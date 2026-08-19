@@ -39,7 +39,7 @@ jobs:
           fi
           echo "Preview URL: $URL"
           echo "Config:"
-          curl --fail --silent --show-error "$URL/api/config"
+          curl --fail --silent --show-error "$URL/api/public/config"
           echo
           echo "Preview state:"
           curl --fail --silent --show-error "$URL/api/preview-state"
