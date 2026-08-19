@@ -26,7 +26,10 @@ export function parseUploadedText(text: string, fileName: string, templates: Par
 
   const viable = templates
     .map((t) => ({ template: t, def: safeJson(t.parser_definition) }))
-    .filter((x) => x.def && typeof x.def === 'object' && x.def.type === 'fixed-width');
+    .filter((x) => {
+      const def = x.def as Record<string, unknown> | null;
+      return !!def && def.type === 'fixed-width';
+    });
 
   const lines = normalizedText.split('\n').filter(Boolean);
   const matches = viable.filter((x) => {
