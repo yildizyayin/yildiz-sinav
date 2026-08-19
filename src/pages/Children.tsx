@@ -1,0 +1,2 @@
+import { Link } from 'react-router-dom';
+export function Children(){return <><div className="page-head"><div><span className="eyebrow">Veli paneli</span><h1>Çocuklarım</h1><p>Bağlı öğrenciler ana sayfada listelenir. Her çocuk yalnız kendi ilişkili veli hesabından görülebilir.</p></div></div><div className="panel"><p>Çocuk seçimi için <Link to="/">Ana Sayfa</Link> üzerinden gelişim raporunu açın.</p></div></>}
