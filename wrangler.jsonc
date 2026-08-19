@@ -10,23 +10,21 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "yildiz-sinav-db",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
       "migrations_dir": "migrations"
     }
   ],
   "r2_buckets": [
     {
-      "binding": "FILES",
-      "bucket_name": "yildiz-sinav-files"
+      "binding": "FILES"
     }
   ],
   "ai": {
     "binding": "AI"
   },
   "vars": {
-    "ENVIRONMENT": "production",
+    "ENVIRONMENT": "staging",
     "PRODUCT_NAME": "Ölçme Platformu",
-    "TURNSTILE_SITE_KEY": ""
+    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+    "TURNSTILE_SECRET_KEY": "1x0000000000000000000000000000000AA"
   }
 }
