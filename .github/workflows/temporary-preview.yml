@@ -29,16 +29,7 @@ jobs:
           set -o pipefail
           npx wrangler deploy --temporary 2>&1 | tee /tmp/cloudflare-preview.log
 
-      - name: Apply D1 migrations
-        run: npx wrangler d1 migrations apply DB --remote --temporary
-
-      - name: Load synthetic demo data
-        shell: bash
-        run: |
-          npm run seed:generate
-          npx wrangler d1 execute DB --remote --file=tmp/demo-seed.sql --temporary
-
-      - name: Smoke test deployed Worker
+      - name: Initialize D1 and smoke test deployed Worker
         shell: bash
         run: |
           URL=$(grep -Eo 'https://[^ ]+\.workers\.dev' /tmp/cloudflare-preview.log | tail -1)
@@ -47,5 +38,9 @@ jobs:
             exit 1
           fi
           echo "Preview URL: $URL"
+          echo "Config:"
           curl --fail --silent --show-error "$URL/api/config"
+          echo
+          echo "Preview state:"
+          curl --fail --silent --show-error "$URL/api/preview-state"
           echo
