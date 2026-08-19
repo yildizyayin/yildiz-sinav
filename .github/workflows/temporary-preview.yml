@@ -30,13 +30,13 @@ jobs:
           npx wrangler deploy --temporary 2>&1 | tee /tmp/cloudflare-preview.log
 
       - name: Apply D1 migrations
-        run: npx wrangler d1 migrations apply DB --remote
+        run: npx wrangler d1 migrations apply DB --remote --temporary
 
       - name: Load synthetic demo data
         shell: bash
         run: |
           npm run seed:generate
-          npx wrangler d1 execute DB --remote --file=tmp/demo-seed.sql
+          npx wrangler d1 execute DB --remote --file=tmp/demo-seed.sql --temporary
 
       - name: Smoke test deployed Worker
         shell: bash
