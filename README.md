@@ -63,7 +63,7 @@ npm run seed:local
 npm run dev
 ```
 
-> `wrangler.jsonc` içindeki D1 `database_id` değeri gerçek Cloudflare deploy öncesi gerçek UUID ile değiştirilmelidir.
+Staging deploy'da D1 ve R2 kaynakları `wrangler deploy` sırasında otomatik provision edilecek şekilde binding-only tanımlanmıştır; repository içine hesap-spesifik D1/R2 ID yazılması gerekmez.
 
 ## Demo hesapları
 
@@ -106,6 +106,8 @@ Seed dosyası aşağıdaki kritik kabul senaryosunu içerir:
 - Pasif kurumun session'ları geçersizleştirilir.
 - Hassas işlemler audit log'a yazılır.
 
+Staging, Cloudflare'ın resmi test Turnstile anahtarlarıyla gerçek widget + server-side Siteverify akışını test eder. Production'a geçerken gerçek widget anahtarlarına geçilir.
+
 ## Resmi veri politikası
 
 Aşağıdaki veriler kaynak sağlanmadan veya doğrulanmadan uydurulmaz:
@@ -135,23 +137,27 @@ Adım adım kurulum için [DEPLOY.md](./DEPLOY.md) dosyasına bakın.
 GitHub Actions:
 
 - `.github/workflows/ci.yml`: typecheck + test + build
-- `.github/workflows/deploy.yml`: Cloudflare deploy (bilerek varsayılan olarak kapalı)
+- `.github/workflows/deploy.yml`: main push sonrası Cloudflare staging deploy + D1 migration
 
-Deploy workflow'unu açmak için GitHub Repository Variable:
+Deploy için GitHub Actions secrets:
 
-`CLOUDFLARE_DEPLOY_ENABLED=true`
+```text
+CLOUDFLARE_API_TOKEN
+CLOUDFLARE_ACCOUNT_ID
+```
 
-Ayrıca Cloudflare Account ID, API Token ve gerçek D1 ID/R2 bucket gereklidir.
+Opsiyonel staging demo verisi için repository variable:
+
+```text
+CLOUDFLARE_LOAD_DEMO=true
+```
 
 ## Üretim öncesi gerçek veri gerektiren bölümler
 
-1. D1 gerçek database ID
-2. R2 bucket
-3. Turnstile site/secret key
-4. Session secret
-5. Doğrulanmış resmi scoring rule'lar
-6. Gerçek optik şablonları/FMT örnekleri/koordinatları
-7. Edesis/Okulizyon gerçek export örnekleri gerekiyorsa adapter tanımları
-8. Kuruma özel marka/logo/domain bilgileri
+1. Gerçek production Turnstile site/secret key
+2. Doğrulanmış resmi scoring rule'lar
+3. Gerçek optik şablonları/FMT örnekleri/koordinatları
+4. Edesis/Okulizyon gerçek export örnekleri gerekiyorsa adapter tanımları
+5. Kuruma özel marka/logo/domain bilgileri
 
 Bu alanlar sağlanmadan sistem onları sahte biçimde “hazır” kabul etmez.
