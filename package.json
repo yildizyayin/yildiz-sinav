@@ -1,0 +1,37 @@
+{
+  "name": "yildiz-sinav-v1",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "npm run build && vite preview",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "deploy": "npm run build && wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply yildiz-sinav-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply yildiz-sinav-db --remote",
+    "seed:generate": "node scripts/generate-demo-seed.mjs",
+    "seed:local": "npm run seed:generate && wrangler d1 execute yildiz-sinav-db --local --file=tmp/demo-seed.sql",
+    "seed:remote": "npm run seed:generate && wrangler d1 execute yildiz-sinav-db --remote --file=tmp/demo-seed.sql"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "lucide-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-router-dom": "latest"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "latest",
+    "@cloudflare/workers-types": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest",
+    "vite": "latest",
+    "vitest": "latest",
+    "wrangler": "latest"
+  }
+}
