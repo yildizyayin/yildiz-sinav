@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "yildiz-sinav-v1",
+  "name": "yildiz-sinav-v1-preview",
   "main": "./worker/index.ts",
   "compatibility_date": "2026-08-20",
   "compatibility_flags": ["nodejs_compat"],
@@ -13,14 +13,6 @@
       "migrations_dir": "migrations"
     }
   ],
-  "r2_buckets": [
-    {
-      "binding": "FILES"
-    }
-  ],
-  "ai": {
-    "binding": "AI"
-  },
   "vars": {
     "ENVIRONMENT": "staging",
     "PRODUCT_NAME": "Ölçme Platformu",
