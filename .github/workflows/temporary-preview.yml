@@ -38,9 +38,10 @@ jobs:
             exit 1
           fi
           echo "Preview URL: $URL"
-          echo "Config:"
-          curl --fail --silent --show-error "$URL/api/public/config"
-          echo
+          sleep 8
           echo "Preview state:"
-          curl --fail --silent --show-error "$URL/api/preview-state"
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 --retry-all-errors "$URL/api/preview-state"
+          echo
+          echo "Config:"
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 --retry-all-errors "$URL/api/config"
           echo
