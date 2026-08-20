@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "yildiz-sinav-v1",
+  "name": "yildiz-sinav-prod",
   "main": "./worker/final-entry.ts",
   "compatibility_date": "2026-08-19",
   "compatibility_flags": ["nodejs_compat"],
@@ -23,9 +23,7 @@
     "binding": "AI"
   },
   "vars": {
-    "ENVIRONMENT": "staging",
-    "PRODUCT_NAME": "Ölçme Platformu",
-    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
-    "TURNSTILE_SECRET_KEY": "1x0000000000000000000000000000000AA"
+    "ENVIRONMENT": "production",
+    "PRODUCT_NAME": "Ölçme Platformu"
   }
 }
