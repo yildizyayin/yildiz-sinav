@@ -1,26 +1,27 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-20T20:09:46.201Z`
+- Time: `2026-08-20T20:13:19.759Z`
 - Result: **FAILED**
-- Passed checks before finish: **3**
+- Passed checks before finish: **6**
 
 ## Checks
 
 - ✅ **Public config** — Ölçme Platformu / staging
 - ✅ **Unauthenticated API boundary**
 - ✅ **Turnstile server validation**
+- ✅ **Manager tenant dashboard** — 65 active / 45 guest / 21 applied exams
+- ✅ **Active/guest student separation** — 65 / 45
+- ✅ **110-person exam matching preview** — 65 active + 45 known guest + 0 new guest
 
 ## Failure
 
 ```text
-Error: Manager dashboard applied exam count mismatch
+Error: POST /api/scan-batches/batch_da54b1d2-2ba2-4880-9c7d-3f00fa4f06ca/evaluate expected 200, got 500
 {
-  "Aktif Öğrenci": 65,
-  "Misafir Öğrenci": 45,
-  "Uygulanan Sınav": 21
+  "raw": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n<title>Worker threw exception | yildiz-sinav-v1.rtsgida.workers.dev | Cloudflare</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/cf.errors.css\" />\n<!--[if lt IE 9]><link rel=\"stylesheet\" id='cf_styles-ie-css' href=\"/cdn-cgi/styles/cf.errors.ie.css\" /><![endif]-->\n<style>body{margin:0;padding:0}</style>\n\n\n<!--[if gte IE 10]><!-->\n<script>\n  if (!navigator.cookieEnabled) {\n    window.addEventListener('DOMContentLoaded', function () {\n      var cookieEl = document.getElementById('cookie-alert');\n      cookieEl.style.display = 'block';\n    })\n  }\n</script>\n<!--<![endif]-->\n\n</head>\n<body>\n    <div id=\"cf-wrapper\">\n        <div class=\"cf-alert cf-alert-error cf-cookie-error\" id=\"cookie-alert\" data-translate=\"enable_cookies\">Please enable cookies.</div>\n        <div id=\"cf-error-details\" class=\"cf-error-details-wrapper\">\n            <div class=\"cf-wrapper cf-header cf-error-overview\">\n                <h1>\n                    <span class=\"cf-error-type\" data-translate=\"error\">Error</span>\n                    <span class=\"cf-error-code\">1101</span>\n                    <small class=\"heading-ray-id\">Ray ID: a2e40d770bb0d490 &bull; 2026-08-20 20:13:19 UTC</small>\n                </h1>\n                <h2 class=\"cf-subheadline\" data-translate=\"error_desc\">Worker threw exception</h2>\n            </div><!-- /.header -->\n    \n            <section></section><!-- spacer -->\n    \n            <div class=\"cf-section cf-wrapper\">\n                <div class=\"cf-columns two\">\n                    <div class=\"cf-column\">\n                        <h2 data-translate=\"what_happened\">What happened?</h2>\n                            <p>You've requested a page on a website (yildiz-sinav-v1.rtsgida.workers.dev) that is on the <a href=\"https://www.cloudflare.com/5xx-error-landing?utm_source=error_100x\" target=\"_blank\">Cloudflare</a> network. An unknown error occurred while rendering the page.</p>\n                    </div>\n                    \n                    <div class=\"cf-column\">\n                        <h2 data-translate=\"what_can_i_do\">What can I do?</h2>\n                            <p><strong>If you are the owner of this website:</strong><br />refer to <a href=\"https://developers.cloudflare.com/workers/observability/errors/\" target=\"_blank\">Workers - Errors and Exceptions</a> and check Workers Logs for yildiz-sinav-v1.rtsgida.workers.dev.</p>\n                    </div>\n                    \n                </div>\n            </div><!-- /.section -->\n    \n            <div class=\"cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300\">\n    <p class=\"text-13\">\n      <span class=\"cf-footer-item sm:block sm:mb-1\">Cloudflare Ray ID: <strong class=\"font-semibold\">a2e40d770bb0d490</strong></span>\n      <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      <span id=\"cf-footer-item-ip\" class=\"cf-footer-item hidden sm:block sm:mb-1\">\n        Your IP:\n        <button type=\"button\" id=\"cf-footer-ip-reveal\" class=\"cf-footer-ip-reveal-btn\">Click to reveal</button>\n        <span class=\"hidden\" id=\"cf-footer-ip\">57.151.138.149</span>\n        <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      </span>\n      <span class=\"cf-footer-item sm:block sm:mb-1\"><span>Performance &amp; security by</span> <a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com/5xx-error-landing\" id=\"brand_link\" target=\"_blank\">Cloudflare</a></span>\n      \n    </p>\n    <script>(function(){function d(){var b=a.getElementById(\"cf-footer-item-ip\"),c=a.getElementById(\"cf-footer-ip-reveal\");b&&\"classList\"in b&&(b.classList.remove(\"hidden\"),c.addEventListener(\"click\",function(){c.classList.add(\"hidden\");a.getElementById(\"cf-footer-ip\").classList.remove(\"hidden\")}))}var a=document;document.addEventListener&&a.addEventListener(\"DOMContentLoaded\",d)})();</script>\n  </div><!-- /.error-footer -->\n\n        </div><!-- /#cf-error-details -->\n    </div><!-- /#cf-wrapper -->\n\n     <script>\n    window._cf_translation = {};\n    \n    \n  </script> \n</body>\n</html>"
 }
-    at check (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke.mjs:12:11)
-    at run (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke.mjs:114:3)
+    at http (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke.mjs:53:11)
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async run (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke.mjs:126:21)
 ```
