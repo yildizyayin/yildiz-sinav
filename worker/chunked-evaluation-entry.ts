@@ -7,7 +7,9 @@ import { assertScoringRuleVerified, calculateOverall, calculateSubjectScore } fr
 import { masteryStatus } from './lib/outcome';
 
 const CHUNK_SIZE = 5;
-const MAX_BINDINGS_PER_STATEMENT = 850;
+// Cloudflare D1 allows at most 100 bound parameters per individual query.
+// Keep headroom for future columns and platform changes.
+const MAX_BINDINGS_PER_STATEMENT = 90;
 
 type AnyRow = Record<string, any>;
 
@@ -229,7 +231,8 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
     await env.DB.batch(statements);
   } catch (error) {
     console.error('Chunked evaluation transaction failed', error);
-    return json({ ok: false, error: { code: 'EVALUATION_CHUNK_FAILED', message: 'Sınav değerlendirme grubunda işlem hatası oluştu. İşlem güvenli şekilde tekrar denenebilir.' } }, 500);
+    const details = env.ENVIRONMENT === 'staging' && error instanceof Error ? error.message : undefined;
+    return json({ ok: false, error: { code: 'EVALUATION_CHUNK_FAILED', message: 'Sınav değerlendirme grubunda işlem hatası oluştu. İşlem güvenli şekilde tekrar denenebilir.', details } }, 500);
   }
 
   const processedRow = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM scan_evaluation_progress WHERE batch_id=?').bind(batchId));
@@ -250,7 +253,7 @@ export default {
       console.error('Chunked evaluation failed', error);
       const message = error instanceof Error ? error.message : 'UNKNOWN_ERROR';
       if (message === 'OFFICIAL_SCORING_RULE_REQUIRED') return badRequest('Bu sınav için doğrulanmış resmî puanlama kuralı tanımlanmalıdır.', message);
-      return json({ ok: false, error: { code: 'SERVER_ERROR', message: 'Sınav değerlendirilirken sunucu hatası oluştu.' } }, 500);
+      return json({ ok: false, error: { code: 'SERVER_ERROR', message: 'Sınav değerlendirilirken sunucu hatası oluştu.', details: env.ENVIRONMENT === 'staging' ? message : undefined } }, 500);
     }
   },
 } satisfies ExportedHandler<Env>;
