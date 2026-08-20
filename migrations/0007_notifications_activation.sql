@@ -10,9 +10,9 @@ CREATE TABLE IF NOT EXISTS activation_requests (
   decided_by TEXT REFERENCES users(id),
   decision_note TEXT,
   requested_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  decided_at TEXT,
-  UNIQUE(institution_id, student_id, status)
+  decided_at TEXT
 );
+CREATE UNIQUE INDEX IF NOT EXISTS idx_activation_one_pending ON activation_requests(institution_id,student_id) WHERE status='PENDING';
 CREATE INDEX IF NOT EXISTS idx_activation_requests_status ON activation_requests(status, requested_at);
 CREATE INDEX IF NOT EXISTS idx_activation_requests_institution ON activation_requests(institution_id, status, requested_at);
 
