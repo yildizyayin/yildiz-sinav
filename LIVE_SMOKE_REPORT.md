@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-20T20:19:08.739Z`
+- Time: `2026-08-20T20:23:07.811Z`
 - Result: **FAILED**
 - Passed checks before finish: **6**
 
@@ -17,15 +17,18 @@
 ## Failure
 
 ```text
-Error: POST /api/scan-batches/batch_7ce8b26e-5cb4-4875-b1cb-56d83f8a3d6a/evaluate expected 200, got 500
+Error: Expected 110 evaluated participants
 {
-  "ok": false,
-  "error": {
-    "code": "EVALUATION_CHUNK_FAILED",
-    "message": "Sınav değerlendirme grubunda işlem hatası oluştu. İşlem güvenli şekilde tekrar denenebilir."
-  }
+  "ok": true,
+  "done": false,
+  "processed": 5,
+  "processedThisRun": 5,
+  "total": 110,
+  "remaining": 105,
+  "batchId": "batch_979b6478-095d-4ac3-bcf7-94ecbe84c4ae",
+  "examId": "exam_demo_active"
 }
-    at http (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke.mjs:53:11)
+    at check (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke.mjs:12:11)
+    at run (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke.mjs:127:3)
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async run (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke.mjs:126:21)
 ```
