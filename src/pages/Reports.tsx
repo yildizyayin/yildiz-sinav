@@ -3,6 +3,7 @@ import { BarChart3, Download, Printer, RefreshCw, Target, TrendingUp, UserRound 
 import { useSearchParams } from 'react-router-dom';
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
+import { resolveReportStudentId } from '../lib/reportSelection';
 
 type StudentRow = { id:string; first_name:string; last_name:string; student_number?:string; grade_level?:number; section?:string; class_name?:string; institution_name?:string };
 
@@ -34,10 +35,7 @@ export function Reports(){
      if(canChooseInstitution&&!institutionId)return;
      const r=await api<any>(`/api/reporting/students${qs({institutionId:canChooseInstitution?institutionId:null})}`);
      const rows:StudentRow[]=r.students||[];setStudents(rows);
-     const requested=searchParams.get('studentId');
-     const allowedRequested=requested&&rows.some((x)=>x.id===requested)?requested:'';
-     const next=allowedRequested||studentId&&rows.some((x)=>x.id===studentId)?studentId:(rows.length===1?rows[0].id:'');
-     setStudentId(next);
+     setStudentId(resolveReportStudentId(rows,searchParams.get('studentId'),studentId));
    }catch(e:any){setError(e.message)}
  };
 
