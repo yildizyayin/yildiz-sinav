@@ -47,7 +47,7 @@ jobs:
           npx wrangler d1 execute DB --remote --file=scripts/demo-camera-fixture.sql
 
       - name: Live staging smoke tests
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-smoke.mjs
 
       - name: Persist live smoke report
