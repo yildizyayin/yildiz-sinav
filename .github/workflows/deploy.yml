@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   deploy:
@@ -49,3 +49,21 @@ jobs:
       - name: Live staging smoke tests
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-smoke.mjs
+
+      - name: Persist live smoke report
+        if: ${{ always() && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        run: |
+          if [ ! -f LIVE_SMOKE_REPORT.md ]; then
+            echo "# Live Staging Smoke Report" > LIVE_SMOKE_REPORT.md
+            echo >> LIVE_SMOKE_REPORT.md
+            echo "Smoke report was not produced by the test runner." >> LIVE_SMOKE_REPORT.md
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add LIVE_SMOKE_REPORT.md
+          if git diff --cached --quiet; then
+            echo "Smoke report unchanged."
+          else
+            git commit -m "chore: update live smoke report [skip ci]"
+            git push
+          fi
