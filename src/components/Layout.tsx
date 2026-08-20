@@ -1,18 +1,18 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BarChart3, BookMarked, BookOpenCheck, Building2, CalendarRange, ClipboardCheck, FileUp, GraduationCap, Home, KeyRound, LogOut, Printer, ScanLine, ShieldCheck, Target, UserCog, Users, UserRoundCheck } from 'lucide-react';
+import { BarChart3, BookMarked, BookOpenCheck, Building2, CalendarRange, Camera, ClipboardCheck, FileUp, GraduationCap, Home, KeyRound, LogOut, Printer, ScanLine, ShieldCheck, Target, UserCog, Users, UserRoundCheck } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 
 const nav: Record<Role, Array<{ to: string; label: string; icon: any }>> = {
   SUPER_ADMIN: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/curriculum', label: 'Müfredat & Kazanımlar', icon: BookMarked }, { to: '/exam-definitions', label: 'Sınav Tanımları', icon: ClipboardCheck }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
     { to: '/students', label: 'Öğrenciler', icon: Users }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange },
-    { to: '/opticals', label: 'Optikler', icon: ScanLine }, { to: '/calibration', label: 'Kalibrasyon', icon: Printer },
+    { to: '/opticals', label: 'Optikler', icon: ScanLine }, { to: '/camera-test', label: 'Kamera Test Optiği', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: Printer },
     { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/reports', label: 'Raporlar', icon: BarChart3 },
   ],
   INSTITUTION_MANAGER: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/exam-definitions', label: 'Sınav Tanımları', icon: ClipboardCheck }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck }, { to: '/students', label: 'Öğrenciler', icon: Users },
     { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange }, { to: '/optical-prepare', label: 'Optik Hazırla', icon: Printer },
-    { to: '/calibration', label: 'Kalibrasyon', icon: ScanLine }, { to: '/reports', label: 'Raporlar', icon: BarChart3 },
+    { to: '/camera-test', label: 'Kamera Test Optiği', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: ScanLine }, { to: '/reports', label: 'Raporlar', icon: BarChart3 },
     { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp },
   ],
   TEACHER: [
