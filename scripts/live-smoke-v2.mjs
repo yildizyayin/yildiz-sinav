@@ -130,11 +130,11 @@ async function main() {
   const studentMe = await request('/api/auth/me', { cookie: student });
   assert(studentMe.payload?.user?.role === 'STUDENT' && studentMe.payload?.user?.student_id === 'stu_a001', 'Student identity binding failed', studentMe.payload);
   const myResults = await request('/api/my-results', { cookie: student });
-  assert(Array.isArray(myResults.payload?.results) && myResults.payload.results.length >= 8, 'Historical student results missing', myResults.payload);
+  assert(Array.isArray(myResults.payload?.exams) && myResults.payload.exams.length >= 8, 'Historical student results missing', myResults.payload);
   await request('/api/reporting/students/stu_a001/combined', { cookie: student });
   const studentIdor = await request('/api/reporting/students/stu_a002/combined', { cookie: student, expected: 403 });
   assert(studentIdor.payload?.error?.code === 'FORBIDDEN', 'Student can access another student', studentIdor.payload);
-  ok('Student self-service + IDOR boundary', `${myResults.payload.results.length} visible results`);
+  ok('Student self-service + IDOR boundary', `${myResults.payload.exams.length} visible exams`);
 
   const parent = await login('parent1');
   const parentDash = await request('/api/dashboard', { cookie: parent });
