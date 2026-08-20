@@ -1,0 +1,71 @@
+name: One-shot backend authorization hardening
+
+on:
+  push:
+    branches: [hardening/teacher-guest-boundaries]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: hardening/teacher-guest-boundaries
+          fetch-depth: 0
+
+      - name: Harden backend boundaries
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('worker/index.ts')
+          s = p.read_text()
+
+          replacements = [
+          (
+          """async function getScanBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {\n  const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));""",
+          """async function getScanBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {\n  if (!canEvaluateExam(user.role)) return forbidden();\n  const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));"""
+          ),
+          (
+          """async function resolveScanRecord(request: Request, env: Env, user: AuthUser, batchId: string, recordId: string): Promise<Response> {\n  const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));""",
+          """async function resolveScanRecord(request: Request, env: Env, user: AuthUser, batchId: string, recordId: string): Promise<Response> {\n  if (!canEvaluateExam(user.role)) return forbidden();\n  const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));"""
+          ),
+          (
+          """  const status = url.searchParams.get('status');\n  const seasonId = url.searchParams.get('seasonId') || (await currentSeason(env.DB, institutionId))?.id;\n  const params: unknown[] = [institutionId];\n  let filter = '';\n  if (seasonId) { filter += ' AND e.season_id=?'; params.push(seasonId); }\n  if (status && ['ACTIVE','GUEST'].includes(status)) { filter += ' AND s.status=?'; params.push(status); }""",
+          """  const requestedStatus = url.searchParams.get('status');\n  const status = (user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER') ? 'ACTIVE' : requestedStatus;\n  const seasonId = url.searchParams.get('seasonId') || (await currentSeason(env.DB, institutionId))?.id;\n  const params: unknown[] = [institutionId];\n  let filter = '';\n  if (seasonId) { filter += ' AND e.season_id=?'; params.push(seasonId); }\n  if (status && ['ACTIVE','GUEST'].includes(status)) { filter += ' AND s.status=?'; params.push(status); }"""
+          ),
+          (
+          """  if (user.role === 'TEACHER' && access.classId) {\n    const scope = await loadPermissionScope(env.DB, user, access.seasonId);\n    const subjectRows = await all<any>(env.DB.prepare(`SELECT ep.exam_id,sr.*,s.name subject_name,s.code subject_code FROM exam_participants ep JOIN subject_results sr ON sr.participant_id=ep.id JOIN subjects s ON s.id=sr.subject_id WHERE ep.student_id=?`).bind(studentId));\n    const filtered = subjectRows.filter((r) => canAccessSubjectForClass(scope, access.classId!, r.subject_id));\n    return json({ ok: true, exams: rows.map(({ net, score, correct_count, wrong_count, blank_count, ...rest }) => rest), subjectResults: filtered, restrictedToSubjects: true });\n  }""",
+          """  if (user.role === 'TEACHER' && access.classId) {\n    const scope = await loadPermissionScope(env.DB, user, access.seasonId);\n    if (scope.guidanceClassIds.includes(access.classId)) return json({ ok: true, exams: rows });\n    const subjectRows = await all<any>(env.DB.prepare(`SELECT ep.exam_id,sr.*,s.name subject_name,s.code subject_code FROM exam_participants ep JOIN subject_results sr ON sr.participant_id=ep.id JOIN subjects s ON s.id=sr.subject_id WHERE ep.student_id=?`).bind(studentId));\n    const filtered = subjectRows.filter((r) => canAccessSubjectForClass(scope, access.classId!, r.subject_id));\n    return json({ ok: true, exams: rows.map(({ net, score, correct_count, wrong_count, blank_count, ...rest }) => rest), subjectResults: filtered, restrictedToSubjects: true });\n  }"""
+          ),
+          (
+          """    subjectFilter = scope.guidanceClassIds.includes(access.classId) ? null : scope.subjectIds;""",
+          """    subjectFilter = scope.guidanceClassIds.includes(access.classId)\n      ? null\n      : scope.subjectClassAssignments.filter((assignment) => assignment.classId === access.classId).map((assignment) => assignment.subjectId);"""
+          ),
+          (
+          """  const enrollment = await one<any>(db.prepare(`SELECT e.class_id,e.season_id,e.institution_id FROM student_enrollments e WHERE e.student_id=? AND e.institution_id=? ORDER BY e.created_at DESC LIMIT 1`).bind(studentId, user.institution_id));\n  if (!enrollment) return { allowed: false };\n  if (user.role === 'INSTITUTION_MANAGER') return { allowed: true, classId: enrollment.class_id, seasonId: enrollment.season_id };\n  if (user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER') {\n    const scope = await loadPermissionScope(db, user, enrollment.season_id);""",
+          """  const enrollment = await one<any>(db.prepare(`SELECT e.class_id,e.season_id,e.institution_id,s.status student_status FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.student_id=? AND e.institution_id=? ORDER BY e.created_at DESC LIMIT 1`).bind(studentId, user.institution_id));\n  if (!enrollment) return { allowed: false };\n  if (user.role === 'INSTITUTION_MANAGER') return { allowed: true, classId: enrollment.class_id, seasonId: enrollment.season_id };\n  if (user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER') {\n    if (enrollment.student_status !== 'ACTIVE') return { allowed: false };\n    const scope = await loadPermissionScope(db, user, enrollment.season_id);"""
+          ),
+          ]
+
+          for old, new in replacements:
+              if old not in s:
+                  raise SystemExit(f'Expected source block not found:\n{old[:160]}')
+              s = s.replace(old, new, 1)
+
+          p.write_text(s)
+          PY
+
+      - name: Remove one-shot workflow and commit patch
+        shell: bash
+        run: |
+          rm .github/workflows/one-shot-backend-hardening.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add worker/index.ts .github/workflows/one-shot-backend-hardening.yml
+          git commit -m "security: enforce teacher and guest backend boundaries"
+          git push origin HEAD:hardening/teacher-guest-boundaries
