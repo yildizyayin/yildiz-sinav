@@ -14,6 +14,38 @@ async function rejectPassive(env:Env,user:any):Promise<Response|null>{
   return null;
 }
 
+async function studentDashboard(env:Env,user:any):Promise<Response>{
+  if(!user.student_id)return fail(400,'STUDENT_NOT_LINKED','Öğrenci hesabı bağlı değil.');
+  const [latest,outcomeRows]=await Promise.all([
+    one<any>(env.DB.prepare(`
+      SELECT e.title,e.exam_date,er.net,er.score,er.success_percent
+      FROM exam_results er
+      JOIN exam_participants ep ON ep.id=er.participant_id
+      JOIN exams e ON e.id=ep.exam_id
+      WHERE ep.student_id=?
+      ORDER BY coalesce(e.exam_date,er.created_at) DESC
+      LIMIT 1
+    `).bind(user.student_id)),
+    all<any>(env.DB.prepare(`
+      SELECT o.id,o.title,o.topic,o.subtopic,o.subject_id,s.name subject_name,
+             sum(r.evidence_count) evidence_count,sum(r.correct_count) correct_count
+      FROM outcome_results r
+      JOIN outcomes o ON o.id=r.outcome_id
+      JOIN subjects s ON s.id=o.subject_id
+      WHERE r.student_id=?
+      GROUP BY o.id,o.title,o.topic,o.subtopic,o.subject_id,s.name
+      HAVING sum(r.evidence_count)>=3
+    `).bind(user.student_id)),
+  ]);
+  const outcomes=outcomeRows.map((row:any)=>{
+    const evidence=Number(row.evidence_count||0),correct=Number(row.correct_count||0);
+    return {...row,evidence_count:evidence,correct_count:correct,success_rate:evidence?correct/evidence:0};
+  });
+  const developing=outcomes.filter((row:any)=>row.success_rate<0.6).sort((a:any,b:any)=>a.success_rate-b.success_rate).slice(0,5);
+  const strong=outcomes.filter((row:any)=>row.success_rate>=0.6).sort((a:any,b:any)=>b.success_rate-a.success_rate).slice(0,6);
+  return Response.json({ok:true,latest,developing,strong});
+}
+
 async function teacherDashboard(env:Env,user:any):Promise<Response>{
   const [classCount,studentCount,examCount,classes,subjects]=await Promise.all([
     one<{c:number}>(env.DB.prepare(`
@@ -90,6 +122,7 @@ export default {
     if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
     const passive=await rejectPassive(env,user);
     if(passive)return passive;
+    if(user.role==='STUDENT')return studentDashboard(env,user);
     if(user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER')return teacherDashboard(env,user);
     if(user.role==='PARENT')return parentDashboard(env,user);
     return app.fetch(request,env);
