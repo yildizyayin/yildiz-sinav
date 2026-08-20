@@ -17,7 +17,7 @@ const nav: Record<Role, Array<{ to: string; label: string; icon: any }>> = {
   ],
   TEACHER: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
-    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck },
+    { to: '/reports', label: 'Branş Gelişimi', icon: BarChart3 }, { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck },
   ],
   GUIDANCE_TEACHER: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
