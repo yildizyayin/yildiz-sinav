@@ -43,3 +43,4 @@ jobs:
         run: |
           npm run seed:generate
           npx wrangler d1 execute DB --remote --file=tmp/demo-seed.sql
+          npx wrangler d1 execute DB --remote --file=scripts/demo-camera-fixture.sql
