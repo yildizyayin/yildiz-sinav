@@ -52,6 +52,10 @@ jobs:
           rm -f LIVE_SMOKE_REPORT.md
           node scripts/live-smoke-v2.mjs
 
+      - name: Live final five feature tests
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        run: node scripts/live-final-features-smoke.mjs
+
       - name: Persist live smoke report
         if: ${{ always() && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: |
@@ -61,7 +65,7 @@ jobs:
             echo "Smoke report was not produced by the test runner." >> LIVE_SMOKE_REPORT.md
           fi
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "4189826+github-actions[bot]@users.noreply.github.com"
           git add LIVE_SMOKE_REPORT.md
           if git diff --cached --quiet; then
             echo "Smoke report unchanged."
