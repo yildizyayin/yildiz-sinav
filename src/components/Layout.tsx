@@ -4,13 +4,13 @@ import { useAuth, type Role } from '../auth';
 
 const nav: Record<Role, Array<{ to: string; label: string; icon: any }>> = {
   SUPER_ADMIN: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/exam-definitions', label: 'Sınav Tanımları', icon: ClipboardCheck }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
     { to: '/students', label: 'Öğrenciler', icon: Users }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange },
     { to: '/opticals', label: 'Optikler', icon: ScanLine }, { to: '/calibration', label: 'Kalibrasyon', icon: Printer },
     { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/reports', label: 'Raporlar', icon: BarChart3 },
   ],
   INSTITUTION_MANAGER: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck }, { to: '/students', label: 'Öğrenciler', icon: Users },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/exam-definitions', label: 'Sınav Tanımları', icon: ClipboardCheck }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck }, { to: '/students', label: 'Öğrenciler', icon: Users },
     { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange }, { to: '/optical-prepare', label: 'Optik Hazırla', icon: Printer },
     { to: '/calibration', label: 'Kalibrasyon', icon: ScanLine }, { to: '/reports', label: 'Raporlar', icon: BarChart3 },
     { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp },

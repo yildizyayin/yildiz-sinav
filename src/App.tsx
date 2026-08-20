@@ -6,6 +6,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Institutions } from './pages/Institutions';
 import { Exams } from './pages/Exams';
 import { ExamEvaluate } from './pages/ExamEvaluate';
+import { ExamDefinitions } from './pages/ExamDefinitions';
 import { Students } from './pages/Students';
 import { Classes } from './pages/Classes';
 import { Outcomes } from './pages/Outcomes';
@@ -38,6 +39,7 @@ export default function App(){
    <Route index element={<Dashboard/>}/>
    <Route path="institutions" element={<RoleGate allowed={['SUPER_ADMIN']}><Institutions/></RoleGate>}/>
    <Route path="exams" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Exams/></RoleGate>}/>
+   <Route path="exam-definitions" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamDefinitions/></RoleGate>}/>
    <Route path="exams/:examId/evaluate" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamEvaluate/></RoleGate>}/>
    <Route path="students" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Students/></RoleGate>}/>
    <Route path="users" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><UsersPage/></RoleGate>}/>
