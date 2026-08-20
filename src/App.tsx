@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { useAuth } from './auth';
+import { useAuth, type Role } from './auth';
 import { Layout } from './components/Layout';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
@@ -17,6 +17,12 @@ import { OpticalPrepare } from './pages/OpticalPrepare';
 import { Calibration } from './pages/Calibration';
 import { Opticals } from './pages/Opticals';
 
+function RoleGate({ allowed, children }: { allowed: Role[]; children: React.ReactNode }) {
+  const { user } = useAuth();
+  if (!user || !allowed.includes(user.role)) return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
 export default function App(){
  const {user,loading}=useAuth(); const location=useLocation();
  if(loading)return <div className="boot">Ölçme Platformu yükleniyor…</div>;
@@ -26,20 +32,20 @@ export default function App(){
   <Route path="/login" element={<Login/>}/>
   <Route element={<Layout/>}>
    <Route index element={<Dashboard/>}/>
-   <Route path="institutions" element={<Institutions/>}/>
-   <Route path="exams" element={<Exams/>}/>
-   <Route path="exams/:examId/evaluate" element={<ExamEvaluate/>}/>
-   <Route path="students" element={<Students/>}/>
-   <Route path="classes" element={<Classes/>}/>
-   <Route path="outcomes" element={<Outcomes/>}/>
-   <Route path="worksheets" element={<Worksheets/>}/>
-   <Route path="reports" element={<Reports/>}/>
-   <Route path="my-results" element={<Reports/>}/>
-   <Route path="children" element={<Children/>}/>
-   <Route path="transfers" element={<Transfers/>}/>
-   <Route path="optical-prepare" element={<OpticalPrepare/>}/>
-   <Route path="calibration" element={<Calibration/>}/>
-   <Route path="opticals" element={<Opticals/>}/>
+   <Route path="institutions" element={<RoleGate allowed={['SUPER_ADMIN']}><Institutions/></RoleGate>}/>
+   <Route path="exams" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Exams/></RoleGate>}/>
+   <Route path="exams/:examId/evaluate" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamEvaluate/></RoleGate>}/>
+   <Route path="students" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Students/></RoleGate>}/>
+   <Route path="classes" element={<RoleGate allowed={['TEACHER','GUIDANCE_TEACHER']}><Classes/></RoleGate>}/>
+   <Route path="outcomes" element={<RoleGate allowed={['TEACHER','GUIDANCE_TEACHER','STUDENT']}><Outcomes/></RoleGate>}/>
+   <Route path="worksheets" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><Worksheets/></RoleGate>}/>
+   <Route path="reports" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','GUIDANCE_TEACHER','PARENT']}><Reports/></RoleGate>}/>
+   <Route path="my-results" element={<RoleGate allowed={['STUDENT']}><Reports/></RoleGate>}/>
+   <Route path="children" element={<RoleGate allowed={['PARENT']}><Children/></RoleGate>}/>
+   <Route path="transfers" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Transfers/></RoleGate>}/>
+   <Route path="optical-prepare" element={<RoleGate allowed={['INSTITUTION_MANAGER']}><OpticalPrepare/></RoleGate>}/>
+   <Route path="calibration" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Calibration/></RoleGate>}/>
+   <Route path="opticals" element={<RoleGate allowed={['SUPER_ADMIN']}><Opticals/></RoleGate>}/>
    <Route path="*" element={<Navigate to="/" replace/>}/>
   </Route>
  </Routes>
