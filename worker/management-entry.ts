@@ -5,8 +5,18 @@ import { all, audit, one, uuid } from './lib/db';
 
 const STAFF_ROLES: Role[] = ['INSTITUTION_MANAGER', 'TEACHER', 'GUIDANCE_TEACHER'];
 
+type AssignmentType = 'SUBJECT' | 'GUIDANCE';
+
 export function canManageUsers(role: Role): boolean {
   return role === 'SUPER_ADMIN' || role === 'INSTITUTION_MANAGER';
+}
+
+export function canManageTeacherAssignments(role: Role): boolean {
+  return canManageUsers(role);
+}
+
+export function assignmentRequiresSubject(type: AssignmentType): boolean {
+  return type === 'SUBJECT';
 }
 
 export function manageableRoles(role: Role): Role[] {
@@ -128,6 +138,91 @@ async function listSeasons(env: Env, user: AuthUser, url: URL): Promise<Response
   return Response.json({ ok: true, seasons: rows });
 }
 
+async function assignmentOptions(env: Env, actor: AuthUser, url: URL): Promise<Response> {
+  if (!canManageTeacherAssignments(actor.role)) return responseError(403, 'FORBIDDEN', 'Öğretmen yetkisi yönetme izniniz bulunmuyor.');
+  const institutionId = requestedInstitutionId(actor, url);
+  if (!institutionId) return responseError(400, 'INSTITUTION_REQUIRED', 'Kurum seçilmelidir.');
+  if (!(await ensureInstitutionAccess(env, actor, institutionId))) return responseError(403, 'FORBIDDEN', 'Bu kuruma erişim yetkiniz bulunmuyor.');
+  const requestedSeasonId = url.searchParams.get('seasonId');
+  const season = requestedSeasonId
+    ? await one<any>(env.DB.prepare('SELECT * FROM institution_seasons WHERE id=? AND institution_id=?').bind(requestedSeasonId, institutionId))
+    : await one<any>(env.DB.prepare(`SELECT * FROM institution_seasons WHERE institution_id=? ORDER BY CASE status WHEN 'ACTIVE' THEN 0 ELSE 1 END, academic_year DESC LIMIT 1`).bind(institutionId));
+  if (!season) return Response.json({ ok: true, season: null, seasons: [], teachers: [], classes: [], subjects: [] });
+  const [seasons, teachers, classes, subjects] = await Promise.all([
+    all<any>(env.DB.prepare('SELECT id,academic_year,status FROM institution_seasons WHERE institution_id=? ORDER BY academic_year DESC').bind(institutionId)),
+    all<any>(env.DB.prepare(`SELECT id,display_name,role,email,username FROM users WHERE institution_id=? AND active=1 AND role IN ('TEACHER','GUIDANCE_TEACHER') ORDER BY display_name`).bind(institutionId)),
+    all<any>(env.DB.prepare(`SELECT id,name,grade_level,section FROM classes WHERE institution_id=? AND season_id=? AND active=1 ORDER BY grade_level,section`).bind(institutionId, season.id)),
+    all<any>(env.DB.prepare(`SELECT id,code,name,category FROM subjects WHERE active=1 ORDER BY name`)),
+  ]);
+  return Response.json({ ok: true, season: { id: season.id, academic_year: season.academic_year, status: season.status }, seasons, teachers, classes, subjects });
+}
+
+async function listTeacherAssignments(env: Env, actor: AuthUser, url: URL): Promise<Response> {
+  if (!canManageTeacherAssignments(actor.role)) return responseError(403, 'FORBIDDEN', 'Öğretmen yetkisi yönetme izniniz bulunmuyor.');
+  const institutionId = requestedInstitutionId(actor, url);
+  if (!institutionId) return responseError(400, 'INSTITUTION_REQUIRED', 'Kurum seçilmelidir.');
+  if (!(await ensureInstitutionAccess(env, actor, institutionId))) return responseError(403, 'FORBIDDEN', 'Bu kuruma erişim yetkiniz bulunmuyor.');
+  const seasonId = url.searchParams.get('seasonId');
+  const rows = await all<any>(env.DB.prepare(`
+    SELECT ta.id,ta.user_id,ta.season_id,ta.class_id,ta.subject_id,ta.assignment_type,ta.active,
+           u.display_name teacher_name,u.role teacher_role,c.name class_name,c.grade_level,c.section,
+           s.name subject_name,se.academic_year
+    FROM teacher_assignments ta
+    JOIN users u ON u.id=ta.user_id
+    LEFT JOIN classes c ON c.id=ta.class_id
+    LEFT JOIN subjects s ON s.id=ta.subject_id
+    JOIN institution_seasons se ON se.id=ta.season_id
+    WHERE ta.institution_id=? AND (? IS NULL OR ta.season_id=?)
+    ORDER BY se.academic_year DESC,u.display_name,c.grade_level,c.section,ta.assignment_type,s.name
+  `).bind(institutionId, seasonId, seasonId));
+  return Response.json({ ok: true, assignments: rows });
+}
+
+async function createTeacherAssignment(request: Request, env: Env, actor: AuthUser): Promise<Response> {
+  if (!canManageTeacherAssignments(actor.role)) return responseError(403, 'FORBIDDEN', 'Öğretmen yetkisi yönetme izniniz bulunmuyor.');
+  const body = await request.json<{ institutionId?: string; userId?: string; classId?: string; subjectId?: string | null; assignmentType?: AssignmentType }>();
+  const institutionId = requestedInstitutionId(actor, new URL(request.url), body.institutionId || null);
+  if (!institutionId || !body.userId || !body.classId || !body.assignmentType) return responseError(400, 'VALIDATION_ERROR', 'Kurum, öğretmen, sınıf ve yetki türü gereklidir.');
+  if (!(await ensureInstitutionAccess(env, actor, institutionId))) return responseError(403, 'FORBIDDEN', 'Bu kuruma erişim yetkiniz bulunmuyor.');
+  if (!['SUBJECT', 'GUIDANCE'].includes(body.assignmentType)) return responseError(400, 'INVALID_ASSIGNMENT_TYPE', 'Geçersiz öğretmen yetki türü.');
+  if (assignmentRequiresSubject(body.assignmentType) && !body.subjectId) return responseError(400, 'SUBJECT_REQUIRED', 'Branş yetkisinde ders seçilmelidir.');
+
+  const teacher = await one<any>(env.DB.prepare(`SELECT id,institution_id,role,display_name FROM users WHERE id=? AND active=1 AND role IN ('TEACHER','GUIDANCE_TEACHER')`).bind(body.userId));
+  if (!teacher || teacher.institution_id !== institutionId) return responseError(404, 'TEACHER_NOT_FOUND', 'Öğretmen bulunamadı.');
+  const cls = await one<any>(env.DB.prepare('SELECT id,institution_id,season_id,name FROM classes WHERE id=? AND active=1').bind(body.classId));
+  if (!cls || cls.institution_id !== institutionId) return responseError(404, 'CLASS_NOT_FOUND', 'Sınıf bulunamadı.');
+  if (body.subjectId) {
+    const subject = await one(env.DB.prepare('SELECT id FROM subjects WHERE id=? AND active=1').bind(body.subjectId));
+    if (!subject) return responseError(404, 'SUBJECT_NOT_FOUND', 'Ders bulunamadı.');
+  }
+
+  const subjectId = body.assignmentType === 'SUBJECT' ? body.subjectId! : null;
+  const duplicate = await one(env.DB.prepare(`
+    SELECT id FROM teacher_assignments
+    WHERE user_id=? AND season_id=? AND class_id=? AND assignment_type=? AND coalesce(subject_id,'')=coalesce(?,'') AND active=1
+    LIMIT 1
+  `).bind(body.userId, cls.season_id, body.classId, body.assignmentType, subjectId));
+  if (duplicate) return responseError(409, 'ASSIGNMENT_EXISTS', 'Bu öğretmen yetkisi zaten tanımlı.');
+
+  const id = uuid('tassign');
+  await env.DB.prepare(`INSERT INTO teacher_assignments (id,user_id,institution_id,season_id,class_id,subject_id,assignment_type,active) VALUES (?,?,?,?,?,?,?,1)`)
+    .bind(id, body.userId, institutionId, cls.season_id, body.classId, subjectId, body.assignmentType).run();
+  await audit(env.DB, actor.id, institutionId, 'TEACHER_ASSIGNMENT_CREATED', 'teacher_assignment', id, { teacherId: body.userId, classId: body.classId, subjectId, assignmentType: body.assignmentType });
+  return Response.json({ ok: true, id }, { status: 201 });
+}
+
+async function setTeacherAssignmentStatus(request: Request, env: Env, actor: AuthUser, assignmentId: string): Promise<Response> {
+  if (!canManageTeacherAssignments(actor.role)) return responseError(403, 'FORBIDDEN', 'Öğretmen yetkisi yönetme izniniz bulunmuyor.');
+  const assignment = await one<any>(env.DB.prepare(`SELECT ta.*,u.display_name FROM teacher_assignments ta JOIN users u ON u.id=ta.user_id WHERE ta.id=?`).bind(assignmentId));
+  if (!assignment) return responseError(404, 'NOT_FOUND', 'Öğretmen yetkisi bulunamadı.');
+  if (!(await ensureInstitutionAccess(env, actor, assignment.institution_id))) return responseError(403, 'FORBIDDEN', 'Bu kayda erişim yetkiniz bulunmuyor.');
+  const body = await request.json<{ active?: boolean }>();
+  if (typeof body.active !== 'boolean') return responseError(400, 'VALIDATION_ERROR', 'Aktiflik durumu belirtilmelidir.');
+  await env.DB.prepare('UPDATE teacher_assignments SET active=? WHERE id=?').bind(body.active ? 1 : 0, assignmentId).run();
+  await audit(env.DB, actor.id, assignment.institution_id, body.active ? 'TEACHER_ASSIGNMENT_ACTIVATED' : 'TEACHER_ASSIGNMENT_DEACTIVATED', 'teacher_assignment', assignmentId, { teacherId: assignment.user_id });
+  return Response.json({ ok: true, active: body.active });
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -153,6 +248,28 @@ export default {
       const auth = await requireUser(env, request);
       if (auth instanceof Response) return auth;
       return listSeasons(env, auth, url);
+    }
+
+    if (url.pathname === '/api/teacher-assignment-options' && request.method === 'GET') {
+      const auth = await requireUser(env, request);
+      if (auth instanceof Response) return auth;
+      return assignmentOptions(env, auth, url);
+    }
+
+    if (url.pathname === '/api/teacher-assignments') {
+      const auth = await requireUser(env, request);
+      if (auth instanceof Response) return auth;
+      if (request.method === 'GET') return listTeacherAssignments(env, auth, url);
+      if (request.method === 'POST') return createTeacherAssignment(request, env, auth);
+      return responseError(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
+
+    const assignmentStatusMatch = url.pathname.match(/^\/api\/teacher-assignments\/([^/]+)\/status$/);
+    if (assignmentStatusMatch) {
+      const auth = await requireUser(env, request);
+      if (auth instanceof Response) return auth;
+      if (request.method === 'PATCH') return setTeacherAssignmentStatus(request, env, auth, assignmentStatusMatch[1]);
+      return responseError(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     }
 
     return secureApp.fetch(request, env);
