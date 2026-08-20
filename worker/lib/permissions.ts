@@ -21,6 +21,7 @@ export async function loadPermissionScope(db: D1Database, user: AuthUser, season
     subjectIds: [],
     classIds: [],
     guidanceClassIds: [],
+    subjectClassAssignments: [],
   };
   if ((user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER') && user.institution_id) {
     const params: unknown[] = [user.id];
@@ -31,9 +32,12 @@ export async function loadPermissionScope(db: D1Database, user: AuthUser, season
     }
     const rows = await all<{ class_id: string | null; subject_id: string | null; assignment_type: 'SUBJECT' | 'GUIDANCE' }>(db.prepare(sql).bind(...params));
     for (const row of rows) {
-      if (row.assignment_type === 'SUBJECT') {
-        if (row.class_id && !scope.classIds.includes(row.class_id)) scope.classIds.push(row.class_id);
-        if (row.subject_id && !scope.subjectIds.includes(row.subject_id)) scope.subjectIds.push(row.subject_id);
+      if (row.assignment_type === 'SUBJECT' && row.class_id && row.subject_id) {
+        if (!scope.classIds.includes(row.class_id)) scope.classIds.push(row.class_id);
+        if (!scope.subjectIds.includes(row.subject_id)) scope.subjectIds.push(row.subject_id);
+        if (!scope.subjectClassAssignments.some((assignment) => assignment.classId === row.class_id && assignment.subjectId === row.subject_id)) {
+          scope.subjectClassAssignments.push({ classId: row.class_id, subjectId: row.subject_id });
+        }
       } else if (row.assignment_type === 'GUIDANCE' && row.class_id && !scope.guidanceClassIds.includes(row.class_id)) {
         scope.guidanceClassIds.push(row.class_id);
       }
@@ -44,13 +48,12 @@ export async function loadPermissionScope(db: D1Database, user: AuthUser, season
 
 export function canAccessClass(scope: PermissionScope, classId: string): boolean {
   if (scope.role === 'SUPER_ADMIN' || scope.role === 'INSTITUTION_MANAGER') return true;
-  if (scope.role === 'GUIDANCE_TEACHER' && scope.guidanceClassIds.includes(classId)) return true;
-  if (scope.role === 'TEACHER' && scope.guidanceClassIds.includes(classId)) return true;
+  if (scope.guidanceClassIds.includes(classId)) return true;
   return scope.classIds.includes(classId);
 }
 
 export function canAccessSubjectForClass(scope: PermissionScope, classId: string, subjectId: string): boolean {
   if (scope.role === 'SUPER_ADMIN' || scope.role === 'INSTITUTION_MANAGER') return true;
   if (scope.guidanceClassIds.includes(classId)) return true;
-  return scope.classIds.includes(classId) && scope.subjectIds.includes(subjectId);
+  return scope.subjectClassAssignments.some((assignment) => assignment.classId === classId && assignment.subjectId === subjectId);
 }

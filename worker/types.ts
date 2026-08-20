@@ -60,4 +60,5 @@ export interface PermissionScope {
   subjectIds: string[];
   classIds: string[];
   guidanceClassIds: string[];
+  subjectClassAssignments: Array<{ classId: string; subjectId: string }>;
 }
