@@ -1,6 +1,9 @@
+import { writeFileSync } from 'node:fs';
+
 const BASE_URL = (process.env.SMOKE_BASE_URL || 'https://yildiz-sinav-v1.rtsgida.workers.dev').replace(/\/$/, '');
 const PASSWORD = process.env.SMOKE_DEMO_PASSWORD || 'Demo123!';
 const TURNSTILE_TEST_TOKEN = 'XXXX.DUMMY.TOKEN.XXXX';
+const REPORT_PATH = 'LIVE_SMOKE_REPORT.md';
 
 const results = [];
 function check(condition, message, details) {
@@ -12,6 +15,26 @@ function check(condition, message, details) {
 function pass(name, details = '') {
   results.push({ name, ok: true, details });
   console.log(`✓ ${name}${details ? ` — ${details}` : ''}`);
+}
+function writeReport(error) {
+  const when = new Date().toISOString();
+  const lines = [
+    '# Live Staging Smoke Report',
+    '',
+    `- Target: \`${BASE_URL}\``,
+    `- Time: \`${when}\``,
+    `- Result: **${error ? 'FAILED' : 'PASSED'}**`,
+    `- Passed checks before finish: **${results.length}**`,
+    '',
+    '## Checks',
+    '',
+    ...(results.length ? results.map((r) => `- ✅ **${r.name}**${r.details ? ` — ${r.details}` : ''}`) : ['- No checks completed.']),
+  ];
+  if (error) {
+    lines.push('', '## Failure', '', '```text', String(error instanceof Error ? error.stack || error.message : error).slice(0, 12000), '```');
+  }
+  lines.push('');
+  writeFileSync(REPORT_PATH, lines.join('\n'));
 }
 
 async function http(path, { method = 'GET', cookie, json, form, expected = 200 } = {}) {
@@ -47,12 +70,8 @@ async function login(identifier) {
 
 function demoCsv() {
   const rows = ['student_number,name,class,booklet,answers_MAT,answers_TUR,answers_FEN'];
-  for (let i = 1; i <= 65; i++) {
-    rows.push(`${1000 + i},Aktif${i} Öğrenci${i},7/A,A,ABCDEABCDE,ABCDEABCDE,ABCDEABCDE`);
-  }
-  for (let i = 1; i <= 45; i++) {
-    rows.push(`${2000 + i},Misafir${i} Katılımcı${i},7/A,A,ABCDEABCDE,ABCDEABCDE,ABCDEABCDE`);
-  }
+  for (let i = 1; i <= 65; i++) rows.push(`${1000 + i},Aktif${i} Öğrenci${i},7/A,A,ABCDEABCDE,ABCDEABCDE,ABCDEABCDE`);
+  for (let i = 1; i <= 45; i++) rows.push(`${2000 + i},Misafir${i} Katılımcı${i},7/A,A,ABCDEABCDE,ABCDEABCDE,ABCDEABCDE`);
   return rows.join('\n');
 }
 
@@ -81,11 +100,7 @@ async function run() {
   check(unauth.payload?.error?.code === 'UNAUTHENTICATED', 'Unauthenticated boundary failed', unauth.payload);
   pass('Unauthenticated API boundary');
 
-  const missingTurnstile = await http('/api/auth/login', {
-    method: 'POST',
-    json: { identifier: 'manager', password: PASSWORD },
-    expected: 400,
-  });
+  const missingTurnstile = await http('/api/auth/login', { method: 'POST', json: { identifier: 'manager', password: PASSWORD }, expected: 400 });
   check(missingTurnstile.payload?.error?.code === 'TURNSTILE_REQUIRED', 'Turnstile server-side enforcement failed', missingTurnstile.payload);
   pass('Turnstile server validation');
 
@@ -162,10 +177,12 @@ async function run() {
   check(revoked.payload?.error?.code === 'UNAUTHENTICATED', 'Revoked session still active', revoked.payload);
   pass('Session revocation on logout');
 
+  writeReport(null);
   console.log(`\n${results.length} live smoke checks passed.`);
 }
 
 run().catch((error) => {
+  writeReport(error);
   console.error('\nLIVE SMOKE FAILED');
   console.error(error instanceof Error ? error.stack || error.message : error);
   process.exit(1);
