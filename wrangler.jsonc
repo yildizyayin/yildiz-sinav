@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "yildiz-sinav-v1",
-  "main": "./worker/camera-chunk-root.ts",
+  "main": "./worker/panel-entry.ts",
   "compatibility_date": "2026-08-19",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {

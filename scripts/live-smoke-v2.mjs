@@ -129,6 +129,10 @@ async function main() {
   const student = await login('student1');
   const studentMe = await request('/api/auth/me', { cookie: student });
   assert(studentMe.payload?.user?.role === 'STUDENT' && studentMe.payload?.user?.student_id === 'stu_a001', 'Student identity binding failed', studentMe.payload);
+  const studentDash = await request('/api/dashboard', { cookie: student });
+  assert(studentDash.payload?.latest?.title, 'Student latest exam missing from dashboard', studentDash.payload);
+  assert(Array.isArray(studentDash.payload?.developing), 'Student developing outcomes missing from dashboard', studentDash.payload);
+  ok('Student dashboard data', `${studentDash.payload.developing.length} developing outcomes`);
   const myResults = await request('/api/my-results', { cookie: student });
   assert(Array.isArray(myResults.payload?.exams) && myResults.payload.exams.length >= 8, 'Historical student results missing', myResults.payload);
   await request('/api/reporting/students/stu_a001/combined', { cookie: student });
@@ -139,12 +143,20 @@ async function main() {
   const parent = await login('parent1');
   const parentDash = await request('/api/dashboard', { cookie: parent });
   assert(parentDash.payload?.children?.length === 1 && parentDash.payload.children[0].id === 'stu_a001', 'Parent child link failed', parentDash.payload);
+  assert(parentDash.payload.children[0].class_name, 'Parent dashboard class information missing', parentDash.payload.children[0]);
   await request('/api/reporting/students/stu_a001/combined', { cookie: parent });
   const parentIdor = await request('/api/reporting/students/stu_a002/combined', { cookie: parent, expected: 403 });
   assert(parentIdor.payload?.error?.code === 'FORBIDDEN', 'Parent can access an unrelated child', parentIdor.payload);
-  ok('Parent linked-child boundary');
+  ok('Parent linked-child boundary', parentDash.payload.children[0].class_name);
 
   const teacher = await login('math');
+  const teacherDash = await request('/api/dashboard', { cookie: teacher });
+  const teacherCards = Object.fromEntries((teacherDash.payload?.cards || []).map((c) => [c.label, Number(c.value)]));
+  assert('Atanmış Sınıf' in teacherCards && 'Kapsamdaki Öğrenci' in teacherCards, 'Branch teacher dashboard is not assignment scoped', teacherDash.payload);
+  assert(!('Aktif Öğrenci' in teacherCards), 'Branch teacher dashboard leaks institution-wide student count', teacherDash.payload);
+  assert(teacherDash.payload?.scope?.mode === 'SUBJECT', 'Branch teacher scope mode mismatch', teacherDash.payload?.scope);
+  assert((teacherDash.payload?.scope?.subjects || []).some((x) => x.name === 'Matematik'), 'Math teacher dashboard has no Mathematics scope', teacherDash.payload?.scope);
+  ok('Branch teacher dashboard scope', `${teacherCards['Atanmış Sınıf']} classes / ${teacherCards['Kapsamdaki Öğrenci']} students`);
   const teacherReport = await request('/api/reporting/students/stu_a001/combined', { cookie: teacher });
   assert(teacherReport.payload?.restrictedToSubjects === true, 'Branch teacher report is not restricted', teacherReport.payload);
   const teacherSubjects = [...new Set((teacherReport.payload?.outcomes || []).map((x) => x.subject_name))];
@@ -152,6 +164,11 @@ async function main() {
   ok('Branch teacher subject scope', teacherSubjects.join(', '));
 
   const guidance = await login('guidance');
+  const guidanceDash = await request('/api/dashboard', { cookie: guidance });
+  assert(guidanceDash.payload?.scope?.mode === 'GUIDANCE', 'Guidance dashboard scope mode mismatch', guidanceDash.payload?.scope);
+  const guidanceCards = Object.fromEntries((guidanceDash.payload?.cards || []).map((c) => [c.label, Number(c.value)]));
+  assert('Atanmış Sınıf' in guidanceCards && 'Kapsamdaki Öğrenci' in guidanceCards, 'Guidance dashboard is not assigned-class scoped', guidanceDash.payload);
+  ok('Guidance dashboard scope', `${guidanceCards['Atanmış Sınıf']} classes / ${guidanceCards['Kapsamdaki Öğrenci']} students`);
   const guidanceReport = await request('/api/reporting/students/stu_a001/combined', { cookie: guidance });
   assert(guidanceReport.payload?.restrictedToSubjects === false, 'Guidance teacher is incorrectly subject-restricted', guidanceReport.payload);
   const guidanceSubjects = [...new Set((guidanceReport.payload?.outcomes || []).map((x) => x.subject_name))];
