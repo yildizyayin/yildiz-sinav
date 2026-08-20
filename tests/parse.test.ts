@@ -20,10 +20,10 @@ describe('TXT/DAT/CSV parser detection',()=>{
 
  it('preserves fixed-width blank positions using raw answer slices',()=>{
   const parser={type:'fixed-width',recordLength:20,fields:{student_number:{start:0,end:2},name:{start:2,end:8},class:{start:8,end:11},booklet:{start:11,end:12}},answers:{MAT:{start:12,end:20}}};
-  const line='01AHMET 7/A AAB CD E';
+  const line='01AHMET 7/AAAB CD E ';
   expect(line).toHaveLength(20);
   const r=parseWithTemplate(line,'sample.dat',{id:'t1',name:'Test',parser_definition:JSON.stringify(parser)});
-  expect(r.records[0].answers_by_subject.MAT).toBe('AB_CD_E');
+  expect(r.records[0].answers_by_subject.MAT).toBe('AB_CD_E_');
   expect(r.records[0].answers_by_subject.MAT).toHaveLength(8);
  });
 
