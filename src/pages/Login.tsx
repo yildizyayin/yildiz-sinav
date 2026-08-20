@@ -36,7 +36,7 @@ export function Login() {
       <div><span className="eyebrow">Tek giriş · Rol otomatik tanınır</span><h2>{config?.productName || 'Ölçme Platformu'}</h2><p className="muted">Kullanıcı adı, e-posta veya telefon numaranızla giriş yapın.</p></div>
       <label>Kullanıcı adı / e-posta / telefon<input value={identifier} onChange={e=>setIdentifier(e.target.value)} autoComplete="username" required/></label>
       <label>Şifre<div className="password-input"><input type={show?'text':'password'} value={password} onChange={e=>setPassword(e.target.value)} autoComplete="current-password" required/><button type="button" onClick={()=>setShow(v=>!v)}>{show?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></label>
-      <div className="form-row"><label className="check"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/> Beni hatırla</label><button type="button" className="link-button">Şifremi unuttum</button></div>
+      <div className="form-row"><label className="check"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/> Beni hatırla</label><span className="muted">Şifre yardımı için kurum yöneticinizle iletişime geçin.</span></div>
       <Turnstile siteKey={config?.turnstileSiteKey || ''} onToken={onToken}/>
       {error && <div className="alert error">{error}</div>}
       <button className="primary large" disabled={loading}>{loading?'Giriş yapılıyor…':'Giriş Yap'}</button>

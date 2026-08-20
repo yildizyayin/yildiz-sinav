@@ -10,7 +10,7 @@ export function canSeeCommercial(role: Role): boolean {
 }
 
 export function canEvaluateExam(role: Role): boolean {
-  return role === 'SUPER_ADMIN' || role === 'INSTITUTION_MANAGER' || role === 'TEACHER' || role === 'GUIDANCE_TEACHER';
+  return role === 'SUPER_ADMIN' || role === 'INSTITUTION_MANAGER';
 }
 
 export async function loadPermissionScope(db: D1Database, user: AuthUser, seasonId?: string | null): Promise<PermissionScope> {

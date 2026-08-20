@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { canAccessClass, canAccessSubjectForClass } from '../worker/lib/permissions';
+import { canAccessClass, canAccessSubjectForClass, canEvaluateExam } from '../worker/lib/permissions';
 import type { PermissionScope } from '../worker/types';
 
 function scope(overrides: Partial<PermissionScope> = {}): PermissionScope {
@@ -62,5 +62,14 @@ describe('teacher and guidance authorization', () => {
   it('allows institution managers to access all subjects in their own institution scope', () => {
     const manager = scope({ role: 'INSTITUTION_MANAGER' });
     expect(canAccessSubjectForClass(manager, 'any-class', 'any-subject')).toBe(true);
+  });
+
+  it('reserves full exam evaluation for operational roles', () => {
+    expect(canEvaluateExam('SUPER_ADMIN')).toBe(true);
+    expect(canEvaluateExam('INSTITUTION_MANAGER')).toBe(true);
+    expect(canEvaluateExam('TEACHER')).toBe(false);
+    expect(canEvaluateExam('GUIDANCE_TEACHER')).toBe(false);
+    expect(canEvaluateExam('STUDENT')).toBe(false);
+    expect(canEvaluateExam('PARENT')).toBe(false);
   });
 });

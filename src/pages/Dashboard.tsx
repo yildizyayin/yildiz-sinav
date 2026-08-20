@@ -16,7 +16,7 @@ export function Dashboard() {
     <div className="kpi-grid">{(data?.cards||[]).map((c:any)=><div className="kpi-card" key={c.label}><span>{c.label}</span><strong>{c.value}</strong></div>)}</div>
     <div className="section-head"><div><h2>Hızlı işlemler</h2><p>En sık kullanılan akışlar.</p></div></div>
     <div className="action-grid">
-      {(user.role==='SUPER_ADMIN'||user.role==='INSTITUTION_MANAGER'||user.role==='TEACHER')&&<Quick to="/exams" icon={<ClipboardCheck/>} title="Sınav Değerlendir" text="TXT/DAT yükle veya kameradan oku."/>}
+      {(user.role==='SUPER_ADMIN'||user.role==='INSTITUTION_MANAGER')&&<Quick to="/exams" icon={<ClipboardCheck/>} title="Sınav Değerlendir" text="TXT/DAT yükle veya kameradan oku."/>}
       {(user.role==='SUPER_ADMIN'||user.role==='INSTITUTION_MANAGER')&&<Quick to="/students" icon={<Users/>} title="Öğrenciler" text="Aktif ve misafir öğrencileri yönetin."/>}
       {user.role==='INSTITUTION_MANAGER'&&<Quick to="/optical-prepare" icon={<Printer/>} title="Optik Hazırla" text="Kişiye özel optikleri yazdırın."/>}
       {(user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER')&&<Quick to="/outcomes" icon={<Target/>} title="Kazanımlar" text="Yetkili olduğunuz alanlardaki eksikleri görün."/>}

@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BarChart3, BookOpenCheck, Building2, ClipboardCheck, FileUp, GraduationCap, Home, LogOut, Printer, ScanLine, Settings, Target, Users, UserRoundCheck } from 'lucide-react';
+import { BarChart3, BookOpenCheck, Building2, ClipboardCheck, FileUp, GraduationCap, Home, LogOut, Printer, ScanLine, Target, Users, UserRoundCheck } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 
 const nav: Record<Role, Array<{ to: string; label: string; icon: any }>> = {
@@ -18,8 +18,8 @@ const nav: Record<Role, Array<{ to: string; label: string; icon: any }>> = {
     { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck },
   ],
   GUIDANCE_TEACHER: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/reports', label: 'Öğrenci Gelişimi', icon: BarChart3 },
-    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
+    { to: '/reports', label: 'Öğrenci Gelişimi', icon: BarChart3 }, { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck },
   ],
   STUDENT: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/my-results', label: 'Sonuçlarım', icon: ClipboardCheck }, { to: '/outcomes', label: 'Kazanımlarım', icon: Target },
@@ -44,7 +44,7 @@ export function Layout() {
       </div>
     </aside>
     <main className="main-area">
-      <header className="topbar"><div><span className="eyebrow">2026–2027</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Platform Yönetimi':'')}</strong></div><button className="icon-button" title="Ayarlar"><Settings size={19}/></button></header>
+      <header className="topbar"><div><span className="eyebrow">2026–2027</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Platform Yönetimi':'')}</strong></div></header>
       <div className="page-wrap"><Outlet/></div>
     </main>
   </div>;
