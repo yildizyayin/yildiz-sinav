@@ -261,6 +261,7 @@ async function previewExamFile(request: Request, env: Env, user: AuthUser, examI
 }
 
 async function getScanBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {
+  if (!canEvaluateExam(user.role)) return forbidden();
   const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
@@ -269,6 +270,7 @@ async function getScanBatch(env: Env, user: AuthUser, batchId: string): Promise<
 }
 
 async function resolveScanRecord(request: Request, env: Env, user: AuthUser, batchId: string, recordId: string): Promise<Response> {
+  if (!canEvaluateExam(user.role)) return forbidden();
   const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
@@ -390,7 +392,8 @@ async function listStudents(env: Env, user: AuthUser, url: URL): Promise<Respons
   const institutionId = user.role === 'SUPER_ADMIN' ? url.searchParams.get('institutionId') : user.institution_id;
   if (!institutionId) return badRequest('Kurum seçilmelidir.');
   if (!(await userCanAccessInstitution(env.DB, user, institutionId))) return forbidden();
-  const status = url.searchParams.get('status');
+  const requestedStatus = url.searchParams.get('status');
+  const status = (user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER') ? 'ACTIVE' : requestedStatus;
   const seasonId = url.searchParams.get('seasonId') || (await currentSeason(env.DB, institutionId))?.id;
   const params: unknown[] = [institutionId];
   let filter = '';
@@ -437,6 +440,7 @@ async function studentResults(env: Env, user: AuthUser, studentId: string): Prom
     WHERE ep.student_id=? ORDER BY coalesce(e.exam_date,er.created_at) DESC`).bind(studentId));
   if (user.role === 'TEACHER' && access.classId) {
     const scope = await loadPermissionScope(env.DB, user, access.seasonId);
+    if (scope.guidanceClassIds.includes(access.classId)) return json({ ok: true, exams: rows });
     const subjectRows = await all<any>(env.DB.prepare(`SELECT ep.exam_id,sr.*,s.name subject_name,s.code subject_code FROM exam_participants ep JOIN subject_results sr ON sr.participant_id=ep.id JOIN subjects s ON s.id=sr.subject_id WHERE ep.student_id=?`).bind(studentId));
     const filtered = subjectRows.filter((r) => canAccessSubjectForClass(scope, access.classId!, r.subject_id));
     return json({ ok: true, exams: rows.map(({ net, score, correct_count, wrong_count, blank_count, ...rest }) => rest), subjectResults: filtered, restrictedToSubjects: true });
@@ -452,7 +456,9 @@ async function studentOutcomes(env: Env, user: AuthUser, studentId: string, url:
   let subjectFilter: string[] | null = null;
   if (user.role === 'TEACHER' && access.classId) {
     const scope = await loadPermissionScope(env.DB, user, access.seasonId);
-    subjectFilter = scope.guidanceClassIds.includes(access.classId) ? null : scope.subjectIds;
+    subjectFilter = scope.guidanceClassIds.includes(access.classId)
+      ? null
+      : scope.subjectClassAssignments.filter((assignment) => assignment.classId === access.classId).map((assignment) => assignment.subjectId);
   }
   const rows = await aggregateStudentOutcomes(env.DB, studentId, threshold, minEvidence, undefined, 200, subjectFilter);
   return json({ ok: true, outcomes: rows, threshold, minEvidence });
@@ -793,10 +799,11 @@ async function canAccessStudent(db: D1Database, user: AuthUser, studentId: strin
     const link = await one<any>(db.prepare('SELECT 1 ok FROM parent_student_links WHERE parent_user_id=? AND student_id=? AND active=1').bind(user.id, studentId));
     return { allowed: Boolean(link) };
   }
-  const enrollment = await one<any>(db.prepare(`SELECT e.class_id,e.season_id,e.institution_id FROM student_enrollments e WHERE e.student_id=? AND e.institution_id=? ORDER BY e.created_at DESC LIMIT 1`).bind(studentId, user.institution_id));
+  const enrollment = await one<any>(db.prepare(`SELECT e.class_id,e.season_id,e.institution_id,s.status student_status FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.student_id=? AND e.institution_id=? ORDER BY e.created_at DESC LIMIT 1`).bind(studentId, user.institution_id));
   if (!enrollment) return { allowed: false };
   if (user.role === 'INSTITUTION_MANAGER') return { allowed: true, classId: enrollment.class_id, seasonId: enrollment.season_id };
   if (user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER') {
+    if (enrollment.student_status !== 'ACTIVE') return { allowed: false };
     const scope = await loadPermissionScope(db, user, enrollment.season_id);
     const allowed = scope.classIds.includes(enrollment.class_id) || scope.guidanceClassIds.includes(enrollment.class_id);
     return { allowed, classId: enrollment.class_id, seasonId: enrollment.season_id };
