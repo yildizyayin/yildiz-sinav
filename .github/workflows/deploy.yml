@@ -48,7 +48,9 @@ jobs:
 
       - name: Live staging smoke tests
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
-        run: node scripts/live-smoke.mjs
+        run: |
+          rm -f LIVE_SMOKE_REPORT.md
+          node scripts/live-smoke-v2.mjs
 
       - name: Persist live smoke report
         if: ${{ always() && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
