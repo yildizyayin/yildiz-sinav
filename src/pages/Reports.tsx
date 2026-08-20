@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BarChart3, Download, Printer, RefreshCw, Target, TrendingUp, UserRound } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
 
@@ -7,6 +8,7 @@ type StudentRow = { id:string; first_name:string; last_name:string; student_numb
 
 export function Reports(){
  const {user}=useAuth();
+ const [searchParams,setSearchParams]=useSearchParams();
  const [institutions,setInstitutions]=useState<any[]>([]);
  const [institutionId,setInstitutionId]=useState('');
  const [students,setStudents]=useState<StudentRow[]>([]);
@@ -27,12 +29,15 @@ export function Reports(){
  };
 
  const loadStudents=async()=>{
-   setError('');setStudents([]);setStudentId('');setReport(null);setSelectedExams([]);
+   setError('');setStudents([]);setReport(null);setSelectedExams([]);
    try{
      if(canChooseInstitution&&!institutionId)return;
      const r=await api<any>(`/api/reporting/students${qs({institutionId:canChooseInstitution?institutionId:null})}`);
-     const rows=r.students||[];setStudents(rows);
-     if(rows.length===1)setStudentId(rows[0].id);
+     const rows:StudentRow[]=r.students||[];setStudents(rows);
+     const requested=searchParams.get('studentId');
+     const allowedRequested=requested&&rows.some((x)=>x.id===requested)?requested:'';
+     const next=allowedRequested||studentId&&rows.some((x)=>x.id===studentId)?studentId:(rows.length===1?rows[0].id:'');
+     setStudentId(next);
    }catch(e:any){setError(e.message)}
  };
 
@@ -47,11 +52,12 @@ export function Reports(){
  };
 
  useEffect(()=>{void loadInstitutions().catch(e=>setError(e.message))},[]);
- useEffect(()=>{void loadStudents()},[institutionId,user?.role]);
+ useEffect(()=>{void loadStudents()},[institutionId,user?.role,searchParams.get('studentId')]);
  useEffect(()=>{if(studentId)void loadReport([])},[studentId]);
 
  const selectedStudent=useMemo(()=>students.find(s=>s.id===studentId),[students,studentId]);
  const toggleExam=(id:string)=>setSelectedExams(cur=>cur.includes(id)?cur.filter(x=>x!==id):[...cur,id]);
+ const selectStudent=(id:string)=>{setStudentId(id);if(user?.role==='PARENT'){const next=new URLSearchParams(searchParams);if(id)next.set('studentId',id);else next.delete('studentId');setSearchParams(next,{replace:true});}};
 
  const exportCsv=()=>{
    if(!report)return;
@@ -70,9 +76,10 @@ export function Reports(){
    <div className="panel report-controls">
     <div className="form-grid">
      {canChooseInstitution&&<label>Kurum<select value={institutionId} onChange={e=>setInstitutionId(e.target.value)}><option value="">Kurum seçin</option>{institutions.map(i=><option key={i.id} value={i.id}>{i.name}</option>)}</select></label>}
-     {user?.role!=='STUDENT'&&<label>Öğrenci<select value={studentId} onChange={e=>setStudentId(e.target.value)}><option value="">Öğrenci seçin</option>{students.map(s=><option key={s.id} value={s.id}>{s.first_name} {s.last_name}{s.class_name?` · ${s.class_name}`:''}</option>)}</select></label>}
+     {user?.role!=='STUDENT'&&<label>{user?.role==='PARENT'?'Çocuk':'Öğrenci'}<select value={studentId} onChange={e=>selectStudent(e.target.value)}><option value="">{user?.role==='PARENT'?'Çocuk seçin':'Öğrenci seçin'}</option>{students.map(s=><option key={s.id} value={s.id}>{s.first_name} {s.last_name}{s.class_name?` · ${s.class_name}`:''}</option>)}</select></label>}
     </div>
     {!students.length&&<div className="empty">Bu kapsamda raporlanabilir aktif öğrenci bulunmuyor.</div>}
+    {user?.role==='PARENT'&&students.length>1&&!studentId&&<div className="alert info">Birden fazla bağlı öğrenci var. Gelişimini görmek istediğiniz çocuğu seçin.</div>}
    </div>
 
    {report&&<>
