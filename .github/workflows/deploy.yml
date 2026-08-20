@@ -65,7 +65,7 @@ jobs:
             echo "Smoke report was not produced by the test runner." >> LIVE_SMOKE_REPORT.md
           fi
           git config user.name "github-actions[bot]"
-          git config user.email "4189826+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add LIVE_SMOKE_REPORT.md
           if git diff --cached --quiet; then
             echo "Smoke report unchanged."

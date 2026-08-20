@@ -1,10 +1,16 @@
+import { appendFileSync, existsSync, writeFileSync } from 'node:fs';
+
 const BASE=(process.env.SMOKE_BASE_URL||'https://yildiz-sinav-v1.rtsgida.workers.dev').replace(/\/$/,'');
 const PASSWORD=process.env.SMOKE_DEMO_PASSWORD||'Demo123!';
 const TOKEN='XXXX.DUMMY.TOKEN.XXXX';
+const REPORT='LIVE_SMOKE_REPORT.md';
+const finalChecks=[];
 
 function assert(v,m,d){if(!v)throw new Error(`${m}${d===undefined?'':`\n${JSON.stringify(d,null,2)}`}`)}
+function passed(name,details=''){finalChecks.push({name,details});console.log(`✓ ${name}${details?` — ${details}`:''}`)}
 async function req(path,{method='GET',cookie,json,expected=200}={}){const h={};if(cookie)h.Cookie=cookie;let body;if(json!==undefined){h['Content-Type']='application/json';body=JSON.stringify(json)}const r=await fetch(`${BASE}${path}`,{method,headers:h,body,redirect:'manual'});const text=await r.text();let p;try{p=text?JSON.parse(text):null}catch{p={raw:text}}if(r.status!==expected)throw new Error(`${method} ${path} expected ${expected}, got ${r.status}\n${JSON.stringify(p,null,2)}`);return{r,p}}
 async function login(identifier){const{r,p}=await req('/api/auth/login',{method:'POST',json:{identifier,password:PASSWORD,remember:false,turnstileToken:TOKEN}});assert(p?.ok===true,`${identifier} login failed`,p);const c=(r.headers.get('set-cookie')||'').match(/(yildiz_session=[^;]+)/)?.[1];assert(c,'session cookie missing');return c}
+function persist(){if(!existsSync(REPORT))writeFileSync(REPORT,'# Live Staging Smoke Report\n');appendFileSync(REPORT,`\n## Final V1 feature checks\n\n${finalChecks.map(x=>`- ✅ **${x.name}**${x.details?` — ${x.details}`:''}`).join('\n')}\n`)}
 
 const manager=await login('manager');
 const guests=await req('/api/students?status=GUEST',{cookie:manager});
@@ -27,14 +33,14 @@ const afterDecision=await req('/api/activation-requests',{cookie:manager});
 assert((afterDecision.p?.requests||[]).some(x=>x.id===created.p.id&&x.status==='REJECTED'),'Activation decision not persisted',afterDecision.p);
 const managerNotes=await req('/api/notifications',{cookie:manager});
 assert((managerNotes.p?.notifications||[]).some(x=>x.entity_id===created.p.id&&x.type==='ACTIVATION_REJECTED'),'Manager decision notification missing',managerNotes.p);
-console.log('✓ activation request + notification flow');
+passed('Activation request + notification flow','manager request → Super Admin decision → manager notification');
 
 const student=await login('student1');
 const wrong=await req('/api/my-wrong-answers',{cookie:student});
 assert(Array.isArray(wrong.p?.wrongAnswers)&&Array.isArray(wrong.p?.exams),'Wrong/blank question API invalid',wrong.p);
 const studentNotes=await req('/api/notifications',{cookie:student});
 assert(Array.isArray(studentNotes.p?.notifications),'Student notification center invalid',studentNotes.p);
-console.log(`✓ student wrong/blank learning flow (${wrong.p.wrongAnswers.length} rows)`);
+passed('Student wrong/blank learning flow',`${wrong.p.wrongAnswers.length} question rows available`);
 
 const parent=await login('parent1');
 const weekly=await req('/api/parent/weekly-summary',{cookie:parent});
@@ -42,8 +48,11 @@ assert(weekly.p?.student?.id==='stu_a001','Parent weekly summary child boundary 
 assert(weekly.p?.summary&&typeof weekly.p.summary.exam_count==='number','Parent weekly summary missing',weekly.p);
 const parentNotes=await req('/api/notifications',{cookie:parent});
 assert((parentNotes.p?.notifications||[]).some(x=>x.type==='WEEKLY_SUMMARY'),'Parent weekly summary notification missing',parentNotes.p);
-console.log('✓ parent weekly summary + notification flow');
+passed('Parent weekly summary + notification flow',`${weekly.p.summary.exam_count} exams in last 7 days`);
 
 const guestCountAfter=await req('/api/students?status=GUEST',{cookie:manager});
 assert((guestCountAfter.p?.students||[]).length===45,'Rejected smoke activation changed guest count',guestCountAfter.p?.students?.length);
-console.log('\nFinal five live smoke checks passed.');
+passed('Demo identity preservation','45 guests preserved after rejected smoke request');
+
+persist();
+console.log(`\n${finalChecks.length} final feature live smoke checks passed.`);
