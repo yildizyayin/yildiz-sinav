@@ -53,7 +53,7 @@ jobs:
           node scripts/live-smoke-v2.mjs
 
       - name: Live final five feature tests
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-final-features-smoke.mjs
 
       - name: Persist live smoke report
