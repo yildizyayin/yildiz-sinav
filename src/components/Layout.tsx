@@ -1,33 +1,33 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BarChart3, BookMarked, BookOpenCheck, Building2, CalendarRange, Camera, ClipboardCheck, FileUp, GraduationCap, Home, KeyRound, LogOut, Printer, ScanLine, ShieldCheck, Target, UserCog, UserRound, Users, UserRoundCheck } from 'lucide-react';
+import { BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ClipboardCheck, FileUp, GraduationCap, Home, KeyRound, ListChecks, LogOut, Printer, ScanLine, ShieldCheck, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 
 const nav: Record<Role, Array<{ to: string; label: string; icon: any }>> = {
   SUPER_ADMIN: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/curriculum', label: 'Müfredat & Kazanımlar', icon: BookMarked }, { to: '/exam-definitions', label: 'Sınav Oluştur', icon: ClipboardCheck }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
-    { to: '/students', label: 'Öğrenciler', icon: Users }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange },
+    { to: '/students', label: 'Öğrenciler', icon: Users }, { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange },
     { to: '/opticals', label: 'Optik Tanıtma', icon: ScanLine }, { to: '/camera-test', label: 'Kamera Test Optiği', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: Printer },
-    { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/reports', label: 'Raporlar', icon: BarChart3 }, { to: '/profile', label: 'Profil', icon: UserRound },
+    { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/reports', label: 'Raporlar', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   INSTITUTION_MANAGER: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/exam-definitions', label: 'Sınav Oluştur', icon: ClipboardCheck }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck }, { to: '/students', label: 'Öğrenciler', icon: Users },
-    { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange }, { to: '/optical-prepare', label: 'Optik Hazırla', icon: Printer },
+    { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange }, { to: '/optical-prepare', label: 'Optik Hazırla', icon: Printer },
     { to: '/camera-test', label: 'Kamera Test Optiği', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: ScanLine }, { to: '/reports', label: 'Raporlar', icon: BarChart3 },
-    { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/profile', label: 'Profil', icon: UserRound },
+    { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   TEACHER: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
-    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Branş Gelişimi', icon: BarChart3 }, { to: '/profile', label: 'Profil', icon: UserRound },
+    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Branş Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   GUIDANCE_TEACHER: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
-    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Öğrenci Gelişimi', icon: BarChart3 }, { to: '/profile', label: 'Profil', icon: UserRound },
+    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Öğrenci Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   STUDENT: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/my-results', label: 'Sonuçlarım', icon: ClipboardCheck }, { to: '/worksheets', label: 'Föylerim', icon: BookOpenCheck }, { to: '/profile', label: 'Profil', icon: UserRound },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/my-results', label: 'Sonuçlarım', icon: ClipboardCheck }, { to: '/wrong-answers', label: 'Yanlış / Boş Sorularım', icon: ListChecks }, { to: '/worksheets', label: 'Föylerim', icon: BookOpenCheck }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   PARENT: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/children', label: 'Çocuklarım', icon: UserRoundCheck }, { to: '/reports', label: 'Gelişim', icon: BarChart3 }, { to: '/profile', label: 'Profil', icon: UserRound },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/children', label: 'Çocuklarım', icon: UserRoundCheck }, { to: '/weekly-summary', label: 'Haftalık Özet', icon: CalendarDays }, { to: '/reports', label: 'Gelişim', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
 };
 
