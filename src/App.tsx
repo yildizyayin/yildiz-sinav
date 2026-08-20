@@ -21,6 +21,7 @@ import { UsersPage } from './pages/Users';
 import { Seasons } from './pages/Seasons';
 import { TeacherAssignments } from './pages/TeacherAssignments';
 import { AccessAccounts } from './pages/AccessAccounts';
+import { CurriculumAdmin } from './pages/CurriculumAdmin';
 
 function RoleGate({ allowed, children }: { allowed: Role[]; children: React.ReactNode }) {
   const { user } = useAuth();
@@ -38,6 +39,7 @@ export default function App(){
   <Route element={<Layout/>}>
    <Route index element={<Dashboard/>}/>
    <Route path="institutions" element={<RoleGate allowed={['SUPER_ADMIN']}><Institutions/></RoleGate>}/>
+   <Route path="curriculum" element={<RoleGate allowed={['SUPER_ADMIN']}><CurriculumAdmin/></RoleGate>}/>
    <Route path="exams" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Exams/></RoleGate>}/>
    <Route path="exam-definitions" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamDefinitions/></RoleGate>}/>
    <Route path="exams/:examId/evaluate" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamEvaluate/></RoleGate>}/>
