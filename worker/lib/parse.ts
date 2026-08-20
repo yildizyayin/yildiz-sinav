@@ -15,9 +15,39 @@ export interface ParseResult {
   issues: string[];
 }
 
+export interface NormalizedAnswerSequence {
+  sequence: string;
+  invalidPositions: number[];
+}
+
+/**
+ * Canonical answer strings are positional. A-E are marked answers and `_` is an
+ * unanswered/blank position. Never delete a character from an answer block:
+ * doing so would shift every question after an internal blank.
+ */
+export function normalizeAnswerSequence(value: string): NormalizedAnswerSequence {
+  let sequence = '';
+  const invalidPositions: number[] = [];
+  const chars = Array.from(value.replace(/\r|\n/g, ''));
+  for (let i = 0; i < chars.length; i++) {
+    const upper = chars[i].toLocaleUpperCase('tr-TR');
+    if (/^[ABCDE]$/.test(upper)) sequence += upper;
+    else if (/\s/.test(chars[i]) || ['-', '_', '.', '0'].includes(chars[i])) sequence += '_';
+    else {
+      sequence += '_';
+      invalidPositions.push(i + 1);
+    }
+  }
+  return { sequence, invalidPositions };
+}
+
+function normalizeNewlines(text: string): string {
+  return text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n+$/, '');
+}
+
 export function parseUploadedText(text: string, fileName: string, templates: ParserTemplate[]): ParseResult {
-  const normalizedText = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').trim();
-  if (!normalizedText) return { confidence: 0, ambiguous: false, records: [], issues: ['Dosya boş.'] };
+  const normalizedText = normalizeNewlines(text);
+  if (!normalizedText.trim()) return { confidence: 0, ambiguous: false, records: [], issues: ['Dosya boş.'] };
 
   const header = normalizedText.split('\n')[0].toLowerCase();
   if (/(student_number|ogrenci_no|öğrenci_no|ad_soyad|name)/i.test(header) && /[,;\t]/.test(header)) {
@@ -31,11 +61,11 @@ export function parseUploadedText(text: string, fileName: string, templates: Par
       return !!def && def.type === 'fixed-width';
     });
 
-  const lines = normalizedText.split('\n').filter(Boolean);
+  const lines = normalizedText.split('\n').filter((line) => line.length > 0);
   const matches = viable.filter((x) => {
     const def = x.def as any;
     if (typeof def.recordLength === 'number' && lines.some((line) => line.length !== def.recordLength)) return false;
-    if (typeof def.signature === 'string' && !normalizedText.includes(def.signature)) return false;
+    if (typeof def.signature === 'string' && def.signature && !normalizedText.includes(def.signature)) return false;
     return true;
   });
 
@@ -52,13 +82,14 @@ export function parseUploadedText(text: string, fileName: string, templates: Par
 export function parseWithTemplate(text: string, fileName: string, template: ParserTemplate): ParseResult {
   const def = safeJson(template.parser_definition) as any;
   if (!def) return { confidence: 0, ambiguous: false, records: [], issues: ['Seçilen optik şablonun parser tanımı yok.'] };
-  if (def.type === 'fixed-width') return parseFixedWidth(text.replace(/\r\n/g, '\n').trim().split('\n').filter(Boolean), fileName, template.id, template.name, def);
-  if (def.type === 'delimited') return parseDelimited(text, fileName, template.id, template.name, def.delimiter);
+  const normalized = normalizeNewlines(text);
+  if (def.type === 'fixed-width') return parseFixedWidth(normalized.split('\n').filter((line) => line.length > 0), fileName, template.id, template.name, def);
+  if (def.type === 'delimited') return parseDelimited(normalized, fileName, template.id, template.name, def.delimiter);
   return { confidence: 0, ambiguous: false, records: [], issues: ['Desteklenmeyen parser türü.'] };
 }
 
 function parseDelimited(text: string, fileName: string, templateId?: string, templateName?: string, forcedDelimiter?: string): ParseResult {
-  const lines = text.replace(/\r\n/g, '\n').trim().split('\n').filter(Boolean);
+  const lines = normalizeNewlines(text).split('\n').filter((line) => line.length > 0);
   const delimiter = forcedDelimiter || detectDelimiter(lines[0]);
   const headers = splitDelimited(lines[0], delimiter).map((x) => x.trim().toLowerCase());
   const find = (...names: string[]) => headers.findIndex((h) => names.includes(h));
@@ -78,11 +109,15 @@ function parseDelimited(text: string, fileName: string, templateId?: string, tem
     const className = classIdx >= 0 ? (cols[classIdx] || '').trim() : '';
     const parsedClass = parseClass(className);
     const answers: Record<string, string> = {};
+    const issues: string[] = [];
     for (const s of subjectIndexes) {
       const code = s.h.replace(/^answers[_:]/, '').replace(/^cevap_/, '').toUpperCase();
-      answers[code] = (cols[s.i] || '').trim().toUpperCase().replace(/[^ABCDE]/g, '');
+      const normalized = normalizeAnswerSequence(cols[s.i] || '');
+      answers[code] = normalized.sequence;
+      if (normalized.invalidPositions.length) issues.push(`${code} cevap alanında geçersiz karakter: ${normalized.invalidPositions.join(', ')}. Boş olarak işaretlendi.`);
     }
     const name = (cols[nameIdx] || '').trim();
+    if (!name) issues.push('Ad soyad boş.');
     records.push({
       row_no: i,
       student_number: noIdx >= 0 ? (cols[noIdx] || '').trim() : undefined,
@@ -94,11 +129,11 @@ function parseDelimited(text: string, fileName: string, templateId?: string, tem
       answers_by_subject: answers,
       source_type: fileName.toLowerCase().endsWith('.dat') ? 'DAT' : fileName.toLowerCase().endsWith('.txt') ? 'TXT' : 'CSV',
       source_template: templateName || 'GENERIC_DELIMITED_V1',
-      confidence: 0.95,
-      issues: name ? [] : ['Ad soyad boş.'],
+      confidence: issues.length ? 0.9 : 0.95,
+      issues,
     });
   }
-  return { templateId, templateName: templateName || 'GENERIC_DELIMITED_V1', confidence: 0.96, ambiguous: false, records, issues: [] };
+  return { templateId, templateName: templateName || 'GENERIC_DELIMITED_V1', confidence: records.some((r) => r.issues.length) ? 0.9 : 0.96, ambiguous: false, records, issues: [] };
 }
 
 function parseFixedWidth(lines: string[], fileName: string, templateId: string, templateName: string, def: any): ParseResult {
@@ -108,10 +143,16 @@ function parseFixedWidth(lines: string[], fileName: string, templateId: string, 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const pick = (f: any) => f ? line.slice(Number(f.start), Number(f.end)).trim() : '';
+    const pickRaw = (f: any) => f ? line.slice(Number(f.start), Number(f.end)) : '';
     const className = pick(fields.class);
     const parsedClass = parseClass(className);
     const answers: Record<string, string> = {};
-    for (const [code, f] of Object.entries<any>(answersDef)) answers[code.toUpperCase()] = pick(f).toUpperCase().replace(/[^ABCDE]/g, '');
+    const issues: string[] = [];
+    for (const [code, f] of Object.entries<any>(answersDef)) {
+      const normalized = normalizeAnswerSequence(pickRaw(f));
+      answers[code.toUpperCase()] = normalized.sequence;
+      if (normalized.invalidPositions.length) issues.push(`${code.toUpperCase()} cevap alanında geçersiz karakter: ${normalized.invalidPositions.join(', ')}. Boş olarak işaretlendi.`);
+    }
     records.push({
       row_no: i + 1,
       student_number: pick(fields.student_number) || undefined,
@@ -123,11 +164,11 @@ function parseFixedWidth(lines: string[], fileName: string, templateId: string, 
       answers_by_subject: answers,
       source_type: fileName.toLowerCase().endsWith('.dat') ? 'DAT' : 'TXT',
       source_template: templateName,
-      confidence: 0.97,
-      issues: [],
+      confidence: issues.length ? 0.9 : 0.97,
+      issues,
     });
   }
-  return { templateId, templateName, confidence: 0.97, ambiguous: false, records, issues: [] };
+  return { templateId, templateName, confidence: records.some((r) => r.issues.length) ? 0.9 : 0.97, ambiguous: false, records, issues: [] };
 }
 
 function detectDelimiter(header: string): string {
