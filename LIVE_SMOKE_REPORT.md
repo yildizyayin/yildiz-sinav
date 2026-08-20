@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-20T21:39:32.995Z`
+- Time: `2026-08-20T21:42:45.297Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -24,3 +24,10 @@
 - ✅ **Guidance teacher all-subject scope** — Fen Bilimleri, Matematik, Türkçe
 - ✅ **Super Admin institution access**
 - ✅ **Session revocation on logout**
+
+## Final V1 feature checks
+
+- ✅ **Activation request + notification flow** — manager request → Super Admin decision → manager notification
+- ✅ **Student wrong/blank learning flow** — 0 question rows available
+- ✅ **Parent weekly summary + notification flow** — 1 exams in last 7 days
+- ✅ **Demo identity preservation** — 45 guests preserved after rejected smoke request
