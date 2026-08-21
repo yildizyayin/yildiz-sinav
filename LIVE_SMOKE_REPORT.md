@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-21T21:20:26.213Z`
+- Time: `2026-08-21T21:37:55.066Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -27,8 +27,18 @@
 
 ## Final platform feature checks
 
-- ✅ **Optik 840 + printer calibration + personalized print flow** — 65 students · A/B set recognized · existing assignments preserved · Canon Öğretmenler Odası
-- ✅ **Activation request + notification flow** — manager request → Super Admin decision → manager notification
-- ✅ **Student wrong/blank learning flow** — 0 question rows available
-- ✅ **Parent weekly summary + notification flow** — 1 exams in last 7 days
-- ✅ **Demo identity preservation** — 45 guests preserved after rejected smoke request
+- ❌ **Final feature smoke failure**
+
+```text
+Error: POST /api/nibiru/chat expected 200, got 404
+{
+  "ok": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "API yolu bulunamadı."
+  }
+}
+    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:11:392)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:21:22
+```
