@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-21T20:44:15.338Z`
+- Time: `2026-08-21T20:49:02.565Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -30,12 +30,46 @@
 - ❌ **Final feature smoke failure**
 
 ```text
-Error: Printer + optical calibration is not READY
-{
-  "ok": true,
-  "calibrations": []
-}
+Error: Booklet assignment did not distribute A/B
+[
+  {
+    "id": "stu_a001",
+    "first_name": "Aktif1",
+    "last_name": "Öğrenci1",
+    "student_number": "1001",
+    "grade_level": 7,
+    "section": "A",
+    "booklet_code": "A"
+  },
+  {
+    "id": "stu_a002",
+    "first_name": "Aktif2",
+    "last_name": "Öğrenci2",
+    "student_number": "1002",
+    "grade_level": 7,
+    "section": "A",
+    "booklet_code": "A"
+  },
+  {
+    "id": "stu_a003",
+    "first_name": "Aktif3",
+    "last_name": "Öğrenci3",
+    "student_number": "1003",
+    "grade_level": 7,
+    "section": "A",
+    "booklet_code": "A"
+  },
+  {
+    "id": "stu_a004",
+    "first_name": "Aktif4",
+    "last_name": "Öğrenci4",
+    "student_number": "1004",
+    "grade_level": 7,
+    "section": "A",
+    "booklet_code": "A"
+  }
+]
     at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:9:36)
-    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:28:2
+    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:44:2
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
 ```
