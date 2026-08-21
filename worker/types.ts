@@ -9,6 +9,12 @@ export interface Env {
   TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET_KEY?: string;
   SESSION_SECRET?: string;
+  NIBIRU_AI_MODEL?: string;
+  WHATSAPP_VERIFY_TOKEN?: string;
+  WHATSAPP_APP_SECRET?: string;
+  WHATSAPP_ACCESS_TOKEN?: string;
+  WHATSAPP_PHONE_NUMBER_ID?: string;
+  WHATSAPP_GRAPH_API_VERSION?: string;
 }
 
 export interface AuthUser {
