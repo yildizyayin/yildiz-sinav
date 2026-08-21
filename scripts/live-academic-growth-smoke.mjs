@@ -35,7 +35,7 @@ try{
  assert(String(worksheetNibiru.p?.answer||'').startsWith('🤖 Nibiru:'),'Nibiru worksheet answer lacks AI disclosure',worksheetNibiru.p);
  passed('Worksheet calendar + Nibiru guidance',`${calendar.p.entries.length} published calendar rows visible`);
 
- const teacher=await login('teacher1');
+ const teacher=await login('math');
  const teacherAnnouncements=await req('/api/announcements',{cookie:teacher});
  assert(Array.isArray(teacherAnnouncements.p?.announcements),'Teacher announcement scope failed',teacherAnnouncements.p);
  const teacherCalendar=await req('/api/worksheet-calendar',{cookie:teacher});
