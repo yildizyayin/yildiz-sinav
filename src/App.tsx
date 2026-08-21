@@ -33,6 +33,9 @@ import { WeeklySummary } from './pages/WeeklySummary';
 import { BulkOperations } from './pages/BulkOperations';
 import { DemoMode } from './pages/DemoMode';
 import { ScaleInfrastructure } from './pages/ScaleInfrastructure';
+import { Nibiru } from './pages/Nibiru';
+import { NibiruAdmin } from './pages/NibiruAdmin';
+import { Licenses } from './pages/Licenses';
 
 const ALL_ROLES: Role[] = ['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT'];
 
@@ -53,6 +56,9 @@ export default function App(){
   <Route path="/login" element={<Login/>}/>
   <Route element={<Layout/>}>
    <Route index element={<Home/>}/>
+   <Route path="nibiru" element={<RoleGate allowed={ALL_ROLES}><Nibiru/></RoleGate>}/>
+   <Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/>
+   <Route path="licenses" element={<RoleGate allowed={['SUPER_ADMIN']}><Licenses/></RoleGate>}/>
    <Route path="profile" element={<RoleGate allowed={ALL_ROLES}><Profile/></RoleGate>}/>
    <Route path="notifications" element={<RoleGate allowed={ALL_ROLES}><Notifications/></RoleGate>}/>
    <Route path="institutions" element={<RoleGate allowed={['SUPER_ADMIN']}><Institutions/></RoleGate>}/>
