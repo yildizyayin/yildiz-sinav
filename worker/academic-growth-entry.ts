@@ -1,7 +1,8 @@
 import app from './nibiru-license-entry';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
-import { buildTargetAnalysis, handleAcademicGrowthApi, processScheduledAnnouncements, targetNibiruAnswer } from './lib/academic-growth';
+import { handleAcademicGrowthApi, processScheduledAnnouncements, targetNibiruAnswer } from './lib/academic-growth';
+import { buildStudentTargetAnalysisV2 } from './lib/target-analysis-v2';
 import { worksheetAdvice } from './lib/nibiru-academic-extensions';
 import { json } from './lib/db';
 
@@ -17,6 +18,15 @@ async function requireUser(env:Env,request:Request){
 export default {
   async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
     const url=new URL(request.url),path=url.pathname;
+
+    if(path==='/api/academic-targets/analysis'&&request.method==='GET'){
+      const user=await requireUser(env,request);
+      if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED',message:'Oturum açmanız gerekiyor.'}},401);
+      if(user.role==='STUDENT'&&user.student_id){
+        try{return json({ok:true,...await buildStudentTargetAnalysisV2(env,user)});}catch{return json({ok:false,error:{code:'TARGET_ANALYSIS_FAILED',message:'Hedef analizi oluşturulamadı.'}},400);}
+      }
+    }
+
     if(NEW_API_PREFIXES.some(prefix=>path.startsWith(prefix))){
       const user=await requireUser(env,request);
       if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED',message:'Oturum açmanız gerekiyor.'}},401);
@@ -32,7 +42,7 @@ export default {
         const message=String(body?.message||'').trim();
         if(message&&user.role==='STUDENT'&&user.student_id&&TARGET_INTENT.test(message)){
           try{
-            const payload=await buildTargetAnalysis(env,user,user.student_id);
+            const payload=await buildStudentTargetAnalysisV2(env,user);
             return json({ok:true,answer:targetNibiruAnswer(payload),intent:'ACADEMIC_TARGET',studentId:user.student_id,target:payload.target,analysis:payload.analysis,outcome:'ANSWERED'});
           }catch{
             return json({ok:true,answer:'🤖 Nibiru: Hedef analizine erişirken doğrulanmış öğrenci verisini alamadım. Kurum yöneticinizden öğrenci kaydınızı kontrol etmesini isteyebilirsiniz.',intent:'ACADEMIC_TARGET',outcome:'DENIED'});
