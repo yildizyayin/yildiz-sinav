@@ -9,6 +9,7 @@ const finalChecks=[];
 function assert(v,m,d){if(!v)throw new Error(`${m}${d===undefined?'':`\n${JSON.stringify(d,null,2)}`}`)}
 function passed(name,details=''){finalChecks.push({name,details});console.log(`✓ ${name}${details?` — ${details}`:''}`)}
 async function req(path,{method='GET',cookie,json,expected=200}={}){const h={};if(cookie)h.Cookie=cookie;let body;if(json!==undefined){h['Content-Type']='application/json';body=JSON.stringify(json)}const r=await fetch(`${BASE}${path}`,{method,headers:h,body,redirect:'manual'});const text=await r.text();let p;try{p=text?JSON.parse(text):null}catch{p={raw:text}}if(r.status!==expected)throw new Error(`${method} ${path} expected ${expected}, got ${r.status}\n${JSON.stringify(p,null,2)}`);return{r,p}}
+async function reqForm(path,{cookie,form,expected=200}={}){const h={};if(cookie)h.Cookie=cookie;const r=await fetch(`${BASE}${path}`,{method:'POST',headers:h,body:form,redirect:'manual'});const text=await r.text();let p;try{p=text?JSON.parse(text):null}catch{p={raw:text}}if(r.status!==expected)throw new Error(`POST ${path} expected ${expected}, got ${r.status}\n${JSON.stringify(p,null,2)}`);return{r,p}}
 async function login(identifier){const{r,p}=await req('/api/auth/login',{method:'POST',json:{identifier,password:PASSWORD,remember:false,turnstileToken:TOKEN}});assert(p?.ok===true,`${identifier} login failed`,p);const c=(r.headers.get('set-cookie')||'').match(/(yildiz_session=[^;]+)/)?.[1];assert(c,'session cookie missing');return c}
 function ensureReport(){if(!existsSync(REPORT))writeFileSync(REPORT,'# Live Staging Smoke Report\n')}
 function persist(){ensureReport();appendFileSync(REPORT,`\n## Final platform feature checks\n\n${finalChecks.map(x=>`- ✅ **${x.name}**${x.details?` — ${x.details}`:''}`).join('\n')}\n`)}
@@ -23,6 +24,16 @@ try{
  const printers=await req('/api/printer-profiles',{cookie:manager});
  const canon=(printers.p?.profiles||[]).find(x=>x.id==='printer_canon');
  assert(canon,'Demo printer profile missing',printers.p);
+
+ const startCal=await req('/api/calibrations/start',{method:'POST',cookie:manager,json:{printerProfileId:'printer_canon',templateVersionId:'optv_demo'}});
+ assert(startCal.p?.calibration?.id,'Calibration start did not return a row',startCal.p);
+ const calForm=new FormData();
+ calForm.append('image',new File([new Uint8Array([255,216,255,217])],'synthetic-calibration.jpg',{type:'image/jpeg'}));
+ calForm.append('metrics',JSON.stringify({offset_x_mm:0.2,offset_y_mm:-0.1,scale_x:1.001,scale_y:0.9995,rotation_deg:0.04,confidence:0.99}));
+ calForm.append('mode','AUTO');
+ const calAttempt=await reqForm(`/api/calibrations/${startCal.p.calibration.id}/attempt`,{cookie:manager,form:calForm});
+ assert(calAttempt.p?.status==='READY','Synthetic calibration attempt did not reach READY',calAttempt.p);
+
  const calibrations=await req('/api/calibrations',{cookie:manager});
  const readyCal=(calibrations.p?.calibrations||[]).find(x=>x.printer_profile_id==='printer_canon'&&x.optical_template_version_id==='optv_demo');
  assert(readyCal?.status==='READY','Printer + optical calibration is not READY',calibrations.p);
