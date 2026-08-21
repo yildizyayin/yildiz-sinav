@@ -34,6 +34,9 @@ const print = {
     { key: 'studentName', xMm: 20, yMm: 20, widthMm: 70, heightMm: 8 },
     { key: 'studentNumber', xMm: 120, yMm: 20 },
     { key: 'class', xMm: 160, yMm: 20 },
+    { key: 'bookletCode', xMm: 175, yMm: 20 },
+    { key: 'examTitle', xMm: 20, yMm: 32 },
+    { key: 'examCode', xMm: 150, yMm: 32 },
   ],
 };
 
@@ -56,6 +59,10 @@ describe('optical definition validation', () => {
     const result = validateCameraGeometry({ regions: [{ id: 'name', type: 'text', xMm: 10, yMm: 10, widthMm: 40, heightMm: 10 }] }, 210, 297);
     expect(result.valid).toBe(false);
     expect(result.errors.some((x) => x.includes('cevap bölgesi'))).toBe(true);
+  });
+
+  it('accepts exam and booklet fields in printable optical definitions', () => {
+    expect(validatePrintFields(print, 210, 297)).toEqual({ valid: true, errors: [] });
   });
 
   it('rejects print coordinates outside the page', () => {
