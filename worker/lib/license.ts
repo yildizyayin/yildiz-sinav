@@ -1,5 +1,5 @@
 import type { AuthUser, Env } from '../types';
-import { all, one, uuid } from './db';
+import { one, uuid } from './db';
 
 export type LicensePlan = 'TRIAL_7_DAY' | 'ANNUAL' | 'PILOT' | 'CUSTOM' | 'LEGACY';
 export type LicenseStatus = 'ACTIVE' | 'EXPIRED' | 'SUSPENDED' | 'CANCELLED' | 'LEGACY_ACTIVE';
@@ -86,19 +86,37 @@ export async function startTrial(env: Env, institutionId: string, actor: AuthUse
 }
 
 async function resetTrialAcademicData(env: Env, institutionId: string) {
-  const studentRows = await all<{student_id:string}>(env.DB.prepare(`SELECT DISTINCT student_id FROM student_enrollments WHERE institution_id=?`).bind(institutionId));
+  const currentSeason = await one<any>(env.DB.prepare(`SELECT id,academic_year,status FROM institution_seasons WHERE institution_id=? AND status IN ('ACTIVE','DRAFT') ORDER BY created_at DESC LIMIT 1`).bind(institutionId));
+  const studentCount = await one<{c:number}>(env.DB.prepare(`SELECT count(DISTINCT student_id) c FROM student_enrollments WHERE institution_id=? AND status='ACTIVE'`).bind(institutionId));
+  const classCount = await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM classes WHERE institution_id=? AND active=1`).bind(institutionId));
+  const now = new Date().toISOString();
+  const archiveSuffix = `TRIAL-${Date.now()}`;
+
   await env.DB.batch([
-    env.DB.prepare(`UPDATE exams SET status='ARCHIVED' WHERE institution_id=? AND status<>'ARCHIVED'`).bind(institutionId),
+    env.DB.prepare(`UPDATE exams SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE institution_id=? AND status<>'ARCHIVED'`).bind(institutionId),
     env.DB.prepare(`UPDATE worksheet_assignments SET status='CLOSED' WHERE institution_id=? AND status='ACTIVE'`).bind(institutionId),
-    env.DB.prepare(`UPDATE teacher_assignments SET active=0 WHERE institution_id=?`).bind(institutionId),
-    env.DB.prepare(`UPDATE student_enrollments SET status='ARCHIVED',class_id=NULL WHERE institution_id=? AND status<>'ARCHIVED'`).bind(institutionId),
-    env.DB.prepare(`DELETE FROM classes WHERE institution_id=?`).bind(institutionId),
+    env.DB.prepare(`UPDATE teacher_assignments SET active=0 WHERE institution_id=? AND active=1`).bind(institutionId),
+    env.DB.prepare(`UPDATE student_enrollments SET status='ARCHIVED' WHERE institution_id=? AND status='ACTIVE'`).bind(institutionId),
+    env.DB.prepare(`UPDATE classes SET active=0 WHERE institution_id=? AND active=1`).bind(institutionId),
   ]);
-  for (const row of studentRows) {
-    const other = await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM student_enrollments WHERE student_id=? AND institution_id<>? AND status='ACTIVE'`).bind(row.student_id,institutionId));
-    if (!other?.c) await env.DB.prepare(`UPDATE student_entities SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(row.student_id).run();
+
+  let newSeasonId: string | null = null;
+  let academicYear: string | null = null;
+  if (currentSeason) {
+    academicYear = String(currentSeason.academic_year);
+    await env.DB.prepare(`UPDATE institution_seasons SET academic_year=?,status='ARCHIVED',ended_at=? WHERE id=?`).bind(`${academicYear}-${archiveSuffix}`,now,currentSeason.id).run();
+    newSeasonId = uuid('season');
+    await env.DB.prepare(`INSERT INTO institution_seasons(id,institution_id,academic_year,status,started_at) VALUES(?,?,?,'ACTIVE',?)`).bind(newSeasonId,institutionId,academicYear,now).run();
   }
-  return { archivedStudents: studentRows.length };
+
+  return {
+    archivedStudents: studentCount?.c || 0,
+    archivedClasses: classCount?.c || 0,
+    archivedSeasonId: currentSeason?.id || null,
+    newSeasonId,
+    academicYear,
+    reversible: true,
+  };
 }
 
 export async function activateAnnual(env: Env, institutionId: string, actor: AuthUser, mode: 'KEEP_DATA' | 'RESET_DATA', days = 365, note?: string | null) {
