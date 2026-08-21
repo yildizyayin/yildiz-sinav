@@ -1,9 +1,13 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "yildiz-sinav-v1",
-  "main": "./worker/final-entry.ts",
-  "compatibility_date": "2026-08-19",
+  "main": "./worker/v2-secure-entry.ts",
+  "compatibility_date": "2026-08-21",
   "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
   "assets": {
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"]
