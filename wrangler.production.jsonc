@@ -1,12 +1,15 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "yildiz-sinav-prod",
-  "main": "./worker/nibiru-license-entry.ts",
+  "main": "./worker/academic-growth-entry.ts",
   "compatibility_date": "2026-08-21",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
     "enabled": true,
     "head_sampling_rate": 0.1
+  },
+  "triggers": {
+    "crons": ["*/15 * * * *"]
   },
   "assets": {
     "not_found_handling": "single-page-application",
