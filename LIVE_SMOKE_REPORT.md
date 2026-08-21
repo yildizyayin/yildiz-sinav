@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-21T20:52:33.627Z`
+- Time: `2026-08-21T20:56:35.220Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -27,12 +27,8 @@
 
 ## Final platform feature checks
 
-- ❌ **Final feature smoke failure**
-
-```text
-Error: Print field studentName missing
-[]
-    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:9:36)
-    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:46:103
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-```
+- ✅ **Optik 840 + printer calibration + personalized print flow** — 65 students · A/B set recognized · existing assignments preserved · Canon Öğretmenler Odası
+- ✅ **Activation request + notification flow** — manager request → Super Admin decision → manager notification
+- ✅ **Student wrong/blank learning flow** — 0 question rows available
+- ✅ **Parent weekly summary + notification flow** — 1 exams in last 7 days
+- ✅ **Demo identity preservation** — 45 guests preserved after rejected smoke request
