@@ -4,23 +4,9 @@ import { getAuthUser } from './lib/auth';
 import { roleCanManageInstitution } from './lib/permissions';
 import { audit, badRequest, forbidden, json, one, uuid } from './lib/db';
 import { calibrationWithinTolerance, nextCalibrationStatus, type CalibrationMetrics } from './lib/calibration';
+import { composeCalibration } from './lib/calibration-cumulative';
 
 function safeFileName(value:string){return value.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/-+/g,'-').slice(0,120)||'file'}
-
-function composeCalibration(previous:any,residual:CalibrationMetrics){
-  const px=Number.isFinite(Number(previous?.offset_x_mm))?Number(previous.offset_x_mm):0;
-  const py=Number.isFinite(Number(previous?.offset_y_mm))?Number(previous.offset_y_mm):0;
-  const psx=Number.isFinite(Number(previous?.scale_x))&&Number(previous.scale_x)!==0?Number(previous.scale_x):1;
-  const psy=Number.isFinite(Number(previous?.scale_y))&&Number(previous.scale_y)!==0?Number(previous.scale_y):1;
-  const prot=Number.isFinite(Number(previous?.rotation_deg))?Number(previous.rotation_deg):0;
-  return {
-    offset_x_mm:px+residual.offset_x_mm,
-    offset_y_mm:py+residual.offset_y_mm,
-    scale_x:psx*residual.scale_x,
-    scale_y:psy*residual.scale_y,
-    rotation_deg:prot+residual.rotation_deg,
-  };
-}
 
 async function saveAttempt(request:Request,env:Env,calibrationId:string){
   const user=await getAuthUser(env,request);
