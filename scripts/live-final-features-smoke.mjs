@@ -19,13 +19,13 @@ try{
  const manager=await login('manager');
 
  const opticals=await req('/api/optical-templates',{cookie:manager});
- const demoOptical=(opticals.p?.templates||[]).find(x=>x.version_id==='optv_demo');
- assert(demoOptical?.has_print,'Demo optical is not print-ready',opticals.p);
+ const optical840=(opticals.p?.templates||[]).find(x=>x.version_id==='v_opt840');
+ assert(optical840?.has_print,'Optik 840 did not receive migration-generated print fields',opticals.p);
  const printers=await req('/api/printer-profiles',{cookie:manager});
  const canon=(printers.p?.profiles||[]).find(x=>x.id==='printer_canon');
  assert(canon,'Demo printer profile missing',printers.p);
 
- const startCal=await req('/api/calibrations/start',{method:'POST',cookie:manager,json:{printerProfileId:'printer_canon',templateVersionId:'optv_demo'}});
+ const startCal=await req('/api/calibrations/start',{method:'POST',cookie:manager,json:{printerProfileId:'printer_canon',templateVersionId:'v_opt840'}});
  assert(startCal.p?.calibration?.id,'Calibration start did not return a row',startCal.p);
  const calForm=new FormData();
  calForm.append('image',new File([new Uint8Array([255,216,255,217])],'synthetic-calibration.jpg',{type:'image/jpeg'}));
@@ -35,16 +35,16 @@ try{
  assert(calAttempt.p?.status==='READY','Synthetic calibration attempt did not reach READY',calAttempt.p);
 
  const calibrations=await req('/api/calibrations',{cookie:manager});
- const readyCal=(calibrations.p?.calibrations||[]).find(x=>x.printer_profile_id==='printer_canon'&&x.optical_template_version_id==='optv_demo');
- assert(readyCal?.status==='READY','Printer + optical calibration is not READY',calibrations.p);
+ const readyCal=(calibrations.p?.calibrations||[]).find(x=>x.printer_profile_id==='printer_canon'&&x.optical_template_version_id==='v_opt840');
+ assert(readyCal?.status==='READY','Canon + Optik 840 calibration is not READY',calibrations.p);
  assert(Number.isFinite(Number(readyCal.offset_x_mm))&&Number.isFinite(Number(readyCal.scale_x)),'Calibration correction metrics missing',readyCal);
- const prep=await req('/api/optical-prepare?classId=class_7a&templateVersionId=optv_demo&examId=exam_demo_active&sort=number',{cookie:manager});
- assert((prep.p?.students||[]).length===65,'Personalized optical preparation did not return 65 active students',prep.p);
+ const prep=await req('/api/optical-prepare?classId=class_7a&templateVersionId=v_opt840&examId=exam_demo_active&sort=number',{cookie:manager});
+ assert((prep.p?.students||[]).length===65,'Personalized Optik 840 preparation did not return 65 active students',prep.p);
  assert((prep.p?.bookletCodes||[]).join(',')==='A,B','Expected A/B booklet set',prep.p?.bookletCodes);
  assert((prep.p?.students||[]).every(x=>['A','B'].includes(x.booklet_code)),'Student booklet is outside configured A/B set',prep.p?.students?.slice(0,4));
  const fields=prep.p?.template?.printFields?.fields||[];
- for(const key of ['studentName','studentNumber','class','bookletCode','institutionCode','examTitle'])assert(fields.some(x=>x.key===key),`Print field ${key} missing`,fields);
- passed('Optical template + printer calibration + personalized print flow',`${prep.p.students.length} students · A/B set recognized · existing assignments preserved · ${canon.name}`);
+ for(const key of ['studentName','studentNumber','class','bookletCode','institutionCode','examTitle'])assert(fields.some(x=>x.key===key),`Optik 840 print field ${key} missing`,fields);
+ passed('Optik 840 + printer calibration + personalized print flow',`${prep.p.students.length} students · A/B set recognized · existing assignments preserved · ${canon.name}`);
 
  const guests=await req('/api/students?status=GUEST',{cookie:manager});
  assert((guests.p?.students||[]).length===45,'Expected demo guests',guests.p);
