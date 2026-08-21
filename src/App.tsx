@@ -36,6 +36,10 @@ import { ScaleInfrastructure } from './pages/ScaleInfrastructure';
 import { Nibiru } from './pages/Nibiru';
 import { NibiruAdmin } from './pages/NibiruAdmin';
 import { Licenses } from './pages/Licenses';
+import { AcademicTarget } from './pages/AcademicTarget';
+import { AcademicTargetAdmin } from './pages/AcademicTargetAdmin';
+import { Announcements } from './pages/Announcements';
+import { WorksheetCalendar } from './pages/WorksheetCalendar';
 
 const ALL_ROLES: Role[] = ['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT'];
 
@@ -58,6 +62,10 @@ export default function App(){
    <Route index element={<Home/>}/>
    <Route path="nibiru" element={<RoleGate allowed={ALL_ROLES}><Nibiru/></RoleGate>}/>
    <Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/>
+   <Route path="academic-target" element={<RoleGate allowed={['STUDENT']}><AcademicTarget/></RoleGate>}/>
+   <Route path="academic-target-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><AcademicTargetAdmin/></RoleGate>}/>
+   <Route path="announcements" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Announcements/></RoleGate>}/>
+   <Route path="worksheet-calendar" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><WorksheetCalendar/></RoleGate>}/>
    <Route path="licenses" element={<RoleGate allowed={['SUPER_ADMIN']}><Licenses/></RoleGate>}/>
    <Route path="profile" element={<RoleGate allowed={ALL_ROLES}><Profile/></RoleGate>}/>
    <Route path="notifications" element={<RoleGate allowed={ALL_ROLES}><Notifications/></RoleGate>}/>
