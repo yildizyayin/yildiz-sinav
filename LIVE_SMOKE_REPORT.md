@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-21T22:11:05.528Z`
+- Time: `2026-08-21T22:15:41.771Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -43,19 +43,6 @@
 - ✅ **Official target search boundaries** — LGS 0 · YKS 0 verified rows currently loaded
 - ✅ **Institution announcement center** — panel + WhatsApp-template + SMS-fallback ledger ready
 - ✅ **Worksheet calendar + Nibiru guidance** — 4 published calendar rows visible
-- ❌ **Academic growth smoke failure**
-
-```text
-Error: POST /api/auth/login expected 200, got 401
-{
-  "ok": false,
-  "error": {
-    "code": "INVALID_CREDENTIALS",
-    "message": "Kullanıcı adı veya şifre hatalı."
-  }
-}
-    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-academic-growth-smoke.mjs:11:392)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async login (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-academic-growth-smoke.mjs:12:45)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-academic-growth-smoke.mjs:38:16
-```
+- ✅ **Teacher communication + worksheet scope** — role-scoped endpoints available
+- ✅ **Student target eligibility + analysis boundary** — grade 7 · target not set
+- ✅ **Super Admin official-source governance** — source URL + official flag enforced
