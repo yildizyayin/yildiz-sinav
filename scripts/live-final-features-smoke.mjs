@@ -78,6 +78,42 @@ try{
  assert(demoLicense.license.locked===false,'Legacy institution should remain active after license rollout',demoLicense);
  passed('License rollout backward compatibility',`${demoLicense.license.planCode} · ${demoLicense.license.status}`);
 
+ const trialDemoList=await req('/api/v2/demo',{cookie:superCookie});
+ let licenseSmoke=(trialDemoList.p?.demos||[]).find(x=>x.name==='Nibiru Lisans Smoke');
+ if(!licenseSmoke){
+   const seeded=await req('/api/v2/demo/seed',{method:'POST',cookie:superCookie,json:{name:'Nibiru Lisans Smoke',managerUsername:'nibiru.license.smoke',managerPassword:PASSWORD},expected:201});
+   licenseSmoke={id:seeded.p.institution.id,name:seeded.p.institution.name};
+ }
+ const beforeLicenseList=await req('/api/admin/licenses',{cookie:superCookie});
+ const beforeTrial=(beforeLicenseList.p?.licenses||[]).find(x=>x.id===licenseSmoke.id);
+ assert(beforeTrial,'Dedicated license smoke institution missing',beforeLicenseList.p);
+ const beforeStudents=Number(beforeTrial.student_count||0);
+ if(beforeStudents===0){
+   throw new Error(`Dedicated license smoke institution has no active students; expected a fresh 160-student seed. Delete/archive the smoke institution before re-running reset-data validation. Institution: ${licenseSmoke.id}`);
+ }
+
+ const trialStarted=await req('/api/admin/licenses/trial',{method:'POST',cookie:superCookie,json:{institutionId:licenseSmoke.id,days:7,note:'Live license smoke'}});
+ assert(trialStarted.p?.license?.planCode==='TRIAL_7_DAY'&&trialStarted.p?.license?.status==='ACTIVE','7-day trial did not activate',trialStarted.p);
+ assert(Number(trialStarted.p.license.daysRemaining)>=1&&Number(trialStarted.p.license.daysRemaining)<=7,'Trial remaining days invalid',trialStarted.p.license);
+
+ const keepAnnual=await req('/api/admin/licenses/annual',{method:'POST',cookie:superCookie,json:{institutionId:licenseSmoke.id,mode:'KEEP_DATA',days:365,note:'Live keep-data smoke'}});
+ assert(keepAnnual.p?.license?.planCode==='ANNUAL'&&keepAnnual.p?.license?.status==='ACTIVE','Annual keep-data conversion failed',keepAnnual.p);
+ assert(keepAnnual.p?.license?.convertedFromTrial===true,'Annual keep-data conversion did not preserve trial conversion flag',keepAnnual.p.license);
+ const afterKeepList=await req('/api/admin/licenses',{cookie:superCookie});
+ const afterKeep=(afterKeepList.p?.licenses||[]).find(x=>x.id===licenseSmoke.id);
+ assert(Number(afterKeep?.student_count||0)===beforeStudents,'KEEP_DATA changed active student count',{beforeStudents,afterKeep});
+
+ const secondTrial=await req('/api/admin/licenses/trial',{method:'POST',cookie:superCookie,json:{institutionId:licenseSmoke.id,days:7,note:'Live reset-data smoke'}});
+ assert(secondTrial.p?.license?.planCode==='TRIAL_7_DAY','Second trial did not activate',secondTrial.p);
+ const resetAnnual=await req('/api/admin/licenses/annual',{method:'POST',cookie:superCookie,json:{institutionId:licenseSmoke.id,mode:'RESET_DATA',days:365,note:'Live clean-start smoke'}});
+ assert(resetAnnual.p?.license?.planCode==='ANNUAL'&&resetAnnual.p?.license?.status==='ACTIVE','Annual clean-start conversion failed',resetAnnual.p);
+ assert(resetAnnual.p?.resetSummary?.reversible===true,'Clean-start conversion is not marked reversible',resetAnnual.p?.resetSummary);
+ assert(resetAnnual.p?.resetSummary?.newSeasonId,'Clean-start conversion did not create a new active season',resetAnnual.p?.resetSummary);
+ const afterResetList=await req('/api/admin/licenses',{cookie:superCookie});
+ const afterReset=(afterResetList.p?.licenses||[]).find(x=>x.id===licenseSmoke.id);
+ assert(Number(afterReset?.student_count||0)===0,'RESET_DATA left active trial enrollments',{afterReset,resetSummary:resetAnnual.p?.resetSummary});
+ passed('7-day trial → annual keep/reset live flow',`${beforeStudents} students preserved on KEEP_DATA · clean start archived and new season opened`);
+
  const superRequests=await req('/api/activation-requests',{cookie:superCookie});
  assert((superRequests.p?.requests||[]).some(x=>x.id===created.p.id),'Super Admin cannot see activation request',superRequests.p);
  const superNotes=await req('/api/notifications',{cookie:superCookie});
