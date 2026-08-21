@@ -18,6 +18,23 @@ function persistFailure(error){ensureReport();const message=String(error instanc
 try{
  const manager=await login('manager');
 
+ const managerNibiru=await req('/api/nibiru/chat',{method:'POST',cookie:manager,json:{message:'Bugün ne oldu?'}});
+ assert(String(managerNibiru.p?.answer||'').startsWith('🤖 Nibiru:'),'Nibiru AI transparency prefix missing',managerNibiru.p);
+ assert(managerNibiru.p?.intent==='TODAY_STATUS','Manager Nibiru intent mismatch',managerNibiru.p);
+ passed('Nibiru manager AI transparency + institution scope',managerNibiru.p.intent);
+
+ const nibiruSettings=await req('/api/nibiru/settings',{cookie:manager});
+ assert(nibiruSettings.p?.settings?.assistant_name==='Nibiru','Nibiru settings missing',nibiruSettings.p);
+ assert(nibiruSettings.p?.settings?.education_language_mode==='MEB_DEVELOPMENTAL','Nibiru MEB developmental language mode missing',nibiruSettings.p);
+ const nibiruUsers=await req('/api/nibiru/users',{cookie:manager});
+ for(const role of ['PARENT','TEACHER','INSTITUTION_MANAGER']){
+   const target=(nibiruUsers.p?.users||[]).find(x=>x.role===role);
+   if(!target)continue;
+   const pairing=await req('/api/nibiru/pairing-code',{method:'POST',cookie:manager,json:{userId:target.id}});
+   assert(/^\d{6}$/.test(pairing.p?.code||''),`Nibiru ${role} pairing code invalid`,pairing.p);
+ }
+ passed('Nibiru WhatsApp role pairing preparation','parent/teacher/manager role-safe pairing codes');
+
  const opticals=await req('/api/optical-templates',{cookie:manager});
  const optical840=(opticals.p?.templates||[]).find(x=>x.version_id==='v_opt840');
  assert(optical840?.has_print,'Optik 840 did not receive migration-generated print fields',opticals.p);
@@ -55,6 +72,12 @@ try{
  assert((managerRequests.p?.requests||[]).some(x=>x.id===created.p.id&&x.status==='PENDING'),'Manager cannot see pending activation request',managerRequests.p);
 
  const superCookie=await login('super');
+ const licenses=await req('/api/admin/licenses',{cookie:superCookie});
+ const demoLicense=(licenses.p?.licenses||[]).find(x=>x.id==='inst_demo');
+ assert(demoLicense?.license,'License engine did not return an effective license for existing institution',licenses.p);
+ assert(demoLicense.license.locked===false,'Legacy institution should remain active after license rollout',demoLicense);
+ passed('License rollout backward compatibility',`${demoLicense.license.planCode} · ${demoLicense.license.status}`);
+
  const superRequests=await req('/api/activation-requests',{cookie:superCookie});
  assert((superRequests.p?.requests||[]).some(x=>x.id===created.p.id),'Super Admin cannot see activation request',superRequests.p);
  const superNotes=await req('/api/notifications',{cookie:superCookie});
@@ -76,6 +99,13 @@ try{
  passed('Student wrong/blank learning flow',`${wrong.p.wrongAnswers.length} question rows available`);
 
  const parent=await login('parent1');
+ const parentNibiru=await req('/api/nibiru/chat',{method:'POST',cookie:parent,json:{message:'Öğrencim nasıl?'}});
+ assert(String(parentNibiru.p?.answer||'').startsWith('🤖 Nibiru:'),'Parent Nibiru answer does not identify itself as AI',parentNibiru.p);
+ assert(parentNibiru.p?.intent==='STUDENT_GENERAL','Parent general-student intent mismatch',parentNibiru.p);
+ const offTopic=await req('/api/nibiru/chat',{method:'POST',cookie:parent,json:{message:'Bugün hava nasıl?'}});
+ assert(offTopic.p?.outcome==='REDIRECTED','Nibiru did not redirect non-academic request',offTopic.p);
+ passed('Nibiru parent context + non-academic redirect','student-linked context · AI disclosure · safe redirect');
+
  const weekly=await req('/api/parent/weekly-summary',{cookie:parent});
  assert(weekly.p?.student?.id==='stu_a001','Parent weekly summary child boundary failed',weekly.p);
  assert(weekly.p?.summary&&typeof weekly.p.summary.exam_count==='number','Parent weekly summary missing',weekly.p);
