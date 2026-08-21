@@ -28,8 +28,8 @@ export default {
       const user=await requireUser(env,request);
       if(user){
         const clone=request.clone();
-        const body=await clone.json<{message?:string}>().catch(()=>({}));
-        const message=String(body.message||'').trim();
+        const body:any=await clone.json().catch(()=>({}));
+        const message=String(body?.message||'').trim();
         if(message&&user.role==='STUDENT'&&user.student_id&&TARGET_INTENT.test(message)){
           try{
             const payload=await buildTargetAnalysis(env,user,user.student_id);
