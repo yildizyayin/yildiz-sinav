@@ -28,16 +28,35 @@ export function whatsappReady(env: Env) {
   return Boolean(env.WHATSAPP_ACCESS_TOKEN && env.WHATSAPP_PHONE_NUMBER_ID && env.WHATSAPP_VERIFY_TOKEN);
 }
 
+function graphUrl(env: Env) {
+  const version = env.WHATSAPP_GRAPH_API_VERSION || 'v25.0';
+  return `https://graph.facebook.com/${version}/${encodeURIComponent(env.WHATSAPP_PHONE_NUMBER_ID || '')}/messages`;
+}
+
 export async function sendWhatsAppText(env: Env, to: string, text: string) {
   if (!env.WHATSAPP_ACCESS_TOKEN || !env.WHATSAPP_PHONE_NUMBER_ID) return { ok:false, reason:'NOT_CONFIGURED' as const };
-  const version = env.WHATSAPP_GRAPH_API_VERSION || 'v23.0';
-  const response = await fetch(`https://graph.facebook.com/${version}/${encodeURIComponent(env.WHATSAPP_PHONE_NUMBER_ID)}/messages`,{
+  const response = await fetch(graphUrl(env),{
     method:'POST',
     headers:{'Authorization':`Bearer ${env.WHATSAPP_ACCESS_TOKEN}`,'Content-Type':'application/json'},
     body:JSON.stringify({messaging_product:'whatsapp',recipient_type:'individual',to:normalizeWhatsAppPhone(to).slice(1),type:'text',text:{preview_url:false,body:text.slice(0,3900)}}),
   });
-  if (!response.ok) return { ok:false, reason:'PROVIDER_ERROR' as const, status:response.status };
-  return { ok:true as const };
+  const payload:any = await response.json().catch(()=>null);
+  if (!response.ok) return { ok:false, reason:'PROVIDER_ERROR' as const, status:response.status, payload };
+  return { ok:true as const, messageId:payload?.messages?.[0]?.id || null };
+}
+
+export async function sendWhatsAppTemplate(env: Env, to: string, templateName: string, bodyParams: string[] = [], languageCode = 'tr') {
+  if (!env.WHATSAPP_ACCESS_TOKEN || !env.WHATSAPP_PHONE_NUMBER_ID) return { ok:false, reason:'NOT_CONFIGURED' as const };
+  if (!templateName.trim()) return { ok:false, reason:'TEMPLATE_REQUIRED' as const };
+  const components = bodyParams.length ? [{type:'body',parameters:bodyParams.map(text=>({type:'text',text:String(text).slice(0,1024)}))}] : undefined;
+  const response = await fetch(graphUrl(env),{
+    method:'POST',
+    headers:{'Authorization':`Bearer ${env.WHATSAPP_ACCESS_TOKEN}`,'Content-Type':'application/json'},
+    body:JSON.stringify({messaging_product:'whatsapp',recipient_type:'individual',to:normalizeWhatsAppPhone(to).slice(1),type:'template',template:{name:templateName.trim(),language:{code:languageCode},...(components?{components}:{})}}),
+  });
+  const payload:any = await response.json().catch(()=>null);
+  if (!response.ok) return { ok:false, reason:'PROVIDER_ERROR' as const, status:response.status, payload };
+  return { ok:true as const, messageId:payload?.messages?.[0]?.id || null };
 }
 
 export type WhatsAppInboundMessage = {
