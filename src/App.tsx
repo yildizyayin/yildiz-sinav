@@ -3,6 +3,7 @@ import { useAuth, type Role } from './auth';
 import { Layout } from './components/Layout';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
+import { InstitutionPanelV2 } from './pages/InstitutionPanelV2';
 import { Institutions } from './pages/Institutions';
 import { Exams } from './pages/Exams';
 import { ExamEvaluate } from './pages/ExamEvaluate';
@@ -11,6 +12,7 @@ import { Students } from './pages/Students';
 import { Classes } from './pages/Classes';
 import { Outcomes } from './pages/Outcomes';
 import { Worksheets } from './pages/Worksheets';
+import { WorksheetAdmin } from './pages/WorksheetAdmin';
 import { Reports } from './pages/Reports';
 import { Children } from './pages/Children';
 import { Transfers } from './pages/Transfers';
@@ -28,6 +30,9 @@ import { Notifications } from './pages/Notifications';
 import { ActivationRequests } from './pages/ActivationRequests';
 import { WrongAnswers } from './pages/WrongAnswers';
 import { WeeklySummary } from './pages/WeeklySummary';
+import { BulkOperations } from './pages/BulkOperations';
+import { DemoMode } from './pages/DemoMode';
+import { ScaleInfrastructure } from './pages/ScaleInfrastructure';
 
 const ALL_ROLES: Role[] = ['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT'];
 
@@ -37,6 +42,8 @@ function RoleGate({ allowed, children }: { allowed: Role[]; children: React.Reac
   return <>{children}</>;
 }
 
+function Home(){const{user}=useAuth();return user?.role==='INSTITUTION_MANAGER'?<InstitutionPanelV2/>:<Dashboard/>}
+
 export default function App(){
  const {user,loading}=useAuth(); const location=useLocation();
  if(loading)return <div className="boot">Ölçme Platformu yükleniyor…</div>;
@@ -45,7 +52,7 @@ export default function App(){
  return <Routes>
   <Route path="/login" element={<Login/>}/>
   <Route element={<Layout/>}>
-   <Route index element={<Dashboard/>}/>
+   <Route index element={<Home/>}/>
    <Route path="profile" element={<RoleGate allowed={ALL_ROLES}><Profile/></RoleGate>}/>
    <Route path="notifications" element={<RoleGate allowed={ALL_ROLES}><Notifications/></RoleGate>}/>
    <Route path="institutions" element={<RoleGate allowed={['SUPER_ADMIN']}><Institutions/></RoleGate>}/>
@@ -63,15 +70,19 @@ export default function App(){
    <Route path="classes" element={<RoleGate allowed={['TEACHER','GUIDANCE_TEACHER']}><Classes/></RoleGate>}/>
    <Route path="outcomes" element={<RoleGate allowed={['TEACHER','GUIDANCE_TEACHER','STUDENT']}><Outcomes/></RoleGate>}/>
    <Route path="worksheets" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><Worksheets/></RoleGate>}/>
+   <Route path="worksheet-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><WorksheetAdmin/></RoleGate>}/>
    <Route path="reports" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','PARENT']}><Reports/></RoleGate>}/>
    <Route path="my-results" element={<RoleGate allowed={['STUDENT']}><Reports/></RoleGate>}/>
    <Route path="wrong-answers" element={<RoleGate allowed={['STUDENT']}><WrongAnswers/></RoleGate>}/>
    <Route path="children" element={<RoleGate allowed={['PARENT']}><Children/></RoleGate>}/>
    <Route path="weekly-summary" element={<RoleGate allowed={['PARENT']}><WeeklySummary/></RoleGate>}/>
    <Route path="transfers" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Transfers/></RoleGate>}/>
-   <Route path="optical-prepare" element={<RoleGate allowed={['INSTITUTION_MANAGER']}><OpticalPrepare/></RoleGate>}/>
+   <Route path="optical-prepare" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><OpticalPrepare/></RoleGate>}/>
    <Route path="calibration" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Calibration/></RoleGate>}/>
    <Route path="opticals" element={<RoleGate allowed={['SUPER_ADMIN']}><Opticals/></RoleGate>}/>
+   <Route path="bulk-operations" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><BulkOperations/></RoleGate>}/>
+   <Route path="demo-mode" element={<RoleGate allowed={['SUPER_ADMIN']}><DemoMode/></RoleGate>}/>
+   <Route path="scale" element={<RoleGate allowed={['SUPER_ADMIN']}><ScaleInfrastructure/></RoleGate>}/>
    <Route path="*" element={<Navigate to="/" replace/>}/>
   </Route>
  </Routes>
