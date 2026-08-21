@@ -80,6 +80,14 @@ CREATE TABLE IF NOT EXISTS nibiru_sessions (
 );
 CREATE INDEX IF NOT EXISTS idx_nibiru_sessions_user ON nibiru_sessions(user_id, expires_at);
 
+CREATE TABLE IF NOT EXISTS nibiru_whatsapp_receipts (
+  provider_message_id TEXT PRIMARY KEY,
+  phone_e164 TEXT NOT NULL,
+  received_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  processed_at TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_nibiru_receipts_phone ON nibiru_whatsapp_receipts(phone_e164, received_at);
+
 CREATE TABLE IF NOT EXISTS nibiru_audit_events (
   id TEXT PRIMARY KEY,
   institution_id TEXT REFERENCES institutions(id) ON DELETE SET NULL,
