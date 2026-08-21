@@ -4,7 +4,7 @@ import { getAuthUser } from './lib/auth';
 import { all, audit, badRequest, forbidden, json, one, uuid } from './lib/db';
 import { activateAnnual, getEffectiveLicense, licenseAccessMessage, setLicenseStatus, startTrial } from './lib/license';
 import { runNibiru } from './lib/nibiru';
-import { extractWhatsAppMessages, normalizeWhatsAppPhone, sendWhatsAppText, verifyWhatsAppSignature, whatsappReady } from './lib/whatsapp';
+import { extractWhatsAppMessages, sendWhatsAppText, verifyWhatsAppSignature, whatsappReady } from './lib/whatsapp';
 
 const WHATSAPP_ROLES = new Set(['PARENT','TEACHER','GUIDANCE_TEACHER','INSTITUTION_MANAGER']);
 
@@ -23,6 +23,15 @@ async function requireUser(env:Env,request:Request):Promise<AuthUser|Response>{r
 function isResponse(v:AuthUser|Response):v is Response{return v instanceof Response}
 
 async function settings(env:Env){return one<any>(env.DB.prepare(`SELECT * FROM nibiru_settings WHERE id='platform'`))}
+
+async function institutionBlock(env:Env,user:AuthUser){
+  if(!user.institution_id)return null;
+  const institution=await one<{status:string}>(env.DB.prepare(`SELECT status FROM institutions WHERE id=?`).bind(user.institution_id));
+  if(!institution||institution.status==='PASSIVE')return {code:'INSTITUTION_PASSIVE',message:'Kurum hesabınız şu anda aktif değildir.'};
+  const license=await getEffectiveLicense(env,user.institution_id);
+  if(license.locked)return {code:'LICENSE_EXPIRED',message:licenseAccessMessage(license),license};
+  return null;
+}
 
 async function userFromIdentity(env:Env,phone:string):Promise<AuthUser|null>{
   return one<AuthUser>(env.DB.prepare(`SELECT u.id,u.institution_id,u.student_id,u.role,u.display_name,u.email,u.username FROM nibiru_whatsapp_identities wi JOIN users u ON u.id=wi.user_id WHERE wi.phone_e164=? AND wi.status='VERIFIED' AND u.active=1 LIMIT 1`).bind(phone));
@@ -55,19 +64,22 @@ async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type
     if(pair){
       const linked=await pairByCode(env,message.from,pair[1]);
       if(!linked){await sendWhatsAppText(env,message.from,'🤖 Nibiru: Eşleştirme kodu geçersiz veya süresi dolmuş. Kurumunuzdan yeni bir kod isteyebilirsiniz.');return}
+      const blocked=await institutionBlock(env,linked);
+      if(blocked){await sendWhatsAppText(env,message.from,`🤖 Nibiru: ${blocked.message}`);return}
       await sendWhatsAppText(env,message.from,`🤖 Nibiru: Eşleştirme tamamlandı. Merhaba ${linked.display_name}. Ben yapay zekâ akademik asistanınızım. Yetkiniz kapsamındaki öğrenci gelişimi, sınavlar, kazanımlar ve çalışma önerileri hakkında bana yazabilirsiniz.`);
       return;
     }
     const user=await userFromIdentity(env,message.from);
     if(!user){await sendWhatsAppText(env,message.from,identityHelp());await env.DB.prepare(`INSERT INTO nibiru_audit_events(id,channel,role,intent,outcome,message_chars) VALUES(?,'WHATSAPP',NULL,'IDENTITY','UNVERIFIED',?)`).bind(uuid('niba'),message.text.length).run();return}
     if(!WHATSAPP_ROLES.has(user.role)){await sendWhatsAppText(env,message.from,'🤖 Nibiru: Bu kullanıcı rolü için WhatsApp erişimi etkin değildir.');return}
-    if(user.institution_id){const license=await getEffectiveLicense(env,user.institution_id);if(license.locked){await sendWhatsAppText(env,message.from,`🤖 Nibiru: ${licenseAccessMessage(license)}`);return}}
+    const blocked=await institutionBlock(env,user);
+    if(blocked){await sendWhatsAppText(env,message.from,`🤖 Nibiru: ${blocked.message}`);return}
     const result=await runNibiru(env,user,message.text,'WHATSAPP',message.from);
     await sendWhatsAppText(env,message.from,result.answer);
     await env.DB.prepare(`UPDATE nibiru_whatsapp_identities SET last_seen_at=CURRENT_TIMESTAMP WHERE phone_e164=?`).bind(message.from).run();
   }catch(error){
     console.error(JSON.stringify({event:'nibiru_whatsapp_error',messageId:message.id,error:error instanceof Error?error.message:String(error)}));
-    try{await sendWhatsAppText(env,message.from,'🤖 Nibiru: Şu anda akademik veriye erişirken kısa süreli bir sorun oluştu. Lütfen biraz sonra yeniden deneyin.')}catch{}
+    try{await sendWhatsAppText(env,message.from,'🤖 Nibiru: Şu anda akademik veriye erişirken kısa süreli bir sorun oluştu. Lütfen daha sonra yeniden deneyin.')}catch{}
   }finally{
     await env.DB.prepare(`UPDATE nibiru_whatsapp_receipts SET processed_at=CURRENT_TIMESTAMP WHERE provider_message_id=?`).bind(message.id).run();
   }
@@ -131,7 +143,8 @@ async function nibiruChat(request:Request,env:Env,user:AuthUser){
   if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
   const body=await request.json<{message?:string}>();const message=body.message?.trim()||'';
   if(!message||message.length>1200)return badRequest('Mesaj 1–1200 karakter arasında olmalıdır.');
-  if(user.institution_id){const license=await getEffectiveLicense(env,user.institution_id);if(license.locked)return json({ok:true,answer:`🤖 Nibiru: ${licenseAccessMessage(license)}`,intent:'LICENSE',locked:true});}
+  const blocked=await institutionBlock(env,user);
+  if(blocked)return json({ok:true,answer:`🤖 Nibiru: ${blocked.message}`,intent:'ACCESS',locked:true});
   const result=await runNibiru(env,user,message,'WEB',user.id);
   return json({ok:true,...result});
 }
@@ -171,6 +184,10 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
 
   if(path==='/api/nibiru/settings'||path==='/api/nibiru/users'||path==='/api/nibiru/pairing-code'||path==='/api/nibiru/chat'||path==='/api/nibiru/audit'||path==='/api/license/status'||path==='/api/admin/licenses'||path.startsWith('/api/admin/licenses/')){
     const userOr=await requireUser(env,request);if(isResponse(userOr))return userOr;const user=userOr;
+    if(user.role!=='SUPER_ADMIN'&&user.institution_id&&path!=='/api/license/status'&&path!=='/api/nibiru/chat'){
+      const blocked=await institutionBlock(env,user);
+      if(blocked)return apiError(blocked.code==='LICENSE_EXPIRED'?402:403,blocked.code,blocked.message,'license' in blocked?blocked.license:undefined);
+    }
     if(path==='/api/nibiru/settings')return nibiruSettings(request,env,user);
     if(path==='/api/nibiru/users'&&request.method==='GET')return nibiruUsers(env,user,url);
     if(path==='/api/nibiru/pairing-code'&&request.method==='POST')return createPairing(request,env,user);
@@ -186,7 +203,7 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
 
   if(path.startsWith('/api/')&&!canPassLocked(path)){
     const user=await getAuthUser(env,request);
-    if(user?.institution_id){const license=await getEffectiveLicense(env,user.institution_id);if(license.locked)return apiError(402,'LICENSE_EXPIRED',licenseAccessMessage(license),license)}
+    if(user?.institution_id){const blocked=await institutionBlock(env,user);if(blocked)return apiError(blocked.code==='LICENSE_EXPIRED'?402:403,blocked.code,blocked.message,'license' in blocked?blocked.license:undefined)}
   }
   return app.fetch(request,env);
 }} satisfies ExportedHandler<Env>;
