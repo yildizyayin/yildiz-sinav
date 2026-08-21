@@ -31,13 +31,13 @@ jobs:
         if: ${{ env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' }}
         run: echo "Cloudflare permanent deployment skipped because repository secrets are not configured yet."
 
+      - name: Apply D1 migrations before deploy
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        run: npx wrangler d1 migrations apply DB --remote
+
       - name: Deploy Worker and auto-provision D1/R2
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: npx wrangler deploy
-
-      - name: Apply D1 migrations
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
-        run: npx wrangler d1 migrations apply DB --remote
 
       - name: Load synthetic staging demo data
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
@@ -52,7 +52,7 @@ jobs:
           rm -f LIVE_SMOKE_REPORT.md
           node scripts/live-smoke-v2.mjs
 
-      - name: Live final five feature tests
+      - name: Live final platform feature tests
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-final-features-smoke.mjs
 
