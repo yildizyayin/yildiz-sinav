@@ -59,7 +59,7 @@ function parseClassHint(message: string) {
 async function childIds(env: Env, user: AuthUser) {
   if (user.role === 'STUDENT' && user.student_id) return [user.student_id];
   if (user.role !== 'PARENT') return [];
-  return (await all<{student_id:string}>(env.DB.prepare(`SELECT student_id FROM parent_student_links WHERE parent_user_id=? AND active=1 ORDER BY created_at`).bind(user.id))).map(x => x.student_id);
+  return (await all<{student_id:string}>(env.DB.prepare(`SELECT student_id FROM parent_student_links WHERE parent_user_id=? AND active=1 ORDER BY id`).bind(user.id))).map(x => x.student_id);
 }
 
 async function selectStudent(env: Env, user: AuthUser, message: string, previousStudentId?: string | null) {
@@ -165,7 +165,8 @@ async function aiAnswer(env: Env, user: AuthUser, intent: NibiruIntent, message:
   if (!settings?.enabled || !env.AI) return null;
   const prompt = `${systemPrompt(user.role)}\n\nNİYET: ${intent}\nKULLANICI MESAJI: ${message}\nDOĞRULANMIŞ VERİ BAĞLAMI:\n${JSON.stringify(context).slice(0,14000)}`;
   try {
-    const response: any = await env.AI.run('@cf/zai-org/glm-4.7-flash', { messages: [{ role: 'system', content: systemPrompt(user.role) }, { role: 'user', content: prompt }], max_tokens: 700, temperature: 0.2 });
+    const model = env.NIBIRU_AI_MODEL || settings.ai_model || '@cf/zai-org/glm-4.7-flash';
+    const response: any = await env.AI.run(model as any, { messages: [{ role: 'system', content: systemPrompt(user.role) }, { role: 'user', content: prompt }], max_tokens: 700, temperature: 0.2 });
     const text = typeof response === 'string' ? response : response?.response || response?.result?.response || response?.choices?.[0]?.message?.content;
     if (!text || typeof text !== 'string') return null;
     return text.startsWith(AI_PREFIX) ? text.trim() : `${AI_PREFIX} ${text.trim()}`;
@@ -214,8 +215,9 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
     if (!selected.student) {
       context = selected.choices.length > 1 ? { disambiguation: selected.choices } : { noStudent: true };
     } else {
-      studentId = selected.student.id;
-      context = await studentAcademicContext(env,studentId,user.institution_id);
+      const selectedStudentId = String(selected.student.id);
+      studentId = selectedStudentId;
+      context = await studentAcademicContext(env,selectedStudentId,user.institution_id);
       examId = context.latestExam?.id || null;
     }
   } else if (user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER') {
