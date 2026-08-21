@@ -125,7 +125,7 @@ export function validatePrintFields(input: unknown, pageWidthMm: number, pageHei
     ? def.fields
     : Object.entries(def).map(([key, value]) => ({ key, ...(value as object) }));
   if (!fields.length) return { valid: false, errors: ['En az bir baskı alanı tanımlanmalıdır.'] };
-  const allowedKeys = new Set(['studentName','studentNumber','class','section','institutionCode','qr','barcode','studentNumberBubbles']);
+  const allowedKeys = new Set(['studentName','studentNumber','class','section','institutionCode','bookletCode','examTitle','examCode','qr','barcode','studentNumberBubbles']);
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i] as any;
     const key = String(field.key || '');
