@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-21T20:25:29.389Z`
+- Time: `2026-08-21T20:44:15.338Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -25,9 +25,17 @@
 - ✅ **Super Admin institution access**
 - ✅ **Session revocation on logout**
 
-## Final V1 feature checks
+## Final platform feature checks
 
-- ✅ **Activation request + notification flow** — manager request → Super Admin decision → manager notification
-- ✅ **Student wrong/blank learning flow** — 0 question rows available
-- ✅ **Parent weekly summary + notification flow** — 1 exams in last 7 days
-- ✅ **Demo identity preservation** — 45 guests preserved after rejected smoke request
+- ❌ **Final feature smoke failure**
+
+```text
+Error: Printer + optical calibration is not READY
+{
+  "ok": true,
+  "calibrations": []
+}
+    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:9:36)
+    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:28:2
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+```
