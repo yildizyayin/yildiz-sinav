@@ -177,7 +177,7 @@ export function definitionReadiness(
     print: print.valid,
     fiducials: fiducials.valid,
     parserTestPassed: values.parserTestPassed,
-    ready: parser.valid && camera.valid && print.valid && fiducials.valid && parserTestPassed,
+    ready: parser.valid && camera.valid && print.valid && fiducials.valid && values.parserTestPassed,
     errors,
   };
 }
