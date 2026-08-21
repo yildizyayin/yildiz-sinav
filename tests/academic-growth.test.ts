@@ -22,6 +22,6 @@ describe('academic target engine',()=>{
   const answer=targetNibiruAnswer({target:{target_type:'LGS_SCHOOL',school_name:'Örnek Lise'},analysis:{examCount:5,trend:'RISING',gaps:[{metric:'MATEMATIK',gap:2.5}],weakOutcomes:[],source:{kind:'MEB_ROTA_MAARIF',year:2026}}});
   expect(answer.startsWith('🤖 Nibiru:')).toBe(true);
   expect(answer).toContain('MEB_ROTA_MAARIF');
-  expect(answer).toContain('yerleşme garantisi vermez');
+  expect(answer).toContain('yerleştirme garantisi vermez');
  });
 });
