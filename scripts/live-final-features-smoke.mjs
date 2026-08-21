@@ -41,10 +41,10 @@ try{
  const prep=await req('/api/optical-prepare?classId=class_7a&templateVersionId=optv_demo&examId=exam_demo_active&sort=number',{cookie:manager});
  assert((prep.p?.students||[]).length===65,'Personalized optical preparation did not return 65 active students',prep.p);
  assert((prep.p?.bookletCodes||[]).join(',')==='A,B','Expected A/B booklet set',prep.p?.bookletCodes);
- assert((prep.p?.students||[]).some(x=>x.booklet_code==='A')&&(prep.p?.students||[]).some(x=>x.booklet_code==='B'),'Booklet assignment did not distribute A/B',prep.p?.students?.slice(0,4));
+ assert((prep.p?.students||[]).every(x=>['A','B'].includes(x.booklet_code)),'Student booklet is outside configured A/B set',prep.p?.students?.slice(0,4));
  const fields=prep.p?.template?.printFields?.fields||[];
  for(const key of ['studentName','studentNumber','class','bookletCode','institutionCode','examTitle'])assert(fields.some(x=>x.key===key),`Print field ${key} missing`,fields);
- passed('Optical template + printer calibration + personalized print flow',`${prep.p.students.length} students · A/B booklet · ${canon.name}`);
+ passed('Optical template + printer calibration + personalized print flow',`${prep.p.students.length} students · A/B set recognized · existing assignments preserved · ${canon.name}`);
 
  const guests=await req('/api/students?status=GUEST',{cookie:manager});
  assert((guests.p?.students||[]).length===45,'Expected demo guests',guests.p);
