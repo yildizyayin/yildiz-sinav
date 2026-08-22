@@ -6,6 +6,7 @@ import { Dashboard } from './pages/Dashboard';
 import { InstitutionPanelV2 } from './pages/InstitutionPanelV2';
 import { Institutions } from './pages/Institutions';
 import { Exams } from './pages/Exams';
+import { ExamCenter } from './pages/ExamCenter';
 import { ExamEvaluate } from './pages/ExamEvaluate';
 import { ExamDefinitions } from './pages/ExamDefinitions';
 import { Students } from './pages/Students';
@@ -40,6 +41,13 @@ import { AcademicTarget } from './pages/AcademicTarget';
 import { AcademicTargetAdmin } from './pages/AcademicTargetAdmin';
 import { Announcements } from './pages/Announcements';
 import { WorksheetCalendar } from './pages/WorksheetCalendar';
+import { FeatureLab } from './pages/FeatureLab';
+import { ContentCenter } from './pages/ContentCenter';
+import { StudentGrowthCenter } from './pages/StudentGrowthCenter';
+import { PremiumCenter } from './pages/PremiumCenter';
+import { EnterpriseCenter } from './pages/EnterpriseCenter';
+import { BoardCenter } from './pages/BoardCenter';
+import { GuidanceTests } from './pages/GuidanceTests';
 
 const ALL_ROLES: Role[] = ['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT'];
 
@@ -71,6 +79,7 @@ export default function App(){
    <Route path="notifications" element={<RoleGate allowed={ALL_ROLES}><Notifications/></RoleGate>}/>
    <Route path="institutions" element={<RoleGate allowed={['SUPER_ADMIN']}><Institutions/></RoleGate>}/>
    <Route path="curriculum" element={<RoleGate allowed={['SUPER_ADMIN']}><CurriculumAdmin/></RoleGate>}/>
+   <Route path="exam-center" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamCenter/></RoleGate>}/>
    <Route path="exams" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Exams/></RoleGate>}/>
    <Route path="exam-definitions" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamDefinitions/></RoleGate>}/>
    <Route path="exams/:examId/evaluate" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamEvaluate/></RoleGate>}/>
@@ -97,6 +106,14 @@ export default function App(){
    <Route path="bulk-operations" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><BulkOperations/></RoleGate>}/>
    <Route path="demo-mode" element={<RoleGate allowed={['SUPER_ADMIN']}><DemoMode/></RoleGate>}/>
    <Route path="scale" element={<RoleGate allowed={['SUPER_ADMIN']}><ScaleInfrastructure/></RoleGate>}/>
+
+   <Route path="feature-lab" element={<RoleGate allowed={['SUPER_ADMIN']}><FeatureLab/></RoleGate>}/>
+   <Route path="content-center" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><ContentCenter/></RoleGate>}/>
+   <Route path="student-growth" element={<RoleGate allowed={['STUDENT']}><StudentGrowthCenter/></RoleGate>}/>
+   <Route path="premium" element={<RoleGate allowed={['STUDENT']}><PremiumCenter/></RoleGate>}/>
+   <Route path="enterprise" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><EnterpriseCenter/></RoleGate>}/>
+   <Route path="board" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><BoardCenter/></RoleGate>}/>
+   <Route path="guidance-tests" element={<RoleGate allowed={['STUDENT']}><GuidanceTests/></RoleGate>}/>
    <Route path="*" element={<Navigate to="/" replace/>}/>
   </Route>
  </Routes>
