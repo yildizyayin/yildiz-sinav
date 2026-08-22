@@ -8,6 +8,7 @@ import { Institutions } from './pages/Institutions';
 import { ExamCenter } from './pages/ExamCenter';
 import { ExamEvaluate } from './pages/ExamEvaluate';
 import { ExamDefinitions } from './pages/ExamDefinitions';
+import { PublishedResult } from './pages/PublishedResult';
 import { NetworkAdmin } from './pages/NetworkAdmin';
 import { Students } from './pages/Students';
 import { Classes } from './pages/Classes';
@@ -76,6 +77,7 @@ export default function App(){
    <Route path="exams" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><ExamCenter/></RoleGate>}/>
    <Route path="exam-definitions" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamDefinitions/></RoleGate>}/>
    <Route path="exams/:examId/evaluate" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamEvaluate/></RoleGate>}/>
+   <Route path="results/:examId" element={<RoleGate allowed={['STUDENT','PARENT']}><PublishedResult/></RoleGate>}/>
    <Route path="camera-test" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><CameraTestSheet/></RoleGate>}/>
    <Route path="students" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Students/></RoleGate>}/>
    <Route path="activation-requests" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ActivationRequests/></RoleGate>}/>
