@@ -131,14 +131,16 @@ CREATE INDEX IF NOT EXISTS idx_rank_entry_org ON exam_ranking_entries(snapshot_i
 CREATE TABLE IF NOT EXISTS exam_result_release_log (
   id TEXT PRIMARY KEY,
   exam_id TEXT NOT NULL REFERENCES exams(id) ON DELETE CASCADE,
-  snapshot_id TEXT NOT NULL REFERENCES exam_ranking_snapshots(id) ON DELETE CASCADE,
+  snapshot_id TEXT REFERENCES exam_ranking_snapshots(id) ON DELETE CASCADE,
   action TEXT NOT NULL CHECK(action IN ('FREEZE','BUILD','PUBLISH','UNPUBLISH')),
   actor_user_id TEXT REFERENCES users(id),
   details_json TEXT,
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- View used by ranking materialization. The ranking service copies from this source into snapshot entries.
+-- One participant must produce exactly one ranking-source row. Network membership is selected
+-- later by the ranking builder according to the exam's linked organization, preventing duplicates
+-- when one institution belongs to multiple enterprise networks.
 CREATE VIEW IF NOT EXISTS v_exam_ranking_source AS
 SELECT
   ep.id AS participant_id,
@@ -153,10 +155,8 @@ SELECT
   se.section,
   er.score,
   er.net,
-  er.success_percent,
-  oi.organization_id
+  er.success_percent
 FROM exam_participants ep
 JOIN institutions i ON i.id = ep.institution_id
 JOIN exam_results er ON er.participant_id = ep.id
-LEFT JOIN student_enrollments se ON se.student_id = ep.student_id AND se.institution_id = ep.institution_id AND se.status = 'ACTIVE'
-LEFT JOIN organization_institutions oi ON oi.institution_id = ep.institution_id AND oi.active = 1;
+LEFT JOIN student_enrollments se ON se.student_id = ep.student_id AND se.institution_id = ep.institution_id AND se.status = 'ACTIVE';
