@@ -1,10 +1,20 @@
 import app from './academic-growth-entry';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
-import { json } from './lib/db';
+import { json,one } from './lib/db';
 import { handlePlatformApi } from './lib/platform-expansion';
 import { handleAdvancedPlatformApi } from './lib/platform-advanced';
 import { materializeNetworkAndPublisherAnalytics, networkRanksForParticipant, publisherQuestionAnalytics } from './lib/platform-ranking';
+import { platformFeatureGate } from './lib/platform-feature-policy';
+
+async function publishedSnapshotVersion(env:Env,examId:string){
+  const cache=caches.default;const key=new Request(`https://platform-cache.invalid/exam-version/${encodeURIComponent(examId)}`);
+  const hit=await cache.match(key);if(hit){const p:any=await hit.json().catch(()=>null);if(p?.version)return Number(p.version)}
+  const row=await one<any>(env.DB.prepare(`SELECT snapshot_version,result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?`).bind(examId));
+  if(row?.result_freeze_status!=='PUBLISHED'||!Number(row.snapshot_version))return 0;
+  const version=Number(row.snapshot_version);ctxWait(cache.put(key,new Response(JSON.stringify({version}),{headers:{'Content-Type':'application/json','Cache-Control':'public,max-age=30'}})));return version;
+}
+function ctxWait(p:Promise<any>){void p.catch(()=>{})}
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
@@ -12,6 +22,14 @@ export default {
     if (url.pathname.startsWith('/api/platform/')) {
       const user = await getAuthUser(env, request);
       if (!user) return json({ ok: false, error: { code: 'UNAUTHENTICATED', message: 'Oturum açmanız gerekiyor.' } }, 401);
+      const featureGate=await platformFeatureGate(env,user,url.pathname);if(featureGate)return featureGate;
+
+      const resultMatchBefore=url.pathname.match(/^\/api\/platform\/exam-center\/([^/]+)\/result$/);
+      let resultCacheKey:Request|null=null;
+      if(resultMatchBefore&&request.method==='GET'){
+        const version=await publishedSnapshotVersion(env,resultMatchBefore[1]);
+        if(version){const studentKey=url.searchParams.get('studentId')||user.student_id||'self';resultCacheKey=new Request(`https://platform-cache.invalid/result/${encodeURIComponent(resultMatchBefore[1])}/${version}/${encodeURIComponent(user.id)}/${encodeURIComponent(studentKey)}`);const hit=await caches.default.match(resultCacheKey);if(hit){const payload=await hit.json();return new Response(JSON.stringify(payload),{status:200,headers:{'Content-Type':'application/json;charset=UTF-8','Cache-Control':'private,no-store','X-Platform-Cache':'HIT'}})}}
+      }
 
       const advanced = await handleAdvancedPlatformApi(request, env, user);
       if (advanced) return advanced;
@@ -34,7 +52,9 @@ export default {
         const r = payload?.result;
         if (r?.participant_id && r?.snapshot_version) {
           const networkRanks = await networkRanksForParticipant(env, resultMatch[1], r.participant_id, Number(r.snapshot_version));
-          return json({ ...payload, result: { ...r, networkRanks } });
+          const enriched={ ...payload, result: { ...r, networkRanks } };
+          if(resultCacheKey)ctx.waitUntil(caches.default.put(resultCacheKey,new Response(JSON.stringify(enriched),{headers:{'Content-Type':'application/json','Cache-Control':'public,max-age=3600'}})).catch(()=>{}));
+          return new Response(JSON.stringify(enriched),{status:200,headers:{'Content-Type':'application/json;charset=UTF-8','Cache-Control':'private,no-store','X-Platform-Cache':'MISS'}});
         }
       }
 
