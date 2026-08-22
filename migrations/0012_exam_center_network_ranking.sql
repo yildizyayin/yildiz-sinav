@@ -138,9 +138,8 @@ CREATE TABLE IF NOT EXISTS exam_result_release_log (
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- One participant must produce exactly one ranking-source row. Network membership is selected
--- later by the ranking builder according to the exam's linked organization, preventing duplicates
--- when one institution belongs to multiple enterprise networks.
+-- One participant produces one source row. A deterministic network id is carried for central
+-- comparisons; NETWORK exams are restricted to their explicitly linked organization in API scope.
 CREATE VIEW IF NOT EXISTS v_exam_ranking_source AS
 SELECT
   ep.id AS participant_id,
@@ -155,7 +154,10 @@ SELECT
   se.section,
   er.score,
   er.net,
-  er.success_percent
+  er.success_percent,
+  (SELECT oi.organization_id FROM organization_institutions oi
+    WHERE oi.institution_id=ep.institution_id AND oi.active=1
+    ORDER BY oi.is_headquarters DESC, oi.created_at ASC LIMIT 1) AS organization_id
 FROM exam_participants ep
 JOIN institutions i ON i.id = ep.institution_id
 JOIN exam_results er ON er.participant_id = ep.id
