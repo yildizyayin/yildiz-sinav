@@ -7,8 +7,9 @@ import { handleAdvancedPlatformApi } from './lib/platform-advanced';
 import { materializeNetworkAndPublisherAnalytics, networkRanksForParticipant, publisherQuestionAnalytics } from './lib/platform-ranking';
 import { platformFeatureGate } from './lib/platform-feature-policy';
 
+function edgeCache():Cache{return (caches as unknown as {default:Cache}).default;}
 async function publishedSnapshotVersion(env:Env,examId:string){
-  const cache=caches.default;const key=new Request(`https://platform-cache.invalid/exam-version/${encodeURIComponent(examId)}`);
+  const cache=edgeCache();const key=new Request(`https://platform-cache.invalid/exam-version/${encodeURIComponent(examId)}`);
   const hit=await cache.match(key);if(hit){const p:any=await hit.json().catch(()=>null);if(p?.version)return Number(p.version)}
   const row=await one<any>(env.DB.prepare(`SELECT snapshot_version,result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?`).bind(examId));
   if(row?.result_freeze_status!=='PUBLISHED'||!Number(row.snapshot_version))return 0;
@@ -28,7 +29,7 @@ export default {
       let resultCacheKey:Request|null=null;
       if(resultMatchBefore&&request.method==='GET'){
         const version=await publishedSnapshotVersion(env,resultMatchBefore[1]);
-        if(version){const studentKey=url.searchParams.get('studentId')||user.student_id||'self';resultCacheKey=new Request(`https://platform-cache.invalid/result/${encodeURIComponent(resultMatchBefore[1])}/${version}/${encodeURIComponent(user.id)}/${encodeURIComponent(studentKey)}`);const hit=await caches.default.match(resultCacheKey);if(hit){const payload=await hit.json();return new Response(JSON.stringify(payload),{status:200,headers:{'Content-Type':'application/json;charset=UTF-8','Cache-Control':'private,no-store','X-Platform-Cache':'HIT'}})}}
+        if(version){const studentKey=url.searchParams.get('studentId')||user.student_id||'self';resultCacheKey=new Request(`https://platform-cache.invalid/result/${encodeURIComponent(resultMatchBefore[1])}/${version}/${encodeURIComponent(user.id)}/${encodeURIComponent(studentKey)}`);const hit=await edgeCache().match(resultCacheKey);if(hit){const payload=await hit.json();return new Response(JSON.stringify(payload),{status:200,headers:{'Content-Type':'application/json;charset=UTF-8','Cache-Control':'private,no-store','X-Platform-Cache':'HIT'}})}}
       }
 
       const advanced = await handleAdvancedPlatformApi(request, env, user);
@@ -53,7 +54,7 @@ export default {
         if (r?.participant_id && r?.snapshot_version) {
           const networkRanks = await networkRanksForParticipant(env, resultMatch[1], r.participant_id, Number(r.snapshot_version));
           const enriched={ ...payload, result: { ...r, networkRanks } };
-          if(resultCacheKey)ctx.waitUntil(caches.default.put(resultCacheKey,new Response(JSON.stringify(enriched),{headers:{'Content-Type':'application/json','Cache-Control':'public,max-age=3600'}})).catch(()=>{}));
+          if(resultCacheKey)ctx.waitUntil(edgeCache().put(resultCacheKey,new Response(JSON.stringify(enriched),{headers:{'Content-Type':'application/json','Cache-Control':'public,max-age=3600'}})).catch(()=>{}));
           return new Response(JSON.stringify(enriched),{status:200,headers:{'Content-Type':'application/json;charset=UTF-8','Cache-Control':'private,no-store','X-Platform-Cache':'MISS'}});
         }
       }
