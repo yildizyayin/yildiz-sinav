@@ -1,7 +1,8 @@
 import app from './academic-growth-entry';
-import type { Env } from './types';
+import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { json,one } from './lib/db';
+import { loadPermissionScope } from './lib/permissions';
 import { handlePlatformApi } from './lib/platform-expansion';
 import { handleAdvancedPlatformApi } from './lib/platform-advanced';
 import { materializeNetworkAndPublisherAnalytics, networkRanksForParticipant, publisherQuestionAnalytics } from './lib/platform-ranking';
@@ -17,6 +18,35 @@ async function publishedSnapshotVersion(env:Env,examId:string){
 }
 function ctxWait(p:Promise<any>){void p.catch(()=>{})}
 
+async function resultStudentAllowed(env:Env,user:AuthUser,requested:string|null):Promise<boolean>{
+  if(user.role==='SUPER_ADMIN')return true;
+  if(user.role==='STUDENT')return !requested||requested===user.student_id;
+  if(user.role==='PARENT'){
+    if(!requested)return false;
+    return !!await one<any>(env.DB.prepare(`SELECT 1 ok FROM parent_student_links WHERE parent_user_id=? AND student_id=? AND active=1`).bind(user.id,requested));
+  }
+  if(!requested||!user.institution_id)return false;
+  const enrollment=await one<any>(env.DB.prepare(`SELECT institution_id,class_id,season_id FROM student_enrollments WHERE student_id=? AND status='ACTIVE' ORDER BY created_at DESC LIMIT 1`).bind(requested));
+  if(!enrollment||enrollment.institution_id!==user.institution_id)return false;
+  if(user.role==='INSTITUTION_MANAGER')return true;
+  if((user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER')&&enrollment.class_id){
+    const scope=await loadPermissionScope(env.DB,user,enrollment.season_id||undefined);
+    return scope.classIds.includes(enrollment.class_id)||scope.guidanceClassIds.includes(enrollment.class_id);
+  }
+  return false;
+}
+
+async function centralCatalogPolicy(request:Request,path:string):Promise<Response|null>{
+  const isCatalogCreate=path==='/api/platform/exam-center/catalog'&&request.method==='POST';
+  const isProfileUpdate=/^\/api\/platform\/exam-center\/[^/]+\/profile$/.test(path)&&request.method==='PUT';
+  if(!isCatalogCreate&&!isProfileUpdate)return null;
+  const body:any=await request.clone().json().catch(()=>({}));
+  if(String(body.scope||'').toUpperCase()==='CENTRAL'&&!body.verifiedCatalog){
+    return json({ok:false,error:{code:'CENTRAL_REQUIRES_VERIFIED_CATALOG',message:'Merkezi / Türkiye Geneli sınav yalnız Süper Admin tarafından doğrulanmış katalog sınavı olarak tanımlanabilir.'}},400);
+  }
+  return null;
+}
+
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
@@ -24,12 +54,15 @@ export default {
       const user = await getAuthUser(env, request);
       if (!user) return json({ ok: false, error: { code: 'UNAUTHENTICATED', message: 'Oturum açmanız gerekiyor.' } }, 401);
       const featureGate=await platformFeatureGate(env,user,url.pathname);if(featureGate)return featureGate;
+      const catalogPolicy=await centralCatalogPolicy(request,url.pathname);if(catalogPolicy)return catalogPolicy;
 
       const resultMatchBefore=url.pathname.match(/^\/api\/platform\/exam-center\/([^/]+)\/result$/);
       let resultCacheKey:Request|null=null;
       if(resultMatchBefore&&request.method==='GET'){
+        const requestedStudent=url.searchParams.get('studentId');
+        if(!await resultStudentAllowed(env,user,requestedStudent))return json({ok:false,error:{code:'FORBIDDEN',message:'Bu öğrenci sonucuna erişim yetkiniz yok.'}},403);
         const version=await publishedSnapshotVersion(env,resultMatchBefore[1]);
-        if(version){const studentKey=url.searchParams.get('studentId')||user.student_id||'self';resultCacheKey=new Request(`https://platform-cache.invalid/result/${encodeURIComponent(resultMatchBefore[1])}/${version}/${encodeURIComponent(user.id)}/${encodeURIComponent(studentKey)}`);const hit=await edgeCache().match(resultCacheKey);if(hit){const payload=await hit.json();return new Response(JSON.stringify(payload),{status:200,headers:{'Content-Type':'application/json;charset=UTF-8','Cache-Control':'private,no-store','X-Platform-Cache':'HIT'}})}}
+        if(version){const studentKey=requestedStudent||user.student_id||'self';resultCacheKey=new Request(`https://platform-cache.invalid/result/${encodeURIComponent(resultMatchBefore[1])}/${version}/${encodeURIComponent(user.id)}/${encodeURIComponent(studentKey)}`);const hit=await edgeCache().match(resultCacheKey);if(hit){const payload=await hit.json();return new Response(JSON.stringify(payload),{status:200,headers:{'Content-Type':'application/json;charset=UTF-8','Cache-Control':'private,no-store','X-Platform-Cache':'HIT'}})}}
       }
 
       const advanced = await handleAdvancedPlatformApi(request, env, user);
@@ -53,7 +86,7 @@ export default {
         const r = payload?.result;
         if (r?.participant_id && r?.snapshot_version) {
           const networkRanks = await networkRanksForParticipant(env, resultMatch[1], r.participant_id, Number(r.snapshot_version));
-          const enriched={ ...payload, result: { ...r, networkRanks } };
+          const enriched={ ...payload, result: { ...r, networkRanks }, rankingLabel:'Türkiye Geneli Katılımcılar Arasında' };
           if(resultCacheKey)ctx.waitUntil(edgeCache().put(resultCacheKey,new Response(JSON.stringify(enriched),{headers:{'Content-Type':'application/json','Cache-Control':'public,max-age=3600'}})).catch(()=>{}));
           return new Response(JSON.stringify(enriched),{status:200,headers:{'Content-Type':'application/json;charset=UTF-8','Cache-Control':'private,no-store','X-Platform-Cache':'MISS'}});
         }
