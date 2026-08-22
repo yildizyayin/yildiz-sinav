@@ -5,9 +5,10 @@ import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { InstitutionPanelV2 } from './pages/InstitutionPanelV2';
 import { Institutions } from './pages/Institutions';
-import { Exams } from './pages/Exams';
+import { ExamCenter } from './pages/ExamCenter';
 import { ExamEvaluate } from './pages/ExamEvaluate';
 import { ExamDefinitions } from './pages/ExamDefinitions';
+import { NetworkAdmin } from './pages/NetworkAdmin';
 import { Students } from './pages/Students';
 import { Classes } from './pages/Classes';
 import { Outcomes } from './pages/Outcomes';
@@ -70,8 +71,9 @@ export default function App(){
    <Route path="profile" element={<RoleGate allowed={ALL_ROLES}><Profile/></RoleGate>}/>
    <Route path="notifications" element={<RoleGate allowed={ALL_ROLES}><Notifications/></RoleGate>}/>
    <Route path="institutions" element={<RoleGate allowed={['SUPER_ADMIN']}><Institutions/></RoleGate>}/>
+   <Route path="networks" element={<RoleGate allowed={['SUPER_ADMIN']}><NetworkAdmin/></RoleGate>}/>
    <Route path="curriculum" element={<RoleGate allowed={['SUPER_ADMIN']}><CurriculumAdmin/></RoleGate>}/>
-   <Route path="exams" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Exams/></RoleGate>}/>
+   <Route path="exams" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><ExamCenter/></RoleGate>}/>
    <Route path="exam-definitions" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamDefinitions/></RoleGate>}/>
    <Route path="exams/:examId/evaluate" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamEvaluate/></RoleGate>}/>
    <Route path="camera-test" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><CameraTestSheet/></RoleGate>}/>
