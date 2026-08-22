@@ -1,7 +1,7 @@
 import app from './academic-growth-entry';
 import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
-import { json,one } from './lib/db';
+import { all,json,one } from './lib/db';
 import { loadPermissionScope } from './lib/permissions';
 import { handlePlatformApi } from './lib/platform-expansion';
 import { handleAdvancedPlatformApi } from './lib/platform-advanced';
@@ -47,6 +47,24 @@ async function centralCatalogPolicy(request:Request,path:string):Promise<Respons
   return null;
 }
 
+async function publishedResultsList(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const u=new URL(request.url);const requested=u.searchParams.get('studentId');
+  if(!await resultStudentAllowed(env,user,requested))return json({ok:false,error:{code:'FORBIDDEN',message:'Bu öğrenci sonucuna erişim yetkiniz yok.'}},403);
+  const studentId=user.role==='STUDENT'?user.student_id:requested;if(!studentId)return json({ok:true,results:[]});
+  const rows=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,p.scope,pub.name publisher_name,n.name network_name,s.snapshot_version,s.score,s.net,s.city,s.district,s.grade_level,s.class_snapshot,
+    s.national_rank,s.national_count,s.city_rank,s.city_count,s.district_rank,s.district_count,s.network_rank,s.network_count,s.institution_rank,s.institution_count,s.grade_rank,s.grade_count,s.class_rank,s.class_count,i.name institution_name
+    FROM exam_result_snapshots s JOIN exam_delivery_profiles p ON p.exam_id=s.exam_id AND p.snapshot_version=s.snapshot_version AND p.result_freeze_status='PUBLISHED'
+    JOIN exams e ON e.id=s.exam_id JOIN institutions i ON i.id=s.institution_id LEFT JOIN publishers pub ON pub.id=p.publisher_id LEFT JOIN institution_networks n ON n.id=p.network_id
+    WHERE s.student_id=? ORDER BY COALESCE(p.published_at,e.exam_date,e.created_at) DESC LIMIT 100`).bind(studentId));
+  return json({ok:true,label:'Türkiye Geneli Katılımcılar Arasında',results:rows});
+}
+
+async function enrichCatalogIds(response:Response,env:Env):Promise<Response>{
+  if(!response.ok)return response;const payload:any=await response.clone().json().catch(()=>null);if(!payload?.exams?.length)return response;
+  const profiles=await all<any>(env.DB.prepare(`SELECT exam_id,publisher_id,network_id FROM exam_delivery_profiles`));const map=new Map(profiles.map(x=>[x.exam_id,x]));
+  return json({...payload,exams:payload.exams.map((e:any)=>({...e,publisher_id:map.get(e.id)?.publisher_id||null,network_id:map.get(e.id)?.network_id||null}))});
+}
+
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
@@ -55,6 +73,7 @@ export default {
       if (!user) return json({ ok: false, error: { code: 'UNAUTHENTICATED', message: 'Oturum açmanız gerekiyor.' } }, 401);
       const featureGate=await platformFeatureGate(env,user,url.pathname);if(featureGate)return featureGate;
       const catalogPolicy=await centralCatalogPolicy(request,url.pathname);if(catalogPolicy)return catalogPolicy;
+      if(url.pathname==='/api/platform/exam-center/results'&&request.method==='GET')return publishedResultsList(request,env,user);
 
       const resultMatchBefore=url.pathname.match(/^\/api\/platform\/exam-center\/([^/]+)\/result$/);
       let resultCacheKey:Request|null=null;
@@ -70,6 +89,7 @@ export default {
 
       const response = await handlePlatformApi(request, env, user);
       if (!response) return json({ ok: false, error: { code: 'NOT_FOUND', message: 'Platform API yolu bulunamadı.' } }, 404);
+      if(url.pathname==='/api/platform/exam-center/catalog'&&request.method==='GET')return enrichCatalogIds(response,env);
 
       const freezeMatch = url.pathname.match(/^\/api\/platform\/exam-center\/([^/]+)\/freeze$/);
       if (freezeMatch && request.method === 'POST' && response.ok) {
