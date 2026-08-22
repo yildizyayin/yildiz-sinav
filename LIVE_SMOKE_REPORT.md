@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-22T21:00:45.304Z`
+- Time: `2026-08-22T21:03:31.456Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -46,3 +46,6 @@
 - ✅ **Teacher communication + worksheet scope** — role-scoped endpoints available
 - ✅ **Student target eligibility + analysis boundary** — grade 7 · target not set
 - ✅ **Super Admin official-source governance** — source URL + official flag enforced
+- ✅ **Official question intelligence registry** — MEB LGS + ÖSYM YKS + EBA/OGM references · protected text not copied
+- ✅ **Official question intelligence authorization** — Super Admin only status/source governance
+- ✅ **Official outcome-history contract** — 0 outcome rows · historical priority is explicitly not a prediction guarantee
