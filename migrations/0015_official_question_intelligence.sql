@@ -9,8 +9,25 @@ ALTER TABLE question_bank ADD COLUMN license_code TEXT;
 
 UPDATE question_bank
 SET difficulty_band = CASE WHEN difficulty <= 2 THEN 'EASY' WHEN difficulty = 3 THEN 'MEDIUM' ELSE 'HARD' END,
-    difficulty_color = CASE WHEN difficulty <= 2 THEN 'BLUE' WHEN difficulty = 3 THEN 'GREEN' ELSE 'RED' END
-WHERE difficulty_band IS NULL OR difficulty_band = 'MEDIUM';
+    difficulty_color = CASE WHEN difficulty <= 2 THEN 'BLUE' WHEN difficulty = 3 THEN 'GREEN' ELSE 'RED' END;
+
+CREATE TRIGGER IF NOT EXISTS trg_question_bank_difficulty_insert
+AFTER INSERT ON question_bank
+BEGIN
+  UPDATE question_bank
+  SET difficulty_band = CASE WHEN NEW.difficulty <= 2 THEN 'EASY' WHEN NEW.difficulty = 3 THEN 'MEDIUM' ELSE 'HARD' END,
+      difficulty_color = CASE WHEN NEW.difficulty <= 2 THEN 'BLUE' WHEN NEW.difficulty = 3 THEN 'GREEN' ELSE 'RED' END
+  WHERE id = NEW.id;
+END;
+
+CREATE TRIGGER IF NOT EXISTS trg_question_bank_difficulty_update
+AFTER UPDATE OF difficulty ON question_bank
+BEGIN
+  UPDATE question_bank
+  SET difficulty_band = CASE WHEN NEW.difficulty <= 2 THEN 'EASY' WHEN NEW.difficulty = 3 THEN 'MEDIUM' ELSE 'HARD' END,
+      difficulty_color = CASE WHEN NEW.difficulty <= 2 THEN 'BLUE' WHEN NEW.difficulty = 3 THEN 'GREEN' ELSE 'RED' END
+  WHERE id = NEW.id;
+END;
 
 -- Official source registry. Publicly accessible does NOT mean public-domain.
 CREATE TABLE IF NOT EXISTS official_question_sources (
