@@ -1,7 +1,7 @@
 import app from './academic-growth-entry';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
-import { handleExamCenterApi } from './lib/exam-center';
+import { handleExamCenterApiV2 } from './lib/exam-center-v2';
 import { json } from './lib/db';
 
 export default {
@@ -10,7 +10,7 @@ export default {
     if(path.startsWith('/api/exam-center')){
       const user=await getAuthUser(env,request);
       if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED',message:'Oturum açmanız gerekiyor.'}},401);
-      const response=await handleExamCenterApi(request,env,user);
+      const response=await handleExamCenterApiV2(request,env,user);
       return response||json({ok:false,error:{code:'NOT_FOUND',message:'Sınav Merkezi API yolu bulunamadı.'}},404);
     }
     return app.fetch(request,env,ctx);
