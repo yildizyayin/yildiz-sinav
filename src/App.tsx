@@ -9,6 +9,7 @@ import { Exams } from './pages/Exams';
 import { ExamCenter } from './pages/ExamCenter';
 import { ExamEvaluate } from './pages/ExamEvaluate';
 import { ExamDefinitions } from './pages/ExamDefinitions';
+import { StudentExamResults } from './pages/StudentExamResults';
 import { Students } from './pages/Students';
 import { Classes } from './pages/Classes';
 import { Outcomes } from './pages/Outcomes';
@@ -39,6 +40,7 @@ import { NibiruAdmin } from './pages/NibiruAdmin';
 import { Licenses } from './pages/Licenses';
 import { AcademicTarget } from './pages/AcademicTarget';
 import { AcademicTargetAdmin } from './pages/AcademicTargetAdmin';
+import { OfficialQuestionIntelligenceAdmin } from './pages/OfficialQuestionIntelligenceAdmin';
 import { Announcements } from './pages/Announcements';
 import { WorksheetCalendar } from './pages/WorksheetCalendar';
 import { FeatureLab } from './pages/FeatureLab';
@@ -72,6 +74,7 @@ export default function App(){
    <Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/>
    <Route path="academic-target" element={<RoleGate allowed={['STUDENT']}><AcademicTarget/></RoleGate>}/>
    <Route path="academic-target-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><AcademicTargetAdmin/></RoleGate>}/>
+   <Route path="official-question-intelligence" element={<RoleGate allowed={['SUPER_ADMIN']}><OfficialQuestionIntelligenceAdmin/></RoleGate>}/>
    <Route path="announcements" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Announcements/></RoleGate>}/>
    <Route path="worksheet-calendar" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><WorksheetCalendar/></RoleGate>}/>
    <Route path="licenses" element={<RoleGate allowed={['SUPER_ADMIN']}><Licenses/></RoleGate>}/>
@@ -95,7 +98,8 @@ export default function App(){
    <Route path="worksheets" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><Worksheets/></RoleGate>}/>
    <Route path="worksheet-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><WorksheetAdmin/></RoleGate>}/>
    <Route path="reports" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','PARENT']}><Reports/></RoleGate>}/>
-   <Route path="my-results" element={<RoleGate allowed={['STUDENT']}><Reports/></RoleGate>}/>
+   <Route path="my-results" element={<RoleGate allowed={['STUDENT']}><StudentExamResults/></RoleGate>}/>
+   <Route path="student-report" element={<RoleGate allowed={['STUDENT']}><Reports/></RoleGate>}/>
    <Route path="wrong-answers" element={<RoleGate allowed={['STUDENT']}><WrongAnswers/></RoleGate>}/>
    <Route path="children" element={<RoleGate allowed={['PARENT']}><Children/></RoleGate>}/>
    <Route path="weekly-summary" element={<RoleGate allowed={['PARENT']}><WeeklySummary/></RoleGate>}/>
@@ -106,7 +110,6 @@ export default function App(){
    <Route path="bulk-operations" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><BulkOperations/></RoleGate>}/>
    <Route path="demo-mode" element={<RoleGate allowed={['SUPER_ADMIN']}><DemoMode/></RoleGate>}/>
    <Route path="scale" element={<RoleGate allowed={['SUPER_ADMIN']}><ScaleInfrastructure/></RoleGate>}/>
-
    <Route path="feature-lab" element={<RoleGate allowed={['SUPER_ADMIN']}><FeatureLab/></RoleGate>}/>
    <Route path="content-center" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><ContentCenter/></RoleGate>}/>
    <Route path="student-growth" element={<RoleGate allowed={['STUDENT']}><StudentGrowthCenter/></RoleGate>}/>
