@@ -54,6 +54,23 @@ try{
  assert((sourceAdmin.p?.sources||[]).every(x=>x.base_url&&x.official===1),'Official source metadata incomplete',sourceAdmin.p);
  passed('Super Admin official-source governance','source URL + official flag enforced');
 
+ const official=await req('/api/official-question-intelligence/status',{cookie:superCookie});
+ const officialKeys=new Set((official.p?.sources||[]).map(x=>x.source_key));
+ for(const key of ['MEB_LGS_ARCHIVE','OSYM_YKS_GROUP','MEB_OGM_MATERIAL','EBA_RESOURCE'])assert(officialKeys.has(key),`Official question source missing: ${key}`,official.p);
+ assert(official.p?.policy?.copyrightedQuestionTextStored===false,'Copyright-safe question policy is not enforced',official.p);
+ assert(official.p?.policy?.officialMetadataOnly===true,'Official metadata-only policy missing',official.p);
+ assert(official.p?.policy?.difficulty?.EASY==='BLUE'&&official.p?.policy?.difficulty?.MEDIUM==='GREEN'&&official.p?.policy?.difficulty?.HARD==='RED','Difficulty color policy mismatch',official.p);
+ passed('Official question intelligence registry','MEB LGS + ÖSYM YKS + EBA/OGM references · protected text not copied');
+
+ const managerOfficial=await req('/api/official-question-intelligence/status',{cookie:manager,expected:403});
+ assert(managerOfficial.p?.error?.code==='FORBIDDEN','Official question admin scope not protected',managerOfficial.p);
+ passed('Official question intelligence authorization','Super Admin only status/source governance');
+
+ const insight=await req('/api/official-question-intelligence/outcomes?examFamily=LGS&gradeLevel=8',{cookie:superCookie});
+ assert(Array.isArray(insight.p?.items),'Outcome intelligence search contract invalid',insight.p);
+ assert(insight.p?.predictionPolicy==='HISTORICAL_PRIORITY_NOT_GUARANTEE','Historical priority policy missing',insight.p);
+ passed('Official outcome-history contract',`${insight.p.items.length} outcome rows · historical priority is explicitly not a prediction guarantee`);
+
  persist(true);
  console.log(`\n${checks.length} academic growth live smoke checks passed.`);
 }catch(error){persist(false,error);console.error(error);process.exitCode=1}
