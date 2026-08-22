@@ -1,0 +1,16 @@
+import { useEffect,useState } from 'react';
+import { CheckCircle2, CircleOff, FlaskConical, RefreshCw } from 'lucide-react';
+import { api } from '../api';
+
+export function FeatureLab(){
+  const [features,setFeatures]=useState<any[]>([]);const [institutions,setInstitutions]=useState<any[]>([]);const [institutionId,setInstitutionId]=useState('inst_demo');const [overview,setOverview]=useState<any>(null);const [notice,setNotice]=useState('');const [error,setError]=useState('');
+  const load=async()=>{const [f,i,o]=await Promise.all([api<any>('/api/platform/features'),api<any>('/api/institutions'),api<any>('/api/platform/overview')]);setFeatures(f.features||[]);setInstitutions(i.institutions||[]);setOverview(o)};
+  useEffect(()=>{void load().catch(e=>setError(e.message))},[]);
+  const set=async(featureKey:string,enabled:boolean)=>{setError('');await api('/api/platform/features',{method:'PUT',body:JSON.stringify({institutionId,featureKey,enabled})});setNotice(`${featureKey} ${enabled?'açıldı':'kapatıldı'} · seçili kurum`)};
+  return <><div className="page-head"><div><span className="eyebrow">Süper Admin · Arka Plan Geliştirme</span><h1>Platform Feature Lab</h1><p>Standard sürümü bozmadan Next modüllerini kurum bazında açıp test edin. WhatsApp ve final marka bu çalışma hattının dışında tutuluyor.</p></div><button className="ghost" onClick={()=>void load()}><RefreshCw size={16}/> Yenile</button></div>{error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
+  <div className="panel" style={{marginBottom:18}}><label>Test kurumu<select value={institutionId} onChange={e=>setInstitutionId(e.target.value)}>{institutions.map(i=><option key={i.id} value={i.id}>{i.name} · {i.code}</option>)}</select></label></div>
+  {overview&&<div className="summary-strip"><S label="Soru" value={overview.counts?.questions||0}/><S label="Video" value={overview.counts?.videos||0}/><S label="Recovery" value={overview.counts?.recovery||0}/><S label="Studio" value={overview.counts?.studio||0}/><S label="Kurum Ağı" value={overview.counts?.networks||0}/><S label="Yayınevi" value={overview.counts?.publishers||0}/></div>}
+  <div className="panel"><div className="panel-head"><div><h2>Özellik kapıları</h2><p>STANDARD her zaman kullanılabilir. NEXT modüllerini pilot kurumlarda kademeli açın.</p></div><FlaskConical/></div><div className="feature-grid">{features.map(f=><div className="feature-card" key={f.feature_key}><div><span className={`status ${f.stage==='STANDARD'?'ok':'neutral'}`}>{f.stage}</span><h3>{f.label}</h3><small>{f.feature_key}</small></div><div style={{display:'flex',gap:8}}><button className="secondary subtle" onClick={()=>void set(f.feature_key,false)}><CircleOff size={15}/> Kapat</button><button className="primary subtle" onClick={()=>void set(f.feature_key,true)}><CheckCircle2 size={15}/> Aç</button></div></div>)}</div></div>
+  <div className="alert warning" style={{marginTop:18}}><strong>Dış işlem gerekenler bilinçli olarak kapalı:</strong> App Store / Play Store mağaza yayını, gerçek canlı görüşme sağlayıcısı, WhatsApp aktivasyonu ve final marka/logo. Kod tarafındaki API ve veri modelleri bunlara hazırdır.</div></>;
+}
+function S({label,value}:{label:string;value:number}){return <div className="summary"><span>{label}</span><strong>{value}</strong></div>}
