@@ -4,9 +4,11 @@ import { getAuthUser } from './lib/auth';
 import { handleAcademicGrowthApi, processScheduledAnnouncements, targetNibiruAnswer } from './lib/academic-growth';
 import { buildStudentTargetAnalysisV2 } from './lib/target-analysis-v2';
 import { worksheetAdvice } from './lib/nibiru-academic-extensions';
+import { handleOfficialQuestionIntelligenceApi, nibiruOfficialOutcomeInsight } from './lib/official-question-intelligence';
 import { json } from './lib/db';
 
 const NEW_API_PREFIXES=['/api/academic-targets','/api/announcements','/api/worksheet-calendar'];
+const OFFICIAL_QUESTION_PREFIX='/api/official-question-intelligence';
 const TARGET_INTENT=/(hedef(im|im ne| lise| okul| üniversite| bölüm)|hedefe|kaç net.*hedef|hedef.*kaç net|hangi lise|hangi üniversite|hedefimin.*geris|hedef.*geris|hedef analizi)/i;
 const WORKSHEET_INTENT=/(hangi föy|bu hafta.*föy|föy.*uygula|föy takvimi|sıradaki föy|kaçıncı föy)/i;
 
@@ -27,6 +29,13 @@ export default {
       }
     }
 
+    if(path.startsWith(OFFICIAL_QUESTION_PREFIX)){
+      const user=await requireUser(env,request);
+      if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED',message:'Oturum açmanız gerekiyor.'}},401);
+      const response=await handleOfficialQuestionIntelligenceApi(request,env,user);
+      return response||json({ok:false,error:{code:'NOT_FOUND',message:'Resmî soru zekâsı API yolu bulunamadı.'}},404);
+    }
+
     if(NEW_API_PREFIXES.some(prefix=>path.startsWith(prefix))){
       const user=await requireUser(env,request);
       if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED',message:'Oturum açmanız gerekiyor.'}},401);
@@ -40,6 +49,12 @@ export default {
         const clone=request.clone();
         const body:any=await clone.json().catch(()=>({}));
         const message=String(body?.message||'').trim();
+        if(message){
+          try{
+            const official=await nibiruOfficialOutcomeInsight(env,user,message,body?.studentId||null);
+            if(official)return json({ok:true,answer:official.answer,intent:'OFFICIAL_EXAM_OUTCOME_HISTORY',studentId:official.studentId||null,outcomeId:official.outcomeId||null,outcome:'ANSWERED'});
+          }catch{}
+        }
         if(message&&user.role==='STUDENT'&&user.student_id&&TARGET_INTENT.test(message)){
           try{
             const payload=await buildStudentTargetAnalysisV2(env,user);
