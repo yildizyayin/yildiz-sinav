@@ -14,6 +14,8 @@ jobs:
         with:
           node-version: 22
       - run: npm install
+      - name: Validate D1 migrations locally
+        run: npx wrangler d1 migrations apply DB --local --persist-to=.wrangler/ci-state
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
