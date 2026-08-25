@@ -13,4 +13,14 @@ function student({id,first,last,grade,section,classId,className,userId,username,
 }
 student({id:'stu_std5',first:'Oyun',last:'Öğrencisi',grade:5,section:'A',classId:'class_5a',className:'5/A',userId:'usr_std5',username:'student5',email:'student5@demo.test'});
 student({id:'stu_std12',first:'Hedef',last:'Öğrencisi',grade:12,section:'A',classId:'class_12a',className:'12/A',userId:'usr_std12',username:'student12',email:'student12@demo.test'});
+
+// Deterministic development evidence for the primary Standard acceptance student.
+// Personal-book generation intentionally requires >=3 evidence and <70% success;
+// keep the production rule strict and make the synthetic demo data satisfy it.
+for(const [id,outcomeId] of [
+ ['or_std_accept_mat','out_mat_1'],
+ ['or_std_accept_tur','out_tur_2'],
+ ['or_std_accept_fen','out_fen_1'],
+]) out.push(`INSERT OR REPLACE INTO outcome_results(id,student_id,exam_id,outcome_id,evidence_count,correct_count,success_rate,mastery_status) VALUES (${q(id)},'stu_a001','exam_hist_08',${q(outcomeId)},3,1,0.333333,'DEVELOPING');`);
+
 mkdirSync('tmp',{recursive:true});writeFileSync('tmp/standard-role-seed.sql',out.join('\n')+'\n');console.log(`Generated ${out.length} Standard role SQL statements at tmp/standard-role-seed.sql`);
