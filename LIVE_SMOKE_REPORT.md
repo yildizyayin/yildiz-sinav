@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-25T22:07:21.126Z`
+- Time: `2026-08-25T22:13:30.517Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -57,18 +57,7 @@
 - ✅ **Zero Error exam source** — institution exams are selectable, not only central snapshots
 - ✅ **Correct / wrong / blank question review** — all answer states available
 - ✅ **Publisher solution + topic micro-learning contract** — YOUTUBE_NOT_CONFIGURED
-- ❌ **Standard acceptance failure**
-
-```text
-Error: POST /api/student-books/personal expected 201, got 400
-{
-  "ok": false,
-  "error": {
-    "code": "INSUFFICIENT_EVIDENCE",
-    "message": "Kişiye Özel Kitap oluşturmak için henüz yeterli gelişim alanı kanıtı yok."
-  }
-}
-    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:6:392)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:31:17
-```
+- ✅ **Kişiye Özel Kitap** — 2 outcomes · 6 questions
+- ✅ **Sıfır Hata Kitapçığı** — 2 wrong · 2 blank · 8 practice
+- ✅ **5–6 educational game catalog** — 5 age-appropriate games for grade 5
+- ✅ **12th-grade YKS target capacity** — maximum 3 prioritized university/department targets
