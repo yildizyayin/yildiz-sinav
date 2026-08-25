@@ -1,5 +1,9 @@
 export type ReadinessState='READY'|'CONFIG_REQUIRED'|'MISSING';
 export type ReadinessCheck={key:string;label:string;state:ReadinessState;detail:string};
+export type ProviderActivation={
+  youtube:{ready:boolean;apiKey:boolean};
+  whatsapp:{ready:boolean;verifyToken:boolean;appSecret:boolean;accessToken:boolean;phoneNumberId:boolean};
+};
 
 export const STANDARD_MODULES=[
   {key:'IDENTITY',label:'Kimlik / Tenant / Yetki',tables:['institutions','users','sessions']},
@@ -18,6 +22,18 @@ export const STANDARD_MODULES=[
   {key:'NOTIFICATIONS',label:'Bildirim Merkezi',tables:['notifications']},
 ] as const;
 
+export function evaluateProviderActivation(config:{youtubeApiKey?:string;whatsappVerifyToken?:string;whatsappAppSecret?:string;whatsappAccessToken?:string;whatsappPhoneNumberId?:string}):ProviderActivation{
+  const youtubeApiKey=Boolean(config.youtubeApiKey?.trim());
+  const verifyToken=Boolean(config.whatsappVerifyToken?.trim());
+  const appSecret=Boolean(config.whatsappAppSecret?.trim());
+  const accessToken=Boolean(config.whatsappAccessToken?.trim());
+  const phoneNumberId=Boolean(config.whatsappPhoneNumberId?.trim());
+  return {
+    youtube:{ready:youtubeApiKey,apiKey:youtubeApiKey},
+    whatsapp:{ready:verifyToken&&appSecret&&accessToken&&phoneNumberId,verifyToken,appSecret,accessToken,phoneNumberId},
+  };
+}
+
 export function evaluateStandardReadiness(existingTables:Iterable<string>,config:{files:boolean;ai:boolean;youtube:boolean;whatsapp:boolean}){
   const tables=new Set(existingTables);
   const checks:ReadinessCheck[]=STANDARD_MODULES.map(m=>{
@@ -27,7 +43,7 @@ export function evaluateStandardReadiness(existingTables:Iterable<string>,config
   checks.push({key:'R2',label:'Dosya / PDF / Baskı Depolama',state:config.files?'READY':'MISSING',detail:config.files?'R2 binding hazır':'FILES R2 binding eksik'});
   checks.push({key:'NIBIRU_BASIC',label:'Nibiru Standard AI',state:config.ai?'READY':'CONFIG_REQUIRED',detail:config.ai?'Workers AI binding hazır':'AI binding yapılandırılmalı'});
   checks.push({key:'YOUTUBE_MICRO',label:'YouTube Mikro Konu Videosu',state:config.youtube?'READY':'CONFIG_REQUIRED',detail:config.youtube?'YouTube API anahtarı hazır':'YOUTUBE_API_KEY secret gerekli'});
-  checks.push({key:'WHATSAPP',label:'WhatsApp Akademik Kanalı',state:config.whatsapp?'READY':'CONFIG_REQUIRED',detail:config.whatsapp?'WhatsApp bağlantısı hazır':'WhatsApp secret/telefon kimliği yapılandırılmalı'});
+  checks.push({key:'WHATSAPP',label:'WhatsApp Akademik Kanalı',state:config.whatsapp?'READY':'CONFIG_REQUIRED',detail:config.whatsapp?'Webhook doğrulama + imza + gönderim secretları hazır':'WHATSAPP_VERIFY_TOKEN + WHATSAPP_APP_SECRET + WHATSAPP_ACCESS_TOKEN + WHATSAPP_PHONE_NUMBER_ID gerekli'});
   const ready=checks.filter(x=>x.state==='READY').length;
   const missing=checks.filter(x=>x.state==='MISSING').length;
   const configRequired=checks.filter(x=>x.state==='CONFIG_REQUIRED').length;
