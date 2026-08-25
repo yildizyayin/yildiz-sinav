@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-25T21:49:22.136Z`
+- Time: `2026-08-25T21:54:21.570Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -59,7 +59,7 @@ Error: Standard operational blockers remain
 {
   "ok": true,
   "environment": "staging",
-  "generatedAt": "2026-08-25T21:50:31.801Z",
+  "generatedAt": "2026-08-25T21:55:31.809Z",
   "checks": [
     {
       "key": "IDENTITY",
