@@ -39,14 +39,14 @@ jobs:
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: npx wrangler deploy
 
-      - name: Load synthetic staging demo data
+      - name: Load synthetic staging demo data idempotently
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: |
           npm run seed:generate
-          npx wrangler d1 execute DB --remote --file=tmp/demo-seed.sql
-          npx wrangler d1 execute DB --remote --file=tmp/standard-role-seed.sql
-          npx wrangler d1 execute DB --remote --file=scripts/demo-camera-fixture.sql
-          npx wrangler d1 execute DB --remote --file=scripts/demo-standard-fixture.sql
+          npx wrangler d1 execute DB --remote --file=tmp/demo-seed.idempotent.sql
+          npx wrangler d1 execute DB --remote --file=tmp/standard-role-seed.idempotent.sql
+          npx wrangler d1 execute DB --remote --file=tmp/demo-camera-fixture.idempotent.sql
+          npx wrangler d1 execute DB --remote --file=tmp/demo-standard-fixture.idempotent.sql
 
       - name: Live staging smoke tests
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
