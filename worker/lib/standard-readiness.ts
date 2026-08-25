@@ -12,6 +12,7 @@ export const STANDARD_MODULES=[
   {key:'WORKSHEETS',label:'Föy Merkezi',tables:['worksheets','worksheet_subjects','worksheet_assets','video_links']},
   {key:'QUESTION_BANK',label:'Soru Havuzu',tables:['question_bank','question_learning_links']},
   {key:'TARGETS',label:'LGS / YKS Hedef Motoru',tables:['student_academic_targets','secondary_school_targets','university_program_targets']},
+  {key:'STUDENT_EXPERIENCE',label:'Öğrenci Kişiselleştirme / Sayaç / Oyun / Mikro Öğrenme',tables:['student_experience_preferences','educational_game_catalog','youtube_micro_video_candidates']},
   {key:'PERSONAL_BOOKS',label:'Kişiye Özel Kitap',tables:['student_personal_books','student_personal_book_items']},
   {key:'ZERO_ERROR',label:'Sıfır Hata Kitapçığı',tables:['zero_error_booklets','zero_error_booklet_items','zero_error_attempts']},
   {key:'NOTIFICATIONS',label:'Bildirim Merkezi',tables:['notifications']},
