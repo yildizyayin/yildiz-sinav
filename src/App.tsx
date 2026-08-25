@@ -7,6 +7,7 @@ import { StudentStandardHome } from './pages/StudentStandardHome';
 import { StudentTargetsV2 } from './pages/StudentTargetsV2';
 import { StudentExperienceSettings } from './pages/StudentExperienceSettings';
 import { StudentGames } from './pages/StudentGames';
+import { StudentQuestionReview } from './pages/StudentQuestionReview';
 import { InstitutionPanelV2 } from './pages/InstitutionPanelV2';
 import { Institutions } from './pages/Institutions';
 import { Exams } from './pages/Exams';
@@ -83,6 +84,7 @@ export default function App(){
    <Route path="academic-target" element={<RoleGate allowed={['STUDENT']}><StudentTargetsV2/></RoleGate>}/>
    <Route path="student-settings" element={<RoleGate allowed={['STUDENT']}><StudentExperienceSettings/></RoleGate>}/>
    <Route path="student-games" element={<RoleGate allowed={['STUDENT']}><StudentGames/></RoleGate>}/>
+   <Route path="question-review" element={<RoleGate allowed={['STUDENT']}><StudentQuestionReview/></RoleGate>}/>
    <Route path="academic-target-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><AcademicTargetAdmin/></RoleGate>}/>
    <Route path="official-question-intelligence" element={<RoleGate allowed={['SUPER_ADMIN']}><OfficialQuestionIntelligenceAdmin/></RoleGate>}/>
    <Route path="announcements" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Announcements/></RoleGate>}/>
