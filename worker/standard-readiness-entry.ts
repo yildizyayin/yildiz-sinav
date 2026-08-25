@@ -44,7 +44,9 @@ async function readiness(request:Request,env:Env){
   if(report.summary.missing===0){try{operational=await operationalChecks(env)}catch(e){operationalError=e instanceof Error?e.message:'OPERATIONAL_CHECK_FAILED'}}
   const blockingSetup=operational.filter(x=>x.blocking&&x.state==='SETUP_REQUIRED').length;
   const externalSetup=report.summary.configRequired;
-  return json({ok:true,environment:env.ENVIRONMENT||'unknown',generatedAt:new Date().toISOString(),...report,operational,operationalError,acceptance:{coreReady:report.summary.coreReady,blockingSetup,externalSetup,standardAcceptanceReady:report.summary.coreReady&&blockingSetup===0}});
+  const coreAcceptanceReady=report.summary.coreReady&&blockingSetup===0;
+  const saleReady=coreAcceptanceReady&&externalSetup===0&&!operationalError;
+  return json({ok:true,environment:env.ENVIRONMENT||'unknown',generatedAt:new Date().toISOString(),...report,operational,operationalError,acceptance:{coreReady:report.summary.coreReady,blockingSetup,externalSetup,coreAcceptanceReady,saleReady,standardAcceptanceReady:saleReady}});
 }
 
 export default {
