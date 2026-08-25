@@ -45,6 +45,7 @@ jobs:
           npm run seed:generate
           npx wrangler d1 execute DB --remote --file=tmp/demo-seed.sql
           npx wrangler d1 execute DB --remote --file=scripts/demo-camera-fixture.sql
+          npx wrangler d1 execute DB --remote --file=scripts/demo-standard-fixture.sql
 
       - name: Live staging smoke tests
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
