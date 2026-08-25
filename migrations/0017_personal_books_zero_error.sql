@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS zero_error_booklet_items (
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_zero_error_items_booklet ON zero_error_booklet_items(booklet_id,item_status,sort_order);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_zero_error_source_per_cycle ON zero_error_booklet_items(booklet_id,source_exam_question_id,cycle_no);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_zero_error_source_question ON zero_error_booklet_items(booklet_id,source_exam_question_id,cycle_no,bank_question_id);
 
 CREATE TABLE IF NOT EXISTS zero_error_attempts (
   id TEXT PRIMARY KEY,
