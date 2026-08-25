@@ -12,6 +12,10 @@ try{
  assert(readiness.p?.summary?.missing===0,'Standard core schema has missing modules',readiness.p);
  assert(readiness.p?.acceptance?.coreAcceptanceReady===true,'Standard operational blockers remain',readiness.p);
  passed('Standard readiness gate',`core ready · external setup ${readiness.p.acceptance.externalSetup}`);
+ const providers=readiness.p?.providers;
+ assert(typeof providers?.youtube?.ready==='boolean'&&typeof providers?.whatsapp?.ready==='boolean','Provider activation detail missing',readiness.p);
+ if(providers.whatsapp.ready)assert(providers.whatsapp.verifyToken&&providers.whatsapp.appSecret&&providers.whatsapp.accessToken&&providers.whatsapp.phoneNumberId,'WhatsApp marked ready without all required secrets',providers.whatsapp);
+ passed('External provider activation contract',`YouTube ${providers.youtube.ready?'ready':'setup'} · WhatsApp ${providers.whatsapp.ready?'ready':'setup'}`);
  const bank=await req('/api/question-bank-standard/stats',{cookie:admin});
  assert(Number(bank.p?.printable||0)>=18,'Printable Standard question bank fixture missing',bank.p);
  passed('Standard question bank',`${bank.p.printable} approved printable questions`);
