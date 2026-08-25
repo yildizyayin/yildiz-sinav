@@ -9,6 +9,7 @@ import { StudentExperienceSettings } from './pages/StudentExperienceSettings';
 import { StudentGames } from './pages/StudentGames';
 import { StudentQuestionReview } from './pages/StudentQuestionReview';
 import { StudentBooks } from './pages/StudentBooks';
+import { StandardReadiness } from './pages/StandardReadiness';
 import { InstitutionPanelV2 } from './pages/InstitutionPanelV2';
 import { Institutions } from './pages/Institutions';
 import { Exams } from './pages/Exams';
@@ -80,6 +81,7 @@ export default function App(){
   <Route path="/login" element={<Login/>}/>
   <Route element={<Layout/>}>
    <Route index element={<Home/>}/>
+   <Route path="standard-readiness" element={<RoleGate allowed={['SUPER_ADMIN']}><StandardReadiness/></RoleGate>}/>
    <Route path="nibiru" element={<RoleGate allowed={ALL_ROLES}><Nibiru/></RoleGate>}/>
    <Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/>
    <Route path="academic-target" element={<RoleGate allowed={['STUDENT']}><StudentTargetsV2/></RoleGate>}/>
