@@ -16,7 +16,8 @@ async function generatePersonalBook(request:Request,env:Env,user:AuthUser){
  const weak=await all<any>(env.DB.prepare(`SELECT o.id outcome_id,o.title,o.topic,o.subtopic,o.subject_id,s.name subject_name,SUM(r.evidence_count) evidence_count,SUM(r.correct_count) correct_count,
    CASE WHEN SUM(r.evidence_count)>0 THEN CAST(SUM(r.correct_count) AS REAL)/SUM(r.evidence_count) ELSE 0 END success_rate
    FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id
-   WHERE r.student_id=? GROUP BY o.id,o.title,o.topic,o.subtopic,o.subject_id,s.name HAVING SUM(r.evidence_count)>=3 AND success_rate<0.70
+   WHERE r.student_id=? GROUP BY o.id,o.title,o.topic,o.subtopic,o.subject_id,s.name
+   HAVING SUM(r.evidence_count)>=3 AND (CAST(SUM(r.correct_count) AS REAL)/NULLIF(SUM(r.evidence_count),0))<0.70
    ORDER BY success_rate ASC,evidence_count DESC LIMIT ?`).bind(user.student_id,outcomeLimit));
  if(!weak.length)return fail(400,'INSUFFICIENT_EVIDENCE','Kişiye Özel Kitap oluşturmak için henüz yeterli gelişim alanı kanıtı yok.');
  const id=uuid('pbook');const title=String(body.title||'Kişiye Özel Kitabım').trim()||'Kişiye Özel Kitabım';const stmts:any[]=[];let order=1,qCount=0;
