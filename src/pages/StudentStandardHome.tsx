@@ -1,5 +1,5 @@
 import { useEffect,useMemo,useState } from 'react';
-import { Bot,Clock3,Gamepad2,GraduationCap,Palette,Target,TrendingUp } from 'lucide-react';
+import { BookOpenCheck,Bot,Clock3,Gamepad2,GraduationCap,Palette,Target,TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
 import './student-standard.css';
@@ -36,6 +36,7 @@ export function StudentStandardHome(){
     <Link to="/nibiru" className="student-action"><Bot/><div><strong>Nibiru</strong><span>Bugün ne çalışacağını birlikte planla.</span></div></Link>
     <Link to="/my-results" className="student-action"><TrendingUp/><div><strong>Sonuçlarım</strong><span>Sınav, net ve kazanım gelişimini gör.</span></div></Link>
     <Link to="/academic-target" className="student-action"><GraduationCap/><div><strong>Hedeflerim</strong><span>LGS veya YKS hedeflerini takip et.</span></div></Link>
+    <Link to="/my-books" className="student-action"><BookOpenCheck/><div><strong>Benim Kitaplarım</strong><span>Kişiye Özel Kitap ve Sıfır Hata Kitapçığı oluştur.</span></div></Link>
     <Link to="/student-games" className="student-action"><Gamepad2/><div><strong>Öğrenirken Oyna</strong><span>Yaşına uygun kısa akademik oyunlar.</span></div></Link>
    </div>
 
