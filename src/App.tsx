@@ -3,6 +3,10 @@ import { useAuth, type Role } from './auth';
 import { Layout } from './components/Layout';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
+import { StudentStandardHome } from './pages/StudentStandardHome';
+import { StudentTargetsV2 } from './pages/StudentTargetsV2';
+import { StudentExperienceSettings } from './pages/StudentExperienceSettings';
+import { StudentGames } from './pages/StudentGames';
 import { InstitutionPanelV2 } from './pages/InstitutionPanelV2';
 import { Institutions } from './pages/Institutions';
 import { Exams } from './pages/Exams';
@@ -38,7 +42,6 @@ import { ScaleInfrastructure } from './pages/ScaleInfrastructure';
 import { Nibiru } from './pages/Nibiru';
 import { NibiruAdmin } from './pages/NibiruAdmin';
 import { Licenses } from './pages/Licenses';
-import { AcademicTarget } from './pages/AcademicTarget';
 import { AcademicTargetAdmin } from './pages/AcademicTargetAdmin';
 import { OfficialQuestionIntelligenceAdmin } from './pages/OfficialQuestionIntelligenceAdmin';
 import { Announcements } from './pages/Announcements';
@@ -59,7 +62,12 @@ function RoleGate({ allowed, children }: { allowed: Role[]; children: React.Reac
   return <>{children}</>;
 }
 
-function Home(){const{user}=useAuth();return user?.role==='INSTITUTION_MANAGER'?<InstitutionPanelV2/>:<Dashboard/>}
+function Home(){
+ const{user}=useAuth();
+ if(user?.role==='INSTITUTION_MANAGER')return <InstitutionPanelV2/>;
+ if(user?.role==='STUDENT')return <StudentStandardHome/>;
+ return <Dashboard/>;
+}
 
 export default function App(){
  const {user,loading}=useAuth(); const location=useLocation();
@@ -72,7 +80,9 @@ export default function App(){
    <Route index element={<Home/>}/>
    <Route path="nibiru" element={<RoleGate allowed={ALL_ROLES}><Nibiru/></RoleGate>}/>
    <Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/>
-   <Route path="academic-target" element={<RoleGate allowed={['STUDENT']}><AcademicTarget/></RoleGate>}/>
+   <Route path="academic-target" element={<RoleGate allowed={['STUDENT']}><StudentTargetsV2/></RoleGate>}/>
+   <Route path="student-settings" element={<RoleGate allowed={['STUDENT']}><StudentExperienceSettings/></RoleGate>}/>
+   <Route path="student-games" element={<RoleGate allowed={['STUDENT']}><StudentGames/></RoleGate>}/>
    <Route path="academic-target-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><AcademicTargetAdmin/></RoleGate>}/>
    <Route path="official-question-intelligence" element={<RoleGate allowed={['SUPER_ADMIN']}><OfficialQuestionIntelligenceAdmin/></RoleGate>}/>
    <Route path="announcements" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Announcements/></RoleGate>}/>
