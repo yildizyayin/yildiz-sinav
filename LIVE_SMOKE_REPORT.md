@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-25T22:13:30.517Z`
+- Time: `2026-08-25T22:22:40.200Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -53,6 +53,7 @@
 ## Standard package acceptance
 
 - ✅ **Standard readiness gate** — core ready · external setup 2
+- ✅ **External provider activation contract** — YouTube setup · WhatsApp setup
 - ✅ **Standard question bank** — 18 approved printable questions
 - ✅ **Zero Error exam source** — institution exams are selectable, not only central snapshots
 - ✅ **Correct / wrong / blank question review** — all answer states available
