@@ -5,6 +5,9 @@ const PASSWORD = process.env.SMOKE_DEMO_PASSWORD || 'Demo123!';
 const TURNSTILE_TEST_TOKEN = 'XXXX.DUMMY.TOKEN.XXXX';
 const REPORT_PATH = 'LIVE_SMOKE_REPORT.md';
 const passed = [];
+const DEMO_ACTIVE_TOTAL = 67; // 65 core 7/A students + Standard grade-5 + grade-12 acceptance students.
+const CORE_CLASS_ACTIVE = 65;
+const DEMO_GUEST_TOTAL = 45;
 
 function assert(value, message, details) {
   if (!value) throw new Error(`${message}${details === undefined ? '' : `\n${JSON.stringify(details, null, 2)}`}`);
@@ -55,8 +58,8 @@ async function login(identifier) {
 
 function build110Csv() {
   const rows = ['student_number,name,class,booklet,answers_MAT,answers_TUR,answers_FEN'];
-  for (let i = 1; i <= 65; i++) rows.push(`${1000 + i},Aktif${i} Öğrenci${i},7/A,A,ABCDEABCDE,ABCDEABCDE,ABCDEABCDE`);
-  for (let i = 1; i <= 45; i++) rows.push(`${2000 + i},Misafir${i} Katılımcı${i},7/A,A,ABCDEABCDE,ABCDEABCDE,ABCDEABCDE`);
+  for (let i = 1; i <= CORE_CLASS_ACTIVE; i++) rows.push(`${1000 + i},Aktif${i} Öğrenci${i},7/A,A,ABCDEABCDE,ABCDEABCDE,ABCDEABCDE`);
+  for (let i = 1; i <= DEMO_GUEST_TOTAL; i++) rows.push(`${2000 + i},Misafir${i} Katılımcı${i},7/A,A,ABCDEABCDE,ABCDEABCDE,ABCDEABCDE`);
   return rows.join('\n');
 }
 
@@ -65,8 +68,8 @@ async function preview110(cookie) {
   form.append('file', new Blob([build110Csv()], { type: 'text/csv' }), 'smoke-110.csv');
   const { payload } = await request('/api/exams/exam_demo_active/preview-file', { method: 'POST', cookie, form });
   assert(payload?.total === 110, 'Preview total must be 110', payload);
-  assert(payload?.counts?.active === 65, 'Preview must match 65 active students', payload?.counts);
-  assert(payload?.counts?.guest === 45, 'Preview must match 45 known guests', payload?.counts);
+  assert(payload?.counts?.active === CORE_CLASS_ACTIVE, 'Preview must match 65 core active students', payload?.counts);
+  assert(payload?.counts?.guest === DEMO_GUEST_TOTAL, 'Preview must match 45 known guests', payload?.counts);
   assert(payload?.counts?.newGuest === 0, 'Preview must create no new guest identity', payload?.counts);
   assert(payload?.counts?.ambiguous === 0 && payload?.counts?.invalid === 0, 'Preview contains unresolved rows', payload?.counts);
   assert(payload?.status === 'READY', 'Preview batch must be READY', payload);
@@ -104,27 +107,27 @@ async function main() {
   assert(managerMe.payload?.user?.role === 'INSTITUTION_MANAGER', 'Manager role mismatch', managerMe.payload);
   const dash = await request('/api/dashboard', { cookie: manager });
   const cards = Object.fromEntries((dash.payload?.cards || []).map((c) => [c.label, Number(c.value)]));
-  assert(cards['Aktif Öğrenci'] === 65 && cards['Misafir Öğrenci'] === 45 && cards['Uygulanan Sınav'] >= 20, 'Manager dashboard counts mismatch', cards);
-  ok('Manager tenant dashboard', `65 active / 45 guest / ${cards['Uygulanan Sınav']} applied exams`);
+  assert(cards['Aktif Öğrenci'] === DEMO_ACTIVE_TOTAL && cards['Misafir Öğrenci'] === DEMO_GUEST_TOTAL && cards['Uygulanan Sınav'] >= 20, 'Manager dashboard counts mismatch', cards);
+  ok('Manager tenant dashboard', `${DEMO_ACTIVE_TOTAL} active / ${DEMO_GUEST_TOTAL} guest / ${cards['Uygulanan Sınav']} applied exams`);
 
   const active = await request('/api/students?status=ACTIVE', { cookie: manager });
   const guests = await request('/api/students?status=GUEST', { cookie: manager });
-  assert(active.payload?.students?.length === 65, 'Active list must contain 65 students', active.payload?.students?.length);
-  assert(guests.payload?.students?.length === 45, 'Guest list must contain 45 students', guests.payload?.students?.length);
-  ok('Active/guest student separation', '65 / 45');
+  assert(active.payload?.students?.length === DEMO_ACTIVE_TOTAL, `Active list must contain ${DEMO_ACTIVE_TOTAL} students`, active.payload?.students?.length);
+  assert(guests.payload?.students?.length === DEMO_GUEST_TOTAL, `Guest list must contain ${DEMO_GUEST_TOTAL} students`, guests.payload?.students?.length);
+  ok('Active/guest student separation', `${DEMO_ACTIVE_TOTAL} / ${DEMO_GUEST_TOTAL}`);
 
   const firstPreview = await preview110(manager);
-  ok('110-person exam matching preview', '65 active + 45 known guest + 0 new guest');
+  ok('110-person exam matching preview', `${CORE_CLASS_ACTIVE} core active + ${DEMO_GUEST_TOTAL} known guest + 0 new guest`);
 
   const evaluation = await evaluateFully(manager, firstPreview.batchId);
   assert(evaluation.processed === 110 && evaluation.remaining === 0, '110-person evaluation did not commit all rows', evaluation);
   ok('110-person chunked exam evaluation', `110 committed in ${evaluation.attempts} safe chunks`);
 
   const afterGuests = await request('/api/students?status=GUEST', { cookie: manager });
-  assert(afterGuests.payload?.students?.length === 45, 'Evaluation created duplicate guests', afterGuests.payload?.students?.length);
+  assert(afterGuests.payload?.students?.length === DEMO_GUEST_TOTAL, 'Evaluation created duplicate guests', afterGuests.payload?.students?.length);
   const secondPreview = await preview110(manager);
-  assert(secondPreview.counts?.active === 65 && secondPreview.counts?.guest === 45 && secondPreview.counts?.newGuest === 0, 'Repeat matching changed identity counts', secondPreview.counts);
-  ok('Repeat guest identity matching', 'still 45 guests; no duplicates');
+  assert(secondPreview.counts?.active === CORE_CLASS_ACTIVE && secondPreview.counts?.guest === DEMO_GUEST_TOTAL && secondPreview.counts?.newGuest === 0, 'Repeat matching changed identity counts', secondPreview.counts);
+  ok('Repeat guest identity matching', `still ${DEMO_GUEST_TOTAL} guests; no duplicates`);
 
   const student = await login('student1');
   const studentMe = await request('/api/auth/me', { cookie: student });
