@@ -2,7 +2,7 @@ import app from './question-bank-standard-entry';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,json,one } from './lib/db';
-import { evaluateStandardReadiness } from './lib/standard-readiness';
+import { evaluateProviderActivation,evaluateStandardReadiness } from './lib/standard-readiness';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
 type OperationalCheck={key:string;label:string;state:'READY'|'SETUP_REQUIRED';value:number;detail:string;blocking:boolean};
@@ -37,8 +37,15 @@ async function readiness(request:Request,env:Env){
   if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
   if(user.role!=='SUPER_ADMIN')return fail(403,'SUPER_ADMIN_ONLY','Standard hazırlık denetimi yalnız Süper Admin içindir.');
   const rows=await all<{name:string}>(env.DB.prepare(`SELECT name FROM sqlite_master WHERE type='table'`));
+  const providers=evaluateProviderActivation({
+    youtubeApiKey:env.YOUTUBE_API_KEY,
+    whatsappVerifyToken:env.WHATSAPP_VERIFY_TOKEN,
+    whatsappAppSecret:env.WHATSAPP_APP_SECRET,
+    whatsappAccessToken:env.WHATSAPP_ACCESS_TOKEN,
+    whatsappPhoneNumberId:env.WHATSAPP_PHONE_NUMBER_ID,
+  });
   const report=evaluateStandardReadiness(rows.map(r=>r.name),{
-    files:Boolean(env.FILES),ai:Boolean(env.AI),youtube:Boolean(env.YOUTUBE_API_KEY),whatsapp:Boolean(env.WHATSAPP_ACCESS_TOKEN&&env.WHATSAPP_PHONE_NUMBER_ID),
+    files:Boolean(env.FILES),ai:Boolean(env.AI),youtube:providers.youtube.ready,whatsapp:providers.whatsapp.ready,
   });
   let operational:OperationalCheck[]=[];let operationalError:string|null=null;
   if(report.summary.missing===0){try{operational=await operationalChecks(env)}catch(e){operationalError=e instanceof Error?e.message:'OPERATIONAL_CHECK_FAILED'}}
@@ -46,7 +53,7 @@ async function readiness(request:Request,env:Env){
   const externalSetup=report.summary.configRequired;
   const coreAcceptanceReady=report.summary.coreReady&&blockingSetup===0;
   const saleReady=coreAcceptanceReady&&externalSetup===0&&!operationalError;
-  return json({ok:true,environment:env.ENVIRONMENT||'unknown',generatedAt:new Date().toISOString(),...report,operational,operationalError,acceptance:{coreReady:report.summary.coreReady,blockingSetup,externalSetup,coreAcceptanceReady,saleReady,standardAcceptanceReady:saleReady}});
+  return json({ok:true,environment:env.ENVIRONMENT||'unknown',generatedAt:new Date().toISOString(),...report,providers,operational,operationalError,acceptance:{coreReady:report.summary.coreReady,blockingSetup,externalSetup,coreAcceptanceReady,saleReady,standardAcceptanceReady:saleReady}});
 }
 
 export default {
