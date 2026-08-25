@@ -10,6 +10,7 @@ export interface Env {
   TURNSTILE_SECRET_KEY?: string;
   SESSION_SECRET?: string;
   NIBIRU_AI_MODEL?: string;
+  YOUTUBE_API_KEY?: string;
   WHATSAPP_VERIFY_TOKEN?: string;
   WHATSAPP_APP_SECRET?: string;
   WHATSAPP_ACCESS_TOKEN?: string;
