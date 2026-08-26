@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-26T11:28:35.658Z`
+- Time: `2026-08-26T11:46:32.175Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -59,9 +59,54 @@
 - ✅ **Nibiru specialist orchestration** — study plan → Education Coach · math question → Subject Teacher AI
 - ✅ **Zero Error exam source** — institution exams are selectable, not only central snapshots
 - ✅ **Correct / wrong / blank question review** — all answer states available
-- ✅ **Publisher solution + topic micro-learning contract** — YOUTUBE_NOT_CONFIGURED
+- ✅ **Publisher solution + topic micro-learning contract** — registered video path
 - ✅ **Kişiye Özel Kitap** — 2 outcomes · 6 questions
 - ✅ **Sıfır Hata Kitapçığı** — 2 wrong · 2 blank · 8 practice
 - ✅ **5–6 educational game catalog** — 5 age-appropriate games for grade 5
 - ✅ **Guidance AI target route** — 0 active targets · snapshot-safe · no fake rank/net gap
 - ✅ **12th-grade YKS target + Guidance AI** — maximum 3 targets · target question → Guidance AI
+
+## Standard final closure
+
+- ✅ **Standard package final readiness** — sale ready · optional channels 2
+- ❌ **Standard final closure failure**
+
+```text
+Error: Countdown target did not persist into home context
+{
+  "ok": true,
+  "student": {
+    "id": "stu_a001",
+    "gradeLevel": 7,
+    "className": "7/A",
+    "enrollmentStatus": "ACTIVE"
+  },
+  "countdown": {
+    "enabled": true,
+    "label": "Standard Kabul Sınavı",
+    "targetDate": "2027-06-01",
+    "days": 279,
+    "flipClock": true
+  },
+  "preferences": {
+    "theme_key": "MIDDLE_FOCUS",
+    "appearance": "DARK",
+    "font_key": "SYSTEM",
+    "font_scale": 1.05,
+    "animation_level": "NORMAL",
+    "countdown_enabled": 1,
+    "countdown_flip_clock": 1,
+    "motivation_enabled": 1,
+    "voice_motivation_enabled": 0,
+    "student_id": "stu_a001",
+    "countdown_label": "Standard Kabul Sınavı",
+    "countdown_target_date": "2027-06-01",
+    "motivation_identity": null,
+    "updated_at": "2026-08-26 11:47:27"
+  },
+  "targets": []
+}
+    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:4:36)
+    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:24:2
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+```
