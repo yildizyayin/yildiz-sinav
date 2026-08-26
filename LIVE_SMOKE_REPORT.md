@@ -1,13 +1,13 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-26T22:11:08.644Z`
+- Time: `2026-08-26T22:18:16.473Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
 ## Checks
 
-- ✅ **Public config** — Ölçme Platformu / staging
+- ✅ **Public config** — Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu / staging
 - ✅ **Unauthenticated API boundary**
 - ✅ **Turnstile server validation**
 - ✅ **Manager tenant dashboard** — 67 active / 45 guest / 21 applied exams
