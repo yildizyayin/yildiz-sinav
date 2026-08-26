@@ -47,6 +47,8 @@ jobs:
           npx wrangler d1 execute DB --remote --file=tmp/standard-role-seed.idempotent.sql
           npx wrangler d1 execute DB --remote --file=tmp/demo-camera-fixture.idempotent.sql
           npx wrangler d1 execute DB --remote --file=tmp/demo-standard-fixture.idempotent.sql
+          npx wrangler d1 execute DB --remote --file=scripts/demo-standard-closure-fixture.sql
+          node scripts/seed-standard-assets.mjs
 
       - name: Live staging smoke tests
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
@@ -66,7 +68,8 @@ jobs:
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-standard-smoke.mjs
 
-      - name: Live Nibiru voice activation
+      - name: Optional live Nibiru voice activation
+        continue-on-error: true
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-nibiru-voice-smoke.mjs
 
