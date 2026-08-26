@@ -3,6 +3,7 @@ import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { json } from './lib/db';
 import { buildVoiceProviderPlan,speakNibiru,transcribeNibiruAudio,voiceProviderStatus } from './lib/nibiru-voice';
+import { classifyVoiceActivationFailure,sanitizedVoiceProviderError } from './lib/nibiru-voice-diagnostics';
 
 function fail(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 function strictArrayBuffer(bytes:Uint8Array):ArrayBuffer{const copy=new Uint8Array(bytes.byteLength);copy.set(bytes);return copy.buffer}
@@ -18,7 +19,7 @@ function voiceError(error:unknown){
 async function status(request:Request,env:Env){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
  const providers=voiceProviderStatus(env);
- return json({ok:true,environment:env.ENVIRONMENT||'unknown',providers,plans:{standard:buildVoiceProviderPlan(env,'STANDARD'),premium:buildVoiceProviderPlan(env,'PREMIUM')},policy:{language:'tr-TR',interaction:'PUSH_TO_TALK',alwaysListening:false,teacherTone:'Sakin, açık, geliştirici ve kurumsal; MEB ürünü/temsilcisi iddiası yok.',maxAudioBytes:8*1024*1024,maxSpeechChars:3600}});
+ return json({ok:true,environment:env.ENVIRONMENT||'unknown',providers,plans:{standard:buildVoiceProviderPlan(env,'STANDARD'),premium:buildVoiceProviderPlan(env,'PREMIUM')},policy:{language:'tr-TR',interaction:'PUSH_TO_TALK',alwaysListening:false,teacherTone:'Sakin, açık, geliştirici ve kurumsal; MEB ürünü/temsilcisi iddiası yok.',maxAudioBytes:8*1024*1024,maxSpeechChars:3600},activation:{configured:providers.standardReady,liveVerified:false,liveProbeRequired:true}});
 }
 
 async function transcribe(request:Request,env:Env){
@@ -38,7 +39,11 @@ async function speak(request:Request,env:Env){
 async function probe(request:Request,env:Env){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(user.role!=='SUPER_ADMIN')return fail(403,'SUPER_ADMIN_ONLY','Ses sağlayıcı testini yalnız Süper Admin çalıştırabilir.');
  const url=new URL(request.url),mode=url.searchParams.get('mode')==='premium'?'PREMIUM':'STANDARD';
- try{const result=await speakNibiru(env,'Nibiru ses testi. Öğrenmeye birlikte devam edebiliriz.',mode);return json({ok:true,mode,provider:result.audio.provider,model:result.audio.model,bytes:result.audio.bytes.byteLength,contentType:result.audio.contentType,attempts:result.attempts});}catch(error){return voiceError(error)}
+ try{const result=await speakNibiru(env,'Nibiru ses testi. Öğrenmeye birlikte devam edebiliriz.',mode);return json({ok:true,mode,provider:result.audio.provider,model:result.audio.model,bytes:result.audio.bytes.byteLength,contentType:result.audio.contentType,attempts:result.attempts,activation:{liveVerified:true}});}catch(error){
+  const diagnostic=classifyVoiceActivationFailure(error),safe=sanitizedVoiceProviderError(error);
+  console.error(JSON.stringify({event:'nibiru_voice_probe_failed',mode,activationCode:diagnostic.activationCode,error:safe}));
+  return fail(502,'VOICE_PROVIDER_FAILED','Nibiru ses sağlayıcısı canlı testi tamamlayamadı.',{...diagnostic,mode,attemptedPlan:buildVoiceProviderPlan(env,mode).providers});
+ }
 }
 
 export default {
