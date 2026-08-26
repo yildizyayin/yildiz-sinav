@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import './NibiruMark.css';
 
 export type NibiruVisualState='idle'|'active'|'listening'|'thinking'|'speaking';
 
