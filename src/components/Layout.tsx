@@ -1,6 +1,6 @@
 import { useEffect,useMemo,useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ClipboardCheck, Database, FileUp, FlaskConical, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, MessageCircle, Printer, ScanLine, ShieldCheck, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck } from 'lucide-react';
+import { BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ClipboardCheck, CreditCard, Database, FileUp, FlaskConical, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, MessageCircle, Printer, ScanLine, ShieldCheck, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 import { api } from '../api';
 import { LicenseBoundary } from './LicenseBoundary';
@@ -9,7 +9,7 @@ import { NibiruMark,NibiruNavIcon } from './NibiruMark';
 type NavItem={to:string;label:string;icon:any;feature?:string};
 const nav: Record<Role, NavItem[]> = {
   SUPER_ADMIN: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/standard-readiness', label: 'Standard Hazırlık', icon: ShieldCheck },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/standard-readiness', label: 'Standard Hazırlık', icon: ShieldCheck }, { to: '/completion-center', label: 'Tamamlanma Merkezi', icon: CalendarRange }, { to: '/membership-orders', label: 'Üyelik Talepleri', icon: CreditCard },
     { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck },
     { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle }, { to: '/licenses', label: 'Lisanslar', icon: KeyRound },
     { to: '/feature-lab', label: 'Feature Lab', icon: FlaskConical }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3, feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Enterprise', icon: Building2, feature:'ENTERPRISE' }, { to: '/board', label: 'Akıllı Tahta', icon: GraduationCap, feature:'BOARD' },

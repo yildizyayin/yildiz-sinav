@@ -130,6 +130,8 @@ npm run build
 
 Ayrıntılı kabul senaryoları için [TEST_PLAN.md](./TEST_PLAN.md) dosyasına bakın.
 
+Vaat edilen, teslim edilen, ertelenen ve dış girdiye bağlı kalan bütün ürün maddeleri için [PRODUCT_STATUS_2026-08-26.md](./PRODUCT_STATUS_2026-08-26.md) dosyasına bakın.
+
 ## Cloudflare deploy
 
 Adım adım kurulum için [DEPLOY.md](./DEPLOY.md) dosyasına bakın.

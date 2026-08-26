@@ -33,6 +33,19 @@ export interface Env {
   WHATSAPP_ACCESS_TOKEN?: string;
   WHATSAPP_PHONE_NUMBER_ID?: string;
   WHATSAPP_GRAPH_API_VERSION?: string;
+  TELEGRAM_BOT_TOKEN?: string;
+  TELEGRAM_WEBHOOK_SECRET?: string;
+  IYZICO_API_KEY?: string;
+  IYZICO_SECRET_KEY?: string;
+  PAYTR_MERCHANT_ID?: string;
+  PAYTR_MERCHANT_KEY?: string;
+  PAYTR_MERCHANT_SALT?: string;
+  APPLE_TEAM_ID?: string;
+  APPLE_BUNDLE_ID?: string;
+  APNS_KEY?: string;
+  ANDROID_PACKAGE_ID?: string;
+  FCM_SERVICE_ACCOUNT_JSON?: string;
+  LIVE_MEETING_PROVIDER_KEY?: string;
 }
 
 export interface AuthUser {
