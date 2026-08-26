@@ -33,11 +33,11 @@ async function counselorCanAccess(env:Env,user:AuthUser,studentId:string){
  return Boolean(await one(env.DB.prepare(`SELECT 1 FROM teacher_assignments WHERE user_id=? AND institution_id=? AND assignment_type='GUIDANCE' AND active=1 AND (class_id=? OR class_id IS NULL) LIMIT 1`).bind(user.id,user.institution_id,enr.class_id)));
 }
 
-async function instrumentByCode(env:Env,code:string){return one<any>(env.DB.prepare(`SELECT * FROM guidance_instruments WHERE code=? AND active=1 AND clinical_use=0`).bind(code))}
-async function sessionById(env:Env,id:string){return one<any>(env.DB.prepare(`SELECT s.*,i.code instrument_code,i.title instrument_title,i.category,i.version,i.question_schema_json FROM guidance_assessment_sessions s JOIN guidance_instruments i ON i.id=s.instrument_id WHERE s.id=?`).bind(id))}
+async function instrumentByCode(env:Env,code:string){return one<any>(env.DB.prepare(`SELECT * FROM guidance_assessment_instruments WHERE code=? AND active=1 AND clinical_use=0`).bind(code))}
+async function sessionById(env:Env,id:string){return one<any>(env.DB.prepare(`SELECT s.*,i.code instrument_code,i.title instrument_title,i.category,i.version,i.question_schema_json FROM guidance_assessment_sessions s JOIN guidance_assessment_instruments i ON i.id=s.instrument_id WHERE s.id=?`).bind(id))}
 
 export async function listGuidanceInstruments(env:Env){
- const rows=await all<any>(env.DB.prepare(`SELECT id,code,title,category,version,description,requires_counselor_approval,evidence_level FROM guidance_instruments WHERE active=1 AND clinical_use=0 ORDER BY CASE category WHEN 'RBA' THEN 0 ELSE 1 END,title`));
+ const rows=await all<any>(env.DB.prepare(`SELECT id,code,title,category,version,description,requires_counselor_approval,evidence_level FROM guidance_assessment_instruments WHERE active=1 AND clinical_use=0 ORDER BY CASE category WHEN 'RBA' THEN 0 ELSE 1 END,title`));
  return rows;
 }
 
@@ -54,14 +54,14 @@ export async function proposeGuidanceAssessment(env:Env,user:AuthUser,code:strin
 
 export async function myGuidanceSessions(env:Env,user:AuthUser){
  if(user.role!=='STUDENT'||!user.student_id)return forbidden('Bu liste öğrenci hesabına açıktır.');
- const rows=await all<any>(env.DB.prepare(`SELECT s.id,s.status,s.proposal_reason,s.approved_at,s.submitted_at,s.reviewed_at,s.counselor_note,s.created_at,i.code,i.title,i.category,i.version,i.description,i.question_schema_json FROM guidance_assessment_sessions s JOIN guidance_instruments i ON i.id=s.instrument_id WHERE s.student_id=? ORDER BY s.created_at DESC LIMIT 50`).bind(user.student_id));
+ const rows=await all<any>(env.DB.prepare(`SELECT s.id,s.status,s.proposal_reason,s.approved_at,s.submitted_at,s.reviewed_at,s.counselor_note,s.created_at,i.code,i.title,i.category,i.version,i.description,i.question_schema_json FROM guidance_assessment_sessions s JOIN guidance_assessment_instruments i ON i.id=s.instrument_id WHERE s.student_id=? ORDER BY s.created_at DESC LIMIT 50`).bind(user.student_id));
  return json({ok:true,sessions:rows.map(row=>({...row,question_schema:['APPROVED','IN_PROGRESS'].includes(row.status)?parseJson(row.question_schema_json,{}):undefined,question_schema_json:undefined}))});
 }
 
 export async function counselorQueue(env:Env,user:AuthUser){
  if(user.role!=='GUIDANCE_TEACHER'||!user.institution_id)return forbidden('Rehberlik onay kuyruğu gerçek rehber öğretmen hesabına açıktır.');
  const rows=await all<any>(env.DB.prepare(`SELECT s.id,s.student_id,s.status,s.proposal_reason,s.created_at,s.approved_at,s.submitted_at,s.scored_result_json,i.code,i.title,i.category,se.first_name,se.last_name,e.class_id,c.name class_name
- FROM guidance_assessment_sessions s JOIN guidance_instruments i ON i.id=s.instrument_id JOIN student_entities se ON se.id=s.student_id
+ FROM guidance_assessment_sessions s JOIN guidance_assessment_instruments i ON i.id=s.instrument_id JOIN student_entities se ON se.id=s.student_id
  JOIN student_enrollments e ON e.student_id=s.student_id AND e.institution_id=s.institution_id AND e.status IN ('ACTIVE','GRADUATED')
  LEFT JOIN classes c ON c.id=e.class_id
  WHERE s.institution_id=? AND EXISTS(SELECT 1 FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=s.institution_id AND ta.assignment_type='GUIDANCE' AND ta.active=1 AND (ta.class_id=e.class_id OR ta.class_id IS NULL))
@@ -106,7 +106,7 @@ export async function reviewGuidanceAssessment(request:Request,env:Env,user:Auth
 }
 
 export async function reviewedGuidanceDevelopmentContext(env:Env,studentId:string){
- const sessions=await all<any>(env.DB.prepare(`SELECT s.id,s.reviewed_at,s.counselor_note,i.code,i.title,i.category,s.scored_result_json FROM guidance_assessment_sessions s JOIN guidance_instruments i ON i.id=s.instrument_id WHERE s.student_id=? AND s.status='REVIEWED' AND s.reviewed_by IS NOT NULL ORDER BY s.reviewed_at DESC LIMIT 8`).bind(studentId));
+ const sessions=await all<any>(env.DB.prepare(`SELECT s.id,s.reviewed_at,s.counselor_note,i.code,i.title,i.category,s.scored_result_json FROM guidance_assessment_sessions s JOIN guidance_assessment_instruments i ON i.id=s.instrument_id WHERE s.student_id=? AND s.status='REVIEWED' AND s.reviewed_by IS NOT NULL ORDER BY s.reviewed_at DESC LIMIT 8`).bind(studentId));
  if(!sessions.length)return {available:false,reviewedAssessments:0,signals:[],summary:null};
  const signals=await all<any>(env.DB.prepare(`SELECT signal_key,round(avg(score),1) score,round(avg(confidence),2) confidence,count(*) evidence FROM guidance_development_signals WHERE student_id=? GROUP BY signal_key ORDER BY score ASC,evidence DESC LIMIT 12`).bind(studentId));
  const focus=signals.slice(0,3).map(x=>`${x.signal_key} ${x.score}/100`).join(', ');return {available:true,reviewedAssessments:sessions.length,signals,latest:sessions.map(s=>({code:s.code,title:s.title,category:s.category,reviewedAt:s.reviewed_at,counselorNote:s.counselor_note})),summary:focus?`Rehber öğretmen onaylı gelişim odağı: ${focus}.`:'Rehber öğretmen onaylı değerlendirmeler mevcut.'};
