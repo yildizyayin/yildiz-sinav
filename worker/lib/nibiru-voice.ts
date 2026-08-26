@@ -14,7 +14,8 @@ function base64Url(data:string|ArrayBuffer){
 }
 function base64FromBytes(bytes:Uint8Array){let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(bytes.length,i+0x8000)));return btoa(binary)}
 function bytesFromBase64(value:string){const binary=atob(value);const out=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)out[i]=binary.charCodeAt(i);return out}
-function pemToArrayBuffer(pem:string){const clean=pem.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\s/g,'');return bytesFromBase64(clean).buffer}
+function strictArrayBuffer(bytes:Uint8Array):ArrayBuffer{const copy=new Uint8Array(bytes.byteLength);copy.set(bytes);return copy.buffer}
+function pemToArrayBuffer(pem:string):ArrayBuffer{const clean=pem.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\s/g,'');return strictArrayBuffer(bytesFromBase64(clean))}
 
 export function prepareNibiruSpeechText(value:string){
  return String(value||'')
