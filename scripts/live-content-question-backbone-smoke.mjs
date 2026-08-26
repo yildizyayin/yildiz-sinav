@@ -34,10 +34,14 @@ const verified=await req(`/api/question-provenance/records/${encodeURIComponent(
 const approved=await req(`/api/question-bank-standard/${encodeURIComponent(qid)}/review`,{method:'PATCH',cookie:admin,json:{status:'APPROVED'}});assert(approved.p?.status==='APPROVED','Verified licensed question could not be approved',approved.p);
 console.log('✓ Provenance review chain — declare → Super Admin verify → printable approval');
 
+const patchBypass=await req(`/api/question-bank-standard/${encodeURIComponent(qid)}`,{method:'PATCH',cookie:admin,expected:400,json:{copyrightStatus:'PUBLIC_DOMAIN',sourceLabel:FIXTURE,originKind:'MANUAL',keepApproved:true}});
+assert(patchBypass.p?.error?.code==='QUESTION_RIGHTS_EVIDENCE_REQUIRED','Copyright-status edit bypassed provenance while preserving APPROVED',patchBypass.p);
+console.log('✓ Rights edit guard — changing APPROVED content to a new external rights basis cannot bypass provenance');
+
 await req(`/api/question-bank-standard/${encodeURIComponent(qid)}`,{method:'PATCH',cookie:admin,json:{copyrightStatus:'RESTRICTED',sourceLabel:FIXTURE,originKind:'MANUAL'}});
 const cleanup=await req(`/api/question-provenance/${encodeURIComponent(qid)}`,{cookie:admin});assert(cleanup.p?.question?.copyrightStatus==='RESTRICTED'&&cleanup.p?.question?.reviewStatus==='REVIEW','Synthetic fixture cleanup failed',cleanup.p);
 console.log('✓ Staging fixture cleanup — returned to RESTRICTED / REVIEW, not printable');
 
 const finalStatus=await req('/api/question-backbone/status',{cookie:admin});assert(typeof finalStatus.p?.summary?.official_archives==='number'&&typeof finalStatus.p?.summary?.verified_official_mappings==='number','Question backbone status counters missing',finalStatus.p);
 console.log(`✓ Question backbone status — archives ${finalStatus.p.summary.official_archives} · mappings ${finalStatus.p.summary.verified_official_mappings} · rights review ${finalStatus.p.summary.rights_review_required}`);
-console.log('\n7 content/question backbone live checks passed.');
+console.log('\n8 content/question backbone live checks passed.');
