@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-26T13:28:46.577Z`
+- Time: `2026-08-26T13:35:29.823Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
