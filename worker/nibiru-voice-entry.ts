@@ -5,6 +5,7 @@ import { json } from './lib/db';
 import { buildVoiceProviderPlan,speakNibiru,transcribeNibiruAudio,voiceProviderStatus } from './lib/nibiru-voice';
 
 function fail(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
+function strictArrayBuffer(bytes:Uint8Array):ArrayBuffer{const copy=new Uint8Array(bytes.byteLength);copy.set(bytes);return copy.buffer}
 function voiceError(error:unknown){
  const value=error instanceof Error?error.message:String(error||'VOICE_FAILED');
  if(value.includes('TOO_LARGE'))return fail(413,'VOICE_AUDIO_TOO_LARGE','Ses kaydı en fazla 8 MB olabilir.');
@@ -31,7 +32,7 @@ async function speak(request:Request,env:Env){
  let body:{text?:string;mode?:'STANDARD'|'PREMIUM'};try{body=await request.json()}catch{return fail(400,'INVALID_JSON','Geçerli konuşma metni gönderilmelidir.')}
  const text=String(body.text||'').trim();if(!text)return fail(400,'VOICE_TEXT_EMPTY','Konuşma metni boş olamaz.');if(text.length>3600)return fail(413,'VOICE_TEXT_TOO_LONG','Seslendirme metni en fazla 3600 karakter olabilir.');
  const mode=body.mode==='PREMIUM'?'PREMIUM':'STANDARD';
- try{const result=await speakNibiru(env,text,mode);return new Response(result.audio.bytes,{status:200,headers:{'content-type':result.audio.contentType,'cache-control':'private, no-store','x-nibiru-voice-provider':result.audio.provider,'x-nibiru-voice-model':result.audio.model,'x-content-type-options':'nosniff'}});}catch(error){return voiceError(error)}
+ try{const result=await speakNibiru(env,text,mode);return new Response(strictArrayBuffer(result.audio.bytes),{status:200,headers:{'content-type':result.audio.contentType,'cache-control':'private, no-store','x-nibiru-voice-provider':result.audio.provider,'x-nibiru-voice-model':result.audio.model,'x-content-type-options':'nosniff'}});}catch(error){return voiceError(error)}
 }
 
 async function probe(request:Request,env:Env){
