@@ -1,8 +1,9 @@
 PRAGMA foreign_keys = ON;
 
 -- Counselor-governed educational guidance assessments.
+-- Keep the legacy guidance_instruments/guidance_responses tables intact for backward compatibility.
 -- These instruments are educational self-assessments, not medical/psychological diagnosis tools.
-CREATE TABLE IF NOT EXISTS guidance_instruments (
+CREATE TABLE IF NOT EXISTS guidance_assessment_instruments (
   id TEXT PRIMARY KEY,
   code TEXT NOT NULL UNIQUE,
   title TEXT NOT NULL,
@@ -22,7 +23,7 @@ CREATE TABLE IF NOT EXISTS guidance_assessment_sessions (
   id TEXT PRIMARY KEY,
   institution_id TEXT NOT NULL REFERENCES institutions(id) ON DELETE CASCADE,
   student_id TEXT NOT NULL REFERENCES student_entities(id) ON DELETE CASCADE,
-  instrument_id TEXT NOT NULL REFERENCES guidance_instruments(id),
+  instrument_id TEXT NOT NULL REFERENCES guidance_assessment_instruments(id),
   proposed_by TEXT NOT NULL DEFAULT 'NIBIRU' CHECK(proposed_by IN ('NIBIRU','GUIDANCE_TEACHER')),
   proposed_by_user_id TEXT REFERENCES users(id),
   proposal_reason TEXT,
@@ -60,7 +61,7 @@ CREATE TABLE IF NOT EXISTS guidance_development_signals (
 );
 CREATE INDEX IF NOT EXISTS idx_guidance_signal_student ON guidance_development_signals(student_id,signal_key,created_at DESC);
 
-INSERT OR IGNORE INTO guidance_instruments(id,code,title,category,version,description,question_schema_json,evidence_level) VALUES
+INSERT OR IGNORE INTO guidance_assessment_instruments(id,code,title,category,version,description,question_schema_json,evidence_level) VALUES
 ('gi_rba_v1','RBA_EDU_V1','RBA Öğrenme ve Çalışma Profili','RBA','1.0','Öğrencinin çalışma davranışı ve akademik öz-düzenleme sinyallerini eğitim amaçlı değerlendirir. Tıbbi/psikolojik tanı değildir.','{"scale":{"min":1,"max":5},"items":[{"id":"r1","dimension":"analytical","text":"Bir soruda çözüm yolunu adımlara ayırırım."},{"id":"r2","dimension":"verbal_processing","text":"Okuduğum bilgiyi kendi cümlelerimle açıklayabilirim."},{"id":"r3","dimension":"numeric_processing","text":"Sayısal bilgileri karşılaştırırken düzenli bir yöntem kullanırım."},{"id":"r4","dimension":"consistency","text":"Çalışma planımı çoğu gün benzer düzende sürdürebilirim."},{"id":"r5","dimension":"error_repetition","text":"Aynı hatayı tekrar etmemek için yanlışlarımı yeniden incelerim."},{"id":"r6","dimension":"pace","text":"Çalışırken hızımı sorunun zorluğuna göre ayarlayabilirim."},{"id":"r7","dimension":"plan_adherence","text":"Belirlediğim günlük çalışma görevlerini tamamlarım."},{"id":"r8","dimension":"persistence","text":"Zorlandığım sorularda hemen bırakmak yerine farklı bir yol denerim."},{"id":"r9","dimension":"performance_stability","text":"Deneme performansımı etkileyen çalışma alışkanlıklarını takip ederim."}]}','INTERNAL_EDUCATIONAL'),
 ('gi_study_v1','STUDY_HABITS_V1','Çalışma Alışkanlıkları Öz-Değerlendirmesi','STUDY_HABITS','1.0','Planlama, odak, tekrar ve görev tamamlama davranışlarını eğitim amacıyla değerlendirir.','{"scale":{"min":1,"max":5},"items":[{"id":"s1","dimension":"planning","text":"Haftalık çalışma planımı önceden belirlerim."},{"id":"s2","dimension":"focus","text":"Çalışma sırasında dikkat dağıtıcıları sınırlarım."},{"id":"s3","dimension":"review","text":"Yanlış yaptığım konulara tekrar dönerim."},{"id":"s4","dimension":"completion","text":"Başladığım akademik görevleri tamamlarım."}]}','INTERNAL_EDUCATIONAL'),
 ('gi_goal_v1','GOAL_MOTIVATION_V1','Hedef ve Motivasyon Öz-Değerlendirmesi','GOAL_MOTIVATION','1.0','Akademik hedef netliği, ilerleme takibi ve sürdürme davranışlarını eğitim amacıyla değerlendirir.','{"scale":{"min":1,"max":5},"items":[{"id":"g1","dimension":"goal_clarity","text":"Ulaşmak istediğim akademik hedefi net biçimde biliyorum."},{"id":"g2","dimension":"progress_tracking","text":"Hedefime ne kadar yaklaştığımı düzenli takip ederim."},{"id":"g3","dimension":"persistence","text":"Kısa süreli düşüşlerde çalışmayı tamamen bırakmam."},{"id":"g4","dimension":"self_adjustment","text":"Sonuçlarıma göre çalışma planımı değiştirebilirim."}]}','INTERNAL_EDUCATIONAL'),
