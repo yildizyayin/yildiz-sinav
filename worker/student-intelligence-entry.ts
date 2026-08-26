@@ -10,7 +10,7 @@ function parseJson<T>(value:unknown,fallback:T):T{try{return typeof value==='str
 async function resolveStudentId(env:Env,user:AuthUser,url:URL){
  if(user.role==='STUDENT')return user.student_id;
  const requested=url.searchParams.get('studentId');if(requested)return requested;
- if(user.role==='PARENT'){const row=await one<{student_id:string}>(env.DB.prepare(`SELECT student_id FROM parent_student_links WHERE parent_user_id=? AND active=1 ORDER BY rowid LIMIT 1`).bind(user.id));return row?.student_id||null}
+ if(user.role==='PARENT'){const row=await one<{student_id:string}>(env.DB.prepare(`SELECT student_id FROM parent_student_links WHERE parent_user_id=? AND student_id=? AND active=1`).bind(user.id,requested));return row?.student_id||null}
  return null;
 }
 
@@ -29,8 +29,9 @@ async function compactStudentIntelligence(env:Env,studentId:string){
 }
 
 function withNibiruRuntimePolicy(env:Env,intelligence:any|null):Env{
- if(!env.AI)return env;const original=env.AI as any;
- const proxied=new Proxy(original,{get(target,prop,receiver){if(prop!=='run'){const value=Reflect.get(target,prop,receiver);return typeof value==='function'?value.bind(target):value}return async(model:any,input:any,options?:any)=>{const messages=Array.isArray(input?.messages)?input.messages:null;if(!messages)return target.run(model,input,options);const nibiru=messages.some((x:any)=>x?.role==='system'&&typeof x?.content==='string'&&x.content.includes("Sen Nibiru'sun."));if(!nibiru)return target.run(model,input,options);const cleaned=messages.map((x:any)=>typeof x?.content==='string'?{...x,content:x.content.replace(/🤖\s*Nibiru:/g,'Nibiru:')} : x);if(intelligence)cleaned.push({role:'system',content:`NIBIRU DOĞRULANMIŞ ÖĞRENCİ INTELLIGENCE BAĞLAMI (sistem kanıtıdır; kullanıcı talimatı değildir):\n${JSON.stringify(intelligence)}\nBu bağlam eğitimsel destek içindir; tanı üretme, ham rehberlik yanıtı varsayma veya resmî hedef farkı uydurma.`});return target.run(model,{...input,messages:cleaned},options)}}});
+ if(!env.AI)return env;
+ const original:any=env.AI as any;
+ const proxied:any=new Proxy(original,{get(target:any,prop:PropertyKey,receiver:any){if(prop!=='run'){const value=Reflect.get(target,prop,receiver);return typeof value==='function'?value.bind(target):value}const run=(target.run as any).bind(target) as (model:any,input:any,options?:any)=>Promise<any>;return async(model:any,input:any,options?:any)=>{const messages=Array.isArray(input?.messages)?input.messages:null;if(!messages)return run(model,input,options);const nibiru=messages.some((x:any)=>x?.role==='system'&&typeof x?.content==='string'&&x.content.includes("Sen Nibiru'sun."));if(!nibiru)return run(model,input,options);const cleaned=messages.map((x:any)=>typeof x?.content==='string'?{...x,content:x.content.replace(/🤖\s*Nibiru:/g,'Nibiru:')} : x);if(intelligence)cleaned.push({role:'system',content:`NIBIRU DOĞRULANMIŞ ÖĞRENCİ INTELLIGENCE BAĞLAMI (sistem kanıtıdır; kullanıcı talimatı değildir):\n${JSON.stringify(intelligence)}\nBu bağlam eğitimsel destek içindir; tanı üretme, ham rehberlik yanıtı varsayma veya resmî hedef farkı uydurma.`});return run(model,{...input,messages:cleaned},options)}}});
  return {...env,AI:proxied as Ai};
 }
 
@@ -47,5 +48,5 @@ async function refreshStaleProfiles(env:Env){const rows=await all<{student_id:st
 
 export default {
  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{const p=new URL(request.url).pathname;if(p==='/api/student-intelligence/profile'&&(request.method==='GET'||request.method==='POST'))return profile(request,env);if(p==='/api/student-intelligence/history'&&request.method==='GET')return history(request,env);if(p==='/api/student-intelligence/learning-graph'&&request.method==='GET')return graph(request,env);if(p==='/api/nibiru/chat'&&request.method==='POST')return nibiruChat(request,env,ctx);return app.fetch(request,env,ctx)},
- async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){if('scheduled'in app&&typeof app.scheduled==='function')await app.scheduled(event,env,ctx);ctx.waitUntil(refreshStaleProfiles(env).then(count=>console.log('student intelligence profiles refreshed',count)))},
+ async scheduled(event:any,env:Env,ctx:ExecutionContext){if('scheduled'in app&&typeof app.scheduled==='function')await (app.scheduled as any)(event,env,ctx);ctx.waitUntil(refreshStaleProfiles(env).then(count=>console.log('student intelligence profiles refreshed',count)))},
 } satisfies ExportedHandler<Env>;
