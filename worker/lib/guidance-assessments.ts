@@ -84,13 +84,13 @@ export async function submitGuidanceAssessment(request:Request,env:Env,user:Auth
  let result:ScoreResult;try{result=scoreGuidanceResponses(parseJson<InstrumentSchema>(session.question_schema_json,{}),responses)}catch(e){return badRequest(e instanceof Error?e.message:'Yanıtlar geçersiz.','GUIDANCE_RESPONSE_INVALID')}
  await env.DB.prepare(`UPDATE guidance_assessment_sessions SET status='SUBMITTED',response_json=?,scored_result_json=?,submitted_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(JSON.stringify(responses),JSON.stringify(result),id).run();
  await audit(env.DB,user.id,session.institution_id,'GUIDANCE_ASSESSMENT_SUBMITTED','guidance_assessment',id,{instrument:session.instrument_code,answered:result.answered});
- return json({ok:true,status:'SUBMITTED',message:'Yanıtların kaydedildi. Sonuçlar gelişim profiline eklenmeden önce rehber öğretmenin inceleyecek.'});
+ return json({ok:true,status:'SUBMITTED',message:'Yanıtların kaydedildi. Sonuçlar gelişim profiline eklenmeden önce gerçek rehber öğretmenin incelemesini bekliyor.'});
 }
 
 async function syncRbaProfile(env:Env,session:any,result:ScoreResult){
  if(session.category!=='RBA')return;const d=result.dimensions,c=result.confidence;const avgConf=Object.values(c).length?Object.values(c).reduce((a,b)=>a+b,0)/Object.values(c).length:0;
  await env.DB.prepare(`INSERT INTO rba_profiles(student_id,version,analytical_score,verbal_processing_score,numeric_processing_score,consistency_score,error_repetition_score,pace_score,plan_adherence_score,persistence_score,performance_stability_score,confidence,evidence_json,updated_at)
- VALUES(?,1,?,?,?,?,?,?,?,?,?,?,?, ?,CURRENT_TIMESTAMP)
+ VALUES(?,1,?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)
  ON CONFLICT(student_id) DO UPDATE SET version=rba_profiles.version+1,analytical_score=excluded.analytical_score,verbal_processing_score=excluded.verbal_processing_score,numeric_processing_score=excluded.numeric_processing_score,consistency_score=excluded.consistency_score,error_repetition_score=excluded.error_repetition_score,pace_score=excluded.pace_score,plan_adherence_score=excluded.plan_adherence_score,persistence_score=excluded.persistence_score,performance_stability_score=excluded.performance_stability_score,confidence=excluded.confidence,evidence_json=excluded.evidence_json,updated_at=CURRENT_TIMESTAMP`)
  .bind(session.student_id,d.analytical??null,d.verbal_processing??null,d.numeric_processing??null,d.consistency??null,d.error_repetition==null?null:Number((100-d.error_repetition).toFixed(1)),d.pace??null,d.plan_adherence??null,d.persistence??null,d.performance_stability??null,Number(avgConf.toFixed(2)),JSON.stringify({source:'COUNSELOR_REVIEWED_GUIDANCE_ASSESSMENT',sessionId:session.id,instrument:session.instrument_code})).run();
  await env.DB.prepare(`INSERT OR REPLACE INTO rba_assessments(id,student_id,instrument_version,response_json,result_json,created_at) VALUES(?,?,?,?,?,CURRENT_TIMESTAMP)`).bind(`rba_${session.id}`,session.student_id,session.version,session.response_json||'{}',JSON.stringify(result)).run();
