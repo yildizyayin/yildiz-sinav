@@ -18,6 +18,15 @@ export interface Env {
   NIBIRU_REASONING_MODEL?: string;
   NIBIRU_CUSTOM_MODEL?: string;
   NIBIRU_CUSTOM_MODEL_MODE?: 'PRIMARY' | 'FALLBACK' | 'OFF';
+  // Nibiru Voice — keep credentials in Cloudflare Secrets, not vars.
+  NIBIRU_STT_MODEL?: string;
+  NIBIRU_GOOGLE_TTS_VOICE?: string;
+  NIBIRU_OPENAI_TTS_MODEL?: string;
+  NIBIRU_OPENAI_TTS_HD_MODEL?: string;
+  NIBIRU_OPENAI_DIRECT_TTS_MODEL?: string;
+  NIBIRU_OPENAI_TTS_VOICE?: string;
+  GOOGLE_TTS_SERVICE_ACCOUNT_JSON?: string;
+  OPENAI_TTS_API_KEY?: string;
   YOUTUBE_API_KEY?: string;
   WHATSAPP_VERIFY_TOKEN?: string;
   WHATSAPP_APP_SECRET?: string;
