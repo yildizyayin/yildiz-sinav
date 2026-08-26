@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-26T09:55:08.385Z`
+- Time: `2026-08-26T10:09:39.561Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -63,4 +63,5 @@
 - ✅ **Kişiye Özel Kitap** — 2 outcomes · 6 questions
 - ✅ **Sıfır Hata Kitapçığı** — 2 wrong · 2 blank · 8 practice
 - ✅ **5–6 educational game catalog** — 5 age-appropriate games for grade 5
+- ✅ **Guidance AI target route** — 0 active targets · snapshot-safe · no fake rank/net gap
 - ✅ **12th-grade YKS target + Guidance AI** — maximum 3 targets · target question → Guidance AI
