@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-25T22:22:40.200Z`
+- Time: `2026-08-26T09:44:39.104Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -55,10 +55,11 @@
 - ✅ **Standard readiness gate** — core ready · external setup 2
 - ✅ **External provider activation contract** — YouTube setup · WhatsApp setup
 - ✅ **Standard question bank** — 18 approved printable questions
+- ✅ **Nibiru specialist orchestration** — study plan → Education Coach · math question → Subject Teacher AI
 - ✅ **Zero Error exam source** — institution exams are selectable, not only central snapshots
 - ✅ **Correct / wrong / blank question review** — all answer states available
 - ✅ **Publisher solution + topic micro-learning contract** — YOUTUBE_NOT_CONFIGURED
 - ✅ **Kişiye Özel Kitap** — 2 outcomes · 6 questions
 - ✅ **Sıfır Hata Kitapçığı** — 2 wrong · 2 blank · 8 practice
 - ✅ **5–6 educational game catalog** — 5 age-appropriate games for grade 5
-- ✅ **12th-grade YKS target capacity** — maximum 3 prioritized university/department targets
+- ✅ **12th-grade YKS target + Guidance AI** — maximum 3 targets · target question → Guidance AI
