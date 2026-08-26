@@ -3,6 +3,8 @@ import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,json,one } from './lib/db';
 import { coachPlanSummary,completeCoachItem,createOrReuseDailyCoachPlan,getTodayCoachPlan } from './lib/education-coach';
+import { guidanceAssessmentChatExtension,handleGuidanceAssessmentApi } from './lib/guidance-assessment-controller';
+import { reviewedGuidanceDevelopmentContext } from './lib/guidance-assessments';
 import { buildStudentTargetAnalysisV2,guidanceSummary } from './lib/target-analysis-v2';
 import { routeNibiruSpecialist } from './lib/nibiru-specialists';
 import { evaluateProviderActivation,evaluateStandardReadiness } from './lib/standard-readiness';
@@ -60,7 +62,11 @@ async function coachApi(request:Request,env:Env,url:URL){
 async function guidanceApi(request:Request,env:Env){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(user.role!=='STUDENT'||!user.student_id)return fail(403,'STUDENT_ONLY','Rehber Öğretmen hedef rotası öğrenci hesabına açıktır.');
  if(request.method!=='GET')return fail(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
- try{const payload=await buildStudentTargetAnalysisV2(env,user);return json({ok:true,...payload,guidance:{summary:guidanceSummary(payload),policy:'Resmî hedef profili yoksa net/rank farkı tahmin edilmez; kurum içi sıra ÖSYM başarı sırası sayılmaz.'}});}catch{return fail(400,'GUIDANCE_ROUTE_FAILED','Rehber Öğretmen hedef rotası oluşturulamadı.');}
+ try{const payload=await buildStudentTargetAnalysisV2(env,user);const development=await reviewedGuidanceDevelopmentContext(env,user.student_id);const targetSummary=guidanceSummary(payload);return json({ok:true,...payload,development,guidance:{summary:[targetSummary,development.summary].filter(Boolean).join('\n'),policy:'Resmî hedef profili yoksa net/rank farkı tahmin edilmez; kurum içi sıra ÖSYM başarı sırası sayılmaz. RBA/rehberlik testlerinden yalnız gerçek rehber öğretmen tarafından incelenmiş sonuçlar gelişim rotasına girer.'}});}catch{return fail(400,'GUIDANCE_ROUTE_FAILED','Rehber Öğretmen hedef rotası oluşturulamadı.');}
+}
+
+async function guidanceGovernanceApi(request:Request,env:Env,url:URL){
+ const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const response=await handleGuidanceAssessmentApi(request,env,user,url);return response||fail(404,'NOT_FOUND','Rehberlik değerlendirmesi API yolu bulunamadı.');
 }
 
 async function orchestratedNibiruChat(request:Request,env:Env,ctx:ExecutionContext){
@@ -69,7 +75,7 @@ async function orchestratedNibiruChat(request:Request,env:Env,ctx:ExecutionConte
   const route=routeNibiruSpecialist(user,message),response=await app.fetch(request,env,ctx);
   if(!response.headers.get('content-type')?.includes('application/json'))return response;
   let payload:any;try{payload=await response.clone().json()}catch{return response}if(!payload?.ok||typeof payload.answer!=='string')return response;
-  let coachPlan:any=null,guidanceRoute:any=null;
+  let coachPlan:any=null,guidanceRoute:any=null,guidanceAssessment:any=null;
   if(route.specialist==='EDUCATION_COACH'&&user.role==='STUDENT'&&user.student_id){
     const result=await createOrReuseDailyCoachPlan(env,user);
     if(result.available){const summary=coachPlanSummary(result);coachPlan=result;if(summary&&!payload.answer.includes('Bugünkü planın'))payload.answer=`${payload.answer}\n\n📋 Bugünkü planın sisteme kaydedildi:\n${summary}`;}
@@ -78,16 +84,27 @@ async function orchestratedNibiruChat(request:Request,env:Env,ctx:ExecutionConte
   if(route.specialist==='GUIDANCE_COUNSELOR'&&user.role==='STUDENT'&&user.student_id){
     try{
       guidanceRoute=await buildStudentTargetAnalysisV2(env,user);
+      guidanceAssessment=await guidanceAssessmentChatExtension(env,user,message);
       const summary=guidanceSummary(guidanceRoute);
       if(guidanceRoute.targets?.length&&summary&&!payload.answer.includes('Rehber rotan'))payload.answer=`${payload.answer}\n\n🎯 Rehber rotan:\n${summary}`;
       if(!guidanceRoute.targets?.length&&!payload.answer.includes('Henüz bir akademik hedef'))payload.answer=`${payload.answer}\n\n🎯 Rehber rotası: Henüz aktif akademik hedef bulunmuyor.`;
+      if(guidanceAssessment.development?.available&&guidanceAssessment.development.summary&&!payload.answer.includes('Rehber öğretmen onaylı gelişim odağı'))payload.answer=`${payload.answer}\n\n🧭 ${guidanceAssessment.development.summary}`;
+      if(guidanceAssessment.proposal?.session){const state=guidanceAssessment.proposal.session.status;payload.answer=`${payload.answer}\n\n📝 ${guidanceAssessment.proposal.session.instrument_title} ${guidanceAssessment.proposal.reused?'zaten':'şimdi'} rehber öğretmen onay kuyruğunda (${state}). Onay verilmeden test başlatılmaz.`;}
     }catch{guidanceRoute={error:'GUIDANCE_ROUTE_FAILED'};}
   }
   const headers=new Headers(response.headers);headers.delete('content-length');headers.set('content-type','application/json; charset=utf-8');
-  return new Response(JSON.stringify({...payload,orchestration:{version:'standard-v1',...route},coachPlan,guidanceRoute}),{status:response.status,statusText:response.statusText,headers});
+  return new Response(JSON.stringify({...payload,orchestration:{version:'standard-v1',...route},coachPlan,guidanceRoute,guidanceAssessment}),{status:response.status,statusText:response.statusText,headers});
 }
 
 export default {
-  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{const url=new URL(request.url);if(url.pathname==='/api/standard-readiness'&&request.method==='GET')return readiness(request,env);if(url.pathname.startsWith('/api/nibiru/coach/'))return coachApi(request,env,url);if(url.pathname==='/api/nibiru/guidance/route')return guidanceApi(request,env);if(url.pathname==='/api/nibiru/chat'&&request.method==='POST')return orchestratedNibiruChat(request,env,ctx);return app.fetch(request,env,ctx);},
+  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
+    const url=new URL(request.url);
+    if(url.pathname==='/api/standard-readiness'&&request.method==='GET')return readiness(request,env);
+    if(url.pathname.startsWith('/api/nibiru/coach/'))return coachApi(request,env,url);
+    if(url.pathname==='/api/nibiru/guidance/route')return guidanceApi(request,env);
+    if(url.pathname.startsWith('/api/nibiru/guidance/'))return guidanceGovernanceApi(request,env,url);
+    if(url.pathname==='/api/nibiru/chat'&&request.method==='POST')return orchestratedNibiruChat(request,env,ctx);
+    return app.fetch(request,env,ctx);
+  },
   async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){if('scheduled' in app&&typeof app.scheduled==='function')return app.scheduled(event,env,ctx);},
 } satisfies ExportedHandler<Env>;
