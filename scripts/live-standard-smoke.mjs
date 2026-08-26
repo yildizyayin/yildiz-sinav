@@ -21,6 +21,11 @@ try{
  passed('Standard question bank',`${bank.p.printable} approved printable questions`);
 
  const student=await login('student1');
+ const coach=await req('/api/nibiru/chat',{method:'POST',cookie:student,json:{message:'Bugün ne çalışayım?'}});
+ assert(coach.p?.orchestration?.specialist==='EDUCATION_COACH','Nibiru did not route study plan to Education Coach',coach.p);
+ const subjectAi=await req('/api/nibiru/chat',{method:'POST',cookie:student,json:{message:'Bu matematik sorusunu neden yanlış yaptım?'}});
+ assert(subjectAi.p?.orchestration?.specialist==='SUBJECT_TEACHER'&&subjectAi.p?.orchestration?.subjectHint==='Matematik','Nibiru did not route subject question to Subject Teacher AI',subjectAi.p);
+ passed('Nibiru specialist orchestration','study plan → Education Coach · math question → Subject Teacher AI');
  const results=await req('/api/my-results',{cookie:student});
  assert((results.p?.exams||[]).some(x=>x.exam_id==='exam_hist_08'),'Institution exam missing from student result history',results.p);
  passed('Zero Error exam source','institution exams are selectable, not only central snapshots');
@@ -48,7 +53,9 @@ try{
  const grade12=await login('student12');
  const targets=await req('/api/student-standard/targets',{cookie:grade12});
  assert(targets.p?.gradeLevel===12&&Number(targets.p?.maxTargets)===3,'Grade 12 three-target policy is not active',targets.p);
- passed('12th-grade YKS target capacity','maximum 3 prioritized university/department targets');
+ const guidance=await req('/api/nibiru/chat',{method:'POST',cookie:grade12,json:{message:'YKS hedefime ne kadar kaldı?'}});
+ assert(guidance.p?.orchestration?.specialist==='GUIDANCE_COUNSELOR','Nibiru did not route target question to Guidance AI',guidance.p);
+ passed('12th-grade YKS target + Guidance AI','maximum 3 targets · target question → Guidance AI');
 
  persist(true);console.log(`\n${checks.length} Standard live acceptance checks passed.`);
 }catch(error){persist(false,error);console.error(error);process.exitCode=1}
