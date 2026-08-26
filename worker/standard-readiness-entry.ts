@@ -2,6 +2,7 @@ import app from './question-bank-standard-entry';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,json,one } from './lib/db';
+import { coachPlanSummary,completeCoachItem,createOrReuseDailyCoachPlan,getTodayCoachPlan } from './lib/education-coach';
 import { routeNibiruSpecialist } from './lib/nibiru-specialists';
 import { evaluateProviderActivation,evaluateStandardReadiness } from './lib/standard-readiness';
 
@@ -38,45 +39,40 @@ async function readiness(request:Request,env:Env){
   if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
   if(user.role!=='SUPER_ADMIN')return fail(403,'SUPER_ADMIN_ONLY','Standard hazırlık denetimi yalnız Süper Admin içindir.');
   const rows=await all<{name:string}>(env.DB.prepare(`SELECT name FROM sqlite_master WHERE type='table'`));
-  const providers=evaluateProviderActivation({
-    youtubeApiKey:env.YOUTUBE_API_KEY,
-    whatsappVerifyToken:env.WHATSAPP_VERIFY_TOKEN,
-    whatsappAppSecret:env.WHATSAPP_APP_SECRET,
-    whatsappAccessToken:env.WHATSAPP_ACCESS_TOKEN,
-    whatsappPhoneNumberId:env.WHATSAPP_PHONE_NUMBER_ID,
-  });
-  const report=evaluateStandardReadiness(rows.map(r=>r.name),{
-    files:Boolean(env.FILES),ai:Boolean(env.AI),youtube:providers.youtube.ready,whatsapp:providers.whatsapp.ready,
-  });
+  const providers=evaluateProviderActivation({youtubeApiKey:env.YOUTUBE_API_KEY,whatsappVerifyToken:env.WHATSAPP_VERIFY_TOKEN,whatsappAppSecret:env.WHATSAPP_APP_SECRET,whatsappAccessToken:env.WHATSAPP_ACCESS_TOKEN,whatsappPhoneNumberId:env.WHATSAPP_PHONE_NUMBER_ID});
+  const report=evaluateStandardReadiness(rows.map(r=>r.name),{files:Boolean(env.FILES),ai:Boolean(env.AI),youtube:providers.youtube.ready,whatsapp:providers.whatsapp.ready});
   let operational:OperationalCheck[]=[];let operationalError:string|null=null;
   if(report.summary.missing===0){try{operational=await operationalChecks(env)}catch(e){operationalError=e instanceof Error?e.message:'OPERATIONAL_CHECK_FAILED'}}
-  const blockingSetup=operational.filter(x=>x.blocking&&x.state==='SETUP_REQUIRED').length;
-  const externalSetup=report.summary.configRequired;
-  const coreAcceptanceReady=report.summary.coreReady&&blockingSetup===0;
-  const saleReady=coreAcceptanceReady&&externalSetup===0&&!operationalError;
+  const blockingSetup=operational.filter(x=>x.blocking&&x.state==='SETUP_REQUIRED').length,externalSetup=report.summary.configRequired,coreAcceptanceReady=report.summary.coreReady&&blockingSetup===0,saleReady=coreAcceptanceReady&&externalSetup===0&&!operationalError;
   return json({ok:true,environment:env.ENVIRONMENT||'unknown',generatedAt:new Date().toISOString(),...report,providers,operational,operationalError,acceptance:{coreReady:report.summary.coreReady,blockingSetup,externalSetup,coreAcceptanceReady,saleReady,standardAcceptanceReady:saleReady}});
 }
 
+async function coachApi(request:Request,env:Env,url:URL){
+ const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(user.role!=='STUDENT'||!user.student_id)return fail(403,'STUDENT_ONLY','Eğitim Koçu günlük planı öğrenci hesabına açıktır.');
+ if(url.pathname==='/api/nibiru/coach/daily-plan'&&request.method==='GET'){const result=await getTodayCoachPlan(env,user);return json({ok:true,...result});}
+ if(url.pathname==='/api/nibiru/coach/daily-plan'&&request.method==='POST'){const result=await createOrReuseDailyCoachPlan(env,user);if(!result.available)return fail(result.reason==='INSUFFICIENT_EVIDENCE'?409:400,result.reason||'COACH_PLAN_UNAVAILABLE','Günlük plan oluşturmak için yeterli doğrulanmış akademik kanıt bulunamadı.');return json({ok:true,...result},result.reused?200:201);}
+ const item=url.pathname.match(/^\/api\/nibiru\/coach\/items\/([^/]+)\/complete$/);
+ if(item&&request.method==='PATCH'){const body:any=await request.json().catch(()=>({}));const result=await completeCoachItem(env,user,item[1],body.completed!==false);if(!result.ok)return fail(result.reason==='ITEM_NOT_FOUND'?404:403,result.reason||'COACH_ITEM_FAILED','Eğitim Koçu görevi güncellenemedi.');return json(result);}
+ return fail(404,'NOT_FOUND','Eğitim Koçu API yolu bulunamadı.');
+}
+
 async function orchestratedNibiruChat(request:Request,env:Env,ctx:ExecutionContext){
-  const user=await getAuthUser(env,request);
-  if(!user)return app.fetch(request,env,ctx);
-  let message='';
-  try{const body=await request.clone().json<{message?:string}>();message=body.message?.trim()||''}catch{}
-  const route=routeNibiruSpecialist(user,message);
-  const response=await app.fetch(request,env,ctx);
+  const user=await getAuthUser(env,request);if(!user)return app.fetch(request,env,ctx);
+  let message='';try{const body=await request.clone().json<{message?:string}>();message=body.message?.trim()||''}catch{}
+  const route=routeNibiruSpecialist(user,message),response=await app.fetch(request,env,ctx);
   if(!response.headers.get('content-type')?.includes('application/json'))return response;
-  let payload:any;try{payload=await response.clone().json()}catch{return response}
-  if(!payload?.ok||typeof payload.answer!=='string')return response;
+  let payload:any;try{payload=await response.clone().json()}catch{return response}if(!payload?.ok||typeof payload.answer!=='string')return response;
+  let coachPlan:any=null;
+  if(route.specialist==='EDUCATION_COACH'&&user.role==='STUDENT'&&user.student_id){
+    const result=await createOrReuseDailyCoachPlan(env,user);
+    if(result.available){const summary=coachPlanSummary(result);coachPlan=result;if(summary&&!payload.answer.includes('Bugünkü planın'))payload.answer=`${payload.answer}\n\n📋 Bugünkü planın sisteme kaydedildi:\n${summary}`;}
+    else coachPlan={available:false,reason:result.reason};
+  }
   const headers=new Headers(response.headers);headers.delete('content-length');headers.set('content-type','application/json; charset=utf-8');
-  return new Response(JSON.stringify({...payload,orchestration:{version:'standard-v1',...route}}),{status:response.status,statusText:response.statusText,headers});
+  return new Response(JSON.stringify({...payload,orchestration:{version:'standard-v1',...route},coachPlan}),{status:response.status,statusText:response.statusText,headers});
 }
 
 export default {
-  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
-    const url=new URL(request.url);
-    if(url.pathname==='/api/standard-readiness'&&request.method==='GET')return readiness(request,env);
-    if(url.pathname==='/api/nibiru/chat'&&request.method==='POST')return orchestratedNibiruChat(request,env,ctx);
-    return app.fetch(request,env,ctx);
-  },
+  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{const url=new URL(request.url);if(url.pathname==='/api/standard-readiness'&&request.method==='GET')return readiness(request,env);if(url.pathname.startsWith('/api/nibiru/coach/'))return coachApi(request,env,url);if(url.pathname==='/api/nibiru/chat'&&request.method==='POST')return orchestratedNibiruChat(request,env,ctx);return app.fetch(request,env,ctx);},
   async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){if('scheduled' in app&&typeof app.scheduled==='function')return app.scheduled(event,env,ctx);},
 } satisfies ExportedHandler<Env>;
