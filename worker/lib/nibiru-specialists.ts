@@ -35,6 +35,7 @@ export function routeNibiruSpecialist(user:Pick<AuthUser,'role'>,message:string)
   const m=lower(message);
   const subjectHint=detectSubjectHint(message);
   const target=/(hedef|üniversite|bölüm|meslek|lise hedef|yks|lgs|tyt|ayt|sıralama|tercih|kaç net daha)/.test(m);
+  const guidanceAssessment=/(rba|rehberlik testi|rehberlik ölçe|çalışma alışkanlık.*test|motivasyon.*test|sınav hazırlık.*test|öz değerlendirme)/.test(m);
   const plan=/(bugün ne (çalış|yap)|çalışma plan|bugünkü plan|program|kaç soru|görev|ödev plan|bu hafta ne çalış)/.test(m);
   const subjectQuestion=Boolean(subjectHint)||/(bu soru|soruyu|neden yanlış|nasıl çöz|nasıl çözer|konuyu anlat|kazanımı anlat|çözümünü anlat)/.test(m);
 
@@ -43,6 +44,7 @@ export function routeNibiruSpecialist(user:Pick<AuthUser,'role'>,message:string)
   if(user.role==='GUIDANCE_TEACHER')return{specialist:'GUIDANCE_COUNSELOR',label:'Rehber Öğretmen AI',reason:'Rehber öğretmen rolünde sınıfın tüm derslerini kapsayan gelişim rotası önceliklendirildi.',subjectHint};
   if(user.role==='TEACHER')return{specialist:'SUBJECT_TEACHER',label:subjectHint?`${subjectHint} Branş Öğretmeni AI`:'Branş Öğretmeni AI',reason:'Öğretmenin atanmış branş ve sınıf kapsamı önceliklendirildi.',subjectHint};
   if(user.role==='STUDENT'){
+    if(guidanceAssessment)return{specialist:'GUIDANCE_COUNSELOR',label:'Rehber Öğretmen AI',reason:'Mesaj RBA veya rehberlik amaçlı eğitimsel öz-değerlendirme istiyor; gerçek rehber öğretmen onayı zorunlu.',subjectHint};
     if(target)return{specialist:'GUIDANCE_COUNSELOR',label:'Rehber Öğretmen AI',reason:'Mesaj hedef, LGS/YKS, üniversite/bölüm veya ilerleme rotasıyla ilgili.',subjectHint};
     if(plan)return{specialist:'EDUCATION_COACH',label:'Eğitim Koçu AI',reason:'Mesaj günlük/haftalık çalışma uygulaması ve görev planıyla ilgili.',subjectHint};
     if(subjectQuestion)return{specialist:'SUBJECT_TEACHER',label:subjectHint?`${subjectHint} Branş Öğretmeni AI`:'Branş Öğretmeni AI',reason:'Mesaj belirli bir ders, soru, konu veya kazanım açıklaması istiyor.',subjectHint};
