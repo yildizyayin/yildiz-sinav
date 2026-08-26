@@ -3,7 +3,28 @@ PRODUCT_NAME=Ölçme Platformu
 TURNSTILE_SITE_KEY=
 TURNSTILE_SECRET_KEY=
 SESSION_SECRET=replace-me
+
+# Nibiru multi-AI routing
 NIBIRU_AI_MODEL=@cf/zai-org/glm-4.7-flash
+NIBIRU_AI_GATEWAY_ID=default
+NIBIRU_ROUTER_MODE=SMART
+NIBIRU_FAST_MODEL=@cf/zai-org/glm-4.7-flash
+NIBIRU_META_MODEL=@cf/meta/llama-4-scout-17b-16e-instruct
+NIBIRU_REASONING_MODEL=@cf/nvidia/nemotron-3-120b-a12b
+
+# Nibiru Voice — non-secret model/voice selection
+NIBIRU_STT_MODEL=@cf/openai/whisper-large-v3-turbo
+NIBIRU_GOOGLE_TTS_VOICE=tr-TR-Wavenet-E
+NIBIRU_OPENAI_TTS_MODEL=openai/tts-1
+NIBIRU_OPENAI_TTS_HD_MODEL=openai/tts-1-hd
+NIBIRU_OPENAI_DIRECT_TTS_MODEL=gpt-4o-mini-tts
+NIBIRU_OPENAI_TTS_VOICE=alloy
+
+# Optional Nibiru Voice secrets. Keep real values in Cloudflare Secrets.
+# Google WaveNet becomes Standard primary when this service-account JSON is defined.
+GOOGLE_TTS_SERVICE_ACCOUNT_JSON=
+# Optional direct OpenAI premium TTS. Without it, Cloudflare Unified Billing TTS is used.
+OPENAI_TTS_API_KEY=
 
 # Standard micro-learning provider
 YOUTUBE_API_KEY=
