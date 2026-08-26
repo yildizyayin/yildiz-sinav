@@ -2,6 +2,7 @@ import app from './question-bank-standard-entry';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,json,one } from './lib/db';
+import { routeNibiruSpecialist } from './lib/nibiru-specialists';
 import { evaluateProviderActivation,evaluateStandardReadiness } from './lib/standard-readiness';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
@@ -56,7 +57,26 @@ async function readiness(request:Request,env:Env){
   return json({ok:true,environment:env.ENVIRONMENT||'unknown',generatedAt:new Date().toISOString(),...report,providers,operational,operationalError,acceptance:{coreReady:report.summary.coreReady,blockingSetup,externalSetup,coreAcceptanceReady,saleReady,standardAcceptanceReady:saleReady}});
 }
 
+async function orchestratedNibiruChat(request:Request,env:Env,ctx:ExecutionContext){
+  const user=await getAuthUser(env,request);
+  if(!user)return app.fetch(request,env,ctx);
+  let message='';
+  try{const body=await request.clone().json<{message?:string}>();message=body.message?.trim()||''}catch{}
+  const route=routeNibiruSpecialist(user,message);
+  const response=await app.fetch(request,env,ctx);
+  if(!response.headers.get('content-type')?.includes('application/json'))return response;
+  let payload:any;try{payload=await response.clone().json()}catch{return response}
+  if(!payload?.ok||typeof payload.answer!=='string')return response;
+  const headers=new Headers(response.headers);headers.delete('content-length');headers.set('content-type','application/json; charset=utf-8');
+  return new Response(JSON.stringify({...payload,orchestration:{version:'standard-v1',...route}}),{status:response.status,statusText:response.statusText,headers});
+}
+
 export default {
-  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{const url=new URL(request.url);if(url.pathname==='/api/standard-readiness'&&request.method==='GET')return readiness(request,env);return app.fetch(request,env,ctx);},
+  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
+    const url=new URL(request.url);
+    if(url.pathname==='/api/standard-readiness'&&request.method==='GET')return readiness(request,env);
+    if(url.pathname==='/api/nibiru/chat'&&request.method==='POST')return orchestratedNibiruChat(request,env,ctx);
+    return app.fetch(request,env,ctx);
+  },
   async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){if('scheduled' in app&&typeof app.scheduled==='function')return app.scheduled(event,env,ctx);},
 } satisfies ExportedHandler<Env>;
