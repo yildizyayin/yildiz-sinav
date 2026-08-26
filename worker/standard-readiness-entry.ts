@@ -5,6 +5,8 @@ import { all,json,one } from './lib/db';
 import { coachPlanSummary,completeCoachItem,createOrReuseDailyCoachPlan,getTodayCoachPlan } from './lib/education-coach';
 import { buildStudentTargetAnalysisV2,guidanceSummary } from './lib/target-analysis-v2';
 import { routeNibiruSpecialist } from './lib/nibiru-specialists';
+import { withNibiruAiRouter } from './lib/nibiru-ai-proxy';
+import { nibiruRoutingMatrix } from './lib/nibiru-model-router';
 import { evaluateProviderActivation,evaluateStandardReadiness } from './lib/standard-readiness';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
@@ -45,7 +47,13 @@ async function readiness(request:Request,env:Env){
   let operational:OperationalCheck[]=[];let operationalError:string|null=null;
   if(report.summary.missing===0){try{operational=await operationalChecks(env)}catch(e){operationalError=e instanceof Error?e.message:'OPERATIONAL_CHECK_FAILED'}}
   const blockingSetup=operational.filter(x=>x.blocking&&x.state==='SETUP_REQUIRED').length,externalSetup=report.summary.configRequired,coreAcceptanceReady=report.summary.coreReady&&blockingSetup===0,saleReady=coreAcceptanceReady&&externalSetup===0&&!operationalError;
-  return json({ok:true,environment:env.ENVIRONMENT||'unknown',generatedAt:new Date().toISOString(),...report,providers,operational,operationalError,acceptance:{coreReady:report.summary.coreReady,blockingSetup,externalSetup,coreAcceptanceReady,saleReady,standardAcceptanceReady:saleReady}});
+  return json({ok:true,environment:env.ENVIRONMENT||'unknown',generatedAt:new Date().toISOString(),...report,providers,aiRouting:nibiruRoutingMatrix(env),operational,operationalError,acceptance:{coreReady:report.summary.coreReady,blockingSetup,externalSetup,coreAcceptanceReady,saleReady,standardAcceptanceReady:saleReady}});
+}
+
+async function routingApi(request:Request,env:Env){
+  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
+  if(user.role!=='SUPER_ADMIN')return fail(403,'SUPER_ADMIN_ONLY','AI model yönlendirme matrisi yalnız Süper Admin içindir.');
+  return json({ok:true,environment:env.ENVIRONMENT||'unknown',routing:nibiruRoutingMatrix(env),policy:{identity:'Nibiru',gateway:'Cloudflare AI Gateway',personalizedCache:false,authoritativeCalculations:'DETERMINISTIC_ENGINES',providerNamesHiddenFromEndUsers:true}});
 }
 
 async function coachApi(request:Request,env:Env,url:URL){
@@ -84,10 +92,19 @@ async function orchestratedNibiruChat(request:Request,env:Env,ctx:ExecutionConte
     }catch{guidanceRoute={error:'GUIDANCE_ROUTE_FAILED'};}
   }
   const headers=new Headers(response.headers);headers.delete('content-length');headers.set('content-type','application/json; charset=utf-8');
-  return new Response(JSON.stringify({...payload,orchestration:{version:'standard-v1',...route},coachPlan,guidanceRoute}),{status:response.status,statusText:response.statusText,headers});
+  return new Response(JSON.stringify({...payload,orchestration:{version:'multi-ai-v1',...route},coachPlan,guidanceRoute}),{status:response.status,statusText:response.statusText,headers});
 }
 
 export default {
-  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{const url=new URL(request.url);if(url.pathname==='/api/standard-readiness'&&request.method==='GET')return readiness(request,env);if(url.pathname.startsWith('/api/nibiru/coach/'))return coachApi(request,env,url);if(url.pathname==='/api/nibiru/guidance/route')return guidanceApi(request,env);if(url.pathname==='/api/nibiru/chat'&&request.method==='POST')return orchestratedNibiruChat(request,env,ctx);return app.fetch(request,env,ctx);},
-  async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){if('scheduled' in app&&typeof app.scheduled==='function')return app.scheduled(event,env,ctx);},
+  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
+    const routedEnv=withNibiruAiRouter(env),url=new URL(request.url);
+    if(url.pathname==='/api/standard-readiness'&&request.method==='GET')return readiness(request,routedEnv);
+    if(url.pathname==='/api/nibiru/ai-routing'&&request.method==='GET')return routingApi(request,routedEnv);
+    if(url.pathname.startsWith('/api/nibiru/coach/'))return coachApi(request,routedEnv,url);
+    if(url.pathname==='/api/nibiru/guidance/route')return guidanceApi(request,routedEnv);
+    if(url.pathname==='/api/nibiru/chat'&&request.method==='POST')return orchestratedNibiruChat(request,routedEnv,ctx);
+    // The wrapped Env also reaches the WhatsApp webhook deeper in the app chain, so Web and WhatsApp use one model policy.
+    return app.fetch(request,routedEnv,ctx);
+  },
+  async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){const routedEnv=withNibiruAiRouter(env);if('scheduled' in app&&typeof app.scheduled==='function')return app.scheduled(event,routedEnv,ctx);},
 } satisfies ExportedHandler<Env>;
