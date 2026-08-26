@@ -34,6 +34,7 @@ async function guardOfficialMappingImport(request:Request,env:Env,ctx:ExecutionC
 async function question(env:Env,id:string){return one<any>(env.DB.prepare(`SELECT * FROM question_bank WHERE id=?`).bind(id))}
 function canManageQuestion(user:AuthUser,q:any){return user.role==='SUPER_ADMIN'||(q?.owner_type==='INSTITUTION'&&q?.owner_id===user.institution_id&&['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))}
 function evidenceUrl(value:unknown){const text=String(value||'').trim();if(!text)return null;try{const u=new URL(text);return u.protocol==='https:'?u.toString():null}catch{return null}}
+async function verifiedRightsProof(env:Env,questionId:string,copyrightStatus:string){if(!requiresVerifiedRightsBeforeApproval(copyrightStatus))return null;const basis=rightsBasisForCopyright(copyrightStatus);return one<any>(env.DB.prepare(`SELECT id FROM question_provenance_records WHERE question_id=? AND rights_basis=? AND verification_status='VERIFIED' ORDER BY reviewed_at DESC LIMIT 1`).bind(questionId,basis));}
 
 async function createQuestionWithProvenance(request:Request,env:Env,ctx:ExecutionContext){
  const user=await auth(request,env);const body=await bodyOf(request);const response=await app.fetch(request,env,ctx);if(!user||!response.ok)return response;
@@ -47,11 +48,23 @@ async function createQuestionWithProvenance(request:Request,env:Env,ctx:Executio
 async function guardQuestionApproval(request:Request,env:Env,ctx:ExecutionContext,id:string){
  const user=await auth(request,env);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const body=await bodyOf(request);if(String(body.status||'').toUpperCase()!=='APPROVED')return app.fetch(request,env,ctx);const q=await question(env,id);if(!q)return notFound('Soru bulunamadı.');
  if(requiresVerifiedRightsBeforeApproval(q.copyright_status)){
-  const basis=rightsBasisForCopyright(q.copyright_status);const proof=await one<any>(env.DB.prepare(`SELECT id FROM question_provenance_records WHERE question_id=? AND rights_basis=? AND verification_status='VERIFIED' ORDER BY reviewed_at DESC LIMIT 1`).bind(id,basis));
+  const basis=rightsBasisForCopyright(q.copyright_status);const proof=await verifiedRightsProof(env,id,q.copyright_status);
   if(!proof)return fail(400,'QUESTION_RIGHTS_EVIDENCE_REQUIRED','Lisanslı veya kamu malı soru, hak/provenance kanıtı Süper Admin tarafından doğrulanmadan basılabilir onaya geçemez.',{questionId:id,requiredRightsBasis:basis});
  }
  if(String(q.copyright_status)==='RESTRICTED')return fail(400,'COPYRIGHT_BLOCKED','Kısıtlı telif durumundaki soru basılabilir havuza onaylanamaz.');
  const response=await app.fetch(request,env,ctx);if(response.ok&&q.copyright_status==='OWNED')await env.DB.prepare(`UPDATE question_provenance_records SET verification_status='VERIFIED',reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE question_id=? AND rights_basis='OWNED' AND verification_status='DECLARED'`).bind(user.id,id).run();return response;
+}
+
+async function guardQuestionPatch(request:Request,env:Env,ctx:ExecutionContext,id:string){
+ const user=await auth(request,env);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const q=await question(env,id);if(!q)return notFound('Soru bulunamadı.');const body=await bodyOf(request);const nextStatus=String(body.copyrightStatus??q.copyright_status).toUpperCase();const currentStatus=String(q.copyright_status||'OWNED').toUpperCase();
+ if(body.keepApproved&&requiresVerifiedRightsBeforeApproval(nextStatus)){
+  const proof=await verifiedRightsProof(env,id,nextStatus);if(!proof)return fail(400,'QUESTION_RIGHTS_EVIDENCE_REQUIRED','Telif statüsü değiştirilirken doğrulanmış hak/provenance kanıtı olmadan APPROVED durumu korunamaz.',{questionId:id,requiredRightsBasis:rightsBasisForCopyright(nextStatus)});
+ }
+ if(body.keepApproved&&nextStatus==='RESTRICTED')return fail(400,'COPYRIGHT_BLOCKED','Kısıtlı telif durumuna geçirilen soru APPROVED olarak korunamaz.');
+ const response=await app.fetch(request,env,ctx);if(!response.ok||nextStatus===currentStatus)return response;
+ const basis=rightsBasisForCopyright(nextStatus);const existing=await one<any>(env.DB.prepare(`SELECT id FROM question_provenance_records WHERE question_id=? AND rights_basis=? ORDER BY created_at DESC LIMIT 1`).bind(id,basis));if(!existing){await env.DB.prepare(`INSERT INTO question_provenance_records(id,question_id,rights_basis,verification_status,created_by) VALUES(?,?,?,'DECLARED',?)`).bind(uuid('qpr'),id,basis,user.id).run();}
+ if(requiresVerifiedRightsBeforeApproval(nextStatus)&&!await verifiedRightsProof(env,id,nextStatus))await env.DB.prepare(`UPDATE question_bank SET review_status='REVIEW',reviewed_by=NULL,reviewed_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run();
+ return response;
 }
 
 async function listProvenance(request:Request,env:Env,questionId:string){const user=await auth(request,env);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const q=await question(env,questionId);if(!q)return notFound('Soru bulunamadı.');if(!canManageQuestion(user,q))return forbidden();const rows=await all<any>(env.DB.prepare(`SELECT p.*,cu.display_name created_by_name,ru.display_name reviewed_by_name FROM question_provenance_records p LEFT JOIN users cu ON cu.id=p.created_by LEFT JOIN users ru ON ru.id=p.reviewed_by WHERE p.question_id=? ORDER BY p.created_at DESC`).bind(questionId));return json({ok:true,question:{id:q.id,copyrightStatus:q.copyright_status,reviewStatus:q.review_status},records:rows});}
@@ -83,6 +96,7 @@ export default {
   if(p==='/api/official-question-intelligence/mappings/import'&&request.method==='POST')return guardOfficialMappingImport(request,env,ctx);
   if(p==='/api/platform/questions'&&request.method==='POST')return createQuestionWithProvenance(request,env,ctx);
   const review=p.match(/^\/api\/question-bank-standard\/([^/]+)\/review$/);if(review&&request.method==='PATCH')return guardQuestionApproval(request,env,ctx,review[1]);
+  const patch=p.match(/^\/api\/question-bank-standard\/([^/]+)$/);if(patch&&request.method==='PATCH')return guardQuestionPatch(request,env,ctx,patch[1]);
   if(p==='/api/question-backbone/status'&&request.method==='GET')return backboneStatus(request,env);
   const list=p.match(/^\/api\/question-provenance\/([^/]+)$/);if(list&&request.method==='GET')return listProvenance(request,env,list[1]);if(list&&request.method==='POST')return declareProvenance(request,env,list[1]);
   const verify=p.match(/^\/api\/question-provenance\/records\/([^/]+)$/);if(verify&&request.method==='PATCH')return reviewProvenance(request,env,verify[1]);
