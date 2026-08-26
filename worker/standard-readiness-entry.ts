@@ -9,16 +9,29 @@ import { withNibiruAiRouter } from './lib/nibiru-ai-proxy';
 import { nibiruRoutingMatrix } from './lib/nibiru-model-router';
 import { evaluateProviderActivation,evaluateStandardReadiness } from './lib/standard-readiness';
 import { guidanceAssessmentChatExtension,handleGuidanceAssessmentApi } from './lib/guidance-assessment-controller';
+import { completeCoachFollowup,getCoachMiniTest,startCoachMiniTest,submitCoachMiniTest } from './lib/coach-mastery-cycle';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
 type OperationalCheck={key:string;label:string;state:'READY'|'SETUP_REQUIRED';value:number;detail:string;blocking:boolean};
 async function count(env:Env,sql:string){const row=await one<{c:number}>(env.DB.prepare(sql));return Number(row?.c||0)}
 
 async function operationalChecks(env:Env):Promise<OperationalCheck[]>{
-  const [readyOpticals,verifiedScoring,printableQuestions,publishedWorksheets,officialTargets,activeInstitutions,activeStudents,teacherAssignments]=await Promise.all([
+  const [readyOpticals,verifiedScoring,printableQuestions,measurableOutcomes,publishedWorksheets,officialTargets,activeInstitutions,activeStudents,teacherAssignments]=await Promise.all([
     count(env,`SELECT COUNT(*) c FROM optical_templates t WHERE t.active=1 AND t.status='READY' AND EXISTS(SELECT 1 FROM optical_template_versions v WHERE v.template_id=t.id AND v.active=1)`),
     count(env,`SELECT COUNT(*) c FROM scoring_rule_versions WHERE verified=1`),
     count(env,`SELECT COUNT(*) c FROM question_bank WHERE review_status='APPROVED' AND copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')`),
+    count(env,`SELECT COUNT(*) c FROM (
+      SELECT l.node_id
+      FROM question_learning_links l
+      JOIN question_bank q ON q.id=l.question_id
+      WHERE l.node_id LIKE 'ln_%'
+        AND q.review_status='APPROVED'
+        AND q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')
+        AND q.correct_answer IS NOT NULL
+        AND q.options_json IS NOT NULL
+      GROUP BY l.node_id
+      HAVING COUNT(DISTINCT q.id)>=5
+    ) measurable_outcomes`),
     count(env,`SELECT COUNT(*) c FROM worksheets WHERE status='PUBLISHED'`),
     count(env,`SELECT (SELECT COUNT(*) FROM secondary_school_targets WHERE active=1)+(SELECT COUNT(*) FROM university_program_targets WHERE active=1) c`),
     count(env,`SELECT COUNT(*) c FROM institutions WHERE status='ACTIVE'`),
@@ -30,6 +43,7 @@ async function operationalChecks(env:Env):Promise<OperationalCheck[]>{
     make('READY_OPTICAL','Okunabilir hazır optik şablonu',readyOpticals,`${readyOpticals} hazır optik şablonu var.`,'En az bir optik şablon READY durumuna getirilmelidir.',true),
     make('VERIFIED_SCORING','Doğrulanmış puanlama kuralı',verifiedScoring,`${verifiedScoring} doğrulanmış puanlama sürümü var.`,'Resmî/standart değerlendirme için doğrulanmış puanlama kuralı gerekir.',true),
     make('PRINTABLE_QUESTIONS','Basılabilir onaylı soru',printableQuestions,`${printableQuestions} soru Kişiye Özel Kitap / Sıfır Hata için kullanılabilir.`,'Soru Havuzunda APPROVED + OWNED/LICENSED/PUBLIC_DOMAIN soru eklenmelidir.',true),
+    make('COACH_MINI_TEST_POOL','Ölçülebilir kazanım mini-test havuzu',measurableOutcomes,`${measurableOutcomes} kazanımda en az 5 doğrulanmış mini-test sorusu var.`,'Eğitim Koçu doğrulama döngüsü için en az bir kazanıma 5 onaylı, seçenekli ve cevap anahtarlı soru bağlanmalıdır.',true),
     make('PUBLISHED_WORKSHEETS','Yayınlanmış föy',publishedWorksheets,`${publishedWorksheets} yayınlanmış föy var.`,'Standard Föy Merkezi için en az bir yayınlanmış föy hazırlanmalıdır.',true),
     make('OFFICIAL_TARGET_DATA','LGS/YKS hedef verisi',officialTargets,`${officialTargets} resmî hedef kaydı hazır.`,'LGS/YKS hedef araması için resmî hedef verisi içe aktarılmalıdır.',false),
     make('ACTIVE_INSTITUTION','Aktif kurum',activeInstitutions,`${activeInstitutions} aktif kurum var.`,'Demo/kabul testi için aktif kurum oluşturulmalıdır.',true),
@@ -61,8 +75,29 @@ async function coachApi(request:Request,env:Env,url:URL){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(user.role!=='STUDENT'||!user.student_id)return fail(403,'STUDENT_ONLY','Eğitim Koçu günlük planı öğrenci hesabına açıktır.');
  if(url.pathname==='/api/nibiru/coach/daily-plan'&&request.method==='GET'){const result=await getTodayCoachPlan(env,user);return json({ok:true,...result});}
  if(url.pathname==='/api/nibiru/coach/daily-plan'&&request.method==='POST'){const result=await createOrReuseDailyCoachPlan(env,user);if(!result.available)return fail(result.reason==='INSUFFICIENT_EVIDENCE'?409:400,result.reason||'COACH_PLAN_UNAVAILABLE','Günlük plan oluşturmak için yeterli doğrulanmış akademik kanıt bulunamadı.');return json({ok:true,...result},result.reused?200:201);}
+ const startTest=url.pathname.match(/^\/api\/nibiru\/coach\/items\/([^/]+)\/mini-test$/);
+ if(startTest&&request.method==='POST'){
+  const result=await startCoachMiniTest(env,user,startTest[1]);
+  if(!result.ok){
+   if(result.reason==='ITEM_NOT_FOUND')return fail(404,'ITEM_NOT_FOUND','Kazanım görevi bulunamadı.');
+   if(result.reason==='SUPPORT_REQUIRED')return json({...result,error:{code:'SUPPORT_REQUIRED',message:'Yeni ölçümden önce açılan destek adımlarından en az birini tamamlayın.'}},409);
+   if(result.reason==='INSUFFICIENT_VERIFIED_QUESTIONS')return json({...result,error:{code:'INSUFFICIENT_VERIFIED_QUESTIONS',message:'Bu kazanım için mini-test oluşturacak en az 5 onaylı ve telif hakkı uygun soru bulunmuyor.'}},409);
+   return fail(400,result.reason||'MINI_TEST_FAILED','Mini-test başlatılamadı.');
+  }
+  return json(result,result.reused?200:201);
+ }
+ const miniTest=url.pathname.match(/^\/api\/nibiru\/coach\/mini-tests\/([^/]+)$/);
+ if(miniTest&&request.method==='GET'){const result=await getCoachMiniTest(env,user,miniTest[1]);if(!result.ok)return fail(result.reason==='TEST_NOT_FOUND'?404:403,result.reason||'MINI_TEST_FAILED','Mini-test bulunamadı.');return json(result);}
+ const submitTest=url.pathname.match(/^\/api\/nibiru\/coach\/mini-tests\/([^/]+)\/submit$/);
+ if(submitTest&&request.method==='POST'){
+  const body:any=await request.json().catch(()=>({}));const result=await submitCoachMiniTest(env,user,submitTest[1],body.answers);
+  if(!result.ok){if(result.reason==='TEST_NOT_FOUND')return fail(404,'TEST_NOT_FOUND','Mini-test bulunamadı.');if(result.reason==='ALL_QUESTIONS_REQUIRED')return fail(400,'ALL_QUESTIONS_REQUIRED','Mini-testi göndermek için bütün soruları cevaplayın.');return fail(403,result.reason||'MINI_TEST_FAILED','Mini-test gönderilemedi.');}
+  return json(result);
+ }
+ const followup=url.pathname.match(/^\/api\/nibiru\/coach\/followups\/([^/]+)\/complete$/);
+ if(followup&&request.method==='PATCH'){const result=await completeCoachFollowup(env,user,followup[1]);if(!result.ok)return fail(result.reason==='FOLLOWUP_NOT_FOUND'?404:403,result.reason||'FOLLOWUP_FAILED','Destek adımı güncellenemedi.');return json(result);}
  const item=url.pathname.match(/^\/api\/nibiru\/coach\/items\/([^/]+)\/complete$/);
- if(item&&request.method==='PATCH'){const body:any=await request.json().catch(()=>({}));const result=await completeCoachItem(env,user,item[1],body.completed!==false);if(!result.ok)return fail(result.reason==='ITEM_NOT_FOUND'?404:403,result.reason||'COACH_ITEM_FAILED','Eğitim Koçu görevi güncellenemedi.');return json(result);}
+ if(item&&request.method==='PATCH'){const body:any=await request.json().catch(()=>({}));const result=await completeCoachItem(env,user,item[1],body.completed!==false);if(!result.ok){const reason='reason' in result?result.reason:'COACH_ITEM_FAILED';if(reason==='ITEM_NOT_FOUND')return fail(404,'ITEM_NOT_FOUND','Eğitim Koçu görevi bulunamadı.');if(reason==='MINI_TEST_REQUIRED')return fail(409,'MINI_TEST_REQUIRED','Kazanım görevi mini-test ile doğrulanmadan tamamlanamaz.');return fail(403,reason||'COACH_ITEM_FAILED','Eğitim Koçu görevi güncellenemedi.');}return json(result);}
  return fail(404,'NOT_FOUND','Eğitim Koçu API yolu bulunamadı.');
 }
 
