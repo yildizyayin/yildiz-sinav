@@ -60,13 +60,13 @@ export async function myGuidanceSessions(env:Env,user:AuthUser){
 
 export async function counselorQueue(env:Env,user:AuthUser){
  if(user.role!=='GUIDANCE_TEACHER'||!user.institution_id)return forbidden('Rehberlik onay kuyruğu gerçek rehber öğretmen hesabına açıktır.');
- const rows=await all<any>(env.DB.prepare(`SELECT s.id,s.student_id,s.status,s.proposal_reason,s.created_at,s.approved_at,s.submitted_at,i.code,i.title,i.category,se.first_name,se.last_name,e.class_id,c.name class_name
+ const rows=await all<any>(env.DB.prepare(`SELECT s.id,s.student_id,s.status,s.proposal_reason,s.created_at,s.approved_at,s.submitted_at,s.scored_result_json,i.code,i.title,i.category,se.first_name,se.last_name,e.class_id,c.name class_name
  FROM guidance_assessment_sessions s JOIN guidance_instruments i ON i.id=s.instrument_id JOIN student_entities se ON se.id=s.student_id
  JOIN student_enrollments e ON e.student_id=s.student_id AND e.institution_id=s.institution_id AND e.status IN ('ACTIVE','GRADUATED')
  LEFT JOIN classes c ON c.id=e.class_id
  WHERE s.institution_id=? AND EXISTS(SELECT 1 FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=s.institution_id AND ta.assignment_type='GUIDANCE' AND ta.active=1 AND (ta.class_id=e.class_id OR ta.class_id IS NULL))
  AND s.status IN ('PROPOSED','APPROVED','IN_PROGRESS','SUBMITTED') ORDER BY CASE s.status WHEN 'SUBMITTED' THEN 0 WHEN 'PROPOSED' THEN 1 ELSE 2 END,s.created_at`).bind(user.institution_id,user.id));
- return json({ok:true,sessions:rows});
+ return json({ok:true,sessions:rows.map(row=>({...row,scored_result:row.status==='SUBMITTED'?parseJson<ScoreResult|null>(row.scored_result_json,null):null,scored_result_json:undefined}))});
 }
 
 export async function counselorDecision(request:Request,env:Env,user:AuthUser,id:string,action:'approve'|'reject'){
