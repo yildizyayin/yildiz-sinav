@@ -9,7 +9,15 @@ export interface Env {
   TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET_KEY?: string;
   SESSION_SECRET?: string;
+  // Backward-compatible single model override. Prefer the smart router variables below.
   NIBIRU_AI_MODEL?: string;
+  NIBIRU_AI_GATEWAY_ID?: string;
+  NIBIRU_ROUTER_MODE?: 'SMART' | 'FAST_ONLY' | 'LEGACY';
+  NIBIRU_FAST_MODEL?: string;
+  NIBIRU_META_MODEL?: string;
+  NIBIRU_REASONING_MODEL?: string;
+  NIBIRU_CUSTOM_MODEL?: string;
+  NIBIRU_CUSTOM_MODEL_MODE?: 'PRIMARY' | 'FALLBACK' | 'OFF';
   YOUTUBE_API_KEY?: string;
   WHATSAPP_VERIFY_TOKEN?: string;
   WHATSAPP_APP_SECRET?: string;
