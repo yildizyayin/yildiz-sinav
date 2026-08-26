@@ -10,7 +10,7 @@ function parseJson<T>(value:unknown,fallback:T):T{try{return typeof value==='str
 async function resolveStudentId(env:Env,user:AuthUser,url:URL){
  if(user.role==='STUDENT')return user.student_id;
  const requested=url.searchParams.get('studentId');if(requested)return requested;
- if(user.role==='PARENT'){const row=await one<{student_id:string}>(env.DB.prepare(`SELECT student_id FROM parent_student_links WHERE parent_user_id=? AND student_id=? AND active=1`).bind(user.id,requested));return row?.student_id||null}
+ if(user.role==='PARENT'){const row=await one<{student_id:string}>(env.DB.prepare(`SELECT student_id FROM parent_student_links WHERE parent_user_id=? AND active=1 ORDER BY rowid LIMIT 1`).bind(user.id));return row?.student_id||null}
  return null;
 }
 
