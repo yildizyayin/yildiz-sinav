@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-26T09:44:39.104Z`
+- Time: `2026-08-26T09:55:08.385Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -55,6 +55,7 @@
 - ✅ **Standard readiness gate** — core ready · external setup 2
 - ✅ **External provider activation contract** — YouTube setup · WhatsApp setup
 - ✅ **Standard question bank** — 18 approved printable questions
+- ✅ **Education Coach persistent daily plan** — 2 tasks · same-day reuse · progress 50%
 - ✅ **Nibiru specialist orchestration** — study plan → Education Coach · math question → Subject Teacher AI
 - ✅ **Zero Error exam source** — institution exams are selectable, not only central snapshots
 - ✅ **Correct / wrong / blank question review** — all answer states available
