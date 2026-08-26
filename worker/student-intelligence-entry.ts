@@ -1,4 +1,4 @@
-import app from './content-question-backbone-entry';
+import app from './academic-growth-entry';
 import type { Env,AuthUser } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,json,one } from './lib/db';
