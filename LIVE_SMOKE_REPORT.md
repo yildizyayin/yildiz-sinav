@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-26T12:09:36.362Z`
+- Time: `2026-08-26T12:23:41.113Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -73,3 +73,12 @@
 - ✅ **Basic results + outcome analysis** — 9 exams · 6 outcome rows
 - ✅ **Role-safe consumable worksheet** — 7. Sınıf Sayısal Föy 1 · PDF + answer key + 40 question supports
 - ✅ **Real registered micro-learning route** — solution + topic video available without YouTube API auto-discovery
+
+## Counselor-approved RBA / guidance governance
+
+- ✅ **Educational instrument registry** — RBA + counselor approval policy
+- ✅ **Pre-approval student boundary** — questions/submission blocked
+- ✅ **Real counselor approval** — assigned GUIDANCE_TEACHER opened assessment
+- ✅ **Student assessment submission** — released only after counselor approval
+- ✅ **Counselor review gate** — derived scores accepted into development signals
+- ✅ **Nibiru reviewed-development context** — only REVIEWED educational signals used
