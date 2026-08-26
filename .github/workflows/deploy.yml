@@ -76,6 +76,10 @@ jobs:
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-guidance-governance-smoke.mjs
 
+      - name: Live Student Intelligence / Learning Graph
+        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        run: node scripts/live-student-intelligence-smoke.mjs
+
       - name: Live official education knowledge trust
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-official-knowledge-smoke.mjs
