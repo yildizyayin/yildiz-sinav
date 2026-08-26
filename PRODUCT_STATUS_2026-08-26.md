@@ -18,7 +18,7 @@ Bu envanter yalnız bağımsız Ölçme Platformunu kapsar. YILDIZERP; öğrenci
 | Nibiru temel akademik asistan | Teslim edildi | Kritik puan/kimlik hesapları AI'a bırakılmaz |
 | AI Eğitim Koçu | Teslim edildi | 5–10 soruluk mini-test, %80 geçme, destek ve yeniden ölçüm zorunlu |
 | LGS/YKS hedef motoru | Motor ve doğrulanmış içe aktarma akışı teslim edildi | Gerçek hedef kayıtları resmî kaynak paketi gelmeden üretilmez |
-| Föy Merkezi ve yıllık föy/soru planı | 36 haftalık planlayıcı teslim edildi | Yalnız doğrulanmış müfredattan plan üretir; eksik soruyu `CONTENT_REQUIRED` işaretler |
+| Föy Merkezi ve yıllık föy/soru planı | 16 sayısal + 16 sözel yıllık planlayıcı teslim edildi | Her föyde ders başına 20 soru; yalnız doğrulanmış müfredattan üretir ve eksik soruyu `CONTENT_REQUIRED` işaretler |
 | Mini öğrenme oyunları | 5 gerçek oyun akışı teslim edildi | Sınıf 5–12; skor ve XP sunucuda sınırlandırılır |
 | Free/Standard, Gold, Premium | Teslim edildi | Standard ücretsiz; Gold 100 TL/yıl; Premium 300 TL/yıl |
 | Ödeme sonrası Super Admin onayı | Banka transferi/dekont akışı teslim edildi | Referans olmadan onay verilemez; aylık Live Credit otomatik işlenir |

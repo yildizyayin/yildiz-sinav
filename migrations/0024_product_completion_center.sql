@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS annual_content_plans (
   id TEXT PRIMARY KEY,
   academic_year TEXT NOT NULL,
   grade_level INTEGER NOT NULL CHECK(grade_level BETWEEN 5 AND 12),
-  week_count INTEGER NOT NULL DEFAULT 36 CHECK(week_count BETWEEN 1 AND 52),
+  week_count INTEGER NOT NULL DEFAULT 16 CHECK(week_count BETWEEN 1 AND 52),
   questions_per_subject INTEGER NOT NULL DEFAULT 20 CHECK(questions_per_subject BETWEEN 5 AND 100),
   curriculum_version_id TEXT NOT NULL REFERENCES curriculum_versions(id),
   status TEXT NOT NULL DEFAULT 'PLANNED' CHECK(status IN ('PLANNED','IN_PROGRESS','READY','ARCHIVED')),

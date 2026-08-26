@@ -17,6 +17,10 @@ describe('product completion contracts',()=>{
   expect(migration).toContain("'ln_'||NEW.id");
  });
 
+ it('defaults the annual plan to sixteen numeric and sixteen verbal issues',()=>{
+  expect(migration).toContain('week_count INTEGER NOT NULL DEFAULT 16');
+ });
+
  it('classifies numeric and verbal tracks deterministically',()=>{
   expect(numericSubject('MAT','Matematik')).toBe(true);
   expect(numericSubject('FEN','Fen Bilimleri')).toBe(true);
