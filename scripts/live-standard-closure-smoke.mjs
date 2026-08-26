@@ -21,9 +21,9 @@ try{
  assert(prefs?.preferences?.appearance==='DARK','Student personalization did not persist',prefs);
  const home=await jsonReq('/api/student-standard/home-context',{cookie:student});
  assert(home?.preferences?.appearance==='DARK','Personalized home context did not reuse preferences',home);
- assert(home?.countdown?.target_date==='2027-06-01'&&home?.countdown?.label==='Standard Kabul Sınavı','Countdown target did not persist into home context',home);
- assert(Number.isFinite(Number(home?.countdown?.remaining_seconds)),'Countdown live seconds missing',home.countdown);
- passed('Student personalization + countdown','preferences persisted · live countdown context');
+ assert(home?.countdown?.targetDate==='2027-06-01'&&home?.countdown?.label==='Standard Kabul Sınavı','Countdown target did not persist into home context',home);
+ assert(Number.isFinite(Number(home?.countdown?.days))&&home?.countdown?.flipClock===true,'Countdown live day/flip context missing',home.countdown);
+ passed('Student personalization + countdown','preferences persisted · live countdown + flip clock context');
 
  const [results,outcomes]=await Promise.all([jsonReq('/api/my-results',{cookie:student}),jsonReq('/api/my-outcomes',{cookie:student})]);
  assert(Array.isArray(results?.exams)&&results.exams.length>0,'Student result history is empty',results);
