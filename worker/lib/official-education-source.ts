@@ -2,7 +2,7 @@ import type { Env } from '../types';
 import { all,one,uuid } from './db';
 
 export type OfficialSourceKind=
- | 'MEB_GENERAL'|'MEB_TYMM'|'MEB_MUFREDAT'|'TTKB'
+ | 'MEB_GENERAL'|'MEB_TYMM'|'MEB_MUFREDAT'|'TTKB'|'MEB_EBA'
  | 'MEB_ROTA_MAARIF'|'MEB_EOKUL'|'OSYM'|'YOK_ATLAS';
 
 type SourcePolicy={kind:OfficialSourceKind;authority:string;title:string;baseUrl:string;roots:string[]};
@@ -12,6 +12,7 @@ export const OFFICIAL_SOURCE_POLICIES:ReadonlyArray<SourcePolicy>=[
  {kind:'MEB_TYMM',authority:'MEB',title:'Türkiye Yüzyılı Maarif Modeli',baseUrl:'https://tymm.meb.gov.tr/',roots:['tymm.meb.gov.tr']},
  {kind:'MEB_MUFREDAT',authority:'TTKB',title:'TTKB Öğretim Programları',baseUrl:'https://mufredat.meb.gov.tr/',roots:['mufredat.meb.gov.tr']},
  {kind:'TTKB',authority:'TTKB',title:'Talim ve Terbiye Kurulu Başkanlığı',baseUrl:'https://ttkb.meb.gov.tr/',roots:['ttkb.meb.gov.tr']},
+ {kind:'MEB_EBA',authority:'MEB',title:'MEB EBA / OGM Materyal',baseUrl:'https://www.eba.gov.tr/',roots:['eba.gov.tr']},
  {kind:'MEB_ROTA_MAARIF',authority:'MEB',title:'MEB Rota Maarif',baseUrl:'https://rotamaarif.meb.gov.tr/',roots:['rotamaarif.meb.gov.tr']},
  {kind:'MEB_EOKUL',authority:'MEB',title:'MEB e-Okul',baseUrl:'https://e-okul.meb.gov.tr/',roots:['e-okul.meb.gov.tr']},
  {kind:'OSYM',authority:'ÖSYM',title:'Ölçme, Seçme ve Yerleştirme Merkezi',baseUrl:'https://www.osym.gov.tr/',roots:['osym.gov.tr']},
@@ -27,6 +28,7 @@ export function inferOfficialSourceKind(authority:string,sourceUrl:string):Offic
  if(host==='tymm.meb.gov.tr'&&a==='MEB')return 'MEB_TYMM';
  if(host==='mufredat.meb.gov.tr'&&(a==='MEB'||a==='TTKB'))return 'MEB_MUFREDAT';
  if(host==='ttkb.meb.gov.tr'&&(a==='MEB'||a==='TTKB'))return 'TTKB';
+ if(hostMatchesRoot(host,'eba.gov.tr')&&a==='MEB')return 'MEB_EBA';
  if(host==='rotamaarif.meb.gov.tr'&&a==='MEB')return 'MEB_ROTA_MAARIF';
  if(host==='e-okul.meb.gov.tr'&&a==='MEB')return 'MEB_EOKUL';
  if(hostMatchesRoot(host,'osym.gov.tr')&&a==='ÖSYM')return 'OSYM';
