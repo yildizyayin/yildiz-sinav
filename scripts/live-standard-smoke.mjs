@@ -35,6 +35,33 @@ try{
  const subjectAi=await req('/api/nibiru/chat',{method:'POST',cookie:student,json:{message:'Bu matematik sorusunu neden yanlış yaptım?'}});
  assert(subjectAi.p?.orchestration?.specialist==='SUBJECT_TEACHER'&&subjectAi.p?.orchestration?.subjectHint==='Matematik','Nibiru did not route subject question to Subject Teacher AI',subjectAi.p);
  passed('Nibiru specialist orchestration','study plan → Education Coach · math question → Subject Teacher AI');
+
+ const instruments=await req('/api/nibiru/guidance/instruments',{cookie:student});
+ assert(instruments.p?.instruments?.some(x=>x.code==='RBA_EDU_V1'),'RBA educational instrument is missing',instruments.p);
+ const rbaChat=await req('/api/nibiru/chat',{method:'POST',cookie:student,json:{message:'RBA testi yapmak istiyorum'}});
+ assert(rbaChat.p?.orchestration?.specialist==='GUIDANCE_COUNSELOR','RBA was not routed to Guidance AI',rbaChat.p);
+ const rbaSession=rbaChat.p?.guidanceAssessment?.proposal?.session;assert(rbaSession?.id&&rbaSession?.status==='PROPOSED','Nibiru did not create counselor approval proposal',rbaChat.p);
+ const blocked=await req(`/api/nibiru/guidance/assessments/${encodeURIComponent(rbaSession.id)}/submit`,{method:'POST',cookie:student,json:{responses:{}},expected:400});
+ assert(blocked.p?.error?.code==='COUNSELOR_APPROVAL_REQUIRED','Student could start RBA without real counselor approval',blocked.p);
+ const counselor=await login('guidance');
+ const queue=await req('/api/nibiru/guidance/assessments/counselor-queue',{cookie:counselor});
+ assert(queue.p?.sessions?.some(x=>x.id===rbaSession.id&&x.status==='PROPOSED'),'RBA proposal is missing from real counselor queue',queue.p);
+ const approved=await req(`/api/nibiru/guidance/assessments/${encodeURIComponent(rbaSession.id)}/approve`,{method:'PATCH',cookie:counselor,json:{note:'Demo rehber öğretmen onayı'}});
+ assert(approved.p?.session?.status==='APPROVED'&&approved.p?.session?.approved_by,'Real counselor approval was not persisted',approved.p);
+ const mine=await req('/api/nibiru/guidance/assessments/my',{cookie:student});
+ const approvedSession=mine.p?.sessions?.find(x=>x.id===rbaSession.id);const items=approvedSession?.question_schema?.items;
+ assert(Array.isArray(items)&&items.length>0,'Approved RBA questions were not released to student',mine.p);
+ const responses=Object.fromEntries(items.map((x,i)=>[x.id,(i%5)+1]));
+ const submitted=await req(`/api/nibiru/guidance/assessments/${encodeURIComponent(rbaSession.id)}/submit`,{method:'POST',cookie:student,json:{responses}});
+ assert(submitted.p?.status==='SUBMITTED','RBA responses were not submitted',submitted.p);
+ const reviewed=await req(`/api/nibiru/guidance/assessments/${encodeURIComponent(rbaSession.id)}/review`,{method:'PATCH',cookie:counselor,json:{note:'Sonuç eğitimsel gelişim planında kullanılabilir.'}});
+ assert(reviewed.p?.session?.status==='REVIEWED'&&reviewed.p?.session?.reviewed_by,'Counselor review was not persisted',reviewed.p);
+ const development=await req('/api/nibiru/guidance/development-profile',{cookie:student});
+ assert(development.p?.development?.available===true&&Number(development.p?.development?.reviewedAssessments||0)>0,'Reviewed RBA did not enter student development context',development.p);
+ const guided=await req('/api/nibiru/chat',{method:'POST',cookie:student,json:{message:'Hedefim ve gelişimim nasıl gidiyor?'}});
+ assert(String(guided.p?.answer||'').includes('Rehber öğretmen onaylı gelişim odağı'),'Guidance AI did not use reviewed RBA development signals',guided.p);
+ passed('Counselor-approved RBA governance','AI proposal → counselor approval → student response → counselor review → Nibiru development context');
+
  const results=await req('/api/my-results',{cookie:student});
  assert((results.p?.exams||[]).some(x=>x.exam_id==='exam_hist_08'),'Institution exam missing from student result history',results.p);
  passed('Zero Error exam source','institution exams are selectable, not only central snapshots');
