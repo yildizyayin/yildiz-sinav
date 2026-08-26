@@ -62,8 +62,18 @@ try{
  const grade12=await login('student12');
  const targets=await req('/api/student-standard/targets',{cookie:grade12});
  assert(targets.p?.gradeLevel===12&&Number(targets.p?.maxTargets)===3,'Grade 12 three-target policy is not active',targets.p);
+ const guidanceRoute=await req('/api/nibiru/guidance/route',{cookie:grade12});
+ assert(guidanceRoute.p?.ok===true&&Array.isArray(guidanceRoute.p?.targets),'Guidance AI route endpoint is unavailable',guidanceRoute.p);
+ assert(typeof guidanceRoute.p?.guidance?.summary==='string'&&guidanceRoute.p.guidance.summary.length>0,'Guidance AI route summary is missing',guidanceRoute.p);
+ assert(String(guidanceRoute.p?.guidance?.policy||'').includes('tahmin edilmez'),'Guidance AI safety policy is missing',guidanceRoute.p);
+ for(const row of guidanceRoute.p.targets){
+  assert(Number(row?.target?.priority||0)>=1&&Number(row?.target?.priority||0)<=3,'Guidance target priority is outside 1–3',row);
+  if(row?.analysis?.officialNetProfile===false)assert(row?.history?.status==='OFFICIAL_PROFILE_REQUIRED','Guidance AI invented a gap without official profile',row);
+ }
  const guidance=await req('/api/nibiru/chat',{method:'POST',cookie:grade12,json:{message:'YKS hedefime ne kadar kaldı?'}});
  assert(guidance.p?.orchestration?.specialist==='GUIDANCE_COUNSELOR','Nibiru did not route target question to Guidance AI',guidance.p);
+ assert(guidance.p?.guidanceRoute&&Array.isArray(guidance.p.guidanceRoute.targets),'Guidance AI chat did not expose route evidence',guidance.p);
+ passed('Guidance AI target route',`${guidanceRoute.p.targets.length} active targets · snapshot-safe · no fake rank/net gap`);
  passed('12th-grade YKS target + Guidance AI','maximum 3 targets · target question → Guidance AI');
 
  persist(true);console.log(`\n${checks.length} Standard live acceptance checks passed.`);
