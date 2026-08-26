@@ -22,7 +22,7 @@ async function responseError(response:Response,fallback:string){
 
 export function Nibiru(){
  const{user}=useAuth();
- const[messages,setMessages]=useState<Message[]>([{role:'assistant',text:'Ben Nibiru. Ölçme Platformu’nun yapay zekâ akademik zekâ katmanıyım. Sorunuza göre Eğitim Koçu, Rehber Öğretmen veya Branş Öğretmeni uzmanlığına yönlenirim; yalnızca yetkiniz kapsamındaki doğrulanmış akademik verileri kullanırım.',specialist:'Nibiru Core'}]);
+ const[messages,setMessages]=useState<Message[]>([{role:'assistant',text:'Ben Nibiru. Anunex’in yapay zekâ akademik zekâ katmanıyım. Sorunuza göre etkin uzmanlığa yönlenir, yalnızca yetkiniz kapsamındaki doğrulanmış akademik verileri kullanırım.',specialist:'Nibiru Core'}]);
  const[text,setText]=useState('');const[busy,setBusy]=useState(false);const[error,setError]=useState('');const[recording,setRecording]=useState(false);const[voiceBusy,setVoiceBusy]=useState(false);const[playing,setPlaying]=useState<number|null>(null);const[voiceStatus,setVoiceStatus]=useState<any>(null);const endRef=useRef<HTMLDivElement|null>(null);
  const recorderRef=useRef<MediaRecorder|null>(null);const chunksRef=useRef<BlobPart[]>([]);const streamRef=useRef<MediaStream|null>(null);const timerRef=useRef<number|null>(null);const audioRef=useRef<HTMLAudioElement|null>(null);
  useEffect(()=>{endRef.current?.scrollIntoView({behavior:'smooth'})},[messages,busy]);

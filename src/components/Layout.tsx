@@ -53,7 +53,7 @@ export function Layout() {
   if (!user) return null;
   return <div className="app-shell">
     <aside className="sidebar">
-      <div className="brand"><div className="brand-mark">Ö</div><div><strong>Ölçme Platformu</strong><span>V2 · Nibiru Akademik Zekâ</span></div></div>
+      <div className="brand"><div className="brand-mark">A</div><div><strong>Anunex</strong><span>Ölçme · Değerlendirme · Nibiru</span></div></div>
       <nav>{visibleNav.map((item) => { const Icon=item.icon; return <NavLink key={item.to} to={item.to} end={item.to==='/' } className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}</nav>
       <div className="sidebar-footer">
         <div className="user-card"><div className="avatar">{user.display_name.charAt(0)}</div><div><strong>{user.display_name}</strong><small>{roleName(user.role)}{institution?.name ? ` · ${institution.name}` : ''}</small></div></div>

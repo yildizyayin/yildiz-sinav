@@ -31,6 +31,12 @@ jobs:
         if: ${{ env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' }}
         run: echo "Cloudflare permanent deployment skipped because repository secrets are not configured yet."
 
+      - name: Ensure staging capacity queues
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        run: |
+          npx wrangler queues list | grep -q 'yildiz-sinav-scale-staging' || npx wrangler queues create yildiz-sinav-scale-staging
+          npx wrangler queues list | grep -q 'yildiz-sinav-scale-staging-dlq' || npx wrangler queues create yildiz-sinav-scale-staging-dlq
+
       - name: Apply D1 migrations before deploy
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: npx wrangler d1 migrations apply DB --remote
@@ -76,6 +82,10 @@ jobs:
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-guidance-governance-smoke.mjs
 
+      - name: Live Student Intelligence / Learning Graph
+        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        run: node scripts/live-student-intelligence-smoke.mjs
+
       - name: Live official education knowledge trust
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-official-knowledge-smoke.mjs
@@ -88,6 +98,10 @@ jobs:
         continue-on-error: true
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-nibiru-voice-smoke.mjs
+
+      - name: Live 100K Queue capacity acceptance
+        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        run: node scripts/live-capacity-smoke.mjs
 
       - name: Persist live smoke report
         if: ${{ always() && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}

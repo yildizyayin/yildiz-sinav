@@ -140,7 +140,7 @@ async function demoStatus(env:Env,user:AuthUser):Promise<Response>{
 async function demoSeed(request:Request,env:Env,user:AuthUser):Promise<Response>{
   if(user.role!=='SUPER_ADMIN')return apiError(403,'FORBIDDEN','Demo oluşturmayı yalnız Süper Admin yapabilir.');
   const body=await request.json<{name?:string;managerUsername?:string;managerPassword?:string}>();
-  const name=body.name?.trim()||'Ölçme Platformu Demo Kurumu';
+  const name=body.name?.trim()||'Anunex Demo Kurumu';
   const username=(body.managerUsername?.trim()||'').toLowerCase();
   const password=body.managerPassword||'';
   if(!username||password.length<8)return apiError(400,'VALIDATION_ERROR','Demo yönetici kullanıcı adı ve en az 8 karakter şifre gereklidir.');

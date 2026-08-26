@@ -1,0 +1,87 @@
+import type { AuthUser,Env } from '../types';
+import { all,one,uuid } from './db';
+
+export type MasteryBand='STRONG'|'STABLE'|'DEVELOPING'|'CRITICAL'|'INSUFFICIENT';
+export type ExamTrend='RISING'|'STABLE'|'FALLING'|'INSUFFICIENT';
+
+type AccessScope={allowed:boolean;mode:'FULL'|'SUBJECT';subjectIds:string[]};
+
+type LearningRow={node_id:string;mastery:number;confidence:number;evidence_count:number;last_evidence_at?:string|null;title:string;code?:string|null;subject_id?:string|null;subject_name?:string|null};
+
+export function classifyMastery(mastery:number,evidenceCount:number,confidence:number):MasteryBand{
+ if(evidenceCount<3||confidence<0.35)return 'INSUFFICIENT';
+ if(mastery>=0.8)return 'STRONG';if(mastery>=0.6)return 'STABLE';if(mastery>=0.4)return 'DEVELOPING';return 'CRITICAL';
+}
+
+export function examTrend(values:number[]):ExamTrend{
+ const v=values.filter(Number.isFinite);if(v.length<3)return 'INSUFFICIENT';const cut=Math.ceil(v.length/2),latest=v.slice(0,cut),older=v.slice(cut);if(!older.length)return 'INSUFFICIENT';
+ const avg=(a:number[])=>a.reduce((s,x)=>s+x,0)/a.length;const delta=avg(latest)-avg(older);return delta>5?'RISING':delta<-5?'FALLING':'STABLE';
+}
+
+function clamp01(v:number){return Math.max(0,Math.min(1,Number.isFinite(v)?v:0))}
+function round(v:number,d=2){const p=10**d;return Math.round(v*p)/p}
+function parseJson<T>(v:unknown,fallback:T):T{try{return typeof v==='string'&&v?JSON.parse(v) as T:fallback}catch{return fallback}}
+
+async function enrollment(env:Env,studentId:string){return one<any>(env.DB.prepare(`SELECT e.*,c.name class_name FROM student_enrollments e LEFT JOIN classes c ON c.id=e.class_id WHERE e.student_id=? AND e.status IN ('ACTIVE','GRADUATED') ORDER BY CASE e.status WHEN 'ACTIVE' THEN 0 ELSE 1 END,e.created_at DESC LIMIT 1`).bind(studentId))}
+
+export async function studentIntelligenceAccess(env:Env,user:AuthUser,studentId:string):Promise<AccessScope>{
+ if(user.role==='SUPER_ADMIN')return {allowed:true,mode:'FULL',subjectIds:[]};
+ if(user.role==='STUDENT')return {allowed:user.student_id===studentId,mode:'FULL',subjectIds:[]};
+ if(user.role==='PARENT'){const linked=await one(env.DB.prepare(`SELECT 1 ok FROM parent_student_links WHERE parent_user_id=? AND student_id=? AND active=1`).bind(user.id,studentId));return {allowed:!!linked,mode:'FULL',subjectIds:[]}}
+ const enr=await enrollment(env,studentId);if(!enr||!user.institution_id||enr.institution_id!==user.institution_id)return {allowed:false,mode:'FULL',subjectIds:[]};
+ if(user.role==='INSTITUTION_MANAGER')return {allowed:true,mode:'FULL',subjectIds:[]};
+ if(user.role==='GUIDANCE_TEACHER'){const ok=await one(env.DB.prepare(`SELECT 1 ok FROM teacher_assignments WHERE user_id=? AND institution_id=? AND assignment_type='GUIDANCE' AND active=1 AND (class_id IS NULL OR class_id=?) LIMIT 1`).bind(user.id,enr.institution_id,enr.class_id));return {allowed:!!ok,mode:'FULL',subjectIds:[]}}
+ if(user.role==='TEACHER'){const rows=await all<{subject_id:string}>(env.DB.prepare(`SELECT DISTINCT subject_id FROM teacher_assignments WHERE user_id=? AND institution_id=? AND assignment_type='SUBJECT' AND active=1 AND class_id=? AND subject_id IS NOT NULL`).bind(user.id,enr.institution_id,enr.class_id));return {allowed:rows.length>0,mode:'SUBJECT',subjectIds:rows.map(x=>x.subject_id)}}
+ return {allowed:false,mode:'FULL',subjectIds:[]};
+}
+
+async function syncLearningGraph(env:Env,studentId:string){
+ await env.DB.prepare(`INSERT OR IGNORE INTO learning_nodes(id,academic_year,node_type,subject_id,grade_level,code,title,parent_id,official,source_url,active)
+  SELECT 'ln_'||o.id,COALESCE(cv.academic_year,e.academic_year,'2026-2027'),'OUTCOME',o.subject_id,o.grade_level,COALESCE(NULLIF(o.code,''),'OUTCOME:'||o.id),o.title,NULL,o.official,cv.source_url,o.active
+  FROM outcomes o JOIN outcome_results r ON r.outcome_id=o.id JOIN exams e ON e.id=r.exam_id LEFT JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE r.student_id=? GROUP BY o.id`).bind(studentId).run();
+ await env.DB.prepare(`INSERT INTO learning_evidence(id,student_id,node_id,source_type,source_id,result,weight,observed_at)
+  SELECT 'legacy_'||r.student_id||'_'||r.exam_id||'_'||r.outcome_id,r.student_id,'ln_'||r.outcome_id,'EXAM',r.exam_id,MIN(1.0,MAX(0.0,r.success_rate/100.0)),CASE WHEN r.evidence_count>0 THEN MIN(5.0,MAX(1.0,r.evidence_count)) ELSE 1.0 END,COALESCE(e.exam_date,e.created_at,CURRENT_TIMESTAMP)
+  FROM outcome_results r JOIN exams e ON e.id=r.exam_id JOIN learning_nodes n ON n.id='ln_'||r.outcome_id WHERE r.student_id=?
+  ON CONFLICT(id) DO UPDATE SET result=excluded.result,weight=excluded.weight,observed_at=excluded.observed_at`).bind(studentId).run();
+ await env.DB.prepare(`INSERT INTO student_learning_state(student_id,node_id,mastery,confidence,evidence_count,last_evidence_at,updated_at)
+  SELECT r.student_id,'ln_'||r.outcome_id,
+   ROUND(CASE WHEN SUM(r.evidence_count)>0 THEN CAST(SUM(r.correct_count) AS REAL)/SUM(r.evidence_count) ELSE 0 END,4),
+   ROUND(MIN(1.0,0.20 + MIN(20,SUM(r.evidence_count))*0.04),4),SUM(r.evidence_count),MAX(COALESCE(e.exam_date,e.created_at)),CURRENT_TIMESTAMP
+  FROM outcome_results r JOIN exams e ON e.id=r.exam_id JOIN learning_nodes n ON n.id='ln_'||r.outcome_id WHERE r.student_id=? GROUP BY r.student_id,r.outcome_id
+  ON CONFLICT(student_id,node_id) DO UPDATE SET mastery=excluded.mastery,confidence=excluded.confidence,evidence_count=excluded.evidence_count,last_evidence_at=excluded.last_evidence_at,updated_at=CURRENT_TIMESTAMP`).bind(studentId).run();
+}
+
+function aggregateSubjects(rows:LearningRow[]){
+ const m=new Map<string,any>();for(const r of rows){const key=r.subject_id||'unknown',e=Math.max(1,Number(r.evidence_count||0));const x=m.get(key)||{subjectId:r.subject_id||null,subjectName:r.subject_name||'Ders',weightedMastery:0,weightedConfidence:0,evidenceCount:0,nodeCount:0,strong:0,stable:0,developing:0,critical:0,insufficient:0};const band=classifyMastery(Number(r.mastery),Number(r.evidence_count),Number(r.confidence));x.weightedMastery+=Number(r.mastery)*e;x.weightedConfidence+=Number(r.confidence)*e;x.evidenceCount+=Number(r.evidence_count||0);x.nodeCount++;x[band.toLowerCase()]++;m.set(key,x)}
+ return [...m.values()].map(x=>({subjectId:x.subjectId,subjectName:x.subjectName,masteryScore:round(100*x.weightedMastery/Math.max(1,x.evidenceCount)),confidence:round(x.weightedConfidence/Math.max(1,x.evidenceCount),3),evidenceCount:x.evidenceCount,nodeCount:x.nodeCount,strong:x.strong,stable:x.stable,developing:x.developing,critical:x.critical,insufficient:x.insufficient})).sort((a,b)=>a.masteryScore-b.masteryScore);
+}
+
+export async function refreshStudentIntelligence(env:Env,studentId:string){
+ const enr=await enrollment(env,studentId);if(!enr)throw new Error('ENROLLMENT_REQUIRED');await syncLearningGraph(env,studentId);
+ const learning=await all<LearningRow>(env.DB.prepare(`SELECT ls.node_id,ls.mastery,ls.confidence,ls.evidence_count,ls.last_evidence_at,n.title,n.code,n.subject_id,s.name subject_name FROM student_learning_state ls JOIN learning_nodes n ON n.id=ls.node_id LEFT JOIN subjects s ON s.id=n.subject_id WHERE ls.student_id=? AND n.node_type='OUTCOME' AND n.active=1 ORDER BY ls.mastery ASC,ls.evidence_count DESC,n.title`).bind(studentId));
+ const totalRow=await one<{c:number}>(env.DB.prepare(`SELECT COUNT(*) c FROM learning_nodes WHERE node_type='OUTCOME' AND active=1 AND grade_level=? AND academic_year=?`).bind(enr.grade_level,enr.academic_year));const totalOutcomes=Number(totalRow?.c||0),evidenced=learning.filter(x=>Number(x.evidence_count)>0).length;
+ const bands={STRONG:0,STABLE:0,DEVELOPING:0,CRITICAL:0,INSUFFICIENT:0};let weightedMastery=0,weightedConfidence=0,totalEvidence=0;
+ for(const r of learning){const e=Math.max(0,Number(r.evidence_count||0));bands[classifyMastery(Number(r.mastery),e,Number(r.confidence))]++;if(e>0){weightedMastery+=Number(r.mastery)*e;weightedConfidence+=Number(r.confidence)*e;totalEvidence+=e}}
+ const masteryScore=totalEvidence?round(100*weightedMastery/totalEvidence):null,academicConfidence=totalEvidence?round(clamp01(weightedConfidence/totalEvidence),3):0,coverage=totalOutcomes?round(clamp01(evidenced/totalOutcomes),3):0;
+ const exams=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,er.success_percent,er.net,er.score FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? ORDER BY COALESCE(e.exam_date,e.created_at) DESC LIMIT 8`).bind(studentId));const success=exams.map(x=>Number(x.success_percent)).filter(Number.isFinite);const trend=examTrend(success);
+ const guidance=await all<any>(env.DB.prepare(`SELECT g.signal_key,g.score,g.confidence,g.summary,g.created_at,i.category,i.title instrument_title FROM guidance_development_signals g JOIN guidance_assessment_sessions sess ON sess.id=g.source_session_id AND sess.status='REVIEWED' JOIN guidance_assessment_instruments i ON i.id=sess.instrument_id WHERE g.student_id=? ORDER BY g.created_at DESC,g.signal_key`).bind(studentId));
+ const targets=await all<any>(env.DB.prepare(`SELECT id,target_type,priority,future_identity_label,created_at FROM student_academic_targets WHERE student_id=? AND status='ACTIVE' ORDER BY priority,created_at`).bind(studentId));
+ const zero=await one<{c:number}>(env.DB.prepare(`SELECT COUNT(*) c FROM zero_error_booklets WHERE student_id=? AND status IN ('ACTIVE','READY')`).bind(studentId));const assignments=await one<{c:number}>(env.DB.prepare(`SELECT COUNT(*) c FROM assignment_recipients WHERE student_id=? AND status IN ('ASSIGNED','STARTED')`).bind(studentId));
+ const subjects=aggregateSubjects(learning);const priorities=learning.map(r=>({...r,band:classifyMastery(Number(r.mastery),Number(r.evidence_count),Number(r.confidence))})).filter(r=>r.band==='CRITICAL'||r.band==='DEVELOPING').sort((a,b)=>Number(a.mastery)-Number(b.mastery)||Number(b.confidence)-Number(a.confidence)).slice(0,8).map(r=>({nodeId:r.node_id,subjectId:r.subject_id||null,subjectName:r.subject_name||null,outcomeCode:r.code||null,outcomeTitle:r.title,masteryScore:round(Number(r.mastery)*100),confidence:round(Number(r.confidence),3),evidenceCount:Number(r.evidence_count),band:r.band}));
+ const payload={schemaVersion:1,policy:{educationalOnly:true,diagnosticUse:false,rawGuidanceResponsesIncluded:false,targetGapFabricated:false},overall:{masteryScore,academicConfidence:academicConfidence,learningCoverage:coverage,evidenceCount:totalEvidence,strongNodes:bands.STRONG,stableNodes:bands.STABLE,developingNodes:bands.DEVELOPING,criticalNodes:bands.CRITICAL,insufficientNodes:bands.INSUFFICIENT,recentExamCount:exams.length,examTrend:trend},subjects,priorities,recentExams:exams.map(x=>({id:x.id,title:x.title,examType:x.exam_type,examDate:x.exam_date,successPercent:x.success_percent,net:x.net,score:x.score})),guidance:{reviewedSignalCount:guidance.length,dimensions:guidance.map(x=>({key:x.signal_key,score:Number(x.score),confidence:Number(x.confidence),summary:x.summary,category:x.category,instrumentTitle:x.instrument_title,observedAt:x.created_at}))},targets:{activeCount:targets.length,items:targets},learningLoop:{openZeroErrorCount:Number(zero?.c||0),activeAssignmentCount:Number(assignments?.c||0)}};
+ const payloadJson=JSON.stringify(payload);const current=await one<any>(env.DB.prepare(`SELECT profile_version,payload_json FROM student_intelligence_profiles WHERE student_id=?`).bind(studentId));const changed=!current||String(current.payload_json)!==payloadJson,version=current?Number(current.profile_version)+(changed?1:0):1;
+ const writes=[env.DB.prepare(`INSERT INTO student_intelligence_profiles(student_id,institution_id,academic_year,grade_level,class_id,profile_version,mastery_score,academic_confidence,learning_coverage,evidence_count,strong_node_count,stable_node_count,developing_node_count,critical_node_count,insufficient_node_count,recent_exam_count,exam_trend,reviewed_guidance_signal_count,active_target_count,open_zero_error_count,active_assignment_count,payload_json,refreshed_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+  ON CONFLICT(student_id) DO UPDATE SET institution_id=excluded.institution_id,academic_year=excluded.academic_year,grade_level=excluded.grade_level,class_id=excluded.class_id,profile_version=excluded.profile_version,mastery_score=excluded.mastery_score,academic_confidence=excluded.academic_confidence,learning_coverage=excluded.learning_coverage,evidence_count=excluded.evidence_count,strong_node_count=excluded.strong_node_count,stable_node_count=excluded.stable_node_count,developing_node_count=excluded.developing_node_count,critical_node_count=excluded.critical_node_count,insufficient_node_count=excluded.insufficient_node_count,recent_exam_count=excluded.recent_exam_count,exam_trend=excluded.exam_trend,reviewed_guidance_signal_count=excluded.reviewed_guidance_signal_count,active_target_count=excluded.active_target_count,open_zero_error_count=excluded.open_zero_error_count,active_assignment_count=excluded.active_assignment_count,payload_json=excluded.payload_json,refreshed_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP`).bind(studentId,enr.institution_id,enr.academic_year||null,enr.grade_level||null,enr.class_id||null,version,masteryScore,academicConfidence,coverage,totalEvidence,bands.STRONG,bands.STABLE,bands.DEVELOPING,bands.CRITICAL,bands.INSUFFICIENT,exams.length,trend,guidance.length,targets.length,Number(zero?.c||0),Number(assignments?.c||0),payloadJson)];
+ if(changed)writes.push(env.DB.prepare(`INSERT INTO student_intelligence_profile_history(id,student_id,profile_version,mastery_score,academic_confidence,learning_coverage,evidence_count,exam_trend,strong_node_count,developing_node_count,critical_node_count,snapshot_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`).bind(uuid('sip'),studentId,version,masteryScore,academicConfidence,coverage,totalEvidence,trend,bands.STRONG,bands.DEVELOPING,bands.CRITICAL,payloadJson));await env.DB.batch(writes);
+ return {studentId,institutionId:enr.institution_id,academicYear:enr.academic_year,gradeLevel:enr.grade_level,classId:enr.class_id,className:enr.class_name,profileVersion:version,changed,payload,learning};
+}
+
+export function scopeStudentIntelligence(profile:any,scope:AccessScope,user:AuthUser){
+ const p=structuredClone(profile.payload);if(scope.mode==='SUBJECT'){const allowed=new Set(scope.subjectIds);p.subjects=p.subjects.filter((x:any)=>allowed.has(x.subjectId));p.priorities=p.priorities.filter((x:any)=>allowed.has(x.subjectId));const evidence=p.subjects.reduce((s:number,x:any)=>s+Number(x.evidenceCount||0),0);p.overall={scope:'ASSIGNED_SUBJECTS',masteryScore:evidence?round(p.subjects.reduce((s:number,x:any)=>s+Number(x.masteryScore||0)*Number(x.evidenceCount||0),0)/evidence):null,academicConfidence:evidence?round(p.subjects.reduce((s:number,x:any)=>s+Number(x.confidence||0)*Number(x.evidenceCount||0),0)/evidence,3):0,evidenceCount:evidence};p.recentExams=[];p.targets={activeCount:0,items:[]};p.guidance={reviewedSignalCount:0,available:false}}
+ else if(!['STUDENT','GUIDANCE_TEACHER','SUPER_ADMIN'].includes(user.role)){p.guidance={reviewedSignalCount:Number(p.guidance?.reviewedSignalCount||0),available:Number(p.guidance?.reviewedSignalCount||0)>0}}
+ return {...profile,learning:undefined,payload:p,accessScope:scope.mode};
+}
+
+export async function studentIntelligenceHistory(env:Env,studentId:string){return all<any>(env.DB.prepare(`SELECT id,profile_version,mastery_score,academic_confidence,learning_coverage,evidence_count,exam_trend,strong_node_count,developing_node_count,critical_node_count,created_at FROM student_intelligence_profile_history WHERE student_id=? ORDER BY profile_version DESC LIMIT 50`).bind(studentId))}
+
+export async function studentIntelligenceContext(env:Env,studentId:string){const p=await refreshStudentIntelligence(env,studentId);const o=p.payload.overall,priorities=p.payload.priorities.slice(0,3);return {studentId,profileVersion:p.profileVersion,summary:`Akademik profil: ustalık ${o.masteryScore??'yetersiz kanıt'}, güven ${Math.round(o.academicConfidence*100)}%, eğilim ${o.examTrend}.`,priorities:priorities.map((x:any)=>`${x.subjectName||'Ders'} · ${x.outcomeTitle} (${x.masteryScore}%)`),policy:p.payload.policy}}

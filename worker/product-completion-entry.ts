@@ -1,7 +1,8 @@
-import app from './content-question-backbone-entry';
-import type { AuthUser,Env } from './types';
+import app from './student-intelligence-entry';
+import type { AuthUser,CapacityJobMessage,Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,audit,badRequest,forbidden,json,notFound,one,uuid } from './lib/db';
+import { capacityTestStatus,processCapacityQueue,startCapacityTest } from './lib/operations-completion';
 
 function fail(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 function parseJson<T>(value:string|null,fallback:T):T{try{return value?JSON.parse(value):fallback}catch{return fallback}}
@@ -51,8 +52,8 @@ function integrationFlags(env:Env){return{
 
 async function completionCenter(env:Env,user:AuthUser){
  if(user.role!=='SUPER_ADMIN')return forbidden();const flags=integrationFlags(env);const implemented:Record<string,boolean>={YOUTUBE:true,WHATSAPP:true,NIBIRU_VOICE:true,TELEGRAM:false,IYZICO:false,PAYTR:false,IOS:false,ANDROID:false,LIVE_MEETING:false};const integrations=(await all<any>(env.DB.prepare(`SELECT * FROM platform_integrations ORDER BY category,label`))).map(row=>{const values=flags[row.integration_key]||[],secretsConfigured=values.length>0&&values.every(Boolean),codeReady=Boolean(implemented[row.integration_key]);return{...row,requiredSecrets:parseJson(row.required_secrets_json,[]),configured:secretsConfigured,active:codeReady&&secretsConfigured,codeReady,configuredParts:values.filter(Boolean).length,totalParts:values.length}});
- const counts=await one<any>(env.DB.prepare(`SELECT (SELECT COUNT(*) FROM curriculum_versions WHERE verified=1) verified_curricula,(SELECT COUNT(*) FROM secondary_school_targets WHERE active=1) lgs_targets,(SELECT COUNT(*) FROM university_program_targets WHERE active=1) yks_targets,(SELECT COUNT(*) FROM optical_templates WHERE active=1 AND status='READY') ready_opticals,(SELECT COUNT(*) FROM question_bank WHERE review_status='APPROVED' AND copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')) approved_questions,(SELECT COUNT(*) FROM annual_content_plan_slots) annual_slots,(SELECT COUNT(*) FROM annual_content_plan_slots WHERE status='PUBLISHED') published_slots,(SELECT COUNT(*) FROM membership_order_requests WHERE status='PENDING') pending_membership_orders`));
- return json({ok:true,integrations,counts,delivered:{bankTransferMembership:true,pwaMobile:true,providerPayments:false,nativeIosAndroid:false},policy:{officialData:'Kaynak URL ve doğrulama olmadan resmî veri üretilmez.',externalSecrets:'Secret değerleri API yanıtına veya D1 kayıtlarına yazılmaz.',deferredAi:['GUIDANCE_COUNSELOR_AI','SUBJECT_TEACHER_AI']}});
+ const counts=await one<any>(env.DB.prepare(`SELECT (SELECT COUNT(*) FROM curriculum_versions WHERE verified=1) verified_curricula,(SELECT COUNT(*) FROM secondary_school_targets WHERE active=1) lgs_targets,(SELECT COUNT(*) FROM university_program_targets WHERE active=1) yks_targets,(SELECT COUNT(*) FROM official_data_releases WHERE import_status='FILE_REQUIRED') official_files_required,(SELECT COUNT(*) FROM transfer_adapter_profiles WHERE status='VERIFIED') verified_transfer_adapters,(SELECT COUNT(*) FROM optical_templates WHERE active=1 AND status='READY') ready_opticals,(SELECT COUNT(*) FROM question_bank WHERE review_status='APPROVED' AND copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')) approved_questions,(SELECT COUNT(*) FROM annual_content_plan_slots) annual_slots,(SELECT COUNT(*) FROM annual_content_plan_slots WHERE status='PUBLISHED') published_slots,(SELECT COUNT(*) FROM membership_order_requests WHERE status='PENDING') pending_membership_orders,(SELECT COUNT(*) FROM capacity_test_runs WHERE status='COMPLETED' AND target_count=100000) completed_100k_tests`));
+ return json({ok:true,integrations,counts,delivered:{bankTransferMembership:true,pwaMobile:true,providerPayments:false,nativeIosAndroid:false,capacityQueueCode:true,capacityQueueConfigured:Boolean(env.SCALE_QUEUE)},policy:{officialData:'Kaynak URL ve doğrulama olmadan resmî veri üretilmez.',externalSecrets:'Secret değerleri API yanıtına veya D1 kayıtlarına yazılmaz.',capacityTest:'Yalnız staging ve izole sentetik tablolarda çalışır.',deferredAi:['GUIDANCE_COUNSELOR_AI','SUBJECT_TEACHER_AI']}});
 }
 
 export function numericSubject(code:string,name:string){const value=`${code} ${name}`.toLocaleUpperCase('tr-TR');return ['MAT','FEN','FİZ','FIZ','KİM','KIM','BİY','BIY','GEOMETR'].some(x=>value.includes(x))}
@@ -70,7 +71,7 @@ async function grantMonthlyMembershipCredits(env:Env){const periodKey=new Date()
 
 export default {
  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
-  const url=new URL(request.url),path=url.pathname;const custom=path==='/api/membership/catalog'||path==='/api/membership/orders'||path==='/api/admin/membership/orders'||path.startsWith('/api/admin/membership/orders/')||path==='/api/admin/completion-center'||path==='/api/admin/annual-content-plans'||path==='/api/admin/annual-content-plans/generate';if(!custom)return app.fetch(request,env,ctx);const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
+  const url=new URL(request.url),path=url.pathname;const custom=path==='/api/membership/catalog'||path==='/api/membership/orders'||path==='/api/admin/membership/orders'||path.startsWith('/api/admin/membership/orders/')||path==='/api/admin/completion-center'||path==='/api/admin/annual-content-plans'||path==='/api/admin/annual-content-plans/generate'||path==='/api/admin/capacity-tests';if(!custom)return app.fetch(request,env,ctx);const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
   if(path==='/api/membership/catalog'&&request.method==='GET')return membershipCatalog(env,user,url);
   if(path==='/api/membership/orders'&&request.method==='POST')return createMembershipOrder(request,env,user);
   if(path==='/api/admin/membership/orders'&&request.method==='GET')return adminMembershipOrders(env,user,url);
@@ -78,7 +79,10 @@ export default {
   if(path==='/api/admin/completion-center'&&request.method==='GET')return completionCenter(env,user);
   if(path==='/api/admin/annual-content-plans'&&request.method==='GET')return annualContentPlans(env,user);
   if(path==='/api/admin/annual-content-plans/generate'&&request.method==='POST')return generateAnnualContentPlan(request,env,user);
+  if(path==='/api/admin/capacity-tests'&&request.method==='GET')return capacityTestStatus(env,user);
+  if(path==='/api/admin/capacity-tests'&&request.method==='POST')return startCapacityTest(request,env,user);
   return fail(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
  },
+ async queue(batch:MessageBatch<CapacityJobMessage>,env:Env,ctx:ExecutionContext){ctx.waitUntil(processCapacityQueue(batch,env))},
  async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){ctx.waitUntil(grantMonthlyMembershipCredits(env).then(count=>console.log(JSON.stringify({event:'membership_monthly_credits',count}))));if('scheduled' in app&&typeof app.scheduled==='function')return app.scheduled(event,env,ctx)},
-} satisfies ExportedHandler<Env>;
+} satisfies ExportedHandler<Env,CapacityJobMessage>;

@@ -65,7 +65,7 @@ function Home(){const{user}=useAuth();if(user?.role==='SUPER_ADMIN')return <Supe
 
 export default function App(){
  const{user,loading}=useAuth();const location=useLocation();
- if(loading)return <div className="boot">Ölçme Platformu yükleniyor…</div>;
+ if(loading)return <div className="boot">Anunex yükleniyor…</div>;
  if(!user&&location.pathname!=='/login')return <Navigate to="/login" replace/>;
  if(user&&location.pathname==='/login')return <Navigate to="/" replace/>;
  return <Routes>

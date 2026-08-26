@@ -3,7 +3,7 @@ import { FlaskConical,RefreshCw } from 'lucide-react';
 import { api } from '../api';
 
 export function DemoMode(){
- const[demos,setDemos]=useState<any[]>([]);const[name,setName]=useState('Ölçme Platformu Demo Kurumu');const[username,setUsername]=useState('demo.kurum');const[password,setPassword]=useState('Demo2026!');const[busy,setBusy]=useState(false);const[error,setError]=useState('');const[notice,setNotice]=useState('');
+ const[demos,setDemos]=useState<any[]>([]);const[name,setName]=useState('Anunex Demo Kurumu');const[username,setUsername]=useState('demo.kurum');const[password,setPassword]=useState('Demo2026!');const[busy,setBusy]=useState(false);const[error,setError]=useState('');const[notice,setNotice]=useState('');
  const load=async()=>{try{const r=await api<any>('/api/v2/demo');setDemos(r.demos||[])}catch(e:any){setError(e.message)}};
  useEffect(()=>{void load()},[]);
  const create=async()=>{setBusy(true);setError('');setNotice('');try{const r=await api<any>('/api/v2/demo/seed',{method:'POST',body:JSON.stringify({name,managerUsername:username,managerPassword:password})});setNotice(`${r.institution.name} hazır: ${r.students} öğrenci, ${r.classes} sınıf. Demo yönetici: ${r.manager.username}`);await load()}catch(e:any){setError(e.message)}finally{setBusy(false)}};

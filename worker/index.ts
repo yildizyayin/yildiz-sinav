@@ -18,7 +18,7 @@ export default {
       if (url.pathname === '/api/config' && request.method === 'GET') {
         return json({
           ok: true,
-          productName: env.PRODUCT_NAME || 'Ölçme Platformu',
+          productName: env.PRODUCT_NAME || 'Anunex',
           turnstileSiteKey: env.TURNSTILE_SITE_KEY || '',
           environment: env.ENVIRONMENT || 'development',
         });
@@ -673,8 +673,20 @@ async function importPreview(request: Request, env: Env, user: AuthUser): Promis
   const seasonId = form.get('seasonId')?.toString() || (await currentSeason(env.DB, institutionId))?.id;
   if (!seasonId) return badRequest('Aktif eğitim yılı bulunamadı.');
   const key = `imports/${institutionId}/${Date.now()}-${safeFileName(file.name)}`;
-  await env.FILES.put(key, file.stream(), { httpMetadata: { contentType: file.type || 'text/plain' } });
-  const text = await (await env.FILES.get(key))!.text();
+  const bytes=await file.arrayBuffer();
+  await env.FILES.put(key, bytes, { httpMetadata: { contentType: file.type || 'text/plain' } });
+  const text = new TextDecoder().decode(bytes);
+  if(sourceSystem==='EDESIS'||sourceSystem==='OKULIZYON'){
+    const adapter=await one<any>(env.DB.prepare(`SELECT * FROM transfer_adapter_profiles WHERE source_system=?`).bind(sourceSystem));
+    if(!adapter||adapter.status!=='VERIFIED'){
+      const digest=await crypto.subtle.digest('SHA-256',bytes),sampleHash=[...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');
+      const firstLine=(text.split(/\r?\n/).find(x=>x.trim())||'').replace(/^\uFEFF/,'').trim();
+      const headerDigest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(firstLine)),headerFingerprint=[...new Uint8Array(headerDigest)].map(x=>x.toString(16).padStart(2,'0')).join('');
+      await env.DB.prepare(`UPDATE transfer_adapter_profiles SET status='UNDER_REVIEW',sample_sha256=?,sample_file_name=?,header_fingerprint=?,updated_at=CURRENT_TIMESTAMP WHERE source_system=?`).bind(sampleHash,safeFileName(file.name),headerFingerprint,sourceSystem).run();
+      await audit(env.DB,user.id,institutionId,'TRANSFER_ADAPTER_SAMPLE_RECEIVED','transfer_adapter',sourceSystem,{fileName:safeFileName(file.name),sampleHash,headerFingerprint,objectKey:key});
+      return json({ok:false,error:{code:'REAL_EXPORT_MAPPING_REVIEW_REQUIRED',message:`${sourceSystem} gerçek export örneği güvenli alana kaydedildi. Özel alan eşlemesi doğrulanıp adapter VERIFIED yapılmadan öğrenci tablolarına aktarım yapılmaz.`,details:{sourceSystem,status:'UNDER_REVIEW',sampleHash,headerFingerprint}}},409);
+    }
+  }
   const rows = parseGenericStudentImport(text);
   if (!rows.length) return badRequest('Aktarılabilir öğrenci satırı bulunamadı. Excel dosyalarını önce CSV olarak dışa aktarın.', 'IMPORT_FORMAT_REQUIRED');
   const candidates = await loadStudentCandidates(env.DB, institutionId, seasonId);
@@ -691,7 +703,7 @@ async function importPreview(request: Request, env: Env, user: AuthUser): Promis
   }
   const summary = { total: rows.length, matched, new: newCount, review };
   await env.DB.prepare('UPDATE import_jobs SET summary_json=?,status=? WHERE id=?').bind(JSON.stringify(summary), review ? 'NEEDS_REVIEW' : 'READY', id).run();
-  return json({ ok: true, importJobId: id, summary, sourceSystem, note: sourceSystem === 'EDESIS' || sourceSystem === 'OKULIZYON' ? 'Kaynağa özel şema uydurulmadı; genel öğrenci CSV alanları kullanıldı.' : undefined });
+  return json({ ok: true, importJobId: id, summary, sourceSystem });
 }
 
 async function getImport(env: Env, user: AuthUser, id: string): Promise<Response> {

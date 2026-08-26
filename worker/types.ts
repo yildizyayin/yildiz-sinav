@@ -46,6 +46,15 @@ export interface Env {
   ANDROID_PACKAGE_ID?: string;
   FCM_SERVICE_ACCOUNT_JSON?: string;
   LIVE_MEETING_PROVIDER_KEY?: string;
+  SCALE_QUEUE?: Queue<CapacityJobMessage>;
+}
+
+export interface CapacityJobMessage {
+  kind: 'CAPACITY_TEST_CHUNK';
+  runId: string;
+  chunkNo: number;
+  startNo: number;
+  rowCount: number;
 }
 
 export interface AuthUser {

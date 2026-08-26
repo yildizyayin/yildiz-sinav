@@ -50,7 +50,7 @@ async function pairByCode(env:Env,phone:string,code:string){
   return userFromIdentity(env,phone);
 }
 
-function identityHelp(){return `🤖 Nibiru: Ben Ölçme Platformu’nun yapay zekâ akademik asistanıyım. Bu WhatsApp numarası henüz bir kullanıcı hesabına bağlanmamış. Kurumunuzdan Nibiru eşleştirme kodu alın ve “BAĞLA 123456” şeklinde gönderin.`}
+function identityHelp(){return `🤖 Nibiru: Ben Anunex’in yapay zekâ akademik asistanıyım. Bu WhatsApp numarası henüz bir kullanıcı hesabına bağlanmamış. Kurumunuzdan Nibiru eşleştirme kodu alın ve “BAĞLA 123456” şeklinde gönderin.`}
 
 async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type:string;text:string|null}){
   const seen=await one(env.DB.prepare(`SELECT provider_message_id FROM nibiru_whatsapp_receipts WHERE provider_message_id=?`).bind(message.id));
