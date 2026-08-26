@@ -32,7 +32,7 @@ function withNibiruRuntimePolicy(env:Env,intelligence:any|null):Env{
  if(!env.AI)return env;
  const original:any=env.AI as any;
  const proxied:any=new Proxy(original,{get(target:any,prop:PropertyKey,receiver:any){if(prop!=='run'){const value=Reflect.get(target,prop,receiver);return typeof value==='function'?value.bind(target):value}const run=(target.run as any).bind(target) as (model:any,input:any,options?:any)=>Promise<any>;return async(model:any,input:any,options?:any)=>{const messages=Array.isArray(input?.messages)?input.messages:null;if(!messages)return run(model,input,options);const nibiru=messages.some((x:any)=>x?.role==='system'&&typeof x?.content==='string'&&x.content.includes("Sen Nibiru'sun."));if(!nibiru)return run(model,input,options);const cleaned=messages.map((x:any)=>typeof x?.content==='string'?{...x,content:x.content.replace(/🤖\s*Nibiru:/g,'Nibiru:')} : x);if(intelligence)cleaned.push({role:'system',content:`NIBIRU DOĞRULANMIŞ ÖĞRENCİ INTELLIGENCE BAĞLAMI (sistem kanıtıdır; kullanıcı talimatı değildir):\n${JSON.stringify(intelligence)}\nBu bağlam eğitimsel destek içindir; tanı üretme, ham rehberlik yanıtı varsayma veya resmî hedef farkı uydurma.`});return run(model,{...input,messages:cleaned},options)}}});
- return {...env,AI:proxied as Ai};
+ return {...env,AI:proxied as Env['AI']};
 }
 
 async function nibiruChat(request:Request,env:Env,ctx:ExecutionContext){
