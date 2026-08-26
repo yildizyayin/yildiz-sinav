@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-26T11:46:32.175Z`
+- Time: `2026-08-26T11:52:22.529Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -69,44 +69,7 @@
 ## Standard final closure
 
 - ✅ **Standard package final readiness** — sale ready · optional channels 2
-- ❌ **Standard final closure failure**
-
-```text
-Error: Countdown target did not persist into home context
-{
-  "ok": true,
-  "student": {
-    "id": "stu_a001",
-    "gradeLevel": 7,
-    "className": "7/A",
-    "enrollmentStatus": "ACTIVE"
-  },
-  "countdown": {
-    "enabled": true,
-    "label": "Standard Kabul Sınavı",
-    "targetDate": "2027-06-01",
-    "days": 279,
-    "flipClock": true
-  },
-  "preferences": {
-    "theme_key": "MIDDLE_FOCUS",
-    "appearance": "DARK",
-    "font_key": "SYSTEM",
-    "font_scale": 1.05,
-    "animation_level": "NORMAL",
-    "countdown_enabled": 1,
-    "countdown_flip_clock": 1,
-    "motivation_enabled": 1,
-    "voice_motivation_enabled": 0,
-    "student_id": "stu_a001",
-    "countdown_label": "Standard Kabul Sınavı",
-    "countdown_target_date": "2027-06-01",
-    "motivation_identity": null,
-    "updated_at": "2026-08-26 11:47:27"
-  },
-  "targets": []
-}
-    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:4:36)
-    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:24:2
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-```
+- ✅ **Student personalization + countdown** — preferences persisted · live countdown + flip clock context
+- ✅ **Basic results + outcome analysis** — 9 exams · 6 outcome rows
+- ✅ **Role-safe consumable worksheet** — 7. Sınıf Sayısal Föy 1 · PDF + answer key + 40 question supports
+- ✅ **Real registered micro-learning route** — solution + topic video available without YouTube API auto-discovery
