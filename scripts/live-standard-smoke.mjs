@@ -23,6 +23,15 @@ try{
  const student=await login('student1');
  const coach=await req('/api/nibiru/chat',{method:'POST',cookie:student,json:{message:'Bugün ne çalışayım?'}});
  assert(coach.p?.orchestration?.specialist==='EDUCATION_COACH','Nibiru did not route study plan to Education Coach',coach.p);
+ assert(coach.p?.coachPlan?.available===true&&Array.isArray(coach.p.coachPlan.items)&&coach.p.coachPlan.items.length>0,'Education Coach did not persist a verified daily plan',coach.p);
+ const planId=coach.p.coachPlan.plan?.id,firstItem=coach.p.coachPlan.items[0];assert(planId&&firstItem?.id,'Education Coach plan identifiers missing',coach.p.coachPlan);
+ const reused=await req('/api/nibiru/coach/daily-plan',{method:'POST',cookie:student});
+ assert(reused.p?.available===true&&reused.p?.plan?.id===planId&&reused.p?.reused===true,'Daily plan is not idempotent on repeat',reused.p);
+ const progress=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/complete`,{method:'PATCH',cookie:student,json:{completed:true}});
+ assert(progress.p?.ok===true&&Number(progress.p?.progress)>0,'Education Coach task progress did not update',progress.p);
+ const currentPlan=await req('/api/nibiru/coach/daily-plan',{cookie:student});
+ assert(currentPlan.p?.available===true&&currentPlan.p?.plan?.id===planId&&currentPlan.p?.items?.some(x=>x.id===firstItem.id&&x.completed===true),'Completed Coach item was not persisted',currentPlan.p);
+ passed('Education Coach persistent daily plan',`${coach.p.coachPlan.items.length} tasks · same-day reuse · progress ${progress.p.progress}%`);
  const subjectAi=await req('/api/nibiru/chat',{method:'POST',cookie:student,json:{message:'Bu matematik sorusunu neden yanlış yaptım?'}});
  assert(subjectAi.p?.orchestration?.specialist==='SUBJECT_TEACHER'&&subjectAi.p?.orchestration?.subjectHint==='Matematik','Nibiru did not route subject question to Subject Teacher AI',subjectAi.p);
  passed('Nibiru specialist orchestration','study plan → Education Coach · math question → Subject Teacher AI');
