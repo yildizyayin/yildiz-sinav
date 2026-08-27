@@ -3,6 +3,10 @@ import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, audit, json, one, uuid } from './lib/db';
 
+const PARTICIPANT_CHUNK_SIZE=1000;
+const MAX_BULK_CLASSES=100;
+const MAX_D1_QUERY_BUDGET=900;
+
 function fail(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 function canManage(role:AuthUser['role']){return role==='SUPER_ADMIN'||role==='INSTITUTION_MANAGER'}
 function resolveInstitution(user:AuthUser,requested:string|null|undefined){return user.role==='SUPER_ADMIN'?(requested||null):(user.institution_id||null)}
@@ -10,53 +14,66 @@ function resolveInstitution(user:AuthUser,requested:string|null|undefined){retur
 async function requireUser(env:Env,request:Request):Promise<AuthUser|Response>{return (await getAuthUser(env,request))||fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.')}
 async function ensureInstitution(env:Env,user:AuthUser,institutionId:string){if(user.role==='SUPER_ADMIN')return Boolean(await one(env.DB.prepare('SELECT id FROM institutions WHERE id=?').bind(institutionId)));return user.institution_id===institutionId}
 
-async function scaleSafeExamParticipants(request:Request,env:Env,user:AuthUser,body:any){
+async function scaleSafeExamParticipants(env:Env,user:AuthUser,body:any){
   if(!canManage(user.role))return fail(403,'FORBIDDEN','Toplu işlem yetkiniz yok.');
   const institutionId=resolveInstitution(user,body?.institutionId);
   const classIds=Array.isArray(body?.classIds)?[...new Set(body.classIds.filter((x:unknown)=>typeof x==='string'&&x))] as string[]:[];
   const examId=typeof body?.examId==='string'?body.examId:'';
   if(!institutionId||!examId||!classIds.length)return fail(400,'VALIDATION_ERROR','Kurum, sınav ve en az bir sınıf seçilmelidir.');
-  if(classIds.length>250)return fail(400,'TOO_MANY_CLASSES','Tek toplu işlemde en fazla 250 sınıf işlenebilir.');
+  if(classIds.length>MAX_BULK_CLASSES)return fail(400,'TOO_MANY_CLASSES',`Tek toplu işlemde en fazla ${MAX_BULK_CLASSES} sınıf işlenebilir.`);
   if(!(await ensureInstitution(env,user,institutionId)))return fail(403,'FORBIDDEN','Bu kuruma erişim yetkiniz yok.');
 
   const exam=await one<any>(env.DB.prepare(`SELECT DISTINCT e.id,e.title FROM exams e LEFT JOIN exam_institutions ei ON ei.exam_id=e.id AND ei.institution_id=? WHERE e.id=? AND (e.institution_id=? OR e.institution_id IS NULL OR ei.enabled=1)`).bind(institutionId,examId,institutionId));
   if(!exam)return fail(404,'EXAM_NOT_FOUND','Sınav bu kurum için kullanılamıyor.');
   const bookletRows=await all<{code:string}>(env.DB.prepare(`SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code`).bind(examId));
   const bookletCodes=bookletRows.length?bookletRows.map(x=>x.code):['A'];
+  if(bookletCodes.length>32)return fail(400,'BOOKLET_LIMIT','Bir sınav için en fazla 32 aktif kitapçık desteklenir.');
 
-  let created=0,skipped=0,eligible=0;
-  const details:Array<{classId:string;eligible:number;created:number;skipped:number}>=[];
+  const classPlans:Array<{classId:string;eligible:number;chunks:number}>=[];
+  let eligible=0,totalChunks=0;
   for(const classId of classIds){
     const cls=await one<any>(env.DB.prepare(`SELECT id,institution_id FROM classes WHERE id=? AND active=1`).bind(classId));
     if(!cls||cls.institution_id!==institutionId)return fail(400,'CLASS_SCOPE_ERROR','Seçilen sınıflardan biri bu kuruma ait değil.');
-
     const countRow=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.class_id=? AND e.institution_id=? AND e.status='ACTIVE' AND s.status='ACTIVE'`).bind(classId,institutionId));
-    const classEligible=Number(countRow?.c||0);
-    eligible+=classEligible;
+    const classEligible=Number(countRow?.c||0),chunks=Math.ceil(classEligible/PARTICIPANT_CHUNK_SIZE);
+    classPlans.push({classId,eligible:classEligible,chunks});eligible+=classEligible;totalChunks+=chunks;
+  }
+  const estimatedQueries=3+classPlans.length*2+totalChunks;
+  if(estimatedQueries>MAX_D1_QUERY_BUDGET)return fail(413,'BULK_QUERY_BUDGET',`Bu seçim tek Worker çağrısının güvenli D1 sorgu bütçesini aşıyor. Sınıfları daha küçük gruplara bölün.`,{estimatedQueries,maxQueries:MAX_D1_QUERY_BUDGET,eligible,totalChunks});
 
-    const cases=bookletCodes.map((_,index)=>`WHEN ${index} THEN ?`).join(' ');
-    const sql=`WITH eligible AS (
+  const cases=bookletCodes.map((_,index)=>`WHEN ${index} THEN ?`).join(' ');
+  const sql=`WITH ranked AS (
       SELECT s.id student_id,e.season_id,e.student_number,s.first_name,s.last_name,c.name class_name,
              row_number() OVER (ORDER BY CASE WHEN e.student_number GLOB '[0-9]*' THEN cast(e.student_number AS INTEGER) ELSE 2147483647 END,e.student_number,s.normalized_name,s.id) rn
       FROM student_enrollments e
       JOIN student_entities s ON s.id=e.student_id
       JOIN classes c ON c.id=e.class_id
       WHERE e.class_id=? AND e.institution_id=? AND e.status='ACTIVE' AND s.status='ACTIVE'
+    ), eligible AS (
+      SELECT * FROM ranked WHERE rn>? AND rn<=?
     )
     INSERT OR IGNORE INTO exam_participants(id,exam_id,institution_id,season_id,student_id,student_number_snapshot,name_snapshot,class_snapshot,booklet_code,participant_status)
     SELECT 'ep_'||lower(hex(randomblob(16))),?,?,season_id,student_id,student_number,trim(first_name||' '||last_name),class_name,
            CASE ((rn-1) % ${bookletCodes.length}) ${cases} ELSE ? END,'ACTIVE'
     FROM eligible`;
-    const result=await env.DB.prepare(sql).bind(classId,institutionId,examId,institutionId,...bookletCodes,bookletCodes[0]).run();
-    const classCreated=Number((result.meta as any)?.changes||0);
-    const classSkipped=Math.max(0,classEligible-classCreated);
-    created+=classCreated;skipped+=classSkipped;details.push({classId,eligible:classEligible,created:classCreated,skipped:classSkipped});
+
+  let created=0,skipped=0;
+  const details:Array<{classId:string;eligible:number;created:number;skipped:number;chunks:number}>=[];
+  for(const plan of classPlans){
+    let classCreated=0;
+    for(let chunk=0;chunk<plan.chunks;chunk++){
+      const start=chunk*PARTICIPANT_CHUNK_SIZE,end=Math.min(plan.eligible,(chunk+1)*PARTICIPANT_CHUNK_SIZE);
+      const result=await env.DB.prepare(sql).bind(plan.classId,institutionId,start,end,examId,institutionId,...bookletCodes,bookletCodes[0]).run();
+      classCreated+=Number((result.meta as any)?.changes||0);
+    }
+    const classSkipped=Math.max(0,plan.eligible-classCreated);
+    created+=classCreated;skipped+=classSkipped;details.push({classId:plan.classId,eligible:plan.eligible,created:classCreated,skipped:classSkipped,chunks:plan.chunks});
   }
 
   const jobId=uuid('bulk');
-  const summary={created,skipped,eligible,exam:exam.title,classes:classIds.length,booklets:bookletCodes,strategy:'SET_BASED_D1',details};
+  const summary={created,skipped,eligible,exam:exam.title,classes:classIds.length,booklets:bookletCodes,strategy:'SET_BASED_D1_CHUNKED',chunkSize:PARTICIPANT_CHUNK_SIZE,totalChunks,estimatedQueries,details};
   await env.DB.prepare(`INSERT INTO bulk_operation_jobs(id,institution_id,operation_type,status,payload_json,summary_json,created_by,completed_at) VALUES(?,?,?,'COMPLETED',?,?,?,CURRENT_TIMESTAMP)`).bind(jobId,institutionId,'CREATE_EXAM_PARTICIPANTS',JSON.stringify({...body,classIds}),JSON.stringify(summary),user.id).run();
-  await audit(env.DB,user.id,institutionId,'BULK_OPERATION_COMPLETED','bulk_operation',jobId,{operation:'CREATE_EXAM_PARTICIPANTS',summary,strategy:'SET_BASED_D1'});
+  await audit(env.DB,user.id,institutionId,'BULK_OPERATION_COMPLETED','bulk_operation',jobId,{operation:'CREATE_EXAM_PARTICIPANTS',summary,strategy:'SET_BASED_D1_CHUNKED'});
   return json({ok:true,jobId,summary});
 }
 
@@ -84,17 +101,18 @@ async function scaleHealth(env:Env,user:AuthUser){
   const backlogRatio=studentCount?backlog/studentCount:0;
   const readiness=[
     {key:'TENANT_SCOPE',label:'Kurum izolasyonu',status:'PASS',detail:'Kritik V2 toplu işlemler institution_id ve rol kapsamıyla sınırlandırılıyor.'},
-    {key:'BULK_PARTICIPANTS',label:'Toplu sınav katılımcısı',status:'PASS',detail:'Öğrenci başına sorgu yerine sınıf başına set-based D1 INSERT OR IGNORE kullanılıyor.'},
+    {key:'BULK_PARTICIPANTS',label:'Toplu sınav katılımcısı',status:'PASS',detail:`Öğrenci başına sorgu yerine set-based D1 INSERT OR IGNORE ve en fazla ${PARTICIPANT_CHUNK_SIZE} satırlık yazma chunk'ları kullanılıyor.`},
+    {key:'D1_QUERY_BUDGET',label:'D1 sorgu bütçesi',status:'PASS',detail:`Toplu katılımcı işlemi Worker başına ${MAX_D1_QUERY_BUDGET} sorguluk koruma eşiğiyle çalışıyor.`},
     {key:'RECOVERY_GUARDRAIL',label:'Nibiru Recovery toplu işlem',status:'PASS',detail:'En fazla 100 sınıf önizlenir; doğrulanmış kazanım kanıtı ve yönetici onayı zorunludur.'},
     {key:'INTELLIGENCE_BACKLOG',label:'Student Intelligence yenileme',status:backlogRatio>0.25?'WARN':'PASS',detail:`6 saatten eski/eksik profil: ${backlog.toLocaleString('tr-TR')} (${Math.round(backlogRatio*100)}%). Profiller ayrıca öğrenci erişiminde on-demand yenilenir.`},
-    {key:'QUEUE_WORKFLOW',label:'Queue / Workflow',status:studentCount>=100000?'WARN':'READY_WHEN_NEEDED',detail:'Mevcut ağır katılımcı üretimi set-based D1 ile optimize edildi. 100.000+ canlı hacimde uzun arka plan yenilemeleri için Queue/Workflow binding açılmalıdır.'},
+    {key:'QUEUE_WORKFLOW',label:'Queue / Workflow',status:studentCount>=100000?'WARN':'READY_WHEN_NEEDED',detail:'Katılımcı üretimi D1 limitlerine göre chunk edildi. 100.000+ canlı hacimde uzun Student Intelligence yenilemeleri ölçülen backlog/latency eşiğini aşarsa Queue/Workflow binding açılmalıdır.'},
     {key:'LIVE_100K_BENCHMARK',label:'100.000 öğrenci staging testi',status:'PENDING',detail:'Staging-only benchmark workflow sonucu gelmeden production kapasitesi 100.000 olarak onaylanmaz.'},
   ];
   const warnings:string[]=[];
   if(Number(metrics.scanRecords)>500000)warnings.push('Optik kayıt hacmi 500 bin üzeri: arşivleme/özetleme politikası etkinleştirilmeli.');
   if(Number(metrics.results)>500000)warnings.push('Sonuç hacmi 500 bin üzeri: ağır raporlar özet read-model üzerinden çalıştırılmalı.');
   if(backlogRatio>0.25)warnings.push('Student Intelligence stale profil kuyruğu aktif öğrencilerin %25’ini aşıyor; Queue/Workflow yenileme hattı etkinleştirilmeli.');
-  return json({ok:true,metrics,warnings,readiness,profileRefresh:{staleAfterHours:6,scheduledBatchSize:25,cron:'*/15 * * * *',oldestRefreshAt:oldestProfile?.refreshed_at||null,onDemandRefresh:true},architecture:{runtime:'Cloudflare Workers',database:'D1',files:'R2',camera:'Browser OMR + Worker APIs',tenantIsolation:'institution_id + role scope',bulkMode:'set-based D1 + job ledger',backgroundRefresh:'bounded cron + on-demand; Queue/Workflow at 100k threshold',recommendedNextScaleStep:'Run staging-only 100k benchmark; provision Queues/Workflows only if measured backlog/latency requires it.'}});
+  return json({ok:true,metrics,warnings,readiness,limits:{participantChunkSize:PARTICIPANT_CHUNK_SIZE,maxBulkClasses:MAX_BULK_CLASSES,maxD1QueryBudget:MAX_D1_QUERY_BUDGET},profileRefresh:{staleAfterHours:6,scheduledBatchSize:25,cron:'*/15 * * * *',oldestRefreshAt:oldestProfile?.refreshed_at||null,onDemandRefresh:true},architecture:{runtime:'Cloudflare Workers',database:'D1',files:'R2',camera:'Browser OMR + Worker APIs',tenantIsolation:'institution_id + role scope',bulkMode:'set-based D1 + 1000-row chunks + job ledger',backgroundRefresh:'bounded cron + on-demand; Queue/Workflow by measured threshold',recommendedNextScaleStep:'Run staging-only 100k benchmark; provision Queues/Workflows only if measured backlog/latency requires it.'}});
 }
 
 export default {
@@ -106,7 +124,7 @@ export default {
     if(url.pathname==='/api/v2/bulk/execute'&&request.method==='POST'){
       let body:any;try{body=await request.clone().json()}catch{return fail(400,'INVALID_JSON','İstek gövdesi okunamadı.')}
       if(body?.operation==='CREATE_EXAM_PARTICIPANTS'){
-        const auth=await requireUser(env,request);if(auth instanceof Response)return auth;return scaleSafeExamParticipants(request,env,auth,body);
+        const auth=await requireUser(env,request);if(auth instanceof Response)return auth;return scaleSafeExamParticipants(env,auth,body);
       }
     }
     return app.fetch(request,env,ctx);
