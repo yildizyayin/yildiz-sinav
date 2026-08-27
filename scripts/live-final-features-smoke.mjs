@@ -19,7 +19,8 @@ try{
  const manager=await login('manager');
 
  const managerNibiru=await req('/api/nibiru/chat',{method:'POST',cookie:manager,json:{message:'Bugün ne oldu?'}});
- assert(String(managerNibiru.p?.answer||'').startsWith('🤖 Nibiru:'),'Nibiru AI transparency prefix missing',managerNibiru.p);
+ assert(String(managerNibiru.p?.answer||'').startsWith('Nibiru:'),'Nibiru branded AI identity prefix missing',managerNibiru.p);
+ assert(!String(managerNibiru.p?.answer||'').includes('🤖'),'Legacy robot emoji leaked into Nibiru answer',managerNibiru.p);
  assert(managerNibiru.p?.intent==='TODAY_STATUS','Manager Nibiru intent mismatch',managerNibiru.p);
  passed('Nibiru manager AI transparency + institution scope',managerNibiru.p.intent);
 
@@ -100,7 +101,8 @@ try{
 
  const parent=await login('parent1');
  const parentNibiru=await req('/api/nibiru/chat',{method:'POST',cookie:parent,json:{message:'Öğrencim nasıl?'}});
- assert(String(parentNibiru.p?.answer||'').startsWith('🤖 Nibiru:'),'Parent Nibiru answer does not identify itself as AI',parentNibiru.p);
+ assert(String(parentNibiru.p?.answer||'').startsWith('Nibiru:'),'Parent Nibiru answer does not expose branded AI identity',parentNibiru.p);
+ assert(!String(parentNibiru.p?.answer||'').includes('🤖'),'Legacy robot emoji leaked into parent Nibiru answer',parentNibiru.p);
  assert(parentNibiru.p?.intent==='STUDENT_GENERAL','Parent general-student intent mismatch',parentNibiru.p);
  const offTopic=await req('/api/nibiru/chat',{method:'POST',cookie:parent,json:{message:'Bugün hava nasıl?'}});
  assert(offTopic.p?.outcome==='REDIRECTED','Nibiru did not redirect non-academic request',offTopic.p);
