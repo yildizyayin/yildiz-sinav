@@ -16,6 +16,10 @@ jobs:
       PROD_TURNSTILE_SITE_KEY: ${{ vars.PROD_TURNSTILE_SITE_KEY }}
       PROD_TURNSTILE_SECRET_KEY: ${{ secrets.PROD_TURNSTILE_SECRET_KEY }}
       PROD_SESSION_SECRET: ${{ secrets.PROD_SESSION_SECRET }}
+      PROD_WHATSAPP_VERIFY_TOKEN: ${{ secrets.PROD_WHATSAPP_VERIFY_TOKEN }}
+      PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
+      PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
+      PROD_WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.PROD_WHATSAPP_PHONE_NUMBER_ID }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -30,6 +34,22 @@ jobs:
           test -n "$PROD_TURNSTILE_SECRET_KEY" || (echo "Missing PROD_TURNSTILE_SECRET_KEY" && exit 1)
           test -n "$PROD_SESSION_SECRET" || (echo "Missing PROD_SESSION_SECRET" && exit 1)
 
+      - name: WhatsApp production readiness
+        shell: bash
+        run: |
+          missing=0
+          for name in PROD_WHATSAPP_VERIFY_TOKEN PROD_WHATSAPP_APP_SECRET PROD_WHATSAPP_ACCESS_TOKEN PROD_WHATSAPP_PHONE_NUMBER_ID; do
+            if [ -z "${!name}" ]; then
+              echo "$name is not configured in the production environment."
+              missing=$((missing+1))
+            fi
+          done
+          if [ "$missing" -eq 0 ]; then
+            echo "Production WhatsApp provider secrets are complete."
+          else
+            echo "Production deploy may continue, but WhatsApp remains inactive until all four values are configured."
+          fi
+
       - name: Install dependencies
         run: npm install
 
@@ -37,7 +57,7 @@ jobs:
         run: npm run typecheck && npm test && npm run build
 
       - name: Deploy isolated production Worker and resources
-        run: npx wrangler deploy --config wrangler.production.jsonc --var ENVIRONMENT:production --var PRODUCT_NAME:"Ölçme Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY
+        run: npx wrangler deploy --config wrangler.production.jsonc --var ENVIRONMENT:production --var PRODUCT_NAME:"Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY
 
       - name: Apply production D1 migrations
         run: npx wrangler d1 migrations apply DB --remote --config wrangler.production.jsonc
@@ -47,7 +67,25 @@ jobs:
           printf '%s' "$PROD_TURNSTILE_SECRET_KEY" | npx wrangler secret put TURNSTILE_SECRET_KEY --config wrangler.production.jsonc
           printf '%s' "$PROD_SESSION_SECRET" | npx wrangler secret put SESSION_SECRET --config wrangler.production.jsonc
 
+      - name: Sync WhatsApp secrets to production Worker
+        shell: bash
+        run: |
+          put_prod_secret() {
+            local source="$1"
+            local target="$2"
+            local value="${!source}"
+            if [ -n "$value" ]; then
+              printf '%s' "$value" | npx wrangler secret put "$target" --config wrangler.production.jsonc >/dev/null
+              echo "$target synced."
+            fi
+          }
+          put_prod_secret PROD_WHATSAPP_VERIFY_TOKEN WHATSAPP_VERIFY_TOKEN
+          put_prod_secret PROD_WHATSAPP_APP_SECRET WHATSAPP_APP_SECRET
+          put_prod_secret PROD_WHATSAPP_ACCESS_TOKEN WHATSAPP_ACCESS_TOKEN
+          put_prod_secret PROD_WHATSAPP_PHONE_NUMBER_ID WHATSAPP_PHONE_NUMBER_ID
+
       - name: Production safety note
         run: |
           echo "Production deploy completed without demo seed data."
           echo "Worker: yildiz-sinav-prod"
+          echo "WhatsApp secrets were synced only when production environment values were present."
