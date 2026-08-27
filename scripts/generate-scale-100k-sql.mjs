@@ -35,20 +35,18 @@ const participantStatements=[];
 for(let base=1;base<=STUDENTS;base+=CHUNK){
   const end=Math.min(STUDENTS,base+CHUNK-1);
   const count=end-base;
+  const startNo=String(base).padStart(6,'0');
+  const endNo=String(end).padStart(6,'0');
   entityStatements.push(`WITH RECURSIVE seq(n) AS (SELECT 0 UNION ALL SELECT n+1 FROM seq WHERE n<${count})
 INSERT INTO student_entities(id,first_name,last_name,normalized_name,status,activated_at)
 SELECT 'scale100k_stu_'||printf('%06d',${base}+n),'Scale',printf('Student %06d',${base}+n),printf('scale student %06d',${base}+n),'ACTIVE',CURRENT_TIMESTAMP FROM seq;`);
   enrollmentStatements.push(`WITH RECURSIVE seq(n) AS (SELECT 0 UNION ALL SELECT n+1 FROM seq WHERE n<${count})
 INSERT INTO student_enrollments(id,student_id,institution_id,season_id,class_id,student_number,grade_level,section,status)
 SELECT 'scale100k_enr_'||printf('%06d',${base}+n),'scale100k_stu_'||printf('%06d',${base}+n),'inst_scale100k','season_scale100k','scale100k_class_'||printf('%03d',(((${base}+n)-1)%${CLASSES})+1),printf('%06d',${base}+n),8,'B'||printf('%03d',(((${base}+n)-1)%${CLASSES})+1),'ACTIVE' FROM seq;`);
-  participantStatements.push(`WITH ranked AS (
-  SELECT s.id student_id,e.season_id,e.student_number,s.first_name,s.last_name,c.name class_name,
-         row_number() OVER (ORDER BY cast(e.student_number AS INTEGER),s.id) rn
-  FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id JOIN classes c ON c.id=e.class_id
-  WHERE e.institution_id='inst_scale100k' AND e.status='ACTIVE' AND s.status='ACTIVE'
-), slice AS (SELECT * FROM ranked WHERE rn>=${base} AND rn<=${end})
-INSERT OR IGNORE INTO exam_participants(id,exam_id,institution_id,season_id,student_id,student_number_snapshot,name_snapshot,class_snapshot,booklet_code,participant_status)
-SELECT 'scale100k_ep_'||student_id,'exam_scale100k','inst_scale100k',season_id,student_id,student_number,trim(first_name||' '||last_name),class_name,CASE ((rn-1)%2) WHEN 0 THEN 'A' ELSE 'B' END,'ACTIVE' FROM slice;`);
+  participantStatements.push(`INSERT OR IGNORE INTO exam_participants(id,exam_id,institution_id,season_id,student_id,student_number_snapshot,name_snapshot,class_snapshot,booklet_code,participant_status)
+SELECT 'scale100k_ep_'||s.id,'exam_scale100k','inst_scale100k',e.season_id,s.id,e.student_number,trim(s.first_name||' '||s.last_name),c.name,CASE (cast(e.student_number AS INTEGER)%2) WHEN 0 THEN 'B' ELSE 'A' END,'ACTIVE'
+FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id JOIN classes c ON c.id=e.class_id
+WHERE e.institution_id='inst_scale100k' AND e.season_id='season_scale100k' AND e.student_number BETWEEN '${startNo}' AND '${endNo}' AND e.status='ACTIVE' AND s.status='ACTIVE';`);
 }
 
 writeFileSync(`${OUT}/cleanup.sql`,cleanup);
