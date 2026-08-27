@@ -88,9 +88,53 @@ async function bulkOptions(env:Env,user:AuthUser,url:URL):Promise<Response>{
   return json({ok:true,institutionId,classes,worksheets,exams});
 }
 
+type RecoveryState='READY'|'NO_ACTION'|'INSUFFICIENT_EVIDENCE'|'NO_WORKSHEET'|'ALREADY_ASSIGNED';
+
+type RecoveryRecommendation={
+  classId:string;className:string;gradeLevel:number;section:string;studentCount:number;
+  state:RecoveryState;reason:string;evidenceCount:number;
+  weakOutcomes:Array<{outcomeId:string;outcomeCode:string|null;outcomeTitle:string;topic:string|null;subjectId:string;subjectName:string;evidenceCount:number;correctCount:number;successRate:number;measuredStudents:number}>;
+  worksheet:null|{id:string;title:string;programCode:string;gradeLevel:number|null;track:string;sequenceNo:number;matchedOutcomeCount:number;alreadyAssigned:boolean};
+};
+
+async function buildRecoveryRecommendations(env:Env,institutionId:string,classIds:string[]):Promise<RecoveryRecommendation[]>{
+  const recommendations:RecoveryRecommendation[]=[];
+  for(const classId of classIds){
+    const cls=await one<any>(env.DB.prepare(`SELECT c.id,c.name,c.grade_level,c.section,(SELECT count(*) FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.class_id=c.id AND e.status='ACTIVE' AND s.status='ACTIVE') student_count FROM classes c JOIN institution_seasons se ON se.id=c.season_id WHERE c.id=? AND c.institution_id=? AND c.active=1 AND se.status='ACTIVE'`).bind(classId,institutionId));
+    if(!cls)continue;
+    const totalEvidence=await one<{evidence_count:number|null}>(env.DB.prepare(`SELECT sum(r.evidence_count) evidence_count FROM outcome_results r JOIN student_enrollments e ON e.student_id=r.student_id AND e.status='ACTIVE' JOIN student_entities st ON st.id=r.student_id AND st.status='ACTIVE' WHERE e.class_id=? AND e.institution_id=?`).bind(classId,institutionId));
+    const evidenceCount=Number(totalEvidence?.evidence_count||0);
+    const weakRows=await all<any>(env.DB.prepare(`SELECT o.id outcome_id,o.code outcome_code,o.title outcome_title,o.topic,s.id subject_id,s.name subject_name,sum(r.evidence_count) evidence_count,sum(r.correct_count) correct_count,count(DISTINCT r.student_id) measured_students FROM outcome_results r JOIN student_enrollments e ON e.student_id=r.student_id AND e.status='ACTIVE' JOIN student_entities st ON st.id=r.student_id AND st.status='ACTIVE' JOIN outcomes o ON o.id=r.outcome_id AND o.active=1 JOIN subjects s ON s.id=o.subject_id WHERE e.class_id=? AND e.institution_id=? GROUP BY o.id,o.code,o.title,o.topic,s.id,s.name HAVING sum(r.evidence_count)>=3 AND (cast(sum(r.correct_count) as real)/nullif(sum(r.evidence_count),0))<0.60 ORDER BY (cast(sum(r.correct_count) as real)/nullif(sum(r.evidence_count),0)) ASC,sum(r.evidence_count) DESC,o.title LIMIT 5`).bind(classId,institutionId));
+    const weakOutcomes=weakRows.map((r:any)=>({outcomeId:r.outcome_id,outcomeCode:r.outcome_code||null,outcomeTitle:r.outcome_title,topic:r.topic||null,subjectId:r.subject_id,subjectName:r.subject_name,evidenceCount:Number(r.evidence_count||0),correctCount:Number(r.correct_count||0),successRate:Number(r.evidence_count)?Math.round((Number(r.correct_count)/Number(r.evidence_count))*1000)/10:0,measuredStudents:Number(r.measured_students||0)}));
+    if(!evidenceCount){recommendations.push({classId,className:cls.name,gradeLevel:Number(cls.grade_level),section:cls.section,studentCount:Number(cls.student_count||0),state:'INSUFFICIENT_EVIDENCE',reason:'Bu sınıf için henüz güvenilir kazanım kanıtı oluşmadı. Önce sınav/optik sonuçlarıyla ölçüm yapılmalı.',evidenceCount,weakOutcomes:[],worksheet:null});continue}
+    if(!weakOutcomes.length){recommendations.push({classId,className:cls.name,gradeLevel:Number(cls.grade_level),section:cls.section,studentCount:Number(cls.student_count||0),state:'NO_ACTION',reason:'Mevcut kanıtlarda %60 altına düşen ve en az 3 kanıtı bulunan kazanım yok. Recovery ataması gerekmiyor.',evidenceCount,weakOutcomes:[],worksheet:null});continue}
+    const ids=weakOutcomes.map(x=>x.outcomeId);const placeholders=ids.map(()=>'?').join(',');
+    const candidates=await all<any>(env.DB.prepare(`SELECT w.id,w.title,w.program_code,w.grade_level,w.track,w.sequence_no,count(DISTINCT wo.outcome_id) matched_outcome_count,CASE WHEN wa.id IS NULL THEN 0 ELSE 1 END already_assigned FROM worksheets w JOIN worksheet_outcomes wo ON wo.worksheet_id=w.id LEFT JOIN worksheet_assignments wa ON wa.worksheet_id=w.id AND wa.class_id=? AND wa.status='ACTIVE' WHERE w.status='PUBLISHED' AND (w.grade_level IS NULL OR w.grade_level=?) AND wo.outcome_id IN (${placeholders}) GROUP BY w.id,w.title,w.program_code,w.grade_level,w.track,w.sequence_no,wa.id ORDER BY already_assigned ASC,matched_outcome_count DESC,w.sequence_no ASC,w.title ASC LIMIT 3`).bind(classId,Number(cls.grade_level),...ids));
+    if(!candidates.length){recommendations.push({classId,className:cls.name,gradeLevel:Number(cls.grade_level),section:cls.section,studentCount:Number(cls.student_count||0),state:'NO_WORKSHEET',reason:'Zayıf kazanımlar doğrulandı; ancak bu kazanımlarla eşleşen yayınlanmış föy bulunamadı. Föy Merkezi’nde içerik eşlemesi yapılmalı.',evidenceCount,weakOutcomes,worksheet:null});continue}
+    const candidate=candidates[0];const alreadyAssigned=Boolean(candidate.already_assigned);
+    const worksheet={id:candidate.id,title:candidate.title,programCode:candidate.program_code,gradeLevel:candidate.grade_level==null?null:Number(candidate.grade_level),track:candidate.track,sequenceNo:Number(candidate.sequence_no),matchedOutcomeCount:Number(candidate.matched_outcome_count||0),alreadyAssigned};
+    recommendations.push({classId,className:cls.name,gradeLevel:Number(cls.grade_level),section:cls.section,studentCount:Number(cls.student_count||0),state:alreadyAssigned?'ALREADY_ASSIGNED':'READY',reason:alreadyAssigned?'En uygun föy bu sınıfa zaten aktif olarak atanmış. Yeni kayıt oluşturulmayacak.':`Nibiru, ölçülmüş zayıf kazanımların ${worksheet.matchedOutcomeCount} tanesiyle eşleşen yayınlanmış föyü öneriyor. Atama yalnız yönetici onayıyla yapılır.`,evidenceCount,weakOutcomes,worksheet});
+  }
+  return recommendations;
+}
+
+async function bulkRecoveryPreview(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  if(!canManage(user.role))return apiError(403,'FORBIDDEN','Toplu işlem yetkiniz yok.');
+  const body=await request.json<{institutionId?:string;classIds?:string[]}>();
+  const institutionId=resolveInstitution(user,body.institutionId);
+  if(!institutionId||!Array.isArray(body.classIds)||!body.classIds.length)return apiError(400,'VALIDATION_ERROR','Kurum ve en az bir sınıf seçilmelidir.');
+  if(!(await ensureInstitution(env,user,institutionId)))return apiError(403,'FORBIDDEN','Bu kuruma erişim yetkiniz yok.');
+  const classIds=[...new Set(body.classIds)];
+  if(classIds.length>100)return apiError(400,'TOO_MANY_CLASSES','Tek önizlemede en fazla 100 sınıf seçilebilir.');
+  for(const classId of classIds){const cls=await one<any>(env.DB.prepare('SELECT id,institution_id FROM classes WHERE id=? AND active=1').bind(classId));if(!cls||cls.institution_id!==institutionId)return apiError(400,'CLASS_SCOPE_ERROR','Seçilen sınıflardan biri bu kuruma ait değil.');}
+  const recommendations=await buildRecoveryRecommendations(env,institutionId,classIds);
+  const ready=recommendations.filter(x=>x.state==='READY').length;
+  return json({ok:true,institutionId,policy:{source:'VERIFIED_ASSESSMENT_EVIDENCE',humanApprovalRequired:true,autoAssignment:false,minEvidencePerOutcome:3,weaknessThresholdPercent:60,fabricatedIdsAllowed:false},summary:{classes:classIds.length,ready,noAction:recommendations.filter(x=>x.state==='NO_ACTION').length,insufficientEvidence:recommendations.filter(x=>x.state==='INSUFFICIENT_EVIDENCE').length,noWorksheet:recommendations.filter(x=>x.state==='NO_WORKSHEET').length,alreadyAssigned:recommendations.filter(x=>x.state==='ALREADY_ASSIGNED').length},recommendations});
+}
+
 async function bulkExecute(request:Request,env:Env,user:AuthUser):Promise<Response>{
   if(!canManage(user.role))return apiError(403,'FORBIDDEN','Toplu işlem yetkiniz yok.');
-  const body=await request.json<{institutionId?:string;operation?:'ASSIGN_WORKSHEET'|'CREATE_EXAM_PARTICIPANTS';classIds?:string[];worksheetId?:string;examId?:string;dueDate?:string|null}>();
+  const body=await request.json<{institutionId?:string;operation?:'ASSIGN_WORKSHEET'|'CREATE_EXAM_PARTICIPANTS'|'ASSIGN_RECOVERY_RECOMMENDATIONS';classIds?:string[];worksheetId?:string;examId?:string;dueDate?:string|null}>();
   const institutionId=resolveInstitution(user,body.institutionId);
   if(!institutionId||!body.operation||!Array.isArray(body.classIds)||!body.classIds.length)return apiError(400,'VALIDATION_ERROR','Kurum, işlem ve en az bir sınıf seçilmelidir.');
   if(!(await ensureInstitution(env,user,institutionId)))return apiError(403,'FORBIDDEN','Bu kuruma erişim yetkiniz yok.');
@@ -125,6 +169,15 @@ async function bulkExecute(request:Request,env:Env,user:AuthUser):Promise<Respon
       }
     }
     summary={created,skipped,exam:exam.title,classes:classIds.length,booklets:codes};
+  }else if(body.operation==='ASSIGN_RECOVERY_RECOMMENDATIONS'){
+    const recommendations=await buildRecoveryRecommendations(env,institutionId,classIds);let created=0,skipped=0,noRecommendation=0;const details:any[]=[];
+    for(const rec of recommendations){
+      if(rec.state!=='READY'||!rec.worksheet){noRecommendation++;details.push({classId:rec.classId,className:rec.className,state:rec.state,created:false});continue}
+      const exists=await one(env.DB.prepare('SELECT id FROM worksheet_assignments WHERE worksheet_id=? AND class_id=?').bind(rec.worksheet.id,rec.classId));
+      if(exists){skipped++;details.push({classId:rec.classId,className:rec.className,state:'ALREADY_ASSIGNED',worksheetId:rec.worksheet.id,worksheetTitle:rec.worksheet.title,created:false});continue}
+      await env.DB.prepare(`INSERT INTO worksheet_assignments(id,worksheet_id,institution_id,class_id,assigned_by,due_date) VALUES(?,?,?,?,?,?)`).bind(uuid('wsa'),rec.worksheet.id,institutionId,rec.classId,user.id,body.dueDate||null).run();created++;details.push({classId:rec.classId,className:rec.className,state:'ASSIGNED',worksheetId:rec.worksheet.id,worksheetTitle:rec.worksheet.title,matchedOutcomeCount:rec.worksheet.matchedOutcomeCount,created:true});
+    }
+    summary={created,skipped,noRecommendation,classes:classIds.length,verifiedRecovery:true,humanApproved:true,details};
   }else return apiError(400,'INVALID_OPERATION','Desteklenmeyen toplu işlem.');
   await env.DB.prepare(`INSERT INTO bulk_operation_jobs(id,institution_id,operation_type,status,payload_json,summary_json,created_by,completed_at) VALUES(?,?,?,'COMPLETED',?,?,?,CURRENT_TIMESTAMP)`).bind(jobId,institutionId,body.operation,JSON.stringify(body),JSON.stringify(summary),user.id).run();
   await audit(env.DB,user.id,institutionId,'BULK_OPERATION_COMPLETED','bulk_operation',jobId,{operation:body.operation,summary});
@@ -140,7 +193,7 @@ async function demoStatus(env:Env,user:AuthUser):Promise<Response>{
 async function demoSeed(request:Request,env:Env,user:AuthUser):Promise<Response>{
   if(user.role!=='SUPER_ADMIN')return apiError(403,'FORBIDDEN','Demo oluşturmayı yalnız Süper Admin yapabilir.');
   const body=await request.json<{name?:string;managerUsername?:string;managerPassword?:string}>();
-  const name=body.name?.trim()||'Ölçme Platformu Demo Kurumu';
+  const name=body.name?.trim()||'Anunex Demo Kurumu';
   const username=(body.managerUsername?.trim()||'').toLowerCase();
   const password=body.managerPassword||'';
   if(!username||password.length<8)return apiError(400,'VALIDATION_ERROR','Demo yönetici kullanıcı adı ve en az 8 karakter şifre gereklidir.');
@@ -194,6 +247,7 @@ export default {async fetch(request:Request,env:Env):Promise<Response>{
     if(url.pathname==='/api/optical-prepare'&&request.method==='GET')return opticalPrepareV2(env,auth,url);
     if(url.pathname==='/api/v2/institution-dashboard'&&request.method==='GET')return institutionDashboard(env,auth,url);
     if(url.pathname==='/api/v2/bulk/options'&&request.method==='GET')return bulkOptions(env,auth,url);
+    if(url.pathname==='/api/v2/bulk/recovery-preview'&&request.method==='POST')return bulkRecoveryPreview(request,env,auth);
     if(url.pathname==='/api/v2/bulk/execute'&&request.method==='POST')return bulkExecute(request,env,auth);
     if(url.pathname==='/api/v2/demo'&&request.method==='GET')return demoStatus(env,auth);
     if(url.pathname==='/api/v2/demo/seed'&&request.method==='POST')return demoSeed(request,env,auth);
