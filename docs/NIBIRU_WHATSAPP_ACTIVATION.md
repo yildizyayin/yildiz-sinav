@@ -12,6 +12,8 @@ Bu doküman gerçek telefon hattı aktive edilmeden önce teknik tarafı hazır 
 - Meta Cloud API metin cevapları.
 - Kurum duyuruları için Meta onaylı template mesaj gönderimi.
 - Panel bildirimi + WhatsApp + SMS fallback teslimat kayıtları.
+- Meta `sent`, `delivered`, `read` ve `failed` webhook durumlarının teslimat kaydına işlenmesi.
+- 1 MB webhook gövde sınırı, sabit-zamanlı verify token kontrolü ve zorunlu HMAC imzası.
 - WhatsApp erişim anahtarları yalnız Cloudflare Secret olarak tutulur.
 
 ## Meta tarafında oluşturulacak bileşenler
@@ -29,6 +31,14 @@ Bu doküman gerçek telefon hattı aktive edilmeden önce teknik tarafı hazır 
 11. Webhook callback URL: `https://<canli-domain>/api/nibiru/whatsapp/webhook`.
 12. `messages` webhook alanına abonelik.
 
+Staging callback URL:
+
+`https://yildiz-sinav-v1.rtsgida.workers.dev/api/nibiru/whatsapp/webhook`
+
+Production callback URL, production Worker alan adına göre:
+
+`https://yildiz-sinav-prod.rtsgida.workers.dev/api/nibiru/whatsapp/webhook`
+
 ## Cloudflare Secrets
 
 Aşağıdakiler GitHub'a veya kaynak koda kesinlikle yazılmaz:
@@ -41,6 +51,15 @@ Aşağıdakiler GitHub'a veya kaynak koda kesinlikle yazılmaz:
 Graph API sürümü yapılandırma değişkenidir:
 
 - `WHATSAPP_GRAPH_API_VERSION`
+
+GitHub Actions staging secret adları yukarıdaki dört adla aynıdır. Production environment için şu adlar kullanılır:
+
+- `PROD_WHATSAPP_VERIFY_TOKEN`
+- `PROD_WHATSAPP_APP_SECRET`
+- `PROD_WHATSAPP_ACCESS_TOKEN`
+- `PROD_WHATSAPP_PHONE_NUMBER_ID`
+
+Production özel alan adı kullanılıyorsa GitHub production variable olarak `PROD_SMOKE_BASE_URL` tanımlanır. Deploy workflow dört secretı `wrangler deploy --secrets-file` ile kod sürümüyle aynı anda Cloudflare Worker'a yükler; kısmi secret seti kabul edilmez. Ardından doğru/yanlış verify token ve doğru/yanlış imza için canlı webhook güvenlik testi çalışır.
 
 ## Nibiru panelinde yapılacak son ayarlar
 
@@ -72,9 +91,11 @@ SMS ana kanal değildir. WhatsApp ulaştırılamazsa ve kurum ayarında SMS fall
 ## Aktivasyon tamamlandı sayılma kriteri
 
 - Meta webhook doğrulaması geçti.
+- Yanlış verify token `403`, geçersiz imza `401` ile reddedildi.
 - İmzalı gerçek inbound mesaj alındı.
 - Test kullanıcısı güvenli şekilde eşleşti.
 - Nibiru rol kapsamına uygun cevap verdi.
 - Onaylı template ile outbound test mesajı gönderildi.
+- Template mesajının `delivered` veya `read` durumu teslimat kaydına işlendi; hata halinde Meta hata kodu kaydedildi.
 - Yanlış/bağlı olmayan numara öğrenci verisine erişemedi.
 - Trial süresi bitmiş kurum WhatsApp üzerinden akademik veri alamadı.

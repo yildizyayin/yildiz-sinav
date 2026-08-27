@@ -9,23 +9,40 @@ function bytesToHex(bytes: Uint8Array) {
   return [...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');
 }
 
-function constantTimeEqual(a: string, b: string) {
-  if (a.length !== b.length) return false;
+function hexToFixedBytes(value: string, size: number) {
+  const normalized=String(value||'').toLowerCase();
+  const valid=normalized.length===size*2&&/^[0-9a-f]+$/.test(normalized);
+  const bytes=new Uint8Array(size);
+  if(valid)for(let i=0;i<size;i++)bytes[i]=Number.parseInt(normalized.slice(i*2,i*2+2),16);
+  return {bytes,valid};
+}
+
+function constantTimeEqual(a: Uint8Array, b: Uint8Array) {
+  const size=Math.max(a.length,b.length);
   let diff = 0;
-  for (let i=0;i<a.length;i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
+  for (let i=0;i<size;i++) diff |= (a[i]||0) ^ (b[i]||0);
+  return diff === 0 && a.length === b.length;
+}
+
+async function sha256(value:string){
+  return new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)));
+}
+
+export async function verifyWhatsAppWebhookToken(expected:string,provided:string|null){
+  const [expectedHash,providedHash]=await Promise.all([sha256(expected),sha256(provided||'')]);
+  return Boolean(expected)&&Boolean(provided)&&constantTimeEqual(expectedHash,providedHash);
 }
 
 export async function verifyWhatsAppSignature(secret: string, rawBody: ArrayBuffer, signatureHeader: string | null) {
-  if (!signatureHeader?.startsWith('sha256=')) return false;
-  const expected = signatureHeader.slice(7).toLowerCase();
+  const supplied=hexToFixedBytes(signatureHeader?.startsWith('sha256=')?signatureHeader.slice(7):'',32);
   const key = await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);
   const signature = await crypto.subtle.sign('HMAC',key,rawBody);
-  return constantTimeEqual(bytesToHex(new Uint8Array(signature)),expected);
+  const expected=hexToFixedBytes(bytesToHex(new Uint8Array(signature)),32);
+  return supplied.valid&&constantTimeEqual(expected.bytes,supplied.bytes);
 }
 
 export function whatsappReady(env: Env) {
-  return Boolean(env.WHATSAPP_ACCESS_TOKEN && env.WHATSAPP_PHONE_NUMBER_ID && env.WHATSAPP_VERIFY_TOKEN);
+  return Boolean(env.WHATSAPP_ACCESS_TOKEN && env.WHATSAPP_PHONE_NUMBER_ID && env.WHATSAPP_VERIFY_TOKEN && env.WHATSAPP_APP_SECRET);
 }
 
 function graphUrl(env: Env) {
@@ -67,6 +84,14 @@ export type WhatsAppInboundMessage = {
   text: string | null;
 };
 
+export type WhatsAppDeliveryStatus = {
+  messageId: string;
+  recipient: string;
+  status: 'sent'|'delivered'|'read'|'failed'|'unknown';
+  timestamp?: string;
+  errorCode: string | null;
+};
+
 export function extractWhatsAppMessages(payload: any): WhatsAppInboundMessage[] {
   const out: WhatsAppInboundMessage[]=[];
   for(const entry of payload?.entry||[]) for(const change of entry?.changes||[]) {
@@ -80,4 +105,20 @@ export function extractWhatsAppMessages(payload: any): WhatsAppInboundMessage[] 
     });
   }
   return out.filter(x=>x.from&&x.id);
+}
+
+export function extractWhatsAppStatuses(payload:any):WhatsAppDeliveryStatus[]{
+  const out:WhatsAppDeliveryStatus[]=[];
+  for(const entry of payload?.entry||[])for(const change of entry?.changes||[])for(const item of change?.value?.statuses||[]){
+    const raw=String(item?.status||'').toLowerCase();
+    const status:WhatsAppDeliveryStatus['status']=['sent','delivered','read','failed'].includes(raw)?raw as WhatsAppDeliveryStatus['status']:'unknown';
+    out.push({
+      messageId:String(item?.id||''),
+      recipient:normalizeWhatsAppPhone(item?.recipient_id||''),
+      status,
+      timestamp:item?.timestamp?String(item.timestamp):undefined,
+      errorCode:item?.errors?.[0]?.code!=null?String(item.errors[0].code):null,
+    });
+  }
+  return out.filter(x=>x.messageId);
 }

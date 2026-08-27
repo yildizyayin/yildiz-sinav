@@ -4,9 +4,10 @@ import { getAuthUser } from './lib/auth';
 import { all, audit, badRequest, forbidden, json, one, uuid } from './lib/db';
 import { activateAnnual, getEffectiveLicense, licenseAccessMessage, setLicenseStatus, startTrial } from './lib/license';
 import { runNibiru } from './lib/nibiru';
-import { extractWhatsAppMessages, sendWhatsAppText, verifyWhatsAppSignature, whatsappReady } from './lib/whatsapp';
+import { extractWhatsAppMessages, extractWhatsAppStatuses, sendWhatsAppText, verifyWhatsAppSignature, verifyWhatsAppWebhookToken, whatsappReady, type WhatsAppDeliveryStatus } from './lib/whatsapp';
 
 const WHATSAPP_ROLES = new Set(['PARENT','TEACHER','GUIDANCE_TEACHER','INSTITUTION_MANAGER']);
+const MAX_WHATSAPP_WEBHOOK_BYTES=1024*1024;
 
 function apiError(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 
@@ -85,20 +86,41 @@ async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type
   }
 }
 
-async function whatsappWebhook(request:Request,env:Env,ctx:ExecutionContext){
+function providerTimestamp(value?:string){
+  const seconds=Number(value||0);
+  return Number.isFinite(seconds)&&seconds>0?new Date(seconds*1000).toISOString():new Date().toISOString();
+}
+
+async function handleWhatsAppStatus(env:Env,event:WhatsAppDeliveryStatus){
+  const occurredAt=providerTimestamp(event.timestamp);
+  const failureCode=event.status==='failed'?`META_${event.errorCode||'DELIVERY_FAILED'}`:null;
+  await env.DB.prepare(`INSERT OR IGNORE INTO nibiru_whatsapp_status_events(provider_message_id,status,recipient_phone_e164,error_code,occurred_at) VALUES(?,?,?,?,?)`).bind(event.messageId,event.status.toUpperCase(),event.recipient||null,failureCode,occurredAt).run();
+  if(event.status==='delivered'||event.status==='read'){
+    await env.DB.prepare(`UPDATE announcement_deliveries SET status='DELIVERED',delivered_at=COALESCE(delivered_at,?),failure_code=NULL WHERE provider_message_id=? AND channel='WHATSAPP' AND status<>'FAILED'`).bind(occurredAt,event.messageId).run();
+  }else if(event.status==='failed'){
+    await env.DB.prepare(`UPDATE announcement_deliveries SET status='FAILED',failure_code=?,attempted_at=COALESCE(attempted_at,?) WHERE provider_message_id=? AND channel='WHATSAPP'`).bind(failureCode,occurredAt,event.messageId).run();
+  }
+  console.log(JSON.stringify({event:'nibiru_whatsapp_delivery_status',messageId:event.messageId,status:event.status,errorCode:event.errorCode}));
+}
+
+export async function whatsappWebhook(request:Request,env:Env,ctx:ExecutionContext){
   const url=new URL(request.url);
   if(request.method==='GET'){
     const mode=url.searchParams.get('hub.mode'),token=url.searchParams.get('hub.verify_token'),challenge=url.searchParams.get('hub.challenge')||'';
-    if(mode==='subscribe'&&env.WHATSAPP_VERIFY_TOKEN&&token===env.WHATSAPP_VERIFY_TOKEN)return new Response(challenge,{status:200,headers:{'Content-Type':'text/plain'}});
+    if(mode==='subscribe'&&env.WHATSAPP_VERIFY_TOKEN&&await verifyWhatsAppWebhookToken(env.WHATSAPP_VERIFY_TOKEN,token))return new Response(challenge,{status:200,headers:{'Content-Type':'text/plain'}});
     return new Response('Forbidden',{status:403});
   }
   if(request.method!=='POST')return new Response('Method Not Allowed',{status:405});
+  const declaredLength=Number(request.headers.get('content-length')||0);
+  if(Number.isFinite(declaredLength)&&declaredLength>MAX_WHATSAPP_WEBHOOK_BYTES)return new Response('Payload Too Large',{status:413});
   const raw=await request.arrayBuffer();
+  if(raw.byteLength>MAX_WHATSAPP_WEBHOOK_BYTES)return new Response('Payload Too Large',{status:413});
   if(env.WHATSAPP_APP_SECRET){const valid=await verifyWhatsAppSignature(env.WHATSAPP_APP_SECRET,raw,request.headers.get('X-Hub-Signature-256'));if(!valid)return new Response('Invalid signature',{status:401})}
   else if(env.ENVIRONMENT==='production')return new Response('WhatsApp app secret not configured',{status:503});
   let payload:any;try{payload=JSON.parse(new TextDecoder().decode(raw))}catch{return new Response('Bad Request',{status:400})}
   const messages=extractWhatsAppMessages(payload);
-  if(messages.length)ctx.waitUntil(Promise.all(messages.map(m=>handleWhatsAppMessage(env,m))).then(()=>undefined));
+  const statuses=extractWhatsAppStatuses(payload);
+  if(messages.length||statuses.length)ctx.waitUntil(Promise.all([...messages.map(m=>handleWhatsAppMessage(env,m)),...statuses.map(s=>handleWhatsAppStatus(env,s))]).then(()=>undefined));
   return new Response('EVENT_RECEIVED',{status:200});
 }
 

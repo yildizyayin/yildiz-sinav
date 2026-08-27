@@ -16,6 +16,11 @@ jobs:
       PROD_TURNSTILE_SITE_KEY: ${{ vars.PROD_TURNSTILE_SITE_KEY }}
       PROD_TURNSTILE_SECRET_KEY: ${{ secrets.PROD_TURNSTILE_SECRET_KEY }}
       PROD_SESSION_SECRET: ${{ secrets.PROD_SESSION_SECRET }}
+      PROD_WHATSAPP_VERIFY_TOKEN: ${{ secrets.PROD_WHATSAPP_VERIFY_TOKEN }}
+      PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
+      PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
+      PROD_WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.PROD_WHATSAPP_PHONE_NUMBER_ID }}
+      SMOKE_BASE_URL: ${{ vars.PROD_SMOKE_BASE_URL }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -29,6 +34,10 @@ jobs:
           test -n "$PROD_TURNSTILE_SITE_KEY" || (echo "Missing PROD_TURNSTILE_SITE_KEY" && exit 1)
           test -n "$PROD_TURNSTILE_SECRET_KEY" || (echo "Missing PROD_TURNSTILE_SECRET_KEY" && exit 1)
           test -n "$PROD_SESSION_SECRET" || (echo "Missing PROD_SESSION_SECRET" && exit 1)
+          test -n "$PROD_WHATSAPP_VERIFY_TOKEN" || (echo "Missing PROD_WHATSAPP_VERIFY_TOKEN" && exit 1)
+          test -n "$PROD_WHATSAPP_APP_SECRET" || (echo "Missing PROD_WHATSAPP_APP_SECRET" && exit 1)
+          test -n "$PROD_WHATSAPP_ACCESS_TOKEN" || (echo "Missing PROD_WHATSAPP_ACCESS_TOKEN" && exit 1)
+          test -n "$PROD_WHATSAPP_PHONE_NUMBER_ID" || (echo "Missing PROD_WHATSAPP_PHONE_NUMBER_ID" && exit 1)
 
       - name: Install dependencies
         run: npm install
@@ -37,15 +46,22 @@ jobs:
         run: npm run typecheck && npm test && npm run build
 
       - name: Deploy isolated production Worker and resources
-        run: npx wrangler deploy --config wrangler.production.jsonc --var ENVIRONMENT:production --var PRODUCT_NAME:"Ölçme Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY
+        run: |
+          secret_file="$RUNNER_TEMP/anunex-production-secrets.json"
+          node -e "const fs=require('fs');fs.writeFileSync(process.argv[1],JSON.stringify({TURNSTILE_SECRET_KEY:process.env.PROD_TURNSTILE_SECRET_KEY,SESSION_SECRET:process.env.PROD_SESSION_SECRET,WHATSAPP_VERIFY_TOKEN:process.env.PROD_WHATSAPP_VERIFY_TOKEN,WHATSAPP_APP_SECRET:process.env.PROD_WHATSAPP_APP_SECRET,WHATSAPP_ACCESS_TOKEN:process.env.PROD_WHATSAPP_ACCESS_TOKEN,WHATSAPP_PHONE_NUMBER_ID:process.env.PROD_WHATSAPP_PHONE_NUMBER_ID}))" "$secret_file"
+          npx wrangler deploy --config wrangler.production.jsonc --secrets-file "$secret_file" --var ENVIRONMENT:production --var PRODUCT_NAME:"Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY
+          rm -f "$secret_file"
 
       - name: Apply production D1 migrations
         run: npx wrangler d1 migrations apply DB --remote --config wrangler.production.jsonc
 
-      - name: Set production secrets
+      - name: Live production WhatsApp webhook security checks
+        env:
+          WHATSAPP_VERIFY_TOKEN: ${{ env.PROD_WHATSAPP_VERIFY_TOKEN }}
+          WHATSAPP_APP_SECRET: ${{ env.PROD_WHATSAPP_APP_SECRET }}
         run: |
-          printf '%s' "$PROD_TURNSTILE_SECRET_KEY" | npx wrangler secret put TURNSTILE_SECRET_KEY --config wrangler.production.jsonc
-          printf '%s' "$PROD_SESSION_SECRET" | npx wrangler secret put SESSION_SECRET --config wrangler.production.jsonc
+          if [ -z "$SMOKE_BASE_URL" ]; then SMOKE_BASE_URL="https://yildiz-sinav-prod.rtsgida.workers.dev"; export SMOKE_BASE_URL; fi
+          node scripts/live-whatsapp-webhook-smoke.mjs
 
       - name: Production safety note
         run: |
