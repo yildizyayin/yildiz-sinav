@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-27T20:18:29.583Z`
+- Time: `2026-08-27T20:29:46.057Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -42,9 +42,9 @@ Error: Nibiru settings missing
     "public_whatsapp_number": "+905441790940",
     "ai_model": "@cf/zai-org/glm-4.7-flash",
     "education_language_mode": "MEB_DEVELOPMENTAL",
-    "transparency_text": "Ben Nibiru AI, Anunex’in yapay zekâ akademik asistanıyım.",
+    "transparency_text": "Ben Nibiru, Anunex’in yapay zekâ akademik asistanıyım.",
     "updated_by": null,
-    "updated_at": "2026-08-27 20:17:32"
+    "updated_at": "2026-08-27 20:28:53"
   },
   "provider": {
     "ready": false,
@@ -72,7 +72,17 @@ Error: Nibiru worksheet answer lacks AI disclosure
   "ok": true,
   "answer": "Nibiru: 2026-08-27 için yetki alanınızda yakın tarihli planlanmış bir föy görünmüyor. Föy Takvimi sekmesinden yıllık planı kontrol edebilirsiniz.",
   "intent": "WORKSHEET_CALENDAR",
-  "outcome": "ANSWERED"
+  "outcome": "ANSWERED",
+  "orchestration": {
+    "version": "multi-ai-v1",
+    "specialist": "INSTITUTION_INSIGHT",
+    "label": "Kurum Akademik İçgörü AI",
+    "reason": "Kurum/platform kapsamındaki akademik yönetim verisi önceliklendirildi.",
+    "subjectHint": null
+  },
+  "coachPlan": null,
+  "guidanceRoute": null,
+  "guidanceAssessment": null
 }
     at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-academic-growth-smoke.mjs:9:36)
     at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-academic-growth-smoke.mjs:35:2
@@ -81,58 +91,41 @@ Error: Nibiru worksheet answer lacks AI disclosure
 
 ## Standard package acceptance
 
+- ✅ **Standard readiness gate** — core ready · external setup 2
+- ✅ **External provider activation contract** — YouTube setup · WhatsApp setup
+- ✅ **Standard question bank** — 20 approved printable questions
 - ❌ **Standard acceptance failure**
 
 ```text
-Error: GET /api/standard-readiness expected 200, got 404
+Error: POST /api/nibiru/coach/items/coach_20260827_stu_a001_i1/mini-test expected 200, got 201
 {
-  "ok": false,
-  "error": {
-    "code": "NOT_FOUND",
-    "message": "API yolu bulunamadı."
-  }
+  "ok": true,
+  "reused": false,
+  "testId": "cmt_002268df-7dc6-4da3-9adf-dc918b000646",
+  "cycleNo": 1,
+  "questionCount": 5
 }
     at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:6:392)
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:11:18
+    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:31:16
 ```
 
 ## Standard final closure
 
-- ❌ **Standard final closure failure**
-
-```text
-Error: GET /api/standard-readiness failed with 404
-{
-  "ok": false,
-  "error": {
-    "code": "NOT_FOUND",
-    "message": "API yolu bulunamadı."
-  }
-}
-    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:4:36)
-    at jsonReq (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:7:339)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:12:18
-```
+- ✅ **Standard package final readiness** — sale ready · optional channels 2
+- ✅ **Student personalization + countdown** — preferences persisted · live countdown + flip clock context
+- ✅ **Basic results + outcome analysis** — 9 exams · 6 outcome rows
+- ✅ **Role-safe consumable worksheet** — 7. Sınıf Sayısal Föy 1 · PDF + answer key + 40 question supports
+- ✅ **Real registered micro-learning route** — solution + topic video available without YouTube API auto-discovery
 
 ## Counselor-approved RBA / guidance governance
 
-- ❌ **Guidance governance failure**
-
-```text
-Error: GET /api/nibiru/guidance/instruments expected 200, got 404
-{
-  "ok": false,
-  "error": {
-    "code": "NOT_FOUND",
-    "message": "API yolu bulunamadı."
-  }
-}
-    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-guidance-governance-smoke.mjs:6:392)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-guidance-governance-smoke.mjs:12:20
-```
+- ✅ **Educational instrument registry** — RBA + counselor approval policy
+- ✅ **Pre-approval student boundary** — questions/submission blocked
+- ✅ **Real counselor approval** — assigned GUIDANCE_TEACHER opened assessment
+- ✅ **Student assessment submission** — released only after counselor approval
+- ✅ **Counselor review gate** — derived scores accepted into development signals
+- ✅ **Nibiru reviewed-development context** — only REVIEWED educational signals used
 
 ## Student Intelligence / Learning Graph
 
@@ -151,3 +144,8 @@ Error: GET /api/student-intelligence/profile expected 200, got 400
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
     at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-student-intelligence-smoke.mjs:12:14
 ```
+
+## 100K Queue kapasite kabulü
+
+- ✅ **Başarılı** — 100.000 izole sentetik kayıt · 1000 Queue parçası · 0 başarısız parça
+- Run: `cap_f55767b0-a5d9-493b-b86f-891ee4a65ea5`
