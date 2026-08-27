@@ -27,6 +27,7 @@ describe('Student Intelligence',()=>{
   const source=readFileSync(new URL('../worker/lib/student-intelligence.ts',import.meta.url),'utf8');
   expect(source).toContain('JOIN institution_seasons season ON season.id=e.season_id');
   expect(source).toContain('season.academic_year');
+  expect(source).toContain('motivation_label future_identity_label');
  });
 
  it('uses conservative mastery bands when evidence or confidence is insufficient',()=>{
