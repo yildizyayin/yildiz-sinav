@@ -1,8 +1,8 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "yildiz-sinav-prod",
-  "main": "./worker/scale-entry.ts",
-  "compatibility_date": "2026-08-21",
+  "main": "./worker/product-completion-entry.ts",
+  "compatibility_date": "2026-08-26",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
     "enabled": true,

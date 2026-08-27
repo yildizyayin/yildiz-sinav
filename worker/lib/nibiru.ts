@@ -126,7 +126,7 @@ async function saveSession(env: Env, channel: 'WHATSAPP' | 'WEB', key: string, u
 }
 
 function transparency() {
-  return `${AI_PREFIX} Ben Ölçme Platformu’nun yapay zekâ akademik asistanıyım.`;
+  return `${AI_PREFIX} Ben Anunex’in yapay zekâ akademik asistanıyım.`;
 }
 
 function helpForRole(role: AuthUser['role']) {
@@ -146,7 +146,7 @@ function deterministic(intent: NibiruIntent, context: any, user: AuthUser): stri
 }
 
 function systemPrompt(role: AuthUser['role']) {
-  return `Sen Nibiru'sun. Ölçme Platformu'nun yapay zekâ akademik asistanısın. Kullanıcı rolü: ${role}.
+  return `Sen Nibiru'sun. Anunex'in yapay zekâ akademik asistanısın. Kullanıcı rolü: ${role}.
 DEĞİŞMEZ KURALLAR:
 1. Her yanıtın başında “🤖 Nibiru:” kullan; insan, öğretmen, MEB çalışanı veya MEB ürünü olduğunu iddia etme.
 2. Yalnızca verilen DOĞRULANMIŞ VERİ BAĞLAMI içindeki olguları kullan. Veri yoksa bunu açıkça söyle; sonuç, net, puan, kazanım veya davranış uydurma.

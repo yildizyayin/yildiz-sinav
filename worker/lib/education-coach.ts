@@ -53,8 +53,17 @@ async function latestExamEvidence(env:Env,studentId:string,institutionId:string)
 async function readPlan(env:Env,studentId:string,planId:string):Promise<CoachPlanResult>{
  const plan=await one<any>(env.DB.prepare(`SELECT a.*,ar.status recipient_status,ar.progress,ar.completed_at FROM assignments a JOIN assignment_recipients ar ON ar.assignment_id=a.id WHERE a.id=? AND a.assignment_type='NIBIRU' AND ar.student_id=?`).bind(planId,studentId));
  if(!plan)return{available:false,reason:'PLAN_NOT_FOUND'};
- const items=await all<any>(env.DB.prepare(`SELECT ai.*,CASE WHEN EXISTS(SELECT 1 FROM assignment_attempts aa WHERE aa.item_id=ai.id AND aa.student_id=? AND coalesce(aa.score,0)>=1) THEN 1 ELSE 0 END completed FROM assignment_items ai WHERE ai.assignment_id=? ORDER BY ai.sort_order`).bind(studentId,planId));
- return{available:true,plan,items:items.map(x=>({...x,payload:x.payload_json?JSON.parse(x.payload_json):{},completed:Boolean(x.completed)}))};
+ const items=await all<any>(env.DB.prepare(`SELECT ai.*,
+   CASE WHEN EXISTS(SELECT 1 FROM assignment_attempts aa WHERE aa.item_id=ai.id AND aa.student_id=? AND coalesce(aa.score,0)>=1) THEN 1 ELSE 0 END completed,
+   som.status mastery_status,som.last_score,
+   mt.id latest_test_id,mt.status latest_test_status,mt.cycle_no latest_test_cycle,mt.question_count latest_test_question_count,mt.score_percent latest_test_score_percent,
+   (SELECT COUNT(*) FROM coach_followup_actions f WHERE f.test_id=mt.id AND f.student_id=? AND f.status='PENDING') pending_followup_count,
+   (SELECT COUNT(*) FROM coach_followup_actions f WHERE f.test_id=mt.id AND f.student_id=? AND f.status='DONE') completed_followup_count
+   FROM assignment_items ai
+   LEFT JOIN student_outcome_mastery som ON som.student_id=? AND som.outcome_id=ai.reference_id
+   LEFT JOIN coach_mini_tests mt ON mt.id=(SELECT t.id FROM coach_mini_tests t WHERE t.assignment_item_id=ai.id AND t.student_id=? ORDER BY t.cycle_no DESC LIMIT 1)
+   WHERE ai.assignment_id=? ORDER BY ai.sort_order`).bind(studentId,studentId,studentId,studentId,studentId,planId));
+ return{available:true,plan,items:items.map(x=>({...x,payload:x.payload_json?JSON.parse(x.payload_json):{},completed:Boolean(x.completed),masteryStatus:x.mastery_status||null,latestMiniTest:x.latest_test_id?{id:x.latest_test_id,status:x.latest_test_status,cycleNo:Number(x.latest_test_cycle),questionCount:Number(x.latest_test_question_count),scorePercent:x.latest_test_score_percent===null?null:Number(x.latest_test_score_percent),pendingFollowupCount:Number(x.pending_followup_count||0),completedFollowupCount:Number(x.completed_followup_count||0)}:null}))};
 }
 
 export async function getTodayCoachPlan(env:Env,user:AuthUser):Promise<CoachPlanResult>{
@@ -88,15 +97,29 @@ export async function createOrReuseDailyCoachPlan(env:Env,user:AuthUser):Promise
 
 export async function completeCoachItem(env:Env,user:AuthUser,itemId:string,completed=true){
  if(user.role!=='STUDENT'||!user.student_id)return{ok:false,reason:'STUDENT_ONLY'};
- const item=await one<any>(env.DB.prepare(`SELECT ai.id,ai.assignment_id FROM assignment_items ai JOIN assignments a ON a.id=ai.assignment_id JOIN assignment_recipients ar ON ar.assignment_id=a.id WHERE ai.id=? AND a.assignment_type='NIBIRU' AND ar.student_id=?`).bind(itemId,user.student_id));
+ const item=await one<any>(env.DB.prepare(`SELECT ai.id,ai.assignment_id,ai.payload_json FROM assignment_items ai JOIN assignments a ON a.id=ai.assignment_id JOIN assignment_recipients ar ON ar.assignment_id=a.id WHERE ai.id=? AND a.assignment_type='NIBIRU' AND ar.student_id=?`).bind(itemId,user.student_id));
  if(!item)return{ok:false,reason:'ITEM_NOT_FOUND'};
+ const payload=item.payload_json?JSON.parse(item.payload_json):{};
+ if(completed&&payload.kind==='OUTCOME_PRACTICE')return{ok:false,reason:'MINI_TEST_REQUIRED',miniTestRequired:true};
  const completionId=completionIdFor(user.student_id,itemId);
  await env.DB.prepare(`INSERT INTO assignment_attempts(id,assignment_id,student_id,item_id,answer_json,score) VALUES(?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET answer_json=excluded.answer_json,score=excluded.score,created_at=CURRENT_TIMESTAMP`).bind(completionId,item.assignment_id,user.student_id,itemId,JSON.stringify({completed}),completed?1:0).run();
- const counts=await one<any>(env.DB.prepare(`SELECT (SELECT COUNT(*) FROM assignment_items WHERE assignment_id=?) total,(SELECT COUNT(DISTINCT aa.item_id) FROM assignment_attempts aa JOIN assignment_items ai ON ai.id=aa.item_id WHERE ai.assignment_id=? AND aa.student_id=? AND coalesce(aa.score,0)>=1) done`).bind(item.assignment_id,item.assignment_id,user.student_id));
+ return refreshCoachProgress(env,user,item.assignment_id,itemId,{completed,source:'MANUAL'});
+}
+
+async function refreshCoachProgress(env:Env,user:AuthUser,assignmentId:string,itemId:string,details:Record<string,unknown>){
+ const counts=await one<any>(env.DB.prepare(`SELECT (SELECT COUNT(*) FROM assignment_items WHERE assignment_id=?) total,(SELECT COUNT(DISTINCT aa.item_id) FROM assignment_attempts aa JOIN assignment_items ai ON ai.id=aa.item_id WHERE ai.assignment_id=? AND aa.student_id=? AND coalesce(aa.score,0)>=1) done`).bind(assignmentId,assignmentId,user.student_id));
  const total=Number(counts?.total||0),done=Number(counts?.done||0),progress=total?Math.round(done*100/total):0,status=done===0?'ASSIGNED':done>=total?'COMPLETED':'STARTED';
- await env.DB.prepare(`UPDATE assignment_recipients SET status=?,progress=?,completed_at=CASE WHEN ?='COMPLETED' THEN CURRENT_TIMESTAMP ELSE NULL END WHERE assignment_id=? AND student_id=?`).bind(status,progress,status,item.assignment_id,user.student_id).run();
- await audit(env.DB,user.id,user.institution_id,'NIBIRU_DAILY_PLAN_PROGRESS','assignment',item.assignment_id,{itemId,completed,done,total,progress});
- return{ok:true,assignmentId:item.assignment_id,itemId,completed,done,total,progress,status};
+ await env.DB.prepare(`UPDATE assignment_recipients SET status=?,progress=?,completed_at=CASE WHEN ?='COMPLETED' THEN CURRENT_TIMESTAMP ELSE NULL END WHERE assignment_id=? AND student_id=?`).bind(status,progress,status,assignmentId,user.student_id).run();
+ await audit(env.DB,user.id,user.institution_id,'NIBIRU_DAILY_PLAN_PROGRESS','assignment',assignmentId,{itemId,done,total,progress,...details});
+ return{ok:true,assignmentId,itemId,completed:done>0,done,total,progress,status};
+}
+
+export async function markCoachItemVerifiedComplete(env:Env,user:AuthUser,itemId:string,verification:Record<string,unknown>){
+ if(user.role!=='STUDENT'||!user.student_id)return{ok:false,reason:'STUDENT_ONLY'};
+ const item=await one<any>(env.DB.prepare(`SELECT ai.id,ai.assignment_id FROM assignment_items ai JOIN assignments a ON a.id=ai.assignment_id JOIN assignment_recipients ar ON ar.assignment_id=a.id WHERE ai.id=? AND a.assignment_type='NIBIRU' AND ar.student_id=?`).bind(itemId,user.student_id));
+ if(!item)return{ok:false,reason:'ITEM_NOT_FOUND'};
+ await env.DB.prepare(`INSERT INTO assignment_attempts(id,assignment_id,student_id,item_id,answer_json,score) VALUES(?,?,?,?,?,1) ON CONFLICT(id) DO UPDATE SET answer_json=excluded.answer_json,score=1,created_at=CURRENT_TIMESTAMP`).bind(completionIdFor(user.student_id,itemId),item.assignment_id,user.student_id,itemId,JSON.stringify({completed:true,verifiedBy:'MINI_TEST',...verification})).run();
+ return refreshCoachProgress(env,user,item.assignment_id,itemId,{source:'MINI_TEST',...verification});
 }
 
 export function coachPlanSummary(result:CoachPlanResult){

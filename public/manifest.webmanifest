@@ -1,0 +1,15 @@
+{
+  "name": "Anunex Ölçme ve Değerlendirme",
+  "short_name": "Anunex",
+  "description": "Kurum, öğretmen, öğrenci ve veli için ölçme-değerlendirme platformu.",
+  "lang": "tr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#07111f",
+  "theme_color": "#0f172a",
+  "icons": [
+    {"src":"/app-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}

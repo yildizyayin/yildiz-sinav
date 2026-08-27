@@ -35,6 +35,12 @@ jobs:
         if: ${{ env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' }}
         run: echo "Cloudflare permanent deployment skipped because repository secrets are not configured yet."
 
+      - name: Ensure staging capacity queues
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        run: |
+          npx wrangler queues list | grep -q 'yildiz-sinav-scale-staging' || npx wrangler queues create yildiz-sinav-scale-staging
+          npx wrangler queues list | grep -q 'yildiz-sinav-scale-staging-dlq' || npx wrangler queues create yildiz-sinav-scale-staging-dlq
+
       - name: WhatsApp secret readiness
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         shell: bash
@@ -134,6 +140,10 @@ jobs:
         continue-on-error: true
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-nibiru-voice-smoke.mjs
+
+      - name: Live 100K Queue capacity acceptance
+        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        run: node scripts/live-capacity-smoke.mjs
 
       - name: Persist live smoke report
         if: ${{ always() && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}

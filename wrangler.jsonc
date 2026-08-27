@@ -1,8 +1,8 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "yildiz-sinav-v1",
-  "main": "./worker/scale-entry.ts",
-  "compatibility_date": "2026-08-21",
+  "main": "./worker/product-completion-entry.ts",
+  "compatibility_date": "2026-08-26",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
     "enabled": true,
@@ -28,6 +28,23 @@
   ],
   "ai": {
     "binding": "AI"
+  },
+  "queues": {
+    "producers": [
+      {
+        "binding": "SCALE_QUEUE",
+        "queue": "yildiz-sinav-scale-staging"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "yildiz-sinav-scale-staging",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5,
+        "max_retries": 3,
+        "dead_letter_queue": "yildiz-sinav-scale-staging-dlq"
+      }
+    ]
   },
   "vars": {
     "ENVIRONMENT": "staging",

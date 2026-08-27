@@ -19,6 +19,10 @@ export const STANDARD_MODULES=[
   {key:'STUDENT_EXPERIENCE',label:'Öğrenci Kişiselleştirme / Sayaç / Oyun / Mikro Öğrenme',tables:['student_experience_preferences','educational_game_catalog','youtube_micro_video_candidates']},
   {key:'PERSONAL_BOOKS',label:'Kişiye Özel Kitap',tables:['student_personal_books','student_personal_book_items']},
   {key:'ZERO_ERROR',label:'Sıfır Hata Kitapçığı',tables:['zero_error_booklets','zero_error_booklet_items','zero_error_attempts']},
+  {key:'COACH_MASTERY',label:'Eğitim Koçu Mini-Test / Yeniden Ölçüm / Kazanım Tamamlama',tables:['coach_mini_tests','coach_mini_test_questions','student_outcome_mastery','coach_followup_actions']},
+  {key:'LEARNING_GRAPH',label:'Kazanım / Learning Graph Köprüsü',tables:['learning_nodes','learning_evidence','student_learning_state']},
+  {key:'MEMBERSHIP_COMMERCE',label:'Standard / Gold / Premium Ticari Akışı',tables:['membership_plans','student_memberships','membership_order_requests','membership_monthly_credit_grants','live_credit_wallets']},
+  {key:'ANNUAL_CONTENT',label:'Tam Yıllık İçerik Planı',tables:['annual_content_plans','annual_content_plan_slots']},
   {key:'NOTIFICATIONS',label:'Bildirim Merkezi',tables:['notifications']},
 ] as const;
 

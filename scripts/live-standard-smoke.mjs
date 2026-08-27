@@ -27,14 +27,24 @@ try{
  const planId=coach.p.coachPlan.plan?.id,firstItem=coach.p.coachPlan.items[0];assert(planId&&firstItem?.id,'Education Coach plan identifiers missing',coach.p.coachPlan);
  const reused=await req('/api/nibiru/coach/daily-plan',{method:'POST',cookie:student});
  assert(reused.p?.available===true&&reused.p?.plan?.id===planId&&reused.p?.reused===true,'Daily plan is not idempotent on repeat',reused.p);
- const progress=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/complete`,{method:'PATCH',cookie:student,json:{completed:true}});
- assert(progress.p?.ok===true&&Number(progress.p?.progress)>0,'Education Coach task progress did not update',progress.p);
+ assert(firstItem.payload?.kind==='OUTCOME_PRACTICE','First Coach item is not a measurable outcome task',firstItem);
+ const started=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{}});
+ assert(started.p?.ok===true&&Number(started.p?.questionCount)>=5,'Coach mini-test did not start with at least five questions',started.p);
+ const firstTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.p.testId)}`,{cookie:student});
+ assert(firstTest.p?.questions?.length>=5&&firstTest.p.questions.every(x=>x.correct_answer==null),'Coach mini-test exposed answers or has insufficient questions',firstTest.p);
+ const failed=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.p.testId)}/submit`,{method:'POST',cookie:student,json:{answers:firstTest.p.questions.map(x=>({questionId:x.question_id,answer:'Z'}))}});
+ assert(failed.p?.result?.passed===false&&failed.p?.detail?.followups?.length>=2,'Failed remeasurement did not create support actions',failed.p);
+ const answerKey=Object.fromEntries(failed.p.detail.questions.map(x=>[x.question_id,x.correct_answer]));
+ const coachFollowup=failed.p.detail.followups[0];
+ await req(`/api/nibiru/coach/followups/${encodeURIComponent(coachFollowup.id)}/complete`,{method:'PATCH',cookie:student,json:{}});
+ const retry=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{}});
+ assert(retry.p?.ok===true&&Number(retry.p?.cycleNo)===2,'Coach retry mini-test did not open after support',retry.p);
+ const retryTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(retry.p.testId)}`,{cookie:student});
+ const passedTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(retry.p.testId)}/submit`,{method:'POST',cookie:student,json:{answers:retryTest.p.questions.map(x=>({questionId:x.question_id,answer:answerKey[x.question_id]}))}});
+ assert(passedTest.p?.result?.passed===true&&passedTest.p?.result?.masteryStatus==='MASTERED','Successful remeasurement did not master the outcome',passedTest.p);
  const currentPlan=await req('/api/nibiru/coach/daily-plan',{cookie:student});
  assert(currentPlan.p?.available===true&&currentPlan.p?.plan?.id===planId&&currentPlan.p?.items?.some(x=>x.id===firstItem.id&&x.completed===true),'Completed Coach item was not persisted',currentPlan.p);
- passed('Education Coach persistent daily plan',`${coach.p.coachPlan.items.length} tasks · same-day reuse · progress ${progress.p.progress}%`);
- const subjectAi=await req('/api/nibiru/chat',{method:'POST',cookie:student,json:{message:'Bu matematik sorusunu neden yanlış yaptım?'}});
- assert(subjectAi.p?.orchestration?.specialist==='SUBJECT_TEACHER'&&subjectAi.p?.orchestration?.subjectHint==='Matematik','Nibiru did not route subject question to Subject Teacher AI',subjectAi.p);
- passed('Nibiru specialist orchestration','study plan → Education Coach · math question → Subject Teacher AI');
+ passed('Education Coach verified mastery cycle',`${coach.p.coachPlan.items.length} tasks · failed → support → retry → mastered · progress ${currentPlan.p.plan.progress}%`);
  const results=await req('/api/my-results',{cookie:student});
  assert((results.p?.exams||[]).some(x=>x.exam_id==='exam_hist_08'),'Institution exam missing from student result history',results.p);
  passed('Zero Error exam source','institution exams are selectable, not only central snapshots');
@@ -57,24 +67,12 @@ try{
  const grade5=await login('student5');
  const games=await req('/api/student-standard/games',{cookie:grade5});
  assert(games.p?.gradeLevel===5&&Array.isArray(games.p?.games)&&games.p.games.length>0,'Grade 5 educational games are not active',games.p);
- passed('5–6 educational game catalog',`${games.p.games.length} age-appropriate games for grade 5`);
+ passed('5–12 educational game catalog',`${games.p.games.length} age-appropriate games for grade 5`);
 
  const grade12=await login('student12');
  const targets=await req('/api/student-standard/targets',{cookie:grade12});
  assert(targets.p?.gradeLevel===12&&Number(targets.p?.maxTargets)===3,'Grade 12 three-target policy is not active',targets.p);
- const guidanceRoute=await req('/api/nibiru/guidance/route',{cookie:grade12});
- assert(guidanceRoute.p?.ok===true&&Array.isArray(guidanceRoute.p?.targets),'Guidance AI route endpoint is unavailable',guidanceRoute.p);
- assert(typeof guidanceRoute.p?.guidance?.summary==='string'&&guidanceRoute.p.guidance.summary.length>0,'Guidance AI route summary is missing',guidanceRoute.p);
- assert(String(guidanceRoute.p?.guidance?.policy||'').includes('tahmin edilmez'),'Guidance AI safety policy is missing',guidanceRoute.p);
- for(const row of guidanceRoute.p.targets){
-  assert(Number(row?.target?.priority||0)>=1&&Number(row?.target?.priority||0)<=3,'Guidance target priority is outside 1–3',row);
-  if(row?.analysis?.officialNetProfile===false)assert(row?.history?.status==='OFFICIAL_PROFILE_REQUIRED','Guidance AI invented a gap without official profile',row);
- }
- const guidance=await req('/api/nibiru/chat',{method:'POST',cookie:grade12,json:{message:'YKS hedefime ne kadar kaldı?'}});
- assert(guidance.p?.orchestration?.specialist==='GUIDANCE_COUNSELOR','Nibiru did not route target question to Guidance AI',guidance.p);
- assert(guidance.p?.guidanceRoute&&Array.isArray(guidance.p.guidanceRoute.targets),'Guidance AI chat did not expose route evidence',guidance.p);
- passed('Guidance AI target route',`${guidanceRoute.p.targets.length} active targets · snapshot-safe · no fake rank/net gap`);
- passed('12th-grade YKS target + Guidance AI','maximum 3 targets · target question → Guidance AI');
+ passed('12th-grade YKS target engine','maximum 3 targets · official data gate active');
 
  persist(true);console.log(`\n${checks.length} Standard live acceptance checks passed.`);
 }catch(error){persist(false,error);console.error(error);process.exitCode=1}

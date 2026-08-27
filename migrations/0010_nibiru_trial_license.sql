@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS nibiru_settings (
   public_whatsapp_number TEXT,
   ai_model TEXT NOT NULL DEFAULT '@cf/zai-org/glm-4.7-flash',
   education_language_mode TEXT NOT NULL DEFAULT 'MEB_DEVELOPMENTAL',
-  transparency_text TEXT NOT NULL DEFAULT 'Ben Nibiru, Ölçme Platformu’nun yapay zekâ akademik asistanıyım.',
+  transparency_text TEXT NOT NULL DEFAULT 'Ben Nibiru, Anunex’in yapay zekâ akademik asistanıyım.',
   updated_by TEXT REFERENCES users(id),
   updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

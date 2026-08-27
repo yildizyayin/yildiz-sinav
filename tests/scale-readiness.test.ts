@@ -2,13 +2,15 @@ import { readFileSync } from 'node:fs';
 import { describe,expect,it } from 'vitest';
 
 const source=readFileSync(new URL('../worker/scale-entry.ts',import.meta.url),'utf8');
+const productRoot=readFileSync(new URL('../worker/product-completion-entry.ts',import.meta.url),'utf8');
 const staging=readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8');
 const production=readFileSync(new URL('../wrangler.production.jsonc',import.meta.url),'utf8');
 
 describe('Anunex scale readiness',()=>{
-  it('routes staging and production through the scale-safe wrapper',()=>{
-    expect(staging).toContain('"main": "./worker/scale-entry.ts"');
-    expect(production).toContain('"main": "./worker/scale-entry.ts"');
+  it('routes staging and production through the product root and scale-safe wrapper',()=>{
+    expect(staging).toContain('"main": "./worker/product-completion-entry.ts"');
+    expect(production).toContain('"main": "./worker/product-completion-entry.ts"');
+    expect(productRoot).toContain("import app from './scale-entry'");
   });
 
   it('uses set-based participant creation instead of per-student existence queries',()=>{

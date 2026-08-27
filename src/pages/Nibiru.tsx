@@ -1,8 +1,9 @@
 import { useEffect,useRef,useState } from 'react';
-import { CheckCircle2,Mic,Send,Square,Volume2 } from 'lucide-react';
+import { Mic,Send,Square,Volume2 } from 'lucide-react';
 import { api } from '../api';
 import { useAuth } from '../auth';
 import { NibiruMark,type NibiruVisualState } from '../components/NibiruMark';
+import { CoachPlanCard } from '../components/CoachPlanCard';
 
 type Message={role:'user'|'assistant';text:string;specialist?:string;coachPlan?:any};
 
@@ -21,13 +22,12 @@ async function responseError(response:Response,fallback:string){
 
 export function Nibiru(){
  const{user}=useAuth();
- const[messages,setMessages]=useState<Message[]>([{role:'assistant',text:'Ben Nibiru. Ölçme Platformu’nun yapay zekâ akademik zekâ katmanıyım. Sorunuza göre Eğitim Koçu, Rehber Öğretmen veya Branş Öğretmeni uzmanlığına yönlenirim; yalnızca yetkiniz kapsamındaki doğrulanmış akademik verileri kullanırım.',specialist:'Nibiru Core'}]);
+ const[messages,setMessages]=useState<Message[]>([{role:'assistant',text:'Ben Nibiru. Anunex’in yapay zekâ akademik zekâ katmanıyım. Sorunuza göre etkin uzmanlığa yönlenir, yalnızca yetkiniz kapsamındaki doğrulanmış akademik verileri kullanırım.',specialist:'Nibiru Core'}]);
  const[text,setText]=useState('');const[busy,setBusy]=useState(false);const[error,setError]=useState('');const[recording,setRecording]=useState(false);const[voiceBusy,setVoiceBusy]=useState(false);const[playing,setPlaying]=useState<number|null>(null);const[voiceStatus,setVoiceStatus]=useState<any>(null);const endRef=useRef<HTMLDivElement|null>(null);
  const recorderRef=useRef<MediaRecorder|null>(null);const chunksRef=useRef<BlobPart[]>([]);const streamRef=useRef<MediaStream|null>(null);const timerRef=useRef<number|null>(null);const audioRef=useRef<HTMLAudioElement|null>(null);
  useEffect(()=>{endRef.current?.scrollIntoView({behavior:'smooth'})},[messages,busy]);
  useEffect(()=>{api<any>('/api/nibiru/voice/status').then(setVoiceStatus).catch(()=>setVoiceStatus(null));return()=>{if(timerRef.current)window.clearTimeout(timerRef.current);streamRef.current?.getTracks().forEach(t=>t.stop());audioRef.current?.pause()}},[]);
  const ask=async(value?:string)=>{const q=(value??text).trim();if(!q||busy)return;setMessages(x=>[...x,{role:'user',text:q}]);setText('');setBusy(true);setError('');try{const r=await api<any>('/api/nibiru/chat',{method:'POST',body:JSON.stringify({message:q})});setMessages(x=>[...x,{role:'assistant',text:r.answer,specialist:r.orchestration?.label,coachPlan:r.coachPlan?.available?r.coachPlan:undefined}])}catch(e:any){setError(e.message||'Nibiru şu anda yanıt veremedi.')}finally{setBusy(false)}};
- const complete=async(itemId:string)=>{setBusy(true);setError('');try{await api(`/api/nibiru/coach/items/${encodeURIComponent(itemId)}/complete`,{method:'PATCH',body:JSON.stringify({completed:true})});const fresh=await api<any>('/api/nibiru/coach/daily-plan');setMessages(ms=>ms.map(m=>m.coachPlan?.available?{...m,coachPlan:fresh.available?fresh:m.coachPlan}:m))}catch(e:any){setError(e.message||'Görev güncellenemedi.')}finally{setBusy(false)}};
  const stopRecording=()=>{if(timerRef.current){window.clearTimeout(timerRef.current);timerRef.current=null}if(recorderRef.current?.state==='recording')recorderRef.current.stop()};
  const startRecording=async()=>{
   if(recording){stopRecording();return}setError('');
@@ -46,7 +46,7 @@ export function Nibiru(){
  };
  const items=suggestions[user?.role||'PARENT']||suggestions.PARENT,sttReady=Boolean(voiceStatus?.providers?.stt?.ready),ttsReady=Boolean(voiceStatus?.providers?.standardReady);
  const visualState:NibiruVisualState=recording?'listening':busy?'thinking':playing!==null?'speaking':voiceBusy?'active':'idle';
- const renderAssistant=(m:Message,i:number)=><div className="nibiru-assistant-message"><NibiruMark size={28} state={playing===i?'speaking':busy&&i===messages.length-1?'thinking':'idle'} title="Nibiru"/><div className="nibiru-message-body" style={{padding:'12px 14px',borderRadius:14,background:'var(--surface-2,#f5f7fb)',whiteSpace:'pre-wrap',lineHeight:1.5}}>{m.specialist&&<div style={{fontSize:12,fontWeight:700,opacity:.68,marginBottom:6}}>Aktif uzman · {m.specialist}</div>}{m.text}<div style={{marginTop:8}}><button className="ghost" disabled={!ttsReady||voiceBusy} onClick={()=>void speakMessage(m.text,i)}><Volume2 size={14}/> {playing===i?'Dinleniyor…':'Dinle'}</button></div>{m.coachPlan?.available&&<div style={{marginTop:12,paddingTop:10,borderTop:'1px solid var(--border,#dbe2ea)',display:'grid',gap:8}}><strong>Bugünkü kayıtlı plan · %{Math.round(Number(m.coachPlan.plan?.progress||0))}</strong>{(m.coachPlan.items||[]).map((item:any)=><div key={item.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:10,padding:'8px 0'}}><span style={{whiteSpace:'normal',display:'inline-flex',alignItems:'center',gap:7}}>{item.completed?<CheckCircle2 size={15}/>:<span aria-hidden="true">•</span>} {item.payload?.label||'Çalışma görevi'}{item.payload?.questionTarget?` · ${item.payload.questionTarget} soru`:''}</span><button className="ghost" disabled={busy||item.completed} onClick={()=>void complete(item.id)}>{item.completed?<><CheckCircle2 size={14}/> Tamamlandı</>:<>Tamamladım</>}</button></div>)}</div>}</div></div>;
+ const renderAssistant=(m:Message,i:number)=><div className="nibiru-assistant-message"><NibiruMark size={28} state={playing===i?'speaking':busy&&i===messages.length-1?'thinking':'idle'} title="Nibiru"/><div className="nibiru-message-body" style={{padding:'12px 14px',borderRadius:14,background:'var(--surface-2,#f5f7fb)',whiteSpace:'pre-wrap',lineHeight:1.5}}>{m.specialist&&<div style={{fontSize:12,fontWeight:700,opacity:.68,marginBottom:6}}>Aktif uzman · {m.specialist}</div>}{m.text}<div style={{marginTop:8}}><button className="ghost" disabled={!ttsReady||voiceBusy} onClick={()=>void speakMessage(m.text,i)}><Volume2 size={14}/> {playing===i?'Dinleniyor…':'Dinle'}</button></div>{m.coachPlan?.available&&<CoachPlanCard plan={m.coachPlan}/>}</div></div>;
  return <>
   <div className="page-head nibiru-hero-head"><div className="nibiru-hero-title"><NibiruMark size={72} state={visualState} showWordmark/><div><span className="eyebrow">TEK AKADEMİK ZEKÂ KAPISI</span><h1>Nibiru</h1><p>Doğrulanmış akademik veri, rol bazlı yetki ve uzman yapay zekâları tek bir kurumsal kimlik altında birleştirir.</p></div></div><div className="status ok nibiru-orchestration-status"><NibiruMark size={18} state="active" title="Nibiru aktif"/> Uzman orkestrasyonu aktif</div></div>
   {error&&<div className="alert error">{error}</div>}
