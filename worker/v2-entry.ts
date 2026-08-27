@@ -124,7 +124,8 @@ async function bulkRecoveryPreview(request:Request,env:Env,user:AuthUser):Promis
   const institutionId=resolveInstitution(user,body.institutionId);
   if(!institutionId||!Array.isArray(body.classIds)||!body.classIds.length)return apiError(400,'VALIDATION_ERROR','Kurum ve en az bir sınıf seçilmelidir.');
   if(!(await ensureInstitution(env,user,institutionId)))return apiError(403,'FORBIDDEN','Bu kuruma erişim yetkiniz yok.');
-  const classIds=[...new Set(body.classIds)];
+  const classIds:string[]=[...new Set((body.classIds as unknown[]).filter((value):value is string=>typeof value==='string'&&value.trim().length>0))];
+  if(!classIds.length)return apiError(400,'VALIDATION_ERROR','En az bir geçerli sınıf seçilmelidir.');
   if(classIds.length>100)return apiError(400,'TOO_MANY_CLASSES','Tek önizlemede en fazla 100 sınıf seçilebilir.');
   for(const classId of classIds){const cls=await one<any>(env.DB.prepare('SELECT id,institution_id FROM classes WHERE id=? AND active=1').bind(classId));if(!cls||cls.institution_id!==institutionId)return apiError(400,'CLASS_SCOPE_ERROR','Seçilen sınıflardan biri bu kuruma ait değil.');}
   const recommendations=await buildRecoveryRecommendations(env,institutionId,classIds);
@@ -138,7 +139,8 @@ async function bulkExecute(request:Request,env:Env,user:AuthUser):Promise<Respon
   const institutionId=resolveInstitution(user,body.institutionId);
   if(!institutionId||!body.operation||!Array.isArray(body.classIds)||!body.classIds.length)return apiError(400,'VALIDATION_ERROR','Kurum, işlem ve en az bir sınıf seçilmelidir.');
   if(!(await ensureInstitution(env,user,institutionId)))return apiError(403,'FORBIDDEN','Bu kuruma erişim yetkiniz yok.');
-  const classIds=[...new Set(body.classIds)];
+  const classIds:string[]=[...new Set((body.classIds as unknown[]).filter((value):value is string=>typeof value==='string'&&value.trim().length>0))];
+  if(!classIds.length)return apiError(400,'VALIDATION_ERROR','En az bir geçerli sınıf seçilmelidir.');
   for(const classId of classIds){const cls=await one<any>(env.DB.prepare('SELECT id,institution_id FROM classes WHERE id=? AND active=1').bind(classId));if(!cls||cls.institution_id!==institutionId)return apiError(400,'CLASS_SCOPE_ERROR','Seçilen sınıflardan biri bu kuruma ait değil.');}
   const jobId=uuid('bulk');
   let summary:any={};
