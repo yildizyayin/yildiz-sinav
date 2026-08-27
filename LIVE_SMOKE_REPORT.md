@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-27T20:29:46.057Z`
+- Time: `2026-08-27T20:39:00.312Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -28,66 +28,27 @@
 ## Final platform feature checks
 
 - ✅ **Nibiru manager AI transparency + institution scope** — TODAY_STATUS
-- ❌ **Final feature smoke failure**
-
-```text
-Error: Nibiru settings missing
-{
-  "ok": true,
-  "settings": {
-    "id": "platform",
-    "assistant_name": "Nibiru AI",
-    "enabled": 1,
-    "whatsapp_enabled": 0,
-    "public_whatsapp_number": "+905441790940",
-    "ai_model": "@cf/zai-org/glm-4.7-flash",
-    "education_language_mode": "MEB_DEVELOPMENTAL",
-    "transparency_text": "Ben Nibiru, Anunex’in yapay zekâ akademik asistanıyım.",
-    "updated_by": null,
-    "updated_at": "2026-08-27 20:28:53"
-  },
-  "provider": {
-    "ready": false,
-    "verifyToken": false,
-    "appSecret": false,
-    "accessToken": false,
-    "phoneNumberId": false
-  }
-}
-    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:9:36)
-    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:28:2
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-```
+- ✅ **Nibiru WhatsApp role pairing preparation** — parent/teacher/manager role-safe pairing codes
+- ✅ **Optik 840 + printer calibration + personalized print flow** — 65 students · A/B set recognized · existing assignments preserved · Canon Öğretmenler Odası
+- ✅ **License rollout backward compatibility** — LEGACY · LEGACY_ACTIVE
+- ✅ **Activation request + notification flow** — manager request → Super Admin decision → manager notification
+- ✅ **Student wrong/blank learning flow** — 4 question rows available
+- ✅ **Nibiru parent context + non-academic redirect** — student-linked context · AI disclosure · safe redirect
+- ✅ **Parent weekly summary + notification flow** — 1 exams in last 7 days
+- ✅ **Demo identity preservation** — 45 guests preserved after rejected smoke request
 
 ## Nibiru academic growth / communication checks
 
 - ✅ **Official academic target source registry** — MEB Rota Maarif + e-Okul + ÖSYM + YÖK Atlas
 - ✅ **Official target search boundaries** — LGS 0 · YKS 0 verified rows currently loaded
 - ✅ **Institution announcement center** — panel + WhatsApp-template + SMS-fallback ledger ready
-- ❌ **Academic growth smoke failure**
-
-```text
-Error: Nibiru worksheet answer lacks AI disclosure
-{
-  "ok": true,
-  "answer": "Nibiru: 2026-08-27 için yetki alanınızda yakın tarihli planlanmış bir föy görünmüyor. Föy Takvimi sekmesinden yıllık planı kontrol edebilirsiniz.",
-  "intent": "WORKSHEET_CALENDAR",
-  "outcome": "ANSWERED",
-  "orchestration": {
-    "version": "multi-ai-v1",
-    "specialist": "INSTITUTION_INSIGHT",
-    "label": "Kurum Akademik İçgörü AI",
-    "reason": "Kurum/platform kapsamındaki akademik yönetim verisi önceliklendirildi.",
-    "subjectHint": null
-  },
-  "coachPlan": null,
-  "guidanceRoute": null,
-  "guidanceAssessment": null
-}
-    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-academic-growth-smoke.mjs:9:36)
-    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-academic-growth-smoke.mjs:35:2
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-```
+- ✅ **Worksheet calendar + Nibiru guidance** — 4 published calendar rows visible
+- ✅ **Teacher communication + worksheet scope** — role-scoped endpoints available
+- ✅ **Student target eligibility + analysis boundary** — grade 7 · target not set
+- ✅ **Super Admin official-source governance** — source URL + official flag enforced
+- ✅ **Official question intelligence registry** — MEB LGS + ÖSYM YKS + EBA/OGM references · protected text not copied
+- ✅ **Official question intelligence authorization** — Super Admin only status/source governance
+- ✅ **Official outcome-history contract** — 0 outcome rows · historical priority is explicitly not a prediction guarantee
 
 ## Standard package acceptance
 
@@ -97,10 +58,10 @@ Error: Nibiru worksheet answer lacks AI disclosure
 - ❌ **Standard acceptance failure**
 
 ```text
-Error: POST /api/nibiru/coach/items/coach_20260827_stu_a001_i1/mini-test expected 200, got 201
+Error: POST /api/nibiru/coach/items/coach_20260827_stu_a001_i1/mini-test expected 201, got 200
 {
   "ok": true,
-  "reused": false,
+  "reused": true,
   "testId": "cmt_002268df-7dc6-4da3-9adf-dc918b000646",
   "cycleNo": 1,
   "questionCount": 5
@@ -136,7 +97,7 @@ Error: GET /api/student-intelligence/profile expected 200, got 400
 {
   "ok": false,
   "error": {
-    "code": "D1_TYPE_ERROR: Type 'undefined' not supported for value 'undefined'",
+    "code": "D1_ERROR: no such column: future_identity_label at offset 31: SQLITE_ERROR",
     "message": "Öğrenci akademik profili oluşturulamadı."
   }
 }
@@ -147,5 +108,5 @@ Error: GET /api/student-intelligence/profile expected 200, got 400
 
 ## 100K Queue kapasite kabulü
 
-- ✅ **Başarılı** — 100.000 izole sentetik kayıt · 1000 Queue parçası · 0 başarısız parça
+- ✅ **Başarılı** — 100.000 izole sentetik kayıt · 1000 Queue parçası · 0 başarısız parça · son 30 günlük kanıt yeniden kullanıldı
 - Run: `cap_f55767b0-a5d9-493b-b86f-891ee4a65ea5`
