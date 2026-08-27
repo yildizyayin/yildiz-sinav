@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-27T20:39:00.312Z`
+- Time: `2026-08-27T20:47:35.520Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -55,21 +55,14 @@
 - ✅ **Standard readiness gate** — core ready · external setup 2
 - ✅ **External provider activation contract** — YouTube setup · WhatsApp setup
 - ✅ **Standard question bank** — 20 approved printable questions
-- ❌ **Standard acceptance failure**
-
-```text
-Error: POST /api/nibiru/coach/items/coach_20260827_stu_a001_i1/mini-test expected 201, got 200
-{
-  "ok": true,
-  "reused": true,
-  "testId": "cmt_002268df-7dc6-4da3-9adf-dc918b000646",
-  "cycleNo": 1,
-  "questionCount": 5
-}
-    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:6:392)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:31:16
-```
+- ✅ **Education Coach verified mastery cycle** — 3 tasks · failed → support → retry → mastered · progress 33%
+- ✅ **Zero Error exam source** — institution exams are selectable, not only central snapshots
+- ✅ **Correct / wrong / blank question review** — all answer states available
+- ✅ **Publisher solution + topic micro-learning contract** — registered video path
+- ✅ **Kişiye Özel Kitap** — 2 outcomes · 6 questions
+- ✅ **Sıfır Hata Kitapçığı** — 2 wrong · 2 blank · 8 practice
+- ✅ **5–12 educational game catalog** — 5 age-appropriate games for grade 5
+- ✅ **12th-grade YKS target engine** — maximum 3 targets · official data gate active
 
 ## Standard final closure
 
@@ -90,21 +83,13 @@ Error: POST /api/nibiru/coach/items/coach_20260827_stu_a001_i1/mini-test expecte
 
 ## Student Intelligence / Learning Graph
 
-- ❌ **Student Intelligence failure**
-
-```text
-Error: GET /api/student-intelligence/profile expected 200, got 400
-{
-  "ok": false,
-  "error": {
-    "code": "D1_ERROR: no such column: future_identity_label at offset 31: SQLITE_ERROR",
-    "message": "Öğrenci akademik profili oluşturulamadı."
-  }
-}
-    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-student-intelligence-smoke.mjs:6:392)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-student-intelligence-smoke.mjs:12:14
-```
+- ✅ **Persistent student intelligence profile** — v2 · 174 evidence · 3 subjects
+- ✅ **Idempotent refresh + versioned history** — 2 history snapshots
+- ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
+- ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
+- ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
+- ✅ **Counselor-reviewed development integration** — 81 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v2 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 
