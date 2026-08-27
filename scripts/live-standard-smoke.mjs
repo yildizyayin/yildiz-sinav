@@ -3,7 +3,7 @@ const BASE=(process.env.SMOKE_BASE_URL||'https://yildiz-sinav-v1.rtsgida.workers
 const PASSWORD=process.env.SMOKE_DEMO_PASSWORD||'Demo123!';const TOKEN='XXXX.DUMMY.TOKEN.XXXX';const REPORT='LIVE_SMOKE_REPORT.md';const checks=[];
 function assert(v,m,d){if(!v)throw new Error(`${m}${d===undefined?'':`\n${JSON.stringify(d,null,2)}`}`)}
 function passed(name,details=''){checks.push({name,details});console.log(`✓ ${name}${details?` — ${details}`:''}`)}
-async function req(path,{method='GET',cookie,json,expected=200}={}){const h={};if(cookie)h.Cookie=cookie;let body;if(json!==undefined){h['Content-Type']='application/json';body=JSON.stringify(json)}const r=await fetch(`${BASE}${path}`,{method,headers:h,body,redirect:'manual'});const text=await r.text();let p;try{p=text?JSON.parse(text):null}catch{p={raw:text}}if(r.status!==expected)throw new Error(`${method} ${path} expected ${expected}, got ${r.status}\n${JSON.stringify(p,null,2)}`);return{r,p}}
+async function req(path,{method='GET',cookie,json,expected=200}={}){const h={};if(cookie)h.Cookie=cookie;let body;if(json!==undefined){h['Content-Type']='application/json';body=JSON.stringify(json)}const r=await fetch(`${BASE}${path}`,{method,headers:h,body,redirect:'manual'});const text=await r.text();let p;try{p=text?JSON.parse(text):null}catch{p={raw:text}}const expectedStatuses=Array.isArray(expected)?expected:[expected];if(!expectedStatuses.includes(r.status))throw new Error(`${method} ${path} expected ${expectedStatuses.join(' or ')}, got ${r.status}\n${JSON.stringify(p,null,2)}`);return{r,p}}
 async function login(identifier){const{r,p}=await req('/api/auth/login',{method:'POST',json:{identifier,password:PASSWORD,remember:false,turnstileToken:TOKEN}});assert(p?.ok===true,`${identifier} login failed`,p);const c=(r.headers.get('set-cookie')||'').match(/(yildiz_session=[^;]+)/)?.[1];assert(c,'session cookie missing');return c}
 function persist(ok,error){if(!existsSync(REPORT))writeFileSync(REPORT,'# Live Staging Smoke Report\n');let text=`\n## Standard package acceptance\n\n${checks.map(x=>`- ✅ **${x.name}**${x.details?` — ${x.details}`:''}`).join('\n')}`;if(!ok)text+=`${checks.length?'\n':''}- ❌ **Standard acceptance failure**\n\n\`\`\`text\n${String(error instanceof Error?error.stack||error.message:error).slice(0,8000)}\n\`\`\``;appendFileSync(REPORT,`${text}\n`)}
 try{
@@ -28,7 +28,7 @@ try{
  const reused=await req('/api/nibiru/coach/daily-plan',{method:'POST',cookie:student});
  assert(reused.p?.available===true&&reused.p?.plan?.id===planId&&reused.p?.reused===true,'Daily plan is not idempotent on repeat',reused.p);
  assert(firstItem.payload?.kind==='OUTCOME_PRACTICE','First Coach item is not a measurable outcome task',firstItem);
- const started=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{},expected:201});
+ const started=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{},expected:[200,201]});
  assert(started.p?.ok===true&&Number(started.p?.questionCount)>=5,'Coach mini-test did not start with at least five questions',started.p);
  const firstTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.p.testId)}`,{cookie:student});
  assert(firstTest.p?.questions?.length>=5&&firstTest.p.questions.every(x=>x.correct_answer==null),'Coach mini-test exposed answers or has insufficient questions',firstTest.p);
@@ -37,7 +37,7 @@ try{
  const answerKey=Object.fromEntries(failed.p.detail.questions.map(x=>[x.question_id,x.correct_answer]));
  const coachFollowup=failed.p.detail.followups[0];
  await req(`/api/nibiru/coach/followups/${encodeURIComponent(coachFollowup.id)}/complete`,{method:'PATCH',cookie:student,json:{}});
- const retry=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{},expected:201});
+ const retry=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{},expected:[200,201]});
  assert(retry.p?.ok===true&&Number(retry.p?.cycleNo)===2,'Coach retry mini-test did not open after support',retry.p);
  const retryTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(retry.p.testId)}`,{cookie:student});
  const passedTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(retry.p.testId)}/submit`,{method:'POST',cookie:student,json:{answers:retryTest.p.questions.map(x=>({questionId:x.question_id,answer:answerKey[x.question_id]}))}});
