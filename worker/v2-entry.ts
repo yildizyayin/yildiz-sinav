@@ -186,7 +186,7 @@ async function bulkExecute(request:Request,env:Env,user:AuthUser):Promise<Respon
 
 async function demoStatus(env:Env,user:AuthUser):Promise<Response>{
   if(user.role!=='SUPER_ADMIN')return apiError(403,'FORBIDDEN','Demo yönetimini yalnız Süper Admin kullanabilir.');
-  const rows=await all<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,i.status,i.demo_mode,(SELECT count(DISTINCT e.student_id) FROM student_enrollments e WHERE e.institution_id=i.id) student_count,(SELECT count(*) FROM classes c WHERE c.institution_id=i.id AND c.active=1) class_count FROM institutions i WHERE i.demo_mode=1 ORDER BY i.created_at DESC`));
+  const rows=await all<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,i.status,i.demo_mode,i.created_at,(SELECT count(DISTINCT e.student_id) FROM student_enrollments e WHERE e.institution_id=i.id) student_count,(SELECT count(*) FROM classes c WHERE c.institution_id=i.id AND c.active=1) class_count,(SELECT count(*) FROM exams ex WHERE ex.institution_id=i.id) exam_count,(SELECT count(*) FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.institution_id=i.id) result_count,(SELECT count(*) FROM worksheet_assignments wa WHERE wa.institution_id=i.id AND wa.status='ACTIVE') worksheet_assignment_count FROM institutions i WHERE i.demo_mode=1 ORDER BY i.created_at DESC`));
   return json({ok:true,demos:rows});
 }
 
@@ -201,20 +201,52 @@ async function demoSeed(request:Request,env:Env,user:AuthUser):Promise<Response>
   const institutionId=uuid('inst');const seasonId=uuid('season');const code=`DEMO${Date.now().toString().slice(-6)}`;
   await env.DB.prepare(`INSERT INTO institutions(id,name,code,city,district,status,demo_mode) VALUES(?,?,?,'İstanbul','Demo','ACTIVE',1)`).bind(institutionId,name,code).run();
   await env.DB.prepare(`INSERT INTO institution_seasons(id,institution_id,academic_year,status,started_at) VALUES(?,?,?,'ACTIVE',date('now'))`).bind(seasonId,institutionId,'2026-2027').run();
-  const classIds:string[]=[];
-  for(const [grade,section] of [[5,'A'],[5,'B'],[6,'A'],[6,'B'],[7,'A'],[7,'B'],[8,'A'],[8,'B']] as Array<[number,string]>){const id=uuid('class');classIds.push(id);await env.DB.prepare(`INSERT INTO classes(id,institution_id,season_id,grade_level,section,name) VALUES(?,?,?,?,?,?)`).bind(id,institutionId,seasonId,grade,section,`${grade}/${section}`).run();}
-  const statements:D1PreparedStatement[]=[];
-  for(let i=0;i<160;i++){
-    const classIndex=i%classIds.length;const grade=5+Math.floor(classIndex/2);const section=classIndex%2===0?'A':'B';const studentId=uuid('stu');const enrollmentId=uuid('enr');const no=String(1001+i);
-    statements.push(env.DB.prepare(`INSERT INTO student_entities(id,first_name,last_name,normalized_name,status,activated_at) VALUES(?,?,?,?, 'ACTIVE',CURRENT_TIMESTAMP)`).bind(studentId,'Demo',`Öğrenci ${String(i+1).padStart(3,'0')}`,normalizeName(`Demo Öğrenci ${i+1}`)));
-    statements.push(env.DB.prepare(`INSERT INTO student_enrollments(id,student_id,institution_id,season_id,class_id,student_number,grade_level,section,status) VALUES(?,?,?,?,?,?,?,?, 'ACTIVE')`).bind(enrollmentId,studentId,institutionId,seasonId,classIds[classIndex],no,grade,section));
-    if(statements.length>=80){await env.DB.batch(statements.splice(0,statements.length));}
-  }
-  if(statements.length)await env.DB.batch(statements);
   const passwordData=await hashPassword(password);const managerId=uuid('usr');
-  await env.DB.prepare(`INSERT INTO users(id,institution_id,role,display_name,username,password_hash,password_salt,password_iterations,password_algo,active) VALUES(?,?,'INSTITUTION_MANAGER','Demo Kurum Yöneticisi',?,?,?,?, 'PBKDF2-SHA256-v1',1)`).bind(managerId,institutionId,username,passwordData.hash,passwordData.salt,passwordData.iterations).run();
-  await audit(env.DB,user.id,institutionId,'DEMO_INSTITUTION_CREATED','institution',institutionId,{code,students:160,classes:8,managerUsername:username});
-  return json({ok:true,institution:{id:institutionId,name,code},manager:{username},students:160,classes:8},201);
+  await env.DB.prepare(`INSERT INTO users(id,institution_id,role,display_name,username,password_hash,password_salt,password_iterations,password_algo,active) VALUES(?,?,'INSTITUTION_MANAGER','Anunex Demo Yöneticisi',?,?,?,?, 'PBKDF2-SHA256-v1',1)`).bind(managerId,institutionId,username,passwordData.hash,passwordData.salt,passwordData.iterations).run();
+
+  const demoClasses:Array<{id:string;grade:number;section:string;name:string}>=[];
+  for(const [grade,section] of [[5,'A'],[5,'B'],[6,'A'],[6,'B'],[7,'A'],[7,'B'],[8,'A'],[8,'B']] as Array<[number,string]>){const id=uuid('class');const className=`${grade}/${section}`;demoClasses.push({id,grade,section,name:className});await env.DB.prepare(`INSERT INTO classes(id,institution_id,season_id,grade_level,section,name) VALUES(?,?,?,?,?,?)`).bind(id,institutionId,seasonId,grade,section,className).run();}
+
+  const demoStudents:Array<{id:string;classId:string;className:string;grade:number;section:string;number:string;name:string}>=[];
+  const studentStatements:D1PreparedStatement[]=[];
+  for(let i=0;i<160;i++){
+    const cls=demoClasses[i%demoClasses.length];const studentId=uuid('stu');const enrollmentId=uuid('enr');const no=String(1001+i);const studentName=`Demo Öğrenci ${String(i+1).padStart(3,'0')}`;
+    demoStudents.push({id:studentId,classId:cls.id,className:cls.name,grade:cls.grade,section:cls.section,number:no,name:studentName});
+    studentStatements.push(env.DB.prepare(`INSERT INTO student_entities(id,first_name,last_name,normalized_name,status,activated_at) VALUES(?,?,?,?, 'ACTIVE',CURRENT_TIMESTAMP)`).bind(studentId,'Demo',`Öğrenci ${String(i+1).padStart(3,'0')}`,normalizeName(studentName)));
+    studentStatements.push(env.DB.prepare(`INSERT INTO student_enrollments(id,student_id,institution_id,season_id,class_id,student_number,grade_level,section,status) VALUES(?,?,?,?,?,?,?,?, 'ACTIVE')`).bind(enrollmentId,studentId,institutionId,seasonId,cls.id,no,cls.grade,cls.section));
+    if(studentStatements.length>=80)await env.DB.batch(studentStatements.splice(0,studentStatements.length));
+  }
+  if(studentStatements.length)await env.DB.batch(studentStatements);
+
+  const demoExamId=uuid('exam');
+  await env.DB.prepare(`INSERT INTO exams(id,owner_type,institution_id,academic_year,title,exam_type,grade_level,exam_date,status,sponsor_mode,created_by) VALUES(?,'INSTITUTION',?,'2026-2027','Anunex Demo Başlangıç Sınavı','DEMO',NULL,date('now','-7 days'),'ACTIVE','INSTITUTION',?)`).bind(demoExamId,institutionId,managerId).run();
+
+  const outcomeRows=await all<any>(env.DB.prepare(`SELECT o.id,o.grade_level,o.subject_id,o.title FROM outcomes o WHERE o.active=1 AND o.grade_level IN (5,6,7,8) ORDER BY o.grade_level,o.subject_id,o.code,o.title`));
+  const outcomesByGrade=new Map<number,any[]>();
+  for(const row of outcomeRows){const grade=Number(row.grade_level);const list=outcomesByGrade.get(grade)||[];if(list.length<6){list.push(row);outcomesByGrade.set(grade,list)}}
+
+  let outcomeSignalCount=0;
+  const resultStatements:D1PreparedStatement[]=[];
+  for(let i=0;i<demoStudents.length;i++){
+    const student=demoStudents[i];const participantId=uuid('ep');const successPercent=48+((i*7)%43);const blank=i%5;const correct=Math.max(0,Math.min(80,Math.round(successPercent*0.8)));const wrong=Math.max(0,80-correct-blank);const net=Math.round((correct-wrong/4)*100)/100;
+    resultStatements.push(env.DB.prepare(`INSERT INTO exam_participants(id,exam_id,institution_id,season_id,student_id,student_number_snapshot,name_snapshot,class_snapshot,booklet_code,participant_status) VALUES(?,?,?,?,?,?,?,?,?,'ACTIVE')`).bind(participantId,demoExamId,institutionId,seasonId,student.id,student.number,student.name,student.className,'A'));
+    resultStatements.push(env.DB.prepare(`INSERT INTO exam_results(id,participant_id,correct_count,wrong_count,blank_count,net,score,success_percent) VALUES(?,?,?,?,?,?,?,?)`).bind(uuid('er'),participantId,correct,wrong,blank,net,successPercent,successPercent));
+    const gradeOutcomes=outcomesByGrade.get(student.grade)||[];
+    for(let j=0;j<gradeOutcomes.length;j++){
+      const outcome=gradeOutcomes[j];const evidence=4;const outcomeCorrect=1+((i+j)%4);const outcomeSuccess=outcomeCorrect/evidence*100;const mastery=outcomeSuccess>=75?'STRONG':'DEVELOPING';
+      resultStatements.push(env.DB.prepare(`INSERT INTO outcome_results(id,student_id,exam_id,outcome_id,evidence_count,correct_count,success_rate,mastery_status) VALUES(?,?,?,?,?,?,?,?)`).bind(uuid('or'),student.id,demoExamId,outcome.id,evidence,outcomeCorrect,outcomeSuccess,mastery));outcomeSignalCount++;
+    }
+    if(resultStatements.length>=70)await env.DB.batch(resultStatements.splice(0,resultStatements.length));
+  }
+  if(resultStatements.length)await env.DB.batch(resultStatements);
+
+  const publishedWorksheets=await all<any>(env.DB.prepare(`SELECT id,grade_level FROM worksheets WHERE status='PUBLISHED' AND grade_level IN (5,6,7,8) ORDER BY academic_year DESC,sequence_no,title`));
+  const worksheetByGrade=new Map<number,string>();for(const row of publishedWorksheets){const grade=Number(row.grade_level);if(!worksheetByGrade.has(grade))worksheetByGrade.set(grade,row.id)}
+  let worksheetAssignments=0;
+  for(const cls of demoClasses){const worksheetId=worksheetByGrade.get(cls.grade);if(!worksheetId)continue;await env.DB.prepare(`INSERT INTO worksheet_assignments(id,worksheet_id,institution_id,class_id,assigned_by,due_date) VALUES(?,?,?,?,?,date('now','+7 days'))`).bind(uuid('wsa'),worksheetId,institutionId,cls.id,managerId).run();worksheetAssignments++}
+
+  await audit(env.DB,user.id,institutionId,'DEMO_INSTITUTION_CREATED','institution',institutionId,{code,students:160,classes:8,managerUsername:username,sampleExam:demoExamId,examResults:demoStudents.length,outcomeSignals:outcomeSignalCount,worksheetAssignments});
+  return json({ok:true,institution:{id:institutionId,name,code},manager:{username},students:160,classes:8,sampleExam:{id:demoExamId,title:'Anunex Demo Başlangıç Sınavı',results:demoStudents.length},outcomeSignals:outcomeSignalCount,worksheetAssignments},201);
 }
 
 async function scaleHealth(env:Env,user:AuthUser):Promise<Response>{
