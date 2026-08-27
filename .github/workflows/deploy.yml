@@ -15,6 +15,10 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       SMOKE_BASE_URL: https://yildiz-sinav-v1.rtsgida.workers.dev
+      WHATSAPP_VERIFY_TOKEN: ${{ secrets.WHATSAPP_VERIFY_TOKEN }}
+      WHATSAPP_APP_SECRET: ${{ secrets.WHATSAPP_APP_SECRET }}
+      WHATSAPP_ACCESS_TOKEN: ${{ secrets.WHATSAPP_ACCESS_TOKEN }}
+      WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -37,6 +41,23 @@ jobs:
           npx wrangler queues list | grep -q 'yildiz-sinav-scale-staging' || npx wrangler queues create yildiz-sinav-scale-staging
           npx wrangler queues list | grep -q 'yildiz-sinav-scale-staging-dlq' || npx wrangler queues create yildiz-sinav-scale-staging-dlq
 
+      - name: WhatsApp secret readiness
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        shell: bash
+        run: |
+          missing=0
+          for name in WHATSAPP_VERIFY_TOKEN WHATSAPP_APP_SECRET WHATSAPP_ACCESS_TOKEN WHATSAPP_PHONE_NUMBER_ID; do
+            if [ -z "${!name}" ]; then
+              echo "$name is not configured in GitHub Actions secrets."
+              missing=$((missing+1))
+            fi
+          done
+          if [ "$missing" -eq 0 ]; then
+            echo "All WhatsApp provider secrets are configured."
+          else
+            echo "WhatsApp deployment will remain partially configured until all four secrets are present."
+          fi
+
       - name: Apply D1 migrations before deploy
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: npx wrangler d1 migrations apply DB --remote
@@ -44,6 +65,27 @@ jobs:
       - name: Deploy Worker and auto-provision D1/R2
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: npx wrangler deploy
+
+      - name: Sync WhatsApp secrets to staging Worker
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        shell: bash
+        run: |
+          put_secret() {
+            local name="$1"
+            local value="${!name}"
+            if [ -n "$value" ]; then
+              printf '%s' "$value" | npx wrangler secret put "$name" >/dev/null
+              echo "$name synced."
+            fi
+          }
+          put_secret WHATSAPP_VERIFY_TOKEN
+          put_secret WHATSAPP_APP_SECRET
+          put_secret WHATSAPP_ACCESS_TOKEN
+          put_secret WHATSAPP_PHONE_NUMBER_ID
+
+      - name: Live WhatsApp webhook handshake
+        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && env.WHATSAPP_VERIFY_TOKEN != '' }}
+        run: node scripts/live-whatsapp-smoke.mjs
 
       - name: Load synthetic staging demo data idempotently
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
@@ -112,7 +154,7 @@ jobs:
             echo "Smoke report was not produced by the test runner." >> LIVE_SMOKE_REPORT.md
           fi
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "4189828+github-actions[bot]@users.noreply.github.com"
           git add LIVE_SMOKE_REPORT.md
           if git diff --cached --quiet; then
             echo "Smoke report unchanged."
