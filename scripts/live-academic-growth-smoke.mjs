@@ -32,7 +32,7 @@ try{
  assert(Array.isArray(calendar.p?.entries),'Worksheet calendar API invalid',calendar.p);
  const worksheetNibiru=await req('/api/nibiru/chat',{method:'POST',cookie:manager,json:{message:'Bu hafta hangi föyü uygulamalıyız?'}});
  assert(worksheetNibiru.p?.intent==='WORKSHEET_CALENDAR','Nibiru worksheet calendar intent not active',worksheetNibiru.p);
- assert(String(worksheetNibiru.p?.answer||'').startsWith('🤖 Nibiru:'),'Nibiru worksheet answer lacks AI disclosure',worksheetNibiru.p);
+ assert(String(worksheetNibiru.p?.answer||'').startsWith('Nibiru:')&&!String(worksheetNibiru.p?.answer||'').includes('🤖'),'Nibiru worksheet answer lacks brand-safe AI disclosure',worksheetNibiru.p);
  passed('Worksheet calendar + Nibiru guidance',`${calendar.p.entries.length} published calendar rows visible`);
 
  const teacher=await login('math');

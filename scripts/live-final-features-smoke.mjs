@@ -25,7 +25,7 @@ try{
  passed('Nibiru manager AI transparency + institution scope',managerNibiru.p.intent);
 
  const nibiruSettings=await req('/api/nibiru/settings',{cookie:manager});
- assert(nibiruSettings.p?.settings?.assistant_name==='Nibiru','Nibiru settings missing',nibiruSettings.p);
+ assert(nibiruSettings.p?.settings?.assistant_name==='Nibiru AI','Nibiru settings missing',nibiruSettings.p);
  assert(nibiruSettings.p?.settings?.education_language_mode==='MEB_DEVELOPMENTAL','Nibiru MEB developmental language mode missing',nibiruSettings.p);
  const nibiruUsers=await req('/api/nibiru/users',{cookie:manager});
  for(const role of ['PARENT','TEACHER','INSTITUTION_MANAGER']){

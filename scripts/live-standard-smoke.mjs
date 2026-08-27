@@ -28,7 +28,7 @@ try{
  const reused=await req('/api/nibiru/coach/daily-plan',{method:'POST',cookie:student});
  assert(reused.p?.available===true&&reused.p?.plan?.id===planId&&reused.p?.reused===true,'Daily plan is not idempotent on repeat',reused.p);
  assert(firstItem.payload?.kind==='OUTCOME_PRACTICE','First Coach item is not a measurable outcome task',firstItem);
- const started=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{}});
+ const started=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{},expected:201});
  assert(started.p?.ok===true&&Number(started.p?.questionCount)>=5,'Coach mini-test did not start with at least five questions',started.p);
  const firstTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.p.testId)}`,{cookie:student});
  assert(firstTest.p?.questions?.length>=5&&firstTest.p.questions.every(x=>x.correct_answer==null),'Coach mini-test exposed answers or has insufficient questions',firstTest.p);
@@ -37,7 +37,7 @@ try{
  const answerKey=Object.fromEntries(failed.p.detail.questions.map(x=>[x.question_id,x.correct_answer]));
  const coachFollowup=failed.p.detail.followups[0];
  await req(`/api/nibiru/coach/followups/${encodeURIComponent(coachFollowup.id)}/complete`,{method:'PATCH',cookie:student,json:{}});
- const retry=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{}});
+ const retry=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{},expected:201});
  assert(retry.p?.ok===true&&Number(retry.p?.cycleNo)===2,'Coach retry mini-test did not open after support',retry.p);
  const retryTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(retry.p.testId)}`,{cookie:student});
  const passedTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(retry.p.testId)}/submit`,{method:'POST',cookie:student,json:{answers:retryTest.p.questions.map(x=>({questionId:x.question_id,answer:answerKey[x.question_id]}))}});
