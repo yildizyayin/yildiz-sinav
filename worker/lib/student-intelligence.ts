@@ -22,7 +22,7 @@ function clamp01(v:number){return Math.max(0,Math.min(1,Number.isFinite(v)?v:0))
 function round(v:number,d=2){const p=10**d;return Math.round(v*p)/p}
 function parseJson<T>(v:unknown,fallback:T):T{try{return typeof v==='string'&&v?JSON.parse(v) as T:fallback}catch{return fallback}}
 
-async function enrollment(env:Env,studentId:string){return one<any>(env.DB.prepare(`SELECT e.*,c.name class_name FROM student_enrollments e LEFT JOIN classes c ON c.id=e.class_id WHERE e.student_id=? AND e.status IN ('ACTIVE','GRADUATED') ORDER BY CASE e.status WHEN 'ACTIVE' THEN 0 ELSE 1 END,e.created_at DESC LIMIT 1`).bind(studentId))}
+async function enrollment(env:Env,studentId:string){return one<any>(env.DB.prepare(`SELECT e.*,season.academic_year,c.name class_name FROM student_enrollments e JOIN institution_seasons season ON season.id=e.season_id LEFT JOIN classes c ON c.id=e.class_id WHERE e.student_id=? AND e.status IN ('ACTIVE','GRADUATED') ORDER BY CASE e.status WHEN 'ACTIVE' THEN 0 ELSE 1 END,e.created_at DESC LIMIT 1`).bind(studentId))}
 
 export async function studentIntelligenceAccess(env:Env,user:AuthUser,studentId:string):Promise<AccessScope>{
  if(user.role==='SUPER_ADMIN')return {allowed:true,mode:'FULL',subjectIds:[]};

@@ -1,4 +1,5 @@
 import {describe,expect,it} from 'vitest';
+import {readFileSync} from 'node:fs';
 import {classifyMastery,examTrend,scopeStudentIntelligence} from '../worker/lib/student-intelligence';
 
 const baseProfile={
@@ -22,6 +23,12 @@ const baseProfile={
 };
 
 describe('Student Intelligence',()=>{
+ it('resolves academic year through the enrollment season before D1 bindings',()=>{
+  const source=readFileSync(new URL('../worker/lib/student-intelligence.ts',import.meta.url),'utf8');
+  expect(source).toContain('JOIN institution_seasons season ON season.id=e.season_id');
+  expect(source).toContain('season.academic_year');
+ });
+
  it('uses conservative mastery bands when evidence or confidence is insufficient',()=>{
   expect(classifyMastery(.95,2,.9)).toBe('INSUFFICIENT');
   expect(classifyMastery(.95,10,.2)).toBe('INSUFFICIENT');
