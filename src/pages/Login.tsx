@@ -12,8 +12,7 @@ export function Login() {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(true);
-  const [show, setShow] = useState(false);
-  const [token, setToken] = useState('');
+  const [show, setShow] = useState(false);\n  const [token, setToken] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   useEffect(()=>{ void api<any>('/api/config').then(setConfig).catch(()=>setConfig({productName:'Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu',turnstileSiteKey:''})); },[]);
