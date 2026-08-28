@@ -66,7 +66,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 ### P3 — Operasyonel kullanım boşlukları
 
 - [x] Kurum, sınıf, öğrenci ve sınav için ham ID alanlarını güvenli seçicilere dönüştür.
-- [ ] Kurum yaşam döngüsü, iletişim, logo, alan adı, şube ve zincir kurum yönetimi.
+- [x] Kurum yaşam döngüsü, iletişim, logo, alan adı, şube ve zincir kurum yönetimi.
 - [ ] Yoklama/devamsızlık.
 - [ ] Fiziksel ve dijital kitaptan ödev verme/takip.
 - [ ] Soru Havuzu & Studio.
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Öğrenci, sınav ve veri aktarımı ekranlarındaki serbest kurum kimliği girişleri yetkili kurum seçicisine; Akıllı Tahta sınıf kimliği girişi yetkili sınıf/şube seçicisine dönüştürüldü. Seçim yapılmadan yanlış kuruma işlem gönderilmesi engellendi.
-- **Son doğrulama:** Typecheck ve production build başarılı; 48/48 test dosyası, 198/198 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
+- **Son tamamlanan:** Kurum iletişim, paket, zincir/şube bilgilerinin yanına logo, ANUNEX alt alan adı, özel alan adı, kurum renkleri ve karşılama metni yönetimi eklendi. Geçersiz/çakışan alan adları engellendi; ANUNEX platform sahipliği görünür bırakıldı.
+- **Son doğrulama:** Typecheck ve production build başarılı; 48/48 test dosyası, 199/199 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Kurum yaşam döngüsündeki logo ve özel alan adı yönetimini tamamla.
+- **Sıradaki tek iş:** Yoklama ve devamsızlık modülünü tamamla.
