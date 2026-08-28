@@ -1,15 +1,19 @@
 import { useEffect,useState } from 'react';
-import { BarChart3,BookOpenCheck,BrainCircuit,ClipboardCheck,Layers3,Printer,Sparkles,Users } from 'lucide-react';
+import { BarChart3,BookOpenCheck,BrainCircuit,CheckCircle2,ClipboardCheck,Layers3,Printer,Sparkles,Users,XCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../auth';
 
 export function InstitutionPanelV2(){
- const{institution}=useAuth();const[data,setData]=useState<any>(null);const[error,setError]=useState('');
- useEffect(()=>{void api<any>('/api/v2/institution-dashboard').then(setData).catch(e=>setError(e.message))},[]);
+ const{institution}=useAuth();const[data,setData]=useState<any>(null);const[license,setLicense]=useState<any>(null);const[error,setError]=useState('');const[busy,setBusy]=useState(false);const[notice,setNotice]=useState('');
+ const loadLicense=()=>api<any>('/api/license/onboarding').then(setLicense);
+ useEffect(()=>{void Promise.all([api<any>('/api/v2/institution-dashboard').then(setData),loadLicense()]).catch(e=>setError(e.message))},[]);
+ const consent=async(approved:boolean)=>{try{setBusy(true);setError('');await api('/api/license/annual-consent',{method:'POST',body:JSON.stringify({approved})});setNotice(approved?'Yıllık lisans dönüşüm onayınız kaydedildi.':'Yıllık lisans dönüşümünü reddettiğiniz kaydedildi.');await loadLicense()}catch(e:any){setError(e.message)}finally{setBusy(false)}};
  if(error)return <div className="alert error">{error}</div>;
  return <>
   <div className="page-head"><div><span className="eyebrow">Anunex · Kurum Yönetimi</span><h1>{institution?.name||'Kurum Yönetimi'}</h1><p><strong>Bilginin yörüngesinde.</strong> Sınav, öğrenci, optik, soru havuzu, föy, Nibiru analizi ve rapor süreçlerini tek kontrol merkezinden yönetin.</p></div></div>
+  {notice&&<div className="alert success">{notice}</div>}
+  {license?.license?.planCode==='TRIAL_7_DAY'&&<div className="panel trial-consent"><div><span className="eyebrow">7 Günlük Demo · {license.license.daysRemaining} gün kaldı</span><h2>Yıllık lisans kararınız</h2><p>Demo verileriniz silinmez. Onay verirseniz Süper Admin kurumunuzu mevcut verilerle 1 yıllık lisansa dönüştürebilir.</p></div><div className="trial-consent-actions"><span className={`status ${license.onboarding?.annual_consent_status==='APPROVED'?'ok':license.onboarding?.annual_consent_status==='DECLINED'?'off':'warn'}`}>{license.onboarding?.annual_consent_status==='APPROVED'?'Onaylandı':license.onboarding?.annual_consent_status==='DECLINED'?'Reddedildi':'Karar bekleniyor'}</span><button className="primary" disabled={busy} onClick={()=>void consent(true)}><CheckCircle2 size={16}/> 1 Yıllık Lisansı Onayla</button><button className="ghost" disabled={busy} onClick={()=>void consent(false)}><XCircle size={16}/> Şimdilik Reddet</button></div></div>}
   <div className="kpi-grid">{(data?.cards||[]).map((c:any)=><div className="kpi-card" key={c.label}><span>{c.label}</span><strong>{c.value}</strong></div>)}</div>
 
   <div className="section-head"><div><span className="eyebrow">Nibiru AI</span><h2>Kurum ölçme ve gelişim zekâsı</h2><p>Nibiru yalnız yetkiniz kapsamındaki ANUNEX verilerini kullanır; eksik veri varsa tahmin üretmez.</p></div><Link className="link-button" to="/nibiru">Nibiru’yu Aç</Link></div>
