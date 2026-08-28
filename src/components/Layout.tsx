@@ -48,8 +48,20 @@ export function Layout() {
   const { user, institution, logout } = useAuth();
   const navigate = useNavigate();
   const [enabledFeatures,setEnabledFeatures]=useState<Set<string>>(new Set());
+  const [logoutBusy,setLogoutBusy]=useState(false);
+  const [logoutError,setLogoutError]=useState('');
   useEffect(()=>{if(!user||user.role==='SUPER_ADMIN')return;void api<any>('/api/platform/features').then(r=>setEnabledFeatures(new Set((r.features||[]).filter((f:any)=>Number(f.effective_enabled||0)===1).map((f:any)=>String(f.feature_key))))).catch(()=>setEnabledFeatures(new Set()));},[user?.id,user?.role]);
   const visibleNav=useMemo(()=>user?nav[user.role].filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature)):[],[user,enabledFeatures]);
+  const signOut=async()=>{
+    if(logoutBusy||!window.confirm('Bu cihazdaki güvenli oturumu sonlandırmak istiyor musunuz?'))return;
+    try{
+      setLogoutBusy(true);setLogoutError('');
+      await logout();
+      navigate('/login',{replace:true});
+    }catch{
+      setLogoutError('Oturum sunucuda sonlandırılamadı. İnternet bağlantınızı kontrol edip yeniden deneyin.');
+    }finally{setLogoutBusy(false)}
+  };
   if (!user) return null;
   return <div className="app-shell">
     <aside className="sidebar">
@@ -57,11 +69,12 @@ export function Layout() {
       <nav>{visibleNav.map((item) => { const Icon=item.icon; return <NavLink key={item.to} to={item.to} end={item.to==='/' } className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}</nav>
       <div className="sidebar-footer">
         <div className="user-card"><div className="avatar">{user.display_name.charAt(0)}</div><div><strong>{user.display_name}</strong><small>{roleName(user.role)}{institution?.name ? ` · ${institution.name}` : ''}</small></div></div>
-        <button className="ghost sidebar-logout" onClick={async()=>{await logout();navigate('/login');}}><LogOut size={18}/>Çıkış</button>
+        {logoutError&&<div className="sidebar-session-error" role="alert">{logoutError}</div>}
+        <button className="ghost sidebar-logout" onClick={signOut} disabled={logoutBusy}><LogOut size={18}/>{logoutBusy?'Oturum kapatılıyor…':'Güvenli Çıkış'}</button>
       </div>
     </aside>
     <main className="main-area">
-      <header className="topbar"><div><span className="eyebrow">2026–2027</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Anunex Platform Yönetimi':'')}</strong></div><div className="status neutral"><NibiruMark size={18} state="active" title="Nibiru AI Akademik Zekâ"/> Nibiru AI</div></header>
+      <header className="topbar"><div><span className="eyebrow">2026–2027</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Anunex Platform Yönetimi':'')}</strong></div><div className="topbar-actions"><div className="status neutral"><NibiruMark size={18} state="active" title="Nibiru AI Akademik Zekâ"/> Nibiru AI</div><button className="topbar-logout" onClick={signOut} disabled={logoutBusy} title="Bu cihazdaki oturumu güvenli biçimde sonlandır"><LogOut size={17}/><span>{logoutBusy?'Kapatılıyor…':'Çıkış'}</span></button></div></header>
       <div className="page-wrap"><LicenseBoundary><Outlet/></LicenseBoundary></div>
     </main>
   </div>;
