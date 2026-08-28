@@ -1,4 +1,4 @@
-import app from './nibiru-license-entry';
+import app from './onboarding-entry';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { handleAcademicGrowthApi, processScheduledAnnouncements, targetNibiruAnswer } from './lib/academic-growth';
