@@ -1,4 +1,4 @@
-import app from './attendance-entry';
+import app from './assignment-entry';
 import type { AuthUser,CapacityJobMessage,Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,audit,badRequest,forbidden,json,notFound,one,uuid } from './lib/db';
