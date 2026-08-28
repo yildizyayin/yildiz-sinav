@@ -97,7 +97,7 @@ async function institutionDetail(env:Env,user:AuthUser,institutionId:string){
  const institution=await one<any>(env.DB.prepare(`SELECT i.*,p.package_code,p.onboarding_status,p.address,p.website,p.logo_url,p.network_name,p.annual_consent_status,p.annual_consent_at FROM institutions i LEFT JOIN institution_onboarding_profiles p ON p.institution_id=i.id WHERE i.id=?`).bind(institutionId));
  if(!institution)return fail(404,'INSTITUTION_NOT_FOUND','Kurum bulunamadı.');
  const [features,networks,membership,seasons,managers,branding]=await Promise.all([
-  all<any>(env.DB.prepare(`SELECT f.feature_key,f.label,f.stage,COALESCE(o.enabled,f.default_enabled) enabled FROM platform_features f LEFT JOIN institution_feature_overrides o ON o.feature_key=f.feature_key AND o.institution_id=? WHERE f.feature_key<>'STANDARD_READINESS' ORDER BY f.stage,f.label`).bind(institutionId)),
+  all<any>(env.DB.prepare(`SELECT f.feature_key,f.label,f.stage,COALESCE(o.enabled,f.enabled_default) enabled FROM platform_features f LEFT JOIN institution_feature_overrides o ON o.feature_key=f.feature_key AND o.institution_id=? WHERE f.feature_key<>'STANDARD_READINESS' ORDER BY f.stage,f.label`).bind(institutionId)),
   all<any>(env.DB.prepare(`SELECT id,name,code FROM institution_networks WHERE active=1 ORDER BY name`)),
   one<any>(env.DB.prepare(`SELECT m.network_id,n.name,n.code,m.region_label FROM institution_network_members m JOIN institution_networks n ON n.id=m.network_id WHERE m.institution_id=? AND m.active=1 ORDER BY n.name LIMIT 1`).bind(institutionId)),
   all<any>(env.DB.prepare(`SELECT id,academic_year,status,started_at,ended_at FROM institution_seasons WHERE institution_id=? ORDER BY created_at DESC`).bind(institutionId)),
