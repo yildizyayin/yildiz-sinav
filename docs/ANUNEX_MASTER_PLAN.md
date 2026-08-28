@@ -52,12 +52,14 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 ### P2 — Süper Admin Panel V2
 
-- [ ] ANUNEX marka kimliğini giriş sonrası panele taşı.
-- [ ] Menüyü Genel, Kurum, Akademik, Sınav/Optik, İçerik, Nibiru AI, Lisans/Finans, Rapor ve Sistem gruplarına ayır.
-- [ ] Menü arama, daraltma, favori ve durum rozetleri.
+- [x] ANUNEX marka kimliğini giriş sonrası Süper Admin ana ekranı ve menü başlığına taşı.
+- [x] Menüyü Genel, Kurum, Sınav/Optik, İçerik, Nibiru AI, Lisans/Paket, Rapor ve Sistem gruplarına ayır.
+- [x] Menü arama.
+- [ ] Menü gruplarını daraltma, favori ve durum rozetleri.
 - [ ] Geliştirici araçlarını normal production menüsünden kaldır veya Sistem altında sınırla.
-- [ ] İlk kurulum/boş durum rehberi.
-- [ ] Bekleyen işlemler, kurum/lisans durumu, aktif sınavlar, optik kuyruğu, Nibiru uyarıları, son işlemler ve servis sağlığı göstergeleri.
+- [x] İlk kurum için boş durum rehberi.
+- [x] Kurum, aktif demo, bekleyen kurum onayı ve yıllık lisans göstergeleri.
+- [ ] Aktif sınavlar, optik kuyruğu, Nibiru uyarıları, son işlemler ve servis sağlığı göstergeleri.
 - [ ] İç teknik adları kullanıcı diline çevir; tekrar eden/eski sınav menülerini birleştir.
 
 ### P3 — Operasyonel kullanım boşlukları
@@ -112,7 +114,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Kurum onboarding, 7 günlük demo, kurum yıllık lisans onayı ve Standard/Premium/Custom paket çekirdeği tamamlandı.
+- **Son tamamlanan:** Süper Admin ana ekranı, ANUNEX yönetim kimliği, gruplu/aranabilir menü ve ilk kurum boş durum akışı tamamlandı.
 - **Son doğrulama:** Typecheck ve production build başarılı; 43/43 test dosyası, 182/182 test başarılı; 0001–0027 migration zinciri boş SQLite veritabanında başarılı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Süper Admin Panel V2 ve menü gruplandırması.
+- **Sıradaki tek iş:** Profil güvenliği; şifre değiştirme, aktif oturumlar ve tüm cihazlardan çıkış.
