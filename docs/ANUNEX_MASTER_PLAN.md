@@ -38,14 +38,17 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 ### P1 — Kurum ve lisans çekirdeği
 
-- [ ] Yeni kurum oluşturma formu ve ayrıntı sayfası.
-- [ ] İlk kurulum sihirbazı: kurum → paket → modüller → sezon → yönetici → sınıf/öğrenci → optik/sınav.
-- [ ] 7 günlük demo başlangıç/bitiş, kalan gün ve durum göstergeleri.
-- [ ] Kurum onayı kaydı ve demoyu verileri koruyarak 1 yıllık lisansa çevirme.
+- [x] Yeni kurum oluşturma formu ve temel onboarding profili.
+- [x] İlk kurulum sihirbazının kurum → yönetici → paket/modül → sezon/demo çekirdeği.
+- [x] 7 günlük demo başlangıç/bitiş, kalan gün ve durum göstergeleri.
+- [x] Kurum onayı kaydı ve onay olmadan yıllık lisansa dönüşümü engelleme.
+- [x] Onay sonrası mevcut yıllık lisans servisiyle verileri koruyarak 365 güne çevirme.
 - [ ] Süre bitişi, yenileme, askıya alma ve erişim sınırları.
-- [ ] Paketler: Standard, Premium, Kendi Paketini Oluştur.
-- [ ] Modül kataloğu, bağımlılık kontrolü, kurum/zincir kurum yetkilendirmesi.
-- [ ] Lisans işlem geçmişi ve denetim kaydı.
+- [x] Paketler: Standard, Premium, Kendi Paketini Oluştur.
+- [x] Paket/modül kataloğu ve kurum özellik yetkilerinin onboarding sırasında uygulanması.
+- [x] Demo başlangıcı ve kurum onayı için lisans/denetim kaydı.
+- [ ] Kurum ayrıntı sayfasında paket değiştirme, zincir/şube ve onboarding kalan adımları.
+- [ ] Lisans yenileme ve bitiş bildirimleri.
 
 ### P2 — Süper Admin Panel V2
 
@@ -109,7 +112,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Ana görev defteri ve güvenli/görünür oturum sonlandırma tamamlandı.
-- **Son doğrulama:** Typecheck başarılı; 42/42 test dosyası ve 177/177 test başarılı; production build başarılı.
+- **Son tamamlanan:** Kurum onboarding, 7 günlük demo, kurum yıllık lisans onayı ve Standard/Premium/Custom paket çekirdeği tamamlandı.
+- **Son doğrulama:** Typecheck ve production build başarılı; 43/43 test dosyası, 182/182 test başarılı; 0001–0027 migration zinciri boş SQLite veritabanında başarılı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Yeni kurum oluşturma ve ilk kurulum sihirbazı.
+- **Sıradaki tek iş:** Süper Admin Panel V2 ve menü gruplandırması.
