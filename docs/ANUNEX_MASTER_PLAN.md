@@ -56,11 +56,11 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] ANUNEX marka kimliğini giriş sonrası Süper Admin ana ekranı ve menü başlığına taşı.
 - [x] Menüyü Genel, Kurum, Sınav/Optik, İçerik, Nibiru AI, Lisans/Paket, Rapor ve Sistem gruplarına ayır.
 - [x] Menü arama.
-- [ ] Menü gruplarını daraltma, favori ve durum rozetleri.
-- [ ] Geliştirici araçlarını normal production menüsünden kaldır veya Sistem altında sınırla.
+- [x] Menü gruplarını daraltma, favori ve durum rozetleri.
+- [x] Geliştirici araçlarını normal production menüsünden kaldır veya Sistem altında sınırla.
 - [x] İlk kurum için boş durum rehberi.
 - [x] Kurum, aktif demo, bekleyen kurum onayı ve yıllık lisans göstergeleri.
-- [ ] Aktif sınavlar, optik kuyruğu, Nibiru uyarıları, son işlemler ve servis sağlığı göstergeleri.
+- [x] Aktif sınavlar, optik kuyruğu, Nibiru uyarıları, son işlemler ve servis sağlığı göstergeleri.
 - [ ] İç teknik adları kullanıcı diline çevir; tekrar eden/eski sınav menülerini birleştir.
 
 ### P3 — Operasyonel kullanım boşlukları
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Nibiru tam sesli komut zincirine ek olarak lisans bitişi, 365 günlük yenileme, askıya alma, operasyon kilidi, kurum onayı ve güvenlik/Nibiru destek erişimi tamamlandı.
-- **Son doğrulama:** Typecheck ve production build başarılı; 45/45 test dosyası, 188/188 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
+- **Son tamamlanan:** Süper Admin V2 daraltılabilir menü grupları, kalıcı favoriler, operasyon rozetleri, kullanıcı dilindeki menü adları ve sınav/optik/Nibiru/servis sağlığı kontrol merkezi tamamlandı.
+- **Son doğrulama:** Typecheck ve production build başarılı; 46/46 test dosyası, 191/191 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Süper Admin V2 menü gruplarını daraltma, favoriler, durum rozetleri ve servis sağlığı göstergelerini tamamla.
+- **Sıradaki tek iş:** Kurum ayrıntı sayfasında paket değiştirme, zincir/şube ve onboarding kalan adımlarını tamamla.
