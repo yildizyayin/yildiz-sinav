@@ -65,7 +65,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 ### P3 — Operasyonel kullanım boşlukları
 
-- [ ] Kurum, sınıf, öğrenci ve sınav için ham ID alanlarını güvenli seçicilere dönüştür.
+- [x] Kurum, sınıf, öğrenci ve sınav için ham ID alanlarını güvenli seçicilere dönüştür.
 - [ ] Kurum yaşam döngüsü, iletişim, logo, alan adı, şube ve zincir kurum yönetimi.
 - [ ] Yoklama/devamsızlık.
 - [ ] Fiziksel ve dijital kitaptan ödev verme/takip.
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Teknik menü adları kullanıcı diline çevrildi; yönetici rollerindeki tekrar eden sınav listesi/tanımı girişleri tek Sınav Merkezi altında birleştirildi ve kurum sınavı oluşturma işlemi merkezin içine taşındı.
-- **Son doğrulama:** Typecheck ve production build başarılı; 47/47 test dosyası, 195/195 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
+- **Son tamamlanan:** Öğrenci, sınav ve veri aktarımı ekranlarındaki serbest kurum kimliği girişleri yetkili kurum seçicisine; Akıllı Tahta sınıf kimliği girişi yetkili sınıf/şube seçicisine dönüştürüldü. Seçim yapılmadan yanlış kuruma işlem gönderilmesi engellendi.
+- **Son doğrulama:** Typecheck ve production build başarılı; 48/48 test dosyası, 198/198 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Kurum, sınıf, öğrenci ve sınav ham kimlik alanlarını güvenli seçicilere dönüştür.
+- **Sıradaki tek iş:** Kurum yaşam döngüsündeki logo ve özel alan adı yönetimini tamamla.
