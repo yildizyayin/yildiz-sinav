@@ -67,7 +67,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 - [x] Kurum, sınıf, öğrenci ve sınav için ham ID alanlarını güvenli seçicilere dönüştür.
 - [x] Kurum yaşam döngüsü, iletişim, logo, alan adı, şube ve zincir kurum yönetimi.
-- [ ] Yoklama/devamsızlık.
+- [x] Yoklama/devamsızlık.
 - [ ] Fiziksel ve dijital kitaptan ödev verme/takip.
 - [ ] Soru Havuzu & Studio.
 - [ ] Kişiye özel kitap üretimi.
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Kurum iletişim, paket, zincir/şube bilgilerinin yanına logo, ANUNEX alt alan adı, özel alan adı, kurum renkleri ve karşılama metni yönetimi eklendi. Geçersiz/çakışan alan adları engellendi; ANUNEX platform sahipliği görünür bırakıldı.
-- **Son doğrulama:** Typecheck ve production build başarılı; 48/48 test dosyası, 199/199 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
+- **Son tamamlanan:** Yetki kapsamlı günlük/ders bazlı yoklama ve devamsızlık modülü tamamlandı. Sınıf listesi otomatik gelir; geldi, gelmedi, geç ve izinli durumları toplu kaydedilir, taslak bırakılır veya kesinleştirilir; sınıf dışı öğrenci eklenmesi engellenir.
+- **Son doğrulama:** Typecheck ve production build başarılı; 49/49 test dosyası, 202/202 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Yoklama ve devamsızlık modülünü tamamla.
+- **Sıradaki tek iş:** Fiziksel ve dijital kitaptan ödev verme ve takip modülünü tamamla.
