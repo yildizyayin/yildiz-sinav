@@ -3,6 +3,7 @@ import { describe,expect,it } from 'vitest';
 
 const source=readFileSync(new URL('../worker/scale-entry.ts',import.meta.url),'utf8');
 const productRoot=readFileSync(new URL('../worker/product-completion-entry.ts',import.meta.url),'utf8');
+const assignmentRoot=readFileSync(new URL('../worker/assignment-entry.ts',import.meta.url),'utf8');
 const attendanceRoot=readFileSync(new URL('../worker/attendance-entry.ts',import.meta.url),'utf8');
 const staging=readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8');
 const production=readFileSync(new URL('../wrangler.production.jsonc',import.meta.url),'utf8');
@@ -11,7 +12,8 @@ describe('Anunex scale readiness',()=>{
   it('routes staging and production through the product root and scale-safe wrapper',()=>{
     expect(staging).toContain('"main": "./worker/product-completion-entry.ts"');
     expect(production).toContain('"main": "./worker/product-completion-entry.ts"');
-    expect(productRoot).toContain("import app from './attendance-entry'");
+    expect(productRoot).toContain("import app from './assignment-entry'");
+    expect(assignmentRoot).toContain("import app from './attendance-entry'");
     expect(attendanceRoot).toContain("import app from './scale-entry'");
   });
 
