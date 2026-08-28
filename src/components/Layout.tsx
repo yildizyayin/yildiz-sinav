@@ -1,6 +1,6 @@
 import { useEffect,useMemo,useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ClipboardCheck, Database, FileUp, FlaskConical, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, MessageCircle, Printer, ScanLine, ShieldCheck, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck } from 'lucide-react';
+import { BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ClipboardCheck, Database, FileUp, FlaskConical, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, MessageCircle, Printer, ScanLine, Search, ShieldCheck, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 import { api } from '../api';
 import { LicenseBoundary } from './LicenseBoundary';
@@ -50,8 +50,11 @@ export function Layout() {
   const [enabledFeatures,setEnabledFeatures]=useState<Set<string>>(new Set());
   const [logoutBusy,setLogoutBusy]=useState(false);
   const [logoutError,setLogoutError]=useState('');
+  const [navSearch,setNavSearch]=useState('');
   useEffect(()=>{if(!user||user.role==='SUPER_ADMIN')return;void api<any>('/api/platform/features').then(r=>setEnabledFeatures(new Set((r.features||[]).filter((f:any)=>Number(f.effective_enabled||0)===1).map((f:any)=>String(f.feature_key))))).catch(()=>setEnabledFeatures(new Set()));},[user?.id,user?.role]);
   const visibleNav=useMemo(()=>user?nav[user.role].filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature)):[],[user,enabledFeatures]);
+  const filteredNav=useMemo(()=>{const query=navSearch.trim().toLocaleLowerCase('tr-TR');return query?visibleNav.filter(item=>item.label.toLocaleLowerCase('tr-TR').includes(query)):visibleNav},[visibleNav,navSearch]);
+  const groupedNav=useMemo(()=>{const groups=new Map<string,NavItem[]>();for(const item of filteredNav){const group=navGroup(item.to);groups.set(group,[...(groups.get(group)||[]),item])}return [...groups.entries()]},[filteredNav]);
   const signOut=async()=>{
     if(logoutBusy||!window.confirm('Bu cihazdaki güvenli oturumu sonlandırmak istiyor musunuz?'))return;
     try{
@@ -65,8 +68,9 @@ export function Layout() {
   if (!user) return null;
   return <div className="app-shell">
     <aside className="sidebar">
-      <div className="brand"><div className="brand-mark">A</div><div><strong>Anunex</strong><span>Bilginin yörüngesinde · Nibiru AI</span></div></div>
-      <nav>{visibleNav.map((item) => { const Icon=item.icon; return <NavLink key={item.to} to={item.to} end={item.to==='/' } className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}</nav>
+      <div className="brand"><div className="brand-mark"><span>A</span><NibiruMark size={17} state="active" title="Anunex Nibiru AI"/></div><div><strong>ANUNEX</strong><span>Bilginin yörüngesinde · Nibiru AI</span></div></div>
+      <label className="nav-search"><Search size={15}/><input value={navSearch} onChange={e=>setNavSearch(e.target.value)} placeholder="Menüde ara" aria-label="Menüde ara"/></label>
+      <nav>{groupedNav.map(([group,items])=><div className="nav-group" key={group}><strong>{group}</strong>{items.map((item) => { const Icon=item.icon; return <NavLink key={item.to} to={item.to} end={item.to==='/' } className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}</div>)}</nav>
       <div className="sidebar-footer">
         <div className="user-card"><div className="avatar">{user.display_name.charAt(0)}</div><div><strong>{user.display_name}</strong><small>{roleName(user.role)}{institution?.name ? ` · ${institution.name}` : ''}</small></div></div>
         {logoutError&&<div className="sidebar-session-error" role="alert">{logoutError}</div>}
@@ -82,4 +86,15 @@ export function Layout() {
 
 function roleName(role: Role) {
   return ({ SUPER_ADMIN:'Süper Admin',INSTITUTION_MANAGER:'Kurum Yöneticisi',TEACHER:'Branş Öğretmeni',GUIDANCE_TEACHER:'Rehber Öğretmeni',STUDENT:'Öğrenci',PARENT:'Veli' } as const)[role];
+}
+
+function navGroup(path:string){
+ if(path==='/')return 'Genel Bakış';
+ if(['/institutions','/students','/users','/access-accounts','/teacher-assignments','/activation-requests','/seasons','/classes','/children','/announcements'].includes(path))return 'Kurum & Kullanıcı';
+ if(['/licenses','/membership-orders','/premium'].includes(path))return 'Lisans & Paketler';
+ if(path.includes('exam')||['/opticals','/optical-prepare','/camera-test','/calibration'].includes(path))return 'Sınav & Optik';
+ if(['/content-center','/curriculum','/outcomes','/worksheet-admin','/worksheet-calendar','/worksheets','/my-books','/wrong-answers','/board'].includes(path))return 'İçerik & Öğrenme';
+ if(path.includes('nibiru')||path.includes('academic-target')||path.includes('guidance')||path==='/student-growth')return 'Nibiru AI';
+ if(['/reports','/weekly-summary','/my-results','/notifications'].includes(path))return 'Rapor & Bildirim';
+ return 'Sistem & Araçlar';
 }
