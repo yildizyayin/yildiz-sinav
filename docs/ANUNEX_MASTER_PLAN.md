@@ -74,7 +74,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Soru Havuzu & Studio.
 - [x] Kişiye özel kitap üretimi.
 - [x] Sıfır Hata kitabı/kitapçığı.
-- [ ] Föy Merkezi ve yıllık kazanım planı: Mavi Seri 5–12. sınıf / ders başına 10 soru; Kırmızı Seri yalnız 8 ve 12. sınıf / ders başına 20 soru.
+- [x] Föy Merkezi ve yıllık kazanım planı: Mavi Seri 5–12. sınıf / ders başına 10 soru; Kırmızı Seri yalnız 8 ve 12. sınıf / ders başına 20 soru.
 - [ ] Toplu işlemler ve veri transferleri.
 - [ ] Zincir kurum merkezi yönetim ve üst yönetim raporları.
 - [ ] Tercih robotu.
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Sıfır Hata Kitabı/Kitapçığı; paket yetkisi, öğrenci sahipliği, aktif kitapçık tekrar engeli, kurum izolasyonu, doğrulanmış içerik seçimi, cevap gizliliği, yanlış/boş tekrar döngüsü, hata kapatma ilerlemesi ve yazdır/PDF deneyimiyle tamamlandı. Föy serileri Mavi 5–12 / ders başına 10 soru ve Kırmızı yalnız 8 ve 12. sınıf / ders başına 20 soru olarak kesinleştirildi; Anlayarak Hızlı Okuma ve Akıllı Tahta kapsamdan çıkarıldı.
-- **Son doğrulama:** Typecheck ve production build başarılı; 53/53 test dosyası, 217/217 test başarılı. Wrangler 4.127.0 doğrulandı; yerel D1 komutu çalışma ortamının ağ onayı engeline takıldığı için migration uygulaması staging zincirinde ayrıca doğrulanacak.
+- **Son tamamlanan:** Föy Merkezi; Mavi Seri 5–12. sınıf / ders başına 10 soru, Kırmızı Seri yalnız 8 ve 12. sınıf / ders başına 20 soru kuralları veri modeli, yönetim ekranı, yıllık slot üretimi, seri/sınıf doğrulaması, sabit soru sayısı, yayın kapısı, takvim filtresi ve öğrenci kataloğuna bağlandı. Anlayarak Hızlı Okuma ve Akıllı Tahta kapsamdan çıkarıldı.
+- **Son doğrulama:** Typecheck ve production build başarılı; 54/54 test dosyası, 221/221 test başarılı. Wrangler 4.127.0 doğrulandı; yerel D1 komutu çalışma ortamının ağ onayı engeline takıldığı için migration uygulaması staging zincirinde ayrıca doğrulanacak.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Föy Merkezi ve yıllık kazanım planını Mavi Seri 5–12. sınıf / ders başına 10 soru ve Kırmızı Seri yalnız 8 ve 12. sınıf / ders başına 20 soru kurallarıyla tamamla.
+- **Sıradaki tek iş:** Toplu işlemler ve veri transferlerini tenant izolasyonu, doğrulama önizlemesi, hata raporu ve geri alınabilir içe aktarma akışıyla tamamla.
