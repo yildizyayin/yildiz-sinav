@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-27T21:40:12.547Z`
+- Time: `2026-08-28T07:02:36.738Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -34,7 +34,7 @@
 - ✅ **Activation request + notification flow** — manager request → Super Admin decision → manager notification
 - ✅ **Student wrong/blank learning flow** — 4 question rows available
 - ✅ **Nibiru parent context + non-academic redirect** — student-linked context · AI disclosure · safe redirect
-- ✅ **Parent weekly summary + notification flow** — 1 exams in last 7 days
+- ✅ **Parent weekly summary + notification flow** — 0 exams in last 7 days
 - ✅ **Demo identity preservation** — 45 guests preserved after rejected smoke request
 
 ## Nibiru academic growth / communication checks
@@ -89,13 +89,13 @@ Error: Coach mini-test did not start with at least five questions
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v3 · 174 evidence · 3 subjects
-- ✅ **Idempotent refresh + versioned history** — 3 history snapshots
+- ✅ **Persistent student intelligence profile** — v4 · 174 evidence · 3 subjects
+- ✅ **Idempotent refresh + versioned history** — 4 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 90 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v3 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 99 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v4 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 
