@@ -68,7 +68,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Kurum, sınıf, öğrenci ve sınav için ham ID alanlarını güvenli seçicilere dönüştür.
 - [x] Kurum yaşam döngüsü, iletişim, logo, alan adı, şube ve zincir kurum yönetimi.
 - [x] Yoklama/devamsızlık.
-- [ ] Fiziksel ve dijital kitaptan ödev verme/takip.
+- [x] Fiziksel ve dijital kitaptan ödev verme/takip.
 - [ ] Soru Havuzu & Studio.
 - [ ] Kişiye özel kitap üretimi.
 - [ ] Sıfır Hata kitabı/kitapçığı.
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Yetki kapsamlı günlük/ders bazlı yoklama ve devamsızlık modülü tamamlandı. Sınıf listesi otomatik gelir; geldi, gelmedi, geç ve izinli durumları toplu kaydedilir, taslak bırakılır veya kesinleştirilir; sınıf dışı öğrenci eklenmesi engellenir.
-- **Son doğrulama:** Typecheck ve production build başarılı; 49/49 test dosyası, 202/202 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
+- **Son tamamlanan:** Fiziksel kitap sayfa aralığı, HTTPS dijital kitap bağlantısı, yayımlanmış föy ve serbest görevden sınıf/seçili öğrenci bazlı ödev verme tamamlandı. Öğretmen yetki kapsamı, aktif öğrenci kontrolü, öğrenci ilerleme bildirimi ve yönetici tamamlanma takibi eklendi.
+- **Son doğrulama:** Typecheck ve production build başarılı; 50/50 test dosyası, 205/205 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Fiziksel ve dijital kitaptan ödev verme ve takip modülünü tamamla.
+- **Sıradaki tek iş:** Soru Havuzu ve İçerik Merkezi modülünü işlevsellik, pratiklik ve güvenlik açısından tamamla.
