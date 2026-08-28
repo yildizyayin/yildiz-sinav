@@ -33,7 +33,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Çıkışta mevcut session kaydının sunucuda iptal edildiğini kod ve test paketiyle doğrula.
 - [x] Sunucu iptali başarısızsa kullanıcıya açık hata göster; sessizce yerel oturumu kapatma.
 - [x] Çıkış sonrası giriş sayfasına `replace` ile dönerek korumalı rotaya geri dönüşü engelle.
-- [ ] Profil ekranına şifre değiştirme, aktif oturumlar ve tüm cihazlardan çıkış ekle.
+- [x] Profil ekranına şifre değiştirme, aktif oturumlar, tek cihazı kapatma ve tüm cihazlardan çıkış ekle.
 - [ ] İlk kurulum tamamlandıktan sonra `PROD_INITIAL_ADMIN_PASSWORD` sırrını kaldır.
 
 ### P1 — Kurum ve lisans çekirdeği
@@ -114,7 +114,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Süper Admin ana ekranı, ANUNEX yönetim kimliği, gruplu/aranabilir menü ve ilk kurum boş durum akışı tamamlandı.
-- **Son doğrulama:** Typecheck ve production build başarılı; 43/43 test dosyası, 182/182 test başarılı; 0001–0027 migration zinciri boş SQLite veritabanında başarılı.
+- **Son tamamlanan:** Profil Güvenlik Merkezi; şifre değiştirme, aktif cihazlar, tek oturum ve tüm oturumları kapatma tamamlandı.
+- **Son doğrulama:** Typecheck ve production build başarılı; 44/44 test dosyası, 185/185 test başarılı; 0001–0028 migration zinciri boş SQLite veritabanında başarılı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Profil güvenliği; şifre değiştirme, aktif oturumlar ve tüm cihazlardan çıkış.
+- **Sıradaki tek iş:** Nibiru sesli komut uçtan uca teşhis ve düzeltme.
