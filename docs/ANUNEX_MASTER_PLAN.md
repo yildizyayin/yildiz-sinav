@@ -69,7 +69,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Kurum yaşam döngüsü, iletişim, logo, alan adı, şube ve zincir kurum yönetimi.
 - [x] Yoklama/devamsızlık.
 - [x] Fiziksel ve dijital kitaptan ödev verme/takip.
-- [ ] Soru Havuzu & Studio.
+- [x] Soru Havuzu & Studio.
 - [ ] Kişiye özel kitap üretimi.
 - [ ] Sıfır Hata kitabı/kitapçığı.
 - [ ] Föy Merkezi ve yıllık kazanım planı.
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Fiziksel kitap sayfa aralığı, HTTPS dijital kitap bağlantısı, yayımlanmış föy ve serbest görevden sınıf/seçili öğrenci bazlı ödev verme tamamlandı. Öğretmen yetki kapsamı, aktif öğrenci kontrolü, öğrenci ilerleme bildirimi ve yönetici tamamlanma takibi eklendi.
-- **Son doğrulama:** Typecheck ve production build başarılı; 50/50 test dosyası, 205/205 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
+- **Son tamamlanan:** Soru ve İçerik Merkezi; güvenli ders/kazanım/kurum seçicileri, arama ve filtreleme, kurum kapsamlı soru/istatistik erişimi, inceleme kuyruğu, telif-provenans doğrulaması, basılabilir soru politikasıyla belge taslağı ve HTTPS video eşleştirmesiyle tamamlandı.
+- **Son doğrulama:** Typecheck ve production build başarılı; 51/51 test dosyası, 209/209 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Soru Havuzu ve İçerik Merkezi modülünü işlevsellik, pratiklik ve güvenlik açısından tamamla.
+- **Sıradaki tek iş:** Kişiye özel kitap üretimini öğrenci zayıf kazanımları, onaylı soru havuzu ve güvenli PDF/çalışma akışıyla tamamla.
