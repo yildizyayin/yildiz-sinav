@@ -138,9 +138,26 @@ export async function activateAnnual(env: Env, institutionId: string, actor: Aut
   return { license: await getEffectiveLicense(env, institutionId), resetSummary };
 }
 
-export async function setLicenseStatus(env: Env, institutionId: string, actor: AuthUser, status: 'ACTIVE' | 'SUSPENDED' | 'CANCELLED') {
-  const row = await one<any>(env.DB.prepare('SELECT id,status FROM institution_licenses WHERE institution_id=?').bind(institutionId));
+export async function renewAnnual(env: Env, institutionId: string, actor: AuthUser, days = 365, note?: string | null) {
+  const row = await one<any>(env.DB.prepare(`SELECT * FROM institution_licenses WHERE institution_id=?`).bind(institutionId));
   if (!row) throw new Error('LICENSE_NOT_FOUND');
+  if (row.plan_code !== 'ANNUAL') throw new Error('ANNUAL_LICENSE_REQUIRED');
+  const now = new Date();
+  const currentExpiry = row.license_expires_at ? new Date(row.license_expires_at) : now;
+  const base = Number.isFinite(currentExpiry.getTime()) && currentExpiry.getTime() > now.getTime() ? currentExpiry : now;
+  const normalizedDays = Math.max(1, Math.min(1095, Math.floor(days)));
+  const expires = new Date(base.getTime() + normalizedDays * 86400000).toISOString();
+  await env.DB.prepare(`UPDATE institution_licenses SET status='ACTIVE',license_started_at=COALESCE(license_started_at,?),license_expires_at=?,note=COALESCE(?,note),updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(now.toISOString(),expires,note||null,row.id).run();
+  await env.DB.prepare(`UPDATE institutions SET status='ACTIVE',updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(institutionId).run();
+  await env.DB.prepare(`INSERT INTO institution_license_events(id,institution_id,license_id,event_type,actor_user_id,details_json) VALUES(?,?,?,'REACTIVATED',?,?)`).bind(uuid('licev'),institutionId,row.id,actor.id,JSON.stringify({action:'ANNUAL_RENEWED',days:normalizedDays,previousExpiry:row.license_expires_at||null,expires})).run();
+  return getEffectiveLicense(env,institutionId);
+}
+
+export async function setLicenseStatus(env: Env, institutionId: string, actor: AuthUser, status: 'ACTIVE' | 'SUSPENDED' | 'CANCELLED') {
+  const row = await one<any>(env.DB.prepare('SELECT id,status,plan_code,trial_expires_at,license_expires_at FROM institution_licenses WHERE institution_id=?').bind(institutionId));
+  if (!row) throw new Error('LICENSE_NOT_FOUND');
+  const expiry=row.plan_code==='TRIAL_7_DAY'?row.trial_expires_at:row.license_expires_at;
+  if(status==='ACTIVE'&&expiry&&new Date(expiry).getTime()<=Date.now())throw new Error('LICENSE_RENEWAL_REQUIRED');
   await env.DB.prepare('UPDATE institution_licenses SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(status,row.id).run();
   const eventType = status === 'SUSPENDED' ? 'SUSPENDED' : status === 'CANCELLED' ? 'CANCELLED' : 'REACTIVATED';
   await env.DB.prepare(`INSERT INTO institution_license_events(id,institution_id,license_id,event_type,actor_user_id,details_json) VALUES(?,?,?,?,?,?)`).bind(uuid('licev'),institutionId,row.id,eventType,actor.id,JSON.stringify({previousStatus:row.status,status})).run();
