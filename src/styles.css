@@ -218,6 +218,7 @@ input:focus,select:focus{border-color:#7aa7f7;box-shadow:0 0 0 3px #2563eb12}
 .branding-editor{margin:18px 0;background:linear-gradient(135deg,#f8fbff,#fff);border-color:#bfdbfe}
 .institution-logo-preview{width:72px;height:72px;object-fit:contain;border:1px solid var(--line);border-radius:14px;background:#fff;padding:7px}
 .attendance-statuses{display:flex;gap:5px;flex-wrap:wrap}.attendance-statuses button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:750;color:#64748b}.attendance-statuses button.active.present{border-color:#86efac;background:#f0fdf4;color:#15803d}.attendance-statuses button.active.absent{border-color:#fca5a5;background:#fef2f2;color:#b91c1c}.attendance-statuses button.active.late{border-color:#fcd34d;background:#fffbeb;color:#a16207}.attendance-statuses button.active.excused{border-color:#93c5fd;background:#eff6ff;color:#1d4ed8}.attendance-actions{margin-top:16px}.attendance-actions>div{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}.attendance-actions small{display:block;color:var(--muted);margin:8px 0}
+.recipient-picker{border:1px solid var(--line);border-radius:14px;padding:12px;margin:14px 0}.recipient-picker>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:8px}.recipient-picker>div:last-child{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-height:230px;overflow:auto}.recipient-picker label{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:10px;padding:8px}.recipient-picker input{width:auto;min-height:0;margin:0}.recipient-picker span,.recipient-picker small{display:block}.recipient-picker small{color:var(--muted)}.assignment-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(340px,.75fr);gap:16px;align-items:start}.assignment-detail{position:sticky;top:80px}.assignment-progress-actions{display:flex;gap:5px;flex-wrap:wrap}.progress-track{height:8px;border-radius:999px;background:#e2e8f0;overflow:hidden;margin:10px 0}.progress-track span{display:block;height:100%;background:linear-gradient(90deg,#2563eb,#22c55e)}
 .created-summary{text-align:center;max-width:720px;margin:20px auto}
 .created-summary>svg{color:#0f9f6e}
 .created-summary h2{font-size:26px;margin:10px 0 5px}
@@ -255,7 +256,8 @@ input:focus,select:focus{border-color:#7aa7f7;box-shadow:0 0 0 3px #2563eb12}
 .page-wrap{padding:18px 14px}
 .page-head{align-items:flex-start;flex-direction:column}
 .page-head h1{font-size:25px}
-.kpi-grid,.action-grid,.exam-grid,.worksheet-grid,.outcome-cards,.source-grid,.form-grid,.summary-strip,.metrics,.package-choice,.feature-choice,.review-grid,.credential-box{grid-template-columns:1fr}
+.kpi-grid,.action-grid,.exam-grid,.worksheet-grid,.outcome-cards,.source-grid,.form-grid,.summary-strip,.metrics,.package-choice,.feature-choice,.review-grid,.credential-box,.assignment-layout,.recipient-picker>div:last-child{grid-template-columns:1fr}
+.assignment-detail{position:static}
 .span-2{grid-column:auto}
 .onboarding-steps strong{display:none}
 .trial-consent{align-items:flex-start;flex-direction:column}.trial-consent-actions{justify-content:flex-start}
