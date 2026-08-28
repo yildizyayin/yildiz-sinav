@@ -70,7 +70,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Yoklama/devamsızlık.
 - [x] Fiziksel ve dijital kitaptan ödev verme/takip.
 - [x] Soru Havuzu & Studio.
-- [ ] Kişiye özel kitap üretimi.
+- [x] Kişiye özel kitap üretimi.
 - [ ] Sıfır Hata kitabı/kitapçığı.
 - [ ] Föy Merkezi ve yıllık kazanım planı.
 - [ ] Toplu işlemler ve veri transferleri.
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Soru ve İçerik Merkezi; güvenli ders/kazanım/kurum seçicileri, arama ve filtreleme, kurum kapsamlı soru/istatistik erişimi, inceleme kuyruğu, telif-provenans doğrulaması, basılabilir soru politikasıyla belge taslağı ve HTTPS video eşleştirmesiyle tamamlandı.
-- **Son doğrulama:** Typecheck ve production build başarılı; 51/51 test dosyası, 209/209 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
+- **Son tamamlanan:** Kişiye Özel Kitap; öğrencinin kanıtlanmış zayıf kazanımlarından, yalnız platform veya kendi kurumunun onaylı ve hakları doğrulanmış sorularıyla güvenli kitap üretimi tamamlandı. Kitap okuyucu, cevap denemesi, doğru/yanlış geri bildirimi, ilerleme, cevap gizliliği ve yazdır/PDF akışı eklendi.
+- **Son doğrulama:** Typecheck ve production build başarılı; 52/52 test dosyası, 213/213 test başarılı. Wrangler 4.127.0 doğrulandı; yerel D1 komutu çalışma ortamının ağ onayı engeline takıldığı için migration uygulaması staging zincirinde ayrıca doğrulanacak.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Kişiye özel kitap üretimini öğrenci zayıf kazanımları, onaylı soru havuzu ve güvenli PDF/çalışma akışıyla tamamla.
+- **Sıradaki tek iş:** Sıfır Hata Kitabı/Kitapçığını tenant izolasyonu, paket yetkisi, güvenli cevap akışı, tekrar döngüsü, ilerleme ve yazdır/PDF deneyimiyle tamamla.
