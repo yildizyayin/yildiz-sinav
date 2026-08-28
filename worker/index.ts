@@ -136,18 +136,24 @@ async function rejectIfPassiveInstitution(env: Env, user: AuthUser): Promise<Res
 
 async function dashboard(env: Env, user: AuthUser): Promise<Response> {
   if (user.role === 'SUPER_ADMIN') {
-    const [institutions, activeStudents, guests, todayResults, passive] = await Promise.all([
+    const [institutions, activeStudents, guests, todayResults, passive,activeExams,pendingScans,failedScans,readyOpticals,nibiruErrors,recentActivity] = await Promise.all([
       one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM institutions')),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM student_entities WHERE status='ACTIVE'`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM student_entities WHERE status='GUEST'`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exam_results WHERE date(created_at)=date('now')`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM institutions WHERE status='PASSIVE'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exams WHERE status='ACTIVE'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_batches WHERE status IN ('PREVIEW','NEEDS_REVIEW','READY')`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_batches WHERE status='FAILED'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM optical_templates WHERE active=1 AND status='READY'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM nibiru_audit_events WHERE outcome='ERROR' AND created_at>=datetime('now','-24 hours')`)),
+      all<any>(env.DB.prepare(`SELECT a.action,a.entity_type,a.created_at,u.display_name actor_name FROM audit_logs a LEFT JOIN users u ON u.id=a.actor_user_id ORDER BY a.created_at DESC LIMIT 6`)),
     ]);
     return json({ ok: true, cards: [
       { label: 'Kurum', value: institutions?.c ?? 0 }, { label: 'Aktif Öğrenci', value: activeStudents?.c ?? 0 },
       { label: 'Misafir Öğrenci', value: guests?.c ?? 0 }, { label: 'Bugün Değerlendirilen', value: todayResults?.c ?? 0 },
       { label: 'Pasif Kurum', value: passive?.c ?? 0 },
-    ] });
+    ], operations:{activeExams:activeExams?.c??0,pendingScans:pendingScans?.c??0,failedScans:failedScans?.c??0,readyOpticals:readyOpticals?.c??0,nibiruErrors24h:nibiruErrors?.c??0},recentActivity });
   }
   if (user.role === 'STUDENT') {
     if (!user.student_id) return badRequest('Öğrenci hesabı bağlı değil.');
