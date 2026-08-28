@@ -184,6 +184,42 @@ input:focus,select:focus{border-color:#7aa7f7;box-shadow:0 0 0 3px #2563eb12}
 .optical-meta{display:flex;justify-content:space-between}
 .optical-demo-grid{margin-top:55px;padding:20px;border:1px dashed #bcc7d6;color:#64748b;display:flex;justify-content:space-between}
 .optical-demo-grid span{font-size:11px}
+.onboarding-wizard{border-color:#c8ddff;box-shadow:0 18px 50px rgba(37,99,235,.08)}
+.onboarding-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
+.onboarding-steps div{display:flex;align-items:center;gap:8px;color:#94a3b8;border-bottom:2px solid #e5e7eb;padding:8px 4px 12px}
+.onboarding-steps div.active{color:#1d4ed8;border-color:#2563eb}
+.onboarding-steps span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#eef2f7;font-size:12px;font-weight:850}
+.onboarding-steps div.active span{background:#dbeafe;color:#1d4ed8}
+.span-2{grid-column:span 2}
+.package-choice{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.package-choice button{text-align:left;border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;color:#334155}
+.package-choice button.active{border-color:#2563eb;background:#eff6ff;box-shadow:0 0 0 3px #2563eb12}
+.package-choice strong,.package-choice span{display:block}
+.package-choice span{font-size:11px;color:var(--muted);line-height:1.45;margin-top:6px}
+.feature-choice{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:320px;overflow:auto;padding:2px}
+.feature-choice label{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:11px;padding:10px;background:#fff}
+.feature-choice label.selected{border-color:#93c5fd;background:#f4f8ff}
+.feature-choice input{width:auto;min-height:auto;margin:0}
+.feature-choice strong,.feature-choice small{display:block}
+.feature-choice small{font-size:9px;color:var(--muted);margin-top:2px}
+.wizard-actions{border-top:1px solid var(--line);padding-top:16px;margin-top:20px;display:flex;justify-content:space-between;align-items:center}
+.wizard-actions>div{display:flex;gap:8px}
+.review-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.review-grid>div{border:1px solid var(--line);border-radius:12px;padding:14px;background:#f8fafc}
+.review-grid span,.review-grid strong,.review-grid small{display:block}
+.review-grid span,.review-grid small{color:var(--muted);font-size:11px}
+.review-grid strong{margin:5px 0}
+.created-summary{text-align:center;max-width:720px;margin:20px auto}
+.created-summary>svg{color:#0f9f6e}
+.created-summary h2{font-size:26px;margin:10px 0 5px}
+.credential-box{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin:20px 0}
+.credential-box>div{position:relative;border:1px solid #bfdbfe;background:#eff6ff;border-radius:12px;padding:14px 48px 14px 14px}
+.credential-box span,.credential-box strong{display:block}
+.credential-box span{font-size:10px;color:#64748b}
+.credential-box strong{margin-top:5px;word-break:break-all}
+.credential-box button{position:absolute;right:9px;top:17px;border:none;background:#fff;border-radius:8px;width:32px;height:32px;display:grid;place-items:center;color:#2563eb}
+.trial-consent{display:flex;justify-content:space-between;align-items:center;gap:20px;background:linear-gradient(135deg,#eff6ff,#fff);border-color:#bfdbfe}
+.trial-consent h2{margin:6px 0}.trial-consent-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
 
 @media(max-width:1050px){.app-shell{grid-template-columns:80px 1fr}
 .brand>div:last-child,.nav-item span,.user-card>div:last-child,.sidebar-logout{display:none}
@@ -204,7 +240,10 @@ input:focus,select:focus{border-color:#7aa7f7;box-shadow:0 0 0 3px #2563eb12}
 .page-wrap{padding:18px 14px}
 .page-head{align-items:flex-start;flex-direction:column}
 .page-head h1{font-size:25px}
-.kpi-grid,.action-grid,.exam-grid,.worksheet-grid,.outcome-cards,.source-grid,.form-grid,.summary-strip,.metrics{grid-template-columns:1fr}
+.kpi-grid,.action-grid,.exam-grid,.worksheet-grid,.outcome-cards,.source-grid,.form-grid,.summary-strip,.metrics,.package-choice,.feature-choice,.review-grid,.credential-box{grid-template-columns:1fr}
+.span-2{grid-column:auto}
+.onboarding-steps strong{display:none}
+.trial-consent{align-items:flex-start;flex-direction:column}.trial-consent-actions{justify-content:flex-start}
 .login-page{grid-template-columns:1fr}
 .login-art{display:none}
 .login-panel{padding:24px 16px}
