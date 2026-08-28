@@ -215,6 +215,8 @@ input:focus,select:focus{border-color:#7aa7f7;box-shadow:0 0 0 3px #2563eb12}
 .review-grid span,.review-grid strong,.review-grid small{display:block}
 .review-grid span,.review-grid small{color:var(--muted);font-size:11px}
 .review-grid strong{margin:5px 0}
+.branding-editor{margin:18px 0;background:linear-gradient(135deg,#f8fbff,#fff);border-color:#bfdbfe}
+.institution-logo-preview{width:72px;height:72px;object-fit:contain;border:1px solid var(--line);border-radius:14px;background:#fff;padding:7px}
 .created-summary{text-align:center;max-width:720px;margin:20px auto}
 .created-summary>svg{color:#0f9f6e}
 .created-summary h2{font-size:26px;margin:10px 0 5px}
