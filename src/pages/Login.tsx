@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api, ApiError, post } from '../api';
 import { Turnstile } from '../components/Turnstile';
 import { useAuth } from '../auth';
+import { AnunexCosmos } from '../components/AnunexCosmos';
 
 export function Login() {
   const navigate = useNavigate();
@@ -28,10 +29,7 @@ export function Login() {
     finally{ setLoading(false); }
   };
   return <div className="login-page">
-    <div className="login-art">
-      <div className="login-logo">A</div>
-      <div className="login-copy"><span className="pill dark"><ShieldCheck size={15}/> Cloudflare korumalı</span><h1>Bilginin yörüngesinde.</h1><p>Sınav, optik, akademik analiz ve Nibiru AI rehberliğini tek güvenli platformda yönetin.</p></div>
-    </div>
+    <div className="login-art"><AnunexCosmos/></div>
     <div className="login-panel"><form className="login-card" onSubmit={submit}>
       <div><span className="eyebrow">Anunex · Tek giriş · Rol otomatik tanınır</span><h2>{config?.productName || 'Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu'}</h2><p className="muted">Kullanıcı adı, e-posta veya telefon numaranızla giriş yapın.</p></div>
       <label>Kullanıcı adı / e-posta / telefon<input value={identifier} onChange={e=>setIdentifier(e.target.value)} autoComplete="username" required/></label>
