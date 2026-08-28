@@ -11,6 +11,8 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - Yeni kuruma 7 günlük demo tanımlanabilir. Kurum onay verirse aynı kurum ve veriler korunarak 1 yıllık lisansa dönüştürülür.
 - Optik Hazırla / Optik Bas hem Süper Admin hem Kurum Yöneticisi rolünde bulunur.
 - Nibiru; öğrenme grafiği, akademik analiz, yanlış/boş ve eksik kazanım, recovery, rehberlik, eğitim koçu, hedef, motivasyon, kişisel görevler, Sıfır Hata, kişisel kitap, video/kazanım köprüsü ve rol bazlı uzman AI yönlendirmelerini birleştirir.
+- Föy sistemi iki ürün serisiyle çalışır: **Mavi Seri**, 5, 6, 7, 8, 9, 10, 11 ve 12. sınıflarda her ders için 10 soru; **Kırmızı Seri**, yalnız 8 ve 12. sınıflarda her ders için 20 soru üretir.
+- Anlayarak Hızlı Okuma ve Akıllı Tahta bu ürünün güncel kapsamından çıkarılmıştır.
 - Kullanıcı arayüzünde ham kurum/sınıf/öğrenci ID'si istenmez; güvenli seçim bileşenleri kullanılır.
 - Demo/sentetik veri production iş akışlarına sızmaz.
 
@@ -71,13 +73,11 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Fiziksel ve dijital kitaptan ödev verme/takip.
 - [x] Soru Havuzu & Studio.
 - [x] Kişiye özel kitap üretimi.
-- [ ] Sıfır Hata kitabı/kitapçığı.
-- [ ] Föy Merkezi ve yıllık kazanım planı.
+- [x] Sıfır Hata kitabı/kitapçığı.
+- [ ] Föy Merkezi ve yıllık kazanım planı: Mavi Seri 5–12. sınıf / ders başına 10 soru; Kırmızı Seri yalnız 8 ve 12. sınıf / ders başına 20 soru.
 - [ ] Toplu işlemler ve veri transferleri.
 - [ ] Zincir kurum merkezi yönetim ve üst yönetim raporları.
 - [ ] Tercih robotu.
-- [ ] Anlayarak hızlı okuma.
-- [ ] Akıllı Tahta içerik seçme, oynatma ve canlı oturum deneyimi.
 - [ ] Resmî MEB/ÖSYM verileri için dosya yükleme, eşleme ve doğrulama arayüzü.
 
 ### P4 — Nibiru AI bütünleştirmesi
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Kişiye Özel Kitap; öğrencinin kanıtlanmış zayıf kazanımlarından, yalnız platform veya kendi kurumunun onaylı ve hakları doğrulanmış sorularıyla güvenli kitap üretimi tamamlandı. Kitap okuyucu, cevap denemesi, doğru/yanlış geri bildirimi, ilerleme, cevap gizliliği ve yazdır/PDF akışı eklendi.
-- **Son doğrulama:** Typecheck ve production build başarılı; 52/52 test dosyası, 213/213 test başarılı. Wrangler 4.127.0 doğrulandı; yerel D1 komutu çalışma ortamının ağ onayı engeline takıldığı için migration uygulaması staging zincirinde ayrıca doğrulanacak.
+- **Son tamamlanan:** Sıfır Hata Kitabı/Kitapçığı; paket yetkisi, öğrenci sahipliği, aktif kitapçık tekrar engeli, kurum izolasyonu, doğrulanmış içerik seçimi, cevap gizliliği, yanlış/boş tekrar döngüsü, hata kapatma ilerlemesi ve yazdır/PDF deneyimiyle tamamlandı. Föy serileri Mavi 5–12 / ders başına 10 soru ve Kırmızı yalnız 8 ve 12. sınıf / ders başına 20 soru olarak kesinleştirildi; Anlayarak Hızlı Okuma ve Akıllı Tahta kapsamdan çıkarıldı.
+- **Son doğrulama:** Typecheck ve production build başarılı; 53/53 test dosyası, 217/217 test başarılı. Wrangler 4.127.0 doğrulandı; yerel D1 komutu çalışma ortamının ağ onayı engeline takıldığı için migration uygulaması staging zincirinde ayrıca doğrulanacak.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Sıfır Hata Kitabı/Kitapçığını tenant izolasyonu, paket yetkisi, güvenli cevap akışı, tekrar döngüsü, ilerleme ve yazdır/PDF deneyimiyle tamamla.
+- **Sıradaki tek iş:** Föy Merkezi ve yıllık kazanım planını Mavi Seri 5–12. sınıf / ders başına 10 soru ve Kırmızı Seri yalnız 8 ve 12. sınıf / ders başına 20 soru kurallarıyla tamamla.
