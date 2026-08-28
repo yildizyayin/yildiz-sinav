@@ -12,7 +12,7 @@ const nav: Record<Role, NavItem[]> = {
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/standard-readiness', label: 'Sistem Hazırlığı', icon: ShieldCheck },
     { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck },
     { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle }, { to: '/licenses', label: 'Lisanslar', icon: KeyRound },
-    { to: '/feature-lab', label: 'Deneysel Özellikler', icon: FlaskConical }, { to: '/content-center', label: 'Soru ve İçerik Merkezi', icon: Layers3, feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Zincir Kurum Yönetimi', icon: Building2, feature:'ENTERPRISE' }, { to: '/board', label: 'Akıllı Tahta', icon: GraduationCap, feature:'BOARD' },
+    { to: '/feature-lab', label: 'Deneysel Özellikler', icon: FlaskConical }, { to: '/content-center', label: 'Soru ve İçerik Merkezi', icon: Layers3, feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Zincir Kurum Yönetimi', icon: Building2, feature:'ENTERPRISE' },
     { to: '/academic-target-admin', label: 'Resmî Hedef Verileri', icon: Target }, { to: '/official-question-intelligence', label: 'Çıkmış Soru & Kazanım', icon: BarChart3 }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/curriculum', label: 'Müfredat & Kazanımlar', icon: BookMarked },
     { to: '/attendance', label: 'Yoklama ve Devamsızlık', icon: UserCheck, feature:'ATTENDANCE' },
     { to: '/assignments', label: 'Ödev Verme ve Takip', icon: BookOpenCheck, feature:'ASSIGNMENTS' },
@@ -23,7 +23,7 @@ const nav: Record<Role, NavItem[]> = {
   ],
   INSTITUTION_MANAGER: [
     { to: '/', label: 'Kurum Ana Sayfası', icon: Home }, { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle },
-    { to: '/content-center', label: 'Soru ve İçerik Merkezi', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Zincir Kurum Yönetimi', icon: Building2,feature:'ENTERPRISE' }, { to: '/board', label: 'Akıllı Tahta', icon: GraduationCap,feature:'BOARD' },
+    { to: '/content-center', label: 'Soru ve İçerik Merkezi', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Zincir Kurum Yönetimi', icon: Building2,feature:'ENTERPRISE' },
     { to: '/announcements', label: 'Duyuru Merkezi', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/students', label: 'Öğrenciler', icon: Users },
     { to: '/attendance', label: 'Yoklama ve Devamsızlık', icon: UserCheck, feature:'ATTENDANCE' },
     { to: '/assignments', label: 'Ödev Verme ve Takip', icon: BookOpenCheck, feature:'ASSIGNMENTS' },
@@ -32,11 +32,11 @@ const nav: Record<Role, NavItem[]> = {
     { to: '/worksheets', label: 'Föy Merkezi', icon: BookOpenCheck }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   TEACHER: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/content-center', label: 'Soru ve İçerik Merkezi', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/board', label: 'Akıllı Tahta', icon: GraduationCap,feature:'BOARD' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/attendance', label: 'Yoklama ve Devamsızlık', icon: UserCheck, feature:'ATTENDANCE' }, { to: '/assignments', label: 'Ödev Verme ve Takip', icon: BookOpenCheck, feature:'ASSIGNMENTS' }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/content-center', label: 'Soru ve İçerik Merkezi', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/attendance', label: 'Yoklama ve Devamsızlık', icon: UserCheck, feature:'ATTENDANCE' }, { to: '/assignments', label: 'Ödev Verme ve Takip', icon: BookOpenCheck, feature:'ASSIGNMENTS' }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
     { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Branş Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   GUIDANCE_TEACHER: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/guidance-tests', label: 'Rehberlik Ölçekleri', icon: ListChecks,feature:'GUIDANCE_TESTS' }, { to: '/content-center', label: 'Soru ve İçerik Merkezi', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/board', label: 'Akıllı Tahta', icon: GraduationCap,feature:'BOARD' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/attendance', label: 'Yoklama ve Devamsızlık', icon: UserCheck, feature:'ATTENDANCE' }, { to: '/assignments', label: 'Ödev Verme ve Takip', icon: BookOpenCheck, feature:'ASSIGNMENTS' }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/guidance-tests', label: 'Rehberlik Ölçekleri', icon: ListChecks,feature:'GUIDANCE_TESTS' }, { to: '/content-center', label: 'Soru ve İçerik Merkezi', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/attendance', label: 'Yoklama ve Devamsızlık', icon: UserCheck, feature:'ATTENDANCE' }, { to: '/assignments', label: 'Ödev Verme ve Takip', icon: BookOpenCheck, feature:'ASSIGNMENTS' }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
     { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Öğrenci Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   STUDENT: [
@@ -105,7 +105,7 @@ function navGroup(path:string){
  if(['/institutions','/students','/users','/access-accounts','/teacher-assignments','/activation-requests','/seasons','/classes','/children','/announcements','/attendance'].includes(path))return 'Kurum & Kullanıcı';
  if(['/licenses','/membership-orders','/premium'].includes(path))return 'Lisans & Paketler';
  if(path.includes('exam')||['/opticals','/optical-prepare','/camera-test','/calibration'].includes(path))return 'Sınav & Optik';
- if(['/content-center','/curriculum','/outcomes','/worksheet-admin','/worksheet-calendar','/worksheets','/my-books','/wrong-answers','/board','/assignments'].includes(path))return 'İçerik & Öğrenme';
+ if(['/content-center','/curriculum','/outcomes','/worksheet-admin','/worksheet-calendar','/worksheets','/my-books','/wrong-answers','/assignments'].includes(path))return 'İçerik & Öğrenme';
  if(path.includes('nibiru')||path.includes('academic-target')||path.includes('guidance')||path==='/student-growth')return 'Nibiru AI';
  if(['/reports','/weekly-summary','/my-results','/notifications'].includes(path))return 'Rapor & Bildirim';
  return 'Sistem & Araçlar';
