@@ -76,7 +76,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Sıfır Hata kitabı/kitapçığı.
 - [x] Föy Merkezi ve yıllık kazanım planı: Mavi Seri 5–12. sınıf / ders başına 10 soru; Kırmızı Seri yalnız 8 ve 12. sınıf / ders başına 20 soru.
 - [x] Toplu işlemler ve veri transferleri.
-- [ ] Zincir kurum merkezi yönetim ve üst yönetim raporları.
+- [x] Zincir kurum merkezi yönetimi ve üst yönetim raporları: genel merkez–bölge–il–ilçe–kampüs hiyerarşisi, kapsamlı yönetici/görüntüleyici rolleri, tenant izolasyonu, karşılaştırmalı KPI, tarih/birim filtresi, CSV ve denetim kaydı.
 - [ ] Tercih robotu.
 - [ ] Resmî MEB/ÖSYM verileri için dosya yükleme, eşleme ve doğrulama arayüzü.
 
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Toplu İşlemler ve Veri Transfer Merkezi; Edesis/Okulizyon gerçek örnek doğrulama kapısı, CSV/TXT/DAT/XLSX/XLS okuma, kurum ve eğitim yılı izolasyonu, dosya parmak iziyle tekrar aktarım engeli, satır önizlemesi, mevcut öğrenci eşleştirme/atlama, açık kullanıcı onayı, hata raporu, aktarım geçmişi, denetim kaydı ve akademik geçmişi silmeden güvenli geri alma tamamlandı. Kaynakta olmayan soru/kazanım ayrıntısı üretilmiyor.
-- **Son doğrulama:** Typecheck, production build ve bağımlılık güvenlik taraması başarılı; 55/55 test dosyası, 226/226 test başarılı ve production bağımlılıklarında bilinen açık bulunmadı. Yerel D1 migration uygulaması çalışma ortamının ağ onayı engeline takıldığı için staging zincirinde ayrıca doğrulanacak.
+- **Son tamamlanan:** Zincir Kurum Yönetim Merkezi; genel merkez–bölge–il–ilçe–kampüs hiyerarşisi, birim kapsamlı Zincir Yöneticisi/Görüntüleyici rolleri, sıradan şube üyeliğinin tüm zinciri görmesini engelleyen güvenlik sınırı, şube bazlı öğrenci–misafir–sınav–başarı–devam–ödev–Sıfır Hata KPI'ları, tarih/birim filtresi, CSV dışa aktarımı ve denetim kayıtları tamamlandı. Kullanıcı kararına uygun olarak Akıllı Tahta menü ve rotası kaldırıldı.
+- **Son doğrulama:** Typecheck, production build, production bağımlılık güvenlik taraması ve 37 migration'ın sıfırdan yerel D1 uygulaması başarılı; 56/56 test dosyası, 231/231 test başarılı ve production bağımlılıklarında bilinen açık bulunmadı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Zincir kurum merkezi yönetimi ve üst yönetim raporlarını; şube yetkisi, konsolide KPI, şubeler arası karşılaştırma ve tenant izolasyonuyla tamamla.
+- **Sıradaki tek iş:** Tercih Robotunu gerçek MEB/ÖSYM veri kaynağı gelene kadar açıkça örnek/veri bekliyor durumuyla; hedef, puan/sıralama, şehir, bölüm ve güvenli veri kaynağı sınırlarıyla tamamla.
