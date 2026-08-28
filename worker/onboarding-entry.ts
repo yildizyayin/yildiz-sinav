@@ -92,6 +92,38 @@ async function onboardingStatus(env:Env,user:AuthUser){
  return json({ok:true,onboarding,license:await getEffectiveLicense(env,user.institution_id)});
 }
 
+async function institutionDetail(env:Env,user:AuthUser,institutionId:string){
+ if(user.role!=='SUPER_ADMIN')return forbidden();
+ const institution=await one<any>(env.DB.prepare(`SELECT i.*,p.package_code,p.onboarding_status,p.address,p.website,p.network_name,p.annual_consent_status,p.annual_consent_at FROM institutions i LEFT JOIN institution_onboarding_profiles p ON p.institution_id=i.id WHERE i.id=?`).bind(institutionId));
+ if(!institution)return fail(404,'INSTITUTION_NOT_FOUND','Kurum bulunamadı.');
+ const [features,networks,membership,seasons,managers]=await Promise.all([
+  all<any>(env.DB.prepare(`SELECT f.feature_key,f.label,f.stage,COALESCE(o.enabled,f.default_enabled) enabled FROM platform_features f LEFT JOIN institution_feature_overrides o ON o.feature_key=f.feature_key AND o.institution_id=? WHERE f.feature_key<>'STANDARD_READINESS' ORDER BY f.stage,f.label`).bind(institutionId)),
+  all<any>(env.DB.prepare(`SELECT id,name,code FROM institution_networks WHERE active=1 ORDER BY name`)),
+  one<any>(env.DB.prepare(`SELECT m.network_id,n.name,n.code,m.region_label FROM institution_network_members m JOIN institution_networks n ON n.id=m.network_id WHERE m.institution_id=? AND m.active=1 ORDER BY n.name LIMIT 1`).bind(institutionId)),
+  all<any>(env.DB.prepare(`SELECT id,academic_year,status,started_at,ended_at FROM institution_seasons WHERE institution_id=? ORDER BY created_at DESC`).bind(institutionId)),
+  all<any>(env.DB.prepare(`SELECT id,display_name,email,active,must_change_password FROM users WHERE institution_id=? AND role='INSTITUTION_MANAGER' ORDER BY created_at`).bind(institutionId)),
+ ]);
+ return json({ok:true,institution,features,networks,membership,seasons,managers,license:await getEffectiveLicense(env,institutionId)});
+}
+
+async function updateInstitutionDetail(request:Request,env:Env,user:AuthUser,institutionId:string){
+ if(user.role!=='SUPER_ADMIN')return forbidden();
+ if(!await one(env.DB.prepare(`SELECT id FROM institutions WHERE id=?`).bind(institutionId)))return fail(404,'INSTITUTION_NOT_FOUND','Kurum bulunamadı.');
+ const body=await request.json<any>().catch(()=>null);if(!body)return badRequest('Kurum bilgileri geçersiz.');
+ const packageCode=String(body.packageCode||'STANDARD').toUpperCase();if(!PACKAGE_CODES.has(packageCode))return badRequest('Geçersiz paket seçimi.');
+ const selected=await packageFeatures(env,packageCode,Array.isArray(body.selectedFeatures)?body.selectedFeatures.map(String):[]);if(!selected.includes('EXAM_CENTER'))return badRequest('Sınav Merkezi zorunlu çekirdek modüldür.');
+ const allFeatures=await all<{feature_key:string}>(env.DB.prepare(`SELECT feature_key FROM platform_features`)),enabled=new Set(selected),networkId=String(body.networkId||'');
+ const statements:D1PreparedStatement[]=[
+  env.DB.prepare(`UPDATE institutions SET name=?,city=?,district=?,contact_name=?,contact_phone=?,contact_email=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(String(body.name||'').trim().slice(0,160),String(body.city||'').trim()||null,String(body.district||'').trim()||null,String(body.contactName||'').trim()||null,String(body.contactPhone||'').trim()||null,String(body.contactEmail||'').trim().toLowerCase()||null,institutionId),
+  env.DB.prepare(`INSERT INTO institution_onboarding_profiles(institution_id,package_code,onboarding_status,address,website,network_name,created_by) VALUES(?,?,'COMPLETED',?,?,?,?) ON CONFLICT(institution_id) DO UPDATE SET package_code=excluded.package_code,onboarding_status='COMPLETED',address=excluded.address,website=excluded.website,network_name=excluded.network_name,updated_at=CURRENT_TIMESTAMP`).bind(institutionId,packageCode,String(body.address||'').trim()||null,String(body.website||'').trim()||null,String(body.networkName||'').trim()||null,user.id),
+  env.DB.prepare(`UPDATE institution_network_members SET active=0 WHERE institution_id=?`).bind(institutionId),
+ ];
+ for(const feature of allFeatures)statements.push(env.DB.prepare(`INSERT INTO institution_feature_overrides(institution_id,feature_key,enabled) VALUES(?,?,?) ON CONFLICT(institution_id,feature_key) DO UPDATE SET enabled=excluded.enabled`).bind(institutionId,feature.feature_key,enabled.has(feature.feature_key)?1:0));
+ if(networkId)statements.push(env.DB.prepare(`INSERT INTO institution_network_members(network_id,institution_id,region_label,active) VALUES(?,?,?,1) ON CONFLICT(network_id,institution_id) DO UPDATE SET region_label=excluded.region_label,active=1`).bind(networkId,institutionId,String(body.regionLabel||'').trim()||null));
+ await env.DB.batch(statements);await audit(env.DB,user.id,institutionId,'INSTITUTION_PROFILE_UPDATED','institution',institutionId,{packageCode,features:selected,networkId:networkId||null});
+ return institutionDetail(env,user,institutionId);
+}
+
 async function accountSessions(request:Request,env:Env,user:AuthUser){
  const currentHash=await currentSessionTokenHash(request);
  const rows=await all<any>(env.DB.prepare(`SELECT id,token_hash,created_at,expires_at,revoked_at,user_agent FROM sessions WHERE user_id=? ORDER BY created_at DESC LIMIT 50`).bind(user.id));
@@ -146,6 +178,10 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
  }
  if(path==='/api/institutions'&&request.method==='POST'){
   const user=await requireUser(env,request);return isResponse(user)?user:createInstitution(request,env,user);
+ }
+ const institutionDetailMatch=path.match(/^\/api\/admin\/institutions\/([^/]+)\/detail$/);
+ if(institutionDetailMatch&&(request.method==='GET'||request.method==='PUT')){
+  const user=await requireUser(env,request);return isResponse(user)?user:request.method==='GET'?institutionDetail(env,user,institutionDetailMatch[1]):updateInstitutionDetail(request,env,user,institutionDetailMatch[1]);
  }
  if(path==='/api/admin/licenses'&&request.method==='GET'){
   const user=await requireUser(env,request);return isResponse(user)?user:enrichedLicenses(env,user);
