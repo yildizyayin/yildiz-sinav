@@ -39,7 +39,7 @@ export function ExamCenter(){
   const reviewRows=(batch?.records||[]).filter((r:any)=>['AMBIGUOUS','INVALID'].includes(r.match_status)||(r.issues||[]).length>0);
 
   return <>
-    <div className="page-head"><div><span className="eyebrow">Sınav Merkezi</span><h1>Sınavı seç, veriyi bırak, sonucu al</h1><p>Merkezi yayınevi sınavlarında cevap anahtarı, kitapçık ve puanlama merkezden gelir. Kurum yalnız sınavı ve veriyi seçer.</p></div><button className="ghost" onClick={()=>void load()}><RefreshCw size={16}/> Yenile</button></div>
+    <div className="page-head"><div><span className="eyebrow">Sınav Merkezi</span><h1>Sınavı seç, veriyi bırak, sonucu al</h1><p>Merkezi yayınevi sınavlarında cevap anahtarı, kitapçık ve puanlama merkezden gelir. Kurum yalnız sınavı ve veriyi seçer.</p></div><div style={{display:'flex',gap:8,flexWrap:'wrap'}}>{user?.role==='INSTITUTION_MANAGER'&&<Link className="secondary" to="/exam-definitions">Yeni Kurum Sınavı</Link>}<button className="ghost" onClick={()=>void load()}><RefreshCw size={16}/> Yenile</button></div></div>
     {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
 
     <div className="panel" style={{marginBottom:18}}>
