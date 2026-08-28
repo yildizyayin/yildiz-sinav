@@ -43,12 +43,13 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] 7 günlük demo başlangıç/bitiş, kalan gün ve durum göstergeleri.
 - [x] Kurum onayı kaydı ve onay olmadan yıllık lisansa dönüşümü engelleme.
 - [x] Onay sonrası mevcut yıllık lisans servisiyle verileri koruyarak 365 güne çevirme.
-- [ ] Süre bitişi, yenileme, askıya alma ve erişim sınırları.
+- [x] Süre bitişi, yıllık yenileme, askıya alma ve erişim sınırları.
 - [x] Paketler: Standard, Premium, Kendi Paketini Oluştur.
 - [x] Paket/modül kataloğu ve kurum özellik yetkilerinin onboarding sırasında uygulanması.
 - [x] Demo başlangıcı ve kurum onayı için lisans/denetim kaydı.
 - [ ] Kurum ayrıntı sayfasında paket değiştirme, zincir/şube ve onboarding kalan adımları.
-- [ ] Lisans yenileme ve bitiş bildirimleri.
+- [x] Süresi dolan/askıya alınan kurum için kilit ekranı, kurum onayı ve lisans yenileme işlemi.
+- [ ] Lisans bitişinden önce uygulama içi/e-posta bildirimleri.
 
 ### P2 — Süper Admin Panel V2
 
@@ -117,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Nibiru bas-konuş artık yalnız metin yazmıyor; komutu otomatik gönderiyor, yanıtı seslendiriyor ve TTS sağlayıcı sorunu halinde tarayıcı Türkçe ses motoruna dönüyor.
-- **Son doğrulama:** Typecheck ve production build başarılı; 44/44 test dosyası, 185/185 test başarılı; Whisper base64 giriş biçimi güncel Cloudflare dokümanıyla eşleştirildi. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
+- **Son tamamlanan:** Nibiru tam sesli komut zincirine ek olarak lisans bitişi, 365 günlük yenileme, askıya alma, operasyon kilidi, kurum onayı ve güvenlik/Nibiru destek erişimi tamamlandı.
+- **Son doğrulama:** Typecheck ve production build başarılı; 45/45 test dosyası, 188/188 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Lisans süre bitişi, yenileme, askıya alma ve erişim sınırlarını tamamla.
+- **Sıradaki tek iş:** Süper Admin V2 menü gruplarını daraltma, favoriler, durum rozetleri ve servis sağlığı göstergelerini tamamla.
