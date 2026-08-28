@@ -61,7 +61,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] İlk kurum için boş durum rehberi.
 - [x] Kurum, aktif demo, bekleyen kurum onayı ve yıllık lisans göstergeleri.
 - [x] Aktif sınavlar, optik kuyruğu, Nibiru uyarıları, son işlemler ve servis sağlığı göstergeleri.
-- [ ] İç teknik adları kullanıcı diline çevir; tekrar eden/eski sınav menülerini birleştir.
+- [x] İç teknik adları kullanıcı diline çevir; tekrar eden/eski sınav menülerini birleştir.
 
 ### P3 — Operasyonel kullanım boşlukları
 
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Kurum ayrıntısında iletişim ve onboarding bilgilerinin, Standard/Premium/özel paket modüllerinin ve zincir/şube bağlantısının tek ekrandan güvenli güncellenmesi tamamlandı.
-- **Son doğrulama:** Typecheck ve production build başarılı; 47/47 test dosyası, 194/194 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
+- **Son tamamlanan:** Teknik menü adları kullanıcı diline çevrildi; yönetici rollerindeki tekrar eden sınav listesi/tanımı girişleri tek Sınav Merkezi altında birleştirildi ve kurum sınavı oluşturma işlemi merkezin içine taşındı.
+- **Son doğrulama:** Typecheck ve production build başarılı; 47/47 test dosyası, 195/195 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** İç teknik adları kullanıcı diline çevir ve tekrar eden/eski sınav menülerini birleştir.
+- **Sıradaki tek iş:** Kurum, sınıf, öğrenci ve sınav ham kimlik alanlarını güvenli seçicilere dönüştür.
