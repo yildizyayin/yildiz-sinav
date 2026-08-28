@@ -47,7 +47,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Paketler: Standard, Premium, Kendi Paketini Oluştur.
 - [x] Paket/modül kataloğu ve kurum özellik yetkilerinin onboarding sırasında uygulanması.
 - [x] Demo başlangıcı ve kurum onayı için lisans/denetim kaydı.
-- [ ] Kurum ayrıntı sayfasında paket değiştirme, zincir/şube ve onboarding kalan adımları.
+- [x] Kurum ayrıntı sayfasında paket değiştirme, zincir/şube ve onboarding kalan adımları.
 - [x] Süresi dolan/askıya alınan kurum için kilit ekranı, kurum onayı ve lisans yenileme işlemi.
 - [ ] Lisans bitişinden önce uygulama içi/e-posta bildirimleri.
 
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Süper Admin V2 daraltılabilir menü grupları, kalıcı favoriler, operasyon rozetleri, kullanıcı dilindeki menü adları ve sınav/optik/Nibiru/servis sağlığı kontrol merkezi tamamlandı.
-- **Son doğrulama:** Typecheck ve production build başarılı; 46/46 test dosyası, 191/191 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
+- **Son tamamlanan:** Kurum ayrıntısında iletişim ve onboarding bilgilerinin, Standard/Premium/özel paket modüllerinin ve zincir/şube bağlantısının tek ekrandan güvenli güncellenmesi tamamlandı.
+- **Son doğrulama:** Typecheck ve production build başarılı; 47/47 test dosyası, 194/194 test başarılı. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Kurum ayrıntı sayfasında paket değiştirme, zincir/şube ve onboarding kalan adımlarını tamamla.
+- **Sıradaki tek iş:** İç teknik adları kullanıcı diline çevir ve tekrar eden/eski sınav menülerini birleştir.
