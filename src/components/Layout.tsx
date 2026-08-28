@@ -1,6 +1,6 @@
 import { useEffect,useMemo,useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ClipboardCheck, Database, FileUp, FlaskConical, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, MessageCircle, Printer, ScanLine, Search, ShieldCheck, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck } from 'lucide-react';
+import { NavLink, Outlet, useLocation,useNavigate } from 'react-router-dom';
+import { BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronDown, ClipboardCheck, Database, FileUp, FlaskConical, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, MessageCircle, Printer, ScanLine, Search, ShieldCheck, Star, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 import { api } from '../api';
 import { LicenseBoundary } from './LicenseBoundary';
@@ -9,12 +9,12 @@ import { NibiruMark,NibiruNavIcon } from './NibiruMark';
 type NavItem={to:string;label:string;icon:any;feature?:string};
 const nav: Record<Role, NavItem[]> = {
   SUPER_ADMIN: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/standard-readiness', label: 'Standard Hazırlık', icon: ShieldCheck },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/standard-readiness', label: 'Sistem Hazırlığı', icon: ShieldCheck },
     { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck },
     { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle }, { to: '/licenses', label: 'Lisanslar', icon: KeyRound },
-    { to: '/feature-lab', label: 'Feature Lab', icon: FlaskConical }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3, feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Enterprise', icon: Building2, feature:'ENTERPRISE' }, { to: '/board', label: 'Akıllı Tahta', icon: GraduationCap, feature:'BOARD' },
+    { to: '/feature-lab', label: 'Deneysel Özellikler', icon: FlaskConical }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3, feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Zincir Kurum Yönetimi', icon: Building2, feature:'ENTERPRISE' }, { to: '/board', label: 'Akıllı Tahta', icon: GraduationCap, feature:'BOARD' },
     { to: '/academic-target-admin', label: 'Resmî Hedef Verileri', icon: Target }, { to: '/official-question-intelligence', label: 'Çıkmış Soru & Kazanım', icon: BarChart3 }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/curriculum', label: 'Müfredat & Kazanımlar', icon: BookMarked },
-    { to: '/exam-definitions', label: 'Gelişmiş Sınav Tanımı', icon: ClipboardCheck }, { to: '/exams', label: 'Eski Sınav Listesi', icon: ClipboardCheck },
+    { to: '/exam-definitions', label: 'Sınav Tanımları', icon: ClipboardCheck }, { to: '/exams', label: 'Sınav Listesi', icon: ClipboardCheck },
     { to: '/students', label: 'Öğrenciler', icon: Users }, { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange },
     { to: '/opticals', label: 'Optik Tanıtma', icon: ScanLine }, { to: '/optical-prepare', label: 'Optik Hazırla / Bas', icon: Printer }, { to: '/camera-test', label: 'Kamera Test Optiği', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: Printer },
     { to: '/worksheet-admin', label: 'Föy Merkezi', icon: BookOpenCheck }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/bulk-operations', label: 'Toplu İşlemler', icon: Layers3 }, { to: '/demo-mode', label: 'Sentetik Demo', icon: FlaskConical }, { to: '/scale', label: 'Ölçek Altyapısı', icon: Database },
@@ -47,14 +47,23 @@ const nav: Record<Role, NavItem[]> = {
 export function Layout() {
   const { user, institution, logout } = useAuth();
   const navigate = useNavigate();
+  const location=useLocation();
   const [enabledFeatures,setEnabledFeatures]=useState<Set<string>>(new Set());
   const [logoutBusy,setLogoutBusy]=useState(false);
   const [logoutError,setLogoutError]=useState('');
   const [navSearch,setNavSearch]=useState('');
+  const [collapsed,setCollapsed]=useState<Record<string,boolean>>(()=>{try{return JSON.parse(localStorage.getItem('anunex.nav.collapsed')||'{}')}catch{return{}}});
+  const [favorites,setFavorites]=useState<string[]>(()=>{try{return JSON.parse(localStorage.getItem('anunex.nav.favorites')||'[]')}catch{return[]}});
+  const [navBadges,setNavBadges]=useState<Record<string,number>>({});
   useEffect(()=>{if(!user||user.role==='SUPER_ADMIN')return;void api<any>('/api/platform/features').then(r=>setEnabledFeatures(new Set((r.features||[]).filter((f:any)=>Number(f.effective_enabled||0)===1).map((f:any)=>String(f.feature_key))))).catch(()=>setEnabledFeatures(new Set()));},[user?.id,user?.role]);
+  useEffect(()=>{if(user?.role!=='SUPER_ADMIN')return;Promise.all([api<any>('/api/dashboard'),api<any>('/api/admin/licenses')]).then(([d,l])=>setNavBadges({'/exam-center':Number(d.operations?.activeExams||0),'/opticals':Number(d.operations?.pendingScans||0),'/licenses':(l.licenses||[]).filter((x:any)=>x.annual_consent_status==='PENDING').length})).catch(()=>setNavBadges({}))},[user?.id,user?.role]);
   const visibleNav=useMemo(()=>user?nav[user.role].filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature)):[],[user,enabledFeatures]);
   const filteredNav=useMemo(()=>{const query=navSearch.trim().toLocaleLowerCase('tr-TR');return query?visibleNav.filter(item=>item.label.toLocaleLowerCase('tr-TR').includes(query)):visibleNav},[visibleNav,navSearch]);
   const groupedNav=useMemo(()=>{const groups=new Map<string,NavItem[]>();for(const item of filteredNav){const group=navGroup(item.to);groups.set(group,[...(groups.get(group)||[]),item])}return [...groups.entries()]},[filteredNav]);
+  const favoriteItems=useMemo(()=>visibleNav.filter(item=>favorites.includes(item.to)),[visibleNav,favorites]);
+  const toggleGroup=(group:string)=>setCollapsed(current=>{const next={...current,[group]:!current[group]};localStorage.setItem('anunex.nav.collapsed',JSON.stringify(next));return next});
+  const toggleFavorite=(path:string)=>setFavorites(current=>{const next=current.includes(path)?current.filter(x=>x!==path):[...current,path];localStorage.setItem('anunex.nav.favorites',JSON.stringify(next));return next});
+  const renderItem=(item:NavItem)=>{const Icon=item.icon,badge=navBadges[item.to]||0;return <div className="nav-row" key={item.to}><NavLink to={item.to} end={item.to==='/' } className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span>{badge>0&&<small className="nav-badge">{badge>99?'99+':badge}</small>}</NavLink><button className={`nav-favorite ${favorites.includes(item.to)?'selected':''}`} onClick={()=>toggleFavorite(item.to)} title={favorites.includes(item.to)?'Favorilerden çıkar':'Favorilere ekle'} aria-label={`${item.label} favori`}><Star size={13}/></button></div>};
   const signOut=async()=>{
     if(logoutBusy||!window.confirm('Bu cihazdaki güvenli oturumu sonlandırmak istiyor musunuz?'))return;
     try{
@@ -70,7 +79,7 @@ export function Layout() {
     <aside className="sidebar">
       <div className="brand"><div className="brand-mark"><span>A</span><NibiruMark size={17} state="active" title="Anunex Nibiru AI"/></div><div><strong>ANUNEX</strong><span>Bilginin yörüngesinde · Nibiru AI</span></div></div>
       <label className="nav-search"><Search size={15}/><input value={navSearch} onChange={e=>setNavSearch(e.target.value)} placeholder="Menüde ara" aria-label="Menüde ara"/></label>
-      <nav>{groupedNav.map(([group,items])=><div className="nav-group" key={group}><strong>{group}</strong>{items.map((item) => { const Icon=item.icon; return <NavLink key={item.to} to={item.to} end={item.to==='/' } className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}</div>)}</nav>
+      <nav>{!navSearch&&favoriteItems.length>0&&<div className="nav-group favorites"><button className="nav-group-toggle" onClick={()=>toggleGroup('Favoriler')}><span>Favoriler</span><ChevronDown size={14}/></button><div className="nav-group-body">{favoriteItems.map(renderItem)}</div></div>}{groupedNav.map(([group,items])=>{const containsActive=items.some(x=>x.to===location.pathname),wide=window.matchMedia('(min-width:1051px)').matches,closed=wide&&!navSearch&&!containsActive&&(collapsed[group]??group==='Sistem & Araçlar');return <div className={`nav-group ${closed?'collapsed':''}`} key={group}><button className="nav-group-toggle" onClick={()=>toggleGroup(group)} aria-expanded={!closed}><span>{group}</span><ChevronDown size={14}/></button>{!closed&&<div className="nav-group-body">{items.map(renderItem)}</div>}</div>})}</nav>
       <div className="sidebar-footer">
         <div className="user-card"><div className="avatar">{user.display_name.charAt(0)}</div><div><strong>{user.display_name}</strong><small>{roleName(user.role)}{institution?.name ? ` · ${institution.name}` : ''}</small></div></div>
         {logoutError&&<div className="sidebar-session-error" role="alert">{logoutError}</div>}
