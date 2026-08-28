@@ -1,5 +1,5 @@
 import { useEffect,useState } from 'react';
-import { BarChart3, ClipboardCheck, GraduationCap, Target, Users } from 'lucide-react';
+import { BarChart3, ClipboardCheck, GraduationCap, Target, UserCheck, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../auth';
@@ -18,6 +18,7 @@ export function Classes(){
     <div className="section-head"><div><h2>Sınıf işlemleri</h2><p>Yetki kapsamınız her sayfada otomatik uygulanır.</p></div></div>
     <div className="action-grid">
       <Link className="quick-card" to="/exams"><div className="quick-icon"><ClipboardCheck/></div><div><h3>Sınavlar</h3><p>Yetkili sınıfların sınavlarını inceleyin.</p></div></Link>
+      <Link className="quick-card" to="/attendance"><div className="quick-icon"><UserCheck/></div><div><h3>Yoklama</h3><p>Günlük veya ders bazlı yoklama alın.</p></div></Link>
       <Link className="quick-card" to="/outcomes"><div className="quick-icon"><Target/></div><div><h3>Kazanımlar</h3><p>{guidance?'Sınıfın tüm ders kazanımlarını görün.':'Kendi branşınızdaki kazanımları görün.'}</p></div></Link>
       <Link className="quick-card" to="/reports"><div className="quick-icon"><GraduationCap/></div><div><h3>{guidance?'Öğrenci Gelişimi':'Branş Gelişimi'}</h3><p>Birleşik gelişim raporuna geçin.</p></div></Link>
     </div>
