@@ -45,6 +45,34 @@ async function canManageNetwork(env: Env, user: AuthUser, networkId: string): Pr
   return !!row;
 }
 
+type NetworkAccess = { role: 'SUPER_ADMIN'|'NETWORK_ADMIN'|'NETWORK_VIEWER'; scopeUnitId: string|null };
+
+async function networkAccess(env:Env,user:AuthUser,networkId:string):Promise<NetworkAccess|null>{
+  if(user.role==='SUPER_ADMIN')return{role:'SUPER_ADMIN',scopeUnitId:null};
+  const row=await one<any>(env.DB.prepare(`SELECT role,scope_unit_id FROM network_user_roles WHERE network_id=? AND user_id=? AND active=1`).bind(networkId,user.id));
+  return row?{role:row.role,scopeUnitId:row.scope_unit_id||null}:null;
+}
+
+async function accessibleNetworkUnit(env:Env,networkId:string,rootUnitId:string|null,requestedUnitId:string|null):Promise<string|null|false>{
+  const effective=requestedUnitId||rootUnitId;
+  if(!effective)return null;
+  const row=await one<any>(env.DB.prepare(`WITH RECURSIVE permitted(id) AS (
+    SELECT id FROM network_units WHERE id=? AND network_id=? AND active=1
+    UNION ALL SELECT u.id FROM network_units u JOIN permitted p ON u.parent_unit_id=p.id WHERE u.network_id=? AND u.active=1
+  ) SELECT id FROM permitted WHERE id=? LIMIT 1`).bind(rootUnitId||effective,networkId,networkId,effective));
+  return row?effective:false;
+}
+
+export function networkPercent(numerator:unknown,denominator:unknown):number{
+  const n=Number(numerator||0),d=Number(denominator||0);return d>0?Math.round((n/d)*1000)/10:0;
+}
+
+function csvValue(value:unknown):string{
+  let text=String(value??'');
+  if(/^[=+\-@]/.test(text))text=`'${text}`;
+  return `"${text.replace(/"/g,'""')}"`;
+}
+
 async function scopedStudentId(env: Env, user: AuthUser, requested?: string | null): Promise<string | null> {
   if (user.role === 'STUDENT') return user.student_id;
   if (user.role === 'PARENT') {
@@ -179,31 +207,106 @@ async function studentExamResult(request:Request,env:Env,user:AuthUser,examId:st
 }
 
 async function listNetworks(env:Env,user:AuthUser):Promise<Response>{
-  const where=user.role==='SUPER_ADMIN'?'1=1':`n.id IN (SELECT network_id FROM network_user_roles WHERE user_id=? AND active=1 UNION SELECT network_id FROM institution_network_members WHERE institution_id=? AND active=1)`;
+  const where=user.role==='SUPER_ADMIN'?'1=1':`n.id IN (SELECT network_id FROM network_user_roles WHERE user_id=? AND active=1)`;
   const stmt=env.DB.prepare(`SELECT n.*,(SELECT COUNT(*) FROM institution_network_members m WHERE m.network_id=n.id AND m.active=1) institution_count FROM institution_networks n WHERE n.active=1 AND ${where} ORDER BY n.name`);
-  const rows=user.role==='SUPER_ADMIN'?await all<any>(stmt):await all<any>(stmt.bind(user.id,user.institution_id));
+  const rows=user.role==='SUPER_ADMIN'?await all<any>(stmt):await all<any>(stmt.bind(user.id));
   return json({ok:true,networks:rows});
 }
 
 async function createNetwork(request:Request,env:Env,user:AuthUser):Promise<Response>{
   if(user.role!=='SUPER_ADMIN')return forbidden(); const b=await requestBody(request); if(!b.name||!b.code)return badRequest('Ağ adı ve kodu gereklidir.'); const id=uuid('net');
-  await env.DB.prepare(`INSERT INTO institution_networks(id,name,code,headquarters_institution_id) VALUES(?,?,?,?)`).bind(id,String(b.name).trim(),String(b.code).trim().toUpperCase(),b.headquartersInstitutionId||null).run();
+  const headquartersId=b.headquartersInstitutionId||null,unitId=headquartersId?uuid('nunit'):null;
+  const statements=[env.DB.prepare(`INSERT INTO institution_networks(id,name,code,headquarters_institution_id) VALUES(?,?,?,?)`).bind(id,String(b.name).trim(),String(b.code).trim().toUpperCase(),headquartersId)];
+  if(headquartersId){
+    const institution=await one<any>(env.DB.prepare(`SELECT id,name,code,city,district FROM institutions WHERE id=?`).bind(headquartersId));if(!institution)return badRequest('Merkez kurum bulunamadı.');
+    statements.push(env.DB.prepare(`INSERT INTO network_units(id,network_id,unit_type,institution_id,name,code,city,district) VALUES(?,?,'HEADQUARTERS',?,?,?,?,?)`).bind(unitId,id,headquartersId,institution.name,`HQ-${institution.code}`,institution.city||null,institution.district||null));
+    statements.push(env.DB.prepare(`INSERT INTO institution_network_members(network_id,institution_id,region_label,active,unit_id) VALUES(?,?,?,1,?)`).bind(id,headquartersId,'Merkez',unitId));
+  }
+  await env.DB.batch(statements);
+  await audit(env.DB,user.id,headquartersId,'NETWORK_CREATED','institution_network',id,{code:String(b.code).trim().toUpperCase(),headquartersInstitutionId:headquartersId});
   return json({ok:true,id},201);
 }
 
 async function addNetworkMember(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
-  if(!await canManageNetwork(env,user,networkId))return forbidden(); const b=await requestBody(request); if(!b.institutionId)return badRequest('Kurum seçin.');
-  await env.DB.prepare(`INSERT INTO institution_network_members(network_id,institution_id,region_label,active) VALUES(?,?,?,1) ON CONFLICT(network_id,institution_id) DO UPDATE SET region_label=excluded.region_label,active=1`).bind(networkId,b.institutionId,b.regionLabel||null).run();
+  const access=await networkAccess(env,user,networkId);if(!access||access.role==='NETWORK_VIEWER')return forbidden(); const b=await requestBody(request); if(!b.institutionId)return badRequest('Kurum seçin.');
+  if(access.scopeUnitId&&!b.unitId)return badRequest('Sınırlı zincir yöneticisi kurumu kendi hiyerarşi kapsamındaki birime bağlamalıdır.');
+  if(b.unitId&&await accessibleNetworkUnit(env,networkId,access.scopeUnitId,b.unitId)===false)return forbidden('Seçilen birim yetki kapsamınızda değil.');
+  const institution=await one<any>(env.DB.prepare(`SELECT id FROM institutions WHERE id=? AND status='ACTIVE'`).bind(b.institutionId));if(!institution)return badRequest('Aktif kurum bulunamadı.');
+  if(b.unitId){const unit=await one<any>(env.DB.prepare(`SELECT id,institution_id FROM network_units WHERE id=? AND network_id=? AND active=1`).bind(b.unitId,networkId));if(!unit)return badRequest('Seçilen hiyerarşi birimi bu zincire ait değil.');if(unit.institution_id&&unit.institution_id!==b.institutionId)return badRequest('Bu birim başka bir kuruma bağlı.');}
+  const statements=[env.DB.prepare(`INSERT INTO institution_network_members(network_id,institution_id,region_label,active,unit_id) VALUES(?,?,?,1,?) ON CONFLICT(network_id,institution_id) DO UPDATE SET region_label=excluded.region_label,unit_id=excluded.unit_id,active=1`).bind(networkId,b.institutionId,b.regionLabel||null,b.unitId||null)];
+  if(b.unitId)statements.push(env.DB.prepare(`UPDATE network_units SET institution_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND network_id=?`).bind(b.institutionId,b.unitId,networkId));
+  await env.DB.batch(statements);
+  await audit(env.DB,user.id,b.institutionId,'NETWORK_MEMBER_UPSERTED','institution_network',networkId,{unitId:b.unitId||null,regionLabel:b.regionLabel||null});
   return json({ok:true});
 }
 
-async function networkDashboard(env:Env,user:AuthUser,networkId:string):Promise<Response>{
-  const allowed=user.role==='SUPER_ADMIN'||await canManageNetwork(env,user,networkId)||!!await one<any>(env.DB.prepare(`SELECT 1 ok FROM institution_network_members WHERE network_id=? AND institution_id=? AND active=1`).bind(networkId,user.institution_id));
-  if(!allowed)return forbidden();
+async function updateNetworkMember(request:Request,env:Env,user:AuthUser,networkId:string,institutionId:string):Promise<Response>{
+  const access=await networkAccess(env,user,networkId);if(!access||access.role==='NETWORK_VIEWER')return forbidden();const b=await requestBody(request);
+  const current=await one<any>(env.DB.prepare(`SELECT unit_id FROM institution_network_members WHERE network_id=? AND institution_id=? AND active=1`).bind(networkId,institutionId));if(!current)return notFound('Zincir kurumu bulunamadı.');
+  if(access.scopeUnitId&&(!current.unit_id||await accessibleNetworkUnit(env,networkId,access.scopeUnitId,current.unit_id)===false))return forbidden('Bu kurum yetki kapsamınızda değil.');
+  if(request.method==='DELETE'){
+    const network=await one<any>(env.DB.prepare(`SELECT headquarters_institution_id FROM institution_networks WHERE id=?`).bind(networkId));if(network?.headquarters_institution_id===institutionId)return badRequest('Merkez kurum zincirden çıkarılamaz.');
+    await env.DB.prepare(`UPDATE institution_network_members SET active=0 WHERE network_id=? AND institution_id=?`).bind(networkId,institutionId).run();
+    await audit(env.DB,user.id,institutionId,'NETWORK_MEMBER_DEACTIVATED','institution_network',networkId,{});return json({ok:true});
+  }
+  if(b.unitId){const unit=await one<any>(env.DB.prepare(`SELECT id FROM network_units WHERE id=? AND network_id=? AND active=1`).bind(b.unitId,networkId));if(!unit)return badRequest('Seçilen hiyerarşi birimi bu zincire ait değil.');if(await accessibleNetworkUnit(env,networkId,access.scopeUnitId,b.unitId)===false)return forbidden('Hedef birim yetki kapsamınızda değil.');}
+  await env.DB.prepare(`UPDATE institution_network_members SET unit_id=?,region_label=? WHERE network_id=? AND institution_id=? AND active=1`).bind(b.unitId||null,b.regionLabel||null,networkId,institutionId).run();
+  await audit(env.DB,user.id,institutionId,'NETWORK_MEMBER_UPDATED','institution_network',networkId,{unitId:b.unitId||null,regionLabel:b.regionLabel||null});return json({ok:true});
+}
+
+async function networkUnits(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
+  const access=await networkAccess(env,user,networkId);if(!access)return forbidden();
+  if(request.method==='GET'){const scope=await accessibleNetworkUnit(env,networkId,access.scopeUnitId,new URL(request.url).searchParams.get('unitId'));if(scope===false)return forbidden('Bu hiyerarşi birimine erişemezsiniz.');const rows=await all<any>(env.DB.prepare(`WITH RECURSIVE visible(id) AS (SELECT ? UNION ALL SELECT u.id FROM network_units u JOIN visible v ON u.parent_unit_id=v.id WHERE u.network_id=? AND u.active=1) SELECT * FROM network_units WHERE network_id=? AND active=1 AND (? IS NULL OR id IN (SELECT id FROM visible)) ORDER BY sort_order,unit_type,name`).bind(scope,networkId,networkId,scope));return json({ok:true,units:rows});}
+  if(access.role==='NETWORK_VIEWER')return forbidden();const b=await requestBody(request),type=String(b.unitType||'').toUpperCase();if(!b.name||!b.code||!['HEADQUARTERS','REGION','PROVINCE','DISTRICT','CAMPUS'].includes(type))return badRequest('Birim adı, kodu ve geçerli tür gereklidir.');
+  if(access.scopeUnitId&&!b.parentUnitId)return badRequest('Sınırlı zincir yöneticisi yeni birimi kendi kapsamının altında oluşturmalıdır.');
+  if(b.parentUnitId){const permitted=await accessibleNetworkUnit(env,networkId,access.scopeUnitId,b.parentUnitId);if(permitted===false)return forbidden('Üst birim yetki kapsamınızda değil.');}
+  const id=uuid('nunit');await env.DB.prepare(`INSERT INTO network_units(id,network_id,parent_unit_id,unit_type,name,code,city,district,sort_order) VALUES(?,?,?,?,?,?,?,?,?)`).bind(id,networkId,b.parentUnitId||null,type,String(b.name).trim(),String(b.code).trim().toUpperCase(),b.city||null,b.district||null,Number(b.sortOrder||0)).run();
+  await audit(env.DB,user.id,user.institution_id,'NETWORK_UNIT_CREATED','network_unit',id,{networkId,type,parentUnitId:b.parentUnitId||null});return json({ok:true,id},201);
+}
+
+async function networkRoles(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
+  const access=await networkAccess(env,user,networkId);if(!access||access.role==='NETWORK_VIEWER')return forbidden();
+  if(request.method==='GET'){const rows=await all<any>(env.DB.prepare(`WITH RECURSIVE visible(id) AS (SELECT ? UNION ALL SELECT nu.id FROM network_units nu JOIN visible v ON nu.parent_unit_id=v.id WHERE nu.network_id=? AND nu.active=1) SELECT r.network_id,r.user_id,r.role,r.scope_unit_id,r.active,u.display_name,u.email,i.name institution_name,nu.name scope_name FROM network_user_roles r JOIN users u ON u.id=r.user_id LEFT JOIN institutions i ON i.id=u.institution_id LEFT JOIN network_units nu ON nu.id=r.scope_unit_id WHERE r.network_id=? AND r.active=1 AND (? IS NULL OR r.scope_unit_id IN (SELECT id FROM visible)) ORDER BY r.role,u.display_name`).bind(access.scopeUnitId,networkId,networkId,access.scopeUnitId));return json({ok:true,roles:rows});}
+  const b=await requestBody(request),role=String(b.role||'NETWORK_VIEWER').toUpperCase();if(!b.userId||!['NETWORK_ADMIN','NETWORK_VIEWER'].includes(role))return badRequest('Kullanıcı ve geçerli zincir rolü gereklidir.');
+  const candidate=await one<any>(env.DB.prepare(`SELECT id,institution_id,role FROM users WHERE id=? AND active=1`).bind(b.userId));if(!candidate||!['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(candidate.role))return badRequest('Zincir rolü yalnız aktif yönetici hesabına verilebilir.');
+  if(user.role!=='SUPER_ADMIN'&&candidate.institution_id){const member=await one<any>(env.DB.prepare(`SELECT unit_id FROM institution_network_members WHERE network_id=? AND institution_id=? AND active=1`).bind(networkId,candidate.institution_id));if(!member)return forbidden('Yalnız zincir içindeki kurum yöneticilerine rol verebilirsiniz.');if(access.scopeUnitId&&(!member.unit_id||await accessibleNetworkUnit(env,networkId,access.scopeUnitId,member.unit_id)===false))return forbidden('Kullanıcının kurumu yetki kapsamınızda değil.');}
+  if(access.scopeUnitId&&!b.scopeUnitId)return badRequest('Sınırlı zincir yöneticisi rol kapsamı seçmelidir.');
+  if(b.scopeUnitId){const permitted=await accessibleNetworkUnit(env,networkId,access.scopeUnitId,b.scopeUnitId);if(permitted===false)return forbidden('Rol kapsamı yetkinizin dışında.');}
+  await env.DB.prepare(`INSERT INTO network_user_roles(network_id,user_id,role,active,scope_unit_id) VALUES(?,?,?,1,?) ON CONFLICT(network_id,user_id) DO UPDATE SET role=excluded.role,scope_unit_id=excluded.scope_unit_id,active=1`).bind(networkId,b.userId,role,b.scopeUnitId||null).run();
+  await audit(env.DB,user.id,candidate.institution_id,'NETWORK_ROLE_GRANTED','institution_network',networkId,{targetUserId:b.userId,role,scopeUnitId:b.scopeUnitId||null});return json({ok:true});
+}
+
+async function networkDashboard(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
+  const access=await networkAccess(env,user,networkId);if(!access)return forbidden();
   const network=await one<any>(env.DB.prepare(`SELECT * FROM institution_networks WHERE id=?`).bind(networkId)); if(!network)return notFound();
-  const institutions=await all<any>(env.DB.prepare(`SELECT i.*,m.region_label FROM institution_network_members m JOIN institutions i ON i.id=m.institution_id WHERE m.network_id=? AND m.active=1 ORDER BY i.city,i.district,i.name`).bind(networkId));
+  const url=new URL(request.url),requestedUnit=url.searchParams.get('unitId'),scope=await accessibleNetworkUnit(env,networkId,access.scopeUnitId,requestedUnit);if(scope===false)return forbidden('Bu rapor kapsamına erişemezsiniz.');
+  const from=url.searchParams.get('from'),to=url.searchParams.get('to');
+  const units=await all<any>(env.DB.prepare(`WITH RECURSIVE visible(id) AS (SELECT ? UNION ALL SELECT u.id FROM network_units u JOIN visible v ON u.parent_unit_id=v.id WHERE u.network_id=? AND u.active=1) SELECT id,parent_unit_id,unit_type,institution_id,name,code,city,district,sort_order FROM network_units WHERE network_id=? AND active=1 AND (? IS NULL OR id IN (SELECT id FROM visible)) ORDER BY sort_order,unit_type,name`).bind(scope,networkId,networkId,scope));
+  const institutions=await all<any>(env.DB.prepare(`WITH RECURSIVE visible(id) AS (SELECT ? UNION ALL SELECT u.id FROM network_units u JOIN visible v ON u.parent_unit_id=v.id WHERE u.network_id=? AND u.active=1), members AS (SELECT m.* FROM institution_network_members m WHERE m.network_id=? AND m.active=1 AND (? IS NULL OR m.unit_id IN (SELECT id FROM visible))) SELECT i.id,i.name,i.code,i.city,i.district,i.status,m.region_label,m.unit_id,nu.name unit_name,nu.unit_type,
+    (SELECT COUNT(*) FROM student_enrollments se WHERE se.institution_id=i.id AND se.status='ACTIVE') active_students,
+    (SELECT COUNT(*) FROM exam_participants ep WHERE ep.institution_id=i.id AND ep.participant_status='GUEST' AND (? IS NULL OR date(ep.created_at)>=date(?)) AND (? IS NULL OR date(ep.created_at)<=date(?))) guest_students,
+    (SELECT COUNT(*) FROM exam_participants ep WHERE ep.institution_id=i.id AND (? IS NULL OR date(ep.created_at)>=date(?)) AND (? IS NULL OR date(ep.created_at)<=date(?))) participant_count,
+    (SELECT ROUND(AVG(er.net),2) FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.institution_id=i.id AND (? IS NULL OR date(ep.created_at)>=date(?)) AND (? IS NULL OR date(ep.created_at)<=date(?))) avg_net,
+    (SELECT ROUND(AVG(er.success_percent),1) FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.institution_id=i.id AND (? IS NULL OR date(ep.created_at)>=date(?)) AND (? IS NULL OR date(ep.created_at)<=date(?))) avg_success,
+    (SELECT COUNT(*) FROM attendance_records ar JOIN attendance_sessions ats ON ats.id=ar.session_id WHERE ats.institution_id=i.id AND ar.attendance_status IN ('PRESENT','LATE') AND (? IS NULL OR date(ats.attendance_date)>=date(?)) AND (? IS NULL OR date(ats.attendance_date)<=date(?))) attendance_present,
+    (SELECT COUNT(*) FROM attendance_records ar JOIN attendance_sessions ats ON ats.id=ar.session_id WHERE ats.institution_id=i.id AND (? IS NULL OR date(ats.attendance_date)>=date(?)) AND (? IS NULL OR date(ats.attendance_date)<=date(?))) attendance_total,
+    (SELECT COUNT(*) FROM assignment_recipients ar JOIN assignments a ON a.id=ar.assignment_id WHERE a.institution_id=i.id AND ar.status='COMPLETED' AND (? IS NULL OR date(a.created_at)>=date(?)) AND (? IS NULL OR date(a.created_at)<=date(?))) assignment_completed,
+    (SELECT COUNT(*) FROM assignment_recipients ar JOIN assignments a ON a.id=ar.assignment_id WHERE a.institution_id=i.id AND (? IS NULL OR date(a.created_at)>=date(?)) AND (? IS NULL OR date(a.created_at)<=date(?))) assignment_total,
+    (SELECT COUNT(*) FROM recovery_plans rp WHERE rp.institution_id=i.id AND rp.status='ACTIVE') active_recovery
+    FROM members m JOIN institutions i ON i.id=m.institution_id LEFT JOIN network_units nu ON nu.id=m.unit_id ORDER BY i.city,i.district,i.name`).bind(scope,networkId,networkId,scope,from,from,to,to,from,from,to,to,from,from,to,to,from,from,to,to,from,from,to,to,from,from,to,to,from,from,to,to,from,from,to,to));
+  const branches=institutions.map(x=>({...x,active_students:Number(x.active_students||0),guest_students:Number(x.guest_students||0),participant_count:Number(x.participant_count||0),avg_net:Number(x.avg_net||0),avg_success:Number(x.avg_success||0),attendance_rate:networkPercent(x.attendance_present,x.attendance_total),assignment_completion_rate:networkPercent(x.assignment_completed,x.assignment_total),active_recovery:Number(x.active_recovery||0)}));
+  const totals={institution_count:branches.length,active_students:branches.reduce((s,x)=>s+x.active_students,0),guest_students:branches.reduce((s,x)=>s+x.guest_students,0),participant_count:branches.reduce((s,x)=>s+x.participant_count,0),attendance_rate:networkPercent(branches.reduce((s,x)=>s+Number(x.attendance_present||0),0),branches.reduce((s,x)=>s+Number(x.attendance_total||0),0)),assignment_completion_rate:networkPercent(branches.reduce((s,x)=>s+Number(x.assignment_completed||0),0),branches.reduce((s,x)=>s+Number(x.assignment_total||0),0)),active_recovery:branches.reduce((s,x)=>s+x.active_recovery,0)};
   const exams=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,p.result_freeze_status,p.snapshot_version,p.published_at,(SELECT COUNT(*) FROM exam_result_snapshots s WHERE s.exam_id=e.id AND s.snapshot_version=p.snapshot_version) participant_count FROM exam_delivery_profiles p JOIN exams e ON e.id=p.exam_id WHERE p.network_id=? ORDER BY e.exam_date DESC,e.created_at DESC LIMIT 100`).bind(networkId));
-  return json({ok:true,network,institutions,exams});
+  const roleCandidates=access.role==='NETWORK_VIEWER'?[]:await all<any>(env.DB.prepare(`WITH RECURSIVE visible(id) AS (SELECT ? UNION ALL SELECT nu.id FROM network_units nu JOIN visible v ON nu.parent_unit_id=v.id WHERE nu.network_id=? AND nu.active=1) SELECT DISTINCT u.id,u.display_name,u.email,u.institution_id,i.name institution_name FROM users u LEFT JOIN institutions i ON i.id=u.institution_id WHERE u.active=1 AND u.role IN ('SUPER_ADMIN','INSTITUTION_MANAGER') AND (u.role='SUPER_ADMIN' OR u.institution_id IN (SELECT institution_id FROM institution_network_members WHERE network_id=? AND active=1)) AND (? IS NULL OR u.institution_id IN (SELECT institution_id FROM institution_network_members WHERE network_id=? AND active=1 AND unit_id IN (SELECT id FROM visible))) ORDER BY u.display_name LIMIT 500`).bind(scope,networkId,networkId,scope,networkId));
+  return json({ok:true,network,permission:{role:access.role,canManage:access.role!=='NETWORK_VIEWER',scopeUnitId:access.scopeUnitId},filters:{unitId:scope,from,to},totals,units,institutions:branches,exams,roleCandidates});
+}
+
+async function networkExport(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
+  const response=await networkDashboard(request,env,user,networkId);if(!response.ok)return response;const data:any=await response.json();
+  const header=['Kurum','Kurum Kodu','Şehir','İlçe','Birim','Aktif Öğrenci','Misafir Öğrenci','Sınav Katılımı','Ortalama Net','Başarı %','Devam %','Ödev Tamamlama %','Aktif Sıfır Hata'];
+  const lines=[header.map(csvValue).join(';'),...data.institutions.map((x:any)=>[x.name,x.code,x.city,x.district,x.unit_name,x.active_students,x.guest_students,x.participant_count,x.avg_net,x.avg_success,x.attendance_rate,x.assignment_completion_rate,x.active_recovery].map(csvValue).join(';'))];
+  await audit(env.DB,user.id,user.institution_id,'NETWORK_REPORT_EXPORTED','institution_network',networkId,{unitId:data.filters.unitId||null,from:data.filters.from||null,to:data.filters.to||null,rowCount:data.institutions.length});
+  return new Response(`\uFEFF${lines.join('\r\n')}`,{headers:{'Content-Type':'text/csv; charset=utf-8','Content-Disposition':`attachment; filename="${String(data.network.code).replace(/[^A-Za-z0-9_-]/g,'_')}-yonetim-raporu.csv"`,'Cache-Control':'no-store'}});
 }
 
 async function listFeatures(env:Env,user:AuthUser):Promise<Response>{
@@ -399,7 +502,11 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/networks'&&request.method==='GET')return listNetworks(env,user);
   if(p==='/api/platform/networks'&&request.method==='POST')return createNetwork(request,env,user);
   m=p.match(/^\/api\/platform\/networks\/([^/]+)\/members$/);if(m&&request.method==='POST')return addNetworkMember(request,env,user,m[1]);
-  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/dashboard$/);if(m&&request.method==='GET')return networkDashboard(env,user,m[1]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/members\/([^/]+)$/);if(m&&(request.method==='PATCH'||request.method==='DELETE'))return updateNetworkMember(request,env,user,m[1],m[2]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/units$/);if(m&&(request.method==='GET'||request.method==='POST'))return networkUnits(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/roles$/);if(m&&(request.method==='GET'||request.method==='POST'))return networkRoles(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/dashboard$/);if(m&&request.method==='GET')return networkDashboard(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/export$/);if(m&&request.method==='GET')return networkExport(request,env,user,m[1]);
 
   if(p==='/api/platform/questions'&&request.method==='GET')return listQuestions(request,env,user);
   if(p==='/api/platform/questions'&&request.method==='POST')return createQuestion(request,env,user);
