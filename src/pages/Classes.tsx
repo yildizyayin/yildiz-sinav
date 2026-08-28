@@ -19,6 +19,7 @@ export function Classes(){
     <div className="action-grid">
       <Link className="quick-card" to="/exams"><div className="quick-icon"><ClipboardCheck/></div><div><h3>Sınavlar</h3><p>Yetkili sınıfların sınavlarını inceleyin.</p></div></Link>
       <Link className="quick-card" to="/attendance"><div className="quick-icon"><UserCheck/></div><div><h3>Yoklama</h3><p>Günlük veya ders bazlı yoklama alın.</p></div></Link>
+      <Link className="quick-card" to="/assignments"><div className="quick-icon"><ClipboardCheck/></div><div><h3>Ödev Ver</h3><p>Kitap, dijital kaynak veya föy ödevi oluşturun.</p></div></Link>
       <Link className="quick-card" to="/outcomes"><div className="quick-icon"><Target/></div><div><h3>Kazanımlar</h3><p>{guidance?'Sınıfın tüm ders kazanımlarını görün.':'Kendi branşınızdaki kazanımları görün.'}</p></div></Link>
       <Link className="quick-card" to="/reports"><div className="quick-icon"><GraduationCap/></div><div><h3>{guidance?'Öğrenci Gelişimi':'Branş Gelişimi'}</h3><p>Birleşik gelişim raporuna geçin.</p></div></Link>
     </div>
