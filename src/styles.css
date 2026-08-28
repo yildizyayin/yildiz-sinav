@@ -217,6 +217,7 @@ input:focus,select:focus{border-color:#7aa7f7;box-shadow:0 0 0 3px #2563eb12}
 .review-grid strong{margin:5px 0}
 .branding-editor{margin:18px 0;background:linear-gradient(135deg,#f8fbff,#fff);border-color:#bfdbfe}
 .institution-logo-preview{width:72px;height:72px;object-fit:contain;border:1px solid var(--line);border-radius:14px;background:#fff;padding:7px}
+.attendance-statuses{display:flex;gap:5px;flex-wrap:wrap}.attendance-statuses button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:750;color:#64748b}.attendance-statuses button.active.present{border-color:#86efac;background:#f0fdf4;color:#15803d}.attendance-statuses button.active.absent{border-color:#fca5a5;background:#fef2f2;color:#b91c1c}.attendance-statuses button.active.late{border-color:#fcd34d;background:#fffbeb;color:#a16207}.attendance-statuses button.active.excused{border-color:#93c5fd;background:#eff6ff;color:#1d4ed8}.attendance-actions{margin-top:16px}.attendance-actions>div{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}.attendance-actions small{display:block;color:var(--muted);margin:8px 0}
 .created-summary{text-align:center;max-width:720px;margin:20px auto}
 .created-summary>svg{color:#0f9f6e}
 .created-summary h2{font-size:26px;margin:10px 0 5px}
