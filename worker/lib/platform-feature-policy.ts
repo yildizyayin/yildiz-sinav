@@ -3,6 +3,7 @@ import { json,one } from './db';
 
 const prefixes:Array<[string,string]>=[
   ['/api/platform/questions','QUESTION_BANK'],
+  ['/api/platform/content-options','QUESTION_BANK'],
   ['/api/platform/learning-','LEARNING_GRAPH'],
   ['/api/platform/recovery','RECOVERY'],
   ['/api/platform/rba','RBA'],
