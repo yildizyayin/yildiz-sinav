@@ -81,8 +81,11 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 ### P4 — Nibiru AI bütünleştirmesi
 
-- [ ] Sesli komut izin, kayıt, yükleme, tanıma, yanıt ve hata durumlarını uçtan uca doğrula.
-- [ ] Desteklenmeyen tarayıcı ve mikrofon reddi için anlaşılır geri dönüş.
+- [x] Sesli komut istemci zinciri: izin → kayıt → yükleme → Türkçe tanıma → komutu otomatik gönderme → yanıt → otomatik seslendirme.
+- [x] Desteklenmeyen tarayıcı, mikrofon reddi, boş/çok kısa kayıt ve kayıt hatası için anlaşılır geri dönüş.
+- [x] Sunucu TTS sağlayıcısı kullanılamazsa tarayıcının Türkçe ses motoruna güvenli geri dönüş.
+- [x] Whisper giriş biçimini güncel Cloudflare Workers AI şemasıyla doğrula; sağlayıcı hatalarını sır açığa çıkarmadan operasyon türüyle logla.
+- [ ] Production adayı yayınlandıktan sonra gerçek mikrofonla Chrome ve mobil tarayıcı kabul testi yap.
 - [ ] Nibiru uzman AI yönlendiricisini tüm rol deneyimlerinde görünür ve bağlamsal yap.
 - [ ] Öğrenme grafiği, Recovery, RBA, rehberlik, koçluk, hedef/motivasyon, kişisel görev, Sıfır Hata ve video köprüsünü tek öğrenci profiline bağla.
 - [ ] Doğru/yanlış/boş sorular için yayınevi çözüm videosu ve konu anlatımı seçeneklerini uygula.
@@ -114,7 +117,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Profil Güvenlik Merkezi; şifre değiştirme, aktif cihazlar, tek oturum ve tüm oturumları kapatma tamamlandı.
-- **Son doğrulama:** Typecheck ve production build başarılı; 44/44 test dosyası, 185/185 test başarılı; 0001–0028 migration zinciri boş SQLite veritabanında başarılı.
+- **Son tamamlanan:** Nibiru bas-konuş artık yalnız metin yazmıyor; komutu otomatik gönderiyor, yanıtı seslendiriyor ve TTS sağlayıcı sorunu halinde tarayıcı Türkçe ses motoruna dönüyor.
+- **Son doğrulama:** Typecheck ve production build başarılı; 44/44 test dosyası, 185/185 test başarılı; Whisper base64 giriş biçimi güncel Cloudflare dokümanıyla eşleştirildi. Gerçek mikrofon production smoke testi yayın sonrasına açık bırakıldı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Nibiru sesli komut uçtan uca teşhis ve düzeltme.
+- **Sıradaki tek iş:** Lisans süre bitişi, yenileme, askıya alma ve erişim sınırlarını tamamla.
