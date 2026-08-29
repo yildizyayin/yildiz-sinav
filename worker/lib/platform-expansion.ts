@@ -22,8 +22,9 @@ function userInstitution(user: AuthUser, requested?: string | null): string | nu
 
 type TeacherContentScope=Array<{subject_id:string;grade_level:number}>;
 async function teacherContentScope(env:Env,user:AuthUser):Promise<TeacherContentScope|null>{
-  if(user.role!=='TEACHER')return null;
-  return all<TeacherContentScope[number]>(env.DB.prepare(`SELECT DISTINCT ta.subject_id,c.grade_level FROM teacher_assignments ta JOIN classes c ON c.id=ta.class_id JOIN institution_seasons se ON se.id=ta.season_id WHERE ta.user_id=? AND ta.institution_id=? AND c.institution_id=ta.institution_id AND se.institution_id=ta.institution_id AND ta.assignment_type='SUBJECT' AND ta.subject_id IS NOT NULL AND ta.active=1 AND c.active=1 AND se.status='ACTIVE'`).bind(user.id,user.institution_id));
+  if(!['TEACHER','GUIDANCE_TEACHER'].includes(user.role))return null;
+  if(user.role==='TEACHER')return all<TeacherContentScope[number]>(env.DB.prepare(`SELECT DISTINCT ta.subject_id,c.grade_level FROM teacher_assignments ta JOIN classes c ON c.id=ta.class_id JOIN institution_seasons se ON se.id=ta.season_id WHERE ta.user_id=? AND ta.institution_id=? AND c.institution_id=ta.institution_id AND se.institution_id=ta.institution_id AND ta.assignment_type='SUBJECT' AND ta.subject_id IS NOT NULL AND ta.active=1 AND c.active=1 AND se.status='ACTIVE'`).bind(user.id,user.institution_id));
+  return all<TeacherContentScope[number]>(env.DB.prepare(`SELECT DISTINCT s.id subject_id,c.grade_level FROM teacher_assignments ta JOIN classes c ON c.id=ta.class_id JOIN institution_seasons se ON se.id=ta.season_id JOIN subjects s ON s.active=1 WHERE ta.user_id=? AND ta.institution_id=? AND c.institution_id=ta.institution_id AND se.institution_id=ta.institution_id AND ta.assignment_type='GUIDANCE' AND ta.active=1 AND c.active=1 AND se.status='ACTIVE'`).bind(user.id,user.institution_id));
 }
 function teacherContentAllowed(scope:TeacherContentScope|null,subjectId:string,gradeLevel:number){return scope===null||scope.some(row=>row.subject_id===subjectId&&Number(row.grade_level)===gradeLevel)}
 
