@@ -445,6 +445,50 @@ async function videos(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'VIDEO_LIBRARY');if(gate)return gate;const u=new URL(request.url);if(request.method==='GET'){const rows=await all<any>(env.DB.prepare(`SELECT v.*,s.name subject_name,n.title node_title FROM learning_videos v LEFT JOIN subjects s ON s.id=v.subject_id LEFT JOIN learning_nodes n ON n.id=v.node_id WHERE v.active=1 AND (v.approved=1 OR ?='SUPER_ADMIN') AND (? IS NULL OR v.grade_level=?) AND (? IS NULL OR v.subject_id=?) ORDER BY v.created_at DESC LIMIT 300`).bind(user.role,u.searchParams.get('gradeLevel'),u.searchParams.get('gradeLevel'),u.searchParams.get('subjectId'),u.searchParams.get('subjectId')));return json({ok:true,videos:rows});}if(user.role!=='SUPER_ADMIN')return forbidden();const b=await requestBody(request);if(!b.url||!b.title)return badRequest('Video URL ve başlık gereklidir.');let parsed:URL;try{parsed=new URL(String(b.url))}catch{return badRequest('Geçerli bir video bağlantısı girin.')}if(parsed.protocol!=='https:')return badRequest('Video bağlantısı HTTPS olmalıdır.');const subject=await one<any>(env.DB.prepare(`SELECT id FROM subjects WHERE id=? AND active=1`).bind(b.subjectId||''));if(!subject)return badRequest('Geçerli bir ders seçin.');const id=uuid('vid');await env.DB.prepare(`INSERT INTO learning_videos(id,provider,external_id,url,title,grade_level,subject_id,node_id,duration_seconds,approved) VALUES(?,?,?,?,?,?,?,?,?,?)`).bind(id,b.provider||'YOUTUBE',b.externalId||null,parsed.toString(),String(b.title).trim(),b.gradeLevel||null,b.subjectId,b.nodeId||null,b.durationSeconds||null,b.approved?1:0).run();return json({ok:true,id},201);
 }
 
+async function questionVideoLinks(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'VIDEO_LIBRARY');if(gate)return gate;if(user.role!=='SUPER_ADMIN')return forbidden();const u=new URL(request.url);
+  if(request.method==='GET'){
+    const [links,questions,outcomes]=await Promise.all([
+      all<any>(env.DB.prepare(`SELECT vl.*,e.title exam_title,q.question_no,q.global_no,s.name subject_name,o.title outcome_title
+        FROM video_links vl LEFT JOIN exam_questions q ON q.id=vl.exam_question_id LEFT JOIN exams e ON e.id=q.exam_id
+        LEFT JOIN subjects s ON s.id=q.subject_id LEFT JOIN outcomes o ON o.id=vl.outcome_id
+        ORDER BY vl.active DESC,vl.created_at DESC LIMIT 500`)),
+      all<any>(env.DB.prepare(`SELECT q.id,q.question_no,q.global_no,e.id exam_id,e.title exam_title,e.exam_date,s.id subject_id,s.name subject_name,
+        group_concat(DISTINCT o.title) outcome_titles
+        FROM exam_questions q JOIN exams e ON e.id=q.exam_id JOIN subjects s ON s.id=q.subject_id
+        LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id LEFT JOIN outcomes o ON o.id=qo.outcome_id
+        GROUP BY q.id,q.question_no,q.global_no,e.id,e.title,e.exam_date,s.id,s.name
+        ORDER BY COALESCE(e.exam_date,e.created_at) DESC,e.title,COALESCE(q.global_no,q.question_no) LIMIT 600`)),
+      all<any>(env.DB.prepare(`SELECT o.id,o.title,o.code,o.grade_level,s.name subject_name FROM outcomes o JOIN subjects s ON s.id=o.subject_id WHERE o.active=1 ORDER BY o.grade_level DESC,s.name,o.code,o.title LIMIT 1200`)),
+    ]);
+    return json({ok:true,links,questions,outcomes,policy:{httpsOnly:true,studentVisibleWhen:'APPROVED_AND_ACTIVE',solutionRequiresQuestion:true}});
+  }
+  const b=await requestBody(request),linkType=String(b.linkType||'').toUpperCase(),provider=String(b.provider||'PUBLISHER').toUpperCase();
+  if(!['SOLUTION','TOPIC'].includes(linkType))return badRequest('Destek türü çözüm veya konu anlatımı olmalıdır.');
+  if(!['ANUNEX','PUBLISHER','EXTERNAL'].includes(provider))return badRequest('Geçerli bir video sağlayıcısı seçin.');
+  if(linkType==='SOLUTION'&&!b.examQuestionId)return badRequest('Video çözümü belirli bir sınav sorusuna bağlanmalıdır.');
+  if(linkType==='TOPIC'&&!b.examQuestionId&&!b.outcomeId)return badRequest('Konu anlatımı bir sınav sorusuna veya kazanıma bağlanmalıdır.');
+  const title=String(b.title||'').trim(),sourceLabel=String(b.sourceLabel||'').trim();if(!title||!sourceLabel)return badRequest('Başlık ve yayınevi/kaynak adı gereklidir.');
+  let parsed:URL;try{parsed=new URL(String(b.url||''))}catch{return badRequest('Geçerli bir video bağlantısı girin.')}if(parsed.protocol!=='https:')return badRequest('Video bağlantısı HTTPS olmalıdır.');
+  if(b.examQuestionId&&!await one(env.DB.prepare(`SELECT 1 ok FROM exam_questions WHERE id=?`).bind(b.examQuestionId)))return badRequest('Seçilen sınav sorusu bulunamadı.');
+  if(b.outcomeId&&!await one(env.DB.prepare(`SELECT 1 ok FROM outcomes WHERE id=? AND active=1`).bind(b.outcomeId)))return badRequest('Seçilen kazanım bulunamadı.');
+  const approved=b.approved===true,id=uuid('vln'),duration=b.durationSeconds==null||b.durationSeconds===''?null:Math.max(1,Math.min(14400,Math.round(Number(b.durationSeconds))));
+  await env.DB.prepare(`INSERT INTO video_links(id,exam_question_id,outcome_id,link_type,url,approved,title,provider,source_label,duration_seconds,safety_review_status,active,created_by,approved_by,approved_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,1,?,?,?)`)
+    .bind(id,b.examQuestionId||null,b.outcomeId||null,linkType,parsed.toString(),approved?1:0,title,provider,sourceLabel,duration,approved?'APPROVED':'PENDING',user.id,approved?user.id:null,approved?new Date().toISOString():null).run();
+  await audit(env.DB,user.id,null,approved?'QUESTION_VIDEO_APPROVED':'QUESTION_VIDEO_CREATED','video_link',id,{linkType,provider,examQuestionId:b.examQuestionId||null,outcomeId:b.outcomeId||null,sourceLabel});
+  return json({ok:true,id,approved},201);
+}
+
+async function updateQuestionVideoLink(request:Request,env:Env,user:AuthUser,id:string):Promise<Response>{
+  const gate=await requireFeature(env,user,'VIDEO_LIBRARY');if(gate)return gate;if(user.role!=='SUPER_ADMIN')return forbidden();const b=await requestBody(request),action=String(b.action||'').toUpperCase();
+  const row=await one<any>(env.DB.prepare(`SELECT id,active FROM video_links WHERE id=?`).bind(id));if(!row)return notFound('Video desteği bulunamadı.');
+  if(action==='APPROVE')await env.DB.prepare(`UPDATE video_links SET approved=1,safety_review_status='APPROVED',active=1,approved_by=?,approved_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(user.id,id).run();
+  else if(action==='REVOKE')await env.DB.prepare(`UPDATE video_links SET approved=0,safety_review_status='REJECTED',approved_by=NULL,approved_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run();
+  else if(action==='ARCHIVE')await env.DB.prepare(`UPDATE video_links SET approved=0,active=0,approved_by=NULL,approved_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run();
+  else return badRequest('İşlem APPROVE, REVOKE veya ARCHIVE olmalıdır.');
+  await audit(env.DB,user.id,null,`QUESTION_VIDEO_${action}`,'video_link',id,{});return json({ok:true,id,action});
+}
+
 export function gameXpForScore(scoreValue:unknown){const score=Math.max(0,Math.min(100,Math.round(Number(scoreValue)||0)));return{score,xp:10+Math.round(score/20)*5}}
 
 async function games(request:Request,env:Env,user:AuthUser):Promise<Response>{
@@ -524,6 +568,8 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/studio'&&(request.method==='GET'||request.method==='POST'))return studio(request,env,user);
   if(p==='/api/platform/physical'&&(request.method==='GET'||request.method==='POST'))return physicalBridge(request,env,user);
   if(p==='/api/platform/videos'&&(request.method==='GET'||request.method==='POST'))return videos(request,env,user);
+  if(p==='/api/platform/question-video-links'&&(request.method==='GET'||request.method==='POST'))return questionVideoLinks(request,env,user);
+  m=p.match(/^\/api\/platform\/question-video-links\/([^/]+)$/);if(m&&request.method==='PATCH')return updateQuestionVideoLink(request,env,user,m[1]);
   if(p==='/api/platform/games'&&(request.method==='GET'||request.method==='POST'))return games(request,env,user);
   if(p.startsWith('/api/platform/publishers'))return publishersApi(request,env,user);
   if(p==='/api/platform/admissions'&&(request.method==='GET'||request.method==='POST'))return admissions(request,env,user);

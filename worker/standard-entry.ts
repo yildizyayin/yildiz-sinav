@@ -162,11 +162,11 @@ async function questionSupport(env:Env,user:AuthUser,url:URL){
   const questionId=url.searchParams.get('examQuestionId');if(!questionId)return fail(400,'QUESTION_REQUIRED','Soru seçilmelidir.');
   const row=await one<any>(env.DB.prepare(`SELECT q.id question_id,q.question_no,q.global_no,sa.status answer_status,s.id subject_id,s.name subject_name,o.id outcome_id,o.title outcome_title,o.topic,o.subtopic,
     (SELECT e2.grade_level FROM student_enrollments e2 WHERE e2.student_id=ep.student_id ORDER BY CASE e2.status WHEN 'ACTIVE' THEN 0 WHEN 'GRADUATED' THEN 1 ELSE 2 END,e2.created_at DESC LIMIT 1) grade_level,
-    (SELECT vl.url FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND vl.approved=1 LIMIT 1) solution_url,
-    (SELECT vl.title FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND vl.approved=1 LIMIT 1) solution_title,
-    (SELECT vl.url FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND vl.approved=1 LIMIT 1) topic_url,
-    (SELECT vl.title FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND vl.approved=1 LIMIT 1) topic_title
-    FROM student_answers sa JOIN exam_participants ep ON ep.id=sa.participant_id JOIN exam_questions q ON q.id=sa.exam_question_id JOIN subjects s ON s.id=q.subject_id LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id LEFT JOIN outcomes o ON o.id=qo.outcome_id WHERE ep.student_id=? AND q.id=? LIMIT 1`).bind(user.student_id,questionId));
+    (SELECT vl.url FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND vl.approved=1 AND vl.active=1 AND vl.safety_review_status='APPROVED' LIMIT 1) solution_url,
+    (SELECT vl.title FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND vl.approved=1 AND vl.active=1 AND vl.safety_review_status='APPROVED' LIMIT 1) solution_title,
+    (SELECT vl.url FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND vl.approved=1 AND vl.active=1 AND vl.safety_review_status='APPROVED' LIMIT 1) topic_url,
+    (SELECT vl.title FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND vl.approved=1 AND vl.active=1 AND vl.safety_review_status='APPROVED' LIMIT 1) topic_title
+    FROM student_answers sa JOIN exam_participants ep ON ep.id=sa.participant_id JOIN exam_delivery_profiles dp ON dp.exam_id=ep.exam_id AND dp.result_freeze_status='PUBLISHED' AND dp.snapshot_version>0 JOIN exam_questions q ON q.id=sa.exam_question_id JOIN subjects s ON s.id=q.subject_id LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id LEFT JOIN outcomes o ON o.id=qo.outcome_id WHERE ep.student_id=? AND q.id=? LIMIT 1`).bind(user.student_id,questionId));
   if(!row)return fail(404,'QUESTION_NOT_FOUND','Bu soru öğrenci sonuçlarında bulunamadı.');
   let topicVideo=row.topic_url?{url:row.topic_url,title:row.topic_title||'Konu Anlatımı',source:'REGISTERED'}:null;let selection:any=null;
   if(!topicVideo){selection=await youtubeMicroVideo(env,row);if(selection.video)topicVideo={...selection.video,source:'YOUTUBE_AI'};}

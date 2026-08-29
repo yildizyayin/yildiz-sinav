@@ -89,7 +89,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [ ] Production adayı yayınlandıktan sonra gerçek mikrofonla Chrome ve mobil tarayıcı kabul testi yap.
 - [x] Nibiru uzman AI yönlendiricisini tüm rol deneyimlerinde görünür ve bağlamsal yap: her sayfada açılır Nibiru, sayfaya özel öneriler, uzman etiketi, tam ekran/sesli geçiş ve yetkiyi genişletmeyen güvenli sayfa bağlamı.
 - [x] Öğrenme grafiği, Recovery, RBA, rehberlik, koçluk, hedef/motivasyon, kişisel görev, Sıfır Hata ve video köprüsünü tek öğrenci profiline bağla.
-- [ ] Doğru/yanlış/boş sorular için yayınevi çözüm videosu ve konu anlatımı seçeneklerini uygula.
+- [x] Doğru/yanlış/boş sorular için yayınevi çözüm videosu ve konu anlatımı seçeneklerini uygula.
 - [ ] YouTube aday seçiminde güvenlik, yaş uygunluğu, kazanım eşleşmesi ve kısa video politikalarını doğrula.
 - [ ] WhatsApp Nibiru kanalını Meta production bilgileri geldiğinde aktive et.
 
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Birleşik öğrenci zekâ profili; Öğrenme Grafiği, Recovery, rehber öğretmen onaylı gelişim sinyalleri, Nibiru eğitim koçu, resmî hedef/motivasyon, kişisel görev, Sıfır Hata, kişisel kitap ve yalnız onaylı video kanıtları tek sürümlü profilde birleştirildi. Öğrenci ekranı bu profile geçirildi; doğrudan RBA öz-bildirimi kaldırıldı, branş öğretmeni kapsamı yalnız atanmış derslerin öğrenme kanıtlarıyla sınırlandı ve aynı doğrulanmış özet Nibiru bağlamına bağlandı.
-- **Son doğrulama:** Typecheck, production build ve production bağımlılık güvenlik taraması başarılı; 59/59 test dosyası, 249/249 test başarılı, 40 migration zinciri sıfırdan doğrulandı ve production bağımlılıklarında bilinen açık bulunmadı.
+- **Son tamamlanan:** Soru bazlı video destek merkezi; Süper Admin belirli sınav sorusuna yayınevi video çözümü, soruya veya kazanıma konu anlatımı bağlayabilir. HTTPS, kaynak, sağlayıcı, süre ve güvenlik onayı kaydedilir; onay kaldırma/arşivleme ve denetim izi bulunur. Öğrenci yalnız yayınlanmış sonuçlarda aktif ve güvenlik onaylı desteği görür; yayın öncesi cevap anahtarı ve video erişimi kapatıldı.
+- **Son doğrulama:** Typecheck, production build ve production bağımlılık güvenlik taraması başarılı; 60/60 test dosyası, 255/255 test başarılı, 41 migration zinciri sıfırdan doğrulandı ve production bağımlılıklarında bilinen açık bulunmadı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Doğru, yanlış ve boş sorular için yayınevi çözüm videosu ile konu anlatımı seçeneklerini soru kanıtına bağla; erişim ve onay kurallarını doğrula.
+- **Sıradaki tek iş:** YouTube kısa konu anlatımı adaylarında güvenlik, yaş uygunluğu, kazanım eşleşmesi, kanal/başlık politikası ve insan onayı sınırlarını tamamla.
