@@ -24,12 +24,15 @@ export async function loadPermissionScope(db: D1Database, user: AuthUser, season
     subjectClassAssignments: [],
   };
   if ((user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER') && user.institution_id) {
-    const params: unknown[] = [user.id];
-    let sql = `SELECT class_id, subject_id, assignment_type FROM teacher_assignments WHERE user_id = ? AND active = 1`;
+    const params: unknown[] = [user.id,user.institution_id,user.institution_id,user.institution_id];
+    let sql = `SELECT ta.class_id,ta.subject_id,ta.assignment_type FROM teacher_assignments ta
+      JOIN classes c ON c.id=ta.class_id AND c.institution_id=ta.institution_id AND c.active=1
+      JOIN institution_seasons se ON se.id=ta.season_id AND se.institution_id=ta.institution_id
+      WHERE ta.user_id=? AND ta.institution_id=? AND c.institution_id=? AND se.institution_id=? AND ta.active=1`;
     if (seasonId) {
-      sql += ' AND season_id = ?';
+      sql += ' AND ta.season_id=?';
       params.push(seasonId);
-    }
+    } else sql += ` AND se.status='ACTIVE'`;
     const rows = await all<{ class_id: string | null; subject_id: string | null; assignment_type: 'SUBJECT' | 'GUIDANCE' }>(db.prepare(sql).bind(...params));
     for (const row of rows) {
       if (row.assignment_type === 'SUBJECT' && row.class_id && row.subject_id) {
