@@ -1,4 +1,4 @@
-import app from './standard-entry';
+import app from './student-home-scope-entry';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,json } from './lib/db';

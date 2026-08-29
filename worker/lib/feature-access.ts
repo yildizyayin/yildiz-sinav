@@ -4,12 +4,16 @@ import {json,one} from './db';
 const API_FEATURES:Array<[RegExp,string]>=[
   [/^\/api\/(?:exams|exam-admin|exam-definitions|answer-key|scan-batches|platform\/exam-center)(?:\/|$)/,'EXAM_CENTER'],
   [/^\/api\/(?:optical|opticals|optical-admin|optical-prepare|optical-definitions|optical-definition-versions|printer-profiles|calibrations|camera|v2\/optical-print-base)(?:\/|$)/,'OPTICAL'],
-  [/^\/api\/(?:reporting|teacher\/insights)(?:\/|$)/,'REPORTING'],
+  [/^\/api\/(?:reporting|teacher\/insights|my-results|my-outcomes)(?:\/|$)/,'REPORTING'],
   [/^\/api\/(?:worksheets|worksheet-admin|worksheet-calendar)(?:\/|$)/,'WORKSHEETS'],
   [/^\/api\/assignment-center(?:\/|$)/,'ASSIGNMENTS'],
   [/^\/api\/attendance(?:\/|$)/,'ATTENDANCE'],
   [/^\/api\/(?:question-bank-standard|platform\/questions|platform\/question-options|platform\/content-options|platform\/studio)(?:\/|$)/,'QUESTION_BANK'],
   [/^\/api\/nibiru\/guidance\/(?:instruments|assessments|development-profile)(?:\/|$)/,'GUIDANCE_TESTS'],
+  [/^\/api\/student-intelligence(?:\/|$)/,'LEARNING_GRAPH'],
+  [/^\/api\/student-standard\/games(?:\/|$)/,'GAMES'],
+  [/^\/api\/student-books\/personal(?:\/|$)/,'PERSONAL_BOOKS'],
+  [/^\/api\/(?:student-books\/zero-error|wrong-answers)(?:\/|$)/,'ZERO_ERROR_BOOKLET'],
   [/^\/api\/platform\/networks(?:\/|$)/,'ENTERPRISE'],
 ];
 
