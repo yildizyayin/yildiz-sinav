@@ -489,6 +489,27 @@ async function updateQuestionVideoLink(request:Request,env:Env,user:AuthUser,id:
   await audit(env.DB,user.id,null,`QUESTION_VIDEO_${action}`,'video_link',id,{});return json({ok:true,id,action});
 }
 
+async function youtubeVideoCandidates(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'VIDEO_LIBRARY');if(gate)return gate;if(user.role!=='SUPER_ADMIN')return forbidden();
+  const rows=await all<any>(env.DB.prepare(`SELECT c.*,e.title exam_title,q.question_no,q.global_no,s.name subject_name,o.title outcome_title
+    FROM youtube_micro_video_candidates c JOIN exam_questions q ON q.id=c.exam_question_id JOIN exams e ON e.id=q.exam_id
+    LEFT JOIN subjects s ON s.id=c.subject_id LEFT JOIN outcomes o ON o.id=c.outcome_id
+    WHERE c.active=1 ORDER BY c.human_review_status='PENDING' DESC,c.ai_selected DESC,c.fetched_at DESC LIMIT 500`));
+  return json({ok:true,candidates:rows,policy:{aiCanRank:true,aiCanApprove:false,humanApprovalRequired:true,studentVisibleWhen:'POLICY_PASSED_AND_HUMAN_APPROVED'}});
+}
+
+async function updateYoutubeVideoCandidate(request:Request,env:Env,user:AuthUser,id:string):Promise<Response>{
+  const gate=await requireFeature(env,user,'VIDEO_LIBRARY');if(gate)return gate;if(user.role!=='SUPER_ADMIN')return forbidden();const b=await requestBody(request),action=String(b.action||'').toUpperCase();
+  const row=await one<any>(env.DB.prepare(`SELECT id,exam_question_id,policy_status,active FROM youtube_micro_video_candidates WHERE id=?`).bind(id));if(!row)return notFound('YouTube adayı bulunamadı.');
+  if(action==='APPROVE'){
+    if(row.policy_status!=='PASSED'||Number(row.active)!==1)return badRequest('Otomatik güvenlik politikasını geçmeyen aday onaylanamaz.');
+    await env.DB.batch([env.DB.prepare(`UPDATE youtube_micro_video_candidates SET human_review_status='REJECTED',reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,review_note='Başka aday onaylandı',updated_at=CURRENT_TIMESTAMP WHERE exam_question_id=? AND id<>? AND human_review_status='APPROVED'`).bind(user.id,row.exam_question_id,id),env.DB.prepare(`UPDATE youtube_micro_video_candidates SET human_review_status='APPROVED',reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,review_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(user.id,String(b.note||'').trim()||null,id)]);
+  }else if(action==='REJECT')await env.DB.prepare(`UPDATE youtube_micro_video_candidates SET human_review_status='REJECTED',reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,review_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(user.id,String(b.note||'').trim()||null,id).run();
+  else if(action==='ARCHIVE')await env.DB.prepare(`UPDATE youtube_micro_video_candidates SET active=0,human_review_status='REJECTED',reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,review_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(user.id,String(b.note||'').trim()||null,id).run();
+  else return badRequest('İşlem APPROVE, REJECT veya ARCHIVE olmalıdır.');
+  await audit(env.DB,user.id,null,`YOUTUBE_CANDIDATE_${action}`,'youtube_micro_video_candidate',id,{examQuestionId:row.exam_question_id,note:String(b.note||'').trim()||null});return json({ok:true,id,action});
+}
+
 export function gameXpForScore(scoreValue:unknown){const score=Math.max(0,Math.min(100,Math.round(Number(scoreValue)||0)));return{score,xp:10+Math.round(score/20)*5}}
 
 async function games(request:Request,env:Env,user:AuthUser):Promise<Response>{
@@ -570,6 +591,8 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/videos'&&(request.method==='GET'||request.method==='POST'))return videos(request,env,user);
   if(p==='/api/platform/question-video-links'&&(request.method==='GET'||request.method==='POST'))return questionVideoLinks(request,env,user);
   m=p.match(/^\/api\/platform\/question-video-links\/([^/]+)$/);if(m&&request.method==='PATCH')return updateQuestionVideoLink(request,env,user,m[1]);
+  if(p==='/api/platform/youtube-video-candidates'&&request.method==='GET')return youtubeVideoCandidates(request,env,user);
+  m=p.match(/^\/api\/platform\/youtube-video-candidates\/([^/]+)$/);if(m&&request.method==='PATCH')return updateYoutubeVideoCandidate(request,env,user,m[1]);
   if(p==='/api/platform/games'&&(request.method==='GET'||request.method==='POST'))return games(request,env,user);
   if(p.startsWith('/api/platform/publishers'))return publishersApi(request,env,user);
   if(p==='/api/platform/admissions'&&(request.method==='GET'||request.method==='POST'))return admissions(request,env,user);

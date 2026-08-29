@@ -90,7 +90,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Nibiru uzman AI yönlendiricisini tüm rol deneyimlerinde görünür ve bağlamsal yap: her sayfada açılır Nibiru, sayfaya özel öneriler, uzman etiketi, tam ekran/sesli geçiş ve yetkiyi genişletmeyen güvenli sayfa bağlamı.
 - [x] Öğrenme grafiği, Recovery, RBA, rehberlik, koçluk, hedef/motivasyon, kişisel görev, Sıfır Hata ve video köprüsünü tek öğrenci profiline bağla.
 - [x] Doğru/yanlış/boş sorular için yayınevi çözüm videosu ve konu anlatımı seçeneklerini uygula.
-- [ ] YouTube aday seçiminde güvenlik, yaş uygunluğu, kazanım eşleşmesi ve kısa video politikalarını doğrula.
+- [x] YouTube aday seçiminde güvenlik, yaş uygunluğu, kazanım eşleşmesi ve kısa video politikalarını doğrula.
 - [ ] WhatsApp Nibiru kanalını Meta production bilgileri geldiğinde aktive et.
 
 ### P5 — Rol bazlı kabul ve production kapanışı
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Soru bazlı video destek merkezi; Süper Admin belirli sınav sorusuna yayınevi video çözümü, soruya veya kazanıma konu anlatımı bağlayabilir. HTTPS, kaynak, sağlayıcı, süre ve güvenlik onayı kaydedilir; onay kaldırma/arşivleme ve denetim izi bulunur. Öğrenci yalnız yayınlanmış sonuçlarda aktif ve güvenlik onaylı desteği görür; yayın öncesi cevap anahtarı ve video erişimi kapatıldı.
-- **Son doğrulama:** Typecheck, production build ve production bağımlılık güvenlik taraması başarılı; 60/60 test dosyası, 255/255 test başarılı, 41 migration zinciri sıfırdan doğrulandı ve production bağımlılıklarında bilinen açık bulunmadı.
+- **Son tamamlanan:** YouTube kısa konu anlatımı yönetişimi; strict/embeddable/short arama, 45–180 saniye sınırı, sonuçla kazanım eşleşmesi, herkese açık ve yaş kısıtsız video şartı, sakıncalı başlık filtresi ve yenilemede insan kararını koruyan aday kaydı tamamlandı. AI yalnız aday sıralar; öğrenciye görünürlük ancak otomatik politikayı geçen adaya Süper Admin insan onayı verildiğinde açılır. Onay/red/arşiv kararları denetlenir.
+- **Son doğrulama:** Typecheck, production build ve production bağımlılık güvenlik taraması başarılı; 61/61 test dosyası, 262/262 test başarılı, 42 migration zinciri sıfırdan doğrulandı ve production bağımlılıklarında bilinen açık bulunmadı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** YouTube kısa konu anlatımı adaylarında güvenlik, yaş uygunluğu, kazanım eşleşmesi, kanal/başlık politikası ve insan onayı sınırlarını tamamla.
+- **Sıradaki tek iş:** P5 rol bazlı kabul turunu Süper Admin ile başlat; görünürlük, yetki, tenant izolasyonu, boş/hata durumları, mobil kullanım, pratiklik, dışa aktarım ve denetim kaydını modül modül doğrula.
