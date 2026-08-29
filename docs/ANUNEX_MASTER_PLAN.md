@@ -87,7 +87,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Sunucu TTS sağlayıcısı kullanılamazsa tarayıcının Türkçe ses motoruna güvenli geri dönüş.
 - [x] Whisper giriş biçimini güncel Cloudflare Workers AI şemasıyla doğrula; sağlayıcı hatalarını sır açığa çıkarmadan operasyon türüyle logla.
 - [ ] Production adayı yayınlandıktan sonra gerçek mikrofonla Chrome ve mobil tarayıcı kabul testi yap.
-- [ ] Nibiru uzman AI yönlendiricisini tüm rol deneyimlerinde görünür ve bağlamsal yap.
+- [x] Nibiru uzman AI yönlendiricisini tüm rol deneyimlerinde görünür ve bağlamsal yap: her sayfada açılır Nibiru, sayfaya özel öneriler, uzman etiketi, tam ekran/sesli geçiş ve yetkiyi genişletmeyen güvenli sayfa bağlamı.
 - [ ] Öğrenme grafiği, Recovery, RBA, rehberlik, koçluk, hedef/motivasyon, kişisel görev, Sıfır Hata ve video köprüsünü tek öğrenci profiline bağla.
 - [ ] Doğru/yanlış/boş sorular için yayınevi çözüm videosu ve konu anlatımı seçeneklerini uygula.
 - [ ] YouTube aday seçiminde güvenlik, yaş uygunluğu, kazanım eşleşmesi ve kısa video politikalarını doğrula.
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Resmî Hedef Dosya Merkezi; MEB/e-Okul/ÖSYM/YÖK Atlas CSV-TXT yükleme, Türkçe başlıklar için otomatik ve manuel kolon eşleme, zorunlu/sayısal/yinelenen kod doğrulaması, R2 dosya saklama ve SHA-256 izi, satır önizlemesi, açık insan onaylı commit, kaynak/provenance/denetim kaydı, güncellenen kayıtların önceki hâlini saklama ve güvenli geri alma tamamlandı. Onaydan önce öğrenci hedef tablolarına veri yazılmaz.
-- **Son doğrulama:** Typecheck, production build, production bağımlılık güvenlik taraması ve 39 migration'ın sıfırdan yerel D1 uygulaması başarılı; 58/58 test dosyası, 241/241 test başarılı ve production bağımlılıklarında bilinen açık bulunmadı.
+- **Son tamamlanan:** Sayfa bağlamlı Nibiru uzman yönlendiricisi; Süper Admin, kurum yöneticisi, branş öğretmeni, rehber öğretmeni, öğrenci ve veli rollerinde her sayfadan açılan ortak Nibiru paneli, sayfa görevine özel hızlı sorular, aktif uzman görünürlüğü, tam ekran/sesli geçiş ve güvenli sunucu tarafı bağlam normalizasyonu tamamlandı. Sayfa bağlamı akademik kanıt sayılmaz, tenant/rol yetkisini genişletmez ve RBA için gerçek rehber öğretmen onayı kuralını bastıramaz.
+- **Son doğrulama:** Typecheck, production build ve production bağımlılık güvenlik taraması başarılı; 59/59 test dosyası, 246/246 test başarılı, 39 migration zinciri son dilimde sıfırdan doğrulandı ve production bağımlılıklarında bilinen açık bulunmadı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Nibiru uzman AI yönlendiricisini Süper Admin, kurum yöneticisi, öğretmen, rehber öğretmen, öğrenci ve veli deneyimlerinde görünür ve sayfa bağlamına duyarlı hâle getir.
+- **Sıradaki tek iş:** Öğrenme grafiği, Recovery, RBA/rehberlik, eğitim koçu, hedef/motivasyon, kişisel görev, Sıfır Hata ve video köprüsünü tek öğrenci zekâ profiline bağla; görünür kanıt kaynaklarını ve yetki kapsamını doğrula.
