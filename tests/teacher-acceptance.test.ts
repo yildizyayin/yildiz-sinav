@@ -22,13 +22,13 @@ describe('P5 Branş Öğretmeni acceptance',()=>{
     expect(worker).toContain("(q.subject_id=? AND q.grade_level=?)");
     expect(worker).toContain('teacherContentAllowed(await teacherContentScope(env,user),String(b.subjectId),grade)');
     expect(worker).toContain('subjectGrades:scope||null');
-    expect(page).toContain("user?.role==='TEACHER'?");
+    expect(page).toContain("const scopedEducator=user?.role==='TEACHER'||user?.role==='GUIDANCE_TEACHER'");
     expect(page).toContain('subjectGrades.filter(row=>row.subject_id===subjectId)');
   });
 
   it('protects teacher edits, statistics and Studio documents with the same scope',()=>{
     const governance=read('worker/question-bank-standard-entry.ts'),worker=read('worker/lib/platform-expansion.ts');
-    expect(governance).toContain('teacherCanAccessQuestion');
+    expect(governance).toContain('educatorCanAccessQuestion');
     expect(governance).toContain('ta.subject_id=q.subject_id AND c.grade_level=q.grade_level');
     expect(governance).toContain("'QUESTION_UPDATED'");
     expect(governance).toContain("'QUESTION_REVIEWED'");
