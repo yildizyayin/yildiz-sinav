@@ -24,7 +24,7 @@ function extractUserMessage(messages:Array<{role:string;content:string}>){
 }
 
 export function withNibiruAiRouter(env:Env):Env{
-  if(!env.AI||env.NIBIRU_ROUTER_MODE==='LEGACY')return env;
+  if(!env.AI)return env;
   const originalAi=env.AI as any;
   const routedAi=new Proxy(originalAi,{
     get(target,prop,receiver){
@@ -35,9 +35,12 @@ export function withNibiruAiRouter(env:Env):Env{
       return async (requestedModel:any,input:any,options?:any)=>{
         const messages=messagesFromInput(input);
         if(!isNibiruPrompt(messages))return originalAi.run(requestedModel,input,options);
+        const minimized=minimizeNibiruAiMessages(messages);
+        if(env.NIBIRU_ROUTER_MODE==='LEGACY'){
+          return originalAi.run(requestedModel,{...input,messages:minimized.messages},options);
+        }
         const role=extractRole(messages),message=extractUserMessage(messages),intent=detectNibiruIntent(message),specialist=routeNibiruSpecialist({role},message);
         const decision=chooseNibiruModelDecision(env,{role},intent,message,specialist);
-        const minimized=minimizeNibiruAiMessages(messages);
         const result=await runNibiruInference(env,decision,minimized.messages,{
           role,
           intent,
