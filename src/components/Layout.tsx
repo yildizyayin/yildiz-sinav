@@ -5,6 +5,7 @@ import { useAuth, type Role } from '../auth';
 import { api } from '../api';
 import { LicenseBoundary } from './LicenseBoundary';
 import { NibiruMark,NibiruNavIcon } from './NibiruMark';
+import { NibiruContextDock } from './NibiruContextDock';
 
 type NavItem={to:string;label:string;icon:any;feature?:string};
 const nav: Record<Role, NavItem[]> = {
@@ -93,6 +94,7 @@ export function Layout() {
       <header className="topbar"><div><span className="eyebrow">2026–2027</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Anunex Platform Yönetimi':'')}</strong></div><div className="topbar-actions"><div className="status neutral"><NibiruMark size={18} state="active" title="Nibiru AI Akademik Zekâ"/> Nibiru AI</div><button className="topbar-logout" onClick={signOut} disabled={logoutBusy} title="Bu cihazdaki oturumu güvenli biçimde sonlandır"><LogOut size={17}/><span>{logoutBusy?'Kapatılıyor…':'Çıkış'}</span></button></div></header>
       <div className="page-wrap"><LicenseBoundary><Outlet/></LicenseBoundary></div>
     </main>
+    <NibiruContextDock/>
   </div>;
 }
 
