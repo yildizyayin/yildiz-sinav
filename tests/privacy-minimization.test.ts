@@ -18,13 +18,16 @@ describe('KVKK data minimization', () => {
       content: 'KULLANICI MESAJI: Ali nasıl?\nDOĞRULANMIŞ VERİ BAĞLAMI: {"student":{"id":"stu_123","first_name":"Ali","last_name":"Yılmaz","student_number":"4567","email":"ali@example.com","student_id":"stu_123"},"latestExam":{"net":12.5}}',
     }];
     const result = minimizeNibiruAiMessages(input);
+    const firstMessage = result.messages[0];
+    expect(firstMessage).toBeDefined();
+    if (!firstMessage) throw new Error('Expected a minimized Nibiru message.');
     expect(result.redactions).toBeGreaterThan(0);
-    expect(result.messages[0].content).not.toContain('Ali');
-    expect(result.messages[0].content).not.toContain('Yılmaz');
-    expect(result.messages[0].content).not.toContain('4567');
-    expect(result.messages[0].content).not.toContain('ali@example.com');
-    expect(result.messages[0].content).not.toContain('stu_123');
-    expect(result.messages[0].content).toContain('12.5');
+    expect(firstMessage.content).not.toContain('Ali');
+    expect(firstMessage.content).not.toContain('Yılmaz');
+    expect(firstMessage.content).not.toContain('4567');
+    expect(firstMessage.content).not.toContain('ali@example.com');
+    expect(firstMessage.content).not.toContain('stu_123');
+    expect(firstMessage.content).toContain('12.5');
   });
 
   it('actually passes minimized messages into the multi-provider Nibiru inference call', () => {
