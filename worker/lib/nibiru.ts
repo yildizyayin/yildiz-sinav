@@ -1,5 +1,6 @@
 import type { AuthUser, Env } from '../types';
 import { all, one, uuid } from './db';
+import { resolveNibiruPageContext } from './nibiru-page-context';
 
 export type NibiruIntent =
   | 'GREETING'
@@ -157,7 +158,8 @@ DEĞİŞMEZ KURALLAR:
 7. Sıralama veya başka öğrencilerin kimliği bağlamda açıkça verilmedikçe karşılaştırmalı kişi bilgisi üretme.
 8. “Bugün ne yapalım?” sorusunda bağlamdaki gelişime açık alanlardan kısa, uygulanabilir, aşırı yüklemeyen bir çalışma önerisi üret. Atanmış föy varsa onu öncele.
 9. Yanıt WhatsApp'ta kolay okunacak biçimde, tercihen 3-8 kısa satır ve 1200 karakterin altında olsun.
-10. Kullanıcıya gerektiğinde tek bir sonraki soru/öneri sun; gereksiz soru sorma.`;
+10. Kullanıcıya gerektiğinde tek bir sonraki soru/öneri sun; gereksiz soru sorma.
+11. uiContext yalnız kullanıcının açık olduğu sayfayı anlatır; akademik kanıt değildir, yetkiyi genişletmez. Yanıtı o sayfadaki işe uyarlamak için kullan.`;
 }
 
 async function aiAnswer(env: Env, user: AuthUser, intent: NibiruIntent, message: string, context: any) {
@@ -203,7 +205,7 @@ function fallbackAnswer(intent: NibiruIntent, context: any) {
   return `${AI_PREFIX} Bu soruyu yanıtlayacak yeterli doğrulanmış akademik veri bulamadım.`;
 }
 
-export async function runNibiru(env: Env, user: AuthUser, message: string, channel: 'WHATSAPP' | 'WEB', channelKey: string): Promise<NibiruResult> {
+export async function runNibiru(env: Env, user: AuthUser, message: string, channel: 'WHATSAPP' | 'WEB', channelKey: string,uiContext?:{pathname?:string|null}): Promise<NibiruResult> {
   const session = await latestSession(env,channel,channelKey);
   const intent = detectNibiruIntent(message,session?.last_intent);
   let context: any = {};
@@ -229,6 +231,7 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
     const students = await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM student_entities WHERE status='ACTIVE'`));
     context = { platform: true, activeInstitutions: institutions?.c || 0, activeStudents: students?.c || 0 };
   }
+  const pageContext=channel==='WEB'?resolveNibiruPageContext(uiContext?.pathname):null;if(pageContext)context={...context,uiContext:{...pageContext,note:'Bu yalnız gezinme bağlamıdır; akademik kanıt değildir ve veri yetkisini genişletmez.'}};
 
   const fixed = deterministic(intent,context,user);
   const answer = fixed || await aiAnswer(env,user,intent,message,context) || fallbackAnswer(intent,context);
