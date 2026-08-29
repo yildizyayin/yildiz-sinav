@@ -249,7 +249,7 @@ export async function importOfficialTargets(request: Request, env: Env, user: Au
 
 async function teacherClassIds(env: Env, user: AuthUser) {
   if(user.role!=='TEACHER'&&user.role!=='GUIDANCE_TEACHER')return [] as string[];
-  return (await all<{class_id:string}>(env.DB.prepare(`SELECT DISTINCT class_id FROM teacher_assignments WHERE user_id=? AND active=1 AND class_id IS NOT NULL`).bind(user.id))).map(x=>x.class_id);
+  return (await all<{class_id:string}>(env.DB.prepare(`SELECT DISTINCT ta.class_id FROM teacher_assignments ta JOIN classes c ON c.id=ta.class_id AND c.institution_id=ta.institution_id JOIN institution_seasons se ON se.id=ta.season_id AND se.institution_id=ta.institution_id WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND c.active=1 AND se.status='ACTIVE' AND ta.class_id IS NOT NULL`).bind(user.id,user.institution_id))).map(x=>x.class_id);
 }
 
 async function resolveAnnouncementRecipients(env: Env, user: AuthUser, audienceType: string, audience: any) {
