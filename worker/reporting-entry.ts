@@ -1,7 +1,7 @@
 import answerApp from './answer-correctness-entry';
 import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
-import { all, forbidden, json, notFound, one } from './lib/db';
+import { all, audit, badRequest, forbidden, json, notFound, one } from './lib/db';
 import { loadPermissionScope } from './lib/permissions';
 import { masteryStatus } from './lib/outcome';
 
@@ -90,4 +90,16 @@ async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Pr
   return json({ok:true,student:access.student,restrictedToSubjects:access.restricted,availableExams:allExams.map(e=>access.restricted?{exam_id:e.exam_id,title:e.title,exam_date:e.exam_date,exam_type:e.exam_type}:e),selectedExamIds:selectedIds,exams:examsForClient,summary,subjectTrend,subjectSummary,outcomes,developing:outcomes.filter(o=>o.mastery_status==='DEVELOPING').sort((a,b)=>a.success_rate-b.success_rate),strong:outcomes.filter(o=>o.mastery_status==='STRONG').sort((a,b)=>b.success_rate-a.success_rate)});
 }
 
-export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
+async function recordReportExport(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const body=await request.json().catch(()=>({})) as {studentId?:string;format?:string;examIds?:string[]};
+  const studentId=String(body.studentId||'').trim(),format=String(body.format||'').trim().toUpperCase();
+  if(!studentId)return badRequest('Dışa aktarılacak öğrenci seçilmelidir.','STUDENT_REQUIRED');
+  if(!['CSV','PRINT_PDF'].includes(format))return badRequest('Dışa aktarım biçimi CSV veya PRINT_PDF olmalıdır.','EXPORT_FORMAT_INVALID');
+  const access=await studentAccess(env,user,studentId);
+  if(!access.allowed||!access.student)return forbidden('Bu öğrenci raporunu dışa aktarma yetkiniz bulunmuyor.');
+  const examIds=Array.isArray(body.examIds)?[...new Set(body.examIds.map(String).filter(Boolean))].slice(0,100):[];
+  await audit(env.DB,user.id,access.student.institution_id,'STUDENT_REPORT_EXPORTED','student_report',studentId,{format,examIds,examCount:examIds.length,restrictedToSubjects:access.restricted});
+  return json({ok:true,recorded:true,format});
+}
+
+export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);if(url.pathname==='/api/reporting/exports/audit'&&request.method==='POST')return recordReportExport(request,env,auth);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;

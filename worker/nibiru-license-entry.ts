@@ -2,7 +2,7 @@ import app from './calibration-v2-entry';
 import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, audit, badRequest, forbidden, json, one, uuid } from './lib/db';
-import { activateAnnual, getEffectiveLicense, licenseAccessMessage, setLicenseStatus, startTrial } from './lib/license';
+import { activateAnnual, getEffectiveLicense, licenseAccessMessage, renewAnnual, setLicenseStatus, startTrial } from './lib/license';
 import { runNibiru } from './lib/nibiru';
 import { extractWhatsAppMessages, sendWhatsAppText, verifyWhatsAppSignature, whatsappReady } from './lib/whatsapp';
 
@@ -141,11 +141,11 @@ async function createPairing(request:Request,env:Env,user:AuthUser){
 
 async function nibiruChat(request:Request,env:Env,user:AuthUser){
   if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
-  const body=await request.json<{message?:string}>();const message=body.message?.trim()||'';
+  const body=await request.json<{message?:string;context?:{pathname?:string}}>();const message=body.message?.trim()||'';
   if(!message||message.length>1200)return badRequest('Mesaj 1–1200 karakter arasında olmalıdır.');
   const blocked=await institutionBlock(env,user);
   if(blocked)return json({ok:true,answer:`🤖 Nibiru: ${blocked.message}`,intent:'ACCESS',locked:true});
-  const result=await runNibiru(env,user,message,'WEB',user.id);
+  const result=await runNibiru(env,user,message,'WEB',user.id,body.context);
   return json({ok:true,...result});
 }
 
@@ -158,12 +158,13 @@ async function adminLicenses(env:Env,user:AuthUser){
   return json({ok:true,licenses:items});
 }
 
-async function licenseMutation(request:Request,env:Env,user:AuthUser,kind:'trial'|'annual'|'status'){
+async function licenseMutation(request:Request,env:Env,user:AuthUser,kind:'trial'|'annual'|'renew'|'status'){
   if(user.role!=='SUPER_ADMIN')return forbidden('Lisans yönetimini yalnız Süper Admin kullanabilir.');
   const body=await request.json<any>();const institutionId=String(body.institutionId||'');if(!institutionId)return badRequest('Kurum seçilmelidir.');
   try{
     if(kind==='trial')return json({ok:true,license:await startTrial(env,institutionId,user,Number(body.days||7),body.note)});
     if(kind==='annual'){const mode=body.mode==='RESET_DATA'?'RESET_DATA':'KEEP_DATA';return json({ok:true,...await activateAnnual(env,institutionId,user,mode,Number(body.days||365),body.note)});}
+    if(kind==='renew')return json({ok:true,license:await renewAnnual(env,institutionId,user,Number(body.days||365),body.note)});
     const status=body.status;if(!['ACTIVE','SUSPENDED','CANCELLED'].includes(status))return badRequest('Geçersiz lisans durumu.');
     return json({ok:true,license:await setLicenseStatus(env,institutionId,user,status)});
   }catch(error){return apiError(400,'LICENSE_OPERATION_FAILED',error instanceof Error?error.message:'Lisans işlemi tamamlanamadı.')}
@@ -197,6 +198,7 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
     if(path==='/api/admin/licenses'&&request.method==='GET')return adminLicenses(env,user);
     if(path==='/api/admin/licenses/trial'&&request.method==='POST')return licenseMutation(request,env,user,'trial');
     if(path==='/api/admin/licenses/annual'&&request.method==='POST')return licenseMutation(request,env,user,'annual');
+    if(path==='/api/admin/licenses/renew'&&request.method==='POST')return licenseMutation(request,env,user,'renew');
     if(path==='/api/admin/licenses/status'&&request.method==='POST')return licenseMutation(request,env,user,'status');
     return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
   }

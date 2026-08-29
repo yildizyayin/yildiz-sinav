@@ -3,6 +3,7 @@ import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { forbidden,json } from './lib/db';
 import { OFFICIAL_SOURCE_POLICIES,officialKnowledgeStatus,recordOfficialKnowledgeEvent,validateOfficialSource,type OfficialSourceKind } from './lib/official-education-source';
+import { handleAcademicTargetFileImport } from './lib/academic-target-file-import';
 
 async function requireSuper(request:Request,env:Env){const user=await getAuthUser(env,request);if(!user)return {user:null,response:json({ok:false,error:{code:'UNAUTHENTICATED',message:'Oturum açmanız gerekiyor.'}},401)};if(user.role!=='SUPER_ADMIN')return {user,response:forbidden('Resmî eğitim bilgi katmanını yalnız Süper Admin yönetebilir.')};return {user,response:null}}
 
@@ -22,6 +23,7 @@ export default {
  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
   const url=new URL(request.url);
   if(url.pathname==='/api/academic-targets/import'&&request.method==='POST')return guardedTargetImport(request,env,ctx);
+  if(url.pathname==='/api/academic-targets/import-preview'||url.pathname.startsWith('/api/academic-targets/import-jobs')){const auth=await requireSuper(request,env);if(auth.response)return auth.response;const response=await handleAcademicTargetFileImport(request,env,auth.user!);if(response)return response;}
   if(!url.pathname.startsWith('/api/official-knowledge/'))return app.fetch(request,env,ctx);
   const auth=await requireSuper(request,env);if(auth.response)return auth.response;
   if(url.pathname==='/api/official-knowledge/sources'&&request.method==='GET')return json({ok:true,sources:OFFICIAL_SOURCE_POLICIES});

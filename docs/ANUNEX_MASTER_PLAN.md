@@ -1,0 +1,124 @@
+# ANUNEX / Nibiru Ana Görev Defteri
+
+Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk ve devam kaynağıdır. ERP, kurumsal satış portalı ve diğer projeler bu dosyaya dahil edilmez. Her geliştirme oturumunun başında okunur; tamamlanan iş, doğrulama kanıtı ve sıradaki tek iş aynı oturumda güncellenir.
+
+## Değişmez ürün kararları
+
+- Marka sahibi ve çatı ürün **ANUNEX**'tir. **Nibiru**, ayrı bir sohbet ürünü değil platformun bütün rollerine yayılan AI katmanıdır.
+- Çalışan üretim sistemi bozulmadan, küçük ve test edilebilir dilimlerle ilerlenir.
+- Süper Admin kurum oluştururken `STANDARD`, `PREMIUM` veya `CUSTOM` paket seçebilir.
+- `CUSTOM` paket, kurumun yalnız ihtiyaç duyduğu modülleri seçebilmesini sağlar.
+- Yeni kuruma 7 günlük demo tanımlanabilir. Kurum onay verirse aynı kurum ve veriler korunarak 1 yıllık lisansa dönüştürülür.
+- Optik Hazırla / Optik Bas hem Süper Admin hem Kurum Yöneticisi rolünde bulunur.
+- Nibiru; öğrenme grafiği, akademik analiz, yanlış/boş ve eksik kazanım, recovery, rehberlik, eğitim koçu, hedef, motivasyon, kişisel görevler, Sıfır Hata, kişisel kitap, video/kazanım köprüsü ve rol bazlı uzman AI yönlendirmelerini birleştirir.
+- Föy sistemi iki ürün serisiyle çalışır: **Mavi Seri**, 5, 6, 7, 8, 9, 10, 11 ve 12. sınıflarda her ders için 10 soru; **Kırmızı Seri**, yalnız 8 ve 12. sınıflarda her ders için 20 soru üretir.
+- Anlayarak Hızlı Okuma ve Akıllı Tahta bu ürünün güncel kapsamından çıkarılmıştır.
+- Kullanıcı arayüzünde ham kurum/sınıf/öğrenci ID'si istenmez; güvenli seçim bileşenleri kullanılır.
+- Demo/sentetik veri production iş akışlarına sızmaz.
+
+## Doğrulanmış mevcut durum — 29 Ağustos 2026
+
+- Production Worker yayında: `yildiz-sinav-prod.rtsgida.workers.dev`.
+- ANUNEX kozmik giriş ekranı, Turnstile ve favicon yayında.
+- Production deploy iş akışı başarılı.
+- Son doğrulanan test özeti: 42 test dosyası, 177 test.
+- İlk Süper Admin hesabı oluşturuldu ve kullanıcı gerçek tarayıcıda giriş yaptı.
+- D1, auth/RBAC/tenant izolasyonu, sınav/optik/değerlendirme çekirdeği ve çeşitli Nibiru servisleri kod tabanında bulunuyor.
+- Güvenli çıkış API'si kodda mevcut; ancak uzun menü nedeniyle çıkış düğmesi görünmüyor ve istemci sunucu iptal hatasında oturumu yerelde kapatıyor. Bu davranış düzeltilmeli.
+- Production boş başlangıç durumunda: kurum ve operasyon verileri henüz oluşturulmadı.
+
+## Kesin uygulama sırası
+
+### P0 — Güvenlik ve erişim
+
+- [x] Çıkış düğmesini masaüstü ve mobilde her zaman görünür yap.
+- [x] Çıkışta mevcut session kaydının sunucuda iptal edildiğini kod ve test paketiyle doğrula.
+- [x] Sunucu iptali başarısızsa kullanıcıya açık hata göster; sessizce yerel oturumu kapatma.
+- [x] Çıkış sonrası giriş sayfasına `replace` ile dönerek korumalı rotaya geri dönüşü engelle.
+- [x] Profil ekranına şifre değiştirme, aktif oturumlar, tek cihazı kapatma ve tüm cihazlardan çıkış ekle.
+- [ ] İlk kurulum tamamlandıktan sonra `PROD_INITIAL_ADMIN_PASSWORD` sırrını kaldır.
+
+### P1 — Kurum ve lisans çekirdeği
+
+- [x] Yeni kurum oluşturma formu ve temel onboarding profili.
+- [x] İlk kurulum sihirbazının kurum → yönetici → paket/modül → sezon/demo çekirdeği.
+- [x] 7 günlük demo başlangıç/bitiş, kalan gün ve durum göstergeleri.
+- [x] Kurum onayı kaydı ve onay olmadan yıllık lisansa dönüşümü engelleme.
+- [x] Onay sonrası mevcut yıllık lisans servisiyle verileri koruyarak 365 güne çevirme.
+- [x] Süre bitişi, yıllık yenileme, askıya alma ve erişim sınırları.
+- [x] Paketler: Standard, Premium, Kendi Paketini Oluştur.
+- [x] Paket/modül kataloğu ve kurum özellik yetkilerinin onboarding sırasında uygulanması.
+- [x] Demo başlangıcı ve kurum onayı için lisans/denetim kaydı.
+- [x] Kurum ayrıntı sayfasında paket değiştirme, zincir/şube ve onboarding kalan adımları.
+- [x] Süresi dolan/askıya alınan kurum için kilit ekranı, kurum onayı ve lisans yenileme işlemi.
+- [ ] Lisans bitişinden önce uygulama içi/e-posta bildirimleri.
+
+### P2 — Süper Admin Panel V2
+
+- [x] ANUNEX marka kimliğini giriş sonrası Süper Admin ana ekranı ve menü başlığına taşı.
+- [x] Menüyü Genel, Kurum, Sınav/Optik, İçerik, Nibiru AI, Lisans/Paket, Rapor ve Sistem gruplarına ayır.
+- [x] Menü arama.
+- [x] Menü gruplarını daraltma, favori ve durum rozetleri.
+- [x] Geliştirici araçlarını normal production menüsünden kaldır veya Sistem altında sınırla.
+- [x] İlk kurum için boş durum rehberi.
+- [x] Kurum, aktif demo, bekleyen kurum onayı ve yıllık lisans göstergeleri.
+- [x] Aktif sınavlar, optik kuyruğu, Nibiru uyarıları, son işlemler ve servis sağlığı göstergeleri.
+- [x] İç teknik adları kullanıcı diline çevir; tekrar eden/eski sınav menülerini birleştir.
+
+### P3 — Operasyonel kullanım boşlukları
+
+- [x] Kurum, sınıf, öğrenci ve sınav için ham ID alanlarını güvenli seçicilere dönüştür.
+- [x] Kurum yaşam döngüsü, iletişim, logo, alan adı, şube ve zincir kurum yönetimi.
+- [x] Yoklama/devamsızlık.
+- [x] Fiziksel ve dijital kitaptan ödev verme/takip.
+- [x] Soru Havuzu & Studio.
+- [x] Kişiye özel kitap üretimi.
+- [x] Sıfır Hata kitabı/kitapçığı.
+- [x] Föy Merkezi ve yıllık kazanım planı: Mavi Seri 5–12. sınıf / ders başına 10 soru; Kırmızı Seri yalnız 8 ve 12. sınıf / ders başına 20 soru.
+- [x] Toplu işlemler ve veri transferleri.
+- [x] Zincir kurum merkezi yönetimi ve üst yönetim raporları: genel merkez–bölge–il–ilçe–kampüs hiyerarşisi, kapsamlı yönetici/görüntüleyici rolleri, tenant izolasyonu, karşılaştırmalı KPI, tarih/birim filtresi, CSV ve denetim kaydı.
+- [x] Tercih robotu: resmî veri yokken tahmin üretmeyen LGS/YKS araması, ayrıntılı filtreler, kaynak görünürlüğü, öğrenciye özel sıralanabilir çalışma listesi ve hedefe dönüştürme.
+- [x] Resmî MEB/ÖSYM verileri için dosya yükleme, otomatik/manuel kolon eşleme, satır doğrulama, staging önizleme, açık onaylı içe aktarma, dosya özeti/denetim izi ve güvenli geri alma arayüzü.
+
+### P4 — Nibiru AI bütünleştirmesi
+
+- [x] Sesli komut istemci zinciri: izin → kayıt → yükleme → Türkçe tanıma → komutu otomatik gönderme → yanıt → otomatik seslendirme.
+- [x] Desteklenmeyen tarayıcı, mikrofon reddi, boş/çok kısa kayıt ve kayıt hatası için anlaşılır geri dönüş.
+- [x] Sunucu TTS sağlayıcısı kullanılamazsa tarayıcının Türkçe ses motoruna güvenli geri dönüş.
+- [x] Whisper giriş biçimini güncel Cloudflare Workers AI şemasıyla doğrula; sağlayıcı hatalarını sır açığa çıkarmadan operasyon türüyle logla.
+- [ ] Production adayı yayınlandıktan sonra gerçek mikrofonla Chrome ve mobil tarayıcı kabul testi yap.
+- [x] Nibiru uzman AI yönlendiricisini tüm rol deneyimlerinde görünür ve bağlamsal yap: her sayfada açılır Nibiru, sayfaya özel öneriler, uzman etiketi, tam ekran/sesli geçiş ve yetkiyi genişletmeyen güvenli sayfa bağlamı.
+- [x] Öğrenme grafiği, Recovery, RBA, rehberlik, koçluk, hedef/motivasyon, kişisel görev, Sıfır Hata ve video köprüsünü tek öğrenci profiline bağla.
+- [x] Doğru/yanlış/boş sorular için yayınevi çözüm videosu ve konu anlatımı seçeneklerini uygula.
+- [x] YouTube aday seçiminde güvenlik, yaş uygunluğu, kazanım eşleşmesi ve kısa video politikalarını doğrula.
+- [ ] WhatsApp Nibiru kanalını Meta production bilgileri geldiğinde aktive et.
+
+### P5 — Rol bazlı kabul ve production kapanışı
+
+- [x] Süper Admin: 33 yönetim rotası görünürlük/RoleGate kontrolü, kurum seçmeli ortak modüller, boş-hata durumları, mobil menü ve tek kolon düzeni, güvenli tek/tüm oturum kapatma, CSV-yazdır/PDF yetki doğrulaması ve denetim iziyle kabul edildi. Kabul matrisi Sistem Hazırlığı ekranına eklendi.
+- [x] Kurum Yöneticisi: yalnız kendi kurum kapsamı, paket-modül görünürlüğü, doğrudan URL ve API engeli, günlük ana ekran pratikliği, 7 günlük demo/yıllık onay, güvenli rapor çıktısı ve kritik modül değişikliği denetim iziyle kabul edildi.
+- [x] Branş Öğretmeni: aktif sezon sınıf–branş–sınıf düzeyi kapsamı ana ekranda görünür; soru, Studio belgesi, istatistik ve föy işlemleri aynı kapsamla sunucuda sınırlandırılır; paket dışı menü/kısayol ve doğrudan API çağrıları kapatılır; atamasız ve sınıf seçilmemiş durumlar güvenli biçimde boş kalır; kritik içerik/föy değişiklikleri denetim kaydı üretir.
+- [x] Rehber Öğretmeni: yalnız aktif sezonda açıkça atanmış sınıfların tüm ders ve öğrencilerine erişir; boş sınıf ataması kurum geneli yetki vermez. Rehberlik ölçeği ve öğrenci zekâ profili aynı sınıf/sezon/tenant sınırını uygular; ham yanıtlar API cevaplarına ve birleşik profile girmez. Nibiru önerisi, gerçek rehber öğretmen onayı ve açıklamalı sonuç kabulü olmadan gelişim sinyaline dönüşmez; doğrudan API çağrısı kurum paketine göre engellenir ve bütün kritik kararlar denetlenir.
+- [ ] Öğrenci.
+- [ ] Veli.
+- [ ] Her modülde: görünürlük, yetki, tenant izolasyonu, boş durum, hata durumu, mobil kullanım, pratiklik, yazdırma/PDF/CSV ve denetim kaydı.
+- [ ] Typecheck, unit/integration test, build, migration dry-run/doğrulama.
+- [ ] Staging smoke, production deploy, production smoke ve geri dönüş planı.
+
+## Dış girdiye bağlı işler
+
+- Meta/WhatsApp production doğrulamaları ve secret'lar.
+- Gerçek MEB müfredat ve ÖSYM/LGS/YKS hedef/veri dosyaları.
+- Gerçek optik/FMT örnekleri ve fiziksel yazıcı kalibrasyonu.
+- Edesis/Okulizyon gerçek export örnekleri.
+- Canlı görüşme sağlayıcısı.
+- `anunex.com` alan adı ve ileride `@anunex.com` yönetici e-postası.
+
+## Oturum kapanış kaydı
+
+Her oturum sonunda aşağıdaki dört satır güncellenir:
+
+- **Son tamamlanan:** P5 Rehber Öğretmeni rol kabulü tamamlandı. Ana ekran; rehberlik onayları, yoklama, ödev takibi, sınıf duyurusu, sınav, rapor, soru ve föy işlemlerini paket yetkisine göre günlük akışta sunuyor. Ortak yetki yükleyici yalnız aynı kurumdaki aktif sınıf/sezon atamalarını kabul ediyor. Rehberlik kuyruğu yalnız aktif atanmış öğrencileri getiriyor; ham cevap ve öneri kanıtı dış API yanıtlarından temizleniyor. Reddetme gerekçesi ve gelişim profiline kabul notu zorunlu, tüm kararlar audit kayıtlı.
+- **Son doğrulama:** Typecheck ve production build başarılı; 66/66 test dosyası, 286/286 test başarılı. Bu adımda bağımlılık veya migration değişikliği yapılmadı; önceki production bağımlılık taraması ve 43 migration zinciri doğrulaması geçerliliğini koruyor.
+- **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
+- **Sıradaki tek iş:** P5 Öğrenci rol kabul turu; yalnız kendi hesap/öğrenci kaydı, sonuç–ödev–föy–kişisel kitap–Sıfır Hata–hedef–Nibiru akışları, üyelik/paket sınırı, boş-hata/mobil durumları, güvenli çıktı ve kişisel veri görünürlüğünü modül modül doğrula.

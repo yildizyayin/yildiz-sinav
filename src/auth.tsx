@@ -40,7 +40,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
   useEffect(() => { void refresh(); }, []);
   const logout = async () => {
-    try { await post('/api/auth/logout', {}); } finally { setUser(null); setInstitution(null); }
+    await post('/api/auth/logout', {});
+    setUser(null);
+    setInstitution(null);
   };
   const value = useMemo(() => ({ user, institution, loading, refresh, logout }), [user, institution, loading]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

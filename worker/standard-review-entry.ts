@@ -1,4 +1,4 @@
-import app from './standard-entry';
+import app from './student-home-scope-entry';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,json } from './lib/db';
@@ -14,10 +14,11 @@ async function examReview(request:Request,env:Env){
   const rows=await all<any>(env.DB.prepare(`SELECT e.id exam_id,e.title exam_title,e.exam_date,q.id question_id,q.question_no,q.global_no,
     s.id subject_id,s.name subject_name,sa.answer,sa.status,ak.correct_answer,
     o.id outcome_id,o.title outcome_title,o.topic,o.subtopic,
-    EXISTS(SELECT 1 FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND vl.approved=1) has_solution_video,
-    EXISTS(SELECT 1 FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND vl.approved=1) has_topic_video
+    EXISTS(SELECT 1 FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND vl.approved=1 AND vl.active=1 AND vl.safety_review_status='APPROVED') has_solution_video,
+    EXISTS(SELECT 1 FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND vl.approved=1 AND vl.active=1 AND vl.safety_review_status='APPROVED') has_topic_video
     FROM exam_participants ep
     JOIN exams e ON e.id=ep.exam_id
+    JOIN exam_delivery_profiles dp ON dp.exam_id=e.id AND dp.result_freeze_status='PUBLISHED' AND dp.snapshot_version>0
     JOIN student_answers sa ON sa.participant_id=ep.id
     JOIN exam_questions q ON q.id=sa.exam_question_id
     JOIN subjects s ON s.id=q.subject_id

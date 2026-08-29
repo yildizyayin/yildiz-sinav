@@ -7,6 +7,7 @@ import { parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib
 import { assertScoringRuleVerified, calculateOverall, calculateSubjectScore } from './lib/scoring';
 import { masteryStatus } from './lib/outcome';
 import { calibrationWithinTolerance, nextCalibrationStatus, type CalibrationMetrics } from './lib/calibration';
+import { parseStudentTransfer } from './lib/transfer-import';
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -82,10 +83,17 @@ export default {
       if (url.pathname === '/api/seasons/rollover-commit' && request.method === 'POST') return rolloverCommit(request, env, user);
 
       if (url.pathname === '/api/imports/preview' && request.method === 'POST') return importPreview(request, env, user);
+      if (url.pathname === '/api/imports' && request.method === 'GET') return listImports(env, user, url);
+      const importRowMatch = url.pathname.match(/^\/api\/imports\/([^/]+)\/rows\/([^/]+)$/);
+      if (importRowMatch) return request.method === 'PATCH' ? resolveImportRow(request, env, user, importRowMatch[1], importRowMatch[2]) : methodNotAllowed();
+      const importReportMatch = url.pathname.match(/^\/api\/imports\/([^/]+)\/error-report$/);
+      if (importReportMatch) return request.method === 'GET' ? importErrorReport(env, user, importReportMatch[1]) : methodNotAllowed();
+      const importRollbackMatch = url.pathname.match(/^\/api\/imports\/([^/]+)\/rollback$/);
+      if (importRollbackMatch) return request.method === 'POST' ? rollbackImport(request, env, user, importRollbackMatch[1]) : methodNotAllowed();
       const importGetMatch = url.pathname.match(/^\/api\/imports\/([^/]+)$/);
       if (importGetMatch) return request.method === 'GET' ? getImport(env, user, importGetMatch[1]) : methodNotAllowed();
       const importCommitMatch = url.pathname.match(/^\/api\/imports\/([^/]+)\/commit$/);
-      if (importCommitMatch) return request.method === 'POST' ? importCommit(env, user, importCommitMatch[1]) : methodNotAllowed();
+      if (importCommitMatch) return request.method === 'POST' ? importCommit(request, env, user, importCommitMatch[1]) : methodNotAllowed();
 
       if (url.pathname === '/api/worksheets' && request.method === 'GET') return listWorksheets(env, user, url);
       const worksheetAssetMatch = url.pathname.match(/^\/api\/worksheets\/([^/]+)\/assets$/);
@@ -136,18 +144,24 @@ async function rejectIfPassiveInstitution(env: Env, user: AuthUser): Promise<Res
 
 async function dashboard(env: Env, user: AuthUser): Promise<Response> {
   if (user.role === 'SUPER_ADMIN') {
-    const [institutions, activeStudents, guests, todayResults, passive] = await Promise.all([
+    const [institutions, activeStudents, guests, todayResults, passive,activeExams,pendingScans,failedScans,readyOpticals,nibiruErrors,recentActivity] = await Promise.all([
       one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM institutions')),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM student_entities WHERE status='ACTIVE'`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM student_entities WHERE status='GUEST'`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exam_results WHERE date(created_at)=date('now')`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM institutions WHERE status='PASSIVE'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exams WHERE status='ACTIVE'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_batches WHERE status IN ('PREVIEW','NEEDS_REVIEW','READY')`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_batches WHERE status='FAILED'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM optical_templates WHERE active=1 AND status='READY'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM nibiru_audit_events WHERE outcome='ERROR' AND created_at>=datetime('now','-24 hours')`)),
+      all<any>(env.DB.prepare(`SELECT a.action,a.entity_type,a.created_at,u.display_name actor_name FROM audit_logs a LEFT JOIN users u ON u.id=a.actor_user_id ORDER BY a.created_at DESC LIMIT 6`)),
     ]);
     return json({ ok: true, cards: [
       { label: 'Kurum', value: institutions?.c ?? 0 }, { label: 'Aktif Öğrenci', value: activeStudents?.c ?? 0 },
       { label: 'Misafir Öğrenci', value: guests?.c ?? 0 }, { label: 'Bugün Değerlendirilen', value: todayResults?.c ?? 0 },
       { label: 'Pasif Kurum', value: passive?.c ?? 0 },
-    ] });
+    ], operations:{activeExams:activeExams?.c??0,pendingScans:pendingScans?.c??0,failedScans:failedScans?.c??0,readyOpticals:readyOpticals?.c??0,nibiruErrors24h:nibiruErrors?.c??0},recentActivity });
   }
   if (user.role === 'STUDENT') {
     if (!user.student_id) return badRequest('Öğrenci hesabı bağlı değil.');
@@ -670,79 +684,142 @@ async function importPreview(request: Request, env: Env, user: AuthUser): Promis
   const institutionId = resolveInstitutionId(user, form.get('institutionId')?.toString() || null);
   if (!(file instanceof File) || !institutionId) return badRequest('Dosya ve kurum gerekli.');
   if (!(await userCanAccessInstitution(env.DB, user, institutionId))) return forbidden();
+  if(file.size>10*1024*1024)return badRequest('Aktarım dosyası 10 MB sınırını aşıyor.','IMPORT_FILE_TOO_LARGE');
+  if(!/\.(csv|txt|dat|xlsx|xls)$/i.test(file.name))return badRequest('CSV, TXT, DAT, XLSX veya XLS dosyası yükleyin.','IMPORT_FORMAT_REQUIRED');
   const seasonId = form.get('seasonId')?.toString() || (await currentSeason(env.DB, institutionId))?.id;
   if (!seasonId) return badRequest('Aktif eğitim yılı bulunamadı.');
-  const key = `imports/${institutionId}/${Date.now()}-${safeFileName(file.name)}`;
   const bytes=await file.arrayBuffer();
+  const digest=await crypto.subtle.digest('SHA-256',bytes),fileHash=[...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');
+  const duplicate=await one<any>(env.DB.prepare(`SELECT id FROM import_jobs WHERE institution_id=? AND season_id=? AND source_system=? AND file_sha256=? AND status='COMMITTED' AND rolled_back_at IS NULL`).bind(institutionId,seasonId,sourceSystem,fileHash));
+  if(duplicate)return json({ok:false,error:{code:'IMPORT_FILE_ALREADY_COMMITTED',message:'Bu dosya aynı kurum ve eğitim yılı için daha önce aktarıldı.',details:{importJobId:duplicate.id}}},409);
+  const key = `imports/${institutionId}/${Date.now()}-${safeFileName(file.name)}`;
   await env.FILES.put(key, bytes, { httpMetadata: { contentType: file.type || 'text/plain' } });
-  const text = new TextDecoder().decode(bytes);
+  const parsed=parseStudentTransfer(bytes,file.name);
   if(sourceSystem==='EDESIS'||sourceSystem==='OKULIZYON'){
     const adapter=await one<any>(env.DB.prepare(`SELECT * FROM transfer_adapter_profiles WHERE source_system=?`).bind(sourceSystem));
     if(!adapter||adapter.status!=='VERIFIED'){
-      const digest=await crypto.subtle.digest('SHA-256',bytes),sampleHash=[...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');
-      const firstLine=(text.split(/\r?\n/).find(x=>x.trim())||'').replace(/^\uFEFF/,'').trim();
-      const headerDigest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(firstLine)),headerFingerprint=[...new Uint8Array(headerDigest)].map(x=>x.toString(16).padStart(2,'0')).join('');
+      const sampleHash=fileHash;const headerMaterial=parsed.headers.join('|');
+      const headerDigest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(headerMaterial)),headerFingerprint=[...new Uint8Array(headerDigest)].map(x=>x.toString(16).padStart(2,'0')).join('');
       await env.DB.prepare(`UPDATE transfer_adapter_profiles SET status='UNDER_REVIEW',sample_sha256=?,sample_file_name=?,header_fingerprint=?,updated_at=CURRENT_TIMESTAMP WHERE source_system=?`).bind(sampleHash,safeFileName(file.name),headerFingerprint,sourceSystem).run();
       await audit(env.DB,user.id,institutionId,'TRANSFER_ADAPTER_SAMPLE_RECEIVED','transfer_adapter',sourceSystem,{fileName:safeFileName(file.name),sampleHash,headerFingerprint,objectKey:key});
       return json({ok:false,error:{code:'REAL_EXPORT_MAPPING_REVIEW_REQUIRED',message:`${sourceSystem} gerçek export örneği güvenli alana kaydedildi. Özel alan eşlemesi doğrulanıp adapter VERIFIED yapılmadan öğrenci tablolarına aktarım yapılmaz.`,details:{sourceSystem,status:'UNDER_REVIEW',sampleHash,headerFingerprint}}},409);
     }
   }
-  const rows = parseGenericStudentImport(text);
-  if (!rows.length) return badRequest('Aktarılabilir öğrenci satırı bulunamadı. Excel dosyalarını önce CSV olarak dışa aktarın.', 'IMPORT_FORMAT_REQUIRED');
+  if(parsed.issues.length||!parsed.rows.length)return badRequest(parsed.issues[0]||'Aktarılabilir öğrenci satırı bulunamadı.','IMPORT_FORMAT_REQUIRED',parsed.issues);
   const candidates = await loadStudentCandidates(env.DB, institutionId, seasonId);
   const id = uuid('imp');
   let matched = 0, newCount = 0, review = 0;
-  await env.DB.prepare(`INSERT INTO import_jobs (id,institution_id,season_id,source_system,source_file_key,status,created_by) VALUES(?,?,?,?,?,'PREVIEW',?)`).bind(id, institutionId, seasonId, sourceSystem, key, user.id).run();
-  for (let i = 0; i < rows.length; i++) {
-    const r = rows[i];
-    const canonical: CanonicalRecord = { row_no: i + 2, student_number: r.student_number, name: r.name, class_name: r.class_name, grade_level: r.grade_level, section: r.section, answers_by_subject: {}, source_type: 'TRANSFER', confidence: 1, issues: [] };
-    const m = matchParticipant(canonical, candidates);
+  await env.DB.prepare(`INSERT INTO import_jobs (id,institution_id,season_id,source_system,source_file_key,status,created_by,original_file_name,file_sha256,row_count) VALUES(?,?,?,?,?,'PREVIEW',?,?,?,?)`).bind(id, institutionId, seasonId, sourceSystem, key, user.id,safeFileName(file.name),fileHash,parsed.rows.length).run();
+  for (const r of parsed.rows) {
+    const canonical: CanonicalRecord = { row_no:r.rowNo, student_number:r.studentNumber, name:r.name, class_name:r.className, grade_level:r.gradeLevel, section:r.section, answers_by_subject: {}, source_type: 'TRANSFER', confidence:r.issues.length?0.4:1, issues:r.issues };
+    const external=r.externalId?await one<any>(env.DB.prepare(`SELECT x.internal_id student_id,s.status,e.id enrollment_id FROM external_identities x JOIN student_entities s ON s.id=x.internal_id LEFT JOIN student_enrollments e ON e.student_id=x.internal_id AND e.season_id=? WHERE x.institution_id=? AND x.source_system=? AND x.entity_type='STUDENT' AND x.external_id=?`).bind(seasonId,institutionId,sourceSystem,r.externalId)):null;
+    const m = r.issues.length?{status:'INVALID' as const,confidence:0,issues:r.issues}:external&&!external.enrollment_id?{status:'INVALID' as const,confidence:0,issues:['Dış sistem kimliği önceki bir öğrenciyle bağlı ancak aktif eğitim yılı kaydı yok. Satırı mevcut öğrenciyle eşleştirin.'],candidates:[external.student_id]}:external?{status:(external.status==='ACTIVE'?'ACTIVE_MATCH':'GUEST_MATCH') as 'ACTIVE_MATCH'|'GUEST_MATCH',student_id:external.student_id,confidence:1,issues:[]}:matchParticipant(canonical, candidates);
     if (m.status === 'ACTIVE_MATCH' || m.status === 'GUEST_MATCH') matched++; else if (m.status === 'NEW_GUEST') newCount++; else review++;
+    const source={external_id:r.externalId,student_number:r.studentNumber,name:r.name,class_name:r.className,grade_level:r.gradeLevel,section:r.section,original:r.source,source_format:parsed.format};
     await env.DB.prepare(`INSERT INTO import_staging_rows (id,import_job_id,row_no,entity_type,source_json,mapped_json,match_status,issues_json) VALUES(?,?,?,?,?,?,?,?)`)
-      .bind(uuid('isr'), id, i + 2, 'STUDENT', JSON.stringify(r), JSON.stringify({ matchedStudentId: m.student_id || null }), m.status, JSON.stringify(m.issues)).run();
+      .bind(uuid('isr'), id, r.rowNo, 'STUDENT', JSON.stringify(source), JSON.stringify({ matchedStudentId: m.student_id || null,confidence:m.confidence,candidates:m.candidates||[] }), m.status, JSON.stringify(m.issues)).run();
   }
-  const summary = { total: rows.length, matched, new: newCount, review };
-  await env.DB.prepare('UPDATE import_jobs SET summary_json=?,status=? WHERE id=?').bind(JSON.stringify(summary), review ? 'NEEDS_REVIEW' : 'READY', id).run();
-  return json({ ok: true, importJobId: id, summary, sourceSystem });
+  const summary = { total: parsed.rows.length, matched, new: newCount, review,skipped:0,format:parsed.format };
+  await env.DB.prepare('UPDATE import_jobs SET summary_json=?,status=?,error_count=? WHERE id=?').bind(JSON.stringify(summary), review ? 'NEEDS_REVIEW' : 'READY',review,id).run();
+  await audit(env.DB,user.id,institutionId,'IMPORT_PREVIEW_CREATED','import_job',id,{sourceSystem,fileName:safeFileName(file.name),fileHash,...summary});
+  return json({ ok: true, importJobId: id, summary, sourceSystem,rows:(await importRows(env,id)).slice(0,100) });
+}
+
+async function importRows(env:Env,id:string){const rows=await all<any>(env.DB.prepare('SELECT * FROM import_staging_rows WHERE import_job_id=? ORDER BY row_no LIMIT 500').bind(id));return rows.map(r=>({...r,source:JSON.parse(r.source_json),mapped:r.mapped_json?JSON.parse(r.mapped_json):null,issues:r.issues_json?JSON.parse(r.issues_json):[]}))}
+
+async function listImports(env:Env,user:AuthUser,url:URL):Promise<Response>{
+ if(!roleCanManageInstitution(user.role))return forbidden();const institutionId=resolveInstitutionId(user,url.searchParams.get('institutionId'));if(!institutionId||!(await userCanAccessInstitution(env.DB,user,institutionId)))return forbidden();
+ const jobs=await all<any>(env.DB.prepare(`SELECT id,source_system,status,original_file_name,row_count,error_count,skipped_count,summary_json,commit_summary_json,created_at,committed_at,rolled_back_at FROM import_jobs WHERE institution_id=? ORDER BY created_at DESC LIMIT 50`).bind(institutionId));
+ return json({ok:true,jobs:jobs.map(j=>({...j,summary:j.summary_json?JSON.parse(j.summary_json):null,commitSummary:j.commit_summary_json?JSON.parse(j.commit_summary_json):null,effectiveStatus:j.rolled_back_at?'ROLLED_BACK':j.status}))});
 }
 
 async function getImport(env: Env, user: AuthUser, id: string): Promise<Response> {
   const job = await one<any>(env.DB.prepare('SELECT * FROM import_jobs WHERE id=?').bind(id));
   if (!job || !(await userCanAccessInstitution(env.DB, user, job.institution_id))) return notFound();
-  const rows = await all<any>(env.DB.prepare('SELECT * FROM import_staging_rows WHERE import_job_id=? ORDER BY row_no LIMIT 500').bind(id));
-  return json({ ok: true, job: { ...job, summary: job.summary_json ? JSON.parse(job.summary_json) : null }, rows: rows.map((r) => ({ ...r, source: JSON.parse(r.source_json), mapped: r.mapped_json ? JSON.parse(r.mapped_json) : null, issues: r.issues_json ? JSON.parse(r.issues_json) : [] })) });
+  return json({ ok: true, job: { ...job, summary: job.summary_json ? JSON.parse(job.summary_json) : null,commitSummary:job.commit_summary_json?JSON.parse(job.commit_summary_json):null,effectiveStatus:job.rolled_back_at?'ROLLED_BACK':job.status }, rows:await importRows(env,id) });
 }
 
-async function importCommit(env: Env, user: AuthUser, id: string): Promise<Response> {
+async function refreshImportSummary(env:Env,id:string){
+ const job=await one<any>(env.DB.prepare('SELECT status FROM import_jobs WHERE id=?').bind(id));if(!job||job.status==='COMMITTED')return null;
+ const counts=await one<any>(env.DB.prepare(`SELECT COUNT(*) total,SUM(CASE WHEN resolution='SKIP' THEN 1 ELSE 0 END) skipped,SUM(CASE WHEN resolution!='SKIP' AND match_status IN ('AMBIGUOUS','INVALID') THEN 1 ELSE 0 END) review,SUM(CASE WHEN resolution!='SKIP' AND match_status IN ('ACTIVE_MATCH','GUEST_MATCH') THEN 1 ELSE 0 END) matched,SUM(CASE WHEN resolution!='SKIP' AND match_status='NEW_GUEST' THEN 1 ELSE 0 END) new_count FROM import_staging_rows WHERE import_job_id=?`).bind(id));
+ const summary={total:Number(counts?.total||0),matched:Number(counts?.matched||0),new:Number(counts?.new_count||0),review:Number(counts?.review||0),skipped:Number(counts?.skipped||0)};
+ await env.DB.prepare('UPDATE import_jobs SET summary_json=?,status=?,error_count=?,skipped_count=? WHERE id=?').bind(JSON.stringify(summary),summary.review?'NEEDS_REVIEW':'READY',summary.review,summary.skipped,id).run();return summary;
+}
+
+async function resolveImportRow(request:Request,env:Env,user:AuthUser,jobId:string,rowId:string):Promise<Response>{
+ if(!roleCanManageInstitution(user.role))return forbidden();const job=await one<any>(env.DB.prepare('SELECT * FROM import_jobs WHERE id=?').bind(jobId));if(!job||!(await userCanAccessInstitution(env.DB,user,job.institution_id)))return notFound();if(job.status==='COMMITTED'||job.rolled_back_at)return badRequest('Tamamlanmış aktarım satırları değiştirilemez.','IMPORT_LOCKED');
+ const row=await one<any>(env.DB.prepare('SELECT * FROM import_staging_rows WHERE id=? AND import_job_id=?').bind(rowId,jobId));if(!row)return notFound('Aktarım satırı bulunamadı.');const body=await request.json<{action?:'SKIP'|'IMPORT'|'MATCH';studentId?:string;note?:string}>();
+ if(body.action==='SKIP')await env.DB.prepare(`UPDATE import_staging_rows SET resolution='SKIP',resolution_note=?,resolved_by=?,resolved_at=CURRENT_TIMESTAMP WHERE id=?`).bind(String(body.note||'Kullanıcı tarafından atlandı').slice(0,250),user.id,rowId).run();
+ else if(body.action==='MATCH'){
+  if(!body.studentId)return badRequest('Eşleştirilecek öğrenci seçilmelidir.');const student=await one<any>(env.DB.prepare(`SELECT s.id FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id WHERE s.id=? AND e.institution_id=? AND e.season_id=?`).bind(body.studentId,job.institution_id,job.season_id));if(!student)return forbidden('Öğrenci bu kurum/eğitim yılı kapsamında değil.');
+  const mapped=row.mapped_json?JSON.parse(row.mapped_json):{};mapped.matchedStudentId=body.studentId;await env.DB.prepare(`UPDATE import_staging_rows SET mapped_json=?,match_status='ACTIVE_MATCH',issues_json='[]',resolution='MATCH',resolution_note=?,resolved_by=?,resolved_at=CURRENT_TIMESTAMP WHERE id=?`).bind(JSON.stringify(mapped),String(body.note||'Kullanıcı eşleştirmesi').slice(0,250),user.id,rowId).run();
+ }else if(body.action==='IMPORT'&&row.match_status==='NEW_GUEST')await env.DB.prepare(`UPDATE import_staging_rows SET resolution='IMPORT',resolution_note=?,resolved_by=?,resolved_at=CURRENT_TIMESTAMP WHERE id=?`).bind(String(body.note||'Yeni öğrenci olarak aktar').slice(0,250),user.id,rowId).run();
+ else return badRequest('Bu satır yalnız atlanabilir veya mevcut öğrenciyle eşleştirilebilir.','IMPORT_ROW_REQUIRES_RESOLUTION');
+ const summary=await refreshImportSummary(env,jobId);await audit(env.DB,user.id,job.institution_id,'IMPORT_ROW_RESOLVED','import_staging_row',rowId,{jobId,action:body.action,studentId:body.studentId||null});return json({ok:true,summary});
+}
+
+function csvCell(value:unknown){const text=String(value??'');return /[;"\n]/.test(text)?`"${text.replace(/"/g,'""')}"`:text}
+async function importErrorReport(env:Env,user:AuthUser,id:string):Promise<Response>{
+ const job=await one<any>(env.DB.prepare('SELECT * FROM import_jobs WHERE id=?').bind(id));if(!job||!(await userCanAccessInstitution(env.DB,user,job.institution_id)))return notFound();const rows=await importRows(env,id);const lines=['Satır;Durum;Karar;Öğrenci No;Ad Soyad;Sınıf;Şube;Sorunlar'];
+ for(const row of rows)lines.push([row.row_no,row.match_status,row.resolution,row.source.student_number,row.source.name,row.source.grade_level,row.source.section,(row.issues||[]).join(' | ')].map(csvCell).join(';'));
+ return new Response(`\uFEFF${lines.join('\n')}`,{headers:{'Content-Type':'text/csv; charset=utf-8','Content-Disposition':`attachment; filename="anunex-aktarim-${id}.csv"`,'Cache-Control':'no-store'}});
+}
+
+async function importCommit(request:Request,env: Env, user: AuthUser, id: string): Promise<Response> {
   if (!roleCanManageInstitution(user.role)) return forbidden();
+  const body:{confirmed?:boolean}=await request.json<{confirmed?:boolean}>().catch(()=>({}));if(body.confirmed!==true)return badRequest('Aktarım için açık kullanıcı onayı gereklidir.','IMPORT_CONFIRMATION_REQUIRED');
   const job = await one<any>(env.DB.prepare('SELECT * FROM import_jobs WHERE id=?').bind(id));
   if (!job || !(await userCanAccessInstitution(env.DB, user, job.institution_id))) return notFound();
+  if(job.rolled_back_at)return badRequest('Geri alınmış aktarım yeniden çalıştırılamaz. Yeni önizleme oluşturun.','IMPORT_ROLLED_BACK');
   if (job.status === 'NEEDS_REVIEW') return badRequest('Kontrol gereken satırlar çözülmeden aktarım yapılamaz.');
   if (job.status === 'COMMITTED') return json({ ok: true, alreadyCommitted: true });
-  const rows = await all<any>(env.DB.prepare('SELECT * FROM import_staging_rows WHERE import_job_id=? ORDER BY row_no').bind(id));
+  if(job.status!=='READY')return badRequest('Aktarım önizlemesi hazır değil.','IMPORT_NOT_READY');
+  const rows = await all<any>(env.DB.prepare(`SELECT * FROM import_staging_rows WHERE import_job_id=? AND resolution!='SKIP' ORDER BY row_no`).bind(id));
   let created = 0, reused = 0;
   for (const row of rows) {
     const source = JSON.parse(row.source_json);
     const mapped = row.mapped_json ? JSON.parse(row.mapped_json) : {};
-    if (mapped.matchedStudentId) { reused++; continue; }
+    if (mapped.matchedStudentId) {
+      if(source.external_id){const exists=await one(env.DB.prepare(`SELECT id FROM external_identities WHERE institution_id=? AND source_system=? AND entity_type='STUDENT' AND external_id=?`).bind(job.institution_id,job.source_system,source.external_id));if(!exists){const extId=uuid('ext');await env.DB.batch([env.DB.prepare(`INSERT INTO external_identities (id,institution_id,source_system,entity_type,external_id,internal_id) VALUES(?,?,?,?,?,?)`).bind(extId,job.institution_id,job.source_system,'STUDENT',source.external_id,mapped.matchedStudentId),env.DB.prepare(`INSERT INTO import_commit_mutations(id,import_job_id,staging_row_id,mutation_type,entity_id) VALUES(?,?,?,?,?)`).bind(uuid('icm'),id,row.id,'EXTERNAL_ID_CREATED',extId)])}}
+      reused++;continue;
+    }
+    const prior=await one(env.DB.prepare(`SELECT 1 FROM import_commit_mutations WHERE import_job_id=? AND staging_row_id=? AND mutation_type='STUDENT_CREATED'`).bind(id,row.id));if(prior){created++;continue}
     const names = splitName(source.name);
     const studentId = uuid('stu');
-    await env.DB.prepare(`INSERT INTO student_entities (id,first_name,last_name,normalized_name,status,activated_at) VALUES(?,?,?,?, 'ACTIVE',CURRENT_TIMESTAMP)`).bind(studentId, names.firstName, names.lastName, normalizeName(source.name)).run();
     let classId: string | null = null;
+    let classCreated=false;
     if (source.grade_level && source.section) {
       let cls = await one<any>(env.DB.prepare('SELECT id FROM classes WHERE season_id=? AND grade_level=? AND upper(section)=upper(?)').bind(job.season_id, source.grade_level, source.section));
       if (!cls) {
         classId = uuid('class');
-        await env.DB.prepare('INSERT INTO classes (id,institution_id,season_id,grade_level,section,name) VALUES(?,?,?,?,?,?)').bind(classId, job.institution_id, job.season_id, source.grade_level, source.section, `${source.grade_level}/${source.section}`).run();
+        classCreated=true;
       } else classId = cls.id;
     }
-    await env.DB.prepare(`INSERT INTO student_enrollments (id,student_id,institution_id,season_id,class_id,student_number,grade_level,section) VALUES(?,?,?,?,?,?,?,?)`).bind(uuid('enr'), studentId, job.institution_id, job.season_id, classId, source.student_number || null, source.grade_level || null, source.section || null).run();
-    if (source.external_id) await env.DB.prepare(`INSERT OR IGNORE INTO external_identities (id,institution_id,source_system,entity_type,external_id,internal_id) VALUES(?,?,?,?,?,?)`).bind(uuid('ext'), job.institution_id, job.source_system, 'STUDENT', source.external_id, studentId).run();
+    const enrollmentId=uuid('enr');const statements:D1PreparedStatement[]=[];
+    if(classCreated&&classId){statements.push(env.DB.prepare('INSERT INTO classes (id,institution_id,season_id,grade_level,section,name) VALUES(?,?,?,?,?,?)').bind(classId,job.institution_id,job.season_id,source.grade_level,source.section,`${source.grade_level}/${source.section}`));statements.push(env.DB.prepare(`INSERT INTO import_commit_mutations(id,import_job_id,staging_row_id,mutation_type,entity_id) VALUES(?,?,?,?,?)`).bind(uuid('icm'),id,row.id,'CLASS_CREATED',classId))}
+    statements.push(env.DB.prepare(`INSERT INTO student_entities (id,first_name,last_name,normalized_name,status,activated_at) VALUES(?,?,?,?, 'ACTIVE',CURRENT_TIMESTAMP)`).bind(studentId,names.firstName,names.lastName,normalizeName(source.name)));
+    statements.push(env.DB.prepare(`INSERT INTO import_commit_mutations(id,import_job_id,staging_row_id,mutation_type,entity_id) VALUES(?,?,?,?,?)`).bind(uuid('icm'),id,row.id,'STUDENT_CREATED',studentId));
+    statements.push(env.DB.prepare(`INSERT INTO student_enrollments (id,student_id,institution_id,season_id,class_id,student_number,grade_level,section) VALUES(?,?,?,?,?,?,?,?)`).bind(enrollmentId,studentId,job.institution_id,job.season_id,classId,source.student_number||null,source.grade_level||null,source.section||null));
+    statements.push(env.DB.prepare(`INSERT INTO import_commit_mutations(id,import_job_id,staging_row_id,mutation_type,entity_id) VALUES(?,?,?,?,?)`).bind(uuid('icm'),id,row.id,'ENROLLMENT_CREATED',enrollmentId));
+    if(source.external_id){const extId=uuid('ext');statements.push(env.DB.prepare(`INSERT INTO external_identities (id,institution_id,source_system,entity_type,external_id,internal_id) VALUES(?,?,?,?,?,?)`).bind(extId,job.institution_id,job.source_system,'STUDENT',source.external_id,studentId));statements.push(env.DB.prepare(`INSERT INTO import_commit_mutations(id,import_job_id,staging_row_id,mutation_type,entity_id) VALUES(?,?,?,?,?)`).bind(uuid('icm'),id,row.id,'EXTERNAL_ID_CREATED',extId))}
+    await env.DB.batch(statements);
     created++;
   }
-  await env.DB.prepare(`UPDATE import_jobs SET status='COMMITTED',committed_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run();
-  await audit(env.DB, user.id, job.institution_id, 'IMPORT_COMMITTED', 'import_job', id, { created, reused });
-  return json({ ok: true, created, reused });
+  const summary={created,reused,skipped:Number(job.skipped_count||0)};await env.DB.prepare(`UPDATE import_jobs SET status='COMMITTED',committed_at=CURRENT_TIMESTAMP,commit_summary_json=? WHERE id=?`).bind(JSON.stringify(summary),id).run();
+  await audit(env.DB, user.id, job.institution_id, 'IMPORT_COMMITTED', 'import_job', id, summary);
+  return json({ ok: true, ...summary });
+}
+
+async function rollbackImport(request:Request,env:Env,user:AuthUser,id:string):Promise<Response>{
+ if(!roleCanManageInstitution(user.role))return forbidden();const body:{confirmed?:boolean;reason?:string}=await request.json<{confirmed?:boolean;reason?:string}>().catch(()=>({}));if(body.confirmed!==true)return badRequest('Geri alma için açık kullanıcı onayı gereklidir.','ROLLBACK_CONFIRMATION_REQUIRED');
+ const job=await one<any>(env.DB.prepare('SELECT * FROM import_jobs WHERE id=?').bind(id));if(!job||!(await userCanAccessInstitution(env.DB,user,job.institution_id)))return notFound();if(job.status!=='COMMITTED')return badRequest('Yalnız tamamlanmış aktarım geri alınabilir.','IMPORT_NOT_COMMITTED');if(job.rolled_back_at)return json({ok:true,alreadyRolledBack:true});
+ const mutations=await all<any>(env.DB.prepare('SELECT * FROM import_commit_mutations WHERE import_job_id=? ORDER BY created_at DESC').bind(id));const enrollments=mutations.filter(x=>x.mutation_type==='ENROLLMENT_CREATED'),students=mutations.filter(x=>x.mutation_type==='STUDENT_CREATED'),classes=mutations.filter(x=>x.mutation_type==='CLASS_CREATED'),external=mutations.filter(x=>x.mutation_type==='EXTERNAL_ID_CREATED');const statements:D1PreparedStatement[]=[];
+ for(const x of enrollments)statements.push(env.DB.prepare(`UPDATE student_enrollments SET status='ARCHIVED' WHERE id=? AND institution_id=?`).bind(x.entity_id,job.institution_id));
+ for(const x of students)statements.push(env.DB.prepare(`UPDATE student_entities SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=? AND NOT EXISTS(SELECT 1 FROM student_enrollments WHERE student_id=? AND status='ACTIVE')`).bind(x.entity_id,x.entity_id));
+ for(const x of external)statements.push(env.DB.prepare('DELETE FROM external_identities WHERE id=? AND institution_id=?').bind(x.entity_id,job.institution_id));
+ for(const x of classes)statements.push(env.DB.prepare(`UPDATE classes SET active=0 WHERE id=? AND institution_id=? AND NOT EXISTS(SELECT 1 FROM student_enrollments WHERE class_id=? AND status='ACTIVE')`).bind(x.entity_id,job.institution_id,x.entity_id));
+ statements.push(env.DB.prepare('UPDATE import_jobs SET rolled_back_at=CURRENT_TIMESTAMP,rolled_back_by=? WHERE id=?').bind(user.id,id));if(statements.length)await env.DB.batch(statements);
+ await audit(env.DB,user.id,job.institution_id,'IMPORT_ROLLED_BACK','import_job',id,{reason:String(body.reason||'').slice(0,500),archivedStudents:students.length,archivedEnrollments:enrollments.length});return json({ok:true,archivedStudents:students.length,archivedEnrollments:enrollments.length,historyPreserved:true});
 }
 
 async function listWorksheets(env: Env, user: AuthUser, url: URL): Promise<Response> {

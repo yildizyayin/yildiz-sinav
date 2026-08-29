@@ -22,6 +22,11 @@ async function sha256Hex(value: string): Promise<string> {
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+export async function currentSessionTokenHash(request:Request):Promise<string|null>{
+  const raw=getCookie(request,SESSION_COOKIE);
+  return raw?sha256Hex(raw):null;
+}
+
 export async function hashPassword(password: string, saltB64?: string, iterations = ITERATIONS): Promise<{ hash: string; salt: string; iterations: number }> {
   const salt = saltB64 ? base64ToBytes(saltB64) : crypto.getRandomValues(new Uint8Array(16));
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);

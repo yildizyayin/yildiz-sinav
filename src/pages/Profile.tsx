@@ -1,37 +1,29 @@
-import { Building2, KeyRound, Mail, ShieldCheck, UserRound } from 'lucide-react';
-import { useAuth, type Role } from '../auth';
+import { useEffect,useState } from 'react';
+import { Building2,KeyRound,Laptop,LogOut,Mail,RefreshCw,ShieldCheck,Smartphone,UserRound } from 'lucide-react';
+import { api } from '../api';
+import { useAuth,type Role } from '../auth';
 
 export function Profile(){
-  const {user,institution}=useAuth();
-  if(!user)return null;
-  return <>
-    <div className="page-head"><div><span className="eyebrow">Hesabım</span><h1>Profil ve erişim bilgileri</h1><p>Bu sayfa hesabınızın hangi rol ve kurum kapsamında çalıştığını gösterir.</p></div></div>
-    <div className="kpi-grid" style={{marginBottom:20}}>
-      <Info label="Rol" value={roleName(user.role)} icon={<ShieldCheck size={18}/>}/>
-      <Info label="Kurum" value={institution?.name||'Platform geneli'} icon={<Building2 size={18}/>}/>
-      <Info label="Kullanıcı" value={user.username||'—'} icon={<UserRound size={18}/>}/>
-      <Info label="E-posta" value={user.email||'Tanımlı değil'} icon={<Mail size={18}/>}/>
-    </div>
-    <div className="panel">
-      <div className="panel-head"><div><h2>Erişim kapsamı</h2><p>Yetkiler sadece menüde gizlenmez; backend tarafında da rol, kurum, sınıf ve branş kapsamına göre uygulanır.</p></div><KeyRound size={20}/></div>
-      <div className="cards-list">
-        <Scope role={user.role}/>
-        <div className="list-card"><div className="quick-icon"><ShieldCheck size={18}/></div><div><strong>Güvenli oturum</strong><span>Oturum kapatıldığında mevcut session iptal edilir. Yetkisiz API erişimleri engellenir.</span></div></div>
-      </div>
-    </div>
-  </>;
+ const{user,institution}=useAuth();const[sessions,setSessions]=useState<any[]>([]),[currentPassword,setCurrentPassword]=useState(''),[newPassword,setNewPassword]=useState(''),[confirmPassword,setConfirmPassword]=useState(''),[busy,setBusy]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState('');
+ const load=async()=>{try{const result=await api<any>('/api/auth/sessions');setSessions(result.sessions||[])}catch(e:any){setError(e.message)}};useEffect(()=>{void load()},[]);
+ if(!user)return null;
+ const change=async()=>{if(newPassword!==confirmPassword){setError('Yeni şifre tekrarı eşleşmiyor.');return}try{setBusy('password');setError('');setNotice('');const result=await api<any>('/api/auth/change-password',{method:'POST',body:JSON.stringify({currentPassword,newPassword})});setNotice(result.message);setCurrentPassword('');setNewPassword('');setConfirmPassword('');await load()}catch(e:any){setError(e.message)}finally{setBusy('')}};
+ const revoke=async(session:any)=>{if(!confirm(session.current?'Bu cihazdaki oturum kapatılacak. Devam edilsin mi?':'Seçili cihazın oturumu kapatılsın mı?'))return;try{setBusy(session.id);await api(`/api/auth/sessions/${session.id}`,{method:'DELETE'});if(session.current){window.location.replace('/login');return}await load()}catch(e:any){setError(e.message)}finally{setBusy('')}};
+ const revokeAll=async()=>{if(!confirm('Tüm cihazlardaki ANUNEX oturumlarınız kapatılacak. Devam edilsin mi?'))return;try{setBusy('all');await api('/api/auth/sessions/revoke-all',{method:'POST',body:'{}'});window.location.replace('/login')}catch(e:any){setError(e.message);setBusy('')}};
+ return <>
+  <div className="page-head"><div><span className="eyebrow">Hesabım · Güvenlik Merkezi</span><h1>Profil ve oturum güvenliği</h1><p>Şifrenizi ve ANUNEX hesabınıza erişen cihazları yönetin.</p></div><button className="ghost" onClick={()=>void load()}><RefreshCw size={16}/> Yenile</button></div>
+  {error&&<div className="alert error" role="alert">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
+  <div className="kpi-grid" style={{marginBottom:20}}><Info label="Rol" value={roleName(user.role)} icon={<ShieldCheck size={18}/>}/><Info label="Kurum" value={institution?.name||'Platform geneli'} icon={<Building2 size={18}/>}/><Info label="Kullanıcı" value={user.username||'—'} icon={<UserRound size={18}/>}/><Info label="E-posta" value={user.email||'Tanımlı değil'} icon={<Mail size={18}/>} /></div>
+  <div className="security-grid">
+   <div className="panel"><div className="panel-head"><div><h2>Şifre değiştir</h2><p>Şifre değiştiğinde bu cihaz dışındaki aktif oturumlar otomatik kapatılır.</p></div><KeyRound/></div><label>Mevcut şifre<input type="password" autoComplete="current-password" value={currentPassword} onChange={e=>setCurrentPassword(e.target.value)}/></label><label>Yeni şifre<input type="password" autoComplete="new-password" value={newPassword} onChange={e=>setNewPassword(e.target.value)}/></label><label>Yeni şifre tekrar<input type="password" autoComplete="new-password" value={confirmPassword} onChange={e=>setConfirmPassword(e.target.value)}/></label><small className="password-rule">En az 12 karakter; büyük harf, küçük harf ve rakam.</small><button className="primary full" disabled={busy==='password'||!currentPassword||!newPassword||!confirmPassword} onClick={()=>void change()}>{busy==='password'?'Değiştiriliyor…':'Şifreyi Güvenli Değiştir'}</button></div>
+   <div className="panel"><div className="panel-head"><div><h2>Erişim kapsamı</h2><p>Yetkiler backend tarafında rol ve kurum kapsamında uygulanır.</p></div><ShieldCheck/></div><Scope role={user.role}/></div>
+  </div>
+  <div className="panel"><div className="panel-head"><div><h2>Aktif cihazlar ve oturumlar</h2><p>Tanımadığınız bir cihazın erişimini hemen sonlandırın.</p></div><button className="danger" disabled={busy==='all'} onClick={()=>void revokeAll()}><LogOut size={16}/> Tüm Cihazlardan Çık</button></div><div className="cards-list">{sessions.map(session=><div className="list-card" key={session.id}><div className="quick-icon">{/Mobile|Android|iPhone/i.test(session.userAgent)?<Smartphone size={18}/>:<Laptop size={18}/>}</div><div><strong>{deviceName(session.userAgent)} {session.current&&<span className="status ok">Bu cihaz</span>}</strong><span>Başlangıç: {formatDate(session.createdAt)} · Bitiş: {formatDate(session.expiresAt)}</span></div><span className={`status ${session.active?'ok':'off'}`}>{session.active?'Aktif':'Kapalı'}</span>{session.active&&<button className="danger subtle" disabled={busy===session.id} onClick={()=>void revoke(session)}>Oturumu Kapat</button>}</div>)}{!sessions.length&&<div className="empty">Oturum kaydı bulunamadı.</div>}</div></div>
+ </>;
 }
 
+function deviceName(value:string){if(/iPhone|iPad/i.test(value))return 'Apple mobil cihaz';if(/Android/i.test(value))return 'Android cihaz';if(/Windows/i.test(value))return 'Windows bilgisayar';if(/Macintosh|Mac OS/i.test(value))return 'Mac bilgisayar';return 'Bilinmeyen cihaz'}
+function formatDate(value:string){return value?new Date(value).toLocaleString('tr-TR'):'—'}
 function Info({label,value,icon}:{label:string;value:string;icon:React.ReactNode}){return <div className="kpi-card"><div className="quick-icon" style={{marginBottom:10}}>{icon}</div><span>{label}</span><strong style={{fontSize:18}}>{value}</strong></div>}
-function Scope({role}:{role:Role}){
-  const text:Record<Role,string>={
-    SUPER_ADMIN:'Tüm kurumlar, sezonlar, sınav tanımları, optikler, müfredat, raporlar ve sistem ayarları.',
-    INSTITUTION_MANAGER:'Yalnız kendi kurumu içindeki öğrenciler, öğretmenler, sınavlar, raporlar, optikler ve operasyonlar.',
-    TEACHER:'Yalnız atandığınız sınıflar ve kendi branşınızla ilgili sonuç, kazanım, sınav ve föy verileri.',
-    GUIDANCE_TEACHER:'Yalnız atandığınız sınıflardaki öğrencilerin tüm ders sonuçları ve gelişim görünümü.',
-    STUDENT:'Yalnız kendi sınav sonuçlarınız, geliştirilecek kazanımlarınız, föyleriniz ve birleşik gelişim raporunuz.',
-    PARENT:'Yalnız hesabınıza bağlanmış çocukların sonuç ve gelişim raporları.',
-  };
-  return <div className="list-card"><div className="quick-icon"><UserRound size={18}/></div><div><strong>{roleName(role)} kapsamı</strong><span>{text[role]}</span></div></div>;
-}
+function Scope({role}:{role:Role}){const text:Record<Role,string>={SUPER_ADMIN:'Tüm kurumlar ve platform ayarları.',INSTITUTION_MANAGER:'Yalnız kendi kurumundaki kullanıcı ve akademik operasyonlar.',TEACHER:'Yalnız atanmış sınıf ve branş verileri.',GUIDANCE_TEACHER:'Yalnız atanmış sınıflardaki rehberlik ve gelişim verileri.',STUDENT:'Yalnız kendi akademik ve gelişim verileri.',PARENT:'Yalnız hesabına bağlanmış çocukların verileri.'};return <div className="list-card"><div className="quick-icon"><UserRound size={18}/></div><div><strong>{roleName(role)} kapsamı</strong><span>{text[role]}</span></div></div>}
 function roleName(role:Role){return ({SUPER_ADMIN:'Süper Admin',INSTITUTION_MANAGER:'Kurum Yöneticisi',TEACHER:'Branş Öğretmeni',GUIDANCE_TEACHER:'Rehber Öğretmeni',STUDENT:'Öğrenci',PARENT:'Veli'} as const)[role]}

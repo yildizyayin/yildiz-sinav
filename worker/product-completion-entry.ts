@@ -1,8 +1,9 @@
-import app from './scale-entry';
+import app from './assignment-entry';
 import type { AuthUser,CapacityJobMessage,Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,audit,badRequest,forbidden,json,notFound,one,uuid } from './lib/db';
 import { capacityTestStatus,processCapacityQueue,startCapacityTest } from './lib/operations-completion';
+import { requireLicensedApiFeature } from './lib/feature-access';
 
 function fail(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 function parseJson<T>(value:string|null,fallback:T):T{try{return value?JSON.parse(value):fallback}catch{return fallback}}
@@ -71,7 +72,9 @@ async function grantMonthlyMembershipCredits(env:Env){const periodKey=new Date()
 
 export default {
  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
-  const url=new URL(request.url),path=url.pathname;const custom=path==='/api/membership/catalog'||path==='/api/membership/orders'||path==='/api/admin/membership/orders'||path.startsWith('/api/admin/membership/orders/')||path==='/api/admin/completion-center'||path==='/api/admin/annual-content-plans'||path==='/api/admin/annual-content-plans/generate'||path==='/api/admin/capacity-tests';if(!custom)return app.fetch(request,env,ctx);const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
+  const url=new URL(request.url),path=url.pathname;
+  if(path.startsWith('/api/')){const featureUser=await getAuthUser(env,request);if(featureUser){const featureBlock=await requireLicensedApiFeature(env,featureUser,path);if(featureBlock)return featureBlock;}}
+  const custom=path==='/api/membership/catalog'||path==='/api/membership/orders'||path==='/api/admin/membership/orders'||path.startsWith('/api/admin/membership/orders/')||path==='/api/admin/completion-center'||path==='/api/admin/annual-content-plans'||path==='/api/admin/annual-content-plans/generate'||path==='/api/admin/capacity-tests';if(!custom)return app.fetch(request,env,ctx);const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
   if(path==='/api/membership/catalog'&&request.method==='GET')return membershipCatalog(env,user,url);
   if(path==='/api/membership/orders'&&request.method==='POST')return createMembershipOrder(request,env,user);
   if(path==='/api/admin/membership/orders'&&request.method==='GET')return adminMembershipOrders(env,user,url);

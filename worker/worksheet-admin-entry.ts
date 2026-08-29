@@ -5,8 +5,10 @@ import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './
 
 const PROGRAMS = ['SCHOOL','TYT','AYT'] as const;
 const TRACKS = ['NUMERIC','VERBAL'] as const;
+const SERIES = ['BLUE','RED'] as const;
 type ProgramCode = typeof PROGRAMS[number];
 type Track = typeof TRACKS[number];
+type SeriesCode = typeof SERIES[number];
 
 function apiError(status:number, code:string, message:string, details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 
@@ -20,9 +22,12 @@ async function requireSuper(env:Env, request:Request):Promise<AuthUser|Response>
 function safeName(value:string){return value.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/-+/g,'-').slice(0,120)||'file'}
 
 function validSlot(programCode:ProgramCode,gradeLevel:number|null){
-  if(programCode==='SCHOOL')return Number.isInteger(gradeLevel)&&Number(gradeLevel)>=5&&Number(gradeLevel)<=11;
+  if(programCode==='SCHOOL')return Number.isInteger(gradeLevel)&&Number(gradeLevel)>=5&&Number(gradeLevel)<=12;
   return gradeLevel==null;
 }
+function validSeries(series:SeriesCode,grade:number|null){return series==='BLUE'?(Number(grade)>=5&&Number(grade)<=12):(grade===8||grade===12)}
+function seriesQuestionCount(series:SeriesCode){return series==='RED'?20:10}
+function storageSequence(series:SeriesCode,displaySequence:number){return series==='RED'?displaySequence+50:displaySequence}
 
 async function listAdmin(env:Env,url:URL):Promise<Response>{
   const academicYear=url.searchParams.get('academicYear');
@@ -52,37 +57,37 @@ async function options(env:Env,url:URL):Promise<Response>{
     FROM outcomes o LEFT JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
     WHERE o.active=1 AND (? IS NULL OR o.grade_level=? OR o.grade_level IS NULL)
     ORDER BY o.subject_id,o.topic,o.title`).bind(grade,grade));
-  return json({ok:true,subjects,outcomes,programs:PROGRAMS,tracks:TRACKS});
+  return json({ok:true,subjects,outcomes,programs:PROGRAMS,tracks:TRACKS,series:SERIES});
 }
 
 async function createWorksheet(request:Request,env:Env,actor:AuthUser):Promise<Response>{
-  const body=await request.json<{academicYear?:string;programCode?:ProgramCode;gradeLevel?:number|null;track?:Track;sequenceNo?:number;title?:string}>();
-  const academicYear=body.academicYear?.trim()||'';const programCode=body.programCode||'SCHOOL';const track=body.track||'NUMERIC';const gradeLevel=body.gradeLevel==null?null:Number(body.gradeLevel);const sequenceNo=Number(body.sequenceNo);const title=body.title?.trim()||'';
-  if(!academicYear||!PROGRAMS.includes(programCode)||!TRACKS.includes(track)||!Number.isInteger(sequenceNo)||sequenceNo<1||sequenceNo>99)return badRequest('Föy alanları eksik veya geçersiz.');
-  if(!validSlot(programCode,gradeLevel))return badRequest(programCode==='SCHOOL'?'Okul föylerinde sınıf 5-11 arasında olmalıdır.':'TYT/AYT föylerinde sınıf alanı boş bırakılmalıdır.');
+  const body=await request.json<{academicYear?:string;programCode?:ProgramCode;gradeLevel?:number|null;track?:Track;seriesCode?:SeriesCode;sequenceNo?:number;title?:string}>();
+  const academicYear=body.academicYear?.trim()||'';const programCode=body.programCode||'SCHOOL';const track=body.track||'NUMERIC';const seriesCode=body.seriesCode||'BLUE';const gradeLevel=body.gradeLevel==null?null:Number(body.gradeLevel);const displaySequence=Number(body.sequenceNo),sequenceNo=storageSequence(seriesCode,displaySequence);const title=body.title?.trim()||'';
+  if(!academicYear||!PROGRAMS.includes(programCode)||!TRACKS.includes(track)||!Number.isInteger(displaySequence)||displaySequence<1||displaySequence>32)return badRequest('Föy alanları eksik veya geçersiz.');
+  if(!SERIES.includes(seriesCode)||!validSlot(programCode,gradeLevel)||programCode==='SCHOOL'&&!validSeries(seriesCode,gradeLevel))return badRequest('Mavi Seri 5–12. sınıflarda; Kırmızı Seri yalnız 8 ve 12. sınıflarda oluşturulabilir.');
   const existing=await one(env.DB.prepare(`SELECT id FROM worksheets WHERE academic_year=? AND program_code=? AND coalesce(grade_level,0)=coalesce(?,0) AND track=? AND sequence_no=?`).bind(academicYear,programCode,gradeLevel,track,sequenceNo));
   if(existing)return apiError(409,'WORKSHEET_SLOT_EXISTS','Bu akademik yıl/program/sıra için föy zaten var.');
-  const id=uuid('ws');const defaultTitle=programCode==='SCHOOL'?`${gradeLevel}. Sınıf ${track==='NUMERIC'?'Sayısal':'Sözel'} Föy ${sequenceNo}`:`${programCode} ${track==='NUMERIC'?'Sayısal':'Sözel'} Föy ${sequenceNo}`;
-  await env.DB.prepare(`INSERT INTO worksheets (id,academic_year,grade_level,track,sequence_no,title,status,program_code) VALUES (?,?,?,?,?,?,'DRAFT',?)`).bind(id,academicYear,gradeLevel,track,sequenceNo,title||defaultTitle,programCode).run();
-  await audit(env.DB,actor.id,null,'WORKSHEET_CREATED','worksheet',id,{academicYear,programCode,gradeLevel,track,sequenceNo});
+  const id=uuid('ws');const defaultTitle=`${gradeLevel}. Sınıf ${seriesCode==='BLUE'?'Mavi':'Kırmızı'} Seri ${track==='NUMERIC'?'Sayısal':'Sözel'} Föy ${displaySequence}`;
+  await env.DB.prepare(`INSERT INTO worksheets (id,academic_year,grade_level,track,sequence_no,title,status,program_code,series_code,series_sequence_no,questions_per_subject) VALUES (?,?,?,?,?,?,'DRAFT',?,?,?,?)`).bind(id,academicYear,gradeLevel,track,sequenceNo,title||defaultTitle,programCode,seriesCode,displaySequence,seriesQuestionCount(seriesCode)).run();
+  await audit(env.DB,actor.id,null,'WORKSHEET_CREATED','worksheet',id,{academicYear,programCode,gradeLevel,track,seriesCode,sequenceNo:displaySequence,questionsPerSubject:seriesQuestionCount(seriesCode)});
   return json({ok:true,id},201);
 }
 
 async function generateSlots(request:Request,env:Env,actor:AuthUser):Promise<Response>{
-  const body=await request.json<{academicYear?:string;programCode?:ProgramCode;gradeLevel?:number|null;numericCount?:number;verbalCount?:number}>();
-  const academicYear=body.academicYear?.trim()||'';const programCode=body.programCode||'SCHOOL';const gradeLevel=body.gradeLevel==null?null:Number(body.gradeLevel);const numericCount=Math.min(32,Math.max(0,Number(body.numericCount??16)));const verbalCount=Math.min(32,Math.max(0,Number(body.verbalCount??16)));
+  const body=await request.json<{academicYear?:string;programCode?:ProgramCode;gradeLevel?:number|null;seriesCode?:SeriesCode;numericCount?:number;verbalCount?:number}>();
+  const academicYear=body.academicYear?.trim()||'';const programCode=body.programCode||'SCHOOL';const seriesCode=body.seriesCode||'BLUE';const gradeLevel=body.gradeLevel==null?null:Number(body.gradeLevel);const numericCount=Math.min(32,Math.max(0,Number(body.numericCount??16)));const verbalCount=Math.min(32,Math.max(0,Number(body.verbalCount??16)));
   if(!academicYear||!PROGRAMS.includes(programCode)||!Number.isInteger(numericCount)||!Number.isInteger(verbalCount))return badRequest('Yıllık föy planı geçersiz.');
-  if(!validSlot(programCode,gradeLevel))return badRequest(programCode==='SCHOOL'?'Okul föylerinde sınıf 5-11 arasında olmalıdır.':'TYT/AYT föylerinde sınıf alanı boş bırakılmalıdır.');
+  if(!SERIES.includes(seriesCode)||programCode!=='SCHOOL'||!validSlot(programCode,gradeLevel)||!validSeries(seriesCode,gradeLevel))return badRequest('Mavi Seri 5–12. sınıflarda; Kırmızı Seri yalnız 8 ve 12. sınıflarda oluşturulabilir.');
   let created=0,skipped=0;
   for(const [track,count] of [['NUMERIC',numericCount],['VERBAL',verbalCount]] as Array<[Track,number]>){
-    for(let sequenceNo=1;sequenceNo<=count;sequenceNo++){
+    for(let displaySequence=1;displaySequence<=count;displaySequence++){const sequenceNo=storageSequence(seriesCode,displaySequence);
       const exists=await one(env.DB.prepare(`SELECT id FROM worksheets WHERE academic_year=? AND program_code=? AND coalesce(grade_level,0)=coalesce(?,0) AND track=? AND sequence_no=?`).bind(academicYear,programCode,gradeLevel,track,sequenceNo));
       if(exists){skipped++;continue}
-      const id=uuid('ws');const title=programCode==='SCHOOL'?`${gradeLevel}. Sınıf ${track==='NUMERIC'?'Sayısal':'Sözel'} Föy ${sequenceNo}`:`${programCode} ${track==='NUMERIC'?'Sayısal':'Sözel'} Föy ${sequenceNo}`;
-      await env.DB.prepare(`INSERT INTO worksheets (id,academic_year,grade_level,track,sequence_no,title,status,program_code) VALUES (?,?,?,?,?,?,'DRAFT',?)`).bind(id,academicYear,gradeLevel,track,sequenceNo,title,programCode).run();created++;
+      const id=uuid('ws');const title=`${gradeLevel}. Sınıf ${seriesCode==='BLUE'?'Mavi':'Kırmızı'} Seri ${track==='NUMERIC'?'Sayısal':'Sözel'} Föy ${displaySequence}`;
+      await env.DB.prepare(`INSERT INTO worksheets (id,academic_year,grade_level,track,sequence_no,title,status,program_code,series_code,series_sequence_no,questions_per_subject) VALUES (?,?,?,?,?,?,'DRAFT',?,?,?,?)`).bind(id,academicYear,gradeLevel,track,sequenceNo,title,programCode,seriesCode,displaySequence,seriesQuestionCount(seriesCode)).run();created++;
     }
   }
-  await audit(env.DB,actor.id,null,'WORKSHEET_SLOTS_GENERATED','worksheet_plan',`${academicYear}:${programCode}:${gradeLevel??'YKS'}`,{numericCount,verbalCount,created,skipped});
+  await audit(env.DB,actor.id,null,'WORKSHEET_SLOTS_GENERATED','worksheet_plan',`${academicYear}:${programCode}:${gradeLevel}:${seriesCode}`,{seriesCode,questionsPerSubject:seriesQuestionCount(seriesCode),numericCount,verbalCount,created,skipped});
   return json({ok:true,created,skipped});
 }
 
@@ -102,7 +107,7 @@ async function saveStructure(request:Request,env:Env,actor:AuthUser,id:string):P
   const worksheet=await one<any>(env.DB.prepare('SELECT * FROM worksheets WHERE id=?').bind(id));if(!worksheet)return notFound('Föy bulunamadı.');if(worksheet.status==='PUBLISHED')return badRequest('Yayınlanmış föy doğrudan değiştirilemez. Önce DRAFT durumuna alın veya yeni içerik hazırlayın.','PUBLISHED_WORKSHEET_LOCKED');
   const body=await request.json<{subjects?:Array<{subjectId:string;questionCount:number;outcomeIds?:string[]}>}>();const items=body.subjects||[];if(!items.length)return badRequest('En az bir ders seçilmelidir.');
   const seen=new Set<string>();
-  for(const item of items){if(seen.has(item.subjectId))return badRequest('Aynı ders birden fazla eklenemez.');seen.add(item.subjectId);if(!Number.isInteger(Number(item.questionCount))||Number(item.questionCount)<1||Number(item.questionCount)>100)return badRequest('Soru sayısı 1-100 arasında olmalıdır.');const subject=await one(env.DB.prepare('SELECT id FROM subjects WHERE id=? AND active=1').bind(item.subjectId));if(!subject)return badRequest('Seçilen ders bulunamadı.');for(const outcomeId of item.outcomeIds||[]){const outcome=await one<any>(env.DB.prepare('SELECT id,subject_id FROM outcomes WHERE id=? AND active=1').bind(outcomeId));if(!outcome||outcome.subject_id!==item.subjectId)return badRequest('Kazanım seçimi dersle eşleşmiyor.')}}
+  for(const item of items){if(seen.has(item.subjectId))return badRequest('Aynı ders birden fazla eklenemez.');seen.add(item.subjectId);if(Number(item.questionCount)!==Number(worksheet.questions_per_subject))return badRequest(`${worksheet.series_code==='RED'?'Kırmızı':'Mavi'} Seri her ders için tam ${worksheet.questions_per_subject} soru içermelidir.`);const subject=await one(env.DB.prepare('SELECT id FROM subjects WHERE id=? AND active=1').bind(item.subjectId));if(!subject)return badRequest('Seçilen ders bulunamadı.');for(const outcomeId of item.outcomeIds||[]){const outcome=await one<any>(env.DB.prepare('SELECT id,subject_id FROM outcomes WHERE id=? AND active=1').bind(outcomeId));if(!outcome||outcome.subject_id!==item.subjectId)return badRequest('Kazanım seçimi dersle eşleşmiyor.')}}
   await env.DB.prepare('DELETE FROM worksheet_question_links WHERE worksheet_id=?').bind(id).run();
   await env.DB.prepare('DELETE FROM worksheet_outcomes WHERE worksheet_id=?').bind(id).run();
   await env.DB.prepare('DELETE FROM worksheet_subjects WHERE worksheet_id=?').bind(id).run();
@@ -133,6 +138,7 @@ async function uploadAsset(request:Request,env:Env,actor:AuthUser,id:string):Pro
 async function worksheetReadiness(env:Env,id:string){
   const worksheet=await one<any>(env.DB.prepare('SELECT * FROM worksheets WHERE id=?').bind(id));if(!worksheet)return {ready:false,errors:['Föy bulunamadı.']};
   const subjects=await all<any>(env.DB.prepare('SELECT subject_id,question_count FROM worksheet_subjects WHERE worksheet_id=?').bind(id));const errors:string[]=[];if(!subjects.length)errors.push('En az bir ders tanımlanmalıdır.');const totalQuestions=subjects.reduce((s,x)=>s+Number(x.question_count||0),0);
+  for(const s of subjects)if(Number(s.question_count)!==Number(worksheet.questions_per_subject))errors.push(`${worksheet.series_code==='RED'?'Kırmızı':'Mavi'} Seri ders başına ${worksheet.questions_per_subject} soru içermelidir.`);
   for(const s of subjects){const c=await one<{c:number}>(env.DB.prepare('SELECT count(*) c FROM worksheet_outcomes WHERE worksheet_id=? AND subject_id=?').bind(id,s.subject_id));if(!(c?.c))errors.push('Her ders için en az bir resmî kazanım seçilmelidir.');}
   const unofficial=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM worksheet_outcomes wo JOIN outcomes o ON o.id=wo.outcome_id LEFT JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE wo.worksheet_id=? AND (o.official!=1 OR coalesce(cv.verified,0)!=1)`).bind(id));if((unofficial?.c||0)>0)errors.push('Yayın için yalnız doğrulanmış resmî müfredat/kazanım verisi kullanılabilir.');
   const pdf=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM worksheet_assets WHERE worksheet_id=? AND asset_type='PDF'`).bind(id));if(!(pdf?.c))errors.push('Föy PDF dosyası gereklidir.');const key=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM worksheet_assets WHERE worksheet_id=? AND asset_type='ANSWER_KEY'`).bind(id));if(!(key?.c))errors.push('Cevap anahtarı PDF dosyası gereklidir.');

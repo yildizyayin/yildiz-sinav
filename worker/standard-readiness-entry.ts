@@ -109,8 +109,8 @@ async function guidanceApi(request:Request,env:Env){
 
 async function orchestratedNibiruChat(request:Request,env:Env,ctx:ExecutionContext){
   const user=await getAuthUser(env,request);if(!user)return app.fetch(request,env,ctx);
-  let message='';try{const body=await request.clone().json<{message?:string}>();message=body.message?.trim()||''}catch{}
-  const route=routeNibiruSpecialist(user,message),response=await app.fetch(request,env,ctx);
+  let message='',pageContext:{pathname?:string}|undefined;try{const body=await request.clone().json<{message?:string;context?:{pathname?:string}}>();message=body.message?.trim()||'';pageContext=body.context}catch{}
+  const route=routeNibiruSpecialist(user,message,pageContext),response=await app.fetch(request,env,ctx);
   if(!response.headers.get('content-type')?.includes('application/json'))return response;
   let payload:any;try{payload=await response.clone().json()}catch{return response}if(!payload?.ok||typeof payload.answer!=='string')return response;
   let coachPlan:any=null,guidanceRoute:any=null,guidanceAssessment:any=null;

@@ -1,5 +1,6 @@
 import type { AuthUser, Env } from '../types';
 import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './db';
+import { rightsBasisForCopyright } from './content-source-policy';
 
 const NEXT_FEATURES = new Set([
   'LEARNING_GRAPH','QUESTION_BANK','RECOVERY','RBA','MEMBERSHIP','LIVE','STUDIO','PHYSICAL_BRIDGE','GAMES','CAMPUS','ENTERPRISE','PUBLISHER','ADMISSIONS','GUIDANCE_TESTS','BOARD','MOBILE_API','VIDEO_LIBRARY',
@@ -18,6 +19,14 @@ function userInstitution(user: AuthUser, requested?: string | null): string | nu
   if (user.role === 'SUPER_ADMIN') return requested || user.institution_id || null;
   return user.institution_id;
 }
+
+type TeacherContentScope=Array<{subject_id:string;grade_level:number}>;
+async function teacherContentScope(env:Env,user:AuthUser):Promise<TeacherContentScope|null>{
+  if(!['TEACHER','GUIDANCE_TEACHER'].includes(user.role))return null;
+  if(user.role==='TEACHER')return all<TeacherContentScope[number]>(env.DB.prepare(`SELECT DISTINCT ta.subject_id,c.grade_level FROM teacher_assignments ta JOIN classes c ON c.id=ta.class_id JOIN institution_seasons se ON se.id=ta.season_id WHERE ta.user_id=? AND ta.institution_id=? AND c.institution_id=ta.institution_id AND se.institution_id=ta.institution_id AND ta.assignment_type='SUBJECT' AND ta.subject_id IS NOT NULL AND ta.active=1 AND c.active=1 AND se.status='ACTIVE'`).bind(user.id,user.institution_id));
+  return all<TeacherContentScope[number]>(env.DB.prepare(`SELECT DISTINCT s.id subject_id,c.grade_level FROM teacher_assignments ta JOIN classes c ON c.id=ta.class_id JOIN institution_seasons se ON se.id=ta.season_id JOIN subjects s ON s.active=1 WHERE ta.user_id=? AND ta.institution_id=? AND c.institution_id=ta.institution_id AND se.institution_id=ta.institution_id AND ta.assignment_type='GUIDANCE' AND ta.active=1 AND c.active=1 AND se.status='ACTIVE'`).bind(user.id,user.institution_id));
+}
+function teacherContentAllowed(scope:TeacherContentScope|null,subjectId:string,gradeLevel:number){return scope===null||scope.some(row=>row.subject_id===subjectId&&Number(row.grade_level)===gradeLevel)}
 
 async function featureEnabled(env: Env, user: AuthUser, key: string): Promise<boolean> {
   if (user.role === 'SUPER_ADMIN') return true;
@@ -42,6 +51,34 @@ async function canManageNetwork(env: Env, user: AuthUser, networkId: string): Pr
   if (user.role === 'SUPER_ADMIN') return true;
   const row = await one<any>(env.DB.prepare(`SELECT 1 ok FROM network_user_roles WHERE network_id=? AND user_id=? AND role='NETWORK_ADMIN' AND active=1`).bind(networkId,user.id));
   return !!row;
+}
+
+type NetworkAccess = { role: 'SUPER_ADMIN'|'NETWORK_ADMIN'|'NETWORK_VIEWER'; scopeUnitId: string|null };
+
+async function networkAccess(env:Env,user:AuthUser,networkId:string):Promise<NetworkAccess|null>{
+  if(user.role==='SUPER_ADMIN')return{role:'SUPER_ADMIN',scopeUnitId:null};
+  const row=await one<any>(env.DB.prepare(`SELECT role,scope_unit_id FROM network_user_roles WHERE network_id=? AND user_id=? AND active=1`).bind(networkId,user.id));
+  return row?{role:row.role,scopeUnitId:row.scope_unit_id||null}:null;
+}
+
+async function accessibleNetworkUnit(env:Env,networkId:string,rootUnitId:string|null,requestedUnitId:string|null):Promise<string|null|false>{
+  const effective=requestedUnitId||rootUnitId;
+  if(!effective)return null;
+  const row=await one<any>(env.DB.prepare(`WITH RECURSIVE permitted(id) AS (
+    SELECT id FROM network_units WHERE id=? AND network_id=? AND active=1
+    UNION ALL SELECT u.id FROM network_units u JOIN permitted p ON u.parent_unit_id=p.id WHERE u.network_id=? AND u.active=1
+  ) SELECT id FROM permitted WHERE id=? LIMIT 1`).bind(rootUnitId||effective,networkId,networkId,effective));
+  return row?effective:false;
+}
+
+export function networkPercent(numerator:unknown,denominator:unknown):number{
+  const n=Number(numerator||0),d=Number(denominator||0);return d>0?Math.round((n/d)*1000)/10:0;
+}
+
+function csvValue(value:unknown):string{
+  let text=String(value??'');
+  if(/^[=+\-@]/.test(text))text=`'${text}`;
+  return `"${text.replace(/"/g,'""')}"`;
 }
 
 async function scopedStudentId(env: Env, user: AuthUser, requested?: string | null): Promise<string | null> {
@@ -178,31 +215,106 @@ async function studentExamResult(request:Request,env:Env,user:AuthUser,examId:st
 }
 
 async function listNetworks(env:Env,user:AuthUser):Promise<Response>{
-  const where=user.role==='SUPER_ADMIN'?'1=1':`n.id IN (SELECT network_id FROM network_user_roles WHERE user_id=? AND active=1 UNION SELECT network_id FROM institution_network_members WHERE institution_id=? AND active=1)`;
+  const where=user.role==='SUPER_ADMIN'?'1=1':`n.id IN (SELECT network_id FROM network_user_roles WHERE user_id=? AND active=1)`;
   const stmt=env.DB.prepare(`SELECT n.*,(SELECT COUNT(*) FROM institution_network_members m WHERE m.network_id=n.id AND m.active=1) institution_count FROM institution_networks n WHERE n.active=1 AND ${where} ORDER BY n.name`);
-  const rows=user.role==='SUPER_ADMIN'?await all<any>(stmt):await all<any>(stmt.bind(user.id,user.institution_id));
+  const rows=user.role==='SUPER_ADMIN'?await all<any>(stmt):await all<any>(stmt.bind(user.id));
   return json({ok:true,networks:rows});
 }
 
 async function createNetwork(request:Request,env:Env,user:AuthUser):Promise<Response>{
   if(user.role!=='SUPER_ADMIN')return forbidden(); const b=await requestBody(request); if(!b.name||!b.code)return badRequest('Ağ adı ve kodu gereklidir.'); const id=uuid('net');
-  await env.DB.prepare(`INSERT INTO institution_networks(id,name,code,headquarters_institution_id) VALUES(?,?,?,?)`).bind(id,String(b.name).trim(),String(b.code).trim().toUpperCase(),b.headquartersInstitutionId||null).run();
+  const headquartersId=b.headquartersInstitutionId||null,unitId=headquartersId?uuid('nunit'):null;
+  const statements=[env.DB.prepare(`INSERT INTO institution_networks(id,name,code,headquarters_institution_id) VALUES(?,?,?,?)`).bind(id,String(b.name).trim(),String(b.code).trim().toUpperCase(),headquartersId)];
+  if(headquartersId){
+    const institution=await one<any>(env.DB.prepare(`SELECT id,name,code,city,district FROM institutions WHERE id=?`).bind(headquartersId));if(!institution)return badRequest('Merkez kurum bulunamadı.');
+    statements.push(env.DB.prepare(`INSERT INTO network_units(id,network_id,unit_type,institution_id,name,code,city,district) VALUES(?,?,'HEADQUARTERS',?,?,?,?,?)`).bind(unitId,id,headquartersId,institution.name,`HQ-${institution.code}`,institution.city||null,institution.district||null));
+    statements.push(env.DB.prepare(`INSERT INTO institution_network_members(network_id,institution_id,region_label,active,unit_id) VALUES(?,?,?,1,?)`).bind(id,headquartersId,'Merkez',unitId));
+  }
+  await env.DB.batch(statements);
+  await audit(env.DB,user.id,headquartersId,'NETWORK_CREATED','institution_network',id,{code:String(b.code).trim().toUpperCase(),headquartersInstitutionId:headquartersId});
   return json({ok:true,id},201);
 }
 
 async function addNetworkMember(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
-  if(!await canManageNetwork(env,user,networkId))return forbidden(); const b=await requestBody(request); if(!b.institutionId)return badRequest('Kurum seçin.');
-  await env.DB.prepare(`INSERT INTO institution_network_members(network_id,institution_id,region_label,active) VALUES(?,?,?,1) ON CONFLICT(network_id,institution_id) DO UPDATE SET region_label=excluded.region_label,active=1`).bind(networkId,b.institutionId,b.regionLabel||null).run();
+  const access=await networkAccess(env,user,networkId);if(!access||access.role==='NETWORK_VIEWER')return forbidden(); const b=await requestBody(request); if(!b.institutionId)return badRequest('Kurum seçin.');
+  if(access.scopeUnitId&&!b.unitId)return badRequest('Sınırlı zincir yöneticisi kurumu kendi hiyerarşi kapsamındaki birime bağlamalıdır.');
+  if(b.unitId&&await accessibleNetworkUnit(env,networkId,access.scopeUnitId,b.unitId)===false)return forbidden('Seçilen birim yetki kapsamınızda değil.');
+  const institution=await one<any>(env.DB.prepare(`SELECT id FROM institutions WHERE id=? AND status='ACTIVE'`).bind(b.institutionId));if(!institution)return badRequest('Aktif kurum bulunamadı.');
+  if(b.unitId){const unit=await one<any>(env.DB.prepare(`SELECT id,institution_id FROM network_units WHERE id=? AND network_id=? AND active=1`).bind(b.unitId,networkId));if(!unit)return badRequest('Seçilen hiyerarşi birimi bu zincire ait değil.');if(unit.institution_id&&unit.institution_id!==b.institutionId)return badRequest('Bu birim başka bir kuruma bağlı.');}
+  const statements=[env.DB.prepare(`INSERT INTO institution_network_members(network_id,institution_id,region_label,active,unit_id) VALUES(?,?,?,1,?) ON CONFLICT(network_id,institution_id) DO UPDATE SET region_label=excluded.region_label,unit_id=excluded.unit_id,active=1`).bind(networkId,b.institutionId,b.regionLabel||null,b.unitId||null)];
+  if(b.unitId)statements.push(env.DB.prepare(`UPDATE network_units SET institution_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND network_id=?`).bind(b.institutionId,b.unitId,networkId));
+  await env.DB.batch(statements);
+  await audit(env.DB,user.id,b.institutionId,'NETWORK_MEMBER_UPSERTED','institution_network',networkId,{unitId:b.unitId||null,regionLabel:b.regionLabel||null});
   return json({ok:true});
 }
 
-async function networkDashboard(env:Env,user:AuthUser,networkId:string):Promise<Response>{
-  const allowed=user.role==='SUPER_ADMIN'||await canManageNetwork(env,user,networkId)||!!await one<any>(env.DB.prepare(`SELECT 1 ok FROM institution_network_members WHERE network_id=? AND institution_id=? AND active=1`).bind(networkId,user.institution_id));
-  if(!allowed)return forbidden();
+async function updateNetworkMember(request:Request,env:Env,user:AuthUser,networkId:string,institutionId:string):Promise<Response>{
+  const access=await networkAccess(env,user,networkId);if(!access||access.role==='NETWORK_VIEWER')return forbidden();const b=await requestBody(request);
+  const current=await one<any>(env.DB.prepare(`SELECT unit_id FROM institution_network_members WHERE network_id=? AND institution_id=? AND active=1`).bind(networkId,institutionId));if(!current)return notFound('Zincir kurumu bulunamadı.');
+  if(access.scopeUnitId&&(!current.unit_id||await accessibleNetworkUnit(env,networkId,access.scopeUnitId,current.unit_id)===false))return forbidden('Bu kurum yetki kapsamınızda değil.');
+  if(request.method==='DELETE'){
+    const network=await one<any>(env.DB.prepare(`SELECT headquarters_institution_id FROM institution_networks WHERE id=?`).bind(networkId));if(network?.headquarters_institution_id===institutionId)return badRequest('Merkez kurum zincirden çıkarılamaz.');
+    await env.DB.prepare(`UPDATE institution_network_members SET active=0 WHERE network_id=? AND institution_id=?`).bind(networkId,institutionId).run();
+    await audit(env.DB,user.id,institutionId,'NETWORK_MEMBER_DEACTIVATED','institution_network',networkId,{});return json({ok:true});
+  }
+  if(b.unitId){const unit=await one<any>(env.DB.prepare(`SELECT id FROM network_units WHERE id=? AND network_id=? AND active=1`).bind(b.unitId,networkId));if(!unit)return badRequest('Seçilen hiyerarşi birimi bu zincire ait değil.');if(await accessibleNetworkUnit(env,networkId,access.scopeUnitId,b.unitId)===false)return forbidden('Hedef birim yetki kapsamınızda değil.');}
+  await env.DB.prepare(`UPDATE institution_network_members SET unit_id=?,region_label=? WHERE network_id=? AND institution_id=? AND active=1`).bind(b.unitId||null,b.regionLabel||null,networkId,institutionId).run();
+  await audit(env.DB,user.id,institutionId,'NETWORK_MEMBER_UPDATED','institution_network',networkId,{unitId:b.unitId||null,regionLabel:b.regionLabel||null});return json({ok:true});
+}
+
+async function networkUnits(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
+  const access=await networkAccess(env,user,networkId);if(!access)return forbidden();
+  if(request.method==='GET'){const scope=await accessibleNetworkUnit(env,networkId,access.scopeUnitId,new URL(request.url).searchParams.get('unitId'));if(scope===false)return forbidden('Bu hiyerarşi birimine erişemezsiniz.');const rows=await all<any>(env.DB.prepare(`WITH RECURSIVE visible(id) AS (SELECT ? UNION ALL SELECT u.id FROM network_units u JOIN visible v ON u.parent_unit_id=v.id WHERE u.network_id=? AND u.active=1) SELECT * FROM network_units WHERE network_id=? AND active=1 AND (? IS NULL OR id IN (SELECT id FROM visible)) ORDER BY sort_order,unit_type,name`).bind(scope,networkId,networkId,scope));return json({ok:true,units:rows});}
+  if(access.role==='NETWORK_VIEWER')return forbidden();const b=await requestBody(request),type=String(b.unitType||'').toUpperCase();if(!b.name||!b.code||!['HEADQUARTERS','REGION','PROVINCE','DISTRICT','CAMPUS'].includes(type))return badRequest('Birim adı, kodu ve geçerli tür gereklidir.');
+  if(access.scopeUnitId&&!b.parentUnitId)return badRequest('Sınırlı zincir yöneticisi yeni birimi kendi kapsamının altında oluşturmalıdır.');
+  if(b.parentUnitId){const permitted=await accessibleNetworkUnit(env,networkId,access.scopeUnitId,b.parentUnitId);if(permitted===false)return forbidden('Üst birim yetki kapsamınızda değil.');}
+  const id=uuid('nunit');await env.DB.prepare(`INSERT INTO network_units(id,network_id,parent_unit_id,unit_type,name,code,city,district,sort_order) VALUES(?,?,?,?,?,?,?,?,?)`).bind(id,networkId,b.parentUnitId||null,type,String(b.name).trim(),String(b.code).trim().toUpperCase(),b.city||null,b.district||null,Number(b.sortOrder||0)).run();
+  await audit(env.DB,user.id,user.institution_id,'NETWORK_UNIT_CREATED','network_unit',id,{networkId,type,parentUnitId:b.parentUnitId||null});return json({ok:true,id},201);
+}
+
+async function networkRoles(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
+  const access=await networkAccess(env,user,networkId);if(!access||access.role==='NETWORK_VIEWER')return forbidden();
+  if(request.method==='GET'){const rows=await all<any>(env.DB.prepare(`WITH RECURSIVE visible(id) AS (SELECT ? UNION ALL SELECT nu.id FROM network_units nu JOIN visible v ON nu.parent_unit_id=v.id WHERE nu.network_id=? AND nu.active=1) SELECT r.network_id,r.user_id,r.role,r.scope_unit_id,r.active,u.display_name,u.email,i.name institution_name,nu.name scope_name FROM network_user_roles r JOIN users u ON u.id=r.user_id LEFT JOIN institutions i ON i.id=u.institution_id LEFT JOIN network_units nu ON nu.id=r.scope_unit_id WHERE r.network_id=? AND r.active=1 AND (? IS NULL OR r.scope_unit_id IN (SELECT id FROM visible)) ORDER BY r.role,u.display_name`).bind(access.scopeUnitId,networkId,networkId,access.scopeUnitId));return json({ok:true,roles:rows});}
+  const b=await requestBody(request),role=String(b.role||'NETWORK_VIEWER').toUpperCase();if(!b.userId||!['NETWORK_ADMIN','NETWORK_VIEWER'].includes(role))return badRequest('Kullanıcı ve geçerli zincir rolü gereklidir.');
+  const candidate=await one<any>(env.DB.prepare(`SELECT id,institution_id,role FROM users WHERE id=? AND active=1`).bind(b.userId));if(!candidate||!['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(candidate.role))return badRequest('Zincir rolü yalnız aktif yönetici hesabına verilebilir.');
+  if(user.role!=='SUPER_ADMIN'&&candidate.institution_id){const member=await one<any>(env.DB.prepare(`SELECT unit_id FROM institution_network_members WHERE network_id=? AND institution_id=? AND active=1`).bind(networkId,candidate.institution_id));if(!member)return forbidden('Yalnız zincir içindeki kurum yöneticilerine rol verebilirsiniz.');if(access.scopeUnitId&&(!member.unit_id||await accessibleNetworkUnit(env,networkId,access.scopeUnitId,member.unit_id)===false))return forbidden('Kullanıcının kurumu yetki kapsamınızda değil.');}
+  if(access.scopeUnitId&&!b.scopeUnitId)return badRequest('Sınırlı zincir yöneticisi rol kapsamı seçmelidir.');
+  if(b.scopeUnitId){const permitted=await accessibleNetworkUnit(env,networkId,access.scopeUnitId,b.scopeUnitId);if(permitted===false)return forbidden('Rol kapsamı yetkinizin dışında.');}
+  await env.DB.prepare(`INSERT INTO network_user_roles(network_id,user_id,role,active,scope_unit_id) VALUES(?,?,?,1,?) ON CONFLICT(network_id,user_id) DO UPDATE SET role=excluded.role,scope_unit_id=excluded.scope_unit_id,active=1`).bind(networkId,b.userId,role,b.scopeUnitId||null).run();
+  await audit(env.DB,user.id,candidate.institution_id,'NETWORK_ROLE_GRANTED','institution_network',networkId,{targetUserId:b.userId,role,scopeUnitId:b.scopeUnitId||null});return json({ok:true});
+}
+
+async function networkDashboard(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
+  const access=await networkAccess(env,user,networkId);if(!access)return forbidden();
   const network=await one<any>(env.DB.prepare(`SELECT * FROM institution_networks WHERE id=?`).bind(networkId)); if(!network)return notFound();
-  const institutions=await all<any>(env.DB.prepare(`SELECT i.*,m.region_label FROM institution_network_members m JOIN institutions i ON i.id=m.institution_id WHERE m.network_id=? AND m.active=1 ORDER BY i.city,i.district,i.name`).bind(networkId));
+  const url=new URL(request.url),requestedUnit=url.searchParams.get('unitId'),scope=await accessibleNetworkUnit(env,networkId,access.scopeUnitId,requestedUnit);if(scope===false)return forbidden('Bu rapor kapsamına erişemezsiniz.');
+  const from=url.searchParams.get('from'),to=url.searchParams.get('to');
+  const units=await all<any>(env.DB.prepare(`WITH RECURSIVE visible(id) AS (SELECT ? UNION ALL SELECT u.id FROM network_units u JOIN visible v ON u.parent_unit_id=v.id WHERE u.network_id=? AND u.active=1) SELECT id,parent_unit_id,unit_type,institution_id,name,code,city,district,sort_order FROM network_units WHERE network_id=? AND active=1 AND (? IS NULL OR id IN (SELECT id FROM visible)) ORDER BY sort_order,unit_type,name`).bind(scope,networkId,networkId,scope));
+  const institutions=await all<any>(env.DB.prepare(`WITH RECURSIVE visible(id) AS (SELECT ? UNION ALL SELECT u.id FROM network_units u JOIN visible v ON u.parent_unit_id=v.id WHERE u.network_id=? AND u.active=1), members AS (SELECT m.* FROM institution_network_members m WHERE m.network_id=? AND m.active=1 AND (? IS NULL OR m.unit_id IN (SELECT id FROM visible))) SELECT i.id,i.name,i.code,i.city,i.district,i.status,m.region_label,m.unit_id,nu.name unit_name,nu.unit_type,
+    (SELECT COUNT(*) FROM student_enrollments se WHERE se.institution_id=i.id AND se.status='ACTIVE') active_students,
+    (SELECT COUNT(*) FROM exam_participants ep WHERE ep.institution_id=i.id AND ep.participant_status='GUEST' AND (? IS NULL OR date(ep.created_at)>=date(?)) AND (? IS NULL OR date(ep.created_at)<=date(?))) guest_students,
+    (SELECT COUNT(*) FROM exam_participants ep WHERE ep.institution_id=i.id AND (? IS NULL OR date(ep.created_at)>=date(?)) AND (? IS NULL OR date(ep.created_at)<=date(?))) participant_count,
+    (SELECT ROUND(AVG(er.net),2) FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.institution_id=i.id AND (? IS NULL OR date(ep.created_at)>=date(?)) AND (? IS NULL OR date(ep.created_at)<=date(?))) avg_net,
+    (SELECT ROUND(AVG(er.success_percent),1) FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.institution_id=i.id AND (? IS NULL OR date(ep.created_at)>=date(?)) AND (? IS NULL OR date(ep.created_at)<=date(?))) avg_success,
+    (SELECT COUNT(*) FROM attendance_records ar JOIN attendance_sessions ats ON ats.id=ar.session_id WHERE ats.institution_id=i.id AND ar.attendance_status IN ('PRESENT','LATE') AND (? IS NULL OR date(ats.attendance_date)>=date(?)) AND (? IS NULL OR date(ats.attendance_date)<=date(?))) attendance_present,
+    (SELECT COUNT(*) FROM attendance_records ar JOIN attendance_sessions ats ON ats.id=ar.session_id WHERE ats.institution_id=i.id AND (? IS NULL OR date(ats.attendance_date)>=date(?)) AND (? IS NULL OR date(ats.attendance_date)<=date(?))) attendance_total,
+    (SELECT COUNT(*) FROM assignment_recipients ar JOIN assignments a ON a.id=ar.assignment_id WHERE a.institution_id=i.id AND ar.status='COMPLETED' AND (? IS NULL OR date(a.created_at)>=date(?)) AND (? IS NULL OR date(a.created_at)<=date(?))) assignment_completed,
+    (SELECT COUNT(*) FROM assignment_recipients ar JOIN assignments a ON a.id=ar.assignment_id WHERE a.institution_id=i.id AND (? IS NULL OR date(a.created_at)>=date(?)) AND (? IS NULL OR date(a.created_at)<=date(?))) assignment_total,
+    (SELECT COUNT(*) FROM recovery_plans rp WHERE rp.institution_id=i.id AND rp.status='ACTIVE') active_recovery
+    FROM members m JOIN institutions i ON i.id=m.institution_id LEFT JOIN network_units nu ON nu.id=m.unit_id ORDER BY i.city,i.district,i.name`).bind(scope,networkId,networkId,scope,from,from,to,to,from,from,to,to,from,from,to,to,from,from,to,to,from,from,to,to,from,from,to,to,from,from,to,to,from,from,to,to));
+  const branches=institutions.map(x=>({...x,active_students:Number(x.active_students||0),guest_students:Number(x.guest_students||0),participant_count:Number(x.participant_count||0),avg_net:Number(x.avg_net||0),avg_success:Number(x.avg_success||0),attendance_rate:networkPercent(x.attendance_present,x.attendance_total),assignment_completion_rate:networkPercent(x.assignment_completed,x.assignment_total),active_recovery:Number(x.active_recovery||0)}));
+  const totals={institution_count:branches.length,active_students:branches.reduce((s,x)=>s+x.active_students,0),guest_students:branches.reduce((s,x)=>s+x.guest_students,0),participant_count:branches.reduce((s,x)=>s+x.participant_count,0),attendance_rate:networkPercent(branches.reduce((s,x)=>s+Number(x.attendance_present||0),0),branches.reduce((s,x)=>s+Number(x.attendance_total||0),0)),assignment_completion_rate:networkPercent(branches.reduce((s,x)=>s+Number(x.assignment_completed||0),0),branches.reduce((s,x)=>s+Number(x.assignment_total||0),0)),active_recovery:branches.reduce((s,x)=>s+x.active_recovery,0)};
   const exams=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,p.result_freeze_status,p.snapshot_version,p.published_at,(SELECT COUNT(*) FROM exam_result_snapshots s WHERE s.exam_id=e.id AND s.snapshot_version=p.snapshot_version) participant_count FROM exam_delivery_profiles p JOIN exams e ON e.id=p.exam_id WHERE p.network_id=? ORDER BY e.exam_date DESC,e.created_at DESC LIMIT 100`).bind(networkId));
-  return json({ok:true,network,institutions,exams});
+  const roleCandidates=access.role==='NETWORK_VIEWER'?[]:await all<any>(env.DB.prepare(`WITH RECURSIVE visible(id) AS (SELECT ? UNION ALL SELECT nu.id FROM network_units nu JOIN visible v ON nu.parent_unit_id=v.id WHERE nu.network_id=? AND nu.active=1) SELECT DISTINCT u.id,u.display_name,u.email,u.institution_id,i.name institution_name FROM users u LEFT JOIN institutions i ON i.id=u.institution_id WHERE u.active=1 AND u.role IN ('SUPER_ADMIN','INSTITUTION_MANAGER') AND (u.role='SUPER_ADMIN' OR u.institution_id IN (SELECT institution_id FROM institution_network_members WHERE network_id=? AND active=1)) AND (? IS NULL OR u.institution_id IN (SELECT institution_id FROM institution_network_members WHERE network_id=? AND active=1 AND unit_id IN (SELECT id FROM visible))) ORDER BY u.display_name LIMIT 500`).bind(scope,networkId,networkId,scope,networkId));
+  return json({ok:true,network,permission:{role:access.role,canManage:access.role!=='NETWORK_VIEWER',scopeUnitId:access.scopeUnitId},filters:{unitId:scope,from,to},totals,units,institutions:branches,exams,roleCandidates});
+}
+
+async function networkExport(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
+  const response=await networkDashboard(request,env,user,networkId);if(!response.ok)return response;const data:any=await response.json();
+  const header=['Kurum','Kurum Kodu','Şehir','İlçe','Birim','Aktif Öğrenci','Misafir Öğrenci','Sınav Katılımı','Ortalama Net','Başarı %','Devam %','Ödev Tamamlama %','Aktif Sıfır Hata'];
+  const lines=[header.map(csvValue).join(';'),...data.institutions.map((x:any)=>[x.name,x.code,x.city,x.district,x.unit_name,x.active_students,x.guest_students,x.participant_count,x.avg_net,x.avg_success,x.attendance_rate,x.assignment_completion_rate,x.active_recovery].map(csvValue).join(';'))];
+  await audit(env.DB,user.id,user.institution_id,'NETWORK_REPORT_EXPORTED','institution_network',networkId,{unitId:data.filters.unitId||null,from:data.filters.from||null,to:data.filters.to||null,rowCount:data.institutions.length});
+  return new Response(`\uFEFF${lines.join('\r\n')}`,{headers:{'Content-Type':'text/csv; charset=utf-8','Content-Disposition':`attachment; filename="${String(data.network.code).replace(/[^A-Za-z0-9_-]/g,'_')}-yonetim-raporu.csv"`,'Cache-Control':'no-store'}});
 }
 
 async function listFeatures(env:Env,user:AuthUser):Promise<Response>{
@@ -215,24 +327,46 @@ async function listFeatures(env:Env,user:AuthUser):Promise<Response>{
 async function setFeature(request:Request,env:Env,user:AuthUser):Promise<Response>{
   if(user.role!=='SUPER_ADMIN')return forbidden(); const b=await requestBody(request); if(!b.institutionId||!b.featureKey)return badRequest('Kurum ve özellik gereklidir.');
   await env.DB.prepare(`INSERT INTO institution_feature_overrides(institution_id,feature_key,enabled,updated_at) VALUES(?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(institution_id,feature_key) DO UPDATE SET enabled=excluded.enabled,updated_at=CURRENT_TIMESTAMP`).bind(b.institutionId,b.featureKey,b.enabled?1:0).run();
+  await audit(env.DB,user.id,b.institutionId,'INSTITUTION_FEATURE_UPDATED','institution_feature_override',String(b.featureKey),{enabled:Boolean(b.enabled)});
   return json({ok:true});
 }
 
 async function listQuestions(request:Request,env:Env,user:AuthUser):Promise<Response>{
-  const gate=await requireFeature(env,user,'QUESTION_BANK'); if(gate)return gate; const u=new URL(request.url); const grade=u.searchParams.get('gradeLevel'); const subject=u.searchParams.get('subjectId'); const q=u.searchParams.get('q');
+  const gate=await requireFeature(env,user,'QUESTION_BANK'); if(gate)return gate;if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden(); const u=new URL(request.url); const grade=u.searchParams.get('gradeLevel'); const subject=u.searchParams.get('subjectId'); const q=u.searchParams.get('q');
   const wh=[`q.review_status<>'ARCHIVED'`],ps:any[]=[]; if(grade){wh.push('q.grade_level=?');ps.push(Number(grade));} if(subject){wh.push('q.subject_id=?');ps.push(subject);} if(q){wh.push('(q.stem_text LIKE ? OR q.topic LIKE ? OR q.subtopic LIKE ?)');const s=`%${q}%`;ps.push(s,s,s);}
   if(user.role!=='SUPER_ADMIN') { wh.push(`(q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`); ps.push(user.institution_id); }
-  const rows=await all<any>(env.DB.prepare(`SELECT q.*,s.name subject_name FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')} ORDER BY q.created_at DESC LIMIT 300`).bind(...ps));
+  const scope=await teacherContentScope(env,user);if(scope!==null){if(!scope.length)return json({ok:true,questions:[]});wh.push(`(${scope.map(()=>'(q.subject_id=? AND q.grade_level=?)').join(' OR ')})`);for(const row of scope)ps.push(row.subject_id,row.grade_level)}
+  const rows=await all<any>(env.DB.prepare(`SELECT q.*,s.name subject_name,(SELECT verification_status FROM question_provenance_records p WHERE p.question_id=q.id ORDER BY p.created_at DESC LIMIT 1) rights_verification_status FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')} ORDER BY q.created_at DESC LIMIT 300`).bind(...ps));
   return json({ok:true,questions:rows.map(r=>({...r,options:parseJson(r.options_json,[])}))});
+}
+
+async function contentOptions(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'QUESTION_BANK');if(gate)return gate;if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden();const u=new URL(request.url);const grade=Number(u.searchParams.get('gradeLevel')||0),subjectId=String(u.searchParams.get('subjectId')||'');
+  const scope=await teacherContentScope(env,user),allowedSubjects=scope===null?null:new Set(scope.map(row=>row.subject_id));
+  const subjects=(await all<any>(env.DB.prepare(`SELECT id,code,name,category FROM subjects WHERE active=1 ORDER BY name`))).filter(row=>allowedSubjects===null||allowedSubjects.has(row.id));
+  const nodes=grade&&subjectId&&teacherContentAllowed(scope,subjectId,grade)?await all<any>(env.DB.prepare(`SELECT id,code,title,node_type,parent_id FROM learning_nodes WHERE active=1 AND grade_level=? AND subject_id=? AND node_type IN ('TOPIC','SUBTOPIC','OUTCOME','SKILL') ORDER BY node_type,title LIMIT 600`).bind(grade,subjectId)):[];
+  const institutions=user.role==='SUPER_ADMIN'?await all<any>(env.DB.prepare(`SELECT id,name FROM institutions WHERE status<>'ARCHIVED' ORDER BY name LIMIT 500`)):[];
+  return json({ok:true,subjects,nodes,institutions,subjectGrades:scope||null,canCreate:['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role),canReview:user.role==='SUPER_ADMIN'});
 }
 
 async function createQuestion(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'QUESTION_BANK');if(gate)return gate; if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden(); const b=await requestBody(request); if(!String(b.stemText||'').trim())return badRequest('Soru metni gereklidir.');
-  const id=uuid('q'); const ownerType=user.role==='SUPER_ADMIN'?(b.ownerType||'PLATFORM'):'INSTITUTION'; const ownerId=ownerType==='INSTITUTION'?user.institution_id:(b.ownerId||null);
+  const subject=await one<any>(env.DB.prepare(`SELECT id FROM subjects WHERE id=? AND active=1`).bind(b.subjectId||''));if(!subject)return badRequest('Geçerli bir ders seçin.');
+  const grade=Math.round(Number(b.gradeLevel||0));if(grade<1||grade>12)return badRequest('Sınıf düzeyi 1 ile 12 arasında olmalıdır.');
+  if(!teacherContentAllowed(await teacherContentScope(env,user),String(b.subjectId),grade))return forbidden('Yalnız aktif sınıf ve branş atamanızdaki soruları ekleyebilirsiniz.');
+  const copyright=String(b.copyrightStatus||'').toUpperCase();if(!['OWNED','LICENSED','PUBLIC_DOMAIN','USER_PROVIDED','RESTRICTED'].includes(copyright))return badRequest('Geçerli bir telif durumu seçin.');
+  const sourceLabel=String(b.sourceLabel||'').trim();if(!sourceLabel)return badRequest('İçeriğin kaynağını belirtin.');
+  const nodeIds=Array.isArray(b.nodeIds)?[...new Set(b.nodeIds.map(String).filter(Boolean))]:[];
+  if(nodeIds.length){const marks=nodeIds.map(()=>'?').join(',');const valid=await all<any>(env.DB.prepare(`SELECT id FROM learning_nodes WHERE active=1 AND grade_level=? AND subject_id=? AND id IN (${marks})`).bind(grade,b.subjectId,...nodeIds));if(valid.length!==nodeIds.length)return badRequest('Seçilen kazanımlardan biri ders veya sınıfla uyuşmuyor.');}
+  if(b.sourceUrl){let source:URL;try{source=new URL(String(b.sourceUrl))}catch{return badRequest('Geçerli bir kaynak bağlantısı girin.')}if(source.protocol!=='https:')return badRequest('Kaynak bağlantısı HTTPS olmalıdır.');b.sourceUrl=source.toString();}
+  const id=uuid('q'); const ownerType=user.role==='SUPER_ADMIN'?String(b.ownerType||'PLATFORM').toUpperCase():'INSTITUTION';if(!['PLATFORM','INSTITUTION'].includes(ownerType))return badRequest('Geçersiz soru sahibi türü.');const ownerId=ownerType==='INSTITUTION'?(user.role==='SUPER_ADMIN'?b.ownerId:user.institution_id):null;if(ownerType==='INSTITUTION'&&!ownerId)return badRequest('Kurum sorusu için kurum kapsamı gereklidir.');
+  const initialStatus=user.role==='SUPER_ADMIN'&&copyright==='OWNED'?'APPROVED':'REVIEW';
   await env.DB.prepare(`INSERT INTO question_bank(id,owner_type,owner_id,academic_year,grade_level,subject_id,topic,subtopic,question_type,difficulty,stem_text,options_json,correct_answer,solution_text,source_label,copyright_status,review_status,created_by)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id,ownerType,ownerId,b.academicYear||'2026-2027',b.gradeLevel||null,b.subjectId||null,b.topic||null,b.subtopic||null,b.questionType||'MULTIPLE_CHOICE',Number(b.difficulty||3),String(b.stemText).trim(),JSON.stringify(b.options||[]),b.correctAnswer||null,b.solutionText||null,b.sourceLabel||null,b.copyrightStatus||'OWNED',user.role==='SUPER_ADMIN'?'APPROVED':'DRAFT',user.id).run();
-  if(Array.isArray(b.nodeIds)&&b.nodeIds.length)await env.DB.batch(b.nodeIds.map((nodeId:string)=>env.DB.prepare(`INSERT OR IGNORE INTO question_learning_links(question_id,node_id) VALUES(?,?)`).bind(id,nodeId)));
-  return json({ok:true,id},201);
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id,ownerType,ownerId,b.academicYear||'2026-2027',grade,b.subjectId,b.topic||null,b.subtopic||null,b.questionType||'MULTIPLE_CHOICE',Math.max(1,Math.min(5,Number(b.difficulty||3))),String(b.stemText).trim(),JSON.stringify(b.options||[]),b.correctAnswer||null,b.solutionText||null,sourceLabel,copyright,initialStatus,user.id).run();
+  const provenanceId=uuid('qpr');const verification=user.role==='SUPER_ADMIN'&&copyright==='OWNED'?'VERIFIED':'DECLARED';
+  const statements:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO question_provenance_records(id,question_id,rights_basis,source_authority,source_url,license_reference,evidence_note,verification_status,created_by,reviewed_by,reviewed_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)`).bind(provenanceId,id,rightsBasisForCopyright(copyright),b.sourceAuthority||null,b.sourceUrl||null,b.licenseReference||null,b.evidenceNote||null,verification,user.id,verification==='VERIFIED'?user.id:null,verification==='VERIFIED'?new Date().toISOString():null)];
+  nodeIds.forEach(nodeId=>statements.push(env.DB.prepare(`INSERT OR IGNORE INTO question_learning_links(question_id,node_id) VALUES(?,?)`).bind(id,nodeId)));await env.DB.batch(statements);
+  return json({ok:true,id,reviewStatus:initialStatus},201);
 }
 
 async function learningState(request:Request,env:Env,user:AuthUser):Promise<Response>{
@@ -311,8 +445,8 @@ async function liveSessions(request:Request,env:Env,user:AuthUser):Promise<Respo
 
 async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden();const u=new URL(request.url);
-  if(request.method==='GET'){const inst=userInstitution(user,u.searchParams.get('institutionId'));const rows=await all<any>(env.DB.prepare(`SELECT d.*,(SELECT COUNT(*) FROM studio_document_items i WHERE i.document_id=d.id) question_count FROM studio_documents d WHERE (? IS NULL OR d.institution_id=?) ORDER BY d.created_at DESC LIMIT 200`).bind(inst,inst));return json({ok:true,documents:rows});}
-  const b=await requestBody(request);if(!b.title||!b.documentType)return badRequest('Belge türü ve başlık gereklidir.');const inst=userInstitution(user,b.institutionId);const id=uuid('std');const count=Math.max(1,Math.min(200,Number(b.questionCount||20)));await env.DB.prepare(`INSERT INTO studio_documents(id,institution_id,created_by,document_type,title,grade_level,subject_id,status,config_json) VALUES(?,?,?,?,?,?,?,'DRAFT',?)`).bind(id,inst,user.id,b.documentType,b.title,b.gradeLevel||null,b.subjectId||null,JSON.stringify(b)).run();const qs=await all<any>(env.DB.prepare(`SELECT id FROM question_bank WHERE review_status='APPROVED' AND (? IS NULL OR grade_level=?) AND (? IS NULL OR subject_id=?) ORDER BY RANDOM() LIMIT ?`).bind(b.gradeLevel||null,b.gradeLevel||null,b.subjectId||null,b.subjectId||null,count));if(qs.length)await env.DB.batch(qs.map((q,i)=>env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,'A',?)`).bind(id,q.id,i+1)));return json({ok:true,id,selectedQuestions:qs.length,requestedQuestions:count},201);
+  if(request.method==='GET'){const inst=userInstitution(user,u.searchParams.get('institutionId')),scope=await teacherContentScope(env,user);const rows=await all<any>(env.DB.prepare(`SELECT d.*,(SELECT COUNT(*) FROM studio_document_items i WHERE i.document_id=d.id) question_count FROM studio_documents d WHERE (? IS NULL OR d.institution_id=?) ORDER BY d.created_at DESC LIMIT 200`).bind(inst,inst));return json({ok:true,documents:scope===null?rows:rows.filter(row=>teacherContentAllowed(scope,String(row.subject_id),Number(row.grade_level)))});}
+  const b=await requestBody(request);if(!b.title||!b.documentType)return badRequest('Belge türü ve başlık gereklidir.');const inst=userInstitution(user,b.institutionId);if(!inst)return badRequest('Belge oluşturmak için kurum kapsamı gereklidir.');const allowedTypes=['PRACTICE_EXAM','WRITTEN_EXAM','WORKSHEET'];if(!allowedTypes.includes(String(b.documentType)))return badRequest('Geçersiz belge türü.');const subject=await one<any>(env.DB.prepare(`SELECT id FROM subjects WHERE id=? AND active=1`).bind(b.subjectId||''));if(!subject)return badRequest('Geçerli bir ders seçin.');const grade=Math.round(Number(b.gradeLevel||0));if(grade<1||grade>12)return badRequest('Sınıf düzeyi 1 ile 12 arasında olmalıdır.');if(!teacherContentAllowed(await teacherContentScope(env,user),String(b.subjectId),grade))return forbidden('Yalnız aktif sınıf ve branş atamanız için belge oluşturabilirsiniz.');const id=uuid('std');const count=Math.max(1,Math.min(200,Number(b.questionCount||20)));await env.DB.prepare(`INSERT INTO studio_documents(id,institution_id,created_by,document_type,title,grade_level,subject_id,status,config_json) VALUES(?,?,?,?,?,?,?,'DRAFT',?)`).bind(id,inst,user.id,b.documentType,String(b.title).trim(),grade,b.subjectId,JSON.stringify(b)).run();const qs=await all<any>(env.DB.prepare(`SELECT id FROM question_bank WHERE review_status='APPROVED' AND copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN') AND grade_level=? AND subject_id=? AND (owner_type='PLATFORM' OR (owner_type='INSTITUTION' AND owner_id=?)) ORDER BY RANDOM() LIMIT ?`).bind(grade,b.subjectId,inst,count));if(qs.length)await env.DB.batch(qs.map((q,i)=>env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,'A',?)`).bind(id,q.id,i+1)));return json({ok:true,id,selectedQuestions:qs.length,requestedQuestions:count},201);
 }
 
 async function physicalBridge(request:Request,env:Env,user:AuthUser):Promise<Response>{
@@ -320,7 +454,72 @@ async function physicalBridge(request:Request,env:Env,user:AuthUser):Promise<Res
 }
 
 async function videos(request:Request,env:Env,user:AuthUser):Promise<Response>{
-  const gate=await requireFeature(env,user,'VIDEO_LIBRARY');if(gate)return gate;const u=new URL(request.url);if(request.method==='GET'){const rows=await all<any>(env.DB.prepare(`SELECT v.*,s.name subject_name,n.title node_title FROM learning_videos v LEFT JOIN subjects s ON s.id=v.subject_id LEFT JOIN learning_nodes n ON n.id=v.node_id WHERE v.active=1 AND (v.approved=1 OR ?='SUPER_ADMIN') AND (? IS NULL OR v.grade_level=?) AND (? IS NULL OR v.subject_id=?) ORDER BY v.created_at DESC LIMIT 300`).bind(user.role,u.searchParams.get('gradeLevel'),u.searchParams.get('gradeLevel'),u.searchParams.get('subjectId'),u.searchParams.get('subjectId')));return json({ok:true,videos:rows});}if(user.role!=='SUPER_ADMIN')return forbidden();const b=await requestBody(request);if(!b.url||!b.title)return badRequest('Video URL ve başlık gereklidir.');const id=uuid('vid');await env.DB.prepare(`INSERT INTO learning_videos(id,provider,external_id,url,title,grade_level,subject_id,node_id,duration_seconds,approved) VALUES(?,?,?,?,?,?,?,?,?,?)`).bind(id,b.provider||'YOUTUBE',b.externalId||null,b.url,b.title,b.gradeLevel||null,b.subjectId||null,b.nodeId||null,b.durationSeconds||null,b.approved?1:0).run();return json({ok:true,id},201);
+  const gate=await requireFeature(env,user,'VIDEO_LIBRARY');if(gate)return gate;const u=new URL(request.url);if(request.method==='GET'){const rows=await all<any>(env.DB.prepare(`SELECT v.*,s.name subject_name,n.title node_title FROM learning_videos v LEFT JOIN subjects s ON s.id=v.subject_id LEFT JOIN learning_nodes n ON n.id=v.node_id WHERE v.active=1 AND (v.approved=1 OR ?='SUPER_ADMIN') AND (? IS NULL OR v.grade_level=?) AND (? IS NULL OR v.subject_id=?) ORDER BY v.created_at DESC LIMIT 300`).bind(user.role,u.searchParams.get('gradeLevel'),u.searchParams.get('gradeLevel'),u.searchParams.get('subjectId'),u.searchParams.get('subjectId')));return json({ok:true,videos:rows});}if(user.role!=='SUPER_ADMIN')return forbidden();const b=await requestBody(request);if(!b.url||!b.title)return badRequest('Video URL ve başlık gereklidir.');let parsed:URL;try{parsed=new URL(String(b.url))}catch{return badRequest('Geçerli bir video bağlantısı girin.')}if(parsed.protocol!=='https:')return badRequest('Video bağlantısı HTTPS olmalıdır.');const subject=await one<any>(env.DB.prepare(`SELECT id FROM subjects WHERE id=? AND active=1`).bind(b.subjectId||''));if(!subject)return badRequest('Geçerli bir ders seçin.');const id=uuid('vid');await env.DB.prepare(`INSERT INTO learning_videos(id,provider,external_id,url,title,grade_level,subject_id,node_id,duration_seconds,approved) VALUES(?,?,?,?,?,?,?,?,?,?)`).bind(id,b.provider||'YOUTUBE',b.externalId||null,parsed.toString(),String(b.title).trim(),b.gradeLevel||null,b.subjectId,b.nodeId||null,b.durationSeconds||null,b.approved?1:0).run();return json({ok:true,id},201);
+}
+
+async function questionVideoLinks(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'VIDEO_LIBRARY');if(gate)return gate;if(user.role!=='SUPER_ADMIN')return forbidden();const u=new URL(request.url);
+  if(request.method==='GET'){
+    const [links,questions,outcomes]=await Promise.all([
+      all<any>(env.DB.prepare(`SELECT vl.*,e.title exam_title,q.question_no,q.global_no,s.name subject_name,o.title outcome_title
+        FROM video_links vl LEFT JOIN exam_questions q ON q.id=vl.exam_question_id LEFT JOIN exams e ON e.id=q.exam_id
+        LEFT JOIN subjects s ON s.id=q.subject_id LEFT JOIN outcomes o ON o.id=vl.outcome_id
+        ORDER BY vl.active DESC,vl.created_at DESC LIMIT 500`)),
+      all<any>(env.DB.prepare(`SELECT q.id,q.question_no,q.global_no,e.id exam_id,e.title exam_title,e.exam_date,s.id subject_id,s.name subject_name,
+        group_concat(DISTINCT o.title) outcome_titles
+        FROM exam_questions q JOIN exams e ON e.id=q.exam_id JOIN subjects s ON s.id=q.subject_id
+        LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id LEFT JOIN outcomes o ON o.id=qo.outcome_id
+        GROUP BY q.id,q.question_no,q.global_no,e.id,e.title,e.exam_date,s.id,s.name
+        ORDER BY COALESCE(e.exam_date,e.created_at) DESC,e.title,COALESCE(q.global_no,q.question_no) LIMIT 600`)),
+      all<any>(env.DB.prepare(`SELECT o.id,o.title,o.code,o.grade_level,s.name subject_name FROM outcomes o JOIN subjects s ON s.id=o.subject_id WHERE o.active=1 ORDER BY o.grade_level DESC,s.name,o.code,o.title LIMIT 1200`)),
+    ]);
+    return json({ok:true,links,questions,outcomes,policy:{httpsOnly:true,studentVisibleWhen:'APPROVED_AND_ACTIVE',solutionRequiresQuestion:true}});
+  }
+  const b=await requestBody(request),linkType=String(b.linkType||'').toUpperCase(),provider=String(b.provider||'PUBLISHER').toUpperCase();
+  if(!['SOLUTION','TOPIC'].includes(linkType))return badRequest('Destek türü çözüm veya konu anlatımı olmalıdır.');
+  if(!['ANUNEX','PUBLISHER','EXTERNAL'].includes(provider))return badRequest('Geçerli bir video sağlayıcısı seçin.');
+  if(linkType==='SOLUTION'&&!b.examQuestionId)return badRequest('Video çözümü belirli bir sınav sorusuna bağlanmalıdır.');
+  if(linkType==='TOPIC'&&!b.examQuestionId&&!b.outcomeId)return badRequest('Konu anlatımı bir sınav sorusuna veya kazanıma bağlanmalıdır.');
+  const title=String(b.title||'').trim(),sourceLabel=String(b.sourceLabel||'').trim();if(!title||!sourceLabel)return badRequest('Başlık ve yayınevi/kaynak adı gereklidir.');
+  let parsed:URL;try{parsed=new URL(String(b.url||''))}catch{return badRequest('Geçerli bir video bağlantısı girin.')}if(parsed.protocol!=='https:')return badRequest('Video bağlantısı HTTPS olmalıdır.');
+  if(b.examQuestionId&&!await one(env.DB.prepare(`SELECT 1 ok FROM exam_questions WHERE id=?`).bind(b.examQuestionId)))return badRequest('Seçilen sınav sorusu bulunamadı.');
+  if(b.outcomeId&&!await one(env.DB.prepare(`SELECT 1 ok FROM outcomes WHERE id=? AND active=1`).bind(b.outcomeId)))return badRequest('Seçilen kazanım bulunamadı.');
+  const approved=b.approved===true,id=uuid('vln'),duration=b.durationSeconds==null||b.durationSeconds===''?null:Math.max(1,Math.min(14400,Math.round(Number(b.durationSeconds))));
+  await env.DB.prepare(`INSERT INTO video_links(id,exam_question_id,outcome_id,link_type,url,approved,title,provider,source_label,duration_seconds,safety_review_status,active,created_by,approved_by,approved_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,1,?,?,?)`)
+    .bind(id,b.examQuestionId||null,b.outcomeId||null,linkType,parsed.toString(),approved?1:0,title,provider,sourceLabel,duration,approved?'APPROVED':'PENDING',user.id,approved?user.id:null,approved?new Date().toISOString():null).run();
+  await audit(env.DB,user.id,null,approved?'QUESTION_VIDEO_APPROVED':'QUESTION_VIDEO_CREATED','video_link',id,{linkType,provider,examQuestionId:b.examQuestionId||null,outcomeId:b.outcomeId||null,sourceLabel});
+  return json({ok:true,id,approved},201);
+}
+
+async function updateQuestionVideoLink(request:Request,env:Env,user:AuthUser,id:string):Promise<Response>{
+  const gate=await requireFeature(env,user,'VIDEO_LIBRARY');if(gate)return gate;if(user.role!=='SUPER_ADMIN')return forbidden();const b=await requestBody(request),action=String(b.action||'').toUpperCase();
+  const row=await one<any>(env.DB.prepare(`SELECT id,active FROM video_links WHERE id=?`).bind(id));if(!row)return notFound('Video desteği bulunamadı.');
+  if(action==='APPROVE')await env.DB.prepare(`UPDATE video_links SET approved=1,safety_review_status='APPROVED',active=1,approved_by=?,approved_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(user.id,id).run();
+  else if(action==='REVOKE')await env.DB.prepare(`UPDATE video_links SET approved=0,safety_review_status='REJECTED',approved_by=NULL,approved_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run();
+  else if(action==='ARCHIVE')await env.DB.prepare(`UPDATE video_links SET approved=0,active=0,approved_by=NULL,approved_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run();
+  else return badRequest('İşlem APPROVE, REVOKE veya ARCHIVE olmalıdır.');
+  await audit(env.DB,user.id,null,`QUESTION_VIDEO_${action}`,'video_link',id,{});return json({ok:true,id,action});
+}
+
+async function youtubeVideoCandidates(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'VIDEO_LIBRARY');if(gate)return gate;if(user.role!=='SUPER_ADMIN')return forbidden();
+  const rows=await all<any>(env.DB.prepare(`SELECT c.*,e.title exam_title,q.question_no,q.global_no,s.name subject_name,o.title outcome_title
+    FROM youtube_micro_video_candidates c JOIN exam_questions q ON q.id=c.exam_question_id JOIN exams e ON e.id=q.exam_id
+    LEFT JOIN subjects s ON s.id=c.subject_id LEFT JOIN outcomes o ON o.id=c.outcome_id
+    WHERE c.active=1 ORDER BY c.human_review_status='PENDING' DESC,c.ai_selected DESC,c.fetched_at DESC LIMIT 500`));
+  return json({ok:true,candidates:rows,policy:{aiCanRank:true,aiCanApprove:false,humanApprovalRequired:true,studentVisibleWhen:'POLICY_PASSED_AND_HUMAN_APPROVED'}});
+}
+
+async function updateYoutubeVideoCandidate(request:Request,env:Env,user:AuthUser,id:string):Promise<Response>{
+  const gate=await requireFeature(env,user,'VIDEO_LIBRARY');if(gate)return gate;if(user.role!=='SUPER_ADMIN')return forbidden();const b=await requestBody(request),action=String(b.action||'').toUpperCase();
+  const row=await one<any>(env.DB.prepare(`SELECT id,exam_question_id,policy_status,active FROM youtube_micro_video_candidates WHERE id=?`).bind(id));if(!row)return notFound('YouTube adayı bulunamadı.');
+  if(action==='APPROVE'){
+    if(row.policy_status!=='PASSED'||Number(row.active)!==1)return badRequest('Otomatik güvenlik politikasını geçmeyen aday onaylanamaz.');
+    await env.DB.batch([env.DB.prepare(`UPDATE youtube_micro_video_candidates SET human_review_status='REJECTED',reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,review_note='Başka aday onaylandı',updated_at=CURRENT_TIMESTAMP WHERE exam_question_id=? AND id<>? AND human_review_status='APPROVED'`).bind(user.id,row.exam_question_id,id),env.DB.prepare(`UPDATE youtube_micro_video_candidates SET human_review_status='APPROVED',reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,review_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(user.id,String(b.note||'').trim()||null,id)]);
+  }else if(action==='REJECT')await env.DB.prepare(`UPDATE youtube_micro_video_candidates SET human_review_status='REJECTED',reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,review_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(user.id,String(b.note||'').trim()||null,id).run();
+  else if(action==='ARCHIVE')await env.DB.prepare(`UPDATE youtube_micro_video_candidates SET active=0,human_review_status='REJECTED',reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,review_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(user.id,String(b.note||'').trim()||null,id).run();
+  else return badRequest('İşlem APPROVE, REJECT veya ARCHIVE olmalıdır.');
+  await audit(env.DB,user.id,null,`YOUTUBE_CANDIDATE_${action}`,'youtube_micro_video_candidate',id,{examQuestionId:row.exam_question_id,note:String(b.note||'').trim()||null});return json({ok:true,id,action});
 }
 
 export function gameXpForScore(scoreValue:unknown){const score=Math.max(0,Math.min(100,Math.round(Number(scoreValue)||0)));return{score,xp:10+Math.round(score/20)*5}}
@@ -380,10 +579,15 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/networks'&&request.method==='GET')return listNetworks(env,user);
   if(p==='/api/platform/networks'&&request.method==='POST')return createNetwork(request,env,user);
   m=p.match(/^\/api\/platform\/networks\/([^/]+)\/members$/);if(m&&request.method==='POST')return addNetworkMember(request,env,user,m[1]);
-  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/dashboard$/);if(m&&request.method==='GET')return networkDashboard(env,user,m[1]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/members\/([^/]+)$/);if(m&&(request.method==='PATCH'||request.method==='DELETE'))return updateNetworkMember(request,env,user,m[1],m[2]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/units$/);if(m&&(request.method==='GET'||request.method==='POST'))return networkUnits(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/roles$/);if(m&&(request.method==='GET'||request.method==='POST'))return networkRoles(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/dashboard$/);if(m&&request.method==='GET')return networkDashboard(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/export$/);if(m&&request.method==='GET')return networkExport(request,env,user,m[1]);
 
   if(p==='/api/platform/questions'&&request.method==='GET')return listQuestions(request,env,user);
   if(p==='/api/platform/questions'&&request.method==='POST')return createQuestion(request,env,user);
+  if(p==='/api/platform/content-options'&&request.method==='GET')return contentOptions(request,env,user);
   if(p==='/api/platform/learning-state'&&request.method==='GET')return learningState(request,env,user);
   if(p==='/api/platform/learning-evidence'&&request.method==='POST')return addLearningEvidence(request,env,user);
   if(p==='/api/platform/assignments'&&request.method==='GET')return listAssignments(request,env,user);
@@ -397,6 +601,10 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/studio'&&(request.method==='GET'||request.method==='POST'))return studio(request,env,user);
   if(p==='/api/platform/physical'&&(request.method==='GET'||request.method==='POST'))return physicalBridge(request,env,user);
   if(p==='/api/platform/videos'&&(request.method==='GET'||request.method==='POST'))return videos(request,env,user);
+  if(p==='/api/platform/question-video-links'&&(request.method==='GET'||request.method==='POST'))return questionVideoLinks(request,env,user);
+  m=p.match(/^\/api\/platform\/question-video-links\/([^/]+)$/);if(m&&request.method==='PATCH')return updateQuestionVideoLink(request,env,user,m[1]);
+  if(p==='/api/platform/youtube-video-candidates'&&request.method==='GET')return youtubeVideoCandidates(request,env,user);
+  m=p.match(/^\/api\/platform\/youtube-video-candidates\/([^/]+)$/);if(m&&request.method==='PATCH')return updateYoutubeVideoCandidate(request,env,user,m[1]);
   if(p==='/api/platform/games'&&(request.method==='GET'||request.method==='POST'))return games(request,env,user);
   if(p.startsWith('/api/platform/publishers'))return publishersApi(request,env,user);
   if(p==='/api/platform/admissions'&&(request.method==='GET'||request.method==='POST'))return admissions(request,env,user);

@@ -76,22 +76,75 @@ export async function listTargetSources(env: Env) {
 export async function searchTargets(env: Env, user: AuthUser, url: URL) {
   const type=url.searchParams.get('type')==='YKS_PROGRAM'?'YKS_PROGRAM':'LGS_SCHOOL';
   const q=(url.searchParams.get('q')||'').trim();
-  const year=Number(url.searchParams.get('year')||2026);
+  const requestedYear=Number(url.searchParams.get('year')||0);
+  const year=requestedYear||Number((await one<any>(env.DB.prepare(type==='LGS_SCHOOL'?`SELECT MAX(source_year) year FROM secondary_school_targets WHERE active=1`:`SELECT MAX(source_year) year FROM university_program_targets WHERE active=1`)))?.year||new Date().getFullYear());
   if (type==='LGS_SCHOOL') {
     const city=(url.searchParams.get('city')||'').trim();
     const district=(url.searchParams.get('district')||'').trim();
+    const schoolType=(url.searchParams.get('schoolType')||'').trim(),placementType=(url.searchParams.get('placementType')||'').trim();
+    const minScore=Number(url.searchParams.get('minScore')),maxScore=Number(url.searchParams.get('maxScore')),maxPercentile=Number(url.searchParams.get('maxPercentile'));
     const terms:string[]=['active=1','source_year=?'];const params:any[]=[year];
     if(q){terms.push('(name LIKE ? OR city LIKE ? OR district LIKE ?)');params.push(`%${q}%`,`%${q}%`,`%${q}%`)}
     if(city){terms.push('city=?');params.push(city)} if(district){terms.push('district=?');params.push(district)}
+    if(schoolType){terms.push('school_type=?');params.push(schoolType)}if(placementType){terms.push('placement_type=?');params.push(placementType)}
+    if(Number.isFinite(minScore)&&minScore>0){terms.push('base_score>=?');params.push(minScore)}if(Number.isFinite(maxScore)&&maxScore>0){terms.push('base_score<=?');params.push(maxScore)}if(Number.isFinite(maxPercentile)&&maxPercentile>0){terms.push('percentile<=?');params.push(maxPercentile)}
     const rows=await all<any>(env.DB.prepare(`SELECT t.*,s.source_kind,s.title source_title FROM secondary_school_targets t JOIN academic_target_sources s ON s.id=t.source_id WHERE ${terms.join(' AND ')} ORDER BY coalesce(percentile,999),name LIMIT 100`).bind(...params));
-    return json({ok:true,type,targets:rows.map(x=>({...x,net_profile:parseJson(x.net_profile_json,{})}))});
+    const available=Number((await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM secondary_school_targets WHERE active=1 AND source_year=?`).bind(year)))?.count||0);
+    return json({ok:true,type,year,dataStatus:available?'CURRENT':'FILE_REQUIRED',message:rows.length?null:(available?'Bu filtrelere uyan doğrulanmış resmî okul kaydı bulunamadı.':'Bu yıl için doğrulanmış resmî okul dosyası henüz yüklenmedi; tahmin üretilmez.'),targets:rows.map(x=>({...x,net_profile:parseJson(x.net_profile_json,{})}))});
   }
-  const scoreType=(url.searchParams.get('scoreType')||'').trim();
+  const scoreType=(url.searchParams.get('scoreType')||'').trim(),city=(url.searchParams.get('city')||'').trim(),universityType=(url.searchParams.get('universityType')||'').trim(),scholarship=(url.searchParams.get('scholarship')||'').trim();
+  const minScore=Number(url.searchParams.get('minScore')),maxScore=Number(url.searchParams.get('maxScore')),minRank=Number(url.searchParams.get('minRank')),maxRank=Number(url.searchParams.get('maxRank'));
   const terms:string[]=['active=1','source_year=?'];const params:any[]=[year];
   if(q){terms.push('(university_name LIKE ? OR program_name LIKE ? OR faculty_name LIKE ?)');params.push(`%${q}%`,`%${q}%`,`%${q}%`)}
-  if(scoreType){terms.push('score_type=?');params.push(scoreType)}
+  if(scoreType){terms.push('score_type=?');params.push(scoreType)}if(city){terms.push('city=?');params.push(city)}if(universityType){terms.push('university_type=?');params.push(universityType)}if(scholarship){terms.push('scholarship=?');params.push(scholarship)}
+  if(Number.isFinite(minScore)&&minScore>0){terms.push('base_score>=?');params.push(minScore)}if(Number.isFinite(maxScore)&&maxScore>0){terms.push('base_score<=?');params.push(maxScore)}if(Number.isFinite(minRank)&&minRank>0){terms.push('success_rank>=?');params.push(minRank)}if(Number.isFinite(maxRank)&&maxRank>0){terms.push('success_rank<=?');params.push(maxRank)}
   const rows=await all<any>(env.DB.prepare(`SELECT t.*,s.source_kind,s.title source_title FROM university_program_targets t JOIN academic_target_sources s ON s.id=t.source_id WHERE ${terms.join(' AND ')} ORDER BY coalesce(success_rank,99999999),university_name,program_name LIMIT 100`).bind(...params));
-  return json({ok:true,type,targets:rows.map(x=>({...x,net_profile:parseJson(x.net_profile_json,{})}))});
+  const available=Number((await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM university_program_targets WHERE active=1 AND source_year=?`).bind(year)))?.count||0);
+  return json({ok:true,type,year,dataStatus:available?'CURRENT':'FILE_REQUIRED',message:rows.length?null:(available?'Bu filtrelere uyan doğrulanmış resmî program kaydı bulunamadı.':'Bu yıl için doğrulanmış resmî program dosyası henüz yüklenmedi; puan veya sıralama tahmini üretilmez.'),targets:rows.map(x=>({...x,net_profile:parseJson(x.net_profile_json,{})}))});
+}
+
+export async function preferenceOptions(env:Env,user:AuthUser,url:URL){
+  const type=url.searchParams.get('type')==='YKS_PROGRAM'?'YKS_PROGRAM':'LGS_SCHOOL';
+  const table=type==='LGS_SCHOOL'?'secondary_school_targets':'university_program_targets';
+  const years=await all<any>(env.DB.prepare(`SELECT source_year year,COUNT(*) row_count,MAX(source_verified_at) verified_at FROM ${table} WHERE active=1 GROUP BY source_year ORDER BY source_year DESC`));
+  const year=Number(url.searchParams.get('year')||years[0]?.year||new Date().getFullYear());
+  const sources=await all<any>(env.DB.prepare(`SELECT source_kind,title,data_year,import_status,last_imported_at,last_verified_at,base_url FROM academic_target_sources WHERE source_kind IN (${type==='LGS_SCHOOL'?"'MEB_ROTA_MAARIF','MEB_EOKUL'":"'OSYM','YOK_ATLAS'"}) ORDER BY data_year DESC,source_kind`));
+  if(type==='LGS_SCHOOL'){
+    const cities=await all<any>(env.DB.prepare(`SELECT DISTINCT city value FROM secondary_school_targets WHERE active=1 AND source_year=? AND city IS NOT NULL ORDER BY city`).bind(year));
+    const schoolTypes=await all<any>(env.DB.prepare(`SELECT DISTINCT school_type value FROM secondary_school_targets WHERE active=1 AND source_year=? AND school_type IS NOT NULL ORDER BY school_type`).bind(year));
+    return json({ok:true,type,year,years,sources,dataReady:years.length>0,filters:{cities:cities.map(x=>x.value),schoolTypes:schoolTypes.map(x=>x.value),placementTypes:['CENTRAL','LOCAL','TALENT']},policy:'Yalnız doğrulanmış resmî satırlar listelenir; sistem taban puan veya yüzdelik üretmez.'});
+  }
+  const values=await one<any>(env.DB.prepare(`SELECT GROUP_CONCAT(DISTINCT city) cities,GROUP_CONCAT(DISTINCT score_type) score_types,GROUP_CONCAT(DISTINCT university_type) university_types,GROUP_CONCAT(DISTINCT scholarship) scholarships FROM university_program_targets WHERE active=1 AND source_year=?`).bind(year));
+  const split=(value:unknown)=>String(value||'').split(',').filter(Boolean).sort((a,b)=>a.localeCompare(b,'tr'));
+  return json({ok:true,type,year,years,sources,dataReady:years.length>0,filters:{cities:split(values?.cities),scoreTypes:split(values?.score_types),universityTypes:split(values?.university_types),scholarships:split(values?.scholarships)},policy:'Kurum içi sıra ÖSYM başarı sırası sayılmaz; veri yoksa puan/sıralama tahmini üretilmez.'});
+}
+
+async function preferenceStudent(env:Env,user:AuthUser){if(user.role!=='STUDENT'||!user.student_id)return null;const enr=await one<any>(env.DB.prepare(`SELECT * FROM student_enrollments WHERE student_id=? AND status IN ('ACTIVE','GRADUATED') ORDER BY CASE status WHEN 'ACTIVE' THEN 0 ELSE 1 END,created_at DESC LIMIT 1`).bind(user.student_id));return enr?{studentId:user.student_id,enrollment:enr}:null}
+
+export async function getPreferenceList(env:Env,user:AuthUser,url:URL){
+  const ctx=await preferenceStudent(env,user);if(!ctx)return forbidden('Tercih çalışma listesi öğrenci hesabına özeldir.');const type=url.searchParams.get('type')==='YKS_PROGRAM'?'YKS_PROGRAM':'LGS_SCHOOL';const year=Number(url.searchParams.get('year')||0);
+  const list=await one<any>(env.DB.prepare(`SELECT * FROM student_preference_lists WHERE student_id=? AND target_type=? AND status='DRAFT' ${year?'AND source_year=?':''} ORDER BY source_year DESC LIMIT 1`).bind(...(year?[ctx.studentId,type,year]:[ctx.studentId,type])));
+  if(!list)return json({ok:true,list:null,items:[],notice:'Bu liste yalnız tercih planlaması içindir; resmî başvuru değildir.'});
+  const items=await all<any>(env.DB.prepare(`SELECT pi.id,pi.sort_order,pi.note,pi.secondary_school_target_id,pi.university_program_target_id,ss.name school_name,ss.city school_city,ss.district school_district,ss.base_score school_base_score,ss.percentile school_percentile,up.university_name,up.program_name,up.faculty_name,up.city university_city,up.score_type,up.base_score university_base_score,up.success_rank,coalesce(ss.source_url,up.source_url) source_url,coalesce(ss.source_verified_at,up.source_verified_at) source_verified_at FROM student_preference_items pi LEFT JOIN secondary_school_targets ss ON ss.id=pi.secondary_school_target_id LEFT JOIN university_program_targets up ON up.id=pi.university_program_target_id WHERE pi.list_id=? ORDER BY pi.sort_order`).bind(list.id));
+  return json({ok:true,list,items,notice:'Bu liste yalnız tercih planlaması içindir; ÖSYM/e-Okul başvurusu yerine geçmez.'});
+}
+
+export async function addPreferenceItem(request:Request,env:Env,user:AuthUser){
+  const ctx=await preferenceStudent(env,user);if(!ctx)return forbidden('Tercih çalışma listesi öğrenci hesabına özeldir.');const b=await request.json<any>().catch(()=>({})),type=b.targetType==='YKS_PROGRAM'?'YKS_PROGRAM':'LGS_SCHOOL';
+  const grade=Number(ctx.enrollment.grade_level||0),eligible=targetEligibility(grade,type)||(type==='YKS_PROGRAM'&&ctx.enrollment.status==='GRADUATED');if(!eligible)return badRequest(type==='LGS_SCHOOL'?'LGS tercih robotu yalnız 8. sınıfta açılır.':'YKS tercih robotu yalnız 12. sınıf ve mezun öğrencilerde açılır.');if(!b.targetId)return badRequest('Listeye eklenecek hedef gereklidir.');
+  const target=await one<any>(env.DB.prepare(type==='LGS_SCHOOL'?`SELECT t.id,t.source_year,s.import_status FROM secondary_school_targets t JOIN academic_target_sources s ON s.id=t.source_id WHERE t.id=? AND t.active=1 AND t.source_verified_at IS NOT NULL`:`SELECT t.id,t.source_year,s.import_status FROM university_program_targets t JOIN academic_target_sources s ON s.id=t.source_id WHERE t.id=? AND t.active=1 AND t.source_verified_at IS NOT NULL`).bind(b.targetId));if(!target)return badRequest('Doğrulanmış resmî hedef kaydı bulunamadı.');if(target.import_status!=='CURRENT')return badRequest('Bu kaynağın resmî veri aktarımı henüz güncel değil.','OFFICIAL_DATA_NOT_CURRENT');
+  let list=await one<any>(env.DB.prepare(`SELECT * FROM student_preference_lists WHERE student_id=? AND target_type=? AND source_year=? AND status='DRAFT'`).bind(ctx.studentId,type,target.source_year));if(!list){const id=uuid('pref');await env.DB.prepare(`INSERT INTO student_preference_lists(id,student_id,institution_id,target_type,source_year,created_by) VALUES(?,?,?,?,?,?)`).bind(id,ctx.studentId,ctx.enrollment.institution_id,type,target.source_year,user.id).run();list={id};}
+  const count=Number((await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM student_preference_items WHERE list_id=?`).bind(list.id)))?.count||0);if(count>=30)return badRequest('Çalışma listesinde en fazla 30 kayıt tutulabilir.');
+  const id=uuid('pitem');try{await env.DB.prepare(`INSERT INTO student_preference_items(id,list_id,secondary_school_target_id,university_program_target_id,sort_order,note) VALUES(?,?,?,?,?,?)`).bind(id,list.id,type==='LGS_SCHOOL'?b.targetId:null,type==='YKS_PROGRAM'?b.targetId:null,count+1,b.note||null).run()}catch{return badRequest('Bu kayıt çalışma listenizde zaten var.','PREFERENCE_ALREADY_EXISTS')}
+  await audit(env.DB,user.id,ctx.enrollment.institution_id,'PREFERENCE_ITEM_ADDED','student_preference_list',list.id,{targetType:type,targetId:b.targetId,sourceYear:target.source_year});return json({ok:true,id,listId:list.id},201);
+}
+
+export async function removePreferenceItem(env:Env,user:AuthUser,id:string){
+  const ctx=await preferenceStudent(env,user);if(!ctx)return forbidden();const item=await one<any>(env.DB.prepare(`SELECT pi.id,pi.list_id FROM student_preference_items pi JOIN student_preference_lists pl ON pl.id=pi.list_id WHERE pi.id=? AND pl.student_id=? AND pl.status='DRAFT'`).bind(id,ctx.studentId));if(!item)return badRequest('Tercih çalışma listesi kaydı bulunamadı.');await env.DB.prepare(`DELETE FROM student_preference_items WHERE id=?`).bind(id).run();await audit(env.DB,user.id,ctx.enrollment.institution_id,'PREFERENCE_ITEM_REMOVED','student_preference_list',item.list_id,{itemId:id});return json({ok:true});
+}
+
+export async function reorderPreferenceList(request:Request,env:Env,user:AuthUser){
+  const ctx=await preferenceStudent(env,user);if(!ctx)return forbidden();const b=await request.json<any>().catch(()=>({})),ids=Array.isArray(b.itemIds)?b.itemIds.map(String).slice(0,30):[];if(!ids.length||new Set(ids).size!==ids.length)return badRequest('Geçerli ve tekrarsız tercih sırası gereklidir.');const owned=await all<any>(env.DB.prepare(`SELECT pi.id,pi.list_id FROM student_preference_items pi JOIN student_preference_lists pl ON pl.id=pi.list_id WHERE pl.student_id=? AND pl.status='DRAFT' AND pi.id IN (${ids.map(()=>'?').join(',')})`).bind(ctx.studentId,...ids));if(owned.length!==ids.length||new Set(owned.map(x=>x.list_id)).size!==1)return forbidden('Tercih sırası yalnız kendi listenizde değiştirilebilir.');await env.DB.batch(ids.map((id:string,index:number)=>env.DB.prepare(`UPDATE student_preference_items SET sort_order=? WHERE id=?`).bind(index+1,id)));await audit(env.DB,user.id,ctx.enrollment.institution_id,'PREFERENCE_LIST_REORDERED','student_preference_list',owned[0].list_id,{itemCount:ids.length});return json({ok:true});
 }
 
 async function activeTarget(env: Env, studentId: string) {
@@ -186,8 +239,8 @@ export async function importOfficialTargets(request: Request, env: Env, user: Au
       else await env.DB.prepare(`INSERT INTO secondary_school_targets(id,source_id,external_code,name,city,district,school_type,placement_type,source_year,base_score,percentile,quota,net_profile_json,source_url,source_verified_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id,source.id,String(r.externalCode),r.name,r.city,r.district||null,r.schoolType||null,r.placementType||'CENTRAL',year,r.baseScore??null,r.percentile??null,r.quota??null,JSON.stringify(r.netProfile||{}),r.sourceUrl,r.sourceVerifiedAt||new Date().toISOString()).run();imported++}
   }else{
     for(const r of rows){if(!r.programCode||!r.universityName||!r.programName||!r.scoreType||!r.sourceUrl)continue;const existing=await one<any>(env.DB.prepare(`SELECT id FROM university_program_targets WHERE source_id=? AND program_code=? AND source_year=?`).bind(source.id,String(r.programCode),year));const id=existing?.id||uuid('yks');
-      if(existing)await env.DB.prepare(`UPDATE university_program_targets SET university_name=?,faculty_name=?,program_name=?,university_type=?,scholarship=?,score_type=?,base_score=?,success_rank=?,quota=?,min_rank_rule=?,net_profile_json=?,source_url=?,source_verified_at=?,active=1,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(r.universityName,r.facultyName||null,r.programName,r.universityType||null,r.scholarship||null,r.scoreType,r.baseScore??null,r.successRank??null,r.quota??null,r.minRankRule??null,JSON.stringify(r.netProfile||{}),r.sourceUrl,r.sourceVerifiedAt||new Date().toISOString(),id).run();
-      else await env.DB.prepare(`INSERT INTO university_program_targets(id,source_id,program_code,university_name,faculty_name,program_name,university_type,scholarship,score_type,source_year,base_score,success_rank,quota,min_rank_rule,net_profile_json,source_url,source_verified_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id,source.id,String(r.programCode),r.universityName,r.facultyName||null,r.programName,r.universityType||null,r.scholarship||null,r.scoreType,year,r.baseScore??null,r.successRank??null,r.quota??null,r.minRankRule??null,JSON.stringify(r.netProfile||{}),r.sourceUrl,r.sourceVerifiedAt||new Date().toISOString()).run();imported++}
+      if(existing)await env.DB.prepare(`UPDATE university_program_targets SET university_name=?,faculty_name=?,program_name=?,university_type=?,scholarship=?,score_type=?,base_score=?,success_rank=?,quota=?,min_rank_rule=?,net_profile_json=?,source_url=?,source_verified_at=?,city=?,education_language=?,education_type=?,active=1,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(r.universityName,r.facultyName||null,r.programName,r.universityType||null,r.scholarship||null,r.scoreType,r.baseScore??null,r.successRank??null,r.quota??null,r.minRankRule??null,JSON.stringify(r.netProfile||{}),r.sourceUrl,r.sourceVerifiedAt||new Date().toISOString(),r.city||null,r.educationLanguage||null,r.educationType||null,id).run();
+      else await env.DB.prepare(`INSERT INTO university_program_targets(id,source_id,program_code,university_name,faculty_name,program_name,university_type,scholarship,score_type,source_year,base_score,success_rank,quota,min_rank_rule,net_profile_json,source_url,source_verified_at,city,education_language,education_type) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id,source.id,String(r.programCode),r.universityName,r.facultyName||null,r.programName,r.universityType||null,r.scholarship||null,r.scoreType,year,r.baseScore??null,r.successRank??null,r.quota??null,r.minRankRule??null,JSON.stringify(r.netProfile||{}),r.sourceUrl,r.sourceVerifiedAt||new Date().toISOString(),r.city||null,r.educationLanguage||null,r.educationType||null).run();imported++}
   }
   await env.DB.prepare(`UPDATE academic_target_sources SET last_imported_at=CURRENT_TIMESTAMP,import_status='CURRENT' WHERE id=?`).bind(source.id).run();
   await audit(env.DB,user.id,null,'OFFICIAL_TARGET_DATA_IMPORTED','academic_target_source',source.id,{sourceKind:body.sourceKind,year,imported});
@@ -196,7 +249,7 @@ export async function importOfficialTargets(request: Request, env: Env, user: Au
 
 async function teacherClassIds(env: Env, user: AuthUser) {
   if(user.role!=='TEACHER'&&user.role!=='GUIDANCE_TEACHER')return [] as string[];
-  return (await all<{class_id:string}>(env.DB.prepare(`SELECT DISTINCT class_id FROM teacher_assignments WHERE user_id=? AND active=1 AND class_id IS NOT NULL`).bind(user.id))).map(x=>x.class_id);
+  return (await all<{class_id:string}>(env.DB.prepare(`SELECT DISTINCT ta.class_id FROM teacher_assignments ta JOIN classes c ON c.id=ta.class_id AND c.institution_id=ta.institution_id JOIN institution_seasons se ON se.id=ta.season_id AND se.institution_id=ta.institution_id WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND c.active=1 AND se.status='ACTIVE' AND ta.class_id IS NOT NULL`).bind(user.id,user.institution_id))).map(x=>x.class_id);
 }
 
 async function resolveAnnouncementRecipients(env: Env, user: AuthUser, audienceType: string, audience: any) {
@@ -277,14 +330,18 @@ export async function processScheduledAnnouncements(env: Env) {
 
 export async function worksheetCalendar(env: Env, user: AuthUser, url: URL) {
   if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT'].includes(user.role))return forbidden();
-  const grade=Number(url.searchParams.get('grade')||0),track=(url.searchParams.get('track')||'').trim(),classId=(url.searchParams.get('classId')||'').trim();const terms=[`w.status='PUBLISHED'`];const params:any[]=[];
-  if(grade){terms.push('w.grade_level=?');params.push(grade)}if(track){terms.push('w.track=?');params.push(track)}
-  let classScope=classId;
-  if((user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER')&&classScope){const allowed=await one(env.DB.prepare(`SELECT 1 FROM teacher_assignments WHERE user_id=? AND class_id=? AND active=1`).bind(user.id,classScope));if(!allowed)return forbidden();}
+  const grade=Number(url.searchParams.get('grade')||0),track=(url.searchParams.get('track')||'').trim(),series=(url.searchParams.get('series')||'').trim(),classId=(url.searchParams.get('classId')||'').trim();const terms=[`w.status='PUBLISHED'`];const params:any[]=[];
+  if(grade){terms.push('w.grade_level=?');params.push(grade)}if(track){terms.push('w.track=?');params.push(track)}if(['BLUE','RED'].includes(series)){terms.push('w.series_code=?');params.push(series)}
+  let classScope=classId,teacherAssignments:any[]=[];
+  if(user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER'){
+    if(!classScope)return json({ok:true,entries:[],classRequired:true});
+    teacherAssignments=await all<any>(env.DB.prepare(`SELECT ta.subject_id,ta.assignment_type,c.grade_level FROM teacher_assignments ta JOIN classes c ON c.id=ta.class_id JOIN institution_seasons se ON se.id=ta.season_id WHERE ta.user_id=? AND ta.institution_id=? AND ta.class_id=? AND c.institution_id=ta.institution_id AND se.institution_id=ta.institution_id AND ta.active=1 AND c.active=1 AND se.status='ACTIVE'`).bind(user.id,user.institution_id,classScope));if(!teacherAssignments.length)return forbidden();
+  }
   if(user.role==='STUDENT'&&user.student_id){const enr=await enrollment(env,user.student_id);classScope=enr?.class_id||'';}
   const institutionId=user.institution_id;
-  const rows=await all<any>(env.DB.prepare(`SELECT w.id,w.academic_year,w.program_code,w.grade_level,w.track,w.sequence_no,w.title,ce.id calendar_id,ce.planned_date,ce.planned_week,ce.actual_date,ce.status calendar_status,ce.note,c.name class_name,(SELECT group_concat(DISTINCT s.name) FROM worksheet_subjects ws JOIN subjects s ON s.id=ws.subject_id WHERE ws.worksheet_id=w.id) subjects,(SELECT group_concat(DISTINCT o.title) FROM worksheet_outcomes wo JOIN outcomes o ON o.id=wo.outcome_id WHERE wo.worksheet_id=w.id) outcomes,(SELECT count(*) FROM worksheet_question_links q WHERE q.worksheet_id=w.id AND q.solution_url IS NOT NULL) solution_count,(SELECT count(*) FROM worksheet_assets a WHERE a.worksheet_id=w.id) asset_count FROM worksheets w LEFT JOIN worksheet_calendar_entries ce ON ce.worksheet_id=w.id AND (ce.institution_id IS NULL OR ce.institution_id=?) ${classScope?'AND (ce.class_id IS NULL OR ce.class_id=?)':''} LEFT JOIN classes c ON c.id=ce.class_id WHERE ${terms.join(' AND ')} ORDER BY coalesce(ce.planned_date,'9999-12-31'),w.sequence_no LIMIT 300`).bind(...([institutionId||'',...(classScope?[classScope]:[]),...params])));
-  return json({ok:true,entries:rows.map(x=>({...x,subjects:x.subjects?String(x.subjects).split(','):[],outcomes:x.outcomes?String(x.outcomes).split(','):[]}))});
+  const rows=await all<any>(env.DB.prepare(`SELECT w.id,w.academic_year,w.program_code,w.grade_level,w.track,w.sequence_no,w.series_code,w.series_sequence_no,w.questions_per_subject,w.title,ce.id calendar_id,ce.class_id calendar_class_id,ce.planned_date,ce.planned_week,ce.actual_date,ce.status calendar_status,ce.note,c.name class_name,(SELECT group_concat(DISTINCT ws.subject_id) FROM worksheet_subjects ws WHERE ws.worksheet_id=w.id) subject_ids,(SELECT group_concat(DISTINCT s.name) FROM worksheet_subjects ws JOIN subjects s ON s.id=ws.subject_id WHERE ws.worksheet_id=w.id) subjects,(SELECT group_concat(DISTINCT o.title) FROM worksheet_outcomes wo JOIN outcomes o ON o.id=wo.outcome_id WHERE wo.worksheet_id=w.id) outcomes,(SELECT count(*) FROM worksheet_question_links q WHERE q.worksheet_id=w.id AND q.solution_url IS NOT NULL) solution_count,(SELECT count(*) FROM worksheet_assets a WHERE a.worksheet_id=w.id) asset_count FROM worksheets w LEFT JOIN worksheet_calendar_entries ce ON ce.worksheet_id=w.id AND (ce.institution_id IS NULL OR ce.institution_id=?) ${classScope?'AND (ce.class_id IS NULL OR ce.class_id=?)':''} LEFT JOIN classes c ON c.id=ce.class_id WHERE ${terms.join(' AND ')} ORDER BY coalesce(ce.planned_date,'9999-12-31'),w.series_code,coalesce(w.series_sequence_no,w.sequence_no) LIMIT 300`).bind(...([institutionId||'',...(classScope?[classScope]:[]),...params])));
+  let visible=rows;if(teacherAssignments.length){const assignedGrade=Number(teacherAssignments[0].grade_level),subjectIds=user.role==='TEACHER'?new Set(teacherAssignments.filter(x=>x.assignment_type==='SUBJECT').map(x=>String(x.subject_id))):null;visible=rows.filter(row=>Number(row.grade_level)===assignedGrade&&(subjectIds===null||String(row.subject_ids||'').split(',').some(id=>subjectIds.has(id))));const preferred=new Map<string,any>();for(const row of visible){const current=preferred.get(row.id);if(!current||row.calendar_class_id===classScope)preferred.set(row.id,row)}visible=[...preferred.values()]}
+  return json({ok:true,entries:visible.map(({subject_ids,...x})=>({...x,subjects:x.subjects?String(x.subjects).split(','):[],outcomes:x.outcomes?String(x.outcomes).split(','):[]})),classRequired:false});
 }
 
 export async function saveWorksheetCalendar(request: Request, env: Env, user: AuthUser) {
@@ -296,15 +353,28 @@ export async function saveWorksheetCalendar(request: Request, env: Env, user: Au
   await audit(env.DB,user.id,institutionId,'WORKSHEET_CALENDAR_SAVED','worksheet_calendar',id,{worksheetId:body.worksheetId,classId,plannedDate:body.plannedDate});return json({ok:true,id});
 }
 
-export async function applyWorksheetCalendar(env: Env, user: AuthUser, id: string) {
-  if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden();const row=await one<any>(env.DB.prepare(`SELECT * FROM worksheet_calendar_entries WHERE id=?`).bind(id));if(!row)return badRequest('Takvim kaydı bulunamadı.');if(user.role!=='SUPER_ADMIN'&&row.institution_id&&row.institution_id!==user.institution_id)return forbidden();if((user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER')&&row.class_id){const allowed=await one(env.DB.prepare(`SELECT 1 FROM teacher_assignments WHERE user_id=? AND class_id=? AND active=1`).bind(user.id,row.class_id));if(!allowed)return forbidden();}
-  await env.DB.prepare(`UPDATE worksheet_calendar_entries SET status='APPLIED',actual_date=date('now'),updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run();await audit(env.DB,user.id,row.institution_id,'WORKSHEET_APPLIED','worksheet_calendar',id,{worksheetId:row.worksheet_id});return json({ok:true,id,status:'APPLIED'});
+export async function applyWorksheetCalendar(request:Request,env: Env, user: AuthUser, id: string) {
+  if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden();const row=await one<any>(env.DB.prepare(`SELECT * FROM worksheet_calendar_entries WHERE id=?`).bind(id));if(!row)return badRequest('Takvim kaydı bulunamadı.');if(user.role!=='SUPER_ADMIN'&&row.institution_id&&row.institution_id!==user.institution_id)return forbidden();let targetId=id,targetClassId=row.class_id;
+  if(user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER'){
+    const body=await request.json<any>().catch(()=>({}));targetClassId=row.class_id||String(body.classId||'');if(!targetClassId)return badRequest('Föy uygulaması için atanmış sınıf seçilmelidir.');
+    const allowed=user.role==='TEACHER'
+      ? await one(env.DB.prepare(`SELECT 1 FROM teacher_assignments ta JOIN classes c ON c.id=ta.class_id JOIN institution_seasons se ON se.id=ta.season_id JOIN worksheets w ON w.id=? JOIN worksheet_subjects ws ON ws.worksheet_id=w.id AND ws.subject_id=ta.subject_id WHERE ta.user_id=? AND ta.institution_id=? AND ta.class_id=? AND c.institution_id=ta.institution_id AND se.institution_id=ta.institution_id AND ta.assignment_type='SUBJECT' AND ta.active=1 AND c.active=1 AND se.status='ACTIVE' AND w.grade_level=c.grade_level LIMIT 1`).bind(row.worksheet_id,user.id,user.institution_id,targetClassId))
+      : await one(env.DB.prepare(`SELECT 1 FROM teacher_assignments ta JOIN classes c ON c.id=ta.class_id JOIN institution_seasons se ON se.id=ta.season_id JOIN worksheets w ON w.id=? WHERE ta.user_id=? AND ta.institution_id=? AND ta.class_id=? AND c.institution_id=ta.institution_id AND se.institution_id=ta.institution_id AND ta.assignment_type='GUIDANCE' AND ta.active=1 AND c.active=1 AND se.status='ACTIVE' AND w.grade_level=c.grade_level LIMIT 1`).bind(row.worksheet_id,user.id,user.institution_id,targetClassId));
+    if(!allowed)return forbidden('Bu sınıf ve branş için föy uygulama yetkiniz yok.');
+    if(!row.class_id){const existing=await one<{id:string}>(env.DB.prepare(`SELECT id FROM worksheet_calendar_entries WHERE worksheet_id=? AND institution_id=? AND class_id=? ORDER BY updated_at DESC LIMIT 1`).bind(row.worksheet_id,user.institution_id,targetClassId));targetId=existing?.id||uuid('wcal');if(existing)await env.DB.prepare(`UPDATE worksheet_calendar_entries SET planned_date=?,planned_week=?,status='APPLIED',actual_date=date('now'),updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(row.planned_date,row.planned_week,targetId).run();else await env.DB.prepare(`INSERT INTO worksheet_calendar_entries(id,worksheet_id,institution_id,class_id,planned_date,planned_week,actual_date,status,note,created_by) VALUES(?,?,?,?,?,?,date('now'),'APPLIED',?,?)`).bind(targetId,row.worksheet_id,user.institution_id,targetClassId,row.planned_date,row.planned_week,row.note,user.id).run();}
+  }
+  if(targetId===id)await env.DB.prepare(`UPDATE worksheet_calendar_entries SET status='APPLIED',actual_date=date('now'),updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(targetId).run();await audit(env.DB,user.id,row.institution_id||user.institution_id,'WORKSHEET_APPLIED','worksheet_calendar',targetId,{worksheetId:row.worksheet_id,classId:targetClassId});return json({ok:true,id:targetId,status:'APPLIED'});
 }
 
 export async function handleAcademicGrowthApi(request: Request, env: Env, user: AuthUser): Promise<Response | null> {
   const url=new URL(request.url),path=url.pathname;const blocked=await accessBlocked(env,user);if(blocked&&user.role!=='SUPER_ADMIN')return json({ok:false,error:{code:'LICENSE_EXPIRED',message:blocked}},402);
   if(path==='/api/academic-targets/sources'&&request.method==='GET')return listTargetSources(env);
   if(path==='/api/academic-targets/search'&&request.method==='GET')return searchTargets(env,user,url);
+  if(path==='/api/academic-targets/preference/options'&&request.method==='GET')return preferenceOptions(env,user,url);
+  if(path==='/api/academic-targets/preferences'&&request.method==='GET')return getPreferenceList(env,user,url);
+  if(path==='/api/academic-targets/preferences'&&request.method==='POST')return addPreferenceItem(request,env,user);
+  if(path==='/api/academic-targets/preferences/reorder'&&request.method==='PATCH')return reorderPreferenceList(request,env,user);
+  const preferenceItem=path.match(/^\/api\/academic-targets\/preferences\/([^/]+)$/);if(preferenceItem&&request.method==='DELETE')return removePreferenceItem(env,user,preferenceItem[1]);
   if(path==='/api/academic-targets/me'&&request.method==='GET')return getMyTarget(env,user,url);
   if(path==='/api/academic-targets/me'&&request.method==='POST')return setMyTarget(request,env,user);
   if(path==='/api/academic-targets/analysis'&&request.method==='GET')return getTargetAnalysis(env,user,url);
@@ -314,6 +384,6 @@ export async function handleAcademicGrowthApi(request: Request, env: Env, user: 
   const send=path.match(/^\/api\/announcements\/([^/]+)\/send$/);if(send&&request.method==='POST')return sendAnnouncement(env,user,send[1]);
   if(path==='/api/worksheet-calendar'&&request.method==='GET')return worksheetCalendar(env,user,url);
   if(path==='/api/worksheet-calendar'&&request.method==='POST')return saveWorksheetCalendar(request,env,user);
-  const apply=path.match(/^\/api\/worksheet-calendar\/([^/]+)\/apply$/);if(apply&&request.method==='POST')return applyWorksheetCalendar(env,user,apply[1]);
+  const apply=path.match(/^\/api\/worksheet-calendar\/([^/]+)\/apply$/);if(apply&&request.method==='POST')return applyWorksheetCalendar(request,env,user,apply[1]);
   return null;
 }

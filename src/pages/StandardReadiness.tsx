@@ -2,6 +2,7 @@ import { useEffect,useState } from 'react';
 import { CheckCircle2, RefreshCw, Settings2, ShieldCheck, XCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
+import { SUPER_ADMIN_ACCEPTANCE } from '../lib/super-admin-acceptance';
 
 type Check={key:string;label:string;state:'READY'|'CONFIG_REQUIRED'|'MISSING';detail:string};
 type Operational={key:string;label:string;state:'READY'|'SETUP_REQUIRED';value:number;detail:string;blocking:boolean};
@@ -21,6 +22,7 @@ export function StandardReadiness(){
  <h2 style={{marginTop:24}}>3 · Opsiyonel dış kanallar</h2><div className="panel"><div className="panel-head"><div><h3>YouTube otomatik mikro öğrenme keşfi</h3><p>Standard’da onaylı kayıtlı çözüm/konu videosu çalışır. YouTube anahtarı yalnız uygun kayıt yoksa otomatik kısa video bulma katmanını açar.</p></div><span className={`status ${data.providers?.youtube?.ready?'success':'warning'}`}>{data.providers?.youtube?.ready?'AKTİF':'OPSİYONEL'}</span></div><div className="cards-list"><ProviderItem label="YOUTUBE_API_KEY" ok={Boolean(data.providers?.youtube?.apiKey)}/></div></div>
  <div className="panel"><div className="panel-head"><div><h3>WhatsApp akademik kanal</h3><p>Web Standard paketinden bağımsız mesajlaşma kanalıdır; dört Meta secret tamamlandığında açılır.</p></div><Link className="ghost" to="/nibiru-admin">Nibiru Yönetimi</Link></div><div className="cards-list"><ProviderItem label="WHATSAPP_VERIFY_TOKEN" ok={Boolean(data.providers?.whatsapp?.verifyToken)}/><ProviderItem label="WHATSAPP_APP_SECRET" ok={Boolean(data.providers?.whatsapp?.appSecret)}/><ProviderItem label="WHATSAPP_ACCESS_TOKEN" ok={Boolean(data.providers?.whatsapp?.accessToken)}/><ProviderItem label="WHATSAPP_PHONE_NUMBER_ID" ok={Boolean(data.providers?.whatsapp?.phoneNumberId)}/></div></div>
  <div className="panel"><div className="panel-head"><div><h3>Resmî hedef verisi</h3><p>Hedef motoru hazırdır; gerçek okul/program araması doğrulanmış MEB, ÖSYM ve YÖK Atlas kayıtlarıyla beslenir. Veri yokluğu sahte hedef üretmez.</p></div><Link className="ghost" to="/academic-target-admin">Hedef Veri Merkezi</Link></div></div>
+ <h2 style={{marginTop:24}}>4 · Süper Admin rol kabulü</h2><p className="muted">Bu matris yalnız ekranın açılmasını değil; görünürlük, yetki, kurum kapsamı, boş/hata durumu, mobil kullanım, pratiklik, çıktı ve denetim şartlarını birlikte izler.</p><div className="acceptance-grid">{SUPER_ADMIN_ACCEPTANCE.map(item=><Link to={item.path} className="acceptance-card" key={item.key}><div className="acceptance-card-head"><CheckCircle2 size={18}/><strong>{item.title}</strong><span className="status success">KOD KABULÜ</span></div><p>{item.detail}</p><small>{item.evidence}</small></Link>)}</div>
  </>}
  </>;
 }

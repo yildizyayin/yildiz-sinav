@@ -1,0 +1,24 @@
+import {useEffect,useMemo,useState} from 'react';
+import {CheckCircle2,Clock3,Save,UserMinus,Users} from 'lucide-react';
+import {api,qs} from '../api';
+import {useAuth} from '../auth';
+import {ClassSelect,InstitutionSelect} from '../components/EntitySelectors';
+
+const statusOptions=[['PRESENT','Geldi'],['ABSENT','Gelmedi'],['LATE','Geç geldi'],['EXCUSED','İzinli']] as const;
+function localDate(){const d=new Date(),offset=d.getTimezoneOffset();return new Date(d.getTime()-offset*60000).toISOString().slice(0,10)}
+
+export function Attendance(){
+ const{user}=useAuth();const[institutionId,setInstitutionId]=useState(''),[classId,setClassId]=useState(''),[date,setDate]=useState(localDate()),[period,setPeriod]=useState('Günlük');
+ const[detail,setDetail]=useState<any>(null),[rows,setRows]=useState<any[]>([]),[note,setNote]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
+ const load=async()=>{if(!classId){setDetail(null);setRows([]);return}setBusy(true);setError('');try{const r=await api<any>(`/api/attendance${qs({classId,date,period})}`);setDetail(r);setRows((r.students||[]).map((x:any)=>({...x,status:x.attendance_status||'PRESENT'})));setNote(r.session?.note||'')}catch(e:any){setError(e.message)}finally{setBusy(false)}};
+ useEffect(()=>{void load()},[classId,date,period]);
+ const counts=useMemo(()=>rows.reduce((a:any,r:any)=>{a[r.status]=(a[r.status]||0)+1;return a},{PRESENT:0,ABSENT:0,LATE:0,EXCUSED:0}),[rows]);
+ const setStatus=(studentId:string,status:string)=>setRows(current=>current.map(row=>row.id===studentId?{...row,status}:row));
+ const save=async(finalized:boolean)=>{if(!classId||!rows.length)return;setBusy(true);setError('');setNotice('');try{const r=await api<any>('/api/attendance',{method:'PUT',body:JSON.stringify({classId,date,period,note,finalized,records:rows.map(row=>({studentId:row.id,status:row.status,note:row.note||''}))})});setDetail(r);setNotice(finalized?'Yoklama kesinleştirildi.':'Yoklama taslağı güvenle kaydedildi.')}catch(e:any){setError(e.message)}finally{setBusy(false)}};
+ return <><div className="page-head"><div><span className="eyebrow">Yoklama ve Devamsızlık</span><h1>Sınıf yoklaması</h1><p>Sınıfı seçin; yalnız farklı olan öğrencileri işaretleyip yoklamayı kaydedin veya kesinleştirin.</p></div></div>
+ {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
+ <div className="panel" style={{marginBottom:18}}><div className="form-grid">{user?.role==='SUPER_ADMIN'&&<InstitutionSelect value={institutionId} onChange={id=>{setInstitutionId(id);setClassId('')}}/>}<ClassSelect value={classId} onChange={setClassId} institutionId={user?.role==='SUPER_ADMIN'?institutionId:undefined} required/><label>Tarih<input type="date" value={date} onChange={e=>setDate(e.target.value)}/></label><label>Ders / dönem<input value={period} onChange={e=>setPeriod(e.target.value)} placeholder="Günlük veya 1. ders"/></label></div></div>
+ {classId&&<><div className="summary-strip"><Summary icon={<Users/>} label="Toplam" value={rows.length}/><Summary icon={<CheckCircle2/>} label="Geldi" value={counts.PRESENT}/><Summary icon={<UserMinus/>} label="Gelmedi" value={counts.ABSENT}/><Summary icon={<Clock3/>} label="Geç / İzinli" value={counts.LATE+counts.EXCUSED}/></div><div className="table-card attendance-table"><table><thead><tr><th>Öğrenci</th><th>No</th><th>Durum</th><th>Not</th></tr></thead><tbody>{rows.map(row=><tr key={row.id}><td><strong>{row.first_name} {row.last_name}</strong></td><td>{row.student_number||'—'}</td><td><div className="attendance-statuses">{statusOptions.map(([value,label])=><button key={value} className={row.status===value?`active ${value.toLowerCase()}`:''} onClick={()=>setStatus(row.id,value)}>{label}</button>)}</div></td><td><input value={row.note||''} onChange={e=>setRows(current=>current.map(x=>x.id===row.id?{...x,note:e.target.value}:x))} placeholder="İsteğe bağlı"/></td></tr>)}</tbody></table>{!busy&&!rows.length&&<div className="empty">Bu sınıfta aktif öğrenci bulunmuyor.</div>}</div><div className="panel attendance-actions"><label>Yoklama notu<textarea rows={2} value={note} onChange={e=>setNote(e.target.value)} placeholder="Sınıf geneli için isteğe bağlı not"/></label>{detail?.session&&<small>Son kayıt: {detail.session.taken_by_name} · {detail.session.status==='FINALIZED'?'Kesinleştirildi':'Taslak'}</small>}<div><button className="secondary" disabled={busy||!rows.length} onClick={()=>void save(false)}><Save size={16}/> Taslak Kaydet</button><button className="primary" disabled={busy||!rows.length} onClick={()=>void save(true)}><CheckCircle2 size={16}/> Yoklamayı Kesinleştir</button></div></div></>}
+ </>;
+}
+function Summary({icon,label,value}:{icon:React.ReactNode;label:string;value:number}){return <div className="summary"><span>{icon}{label}</span><strong>{value}</strong></div>}
