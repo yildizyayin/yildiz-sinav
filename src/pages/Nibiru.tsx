@@ -1,9 +1,11 @@
 import { useEffect,useRef,useState } from 'react';
 import { Mic,Send,Square,Volume2 } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../auth';
 import { NibiruMark,type NibiruVisualState } from '../components/NibiruMark';
 import { CoachPlanCard } from '../components/CoachPlanCard';
+import { nibiruUiContext } from '../lib/nibiru-context';
 
 type Message={role:'user'|'assistant';text:string;specialist?:string;coachPlan?:any};
 
@@ -22,6 +24,7 @@ async function responseError(response:Response,fallback:string){
 
 export function Nibiru(){
  const{user}=useAuth();
+ const location=useLocation(),from=new URLSearchParams(location.search).get('from'),pageContext=user?nibiruUiContext(from||'/',user.role):null;
  const[messages,setMessages]=useState<Message[]>([{role:'assistant',text:'Ben Nibiru. Anunex’in yapay zekâ akademik zekâ katmanıyım. Sorunuza göre etkin uzmanlığa yönlenir, yalnızca yetkiniz kapsamındaki doğrulanmış akademik verileri kullanırım.',specialist:'Nibiru Core'}]);
  const[text,setText]=useState('');const[busy,setBusy]=useState(false);const[error,setError]=useState('');const[recording,setRecording]=useState(false);const[voiceBusy,setVoiceBusy]=useState(false);const[playing,setPlaying]=useState<number|null>(null);const[voiceStatus,setVoiceStatus]=useState<any>(null);const endRef=useRef<HTMLDivElement|null>(null);
  const recorderRef=useRef<MediaRecorder|null>(null);const chunksRef=useRef<BlobPart[]>([]);const streamRef=useRef<MediaStream|null>(null);const timerRef=useRef<number|null>(null);const audioRef=useRef<HTMLAudioElement|null>(null);
@@ -48,7 +51,7 @@ export function Nibiru(){
  const ask=async(value?:string,options:{speakAnswer?:boolean}={})=>{
   const q=(value??text).trim();if(!q||busy)return;setMessages(x=>[...x,{role:'user',text:q}]);setText('');setBusy(true);setError('');
   try{
-   const r=await api<any>('/api/nibiru/chat',{method:'POST',body:JSON.stringify({message:q})});
+   const r=await api<any>('/api/nibiru/chat',{method:'POST',body:JSON.stringify({message:q,context:{pathname:pageContext?.pathname||'/'}})});
    setMessages(x=>[...x,{role:'assistant',text:r.answer,specialist:r.orchestration?.label,coachPlan:r.coachPlan?.available?r.coachPlan:undefined}]);
    if(options.speakAnswer)await playSpeech(r.answer,-1);
   }catch(e:any){setPlaying(null);setError(e.message||'Nibiru şu anda yanıt veremedi.')}finally{setBusy(false)}
@@ -84,12 +87,13 @@ export function Nibiru(){
   if(voiceBusy)return;setError('');setVoiceBusy(true);
   try{await playSpeech(message,index)}catch(e:any){setPlaying(null);setError(e.message||'Nibiru sesi oluşturulamadı.')}finally{setVoiceBusy(false)}
  };
- const items=suggestions[user?.role||'PARENT']||suggestions.PARENT,sttReady=Boolean(voiceStatus?.providers?.stt?.ready),ttsReady=Boolean(voiceStatus?.providers?.standardReady)||('speechSynthesis' in window);
+ const items=[...(from&&pageContext?pageContext.prompts:[]),...(suggestions[user?.role||'PARENT']||suggestions.PARENT)].filter((x,i,a)=>a.indexOf(x)===i).slice(0,6),sttReady=Boolean(voiceStatus?.providers?.stt?.ready),ttsReady=Boolean(voiceStatus?.providers?.standardReady)||('speechSynthesis' in window);
  const visualState:NibiruVisualState=recording?'listening':busy?'thinking':playing!==null?'speaking':voiceBusy?'active':'idle';
  const renderAssistant=(m:Message,i:number)=><div className="nibiru-assistant-message"><NibiruMark size={28} state={playing===i?'speaking':busy&&i===messages.length-1?'thinking':'idle'} title="Nibiru"/><div className="nibiru-message-body" style={{padding:'12px 14px',borderRadius:14,background:'var(--surface-2,#f5f7fb)',whiteSpace:'pre-wrap',lineHeight:1.5}}>{m.specialist&&<div style={{fontSize:12,fontWeight:700,opacity:.68,marginBottom:6}}>Aktif uzman · {m.specialist}</div>}{m.text}<div style={{marginTop:8}}><button className="ghost" disabled={!ttsReady||voiceBusy} onClick={()=>void speakMessage(m.text,i)}><Volume2 size={14}/> {playing===i?'Dinleniyor…':'Dinle'}</button></div>{m.coachPlan?.available&&<CoachPlanCard plan={m.coachPlan}/>}</div></div>;
  return <>
   <div className="page-head nibiru-hero-head"><div className="nibiru-hero-title"><NibiruMark size={72} state={visualState} showWordmark/><div><span className="eyebrow">TEK AKADEMİK ZEKÂ KAPISI</span><h1>Nibiru</h1><p>Doğrulanmış akademik veri, rol bazlı yetki ve uzman yapay zekâları tek bir kurumsal kimlik altında birleştirir.</p></div></div><div className="status ok nibiru-orchestration-status"><NibiruMark size={18} state="active" title="Nibiru aktif"/> Uzman orkestrasyonu aktif</div></div>
   {error&&<div className="alert error">{error}</div>}
+  {from&&pageContext&&<div className="alert info"><strong>Aktif sayfa bağlamı:</strong> {pageContext.label}. Nibiru bu bağlamı yanıtı işe uyarlamak için kullanır; veri yetkinizi genişletmez.</div>}
   <div className="panel nibiru-chat-panel">
    <div className="nibiru-identity-strip"><NibiruMark size={34} state={visualState}/><div><strong>Nibiru konuşma standardı</strong><span>Geliştirici, süreç odaklı ve yargısız akademik dil kullanır. Sesli kullanım da aynı yetki ve doğrulanmış veri sınırlarından geçer; mikrofon yalnız siz başlattığınızda kayıt yapar.</span></div></div>
    <div style={{display:'flex',gap:8,flexWrap:'wrap',margin:'12px 0 16px'}}>{items.map(s=><button className="secondary" key={s} onClick={()=>void ask(s)} disabled={busy}>{s}</button>)}</div>
