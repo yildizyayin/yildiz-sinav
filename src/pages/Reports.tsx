@@ -57,18 +57,23 @@ export function Reports(){
  const toggleExam=(id:string)=>setSelectedExams(cur=>cur.includes(id)?cur.filter(x=>x!==id):[...cur,id]);
  const selectStudent=(id:string)=>{setStudentId(id);if(user?.role==='PARENT'){const next=new URLSearchParams(searchParams);if(id)next.set('studentId',id);else next.delete('studentId');setSearchParams(next,{replace:true});}};
 
- const exportCsv=()=>{
+ const recordExport=(format:'CSV'|'PRINT_PDF')=>api('/api/reporting/exports/audit',{method:'POST',body:JSON.stringify({studentId,format,examIds:selectedExams})});
+ const exportCsv=async()=>{
    if(!report)return;
+   setBusy(true);setError('');
+   try{await recordExport('CSV')}catch(e:any){setError(`CSV denetim kaydı oluşturulamadı: ${e.message}`);setBusy(false);return}
    const rows:string[][]=[['Öğrenci','Sınav','Tarih','Ders','Doğru','Yanlış','Boş','Net','Başarı %']];
    const name=`${report.student.first_name} ${report.student.last_name}`;
    for(const r of report.subjectTrend||[])rows.push([name,r.title,r.exam_date||'',r.subject_name,String(r.correct_count??''),String(r.wrong_count??''),String(r.blank_count??''),String(r.net??''),String(r.success_percent??'')]);
    const csv='\uFEFF'+rows.map(cols=>cols.map(csvCell).join(';')).join('\n');
    const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
    const a=document.createElement('a');a.href=url;a.download=`birlesik-rapor-${slug(name)}.csv`;a.click();URL.revokeObjectURL(url);
+   setBusy(false);
  };
+ const printReport=async()=>{if(!report)return;setBusy(true);setError('');try{await recordExport('PRINT_PDF');window.print()}catch(e:any){setError(`PDF/yazdırma denetim kaydı oluşturulamadı: ${e.message}`)}finally{setBusy(false)}};
 
  return <>
-   <div className="page-head"><div><span className="eyebrow">Birleşik Rapor Merkezi</span><h1>Sonuçlar ve gelişim</h1><p>Seçili sınavları tek raporda karşılaştırın; branş öğretmeni yalnız kendi branşını, rehber öğretmeni yetkili sınıfın tüm derslerini görür.</p></div><div style={{display:'flex',gap:8}}><button className="ghost" onClick={()=>void loadStudents()}><RefreshCw size={16}/> Yenile</button>{report&&<><button className="secondary" onClick={exportCsv}><Download size={16}/> CSV</button><button className="primary" onClick={()=>window.print()}><Printer size={16}/> Yazdır / PDF</button></>}</div></div>
+   <div className="page-head"><div><span className="eyebrow">Birleşik Rapor Merkezi</span><h1>Sonuçlar ve gelişim</h1><p>Seçili sınavları tek raporda karşılaştırın; branş öğretmeni yalnız kendi branşını, rehber öğretmeni yetkili sınıfın tüm derslerini görür.</p></div><div style={{display:'flex',gap:8}}><button className="ghost" onClick={()=>void loadStudents()} disabled={busy}><RefreshCw size={16}/> Yenile</button>{report&&<><button className="secondary" disabled={busy} onClick={()=>void exportCsv()}><Download size={16}/> CSV</button><button className="primary" disabled={busy} onClick={()=>void printReport()}><Printer size={16}/> Yazdır / PDF</button></>}</div></div>
    {error&&<div className="alert error">{error}</div>}
 
    <div className="panel report-controls">

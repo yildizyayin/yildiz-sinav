@@ -95,7 +95,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 ### P5 — Rol bazlı kabul ve production kapanışı
 
-- [ ] Süper Admin.
+- [x] Süper Admin: 33 yönetim rotası görünürlük/RoleGate kontrolü, kurum seçmeli ortak modüller, boş-hata durumları, mobil menü ve tek kolon düzeni, güvenli tek/tüm oturum kapatma, CSV-yazdır/PDF yetki doğrulaması ve denetim iziyle kabul edildi. Kabul matrisi Sistem Hazırlığı ekranına eklendi.
 - [ ] Kurum Yöneticisi.
 - [ ] Branş Öğretmeni.
 - [ ] Rehber Öğretmeni.
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** YouTube kısa konu anlatımı yönetişimi; strict/embeddable/short arama, 45–180 saniye sınırı, sonuçla kazanım eşleşmesi, herkese açık ve yaş kısıtsız video şartı, sakıncalı başlık filtresi ve yenilemede insan kararını koruyan aday kaydı tamamlandı. AI yalnız aday sıralar; öğrenciye görünürlük ancak otomatik politikayı geçen adaya Süper Admin insan onayı verildiğinde açılır. Onay/red/arşiv kararları denetlenir.
-- **Son doğrulama:** Typecheck, production build ve production bağımlılık güvenlik taraması başarılı; 61/61 test dosyası, 262/262 test başarılı, 42 migration zinciri sıfırdan doğrulandı ve production bağımlılıklarında bilinen açık bulunmadı.
+- **Son tamamlanan:** P5 Süper Admin rol kabulü tamamlandı. Sistem Hazırlığı ekranına görünürlük, backend yetkisi, global/kurum kapsamı, boş-hata durumu, mobil kullanım, pratiklik, yazdırma/PDF/CSV ve audit/oturum güvenliği için sekiz maddelik kabul matrisi eklendi. Birleşik rapor CSV ve yazdır/PDF işlemleri, öğrenci erişimini backend'de yeniden doğrulayıp `STUDENT_REPORT_EXPORTED` denetim kaydı oluşmadan çıktıyı açmayacak şekilde kapalı güvenli hale getirildi.
+- **Son doğrulama:** Typecheck, production build ve production bağımlılık güvenlik taraması başarılı; 63/63 test dosyası, 269/269 test başarılı, 42 migration zinciri sıfır veritabanına sırayla uygulanarak doğrulandı ve production bağımlılıklarında bilinen açık bulunmadı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** P5 rol bazlı kabul turunu Süper Admin ile başlat; görünürlük, yetki, tenant izolasyonu, boş/hata durumları, mobil kullanım, pratiklik, dışa aktarım ve denetim kaydını modül modül doğrula.
+- **Sıradaki tek iş:** P5 Kurum Yöneticisi kabul turu; yalnız kendi kurumunu görme/yazma, paket-modül sınırı, boş-hata ve mobil durumlar, günlük işlem pratikliği, çıktı ve denetim izini modül modül doğrula.
