@@ -9,6 +9,7 @@ const API_FEATURES:Array<[RegExp,string]>=[
   [/^\/api\/assignment-center(?:\/|$)/,'ASSIGNMENTS'],
   [/^\/api\/attendance(?:\/|$)/,'ATTENDANCE'],
   [/^\/api\/(?:question-bank-standard|platform\/questions|platform\/question-options|platform\/content-options|platform\/studio)(?:\/|$)/,'QUESTION_BANK'],
+  [/^\/api\/nibiru\/guidance\/(?:instruments|assessments|development-profile)(?:\/|$)/,'GUIDANCE_TESTS'],
   [/^\/api\/platform\/networks(?:\/|$)/,'ENTERPRISE'],
 ];
 
