@@ -1,4 +1,5 @@
 import type { Env } from '../types';
+import { minimizeWhatsAppOutboundText } from './privacy-minimization';
 
 export function normalizeWhatsAppPhone(value: string) {
   const digits = String(value || '').replace(/\D/g,'');
@@ -70,20 +71,22 @@ export async function probeWhatsAppProvider(env: Env) {
 
 export async function sendWhatsAppText(env: Env, to: string, text: string) {
   if (!env.WHATSAPP_ACCESS_TOKEN || !env.WHATSAPP_PHONE_NUMBER_ID) return { ok:false, reason:'NOT_CONFIGURED' as const };
+  const minimized=minimizeWhatsAppOutboundText(text);
   const response = await fetch(graphUrl(env),{
     method:'POST',
     headers:{'Authorization':`Bearer ${env.WHATSAPP_ACCESS_TOKEN}`,'Content-Type':'application/json'},
-    body:JSON.stringify({messaging_product:'whatsapp',recipient_type:'individual',to:normalizeWhatsAppPhone(to).slice(1),type:'text',text:{preview_url:false,body:text.slice(0,3900)}}),
+    body:JSON.stringify({messaging_product:'whatsapp',recipient_type:'individual',to:normalizeWhatsAppPhone(to).slice(1),type:'text',text:{preview_url:false,body:minimized.text.slice(0,3900)}}),
   });
   const payload:any = await response.json().catch(()=>null);
   if (!response.ok) return { ok:false, reason:'PROVIDER_ERROR' as const, status:response.status, payload };
-  return { ok:true as const, messageId:payload?.messages?.[0]?.id || null };
+  return { ok:true as const, messageId:payload?.messages?.[0]?.id || null, privacyMinimized:minimized.minimized };
 }
 
 export async function sendWhatsAppTemplate(env: Env, to: string, templateName: string, bodyParams: string[] = [], languageCode = 'tr') {
   if (!env.WHATSAPP_ACCESS_TOKEN || !env.WHATSAPP_PHONE_NUMBER_ID) return { ok:false, reason:'NOT_CONFIGURED' as const };
   if (!templateName.trim()) return { ok:false, reason:'TEMPLATE_REQUIRED' as const };
-  const components = bodyParams.length ? [{type:'body',parameters:bodyParams.map(text=>({type:'text',text:String(text).slice(0,1024)}))}] : undefined;
+  const minimizedParams=bodyParams.map(value=>minimizeWhatsAppOutboundText(String(value)));
+  const components = minimizedParams.length ? [{type:'body',parameters:minimizedParams.map(value=>({type:'text',text:value.text.slice(0,1024)}))}] : undefined;
   const response = await fetch(graphUrl(env),{
     method:'POST',
     headers:{'Authorization':`Bearer ${env.WHATSAPP_ACCESS_TOKEN}`,'Content-Type':'application/json'},
@@ -91,7 +94,7 @@ export async function sendWhatsAppTemplate(env: Env, to: string, templateName: s
   });
   const payload:any = await response.json().catch(()=>null);
   if (!response.ok) return { ok:false, reason:'PROVIDER_ERROR' as const, status:response.status, payload };
-  return { ok:true as const, messageId:payload?.messages?.[0]?.id || null };
+  return { ok:true as const, messageId:payload?.messages?.[0]?.id || null, privacyMinimized:minimizedParams.some(x=>x.minimized) };
 }
 
 export type WhatsAppInboundMessage = {
