@@ -141,11 +141,11 @@ async function createPairing(request:Request,env:Env,user:AuthUser){
 
 async function nibiruChat(request:Request,env:Env,user:AuthUser){
   if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
-  const body=await request.json<{message?:string}>();const message=body.message?.trim()||'';
+  const body=await request.json<{message?:string;context?:{pathname?:string}}>();const message=body.message?.trim()||'';
   if(!message||message.length>1200)return badRequest('Mesaj 1–1200 karakter arasında olmalıdır.');
   const blocked=await institutionBlock(env,user);
   if(blocked)return json({ok:true,answer:`🤖 Nibiru: ${blocked.message}`,intent:'ACCESS',locked:true});
-  const result=await runNibiru(env,user,message,'WEB',user.id);
+  const result=await runNibiru(env,user,message,'WEB',user.id,body.context);
   return json({ok:true,...result});
 }
 
