@@ -78,7 +78,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Toplu işlemler ve veri transferleri.
 - [x] Zincir kurum merkezi yönetimi ve üst yönetim raporları: genel merkez–bölge–il–ilçe–kampüs hiyerarşisi, kapsamlı yönetici/görüntüleyici rolleri, tenant izolasyonu, karşılaştırmalı KPI, tarih/birim filtresi, CSV ve denetim kaydı.
 - [x] Tercih robotu: resmî veri yokken tahmin üretmeyen LGS/YKS araması, ayrıntılı filtreler, kaynak görünürlüğü, öğrenciye özel sıralanabilir çalışma listesi ve hedefe dönüştürme.
-- [ ] Resmî MEB/ÖSYM verileri için dosya yükleme, eşleme ve doğrulama arayüzü.
+- [x] Resmî MEB/ÖSYM verileri için dosya yükleme, otomatik/manuel kolon eşleme, satır doğrulama, staging önizleme, açık onaylı içe aktarma, dosya özeti/denetim izi ve güvenli geri alma arayüzü.
 
 ### P4 — Nibiru AI bütünleştirmesi
 
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Tercih Robotu; resmî veri yokken puan/sıralama uydurmayan kaynak güvenlik sınırı, LGS ve YKS için yıl–şehir–ilçe–okul/bölüm–puan–yüzdelik/sıralama–burs–öğretim filtreleri, yalnız doğrulanmış içe aktarım satırlarından öğrenciye özel sıralanabilir çalışma listesi, listeden hedefe dönüştürme, öğrenci sahipliği ve denetim kayıtları tamamlandı. Bu liste resmî ÖSYM/e-Okul başvurusu değildir.
-- **Son doğrulama:** Typecheck, production build, production bağımlılık güvenlik taraması ve 38 migration'ın sıfırdan yerel D1 uygulaması başarılı; 57/57 test dosyası, 236/236 test başarılı ve production bağımlılıklarında bilinen açık bulunmadı.
+- **Son tamamlanan:** Resmî Hedef Dosya Merkezi; MEB/e-Okul/ÖSYM/YÖK Atlas CSV-TXT yükleme, Türkçe başlıklar için otomatik ve manuel kolon eşleme, zorunlu/sayısal/yinelenen kod doğrulaması, R2 dosya saklama ve SHA-256 izi, satır önizlemesi, açık insan onaylı commit, kaynak/provenance/denetim kaydı, güncellenen kayıtların önceki hâlini saklama ve güvenli geri alma tamamlandı. Onaydan önce öğrenci hedef tablolarına veri yazılmaz.
+- **Son doğrulama:** Typecheck, production build, production bağımlılık güvenlik taraması ve 39 migration'ın sıfırdan yerel D1 uygulaması başarılı; 58/58 test dosyası, 241/241 test başarılı ve production bağımlılıklarında bilinen açık bulunmadı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Resmî MEB/ÖSYM verileri için dosya yükleme, kolon eşleme, önizleme, doğrulama hataları, onaylı içe aktarma ve geri alma arayüzünü tamamla.
+- **Sıradaki tek iş:** Nibiru uzman AI yönlendiricisini Süper Admin, kurum yöneticisi, öğretmen, rehber öğretmen, öğrenci ve veli deneyimlerinde görünür ve sayfa bağlamına duyarlı hâle getir.
