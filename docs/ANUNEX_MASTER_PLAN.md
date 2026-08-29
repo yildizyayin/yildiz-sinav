@@ -88,7 +88,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Whisper giriş biçimini güncel Cloudflare Workers AI şemasıyla doğrula; sağlayıcı hatalarını sır açığa çıkarmadan operasyon türüyle logla.
 - [ ] Production adayı yayınlandıktan sonra gerçek mikrofonla Chrome ve mobil tarayıcı kabul testi yap.
 - [x] Nibiru uzman AI yönlendiricisini tüm rol deneyimlerinde görünür ve bağlamsal yap: her sayfada açılır Nibiru, sayfaya özel öneriler, uzman etiketi, tam ekran/sesli geçiş ve yetkiyi genişletmeyen güvenli sayfa bağlamı.
-- [ ] Öğrenme grafiği, Recovery, RBA, rehberlik, koçluk, hedef/motivasyon, kişisel görev, Sıfır Hata ve video köprüsünü tek öğrenci profiline bağla.
+- [x] Öğrenme grafiği, Recovery, RBA, rehberlik, koçluk, hedef/motivasyon, kişisel görev, Sıfır Hata ve video köprüsünü tek öğrenci profiline bağla.
 - [ ] Doğru/yanlış/boş sorular için yayınevi çözüm videosu ve konu anlatımı seçeneklerini uygula.
 - [ ] YouTube aday seçiminde güvenlik, yaş uygunluğu, kazanım eşleşmesi ve kısa video politikalarını doğrula.
 - [ ] WhatsApp Nibiru kanalını Meta production bilgileri geldiğinde aktive et.
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Sayfa bağlamlı Nibiru uzman yönlendiricisi; Süper Admin, kurum yöneticisi, branş öğretmeni, rehber öğretmeni, öğrenci ve veli rollerinde her sayfadan açılan ortak Nibiru paneli, sayfa görevine özel hızlı sorular, aktif uzman görünürlüğü, tam ekran/sesli geçiş ve güvenli sunucu tarafı bağlam normalizasyonu tamamlandı. Sayfa bağlamı akademik kanıt sayılmaz, tenant/rol yetkisini genişletmez ve RBA için gerçek rehber öğretmen onayı kuralını bastıramaz.
-- **Son doğrulama:** Typecheck, production build ve production bağımlılık güvenlik taraması başarılı; 59/59 test dosyası, 246/246 test başarılı, 39 migration zinciri son dilimde sıfırdan doğrulandı ve production bağımlılıklarında bilinen açık bulunmadı.
+- **Son tamamlanan:** Birleşik öğrenci zekâ profili; Öğrenme Grafiği, Recovery, rehber öğretmen onaylı gelişim sinyalleri, Nibiru eğitim koçu, resmî hedef/motivasyon, kişisel görev, Sıfır Hata, kişisel kitap ve yalnız onaylı video kanıtları tek sürümlü profilde birleştirildi. Öğrenci ekranı bu profile geçirildi; doğrudan RBA öz-bildirimi kaldırıldı, branş öğretmeni kapsamı yalnız atanmış derslerin öğrenme kanıtlarıyla sınırlandı ve aynı doğrulanmış özet Nibiru bağlamına bağlandı.
+- **Son doğrulama:** Typecheck, production build ve production bağımlılık güvenlik taraması başarılı; 59/59 test dosyası, 249/249 test başarılı, 40 migration zinciri sıfırdan doğrulandı ve production bağımlılıklarında bilinen açık bulunmadı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Öğrenme grafiği, Recovery, RBA/rehberlik, eğitim koçu, hedef/motivasyon, kişisel görev, Sıfır Hata ve video köprüsünü tek öğrenci zekâ profiline bağla; görünür kanıt kaynaklarını ve yetki kapsamını doğrula.
+- **Sıradaki tek iş:** Doğru, yanlış ve boş sorular için yayınevi çözüm videosu ile konu anlatımı seçeneklerini soru kanıtına bağla; erişim ve onay kurallarını doğrula.
