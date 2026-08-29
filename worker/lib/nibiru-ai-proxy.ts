@@ -2,6 +2,7 @@ import type { Env, Role } from '../types';
 import { detectNibiruIntent } from './nibiru';
 import { routeNibiruSpecialist } from './nibiru-specialists';
 import { chooseNibiruModelDecision,runNibiruInference } from './nibiru-model-router';
+import { minimizeNibiruAiMessages } from './privacy-minimization';
 
 function messagesFromInput(input:any):Array<{role:'system'|'user'|'assistant';content:string}>{
   if(!Array.isArray(input?.messages))return[];
@@ -36,7 +37,8 @@ export function withNibiruAiRouter(env:Env):Env{
         if(!isNibiruPrompt(messages))return originalAi.run(requestedModel,input,options);
         const role=extractRole(messages),message=extractUserMessage(messages),intent=detectNibiruIntent(message),specialist=routeNibiruSpecialist({role},message);
         const decision=chooseNibiruModelDecision(env,{role},intent,message,specialist);
-        const result=await runNibiruInference(env,decision,messages,{
+        const minimized=minimizeNibiruAiMessages(messages);
+        const result=await runNibiruInference(env,decision,minimized.messages,{
           role,
           intent,
           environment:env.ENVIRONMENT||'unknown',
@@ -50,6 +52,7 @@ export function withNibiruAiRouter(env:Env):Env{
           selectedModel:result.selected?.model||null,
           attempts:result.attempts,
           gatewayLogId:result.gatewayLogId,
+          privacyRedactions:minimized.redactions,
         }));
         // Keep compatibility with the legacy Nibiru response extractor.
         return {response:result.text};
