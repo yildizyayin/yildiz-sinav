@@ -77,7 +77,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - [x] Föy Merkezi ve yıllık kazanım planı: Mavi Seri 5–12. sınıf / ders başına 10 soru; Kırmızı Seri yalnız 8 ve 12. sınıf / ders başına 20 soru.
 - [x] Toplu işlemler ve veri transferleri.
 - [x] Zincir kurum merkezi yönetimi ve üst yönetim raporları: genel merkez–bölge–il–ilçe–kampüs hiyerarşisi, kapsamlı yönetici/görüntüleyici rolleri, tenant izolasyonu, karşılaştırmalı KPI, tarih/birim filtresi, CSV ve denetim kaydı.
-- [ ] Tercih robotu.
+- [x] Tercih robotu: resmî veri yokken tahmin üretmeyen LGS/YKS araması, ayrıntılı filtreler, kaynak görünürlüğü, öğrenciye özel sıralanabilir çalışma listesi ve hedefe dönüştürme.
 - [ ] Resmî MEB/ÖSYM verileri için dosya yükleme, eşleme ve doğrulama arayüzü.
 
 ### P4 — Nibiru AI bütünleştirmesi
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** Zincir Kurum Yönetim Merkezi; genel merkez–bölge–il–ilçe–kampüs hiyerarşisi, birim kapsamlı Zincir Yöneticisi/Görüntüleyici rolleri, sıradan şube üyeliğinin tüm zinciri görmesini engelleyen güvenlik sınırı, şube bazlı öğrenci–misafir–sınav–başarı–devam–ödev–Sıfır Hata KPI'ları, tarih/birim filtresi, CSV dışa aktarımı ve denetim kayıtları tamamlandı. Kullanıcı kararına uygun olarak Akıllı Tahta menü ve rotası kaldırıldı.
-- **Son doğrulama:** Typecheck, production build, production bağımlılık güvenlik taraması ve 37 migration'ın sıfırdan yerel D1 uygulaması başarılı; 56/56 test dosyası, 231/231 test başarılı ve production bağımlılıklarında bilinen açık bulunmadı.
+- **Son tamamlanan:** Tercih Robotu; resmî veri yokken puan/sıralama uydurmayan kaynak güvenlik sınırı, LGS ve YKS için yıl–şehir–ilçe–okul/bölüm–puan–yüzdelik/sıralama–burs–öğretim filtreleri, yalnız doğrulanmış içe aktarım satırlarından öğrenciye özel sıralanabilir çalışma listesi, listeden hedefe dönüştürme, öğrenci sahipliği ve denetim kayıtları tamamlandı. Bu liste resmî ÖSYM/e-Okul başvurusu değildir.
+- **Son doğrulama:** Typecheck, production build, production bağımlılık güvenlik taraması ve 38 migration'ın sıfırdan yerel D1 uygulaması başarılı; 57/57 test dosyası, 236/236 test başarılı ve production bağımlılıklarında bilinen açık bulunmadı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** Tercih Robotunu gerçek MEB/ÖSYM veri kaynağı gelene kadar açıkça örnek/veri bekliyor durumuyla; hedef, puan/sıralama, şehir, bölüm ve güvenli veri kaynağı sınırlarıyla tamamla.
+- **Sıradaki tek iş:** Resmî MEB/ÖSYM verileri için dosya yükleme, kolon eşleme, önizleme, doğrulama hataları, onaylı içe aktarma ve geri alma arayüzünü tamamla.
