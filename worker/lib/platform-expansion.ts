@@ -319,6 +319,7 @@ async function listFeatures(env:Env,user:AuthUser):Promise<Response>{
 async function setFeature(request:Request,env:Env,user:AuthUser):Promise<Response>{
   if(user.role!=='SUPER_ADMIN')return forbidden(); const b=await requestBody(request); if(!b.institutionId||!b.featureKey)return badRequest('Kurum ve özellik gereklidir.');
   await env.DB.prepare(`INSERT INTO institution_feature_overrides(institution_id,feature_key,enabled,updated_at) VALUES(?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(institution_id,feature_key) DO UPDATE SET enabled=excluded.enabled,updated_at=CURRENT_TIMESTAMP`).bind(b.institutionId,b.featureKey,b.enabled?1:0).run();
+  await audit(env.DB,user.id,b.institutionId,'INSTITUTION_FEATURE_UPDATED','institution_feature_override',String(b.featureKey),{enabled:Boolean(b.enabled)});
   return json({ok:true});
 }
 

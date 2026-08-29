@@ -6,6 +6,7 @@ import {canAccessClass,loadPermissionScope} from './lib/permissions';
 
 const STATUSES=new Set(['PRESENT','ABSENT','LATE','EXCUSED']);
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
+async function featureEnabled(env:Env,user:AuthUser){if(user.role==='SUPER_ADMIN')return true;if(!user.institution_id)return false;const row=await one<any>(env.DB.prepare(`SELECT COALESCE(o.enabled,f.enabled_default) enabled FROM platform_features f LEFT JOIN institution_feature_overrides o ON o.feature_key=f.feature_key AND o.institution_id=? WHERE f.feature_key='ATTENDANCE'`).bind(user.institution_id));return Number(row?.enabled||0)===1}
 
 async function classAccess(env:Env,user:AuthUser,classId:string){
  const row=await one<any>(env.DB.prepare(`SELECT c.id,c.name,c.institution_id,c.season_id FROM classes c WHERE c.id=? AND c.active=1`).bind(classId));
@@ -46,6 +47,7 @@ async function saveAttendance(request:Request,env:Env,user:AuthUser){
 export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
  const url=new URL(request.url);if(url.pathname!=='/api/attendance')return app.fetch(request,env,ctx);
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
+ if(!await featureEnabled(env,user))return fail(403,'FEATURE_DISABLED','Yoklama modülü kurumunuz için etkin değil.');
  if(request.method==='GET')return attendanceDetail(env,user,url);
  if(request.method==='PUT')return saveAttendance(request,env,user);
  return fail(405,'METHOD_NOT_ALLOWED','Bu işlem desteklenmiyor.');

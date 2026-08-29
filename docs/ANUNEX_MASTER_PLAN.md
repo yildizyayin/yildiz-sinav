@@ -16,7 +16,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 - Kullanıcı arayüzünde ham kurum/sınıf/öğrenci ID'si istenmez; güvenli seçim bileşenleri kullanılır.
 - Demo/sentetik veri production iş akışlarına sızmaz.
 
-## Doğrulanmış mevcut durum — 28 Ağustos 2026
+## Doğrulanmış mevcut durum — 29 Ağustos 2026
 
 - Production Worker yayında: `yildiz-sinav-prod.rtsgida.workers.dev`.
 - ANUNEX kozmik giriş ekranı, Turnstile ve favicon yayında.
@@ -96,7 +96,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 ### P5 — Rol bazlı kabul ve production kapanışı
 
 - [x] Süper Admin: 33 yönetim rotası görünürlük/RoleGate kontrolü, kurum seçmeli ortak modüller, boş-hata durumları, mobil menü ve tek kolon düzeni, güvenli tek/tüm oturum kapatma, CSV-yazdır/PDF yetki doğrulaması ve denetim iziyle kabul edildi. Kabul matrisi Sistem Hazırlığı ekranına eklendi.
-- [ ] Kurum Yöneticisi.
+- [x] Kurum Yöneticisi: yalnız kendi kurum kapsamı, paket-modül görünürlüğü, doğrudan URL ve API engeli, günlük ana ekran pratikliği, 7 günlük demo/yıllık onay, güvenli rapor çıktısı ve kritik modül değişikliği denetim iziyle kabul edildi.
 - [ ] Branş Öğretmeni.
 - [ ] Rehber Öğretmeni.
 - [ ] Öğrenci.
@@ -118,7 +118,7 @@ Bu dosya yalnız ANUNEX ölçme-değerlendirme platformunun kalıcı doğruluk v
 
 Her oturum sonunda aşağıdaki dört satır güncellenir:
 
-- **Son tamamlanan:** P5 Süper Admin rol kabulü tamamlandı. Sistem Hazırlığı ekranına görünürlük, backend yetkisi, global/kurum kapsamı, boş-hata durumu, mobil kullanım, pratiklik, yazdırma/PDF/CSV ve audit/oturum güvenliği için sekiz maddelik kabul matrisi eklendi. Birleşik rapor CSV ve yazdır/PDF işlemleri, öğrenci erişimini backend'de yeniden doğrulayıp `STUDENT_REPORT_EXPORTED` denetim kaydı oluşmadan çıktıyı açmayacak şekilde kapalı güvenli hale getirildi.
-- **Son doğrulama:** Typecheck, production build ve production bağımlılık güvenlik taraması başarılı; 63/63 test dosyası, 269/269 test başarılı, 42 migration zinciri sıfır veritabanına sırayla uygulanarak doğrulandı ve production bağımlılıklarında bilinen açık bulunmadı.
+- **Son tamamlanan:** P5 Kurum Yöneticisi rol kabulü tamamlandı. Panel paket adını, etkin modül sayısını ve kullanıma açık modülleri gösteriyor; devre dışı modüller menüden, doğrudan URL'den ve doğrudan API çağrısından kapalı güvenli biçimde engelleniyor. Kurum verisi tenant kapsamında kalıyor, rapor çıktısı backend erişim doğrulaması ve denetim kaydı istiyor, Süper Admin modül override değişikliği audit kaydı üretiyor. Akıllı Tahta mevcut ve yeni kurum paketlerinden veri kaybı olmadan çıkarıldı.
+- **Son doğrulama:** Typecheck, production build ve production bağımlılık güvenlik taraması başarılı; 64/64 test dosyası, 276/276 test başarılı, 43 migration zinciri sıfır veritabanına sırayla uygulanarak doğrulandı ve production bağımlılıklarında bilinen açık bulunmadı.
 - **Production durumu:** `b34e0ea` tabanlı sürüm canlı; bu çalışma henüz yayınlanmadı.
-- **Sıradaki tek iş:** P5 Kurum Yöneticisi kabul turu; yalnız kendi kurumunu görme/yazma, paket-modül sınırı, boş-hata ve mobil durumlar, günlük işlem pratikliği, çıktı ve denetim izini modül modül doğrula.
+- **Sıradaki tek iş:** P5 Branş Öğretmeni kabul turu; yalnız atanmış sınıf ve branşı görme/yazma, paket-modül sınırı, sınav–kazanım–soru–föy günlük akışı, boş-hata/mobil durumları, çıktı ve denetim izini modül modül doğrula.

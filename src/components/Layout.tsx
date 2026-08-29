@@ -6,6 +6,8 @@ import { api } from '../api';
 import { LicenseBoundary } from './LicenseBoundary';
 import { NibiruMark,NibiruNavIcon } from './NibiruMark';
 import { NibiruContextDock } from './NibiruContextDock';
+import { FeatureBoundary } from './FeatureBoundary';
+import { featureForPath } from '../lib/feature-routes';
 
 type NavItem={to:string;label:string;icon:any;feature?:string};
 const nav: Record<Role, NavItem[]> = {
@@ -61,7 +63,7 @@ export function Layout() {
   const [navBadges,setNavBadges]=useState<Record<string,number>>({});
   useEffect(()=>{if(!user||user.role==='SUPER_ADMIN')return;void api<any>('/api/platform/features').then(r=>setEnabledFeatures(new Set((r.features||[]).filter((f:any)=>Number(f.effective_enabled||0)===1).map((f:any)=>String(f.feature_key))))).catch(()=>setEnabledFeatures(new Set()));},[user?.id,user?.role]);
   useEffect(()=>{if(user?.role!=='SUPER_ADMIN')return;Promise.all([api<any>('/api/dashboard'),api<any>('/api/admin/licenses')]).then(([d,l])=>setNavBadges({'/exam-center':Number(d.operations?.activeExams||0),'/opticals':Number(d.operations?.pendingScans||0),'/licenses':(l.licenses||[]).filter((x:any)=>x.annual_consent_status==='PENDING').length})).catch(()=>setNavBadges({}))},[user?.id,user?.role]);
-  const visibleNav=useMemo(()=>user?nav[user.role].filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature)):[],[user,enabledFeatures]);
+  const visibleNav=useMemo(()=>user?nav[user.role].filter(item=>{const feature=item.feature||featureForPath(item.to);return !feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(feature)}):[],[user,enabledFeatures]);
   const filteredNav=useMemo(()=>{const query=navSearch.trim().toLocaleLowerCase('tr-TR');return query?visibleNav.filter(item=>item.label.toLocaleLowerCase('tr-TR').includes(query)):visibleNav},[visibleNav,navSearch]);
   const groupedNav=useMemo(()=>{const groups=new Map<string,NavItem[]>();for(const item of filteredNav){const group=navGroup(item.to);groups.set(group,[...(groups.get(group)||[]),item])}return [...groups.entries()]},[filteredNav]);
   const favoriteItems=useMemo(()=>visibleNav.filter(item=>favorites.includes(item.to)),[visibleNav,favorites]);
@@ -92,7 +94,7 @@ export function Layout() {
     </aside>
     <main className="main-area">
       <header className="topbar"><div><span className="eyebrow">2026–2027</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Anunex Platform Yönetimi':'')}</strong></div><div className="topbar-actions"><div className="status neutral"><NibiruMark size={18} state="active" title="Nibiru AI Akademik Zekâ"/> Nibiru AI</div><button className="topbar-logout" onClick={signOut} disabled={logoutBusy} title="Bu cihazdaki oturumu güvenli biçimde sonlandır"><LogOut size={17}/><span>{logoutBusy?'Kapatılıyor…':'Çıkış'}</span></button></div></header>
-      <div className="page-wrap"><LicenseBoundary><Outlet/></LicenseBoundary></div>
+      <div className="page-wrap"><LicenseBoundary><FeatureBoundary><Outlet/></FeatureBoundary></LicenseBoundary></div>
     </main>
     <NibiruContextDock/>
   </div>;
