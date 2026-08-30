@@ -11,11 +11,13 @@
     "test": "vitest run --config vitest.config.ts",
     "test:capacity:local": "node scripts/local-capacity-smoke.mjs",
     "test:capacity:live": "node scripts/live-capacity-smoke.mjs",
+    "test:privacy:live": "node scripts/live-kvkk-security-smoke.mjs",
     "test:watch": "vitest --config vitest.config.ts",
     "deploy": "npm run build && wrangler deploy",
     "db:migrate:local": "wrangler d1 migrations apply yildiz-sinav-db --local",
     "db:migrate:remote": "wrangler d1 migrations apply yildiz-sinav-db --remote",
     "seed:generate": "node scripts/generate-demo-seed.mjs && node scripts/generate-standard-role-seed.mjs && node scripts/make-demo-seeds-idempotent.mjs",
+    "seed:privacy:generate": "node scripts/generate-privacy-security-fixture.mjs",
     "seed:local": "npm run seed:generate && wrangler d1 execute yildiz-sinav-db --local --file=tmp/demo-seed.idempotent.sql && wrangler d1 execute yildiz-sinav-db --local --file=tmp/standard-role-seed.idempotent.sql && wrangler d1 execute yildiz-sinav-db --local --file=tmp/demo-camera-fixture.idempotent.sql && wrangler d1 execute yildiz-sinav-db --local --file=tmp/demo-standard-fixture.idempotent.sql",
     "seed:remote": "npm run seed:generate && wrangler d1 execute yildiz-sinav-db --remote --file=tmp/demo-seed.idempotent.sql && wrangler d1 execute yildiz-sinav-db --remote --file=tmp/standard-role-seed.idempotent.sql && wrangler d1 execute yildiz-sinav-db --remote --file=tmp/demo-camera-fixture.idempotent.sql && wrangler d1 execute yildiz-sinav-db --remote --file=tmp/demo-standard-fixture.idempotent.sql"
   },
