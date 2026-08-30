@@ -140,6 +140,10 @@ GitHub Actions:
 
 - `.github/workflows/ci.yml`: typecheck + test + build
 - `.github/workflows/deploy.yml`: main push sonrası Cloudflare staging deploy + D1 migration
+- `.github/workflows/deploy-production.yml`: manuel/onaylı production deploy + salt-okunur production smoke
+- `.github/workflows/production-recovery-check.yml`: Time Travel doğrulama + geçici, izole geri yükleme tatbikatı
+
+Production operasyon ve kurtarma prosedürü: [docs/PRODUCTION_OPERATIONS.md](./docs/PRODUCTION_OPERATIONS.md)
 
 Deploy için GitHub Actions secrets:
 
