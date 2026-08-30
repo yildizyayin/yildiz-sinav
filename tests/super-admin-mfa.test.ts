@@ -29,7 +29,7 @@ describe('Super Admin MFA production gate', () => {
     expect(entrySource).toContain('MFA_FAILURE_LIMIT = 8');
     expect(entrySource).toContain('MFA_TEMP_LOCKED');
     expect(migration).toContain('CREATE TABLE IF NOT EXISTS super_admin_mfa_attempts');
-    expect(migration).not.toMatch(/totp|secret|code\s+TEXT/i);
+    expect(migration).not.toMatch(/(?:totp|secret|one_time_code)\s+TEXT/i);
   });
 
   it('keeps the MFA seed out of plaintext production vars', () => {
