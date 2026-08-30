@@ -6,6 +6,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy-production:
     runs-on: ubuntu-latest
@@ -20,6 +24,7 @@ jobs:
       PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
       PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
       PROD_WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.PROD_WHATSAPP_PHONE_NUMBER_ID }}
+      PROD_BASE_URL: ${{ vars.PROD_BASE_URL }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -60,7 +65,7 @@ jobs:
         run: npx wrangler deploy --config wrangler.production.jsonc --var ENVIRONMENT:production --var PRODUCT_NAME:"Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY
 
       - name: Apply production D1 migrations
-        run: npx wrangler d1 migrations apply DB --remote --config wrangler.production.jsonc
+        run: npx wrangler d1 migrations apply DB --remote --yes --config wrangler.production.jsonc
 
       - name: Set production secrets
         run: |
@@ -83,6 +88,9 @@ jobs:
           put_prod_secret PROD_WHATSAPP_APP_SECRET WHATSAPP_APP_SECRET
           put_prod_secret PROD_WHATSAPP_ACCESS_TOKEN WHATSAPP_ACCESS_TOKEN
           put_prod_secret PROD_WHATSAPP_PHONE_NUMBER_ID WHATSAPP_PHONE_NUMBER_ID
+
+      - name: Read-only production smoke acceptance
+        run: node scripts/live-production-smoke.mjs
 
       - name: Production safety note
         run: |
