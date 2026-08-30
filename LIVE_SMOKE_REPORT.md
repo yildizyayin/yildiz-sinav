@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-30T10:43:00.693Z`
+- Time: `2026-08-30T12:51:29.640Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -107,13 +107,13 @@
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v7 · 174 evidence · 3 subjects
-- ✅ **Idempotent refresh + versioned history** — 7 history snapshots
+- ✅ **Persistent student intelligence profile** — v8 · 174 evidence · 3 subjects
+- ✅ **Idempotent refresh + versioned history** — 8 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 126 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v7 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 135 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v8 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 
