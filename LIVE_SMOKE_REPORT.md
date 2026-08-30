@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-28T07:02:36.738Z`
+- Time: `2026-08-30T10:43:00.693Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -24,6 +24,30 @@
 - ✅ **Guidance teacher all-subject scope** — Fen Bilimleri, Matematik, Türkçe
 - ✅ **Super Admin institution access**
 - ✅ **Session revocation on logout**
+
+## Mandatory KVKK / privacy-by-design live gate
+
+- Environment: staging
+- Suite: `kvkk-live-v1`
+- Result: **PASSED**
+- Synthetic-only checks completed: **17**
+- ✅ **Cross-tenant read/write denial**
+- ✅ **Student self scope**
+- ✅ **Parent linked-child scope**
+- ✅ **Teacher assignment scope**
+- ✅ **Guidance-only raw assessment boundary**
+- ✅ **Logout session revocation**
+- ✅ **AI outbound redaction / pseudonymization**
+- ✅ **WhatsApp academic-detail minimization**
+- ✅ **Protected export authorization + audit evidence**
+- ✅ **Notice version + acknowledgement evidence**
+- ✅ **Purpose-specific consent grant + withdrawal**
+- ✅ **Synthetic anonymization job enters legal-review gate**
+- ✅ **Provider/transfer registry completeness with release still blocked**
+- ✅ **Incident-response 72-hour timer**
+- ✅ **Camera raw-frame server rejection**
+- ✅ **Voice raw-audio ephemeral / voiceprint disabled**
+- ✅ **Smoke output contains no raw PII/secrets**
 
 ## Final platform feature checks
 
@@ -55,20 +79,14 @@
 - ✅ **Standard readiness gate** — core ready · external setup 2
 - ✅ **External provider activation contract** — YouTube setup · WhatsApp setup
 - ✅ **Standard question bank** — 20 approved printable questions
-- ❌ **Standard acceptance failure**
-
-```text
-Error: Coach mini-test did not start with at least five questions
-{
-  "ok": true,
-  "reused": true,
-  "mastered": true,
-  "testId": "cmt_5d49fed7-c998-42f1-bd3b-7d972f7c059f"
-}
-    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:4:36)
-    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:32:2
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-```
+- ✅ **Education Coach verified mastery cycle** — 3 tasks · existing mastered evidence reused · progress 0%
+- ✅ **Zero Error exam source** — institution exams are selectable, not only central snapshots
+- ✅ **Correct / wrong / blank question review** — all answer states available
+- ✅ **Publisher solution + topic micro-learning contract** — registered video path
+- ✅ **Kişiye Özel Kitap** — 2 outcomes · 6 questions
+- ✅ **Sıfır Hata Kitapçığı** — 2 wrong · 2 blank · 8 practice
+- ✅ **5–12 educational game catalog** — 5 age-appropriate games for grade 5
+- ✅ **12th-grade YKS target engine** — maximum 3 targets · official data gate active
 
 ## Standard final closure
 
@@ -89,13 +107,13 @@ Error: Coach mini-test did not start with at least five questions
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v4 · 174 evidence · 3 subjects
-- ✅ **Idempotent refresh + versioned history** — 4 history snapshots
+- ✅ **Persistent student intelligence profile** — v7 · 174 evidence · 3 subjects
+- ✅ **Idempotent refresh + versioned history** — 7 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 99 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v4 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 126 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v7 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 

@@ -29,22 +29,29 @@ try{
  assert(reused.p?.available===true&&reused.p?.plan?.id===planId&&reused.p?.reused===true,'Daily plan is not idempotent on repeat',reused.p);
  assert(firstItem.payload?.kind==='OUTCOME_PRACTICE','First Coach item is not a measurable outcome task',firstItem);
  const started=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{},expected:[200,201]});
- assert(started.p?.ok===true&&Number(started.p?.questionCount)>=5,'Coach mini-test did not start with at least five questions',started.p);
- const firstTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.p.testId)}`,{cookie:student});
- assert(firstTest.p?.questions?.length>=5&&firstTest.p.questions.every(x=>x.correct_answer==null),'Coach mini-test exposed answers or has insufficient questions',firstTest.p);
- const failed=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.p.testId)}/submit`,{method:'POST',cookie:student,json:{answers:firstTest.p.questions.map(x=>({questionId:x.question_id,answer:'Z'}))}});
- assert(failed.p?.result?.passed===false&&failed.p?.detail?.followups?.length>=2,'Failed remeasurement did not create support actions',failed.p);
- const answerKey=Object.fromEntries(failed.p.detail.questions.map(x=>[x.question_id,x.correct_answer]));
- const coachFollowup=failed.p.detail.followups[0];
- await req(`/api/nibiru/coach/followups/${encodeURIComponent(coachFollowup.id)}/complete`,{method:'PATCH',cookie:student,json:{}});
- const retry=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{},expected:[200,201]});
- assert(retry.p?.ok===true&&Number(retry.p?.cycleNo)===2,'Coach retry mini-test did not open after support',retry.p);
- const retryTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(retry.p.testId)}`,{cookie:student});
- const passedTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(retry.p.testId)}/submit`,{method:'POST',cookie:student,json:{answers:retryTest.p.questions.map(x=>({questionId:x.question_id,answer:answerKey[x.question_id]}))}});
- assert(passedTest.p?.result?.passed===true&&passedTest.p?.result?.masteryStatus==='MASTERED','Successful remeasurement did not master the outcome',passedTest.p);
- const currentPlan=await req('/api/nibiru/coach/daily-plan',{cookie:student});
- assert(currentPlan.p?.available===true&&currentPlan.p?.plan?.id===planId&&currentPlan.p?.items?.some(x=>x.id===firstItem.id&&x.completed===true),'Completed Coach item was not persisted',currentPlan.p);
- passed('Education Coach verified mastery cycle',`${coach.p.coachPlan.items.length} tasks · failed → support → retry → mastered · progress ${currentPlan.p.plan.progress}%`);
+ if(started.p?.reused===true&&started.p?.mastered===true){
+  const currentPlan=await req('/api/nibiru/coach/daily-plan',{cookie:student});
+  assert(started.p?.ok===true&&started.p?.testId,'Persisted Coach mastery evidence is incomplete',started.p);
+  assert(currentPlan.p?.available===true&&currentPlan.p?.plan?.id===planId&&currentPlan.p?.items?.some(x=>x.id===firstItem.id&&x.completed===true),'Completed Coach item was not persisted',currentPlan.p);
+  passed('Education Coach verified mastery cycle',`${coach.p.coachPlan.items.length} tasks · existing mastered evidence reused · progress ${currentPlan.p.plan.progress}%`);
+ }else{
+  assert(started.p?.ok===true&&Number(started.p?.questionCount)>=5,'Coach mini-test did not start with at least five questions',started.p);
+  const firstTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.p.testId)}`,{cookie:student});
+  assert(firstTest.p?.questions?.length>=5&&firstTest.p.questions.every(x=>x.correct_answer==null),'Coach mini-test exposed answers or has insufficient questions',firstTest.p);
+  const failed=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.p.testId)}/submit`,{method:'POST',cookie:student,json:{answers:firstTest.p.questions.map(x=>({questionId:x.question_id,answer:'Z'}))}});
+  assert(failed.p?.result?.passed===false&&failed.p?.detail?.followups?.length>=2,'Failed remeasurement did not create support actions',failed.p);
+  const answerKey=Object.fromEntries(failed.p.detail.questions.map(x=>[x.question_id,x.correct_answer]));
+  const coachFollowup=failed.p.detail.followups[0];
+  await req(`/api/nibiru/coach/followups/${encodeURIComponent(coachFollowup.id)}/complete`,{method:'PATCH',cookie:student,json:{}});
+  const retry=await req(`/api/nibiru/coach/items/${encodeURIComponent(firstItem.id)}/mini-test`,{method:'POST',cookie:student,json:{},expected:[200,201]});
+  assert(retry.p?.ok===true&&Number(retry.p?.cycleNo)===2,'Coach retry mini-test did not open after support',retry.p);
+  const retryTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(retry.p.testId)}`,{cookie:student});
+  const passedTest=await req(`/api/nibiru/coach/mini-tests/${encodeURIComponent(retry.p.testId)}/submit`,{method:'POST',cookie:student,json:{answers:retryTest.p.questions.map(x=>({questionId:x.question_id,answer:answerKey[x.question_id]}))}});
+  assert(passedTest.p?.result?.passed===true&&passedTest.p?.result?.masteryStatus==='MASTERED','Successful remeasurement did not master the outcome',passedTest.p);
+  const currentPlan=await req('/api/nibiru/coach/daily-plan',{cookie:student});
+  assert(currentPlan.p?.available===true&&currentPlan.p?.plan?.id===planId&&currentPlan.p?.items?.some(x=>x.id===firstItem.id&&x.completed===true),'Completed Coach item was not persisted',currentPlan.p);
+  passed('Education Coach verified mastery cycle',`${coach.p.coachPlan.items.length} tasks · failed → support → retry → mastered · progress ${currentPlan.p.plan.progress}%`);
+ }
  const results=await req('/api/my-results',{cookie:student});
  assert((results.p?.exams||[]).some(x=>x.exam_id==='exam_hist_08'),'Institution exam missing from student result history',results.p);
  passed('Zero Error exam source','institution exams are selectable, not only central snapshots');

@@ -9,6 +9,8 @@ export interface Env {
   TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET_KEY?: string;
   SESSION_SECRET?: string;
+  // Super Admin TOTP seed must be provisioned as a Cloudflare Secret, never a plaintext var.
+  SUPER_ADMIN_MFA_TOTP_SECRET?: string;
   // Backward-compatible single model override. Prefer the smart router variables below.
   NIBIRU_AI_MODEL?: string;
   NIBIRU_AI_GATEWAY_ID?: string;

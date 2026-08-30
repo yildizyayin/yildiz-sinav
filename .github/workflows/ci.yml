@@ -16,15 +16,17 @@ jobs:
       - run: npm install
       - name: Validate D1 migrations locally
         run: npx wrangler d1 migrations apply DB --local --persist-to=.wrangler/ci-state
-      - name: Validate complete Standard demo seed locally and on repeat
+      - name: Validate complete Standard + privacy synthetic seeds locally and on repeat
         run: |
           npm run seed:generate
+          npm run seed:privacy:generate
           for pass in 1 2; do
             echo "Seed validation pass $pass"
             npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/demo-seed.idempotent.sql
             npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/standard-role-seed.idempotent.sql
             npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/demo-camera-fixture.idempotent.sql
             npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/demo-standard-fixture.idempotent.sql
+            npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/privacy-security-fixture.idempotent.sql
           done
       - run: npm run typecheck
       - run: npm test

@@ -2,6 +2,8 @@ import type { Env, Role } from '../types';
 import { detectNibiruIntent } from './nibiru';
 import { routeNibiruSpecialist } from './nibiru-specialists';
 import { chooseNibiruModelDecision,runNibiruInference } from './nibiru-model-router';
+import { externalPersonalDataGate } from './privacy-external-gate';
+import { minimizeNibiruAiMessages } from './privacy-minimization';
 
 function messagesFromInput(input:any):Array<{role:'system'|'user'|'assistant';content:string}>{
   if(!Array.isArray(input?.messages))return[];
@@ -23,7 +25,7 @@ function extractUserMessage(messages:Array<{role:string;content:string}>){
 }
 
 export function withNibiruAiRouter(env:Env):Env{
-  if(!env.AI||env.NIBIRU_ROUTER_MODE==='LEGACY')return env;
+  if(!env.AI)return env;
   const originalAi=env.AI as any;
   const routedAi=new Proxy(originalAi,{
     get(target,prop,receiver){
@@ -34,9 +36,15 @@ export function withNibiruAiRouter(env:Env):Env{
       return async (requestedModel:any,input:any,options?:any)=>{
         const messages=messagesFromInput(input);
         if(!isNibiruPrompt(messages))return originalAi.run(requestedModel,input,options);
+        const minimized=minimizeNibiruAiMessages(messages);
+        const privacyGate=await externalPersonalDataGate(env,'NIBIRU_AI');
+        if(!privacyGate.ok)throw new Error(`PRIVACY_EXTERNAL_PROVIDER_BLOCKED:${privacyGate.code}`);
+        if(env.NIBIRU_ROUTER_MODE==='LEGACY'){
+          return originalAi.run(requestedModel,{...input,messages:minimized.messages},options);
+        }
         const role=extractRole(messages),message=extractUserMessage(messages),intent=detectNibiruIntent(message),specialist=routeNibiruSpecialist({role},message);
         const decision=chooseNibiruModelDecision(env,{role},intent,message,specialist);
-        const result=await runNibiruInference(env,decision,messages,{
+        const result=await runNibiruInference(env,decision,minimized.messages,{
           role,
           intent,
           environment:env.ENVIRONMENT||'unknown',
@@ -50,6 +58,8 @@ export function withNibiruAiRouter(env:Env):Env{
           selectedModel:result.selected?.model||null,
           attempts:result.attempts,
           gatewayLogId:result.gatewayLogId,
+          privacyRedactions:minimized.redactions,
+          privacyProviderGate:privacyGate.enforcement,
         }));
         // Keep compatibility with the legacy Nibiru response extractor.
         return {response:result.text};
