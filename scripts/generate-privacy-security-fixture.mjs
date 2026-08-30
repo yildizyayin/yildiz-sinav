@@ -44,9 +44,9 @@ out.push(`INSERT INTO privacy_notice_versions
   ON CONFLICT(id) DO UPDATE SET audience='STUDENT',version='smoke-v1',title=excluded.title,content_hash=excluded.content_hash,content_url=NULL,effective_at='2026-01-01',retired_at=NULL,status='ACTIVE',created_by='usr_super';`);
 
 out.push(`INSERT INTO retention_policies
-  (id,code,entity_type,purpose_note,trigger_event,retention_days,retention_note,disposal_action,legal_hold_supported,status,legal_review_note,approved_by,approved_at)
-  VALUES ('ret_smoke_student','SMOKE_SYNTHETIC_STUDENT_ERASURE','SYNTHETIC_STUDENT','Staging-only lifecycle verification for a dedicated synthetic subject.','SMOKE_REQUEST',0,'Never use as a production retention decision.','ANONYMIZE',1,'APPROVED','Synthetic staging fixture approval only; this is not counsel or production legal approval.','usr_super',CURRENT_TIMESTAMP)
-  ON CONFLICT(id) DO UPDATE SET code=excluded.code,entity_type='SYNTHETIC_STUDENT',purpose_note=excluded.purpose_note,trigger_event='SMOKE_REQUEST',retention_days=0,retention_note=excluded.retention_note,disposal_action='ANONYMIZE',legal_hold_supported=1,status='APPROVED',legal_review_note=excluded.legal_review_note,approved_by='usr_super',approved_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP;`);
+  (id,code,entity_type,purpose_note,trigger_event,retention_days,retention_note,disposal_action,legal_hold_supported,status,approved_by,approved_at)
+  VALUES ('ret_smoke_student','SMOKE_SYNTHETIC_STUDENT_ERASURE','SYNTHETIC_STUDENT','Staging-only lifecycle verification for a dedicated synthetic subject.','SMOKE_REQUEST',0,'Never use as a production retention decision.','ANONYMIZE',1,'APPROVED','usr_super',CURRENT_TIMESTAMP)
+  ON CONFLICT(id) DO UPDATE SET code=excluded.code,entity_type='SYNTHETIC_STUDENT',purpose_note=excluded.purpose_note,trigger_event='SMOKE_REQUEST',retention_days=0,retention_note=excluded.retention_note,disposal_action='ANONYMIZE',legal_hold_supported=1,status='APPROVED',approved_by='usr_super',approved_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP;`);
 
 for (const [id, processorId] of [
   ['tr_smoke_cloudflare', 'proc_cloudflare'],
