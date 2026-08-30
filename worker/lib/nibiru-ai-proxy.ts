@@ -2,6 +2,7 @@ import type { Env, Role } from '../types';
 import { detectNibiruIntent } from './nibiru';
 import { routeNibiruSpecialist } from './nibiru-specialists';
 import { chooseNibiruModelDecision,runNibiruInference } from './nibiru-model-router';
+import { externalPersonalDataGate } from './privacy-external-gate';
 import { minimizeNibiruAiMessages } from './privacy-minimization';
 
 function messagesFromInput(input:any):Array<{role:'system'|'user'|'assistant';content:string}>{
@@ -36,6 +37,8 @@ export function withNibiruAiRouter(env:Env):Env{
         const messages=messagesFromInput(input);
         if(!isNibiruPrompt(messages))return originalAi.run(requestedModel,input,options);
         const minimized=minimizeNibiruAiMessages(messages);
+        const privacyGate=await externalPersonalDataGate(env,'NIBIRU_AI');
+        if(!privacyGate.ok)throw new Error(`PRIVACY_EXTERNAL_PROVIDER_BLOCKED:${privacyGate.code}`);
         if(env.NIBIRU_ROUTER_MODE==='LEGACY'){
           return originalAi.run(requestedModel,{...input,messages:minimized.messages},options);
         }
@@ -56,6 +59,7 @@ export function withNibiruAiRouter(env:Env):Env{
           attempts:result.attempts,
           gatewayLogId:result.gatewayLogId,
           privacyRedactions:minimized.redactions,
+          privacyProviderGate:privacyGate.enforcement,
         }));
         // Keep compatibility with the legacy Nibiru response extractor.
         return {response:result.text};
