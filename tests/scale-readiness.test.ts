@@ -6,13 +6,16 @@ const productRoot=readFileSync(new URL('../worker/product-completion-entry.ts',i
 const privacyRoot=readFileSync(new URL('../worker/privacy-entry.ts',import.meta.url),'utf8');
 const privacyMinimizationRoot=readFileSync(new URL('../worker/privacy-minimization-entry.ts',import.meta.url),'utf8');
 const privacyExportRoot=readFileSync(new URL('../worker/privacy-export-entry.ts',import.meta.url),'utf8');
+const privacySmokeRoot=readFileSync(new URL('../worker/privacy-smoke-entry.ts',import.meta.url),'utf8');
 const staging=readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8');
 const production=readFileSync(new URL('../wrangler.production.jsonc',import.meta.url),'utf8');
 
 describe('Anunex scale readiness',()=>{
-  it('routes staging and production through audited export, privacy gates, product root and scale-safe wrapper',()=>{
-    expect(staging).toContain('"main": "./worker/privacy-export-entry.ts"');
+  it('routes staging through synthetic smoke evidence while production keeps the audited privacy chain',()=>{
+    expect(staging).toContain('"main": "./worker/privacy-smoke-entry.ts"');
     expect(production).toContain('"main": "./worker/privacy-export-entry.ts"');
+    expect(privacySmokeRoot).toContain("import app from './privacy-export-entry'");
+    expect(privacySmokeRoot).toContain("env.ENVIRONMENT !== 'staging'");
     expect(privacyExportRoot).toContain("import app from './privacy-minimization-entry'");
     expect(privacyMinimizationRoot).toContain("import app from './privacy-entry'");
     expect(privacyRoot).toContain("import app from './product-completion-entry'");
