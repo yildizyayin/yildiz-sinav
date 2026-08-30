@@ -91,11 +91,13 @@ jobs:
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: |
           npm run seed:generate
+          npm run seed:privacy:generate
           npx wrangler d1 execute DB --remote --file=tmp/demo-seed.idempotent.sql
           npx wrangler d1 execute DB --remote --file=tmp/standard-role-seed.idempotent.sql
           npx wrangler d1 execute DB --remote --file=tmp/demo-camera-fixture.idempotent.sql
           npx wrangler d1 execute DB --remote --file=tmp/demo-standard-fixture.idempotent.sql
           npx wrangler d1 execute DB --remote --file=scripts/demo-standard-closure-fixture.sql
+          npx wrangler d1 execute DB --remote --file=tmp/privacy-security-fixture.idempotent.sql
           node scripts/seed-standard-assets.mjs
 
       - name: Live staging smoke tests
@@ -103,6 +105,10 @@ jobs:
         run: |
           rm -f LIVE_SMOKE_REPORT.md
           node scripts/live-smoke-v2.mjs
+
+      - name: Mandatory live KVKK/privacy security gate
+        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        run: npm run test:privacy:live
 
       - name: Live final platform feature tests
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
