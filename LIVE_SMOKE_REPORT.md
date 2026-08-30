@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-28T07:02:36.738Z`
+- Time: `2026-08-30T10:31:20.405Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -24,6 +24,30 @@
 - ✅ **Guidance teacher all-subject scope** — Fen Bilimleri, Matematik, Türkçe
 - ✅ **Super Admin institution access**
 - ✅ **Session revocation on logout**
+
+## Mandatory KVKK / privacy-by-design live gate
+
+- Environment: staging
+- Suite: `kvkk-live-v1`
+- Result: **PASSED**
+- Synthetic-only checks completed: **17**
+- ✅ **Cross-tenant read/write denial**
+- ✅ **Student self scope**
+- ✅ **Parent linked-child scope**
+- ✅ **Teacher assignment scope**
+- ✅ **Guidance-only raw assessment boundary**
+- ✅ **Logout session revocation**
+- ✅ **AI outbound redaction / pseudonymization**
+- ✅ **WhatsApp academic-detail minimization**
+- ✅ **Protected export authorization + audit evidence**
+- ✅ **Notice version + acknowledgement evidence**
+- ✅ **Purpose-specific consent grant + withdrawal**
+- ✅ **Synthetic anonymization job enters legal-review gate**
+- ✅ **Provider/transfer registry completeness with release still blocked**
+- ✅ **Incident-response 72-hour timer**
+- ✅ **Camera raw-frame server rejection**
+- ✅ **Voice raw-audio ephemeral / voiceprint disabled**
+- ✅ **Smoke output contains no raw PII/secrets**
 
 ## Final platform feature checks
 
@@ -89,13 +113,13 @@ Error: Coach mini-test did not start with at least five questions
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v4 · 174 evidence · 3 subjects
-- ✅ **Idempotent refresh + versioned history** — 4 history snapshots
+- ✅ **Persistent student intelligence profile** — v5 · 174 evidence · 3 subjects
+- ✅ **Idempotent refresh + versioned history** — 5 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 99 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v4 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 108 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v5 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 
