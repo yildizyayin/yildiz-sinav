@@ -1,4 +1,5 @@
 import type { Env } from '../types';
+import { externalPersonalDataGate } from './privacy-external-gate';
 import { minimizeWhatsAppOutboundText } from './privacy-minimization';
 
 export function normalizeWhatsAppPhone(value: string) {
@@ -71,6 +72,8 @@ export async function probeWhatsAppProvider(env: Env) {
 
 export async function sendWhatsAppText(env: Env, to: string, text: string) {
   if (!env.WHATSAPP_ACCESS_TOKEN || !env.WHATSAPP_PHONE_NUMBER_ID) return { ok:false, reason:'NOT_CONFIGURED' as const };
+  const privacyGate=await externalPersonalDataGate(env,'META_WHATSAPP');
+  if(!privacyGate.ok)return {ok:false,reason:'PRIVACY_PROVIDER_BLOCKED' as const,privacyCode:privacyGate.code};
   const minimized=minimizeWhatsAppOutboundText(text);
   const response = await fetch(graphUrl(env),{
     method:'POST',
@@ -85,6 +88,8 @@ export async function sendWhatsAppText(env: Env, to: string, text: string) {
 export async function sendWhatsAppTemplate(env: Env, to: string, templateName: string, bodyParams: string[] = [], languageCode = 'tr') {
   if (!env.WHATSAPP_ACCESS_TOKEN || !env.WHATSAPP_PHONE_NUMBER_ID) return { ok:false, reason:'NOT_CONFIGURED' as const };
   if (!templateName.trim()) return { ok:false, reason:'TEMPLATE_REQUIRED' as const };
+  const privacyGate=await externalPersonalDataGate(env,'META_WHATSAPP');
+  if(!privacyGate.ok)return {ok:false,reason:'PRIVACY_PROVIDER_BLOCKED' as const,privacyCode:privacyGate.code};
   const minimizedParams=bodyParams.map(value=>minimizeWhatsAppOutboundText(String(value)));
   const components = minimizedParams.length ? [{type:'body',parameters:minimizedParams.map(value=>({type:'text',text:value.text.slice(0,1024)}))}] : undefined;
   const response = await fetch(graphUrl(env),{
@@ -106,7 +111,7 @@ export type WhatsAppInboundMessage = {
 };
 
 export function extractWhatsAppMessages(payload: any): WhatsAppInboundMessage[] {
-  const out: WhatsAppInboundMessage[]=[];
+  const out:WhatsAppInboundMessage[]=[];
   for(const entry of payload?.entry||[]) for(const change of entry?.changes||[]) {
     const messages=change?.value?.messages||[];
     for(const message of messages) out.push({
