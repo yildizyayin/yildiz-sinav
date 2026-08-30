@@ -7,15 +7,16 @@ const releaseMigration = readFileSync(new URL('../migrations/0028_kvkk_release_c
 describe('KVKK operational workflows', () => {
   it('keeps consent separate, purpose-approved, withdrawable and tenant/relation scoped', () => {
     expect(entry).toContain("upper(coalesce(lawful_basis_code,'')) IN ('CONSENT','EXPLICIT_CONSENT','ACIK_RIZA')");
-    expect(entry).toContain("INSERT INTO consent_records");
+    expect(entry).toContain('INSERT INTO consent_records');
     expect(entry).toContain("state='WITHDRAWN',withdrawn_at=CURRENT_TIMESTAMP");
     expect(entry).toContain('p.parent_user_id=? AND p.student_id=? AND p.active=1 AND e.institution_id=?');
   });
 
   it('does not allow deletion jobs before identity verification and legal review', () => {
     expect(entry).toContain("dsr.identity_verification_status !== 'VERIFIED'");
+    expect(entry).toContain('INSERT INTO privacy_deletion_jobs');
     expect(entry).toContain("status='LEGAL_REVIEW'");
-    expect(entry).not.toContain("INSERT INTO privacy_deletion_jobs").toBe(false);
+    expect(entry).not.toContain("status='RUNNING' WHERE request_id");
   });
 
   it('creates incident records with the 72-hour authority review clock', () => {
