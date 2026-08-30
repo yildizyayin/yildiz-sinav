@@ -15,7 +15,7 @@ describe('KVKK operational workflows', () => {
   it('does not allow deletion jobs before identity verification and legal review', () => {
     expect(entry).toContain("dsr.identity_verification_status !== 'VERIFIED'");
     expect(entry).toContain('INSERT INTO privacy_deletion_jobs');
-    expect(entry).toContain("status='LEGAL_REVIEW'");
+    expect(entry).toContain("VALUES (?,?,?,?,?,?,?,?,'LEGAL_REVIEW')");
     expect(entry).not.toContain("status='RUNNING' WHERE request_id");
   });
 
