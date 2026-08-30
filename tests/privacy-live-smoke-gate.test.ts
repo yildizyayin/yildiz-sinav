@@ -20,7 +20,7 @@ describe('mandatory live KVKK/privacy security gate', () => {
   });
 
   it('uses only synthetic minimization markers and returns evidence rather than raw values', () => {
-    expect(wrapper).toContain("syntheticOnly: true");
+    expect(wrapper).toContain('syntheticOnly: true');
     expect(wrapper).toContain('minimizeNibiruAiMessages');
     expect(wrapper).toContain('minimizeWhatsAppOutboundText');
     expect(wrapper).toContain('containsRawCameraMedia');
@@ -29,11 +29,13 @@ describe('mandatory live KVKK/privacy security gate', () => {
   });
 
   it('builds a separate synthetic tenant and deliberately keeps legal transfer status pending', () => {
-    expect(fixture).toContain("'inst_privacy_b'");
-    expect(fixture).toContain("'stu_privacy_b'");
-    expect(fixture).toContain("'SMOKE_CONSENT'");
-    expect(fixture).toContain("'TBD','LEGAL_REVIEW'");
-    expect(fixture).not.toContain("'STANDARD_CONTRACT','ACTIVE'");
+    expect(fixture).toContain('inst_privacy_b');
+    expect(fixture).toContain('stu_privacy_b');
+    expect(fixture).toContain('SMOKE_CONSENT');
+    expect(fixture).toContain("transfer_mechanism='TBD'");
+    expect(fixture).toContain("status='LEGAL_REVIEW'");
+    expect(fixture).toContain('LEGAL_REVIEW_PENDING');
+    expect(fixture).not.toContain("transfer_mechanism='STANDARD_CONTRACT'");
   });
 
   it('covers the release-blocking live privacy boundaries without emitting secrets', () => {
