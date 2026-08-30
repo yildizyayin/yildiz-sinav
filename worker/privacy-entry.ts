@@ -9,6 +9,9 @@ import {
   noticeAudienceForRole,
 } from './lib/privacy-policy';
 
+type PrivacyNoticeAckBody = { noticeVersionId?: string; channel?: string };
+type PrivacyRequestBody = { requestType?: string; studentId?: string; scopeNote?: string };
+
 function unauthenticated(): Response {
   return json({ ok: false, error: { code: 'UNAUTHENTICATED', message: 'Oturum açmanız gerekiyor.' } }, 401);
 }
@@ -38,7 +41,7 @@ async function currentPrivacyNotice(env: Env, user: AuthUser): Promise<Response>
 }
 
 async function acknowledgePrivacyNotice(request: Request, env: Env, user: AuthUser): Promise<Response> {
-  const body = await request.json<{ noticeVersionId?: string; channel?: string }>().catch(() => ({}));
+  const body = await request.json<PrivacyNoticeAckBody>().catch(() => ({} as PrivacyNoticeAckBody));
   const audience = noticeAudienceForRole(user.role);
   const notice = body.noticeVersionId
     ? await one<any>(env.DB.prepare(`
@@ -110,7 +113,7 @@ async function resolvePrivacyRequestTarget(env: Env, user: AuthUser, requestedSt
 }
 
 async function createPrivacyRequest(request: Request, env: Env, user: AuthUser): Promise<Response> {
-  const body = await request.json<{ requestType?: string; studentId?: string; scopeNote?: string }>().catch(() => ({}));
+  const body = await request.json<PrivacyRequestBody>().catch(() => ({} as PrivacyRequestBody));
   const requestType = String(body.requestType || '').toUpperCase();
   if (!isPrivacyRequestType(requestType)) return badRequest('Geçersiz KVKK başvuru türü.');
   const target = await resolvePrivacyRequestTarget(env, user, body.studentId || null);
