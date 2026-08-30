@@ -21,12 +21,16 @@ describe('privacy lifecycle enforcement', () => {
   });
 
   it('persists legal holds and non-PII disposal evidence', () => {
+    const disposalEvidenceTable = migration.match(
+      /CREATE TABLE IF NOT EXISTS privacy_disposal_evidence \([\s\S]*?\n\);/,
+    )?.[0];
+
     expect(migration).toContain('CREATE TABLE IF NOT EXISTS privacy_legal_holds');
     expect(migration).toContain("status TEXT NOT NULL DEFAULT 'ACTIVE'");
-    expect(migration).toContain('CREATE TABLE IF NOT EXISTS privacy_disposal_evidence');
-    expect(migration).toContain('affected_records INTEGER NOT NULL DEFAULT 0');
-    expect(migration).toContain('result_hash TEXT NOT NULL');
-    expect(migration).not.toContain('raw_payload');
+    expect(disposalEvidenceTable).toBeDefined();
+    expect(disposalEvidenceTable).toContain('affected_records INTEGER NOT NULL DEFAULT 0');
+    expect(disposalEvidenceTable).toContain('result_hash TEXT NOT NULL');
+    expect(disposalEvidenceTable).not.toContain('raw_payload');
   });
 
   it('requires Super Admin, approved policy and no legal hold before execution', () => {
