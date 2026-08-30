@@ -15,25 +15,9 @@ const REQUIRED_RETENTION_POLICY_CODES = [
 const LIFECYCLE_SCOPE = 'IDENTITY_ERASURE_V1';
 const SYNTHETIC_POLICY_CODE = 'SMOKE_SYNTHETIC_STUDENT_ERASURE';
 
-type DeletionDecisionBody = {
-  decision?: string;
-  retentionPolicyCode?: string;
-  evidenceHash?: string;
-  note?: string;
-};
-
-type LegalHoldBody = {
-  action?: string;
-  reasonCode?: string;
-  evidenceHash?: string;
-  note?: string;
-};
-
-type RetentionDecisionBody = {
-  status?: string;
-  evidenceHash?: string;
-  note?: string;
-};
+type DeletionDecisionBody = { decision?: string; retentionPolicyCode?: string; evidenceHash?: string; note?: string };
+type LegalHoldBody = { action?: string; reasonCode?: string; evidenceHash?: string; note?: string };
+type RetentionDecisionBody = { status?: string; evidenceHash?: string; note?: string };
 
 type DeletionJobRow = {
   id: string;
@@ -117,7 +101,8 @@ async function retentionCounselApproved(env: Env): Promise<boolean> {
 function isSyntheticStagingJob(env: Env, job: DeletionJobRow): boolean {
   return env.ENVIRONMENT === 'staging'
     && job.institution_code === 'PRIVB'
-    && job.reason_code === 'SMOKE_SYNTHETIC';
+    && job.reason_code === 'SMOKE_SYNTHETIC'
+    && job.retention_policy_code === SYNTHETIC_POLICY_CODE;
 }
 
 async function activeLegalHoldExists(env: Env, job: DeletionJobRow): Promise<boolean> {
@@ -144,9 +129,7 @@ async function decideDeletionJob(request: Request, env: Env, admin: AuthUser, jo
   if (!['LEGAL_REVIEW', 'FAILED'].includes(job.status)) return conflict('İş yalnız hukuk incelemesi veya kontrollü yeniden deneme durumunda karara bağlanabilir.', 'DELETION_JOB_DECISION_STATE');
 
   if (decision === 'REJECT') {
-    await env.DB.prepare(`
-      UPDATE privacy_deletion_jobs SET status='CANCELLED',failure_summary='LEGAL_REVIEW_REJECTED',updated_at=CURRENT_TIMESTAMP WHERE id=?
-    `).bind(jobId).run();
+    await env.DB.prepare(`UPDATE privacy_deletion_jobs SET status='CANCELLED',failure_summary='LEGAL_REVIEW_REJECTED',updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(jobId).run();
     if (job.request_id) await env.DB.prepare(`UPDATE data_subject_requests SET status='IN_REVIEW',updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(job.request_id).run();
     await audit(env.DB, admin.id, job.institution_id, 'PRIVACY_DELETION_JOB_REJECTED', 'privacy_deletion_job', jobId, { requestId: job.request_id });
     return json({ ok: true, id: jobId, status: 'CANCELLED' });
@@ -160,7 +143,10 @@ async function decideDeletionJob(request: Request, env: Env, admin: AuthUser, jo
   if (!policy || policy.status !== 'APPROVED') return conflict('Silme işi yalnız onaylı bir saklama/imha politikasına bağlanabilir.', 'RETENTION_POLICY_NOT_APPROVED');
   if (policy.disposal_action !== job.mode && policy.disposal_action !== 'LEGAL_REVIEW') return conflict('Saklama politikası imha eylemi iş moduyla uyuşmuyor.', 'RETENTION_POLICY_MODE_MISMATCH');
 
-  const syntheticStaging = env.ENVIRONMENT === 'staging' && job.institution_code === 'PRIVB' && job.reason_code === 'SMOKE_SYNTHETIC' && policy.code === SYNTHETIC_POLICY_CODE;
+  const syntheticStaging = env.ENVIRONMENT === 'staging'
+    && job.institution_code === 'PRIVB'
+    && job.reason_code === 'SMOKE_SYNTHETIC'
+    && policy.code === SYNTHETIC_POLICY_CODE;
   if (!syntheticStaging && !await retentionCounselApproved(env)) {
     return conflict('Hukukçu saklama/imha planı onayı tamamlanmadan gerçek kişi verisi için yürütme onayı verilemez.', 'RETENTION_COUNSEL_APPROVAL_PENDING');
   }
@@ -245,9 +231,11 @@ async function executeDeletionJob(env: Env, admin: AuthUser, jobId: string): Pro
     return json({ ok: true, id: jobId, status: 'COMPLETED', alreadyCompleted: true, evidence });
   }
   const activeHold = await activeLegalHoldExists(env, job);
-  if (activeHold || !deletionJobCanExecute(job.status, job.legal_hold)) return conflict('İş onaylı değil veya aktif legal hold nedeniyle çalıştırılamaz.', activeHold ? 'LEGAL_HOLD_ACTIVE' : 'DELETION_JOB_NOT_EXECUTABLE');
+  if (activeHold || !deletionJobCanExecute(job.status, job.legal_hold)) {
+    return conflict('İş onaylı değil veya aktif legal hold nedeniyle çalıştırılamaz.', activeHold ? 'LEGAL_HOLD_ACTIVE' : 'DELETION_JOB_NOT_EXECUTABLE');
+  }
   if (!job.retention_policy_id || job.retention_policy_status !== 'APPROVED') return conflict('Onaylı saklama/imha politikası olmadan iş çalıştırılamaz.', 'RETENTION_POLICY_NOT_APPROVED');
-  const syntheticStaging = isSyntheticStagingJob(env, job) && job.retention_policy_code === SYNTHETIC_POLICY_CODE;
+  const syntheticStaging = isSyntheticStagingJob(env, job);
   if (!syntheticStaging && !await retentionCounselApproved(env)) return conflict('Hukukçu saklama/imha planı onayı tamamlanmadı.', 'RETENTION_COUNSEL_APPROVAL_PENDING');
 
   const userIds = new Set<string>();
@@ -268,11 +256,12 @@ async function executeDeletionJob(env: Env, admin: AuthUser, jobId: string): Pro
     statements.push(env.DB.prepare(`DELETE FROM nibiru_whatsapp_identities WHERE user_id IN (${marks})`).bind(...ids));
     statements.push(env.DB.prepare(`DELETE FROM announcement_deliveries WHERE recipient_user_id IN (${marks})`).bind(...ids));
     statements.push(env.DB.prepare(`DELETE FROM sessions WHERE user_id IN (${marks})`).bind(...ids));
-    statements.push(env.DB.prepare(`UPDATE users SET display_name='Silinmiş Hesap',email=NULL,phone=NULL,username=NULL,password_hash=?,password_salt=?,active=0,updated_at=CURRENT_TIMESTAMP WHERE id IN (${marks})`).bind(erasedSecret, erasedSecret, ...ids));
   }
 
   if (job.subject_student_id) {
     const studentId = job.subject_student_id;
+    statements.push(env.DB.prepare(`DELETE FROM external_identities WHERE entity_type='STUDENT' AND internal_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`UPDATE nibiru_sessions SET last_student_id=NULL WHERE last_student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM parent_student_links WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM guest_profiles WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM student_experience_preferences WHERE student_id=?`).bind(studentId));
@@ -283,8 +272,8 @@ async function executeDeletionJob(env: Env, admin: AuthUser, jobId: string): Pro
     statements.push(env.DB.prepare(`DELETE FROM rba_profiles WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM live_sessions WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM student_personal_books WHERE student_id=?`).bind(studentId));
-    statements.push(env.DB.prepare(`DELETE FROM zero_error_booklets WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM zero_error_attempts WHERE student_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM zero_error_booklets WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM assignment_attempts WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM assignment_recipients WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM recovery_plans WHERE student_id=?`).bind(studentId));
@@ -299,17 +288,25 @@ async function executeDeletionJob(env: Env, admin: AuthUser, jobId: string): Pro
     statements.push(env.DB.prepare(`DELETE FROM coach_mini_tests WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM student_intelligence_profile_history WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM student_intelligence_profiles WHERE student_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM outcome_results WHERE student_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`UPDATE admissions_candidates SET participant_id=NULL WHERE participant_id IN (SELECT id FROM exam_participants WHERE student_id=?)`).bind(studentId));
     statements.push(env.DB.prepare(`UPDATE scan_records SET canonical_json='{}',matched_student_id=NULL,match_status='INVALID',match_confidence=0,issues_json=NULL WHERE matched_student_id=?`).bind(studentId));
+
     if (job.mode === 'DELETE') {
-      statements.push(env.DB.prepare(`DELETE FROM outcome_results WHERE student_id=?`).bind(studentId));
       statements.push(env.DB.prepare(`DELETE FROM exam_participants WHERE student_id=?`).bind(studentId));
     } else {
-      statements.push(env.DB.prepare(`UPDATE exam_participants SET student_number_snapshot=NULL,name_snapshot='Anonim Öğrenci' WHERE student_id=?`).bind(studentId));
-      statements.push(env.DB.prepare(`UPDATE exam_result_snapshots SET payload_json=NULL WHERE student_id=?`).bind(studentId));
+      statements.push(env.DB.prepare(`UPDATE exam_result_snapshots SET student_id=NULL,payload_json=NULL,class_snapshot=NULL WHERE student_id=?`).bind(studentId));
+      statements.push(env.DB.prepare(`UPDATE exam_participants SET student_id=NULL,student_number_snapshot=NULL,name_snapshot='Anonim Öğrenci',class_snapshot=NULL WHERE student_id=?`).bind(studentId));
     }
-    statements.push(env.DB.prepare(`UPDATE student_enrollments SET student_number=NULL,status='ARCHIVED' WHERE student_id=?`).bind(studentId));
-    statements.push(env.DB.prepare(`UPDATE student_entities SET first_name='Anonim',last_name='Öğrenci',normalized_name='anonim ogrenci',status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(studentId));
+
+    statements.push(env.DB.prepare(`DELETE FROM student_enrollments WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`UPDATE nibiru_audit_events SET subject_student_id=NULL WHERE subject_student_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`UPDATE student_entities SET first_name='Anonim',last_name='Öğrenci',normalized_name='anonim ogrenci',status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(studentId));
+  }
+
+  if (ids.length) {
+    const marks = placeholders(ids.length);
+    statements.push(env.DB.prepare(`UPDATE users SET institution_id=NULL,student_id=NULL,display_name='Silinmiş Hesap',email=NULL,phone=NULL,username=NULL,password_hash=?,password_salt=?,active=0,updated_at=CURRENT_TIMESTAMP WHERE id IN (${marks})`).bind(erasedSecret, erasedSecret, ...ids));
   }
 
   if (!statements.length) return conflict('İş için yürütülebilir veri kapsamı bulunamadı.', 'DELETION_JOB_EMPTY_SCOPE');
@@ -369,10 +366,26 @@ async function decideRetentionPolicy(request: Request, env: Env, admin: AuthUser
   return json({ ok: true, code, status });
 }
 
+async function listLifecycleCollection(env: Env, collection: string): Promise<Response> {
+  if (collection === 'legal-holds') {
+    const items = await all<any>(env.DB.prepare(`SELECT id,institution_id,subject_user_id,subject_student_id,reason_code,status,applied_at,released_at,created_at FROM privacy_legal_holds ORDER BY applied_at DESC LIMIT 500`));
+    return json({ ok: true, collection, items });
+  }
+  if (collection === 'disposal-evidence') {
+    const items = await all<any>(env.DB.prepare(`SELECT id,deletion_job_id,request_id,institution_id,mode,execution_scope_code,affected_records,result_hash,completed_at,created_at FROM privacy_disposal_evidence ORDER BY completed_at DESC LIMIT 500`));
+    return json({ ok: true, collection, items });
+  }
+  if (collection === 'retention-runs') {
+    const items = await all<any>(env.DB.prepare(`SELECT id,environment,status,policies_considered,policies_executed,affected_records,failure_codes_json,started_at,completed_at FROM privacy_retention_runs ORDER BY started_at DESC LIMIT 100`));
+    return json({ ok: true, collection, items });
+  }
+  return notFound('KVKK yaşam döngüsü koleksiyonu bulunamadı.');
+}
+
 async function augmentReleaseGate(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const response = await app.fetch(request, env, ctx);
   if (response.status !== 200) return response;
-  const payload = await response.clone().json<any>().catch(() => null);
+  const payload = await response.clone().json().catch(() => null) as any;
   if (!payload?.ok || !Array.isArray(payload.blockers)) return response;
   const policies = await all<{ code: string; status: string }>(env.DB.prepare(`SELECT code,status FROM retention_policies WHERE code IN (${REQUIRED_RETENTION_POLICY_CODES.map(() => '?').join(',')})`).bind(...REQUIRED_RETENTION_POLICY_CODES));
   const statusByCode = new Map(policies.map(row => [row.code, row.status]));
@@ -410,7 +423,7 @@ async function runApprovedRetentionSweep(env: Env): Promise<void> {
       } else if (policy.code === 'WHATSAPP_RECEIPT') {
         statement = env.DB.prepare(`DELETE FROM nibiru_whatsapp_receipts WHERE received_at<? AND phone_e164 NOT IN (SELECT n.phone_e164 FROM nibiru_whatsapp_identities n JOIN privacy_legal_holds h ON h.subject_user_id=n.user_id WHERE h.status='ACTIVE')`).bind(cutoff);
       } else if (policy.code === 'SCAN_RAW_PAYLOAD') {
-        statement = env.DB.prepare(`UPDATE scan_records SET canonical_json='{}',issues_json=NULL WHERE batch_id IN (SELECT id FROM scan_batches WHERE status='COMMITTED' AND created_at<?) AND matched_student_id NOT IN (SELECT subject_student_id FROM privacy_legal_holds WHERE status='ACTIVE' AND subject_student_id IS NOT NULL)`).bind(cutoff);
+        statement = env.DB.prepare(`UPDATE scan_records SET canonical_json='{}',issues_json=NULL WHERE batch_id IN (SELECT id FROM scan_batches WHERE status='COMMITTED' AND created_at<?) AND (matched_student_id IS NULL OR matched_student_id NOT IN (SELECT subject_student_id FROM privacy_legal_holds WHERE status='ACTIVE' AND subject_student_id IS NOT NULL))`).bind(cutoff);
       }
       if (!statement) continue;
       try {
@@ -437,6 +450,14 @@ export default {
     const path = url.pathname;
 
     if (path === '/api/admin/privacy/release-gate' && request.method === 'GET') return augmentReleaseGate(request, env, ctx);
+
+    const collectionMatch = path.match(/^\/api\/admin\/privacy\/(legal-holds|disposal-evidence|retention-runs)$/);
+    if (collectionMatch) {
+      if (request.method !== 'GET') return methodNotAllowed();
+      const admin = await requireAdmin(env, request);
+      if (admin instanceof Response) return admin;
+      return listLifecycleCollection(env, collectionMatch[1]);
+    }
 
     const decisionMatch = path.match(/^\/api\/admin\/privacy\/deletion-jobs\/([^/]+)\/decision$/);
     const holdMatch = path.match(/^\/api\/admin\/privacy\/deletion-jobs\/([^/]+)\/legal-hold$/);
