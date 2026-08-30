@@ -43,6 +43,7 @@ out.push(`INSERT INTO privacy_notice_versions
   VALUES ('pn_smoke_student','STUDENT','smoke-v1','Synthetic staging privacy notice','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',NULL,'2026-01-01',NULL,'ACTIVE','usr_super')
   ON CONFLICT(id) DO UPDATE SET audience='STUDENT',version='smoke-v1',title=excluded.title,content_hash=excluded.content_hash,content_url=NULL,effective_at='2026-01-01',retired_at=NULL,status='ACTIVE',created_by='usr_super';`);
 
+out.push('-- Synthetic staging fixture approval only; this is not counsel or production legal approval.');
 out.push(`INSERT INTO retention_policies
   (id,code,entity_type,purpose_note,trigger_event,retention_days,retention_note,disposal_action,legal_hold_supported,status,approved_by,approved_at)
   VALUES ('ret_smoke_student','SMOKE_SYNTHETIC_STUDENT_ERASURE','SYNTHETIC_STUDENT','Staging-only lifecycle verification for a dedicated synthetic subject.','SMOKE_REQUEST',0,'Never use as a production retention decision.','ANONYMIZE',1,'APPROVED','usr_super',CURRENT_TIMESTAMP)
