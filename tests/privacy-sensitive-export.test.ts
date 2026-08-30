@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const source = readFileSync(new URL('../worker/privacy-export-entry.ts', import.meta.url), 'utf8');
+const smokeSource = readFileSync(new URL('../worker/privacy-smoke-entry.ts', import.meta.url), 'utf8');
 const staging = readFileSync(new URL('../wrangler.jsonc', import.meta.url), 'utf8');
 const production = readFileSync(new URL('../wrangler.production.jsonc', import.meta.url), 'utf8');
 
@@ -33,8 +34,9 @@ describe('sensitive privacy export boundary', () => {
     expect(source).toContain("'X-Content-Type-Options': 'nosniff'");
   });
 
-  it('routes staging and production through the export security wrapper', () => {
-    expect(staging).toContain('"main": "./worker/privacy-export-entry.ts"');
+  it('keeps the audited export wrapper in both deployment chains', () => {
+    expect(staging).toContain('"main": "./worker/privacy-smoke-entry.ts"');
+    expect(smokeSource).toContain("import app from './privacy-export-entry'");
     expect(production).toContain('"main": "./worker/privacy-export-entry.ts"');
   });
 });
