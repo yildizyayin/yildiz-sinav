@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://yildiz-sinav-v1.rtsgida.workers.dev`
-- Time: `2026-08-30T10:31:20.405Z`
+- Time: `2026-08-30T10:37:23.629Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -82,15 +82,123 @@
 - ❌ **Standard acceptance failure**
 
 ```text
-Error: Coach mini-test did not start with at least five questions
+Error: Completed Coach item was not persisted
 {
   "ok": true,
-  "reused": true,
-  "mastered": true,
-  "testId": "cmt_5d49fed7-c998-42f1-bd3b-7d972f7c059f"
+  "available": true,
+  "plan": {
+    "id": "coach_20260830_stu_a001",
+    "institution_id": "inst_demo",
+    "season_id": "season_2627",
+    "created_by": "usr_student",
+    "assignment_type": "NIBIRU",
+    "title": "Nibiru · 2026-08-30 Günlük Gelişim Planı",
+    "description": "Doğrulanmış sınav/kazanım kanıtları ve kurum föy planına göre hazırlanmış kısa günlük çalışma planı.",
+    "due_at": "2026-08-30T21:00:00+03:00",
+    "status": "ASSIGNED",
+    "created_at": "2026-08-30 10:32:27",
+    "recipient_status": "ASSIGNED",
+    "progress": 0,
+    "completed_at": null
+  },
+  "items": [
+    {
+      "id": "coach_20260830_stu_a001_i1",
+      "assignment_id": "coach_20260830_stu_a001",
+      "item_type": "TASK",
+      "reference_id": "out_fen_1",
+      "payload_json": "{\"kind\":\"OUTCOME_PRACTICE\",\"outcomeId\":\"out_fen_1\",\"subjectName\":\"Fen Bilimleri\",\"outcomeTitle\":\"Hücre ve Bölünmeler\",\"topic\":\"Canlılar\",\"successRate\":0.4482758620689655,\"evidenceCount\":29,\"questionTarget\":10,\"minutes\":15,\"label\":\"Fen Bilimleri · Hücre ve Bölünmeler\"}",
+      "sort_order": 1,
+      "completed": false,
+      "mastery_status": "MASTERED",
+      "last_score": 1,
+      "latest_test_id": null,
+      "latest_test_status": null,
+      "latest_test_cycle": null,
+      "latest_test_question_count": null,
+      "latest_test_score_percent": null,
+      "pending_followup_count": 0,
+      "completed_followup_count": 0,
+      "payload": {
+        "kind": "OUTCOME_PRACTICE",
+        "outcomeId": "out_fen_1",
+        "subjectName": "Fen Bilimleri",
+        "outcomeTitle": "Hücre ve Bölünmeler",
+        "topic": "Canlılar",
+        "successRate": 0.4482758620689655,
+        "evidenceCount": 29,
+        "questionTarget": 10,
+        "minutes": 15,
+        "label": "Fen Bilimleri · Hücre ve Bölünmeler"
+      },
+      "masteryStatus": "MASTERED",
+      "latestMiniTest": null
+    },
+    {
+      "id": "coach_20260830_stu_a001_i2",
+      "assignment_id": "coach_20260830_stu_a001",
+      "item_type": "WORKSHEET",
+      "reference_id": "ws_num_1",
+      "payload_json": "{\"kind\":\"ASSIGNED_WORKSHEET\",\"worksheetId\":\"ws_num_1\",\"title\":\"7. Sınıf Sayısal Föy 1\",\"track\":\"NUMERIC\",\"plannedDate\":null,\"minutes\":20,\"label\":\"7. Sınıf Sayısal Föy 1\"}",
+      "sort_order": 2,
+      "completed": false,
+      "mastery_status": null,
+      "last_score": null,
+      "latest_test_id": null,
+      "latest_test_status": null,
+      "latest_test_cycle": null,
+      "latest_test_question_count": null,
+      "latest_test_score_percent": null,
+      "pending_followup_count": 0,
+      "completed_followup_count": 0,
+      "payload": {
+        "kind": "ASSIGNED_WORKSHEET",
+        "worksheetId": "ws_num_1",
+        "title": "7. Sınıf Sayısal Föy 1",
+        "track": "NUMERIC",
+        "plannedDate": null,
+        "minutes": 20,
+        "label": "7. Sınıf Sayısal Föy 1"
+      },
+      "masteryStatus": null,
+      "latestMiniTest": null
+    },
+    {
+      "id": "coach_20260830_stu_a001_i3",
+      "assignment_id": "coach_20260830_stu_a001",
+      "item_type": "TASK",
+      "reference_id": "out_mat_1",
+      "payload_json": "{\"kind\":\"OUTCOME_PRACTICE\",\"outcomeId\":\"out_mat_1\",\"subjectName\":\"Matematik\",\"outcomeTitle\":\"Oran ve Orantı\",\"topic\":\"Oran\",\"successRate\":0.5862068965517241,\"evidenceCount\":29,\"questionTarget\":8,\"minutes\":12,\"label\":\"Matematik · Oran ve Orantı\"}",
+      "sort_order": 3,
+      "completed": false,
+      "mastery_status": null,
+      "last_score": null,
+      "latest_test_id": null,
+      "latest_test_status": null,
+      "latest_test_cycle": null,
+      "latest_test_question_count": null,
+      "latest_test_score_percent": null,
+      "pending_followup_count": 0,
+      "completed_followup_count": 0,
+      "payload": {
+        "kind": "OUTCOME_PRACTICE",
+        "outcomeId": "out_mat_1",
+        "subjectName": "Matematik",
+        "outcomeTitle": "Oran ve Orantı",
+        "topic": "Oran",
+        "successRate": 0.5862068965517241,
+        "evidenceCount": 29,
+        "questionTarget": 8,
+        "minutes": 12,
+        "label": "Matematik · Oran ve Orantı"
+      },
+      "masteryStatus": null,
+      "latestMiniTest": null
+    }
+  ]
 }
     at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:4:36)
-    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:32:2
+    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:35:3
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
 ```
 
@@ -113,13 +221,13 @@ Error: Coach mini-test did not start with at least five questions
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v5 · 174 evidence · 3 subjects
-- ✅ **Idempotent refresh + versioned history** — 5 history snapshots
+- ✅ **Persistent student intelligence profile** — v6 · 174 evidence · 3 subjects
+- ✅ **Idempotent refresh + versioned history** — 6 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 108 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v5 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 117 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v6 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 
