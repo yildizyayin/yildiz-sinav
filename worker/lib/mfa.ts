@@ -43,12 +43,12 @@ export async function generateTotpCode(secret: string, atMs = Date.now(), digits
   if (!keyBytes) return null;
   const counter = Math.floor(atMs / 1000 / 30);
   const key = await crypto.subtle.importKey('raw', keyBytes as BufferSource, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
-  const signature = new Uint8Array(await crypto.subtle.sign('HMAC', key, counterBytes(counter)));
+  const signature = new Uint8Array(await crypto.subtle.sign('HMAC', key, counterBytes(counter) as BufferSource));
   const offset = (signature[signature.length - 1] ?? 0) & 0x0f;
-  const binary = ((signature[offset] & 0x7f) << 24)
-    | ((signature[offset + 1] & 0xff) << 16)
-    | ((signature[offset + 2] & 0xff) << 8)
-    | (signature[offset + 3] & 0xff);
+  const binary = (((signature[offset] ?? 0) & 0x7f) << 24)
+    | (((signature[offset + 1] ?? 0) & 0xff) << 16)
+    | (((signature[offset + 2] ?? 0) & 0xff) << 8)
+    | ((signature[offset + 3] ?? 0) & 0xff);
   return String(binary % (10 ** digits)).padStart(digits, '0');
 }
 
