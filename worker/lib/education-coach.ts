@@ -54,7 +54,8 @@ async function readPlan(env:Env,studentId:string,planId:string):Promise<CoachPla
  const plan=await one<any>(env.DB.prepare(`SELECT a.*,ar.status recipient_status,ar.progress,ar.completed_at FROM assignments a JOIN assignment_recipients ar ON ar.assignment_id=a.id WHERE a.id=? AND a.assignment_type='NIBIRU' AND ar.student_id=?`).bind(planId,studentId));
  if(!plan)return{available:false,reason:'PLAN_NOT_FOUND'};
  const items=await all<any>(env.DB.prepare(`SELECT ai.*,
-   CASE WHEN EXISTS(SELECT 1 FROM assignment_attempts aa WHERE aa.item_id=ai.id AND aa.student_id=? AND coalesce(aa.score,0)>=1) THEN 1 ELSE 0 END completed,
+   CASE WHEN EXISTS(SELECT 1 FROM assignment_attempts aa WHERE aa.item_id=ai.id AND aa.student_id=? AND coalesce(aa.score,0)>=1)
+     OR som.status='MASTERED' THEN 1 ELSE 0 END completed,
    som.status mastery_status,som.last_score,
    mt.id latest_test_id,mt.status latest_test_status,mt.cycle_no latest_test_cycle,mt.question_count latest_test_question_count,mt.score_percent latest_test_score_percent,
    (SELECT COUNT(*) FROM coach_followup_actions f WHERE f.test_id=mt.id AND f.student_id=? AND f.status='PENDING') pending_followup_count,
