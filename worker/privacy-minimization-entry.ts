@@ -40,70 +40,103 @@ async function sha256Hex(value: string): Promise<string> {
   return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
-async function revokeAllSessionsForUser(env: Env, userId: string): Promise<void> {
-  await env.DB.prepare(`UPDATE sessions SET revoked_at=CURRENT_TIMESTAMP WHERE user_id=? AND revoked_at IS NULL`).bind(userId).run();
+function sessionTokenFromResponse(response: Response): string | null {
+  const raw = response.headers.get('Set-Cookie') || '';
+  const match = raw.match(/(?:^|[;,]\s*)yildiz_session=([^;,]+)/i);
+  if (!match?.[1]) return null;
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return null;
+  }
 }
 
-async function enforceSuperAdminMfa(request: Request, env: Env): Promise<Response | null> {
-  const body = await request.clone().json<{ identifier?: string; password?: string; mfaCode?: string }>().catch(() => ({}));
-  const identifier = String(body.identifier || '').trim();
-  if (!identifier) return null;
-  const user = await one<{ id: string; role: string; mfa_enabled: number; mfa_secret_base32: string | null; mfa_failure_count: number; mfa_locked_at: string | null }>(env.DB.prepare(`
-    SELECT id,role,mfa_enabled,mfa_secret_base32,mfa_failure_count,mfa_locked_at FROM users
-    WHERE active=1 AND (lower(username)=lower(?) OR lower(email)=lower(?)) LIMIT 1
-  `).bind(identifier, identifier));
-  if (!user || user.role !== 'SUPER_ADMIN') return null;
+async function revokeIssuedLoginSession(env: Env, response: Response): Promise<void> {
+  const token = sessionTokenFromResponse(response);
+  if (!token) return;
+  const tokenHash = await sha256Hex(token);
+  await env.DB.prepare(`UPDATE sessions SET revoked_at=COALESCE(revoked_at,CURRENT_TIMESTAMP) WHERE token_hash=?`).bind(tokenHash).run();
+}
 
-  if (!user.mfa_enabled || !user.mfa_secret_base32) {
-    return json({ ok: false, error: { code: 'SUPER_ADMIN_MFA_REQUIRED', message: 'Süper Admin hesabı için MFA etkinleştirilmeden giriş yapılamaz.' } }, 403);
+async function resolveLoginUser(env: Env, identifier: string): Promise<{ id: string; role: string } | null> {
+  return one<{ id: string; role: string }>(env.DB.prepare(`
+    SELECT id,role FROM users
+    WHERE lower(coalesce(email,''))=lower(?) OR lower(coalesce(username,''))=lower(?) OR coalesce(phone,'')=?
+    LIMIT 1
+  `).bind(identifier, identifier, identifier));
+}
+
+async function mfaTemporarilyLocked(env: Env, userId: string): Promise<boolean> {
+  const rows = await env.DB.prepare(`
+    SELECT success FROM super_admin_mfa_attempts
+    WHERE user_id=? AND created_at>=datetime('now','-15 minutes')
+    ORDER BY created_at DESC LIMIT ?
+  `).bind(userId, MFA_FAILURE_LIMIT).all<{ success: number }>();
+  const attempts = rows.results || [];
+  return attempts.length >= MFA_FAILURE_LIMIT && attempts.every(row => !row.success);
+}
+
+async function recordMfaAttempt(env: Env, userId: string, success: boolean, request: Request): Promise<void> {
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  const ipHash = ip ? await sha256Hex(ip) : null;
+  await env.DB.prepare(`INSERT INTO super_admin_mfa_attempts(id,user_id,success,ip_hash) VALUES(?,?,?,?)`)
+    .bind(uuid('mfa'), userId, success ? 1 : 0, ipHash)
+    .run();
+}
+
+async function enforceProductionSuperAdminMfa(
+  request: Request,
+  env: Env,
+  loginBody: Record<string, unknown> | null,
+  response: Response,
+): Promise<Response> {
+  if (env.ENVIRONMENT !== 'production' || !response.ok || !loginBody) return response;
+  const identifier = String(loginBody.identifier || '').trim();
+  if (!identifier) return response;
+
+  const user = await resolveLoginUser(env, identifier);
+  if (!user || user.role !== 'SUPER_ADMIN') return response;
+
+  if (await mfaTemporarilyLocked(env, user.id)) {
+    await revokeIssuedLoginSession(env, response);
+    return json({ ok: false, error: { code: 'MFA_TEMP_LOCKED', message: 'Çok fazla hatalı doğrulama kodu girildi. 15 dakika sonra tekrar deneyin.' } }, 429);
   }
-  if (user.mfa_locked_at) {
-    return json({ ok: false, error: { code: 'SUPER_ADMIN_MFA_LOCKED', message: 'MFA doğrulaması güvenlik nedeniyle kilitlendi. Yönetici müdahalesi gerekiyor.' } }, 423);
+
+  const secret = String(env.SUPER_ADMIN_MFA_TOTP_SECRET || '').trim();
+  if (!secret) {
+    await revokeIssuedLoginSession(env, response);
+    return json({ ok: false, error: { code: 'SUPER_ADMIN_MFA_NOT_CONFIGURED', message: 'Süper Admin MFA production için yapılandırılmadan oturum açılamaz.' } }, 503);
   }
-  const mfaCode = String(body.mfaCode || '').trim();
-  if (!/^\d{6}$/.test(mfaCode)) {
-    return json({ ok: false, error: { code: 'MFA_CODE_REQUIRED', message: '6 haneli doğrulama kodu gerekiyor.' } }, 401);
-  }
-  const valid = await verifyTotpCode(user.mfa_secret_base32, mfaCode);
+
+  const code = String(loginBody.mfaCode || '').trim();
+  const valid = await verifyTotpCode(secret, code);
+  await recordMfaAttempt(env, user.id, valid, request);
   if (!valid) {
-    const failures = Number(user.mfa_failure_count || 0) + 1;
-    await env.DB.prepare(`
-      UPDATE users SET mfa_failure_count=?,mfa_locked_at=CASE WHEN ?>=? THEN CURRENT_TIMESTAMP ELSE mfa_locked_at END,updated_at=CURRENT_TIMESTAMP WHERE id=?
-    `).bind(failures, failures, MFA_FAILURE_LIMIT, user.id).run();
-    return json({ ok: false, error: { code: failures >= MFA_FAILURE_LIMIT ? 'SUPER_ADMIN_MFA_LOCKED' : 'MFA_CODE_INVALID', message: failures >= MFA_FAILURE_LIMIT ? 'MFA doğrulaması güvenlik nedeniyle kilitlendi.' : 'Doğrulama kodu geçersiz.' } }, failures >= MFA_FAILURE_LIMIT ? 423 : 401);
+    await revokeIssuedLoginSession(env, response);
+    const codeName = code ? 'MFA_INVALID' : 'MFA_REQUIRED';
+    const message = code ? 'Doğrulama kodu geçersiz.' : 'Süper Admin hesabı için 6 haneli doğrulama kodu gereklidir.';
+    return json({ ok: false, error: { code: codeName, message } }, 401);
   }
-  await env.DB.prepare(`UPDATE users SET mfa_failure_count=0,mfa_locked_at=NULL,mfa_last_verified_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(user.id).run();
-  return null;
+
+  return response;
 }
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
-    const path = url.pathname;
-
-    if (isCameraPreview(path, request.method)) {
+    if (isCameraPreview(url.pathname, request.method)) {
       const body = await request.clone().json<unknown>().catch(() => null);
       if (containsRawCameraMedia(body)) return rawCameraRejected();
     }
 
-    if (isLogin(path, request.method)) {
-      const mfaBlock = await enforceSuperAdminMfa(request, env);
-      if (mfaBlock) return mfaBlock;
-    }
-
+    const loginBody = isLogin(url.pathname, request.method)
+      ? await request.clone().json<Record<string, unknown>>().catch(() => null)
+      : null;
     const response = await app.fetch(request, env, ctx);
-
-    if (path === '/api/auth/logout' && request.method === 'POST') {
-      const cookie = request.headers.get('Cookie') || '';
-      const token = cookie.match(/(?:^|;\s*)yildiz_session=([^;]+)/)?.[1];
-      if (token) {
-        const tokenHash = await sha256Hex(decodeURIComponent(token));
-        const session = await one<{ user_id: string }>(env.DB.prepare(`SELECT user_id FROM sessions WHERE token_hash=? LIMIT 1`).bind(tokenHash));
-        if (session?.user_id) await revokeAllSessionsForUser(env, session.user_id);
-      }
-    }
-
-    return withEphemeralVoiceHeaders(response, path);
+    const mfaResponse = isLogin(url.pathname, request.method)
+      ? await enforceProductionSuperAdminMfa(request, env, loginBody, response)
+      : response;
+    return withEphemeralVoiceHeaders(mfaResponse, url.pathname);
   },
   async queue(batch: MessageBatch<CapacityJobMessage>, env: Env, ctx: ExecutionContext) {
     return app.queue(batch, env, ctx);
@@ -112,3 +145,5 @@ export default {
     return app.scheduled(event, env, ctx);
   },
 } satisfies ExportedHandler<Env, CapacityJobMessage>;
+
+export { privacyMinimizationPolicy };
