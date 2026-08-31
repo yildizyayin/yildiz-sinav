@@ -69,7 +69,17 @@ jobs:
         run: npx wrangler deploy --config wrangler.production.jsonc --var ENVIRONMENT:production --var PRODUCT_NAME:"Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY
 
       - name: Apply production D1 migrations
-        run: npx wrangler d1 migrations apply DB --remote --yes --config wrangler.production.jsonc
+        shell: bash
+        run: |
+          api_base="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/yildiz-sinav-prod"
+          auth_header="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          versions="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions")"
+          version_id="$(jq -r '.result.items[0].id // .result[0].id // empty' <<<"$versions")"
+          test -n "$version_id" || (echo "Production Worker version could not be resolved." >&2 && exit 1)
+          detail="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions/$version_id")"
+          database_id="$(jq -r '.result.resources.bindings[] | select(.name == "DB" and .type == "d1") | .database_id // .id // empty' <<<"$detail")"
+          test -n "$database_id" || (echo "Production D1 binding could not be resolved." >&2 && exit 1)
+          npx wrangler d1 migrations apply "$database_id" --remote --yes --config wrangler.production.jsonc
 
       - name: Set production secrets
         run: |
