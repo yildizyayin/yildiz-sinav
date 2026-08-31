@@ -48,7 +48,7 @@ const studentJourney=[
 
 const integrations=[
   {icon:MessageCircle,label:'WhatsApp akademik kanal',text:'Doğrulanmış kullanıcıya kurum duyurusu, gelişim hatırlatması ve Nibiru destek akışı.',state:'Kuruluma hazır'},
-  {icon:PlayCircle,label:'YouTube mikro öğrenme',text:'Kazanıma göre güvenli arama, kısa video adayları ve yapay zekâ destekli uygunluk seçimi.',state:'Entegrasyonlu'},
+  {icon:PlayCircle,label:'YouTube mikro öğrenme',text:'Kazanıma göre güvenli arama, kısa video adayları ve yapay zekâ destekli uygunluk seçimi.',state:'Altyapısı hazır'},
   {icon:Camera,label:'Telefon kamerası + optik',text:'Kişiselleştirilmiş optik hazırlama, kamera ile cevap yakalama ve ham görseli kalıcılaştırmayan akış.',state:'Çalışan çekirdek'},
   {icon:BrainCircuit,label:'Nibiru uzman orkestrasyonu',text:'Eğitim koçu, branş öğretmeni, rehberlik, veli rehberi ve kurum içgörüsü tek kimlik altında.',state:'Aktif'},
 ];
