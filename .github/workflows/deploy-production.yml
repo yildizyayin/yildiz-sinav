@@ -79,7 +79,14 @@ jobs:
           detail="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions/$version_id")"
           database_id="$(jq -r '.result.resources.bindings[] | select(.name == "DB" and .type == "d1") | .database_id // .id // empty' <<<"$detail")"
           test -n "$database_id" || (echo "Production D1 binding could not be resolved." >&2 && exit 1)
-          npx wrangler d1 migrations apply "$database_id" --remote --yes --config wrangler.production.jsonc
+          database="$(curl --fail-with-body --silent --show-error --header "$auth_header" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/d1/database/$database_id")"
+          database_name="$(jq -r '.result.name // empty' <<<"$database")"
+          test -n "$database_name" || (echo "Production D1 database name could not be resolved." >&2 && exit 1)
+          jq --arg id "$database_id" --arg name "$database_name" \
+            '.d1_databases[0].database_id=$id | .d1_databases[0].database_name=$name' \
+            wrangler.production.jsonc > wrangler.production.resolved.json
+          npx wrangler d1 migrations apply DB --remote --yes --config wrangler.production.resolved.json
+          rm -f wrangler.production.resolved.json
 
       - name: Set production secrets
         run: |
