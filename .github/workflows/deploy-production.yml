@@ -164,6 +164,81 @@ jobs:
       - name: Deploy public ANUNEX website
         run: npx wrangler deploy --config wrangler.marketing.jsonc
 
+      - name: Remove exact public-domain DNS conflicts
+        shell: bash
+        run: |
+          report_cloudflare_error() {
+            local action="$1"
+            local hostname="$2"
+            local response="$3"
+            local errors
+            errors="$(jq -c '[.errors[]? | {code,message}]' "$response" 2>/dev/null || printf '[]')"
+            if [ "$errors" = "[]" ]; then
+              errors='[{"code":"unknown","message":"Cloudflare returned no structured error details."}]'
+            fi
+            echo "::error title=Cloudflare $action failed::$hostname — $errors"
+            {
+              echo "### Cloudflare DNS conflict cleanup error"
+              echo
+              echo "- Action: \`$action\`"
+              echo "- Hostname: \`$hostname\`"
+              echo "- Errors: \`$errors\`"
+            } >> "$GITHUB_STEP_SUMMARY"
+          }
+
+          api="https://api.cloudflare.com/client/v4"
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          zones_response="$(mktemp)"
+          records_response="$(mktemp)"
+          delete_response="$(mktemp)"
+          if ! curl --fail-with-body --silent --show-error --get \
+            "$api/zones" \
+            --header "$auth" \
+            --data-urlencode 'name=anunex.com' \
+            --data-urlencode "account.id=$CLOUDFLARE_ACCOUNT_ID" \
+            --output "$zones_response"; then
+            report_cloudflare_error "zone lookup" "anunex.com" "$zones_response"
+            rm -f "$zones_response" "$records_response" "$delete_response"
+            exit 1
+          fi
+          zone_id="$(jq -r '.result[] | select(.name == "anunex.com") | .id' "$zones_response" | head -n1)"
+          if [ -z "$zone_id" ]; then
+            echo "::error title=Cloudflare zone lookup failed::The active anunex.com zone could not be resolved."
+            rm -f "$zones_response" "$records_response" "$delete_response"
+            exit 1
+          fi
+
+          for hostname in anunex.com www.anunex.com; do
+            if ! curl --fail-with-body --silent --show-error --get \
+              "$api/zones/$zone_id/dns_records" \
+              --header "$auth" \
+              --data-urlencode "name=$hostname" \
+              --data-urlencode 'per_page=100' \
+              --output "$records_response"; then
+              report_cloudflare_error "DNS record lookup" "$hostname" "$records_response"
+              rm -f "$zones_response" "$records_response" "$delete_response"
+              exit 1
+            fi
+            mapfile -t conflicts < <(jq -r --arg hostname "$hostname" \
+              '.result[] | select(.name == $hostname and (.type == "A" or .type == "AAAA" or .type == "CNAME")) | [.id,.type] | @tsv' \
+              "$records_response")
+            for conflict in "${conflicts[@]}"; do
+              IFS=$'\t' read -r record_id record_type <<<"$conflict"
+              if ! curl --fail-with-body --silent --show-error \
+                "$api/zones/$zone_id/dns_records/$record_id" \
+                --request DELETE \
+                --header "$auth" \
+                --output "$delete_response"; then
+                report_cloudflare_error "DNS $record_type record deletion" "$hostname" "$delete_response"
+                rm -f "$zones_response" "$records_response" "$delete_response"
+                exit 1
+              fi
+              jq -e '.success == true' "$delete_response" >/dev/null
+              echo "Removed exact conflicting $record_type record for $hostname."
+            done
+          done
+          rm -f "$zones_response" "$records_response" "$delete_response"
+
       - name: Attach public website apex domain
         shell: bash
         run: |
