@@ -68,7 +68,8 @@ jobs:
       - name: Deploy isolated production Worker and resources
         run: npx wrangler deploy --config wrangler.production.jsonc --var ENVIRONMENT:production --var PRODUCT_NAME:"Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY
 
-      - name: Apply production D1 migrations
+      - name: Resolve production Worker version
+        id: production-worker-version
         shell: bash
         run: |
           api_base="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/yildiz-sinav-prod"
@@ -76,15 +77,40 @@ jobs:
           versions="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions")"
           version_id="$(jq -r '.result.items[0].id // .result[0].id // empty' <<<"$versions")"
           test -n "$version_id" || (echo "Production Worker version could not be resolved." >&2 && exit 1)
-          detail="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions/$version_id")"
+          echo "version_id=$version_id" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve production D1 database
+        id: production-d1
+        shell: bash
+        env:
+          VERSION_ID: ${{ steps.production-worker-version.outputs.version_id }}
+        run: |
+          api_base="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/yildiz-sinav-prod"
+          auth_header="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          test -n "$VERSION_ID" || (echo "Production Worker version output is empty." >&2 && exit 1)
+          detail="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions/$VERSION_ID")"
           database_id="$(jq -r '.result.resources.bindings[] | select(.name == "DB" and .type == "d1") | .database_id // .id // empty' <<<"$detail")"
           test -n "$database_id" || (echo "Production D1 binding could not be resolved." >&2 && exit 1)
           database="$(curl --fail-with-body --silent --show-error --header "$auth_header" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/d1/database/$database_id")"
           database_name="$(jq -r '.result.name // empty' <<<"$database")"
           test -n "$database_name" || (echo "Production D1 database name could not be resolved." >&2 && exit 1)
-          jq --arg id "$database_id" --arg name "$database_name" \
+          echo "database_id=$database_id" >> "$GITHUB_OUTPUT"
+          echo "database_name=$database_name" >> "$GITHUB_OUTPUT"
+
+      - name: Materialize resolved production D1 config
+        shell: bash
+        env:
+          DATABASE_ID: ${{ steps.production-d1.outputs.database_id }}
+          DATABASE_NAME: ${{ steps.production-d1.outputs.database_name }}
+        run: |
+          test -n "$DATABASE_ID" || (echo "Production D1 database ID output is empty." >&2 && exit 1)
+          test -n "$DATABASE_NAME" || (echo "Production D1 database name output is empty." >&2 && exit 1)
+          jq --arg id "$DATABASE_ID" --arg name "$DATABASE_NAME" \
             '.d1_databases[0].database_id=$id | .d1_databases[0].database_name=$name' \
             wrangler.production.jsonc > wrangler.production.resolved.json
+
+      - name: Apply production D1 migrations
+        run: |
           npx wrangler d1 migrations apply DB --remote --yes --config wrangler.production.resolved.json
           rm -f wrangler.production.resolved.json
 
