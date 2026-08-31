@@ -1,1 +1,1 @@
-ANUNEX domain launch retry: use supported D1 migration flags, app first, public website second.
+ANUNEX domain launch retry: attach apex and www independently after the verified app.

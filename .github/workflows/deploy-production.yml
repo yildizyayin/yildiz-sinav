@@ -164,7 +164,7 @@ jobs:
       - name: Deploy public ANUNEX website
         run: npx wrangler deploy --config wrangler.marketing.jsonc
 
-      - name: Attach public website domains
+      - name: Attach public website apex domain
         shell: bash
         run: |
           attach_domain() {
@@ -172,7 +172,7 @@ jobs:
             local service="$2"
             local response
             response="$(mktemp)"
-            curl --fail-with-body --silent --show-error \
+            curl --fail-with-body --silent --show-error --retry 5 --retry-all-errors --max-time 30 \
               "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains" \
               --request PUT \
               --header 'Content-Type: application/json' \
@@ -185,6 +185,27 @@ jobs:
             echo "$hostname attached to $service."
           }
           attach_domain anunex.com anunex-web
+
+      - name: Attach public website www domain
+        shell: bash
+        run: |
+          attach_domain() {
+            local hostname="$1"
+            local service="$2"
+            local response
+            response="$(mktemp)"
+            curl --fail-with-body --silent --show-error --retry 5 --retry-all-errors --max-time 30 \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains" \
+              --request PUT \
+              --header 'Content-Type: application/json' \
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              --data "$(jq -n --arg hostname "$hostname" --arg service "$service" '{hostname:$hostname,service:$service,zone_name:"anunex.com"}')" \
+              --output "$response"
+            jq -e --arg hostname "$hostname" --arg service "$service" \
+              '.success == true and .result.hostname == $hostname and .result.service == $service' "$response" >/dev/null
+            rm -f "$response"
+            echo "$hostname attached to $service."
+          }
           attach_domain www.anunex.com anunex-web
 
       - name: Verify public website
