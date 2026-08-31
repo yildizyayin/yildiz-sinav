@@ -1,1 +1,1 @@
-ANUNEX domain launch retry: remove only exact public-host DNS conflicts before custom-domain attach.
+ANUNEX domain launch retry: use Workers-managed DNS takeover for both public hostnames.
