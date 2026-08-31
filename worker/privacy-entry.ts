@@ -1,4 +1,4 @@
-import app from './product-completion-entry';
+import app from './panel-theme-entry';
 import type { AuthUser, CapacityJobMessage, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, audit, badRequest, forbidden, json, methodNotAllowed, notFound, one, uuid } from './lib/db';

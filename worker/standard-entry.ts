@@ -78,7 +78,7 @@ async function getPreferences(env:Env,user:AuthUser){
   const enrollment=await latestEnrollment(env,user.student_id!);
   const row=await one<any>(env.DB.prepare(`SELECT * FROM student_experience_preferences WHERE student_id=?`).bind(user.student_id));
   const grade=Number(enrollment?.grade_level||0);
-  const defaults={theme_key:grade<=6?'MIDDLE_FUN':grade<=8?'MIDDLE_FOCUS':grade<=10?'HIGH_MODERN':grade===11?'HIGH_GROWTH':'EXAM_FOCUS',appearance:'AUTO',font_key:'SYSTEM',font_scale:1,animation_level:'NORMAL',countdown_enabled:1,countdown_flip_clock:1,motivation_enabled:1,voice_motivation_enabled:0};
+  const defaults={theme_key:'ANUNEX_STANDARD',appearance:'AUTO',font_key:'SYSTEM',font_scale:1,animation_level:'NORMAL',countdown_enabled:1,countdown_flip_clock:1,motivation_enabled:1,voice_motivation_enabled:0};
   return {enrollment,preferences:{...defaults,...(row||{})}};
 }
 

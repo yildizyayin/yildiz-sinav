@@ -7,6 +7,10 @@ import './styles.css';
 import './report-print.css';
 import './camera-test.css';
 import './expansion.css';
+import './panel-system.css';
+import './student-enhancements.css';
+import './operations-ui.css';
+import './campaign-ui.css';
 
 createRoot(document.getElementById('root')!).render(<StrictMode><BrowserRouter><AuthProvider><App/></AuthProvider></BrowserRouter></StrictMode>);
 
