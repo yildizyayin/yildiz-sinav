@@ -2,6 +2,10 @@ name: Deploy Production Cloudflare Worker
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/releases/anunex-domain-launch
 
 permissions:
   contents: read
@@ -24,7 +28,7 @@ jobs:
       PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
       PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
       PROD_WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.PROD_WHATSAPP_PHONE_NUMBER_ID }}
-      PROD_BASE_URL: ${{ vars.PROD_BASE_URL }}
+      PROD_BASE_URL: https://app.anunex.com
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -89,11 +93,84 @@ jobs:
           put_prod_secret PROD_WHATSAPP_ACCESS_TOKEN WHATSAPP_ACCESS_TOKEN
           put_prod_secret PROD_WHATSAPP_PHONE_NUMBER_ID WHATSAPP_PHONE_NUMBER_ID
 
+      - name: Attach licensed application domain
+        shell: bash
+        run: |
+          attach_domain() {
+            local hostname="$1"
+            local service="$2"
+            local response
+            response="$(mktemp)"
+            curl --fail-with-body --silent --show-error \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains" \
+              --request PUT \
+              --header 'Content-Type: application/json' \
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              --data "$(jq -n --arg hostname "$hostname" --arg service "$service" '{hostname:$hostname,service:$service,zone_name:"anunex.com"}')" \
+              --output "$response"
+            jq -e --arg hostname "$hostname" --arg service "$service" \
+              '.success == true and .result.hostname == $hostname and .result.service == $service' "$response" >/dev/null
+            rm -f "$response"
+            echo "$hostname attached to $service."
+          }
+          attach_domain app.anunex.com yildiz-sinav-prod
+
       - name: Read-only production smoke acceptance
         run: node scripts/live-production-smoke.mjs
+
+      - name: Deploy public ANUNEX website
+        run: npx wrangler deploy --config wrangler.marketing.jsonc
+
+      - name: Attach public website domains
+        shell: bash
+        run: |
+          attach_domain() {
+            local hostname="$1"
+            local service="$2"
+            local response
+            response="$(mktemp)"
+            curl --fail-with-body --silent --show-error \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains" \
+              --request PUT \
+              --header 'Content-Type: application/json' \
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              --data "$(jq -n --arg hostname "$hostname" --arg service "$service" '{hostname:$hostname,service:$service,zone_name:"anunex.com"}')" \
+              --output "$response"
+            jq -e --arg hostname "$hostname" --arg service "$service" \
+              '.success == true and .result.hostname == $hostname and .result.service == $service' "$response" >/dev/null
+            rm -f "$response"
+            echo "$hostname attached to $service."
+          }
+          attach_domain anunex.com anunex-web
+          attach_domain www.anunex.com anunex-web
+
+      - name: Verify public website
+        shell: bash
+        run: |
+          verify_homepage() {
+            local url="$1"
+            local body
+            body="$(mktemp)"
+            for attempt in {1..12}; do
+              if curl --fail --silent --show-error --location --max-time 20 "$url" --output "$body" \
+                && grep -q 'Ölçmenin ötesinde' "$body"; then
+                rm -f "$body"
+                echo "$url verified."
+                return 0
+              fi
+              sleep 10
+            done
+            rm -f "$body"
+            echo "$url did not serve the ANUNEX public homepage." >&2
+            return 1
+          }
+          verify_homepage https://anunex.com
+          verify_homepage https://www.anunex.com
 
       - name: Production safety note
         run: |
           echo "Production deploy completed without demo seed data."
           echo "Worker: yildiz-sinav-prod"
+          echo "Licensed app: https://app.anunex.com"
+          echo "Public website: https://anunex.com"
           echo "WhatsApp secrets were synced only when production environment values were present."
