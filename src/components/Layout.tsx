@@ -5,6 +5,7 @@ import { useAuth, type Role } from '../auth';
 import { api } from '../api';
 import { LicenseBoundary } from './LicenseBoundary';
 import { NibiruMark,NibiruNavIcon } from './NibiruMark';
+import { AnunexBrand } from './AnunexBrand';
 
 type NavItem={to:string;label:string;icon:any;feature?:string};
 const nav: Record<Role, NavItem[]> = {
@@ -66,7 +67,7 @@ export function Layout() {
   return <div className={`app-shell role-${user.role.toLowerCase()} ${mobileNavOpen?'nav-open':''}`} data-panel-theme={activeTheme}>
     <button className="nav-scrim" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}/>
     <aside className="sidebar" aria-label="Ana menü">
-      <div className="brand"><div className="brand-mark" aria-hidden="true"><span>A</span></div><div><strong>ANUNEX</strong><span>Bilginin yörüngesinde</span></div><button className="mobile-nav-close" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}><X size={20}/></button></div>
+      <div className="brand"><AnunexBrand compact inverse tagline/><button className="mobile-nav-close" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}><X size={20}/></button></div>
       <div className="nibiru-sidebar-card"><NibiruMark size={36} state="active"/><div><strong>Nibiru AI</strong><span>Canlı akademik zekâ</span></div><ChevronRight size={16}/></div>
       <nav>{visibleNav.map((item) => { const Icon=item.icon; return <NavLink key={item.to} to={item.to} end={item.to==='/' } onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}</nav>
       <div className="sidebar-footer">
