@@ -8,6 +8,7 @@ const smoke=readFileSync(new URL('../scripts/live-production-smoke.mjs',import.m
 const productionConfig=readFileSync(new URL('../wrangler.production.jsonc',import.meta.url),'utf8');
 const marketingConfig=readFileSync(new URL('../wrangler.marketing.jsonc',import.meta.url),'utf8');
 const stagingDeploy=readFileSync(new URL('../.github/workflows/deploy.yml',import.meta.url),'utf8');
+const appSource=readFileSync(new URL('../src/App.tsx',import.meta.url),'utf8');
 
 describe('production operations closure',()=>{
  it('requires the complete critical schema and redacts long identifiers',()=>{
@@ -43,6 +44,7 @@ describe('production operations closure',()=>{
   expect(productionConfig).not.toContain('"custom_domain": true');
   expect(marketingConfig).not.toContain('"custom_domain": true');
   expect(smoke).toContain("'https://app.anunex.com'");
+  expect(appSource).toContain("hostname.startsWith('anunex-web.')&&hostname.endsWith('.workers.dev')");
  });
  it('rehearses recovery transiently and never publishes the production export',()=>{
   expect(recoveryWorkflow).toContain('d1 time-travel info DB');
