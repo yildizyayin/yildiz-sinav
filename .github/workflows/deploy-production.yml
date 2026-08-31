@@ -171,7 +171,27 @@ jobs:
             local hostname="$1"
             local service="$2"
             local response
+            local domains
+            local domain_id
+            local current_service
             response="$(mktemp)"
+            domains="$(curl --fail-with-body --silent --show-error \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains?hostname=$hostname" \
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN")"
+            domain_id="$(jq -r --arg hostname "$hostname" '.result[] | select(.hostname == $hostname) | .id' <<<"$domains" | head -n1)"
+            current_service="$(jq -r --arg hostname "$hostname" '.result[] | select(.hostname == $hostname) | .service' <<<"$domains" | head -n1)"
+            if [ "$current_service" = "$service" ]; then
+              rm -f "$response"
+              echo "$hostname is already attached to $service."
+              return 0
+            fi
+            if [ -n "$domain_id" ]; then
+              curl --fail-with-body --silent --show-error \
+                "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains/$domain_id" \
+                --request DELETE \
+                --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" >/dev/null
+              echo "$hostname detached from its previous Worker."
+            fi
             curl --fail-with-body --silent --show-error --retry 5 --retry-all-errors --max-time 30 \
               "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains" \
               --request PUT \
@@ -193,7 +213,27 @@ jobs:
             local hostname="$1"
             local service="$2"
             local response
+            local domains
+            local domain_id
+            local current_service
             response="$(mktemp)"
+            domains="$(curl --fail-with-body --silent --show-error \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains?hostname=$hostname" \
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN")"
+            domain_id="$(jq -r --arg hostname "$hostname" '.result[] | select(.hostname == $hostname) | .id' <<<"$domains" | head -n1)"
+            current_service="$(jq -r --arg hostname "$hostname" '.result[] | select(.hostname == $hostname) | .service' <<<"$domains" | head -n1)"
+            if [ "$current_service" = "$service" ]; then
+              rm -f "$response"
+              echo "$hostname is already attached to $service."
+              return 0
+            fi
+            if [ -n "$domain_id" ]; then
+              curl --fail-with-body --silent --show-error \
+                "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains/$domain_id" \
+                --request DELETE \
+                --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" >/dev/null
+              echo "$hostname detached from its previous Worker."
+            fi
             curl --fail-with-body --silent --show-error --retry 5 --retry-all-errors --max-time 30 \
               "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains" \
               --request PUT \
