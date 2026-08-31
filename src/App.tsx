@@ -69,7 +69,8 @@ function Home(){const{user}=useAuth();if(user?.role==='SUPER_ADMIN')return <Supe
 export default function App(){
  const{user,loading}=useAuth();const location=useLocation();
  const hostname=typeof window==='undefined'?'':window.location.hostname.toLowerCase();
- const isMarketingHost=hostname==='anunex.com'||hostname==='www.anunex.com'||new URLSearchParams(location.search).get('site')==='marketing';
+ const isMarketingPreview=hostname.startsWith('anunex-web.')&&hostname.endsWith('.workers.dev');
+ const isMarketingHost=hostname==='anunex.com'||hostname==='www.anunex.com'||isMarketingPreview||new URLSearchParams(location.search).get('site')==='marketing';
  if(isMarketingHost)return <MarketingHome/>;
  if(loading)return <div className="boot">Anunex yükleniyor…</div>;
  if(!user&&location.pathname!=='/login')return <Navigate to="/login" replace/>;
