@@ -111,7 +111,7 @@ jobs:
 
       - name: Apply production D1 migrations
         run: |
-          npx wrangler d1 migrations apply DB --remote --yes --config wrangler.production.resolved.json
+          npx wrangler d1 migrations apply DB --remote --config wrangler.production.resolved.json
           rm -f wrangler.production.resolved.json
 
       - name: Set production secrets
