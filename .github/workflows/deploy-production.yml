@@ -244,7 +244,7 @@ jobs:
             body="$(mktemp)"
             for attempt in {1..12}; do
               if curl --fail --silent --show-error --location --max-time 20 "$url" --output "$body" \
-                && grep -q 'Ölçmenin ötesinde' "$body"; then
+                && grep -q '<title>Anunex — Bilginin yörüngesinde</title>' "$body"; then
                 rm -f "$body"
                 echo "$url verified."
                 return 0
