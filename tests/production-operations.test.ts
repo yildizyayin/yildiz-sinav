@@ -19,6 +19,8 @@ describe('production operations closure',()=>{
  it('runs a read-only smoke after migrations and secret synchronization',()=>{
   expect(deployWorkflow.indexOf('Apply production D1 migrations')).toBeLessThan(deployWorkflow.indexOf('Read-only production smoke acceptance'));
   expect(deployWorkflow.indexOf('Set production secrets')).toBeLessThan(deployWorkflow.indexOf('Read-only production smoke acceptance'));
+  expect(deployWorkflow).toContain('.result.resources.bindings[]');
+  expect(deployWorkflow).toContain('d1 migrations apply "$database_id"');
   expect(smoke).toContain("request('/api/health')");
   expect(smoke).toContain("request('/api/dashboard',{expected:401})");
   expect(smoke).not.toMatch(/method\s*:\s*['"](POST|PUT|PATCH|DELETE)/);
