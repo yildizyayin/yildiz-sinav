@@ -24,11 +24,14 @@ describe('production operations closure',()=>{
   expect(smoke).not.toMatch(/method\s*:\s*['"](POST|PUT|PATCH|DELETE)/);
  });
  it('separates public website, licensed app and demo domains',()=>{
-  expect(marketingConfig).toContain('"pattern": "anunex.com"');
-  expect(marketingConfig).toContain('"pattern": "www.anunex.com"');
-  expect(productionConfig).toContain('"pattern": "app.anunex.com"');
+  expect(marketingConfig).toContain('"name": "anunex-web"');
+  expect(productionConfig).toContain('"name": "yildiz-sinav-prod"');
+  expect(deployWorkflow).toContain('attach_domain app.anunex.com yildiz-sinav-prod');
+  expect(deployWorkflow).toContain('attach_domain anunex.com anunex-web');
+  expect(deployWorkflow).toContain('attach_domain www.anunex.com anunex-web');
   expect(stagingDeploy).toContain('SMOKE_BASE_URL: https://demo.anunex.com');
-  expect(productionConfig).toContain('"custom_domain": true');
+  expect(productionConfig).not.toContain('"custom_domain": true');
+  expect(marketingConfig).not.toContain('"custom_domain": true');
   expect(smoke).toContain("'https://app.anunex.com'");
  });
  it('rehearses recovery transiently and never publishes the production export',()=>{
