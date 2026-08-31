@@ -32,6 +32,8 @@ describe('production operations closure',()=>{
   expect(deployWorkflow).toContain('attach_domain app.anunex.com yildiz-sinav-prod');
   expect(deployWorkflow).toContain('attach_domain anunex.com anunex-web');
   expect(deployWorkflow).toContain('attach_domain www.anunex.com anunex-web');
+  expect(deployWorkflow).toContain('Cloudflare public-domain error');
+  expect(deployWorkflow).toContain('[.errors[]? | {code,message}]');
   expect(stagingDeploy).toContain('SMOKE_BASE_URL: https://demo.anunex.com');
   expect(productionConfig).not.toContain('"custom_domain": true');
   expect(marketingConfig).not.toContain('"custom_domain": true');

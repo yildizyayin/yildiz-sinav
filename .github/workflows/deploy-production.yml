@@ -167,41 +167,79 @@ jobs:
       - name: Attach public website apex domain
         shell: bash
         run: |
+          report_cloudflare_error() {
+            local action="$1"
+            local hostname="$2"
+            local response="$3"
+            local errors
+            errors="$(jq -c '[.errors[]? | {code,message}]' "$response" 2>/dev/null || printf '[]')"
+            if [ "$errors" = "[]" ]; then
+              errors='[{"code":"unknown","message":"Cloudflare returned no structured error details."}]'
+            fi
+            echo "::error title=Cloudflare $action failed::$hostname — $errors"
+            {
+              echo "### Cloudflare public-domain error"
+              echo
+              echo "- Action: \`$action\`"
+              echo "- Hostname: \`$hostname\`"
+              echo "- Errors: \`$errors\`"
+            } >> "$GITHUB_STEP_SUMMARY"
+          }
+
           attach_domain() {
             local hostname="$1"
             local service="$2"
             local response
-            local domains
+            local domains_response
             local domain_id
             local current_service
             response="$(mktemp)"
-            domains="$(curl --fail-with-body --silent --show-error \
+            domains_response="$(mktemp)"
+            if ! curl --fail-with-body --silent --show-error \
               "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains?hostname=$hostname" \
-              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN")"
-            domain_id="$(jq -r --arg hostname "$hostname" '.result[] | select(.hostname == $hostname) | .id' <<<"$domains" | head -n1)"
-            current_service="$(jq -r --arg hostname "$hostname" '.result[] | select(.hostname == $hostname) | .service' <<<"$domains" | head -n1)"
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              --output "$domains_response"; then
+              report_cloudflare_error "domain lookup" "$hostname" "$domains_response"
+              rm -f "$response" "$domains_response"
+              return 1
+            fi
+            domain_id="$(jq -r --arg hostname "$hostname" '.result[] | select(.hostname == $hostname) | .id' "$domains_response" | head -n1)"
+            current_service="$(jq -r --arg hostname "$hostname" '.result[] | select(.hostname == $hostname) | .service' "$domains_response" | head -n1)"
             if [ "$current_service" = "$service" ]; then
-              rm -f "$response"
+              rm -f "$response" "$domains_response"
               echo "$hostname is already attached to $service."
               return 0
             fi
             if [ -n "$domain_id" ]; then
-              curl --fail-with-body --silent --show-error \
+              if ! curl --fail-with-body --silent --show-error \
                 "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains/$domain_id" \
                 --request DELETE \
-                --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" >/dev/null
+                --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+                --output "$response"; then
+                report_cloudflare_error "domain detach" "$hostname" "$response"
+                rm -f "$response" "$domains_response"
+                return 1
+              fi
               echo "$hostname detached from its previous Worker."
             fi
-            curl --fail-with-body --silent --show-error --retry 5 --retry-all-errors --max-time 30 \
+            if ! curl --fail-with-body --silent --show-error --retry 5 --retry-all-errors --max-time 30 \
               "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains" \
               --request PUT \
               --header 'Content-Type: application/json' \
               --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
               --data "$(jq -n --arg hostname "$hostname" --arg service "$service" '{hostname:$hostname,service:$service,zone_name:"anunex.com"}')" \
-              --output "$response"
-            jq -e --arg hostname "$hostname" --arg service "$service" \
-              '.success == true and .result.hostname == $hostname and .result.service == $service' "$response" >/dev/null
-            rm -f "$response"
+              --output "$response"; then
+              report_cloudflare_error "domain attach" "$hostname" "$response"
+              rm -f "$response" "$domains_response"
+              return 1
+            fi
+            if ! jq -e --arg hostname "$hostname" --arg service "$service" \
+              '.success == true and .result.hostname == $hostname and .result.service == $service' "$response" >/dev/null; then
+              report_cloudflare_error "domain attach validation" "$hostname" "$response"
+              rm -f "$response" "$domains_response"
+              return 1
+            fi
+            rm -f "$response" "$domains_response"
             echo "$hostname attached to $service."
           }
           attach_domain anunex.com anunex-web
