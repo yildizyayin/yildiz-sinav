@@ -7,7 +7,7 @@ const recoveryWorkflow=readFileSync(new URL('../.github/workflows/production-rec
 const smoke=readFileSync(new URL('../scripts/live-production-smoke.mjs',import.meta.url),'utf8');
 const productionConfig=readFileSync(new URL('../wrangler.production.jsonc',import.meta.url),'utf8');
 const marketingConfig=readFileSync(new URL('../wrangler.marketing.jsonc',import.meta.url),'utf8');
-const demoConfig=readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8');
+const stagingDeploy=readFileSync(new URL('../.github/workflows/deploy.yml',import.meta.url),'utf8');
 
 describe('production operations closure',()=>{
  it('requires the complete critical schema and redacts long identifiers',()=>{
@@ -27,7 +27,7 @@ describe('production operations closure',()=>{
   expect(marketingConfig).toContain('"pattern": "anunex.com"');
   expect(marketingConfig).toContain('"pattern": "www.anunex.com"');
   expect(productionConfig).toContain('"pattern": "app.anunex.com"');
-  expect(demoConfig).toContain('"pattern": "demo.anunex.com"');
+  expect(stagingDeploy).toContain('SMOKE_BASE_URL: https://demo.anunex.com');
   expect(productionConfig).toContain('"custom_domain": true');
   expect(smoke).toContain("'https://app.anunex.com'");
  });
