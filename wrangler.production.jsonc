@@ -8,12 +8,6 @@
     "enabled": true,
     "head_sampling_rate": 0.1
   },
-  "routes": [
-    {
-      "pattern": "app.anunex.com",
-      "custom_domain": true
-    }
-  ],
   "triggers": {
     "crons": ["*/15 * * * *"]
   },
