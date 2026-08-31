@@ -47,10 +47,10 @@ const studentJourney=[
 ];
 
 const integrations=[
-  {icon:MessageCircle,label:'WhatsApp akademik kanal',text:'Doğrulanmış kullanıcıya kurum duyurusu, gelişim hatırlatması ve Nibiru destek akışı.',state:'Kuruluma hazır'},
-  {icon:PlayCircle,label:'YouTube mikro öğrenme',text:'Kazanıma göre güvenli arama, kısa video adayları ve yapay zekâ destekli uygunluk seçimi.',state:'Altyapısı hazır'},
-  {icon:Camera,label:'Telefon kamerası + optik',text:'Kişiselleştirilmiş optik hazırlama, kamera ile cevap yakalama ve ham görseli kalıcılaştırmayan akış.',state:'Çalışan çekirdek'},
-  {icon:BrainCircuit,label:'Nibiru uzman orkestrasyonu',text:'Eğitim koçu, branş öğretmeni, rehberlik, veli rehberi ve kurum içgörüsü tek kimlik altında.',state:'Aktif'},
+  {icon:MessageCircle,label:'WhatsApp akademik kanal',text:'Öğrenci, veli ve kurum arasında doğrulanmış kimlikle çalışan güvenli akademik iletişim.',state:'Entegre',steps:['Kurum duyuru, ödev ve sınav hatırlatmasını seçer','Onaylı şablon doğru öğrenci veya veliye gider','Nibiru yanıtı rol ve veri sınırları içinde kişiselleştirir']},
+  {icon:PlayCircle,label:'YouTube mikro öğrenme',text:'Yanlış veya boş sorudan doğrudan doğru video desteğine uzanan kazanım bazlı akış.',state:'Entegre',steps:['Yayınevi çözümü varsa önce kendi video çözümü açılır','Yoksa kazanıma uygun kısa ve güvenli adaylar taranır','Nibiru 5 aday içinden en uygun konu anlatımını seçer']},
+  {icon:Camera,label:'Telefon kamerası + optik',text:'Kişiselleştirilmiş optik hazırlama, kamera ile cevap yakalama ve ham görseli kalıcılaştırmayan akış.',state:'Çalışan çekirdek',steps:['Öğrenci ve sınava özel optik hazırlanır','Telefon kamerası cevapları güvenli biçimde yakalar','Sonuç kazanım ve kişisel öğrenme akışına bağlanır']},
+  {icon:BrainCircuit,label:'Nibiru uzman orkestrasyonu',text:'Eğitim koçu, branş öğretmeni, rehberlik, veli rehberi ve kurum içgörüsü tek kimlik altında.',state:'Aktif',steps:['Kullanıcının rolü ve sorusu anlaşılır','Doğru uzman ve model otomatik seçilir','Yanıt yalnız yetkili, doğrulanmış veriye dayanır']},
 ];
 
 export function MarketingHome(){
@@ -123,7 +123,7 @@ export function MarketingHome(){
         <div className="student-orbit-map"><div className="orbit-line"/><div className="student-core"><NibiruMark size={72} state="active"/><strong>Benim<br/>Yörüngem</strong></div>{studentJourney.map(({icon:Icon,title,text},index)=><article key={title} style={{'--journey-index':index} as React.CSSProperties}><span><Icon/></span><div><small>0{index+1}</small><h3>{title}</h3><p>{text}</p></div></article>)}</div>
       </section>
 
-      <section className="marketing-section integration-section"><div className="section-heading"><span>BAŞKA ARAÇLAR DEĞİL · TEK AKADEMİK AKIŞ</span><h2>Kimsede olmayan fark,<br/><em>özelliklerin birlikte çalışması.</em></h2><p>Her parça tek başına değil; aynı öğrenci, aynı kazanım ve aynı güvenli veri kaydı üzerinde birbirini tamamlar.</p></div><div className="integration-grid">{integrations.map(({icon:Icon,label,text,state})=><article key={label}><div><Icon/><span>{state}</span></div><h3>{label}</h3><p>{text}</p></article>)}</div>
+      <section className="marketing-section integration-section"><div className="section-heading"><span>BAŞKA ARAÇLAR DEĞİL · TEK AKADEMİK AKIŞ</span><h2>Kimsede olmayan fark,<br/><em>özelliklerin birlikte çalışması.</em></h2><p>Her parça tek başına değil; aynı öğrenci, aynı kazanım ve aynı güvenli veri kaydı üzerinde birbirini tamamlar.</p></div><div className="integration-grid">{integrations.map(({icon:Icon,label,text,state,steps})=><article key={label}><div><Icon/><span>{state}</span></div><h3>{label}</h3><p>{text}</p><ol>{steps.map((step,index)=><li key={step}><b>0{index+1}</b><span>{step}</span></li>)}</ol></article>)}</div>
         <div className="unique-strip"><span><FileText/> Kişiye Özel Kitap</span><span><BookOpen/> Sıfır Hata Kitapçığı</span><span><Gamepad2/> Güvenli Mini Oyunlar</span><span><Monitor/> Tema & Özel Gün Yönetimi</span><span><HeartHandshake/> Rehberlik Müdahale Akışı</span></div>
       </section>
 
