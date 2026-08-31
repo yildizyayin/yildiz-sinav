@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://demo.anunex.com`
-- Time: `2026-08-31T12:08:54.748Z`
+- Time: `2026-08-31T12:13:36.669Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -107,13 +107,13 @@
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v15 · 174 evidence · 3 subjects
-- ✅ **Idempotent refresh + versioned history** — 15 history snapshots
+- ✅ **Persistent student intelligence profile** — v16 · 174 evidence · 3 subjects
+- ✅ **Idempotent refresh + versioned history** — 16 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 198 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v15 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 207 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v16 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 
