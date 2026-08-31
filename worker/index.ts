@@ -154,8 +154,11 @@ async function dashboard(env: Env, user: AuthUser): Promise<Response> {
     const latest = await one<any>(env.DB.prepare(`SELECT e.title, e.exam_date, er.net, er.score, er.success_percent
       FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id JOIN exams e ON e.id=ep.exam_id
       WHERE ep.student_id=? ORDER BY coalesce(e.exam_date, er.created_at) DESC LIMIT 1`).bind(user.student_id));
-    const developing = await aggregateStudentOutcomes(env.DB, user.student_id, 0.6, 3, 'DEVELOPING', 5);
-    return json({ ok: true, latest, developing });
+    const [developing,strong] = await Promise.all([
+      aggregateStudentOutcomes(env.DB, user.student_id, 0.6, 3, 'DEVELOPING', 5),
+      aggregateStudentOutcomes(env.DB, user.student_id, 0.6, 3, 'STRONG', 5),
+    ]);
+    return json({ ok: true, latest, developing, strong });
   }
   if (user.role === 'PARENT') {
     const children = await all<any>(env.DB.prepare(`SELECT s.id, s.first_name || ' ' || s.last_name name FROM parent_student_links p JOIN student_entities s ON s.id=p.student_id WHERE p.parent_user_id=? AND p.active=1`).bind(user.id));

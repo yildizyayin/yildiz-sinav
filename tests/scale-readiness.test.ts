@@ -4,6 +4,8 @@ import { describe,expect,it } from 'vitest';
 const source=readFileSync(new URL('../worker/scale-entry.ts',import.meta.url),'utf8');
 const productRoot=readFileSync(new URL('../worker/product-completion-entry.ts',import.meta.url),'utf8');
 const privacyRoot=readFileSync(new URL('../worker/privacy-entry.ts',import.meta.url),'utf8');
+const panelThemeRoot=readFileSync(new URL('../worker/panel-theme-entry.ts',import.meta.url),'utf8');
+const schoolOperationsRoot=readFileSync(new URL('../worker/school-operations-entry.ts',import.meta.url),'utf8');
 const privacyLifecycleRoot=readFileSync(new URL('../worker/privacy-lifecycle-entry.ts',import.meta.url),'utf8');
 const privacyMinimizationRoot=readFileSync(new URL('../worker/privacy-minimization-entry.ts',import.meta.url),'utf8');
 const privacyExportRoot=readFileSync(new URL('../worker/privacy-export-entry.ts',import.meta.url),'utf8');
@@ -20,7 +22,9 @@ describe('Anunex scale readiness',()=>{
     expect(privacyExportRoot).toContain("import app from './privacy-minimization-entry'");
     expect(privacyMinimizationRoot).toContain("import app from './privacy-lifecycle-entry'");
     expect(privacyLifecycleRoot).toContain("import app from './privacy-entry'");
-    expect(privacyRoot).toContain("import app from './product-completion-entry'");
+    expect(privacyRoot).toContain("import app from './panel-theme-entry'");
+    expect(panelThemeRoot).toContain("import app from './school-operations-entry'");
+    expect(schoolOperationsRoot).toContain("import app from './product-completion-entry'");
     expect(productRoot).toContain("import app from './scale-entry'");
   });
 
