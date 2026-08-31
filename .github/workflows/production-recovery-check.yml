@@ -1,0 +1,51 @@
+name: Verify Production D1 Recovery
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 2 * * 0'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-d1-recovery-check
+  cancel-in-progress: false
+
+jobs:
+  verify-recovery:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Validate Cloudflare credentials
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || (echo "Missing CLOUDFLARE_API_TOKEN" && exit 1)
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "Missing CLOUDFLARE_ACCOUNT_ID" && exit 1)
+      - name: Install project tooling
+        run: npm install
+      - name: Verify current Time Travel recovery point
+        run: |
+          mkdir -p tmp/recovery-check
+          npx wrangler d1 info DB --config wrangler.production.jsonc --json > tmp/recovery-check/d1-info.json
+          node -e "const fs=require('fs');const value=JSON.parse(fs.readFileSync('tmp/recovery-check/d1-info.json','utf8'));const row=Array.isArray(value)?value[0]:value;if(!row||row.version!=='production')throw new Error('Production D1 storage backend is not Time Travel capable');"
+          npx wrangler d1 time-travel info DB --config wrangler.production.jsonc --json > tmp/recovery-check/time-travel.json
+          node -e "const fs=require('fs');const value=JSON.parse(fs.readFileSync('tmp/recovery-check/time-travel.json','utf8'));if(!value||!(value.bookmark||value.current_bookmark))throw new Error('Current Time Travel bookmark was not returned');"
+      - name: Export into an isolated runner
+        run: npx wrangler d1 export DB --remote --skip-confirmation --config wrangler.production.jsonc --output=tmp/recovery-check/production.sql
+      - name: Rehearse restore without retaining production data
+        run: |
+          command -v sqlite3 >/dev/null || (sudo apt-get update && sudo apt-get install -y sqlite3)
+          sqlite3 tmp/recovery-check/restored.sqlite < tmp/recovery-check/production.sql
+          test "$(sqlite3 tmp/recovery-check/restored.sqlite 'PRAGMA integrity_check;')" = "ok"
+          test "$(sqlite3 tmp/recovery-check/restored.sqlite "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ('institutions','users','sessions','exams','student_entities','audit_logs');")" = "6"
+          echo "Isolated restore rehearsal passed; no production export will be retained."
+      - name: Securely discard transient recovery files
+        if: ${{ always() }}
+        run: rm -rf tmp/recovery-check
