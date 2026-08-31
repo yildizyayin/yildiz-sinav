@@ -34,6 +34,10 @@ describe('production operations closure',()=>{
   expect(deployWorkflow).toContain('attach_domain www.anunex.com anunex-web');
   expect(deployWorkflow).toContain('Cloudflare public-domain error');
   expect(deployWorkflow).toContain('[.errors[]? | {code,message}]');
+  expect(deployWorkflow).toContain('Remove exact public-domain DNS conflicts');
+  expect(deployWorkflow).toContain('.type == "A" or .type == "AAAA" or .type == "CNAME"');
+  expect(deployWorkflow).toContain('for hostname in anunex.com www.anunex.com');
+  expect(deployWorkflow).not.toContain('dns_records?');
   expect(stagingDeploy).toContain('SMOKE_BASE_URL: https://demo.anunex.com');
   expect(productionConfig).not.toContain('"custom_domain": true');
   expect(marketingConfig).not.toContain('"custom_domain": true');
