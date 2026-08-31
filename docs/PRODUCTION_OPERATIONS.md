@@ -2,7 +2,7 @@
 
 Bu belge production izleme, yayın sonrası kabul ve D1 geri kurtarma sınırlarını tanımlar. Demo verisi veya panel geliştirmesi içermez.
 
-Production custom domain `wrangler.production.jsonc` içinde `anunex.com` olarak tanımlıdır. Worker deploy sırasında Cloudflare DNS kaydını ve sertifikayı yönetir. `www` yönlendirmesi ana site/SEO kararıyla birlikte daha sonra ele alınacaktır; şimdilik kanonik production adresi `https://anunex.com`'dur.
+Gerçek lisanslı production uygulaması `wrangler.production.jsonc` içinde `app.anunex.com` olarak tanımlıdır. Halka açık ürün sitesi `anunex.com` ve `www.anunex.com` alanlarında ayrı `anunex-web` Worker'ı tarafından sunulur. Sentetik ve silinebilir demo ortamı `demo.anunex.com` alanında staging kaynaklarını kullanır. Worker deploy sırasında Cloudflare DNS kaydını ve sertifikayı yönetir.
 
 ## Gözlemlenebilirlik
 

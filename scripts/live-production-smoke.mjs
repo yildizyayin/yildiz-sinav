@@ -1,4 +1,4 @@
-const BASE_URL=(process.env.PROD_BASE_URL||'https://anunex.com').replace(/\/$/,'');
+const BASE_URL=(process.env.PROD_BASE_URL||'https://app.anunex.com').replace(/\/$/,'');
 const timeoutMs=Number(process.env.PROD_SMOKE_TIMEOUT_MS||20_000);
 const attempts=Number(process.env.PROD_SMOKE_ATTEMPTS||6);
 

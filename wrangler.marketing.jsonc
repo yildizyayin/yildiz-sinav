@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "anunex-web",
+  "main": "./worker/marketing-entry.ts",
+  "compatibility_date": "2026-08-26",
+  "observability": { "enabled": true, "head_sampling_rate": 0.1 },
+  "routes": [
+    { "pattern": "anunex.com", "custom_domain": true },
+    { "pattern": "www.anunex.com", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": "./dist/client",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  }
+}

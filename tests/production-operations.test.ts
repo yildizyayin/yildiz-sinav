@@ -6,6 +6,8 @@ const deployWorkflow=readFileSync(new URL('../.github/workflows/deploy-productio
 const recoveryWorkflow=readFileSync(new URL('../.github/workflows/production-recovery-check.yml',import.meta.url),'utf8');
 const smoke=readFileSync(new URL('../scripts/live-production-smoke.mjs',import.meta.url),'utf8');
 const productionConfig=readFileSync(new URL('../wrangler.production.jsonc',import.meta.url),'utf8');
+const marketingConfig=readFileSync(new URL('../wrangler.marketing.jsonc',import.meta.url),'utf8');
+const demoConfig=readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8');
 
 describe('production operations closure',()=>{
  it('requires the complete critical schema and redacts long identifiers',()=>{
@@ -21,10 +23,13 @@ describe('production operations closure',()=>{
   expect(smoke).toContain("request('/api/dashboard',{expected:401})");
   expect(smoke).not.toMatch(/method\s*:\s*['"](POST|PUT|PATCH|DELETE)/);
  });
- it('binds and verifies the purchased production domain',()=>{
-  expect(productionConfig).toContain('"pattern": "anunex.com"');
+ it('separates public website, licensed app and demo domains',()=>{
+  expect(marketingConfig).toContain('"pattern": "anunex.com"');
+  expect(marketingConfig).toContain('"pattern": "www.anunex.com"');
+  expect(productionConfig).toContain('"pattern": "app.anunex.com"');
+  expect(demoConfig).toContain('"pattern": "demo.anunex.com"');
   expect(productionConfig).toContain('"custom_domain": true');
-  expect(smoke).toContain("'https://anunex.com'");
+  expect(smoke).toContain("'https://app.anunex.com'");
  });
  it('rehearses recovery transiently and never publishes the production export',()=>{
   expect(recoveryWorkflow).toContain('d1 time-travel info DB');

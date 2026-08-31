@@ -10,7 +10,7 @@
   },
   "routes": [
     {
-      "pattern": "anunex.com",
+      "pattern": "app.anunex.com",
       "custom_domain": true
     }
   ],
