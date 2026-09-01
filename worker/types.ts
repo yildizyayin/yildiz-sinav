@@ -9,6 +9,8 @@ export interface Env {
   TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET_KEY?: string;
   SESSION_SECRET?: string;
+  // Keyed result lookup tokens prevent raw TCKN/student numbers from entering the result index.
+  RESULT_LOOKUP_SECRET?: string;
   // Super Admin TOTP seed must be provisioned as a Cloudflare Secret, never a plaintext var.
   SUPER_ADMIN_MFA_TOTP_SECRET?: string;
   // Backward-compatible single model override. Prefer the smart router variables below.
@@ -52,7 +54,7 @@ export interface Env {
 }
 
 export interface CapacityJobMessage {
-  kind: 'CAPACITY_TEST_CHUNK';
+  kind: 'CAPACITY_TEST_CHUNK' | 'CAPACITY_BENCHMARK_CHUNK';
   runId: string;
   chunkNo: number;
   startNo: number;

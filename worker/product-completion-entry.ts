@@ -2,7 +2,7 @@ import app from './scale-entry';
 import type { AuthUser,CapacityJobMessage,Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,audit,badRequest,forbidden,json,notFound,one,uuid } from './lib/db';
-import { capacityTestStatus,processCapacityQueue,startCapacityTest } from './lib/operations-completion';
+import { capacityBenchmarkStatus,capacityTestStatus,processCapacityQueue,startCapacityBenchmark,startCapacityTest } from './lib/operations-completion';
 
 function fail(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 function parseJson<T>(value:string|null,fallback:T):T{try{return value?JSON.parse(value):fallback}catch{return fallback}}
@@ -71,7 +71,7 @@ async function grantMonthlyMembershipCredits(env:Env){const periodKey=new Date()
 
 export default {
  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
-  const url=new URL(request.url),path=url.pathname;const custom=path==='/api/membership/catalog'||path==='/api/membership/orders'||path==='/api/admin/membership/orders'||path.startsWith('/api/admin/membership/orders/')||path==='/api/admin/completion-center'||path==='/api/admin/annual-content-plans'||path==='/api/admin/annual-content-plans/generate'||path==='/api/admin/capacity-tests';if(!custom)return app.fetch(request,env,ctx);const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
+  const url=new URL(request.url),path=url.pathname;const custom=path==='/api/membership/catalog'||path==='/api/membership/orders'||path==='/api/admin/membership/orders'||path.startsWith('/api/admin/membership/orders/')||path==='/api/admin/completion-center'||path==='/api/admin/annual-content-plans'||path==='/api/admin/annual-content-plans/generate'||path==='/api/admin/capacity-tests'||path==='/api/admin/capacity-benchmarks';if(!custom)return app.fetch(request,env,ctx);const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
   if(path==='/api/membership/catalog'&&request.method==='GET')return membershipCatalog(env,user,url);
   if(path==='/api/membership/orders'&&request.method==='POST')return createMembershipOrder(request,env,user);
   if(path==='/api/admin/membership/orders'&&request.method==='GET')return adminMembershipOrders(env,user,url);
@@ -81,6 +81,8 @@ export default {
   if(path==='/api/admin/annual-content-plans/generate'&&request.method==='POST')return generateAnnualContentPlan(request,env,user);
   if(path==='/api/admin/capacity-tests'&&request.method==='GET')return capacityTestStatus(env,user);
   if(path==='/api/admin/capacity-tests'&&request.method==='POST')return startCapacityTest(request,env,user);
+  if(path==='/api/admin/capacity-benchmarks'&&request.method==='GET')return capacityBenchmarkStatus(env,user);
+  if(path==='/api/admin/capacity-benchmarks'&&request.method==='POST')return startCapacityBenchmark(request,env,user);
   return fail(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
  },
  async queue(batch:MessageBatch<CapacityJobMessage>,env:Env,ctx:ExecutionContext){ctx.waitUntil(processCapacityQueue(batch,env))},

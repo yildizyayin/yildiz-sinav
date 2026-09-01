@@ -61,6 +61,8 @@ import { ThemeManagement } from './pages/ThemeManagement';
 import { AttendanceCenter } from './pages/AttendanceCenter';
 import { AssignmentsCenter } from './pages/AssignmentsCenter';
 import { MarketingHome } from './pages/MarketingHome';
+import { ResultPortal } from './pages/ResultPortal';
+import { ResultNetworkAdmin } from './pages/ResultNetworkAdmin';
 
 const ALL_ROLES: Role[] = ['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT'];
 function RoleGate({allowed,children}:{allowed:Role[];children:React.ReactNode}){const{user}=useAuth();if(!user||!allowed.includes(user.role))return <Navigate to="/" replace/>;return <>{children}</>}
@@ -70,7 +72,10 @@ export default function App(){
  const{user,loading}=useAuth();const location=useLocation();
  const hostname=typeof window==='undefined'?'':window.location.hostname.toLowerCase();
  const isMarketingPreview=hostname.startsWith('anunex-web.')&&hostname.endsWith('.workers.dev');
+ const isResultPreview=hostname.startsWith('anunex-results.')&&hostname.endsWith('.workers.dev');
+ const isResultHost=hostname==='sonuc.anunex.com'||isResultPreview||new URLSearchParams(location.search).get('site')==='results';
  const isMarketingHost=hostname==='anunex.com'||hostname==='www.anunex.com'||isMarketingPreview||new URLSearchParams(location.search).get('site')==='marketing';
+ if(isResultHost)return <ResultPortal/>;
  if(isMarketingHost)return <MarketingHome/>;
  if(loading)return <div className="boot">Anunex yükleniyor…</div>;
  if(!user&&location.pathname!=='/login')return <Navigate to="/login" replace/>;
@@ -79,13 +84,14 @@ export default function App(){
   <Route path="/login" element={<Login/>}/><Route element={<Layout/>}><Route index element={<Home/>}/>
   <Route path="standard-readiness" element={<RoleGate allowed={['SUPER_ADMIN']}><StandardReadiness/></RoleGate>}/>
   <Route path="theme-management" element={<RoleGate allowed={['SUPER_ADMIN']}><ThemeManagement/></RoleGate>}/>
-  <Route path="attendance" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><AttendanceCenter/></RoleGate>}/>
+  <Route path="attendance" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><AttendanceCenter/></RoleGate>}/>
   <Route path="assignments" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><AssignmentsCenter/></RoleGate>}/>
   <Route path="completion-center" element={<RoleGate allowed={['SUPER_ADMIN']}><CompletionCenter/></RoleGate>}/><Route path="membership-orders" element={<RoleGate allowed={['SUPER_ADMIN']}><MembershipOrders/></RoleGate>}/>
   <Route path="nibiru" element={<RoleGate allowed={ALL_ROLES}><Nibiru/></RoleGate>}/><Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/>
   <Route path="academic-target" element={<RoleGate allowed={['STUDENT']}><StudentTargetsV2/></RoleGate>}/><Route path="student-settings" element={<RoleGate allowed={['STUDENT']}><StudentExperienceSettings/></RoleGate>}/><Route path="student-games" element={<RoleGate allowed={['STUDENT']}><StudentGames/></RoleGate>}/><Route path="question-review" element={<RoleGate allowed={['STUDENT']}><StudentQuestionReview/></RoleGate>}/><Route path="my-books" element={<RoleGate allowed={['STUDENT']}><StudentBooks/></RoleGate>}/>
   <Route path="academic-target-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><AcademicTargetAdmin/></RoleGate>}/><Route path="official-question-intelligence" element={<RoleGate allowed={['SUPER_ADMIN']}><OfficialQuestionIntelligenceAdmin/></RoleGate>}/>
   <Route path="announcements" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Announcements/></RoleGate>}/><Route path="worksheet-calendar" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><WorksheetCalendar/></RoleGate>}/><Route path="licenses" element={<RoleGate allowed={['SUPER_ADMIN']}><Licenses/></RoleGate>}/><Route path="profile" element={<RoleGate allowed={ALL_ROLES}><Profile/></RoleGate>}/><Route path="notifications" element={<RoleGate allowed={ALL_ROLES}><Notifications/></RoleGate>}/>
+  <Route path="result-network" element={<RoleGate allowed={['SUPER_ADMIN']}><ResultNetworkAdmin/></RoleGate>}/>
   <Route path="institutions" element={<RoleGate allowed={['SUPER_ADMIN']}><Institutions/></RoleGate>}/><Route path="curriculum" element={<RoleGate allowed={['SUPER_ADMIN']}><CurriculumAdmin/></RoleGate>}/><Route path="exam-center" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamCenter/></RoleGate>}/><Route path="exams" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Exams/></RoleGate>}/><Route path="exam-definitions" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamDefinitions/></RoleGate>}/><Route path="exams/:examId/evaluate" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ExamEvaluate/></RoleGate>}/><Route path="camera-test" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><CameraTestSheet/></RoleGate>}/>
   <Route path="students" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Students/></RoleGate>}/><Route path="activation-requests" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ActivationRequests/></RoleGate>}/><Route path="users" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><UsersPage/></RoleGate>}/><Route path="access-accounts" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><AccessAccounts/></RoleGate>}/><Route path="teacher-assignments" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><TeacherAssignments/></RoleGate>}/><Route path="seasons" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Seasons/></RoleGate>}/>
   <Route path="classes" element={<RoleGate allowed={['TEACHER','GUIDANCE_TEACHER']}><Classes/></RoleGate>}/><Route path="outcomes" element={<RoleGate allowed={['TEACHER','GUIDANCE_TEACHER','STUDENT']}><Outcomes/></RoleGate>}/><Route path="worksheets" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><Worksheets/></RoleGate>}/><Route path="worksheet-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><WorksheetAdmin/></RoleGate>}/><Route path="reports" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','PARENT']}><Reports/></RoleGate>}/>

@@ -12,6 +12,7 @@ import './student-enhancements.css';
 import './operations-ui.css';
 import './campaign-ui.css';
 import './brand-lock.css';
+import './profession-targets.css';
 
 createRoot(document.getElementById('root')!).render(<StrictMode><BrowserRouter><AuthProvider><App/></AuthProvider></BrowserRouter></StrictMode>);
 
