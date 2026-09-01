@@ -4,7 +4,6 @@ import { CAPACITY_PROFILES,buildCapacityChunks } from '../worker/lib/operations-
 
 const source=readFileSync(new URL('../worker/result-network-entry.ts',import.meta.url),'utf8');
 const migration=readFileSync(new URL('../migrations/0033_results_network_targets_attendance.sql',import.meta.url),'utf8');
-const portalMigration=readFileSync(new URL('../migrations/0034_result_portal_brand_settings.sql',import.meta.url),'utf8');
 const app=readFileSync(new URL('../src/App.tsx',import.meta.url),'utf8');
 
 describe('ANUNEX result network contract',()=>{
@@ -25,10 +24,9 @@ describe('ANUNEX result network contract',()=>{
   expect(migration).toContain("catalogue_retention TEXT NOT NULL DEFAULT 'PERMANENT'");
  });
  it('lets only Super Admin manage portal conversion copy while brand marks stay locked in code',()=>{
-  expect(portalMigration).toContain('CREATE TABLE IF NOT EXISTS result_portal_settings');
   expect(source).toContain("p==='/api/admin/result-network/portal-settings'");
   expect(source).toContain('requireSuper(request,env)');
-  expect(source).toContain('RESULT_PORTAL_BRAND_UPDATED');
+  expect(source).toContain("env.FILES.put('settings/result-portal.json'");
  });
 });
 
