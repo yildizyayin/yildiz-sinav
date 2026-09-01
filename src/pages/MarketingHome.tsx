@@ -3,6 +3,7 @@ import { ArrowRight, BarChart3, BookOpen, BookOpenCheck, BrainCircuit, Building2
 import { AnunexBrand } from '../components/AnunexBrand';
 import { NibiruMark } from '../components/NibiruMark';
 import './marketing-home.css';
+import './marketing-premium.css';
 
 const APP_URL='https://app.anunex.com';
 const DEMO_URL='https://demo.anunex.com';
@@ -37,6 +38,16 @@ const roleShowcases={
 
 type ShowcaseKey=keyof typeof roleShowcases;
 
+function speakGuidance(text:string){
+ if(!('speechSynthesis'in window))return;
+ window.speechSynthesis.cancel();
+ const utterance=new SpeechSynthesisUtterance(text);
+ utterance.lang='tr-TR';utterance.rate=.94;utterance.pitch=1.02;
+ const voices=window.speechSynthesis.getVoices();
+ utterance.voice=voices.find(voice=>voice.lang.toLowerCase().startsWith('tr')&&/female|selin|filiz|aylin/i.test(voice.name))||voices.find(voice=>voice.lang.toLowerCase().startsWith('tr'))||null;
+ window.speechSynthesis.speak(utterance);
+}
+
 const studentJourney=[
   {icon:Target,title:'Hedefini tanır',text:'LGS hedef lisesi veya YKS hedef programı; resmî veri ve öğrencinin gerçek gelişimi birlikte izlenir.'},
   {icon:CalendarClock,title:'Bugünü planlar',text:'Nibiru; ödev, eksik kazanım ve yaklaşan sınava göre uygulanabilir günlük rota hazırlar.'},
@@ -65,7 +76,7 @@ export function MarketingHome(){
   return <div className="marketing-home">
     <header className="marketing-header">
       <a href="#top" className="marketing-logo"><AnunexBrand tagline/></a>
-      <nav aria-label="Tanıtım menüsü"><a href="#platform">Platform</a><a href="#nibiru">Nibiru</a><a href="#roller">Paneller</a><a href="#ogrenci">Öğrenci</a><a href="#iletisim">İletişim</a></nav>
+      <nav aria-label="Tanıtım menüsü"><a href="#platform">Platform</a><a href="#nibiru">Nibiru</a><a href="#roller">Paneller</a><a href="#oyunlar">Mini Oyunlar</a><a href="#entegrasyon">Entegrasyonlar</a><a href="#iletisim">İletişim</a></nav>
       <div className="marketing-actions"><a className="marketing-link" href={DEMO_URL}>Demo</a><a className="marketing-button small" href={APP_URL}>Sisteme Giriş <ArrowRight size={16}/></a></div>
     </header>
 
@@ -95,13 +106,13 @@ export function MarketingHome(){
 
       <section className="nibiru-section" id="nibiru">
         <div className="nibiru-stage nibiru-live-stage">
-          <div className="nibiru-rings"/><NibiruMark size={176} state={nibiruStep?'speaking':'active'} showWordmark/>
+          <div className="nibiru-rings"/><NibiruMark size={176} state={nibiruStep?'speaking':'active'} showWordmark interactive/>
           <div className="live-signal"><i/><span>{nibiruStep?'Nibiru yanıtlıyor':'Nibiru çevrimiçi'}</span></div>
         </div>
         <div className="nibiru-copy"><span>NIBIRU · ANUNEX’İN YAŞAYAN ZEKÂSI</span><h2>Bir sohbet kutusu değil.<br/><em>Sistemin kalbi.</em></h2><p>Nibiru; ölçme verisini, öğrencinin öğrenme geçmişini ve kullanıcının rolünü birlikte okuyarak kanıta dayalı içgörüler üretir. Dinler, analiz eder, önerir ve yönlendirir; veri yoksa tahmin yürütmez.</p>
           <div className="nibiru-conversation" aria-live="polite">
-            <div className="conversation-user"><span>Ben geleceğin doktoruyum. Bugün ne yapmalıyım?</span><div>E</div></div>
-            {nibiruStep===1&&<div className="conversation-nibiru"><NibiruMark size={34} state="speaking"/><div><strong>Geleceğin doktoru için bugünü planladım.</strong><p>Son sınavındaki biyoloji hücre bölünmeleri ve matematik fonksiyonlar sinyallerine göre üç odak hazırladım.</p><ul><li><CheckCircle2/> Biyoloji · 18 dk konu tekrarı</li><li><CheckCircle2/> Fonksiyonlar · 12 hedef soru</li><li><CheckCircle2/> Paragraf · 20 soru hız çalışması</li></ul><button type="button"><Volume2/> Dinle</button></div></div>}
+            <div className="conversation-user"><span>Bugün ne yapmalıyım?</span><div>E</div></div>
+            {nibiruStep===1&&<div className="conversation-nibiru"><NibiruMark size={34} state="speaking" interactive/><div><small className="identity-recognition"><ShieldCheck/> Güvenli öğrenci profili tanındı · Efe</small><strong>Merhaba Efe, bugünkü rotanı hazırladım.</strong><p>Son sınavındaki biyoloji hücre bölünmeleri ve matematik fonksiyonlar sinyallerine göre üç odak hazırladım.</p><ul><li><CheckCircle2/> Biyoloji · 18 dk konu tekrarı</li><li><CheckCircle2/> Fonksiyonlar · 12 hedef soru</li><li><CheckCircle2/> Paragraf · 20 soru hız çalışması</li></ul><p className="career-signoff">Hazırsan başlayalım, geleceğin doktoru.</p><button type="button" onClick={()=>speakGuidance('Merhaba Efe. Bugünkü rotanı hazırladım. Biyoloji hücre bölünmeleri için on sekiz dakika konu tekrarı, fonksiyonlardan on iki hedef soru ve paragraftan yirmi soru hız çalışması yapacağız. Hazırsan başlayalım, geleceğin doktoru.')}><Volume2/> Rehber öğretmenden dinle</button></div></div>}
             {nibiruStep===0&&<button className="ask-nibiru" type="button" onClick={()=>setNibiruStep(1)}><Sparkles/> Nibiru’ya sor <Send/></button>}
           </div>
           <div className="nibiru-capabilities"><div><Sparkles/><span><strong>Anlar</strong><small>Doğrulanmış bağlamı okur</small></span></div><div><LineChart/><span><strong>Analiz eder</strong><small>Örüntü ve riski görünür kılar</small></span></div><div><Mic2/><span><strong>Dinler ve konuşur</strong><small>Bas-konuş ses deneyimi</small></span></div><div><LockKeyhole/><span><strong>Sınırlarını bilir</strong><small>Yetki ve mahremiyeti korur</small></span></div></div>
@@ -123,9 +134,13 @@ export function MarketingHome(){
         <div className="student-orbit-map"><div className="orbit-line"/><div className="student-core"><NibiruMark size={72} state="active"/><strong>Benim<br/>Yörüngem</strong></div>{studentJourney.map(({icon:Icon,title,text},index)=><article key={title} style={{'--journey-index':index} as React.CSSProperties}><span><Icon/></span><div><small>0{index+1}</small><h3>{title}</h3><p>{text}</p></div></article>)}</div>
       </section>
 
-      <section className="marketing-section integration-section"><div className="section-heading"><span>BAŞKA ARAÇLAR DEĞİL · TEK AKADEMİK AKIŞ</span><h2>Kimsede olmayan fark,<br/><em>özelliklerin birlikte çalışması.</em></h2><p>Her parça tek başına değil; aynı öğrenci, aynı kazanım ve aynı güvenli veri kaydı üzerinde birbirini tamamlar.</p></div><div className="integration-grid">{integrations.map(({icon:Icon,label,text,state,steps})=><article key={label}><div><Icon/><span>{state}</span></div><h3>{label}</h3><p>{text}</p><ol>{steps.map((step,index)=><li key={step}><b>0{index+1}</b><span>{step}</span></li>)}</ol></article>)}</div>
+      <section className="game-showcase" id="oyunlar"><div className="game-copy"><span>ÖĞRENMEYİ OYUNA DEĞİL · OYUNU ÖĞRENMEYE BAĞLAR</span><h2>Her oyun gerçek bir<br/><em>kazanımı güçlendirir.</em></h2><p>ANUNEX mini oyunları rastgele puan dağıtmaz. Öğrencinin eksik kazanımını, yaş grubunu ve çalışma hedefini tanır; kısa, güvenli ve ölçülebilir görevler üretir.</p><div className="game-proof"><span><CheckCircle2/> Reklamsız ve güvenli</span><span><CheckCircle2/> Kazanım bağlantılı</span><span><CheckCircle2/> Öğretmen görünürlüklü</span></div></div><div className="game-console"><div className="game-top"><div><small>EFE’NİN BUGÜNKÜ GÖREVİ</small><strong>Fonksiyon Yörüngesi</strong></div><span><Trophy/> 1.280 XP</span></div><div className="game-arena"><div className="game-orbit-track"><i/><i/><i/></div><div className="game-core"><Gamepad2/><strong>3 / 5</strong><span>Doğru eşleşme</span></div><button className="answer-chip a">f(2)=5</button><button className="answer-chip b">f(3)=7</button><button className="answer-chip c">f(4)=9</button></div><div className="game-bottom"><div><span>Günlük seri</span><strong>12 gün</strong></div><div><span>Güçlenen kazanım</span><strong>Doğrusal fonksiyon</strong></div><button>Oyunu başlat <ChevronRight/></button></div></div></section>
+
+      <section className="marketing-section integration-section" id="entegrasyon"><div className="section-heading"><span>BAŞKA ARAÇLAR DEĞİL · TEK AKADEMİK AKIŞ</span><h2>Kimsede olmayan fark,<br/><em>özelliklerin birlikte çalışması.</em></h2><p>Her parça tek başına değil; aynı öğrenci, aynı kazanım ve aynı güvenli veri kaydı üzerinde birbirini tamamlar.</p></div><div className="integration-grid">{integrations.map(({icon:Icon,label,text,state,steps})=><article key={label}><div><Icon/><span>{state}</span></div><h3>{label}</h3><p>{text}</p><ol>{steps.map((step,index)=><li key={step}><b>0{index+1}</b><span>{step}</span></li>)}</ol></article>)}</div>
         <div className="unique-strip"><span><FileText/> Kişiye Özel Kitap</span><span><BookOpen/> Sıfır Hata Kitapçığı</span><span><Gamepad2/> Güvenli Mini Oyunlar</span><span><Monitor/> Tema & Özel Gün Yönetimi</span><span><HeartHandshake/> Rehberlik Müdahale Akışı</span></div>
       </section>
+
+      <section className="connected-demo"><div className="connected-heading"><span>GERÇEK BİR ÖĞRENCİ YOLCULUĞU</span><h2>Bir yanlış soru, bütün sistemi harekete geçirir.</h2><p>Öğrenci soruya dokunduğunda ANUNEX yalnız cevabı göstermez; öğretmen, veli, video ve Nibiru akışını aynı kazanım etrafında birleştirir.</p></div><div className="connected-grid"><article className="question-demo"><div className="demo-head"><span>Soru 14 · Matematik</span><b>Yanlış</b></div><h3>Fonksiyonlar · Bileşke işlemi</h3><div className="question-placeholder"><span>f(x)=2x+1 ve g(x)=x²</span><strong>(f∘g)(2) kaçtır?</strong></div><div className="question-actions"><button><PlayCircle/> Yayınevi video çözümü</button><button><BookOpen/> Konu anlatım videosu</button><button><Sparkles/> Nibiru’ya sor</button></div><small>Öğrencinin doğru yaptığı sorularda da onaylı video desteği açılabilir.</small></article><article className="youtube-demo"><div className="demo-head"><span>ANUNEX · YouTube mikro öğrenme</span><b>Onaylı</b></div><div className="video-preview"><PlayCircle/><span>1:42</span></div><h3>Bileşke fonksiyon 2 dakikada</h3><p>Yayınevi çözümü yoksa Nibiru; kazanıma, süreye ve içerik güvenliğine göre en uygun kısa konu anlatımını seçer.</p><div className="video-meta"><span>5 aday tarandı</span><span>Öğretmen onaylı kanal</span></div></article><article className="whatsapp-demo"><div className="demo-head"><span>WhatsApp akademik kanal</span><b>Entegre</b></div><div className="chat-bubble school">ANUNEX: Efe’nin matematik görevinde 1 kazanım için tekrar önerildi.</div><div className="chat-bubble parent">Detayını görebilir miyim?</div><div className="chat-bubble nibiru"><NibiruMark size={24} state="speaking"/> Nibiru Veli Rehberi: Sonuç paylaşmadan, haftalık gelişim özetini güvenli bağlantıda görüntüleyebilirsiniz.</div><div className="chat-audience"><span><Users/> Veli</span><span><GraduationCap/> Öğretmen</span><span><Building2/> Kurum</span></div></article></div></section>
 
       <section className="why-section"><div className="why-copy"><span>NEDEN KURUMLAR ANUNEX’İ SEÇER?</span><h2>Dağınık araçlar yerine<br/><em>tek bir gelişim sistemi.</em></h2><p>Sınav, optik, rapor, ödev ve rehberlik farklı yerlerde kaldığında okul veriyi taşımakla vakit kaybeder. ANUNEX tüm süreci aynı akademik kayıt üzerinde birleştirir.</p><a className="marketing-button" href={DEMO_URL}>Kurumunuzda deneyin <ArrowRight size={18}/></a></div><div className="why-list"><WhyItem title="Daha hızlı operasyon" text="Tekrarlayan ölçme ve raporlama işlerini azaltır; öğretmenin zamanını öğrenciye geri verir."/><WhyItem title="Daha erken müdahale" text="Sorun dönem sonunda değil, kanıt oluştuğu anda görünür olur."/><WhyItem title="Daha kişisel öğrenme" text="Her öğrenci aynı sonuca değil, kendi eksiğine göre hazırlanmış rotaya ulaşır."/><WhyItem title="Daha güvenilir karar" text="Kurum yönetimi sezgi yerine ölçülebilir gelişim verisiyle hareket eder."/></div></section>
 
