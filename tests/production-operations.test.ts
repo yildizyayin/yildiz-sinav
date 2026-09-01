@@ -8,6 +8,7 @@ const smoke=readFileSync(new URL('../scripts/live-production-smoke.mjs',import.m
 const productionConfig=readFileSync(new URL('../wrangler.production.jsonc',import.meta.url),'utf8');
 const marketingConfig=readFileSync(new URL('../wrangler.marketing.jsonc',import.meta.url),'utf8');
 const stagingDeploy=readFileSync(new URL('../.github/workflows/deploy.yml',import.meta.url),'utf8');
+const appSource=readFileSync(new URL('../src/App.tsx',import.meta.url),'utf8');
 
 describe('production operations closure',()=>{
  it('requires the complete critical schema and redacts long identifiers',()=>{
@@ -19,17 +20,31 @@ describe('production operations closure',()=>{
  it('runs a read-only smoke after migrations and secret synchronization',()=>{
   expect(deployWorkflow.indexOf('Apply production D1 migrations')).toBeLessThan(deployWorkflow.indexOf('Read-only production smoke acceptance'));
   expect(deployWorkflow.indexOf('Set production secrets')).toBeLessThan(deployWorkflow.indexOf('Read-only production smoke acceptance'));
+  expect(deployWorkflow).toContain('.result.resources.bindings[]');
+  expect(deployWorkflow).toContain('wrangler.production.resolved.json');
+  expect(deployWorkflow).toContain('d1 migrations apply DB');
   expect(smoke).toContain("request('/api/health')");
   expect(smoke).toContain("request('/api/dashboard',{expected:401})");
   expect(smoke).not.toMatch(/method\s*:\s*['"](POST|PUT|PATCH|DELETE)/);
  });
  it('separates public website, licensed app and demo domains',()=>{
-  expect(marketingConfig).toContain('"pattern": "anunex.com"');
-  expect(marketingConfig).toContain('"pattern": "www.anunex.com"');
-  expect(productionConfig).toContain('"pattern": "app.anunex.com"');
+  expect(marketingConfig).toContain('"name": "anunex-web"');
+  expect(productionConfig).toContain('"name": "yildiz-sinav-prod"');
+  expect(deployWorkflow).toContain('attach_domain app.anunex.com yildiz-sinav-prod');
+  expect(deployWorkflow).toContain('Attach public website domains with DNS takeover');
+  expect(deployWorkflow).toContain('workers/scripts/$service/domains/records');
+  expect(deployWorkflow).toContain('override_existing_dns_record:true');
+  expect(deployWorkflow).toContain('{hostname:"anunex.com",zone_name:"anunex.com"}');
+  expect(deployWorkflow).toContain('{hostname:"www.anunex.com",zone_name:"anunex.com"}');
+  expect(deployWorkflow).toContain('Cloudflare public-domain takeover error');
+  expect(deployWorkflow).toContain('[.errors[]? | {code,message}]');
+  expect(deployWorkflow).not.toContain('Remove exact public-domain DNS conflicts');
+  expect(deployWorkflow).not.toContain('dns_records?');
   expect(stagingDeploy).toContain('SMOKE_BASE_URL: https://demo.anunex.com');
-  expect(productionConfig).toContain('"custom_domain": true');
+  expect(productionConfig).not.toContain('"custom_domain": true');
+  expect(marketingConfig).not.toContain('"custom_domain": true');
   expect(smoke).toContain("'https://app.anunex.com'");
+  expect(appSource).toContain("hostname.startsWith('anunex-web.')&&hostname.endsWith('.workers.dev')");
  });
  it('rehearses recovery transiently and never publishes the production export',()=>{
   expect(recoveryWorkflow).toContain('d1 time-travel info DB');

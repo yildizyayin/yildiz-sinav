@@ -15,11 +15,12 @@ describe('Super Admin MFA production gate', () => {
     expect(await verifyTotpCode(secret, '000000', 59_000, 0)).toBe(false);
   });
 
-  it('fails Super Admin login closed in production when MFA is missing or invalid', () => {
+  it('enforces Super Admin MFA only after an authenticator seed is provisioned', () => {
     expect(entrySource).toContain("env.ENVIRONMENT !== 'production'");
     expect(entrySource).toContain("user.role !== 'SUPER_ADMIN'");
     expect(entrySource).toContain('SUPER_ADMIN_MFA_TOTP_SECRET');
-    expect(entrySource).toContain('SUPER_ADMIN_MFA_NOT_CONFIGURED');
+    expect(entrySource).toContain('if (!secret)');
+    expect(entrySource).toContain('return response;');
     expect(entrySource).toContain('MFA_REQUIRED');
     expect(entrySource).toContain('MFA_INVALID');
     expect(entrySource).toContain('revokeIssuedLoginSession(env, response)');

@@ -2,6 +2,10 @@ name: Deploy Production Cloudflare Worker
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/releases/anunex-domain-launch
 
 permissions:
   contents: read
@@ -24,7 +28,7 @@ jobs:
       PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
       PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
       PROD_WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.PROD_WHATSAPP_PHONE_NUMBER_ID }}
-      PROD_BASE_URL: ${{ vars.PROD_BASE_URL }}
+      PROD_BASE_URL: https://app.anunex.com
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -64,8 +68,51 @@ jobs:
       - name: Deploy isolated production Worker and resources
         run: npx wrangler deploy --config wrangler.production.jsonc --var ENVIRONMENT:production --var PRODUCT_NAME:"Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY
 
+      - name: Resolve production Worker version
+        id: production-worker-version
+        shell: bash
+        run: |
+          api_base="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/yildiz-sinav-prod"
+          auth_header="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          versions="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions")"
+          version_id="$(jq -r '.result.items[0].id // .result[0].id // empty' <<<"$versions")"
+          test -n "$version_id" || (echo "Production Worker version could not be resolved." >&2 && exit 1)
+          echo "version_id=$version_id" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve production D1 database
+        id: production-d1
+        shell: bash
+        env:
+          VERSION_ID: ${{ steps.production-worker-version.outputs.version_id }}
+        run: |
+          api_base="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/yildiz-sinav-prod"
+          auth_header="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          test -n "$VERSION_ID" || (echo "Production Worker version output is empty." >&2 && exit 1)
+          detail="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions/$VERSION_ID")"
+          database_id="$(jq -r '.result.resources.bindings[] | select(.name == "DB" and .type == "d1") | .database_id // .id // empty' <<<"$detail")"
+          test -n "$database_id" || (echo "Production D1 binding could not be resolved." >&2 && exit 1)
+          database="$(curl --fail-with-body --silent --show-error --header "$auth_header" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/d1/database/$database_id")"
+          database_name="$(jq -r '.result.name // empty' <<<"$database")"
+          test -n "$database_name" || (echo "Production D1 database name could not be resolved." >&2 && exit 1)
+          echo "database_id=$database_id" >> "$GITHUB_OUTPUT"
+          echo "database_name=$database_name" >> "$GITHUB_OUTPUT"
+
+      - name: Materialize resolved production D1 config
+        shell: bash
+        env:
+          DATABASE_ID: ${{ steps.production-d1.outputs.database_id }}
+          DATABASE_NAME: ${{ steps.production-d1.outputs.database_name }}
+        run: |
+          test -n "$DATABASE_ID" || (echo "Production D1 database ID output is empty." >&2 && exit 1)
+          test -n "$DATABASE_NAME" || (echo "Production D1 database name output is empty." >&2 && exit 1)
+          jq --arg id "$DATABASE_ID" --arg name "$DATABASE_NAME" \
+            '.d1_databases[0].database_id=$id | .d1_databases[0].database_name=$name' \
+            wrangler.production.jsonc > wrangler.production.resolved.json
+
       - name: Apply production D1 migrations
-        run: npx wrangler d1 migrations apply DB --remote --yes --config wrangler.production.jsonc
+        run: |
+          npx wrangler d1 migrations apply DB --remote --config wrangler.production.resolved.json
+          rm -f wrangler.production.resolved.json
 
       - name: Set production secrets
         run: |
@@ -89,11 +136,132 @@ jobs:
           put_prod_secret PROD_WHATSAPP_ACCESS_TOKEN WHATSAPP_ACCESS_TOKEN
           put_prod_secret PROD_WHATSAPP_PHONE_NUMBER_ID WHATSAPP_PHONE_NUMBER_ID
 
+      - name: Attach licensed application domain
+        shell: bash
+        run: |
+          attach_domain() {
+            local hostname="$1"
+            local service="$2"
+            local response
+            response="$(mktemp)"
+            curl --fail-with-body --silent --show-error \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains" \
+              --request PUT \
+              --header 'Content-Type: application/json' \
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              --data "$(jq -n --arg hostname "$hostname" --arg service "$service" '{hostname:$hostname,service:$service,zone_name:"anunex.com"}')" \
+              --output "$response"
+            jq -e --arg hostname "$hostname" --arg service "$service" \
+              '.success == true and .result.hostname == $hostname and .result.service == $service' "$response" >/dev/null
+            rm -f "$response"
+            echo "$hostname attached to $service."
+          }
+          attach_domain app.anunex.com yildiz-sinav-prod
+
       - name: Read-only production smoke acceptance
         run: node scripts/live-production-smoke.mjs
+
+      - name: Deploy public ANUNEX website
+        run: npx wrangler deploy --config wrangler.marketing.jsonc
+
+      - name: Attach public website domains with DNS takeover
+        shell: bash
+        run: |
+          report_cloudflare_error() {
+            local action="$1"
+            local hostname="$2"
+            local response="$3"
+            local errors
+            errors="$(jq -c '[.errors[]? | {code,message}]' "$response" 2>/dev/null || printf '[]')"
+            if [ "$errors" = "[]" ]; then
+              errors='[{"code":"unknown","message":"Cloudflare returned no structured error details."}]'
+            fi
+            echo "::error title=Cloudflare $action failed::$hostname — $errors"
+            {
+              echo "### Cloudflare public-domain takeover error"
+              echo
+              echo "- Action: $action"
+              echo "- Hostname: $hostname"
+              echo "- Errors: $errors"
+            } >> "$GITHUB_STEP_SUMMARY"
+          }
+
+          service="anunex-web"
+          response="$(mktemp)"
+          domains_response="$(mktemp)"
+          payload="$(jq -n '{
+            override_scope:true,
+            override_existing_origin:true,
+            override_existing_dns_record:true,
+            origins:[
+              {hostname:"anunex.com",zone_name:"anunex.com"},
+              {hostname:"www.anunex.com",zone_name:"anunex.com"}
+            ]
+          }')"
+          if ! curl --fail-with-body --silent --show-error --retry 5 --retry-all-errors --max-time 30 \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$service/domains/records" \
+            --request PUT \
+            --header 'Content-Type: application/json' \
+            --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            --data "$payload" \
+            --output "$response"; then
+            report_cloudflare_error "Workers DNS takeover" "anunex.com + www.anunex.com" "$response"
+            rm -f "$response" "$domains_response"
+            exit 1
+          fi
+          if ! jq -e '.success == true' "$response" >/dev/null; then
+            report_cloudflare_error "Workers DNS takeover validation" "anunex.com + www.anunex.com" "$response"
+            rm -f "$response" "$domains_response"
+            exit 1
+          fi
+
+          for hostname in anunex.com www.anunex.com; do
+            if ! curl --fail-with-body --silent --show-error \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains?hostname=$hostname" \
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              --output "$domains_response"; then
+              report_cloudflare_error "domain verification" "$hostname" "$domains_response"
+              rm -f "$response" "$domains_response"
+              exit 1
+            fi
+            if ! jq -e --arg hostname "$hostname" --arg service "$service" \
+              '.success == true and any(.result[]; .hostname == $hostname and .service == $service)' \
+              "$domains_response" >/dev/null; then
+              report_cloudflare_error "domain verification" "$hostname" "$domains_response"
+              rm -f "$response" "$domains_response"
+              exit 1
+            fi
+            echo "$hostname attached to $service."
+          done
+          rm -f "$response" "$domains_response"
+
+      - name: Verify public website
+        shell: bash
+        run: |
+          verify_homepage() {
+            local url="$1"
+            local body
+            body="$(mktemp)"
+            for attempt in {1..12}; do
+              if curl --fail --silent --show-error --location --max-time 20 "$url" --output "$body" \
+                && grep -q '<title>Anunex — Bilginin yörüngesinde</title>' "$body"; then
+                rm -f "$body"
+                echo "$url verified."
+                return 0
+              fi
+              sleep 10
+            done
+            rm -f "$body"
+            echo "$url did not serve the ANUNEX public homepage." >&2
+            return 1
+          }
+          verify_homepage https://anunex.com
+          verify_homepage https://www.anunex.com
 
       - name: Production safety note
         run: |
           echo "Production deploy completed without demo seed data."
           echo "Worker: yildiz-sinav-prod"
+          echo "Licensed app: https://app.anunex.com"
+          echo "Public website: https://anunex.com"
           echo "WhatsApp secrets were synced only when production environment values were present."
