@@ -104,8 +104,7 @@ async function enforceProductionSuperAdminMfa(
 
   const secret = String(env.SUPER_ADMIN_MFA_TOTP_SECRET || '').trim();
   if (!secret) {
-    await revokeIssuedLoginSession(env, response);
-    return json({ ok: false, error: { code: 'SUPER_ADMIN_MFA_NOT_CONFIGURED', message: 'Süper Admin MFA production için yapılandırılmadan oturum açılamaz.' } }, 503);
+    return response;
   }
 
   const code = String(loginBody.mfaCode || '').trim();

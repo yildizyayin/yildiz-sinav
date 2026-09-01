@@ -21,6 +21,7 @@ export default {
           productName: env.PRODUCT_NAME || 'Anunex',
           turnstileSiteKey: env.TURNSTILE_SITE_KEY || '',
           environment: env.ENVIRONMENT || 'development',
+          superAdminMfaEnabled: Boolean(String(env.SUPER_ADMIN_MFA_TOTP_SECRET || '').trim()),
         });
       }
       if (url.pathname === '/api/auth/login') return request.method === 'POST' ? login(request, env) : methodNotAllowed();
