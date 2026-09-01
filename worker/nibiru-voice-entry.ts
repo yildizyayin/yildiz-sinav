@@ -5,6 +5,26 @@ import { json } from './lib/db';
 import { buildVoiceProviderPlan,speakNibiru,transcribeNibiruAudio,voiceProviderStatus } from './lib/nibiru-voice';
 import { classifyVoiceActivationFailure,sanitizedVoiceProviderError } from './lib/nibiru-voice-diagnostics';
 
+
+const PUBLIC_VOICE_SCENARIOS:Record<string,string>={
+ 'student-plan':'Merhaba Efe. Bugünkü rotanı hazırladım. Biyoloji için on sekiz dakika konu tekrarı, fonksiyonlardan on iki hedef soru ve paragraftan yirmi soru hız çalışması yapacağız. Hazırsan başlayalım, geleceğin doktoru.',
+ 'wrong-question':'Bu soruda işlem hatası değil, kavram karışıklığı görüyorum. Önce g fonksiyonunun sonucunu, sonra f fonksiyonunu uygulayacağız. Hata bir etiket değil, bir sonraki doğru adımın işaretidir.',
+ 'teacher':'Sekiz A sınıfında iki kazanım sınıf müdahalesi istiyor. On iki dakikalık tekrar, altı öğrencilik destek grubu ve akşam mini kontrol testi öneriyorum.',
+ 'parent':'Efe bu hafta düzenli ilerledi. Görev tamamlama oranı yükseldi. Matematikte küçük bir tekrar ihtiyacı var. Bu hafta çabanı gördüm demeniz en doğru destek olur.',
+ 'institution':'Bugün üç sınıf için erken müdahale öneriyorum. Devamsızlık, sınav eğilimi ve görev tamamlama verilerini birlikte değerlendirdim. Rehberlik ve öğretmen görevlerini onayınıza hazırladım.',
+ 'goal':'Evet Zeynep, yönün doğru. Fen ivmen güçlü. Türkçe hızın için paragraf, kimyada iki kazanım tekrarı ve cumartesi denemesi planladım. Bugünün küçük adımları geleceğin doktorunu inşa ediyor.'
+};
+
+async function publicVoiceDemo(request:Request,env:Env){
+ const key=new URL(request.url).searchParams.get('scenario')||'';
+ const text=PUBLIC_VOICE_SCENARIOS[key];
+ if(!text)return fail(404,'VOICE_SCENARIO_NOT_FOUND','Tanımlı ses senaryosu bulunamadı.');
+ try{
+  const result=await speakNibiru(env,text,'STANDARD');
+  return new Response(strictArrayBuffer(result.audio.bytes),{status:200,headers:{'content-type':result.audio.contentType,'cache-control':'public, max-age=86400, s-maxage=604800, immutable','x-nibiru-voice-provider':result.audio.provider,'x-content-type-options':'nosniff'}});
+ }catch(error){return voiceError(error)}
+}
+
 function fail(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 function strictArrayBuffer(bytes:Uint8Array):ArrayBuffer{const copy=new Uint8Array(bytes.byteLength);copy.set(bytes);return copy.buffer}
 function voiceError(error:unknown){
@@ -49,6 +69,7 @@ async function probe(request:Request,env:Env){
 export default {
  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
   const url=new URL(request.url),p=url.pathname;
+  if(p==='/api/public/nibiru/voice-demo'&&request.method==='GET')return publicVoiceDemo(request,env);
   if(p==='/api/nibiru/voice/status'&&request.method==='GET')return status(request,env);
   if(p==='/api/nibiru/voice/transcribe'&&request.method==='POST')return transcribe(request,env);
   if(p==='/api/nibiru/voice/speak'&&request.method==='POST')return speak(request,env);

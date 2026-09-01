@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, BarChart3, BookOpen, BookOpenCheck, BrainCircuit, Building2, CalendarClock, Camera, Check, CheckCircle2, ChevronRight, ClipboardCheck, FileText, Gamepad2, GraduationCap, HeartHandshake, Layers3, LineChart, LockKeyhole, MapPin, MessageCircle, Mic2, Monitor, Network, Phone, PlayCircle, ScanLine, Send, ShieldCheck, Sparkles, Target, Trophy, UserRoundCheck, Users, Volume2 } from 'lucide-react';
 import { AnunexBrand } from '../components/AnunexBrand';
 import { NibiruMark } from '../components/NibiruMark';
+import { NibiruPlanetarySystem } from '../components/NibiruPlanetarySystem';
 import './marketing-home.css';
 import './marketing-premium.css';
 
@@ -38,15 +39,30 @@ const roleShowcases={
 
 type ShowcaseKey=keyof typeof roleShowcases;
 
-function speakGuidance(text:string){
+const nibiruConversations=[
+ {key:'student-plan',label:'Bugünkü rota',audience:'Öğrenci',initial:'E',question:'Bugün ne yapmalıyım?',identity:'Güvenli öğrenci profili tanındı · Efe',title:'Merhaba Efe, bugünkü rotanı hazırladım.',body:'Son sınavındaki biyoloji ve matematik sinyallerine göre üç odak seçtim.',tasks:['Biyoloji · 18 dk konu tekrarı','Fonksiyonlar · 12 hedef soru','Paragraf · 20 soru hız çalışması'],signoff:'Hazırsan başlayalım, geleceğin doktoru.'},
+ {key:'wrong-question',label:'Yanlış soru',audience:'Öğrenci',initial:'E',question:'Bu soruda neden hata yaptım?',identity:'Soru ve kazanım bağlamı doğrulandı',title:'İşlem hatası değil, kavram karışıklığı görüyorum.',body:'Bileşke fonksiyonda işlem sırasını ters uygulamışsın. Önce g(2), sonra f sonucunu kullanacağız.',tasks:['90 sn konu özeti','Öğretmen onaylı video','Aynı kazanımdan 3 soru'],signoff:'Hata bir etiket değil; bir sonraki doğru adımın işaretidir.'},
+ {key:'teacher',label:'Öğretmen',audience:'Öğretmen',initial:'Ö',question:'8-A için bugün neye odaklanmalıyım?',identity:'Yetkili sınıf verisi · 8-A',title:'İki kazanım sınıf müdahalesi istiyor.',body:'Öğrencilerin %41’i olasılık, %36’sı çarpanlar konusunda aynı hata örüntüsünü gösterdi.',tasks:['12 dk sınıf tekrarı','6 öğrencilik destek grubu','Akşam mini kontrol testi'],signoff:'Plan hazır; istersen ödevi tek dokunuşla atayabilirim.'},
+ {key:'parent',label:'Veli',audience:'Veli',initial:'V',question:'Çocuğumun bu haftası nasıl geçti?',identity:'Veli görünümü · mahremiyet sınırı açık',title:'Efe düzenli ilerledi; baskı değil süreklilik gerekiyor.',body:'Görev tamamlama yükseldi. Matematikte küçük bir tekrar ihtiyacı var; ayrıntılı öğrenci cevabı paylaşılmıyor.',tasks:['4/5 görev tamamlandı','Haftalık gelişim +%6','Pazar günü 20 dk tekrar'],signoff:'Bu hafta “çabanı gördüm” demeniz en doğru destek olur.'},
+ {key:'institution',label:'Kurum',audience:'Kurum',initial:'K',question:'Bugün hangi sınıflara müdahale etmeliyiz?',identity:'Kurum yöneticisi · yetkili özet',title:'Üç sınıf için erken müdahale öneriyorum.',body:'Devamsızlık, sınav eğilimi ve görev tamamlama birlikte değerlendirildi; yalnız doğrulanmış kurum verisi kullanıldı.',tasks:['7-B · devamsızlık sinyali','8-C · matematik kazanımı','11-A · deneme düşüşü'],signoff:'Rehberlik ve öğretmen görevlerini onayınıza hazırladım.'},
+ {key:'goal',label:'Hedef meslek',audience:'Öğrenci',initial:'Z',question:'Hedefime yaklaşıyor muyum?',identity:'Hedef program · Tıp Fakültesi',title:'Evet Zeynep; yönün doğru, planı biraz dengeleyeceğiz.',body:'Fen ivmen güçlü. Türkçe hızın hedef sıralaman için bu hafta öncelik olmalı.',tasks:['Paragraf · günlük 25 soru','Kimya · 2 kazanım tekrarı','Cumartesi TYT simülasyonu'],signoff:'Bugünün küçük adımları geleceğin doktorunu inşa ediyor.'}
+] as const;
+
+async function playNibiruVoice(scenario:string,text:string){
+ try{
+  const response=await fetch('/api/public/nibiru/voice-demo?scenario='+encodeURIComponent(scenario));
+  if(!response.ok)throw new Error('voice');
+  const url=URL.createObjectURL(await response.blob());
+  const audio=new Audio(url);audio.onended=()=>URL.revokeObjectURL(url);await audio.play();return;
+ }catch{}
  if(!('speechSynthesis'in window))return;
- window.speechSynthesis.cancel();
- const utterance=new SpeechSynthesisUtterance(text);
+ window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);
  utterance.lang='tr-TR';utterance.rate=.94;utterance.pitch=1.02;
  const voices=window.speechSynthesis.getVoices();
- utterance.voice=voices.find(voice=>voice.lang.toLowerCase().startsWith('tr')&&/female|selin|filiz|aylin/i.test(voice.name))||voices.find(voice=>voice.lang.toLowerCase().startsWith('tr'))||null;
- window.speechSynthesis.speak(utterance);
+ utterance.voice=voices.find(v=>v.lang.toLowerCase().startsWith('tr'))||null;window.speechSynthesis.speak(utterance);
 }
+
+
 
 const studentJourney=[
   {icon:Target,title:'Hedefini tanır',text:'LGS hedef lisesi veya YKS hedef programı; resmî veri ve öğrencinin gerçek gelişimi birlikte izlenir.'},
@@ -66,7 +82,9 @@ const integrations=[
 
 export function MarketingHome(){
   const [activeRole,setActiveRole]=useState<ShowcaseKey>('student');
-  const [nibiruStep,setNibiruStep]=useState<0|1>(0);
+  const [activeConversation,setActiveConversation]=useState(0);
+  const [nibiruOpen,setNibiruOpen]=useState(true);
+  const conversation=nibiruConversations[activeConversation];
   const role=useMemo(()=>roleShowcases[activeRole],[activeRole]);
   useEffect(()=>{
     document.title='ANUNEX — Nibiru AI Destekli Ölçme ve Analiz Platformu';
@@ -104,18 +122,18 @@ export function MarketingHome(){
 
       <section className="marketing-section platform-section" id="platform"><div className="section-heading"><span>TEK BİR AKADEMİK OMURGA</span><h2>Veriyi toplamaz; <em>karara dönüştürür.</em></h2><p>ANUNEX’in değeri yalnız sınav sonucunu göstermek değil, sonucu doğru kişiye doğru anda uygulanabilir bir sonraki adım olarak sunmaktır.</p></div><div className="decision-flow"><FlowStep no="01" title="Yakala" text="Optik, kamera veya veri aktarımı"/><FlowStep no="02" title="Anla" text="Soru ve kazanım düzeyinde analiz"/><FlowStep no="03" title="Kişiselleştir" text="Öğrenciye özel rota ve materyal"/><FlowStep no="04" title="Uygula" text="Ödev, föy, rehberlik ve müdahale"/><FlowStep no="05" title="İzle" text="Gelişimi kanıtlarla takip et"/></div><div className="feature-grid">{features.map(({icon:Icon,title,text})=><article key={title}><span><Icon/></span><h3>{title}</h3><p>{text}</p></article>)}</div></section>
 
-      <section className="nibiru-section" id="nibiru">
+      <section className="nibiru-section nibiru-planet-section" id="nibiru">
         <div className="nibiru-stage nibiru-live-stage">
-          <div className="nibiru-rings"/><NibiruMark size={176} state={nibiruStep?'speaking':'active'} showWordmark interactive/>
-          <div className="live-signal"><i/><span>{nibiruStep?'Nibiru yanıtlıyor':'Nibiru çevrimiçi'}</span></div>
+          <NibiruPlanetarySystem size={560} state={nibiruOpen?'speaking':'idle'}/>
+          <div className="live-signal"><i/><span>{nibiruOpen?'Nibiru bağlamı analiz ediyor':'Nibiru çevrimiçi'}</span></div>
         </div>
-        <div className="nibiru-copy"><span>NIBIRU · ANUNEX’İN YAŞAYAN ZEKÂSI</span><h2>Bir sohbet kutusu değil.<br/><em>Sistemin kalbi.</em></h2><p>Nibiru; ölçme verisini, öğrencinin öğrenme geçmişini ve kullanıcının rolünü birlikte okuyarak kanıta dayalı içgörüler üretir. Dinler, analiz eder, önerir ve yönlendirir; veri yoksa tahmin yürütmez.</p>
-          <div className="nibiru-conversation" aria-live="polite">
-            <div className="conversation-user"><span>Bugün ne yapmalıyım?</span><div>E</div></div>
-            {nibiruStep===1&&<div className="conversation-nibiru"><NibiruMark size={34} state="speaking" interactive/><div><small className="identity-recognition"><ShieldCheck/> Güvenli öğrenci profili tanındı · Efe</small><strong>Merhaba Efe, bugünkü rotanı hazırladım.</strong><p>Son sınavındaki biyoloji hücre bölünmeleri ve matematik fonksiyonlar sinyallerine göre üç odak hazırladım.</p><ul><li><CheckCircle2/> Biyoloji · 18 dk konu tekrarı</li><li><CheckCircle2/> Fonksiyonlar · 12 hedef soru</li><li><CheckCircle2/> Paragraf · 20 soru hız çalışması</li></ul><p className="career-signoff">Hazırsan başlayalım, geleceğin doktoru.</p><button type="button" onClick={()=>speakGuidance('Merhaba Efe. Bugünkü rotanı hazırladım. Biyoloji hücre bölünmeleri için on sekiz dakika konu tekrarı, fonksiyonlardan on iki hedef soru ve paragraftan yirmi soru hız çalışması yapacağız. Hazırsan başlayalım, geleceğin doktoru.')}><Volume2/> Rehber öğretmenden dinle</button></div></div>}
-            {nibiruStep===0&&<button className="ask-nibiru" type="button" onClick={()=>setNibiruStep(1)}><Sparkles/> Nibiru’ya sor <Send/></button>}
+        <div className="nibiru-copy"><span>NIBIRU · ANUNEX’İN AKADEMİK ZEKA GEZEGENİ</span><h2>Tek bir yapay zekâ değil.<br/><em>Uzmanların ortak yörüngesi.</em></h2><p>Merkezde Nibiru; çevresinde ölçme, rehberlik, branş, veli, kurum, içerik ve video uzmanları. Kullanıcıyı, rolünü ve yalnızca yetkili verisini tanır; doğru uzmanı doğru anda devreye alır.</p>
+          <div className="nibiru-tabs" role="tablist" aria-label="Nibiru örnek görüşmeleri">{nibiruConversations.map((item,index)=><button key={item.key} type="button" role="tab" aria-selected={activeConversation===index} className={activeConversation===index?'active':''} onClick={()=>{setActiveConversation(index);setNibiruOpen(true)}}>{item.label}</button>)}</div>
+          <div className="nibiru-conversation multi-conversation" aria-live="polite">
+            <div className="conversation-user"><span><small>{conversation.audience}</small>{conversation.question}</span><div>{conversation.initial}</div></div>
+            {nibiruOpen?<div className="conversation-nibiru"><NibiruMark size={34} state="speaking"/><div><small className="identity-recognition"><ShieldCheck/> {conversation.identity}</small><strong>{conversation.title}</strong><p>{conversation.body}</p><ul>{conversation.tasks.map(task=><li key={task}><CheckCircle2/> {task}</li>)}</ul><p className="career-signoff">{conversation.signoff}</p><button type="button" onClick={()=>playNibiruVoice(conversation.key,[conversation.title,conversation.body,...conversation.tasks,conversation.signoff].join(' '))}><Volume2/> Gerçek rehber sesinden dinle</button></div></div>:<button className="ask-nibiru" type="button" onClick={()=>setNibiruOpen(true)}><Sparkles/> Nibiru’ya sor <Send/></button>}
           </div>
-          <div className="nibiru-capabilities"><div><Sparkles/><span><strong>Anlar</strong><small>Doğrulanmış bağlamı okur</small></span></div><div><LineChart/><span><strong>Analiz eder</strong><small>Örüntü ve riski görünür kılar</small></span></div><div><Mic2/><span><strong>Dinler ve konuşur</strong><small>Bas-konuş ses deneyimi</small></span></div><div><LockKeyhole/><span><strong>Sınırlarını bilir</strong><small>Yetki ve mahremiyeti korur</small></span></div></div>
+          <div className="nibiru-capabilities"><div><Sparkles/><span><strong>Tanır</strong><small>Rolü ve doğrulanmış bağlamı bilir</small></span></div><div><LineChart/><span><strong>Birleştirir</strong><small>Uzman zekâları tek yanıtta buluşturur</small></span></div><div><Mic2/><span><strong>İnsan gibi iletişim kurar</strong><small>Sıcak, öğretici ve güven veren ses</small></span></div><div><LockKeyhole/><span><strong>Sınırlarını korur</strong><small>Yetki, KVKK ve mahremiyet önce gelir</small></span></div></div>
         </div>
       </section>
 
@@ -140,7 +158,7 @@ export function MarketingHome(){
         <div className="unique-strip"><span><FileText/> Kişiye Özel Kitap</span><span><BookOpen/> Sıfır Hata Kitapçığı</span><span><Gamepad2/> Güvenli Mini Oyunlar</span><span><Monitor/> Tema & Özel Gün Yönetimi</span><span><HeartHandshake/> Rehberlik Müdahale Akışı</span></div>
       </section>
 
-      <section className="connected-demo"><div className="connected-heading"><span>GERÇEK BİR ÖĞRENCİ YOLCULUĞU</span><h2>Bir yanlış soru, bütün sistemi harekete geçirir.</h2><p>Öğrenci soruya dokunduğunda ANUNEX yalnız cevabı göstermez; öğretmen, veli, video ve Nibiru akışını aynı kazanım etrafında birleştirir.</p></div><div className="connected-grid"><article className="question-demo"><div className="demo-head"><span>Soru 14 · Matematik</span><b>Yanlış</b></div><h3>Fonksiyonlar · Bileşke işlemi</h3><div className="question-placeholder"><span>f(x)=2x+1 ve g(x)=x²</span><strong>(f∘g)(2) kaçtır?</strong></div><div className="question-actions"><button><PlayCircle/> Yayınevi video çözümü</button><button><BookOpen/> Konu anlatım videosu</button><button><Sparkles/> Nibiru’ya sor</button></div><small>Öğrencinin doğru yaptığı sorularda da onaylı video desteği açılabilir.</small></article><article className="youtube-demo"><div className="demo-head"><span>ANUNEX · YouTube mikro öğrenme</span><b>Onaylı</b></div><div className="video-preview"><PlayCircle/><span>1:42</span></div><h3>Bileşke fonksiyon 2 dakikada</h3><p>Yayınevi çözümü yoksa Nibiru; kazanıma, süreye ve içerik güvenliğine göre en uygun kısa konu anlatımını seçer.</p><div className="video-meta"><span>5 aday tarandı</span><span>Öğretmen onaylı kanal</span></div></article><article className="whatsapp-demo"><div className="demo-head"><span>WhatsApp akademik kanal</span><b>Entegre</b></div><div className="chat-bubble school">ANUNEX: Efe’nin matematik görevinde 1 kazanım için tekrar önerildi.</div><div className="chat-bubble parent">Detayını görebilir miyim?</div><div className="chat-bubble nibiru"><NibiruMark size={24} state="speaking"/> Nibiru Veli Rehberi: Sonuç paylaşmadan, haftalık gelişim özetini güvenli bağlantıda görüntüleyebilirsiniz.</div><div className="chat-audience"><span><Users/> Veli</span><span><GraduationCap/> Öğretmen</span><span><Building2/> Kurum</span></div></article></div></section>
+      <section className="connected-demo"><div className="connected-heading"><span>GERÇEK BİR ÖĞRENCİ YOLCULUĞU</span><h2>Bir yanlış soru, bütün sistemi harekete geçirir.</h2><p>Öğrenci soruya dokunduğunda ANUNEX yalnız cevabı göstermez; öğretmen, veli, video ve Nibiru akışını aynı kazanım etrafında birleştirir.</p></div><div className="connected-grid"><article className="question-demo"><div className="demo-head"><span>Soru 14 · Matematik</span><b>Yanlış</b></div><h3>Fonksiyonlar · Bileşke işlemi</h3><div className="question-placeholder"><span>f(x)=2x+1 ve g(x)=x²</span><strong>(f∘g)(2) kaçtır?</strong></div><div className="question-actions"><button><PlayCircle/> Yayınevi video çözümü</button><button><BookOpen/> Konu anlatım videosu</button><button><Sparkles/> Nibiru’ya sor</button></div><small>Öğrencinin doğru yaptığı sorularda da onaylı video desteği açılabilir.</small></article><article className="youtube-demo"><div className="demo-head"><span>ANUNEX · YouTube mikro öğrenme</span><b>Onaylı</b></div><div className="video-preview"><PlayCircle/><span>1:42</span></div><h3>Bileşke fonksiyon 2 dakikada</h3><p>Yayınevi çözümü yoksa Nibiru; kazanıma, süreye ve içerik güvenliğine göre en uygun kısa konu anlatımını seçer.</p><div className="video-meta"><span>5 aday tarandı</span><span>Öğretmen onaylı kanal</span></div></article><article className="whatsapp-demo"><div className="demo-head"><span>WhatsApp akademik kanal</span><b>Entegre</b></div><div className="chat-bubble school">ANUNEX: Efe’nin matematik görevinde 1 kazanım için tekrar önerildi.</div><div className="chat-bubble parent">Detayını görebilir miyim?</div><div className="chat-bubble nibiru"><NibiruMark size={24} state="speaking"/> Nibiru Veli Rehberi: Sonuç paylaşmadan, haftalık gelişim özetini güvenli bağlantıda görüntüleyebilirsiniz.</div><div className="chat-audience"><span><Users/> Veli</span><span><GraduationCap/> Öğretmen</span><span><Building2/> Kurum</span></div></article></div><div className="channel-scenarios"><article><h3>WhatsApp nasıl çalışır?</h3><div className="scenario-row"><span>01</span><p><strong>Sınav sonucu:</strong> Veliye doğrulanmış bağlantı gider; hassas veri mesaj içinde dolaşmaz.</p></div><div className="scenario-row"><span>02</span><p><strong>Devamsızlık:</strong> Kurum onaylı bildirim, doğru veliye teslim edilir ve kayda alınır.</p></div><div className="scenario-row"><span>03</span><p><strong>Ödev ve rehberlik:</strong> Hatırlatma gönderilir; yanıt gerekirse yetkili öğretmen veya rehberliğe aktarılır.</p></div></article><article><h3>YouTube nasıl çalışır?</h3><div className="scenario-row"><span>01</span><p><strong>Öncelik yayınevinde:</strong> Tanımlı resmî çözüm videosu varsa doğrudan o açılır.</p></div><div className="scenario-row"><span>02</span><p><strong>Güvenli aday seçimi:</strong> Yoksa kazanım, yaş, süre ve kanal güvenilirliğine göre adaylar süzülür.</p></div><div className="scenario-row"><span>03</span><p><strong>Öğretmen kontrolü:</strong> Kurum isterse yalnız onayladığı kanalları ve videoları öğrenciye gösterir.</p></div></article></div></section>
 
       <section className="why-section"><div className="why-copy"><span>NEDEN KURUMLAR ANUNEX’İ SEÇER?</span><h2>Dağınık araçlar yerine<br/><em>tek bir gelişim sistemi.</em></h2><p>Sınav, optik, rapor, ödev ve rehberlik farklı yerlerde kaldığında okul veriyi taşımakla vakit kaybeder. ANUNEX tüm süreci aynı akademik kayıt üzerinde birleştirir.</p><a className="marketing-button" href={DEMO_URL}>Kurumunuzda deneyin <ArrowRight size={18}/></a></div><div className="why-list"><WhyItem title="Daha hızlı operasyon" text="Tekrarlayan ölçme ve raporlama işlerini azaltır; öğretmenin zamanını öğrenciye geri verir."/><WhyItem title="Daha erken müdahale" text="Sorun dönem sonunda değil, kanıt oluştuğu anda görünür olur."/><WhyItem title="Daha kişisel öğrenme" text="Her öğrenci aynı sonuca değil, kendi eksiğine göre hazırlanmış rotaya ulaşır."/><WhyItem title="Daha güvenilir karar" text="Kurum yönetimi sezgi yerine ölçülebilir gelişim verisiyle hareket eder."/></div></section>
 
