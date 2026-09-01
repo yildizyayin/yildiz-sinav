@@ -15,19 +15,28 @@ export type FixedWidthSuggestion = {
   answerBlocks: Array<{ start: number; end: number; confidence: number }>;
 };
 
-export type ExamChoice =
-  | { key: 'LGS'; examType: 'LGS'; gradeLevel: 8; label: 'LGS' }
-  | { key: 'TYT'; examType: 'TYT'; gradeLevel: 12; label: 'TYT' }
-  | { key: 'AYT'; examType: 'AYT'; gradeLevel: 12; label: 'AYT' }
-  | { key: `STD_${number}`; examType: 'STANDARD'; gradeLevel: number; label: string };
+export type ExamChoice = {
+  key: string;
+  examType: 'STANDARD' | 'MIDDLE_COMPOSITE' | 'LGS' | 'TYT' | 'AYT' | 'TYT_AYT';
+  gradeLevel: number;
+  label: string;
+  description: string;
+  sessionMode: 'SINGLE' | 'VERBAL_NUMERIC' | 'TYT_AYT';
+  defaultWrongDivisor: number;
+};
 
 export const EXAM_CHOICES: ExamChoice[] = [
-  { key: 'LGS', examType: 'LGS', gradeLevel: 8, label: 'LGS' },
-  { key: 'TYT', examType: 'TYT', gradeLevel: 12, label: 'TYT' },
-  { key: 'AYT', examType: 'AYT', gradeLevel: 12, label: 'AYT' },
-  ...Array.from({ length: 8 }, (_, i) => {
-    const grade = i + 4;
-    return { key: `STD_${grade}` as const, examType: 'STANDARD' as const, gradeLevel: grade, label: `${grade}. Sınıf Standart Deneme` };
+  { key: 'LGS', examType: 'LGS', gradeLevel: 8, label: '8. Sınıf · LGS', description: 'Sözel ve sayısal oturumlar öğrenci numarasıyla tek karnede birleşir.', sessionMode: 'VERBAL_NUMERIC', defaultWrongDivisor: 3 },
+  { key: 'TYT', examType: 'TYT', gradeLevel: 12, label: 'TYT', description: 'TYT ders yapısı ve sürümlü puanlama kuralı.', sessionMode: 'SINGLE', defaultWrongDivisor: 4 },
+  { key: 'AYT', examType: 'AYT', gradeLevel: 12, label: 'AYT', description: 'Sayısal, eşit ağırlık ve sözel alan sonuçları.', sessionMode: 'SINGLE', defaultWrongDivisor: 4 },
+  { key: 'TYT_AYT', examType: 'TYT_AYT', gradeLevel: 12, label: 'TYT + AYT Bileşik', description: 'İki sınav sonucu ayrı gösterilir ve bileşik karneye bağlanır.', sessionMode: 'TYT_AYT', defaultWrongDivisor: 4 },
+  ...Array.from({ length: 8 }, (_, i): ExamChoice => {
+    const grade = i + 5;
+    return { key: `STD_${grade}`, examType: 'STANDARD', gradeLevel: grade, label: `${grade}. Sınıf`, description: `${grade}. sınıf genel, ders veya kazanım sınavı.`, sessionMode: 'SINGLE', defaultWrongDivisor: 4 };
+  }),
+  ...Array.from({ length: 4 }, (_, i): ExamChoice => {
+    const grade = i + 5;
+    return { key: `MID_${grade}`, examType: 'MIDDLE_COMPOSITE', gradeLevel: grade, label: `${grade}. Sınıf · Sözel + Sayısal`, description: 'Ayrı optik/dosya oturumları öğrenci numarasıyla birleştirilir.', sessionMode: 'VERBAL_NUMERIC', defaultWrongDivisor: 4 };
   }),
 ];
 

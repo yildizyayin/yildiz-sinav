@@ -158,12 +158,38 @@ async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response
 
 async function examStats(env:Env,user:AuthUser,examId:string):Promise<Response>{
   const p=await examProfile(env,examId); if(!p)return notFound();
-  const can=await canManageExam(env,user,p); if(!can&&user.role!=='TEACHER'&&user.role!=='GUIDANCE_TEACHER')return forbidden();
-  const version=Number(p.snapshot_version||0); if(!version)return json({ok:true,profile:p,stats:null,cities:[],institutions:[]});
-  const stats=await one<any>(env.DB.prepare(`SELECT * FROM exam_publication_stats WHERE exam_id=? AND snapshot_version=?`).bind(examId,version));
-  const cities=await all<any>(env.DB.prepare(`SELECT COALESCE(city,'Belirtilmemiş') city,COUNT(*) participant_count,AVG(net) avg_net,AVG(score) avg_score FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=? GROUP BY city ORDER BY participant_count DESC LIMIT 100`).bind(examId,version));
-  const institutions=await all<any>(env.DB.prepare(`SELECT i.id,i.name,i.city,i.district,COUNT(*) participant_count,AVG(s.net) avg_net,AVG(s.score) avg_score FROM exam_result_snapshots s JOIN institutions i ON i.id=s.institution_id WHERE s.exam_id=? AND s.snapshot_version=? GROUP BY i.id,i.name,i.city,i.district ORDER BY participant_count DESC LIMIT 500`).bind(examId,version));
-  return json({ok:true,profile:p,stats,cities,institutions});
+  const institutionScope=user.role==='SUPER_ADMIN'?null:user.institution_id;
+  const can=await canManageExam(env,user,p);
+  const catalogAccess=institutionScope?await one<any>(env.DB.prepare(`SELECT 1 ok FROM exams e LEFT JOIN exam_delivery_profiles p ON p.exam_id=e.id
+    WHERE e.id=? AND (p.scope='CENTRAL' OR e.institution_id=? OR e.id IN (SELECT exam_id FROM exam_institutions WHERE institution_id=? AND enabled=1)
+      OR p.network_id IN (SELECT network_id FROM institution_network_members WHERE institution_id=? AND active=1))`).bind(examId,institutionScope,institutionScope,institutionScope)):null;
+  if(!can&&!catalogAccess&&user.role!=='TEACHER'&&user.role!=='GUIDANCE_TEACHER')return forbidden();
+  const version=Number(p.snapshot_version||0);
+  const stats=version?institutionScope
+    ?await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT institution_id) institution_count,COUNT(DISTINCT city) city_count FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=? AND institution_id=?`).bind(examId,version,institutionScope))
+    :await one<any>(env.DB.prepare(`SELECT * FROM exam_publication_stats WHERE exam_id=? AND snapshot_version=?`).bind(examId,version))
+    :await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT ep.institution_id) institution_count,COUNT(DISTINCT i.city) city_count
+      FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id JOIN institutions i ON i.id=ep.institution_id
+      WHERE ep.exam_id=? AND (? IS NULL OR ep.institution_id=?)`).bind(examId,institutionScope,institutionScope));
+  const cities=institutionScope?[]:version
+    ?await all<any>(env.DB.prepare(`SELECT COALESCE(city,'Belirtilmemiş') city,COUNT(*) participant_count,AVG(net) avg_net,AVG(score) avg_score FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=? GROUP BY city ORDER BY participant_count DESC LIMIT 100`).bind(examId,version))
+    :await all<any>(env.DB.prepare(`SELECT COALESCE(i.city,'Belirtilmemiş') city,COUNT(*) participant_count,AVG(er.net) avg_net,AVG(er.score) avg_score FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id JOIN institutions i ON i.id=ep.institution_id WHERE ep.exam_id=? GROUP BY i.city ORDER BY participant_count DESC LIMIT 100`).bind(examId));
+  const institutions=institutionScope?[]:version
+    ?await all<any>(env.DB.prepare(`SELECT i.id,i.name,i.city,i.district,COUNT(*) participant_count,AVG(s.net) avg_net,AVG(s.score) avg_score FROM exam_result_snapshots s JOIN institutions i ON i.id=s.institution_id WHERE s.exam_id=? AND s.snapshot_version=? GROUP BY i.id,i.name,i.city,i.district ORDER BY participant_count DESC LIMIT 500`).bind(examId,version))
+    :await all<any>(env.DB.prepare(`SELECT i.id,i.name,i.city,i.district,COUNT(*) participant_count,AVG(er.net) avg_net,AVG(er.score) avg_score FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id JOIN institutions i ON i.id=ep.institution_id WHERE ep.exam_id=? GROUP BY i.id,i.name,i.city,i.district ORDER BY participant_count DESC LIMIT 500`).bind(examId));
+  const students=institutionScope?await all<any>(env.DB.prepare(`WITH live AS (SELECT ep.id participant_id,ep.student_number_snapshot,ep.name_snapshot,ep.class_snapshot,
+      er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.institution_rank,
+      COUNT(*) OVER() live_institution_count,
+      RANK() OVER(PARTITION BY COALESCE(ep.class_snapshot,'') ORDER BY er.net DESC,er.correct_count DESC) live_class_rank,
+      COUNT(*) OVER(PARTITION BY COALESCE(ep.class_snapshot,'')) live_class_count
+      FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id WHERE ep.exam_id=? AND ep.institution_id=?)
+    SELECT live.*,COALESCE(s.institution_rank,live.institution_rank) institution_rank,COALESCE(s.institution_count,live.live_institution_count) institution_count,s.grade_rank,s.grade_count,
+      COALESCE(s.class_rank,live.live_class_rank) class_rank,COALESCE(s.class_count,live.live_class_count) class_count,
+    CASE WHEN p.scope='CENTRAL' THEN s.national_rank END national_rank,CASE WHEN p.scope='CENTRAL' THEN s.national_count END national_count
+    FROM live LEFT JOIN exam_result_snapshots s ON s.participant_id=live.participant_id AND s.snapshot_version=?
+    LEFT JOIN exam_delivery_profiles p ON p.exam_id=?
+    ORDER BY live.net DESC,live.correct_count DESC,live.name_snapshot LIMIT 5000`).bind(examId,institutionScope,version,examId)):[];
+  return json({ok:true,profile:p,stats,cities,institutions,students});
 }
 
 async function studentExamResult(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
@@ -174,7 +200,16 @@ async function studentExamResult(request:Request,env:Env,user:AuthUser,examId:st
   const snap=await one<any>(env.DB.prepare(`SELECT s.*,i.name institution_name,e.title exam_title,e.exam_type FROM exam_result_snapshots s JOIN institutions i ON i.id=s.institution_id JOIN exams e ON e.id=s.exam_id WHERE s.exam_id=? AND s.student_id=? AND s.snapshot_version=? LIMIT 1`).bind(examId,studentId,p.snapshot_version));
   if(!snap)return notFound('Öğrencinin bu sınav için yayınlanmış sonucu yok.');
   const subjects=await all<any>(env.DB.prepare(`SELECT sub.name subject,sr.correct_count,sr.wrong_count,sr.blank_count,sr.net,sr.success_percent FROM subject_results sr JOIN subjects sub ON sub.id=sr.subject_id WHERE sr.participant_id=? ORDER BY sub.name`).bind(snap.participant_id));
-  return json({ok:true,profile:p,result:{...snap,subjects,rankingLabel:p.scope==='CENTRAL'?'Türkiye geneli sınav katılımcıları arasında':p.scope==='NETWORK'?'Kurum ağı katılımcıları arasında':'Kurum katılımcıları arasında'}});
+  const questionInsights=await all<any>(env.DB.prepare(`SELECT sub.name subject,q.question_no,sa.status student_status,
+    a.participant_count,a.correct_count,a.wrong_count,a.blank_count,a.success_percent
+    FROM student_answers sa JOIN exam_questions q ON q.id=sa.exam_question_id JOIN subjects sub ON sub.id=q.subject_id
+    JOIN publisher_question_analytics a ON a.exam_question_id=q.id AND a.exam_id=? AND a.snapshot_version=?
+    WHERE sa.participant_id=? AND a.participant_count>=10
+    ORDER BY a.success_percent ASC,q.global_no,q.question_no LIMIT 10`).bind(examId,p.snapshot_version,snap.participant_id));
+  const scopedSnap=p.scope==='CENTRAL'?snap:p.scope==='NETWORK'
+    ?{...snap,national_rank:null,national_count:null,city_rank:null,city_count:null,district_rank:null,district_count:null}
+    :{...snap,national_rank:null,national_count:null,city_rank:null,city_count:null,district_rank:null,district_count:null,network_rank:null,network_count:null};
+  return json({ok:true,profile:p,result:{...scopedSnap,subjects,questionInsights,rankingLabel:p.scope==='CENTRAL'?'Türkiye geneli sınav katılımcıları arasında':p.scope==='NETWORK'?'Kurum ağı katılımcıları arasında':'Kurum katılımcıları arasında'}});
 }
 
 async function listNetworks(env:Env,user:AuthUser):Promise<Response>{

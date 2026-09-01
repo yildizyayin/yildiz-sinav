@@ -125,6 +125,15 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
     ? await all<{ id: string; student_id: string }>(env.DB.prepare(`SELECT id,student_id FROM exam_participants WHERE exam_id=? AND institution_id=? AND student_id IN (${placeholders(studentIds.length)})`).bind(exam.id, batch.institution_id, ...studentIds))
     : [];
   const participantByStudent = new Map(existingParticipants.map((x) => [x.student_id, x.id]));
+  const existingParticipantIds = existingParticipants.map((x) => x.id);
+  const existingSubjectResults = existingParticipantIds.length
+    ? await all<AnyRow>(env.DB.prepare(`SELECT participant_id,subject_id,correct_count,wrong_count,blank_count,net,success_percent FROM subject_results WHERE participant_id IN (${placeholders(existingParticipantIds.length)})`).bind(...existingParticipantIds))
+    : [];
+  const existingOutcomeEvidence = existingParticipantIds.length
+    ? await all<AnyRow>(env.DB.prepare(`SELECT sa.participant_id,q.subject_id,qo.outcome_id,sa.status
+      FROM student_answers sa JOIN exam_questions q ON q.id=sa.exam_question_id JOIN question_outcomes qo ON qo.exam_question_id=q.id
+      WHERE sa.participant_id IN (${placeholders(existingParticipantIds.length)})`).bind(...existingParticipantIds))
+    : [];
 
   const statements: D1PreparedStatement[] = [];
   const participantRows: unknown[][] = [];
@@ -147,6 +156,9 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
     const participantId = participantByStudent.get(studentId) || uuid('part');
     participantIds.push(participantId);
     outcomeStudentIds.push(studentId);
+    const incomingSubjects = subjects.filter((subject) => Object.prototype.hasOwnProperty.call(record.answers_by_subject || {}, subject.code));
+    if (!incomingSubjects.length) return badRequest(`Satır ${row.row_no} için sınava ait ders cevap alanı bulunamadı.`, 'ANSWER_SUBJECT_REQUIRED');
+    const incomingSubjectIds = new Set(incomingSubjects.map((subject) => subject.subject_id));
 
     if (isNewGuest) {
       const names = splitName(record.name);
@@ -162,9 +174,20 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
       record.student_number || null, record.name, record.class_name || null, booklet, studentStatus,
     ]);
 
-    const subjectScores = [];
+    const subjectScores = existingSubjectResults.filter((score) => score.participant_id === participantId && !incomingSubjectIds.has(score.subject_id)).map((score) => ({
+      correct: Number(score.correct_count), wrong: Number(score.wrong_count), blank: Number(score.blank_count),
+      net: Number(score.net), successPercent: Number(score.success_percent),
+      wrongDivisor: Number(subjects.find((subject) => subject.subject_id === score.subject_id)?.wrong_divisor || 4),
+      questionCount: Number(subjects.find((subject) => subject.subject_id === score.subject_id)?.question_count || 0),
+    }));
     const outcomeAccumulator = new Map<string, { evidence: number; correct: number }>();
-    for (const subject of subjects) {
+    for (const evidence of existingOutcomeEvidence.filter((x) => x.participant_id === participantId && !incomingSubjectIds.has(x.subject_id))) {
+      const acc = outcomeAccumulator.get(evidence.outcome_id) || { evidence: 0, correct: 0 };
+      acc.evidence += 1;
+      if (evidence.status === 'CORRECT') acc.correct += 1;
+      outcomeAccumulator.set(evidence.outcome_id, acc);
+    }
+    for (const subject of incomingSubjects) {
       const answerString = record.answers_by_subject?.[subject.code] || '';
       const subjectKeys = keyRows.filter((k) => k.subject_id === subject.subject_id && k.booklet_code === booklet).sort((a, b) => Number(a.question_no) - Number(b.question_no));
       let correct = 0, wrong = 0, blank = 0;
@@ -195,6 +218,16 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
       const rate = acc.evidence ? acc.correct / acc.evidence : 0;
       outcomeRows.push([uuid('or'), studentId, exam.id, outcomeId, acc.evidence, acc.correct, rate, masteryStatus(acc.correct, acc.evidence)]);
     }
+    if (participantByStudent.has(studentId)) {
+      const marks = incomingSubjects.map(() => '?').join(',');
+      statements.push(
+        env.DB.prepare(`DELETE FROM student_answers WHERE participant_id=? AND exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=? AND subject_id IN (${marks}))`)
+          .bind(participantId, exam.id, ...incomingSubjects.map((subject) => subject.subject_id)),
+        env.DB.prepare(`DELETE FROM subject_results WHERE participant_id=? AND subject_id IN (${marks})`)
+          .bind(participantId, ...incomingSubjects.map((subject) => subject.subject_id)),
+        env.DB.prepare('DELETE FROM exam_results WHERE participant_id=?').bind(participantId),
+      );
+    }
     progressRows.push([batchId, row.id, studentId, participantId]);
   }
 
@@ -204,11 +237,6 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
     statements.push(...bulkInsert(env.DB, 'guest_profiles', ['student_id','first_seen_exam_id'], newGuestProfileRows, 'INSERT OR REPLACE INTO'));
   }
 
-  if (participantIds.length) {
-    statements.push(env.DB.prepare(`DELETE FROM student_answers WHERE participant_id IN (${placeholders(participantIds.length)})`).bind(...participantIds));
-    statements.push(env.DB.prepare(`DELETE FROM subject_results WHERE participant_id IN (${placeholders(participantIds.length)})`).bind(...participantIds));
-    statements.push(env.DB.prepare(`DELETE FROM exam_results WHERE participant_id IN (${placeholders(participantIds.length)})`).bind(...participantIds));
-  }
   if (outcomeStudentIds.length) {
     statements.push(env.DB.prepare(`DELETE FROM outcome_results WHERE exam_id=? AND student_id IN (${placeholders(outcomeStudentIds.length)})`).bind(exam.id, ...outcomeStudentIds));
   }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeFixedWidthSample, parseAnswerKeyText } from '../src/lib/guidedDefinitions';
+import { analyzeFixedWidthSample, EXAM_CHOICES, parseAnswerKeyText } from '../src/lib/guidedDefinitions';
 
 const subjects = [
   { id: 'sub_mat', code: 'MAT', name: 'Matematik' },
@@ -20,6 +20,19 @@ describe('guided answer key parser', () => {
     const result = parseAnswerKeyText('[A]\nMAT: ABCDE\n[B]\nMAT: EDCBA', subjects);
     expect(result.entries.map((x) => x.bookletCode)).toEqual(['A', 'B']);
     expect(result.detectedBooklets).toEqual(['A', 'B']);
+  });
+});
+
+describe('professional exam model catalog', () => {
+  it('covers grades 5 through 12 without the retired grade 4 shortcut', () => {
+    const standardGrades = EXAM_CHOICES.filter((x) => x.examType === 'STANDARD').map((x) => x.gradeLevel);
+    expect(standardGrades).toEqual([5, 6, 7, 8, 9, 10, 11, 12]);
+    expect(EXAM_CHOICES.some((x) => x.gradeLevel === 4)).toBe(false);
+  });
+
+  it('offers middle-school and TYT–AYT composite models', () => {
+    expect(EXAM_CHOICES.filter((x) => x.sessionMode === 'VERBAL_NUMERIC').map((x) => x.gradeLevel)).toEqual([8, 5, 6, 7, 8]);
+    expect(EXAM_CHOICES.some((x) => x.examType === 'TYT_AYT' && x.sessionMode === 'TYT_AYT')).toBe(true);
   });
 });
 
