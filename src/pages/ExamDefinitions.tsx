@@ -29,7 +29,7 @@ export function ExamDefinitions() {
   const selectedChoice = EXAM_CHOICES.find((x) => x.key === choiceKey) || EXAM_CHOICES[0];
   const [createForm, setCreateForm] = useState({
     ownerType: user?.role === 'SUPER_ADMIN' ? 'CENTRAL' : 'INSTITUTION',
-    institutionId: 'inst_demo', academicYear: '2026-2027', title: '', examDate: '', scoringRuleVersionId: 'srv_demo',
+    institutionId: '', academicYear: '2026-2027', title: '', examDate: '', scoringRuleVersionId: '',
   });
   const [answerKeyText, setAnswerKeyText] = useState('');
   const [analysis, setAnalysis] = useState<ReturnType<typeof parseAnswerKeyText> | null>(null);
@@ -43,13 +43,22 @@ export function ExamDefinitions() {
   const loadOptions = async (gradeLevel?: number) => {
     const data = await api<any>(`/api/exam-definitions/options${qs({ gradeLevel: gradeLevel || null })}`);
     setOptions(data);
-    if (!createForm.scoringRuleVersionId && data.scoringVersions?.[0]?.id) setCreateForm((f) => ({ ...f, scoringRuleVersionId: data.scoringVersions[0].id }));
+    const preferredRuleCode = selectedChoice.examType === 'LGS' ? 'ANUNEX_LGS_PRACTICE'
+      : selectedChoice.examType === 'TYT' ? 'ANUNEX_TYT_PRACTICE'
+      : selectedChoice.examType === 'AYT' ? 'ANUNEX_AYT_PRACTICE'
+      : selectedChoice.examType === 'TYT_AYT' ? 'ANUNEX_YKS_COMPOSITE'
+      : 'ANUNEX_STANDARD_NET';
+    const preferredScoring = data.scoringVersions?.find((x: any) => x.rule_code === preferredRuleCode)?.id || data.scoringVersions?.[0]?.id || '';
+    setCreateForm((f) => ({ ...f, scoringRuleVersionId: preferredScoring }));
+    if (!createForm.institutionId && data.institutions?.[0]?.id) setCreateForm((f) => ({ ...f, institutionId: data.institutions[0].id }));
   };
   const loadRows = async () => { const data = await api<any>('/api/exam-definitions'); setRows(data.exams || []); };
   const loadDetail = async (id: string) => {
     if (!id) { setDetail(null); return; }
     const data = await api<any>(`/api/exam-definitions/${id}`);
     setDetail(data);
+    const examType = String(data.exam.exam_type || 'STANDARD');
+    setChoiceKey(examType === 'STANDARD' ? `STD_${data.exam.grade_level}` : examType === 'MIDDLE_COMPOSITE' ? `MID_${data.exam.grade_level}` : examType);
     setBooklets((data.booklets || []).map((b: any) => b.code).join(','));
     setSubjects((data.subjects || []).map((s: any) => ({ subjectId: s.subject_id, questionCount: Number(s.question_count), wrongDivisor: Number(s.wrong_divisor), sortOrder: Number(s.sort_order) })));
     const entries: ParsedAnswerEntry[] = [];
@@ -71,6 +80,13 @@ export function ExamDefinitions() {
   useEffect(() => { if (selectedId) void loadDetail(selectedId).catch((e) => setError(e.message)); }, [selectedId]);
 
   const selectedSubjectIds = useMemo(() => new Set(subjects.map((s) => s.subjectId)), [subjects]);
+  const visibleSubjects = useMemo(() => (options.subjects || []).filter((subject: any) => {
+    const code = String(subject.code || '');
+    if (selectedChoice.examType === 'TYT') return code.startsWith('TYT_');
+    if (selectedChoice.examType === 'AYT') return code.startsWith('AYT_');
+    if (selectedChoice.examType === 'TYT_AYT') return code.startsWith('TYT_') || code.startsWith('AYT_');
+    return !code.startsWith('TYT_') && !code.startsWith('AYT_');
+  }), [options.subjects, selectedChoice.examType]);
 
   const analyseKey = (text = answerKeyText) => {
     const result = parseAnswerKeyText(text, options.subjects as SubjectOption[]);
@@ -79,7 +95,7 @@ export function ExamDefinitions() {
     setError('');
     setBooklets(result.detectedBooklets.join(','));
     setKeyEntries(result.entries);
-    const cfg = Object.entries(result.questionCounts).map(([subjectId, questionCount], index) => ({ subjectId, questionCount, wrongDivisor: 4, sortOrder: index + 1 }));
+    const cfg = Object.entries(result.questionCounts).map(([subjectId, questionCount], index) => ({ subjectId, questionCount, wrongDivisor: selectedChoice.defaultWrongDivisor, sortOrder: index + 1 }));
     setSubjects(cfg);
     setNotice(`Cevap anahtarı analiz edildi: ${cfg.length} ders, ${cfg.reduce((n, x) => n + x.questionCount, 0)} soru, ${result.detectedBooklets.length} kitapçık.`);
   };
@@ -95,6 +111,7 @@ export function ExamDefinitions() {
     setBusy(true); setError(''); setNotice('');
     try {
       if (!createForm.title.trim()) throw new Error('Sınav adı gereklidir.');
+      if (user?.role === 'SUPER_ADMIN' && createForm.ownerType === 'INSTITUTION' && !createForm.institutionId) throw new Error('Kuruma özel sınav için kurum seçilmelidir.');
       if (createMethod === 'ANSWER_KEY' && !keyEntries.length) throw new Error('Önce cevap anahtarını yükleyin veya yapıştırıp analiz edin.');
       const created = await api<any>('/api/exam-definitions', { method: 'POST', body: JSON.stringify({
         ownerType: createForm.ownerType,
@@ -121,7 +138,7 @@ export function ExamDefinitions() {
   };
 
   const toggleSubject = (subjectId: string, checked: boolean) => setSubjects((current) => checked
-    ? [...current, { subjectId, questionCount: 20, wrongDivisor: 4, sortOrder: current.length + 1 }]
+    ? [...current, { subjectId, questionCount: 20, wrongDivisor: selectedChoice.defaultWrongDivisor, sortOrder: current.length + 1 }]
     : current.filter((s) => s.subjectId !== subjectId).map((s, i) => ({ ...s, sortOrder: i + 1 })));
   const patchSubject = (subjectId: string, patch: Partial<SubjectConfig>) => setSubjects((current) => current.map((s) => s.subjectId === subjectId ? { ...s, ...patch } : s));
 
@@ -171,8 +188,8 @@ export function ExamDefinitions() {
     {error && <div className="alert error">{error}</div>}{notice && <div className="alert success">{notice}</div>}
 
     <div className="panel" style={{ marginBottom: 20 }}>
-      <div className="panel-head"><div><h2>1. Sınav seviyesi</h2><p>LGS / TYT / AYT veya 4-11. sınıf standart denemesi seçin.</p></div><BookOpenCheck /></div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>{EXAM_CHOICES.map((c) => <button key={c.key} className={choiceKey === c.key ? 'primary' : 'secondary'} onClick={() => setChoiceKey(c.key)}>{c.label}</button>)}</div>
+      <div className="panel-head"><div><h2>1. Hazır sınav modeli</h2><p>5–12. sınıf, LGS, TYT, AYT veya bileşik oturum modelini seçin.</p></div><BookOpenCheck /></div>
+      <div className="exam-model-grid">{EXAM_CHOICES.map((c) => <button key={c.key} className={`exam-model-card ${choiceKey === c.key ? 'selected' : ''}`} onClick={() => setChoiceKey(c.key)}><strong>{c.label}</strong><span>{c.description}</span>{c.sessionMode !== 'SINGLE' && <small>{c.sessionMode === 'TYT_AYT' ? 'Bileşik karne' : 'Oturum birleştirme'}</small>}</button>)}</div>
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
         <button className={definitionMode === 'STANDARD' ? 'primary' : 'secondary'} onClick={() => setDefinitionMode('STANDARD')}>Standart Cevap Anahtarı</button>
         <button className={definitionMode === 'OUTCOME' ? 'primary' : 'secondary'} onClick={() => setDefinitionMode('OUTCOME')}><Sparkles size={16} /> Kazanımlı Sınav</button>
@@ -187,7 +204,7 @@ export function ExamDefinitions() {
         <label>Veya cevap anahtarını yapıştır<textarea rows={8} value={answerKeyText} onChange={(e) => setAnswerKeyText(e.target.value)} placeholder={'MAT: ABCDEABCDE\nTUR: ABCDEABCDE\nFEN: ABCDEABCDE\n\n[A] ve [B] başlıklarıyla çoklu kitapçık da girebilirsiniz.'} /></label>
         <button className="secondary" onClick={() => analyseKey()}><FileUp size={16} /> Anahtarı Analiz Et</button>
         {analysis && <div className={analysis.unknownLines.length ? 'alert warning' : 'alert success'} style={{ marginTop: 12 }}><strong>{Object.keys(analysis.questionCounts).length} ders bulundu.</strong> {analysis.unknownLines.length ? `${analysis.unknownLines.length} satır tanınmadı; aşağıdaki yapıyı kontrol edin.` : 'Soru sayıları cevap anahtarından çıkarıldı.'}</div>}
-      </> : <div className="cards-list">{options.subjects?.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div style={{ flex: 1 }}><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <label className="compact-field">Soru<input type="number" min="1" max="200" value={cfg.questionCount} onChange={(e) => patchSubject(s.id, { questionCount: Number(e.target.value) })} /></label>}</div>; })}</div>}
+      </> : <div className="cards-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div style={{ flex: 1 }}><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <label className="compact-field">Soru<input type="number" min="1" max="200" value={cfg.questionCount} onChange={(e) => patchSubject(s.id, { questionCount: Number(e.target.value) })} /></label>}</div>; })}</div>}
     </div>
 
     <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>3. Sınav bilgileri ve oluştur</h2><p>Teknik ayrıntılar sonraki ekranda değiştirilebilir.</p></div></div><div className="form-grid">
@@ -205,7 +222,7 @@ export function ExamDefinitions() {
       <div className="section-head"><div><h2>{detail.exam.title}</h2><p>{detail.exam.exam_type} · {detail.exam.grade_level}. sınıf · {detail.exam.status === 'DRAFT' ? 'Düzenlenebilir taslak' : 'Yayında'}</p></div>{detail.exam.status === 'DRAFT' && <button className="primary" disabled={busy || !detail.readiness?.ready_to_publish} onClick={publish}><Send size={17} /> Sınavı Yayınla</button>}</div>
       <div className="kpi-grid" style={{ marginBottom: 20 }}><div className="kpi-card"><span>Soru</span><strong>{detail.readiness?.actual_questions || 0}/{detail.readiness?.expected_questions || 0}</strong></div><div className="kpi-card"><span>Cevap</span><strong>{detail.readiness?.actual_answers || 0}/{detail.readiness?.expected_answers || 0}</strong></div><div className="kpi-card"><span>Kazanımlı Soru</span><strong>{detail.readiness?.outcome_mapped_questions || 0}</strong></div><div className="kpi-card"><span>Hazır mı?</span><strong>{detail.readiness?.ready_to_publish ? 'Evet' : 'Eksik var'}</strong></div></div>
       {detail.exam.status === 'DRAFT' && <>
-        <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Dersler ve soru sayıları</h2><p>Cevap anahtarından geldi; gerekirse burada düzeltin.</p></div></div><label>Kitapçıklar<input value={booklets} onChange={(e) => setBooklets(e.target.value)} /></label><div className="cards-list">{options.subjects?.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div style={{ flex: 1 }}><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Soru<input type="number" value={cfg.questionCount} onChange={(e) => patchSubject(s.id, { questionCount: Number(e.target.value) })} /></label><label className="compact-field">Yanlış götürme<input type="number" step="0.5" value={cfg.wrongDivisor} onChange={(e) => patchSubject(s.id, { wrongDivisor: Number(e.target.value) })} /></label></>}</div>; })}</div><button className="secondary" onClick={saveStructure}><Save size={16} /> Yapıyı Kaydet</button></div>
+        <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Dersler ve soru sayıları</h2><p>Cevap anahtarından geldi; gerekirse burada düzeltin.</p></div></div><label>Kitapçıklar<input value={booklets} onChange={(e) => setBooklets(e.target.value)} /></label><div className="cards-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div style={{ flex: 1 }}><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Soru<input type="number" value={cfg.questionCount} onChange={(e) => patchSubject(s.id, { questionCount: Number(e.target.value) })} /></label><label className="compact-field">Yanlış götürme<input type="number" step="0.5" value={cfg.wrongDivisor} onChange={(e) => patchSubject(s.id, { wrongDivisor: Number(e.target.value) })} /></label></>}</div>; })}</div><button className="secondary" onClick={saveStructure}><Save size={16} /> Yapıyı Kaydet</button></div>
 
         {!!detail.subjects?.length && !!detail.booklets?.length && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Cevap anahtarı</h2><p>Standart sınavda burada bitirebilirsiniz. Kazanımlı sınavda aşağıda her soruyu kazanıma bağlayın.</p></div><CheckCircle2 /></div>{detail.subjects.map((s: any) => <div key={s.subject_id} style={{ padding: 14, marginBottom: 12, border: '1px solid var(--border,#e5e7eb)', borderRadius: 12 }}><strong>{s.name} · {s.question_count} soru</strong>{detail.booklets.map((b: any) => { const entry = keyEntries.find((x) => x.subjectId === s.subject_id && x.bookletCode === b.code); return <label key={b.code}>{b.code} Kitapçığı<input value={entry?.answers || ''} onChange={(e) => setKey(s.subject_id, b.code, e.target.value)} placeholder={`${s.question_count} cevap`} /><small>{entry?.answers.length || 0}/{s.question_count}</small></label>; })}</div>)}<label style={{ display: 'flex', gap: 8, alignItems: 'center' }}><input type="checkbox" checked={outcomeRequired} onChange={(e) => setOutcomeRequired(e.target.checked)} /> Bu sınav kazanımlı; bütün sorular kazanıma bağlanacak.</label>
           {outcomeRequired && <div style={{ marginTop: 14 }}>{detail.subjects.map((s: any) => <div key={s.subject_id} style={{ marginBottom: 18 }}><h3>{s.name} kazanımları</h3><div className="form-grid">{Array.from({ length: Number(s.question_count) }, (_, i) => i + 1).map((q) => <label key={q}>Soru {q}<select value={outcomeMappings.find((x) => x.subjectId === s.subject_id && x.questionNo === q)?.outcomeId || ''} onChange={(e) => setOutcome(s.subject_id, q, e.target.value)}><option value="">Kazanım seç</option>{options.outcomes?.filter((o: any) => o.subject_id === s.subject_id).map((o: any) => <option key={o.id} value={o.id}>{o.code ? `${o.code} · ` : ''}{o.title}</option>)}</select></label>)}</div></div>)}</div>}

@@ -21,6 +21,7 @@ export default {
           productName: env.PRODUCT_NAME || 'Anunex',
           turnstileSiteKey: env.TURNSTILE_SITE_KEY || '',
           environment: env.ENVIRONMENT || 'development',
+          superAdminMfaEnabled: Boolean(String(env.SUPER_ADMIN_MFA_TOTP_SECRET || '').trim()),
         });
       }
       if (url.pathname === '/api/auth/login') return request.method === 'POST' ? login(request, env) : methodNotAllowed();
@@ -329,11 +330,19 @@ async function evaluateBatch(env: Env, user: AuthUser, batchId: string): Promise
     if (!studentId) throw new Error('UNRESOLVED_PARTICIPANT');
     const booklet = (record.booklet || '').toUpperCase() || (booklets.length === 1 ? booklets[0].code : '');
     if (!booklet || !booklets.some((b) => b.code === booklet)) throw new Error(`BOOKLET_REQUIRED_ROW_${row.row_no}`);
+    const incomingSubjects = subjects.filter((subject) => Object.prototype.hasOwnProperty.call(record.answers_by_subject || {}, subject.code));
+    if (!incomingSubjects.length) throw new Error(`ANSWER_SUBJECT_REQUIRED_ROW_${row.row_no}`);
+    const incomingSubjectIds = new Set(incomingSubjects.map((subject) => subject.subject_id));
     const existing = await one<{ id: string }>(env.DB.prepare('SELECT id FROM exam_participants WHERE exam_id=? AND institution_id=? AND student_id=?').bind(exam.id, batch.institution_id, studentId));
     let participantId = existing?.id || uuid('part');
+    const preservedSubjectScores = existing ? (await all<any>(env.DB.prepare(`SELECT subject_id,correct_count,wrong_count,blank_count,net,success_percent FROM subject_results WHERE participant_id=?`).bind(participantId)))
+      .filter((score) => !incomingSubjectIds.has(score.subject_id)) : [];
     if (existing) {
-      await env.DB.prepare('DELETE FROM student_answers WHERE participant_id=?').bind(participantId).run();
-      await env.DB.prepare('DELETE FROM subject_results WHERE participant_id=?').bind(participantId).run();
+      const marks = incomingSubjects.map(() => '?').join(',');
+      await env.DB.prepare(`DELETE FROM student_answers WHERE participant_id=? AND exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=? AND subject_id IN (${marks}))`)
+        .bind(participantId, exam.id, ...incomingSubjects.map((subject) => subject.subject_id)).run();
+      await env.DB.prepare(`DELETE FROM subject_results WHERE participant_id=? AND subject_id IN (${marks})`)
+        .bind(participantId, ...incomingSubjects.map((subject) => subject.subject_id)).run();
       await env.DB.prepare('DELETE FROM exam_results WHERE participant_id=?').bind(participantId).run();
       await env.DB.prepare(`UPDATE exam_participants SET scan_record_id=?,student_number_snapshot=?,name_snapshot=?,class_snapshot=?,booklet_code=?,participant_status=? WHERE id=?`)
         .bind(row.id, record.student_number || null, record.name, record.class_name || null, booklet, studentStatus, participantId).run();
@@ -341,10 +350,13 @@ async function evaluateBatch(env: Env, user: AuthUser, batchId: string): Promise
       await env.DB.prepare(`INSERT INTO exam_participants (id,exam_id,institution_id,season_id,student_id,scan_record_id,student_number_snapshot,name_snapshot,class_snapshot,booklet_code,participant_status)
         VALUES(?,?,?,?,?,?,?,?,?,?,?)`).bind(participantId, exam.id, batch.institution_id, batch.season_id, studentId, row.id, record.student_number || null, record.name, record.class_name || null, booklet, studentStatus).run();
     }
-    await env.DB.prepare('DELETE FROM outcome_results WHERE student_id=? AND exam_id=?').bind(studentId, exam.id).run();
-    const subjectScores = [];
-    const outcomeAccumulator = new Map<string, { evidence: number; correct: number }>();
-    for (const subject of subjects) {
+    const subjectScores = preservedSubjectScores.map((score) => ({
+      correct: Number(score.correct_count), wrong: Number(score.wrong_count), blank: Number(score.blank_count),
+      net: Number(score.net), successPercent: Number(score.success_percent),
+      wrongDivisor: Number(subjects.find((subject) => subject.subject_id === score.subject_id)?.wrong_divisor || 4),
+      questionCount: Number(subjects.find((subject) => subject.subject_id === score.subject_id)?.question_count || 0),
+    }));
+    for (const subject of incomingSubjects) {
       const answerString = record.answers_by_subject[subject.code] || '';
       const subjectKeys = keyRows.filter((k) => k.subject_id === subject.subject_id && k.booklet_code === booklet).sort((a,b)=>a.question_no-b.question_no);
       let correct = 0, wrong = 0, blank = 0;
@@ -356,13 +368,6 @@ async function evaluateBatch(env: Env, user: AuthUser, batchId: string): Promise
         if (key) {
           await env.DB.prepare(`INSERT INTO student_answers (id,participant_id,exam_question_id,answer,status,confidence) VALUES(?,?,?,?,?,?)`)
             .bind(uuid('ans'), participantId, key.question_id, answer || null, status, record.confidence).run();
-          const outcomeIds = key.outcome_ids ? String(key.outcome_ids).split(',').filter(Boolean) : [];
-          for (const outcomeId of outcomeIds) {
-            const acc = outcomeAccumulator.get(outcomeId) || { evidence: 0, correct: 0 };
-            acc.evidence += 1;
-            if (status === 'CORRECT') acc.correct += 1;
-            outcomeAccumulator.set(outcomeId, acc);
-          }
         }
       }
       const score = calculateSubjectScore({ correct, wrong, blank, wrongDivisor: subject.wrong_divisor, questionCount: subject.question_count });
@@ -373,10 +378,16 @@ async function evaluateBatch(env: Env, user: AuthUser, batchId: string): Promise
     const overall = calculateOverall(subjectScores);
     await env.DB.prepare(`INSERT INTO exam_results (id,participant_id,scoring_rule_version_id,correct_count,wrong_count,blank_count,net,score,success_percent) VALUES(?,?,?,?,?,?,?,?,?)`)
       .bind(uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, null, overall.successPercent).run();
-    for (const [outcomeId, acc] of outcomeAccumulator) {
-      const rate = acc.evidence ? acc.correct / acc.evidence : 0;
+    await env.DB.prepare('DELETE FROM outcome_results WHERE student_id=? AND exam_id=?').bind(studentId, exam.id).run();
+    const mergedOutcomes = await all<any>(env.DB.prepare(`SELECT qo.outcome_id,COUNT(*) evidence,
+      SUM(CASE WHEN sa.status='CORRECT' THEN 1 ELSE 0 END) correct
+      FROM student_answers sa JOIN exam_questions q ON q.id=sa.exam_question_id
+      JOIN question_outcomes qo ON qo.exam_question_id=q.id
+      WHERE sa.participant_id=? GROUP BY qo.outcome_id`).bind(participantId));
+    for (const acc of mergedOutcomes) {
+      const rate = Number(acc.evidence) ? Number(acc.correct) / Number(acc.evidence) : 0;
       await env.DB.prepare(`INSERT INTO outcome_results (id,student_id,exam_id,outcome_id,evidence_count,correct_count,success_rate,mastery_status) VALUES(?,?,?,?,?,?,?,?)`)
-        .bind(uuid('or'), studentId, exam.id, outcomeId, acc.evidence, acc.correct, rate, masteryStatus(acc.correct, acc.evidence)).run();
+        .bind(uuid('or'), studentId, exam.id, acc.outcome_id, Number(acc.evidence), Number(acc.correct), rate, masteryStatus(Number(acc.correct), Number(acc.evidence))).run();
     }
     processed++;
   }

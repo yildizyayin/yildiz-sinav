@@ -56,7 +56,9 @@ async function publishedResultsList(request:Request,env:Env,user:AuthUser):Promi
     FROM exam_result_snapshots s JOIN exam_delivery_profiles p ON p.exam_id=s.exam_id AND p.snapshot_version=s.snapshot_version AND p.result_freeze_status='PUBLISHED'
     JOIN exams e ON e.id=s.exam_id JOIN institutions i ON i.id=s.institution_id LEFT JOIN publishers pub ON pub.id=p.publisher_id LEFT JOIN institution_networks n ON n.id=p.network_id
     WHERE s.student_id=? ORDER BY COALESCE(p.published_at,e.exam_date,e.created_at) DESC LIMIT 100`).bind(studentId));
-  return json({ok:true,label:'Türkiye Geneli Katılımcılar Arasında',results:rows});
+  return json({ok:true,label:'Yayınlanmış Sınav Sonuçları',results:rows.map((row:any)=>row.scope==='CENTRAL'?row:row.scope==='NETWORK'
+    ?{...row,national_rank:null,national_count:null,city_rank:null,city_count:null,district_rank:null,district_count:null}
+    :{...row,national_rank:null,national_count:null,city_rank:null,city_count:null,district_rank:null,district_count:null,network_rank:null,network_count:null})});
 }
 
 async function enrichCatalogIds(response:Response,env:Env):Promise<Response>{
@@ -106,7 +108,8 @@ export default {
         const r = payload?.result;
         if (r?.participant_id && r?.snapshot_version) {
           const networkRanks = await networkRanksForParticipant(env, resultMatch[1], r.participant_id, Number(r.snapshot_version));
-          const enriched={ ...payload, result: { ...r, networkRanks }, rankingLabel:'Türkiye Geneli Katılımcılar Arasında' };
+          const rankingLabel=payload?.profile?.scope==='CENTRAL'?'Türkiye Geneli Katılımcılar Arasında':payload?.profile?.scope==='NETWORK'?'Zincir Kurum Katılımcıları Arasında':'Kurum Katılımcıları Arasında';
+          const enriched={ ...payload, result: { ...r, networkRanks }, rankingLabel };
           if(resultCacheKey)ctx.waitUntil(edgeCache().put(resultCacheKey,new Response(JSON.stringify(enriched),{headers:{'Content-Type':'application/json','Cache-Control':'public,max-age=3600'}})).catch(()=>{}));
           return new Response(JSON.stringify(enriched),{status:200,headers:{'Content-Type':'application/json;charset=UTF-8','Cache-Control':'private,no-store','X-Platform-Cache':'MISS'}});
         }
