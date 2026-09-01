@@ -97,13 +97,13 @@ async function googleSpeak(env:Env,text:string,speed:number):Promise<VoiceAudio>
 }
 
 async function directOpenAiSpeak(env:Env,text:string,speed:number):Promise<VoiceAudio>{
- if(!env.OPENAI_TTS_API_KEY)throw new Error('OPENAI_TTS_NOT_CONFIGURED');const model=env.NIBIRU_OPENAI_DIRECT_TTS_MODEL||'gpt-4o-mini-tts';const voice=env.NIBIRU_OPENAI_TTS_VOICE||'alloy';
- const response=await fetch('https://api.openai.com/v1/audio/speech',{method:'POST',headers:{authorization:`Bearer ${env.OPENAI_TTS_API_KEY}`,'content-type':'application/json'},body:JSON.stringify({model,voice,input:text,response_format:'mp3',speed,instructions:'Türkçe konuş. Sakin, açık, profesyonel bir öğretmen tonu kullan. Öğrenciyi küçümseme; abartılı duygu, argo ve yapay coşkudan kaçın.'})});
+ if(!env.OPENAI_TTS_API_KEY)throw new Error('OPENAI_TTS_NOT_CONFIGURED');const model=env.NIBIRU_OPENAI_DIRECT_TTS_MODEL||'gpt-4o-mini-tts';const voice=env.NIBIRU_OPENAI_TTS_VOICE||'coral';
+ const response=await fetch('https://api.openai.com/v1/audio/speech',{method:'POST',headers:{authorization:`Bearer ${env.OPENAI_TTS_API_KEY}`,'content-type':'application/json'},body:JSON.stringify({model,voice,input:text,response_format:'mp3',speed,instructions:'Doğal İstanbul Türkçesiyle konuş. Sesin sıcak, güven veren, sakin ve zeki bir kadın rehber öğretmen gibi olsun. Cümleleri anlamına göre yumuşak duraklarla oku; isimlere nazikçe hitap et. Robotik ritimden, yapay coşkudan, reklam sesinden, yargılayıcı veya çocuklaştıran tondan kesinlikle kaçın. Olumsuz sonuçları gelişim odaklı ve MEB okul iletişimine uygun bir dille anlat.'})});
  if(!response.ok)throw new Error(`OPENAI_TTS_FAILED_${response.status}`);return{bytes:new Uint8Array(await response.arrayBuffer()),contentType:response.headers.get('content-type')||'audio/mpeg',provider:'OPENAI_GPT4O_MINI_TTS',model};
 }
 
 async function unifiedOpenAiSpeak(env:Env,text:string,speed:number,hd:boolean):Promise<VoiceAudio>{
- if(!env.AI)throw new Error('OPENAI_UNIFIED_NOT_CONFIGURED');const model=hd?(env.NIBIRU_OPENAI_TTS_HD_MODEL||'openai/tts-1-hd'):(env.NIBIRU_OPENAI_TTS_MODEL||'openai/tts-1');const voice=env.NIBIRU_OPENAI_TTS_VOICE||'alloy';
+ if(!env.AI)throw new Error('OPENAI_UNIFIED_NOT_CONFIGURED');const model=hd?(env.NIBIRU_OPENAI_TTS_HD_MODEL||'openai/tts-1-hd'):(env.NIBIRU_OPENAI_TTS_MODEL||'openai/tts-1');const voice=env.NIBIRU_OPENAI_TTS_VOICE||'coral';
  const response:any=await env.AI.run(model as any,{response_format:'mp3',speed,text,voice} as any,{gateway:{id:env.NIBIRU_AI_GATEWAY_ID||'default',skipCache:true,collectLog:true,metadata:{app:'nibiru',modality:'tts',language:'tr',quality:hd?'premium':'standard'}}} as any);
  if(response instanceof Response)return{bytes:new Uint8Array(await response.arrayBuffer()),contentType:response.headers.get('content-type')||'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model};
  const audioUrl=String(response?.audio||response?.result?.audio||'');if(!audioUrl)throw new Error('OPENAI_UNIFIED_TTS_EMPTY');const audio=await fetch(audioUrl);if(!audio.ok)throw new Error('OPENAI_UNIFIED_TTS_FETCH_FAILED');
@@ -111,7 +111,7 @@ async function unifiedOpenAiSpeak(env:Env,text:string,speed:number,hd:boolean):P
 }
 
 export async function speakNibiru(env:Env,value:string,mode:NibiruVoiceMode='STANDARD'){
- const text=prepareNibiruSpeechText(value);if(!text)throw new Error('VOICE_TEXT_EMPTY');const speed=mode==='PREMIUM'?0.98:0.96,plan=buildVoiceProviderPlan(env,mode);const attempts:string[]=[];
+ const text=prepareNibiruSpeechText(value);if(!text)throw new Error('VOICE_TEXT_EMPTY');const speed=mode==='PREMIUM'?0.93:0.96,plan=buildVoiceProviderPlan(env,mode);const attempts:string[]=[];
  for(const provider of plan.providers){try{
   if(provider==='GOOGLE_WAVENET')return{audio:await googleSpeak(env,text,speed),plan,attempts};
   if(provider==='OPENAI_GPT4O_MINI_TTS')return{audio:await directOpenAiSpeak(env,text,speed),plan,attempts};
