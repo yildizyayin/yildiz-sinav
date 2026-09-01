@@ -7,7 +7,7 @@ const SIX_HOURS=6*60*60*1000;
 const LOOKUP=/^[A-Za-z0-9._-]{1,40}$/;
 
 async function sha256(value:string){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-async function hmac(env:Env,value:string){const secret=env.RESULT_LOOKUP_SECRET||env.SESSION_SECRET;if(!secret)throw new Error('RESULT_LOOKUP_SECRET_NOT_CONFIGURED');const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);const sig=await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(value));return [...new Uint8Array(sig)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function hmac(env:Env,value:string){const root=env.RESULT_LOOKUP_SECRET||env.SESSION_SECRET;if(!root)throw new Error('RESULT_LOOKUP_SECRET_NOT_CONFIGURED');const secret=env.RESULT_LOOKUP_SECRET||await sha256(`ANUNEX_RESULT_LOOKUP_V1|${root}`);const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);const sig=await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(value));return [...new Uint8Array(sig)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 function rawCookie(request:Request,name:string){for(const part of (request.headers.get('cookie')||'').split(';')){const [key,...rest]=part.trim().split('=');if(key===name)return decodeURIComponent(rest.join('='))}return null}
 function clientIp(request:Request){return request.headers.get('CF-Connecting-IP')||'local'}
 function normalizeLookup(value:unknown){return String(value||'').trim().replace(/\s+/g,'').toLocaleLowerCase('tr-TR')}
