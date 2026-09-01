@@ -38,8 +38,21 @@ async function listTargets(env:Env,user:AuthUser){
     LEFT JOIN university_program_targets up ON up.id=sat.university_program_target_id
     WHERE sat.student_id=? AND sat.status='ACTIVE'
     ORDER BY sat.target_type,sat.priority,sat.created_at DESC`).bind(user.student_id));
-  return json({ok:true,studentId:user.student_id,gradeLevel:enrollment?.grade_level??null,enrollmentStatus:enrollment?.status??null,maxTargets:Number(enrollment?.grade_level)===12||enrollment?.status==='GRADUATED'?3:1,targets:rows});
+  const [professions,catalog]=await Promise.all([
+    all<any>(env.DB.prepare(`SELECT spt.id,spt.priority,pc.code,pc.title,pc.motivation_title,pc.category FROM student_profession_targets spt JOIN profession_catalog pc ON pc.code=spt.profession_code WHERE spt.student_id=? AND spt.status='ACTIVE' ORDER BY spt.priority`).bind(user.student_id)),
+    all<any>(env.DB.prepare(`SELECT code,title,motivation_title,category FROM profession_catalog WHERE active=1 AND min_grade<=? ORDER BY sort_order,title`).bind(Number(enrollment?.grade_level||5))),
+  ]);
+  return json({ok:true,studentId:user.student_id,gradeLevel:enrollment?.grade_level??null,enrollmentStatus:enrollment?.status??null,maxTargets:Number(enrollment?.grade_level)===12||enrollment?.status==='GRADUATED'?3:1,targets:rows,professions,professionCatalog:catalog,maxProfessions:3});
 }
+
+async function setProfession(request:Request,env:Env,user:AuthUser){
+  const body:any=await request.json<{professionCode?:string;priority?:number}>().catch(()=>({}));const enrollment=await latestEnrollment(env,user.student_id!);if(!enrollment)return fail(400,'ENROLLMENT_REQUIRED','Öğrenci için sınıf kaydı bulunamadı.');
+  const code=String(body.professionCode||'').trim().toUpperCase(),priority=Math.max(1,Math.min(3,Number(body.priority||1)));const profession=await one<any>(env.DB.prepare(`SELECT code FROM profession_catalog WHERE code=? AND active=1 AND min_grade<=?`).bind(code,Number(enrollment.grade_level||5)));if(!profession)return fail(404,'PROFESSION_NOT_FOUND','Meslek kataloğunda aktif kayıt bulunamadı.');
+  await env.DB.prepare(`UPDATE student_profession_targets SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE student_id=? AND status='ACTIVE' AND (priority=? OR profession_code=?)`).bind(user.student_id,priority,code).run();
+  await env.DB.prepare(`INSERT INTO student_profession_targets(id,student_id,profession_code,priority,created_by) VALUES(?,?,?,?,?)`).bind(uuid('pro'),user.student_id,code,priority,user.id).run();return listTargets(env,user);
+}
+
+async function archiveProfession(env:Env,user:AuthUser,id:string){const result=await env.DB.prepare(`UPDATE student_profession_targets SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=? AND student_id=? AND status='ACTIVE'`).bind(id,user.student_id).run();if(!result.meta.changes)return fail(404,'PROFESSION_NOT_FOUND','Aktif meslek hedefi bulunamadı.');return listTargets(env,user)}
 
 async function setTarget(request:Request,env:Env,user:AuthUser){
   const body=await request.json<{targetType?:'LGS_SCHOOL'|'YKS_PROGRAM';targetId?:string;priority?:number;note?:string;motivationLabel?:string;motivationEnabled?:boolean}>();
@@ -78,7 +91,7 @@ async function getPreferences(env:Env,user:AuthUser){
   const enrollment=await latestEnrollment(env,user.student_id!);
   const row=await one<any>(env.DB.prepare(`SELECT * FROM student_experience_preferences WHERE student_id=?`).bind(user.student_id));
   const grade=Number(enrollment?.grade_level||0);
-  const defaults={theme_key:'ANUNEX_STANDARD',appearance:'AUTO',font_key:'SYSTEM',font_scale:1,animation_level:'NORMAL',countdown_enabled:1,countdown_flip_clock:1,motivation_enabled:1,voice_motivation_enabled:0};
+  const defaults={theme_key:'ANUNEX_STANDARD',appearance:'AUTO',font_key:'SYSTEM',font_scale:1,animation_level:'NORMAL',countdown_enabled:1,countdown_flip_clock:1,motivation_enabled:1,voice_motivation_enabled:0,motivation_frequency:'MILESTONES'};
   return {enrollment,preferences:{...defaults,...(row||{})}};
 }
 
@@ -88,10 +101,11 @@ async function updatePreferences(request:Request,env:Env,user:AuthUser){
   const fontScale=Math.max(.85,Math.min(1.3,Number(p.font_scale||1)));
   const appearance=['AUTO','LIGHT','DARK'].includes(String(p.appearance))?String(p.appearance):'AUTO';
   const animation=['OFF','REDUCED','NORMAL'].includes(String(p.animation_level))?String(p.animation_level):'NORMAL';
-  await env.DB.prepare(`INSERT INTO student_experience_preferences(student_id,theme_key,appearance,font_key,font_scale,animation_level,countdown_enabled,countdown_label,countdown_target_date,countdown_flip_clock,motivation_identity,motivation_enabled,voice_motivation_enabled,updated_at)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)
-    ON CONFLICT(student_id) DO UPDATE SET theme_key=excluded.theme_key,appearance=excluded.appearance,font_key=excluded.font_key,font_scale=excluded.font_scale,animation_level=excluded.animation_level,countdown_enabled=excluded.countdown_enabled,countdown_label=excluded.countdown_label,countdown_target_date=excluded.countdown_target_date,countdown_flip_clock=excluded.countdown_flip_clock,motivation_identity=excluded.motivation_identity,motivation_enabled=excluded.motivation_enabled,voice_motivation_enabled=excluded.voice_motivation_enabled,updated_at=CURRENT_TIMESTAMP`)
-    .bind(user.student_id,String(p.theme_key||'AUTO'),appearance,String(p.font_key||'SYSTEM'),fontScale,animation,p.countdown_enabled===0?0:1,p.countdown_label||null,p.countdown_target_date||null,p.countdown_flip_clock===0?0:1,p.motivation_identity||null,p.motivation_enabled===0?0:1,p.voice_motivation_enabled===1?1:0).run();
+  const frequency=['OFF','MILESTONES','BALANCED'].includes(String(p.motivation_frequency))?String(p.motivation_frequency):'MILESTONES';
+  await env.DB.prepare(`INSERT INTO student_experience_preferences(student_id,theme_key,appearance,font_key,font_scale,animation_level,countdown_enabled,countdown_label,countdown_target_date,countdown_flip_clock,motivation_identity,motivation_enabled,voice_motivation_enabled,motivation_frequency,updated_at)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)
+    ON CONFLICT(student_id) DO UPDATE SET theme_key=excluded.theme_key,appearance=excluded.appearance,font_key=excluded.font_key,font_scale=excluded.font_scale,animation_level=excluded.animation_level,countdown_enabled=excluded.countdown_enabled,countdown_label=excluded.countdown_label,countdown_target_date=excluded.countdown_target_date,countdown_flip_clock=excluded.countdown_flip_clock,motivation_identity=excluded.motivation_identity,motivation_enabled=excluded.motivation_enabled,voice_motivation_enabled=excluded.voice_motivation_enabled,motivation_frequency=excluded.motivation_frequency,updated_at=CURRENT_TIMESTAMP`)
+    .bind(user.student_id,String(p.theme_key||'AUTO'),appearance,String(p.font_key||'SYSTEM'),fontScale,animation,p.countdown_enabled===0?0:1,p.countdown_label||null,p.countdown_target_date||null,p.countdown_flip_clock===0?0:1,p.motivation_identity||null,p.motivation_enabled===0?0:1,p.voice_motivation_enabled===1?1:0,frequency).run();
   return json({ok:true,...await getPreferences(env,user)});
 }
 
@@ -182,6 +196,8 @@ export default {
     if(path==='/api/student-standard/targets'&&request.method==='GET')return listTargets(env,auth);
     if(path==='/api/student-standard/targets'&&request.method==='POST')return setTarget(request,env,auth);
     const targetDelete=path.match(/^\/api\/student-standard\/targets\/([^/]+)$/);if(targetDelete&&request.method==='DELETE')return archiveTarget(env,auth,targetDelete[1]);
+    if(path==='/api/student-standard/professions'&&request.method==='POST')return setProfession(request,env,auth);
+    const professionDelete=path.match(/^\/api\/student-standard\/professions\/([^/]+)$/);if(professionDelete&&request.method==='DELETE')return archiveProfession(env,auth,professionDelete[1]);
     if(path==='/api/student-standard/preferences'&&request.method==='GET')return json({ok:true,...await getPreferences(env,auth)});
     if(path==='/api/student-standard/preferences'&&request.method==='PATCH')return updatePreferences(request,env,auth);
     if(path==='/api/student-standard/home-context'&&request.method==='GET')return homeContext(env,auth);

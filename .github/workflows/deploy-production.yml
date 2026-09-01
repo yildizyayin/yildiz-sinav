@@ -24,6 +24,7 @@ jobs:
       PROD_TURNSTILE_SITE_KEY: ${{ vars.PROD_TURNSTILE_SITE_KEY }}
       PROD_TURNSTILE_SECRET_KEY: ${{ secrets.PROD_TURNSTILE_SECRET_KEY }}
       PROD_SESSION_SECRET: ${{ secrets.PROD_SESSION_SECRET }}
+      PROD_RESULT_LOOKUP_SECRET: ${{ secrets.PROD_RESULT_LOOKUP_SECRET }}
       PROD_WHATSAPP_VERIFY_TOKEN: ${{ secrets.PROD_WHATSAPP_VERIFY_TOKEN }}
       PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
       PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
@@ -42,6 +43,7 @@ jobs:
           test -n "$PROD_TURNSTILE_SITE_KEY" || (echo "Missing PROD_TURNSTILE_SITE_KEY" && exit 1)
           test -n "$PROD_TURNSTILE_SECRET_KEY" || (echo "Missing PROD_TURNSTILE_SECRET_KEY" && exit 1)
           test -n "$PROD_SESSION_SECRET" || (echo "Missing PROD_SESSION_SECRET" && exit 1)
+          test -n "$PROD_RESULT_LOOKUP_SECRET" || (echo "Missing PROD_RESULT_LOOKUP_SECRET" && exit 1)
 
       - name: WhatsApp production readiness
         shell: bash
@@ -118,6 +120,7 @@ jobs:
         run: |
           printf '%s' "$PROD_TURNSTILE_SECRET_KEY" | npx wrangler secret put TURNSTILE_SECRET_KEY --config wrangler.production.jsonc
           printf '%s' "$PROD_SESSION_SECRET" | npx wrangler secret put SESSION_SECRET --config wrangler.production.jsonc
+          printf '%s' "$PROD_RESULT_LOOKUP_SECRET" | npx wrangler secret put RESULT_LOOKUP_SECRET --config wrangler.production.jsonc
 
       - name: Sync WhatsApp secrets to production Worker
         shell: bash
@@ -157,6 +160,7 @@ jobs:
             echo "$hostname attached to $service."
           }
           attach_domain app.anunex.com yildiz-sinav-prod
+          attach_domain sonuc.anunex.com yildiz-sinav-prod
 
       - name: Read-only production smoke acceptance
         run: node scripts/live-production-smoke.mjs
