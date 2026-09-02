@@ -31,9 +31,44 @@ const subjectFor = (exam, question) => {
 
 ins("INSERT OR IGNORE INTO publishers(id,name,code,active) VALUES ('pub_cap','ÇAP Yayınları','CAP',1)");
 ins("INSERT OR IGNORE INTO publishers(id,name,code,active) VALUES ('pub_ankara','Ankara Yayınları','ANKARA',1)");
-ins("INSERT OR IGNORE INTO optical_templates(id,name,vendor,status,active) VALUES ('opt7108','Optik 7108 LGS','Piyasa','NEEDS_DEFINITION',1)");
-ins("INSERT OR IGNORE INTO optical_template_versions(id,template_id,version,page_width_mm,page_height_mm,parser_definition,active) VALUES ('v_opt7108','opt7108','fmt-required',210,297,'{\"type\":\"fixed-width\",\"status\":\"FMT_REQUIRED\"}',1)");
-ins("UPDATE optical_templates SET status='NEEDS_DEFINITION' WHERE id IN ('opt129','opt7108')");
+const sekonic7108 = {
+  type: 'fixed-width', recordLength: 171, signature: '7108',
+  encoding: 'windows-1254',
+  fields: {
+    institution_code: { start: 4, end: 10 },
+    student_number: { start: 10, end: 15 },
+    name: { start: 15, end: 35 },
+    class: { start: 35, end: 37 },
+    identity_reference: { start: 37, end: 48 },
+    booklet: { start: 50, end: 51 },
+  },
+  answers: {
+    TUR: { start: 51, end: 71 }, SOS: { start: 71, end: 91 },
+    DIN: { start: 91, end: 111 }, ING: { start: 111, end: 131 },
+    MAT: { start: 131, end: 151 }, FEN: { start: 151, end: 171 },
+  },
+};
+const sekonic129 = {
+  type: 'fixed-width', recordLength: 222, encoding: 'windows-1254',
+  fields: {
+    institution_code: { start: 3, end: 11 },
+    student_number: { start: 11, end: 16 },
+    name: { start: 16, end: 36 },
+    identity_reference: { start: 36, end: 47 },
+    class: { start: 48, end: 51 },
+    booklet: { start: 55, end: 56 },
+  },
+  answers: {
+    TYT_TUR: { start: 56, end: 96 }, TYT_SOS: { start: 96, end: 142 },
+    TYT_MAT: { start: 142, end: 182 }, TYT_FEN: { start: 182, end: 222 },
+  },
+};
+ins("INSERT OR IGNORE INTO optical_templates(id,name,vendor,status,active) VALUES ('opt7108','Optik 7108 LGS','Sekonic','READY',1)");
+ins(`INSERT OR REPLACE INTO optical_template_versions(id,template_id,version,page_width_mm,page_height_mm,parser_definition,active) VALUES ('v_opt7108_sekonic','opt7108','sekonic-fmt-2026-09',210,297,${q(JSON.stringify(sekonic7108))},1)`);
+ins(`INSERT OR REPLACE INTO optical_template_versions(id,template_id,version,page_width_mm,page_height_mm,parser_definition,active) VALUES ('v_opt129_sekonic','opt129','sekonic-fmt-2026-09',210,297,${q(JSON.stringify(sekonic129))},1)`);
+ins("UPDATE optical_templates SET vendor='Sekonic',status='READY',active=1 WHERE id IN ('opt129','opt7108')");
+ins("INSERT OR REPLACE INTO optical_definition_validations(optical_template_version_id,parser_test_passed,parser_test_record_count,parser_tested_at,last_error) VALUES ('v_opt7108_sekonic',1,61,'2026-09-02',NULL)");
+ins("INSERT OR REPLACE INTO optical_definition_validations(optical_template_version_id,parser_test_passed,parser_test_record_count,parser_tested_at,last_error) VALUES ('v_opt129_sekonic',1,40,'2026-09-02',NULL)");
 
 for (const exam of data.exams) {
   const examId = exam.id === 'cap' ? 'exam_demo_cap_tyt_0' : 'exam_demo_ankara_hbs_8';
