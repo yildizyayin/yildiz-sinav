@@ -26,6 +26,7 @@ describe('Demo Koleji presentation fixture', () => {
     const generator = readFileSync('scripts/generate-demo-exam-catalog.mjs', 'utf8');
     expect(generator).toContain('opt129');
     expect(generator).toContain('opt7108');
-    expect(generator).toContain('FMT_REQUIRED');
+    expect(generator).toContain("recordLength: 171");
+    expect(generator).toContain("recordLength: 222");
   });
 });
