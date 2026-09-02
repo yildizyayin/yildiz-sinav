@@ -45,6 +45,16 @@ function normalizeNewlines(text: string): string {
   return text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n+$/, '');
 }
 
+/** Sekonic DAT exports use Windows-1254 while CSV/TXT uploads are generally UTF-8. */
+export function decodeUploadedBytes(value: ArrayBuffer): string {
+  const bytes = new Uint8Array(value);
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+  } catch {
+    return new TextDecoder('windows-1254', { fatal: false }).decode(bytes);
+  }
+}
+
 export function parseUploadedText(text: string, fileName: string, templates: ParserTemplate[]): ParseResult {
   const normalizedText = normalizeNewlines(text);
   if (!normalizedText.trim()) return { confidence: 0, ambiguous: false, records: [], issues: ['Dosya boş.'] };
