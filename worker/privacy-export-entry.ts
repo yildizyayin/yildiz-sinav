@@ -5,6 +5,7 @@ import { all, audit, forbidden, json, methodNotAllowed, one } from './lib/db';
 import { handleResultNetworkRequest,purgeExpiredResultNetwork } from './result-network-entry';
 import { handleResultOperatorRequest } from './result-operator-entry';
 import { handleResultInstitutionRequest } from './result-institution-entry';
+import { handleResultDirectoryAdminRequest } from './result-directory-admin-entry';
 
 const DSR_EXPORT_PATH = '/api/admin/privacy/exports/requests.csv';
 const HEALTH_TABLES = ['institutions', 'users', 'sessions', 'exams', 'student_entities', 'audit_logs'] as const;
@@ -104,6 +105,8 @@ async function handleFetch(request: Request, env: Env, ctx: ExecutionContext): P
   const url = new URL(request.url);
   const resultInstitution = await handleResultInstitutionRequest(request,env);
   if (resultInstitution) return resultInstitution;
+  const resultDirectory = await handleResultDirectoryAdminRequest(request,env);
+  if (resultDirectory) return resultDirectory;
   const resultOperator = await handleResultOperatorRequest(request,env);
   if (resultOperator) return resultOperator;
   const resultNetwork = await handleResultNetworkRequest(request,env);
