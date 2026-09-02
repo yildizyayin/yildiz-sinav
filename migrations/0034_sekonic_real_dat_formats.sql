@@ -32,15 +32,15 @@ SET version='sekonic-fmt-v1',
 WHERE id='v_opt7108';
 UPDATE optical_template_versions SET active=0 WHERE template_id='opt7108' AND id<>'v_opt7108';
 
--- Parser mapping is installed, but physical print/camera verification remains a separate gate.
-INSERT OR IGNORE INTO optical_definition_validations (optical_template_version_id,parser_test_passed,print_alignment_passed,camera_read_passed,last_error)
-VALUES ('v_opt129',0,0,0,'Sekonic FMT parser installed; real DAT smoke and physical verification pending.');
+-- Parser mapping is installed, but real DAT and physical print/camera verification remain separate gates.
+INSERT OR IGNORE INTO optical_definition_validations (optical_template_version_id,parser_test_passed,parser_test_record_count,parser_tested_at,last_error)
+VALUES ('v_opt129',0,0,NULL,'Sekonic FMT parser installed; real DAT smoke and physical verification pending.');
 UPDATE optical_definition_validations
-SET parser_test_passed=0,last_error='Sekonic FMT parser installed; real DAT smoke and physical verification pending.',updated_at=CURRENT_TIMESTAMP
+SET parser_test_passed=0,parser_test_record_count=0,parser_tested_at=NULL,last_error='Sekonic FMT parser installed; real DAT smoke and physical verification pending.',updated_at=CURRENT_TIMESTAMP
 WHERE optical_template_version_id='v_opt129';
 
-INSERT OR IGNORE INTO optical_definition_validations (optical_template_version_id,parser_test_passed,print_alignment_passed,camera_read_passed,last_error)
-VALUES ('v_opt7108',0,0,0,'Sekonic FMT parser installed; real DAT smoke and physical verification pending.');
+INSERT OR IGNORE INTO optical_definition_validations (optical_template_version_id,parser_test_passed,parser_test_record_count,parser_tested_at,last_error)
+VALUES ('v_opt7108',0,0,NULL,'Sekonic FMT parser installed; real DAT smoke and physical verification pending.');
 UPDATE optical_definition_validations
-SET parser_test_passed=0,last_error='Sekonic FMT parser installed; real DAT smoke and physical verification pending.',updated_at=CURRENT_TIMESTAMP
+SET parser_test_passed=0,parser_test_record_count=0,parser_tested_at=NULL,last_error='Sekonic FMT parser installed; real DAT smoke and physical verification pending.',updated_at=CURRENT_TIMESTAMP
 WHERE optical_template_version_id='v_opt7108';
