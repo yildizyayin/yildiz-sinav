@@ -4,6 +4,8 @@ mkdirSync('tmp',{recursive:true});
 
 const sources=[
  ['tmp/demo-seed.sql','tmp/demo-seed.idempotent.sql'],
+ ['tmp/demo-college-showcase.sql','tmp/demo-college-showcase.idempotent.sql'],
+ ['tmp/demo-exam-catalog.sql','tmp/demo-exam-catalog.idempotent.sql'],
  ['tmp/standard-role-seed.sql','tmp/standard-role-seed.idempotent.sql'],
  ['scripts/demo-camera-fixture.sql','tmp/demo-camera-fixture.idempotent.sql'],
  ['scripts/demo-standard-fixture.sql','tmp/demo-standard-fixture.idempotent.sql'],
