@@ -23,7 +23,9 @@ jobs:
           for pass in 1 2; do
             echo "Seed validation pass $pass"
             npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/demo-seed.idempotent.sql
+            npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/demo-college-showcase.idempotent.sql
             npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/standard-role-seed.idempotent.sql
+            npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/demo-exam-catalog.idempotent.sql
             npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/demo-camera-fixture.idempotent.sql
             npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/demo-standard-fixture.idempotent.sql
             npx wrangler d1 execute DB --local --persist-to=.wrangler/ci-state --file=tmp/privacy-security-fixture.idempotent.sql
