@@ -20,7 +20,7 @@ async function publicVoiceDemo(request:Request,env:Env){
  const text=PUBLIC_VOICE_SCENARIOS[key];
  if(!text)return fail(404,'VOICE_SCENARIO_NOT_FOUND','Tanımlı ses senaryosu bulunamadı.');
  try{
-  const result=await speakNibiru(env,text,'STANDARD');
+  const result=await speakNibiru(env,text,'PREMIUM');
   return new Response(strictArrayBuffer(result.audio.bytes),{status:200,headers:{'content-type':result.audio.contentType,'cache-control':'public, max-age=86400, s-maxage=604800, immutable','x-nibiru-voice-provider':result.audio.provider,'x-content-type-options':'nosniff'}});
  }catch(error){return voiceError(error)}
 }

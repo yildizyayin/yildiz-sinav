@@ -93,7 +93,7 @@ export function MarketingHome(){
   },[]);
   return <div className="marketing-home">
     <header className="marketing-header">
-      <a href="#top" className="marketing-logo"><AnunexBrand tagline/></a>
+      <a href="#top" className="marketing-logo"><AnunexBrand tagline/><span className="header-nibiru"><i/><b>NIBIRU</b><small>Öğrenmenin yaşayan zekâsı</small></span></a>
       <nav aria-label="Tanıtım menüsü"><a href="#platform">Platform</a><a href="#nibiru">Nibiru</a><a href="#roller">Paneller</a><a href="#oyunlar">Mini Oyunlar</a><a href="#entegrasyon">Entegrasyonlar</a><a href="#iletisim">İletişim</a></nav>
       <div className="marketing-actions"><a className="marketing-link" href={DEMO_URL}>Demo</a><a className="marketing-button small" href={APP_URL}>Sisteme Giriş <ArrowRight size={16}/></a></div>
     </header>
@@ -158,7 +158,42 @@ export function MarketingHome(){
         <div className="unique-strip"><span><FileText/> Kişiye Özel Kitap</span><span><BookOpen/> Sıfır Hata Kitapçığı</span><span><Gamepad2/> Güvenli Mini Oyunlar</span><span><Monitor/> Tema & Özel Gün Yönetimi</span><span><HeartHandshake/> Rehberlik Müdahale Akışı</span></div>
       </section>
 
-      <section className="connected-demo"><div className="connected-heading"><span>GERÇEK BİR ÖĞRENCİ YOLCULUĞU</span><h2>Bir yanlış soru, bütün sistemi harekete geçirir.</h2><p>Öğrenci soruya dokunduğunda ANUNEX yalnız cevabı göstermez; öğretmen, veli, video ve Nibiru akışını aynı kazanım etrafında birleştirir.</p></div><div className="connected-grid"><article className="question-demo"><div className="demo-head"><span>Soru 14 · Matematik</span><b>Yanlış</b></div><h3>Fonksiyonlar · Bileşke işlemi</h3><div className="question-placeholder"><span>f(x)=2x+1 ve g(x)=x²</span><strong>(f∘g)(2) kaçtır?</strong></div><div className="question-actions"><button><PlayCircle/> Yayınevi video çözümü</button><button><BookOpen/> Konu anlatım videosu</button><button><Sparkles/> Nibiru’ya sor</button></div><small>Öğrencinin doğru yaptığı sorularda da onaylı video desteği açılabilir.</small></article><article className="youtube-demo"><div className="demo-head"><span>ANUNEX · YouTube mikro öğrenme</span><b>Onaylı</b></div><div className="video-preview"><PlayCircle/><span>1:42</span></div><h3>Bileşke fonksiyon 2 dakikada</h3><p>Yayınevi çözümü yoksa Nibiru; kazanıma, süreye ve içerik güvenliğine göre en uygun kısa konu anlatımını seçer.</p><div className="video-meta"><span>5 aday tarandı</span><span>Öğretmen onaylı kanal</span></div></article><article className="whatsapp-demo"><div className="demo-head"><span>WhatsApp akademik kanal</span><b>Entegre</b></div><div className="chat-bubble school">ANUNEX: Efe’nin matematik görevinde 1 kazanım için tekrar önerildi.</div><div className="chat-bubble parent">Detayını görebilir miyim?</div><div className="chat-bubble nibiru"><NibiruMark size={24} state="speaking"/> Nibiru Veli Rehberi: Sonuç paylaşmadan, haftalık gelişim özetini güvenli bağlantıda görüntüleyebilirsiniz.</div><div className="chat-audience"><span><Users/> Veli</span><span><GraduationCap/> Öğretmen</span><span><Building2/> Kurum</span></div></article></div><div className="channel-scenarios"><article><h3>WhatsApp nasıl çalışır?</h3><div className="scenario-row"><span>01</span><p><strong>Sınav sonucu:</strong> Veliye doğrulanmış bağlantı gider; hassas veri mesaj içinde dolaşmaz.</p></div><div className="scenario-row"><span>02</span><p><strong>Devamsızlık:</strong> Kurum onaylı bildirim, doğru veliye teslim edilir ve kayda alınır.</p></div><div className="scenario-row"><span>03</span><p><strong>Ödev ve rehberlik:</strong> Hatırlatma gönderilir; yanıt gerekirse yetkili öğretmen veya rehberliğe aktarılır.</p></div></article><article><h3>YouTube nasıl çalışır?</h3><div className="scenario-row"><span>01</span><p><strong>Öncelik yayınevinde:</strong> Tanımlı resmî çözüm videosu varsa doğrudan o açılır.</p></div><div className="scenario-row"><span>02</span><p><strong>Güvenli aday seçimi:</strong> Yoksa kazanım, yaş, süre ve kanal güvenilirliğine göre adaylar süzülür.</p></div><div className="scenario-row"><span>03</span><p><strong>Öğretmen kontrolü:</strong> Kurum isterse yalnız onayladığı kanalları ve videoları öğrenciye gösterir.</p></div></article></div></section>
+      <section className="connected-demo connected-real-stories">
+        <div className="connected-heading"><span>GERÇEK İLETİŞİM · GERÇEK ÖĞRENME AKIŞI</span><h2>Nibiru yalnız cevap vermez.<br/><em>Kimi dinlediğini ve neyi koruması gerektiğini bilir.</em></h2><p>WhatsApp görüşmesi doğrulanmış veli kimliğiyle, YouTube seçimi öğrencinin gerçek sınav kazanımıyla çalışır. Hassas sonuçlar mesajda açık bırakılmaz; güvenli ANUNEX bağlantısıyla paylaşılır.</p></div>
+        <div className="real-story-grid">
+          <article className="whatsapp-phone-story">
+            <div className="phone-hardware"><div className="phone-island"/><div className="wa-header"><button aria-label="Geri">‹</button><span className="wa-nibiru-avatar"/><div><strong>Nibiru · ANUNEX</strong><small><i/> Akademik asistan · çevrimiçi</small></div></div>
+              <div className="wa-encryption"><LockKeyhole/> Mesajlar kurum politikası ve KVKK sınırlarında işlenir.</div>
+              <div className="wa-chat-thread">
+                <div className="wa-day">BUGÜN</div>
+                <div className="wa-message outgoing m1">Merhaba Nibiru<span>10:02 ✓✓</span></div>
+                <div className="wa-message incoming nibiru-message m2"><b>Nibiru</b>Merhaba Seval Hanım. Aras Bulut’un velisi olarak sizi tanıdım. Bugün size hangi konu hakkında bilgi vermemi istersiniz?<span>10:02</span></div>
+                <div className="wa-message outgoing m3">Deneme sınavı sonucu açıklandı mı?<span>10:03 ✓✓</span></div>
+                <div className="wa-message incoming nibiru-message m4"><b>Nibiru</b>Evet, sonuç açıklandı. Aras Bulut’un karnesini güvenli bağlantı olarak şimdi sizinle paylaştım.<button><FileText/> Karnesini güvenle aç</button><span>10:03</span></div>
+                <div className="wa-message outgoing m5">Sonuçları sence nasıl?<span>10:04 ✓✓</span></div>
+                <div className="wa-message incoming nibiru-message m6"><b>Nibiru</b>Son dört denemeye göre düzenli bir ilerleme görüyorum. Matematikte “çarpanlar ve katlar” kazanımında kısa tekrar yararlı olur. Sonuç tek başına bir etiket değildir; öğretmeniyle birlikte belirlenen çalışma planını izlemenizi öneririm.<span>10:04</span></div>
+                <div className="wa-message outgoing m7">Teşekkür ederim.<span>10:05 ✓✓</span></div>
+                <div className="wa-message incoming nibiru-message m8"><b>Nibiru</b>Rica ederim Seval Hanım. Aras Bulut’un çabasını fark etmeniz ve gelişimini baskı kurmadan desteklemeniz çok kıymetli. İhtiyaç duyduğunuzda buradayım.<span>10:05</span></div>
+              </div><div className="wa-compose"><span>Mesaj</span><Mic2/></div>
+            </div>
+            <div className="story-explain"><span>WHATSAPP AKADEMİK KANAL</span><h3>Veli sorar; Nibiru kimliği, yetkiyi ve doğru dili birlikte korur.</h3><ul><li><CheckCircle2/> Veli ve öğrenci ilişkisi doğrulanır</li><li><CheckCircle2/> Karne açık mesaj yerine güvenli bağlantıyla paylaşılır</li><li><CheckCircle2/> Olumsuz sonuçlarda yargılayan değil, gelişimi destekleyen MEB’e uygun dil kullanılır</li></ul></div>
+          </article>
+          <article className="youtube-learning-story">
+            <div className="youtube-result-head"><div><span>ANUNEX · SINAV SONUCU</span><h3>Matematik · Çarpanlar ve Katlar</h3><p>Aras Bulut bu kazanımda 4 sorunun 2’sinde desteğe ihtiyaç duyuyor.</p></div><span className="yt-score">2 / 4</span></div>
+            <div className="nibiru-video-advice"><span className="wa-nibiru-avatar"/><div><strong>Nibiru önerisi</strong><p>Önce 4 dakika 18 saniyelik öğretmen onaylı özeti izlemeni öneriyorum. Ardından sana üç kısa kontrol sorusu hazırlayacağım.</p></div></div>
+            <div className="video-candidate-list">
+              {[
+               ['01','Çarpanlar ve Katlar · Hızlı Konu Özeti','4:18','1,2 Mn izlenme','Öğretmen onaylı','ÖNERİLEN'],
+               ['02','Asal Çarpanlara Ayırma · Pratik Yöntem','6:42','846 B izlenme','MEB kazanımıyla uyumlu',''],
+               ['03','EBOB–EKOK Mantığını Anlayalım','8:05','2,1 Mn izlenme','Yaş düzeyine uygun',''],
+               ['04','Yeni Nesil Çarpanlar Soruları','7:24','623 B izlenme','Soru çözümü',''],
+               ['05','Çarpanlar · 5 Dakikada Tekrar','5:11','504 B izlenme','Kısa tekrar','']
+              ].map(([no,title,duration,views,trust,badge])=><button type="button" className={badge?'recommended':''} key={no}><span className="yt-thumb"><PlayCircle/><small>{duration}</small></span><span className="yt-copy"><small>{no} · {trust}</small><strong>{title}</strong><em>{views}</em></span>{badge&&<b>{badge}</b>}<ChevronRight/></button>)}
+            </div>
+            <div className="youtube-policy"><ShieldCheck/><p><strong>Beş aday nasıl seçilir?</strong> Önce yayınevinin kendi çözümü; yoksa kazanım eşleşmesi, yaş düzeyi, süre, popülerlik, kanal güvenilirliği ve öğretmen onayı birlikte değerlendirilir. Kurum isterse yalnız kendi onaylı kanal listesini açar.</p></div>
+          </article>
+        </div>
+      </section>
 
       <section className="why-section"><div className="why-copy"><span>NEDEN KURUMLAR ANUNEX’İ SEÇER?</span><h2>Dağınık araçlar yerine<br/><em>tek bir gelişim sistemi.</em></h2><p>Sınav, optik, rapor, ödev ve rehberlik farklı yerlerde kaldığında okul veriyi taşımakla vakit kaybeder. ANUNEX tüm süreci aynı akademik kayıt üzerinde birleştirir.</p><a className="marketing-button" href={DEMO_URL}>Kurumunuzda deneyin <ArrowRight size={18}/></a></div><div className="why-list"><WhyItem title="Daha hızlı operasyon" text="Tekrarlayan ölçme ve raporlama işlerini azaltır; öğretmenin zamanını öğrenciye geri verir."/><WhyItem title="Daha erken müdahale" text="Sorun dönem sonunda değil, kanıt oluştuğu anda görünür olur."/><WhyItem title="Daha kişisel öğrenme" text="Her öğrenci aynı sonuca değil, kendi eksiğine göre hazırlanmış rotaya ulaşır."/><WhyItem title="Daha güvenilir karar" text="Kurum yönetimi sezgi yerine ölçülebilir gelişim verisiyle hareket eder."/></div></section>
 
