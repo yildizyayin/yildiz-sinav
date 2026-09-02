@@ -105,9 +105,18 @@ export async function callSharedEvaluationEngine(
     const [pathname,query=''] = targetPath.split('?');
     target.pathname = pathname;
     target.search = query ? `?${query}` : '';
-    let forwarded = new Request(target.toString(), request);
-    forwarded.headers.set('Cookie',`yildiz_session=${encodeURIComponent(raw)}`);
-    forwarded.headers.set('X-Anunex-Result-Bridge','1');
+    const source = request.clone();
+    const headers = new Headers(source.headers);
+    headers.set('Cookie',`yildiz_session=${encodeURIComponent(raw)}`);
+    headers.set('X-Anunex-Result-Bridge','1');
+    headers.delete('content-length');
+    const body = request.method==='GET'||request.method==='HEAD' ? undefined : await source.arrayBuffer();
+    let forwarded = new Request(target.toString(),{
+      method:request.method,
+      headers,
+      body,
+      redirect:request.redirect,
+    });
     if (/^\/api\/exams\/[^/]+\/preview-file$/.test(target.pathname)) {
       forwarded = await normalizeSekonicPreviewRequest(forwarded);
     }
