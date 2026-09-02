@@ -93,7 +93,9 @@ jobs:
           npm run seed:generate
           npm run seed:privacy:generate
           npx wrangler d1 execute DB --remote --file=tmp/demo-seed.idempotent.sql
+          npx wrangler d1 execute DB --remote --file=tmp/demo-college-showcase.idempotent.sql
           npx wrangler d1 execute DB --remote --file=tmp/standard-role-seed.idempotent.sql
+          npx wrangler d1 execute DB --remote --file=tmp/demo-exam-catalog.idempotent.sql
           npx wrangler d1 execute DB --remote --file=tmp/demo-camera-fixture.idempotent.sql
           npx wrangler d1 execute DB --remote --file=tmp/demo-standard-fixture.idempotent.sql
           npx wrangler d1 execute DB --remote --file=scripts/demo-standard-closure-fixture.sql
