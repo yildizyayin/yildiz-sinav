@@ -3,6 +3,8 @@ import type { CapacityJobMessage, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, audit, forbidden, json, methodNotAllowed, one } from './lib/db';
 import { handleResultNetworkRequest,purgeExpiredResultNetwork } from './result-network-entry';
+import { handleResultOperatorRequest } from './result-operator-entry';
+import { handleResultInstitutionRequest } from './result-institution-entry';
 
 const DSR_EXPORT_PATH = '/api/admin/privacy/exports/requests.csv';
 const HEALTH_TABLES = ['institutions', 'users', 'sessions', 'exams', 'student_entities', 'audit_logs'] as const;
@@ -100,6 +102,10 @@ async function productionHealth(env: Env): Promise<Response> {
 
 async function handleFetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const url = new URL(request.url);
+  const resultInstitution = await handleResultInstitutionRequest(request,env);
+  if (resultInstitution) return resultInstitution;
+  const resultOperator = await handleResultOperatorRequest(request,env);
+  if (resultOperator) return resultOperator;
   const resultNetwork = await handleResultNetworkRequest(request,env);
   if (resultNetwork) return resultNetwork;
   if (url.pathname === '/api/health' && request.method === 'GET') return productionHealth(env);
