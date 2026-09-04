@@ -1,3 +1,4 @@
+import { ANUNEX_BRAND } from '../brand';
 import './AnunexBrand.css';
 
 type AnunexBrandProps={
@@ -8,7 +9,7 @@ type AnunexBrandProps={
 };
 
 export function AnunexSymbol({className=''}:{className?:string}){
-  return <svg className={`anunex-symbol-canonical ${className}`.trim()} viewBox="0 0 72 72" role="img" aria-label="ANUNEX">
+  return <svg className={`anunex-symbol-canonical ${className}`.trim()} viewBox="0 0 72 72" role="img" aria-label={ANUNEX_BRAND.name}>
     <defs>
       <linearGradient id="anunex-a-left" x1="8" y1="62" x2="42" y2="5" gradientUnits="userSpaceOnUse"><stop stopColor="#6ca8ff"/><stop offset=".52" stopColor="#2867e8"/><stop offset="1" stopColor="#123a9e"/></linearGradient>
       <linearGradient id="anunex-a-right" x1="60" y1="61" x2="35" y2="10" gradientUnits="userSpaceOnUse"><stop stopColor="#07194b"/><stop offset=".48" stopColor="#0b2a75"/><stop offset="1" stopColor="#174ebf"/></linearGradient>
@@ -21,8 +22,8 @@ export function AnunexSymbol({className=''}:{className?:string}){
 }
 
 export function AnunexBrand({compact=false,inverse=false,className='',tagline=true}:AnunexBrandProps){
-  return <span className={`anunex-brand-canonical ${inverse?'is-inverse':''} ${compact?'is-compact':''} ${className}`.trim()} aria-label="ANUNEX — Bilginin yörüngesinde">
+  return <span className={`anunex-brand-canonical ${inverse?'is-inverse':''} ${compact?'is-compact':''} ${className}`.trim()} aria-label={`${ANUNEX_BRAND.name} — ${ANUNEX_BRAND.ariaTagline}`}>
     <AnunexSymbol/>
-    <span className="anunex-wordmark-canonical"><strong>ANUNEX</strong>{tagline&&<small>BİLGİNİN YÖRÜNGESİNDE</small>}</span>
+    <span className="anunex-wordmark-canonical"><strong>{ANUNEX_BRAND.name}</strong>{tagline&&<small>{ANUNEX_BRAND.tagline}</small>}</span>
   </span>;
 }

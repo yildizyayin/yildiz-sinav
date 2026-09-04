@@ -1,4 +1,5 @@
 import { useId, useRef, type CSSProperties, type PointerEvent } from 'react';
+import { NIBIRU_BRAND,NIBIRU_STATE_COPY } from '../brand';
 import './NibiruPlanetarySystem.css';
 
 type NibiruState='idle'|'listening'|'thinking'|'speaking';
@@ -13,11 +14,11 @@ export function NibiruPlanetarySystem({size=520,state='idle',compact=false}:{siz
   shell.current?.style.setProperty('--ny',String(y));
  };
  const reset=()=>{shell.current?.style.setProperty('--nx','0');shell.current?.style.setProperty('--ny','0')};
- return <div ref={shell} className={'nibiru-living-star '+(compact?'is-compact ':'')+'is-'+state} style={{'--nibiru-size':size+'px'} as CSSProperties} onPointerMove={move} onPointerLeave={reset} aria-label="Nibiru — Öğrenmenin yaşayan zekâsı">
+ return <div ref={shell} className={'nibiru-living-star '+(compact?'is-compact ':'')+'is-'+state} style={{'--nibiru-size':size+'px'} as CSSProperties} onPointerMove={move} onPointerLeave={reset} aria-label={`${NIBIRU_BRAND.name} — ${NIBIRU_BRAND.ariaTagline}`}>
   <div className="nibiru-space" aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/><i/><i/></div>
   <div className="nibiru-corona" aria-hidden="true"><b/><b/><b/></div>
   <div className="nibiru-star-shell">
-   <svg className="nibiru-star-art" viewBox="0 0 500 500" role="img" aria-label="Canlı Nibiru yıldız gezegeni">
+   <svg className="nibiru-star-art" viewBox="0 0 500 500" role="img" aria-label={`${NIBIRU_BRAND.name} yaşayan ışık formu`}>
     <defs>
      <radialGradient id={'body'+id} cx="36%" cy="30%" r="72%">
       <stop offset="0" stopColor="#ffffff"/><stop offset=".12" stopColor="#b9e6ff"/><stop offset=".34" stopColor="#6f7cff"/><stop offset=".61" stopColor="#3833a9"/><stop offset=".84" stopColor="#121643"/><stop offset="1" stopColor="#050817"/>
@@ -48,6 +49,6 @@ export function NibiruPlanetarySystem({size=520,state='idle',compact=false}:{siz
    <span className="nibiru-sense sense-a"/><span className="nibiru-sense sense-b"/><span className="nibiru-sense sense-c"/>
    <div className="nibiru-voice-wave" aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/></div>
   </div>
-  <div className="nibiru-signature"><strong>NIBIRU</strong><span>Öğrenmenin yaşayan zekâsı</span><small><i/> {state==='speaking'?'Sizinle konuşuyor':state==='listening'?'Sizi dinliyor':state==='thinking'?'Düşünüyor':'Sizinle birlikte öğreniyor'}</small></div>
+  <div className="nibiru-signature"><strong>{NIBIRU_BRAND.name}</strong><span>{NIBIRU_BRAND.tagline}</span><small><i/> {NIBIRU_STATE_COPY[state]}</small></div>
  </div>;
 }
