@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://demo.anunex.com`
-- Time: `2026-09-04T16:55:47.651Z`
+- Time: `2026-09-04T17:07:48.425Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -107,13 +107,28 @@
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v48 · 174 evidence · 3 subjects
-- ✅ **Idempotent refresh + versioned history** — 48 history snapshots
+- ✅ **Persistent student intelligence profile** — v49 · 174 evidence · 3 subjects
+- ✅ **Idempotent refresh + versioned history** — 49 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 477 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v48 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 486 reviewed signals · no raw responses
+- ❌ **Student Intelligence failure**
+
+```text
+Error: POST /api/nibiru/chat expected 200, got 500
+{
+  "ok": false,
+  "error": {
+    "code": "SERVER_ERROR",
+    "message": "Sunucu hatası oluştu.",
+    "requestId": "a35ea4114a44ed40"
+  }
+}
+    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-student-intelligence-smoke.mjs:6:392)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-student-intelligence-smoke.mjs:61:15
+```
 
 ## 100K Queue kapasite kabulü
 
