@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://demo.anunex.com`
-- Time: `2026-09-04T15:41:04.081Z`
+- Time: `2026-09-04T15:44:58.178Z`
 - Result: **FAILED**
 - Passed checks before finish: **3**
 
@@ -107,13 +107,13 @@ Error: Manager dashboard counts mismatch
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v42 · 174 evidence · 3 subjects
-- ✅ **Idempotent refresh + versioned history** — 42 history snapshots
+- ✅ **Persistent student intelligence profile** — v43 · 174 evidence · 3 subjects
+- ✅ **Idempotent refresh + versioned history** — 43 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 423 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v42 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 432 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v43 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 
