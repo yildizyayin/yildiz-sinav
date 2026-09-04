@@ -3,7 +3,7 @@ import { audit, badRequest, forbidden, json, methodNotAllowed, normalizeName, no
 import { createSession, getAuthUser, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
 import { canAccessSubjectForClass, canEvaluateExam, loadPermissionScope, roleCanManageInstitution } from './lib/permissions';
 import { matchParticipant } from './lib/matching';
-import { parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib/parse';
+import { decodeUploadedBytes, parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib/parse';
 import { assertScoringRuleVerified, calculateOverall, calculateSubjectScore } from './lib/scoring';
 import { masteryStatus } from './lib/outcome';
 import { calibrationWithinTolerance, nextCalibrationStatus, type CalibrationMetrics } from './lib/calibration';
@@ -230,7 +230,7 @@ async function previewExamFile(request: Request, env: Env, user: AuthUser, examI
   if (!inst) return notFound('Kurum bulunamadı.');
   if (inst.status === 'PASSIVE') return badRequest('Pasif kurumda sınav değerlendirilemez.', 'INSTITUTION_PASSIVE');
   const season = await ensureSeason(env.DB, institutionId, exam.academic_year);
-  const text = await file.text();
+  const text = decodeUploadedBytes(await file.arrayBuffer());
   const templates = await all<ParserTemplate>(env.DB.prepare(`SELECT v.id, t.name, v.parser_definition FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.active=1 AND t.active=1`));
   const manualTemplateId = form.get('templateVersionId')?.toString();
   let parsed;

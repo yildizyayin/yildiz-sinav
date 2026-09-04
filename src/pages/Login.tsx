@@ -18,6 +18,17 @@ export function Login() {
   const [token, setToken] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const isDemoHost = typeof window !== 'undefined' && (
+    window.location.hostname.toLowerCase() === 'demo.anunex.com'
+    || new URLSearchParams(window.location.search).get('demo') === '1'
+  );
+  const demoAccounts = [
+    ['Öğrenci', 'student.demo', 'Anunex.Ogrenci!26'],
+    ['Veli', 'parent.demo', 'Anunex.Veli!26'],
+    ['Öğretmen', 'teacher.demo', 'Anunex.Ogretmen!26'],
+    ['Rehberlik', 'guidance.demo', 'Anunex.Rehber!26'],
+    ['Kurum', 'manager.demo', 'Anunex.Kurum!26'],
+  ] as const;
   useEffect(()=>{ void api<any>('/api/config').then(setConfig).catch(()=>setConfig({productName:'Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu',turnstileSiteKey:''})); },[]);
   useEffect(()=>{ if(user) navigate('/'); },[user,navigate]);
   const onToken = useCallback((value:string)=>setToken(value),[]);
@@ -34,6 +45,7 @@ export function Login() {
     <div className="login-art"><AnunexCosmos/></div>
     <div className="login-panel"><form className="login-card" onSubmit={submit}>
       <div><span className="eyebrow">Anunex · Tek giriş · Rol otomatik tanınır</span><h2>{config?.productName || 'Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu'}</h2><p className="muted">Kullanıcı adı, e-posta veya telefon numaranızla giriş yapın.</p></div>
+      {isDemoHost && <div className="demo-role-picker"><div><strong>Demo Koleji</strong><span>İncelemek istediğiniz paneli seçin; demo hesabı güvenli biçimde doldurulur.</span></div><div>{demoAccounts.map(([label,user,pass])=><button type="button" key={user} onClick={()=>{setIdentifier(user);setPassword(pass);setError('')}}>{label}</button>)}</div></div>}
       <label>Kullanıcı adı / e-posta / telefon<input value={identifier} onChange={e=>setIdentifier(e.target.value)} autoComplete="username" required/></label>
       <label>Şifre<div className="password-input"><input type={show?'text':'password'} value={password} onChange={e=>setPassword(e.target.value)} autoComplete="current-password" required/><button type="button" aria-label={show?'Şifreyi gizle':'Şifreyi göster'} onClick={()=>setShow(v=>!v)}>{show?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></label>
       {config?.superAdminMfaEnabled && <label>Süper Admin doğrulama kodu <span className="muted">(yalnız yönetici hesabı)</span><input value={mfaCode} onChange={e=>setMfaCode(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="one-time-code" placeholder="6 haneli kod" maxLength={6}/></label>}
