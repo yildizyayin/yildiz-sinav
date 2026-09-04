@@ -22,7 +22,7 @@ ins("UPDATE student_enrollments SET status='INACTIVE' WHERE student_id GLOB 'stu
 ins("UPDATE student_entities SET status='INACTIVE' WHERE id GLOB 'stu_a0[2-6][1-9]' OR id GLOB 'stu_a0[3-6]0'");
 
 for (const grade of [5, 6, 7, 8, 9, 10, 11, 12]) {
-  ins(`INSERT OR REPLACE INTO classes (id,institution_id,season_id,grade_level,section,name,active) VALUES (${q(`class_${grade}a`)},'inst_demo','season_2627',${grade},'A',${q(`${grade}/A`)},1)`);
+  ins(`INSERT OR IGNORE INTO classes (id,institution_id,season_id,grade_level,section,name,active) VALUES (${q(`class_${grade}a`)},'inst_demo','season_2627',${grade},'A',${q(`${grade}/A`)},1)`);
 }
 
 const subjects = [
@@ -42,7 +42,7 @@ const subjects = [
   ['sub_edb', 'EDB', 'Türk Dili ve Edebiyatı', 'VERBAL'],
 ];
 for (const [id, code, name, category] of subjects) {
-  ins(`INSERT OR REPLACE INTO subjects (id,code,name,category,active) VALUES (${q(id)},${q(code)},${q(name)},${q(category)},1)`);
+  ins(`INSERT OR IGNORE INTO subjects (id,code,name,category,active) VALUES (${q(id)},${q(code)},${q(name)},${q(category)},1)`);
 }
 
 const firstNames = ['Aras', 'Defne', 'Efe', 'Elif', 'Mert', 'Zeynep', 'Kerem', 'İpek', 'Can', 'Duru', 'Emir', 'Ada', 'Bora', 'Nehir', 'Kaan', 'Eylül', 'Deniz', 'Mina', 'Atlas', 'Selin'];
@@ -53,8 +53,8 @@ for (const grade of [5, 6, 7, 8, 9, 10, 11, 12]) {
     const first = grade === 8 && index === 1 ? 'Aras' : firstNames[(index + grade) % firstNames.length];
     const last = grade === 8 && index === 1 ? 'Bulut' : lastNames[(index * 3 + grade) % lastNames.length];
     const studentNumber = String(grade * 1000 + index);
-    ins(`INSERT OR REPLACE INTO student_entities (id,first_name,last_name,normalized_name,status,activated_at) VALUES (${q(id)},${q(first)},${q(last)},${q(norm(`${first} ${last}`))},'ACTIVE','2026-09-01')`);
-    ins(`INSERT OR REPLACE INTO student_enrollments (id,student_id,institution_id,season_id,class_id,student_number,grade_level,section,status) VALUES (${q(`enr_demo_${grade}_${index}`)},${q(id)},'inst_demo','season_2627',${q(`class_${grade}a`)},${q(studentNumber)},${grade},'A','ACTIVE')`);
+    ins(`INSERT OR IGNORE INTO student_entities (id,first_name,last_name,normalized_name,status,activated_at) VALUES (${q(id)},${q(first)},${q(last)},${q(norm(`${first} ${last}`))},'ACTIVE','2026-09-01')`);
+    ins(`INSERT OR IGNORE INTO student_enrollments (id,student_id,institution_id,season_id,class_id,student_number,grade_level,section,status) VALUES (${q(`enr_demo_${grade}_${index}`)},${q(id)},'inst_demo','season_2627',${q(`class_${grade}a`)},${q(studentNumber)},${grade},'A','ACTIVE')`);
   }
 }
 
@@ -67,23 +67,23 @@ const roleAccounts = [
 ];
 for (const [id, studentId, role, displayName, username, email, rawPassword] of roleAccounts) {
   const credentials = password(rawPassword);
-  ins(`INSERT OR REPLACE INTO users (id,institution_id,student_id,role,display_name,email,username,password_hash,password_salt,password_iterations,password_algo,active) VALUES (${q(id)},'inst_demo',${q(studentId)},${q(role)},${q(displayName)},${q(email)},${q(username)},${q(credentials.hash)},${q(credentials.salt)},100000,'PBKDF2-SHA256-v1',1)`);
+  ins(`INSERT OR IGNORE INTO users (id,institution_id,student_id,role,display_name,email,username,password_hash,password_salt,password_iterations,password_algo,active) VALUES (${q(id)},'inst_demo',${q(studentId)},${q(role)},${q(displayName)},${q(email)},${q(username)},${q(credentials.hash)},${q(credentials.salt)},100000,'PBKDF2-SHA256-v1',1)`);
 }
-ins("INSERT OR REPLACE INTO parent_student_links (id,parent_user_id,student_id,relationship,active) VALUES ('psl_showcase','usr_show_parent','stu_demo_8_01','Anne',1)");
+ins("INSERT OR IGNORE INTO parent_student_links (id,parent_user_id,student_id,relationship,active) VALUES ('psl_showcase','usr_show_parent','stu_demo_8_01','Anne',1)");
 
 const branchTeachers = subjects.map(([subjectId, code, subjectName], index) => [
   `usr_branch_${code.toLowerCase()}`, subjectId, `${subjectName} Öğretmeni`, `branch.${code.toLowerCase()}`, `branch.${code.toLowerCase()}@demo.anunex.com`, index,
 ]);
 for (const [userId, subjectId, displayName, username, email] of branchTeachers) {
   const credentials = password('Anunex.Brans!26');
-  ins(`INSERT OR REPLACE INTO users (id,institution_id,student_id,role,display_name,email,username,password_hash,password_salt,password_iterations,password_algo,active) VALUES (${q(userId)},'inst_demo',NULL,'TEACHER',${q(displayName)},${q(email)},${q(username)},${q(credentials.hash)},${q(credentials.salt)},100000,'PBKDF2-SHA256-v1',1)`);
+  ins(`INSERT OR IGNORE INTO users (id,institution_id,student_id,role,display_name,email,username,password_hash,password_salt,password_iterations,password_algo,active) VALUES (${q(userId)},'inst_demo',NULL,'TEACHER',${q(displayName)},${q(email)},${q(username)},${q(credentials.hash)},${q(credentials.salt)},100000,'PBKDF2-SHA256-v1',1)`);
   for (const grade of [5, 6, 7, 8, 9, 10, 11, 12]) {
-    ins(`INSERT OR REPLACE INTO teacher_assignments (id,user_id,institution_id,season_id,class_id,subject_id,assignment_type,active) VALUES (${q(`ta_${userId}_${grade}`)},${q(userId)},'inst_demo','season_2627',${q(`class_${grade}a`)},${q(subjectId)},'SUBJECT',1)`);
+    ins(`INSERT OR IGNORE INTO teacher_assignments (id,user_id,institution_id,season_id,class_id,subject_id,assignment_type,active) VALUES (${q(`ta_${userId}_${grade}`)},${q(userId)},'inst_demo','season_2627',${q(`class_${grade}a`)},${q(subjectId)},'SUBJECT',1)`);
   }
 }
 for (const grade of [5, 6, 7, 8, 9, 10, 11, 12]) {
-  ins(`INSERT OR REPLACE INTO teacher_assignments (id,user_id,institution_id,season_id,class_id,subject_id,assignment_type,active) VALUES (${q(`ta_show_teacher_${grade}`)},'usr_show_teacher','inst_demo','season_2627',${q(`class_${grade}a`)},'sub_mat','SUBJECT',1)`);
-  ins(`INSERT OR REPLACE INTO teacher_assignments (id,user_id,institution_id,season_id,class_id,subject_id,assignment_type,active) VALUES (${q(`ta_show_guidance_${grade}`)},'usr_show_guidance','inst_demo','season_2627',${q(`class_${grade}a`)},NULL,'GUIDANCE',1)`);
+  ins(`INSERT OR IGNORE INTO teacher_assignments (id,user_id,institution_id,season_id,class_id,subject_id,assignment_type,active) VALUES (${q(`ta_show_teacher_${grade}`)},'usr_show_teacher','inst_demo','season_2627',${q(`class_${grade}a`)},'sub_mat','SUBJECT',1)`);
+  ins(`INSERT OR IGNORE INTO teacher_assignments (id,user_id,institution_id,season_id,class_id,subject_id,assignment_type,active) VALUES (${q(`ta_show_guidance_${grade}`)},'usr_show_guidance','inst_demo','season_2627',${q(`class_${grade}a`)},NULL,'GUIDANCE',1)`);
 }
 ins("UPDATE institution_license_state SET licensed_student_limit=500,licensed_student_count=160 WHERE id='lic_demo'");
 
