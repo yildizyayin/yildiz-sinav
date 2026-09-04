@@ -21,7 +21,7 @@ assert(spoofBlocked.p?.error?.code==='OFFICIAL_QUESTION_MAPPING_POLICY_FAILED','
 console.log('✓ Official question source boundary — lookalike domain rejected before archive write');
 
 const questions=await req('/api/platform/questions',{cookie:admin});let q=(questions.p?.questions||[]).find(x=>x.source_label===FIXTURE);
-if(!q){const created=await req('/api/platform/questions',{method:'POST',cookie:admin,expected:201,json:{stemText:'Staging hak doğrulama motoru için sentetik soru.',gradeLevel:99,difficulty:3,correctAnswer:'A',options:['A','B','C','D'],sourceLabel:FIXTURE,copyrightStatus:'LICENSED',originKind:'MANUAL'}});assert(created.p?.id,'Synthetic rights fixture creation failed',created.p);q={id:created.p.id};}
+if(!q){const created=await req('/api/platform/questions',{method:'POST',cookie:admin,expected:201,json:{stemText:'Staging hak doğrulama motoru için sentetik soru.',gradeLevel:5,difficulty:3,correctAnswer:'A',options:['A','B','C','D'],sourceLabel:FIXTURE,copyrightStatus:'LICENSED',originKind:'MANUAL'}});assert(created.p?.id,'Synthetic rights fixture creation failed',created.p);q={id:created.p.id};}
 const qid=q.id;const provenance=await req(`/api/question-provenance/${encodeURIComponent(qid)}`,{cookie:admin});
 assert(provenance.p?.question?.reviewStatus==='REVIEW','Licensed question was auto-approved before rights verification',provenance.p);
 const blockedApproval=await req(`/api/question-bank-standard/${encodeURIComponent(qid)}/review`,{method:'PATCH',cookie:admin,expected:400,json:{status:'APPROVED'}});
