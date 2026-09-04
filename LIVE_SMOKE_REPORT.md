@@ -1,29 +1,29 @@
 # Live Staging Smoke Report
 
 - Target: `https://demo.anunex.com`
-- Time: `2026-09-04T15:31:32.995Z`
-- Result: **PASSED**
-- Passed checks before finish: **17**
+- Time: `2026-09-04T15:36:08.376Z`
+- Result: **FAILED**
+- Passed checks before finish: **3**
 
 ## Checks
 
 - ✅ **Public config** — Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu / staging
 - ✅ **Unauthenticated API boundary**
 - ✅ **Turnstile server validation**
-- ✅ **Manager tenant dashboard** — 67 active / 45 guest / 21 applied exams
-- ✅ **Active/guest student separation** — 67 / 45
-- ✅ **110-person exam matching preview** — 65 core active + 45 known guest + 0 new guest
-- ✅ **110-person chunked exam evaluation** — 110 committed in 22 safe chunks
-- ✅ **Repeat guest identity matching** — still 45 guests; no duplicates
-- ✅ **Student dashboard data** — 2 developing outcomes
-- ✅ **Student self-service + IDOR boundary** — 9 visible exams
-- ✅ **Parent linked-child boundary** — 7/A
-- ✅ **Branch teacher dashboard scope** — 1 classes / 65 students
-- ✅ **Branch teacher subject scope** — Matematik
-- ✅ **Guidance dashboard scope** — 1 classes / 65 students
-- ✅ **Guidance teacher all-subject scope** — Fen Bilimleri, Matematik, Türkçe
-- ✅ **Super Admin institution access**
-- ✅ **Session revocation on logout**
+
+## Failure
+
+```text
+Error: Manager dashboard counts mismatch
+{
+  "Aktif Öğrenci": 67,
+  "Misafir Öğrenci": 45,
+  "Uygulanan Sınav": 21
+}
+    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke-v2.mjs:13:21)
+    at main (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke-v2.mjs:110:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+```
 
 ## Mandatory KVKK / privacy-by-design live gate
 
@@ -107,13 +107,13 @@
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v40 · 174 evidence · 3 subjects
-- ✅ **Idempotent refresh + versioned history** — 40 history snapshots
+- ✅ **Persistent student intelligence profile** — v41 · 174 evidence · 3 subjects
+- ✅ **Idempotent refresh + versioned history** — 41 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 405 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v40 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 414 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v41 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 
