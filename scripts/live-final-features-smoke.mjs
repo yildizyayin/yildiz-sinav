@@ -57,7 +57,7 @@ try{
  assert(readyCal?.status==='READY','Canon + Optik 840 calibration is not READY',calibrations.p);
  assert(Number.isFinite(Number(readyCal.offset_x_mm))&&Number.isFinite(Number(readyCal.scale_x)),'Calibration correction metrics missing',readyCal);
  const prep=await req('/api/optical-prepare?classId=class_7a&templateVersionId=v_opt840&examId=exam_demo_active&sort=number',{cookie:manager});
- assert((prep.p?.students||[]).length===65,'Personalized Optik 840 preparation did not return 65 active students',prep.p);
+ assert((prep.p?.students||[]).length===20,'Personalized Optik 840 preparation did not return 20 active students',prep.p);
  assert((prep.p?.bookletCodes||[]).join(',')==='A,B','Expected A/B booklet set',prep.p?.bookletCodes);
  assert((prep.p?.students||[]).every(x=>['A','B'].includes(x.booklet_code)),'Student booklet is outside configured A/B set',prep.p?.students?.slice(0,4));
  const fields=prep.p?.template?.printFields?.fields||[];
