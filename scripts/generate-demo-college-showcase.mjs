@@ -18,8 +18,8 @@ ins('PRAGMA foreign_keys = ON');
 
 // The original smoke fixture keeps 65 grade-7 students. The presentation tenant is
 // deliberately normalized to 20 students per grade without touching guest records.
-ins("UPDATE student_enrollments SET status='INACTIVE' WHERE student_id GLOB 'stu_a0[2-6][1-9]' OR student_id GLOB 'stu_a0[3-6]0'");
-ins("UPDATE student_entities SET status='INACTIVE' WHERE id GLOB 'stu_a0[2-6][1-9]' OR id GLOB 'stu_a0[3-6]0'");
+ins("UPDATE student_enrollments SET status='ARCHIVED' WHERE student_id GLOB 'stu_a0[2-6][1-9]' OR student_id GLOB 'stu_a0[3-6]0'");
+ins("UPDATE student_entities SET status='ARCHIVED' WHERE id GLOB 'stu_a0[2-6][1-9]' OR id GLOB 'stu_a0[3-6]0'");
 
 for (const grade of [5, 6, 7, 8, 9, 10, 11, 12]) {
   ins(`INSERT OR IGNORE INTO classes (id,institution_id,season_id,grade_level,section,name,active) VALUES (${q(`class_${grade}a`)},'inst_demo','season_2627',${grade},'A',${q(`${grade}/A`)},1)`);
