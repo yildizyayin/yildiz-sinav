@@ -5,8 +5,8 @@ const PASSWORD = process.env.SMOKE_DEMO_PASSWORD || 'Demo123!';
 const TURNSTILE_TEST_TOKEN = 'XXXX.DUMMY.TOKEN.XXXX';
 const REPORT_PATH = 'LIVE_SMOKE_REPORT.md';
 const passed = [];
-const DEMO_ACTIVE_TOTAL = 67; // 65 core 7/A students + Standard grade-5 + grade-12 acceptance students.
-const CORE_CLASS_ACTIVE = 65;
+const DEMO_ACTIVE_TOTAL = 162; // 20 students per grade in Demo Koleji + 2 standard acceptance students.
+const CORE_CLASS_ACTIVE = 20;
 const DEMO_GUEST_TOTAL = 45;
 
 function assert(value, message, details) {
@@ -67,7 +67,7 @@ async function preview110(cookie) {
   const form = new FormData();
   form.append('file', new Blob([build110Csv()], { type: 'text/csv' }), 'smoke-110.csv');
   const { payload } = await request('/api/exams/exam_demo_active/preview-file', { method: 'POST', cookie, form });
-  assert(payload?.total === 110, 'Preview total must be 110', payload);
+  assert(payload?.total === CORE_CLASS_ACTIVE + DEMO_GUEST_TOTAL, 'Preview total must match active + guest rows', payload);
   assert(payload?.counts?.active === CORE_CLASS_ACTIVE, 'Preview must match 65 core active students', payload?.counts);
   assert(payload?.counts?.guest === DEMO_GUEST_TOTAL, 'Preview must match 45 known guests', payload?.counts);
   assert(payload?.counts?.newGuest === 0, 'Preview must create no new guest identity', payload?.counts);
@@ -120,8 +120,8 @@ async function main() {
   ok('110-person exam matching preview', `${CORE_CLASS_ACTIVE} core active + ${DEMO_GUEST_TOTAL} known guest + 0 new guest`);
 
   const evaluation = await evaluateFully(manager, firstPreview.batchId);
-  assert(evaluation.processed === 110 && evaluation.remaining === 0, '110-person evaluation did not commit all rows', evaluation);
-  ok('110-person chunked exam evaluation', `110 committed in ${evaluation.attempts} safe chunks`);
+  assert(evaluation.processed === CORE_CLASS_ACTIVE + DEMO_GUEST_TOTAL && evaluation.remaining === 0, 'Demo evaluation did not commit all rows', evaluation);
+  ok('110-person chunked exam evaluation', `${CORE_CLASS_ACTIVE + DEMO_GUEST_TOTAL} committed in ${evaluation.attempts} safe chunks`);
 
   const afterGuests = await request('/api/students?status=GUEST', { cookie: manager });
   assert(afterGuests.payload?.students?.length === DEMO_GUEST_TOTAL, 'Evaluation created duplicate guests', afterGuests.payload?.students?.length);
