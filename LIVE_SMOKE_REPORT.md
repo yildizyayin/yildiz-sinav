@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://demo.anunex.com`
-- Time: `2026-09-04T20:57:58.188Z`
+- Time: `2026-09-04T21:02:00.223Z`
 - Result: **FAILED**
 - Passed checks before finish: **5**
 
@@ -22,7 +22,7 @@ Error: POST /api/exams/exam_demo_active/preview-file expected 200, got 500
   "error": {
     "code": "SERVER_ERROR",
     "message": "Sunucu hatası oluştu.",
-    "requestId": "a35fe8d8bec9fa9a"
+    "requestId": "a35feebce91bfbdd"
   }
 }
     at request (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke-v2.mjs:44:43)
@@ -55,7 +55,7 @@ Error: POST /api/nibiru/chat expected 200, got 500
   "error": {
     "code": "SERVER_ERROR",
     "message": "Sunucu hatası oluştu.",
-    "requestId": "a35fe8f3eb5cab6b"
+    "requestId": "a35fef08bcd9fbdd"
   }
 }
     at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:11:392)
@@ -81,25 +81,21 @@ Error: POST /api/nibiru/chat expected 200, got 500
 - ✅ **Standard readiness gate** — core ready · external setup 2
 - ✅ **External provider activation contract** — YouTube setup · WhatsApp setup
 - ✅ **Standard question bank** — 20 approved printable questions
-- ✅ **Education Coach verified mastery cycle** — 3 tasks · existing mastered evidence reused · progress 0%
-- ✅ **Zero Error exam source** — institution exams are selectable, not only central snapshots
-- ✅ **Correct / wrong / blank question review** — all answer states available
-- ✅ **Publisher solution + topic micro-learning contract** — registered video path
 - ❌ **Standard acceptance failure**
 
 ```text
-Error: POST /api/student-books/personal expected 201, got 500
+Error: POST /api/nibiru/chat expected 200, got 500
 {
   "ok": false,
   "error": {
     "code": "SERVER_ERROR",
     "message": "Sunucu hatası oluştu.",
-    "requestId": "a35fe9b5d9e6ab6b"
+    "requestId": "a35fefabcad774d1"
   }
 }
     at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:6:476)
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:66:17
+    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:24:14
 ```
 
 ## Standard final closure
@@ -114,7 +110,7 @@ Error: PATCH /api/student-standard/preferences failed with 500
   "error": {
     "code": "SERVER_ERROR",
     "message": "Sunucu hatası oluştu.",
-    "requestId": "a35fe9bbbb0afa9a"
+    "requestId": "a35ff0ebdae1cd76"
   }
 }
     at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:4:36)
@@ -135,7 +131,7 @@ Error: POST /api/nibiru/chat expected 200, got 500
   "error": {
     "code": "SERVER_ERROR",
     "message": "Sunucu hatası oluştu.",
-    "requestId": "a35fe9c0cda3f4c4"
+    "requestId": "a35ff0f5bad15629"
   }
 }
     at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-guidance-governance-smoke.mjs:6:392)
