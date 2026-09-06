@@ -131,7 +131,17 @@ async function orchestratedNibiruChat(request:Request,env:Env,ctx:ExecutionConte
     }catch{guidanceRoute={error:'GUIDANCE_ROUTE_FAILED'};}
   }
   const headers=new Headers(response.headers);headers.delete('content-length');headers.set('content-type','application/json; charset=utf-8');
-  return new Response(JSON.stringify({...payload,orchestration:{version:'multi-ai-v1',...route},coachPlan,guidanceRoute,guidanceAssessment}),{status:response.status,statusText:response.statusText,headers});
+  const baseOrchestration=payload.orchestration&&typeof payload.orchestration==='object'?payload.orchestration:{};
+  const orchestration={
+    ...baseOrchestration,
+    version:'multi-ai-v1',
+    specialist:baseOrchestration.specialist||route.specialist,
+    specialistLabel:baseOrchestration.specialistLabel||route.label,
+    label:route.label,
+    reason:route.reason,
+    subjectHint:route.subjectHint,
+  };
+  return new Response(JSON.stringify({...payload,orchestration,coachPlan,guidanceRoute,guidanceAssessment}),{status:response.status,statusText:response.statusText,headers});
 }
 
 export default {
