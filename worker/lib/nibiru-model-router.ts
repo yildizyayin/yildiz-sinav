@@ -32,12 +32,39 @@ export type NibiruModelDecision = {
   reason: string;
 };
 
+export type NibiruInferenceAttempt = {
+  model: string;
+  family: NibiruModelFamily;
+  ok: boolean;
+  transport?: 'gateway' | 'direct' | 'none';
+};
+
 export type NibiruInferenceResult = {
   text: string | null;
   decision: NibiruModelDecision;
   selected: NibiruModelCandidate | null;
-  attempts: Array<{model:string;family:NibiruModelFamily;ok:boolean}>;
+  attempts: NibiruInferenceAttempt[];
   gatewayLogId: string | null;
+  gatewayConfigured: boolean;
+  directFallbackUsed: boolean;
+};
+
+export type NibiruProbeItem = {
+  family: NibiruModelFamily;
+  model: string;
+  ok: boolean;
+  transport: 'gateway' | 'direct' | 'none';
+  gatewayFallback: boolean;
+  preview: string | null;
+  error: string | null;
+};
+
+export type NibiruProbeResult = {
+  ok: boolean;
+  gatewayId: string | null;
+  gatewayConfigured: boolean;
+  routerMode: string;
+  results: NibiruProbeItem[];
 };
 
 const DEFAULT_FAST = '@cf/zai-org/glm-4.7-flash';
@@ -148,43 +175,114 @@ function extractText(response:any):string|null{
   return typeof value==='string'&&value.trim()?value.trim():null;
 }
 
+function gatewayIdEnabled(value:string|null|undefined){
+  const id=String(value||'').trim();
+  return Boolean(id)&&!['off','none','disabled','direct'].includes(id.toLocaleLowerCase('en-US'));
+}
+
+function gatewayOptions(decision:Pick<NibiruModelDecision,'gatewayId'|'skipCache'>){
+  if(!gatewayIdEnabled(decision.gatewayId))return undefined;
+  return {gateway:{id:String(decision.gatewayId).trim(),skipCache:decision.skipCache}};
+}
+
+function errorMessage(error:unknown){
+  return String(error instanceof Error?error.message:error||'AI_PROVIDER_ERROR').replace(/\s+/g,' ').slice(0,240);
+}
+
+type ModelCallResult={
+  text:string|null;
+  transport:'gateway'|'direct'|'none';
+  gatewayFallback:boolean;
+  error:string|null;
+};
+
+async function callModel(
+  env:Env,
+  item:Pick<NibiruModelCandidate,'model'>,
+  decision:Pick<NibiruModelDecision,'gatewayId'|'skipCache'|'maxTokens'|'temperature'>,
+  messages:Array<{role:'system'|'user'|'assistant';content:string}>,
+):Promise<ModelCallResult>{
+  if(!env.AI)return{text:null,transport:'none',gatewayFallback:false,error:'AI_BINDING_MISSING'};
+  const input={messages,max_tokens:decision.maxTokens,temperature:decision.temperature} as any;
+  const gateway=gatewayOptions(decision);
+  if(!gateway){
+    try{
+      const response:any=await env.AI.run(item.model as any,input);
+      const text=extractText(response);
+      return{text,transport:'direct',gatewayFallback:false,error:text?null:'EMPTY_RESPONSE'};
+    }catch(error){return{text:null,transport:'direct',gatewayFallback:false,error:errorMessage(error)}}
+  }
+  try{
+    const response:any=await env.AI.run(item.model as any,input,gateway as any);
+    const text=extractText(response);
+    if(text)return{text,transport:'gateway',gatewayFallback:false,error:null};
+    throw new Error('EMPTY_GATEWAY_RESPONSE');
+  }catch(gatewayError){
+    try{
+      const response:any=await env.AI.run(item.model as any,input);
+      const text=extractText(response);
+      return{text,transport:'direct',gatewayFallback:true,error:text?null:errorMessage(gatewayError)};
+    }catch(directError){
+      return{text:null,transport:'direct',gatewayFallback:true,error:'Gateway: '+errorMessage(gatewayError)+'; Direct: '+errorMessage(directError)};
+    }
+  }
+}
+
 export async function runNibiruInference(
   env:Env,
   decision:NibiruModelDecision,
   messages:Array<{role:'system'|'user'|'assistant';content:string}>,
   metadata:Record<string,string|number|boolean|null|undefined>={},
 ):Promise<NibiruInferenceResult>{
-  const attempts:NibiruInferenceResult['attempts']=[];
-  if(!env.AI)return{text:null,decision,selected:null,attempts,gatewayLogId:null};
+  void metadata;
+  const attempts:NibiruInferenceAttempt[]=[];
+  const gatewayConfigured=gatewayIdEnabled(decision.gatewayId);
+  let directFallbackUsed=false;
+  if(!env.AI)return{text:null,decision,selected:null,attempts,gatewayLogId:null,gatewayConfigured,directFallbackUsed};
 
   for(const item of decision.candidates){
-    try{
-      const response:any=await env.AI.run(item.model as any,{
-        messages,
-        max_tokens:decision.maxTokens,
-        temperature:decision.temperature,
-      } as any,{
-        gateway:{
-          id:decision.gatewayId,
-          skipCache:decision.skipCache,
-          collectLog:true,
-          metadata:{
-            app:'nibiru',
-            specialist:decision.specialist,
-            workload:decision.workload,
-            modelFamily:item.family,
-            ...metadata,
-          },
-        },
-      } as any);
-      const text=extractText(response);
-      attempts.push({model:item.model,family:item.family,ok:Boolean(text)});
-      if(text)return{text,decision,selected:item,attempts,gatewayLogId:env.AI.aiGatewayLogId||null};
-    }catch{
-      attempts.push({model:item.model,family:item.family,ok:false});
-    }
+    const result=await callModel(env,item,decision,messages);
+    directFallbackUsed=directFallbackUsed||result.gatewayFallback;
+    attempts.push({model:item.model,family:item.family,ok:Boolean(result.text),transport:result.transport});
+    if(result.text)return{text:result.text,decision,selected:item,attempts,gatewayLogId:env.AI.aiGatewayLogId||null,gatewayConfigured,directFallbackUsed};
   }
-  return{text:null,decision,selected:null,attempts,gatewayLogId:env.AI.aiGatewayLogId||null};
+  return{text:null,decision,selected:null,attempts,gatewayLogId:env.AI.aiGatewayLogId||null,gatewayConfigured,directFallbackUsed};
+}
+
+export async function probeNibiruModels(env:Env):Promise<NibiruProbeResult>{
+  const m=models(env);
+  const gatewayId=gatewayIdEnabled(env.NIBIRU_AI_GATEWAY_ID||'default')?(env.NIBIRU_AI_GATEWAY_ID||'default'):null;
+  const decision={
+    gatewayId:gatewayId||'',
+    skipCache:true,
+    maxTokens:8,
+    temperature:0,
+  } as Pick<NibiruModelDecision,'gatewayId'|'skipCache'|'maxTokens'|'temperature'>;
+  const messages=[{role:'system' as const,content:'Sen Nibiru sağlayıcı bağlantı testisin. Yalnızca kısa bir yanıt ver.'},{role:'user' as const,content:'Bağlantı testi başarılıysa yalnızca OK yaz.'}];
+  const candidates:NibiruModelCandidate[]=[
+    candidate('FAST',m.fast,'Bağlantı testi'),
+    candidate('META',m.meta,'Bağlantı testi'),
+    candidate('NVIDIA',m.nvidia,'Bağlantı testi'),
+  ];
+  const results=await Promise.all(candidates.map(async item=>{
+    const call=await callModel(env,item,decision,messages);
+    return{
+      family:item.family,
+      model:item.model,
+      ok:Boolean(call.text),
+      transport:call.transport,
+      gatewayFallback:call.gatewayFallback,
+      preview:call.text?call.text.replace(/\s+/g,' ').slice(0,120):null,
+      error:call.error,
+    };
+  }));
+  return{
+    ok:results.every(item=>item.ok),
+    gatewayId,
+    gatewayConfigured:Boolean(gatewayId),
+    routerMode:env.NIBIRU_ROUTER_MODE||'SMART',
+    results,
+  };
 }
 
 export function nibiruRoutingMatrix(env:Env){
