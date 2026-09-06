@@ -313,7 +313,7 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
     routerMode:env.NIBIRU_ROUTER_MODE||'SMART',
     gatewayConfigured:inference?.gatewayConfigured ?? Boolean(decision.gatewayId),
     selectedFamily:inference?.selected?.family||null,
-    fallbackUsed:Boolean(inference?.directFallbackUsed || (inference && inference.attempts.filter(item=>item.ok).length>1)),
+    fallbackUsed:Boolean(inference?.directFallbackUsed || (inference && inference.attempts.length>1)),
     attempts:(inference?.attempts||[]).map(item=>({family:item.family,ok:item.ok,transport:item.transport})),
   };
   const outcome = intent === 'OUT_OF_SCOPE' || intent === 'UNKNOWN' ? 'REDIRECTED' : 'ANSWERED';
