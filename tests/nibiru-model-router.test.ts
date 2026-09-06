@@ -1,6 +1,6 @@
 import { describe,expect,it } from 'vitest';
 import type { Env } from '../worker/types';
-import { chooseNibiruModelDecision,classifyNibiruWorkload } from '../worker/lib/nibiru-model-router';
+import { chooseNibiruModelDecision,classifyNibiruWorkload,probeNibiruModels,runNibiruInference } from '../worker/lib/nibiru-model-router';
 import { routeNibiruSpecialist } from '../worker/lib/nibiru-specialists';
 
 const env={} as Env;
@@ -64,4 +64,30 @@ describe('Nibiru multi-AI router',()=>{
   const d=chooseNibiruModelDecision(customEnv,{role:'STUDENT'},'GENERAL_ACADEMIC','Bu matematik problemini neden yanlış yaptım?',route);
   expect(d.candidates.map(x=>x.model)).toEqual(['nvidia/z','meta/y','fast/x']);
  });
+ it('falls back to direct Workers AI when the Gateway transport is unavailable',async()=>{
+  const calls:any[]=[];
+  const ai={
+   run:async(model:any,_input:any,options?:any)=>{
+    calls.push({model,options});
+    if(options?.gateway)throw new Error('gateway unavailable');
+    return{response:'OK'};
+   },
+  };
+  const env={AI:ai,NIBIRU_AI_GATEWAY_ID:'default'} as Env;
+  const d=decision('STUDENT','GENERAL_ACADEMIC','Türkçe paragrafı anlatır mısın?');
+  const result=await runNibiruInference(env,d,[{role:'user',content:'Bağlantı testi'}]);
+  expect(result.text).toBe('OK');
+  expect(result.directFallbackUsed).toBe(true);
+  expect(result.attempts[0].transport).toBe('direct');
+  expect(calls).toHaveLength(2);
+ });
+
+ it('probes FAST, META and NVIDIA providers independently',async()=>{
+  const ai={run:async(_model:any,_input:any,_options?:any)=>({response:'OK'})};
+  const result=await probeNibiruModels({AI:ai,NIBIRU_AI_GATEWAY_ID:'default'} as Env);
+  expect(result.ok).toBe(true);
+  expect(result.results.map(x=>x.family)).toEqual(['FAST','META','NVIDIA']);
+  expect(result.results.every(x=>x.ok&&x.transport==='gateway')).toBe(true);
+ });
+
 });

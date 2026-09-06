@@ -4,6 +4,7 @@ import { getAuthUser } from './lib/auth';
 import { all, audit, badRequest, forbidden, json, one, uuid } from './lib/db';
 import { activateAnnual, getEffectiveLicense, licenseAccessMessage, setLicenseStatus, startTrial } from './lib/license';
 import { runNibiru } from './lib/nibiru';
+import { nibiruRoutingMatrix, probeNibiruModels } from './lib/nibiru-model-router';
 import { extractWhatsAppMessages, sendWhatsAppText, verifyWhatsAppSignature, whatsappReady } from './lib/whatsapp';
 
 const WHATSAPP_ROLES = new Set(['PARENT','TEACHER','GUIDANCE_TEACHER','INSTITUTION_MANAGER']);
@@ -106,7 +107,7 @@ async function nibiruSettings(request:Request,env:Env,user:AuthUser){
   if(user.role!=='SUPER_ADMIN'&&user.role!=='INSTITUTION_MANAGER')return forbidden();
   if(request.method==='GET'){
     const row=await settings(env);
-    return json({ok:true,settings:row,provider:{ready:whatsappReady(env),verifyToken:Boolean(env.WHATSAPP_VERIFY_TOKEN),appSecret:Boolean(env.WHATSAPP_APP_SECRET),accessToken:Boolean(env.WHATSAPP_ACCESS_TOKEN),phoneNumberId:Boolean(env.WHATSAPP_PHONE_NUMBER_ID)}});
+    return json({ok:true,settings:row,ai:{bindingReady:Boolean(env.AI),routing:nibiruRoutingMatrix(env)},provider:{ready:whatsappReady(env),verifyToken:Boolean(env.WHATSAPP_VERIFY_TOKEN),appSecret:Boolean(env.WHATSAPP_APP_SECRET),accessToken:Boolean(env.WHATSAPP_ACCESS_TOKEN),phoneNumberId:Boolean(env.WHATSAPP_PHONE_NUMBER_ID)}});
   }
   if(request.method==='PUT'){
     if(user.role!=='SUPER_ADMIN')return forbidden('Nibiru platform ayarlarını yalnız Süper Admin değiştirebilir.');
@@ -137,6 +138,22 @@ async function createPairing(request:Request,env:Env,user:AuthUser){
   await env.DB.prepare(`INSERT INTO nibiru_pairing_codes(id,user_id,code_hash,expires_at,created_by) VALUES(?,?,?,?,?)`).bind(uuid('nibc'),target.id,hash,expires,user.id).run();
   await audit(env.DB,user.id,target.institution_id,'NIBIRU_PAIRING_CODE_CREATED','user',target.id,{expiresAt:expires,role:target.role});
   return json({ok:true,code,expiresAt:expires,user:{id:target.id,displayName:target.display_name,role:target.role},instruction:`WhatsApp'tan “BAĞLA ${code}” yazın.`});
+}
+
+async function nibiruAiProbe(request:Request,env:Env,user:AuthUser){
+  if(user.role!=='SUPER_ADMIN')return forbidden("Nibiru sağlayıcı probe'u yalnız Süper Admin çalıştırabilir.");
+  if(env.ENVIRONMENT==='production')return apiError(403,'STAGING_ONLY',"AI sağlayıcı probe'u üretimde kapalıdır.");
+  if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Probe yalnız POST ile çalıştırılabilir.');
+  const probe=await probeNibiruModels(env);
+  return json({
+    ok:probe.ok,
+    environment:env.ENVIRONMENT||'unknown',
+    bindingReady:Boolean(env.AI),
+    freeMode:true,
+    paidPlanRequired:false,
+    routing:nibiruRoutingMatrix(env),
+    probe,
+  });
 }
 
 async function nibiruChat(request:Request,env:Env,user:AuthUser){
@@ -182,12 +199,13 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
   const url=new URL(request.url),path=url.pathname;
   if(path==='/api/nibiru/whatsapp/webhook')return whatsappWebhook(request,env,ctx);
 
-  if(path==='/api/nibiru/settings'||path==='/api/nibiru/users'||path==='/api/nibiru/pairing-code'||path==='/api/nibiru/chat'||path==='/api/nibiru/audit'||path==='/api/license/status'||path==='/api/admin/licenses'||path.startsWith('/api/admin/licenses/')){
+  if(path==='/api/nibiru/settings'||path==='/api/nibiru/users'||path==='/api/nibiru/pairing-code'||path==='/api/nibiru/chat'||path==='/api/nibiru/ai/probe'||path==='/api/nibiru/audit'||path==='/api/license/status'||path==='/api/admin/licenses'||path.startsWith('/api/admin/licenses/')){
     const userOr=await requireUser(env,request);if(isResponse(userOr))return userOr;const user=userOr;
     if(user.role!=='SUPER_ADMIN'&&user.institution_id&&path!=='/api/license/status'&&path!=='/api/nibiru/chat'){
       const blocked=await institutionBlock(env,user);
       if(blocked)return apiError(blocked.code==='LICENSE_EXPIRED'?402:403,blocked.code,blocked.message,'license' in blocked?blocked.license:undefined);
     }
+    if(path==='/api/nibiru/ai/probe')return nibiruAiProbe(request,env,user);
     if(path==='/api/nibiru/settings')return nibiruSettings(request,env,user);
     if(path==='/api/nibiru/users'&&request.method==='GET')return nibiruUsers(env,user,url);
     if(path==='/api/nibiru/pairing-code'&&request.method==='POST')return createPairing(request,env,user);

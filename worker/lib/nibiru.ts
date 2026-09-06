@@ -1,5 +1,10 @@
 import type { AuthUser, Env } from '../types';
 import { all, one, uuid } from './db';
+import { createOrReuseDailyCoachPlan, coachPlanSummary, type CoachPlanResult } from './education-coach';
+import { externalPersonalDataGate } from './privacy-external-gate';
+import { minimizeNibiruAiMessages } from './privacy-minimization';
+import { chooseNibiruModelDecision, runNibiruInference, type NibiruInferenceResult } from './nibiru-model-router';
+import { routeNibiruSpecialist } from './nibiru-specialists';
 
 export type NibiruIntent =
   | 'GREETING'
@@ -23,6 +28,18 @@ export type NibiruResult = {
   studentId: string | null;
   examId: string | null;
   outcome: 'ANSWERED' | 'REDIRECTED' | 'DENIED' | 'ERROR';
+  coachPlan?: CoachPlanResult | null;
+  orchestration: {
+    specialist: string;
+    specialistLabel: string;
+    workload: string;
+    routerMode: string;
+    gatewayConfigured: boolean;
+    selectedFamily: string | null;
+    fallbackUsed: boolean;
+    attempts: Array<{ family: string; ok: boolean; transport?: string }>;
+  };
+  persistenceWarning?: string;
 };
 
 const AI_PREFIX = '🤖 Nibiru:';
@@ -160,19 +177,55 @@ DEĞİŞMEZ KURALLAR:
 10. Kullanıcıya gerektiğinde tek bir sonraki soru/öneri sun; gereksiz soru sorma.`;
 }
 
-async function aiAnswer(env: Env, user: AuthUser, intent: NibiruIntent, message: string, context: any) {
-  const settings = await one<any>(env.DB.prepare(`SELECT * FROM nibiru_settings WHERE id='platform'`));
-  if (!settings?.enabled || !env.AI) return null;
-  const prompt = `${systemPrompt(user.role)}\n\nNİYET: ${intent}\nKULLANICI MESAJI: ${message}\nDOĞRULANMIŞ VERİ BAĞLAMI:\n${JSON.stringify(context).slice(0,14000)}`;
-  try {
-    const model = env.NIBIRU_AI_MODEL || settings.ai_model || '@cf/zai-org/glm-4.7-flash';
-    const response: any = await env.AI.run(model as any, { messages: [{ role: 'system', content: systemPrompt(user.role) }, { role: 'user', content: prompt }], max_tokens: 700, temperature: 0.2 });
-    const text = typeof response === 'string' ? response : response?.response || response?.result?.response || response?.choices?.[0]?.message?.content;
-    if (!text || typeof text !== 'string') return null;
-    return text.startsWith(AI_PREFIX) ? text.trim() : `${AI_PREFIX} ${text.trim()}`;
-  } catch {
-    return null;
+async function aiAnswer(
+  env: Env,
+  user: AuthUser,
+  intent: NibiruIntent,
+  message: string,
+  context: any,
+  decision: ReturnType<typeof chooseNibiruModelDecision>,
+): Promise<{text:string|null;inference:NibiruInferenceResult|null;blocked:string|null}> {
+  const settings = await one<any>(env.DB.prepare("SELECT * FROM nibiru_settings WHERE id='platform'"));
+  if (!settings?.enabled || !env.AI) return {text:null,inference:null,blocked:null};
+
+  const privacyGate = await externalPersonalDataGate(env,'NIBIRU_AI');
+  if (!privacyGate.ok) {
+    console.error(JSON.stringify({
+      event:'nibiru_external_provider_blocked',
+      code:privacyGate.code,
+      environment:env.ENVIRONMENT||'unknown',
+    }));
+    return {text:null,inference:null,blocked:privacyGate.code};
   }
+
+  const prompt = systemPrompt(user.role) + '\n\nNİYET: ' + intent + '\nKULLANICI MESAJI: ' + message + '\nDOĞRULANMIŞ VERİ BAĞLAMI:\n' + JSON.stringify(context).slice(0,14000);
+  const minimized = minimizeNibiruAiMessages([
+    { role:'system', content:systemPrompt(user.role) },
+    { role:'user', content:prompt },
+  ]);
+  const inference = await runNibiruInference(env,decision,minimized.messages,{
+    role:user.role,
+    intent,
+    environment:env.ENVIRONMENT||'unknown',
+    privacyRedactions:minimized.redactions,
+  });
+
+  console.log(JSON.stringify({
+    event:'nibiru_model_route',
+    specialist:decision.specialist,
+    workload:decision.workload,
+    selectedFamily:inference.selected?.family||null,
+    attempts:inference.attempts.map(item=>({family:item.family,ok:item.ok,transport:item.transport})),
+    gatewayConfigured:inference.gatewayConfigured,
+    directFallbackUsed:inference.directFallbackUsed,
+    gatewayLogId:inference.gatewayLogId,
+    privacyRedactions:minimized.redactions,
+    privacyProviderGate:privacyGate.enforcement,
+  }));
+
+  if (!inference.text) return {text:null,inference,blocked:null};
+  const text = inference.text.startsWith(AI_PREFIX) ? inference.text.trim() : AI_PREFIX + ' ' + inference.text.trim();
+  return {text,inference,blocked:null};
 }
 
 function fallbackAnswer(intent: NibiruIntent, context: any) {
@@ -206,9 +259,12 @@ function fallbackAnswer(intent: NibiruIntent, context: any) {
 export async function runNibiru(env: Env, user: AuthUser, message: string, channel: 'WHATSAPP' | 'WEB', channelKey: string): Promise<NibiruResult> {
   const session = await latestSession(env,channel,channelKey);
   const intent = detectNibiruIntent(message,session?.last_intent);
+  const specialist = routeNibiruSpecialist(user,message);
+  const decision = chooseNibiruModelDecision(env,user,intent,message,specialist);
   let context: any = {};
   let studentId: string | null = null;
   let examId: string | null = null;
+  let coachPlan: CoachPlanResult | null = null;
 
   if (user.role === 'PARENT' || user.role === 'STUDENT') {
     const selected = await selectStudent(env,user,message,session?.last_student_id);
@@ -225,15 +281,56 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
   } else if (user.institution_id) {
     context = await institutionContext(env,user.institution_id);
   } else if (user.role === 'SUPER_ADMIN') {
-    const institutions = await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM institutions WHERE status='ACTIVE'`));
-    const students = await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM student_entities WHERE status='ACTIVE'`));
+    const institutions = await one<{c:number}>(env.DB.prepare("SELECT count(*) c FROM institutions WHERE status='ACTIVE'"));
+    const students = await one<{c:number}>(env.DB.prepare("SELECT count(*) c FROM student_entities WHERE status='ACTIVE'"));
     context = { platform: true, activeInstitutions: institutions?.c || 0, activeStudents: students?.c || 0 };
   }
 
+  if (intent === 'TODAY_PLAN' && user.role === 'STUDENT') {
+    try {
+      coachPlan = await createOrReuseDailyCoachPlan(env,user);
+    } catch (error) {
+      console.error(JSON.stringify({
+        event:'nibiru_coach_plan_error',
+        userRole:user.role,
+        error:error instanceof Error?error.message:String(error),
+      }));
+    }
+  }
+
   const fixed = deterministic(intent,context,user);
-  const answer = fixed || await aiAnswer(env,user,intent,message,context) || fallbackAnswer(intent,context);
+  const planSummary = coachPlan?.available ? coachPlanSummary(coachPlan) : null;
+  const planAnswer = planSummary
+    ? AI_PREFIX + ' Bugün için doğrulanmış kısa çalışma planın hazır:\n' + planSummary + '\nGörevleri tamamladıktan sonra mini test ile pekiştirme yapabilirsin.'
+    : null;
+  const ai = fixed || planAnswer ? null : await aiAnswer(env,user,intent,message,context,decision);
+  const answer = fixed || planAnswer || ai?.text || fallbackAnswer(intent,context);
+  const inference = ai?.inference || null;
+  const orchestration = {
+    specialist:specialist.specialist,
+    specialistLabel:specialist.label,
+    workload:decision.workload,
+    routerMode:env.NIBIRU_ROUTER_MODE||'SMART',
+    gatewayConfigured:inference?.gatewayConfigured ?? Boolean(decision.gatewayId),
+    selectedFamily:inference?.selected?.family||null,
+    fallbackUsed:Boolean(inference?.directFallbackUsed || (inference && inference.attempts.length>1)),
+    attempts:(inference?.attempts||[]).map(item=>({family:item.family,ok:item.ok,transport:item.transport})),
+  };
   const outcome = intent === 'OUT_OF_SCOPE' || intent === 'UNKNOWN' ? 'REDIRECTED' : 'ANSWERED';
-  await saveSession(env,channel,channelKey,user.id,intent,studentId,examId);
-  await env.DB.prepare(`INSERT INTO nibiru_audit_events(id,institution_id,user_id,channel,role,intent,subject_student_id,subject_exam_id,outcome,message_chars) VALUES(?,?,?,?,?,?,?,?,?,?)`).bind(uuid('niba'),user.institution_id,user.id,channel,user.role,intent,studentId,examId,outcome,message.length).run();
-  return { answer, intent, studentId, examId, outcome };
+
+  let persistenceWarning: string | undefined;
+  try {
+    await saveSession(env,channel,channelKey,user.id,intent,studentId,examId);
+    await env.DB.prepare('INSERT INTO nibiru_audit_events(id,institution_id,user_id,channel,role,intent,subject_student_id,subject_exam_id,outcome,message_chars) VALUES(?,?,?,?,?,?,?,?,?,?)').bind(uuid('niba'),user.institution_id,user.id,channel,user.role,intent,studentId,examId,outcome,message.length).run();
+  } catch (error) {
+    console.error(JSON.stringify({
+      event:'nibiru_persistence_error',
+      environment:env.ENVIRONMENT||'unknown',
+      error:error instanceof Error?error.message:String(error),
+    }));
+    if (env.ENVIRONMENT === 'production') throw error;
+    persistenceWarning = 'STAGING_D1_WRITE_SKIPPED';
+  }
+
+  return { answer, intent, studentId, examId, outcome, coachPlan, orchestration, persistenceWarning };
 }
