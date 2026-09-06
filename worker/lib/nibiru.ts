@@ -185,7 +185,7 @@ async function aiAnswer(
   context: any,
   decision: ReturnType<typeof chooseNibiruModelDecision>,
 ): Promise<{text:string|null;inference:NibiruInferenceResult|null;blocked:string|null}> {
-  const settings = await one<any>(env.DB.prepare('SELECT * FROM nibiru_settings WHERE id=''platform'''));
+  const settings = await one<any>(env.DB.prepare("SELECT * FROM nibiru_settings WHERE id='platform'"));
   if (!settings?.enabled || !env.AI) return {text:null,inference:null,blocked:null};
 
   const privacyGate = await externalPersonalDataGate(env,'NIBIRU_AI');
@@ -281,8 +281,8 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
   } else if (user.institution_id) {
     context = await institutionContext(env,user.institution_id);
   } else if (user.role === 'SUPER_ADMIN') {
-    const institutions = await one<{c:number}>(env.DB.prepare('SELECT count(*) c FROM institutions WHERE status=''ACTIVE'''));
-    const students = await one<{c:number}>(env.DB.prepare('SELECT count(*) c FROM student_entities WHERE status=''ACTIVE'''));
+    const institutions = await one<{c:number}>(env.DB.prepare("SELECT count(*) c FROM institutions WHERE status='ACTIVE'"));
+    const students = await one<{c:number}>(env.DB.prepare("SELECT count(*) c FROM student_entities WHERE status='ACTIVE'"));
     context = { platform: true, activeInstitutions: institutions?.c || 0, activeStudents: students?.c || 0 };
   }
 
