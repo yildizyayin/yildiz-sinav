@@ -226,12 +226,14 @@ async function callModel(
   messages:Array<{role:'system'|'user'|'assistant';content:string}>,
 ):Promise<ModelCallResult>{
   if(!env.AI)return{text:null,transport:'none',gatewayFallback:false,error:'AI_BINDING_MISSING'};
-  const input:any={messages,temperature:decision.temperature,stream:false};
-  if(item.model===DEFAULT_FAST){
-    // Cloudflare's GLM schema exposes prompt as a required text-generation field;
-    // keep messages as well for chat compatibility and provide both forms.
-    input.prompt=messages.map(message=>message.role.toUpperCase()+': '+message.content).join('\\n');
-  }
+  const isGlm=item.model===DEFAULT_FAST;
+  const input:any=isGlm
+    ? {
+        prompt:messages.map(message=>message.role.toUpperCase()+': '+message.content).join('\\n'),
+        temperature:decision.temperature,
+        stream:false,
+      }
+    : {messages,temperature:decision.temperature,stream:false};
   if(item.model===DEFAULT_FAST||item.family==='FAST'){
     input.max_completion_tokens=decision.maxTokens;
     input.reasoning_effort='low';
