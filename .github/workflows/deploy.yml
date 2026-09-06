@@ -37,10 +37,28 @@ jobs:
 
       - name: Ensure staging capacity queues
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        shell: bash
         run: |
-          npx wrangler queues list | grep -q 'yildiz-sinav-scale-staging' || npx wrangler queues create yildiz-sinav-scale-staging
-          npx wrangler queues list | grep -q 'yildiz-sinav-scale-staging-dlq' || npx wrangler queues create yildiz-sinav-scale-staging-dlq
-
+          ensure_queue() {
+            local name="$1"
+            if npx wrangler queues list 2>/dev/null | grep -q "$name"; then
+              echo "$name already exists."
+              return 0
+            fi
+            local output
+            if output="$(npx wrangler queues create "$name" 2>&1)"; then
+              echo "$output"
+              return 0
+            fi
+            echo "$output"
+            if echo "$output" | grep -q "already taken"; then
+              echo "$name exists; queue listing was stale or temporarily unavailable."
+              return 0
+            fi
+            return 1
+          }
+          ensure_queue yildiz-sinav-scale-staging
+          ensure_queue yildiz-sinav-scale-staging-dlq
       - name: WhatsApp secret readiness
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         shell: bash
