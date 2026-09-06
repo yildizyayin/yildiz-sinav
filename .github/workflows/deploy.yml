@@ -102,6 +102,10 @@ jobs:
           npx wrangler d1 execute DB --remote --file=tmp/privacy-security-fixture.idempotent.sql
           node scripts/seed-standard-assets.mjs
 
+      - name: Live Nibiru free multi-AI provider probe
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        run: node scripts/live-nibiru-ai-probe.mjs
+
       - name: Live staging smoke tests
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: |
