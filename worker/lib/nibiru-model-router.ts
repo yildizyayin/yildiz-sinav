@@ -203,7 +203,7 @@ async function callModel(
   messages:Array<{role:'system'|'user'|'assistant';content:string}>,
 ):Promise<ModelCallResult>{
   if(!env.AI)return{text:null,transport:'none',gatewayFallback:false,error:'AI_BINDING_MISSING'};
-  const input={messages,max_tokens:decision.maxTokens,temperature:decision.temperature} as any;
+  const input={messages,max_tokens:decision.maxTokens,temperature:decision.temperature,stream:false} as any;
   const gateway=gatewayOptions(decision);
   if(!gateway){
     try{
@@ -255,7 +255,7 @@ export async function probeNibiruModels(env:Env):Promise<NibiruProbeResult>{
   const decision={
     gatewayId:gatewayId||'',
     skipCache:true,
-    maxTokens:8,
+    maxTokens:128,
     temperature:0,
   } as Pick<NibiruModelDecision,'gatewayId'|'skipCache'|'maxTokens'|'temperature'>;
   const messages=[{role:'system' as const,content:'Sen Nibiru sağlayıcı bağlantı testisin. Yalnızca kısa bir yanıt ver.'},{role:'user' as const,content:'Bağlantı testi başarılıysa yalnızca OK yaz.'}];
