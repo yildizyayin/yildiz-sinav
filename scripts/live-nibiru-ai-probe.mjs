@@ -44,6 +44,18 @@ try{
     assert(item?.ok===true,'Provider probe failed for '+family,item);
     console.log('✓ '+family+' provider response · '+item.model+' · '+item.transport+(item.gatewayFallback?' · direct fallback':''));
   }
+  const inference=await request('/api/nibiru/chat',{
+    method:'POST',
+    cookie,
+    json:{message:'Akademik gelişim verilerini süreç odaklı ve kısa biçimde açıkla.'},
+  });
+  const orchestration=inference.payload?.orchestration;
+  assert(inference.payload?.ok===true&&inference.payload?.outcome==='ANSWERED','Nibiru inference did not answer',inference.payload);
+  assert(orchestration?.gatewayConfigured===true,'Nibiru inference did not report Gateway configuration',inference.payload);
+  assert(Boolean(orchestration?.selectedFamily),'Nibiru inference did not select a model family',inference.payload);
+  assert((orchestration?.attempts||[]).some(item=>item.ok===true),'Nibiru inference had no successful model attempt',inference.payload);
+  console.log('✓ Nibiru real inference · '+orchestration.selectedFamily+' · '+(orchestration.attempts||[]).map(item=>item.family+':'+(item.ok?'ok':'failed')).join(', '));
+
   console.log('\nNibiru free multi-AI activation probe passed.');
 }catch(error){
   console.error('\nNIBIRU AI PROVIDER PROBE FAILED');
