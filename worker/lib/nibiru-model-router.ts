@@ -170,9 +170,32 @@ export function chooseNibiruModelDecision(
   };
 }
 
+function textFromValue(value:any):string|null{
+  if(typeof value==='string'&&value.trim())return value.trim();
+  if(Array.isArray(value)){
+    const joined=value.map(part=>typeof part==='string'?part:part?.text||part?.content||'').join('');
+    return joined.trim()?joined.trim():null;
+  }
+  return null;
+}
+
 function extractText(response:any):string|null{
-  const value=typeof response==='string'?response:response?.response||response?.result?.response||response?.choices?.[0]?.message?.content;
-  return typeof value==='string'&&value.trim()?value.trim():null;
+  const values=[
+    response,
+    response?.response,
+    response?.result?.response,
+    response?.output_text,
+    response?.text,
+    response?.choices?.[0]?.message?.content,
+    response?.choices?.[0]?.message?.text,
+    response?.choices?.[0]?.delta?.content,
+    response?.choices?.[0]?.text,
+  ];
+  for(const value of values){
+    const text=textFromValue(value);
+    if(text)return text;
+  }
+  return null;
 }
 
 function gatewayIdEnabled(value:string|null|undefined){
@@ -198,12 +221,18 @@ type ModelCallResult={
 
 async function callModel(
   env:Env,
-  item:Pick<NibiruModelCandidate,'model'>,
+  item:Pick<NibiruModelCandidate,'model'|'family'>,
   decision:Pick<NibiruModelDecision,'gatewayId'|'skipCache'|'maxTokens'|'temperature'>,
   messages:Array<{role:'system'|'user'|'assistant';content:string}>,
 ):Promise<ModelCallResult>{
   if(!env.AI)return{text:null,transport:'none',gatewayFallback:false,error:'AI_BINDING_MISSING'};
-  const input={messages,max_tokens:decision.maxTokens,temperature:decision.temperature,stream:false} as any;
+  const input:any={messages,temperature:decision.temperature,stream:false};
+  if(item.model===DEFAULT_FAST||item.family==='FAST'){
+    input.max_completion_tokens=decision.maxTokens;
+    input.reasoning_effort='low';
+  }else{
+    input.max_tokens=decision.maxTokens;
+  }
   const gateway=gatewayOptions(decision);
   if(!gateway){
     try{
@@ -221,7 +250,7 @@ async function callModel(
     try{
       const response:any=await env.AI.run(item.model as any,input);
       const text=extractText(response);
-      return{text,transport:'direct',gatewayFallback:true,error:text?null:errorMessage(gatewayError)};
+      return{text,transport:'direct',gatewayFallback:true,error:text?null:'EMPTY_DIRECT_RESPONSE'};
     }catch(directError){
       return{text:null,transport:'direct',gatewayFallback:true,error:'Gateway: '+errorMessage(gatewayError)+'; Direct: '+errorMessage(directError)};
     }
@@ -255,7 +284,7 @@ export async function probeNibiruModels(env:Env):Promise<NibiruProbeResult>{
   const decision={
     gatewayId:gatewayId||'',
     skipCache:true,
-    maxTokens:128,
+    maxTokens:256,
     temperature:0,
   } as Pick<NibiruModelDecision,'gatewayId'|'skipCache'|'maxTokens'|'temperature'>;
   const messages=[{role:'system' as const,content:'Sen Nibiru sağlayıcı bağlantı testisin. Yalnızca kısa bir yanıt ver.'},{role:'user' as const,content:'Bağlantı testi başarılıysa yalnızca OK yaz.'}];
