@@ -5,6 +5,7 @@ import { resultApiPathAllowed } from '../worker/result-worker-entry';
 const config=readFileSync(new URL('../wrangler.result.production.jsonc',import.meta.url),'utf8');
 const workflow=readFileSync(new URL('../.github/workflows/deploy-result-network.yml',import.meta.url),'utf8');
 const licensedWorkflow=readFileSync(new URL('../.github/workflows/deploy-production.yml',import.meta.url),'utf8');
+const bootstrapWorkflow=readFileSync(new URL('../.github/workflows/bootstrap-production-admin.yml',import.meta.url),'utf8');
 
 describe('dedicated Result Network production boundary',()=>{
   it('allows only result, authentication and narrowly required administration APIs',()=>{
@@ -28,5 +29,11 @@ describe('dedicated Result Network production boundary',()=>{
     expect(workflow).not.toContain('live-nibiru');
     expect(licensedWorkflow).toContain('attach_domain app.anunex.com yildiz-sinav-prod');
     expect(licensedWorkflow).not.toContain('attach_domain sonuc.anunex.com yildiz-sinav-prod');
+  });
+
+  it('uses explicit audited trigger markers for the first production cutover and admin repair',()=>{
+    expect(workflow).toContain("- '.github/deploy-result-network.trigger'");
+    expect(workflow).toContain("github.event_name == 'push' || inputs.attach_domain == true");
+    expect(bootstrapWorkflow).toContain("- '.github/bootstrap-production-admin.trigger'");
   });
 });
