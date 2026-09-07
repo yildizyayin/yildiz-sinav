@@ -6,6 +6,7 @@ const source=readFileSync(new URL('../worker/result-network-entry.ts',import.met
 const migration=readFileSync(new URL('../migrations/0033_results_network_targets_attendance.sql',import.meta.url),'utf8');
 const app=readFileSync(new URL('../src/App.tsx',import.meta.url),'utf8');
 const portal=readFileSync(new URL('../src/pages/ResultPortal.tsx',import.meta.url),'utf8');
+const operator=readFileSync(new URL('../src/pages/ResultOperatorWorkspace.tsx',import.meta.url),'utf8');
 
 describe('ANUNEX result network contract',()=>{
  it('never uses a raw TCKN as the result access decision',()=>{
@@ -48,6 +49,16 @@ describe('ANUNEX result network contract',()=>{
   expect(portal).toContain('const refreshTurnstile=()=>');
   expect(portal).toContain('key={turnstileCycle}');
   expect(portal).toContain('disabled={busy||!institution||!token}');
+ });
+ it('connects the independent operator screen to a scoped evaluation workflow',()=>{
+  expect(source).toContain('handleResultOperations');
+  expect(source).toContain("channel='RESULT_NETWORK' AND status='ACTIVE'");
+  expect(source).toContain("institution.lifecycle_status!=='ACTIVE'");
+  expect(source).toContain("s.scope_type='DISTRICT' AND s.city=ndi.city AND s.district=ndi.district");
+  expect(operator).toContain("operations/catalog");
+  expect(operator).toContain("operations/exams/${examId}/preview-file");
+  expect(operator).toContain("operations/scan-batches/${preview.batchId}/evaluate");
+  expect(portal).toContain('<ResultOperatorWorkspace');
  });
 });
 
