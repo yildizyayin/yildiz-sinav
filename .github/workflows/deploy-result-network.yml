@@ -117,19 +117,42 @@ jobs:
           previous="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$endpoint?hostname=sonuc.anunex.com")"
           previous_service="$(jq -r '.result[0].service // empty' <<<"$previous")"
           previous_environment="$(jq -r '.result[0].environment // "production"' <<<"$previous")"
+          domain_id="$(jq -r '.result[0].id // empty' <<<"$previous")"
           zone_id="$(jq -r '.result[0].zone_id // empty' <<<"$previous")"
           test -n "$previous_service" || (echo "Current sonuc.anunex.com service could not be recorded." >&2 && exit 1)
+          test -n "$domain_id" || (echo "Current sonuc.anunex.com domain id could not be recorded." >&2 && exit 1)
           test -n "$zone_id" || (echo "Current sonuc.anunex.com zone could not be recorded." >&2 && exit 1)
           echo "previous_service=$previous_service" >> "$GITHUB_OUTPUT"
           echo "previous_environment=$previous_environment" >> "$GITHUB_OUTPUT"
+          echo "domain_id=$domain_id" >> "$GITHUB_OUTPUT"
           echo "zone_id=$zone_id" >> "$GITHUB_OUTPUT"
-          response="$(curl --fail-with-body --silent --show-error \
+
+          delete_status="$(curl --silent --show-error \
+            --output result-domain-delete-response.json \
+            --write-out '%{http_code}' \
+            --request DELETE \
+            --header "$auth_header" \
+            "$endpoint/$domain_id")"
+          if [[ "$delete_status" -lt 200 || "$delete_status" -ge 300 ]] || ! jq -e '.success == true' result-domain-delete-response.json >/dev/null; then
+            echo "Cloudflare could not detach the existing sonuc.anunex.com custom domain (HTTP $delete_status)." >&2
+            jq -c '{success,errors,messages}' result-domain-delete-response.json >&2 || true
+            exit 1
+          fi
+          echo "detached=true" >> "$GITHUB_OUTPUT"
+
+          attach_status="$(curl --silent --show-error \
+            --output result-domain-attach-response.json \
+            --write-out '%{http_code}' \
             --request PUT \
             --header 'Content-Type: application/json' \
             --header "$auth_header" \
             --data "$(jq -n --arg zone "$zone_id" '{hostname:"sonuc.anunex.com",service:"anunex-result-prod",environment:"production",zone_id:$zone}')" \
             "$endpoint")"
-          jq -e '.success == true and .result.hostname == "sonuc.anunex.com" and .result.service == "anunex-result-prod"' <<<"$response" >/dev/null
+          if [[ "$attach_status" -lt 200 || "$attach_status" -ge 300 ]] || ! jq -e '.success == true and .result.hostname == "sonuc.anunex.com" and .result.service == "anunex-result-prod"' result-domain-attach-response.json >/dev/null; then
+            echo "Cloudflare could not attach sonuc.anunex.com to anunex-result-prod (HTTP $attach_status)." >&2
+            jq -c '{success,errors,messages}' result-domain-attach-response.json >&2 || true
+            exit 1
+          fi
 
       - name: Verify sonuc.anunex.com after attachment
         if: ${{ github.event_name == 'push' || inputs.attach_domain == true }}
@@ -144,15 +167,23 @@ jobs:
           PREVIOUS_ENVIRONMENT: ${{ steps.attach.outputs.previous_environment }}
           ZONE_ID: ${{ steps.attach.outputs.zone_id }}
         run: |
+          set -euo pipefail
           test -n "$PREVIOUS_SERVICE" || exit 1
           test -n "$ZONE_ID" || exit 1
-          curl --fail-with-body --silent --show-error \
+          rollback_status="$(curl --silent --show-error \
+            --output result-domain-rollback-response.json \
+            --write-out '%{http_code}' \
             --request PUT \
             --header 'Content-Type: application/json' \
             --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
             --data "$(jq -n --arg service "$PREVIOUS_SERVICE" --arg environment "${PREVIOUS_ENVIRONMENT:-production}" --arg zone "$ZONE_ID" '{hostname:"sonuc.anunex.com",service:$service,environment:$environment,zone_id:$zone}')" \
-            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains"
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains")"
+          if [[ "$rollback_status" -lt 200 || "$rollback_status" -ge 300 ]] || ! jq -e '.success == true and .result.hostname == "sonuc.anunex.com" and .result.service == env.PREVIOUS_SERVICE' result-domain-rollback-response.json >/dev/null; then
+            echo "CRITICAL: sonuc.anunex.com rollback failed (HTTP $rollback_status)." >&2
+            jq -c '{success,errors,messages}' result-domain-rollback-response.json >&2 || true
+            exit 1
+          fi
 
       - name: Remove materialized configuration
         if: ${{ always() }}
-        run: rm -f wrangler.result.production.resolved.json result-deploy.log
+        run: rm -f wrangler.result.production.resolved.json result-deploy.log result-domain-*-response.json
