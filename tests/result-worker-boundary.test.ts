@@ -40,6 +40,8 @@ describe('dedicated Result Network production boundary',()=>{
     expect(workflow).toContain('domain_id="$(jq -r');
     expect(workflow).toContain('$endpoint/$domain_id');
     expect(workflow).toContain('--request DELETE');
+    expect(workflow).toContain('remaining_domain_id="$domain_id"');
+    expect(workflow).toContain('for attempt in {1..10}');
     expect(workflow).toContain('result-domain-attach-response.json');
     expect(workflow).toContain('result-domain-rollback-response.json');
     expect(workflow).toContain("steps.attach.outputs.previous_service != ''");
