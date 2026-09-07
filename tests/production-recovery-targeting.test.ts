@@ -8,8 +8,14 @@ describe('production D1 recovery targeting',()=>{
     expect(workflow).toContain('workers/scripts/yildiz-sinav-prod');
     expect(workflow).toContain('select(.name == "DB" and .type == "d1")');
     expect(workflow).toContain('wrangler.production.recovery.json');
-    expect(workflow).not.toContain('d1 info DB --config wrangler.production.jsonc');
     expect(workflow).not.toContain('d1 export DB --remote --skip-confirmation --config wrangler.production.jsonc');
+  });
+
+  it('uses the Time Travel command itself as the storage compatibility gate',()=>{
+    expect(workflow).toContain('d1 time-travel info DB --config wrangler.production.recovery.json --json');
+    expect(workflow).toContain('if(!value||!value.bookmark)');
+    expect(workflow).not.toContain("row.version!=='production'");
+    expect(workflow).not.toContain('d1-info.json');
   });
 
   it('never restores or mutates production during the rehearsal',()=>{
