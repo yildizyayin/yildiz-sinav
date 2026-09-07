@@ -5,6 +5,7 @@ import { CAPACITY_PROFILES,buildCapacityChunks } from '../worker/lib/operations-
 const source=readFileSync(new URL('../worker/result-network-entry.ts',import.meta.url),'utf8');
 const migration=readFileSync(new URL('../migrations/0033_results_network_targets_attendance.sql',import.meta.url),'utf8');
 const app=readFileSync(new URL('../src/App.tsx',import.meta.url),'utf8');
+const portal=readFileSync(new URL('../src/pages/ResultPortal.tsx',import.meta.url),'utf8');
 
 describe('ANUNEX result network contract',()=>{
  it('never uses a raw TCKN as the result access decision',()=>{
@@ -27,6 +28,18 @@ describe('ANUNEX result network contract',()=>{
   expect(source).toContain("p==='/api/admin/result-network/portal-settings'");
   expect(source).toContain('requireSuper(request,env)');
   expect(source).toContain("env.FILES.put('settings/result-portal.json'");
+ });
+ it('resolves institution and approved dealer access after authentication',()=>{
+  expect(source).toContain("p==='/api/admin/result-network/access-profile'");
+  expect(source).toContain("dealer?.status==='APPROVED'");
+  expect(source).toContain("canManageInstitution:user.role==='SUPER_ADMIN'||user.role==='INSTITUTION_MANAGER'");
+  expect(portal).toContain("api<any>('/api/admin/result-network/access-profile')");
+  expect(portal).toContain('<ResultNetworkAdmin/>');
+ });
+ it('refreshes single-use Turnstile tokens after a failed result lookup or operator login',()=>{
+  expect(portal).toContain('const refreshTurnstile=()=>');
+  expect(portal).toContain('key={turnstileCycle}');
+  expect(portal).toContain('disabled={busy||!institution||!token}');
  });
 });
 
