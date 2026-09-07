@@ -13,6 +13,7 @@ describe('dedicated Result Network production boundary',()=>{
     expect(resultApiPathAllowed('/api/public/results/config')).toBe(true);
     expect(resultApiPathAllowed('/api/auth/login')).toBe(true);
     expect(resultApiPathAllowed('/api/admin/result-network/governance')).toBe(true);
+    expect(resultApiPathAllowed('/api/admin/result-network/operations/catalog')).toBe(true);
     expect(resultApiPathAllowed('/api/admin/institution-directory/import')).toBe(true);
     expect(resultApiPathAllowed('/api/dashboard')).toBe(false);
     expect(resultApiPathAllowed('/api/nibiru/chat')).toBe(false);

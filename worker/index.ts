@@ -215,7 +215,7 @@ async function listExams(env: Env, user: AuthUser, url: URL): Promise<Response> 
   return json({ ok: true, exams: rows });
 }
 
-async function previewExamFile(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+export async function previewExamFile(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   if (!canEvaluateExam(user.role)) return forbidden();
   const form = await request.formData();
   const file = form.get('file');
@@ -264,7 +264,7 @@ async function previewExamFile(request: Request, env: Env, user: AuthUser, examI
   return json({ ok: true, batchId, detection: { templateId: parsed.templateId, templateName: parsed.templateName, confidence: parsed.confidence }, counts, total: parsed.records.length, status: finalStatus });
 }
 
-async function getScanBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {
+export async function getScanBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {
   if (!canEvaluateExam(user.role)) return forbidden();
   const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
@@ -273,7 +273,7 @@ async function getScanBatch(env: Env, user: AuthUser, batchId: string): Promise<
   return json({ ok: true, batch, records: records.map((r) => ({ ...r, canonical: JSON.parse(r.canonical_json), issues: r.issues_json ? JSON.parse(r.issues_json) : [] })) });
 }
 
-async function resolveScanRecord(request: Request, env: Env, user: AuthUser, batchId: string, recordId: string): Promise<Response> {
+export async function resolveScanRecord(request: Request, env: Env, user: AuthUser, batchId: string, recordId: string): Promise<Response> {
   if (!canEvaluateExam(user.role)) return forbidden();
   const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
@@ -292,7 +292,7 @@ async function resolveScanRecord(request: Request, env: Env, user: AuthUser, bat
   return json({ ok: true });
 }
 
-async function evaluateBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {
+export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {
   if (!canEvaluateExam(user.role)) return forbidden();
   const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
