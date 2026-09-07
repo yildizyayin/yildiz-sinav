@@ -8,6 +8,11 @@ on:
         required: true
         default: false
         type: boolean
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/deploy-result-network.trigger'
 
 permissions:
   contents: read
@@ -103,7 +108,7 @@ jobs:
 
       - name: Attach sonuc.anunex.com
         id: attach
-        if: ${{ inputs.attach_domain == true }}
+        if: ${{ github.event_name == 'push' || inputs.attach_domain == true }}
         shell: bash
         run: |
           set -euo pipefail
@@ -122,13 +127,13 @@ jobs:
           jq -e '.success == true and .result.hostname == "sonuc.anunex.com" and .result.service == "anunex-result-prod"' <<<"$response" >/dev/null
 
       - name: Verify sonuc.anunex.com after attachment
-        if: ${{ inputs.attach_domain == true }}
+        if: ${{ github.event_name == 'push' || inputs.attach_domain == true }}
         env:
           RESULT_BASE_URL: https://sonuc.anunex.com
         run: node scripts/live-result-network-smoke.mjs
 
       - name: Restore previous domain service after failed acceptance
-        if: ${{ failure() && inputs.attach_domain == true && steps.attach.outcome == 'success' }}
+        if: ${{ failure() && (github.event_name == 'push' || inputs.attach_domain == true) && steps.attach.outcome == 'success' }}
         env:
           PREVIOUS_SERVICE: ${{ steps.attach.outputs.previous_service }}
         run: |
