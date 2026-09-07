@@ -157,7 +157,6 @@ jobs:
             echo "$hostname attached to $service."
           }
           attach_domain app.anunex.com yildiz-sinav-prod
-          attach_domain sonuc.anunex.com yildiz-sinav-prod
 
       - name: Read-only production smoke acceptance
         run: node scripts/live-production-smoke.mjs
