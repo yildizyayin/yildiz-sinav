@@ -39,5 +39,8 @@ before `sonuc.anunex.com` can be attached. Domain attachment requires the explic
 `attach_domain` input. The previous service is recorded and restored automatically if
 post-attachment acceptance fails.
 
+The licensed application deployment owns only `app.anunex.com`; it must never reattach
+`sonuc.anunex.com` to `yildiz-sinav-prod`.
+
 No production D1 migration is run by this workflow until the independent production
 recovery check is green.
