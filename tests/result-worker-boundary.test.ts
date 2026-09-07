@@ -37,6 +37,11 @@ describe('dedicated Result Network production boundary',()=>{
     expect(workflow).toContain("zone_id:$zone");
     expect(workflow).toContain('environment:"production"');
     expect(workflow).not.toContain('zone_name:"anunex.com"');
+    expect(workflow).toContain('domain_id="$(jq -r');
+    expect(workflow).toContain('$endpoint/$domain_id');
+    expect(workflow).toContain('--request DELETE');
+    expect(workflow).toContain('result-domain-attach-response.json');
+    expect(workflow).toContain('result-domain-rollback-response.json');
     expect(workflow).toContain("steps.attach.outputs.previous_service != ''");
     expect(bootstrapWorkflow).toContain("- '.github/bootstrap-production-admin.trigger'");
   });
