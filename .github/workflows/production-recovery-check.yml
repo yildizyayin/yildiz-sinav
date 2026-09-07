@@ -30,15 +30,44 @@ jobs:
           test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "Missing CLOUDFLARE_ACCOUNT_ID" && exit 1)
       - name: Install project tooling
         run: npm install
+
+      - name: Resolve the D1 database bound to the production Worker
+        id: production-d1
+        shell: bash
+        run: |
+          set -euo pipefail
+          api_base="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/yildiz-sinav-prod"
+          auth_header="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          versions="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions")"
+          version_id="$(jq -r '.result.items[0].id // .result[0].id // empty' <<<"$versions")"
+          test -n "$version_id" || (echo "Production Worker version could not be resolved." >&2 && exit 1)
+          detail="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions/$version_id")"
+          database_id="$(jq -r '.result.resources.bindings[] | select(.name == "DB" and .type == "d1") | .database_id // .id // empty' <<<"$detail")"
+          test -n "$database_id" || (echo "Production D1 binding could not be resolved." >&2 && exit 1)
+          database="$(curl --fail-with-body --silent --show-error --header "$auth_header" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/d1/database/$database_id")"
+          database_name="$(jq -r '.result.name // empty' <<<"$database")"
+          test -n "$database_name" || (echo "Production D1 database name could not be resolved." >&2 && exit 1)
+          echo "database_id=$database_id" >> "$GITHUB_OUTPUT"
+          echo "database_name=$database_name" >> "$GITHUB_OUTPUT"
+
+      - name: Materialize the exact production D1 configuration
+        env:
+          DATABASE_ID: ${{ steps.production-d1.outputs.database_id }}
+          DATABASE_NAME: ${{ steps.production-d1.outputs.database_name }}
+        run: |
+          jq --arg id "$DATABASE_ID" --arg name "$DATABASE_NAME" \
+            '.d1_databases[0].database_id=$id | .d1_databases[0].database_name=$name' \
+            wrangler.production.jsonc > wrangler.production.recovery.json
+
       - name: Verify current Time Travel recovery point
         run: |
           mkdir -p tmp/recovery-check
-          npx wrangler d1 info DB --config wrangler.production.jsonc --json > tmp/recovery-check/d1-info.json
+          npx wrangler d1 info DB --config wrangler.production.recovery.json --json > tmp/recovery-check/d1-info.json
           node -e "const fs=require('fs');const value=JSON.parse(fs.readFileSync('tmp/recovery-check/d1-info.json','utf8'));const row=Array.isArray(value)?value[0]:value;if(!row||row.version!=='production')throw new Error('Production D1 storage backend is not Time Travel capable');"
-          npx wrangler d1 time-travel info DB --config wrangler.production.jsonc --json > tmp/recovery-check/time-travel.json
+          npx wrangler d1 time-travel info DB --config wrangler.production.recovery.json --json > tmp/recovery-check/time-travel.json
           node -e "const fs=require('fs');const value=JSON.parse(fs.readFileSync('tmp/recovery-check/time-travel.json','utf8'));if(!value||!(value.bookmark||value.current_bookmark))throw new Error('Current Time Travel bookmark was not returned');"
       - name: Export into an isolated runner
-        run: npx wrangler d1 export DB --remote --skip-confirmation --config wrangler.production.jsonc --output=tmp/recovery-check/production.sql
+        run: npx wrangler d1 export DB --remote --skip-confirmation --config wrangler.production.recovery.json --output=tmp/recovery-check/production.sql
       - name: Rehearse restore without retaining production data
         run: |
           command -v sqlite3 >/dev/null || (sudo apt-get update && sudo apt-get install -y sqlite3)
@@ -48,4 +77,4 @@ jobs:
           echo "Isolated restore rehearsal passed; no production export will be retained."
       - name: Securely discard transient recovery files
         if: ${{ always() }}
-        run: rm -rf tmp/recovery-check
+        run: rm -rf tmp/recovery-check wrangler.production.recovery.json

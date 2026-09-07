@@ -35,11 +35,13 @@ Cloudflare D1 Time Travel varsayılan olarak açıktır. Saklama süresi plana g
 
 `.github/workflows/production-recovery-check.yml` her pazar ve manuel olarak:
 
-1. D1'in production storage backend kullandığını doğrular.
-2. Güncel Time Travel bookmark alınabildiğini doğrular.
-3. D1'i geçici GitHub runner alanına export eder.
-4. Export'u izole SQLite veritabanına geri yükler, bütünlük ve kritik tabloları kontrol eder.
-5. SQL export ve geri yüklenen dosyayı her koşulda siler; artifact olarak saklamaz.
+1. `yildiz-sinav-prod` Worker'ının aktif sürümündeki gerçek D1 kimliğini Cloudflare API'den çözer.
+2. Draft/otomatik oluşturulan ada güvenmeden yalnız bu üretim D1'i hedefleyen geçici yapılandırmayı oluşturur.
+3. D1'in production storage backend kullandığını doğrular.
+4. Güncel Time Travel bookmark alınabildiğini doğrular.
+5. D1'i geçici GitHub runner alanına export eder.
+6. Export'u izole SQLite veritabanına geri yükler, bütünlük ve kritik tabloları kontrol eder.
+7. SQL export, geri yüklenen dosya ve geçici D1 yapılandırmasını her koşulda siler; artifact olarak saklamaz.
 
 Bu iş akışı production D1'i değiştirmez. Gerçek Time Travel restore işlemi production verisini yerinde ezer; yalnız planlı olay müdahalesinde, production environment onayı ve iki yetkili kontrolüyle manuel çalıştırılmalıdır.
 
