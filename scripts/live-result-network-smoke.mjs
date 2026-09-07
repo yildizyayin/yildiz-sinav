@@ -45,13 +45,16 @@ async function main(){
   const protectedRoute=await request('/api/admin/result-network/governance',{expected:401});
   assert(protectedRoute.body?.error?.code==='UNAUTHENTICATED','Sonuç yönetimi anonim isteği reddetmedi',protectedRoute.body);
 
+  const operatorCatalog=await request('/api/admin/result-network/operations/catalog',{expected:401});
+  assert(operatorCatalog.body?.error?.code==='UNAUTHENTICATED','Sonuç değerlendirme kataloğu anonim isteği reddetmedi',operatorCatalog.body);
+
   const isolatedRoute=await request('/api/dashboard',{expected:404});
   assert(isolatedRoute.body?.error?.code==='RESULT_NETWORK_ROUTE_NOT_AVAILABLE','Lisanslı uygulama API yüzeyi Sonuç Ağına sızıyor',isolatedRoute.body);
 
   const shell=await request('/',{accept:'text/html'});
   assert((shell.response.headers.get('content-type')||'').includes('text/html'),'Sonuç Ağı SPA kabuğu HTML dönmedi');
 
-  console.log(JSON.stringify({ok:true,target:new URL(BASE_URL).origin,checks:5,mutations:0}));
+  console.log(JSON.stringify({ok:true,target:new URL(BASE_URL).origin,checks:6,mutations:0}));
 }
 
 main().catch(error=>{
