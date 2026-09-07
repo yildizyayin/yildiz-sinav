@@ -17,4 +17,9 @@ describe('production D1 recovery targeting',()=>{
     expect(workflow).not.toContain('d1 execute DB --remote');
     expect(workflow).toContain('sqlite3 tmp/recovery-check/restored.sqlite');
   });
+
+  it('runs automatically when its production recovery definition changes',()=>{
+    expect(workflow).toContain("- '.github/workflows/production-recovery-check.yml'");
+    expect(workflow).toContain("- 'tests/production-recovery-targeting.test.ts'");
+  });
 });

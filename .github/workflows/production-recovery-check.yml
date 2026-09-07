@@ -2,6 +2,12 @@ name: Verify Production D1 Recovery
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/production-recovery-check.yml'
+      - 'tests/production-recovery-targeting.test.ts'
   schedule:
     - cron: '30 2 * * 0'
 
