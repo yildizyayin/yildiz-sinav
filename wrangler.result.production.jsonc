@@ -1,0 +1,38 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "anunex-result-prod",
+  "main": "./worker/result-worker-entry.ts",
+  "compatibility_date": "2026-08-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1
+  },
+  "triggers": {
+    "crons": ["17 3 * * *"]
+  },
+  "assets": {
+    "directory": "./dist/client",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "__RESOLVED_FROM_PRODUCTION__",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "FILES",
+      "bucket_name": "__RESOLVED_FROM_PRODUCTION__"
+    }
+  ],
+  "vars": {
+    "ENVIRONMENT": "production",
+    "PRODUCT_NAME": "ANUNEX Sonuç Ağı",
+    "TURNSTILE_SITE_KEY": "1x00000000000000000000BB"
+  }
+}

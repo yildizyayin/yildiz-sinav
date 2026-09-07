@@ -1,0 +1,145 @@
+name: Deploy ANUNEX Result Network
+
+on:
+  workflow_dispatch:
+    inputs:
+      attach_domain:
+        description: Attach sonuc.anunex.com after the isolated smoke test passes
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-result-network
+  cancel-in-progress: false
+
+jobs:
+  deploy-result-network:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PROD_TURNSTILE_SITE_KEY: ${{ vars.PROD_TURNSTILE_SITE_KEY }}
+      PROD_TURNSTILE_SECRET_KEY: ${{ secrets.PROD_TURNSTILE_SECRET_KEY }}
+      PROD_SESSION_SECRET: ${{ secrets.PROD_SESSION_SECRET }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Validate result production configuration
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || (echo "Missing CLOUDFLARE_API_TOKEN" && exit 1)
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "Missing CLOUDFLARE_ACCOUNT_ID" && exit 1)
+          test -n "$PROD_TURNSTILE_SITE_KEY" || (echo "Missing PROD_TURNSTILE_SITE_KEY" && exit 1)
+          test -n "$PROD_TURNSTILE_SECRET_KEY" || (echo "Missing PROD_TURNSTILE_SECRET_KEY" && exit 1)
+          test -n "$PROD_SESSION_SECRET" || (echo "Missing PROD_SESSION_SECRET" && exit 1)
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Verify result boundary and release
+        run: npm run typecheck && npm test && npm run build
+
+      - name: Resolve canonical production D1 and R2 bindings
+        id: canonical
+        shell: bash
+        run: |
+          set -euo pipefail
+          api_base="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/yildiz-sinav-prod"
+          auth_header="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          versions="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions")"
+          version_id="$(jq -r '.result.items[0].id // .result[0].id // empty' <<<"$versions")"
+          test -n "$version_id" || (echo "Canonical production Worker version could not be resolved." >&2 && exit 1)
+          detail="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$api_base/versions/$version_id")"
+          database_id="$(jq -r '.result.resources.bindings[] | select(.name == "DB" and .type == "d1") | .database_id // .id // empty' <<<"$detail")"
+          bucket_name="$(jq -r '.result.resources.bindings[] | select(.name == "FILES" and (.type == "r2_bucket" or .type == "r2")) | .bucket_name // .bucket // empty' <<<"$detail")"
+          test -n "$database_id" || (echo "Canonical production D1 binding could not be resolved." >&2 && exit 1)
+          test -n "$bucket_name" || (echo "Canonical production R2 binding could not be resolved." >&2 && exit 1)
+          database="$(curl --fail-with-body --silent --show-error --header "$auth_header" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/d1/database/$database_id")"
+          database_name="$(jq -r '.result.name // empty' <<<"$database")"
+          test -n "$database_name" || (echo "Canonical production D1 name could not be resolved." >&2 && exit 1)
+          echo "database_id=$database_id" >> "$GITHUB_OUTPUT"
+          echo "database_name=$database_name" >> "$GITHUB_OUTPUT"
+          echo "bucket_name=$bucket_name" >> "$GITHUB_OUTPUT"
+
+      - name: Materialize isolated Result Network config
+        env:
+          DATABASE_ID: ${{ steps.canonical.outputs.database_id }}
+          DATABASE_NAME: ${{ steps.canonical.outputs.database_name }}
+          BUCKET_NAME: ${{ steps.canonical.outputs.bucket_name }}
+        run: |
+          jq --arg id "$DATABASE_ID" --arg name "$DATABASE_NAME" --arg bucket "$BUCKET_NAME" \
+            '.d1_databases[0].database_id=$id | .d1_databases[0].database_name=$name | .r2_buckets[0].bucket_name=$bucket' \
+            wrangler.result.production.jsonc > wrangler.result.production.resolved.json
+
+      - name: Deploy isolated Result Network Worker
+        id: deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx wrangler deploy --config wrangler.result.production.resolved.json \
+            --var ENVIRONMENT:production \
+            --var PRODUCT_NAME:"ANUNEX Sonuç Ağı" \
+            --var TURNSTILE_SITE_KEY:"$PROD_TURNSTILE_SITE_KEY" | tee result-deploy.log
+          preview_url="$(grep -Eo 'https://[^[:space:]]+workers\.dev' result-deploy.log | tail -1)"
+          test -n "$preview_url" || (echo "Result Network workers.dev preview URL could not be resolved." >&2 && exit 1)
+          echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
+
+      - name: Set Result Network secrets
+        run: |
+          printf '%s' "$PROD_TURNSTILE_SECRET_KEY" | npx wrangler secret put TURNSTILE_SECRET_KEY --config wrangler.result.production.resolved.json
+          printf '%s' "$PROD_SESSION_SECRET" | npx wrangler secret put SESSION_SECRET --config wrangler.result.production.resolved.json
+
+      - name: Verify isolated Result Network
+        env:
+          RESULT_BASE_URL: ${{ steps.deploy.outputs.preview_url }}
+        run: node scripts/live-result-network-smoke.mjs
+
+      - name: Attach sonuc.anunex.com
+        id: attach
+        if: ${{ inputs.attach_domain == true }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          endpoint="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains"
+          auth_header="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          previous="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$endpoint?hostname=sonuc.anunex.com")"
+          previous_service="$(jq -r '.result[0].service // empty' <<<"$previous")"
+          test -n "$previous_service" || (echo "Current sonuc.anunex.com service could not be recorded." >&2 && exit 1)
+          echo "previous_service=$previous_service" >> "$GITHUB_OUTPUT"
+          response="$(curl --fail-with-body --silent --show-error \
+            --request PUT \
+            --header 'Content-Type: application/json' \
+            --header "$auth_header" \
+            --data '{"hostname":"sonuc.anunex.com","service":"anunex-result-prod","zone_name":"anunex.com"}' \
+            "$endpoint")"
+          jq -e '.success == true and .result.hostname == "sonuc.anunex.com" and .result.service == "anunex-result-prod"' <<<"$response" >/dev/null
+
+      - name: Verify sonuc.anunex.com after attachment
+        if: ${{ inputs.attach_domain == true }}
+        env:
+          RESULT_BASE_URL: https://sonuc.anunex.com
+        run: node scripts/live-result-network-smoke.mjs
+
+      - name: Restore previous domain service after failed acceptance
+        if: ${{ failure() && inputs.attach_domain == true && steps.attach.outcome == 'success' }}
+        env:
+          PREVIOUS_SERVICE: ${{ steps.attach.outputs.previous_service }}
+        run: |
+          test -n "$PREVIOUS_SERVICE" || exit 1
+          curl --fail-with-body --silent --show-error \
+            --request PUT \
+            --header 'Content-Type: application/json' \
+            --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            --data "$(jq -n --arg service "$PREVIOUS_SERVICE" '{hostname:"sonuc.anunex.com",service:$service,zone_name:"anunex.com"}')" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains"
+
+      - name: Remove materialized configuration
+        if: ${{ always() }}
+        run: rm -f wrangler.result.production.resolved.json result-deploy.log
