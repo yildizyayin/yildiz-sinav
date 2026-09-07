@@ -116,13 +116,18 @@ jobs:
           auth_header="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
           previous="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$endpoint?hostname=sonuc.anunex.com")"
           previous_service="$(jq -r '.result[0].service // empty' <<<"$previous")"
+          previous_environment="$(jq -r '.result[0].environment // "production"' <<<"$previous")"
+          zone_id="$(jq -r '.result[0].zone_id // empty' <<<"$previous")"
           test -n "$previous_service" || (echo "Current sonuc.anunex.com service could not be recorded." >&2 && exit 1)
+          test -n "$zone_id" || (echo "Current sonuc.anunex.com zone could not be recorded." >&2 && exit 1)
           echo "previous_service=$previous_service" >> "$GITHUB_OUTPUT"
+          echo "previous_environment=$previous_environment" >> "$GITHUB_OUTPUT"
+          echo "zone_id=$zone_id" >> "$GITHUB_OUTPUT"
           response="$(curl --fail-with-body --silent --show-error \
             --request PUT \
             --header 'Content-Type: application/json' \
             --header "$auth_header" \
-            --data '{"hostname":"sonuc.anunex.com","service":"anunex-result-prod","zone_name":"anunex.com"}' \
+            --data "$(jq -n --arg zone "$zone_id" '{hostname:"sonuc.anunex.com",service:"anunex-result-prod",environment:"production",zone_id:$zone}')" \
             "$endpoint")"
           jq -e '.success == true and .result.hostname == "sonuc.anunex.com" and .result.service == "anunex-result-prod"' <<<"$response" >/dev/null
 
@@ -133,16 +138,19 @@ jobs:
         run: node scripts/live-result-network-smoke.mjs
 
       - name: Restore previous domain service after failed acceptance
-        if: ${{ failure() && (github.event_name == 'push' || inputs.attach_domain == true) && steps.attach.outcome == 'success' }}
+        if: ${{ failure() && (github.event_name == 'push' || inputs.attach_domain == true) && steps.attach.outputs.previous_service != '' }}
         env:
           PREVIOUS_SERVICE: ${{ steps.attach.outputs.previous_service }}
+          PREVIOUS_ENVIRONMENT: ${{ steps.attach.outputs.previous_environment }}
+          ZONE_ID: ${{ steps.attach.outputs.zone_id }}
         run: |
           test -n "$PREVIOUS_SERVICE" || exit 1
+          test -n "$ZONE_ID" || exit 1
           curl --fail-with-body --silent --show-error \
             --request PUT \
             --header 'Content-Type: application/json' \
             --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            --data "$(jq -n --arg service "$PREVIOUS_SERVICE" '{hostname:"sonuc.anunex.com",service:$service,zone_name:"anunex.com"}')" \
+            --data "$(jq -n --arg service "$PREVIOUS_SERVICE" --arg environment "${PREVIOUS_ENVIRONMENT:-production}" --arg zone "$ZONE_ID" '{hostname:"sonuc.anunex.com",service:$service,environment:$environment,zone_id:$zone}')" \
             "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains"
 
       - name: Remove materialized configuration

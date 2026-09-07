@@ -34,6 +34,10 @@ describe('dedicated Result Network production boundary',()=>{
   it('uses explicit audited trigger markers for the first production cutover and admin repair',()=>{
     expect(workflow).toContain("- '.github/deploy-result-network.trigger'");
     expect(workflow).toContain("github.event_name == 'push' || inputs.attach_domain == true");
+    expect(workflow).toContain("zone_id:$zone");
+    expect(workflow).toContain('environment:"production"');
+    expect(workflow).not.toContain('zone_name:"anunex.com"');
+    expect(workflow).toContain("steps.attach.outputs.previous_service != ''");
     expect(bootstrapWorkflow).toContain("- '.github/bootstrap-production-admin.trigger'");
   });
 });
