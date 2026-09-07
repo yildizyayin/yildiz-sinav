@@ -32,9 +32,17 @@ describe('ANUNEX result network contract',()=>{
  it('resolves institution and approved dealer access after authentication',()=>{
   expect(source).toContain("p==='/api/admin/result-network/access-profile'");
   expect(source).toContain("dealer?.status==='APPROVED'");
-  expect(source).toContain("canManageInstitution:user.role==='SUPER_ADMIN'||user.role==='INSTITUTION_MANAGER'");
+  expect(source).toContain("canManageInstitution:user.role==='SUPER_ADMIN'||activeInstitutionManager");
   expect(portal).toContain("api<any>('/api/admin/result-network/access-profile')");
   expect(portal).toContain('<ResultNetworkAdmin/>');
+ });
+ it('keeps result institution and dealer lifecycle controls scoped and auditable',()=>{
+  expect(source).toContain("activeInstitutionManager=user.role==='INSTITUTION_MANAGER'&&institution?.lifecycle_status==='ACTIVE'");
+  expect(source).toContain("scope_type='DISTRICT' AND city=? AND district=?");
+  expect(source).toContain("'RESULT_DEALER_STATUS_CHANGED'");
+  expect(source).toContain("'RESULT_DEALER_SCOPE_REVOKED'");
+  expect(source).toContain("UPDATE sessions SET revoked_at=CURRENT_TIMESTAMP WHERE user_id IN (SELECT id FROM users WHERE institution_id=?)");
+  expect(source).toContain("'INSTITUTION_ALREADY_EXISTS'");
  });
  it('refreshes single-use Turnstile tokens after a failed result lookup or operator login',()=>{
   expect(portal).toContain('const refreshTurnstile=()=>');

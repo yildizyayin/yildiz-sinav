@@ -1,7 +1,7 @@
 import app from './privacy-export-entry';
 import type { Env } from './types';
 import { json } from './lib/db';
-import { purgeExpiredResultNetwork } from './result-network-entry';
+import { handleResultGovernanceMutation, purgeExpiredResultNetwork } from './result-network-entry';
 
 /**
  * Dedicated production boundary for sonuc.anunex.com.
@@ -36,6 +36,8 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     if (url.pathname.startsWith('/api/') && !resultApiPathAllowed(url.pathname)) return unavailable();
+    const governanceMutation = await handleResultGovernanceMutation(request, env);
+    if (governanceMutation) return governanceMutation;
     return app.fetch(request, env, ctx);
   },
   async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext) {

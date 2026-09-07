@@ -4,6 +4,16 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    paths-ignore:
+      - '.github/deploy-result-network.trigger'
+      - '.github/workflows/deploy-result-network.yml'
+      - 'worker/result-network-entry.ts'
+      - 'worker/result-worker-entry.ts'
+      - 'src/pages/ResultNetworkAdmin.tsx'
+      - 'src/pages/ResultOperatorWorkspace.tsx'
+      - 'src/pages/ResultPortal.tsx'
+      - 'src/pages/result-portal*.css'
+      - 'tests/result-*.test.ts'
 
 permissions:
   contents: write
