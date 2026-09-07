@@ -133,9 +133,21 @@ jobs:
             --request DELETE \
             --header "$auth_header" \
             "$endpoint/$domain_id")"
-          if [[ "$delete_status" -lt 200 || "$delete_status" -ge 300 ]] || ! jq -e '.success == true' result-domain-delete-response.json >/dev/null; then
+          if [[ "$delete_status" -lt 200 || "$delete_status" -ge 300 ]]; then
             echo "Cloudflare could not detach the existing sonuc.anunex.com custom domain (HTTP $delete_status)." >&2
             jq -c '{success,errors,messages}' result-domain-delete-response.json >&2 || true
+            exit 1
+          fi
+
+          remaining_domain_id="$domain_id"
+          for attempt in {1..10}; do
+            current="$(curl --fail-with-body --silent --show-error --header "$auth_header" "$endpoint?hostname=sonuc.anunex.com")"
+            remaining_domain_id="$(jq -r '.result[0].id // empty' <<<"$current")"
+            [[ -z "$remaining_domain_id" ]] && break
+            sleep 2
+          done
+          if [[ -n "$remaining_domain_id" ]]; then
+            echo "Cloudflare accepted the delete request but sonuc.anunex.com is still attached." >&2
             exit 1
           fi
           echo "detached=true" >> "$GITHUB_OUTPUT"
