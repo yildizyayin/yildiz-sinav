@@ -6,6 +6,7 @@ const config=readFileSync(new URL('../wrangler.result.production.jsonc',import.m
 const workflow=readFileSync(new URL('../.github/workflows/deploy-result-network.yml',import.meta.url),'utf8');
 const licensedWorkflow=readFileSync(new URL('../.github/workflows/deploy-production.yml',import.meta.url),'utf8');
 const bootstrapWorkflow=readFileSync(new URL('../.github/workflows/bootstrap-production-admin.yml',import.meta.url),'utf8');
+const stagingWorkflow=readFileSync(new URL('../.github/workflows/deploy.yml',import.meta.url),'utf8');
 
 describe('dedicated Result Network production boundary',()=>{
   it('allows only result, authentication and narrowly required administration APIs',()=>{
@@ -46,5 +47,12 @@ describe('dedicated Result Network production boundary',()=>{
     expect(workflow).toContain('result-domain-rollback-response.json');
     expect(workflow).toContain("steps.attach.outputs.previous_service != ''");
     expect(bootstrapWorkflow).toContain("- '.github/bootstrap-production-admin.trigger'");
+  });
+
+  it('does not redeploy the demo Worker for result-only changes',()=>{
+    expect(stagingWorkflow).toContain('paths-ignore:');
+    expect(stagingWorkflow).toContain("- 'worker/result-network-entry.ts'");
+    expect(stagingWorkflow).toContain("- 'src/pages/ResultNetworkAdmin.tsx'");
+    expect(stagingWorkflow).toContain("- '.github/deploy-result-network.trigger'");
   });
 });
