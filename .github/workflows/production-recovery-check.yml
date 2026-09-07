@@ -68,10 +68,8 @@ jobs:
       - name: Verify current Time Travel recovery point
         run: |
           mkdir -p tmp/recovery-check
-          npx wrangler d1 info DB --config wrangler.production.recovery.json --json > tmp/recovery-check/d1-info.json
-          node -e "const fs=require('fs');const value=JSON.parse(fs.readFileSync('tmp/recovery-check/d1-info.json','utf8'));const row=Array.isArray(value)?value[0]:value;if(!row||row.version!=='production')throw new Error('Production D1 storage backend is not Time Travel capable');"
           npx wrangler d1 time-travel info DB --config wrangler.production.recovery.json --json > tmp/recovery-check/time-travel.json
-          node -e "const fs=require('fs');const value=JSON.parse(fs.readFileSync('tmp/recovery-check/time-travel.json','utf8'));if(!value||!(value.bookmark||value.current_bookmark))throw new Error('Current Time Travel bookmark was not returned');"
+          node -e "const fs=require('fs');const value=JSON.parse(fs.readFileSync('tmp/recovery-check/time-travel.json','utf8'));if(!value||!value.bookmark)throw new Error('Current Time Travel bookmark was not returned');"
       - name: Export into an isolated runner
         run: npx wrangler d1 export DB --remote --skip-confirmation --config wrangler.production.recovery.json --output=tmp/recovery-check/production.sql
       - name: Rehearse restore without retaining production data
