@@ -1,6 +1,7 @@
 import type { AuthUser,Env } from './types';
 import { getAuthUser,hashPassword,verifyPassword,verifyTurnstile } from './lib/auth';
 import { all,audit,badRequest,forbidden,json,normalizeName,one,uuid } from './lib/db';
+import { evaluateBatch,getScanBatch,previewExamFile,resolveScanRecord } from './index';
 
 const COOKIE='anunex_result_session';
 const SIX_HOURS=6*60*60*1000;
@@ -102,6 +103,62 @@ export async function handleResultGovernanceMutation(request:Request,env:Env):Pr
  if(dealerStatus&&request.method==='POST')return setDealerStatus(request,env,user,dealerStatus[1]);
  if(removeScope&&request.method==='DELETE')return removeDealerScope(env,user,removeScope[1],removeScope[2]);
  return safeError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+}
+
+async function scopedOperatorInstitutions(env:Env,user:AuthUser,mode:string){
+ if(user.role==='SUPER_ADMIN')return all<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,i.city,i.district FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id WHERE COALESCE(iac.lifecycle_status,i.status)='ACTIVE' ORDER BY i.name LIMIT 2000`));
+ if(mode!=='DEALER'&&user.role==='INSTITUTION_MANAGER'&&user.institution_id)return all<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,i.city,i.district FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id WHERE i.id=? AND COALESCE(iac.lifecycle_status,i.status)='ACTIVE'`).bind(user.institution_id));
+ return all<any>(env.DB.prepare(`SELECT DISTINCT i.id,i.name,i.code,i.city,i.district FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id LEFT JOIN national_institution_directory ndi ON ndi.meb_code=i.code JOIN result_network_dealers d ON d.user_id=? AND d.status='APPROVED' JOIN result_network_dealer_scopes s ON s.dealer_id=d.id AND s.active=1 WHERE COALESCE(iac.lifecycle_status,i.status)='ACTIVE' AND (s.scope_type='NATIONAL' OR (s.scope_type='INSTITUTION' AND s.meb_code=i.code) OR (s.scope_type='CITY' AND s.city=ndi.city) OR (s.scope_type='DISTRICT' AND s.city=ndi.city AND s.district=ndi.district)) ORDER BY i.name LIMIT 2000`).bind(user.id));
+}
+
+async function resultOperatorContext(request:Request,env:Env,institutionId:string):Promise<{user:AuthUser;effective:AuthUser;institution:any}|Response>{
+ const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
+ const institution=await one<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,COALESCE(iac.lifecycle_status,i.status) lifecycle_status FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id WHERE i.id=?`).bind(institutionId));
+ if(!institution)return safeError(404,'INSTITUTION_NOT_FOUND','Kurum bulunamadı.');
+ if(institution.lifecycle_status!=='ACTIVE')return safeError(409,'INSTITUTION_NOT_ACTIVE','Pasif, dondurulmuş veya arşivlenmiş kurumda değerlendirme yapılamaz.');
+ const ownInstitution=user.role==='INSTITUTION_MANAGER'&&user.institution_id===institutionId;
+ const dealerPermission=await dealerCanAct(env,user,institution.code);
+ if(user.role!=='SUPER_ADMIN'&&!ownInstitution&&!dealerPermission.ok)return forbidden('Bu kurum için sonuç değerlendirme yetkiniz bulunmuyor.');
+ const effective:AuthUser=user.role==='SUPER_ADMIN'||ownInstitution?user:{...user,role:'SUPER_ADMIN',institution_id:null};
+ return{user,effective,institution};
+}
+
+async function resultOperatorCatalog(request:Request,env:Env){
+ const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
+ const mode=new URL(request.url).searchParams.get('mode')==='DEALER'?'DEALER':'INSTITUTION';
+ const institutions=await scopedOperatorInstitutions(env,user,mode);if(!institutions.length&&user.role!=='SUPER_ADMIN')return forbidden('Aktif kurum veya bayi kapsamınız bulunmuyor.');
+ const [exams,opticals]=await Promise.all([
+  all<any>(env.DB.prepare(`SELECT DISTINCT e.id,e.title,e.exam_type,e.academic_year,e.grade_level,e.publisher_name,srv.verified scoring_verified FROM exams e JOIN exam_channel_publications ecp ON ecp.exam_id=e.id AND ecp.channel='RESULT_NETWORK' AND ecp.status='ACTIVE' JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id AND srv.verified=1 WHERE e.status IN ('ACTIVE','CLOSED') ORDER BY e.academic_year DESC,e.title LIMIT 500`)),
+  all<any>(env.DB.prepare(`SELECT v.id,t.name,v.version FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.active=1 AND t.active=1 AND v.parser_definition IS NOT NULL ORDER BY t.name,v.version DESC LIMIT 200`)),
+ ]);
+ return json({ok:true,institutions,exams,opticals});
+}
+
+async function batchOperatorContext(request:Request,env:Env,batchId:string){
+ const batch=await one<any>(env.DB.prepare(`SELECT id,institution_id FROM scan_batches WHERE id=?`).bind(batchId));
+ if(!batch)return safeError(404,'BATCH_NOT_FOUND','Değerlendirme grubu bulunamadı.');
+ return resultOperatorContext(request,env,batch.institution_id);
+}
+
+export async function handleResultOperations(request:Request,env:Env):Promise<Response|null>{
+ const path=new URL(request.url).pathname;
+ if(path==='/api/admin/result-network/operations/catalog'&&request.method==='GET')return resultOperatorCatalog(request,env);
+ const preview=path.match(/^\/api\/admin\/result-network\/operations\/exams\/([^/]+)\/preview-file$/);
+ if(preview&&request.method==='POST'){
+  const form=await request.clone().formData(),institutionId=String(form.get('institutionId')||'');
+  if(!institutionId)return badRequest('Kurum seçilmelidir.');
+  const published=await one<any>(env.DB.prepare(`SELECT 1 ok FROM exam_channel_publications WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='ACTIVE'`).bind(preview[1]));
+  if(!published)return safeError(404,'RESULT_EXAM_NOT_PUBLISHED','Sınav Sonuç Ağı kataloğunda yayınlanmamış.');
+  const context=await resultOperatorContext(request,env,institutionId);if(context instanceof Response)return context;
+  return previewExamFile(request,env,context.effective,preview[1]);
+ }
+ const resolve=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/records\/([^/]+)\/resolve$/);
+ if(resolve&&request.method==='POST'){const context=await batchOperatorContext(request,env,resolve[1]);if(context instanceof Response)return context;return resolveScanRecord(request,env,context.effective,resolve[1],resolve[2])}
+ const evaluate=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/evaluate$/);
+ if(evaluate&&request.method==='POST'){const context=await batchOperatorContext(request,env,evaluate[1]);if(context instanceof Response)return context;return evaluateBatch(env,context.effective,evaluate[1])}
+ const batch=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)$/);
+ if(batch&&request.method==='GET'){const context=await batchOperatorContext(request,env,batch[1]);if(context instanceof Response)return context;return getScanBatch(env,context.effective,batch[1])}
+ return null;
 }
 export async function purgeExpiredResultNetwork(env:Env){const rows=await all<any>(env.DB.prepare(`SELECT id FROM exam_administrations WHERE channel='RESULT_NETWORK' AND status IN ('PUBLISHED','ARCHIVED') AND retention_due_at IS NOT NULL AND retention_due_at<=CURRENT_TIMESTAMP LIMIT 5`));for(const row of rows){const participants=await all<{participant_id:string}>(env.DB.prepare(`SELECT participant_id FROM result_access_identities WHERE administration_id=?`).bind(row.id));await env.DB.prepare(`INSERT INTO result_retention_events(id,administration_id,event_type) VALUES(?,?,'PURGE_STARTED')`).bind(uuid('rre'),row.id).run();for(let i=0;i<participants.length;i+=80){const ids=participants.slice(i,i+80).map(x=>x.participant_id);if(ids.length)await env.DB.prepare(`DELETE FROM exam_participants WHERE id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).run()}await env.DB.batch([env.DB.prepare(`DELETE FROM result_network_institutions WHERE administration_id=?`).bind(row.id),env.DB.prepare(`UPDATE exam_administrations SET status='PURGED' WHERE id=?`).bind(row.id),env.DB.prepare(`INSERT INTO result_retention_events(id,administration_id,event_type,summary_json) VALUES(?,?,'PURGE_COMPLETED',?)`).bind(uuid('rre'),row.id,JSON.stringify({participants:participants.length,examDefinitionRetained:true}))])}}
 
