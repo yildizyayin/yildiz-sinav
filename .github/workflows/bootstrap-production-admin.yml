@@ -2,6 +2,11 @@ name: Bootstrap Production Super Admin
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/bootstrap-production-admin.trigger'
 
 permissions:
   contents: read
