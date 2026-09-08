@@ -130,6 +130,9 @@ jobs:
             '.d1_databases[0].database_id=$id | .d1_databases[0].database_name=$name | .r2_buckets[0].bucket_name=$bucket' \
             wrangler.result.production.jsonc > wrangler.result.production.resolved.json
 
+      - name: Apply canonical production D1 migrations
+        run: npx wrangler d1 migrations apply DB --remote --config wrangler.result.production.resolved.json
+
       - name: Deploy isolated Result Network Worker
         id: deploy
         shell: bash
