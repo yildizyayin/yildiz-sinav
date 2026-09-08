@@ -25,6 +25,7 @@ describe('dedicated Result Network production boundary',()=>{
     expect(config).toContain('"main": "./worker/result-worker-entry.ts"');
     expect(config).toContain('__RESOLVED_FROM_PRODUCTION__');
     expect(workflow).toContain('Resolve canonical production D1 and R2 bindings');
+    expect(workflow).toContain('Apply canonical production D1 migrations');
     expect(workflow).toContain('attach_domain');
     expect(workflow).toContain('live-result-network-smoke.mjs');
     expect(workflow).toContain('Authorize sonuc.anunex.com on the production Turnstile widget');
