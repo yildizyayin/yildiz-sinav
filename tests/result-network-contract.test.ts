@@ -60,6 +60,25 @@ describe('ANUNEX result network contract',()=>{
   expect(operator).toContain("operations/scan-batches/${preview.batchId}/evaluate");
   expect(portal).toContain('<ResultOperatorWorkspace');
  });
+ it('freezes publication ranks and produces scoped result access and reports',()=>{
+  expect(source).toContain('RESULT_RANKINGS_FROZEN_AND_PUBLISHED');
+  expect(source).toContain('national_rank,national_count,city_rank,city_count,district_rank,district_count');
+  expect(source).toContain('access-codes$/');
+  expect(source).toContain('report$/');
+  expect(source).toContain('RESULT_HMAC_V1:');
+  expect(operator).toContain('Öğrenci erişim kartlarını üret');
+  expect(operator).toContain('Excel / CSV');
+  expect(operator).toContain('PDF yazdır');
+  expect(portal).toContain('Türkiye {rankText(x.national_rank,x.national_count)}');
+ });
+ it('schedules retention notices and purges cohort data while retaining catalogue assets',()=>{
+  expect(source).toContain("type:'NOTICE_90'");
+  expect(source).toContain("type:'NOTICE_60'");
+  expect(source).toContain("type:'NOTICE_15'");
+  expect(source).toContain('answerKeysRetained:true');
+  expect(source).toContain('outcomesRetained:true');
+  expect(source).toContain('videosRetained:true');
+ });
 });
 
 describe('agreed capacity profiles',()=>{
