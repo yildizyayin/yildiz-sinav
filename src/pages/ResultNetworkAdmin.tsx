@@ -30,10 +30,6 @@ export function ResultNetworkAdmin({onLogout}:{onLogout?:()=>void}){
  const[institutionForm,setInstitutionForm]=useState(emptyInstitution);
  const[dealerUserId,setDealerUserId]=useState('');
  const[dealerName,setDealerName]=useState('');
- const availableDistricts:string[]=[...new Set<string>((governance.locations||[]).filter((x:any)=>x.city===institutionForm.city).map((x:any)=>String(x.district||'')).filter(Boolean))];
- const dealerDistricts:string[]=[...new Set<string>((governance.locations||[]).filter((x:any)=>x.city===dealerCity).map((x:any)=>String(x.district||'')).filter(Boolean))];
- const scopeDistricts:string[]=[...new Set<string>((governance.locations||[]).filter((x:any)=>x.city===scopeForm.city).map((x:any)=>String(x.district||'')).filter(Boolean))];
- const selectedDealer=(governance.dealers||[]).find((dealer:any)=>dealer.id===selectedDealerId);
  const[dealerUsername,setDealerUsername]=useState('');
  const[dealerEmail,setDealerEmail]=useState('');
  const[dealerPassword,setDealerPassword]=useState('');
@@ -46,6 +42,10 @@ export function ResultNetworkAdmin({onLogout}:{onLogout?:()=>void}){
  const[dealerDistrict,setDealerDistrict]=useState('');
  const[selectedDealerId,setSelectedDealerId]=useState('');
  const[scopeForm,setScopeForm]=useState(emptyScope);
+ const availableDistricts:string[]=[...new Set<string>((governance.locations||[]).filter((x:any)=>x.city===institutionForm.city).map((x:any)=>String(x.district||'')).filter(Boolean))];
+ const dealerDistricts:string[]=[...new Set<string>((governance.locations||[]).filter((x:any)=>x.city===dealerCity).map((x:any)=>String(x.district||'')).filter(Boolean))];
+ const scopeDistricts:string[]=[...new Set<string>((governance.locations||[]).filter((x:any)=>x.city===scopeForm.city).map((x:any)=>String(x.district||'')).filter(Boolean))];
+ const selectedDealer=(governance.dealers||[]).find((dealer:any)=>dealer.id===selectedDealerId);
  const[busy,setBusy]=useState(false);
  const[error,setError]=useState('');
  const[notice,setNotice]=useState('');
