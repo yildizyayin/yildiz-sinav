@@ -10,3 +10,5 @@ Fix district selector typing 2026-09-08T14:11:44.403Z
 # restore-validated-admin-screen-2026-09-08
 
 # refine-card-information-hierarchy-2026-09-08
+
+# permission-profiles-2026-09-08
