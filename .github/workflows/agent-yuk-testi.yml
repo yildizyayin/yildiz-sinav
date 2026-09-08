@@ -1,0 +1,157 @@
+name: "Ajan 5 - Yük Testi"
+
+# Yalnızca staging/test hedefine yük bindirir. Production hostname'leri
+# aşağıdaki korumadan geçemez.
+
+on:
+  schedule:
+    - cron: "0 3 * * 3"
+  workflow_dispatch:
+    inputs:
+      sanal_kullanici_sayisi:
+        description: "Eşzamanlı sanal kullanıcı sayısı"
+        default: "1000"
+        required: false
+        type: number
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: yuk-testi-ajani
+  cancel-in-progress: false
+
+jobs:
+  yuk-testi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TARGET_URL: ${{ secrets.STAGING_URL || vars.STAGING_URL || 'https://demo.anunex.com' }}
+      VUS: ${{ inputs.sanal_kullanici_sayisi || '1000' }}
+    steps:
+      - name: Test hedefini doğrula
+        run: |
+          set -euo pipefail
+          case "$TARGET_URL" in
+            https://anunex.com|https://www.anunex.com|https://app.anunex.com|https://sonuc.anunex.com)
+              echo "Production hostname yük testine kapalı: $TARGET_URL" >&2
+              exit 1
+              ;;
+          esac
+          [[ "$TARGET_URL" == https://* || "$TARGET_URL" == http://localhost* ]] || {
+            echo "TARGET_URL staging/test URL'i olmalı: $TARGET_URL" >&2
+            exit 1
+          }
+          [[ "$VUS" =~ ^[1-9][0-9]{0,5}$ ]] || {
+            echo "VUS 1 ile 999999 arasında olmalı." >&2
+            exit 1
+          }
+          echo "Yük testi hedefi: $TARGET_URL; VUS: $VUS"
+
+      - name: k6 kur
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            https://github.com/grafana/k6/releases/download/v0.52.0/k6-v0.52.0-linux-amd64.tar.gz \
+            | tar xz --strip-components 1
+
+      - name: Test scriptini oluştur
+        run: |
+          cat > loadtest.js <<'EOF'
+          import http from 'k6/http';
+          import { check, sleep } from 'k6';
+
+          export const options = {
+            stages: [
+              { duration: '2m', target: Number(__ENV.VUS || 1000) },
+              { duration: '5m', target: Number(__ENV.VUS || 1000) },
+              { duration: '2m', target: 0 },
+            ],
+            thresholds: {
+              http_req_duration: ['p(95)<2000'],
+              http_req_failed: ['rate<0.05'],
+            },
+          };
+
+          export default function () {
+            const res = http.get(__ENV.TARGET_URL);
+            check(res, { 'status 200': (r) => r.status === 200 });
+            sleep(1);
+          }
+          EOF
+
+      - name: Testi çalıştır
+        id: k6
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          ./k6 run \
+            --env VUS="$VUS" \
+            --env TARGET_URL="$TARGET_URL" \
+            --summary-export=sonuc.json \
+            loadtest.js
+
+      - name: Sonucu Issue olarak paylaş
+        if: ${{ always() }}
+        uses: actions/github-script@v7
+        env:
+          K6_OUTCOME: ${{ steps.k6.outcome }}
+          TARGET_URL: ${{ env.TARGET_URL }}
+          VUS: ${{ env.VUS }}
+        with:
+          script: |
+            const fs = require("fs");
+            let summary = "Sonuç dosyası okunamadı; Actions log'una bak.";
+            try {
+              const raw = JSON.parse(fs.readFileSync("sonuc.json", "utf8"));
+              const p95 = raw.metrics?.http_req_duration?.values?.["p(95)"];
+              const failRate = raw.metrics?.http_req_failed?.values?.rate;
+              summary = `p95 gecikme: ${Number(p95).toFixed(0)}ms | Hata oranı: ${(Number(failRate) * 100).toFixed(2)}%`;
+            } catch {}
+
+            const title = `⚡ Yük Testi Raporu - ${new Date().toISOString().split("T")[0]}`;
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "yuk-testi-ajani",
+              per_page: 1,
+            });
+            const body = [
+              "**Yük Testi Ajanı otomatik raporu**",
+              "",
+              `Hedef: ${process.env.TARGET_URL}`,
+              `Sanal kullanıcı: ${process.env.VUS}`,
+              `Çalışma sonucu: ${process.env.K6_OUTCOME}`,
+              summary,
+              "",
+              "_Eşik: p95 < 2000ms, hata oranı < %5. Production hostname'leri güvenlik nedeniyle reddedilir._",
+            ].join("\n");
+            if (existing.data[0]) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.data[0].number,
+                title,
+                body,
+              });
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.data[0].number,
+                body: `Yeni yük testi sonucu: ${summary}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                labels: ["yuk-testi-ajani"],
+                body,
+              });
+            }
+
+      - name: Eşik başarısızsa workflow'u başarısız yap
+        if: ${{ steps.k6.outcome == 'failure' }}
+        run: exit 1

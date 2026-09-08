@@ -2,20 +2,22 @@ name: Deploy Production Cloudflare Worker
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - .github/releases/anunex-domain-launch
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: production-deploy
   cancel-in-progress: false
 
 jobs:
+  dogrula:
+    uses: ./.github/workflows/agent-deploy-dogrulayici.yml
+    secrets: inherit
+
   deploy-production:
+    needs: [dogrula]
     runs-on: ubuntu-latest
     environment: production
     env:

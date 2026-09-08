@@ -1,0 +1,75 @@
+name: "Ajan 6 - Deploy/Domain Doğrulayıcı"
+
+# Production deploy işinin ön koşuludur. Zone aktif değilse veya üretim
+# yapılandırmasına test anahtarı sızmışsa deploy job'ı hiç başlamaz.
+
+on:
+  workflow_call:
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: true
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: deploy-dogrulama
+  cancel-in-progress: false
+
+jobs:
+  dogrula:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Zone durumunu kontrol et
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "$CF_API_TOKEN" || (echo "Missing CLOUDFLARE_API_TOKEN" >&2 && exit 1)
+
+          response="$(curl --fail-with-body --silent --show-error \
+            --header "Authorization: Bearer ${CF_API_TOKEN}" \
+            --header "Content-Type: application/json" \
+            --get "https://api.cloudflare.com/client/v4/zones" \
+            --data-urlencode "name=anunex.com" \
+            --data-urlencode "status=active" \
+            --data-urlencode "per_page=1")"
+          jq -e '.success == true and (.result | length == 1) and .[0].name == "anunex.com" and .[0].status == "active"' <<<"$response" >/dev/null \
+            || (echo "anunex.com Cloudflare zone aktif değil veya bulunamadı. Deploy durduruldu." >&2 && exit 1)
+          echo "anunex.com zone durumu: active"
+
+      - name: Üretim kodunda test/sandbox anahtarı taraması
+        run: |
+          set -euo pipefail
+          pattern="(1x00000000000000000000AA|(SITE_KEY|API_KEY|AUTH_TOKEN|SESSION_SECRET|SECRET|TOKEN|KEY)[[:space:]]*[:=][[:space:]]*['\"](test|sandbox))"
+          matches="$(rg -n -i \
+            --glob '*.ts' --glob '*.tsx' --glob '*.json' --glob '*.jsonc' --glob '*.toml' \
+            "$pattern" \
+            worker src migrations wrangler*.jsonc 2>/dev/null || true)"
+
+          if [[ -n "$matches" ]]; then
+            echo "::error::Üretim kapsamındaki dosyalarda test/sandbox anahtarı izi bulundu:"
+            echo "$matches"
+            exit 1
+          fi
+          echo "Üretim kodunda test/sandbox anahtarı izine rastlanmadı."
+
+      - name: Deploy durduruldu bildirimi
+        if: ${{ failure() }}
+        uses: ./.github/actions/sana-bildir
+        env:
+          ONAY_WORKER_URL: ${{ vars.ONAY_WORKER_URL }}
+          ONAY_WORKER_SECRET: ${{ secrets.ONAY_WORKER_SECRET }}
+          TWILIO_ACCOUNT_SID: ${{ vars.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_FROM_NUMBER: ${{ vars.TWILIO_FROM_NUMBER }}
+          TWILIO_WHATSAPP_FROM: ${{ vars.TWILIO_WHATSAPP_FROM }}
+          SAHIP_TELEFON_NUMARASI: ${{ vars.SAHIP_TELEFON_NUMARASI }}
+        with:
+          baslik: "⚠️ Deploy durduruldu"
+          aciklama: "Domain/zone ya da test anahtarı kontrolü başarısız oldu"
+          action_type: "info_only"
