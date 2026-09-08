@@ -146,6 +146,14 @@ function parseDelimited(text: string, fileName: string, templateId?: string, tem
   return { templateId, templateName: templateName || 'GENERIC_DELIMITED_V1', confidence: records.some((r) => r.issues.length) ? 0.9 : 0.96, ambiguous: false, records, issues: [] };
 }
 
+function fallbackStudentNumber(line: string, answersDef: Record<string, any>): string {
+  const starts = Object.values(answersDef)
+    .map((field: any) => Number(field?.start))
+    .filter((value) => Number.isFinite(value));
+  const metadata = line.slice(0, starts.length ? Math.min(...starts) : line.length);
+  return metadata.match(/\\d{10,12}/)?.[0] || '';
+}
+
 function parseFixedWidth(lines: string[], fileName: string, templateId: string, templateName: string, def: any): ParseResult {
   const fields = def.fields || {};
   const answersDef = def.answers || {};
@@ -165,7 +173,7 @@ function parseFixedWidth(lines: string[], fileName: string, templateId: string, 
     }
     records.push({
       row_no: i + 1,
-      student_number: pick(fields.student_number) || undefined,
+      student_number: pick(fields.student_number) || fallbackStudentNumber(line, answersDef) || undefined,
       name: pick(fields.name),
       class_name: className || undefined,
       grade_level: parsedClass.grade,
