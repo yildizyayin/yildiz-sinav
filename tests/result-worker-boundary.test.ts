@@ -27,6 +27,10 @@ describe('dedicated Result Network production boundary',()=>{
     expect(workflow).toContain('Resolve canonical production D1 and R2 bindings');
     expect(workflow).toContain('attach_domain');
     expect(workflow).toContain('live-result-network-smoke.mjs');
+    expect(workflow).toContain('Authorize sonuc.anunex.com on the production Turnstile widget');
+    expect(workflow).toContain('challenges/widgets/$PROD_TURNSTILE_SITE_KEY');
+    expect(workflow).toContain('(.domains + ["sonuc.anunex.com"]) | unique');
+    expect(workflow).toContain('Turnstile Sites Read/Write permission');
     expect(workflow).not.toContain('live-whatsapp-smoke');
     expect(workflow).not.toContain('live-nibiru');
     expect(licensedWorkflow).toContain('attach_domain app.anunex.com yildiz-sinav-prod');
