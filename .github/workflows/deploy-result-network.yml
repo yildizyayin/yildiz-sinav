@@ -47,6 +47,7 @@ jobs:
 
 
       - name: Authorize sonuc.anunex.com on the production Turnstile widget
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.attach_domain == true }}
         shell: bash
         run: |
           set -euo pipefail
@@ -154,7 +155,7 @@ jobs:
 
       - name: Attach sonuc.anunex.com
         id: attach
-        if: ${{ github.event_name == 'push' || inputs.attach_domain == true }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.attach_domain == true }}
         shell: bash
         run: |
           set -euo pipefail
@@ -213,13 +214,13 @@ jobs:
           fi
 
       - name: Verify sonuc.anunex.com after attachment
-        if: ${{ github.event_name == 'push' || inputs.attach_domain == true }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.attach_domain == true }}
         env:
           RESULT_BASE_URL: https://sonuc.anunex.com
         run: node scripts/live-result-network-smoke.mjs
 
       - name: Restore previous domain service after failed acceptance
-        if: ${{ failure() && (github.event_name == 'push' || inputs.attach_domain == true) && steps.attach.outputs.previous_service != '' }}
+        if: ${{ failure() && github.event_name == 'workflow_dispatch' && inputs.attach_domain == true && steps.attach.outputs.previous_service != '' }}
         env:
           PREVIOUS_SERVICE: ${{ steps.attach.outputs.previous_service }}
           PREVIOUS_ENVIRONMENT: ${{ steps.attach.outputs.previous_environment }}
