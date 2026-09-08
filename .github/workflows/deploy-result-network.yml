@@ -8,6 +8,13 @@ on:
         required: true
         default: false
         type: boolean
+  # Eski audited marker yalnızca doğrulama job'ını uyandırır; aşağıdaki
+  # deploy job'ı workflow_dispatch olmadan çalışmaz.
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/deploy-result-network.trigger'
 
 permissions:
   contents: read
@@ -24,6 +31,7 @@ jobs:
 
   deploy-result-network:
     needs: [dogrula]
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     environment: production
     env:
