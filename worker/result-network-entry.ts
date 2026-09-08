@@ -144,7 +144,7 @@ async function governanceSnapshot(env:Env){
   all<any>(env.DB.prepare(`SELECT id,dealer_id,scope_type,meb_code,city,district,active,created_at FROM result_network_dealer_scopes ORDER BY created_at DESC LIMIT 1000`)),
   all<any>(env.DB.prepare(`SELECT * FROM institution_governance_events ORDER BY created_at DESC LIMIT 100`)),
   all<any>(env.DB.prepare(`SELECT u.id,u.display_name,u.email,u.username,u.role,i.name institution_name FROM users u LEFT JOIN institutions i ON i.id=u.institution_id WHERE u.active=1 AND u.role IN ('INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER') ORDER BY u.display_name LIMIT 500`)),
-  all<any>(env.DB.prepare(`SELECT city,district FROM national_institution_directory WHERE status='ACTIVE' GROUP BY city,district ORDER BY city,district LIMIT 5000`)),
+  all<any>(env.DB.prepare(`SELECT city,district FROM (SELECT city,district FROM national_institution_directory WHERE status='ACTIVE' UNION SELECT city,district FROM institutions WHERE status='ACTIVE') WHERE city IS NOT NULL AND district IS NOT NULL ORDER BY city,district LIMIT 5000`)),
   all<any>(env.DB.prepare(`SELECT entity_id,action,created_at FROM audit_logs WHERE entity_type='result_network_dealer' ORDER BY created_at DESC LIMIT 1000`)),
   all<any>(env.DB.prepare(`SELECT institution_id,COUNT(DISTINCT exam_id) exam_count,COUNT(*) evaluated_student_count FROM exam_participants GROUP BY institution_id`)),
  ]);
