@@ -31,7 +31,7 @@ export function ResultNetworkAdmin(){
  const[scopeForm,setScopeForm]=useState(emptyScope);
  const[busy,setBusy]=useState(false);
  const[error,setError]=useState('');
- const[notice,setNotice]=useState('');
+ const[notice,setNotice]=useState('');\n const[activeSection,setActiveSection]=useState('dashboard');\n const[activeLevel,setActiveLevel]=useState('YKS');\n const[archivePublisher,setArchivePublisher]=useState('');\n const[archiveYear,setArchiveYear]=useState('');\n const[archiveLevel,setArchiveLevel]=useState('');\n const[archiveExam,setArchiveExam]=useState('');
 
  const load=async()=>{
   const[e,a,p,g]=await Promise.all([
