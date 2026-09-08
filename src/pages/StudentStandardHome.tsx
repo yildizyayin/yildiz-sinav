@@ -2,6 +2,7 @@ import { useEffect,useState } from 'react';
 import { BookOpenCheck,Bot,CalendarDays,Gamepad2,GraduationCap,Palette,Target,TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
+import { NibiruPlanetarySystem } from '../components/NibiruPlanetarySystem';
 import './student-standard.css';
 
 function targetName(t:any){return t.target_type==='LGS_SCHOOL'?t.school_name:`${t.university_name||''} · ${t.program_name||''}`}
@@ -23,6 +24,8 @@ export function StudentStandardHome(){
     </button>
     <div className="goal-story-card"><div className="goal-story-icon"><Target/></div><span>{primary?.priority?`${primary.priority}. hedefin`:'Hedef yolculuğun'}</span><h2>{primary?targetName(primary):'Hedefini belirle'}</h2><p>{primary?.motivation_enabled&&primary?.motivation_label?primary.motivation_label:'Hedefini belirlediğinde Nibiru gelişimini onunla birlikte takip edecek.'}</p><Link to="/academic-target" className="link-button">Hedeflerimi aç →</Link></div>
    </div>
+
+   <Link to="/nibiru" className="nibiru-student-card"><div className="nibiru-student-visual"><NibiruPlanetarySystem size={190} state="thinking" compact/></div><div className="nibiru-student-copy"><span className="eyebrow">NIBIRU · BUGÜNÜN EŞLİĞİ</span><h2>Bugün hangi kazanımı güçlendirelim?</h2><p>Son sınavındaki gelişim alanlarına göre sana kısa ve uygulanabilir bir çalışma rotası hazırlayacak.</p><strong>Nibiru çalışma alanını aç →</strong></div></Link>
 
    <div className="student-kpi-grid">
     <div className="student-kpi"><span>Son sınav</span><strong>{latest?.title||'Henüz yok'}</strong><small>{latest?.net!=null?`${Number(latest.net).toFixed(2)} net`:'Sonuç oluştuğunda burada.'}</small></div>
