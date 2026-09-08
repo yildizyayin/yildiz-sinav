@@ -55,4 +55,15 @@ describe('Sekonic FMT/DAT formats',()=>{
   const encoded=Uint8Array.from([0xc7,0x41,0xd0,0x52,0x49]).buffer;
   expect(decodeUploadedBytes(encoded)).toBe('ÇAĞRI');
  });
+
+ it('recovers a variable-position student number from Sekonic metadata',()=>{
+  const parser={type:'fixed-width',recordLength:222,fields:{student_number:{start:11,end:16},name:{start:16,end:36},class:{start:48,end:51},booklet:{start:55,end:56}},answers:{TYT_TUR:{start:56,end:96}}};
+  const chars=Array(222).fill(' ');
+  for(let i=0;i<11;i++) chars[36+i]=String(i%10);
+  chars[48]='M'; chars[49]='A'; chars[55]='B';
+  for(let i=0;i<40;i++) chars[56+i]='A';
+  const result=parseWithTemplate(chars.join(''),'129.dat',{id:'129',name:'Optik 129 Sekonic',parser_definition:JSON.stringify(parser)});
+  expect(result.records[0].student_number).toBe('01234567890');
+  expect(result.records[0].answers_by_subject.TYT_TUR).toHaveLength(40);
+ });
 });
