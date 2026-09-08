@@ -148,7 +148,7 @@ async function governanceSnapshot(env:Env){
   all<any>(env.DB.prepare(`SELECT entity_id,action,created_at FROM audit_logs WHERE entity_type='result_network_dealer' ORDER BY created_at DESC LIMIT 1000`)),
   all<any>(env.DB.prepare(`SELECT institution_id,COUNT(DISTINCT exam_id) exam_count,COUNT(*) evaluated_student_count FROM exam_participants GROUP BY institution_id`)),
   all<any>(env.DB.prepare(`SELECT id,code,name,description,permissions_json FROM result_network_permission_profiles WHERE active=1 ORDER BY name`)),
-  all<any>(env.DB.prepare(`SELECT user_id,profile_id,scope_type,city,district,institution_id,assigned_at,updated_at FROM result_network_user_permission_profiles`)),
+  all<any>(env.DB.prepare(`SELECT a.user_id,a.profile_id,a.scope_type,a.city,a.district,a.institution_id,a.assigned_at,a.updated_at,u.display_name user_name,u.email,u.username,p.name profile_name FROM result_network_user_permission_profiles a JOIN users u ON u.id=a.user_id JOIN result_network_permission_profiles p ON p.id=a.profile_id ORDER BY u.display_name`)),
  ]);
  const activeInstitutions=institutions.filter((x:any)=>x.lifecycle_status==='ACTIVE');
  const auditByDealer=new Map<string,any>();
