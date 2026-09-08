@@ -5,7 +5,7 @@ name: "AI ajan etiketlerini kur"
 
 on:
   push:
-    branches: [main]
+    branches: [main, codex/ai-agent-team]
     paths:
       - .github/workflows/agent-label-kurulum.yml
   workflow_dispatch: {}
