@@ -28,7 +28,7 @@ export function ResultNetworkAdmin({onLogout}:{onLogout?:()=>void}){
  const[institutionForm,setInstitutionForm]=useState(emptyInstitution);
  const[dealerUserId,setDealerUserId]=useState('');
  const[dealerName,setDealerName]=useState('');
- const availableDistricts=[...new Set((governance.locations||[]).filter((x:any)=>x.city===institutionForm.city).map((x:any)=>x.district).filter(Boolean))];
+ const availableDistricts:string[]=[...new Set<string>((governance.locations||[]).filter((x:any)=>x.city===institutionForm.city).map((x:any)=>String(x.district||'')).filter(Boolean))];
  const[dealerUsername,setDealerUsername]=useState('');
  const[dealerEmail,setDealerEmail]=useState('');
  const[dealerPassword,setDealerPassword]=useState('');
