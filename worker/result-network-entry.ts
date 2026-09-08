@@ -138,30 +138,50 @@ async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthU
 }
 
 async function governanceSnapshot(env:Env){
- const [institutions,dealers,scopes,events,candidates,locations]=await Promise.all([
-  all<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,i.city,i.district,i.status,COALESCE(iac.lifecycle_status,i.status) lifecycle_status FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id ORDER BY i.name LIMIT 500`)),
-  all<any>(env.DB.prepare(`SELECT d.id,d.user_id,d.status,d.display_name,d.approved_at,u.display_name user_name,u.email,u.username FROM result_network_dealers d JOIN users u ON u.id=d.user_id ORDER BY d.created_at DESC LIMIT 200`)),
-  all<any>(env.DB.prepare(`SELECT id,dealer_id,scope_type,meb_code,city,district,active,created_at FROM result_network_dealer_scopes ORDER BY created_at DESC LIMIT 1000`)),
-  all<any>(env.DB.prepare(`SELECT * FROM institution_governance_events ORDER BY created_at DESC LIMIT 100`)),
-  all<any>(env.DB.prepare(`SELECT u.id,u.display_name,u.email,u.username,u.role,i.name institution_name FROM users u LEFT JOIN institutions i ON i.id=u.institution_id WHERE u.active=1 AND u.role IN ('INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER') ORDER BY u.display_name LIMIT 500`)),
-  all<any>(env.DB.prepare(`SELECT city,district FROM national_institution_directory WHERE status='ACTIVE' GROUP BY city,district ORDER BY city,district LIMIT 5000`)),
+ const [institutions,dealers,scopes,events,candidates,locations,dealerAudits,usage]=await Promise.all([
+  all<any>(env.DB.prepare(\`SELECT i.id,i.name,i.code,i.city,i.district,i.status,COALESCE(iac.lifecycle_status,i.status) lifecycle_status FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id ORDER BY i.name LIMIT 5000\`)),
+  all<any>(env.DB.prepare(\`SELECT d.id,d.user_id,d.status,d.display_name,d.approved_at,d.created_at,d.updated_at,d.contact_name,d.contact_phone,d.contact_email,d.address,d.neighborhood,d.city,d.district,u.display_name user_name,u.email,u.username,u.phone FROM result_network_dealers d JOIN users u ON u.id=d.user_id ORDER BY d.created_at DESC LIMIT 200\`)),
+  all<any>(env.DB.prepare(\`SELECT id,dealer_id,scope_type,meb_code,city,district,active,created_at FROM result_network_dealer_scopes ORDER BY created_at DESC LIMIT 1000\`)),
+  all<any>(env.DB.prepare(\`SELECT * FROM institution_governance_events ORDER BY created_at DESC LIMIT 100\`)),
+  all<any>(env.DB.prepare(\`SELECT u.id,u.display_name,u.email,u.username,u.role,i.name institution_name FROM users u LEFT JOIN institutions i ON i.id=u.institution_id WHERE u.active=1 AND u.role IN ('INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER') ORDER BY u.display_name LIMIT 500\`)),
+  all<any>(env.DB.prepare(\`SELECT city,district FROM national_institution_directory WHERE status='ACTIVE' GROUP BY city,district ORDER BY city,district LIMIT 5000\`)),
+  all<any>(env.DB.prepare(\`SELECT entity_id,action,created_at FROM audit_logs WHERE entity_type='result_network_dealer' ORDER BY created_at DESC LIMIT 1000\`)),
+  all<any>(env.DB.prepare(\`SELECT institution_id,COUNT(DISTINCT exam_id) exam_count,COUNT(*) evaluated_student_count FROM exam_participants GROUP BY institution_id\`)),
  ]);
- return json({ok:true,institutions,dealers:dealers.map(d=>({...d,scopes:scopes.filter(s=>s.dealer_id===d.id)})),events, candidates, locations});
+ const activeInstitutions=institutions.filter((x:any)=>x.lifecycle_status==='ACTIVE');
+ const auditByDealer=new Map<string,any>();
+ for(const row of dealerAudits)if(row.entity_id&&!auditByDealer.has(row.entity_id))auditByDealer.set(row.entity_id,row);
+ const usageByInstitution=new Map<string,any>(usage.map((row:any)=>[row.institution_id,row]));
+ const matches=(institution:any,scope:any)=>scope.scope_type==='NATIONAL'||(scope.scope_type==='INSTITUTION'&&scope.meb_code&&scope.meb_code===institution.code)||(scope.scope_type==='CITY'&&scope.city&&scope.city===institution.city)||(scope.scope_type==='DISTRICT'&&scope.city&&scope.district&&scope.city===institution.city&&scope.district===institution.district);
+ const enrichedDealers=dealers.map((dealer:any)=>{
+  const dealerScopes=scopes.filter((scope:any)=>scope.dealer_id===dealer.id);
+  const activeScopes=dealerScopes.filter((scope:any)=>scope.active);
+  const linked=activeInstitutions.filter((institution:any)=>activeScopes.some((scope:any)=>matches(institution,scope)));
+  const dealerUsage=linked.reduce((total:any,institution:any)=>{
+   const item=usageByInstitution.get(institution.id);
+   return{exam_count:total.exam_count+Number(item?.exam_count||0),evaluated_student_count:total.evaluated_student_count+Number(item?.evaluated_student_count||0)};
+  },{exam_count:0,evaluated_student_count:0});
+  const last=auditByDealer.get(dealer.id);
+  return{...dealer,scopes:dealerScopes,scope_count:activeScopes.length,linked_institution_count:linked.length,exam_count:dealerUsage.exam_count,evaluated_student_count:dealerUsage.evaluated_student_count,last_action:last?.action||'RESULT_DEALER_APPROVED',last_action_at:last?.created_at||dealer.updated_at||dealer.approved_at||dealer.created_at};
+ });
+ return json({ok:true,institutions,dealers:enrichedDealers,scopes,events,candidates,locations});
 }
 async function createDealer(request:Request,env:Env,user:AuthUser){
- const body:any=await request.json().catch(()=>({})),userId=String(body.userId||''),displayName=String(body.displayName||'').trim(),username=String(body.username||'').trim().toLowerCase(),email=String(body.email||'').trim().toLowerCase(),password=String(body.password||'');
+ const body:any=await request.json().catch(()=>({})),userId=String(body.userId||''),displayName=String(body.displayName||'').trim(),username=String(body.username||'').trim().toLowerCase(),email=String(body.email||'').trim().toLowerCase(),password=String(body.password||''),clean=(key:string,max:number)=>String(body[key]||'').trim().slice(0,max),contactName=clean('contactName',120),contactPhone=clean('contactPhone',32),contactEmail=clean('contactEmail',160).toLowerCase(),address=clean('address',240),neighborhood=clean('neighborhood',120),city=clean('city',80),district=clean('district',80);
+ if(displayName.length<2)return badRequest('Bayi görünen adı en az 2 karakter olmalıdır.');
+ if(contactEmail&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contactEmail))return badRequest('Bayi iletişim e-posta adresi geçersiz.');
  let targetId=userId;
  if(!targetId){
-  if(displayName.length<2||username.length<3||password.length<6)return badRequest('Yeni bayi için görünen ad, kullanıcı adı ve en az 6 karakterli şifre zorunludur.');
+  if(username.length<3||password.length<6)return badRequest('Yeni bayi için görünen ad, kullanıcı adı ve en az 6 karakterli şifre zorunludur.');
   if(!/^[a-z0-9._-]+$/.test(username))return badRequest('Kullanıcı adı yalnızca küçük harf, rakam, nokta, alt çizgi ve tire içerebilir.');
-  const duplicate=await one<any>(env.DB.prepare('SELECT id FROM users WHERE username=? OR (?<>\'\' AND lower(email)=?) LIMIT 1').bind(username,email,email));
+  const duplicate=await one<any>(env.DB.prepare('SELECT id FROM users WHERE username=? OR (?<>\\'\\' AND lower(email)=?) LIMIT 1').bind(username,email,email));
   if(duplicate)return safeError(409,'USER_ALREADY_EXISTS','Bu kullanıcı adı veya e-posta zaten kullanılıyor.');
   const credentials=await hashPassword(password);targetId=uuid('usr');
-  await env.DB.prepare(`INSERT INTO users(id,display_name,email,username,password_hash,password_salt,password_iterations,password_algo,role,active) VALUES(?,?,?,?,?,?,?,?, 'INSTITUTION_MANAGER',1)`).bind(targetId,displayName,email||null,username,credentials.hash,credentials.salt,credentials.iterations, 'PBKDF2-SHA256-v1').run();
+  await env.DB.prepare(\`INSERT INTO users(id,display_name,email,username,password_hash,password_salt,password_iterations,password_algo,role,active) VALUES(?,?,?,?,?,?,?,?, 'INSTITUTION_MANAGER',1)\`).bind(targetId,displayName,email||null,username,credentials.hash,credentials.salt,credentials.iterations, 'PBKDF2-SHA256-v1').run();
  }else{
   const target=await one<any>(env.DB.prepare('SELECT id FROM users WHERE id=? AND active=1').bind(targetId));if(!target)return safeError(404,'USER_NOT_FOUND','Aktif kullanıcı bulunamadı.');
  }
- const id=uuid('dealer');await env.DB.prepare(`INSERT INTO result_network_dealers(id,user_id,status,display_name,approved_by,approved_at) VALUES(?,?,'APPROVED',?,?,CURRENT_TIMESTAMP) ON CONFLICT(user_id) DO UPDATE SET status='APPROVED',display_name=COALESCE(excluded.display_name,result_network_dealers.display_name),approved_by=excluded.approved_by,approved_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP`).bind(id,targetId,displayName||null,user.id).run();
+ const id=uuid('dealer');await env.DB.prepare(\`INSERT INTO result_network_dealers(id,user_id,status,display_name,contact_name,contact_phone,contact_email,address,neighborhood,city,district,approved_by,approved_at) VALUES(?,?,'APPROVED',?,?,?,?,?,?,?, ?,CURRENT_TIMESTAMP) ON CONFLICT(user_id) DO UPDATE SET status='APPROVED',display_name=COALESCE(NULLIF(excluded.display_name,''),result_network_dealers.display_name),contact_name=COALESCE(NULLIF(excluded.contact_name,''),result_network_dealers.contact_name),contact_phone=COALESCE(NULLIF(excluded.contact_phone,''),result_network_dealers.contact_phone),contact_email=COALESCE(NULLIF(excluded.contact_email,''),result_network_dealers.contact_email),address=COALESCE(NULLIF(excluded.address,''),result_network_dealers.address),neighborhood=COALESCE(NULLIF(excluded.neighborhood,''),result_network_dealers.neighborhood),city=COALESCE(NULLIF(excluded.city,''),result_network_dealers.city),district=COALESCE(NULLIF(excluded.district,''),result_network_dealers.district),approved_by=excluded.approved_by,approved_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP\`).bind(id,targetId,displayName,contactName,contactPhone,contactEmail,address,neighborhood,city,district,user.id).run();
  const dealer=await one<any>(env.DB.prepare('SELECT id FROM result_network_dealers WHERE user_id=?').bind(targetId));await audit(env.DB,user.id,null,'RESULT_DEALER_APPROVED','result_network_dealer',dealer.id,{userId:targetId,createdAccount:!userId});return json({ok:true,dealerId:dealer.id,status:'APPROVED',userId:targetId,username:username||null},201);
 }
 async function dealerCanAct(env:Env,user:AuthUser,mebCode?:string){if(user.role==='SUPER_ADMIN')return{ok:true,dealerId:null};const d=await one<any>(env.DB.prepare(`SELECT id FROM result_network_dealers WHERE user_id=? AND status='APPROVED'`).bind(user.id));if(!d)return{ok:false};const directory=mebCode?await one<any>(env.DB.prepare(`SELECT city,district FROM national_institution_directory WHERE meb_code=? AND status='ACTIVE'`).bind(mebCode)):null;const scope=await one<any>(env.DB.prepare(`SELECT 1 FROM result_network_dealer_scopes WHERE dealer_id=? AND active=1 AND (scope_type='NATIONAL' OR (scope_type='INSTITUTION' AND meb_code=?) OR (scope_type='CITY' AND city=?) OR (scope_type='DISTRICT' AND city=? AND district=?)) LIMIT 1`).bind(d.id,mebCode||'',directory?.city||'',directory?.city||'',directory?.district||''));return{ok:!!scope,dealerId:d.id}}
