@@ -6,3 +6,5 @@ Fix district selector typing 2026-09-08T14:11:44.403Z
 # dealer-institution-location-upload-2026-09-08
 
 # premium-super-admin-architecture-2026-09-08
+
+# restore-validated-admin-screen-2026-09-08
