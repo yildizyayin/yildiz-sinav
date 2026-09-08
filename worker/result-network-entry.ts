@@ -137,12 +137,22 @@ async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthU
  return json({ok:true,id,status:'PUBLISHED',snapshotVersion:version,participantCount:Number(totals.participant_count),institutionCount:Number(totals.institution_count),retentionDueAt:due});
 }
 
-async function governanceSnapshot(env:Env){const [institutions,dealers,scopes,events,candidates]=await Promise.all([all<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,i.city,i.district,i.status,COALESCE(iac.lifecycle_status,i.status) lifecycle_status FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id ORDER BY i.name LIMIT 500`)),all<any>(env.DB.prepare(`SELECT d.id,d.user_id,d.status,d.display_name,d.approved_at,u.display_name user_name,u.email,u.username FROM result_network_dealers d JOIN users u ON u.id=d.user_id ORDER BY d.created_at DESC LIMIT 200`)),all<any>(env.DB.prepare(`SELECT id,dealer_id,scope_type,meb_code,city,district,active,created_at FROM result_network_dealer_scopes ORDER BY created_at DESC LIMIT 1000`)),all<any>(env.DB.prepare(`SELECT * FROM institution_governance_events ORDER BY created_at DESC LIMIT 100`)),all<any>(env.DB.prepare(`SELECT u.id,u.display_name,u.email,u.username,u.role,i.name institution_name FROM users u LEFT JOIN institutions i ON i.id=u.institution_id WHERE u.active=1 AND u.role IN ('INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER') ORDER BY u.display_name LIMIT 500`))]);return json({ok:true,institutions,dealers:dealers.map(d=>({...d,scopes:scopes.filter(s=>s.dealer_id===d.id)})),events,candidates})}
+async function governanceSnapshot(env:Env){
+ const [institutions,dealers,scopes,events,candidates,locations]=await Promise.all([
+  all<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,i.city,i.district,i.status,COALESCE(iac.lifecycle_status,i.status) lifecycle_status FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id ORDER BY i.name LIMIT 500`)),
+  all<any>(env.DB.prepare(`SELECT d.id,d.user_id,d.status,d.display_name,d.approved_at,u.display_name user_name,u.email,u.username FROM result_network_dealers d JOIN users u ON u.id=d.user_id ORDER BY d.created_at DESC LIMIT 200`)),
+  all<any>(env.DB.prepare(`SELECT id,dealer_id,scope_type,meb_code,city,district,active,created_at FROM result_network_dealer_scopes ORDER BY created_at DESC LIMIT 1000`)),
+  all<any>(env.DB.prepare(`SELECT * FROM institution_governance_events ORDER BY created_at DESC LIMIT 100`)),
+  all<any>(env.DB.prepare(`SELECT u.id,u.display_name,u.email,u.username,u.role,i.name institution_name FROM users u LEFT JOIN institutions i ON i.id=u.institution_id WHERE u.active=1 AND u.role IN ('INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER') ORDER BY u.display_name LIMIT 500`)),
+  all<any>(env.DB.prepare(`SELECT city,district FROM national_institution_directory WHERE status='ACTIVE' GROUP BY city,district ORDER BY city,district LIMIT 5000`)),
+ ]);
+ return json({ok:true,institutions,dealers:dealers.map(d=>({...d,scopes:scopes.filter(s=>s.dealer_id===d.id)})),events, candidates, locations});
+}
 async function createDealer(request:Request,env:Env,user:AuthUser){
  const body:any=await request.json().catch(()=>({})),userId=String(body.userId||''),displayName=String(body.displayName||'').trim(),username=String(body.username||'').trim().toLowerCase(),email=String(body.email||'').trim().toLowerCase(),password=String(body.password||'');
  let targetId=userId;
  if(!targetId){
-  if(displayName.length<2||username.length<3||password.length<10)return badRequest('Yeni bayi için görünen ad, kullanıcı adı ve en az 10 karakterli şifre zorunludur.');
+  if(displayName.length<2||username.length<3||password.length<6)return badRequest('Yeni bayi için görünen ad, kullanıcı adı ve en az 6 karakterli şifre zorunludur.');
   if(!/^[a-z0-9._-]+$/.test(username))return badRequest('Kullanıcı adı yalnızca küçük harf, rakam, nokta, alt çizgi ve tire içerebilir.');
   const duplicate=await one<any>(env.DB.prepare('SELECT id FROM users WHERE username=? OR (?<>\'\' AND lower(email)=?) LIMIT 1').bind(username,email,email));
   if(duplicate)return safeError(409,'USER_ALREADY_EXISTS','Bu kullanıcı adı veya e-posta zaten kullanılıyor.');
