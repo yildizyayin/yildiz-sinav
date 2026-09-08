@@ -68,7 +68,7 @@ async function aiAgentOverview(env:Env,user:AuthUser){
 }
 
 async function dispatchAiAgent(request:Request,env:Env,user:AuthUser){
-  if(user.role!=='SUPER_ADMIN')return forbidden('AI ajan workflow'larını yalnızca Süper Admin tetikleyebilir.');
+  if(user.role!=='SUPER_ADMIN')return forbidden("AI ajan workflow'larını yalnızca Süper Admin tetikleyebilir.");
   if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
   if(!env.GITHUB_AGENT_TOKEN)return apiError(503,'GITHUB_AGENT_NOT_CONFIGURED','GITHUB_AGENT_TOKEN Cloudflare Secret olarak tanımlı değil.');
   const body=await request.json<{workflow?:string;inputs?:Record<string,unknown>}>();
