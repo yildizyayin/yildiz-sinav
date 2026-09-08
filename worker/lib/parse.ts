@@ -151,7 +151,7 @@ function fallbackStudentNumber(line: string, answersDef: Record<string, any>): s
     .map((field: any) => Number(field?.start))
     .filter((value) => Number.isFinite(value));
   const metadata = line.slice(0, starts.length ? Math.min(...starts) : line.length);
-  return metadata.match(/\\d{10,12}/)?.[0] || '';
+  return metadata.match(/\d{10,12}/)?.[0] || '';
 }
 
 function parseFixedWidth(lines: string[], fileName: string, templateId: string, templateName: string, def: any): ParseResult {
