@@ -45,6 +45,52 @@ jobs:
           test -n "$PROD_TURNSTILE_SECRET_KEY" || (echo "Missing PROD_TURNSTILE_SECRET_KEY" && exit 1)
           test -n "$PROD_SESSION_SECRET" || (echo "Missing PROD_SESSION_SECRET" && exit 1)
 
+
+      - name: Authorize sonuc.anunex.com on the production Turnstile widget
+        shell: bash
+        run: |
+          set -euo pipefail
+          endpoint="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/challenges/widgets/$PROD_TURNSTILE_SITE_KEY"
+          auth_header="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+
+          detail_status="$(curl --silent --show-error \
+            --output result-turnstile-detail.json \
+            --write-out '%{http_code}' \
+            --header "$auth_header" \
+            "$endpoint")"
+          if [[ "$detail_status" -lt 200 || "$detail_status" -ge 300 ]] || ! jq -e '.success == true and (.result.sitekey | length > 0)' result-turnstile-detail.json >/dev/null; then
+            echo "Cloudflare Turnstile widget could not be read (HTTP $detail_status). The API token needs Turnstile Sites Read/Write permission." >&2
+            jq -c '{success,errors,messages}' result-turnstile-detail.json >&2 || true
+            exit 1
+          fi
+
+          jq '.result | {
+            domains: ((.domains + ["sonuc.anunex.com"]) | unique),
+            mode,
+            name,
+            clearance_level
+          }' result-turnstile-detail.json > result-turnstile-update.json
+          domain_count="$(jq '.domains | length' result-turnstile-update.json)"
+          if [[ "$domain_count" -gt 10 ]]; then
+            echo "Turnstile hostname limit would be exceeded; use a dedicated Result Network widget." >&2
+            exit 1
+          fi
+
+          update_status="$(curl --silent --show-error \
+            --output result-turnstile-response.json \
+            --write-out '%{http_code}' \
+            --request PUT \
+            --header 'Content-Type: application/json' \
+            --header "$auth_header" \
+            --data-binary @result-turnstile-update.json \
+            "$endpoint")"
+          if [[ "$update_status" -lt 200 || "$update_status" -ge 300 ]] || ! jq -e '.success == true and (.result.domains | index("sonuc.anunex.com") != null)' result-turnstile-response.json >/dev/null; then
+            echo "Cloudflare could not authorize sonuc.anunex.com on the Turnstile widget (HTTP $update_status)." >&2
+            jq -c '{success,errors,messages}' result-turnstile-response.json >&2 || true
+            exit 1
+          fi
+          echo "Turnstile hostname authorization verified for sonuc.anunex.com."
+
       - name: Install dependencies
         run: npm install
 
@@ -198,4 +244,4 @@ jobs:
 
       - name: Remove materialized configuration
         if: ${{ always() }}
-        run: rm -f wrangler.result.production.resolved.json result-deploy.log result-domain-*-response.json
+        run: rm -f wrangler.result.production.resolved.json result-deploy.log result-domain-*-response.json result-turnstile-*.json
