@@ -1,6 +1,6 @@
 import { useEffect,useMemo,useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
+import { Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 import { api } from '../api';
 import { LicenseBoundary } from './LicenseBoundary';
@@ -14,7 +14,7 @@ const nav: Record<Role, NavItem[]> = {
     { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck },
     { to: '/result-network', label: 'Sonuç Ağı', icon: Globe2 },
     { to: '/attendance', label: 'Yoklama Gözetimi', icon: UserCheck },
-    { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle }, { to: '/licenses', label: 'Lisanslar', icon: KeyRound },
+    { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle }, { to: '/agent-center', label: 'AI Ajan Merkezi', icon: Activity }, { to: '/licenses', label: 'Lisanslar', icon: KeyRound },
     { to: '/theme-management', label: 'Tema & Özel Günler', icon: Palette },
     { to: '/feature-lab', label: 'Feature Lab', icon: FlaskConical }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3, feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Enterprise', icon: Building2, feature:'ENTERPRISE' },
     { to: '/academic-target-admin', label: 'Resmî Hedef Verileri', icon: Target }, { to: '/official-question-intelligence', label: 'Çıkmış Soru & Kazanım', icon: BarChart3 }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/curriculum', label: 'Müfredat & Kazanımlar', icon: BookMarked },
