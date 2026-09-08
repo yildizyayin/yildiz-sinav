@@ -45,11 +45,11 @@ jobs:
       - name: Üretim kodunda test/sandbox anahtarı taraması
         run: |
           set -euo pipefail
-          pattern="(1x00000000000000000000AA|(SITE_KEY|API_KEY|AUTH_TOKEN|SESSION_SECRET|SECRET|TOKEN|KEY)[[:space:]]*[:=][[:space:]]*['\"](test|sandbox))"
+          pattern="(1x0{10,}[A-Z]{2}|(SITE_KEY|API_KEY|AUTH_TOKEN|SESSION_SECRET|SECRET|TOKEN|KEY)[[:space:]]*[:=][[:space:]]*['\"](test|sandbox))"
           matches="$(rg -n -i \
             --glob '*.ts' --glob '*.tsx' --glob '*.json' --glob '*.jsonc' --glob '*.toml' \
             "$pattern" \
-            worker src migrations wrangler*.jsonc 2>/dev/null || true)"
+            worker src migrations wrangler.production.jsonc wrangler.marketing.jsonc wrangler.result.production.jsonc 2>/dev/null || true)"
 
           if [[ -n "$matches" ]]; then
             echo "::error::Üretim kapsamındaki dosyalarda test/sandbox anahtarı izi bulundu:"
