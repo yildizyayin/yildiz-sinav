@@ -76,3 +76,36 @@
 .scope-editor-row small{color:#188a6b;font-weight:800}.scope-editor-row.inactive{opacity:.55}.scope-editor-row.inactive small{color:#718096}
 @media(max-width:900px){.dealer-card-grid{grid-template-columns:1fr}}
 @media(max-width:620px){.dealer-contact-grid{grid-template-columns:1fr}.dealer-contact-grid .dealer-address{grid-column:auto}.dealer-stat-grid{grid-template-columns:1fr 1fr}.dealer-card-head{flex-direction:column}.dealer-card-actions{justify-content:flex-start}.dealer-card-foot{flex-direction:column}.dealer-card-foot time{text-align:left}}
+
+/* Readable admin typography and branded lockups */
+.admin-shell{font-size:15px}
+.admin-sidebar-brand{align-items:flex-start;gap:12px}
+.admin-sidebar-brand .anunex-brand-canonical{min-width:0;flex:1}
+.admin-sidebar-brand .anunex-wordmark-canonical strong{font-size:18px}
+.admin-sidebar-brand .anunex-wordmark-canonical small{font-size:6px;letter-spacing:.16em}
+.admin-nibiru-lockup{padding-top:6px;color:#dce8ff}
+.admin-nibiru-lockup .nibiru-brand-lockup{gap:7px;flex-direction:column;align-items:center}
+.admin-nibiru-lockup .nibiru-wordmark{text-align:center}
+.admin-nibiru-lockup .nibiru-wordmark strong{font-size:8px;color:#fff}
+.admin-nibiru-lockup .nibiru-wordmark small{font-size:5px;color:#a9c5ff}
+.admin-main p{font-size:15px;line-height:1.6}
+.admin-main label{font-size:14px;line-height:1.45}
+.admin-main input,.admin-main select,.admin-main textarea{font-size:15px;min-height:48px}
+.admin-main textarea{padding:12px 14px;border:1px solid #cbd7e9;border-radius:12px;font:inherit;resize:vertical}
+.admin-main button{font-size:14px}
+.admin-main .panel h2{font-size:22px}
+.admin-main .panel h3{font-size:18px}
+.admin-nav button{font-size:14px}
+.admin-nav-title{font-size:11px}
+.admin-sidebar-foot{font-size:11px}
+.field-help{display:block;margin-top:6px;color:#718096;font-size:12px}
+.bulk-directory-panel{background:linear-gradient(135deg,#fbfdff,#f4f8ff)}
+.bulk-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.bulk-actions button,.file-picker{display:inline-flex;align-items:center;gap:8px}
+.file-picker{position:relative;overflow:hidden;border:1px solid #cedcf0;background:#f5f8ff;color:#315cff;border-radius:10px;padding:10px 12px;font-weight:850;cursor:pointer}
+.file-picker input{position:absolute;inset:0;opacity:0;cursor:pointer;min-height:0}
+.bulk-source{display:grid;gap:7px;margin-top:14px}
+.bulk-ready{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px;padding:14px;border-radius:12px;background:#eaf8f2;color:#1b6e58}
+.bulk-ready span{color:#4c756b;font-size:13px}
+.bulk-ready .primary{margin-left:auto}
+@media(max-width:620px){.admin-sidebar-brand{align-items:flex-start}.admin-sidebar-brand .anunex-wordmark-canonical strong{font-size:16px}.bulk-ready .primary{margin-left:0;width:100%}}
