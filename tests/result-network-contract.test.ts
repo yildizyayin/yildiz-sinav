@@ -35,7 +35,7 @@ describe('ANUNEX result network contract',()=>{
   expect(source).toContain("dealer?.status==='APPROVED'");
   expect(source).toContain("canManageInstitution:user.role==='SUPER_ADMIN'||activeInstitutionManager");
   expect(portal).toContain("api<any>('/api/admin/result-network/access-profile')");
-  expect(portal).toContain('<ResultNetworkAdmin/>');
+  expect(portal).toContain('<ResultNetworkAdmin onLogout={operatorLogout}/>');
  });
  it('keeps result institution and dealer lifecycle controls scoped and auditable',()=>{
   expect(source).toContain("activeInstitutionManager=user.role==='INSTITUTION_MANAGER'&&institution?.lifecycle_status==='ACTIVE'");
