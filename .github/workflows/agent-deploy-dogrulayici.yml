@@ -1,8 +1,6 @@
 name: "Ajan 6 - Deploy/Domain Doğrulayıcı"
-
 # Production deploy işinin ön koşuludur. Zone aktif değilse veya üretim
 # yapılandırmasına test anahtarı sızmışsa deploy job'ı hiç başlamaz.
-
 on:
   workflow_call:
     secrets:
@@ -30,7 +28,6 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$CF_API_TOKEN" || (echo "Missing CLOUDFLARE_API_TOKEN" >&2 && exit 1)
-
           response="$(curl --fail-with-body --silent --show-error \
             --header "Authorization: Bearer ${CF_API_TOKEN}" \
             --header "Content-Type: application/json" \
@@ -38,8 +35,11 @@ jobs:
             --data-urlencode "name=anunex.com" \
             --data-urlencode "status=active" \
             --data-urlencode "per_page=1")"
-          jq -e '.success == true and (.result | length == 1) and .[0].name == "anunex.com" and .[0].status == "active"' <<<"$response" >/dev/null \
-            || (echo "anunex.com Cloudflare zone aktif değil veya bulunamadı. Deploy durduruldu." >&2 && exit 1)
+          if ! jq -e '(.success == true) and ((.result | type) == "array") and ((.result | length) == 1) and (.result[0].name == "anunex.com") and (.result[0].status == "active")' <<<"$response" >/dev/null; then
+            echo "anunex.com Cloudflare zone aktif değil veya API token Zone:Read yetkisine sahip değil. Deploy durduruldu." >&2
+            jq -r '.errors[]? | "Cloudflare API error \(.code // "unknown"): \(.message // "unknown")"' <<<"$response" >&2 || true
+            exit 1
+          fi
           echo "anunex.com zone durumu: active"
 
       - name: Üretim kodunda test/sandbox anahtarı taraması
@@ -50,7 +50,6 @@ jobs:
             --glob '*.ts' --glob '*.tsx' --glob '*.json' --glob '*.jsonc' --glob '*.toml' \
             "$pattern" \
             worker src migrations wrangler.production.jsonc wrangler.marketing.jsonc wrangler.result.production.jsonc 2>/dev/null || true)"
-
           if [[ -n "$matches" ]]; then
             echo "::error::Üretim kapsamındaki dosyalarda test/sandbox anahtarı izi bulundu:"
             echo "$matches"
