@@ -73,12 +73,21 @@ jobs:
             --arg system "$system_prompt" \
             --arg user "$user_prompt" \
             '{model:$model,max_tokens:300,system:$system,messages:[{role:"user",content:$user}]}')"
-          response="$(curl --fail-with-body --silent --show-error \
+          response_file="$(mktemp)"
+          trap 'rm -f "$response_file"' EXIT
+          http_code="$(curl --silent --show-error --output "$response_file" --write-out '%{http_code}' \
             --request POST https://api.anthropic.com/v1/messages \
             --header "x-api-key: $ANTHROPIC_API_KEY" \
             --header "anthropic-version: 2023-06-01" \
             --header "content-type: application/json" \
             --data "$payload")"
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            error_type="$(jq -r '.error.type // "unknown"' "$response_file" 2>/dev/null || echo "unknown")"
+            error_message="$(jq -r '.error.message // "ayrıntı yok"' "$response_file" 2>/dev/null || echo "ayrıntı yok")"
+            echo "Anthropic API HTTP $http_code — $error_type — $error_message" >&2
+            exit 1
+          fi
+          response="$(cat "$response_file")"
           text="$(jq -er '.content[0].text' <<<"$response")"
           result="$(jq -cer 'fromjson | select(.aciliyet|IN("kritik","yuksek","orta","dusuk")) | select(.kategori|IN("bug","ozellik","guvenlik","performans","icerik","diger")) | select((.ozet|type) == "string") and (.ozet|length > 0 and length <= 500)' <<<"$text")"
           {
