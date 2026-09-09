@@ -1,5 +1,5 @@
 import { useEffect,useMemo,useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 import { api } from '../api';
@@ -8,6 +8,104 @@ import { NibiruMark,NibiruNavIcon } from './NibiruMark';
 import { AnunexBrand } from './AnunexBrand';
 
 type NavItem={to:string;label:string;icon:any;feature?:string};
+type NavGroup={label:string;items:NavItem[]};
+type GroupedRole='SUPER_ADMIN'|'INSTITUTION_MANAGER';
+
+const groupedNav: Record<GroupedRole, NavGroup[]> = {
+  SUPER_ADMIN: [
+    { label:'GENEL', items:[
+      {to:'/',label:'Ana Sayfa',icon:Home},
+      {to:'/standard-readiness',label:'Hazırlık Merkezi',icon:ShieldCheck},
+    ]},
+    { label:'SINAV MERKEZİ', items:[
+      {to:'/exam-center',label:'Genel Bakış',icon:ClipboardCheck},
+      {to:'/exams',label:'Sınavlar',icon:ClipboardCheck},
+      {to:'/exam-definitions',label:'Oluştur',icon:Sparkles},
+      {to:'/exam-center',label:'Yükle / Değerlendir',icon:FileUp},
+      {to:'/exam-center',label:'Katalogdan Ekle',icon:BookMarked},
+      {to:'/reports',label:'Raporlar',icon:BarChart3},
+    ]},
+    { label:'OPTİK İŞLEMLERİ', items:[
+      {to:'/opticals',label:'Kayıtlı Optikler',icon:ScanLine},
+      {to:'/optical-prepare',label:'Optik Form Tasarımcısı',icon:Printer},
+      {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
+      {to:'/calibration',label:'Kalibrasyon',icon:Printer},
+    ]},
+    { label:'İÇERİK VE BELGELER', items:[
+      {to:'/content-center',label:'Soru Havuzu & Studio',icon:Layers3,feature:'QUESTION_BANK'},
+      {to:'/worksheet-admin',label:'Föy Merkezi',icon:BookOpenCheck},
+      {to:'/worksheet-calendar',label:'Föy Takvimi',icon:CalendarDays},
+      {to:'/outcomes',label:'Kazanım Haritası',icon:Target},
+      {to:'/transfers',label:'Veri Dosyaları',icon:FileUp},
+    ]},
+    { label:'KURUMLAR VE ERİŞİM', items:[
+      {to:'/institutions',label:'Kurumlar',icon:Building2},
+      {to:'/students',label:'Öğrenciler',icon:Users},
+      {to:'/activation-requests',label:'Aktivasyon Talepleri',icon:UserCheck},
+      {to:'/users',label:'Kullanıcılar',icon:UserCog},
+      {to:'/access-accounts',label:'Öğrenci / Veli Erişimi',icon:KeyRound},
+      {to:'/teacher-assignments',label:'Öğretmen Yetkileri',icon:ShieldCheck},
+    ]},
+    { label:'PLATFORM', items:[
+      {to:'/result-network',label:'Sonuç Ağı',icon:Globe2},
+      {to:'/attendance',label:'Yoklama Gözetimi',icon:UserCheck},
+      {to:'/nibiru',label:'Nibiru',icon:NibiruNavIcon},
+      {to:'/nibiru-admin',label:'Nibiru Yönetimi',icon:MessageCircle},
+      {to:'/agent-center',label:'AI Ajan Merkezi',icon:Activity},
+      {to:'/licenses',label:'Lisanslar',icon:KeyRound},
+      {to:'/theme-management',label:'Tema & Özel Günler',icon:Palette},
+      {to:'/feature-lab',label:'Feature Lab',icon:FlaskConical},
+      {to:'/enterprise',label:'Enterprise',icon:Building2,feature:'ENTERPRISE'},
+      {to:'/academic-target-admin',label:'Resmî Hedef Verileri',icon:Target},
+      {to:'/official-question-intelligence',label:'Çıkmış Soru & Kazanım',icon:BarChart3},
+      {to:'/curriculum',label:'Müfredat & Kazanımlar',icon:BookMarked},
+      {to:'/bulk-operations',label:'Toplu İşlemler',icon:Layers3},
+      {to:'/demo-mode',label:'Sentetik Demo',icon:FlaskConical},
+      {to:'/scale',label:'Ölçek Altyapısı',icon:Database},
+      {to:'/notifications',label:'Bildirimler',icon:Bell},
+      {to:'/profile',label:'Profil',icon:UserRound},
+    ]},
+  ],
+  INSTITUTION_MANAGER: [
+    { label:'GENEL', items:[{to:'/',label:'Ana Sayfa',icon:Home}]},
+    { label:'SINAV MERKEZİ', items:[
+      {to:'/exam-center',label:'Genel Bakış',icon:ClipboardCheck},
+      {to:'/exams',label:'Sınavlar',icon:ClipboardCheck},
+      {to:'/exam-definitions',label:'Oluştur',icon:Sparkles},
+      {to:'/exam-center',label:'Yükle / Değerlendir',icon:FileUp},
+      {to:'/exam-center',label:'Katalogdan Ekle',icon:BookMarked},
+      {to:'/reports',label:'Raporlar',icon:BarChart3},
+    ]},
+    { label:'OPTİK İŞLEMLERİ', items:[
+      {to:'/optical-prepare',label:'Optik Form Tasarımcısı',icon:Printer},
+      {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
+      {to:'/calibration',label:'Kalibrasyon',icon:ScanLine},
+    ]},
+    { label:'İÇERİK VE BELGELER', items:[
+      {to:'/content-center',label:'Soru Havuzu & Studio',icon:Layers3,feature:'QUESTION_BANK'},
+      {to:'/worksheet-calendar',label:'Föy Takvimi',icon:CalendarDays},
+      {to:'/worksheets',label:'Föy Merkezi',icon:BookOpenCheck},
+      {to:'/transfers',label:'Veri Dosyaları',icon:FileUp},
+    ]},
+    { label:'KURUM VE ERİŞİM', items:[
+      {to:'/students',label:'Öğrenciler',icon:Users},
+      {to:'/users',label:'Kullanıcılar',icon:UserCog},
+      {to:'/access-accounts',label:'Öğrenci / Veli Erişimi',icon:KeyRound},
+      {to:'/teacher-assignments',label:'Öğretmen Yetkileri',icon:ShieldCheck},
+      {to:'/attendance',label:'Yoklama',icon:UserCheck},
+    ]},
+    { label:'PLATFORM', items:[
+      {to:'/nibiru',label:'Nibiru',icon:NibiruNavIcon},
+      {to:'/nibiru-admin',label:'Nibiru Yönetimi',icon:MessageCircle},
+      {to:'/enterprise',label:'Enterprise / Campus',icon:Building2,feature:'ENTERPRISE'},
+      {to:'/announcements',label:'Duyuru Merkezi',icon:Megaphone},
+      {to:'/assignments',label:'Ödev Merkezi',icon:BookOpenCheck},
+      {to:'/notifications',label:'Bildirimler',icon:Bell},
+      {to:'/profile',label:'Profil',icon:UserRound},
+    ]},
+  ],
+};
+
 const nav: Record<Role, NavItem[]> = {
   SUPER_ADMIN: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/standard-readiness', label: 'Standard Hazırlık', icon: ShieldCheck },
@@ -62,6 +160,16 @@ export function Layout() {
   useEffect(()=>{if(!user)return;void api<any>('/api/panel-experience').then(setPanelExperience).catch(()=>setPanelExperience(null))},[user?.id,user?.role,user?.institution_id]);
   useEffect(()=>{const refresh=()=>setThemeRevision(value=>value+1);window.addEventListener('anunex-theme-change',refresh);return()=>window.removeEventListener('anunex-theme-change',refresh)},[]);
   const visibleNav=useMemo(()=>user?nav[user.role].filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature)):[],[user,enabledFeatures]);
+  const location=useLocation();
+  const groupedItems=useMemo(()=>{
+    if(!user || (user.role!=='SUPER_ADMIN' && user.role!=='INSTITUTION_MANAGER')) return null;
+    return groupedNav[user.role].map(group=>({...group,items:group.items.filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature))}));
+  },[user,enabledFeatures]);
+  const [openGroups,setOpenGroups]=useState<Record<string,boolean>>({});
+  const isRouteActive=(to:string)=>{
+    const path=to.split('?')[0];
+    return path==='/' ? location.pathname==='/' : location.pathname===path || location.pathname.startsWith(path+'/');
+  };
   if (!user) return null;
   const allowedThemeKeys=(panelExperience?.allowedThemes||[]).map((theme:any)=>String(theme.theme_key));
   const storedTheme=useMemo(()=>typeof window==='undefined'?null:window.localStorage.getItem('anunex-panel-theme'),[themeRevision]);
@@ -71,7 +179,16 @@ export function Layout() {
     <aside className="sidebar" aria-label="Ana menü">
       <div className="brand"><AnunexBrand compact inverse tagline/><button className="mobile-nav-close" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}><X size={20}/></button></div>
       <div className="nibiru-sidebar-card"><NibiruMark size={36} state="active"/><div><strong>Nibiru AI</strong><span>Canlı akademik zekâ</span></div><ChevronRight size={16}/></div>
-      <nav>{visibleNav.map((item) => { const Icon=item.icon; return <NavLink key={item.to} to={item.to} end={item.to==='/' } onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}</nav>
+      <nav className={groupedItems ? 'grouped-sidebar-nav' : undefined}>
+        {groupedItems ? groupedItems.map((group) => {
+          const activeGroup=group.items.some(item=>isRouteActive(item.to));
+          const open=openGroups[group.label] ?? activeGroup;
+          return <section className={`nav-group ${open?'open':''}`} key={group.label}>
+            <button type="button" className="nav-group-toggle" aria-expanded={open} onClick={()=>setOpenGroups(current=>({...current,[group.label]:!open}))}><span>{group.label}</span><ChevronRight size={14}/></button>
+            {open && <div className="nav-group-items">{group.items.map((item,index) => { const Icon=item.icon; return <NavLink key={`${group.label}-${item.to}-${index}`} to={item.to} end={item.to==='/' } onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={18}/><span>{item.label}</span></NavLink>; })}</div>}
+          </section>;
+        }) : visibleNav.map((item) => { const Icon=item.icon; return <NavLink key={item.to} to={item.to} end={item.to==='/' } onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}
+      </nav>
       <div className="sidebar-footer">
         <div className="user-card"><div className="avatar">{user.display_name.charAt(0)}</div><div><strong>{user.display_name}</strong><small>{roleName(user.role)}{institution?.name ? ` · ${institution.name}` : ''}</small></div></div>
         <button className="ghost sidebar-logout" onClick={async()=>{await logout();navigate('/login');}}><LogOut size={18}/>Çıkış</button>
