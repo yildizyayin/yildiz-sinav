@@ -58,8 +58,12 @@ async function aiAgentOverview(env:Env,user:AuthUser){
         return {...workflow,available:availablePaths.has(`.github/workflows/${workflow.file}`),lastRun:latest?{id:latest.id,status:latest.status,conclusion:latest.conclusion,createdAt:latest.created_at,updatedAt:latest.updated_at,htmlUrl:latest.html_url,runNumber:latest.run_number,event:latest.event}:null};
       }catch(error){return {...workflow,available:availablePaths.has(`.github/workflows/${workflow.file}`),error:error instanceof Error?error.message:'Workflow çalıştırma geçmişi okunamadı.'};}
     }));
-    const issues=(issueList||[]).filter((issue:any)=>!issue.pull_request&&Array.isArray(issue.labels)).map((issue:any)=>({number:issue.number,title:issue.title,state:issue.state,htmlUrl:issue.html_url,updatedAt:issue.updated_at,labels:issue.labels.map((label:any)=>typeof label==='string'?label:label.name).filter(Boolean)}));
     const trackedLabels=['izleyici-ajan','icerik-tarama-ajani','acil','yuk-testi-ajani','ajan-fix-dene'];
+    const issues=(issueList||[]).filter((issue:any)=>{
+      if(issue.pull_request||!Array.isArray(issue.labels))return false;
+      const labels=issue.labels.map((label:any)=>typeof label==='string'?label:label.name).filter(Boolean);
+      return labels.some((label:string)=>trackedLabels.includes(label));
+    }).map((issue:any)=>({number:issue.number,title:issue.title,state:issue.state,htmlUrl:issue.html_url,updatedAt:issue.updated_at,labels:issue.labels.map((label:any)=>typeof label==='string'?label:label.name).filter(Boolean)}));
     const issueCounts=Object.fromEntries(trackedLabels.map(label=>[label,issues.filter((issue:any)=>issue.labels.includes(label)).length]));
     return json({ok:true,repository,configured:true,apiReachable:true,workflows:runs,issues:issues.slice(0,30),issueCounts,setup:{githubToken:true,onayWorkerUrl:Boolean(env.ONAY_WORKER_URL),actionsSecretsVisible:false}});
   }catch(error){
