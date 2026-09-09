@@ -1,0 +1,127 @@
+name: "Sana Bildir ve Onay İste"
+description: "Onay Worker'da bir onay linki oluşturur, SMS ve WhatsApp ile gönderir"
+
+inputs:
+  baslik:
+    required: true
+    description: "Bildirimde görünecek kısa başlık"
+  aciklama:
+    required: true
+    description: "Ne olduğuna dair kısa açıklama"
+  action_type:
+    required: true
+    description: "merge_pr | close_issue | info_only"
+  ref_number:
+    required: false
+    description: "PR ya da Issue numarası (info_only ise boş bırakılabilir)"
+    default: ""
+
+outputs:
+  onay_link:
+    description: "Oluşturulan onay bağlantısı"
+    value: ${{ steps.link.outputs.onay_link }}
+  red_link:
+    description: "Oluşturulan red bağlantısı"
+    value: ${{ steps.link.outputs.red_link }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Bildirim ayarlarını kontrol et
+      id: config
+      shell: bash
+      env:
+        ONAY_WORKER_URL: ${{ env.ONAY_WORKER_URL }}
+        ONAY_WORKER_SECRET: ${{ env.ONAY_WORKER_SECRET }}
+        TWILIO_ACCOUNT_SID: ${{ env.TWILIO_ACCOUNT_SID }}
+        TWILIO_AUTH_TOKEN: ${{ env.TWILIO_AUTH_TOKEN }}
+        TWILIO_FROM_NUMBER: ${{ env.TWILIO_FROM_NUMBER }}
+        TWILIO_WHATSAPP_FROM: ${{ env.TWILIO_WHATSAPP_FROM }}
+        SAHIP_TELEFON_NUMARASI: ${{ env.SAHIP_TELEFON_NUMARASI }}
+      run: |
+        set -euo pipefail
+        missing=()
+        for name in ONAY_WORKER_URL ONAY_WORKER_SECRET TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_FROM_NUMBER TWILIO_WHATSAPP_FROM SAHIP_TELEFON_NUMARASI; do
+          if [[ -z "${!name:-}" ]]; then
+            missing+=("$name")
+          fi
+        done
+        if (( ${#missing[@]} > 0 )); then
+          echo "::warning::Sana-bildir yapılandırılmadı; bildirim atlanıyor. Eksik ayarlar: ${missing[*]}"
+          echo "enabled=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Onay linki oluştur
+      id: link
+      if: steps.config.outputs.enabled == 'true'
+      shell: bash
+      env:
+        ONAY_WORKER_URL: ${{ env.ONAY_WORKER_URL }}
+        ONAY_WORKER_SECRET: ${{ env.ONAY_WORKER_SECRET }}
+        TITLE: ${{ inputs.baslik }}
+        DESCRIPTION: ${{ inputs.aciklama }}
+        REPOSITORY: ${{ github.repository }}
+        ACTION_TYPE: ${{ inputs.action_type }}
+        REF_NUMBER: ${{ inputs.ref_number }}
+      run: |
+        set -euo pipefail
+        payload="$(jq -n \
+          --arg title "$TITLE" \
+          --arg description "$DESCRIPTION" \
+          --arg repo "$REPOSITORY" \
+          --arg action_type "$ACTION_TYPE" \
+          --arg ref_number "$REF_NUMBER" \
+          '{title:$title,description:$description,repo:$repo,action_type:$action_type,ref_number:$ref_number}')"
+        response="$(curl --fail-with-body --silent --show-error \
+          --request POST "${ONAY_WORKER_URL%/}/create-approval" \
+          --header "x-onay-secret: ${ONAY_WORKER_SECRET}" \
+          --header "content-type: application/json" \
+          --data "$payload")"
+        onay_link="$(jq -er '.onay_link' <<<"$response")"
+        red_link="$(jq -er '.red_link' <<<"$response")"
+        echo "onay_link=$onay_link" >> "$GITHUB_OUTPUT"
+        echo "red_link=$red_link" >> "$GITHUB_OUTPUT"
+
+    - name: SMS gönder (Twilio)
+      if: steps.config.outputs.enabled == 'true'
+      shell: bash
+      env:
+        TWILIO_SID: ${{ env.TWILIO_ACCOUNT_SID }}
+        TWILIO_TOKEN: ${{ env.TWILIO_AUTH_TOKEN }}
+        TWILIO_FROM: ${{ env.TWILIO_FROM_NUMBER }}
+        HEDEF_NUMARA: ${{ env.SAHIP_TELEFON_NUMARASI }}
+        BASLIK: ${{ inputs.baslik }}
+        ACIKLAMA: ${{ inputs.aciklama }}
+        ONAY_LINK: ${{ steps.link.outputs.onay_link }}
+      run: |
+        set -euo pipefail
+        mesaj="🤖 ${BASLIK} — ${ACIKLAMA} | Onayla: ${ONAY_LINK}"
+        curl --fail-with-body --silent --show-error \
+          --request POST "https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json" \
+          --user "${TWILIO_SID}:${TWILIO_TOKEN}" \
+          --data-urlencode "From=${TWILIO_FROM}" \
+          --data-urlencode "To=${HEDEF_NUMARA}" \
+          --data-urlencode "Body=${mesaj}" >/dev/null
+
+    - name: WhatsApp gönder (Twilio WhatsApp)
+      if: steps.config.outputs.enabled == 'true'
+      shell: bash
+      env:
+        TWILIO_SID: ${{ env.TWILIO_ACCOUNT_SID }}
+        TWILIO_TOKEN: ${{ env.TWILIO_AUTH_TOKEN }}
+        TWILIO_WA_FROM: ${{ env.TWILIO_WHATSAPP_FROM }}
+        HEDEF_NUMARA: ${{ env.SAHIP_TELEFON_NUMARASI }}
+        BASLIK: ${{ inputs.baslik }}
+        ACIKLAMA: ${{ inputs.aciklama }}
+        ONAY_LINK: ${{ steps.link.outputs.onay_link }}
+      run: |
+        set -euo pipefail
+        mesaj="🤖 *${BASLIK}*\n${ACIKLAMA}\n\nOnayla: ${ONAY_LINK}"
+        curl --fail-with-body --silent --show-error \
+          --request POST "https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json" \
+          --user "${TWILIO_SID}:${TWILIO_TOKEN}" \
+          --data-urlencode "From=whatsapp:${TWILIO_WA_FROM}" \
+          --data-urlencode "To=whatsapp:${HEDEF_NUMARA}" \
+          --data-urlencode "Body=${mesaj}" >/dev/null

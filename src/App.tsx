@@ -44,6 +44,7 @@ import { DemoMode } from './pages/DemoMode';
 import { ScaleInfrastructure } from './pages/ScaleInfrastructure';
 import { Nibiru } from './pages/Nibiru';
 import { NibiruAdmin } from './pages/NibiruAdmin';
+import { AgentCenter } from './pages/AgentCenter';
 import { Licenses } from './pages/Licenses';
 import { AcademicTargetAdmin } from './pages/AcademicTargetAdmin';
 import { OfficialQuestionIntelligenceAdmin } from './pages/OfficialQuestionIntelligenceAdmin';
@@ -87,7 +88,7 @@ export default function App(){
   <Route path="attendance" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><AttendanceCenter/></RoleGate>}/>
   <Route path="assignments" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><AssignmentsCenter/></RoleGate>}/>
   <Route path="completion-center" element={<RoleGate allowed={['SUPER_ADMIN']}><CompletionCenter/></RoleGate>}/><Route path="membership-orders" element={<RoleGate allowed={['SUPER_ADMIN']}><MembershipOrders/></RoleGate>}/>
-  <Route path="nibiru" element={<RoleGate allowed={ALL_ROLES}><Nibiru/></RoleGate>}/><Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/>
+  <Route path="nibiru" element={<RoleGate allowed={ALL_ROLES}><Nibiru/></RoleGate>}/><Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/><Route path="agent-center" element={<RoleGate allowed={['SUPER_ADMIN']}><AgentCenter/></RoleGate>}/>
   <Route path="academic-target" element={<RoleGate allowed={['STUDENT']}><StudentTargetsV2/></RoleGate>}/><Route path="student-settings" element={<RoleGate allowed={['STUDENT']}><StudentExperienceSettings/></RoleGate>}/><Route path="student-games" element={<RoleGate allowed={['STUDENT']}><StudentGames/></RoleGate>}/><Route path="question-review" element={<RoleGate allowed={['STUDENT']}><StudentQuestionReview/></RoleGate>}/><Route path="my-books" element={<RoleGate allowed={['STUDENT']}><StudentBooks/></RoleGate>}/>
   <Route path="academic-target-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><AcademicTargetAdmin/></RoleGate>}/><Route path="official-question-intelligence" element={<RoleGate allowed={['SUPER_ADMIN']}><OfficialQuestionIntelligenceAdmin/></RoleGate>}/>
   <Route path="announcements" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Announcements/></RoleGate>}/><Route path="worksheet-calendar" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><WorksheetCalendar/></RoleGate>}/><Route path="licenses" element={<RoleGate allowed={['SUPER_ADMIN']}><Licenses/></RoleGate>}/><Route path="profile" element={<RoleGate allowed={ALL_ROLES}><Profile/></RoleGate>}/><Route path="notifications" element={<RoleGate allowed={ALL_ROLES}><Notifications/></RoleGate>}/>

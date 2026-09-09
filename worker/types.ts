@@ -39,6 +39,11 @@ export interface Env {
   WHATSAPP_GRAPH_API_VERSION?: string;
   TELEGRAM_BOT_TOKEN?: string;
   TELEGRAM_WEBHOOK_SECRET?: string;
+  // AI ajan merkezi yalnızca allowlist'teki workflow'ları izler/tetikler.
+  // Token Cloudflare Secret olarak provision edilmelidir.
+  GITHUB_AGENT_TOKEN?: string;
+  GITHUB_AGENT_REPO?: string;
+  ONAY_WORKER_URL?: string;
   IYZICO_API_KEY?: string;
   IYZICO_SECRET_KEY?: string;
   PAYTR_MERCHANT_ID?: string;

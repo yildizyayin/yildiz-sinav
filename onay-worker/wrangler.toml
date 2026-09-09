@@ -1,0 +1,16 @@
+name = "onay-worker"
+main = "index.js"
+compatibility_date = "2025-01-01"
+
+# `wrangler kv namespace create ONAY_KV` çalıştırıldıktan sonra gerçek id'yi
+# buraya yazın. Bilinmeyen bir Cloudflare id'si tahmin edilmemelidir.
+kv_namespaces = [
+  { binding = "ONAY_KV", id = "BURAYA_KV_NAMESPACE_ID" }
+]
+
+[vars]
+ALLOWED_REPO = "yildizyayin/yildiz-sinav"
+
+# Secrets (koda yazılmaz):
+# - GITHUB_TOKEN
+# - ONAY_WORKER_SECRET

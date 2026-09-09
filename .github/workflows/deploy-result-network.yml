@@ -8,6 +8,8 @@ on:
         required: true
         default: false
         type: boolean
+  # Eski audited marker yalnızca doğrulama job'ını uyandırır; aşağıdaki
+  # deploy job'ı workflow_dispatch olmadan çalışmaz.
   push:
     branches:
       - main
@@ -16,13 +18,20 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: production-result-network
   cancel-in-progress: false
 
 jobs:
+  dogrula:
+    uses: ./.github/workflows/agent-deploy-dogrulayici.yml
+    secrets: inherit
+
   deploy-result-network:
+    needs: [dogrula]
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     environment: production
     env:
