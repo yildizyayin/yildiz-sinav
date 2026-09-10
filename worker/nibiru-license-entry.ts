@@ -98,7 +98,6 @@ async function dispatchAiAgent(request:Request,env:Env,user:AuthUser){
   if(Object.keys(rawInputs).some(key=>!allowedInputs.has(key)))return badRequest('Workflow input alanı geçersiz.');
   const inputs:Record<string,string>={};
   for(const [key,value] of Object.entries(rawInputs))inputs[key]=String(value);
-  if((workflow.file==='agent-triyaj.yml'||workflow.file==='agent-kod-yazici.yml')&&(!/^[1-9][0-9]*$/.test(inputs.issue_number||'')))return badRequest('Bu ajan için geçerli bir Issue numarası gerekir.');
   if(workflow.file==='agent-yuk-testi.yml'&&inputs.sanal_kullanici_sayisi&&!/^[1-9][0-9]{0,5}$/.test(inputs.sanal_kullanici_sayisi))return badRequest('Sanal kullanıcı sayısı 1–999999 arasında olmalıdır.');
   try{
     await githubAgentRequest(env,`actions/workflows/${workflow.file}/dispatches`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ref:'main',inputs})});
