@@ -35,7 +35,15 @@ function completionIdFor(studentId:string,itemId:string){return `coachdone_${saf
 
 async function activeEnrollment(env:Env,studentId:string){return one<any>(env.DB.prepare(`SELECT e.*,c.name class_name FROM student_enrollments e LEFT JOIN classes c ON c.id=e.class_id WHERE e.student_id=? AND e.status='ACTIVE' ORDER BY e.created_at DESC LIMIT 1`).bind(studentId));}
 
-async function weakOutcomes(env:Env,studentId:string){return all<CoachWeakOutcome>(env.DB.prepare(`SELECT o.id outcome_id,o.title,o.topic,o.subtopic,o.subject_id,s.name subject_name,SUM(r.evidence_count) evidence_count,SUM(r.correct_count) correct_count,CASE WHEN SUM(r.evidence_count)>0 THEN CAST(SUM(r.correct_count) AS REAL)/SUM(r.evidence_count) ELSE 0 END success_rate FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id WHERE r.student_id=? GROUP BY o.id,o.title,o.topic,o.subtopic,o.subject_id,s.name HAVING SUM(r.evidence_count)>=3 AND (CAST(SUM(r.correct_count) AS REAL)/NULLIF(SUM(r.evidence_count),0))<0.70 ORDER BY success_rate ASC,evidence_count DESC LIMIT 3`).bind(studentId));}
+async function weakOutcomes(env:Env,studentId:string){
+ const legacy=await all<CoachWeakOutcome>(env.DB.prepare(`SELECT o.id outcome_id,o.title,o.topic,o.subtopic,o.subject_id,s.name subject_name,SUM(r.evidence_count) evidence_count,SUM(r.correct_count) correct_count,CASE WHEN SUM(r.evidence_count)>0 THEN CAST(SUM(r.correct_count) AS REAL)/SUM(r.evidence_count) ELSE 0 END success_rate FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id WHERE r.student_id=? GROUP BY o.id,o.title,o.topic,o.subtopic,o.subject_id,s.name HAVING SUM(r.evidence_count)>=3 AND (CAST(SUM(r.correct_count) AS REAL)/NULLIF(SUM(r.evidence_count),0))<0.70 ORDER BY success_rate ASC,evidence_count DESC LIMIT 3`).bind(studentId));
+ if(legacy.length)return legacy;
+ return all<CoachWeakOutcome>(env.DB.prepare(`SELECT o.id outcome_id,o.title,o.topic,o.subtopic,o.subject_id,s.name subject_name,ls.evidence_count,ROUND(ls.mastery*ls.evidence_count,4) correct_count,ls.mastery success_rate
+   FROM student_learning_state ls JOIN learning_nodes n ON n.id=ls.node_id AND n.node_type='OUTCOME'
+   JOIN outcomes o ON o.id=CASE WHEN n.id LIKE 'ln_%' THEN substr(n.id,4) ELSE n.code END
+   JOIN subjects s ON s.id=o.subject_id WHERE ls.student_id=? AND ls.evidence_count>=3 AND ls.mastery<0.70
+   ORDER BY ls.mastery ASC,ls.evidence_count DESC LIMIT 3`).bind(studentId));
+}
 
 async function worksheetCandidate(env:Env,enrollment:any,weak:CoachWeakOutcome[]){
  if(!enrollment?.class_id)return null;
