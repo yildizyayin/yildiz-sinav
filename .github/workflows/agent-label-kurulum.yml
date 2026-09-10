@@ -27,6 +27,20 @@ jobs:
               { name: "acil", color: "d93f0b", description: "İnsan müdahalesi gerektiren acil durum" },
               { name: "yuk-testi-ajani", color: "fbca04", description: "Staging yük testi ajanı" },
               { name: "ajan-fix-dene", color: "0e8a16", description: "Kod yazıcı ajanından düşük riskli fix isteği" },
+              { name: "ci-saglik-ajani", color: "0e8a16", description: "CI typecheck, test ve build sağlık ajanı" },
+              { name: "d1-sema-ajani", color: "5319e7", description: "D1 migration ve şema denetim ajanı" },
+              { name: "route-denetim-ajani", color: "fbca04", description: "Route ve Worker entry zinciri denetimi" },
+              { name: "tenant-guvenlik-ajani", color: "d93f0b", description: "Tenant ve yetki izolasyonu testleri" },
+              { name: "kvkk-denetim-ajani", color: "b60205", description: "KVKK, privacy ve redaksiyon denetimi" },
+              { name: "dependency-guvenlik-ajani", color: "5319e7", description: "NPM bağımlılık güvenliği" },
+              { name: "frontend-erisim-ajani", color: "a2eeef", description: "Frontend temel erişilebilirlik taraması" },
+              { name: "api-saglik-ajani", color: "0e8a16", description: "Public API sağlık endpointleri" },
+              { name: "demo-veri-ajani", color: "0366d6", description: "Demo seed ve idempotensi kontrolü" },
+              { name: "icerik-kalite-ajani", color: "5319e7", description: "Eksik ve doğrulama bekleyen içerik taraması" },
+              { name: "performans-ajani", color: "fbca04", description: "Hafif public GET performans ölçümü" },
+              { name: "release-hazirlik-ajani", color: "7057ff", description: "Production release checklist denetimi" },
+              { name: "issue-tekillestirme-ajani", color: "c2e0c6", description: "Ajan Issue tekrarlarını bulur" },
+              { name: "ajan-durum-raporu", color: "0366d6", description: "Ücretsiz AI ajan ekip durum raporu" },
             ];
             for (const label of labels) {
               try {

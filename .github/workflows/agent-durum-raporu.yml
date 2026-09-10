@@ -1,0 +1,37 @@
+name: "Ücretsiz Ajan - AI Ekip Durum Raporu"
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  rapor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Workflow ve son çalışmaların özetini çıkar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh workflow list --all --limit 200 > agent-status-report.md
+          {
+            echo
+            echo "Son çalışmalar:"
+            gh run list --limit 100 --json workflowName,status,conclusion,createdAt,url               --jq '.[] | [.workflowName,.status,(.conclusion // "-"),.createdAt,.url] | @tsv'
+          } >> agent-status-report.md
+      - name: Durum raporunu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
+        with:
+          report-file: agent-status-report.md
+          title: "AI Ekip Durum Raporu"
+          label: "ajan-durum-raporu"
+          status: warning
+          close-on-success: "false"
+          label-color: "0366d6"

@@ -1,0 +1,39 @@
+name: "Ücretsiz Ajan - KVKK Denetimi"
+
+on:
+  schedule:
+    - cron: "0 4 * * 3"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: KVKK ve redaksiyon testleri
+        id: verify
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          { npm install --no-audit --no-fund; npx vitest run --config vitest.config.ts tests/privacy-policy.test.ts tests/privacy-operations.test.ts tests/privacy-workflows.test.ts tests/privacy-sensitive-export.test.ts tests/audit-redaction.test.ts; } 2>&1 | tee agent-kvkk-report.md
+      - name: Raporu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
+        with:
+          report-file: agent-kvkk-report.md
+          title: "KVKK Denetim Ajanı Raporu"
+          label: "kvkk-denetim-ajani"
+          status: ${{ steps.verify.outcome }}
+          close-on-success: "true"
+          label-color: "b60205"
+      - name: Başarısızsa workflow'u işaretle
+        if: steps.verify.outcome == 'failure'
+        run: exit 1

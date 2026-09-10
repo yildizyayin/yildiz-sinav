@@ -1,0 +1,46 @@
+name: "Ücretsiz Ajan - API Sağlık Kontrolü"
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Public API health endpointleri
+        id: verify
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          : > agent-api-report.md
+          overall=0
+          for url in "https://app.anunex.com/api/health" "https://demo.anunex.com/api/health" "https://sonuc.anunex.com/api/health"; do
+            code=$(curl -sS -L --max-time 15 -o /dev/null -w "%{http_code}" "$url")
+            echo "$url -> HTTP $code" | tee -a agent-api-report.md
+            if [ "$code" = "000" ] || [ "$code" -ge 400 ]; then overall=1; fi
+          done
+          if [ "$overall" -ne 0 ]; then
+            echo "Bir veya daha fazla public API health endpointi başarısız." >> agent-api-report.md
+            exit 1
+          fi
+          echo "Tüm public API health endpointleri erişilebilir." >> agent-api-report.md
+      - name: Raporu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
+        with:
+          report-file: agent-api-report.md
+          title: "API Sağlık Ajanı Raporu"
+          label: "api-saglik-ajani"
+          status: ${{ steps.verify.outcome }}
+          close-on-success: "true"
+          label-color: "0e8a16"
+      - name: Başarısızsa workflow'u işaretle
+        if: steps.verify.outcome == 'failure'
+        run: exit 1

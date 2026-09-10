@@ -10,12 +10,26 @@ import { extractWhatsAppMessages, sendWhatsAppText, verifyWhatsAppSignature, wha
 const WHATSAPP_ROLES = new Set(['PARENT','TEACHER','GUIDANCE_TEACHER','INSTITUTION_MANAGER']);
 
 const AI_AGENT_WORKFLOWS = [
-  { key:'monitor', file:'agent-izleyici.yml', name:'İzleyici', description:'Production domain ve subdomain uptime kontrolü', label:'izleyici-ajan', cadence:'Her 15 dakika' },
-  { key:'content', file:'agent-icerik-tarama.yml', name:'İçerik Eksik Tarayıcı', description:'NEEDS_DEFINITION ve CONTENT_REQUIRED işaretlerini tarar', label:'icerik-tarama-ajani', cadence:'Haftalık · Pazartesi' },
-  { key:'triage', file:'agent-triyaj.yml', name:'Triyaj', description:'Yeni Issue kayıtlarını sınıflandırır', label:'—', cadence:'Issue açıldığında' },
-  { key:'code', file:'agent-kod-yazici.yml', name:'Kod Yazıcı', description:'Düşük riskli fix için PR önerisi üretir', label:'ajan-fix-dene', cadence:'Etiketlendiğinde' },
-  { key:'load', file:'agent-yuk-testi.yml', name:'Yük Testi', description:'Yalnız staging/demo hedefinde k6 testi çalıştırır', label:'yuk-testi-ajani', cadence:'Haftalık · Çarşamba' },
-  { key:'deployGuard', file:'agent-deploy-dogrulayici.yml', name:'Deploy Doğrulayıcı', description:'Cloudflare zone ve production güvenlik ön koşullarını denetler', label:'—', cadence:'Deploy öncesi / manuel' },
+  { key:'monitor', file:'agent-izleyici.yml', name:'İzleyici', description:'Production domain ve subdomain uptime kontrolü', label:'izleyici-ajan', cadence:'Her 15 dakika', tier:'free' },
+  { key:'content', file:'agent-icerik-tarama.yml', name:'İçerik Eksik Tarayıcı', description:'NEEDS_DEFINITION ve CONTENT_REQUIRED işaretlerini tarar', label:'icerik-tarama-ajani', cadence:'Haftalık · Pazartesi', tier:'free' },
+  { key:'load', file:'agent-yuk-testi.yml', name:'Yük Testi', description:'Yalnız staging/demo hedefinde k6 testi çalıştırır', label:'yuk-testi-ajani', cadence:'Haftalık · Çarşamba', tier:'free' },
+  { key:'deployGuard', file:'agent-deploy-dogrulayici.yml', name:'Deploy Doğrulayıcı', description:'Cloudflare zone ve production güvenlik ön koşullarını denetler', label:'—', cadence:'Deploy öncesi / manuel', tier:'free' },
+  { key:'ci', file:'agent-ci-saglik.yml', name:'CI Sağlık', description:'Typecheck, test ve frontend build zincirini doğrular', label:'ci-saglik-ajani', cadence:'Günlük · 02:00 UTC', tier:'free' },
+  { key:'d1', file:'agent-d1-sema.yml', name:'D1 Şema Denetimi', description:'Migration sürümlerini ve yerel D1 uygulamasını kontrol eder', label:'d1-sema-ajani', cadence:'Haftalık · Pazartesi', tier:'free' },
+  { key:'routes', file:'agent-route-denetim.yml', name:'Route/Entry Denetimi', description:'Gerçek Worker entry zinciri ve kritik route referanslarını tarar', label:'route-denetim-ajani', cadence:'Haftalık · Salı', tier:'free' },
+  { key:'tenant', file:'agent-tenant-guvenlik.yml', name:'Tenant Güvenlik Denetimi', description:'Kurum izolasyonu ve yetki sınırı testlerini çalıştırır', label:'tenant-guvenlik-ajani', cadence:'Haftalık · Salı', tier:'free' },
+  { key:'kvkk', file:'agent-kvkk-denetim.yml', name:'KVKK Denetimi', description:'Privacy, redaksiyon ve hassas veri güvenlik testlerini çalıştırır', label:'kvkk-denetim-ajani', cadence:'Haftalık · Çarşamba', tier:'free' },
+  { key:'dependencies', file:'agent-dependency-guvenlik.yml', name:'Bağımlılık Güvenliği', description:'Production npm bağımlılıklarında yüksek riskli açık arar', label:'dependency-guvenlik-ajani', cadence:'Haftalık · Çarşamba', tier:'free' },
+  { key:'frontend', file:'agent-frontend-erisim.yml', name:'Frontend Erişilebilirlik', description:'TSX/JSX img ve input temel erişilebilirlik kontrollerini yapar', label:'frontend-erisim-ajani', cadence:'Haftalık · Perşembe', tier:'free' },
+  { key:'api', file:'agent-api-saglik.yml', name:'API Sağlık Kontrolü', description:'app, demo ve sonuc public health endpointlerini GET ile denetler', label:'api-saglik-ajani', cadence:'Her 30 dakika', tier:'free' },
+  { key:'demo', file:'agent-demo-veri.yml', name:'Demo Veri İdempotensi', description:'Sentetik demo seed üretimini ve yerel tekrar çalışmayı doğrular', label:'demo-veri-ajani', cadence:'Haftalık · Perşembe', tier:'free' },
+  { key:'contentQuality', file:'agent-icerik-kalite.yml', name:'İçerik Kalitesi', description:'Eksik veya insan doğrulaması bekleyen içerik işaretlerini raporlar', label:'icerik-kalite-ajani', cadence:'Haftalık · Pazartesi', tier:'free' },
+  { key:'performance', file:'agent-performans.yml', name:'Hafif Performans', description:'Beş public domain üzerinde düşük hacimli GET sürelerini ölçer', label:'performans-ajani', cadence:'Her saat', tier:'free' },
+  { key:'release', file:'agent-release-hazirlik.yml', name:'Release Hazırlık', description:'Production release checklist ve çözülmemiş placeholder ayarlarını kontrol eder', label:'release-hazirlik-ajani', cadence:'Haftalık · Cuma', tier:'free' },
+  { key:'dedupe', file:'agent-issue-tekillestirme.yml', name:'Issue Tekilleştirme', description:'Ajanların açtığı açık Issue tekrarlarını bulur', label:'issue-tekillestirme-ajani', cadence:'Hafta içi günlük', tier:'free' },
+  { key:'status', file:'agent-durum-raporu.yml', name:'AI Ekip Durum Raporu', description:'Ajan workflow ve son çalışma özetini tek raporda toplar', label:'ajan-durum-raporu', cadence:'Günlük · 09:00 UTC', tier:'free' },
+  { key:'triage', file:'agent-triyaj.yml', name:'Triyaj', description:'Yeni Issue kayıtlarını sınıflandırır', label:'—', cadence:'Issue açıldığında', tier:'paid', paused:true },
+  { key:'code', file:'agent-kod-yazici.yml', name:'Kod Yazıcı', description:'Düşük riskli fix için PR önerisi üretir', label:'ajan-fix-dene', cadence:'Etiketlendiğinde', tier:'paid', paused:true },
 ] as const;
 
 function githubAgentRepo(env:Env){
@@ -58,7 +72,7 @@ async function aiAgentOverview(env:Env,user:AuthUser){
         return {...workflow,available:availablePaths.has(`.github/workflows/${workflow.file}`),lastRun:latest?{id:latest.id,status:latest.status,conclusion:latest.conclusion,createdAt:latest.created_at,updatedAt:latest.updated_at,htmlUrl:latest.html_url,runNumber:latest.run_number,event:latest.event}:null};
       }catch(error){return {...workflow,available:availablePaths.has(`.github/workflows/${workflow.file}`),error:error instanceof Error?error.message:'Workflow çalıştırma geçmişi okunamadı.'};}
     }));
-    const trackedLabels=['izleyici-ajan','icerik-tarama-ajani','acil','yuk-testi-ajani','ajan-fix-dene'];
+    const trackedLabels=['izleyici-ajan','icerik-tarama-ajani','acil','yuk-testi-ajani','ajan-fix-dene','ci-saglik-ajani','d1-sema-ajani','route-denetim-ajani','tenant-guvenlik-ajani','kvkk-denetim-ajani','dependency-guvenlik-ajani','frontend-erisim-ajani','api-saglik-ajani','demo-veri-ajani','icerik-kalite-ajani','performans-ajani','release-hazirlik-ajani','issue-tekillestirme-ajani','ajan-durum-raporu'];
     const issues=(issueList||[]).filter((issue:any)=>{
       if(issue.pull_request||!Array.isArray(issue.labels))return false;
       const labels=issue.labels.map((label:any)=>typeof label==='string'?label:label.name).filter(Boolean);
@@ -78,12 +92,12 @@ async function dispatchAiAgent(request:Request,env:Env,user:AuthUser){
   const body=await request.json<{workflow?:string;inputs?:Record<string,unknown>}>();
   const workflow=AI_AGENT_WORKFLOWS.find(item=>item.file===body.workflow);
   if(!workflow)return badRequest('Bu workflow AI ajan allowlistinde değil.');
+  if(workflow.tier==='paid')return apiError(402,'AGENT_PAUSED',`${workflow.name} ajanı şimdilik kredi gerektirdiği için duraklatıldı.`);
   const rawInputs=body.inputs&&typeof body.inputs==='object'&&!Array.isArray(body.inputs)?body.inputs:{};
   const allowedInputs=new Set(['issue_number','sanal_kullanici_sayisi']);
   if(Object.keys(rawInputs).some(key=>!allowedInputs.has(key)))return badRequest('Workflow input alanı geçersiz.');
   const inputs:Record<string,string>={};
   for(const [key,value] of Object.entries(rawInputs))inputs[key]=String(value);
-  if((workflow.file==='agent-triyaj.yml'||workflow.file==='agent-kod-yazici.yml')&&(!/^[1-9][0-9]*$/.test(inputs.issue_number||'')))return badRequest('Bu ajan için geçerli bir Issue numarası gerekir.');
   if(workflow.file==='agent-yuk-testi.yml'&&inputs.sanal_kullanici_sayisi&&!/^[1-9][0-9]{0,5}$/.test(inputs.sanal_kullanici_sayisi))return badRequest('Sanal kullanıcı sayısı 1–999999 arasında olmalıdır.');
   try{
     await githubAgentRequest(env,`actions/workflows/${workflow.file}/dispatches`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ref:'main',inputs})});

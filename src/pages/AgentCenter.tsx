@@ -10,6 +10,8 @@ type AgentWorkflow = {
   description: string;
   label: string;
   cadence: string;
+  tier: 'free' | 'paid';
+  paused?: boolean;
   actionsUrl: string;
   available: boolean;
   error?: string | null;
@@ -31,6 +33,7 @@ function date(value?: string | null) {
 }
 
 function workflowState(workflow: AgentWorkflow) {
+  if (workflow.paused || workflow.tier === 'paid') return { label: 'Kredi bekliyor', tone: 'paused', Icon: Clock3 };
   if (!workflow.available) return { label: 'Merge bekliyor', tone: 'warn', Icon: CircleDashed };
   if (workflow.lastRun?.status === 'queued' || workflow.lastRun?.status === 'in_progress') return { label: 'Çalışıyor', tone: 'running', Icon: Activity };
   if (workflow.lastRun?.conclusion === 'success') return { label: 'Başarılı', tone: 'ok', Icon: CheckCircle2 };
@@ -62,11 +65,17 @@ export function AgentCenter() {
 
   const workflows: AgentWorkflow[] = data?.workflows || [];
   const issues: any[] = data?.issues || [];
-  const successful = useMemo(() => workflows.filter(workflow => workflow.lastRun?.conclusion === 'success').length, [workflows]);
-  const running = useMemo(() => workflows.filter(workflow => ['queued', 'in_progress'].includes(workflow.lastRun?.status || '')).length, [workflows]);
+  const freeWorkflows = useMemo(() => workflows.filter(workflow => workflow.tier === 'free'), [workflows]);
+  const pausedWorkflows = useMemo(() => workflows.filter(workflow => workflow.tier === 'paid' || workflow.paused), [workflows]);
+  const successful = useMemo(() => freeWorkflows.filter(workflow => workflow.lastRun?.conclusion === 'success').length, [freeWorkflows]);
+  const running = useMemo(() => freeWorkflows.filter(workflow => ['queued', 'in_progress'].includes(workflow.lastRun?.status || '')).length, [freeWorkflows]);
   const urgentIssues = Number(data?.issueCounts?.acil || 0);
 
   const runWorkflow = async (workflow: AgentWorkflow) => {
+    if (workflow.tier === 'paid' || workflow.paused) {
+      setError(`${workflow.name} ajanı şimdilik kredi bekliyor.`);
+      return;
+    }
     const inputs: Record<string, string> = {};
     if (workflow.file === 'agent-triyaj.yml' || workflow.file === 'agent-kod-yazici.yml') {
       const issueNumber = window.prompt(`${workflow.name} için Issue numarası:`);
@@ -109,7 +118,9 @@ export function AgentCenter() {
     {data?.warning && <div className="alert warning"><AlertTriangle size={17} /><div><strong>GitHub durumu kısmen okunamadı.</strong><span>{data.warning}</span></div></div>}
 
     <div className="summary-strip agent-summary">
-      <div className="kpi-card"><span>Tanımlı ajan</span><strong>{workflows.length || '—'}</strong></div>
+      <div className="kpi-card"><span>Toplam ajan</span><strong>{workflows.length || '—'}</strong></div>
+      <div className="kpi-card"><span>Ücretsiz aktif</span><strong>{freeWorkflows.length || '—'}</strong></div>
+      <div className="kpi-card"><span>Kredi bekleyen</span><strong>{pausedWorkflows.length || '0'}</strong></div>
       <div className="kpi-card"><span>Son başarılı</span><strong>{successful || '—'}</strong></div>
       <div className="kpi-card"><span>Şu an çalışan</span><strong>{running || '0'}</strong></div>
       <div className="kpi-card"><span>Açık ajan Issue</span><strong>{issues.length || '0'}</strong></div>
@@ -130,9 +141,9 @@ export function AgentCenter() {
       <div className="agent-setup-note"><strong>Actions Secret kontrol listesi</strong><span>ONAY_WORKER_SECRET · TWILIO_AUTH_TOKEN · ANTHROPIC_API_KEY · CLOUDFLARE_API_TOKEN</span><small>Bu değerler GitHub’da saklanır ve bilerek bu panele taşınmaz. Ayrıntılı kurulum için GitHub Actions workflow açıklamalarını kullanın.</small></div>
     </div>
 
-    <div className="section-head agent-section-head"><div><h2>Ajanlar</h2><p>Durum bilgisi 60 saniyede bir yenilenir. “Actions’ta aç” düğmesi GitHub’ın standart Run workflow ekranına götürür.</p></div></div>
+    <div className="section-head agent-section-head"><div><h2>Ücretsiz ajanlar</h2><p>Durum bilgisi 60 saniyede bir yenilenir. Manuel tetikleme yalnız ücretsiz ve allowlist’teki workflow’larda aktiftir.</p></div></div>
     <div className="agent-grid">
-      {workflows.map(workflow => {
+      {freeWorkflows.map(workflow => {
         const state = workflowState(workflow);
         const StateIcon = state.Icon;
         return <article className={`agent-card ${state.tone}`} key={workflow.file}>
@@ -143,6 +154,22 @@ export function AgentCenter() {
           <div className="agent-card-meta"><span><Clock3 size={14} /> Son çalışma</span><strong>{date(workflow.lastRun?.updatedAt || workflow.lastRun?.createdAt)}</strong></div>
           {workflow.error && <small className="agent-inline-error">{workflow.error}</small>}
           <div className="agent-card-actions"><a className="secondary subtle" href={workflow.actionsUrl} target="_blank" rel="noreferrer"><ExternalLink size={14} /> Actions’ta aç</a><button className="primary subtle" disabled={busy || !workflow.available} onClick={() => void runWorkflow(workflow)}>{runningWorkflow === workflow.file ? <RefreshCw size={14} className="spin" /> : <Play size={14} />} Çalıştır</button></div>
+        </article>;
+      })}
+    </div>
+
+    <div className="section-head agent-section-head"><div><h2>Kredi bekleyen ajanlar</h2><p>Triyaj ve Kod Yazıcı ajanları yapısal olarak hazırdır; ücretli sağlayıcı kredisi açılana kadar bilinçli olarak duraklatılmıştır.</p></div></div>
+    <div className="agent-grid agent-paid-grid">
+      {pausedWorkflows.map(workflow => {
+        const state = workflowState(workflow);
+        const StateIcon = state.Icon;
+        return <article className={`agent-card ${state.tone} agent-paused`} key={workflow.file}>
+          <div className="agent-card-top"><div className="agent-avatar"><Clock3 size={20} /></div><span className="status warn"><StateIcon size={13} /> {state.label}</span></div>
+          <span className="eyebrow">{workflow.cadence}</span>
+          <h3>{workflow.name}</h3>
+          <p>{workflow.description}</p>
+          <div className="agent-card-meta"><span><Clock3 size={14} /> Durum</span><strong>Ücretli sağlayıcı</strong></div>
+          <div className="agent-card-actions"><a className="secondary subtle" href={workflow.actionsUrl} target="_blank" rel="noreferrer"><ExternalLink size={14} /> Actions’ta aç</a><span className="agent-paused-note">Kredi bekleniyor</span></div>
         </article>;
       })}
     </div>
