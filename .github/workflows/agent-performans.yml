@@ -1,0 +1,47 @@
+name: "Ücretsiz Ajan - Hafif Performans"
+
+on:
+  schedule:
+    - cron: "15 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Public GET sürelerini ölç
+        id: verify
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          : > agent-performance-report.md
+          overall=0
+          for url in "https://anunex.com" "https://www.anunex.com" "https://app.anunex.com" "https://demo.anunex.com" "https://sonuc.anunex.com"; do
+            metrics=$(curl -sS -L --max-time 20 -o /dev/null -w "%{http_code} %{time_total}" "$url")
+            code=$(echo "$metrics" | awk '{print $1}')
+            seconds=$(echo "$metrics" | awk '{print $2}')
+            echo "$url -> HTTP $code, toplam $seconds s" | tee -a agent-performance-report.md
+            if [ "$code" = "000" ] || [ "$code" -ge 500 ]; then overall=1; fi
+            awk -v t="$seconds" 'BEGIN { exit !(t > 4) }'
+            if [ "$?" -eq 0 ]; then echo "Yavaş yanıt (>4s): $url" >> agent-performance-report.md; overall=1; fi
+          done
+          if [ "$overall" -ne 0 ]; then exit 1; fi
+          echo "Hafif performans kontrolü eşik içinde." >> agent-performance-report.md
+      - name: Raporu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
+        with:
+          report-file: agent-performance-report.md
+          title: "Hafif Performans Ajanı Raporu"
+          label: "performans-ajani"
+          status: ${{ steps.verify.outcome }}
+          close-on-success: "true"
+          label-color: "fbca04"
+      - name: Başarısızsa workflow'u işaretle
+        if: steps.verify.outcome == 'failure'
+        run: exit 1
