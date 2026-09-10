@@ -22,12 +22,14 @@ export function Login() {
     window.location.hostname.toLowerCase() === 'demo.anunex.com'
     || new URLSearchParams(window.location.search).get('demo') === '1'
   );
+  // These accounts mirror scripts/generate-demo-seed.mjs and are demo-only.
   const demoAccounts = [
-    ['Öğrenci', 'student.demo', 'Anunex.Ogrenci!26'],
-    ['Veli', 'parent.demo', 'Anunex.Veli!26'],
-    ['Öğretmen', 'teacher.demo', 'Anunex.Ogretmen!26'],
-    ['Rehberlik', 'guidance.demo', 'Anunex.Rehber!26'],
-    ['Kurum', 'manager.demo', 'Anunex.Kurum!26'],
+    ['Süper Admin', 'super', 'Demo123!'],
+    ['Kurum', 'manager', 'Demo123!'],
+    ['Öğretmen', 'math', 'Demo123!'],
+    ['Rehberlik', 'guidance', 'Demo123!'],
+    ['Öğrenci', 'student1', 'Demo123!'],
+    ['Veli', 'parent1', 'Demo123!'],
   ] as const;
   useEffect(()=>{ void api<any>('/api/config').then(setConfig).catch(()=>setConfig({productName:'Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu',turnstileSiteKey:''})); },[]);
   useEffect(()=>{ if(user) navigate('/'); },[user,navigate]);
