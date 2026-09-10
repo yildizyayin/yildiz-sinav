@@ -1,0 +1,58 @@
+name: "Ücretsiz Ajan - Issue Tekilleştirme"
+
+on:
+  schedule:
+    - cron: "0 8 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Açık ajan Issue tekrarlarını tara
+        id: verify
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set +e
+          gh issue list --state open --limit 200 --json number,title,labels > agent-issues.json
+          gh_status=$?
+          node <<'NODE' > agent-issue-report.md
+          const fs = require('fs');
+          let issues = [];
+          try { issues = JSON.parse(fs.readFileSync('agent-issues.json','utf8')); } catch {}
+          const agentLabels = new Set(['izleyici-ajan','icerik-tarama-ajani','yuk-testi-ajani','ci-saglik-ajani','d1-sema-ajani','route-denetim-ajani','tenant-guvenlik-ajani','kvkk-denetim-ajani','dependency-guvenlik-ajani','frontend-erisim-ajani','api-saglik-ajani','demo-veri-ajani','icerik-kalite-ajani','performans-ajani','release-hazirlik-ajani','ajan-durum-raporu']);
+          const seen = new Map();
+          for (const issue of issues) {
+            const labels = (issue.labels || []).map(label => label.name || label).filter(label => agentLabels.has(label));
+            if (!labels.length) continue;
+            const key = `${labels.sort().join(',')}|${String(issue.title || '').toLowerCase().replace(/\s+/g,' ').trim()}`;
+            if (!seen.has(key)) seen.set(key, []);
+            seen.get(key).push(`#${issue.number}`);
+          }
+          const duplicates = [...seen.entries()].filter(([,numbers]) => numbers.length > 1);
+          console.log(`Açık ajan Issue sayısı: ${issues.filter(issue => (issue.labels || []).some(label => agentLabels.has(label.name || label))).length}`);
+          if (duplicates.length) { console.log('Olası tekrarlar:'); for (const [key,numbers] of duplicates) console.log(`${numbers.join(', ')} — ${key.split('|')[1]}`); }
+          else console.log('Aynı başlık+ajan etiketi ile yinelenen açık Issue yok.');
+          if (gh_status !== 0 || duplicates.length) process.exitCode = 1;
+          NODE
+          if [ "$gh_status" -ne 0 ]; then exit 1; fi
+      - name: Raporu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
+        with:
+          report-file: agent-issue-report.md
+          title: "Issue Tekilleştirme Ajanı Raporu"
+          label: "issue-tekillestirme-ajani"
+          status: ${{ steps.verify.outcome }}
+          close-on-success: "true"
+          label-color: "c2e0c6"
+      - name: Başarısızsa workflow'u işaretle
+        if: steps.verify.outcome == 'failure'
+        run: exit 1
