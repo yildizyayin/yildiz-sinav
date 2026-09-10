@@ -1,6 +1,7 @@
 import type { AuthUser, Env } from '../types';
 import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './db';
 import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
+import { hydrateQuestionMedia } from './question-content';
 
 const NEXT_FEATURES = new Set([
   'LEARNING_GRAPH','QUESTION_BANK','RECOVERY','RBA','MEMBERSHIP','LIVE','STUDIO','PHYSICAL_BRIDGE','GAMES','CAMPUS','ENTERPRISE','PUBLISHER','ADMISSIONS','GUIDANCE_TESTS','BOARD','MOBILE_API','VIDEO_LIBRARY',
@@ -13,6 +14,56 @@ function parseJson<T>(value: unknown, fallback: T): T {
 
 async function requestBody(request: Request): Promise<any> {
   return request.json().catch(() => ({}));
+}
+
+function safeFileName(value: string) {
+  return value.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/-+/g, '-').slice(0, 120) || 'question-media';
+}
+
+function normalizeQuestionOptions(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value.map((option: any, index) => {
+    const label = String(option?.label || option?.letter || String.fromCharCode(65 + index)).trim().toUpperCase();
+    const text = typeof option === 'string' ? option.trim() : String(option?.text ?? option?.content ?? '').trim();
+    return { label, text };
+  }).filter(option => option.label && option.text);
+}
+
+function normalizeContentMode(value: unknown) {
+  const mode = String(value || 'TEXT').trim().toUpperCase();
+  return ['TEXT', 'IMAGE', 'MIXED'].includes(mode) ? mode : null;
+}
+
+async function teacherHasSubject(env: Env, user: AuthUser, subjectId: string | null | undefined) {
+  if (user.role !== 'TEACHER') return true;
+  if (!user.institution_id || !subjectId) return false;
+  const row = await one<any>(env.DB.prepare(`SELECT 1 ok FROM teacher_assignments
+    WHERE user_id=? AND institution_id=? AND active=1 AND assignment_type='SUBJECT' AND subject_id=? LIMIT 1`)
+    .bind(user.id, user.institution_id, subjectId));
+  return !!row;
+}
+
+function mediaInputList(body: any) {
+  return Array.isArray(body.assets) ? body.assets.filter((asset: any) => asset && typeof asset === 'object') : [];
+}
+
+function optionalProbability(value: unknown) {
+  if (value === null || value === undefined || value === '') return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 && parsed <= 1 ? parsed : undefined;
+}
+
+async function questionAsset(request: Request, env: Env, user: AuthUser, questionId: string, assetId: string): Promise<Response> {
+  const row = await one<any>(env.DB.prepare(`SELECT a.*,q.review_status,q.copyright_status,q.owner_type,q.owner_id
+    FROM question_assets a JOIN question_bank q ON q.id=a.question_id
+    WHERE a.id=? AND a.question_id=?`).bind(assetId,questionId));
+  if(!row || !row.r2_key) return notFound('Soru medyası bulunamadı.');
+  const allowed = user.role==='SUPER_ADMIN'||(row.review_status==='APPROVED'&&row.copyright_status!=='RESTRICTED')||
+    (user.institution_id&&row.owner_type==='INSTITUTION'&&row.owner_id===user.institution_id);
+  if(!allowed)return forbidden();
+  const object=await env.FILES.get(row.r2_key);if(!object)return notFound('Soru medyası depolamada bulunamadı.');
+  const headers=new Headers({'content-type':object.httpMetadata?.contentType||row.mime_type||'application/octet-stream','cache-control':row.review_status==='APPROVED'?'private, max-age=3600':'private, no-store','x-content-type-options':'nosniff'});
+  return new Response(object.body,{headers});
 }
 
 function userInstitution(user: AuthUser, requested?: string | null): string | null {
@@ -262,20 +313,53 @@ async function listQuestions(request:Request,env:Env,user:AuthUser):Promise<Resp
   if(difficulty){const level=normalizeDifficultyLevel(difficulty);if(!level)return badRequest('Zorluk seviyesi 1 ile 6 arasında olmalıdır.','INVALID_DIFFICULTY');wh.push('COALESCE(q.difficulty_level,q.difficulty,3)=?');ps.push(level);}
   if(reviewStatus){if(!['DRAFT','REVIEW','APPROVED','REJECTED','ARCHIVED'].includes(reviewStatus))return badRequest('Geçersiz inceleme durumu.','INVALID_STATUS');wh.push('q.review_status=?');ps.push(reviewStatus);}
   if(user.role!=='SUPER_ADMIN') { wh.push(`(q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`); ps.push(user.institution_id); }
+  if(user.role==='TEACHER') wh.push(`q.subject_id IN (SELECT ta.subject_id FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND ta.assignment_type='SUBJECT')`),ps.push(user.id,user.institution_id);
   const rows=await all<any>(env.DB.prepare(`SELECT q.*,COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,s.name subject_name,
-    EXISTS(SELECT 1 FROM question_learning_links ql WHERE ql.question_id=q.id) has_learning_link
+    EXISTS(SELECT 1 FROM question_learning_links ql WHERE ql.question_id=q.id) has_learning_link,
+    (SELECT COUNT(*) FROM question_assets qa WHERE qa.question_id=q.id) asset_count
     FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')} ORDER BY q.created_at DESC LIMIT 300`).bind(...ps));
-  return json({ok:true,questions:rows.map(r=>({...r,options:parseJson(r.options_json,[])}))});
+  const hydrated=await hydrateQuestionMedia(env,rows);
+  return json({ok:true,questions:hydrated.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined}))});
 }
 
 async function createQuestion(request:Request,env:Env,user:AuthUser):Promise<Response>{
-  const gate=await requireFeature(env,user,'QUESTION_BANK');if(gate)return gate; if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden(); const b=await requestBody(request); if(!String(b.stemText||'').trim())return badRequest('Soru metni gereklidir.');
+  const gate=await requireFeature(env,user,'QUESTION_BANK');if(gate)return gate;
+  if(user.role!=='SUPER_ADMIN')return forbidden('Soru havuzuna içerik yükleme yetkisi yalnız Süper Admin hesabındadır.');
+  let b:any={};let file:File|null=null;
+  if((request.headers.get('content-type')||'').toLowerCase().includes('multipart/form-data')){
+    const form=await request.formData();const raw=String(form.get('payload')||'{}');
+    try{b=JSON.parse(raw)}catch{return badRequest('Soru paketi JSON olarak okunamadı.','INVALID_CONTENT_PACKAGE');}
+    const candidate=form.get('file');if(candidate instanceof File)file=candidate;
+  }else b=await requestBody(request);
+  const contentMode=normalizeContentMode(b.contentMode);if(!contentMode)return badRequest('İçerik türü TEXT, IMAGE veya MIXED olmalıdır.','INVALID_CONTENT_MODE');
+  const options=normalizeQuestionOptions(b.options);const questionType=String(b.questionType||'MULTIPLE_CHOICE').toUpperCase();
+  const optionCount=Number(b.optionCount||options.length||4);
+  if(questionType==='MULTIPLE_CHOICE'&&(![4,5].includes(optionCount)||options.length!==optionCount))return badRequest('Çoktan seçmeli soru 4 veya 5 dolu seçenek içermelidir.','INVALID_OPTION_COUNT');
+  if(questionType==='MULTIPLE_CHOICE'&&options.some((option:any,index:number)=>option.label!==String.fromCharCode(65+index)))return badRequest('Seçenek etiketleri A-B-C-D veya A-B-C-D-E sırasına uygun olmalıdır.','INVALID_OPTION_LABELS');
+  const assets=mediaInputList(b);if(file&&file.size>15*1024*1024)return badRequest('Soru görseli 15 MB sınırını aşamaz.','QUESTION_MEDIA_TOO_LARGE');
+  if(file&&!/^image\/(png|jpeg|webp|gif)$/i.test(file.type||''))return badRequest('Soru görseli PNG, JPEG, WEBP veya GIF olmalıdır.','QUESTION_MEDIA_TYPE');
+  const hasMedia=Boolean(file||assets.length||(Array.isArray(b.blocks)&&b.blocks.some((block:any)=>block?.blockType&&block.blockType!=='TEXT')));
+  const stemText=String(b.stemText||'').trim();
+  const lgsProbability=optionalProbability(b.lgsProbability),yksProbability=optionalProbability(b.yksProbability);if(lgsProbability===undefined||yksProbability===undefined)return badRequest('LGS/YKS olasılığı 0 ile 1 arasında olmalıdır.','INVALID_EXAM_PROBABILITY');
+  const priorGradeRefs=Array.isArray(b.priorGradeRefs)?b.priorGradeRefs.map((x:any)=>String(x).trim()).filter(Boolean):String(b.priorGradeRefs||'').split(',').map((x:string)=>x.trim()).filter(Boolean);const exam5yCount=b.exam5yCount===undefined||b.exam5yCount===''?null:Number(b.exam5yCount);if(exam5yCount!==null&&(!Number.isFinite(exam5yCount)||exam5yCount<0))return badRequest('Son 5 yıl çıkma sayısı geçersiz.','INVALID_EXAM_COUNT');
+  if(!stemText&&contentMode==='TEXT')return badRequest('Metin türündeki soru için soru metni gereklidir.','QUESTION_TEXT_REQUIRED');
+  if(!hasMedia&&contentMode==='IMAGE')return badRequest('Görsel türündeki soru için en az bir görsel yüklenmelidir.','QUESTION_MEDIA_REQUIRED');
+  if(!await teacherHasSubject(env,user,b.subjectId||null))return forbidden('Bu ders için branş yetkiniz bulunmuyor.');
+  const normalizedNodeIds:string[]=[];for(const raw of Array.isArray(b.nodeIds)?b.nodeIds:String(b.nodeIds||'').split(',').map((x:string)=>x.trim()).filter(Boolean)){const direct=await one<any>(env.DB.prepare(`SELECT id FROM learning_nodes WHERE id=? AND active=1`).bind(String(raw)));if(direct)normalizedNodeIds.push(direct.id);else{const outcome=await one<any>(env.DB.prepare(`SELECT id FROM outcomes WHERE active=1 AND (id=? OR code=?) LIMIT 1`).bind(String(raw),String(raw)));if(!outcome)return badRequest(`Kazanım bulunamadı: ${String(raw)}`,'OUTCOME_NOT_FOUND');normalizedNodeIds.push(`ln_${outcome.id}`);}}
   const difficultyLevel=normalizeDifficultyLevel(b.difficultyLevel??b.difficulty,3);if(!difficultyLevel)return badRequest('Zorluk seviyesi 1 ile 6 arasında olmalıdır.','INVALID_DIFFICULTY');
-  const id=uuid('q'); const ownerType=user.role==='SUPER_ADMIN'?(b.ownerType||'PLATFORM'):'INSTITUTION'; const ownerId=ownerType==='INSTITUTION'?user.institution_id:(b.ownerId||null);
-  await env.DB.prepare(`INSERT INTO question_bank(id,owner_type,owner_id,academic_year,grade_level,subject_id,topic,subtopic,question_type,difficulty,difficulty_level,stem_text,options_json,correct_answer,solution_text,source_label,copyright_status,review_status,created_by)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id,ownerType,ownerId,b.academicYear||'2026-2027',b.gradeLevel||null,b.subjectId||null,b.topic||null,b.subtopic||null,b.questionType||'MULTIPLE_CHOICE',legacyDifficulty(difficultyLevel),difficultyLevel,String(b.stemText).trim(),JSON.stringify(b.options||[]),b.correctAnswer||null,b.solutionText||null,b.sourceLabel||null,b.copyrightStatus||'OWNED',(['LICENSED','PUBLIC_DOMAIN','RESTRICTED'].includes(String(b.copyrightStatus||'OWNED').toUpperCase())?'REVIEW':user.role==='SUPER_ADMIN'?'APPROVED':'DRAFT'),user.id).run();
-  if(Array.isArray(b.nodeIds)&&b.nodeIds.length)await env.DB.batch(b.nodeIds.map((nodeId:string)=>env.DB.prepare(`INSERT OR IGNORE INTO question_learning_links(question_id,node_id) VALUES(?,?)`).bind(id,nodeId)));
-  return json({ok:true,id},201);
+  const id=uuid('q');const copyright=String(b.copyrightStatus||'OWNED').toUpperCase();
+  const reviewStatus=['LICENSED','PUBLIC_DOMAIN','RESTRICTED'].includes(copyright)?'REVIEW':'APPROVED';
+  const storedAssets:any[]=[];const mediaStatements:D1PreparedStatement[]=[];
+  if(file){const assetId=uuid('qa');const key=`question-media/${b.academicYear||'2026-2027'}/${id}/${Date.now()}-${safeFileName(file.name)}`;await env.FILES.put(key,file.stream(),{httpMetadata:{contentType:file.type||'image/*'}});storedAssets.push({id:assetId,assetType:'IMAGE',r2Key:key,placement:'STEM',sortOrder:0,altText:String(b.imageAlt||'Soru görseli').trim()});mediaStatements.push(env.DB.prepare(`INSERT INTO question_assets(id,question_id,asset_type,r2_key,external_url,title,approved,placement,option_label,sort_order,alt_text,mime_type,rights_status) VALUES(?,?,?,?,?,?,1,?,?,?,?,?,?)`).bind(assetId,id,'IMAGE',key,null,b.imageTitle||null,'STEM',null,0,String(b.imageAlt||'Soru görseli').trim(),file.type||null,copyright==='RESTRICTED'?'DECLARED':'VERIFIED'));}
+  for(const asset of assets){const assetType=String(asset.assetType||'IMAGE').toUpperCase();if(!['IMAGE','PDF','AUDIO','VIDEO','SOLUTION_VIDEO'].includes(assetType))return badRequest('Geçersiz soru medya türü.','INVALID_MEDIA_TYPE');if(!asset.r2Key&&!asset.externalUrl)return badRequest('Her medya için R2 anahtarı veya HTTPS URL gereklidir.','MEDIA_SOURCE_REQUIRED');if(asset.externalUrl&&!/^https:\/\//i.test(String(asset.externalUrl)))return badRequest('Dış medya bağlantısı HTTPS olmalıdır.','MEDIA_URL_REQUIRED');const assetId=uuid('qa');storedAssets.push({id:assetId,assetType,r2Key:asset.r2Key||null,externalUrl:asset.externalUrl||null,placement:String(asset.placement||'STEM').toUpperCase(),optionLabel:asset.optionLabel||null,sortOrder:Number(asset.sortOrder||0),altText:asset.altText||null});mediaStatements.push(env.DB.prepare(`INSERT INTO question_assets(id,question_id,asset_type,r2_key,external_url,title,approved,placement,option_label,sort_order,alt_text,mime_type,rights_status) VALUES(?,?,?,?,?,?,1,?,?,?,?,?,?)`).bind(assetId,id,assetType,asset.r2Key||null,asset.externalUrl||null,asset.title||null,storedAssets.at(-1).placement,storedAssets.at(-1).optionLabel,storedAssets.at(-1).sortOrder,storedAssets.at(-1).altText,asset.mimeType||null,copyright==='RESTRICTED'?'DECLARED':'VERIFIED'));}
+  const blockInput=Array.isArray(b.blocks)?b.blocks:[];const blocks:any[]=blockInput.length?blockInput:storedAssets.filter((asset:any)=>asset.assetType==='IMAGE').map((asset:any,index:number)=>({blockType:'IMAGE',placement:asset.placement,optionLabel:asset.optionLabel,sortOrder:index,assetIndex:storedAssets.indexOf(asset),altText:asset.altText}));
+  for(const block of blocks){const blockType=String(block.blockType||'TEXT').toUpperCase();if(!['TEXT','IMAGE','TABLE','FORMULA','DIAGRAM','AUDIO','VIDEO'].includes(blockType))return badRequest('Geçersiz soru içerik bloğu.','INVALID_CONTENT_BLOCK');const asset=Number.isInteger(Number(block.assetIndex))?storedAssets[Number(block.assetIndex)]:null;if(blockType==='TEXT'&&!String(block.textContent||'').trim())continue;mediaStatements.push(env.DB.prepare(`INSERT INTO question_content_blocks(id,question_id,block_type,placement,option_label,sort_order,text_content,asset_id,payload_json,alt_text) VALUES(?,?,?,?,?,?,?,?,?,?)`).bind(uuid('qcb'),id,blockType,String(block.placement||'STEM').toUpperCase(),block.optionLabel||null,Number(block.sortOrder||0),block.textContent||null,asset?.id||block.assetId||null,JSON.stringify(block.payload||{}),block.altText||asset?.altText||null));}
+  const questionStmt=env.DB.prepare(`INSERT INTO question_bank(id,owner_type,owner_id,academic_year,grade_level,subject_id,topic,subtopic,question_type,difficulty,difficulty_level,content_mode,option_count,prior_grade_refs_json,lgs_probability,yks_probability,exam_5y_count,stem_text,options_json,correct_answer,solution_text,source_label,copyright_status,review_status,created_by)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id,'PLATFORM',null,b.academicYear||'2026-2027',b.gradeLevel||null,b.subjectId||null,b.topic||null,b.subtopic||null,questionType,legacyDifficulty(difficultyLevel),difficultyLevel,contentMode,optionCount,JSON.stringify(priorGradeRefs),lgsProbability,yksProbability,exam5yCount===null?null:Math.round(exam5yCount),stemText||'',JSON.stringify(options),b.correctAnswer||null,b.solutionText||null,b.sourceLabel||null,copyright,reviewStatus,user.id);
+  const statements:D1PreparedStatement[]=[questionStmt,...mediaStatements];
+  if(normalizedNodeIds.length)for(const nodeId of new Set(normalizedNodeIds))statements.push(env.DB.prepare(`INSERT OR IGNORE INTO question_learning_links(question_id,node_id) VALUES(?,?)`).bind(id,nodeId));
+  await env.DB.batch(statements);await audit(env.DB,user.id,user.institution_id,'QUESTION_UPLOADED','question_bank',id,{contentMode,optionCount,assetCount:storedAssets.length,reviewStatus});
+  return json({ok:true,id,contentMode,optionCount,assetCount:storedAssets.length,reviewStatus},201);
 }
 
 function normalizedPracticeAnswer(value:unknown){return String(value??'').trim().toLocaleUpperCase('tr-TR');}
@@ -290,12 +374,13 @@ async function studentPracticeQuestions(request:Request,env:Env,user:AuthUser):P
   const wh=[`q.review_status='APPROVED'`,`q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')`,`q.grade_level=?`,`(q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`,`q.correct_answer IS NOT NULL`,`q.options_json IS NOT NULL`];const ps:any[]=[grade,enrollment?.institution_id||user.institution_id||null];
   if(subject){wh.push('q.subject_id=?');ps.push(subject);}if(nodeId){wh.push('EXISTS(SELECT 1 FROM question_learning_links ql WHERE ql.question_id=q.id AND ql.node_id=?)');ps.push(nodeId);}
   if(difficulty){const level=normalizeDifficultyLevel(difficulty);if(!level)return badRequest('Zorluk seviyesi 1 ile 6 arasında olmalıdır.','INVALID_DIFFICULTY');wh.push('COALESCE(q.difficulty_level,q.difficulty,3)=?');ps.push(level);}
-  const rows=await all<any>(env.DB.prepare(`SELECT q.id,q.grade_level,q.subject_id,q.topic,q.subtopic,q.question_type,
+  const rows=await all<any>(env.DB.prepare(`SELECT q.id,q.grade_level,q.subject_id,q.topic,q.subtopic,q.question_type,q.content_mode,q.option_count,
     COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,q.stem_text,q.options_json,q.solution_text,s.name subject_name
     FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')}
     ORDER BY COALESCE(q.difficulty_level,q.difficulty,3),q.created_at DESC LIMIT ?`).bind(...ps,limit));
   const today=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM question_practice_attempts WHERE student_id=? AND created_at>=date('now')`).bind(user.student_id));
-  return json({ok:true,questions:rows.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined})),progress:{completedToday:Number(today?.count||0)}});
+  const hydrated=await hydrateQuestionMedia(env,rows);
+  return json({ok:true,questions:hydrated.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined})),progress:{completedToday:Number(today?.count||0)}});
 }
 
 async function submitStudentPractice(request:Request,env:Env,user:AuthUser):Promise<Response>{
@@ -310,20 +395,36 @@ async function submitStudentPractice(request:Request,env:Env,user:AuthUser):Prom
   if(!q)return notFound('Bu soru artık çözülebilir durumda değil.');
   const answer=normalizedPracticeAnswer(b.answer);const correct=answer!==''&&answer===normalizedPracticeAnswer(q.correct_answer);const attemptId=uuid('qpa');
   const links=await all<any>(env.DB.prepare(`SELECT ql.node_id FROM question_learning_links ql JOIN learning_nodes n ON n.id=ql.node_id AND n.node_type='OUTCOME' WHERE ql.question_id=?`).bind(questionId));
-  const result=correct?1:0;const statements:any[]=[env.DB.prepare(`INSERT INTO question_practice_attempts(id,student_id,question_id,selected_answer,is_correct) VALUES(?,?,?,?,?)`).bind(attemptId,user.student_id,questionId,answer||null,correct?1:0)];
+  const result=correct?1:0;const runId=String(b.runId||uuid('asr'));const statements:any[]=[
+    env.DB.prepare(`INSERT OR IGNORE INTO assessment_runs(id,institution_id,student_id,source_type,source_id,delivery_mode,status,score,metadata_json,completed_at) VALUES(?,?,?,'QUESTION_BANK',?,'DIGITAL','SCORED',?,?,CURRENT_TIMESTAMP)`).bind(runId,enrollment?.institution_id||user.institution_id||null,user.student_id,questionId,correct?1:0,JSON.stringify({questionPractice:true})),
+    env.DB.prepare(`INSERT INTO question_practice_attempts(id,student_id,question_id,selected_answer,is_correct) VALUES(?,?,?,?,?)`).bind(attemptId,user.student_id,questionId,answer||null,correct?1:0),
+    env.DB.prepare(`INSERT OR IGNORE INTO assessment_responses(id,run_id,student_id,question_id,node_id,selected_answer,is_correct,source_channel) VALUES(?,?,?,?,?,?,?,'DIGITAL')`).bind(uuid('ars'),runId,user.student_id,questionId,links[0]?.node_id||null,answer||null,correct?1:0)
+  ];
   for(const link of links){
     statements.push(env.DB.prepare(`INSERT INTO learning_evidence(id,student_id,node_id,source_type,source_id,result,weight) VALUES(?,?,?,'MANUAL',?,?,?)`).bind(uuid('evd'),user.student_id,link.node_id,`question_practice:${attemptId}`,result,1));
     statements.push(env.DB.prepare(`INSERT INTO student_learning_state(student_id,node_id,mastery,confidence,evidence_count,last_evidence_at,updated_at) VALUES(?,?,?,0.25,1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
       ON CONFLICT(student_id,node_id) DO UPDATE SET mastery=ROUND(((student_learning_state.mastery*student_learning_state.evidence_count)+(excluded.mastery*excluded.evidence_count))/(student_learning_state.evidence_count+excluded.evidence_count),4),confidence=MIN(1,student_learning_state.confidence+0.1),evidence_count=student_learning_state.evidence_count+1,last_evidence_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP`).bind(user.student_id,link.node_id,result));
   }
-  await env.DB.batch(statements);await audit(env.DB,user.id,user.institution_id,'QUESTION_PRACTICE_SUBMITTED','question_bank',questionId,{attemptId,correct,linkedOutcomeCount:links.length});
-  return json({ok:true,attemptId,correct,correctAnswer:q.correct_answer,solutionText:q.solution_text||null});
+  await env.DB.batch(statements);await audit(env.DB,user.id,user.institution_id,'QUESTION_PRACTICE_SUBMITTED','question_bank',questionId,{attemptId,runId,correct,linkedOutcomeCount:links.length});
+  return json({ok:true,attemptId,runId,correct,correctAnswer:q.correct_answer,solutionText:q.solution_text||null});
 }
 
 async function learningState(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'LEARNING_GRAPH');if(gate)return gate; const u=new URL(request.url); const sid=await scopedStudentId(env,user,u.searchParams.get('studentId'));if(!sid)return forbidden();
   const rows=await all<any>(env.DB.prepare(`SELECT ls.*,n.title,n.node_type,n.code,n.grade_level,s.name subject_name FROM student_learning_state ls JOIN learning_nodes n ON n.id=ls.node_id LEFT JOIN subjects s ON s.id=n.subject_id WHERE ls.student_id=? ORDER BY ls.mastery ASC,ls.evidence_count DESC LIMIT 500`).bind(sid));
   return json({ok:true,studentId:sid,nodes:rows,weak:rows.filter(r=>Number(r.mastery)<0.6).slice(0,20)});
+}
+
+async function assessmentFeed(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'LEARNING_GRAPH');if(gate)return gate;const u=new URL(request.url);const sid=await scopedStudentId(env,user,u.searchParams.get('studentId'));if(!sid)return forbidden();
+  const [evidence,runs,exams,assignments]=await Promise.all([
+    all<any>(env.DB.prepare(`SELECT le.id,le.source_type,le.source_id,le.result,le.weight,le.observed_at,n.title node_title,s.name subject_name FROM learning_evidence le JOIN learning_nodes n ON n.id=le.node_id LEFT JOIN subjects s ON s.id=n.subject_id WHERE le.student_id=? ORDER BY le.observed_at DESC LIMIT 100`).bind(sid)),
+    all<any>(env.DB.prepare(`SELECT ar.id,ar.source_type,ar.source_id,ar.delivery_mode,ar.status,ar.score,ar.started_at,ar.completed_at FROM assessment_runs ar WHERE ar.student_id=? ORDER BY ar.started_at DESC LIMIT 100`).bind(sid)),
+    all<any>(env.DB.prepare(`SELECT e.id source_id,'EXAM' source_type,e.title label,e.exam_type,er.success_percent result,COALESCE(e.exam_date,er.created_at) observed_at FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? ORDER BY observed_at DESC LIMIT 100`).bind(sid)),
+    all<any>(env.DB.prepare(`SELECT a.id source_id,'ASSIGNMENT' source_type,a.title label,ar.progress,ar.status,ar.completed_at observed_at FROM assignment_recipients ar JOIN assignments a ON a.id=ar.assignment_id WHERE ar.student_id=? ORDER BY a.created_at DESC LIMIT 100`).bind(sid)),
+  ]);
+  const measurements=[...evidence.map(x=>({...x,label:x.node_title||'Kazanım kanıtı',result:Number(x.result)*100,kind:'LEARNING_EVIDENCE'})),...runs.map(x=>({...x,label:x.source_type==='QUESTION_BANK'?'Soru havuzu':x.source_type==='MINI_TEST'?'Nibiru mini-test':x.source_type,result:x.score===null?null:Number(x.score)*100,observed_at:x.completed_at||x.started_at,kind:'ASSESSMENT_RUN'})),...exams.map(x=>({...x,result:Number(x.result),kind:'EXAM_RESULT'})),...assignments.map(x=>({...x,result:Number(x.progress||0),kind:'ASSIGNMENT_PROGRESS'}))].sort((a,b)=>String(b.observed_at||'').localeCompare(String(a.observed_at||''))).slice(0,200);
+  return json({ok:true,studentId:sid,measurements,sourceTypes:['EXAM','QUESTION_BANK','FOY','EXTERNAL','MINI_TEST','ASSIGNMENT']});
 }
 
 async function addLearningEvidence(request:Request,env:Env,user:AuthUser):Promise<Response>{
@@ -347,6 +448,10 @@ async function listAssignments(request:Request,env:Env,user:AuthUser):Promise<Re
 async function createAssignment(request:Request,env:Env,user:AuthUser):Promise<Response>{
   if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden(); const b=await requestBody(request); const inst=userInstitution(user,b.institutionId); if(!inst||!b.title)return badRequest('Kurum ve ödev başlığı gereklidir.'); const id=uuid('asg');
   const recipients:Array<string>=Array.isArray(b.studentIds)?b.studentIds:[]; const items:Array<any>=Array.isArray(b.items)?b.items:[];
+  if(user.role==='TEACHER'){
+    for(const studentId of recipients){const allowed=await one<any>(env.DB.prepare(`SELECT 1 ok FROM student_enrollments e WHERE e.student_id=? AND e.institution_id=? AND e.status='ACTIVE' AND EXISTS(SELECT 1 FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND (ta.class_id IS NULL OR ta.class_id=e.class_id)) LIMIT 1`).bind(studentId,inst,user.id,inst));if(!allowed)return forbidden('Ödev alıcısı branş/sınıf yetkinizin dışında.');}
+    for(const item of items.filter(x=>x.itemType==='QUESTION'&&x.referenceId)){const question=await one<any>(env.DB.prepare(`SELECT subject_id FROM question_bank WHERE id=? AND review_status='APPROVED'`).bind(item.referenceId));if(!question||!await teacherHasSubject(env,user,question.subject_id))return forbidden('Atanan soru branş yetkinizin dışında.');}
+  }
   const stmts=[env.DB.prepare(`INSERT INTO assignments(id,institution_id,season_id,created_by,assignment_type,title,description,due_at,status) VALUES(?,?,?,?,?,?,?,?,?)`).bind(id,inst,b.seasonId||null,user.id,b.assignmentType||'TEACHER',String(b.title).trim(),b.description||null,b.dueAt||null,b.publish?'ASSIGNED':'DRAFT')];
   items.forEach((it,i)=>stmts.push(env.DB.prepare(`INSERT INTO assignment_items(id,assignment_id,item_type,reference_id,payload_json,sort_order) VALUES(?,?,?,?,?,?)`).bind(uuid('asi'),id,it.itemType||'TASK',it.referenceId||null,JSON.stringify(it.payload||{}),i+1)));
   recipients.forEach(sid=>stmts.push(env.DB.prepare(`INSERT OR IGNORE INTO assignment_recipients(assignment_id,student_id,status) VALUES(?,?,'ASSIGNED')`).bind(id,sid)));
@@ -395,9 +500,17 @@ async function liveSessions(request:Request,env:Env,user:AuthUser):Promise<Respo
 }
 
 async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
-  const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden();const u=new URL(request.url);
-  if(request.method==='GET'){const inst=userInstitution(user,u.searchParams.get('institutionId'));const rows=await all<any>(env.DB.prepare(`SELECT d.*,(SELECT COUNT(*) FROM studio_document_items i WHERE i.document_id=d.id) question_count FROM studio_documents d WHERE (? IS NULL OR d.institution_id=?) ORDER BY d.created_at DESC LIMIT 200`).bind(inst,inst));return json({ok:true,documents:rows});}
-  const b=await requestBody(request);if(!b.title||!b.documentType)return badRequest('Belge türü ve başlık gereklidir.');const inst=userInstitution(user,b.institutionId);const id=uuid('std');const count=Math.max(1,Math.min(200,Number(b.questionCount||20)));await env.DB.prepare(`INSERT INTO studio_documents(id,institution_id,created_by,document_type,title,grade_level,subject_id,status,config_json) VALUES(?,?,?,?,?,?,?,'DRAFT',?)`).bind(id,inst,user.id,b.documentType,b.title,b.gradeLevel||null,b.subjectId||null,JSON.stringify(b)).run();const qs=await all<any>(env.DB.prepare(`SELECT id FROM question_bank WHERE review_status='APPROVED' AND (? IS NULL OR grade_level=?) AND (? IS NULL OR subject_id=?) ORDER BY RANDOM() LIMIT ?`).bind(b.gradeLevel||null,b.gradeLevel||null,b.subjectId||null,b.subjectId||null,count));if(qs.length)await env.DB.batch(qs.map((q,i)=>env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,'A',?)`).bind(id,q.id,i+1)));return json({ok:true,id,selectedQuestions:qs.length,requestedQuestions:count},201);
+  const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER'].includes(user.role))return forbidden('Sınav üretimi Süper Admin, kurum yöneticisi veya branş öğretmeni içindir.');const u=new URL(request.url);
+  if(request.method==='GET'){const inst=userInstitution(user,u.searchParams.get('institutionId'));const rows=await all<any>(env.DB.prepare(`SELECT d.*,(SELECT COUNT(DISTINCT i.question_id) FROM studio_document_items i WHERE i.document_id=d.id) question_count,(SELECT GROUP_CONCAT(DISTINCT i.booklet_code) FROM studio_document_items i WHERE i.document_id=d.id) booklet_codes FROM studio_documents d WHERE (? IS NULL OR d.institution_id=?) ORDER BY d.created_at DESC LIMIT 200`).bind(inst,inst));return json({ok:true,documents:rows});}
+  const b=await requestBody(request);if(!b.title||!b.documentType)return badRequest('Belge türü ve başlık gereklidir.');const inst=userInstitution(user,b.institutionId);if(!inst)return badRequest('Kurum kapsamı gereklidir.');if(user.role==='TEACHER'&&!await teacherHasSubject(env,user,b.subjectId||null))return forbidden('Bu ders için branş yetkiniz bulunmuyor.');
+  const optionMode=String(b.optionMode||'MIXED').toUpperCase();if(!['FOUR','FIVE','MIXED'].includes(optionMode))return badRequest('Şık düzeni FOUR, FIVE veya MIXED olmalıdır.','INVALID_OPTION_MODE');
+  const bookletCodes:string[]=Array.from(new Set<string>((Array.isArray(b.bookletCodes)?b.bookletCodes:String(b.bookletCodes||'A').split(',')).map((x:any)=>String(x).trim().toUpperCase()).filter((x:string)=>['A','B'].includes(x))));if(!bookletCodes.length)return badRequest('En az bir kitapçık seçilmelidir.','BOOKLET_REQUIRED');
+  const id=uuid('std');const count=Math.max(1,Math.min(200,Number(b.questionCount||20)));const wh=[`q.review_status='APPROVED'`,`q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')`,`(? IS NULL OR q.grade_level=?)`,`(? IS NULL OR q.subject_id=?)`],ps:any[]=[b.gradeLevel||null,b.gradeLevel||null,b.subjectId||null,b.subjectId||null];if(optionMode==='FOUR')wh.push('COALESCE(q.option_count,4)=4');if(optionMode==='FIVE')wh.push('COALESCE(q.option_count,4)=5');if(user.role==='TEACHER'){wh.push(`q.subject_id IN (SELECT ta.subject_id FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND ta.assignment_type='SUBJECT')`);ps.push(user.id,inst);}
+  const qs=await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')} ORDER BY RANDOM() LIMIT ?`).bind(...ps,count));
+  const config={...b,bookletCodes,optionMode,deliveryMode:String(b.deliveryMode||'PDF_OPTICAL').toUpperCase(),sourceTypes:Array.isArray(b.sourceTypes)?b.sourceTypes:['QUESTION_BANK']};
+  const statements:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO studio_documents(id,institution_id,created_by,document_type,title,grade_level,subject_id,status,config_json) VALUES(?,?,?,?,?,?,?,'DRAFT',?)`).bind(id,inst,user.id,b.documentType,b.title,b.gradeLevel||null,b.subjectId||null,JSON.stringify(config))];
+  bookletCodes.forEach((code:string)=>{const ordered=code==='B'?[...qs].reverse():qs;ordered.forEach((q,index)=>statements.push(env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,?,?)`).bind(id,q.id,code,index+1)));});
+  await env.DB.batch(statements);await audit(env.DB,user.id,inst,'STUDIO_DOCUMENT_CREATED','studio_document',id,{selectedQuestions:qs.length,bookletCodes,optionMode,deliveryMode:config.deliveryMode});return json({ok:true,id,selectedQuestions:qs.length,requestedQuestions:count,bookletCodes,optionMode},201);
 }
 
 async function physicalBridge(request:Request,env:Env,user:AuthUser):Promise<Response>{
@@ -469,9 +582,11 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
 
   if(p==='/api/platform/questions'&&request.method==='GET')return listQuestions(request,env,user);
   if(p==='/api/platform/questions'&&request.method==='POST')return createQuestion(request,env,user);
+  let media=p.match(/^\/api\/platform\/questions\/([^/]+)\/assets\/([^/]+)$/);if(media&&request.method==='GET')return questionAsset(request,env,user,media[1],media[2]);
   if(p==='/api/platform/student-practice'&&request.method==='GET')return studentPracticeQuestions(request,env,user);
   if(p==='/api/platform/student-practice/attempts'&&request.method==='POST')return submitStudentPractice(request,env,user);
   if(p==='/api/platform/learning-state'&&request.method==='GET')return learningState(request,env,user);
+  if(p==='/api/platform/assessment-feed'&&request.method==='GET')return assessmentFeed(request,env,user);
   if(p==='/api/platform/learning-evidence'&&request.method==='POST')return addLearningEvidence(request,env,user);
   if(p==='/api/platform/assignments'&&request.method==='GET')return listAssignments(request,env,user);
   if(p==='/api/platform/assignments'&&request.method==='POST')return createAssignment(request,env,user);
