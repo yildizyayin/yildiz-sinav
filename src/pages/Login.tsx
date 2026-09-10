@@ -22,9 +22,8 @@ export function Login() {
     window.location.hostname.toLowerCase() === 'demo.anunex.com'
     || new URLSearchParams(window.location.search).get('demo') === '1'
   );
-  // These accounts mirror scripts/generate-demo-seed.mjs and are demo-only.
+  // Demo roles mirror scripts/generate-demo-seed.mjs. SUPER_ADMIN stays on app.anunex.com.
   const demoAccounts = [
-    ['Süper Admin', 'super', 'Demo123!'],
     ['Kurum', 'manager', 'Demo123!'],
     ['Öğretmen', 'math', 'Demo123!'],
     ['Rehberlik', 'guidance', 'Demo123!'],
