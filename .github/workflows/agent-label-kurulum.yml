@@ -25,6 +25,7 @@ jobs:
               { name: "izleyici-ajan", color: "b60205", description: "Uptime izleyici ajanı" },
               { name: "icerik-tarama-ajani", color: "5319e7", description: "İçerik eksik tarama ajanı" },
               { name: "acil", color: "d93f0b", description: "İnsan müdahalesi gerektiren acil durum" },
+              { name: "ajan-talimatı", color: "0366d6", description: "Agent Center üzerinden verilen ücretsiz ajan talimatı" },
               { name: "yuk-testi-ajani", color: "fbca04", description: "Staging yük testi ajanı" },
               { name: "ajan-fix-dene", color: "0e8a16", description: "Kod yazıcı ajanından düşük riskli fix isteği" },
               { name: "ci-saglik-ajani", color: "0e8a16", description: "CI typecheck, test ve build sağlık ajanı" },

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Activity, AlertTriangle, CheckCircle2, CircleDashed, Clock3, ExternalLink, Play, RefreshCw, ShieldCheck, XCircle } from 'lucide-react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { Activity, AlertTriangle, CheckCircle2, CircleDashed, ClipboardList, Clock3, ExternalLink, Play, RefreshCw, Send, ShieldCheck, XCircle } from 'lucide-react';
 import { api } from '../api';
 import './agent-center.css';
 
@@ -47,6 +47,11 @@ export function AgentCenter() {
   const [runningWorkflow, setRunningWorkflow] = useState('');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [instructionAgent, setInstructionAgent] = useState('');
+  const [instructionTitle, setInstructionTitle] = useState('');
+  const [instructionText, setInstructionText] = useState('');
+  const [instructionPriority, setInstructionPriority] = useState('normal');
+  const [instructionBusy, setInstructionBusy] = useState(false);
 
   const load = async () => {
     setError('');
@@ -70,6 +75,33 @@ export function AgentCenter() {
   const successful = useMemo(() => freeWorkflows.filter(workflow => workflow.lastRun?.conclusion === 'success').length, [freeWorkflows]);
   const running = useMemo(() => freeWorkflows.filter(workflow => ['queued', 'in_progress'].includes(workflow.lastRun?.status || '')).length, [freeWorkflows]);
   const urgentIssues = Number(data?.issueCounts?.acil || 0);
+  const instructionIssues: any[] = data?.instructionIssues || [];
+
+  const createInstruction = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!instructionAgent || !instructionTitle.trim() || !instructionText.trim()) {
+      setError('Talimat için ajan, başlık ve açıklama alanlarını doldurun.');
+      return;
+    }
+    setInstructionBusy(true);
+    setError('');
+    setNotice('');
+    try {
+      const result = await api<any>('/api/ai-agents/instructions', {
+        method: 'POST',
+        body: JSON.stringify({ workflow: instructionAgent, title: instructionTitle.trim(), instruction: instructionText.trim(), priority: instructionPriority }),
+      });
+      setNotice(result.message || 'Ajan talimatı kuyruğa alındı.');
+      setInstructionTitle('');
+      setInstructionText('');
+      setInstructionPriority('normal');
+      void load();
+    } catch (e: any) {
+      setError(e.message || 'Ajan talimatı oluşturulamadı.');
+    } finally {
+      setInstructionBusy(false);
+    }
+  };
 
   const runWorkflow = async (workflow: AgentWorkflow) => {
     if (workflow.tier === 'paid' || workflow.paused) {
@@ -139,6 +171,54 @@ export function AgentCenter() {
       </div>
       {!data?.configured && <div className="alert warning" style={{ marginTop: 14 }}><AlertTriangle size={17} /><div><strong>Panel henüz GitHub’a bağlanmadı.</strong><span>Cloudflare Worker’a GITHUB_AGENT_TOKEN Secret’ını ekleyin; token yalnızca bu allowlist’teki ajan workflow’ları için kullanılır.</span></div></div>}
       <div className="agent-setup-note"><strong>Actions Secret kontrol listesi</strong><span>ONAY_WORKER_SECRET · TWILIO_AUTH_TOKEN · ANTHROPIC_API_KEY · CLOUDFLARE_API_TOKEN</span><small>Bu değerler GitHub’da saklanır ve bilerek bu panele taşınmaz. Ayrıntılı kurulum için GitHub Actions workflow açıklamalarını kullanın.</small></div>
+    </div>
+
+    <div className="panel agent-command-panel">
+      <div className="panel-head">
+        <div><span className="eyebrow">EKİP KOMUTA MASASI</span><h2>Ajanlara talimat ver</h2><p>Bir free ajan seçin; görev, kapsam veya kontrol notunu denetlenebilir bir GitHub Issue olarak kuyruğa alın.</p></div>
+        <Send className="agent-panel-icon" />
+      </div>
+      <div className="agent-command-grid">
+        <form className="agent-command-form" onSubmit={(event) => void createInstruction(event)}>
+          <label>Hedef ajan
+            <select value={instructionAgent} onChange={(event) => setInstructionAgent(event.target.value)} disabled={instructionBusy}>
+              <option value="">Free ajan seçin</option>
+              {freeWorkflows.map(workflow => <option key={workflow.file} value={workflow.file}>{workflow.name} · {workflow.cadence}</option>)}
+            </select>
+          </label>
+          <label>Talimat başlığı
+            <input value={instructionTitle} onChange={(event) => setInstructionTitle(event.target.value)} placeholder="Örn. Sonuç ekranı kontrolü" maxLength={160} disabled={instructionBusy} />
+          </label>
+          <label>Öncelik
+            <select value={instructionPriority} onChange={(event) => setInstructionPriority(event.target.value)} disabled={instructionBusy}>
+              <option value="low">Düşük</option>
+              <option value="normal">Normal</option>
+              <option value="high">Yüksek</option>
+              <option value="urgent">Acil</option>
+            </select>
+          </label>
+          <label>Talimat / beklenen çıktı
+            <textarea value={instructionText} onChange={(event) => setInstructionText(event.target.value)} placeholder="Ajanın neyi kontrol etmesini, hangi sınırlar içinde çalışmasını veya hangi çıktıyı hazırlamasını istediğinizi yazın." maxLength={5000} rows={6} disabled={instructionBusy} />
+          </label>
+          <button className="primary agent-command-submit" type="submit" disabled={instructionBusy || !instructionAgent || !instructionTitle.trim() || !instructionText.trim()}><Send size={15} /> {instructionBusy ? 'Kuyruğa alınıyor…' : 'Talimatı kuyruğa al'}</button>
+          <small className="agent-form-hint">Talimat, seçilen ajan etiketiyle GitHub Issue olarak saklanır. Ücretli ajanlar ve production işlemleri bu formdan çalıştırılamaz.</small>
+        </form>
+        <div className="agent-command-guide">
+          <div className="agent-guide-title"><ClipboardList size={18} /><strong>Bu panel nasıl çalışır?</strong></div>
+          <ol>
+            <li>Görevi vereceğiniz ücretsiz ajanı seçin.</li>
+            <li>Beklenen kontrolü ve çıktıyı açıkça yazın.</li>
+            <li>Talimat, ilgili ajan kuyruğuna ve GitHub Issue listesine eklenir.</li>
+            <li>Ajan kartındaki <strong>Çalıştır</strong> düğmesiyle kontrolü hemen başlatabilir veya zamanlamasını bekleyebilirsiniz.</li>
+          </ol>
+          <div className="agent-command-note"><strong>Önemli:</strong> Free ajanlar güvenli, belirlenmiş denetimleri çalıştıran otomasyonlardır. Serbest biçimli kod yazma ve doğal dil yorumlama ücretli Anthropic ajanlarında kapalıdır.</div>
+        </div>
+      </div>
+    </div>
+
+    <div className="panel agent-instruction-panel">
+      <div className="panel-head"><div><h2>Bekleyen talimatlar</h2><p>Açık görev Issue’ları burada görünür; ayrıntıyı GitHub’da açabilirsiniz.</p></div><ClipboardList className="agent-panel-icon" /></div>
+      {instructionIssues.length ? <div className="agent-instruction-list">{instructionIssues.map(issue => <div className="agent-instruction-row" key={issue.number}><div><strong>#{issue.number} · {issue.title}</strong><span>{date(issue.updatedAt)}</span></div><div className="agent-instruction-row-right"><div className="agent-labels">{(issue.labels || []).map((label: string) => <span className="pill" key={label}>{label}</span>)}</div><a className="link-button" href={issue.htmlUrl} target="_blank" rel="noreferrer">Aç <ExternalLink size={13} /></a></div></div>)}</div> : <div className="empty">Henüz bekleyen ajan talimatı yok.</div>}
     </div>
 
     <div className="section-head agent-section-head"><div><h2>Ücretsiz ajanlar</h2><p>Durum bilgisi 60 saniyede bir yenilenir. Manuel tetikleme yalnız ücretsiz ve allowlist’teki workflow’larda aktiftir.</p></div></div>
