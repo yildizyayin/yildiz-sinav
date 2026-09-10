@@ -1,0 +1,97 @@
+name: Agent Issue Report
+description: Idempotently publish an AI-agent report to GitHub Issues
+inputs:
+  report-file:
+    required: false
+    default: agent-report.md
+  title:
+    required: true
+  label:
+    required: true
+  status:
+    required: false
+    default: warning
+  close-on-success:
+    required: false
+    default: "true"
+  label-color:
+    required: false
+    default: "1d76db"
+runs:
+  using: composite
+  steps:
+    - name: Publish report
+      uses: actions/github-script@v7
+      env:
+        REPORT_FILE: ${{ inputs.report-file }}
+        REPORT_TITLE: ${{ inputs.title }}
+        REPORT_LABEL: ${{ inputs.label }}
+        REPORT_STATUS: ${{ inputs.status }}
+        CLOSE_ON_SUCCESS: ${{ inputs.close-on-success }}
+        LABEL_COLOR: ${{ inputs.label-color }}
+      with:
+        script: |
+          const fs = require('fs');
+          const reportPath = process.env.REPORT_FILE;
+          const report = fs.existsSync(reportPath)
+            ? fs.readFileSync(reportPath, 'utf8').slice(0, 12000)
+            : 'Rapor dosyası üretilemedi. Actions logunu inceleyin.';
+          const label = process.env.REPORT_LABEL;
+          const title = process.env.REPORT_TITLE;
+          const status = process.env.REPORT_STATUS || 'warning';
+          const closeOnSuccess = process.env.CLOSE_ON_SUCCESS !== 'false';
+          try {
+            await github.rest.issues.createLabel({
+              owner: context.repo.owner, repo: context.repo.repo, name: label,
+              color: process.env.LABEL_COLOR || '1d76db',
+              description: 'Ücretsiz AI ajan raporu',
+            });
+          } catch (error) {
+            if (error.status === 422) {
+              await github.rest.issues.updateLabel({
+                owner: context.repo.owner, repo: context.repo.repo, name: label,
+                color: process.env.LABEL_COLOR || '1d76db',
+                description: 'Ücretsiz AI ajan raporu',
+              });
+            } else throw error;
+          }
+          const existing = await github.paginate(github.rest.issues.listForRepo, {
+            owner: context.repo.owner, repo: context.repo.repo, state: 'open',
+            labels: label, per_page: 100,
+          });
+          const body = [
+            '## Ücretsiz AI ajan raporu', '',
+            `**Durum:** ${status}`,
+            `**Zaman:** ${new Date().toISOString()}`, '',
+            report, '',
+            '_Bu Issue ilgili GitHub Actions ajanı tarafından idempotent olarak güncellenir._',
+          ].join('\n');
+          if (status === 'success' && closeOnSuccess) {
+            for (const issue of existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number, state: 'closed',
+                state_reason: 'completed', body,
+              });
+            }
+            core.info(`Sağlıklı çalışma: ${existing.length} eski rapor kapatıldı.`);
+            return;
+          }
+          if (existing.length) {
+            await github.rest.issues.update({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: existing[0].number, title, body,
+            });
+            await github.rest.issues.createComment({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: existing[0].number,
+              body: `Yeni rapor: ${new Date().toISOString()} — durum: ${status}`,
+            });
+            core.info(`Rapor Issue güncellendi: #${existing[0].number}`);
+          } else {
+            const created = await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title, labels: [label], body,
+            });
+            core.info(`Rapor Issue açıldı: #${created.data.number}`);
+          }
