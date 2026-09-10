@@ -1,6 +1,7 @@
 import type { AuthUser,Env } from '../types';
 import { all,audit,one,uuid } from './db';
 import { coachQuestionTarget,markCoachItemVerifiedComplete } from './education-coach';
+import { hydrateQuestionMedia } from './question-content';
 
 const PASS_THRESHOLD=.80;
 const MIN_QUESTIONS=5;
@@ -84,11 +85,12 @@ export async function getCoachMiniTest(env:Env,user:AuthUser,testId:string){
    WHERE t.id=? AND t.student_id=?`).bind(testId,user.student_id));
  if(!test)return{ok:false,reason:'TEST_NOT_FOUND'};
  const submitted=test.status!=='READY';
- const rows=await all<any>(env.DB.prepare(`SELECT tq.question_id,tq.sort_order,tq.student_answer,tq.correct,q.stem_text,q.options_json,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.solution_text,
+ const rows=await all<any>(env.DB.prepare(`SELECT tq.question_id id,tq.question_id,tq.sort_order,tq.student_answer,tq.correct,q.stem_text,q.options_json,q.content_mode,q.option_count,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.solution_text,
    CASE WHEN ?=1 THEN q.correct_answer ELSE NULL END correct_answer
    FROM coach_mini_test_questions tq JOIN question_bank q ON q.id=tq.question_id
    WHERE tq.test_id=? ORDER BY tq.sort_order`).bind(submitted?1:0,testId));
- return{ok:true,test,questions:rows.map(x=>({...x,options:parseJson(x.options_json,[]),options_json:undefined})),followups:await followups(env,user.student_id,testId)};
+ const hydrated=await hydrateQuestionMedia(env,rows);
+ return{ok:true,test,questions:hydrated.map(x=>({...x,options:parseJson(x.options_json,[]),options_json:undefined})),followups:await followups(env,user.student_id,testId)};
 }
 
 async function updateLearningState(env:Env,studentId:string,outcomeId:string,testId:string,rate:number,questionCount:number){
