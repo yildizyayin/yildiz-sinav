@@ -2,6 +2,7 @@ import app from './student-books-entry';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { json,one,all } from './lib/db';
+import { legacyDifficulty, normalizeDifficultyLevel } from './lib/question-bank';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
 
@@ -27,7 +28,8 @@ async function patchQuestion(request:Request,env:Env,id:string){
  const q=await one<any>(env.DB.prepare(`SELECT * FROM question_bank WHERE id=?`).bind(id));if(!q)return fail(404,'QUESTION_NOT_FOUND','Soru bulunamadı.');
  const can=user.role==='SUPER_ADMIN'||(q.owner_type==='INSTITUTION'&&q.owner_id===user.institution_id&&['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role));if(!can)return fail(403,'FORBIDDEN','Bu soruyu düzenleyemezsiniz.');
  const body:any=await request.json().catch(()=>({}));const copyright=body.copyrightStatus||q.copyright_status;const allowed=['OWNED','LICENSED','PUBLIC_DOMAIN','USER_PROVIDED','RESTRICTED'];if(!allowed.includes(copyright))return fail(400,'INVALID_COPYRIGHT','Geçersiz telif durumu.');
- await env.DB.prepare(`UPDATE question_bank SET topic=?,subtopic=?,difficulty=?,source_label=?,copyright_status=?,origin_kind=?,review_status=?,reviewed_by=NULL,reviewed_at=NULL,rejection_note=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(body.topic??q.topic,body.subtopic??q.subtopic,Math.max(1,Math.min(5,Number(body.difficulty??q.difficulty))),body.sourceLabel??q.source_label,copyright,body.originKind??q.origin_kind,user.role==='SUPER_ADMIN'&&body.keepApproved? q.review_status:'REVIEW',id).run();
+ const requestedDifficulty=body.difficultyLevel??body.difficulty;const currentDifficulty=normalizeDifficultyLevel(q.difficulty_level??q.difficulty,3);const difficultyLevel=normalizeDifficultyLevel(requestedDifficulty,currentDifficulty);if(!difficultyLevel)return fail(400,'INVALID_DIFFICULTY','Zorluk seviyesi 1 ile 6 arasında olmalıdır.');
+ await env.DB.prepare(`UPDATE question_bank SET topic=?,subtopic=?,difficulty=?,difficulty_level=?,source_label=?,copyright_status=?,origin_kind=?,review_status=?,reviewed_by=NULL,reviewed_at=NULL,rejection_note=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(body.topic??q.topic,body.subtopic??q.subtopic,legacyDifficulty(difficultyLevel),difficultyLevel,body.sourceLabel??q.source_label,copyright,body.originKind??q.origin_kind,user.role==='SUPER_ADMIN'&&body.keepApproved? q.review_status:'REVIEW',id).run();
  return json({ok:true,id});
 }
 

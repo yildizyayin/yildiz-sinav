@@ -37,12 +37,12 @@ async function currentTest(env:Env,studentId:string,itemId:string){
 }
 
 async function eligibleQuestions(env:Env,outcomeId:string){
- return all<EligibleQuestion>(env.DB.prepare(`SELECT DISTINCT q.id,q.stem_text,q.options_json,q.difficulty,q.solution_text,q.correct_answer
+ return all<EligibleQuestion>(env.DB.prepare(`SELECT DISTINCT q.id,q.stem_text,q.options_json,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.solution_text,q.correct_answer
    FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id
    WHERE l.node_id=? AND q.review_status='APPROVED'
      AND q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')
      AND q.question_type='MULTIPLE_CHOICE' AND q.correct_answer IS NOT NULL AND q.options_json IS NOT NULL
-   ORDER BY q.difficulty,q.created_at DESC,q.id LIMIT 100`).bind(nodeId(outcomeId)));
+   ORDER BY COALESCE(q.difficulty_level,q.difficulty,3),q.created_at DESC,q.id LIMIT 100`).bind(nodeId(outcomeId)));
 }
 
 async function followups(env:Env,studentId:string,testId:string){
@@ -84,7 +84,7 @@ export async function getCoachMiniTest(env:Env,user:AuthUser,testId:string){
    WHERE t.id=? AND t.student_id=?`).bind(testId,user.student_id));
  if(!test)return{ok:false,reason:'TEST_NOT_FOUND'};
  const submitted=test.status!=='READY';
- const rows=await all<any>(env.DB.prepare(`SELECT tq.question_id,tq.sort_order,tq.student_answer,tq.correct,q.stem_text,q.options_json,q.difficulty,q.solution_text,
+ const rows=await all<any>(env.DB.prepare(`SELECT tq.question_id,tq.sort_order,tq.student_answer,tq.correct,q.stem_text,q.options_json,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.solution_text,
    CASE WHEN ?=1 THEN q.correct_answer ELSE NULL END correct_answer
    FROM coach_mini_test_questions tq JOIN question_bank q ON q.id=tq.question_id
    WHERE tq.test_id=? ORDER BY tq.sort_order`).bind(submitted?1:0,testId));

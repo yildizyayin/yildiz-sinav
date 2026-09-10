@@ -1,5 +1,6 @@
 import type { AuthUser, Env } from '../types';
 import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './db';
+import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
 
 const NEXT_FEATURES = new Set([
   'LEARNING_GRAPH','QUESTION_BANK','RECOVERY','RBA','MEMBERSHIP','LIVE','STUDIO','PHYSICAL_BRIDGE','GAMES','CAMPUS','ENTERPRISE','PUBLISHER','ADMISSIONS','GUIDANCE_TESTS','BOARD','MOBILE_API','VIDEO_LIBRARY',
@@ -254,20 +255,69 @@ async function setFeature(request:Request,env:Env,user:AuthUser):Promise<Respons
 }
 
 async function listQuestions(request:Request,env:Env,user:AuthUser):Promise<Response>{
-  const gate=await requireFeature(env,user,'QUESTION_BANK'); if(gate)return gate; const u=new URL(request.url); const grade=u.searchParams.get('gradeLevel'); const subject=u.searchParams.get('subjectId'); const q=u.searchParams.get('q');
-  const wh=[`q.review_status<>'ARCHIVED'`],ps:any[]=[]; if(grade){wh.push('q.grade_level=?');ps.push(Number(grade));} if(subject){wh.push('q.subject_id=?');ps.push(subject);} if(q){wh.push('(q.stem_text LIKE ? OR q.topic LIKE ? OR q.subtopic LIKE ?)');const s=`%${q}%`;ps.push(s,s,s);}
+  const gate=await requireFeature(env,user,'QUESTION_BANK'); if(gate)return gate;
+  if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden('Öğrenci soru havuzunun yönetim görünümüne erişemez.');
+  const u=new URL(request.url); const grade=u.searchParams.get('gradeLevel'); const subject=u.searchParams.get('subjectId'); const q=u.searchParams.get('q'); const difficulty=u.searchParams.get('difficultyLevel'); const reviewStatus=u.searchParams.get('reviewStatus');
+  const wh=[reviewStatus==='ARCHIVED'?`q.review_status='ARCHIVED'`:`q.review_status<>'ARCHIVED'`],ps:any[]=[]; if(grade){wh.push('q.grade_level=?');ps.push(Number(grade));} if(subject){wh.push('q.subject_id=?');ps.push(subject);} if(q){wh.push('(q.stem_text LIKE ? OR q.topic LIKE ? OR q.subtopic LIKE ?)');const s=`%${q}%`;ps.push(s,s,s);}
+  if(difficulty){const level=normalizeDifficultyLevel(difficulty);if(!level)return badRequest('Zorluk seviyesi 1 ile 6 arasında olmalıdır.','INVALID_DIFFICULTY');wh.push('COALESCE(q.difficulty_level,q.difficulty,3)=?');ps.push(level);}
+  if(reviewStatus){if(!['DRAFT','REVIEW','APPROVED','REJECTED','ARCHIVED'].includes(reviewStatus))return badRequest('Geçersiz inceleme durumu.','INVALID_STATUS');wh.push('q.review_status=?');ps.push(reviewStatus);}
   if(user.role!=='SUPER_ADMIN') { wh.push(`(q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`); ps.push(user.institution_id); }
-  const rows=await all<any>(env.DB.prepare(`SELECT q.*,s.name subject_name FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')} ORDER BY q.created_at DESC LIMIT 300`).bind(...ps));
+  const rows=await all<any>(env.DB.prepare(`SELECT q.*,COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,s.name subject_name,
+    EXISTS(SELECT 1 FROM question_learning_links ql WHERE ql.question_id=q.id) has_learning_link
+    FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')} ORDER BY q.created_at DESC LIMIT 300`).bind(...ps));
   return json({ok:true,questions:rows.map(r=>({...r,options:parseJson(r.options_json,[])}))});
 }
 
 async function createQuestion(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'QUESTION_BANK');if(gate)return gate; if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden(); const b=await requestBody(request); if(!String(b.stemText||'').trim())return badRequest('Soru metni gereklidir.');
+  const difficultyLevel=normalizeDifficultyLevel(b.difficultyLevel??b.difficulty,3);if(!difficultyLevel)return badRequest('Zorluk seviyesi 1 ile 6 arasında olmalıdır.','INVALID_DIFFICULTY');
   const id=uuid('q'); const ownerType=user.role==='SUPER_ADMIN'?(b.ownerType||'PLATFORM'):'INSTITUTION'; const ownerId=ownerType==='INSTITUTION'?user.institution_id:(b.ownerId||null);
-  await env.DB.prepare(`INSERT INTO question_bank(id,owner_type,owner_id,academic_year,grade_level,subject_id,topic,subtopic,question_type,difficulty,stem_text,options_json,correct_answer,solution_text,source_label,copyright_status,review_status,created_by)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id,ownerType,ownerId,b.academicYear||'2026-2027',b.gradeLevel||null,b.subjectId||null,b.topic||null,b.subtopic||null,b.questionType||'MULTIPLE_CHOICE',Number(b.difficulty||3),String(b.stemText).trim(),JSON.stringify(b.options||[]),b.correctAnswer||null,b.solutionText||null,b.sourceLabel||null,b.copyrightStatus||'OWNED',(['LICENSED','PUBLIC_DOMAIN','RESTRICTED'].includes(String(b.copyrightStatus||'OWNED').toUpperCase())?'REVIEW':user.role==='SUPER_ADMIN'?'APPROVED':'DRAFT'),user.id).run();
+  await env.DB.prepare(`INSERT INTO question_bank(id,owner_type,owner_id,academic_year,grade_level,subject_id,topic,subtopic,question_type,difficulty,difficulty_level,stem_text,options_json,correct_answer,solution_text,source_label,copyright_status,review_status,created_by)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id,ownerType,ownerId,b.academicYear||'2026-2027',b.gradeLevel||null,b.subjectId||null,b.topic||null,b.subtopic||null,b.questionType||'MULTIPLE_CHOICE',legacyDifficulty(difficultyLevel),difficultyLevel,String(b.stemText).trim(),JSON.stringify(b.options||[]),b.correctAnswer||null,b.solutionText||null,b.sourceLabel||null,b.copyrightStatus||'OWNED',(['LICENSED','PUBLIC_DOMAIN','RESTRICTED'].includes(String(b.copyrightStatus||'OWNED').toUpperCase())?'REVIEW':user.role==='SUPER_ADMIN'?'APPROVED':'DRAFT'),user.id).run();
   if(Array.isArray(b.nodeIds)&&b.nodeIds.length)await env.DB.batch(b.nodeIds.map((nodeId:string)=>env.DB.prepare(`INSERT OR IGNORE INTO question_learning_links(question_id,node_id) VALUES(?,?)`).bind(id,nodeId)));
   return json({ok:true,id},201);
+}
+
+function normalizedPracticeAnswer(value:unknown){return String(value??'').trim().toLocaleUpperCase('tr-TR');}
+
+async function studentPracticeQuestions(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'QUESTION_BANK');if(gate)return gate;
+  if(user.role!=='STUDENT'||!user.student_id)return forbidden('Bu akış yalnızca öğrenci hesabına açıktır.');
+  const u=new URL(request.url);const enrollment=await one<any>(env.DB.prepare(`SELECT grade_level,institution_id FROM student_enrollments WHERE student_id=? AND status='ACTIVE' ORDER BY created_at DESC LIMIT 1`).bind(user.student_id));
+  const gradeValue=u.searchParams.get('gradeLevel')||enrollment?.grade_level;if(!gradeValue)return badRequest('Öğrencinin aktif sınıf bilgisi bulunamadı.','ENROLLMENT_REQUIRED');
+  const grade=Number(gradeValue);if(!Number.isInteger(grade)||grade<1||grade>12)return badRequest('Geçersiz sınıf seviyesi.','INVALID_GRADE');
+  const subject=u.searchParams.get('subjectId');const nodeId=u.searchParams.get('nodeId');const difficulty=u.searchParams.get('difficultyLevel');const limit=Math.max(1,Math.min(20,Number(u.searchParams.get('limit')||10)));
+  const wh=[`q.review_status='APPROVED'`,`q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')`,`q.grade_level=?`,`(q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`,`q.correct_answer IS NOT NULL`,`q.options_json IS NOT NULL`];const ps:any[]=[grade,enrollment?.institution_id||user.institution_id||null];
+  if(subject){wh.push('q.subject_id=?');ps.push(subject);}if(nodeId){wh.push('EXISTS(SELECT 1 FROM question_learning_links ql WHERE ql.question_id=q.id AND ql.node_id=?)');ps.push(nodeId);}
+  if(difficulty){const level=normalizeDifficultyLevel(difficulty);if(!level)return badRequest('Zorluk seviyesi 1 ile 6 arasında olmalıdır.','INVALID_DIFFICULTY');wh.push('COALESCE(q.difficulty_level,q.difficulty,3)=?');ps.push(level);}
+  const rows=await all<any>(env.DB.prepare(`SELECT q.id,q.grade_level,q.subject_id,q.topic,q.subtopic,q.question_type,
+    COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,q.stem_text,q.options_json,q.solution_text,s.name subject_name
+    FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')}
+    ORDER BY COALESCE(q.difficulty_level,q.difficulty,3),q.created_at DESC LIMIT ?`).bind(...ps,limit));
+  const today=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM question_practice_attempts WHERE student_id=? AND created_at>=date('now')`).bind(user.student_id));
+  return json({ok:true,questions:rows.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined})),progress:{completedToday:Number(today?.count||0)}});
+}
+
+async function submitStudentPractice(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'QUESTION_BANK');if(gate)return gate;
+  if(user.role!=='STUDENT'||!user.student_id)return forbidden('Bu akış yalnızca öğrenci hesabına açıktır.');
+  const b=await requestBody(request);const questionId=String(b.questionId||'').trim();if(!questionId)return badRequest('Soru gereklidir.','QUESTION_REQUIRED');
+  const enrollment=await one<any>(env.DB.prepare(`SELECT institution_id FROM student_enrollments WHERE student_id=? AND status='ACTIVE' ORDER BY created_at DESC LIMIT 1`).bind(user.student_id));
+  const q=await one<any>(env.DB.prepare(`SELECT q.id,q.correct_answer,q.solution_text,q.owner_type,q.owner_id
+    FROM question_bank q WHERE q.id=? AND q.review_status='APPROVED' AND q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')
+      AND q.correct_answer IS NOT NULL AND q.options_json IS NOT NULL
+      AND (q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`).bind(questionId,enrollment?.institution_id||user.institution_id||null));
+  if(!q)return notFound('Bu soru artık çözülebilir durumda değil.');
+  const answer=normalizedPracticeAnswer(b.answer);const correct=answer!==''&&answer===normalizedPracticeAnswer(q.correct_answer);const attemptId=uuid('qpa');
+  const links=await all<any>(env.DB.prepare(`SELECT ql.node_id FROM question_learning_links ql JOIN learning_nodes n ON n.id=ql.node_id AND n.node_type='OUTCOME' WHERE ql.question_id=?`).bind(questionId));
+  const result=correct?1:0;const statements:any[]=[env.DB.prepare(`INSERT INTO question_practice_attempts(id,student_id,question_id,selected_answer,is_correct) VALUES(?,?,?,?,?)`).bind(attemptId,user.student_id,questionId,answer||null,correct?1:0)];
+  for(const link of links){
+    statements.push(env.DB.prepare(`INSERT INTO learning_evidence(id,student_id,node_id,source_type,source_id,result,weight) VALUES(?,?,?,'MANUAL',?,?,?)`).bind(uuid('evd'),user.student_id,link.node_id,`question_practice:${attemptId}`,result,1));
+    statements.push(env.DB.prepare(`INSERT INTO student_learning_state(student_id,node_id,mastery,confidence,evidence_count,last_evidence_at,updated_at) VALUES(?,?,?,0.25,1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+      ON CONFLICT(student_id,node_id) DO UPDATE SET mastery=ROUND(((student_learning_state.mastery*student_learning_state.evidence_count)+(excluded.mastery*excluded.evidence_count))/(student_learning_state.evidence_count+excluded.evidence_count),4),confidence=MIN(1,student_learning_state.confidence+0.1),evidence_count=student_learning_state.evidence_count+1,last_evidence_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP`).bind(user.student_id,link.node_id,result));
+  }
+  await env.DB.batch(statements);await audit(env.DB,user.id,user.institution_id,'QUESTION_PRACTICE_SUBMITTED','question_bank',questionId,{attemptId,correct,linkedOutcomeCount:links.length});
+  return json({ok:true,attemptId,correct,correctAnswer:q.correct_answer,solutionText:q.solution_text||null});
 }
 
 async function learningState(request:Request,env:Env,user:AuthUser):Promise<Response>{
@@ -419,6 +469,8 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
 
   if(p==='/api/platform/questions'&&request.method==='GET')return listQuestions(request,env,user);
   if(p==='/api/platform/questions'&&request.method==='POST')return createQuestion(request,env,user);
+  if(p==='/api/platform/student-practice'&&request.method==='GET')return studentPracticeQuestions(request,env,user);
+  if(p==='/api/platform/student-practice/attempts'&&request.method==='POST')return submitStudentPractice(request,env,user);
   if(p==='/api/platform/learning-state'&&request.method==='GET')return learningState(request,env,user);
   if(p==='/api/platform/learning-evidence'&&request.method==='POST')return addLearningEvidence(request,env,user);
   if(p==='/api/platform/assignments'&&request.method==='GET')return listAssignments(request,env,user);
