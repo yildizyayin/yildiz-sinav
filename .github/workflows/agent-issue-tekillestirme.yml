@@ -27,7 +27,7 @@ jobs:
           const fs = require('fs');
           let issues = [];
           try { issues = JSON.parse(fs.readFileSync('agent-issues.json','utf8')); } catch {}
-          const agentLabels = new Set(['izleyici-ajan','icerik-tarama-ajani','yuk-testi-ajani','ci-saglik-ajani','d1-sema-ajani','route-denetim-ajani','tenant-guvenlik-ajani','kvkk-denetim-ajani','dependency-guvenlik-ajani','frontend-erisim-ajani','api-saglik-ajani','demo-veri-ajani','icerik-kalite-ajani','performans-ajani','release-hazirlik-ajani','ajan-durum-raporu']);
+          const agentLabels = new Set(['izleyici-ajan','icerik-tarama-ajani','yuk-testi-ajani','ci-saglik-ajani','d1-sema-ajani','route-denetim-ajani','tenant-guvenlik-ajani','kvkk-denetim-ajani','dependency-guvenlik-ajani','frontend-erisim-ajani','api-saglik-ajani','demo-veri-ajani','icerik-kalite-ajani','performans-ajani','release-hazirlik-ajani','issue-tekillestirme-ajani','ajan-durum-raporu']);
           const seen = new Map();
           for (const issue of issues) {
             const labels = (issue.labels || []).map(label => label.name || label).filter(label => agentLabels.has(label));
