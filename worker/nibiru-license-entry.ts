@@ -53,11 +53,21 @@ async function githubAgentRequest<T>(env:Env,path:string,init:RequestInit={}):Pr
 
 function agentActionsUrl(env:Env,file:string){return `https://github.com/${githubAgentRepo(env)}/actions/workflows/${file}`}
 
+async function ensureAgentLabel(env:Env,name:string,color:string,description:string){
+  const payload={name,color,description};
+  try{
+    await githubAgentRequest(env,'issues/labels',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  }catch(error){
+    if(!(error instanceof Error)||!error.message.includes('GitHub API 422'))throw error;
+    await githubAgentRequest(env,`issues/labels/${encodeURIComponent(name)}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({color,description})});
+  }
+}
+
 async function aiAgentOverview(env:Env,user:AuthUser){
   if(user.role!=='SUPER_ADMIN')return forbidden('AI Ajan Merkezi yalnızca Süper Admin tarafından kullanılabilir.');
   const repository=githubAgentRepo(env);
   const base=AI_AGENT_WORKFLOWS.map(workflow=>({...workflow,actionsUrl:agentActionsUrl(env,workflow.file),available:false,lastRun:null as any,error:null as string|null}));
-  if(!env.GITHUB_AGENT_TOKEN)return json({ok:true,repository,configured:false,apiReachable:false,workflows:base,issues:[],issueCounts:{},setup:{githubToken:false,onayWorkerUrl:Boolean(env.ONAY_WORKER_URL),actionsSecretsVisible:false}});
+  if(!env.GITHUB_AGENT_TOKEN)return json({ok:true,repository,configured:false,apiReachable:false,workflows:base,issues:[],instructionIssues:[],issueCounts:{},setup:{githubToken:false,onayWorkerUrl:Boolean(env.ONAY_WORKER_URL),actionsSecretsVisible:false}});
 
   try{
     const [workflowList,issueList]=await Promise.all([
@@ -72,17 +82,57 @@ async function aiAgentOverview(env:Env,user:AuthUser){
         return {...workflow,available:availablePaths.has(`.github/workflows/${workflow.file}`),lastRun:latest?{id:latest.id,status:latest.status,conclusion:latest.conclusion,createdAt:latest.created_at,updatedAt:latest.updated_at,htmlUrl:latest.html_url,runNumber:latest.run_number,event:latest.event}:null};
       }catch(error){return {...workflow,available:availablePaths.has(`.github/workflows/${workflow.file}`),error:error instanceof Error?error.message:'Workflow çalıştırma geçmişi okunamadı.'};}
     }));
-    const trackedLabels=['izleyici-ajan','icerik-tarama-ajani','acil','yuk-testi-ajani','ajan-fix-dene','ci-saglik-ajani','d1-sema-ajani','route-denetim-ajani','tenant-guvenlik-ajani','kvkk-denetim-ajani','dependency-guvenlik-ajani','frontend-erisim-ajani','api-saglik-ajani','demo-veri-ajani','icerik-kalite-ajani','performans-ajani','release-hazirlik-ajani','issue-tekillestirme-ajani','ajan-durum-raporu'];
+    const trackedLabels=['izleyici-ajan','icerik-tarama-ajani','acil','ajan-talimatı','yuk-testi-ajani','ajan-fix-dene','ci-saglik-ajani','d1-sema-ajani','route-denetim-ajani','tenant-guvenlik-ajani','kvkk-denetim-ajani','dependency-guvenlik-ajani','frontend-erisim-ajani','api-saglik-ajani','demo-veri-ajani','icerik-kalite-ajani','performans-ajani','release-hazirlik-ajani','issue-tekillestirme-ajani','ajan-durum-raporu'];
     const issues=(issueList||[]).filter((issue:any)=>{
       if(issue.pull_request||!Array.isArray(issue.labels))return false;
       const labels=issue.labels.map((label:any)=>typeof label==='string'?label:label.name).filter(Boolean);
       return labels.some((label:string)=>trackedLabels.includes(label));
     }).map((issue:any)=>({number:issue.number,title:issue.title,state:issue.state,htmlUrl:issue.html_url,updatedAt:issue.updated_at,labels:issue.labels.map((label:any)=>typeof label==='string'?label:label.name).filter(Boolean)}));
     const issueCounts=Object.fromEntries(trackedLabels.map(label=>[label,issues.filter((issue:any)=>issue.labels.includes(label)).length]));
-    return json({ok:true,repository,configured:true,apiReachable:true,workflows:runs,issues:issues.slice(0,30),issueCounts,setup:{githubToken:true,onayWorkerUrl:Boolean(env.ONAY_WORKER_URL),actionsSecretsVisible:false}});
+    const instructionIssues=issues.filter((issue:any)=>issue.labels.includes('ajan-talimatı')).map((issue:any)=>({number:issue.number,title:issue.title,state:issue.state,htmlUrl:issue.html_url,updatedAt:issue.updated_at,labels:issue.labels}));
+    return json({ok:true,repository,configured:true,apiReachable:true,workflows:runs,issues:issues.slice(0,30),instructionIssues:instructionIssues.slice(0,30),issueCounts,setup:{githubToken:true,onayWorkerUrl:Boolean(env.ONAY_WORKER_URL),actionsSecretsVisible:false}});
   }catch(error){
-    return json({ok:true,repository,configured:true,apiReachable:false,workflows:base,issues:[],issueCounts:{},setup:{githubToken:true,onayWorkerUrl:Boolean(env.ONAY_WORKER_URL),actionsSecretsVisible:false},warning:error instanceof Error?error.message:'GitHub durumu okunamadı.'});
+    return json({ok:true,repository,configured:true,apiReachable:false,workflows:base,issues:[],instructionIssues:[],issueCounts:{},setup:{githubToken:true,onayWorkerUrl:Boolean(env.ONAY_WORKER_URL),actionsSecretsVisible:false},warning:error instanceof Error?error.message:'GitHub durumu okunamadı.'});
   }
+}
+
+async function createAiAgentInstruction(request:Request,env:Env,user:AuthUser){
+  if(user.role!=='SUPER_ADMIN')return forbidden('AI ajan talimatlarını yalnızca Süper Admin oluşturabilir.');
+  if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+  if(!env.GITHUB_AGENT_TOKEN)return apiError(503,'GITHUB_AGENT_NOT_CONFIGURED','GITHUB_AGENT_TOKEN Cloudflare Secret olarak tanımlı değil.');
+  const body=await request.json<{workflow?:string;title?:string;instruction?:string;priority?:string}>();
+  const workflow=AI_AGENT_WORKFLOWS.find(item=>item.file===body.workflow);
+  if(!workflow)return badRequest('Bu workflow AI ajan allowlistinde değil.');
+  if(workflow.tier==='paid')return apiError(402,'AGENT_PAUSED',workflow.name+' ajanı şimdilik kredi beklediği için talimat alamaz.');
+  const title=String(body.title||'').trim();
+  const instruction=String(body.instruction||'').trim();
+  const priority=String(body.priority||'normal').trim();
+  if(title.length<3||title.length>160)return badRequest('Talimat başlığı 3–160 karakter arasında olmalıdır.');
+  if(instruction.length<10||instruction.length>5000)return badRequest('Talimat metni 10–5000 karakter arasında olmalıdır.');
+  if(!['low','normal','high','urgent'].includes(priority))return badRequest('Talimat önceliği geçersiz.');
+  const labels=['ajan-talimatı'];
+  if(workflow.label&&workflow.label!=='—')labels.push(workflow.label);
+  if(priority==='urgent')labels.push('acil');
+  for(const label of labels)await ensureAgentLabel(env,label,label==='acil'?'d93f0b':'0366d6',label==='ajan-talimatı'?'Agent Center üzerinden verilen ajan görevi':label==='acil'?'İnsan müdahalesi gerektiren acil talimat':workflow.name+' ajanı talimatı');
+  const issueBody=[
+    '## AI Ajan Talimatı',
+    '',
+    '**Hedef ajan:** '+workflow.name,
+    '**Öncelik:** '+priority,
+    '**Oluşturulma:** '+new Date().toISOString(),
+    '',
+    instruction,
+    '',
+    '### Güvenlik sınırı',
+    '- Production deploy, production D1 ve ücretli Anthropic ajanları bu talimat kuyruğundan çalıştırılamaz.',
+    '- Yük testi yalnızca staging/demo hedefinde yürütülür.',
+    '',
+    '_Bu görev Agent Center üzerinden oluşturuldu ve denetlenebilir GitHub Issue olarak saklanır._',
+  ].join('\n');
+  try{
+    const issue=await githubAgentRequest<any>(env,'issues',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:'🧭 '+workflow.name+': '+title,labels,body:issueBody})});
+    return json({ok:true,message:workflow.name+' ajanına talimat kuyruğa alındı.',instruction:{number:issue.number,title:issue.title,htmlUrl:issue.html_url,state:issue.state,labels:issue.labels?.map((label:any)=>typeof label==='string'?label:label.name)||[]}});
+  }catch(error){return apiError(502,'AGENT_INSTRUCTION_FAILED',error instanceof Error?error.message:'Ajan talimatı oluşturulamadı.');}
 }
 
 async function dispatchAiAgent(request:Request,env:Env,user:AuthUser){
@@ -302,6 +352,7 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
       if(blocked)return apiError(blocked.code==='LICENSE_EXPIRED'?402:403,blocked.code,blocked.message,'license' in blocked?blocked.license:undefined);
     }
     if(path==='/api/ai-agents'&&request.method==='GET')return aiAgentOverview(env,user);
+    if(path==='/api/ai-agents/instructions'&&request.method==='POST')return createAiAgentInstruction(request,env,user);
     if(path==='/api/ai-agents/dispatch')return dispatchAiAgent(request,env,user);
     if(path==='/api/nibiru/ai/probe')return nibiruAiProbe(request,env,user);
     if(path==='/api/nibiru/settings')return nibiruSettings(request,env,user);
