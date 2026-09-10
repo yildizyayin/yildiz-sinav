@@ -1,0 +1,57 @@
+name: "Ücretsiz Ajan - Frontend Erişilebilirlik"
+
+on:
+  schedule:
+    - cron: "0 5 * * 4"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Erişilebilirlik statik taraması
+        id: verify
+        continue-on-error: true
+        shell: bash
+        run: |
+          node <<'NODE' > agent-frontend-report.md
+          const fs = require('fs');
+          const path = require('path');
+          const files = [];
+          function walk(dir) {
+            if (!fs.existsSync(dir)) return;
+            for (const entry of fs.readdirSync(dir,{withFileTypes:true})) {
+              const full = path.join(dir,entry.name);
+              if (entry.isDirectory()) walk(full);
+              else if (/\.(tsx|jsx)$/.test(entry.name)) files.push(full);
+            }
+          }
+          walk('src');
+          const findings = [];
+          for (const file of files) {
+            const text = fs.readFileSync(file,'utf8');
+            for (const match of text.matchAll(/<img\b[^>]*>/g)) if (!/\balt\s*=/.test(match[0])) findings.push(`${file}: img etiketi alt içermiyor`);
+            for (const match of text.matchAll(/<input\b[^>]*>/g)) if (!/\baria-label\s*=|\bid\s*=/.test(match[0])) findings.push(`${file}: input etiketi aria-label/id içermiyor`);
+          }
+          console.log(`Taranan TSX/JSX dosyası: ${files.length}`);
+          if (findings.length) { console.log('Olası bulgular:'); console.log(findings.slice(0,80).join('\n')); process.exitCode=1; }
+          else console.log('img/input temel erişilebilirlik kontrolleri temiz.');
+          NODE
+      - name: Raporu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
+        with:
+          report-file: agent-frontend-report.md
+          title: "Frontend Erişilebilirlik Ajanı Raporu"
+          label: "frontend-erisim-ajani"
+          status: ${{ steps.verify.outcome }}
+          close-on-success: "true"
+          label-color: "a2eeef"
+      - name: Başarısızsa workflow'u işaretle
+        if: steps.verify.outcome == 'failure'
+        run: exit 1
