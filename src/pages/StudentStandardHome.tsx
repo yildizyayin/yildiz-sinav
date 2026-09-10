@@ -1,5 +1,5 @@
 import { useEffect,useState } from 'react';
-import { BookOpenCheck,Bot,CalendarDays,Gamepad2,GraduationCap,Palette,Target,TrendingUp } from 'lucide-react';
+import { BookOpen,BookOpenCheck,Bot,CalendarDays,Gamepad2,GraduationCap,Palette,Target,TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { NibiruPlanetarySystem } from '../components/NibiruPlanetarySystem';
@@ -34,7 +34,8 @@ export function StudentStandardHome(){
    </div>
 
    <div className="student-action-grid">
-    <Link to="/nibiru" className="student-action"><Bot/><div><strong>Nibiru</strong><span>Bugün ne çalışacağını birlikte planla.</span></div></Link>
+   <Link to="/nibiru" className="student-action"><Bot/><div><strong>Nibiru</strong><span>Bugün ne çalışacağını birlikte planla.</span></div></Link>
+    <Link to="/question-practice" className="student-action"><BookOpen/><div><strong>Soru çöz</strong><span>Seviyene uygun kısa bir soru seti çöz.</span></div></Link>
     <Link to="/my-results" className="student-action"><TrendingUp/><div><strong>Sonuçlarım</strong><span>Sınav, net ve kazanım gelişimini gör.</span></div></Link>
     <Link to="/assignments" className="student-action"><BookOpenCheck/><div><strong>Ödevlerim</strong><span>Atanan çalışmaları ve teslim tarihlerini takip et.</span></div></Link>
     <Link to="/academic-target" className="student-action"><GraduationCap/><div><strong>Hedeflerim</strong><span>LGS veya YKS hedeflerini takip et.</span></div></Link>
