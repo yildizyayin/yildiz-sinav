@@ -64,6 +64,13 @@ describe('Nibiru multi-AI router',()=>{
   const d=chooseNibiruModelDecision(customEnv,{role:'STUDENT'},'GENERAL_ACADEMIC','Bu matematik problemini neden yanlış yaptım?',route);
   expect(d.candidates.map(x=>x.model)).toEqual(['nvidia/z','meta/y','fast/x']);
  });
+ it('keeps the specialist and workload sticky when the intent is unchanged',()=>{
+  const route=routeNibiruSpecialist({role:'STUDENT'},'Bu matematik problemini adım adım çöz');
+  const d=chooseNibiruModelDecision(env,{role:'STUDENT'},'GENERAL_ACADEMIC','Bu matematik problemini adım adım çöz',route,{specialist:'EDUCATION_COACH',workload:'COACHING'});
+  expect(d.specialist).toBe('EDUCATION_COACH');
+  expect(d.workload).toBe('COACHING');
+  expect(d.candidates[0].family).toBe('FAST');
+ });
  it('falls back to direct Workers AI when the Gateway transport is unavailable',async()=>{
   const calls:any[]=[];
   const ai={
