@@ -32,6 +32,8 @@ jobs:
       PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
       PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
       PROD_WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.PROD_WHATSAPP_PHONE_NUMBER_ID }}
+      PROD_GOOGLE_TTS_SERVICE_ACCOUNT_JSON: ${{ secrets.PROD_GOOGLE_TTS_SERVICE_ACCOUNT_JSON }}
+      PROD_OPENAI_TTS_API_KEY: ${{ secrets.PROD_OPENAI_TTS_API_KEY }}
       PROD_BASE_URL: https://app.anunex.com
     steps:
       - uses: actions/checkout@v5
@@ -139,6 +141,8 @@ jobs:
           put_prod_secret PROD_WHATSAPP_APP_SECRET WHATSAPP_APP_SECRET
           put_prod_secret PROD_WHATSAPP_ACCESS_TOKEN WHATSAPP_ACCESS_TOKEN
           put_prod_secret PROD_WHATSAPP_PHONE_NUMBER_ID WHATSAPP_PHONE_NUMBER_ID
+          put_prod_secret PROD_GOOGLE_TTS_SERVICE_ACCOUNT_JSON GOOGLE_TTS_SERVICE_ACCOUNT_JSON
+          put_prod_secret PROD_OPENAI_TTS_API_KEY OPENAI_TTS_API_KEY
 
       - name: Attach licensed application domain
         shell: bash
