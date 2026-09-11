@@ -620,7 +620,13 @@ async function saveCalibrationAttempt(request: Request, env: Env, user: AuthUser
 async function opticalPrepare(env: Env, user: AuthUser, url: URL): Promise<Response> {
   if (!roleCanManageInstitution(user.role)) return forbidden();
   const classId = url.searchParams.get('classId');
-  const templateVersionId = url.searchParams.get('templateVersionId');
+  let templateVersionId = url.searchParams.get('templateVersionId');
+  const examId = url.searchParams.get('examId');
+  if (!templateVersionId && examId) {
+    const requestedBooklet = (url.searchParams.get('bookletSet') || 'A').split(',')[0].trim().toUpperCase();
+    const binding = await one<{ optical_template_version_id: string }>(env.DB.prepare(`SELECT b.optical_template_version_id FROM exam_optical_bindings b WHERE b.exam_id=? AND b.booklet_code=? AND b.active=1`).bind(examId, requestedBooklet));
+    templateVersionId = binding?.optical_template_version_id || null;
+  }
   const sort = url.searchParams.get('sort') === 'name' ? 'name' : 'number';
   if (!classId || !templateVersionId) return badRequest('Sınıf ve optik şablon seçilmelidir.');
   const c = await one<any>(env.DB.prepare('SELECT * FROM classes WHERE id=?').bind(classId));
