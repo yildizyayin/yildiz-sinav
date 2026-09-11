@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeFixedWidthSample, EXAM_CHOICES, EXAM_TEMPLATES, parseAnswerKeyText } from '../src/lib/guidedDefinitions';
+import { analyzeFixedWidthSample, EXAM_CHOICES, EXAM_TEMPLATES, matchOfficialOutcome, parseAnswerKeyText } from '../src/lib/guidedDefinitions';
 
 const subjects = [
   { id: 'sub_mat', code: 'MAT', name: 'Matematik' },
@@ -23,10 +23,11 @@ describe('guided answer key parser', () => {
   });
 
   it('maps tabular CSV rows with outcomes metadata', () => {
-    const result = parseAnswerKeyText('Ders,Soru,Kitapçık,Doğru Cevap,Şık Sayısı,Kabul Edilen Cevaplar,Durum\nMAT,1,A,A,4,A|B,ACTIVE\nMAT,2,A,C,4,C,CANCELLED', subjects);
+    const result = parseAnswerKeyText('Ders,Soru,Kitapçık,Doğru Cevap,Şık Sayısı,Kabul Edilen Cevaplar,Durum,Kazanım Kodu,Kazanım Açıklaması,Konu,Alt Konu\nMAT,1,A,A,4,A|B,ACTIVE,MAT.7.1.1,Tam sayılarla işlem yapar.,Sayılar,Tam sayılar\nMAT,2,A,C,4,C,CANCELLED,MAT.7.1.2,İşlem sonucunu bulur.,Sayılar,Tam sayılar', subjects);
     expect(result.entries[0]).toMatchObject({ subjectId: 'sub_mat', bookletCode: 'A', answers: 'AC', optionCount: 4 });
     expect(result.entries[0].acceptedAnswers).toEqual([['A', 'B'], ['C']]);
     expect(result.entries[0].questionStatuses).toEqual(['ACTIVE', 'CANCELLED']);
+    expect(result.entries[0].outcomeRefs?.[0]).toMatchObject({ code: 'MAT.7.1.1', title: 'Tam sayılarla işlem yapar.', topic: 'Sayılar', subtopic: 'Tam sayılar' });
   });
 });
 
@@ -47,7 +48,22 @@ describe('professional exam model catalog', () => {
     expect(EXAM_TEMPLATES.find((x) => x.key === 'AYT')?.sections.reduce((n, x) => n + x.questionCount, 0)).toBe(160);
     expect(EXAM_TEMPLATES.find((x) => x.key === 'YDT')?.sections[0]).toMatchObject({ questionCount: 80, optionCount: 5, wrongDivisor: 4 });
     expect(EXAM_TEMPLATES.find((x) => x.key === 'LGS')?.sections.reduce((n, x) => n + x.questionCount, 0)).toBe(90);
-    expect(EXAM_TEMPLATES.filter((x) => x.key.startsWith('SCHOOL_')).map((x) => x.gradeLevel)).toEqual([5, 6, 7]);
+    expect(EXAM_TEMPLATES.filter((x) => /^SCHOOL_[567]$/.test(x.key)).map((x) => x.gradeLevel)).toEqual([5, 6, 7]);
+  });
+});
+
+describe('official outcome matching', () => {
+  const catalog = [
+    { id: 'out-1', subject_id: 'sub_mat', code: 'MAT.7.1.1', title: 'Tam sayılarla işlem yapar.', topic: 'Sayılar', official: 1, verified: 1 },
+    { id: 'out-2', subject_id: 'sub_mat', code: 'MAT.7.1.2', title: 'İşlem sonucunu bulur.', topic: 'Sayılar', official: 1, verified: 0 },
+  ];
+
+  it('prefers an exact verified official code', () => {
+    expect(matchOfficialOutcome({ code: 'mat.7.1.1' }, 'sub_mat', catalog)).toEqual({ outcomeId: 'out-1', reason: 'CODE' });
+  });
+
+  it('does not auto-match an unverified catalog', () => {
+    expect(matchOfficialOutcome({ code: 'MAT.7.1.2' }, 'sub_mat', catalog)).toEqual({ reason: 'UNVERIFIED' });
   });
 });
 

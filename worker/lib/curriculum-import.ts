@@ -3,6 +3,9 @@ export interface CurriculumCsvRow {
   subjectCode: string;
   gradeLevel: number | null;
   outcomeCode: string | null;
+  parentCode: string | null;
+  nodeType: 'UNIT' | 'TOPIC' | 'OUTCOME' | 'SUB_OUTCOME';
+  unit: string | null;
   topic: string | null;
   subtopic: string | null;
   title: string;
@@ -19,6 +22,9 @@ const aliases = {
   subject: ['subject_code','subject','ders_kodu','ders','brans_kodu','branş_kodu'],
   grade: ['grade_level','grade','sinif','sınıf'],
   code: ['outcome_code','code','kazanim_kodu','kazanım_kodu','ogrenme_ciktisi_kodu','öğrenme_çıktısı_kodu'],
+  parentCode: ['parent_code','parent_outcome_code','ust_kazanim_kodu','üst_kazanım_kodu','alt_kazanim_parent_code'],
+  nodeType: ['node_type','type','level','duzey','düzey','kazanim_turu','kazanım_türü'],
+  unit: ['unit','unite','ünite'],
   topic: ['topic','konu'],
   subtopic: ['subtopic','alt_konu','altkonu'],
   title: ['title','outcome','kazanim','kazanım','ogrenme_ciktisi','öğrenme_çıktısı','aciklama','açıklama'],
@@ -39,7 +45,7 @@ export function parseCurriculumCsv(text:string, programCode:'SCHOOL'|'TYT'|'AYT'
   if(lines.length<2)return {rows:[],delimiter:',',errors:['Başlık satırı ve en az bir veri satırı gereklidir.']};
   const delimiter=detectDelimiter(lines[0]);
   const headers=splitCsv(lines[0],delimiter).map(normHeader);
-  const subjectIdx=indexOf(headers,aliases.subject);const gradeIdx=indexOf(headers,aliases.grade);const codeIdx=indexOf(headers,aliases.code);const topicIdx=indexOf(headers,aliases.topic);const subtopicIdx=indexOf(headers,aliases.subtopic);const titleIdx=indexOf(headers,aliases.title);
+  const subjectIdx=indexOf(headers,aliases.subject);const gradeIdx=indexOf(headers,aliases.grade);const codeIdx=indexOf(headers,aliases.code);const parentCodeIdx=indexOf(headers,aliases.parentCode);const nodeTypeIdx=indexOf(headers,aliases.nodeType);const unitIdx=indexOf(headers,aliases.unit);const topicIdx=indexOf(headers,aliases.topic);const subtopicIdx=indexOf(headers,aliases.subtopic);const titleIdx=indexOf(headers,aliases.title);
   const errors:string[]=[];
   if(subjectIdx<0)errors.push('Ders kodu sütunu bulunamadı. Örnek: subject_code.');
   if(titleIdx<0)errors.push('Kazanım/öğrenme çıktısı metni sütunu bulunamadı. Örnek: title.');
@@ -62,11 +68,16 @@ export function parseCurriculumCsv(text:string, programCode:'SCHOOL'|'TYT'|'AYT'
     if(!subjectCode)issues.push('Ders kodu boş.');
     if(!title)issues.push('Kazanım/öğrenme çıktısı metni boş.');
     const outcomeCode=codeIdx>=0?(cols[codeIdx]||'').trim()||null:null;
+    const parentCode=parentCodeIdx>=0?(cols[parentCodeIdx]||'').trim()||null:null;
+    const rawNodeType=nodeTypeIdx>=0?(cols[nodeTypeIdx]||'').trim().toLocaleUpperCase('tr-TR'):'';
+    const nodeType: CurriculumCsvRow['nodeType'] = rawNodeType.includes('ALT') || rawNodeType.includes('SUB') ? 'SUB_OUTCOME' : rawNodeType.includes('UNIT') || rawNodeType.includes('ÜNİTE') ? 'UNIT' : rawNodeType.includes('TOPIC') || rawNodeType.includes('KONU') ? 'TOPIC' : 'OUTCOME';
+    const unit=unitIdx>=0?(cols[unitIdx]||'').trim()||null:null;
     const topic=topicIdx>=0?(cols[topicIdx]||'').trim()||null:null;
     const subtopic=subtopicIdx>=0?(cols[subtopicIdx]||'').trim()||null:null;
     const dedupeKey=`${subjectCode}|${gradeLevel??''}|${outcomeCode||''}|${title.toLocaleLowerCase('tr-TR')}`;
     if(dedupe.has(dedupeKey))issues.push('Dosyada aynı kazanım/öğrenme çıktısı birden fazla kez bulunuyor.');else dedupe.add(dedupeKey);
-    rows.push({rowNo:i+1,subjectCode,gradeLevel,outcomeCode,topic,subtopic,title,issues});
+    if (nodeType !== 'UNIT' && nodeType !== 'TOPIC' && !outcomeCode) issues.push('Kazanım/öğrenme çıktısı kodu boş.');
+    rows.push({rowNo:i+1,subjectCode,gradeLevel,outcomeCode,parentCode,nodeType,unit,topic,subtopic,title,issues});
   }
   return {rows,delimiter,errors};
 }
