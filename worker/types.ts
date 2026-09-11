@@ -20,6 +20,14 @@ export interface Env {
   NIBIRU_FAST_MODEL?: string;
   NIBIRU_META_MODEL?: string;
   NIBIRU_REASONING_MODEL?: string;
+  // Optional Workers AI models; keep disabled until billing/availability is accepted.
+  NIBIRU_EXPERIMENTAL_MODELS?: 'ON' | 'OFF';
+  NIBIRU_DEEPSEEK_MODEL?: string;
+  NIBIRU_QWEN_MODEL?: string;
+  // Groq is an external provider and remains behind the KVKK processor gate.
+  NIBIRU_GROQ_API_KEY?: string;
+  NIBIRU_GROQ_REASONING_MODEL?: string;
+  NIBIRU_GROQ_INSTITUTION_MODEL?: string;
   NIBIRU_CUSTOM_MODEL?: string;
   NIBIRU_CUSTOM_MODEL_MODE?: 'PRIMARY' | 'FALLBACK' | 'OFF';
   // Nibiru Voice — keep credentials in Cloudflare Secrets, not vars.
@@ -89,31 +97,4 @@ export interface CanonicalRecord {
   source_template?: string;
   confidence: number;
   issues: string[];
-}
-
-export interface MatchCandidate {
-  student_id: string;
-  status: 'ACTIVE' | 'GUEST' | 'ARCHIVED';
-  normalized_name: string;
-  student_number: string | null;
-  grade_level: number | null;
-  section: string | null;
-}
-
-export interface MatchResult {
-  status: 'ACTIVE_MATCH' | 'GUEST_MATCH' | 'NEW_GUEST' | 'AMBIGUOUS' | 'INVALID';
-  student_id?: string;
-  confidence: number;
-  issues: string[];
-  candidates?: string[];
-}
-
-export interface PermissionScope {
-  role: Role;
-  institutionId: string | null;
-  studentId: string | null;
-  subjectIds: string[];
-  classIds: string[];
-  guidanceClassIds: string[];
-  subjectClassAssignments: Array<{ classId: string; subjectId: string }>;
 }
