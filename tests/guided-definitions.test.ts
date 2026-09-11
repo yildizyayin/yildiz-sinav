@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeFixedWidthSample, EXAM_CHOICES, parseAnswerKeyText } from '../src/lib/guidedDefinitions';
+import { analyzeFixedWidthSample, EXAM_CHOICES, EXAM_TEMPLATES, parseAnswerKeyText } from '../src/lib/guidedDefinitions';
 
 const subjects = [
   { id: 'sub_mat', code: 'MAT', name: 'Matematik' },
@@ -21,6 +21,13 @@ describe('guided answer key parser', () => {
     expect(result.entries.map((x) => x.bookletCode)).toEqual(['A', 'B']);
     expect(result.detectedBooklets).toEqual(['A', 'B']);
   });
+
+  it('maps tabular CSV rows with outcomes metadata', () => {
+    const result = parseAnswerKeyText('Ders,Soru,Kitapçık,Doğru Cevap,Şık Sayısı,Kabul Edilen Cevaplar,Durum\nMAT,1,A,A,4,A|B,ACTIVE\nMAT,2,A,C,4,C,CANCELLED', subjects);
+    expect(result.entries[0]).toMatchObject({ subjectId: 'sub_mat', bookletCode: 'A', answers: 'AC', optionCount: 4 });
+    expect(result.entries[0].acceptedAnswers).toEqual([['A', 'B'], ['C']]);
+    expect(result.entries[0].questionStatuses).toEqual(['ACTIVE', 'CANCELLED']);
+  });
 });
 
 describe('professional exam model catalog', () => {
@@ -33,6 +40,14 @@ describe('professional exam model catalog', () => {
   it('offers middle-school and TYT–AYT composite models', () => {
     expect(EXAM_CHOICES.filter((x) => x.sessionMode === 'VERBAL_NUMERIC').map((x) => x.gradeLevel)).toEqual([8, 5, 6, 7, 8]);
     expect(EXAM_CHOICES.some((x) => x.examType === 'TYT_AYT' && x.sessionMode === 'TYT_AYT')).toBe(true);
+  });
+
+  it('keeps the agreed template question totals and scoring profiles', () => {
+    expect(EXAM_TEMPLATES.find((x) => x.key === 'TYT')?.sections.reduce((n, x) => n + x.questionCount, 0)).toBe(120);
+    expect(EXAM_TEMPLATES.find((x) => x.key === 'AYT')?.sections.reduce((n, x) => n + x.questionCount, 0)).toBe(160);
+    expect(EXAM_TEMPLATES.find((x) => x.key === 'YDT')?.sections[0]).toMatchObject({ questionCount: 80, optionCount: 5, wrongDivisor: 4 });
+    expect(EXAM_TEMPLATES.find((x) => x.key === 'LGS')?.sections.reduce((n, x) => n + x.questionCount, 0)).toBe(90);
+    expect(EXAM_TEMPLATES.filter((x) => x.key.startsWith('SCHOOL_')).map((x) => x.gradeLevel)).toEqual([5, 6, 7]);
   });
 });
 
