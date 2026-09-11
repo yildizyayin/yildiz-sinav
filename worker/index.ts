@@ -232,7 +232,9 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
   if (inst.status === 'PASSIVE') return badRequest('Pasif kurumda sınav değerlendirilemez.', 'INSTITUTION_PASSIVE');
   const season = await ensureSeason(env.DB, institutionId, exam.academic_year);
   const text = decodeUploadedBytes(await file.arrayBuffer());
-  const templates = await all<ParserTemplate>(env.DB.prepare(`SELECT v.id, t.name, v.parser_definition FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.active=1 AND t.active=1`));
+  const globalTemplates = await all<ParserTemplate>(env.DB.prepare(`SELECT v.id, t.name, v.parser_definition FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.active=1 AND t.active=1`));
+  const boundTemplates = await all<ParserTemplate>(env.DB.prepare(`SELECT DISTINCT v.id, t.name, v.parser_definition FROM exam_optical_bindings b JOIN optical_template_versions v ON v.id=b.optical_template_version_id JOIN optical_templates t ON t.id=v.template_id WHERE b.exam_id=? AND b.active=1 AND v.active=1 AND t.active=1 AND v.parser_definition IS NOT NULL`).bind(examId));
+  const templates = boundTemplates.length ? boundTemplates : globalTemplates;
   const manualTemplateId = form.get('templateVersionId')?.toString();
   let parsed;
   if (manualTemplateId) {
