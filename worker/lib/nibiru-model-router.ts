@@ -1,6 +1,7 @@
 import type { AuthUser, Env } from '../types';
 import type { NibiruIntent } from './nibiru';
 import type { NibiruSpecialistRoute } from './nibiru-specialists';
+import { externalPersonalDataGate } from './privacy-external-gate';
 
 export type NibiruWorkload =
   | 'FAST_FACT'
@@ -12,7 +13,7 @@ export type NibiruWorkload =
   | 'INSTITUTION_ANALYSIS'
   | 'CORE';
 
-export type NibiruModelFamily = 'FAST' | 'META' | 'NVIDIA' | 'CUSTOM';
+export type NibiruModelFamily = 'FAST' | 'META' | 'NVIDIA' | 'DEEPSEEK' | 'QWEN' | 'GROQ' | 'CUSTOM';
 
 export type NibiruModelCandidate = {
   family: NibiruModelFamily;
@@ -75,6 +76,10 @@ export type NibiruProbeResult = {
 const DEFAULT_FAST = '@cf/zai-org/glm-4.7-flash';
 const DEFAULT_META = '@cf/meta/llama-4-scout-17b-16e-instruct';
 const DEFAULT_NVIDIA = '@cf/nvidia/nemotron-3-120b-a12b';
+const DEFAULT_DEEPSEEK = '@cf/deepseek-ai/deepseek-v4-flash-0731';
+const DEFAULT_QWEN = '@cf/qwen/qwen3-30b-a3b-fp8';
+const DEFAULT_GROQ_REASONING = 'openai/gpt-oss-120b';
+const DEFAULT_GROQ_INSTITUTION = 'llama-3.3-70b-versatile';
 
 function lower(value:string){return String(value||'').toLocaleLowerCase('tr-TR')}
 function uniqueCandidates(rows:NibiruModelCandidate[]){
@@ -87,8 +92,16 @@ function models(env:Env){
     fast: env.NIBIRU_FAST_MODEL || DEFAULT_FAST,
     meta: env.NIBIRU_META_MODEL || DEFAULT_META,
     nvidia: env.NIBIRU_REASONING_MODEL || DEFAULT_NVIDIA,
+    deepseek: env.NIBIRU_DEEPSEEK_MODEL || DEFAULT_DEEPSEEK,
+    qwen: env.NIBIRU_QWEN_MODEL || DEFAULT_QWEN,
+    groqReasoning: env.NIBIRU_GROQ_REASONING_MODEL || DEFAULT_GROQ_REASONING,
+    groqInstitution: env.NIBIRU_GROQ_INSTITUTION_MODEL || DEFAULT_GROQ_INSTITUTION,
     custom: env.NIBIRU_CUSTOM_MODEL || null,
   };
+}
+
+function experimentalModelsEnabled(env:Env){
+  return env.NIBIRU_EXPERIMENTAL_MODELS === 'ON';
 }
 
 function candidate(family:NibiruModelFamily,model:string,purpose:string):NibiruModelCandidate{return{family,model,purpose}}
@@ -136,6 +149,8 @@ export function chooseNibiruModelDecision(
   const workload=sticky?.workload || classifyNibiruWorkload(user,intent,message,activeRoute);
   const m=models(env);
   const custom=m.custom?candidate('CUSTOM',m.custom,'Opsiyonel haricî/kurumsal model'):null;
+  const experimental=experimentalModelsEnabled(env);
+  const groqEnabled=Boolean(env.NIBIRU_GROQ_API_KEY);
   let rows:NibiruModelCandidate[]=[];
   let maxTokens=650,temperature=0.2,reason='Dengeli akademik yanıt';
 
@@ -144,22 +159,30 @@ export function chooseNibiruModelDecision(
       rows=[candidate('FAST',m.fast,'Hızlı, düşük maliyetli doğrulanmış veri açıklaması'),candidate('META',m.meta,'Doğal dil yedeği')];
       maxTokens=420;temperature=0.1;reason='Basit bilgi/özet için hızlı model yeterli.';break;
     case 'COACHING':
-      rows=[candidate('FAST',m.fast,'Günlük görev ve kısa koçluk'),candidate('META',m.meta,'Daha doğal koçluk dili'),candidate('NVIDIA',m.nvidia,'Karmaşık planlama yedeği')];
+      rows=[candidate('FAST',m.fast,'Günlük görev ve kısa koçluk')];
+      if(experimental)rows.push(candidate('DEEPSEEK',m.deepseek,'Uzun bağlamlı koçluk yedeği'));
+      rows.push(candidate('META',m.meta,'Daha doğal koçluk dili'),candidate('NVIDIA',m.nvidia,'Karmaşık planlama yedeği'));
       maxTokens=620;temperature=0.2;reason='Eğitim Koçu sık kullanılır; maliyet ve hız öncelikli.';break;
     case 'GUIDANCE':
       rows=[candidate('META',m.meta,'Doğal, destekleyici rehberlik dili'),candidate('NVIDIA',m.nvidia,'Karmaşık hedef/gap açıklaması'),candidate('FAST',m.fast,'Ekonomik yedek')];
       maxTokens=760;temperature=0.2;reason='Rehberlikte doğal dil öncelikli; sayısal kararlar deterministik motordan gelir.';break;
     case 'SUBJECT_REASONING':
-      rows=[candidate('NVIDIA',m.nvidia,'Zor matematik/fen ve çok adımlı akademik muhakeme'),candidate('META',m.meta,'Alternatif öğretim açıklaması'),candidate('FAST',m.fast,'Ekonomik yedek')];
+      rows=[candidate('NVIDIA',m.nvidia,'Zor matematik/fen ve çok adımlı akademik muhakeme'),candidate('META',m.meta,'Alternatif öğretim açıklaması')];
+      if(groqEnabled)rows.push(candidate('GROQ',m.groqReasoning,'KVKK kapısından geçen haricî hızlı reasoning yedeği'));
+      rows.push(candidate('FAST',m.fast,'Ekonomik yedek'));
       maxTokens=900;temperature=0.12;reason='Sayısal/çok adımlı soruda reasoning modeli öncelikli.';break;
     case 'SUBJECT_EXPLANATION':
-      rows=[candidate('META',m.meta,'Öğrenciye doğal konu/soru anlatımı'),candidate('NVIDIA',m.nvidia,'Derin açıklama yedeği'),candidate('FAST',m.fast,'Ekonomik yedek')];
+      rows=[candidate('META',m.meta,'Öğrenciye doğal konu/soru anlatımı')];
+      if(experimental)rows.push(candidate('DEEPSEEK',m.deepseek,'Derin konu anlatımı ve uzun bağlam yedeği'),candidate('QWEN',m.qwen,'Çok dilli açıklama ve reasoning yedeği'));
+      rows.push(candidate('NVIDIA',m.nvidia,'Derin açıklama yedeği'),candidate('FAST',m.fast,'Ekonomik yedek'));
       maxTokens=760;temperature=0.18;reason='Konu anlatımında doğal ve açıklayıcı dil öncelikli.';break;
     case 'PARENT_EXPLANATION':
       rows=[candidate('META',m.meta,'Veliye sade ve doğal gelişim açıklaması'),candidate('FAST',m.fast,'Ekonomik yedek')];
       maxTokens=620;temperature=0.16;reason='Veli dilinde sadelik ve doğallık öncelikli.';break;
     case 'INSTITUTION_ANALYSIS':
-      rows=[candidate('NVIDIA',m.nvidia,'Kurum/sınıf düzeyi çoklu veri analizi'),candidate('FAST',m.fast,'Basit kurum özeti yedeği'),candidate('META',m.meta,'Yönetici dilinde açıklama yedeği')];
+      rows=[candidate('NVIDIA',m.nvidia,'Kurum/sınıf düzeyi çoklu veri analizi'),candidate('FAST',m.fast,'Basit kurum özeti yedeği')];
+      if(groqEnabled)rows.push(candidate('GROQ',m.groqInstitution,'KVKK kapısından geçen haricî kurum analizi yedeği'));
+      rows.push(candidate('META',m.meta,'Yönetici dilinde açıklama yedeği'));
       maxTokens=850;temperature=0.1;reason='Kurum içgörüsünde çoklu veri ve trend analizi öncelikli.';break;
     default:
       rows=[candidate('FAST',m.fast,'Genel Nibiru çekirdeği'),candidate('META',m.meta,'Doğal dil yedeği')];
@@ -228,6 +251,28 @@ function errorMessage(error:unknown){
   return String(error instanceof Error?error.message:error||'AI_PROVIDER_ERROR').replace(/\s+/g,' ').slice(0,240);
 }
 
+async function callGroqModel(
+  env:Env,
+  item:Pick<NibiruModelCandidate,'model'>,
+  decision:Pick<NibiruModelDecision,'maxTokens'|'temperature'>,
+  messages:Array<{role:'system'|'user'|'assistant';content:string}>,
+):Promise<ModelCallResult>{
+  if(!env.NIBIRU_GROQ_API_KEY)return{text:null,transport:'none',gatewayFallback:false,error:'GROQ_API_KEY_MISSING'};
+  try{
+    const response=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'content-type':'application/json',authorization:`Bearer ${env.NIBIRU_GROQ_API_KEY}`},
+      body:JSON.stringify({model:item.model,messages,temperature:decision.temperature,max_tokens:decision.maxTokens,stream:false}),
+    });
+    const payload:any=await response.json().catch(()=>null);
+    if(!response.ok)return{text:null,transport:'direct',gatewayFallback:false,error:`GROQ_HTTP_${response.status}`};
+    const text=extractText(payload);
+    return{text,transport:'direct',gatewayFallback:false,error:text?null:'EMPTY_GROQ_RESPONSE'};
+  }catch(error){
+    return{text:null,transport:'direct',gatewayFallback:false,error:errorMessage(error)};
+  }
+}
+
 type ModelCallResult={
   text:string|null;
   transport:'gateway'|'direct'|'none';
@@ -241,6 +286,7 @@ async function callModel(
   decision:Pick<NibiruModelDecision,'gatewayId'|'skipCache'|'maxTokens'|'temperature'>,
   messages:Array<{role:'system'|'user'|'assistant';content:string}>,
 ):Promise<ModelCallResult>{
+  if(item.family==='GROQ')return callGroqModel(env,item,decision,messages);
   if(!env.AI)return{text:null,transport:'none',gatewayFallback:false,error:'AI_BINDING_MISSING'};
   const isGlm=item.model===DEFAULT_FAST;
   const input:any=isGlm
@@ -290,15 +336,30 @@ export async function runNibiruInference(
   const attempts:NibiruInferenceAttempt[]=[];
   const gatewayConfigured=gatewayIdEnabled(decision.gatewayId);
   let directFallbackUsed=false;
-  if(!env.AI)return{text:null,decision,selected:null,attempts,gatewayLogId:null,gatewayConfigured,directFallbackUsed};
+  const hasGroqCandidate=decision.candidates.some(item=>item.family==='GROQ');
+  if(!env.AI&&!hasGroqCandidate)return{text:null,decision,selected:null,attempts,gatewayLogId:null,gatewayConfigured,directFallbackUsed};
+
+  let groqGateChecked=false;
+  let groqAllowed=false;
 
   for(const item of decision.candidates){
+    if(item.family==='GROQ'){
+      if(!groqGateChecked){
+        const gate=await externalPersonalDataGate(env,'GROQ_AI');
+        groqAllowed=gate.ok;
+        groqGateChecked=true;
+      }
+      if(!groqAllowed){
+        attempts.push({model:item.model,family:item.family,ok:false,transport:'none'});
+        continue;
+      }
+    }
     const result=await callModel(env,item,decision,messages);
     directFallbackUsed=directFallbackUsed||result.gatewayFallback;
     attempts.push({model:item.model,family:item.family,ok:Boolean(result.text),transport:result.transport});
-    if(result.text)return{text:result.text,decision,selected:item,attempts,gatewayLogId:env.AI.aiGatewayLogId||null,gatewayConfigured,directFallbackUsed};
+    if(result.text)return{text:result.text,decision,selected:item,attempts,gatewayLogId:env.AI?.aiGatewayLogId||null,gatewayConfigured,directFallbackUsed};
   }
-  return{text:null,decision,selected:null,attempts,gatewayLogId:env.AI.aiGatewayLogId||null,gatewayConfigured,directFallbackUsed};
+  return{text:null,decision,selected:null,attempts,gatewayLogId:env.AI?.aiGatewayLogId||null,gatewayConfigured,directFallbackUsed};
 }
 
 export async function probeNibiruModels(env:Env):Promise<NibiruProbeResult>{
@@ -343,14 +404,17 @@ export function nibiruRoutingMatrix(env:Env){
     gatewayId:env.NIBIRU_AI_GATEWAY_ID||'default',
     routerMode:env.NIBIRU_ROUTER_MODE||'SMART',
     models:{fast:m.fast,meta:m.meta,nvidia:m.nvidia,custom:m.custom},
+    optionalModels:{deepseek:m.deepseek,qwen:m.qwen,groqReasoning:m.groqReasoning,groqInstitution:m.groqInstitution},
+    optionalModelsEnabled:experimentalModelsEnabled(env),
+    groqConfigured:Boolean(env.NIBIRU_GROQ_API_KEY),
     policy:[
       {workload:'FAST_FACT',primary:'FAST',use:'Selam/yardım, son sınav, kısa doğrulanmış özet'},
-      {workload:'COACHING',primary:'FAST',use:'Eğitim Koçu günlük/haftalık plan ve görev dili'},
+      {workload:'COACHING',primary:'FAST',use:'Eğitim Koçu günlük/haftalık plan; DeepSeek yalnız optional model flag ile'},
       {workload:'GUIDANCE',primary:'META',use:'Rehber AI hedef, motivasyon ve gelişim rotası açıklaması'},
-      {workload:'SUBJECT_REASONING',primary:'NVIDIA',use:'Matematik/fen çok adımlı soru ve reasoning'},
-      {workload:'SUBJECT_EXPLANATION',primary:'META',use:'Branş konu/soru anlatımı ve alternatif açıklama'},
+      {workload:'SUBJECT_REASONING',primary:'NVIDIA',use:'Matematik/fen çok adımlı soru; Groq yalnız KVKK kapısından sonra yedek'},
+      {workload:'SUBJECT_EXPLANATION',primary:'META',use:'Branş konu/soru anlatımı; DeepSeek/Qwen yalnız optional model flag ile'},
       {workload:'PARENT_EXPLANATION',primary:'META',use:'Veliye sade, güvenli gelişim özeti'},
-      {workload:'INSTITUTION_ANALYSIS',primary:'NVIDIA',use:'Kurum/sınıf trend ve çoklu veri analizi'},
+      {workload:'INSTITUTION_ANALYSIS',primary:'NVIDIA',use:'Kurum/sınıf trend; Groq yalnız KVKK kapısından sonra yedek'},
     ],
   };
 }
