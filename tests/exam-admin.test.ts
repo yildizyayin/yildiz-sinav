@@ -28,5 +28,7 @@ describe('exam definition center rules', () => {
     expect(answerStringValid('ABCDE', 5)).toBe(true);
     expect(answerStringValid('ABCD', 5)).toBe(false);
     expect(answerStringValid('ABC?E', 5)).toBe(false);
+    expect(answerStringValid('ABCD', 4, 4)).toBe(true);
+    expect(answerStringValid('ABCE', 4, 4)).toBe(false);
   });
 });
