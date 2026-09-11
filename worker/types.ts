@@ -98,3 +98,30 @@ export interface CanonicalRecord {
   confidence: number;
   issues: string[];
 }
+
+export interface MatchCandidate {
+  student_id: string;
+  status: 'ACTIVE' | 'GUEST' | 'ARCHIVED';
+  normalized_name: string;
+  student_number: string | null;
+  grade_level: number | null;
+  section: string | null;
+}
+
+export interface MatchResult {
+  status: 'ACTIVE_MATCH' | 'GUEST_MATCH' | 'NEW_GUEST' | 'AMBIGUOUS' | 'INVALID';
+  student_id?: string;
+  confidence: number;
+  issues: string[];
+  candidates?: string[];
+}
+
+export interface PermissionScope {
+  role: Role;
+  institutionId: string | null;
+  studentId: string | null;
+  subjectIds: string[];
+  classIds: string[];
+  guidanceClassIds: string[];
+  subjectClassAssignments: Array<{ classId: string; subjectId: string }>;
+}
