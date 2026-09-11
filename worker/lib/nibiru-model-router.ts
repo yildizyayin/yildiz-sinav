@@ -32,6 +32,11 @@ export type NibiruModelDecision = {
   reason: string;
 };
 
+export type NibiruStickyRouting = {
+  specialist: NibiruSpecialistRoute['specialist'];
+  workload: NibiruWorkload;
+};
+
 export type NibiruInferenceAttempt = {
   model: string;
   family: NibiruModelFamily;
@@ -116,8 +121,19 @@ export function chooseNibiruModelDecision(
   intent:NibiruIntent,
   message:string,
   route:NibiruSpecialistRoute,
+  sticky?:NibiruStickyRouting,
 ):NibiruModelDecision{
-  const workload=classifyNibiruWorkload(user,intent,message,route);
+  const activeRoute = sticky ? {
+    ...route,
+    specialist:sticky.specialist,
+    label:sticky.specialist === 'NIBIRU_CORE' ? 'Nibiru Core'
+      : sticky.specialist === 'EDUCATION_COACH' ? 'Eğitim Koçu AI'
+      : sticky.specialist === 'GUIDANCE_COUNSELOR' ? 'Rehber Öğretmen AI'
+      : sticky.specialist === 'SUBJECT_TEACHER' ? 'Branş Öğretmeni AI'
+      : sticky.specialist === 'PARENT_GUIDE' ? 'Veli Akademik Rehber AI'
+      : 'Kurum Akademik İçgörü AI',
+  } : route;
+  const workload=sticky?.workload || classifyNibiruWorkload(user,intent,message,activeRoute);
   const m=models(env);
   const custom=m.custom?candidate('CUSTOM',m.custom,'Opsiyonel haricî/kurumsal model'):null;
   let rows:NibiruModelCandidate[]=[];
@@ -158,8 +174,8 @@ export function chooseNibiruModelDecision(
 
   return {
     workload,
-    specialist:route.specialist,
-    specialistLabel:route.label,
+    specialist:activeRoute.specialist,
+    specialistLabel:activeRoute.label,
     gatewayId:env.NIBIRU_AI_GATEWAY_ID||'default',
     candidates:uniqueCandidates(rows),
     maxTokens,
