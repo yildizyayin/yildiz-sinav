@@ -2,8 +2,6 @@ name: Deploy Production Cloudflare Worker
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
 
 permissions:
   contents: read
