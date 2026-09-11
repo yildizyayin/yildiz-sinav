@@ -1,4 +1,5 @@
 import type { CanonicalRecord } from '../types';
+import { fixedWidthFromDefinition } from './fmt';
 
 export interface ParserTemplate {
   id: string;
@@ -68,19 +69,20 @@ export function parseUploadedText(text: string, fileName: string, templates: Par
     .map((t) => ({ template: t, def: safeJson(t.parser_definition) }))
     .filter((x) => {
       const def = x.def as Record<string, unknown> | null;
-      return !!def && def.type === 'fixed-width';
+      const fixed = fixedWidthFromDefinition(def);
+      return !!fixed && fixed.type === 'fixed-width';
     });
 
   const lines = normalizedText.split('\n').filter((line) => line.length > 0);
   const matches = viable.filter((x) => {
-    const def = x.def as any;
+    const def = fixedWidthFromDefinition(x.def as any) as any;
     if (typeof def.recordLength === 'number' && lines.some((line) => line.length !== def.recordLength)) return false;
     if (typeof def.signature === 'string' && def.signature && !normalizedText.includes(def.signature)) return false;
     return true;
   });
 
   if (matches.length === 1) {
-    return parseFixedWidth(lines, fileName, matches[0].template.id, matches[0].template.name, matches[0].def as any);
+    return parseFixedWidth(lines, fileName, matches[0].template.id, matches[0].template.name, fixedWidthFromDefinition(matches[0].def as any) as any);
   }
   if (matches.length > 1) {
     return { confidence: 0.5, ambiguous: true, records: [], issues: ['Birden fazla optik şablonu dosyayla eşleşiyor. Manuel seçim gerekli.'] };
@@ -93,7 +95,7 @@ export function parseWithTemplate(text: string, fileName: string, template: Pars
   const def = safeJson(template.parser_definition) as any;
   if (!def) return { confidence: 0, ambiguous: false, records: [], issues: ['Seçilen optik şablonun parser tanımı yok.'] };
   const normalized = normalizeNewlines(text);
-  if (def.type === 'fixed-width') return parseFixedWidth(normalized.split('\n').filter((line) => line.length > 0), fileName, template.id, template.name, def);
+  if (def.type === 'fixed-width' || def.type === 'fmt') return parseFixedWidth(normalized.split('\n').filter((line) => line.length > 0), fileName, template.id, template.name, fixedWidthFromDefinition(def));
   if (def.type === 'delimited') return parseDelimited(normalized, fileName, template.id, template.name, def.delimiter);
   return { confidence: 0, ambiguous: false, records: [], issues: ['Desteklenmeyen parser türü.'] };
 }
