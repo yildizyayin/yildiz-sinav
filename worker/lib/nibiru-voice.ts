@@ -34,12 +34,13 @@ export function voiceProviderStatus(env:Env){
  const directOpenAi=Boolean(env.OPENAI_TTS_API_KEY);
  const unified=Boolean(env.AI);
  return {
-  stt:{ready:Boolean(env.AI),provider:'CLOUDFLARE_WORKERS_AI',model:env.NIBIRU_STT_MODEL||'@cf/openai/whisper-large-v3-turbo'},
-  google:{ready:googleConfigured,provider:'GOOGLE_WAVENET',voice:env.NIBIRU_GOOGLE_TTS_VOICE||'tr-TR-Wavenet-E',detail:googleConfigured?'Google Cloud servis hesabı tanımlı.':'GOOGLE_TTS_SERVICE_ACCOUNT_JSON secret bekleniyor.'},
-  openaiDirect:{ready:directOpenAi,provider:'OPENAI_GPT4O_MINI_TTS',model:env.NIBIRU_OPENAI_DIRECT_TTS_MODEL||'gpt-4o-mini-tts',detail:directOpenAi?'OpenAI TTS secret tanımlı.':'OPENAI_TTS_API_KEY opsiyonel; Unified Billing fallback kullanılabilir.'},
-  openaiUnified:{ready:unified,provider:'CLOUDFLARE_AI_GATEWAY_UNIFIED',standardModel:env.NIBIRU_OPENAI_TTS_MODEL||'openai/tts-1',premiumModel:env.NIBIRU_OPENAI_TTS_HD_MODEL||'openai/tts-1-hd',detail:unified?'Workers AI binding üzerinden Unified Billing çağrısına hazır.':'Workers AI binding eksik.'},
+  stt:{ready:false,configured:Boolean(env.AI),provider:'CLOUDFLARE_WORKERS_AI',model:env.NIBIRU_STT_MODEL||'@cf/openai/whisper-large-v3-turbo',detail:env.AI?'Workers AI binding var; canlı probe gerekli.':'Workers AI binding eksik.'},
+  google:{ready:false,configured:googleConfigured,provider:'GOOGLE_WAVENET',voice:env.NIBIRU_GOOGLE_TTS_VOICE||'tr-TR-Wavenet-E',detail:googleConfigured?'Google Cloud servis hesabı tanımlı; canlı probe gerekli.':'GOOGLE_TTS_SERVICE_ACCOUNT_JSON secret bekleniyor.'},
+  openaiDirect:{ready:false,configured:directOpenAi,provider:'OPENAI_GPT4O_MINI_TTS',model:env.NIBIRU_OPENAI_DIRECT_TTS_MODEL||'gpt-4o-mini-tts',detail:directOpenAi?'OpenAI TTS secret tanımlı; canlı probe gerekli.':'OPENAI_TTS_API_KEY opsiyonel; Unified Billing fallback kullanılabilir.'},
+  openaiUnified:{ready:false,configured:unified,provider:'CLOUDFLARE_AI_GATEWAY_UNIFIED',standardModel:env.NIBIRU_OPENAI_TTS_MODEL||'openai/tts-1',premiumModel:env.NIBIRU_OPENAI_TTS_HD_MODEL||'openai/tts-1-hd',detail:unified?'Workers AI binding var; Unified Billing canlı probe gerekli.':'Workers AI binding eksik.'},
   standardReady:googleConfigured||unified,
   premiumReady:directOpenAi||unified||googleConfigured,
+  liveVerified:false,
  };
 }
 
@@ -47,14 +48,14 @@ export function buildVoiceProviderPlan(env:Env,mode:NibiruVoiceMode):VoiceProvid
  const s=voiceProviderStatus(env);
  const rows:NibiruVoiceProvider[]=[];
  if(mode==='PREMIUM'){
-  if(s.openaiDirect.ready)rows.push('OPENAI_GPT4O_MINI_TTS');
-  if(s.openaiUnified.ready)rows.push('OPENAI_UNIFIED_TTS_HD');
-  if(s.google.ready)rows.push('GOOGLE_WAVENET');
+  if(s.openaiDirect.configured)rows.push('OPENAI_GPT4O_MINI_TTS');
+  if(s.openaiUnified.configured)rows.push('OPENAI_UNIFIED_TTS_HD');
+  if(s.google.configured)rows.push('GOOGLE_WAVENET');
   return{mode,providers:rows,reason:'Premium seste doğal ifade öncelikli; sağlayıcı yoksa kurumsal WaveNet yedeği kullanılır.'};
  }
- if(s.google.ready)rows.push('GOOGLE_WAVENET');
- if(s.openaiUnified.ready)rows.push('OPENAI_UNIFIED_TTS');
- if(s.openaiDirect.ready)rows.push('OPENAI_GPT4O_MINI_TTS');
+ if(s.google.configured)rows.push('GOOGLE_WAVENET');
+ if(s.openaiUnified.configured)rows.push('OPENAI_UNIFIED_TTS');
+ if(s.openaiDirect.configured)rows.push('OPENAI_GPT4O_MINI_TTS');
  return{mode,providers:rows,reason:'Standart seste düşük maliyetli Türkçe WaveNet öncelikli; Unified Billing kesintisiz yedektir.'};
 }
 
