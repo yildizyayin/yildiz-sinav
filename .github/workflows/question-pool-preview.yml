@@ -63,7 +63,12 @@ jobs:
           bucket_response="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/r2/buckets?name=$(printf '%s' "$bucket_name" | jq -sRr @uri)")"
           bucket_exists="$(jq -r --arg name "$bucket_name" '((.result // .) | map(select(type == "object" and (.name // "") == $name)) | length)' <<<"$bucket_response")"
           if [ "$bucket_exists" = "0" ]; then
-            curl --fail-with-body --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' --data "$(jq -nc --arg name "$bucket_name" '{name:$name,location:"WEUR"}')" "$api/r2/buckets" >/dev/null
+            create_response="$(curl --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' --data "$(jq -nc --arg name "$bucket_name" '{name:$name,location:"WEUR"}')" --write-out '\n%{http_code}' "$api/r2/buckets" || true)"
+            create_status="$(tail -n1 <<<"$create_response")"
+            if [[ ! "$create_status" =~ ^2[0-9][0-9]$ && "$create_status" != "409" ]]; then
+              echo "$create_response" >&2
+              exit 1
+            fi
           fi
 
           jq --arg name "$worker_name" --arg db_name "$db_name" --arg db_id "$db_id" --arg bucket "$bucket_name" \
