@@ -447,12 +447,13 @@ async function listAssignments(request:Request,env:Env,user:AuthUser):Promise<Re
 
 async function createAssignment(request:Request,env:Env,user:AuthUser):Promise<Response>{
   if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden(); const b=await requestBody(request); const inst=userInstitution(user,b.institutionId); if(!inst||!b.title)return badRequest('Kurum ve ödev başlığı gereklidir.'); const id=uuid('asg');
+  const assignmentType=String(b.assignmentType||'TEACHER').toUpperCase(); if(!['TEACHER','NIBIRU','RECOVERY'].includes(assignmentType))return badRequest('Geçersiz ödev türü.');
   const recipients:Array<string>=Array.isArray(b.studentIds)?b.studentIds:[]; const items:Array<any>=Array.isArray(b.items)?b.items:[];
   if(user.role==='TEACHER'){
     for(const studentId of recipients){const allowed=await one<any>(env.DB.prepare(`SELECT 1 ok FROM student_enrollments e WHERE e.student_id=? AND e.institution_id=? AND e.status='ACTIVE' AND EXISTS(SELECT 1 FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND (ta.class_id IS NULL OR ta.class_id=e.class_id)) LIMIT 1`).bind(studentId,inst,user.id,inst));if(!allowed)return forbidden('Ödev alıcısı branş/sınıf yetkinizin dışında.');}
     for(const item of items.filter(x=>x.itemType==='QUESTION'&&x.referenceId)){const question=await one<any>(env.DB.prepare(`SELECT subject_id FROM question_bank WHERE id=? AND review_status='APPROVED'`).bind(item.referenceId));if(!question||!await teacherHasSubject(env,user,question.subject_id))return forbidden('Atanan soru branş yetkinizin dışında.');}
   }
-  const stmts=[env.DB.prepare(`INSERT INTO assignments(id,institution_id,season_id,created_by,assignment_type,title,description,due_at,status) VALUES(?,?,?,?,?,?,?,?,?)`).bind(id,inst,b.seasonId||null,user.id,b.assignmentType||'TEACHER',String(b.title).trim(),b.description||null,b.dueAt||null,b.publish?'ASSIGNED':'DRAFT')];
+  const stmts=[env.DB.prepare(`INSERT INTO assignments(id,institution_id,season_id,created_by,assignment_type,title,description,due_at,status) VALUES(?,?,?,?,?,?,?,?,?)`).bind(id,inst,b.seasonId||null,user.id,assignmentType,String(b.title).trim(),b.description||null,b.dueAt||null,b.publish?'ASSIGNED':'DRAFT')];
   items.forEach((it,i)=>stmts.push(env.DB.prepare(`INSERT INTO assignment_items(id,assignment_id,item_type,reference_id,payload_json,sort_order) VALUES(?,?,?,?,?,?)`).bind(uuid('asi'),id,it.itemType||'TASK',it.referenceId||null,JSON.stringify(it.payload||{}),i+1)));
   recipients.forEach(sid=>stmts.push(env.DB.prepare(`INSERT OR IGNORE INTO assignment_recipients(assignment_id,student_id,status) VALUES(?,?,'ASSIGNED')`).bind(id,sid)));
   await env.DB.batch(stmts); return json({ok:true,id},201);
