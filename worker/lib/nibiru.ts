@@ -3,8 +3,9 @@ import { all, one, uuid } from './db';
 import { createOrReuseDailyCoachPlan, coachPlanSummary, type CoachPlanResult } from './education-coach';
 import { externalPersonalDataGate } from './privacy-external-gate';
 import { minimizeNibiruAiMessages } from './privacy-minimization';
-import { chooseNibiruModelDecision, runNibiruInference, type NibiruInferenceResult } from './nibiru-model-router';
+import { chooseNibiruModelDecision, runNibiruInference, type NibiruInferenceResult, type NibiruStickyRouting, type NibiruWorkload } from './nibiru-model-router';
 import { routeNibiruSpecialist } from './nibiru-specialists';
+import type { NibiruSpecialist } from './nibiru-specialists';
 
 export type NibiruIntent =
   | 'GREETING'
@@ -56,7 +57,7 @@ export function detectNibiruIntent(message: string, previous?: string | null): N
   if (/(başarısız mı|tembel mi|zeki mi|yetersiz mi|kötü öğrenci|iyi öğrenci)/.test(m)) return 'SENSITIVE_LABEL';
   if (/(depres|anksiy|adhd|dikkat eksik|disleksi|otizm|psikolog|psikolojik|zeka testi|tanı koy)/.test(m)) return 'PSYCHOLOGICAL_MEDICAL';
   if (/(bugün ne yap|bugün ne çalış|ne çalışalım|çalışma plan|bugünkü çalışma)/.test(m)) return 'TODAY_PLAN';
-  if (/(sınav ne oldu|son sınav|sınav sonucu|kaç net|kaç puan|sınav nasıl|deneme ne oldu)/.test(m)) return 'LATEST_EXAM';
+  if (/(sınav ne oldu|son sınav|son deneme|en son deneme|geçen sınav|geçen deneme|sınav sonucu|sonuçlarım|sonucum|kaç net|netlerim|kaç puan|puanım|sınav nasıl|deneme ne oldu|son denemede|sınavdaki durum|sınav performans|performansım)/.test(m)) return 'LATEST_EXAM';
   if (/(öğrencim nasıl|çocuğum nasıl|kızım nasıl|oğlum nasıl|genel durumu|gelişimi nasıl)/.test(m)) return 'STUDENT_GENERAL';
   if (/(hangi konu|hangi kazanım|nerede zorlan|eksik konu|gelişime açık|zayıf kazanım)/.test(m)) return 'WEAK_OUTCOMES';
   if (/(sınıfım nasıl|sınıf nasıl|öğrencilerim nasıl|sınıf özeti|şube nasıl)/.test(m)) return 'CLASS_SUMMARY';
@@ -135,35 +136,52 @@ async function latestSession(env: Env, channel: 'WHATSAPP' | 'WEB', key: string)
   return one<any>(env.DB.prepare(`SELECT * FROM nibiru_sessions WHERE channel=? AND channel_user_key=? AND expires_at>datetime('now')`).bind(channel,key));
 }
 
-async function saveSession(env: Env, channel: 'WHATSAPP' | 'WEB', key: string, userId: string, intent: NibiruIntent, studentId: string | null, examId: string | null) {
+function sessionRouting(session: any, intent: NibiruIntent): NibiruStickyRouting | undefined {
+  if (!session || session.last_intent !== intent) return undefined;
+  const specialists: NibiruSpecialist[] = ['NIBIRU_CORE','EDUCATION_COACH','GUIDANCE_COUNSELOR','SUBJECT_TEACHER','PARENT_GUIDE','INSTITUTION_INSIGHT'];
+  const workloads: NibiruWorkload[] = ['FAST_FACT','COACHING','GUIDANCE','SUBJECT_REASONING','SUBJECT_EXPLANATION','PARENT_EXPLANATION','INSTITUTION_ANALYSIS','CORE'];
+  if (!specialists.includes(session.specialist) || !workloads.includes(session.workload)) return undefined;
+  return { specialist:session.specialist, workload:session.workload };
+}
+
+async function saveSession(env: Env, channel: 'WHATSAPP' | 'WEB', key: string, userId: string, intent: NibiruIntent, studentId: string | null, examId: string | null, specialist: NibiruSpecialist, workload: NibiruWorkload) {
   const expiresAt = new Date(Date.now()+24*3600000).toISOString();
   const existing = await one<any>(env.DB.prepare(`SELECT id FROM nibiru_sessions WHERE channel=? AND channel_user_key=?`).bind(channel,key));
-  if (existing) await env.DB.prepare(`UPDATE nibiru_sessions SET user_id=?,last_intent=?,last_student_id=?,last_exam_id=?,expires_at=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(userId,intent,studentId,examId,expiresAt,existing.id).run();
-  else await env.DB.prepare(`INSERT INTO nibiru_sessions(id,channel,channel_user_key,user_id,last_intent,last_student_id,last_exam_id,expires_at) VALUES(?,?,?,?,?,?,?,?)`).bind(uuid('nibs'),channel,key,userId,intent,studentId,examId,expiresAt).run();
+  if (existing) await env.DB.prepare(`UPDATE nibiru_sessions SET user_id=?,last_intent=?,last_student_id=?,last_exam_id=?,specialist=?,workload=?,expires_at=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(userId,intent,studentId,examId,specialist,workload,expiresAt,existing.id).run();
+  else await env.DB.prepare(`INSERT INTO nibiru_sessions(id,channel,channel_user_key,user_id,last_intent,last_student_id,last_exam_id,specialist,workload,expires_at) VALUES(?,?,?,?,?,?,?,?,?,?)`).bind(uuid('nibs'),channel,key,userId,intent,studentId,examId,specialist,workload,expiresAt).run();
 }
 
 function transparency() {
   return `${AI_PREFIX} Ben Anunex’in yapay zekâ akademik asistanıyım.`;
 }
 
-function helpForRole(role: AuthUser['role']) {
-  if (role === 'PARENT') return `${transparency()}\nBana “Öğrencim nasıl?”, “Son sınav ne oldu?”, “Hangi konuda zorlanıyor?” veya “Bugün ne çalışalım?” diye sorabilirsiniz.`;
-  if (role === 'TEACHER' || role === 'GUIDANCE_TEACHER') return `${transparency()}\nYetkili olduğunuz sınıflar için “7/A nasıl?”, “Hangi kazanımlarda zorlanılıyor?” veya “Bugün neye öncelik verelim?” diye sorabilirsiniz.`;
-  if (role === 'INSTITUTION_MANAGER') return `${transparency()}\nKurumunuz için “Bugün ne oldu?”, “Kurumun akademik durumu nasıl?” veya “Bekleyen optikler var mı?” diye sorabilirsiniz.`;
-  return `${transparency()}\nÖğrenci gelişimi, sınavlar, kazanımlar, föyler ve kurum akademik verileri hakkında yardımcı olabilirim.`;
-}
-
-function deterministic(intent: NibiruIntent, context: any, user: AuthUser): string | null {
-  if (intent === 'GREETING' || intent === 'HELP') return helpForRole(user.role);
-  if (intent === 'OUT_OF_SCOPE' || intent === 'UNKNOWN') return `${transparency()}\nBenim görev alanım öğrenci gelişimi, sınavlar, kazanımlar, föyler ve okulun ölçme-değerlendirme süreçleridir. Örneğin “Son sınav ne oldu?” veya “Bugün ne çalışalım?” diye sorabilirsiniz.`;
+function deterministic(intent: NibiruIntent, context: any): string | null {
   if (intent === 'PSYCHOLOGICAL_MEDICAL') return `${transparency()}\nAkademik verileri yorumlayabilirim ancak psikolojik, tıbbi veya özel öğrenme güçlüğüne ilişkin tanı koyamam. Sistem verilerindeki öğrenme göstergelerini açıklayabilir; gerektiğinde okul rehberlik servisi veya ilgili uzmanla görüşmenizi önerebilirim.`;
   if (context?.disambiguation?.length) return `${transparency()}\nHangi öğrenci için bakmamı istersiniz: ${context.disambiguation.map((x:any)=>x.first_name).join(' mı, ')} mı?`;
   if (context?.noStudent) return `${transparency()}\nBu hesapla ilişkilendirilmiş bir öğrenci göremiyorum. Kurum yöneticinizden veli-öğrenci bağlantısını kontrol etmesini isteyebilirsiniz.`;
   return null;
 }
 
-function systemPrompt(role: AuthUser['role']) {
-  return `Sen Nibiru'sun. Anunex'in yapay zekâ akademik asistanısın. Kullanıcı rolü: ${role}.
+export function shouldUseAiAnswer(intent: NibiruIntent, context: any): boolean {
+  return deterministic(intent,context) === null;
+}
+
+function specialistPersona(specialist: NibiruSpecialist) {
+  const personas: Record<NibiruSpecialist,string> = {
+    NIBIRU_CORE: 'Genel akademik yönlendirmede kapsamı koru; yalnız doğrulanmış sınav, kazanım ve gelişim verisini açıklayıp uygun uzmana yönlendir.',
+    EDUCATION_COACH: 'Kısa, uygulanabilir ve aşırı yüklemeyen günlük/haftalık çalışma adımları öner; atanmış görevleri ve gelişime açık kazanımları öncele.',
+    GUIDANCE_COUNSELOR: 'Hedef, ilerleme ve çalışma rotasını destekleyici biçimde açıkla; psikolojik/tıbbi değerlendirme yapma ve hassas durumlarda insan rehberlik servisine yönlendir.',
+    SUBJECT_TEACHER: 'Ders, soru ve kazanımı adım adım açıkla; cevap anahtarı veya konu bilgisi bağlamda yoksa uydurma, eksikliği açıkça belirt.',
+    PARENT_GUIDE: 'Veliye sade, sakin ve yapıcı bir gelişim özeti sun; yalnız bağlı çocuğun verisini kullan ve hiçbir öğrenci etiketi üretme.',
+    INSTITUTION_INSIGHT: 'Kurum ve sınıf düzeyindeki toplu eğilimleri gizliliği koruyarak yorumla; yetki verilmedikçe bireysel öğrenci kimliği veya karşılaştırması açıklama.',
+  };
+  return personas[specialist];
+}
+
+function systemPrompt(role: AuthUser['role'], specialist: NibiruSpecialist) {
+  return `Sen Nibiru'sun. Anunex'in yapay zekâ akademik asistanısın. Kullanıcı rolü: ${role}. Aktif uzman: ${specialist}.
+UZMAN ÇALIŞMA İLKESİ:
+${specialistPersona(specialist)}
 DEĞİŞMEZ KURALLAR:
 1. Her yanıtın başında “🤖 Nibiru:” kullan; insan, öğretmen, MEB çalışanı veya MEB ürünü olduğunu iddia etme.
 2. Yalnızca verilen DOĞRULANMIŞ VERİ BAĞLAMI içindeki olguları kullan. Veri yoksa bunu açıkça söyle; sonuç, net, puan, kazanım veya davranış uydurma.
@@ -173,8 +191,9 @@ DEĞİŞMEZ KURALLAR:
 6. Kullanıcı veli ise yalnız bağlı çocuğun verisini; öğretmen ise yalnız atanmış sınıf/branşı; kurum yöneticisi ise yalnız kendi kurumunu yorumla.
 7. Sıralama veya başka öğrencilerin kimliği bağlamda açıkça verilmedikçe karşılaştırmalı kişi bilgisi üretme.
 8. “Bugün ne yapalım?” sorusunda bağlamdaki gelişime açık alanlardan kısa, uygulanabilir, aşırı yüklemeyen bir çalışma önerisi üret. Atanmış föy varsa onu öncele.
-9. Yanıt WhatsApp'ta kolay okunacak biçimde, tercihen 3-8 kısa satır ve 1200 karakterin altında olsun.
-10. Kullanıcıya gerektiğinde tek bir sonraki soru/öneri sun; gereksiz soru sorma.`;
+9. Niyet UNKNOWN veya OUT_OF_SCOPE ise eğitim, sınav ve öğrenci gelişimi kapsamını kısa biçimde açıkla; kapsam dışı isteğe içerik üretme ve akademik bir alternatif öner.
+10. Yanıt WhatsApp'ta kolay okunacak biçimde, tercihen 3-8 kısa satır ve 1200 karakterin altında olsun.
+11. Kullanıcıya gerektiğinde tek bir sonraki soru/öneri sun; gereksiz soru sorma.`;
 }
 
 async function aiAnswer(
@@ -198,9 +217,9 @@ async function aiAnswer(
     return {text:null,inference:null,blocked:privacyGate.code};
   }
 
-  const prompt = systemPrompt(user.role) + '\n\nNİYET: ' + intent + '\nKULLANICI MESAJI: ' + message + '\nDOĞRULANMIŞ VERİ BAĞLAMI:\n' + JSON.stringify(context).slice(0,14000);
+  const prompt = systemPrompt(user.role,decision.specialist) + '\n\nNİYET: ' + intent + '\nKULLANICI MESAJI: ' + message + '\nDOĞRULANMIŞ VERİ BAĞLAMI:\n' + JSON.stringify(context).slice(0,14000);
   const minimized = minimizeNibiruAiMessages([
-    { role:'system', content:systemPrompt(user.role) },
+    { role:'system', content:systemPrompt(user.role,decision.specialist) },
     { role:'user', content:prompt },
   ]);
   const inference = await runNibiruInference(env,decision,minimized.messages,{
@@ -260,7 +279,8 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
   const session = await latestSession(env,channel,channelKey);
   const intent = detectNibiruIntent(message,session?.last_intent);
   const specialist = routeNibiruSpecialist(user,message);
-  const decision = chooseNibiruModelDecision(env,user,intent,message,specialist);
+  const stickyRouting = sessionRouting(session,intent);
+  const decision = chooseNibiruModelDecision(env,user,intent,message,specialist,stickyRouting);
   let context: any = {};
   let studentId: string | null = null;
   let examId: string | null = null;
@@ -298,7 +318,7 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
     }
   }
 
-  const fixed = deterministic(intent,context,user);
+  const fixed = deterministic(intent,context);
   const planSummary = coachPlan?.available ? coachPlanSummary(coachPlan) : null;
   const planAnswer = planSummary
     ? AI_PREFIX + ' Bugün için doğrulanmış kısa çalışma planın hazır:\n' + planSummary + '\nGörevleri tamamladıktan sonra mini test ile pekiştirme yapabilirsin.'
@@ -307,8 +327,8 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
   const answer = fixed || planAnswer || ai?.text || fallbackAnswer(intent,context);
   const inference = ai?.inference || null;
   const orchestration = {
-    specialist:specialist.specialist,
-    specialistLabel:specialist.label,
+    specialist:decision.specialist,
+    specialistLabel:decision.specialistLabel,
     workload:decision.workload,
     routerMode:env.NIBIRU_ROUTER_MODE||'SMART',
     gatewayConfigured:inference?.gatewayConfigured ?? Boolean(decision.gatewayId),
@@ -320,7 +340,7 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
 
   let persistenceWarning: string | undefined;
   try {
-    await saveSession(env,channel,channelKey,user.id,intent,studentId,examId);
+    await saveSession(env,channel,channelKey,user.id,intent,studentId,examId,decision.specialist,decision.workload);
     await env.DB.prepare('INSERT INTO nibiru_audit_events(id,institution_id,user_id,channel,role,intent,subject_student_id,subject_exam_id,outcome,message_chars) VALUES(?,?,?,?,?,?,?,?,?,?)').bind(uuid('niba'),user.institution_id,user.id,channel,user.role,intent,studentId,examId,outcome,message.length).run();
   } catch (error) {
     console.error(JSON.stringify({
