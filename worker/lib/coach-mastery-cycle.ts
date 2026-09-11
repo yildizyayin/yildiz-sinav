@@ -1,6 +1,7 @@
 import type { AuthUser,Env } from '../types';
 import { all,audit,one,uuid } from './db';
 import { coachQuestionTarget,markCoachItemVerifiedComplete } from './education-coach';
+import { hydrateQuestionMedia } from './question-content';
 
 const PASS_THRESHOLD=.80;
 const MIN_QUESTIONS=5;
@@ -84,11 +85,12 @@ export async function getCoachMiniTest(env:Env,user:AuthUser,testId:string){
    WHERE t.id=? AND t.student_id=?`).bind(testId,user.student_id));
  if(!test)return{ok:false,reason:'TEST_NOT_FOUND'};
  const submitted=test.status!=='READY';
- const rows=await all<any>(env.DB.prepare(`SELECT tq.question_id,tq.sort_order,tq.student_answer,tq.correct,q.stem_text,q.options_json,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.solution_text,
+ const rows=await all<any>(env.DB.prepare(`SELECT tq.question_id id,tq.question_id,tq.sort_order,tq.student_answer,tq.correct,q.stem_text,q.options_json,q.content_mode,q.option_count,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.solution_text,
    CASE WHEN ?=1 THEN q.correct_answer ELSE NULL END correct_answer
    FROM coach_mini_test_questions tq JOIN question_bank q ON q.id=tq.question_id
    WHERE tq.test_id=? ORDER BY tq.sort_order`).bind(submitted?1:0,testId));
- return{ok:true,test,questions:rows.map(x=>({...x,options:parseJson(x.options_json,[]),options_json:undefined})),followups:await followups(env,user.student_id,testId)};
+ const hydrated=await hydrateQuestionMedia(env,rows);
+ return{ok:true,test,questions:hydrated.map(x=>({...x,options:parseJson(x.options_json,[]),options_json:undefined})),followups:await followups(env,user.student_id,testId)};
 }
 
 async function updateLearningState(env:Env,studentId:string,outcomeId:string,testId:string,rate:number,questionCount:number){
@@ -123,6 +125,8 @@ export async function submitCoachMiniTest(env:Env,user:AuthUser,testId:string,an
  statements.push(env.DB.prepare(`UPDATE coach_mini_tests SET status=?,correct_count=?,score_percent=?,submitted_at=CURRENT_TIMESTAMP WHERE id=? AND status='READY'`).bind(status,result.correct,result.scorePercent,testId));
  statements.push(env.DB.prepare(`INSERT INTO student_outcome_mastery(student_id,outcome_id,status,cycle_count,last_score,last_test_id,mastered_at,updated_at) VALUES(?,?,?,?,?,?,CASE WHEN ?='MASTERED' THEN CURRENT_TIMESTAMP ELSE NULL END,CURRENT_TIMESTAMP)
    ON CONFLICT(student_id,outcome_id) DO UPDATE SET status=excluded.status,cycle_count=student_outcome_mastery.cycle_count+1,last_score=excluded.last_score,last_test_id=excluded.last_test_id,mastered_at=CASE WHEN excluded.status='MASTERED' THEN CURRENT_TIMESTAMP ELSE student_outcome_mastery.mastered_at END,updated_at=CURRENT_TIMESTAMP`).bind(user.student_id,test.outcome_id,result.passed?'MASTERED':'DEVELOPING',1,result.rate,testId,result.passed?'MASTERED':'DEVELOPING'));
+ statements.push(env.DB.prepare(`INSERT OR IGNORE INTO assessment_runs(id,institution_id,student_id,source_type,source_id,assignment_id,delivery_mode,status,score,metadata_json,completed_at) VALUES(?,?,?,'MINI_TEST',?,?,'DIGITAL','SCORED',?,?,CURRENT_TIMESTAMP)`).bind(testId,user.institution_id,user.student_id,testId,test.assignment_id,result.rate,JSON.stringify({outcomeId:test.outcome_id,cycleNo:test.cycle_no,correct:result.correct,total:result.total,scorePercent:result.scorePercent,passThreshold:test.pass_threshold})));
+ graded.forEach(x=>statements.push(env.DB.prepare(`INSERT OR IGNORE INTO assessment_responses(id,run_id,student_id,question_id,node_id,selected_answer,is_correct,source_channel) VALUES(?,?,?,?,?,?,?,'DIGITAL')`).bind(uuid('ars'),testId,user.student_id,x.questionId,nodeId(test.outcome_id),x.answer,x.correct?1:0)));
  await env.DB.batch(statements);
  await updateLearningState(env,user.student_id,test.outcome_id,testId,result.rate,result.total);
  if(result.passed)await markCoachItemVerifiedComplete(env,user,test.assignment_item_id,{testId,scorePercent:result.scorePercent,cycleNo:test.cycle_no});else await createFollowupActions(env,user,{...test,id:testId},result);

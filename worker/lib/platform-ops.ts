@@ -1,5 +1,6 @@
 import type { AuthUser,Env } from '../types';
 import { all,badRequest,forbidden,json,notFound,one } from './db';
+import { hydrateQuestionMedia } from './question-content';
 
 async function canUseDocument(env:Env,user:AuthUser,id:string){
   const row=await one<any>(env.DB.prepare(`SELECT institution_id,created_by FROM studio_documents WHERE id=?`).bind(id));
@@ -13,9 +14,10 @@ async function canUseDocument(env:Env,user:AuthUser,id:string){
 async function studioDocument(env:Env,user:AuthUser,id:string){
   const access=await canUseDocument(env,user,id);if(!access.row)return notFound('Belge bulunamadı.');if(!access.allowed)return forbidden();
   const document=await one<any>(env.DB.prepare(`SELECT d.*,i.name institution_name,i.city,i.district FROM studio_documents d LEFT JOIN institutions i ON i.id=d.institution_id WHERE d.id=?`).bind(id));
-  const items=await all<any>(env.DB.prepare(`SELECT si.sort_order,si.booklet_code,q.id question_id,q.stem_text,q.options_json,q.correct_answer,q.solution_text,q.question_type,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.topic,q.subtopic,s.name subject_name
+  const items=await all<any>(env.DB.prepare(`SELECT si.sort_order,si.booklet_code,q.id,q.id question_id,q.stem_text,q.options_json,q.correct_answer,q.solution_text,q.question_type,q.content_mode,q.option_count,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.topic,q.subtopic,s.name subject_name
     FROM studio_document_items si JOIN question_bank q ON q.id=si.question_id LEFT JOIN subjects s ON s.id=q.subject_id WHERE si.document_id=? ORDER BY si.booklet_code,si.sort_order`).bind(id));
-  return json({ok:true,document,items:items.map(x=>({...x,options:parseJson(x.options_json,[])})),answerKey:items.map(x=>({no:x.sort_order,answer:x.correct_answer,booklet:x.booklet_code,subject:x.subject_name}))});
+  const hydrated=await hydrateQuestionMedia(env,items);
+  return json({ok:true,document,items:hydrated.map(x=>({...x,options:parseJson(x.options_json,[]),options_json:undefined})),answerKey:items.map(x=>({no:x.sort_order,answer:x.correct_answer,booklet:x.booklet_code,subject:x.subject_name}))});
 }
 
 function parseJson(v:any,f:any){if(typeof v!=='string'||!v)return f;try{return JSON.parse(v)}catch{return f}}

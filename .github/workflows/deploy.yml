@@ -3,7 +3,7 @@ name: Deploy Cloudflare Worker
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [staging]
     paths-ignore:
       - '.github/deploy-result-network.trigger'
       - '.github/workflows/deploy-result-network.yml'
