@@ -8,7 +8,7 @@ function assert(value, message, details) {
   if (!value) throw new Error(`${message}${details === undefined ? '' : `\n${JSON.stringify(details, null, 2)}`}`);
 }
 
-async function request(path, { method = 'GET', cookie, json, form, expected = 200 } = {}) {
+async function request(path, { method = 'GET', cookie, json, form, expected = 200, raw = false } = {}) {
   const headers = {};
   if (cookie) headers.Cookie = cookie;
   let body;
@@ -20,6 +20,7 @@ async function request(path, { method = 'GET', cookie, json, form, expected = 20
   }
   const response = await fetch(`${BASE}${path}`, { method, headers, body, redirect: 'manual' });
   const text = await response.text();
+  if (raw) return { response, payload: text };
   let payload;
   try { payload = text ? JSON.parse(text) : null; } catch { payload = { raw: text }; }
   const expectedStatuses = Array.isArray(expected) ? expected : [expected];
@@ -139,6 +140,7 @@ const studio = await request('/api/platform/studio', {
     gradeLevel: 7,
     subjectId: 'sub_fen',
     questionCount: 5,
+    questionIds: questions.map((question) => question.id),
     optionMode: 'MIXED',
     bookletCodes: ['A', 'B'],
     deliveryMode: 'PDF_OPTICAL',
@@ -148,6 +150,19 @@ const studio = await request('/api/platform/studio', {
 });
 assert(Number(studio.payload?.selectedQuestions) >= 5 && studio.payload?.bookletCodes?.includes('A') && studio.payload?.bookletCodes?.includes('B'), 'A/B PDF-optical studio blueprint was not created', studio.payload);
 console.log('✓ A/B + PDF_OPTICAL studio blueprint');
+
+for (const booklet of ['A', 'B']) {
+  const pdf = await request(`/api/platform/studio/${encodeURIComponent(studio.payload.id)}/pdf?booklet=${booklet}`, { cookie: manager, expected: 200, raw: true });
+  assert(pdf.response.headers.get('content-type')?.includes('application/pdf'), `Booklet ${booklet} did not return a PDF`, pdf.response.headers);
+  assert(String(pdf.payload).startsWith('%PDF-1.4'), `Booklet ${booklet} is not a valid generated PDF`, String(pdf.payload).slice(0, 20));
+  assert(pdf.response.headers.get('x-anunex-optical-form') === 'included', `Booklet ${booklet} has no optical form marker`, pdf.response.headers);
+}
+const opticalTemplate = await request(`/api/platform/studio/${encodeURIComponent(studio.payload.id)}/optical-template?booklet=A`, { cookie: manager, expected: 200 });
+assert(opticalTemplate.payload?.template?.optical?.cameraGeometry?.regions?.length, 'Generated PDF did not publish a camera-readable optical geometry', opticalTemplate.payload);
+const opticalAnswers = Object.fromEntries(questions.slice(0, 5).map((question) => [question.id, question.correctAnswer]));
+const opticalSubmit = await request(`/api/platform/studio/${encodeURIComponent(studio.payload.id)}/optical-submit`, { method: 'POST', cookie: manager, expected: 200, json: { studentId: 'stu_a001', booklet: 'A', answers: opticalAnswers } });
+assert(opticalSubmit.payload?.runId && opticalSubmit.payload?.score === 1 && opticalSubmit.payload?.booklet === 'A', 'Camera-derived optical submission was not scored in the unified ledger', opticalSubmit.payload);
+console.log('✓ Real PDF generation — A/B booklets + optical page');
 
 const assignment = await request('/api/platform/assignments', {
   method: 'POST',
@@ -165,6 +180,23 @@ assert(assignment.payload?.id, 'Institution manager could not assign a question 
 const assignments = await request('/api/platform/assignments', { cookie: student });
 assert(assignments.payload?.assignments?.some((item) => item.id === assignment.payload.id), 'Student did not receive the question assignment', assignments.payload);
 console.log('✓ Institution assignment → student measurement entry');
+
+const foyAttempt = await request('/api/platform/foy/attempts', {
+  method: 'POST', cookie: student,
+  json: { assignmentId: assignment.payload.id, answers: { [questions[0].id]: questions[0].correctAnswer } },
+  expected: 200,
+});
+assert(foyAttempt.payload?.runId && foyAttempt.payload?.score === 1, 'Föy attempt was not written to the unified ledger', foyAttempt.payload);
+const external = await request('/api/platform/assessment-imports/external', {
+  method: 'POST', cookie: manager,
+  json: { studentId: 'stu_a001', externalKey: `external_${suffix}`, sourceLabel: 'Sentetik dış kaynak', title: 'Dış kaynak deneme', subjectId: 'sub_fen', score: 72, correctCount: 18, wrongCount: 4, blankCount: 3 },
+  expected: 201,
+});
+assert(external.payload?.runId && external.payload?.score === 0.72, 'External assessment was not normalized into the unified ledger', external.payload);
+const sourceFeed = await request('/api/platform/assessment-feed', { cookie: student });
+const sourceSet = new Set((sourceFeed.payload?.measurements || []).map((item) => item.source_type || item.sourceType));
+assert(sourceSet.has('FOY') && sourceSet.has('EXTERNAL'), 'Föy or external assessment was not visible in the unified feed', sourceFeed.payload);
+console.log('✓ Unified assessment adapters — FOY + external results visible');
 
 const plan = await request('/api/nibiru/coach/daily-plan', { method: 'POST', cookie: student, json: {}, expected: [200, 201] });
 const outcomeItem = (plan.payload?.items || []).find((item) => item.payload?.kind === 'OUTCOME_PRACTICE');

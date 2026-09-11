@@ -121,6 +121,12 @@ jobs:
           SMOKE_DEMO_PASSWORD: Demo123!
         run: node scripts/live-question-assessment-pipeline-smoke.mjs
 
+      - name: Run mandatory tenant-role and KVKK live gate
+        env:
+          SMOKE_BASE_URL: ${{ steps.deploy.outputs.preview_url }}
+          SMOKE_DEMO_PASSWORD: Demo123!
+        run: npm run test:privacy:live
+
       - name: Remove transient preview config
         if: always()
         run: rm -f wrangler.question-pool-preview.json preview-deploy.log

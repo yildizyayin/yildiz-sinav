@@ -2,6 +2,8 @@ import type { AuthUser, Env } from '../types';
 import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './db';
 import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
 import { hydrateQuestionMedia } from './question-content';
+import { recordAssessmentRun } from './assessment-ledger';
+import { renderStudioPdf } from './studio-pdf';
 
 const NEXT_FEATURES = new Set([
   'LEARNING_GRAPH','QUESTION_BANK','RECOVERY','RBA','MEMBERSHIP','LIVE','STUDIO','PHYSICAL_BRIDGE','GAMES','CAMPUS','ENTERPRISE','PUBLISHER','ADMISSIONS','GUIDANCE_TESTS','BOARD','MOBILE_API','VIDEO_LIBRARY',
@@ -106,7 +108,11 @@ async function scopedStudentId(env: Env, user: AuthUser, requested?: string | nu
   if (!requested) return null;
   if (user.role === 'SUPER_ADMIN') return requested;
   if (!user.institution_id) return null;
-  const row = await one<any>(env.DB.prepare(`SELECT 1 ok FROM student_enrollments WHERE student_id=? AND institution_id=? AND status='ACTIVE' ORDER BY created_at DESC LIMIT 1`).bind(requested,user.institution_id));
+  const row = user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER'
+    ? await one<any>(env.DB.prepare(`SELECT 1 ok FROM student_enrollments e WHERE e.student_id=? AND e.institution_id=? AND e.status='ACTIVE'
+        AND EXISTS (SELECT 1 FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1
+          AND (ta.class_id IS NULL OR ta.class_id=e.class_id)) ORDER BY e.created_at DESC LIMIT 1`).bind(requested,user.institution_id,user.id,user.institution_id))
+    : await one<any>(env.DB.prepare(`SELECT 1 ok FROM student_enrollments WHERE student_id=? AND institution_id=? AND status='ACTIVE' ORDER BY created_at DESC LIMIT 1`).bind(requested,user.institution_id));
   return row ? requested : null;
 }
 
@@ -419,11 +425,13 @@ async function assessmentFeed(request:Request,env:Env,user:AuthUser):Promise<Res
   const gate=await requireFeature(env,user,'LEARNING_GRAPH');if(gate)return gate;const u=new URL(request.url);const sid=await scopedStudentId(env,user,u.searchParams.get('studentId'));if(!sid)return forbidden();
   const [evidence,runs,exams,assignments]=await Promise.all([
     all<any>(env.DB.prepare(`SELECT le.id,le.source_type,le.source_id,le.result,le.weight,le.observed_at,n.title node_title,s.name subject_name FROM learning_evidence le JOIN learning_nodes n ON n.id=le.node_id LEFT JOIN subjects s ON s.id=n.subject_id WHERE le.student_id=? ORDER BY le.observed_at DESC LIMIT 100`).bind(sid)),
-    all<any>(env.DB.prepare(`SELECT ar.id,ar.source_type,ar.source_id,ar.delivery_mode,ar.status,ar.score,ar.started_at,ar.completed_at FROM assessment_runs ar WHERE ar.student_id=? ORDER BY ar.started_at DESC LIMIT 100`).bind(sid)),
-    all<any>(env.DB.prepare(`SELECT e.id source_id,'EXAM' source_type,e.title label,e.exam_type,er.success_percent result,COALESCE(e.exam_date,er.created_at) observed_at FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? ORDER BY observed_at DESC LIMIT 100`).bind(sid)),
+    all<any>(env.DB.prepare(`SELECT ar.id,ar.source_type,ar.source_id,ar.delivery_mode,ar.status,ar.score,ar.metadata_json,ar.started_at,ar.completed_at FROM assessment_runs ar WHERE ar.student_id=? ORDER BY ar.started_at DESC LIMIT 100`).bind(sid)),
+    all<any>(env.DB.prepare(`SELECT e.id source_id,'EXAM' source_type,e.title label,e.exam_type,er.success_percent result,COALESCE(e.exam_date,er.created_at) observed_at FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? AND NOT EXISTS(SELECT 1 FROM assessment_runs ar WHERE ar.student_id=ep.student_id AND ar.source_type='EXAM' AND ar.source_id=ep.id) ORDER BY observed_at DESC LIMIT 100`).bind(sid)),
     all<any>(env.DB.prepare(`SELECT a.id source_id,'ASSIGNMENT' source_type,a.title label,ar.progress,ar.status,ar.completed_at observed_at FROM assignment_recipients ar JOIN assignments a ON a.id=ar.assignment_id WHERE ar.student_id=? ORDER BY a.created_at DESC LIMIT 100`).bind(sid)),
   ]);
-  const measurements=[...evidence.map(x=>({...x,label:x.node_title||'Kazanım kanıtı',result:Number(x.result)*100,kind:'LEARNING_EVIDENCE'})),...runs.map(x=>({...x,label:x.source_type==='QUESTION_BANK'?'Soru havuzu':x.source_type==='MINI_TEST'?'Nibiru mini-test':x.source_type,result:x.score===null?null:Number(x.score)*100,observed_at:x.completed_at||x.started_at,kind:'ASSESSMENT_RUN'})),...exams.map(x=>({...x,result:Number(x.result),kind:'EXAM_RESULT'})),...assignments.map(x=>({...x,result:Number(x.progress||0),kind:'ASSIGNMENT_PROGRESS'}))].sort((a,b)=>String(b.observed_at||'').localeCompare(String(a.observed_at||''))).slice(0,200);
+  const subjectIds=user.role==='TEACHER'?new Set((await all<any>(env.DB.prepare(`SELECT DISTINCT subject_id FROM teacher_assignments WHERE user_id=? AND institution_id=? AND active=1 AND assignment_type='SUBJECT'`).bind(user.id,user.institution_id))).map(x=>x.subject_id)):null;
+  const visibleRuns=runs.filter(x=>{if(!subjectIds)return true;const meta=parseJson<any>(x.metadata_json,{});const ids=Array.isArray(meta.subjectIds)?meta.subjectIds:[meta.subjectId].filter(Boolean);return !ids.length||ids.some((id:string)=>subjectIds.has(id));});
+  const measurements=[...evidence.map(x=>({...x,label:x.node_title||'Kazanım kanıtı',result:Number(x.result)*100,kind:'LEARNING_EVIDENCE'})),...visibleRuns.map(x=>({...x,label:x.source_type==='QUESTION_BANK'?'Soru havuzu':x.source_type==='MINI_TEST'?'Nibiru mini-test':x.source_type==='FOY'?'Föy':x.source_type==='EXTERNAL'?'Dış kaynak sınavı':x.source_type,result:x.score===null?null:Number(x.score)*100,metadata:parseJson(x.metadata_json,{}),observed_at:x.completed_at||x.started_at,kind:'ASSESSMENT_RUN'})),...exams.map(x=>({...x,result:Number(x.result),kind:'EXAM_RESULT'})),...assignments.map(x=>({...x,result:Number(x.progress||0),kind:'ASSIGNMENT_PROGRESS'}))].sort((a,b)=>String(b.observed_at||'').localeCompare(String(a.observed_at||''))).slice(0,200);
   return json({ok:true,studentId:sid,measurements,sourceTypes:['EXAM','QUESTION_BANK','FOY','EXTERNAL','MINI_TEST','ASSIGNMENT']});
 }
 
@@ -500,6 +508,61 @@ async function liveSessions(request:Request,env:Env,user:AuthUser):Promise<Respo
   if(!sid)return forbidden();const b=await requestBody(request);if(!b.scheduledAt||!b.sessionType)return badRequest('Görüşme türü ve zaman gereklidir.');const cost=Math.max(1,Number(b.creditCost||1));const wallet=await one<any>(env.DB.prepare(`SELECT balance FROM live_credit_wallets WHERE student_id=?`).bind(sid));if(Number(wallet?.balance||0)<cost)return badRequest('Yeterli Live Credit yok.','INSUFFICIENT_CREDIT');const id=uuid('live');await env.DB.batch([env.DB.prepare(`INSERT INTO live_sessions(id,student_id,provider_id,session_type,scheduled_at,duration_minutes,credit_cost,status) VALUES(?,?,?,?,?,?,?,'RESERVED')`).bind(id,sid,b.providerId||null,b.sessionType,b.scheduledAt,Number(b.durationMinutes||20),cost),env.DB.prepare(`UPDATE live_credit_wallets SET balance=balance-?,updated_at=CURRENT_TIMESTAMP WHERE student_id=?`).bind(cost,sid),env.DB.prepare(`INSERT INTO live_credit_ledger(id,student_id,amount,reason,reference_id) VALUES(?,?,?,?,?)`).bind(uuid('lcd'),sid,-cost,'LIVE_RESERVATION',id)]);return json({ok:true,id,meetingProviderConfigured:false},201);
 }
 
+async function studioPdf(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
+  const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;
+  const document=await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId));
+  if(!document)return notFound('Sınav taslağı bulunamadı.');
+  if(user.role!=='SUPER_ADMIN'&&document.institution_id!==user.institution_id)return forbidden();
+  if(user.role==='TEACHER'&&document.created_by!==user.id)return forbidden('Öğretmen yalnızca kendi ürettiği sınavı indirebilir.');
+  const booklet=(new URL(request.url).searchParams.get('booklet')||'A').toUpperCase();
+  if(!['A','B'].includes(booklet))return badRequest('Kitapçık A veya B olmalıdır.','INVALID_BOOKLET');
+  const allowed=await one<any>(env.DB.prepare('SELECT 1 ok FROM studio_document_items WHERE document_id=? AND booklet_code=? LIMIT 1').bind(documentId,booklet));
+  if(!allowed)return notFound('Bu belge için seçilen kitapçık bulunamadı.');
+  try{
+    const rendered=await renderStudioPdf(env,documentId,booklet);
+    const key=`studio-documents/${document.institution_id||'central'}/${documentId}/${booklet}.pdf`;
+    await env.FILES.put(key,rendered.bytes,{httpMetadata:{contentType:'application/pdf',cacheControl:'private, no-store'},customMetadata:{documentId,bookletCode:booklet,questionCount:String(rendered.questionCount),generatedBy:'ANUNEX_STUDIO'}});
+    await env.DB.prepare(`INSERT INTO studio_document_assets(id,document_id,institution_id,booklet_code,asset_type,r2_key,file_name,mime_type,byte_size,metadata_json)
+      VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(document_id,booklet_code,asset_type) DO UPDATE SET r2_key=excluded.r2_key,file_name=excluded.file_name,byte_size=excluded.byte_size,metadata_json=excluded.metadata_json,created_at=CURRENT_TIMESTAMP`)
+      .bind(uuid('sda'),documentId,document.institution_id,booklet,'QUESTION_PDF',key,`${safeFileName(document.title)}-${booklet}.pdf`,'application/pdf',rendered.bytes.byteLength,JSON.stringify(rendered.metadata)).run();
+    if(booklet==='A')await env.DB.prepare('UPDATE studio_documents SET pdf_r2_key=?,status=CASE WHEN status=\'DRAFT\' THEN \'READY\' ELSE status END,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(key,documentId).run();
+    await audit(env.DB,user.id,document.institution_id,'STUDIO_PDF_GENERATED','studio_document',documentId,{bookletCode:booklet,questionCount:rendered.questionCount,containsOpticalForm:true});
+    return new Response(rendered.bytes,{headers:{'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="${safeFileName(document.title)}-${booklet}.pdf"`,'Cache-Control':'private, no-store','X-Anunex-Booklet':booklet,'X-Anunex-Optical-Form':'included','X-Content-Type-Options':'nosniff'}});
+  }catch(error){console.error('Studio PDF generation failed',error);return json({ok:false,error:{code:'PDF_GENERATION_FAILED',message:'Sınav PDF dosyası üretilemedi.'}},500)}
+}
+
+async function studioOpticalTemplate(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
+  const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;const document=await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId));if(!document)return notFound('Sınav taslağı bulunamadı.');if(user.role!=='SUPER_ADMIN'&&document.institution_id!==user.institution_id)return forbidden();const booklet=(new URL(request.url).searchParams.get('booklet')||'A').toUpperCase();const asset=await one<any>(env.DB.prepare(`SELECT metadata_json,file_name FROM studio_document_assets WHERE document_id=? AND booklet_code=? AND asset_type='QUESTION_PDF'`).bind(documentId,booklet));if(!asset)return notFound('Önce ilgili kitapçığın PDF dosyası üretilmelidir.');return json({ok:true,documentId,booklet,template:parseJson(asset.metadata_json,{})});
+}
+
+async function submitStudioOptical(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
+  const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER'].includes(user.role))return forbidden();const document=await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId));if(!document)return notFound('Sınav taslağı bulunamadı.');if(user.role!=='SUPER_ADMIN'&&document.institution_id!==user.institution_id)return forbidden();if(user.role==='TEACHER'&&document.created_by!==user.id)return forbidden('Öğretmen yalnızca kendi ürettiği sınavı okutabilir.');const b=await requestBody(request);const sid=String(b.studentId||'').trim();const student=await scopedStudentId(env,user,sid);if(!student)return forbidden('Bu öğrenci için optik okuma yetkiniz yok.');const booklet=String(b.booklet||'A').toUpperCase();if(!['A','B'].includes(booklet))return badRequest('Kitapçık A veya B olmalıdır.','INVALID_BOOKLET');const rows=await all<any>(env.DB.prepare(`SELECT q.id,q.correct_answer FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code=? ORDER BY i.sort_order`).bind(documentId,booklet));if(!rows.length)return notFound('Kitapçık soruları bulunamadı.');const answerMap=b.answers&&typeof b.answers==='object'?b.answers:{};let correct=0;const responses:any[]=[];for(const row of rows){const answer=String(answerMap[row.id]||'').trim().toUpperCase()||null;const ok=!!answer&&answer===String(row.correct_answer||'').toUpperCase();if(ok)correct++;responses.push({questionId:row.id,selectedAnswer:answer,isCorrect:ok,sourceChannel:'OPTICAL'});}const score=correct/rows.length;const runId=`asr_qpool_${documentId}_${student}`;await recordAssessmentRun(env.DB,{id:runId,institutionId:document.institution_id,studentId:student,sourceType:'QUESTION_BANK',sourceId:documentId,deliveryMode:'OPTICAL',bookletCode:booklet,score,metadata:{studioDocumentId:documentId,title:document.title,bookletCode:booklet,questionCount:rows.length},responses});await audit(env.DB,user.id,document.institution_id,'STUDIO_OPTICAL_SUBMITTED','studio_document',documentId,{studentId:student,bookletCode:booklet,questionCount:rows.length,score});return json({ok:true,runId,score,correct,total:rows.length,booklet});
+}
+
+async function submitFoyAttempt(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'LEARNING_GRAPH');if(gate)return gate;
+  if(user.role!=='STUDENT'||!user.student_id)return forbidden('Föy çözümü yalnızca öğrenci hesabından gönderilebilir.');
+  const b=await requestBody(request);const assignmentId=String(b.assignmentId||'').trim();if(!assignmentId)return badRequest('Föy ataması gereklidir.','ASSIGNMENT_REQUIRED');
+  const recipient=await one<any>(env.DB.prepare(`SELECT a.id,a.institution_id,a.title,ar.status FROM assignments a JOIN assignment_recipients ar ON ar.assignment_id=a.id WHERE a.id=? AND ar.student_id=? AND a.status='ASSIGNED'`).bind(assignmentId,user.student_id));
+  if(!recipient)return forbidden('Bu föy ataması size ait değil.');
+  const items=await all<any>(env.DB.prepare(`SELECT ai.id,ai.item_type,ai.reference_id,q.correct_answer,q.options_json FROM assignment_items ai LEFT JOIN question_bank q ON q.id=ai.reference_id WHERE ai.assignment_id=? ORDER BY ai.sort_order`).bind(assignmentId));
+  const answers=(b.answers&&typeof b.answers==='object')?b.answers:{};const questionItems=items.filter(item=>item.item_type==='QUESTION'&&item.reference_id&&item.correct_answer);if(!questionItems.length)return badRequest('Bu föyde ölçülebilir soru bulunmuyor.','FOY_QUESTIONS_REQUIRED');
+  let correct=0;const responses:any[]=[];for(const item of questionItems){const answer=String(answers[item.reference_id]||'').trim().toUpperCase()||null;const ok=!!answer&&answer===String(item.correct_answer).toUpperCase();if(ok)correct++;responses.push({questionId:item.reference_id,selectedAnswer:answer,isCorrect:ok,sourceChannel:'DIGITAL'});await env.DB.prepare(`INSERT INTO assignment_attempts(id,assignment_id,student_id,item_id,answer_json,score) VALUES(?,?,?,?,?,?)`).bind(uuid('aat'),assignmentId,user.student_id,item.id,JSON.stringify({answer}),ok?1:0).run();}
+  const score=correct/questionItems.length;const runId=`asr_foy_${assignmentId}_${user.student_id}`;await recordAssessmentRun(env.DB,{id:runId,institutionId:recipient.institution_id,studentId:user.student_id,sourceType:'FOY',sourceId:assignmentId,assignmentId,deliveryMode:'DIGITAL',score,metadata:{title:recipient.title,questionCount:questionItems.length},responses});
+  await env.DB.prepare(`UPDATE assignment_recipients SET status='COMPLETED',progress=1,completed_at=CURRENT_TIMESTAMP WHERE assignment_id=? AND student_id=?`).bind(assignmentId,user.student_id).run();
+  await audit(env.DB,user.id,recipient.institution_id,'FOY_ASSESSMENT_SUBMITTED','assignment',assignmentId,{questionCount:questionItems.length,score});return json({ok:true,runId,score,correct,total:questionItems.length});
+}
+
+async function importExternalAssessment(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER'].includes(user.role))return forbidden();const b=await requestBody(request);const sid=String(b.studentId||'').trim();const key=String(b.externalKey||'').trim();const title=String(b.title||'').trim();const sourceLabel=String(b.sourceLabel||'').trim();if(!sid||!key||!title||!sourceLabel)return badRequest('Öğrenci, dış kaynak anahtarı, başlık ve kaynak adı gereklidir.');
+  const scoped=await scopedStudentId(env,user,sid);if(!scoped)return forbidden('Bu öğrenci için dış kaynak sonucu girme yetkiniz yok.');const enrollment=await one<any>(env.DB.prepare(`SELECT institution_id FROM student_enrollments WHERE student_id=? AND status='ACTIVE' ORDER BY created_at DESC LIMIT 1`).bind(sid));if(!enrollment)return notFound('Aktif öğrenci kaydı bulunamadı.');
+  if(user.role==='TEACHER'&&(!b.subjectId||!await teacherHasSubject(env,user,String(b.subjectId))))return forbidden('Bu ders için dış kaynak sonucu girme yetkiniz yok.');
+  const scoreRaw=Number(b.score);const score=scoreRaw>1?scoreRaw/100:scoreRaw;if(!Number.isFinite(score)||score<0||score>1)return badRequest('Dış kaynak puanı 0-1 veya 0-100 aralığında olmalıdır.');
+  const existing=await one<any>(env.DB.prepare('SELECT id FROM external_assessment_records WHERE institution_id=? AND student_id=? AND external_key=?').bind(enrollment.institution_id,sid,key));if(existing)return json({ok:true,recordId:existing.id,duplicate:true});
+  const recordId=uuid('ext');await env.DB.prepare(`INSERT INTO external_assessment_records(id,institution_id,student_id,external_key,source_label,title,subject_id,score,correct_count,wrong_count,blank_count,observed_at,imported_by,metadata_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(recordId,enrollment.institution_id,sid,key,sourceLabel,title,b.subjectId||null,score,b.correctCount==null?null:Number(b.correctCount),b.wrongCount==null?null:Number(b.wrongCount),b.blankCount==null?null:Number(b.blankCount),b.observedAt||new Date().toISOString(),user.id,JSON.stringify({externalKey:key,sourceLabel})).run();
+  const responses=Array.isArray(b.responses)?b.responses.filter((x:any)=>x&&x.questionId).map((x:any)=>({questionId:String(x.questionId),selectedAnswer:x.selectedAnswer||null,isCorrect:x.isCorrect==null?null:Boolean(x.isCorrect),sourceChannel:'IMPORT' as const})):[];const runId=`asr_external_${recordId}`;await recordAssessmentRun(env.DB,{id:runId,institutionId:enrollment.institution_id,studentId:sid,sourceType:'EXTERNAL',sourceId:recordId,deliveryMode:'DIGITAL',score,metadata:{title,sourceLabel,subjectId:b.subjectId||null,observedAt:b.observedAt||null},responses});await audit(env.DB,user.id,enrollment.institution_id,'EXTERNAL_ASSESSMENT_IMPORTED','external_assessment',recordId,{sourceLabel,score});return json({ok:true,recordId,runId,score},201);
+}
+
 async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER'].includes(user.role))return forbidden('Sınav üretimi Süper Admin, kurum yöneticisi veya branş öğretmeni içindir.');const u=new URL(request.url);
   if(request.method==='GET'){const inst=userInstitution(user,u.searchParams.get('institutionId'));const rows=await all<any>(env.DB.prepare(`SELECT d.*,(SELECT COUNT(DISTINCT i.question_id) FROM studio_document_items i WHERE i.document_id=d.id) question_count,(SELECT GROUP_CONCAT(DISTINCT i.booklet_code) FROM studio_document_items i WHERE i.document_id=d.id) booklet_codes FROM studio_documents d WHERE (? IS NULL OR d.institution_id=?) ORDER BY d.created_at DESC LIMIT 200`).bind(inst,inst));return json({ok:true,documents:rows});}
@@ -507,7 +570,10 @@ async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const optionMode=String(b.optionMode||'MIXED').toUpperCase();if(!['FOUR','FIVE','MIXED'].includes(optionMode))return badRequest('Şık düzeni FOUR, FIVE veya MIXED olmalıdır.','INVALID_OPTION_MODE');
   const bookletCodes:string[]=Array.from(new Set<string>((Array.isArray(b.bookletCodes)?b.bookletCodes:String(b.bookletCodes||'A').split(',')).map((x:any)=>String(x).trim().toUpperCase()).filter((x:string)=>['A','B'].includes(x))));if(!bookletCodes.length)return badRequest('En az bir kitapçık seçilmelidir.','BOOKLET_REQUIRED');
   const id=uuid('std');const count=Math.max(1,Math.min(200,Number(b.questionCount||20)));const wh=[`q.review_status='APPROVED'`,`q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')`,`(? IS NULL OR q.grade_level=?)`,`(? IS NULL OR q.subject_id=?)`],ps:any[]=[b.gradeLevel||null,b.gradeLevel||null,b.subjectId||null,b.subjectId||null];if(optionMode==='FOUR')wh.push('COALESCE(q.option_count,4)=4');if(optionMode==='FIVE')wh.push('COALESCE(q.option_count,4)=5');if(user.role==='TEACHER'){wh.push(`q.subject_id IN (SELECT ta.subject_id FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND ta.assignment_type='SUBJECT')`);ps.push(user.id,inst);}
-  const qs=await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')} ORDER BY RANDOM() LIMIT ?`).bind(...ps,count));
+  const requestedIds=Array.isArray(b.questionIds)?[...new Set((b.questionIds as unknown[]).filter((value):value is string=>typeof value==='string'&&Boolean(value.trim())))].slice(0,count):[];
+  const requestedClause=requestedIds.length?` AND q.id IN (${requestedIds.map(()=>'?').join(',')})`:'';
+  const qs=await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')}${requestedClause} ORDER BY RANDOM() LIMIT ?`).bind(...ps,...requestedIds,count));
+  if(qs.length<count)return badRequest(`İstenen ${count} soruya uygun soru havuzu bulunamadı; yalnız ${qs.length} soru seçilebildi.`,'INSUFFICIENT_QUESTION_POOL');
   const config={...b,bookletCodes,optionMode,deliveryMode:String(b.deliveryMode||'PDF_OPTICAL').toUpperCase(),sourceTypes:Array.isArray(b.sourceTypes)?b.sourceTypes:['QUESTION_BANK']};
   const statements:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO studio_documents(id,institution_id,created_by,document_type,title,grade_level,subject_id,status,config_json) VALUES(?,?,?,?,?,?,?,'DRAFT',?)`).bind(id,inst,user.id,b.documentType,b.title,b.gradeLevel||null,b.subjectId||null,JSON.stringify(config))];
   bookletCodes.forEach((code:string)=>{const ordered=code==='B'?[...qs].reverse():qs;ordered.forEach((q,index)=>statements.push(env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,?,?)`).bind(id,q.id,code,index+1)));});
@@ -588,6 +654,8 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/student-practice/attempts'&&request.method==='POST')return submitStudentPractice(request,env,user);
   if(p==='/api/platform/learning-state'&&request.method==='GET')return learningState(request,env,user);
   if(p==='/api/platform/assessment-feed'&&request.method==='GET')return assessmentFeed(request,env,user);
+  if(p==='/api/platform/foy/attempts'&&request.method==='POST')return submitFoyAttempt(request,env,user);
+  if(p==='/api/platform/assessment-imports/external'&&request.method==='POST')return importExternalAssessment(request,env,user);
   if(p==='/api/platform/learning-evidence'&&request.method==='POST')return addLearningEvidence(request,env,user);
   if(p==='/api/platform/assignments'&&request.method==='GET')return listAssignments(request,env,user);
   if(p==='/api/platform/assignments'&&request.method==='POST')return createAssignment(request,env,user);
@@ -598,6 +666,9 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/membership/grant'&&request.method==='POST')return grantMembership(request,env,user);
   if(p==='/api/platform/live'&&(request.method==='GET'||request.method==='POST'))return liveSessions(request,env,user);
   if(p==='/api/platform/studio'&&(request.method==='GET'||request.method==='POST'))return studio(request,env,user);
+  m=p.match(/^\/api\/platform\/studio\/([^/]+)\/pdf$/);if(m&&request.method==='GET')return studioPdf(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/studio\/([^/]+)\/optical-template$/);if(m&&request.method==='GET')return studioOpticalTemplate(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/studio\/([^/]+)\/optical-submit$/);if(m&&request.method==='POST')return submitStudioOptical(request,env,user,m[1]);
   if(p==='/api/platform/physical'&&(request.method==='GET'||request.method==='POST'))return physicalBridge(request,env,user);
   if(p==='/api/platform/videos'&&(request.method==='GET'||request.method==='POST'))return videos(request,env,user);
   if(p==='/api/platform/games'&&(request.method==='GET'||request.method==='POST'))return games(request,env,user);

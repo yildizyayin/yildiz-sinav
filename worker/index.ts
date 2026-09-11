@@ -7,6 +7,7 @@ import { decodeUploadedBytes, parseUploadedText, parseWithTemplate, type ParserT
 import { assertScoringRuleVerified, calculateOverall, calculateSubjectScore } from './lib/scoring';
 import { masteryStatus } from './lib/outcome';
 import { calibrationWithinTolerance, nextCalibrationStatus, type CalibrationMetrics } from './lib/calibration';
+import { recordExamAssessments, recordExamEvidenceAudit } from './lib/assessment-ledger';
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -396,6 +397,8 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
     JOIN exam_participants ep2 ON ep2.id=er2.participant_id WHERE ep2.exam_id=? AND ep2.institution_id=?
     ) ranked WHERE ranked.id=exam_results.id)
     WHERE participant_id IN (SELECT id FROM exam_participants WHERE exam_id=? AND institution_id=?)`).bind(exam.id, batch.institution_id, exam.id, batch.institution_id).run();
+  const ledgerCount=await recordExamAssessments(env,batchId);
+  await recordExamEvidenceAudit(env,user.id,batch.institution_id,batchId,ledgerCount);
   await env.DB.prepare(`UPDATE scan_batches SET status='COMMITTED' WHERE id=?`).bind(batchId).run();
   await audit(env.DB, user.id, batch.institution_id, 'EXAM_EVALUATED', 'scan_batch', batchId, { examId: exam.id, processed });
   return json({ ok: true, processed, batchId, examId: exam.id });
