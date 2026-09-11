@@ -39,7 +39,7 @@ function voiceError(error:unknown){
 async function status(request:Request,env:Env){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
  const providers=await voiceProviderStatusWithHealth(env);
- return json({ok:true,environment:env.ENVIRONMENT||'unknown',providers,plans:{standard:buildVoiceProviderPlan(env,'STANDARD'),premium:buildVoiceProviderPlan(env,'PREMIUM')},policy:{language:'tr-TR',interaction:'PUSH_TO_TALK',alwaysListening:false,teacherTone:'Sakin, açık, geliştirici ve kurumsal; MEB ürünü/temsilcisi iddiası yok.',maxAudioBytes:8*1024*1024,maxSpeechChars:3600},activation:{configured:providers.standardReady,liveVerified:false,liveProbeRequired:true}});
+ return json({ok:true,environment:env.ENVIRONMENT||'unknown',providers,plans:{standard:buildVoiceProviderPlan(env,'STANDARD'),premium:buildVoiceProviderPlan(env,'PREMIUM')},policy:{language:'tr-TR',interaction:'PUSH_TO_TALK',alwaysListening:false,teacherTone:'Sakin, açık, geliştirici ve kurumsal; MEB ürünü/temsilcisi iddiası yok.',maxAudioBytes:8*1024*1024,maxSpeechChars:3600},activation:{configured:providers.standardReady,liveVerified:providers.liveVerified,liveProbeRequired:true}});
 }
 
 async function transcribe(request:Request,env:Env){
