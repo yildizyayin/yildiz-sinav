@@ -15,6 +15,8 @@ Amaç yalnız ekranların açılması değil; ticari, akademik ve tenant güvenl
 - kazanımda minimum evidence olmadan “geliştirilecek” etiketi üretmeme
 - TXT/CSV genel parser tespiti
 - bilinmeyen formatta sahte başarı vermeme
+- Nibiru'da farklı ifade edilen aynı sınav sorularının AI cevap yoluna gitmesi
+- Nibiru specialist/workload kararının aynı niyetli oturumda sabit kalması
 - kalibrasyonda 3 deneme sonrası manuel moda geçme
 
 ## Canlı kabul testleri
@@ -122,3 +124,11 @@ Amaç yalnız ekranların açılması değil; ticari, akademik ve tenant güvenl
 ## Production'a geçiş kriteri
 
 A, B, C, D, E, H ve I grupları geçmeden production müşteri kullanımı başlatılmamalıdır. F/G/J grupları gerçek optik, gerçek yazıcı ve gerçek dış sistem örnek dosyalarıyla ayrıca doğrulanmalıdır.
+
+## Nibiru Faz 1 kabul notu
+
+- `npm run typecheck`, `npm test -- --run` ve `npm run build` başarılıdır.
+- Nibiru'nun sabit yanıtları psikolojik/tıbbi güvenlik, öğrenci belirsizliği ve öğrenci bağlantısı yokluğu ile sınırlandırılmıştır.
+- `EDUCATION_COACH`, `GUIDANCE_COUNSELOR`, `SUBJECT_TEACHER`, `PARENT_GUIDE`, `INSTITUTION_INSIGHT` ve `NIBIRU_CORE` persona kuralları prompt'a uygulanır.
+- Aynı niyet 24 saatlik oturum içinde sürdüğü sürece specialist/workload kararı `nibiru_sessions` üzerinde korunur.
+- AI sağlayıcısı ve dış veri gizlilik kapısı gerçek production secret/configuration doğrulaması olmadan kabul edilmiş sayılmaz.
