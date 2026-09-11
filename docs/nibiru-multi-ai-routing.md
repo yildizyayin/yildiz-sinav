@@ -28,10 +28,21 @@ AI Gateway is the transport, logging, cost, rate-limit and fallback control laye
 | Parent explanation | Parent Guide | Meta Llama 4 Scout | GLM | Clear, calm development summaries |
 | Institution/class analysis | Institution Insight | NVIDIA Nemotron 3 120B | GLM → Meta | Multi-signal trend and aggregate analysis |
 
+Optional model extensions (disabled by default to prevent unexpected billing):
+
+| Workload | Optional fallback | Activation rule |
+| --- | --- | --- |
+| Education Coach | DeepSeek V4 Flash | `NIBIRU_EXPERIMENTAL_MODELS=ON` |
+| Subject explanation | DeepSeek V4 Flash → Qwen3 30B A3B | `NIBIRU_EXPERIMENTAL_MODELS=ON` |
+| Subject reasoning | Groq GPT-OSS 120B | API key + production privacy gate |
+| Institution analysis | Groq Llama 3.3 70B | API key + production privacy gate |
+
 Default model IDs:
 - FAST: `@cf/zai-org/glm-4.7-flash`
 - META: `@cf/meta/llama-4-scout-17b-16e-instruct`
 - NVIDIA: `@cf/nvidia/nemotron-3-120b-a12b`
+- DEEPSEEK (optional): `@cf/deepseek-ai/deepseek-v4-flash-0731`
+- QWEN (optional): `@cf/qwen/qwen3-30b-a3b-fp8`
 
 ## Non-negotiable rules
 
@@ -43,6 +54,9 @@ Default model IDs:
 - RBA/guidance assessment data becomes available to Guidance AI only after real counselor review.
 - Psychological/medical diagnosis is out of scope.
 - Production model changes must be configuration changes, not persona rewrites.
+- Groq is never used for general or fast workloads; only subject reasoning and institution analysis may reach its candidate.
+- The Groq processor registry row starts inactive and production calls remain blocked until legal review, DPA and transfer evidence are approved.
+- DeepSeek V4 Flash and Qwen3 30B A3B are opt-in because catalog access/pricing can require paid usage.
 
 ## Configuration
 
@@ -53,9 +67,15 @@ Environment variables:
 - `NIBIRU_FAST_MODEL` — cheap/fast model override.
 - `NIBIRU_META_MODEL` — natural-language/tutoring model override.
 - `NIBIRU_REASONING_MODEL` — reasoning/analysis model override.
+- `NIBIRU_EXPERIMENTAL_MODELS` — `ON` enables optional DeepSeek/Qwen candidates; default is off.
+- `NIBIRU_DEEPSEEK_MODEL` — optional DeepSeek model override.
+- `NIBIRU_QWEN_MODEL` — optional Qwen model override.
 - `NIBIRU_CUSTOM_MODEL` — optional third-party/custom model accessible through AI Gateway.
 - `NIBIRU_CUSTOM_MODEL_MODE` — `PRIMARY`, `FALLBACK`, or `OFF`.
 - `NIBIRU_AI_MODEL` — old single-model compatibility setting used only in `LEGACY` mode.
+- `NIBIRU_GROQ_API_KEY` — Groq secret; production inference also requires `GROQ_AI` privacy approval.
+- `NIBIRU_GROQ_REASONING_MODEL` — defaults to `openai/gpt-oss-120b`.
+- `NIBIRU_GROQ_INSTITUTION_MODEL` — defaults to `llama-3.3-70b-versatile`.
 
 ## Cost-control modes
 
