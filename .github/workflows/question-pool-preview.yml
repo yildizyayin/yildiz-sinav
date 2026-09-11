@@ -67,7 +67,7 @@ jobs:
           fi
 
           jq --arg name "$worker_name" --arg db_name "$db_name" --arg db_id "$db_id" --arg bucket "$bucket_name" \
-            '.name=$name | .assets.directory="./dist/client" | .d1_databases=[{binding:"DB",database_name:$db_name,database_id:$db_id,migrations_dir:"migrations"}] | .r2_buckets=[{binding:"FILES",bucket_name:$bucket}] | .vars.ENVIRONMENT="staging"' \
+            'del(.triggers,.queues) | .name=$name | .assets.directory="./dist/client" | .d1_databases=[{binding:"DB",database_name:$db_name,database_id:$db_id,migrations_dir:"migrations"}] | .r2_buckets=[{binding:"FILES",bucket_name:$bucket}] | .vars.ENVIRONMENT="staging"' \
             wrangler.jsonc > wrangler.question-pool-preview.json
 
           echo "db_name=$db_name" >> "$GITHUB_OUTPUT"
