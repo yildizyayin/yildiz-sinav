@@ -87,6 +87,20 @@ async function createTemplate(request: Request, env: Env, actor: AuthUser): Prom
   return json({ ok: true, templateId, versionId }, 201);
 }
 
+async function updateTemplate(request: Request, env: Env, actor: AuthUser, templateId: string): Promise<Response> {
+  const template = await one<any>(env.DB.prepare('SELECT * FROM optical_templates WHERE id=?').bind(templateId));
+  if (!template) return notFound('Optik şablon bulunamadı.');
+  const body = await request.json<{ name?: string; vendor?: string | null }>();
+  const name = body.name?.trim() || '';
+  const vendor = body.vendor?.trim() || null;
+  if (!name) return badRequest('Optik adı gereklidir.');
+  const duplicate = await one(env.DB.prepare(`SELECT id FROM optical_templates WHERE id<>? AND lower(name)=lower(?) AND coalesce(lower(vendor),'')=coalesce(lower(?),'')`).bind(templateId, name, vendor));
+  if (duplicate) return error(409, 'TEMPLATE_EXISTS', 'Aynı ad ve üreticiyle başka bir optik şablon zaten bulunuyor.');
+  await env.DB.prepare('UPDATE optical_templates SET name=?,vendor=? WHERE id=?').bind(name, vendor, templateId).run();
+  await audit(env.DB, actor.id, null, 'OPTICAL_TEMPLATE_UPDATED', 'optical_template', templateId, { before: { name: template.name, vendor: template.vendor }, after: { name, vendor } });
+  return json({ ok: true, template: { ...template, name, vendor } });
+}
+
 async function getTemplateDetail(env: Env, templateId: string): Promise<Response> {
   const template = await one<any>(env.DB.prepare('SELECT * FROM optical_templates WHERE id=?').bind(templateId));
   if (!template) return notFound('Optik şablon bulunamadı.');
@@ -104,6 +118,7 @@ async function getTemplateDetail(env: Env, templateId: string): Promise<Response
 async function createVersion(request: Request, env: Env, actor: AuthUser, templateId: string): Promise<Response> {
   const template = await one<any>(env.DB.prepare('SELECT * FROM optical_templates WHERE id=?').bind(templateId));
   if (!template) return notFound('Optik şablon bulunamadı.');
+  if (!template.active || template.status === 'ARCHIVED') return badRequest('Arşivlenmiş optik için yeni sürüm oluşturulamaz.', 'ARCHIVED_TEMPLATE');
   const body = await request.json<{ version?: string; pageWidthMm?: number; pageHeightMm?: number; cloneFromVersionId?: string }>();
   const version = body.version?.trim() || '';
   if (!version) return badRequest('Sürüm adı gereklidir.');
@@ -145,6 +160,7 @@ function sectionValidator(section: DefinitionSection, value: unknown, row: any) 
 async function updateSection(request: Request, env: Env, actor: AuthUser, versionId: string, section: DefinitionSection): Promise<Response> {
   const row = await getVersion(env, versionId);
   if (!row) return notFound('Optik sürümü bulunamadı.');
+  if (!row.template_active || row.template_status === 'ARCHIVED') return badRequest('Arşivlenmiş optik düzenlenemez.', 'ARCHIVED_TEMPLATE');
   if (row.active) return badRequest('Yayındaki optik sürümü doğrudan değiştirilemez. Yeni sürüm oluşturun.', 'PUBLISHED_VERSION_LOCKED');
   const body = await request.json<{ definition?: unknown }>();
   const parsed = parseDefinition(body.definition);
@@ -205,6 +221,7 @@ async function uploadAsset(request: Request, env: Env, actor: AuthUser, versionI
 async function publishVersion(env: Env, actor: AuthUser, versionId: string): Promise<Response> {
   const row = await getVersion(env, versionId);
   if (!row) return notFound('Optik sürümü bulunamadı.');
+  if (!row.template_active || row.template_status === 'ARCHIVED') return badRequest('Arşivlenmiş optik yayınlanamaz.', 'ARCHIVED_TEMPLATE');
   const readiness = readinessFor(row);
   if (!readiness.ready) return badRequest('Optik sürümü yayına hazır değil.', 'OPTICAL_DEFINITION_INCOMPLETE', readiness.errors);
   await env.DB.batch([
@@ -219,12 +236,29 @@ async function publishVersion(env: Env, actor: AuthUser, versionId: string): Pro
 async function archiveTemplate(env: Env, actor: AuthUser, templateId: string): Promise<Response> {
   const template = await one<any>(env.DB.prepare('SELECT * FROM optical_templates WHERE id=?').bind(templateId));
   if (!template) return notFound('Optik şablon bulunamadı.');
+  const binding = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exam_optical_bindings WHERE optical_template_version_id IN (SELECT id FROM optical_template_versions WHERE template_id=?) AND active=1`).bind(templateId));
+  if (Number(binding?.c || 0) > 0) return error(409, 'OPTICAL_IN_USE', 'Bu optik bir veya daha fazla sınava bağlı. Önce sınavın Optik/FMT Tanımları alanından bağlantıyı kaldırın.');
   await env.DB.batch([
     env.DB.prepare(`UPDATE optical_templates SET status='ARCHIVED',active=0 WHERE id=?`).bind(templateId),
     env.DB.prepare('UPDATE optical_template_versions SET active=0 WHERE template_id=?').bind(templateId),
   ]);
-  await audit(env.DB, actor.id, null, 'OPTICAL_TEMPLATE_ARCHIVED', 'optical_template', templateId, { name: template.name });
-  return json({ ok: true, status: 'ARCHIVED' });
+  await audit(env.DB, actor.id, null, 'OPTICAL_TEMPLATE_DELETED', 'optical_template', templateId, { name: template.name, mode: 'ARCHIVE' });
+  return json({ ok: true, status: 'ARCHIVED', deleted: true, mode: 'ARCHIVE' });
+}
+
+async function deleteVersion(env: Env, actor: AuthUser, versionId: string): Promise<Response> {
+  const row = await getVersion(env, versionId);
+  if (!row) return notFound('Optik sürümü bulunamadı.');
+  if (row.active) return badRequest('Yayındaki sürüm silinemez. Değişiklik için yeni sürüm oluşturun.', 'PUBLISHED_VERSION_LOCKED');
+  const usage = await one<{ bindings: number; batches: number }>(env.DB.prepare(`SELECT
+      (SELECT count(*) FROM exam_optical_bindings WHERE optical_template_version_id=? AND active=1) bindings,
+      (SELECT count(*) FROM scan_batches WHERE optical_template_version_id=?) batches`).bind(versionId, versionId));
+  if (Number(usage?.bindings || 0) > 0 || Number(usage?.batches || 0) > 0) return error(409, 'OPTICAL_VERSION_IN_USE', 'Bu sürüm sınav veya değerlendirme geçmişinde kullanıldığı için silinemez.');
+  const assets = await all<{ object_key: string }>(env.DB.prepare('SELECT object_key FROM optical_template_assets WHERE optical_template_version_id=?').bind(versionId));
+  await env.DB.prepare('DELETE FROM optical_template_versions WHERE id=?').bind(versionId).run();
+  await Promise.all(assets.map((asset) => env.FILES.delete(asset.object_key).catch(() => undefined)));
+  await audit(env.DB, actor.id, null, 'OPTICAL_VERSION_DELETED', 'optical_template_version', versionId, { templateId: row.template_id, version: row.version });
+  return json({ ok: true, deleted: true, versionId });
 }
 
 export default {
@@ -249,7 +283,12 @@ export default {
       if (templateVersions) return request.method === 'POST' ? createVersion(request, env, actor, templateVersions[1]) : error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
 
       const templateDetail = url.pathname.match(/^\/api\/optical-definitions\/([^/]+)$/);
-      if (templateDetail) return request.method === 'GET' ? getTemplateDetail(env, templateDetail[1]) : error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+      if (templateDetail) {
+        if (request.method === 'GET') return getTemplateDetail(env, templateDetail[1]);
+        if (request.method === 'PATCH') return updateTemplate(request, env, actor, templateDetail[1]);
+        if (request.method === 'DELETE') return archiveTemplate(env, actor, templateDetail[1]);
+        return error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+      }
 
       const sectionMatch = url.pathname.match(/^\/api\/optical-definition-versions\/([^/]+)\/(parser|camera|print|fiducials)$/);
       if (sectionMatch) return request.method === 'PUT' ? updateSection(request, env, actor, sectionMatch[1], sectionMatch[2] as DefinitionSection) : error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
@@ -264,7 +303,11 @@ export default {
       if (publishMatch) return request.method === 'POST' ? publishVersion(env, actor, publishMatch[1]) : error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
 
       const versionMatch = url.pathname.match(/^\/api\/optical-definition-versions\/([^/]+)$/);
-      if (versionMatch) return request.method === 'GET' ? versionDetail(env, versionMatch[1]) : error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+      if (versionMatch) {
+        if (request.method === 'GET') return versionDetail(env, versionMatch[1]);
+        if (request.method === 'DELETE') return deleteVersion(env, actor, versionMatch[1]);
+        return error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+      }
 
       return notFound('Optik yönetim API yolu bulunamadı.');
     } catch (e) {
