@@ -3,6 +3,7 @@ import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './lib/db';
 import { parseWithTemplate } from './lib/parse';
+import { parseFmtBytes } from './lib/fmt';
 import {
   definitionReadiness,
   parseDefinition,
@@ -218,6 +219,33 @@ async function uploadAsset(request: Request, env: Env, actor: AuthUser, versionI
   return json({ ok: true, id, assetType, fileName: file.name }, 201);
 }
 
+async function importFmt(request: Request, env: Env, actor: AuthUser, versionId: string): Promise<Response> {
+  const row = await getVersion(env, versionId);
+  if (!row) return notFound('Optik sürümü bulunamadı.');
+  if (!row.template_active || row.template_status === 'ARCHIVED') return badRequest('Arşivlenmiş optik düzenlenemez.', 'ARCHIVED_TEMPLATE');
+  if (row.active) return badRequest('Yayındaki optik sürümü doğrudan değiştirilemez. Yeni sürüm oluşturun.', 'PUBLISHED_VERSION_LOCKED');
+  const form = await request.formData();
+  const file = form.get('file');
+  if (!(file instanceof File)) return badRequest('FMT dosyası seçilmelidir.');
+  if (file.size > 5 * 1024 * 1024) return badRequest('FMT dosyası 5 MB sınırını aşıyor.');
+  const parsed = await parseFmtBytes(await file.arrayBuffer(), file.name);
+  if (!parsed.ok || !parsed.definition) return badRequest('FMT alanları okunamadı.', 'INVALID_FMT', { errors: parsed.errors, warnings: parsed.warnings });
+  const validation = validateParserDefinition(parsed.definition);
+  if (!validation.valid) return badRequest('FMT eşlemesi doğrulanamadı.', 'INVALID_DEFINITION', validation.errors);
+  await env.DB.prepare('UPDATE optical_template_versions SET parser_definition=? WHERE id=?').bind(JSON.stringify(parsed.definition), versionId).run();
+  await env.DB.prepare(`INSERT INTO optical_definition_validations (optical_template_version_id,parser_test_passed,parser_test_record_count,parser_tested_at,last_error,updated_at)
+    VALUES (?,0,0,NULL,'FMT tanımı değişti; örnek kayıt testi yeniden yapılmalıdır.',CURRENT_TIMESTAMP)
+    ON CONFLICT(optical_template_version_id) DO UPDATE SET parser_test_passed=0,parser_test_record_count=0,parser_tested_at=NULL,last_error=excluded.last_error,updated_at=CURRENT_TIMESTAMP`).bind(versionId).run();
+  const key = `optical-definitions/${row.template_id}/${versionId}/FMT_SAMPLE/${Date.now()}-${safeFileName(file.name)}`;
+  await env.FILES.put(key, file.stream(), { httpMetadata: { contentType: file.type || 'text/plain' } });
+  const assetId = uuid('opta');
+  await env.DB.prepare(`INSERT INTO optical_template_assets (id,optical_template_version_id,asset_type,object_key,file_name,content_type,uploaded_by) VALUES (?,?,?,?,?,?,?)`)
+    .bind(assetId, versionId, 'FMT_SAMPLE', key, file.name, file.type || 'text/plain', actor.id).run();
+  await audit(env.DB, actor.id, null, 'OPTICAL_FMT_IMPORTED', 'optical_template_version', versionId, { fileName: file.name, warnings: parsed.warnings });
+  const fresh = await getVersion(env, versionId);
+  return json({ ok: true, source: 'FMT', assetId, fileName: file.name, definition: parsed.definition, warnings: parsed.warnings, validation, readiness: readinessFor(fresh) }, 201);
+}
+
 async function publishVersion(env: Env, actor: AuthUser, versionId: string): Promise<Response> {
   const row = await getVersion(env, versionId);
   if (!row) return notFound('Optik sürümü bulunamadı.');
@@ -295,6 +323,9 @@ export default {
 
       const parserTestMatch = url.pathname.match(/^\/api\/optical-definition-versions\/([^/]+)\/test-parser$/);
       if (parserTestMatch) return request.method === 'POST' ? testParser(request, env, actor, parserTestMatch[1]) : error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+
+      const fmtMatch = url.pathname.match(/^\/api\/optical-definition-versions\/([^/]+)\/fmt$/);
+      if (fmtMatch) return request.method === 'POST' ? importFmt(request, env, actor, fmtMatch[1]) : error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
 
       const assetMatch = url.pathname.match(/^\/api\/optical-definition-versions\/([^/]+)\/assets$/);
       if (assetMatch) return request.method === 'POST' ? uploadAsset(request, env, actor, assetMatch[1]) : error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
