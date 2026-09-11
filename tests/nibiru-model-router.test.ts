@@ -1,4 +1,4 @@
-import { describe,expect,it } from 'vitest';
+import { describe,expect,it,vi } from 'vitest';
 import type { Env } from '../worker/types';
 import { chooseNibiruModelDecision,classifyNibiruWorkload,probeNibiruModels,runNibiruInference } from '../worker/lib/nibiru-model-router';
 import { routeNibiruSpecialist } from '../worker/lib/nibiru-specialists';
@@ -8,6 +8,11 @@ const env={} as Env;
 function decision(role:any,intent:any,message:string){
  const route=routeNibiruSpecialist({role},message);
  return chooseNibiruModelDecision(env,{role},intent,message,route);
+}
+
+function decisionWithEnv(environment:Env,role:any,intent:any,message:string){
+ const route=routeNibiruSpecialist({role},message);
+ return chooseNibiruModelDecision(environment,{role},intent,message,route);
 }
 
 describe('Nibiru multi-AI router',()=>{
@@ -70,6 +75,30 @@ describe('Nibiru multi-AI router',()=>{
   expect(d.specialist).toBe('EDUCATION_COACH');
   expect(d.workload).toBe('COACHING');
   expect(d.candidates[0].family).toBe('FAST');
+ });
+ it('keeps newly catalogued Workers AI models opt-in',()=>{
+  const optionalEnv={NIBIRU_EXPERIMENTAL_MODELS:'ON'} as Env;
+  const coaching=chooseNibiruModelDecision(optionalEnv,{role:'STUDENT'},'TODAY_PLAN','Bugün ne çalışayım?',routeNibiruSpecialist({role:'STUDENT'},'Bugün ne çalışayım?'));
+  expect(coaching.candidates.map(x=>x.family)).toEqual(['FAST','DEEPSEEK','META','NVIDIA']);
+  const subject=chooseNibiruModelDecision(optionalEnv,{role:'STUDENT'},'GENERAL_ACADEMIC','Türkçe paragrafı anlatır mısın?',routeNibiruSpecialist({role:'STUDENT'},'Türkçe paragrafı anlatır mısın?'));
+  expect(subject.candidates.map(x=>x.family)).toEqual(['META','DEEPSEEK','QWEN','NVIDIA','FAST']);
+ });
+ it('only adds Groq as a configured fallback for heavy workloads',()=>{
+  const groqEnv={NIBIRU_GROQ_API_KEY:'test-key'} as Env;
+  const reasoning=decisionWithEnv(groqEnv,'STUDENT','GENERAL_ACADEMIC','Bu matematik problemini neden yanlış yaptım, adım adım çözer misin?');
+  expect(reasoning.candidates.map(x=>x.family)).toEqual(['NVIDIA','META','GROQ','FAST']);
+  const guidance=chooseNibiruModelDecision(groqEnv,{role:'STUDENT'},'GENERAL_ACADEMIC','YKS hedefime nasıl ilerlemeliyim?',routeNibiruSpecialist({role:'STUDENT'},'YKS hedefime nasıl ilerlemeliyim?'));
+  expect(guidance.candidates.some(x=>x.family==='GROQ')).toBe(false);
+ });
+ it('calls Groq through its OpenAI-compatible endpoint in non-production',async()=>{
+  const fetchMock=vi.fn().mockResolvedValue({ok:true,status:200,json:async()=>({choices:[{message:{content:'OK'}}]})});
+  vi.stubGlobal('fetch',fetchMock);
+  const env={ENVIRONMENT:'staging',NIBIRU_GROQ_API_KEY:'test-key'} as Env;
+  const d=decisionWithEnv(env,'STUDENT','GENERAL_ACADEMIC','Bu matematik problemini neden yanlış yaptım, adım adım çözer misin?');
+  const result=await runNibiruInference(env,d,[{role:'user',content:'Soru'}]);
+  expect(result.text).toBe('OK');
+  expect(fetchMock).toHaveBeenCalledWith('https://api.groq.com/openai/v1/chat/completions',expect.objectContaining({method:'POST'}));
+  vi.unstubAllGlobals();
  });
  it('falls back to direct Workers AI when the Gateway transport is unavailable',async()=>{
   const calls:any[]=[];

@@ -20,6 +20,14 @@ export interface Env {
   NIBIRU_FAST_MODEL?: string;
   NIBIRU_META_MODEL?: string;
   NIBIRU_REASONING_MODEL?: string;
+  // Optional Workers AI models; keep disabled until billing/availability is accepted.
+  NIBIRU_EXPERIMENTAL_MODELS?: 'ON' | 'OFF';
+  NIBIRU_DEEPSEEK_MODEL?: string;
+  NIBIRU_QWEN_MODEL?: string;
+  // Groq is an external provider and remains behind the KVKK processor gate.
+  NIBIRU_GROQ_API_KEY?: string;
+  NIBIRU_GROQ_REASONING_MODEL?: string;
+  NIBIRU_GROQ_INSTITUTION_MODEL?: string;
   NIBIRU_CUSTOM_MODEL?: string;
   NIBIRU_CUSTOM_MODEL_MODE?: 'PRIMARY' | 'FALLBACK' | 'OFF';
   // Nibiru Voice — keep credentials in Cloudflare Secrets, not vars.
