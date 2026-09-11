@@ -113,6 +113,7 @@ jobs:
             npx wrangler d1 execute DB --remote --config "$CONFIG" --file="$file"
           done
           npx wrangler d1 execute DB --remote --config "$CONFIG" --command="INSERT OR REPLACE INTO institution_feature_overrides(institution_id,feature_key,enabled) VALUES ('inst_demo','LEARNING_GRAPH',1),('inst_demo','QUESTION_BANK',1),('inst_demo','STUDIO',1),('inst_demo','ASSIGNMENTS',1);"
+          npx wrangler d1 execute DB --remote --config "$CONFIG" --command="DELETE FROM assessment_responses WHERE student_id='stu_a001'; DELETE FROM assessment_runs WHERE student_id='stu_a001'; DELETE FROM coach_followup_actions WHERE student_id='stu_a001'; DELETE FROM coach_mini_tests WHERE student_id='stu_a001'; DELETE FROM student_outcome_mastery WHERE student_id='stu_a001';"
 
       - name: Run question pool and assessment smoke
         env:
