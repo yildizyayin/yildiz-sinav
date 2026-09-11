@@ -24,8 +24,9 @@ export function normalizeBookletCodes(values: unknown[]): string[] {
   return out;
 }
 
-export function answerStringValid(value: string, questionCount: number): boolean {
-  return value.length === questionCount && /^[A-Z]+$/.test(value);
+export function answerStringValid(value: string, questionCount: number, optionCount: 4 | 5 = 5): boolean {
+  const pattern = optionCount === 4 ? /^[A-D]+$/ : /^[A-E]+$/;
+  return value.length === questionCount && pattern.test(value);
 }
 
 function err(status: number, code: string, message: string, details?: unknown): Response {
@@ -70,7 +71,7 @@ async function options(env: Env, user: AuthUser, url: URL): Promise<Response> {
   const [subjects, scoringVersions, institutions] = await Promise.all([
     all<any>(env.DB.prepare(`SELECT id,code,name,category FROM subjects WHERE active=1 ORDER BY name`)),
     all<any>(env.DB.prepare(`
-      SELECT srv.id,srv.academic_year,srv.version,srv.verified,srv.source_url,sr.code rule_code,sr.name rule_name,sr.authority,sr.official
+      SELECT srv.id,srv.academic_year,srv.version,srv.verified,srv.source_url,srv.config_json,sr.code rule_code,sr.name rule_name,sr.authority,sr.official
       FROM scoring_rule_versions srv JOIN scoring_rules sr ON sr.id=srv.rule_id
       ORDER BY srv.verified DESC,srv.academic_year DESC,sr.name,srv.version
     `)),
@@ -128,6 +129,12 @@ async function createDefinition(request: Request, env: Env, user: AuthUser): Pro
     gradeLevel?: number | null;
     examDate?: string | null;
     scoringRuleVersionId?: string | null;
+    publisherName?: string | null;
+    sessionLabel?: string | null;
+    description?: string | null;
+    resultNetworkEnabled?: boolean;
+    scoringOverride?: Record<string, unknown> | null;
+    scoringSettings?: Record<string, unknown> | null;
   }>();
   const ownerType = body.ownerType || (user.role === 'SUPER_ADMIN' ? 'CENTRAL' : 'INSTITUTION');
   if (!ownerTypeAllowed(user.role, ownerType)) return err(403, 'OWNER_TYPE_FORBIDDEN', 'Bu sınav sahipliği türünü oluşturma yetkiniz bulunmuyor.');
@@ -135,6 +142,13 @@ async function createDefinition(request: Request, env: Env, user: AuthUser): Pro
   const academicYear = body.academicYear?.trim() || '';
   const examType = body.examType?.trim().toUpperCase() || '';
   if (!title || !/^20\d{2}-20\d{2}$/.test(academicYear) || !examType) return err(400, 'VALIDATION_ERROR', 'Sınav adı, eğitim yılı ve sınav türü gereklidir.');
+  const publisherName = body.publisherName?.trim() || '';
+  const sessionLabel = body.sessionLabel?.trim() || '';
+  const description = body.description?.trim() || '';
+  if (!publisherName || !sessionLabel || !description) return err(400, 'VALIDATION_ERROR', 'Yayınevi adı, oturum/bölüm ve açıklama/not gereklidir.');
+  if (publisherName && publisherName.length > 160) return err(400, 'VALIDATION_ERROR', 'Yayınevi adı 160 karakteri geçemez.');
+  if (sessionLabel && sessionLabel.length > 120) return err(400, 'VALIDATION_ERROR', 'Oturum / bölüm 120 karakteri geçemez.');
+  if (description && description.length > 2000) return err(400, 'VALIDATION_ERROR', 'Açıklama 2000 karakteri geçemez.');
   const gradeLevel = body.gradeLevel == null ? null : Number(body.gradeLevel);
   if (gradeLevel != null && (!Number.isInteger(gradeLevel) || gradeLevel < 1 || gradeLevel > 12)) return err(400, 'INVALID_GRADE', 'Sınıf düzeyi 1-12 arasında olmalıdır.');
 
@@ -144,20 +158,28 @@ async function createDefinition(request: Request, env: Env, user: AuthUser): Pro
     if (!institutionId) return err(400, 'INSTITUTION_REQUIRED', 'Kurum sınavında kurum seçilmelidir.');
     if (!(await institutionAllowed(env, user, institutionId))) return err(403, 'FORBIDDEN', 'Bu kuruma erişim yetkiniz bulunmuyor.');
   }
+  let scoring: any = null;
   if (body.scoringRuleVersionId) {
-    const scoring = await one<any>(env.DB.prepare('SELECT id,verified FROM scoring_rule_versions WHERE id=?').bind(body.scoringRuleVersionId));
+    scoring = await one<any>(env.DB.prepare('SELECT srv.id,sr.code rule_code FROM scoring_rule_versions srv JOIN scoring_rules sr ON sr.id=srv.rule_id WHERE srv.id=?').bind(body.scoringRuleVersionId));
     if (!scoring) return err(404, 'SCORING_NOT_FOUND', 'Puanlama kuralı bulunamadı.');
   }
+  if (body.scoringOverride && scoring?.rule_code !== 'CUSTOM_EXAM') return err(400, 'SCORING_OVERRIDE_FORBIDDEN', 'Özel puanlama alanları yalnız Özel Deneme profilinde kullanılabilir.');
+  const scoringOverride = body.scoringOverride ? JSON.stringify(body.scoringOverride) : null;
+  if (scoringOverride && scoringOverride.length > 5000) return err(400, 'VALIDATION_ERROR', 'Özel puanlama tanımı çok uzun.');
+  const scoringSettings = body.scoringSettings ? JSON.stringify(body.scoringSettings) : null;
+  if (scoringSettings && scoringSettings.length > 5000) return err(400, 'VALIDATION_ERROR', 'Sonuç görünümü tanımı çok uzun.');
+  const resultNetworkEnabled = user.role === 'SUPER_ADMIN' && body.resultNetworkEnabled === true ? 1 : 0;
   const id = uuid('exam');
   await env.DB.prepare(`
-    INSERT INTO exams (id,owner_type,institution_id,academic_year,title,exam_type,grade_level,exam_date,status,scoring_rule_version_id,sponsor_mode,created_by)
-    VALUES (?,?,?,?,?,?,?,?, 'DRAFT',?,?,?)
+    INSERT INTO exams (id,owner_type,institution_id,academic_year,title,exam_type,grade_level,exam_date,status,scoring_rule_version_id,sponsor_mode,created_by,publisher_name,session_label,description,result_network_enabled,scoring_override_json,scoring_settings_json)
+    VALUES (?,?,?,?,?,?,?,?, 'DRAFT',?,?,?,?,?,?,?,?,?)
   `).bind(
     id, ownerType, institutionId, academicYear, title, examType, gradeLevel,
     body.examDate || null, body.scoringRuleVersionId || null,
     ownerType === 'CENTRAL' ? 'ADMIN_SPONSORED' : 'INSTITUTION', user.id,
+    publisherName, sessionLabel, description, resultNetworkEnabled, scoringOverride, scoringSettings,
   ).run();
-  await audit(env.DB, user.id, institutionId, 'EXAM_DEFINITION_CREATED', 'exam', id, { ownerType, academicYear, title, examType, gradeLevel });
+  await audit(env.DB, user.id, institutionId, 'EXAM_DEFINITION_CREATED', 'exam', id, { ownerType, academicYear, title, examType, gradeLevel, resultNetworkEnabled });
   return Response.json({ ok: true, id }, { status: 201 });
 }
 
@@ -189,11 +211,13 @@ async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<
     all<any>(env.DB.prepare(`SELECT id,code,active FROM exam_booklets WHERE exam_id=? ORDER BY code`).bind(examId)),
     all<any>(env.DB.prepare(`SELECT ei.institution_id,ei.enabled,i.name,i.code FROM exam_institutions ei JOIN institutions i ON i.id=ei.institution_id WHERE ei.exam_id=? ORDER BY i.name`).bind(examId)),
     all<any>(env.DB.prepare(`
-      SELECT q.id question_id,q.subject_id,q.question_no,q.global_no,ak.booklet_code,ak.correct_answer,
-             group_concat(DISTINCT qo.outcome_id) outcome_ids
+      SELECT q.id question_id,q.subject_id,q.question_no,q.global_no,q.option_count question_option_count,q.question_status question_status,
+             ak.booklet_code,ak.correct_answer,ak.option_count answer_option_count,ak.accepted_answers,ak.question_status answer_question_status,
+             group_concat(DISTINCT qo.outcome_id) outcome_ids,group_concat(DISTINCT o.code) outcome_codes,group_concat(DISTINCT o.title) outcome_titles
       FROM exam_questions q
       LEFT JOIN answer_keys ak ON ak.exam_question_id=q.id
       LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id
+      LEFT JOIN outcomes o ON o.id=qo.outcome_id
       WHERE q.exam_id=?
       GROUP BY q.id,ak.booklet_code
       ORDER BY q.global_no,ak.booklet_code
@@ -207,18 +231,35 @@ async function updateGeneral(request: Request, env: Env, user: AuthUser, examId:
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Aktif veya kapanmış sınavın temel tanımı değiştirilemez.');
-  const body = await request.json<{ title?: string; examType?: string; gradeLevel?: number | null; examDate?: string | null; scoringRuleVersionId?: string | null }>();
+  const body = await request.json<{ title?: string; examType?: string; gradeLevel?: number | null; examDate?: string | null; scoringRuleVersionId?: string | null; publisherName?: string | null; sessionLabel?: string | null; description?: string | null; resultNetworkEnabled?: boolean; scoringOverride?: Record<string, unknown> | null; scoringSettings?: Record<string, unknown> | null }>();
   const title = body.title?.trim() || exam.title;
   const examType = body.examType?.trim().toUpperCase() || exam.exam_type;
   const gradeLevel = body.gradeLevel === undefined ? exam.grade_level : body.gradeLevel == null ? null : Number(body.gradeLevel);
   if (gradeLevel != null && (!Number.isInteger(gradeLevel) || gradeLevel < 1 || gradeLevel > 12)) return err(400, 'INVALID_GRADE', 'Sınıf düzeyi 1-12 arasında olmalıdır.');
-  if (body.scoringRuleVersionId) {
-    const scoring = await one<any>(env.DB.prepare('SELECT id FROM scoring_rule_versions WHERE id=?').bind(body.scoringRuleVersionId));
+  const publisherName = body.publisherName === undefined ? exam.publisher_name : body.publisherName?.trim() || null;
+  const sessionLabel = body.sessionLabel === undefined ? exam.session_label : body.sessionLabel?.trim() || null;
+  const description = body.description === undefined ? exam.description : body.description?.trim() || null;
+  if (publisherName && publisherName.length > 160) return err(400, 'VALIDATION_ERROR', 'Yayınevi adı 160 karakteri geçemez.');
+  if (sessionLabel && sessionLabel.length > 120) return err(400, 'VALIDATION_ERROR', 'Oturum / bölüm 120 karakteri geçemez.');
+  if (description && description.length > 2000) return err(400, 'VALIDATION_ERROR', 'Açıklama 2000 karakteri geçemez.');
+  const scoringRuleVersionId = body.scoringRuleVersionId === undefined ? exam.scoring_rule_version_id : body.scoringRuleVersionId || null;
+  let scoringCode: string | null = null;
+  if (scoringRuleVersionId) {
+    const scoring = await one<any>(env.DB.prepare('SELECT srv.id,sr.code rule_code FROM scoring_rule_versions srv JOIN scoring_rules sr ON sr.id=srv.rule_id WHERE srv.id=?').bind(scoringRuleVersionId));
     if (!scoring) return err(404, 'SCORING_NOT_FOUND', 'Puanlama kuralı bulunamadı.');
+    scoringCode = scoring.rule_code;
   }
-  await env.DB.prepare(`UPDATE exams SET title=?,exam_type=?,grade_level=?,exam_date=?,scoring_rule_version_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
+  if (body.scoringOverride && scoringCode !== 'CUSTOM_EXAM') return err(400, 'SCORING_OVERRIDE_FORBIDDEN', 'Özel puanlama alanları yalnız Özel Deneme profilinde kullanılabilir.');
+  const scoringOverride = body.scoringOverride === undefined ? exam.scoring_override_json : body.scoringOverride ? JSON.stringify(body.scoringOverride) : null;
+  if (scoringOverride && scoringOverride.length > 5000) return err(400, 'VALIDATION_ERROR', 'Özel puanlama tanımı çok uzun.');
+  const scoringSettings = body.scoringSettings === undefined ? exam.scoring_settings_json : body.scoringSettings ? JSON.stringify(body.scoringSettings) : null;
+  if (scoringSettings && scoringSettings.length > 5000) return err(400, 'VALIDATION_ERROR', 'Sonuç görünümü tanımı çok uzun.');
+  const resultNetworkEnabled = user.role === 'SUPER_ADMIN' && body.resultNetworkEnabled !== undefined
+    ? (body.resultNetworkEnabled ? 1 : 0)
+    : Number(exam.result_network_enabled || 0);
+  await env.DB.prepare(`UPDATE exams SET title=?,exam_type=?,grade_level=?,exam_date=?,scoring_rule_version_id=?,publisher_name=?,session_label=?,description=?,result_network_enabled=?,scoring_override_json=?,scoring_settings_json=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
     .bind(title, examType, gradeLevel, body.examDate === undefined ? exam.exam_date : body.examDate || null,
-      body.scoringRuleVersionId === undefined ? exam.scoring_rule_version_id : body.scoringRuleVersionId || null, examId).run();
+      scoringRuleVersionId, publisherName, sessionLabel, description, resultNetworkEnabled, scoringOverride, scoringSettings, examId).run();
   await audit(env.DB, user.id, exam.institution_id, 'EXAM_DEFINITION_UPDATED', 'exam', examId, { title, examType, gradeLevel });
   return Response.json({ ok: true });
 }
@@ -229,16 +270,23 @@ async function replaceStructure(request: Request, env: Env, user: AuthUser, exam
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Sınav yapısı yalnız taslak durumunda değiştirilebilir.');
   const participant = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM exam_participants WHERE exam_id=?').bind(examId));
   if ((participant?.c || 0) > 0) return err(409, 'EXAM_HAS_RESULTS', 'Katılımcısı bulunan sınavın soru yapısı değiştirilemez.');
-  const body = await request.json<{ booklets?: unknown[]; subjects?: Array<{ subjectId?: string; questionCount?: number; wrongDivisor?: number; sortOrder?: number }> }>();
+  const body = await request.json<{ booklets?: unknown[]; subjects?: Array<{ subjectId?: string; questionCount?: number; questionStart?: number; questionEnd?: number; optionCount?: 4 | 5; questionStatus?: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'; wrongDivisor?: number; sortOrder?: number }> }>();
   const booklets = normalizeBookletCodes(body.booklets || []);
   if (!booklets.length || booklets.length > 8) return err(400, 'INVALID_BOOKLETS', 'En az 1, en fazla 8 geçerli kitapçık tanımlayın.');
   const subjects = (body.subjects || []).map((s, index) => ({
-    subjectId: String(s.subjectId || ''), questionCount: Number(s.questionCount), wrongDivisor: Number(s.wrongDivisor ?? 4), sortOrder: Number(s.sortOrder ?? index + 1),
+    subjectId: String(s.subjectId || ''), questionCount: Number(s.questionCount),
+    questionStart: Number(s.questionStart ?? 1), questionEnd: Number(s.questionEnd ?? (Number(s.questionStart ?? 1) + Number(s.questionCount) - 1)),
+    optionCount: Number(s.optionCount ?? 5) as 4 | 5, questionStatus: s.questionStatus || 'ACTIVE' as const,
+    wrongDivisor: Number(s.wrongDivisor ?? 4), sortOrder: Number(s.sortOrder ?? index + 1),
   })).filter((s) => s.subjectId);
   if (!subjects.length) return err(400, 'SUBJECT_REQUIRED', 'En az bir ders tanımlayın.');
   if (new Set(subjects.map((s) => s.subjectId)).size !== subjects.length) return err(400, 'DUPLICATE_SUBJECT', 'Aynı ders birden fazla kez eklenemez.');
   for (const s of subjects) {
     if (!Number.isInteger(s.questionCount) || s.questionCount < 1 || s.questionCount > 200) return err(400, 'INVALID_QUESTION_COUNT', 'Ders soru sayısı 1-200 arasında olmalıdır.');
+    if (!Number.isInteger(s.questionStart) || !Number.isInteger(s.questionEnd) || s.questionStart < 1 || s.questionEnd < s.questionStart || s.questionEnd - s.questionStart + 1 !== s.questionCount) return err(400, 'INVALID_QUESTION_RANGE', 'Soru başlangıç/bitiş aralığı soru sayısıyla uyuşmalıdır.');
+    if (s.questionEnd > 1000) return err(400, 'INVALID_QUESTION_RANGE', 'Soru numarası 1000 değerini geçemez.');
+    if (s.optionCount !== 4 && s.optionCount !== 5) return err(400, 'INVALID_OPTION_COUNT', 'Şık sayısı 4 veya 5 olmalıdır.');
+    if (!['ACTIVE', 'CANCELLED', 'EXCLUDED'].includes(s.questionStatus)) return err(400, 'INVALID_QUESTION_STATUS', 'Geçersiz soru durumu.');
     if (!Number.isFinite(s.wrongDivisor) || s.wrongDivisor <= 0 || s.wrongDivisor > 20) return err(400, 'INVALID_WRONG_DIVISOR', 'Yanlış götürme böleni geçersiz.');
     const subject = await one(env.DB.prepare('SELECT id FROM subjects WHERE id=? AND active=1').bind(s.subjectId));
     if (!subject) return err(404, 'SUBJECT_NOT_FOUND', 'Seçilen derslerden biri bulunamadı.');
@@ -253,11 +301,11 @@ async function replaceStructure(request: Request, env: Env, user: AuthUser, exam
   ];
   let globalNo = 1;
   for (const [index, s] of subjects.entries()) {
-    statements.push(env.DB.prepare(`INSERT INTO exam_subjects (id,exam_id,subject_id,question_count,sort_order,wrong_divisor) VALUES(?,?,?,?,?,?)`)
-      .bind(uuid('es'), examId, s.subjectId, s.questionCount, s.sortOrder || index + 1, s.wrongDivisor));
-    for (let q = 1; q <= s.questionCount; q++) {
-      statements.push(env.DB.prepare(`INSERT INTO exam_questions (id,exam_id,subject_id,question_no,global_no) VALUES(?,?,?,?,?)`)
-        .bind(uuid('q'), examId, s.subjectId, q, globalNo++));
+    statements.push(env.DB.prepare(`INSERT INTO exam_subjects (id,exam_id,subject_id,question_count,sort_order,wrong_divisor,question_start,question_end,option_count) VALUES(?,?,?,?,?,?,?,?,?)`)
+      .bind(uuid('es'), examId, s.subjectId, s.questionCount, s.sortOrder || index + 1, s.wrongDivisor, s.questionStart, s.questionEnd, s.optionCount));
+    for (let q = s.questionStart; q <= s.questionEnd; q++) {
+      statements.push(env.DB.prepare(`INSERT INTO exam_questions (id,exam_id,subject_id,question_no,global_no,option_count,question_status) VALUES(?,?,?,?,?,?,?)`)
+        .bind(uuid('q'), examId, s.subjectId, q, globalNo++, s.optionCount, s.questionStatus));
     }
   }
   for (const code of booklets) statements.push(env.DB.prepare(`INSERT INTO exam_booklets (id,exam_id,code,active) VALUES(?,?,?,1)`).bind(uuid('book'), examId, code));
@@ -271,29 +319,35 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Cevap anahtarı yalnız taslak sınavda değiştirilebilir.');
   const body = await request.json<{
-    entries?: Array<{ subjectId?: string; bookletCode?: string; answers?: string }>;
+    entries?: Array<{ subjectId?: string; bookletCode?: string; answers?: string; optionCount?: 4 | 5; acceptedAnswers?: Array<string | string[]>; questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'> }>;
     outcomeMappings?: Array<{ subjectId?: string; questionNo?: number; outcomeId?: string }>;
   }>();
-  const subjects = await all<any>(env.DB.prepare(`SELECT subject_id,question_count FROM exam_subjects WHERE exam_id=? ORDER BY sort_order`).bind(examId));
+  const subjects = await all<any>(env.DB.prepare(`SELECT subject_id,question_count,question_start,question_end,option_count FROM exam_subjects WHERE exam_id=? ORDER BY sort_order`).bind(examId));
   const booklets = await all<{ code: string }>(env.DB.prepare(`SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code`).bind(examId));
   if (!subjects.length || !booklets.length) return err(409, 'STRUCTURE_REQUIRED', 'Önce ders ve kitapçık yapısını kaydedin.');
-  const entryMap = new Map<string, string>();
+  const entryMap = new Map<string, { answers: string; optionCount: 4 | 5; acceptedAnswers?: Array<string | string[]>; questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'> }>();
   for (const entry of body.entries || []) {
     const subjectId = String(entry.subjectId || '');
     const bookletCode = String(entry.bookletCode || '').trim().toUpperCase();
     const answers = String(entry.answers || '').replace(/\s+/g, '').toUpperCase();
-    entryMap.set(`${subjectId}::${bookletCode}`, answers);
+    const optionCount = entry.optionCount === 4 ? 4 : 5;
+    entryMap.set(`${subjectId}::${bookletCode}`, { answers, optionCount, acceptedAnswers: entry.acceptedAnswers, questionStatuses: entry.questionStatuses });
   }
   for (const subject of subjects) {
     for (const booklet of booklets) {
-      const answers = entryMap.get(`${subject.subject_id}::${booklet.code}`) || '';
-      if (!answerStringValid(answers, Number(subject.question_count))) {
+      const entry = entryMap.get(`${subject.subject_id}::${booklet.code}`);
+      const answers = entry?.answers || '';
+      const optionCount = (entry?.optionCount || Number(subject.option_count) || 5) as 4 | 5;
+      if (optionCount !== Number(subject.option_count || optionCount)) return err(400, 'OPTION_COUNT_MISMATCH', `${subject.subject_id} / ${booklet.code} şık sayısı sınav yapısıyla uyuşmuyor.`);
+      if (!answerStringValid(answers, Number(subject.question_count), optionCount)) {
         return err(400, 'ANSWER_KEY_INCOMPLETE', `${subject.subject_id} / ${booklet.code} cevap anahtarı ${subject.question_count} karakter olmalıdır.`);
       }
+      if (entry?.questionStatuses && entry.questionStatuses.length !== Number(subject.question_count)) return err(400, 'QUESTION_STATUS_INCOMPLETE', `${subject.subject_id} soru durumları soru sayısıyla uyuşmuyor.`);
+      if (entry?.acceptedAnswers && entry.acceptedAnswers.length !== Number(subject.question_count)) return err(400, 'ACCEPTED_ANSWERS_INCOMPLETE', `${subject.subject_id} kabul edilen cevaplar soru sayısıyla uyuşmuyor.`);
     }
   }
 
-  const questions = await all<any>(env.DB.prepare(`SELECT id,subject_id,question_no FROM exam_questions WHERE exam_id=? ORDER BY global_no`).bind(examId));
+  const questions = await all<any>(env.DB.prepare(`SELECT id,subject_id,question_no,option_count FROM exam_questions WHERE exam_id=? ORDER BY global_no`).bind(examId));
   const questionMap = new Map(questions.map((q) => [`${q.subject_id}::${q.question_no}`, q]));
   const statements: D1PreparedStatement[] = [
     env.DB.prepare(`DELETE FROM answer_keys WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
@@ -301,12 +355,21 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
   ];
   for (const subject of subjects) {
     for (const booklet of booklets) {
-      const answers = entryMap.get(`${subject.subject_id}::${booklet.code}`)!;
-      for (let n = 1; n <= Number(subject.question_count); n++) {
+      const entry = entryMap.get(`${subject.subject_id}::${booklet.code}`)!;
+      for (let offset = 0; offset < Number(subject.question_count); offset++) {
+        const n = Number(subject.question_start || 1) + offset;
         const question = questionMap.get(`${subject.subject_id}::${n}`);
         if (!question) return err(500, 'QUESTION_STRUCTURE_ERROR', 'Soru yapısı cevap anahtarıyla uyuşmuyor.');
-        statements.push(env.DB.prepare(`INSERT INTO answer_keys (id,exam_question_id,booklet_code,correct_answer) VALUES(?,?,?,?)`)
-          .bind(uuid('ak'), question.id, booklet.code, answers[n - 1]));
+        const primary = entry.answers[offset];
+        const acceptedRaw = entry.acceptedAnswers?.[offset];
+        const accepted = Array.isArray(acceptedRaw) ? acceptedRaw : typeof acceptedRaw === 'string' ? acceptedRaw.split(/[|/,]/) : [primary];
+        const allowed = entry.optionCount === 4 ? /^[A-D]$/ : /^[A-E]$/;
+        const normalizedAccepted = [...new Set(accepted.map((x) => String(x).trim().toUpperCase()).filter(Boolean))];
+        if (!normalizedAccepted.length || normalizedAccepted.some((x) => !allowed.test(x))) return err(400, 'INVALID_ACCEPTED_ANSWER', `${subject.subject_id} / ${n} kabul edilen cevapları geçersiz.`);
+        const status = entry.questionStatuses?.[offset] || 'ACTIVE';
+        statements.push(env.DB.prepare(`UPDATE exam_questions SET option_count=?,question_status=? WHERE id=?`).bind(entry.optionCount, status, question.id));
+        statements.push(env.DB.prepare(`INSERT INTO answer_keys (id,exam_question_id,booklet_code,correct_answer,option_count,accepted_answers,question_status) VALUES(?,?,?,?,?,?,?)`)
+          .bind(uuid('ak'), question.id, booklet.code, primary, entry.optionCount, JSON.stringify(normalizedAccepted), status));
       }
     }
   }
@@ -364,6 +427,20 @@ async function setStatus(request: Request, env: Env, user: AuthUser, examId: str
     }
   }
   await env.DB.prepare('UPDATE exams SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(next, examId).run();
+  if (next === 'ACTIVE') {
+    if (Number(exam.result_network_enabled || 0) === 1) {
+      await env.DB.prepare(`
+        INSERT INTO exam_channel_publications (id,exam_id,channel,status,published_by,published_at)
+        VALUES(?,?, 'RESULT_NETWORK','ACTIVE',?,CURRENT_TIMESTAMP)
+        ON CONFLICT(exam_id,channel) DO UPDATE SET status='ACTIVE',published_by=excluded.published_by,published_at=excluded.published_at
+      `).bind(uuid('pub'), examId, user.id).run();
+    } else {
+      await env.DB.prepare(`UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'`).bind(examId).run();
+    }
+  }
+  if (next === 'ARCHIVED') {
+    await env.DB.prepare(`UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'`).bind(examId).run();
+  }
   await audit(env.DB, user.id, exam.institution_id, `EXAM_STATUS_${next}`, 'exam', examId, { previous: exam.status, next });
   return Response.json({ ok: true, status: next });
 }
