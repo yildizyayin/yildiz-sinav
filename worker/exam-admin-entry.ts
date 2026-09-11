@@ -93,8 +93,9 @@ function makeAnswerKeyPdf(title: string, publisher: string, booklet: string, row
 
 async function contentList(env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await contentExam(env, user, examId); if (!exam) return notFound('Bu sınav içeriğine erişilemiyor.');
+  const assetVisibility = user.role === 'SUPER_ADMIN' ? null : user.role === 'STUDENT' || user.role === 'PARENT' ? 'STUDENT' : 'INSTITUTION_TEACHER';
   const [assets, videos] = await Promise.all([
-    all<any>(env.DB.prepare(`SELECT id,asset_type,booklet_code,file_name,mime_type,byte_size,version,status,visibility,metadata_json,created_at FROM exam_document_assets WHERE exam_id=? AND status='READY' AND (visibility IN ('PUBLIC','STUDENT','INSTITUTION_TEACHER') OR ?='SUPER_ADMIN') ORDER BY created_at DESC`).bind(examId, user.role)),
+    all<any>(env.DB.prepare(`SELECT id,asset_type,booklet_code,file_name,mime_type,byte_size,version,status,visibility,metadata_json,created_at FROM exam_document_assets WHERE exam_id=? AND status='READY' AND (? IS NULL OR visibility IN (?, 'PUBLIC')) ORDER BY created_at DESC`).bind(examId, assetVisibility, assetVisibility)),
     all<any>(env.DB.prepare(`SELECT id,exam_question_id,outcome_id,link_type,provider,url,title,description,status,publish_at,published_at,visibility,link_status,last_checked_at FROM video_links WHERE exam_id=? AND ((status='PUBLISHED' AND (publish_at IS NULL OR publish_at<=CURRENT_TIMESTAMP) AND visibility IN ('PUBLIC','STUDENT_TEACHER')) OR ? IN ('SUPER_ADMIN','INSTITUTION_MANAGER')) ORDER BY coalesce(published_at,publish_at,updated_at) DESC`).bind(examId, user.role)),
   ]);
   return json({ ok: true, exam: { id: exam.id, title: exam.title, publisherName: exam.publisher_name }, assets, videos });
