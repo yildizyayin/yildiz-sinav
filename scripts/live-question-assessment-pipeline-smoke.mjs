@@ -154,7 +154,7 @@ const assignment = await request('/api/platform/assignments', {
   cookie: manager,
   json: {
     title: `PR ${suffix} soru havuzu ödevi`,
-    assignmentType: 'QUESTION_BANK',
+    assignmentType: 'TEACHER',
     studentIds: ['stu_a001'],
     items: [{ itemType: 'QUESTION', referenceId: questions[0].id, payload: { source: 'QUESTION_POOL_PIPELINE' } }],
     publish: true,
