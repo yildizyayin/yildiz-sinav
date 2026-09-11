@@ -34,7 +34,7 @@ export function voiceProviderStatus(env:Env){
  const directOpenAi=Boolean(env.OPENAI_TTS_API_KEY);
  const unified=Boolean(env.AI);
  return {
-  stt:{ready:false,configured:Boolean(env.AI),provider:'CLOUDFLARE_WORKERS_AI',model:env.NIBIRU_STT_MODEL||'@cf/openai/whisper-large-v3-turbo',detail:env.AI?'Workers AI binding var; canlı probe gerekli.':'Workers AI binding eksik.'},
+  stt:{ready:Boolean(env.AI),configured:Boolean(env.AI),provider:'CLOUDFLARE_WORKERS_AI',model:env.NIBIRU_STT_MODEL||'@cf/openai/whisper-large-v3-turbo',detail:env.AI?'Workers AI binding var; canlı probe gerekli.':'Workers AI binding eksik.'},
   google:{ready:false,configured:googleConfigured,provider:'GOOGLE_WAVENET',voice:env.NIBIRU_GOOGLE_TTS_VOICE||'tr-TR-Wavenet-E',detail:googleConfigured?'Google Cloud servis hesabı tanımlı; canlı probe gerekli.':'GOOGLE_TTS_SERVICE_ACCOUNT_JSON secret bekleniyor.'},
   openaiDirect:{ready:false,configured:directOpenAi,provider:'OPENAI_GPT4O_MINI_TTS',model:env.NIBIRU_OPENAI_DIRECT_TTS_MODEL||'gpt-4o-mini-tts',detail:directOpenAi?'OpenAI TTS secret tanımlı; canlı probe gerekli.':'OPENAI_TTS_API_KEY opsiyonel; Unified Billing fallback kullanılabilir.'},
   openaiUnified:{ready:false,configured:unified,provider:'CLOUDFLARE_AI_GATEWAY_UNIFIED',standardModel:env.NIBIRU_OPENAI_TTS_MODEL||'openai/tts-1',premiumModel:env.NIBIRU_OPENAI_TTS_HD_MODEL||'openai/tts-1-hd',detail:unified?'Workers AI binding var; Unified Billing canlı probe gerekli.':'Workers AI binding eksik.'},
@@ -120,4 +120,52 @@ export async function speakNibiru(env:Env,value:string,mode:NibiruVoiceMode='STA
   if(provider==='OPENAI_UNIFIED_TTS')return{audio:await unifiedOpenAiSpeak(env,text,speed,false),plan,attempts};
  }catch(error){attempts.push(`${provider}:${error instanceof Error?error.message:'FAILED'}`)}}
  throw new Error(attempts.length?`VOICE_PROVIDER_FAILED:${attempts.join('|')}`:'VOICE_NOT_CONFIGURED');
+}
+
+
+type VoiceHealthRow={provider:string;mode:NibiruVoiceMode;model:string;last_success_at:string};
+
+function recentlyVerified(rows:VoiceHealthRow[],provider:NibiruVoiceProvider,configured:boolean){
+ if(!configured)return false;
+ const cutoff=Date.now()-24*60*60*1000;
+ return rows.some(row=>row.provider===provider&&Date.parse(row.last_success_at)>=cutoff);
+}
+
+export async function voiceProviderStatusWithHealth(env:Env){
+ const base=voiceProviderStatus(env);
+ let rows:VoiceHealthRow[]=[];
+ try{
+  const result=await env.DB.prepare('SELECT provider,mode,model,last_success_at FROM nibiru_voice_provider_health').all<VoiceHealthRow>();
+  rows=result.results||[];
+ }catch{
+  // A deployment that has not applied the health migration still reports safe configuration state.
+ }
+ const googleLive=recentlyVerified(rows,'GOOGLE_WAVENET',base.google.configured);
+ const directLive=recentlyVerified(rows,'OPENAI_GPT4O_MINI_TTS',base.openaiDirect.configured);
+ const unifiedLive=recentlyVerified(rows,'OPENAI_UNIFIED_TTS',base.openaiUnified.configured);
+ const unifiedHdLive=recentlyVerified(rows,'OPENAI_UNIFIED_TTS_HD',base.openaiUnified.configured);
+ return {
+  ...base,
+  stt:{...base.stt,ready:base.stt.configured},
+  google:{...base.google,ready:googleLive},
+  openaiDirect:{...base.openaiDirect,ready:directLive},
+  openaiUnified:{...base.openaiUnified,ready:unifiedLive||unifiedHdLive},
+  liveVerified:googleLive||directLive||unifiedLive||unifiedHdLive,
+ };
+}
+
+export async function recordVoiceProviderProbe(env:Env,mode:NibiruVoiceMode,provider:NibiruVoiceProvider,model:string){
+ try{
+  await env.DB.prepare(`
+   INSERT INTO nibiru_voice_provider_health(provider,mode,model,last_success_at,updated_at)
+   VALUES(?,?,?,?,CURRENT_TIMESTAMP)
+   ON CONFLICT(provider) DO UPDATE SET
+     mode=excluded.mode,
+     model=excluded.model,
+     last_success_at=excluded.last_success_at,
+     updated_at=CURRENT_TIMESTAMP
+  `).bind(provider,mode,model,new Date().toISOString()).run();
+ }catch(error){
+  console.warn(JSON.stringify({event:'nibiru_voice_health_persist_failed',provider,mode,error:error instanceof Error?error.message:'FAILED'}));
+ }
 }

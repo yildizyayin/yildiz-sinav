@@ -35,9 +35,9 @@ describe('Nibiru Voice provider policy',()=>{
   expect(plan.providers[0]).toBe('OPENAI_UNIFIED_TTS_HD');
  });
 
- it('reports Turkish STT ready when Workers AI binding exists',()=>{
+ it('reports Turkish STT configured when Workers AI binding exists',()=>{
   const status=voiceProviderStatus(env({AI:ai}));
-  expect(status.stt.ready).toBe(false);
+  expect(status.stt.ready).toBe(true);
   expect(status.stt.configured).toBe(true);
   expect(status.stt.model).toBe('@cf/openai/whisper-large-v3-turbo');
   expect(status.standardReady).toBe(true);
