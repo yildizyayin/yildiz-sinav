@@ -1,7 +1,7 @@
 import accessApp from './access-entry';
 import type { AuthUser, Env, Role } from './types';
 import { getAuthUser } from './lib/auth';
-import { all, audit, one, uuid } from './lib/db';
+import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './lib/db';
 
 export type ExamOwnerType = 'CENTRAL' | 'INSTITUTION';
 
@@ -31,6 +31,141 @@ export function answerStringValid(value: string, questionCount: number, optionCo
 
 function err(status: number, code: string, message: string, details?: unknown): Response {
   return Response.json({ ok: false, error: { code, message, ...(details === undefined ? {} : { details }) } }, { status });
+}
+
+const CONTENT_ROLES: Role[] = ['SUPER_ADMIN', 'INSTITUTION_MANAGER', 'TEACHER', 'GUIDANCE_TEACHER', 'STUDENT', 'PARENT'];
+
+function safeAssetName(value: string): string {
+  return value.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/-+/g, '-').slice(0, 120) || 'dosya';
+}
+
+function validHttpUrl(value: string): boolean {
+  try { const url = new URL(value); return url.protocol === 'https:' && url.hostname.length > 2; } catch { return false; }
+}
+
+async function contentUser(env: Env, request: Request): Promise<AuthUser | Response> {
+  const user = await getAuthUser(env, request);
+  if (!user) return err(401, 'UNAUTHENTICATED', 'Oturum açmanız gerekiyor.');
+  if (!CONTENT_ROLES.includes(user.role)) return forbidden();
+  return user;
+}
+
+async function contentExam(env: Env, user: AuthUser, examId: string): Promise<any | null> {
+  const exam = await one<any>(env.DB.prepare('SELECT * FROM exams WHERE id=?').bind(examId));
+  if (!exam) return null;
+  if (user.role === 'SUPER_ADMIN') return exam;
+  if (user.role === 'STUDENT') {
+    return user.student_id && await one(env.DB.prepare('SELECT 1 FROM exam_participants WHERE exam_id=? AND student_id=?').bind(examId, user.student_id)) ? exam : null;
+  }
+  if (user.role === 'PARENT') {
+    return await one(env.DB.prepare(`SELECT 1 FROM exam_participants ep JOIN parent_student_links p ON p.student_id=ep.student_id AND p.parent_user_id=? AND p.active=1 WHERE ep.exam_id=? LIMIT 1`).bind(user.id, examId)) ? exam : null;
+  }
+  if (!user.institution_id) return null;
+  return exam.owner_type === 'CENTRAL'
+    ? await one(env.DB.prepare('SELECT 1 FROM exam_institutions WHERE exam_id=? AND institution_id=? AND enabled=1').bind(examId, user.institution_id)) ? exam : null
+    : exam.institution_id === user.institution_id ? exam : null;
+}
+
+function pdfAscii(value: unknown): string {
+  return String(value ?? '').replace(/İ|ı/g, 'i').replace(/Ğ|ğ/g, 'g').replace(/Ş|ş/g, 's').replace(/Ü|ü/g, 'u').replace(/Ö|ö/g, 'o').replace(/Ç|ç/g, 'c').replace(/[^ -~]/g, '?');
+}
+function pdfEscape(value: unknown): string { return pdfAscii(value).replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)'); }
+function pdfLine(commands: string[], x: number, y: number, value: unknown, size = 10, color = '0.05 0.14 0.35') { commands.push(`${color} rg BT /F1 ${size} Tf ${x} ${y} Td (${pdfEscape(value)}) Tj ET`); }
+function makeAnswerKeyPdf(title: string, publisher: string, booklet: string, rows: any[], logoFileName?: string | null): ArrayBuffer {
+  const enc = new TextEncoder(); const commands: string[] = [];
+  commands.push('0.96 0.98 1 rg 0 0 595 842 re f', '0.10 0.35 0.85 rg 0 790 595 52 re f');
+  pdfLine(commands, 34, 812, 'ANUNEX', 22, '1 1 1'); pdfLine(commands, 34, 798, 'SINAV SONUCLARI VE KAZANIM ARSIVI', 7, '0.82 0.90 1');
+  pdfLine(commands, 390, 814, publisher || 'Yayinevi', 10, '1 1 1'); pdfLine(commands, 390, 800, title, 8, '0.82 0.90 1');
+  pdfLine(commands, 34, 766, 'Cevap Anahtari', 17); pdfLine(commands, 34, 748, `${title} · Kitapcik ${booklet}`, 9, '0.25 0.32 0.45');
+  if (logoFileName) pdfLine(commands, 34, 732, `Yayinevi logosu arsivlendi: ${logoFileName}`, 7, '0.32 0.40 0.55');
+  let y = 704; let lastSubject = '';
+  for (const row of rows) {
+    if (y < 80) break;
+    if (row.subject_name !== lastSubject) { commands.push('0.86 0.92 1 rg 32 ' + (y - 7) + ' 531 24 re f'); pdfLine(commands, 42, y, row.subject_name, 10); y -= 30; lastSubject = row.subject_name; }
+    pdfLine(commands, 46, y, `${row.question_no}.`, 8); pdfLine(commands, 80, y, row.correct_answer || '—', 10, '0.10 0.35 0.85'); pdfLine(commands, 122, y, row.status === 'CANCELLED' ? 'Iptal' : row.status === 'EXCLUDED' ? 'Degerlendirme disi' : 'Aktif', 7, '0.28 0.36 0.50');
+    pdfLine(commands, 250, y, row.outcome_text || 'Kazanimsiz', 7, '0.28 0.36 0.50'); y -= 20;
+  }
+  pdfLine(commands, 34, 45, 'Bu belge ANUNEX merkezi sinav kaydindan uretilmistir.', 7, '0.35 0.43 0.55');
+  const objects: string[] = []; const add = (s: string) => { objects.push(s); return objects.length; }; const font = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+  const content = commands.join('\n'); const stream = add(`<< /Length ${enc.encode(content).length} >>\nstream\n${content}\nendstream`); const page = add(`<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ${font} 0 R >> >> /Contents ${stream} 0 R >>`); const pages = add(`<< /Type /Pages /Kids [${page} 0 R] /Count 1 >>`); const catalog = add(`<< /Type /Catalog /Pages ${pages} 0 R >>`);
+  let out = '%PDF-1.4\n%\xFF\xFF\xFF\xFF\n'; const offsets = [0]; for (let i = 0; i < objects.length; i++) { offsets.push(enc.encode(out).length); out += `${i + 1} 0 obj\n${objects[i]}\nendobj\n`; } const xref = enc.encode(out).length; out += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`; for (let i = 1; i <= objects.length; i++) out += `${String(offsets[i]).padStart(10, '0')} 00000 n \n`; out += `trailer\n<< /Size ${objects.length + 1} /Root ${catalog} 0 R >>\nstartxref\n${xref}\n%%EOF\n`; return enc.encode(out).buffer;
+}
+
+async function contentList(env: Env, user: AuthUser, examId: string): Promise<Response> {
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Bu sınav içeriğine erişilemiyor.');
+  const [assets, videos] = await Promise.all([
+    all<any>(env.DB.prepare(`SELECT id,asset_type,booklet_code,file_name,mime_type,byte_size,version,status,visibility,metadata_json,created_at FROM exam_document_assets WHERE exam_id=? AND status='READY' AND (visibility IN ('PUBLIC','STUDENT','INSTITUTION_TEACHER') OR ?='SUPER_ADMIN') ORDER BY created_at DESC`).bind(examId, user.role)),
+    all<any>(env.DB.prepare(`SELECT id,exam_question_id,outcome_id,link_type,provider,url,title,description,status,publish_at,published_at,visibility,link_status,last_checked_at FROM video_links WHERE exam_id=? AND ((status='PUBLISHED' AND (publish_at IS NULL OR publish_at<=CURRENT_TIMESTAMP) AND visibility IN ('PUBLIC','STUDENT_TEACHER')) OR ? IN ('SUPER_ADMIN','INSTITUTION_MANAGER')) ORDER BY coalesce(published_at,publish_at,updated_at) DESC`).bind(examId, user.role)),
+  ]);
+  return json({ ok: true, exam: { id: exam.id, title: exam.title, publisherName: exam.publisher_name }, assets, videos });
+}
+
+async function uploadContentAsset(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden();
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.');
+  if (exam.owner_type === 'CENTRAL' && user.role !== 'SUPER_ADMIN') return forbidden('Merkezi sınav arşivini yalnız Super Admin yönetebilir.');
+  const form = await request.formData(); const file = form.get('file'); if (!(file instanceof File)) return badRequest('Bir dosya seçilmelidir.');
+  const rawType = String(form.get('assetType') || '').toUpperCase(); const allowed = ['QUALIFIED_ANSWER_KEY', 'SOURCE_ANSWER_KEY', 'EXAM_PDF', 'PUBLISHER_LOGO', 'OTHER']; if (!allowed.includes(rawType)) return badRequest('Geçersiz arşiv belge türü.');
+  const max = rawType === 'PUBLISHER_LOGO' ? 5 * 1024 * 1024 : 30 * 1024 * 1024; if (file.size > max) return badRequest('Dosya boyutu sınırı aşıyor.');
+  const mime = file.type || 'application/octet-stream';
+  if (rawType === 'PUBLISHER_LOGO' && !mime.startsWith('image/')) return badRequest('Yayınevi logosu PNG, JPG, SVG veya WEBP olmalıdır.');
+  if (rawType !== 'PUBLISHER_LOGO' && rawType !== 'OTHER' && !(['application/pdf', 'text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].includes(mime) || /\.(pdf|csv|xlsx)$/i.test(file.name))) return badRequest('Bu arşiv türü için PDF, CSV veya XLSX dosyası yükleyin.');
+  const current = await one<{ version: number }>(env.DB.prepare('SELECT max(version) version FROM exam_document_assets WHERE exam_id=? AND asset_type=?').bind(examId, rawType)); const version = Number(current?.version || 0) + 1;
+  const key = `exams/${exam.academic_year}/${examId}/archive/${rawType.toLowerCase()}/v${version}-${Date.now()}-${safeAssetName(file.name)}`;
+  await env.FILES.put(key, file.stream(), { httpMetadata: { contentType: mime, cacheControl: 'private, no-store' } });
+  const id = uuid('eda'); await env.DB.prepare(`INSERT INTO exam_document_assets(id,exam_id,asset_type,r2_key,file_name,mime_type,byte_size,version,visibility,metadata_json,created_by) VALUES(?,?,?,?,?,?,?,?,?,?,?)`).bind(id, examId, rawType, key, file.name, mime, file.size, version, rawType === 'PUBLISHER_LOGO' ? 'INSTITUTION_TEACHER' : 'INSTITUTION_TEACHER', JSON.stringify({ source: 'SUPER_ADMIN_ARCHIVE_UPLOAD' }), user.id).run();
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_ARCHIVE_ASSET_UPLOADED', 'exam', examId, { assetType: rawType, version, fileName: file.name, byteSize: file.size });
+  return json({ ok: true, id, version, assetType: rawType }, 201);
+}
+
+async function generatePlainAnswerKey(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden();
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.');
+  if (exam.owner_type === 'CENTRAL' && user.role !== 'SUPER_ADMIN') return forbidden('Merkezi sınav PDF arşivini yalnız Super Admin yönetebilir.');
+  const booklet = (new URL(request.url).searchParams.get('booklet') || 'A').trim().toUpperCase();
+  const rows = await all<any>(env.DB.prepare(`SELECT s.name subject_name,q.question_no,ak.correct_answer,ak.question_status status,GROUP_CONCAT(DISTINCT o.code || ' · ' || o.title) outcome_text FROM exam_questions q JOIN subjects s ON s.id=q.subject_id LEFT JOIN answer_keys ak ON ak.exam_question_id=q.id AND ak.booklet_code=? LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id LEFT JOIN outcomes o ON o.id=qo.outcome_id WHERE q.exam_id=? GROUP BY q.id ORDER BY q.global_no`).bind(booklet, examId));
+  if (!rows.length) return badRequest('Önce sınavın cevap anahtarını kaydedin.');
+  const logo = await one<{ file_name: string }>(env.DB.prepare(`SELECT file_name FROM exam_document_assets WHERE exam_id=? AND asset_type='PUBLISHER_LOGO' AND status='READY' ORDER BY version DESC LIMIT 1`).bind(examId));
+  const bytes = makeAnswerKeyPdf(exam.title, exam.publisher_name || '', booklet, rows, logo?.file_name); const versionRow = await one<{ version: number }>(env.DB.prepare(`SELECT max(version) version FROM exam_document_assets WHERE exam_id=? AND asset_type='PLAIN_ANSWER_KEY_PDF' AND booklet_code=?`).bind(examId, booklet)); const version = Number(versionRow?.version || 0) + 1;
+  const fileName = `${safeAssetName(exam.title)}-${booklet}-cevap-anahtari.pdf`; const key = `exams/${exam.academic_year}/${examId}/archive/plain-answer-key/v${version}-${booklet}.pdf`; await env.FILES.put(key, bytes, { httpMetadata: { contentType: 'application/pdf', cacheControl: 'private, no-store' } });
+  const id = uuid('eda'); await env.DB.prepare(`INSERT INTO exam_document_assets(id,exam_id,asset_type,booklet_code,r2_key,file_name,mime_type,byte_size,version,visibility,metadata_json,created_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id, examId, 'PLAIN_ANSWER_KEY_PDF', booklet, key, fileName, 'application/pdf', bytes.byteLength, version, 'STUDENT', JSON.stringify({ generatedFrom: 'ANSWER_KEYS', publisherLogoFile: logo?.file_name || null }), user.id).run();
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_PLAIN_ANSWER_KEY_GENERATED', 'exam', examId, { booklet, version, byteSize: bytes.byteLength });
+  return new Response(bytes, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${fileName}"`, 'Cache-Control': 'private, no-store', 'X-Anunex-Archive-Asset-Id': id } });
+}
+
+async function createExamVideo(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden(); const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.');
+  if (exam.owner_type === 'CENTRAL' && user.role !== 'SUPER_ADMIN') return forbidden('Merkezi sınav videolarını yalnız Super Admin yönetebilir.');
+  const body = await request.json<{ url?: string; title?: string; description?: string; linkType?: 'EXAM' | 'SOLUTION' | 'TOPIC'; examQuestionId?: string | null; outcomeId?: string | null; publishMode?: 'DRAFT' | 'NOW' | 'SCHEDULED'; publishAt?: string | null; visibility?: 'STUDENT_TEACHER' | 'PUBLIC' }>();
+  const url = String(body.url || '').trim(); const title = String(body.title || '').trim(); if (!validHttpUrl(url) || !title) return badRequest('HTTPS video bağlantısı ve başlık zorunludur.');
+  const linkType = body.linkType || 'EXAM'; if (linkType !== 'EXAM' && !body.examQuestionId && !body.outcomeId) return badRequest('Çözüm veya konu videosu soru ya da kazanıma bağlanmalıdır.');
+  if (body.examQuestionId && !(await one(env.DB.prepare('SELECT 1 FROM exam_questions WHERE id=? AND exam_id=?').bind(body.examQuestionId, examId)))) return badRequest('Video sorusu bu sınava ait değil.');
+  if (body.outcomeId && !(await one(env.DB.prepare('SELECT 1 FROM outcomes o JOIN question_outcomes qo ON qo.outcome_id=o.id JOIN exam_questions q ON q.id=qo.exam_question_id WHERE o.id=? AND q.exam_id=?').bind(body.outcomeId, examId)))) return badRequest('Video kazanımı bu sınava ait değil.');
+  let status: 'DRAFT' | 'SCHEDULED' | 'PUBLISHED' = 'DRAFT'; let publishAt: string | null = null; const mode = body.publishMode || 'DRAFT'; if (mode === 'NOW') status = 'PUBLISHED'; else if (mode === 'SCHEDULED') { const date = body.publishAt ? new Date(body.publishAt) : null; if (!date || Number.isNaN(date.getTime()) || date.getTime() <= Date.now()) return badRequest('Planlı yayın tarihi gelecekte olmalıdır.'); status = 'SCHEDULED'; publishAt = date.toISOString(); }
+  const id = uuid('vid'); await env.DB.prepare(`INSERT INTO video_links(id,exam_id,exam_question_id,outcome_id,link_type,provider,url,title,description,approved,status,publish_at,published_at,visibility,link_status,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,'UNKNOWN',CURRENT_TIMESTAMP)`).bind(id, examId, body.examQuestionId || null, body.outcomeId || null, linkType, 'EXTERNAL', url, title, body.description?.trim() || null, status === 'PUBLISHED' ? 1 : 0, status, publishAt, status === 'PUBLISHED' ? new Date().toISOString() : null, body.visibility || 'STUDENT_TEACHER').run();
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_VIDEO_CREATED', 'exam', examId, { videoId: id, linkType, status, publishAt }); return json({ ok: true, id, status }, 201);
+}
+
+async function updateExamVideo(request: Request, env: Env, user: AuthUser, examId: string, videoId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden(); const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.'); if (exam.owner_type === 'CENTRAL' && user.role !== 'SUPER_ADMIN') return forbidden('Merkezi sınav videolarını yalnız Super Admin yönetebilir.'); const body = await request.json<{ status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'; publishAt?: string | null }>(); const next = body.status; if (!next || !['DRAFT', 'PUBLISHED', 'ARCHIVED'].includes(next)) return badRequest('Geçersiz video durumu.'); const row = await one<any>(env.DB.prepare('SELECT id FROM video_links WHERE id=? AND exam_id=?').bind(videoId, examId)); if (!row) return notFound('Video bulunamadı.'); const published = next === 'PUBLISHED' ? 1 : 0; await env.DB.prepare(`UPDATE video_links SET status=?,approved=?,publish_at=?,published_at=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND exam_id=?`).bind(next, published, next === 'PUBLISHED' ? null : body.publishAt || null, next === 'PUBLISHED' ? new Date().toISOString() : null, videoId, examId).run(); await audit(env.DB, user.id, exam.institution_id, 'EXAM_VIDEO_STATUS_CHANGED', 'video_link', videoId, { status: next }); return json({ ok: true, status: next });
+}
+
+async function checkExamVideo(env: Env, user: AuthUser, examId: string, videoId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden();
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.');
+  const row = await one<any>(env.DB.prepare('SELECT id,url FROM video_links WHERE id=? AND exam_id=?').bind(videoId, examId)); if (!row) return notFound('Video bulunamadı.');
+  let status: 'OK' | 'BROKEN' = 'BROKEN';
+  try { const response = await fetch(row.url, { method: 'HEAD', redirect: 'manual' }); status = response.status >= 200 && response.status < 400 ? 'OK' : 'BROKEN'; } catch { status = 'BROKEN'; }
+  await env.DB.prepare('UPDATE video_links SET link_status=?,last_checked_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(status, videoId).run();
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_VIDEO_LINK_CHECKED', 'video_link', videoId, { linkStatus: status }); return json({ ok: true, linkStatus: status });
+}
+
+async function downloadExamAsset(request: Request, env: Env, user: AuthUser, examId: string, assetId: string): Promise<Response> {
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Bu sınav arşivine erişilemiyor.'); const visibility = user.role === 'SUPER_ADMIN' ? null : user.role === 'STUDENT' || user.role === 'PARENT' ? 'STUDENT' : 'INSTITUTION_TEACHER'; const asset = await one<any>(env.DB.prepare(`SELECT * FROM exam_document_assets WHERE id=? AND exam_id=? AND status=? AND (? IS NULL OR visibility IN (?, 'PUBLIC'))`).bind(assetId, examId, 'READY', visibility, visibility)); if (!asset) return notFound('Arşiv belgesi bulunamadı.'); const object = await env.FILES.get(asset.r2_key); if (!object) return notFound('Arşiv dosyası depolamada bulunamadı.'); await audit(env.DB, user.id, exam.institution_id, 'EXAM_ARCHIVE_ASSET_DOWNLOADED', 'exam_document_asset', assetId, { assetType: asset.asset_type }); const headers = new Headers({ 'Content-Type': asset.mime_type, 'Content-Disposition': `attachment; filename="${safeAssetName(asset.file_name)}"`, 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' }); object.writeHttpMetadata(headers); return new Response(object.body, { headers });
+}
+
+export async function publishScheduledExamVideos(env: Env): Promise<void> {
+  try { await env.DB.prepare(`UPDATE video_links SET status='PUBLISHED',approved=1,published_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE status='SCHEDULED' AND publish_at IS NOT NULL AND publish_at<=CURRENT_TIMESTAMP`).run(); } catch (error) { console.error('Scheduled exam video promotion failed', error); }
 }
 
 async function actor(env: Env, request: Request): Promise<AuthUser | Response> {
@@ -484,6 +619,39 @@ export default {
     if (filteredCatalog) return filteredCatalog;
 
     const url = new URL(request.url);
+    const plainPdfMatch = url.pathname.match(/^\/api\/exam-content\/([^/]+)\/plain-answer-key\.pdf$/);
+    if (plainPdfMatch) {
+      const auth = await contentUser(env, request);
+      if (auth instanceof Response) return auth;
+      return request.method === 'POST' ? generatePlainAnswerKey(request, env, auth, plainPdfMatch[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
+    const videoCheckMatch = url.pathname.match(/^\/api\/exam-content\/([^/]+)\/videos\/([^/]+)\/check$/);
+    if (videoCheckMatch) {
+      const auth = await contentUser(env, request);
+      if (auth instanceof Response) return auth;
+      return request.method === 'POST' ? checkExamVideo(env, auth, videoCheckMatch[1], videoCheckMatch[2]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
+    const contentMatch = url.pathname.match(/^\/api\/exam-content\/([^/]+)(?:\/assets\/([^/]+))?(?:\/videos(?:\/([^/]+))?)?$/);
+    if (contentMatch) {
+      const auth = await contentUser(env, request);
+      if (auth instanceof Response) return auth;
+      const examId = contentMatch[1];
+      if (contentMatch[2] && request.method === 'GET') return downloadExamAsset(request, env, auth, examId, contentMatch[2]);
+      if (contentMatch[3]) {
+        if (request.method === 'PATCH') return updateExamVideo(request, env, auth, examId, contentMatch[3]);
+        if (request.method === 'POST' && url.pathname.endsWith('/check')) return checkExamVideo(env, auth, examId, contentMatch[3]);
+        return err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+      }
+      if (url.pathname.endsWith('/videos') && request.method === 'POST') return createExamVideo(request, env, auth, examId);
+      if (url.pathname.endsWith('/plain-answer-key.pdf') && request.method === 'POST') return generatePlainAnswerKey(request, env, auth, examId);
+      return request.method === 'GET' ? contentList(env, auth, examId) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
+    const uploadMatch = url.pathname.match(/^\/api\/exam-content\/([^/]+)\/assets$/);
+    if (uploadMatch) {
+      const auth = await contentUser(env, request);
+      if (auth instanceof Response) return auth;
+      return request.method === 'POST' ? uploadContentAsset(request, env, auth, uploadMatch[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
     if (!url.pathname.startsWith('/api/exam-definitions')) return accessApp.fetch(request, env);
     const auth = await actor(env, request);
     if (auth instanceof Response) return auth;
@@ -511,5 +679,9 @@ export default {
     if (status) return request.method === 'PATCH' ? setStatus(request, env, auth, status[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
 
     return err(404, 'NOT_FOUND', 'Sınav tanımı API yolu bulunamadı.');
+  },
+  async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext) {
+    await publishScheduledExamVideos(env);
+    if ('scheduled' in accessApp && typeof accessApp.scheduled === 'function') return accessApp.scheduled(event, env, ctx);
   },
 } satisfies ExportedHandler<Env>;

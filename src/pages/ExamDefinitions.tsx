@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BookOpenCheck, Check, CheckCircle2, CircleAlert, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, UploadCloud, Workflow } from 'lucide-react';
+import { Archive, BookOpenCheck, Check, CheckCircle2, CircleAlert, Clock3, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, PlayCircle, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, UploadCloud, Workflow } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
@@ -12,6 +12,9 @@ type CreateMethod = 'ANSWER_KEY' | 'MANUAL';
 
 function subjectName(options: any, id: string) {
   return options.subjects?.find((s: any) => s.id === id)?.name || id;
+}
+function safeDownloadName(value: string) {
+  return value.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/-+/g, '-').slice(0, 80) || 'sinav';
 }
 
 export function ExamDefinitions() {
@@ -37,6 +40,7 @@ export function ExamDefinitions() {
   const [customScoring, setCustomScoring] = useState({ wrongMode: 'NONE', wrongDivisor: 4, scale: 100, customScale: 100, weights: {} as Record<string, number> });
   const [resultSettings, setResultSettings] = useState({ correct: true, wrong: true, blank: true, net: true, branchNet: true, successPercent: true, rawScore: true, standardScore: true, branchScore: true, totalScore: true, ranking: true, percentile: true, rankingScopes: ['INSTITUTION', 'DISTRICT', 'CITY', 'NATIONAL'] as string[], includeObp: false });
   const [answerKeyText, setAnswerKeyText] = useState('');
+  const [answerKeyFile, setAnswerKeyFile] = useState<File | null>(null);
   const [analysis, setAnalysis] = useState<ReturnType<typeof parseAnswerKeyText> | null>(null);
   const [booklets, setBooklets] = useState('A');
   const [subjects, setSubjects] = useState<SubjectConfig[]>([]);
@@ -44,6 +48,9 @@ export function ExamDefinitions() {
   const [outcomeMappings, setOutcomeMappings] = useState<OutcomeMap[]>([]);
   const [assignedInstitutions, setAssignedInstitutions] = useState<string[]>([]);
   const [outcomeRequired, setOutcomeRequired] = useState(false);
+  const [content, setContent] = useState<any>({ assets: [], videos: [] });
+  const [contentBusy, setContentBusy] = useState(false);
+  const [videoForm, setVideoForm] = useState({ url: '', title: '', linkType: 'EXAM', publishMode: 'DRAFT', publishAt: '', visibility: 'STUDENT_TEACHER' });
 
   const loadOptions = async (gradeLevel?: number) => {
     const data = await api<any>(`/api/exam-definitions/options${qs({ gradeLevel: gradeLevel || null })}`);
@@ -83,6 +90,7 @@ export function ExamDefinitions() {
     setOutcomeMappings(maps);
     setOutcomeRequired(data.exam.outcome_mode === 'OFFICIAL_REQUIRED' || maps.length > 0);
     setAssignedInstitutions((data.institutions || []).filter((x: any) => x.enabled).map((x: any) => x.institution_id));
+    try { setContent(await api<any>(`/api/exam-content/${id}`)); } catch { setContent({ assets: [], videos: [] }); }
     await loadOptions(Number(data.exam.grade_level) || undefined);
   };
 
@@ -153,6 +161,7 @@ export function ExamDefinitions() {
 
   const readAnswerFile = async (file?: File) => {
     if (!file) return;
+    setAnswerKeyFile(file);
     let text = '';
     if (file.name.toLowerCase().endsWith('.xlsx')) {
       const workbook = XLSX.read(await file.arrayBuffer(), { type: 'array' });
@@ -204,6 +213,7 @@ export function ExamDefinitions() {
       }
       if (keyEntries.length) {
         await api(`/api/exam-definitions/${created.id}/answer-key`, { method: 'PUT', body: JSON.stringify({ entries: keyEntries, outcomeMappings, outcomeMode: requiresOfficialOutcomes ? 'OFFICIAL_REQUIRED' : 'OPTIONAL' }) });
+        if (answerKeyFile) { const archive = new FormData(); archive.append('assetType', 'QUALIFIED_ANSWER_KEY'); archive.append('file', answerKeyFile); await api(`/api/exam-content/${created.id}/assets`, { method: 'POST', body: archive }); }
       }
       setOutcomeRequired(requiresOfficialOutcomes);
       setSelectedId(created.id);
@@ -277,6 +287,24 @@ export function ExamDefinitions() {
     setBusy(true); setError('');
     try { await api(`/api/exam-definitions/${selectedId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'ACTIVE' }) }); setNotice('Sınav yayınlandı.'); await loadDetail(selectedId); await loadRows(); } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
+
+  const uploadArchive = async (assetType: string, file?: File) => {
+    if (!selectedId || !file) return;
+    setContentBusy(true); setError('');
+    try { const form = new FormData(); form.append('assetType', assetType); form.append('file', file); await api(`/api/exam-content/${selectedId}/assets`, { method: 'POST', body: form }); setNotice('Belge sınav arşivine eklendi.'); setContent(await api<any>(`/api/exam-content/${selectedId}`)); }
+    catch (e: any) { setError(e.message); } finally { setContentBusy(false); }
+  };
+  const generatePlainPdf = async () => {
+    if (!selectedId) return; setContentBusy(true); setError('');
+    try { const response = await fetch(`/api/exam-content/${selectedId}/plain-answer-key.pdf?booklet=${encodeURIComponent((booklets.split(',')[0] || 'A').trim())}`, { method: 'POST', credentials: 'include' }); if (!response.ok) { const payload = await response.json().catch(() => null); throw new Error(payload?.error?.message || 'PDF üretilemedi.'); } const blob = await response.blob(); const url = URL.createObjectURL(blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = `${safeDownloadName(detail?.exam?.title || 'sinav')}-cevap-anahtari.pdf`; anchor.click(); URL.revokeObjectURL(url); setNotice('Kazanımsız, markalı cevap anahtarı oluşturuldu ve arşive eklendi.'); setContent(await api<any>(`/api/exam-content/${selectedId}`)); }
+    catch (e: any) { setError(e.message); } finally { setContentBusy(false); }
+  };
+  const addVideo = async () => {
+    if (!selectedId) return; setContentBusy(true); setError('');
+    try { await api(`/api/exam-content/${selectedId}/videos`, { method: 'POST', body: JSON.stringify({ ...videoForm, publishAt: videoForm.publishAt ? new Date(videoForm.publishAt).toISOString() : null }) }); setVideoForm({ url: '', title: '', linkType: 'EXAM', publishMode: 'DRAFT', publishAt: '', visibility: 'STUDENT_TEACHER' }); setNotice('Video bağlantısı kaydedildi.'); setContent(await api<any>(`/api/exam-content/${selectedId}`)); }
+    catch (e: any) { setError(e.message); } finally { setContentBusy(false); }
+  };
+  const publishVideo = async (id: string) => { if (!selectedId) return; setContentBusy(true); try { await api(`/api/exam-content/${selectedId}/videos/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'PUBLISHED' }) }); setNotice('Video yayınlandı.'); setContent(await api<any>(`/api/exam-content/${selectedId}`)); } catch (e: any) { setError(e.message); } finally { setContentBusy(false); } };
 
   const totalConfiguredQuestions = subjects.reduce((total, subject) => total + Number(subject.questionCount || 0), 0);
   const totalAnswerSlots = keyEntries.reduce((total, entry) => total + cleanAnswers(entry.answers).length, 0);
@@ -379,6 +407,17 @@ export function ExamDefinitions() {
 
         {detail.exam.owner_type === 'CENTRAL' && user?.role === 'SUPER_ADMIN' && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Hangi kurumlar kullanacak?</h2><p>Merkezi sınav yalnız seçtiğiniz kurumlarda görünür.</p></div></div><div className="cards-list">{options.institutions?.map((i: any) => <label className="list-card" key={i.id}><input type="checkbox" checked={assignedInstitutions.includes(i.id)} onChange={(e) => setAssignedInstitutions((x) => e.target.checked ? [...new Set([...x, i.id])] : x.filter((id) => id !== i.id))} /><div><strong>{i.name}</strong><span>{i.status}</span></div></label>)}</div><button className="secondary" onClick={saveInstitutions}><Save size={16} /> Kurumları Kaydet</button></div>}
       </>}
+      <section className="panel" style={{ marginBottom: 20 }}>
+        <div className="panel-head"><div><h2><Archive size={19} style={{ verticalAlign: 'middle', marginRight: 7 }} /> Sınav İçerik Arşivi</h2><p>Bu sınava ait kazanımlı anahtar, markalı PDF, logo ve video içerikleri merkezi <code>exam_id</code> altında tutulur.</p></div><span className="status ok">Tek kayıt</span></div>
+        <div className="form-grid" style={{ alignItems: 'end' }}>
+          <label>Kazanımlı cevap anahtarı (PDF)<input type="file" accept=".pdf" disabled={contentBusy} onChange={(e) => void uploadArchive('QUALIFIED_ANSWER_KEY', e.target.files?.[0])} /></label>
+          <label>Kaynak cevap anahtarı (CSV / XLSX)<input type="file" accept=".csv,.xlsx,.pdf" disabled={contentBusy} onChange={(e) => void uploadArchive('SOURCE_ANSWER_KEY', e.target.files?.[0])} /></label>
+          <label>Yayınevi logosu<input type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" disabled={contentBusy} onChange={(e) => void uploadArchive('PUBLISHER_LOGO', e.target.files?.[0])} /></label>
+          <button className="primary" disabled={contentBusy || !detail.answerKey?.length} onClick={() => void generatePlainPdf()}><FileText size={16} /> Kazanımsız PDF üret</button>
+        </div>
+        <div className="table-card" style={{ marginTop: 15 }}><table><thead><tr><th>Belge</th><th>Tür</th><th>Sürüm</th><th>Tarih</th><th></th></tr></thead><tbody>{(content.assets || []).map((asset: any) => <tr key={asset.id}><td><strong>{asset.file_name}</strong><br /><small>{Math.round(Number(asset.byte_size || 0) / 1024)} KB</small></td><td>{asset.asset_type === 'QUALIFIED_ANSWER_KEY' ? 'Kazanımlı anahtar' : asset.asset_type === 'PLAIN_ANSWER_KEY_PDF' ? 'Kazanımsız markalı PDF' : asset.asset_type === 'PUBLISHER_LOGO' ? 'Yayınevi logosu' : 'Kaynak dosya'}</td><td>v{asset.version}</td><td>{asset.created_at}</td><td><a className="ghost" href={`/api/exam-content/${selectedId}/assets/${asset.id}`}>İndir</a></td></tr>)}{!content.assets?.length && <tr><td colSpan={5}>Henüz bu sınava bağlı arşiv belgesi yok.</td></tr>}</tbody></table></div>
+        <div className="panel" style={{ margin: '15px 0 0', background: 'var(--surface-muted, #f7f9ff)' }}><div className="panel-head"><div><h3><PlayCircle size={17} style={{ verticalAlign: 'middle', marginRight: 6 }} /> Video çözümü / konu bağlantısı</h3><p>Öğrenci yalnızca sınava katıldıysa, yayınlanmış içeriği kendi sonuç ekranında görür.</p></div></div><div className="form-grid" style={{ alignItems: 'end' }}><label>Video başlığı<input value={videoForm.title} onChange={(e) => setVideoForm((v) => ({ ...v, title: e.target.value }))} placeholder="Örn. TYT Matematik 12. soru çözümü" /></label><label>HTTPS video linki<input value={videoForm.url} onChange={(e) => setVideoForm((v) => ({ ...v, url: e.target.value }))} placeholder="https://..." /></label><label>İçerik türü<select value={videoForm.linkType} onChange={(e) => setVideoForm((v) => ({ ...v, linkType: e.target.value }))}><option value="EXAM">Deneme geneli</option><option value="SOLUTION">Soru çözümü</option><option value="TOPIC">Konu anlatımı</option></select></label><label>Yayın zamanı<select value={videoForm.publishMode} onChange={(e) => setVideoForm((v) => ({ ...v, publishMode: e.target.value }))}><option value="DRAFT">Taslak</option><option value="NOW">Şimdi yayınla</option><option value="SCHEDULED">Tarih planla</option></select></label>{videoForm.publishMode === 'SCHEDULED' && <label><Clock3 size={14} /> İstanbul saati<input type="datetime-local" value={videoForm.publishAt} onChange={(e) => setVideoForm((v) => ({ ...v, publishAt: e.target.value }))} /></label>}<button className="primary" disabled={contentBusy || !videoForm.title || !videoForm.url} onClick={() => void addVideo()}><Save size={16} /> Videoyu kaydet</button></div><div className="table-card" style={{ marginTop: 15 }}><table><thead><tr><th>Başlık</th><th>Tür</th><th>Durum</th><th>Yayın</th><th></th></tr></thead><tbody>{(content.videos || []).map((video: any) => <tr key={video.id}><td><strong>{video.title}</strong><br /><a href={video.url} target="_blank" rel="noreferrer">Bağlantıyı aç</a></td><td>{video.link_type}</td><td><span className={`status ${video.status === 'PUBLISHED' ? 'ok' : 'neutral'}`}>{video.status}</span></td><td>{video.publish_at || video.published_at || '—'}</td><td>{video.status !== 'PUBLISHED' && <button className="ghost" onClick={() => void publishVideo(video.id)}>Yayınla</button>}</td></tr>)}{!content.videos?.length && <tr><td colSpan={5}>Henüz bu sınava bağlı video yok.</td></tr>}</tbody></table></div></div>
+      </section>
       {!detail.readiness?.ready_to_publish && <div className="alert warning"><CircleAlert size={16} /> Yayın için soru sayısı, bütün kitapçık cevapları ve doğrulanmış puanlama kuralı tamamlanmalıdır.{outcomeRequired ? ' Kazanımlı sınavda ayrıca her soru kazanıma bağlanmalıdır.' : ''}</div>}
     </>}
   </>;

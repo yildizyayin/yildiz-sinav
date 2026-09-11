@@ -14,8 +14,12 @@ async function examReview(request:Request,env:Env){
   const rows=await all<any>(env.DB.prepare(`SELECT e.id exam_id,e.title exam_title,e.exam_date,q.id question_id,q.question_no,q.global_no,
     s.id subject_id,s.name subject_name,sa.answer,sa.status,ak.correct_answer,
     o.id outcome_id,o.title outcome_title,o.topic,o.subtopic,
-    EXISTS(SELECT 1 FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND vl.approved=1) has_solution_video,
-    EXISTS(SELECT 1 FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND vl.approved=1) has_topic_video
+    EXISTS(SELECT 1 FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND vl.approved=1 AND (vl.status='PUBLISHED' OR vl.status IS NULL)) has_solution_video,
+    (SELECT vl.url FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND vl.approved=1 AND (vl.status='PUBLISHED' OR vl.status IS NULL) ORDER BY vl.published_at DESC,vl.id DESC LIMIT 1) solution_video_url,
+    (SELECT vl.title FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND vl.approved=1 AND (vl.status='PUBLISHED' OR vl.status IS NULL) ORDER BY vl.published_at DESC,vl.id DESC LIMIT 1) solution_video_title,
+    EXISTS(SELECT 1 FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND vl.approved=1 AND (vl.status='PUBLISHED' OR vl.status IS NULL)) has_topic_video,
+    (SELECT vl.url FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND vl.approved=1 AND (vl.status='PUBLISHED' OR vl.status IS NULL) ORDER BY vl.published_at DESC,vl.id DESC LIMIT 1) topic_video_url,
+    (SELECT vl.title FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND vl.approved=1 AND (vl.status='PUBLISHED' OR vl.status IS NULL) ORDER BY vl.published_at DESC,vl.id DESC LIMIT 1) topic_video_title
     FROM exam_participants ep
     JOIN exams e ON e.id=ep.exam_id
     JOIN student_answers sa ON sa.participant_id=ep.id
@@ -27,7 +31,8 @@ async function examReview(request:Request,env:Env){
     WHERE ep.student_id=? AND e.id=?
     ORDER BY coalesce(q.global_no,9999),s.name,q.question_no`).bind(user.student_id,examId));
   if(!rows.length)return fail(404,'REVIEW_NOT_FOUND','Bu sınav için incelenebilir öğrenci cevabı bulunamadı.');
-  return json({ok:true,exam:{id:examId,title:rows[0].exam_title,examDate:rows[0].exam_date},answers:rows});
+  const videos=await all<any>(env.DB.prepare(`SELECT id,title,url,link_type,description,published_at FROM video_links WHERE exam_id=? AND status='PUBLISHED' AND approved=1 AND (publish_at IS NULL OR publish_at<=CURRENT_TIMESTAMP) ORDER BY published_at DESC`).bind(examId));
+  return json({ok:true,exam:{id:examId,title:rows[0].exam_title,examDate:rows[0].exam_date},answers:rows,videos});
 }
 
 export default {
