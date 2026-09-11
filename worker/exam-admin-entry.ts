@@ -94,11 +94,37 @@ function makeAnswerKeyPdf(title: string, publisher: string, booklet: string, row
 async function contentList(env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await contentExam(env, user, examId); if (!exam) return notFound('Bu sınav içeriğine erişilemiyor.');
   const assetVisibility = user.role === 'SUPER_ADMIN' ? null : user.role === 'STUDENT' || user.role === 'PARENT' ? 'STUDENT' : 'INSTITUTION_TEACHER';
-  const [assets, videos] = await Promise.all([
+  const [assets, videos, opticalBindings, opticals] = await Promise.all([
     all<any>(env.DB.prepare(`SELECT id,asset_type,booklet_code,file_name,mime_type,byte_size,version,status,visibility,metadata_json,created_at FROM exam_document_assets WHERE exam_id=? AND status='READY' AND (? IS NULL OR visibility IN (?, 'PUBLIC')) ORDER BY created_at DESC`).bind(examId, assetVisibility, assetVisibility)),
     all<any>(env.DB.prepare(`SELECT id,exam_question_id,outcome_id,link_type,provider,url,title,description,status,publish_at,published_at,visibility,link_status,last_checked_at FROM video_links WHERE exam_id=? AND ((status='PUBLISHED' AND (publish_at IS NULL OR publish_at<=CURRENT_TIMESTAMP) AND visibility IN ('PUBLIC','STUDENT_TEACHER')) OR ? IN ('SUPER_ADMIN','INSTITUTION_MANAGER')) ORDER BY coalesce(published_at,publish_at,updated_at) DESC`).bind(examId, user.role)),
+    all<any>(env.DB.prepare(`SELECT b.id,b.booklet_code,b.optical_template_version_id,b.input_modes_json,b.active,t.name template_name,t.vendor,v.version template_version,v.page_width_mm,v.page_height_mm FROM exam_optical_bindings b JOIN optical_template_versions v ON v.id=b.optical_template_version_id JOIN optical_templates t ON t.id=v.template_id WHERE b.exam_id=? AND b.active=1 ORDER BY b.booklet_code`).bind(examId)),
+    ['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)
+      ? all<any>(env.DB.prepare(`SELECT v.id version_id,t.name,t.vendor,v.version,v.page_width_mm,v.page_height_mm FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id LEFT JOIN optical_definition_validations d ON d.optical_template_version_id=v.id WHERE t.active=1 AND t.status='READY' AND v.active=1 AND v.parser_definition IS NOT NULL AND coalesce(d.parser_test_passed,0)=1 ORDER BY t.name,v.version`))
+      : Promise.resolve([]),
   ]);
-  return json({ ok: true, exam: { id: exam.id, title: exam.title, publisherName: exam.publisher_name }, assets, videos });
+  return json({ ok: true, exam: { id: exam.id, title: exam.title, publisherName: exam.publisher_name }, assets, videos, opticalBindings, opticals });
+}
+
+async function replaceExamOptical(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden();
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.');
+  if (exam.owner_type === 'CENTRAL' && user.role !== 'SUPER_ADMIN') return forbidden('Merkezi sınav optik bağını yalnız Super Admin yönetebilir.');
+  const body = await request.json<{ opticalTemplateVersionId?: string; bookletCodes?: string[]; inputModes?: string[] }>();
+  const versionId = String(body.opticalTemplateVersionId || '').trim();
+  const version = await one<any>(env.DB.prepare(`SELECT v.id,t.name,t.status,v.active,v.parser_definition,v.camera_geometry,v.print_fields,v.fiducials,coalesce(d.parser_test_passed,0) parser_test_passed FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id LEFT JOIN optical_definition_validations d ON d.optical_template_version_id=v.id WHERE v.id=? AND t.active=1`).bind(versionId));
+  if (!version || !version.active || version.status !== 'READY') return badRequest('Yalnız yayındaki READY optik sürümü bağlanabilir.', 'OPTICAL_NOT_READY');
+  const modes = [...new Set((body.inputModes || ['TXT', 'DAT', 'CAMERA']).map((x) => String(x).toUpperCase()).filter((x) => ['TXT', 'DAT', 'CAMERA'].includes(x)))];
+  if (!modes.length) return badRequest('En az bir okuma yöntemi seçilmelidir.');
+  if (!version.parser_definition && modes.some((x) => x === 'TXT' || x === 'DAT')) return badRequest('TXT/DAT okuması için parser tanımı tamamlanmalıdır.');
+  if (!version.camera_geometry || !version.fiducials) { if (modes.includes('CAMERA')) return badRequest('Telefon kamerası için kamera geometrisi ve referans hedefleri tamamlanmalıdır.'); }
+  if (modes.includes('TXT') || modes.includes('DAT')) { if (!Number(version.parser_test_passed)) return badRequest('TXT/DAT için örnek dosya parser testi başarıyla tamamlanmalıdır.'); }
+  const available = await all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code').bind(examId));
+  const allowed = new Set(available.map((x) => x.code)); const bookletCodes = [...new Set((body.bookletCodes?.length ? body.bookletCodes : available.map((x) => x.code)).map((x) => String(x).trim().toUpperCase()).filter((x) => allowed.has(x)))];
+  if (!bookletCodes.length) return badRequest('Sınavda tanımlı kitapçıklardan en az biri seçilmelidir.');
+  const statements: D1PreparedStatement[] = [env.DB.prepare('UPDATE exam_optical_bindings SET active=0,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?').bind(examId)];
+  for (const bookletCode of bookletCodes) statements.push(env.DB.prepare(`INSERT INTO exam_optical_bindings(id,exam_id,booklet_code,optical_template_version_id,input_modes_json,active,created_by) VALUES(?,?,?,?,?,1,?)`).bind(uuid('eob'), examId, bookletCode, versionId, JSON.stringify(modes), user.id));
+  await env.DB.batch(statements); await audit(env.DB, user.id, exam.institution_id, 'EXAM_OPTICAL_BOUND', 'exam', examId, { opticalTemplateVersionId: versionId, bookletCodes, inputModes: modes });
+  return json({ ok: true, versionId, bookletCodes, inputModes: modes });
 }
 
 async function uploadContentAsset(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
@@ -631,6 +657,12 @@ export default {
       const auth = await contentUser(env, request);
       if (auth instanceof Response) return auth;
       return request.method === 'POST' ? checkExamVideo(env, auth, videoCheckMatch[1], videoCheckMatch[2]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
+    const opticalBindingMatch = url.pathname.match(/^\/api\/exam-content\/([^/]+)\/optical$/);
+    if (opticalBindingMatch) {
+      const auth = await contentUser(env, request);
+      if (auth instanceof Response) return auth;
+      return request.method === 'PUT' ? replaceExamOptical(request, env, auth, opticalBindingMatch[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     }
     const contentMatch = url.pathname.match(/^\/api\/exam-content\/([^/]+)(?:\/assets\/([^/]+))?(?:\/videos(?:\/([^/]+))?)?$/);
     if (contentMatch) {
