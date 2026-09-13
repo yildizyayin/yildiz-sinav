@@ -132,6 +132,18 @@ async function institutionContext(env: Env, institutionId: string) {
   return { institution, activeStudents: students?.c || 0, activeClasses: classes?.c || 0, pendingScans: pendingScans?.c || 0, todayExams: todayExams?.c || 0, recentExams };
 }
 
+async function selectCapabilityLabStudent(env: Env, user: AuthUser, requestedStudentId?: string | null) {
+  if (user.role !== 'SUPER_ADMIN' || !requestedStudentId) return null;
+  return one<any>(env.DB.prepare(`
+    SELECT s.id,s.first_name,s.last_name,e.grade_level,e.section,e.student_number,i.id institution_id
+    FROM student_entities s
+    JOIN student_enrollments e ON e.student_id=s.id AND e.status='ACTIVE'
+    JOIN institutions i ON i.id=e.institution_id AND i.demo_mode=1 AND i.code='NIBIRU-LAB'
+    WHERE s.id=? AND s.status='ACTIVE'
+    LIMIT 1
+  `).bind(requestedStudentId));
+}
+
 async function latestSession(env: Env, channel: 'WHATSAPP' | 'WEB', key: string) {
   return one<any>(env.DB.prepare(`SELECT * FROM nibiru_sessions WHERE channel=? AND channel_user_key=? AND expires_at>datetime('now')`).bind(channel,key));
 }
@@ -275,7 +287,7 @@ function fallbackAnswer(intent: NibiruIntent, context: any) {
   return `${AI_PREFIX} Bu soruyu yanıtlayacak yeterli doğrulanmış akademik veri bulamadım.`;
 }
 
-export async function runNibiru(env: Env, user: AuthUser, message: string, channel: 'WHATSAPP' | 'WEB', channelKey: string): Promise<NibiruResult> {
+export async function runNibiru(env: Env, user: AuthUser, message: string, channel: 'WHATSAPP' | 'WEB', channelKey: string, options: { labStudentId?: string | null } = {}): Promise<NibiruResult> {
   const session = await latestSession(env,channel,channelKey);
   const intent = detectNibiruIntent(message,session?.last_intent);
   const specialist = routeNibiruSpecialist(user,message);
@@ -286,7 +298,20 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
   let examId: string | null = null;
   let coachPlan: CoachPlanResult | null = null;
 
-  if (user.role === 'PARENT' || user.role === 'STUDENT') {
+  const labStudent = await selectCapabilityLabStudent(env,user,options.labStudentId);
+  if (labStudent) {
+    studentId = String(labStudent.id);
+    context = await studentAcademicContext(env,studentId,String(labStudent.institution_id));
+    context = {
+      ...context,
+      capabilityLab: {
+        label:'ANUNEX Nibiru Yetenek Laboratuvarı',
+        synthetic:true,
+        notice:'Bu bağlam yalnızca sentetik kabul testi içindir; gerçek kişi veya kurum verisi değildir.',
+      },
+    };
+    examId = context.latestExam?.id || null;
+  } else if (user.role === 'PARENT' || user.role === 'STUDENT') {
     const selected = await selectStudent(env,user,message,session?.last_student_id);
     if (!selected.student) {
       context = selected.choices.length > 1 ? { disambiguation: selected.choices } : { noStudent: true };
