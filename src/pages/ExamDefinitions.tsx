@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Archive, BookOpenCheck, Check, CheckCircle2, CircleAlert, Clock3, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, PlayCircle, Printer, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, UploadCloud, Workflow } from 'lucide-react';
+import { Archive, BookOpenCheck, Check, CheckCircle2, ChevronRight, CircleAlert, Clock3, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, PlayCircle, Printer, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, UploadCloud, Workflow } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
@@ -26,6 +26,7 @@ export function ExamDefinitions() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [builderStep, setBuilderStep] = useState(1);
 
   const [createMethod, setCreateMethod] = useState<CreateMethod>('ANSWER_KEY');
   const [definitionMode, setDefinitionMode] = useState<DefinitionMode>('STANDARD');
@@ -335,10 +336,19 @@ export function ExamDefinitions() {
 
       {error && <div className="alert error">{error}</div>}
       {notice && <div className="alert success">{notice}</div>}
+      <div className="exam-builder-stepper" aria-label="Sınav oluşturma adımları">
+        <button type="button" className={builderStep === 1 ? "active" : ""} onClick={() => setBuilderStep(1)}><span>01</span><strong>Sınav kartı</strong><small>Temel bilgileri girin</small></button>
+        <i aria-hidden="true" />
+        <button type="button" className={builderStep === 2 ? "active" : ""} onClick={() => setBuilderStep(2)}><span>02</span><strong>Cevap anahtarı</strong><small>Şablon veya manuel giriş</small></button>
+        <i aria-hidden="true" />
+        <button type="button" className={builderStep === 3 ? "active" : ""} onClick={() => setBuilderStep(3)}><span>03</span><strong>Puanlama</strong><small>Resmî veya özel profil</small></button>
+        <i aria-hidden="true" />
+        <button type="button" className={builderStep === 4 ? "active" : ""} onClick={() => setBuilderStep(4)}><span>04</span><strong>Kontrol ve yayın</strong><small>Oluşturmadan önce son kontrol</small></button>
+      </div>
 
       <div className="exam-builder-layout">
         <div className="exam-builder-main">
-          <section className="builder-card architecture-card">
+          <section className="builder-card architecture-card" style={{ display: builderStep === 1 ? "block" : "none" }}>
             <div className="builder-step-head">
               <span className="builder-step-number">1</span>
               <div><span className="eyebrow">TEMEL BİLGİLER</span><h2>Sınav Kartı</h2><p>Sınavın temel bilgilerini girin. Seçtiğiniz tür, ders yapısını ve puanlama profilini hazırlar.</p></div>
@@ -358,7 +368,7 @@ export function ExamDefinitions() {
             </div>
           </section>
 
-          <section className="builder-card architecture-card">
+          <section className="builder-card architecture-card" style={{ display: builderStep === 2 ? "block" : "none" }}>
             <div className="builder-step-head">
               <span className="builder-step-number">2</span>
               <div><span className="eyebrow">SORU VE KAZANIMLAR</span><h2>Cevap Anahtarı</h2><p>Hazır şablon kullanın veya standart dışı sınavı kendiniz oluşturun.</p></div>
@@ -381,7 +391,7 @@ export function ExamDefinitions() {
             </> : <div className="cards-list builder-subject-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" min="1" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" min={cfg.questionStart} value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label></>}</div>; })}</div>}
           </section>
 
-          <section className="builder-card architecture-card">
+          <section className="builder-card architecture-card" style={{ display: builderStep === 3 ? "block" : "none" }}>
             <div className="builder-step-head">
               <span className="builder-step-number">3</span>
               <div><span className="eyebrow">DEĞERLENDİRME KURALI</span><h2>Puan Hesaplama</h2><p>Resmî MEB / ÖSYM profilini kullanın veya özel deneme kuralını belirleyin.</p></div>
@@ -391,7 +401,7 @@ export function ExamDefinitions() {
             <div className="result-settings-box"><div><strong>Sonuçta gösterilecekler ve sıralama</strong><span>Değerlendirme motoru yalnız seçilen sonuç metriklerini üretir.</span></div><div className="check-grid">{[['correct','Doğru'],['wrong','Yanlış'],['blank','Boş'],['net','Net'],['branchNet','Branş neti'],['successPercent','Başarı yüzdesi'],['rawScore','Ham puan'],['standardScore','Standart puan'],['branchScore','Branş puanı'],['totalScore','Toplam puan'],['ranking','Sıralama'],['percentile','Yüzdelik dilim']].map(([key, label]) => <label key={key}><input type="checkbox" checked={Boolean((resultSettings as any)[key])} onChange={(e) => setResultSettings((x) => ({ ...x, [key]: e.target.checked }))} />{label}</label>)}</div><div className="ranking-scope-row"><strong>Sıralama kapsamı</strong>{[['INSTITUTION','Kurum'],['DISTRICT','İlçe'],['CITY','İl'],['NATIONAL','Türkiye'],['NETWORK','Zincir']].map(([value, label]) => <label key={value}><input type="checkbox" checked={resultSettings.rankingScopes.includes(value)} onChange={(e) => setResultSettings((x) => ({ ...x, rankingScopes: e.target.checked ? [...new Set([...x.rankingScopes, value])] : x.rankingScopes.filter((scope) => scope !== value) }))} />{label}</label>)}</div>{(selectedScoring?.rule_code?.startsWith('OSYM_YKS_') || selectedChoice.examType === 'AYT' || selectedChoice.examType === 'YDT') && <label className="publish-toggle"><input type="checkbox" checked={resultSettings.includeObp} onChange={(e) => setResultSettings((x) => ({ ...x, includeObp: e.target.checked }))} /><span><strong>OBP katkısını kullan</strong><small>YKS sonuçlarında gerektiğinde adayın OBP verisi ayrıca işlenir.</small></span></label>}</div>
           </section>
 
-          <section className="builder-card architecture-card publication-card">
+          <section className="builder-card architecture-card publication-card" style={{ display: builderStep === 4 ? "block" : "none" }}>
             <div className="builder-step-head"><span className="builder-step-number">4</span><div><span className="eyebrow">YAYIN VE KONTROL</span><h2>Yayın Ayarı / Önizleme</h2><p>Sınav oluşturulmadan önce bilgileri son kez kontrol edin.</p></div></div>
             <div className="publication-preview"><div className="publication-system"><Globe2 size={19}/><div><strong>app.anunex.com</strong><span>Varsayılan merkezi sistem</span></div></div><label className="publish-toggle inline-publish"><input type="checkbox" checked={createForm.resultNetworkEnabled} onChange={(e) => setCreateForm((f) => ({ ...f, resultNetworkEnabled: e.target.checked }))} /><span><strong>Bu sınav sonuc.anunex.com'da yayınlansın</strong><small>Oluşturulan sınav, onay sonrası sonuç platformunda görüntülenir.</small></span></label><div className="live-preview-chip"><Eye size={16}/><span><strong>Sınavı önizle</strong><small>{selectedChoice.label} · {totalConfiguredQuestions} soru · {selectedScoring?.rule_name || 'Puanlama profili seçilmedi'}</small></span></div></div>
             <div className="builder-create-row"><div><strong>Hazır olduğunuzda sınavı oluşturun</strong><span>Oluşturulan kayıt önce taslak olarak açılır; optik/FMT daha sonra bağlanır.</span></div><div className="builder-action-buttons"><button type="button" className="secondary" disabled={busy} onClick={() => setNotice('Taslak bilgileri bu oturumda hazır. Sınav oluşturduğunuzda kalıcı olarak kaydedilir.')}><Save size={16}/> Taslak Kaydet</button><button type="button" className="primary builder-create-button" disabled={busy || !createForm.title.trim()} onClick={createExam}><Check size={17}/> Sınav Oluştur</button></div></div>
@@ -399,10 +409,36 @@ export function ExamDefinitions() {
         </div>
 
         <aside className="exam-builder-summary">
-          <div className="architecture-panel workflow-panel"><div className="architecture-panel-title"><Workflow size={28}/><div><h2>Önerilen İş Akışı</h2><p>Sınav oluşturma sürecinin adım adım akışı</p></div><span className="recommended-badge"><CheckCircle2 size={13}/> Önerilen</span></div><div className="workflow-line">{[['1','Sınav Kartı','Bilgileri'],['2','Şablon Seç veya','Kendin Oluştur'],['3','Cevap Anahtarı','Yükle'],['4','Kazanım','Eşleştir'],['5','Önizleme &','Doğrulama'],['6','Sınav','Oluştur'],['7','Yayın Durumu:','app / sonuc']].map(([number, title, subtitle], index) => <div className="workflow-step" key={number}><span className="workflow-number">{number}</span><span className="workflow-icon">{index === 0 ? <FileText size={19}/> : index === 1 ? <Layers3 size={19}/> : index === 2 ? <UploadCloud size={19}/> : index === 3 ? <Link2 size={19}/> : index === 4 ? <Eye size={19}/> : index === 5 ? <Check size={19}/> : <Share2 size={19}/>}</span><strong>{title}<br/>{subtitle}</strong></div>)}</div><div className="architecture-info"><Info size={18}/><span>Bu akış, Süper Admin’in en hızlı ve hatasız şekilde sınav oluşturabilmesi için tasarlanmıştır.</span></div></div>
-          <div className="architecture-panel option-panel"><div className="architecture-panel-title"><Layers3 size={28}/><div><h2>Mimari Seçenekler</h2><p>Sınav oluşturma ve yayınlama için önerilen yaklaşım</p></div></div><div className="architecture-option selected"><div className="option-heading"><span className="option-letter">A</span><strong>Model A — Tek Panel + Yayın Onayı</strong><span className="recommended-badge">Önerilen</span></div>{['Süper Admin tek ekrandan sınav açar','Yayın kutusu ile sonuc.anunex.com kontrol edilir','Optik / FMT daha sonra tanımlanır','Daha az adım, daha hızlı kullanım'].map((item) => <div className="option-point" key={item}><CheckCircle2 size={16}/><span>{item}</span></div>)}<div className="option-note">Hızlı uygulama, düşük operasyon yükü, maksimum verim.</div></div><div className="architecture-option"><div className="option-heading"><span className="option-letter muted-letter">B</span><strong>Model B — Ayrı Hazırlık Alanı</strong></div><div className="option-point"><CheckCircle2 size={16}/><span>Daha kapsamlı yapı; ancak kurulum ve kullanım maliyeti daha yüksek.</span></div></div></div>
-          <div className="architecture-panel requirements-panel"><div className="architecture-panel-title"><ShieldCheck size={28}/><div><h2>Cevap Anahtarında Olmazsa Olmazlar</h2><p>Doğru, tutarlı ve hatasız bir sınav için kritik gereksinimler</p></div></div><div className="requirements-grid">{['Ders bazlı bölümleme','Boş / geçersiz cevap kontrolü','4 ve 5 şıklı soru desteği','Kazanım kodu + açıklaması','Soru no aralık kontrolü','Önizleme ve doğrulama zorunlu','Taslak kaydetme desteği','İptal / değerlendirme dışı soru'].map((item) => <div key={item}><CheckCircle2 size={16}/><span>{item}</span></div>)}</div></div>
-          <div className="summary-card live-summary-card"><div className="summary-card-head"><span className="eyebrow">CANLI ÖNİZLEME</span><CheckCircle2 size={20}/></div><h2>{createForm.title.trim() || 'Yeni sınav'}</h2><p>{selectedChoice.label} · {createForm.academicYear}</p><div className="summary-metrics"><div><strong>{totalConfiguredQuestions}</strong><span>toplam soru</span></div><div><strong>{totalAnswerSlots}</strong><span>cevap alanı</span></div></div><div className="summary-checklist"><div className={createForm.title.trim() ? 'ready' : ''}><span>1</span><span>Sınav kartı</span><b>{createForm.title.trim() ? 'Hazır' : 'Bekliyor'}</b></div><div className={subjects.length ? 'ready' : ''}><span>2</span><span>Ders yapısı</span><b>{subjects.length ? subjects.length + ' test' : 'Bekliyor'}</b></div><div className={createMethod === 'MANUAL' || keyEntries.length ? 'ready' : ''}><span>3</span><span>Cevap anahtarı</span><b>{createMethod === 'MANUAL' ? 'Manuel' : (keyEntries.length ? 'Hazır' : 'Bekliyor')}</b></div></div><div className="summary-tip"><Sparkles size={16}/><span>Kazanımlı sınavlarda yayın öncesi her soru bir kazanıma bağlanır.</span></div></div>
+          <div className="summary-card live-summary-card">
+            <div className="summary-card-head"><span className="eyebrow">SINAV ÖZETİ</span><CheckCircle2 size={20}/></div>
+            <h2>{createForm.title.trim() || "Yeni sınav"}</h2>
+            <p>{selectedChoice.label} · {createForm.academicYear}</p>
+            <div className="summary-metrics"><div><strong>{totalConfiguredQuestions}</strong><span>toplam soru</span></div><div><strong>{totalAnswerSlots}</strong><span>cevap alanı</span></div></div>
+            <div className="summary-checklist">
+              <div className={createForm.title.trim() ? "ready" : ""}><span>1</span><span>Sınav kartı</span><b>{createForm.title.trim() ? "Hazır" : "Bekliyor"}</b></div>
+              <div className={subjects.length ? "ready" : ""}><span>2</span><span>Ders yapısı</span><b>{subjects.length ? subjects.length + " test" : "Bekliyor"}</b></div>
+              <div className={createMethod === "MANUAL" || keyEntries.length ? "ready" : ""}><span>3</span><span>Cevap anahtarı</span><b>{createMethod === "MANUAL" ? "Manuel" : (keyEntries.length ? "Hazır" : "Bekliyor")}</b></div>
+              <div className={createForm.scoringRuleVersionId ? "ready" : ""}><span>4</span><span>Puanlama profili</span><b>{createForm.scoringRuleVersionId ? "Seçildi" : "Bekliyor"}</b></div>
+            </div>
+          </div>
+          <div className="architecture-panel workflow-panel">
+            <div className="architecture-panel-title"><Workflow size={24}/><div><h2>Bu sınavı oluştur</h2><p>Adımlar arasında istediğiniz zaman geçebilirsiniz.</p></div></div>
+            <div className="builder-summary-step-list">
+              <button type="button" className={builderStep === 1 ? "active" : ""} onClick={() => setBuilderStep(1)}><span>01</span><strong>Sınav kartı</strong><small>Ad, tür, yıl ve yayın</small></button>
+              <button type="button" className={builderStep === 2 ? "active" : ""} onClick={() => setBuilderStep(2)}><span>02</span><strong>Cevap anahtarı</strong><small>Şablon, dosya veya manuel</small></button>
+              <button type="button" className={builderStep === 3 ? "active" : ""} onClick={() => setBuilderStep(3)}><span>03</span><strong>Puanlama</strong><small>Sonuç ve sıralama kuralları</small></button>
+              <button type="button" className={builderStep === 4 ? "active" : ""} onClick={() => setBuilderStep(4)}><span>04</span><strong>Kontrol ve yayın</strong><small>Taslak olarak oluştur</small></button>
+            </div>
+          </div>
+          <div className="architecture-panel requirements-panel">
+            <div className="architecture-panel-title"><ShieldCheck size={24}/><div><h2>Güvenlik kontrolü</h2><p>Sistem yayınlamadan önce eksikleri kontrol eder.</p></div></div>
+            <div className="requirements-grid">
+              <div><CheckCircle2 size={16}/><span>Resmî MEB / ÖSYM profilleri kilitlidir.</span></div>
+              <div><CheckCircle2 size={16}/><span>4 ve 5 şıklı soru yapısı desteklenir.</span></div>
+              <div><CheckCircle2 size={16}/><span>Kazanım eşleşmesi doğrulanmadan yayın engellenir.</span></div>
+              <div><CheckCircle2 size={16}/><span>Optik / FMT sınav oluşturulduktan sonra bağlanır.</span></div>
+            </div>
+          </div>
         </aside>
       </div>
     </div>
