@@ -99,13 +99,18 @@ export function MarketingHome(){
     </header>
 
     <main id="top">
+      <section className="entry-paths" aria-label="Nereden başlamak istersiniz?">
+        <a href="https://sonuc.anunex.com/#student-results"><strong>Sınav sonucumu görmek istiyorum</strong><span>Kurumunuzu seçin, öğrenci bilgileriniz ve kurumunuzdan aldığınız erişim koduyla karnenize ulaşın.</span><b>Sonuç sorgula →</b></a>
+        <a href={APP_URL}><strong>ANUNEX hesabım var</strong><span>Öğrenci, veli, öğretmen veya kurum hesabınızla kendi çalışma alanınıza giriş yapın.</span><b>Hesabıma giriş yap →</b></a>
+        <a href={DEMO_URL}><strong>Kurumum için inceliyorum</strong><span>Örnek verilerle beş rolün deneyimini keşfedin; kurumunuza özel deneme için bizimle görüşün.</span><b>Demoyu incele →</b></a>
+      </section>
       <section className="marketing-hero">
         <div className="hero-aurora" aria-hidden="true"/><div className="hero-grid" aria-hidden="true"/>
         <div className="hero-copy">
           <div className="hero-kicker"><NibiruMark size={24} state="active"/><span>Nibiru AI destekli ölçme ve analiz platformu</span></div>
           <h1>Ölçmenin ötesinde.<br/><em>Her öğrenci için yön.</em></h1>
           <p>ANUNEX; optik cevap yakalamadan kazanım analizine, kişiselleştirilmiş öğrenmeden rehberliğe kadar okulun akademik kararlarını tek ve güvenli bir sistemde birleştirir.</p>
-          <div className="hero-actions"><a className="marketing-button" href={DEMO_URL}>7 Günlük Kurum Demosu <ArrowRight size={18}/></a><a className="marketing-button secondary" href="#roller">Panelleri Gör <ChevronRight size={18}/></a></div>
+          <div className="hero-actions"><a className="marketing-button" href={DEMO_URL}>Demoyu İncele <ArrowRight size={18}/></a><a className="marketing-button secondary" href="https://sonuc.anunex.com/#student-results">Sınav Sonucum <ChevronRight size={18}/></a></div>
           <div className="hero-assurances"><span><Check/> MEB kurumlarının iş akışlarına uygun</span><span><Check/> KVKK odaklı mimari</span><span><Check/> Web ve mobil</span></div>
         </div>
         <div className="hero-product" aria-label="ANUNEX platform görünümü">
@@ -202,6 +207,12 @@ export function MarketingHome(){
       <section className="contact-section" id="iletisim"><div><span>ANUNEX’İ KURUMUNUZDA GÖRÜN</span><h2>Aradığınız sistemin<br/><em>gerçekte nasıl çalıştığını konuşalım.</em></h2><p>İhtiyacınızı dinleyelim; kurum yapınıza uygun modülleri ve 7 günlük demo planını birlikte oluşturalım.</p></div><div className="contact-cards"><a href={PHONE_URL}><Phone/><span><small>Telefon</small><strong>{PHONE_DISPLAY}</strong></span><ArrowRight/></a><a href={WHATSAPP_URL} target="_blank" rel="noreferrer"><MessageCircle/><span><small>WhatsApp</small><strong>Hemen bilgi alın</strong></span><ArrowRight/></a><div><MapPin/><span><small>Merkez</small><strong>Kartal / İSTANBUL</strong></span></div></div></section>
 
       <section className="final-cta"><div className="cta-orb"><NibiruMark size={120} state="speaking"/></div><AnunexBrand inverse tagline/><h2>Akademik gelişimi<br/>tek yörüngede buluşturun.</h2><p>Hayal edilen özellikleri anlatmakla kalmıyoruz. Optikten kişisel öğrenmeye, Nibiru’dan kurum yönetimine kadar aynı sistem içinde çalıştırıyoruz.</p><div><a className="marketing-button light" href={DEMO_URL}>7 Günlük Demo <ArrowRight size={18}/></a><a className="marketing-button ghost" href={WHATSAPP_URL} target="_blank" rel="noreferrer">İletişime Geç</a></div></section>
+      <section className="entry-faq" aria-labelledby="entry-faq-title"><h2 id="entry-faq-title">Başlamadan önce</h2>
+        <details><summary>Sınav sonucuma nasıl ulaşırım?</summary><p>Sonuç portalında kurumunuzu seçin; sınıf, ad soyad ve öğrenci numaranızı girin. Eşleşmenin ardından kurumunuzun verdiği kişisel erişim kodu istenir. Kodunuz yoksa sınavı düzenleyen kurumla iletişime geçin.</p></details>
+        <details><summary>Demo ile kurum hesabı arasındaki fark nedir?</summary><p>Demo, örnek hesaplarla ürünü incelemenizi sağlar. Kurumunuza özel 7 günlük deneme planı için iletişim bölümünden bize ulaşın. Mevcut kullanıcılar uygulama girişini kullanmalıdır.</p></details>
+        <details><summary>Şifremi veya sonuç erişim kodumu unuttum.</summary><p>Uygulama şifresi ve sonuç erişim kodu farklıdır. Şifreniz için kurum yöneticinize, sonuç kodunuz için sınavı düzenleyen kuruma başvurun. Kimlik bilgilerinizi herkese açık mesajlarda paylaşmayın.</p></details>
+        <details><summary>Paneldeki örnekler benim kurumuma mı ait?</summary><p>Bu tanıtımdaki ekranlar, sayılar ve görüşmeler temsili senaryolardır. Gerçek paneller yalnız hesabınızın yetkili olduğu verileri gösterir. Optik, içerik ve dış servis özelliklerinin kullanılabilirliği kurum yapılandırmasına bağlıdır.</p></details>
+      </section>
     </main>
 
     <a className="floating-whatsapp" href={WHATSAPP_URL} target="_blank" rel="noreferrer" aria-label="WhatsApp ile ANUNEX hakkında bilgi alın"><MessageCircle/><span>Bilgi alın</span></a>

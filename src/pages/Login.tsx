@@ -18,6 +18,8 @@ export function Login() {
   const [token, setToken] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [turnstileCycle, setTurnstileCycle] = useState(0);
+  const [configError, setConfigError] = useState(false);
   const isDemoHost = typeof window !== 'undefined' && (
     window.location.hostname.toLowerCase() === 'demo.anunex.com'
     || new URLSearchParams(window.location.search).get('demo') === '1'
@@ -30,15 +32,16 @@ export function Login() {
     ['Öğrenci', 'student1', 'Demo123!'],
     ['Veli', 'parent1', 'Demo123!'],
   ] as const;
-  useEffect(()=>{ void api<any>('/api/config').then(setConfig).catch(()=>setConfig({productName:'Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu',turnstileSiteKey:''})); },[]);
+  const loadConfig = useCallback(() => { setConfigError(false); void api<any>('/api/config').then(setConfig).catch(() => setConfigError(true)); }, []);
+  useEffect(loadConfig, [loadConfig]);
   useEffect(()=>{ if(user) navigate('/'); },[user,navigate]);
   const onToken = useCallback((value:string)=>setToken(value),[]);
   const submit = async (e:React.FormEvent) => {
-    e.preventDefault(); setError(''); setLoading(true);
+    e.preventDefault(); if(loading || !config || !token) return; setError(''); setLoading(true);
     try {
       await post('/api/auth/login',{identifier,password,remember,turnstileToken:token,mfaCode:mfaCode.trim()||undefined});
       await refresh(); navigate('/');
-    } catch(e){ setError(e instanceof ApiError ? e.message : 'Giriş yapılamadı.'); }
+    } catch(e){ setError(e instanceof ApiError ? e.message : 'Giriş yapılamadı.'); setToken(''); setTurnstileCycle(value => value + 1); }
     finally{ setLoading(false); }
   };
   const mfaValid = !mfaCode || /^\d{6}$/.test(mfaCode);
@@ -51,9 +54,12 @@ export function Login() {
       <label>Şifre<div className="password-input"><input type={show?'text':'password'} value={password} onChange={e=>setPassword(e.target.value)} autoComplete="current-password" required/><button type="button" aria-label={show?'Şifreyi gizle':'Şifreyi göster'} onClick={()=>setShow(v=>!v)}>{show?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></label>
       {config?.superAdminMfaEnabled && <label>Süper Admin doğrulama kodu <span className="muted">(yalnız yönetici hesabı)</span><input value={mfaCode} onChange={e=>setMfaCode(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="one-time-code" placeholder="6 haneli kod" maxLength={6}/></label>}
       <div className="form-row"><label className="check"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/> Beni hatırla</label><span className="muted">Şifre yardımı için kurum yöneticinizle iletişime geçin.</span></div>
-      <Turnstile siteKey={config?.turnstileSiteKey || ''} onToken={onToken}/>
-      {error && <div className="alert error">{error}</div>}
-      <button className="primary large" disabled={loading||!identifier.trim()||!password||!mfaValid}>{loading?'Giriş yapılıyor…':'Giriş Yap'}</button>
+      {configError && <div role="alert" className="alert error">Giriş hizmetine ulaşılamadı. <button type="button" onClick={loadConfig}>Yeniden dene</button></div>}
+      <Turnstile key={turnstileCycle} siteKey={config?.turnstileSiteKey || ''} onToken={onToken}/>
+      {error && <div role="alert" className="alert error">{error}</div>}
+      <button className="primary large" disabled={loading||!config||!token||!identifier.trim()||!password||!mfaValid}>{loading?'Giriş yapılıyor…':'Giriş Yap'}</button>
+      {isDemoHost && <p className="muted">Örnek hesaplarla beş farklı paneli inceleyebilirsiniz. Demo alanına gerçek öğrenci bilgisi yüklemeyin. Kurumunuza özel 7 günlük deneme için <a href="https://anunex.com/#iletisim">iletişime geçin</a>.</p>}
+      <nav className="entry-links" aria-label="ANUNEX hizmetleri"><a href="https://anunex.com">Ana sayfa</a><a href="https://sonuc.anunex.com/#student-results">Sınav sonucum</a><a href={isDemoHost?'https://app.anunex.com':'https://demo.anunex.com'}>{isDemoHost?'Kurum hesabımla giriş':'Demoyu incele'}</a></nav>
     </form></div>
   </div>;
 }

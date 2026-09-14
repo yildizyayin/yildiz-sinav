@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 declare global {
   interface Window {
@@ -16,7 +16,7 @@ function loadScript(): Promise<void> {
     script.async = true;
     script.defer = true;
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Turnstile yüklenemedi.'));
+    script.onerror = () => { script.remove(); scriptPromise = null; reject(new Error('Turnstile yüklenemedi.')); };
     document.head.appendChild(script);
   });
   return scriptPromise;
@@ -24,8 +24,12 @@ function loadScript(): Promise<void> {
 
 export function Turnstile({ siteKey, onToken }: { siteKey: string; onToken: (token: string) => void }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     if (!siteKey || !ref.current) return;
+    setError(false);
+    onToken('');
     let widgetId = '';
     let alive = true;
     void loadScript().then(() => {
@@ -34,13 +38,14 @@ export function Turnstile({ siteKey, onToken }: { siteKey: string; onToken: (tok
         sitekey: siteKey,
         theme: 'light',
         size: 'flexible',
-        callback: (token: string) => onToken(token),
+        callback: (token: string) => { setError(false); onToken(token); },
         'expired-callback': () => onToken(''),
-        'error-callback': () => onToken(''),
+        'error-callback': () => { onToken(''); setError(true); },
+        'timeout-callback': () => { onToken(''); setError(true); },
       });
-    });
+    }).catch(() => { if (alive) { onToken(''); setError(true); } });
     return () => { alive = false; if (widgetId && window.turnstile) window.turnstile.remove(widgetId); };
-  }, [siteKey, onToken]);
-  if (!siteKey) return <div className="dev-note">Turnstile site key henüz tanımlı değil. Production deploy öncesi zorunlu.</div>;
-  return <div ref={ref} className="turnstile-box" />;
+  }, [siteKey, onToken, attempt]);
+  if (!siteKey) return <div role="status" className="dev-note">Güvenli giriş hazırlanıyor. Bu mesaj devam ederse sayfayı yenileyin veya kurumunuzdan destek alın.</div>;
+  return <div><div ref={ref} className="turnstile-box" />{error && <div role="alert" className="alert error">Güvenlik doğrulaması yüklenemedi. Bağlantınızı kontrol edin. <button type="button" onClick={() => setAttempt(value => value + 1)}>Yeniden dene</button></div>}</div>;
 }

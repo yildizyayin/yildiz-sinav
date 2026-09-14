@@ -20,7 +20,13 @@ export class ApiError extends Error {
 export async function api<T = any>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers || {});
   if (options.body && !(options.body instanceof FormData) && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
-  const response = await fetch(path, { credentials: 'include', ...options, headers });
+  let response: Response;
+  try {
+    response = await fetch(path, { credentials: 'include', ...options, headers });
+  } catch (error) {
+    if (options.signal?.aborted) throw error;
+    throw new ApiError(0, { code: 'NETWORK_ERROR', message: 'Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edip yeniden deneyin.' });
+  }
   const payload = await response.json().catch(() => ({ ok: false, error: { code: 'INVALID_RESPONSE', message: 'Sunucu yanıtı okunamadı.' } }));
   if (!response.ok || payload?.ok === false) throw new ApiError(response.status, payload?.error || { code: 'HTTP_ERROR', message: 'İşlem başarısız.' });
   return payload as T;
