@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Archive, BookOpenCheck, Check, CheckCircle2, ChevronRight, CircleAlert, Clock3, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, PlayCircle, Printer, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, UploadCloud, Workflow } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Archive, BookOpenCheck, Check, CheckCircle2, CircleAlert, Clock3, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, PlayCircle, Printer, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, UploadCloud, Workflow } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
@@ -26,7 +27,6 @@ export function ExamDefinitions() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
-  const [builderStep, setBuilderStep] = useState(1);
 
   const [createMethod, setCreateMethod] = useState<CreateMethod>('ANSWER_KEY');
   const [definitionMode, setDefinitionMode] = useState<DefinitionMode>('STANDARD');
@@ -327,122 +327,51 @@ export function ExamDefinitions() {
   const isCustomScoring = selectedScoring?.rule_code === 'CUSTOM_EXAM';
 
   return <>
-    <div className="exam-builder-shell">
-      <div className="exam-architecture-head">
-        <div className="exam-architecture-brand"><span className="exam-architecture-mark">A</span><span><strong>ANUNEX</strong><small>Eğitimde Daha Fazlası</small></span></div>
-        <div className="exam-architecture-title"><span className="eyebrow">SÜPER ADMİN · TEK PANEL AKIŞI</span><h1>ANUNEX — Sınav Ekle Mimarisi</h1><p>app.anunex.com + sonuc.anunex.com | Sınav kartı, cevap anahtarı ve puanlama tek akışta.</p></div>
-        <div className="exam-builder-head-badge"><Sparkles size={17}/><span>Hızlı, sade, hatasız sınav kartı</span></div>
+    <div className="exam-simple-shell">
+      <div className="exam-simple-head">
+        <div><span className="eyebrow">SINAV MERKEZİ</span><h1>Sınavlar</h1><p>Sınav kartını oluşturun veya mevcut sınava sonuç yükleyin.</p></div>
+        <div className="exam-simple-actions"><Link className="secondary" to="/exam-center?mode=upload"><UploadCloud size={16}/> Sınav Yükle</Link><a className="primary" href="#exam-create"><FileText size={16}/> Sınav Ekle</a></div>
       </div>
+      {error && <div className="alert error">{error}</div>}{notice && <div className="alert success">{notice}</div>}
+      <div className="exam-quick-bar"><span className="quick-status">app.anunex.com ana sistem</span><span>Optik / FMT, sınav kaydından sonra bağlanır.</span>{createForm.resultNetworkEnabled && <span className="quick-status network">sonuc.anunex.com seçili</span>}</div>
 
-      {error && <div className="alert error">{error}</div>}
-      {notice && <div className="alert success">{notice}</div>}
-      <div className="exam-builder-stepper" aria-label="Sınav oluşturma adımları">
-        <button type="button" className={builderStep === 1 ? "active" : ""} onClick={() => setBuilderStep(1)}><span>01</span><strong>Sınav kartı</strong><small>Temel bilgileri girin</small></button>
-        <i aria-hidden="true" />
-        <button type="button" className={builderStep === 2 ? "active" : ""} onClick={() => setBuilderStep(2)}><span>02</span><strong>Cevap anahtarı</strong><small>Şablon veya manuel giriş</small></button>
-        <i aria-hidden="true" />
-        <button type="button" className={builderStep === 3 ? "active" : ""} onClick={() => setBuilderStep(3)}><span>03</span><strong>Puanlama</strong><small>Resmî veya özel profil</small></button>
-        <i aria-hidden="true" />
-        <button type="button" className={builderStep === 4 ? "active" : ""} onClick={() => setBuilderStep(4)}><span>04</span><strong>Kontrol ve yayın</strong><small>Oluşturmadan önce son kontrol</small></button>
-      </div>
-
-      <div className="exam-builder-layout">
-        <div className="exam-builder-main">
-          <section className="builder-card architecture-card" style={{ display: builderStep === 1 ? "block" : "none" }}>
-            <div className="builder-step-head">
-              <span className="builder-step-number">1</span>
-              <div><span className="eyebrow">TEMEL BİLGİLER</span><h2>Sınav Kartı</h2><p>Sınavın temel bilgilerini girin. Seçtiğiniz tür, ders yapısını ve puanlama profilini hazırlar.</p></div>
-            </div>
-            <div className="form-grid builder-form-grid exam-card-grid">
-              {user?.role === 'SUPER_ADMIN' && <label>Yayınevi adı *<input value={createForm.publisherName} onChange={(e) => setCreateForm((f) => ({ ...f, publisherName: e.target.value }))} placeholder="Yayınevi seçin veya yazın..." /></label>}
-              <label>Sınav adı *<input value={createForm.title} onChange={(e) => setCreateForm((f) => ({ ...f, title: e.target.value }))} placeholder="Sınav adını girin..." /></label>
-              <label>Sınav türü *<select value={choiceKey} onChange={(e) => setChoiceKey(e.target.value)}>{EXAM_CHOICES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}</select></label>
-              <label>Eğitim yılı *<input value={createForm.academicYear} onChange={(e) => setCreateForm((f) => ({ ...f, academicYear: e.target.value }))} /></label>
-              <label>Sınıf düzeyi *<select value={createForm.gradeLevel} onChange={(e) => setCreateForm((f) => ({ ...f, gradeLevel: e.target.value }))}>{Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}. sınıf</option>)}</select></label>
-              <label>Oturum / Bölüm *<input value={createForm.sessionLabel} onChange={(e) => setCreateForm((f) => ({ ...f, sessionLabel: e.target.value }))} placeholder="Örn. Sayısal / 1. Oturum" /></label>
-            </div>
-            <label className="builder-textarea-label"><span>Açıklama / Not</span><textarea rows={2} value={createForm.description} onChange={(e) => setCreateForm((f) => ({ ...f, description: e.target.value }))} placeholder="Sınavla ilgili açıklama ekleyin..." /></label>
-            <div className="builder-mode-row">
-              <div><strong>Değerlendirme tipi</strong><span>Sonuç ekranında kullanılacak analiz kapsamı</span></div>
-              <div className="segmented-control"><button type="button" className={definitionMode === 'STANDARD' ? 'active' : ''} onClick={() => { setDefinitionMode('STANDARD'); setOutcomeRequired(false); }}>Standart</button><button type="button" className={definitionMode === 'OUTCOME' ? 'active' : ''} onClick={() => { setDefinitionMode('OUTCOME'); setOutcomeRequired(true); }}><Sparkles size={15}/> Kazanımlı</button></div>
-            </div>
-          </section>
-
-          <section className="builder-card architecture-card" style={{ display: builderStep === 2 ? "block" : "none" }}>
-            <div className="builder-step-head">
-              <span className="builder-step-number">2</span>
-              <div><span className="eyebrow">SORU VE KAZANIMLAR</span><h2>Cevap Anahtarı</h2><p>Hazır şablon kullanın veya standart dışı sınavı kendiniz oluşturun.</p></div>
-            </div>
-            <div className="creation-method-grid">
-              <button type="button" className={`creation-method ${createMethod === 'ANSWER_KEY' ? 'selected' : ''}`} onClick={() => setCreateMethod('ANSWER_KEY')}><FileUp size={19}/><span><strong>Hazır şablon kullan</strong><small>CSV/XLSX kazanımlı cevap anahtarını eşleştir</small></span></button>
-              <button type="button" className={`creation-method ${createMethod === 'MANUAL' ? 'selected' : ''}`} onClick={() => setCreateMethod('MANUAL')}><BookOpenCheck size={19}/><span><strong>Kendin oluştur</strong><small>Ders, aralık, şık ve cevap yapısını tanımla</small></span></button>
-            </div>
-            {createMethod === 'ANSWER_KEY' ? <>
-              <div className="builder-inline-fields">
-                <label><span>Hazır sınav şablonu</span><select value={templateKey} onChange={(e) => { const key = e.target.value; const chosen = EXAM_TEMPLATES.find((template) => template.key === key); setTemplateKey(key); setOutcomeRequired(Boolean(chosen?.requiresOutcomes)); setDefinitionMode(chosen?.requiresOutcomes ? 'OUTCOME' : 'STANDARD'); const baseKey = key.endsWith('_OUTCOME') ? key.slice(0, -8) : key; const nextChoice = baseKey === 'SCHOOL_5' || baseKey === 'SCHOOL_6' || baseKey === 'SCHOOL_7' ? `STD_${baseKey.slice(-1)}` : baseKey; if (EXAM_CHOICES.some((choice) => choice.key === nextChoice)) setChoiceKey(nextChoice); }}>{EXAM_TEMPLATES.map((template) => <option key={template.key} value={template.key}>{template.label}</option>)}</select></label>
-                <div className="template-helper"><strong>{selectedTemplate.label}</strong><span>{selectedTemplate.description}</span><div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button type="button" className="ghost" onClick={downloadOutcomeTemplate}>Kazanımlı CSV indir</button><button type="button" className="secondary" onClick={() => applyTemplate()}>Şablonu uygula</button></div></div>
-              </div>
-              <div className="builder-inline-fields">
-                <label className="upload-field"><span>CSV / XLSX kazanımlı cevap anahtarı</span><span className="upload-zone-compact"><UploadCloud size={18}/><input type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(e) => void readAnswerFile(e.target.files?.[0])} /><b>Dosyanızı buraya sürükleyin veya seçin</b><small>Maksimum dosya boyutu: 10 MB</small></span></label>
-                <label><span>Kitapçıklar</span><input value={booklets} onChange={(e) => setBooklets(e.target.value)} placeholder="A veya A,B" /></label>
-              </div>
-              <label className="builder-textarea-label"><span>Veya cevap anahtarını yapıştır</span><textarea rows={7} value={answerKeyText} onChange={(e) => setAnswerKeyText(e.target.value)} placeholder={'MAT: ABCDEABCDE\nTUR: ABCDEABCDE\nFEN: ABCDEABCDE\n\n[A] ve [B] başlıklarıyla çoklu kitapçık da girebilirsiniz.'} /></label>
-              <div className="builder-footer-row"><button type="button" className="secondary" onClick={() => analyseKey()}><FileUp size={16}/> Anahtarı analiz et</button>{analysis && <div className={analysis.unknownLines.length ? 'builder-analysis warning' : 'builder-analysis success'}><strong>{Object.keys(analysis.questionCounts).length} ders bulundu.</strong> {analysis.unknownLines.length ? `${analysis.unknownLines.length} satır kontrol edilmeli.` : 'Soru sayıları otomatik çıkarıldı.'}</div>}</div>
-            </> : <div className="cards-list builder-subject-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" min="1" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" min={cfg.questionStart} value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label></>}</div>; })}</div>}
-          </section>
-
-          <section className="builder-card architecture-card" style={{ display: builderStep === 3 ? "block" : "none" }}>
-            <div className="builder-step-head">
-              <span className="builder-step-number">3</span>
-              <div><span className="eyebrow">DEĞERLENDİRME KURALI</span><h2>Puan Hesaplama</h2><p>Resmî MEB / ÖSYM profilini kullanın veya özel deneme kuralını belirleyin.</p></div>
-            </div>
-            <div className="scoring-profile-row"><label>Puanlama profili *<select value={createForm.scoringRuleVersionId} onChange={(e) => setCreateForm((f) => ({ ...f, scoringRuleVersionId: e.target.value }))}><option value="">Seçiniz</option>{options.scoringVersions?.map((s: any) => <option key={s.id} value={s.id}>{s.rule_name} · {s.academic_year} {s.version}{s.official ? ' · Kilitli resmî profil' : ''}</option>)}</select></label><div className="locked-profile-note"><LockKeyhole size={16}/><span>{selectedScoring?.official ? 'Resmî profil kilitli; oran ve katsayılar değiştirilemez.' : 'Özel profil seçildiğinde alanlar sınava özel açılır.'}</span></div></div>
-            {isCustomScoring && <div className="custom-scoring-box"><div><strong>Özel deneme puanlaması</strong><span>Yanlış oranı, puan ölçeği ve branş ağırlıkları bu sınava özel kaydedilir.</span></div><div className="form-grid"><label>Yanlışlar doğruyu götürsün mü?<select value={customScoring.wrongMode} onChange={(e) => setCustomScoring((x) => ({ ...x, wrongMode: e.target.value }))}><option value="NONE">Hayır</option><option value="2">2 yanlış = 1 doğru</option><option value="3">3 yanlış = 1 doğru</option><option value="4">4 yanlış = 1 doğru</option><option value="5">5 yanlış = 1 doğru</option><option value="CUSTOM">Özel oran</option></select></label>{customScoring.wrongMode === 'CUSTOM' && <label>Özel oran<input type="number" min="0.1" max="20" step="0.1" value={customScoring.wrongDivisor} onChange={(e) => setCustomScoring((x) => ({ ...x, wrongDivisor: Number(e.target.value) }))} /></label>}<label>Sınav kaç üzerinden?<select value={customScoring.scale} onChange={(e) => setCustomScoring((x) => ({ ...x, scale: Number(e.target.value) }))}><option value="100">100</option><option value="500">500</option><option value="1000">1000</option><option value="0">Özel değer</option></select></label>{customScoring.scale === 0 && <label>Özel değer<input type="number" min="1" value={customScoring.customScale} onChange={(e) => setCustomScoring((x) => ({ ...x, customScale: Number(e.target.value) }))} /></label>}</div><div className="custom-weight-grid"><strong>Branş ağırlıkları</strong>{subjects.map((subject) => <label key={subject.subjectId}>{subjectName(options, subject.subjectId)}<input type="number" min="0" step="0.1" value={customScoring.weights[subject.subjectId] ?? 1} onChange={(e) => setCustomScoring((x) => ({ ...x, weights: { ...x.weights, [subject.subjectId]: Number(e.target.value) } }))} /></label>)}</div></div>}
-            <div className="result-settings-box"><div><strong>Sonuçta gösterilecekler ve sıralama</strong><span>Değerlendirme motoru yalnız seçilen sonuç metriklerini üretir.</span></div><div className="check-grid">{[['correct','Doğru'],['wrong','Yanlış'],['blank','Boş'],['net','Net'],['branchNet','Branş neti'],['successPercent','Başarı yüzdesi'],['rawScore','Ham puan'],['standardScore','Standart puan'],['branchScore','Branş puanı'],['totalScore','Toplam puan'],['ranking','Sıralama'],['percentile','Yüzdelik dilim']].map(([key, label]) => <label key={key}><input type="checkbox" checked={Boolean((resultSettings as any)[key])} onChange={(e) => setResultSettings((x) => ({ ...x, [key]: e.target.checked }))} />{label}</label>)}</div><div className="ranking-scope-row"><strong>Sıralama kapsamı</strong>{[['INSTITUTION','Kurum'],['DISTRICT','İlçe'],['CITY','İl'],['NATIONAL','Türkiye'],['NETWORK','Zincir']].map(([value, label]) => <label key={value}><input type="checkbox" checked={resultSettings.rankingScopes.includes(value)} onChange={(e) => setResultSettings((x) => ({ ...x, rankingScopes: e.target.checked ? [...new Set([...x.rankingScopes, value])] : x.rankingScopes.filter((scope) => scope !== value) }))} />{label}</label>)}</div>{(selectedScoring?.rule_code?.startsWith('OSYM_YKS_') || selectedChoice.examType === 'AYT' || selectedChoice.examType === 'YDT') && <label className="publish-toggle"><input type="checkbox" checked={resultSettings.includeObp} onChange={(e) => setResultSettings((x) => ({ ...x, includeObp: e.target.checked }))} /><span><strong>OBP katkısını kullan</strong><small>YKS sonuçlarında gerektiğinde adayın OBP verisi ayrıca işlenir.</small></span></label>}</div>
-          </section>
-
-          <section className="builder-card architecture-card publication-card" style={{ display: builderStep === 4 ? "block" : "none" }}>
-            <div className="builder-step-head"><span className="builder-step-number">4</span><div><span className="eyebrow">YAYIN VE KONTROL</span><h2>Yayın Ayarı / Önizleme</h2><p>Sınav oluşturulmadan önce bilgileri son kez kontrol edin.</p></div></div>
-            <div className="publication-preview"><div className="publication-system"><Globe2 size={19}/><div><strong>app.anunex.com</strong><span>Varsayılan merkezi sistem</span></div></div><label className="publish-toggle inline-publish"><input type="checkbox" checked={createForm.resultNetworkEnabled} onChange={(e) => setCreateForm((f) => ({ ...f, resultNetworkEnabled: e.target.checked }))} /><span><strong>Bu sınav sonuc.anunex.com'da yayınlansın</strong><small>Oluşturulan sınav, onay sonrası sonuç platformunda görüntülenir.</small></span></label><div className="live-preview-chip"><Eye size={16}/><span><strong>Sınavı önizle</strong><small>{selectedChoice.label} · {totalConfiguredQuestions} soru · {selectedScoring?.rule_name || 'Puanlama profili seçilmedi'}</small></span></div></div>
-            <div className="builder-create-row"><div><strong>Hazır olduğunuzda sınavı oluşturun</strong><span>Oluşturulan kayıt önce taslak olarak açılır; optik/FMT daha sonra bağlanır.</span></div><div className="builder-action-buttons"><button type="button" className="secondary" disabled={busy} onClick={() => setNotice('Taslak bilgileri bu oturumda hazır. Sınav oluşturduğunuzda kalıcı olarak kaydedilir.')}><Save size={16}/> Taslak Kaydet</button><button type="button" className="primary builder-create-button" disabled={busy || !createForm.title.trim()} onClick={createExam}><Check size={17}/> Sınav Oluştur</button></div></div>
-          </section>
+      <section id="exam-create" className="exam-simple-card">
+        <div className="exam-simple-card-head"><span className="simple-number">01</span><div><h2>Sınav bilgileri</h2><p>Yeni sınav için temel kart bilgilerini girin.</p></div></div>
+        <div className="form-grid builder-form-grid exam-card-grid">
+          {user?.role === 'SUPER_ADMIN' && <label>Yayınevi adı *<input value={createForm.publisherName} onChange={(e) => setCreateForm((f) => ({ ...f, publisherName: e.target.value }))} placeholder="Yayınevi adı" /></label>}
+          <label>Sınav adı *<input value={createForm.title} onChange={(e) => setCreateForm((f) => ({ ...f, title: e.target.value }))} placeholder="Örn. TYT Türkiye Geneli Deneme 1" /></label>
+          <label>Sınav türü *<select value={choiceKey} onChange={(e) => setChoiceKey(e.target.value)}>{EXAM_CHOICES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}</select></label>
+          <label>Eğitim yılı *<input value={createForm.academicYear} onChange={(e) => setCreateForm((f) => ({ ...f, academicYear: e.target.value }))} /></label>
+          <label>Sınıf düzeyi *<select value={createForm.gradeLevel} onChange={(e) => setCreateForm((f) => ({ ...f, gradeLevel: e.target.value }))}>{Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}. sınıf</option>)}</select></label>
+          <label>Oturum / bölüm *<input value={createForm.sessionLabel} onChange={(e) => setCreateForm((f) => ({ ...f, sessionLabel: e.target.value }))} placeholder="Örn. 1. Oturum" /></label>
         </div>
+        <label className="builder-textarea-label"><span>Açıklama / not</span><textarea rows={2} value={createForm.description} onChange={(e) => setCreateForm((f) => ({ ...f, description: e.target.value }))} placeholder="İsteğe bağlı açıklama" /></label>
+        <div className="builder-mode-row"><div><strong>Cevap anahtarı modu</strong><span>Kazanım bağlantısı gerekiyorsa kazanımlı modu seçin.</span></div><div className="segmented-control"><button type="button" className={definitionMode === 'STANDARD' ? 'active' : ''} onClick={() => { setDefinitionMode('STANDARD'); setOutcomeRequired(false); }}>Standart</button><button type="button" className={definitionMode === 'OUTCOME' ? 'active' : ''} onClick={() => { setDefinitionMode('OUTCOME'); setOutcomeRequired(true); }}><Sparkles size={15}/> Kazanımlı</button></div></div>
+      </section>
 
-        <aside className="exam-builder-summary">
-          <div className="summary-card live-summary-card">
-            <div className="summary-card-head"><span className="eyebrow">SINAV ÖZETİ</span><CheckCircle2 size={20}/></div>
-            <h2>{createForm.title.trim() || "Yeni sınav"}</h2>
-            <p>{selectedChoice.label} · {createForm.academicYear}</p>
-            <div className="summary-metrics"><div><strong>{totalConfiguredQuestions}</strong><span>toplam soru</span></div><div><strong>{totalAnswerSlots}</strong><span>cevap alanı</span></div></div>
-            <div className="summary-checklist">
-              <div className={createForm.title.trim() ? "ready" : ""}><span>1</span><span>Sınav kartı</span><b>{createForm.title.trim() ? "Hazır" : "Bekliyor"}</b></div>
-              <div className={subjects.length ? "ready" : ""}><span>2</span><span>Ders yapısı</span><b>{subjects.length ? subjects.length + " test" : "Bekliyor"}</b></div>
-              <div className={createMethod === "MANUAL" || keyEntries.length ? "ready" : ""}><span>3</span><span>Cevap anahtarı</span><b>{createMethod === "MANUAL" ? "Manuel" : (keyEntries.length ? "Hazır" : "Bekliyor")}</b></div>
-              <div className={createForm.scoringRuleVersionId ? "ready" : ""}><span>4</span><span>Puanlama profili</span><b>{createForm.scoringRuleVersionId ? "Seçildi" : "Bekliyor"}</b></div>
-            </div>
-          </div>
-          <div className="architecture-panel workflow-panel">
-            <div className="architecture-panel-title"><Workflow size={24}/><div><h2>Bu sınavı oluştur</h2><p>Adımlar arasında istediğiniz zaman geçebilirsiniz.</p></div></div>
-            <div className="builder-summary-step-list">
-              <button type="button" className={builderStep === 1 ? "active" : ""} onClick={() => setBuilderStep(1)}><span>01</span><strong>Sınav kartı</strong><small>Ad, tür, yıl ve yayın</small></button>
-              <button type="button" className={builderStep === 2 ? "active" : ""} onClick={() => setBuilderStep(2)}><span>02</span><strong>Cevap anahtarı</strong><small>Şablon, dosya veya manuel</small></button>
-              <button type="button" className={builderStep === 3 ? "active" : ""} onClick={() => setBuilderStep(3)}><span>03</span><strong>Puanlama</strong><small>Sonuç ve sıralama kuralları</small></button>
-              <button type="button" className={builderStep === 4 ? "active" : ""} onClick={() => setBuilderStep(4)}><span>04</span><strong>Kontrol ve yayın</strong><small>Taslak olarak oluştur</small></button>
-            </div>
-          </div>
-          <div className="architecture-panel requirements-panel">
-            <div className="architecture-panel-title"><ShieldCheck size={24}/><div><h2>Güvenlik kontrolü</h2><p>Sistem yayınlamadan önce eksikleri kontrol eder.</p></div></div>
-            <div className="requirements-grid">
-              <div><CheckCircle2 size={16}/><span>Resmî MEB / ÖSYM profilleri kilitlidir.</span></div>
-              <div><CheckCircle2 size={16}/><span>4 ve 5 şıklı soru yapısı desteklenir.</span></div>
-              <div><CheckCircle2 size={16}/><span>Kazanım eşleşmesi doğrulanmadan yayın engellenir.</span></div>
-              <div><CheckCircle2 size={16}/><span>Optik / FMT sınav oluşturulduktan sonra bağlanır.</span></div>
-            </div>
-          </div>
-        </aside>
-      </div>
+      <section className="exam-simple-card">
+        <div className="exam-simple-card-head"><span className="simple-number">02</span><div><h2>Cevap anahtarı</h2><p>Hazır şablon ve CSV/XLSX dosyasıyla hızlıca eşleştirin.</p></div></div>
+        <div className="simple-method-row"><button type="button" className={createMethod === 'ANSWER_KEY' ? 'active' : ''} onClick={() => setCreateMethod('ANSWER_KEY')}><FileUp size={16}/> Hazır şablon / dosya</button><button type="button" className={createMethod === 'MANUAL' ? 'active' : ''} onClick={() => setCreateMethod('MANUAL')}><BookOpenCheck size={16}/> Kendin oluştur</button></div>
+        {createMethod === 'ANSWER_KEY' ? <>
+          <div className="simple-file-row"><label><span>Hazır sınav şablonu</span><select value={templateKey} onChange={(e) => { const key = e.target.value; const chosen = EXAM_TEMPLATES.find((template) => template.key === key); setTemplateKey(key); setOutcomeRequired(Boolean(chosen?.requiresOutcomes)); setDefinitionMode(chosen?.requiresOutcomes ? 'OUTCOME' : 'STANDARD'); const baseKey = key.endsWith('_OUTCOME') ? key.slice(0, -8) : key; const nextChoice = baseKey === 'SCHOOL_5' || baseKey === 'SCHOOL_6' || baseKey === 'SCHOOL_7' ? `STD_${baseKey.slice(-1)}` : baseKey; if (EXAM_CHOICES.some((choice) => choice.key === nextChoice)) setChoiceKey(nextChoice); }}>{EXAM_TEMPLATES.map((template) => <option key={template.key} value={template.key}>{template.label}</option>)}</select></label><div className="simple-template-note"><strong>{selectedTemplate.label}</strong><span>{selectedTemplate.description}</span><div><button type="button" className="ghost" onClick={downloadOutcomeTemplate}>Kazanımlı şablonu indir</button><button type="button" className="secondary" onClick={() => applyTemplate()}>Şablonu uygula</button></div></div></div>
+          <div className="simple-file-row"><label className="simple-upload"><span>Kazanımlı cevap anahtarı (.csv / .xlsx)</span><input type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(e) => void readAnswerFile(e.target.files?.[0])} /></label><label><span>Kitapçıklar</span><input value={booklets} onChange={(e) => setBooklets(e.target.value)} placeholder="A veya A,B" /></label></div>
+          <details className="simple-details"><summary>Metin olarak cevap anahtarı gir</summary><textarea rows={5} value={answerKeyText} onChange={(e) => setAnswerKeyText(e.target.value)} placeholder={'MAT: ABCDEABCDE\nTUR: ABCDEABCDE\nFEN: ABCDEABCDE'} /><button type="button" className="secondary" onClick={() => analyseKey()}><FileUp size={15}/> Anahtarı analiz et</button></details>
+          {analysis && <div className={analysis.unknownLines.length ? 'builder-analysis warning' : 'builder-analysis success'}><strong>{Object.keys(analysis.questionCounts).length} ders bulundu.</strong> {analysis.unknownLines.length ? `${analysis.unknownLines.length} satır kontrol edilmeli.` : 'Soru sayıları otomatik çıkarıldı.'}</div>}
+        </> : <div className="cards-list builder-subject-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" min="1" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" min={cfg.questionStart} value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label></>}</div>; })}</div>}
+      </section>
+
+      <section className="exam-simple-card">
+        <div className="exam-simple-card-head"><span className="simple-number">03</span><div><h2>Sonuç ayarları</h2><p>Resmî puanlama profilini seçin; gelişmiş seçenekler isteğe bağlıdır.</p></div></div>
+        <div className="simple-score-row"><label>Puanlama profili *<select value={createForm.scoringRuleVersionId} onChange={(e) => setCreateForm((f) => ({ ...f, scoringRuleVersionId: e.target.value }))}><option value="">Seçiniz</option>{options.scoringVersions?.map((s: any) => <option key={s.id} value={s.id}>{s.rule_name} · {s.academic_year} {s.version}{s.official ? ' · Kilitli resmî profil' : ''}</option>)}</select></label><div className="locked-profile-note"><LockKeyhole size={16}/><span>{selectedScoring?.official ? 'Resmî profil kilitli; oranlar değiştirilemez.' : 'Özel profil seçilirse gelişmiş alanlar açılır.'}</span></div></div>
+        {isCustomScoring && <details className="simple-details" open><summary>Özel deneme puanlaması</summary><div className="form-grid"><label>Yanlışlar doğruyu götürsün mü?<select value={customScoring.wrongMode} onChange={(e) => setCustomScoring((x) => ({ ...x, wrongMode: e.target.value }))}><option value="NONE">Hayır</option><option value="2">2 yanlış = 1 doğru</option><option value="3">3 yanlış = 1 doğru</option><option value="4">4 yanlış = 1 doğru</option><option value="5">5 yanlış = 1 doğru</option><option value="CUSTOM">Özel oran</option></select></label>{customScoring.wrongMode === 'CUSTOM' && <label>Özel oran<input type="number" min="0.1" step="0.1" value={customScoring.wrongDivisor} onChange={(e) => setCustomScoring((x) => ({ ...x, wrongDivisor: Number(e.target.value) }))} /></label>}<label>Sınav kaç üzerinden?<select value={customScoring.scale} onChange={(e) => setCustomScoring((x) => ({ ...x, scale: Number(e.target.value) }))}><option value="100">100</option><option value="500">500</option><option value="1000">1000</option><option value="0">Özel değer</option></select></label>{customScoring.scale === 0 && <label>Özel değer<input type="number" min="1" value={customScoring.customScale} onChange={(e) => setCustomScoring((x) => ({ ...x, customScale: Number(e.target.value) }))} /></label>}</div></details>}
+        <details className="simple-details"><summary>Sonuçlarda gösterilecekler ve sıralama</summary><div className="check-grid">{[['correct','Doğru'],['wrong','Yanlış'],['blank','Boş'],['net','Net'],['branchNet','Branş neti'],['successPercent','Başarı yüzdesi'],['rawScore','Ham puan'],['standardScore','Standart puan'],['branchScore','Branş puanı'],['totalScore','Toplam puan'],['ranking','Sıralama'],['percentile','Yüzdelik dilim']].map(([key, label]) => <label key={key}><input type="checkbox" checked={Boolean((resultSettings as any)[key])} onChange={(e) => setResultSettings((x) => ({ ...x, [key]: e.target.checked }))} />{label}</label>)}</div><div className="ranking-scope-row"><strong>Sıralama kapsamı</strong>{[['INSTITUTION','Kurum'],['DISTRICT','İlçe'],['CITY','İl'],['NATIONAL','Türkiye'],['NETWORK','Zincir']].map(([value, label]) => <label key={value}><input type="checkbox" checked={resultSettings.rankingScopes.includes(value)} onChange={(e) => setResultSettings((x) => ({ ...x, rankingScopes: e.target.checked ? [...new Set([...x.rankingScopes, value])] : x.rankingScopes.filter((scope) => scope !== value) }))} />{label}</label>)}</div>{(selectedScoring?.rule_code?.startsWith('OSYM_YKS_') || selectedChoice.examType === 'AYT' || selectedChoice.examType === 'YDT') && <label className="publish-toggle"><input type="checkbox" checked={resultSettings.includeObp} onChange={(e) => setResultSettings((x) => ({ ...x, includeObp: e.target.checked }))} /><span><strong>OBP katkısını kullan</strong><small>YKS sonuçlarında gerektiğinde ayrıca işlenir.</small></span></label>}</details>
+        <label className="simple-publication"><input type="checkbox" checked={createForm.resultNetworkEnabled} onChange={(e) => setCreateForm((f) => ({ ...f, resultNetworkEnabled: e.target.checked }))} /><span><strong>Bu sınav sonuc.anunex.com'da yayınlansın</strong><small>app.anunex.com ana kaydı korunur; yayın sonrasında sonuç ekranında görünür.</small></span></label>
+      </section>
+
+      <div className="exam-simple-actions-footer"><button type="button" className="secondary" disabled={busy} onClick={() => setNotice('Taslak bilgileri bu oturumda hazır. Sınavı kaydettiğinizde kalıcı olarak oluşturulur.')}><Save size={16}/> Taslak Kaydet</button><button type="button" className="primary" disabled={busy || !createForm.title.trim()} onClick={createExam}><Check size={17}/> Sınavı Kaydet</button></div>
     </div>
 
+    <div className="exam-list-heading"><div><h2>Kayıtlı sınavlar</h2><p>Oluşturduğunuz sınavları buradan açıp düzenleyebilirsiniz.</p></div></div>
     <div className="table-card" style={{ marginBottom: 20 }}><table><thead><tr><th>Sınav</th><th>Tür / Sınıf</th><th>Durum</th><th>Platform</th><th>Ders / Soru</th><th>Cevap</th><th>Kazanım</th><th></th></tr></thead><tbody>{rows.map((r) => <tr key={r.id}><td><strong>{r.title}</strong><br /><small>{r.academic_year}{r.publisher_name ? ` · ${r.publisher_name}` : ''}{r.institution_name ? ` · ${r.institution_name}` : ''}</small></td><td>{r.exam_type} · {r.grade_level ? `${r.grade_level}. sınıf` : '-'}</td><td><span className={`status ${r.status === 'ACTIVE' ? 'ok' : 'neutral'}`}>{r.status}</span></td><td>{r.result_network_enabled ? <span className="status ok">Sonuç ağı</span> : <span className="status neutral">app</span>}</td><td>{r.subject_count} / {r.question_count}</td><td>{r.answer_count}</td><td>{r.outcome_mapped_count}</td><td><button className="ghost" onClick={() => setSelectedId(r.id)}>Aç / Düzenle</button></td></tr>)}</tbody></table></div>
 
     {detail && <>
