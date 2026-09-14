@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, BarChart3, Building2, CheckCircle2, ChevronRight, FilePlus2, FileUp, Globe2, LockKeyhole, Network, Play, RefreshCw, Save, Search, Send, Settings2, TriangleAlert } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { api, ApiError, qs } from '../api';
 import { useAuth } from '../auth';
 
@@ -12,11 +12,14 @@ type ExamRow = {
 
 export function ExamCenter(){
   const {user}=useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const modeParam = searchParams.get('mode');
   const [rows,setRows]=useState<ExamRow[]>([]); const [q,setQ]=useState(''); const [scope,setScope]=useState(''); const [selected,setSelected]=useState<ExamRow|null>(null);
   const [files,setFiles]=useState<File[]>([]); const [fileIndex,setFileIndex]=useState(0); const file=files[fileIndex]||null; const [preview,setPreview]=useState<any>(null); const [batch,setBatch]=useState<any>(null); const [templates,setTemplates]=useState<any[]>([]); const [templateId,setTemplateId]=useState('');
   const [loading,setLoading]=useState(false); const [error,setError]=useState(''); const [notice,setNotice]=useState(''); const [stats,setStats]=useState<any>(null);
-  const [entryMode,setEntryMode]=useState<'CATALOG'|null>(null);
+  const [entryMode,setEntryMode]=useState<'CATALOG'|null>(() => modeParam === 'upload' || modeParam === 'catalog' ? 'CATALOG' : null);
   const isSuper=user?.role==='SUPER_ADMIN';
+  useEffect(() => { if (modeParam === 'upload' || modeParam === 'catalog') setEntryMode('CATALOG'); }, [modeParam]);
 
   const load=async()=>{const r=await api<any>(`/api/platform/exam-center/catalog${qs({q:q||null,scope:scope||null})}`);setRows(r.exams||[]);if(selected){const fresh=(r.exams||[]).find((x:ExamRow)=>x.id===selected.id);if(fresh)setSelected(fresh)}};
   useEffect(()=>{void load().catch(e=>setError(e.message))},[]);
@@ -52,7 +55,7 @@ export function ExamCenter(){
   </>;
 
   return <>
-    <div className="page-head exam-operation-head"><div><span className="eyebrow">SINAV MERKEZİ / YÜKLE VE DEĞERLENDİR</span><h1>Sınavı seçin, sonucu güvenle tamamlayın</h1><p>Tek bir çalışma alanında sınavı bulun, TXT / DAT / CSV verisini kontrol edin ve sonuçları yayınlamaya hazır hâle getirin.</p></div><div className="exam-operation-head-actions"><button className="ghost" onClick={()=>setEntryMode(null)}><ArrowLeft size={16}/> Merkeze dön</button><button className="ghost" onClick={()=>void load()}><RefreshCw size={16}/> Yenile</button></div></div>
+    <div className="page-head exam-operation-head"><div><span className="eyebrow">SINAV MERKEZİ / YÜKLE VE DEĞERLENDİR</span><h1>Sınavı seçin, sonucu güvenle tamamlayın</h1><p>Tek bir çalışma alanında sınavı bulun, TXT / DAT / CSV verisini kontrol edin ve sonuçları yayınlamaya hazır hâle getirin.</p></div><div className="exam-operation-head-actions"><button className="ghost" onClick={()=>{setEntryMode(null);setSearchParams({})}}><ArrowLeft size={16}/> Merkeze dön</button><button className="ghost" onClick={()=>void load()}><RefreshCw size={16}/> Yenile</button></div></div>
     {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
     <div className="exam-operation-stepper" aria-label="Sınav değerlendirme adımları">
       <div className={activeOperationStep >= 1 ? 'active' : ''}><span>01</span><div><strong>Sınavı seç</strong><small>Yayınlanmış sınavı bul</small></div></div>

@@ -21,8 +21,8 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/exam-center',label:'Genel Bakış',icon:ClipboardCheck},
       {to:'/exams',label:'Sınavlar',icon:ClipboardCheck},
       {to:'/exam-definitions',label:'Sınav Ekle',icon:Sparkles},
-      {to:'/exam-center',label:'Yükle / Değerlendir',icon:FileUp},
-      {to:'/exam-center',label:'Katalogdan Ekle',icon:BookMarked},
+      {to:'/exam-center?mode=upload',label:'Yükle / Değerlendir',icon:FileUp},
+      {to:'/exam-center?mode=catalog',label:'Katalogdan Ekle',icon:BookMarked},
       {to:'/reports',label:'Raporlar',icon:BarChart3},
     ]},
     { label:'OPTİK İŞLEMLERİ', items:[
@@ -72,8 +72,8 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/exam-center',label:'Genel Bakış',icon:ClipboardCheck},
       {to:'/exams',label:'Sınavlar',icon:ClipboardCheck},
       {to:'/exam-definitions',label:'Sınav Ekle',icon:Sparkles},
-      {to:'/exam-center',label:'Yükle / Değerlendir',icon:FileUp},
-      {to:'/exam-center',label:'Katalogdan Ekle',icon:BookMarked},
+      {to:'/exam-center?mode=upload',label:'Yükle / Değerlendir',icon:FileUp},
+      {to:'/exam-center?mode=catalog',label:'Katalogdan Ekle',icon:BookMarked},
       {to:'/reports',label:'Raporlar',icon:BarChart3},
     ]},
     { label:'OPTİK İŞLEMLERİ', items:[
