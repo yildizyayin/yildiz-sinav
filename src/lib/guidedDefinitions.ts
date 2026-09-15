@@ -269,7 +269,7 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
   })();
 
   if (headerIndex >= 0) {
-    const subjectColumn = tableHeaderIndex(tableHeaders, ['DERS', 'TEST', 'SUBJECT', 'SUBJECTCODE', 'DERSKODU']);
+    const subjectColumn = tableHeaderIndex(tableHeaders, ['DERS', 'SUBJECT', 'SUBJECTCODE', 'DERSKODU']);
     const testColumn = tableHeaderIndex(tableHeaders, ['TEST']);
     const questionColumn = tableHeaderIndex(tableHeaders, ['SORU', 'SORUNO', 'QUESTION', 'QUESTIONNO', 'SORUNUMARASI']);
     const answerColumn = tableHeaderIndex(tableHeaders, ['CEVAP', 'DOGRUCEVAP', 'ANSWER', 'CORRECTANSWER', 'DOGRU']);
