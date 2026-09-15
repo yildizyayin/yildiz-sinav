@@ -178,8 +178,9 @@ async function uploadContentAsset(request: Request, env: Env, user: AuthUser, ex
     title,
     originalAssetType: requestedType || rawType,
   };
+  const visibility = documentKind === 'EXAM_PDF' ? 'STUDENT' : 'INSTITUTION_TEACHER';
   await env.DB.prepare(`INSERT INTO exam_document_assets(id,exam_id,asset_type,booklet_code,r2_key,file_name,mime_type,byte_size,version,visibility,metadata_json,created_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`)
-    .bind(id, examId, rawType, bookletCode, key, file.name, mime, file.size, version, 'INSTITUTION_TEACHER', JSON.stringify(metadata), user.id).run();
+    .bind(id, examId, rawType, bookletCode, key, file.name, mime, file.size, version, visibility, JSON.stringify(metadata), user.id).run();
   await audit(env.DB, user.id, exam.institution_id, 'EXAM_ARCHIVE_ASSET_UPLOADED', 'exam', examId, { assetType: rawType, documentKind, bookletCode, title, version, fileName: file.name, byteSize: file.size });
   return json({ ok: true, id, version, assetType: rawType, documentKind, bookletCode }, 201);
 }
