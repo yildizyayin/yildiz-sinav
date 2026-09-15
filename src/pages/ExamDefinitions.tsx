@@ -373,8 +373,9 @@ export function ExamDefinitions() {
       if (!documentDraft.title.trim() || !documentDraft.url.trim()) { setError('Video başlığı ve HTTPS bağlantısı gereklidir.'); return; }
       setPendingVideos((items) => [...items, { id: `video-${Date.now()}-${Math.random()}`, title: documentDraft.title.trim(), url: documentDraft.url.trim(), publishMode: documentDraft.publishMode, publishAt: documentDraft.publishAt, visibility: 'STUDENT_TEACHER' }]);
     } else {
-      if (!documentDraft.file) { setError(`${option?.label || 'Belge'} için dosya seçilmelidir.`); return; }
-      setPendingDocuments((items) => [...items, { id: `doc-${Date.now()}-${Math.random()}`, kind: documentDraft.kind, title: documentDraft.title.trim() || documentDraft.file.name, file: documentDraft.file, bookletCode: documentDraft.bookletCode.trim().toUpperCase() || 'A' }]);
+      const file = documentDraft.file;
+      if (!file) { setError(`${option?.label || 'Belge'} için dosya seçilmelidir.`); return; }
+      setPendingDocuments((items) => [...items, { id: `doc-${Date.now()}-${Math.random()}`, kind: documentDraft.kind, title: documentDraft.title.trim() || file.name, file, bookletCode: documentDraft.bookletCode.trim().toUpperCase() || 'A' }]);
     }
     setError('');
     setNotice('Belge sınav oluşturulduktan sonra arşive eklenecek şekilde hazırlandı.');
