@@ -200,7 +200,7 @@ export function GuidanceAdmin() {
         <label>Optik şablon<select value={templateVersionId} onChange={e => setTemplateVersionId(e.target.value)}><option value="">Otomatik eşleştir</option>{opticals.filter(x => x.version_id).map(x => <option key={x.version_id} value={x.version_id}>{x.name} · {x.version}</option>)}</select></label>
         <label>Dosya<input type="file" accept=".fmt,.txt,.dat,.csv,application/octet-stream,text/plain,text/csv" onChange={e => setFile(e.target.files?.[0] || null)} /><small>TXT, DAT, FMT veya CSV · tek dosya</small></label>
       </div>
-      <button className="primary" disabled={busy === 'optical' || !file || !selectedCode || !institutionId} onClick={() => void evaluateOptical}><FileUp size={16} /> {busy === 'optical' ? 'Değerlendiriliyor…' : 'Matbu Optiği Değerlendir'}</button>
+      <button className="primary" disabled={busy === 'optical' || !file || !selectedCode || !institutionId} onClick={() => void evaluateOptical()}><FileUp size={16} /> {busy === 'optical' ? 'Değerlendiriliyor…' : 'Matbu Optiği Değerlendir'}</button>
       {result && <div className="alert info" style={{ marginTop: 14 }}><strong>{result.processed || 0} kayıt işlendi.</strong> Eşleşen: {result.matched || 0} · Geçersiz: {result.invalid || 0} · Eşleşmeyen: {result.unmatched || 0}. Rehber öğretmen incelemesi zorunludur.</div>}
     </div>
 
