@@ -1,6 +1,6 @@
 import { useEffect,useMemo,useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
+import { Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, Network, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 import { api } from '../api';
 import { LicenseBoundary } from './LicenseBoundary';
@@ -15,6 +15,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
   SUPER_ADMIN: [
     { label:'GENEL', items:[
       {to:'/',label:'Ana Sayfa',icon:Home},
+      {to:'/admin-center',label:'Yönetim Merkezi',icon:Network},
       {to:'/standard-readiness',label:'Hazırlık Merkezi',icon:ShieldCheck},
     ]},
     { label:'SINAV MERKEZİ', items:[
