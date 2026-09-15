@@ -96,7 +96,7 @@ export function ExamDefinitions() {
     for (const s of data.subjects || []) for (const b of data.booklets || []) {
       const answers = (data.answerKey || []).filter((x: any) => x.subject_id === s.subject_id && x.booklet_code === b.code).sort((a: any, b2: any) => a.question_no - b2.question_no).map((x: any) => x.correct_answer || '').join('');
       const keyRows = (data.answerKey || []).filter((x: any) => x.subject_id === s.subject_id && x.booklet_code === b.code).sort((a: any, b2: any) => a.question_no - b2.question_no);
-      entries.push({ subjectId: s.subject_id, bookletCode: b.code, answers, optionCount: Number(keyRows[0]?.answer_option_count || s.option_count || 5) === 4 ? 4 : 5, ...(keyRows.length ? { acceptedAnswers: keyRows.map((x: any) => { try { const parsed = JSON.parse(x.accepted_answers || '[]'); return Array.isArray(parsed) ? parsed : [x.correct_answer]; } catch { return [x.correct_answer]; } }), questionStatuses: keyRows.map((x: any) => x.answer_question_status || x.question_status || 'ACTIVE') } : {}) });
+      entries.push({ subjectId: s.subject_id, bookletCode: b.code, answers, optionCount: Number(keyRows[0]?.answer_option_count || s.option_count || 5) === 4 ? 4 : 5, ...(keyRows.length ? { acceptedAnswers: keyRows.map((x: any) => { try { const parsed = JSON.parse(x.accepted_answers || '[]'); return Array.isArray(parsed) ? parsed : [x.correct_answer]; } catch { return [x.correct_answer]; } }), questionStatuses: keyRows.map((x: any) => x.answer_question_status || x.question_status || 'ACTIVE'), bookletQuestionNumbers: keyRows.map((x: any) => Number(x.printed_question_no || x.question_no)) } : {}) });
     }
     setKeyEntries(entries);
     const maps: OutcomeMap[] = [];
@@ -164,13 +164,19 @@ export function ExamDefinitions() {
     setError('');
     setBooklets(result.detectedBooklets.join(','));
     setKeyEntries(result.entries);
+    const detectedTitle = result.metadata?.title || '';
+    const detectedTitleNorm = detectedTitle.toLocaleUpperCase('tr-TR');
+    if (detectedTitleNorm.includes('TYT')) setChoiceKey('TYT');
+    else if (detectedTitleNorm.includes('AYT')) setChoiceKey('AYT');
+    else if (detectedTitleNorm.includes('YDT')) setChoiceKey('YDT');
+    else if (detectedTitleNorm.includes('LGS')) setChoiceKey('LGS');
+    setCreateForm((current) => ({ ...current, title: current.title || result.metadata?.title || '', publisherName: current.publisherName || result.metadata?.publisherName || '', gradeLevel: (!current.gradeLevel || current.gradeLevel === String(selectedChoice.gradeLevel || 7)) ? String(result.metadata?.gradeLevel || current.gradeLevel || selectedChoice.gradeLevel || '') : current.gradeLevel, description: current.description || (result.detectedFormat === 'WIDE_BOOKLET_TABLE' ? 'Kazanımlı cevap anahtarından otomatik oluşturuldu; yayın öncesi kontrol edilmelidir.' : '') }));
     const mappingSummary = autoMatchOutcomes(result);
-    const cfg = Object.entries(result.questionCounts).map(([subjectId, questionCount], index) => { const questionStart = result.questionStarts[subjectId] || 1; return { subjectId, questionCount, questionStart, questionEnd: questionStart + questionCount - 1, optionCount: 5 as const, questionStatus: 'ACTIVE' as const, wrongDivisor: selectedChoice.defaultWrongDivisor, sortOrder: index + 1 }; });
+    const cfg = Object.entries(result.questionCounts).map(([subjectId, questionCount], index) => { const questionStart = result.questionStarts[subjectId] || 1; const optionCount = result.entries.find((entry) => entry.subjectId === subjectId)?.optionCount || 5; return { subjectId, questionCount, questionStart, questionEnd: questionStart + questionCount - 1, optionCount, questionStatus: 'ACTIVE' as const, wrongDivisor: selectedChoice.defaultWrongDivisor, sortOrder: index + 1 }; });
     setSubjects(cfg);
-    const outcomeNotice = result.entries.some((entry) => (entry.outcomeRefs || []).some(Boolean))
-      ? ` ${mappingSummary.matched} kazanım otomatik eşleşti; ${mappingSummary.ambiguous + mappingSummary.missing + mappingSummary.unverified} kayıt manuel kontrol bekliyor.`
-      : '';
-    setNotice(`Cevap anahtarı analiz edildi: ${cfg.length} ders, ${cfg.reduce((n, x) => n + x.questionCount, 0)} soru, ${result.detectedBooklets.length} kitapçık.${outcomeNotice}`);
+    const outcomeNotice = result.entries.some((entry) => (entry.outcomeRefs || []).some(Boolean)) ? ` ${mappingSummary.matched} kazanım otomatik eşleşti; ${mappingSummary.ambiguous + mappingSummary.missing + mappingSummary.unverified} kayıt manuel kontrol bekliyor.` : '';
+    const warningNotice = result.warnings?.length ? ` Uyarı: ${result.warnings.join(' ')}` : '';
+    setNotice(`Cevap anahtarı analiz edildi: ${cfg.length} ders, ${cfg.reduce((n, x) => n + x.questionCount, 0)} soru, ${result.detectedBooklets.length} kitapçık.${outcomeNotice}${warningNotice}`);
   };
 
   const readAnswerFile = async (file?: File) => {
@@ -189,7 +195,8 @@ export function ExamDefinitions() {
   const downloadOutcomeTemplate = () => {
     const escapeCsv = (value: string | number) => `"${String(value).replace(/"/g, '""')}"`;
     const headers = ['Ders', 'Soru', 'Kitapçık', 'Doğru Cevap', 'Şık Sayısı', 'Kabul Edilen Cevaplar', 'Durum', 'Kazanım Kodu', 'Kazanım Açıklaması', 'Ünite', 'Konu', 'Alt Konu', 'Üst Kazanım Kodu'];
-    const rows = selectedTemplate.sections.flatMap((item) => Array.from({ length: item.questionCount }, (_, index) => [item.subjectCode, item.questionStart + index, 'A', '', item.optionCount, '', 'ACTIVE', '', '', '', '', '', '']));
+    const bookletCodes = [...new Set(booklets.split(',').map((value) => value.trim().toUpperCase()).filter(Boolean))];
+    const rows = (bookletCodes.length ? bookletCodes : ['A']).flatMap((booklet) => selectedTemplate.sections.flatMap((item) => Array.from({ length: item.questionCount }, (_, index) => [item.subjectCode, item.questionStart + index, booklet, '', item.optionCount, '', 'ACTIVE', '', '', '', '', '', ''])));
     const csv = [headers, ...rows].map((row) => row.map(escapeCsv).join(',')).join('\n');
     const url = URL.createObjectURL(new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' }));
     const anchor = document.createElement('a'); anchor.href = url; anchor.download = `${selectedTemplate.key.toLowerCase()}-kazanimli-cevap-anahtari-sablonu.csv`; anchor.click(); URL.revokeObjectURL(url);
@@ -356,7 +363,7 @@ export function ExamDefinitions() {
           <div className="simple-file-row"><label><span>Hazır sınav şablonu</span><select value={templateKey} onChange={(e) => { const key = e.target.value; const chosen = EXAM_TEMPLATES.find((template) => template.key === key); setTemplateKey(key); setOutcomeRequired(Boolean(chosen?.requiresOutcomes)); setDefinitionMode(chosen?.requiresOutcomes ? 'OUTCOME' : 'STANDARD'); const baseKey = key.endsWith('_OUTCOME') ? key.slice(0, -8) : key; const nextChoice = baseKey === 'SCHOOL_5' || baseKey === 'SCHOOL_6' || baseKey === 'SCHOOL_7' ? `STD_${baseKey.slice(-1)}` : baseKey; if (EXAM_CHOICES.some((choice) => choice.key === nextChoice)) setChoiceKey(nextChoice); }}>{EXAM_TEMPLATES.map((template) => <option key={template.key} value={template.key}>{template.label}</option>)}</select></label><div className="simple-template-note"><strong>{selectedTemplate.label}</strong><span>{selectedTemplate.description}</span><div><button type="button" className="ghost" onClick={downloadOutcomeTemplate}>Kazanımlı şablonu indir</button><button type="button" className="secondary" onClick={() => applyTemplate()}>Şablonu uygula</button></div></div></div>
           <div className="simple-file-row"><label className="simple-upload"><span>Kazanımlı cevap anahtarı (.csv / .xlsx)</span><input type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(e) => void readAnswerFile(e.target.files?.[0])} /></label><label><span>Kitapçıklar</span><input value={booklets} onChange={(e) => setBooklets(e.target.value)} placeholder="A veya A,B" /></label></div>
           <details className="simple-details"><summary>Metin olarak cevap anahtarı gir</summary><textarea rows={5} value={answerKeyText} onChange={(e) => setAnswerKeyText(e.target.value)} placeholder={'MAT: ABCDEABCDE\nTUR: ABCDEABCDE\nFEN: ABCDEABCDE'} /><button type="button" className="secondary" onClick={() => analyseKey()}><FileUp size={15}/> Anahtarı analiz et</button></details>
-          {analysis && <div className={analysis.unknownLines.length ? 'builder-analysis warning' : 'builder-analysis success'}><strong>{Object.keys(analysis.questionCounts).length} ders bulundu.</strong> {analysis.unknownLines.length ? `${analysis.unknownLines.length} satır kontrol edilmeli.` : 'Soru sayıları otomatik çıkarıldı.'}</div>}
+          {analysis && <div className={analysis.unknownLines.length || analysis.warnings?.length ? 'builder-analysis warning' : 'builder-analysis success'}><strong>{Object.keys(analysis.questionCounts).length} ders bulundu.</strong> {analysis.detectedFormat === 'WIDE_BOOKLET_TABLE' ? ' Geniş kitapçık tablosu algılandı.' : ''} Kitapçıklar: {analysis.detectedBooklets.join(', ')}. {analysis.unknownLines.length ? `${analysis.unknownLines.length} satır kontrol edilmeli.` : 'Soru sayıları otomatik çıkarıldı.'} {analysis.warnings?.join(' ')}</div>}
         </> : <div className="cards-list builder-subject-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" min="1" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" min={cfg.questionStart} value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label></>}</div>; })}</div>}
       </section>
 
