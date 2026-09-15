@@ -1,11 +1,12 @@
 import type { AuthUser,Env } from '../types';
-import { all,audit,badRequest,forbidden,json,one,uuid } from './db';
+import { all,audit,badRequest,forbidden,json,notFound,one,uuid } from './db';
 import { decodeUploadedBytes,parseUploadedText,parseWithTemplate,type ParserTemplate } from './parse';
 import { counselorDecision,counselorQueue,guidanceInstrumentForMessage,listGuidanceInstruments,myGuidanceSessions,proposeGuidanceAssessment,reviewGuidanceAssessment,reviewedGuidanceDevelopmentContext,submitGuidanceAssessment } from './guidance-assessments';
 
 
 function guidanceAdminAllowed(user:AuthUser){return user.role==='SUPER_ADMIN'||user.role==='INSTITUTION_MANAGER';}
 function parseGuidanceJson<T>(value:unknown,fallback:T):T{if(typeof value!=='string'||!value)return fallback;try{return JSON.parse(value) as T}catch{return fallback;}}
+type GuidanceInstrumentSchema={scale?:{min?:number;max?:number};items?:Array<{id:string;dimension:string;text:string;reverse?:boolean}>};
 const GUIDANCE_CATEGORIES=['RBA','STUDY_HABITS','GOAL_MOTIVATION','EXAM_READINESS','STUDY_PREFERENCES','CUSTOM_EDUCATIONAL'];
 const GUIDANCE_DELIVERY_MODES=['ONLINE','PRINT_OPTICAL'];
 
@@ -49,7 +50,7 @@ export async function evaluateGuidanceOptical(request:Request,env:Env,user:AuthU
  const templateId=String(form.get('templateVersionId')||'');const templates=templateId?templateRows.filter(x=>x.id===templateId):templateRows;if(templateId&&!templates.length)return badRequest('Optik şablon bulunamadı.');
  const text=decodeUploadedBytes(await file.arrayBuffer());const parsed=templateId?parseWithTemplate(text,file.name,templates[0]):parseUploadedText(text,file.name,templates);
  if(!parsed.records.length)return badRequest(parsed.issues[0]||'Optik dosyası okunamadı.',parsed.ambiguous?'OPTICAL_TEMPLATE_AMBIGUOUS':'OPTICAL_TEMPLATE_REQUIRED');
- const opticalConfig=parseGuidanceJson<any>(instrument.optical_config_json,{answerBlockCode:'RBA',scaleMap:{A:1,B:2,C:3,D:4,E:5}});const schema=parseGuidanceJson<InstrumentSchema>(instrument.question_schema_json,{scale:{min:1,max:5},items:[]});const answerBlock=String(opticalConfig.answerBlockCode||'RBA').toUpperCase();const scaleMap=opticalConfig.scaleMap||{A:1,B:2,C:3,D:4,E:5};
+ const opticalConfig=parseGuidanceJson<any>(instrument.optical_config_json,{answerBlockCode:'RBA',scaleMap:{A:1,B:2,C:3,D:4,E:5}});const schema=parseGuidanceJson<GuidanceInstrumentSchema>(instrument.question_schema_json,{scale:{min:1,max:5},items:[]});const answerBlock=String(opticalConfig.answerBlockCode||'RBA').toUpperCase();const scaleMap=opticalConfig.scaleMap||{A:1,B:2,C:3,D:4,E:5};
  const batchId=uuid('gob');await env.DB.prepare(`INSERT INTO guidance_optical_batches(id,institution_id,instrument_id,optical_template_version_id,source_file_name,record_count,status,created_by) VALUES(?,?,?,?,?,?,'PREVIEW',?)`).bind(batchId,institutionId,instrument.id,templateId||parsed.templateId||null,file.name,parsed.records.length,user.id).run();
  let processed=0,matched=0,invalid=0,unmatched=0;const issues:any[]=[];
  for(const record of parsed.records){
