@@ -237,7 +237,7 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
   const unknownLines: string[] = [];
   const detectedBooklets: string[] = [];
   const warnings: string[] = [];
-  const lines = text.replace(/^\\uFEFF/, '').replace(/\\r/g, '').split('\\n').filter((line) => line.trim());
+  const lines = text.replace(/^\uFEFF/, '').replace(/\r/g, '').split('\n').filter((line) => line.trim());
   const cleanBooklet = (value: string) => String(value || defaultBooklet).trim().toUpperCase() || defaultBooklet.toUpperCase();
   const unique = <T,>(values: T[]) => [...new Set(values)];
 
@@ -259,10 +259,10 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
     if (headerIndex <= 0) return undefined;
     const rows = lines.slice(0, headerIndex).flatMap((line) => splitDelimitedLine(line).map((value) => value.trim()).filter(Boolean));
     const joined = rows.join(' ');
-    const gradeMatches = [...joined.matchAll(/(\\d{1,2})\\s*\\.?\\s*SINIF/gi)].map((match) => Number(match[1]));
+    const gradeMatches = [...joined.matchAll(/(\d{1,2})\s*\.?\s*SINIF/gi)].map((match) => Number(match[1]));
     const title = rows.find((value) => /TYT|AYT|YDT|LGS|SINAV|HAZIR|BULUNUS|DENEME/i.test(value) && value.length > 4);
     const publisherName = rows.find((value) => /[A-Za-zÇĞİÖŞÜçğıöşü]/.test(value) && !/SINIF|SINAV|TYT|AYT|YDT|LGS/i.test(value)) || rows[0];
-    const externalExamCode = rows.find((value) => /^\\d{3,12}$/.test(value));
+    const externalExamCode = rows.find((value) => /^\d{3,12}$/.test(value));
     const gradeLevel = gradeMatches[0];
     if (new Set(gradeMatches).size > 1) warnings.push(`Dosya üst bilgisinde birden fazla sınıf bilgisi bulundu: ${unique(gradeMatches).join(', ')}. Yayınlamadan önce sınav kartını kontrol edin.`);
     return { publisherName, title, gradeLevel, externalExamCode };
@@ -334,7 +334,7 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
         continue;
       }
       const acceptedRaw = String(acceptedColumn >= 0 ? cells[acceptedColumn] || commonAnswer : commonAnswer);
-      const accepted = unique(acceptedRaw.split(/[|\\/,]/).map((value) => cleanAnswers(value).slice(0, 1)).filter(Boolean));
+      const accepted = unique(acceptedRaw.split(/[|\/,]/).map((value) => cleanAnswers(value).slice(0, 1)).filter(Boolean));
       const statusValue = norm(statusColumn >= 0 ? cells[statusColumn] || '' : 'ACTIVE');
       const status = statusValue === 'CANCELLED' || statusValue === 'IPTAL' ? 'CANCELLED'
         : statusValue === 'EXCLUDED' || statusValue === 'DEGERLENDIRMEDISI' ? 'EXCLUDED' : 'ACTIVE';
@@ -347,8 +347,8 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
         parentCode: String(parentCodeColumn >= 0 ? cells[parentCodeColumn] || '' : '').trim() || undefined,
       };
       const outcomes = [primaryOutcome];
-      for (const [header, column] of tableHeaders.entries()) {
-        if (!/^KAZANIM\\d+$/.test(header) || column === outcomeTitleColumn) continue;
+      for (const [column, header] of tableHeaders.entries()) {
+        if (!/^KAZANIM\d+$/.test(header) || column === outcomeTitleColumn) continue;
         const title = String(cells[column] || '').trim();
         if (title) outcomes.push({ title });
       }
@@ -382,16 +382,16 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
 
   let booklet = defaultBooklet.toUpperCase();
   if (!detectedBooklets.includes(booklet)) detectedBooklets.push(booklet);
-  for (const rawLine of text.replace(/\\r/g, '').split('\\n')) {
+  for (const rawLine of text.replace(/\r/g, '').split('\n')) {
     const line = rawLine.trim();
     if (!line || line.startsWith('#')) continue;
-    const bookletMatch = line.match(/^\\[?\\s*(?:KITAP(?:Ç|C)IK\\s*)?([A-Z0-9]{1,4})\\s*\\]?$/i);
+    const bookletMatch = line.match(/^\[?\s*(?:KITAP(?:Ç|C)IK\s*)?([A-Z0-9]{1,4})\s*\]?$/i);
     if (bookletMatch && !/[ABCDE]{5,}/i.test(line)) {
       booklet = bookletMatch[1].toUpperCase();
       if (!detectedBooklets.includes(booklet)) detectedBooklets.push(booklet);
       continue;
     }
-    const match = line.match(/^(.+?)\\s*[:;,=|\\t]\\s*([ABCDE\\s._-]+)$/i) || line.match(/^([^\\s]+)\\s+([ABCDE]{4,})$/i);
+    const match = line.match(/^(.+?)\s*[:;,=|\t]\s*([ABCDE\s._-]+)$/i) || line.match(/^([^\s]+)\s+([ABCDE]{4,})$/i);
     if (!match) { unknownLines.push(line); continue; }
     const subject = subjectForToken(match[1], subjects);
     const answers = cleanAnswers(match[2]);
