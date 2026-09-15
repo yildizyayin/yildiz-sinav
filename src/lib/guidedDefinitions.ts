@@ -259,7 +259,7 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
     if (headerIndex <= 0) return undefined;
     const rows = lines.slice(0, headerIndex).flatMap((line) => splitDelimitedLine(line).map((value) => value.trim()).filter(Boolean));
     const joined = rows.join(' ');
-    const gradeMatches = [...joined.matchAll(/(\d{1,2})\s*\.?\s*SINIF/gi)].map((match) => Number(match[1]));
+    const gradeMatches = [...norm(joined).matchAll(/(\d{1,2})SINIF/g)].map((match) => Number(match[1]));
     const title = rows.find((value) => /TYT|AYT|YDT|LGS|SINAV|HAZIR|BULUNUS|DENEME/i.test(value) && value.length > 4);
     const publisherName = rows.find((value) => /[A-Za-zÇĞİÖŞÜçğıöşü]/.test(value) && !/SINIF|SINAV|TYT|AYT|YDT|LGS/i.test(value)) || rows[0];
     const externalExamCode = rows.find((value) => /^\d{3,12}$/.test(value));
