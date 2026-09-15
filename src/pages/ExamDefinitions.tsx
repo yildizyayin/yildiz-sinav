@@ -10,7 +10,7 @@ type SubjectConfig = { subjectId: string; questionCount: number; questionStart: 
 type OutcomeMap = { subjectId: string; questionNo: number; outcomeId: string };
 type DefinitionMode = 'STANDARD' | 'OUTCOME';
 type CreateMethod = 'ANSWER_KEY' | 'MANUAL';
-type ExamDocumentKind = 'ANSWER_KEY_PDF' | 'OUTCOME_TABLE' | 'EXAM_PDF' | 'OPTICAL_DOCUMENT' | 'SEKONIC' | 'BICOM' | 'OTHER_DIGITAL_FILE' | 'PUBLISHER_LOGO';
+type ExamDocumentKind = 'ANSWER_KEY_PDF' | 'OUTCOME_TABLE' | 'EXAM_PDF' | 'OPTICAL_DOCUMENT' | 'SEKONIC' | 'BICOM' | 'OTHER_DIGITAL_FILE' | 'PUBLISHER_LOGO' | 'VIDEO_SOLUTION';
 type PendingDocument = { id: string; kind: ExamDocumentKind; title: string; file: File; bookletCode: string };
 type PendingVideo = { id: string; title: string; url: string; publishMode: 'DRAFT' | 'NOW' | 'SCHEDULED'; publishAt: string; visibility: 'STUDENT_TEACHER' };
 
