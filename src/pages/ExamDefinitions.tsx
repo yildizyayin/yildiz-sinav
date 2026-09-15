@@ -10,6 +10,27 @@ type SubjectConfig = { subjectId: string; questionCount: number; questionStart: 
 type OutcomeMap = { subjectId: string; questionNo: number; outcomeId: string };
 type DefinitionMode = 'STANDARD' | 'OUTCOME';
 type CreateMethod = 'ANSWER_KEY' | 'MANUAL';
+type ExamDocumentKind = 'ANSWER_KEY_PDF' | 'OUTCOME_TABLE' | 'EXAM_PDF' | 'OPTICAL_DOCUMENT' | 'SEKONIC' | 'BICOM' | 'OTHER_DIGITAL_FILE' | 'PUBLISHER_LOGO';
+type PendingDocument = { id: string; kind: ExamDocumentKind; title: string; file: File; bookletCode: string };
+type PendingVideo = { id: string; title: string; url: string; publishMode: 'DRAFT' | 'NOW' | 'SCHEDULED'; publishAt: string; visibility: 'STUDENT_TEACHER' };
+
+const EXAM_DOCUMENT_OPTIONS: Array<{ value: ExamDocumentKind; label: string; help: string }> = [
+  { value: 'ANSWER_KEY_PDF', label: 'Cevap Anahtarı PDF', help: 'Kazanımsız/standart cevap anahtarını arşivler.' },
+  { value: 'OUTCOME_TABLE', label: 'Kazanım Tablosu', help: 'CSV/XLSX/PDF kazanım kaynağını saklar.' },
+  { value: 'EXAM_PDF', label: 'Deneme PDF', help: 'Öğrencinin görebileceği deneme belgesini arşivler.' },
+  { value: 'OPTICAL_DOCUMENT', label: 'Optik Dokümanı', help: 'Optik referans dosyasıdır; optik tanımının yerine geçmez.' },
+  { value: 'SEKONIC', label: 'Sekonic', help: 'Sekonic okuma kaynağını optik arşivine ekler.' },
+  { value: 'BICOM', label: 'Bicom', help: 'Bicom okuma kaynağını optik arşivine ekler.' },
+  { value: 'OTHER_DIGITAL_FILE', label: 'Diğer Dijital Dosya', help: 'Sınava ait ek dijital belgeyi arşivler.' },
+  { value: 'PUBLISHER_LOGO', label: 'Yayınevi Logosu', help: 'Kazanımsız cevap anahtarı PDF üretiminde kullanılır.' },
+  { value: 'VIDEO_SOLUTION', label: 'Video Çözüm', help: 'Bağlantıyı şimdi, taslakta veya planlanan tarihte yayınlar.' },
+];
+
+function documentAccept(kind: ExamDocumentKind) {
+  if (kind === 'PUBLISHER_LOGO') return 'image/png,image/jpeg,image/svg+xml,image/webp';
+  if (kind === 'OPTICAL_DOCUMENT' || kind === 'SEKONIC' || kind === 'BICOM') return '.pdf,.csv,.xlsx,.txt,.dat,.fmt,.zip';
+  return '.pdf,.csv,.xlsx';
+}
 
 function subjectName(options: any, id: string) {
   return options.subjects?.find((s: any) => s.id === id)?.name || id;
@@ -55,6 +76,10 @@ export function ExamDefinitions() {
   const [opticalVersionId, setOpticalVersionId] = useState('');
   const [opticalBooklets, setOpticalBooklets] = useState<string[]>([]);
   const [opticalModes, setOpticalModes] = useState<string[]>(['TXT', 'DAT', 'CAMERA']);
+  const [documentDialogOpen, setDocumentDialogOpen] = useState(false);
+  const [pendingDocuments, setPendingDocuments] = useState<PendingDocument[]>([]);
+  const [pendingVideos, setPendingVideos] = useState<PendingVideo[]>([]);
+  const [documentDraft, setDocumentDraft] = useState<{ kind: ExamDocumentKind; title: string; file: File | null; bookletCode: string; url: string; publishMode: 'DRAFT' | 'NOW' | 'SCHEDULED'; publishAt: string }>({ kind: 'ANSWER_KEY_PDF', title: '', file: null, bookletCode: 'A', url: '', publishMode: 'DRAFT', publishAt: '' });
 
   const loadContent = async (id: string) => {
     const data = await api<any>(`/api/exam-content/${id}`);
@@ -234,12 +259,25 @@ export function ExamDefinitions() {
       }
       if (keyEntries.length) {
         await api(`/api/exam-definitions/${created.id}/answer-key`, { method: 'PUT', body: JSON.stringify({ entries: keyEntries, outcomeMappings, outcomeMode: requiresOfficialOutcomes ? 'OFFICIAL_REQUIRED' : 'OPTIONAL' }) });
-        if (answerKeyFile) { const archive = new FormData(); archive.append('assetType', 'QUALIFIED_ANSWER_KEY'); archive.append('file', answerKeyFile); await api(`/api/exam-content/${created.id}/assets`, { method: 'POST', body: archive }); }
+        if (answerKeyFile) { await uploadArchiveForExam(created.id, 'QUALIFIED_ANSWER_KEY', answerKeyFile, { documentKind: 'OUTCOME_TABLE', title: answerKeyFile.name, source: 'ANSWER_KEY_PARSER' }); }
       }
+      const documentFailures: string[] = [];
+      for (const pending of pendingDocuments) {
+        try {
+          await uploadArchiveForExam(created.id, archiveTypeForDocument(pending.kind), pending.file, { documentKind: pending.kind, title: pending.title, bookletCode: pending.bookletCode });
+        } catch (e: any) { documentFailures.push(`${pending.title}: ${e.message || 'yüklenemedi'}`); }
+      }
+      for (const pending of pendingVideos) {
+        try {
+          await api(`/api/exam-content/${created.id}/videos`, { method: 'POST', body: JSON.stringify({ url: pending.url, title: pending.title, linkType: 'EXAM', publishMode: pending.publishMode, publishAt: pending.publishAt ? new Date(pending.publishAt).toISOString() : null, visibility: pending.visibility }) });
+        } catch (e: any) { documentFailures.push(`${pending.title}: video bağlantısı kaydedilemedi`); }
+      }
+      setPendingDocuments([]);
+      setPendingVideos([]);
       setOutcomeRequired(requiresOfficialOutcomes);
       setSelectedId(created.id);
       setCreateForm((f) => ({ ...f, title: '' }));
-      setNotice(definitionMode === 'OUTCOME' ? 'Sınav oluşturuldu. Şimdi soru-kazanım eşleştirmelerini tamamlayın.' : 'Sınav cevap anahtarından oluşturuldu. Kontrol edip yayınlayabilirsiniz.');
+      setNotice(documentFailures.length ? `Sınav oluşturuldu; bazı belgeler daha sonra tekrar yüklenmeli: ${documentFailures.join(' · ')}` : definitionMode === 'OUTCOME' ? 'Sınav oluşturuldu. Şimdi soru-kazanım eşleştirmelerini tamamlayın.' : 'Sınav cevap anahtarından oluşturuldu. Kontrol edip yayınlayabilirsiniz.');
       await loadRows();
     } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
@@ -309,11 +347,39 @@ export function ExamDefinitions() {
     try { await api(`/api/exam-definitions/${selectedId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'ACTIVE' }) }); setNotice('Sınav yayınlandı.'); await loadDetail(selectedId); await loadRows(); } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
 
-  const uploadArchive = async (assetType: string, file?: File) => {
+  const archiveTypeForDocument = (kind: ExamDocumentKind) => kind === 'ANSWER_KEY_PDF' ? 'SOURCE_ANSWER_KEY' : kind === 'OUTCOME_TABLE' ? 'QUALIFIED_ANSWER_KEY' : kind === 'EXAM_PDF' ? 'EXAM_PDF' : kind === 'PUBLISHER_LOGO' ? 'PUBLISHER_LOGO' : 'OTHER';
+
+  const uploadArchiveForExam = async (examId: string, assetType: string, file: File, metadata: { documentKind?: string; title?: string; bookletCode?: string; source?: string } = {}) => {
+    const form = new FormData();
+    form.append('assetType', assetType);
+    form.append('documentKind', metadata.documentKind || assetType);
+    form.append('title', metadata.title || file.name);
+    form.append('bookletCode', metadata.bookletCode || 'A');
+    form.append('source', metadata.source || 'EXAM_CREATION');
+    form.append('file', file);
+    await api(`/api/exam-content/${examId}/assets`, { method: 'POST', body: form });
+  };
+
+  const uploadArchive = async (assetType: string, file?: File, metadata: { documentKind?: string; title?: string; bookletCode?: string } = {}) => {
     if (!selectedId || !file) return;
     setContentBusy(true); setError('');
-    try { const form = new FormData(); form.append('assetType', assetType); form.append('file', file); await api(`/api/exam-content/${selectedId}/assets`, { method: 'POST', body: form }); setNotice('Belge sınav arşivine eklendi.'); await loadContent(selectedId); }
+    try { await uploadArchiveForExam(selectedId, assetType, file, metadata); setNotice('Belge sınav arşivine eklendi.'); await loadContent(selectedId); }
     catch (e: any) { setError(e.message); } finally { setContentBusy(false); }
+  };
+
+  const addDocumentToQueue = () => {
+    const option = EXAM_DOCUMENT_OPTIONS.find((item) => item.value === documentDraft.kind);
+    if (documentDraft.kind === 'VIDEO_SOLUTION') {
+      if (!documentDraft.title.trim() || !documentDraft.url.trim()) { setError('Video başlığı ve HTTPS bağlantısı gereklidir.'); return; }
+      setPendingVideos((items) => [...items, { id: `video-${Date.now()}-${Math.random()}`, title: documentDraft.title.trim(), url: documentDraft.url.trim(), publishMode: documentDraft.publishMode, publishAt: documentDraft.publishAt, visibility: 'STUDENT_TEACHER' }]);
+    } else {
+      if (!documentDraft.file) { setError(`${option?.label || 'Belge'} için dosya seçilmelidir.`); return; }
+      setPendingDocuments((items) => [...items, { id: `doc-${Date.now()}-${Math.random()}`, kind: documentDraft.kind, title: documentDraft.title.trim() || documentDraft.file.name, file: documentDraft.file, bookletCode: documentDraft.bookletCode.trim().toUpperCase() || 'A' }]);
+    }
+    setError('');
+    setNotice('Belge sınav oluşturulduktan sonra arşive eklenecek şekilde hazırlandı.');
+    setDocumentDraft({ kind: 'ANSWER_KEY_PDF', title: '', file: null, bookletCode: 'A', url: '', publishMode: 'DRAFT', publishAt: '' });
+    setDocumentDialogOpen(false);
   };
   const generatePlainPdf = async () => {
     if (!selectedId) return; setContentBusy(true); setError('');
@@ -365,6 +431,23 @@ export function ExamDefinitions() {
           <details className="simple-details"><summary>Metin olarak cevap anahtarı gir</summary><textarea rows={5} value={answerKeyText} onChange={(e) => setAnswerKeyText(e.target.value)} placeholder={'MAT: ABCDEABCDE\nTUR: ABCDEABCDE\nFEN: ABCDEABCDE'} /><button type="button" className="secondary" onClick={() => analyseKey()}><FileUp size={15}/> Anahtarı analiz et</button></details>
           {analysis && <div className={analysis.unknownLines.length || analysis.warnings?.length ? 'builder-analysis warning' : 'builder-analysis success'}><strong>{Object.keys(analysis.questionCounts).length} ders bulundu.</strong> {analysis.detectedFormat === 'WIDE_BOOKLET_TABLE' ? ' Geniş kitapçık tablosu algılandı.' : ''} Kitapçıklar: {analysis.detectedBooklets.join(', ')}. {analysis.unknownLines.length ? `${analysis.unknownLines.length} satır kontrol edilmeli.` : 'Soru sayıları otomatik çıkarıldı.'} {analysis.warnings?.join(' ')}</div>}
         </> : <div className="cards-list builder-subject-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" min="1" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" min={cfg.questionStart} value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label></>}</div>; })}</div>}
+      </section>
+
+      <section className="exam-simple-card" style={{ borderColor: pendingDocuments.length || pendingVideos.length ? '#2563eb' : undefined }}>
+        <div className="exam-simple-card-head"><span className="simple-number">+</span><div><h2>Belge ekle <small style={{ fontWeight: 500, color: '#64748b' }}>(isteğe bağlı)</small></h2><p>Deneme portalındaki arşiv mantığıyla belge türünü seçin; her tür kendi işleviyle kaydedilir.</p></div><button type="button" className="secondary" onClick={() => setDocumentDialogOpen(true)}><Archive size={16}/> Yeni belge yükle</button></div>
+        {(pendingDocuments.length > 0 || pendingVideos.length > 0) && <div className="cards-list" style={{ marginTop: 14 }}>
+          {pendingDocuments.map((document) => <div className="list-card" key={document.id}><FileText size={17}/><div style={{ flex: 1 }}><strong>{document.title}</strong><span>{EXAM_DOCUMENT_OPTIONS.find((item) => item.value === document.kind)?.label} · {document.file.name} · Kitapçık {document.bookletCode}</span></div><button type="button" className="ghost" onClick={() => setPendingDocuments((items) => items.filter((item) => item.id !== document.id))}>Kaldır</button></div>)}
+          {pendingVideos.map((video) => <div className="list-card" key={video.id}><PlayCircle size={17}/><div style={{ flex: 1 }}><strong>{video.title}</strong><span>Video Çözüm · {video.publishMode === 'NOW' ? 'Şimdi yayınlanacak' : video.publishMode === 'SCHEDULED' ? `Planlandı: ${video.publishAt || 'tarih seçilmedi'}` : 'Taslak'}</span></div><button type="button" className="ghost" onClick={() => setPendingVideos((items) => items.filter((item) => item.id !== video.id))}>Kaldır</button></div>)}
+        </div>}
+        {documentDialogOpen && <div className="panel" style={{ marginTop: 14, background: 'var(--surface-muted, #f7f9ff)', border: '1px solid #dbeafe' }}>
+          <div className="panel-head"><div><h3>Yeni belge yükle</h3><p>Belge sınav kaydedildiğinde merkezi arşive aktarılır.</p></div><button type="button" className="ghost" onClick={() => setDocumentDialogOpen(false)}>×</button></div>
+          <div className="form-grid" style={{ alignItems: 'end' }}>
+            <label>Belge türü<select value={documentDraft.kind} onChange={(e) => setDocumentDraft((draft) => ({ ...draft, kind: e.target.value as ExamDocumentKind, file: null }))}>{EXAM_DOCUMENT_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select><small>{EXAM_DOCUMENT_OPTIONS.find((item) => item.value === documentDraft.kind)?.help}</small></label>
+            <label>Başlık<input value={documentDraft.title} onChange={(e) => setDocumentDraft((draft) => ({ ...draft, title: e.target.value }))} placeholder="Örn. TYT Deneme 1 Cevap Anahtarı" /></label>
+            {documentDraft.kind === 'VIDEO_SOLUTION' ? <><label>Video bağlantısı<input value={documentDraft.url} onChange={(e) => setDocumentDraft((draft) => ({ ...draft, url: e.target.value }))} placeholder="https://..." /></label><label>Yayın zamanı<select value={documentDraft.publishMode} onChange={(e) => setDocumentDraft((draft) => ({ ...draft, publishMode: e.target.value as any }))}><option value="DRAFT">Taslak</option><option value="NOW">Şimdi yayınla</option><option value="SCHEDULED">Tarih planla</option></select></label>{documentDraft.publishMode === 'SCHEDULED' && <label>Yayın tarihi<input type="datetime-local" value={documentDraft.publishAt} onChange={(e) => setDocumentDraft((draft) => ({ ...draft, publishAt: e.target.value }))} /></label>}</> : <><label>Dosya<input type="file" accept={documentAccept(documentDraft.kind)} onChange={(e) => setDocumentDraft((draft) => ({ ...draft, file: e.target.files?.[0] || null }))} /></label><label>Kitapçık<select value={documentDraft.bookletCode} onChange={(e) => setDocumentDraft((draft) => ({ ...draft, bookletCode: e.target.value }))}>{['A', 'B', 'C', 'D'].map((code) => <option key={code} value={code}>{code}</option>)}</select></label></>}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 14 }}><button type="button" className="secondary" onClick={() => setDocumentDialogOpen(false)}>Vazgeç</button><button type="button" className="primary" onClick={addDocumentToQueue}><Save size={16}/> Listeye ekle</button></div>
+        </div>}
       </section>
 
       <section className="exam-simple-card">
