@@ -10,8 +10,7 @@ CREATE TABLE IF NOT EXISTS exam_question_booklet_orders (
   booklet_code TEXT NOT NULL,
   printed_question_no INTEGER NOT NULL,
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(exam_question_id, booklet_code),
-  UNIQUE(exam_id, booklet_code, printed_question_no)
+  UNIQUE(exam_question_id, booklet_code)
 );
 
 CREATE INDEX IF NOT EXISTS idx_exam_question_booklet_orders_lookup
