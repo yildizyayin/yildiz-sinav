@@ -131,18 +131,57 @@ async function uploadContentAsset(request: Request, env: Env, user: AuthUser, ex
   if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden();
   const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.');
   if (exam.owner_type === 'CENTRAL' && user.role !== 'SUPER_ADMIN') return forbidden('Merkezi sınav arşivini yalnız Super Admin yönetebilir.');
-  const form = await request.formData(); const file = form.get('file'); if (!(file instanceof File)) return badRequest('Bir dosya seçilmelidir.');
-  const rawType = String(form.get('assetType') || '').toUpperCase(); const allowed = ['QUALIFIED_ANSWER_KEY', 'SOURCE_ANSWER_KEY', 'EXAM_PDF', 'PUBLISHER_LOGO', 'OTHER']; if (!allowed.includes(rawType)) return badRequest('Geçersiz arşiv belge türü.');
-  const max = rawType === 'PUBLISHER_LOGO' ? 5 * 1024 * 1024 : 30 * 1024 * 1024; if (file.size > max) return badRequest('Dosya boyutu sınırı aşıyor.');
+
+  const form = await request.formData();
+  const file = form.get('file');
+  if (!(file instanceof File)) return badRequest('Bir dosya seçilmelidir.');
+
+  const requestedType = String(form.get('assetType') || '').toUpperCase();
+  const documentKind = String(form.get('documentKind') || requestedType).toUpperCase();
+  const kindToAssetType: Record<string, string> = {
+    ANSWER_KEY_PDF: 'SOURCE_ANSWER_KEY',
+    OUTCOME_TABLE: 'QUALIFIED_ANSWER_KEY',
+    EXAM_PDF: 'EXAM_PDF',
+    PUBLISHER_LOGO: 'PUBLISHER_LOGO',
+    OPTICAL_DOCUMENT: 'OTHER',
+    SEKONIC: 'OTHER',
+    BICOM: 'OTHER',
+    OTHER_DIGITAL_FILE: 'OTHER',
+  };
+  const rawType = kindToAssetType[documentKind] || requestedType;
+  const allowedTypes = ['QUALIFIED_ANSWER_KEY', 'SOURCE_ANSWER_KEY', 'EXAM_PDF', 'PUBLISHER_LOGO', 'OTHER'];
+  const allowedKinds = ['ANSWER_KEY_PDF', 'OUTCOME_TABLE', 'EXAM_PDF', 'PUBLISHER_LOGO', 'OPTICAL_DOCUMENT', 'SEKONIC', 'BICOM', 'OTHER_DIGITAL_FILE', ...allowedTypes];
+  if (!allowedTypes.includes(rawType) || !allowedKinds.includes(documentKind)) return badRequest('Geçersiz arşiv belge türü.');
+
+  const max = rawType === 'PUBLISHER_LOGO' ? 5 * 1024 * 1024 : 30 * 1024 * 1024;
+  if (file.size > max) return badRequest('Dosya boyutu sınırı aşıyor.');
   const mime = file.type || 'application/octet-stream';
-  if (rawType === 'PUBLISHER_LOGO' && !mime.startsWith('image/')) return badRequest('Yayınevi logosu PNG, JPG, SVG veya WEBP olmalıdır.');
-  if (rawType !== 'PUBLISHER_LOGO' && rawType !== 'OTHER' && !(['application/pdf', 'text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].includes(mime) || /\.(pdf|csv|xlsx)$/i.test(file.name))) return badRequest('Bu arşiv türü için PDF, CSV veya XLSX dosyası yükleyin.');
-  const current = await one<{ version: number }>(env.DB.prepare('SELECT max(version) version FROM exam_document_assets WHERE exam_id=? AND asset_type=?').bind(examId, rawType)); const version = Number(current?.version || 0) + 1;
-  const key = `exams/${exam.academic_year}/${examId}/archive/${rawType.toLowerCase()}/v${version}-${Date.now()}-${safeAssetName(file.name)}`;
+  const extension = file.name.toLowerCase().match(/\.([a-z0-9]+)$/)?.[1] || '';
+  const isImage = mime.startsWith('image/') || ['png', 'jpg', 'jpeg', 'svg', 'webp'].includes(extension);
+  const structuredFile = ['pdf', 'csv', 'xlsx'].includes(extension) || ['application/pdf', 'text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].includes(mime);
+  const opticalSourceFile = [...['txt', 'dat', 'fmt', 'zip'], ...['pdf', 'csv', 'xlsx']].includes(extension) || structuredFile;
+
+  if (documentKind === 'PUBLISHER_LOGO' && !isImage) return badRequest('Yayınevi logosu PNG, JPG, SVG veya WEBP olmalıdır.');
+  if (['ANSWER_KEY_PDF', 'OUTCOME_TABLE', 'EXAM_PDF'].includes(documentKind) && !structuredFile) return badRequest('Bu belge türü için PDF, CSV veya XLSX dosyası yükleyin.');
+  if (['OPTICAL_DOCUMENT', 'SEKONIC', 'BICOM'].includes(documentKind) && !opticalSourceFile) return badRequest('Optik kaynak için PDF, CSV, XLSX, TXT, DAT, FMT veya ZIP dosyası yükleyin.');
+
+  const bookletCode = normalizeBookletCodes([form.get('bookletCode')])[0] || 'A';
+  const title = String(form.get('title') || file.name).trim().slice(0, 200) || file.name;
+  const current = await one<{ version: number }>(env.DB.prepare('SELECT max(version) version FROM exam_document_assets WHERE exam_id=? AND asset_type=? AND booklet_code=?').bind(examId, rawType, bookletCode));
+  const version = Number(current?.version || 0) + 1;
+  const key = `exams/${exam.academic_year}/${examId}/archive/${documentKind.toLowerCase()}/v${version}-${Date.now()}-${safeAssetName(file.name)}`;
   await env.FILES.put(key, file.stream(), { httpMetadata: { contentType: mime, cacheControl: 'private, no-store' } });
-  const id = uuid('eda'); await env.DB.prepare(`INSERT INTO exam_document_assets(id,exam_id,asset_type,r2_key,file_name,mime_type,byte_size,version,visibility,metadata_json,created_by) VALUES(?,?,?,?,?,?,?,?,?,?,?)`).bind(id, examId, rawType, key, file.name, mime, file.size, version, rawType === 'PUBLISHER_LOGO' ? 'INSTITUTION_TEACHER' : 'INSTITUTION_TEACHER', JSON.stringify({ source: 'SUPER_ADMIN_ARCHIVE_UPLOAD' }), user.id).run();
-  await audit(env.DB, user.id, exam.institution_id, 'EXAM_ARCHIVE_ASSET_UPLOADED', 'exam', examId, { assetType: rawType, version, fileName: file.name, byteSize: file.size });
-  return json({ ok: true, id, version, assetType: rawType }, 201);
+  const id = uuid('eda');
+  const metadata = {
+    source: String(form.get('source') || 'SUPER_ADMIN_ARCHIVE_UPLOAD'),
+    documentKind,
+    title,
+    originalAssetType: requestedType || rawType,
+  };
+  await env.DB.prepare(`INSERT INTO exam_document_assets(id,exam_id,asset_type,booklet_code,r2_key,file_name,mime_type,byte_size,version,visibility,metadata_json,created_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`)
+    .bind(id, examId, rawType, bookletCode, key, file.name, mime, file.size, version, 'INSTITUTION_TEACHER', JSON.stringify(metadata), user.id).run();
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_ARCHIVE_ASSET_UPLOADED', 'exam', examId, { assetType: rawType, documentKind, bookletCode, title, version, fileName: file.name, byteSize: file.size });
+  return json({ ok: true, id, version, assetType: rawType, documentKind, bookletCode }, 201);
 }
 
 async function generatePlainAnswerKey(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
