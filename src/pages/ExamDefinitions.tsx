@@ -195,7 +195,8 @@ export function ExamDefinitions() {
   const downloadOutcomeTemplate = () => {
     const escapeCsv = (value: string | number) => `"${String(value).replace(/"/g, '""')}"`;
     const headers = ['Ders', 'Soru', 'Kitapçık', 'Doğru Cevap', 'Şık Sayısı', 'Kabul Edilen Cevaplar', 'Durum', 'Kazanım Kodu', 'Kazanım Açıklaması', 'Ünite', 'Konu', 'Alt Konu', 'Üst Kazanım Kodu'];
-    const rows = selectedTemplate.sections.flatMap((item) => Array.from({ length: item.questionCount }, (_, index) => [item.subjectCode, item.questionStart + index, 'A', '', item.optionCount, '', 'ACTIVE', '', '', '', '', '', '']));
+    const bookletCodes = [...new Set(booklets.split(',').map((value) => value.trim().toUpperCase()).filter(Boolean))];
+    const rows = (bookletCodes.length ? bookletCodes : ['A']).flatMap((booklet) => selectedTemplate.sections.flatMap((item) => Array.from({ length: item.questionCount }, (_, index) => [item.subjectCode, item.questionStart + index, booklet, '', item.optionCount, '', 'ACTIVE', '', '', '', '', '', ''])));
     const csv = [headers, ...rows].map((row) => row.map(escapeCsv).join(',')).join('\n');
     const url = URL.createObjectURL(new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' }));
     const anchor = document.createElement('a'); anchor.href = url; anchor.download = `${selectedTemplate.key.toLowerCase()}-kazanimli-cevap-anahtari-sablonu.csv`; anchor.click(); URL.revokeObjectURL(url);
