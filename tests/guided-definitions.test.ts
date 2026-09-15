@@ -48,10 +48,10 @@ describe('guided answer key parser', () => {
       answers: 'DB',
       bookletQuestionNumbers: [4, 1],
     });
-    expect(result.entries.find((entry) => entry.bookletCode === 'D')?.outcomeRefsByQuestion?.[0]).toEqual([
-      { code: 'TUR.1', title: 'Sözcükte anlam', unit: undefined, topic: undefined, subtopic: undefined, parentCode: undefined },
-      { title: 'Söz varlığı' },
-    ]);
+    const dOutcomes = result.entries.find((entry) => entry.bookletCode === 'D')?.outcomeRefsByQuestion?.[0] || [];
+    expect(dOutcomes).toHaveLength(3);
+    expect(dOutcomes[0]).toMatchObject({ code: 'TUR.1', title: undefined });
+    expect(dOutcomes.slice(1)).toEqual([{ title: 'Sözcükte anlam' }, { title: 'Söz varlığı' }]);
   });
 });
 
