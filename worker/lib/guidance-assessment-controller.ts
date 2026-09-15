@@ -1,7 +1,7 @@
 import type { AuthUser,Env } from '../types';
 import { all,audit,badRequest,forbidden,json,notFound,one,uuid } from './db';
 import { decodeUploadedBytes,parseUploadedText,parseWithTemplate,type ParserTemplate } from './parse';
-import { counselorDecision,counselorQueue,guidanceInstrumentForMessage,listGuidanceInstruments,myGuidanceSessions,proposeGuidanceAssessment,reviewGuidanceAssessment,reviewedGuidanceDevelopmentContext,submitGuidanceAssessment } from './guidance-assessments';
+import { counselorDecision,counselorQueue,guidanceInstrumentForMessage,listGuidanceInstruments,scoreGuidanceResponses,myGuidanceSessions,proposeGuidanceAssessment,reviewGuidanceAssessment,reviewedGuidanceDevelopmentContext,submitGuidanceAssessment } from './guidance-assessments';
 
 
 function guidanceAdminAllowed(user:AuthUser){return user.role==='SUPER_ADMIN'||user.role==='INSTITUTION_MANAGER';}
@@ -50,15 +50,15 @@ export async function evaluateGuidanceOptical(request:Request,env:Env,user:AuthU
  const templateId=String(form.get('templateVersionId')||'');const templates=templateId?templateRows.filter(x=>x.id===templateId):templateRows;if(templateId&&!templates.length)return badRequest('Optik şablon bulunamadı.');
  const text=decodeUploadedBytes(await file.arrayBuffer());const parsed=templateId?parseWithTemplate(text,file.name,templates[0]):parseUploadedText(text,file.name,templates);
  if(!parsed.records.length)return badRequest(parsed.issues[0]||'Optik dosyası okunamadı.',parsed.ambiguous?'OPTICAL_TEMPLATE_AMBIGUOUS':'OPTICAL_TEMPLATE_REQUIRED');
- const opticalConfig=parseGuidanceJson<any>(instrument.optical_config_json,{answerBlockCode:'RBA',scaleMap:{A:1,B:2,C:3,D:4,E:5}});const schema=parseGuidanceJson<GuidanceInstrumentSchema>(instrument.question_schema_json,{scale:{min:1,max:5},items:[]});const answerBlock=String(opticalConfig.answerBlockCode||'RBA').toUpperCase();const scaleMap=opticalConfig.scaleMap||{A:1,B:2,C:3,D:4,E:5};
+ const opticalConfig=parseGuidanceJson<any>(instrument.optical_config_json,{answerBlockCode:'RBA',scaleMap:{A:1,B:2,C:3,D:4,E:5}});const schema=parseGuidanceJson<GuidanceInstrumentSchema>(instrument.question_schema_json,{scale:{min:1,max:5},items:[]});const items=schema.items||[];const answerBlock=String(opticalConfig.answerBlockCode||'RBA').toUpperCase();const scaleMap=opticalConfig.scaleMap||{A:1,B:2,C:3,D:4,E:5};
  const batchId=uuid('gob');await env.DB.prepare(`INSERT INTO guidance_optical_batches(id,institution_id,instrument_id,optical_template_version_id,source_file_name,record_count,status,created_by) VALUES(?,?,?,?,?,?,'PREVIEW',?)`).bind(batchId,institutionId,instrument.id,templateId||parsed.templateId||null,file.name,parsed.records.length,user.id).run();
  let processed=0,matched=0,invalid=0,unmatched=0;const issues:any[]=[];
  for(const record of parsed.records){
   processed++;const studentNo=String(record.student_number||'').trim();if(!studentNo){unmatched++;issues.push({row:record.row_no,reason:'Öğrenci numarası bulunamadı.'});continue;}
   const student=await one<any>(env.DB.prepare(`SELECT s.id,e.student_number FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id AND e.institution_id=? WHERE e.student_number=? AND s.status IN ('ACTIVE','GUEST') ORDER BY CASE WHEN e.status='ACTIVE' THEN 0 ELSE 1 END LIMIT 1`).bind(institutionId,studentNo));
   if(!student){unmatched++;issues.push({row:record.row_no,studentNumber:studentNo,reason:'Öğrenci numarası kurumda bulunamadı.'});continue;}
-  const raw=String(record.answers_by_subject?.[answerBlock]||Object.values(record.answers_by_subject||{})[0]||'').toUpperCase();const answers=Array.from(raw);if(answers.length<schema.items.length){invalid++;issues.push({row:record.row_no,studentNumber:studentNo,reason:`Beklenen ${schema.items.length}, bulunan ${answers.length} cevap.`});continue;}
-  const responses:Record<string,number>={};let bad=false;for(let i=0;i<schema.items.length;i++){const value=scaleMap[answers[i]];if(!Number.isFinite(Number(value))){bad=true;break;}responses[schema.items[i].id]=Number(value);}
+  const raw=String(record.answers_by_subject?.[answerBlock]||Object.values(record.answers_by_subject||{})[0]||'').toUpperCase();const answers=Array.from(raw);if(answers.length<items.length){invalid++;issues.push({row:record.row_no,studentNumber:studentNo,reason:`Beklenen ${items.length}, bulunan ${answers.length} cevap.`});continue;}
+  const responses:Record<string,number>={};let bad=false;for(let i=0;i<items.length;i++){const value=scaleMap[answers[i]];if(!Number.isFinite(Number(value))){bad=true;break;}responses[items[i].id]=Number(value);}
   if(bad){invalid++;issues.push({row:record.row_no,studentNumber:studentNo,reason:'Cevaplar A–E ölçeğine eşleşmedi.'});continue;}
   let scored;try{scored=scoreGuidanceResponses(schema,responses)}catch{invalid++;issues.push({row:record.row_no,studentNumber:studentNo,reason:'RBA cevapları puanlanamadı.'});continue;}
   const open=await one<any>(env.DB.prepare(`SELECT id FROM guidance_assessment_sessions WHERE student_id=? AND instrument_id=? AND status IN ('PROPOSED','APPROVED','IN_PROGRESS','SUBMITTED') ORDER BY created_at DESC LIMIT 1`).bind(student.id,instrument.id));
