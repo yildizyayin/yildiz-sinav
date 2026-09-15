@@ -29,6 +29,30 @@ describe('guided answer key parser', () => {
     expect(result.entries[0].questionStatuses).toEqual(['ACTIVE', 'CANCELLED']);
     expect(result.entries[0].outcomeRefs?.[0]).toMatchObject({ code: 'MAT.7.1.1', title: 'Tam sayılarla işlem yapar.', topic: 'Sayılar', subtopic: 'Tam sayılar' });
   });
+
+  it('imports qualified wide tables with A/B/C/D booklet question maps and pre-header metadata', () => {
+    const result = parseAnswerKeyText([
+      'ÇAP,,ÇAP TYT 0 Deneme',
+      '7661,,12.Sınıf',
+      'Kitapçık,Test,Ders,A Soru,B Soru,C Soru,D Soru,Cevap,Kazanım Kodu,Kazanım-1,Kazanım-2',
+      'A,TYT Türkçe,Türkçe,1,4,2,3,D,TUR.1,Sözcükte anlam,Söz varlığı',
+      'A,TYT Türkçe,Türkçe,2,1,3,4,B,TUR.2,Cümlede anlam,',
+    ].join('\n'), [
+      { id: 'sub_tur', code: 'TUR', name: 'Türkçe' },
+    ]);
+    expect(result.detectedFormat).toBe('WIDE_BOOKLET_TABLE');
+    expect(result.detectedBooklets).toEqual(['A', 'B', 'C', 'D']);
+    expect(result.metadata).toMatchObject({ publisherName: 'ÇAP', gradeLevel: 12, externalExamCode: '7661' });
+    expect(result.entries).toHaveLength(4);
+    expect(result.entries.find((entry) => entry.bookletCode === 'B')).toMatchObject({
+      answers: 'DB',
+      bookletQuestionNumbers: [4, 1],
+    });
+    expect(result.entries.find((entry) => entry.bookletCode === 'D')?.outcomeRefsByQuestion?.[0]).toEqual([
+      { code: 'TUR.1', title: 'Sözcükte anlam', unit: undefined, topic: undefined, subtopic: undefined, parentCode: undefined },
+      { title: 'Söz varlığı' },
+    ]);
+  });
 });
 
 describe('professional exam model catalog', () => {
