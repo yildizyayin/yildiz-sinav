@@ -127,7 +127,7 @@ export function MarketingHome(){
           <NibiruPlanetarySystem size={560} state={nibiruOpen?'speaking':'idle'}/>
           <div className="live-signal"><i/><span>{nibiruOpen?'Nibiru bağlamı analiz ediyor':'Nibiru çevrimiçi'}</span></div>
         </div>
-        <div className="nibiru-copy"><span>NIBIRU · ANUNEX’İN AKADEMİK ZEKA GEZEGENİ</span><h2>Tek bir yapay zekâ değil.<br/><em>Uzmanların ortak yörüngesi.</em></h2><p>Merkezde Nibiru; çevresinde ölçme, rehberlik, branş, veli, kurum, içerik ve video uzmanları. Kullanıcıyı, rolünü ve yalnızca yetkili verisini tanır; doğru uzmanı doğru anda devreye alır.</p>
+        <div className="nibiru-copy"><span>NIBIRU · ANUNEX’İN AKADEMİK ZEKA ÇEKİRDEĞİ</span><h2>Tek bir yapay zekâ değil.<br/><em>Uzmanların ortak yörüngesi.</em></h2><p>Merkezde Nibiru; çevresinde ölçme, rehberlik, branş, veli, kurum, içerik ve video uzmanları. Kullanıcıyı, rolünü ve yalnızca yetkili verisini tanır; doğru uzmanı doğru anda devreye alır.</p>
           <div className="nibiru-tabs" role="tablist" aria-label="Nibiru örnek görüşmeleri">{nibiruConversations.map((item,index)=><button key={item.key} type="button" role="tab" aria-selected={activeConversation===index} className={activeConversation===index?'active':''} onClick={()=>{setActiveConversation(index);setNibiruOpen(true)}}>{item.label}</button>)}</div>
           <div className="nibiru-conversation multi-conversation" aria-live="polite">
             <div className="conversation-user"><span><small>{conversation.audience}</small>{conversation.question}</span><div>{conversation.initial}</div></div>
