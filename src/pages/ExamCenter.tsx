@@ -3,6 +3,7 @@ import { Archive, ArrowLeft, BarChart3, Building2, CheckCircle2, ChevronRight, F
 import { Link, useSearchParams } from 'react-router-dom';
 import { api, ApiError, qs } from '../api';
 import { useAuth } from '../auth';
+import { NibiruMark } from '../components/NibiruMark';
 
 type ExamRow = {
   id:string; title:string; exam_type:string; grade_level:number|null; academic_year:string; exam_date:string|null; status:string;
@@ -53,7 +54,7 @@ export function ExamCenter(){
           <p>Tanımlı sınavlar, kazanımlı cevap anahtarları, optik dosyaları ve sonuç yayınını tek çalışma alanında yönetin.</p>
           <div className="exam-center-hero-actions"><Link className="primary" to="/exam-definitions"><FilePlus2 size={17}/> Sınav Ekle</Link><Link className="ghost light" to="/exam-center?mode=upload"><UploadCloud size={17}/> Sınav Yükle</Link></div>
         </div>
-        <div className="exam-center-nibiru-orb" aria-label="Nibiru sınav değerlendirme asistanı"><Sparkles size={19}/><strong>NIBIRU</strong><span>değerlendirme asistanı</span><small>Akışınızı kontrol eder</small></div>
+        <div className="exam-center-nibiru-orb" aria-label="Nibiru sınav değerlendirme asistanı"><NibiruMark size={78} state="active" showWordmark/><span>Değerlendirme asistanı</span><small>Akışınızı kontrol eder</small></div>
       </section>
       <div className="exam-center-command-grid">
         <section className="exam-center-action-panel">
