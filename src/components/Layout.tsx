@@ -176,8 +176,10 @@ export function Layout() {
   return <div className={`app-shell role-${user.role.toLowerCase()} ${mobileNavOpen?'nav-open':''}`} data-panel-theme={activeTheme} data-panel-module={moduleView}>
     <button className="nav-scrim" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}/>
     <aside className="sidebar" aria-label="Ana menü">
-      <div className="brand"><AnunexBrand compact inverse tagline/><button className="mobile-nav-close" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}><X size={20}/></button></div>
-      <div className="nibiru-sidebar-card"><NibiruMark size={36} state="active"/><div><strong>Nibiru AI</strong><span>Canlı akademik zekâ</span></div><ChevronRight size={16}/></div>
+      <div className="brand"><AnunexBrand compact inverse tagline/><span className="brand-version">AKADEMİK PLATFORM</span><button className="mobile-nav-close" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}><X size={20}/></button></div>
+      <NavLink to="/nibiru" className="nibiru-sidebar-card" onClick={()=>setMobileNavOpen(false)} aria-label="Nibiru akademik zekâya geç">
+        <NibiruMark size={38} state="active"/><div><strong>Nibiru AI</strong><span>Öğrenmenin yaşayan zekâsı</span><small><i/> Hazır</small></div><ChevronRight size={16}/>
+      </NavLink>
       <nav className={groupedItems ? 'grouped-sidebar-nav' : undefined}>
         {groupedItems ? groupedItems.map((group) => {
           const activeGroup=group.items.some(item=>isRouteActive(item.to));
@@ -194,7 +196,7 @@ export function Layout() {
       </div>
     </aside>
     <main className="main-area">
-      <header className="topbar"><button className="mobile-menu-button" aria-label="Menüyü aç" aria-expanded={mobileNavOpen} onClick={()=>setMobileNavOpen(true)}><Menu size={22}/></button><div className="topbar-context"><span className="eyebrow">2026–2027 Eğitim Dönemi</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Anunex Platform Yönetimi':'')}</strong></div><div className="topbar-actions"><div className="status neutral"><Sparkles size={15}/> Sistem hazır</div><NavLink to="/notifications" className="topbar-icon" aria-label="Bildirimler"><Bell size={19}/><i/></NavLink><NavLink to="/nibiru" className="nibiru-topbar"><NibiruMark size={23} state="active" title="Nibiru AI Akademik Zekâ"/><span>Nibiru AI</span></NavLink></div></header>
+      <header className="topbar"><button className="mobile-menu-button" aria-label="Menüyü aç" aria-expanded={mobileNavOpen} onClick={()=>setMobileNavOpen(true)}><Menu size={22}/></button><div className="topbar-mobile-brand"><AnunexBrand compact tagline={false}/></div><div className="topbar-context"><span className="eyebrow">2026–2027 Eğitim Dönemi</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Anunex Platform Yönetimi':'')}</strong></div><div className="topbar-actions"><div className="status neutral"><Sparkles size={15}/> Sistem hazır</div><NavLink to="/notifications" className="topbar-icon" aria-label="Bildirimler"><Bell size={19}/><i/></NavLink><NavLink to="/nibiru" className="nibiru-topbar"><NibiruMark size={24} state="active" title="Nibiru AI Akademik Zekâ"/><span>Nibiru AI</span></NavLink></div></header>
       {panelExperience?.specialDay&&<div className="special-day-banner" style={{background:`linear-gradient(90deg,${panelExperience.specialDay.accent_color},${panelExperience.specialDay.accent_color}dd)`}}><Sparkles size={20}/><div><strong>{panelExperience.specialDay.title}</strong><span>{panelExperience.specialDay.short_message}</span></div></div>}
       <div className="page-wrap"><LicenseBoundary><Outlet/></LicenseBoundary></div>
     </main>
