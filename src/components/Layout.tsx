@@ -97,6 +97,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/enterprise',label:'Enterprise / Campus',icon:Building2,feature:'ENTERPRISE'},
       {to:'/announcements',label:'Duyuru Merkezi',icon:Megaphone},
       {to:'/assignments',label:'Ödev Merkezi',icon:BookOpenCheck},
+      {to:'/settings',label:'Ayarlar',icon:Palette},
       {to:'/notifications',label:'Bildirimler',icon:Bell},
       {to:'/profile',label:'Profil',icon:UserRound},
     ]},
