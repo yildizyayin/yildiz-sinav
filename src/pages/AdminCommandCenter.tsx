@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Activity, ArrowRight, BarChart3, BookOpenCheck, CalendarDays, CheckCircle2, ClipboardCheck, FileText, GraduationCap, Layers3, ListChecks, MessageCircle, Network, PlayCircle, Plus, ShieldCheck, Sparkles, Target, Users } from 'lucide-react';
+import { Activity, ArrowRight, BarChart3, BookOpenCheck, CalendarDays, CheckCircle2, ClipboardCheck, FileText, GraduationCap, Layers3, ListChecks, MessageCircle, Network, PlayCircle, Plus, ShieldCheck, Target, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
+import { NibiruMark } from '../components/NibiruMark';
 
 type ModuleState = 'ACTIVE' | 'NEXT' | 'CORE';
 type AdminModule = { title: string; subtitle: string; description: string; state: ModuleState; color: string; icon: ReactNode; to?: string; action?: string };
@@ -40,7 +41,7 @@ export function AdminCommandCenter() {
         <p>Sınav, soru, kazanım, rehberlik, ödev, video ve Nibiru aynı öğrenci–kurum veri omurgasında birlikte çalışır.</p>
         <div className="admin-command-hero-actions"><Link className="primary" to="/exam-definitions"><Plus size={17} /> Sınav Ekle</Link><Link className="ghost light" to="/content-center"><Layers3 size={17} /> Soru Havuzu</Link></div>
       </div>
-      <div className="admin-command-nibiru" aria-label="Nibiru ortak veri omurgası"><div className="admin-command-star"><Sparkles size={25} /></div><strong>NIBIRU</strong><span>ortak akademik zekâ</span><small>{activeModules} aktif çalışma alanı</small></div>
+      <div className="admin-command-nibiru" aria-label="Nibiru ortak veri omurgası"><NibiruMark size={72} state="active" showWordmark/><span>ANUNEX’in ortak akademik zekâsı</span><small>{activeModules} aktif çalışma alanı</small></div>
     </section>
 
     {error && <div className="alert error">Yönetim özeti yüklenemedi: {error}</div>}
