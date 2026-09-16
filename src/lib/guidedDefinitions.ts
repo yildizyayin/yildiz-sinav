@@ -114,11 +114,11 @@ export const EXAM_TEMPLATES: ExamTemplate[] = [
   },
   {
     key: 'LGS', label: 'LGS — MEB Şablonu', description: 'Sözel 50 · Sayısal 40 soru; 3 yanlış 1 doğru', examType: 'LGS', gradeLevel: 8, scoringCode: 'MEB_LGS',
-    sections: [section('TUR', 'Türkçe', 20, 3), section('INK', 'İnkılap Tarihi', 10, 3), section('DIN', 'Din Kültürü', 10, 3), section('YAB', 'Yabancı Dil', 10, 3), section('MAT', 'Matematik', 20, 3), section('FEN', 'Fen Bilimleri', 20, 3)],
+    sections: [section('TUR', 'Türkçe', 20, 3, 4), section('INK', 'İnkılap Tarihi', 10, 3, 4), section('DIN', 'Din Kültürü', 10, 3, 4), section('YAB', 'Yabancı Dil', 10, 3, 4), section('MAT', 'Matematik', 20, 3, 4), section('FEN', 'Fen Bilimleri', 20, 3, 4)],
   },
   ...[5, 6, 7].map((grade): ExamTemplate => ({
     key: `SCHOOL_${grade}`, label: `${grade}. Sınıf Şablonu`, description: 'Temel ders yapısı; soru adetleri oluşturma aşamasında düzenlenebilir.', examType: 'STANDARD', gradeLevel: grade, scoringCode: 'SCHOOL_100', editable: true,
-    sections: [section('TUR', 'Türkçe', 20, 4), section('MAT', 'Matematik', 20, 4), section('FEN', 'Fen Bilimleri', 20, 4), section('SOS', 'Sosyal Bilgiler', 20, 4), section('DIN', 'Din Kültürü', 10, 4), section('YAB', 'Yabancı Dil', 10, 4)],
+    sections: [section('TUR', 'Türkçe', 20, 4, 4), section('MAT', 'Matematik', 20, 4, 4), section('FEN', 'Fen Bilimleri', 20, 4, 4), section('SOS', 'Sosyal Bilgiler', 20, 4, 4), section('DIN', 'Din Kültürü', 10, 4, 4), section('YAB', 'Yabancı Dil', 10, 4, 4)],
   })),
   { key: 'CUSTOM', label: 'Özel Sınav', description: 'Ders, soru aralığı, şık sayısı ve puanlama kurum standardına göre tanımlanır.', examType: 'CUSTOM', gradeLevel: 0, scoringCode: 'CUSTOM_EXAM', sections: [], editable: true },
 ];
@@ -314,7 +314,8 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
     for (const line of lines.slice(headerIndex + 1)) {
       const cells = splitDelimitedLine(line);
       const subjectToken = String((subjectColumn >= 0 ? cells[subjectColumn] : '') || (testColumn >= 0 ? cells[testColumn] : '') || '').trim();
-      const subject = subjectForToken(subjectToken, subjects);
+      const testSubject = testColumn >= 0 ? subjectForToken(String(cells[testColumn] || '').trim(), subjects) : undefined;
+      const subject = testSubject || subjectForToken(subjectToken, subjects);
       const questionNumbers: Record<string, number> = {};
       for (const [code, column] of Object.entries(bookletQuestionColumns)) {
         const value = Number(cells[column]);
@@ -338,9 +339,15 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
       const statusValue = norm(statusColumn >= 0 ? cells[statusColumn] || '' : 'ACTIVE');
       const status = statusValue === 'CANCELLED' || statusValue === 'IPTAL' ? 'CANCELLED'
         : statusValue === 'EXCLUDED' || statusValue === 'DEGERLENDIRMEDISI' ? 'EXCLUDED' : 'ACTIVE';
+      const outcomeTitleColumns = tableHeaders
+        .map((header, index) => (/^KAZANIM\d+$/.test(header) ? index : -1))
+        .filter((index) => index >= 0);
+      const firstOutcomeTitle = outcomeTitleColumn >= 0
+        ? cells[outcomeTitleColumn]
+        : outcomeTitleColumns.map((column) => cells[column]).find((value) => String(value || '').trim());
       const primaryOutcome: OutcomeReference = {
         code: String(outcomeCodeColumn >= 0 ? cells[outcomeCodeColumn] || '' : '').trim() || undefined,
-        title: String(outcomeTitleColumn >= 0 ? cells[outcomeTitleColumn] || '' : '').trim() || undefined,
+        title: String(firstOutcomeTitle || '').trim() || undefined,
         unit: String(unitColumn >= 0 ? cells[unitColumn] || '' : '').trim() || undefined,
         topic: String(topicColumn >= 0 ? cells[topicColumn] || '' : '').trim() || undefined,
         subtopic: String(subtopicColumn >= 0 ? cells[subtopicColumn] || '' : '').trim() || undefined,
@@ -348,11 +355,14 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
       };
       const outcomes = [primaryOutcome];
       for (const [column, header] of tableHeaders.entries()) {
-        if (!/^KAZANIM\d+$/.test(header) || column === outcomeTitleColumn) continue;
+        if (!/^KAZANIM\d+$/.test(header) || column === outcomeTitleColumn || column === outcomeTitleColumns[0]) continue;
         const title = String(cells[column] || '').trim();
         if (title) outcomes.push({ title });
       }
-      const optionCount = Object.values(answers).some((answer) => answer === 'E') || commonAnswer === 'E' ? 5 : 4;
+      const explicitOptionCount = optionColumn >= 0 ? Number(cells[optionColumn]) : 0;
+      const optionCount = explicitOptionCount === 5 || explicitOptionCount === 4
+        ? explicitOptionCount
+        : Object.values(answers).some((answer) => answer === 'E') || commonAnswer === 'E' ? 5 : 4;
       const row: ParsedRow = { subject, canonicalQuestion, questionNumbers, answers, commonAnswer, accepted: accepted.length ? accepted : [commonAnswer], status, outcomes: unique(outcomes.filter((outcome) => outcome.code || outcome.title || outcome.topic || outcome.subtopic) as any[]), optionCount };
       const rows = grouped.get(subject.id) || [];
       rows.push(row);

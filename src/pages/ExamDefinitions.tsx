@@ -240,13 +240,34 @@ export function ExamDefinitions() {
   };
 
   const downloadOutcomeTemplate = () => {
-    const escapeCsv = (value: string | number) => `"${String(value).replace(/"/g, '""')}"`;
-    const headers = ['Ders', 'Soru', 'Kitapçık', 'Doğru Cevap', 'Şık Sayısı', 'Kabul Edilen Cevaplar', 'Durum', 'Kazanım Kodu', 'Kazanım Açıklaması', 'Ünite', 'Konu', 'Alt Konu', 'Üst Kazanım Kodu'];
     const bookletCodes = [...new Set(booklets.split(',').map((value) => value.trim().toUpperCase()).filter(Boolean))];
-    const rows = (bookletCodes.length ? bookletCodes : ['A']).flatMap((booklet) => selectedTemplate.sections.flatMap((item) => Array.from({ length: item.questionCount }, (_, index) => [item.subjectCode, item.questionStart + index, booklet, '', item.optionCount, '', 'ACTIVE', '', '', '', '', '', ''])));
-    const csv = [headers, ...rows].map((row) => row.map(escapeCsv).join(',')).join('\n');
-    const url = URL.createObjectURL(new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' }));
-    const anchor = document.createElement('a'); anchor.href = url; anchor.download = `${selectedTemplate.key.toLowerCase()}-kazanimli-cevap-anahtari-sablonu.csv`; anchor.click(); URL.revokeObjectURL(url);
+    const codes = bookletCodes.length ? bookletCodes : ['A', 'B'];
+    const questionColumns = ['A', 'B', 'C', 'D'].map((code) => `${code} Soru`);
+    const headers = ['Kitapçık', 'Test', 'Ders', ...questionColumns, 'Cevap', 'Şık Sayısı', 'Kabul Edilen Cevaplar', 'Durum', 'Kazanım Kodu', 'Kazanım-1', 'Kazanım-2', 'Kazanım-3', 'Kazanım-4', 'Kazanım-5', 'Kazanım-6', 'Ünite', 'Konu', 'Alt Konu', 'Üst Kazanım Kodu'];
+    const rows = selectedTemplate.sections.flatMap((item) => Array.from({ length: item.questionCount }, (_, index) => {
+      const question = item.questionStart + index;
+      const bookletQuestions = ['A', 'B', 'C', 'D'].map((code) => codes.includes(code) ? question : '');
+      return [codes[0], item.label, item.label, ...bookletQuestions, '', item.optionCount, '', 'ACTIVE', '', '', '', '', '', '', '', '', '', '', ''];
+    }));
+    const instructions = [
+      ['ANUNEX kazanımlı cevap anahtarı şablonu', selectedTemplate.label],
+      ['Kullanım', 'Her bilgi ayrı hücrede tutulur. Soru numaralarını A/B/C/D kitapçıklarına göre düzenleyin; Cevap, Şık Sayısı ve kazanım alanlarını doldurup dosyayı .xlsx olarak yükleyin.'],
+      ['Zorunlu alanlar', 'Kitapçık, Test veya Ders, en az bir kitapçık soru numarası, Cevap ve Kazanım Kodu ya da Kazanım-1.'],
+      ['Soru durumu', 'ACTIVE = aktif, CANCELLED = iptal, EXCLUDED = değerlendirme dışı. Birden fazla kabul edilen cevap için A|B biçimini kullanın.'],
+    ];
+    const workbook = XLSX.utils.book_new();
+    const sheet = XLSX.utils.aoa_to_sheet([
+      [createForm.publisherName || 'Yayınevi', null, createForm.title || selectedTemplate.label],
+      [createForm.academicYear, null, `${selectedTemplate.gradeLevel || createForm.gradeLevel || ''}. Sınıf`],
+      headers,
+      ...rows,
+    ]);
+    const guide = XLSX.utils.aoa_to_sheet(instructions);
+    XLSX.utils.book_append_sheet(workbook, sheet, 'Cevap Anahtarı');
+    XLSX.utils.book_append_sheet(workbook, guide, 'Kullanım');
+    const output = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const url = URL.createObjectURL(new Blob([output], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    const anchor = document.createElement('a'); anchor.href = url; anchor.download = `${selectedTemplate.key.toLowerCase()}-kazanimli-cevap-anahtari-sablonu.xlsx`; anchor.click(); URL.revokeObjectURL(url);
   };
 
   const createExam = async () => {
@@ -475,9 +496,10 @@ export function ExamDefinitions() {
         <div className="simple-method-row"><button type="button" className={createMethod === 'ANSWER_KEY' ? 'active' : ''} onClick={() => setCreateMethod('ANSWER_KEY')}><FileUp size={16}/> Hazır şablon / dosya</button><button type="button" className={createMethod === 'MANUAL' ? 'active' : ''} onClick={() => setCreateMethod('MANUAL')}><BookOpenCheck size={16}/> Kendin oluştur</button></div>
         {createMethod === 'ANSWER_KEY' ? <>
           <div className="simple-file-row"><label><span>Hazır sınav şablonu</span><select value={templateKey} onChange={(e) => { const key = e.target.value; const chosen = EXAM_TEMPLATES.find((template) => template.key === key); setTemplateKey(key); setOutcomeRequired(Boolean(chosen?.requiresOutcomes)); setDefinitionMode(chosen?.requiresOutcomes ? 'OUTCOME' : 'STANDARD'); const baseKey = key.endsWith('_OUTCOME') ? key.slice(0, -8) : key; const nextChoice = baseKey === 'SCHOOL_5' || baseKey === 'SCHOOL_6' || baseKey === 'SCHOOL_7' ? `STD_${baseKey.slice(-1)}` : baseKey; if (EXAM_CHOICES.some((choice) => choice.key === nextChoice)) setChoiceKey(nextChoice); }}>{EXAM_TEMPLATES.map((template) => <option key={template.key} value={template.key}>{template.label}</option>)}</select></label><div className="simple-template-note"><strong>{selectedTemplate.label}</strong><span>{selectedTemplate.description}</span><div><button type="button" className="ghost" onClick={downloadOutcomeTemplate}>Kazanımlı şablonu indir</button><button type="button" className="secondary" onClick={() => applyTemplate()}>Şablonu uygula</button></div></div></div>
-          <div className="simple-file-row"><label className="simple-upload"><span>Kazanımlı cevap anahtarı (.csv / .xlsx)</span><input type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(e) => void readAnswerFile(e.target.files?.[0])} /></label><label><span>Kitapçıklar</span><input value={booklets} onChange={(e) => setBooklets(e.target.value)} placeholder="A veya A,B" /></label></div>
+          <div className="simple-file-row"><label className="simple-upload"><span>Kazanımlı cevap anahtarı (.xlsx / .csv)</span><input type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(e) => void readAnswerFile(e.target.files?.[0])} /><small className="field-help">Şablon indirildiğinde her başlık ayrı Excel hücresinde gelir; A/B/C/D soru numaraları aynı satırda eşleştirilir.</small></label><label><span>Kitapçıklar</span><input value={booklets} onChange={(e) => setBooklets(e.target.value)} placeholder="A veya A,B,C,D" /><small className="field-help">Dosyada bulunan kitapçıkları virgülle yazın.</small></label></div>
           <details className="simple-details"><summary>Metin olarak cevap anahtarı gir</summary><textarea rows={5} value={answerKeyText} onChange={(e) => setAnswerKeyText(e.target.value)} placeholder={'MAT: ABCDEABCDE\nTUR: ABCDEABCDE\nFEN: ABCDEABCDE'} /><button type="button" className="secondary" onClick={() => analyseKey()}><FileUp size={15}/> Anahtarı analiz et</button></details>
-          {analysis && <div className={analysis.unknownLines.length || analysis.warnings?.length ? 'builder-analysis warning' : 'builder-analysis success'}><strong>{Object.keys(analysis.questionCounts).length} ders bulundu.</strong> {analysis.detectedFormat === 'WIDE_BOOKLET_TABLE' ? ' Geniş kitapçık tablosu algılandı.' : ''} Kitapçıklar: {analysis.detectedBooklets.join(', ')}. {analysis.unknownLines.length ? `${analysis.unknownLines.length} satır kontrol edilmeli.` : 'Soru sayıları otomatik çıkarıldı.'} {analysis.warnings?.join(' ')}</div>}
+          {analysis && <div className={analysis.unknownLines.length || analysis.warnings?.length ? 'builder-analysis warning' : 'builder-analysis success'}><strong>{Object.keys(analysis.questionCounts).length} ders bulundu.</strong> {analysis.detectedFormat === 'WIDE_BOOKLET_TABLE' ? 'Gönderdiğiniz geniş kitapçık tablosu algılandı.' : ''} Kitapçıklar: {analysis.detectedBooklets.join(', ')}. {analysis.unknownLines.length ? `${analysis.unknownLines.length} satır kontrol edilmeli.` : 'Soru sayıları otomatik çıkarıldı.'} {analysis.warnings?.join(' ')}</div>}
+          {analysis && (analysis.unknownLines.length > 0 || analysis.warnings?.length) && <details className="answer-analysis-issues"><summary>Kontrol edilmesi gerekenleri göster</summary>{analysis.warnings?.map((warning) => <div key={warning}>• {warning}</div>)}{analysis.unknownLines.slice(0, 12).map((line, index) => <div key={`${line}-${index}`}>• Satır {index + 1}: {line}</div>)}{analysis.unknownLines.length > 12 && <small>İlk 12 satır gösteriliyor; kalan kayıtlar yükleme öncesi ayrıca işaretlenir.</small>}</details>}
         </> : <div className="cards-list builder-subject-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" min="1" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" min={cfg.questionStart} value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label></>}</div>; })}</div>}
       </section>}
 
