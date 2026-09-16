@@ -5,6 +5,8 @@ import { api, ApiError, post } from '../api';
 import { Turnstile } from '../components/Turnstile';
 import { useAuth } from '../auth';
 import { AnunexCosmos } from '../components/AnunexCosmos';
+import { AnunexBrand } from '../components/AnunexBrand';
+import { NibiruMark } from '../components/NibiruMark';
 
 export function Login() {
   const navigate = useNavigate();
@@ -45,6 +47,7 @@ export function Login() {
   return <div className="login-page">
     <div className="login-art"><AnunexCosmos/></div>
     <div className="login-panel"><form className="login-card" onSubmit={submit}>
+      <div className="login-brand-header"><AnunexBrand tagline/><span className="login-brand-rule"/><div className="login-nibiru-note"><NibiruMark size={24} state="active"/><span><strong>Nibiru AI</strong><small>Öğrenmenin yaşayan zekâsı</small></span></div></div>
       <div><span className="eyebrow">Anunex · Tek giriş · Rol otomatik tanınır</span><h2>{config?.productName || 'Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu'}</h2><p className="muted">Kullanıcı adı, e-posta veya telefon numaranızla giriş yapın.</p></div>
       {isDemoHost && <div className="demo-role-picker"><div><strong>Demo Koleji</strong><span>İncelemek istediğiniz paneli seçin; demo hesabı güvenli biçimde doldurulur.</span></div><div>{demoAccounts.map(([label,user,pass])=><button type="button" key={user} onClick={()=>{setIdentifier(user);setPassword(pass);setError('')}}>{label}</button>)}</div></div>}
       <label>Kullanıcı adı / e-posta / telefon<input value={identifier} onChange={e=>setIdentifier(e.target.value)} autoComplete="username" required/></label>
