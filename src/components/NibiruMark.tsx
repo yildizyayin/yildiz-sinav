@@ -27,7 +27,7 @@ export function NibiruMark({size=34,state='idle',className='',title='Nibiru Akad
    <span className="nibiru-orbit nibiru-orbit-b"><i/></span>
    <span className="nibiru-signal"/>
   </span>
-  {showWordmark&&<span className="nibiru-wordmark"><strong>NIBIRU</strong><small>AKADEMİK ZEKÂ</small></span>}
+  {showWordmark&&<span className="nibiru-wordmark"><strong>NIBIRU AI</strong><small>ÖĞRENMENİN YAŞAYAN ZEKÂSI</small></span>}
  </span>;
 }
 
