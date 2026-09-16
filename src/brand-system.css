@@ -200,6 +200,119 @@ textarea:focus-visible {
 .nibiru-topbar:hover { border-color: #a995ff; color: #5a43c9; }
 .topbar-mobile-brand { display: none; }
 
+/* One public identity across app, result portal and marketing surfaces. */
+.marketing-home,
+.result-portal,
+.admin-portal-mode {
+  --brand-ink: var(--anunex-ink);
+  --brand-navy: var(--anunex-navy);
+  --brand-blue: var(--anunex-blue);
+  --brand-cyan: var(--anunex-cyan);
+  --brand-violet: var(--nibiru-violet);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.marketing-home .marketing-header,
+.result-portal .result-nav {
+  border-bottom: 1px solid rgba(223, 231, 244, .9);
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 8px 26px rgba(21, 54, 117, .06);
+  backdrop-filter: blur(18px);
+}
+
+.marketing-home .marketing-logo,
+.result-portal .result-brand {
+  color: var(--brand-ink);
+}
+
+.marketing-home .header-nibiru {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding-left: 11px;
+  border-left: 1px solid #dfe7f4;
+  color: #293d72;
+  letter-spacing: 0;
+}
+.marketing-home .header-nibiru > span { display: flex; flex-direction: column; gap: 3px; }
+.marketing-home .header-nibiru b { color: #263f83; font-size: 10px; letter-spacing: .15em; }
+.marketing-home .header-nibiru small { color: #7485a5; font-size: 9px; font-weight: 700; letter-spacing: .01em; }
+.marketing-home .header-nibiru .nibiru-mark { --nibiru-size: 24px; }
+
+.result-portal .result-brand .anunex-wordmark-canonical strong,
+.marketing-home .marketing-logo .anunex-wordmark-canonical strong { letter-spacing: .12em; }
+.result-portal .result-brand .anunex-wordmark-canonical small,
+.marketing-home .marketing-logo .anunex-wordmark-canonical small { letter-spacing: .17em; }
+
+.result-portal .result-hero {
+  background: radial-gradient(circle at 79% 37%, #283f91 0, #0d2250 31%, #071536 67%, #040c20 100%);
+}
+.result-portal .result-hero .result-kicker,
+.result-portal .result-hero .orbit-caption strong { color: var(--brand-cyan); }
+.result-portal .result-primary,
+.result-portal .result-login-link,
+.result-portal .result-admin-link:hover { background: linear-gradient(100deg, var(--brand-blue), var(--brand-violet)); }
+.result-portal .result-role-grid > button:hover,
+.result-portal .result-form input:focus,
+.result-portal .result-form select:focus { border-color: #92b6ff; box-shadow: 0 0 0 3px rgba(101, 223, 255, .18); }
+
+.admin-portal-mode .admin-sidebar {
+  background: linear-gradient(180deg, #071a4b 0%, #071d4b 53%, #061338 100%);
+  border-right-color: rgba(125, 178, 255, .18);
+}
+.admin-portal-mode .admin-sidebar-brand { border-bottom-color: rgba(171, 207, 255, .15); }
+.admin-portal-mode .admin-sidebar-brand .anunex-wordmark-canonical small { color: #b7d5ff; }
+.admin-portal-mode .admin-nibiru-lockup { color: #fff; }
+.admin-portal-mode .admin-nibiru-lockup .nibiru-wordmark strong { letter-spacing: .15em; }
+.admin-portal-mode .admin-nibiru-lockup .nibiru-wordmark small { color: #a9c5ff; letter-spacing: .1em; }
+.admin-portal-mode .admin-nav button.active { background: linear-gradient(100deg, var(--brand-blue), var(--brand-violet)); }
+.admin-portal-mode .admin-live-dot { color: #168f72; }
+
+.admin-command-nibiru .nibiru-brand-lockup,
+.exam-center-nibiru-orb .nibiru-brand-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.admin-command-nibiru .nibiru-wordmark,
+.exam-center-nibiru-orb .nibiru-wordmark { text-align: center; }
+.admin-command-nibiru .nibiru-wordmark strong,
+.exam-center-nibiru-orb .nibiru-wordmark strong { margin: 0; color: #fff; font-size: 12px; letter-spacing: .12em; }
+.admin-command-nibiru .nibiru-wordmark small,
+.exam-center-nibiru-orb .nibiru-wordmark small { margin: 4px 0 0; color: #a9c5ff; font-size: 6px; letter-spacing: .08em; }
+.admin-command-nibiru > span:not(.nibiru-brand-lockup),
+.exam-center-nibiru-orb > span:not(.nibiru-brand-lockup) { margin-top: 4px; color: #d2dcff; font-size: 10px; }
+.admin-command-nibiru > small,
+.exam-center-nibiru-orb > small { margin-top: 8px; color: var(--anunex-cyan); font-size: 9px; }
+
+.nibiru-canonical-lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 270px;
+  padding: 10px 12px;
+  border: 1px solid #dce3f3;
+  border-radius: 17px;
+  background: linear-gradient(135deg, #fff, #f4f1ff);
+  box-shadow: 0 14px 34px rgba(54, 47, 145, .08);
+}
+.nibiru-canonical-lockup .anunex-brand-canonical { color: var(--anunex-ink); }
+.nibiru-canonical-lockup .anunex-wordmark-canonical strong { font-size: 17px; }
+.nibiru-canonical-lockup .anunex-wordmark-canonical small { font-size: 5px; color: #476db0; }
+.nibiru-canonical-divider { width: 1px; height: 34px; background: #d8dff0; }
+.nibiru-canonical-lockup .nibiru-wordmark strong { color: #3d378c; font-size: 11px; }
+.nibiru-canonical-lockup .nibiru-wordmark small { color: #7080a1; font-size: 6px; }
+
+@media (max-width: 760px) {
+  .marketing-home .header-nibiru { display: none; }
+  .nibiru-canonical-lockup { min-width: 0; padding: 8px; gap: 7px; }
+  .nibiru-canonical-lockup .anunex-wordmark-canonical { display: none; }
+  .nibiru-canonical-divider { height: 28px; }
+  .nibiru-canonical-lockup .nibiru-mark { --nibiru-size: 42px !important; }
+  .nibiru-canonical-lockup .nibiru-wordmark small { display: none; }
+}
+
 .page-wrap { padding-top: 30px; }
 .page-head h1, .section-head h2, .panel h2 { color: var(--anunex-ink); }
 .eyebrow { color: var(--anunex-blue); }
