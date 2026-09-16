@@ -3,7 +3,7 @@ import { CalendarRange,Check,Palette,ShieldCheck,Sparkles } from 'lucide-react';
 import { api } from '../api';
 
 const ROLE_LABELS:Record<string,string>={INSTITUTION_MANAGER:'Kurum Yöneticisi',TEACHER:'Öğretmen',GUIDANCE_TEACHER:'Rehber Öğretmen',STUDENT:'Öğrenci',PARENT:'Veli'};
-const swatches:Record<string,string>={ANUNEX_STANDARD:'linear-gradient(135deg,#ffffff 0 65%,#315efb 65%)',ANUNEX_COSMIC:'linear-gradient(135deg,#06122f,#273b92,#8b5cf6)',ANUNEX_NEON:'linear-gradient(135deg,#051029,#315efb,#d946ef)',ANUNEX_FOCUS:'linear-gradient(135deg,#f8fafc,#dbeafe,#0f3d8b)'};
+const swatches:Record<string,string>={ANUNEX_STANDARD:'linear-gradient(135deg,#ffffff 0 65%,#315efb 65%)',ANUNEX_COSMIC:'linear-gradient(135deg,#102a56,#2f66d0 55%,#eef4ff)',ANUNEX_NEON:'linear-gradient(135deg,#173c3a,#d6b36a 55%,#fbf7ed)',ANUNEX_FOCUS:'linear-gradient(135deg,#070b18,#182a55 55%,#6c8cff)'};
 
 export function ThemeManagement(){
  const[data,setData]=useState<any>(null),[institutions,setInstitutions]=useState<any[]>([]),[error,setError]=useState(''),[message,setMessage]=useState(''),[busy,setBusy]=useState(false);

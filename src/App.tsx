@@ -61,6 +61,7 @@ import { GuidanceAdmin } from './pages/GuidanceAdmin';
 import { MembershipOrders } from './pages/MembershipOrders';
 import { CompletionCenter } from './pages/CompletionCenter';
 import { ThemeManagement } from './pages/ThemeManagement';
+import { AppearanceSettings } from './pages/AppearanceSettings';
 import { AttendanceCenter } from './pages/AttendanceCenter';
 import { AssignmentsCenter } from './pages/AssignmentsCenter';
 import { MarketingHome } from './pages/MarketingHome';
@@ -89,6 +90,7 @@ export default function App(){
   <Route path="admin-center" element={<RoleGate allowed={['SUPER_ADMIN']}><AdminCommandCenter/></RoleGate>}/>
   <Route path="standard-readiness" element={<RoleGate allowed={['SUPER_ADMIN']}><StandardReadiness/></RoleGate>}/>
   <Route path="theme-management" element={<RoleGate allowed={['SUPER_ADMIN']}><ThemeManagement/></RoleGate>}/>
+  <Route path="settings" element={<RoleGate allowed={ALL_ROLES}><AppearanceSettings/></RoleGate>}/>
   <Route path="attendance" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><AttendanceCenter/></RoleGate>}/>
   <Route path="assignments" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><AssignmentsCenter/></RoleGate>}/>
   <Route path="completion-center" element={<RoleGate allowed={['SUPER_ADMIN']}><CompletionCenter/></RoleGate>}/><Route path="membership-orders" element={<RoleGate allowed={['SUPER_ADMIN']}><MembershipOrders/></RoleGate>}/>

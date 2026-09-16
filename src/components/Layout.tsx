@@ -53,6 +53,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/agent-center',label:'AI Ajan Merkezi',icon:Activity},
       {to:'/licenses',label:'Lisanslar',icon:KeyRound},
       {to:'/theme-management',label:'Tema & Özel Günler',icon:Palette},
+      {to:'/settings',label:'Ayarlar',icon:Palette},
       {to:'/feature-lab',label:'Feature Lab',icon:FlaskConical},
       {to:'/enterprise',label:'Enterprise',icon:Building2,feature:'ENTERPRISE'},
       {to:'/academic-target-admin',label:'Resmî Hedef Verileri',icon:Target},
@@ -96,6 +97,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/enterprise',label:'Enterprise / Campus',icon:Building2,feature:'ENTERPRISE'},
       {to:'/announcements',label:'Duyuru Merkezi',icon:Megaphone},
       {to:'/assignments',label:'Ödev Merkezi',icon:BookOpenCheck},
+      {to:'/settings',label:'Ayarlar',icon:Palette},
       {to:'/notifications',label:'Bildirimler',icon:Bell},
       {to:'/profile',label:'Profil',icon:UserRound},
     ]},
@@ -157,6 +159,7 @@ export function Layout() {
   useEffect(()=>{const refresh=()=>setThemeRevision(value=>value+1);window.addEventListener('anunex-theme-change',refresh);return()=>window.removeEventListener('anunex-theme-change',refresh)},[]);
   const visibleNav=useMemo(()=>user?nav[user.role].filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature)):[],[user,enabledFeatures]);
   const location=useLocation();
+  const moduleView=location.pathname.startsWith('/exam-center')?'exam-center':location.pathname.startsWith('/opticals')||location.pathname.startsWith('/optical-')||location.pathname.startsWith('/calibration')||location.pathname.startsWith('/camera-test')?'optical-operations':location.pathname.startsWith('/content-center')||location.pathname.startsWith('/worksheet')?'content-center':location.pathname.startsWith('/nibiru')||location.pathname.startsWith('/agent-center')?'ai-center':'general';
   const groupedItems=useMemo(()=>{
     if(!user || (user.role!=='SUPER_ADMIN' && user.role!=='INSTITUTION_MANAGER')) return null;
     return groupedNav[user.role].map(group=>({...group,items:group.items.filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature))}));
@@ -170,7 +173,7 @@ export function Layout() {
   const allowedThemeKeys=(panelExperience?.allowedThemes||[]).map((theme:any)=>String(theme.theme_key));
   const storedTheme=useMemo(()=>typeof window==='undefined'?null:window.localStorage.getItem('anunex-panel-theme'),[themeRevision]);
   const activeTheme=panelExperience?.specialDay?.theme_key||(storedTheme&&allowedThemeKeys.includes(storedTheme)?storedTheme:panelExperience?.defaultTheme||'ANUNEX_STANDARD');
-  return <div className={`app-shell role-${user.role.toLowerCase()} ${mobileNavOpen?'nav-open':''}`} data-panel-theme={activeTheme}>
+  return <div className={`app-shell role-${user.role.toLowerCase()} ${mobileNavOpen?'nav-open':''}`} data-panel-theme={activeTheme} data-panel-module={moduleView}>
     <button className="nav-scrim" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}/>
     <aside className="sidebar" aria-label="Ana menü">
       <div className="brand"><AnunexBrand compact inverse tagline/><button className="mobile-nav-close" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}><X size={20}/></button></div>
