@@ -2,7 +2,7 @@ import './AnunexCosmos.css';
 import { AnunexBrand } from './AnunexBrand';
 import { NibiruMark } from './NibiruMark';
 
-const worlds = ['earth', 'mars', 'venus', 'uranus', 'moon', 'sun'];
+const signals = ['signal-a', 'signal-b', 'signal-c', 'signal-d', 'signal-e', 'signal-f'];
 
 export function AnunexCosmos(){
   return <div className="anunex-cosmos" aria-label="ANUNEX ve merkezî Nibiru yapay zekâ ağı">
@@ -11,7 +11,7 @@ export function AnunexCosmos(){
     <div className="cosmos-system" aria-hidden="true">
       <span className="cosmos-orbit orbit-one"/><span className="cosmos-orbit orbit-two"/><span className="cosmos-orbit orbit-three"/>
       <span className="cosmos-network network-a"/><span className="cosmos-network network-b"/>
-      {worlds.map((world)=><span key={world} className={`cosmos-world ${world}`}><i/></span>)}
+      {signals.map((signal)=><span key={signal} className={`cosmos-world ${signal}`}><i/></span>)}
       <span className="nibiru-halo halo-one"/><span className="nibiru-halo halo-two"/>
       <span className="nibiru-center-canonical"><NibiruMark size={112} state="active" showWordmark/></span>
     </div>
