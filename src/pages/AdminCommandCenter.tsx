@@ -7,10 +7,10 @@ type ModuleState = 'ACTIVE' | 'NEXT' | 'CORE';
 type AdminModule = { title: string; subtitle: string; description: string; state: ModuleState; color: string; icon: ReactNode; to?: string; action?: string };
 
 const modules: AdminModule[] = [
-  { title: 'Sınav Merkezi', subtitle: 'Ölçme operasyonu', description: 'Sınav ekle, yükle, optik/FMT bağla, puanla ve yayınla.', state: 'ACTIVE', color: 'mars', icon: <ClipboardCheck />, to: '/exam-center', action: 'Merkeze git' },
-  { title: 'Soru Havuzu & Studio', subtitle: 'İçerik zekâsı', description: 'Soru, şık, zorluk ve kazanım verisini tek kayıtta yönetin.', state: 'ACTIVE', color: 'jupiter', icon: <Layers3 />, to: '/content-center', action: 'Havuzu aç' },
-  { title: 'Test & Ödev Merkezi', subtitle: 'Uygulama akışı', description: 'Soru havuzundan test üretin, sınıfa veya öğrenciye atayın.', state: 'ACTIVE', color: 'orbit', icon: <BookOpenCheck />, to: '/assignments', action: 'Ödevleri aç' },
-  { title: 'RBA & Rehberlik', subtitle: 'Gelişim ve rehberlik', description: 'Rehberlik testlerini, insan onayını ve gelişim sinyallerini yönetin.', state: 'CORE', color: 'moon', icon: <ShieldCheck />, to: '/guidance-admin', action: 'Test ve optik yönetimi aç' },
+  { title: 'Sınav Merkezi', subtitle: 'Ölçme operasyonu', description: 'Sınav ekle, cevap anahtarını doğrula, optik/FMT bağla, puanla ve yayınla.', state: 'ACTIVE', color: 'measure', icon: <ClipboardCheck />, to: '/exam-center', action: 'Merkeze git' },
+  { title: 'Soru Havuzu & Studio', subtitle: 'İçerik üretimi', description: 'Soru, şık, zorluk ve kazanım verisini tek kayıtta yönetin.', state: 'ACTIVE', color: 'library', icon: <Layers3 />, to: '/content-center', action: 'Havuzu aç' },
+  { title: 'Test & Ödev Merkezi', subtitle: 'Uygulama akışı', description: 'Soru havuzundan test üretin, sınıfa veya öğrenciye atayın.', state: 'ACTIVE', color: 'delivery', icon: <BookOpenCheck />, to: '/assignments', action: 'Ödevleri aç' },
+  { title: 'RBA & Rehberlik', subtitle: 'Gelişim ve rehberlik', description: 'Rehberlik testlerini, insan onayını ve gelişim sinyallerini yönetin.', state: 'CORE', color: 'guidance', icon: <ShieldCheck />, to: '/guidance-admin', action: 'Test ve optik yönetimi aç' },
   { title: 'Ders Programı', subtitle: 'Planlama', description: 'Ders, öğretmen, sınıf ve haftalık zaman ilişkisini kurun.', state: 'NEXT', color: 'schedule', icon: <CalendarDays />, action: 'Sıradaki modül' },
   { title: 'YouTube & Video', subtitle: 'İçerik bağlantısı', description: 'Video çözümünü soru, kazanım, test veya ödevle eşleştirin.', state: 'NEXT', color: 'video', icon: <PlayCircle />, to: '/content-center', action: 'İçerik merkezine git' },
   { title: 'Kazanım Haritası', subtitle: 'Kazanım ve performans', description: 'MEB/ÖSYM kazanımlarını, alt kazanımları ve performansı izleyin.', state: 'ACTIVE', color: 'outcome', icon: <Target />, to: '/curriculum', action: 'Haritayı aç' },
