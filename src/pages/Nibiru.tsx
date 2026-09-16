@@ -2,6 +2,7 @@ import { useEffect,useRef,useState } from 'react';
 import { Mic,Send,Square,Volume2 } from 'lucide-react';
 import { api } from '../api';
 import { useAuth } from '../auth';
+import { AnunexBrand } from '../components/AnunexBrand';
 import { NibiruMark,type NibiruVisualState } from '../components/NibiruMark';
 import { CoachPlanCard } from '../components/CoachPlanCard';
 
@@ -49,7 +50,7 @@ export function Nibiru(){
  const visualState:NibiruVisualState=recording?'listening':busy?'thinking':playing!==null?'speaking':voiceBusy?'active':'idle';
  const renderAssistant=(m:Message,i:number)=><div className="nibiru-assistant-message"><NibiruMark size={28} state={playing===i?'speaking':busy&&i===messages.length-1?'thinking':'idle'} title="Nibiru"/><div className="nibiru-message-body" style={{padding:'12px 14px',borderRadius:14,background:'var(--surface-2,#f5f7fb)',whiteSpace:'pre-wrap',lineHeight:1.5}}>{m.specialist&&<div style={{fontSize:12,fontWeight:700,opacity:.68,marginBottom:6}}>Aktif uzman · {m.specialist}</div>}{m.text}<div style={{marginTop:8}}><button className="ghost" disabled={!ttsReady||voiceBusy} onClick={()=>void speakMessage(m.text,i)}><Volume2 size={14}/> {playing===i?'Dinleniyor…':'Dinle'}</button></div>{m.coachPlan?.available&&<CoachPlanCard plan={m.coachPlan}/>}</div></div>;
  return <>
-  <div className="page-head nibiru-hero-head"><div className="nibiru-hero-title"><NibiruMark size={72} state={visualState} showWordmark/><div><span className="eyebrow">TEK AKADEMİK ZEKÂ KAPISI</span><h1>Nibiru</h1><p>Doğrulanmış akademik veri, rol bazlı yetki ve uzman yapay zekâları tek bir kurumsal kimlik altında birleştirir.</p></div></div><div className="status ok nibiru-orchestration-status"><NibiruMark size={18} state="active" title="Nibiru aktif"/> Uzman orkestrasyonu aktif</div></div>
+  <div className="page-head nibiru-hero-head"><div className="nibiru-hero-title"><div className="nibiru-canonical-lockup"><AnunexBrand compact tagline={false}/><span className="nibiru-canonical-divider" aria-hidden="true"/><NibiruMark size={52} state={visualState} showWordmark/></div><div><span className="eyebrow">TEK AKADEMİK ZEKÂ KAPISI</span><h1>Nibiru</h1><p>Doğrulanmış akademik veri, rol bazlı yetki ve uzman yapay zekâları tek bir kurumsal kimlik altında birleştirir.</p></div></div><div className="status ok nibiru-orchestration-status"><NibiruMark size={18} state="active" title="Nibiru aktif"/> Uzman orkestrasyonu aktif</div></div>
   {error&&<div className="alert error">{error}</div>}
   <div className="panel nibiru-chat-panel">
    {user?.role==='SUPER_ADMIN'&&capabilityLab?.enabled&&<div style={{border:'1px solid #9cc5ff',borderRadius:16,padding:16,marginBottom:16,background:'linear-gradient(135deg,#eff6ff,#f8fbff)'}}>
