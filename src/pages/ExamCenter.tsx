@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, BarChart3, Building2, CheckCircle2, ChevronRight, FilePlus2, FileUp, Globe2, LockKeyhole, Network, Play, RefreshCw, Save, Search, Send, Settings2, TriangleAlert } from 'lucide-react';
+import { Archive, ArrowLeft, BarChart3, Building2, CheckCircle2, ChevronRight, FilePlus2, FileText, FileUp, Globe2, LockKeyhole, Network, Play, RefreshCw, ScanLine, Search, Send, Settings2, Sparkles, TriangleAlert, UploadCloud, Save } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api, ApiError, qs } from '../api';
 import { useAuth } from '../auth';
@@ -45,10 +45,31 @@ export function ExamCenter(){
   const activeOperationStep = preview ? 3 : selected ? 2 : 1;
 
   if(!entryMode)return <>
-    <div className="exam-center-simple-head"><div><span className="eyebrow">SINAV MERKEZİ</span><h1>Sınavlar</h1><p>Sınavı ekleyin, yükleyin veya kayıtlı sınavınızı açın.</p></div><div className="exam-center-simple-actions"><Link className="secondary" to="/exam-center?mode=upload"><FileUp size={16}/> Sınav Yükle</Link><Link className="primary" to="/exam-definitions"><FilePlus2 size={16}/> Sınav Ekle</Link></div></div>
+    <div className="exam-center-command-shell">
+      <section className="exam-center-command-hero">
+        <div className="exam-center-command-copy">
+          <div className="exam-center-brand-row"><span className="exam-center-kicker">ANUNEX · SINAV MERKEZİ</span><span className="exam-center-live"><span/> Nibiru hazır</span></div>
+          <h1>Sınavı kurun, okutun, sonucu yönetin.</h1>
+          <p>Tanımlı sınavlar, kazanımlı cevap anahtarları, optik dosyaları ve sonuç yayınını tek çalışma alanında yönetin.</p>
+          <div className="exam-center-hero-actions"><Link className="primary" to="/exam-definitions"><FilePlus2 size={17}/> Sınav Ekle</Link><Link className="ghost light" to="/exam-center?mode=upload"><UploadCloud size={17}/> Sınav Yükle</Link></div>
+        </div>
+        <div className="exam-center-nibiru-orb" aria-label="Nibiru sınav değerlendirme asistanı"><Sparkles size={19}/><strong>NIBIRU</strong><span>değerlendirme asistanı</span><small>Akışınızı kontrol eder</small></div>
+      </section>
+      <div className="exam-center-command-grid">
+        <section className="exam-center-action-panel">
+          <div className="exam-center-section-head"><div><span className="eyebrow">HIZLI İŞLEMLER</span><h2>Bugün ne yapmak istiyorsunuz?</h2><p>En sık kullanılan işlemlere tek dokunuşla geçin.</p></div><span className="exam-center-count">{readyRows.length} kayıtlı sınav</span></div>
+          <div className="exam-center-action-grid">
+            <Link className="exam-center-action-card exam-center-action-blue" to="/exam-definitions"><span className="exam-center-action-icon"><FilePlus2 size={20}/></span><span><strong>Sınav Ekle</strong><small>Sınav kartı, cevap anahtarı ve yayın ayarları</small></span><ChevronRight size={17}/></Link>
+            <Link className="exam-center-action-card exam-center-action-violet" to="/exam-center?mode=upload"><span className="exam-center-action-icon"><FileUp size={20}/></span><span><strong>Sınav Yükle</strong><small>TXT, DAT, FMT veya kamera verisini değerlendir</small></span><ChevronRight size={17}/></Link>
+            <Link className="exam-center-action-card exam-center-action-teal" to="/opticals"><span className="exam-center-action-icon"><ScanLine size={20}/></span><span><strong>Optik Tanımla</strong><small>FMT, manuel alan ve kamera okuma referansları</small></span><ChevronRight size={17}/></Link>
+            <Link className="exam-center-action-card exam-center-action-amber" to="/exam-definitions"><span className="exam-center-action-icon"><Archive size={20}/></span><span><strong>Belge arşivi</strong><small>Kazanımlı anahtar, PDF, logo ve video bağlantıları</small></span><ChevronRight size={17}/></Link>
+          </div>
+        </section>
+        <aside className="exam-center-readiness-card"><div className="exam-center-readiness-top"><span className="eyebrow">MERKEZ DURUMU</span><CheckCircle2 size={19}/></div><h2>Her kayıt tek yerde.</h2><p>Sınav oluşturma ile değerlendirme arasında kopuk ekran yok.</p><div className="exam-center-readiness-list"><div><b>01</b><span>Sınav kartı ve puanlama</span><strong>Hazır</strong></div><div><b>02</b><span>Cevap anahtarı ve kazanım</span><strong>Hazır</strong></div><div><b>03</b><span>Optik / FMT bağlantısı</span><strong>Sonradan bağlanır</strong></div><div><b>04</b><span>Sonuç ve yayın</span><strong>Kontrollü</strong></div></div></aside>
+      </div>
+    </div>
     {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
-    <div className="exam-center-quick-help"><span><CheckCircle2 size={15}/> Sınav Ekle: kart + cevap anahtarı</span><span><CheckCircle2 size={15}/> Sınav Yükle: DAT / TXT / FMT / kamera</span><span><CheckCircle2 size={15}/> Optik / FMT: sonradan bağlanır</span></div>
-    <section className="panel exam-center-simple-list"><div className="panel-head"><div><h2>Kayıtlı sınavlar</h2><p>Bir sınavı seçerek yükleme ve değerlendirme ekranına geçin.</p></div><button className="ghost" onClick={()=>void load()}><RefreshCw size={15}/> Yenile</button></div>
+    <section className="panel exam-center-simple-list exam-center-recent-panel"><div className="panel-head"><div><span className="eyebrow">KAYITLI SINAVLAR</span><h2>Değerlendirmeye hazır sınavlar</h2><p>Bir sınavı seçerek yükleme, sonuç ve yayın işlemlerine geçin.</p></div><button className="ghost" onClick={()=>void load()}><RefreshCw size={15}/> Yenile</button></div>
       {readyRows.length ? <div className="table-card"><table><thead><tr><th>Sınav</th><th>Tür / sınıf</th><th>Katılım</th><th>Kitapçık</th><th>Durum</th><th></th></tr></thead><tbody>{readyRows.slice(0,8).map((r)=><tr key={r.id}><td><strong>{r.title}</strong><br/><small>{r.academic_year}{r.publisher_name?` · ${r.publisher_name}`:''}</small></td><td>{r.exam_type} · {r.grade_level?`${r.grade_level}. sınıf`:'-'}</td><td>{r.participant_count||0}</td><td>{r.booklet_codes||'—'}</td><td><span className={`status ${r.status==='ACTIVE'?'ok':'neutral'}`}>{r.status==='ACTIVE'?'Hazır':'Kapalı'}</span></td><td><button className="primary" onClick={()=>{setSelected(r);setStats(null);resetUpload();setEntryMode('CATALOG')}}>Sınavı aç</button></td></tr>)}</tbody></table></div> : <div className="empty-state"><FilePlus2/><strong>Henüz değerlendirilebilir sınav yok</strong><span>Önce Sınav Ekle ile bir sınav kartı oluşturun.</span></div>}
     </section>
   </>;
