@@ -93,7 +93,7 @@ export function MarketingHome(){
   },[]);
   return <div className="marketing-home">
     <header className="marketing-header">
-      <a href="#top" className="marketing-logo"><AnunexBrand tagline/><span className="header-nibiru"><i/><b>NIBIRU</b><small>Öğrenmenin yaşayan zekâsı</small></span></a>
+      <a href="#top" className="marketing-logo"><AnunexBrand tagline/><span className="header-nibiru"><NibiruMark size={24} state="active"/><span><b>NIBIRU AI</b><small>Öğrenmenin yaşayan zekâsı</small></span></span></a>
       <nav aria-label="Tanıtım menüsü"><a href="#platform">Platform</a><a href="#nibiru">Nibiru</a><a href="#roller">Paneller</a><a href="#oyunlar">Mini Oyunlar</a><a href="#entegrasyon">Entegrasyonlar</a><a href="#iletisim">İletişim</a></nav>
       <div className="marketing-actions"><a className="marketing-link" href={DEMO_URL}>Demo</a><a className="marketing-button small" href={APP_URL}>Sisteme Giriş <ArrowRight size={16}/></a></div>
     </header>
