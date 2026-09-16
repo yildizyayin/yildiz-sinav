@@ -16,6 +16,7 @@ import './campaign-ui.css';
 import './brand-lock.css';
 import './profession-targets.css';
 import './pages/admin-command-center.css';
+import './theme-experience.css';
 
 createRoot(document.getElementById('root')!).render(<StrictMode><BrowserRouter><AuthProvider><App/></AuthProvider></BrowserRouter></StrictMode>);
 
