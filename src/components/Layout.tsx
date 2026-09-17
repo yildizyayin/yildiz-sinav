@@ -1,6 +1,6 @@
 import { useEffect,useMemo,useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
+import { Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Network, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 import { api } from '../api';
 import { LicenseBoundary } from './LicenseBoundary';
@@ -15,12 +15,13 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
   SUPER_ADMIN: [
     { label:'GENEL', items:[
       {to:'/',label:'Ana Sayfa',icon:Home},
+      {to:'/admin-center',label:'Yönetim Merkezi',icon:Network},
       {to:'/standard-readiness',label:'Hazırlık Merkezi',icon:ShieldCheck},
     ]},
     { label:'SINAV MERKEZİ', items:[
       {to:'/exam-center',label:'Genel Bakış',icon:ClipboardCheck},
       {to:'/exams',label:'Sınavlar',icon:ClipboardCheck},
-      {to:'/exam-definitions',label:'Oluştur',icon:Sparkles},
+      {to:'/exam-definitions',label:'Sınav Ekle',icon:Sparkles},
       {to:'/exam-center',label:'Yükle / Değerlendir',icon:FileUp},
       {to:'/exam-center',label:'Katalogdan Ekle',icon:BookMarked},
       {to:'/reports',label:'Raporlar',icon:BarChart3},
@@ -71,7 +72,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
     { label:'SINAV MERKEZİ', items:[
       {to:'/exam-center',label:'Genel Bakış',icon:ClipboardCheck},
       {to:'/exams',label:'Sınavlar',icon:ClipboardCheck},
-      {to:'/exam-definitions',label:'Oluştur',icon:Sparkles},
+      {to:'/exam-definitions',label:'Sınav Ekle',icon:Sparkles},
       {to:'/exam-center',label:'Yükle / Değerlendir',icon:FileUp},
       {to:'/exam-center',label:'Katalogdan Ekle',icon:BookMarked},
       {to:'/reports',label:'Raporlar',icon:BarChart3},
@@ -116,7 +117,7 @@ const nav: Record<Role, NavItem[]> = {
     { to: '/theme-management', label: 'Tema & Özel Günler', icon: Palette },
     { to: '/feature-lab', label: 'Feature Lab', icon: FlaskConical }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3, feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Enterprise', icon: Building2, feature:'ENTERPRISE' },
     { to: '/academic-target-admin', label: 'Resmî Hedef Verileri', icon: Target }, { to: '/official-question-intelligence', label: 'Çıkmış Soru & Kazanım', icon: BarChart3 }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/curriculum', label: 'Müfredat & Kazanımlar', icon: BookMarked },
-    { to: '/exam-definitions', label: 'Gelişmiş Sınav Tanımı', icon: ClipboardCheck }, { to: '/exams', label: 'Eski Sınav Listesi', icon: ClipboardCheck },
+    { to: '/exam-definitions', label: 'Sınav Ekle', icon: ClipboardCheck }, { to: '/exams', label: 'Sınav Listesi', icon: ClipboardCheck },
     { to: '/students', label: 'Öğrenciler', icon: Users }, { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange },
     { to: '/opticals', label: 'Optik Tanıtma', icon: ScanLine }, { to: '/optical-prepare', label: 'Optik Hazırla / Bas', icon: Printer }, { to: '/camera-test', label: 'Kamera Test Optiği', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: Printer },
     { to: '/worksheet-admin', label: 'Föy Merkezi', icon: BookOpenCheck }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/bulk-operations', label: 'Toplu İşlemler', icon: Layers3 }, { to: '/demo-mode', label: 'Sentetik Demo', icon: FlaskConical }, { to: '/scale', label: 'Ölçek Altyapısı', icon: Database },
@@ -125,7 +126,7 @@ const nav: Record<Role, NavItem[]> = {
   INSTITUTION_MANAGER: [
     { to: '/', label: 'Kurum Paneli V2', icon: Home }, { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle },
     { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Enterprise / Campus', icon: Building2,feature:'ENTERPRISE' },
-    { to: '/announcements', label: 'Duyuru Merkezi', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/exam-definitions', label: 'Kendi Sınavını Oluştur', icon: ClipboardCheck }, { to: '/students', label: 'Öğrenciler', icon: Users },
+    { to: '/announcements', label: 'Duyuru Merkezi', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/exam-definitions', label: 'Sınav Ekle', icon: ClipboardCheck }, { to: '/students', label: 'Öğrenciler', icon: Users },
     { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck },
     { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange }, { to: '/optical-prepare', label: 'Optik Hazırla / Bas', icon: Printer },
     { to: '/camera-test', label: 'Kamera Test Optiği', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: ScanLine }, { to: '/bulk-operations', label: 'Toplu İşlemler', icon: Layers3 }, { to: '/reports', label: 'Raporlar', icon: BarChart3 },
