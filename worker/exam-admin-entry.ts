@@ -348,10 +348,10 @@ async function createDefinition(request: Request, env: Env, user: AuthUser): Pro
   const academicYear = body.academicYear?.trim() || '';
   const examType = body.examType?.trim().toUpperCase() || '';
   if (!title || !/^20\d{2}-20\d{2}$/.test(academicYear) || !examType) return err(400, 'VALIDATION_ERROR', 'Sınav adı, eğitim yılı ve sınav türü gereklidir.');
-  const publisherName = body.publisherName?.trim() || '';
+  const publisherName = body.publisherName?.trim() || (ownerType === 'INSTITUTION' ? 'Kurum Sınavı' : '');
   const sessionLabel = body.sessionLabel?.trim() || '';
   const description = body.description?.trim() || '';
-  if (!publisherName || !sessionLabel || !description) return err(400, 'VALIDATION_ERROR', 'Yayınevi adı, oturum/bölüm ve açıklama/not gereklidir.');
+  if (!publisherName) return err(400, 'VALIDATION_ERROR', 'Merkezi sınav için yayınevi adı gereklidir.');
   if (publisherName && publisherName.length > 160) return err(400, 'VALIDATION_ERROR', 'Yayınevi adı 160 karakteri geçemez.');
   if (sessionLabel && sessionLabel.length > 120) return err(400, 'VALIDATION_ERROR', 'Oturum / bölüm 120 karakteri geçemez.');
   if (description && description.length > 2000) return err(400, 'VALIDATION_ERROR', 'Açıklama 2000 karakteri geçemez.');
