@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://demo.anunex.com`
-- Time: `2026-09-17T09:35:56.662Z`
+- Time: `2026-09-17T15:13:19.013Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -90,7 +90,7 @@ Error: GET /api/student-standard/exam-review?examId=exam_hist_08 expected 200, g
   "error": {
     "code": "SERVER_ERROR",
     "message": "Sunucu hatası oluştu.",
-    "requestId": "a3c720facb42ab5c"
+    "requestId": "a3c90f755dff43f2"
   }
 }
     at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:6:476)
@@ -117,13 +117,13 @@ Error: GET /api/student-standard/exam-review?examId=exam_hist_08 expected 200, g
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v91 · 174 evidence · 3 subjects
+- ✅ **Persistent student intelligence profile** — v93 · 174 evidence · 3 subjects
 - ✅ **Idempotent refresh + versioned history** — 50 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 855 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v91 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 873 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v93 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 
