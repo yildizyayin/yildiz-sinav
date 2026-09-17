@@ -1,2 +1,1 @@
-result network deployment marker — supersede stale pending runs
-result network deployment marker — final canonical Nibiru design
+result network deployment marker — TYT elective Philosophy answer-key fix
