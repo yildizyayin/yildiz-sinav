@@ -65,10 +65,11 @@ import { AssignmentsCenter } from './pages/AssignmentsCenter';
 import { MarketingHome } from './pages/MarketingHome';
 import { ResultPortal } from './pages/ResultPortal';
 import { ResultNetworkAdmin } from './pages/ResultNetworkAdmin';
+import { AdminCommandCenter } from './pages/AdminCommandCenter';
 
 const ALL_ROLES: Role[] = ['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT'];
 function RoleGate({allowed,children}:{allowed:Role[];children:React.ReactNode}){const{user}=useAuth();if(!user||!allowed.includes(user.role))return <Navigate to="/" replace/>;return <>{children}</>}
-function Home(){const{user}=useAuth();if(user?.role==='SUPER_ADMIN')return <SuperAdminStandardHome/>;if(user?.role==='INSTITUTION_MANAGER')return <InstitutionPanelV2/>;if(user?.role==='TEACHER'||user?.role==='GUIDANCE_TEACHER')return <TeacherStandardHome/>;if(user?.role==='STUDENT')return <StudentStandardHome/>;if(user?.role==='PARENT')return <ParentStandardHome/>;return null}
+function Home(){const{user}=useAuth();if(user?.role==='SUPER_ADMIN')return <AdminCommandCenter/>;if(user?.role==='INSTITUTION_MANAGER')return <InstitutionPanelV2/>;if(user?.role==='TEACHER'||user?.role==='GUIDANCE_TEACHER')return <TeacherStandardHome/>;if(user?.role==='STUDENT')return <StudentStandardHome/>;if(user?.role==='PARENT')return <ParentStandardHome/>;return null}
 
 export default function App(){
  const{user,loading}=useAuth();const location=useLocation();
@@ -83,7 +84,8 @@ export default function App(){
  if(!user&&location.pathname!=='/login')return <Navigate to="/login" replace/>;
  if(user&&location.pathname==='/login')return <Navigate to="/" replace/>;
  return <Routes>
-  <Route path="/login" element={<Login/>}/><Route element={<Layout/>}><Route index element={<Home/>}/>
+ <Route path="/login" element={<Login/>}/><Route element={<Layout/>}><Route index element={<Home/>}/>
+  <Route path="admin-center" element={<RoleGate allowed={['SUPER_ADMIN']}><AdminCommandCenter/></RoleGate>}/>
   <Route path="standard-readiness" element={<RoleGate allowed={['SUPER_ADMIN']}><StandardReadiness/></RoleGate>}/>
   <Route path="theme-management" element={<RoleGate allowed={['SUPER_ADMIN']}><ThemeManagement/></RoleGate>}/>
   <Route path="attendance" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><AttendanceCenter/></RoleGate>}/>
