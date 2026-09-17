@@ -82,7 +82,10 @@ describe('professional exam model catalog', () => {
   });
 
   it('keeps the agreed template question totals and scoring profiles', () => {
-    expect(EXAM_TEMPLATES.find((x) => x.key === 'TYT')?.sections.reduce((n, x) => n + x.questionCount, 0)).toBe(120);
+    const tyt = EXAM_TEMPLATES.find((x) => x.key === 'TYT');
+    expect(tyt?.sections.reduce((n, x) => n + x.questionCount, 0)).toBe(120);
+    expect(tyt?.optionalSections).toEqual([expect.objectContaining({ subjectCode: 'TYT_FEL', questionCount: 5, answerKeyOnly: true, optionalGroup: 'TYT_SOSYAL_SECME' })]);
+    expect(tyt?.optionalSections?.reduce((n, x) => n + x.questionCount, 0)).toBe(5);
     expect(EXAM_TEMPLATES.find((x) => x.key === 'AYT')?.sections.reduce((n, x) => n + x.questionCount, 0)).toBe(160);
     expect(EXAM_TEMPLATES.find((x) => x.key === 'YDT')?.sections[0]).toMatchObject({ questionCount: 80, optionCount: 5, wrongDivisor: 4 });
     expect(EXAM_TEMPLATES.find((x) => x.key === 'LGS')?.sections.reduce((n, x) => n + x.questionCount, 0)).toBe(90);

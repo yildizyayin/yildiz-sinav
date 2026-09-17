@@ -29,6 +29,15 @@ export function answerStringValid(value: string, questionCount: number, optionCo
   return value.length === questionCount && pattern.test(value);
 }
 
+/** Empty alternative-answer cells mean “accept the primary answer”. */
+export function normalizeAcceptedAnswers(value: unknown, primary: string): string[] {
+  const raw = Array.isArray(value)
+    ? value.reduce<unknown[]>((all, item) => all.concat(Array.isArray(item) ? item : [item]), [])
+    : typeof value === 'string' ? value.split(/[|/,]/) : [];
+  const normalized = [...new Set(raw.map((item) => String(item ?? '').trim().toUpperCase()).filter(Boolean))];
+  return normalized.length ? normalized : [primary];
+}
+
 function err(status: number, code: string, message: string, details?: unknown): Response {
   return Response.json({ ok: false, error: { code, message, ...(details === undefined ? {} : { details }) } }, { status });
 }
@@ -415,7 +424,7 @@ async function readiness(env: Env, examId: string): Promise<any> {
 async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
-  const [subjects, booklets, institutions, keys, ready] = await Promise.all([
+  const [subjects, booklets, institutions, keys, optionalAnswerKey, ready] = await Promise.all([
     all<any>(env.DB.prepare(`SELECT es.*,s.code,s.name,s.category FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order,s.name`).bind(examId)),
     all<any>(env.DB.prepare(`SELECT id,code,active FROM exam_booklets WHERE exam_id=? ORDER BY code`).bind(examId)),
     all<any>(env.DB.prepare(`SELECT ei.institution_id,ei.enabled,i.name,i.code FROM exam_institutions ei JOIN institutions i ON i.id=ei.institution_id WHERE ei.exam_id=? ORDER BY i.name`).bind(examId)),
@@ -433,9 +442,15 @@ async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<
       GROUP BY q.id,ak.booklet_code
       ORDER BY q.global_no,ak.booklet_code
     `).bind(examId)),
+    all<any>(env.DB.prepare(`
+      SELECT oak.subject_id,s.code,s.name,oak.booklet_code,oak.question_no,oak.correct_answer,
+             oak.option_count answer_option_count,oak.accepted_answers,oak.question_status answer_question_status
+      FROM exam_optional_answer_keys oak JOIN subjects s ON s.id=oak.subject_id
+      WHERE oak.exam_id=? ORDER BY s.name,oak.booklet_code,oak.question_no
+    `).bind(examId)),
     readiness(env, examId),
   ]);
-  return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, readiness: ready });
+  return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, optionalAnswerKey, readiness: ready });
 }
 
 async function updateGeneral(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
@@ -547,6 +562,16 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
     const optionCount = entry.optionCount === 4 ? 4 : 5;
     entryMap.set(`${subjectId}::${bookletCode}`, { answers, optionCount, acceptedAnswers: entry.acceptedAnswers, questionStatuses: entry.questionStatuses, bookletQuestionNumbers: entry.bookletQuestionNumbers });
   }
+  const structureSubjectIds = new Set(subjects.map((subject) => String(subject.subject_id)));
+  const optionalEntries = [...entryMap.entries()].filter(([key]) => !structureSubjectIds.has(key.split('::')[0]));
+  for (const [key, entry] of optionalEntries) {
+    const [subjectId, bookletCode] = key.split('::');
+    const subject = await one<{ id: string; code: string }>(env.DB.prepare('SELECT id,code FROM subjects WHERE id=? AND active=1').bind(subjectId));
+    if (!subject || subject.code !== 'TYT_FEL') return err(400, 'OPTIONAL_SUBJECT_NOT_ALLOWED', 'Yalnız TYT seçmeli Felsefe alanı cevap anahtarına eklenebilir.');
+    if (!booklets.some((booklet) => booklet.code === bookletCode)) return err(400, 'INVALID_BOOKLET', 'Seçmeli cevap anahtarındaki kitapçık kodu sınav yapısıyla uyuşmuyor.');
+    if (!answerStringValid(entry.answers, 5, entry.optionCount)) return err(400, 'OPTIONAL_ANSWER_KEY_INCOMPLETE', 'TYT seçmeli Felsefe cevap anahtarı her kitapçık için 5 cevap olmalıdır.');
+    if (entry.acceptedAnswers && entry.acceptedAnswers.length !== 5) return err(400, 'OPTIONAL_ACCEPTED_ANSWERS_INCOMPLETE', 'TYT seçmeli Felsefe kabul edilen cevapları 5 soru olmalıdır.');
+  }
   for (const subject of subjects) {
     for (const booklet of booklets) {
       const entry = entryMap.get(`${subject.subject_id}::${booklet.code}`);
@@ -570,6 +595,7 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
     env.DB.prepare(`DELETE FROM answer_keys WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
     env.DB.prepare(`DELETE FROM exam_question_booklet_orders WHERE exam_id=?`).bind(examId),
     env.DB.prepare(`DELETE FROM question_outcomes WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
+    env.DB.prepare('DELETE FROM exam_optional_answer_keys WHERE exam_id=?').bind(examId),
   ];
   for (const subject of subjects) {
     for (const booklet of booklets) {
@@ -580,9 +606,8 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
         if (!question) return err(500, 'QUESTION_STRUCTURE_ERROR', 'Soru yapısı cevap anahtarıyla uyuşmuyor.');
         const primary = entry.answers[offset];
         const acceptedRaw = entry.acceptedAnswers?.[offset];
-        const accepted = Array.isArray(acceptedRaw) ? acceptedRaw : typeof acceptedRaw === 'string' ? acceptedRaw.split(/[|/,]/) : [primary];
         const allowed = entry.optionCount === 4 ? /^[A-D]$/ : /^[A-E]$/;
-        const normalizedAccepted = [...new Set(accepted.map((x) => String(x).trim().toUpperCase()).filter(Boolean))];
+        const normalizedAccepted = normalizeAcceptedAnswers(acceptedRaw, primary);
         if (!normalizedAccepted.length || normalizedAccepted.some((x) => !allowed.test(x))) return err(400, 'INVALID_ACCEPTED_ANSWER', `${subject.subject_id} / ${n} kabul edilen cevapları geçersiz.`);
         const status = entry.questionStatuses?.[offset] || 'ACTIVE';
         statements.push(env.DB.prepare(`UPDATE exam_questions SET option_count=?,question_status=? WHERE id=?`).bind(entry.optionCount, status, question.id));
@@ -592,6 +617,17 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
         statements.push(env.DB.prepare(`INSERT INTO exam_question_booklet_orders (id,exam_id,exam_question_id,booklet_code,printed_question_no) VALUES(?,?,?,?,?)`)
           .bind(uuid('eqbo'), examId, question.id, booklet.code, printedQuestionNo));
       }
+    }
+  }
+
+  for (const [key, entry] of optionalEntries) {
+    const [subjectId, bookletCode] = key.split('::');
+    for (let offset = 0; offset < 5; offset++) {
+      const primary = entry.answers[offset];
+      const accepted = normalizeAcceptedAnswers(entry.acceptedAnswers?.[offset], primary);
+      if (accepted.some((answer) => !(entry.optionCount === 4 ? /^[A-D]$/ : /^[A-E]$/).test(answer))) return err(400, 'INVALID_OPTIONAL_ACCEPTED_ANSWER', `${subjectId} / ${offset + 1} seçmeli kabul edilen cevabı geçersiz.`);
+      statements.push(env.DB.prepare(`INSERT INTO exam_optional_answer_keys (id,exam_id,subject_id,booklet_code,question_no,correct_answer,option_count,accepted_answers,question_status) VALUES(?,?,?,?,?,?,?,?,?)`)
+        .bind(uuid('oak'), examId, subjectId, bookletCode, offset + 1, primary, entry.optionCount, JSON.stringify(accepted), entry.questionStatuses?.[offset] || 'ACTIVE'));
     }
   }
 
