@@ -21,11 +21,15 @@ export function NibiruMark({size=34,state='idle',className='',title='Nibiru Akad
  const style:MarkStyle={'--nibiru-size':`${size}px`};
  return <span className={`nibiru-brand-lockup ${className}`.trim()} title={title} aria-label={title}>
   <span ref={markRef} className={`nibiru-mark nibiru-${state} ${interactive?'nibiru-interactive':''}`} style={style} aria-hidden="true">
-   <span className="nibiru-eclipse"/>
-   <span className="nibiru-core"><i/></span>
-   <span className="nibiru-orbit nibiru-orbit-a"><i/></span>
-   <span className="nibiru-orbit nibiru-orbit-b"><i/></span>
+   <span className="nibiru-aura"/>
+   <span className="nibiru-sphere">
+    <i className="nibiru-flow nibiru-flow-a"/>
+    <i className="nibiru-flow nibiru-flow-b"/>
+    <i className="nibiru-flow nibiru-flow-c"/>
+    <i className="nibiru-glint"/>
+   </span>
    <span className="nibiru-signal"/>
+   <span className="nibiru-voice-wave"><i/><i/><i/><i/><i/></span>
   </span>
   {showWordmark&&<span className="nibiru-wordmark"><strong>NIBIRU AI</strong><small>ÖĞRENMENİN YAŞAYAN ZEKÂSI</small></span>}
  </span>;
