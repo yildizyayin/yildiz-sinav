@@ -1,1 +1,1 @@
-one-shot result network deployment marker
+result network deployment marker — deploy worker without domain mutation
