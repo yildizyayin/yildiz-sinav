@@ -16,6 +16,8 @@ export type ParsedAnswerEntry = {
   acceptedAnswers?: Array<string | string[]>;
   questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>;
   outcomeRefs?: Array<OutcomeReference | null>;
+  outcomeRefsByQuestion?: Array<OutcomeReference[]>;
+  bookletQuestionNumbers?: number[];
 };
 export type ParsedAnswerKey = {
   entries: ParsedAnswerEntry[];
@@ -23,6 +25,10 @@ export type ParsedAnswerKey = {
   questionStarts: Record<string, number>;
   unknownLines: string[];
   detectedBooklets: string[];
+  questionCountsByBooklet?: Record<string, Record<string, number>>;
+  metadata?: { publisherName?: string; title?: string; gradeLevel?: number; externalExamCode?: string };
+  warnings?: string[];
+  detectedFormat?: 'TEXT' | 'TABULAR' | 'WIDE_BOOKLET_TABLE';
 };
 
 export type FixedWidthSuggestion = {
@@ -225,41 +231,74 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
   const entries: ParsedAnswerEntry[] = [];
   const questionCounts: Record<string, number> = {};
   const questionStarts: Record<string, number> = {};
+  const questionCountsByBooklet: Record<string, Record<string, number>> = {};
   const unknownLines: string[] = [];
   const detectedBooklets: string[] = [];
+  const warnings: string[] = [];
   const lines = text.replace(/^\uFEFF/, '').replace(/\r/g, '').split('\n').filter((line) => line.trim());
-  const tableHeaders = lines.length ? splitDelimitedLine(lines[0]).map(norm) : [];
-  const subjectColumn = tableHeaderIndex(tableHeaders, ['DERS', 'TEST', 'SUBJECT', 'SUBJECTCODE', 'DERSKODU']);
-  const questionColumn = tableHeaderIndex(tableHeaders, ['SORU', 'SORUNO', 'QUESTION', 'QUESTIONNO', 'SORUNUMARASI']);
-  const answerColumn = tableHeaderIndex(tableHeaders, ['CEVAP', 'DOGRUCEVAP', 'ANSWER', 'CORRECTANSWER', 'DOGRU']);
-  if (subjectColumn >= 0 && questionColumn >= 0 && answerColumn >= 0) {
+  const cleanBooklet = (value: string) => String(value || defaultBooklet).trim().toUpperCase() || defaultBooklet.toUpperCase();
+  const unique = <T,>(values: T[]) => [...new Set(values)];
+  let headerIndex = -1;
+  let tableHeaders: string[] = [];
+  for (let index = 0; index < Math.min(lines.length, 15); index++) {
+    const candidate = splitDelimitedLine(lines[index]).map(norm);
+    const hasSubject = candidate.some((x) => ['DERS', 'TEST', 'SUBJECT', 'SUBJECTCODE', 'DERSKODU'].includes(x));
+    const hasAnswer = candidate.some((x) => ['CEVAP', 'DOGRUCEVAP', 'ANSWER', 'CORRECTANSWER', 'DOGRU'].includes(x)) || candidate.some((x) => /^[A-D]CEVAP$/.test(x));
+    const hasQuestion = candidate.some((x) => ['SORU', 'SORUNO', 'QUESTION', 'QUESTIONNO', 'SORUNUMARASI'].includes(x)) || candidate.some((x) => /^[A-D]SORU$/.test(x));
+    if (hasSubject && hasAnswer && hasQuestion) { headerIndex = index; tableHeaders = candidate; break; }
+  }
+  const metadata = (() => {
+    if (headerIndex <= 0) return undefined;
+    const rows = lines.slice(0, headerIndex).flatMap((line) => splitDelimitedLine(line).map((value) => value.trim()).filter(Boolean));
+    const joined = rows.join(' ');
+    const gradeMatches = [...norm(joined).matchAll(/(\d{1,2})SINIF/g)].map((match) => Number(match[1]));
+    const title = rows.find((value) => /TYT|AYT|YDT|LGS|SINAV|HAZIR|BULUNUS|DENEME/i.test(value) && value.length > 4);
+    const publisherName = rows.find((value) => /[A-Za-zÇĞİÖŞÜçğıöşü]/.test(value) && !/SINIF|SINAV|TYT|AYT|YDT|LGS/i.test(value)) || rows[0];
+    const externalExamCode = rows.find((value) => /^\d{3,12}$/.test(value));
+    if (new Set(gradeMatches).size > 1) warnings.push(`Dosya üst bilgisinde birden fazla sınıf bilgisi bulundu: ${unique(gradeMatches).join(', ')}. Yayınlamadan önce sınav kartını kontrol edin.`);
+    return { publisherName, title, gradeLevel: gradeMatches[0], externalExamCode };
+  })();
+
+  if (headerIndex >= 0) {
+    const subjectColumn = tableHeaderIndex(tableHeaders, ['DERS', 'SUBJECT', 'SUBJECTCODE', 'DERSKODU']);
+    const testColumn = tableHeaderIndex(tableHeaders, ['TEST']);
+    const questionColumn = tableHeaderIndex(tableHeaders, ['SORU', 'SORUNO', 'QUESTION', 'QUESTIONNO', 'SORUNUMARASI']);
+    const answerColumn = tableHeaderIndex(tableHeaders, ['CEVAP', 'DOGRUCEVAP', 'ANSWER', 'CORRECTANSWER', 'DOGRU']);
     const bookletColumn = tableHeaderIndex(tableHeaders, ['KITAPCIK', 'BOOKLET', 'KITAPCIKKODU']);
     const optionColumn = tableHeaderIndex(tableHeaders, ['SIKSAYISI', 'OPTIONCOUNT', 'OPTIONS']);
     const acceptedColumn = tableHeaderIndex(tableHeaders, ['KABULEDILENCEVAPLAR', 'ACCEPTEDANSWERS', 'ALTERNATIFCEVAP']);
     const statusColumn = tableHeaderIndex(tableHeaders, ['DURUM', 'STATUS', 'QUESTIONSTATUS']);
     const outcomeCodeColumn = tableHeaderIndex(tableHeaders, ['KAZANIMKODU', 'OUTCOMECODE', 'OGRENMECIKTISIKODU']);
     const outcomeTitleColumn = tableHeaderIndex(tableHeaders, ['KAZANIM', 'KAZANIMACIKLAMASI', 'OUTCOME', 'OUTCOMETITLE', 'OGRENMECIKTISI', 'OGRENMECIKTISIACIKLAMASI']);
-    const unitColumn = tableHeaderIndex(tableHeaders, ['UNIT', 'ÜNITE', 'UNITE']);
+    const unitColumn = tableHeaderIndex(tableHeaders, ['UNIT', 'UNITE']);
     const topicColumn = tableHeaderIndex(tableHeaders, ['KONU', 'TOPIC']);
-    const subtopicColumn = tableHeaderIndex(tableHeaders, ['ALTKONU', 'ALTKONU', 'SUBTOPIC', 'ALTKAZANIM']);
-    const parentCodeColumn = tableHeaderIndex(tableHeaders, ['PARENTCODE', 'USTKAZANIMKODU', 'ÜSTKAZANIMKODU', 'ALTKAZANIMKODU']);
-    const grouped = new Map<string, { subject: SubjectOption; booklet: string; answers: Map<number, string>; accepted: Map<number, string[]>; statuses: Map<number, 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>; outcomes: Map<number, OutcomeReference>; optionCount: 4 | 5 }>();
-    for (const line of lines.slice(1)) {
+    const subtopicColumn = tableHeaderIndex(tableHeaders, ['ALTKONU', 'SUBTOPIC', 'ALTKAZANIM']);
+    const parentCodeColumn = tableHeaderIndex(tableHeaders, ['PARENTCODE', 'USTKAZANIMKODU', 'ALTKAZANIMKODU']);
+    const bookletQuestionColumns = Object.fromEntries(tableHeaders.map((header, index) => { const match = header.match(/^([A-D])SORU$/); return match ? [match[1], index] : null; }).filter((value): value is [string, number] => Boolean(value)));
+    const bookletAnswerColumns = Object.fromEntries(tableHeaders.map((header, index) => { const match = header.match(/^([A-D])(?:CEVAP|DOGRUCEVAP)$/); return match ? [match[1], index] : null; }).filter((value): value is [string, number] => Boolean(value)));
+    const bookletCodes = unique([...Object.keys(bookletQuestionColumns), ...Object.keys(bookletAnswerColumns), ...(bookletColumn >= 0 ? lines.slice(headerIndex + 1).map((line) => cleanBooklet(splitDelimitedLine(line)[bookletColumn] || '')).filter(Boolean) : [])]);
+    if (!bookletCodes.length) bookletCodes.push(defaultBooklet.toUpperCase());
+    for (const code of bookletCodes) if (!detectedBooklets.includes(code)) detectedBooklets.push(code);
+    const primaryBooklet = bookletCodes.includes('A') ? 'A' : bookletCodes[0];
+    type ParsedRow = { subject: SubjectOption; canonicalQuestion: number; questionNumbers: Record<string, number>; answers: Record<string, string>; commonAnswer: string; accepted: string[]; status: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'; outcomes: OutcomeReference[]; optionCount: 4 | 5 };
+    const grouped = new Map<string, ParsedRow[]>();
+    for (const line of lines.slice(headerIndex + 1)) {
       const cells = splitDelimitedLine(line);
-      const subject = subjectForToken(cells[subjectColumn] || '', subjects);
-      const questionNo = Number(cells[questionColumn]);
-      const answer = cleanAnswers(cells[answerColumn] || '').slice(0, 1);
-      if (!subject || !Number.isInteger(questionNo) || questionNo < 1 || !answer) { unknownLines.push(line); continue; }
-      const booklet = String(bookletColumn >= 0 ? cells[bookletColumn] || defaultBooklet : defaultBooklet).trim().toUpperCase() || defaultBooklet.toUpperCase();
-      const optionCount = Number(cells[optionColumn] || 5) === 4 ? 4 : 5;
-      const key = `${subject.id}::${booklet}`;
-      const group = grouped.get(key) || { subject, booklet, answers: new Map(), accepted: new Map(), statuses: new Map(), outcomes: new Map(), optionCount };
-      group.answers.set(questionNo, answer);
-      const alternatives = String(acceptedColumn >= 0 ? cells[acceptedColumn] || answer : answer).split(/[|/,]/).map((x) => cleanAnswers(x).slice(0, 1)).filter(Boolean);
-      group.accepted.set(questionNo, [...new Set(alternatives)]);
+      const subject = subjectForToken(String((subjectColumn >= 0 ? cells[subjectColumn] : '') || (testColumn >= 0 ? cells[testColumn] : '') || '').trim(), subjects);
+      const questionNumbers: Record<string, number> = {};
+      for (const [code, column] of Object.entries(bookletQuestionColumns)) { const value = Number(cells[column]); if (Number.isInteger(value) && value > 0) questionNumbers[code] = value; }
+      if (!Object.keys(questionNumbers).length && questionColumn >= 0) { const value = Number(cells[questionColumn]); if (Number.isInteger(value) && value > 0) questionNumbers[cleanBooklet(bookletColumn >= 0 ? cells[bookletColumn] : primaryBooklet)] = value; }
+      const canonicalQuestion = questionNumbers[primaryBooklet] || Object.values(questionNumbers)[0];
+      const commonAnswer = cleanAnswers(answerColumn >= 0 ? cells[answerColumn] || '' : '').slice(0, 1);
+      const answers: Record<string, string> = {};
+      for (const [code, column] of Object.entries(bookletAnswerColumns)) answers[code] = cleanAnswers(cells[column] || '').slice(0, 1);
+      for (const code of Object.keys(questionNumbers)) if (!answers[code]) answers[code] = commonAnswer;
+      if (!subject || !Number.isInteger(canonicalQuestion) || canonicalQuestion < 1 || !Object.keys(questionNumbers).length || (!commonAnswer && !Object.values(answers).some(Boolean))) { unknownLines.push(line); continue; }
+      const acceptedRaw = String(acceptedColumn >= 0 ? cells[acceptedColumn] || commonAnswer : commonAnswer);
+      const accepted = unique(acceptedRaw.split(/[|\/,]/).map((value) => cleanAnswers(value).slice(0, 1)).filter(Boolean));
       const statusValue = norm(statusColumn >= 0 ? cells[statusColumn] || '' : 'ACTIVE');
-      group.statuses.set(questionNo, statusValue === 'CANCELLED' || statusValue === 'IPTAL' ? 'CANCELLED' : statusValue === 'EXCLUDED' || statusValue === 'DEGERLENDIRMEDISI' ? 'EXCLUDED' : 'ACTIVE');
-      const outcome = {
+      const status = statusValue === 'CANCELLED' || statusValue === 'IPTAL' ? 'CANCELLED' : statusValue === 'EXCLUDED' || statusValue === 'DEGERLENDIRMEDISI' ? 'EXCLUDED' : 'ACTIVE';
+      const primaryOutcome: OutcomeReference = {
         code: String(outcomeCodeColumn >= 0 ? cells[outcomeCodeColumn] || '' : '').trim() || undefined,
         title: String(outcomeTitleColumn >= 0 ? cells[outcomeTitleColumn] || '' : '').trim() || undefined,
         unit: String(unitColumn >= 0 ? cells[unitColumn] || '' : '').trim() || undefined,
@@ -267,21 +306,26 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
         subtopic: String(subtopicColumn >= 0 ? cells[subtopicColumn] || '' : '').trim() || undefined,
         parentCode: String(parentCodeColumn >= 0 ? cells[parentCodeColumn] || '' : '').trim() || undefined,
       };
-      if (outcome.code || outcome.title || outcome.topic || outcome.subtopic) group.outcomes.set(questionNo, outcome);
-      grouped.set(key, group);
-      questionCounts[subject.id] = Math.max(questionCounts[subject.id] || 0, questionNo);
-      if (!detectedBooklets.includes(booklet)) detectedBooklets.push(booklet);
+      const outcomes = [primaryOutcome];
+      for (const [column, header] of tableHeaders.entries()) { if (!/^KAZANIM\d+$/.test(header) || column === outcomeTitleColumn) continue; const title = String(cells[column] || '').trim(); if (title) outcomes.push({ title }); }
+      const optionCount = optionColumn >= 0
+        ? (Number(cells[optionColumn] || 5) === 4 ? 4 : 5)
+        : 5;
+      const row: ParsedRow = { subject, canonicalQuestion, questionNumbers, answers, commonAnswer, accepted: accepted.length ? accepted : [commonAnswer], status, outcomes: unique(outcomes.filter((outcome) => outcome.code || outcome.title || outcome.topic || outcome.subtopic) as any[]), optionCount };
+      const rows = grouped.get(subject.id) || []; rows.push(row); grouped.set(subject.id, rows);
     }
-    for (const group of grouped.values()) {
-      const questionNumbers = [...group.answers.keys()].sort((a, b) => a - b);
-      const start = questionNumbers[0] || 1;
-      const end = questionNumbers[questionNumbers.length - 1] || start;
-      questionStarts[group.subject.id] = Math.min(questionStarts[group.subject.id] || start, start);
-      questionCounts[group.subject.id] = end - start + 1;
-      const answers = Array.from({ length: end - start + 1 }, (_, index) => group.answers.get(start + index) || '').join('');
-      entries.push({ subjectId: group.subject.id, bookletCode: group.booklet, answers, optionCount: group.optionCount, acceptedAnswers: Array.from({ length: end - start + 1 }, (_, index) => group.accepted.get(start + index) || [answers[index]]), questionStatuses: Array.from({ length: end - start + 1 }, (_, index) => group.statuses.get(start + index) || 'ACTIVE'), outcomeRefs: Array.from({ length: end - start + 1 }, (_, index) => group.outcomes.get(start + index) || null) });
+    for (const [subjectId, rows] of grouped.entries()) {
+      const sorted = rows.sort((a, b) => a.canonicalQuestion - b.canonicalQuestion); const start = sorted[0]?.canonicalQuestion || 1;
+      questionStarts[subjectId] = start; questionCounts[subjectId] = sorted.length; questionCountsByBooklet[subjectId] = {};
+      if (sorted.some((row, index) => row.canonicalQuestion !== start + index)) warnings.push(`${subjectId} soruları ardışık değil; soru aralığını ve kitapçık eşleşmesini kontrol edin.`);
+      for (const booklet of bookletCodes) {
+        const answers = sorted.map((row) => row.answers[booklet] || row.commonAnswer || '').join('');
+        const bookletQuestionNumbers = sorted.map((row) => row.questionNumbers[booklet] || row.canonicalQuestion);
+        entries.push({ subjectId, bookletCode: booklet, answers, optionCount: sorted.some((row) => row.optionCount === 5) ? 5 : 4, acceptedAnswers: sorted.map((row) => row.accepted), questionStatuses: sorted.map((row) => row.status), outcomeRefs: sorted.map((row) => row.outcomes[0] || null), outcomeRefsByQuestion: sorted.map((row) => row.outcomes), bookletQuestionNumbers });
+        questionCountsByBooklet[subjectId][booklet] = sorted.length;
+      }
     }
-    return { entries, questionCounts, questionStarts, unknownLines, detectedBooklets };
+    return { entries, questionCounts, questionStarts, questionCountsByBooklet, unknownLines, detectedBooklets, metadata, warnings, detectedFormat: Object.keys(bookletQuestionColumns).length ? 'WIDE_BOOKLET_TABLE' : 'TABULAR' };
   }
   let booklet = defaultBooklet.toUpperCase();
   if (!detectedBooklets.includes(booklet)) detectedBooklets.push(booklet);
@@ -297,8 +341,7 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
       continue;
     }
 
-    const match = line.match(/^(.+?)\s*[:;,=|\t]\s*([ABCDE\s._-]+)$/i)
-      || line.match(/^([^\s]+)\s+([ABCDE]{4,})$/i);
+    const match = line.match(/^(.+?)\s*[:;,=|\t]\s*([ABCDE\s._-]+)$/i) || line.match(/^([^\s]+)\s+([ABCDE]{4,})$/i);
     if (!match) { unknownLines.push(line); continue; }
     const subject = subjectForToken(match[1], subjects);
     const answers = cleanAnswers(match[2]);
@@ -309,7 +352,7 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
     questionCounts[subject.id] = Math.max(questionCounts[subject.id] || 0, answers.length);
   }
 
-  return { entries, questionCounts, questionStarts, unknownLines, detectedBooklets };
+  return { entries, questionCounts, questionStarts, unknownLines, detectedBooklets, warnings, detectedFormat: entries.length ? 'TEXT' : undefined };
 }
 
 function contiguousRanges(flags: boolean[], minLength: number): Array<{ start: number; end: number }> {

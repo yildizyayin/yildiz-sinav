@@ -22,8 +22,8 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/exam-center',label:'Genel Bakış',icon:ClipboardCheck},
       {to:'/exams',label:'Sınavlar',icon:ClipboardCheck},
       {to:'/exam-definitions',label:'Sınav Ekle',icon:Sparkles},
-      {to:'/exam-center',label:'Yükle / Değerlendir',icon:FileUp},
-      {to:'/exam-center',label:'Katalogdan Ekle',icon:BookMarked},
+      {to:'/exam-center/upload',label:'Yükle / Değerlendir',icon:FileUp},
+      {to:'/exam-center/catalog',label:'Katalogdan Ekle',icon:BookMarked},
       {to:'/reports',label:'Raporlar',icon:BarChart3},
     ]},
     { label:'OPTİK İŞLEMLERİ', items:[
@@ -73,8 +73,8 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/exam-center',label:'Genel Bakış',icon:ClipboardCheck},
       {to:'/exams',label:'Sınavlar',icon:ClipboardCheck},
       {to:'/exam-definitions',label:'Sınav Ekle',icon:Sparkles},
-      {to:'/exam-center',label:'Yükle / Değerlendir',icon:FileUp},
-      {to:'/exam-center',label:'Katalogdan Ekle',icon:BookMarked},
+      {to:'/exam-center/upload',label:'Yükle / Değerlendir',icon:FileUp},
+      {to:'/exam-center/catalog',label:'Katalogdan Ekle',icon:BookMarked},
       {to:'/reports',label:'Raporlar',icon:BarChart3},
     ]},
     { label:'OPTİK İŞLEMLERİ', items:[
@@ -186,7 +186,7 @@ export function Layout() {
           const open=openGroups[group.label] ?? activeGroup;
           return <section className={`nav-group ${open?'open':''}`} key={group.label}>
             <button type="button" className="nav-group-toggle" aria-expanded={open} onClick={()=>setOpenGroups(current=>({...current,[group.label]:!open}))}><span>{group.label}</span><ChevronRight size={14}/></button>
-            {open && <div className="nav-group-items">{group.items.map((item,index) => { const Icon=item.icon; return <NavLink key={`${group.label}-${item.to}-${index}`} to={item.to} end={item.to==='/' } onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={18}/><span>{item.label}</span></NavLink>; })}</div>}
+            {open && <div className="nav-group-items">{group.items.map((item,index) => { const Icon=item.icon; const exact=item.to==='/'||item.to==='/exam-center'||item.to==='/exam-center/upload'||item.to==='/exam-center/catalog'; return <NavLink key={`${group.label}-${item.to}-${index}`} to={item.to} end={exact} onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={18}/><span>{item.label}</span></NavLink>; })}</div>}
           </section>;
         }) : visibleNav.map((item) => { const Icon=item.icon; return <NavLink key={item.to} to={item.to} end={item.to==='/' } onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}
       </nav>
