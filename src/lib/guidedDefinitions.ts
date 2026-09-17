@@ -59,8 +59,6 @@ export type ExamTemplateSection = {
   questionEnd: number;
   optionCount: 4 | 5;
   wrongDivisor: number;
-  answerKeyOnly?: boolean;
-  optionalGroup?: string;
 };
 
 export type ExamTemplate = {
@@ -74,7 +72,6 @@ export type ExamTemplate = {
   editable?: boolean;
   requiresOutcomes?: boolean;
   outcomeAuthority?: 'MEB' | 'ÖSYM';
-  optionalSections?: ExamTemplateSection[];
 };
 
 export const EXAM_CHOICES: ExamChoice[] = [
@@ -98,21 +95,14 @@ const section = (subjectCode: string, label: string, questionCount: number, wron
   subjectCode, label, questionCount, questionStart: 1, questionEnd: questionCount, optionCount, wrongDivisor,
 });
 
-const optionalAnswerKeySection = (subjectCode: string, label: string, questionCount: number, wrongDivisor: number, optionalGroup: string, optionCount: 4 | 5 = 5): ExamTemplateSection => ({
-  ...section(subjectCode, label, questionCount, wrongDivisor, optionCount),
-  answerKeyOnly: true,
-  optionalGroup,
-});
-
 /**
  * Definition templates only describe the exam envelope. They do not create an
  * answer key and they never define an optical/FMT import format.
  */
 export const EXAM_TEMPLATES: ExamTemplate[] = [
   {
-    key: 'TYT', label: 'TYT Şablonu', description: 'Türkçe 40 · Sosyal 20 · Temel Matematik 40 · Fen 20 · ayrıca 5 seçmeli Felsefe cevap alanı', examType: 'TYT', gradeLevel: 12, scoringCode: 'OSYM_TYT',
+    key: 'TYT', label: 'TYT Şablonu', description: 'Türkçe 40 · Sosyal 20 · Temel Matematik 40 · Fen 20', examType: 'TYT', gradeLevel: 12, scoringCode: 'OSYM_TYT',
     sections: [section('TYT_TUR', 'Türkçe', 40, 4), section('TYT_SOS', 'Sosyal Bilimler', 20, 4), section('TYT_MAT', 'Temel Matematik', 40, 4), section('TYT_FEN', 'Fen Bilimleri', 20, 4)],
-    optionalSections: [optionalAnswerKeySection('TYT_FEL', 'Felsefe (seçmeli)', 5, 4, 'TYT_SOSYAL_SECME')],
   },
   {
     key: 'AYT', label: 'AYT Şablonu', description: 'Matematik, Fen, Edebiyat-Sosyal 1 ve Sosyal Bilimler 2 testleri', examType: 'AYT', gradeLevel: 12, scoringCode: 'OSYM_AYT', editable: true,

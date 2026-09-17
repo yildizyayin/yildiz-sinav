@@ -37,7 +37,3 @@
 /* A reference: Nibiru stays a single blue/cyan glass orb on every surface. */
 .header-nibiru i,.wa-nibiru-avatar{background:radial-gradient(circle at 33% 27%,#fff 0 7%,#9eeeff 15%,#4ad9ff 42%,#1456b8 69%,#061947 100%);box-shadow:0 0 0 2px rgba(98,174,255,.2),0 0 16px rgba(74,190,255,.7)}
 .nibiru-video-advice{background:linear-gradient(115deg,#12285b,#0d4d9e)}
-
-/* A reference: keep all Nibiru conversation controls blue/cyan. */
-.ask-nibiru{border-color:rgba(91,210,255,.35);background:linear-gradient(135deg,rgba(30,122,210,.5),rgba(24,82,181,.42))}
-.conversation-nibiru>div{background:rgba(8,38,91,.9);border-color:rgba(104,224,255,.25)}

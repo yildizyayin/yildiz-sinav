@@ -24,8 +24,8 @@ const parser = {
 
 const camera = {
   regions: [
-    { id: 'student-number', type: 'bubble-grid', purpose: 'student-number', positions: 5, xMm: 10, yMm: 20, widthMm: 40, heightMm: 50 },
-    { id: 'answers', type: 'answers', purpose: 'answers', subjectCode: 'MAT', questionCount: 20, options: ['A', 'B', 'C', 'D', 'E'], xMm: 60, yMm: 30, widthMm: 120, heightMm: 220 },
+    { id: 'student-number', type: 'bubble-grid', xMm: 10, yMm: 20, widthMm: 40, heightMm: 50 },
+    { id: 'answers', type: 'answers', xMm: 60, yMm: 30, widthMm: 120, heightMm: 220 },
   ],
 };
 
@@ -86,21 +86,4 @@ describe('optical definition validation', () => {
     const after = definitionReadiness({ parser, camera, print, fiducials, pageWidthMm: 210, pageHeightMm: 297, parserTestPassed: true });
     expect(after.ready).toBe(true);
   });
-  it('rejects a drawn answer rectangle without executable question metadata', () => {
-    const result = validateCameraGeometry({ regions: [{ id: 'answers', type: 'answers', purpose: 'answers', subjectCode: 'MAT', xMm: 10, yMm: 10, widthMm: 100, heightMm: 100 }] }, 210, 297);
-    expect(result.valid).toBe(false);
-    expect(result.errors.some((x) => x.includes('questionCount'))).toBe(true);
-  });
-
-  it('requires explicit identity metadata for student number and booklet regions', () => {
-    const result = validateCameraGeometry({
-      regions: [
-        { id: 'answers', type: 'answers', purpose: 'answers', subjectCode: 'MAT', questionCount: 10, options: ['A', 'B', 'C', 'D'], xMm: 10, yMm: 10, widthMm: 100, heightMm: 100 },
-        { id: 'booklet', type: 'bubble-grid', purpose: 'booklet', positions: 2, values: ['A', 'B'], xMm: 10, yMm: 120, widthMm: 40, heightMm: 20 },
-      ],
-    }, 210, 297);
-    expect(result.valid).toBe(false);
-    expect(result.errors.some((x) => x.includes('kitapçık'))).toBe(true);
-  });
-
 });

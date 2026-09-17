@@ -30,7 +30,3 @@
 .nibiru-copy h2 em{color:#8eeaff}
 .ask-nibiru{border-color:rgba(91,210,255,.35);background:linear-gradient(135deg,rgba(30,122,210,.5),rgba(24,82,181,.42))}
 .conversation-nibiru>div{background:rgba(8,38,91,.9);border-color:rgba(104,224,255,.25)}
-
-/* A reference: remove legacy violet from live Nibiru conversation surfaces. */
-.live-signal{border-color:rgba(104,224,255,.25);background:rgba(9,42,95,.42);color:#c7edff}
-.nibiru-conversation{border-color:rgba(104,224,255,.18)}
