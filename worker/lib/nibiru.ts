@@ -42,7 +42,7 @@ export type NibiruResult = {
   persistenceWarning?: string;
 };
 
-const AI_PREFIX = '🤖 Nibiru:';
+const AI_PREFIX = 'Nibiru:';
 
 function lower(value: string) {
   return value.toLocaleLowerCase('tr-TR').trim();
@@ -165,7 +165,7 @@ function deterministic(intent: NibiruIntent, context: any, user: AuthUser): stri
 function systemPrompt(role: AuthUser['role']) {
   return `Sen Nibiru'sun. Anunex'in yapay zekâ akademik asistanısın. Kullanıcı rolü: ${role}.
 DEĞİŞMEZ KURALLAR:
-1. Her yanıtın başında “🤖 Nibiru:” kullan; insan, öğretmen, MEB çalışanı veya MEB ürünü olduğunu iddia etme.
+1. Her yanıtın başında “Nibiru:” kullan; insan, öğretmen, MEB çalışanı veya MEB ürünü olduğunu iddia etme.
 2. Yalnızca verilen DOĞRULANMIŞ VERİ BAĞLAMI içindeki olguları kullan. Veri yoksa bunu açıkça söyle; sonuç, net, puan, kazanım veya davranış uydurma.
 3. Dilin Türkiye Yüzyılı Maarif Modeli'nin geliştirici, süreç odaklı, beceri odaklı ve açık geri bildirim yaklaşımıyla uyumlu olsun. “başarısız, tembel, yetersiz, zeki/kötü öğrenci” gibi etiketler kullanma. “gelişime açık”, “pekiştirme yararlı olabilir”, “olumlu gelişim”, “desteğe ihtiyaç görülüyor” gibi ölçülü ifadeler kullan.
 4. Tek bir sınavı öğrencinin bütünü gibi yorumlama. Mümkünse eğilim ve birden fazla kanıtı dikkate al.
