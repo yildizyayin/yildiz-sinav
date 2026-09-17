@@ -1,4 +1,13 @@
 export type SubjectOption = { id: string; code: string; name: string };
+export type OutcomeReference = {
+  code?: string;
+  title?: string;
+  unit?: string;
+  topic?: string;
+  subtopic?: string;
+  parentCode?: string;
+};
+export type OutcomeCatalogEntry = { id: string; subject_id: string; code?: string | null; title?: string | null; topic?: string | null; subtopic?: string | null; official?: number | boolean; verified?: number | boolean };
 export type ParsedAnswerEntry = {
   subjectId: string;
   bookletCode: string;
@@ -6,6 +15,7 @@ export type ParsedAnswerEntry = {
   optionCount?: 4 | 5;
   acceptedAnswers?: Array<string | string[]>;
   questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>;
+  outcomeRefs?: Array<OutcomeReference | null>;
 };
 export type ParsedAnswerKey = {
   entries: ParsedAnswerEntry[];
@@ -52,6 +62,8 @@ export type ExamTemplate = {
   scoringCode: string;
   sections: ExamTemplateSection[];
   editable?: boolean;
+  requiresOutcomes?: boolean;
+  outcomeAuthority?: 'MEB' | 'ÖSYM';
 };
 
 export const EXAM_CHOICES: ExamChoice[] = [
@@ -103,6 +115,32 @@ export const EXAM_TEMPLATES: ExamTemplate[] = [
   { key: 'CUSTOM', label: 'Özel Sınav', description: 'Ders, soru aralığı, şık sayısı ve puanlama kurum standardına göre tanımlanır.', examType: 'CUSTOM', gradeLevel: 0, scoringCode: 'CUSTOM_EXAM', sections: [], editable: true },
 ];
 
+// These variants are deliberately separate from the ordinary templates: a
+// qualified key must be matched against a verified official catalog before it
+// can be published. The question envelope and scoring profile stay identical.
+const officialTemplate = (baseKey: string, key: string, authority: 'MEB' | 'ÖSYM'): ExamTemplate => {
+  const base = EXAM_TEMPLATES.find((template) => template.key === baseKey);
+  if (!base) throw new Error(`Template not found: ${baseKey}`);
+  return {
+    ...base,
+    key,
+    label: `${base.label} · ${authority} Kazanımlı`,
+    description: `${base.description} · ${authority} doğrulanmış kazanım kodlarıyla`,
+    requiresOutcomes: true,
+    outcomeAuthority: authority,
+  };
+};
+
+EXAM_TEMPLATES.push(
+  officialTemplate('TYT', 'TYT_OUTCOME', 'ÖSYM'),
+  officialTemplate('AYT', 'AYT_OUTCOME', 'ÖSYM'),
+  officialTemplate('YDT', 'YDT_OUTCOME', 'ÖSYM'),
+  officialTemplate('LGS', 'LGS_OUTCOME', 'MEB'),
+  officialTemplate('SCHOOL_5', 'SCHOOL_5_OUTCOME', 'MEB'),
+  officialTemplate('SCHOOL_6', 'SCHOOL_6_OUTCOME', 'MEB'),
+  officialTemplate('SCHOOL_7', 'SCHOOL_7_OUTCOME', 'MEB'),
+);
+
 export function cleanAnswers(value: string): string {
   return value.toLocaleUpperCase('tr-TR').replace(/[^ABCDE]/g, '');
 }
@@ -119,6 +157,33 @@ function norm(value: string): string {
     .replace(/Ö/g, 'O')
     .replace(/Ç/g, 'C')
     .replace(/[^A-Z0-9]/g, '');
+}
+
+export function normalizeCatalogText(value: string | null | undefined): string {
+  return norm(String(value || ''));
+}
+
+export function matchOfficialOutcome(reference: OutcomeReference | null | undefined, subjectId: string, catalog: OutcomeCatalogEntry[]): { outcomeId?: string; reason: 'CODE' | 'TITLE' | 'AMBIGUOUS' | 'MISSING' | 'UNVERIFIED' } {
+  if (!reference) return { reason: 'MISSING' };
+  const candidates = catalog.filter((outcome) => outcome.subject_id === subjectId);
+  const verified = candidates.filter((outcome) => Number(outcome.official) === 1 && Number(outcome.verified) === 1);
+  if (!verified.length) return { reason: 'UNVERIFIED' };
+  if (reference.code) {
+    const allByCode = candidates.filter((outcome) => normalizeCatalogText(outcome.code) === normalizeCatalogText(reference.code));
+    const byCode = verified.filter((outcome) => normalizeCatalogText(outcome.code) === normalizeCatalogText(reference.code));
+    if (byCode.length === 1) return { outcomeId: byCode[0].id, reason: 'CODE' };
+    if (byCode.length > 1) return { reason: 'AMBIGUOUS' };
+    if (allByCode.length) return { reason: 'UNVERIFIED' };
+  }
+  if (reference.title) {
+    const title = normalizeCatalogText(reference.title);
+    const byTitle = verified.filter((outcome) => normalizeCatalogText(outcome.title) === title
+      && (!reference.topic || normalizeCatalogText(outcome.topic) === normalizeCatalogText(reference.topic))
+      && (!reference.subtopic || normalizeCatalogText(outcome.subtopic) === normalizeCatalogText(reference.subtopic)));
+    if (byTitle.length === 1) return { outcomeId: byTitle[0].id, reason: 'TITLE' };
+    if (byTitle.length > 1) return { reason: 'AMBIGUOUS' };
+  }
+  return { reason: 'MISSING' };
 }
 
 function subjectForToken(token: string, subjects: SubjectOption[]): SubjectOption | undefined {
@@ -172,7 +237,13 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
     const optionColumn = tableHeaderIndex(tableHeaders, ['SIKSAYISI', 'OPTIONCOUNT', 'OPTIONS']);
     const acceptedColumn = tableHeaderIndex(tableHeaders, ['KABULEDILENCEVAPLAR', 'ACCEPTEDANSWERS', 'ALTERNATIFCEVAP']);
     const statusColumn = tableHeaderIndex(tableHeaders, ['DURUM', 'STATUS', 'QUESTIONSTATUS']);
-    const grouped = new Map<string, { subject: SubjectOption; booklet: string; answers: Map<number, string>; accepted: Map<number, string[]>; statuses: Map<number, 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>; optionCount: 4 | 5 }>();
+    const outcomeCodeColumn = tableHeaderIndex(tableHeaders, ['KAZANIMKODU', 'OUTCOMECODE', 'OGRENMECIKTISIKODU']);
+    const outcomeTitleColumn = tableHeaderIndex(tableHeaders, ['KAZANIM', 'KAZANIMACIKLAMASI', 'OUTCOME', 'OUTCOMETITLE', 'OGRENMECIKTISI', 'OGRENMECIKTISIACIKLAMASI']);
+    const unitColumn = tableHeaderIndex(tableHeaders, ['UNIT', 'ÜNITE', 'UNITE']);
+    const topicColumn = tableHeaderIndex(tableHeaders, ['KONU', 'TOPIC']);
+    const subtopicColumn = tableHeaderIndex(tableHeaders, ['ALTKONU', 'ALTKONU', 'SUBTOPIC', 'ALTKAZANIM']);
+    const parentCodeColumn = tableHeaderIndex(tableHeaders, ['PARENTCODE', 'USTKAZANIMKODU', 'ÜSTKAZANIMKODU', 'ALTKAZANIMKODU']);
+    const grouped = new Map<string, { subject: SubjectOption; booklet: string; answers: Map<number, string>; accepted: Map<number, string[]>; statuses: Map<number, 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>; outcomes: Map<number, OutcomeReference>; optionCount: 4 | 5 }>();
     for (const line of lines.slice(1)) {
       const cells = splitDelimitedLine(line);
       const subject = subjectForToken(cells[subjectColumn] || '', subjects);
@@ -182,12 +253,21 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
       const booklet = String(bookletColumn >= 0 ? cells[bookletColumn] || defaultBooklet : defaultBooklet).trim().toUpperCase() || defaultBooklet.toUpperCase();
       const optionCount = Number(cells[optionColumn] || 5) === 4 ? 4 : 5;
       const key = `${subject.id}::${booklet}`;
-      const group = grouped.get(key) || { subject, booklet, answers: new Map(), accepted: new Map(), statuses: new Map(), optionCount };
+      const group = grouped.get(key) || { subject, booklet, answers: new Map(), accepted: new Map(), statuses: new Map(), outcomes: new Map(), optionCount };
       group.answers.set(questionNo, answer);
       const alternatives = String(acceptedColumn >= 0 ? cells[acceptedColumn] || answer : answer).split(/[|/,]/).map((x) => cleanAnswers(x).slice(0, 1)).filter(Boolean);
       group.accepted.set(questionNo, [...new Set(alternatives)]);
       const statusValue = norm(statusColumn >= 0 ? cells[statusColumn] || '' : 'ACTIVE');
       group.statuses.set(questionNo, statusValue === 'CANCELLED' || statusValue === 'IPTAL' ? 'CANCELLED' : statusValue === 'EXCLUDED' || statusValue === 'DEGERLENDIRMEDISI' ? 'EXCLUDED' : 'ACTIVE');
+      const outcome = {
+        code: String(outcomeCodeColumn >= 0 ? cells[outcomeCodeColumn] || '' : '').trim() || undefined,
+        title: String(outcomeTitleColumn >= 0 ? cells[outcomeTitleColumn] || '' : '').trim() || undefined,
+        unit: String(unitColumn >= 0 ? cells[unitColumn] || '' : '').trim() || undefined,
+        topic: String(topicColumn >= 0 ? cells[topicColumn] || '' : '').trim() || undefined,
+        subtopic: String(subtopicColumn >= 0 ? cells[subtopicColumn] || '' : '').trim() || undefined,
+        parentCode: String(parentCodeColumn >= 0 ? cells[parentCodeColumn] || '' : '').trim() || undefined,
+      };
+      if (outcome.code || outcome.title || outcome.topic || outcome.subtopic) group.outcomes.set(questionNo, outcome);
       grouped.set(key, group);
       questionCounts[subject.id] = Math.max(questionCounts[subject.id] || 0, questionNo);
       if (!detectedBooklets.includes(booklet)) detectedBooklets.push(booklet);
@@ -199,7 +279,7 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
       questionStarts[group.subject.id] = Math.min(questionStarts[group.subject.id] || start, start);
       questionCounts[group.subject.id] = end - start + 1;
       const answers = Array.from({ length: end - start + 1 }, (_, index) => group.answers.get(start + index) || '').join('');
-      entries.push({ subjectId: group.subject.id, bookletCode: group.booklet, answers, optionCount: group.optionCount, acceptedAnswers: Array.from({ length: end - start + 1 }, (_, index) => group.accepted.get(start + index) || [answers[index]]), questionStatuses: Array.from({ length: end - start + 1 }, (_, index) => group.statuses.get(start + index) || 'ACTIVE') });
+      entries.push({ subjectId: group.subject.id, bookletCode: group.booklet, answers, optionCount: group.optionCount, acceptedAnswers: Array.from({ length: end - start + 1 }, (_, index) => group.accepted.get(start + index) || [answers[index]]), questionStatuses: Array.from({ length: end - start + 1 }, (_, index) => group.statuses.get(start + index) || 'ACTIVE'), outcomeRefs: Array.from({ length: end - start + 1 }, (_, index) => group.outcomes.get(start + index) || null) });
     }
     return { entries, questionCounts, questionStarts, unknownLines, detectedBooklets };
   }
