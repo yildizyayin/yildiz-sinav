@@ -1,0 +1,2429 @@
+{
+  "schemaVersion": 1,
+  "exams": [
+    {
+      "id": "cap",
+      "publisher": "ÇAP Yayınları",
+      "title": "TYT ÇAP Deneme Sınavı - 0",
+      "academicYear": "2026-2027",
+      "examType": "TYT",
+      "gradeLevel": 12,
+      "sourceExamId": "7661",
+      "sourceNotice": "Kullanıcı tarafından sağlanan kazanımlı cevap anahtarı; orijinal yayınevi etiketi korunur, MEB eşleştirmesi ayrıca doğrulanır.",
+      "questions": [
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 1,
+          "bQuestion": 4,
+          "answer": "D",
+          "publisherOutcomeCode": "21.1.1",
+          "outcomePath": [
+            "Sözcükte Anlam"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 2,
+          "bQuestion": 3,
+          "answer": "B",
+          "publisherOutcomeCode": "21.1.1",
+          "outcomePath": [
+            "Sözcükte Anlam"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 3,
+          "bQuestion": 2,
+          "answer": "A",
+          "publisherOutcomeCode": "21.1.4",
+          "outcomePath": [
+            "Söz Öbeklerinde Anlam"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 4,
+          "bQuestion": 1,
+          "answer": "B",
+          "publisherOutcomeCode": "21.1.2",
+          "outcomePath": [
+            "Metne Sözcük Yerleştirme"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 5,
+          "bQuestion": 6,
+          "answer": "C",
+          "publisherOutcomeCode": "21.2.3",
+          "outcomePath": [
+            "Parçadaki Cümlelerin İçerik ve Özellikleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 6,
+          "bQuestion": 5,
+          "answer": "A",
+          "publisherOutcomeCode": "21.2.6",
+          "outcomePath": [
+            "İki Cümleyi Birleştirme"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 7,
+          "bQuestion": 11,
+          "answer": "A",
+          "publisherOutcomeCode": "21.1.1",
+          "outcomePath": [
+            "Sözcükte Anlam"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 8,
+          "bQuestion": 10,
+          "answer": "D",
+          "publisherOutcomeCode": "21.15.6",
+          "outcomePath": [
+            "Cümlenin Ögeleri - Karma"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 9,
+          "bQuestion": 9,
+          "answer": "A",
+          "publisherOutcomeCode": "21.13.1",
+          "outcomePath": [
+            "İsim-Fiiller"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 10,
+          "bQuestion": 8,
+          "answer": "A",
+          "publisherOutcomeCode": "21.9.2",
+          "outcomePath": [
+            "Ekler ve Ek Çeşitleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 11,
+          "bQuestion": 7,
+          "answer": "C",
+          "publisherOutcomeCode": "21.7.2",
+          "outcomePath": [
+            "Büyük Harflerin Yazılışı"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 12,
+          "bQuestion": 15,
+          "answer": "E",
+          "publisherOutcomeCode": "21.7.5",
+          "outcomePath": [
+            "Bitişik ve Ayrı Yazılan Kelimeler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 13,
+          "bQuestion": 14,
+          "answer": "D",
+          "publisherOutcomeCode": "21.8.2",
+          "outcomePath": [
+            "Virgül"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 14,
+          "bQuestion": 13,
+          "answer": "C",
+          "publisherOutcomeCode": "21.8.12",
+          "outcomePath": [
+            "Noktalama İşaretleri - Karma"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 15,
+          "bQuestion": 12,
+          "answer": "E",
+          "publisherOutcomeCode": "21.5.1",
+          "outcomePath": [
+            "Paragrafta Ana Düşünce (Ana Fikir)"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 16,
+          "bQuestion": 18,
+          "answer": "D",
+          "publisherOutcomeCode": "21.4.3",
+          "outcomePath": [
+            "Paragrafta Anlatım Akışını Bozan Cümle"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 17,
+          "bQuestion": 17,
+          "answer": "B",
+          "publisherOutcomeCode": "21.4.1",
+          "outcomePath": [
+            "Paragrafı İkiye Ayırma"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 18,
+          "bQuestion": 16,
+          "answer": "A",
+          "publisherOutcomeCode": "21.4.2",
+          "outcomePath": [
+            "Paragrafta Boş Bırakılan Yerleri Tamamlama"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 19,
+          "bQuestion": 21,
+          "answer": "E",
+          "publisherOutcomeCode": "21.4.2",
+          "outcomePath": [
+            "Paragrafta Boş Bırakılan Yerleri Tamamlama"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 20,
+          "bQuestion": 20,
+          "answer": "A",
+          "publisherOutcomeCode": "21.5.1",
+          "outcomePath": [
+            "Paragrafta Ana Düşünce (Ana Fikir)"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 21,
+          "bQuestion": 19,
+          "answer": "B",
+          "publisherOutcomeCode": "21.5.1",
+          "outcomePath": [
+            "Paragrafta Ana Düşünce (Ana Fikir)"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 22,
+          "bQuestion": 23,
+          "answer": "E",
+          "publisherOutcomeCode": "21.5.1",
+          "outcomePath": [
+            "Paragrafta Ana Düşünce (Ana Fikir)"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 23,
+          "bQuestion": 22,
+          "answer": "D",
+          "publisherOutcomeCode": "21.5.9",
+          "outcomePath": [
+            "Diyalogta Boş Bırakılan Yerleri Tamamlama"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 24,
+          "bQuestion": 26,
+          "answer": "A",
+          "publisherOutcomeCode": "21.5.1",
+          "outcomePath": [
+            "Paragrafta Ana Düşünce (Ana Fikir)"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 25,
+          "bQuestion": 25,
+          "answer": "B",
+          "publisherOutcomeCode": "21.5.1",
+          "outcomePath": [
+            "Paragrafta Ana Düşünce (Ana Fikir)"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 26,
+          "bQuestion": 24,
+          "answer": "A",
+          "publisherOutcomeCode": "21.5.1",
+          "outcomePath": [
+            "Paragrafta Ana Düşünce (Ana Fikir)"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 27,
+          "bQuestion": 30,
+          "answer": "D",
+          "publisherOutcomeCode": "21.5.2",
+          "outcomePath": [
+            "Paragrafta Yardımcı Düşünceler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 28,
+          "bQuestion": 29,
+          "answer": "E",
+          "publisherOutcomeCode": "21.5.2",
+          "outcomePath": [
+            "Paragrafta Yardımcı Düşünceler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 29,
+          "bQuestion": 28,
+          "answer": "D",
+          "publisherOutcomeCode": "21.5.2",
+          "outcomePath": [
+            "Paragrafta Yardımcı Düşünceler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 30,
+          "bQuestion": 27,
+          "answer": "C",
+          "publisherOutcomeCode": "21.5.2",
+          "outcomePath": [
+            "Paragrafta Yardımcı Düşünceler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 31,
+          "bQuestion": 33,
+          "answer": "D",
+          "publisherOutcomeCode": "21.5.2",
+          "outcomePath": [
+            "Paragrafta Yardımcı Düşünceler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 32,
+          "bQuestion": 32,
+          "answer": "E",
+          "publisherOutcomeCode": "21.5.2",
+          "outcomePath": [
+            "Paragrafta Yardımcı Düşünceler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 33,
+          "bQuestion": 31,
+          "answer": "E",
+          "publisherOutcomeCode": "21.5.2",
+          "outcomePath": [
+            "Paragrafta Yardımcı Düşünceler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 34,
+          "bQuestion": 34,
+          "answer": "E",
+          "publisherOutcomeCode": "21.5.4",
+          "outcomePath": [
+            "Paragrafın Yorumlanması"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 35,
+          "bQuestion": 35,
+          "answer": "D",
+          "publisherOutcomeCode": "21.5.11",
+          "outcomePath": [
+            "Bir Paragrafa Bağlı Çoklu Sorular"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 36,
+          "bQuestion": 36,
+          "answer": "A",
+          "publisherOutcomeCode": "21.5.11",
+          "outcomePath": [
+            "Bir Paragrafa Bağlı Çoklu Sorular"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 37,
+          "bQuestion": 37,
+          "answer": "C",
+          "publisherOutcomeCode": "21.5.11",
+          "outcomePath": [
+            "Bir Paragrafa Bağlı Çoklu Sorular"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 38,
+          "bQuestion": 38,
+          "answer": "A",
+          "publisherOutcomeCode": "21.5.11",
+          "outcomePath": [
+            "Bir Paragrafa Bağlı Çoklu Sorular"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 39,
+          "bQuestion": 39,
+          "answer": "B",
+          "publisherOutcomeCode": "21.5.11",
+          "outcomePath": [
+            "Bir Paragrafa Bağlı Çoklu Sorular"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 40,
+          "bQuestion": 40,
+          "answer": "D",
+          "publisherOutcomeCode": "21.5.11",
+          "outcomePath": [
+            "Bir Paragrafa Bağlı Çoklu Sorular"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Tarih-1",
+          "aQuestion": 1,
+          "bQuestion": 4,
+          "answer": "D",
+          "publisherOutcomeCode": "9.4.1.2",
+          "outcomePath": [
+            "İslamiyet öncesi dönemde Türklerin yaşadığı coğrafyalar ile hayat tarzları arasındaki ilişkiyi analiz eder."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Tarih-1",
+          "aQuestion": 2,
+          "bQuestion": 3,
+          "answer": "B",
+          "publisherOutcomeCode": "9.5.1.2",
+          "outcomePath": [
+            "Hz. Muhammed (s.a.v.) ve Dört Halife Dönemi’nde Müslümanların Arap Yarımadası ve çevresinde siyasi hâkimiyet kurmaya yönelik faaliyetlerini analiz eder."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Tarih-1",
+          "aQuestion": 3,
+          "bQuestion": 2,
+          "answer": "C",
+          "publisherOutcomeCode": "10.2.1.1",
+          "outcomePath": [
+            "1302-1453 yılları arasındaki süreçte meydana gelen başlıca siyasi gelişmeleri tarih şeridi ve haritalar üzerinde gösterir."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Tarih-1",
+          "aQuestion": 4,
+          "bQuestion": 1,
+          "answer": "E",
+          "publisherOutcomeCode": "12.2.1.2",
+          "outcomePath": [
+            "Büyük Millet Meclisinin açılış sürecini ve sonrasında meydana gelen gelişmeleri kavrar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Tarih-1",
+          "aQuestion": 5,
+          "bQuestion": 5,
+          "answer": "D",
+          "publisherOutcomeCode": "12.3.1.1",
+          "outcomePath": [
+            "Çağdaşlaşan Türkiye'nin temeli olan Atatürk ilkelerini kavrar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Coğrafya-1",
+          "aQuestion": 6,
+          "bQuestion": 9,
+          "answer": "B",
+          "publisherOutcomeCode": "21.1.3.4",
+          "outcomePath": [
+            "Konum, Türkiye'nin Coğrafi Konumu"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Coğrafya-1",
+          "aQuestion": 7,
+          "bQuestion": 7,
+          "answer": "A",
+          "publisherOutcomeCode": "21.1.4.1",
+          "outcomePath": [
+            "Haritalarda Temel Kavramlar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Coğrafya-1",
+          "aQuestion": 8,
+          "bQuestion": 8,
+          "answer": "C",
+          "publisherOutcomeCode": "21.5.1.8",
+          "outcomePath": [
+            "Türkiye'de Başlıca Yüzey Şekilleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Coğrafya-1",
+          "aQuestion": 9,
+          "bQuestion": 6,
+          "answer": "E",
+          "publisherOutcomeCode": "21.8.1.2",
+          "outcomePath": [
+            "Afetlerin Dağılışı ve Afetlerden Korunma Yolları"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Coğrafya-1",
+          "aQuestion": 10,
+          "bQuestion": 10,
+          "answer": "B",
+          "publisherOutcomeCode": "21.6.1.4",
+          "outcomePath": [
+            "Nüfus Piramitleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Felsefe",
+          "aQuestion": 11,
+          "bQuestion": 11,
+          "answer": "B",
+          "publisherOutcomeCode": "21.3.4",
+          "outcomePath": [
+            "Ahlak Felsefesi"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Felsefe",
+          "aQuestion": 12,
+          "bQuestion": 12,
+          "answer": "A",
+          "publisherOutcomeCode": "21.1.2",
+          "outcomePath": [
+            "Felsefi Düşünce"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Felsefe",
+          "aQuestion": 13,
+          "bQuestion": 15,
+          "answer": "C",
+          "publisherOutcomeCode": "21.3.1",
+          "outcomePath": [
+            "Varlık Felsefesi"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Felsefe",
+          "aQuestion": 14,
+          "bQuestion": 14,
+          "answer": "B",
+          "publisherOutcomeCode": "21.6.2",
+          "outcomePath": [
+            "MS 2. Yüzyıl - MS 15. Yüzyıl Felsefesinin Ayırıcı Nitelikleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Felsefe",
+          "aQuestion": 15,
+          "bQuestion": 13,
+          "answer": "A",
+          "publisherOutcomeCode": "21.7.2",
+          "outcomePath": [
+            "15. Yüzyıl - 17. Yüzyıl Felsefesinin Ayırıcı Nitelikleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Din Kül. ve Ahl. Bil.",
+          "aQuestion": 16,
+          "bQuestion": 16,
+          "answer": "C",
+          "publisherOutcomeCode": "21.1.1",
+          "outcomePath": [
+            "Bilgi ve İnanç"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Din Kül. ve Ahl. Bil.",
+          "aQuestion": 17,
+          "bQuestion": 20,
+          "answer": "B",
+          "publisherOutcomeCode": "21.8.1",
+          "outcomePath": [
+            "Din ve Hayat"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Din Kül. ve Ahl. Bil.",
+          "aQuestion": 18,
+          "bQuestion": 19,
+          "answer": "D",
+          "publisherOutcomeCode": "21.11.1",
+          "outcomePath": [
+            "Dünya ve Ahiret"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Din Kül. ve Ahl. Bil.",
+          "aQuestion": 19,
+          "bQuestion": 18,
+          "answer": "E",
+          "publisherOutcomeCode": "21.6.1",
+          "outcomePath": [
+            "Allah İnsan İlişkisi"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Din Kül. ve Ahl. Bil.",
+          "aQuestion": 20,
+          "bQuestion": 17,
+          "answer": "A",
+          "publisherOutcomeCode": "21.5.1",
+          "outcomePath": [
+            "Gönül Coğrafyamız"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Felsefe (Seçmeli)",
+          "aQuestion": 21,
+          "bQuestion": 25,
+          "answer": "E",
+          "publisherOutcomeCode": "21.1.2",
+          "outcomePath": [
+            "Felsefi Düşünce"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Felsefe (Seçmeli)",
+          "aQuestion": 22,
+          "bQuestion": 24,
+          "answer": "D",
+          "publisherOutcomeCode": "21.8.2",
+          "outcomePath": [
+            "18. Yüzyıl - 19. Yüzyıl Felsefesinin Ayırıcı Nitelikleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Felsefe (Seçmeli)",
+          "aQuestion": 23,
+          "bQuestion": 23,
+          "answer": "C",
+          "publisherOutcomeCode": "21.6.2",
+          "outcomePath": [
+            "MS 2. Yüzyıl - MS 15. Yüzyıl Felsefesinin Ayırıcı Nitelikleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Felsefe (Seçmeli)",
+          "aQuestion": 24,
+          "bQuestion": 22,
+          "answer": "A",
+          "publisherOutcomeCode": "21.2.1",
+          "outcomePath": [
+            "Düşünme ve Akıl Yürütmenin Temel Kavramları"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Sosyal",
+          "subject": "Felsefe (Seçmeli)",
+          "aQuestion": 25,
+          "bQuestion": 21,
+          "answer": "A",
+          "publisherOutcomeCode": "21.8.2",
+          "outcomePath": [
+            "18. Yüzyıl - 19. Yüzyıl Felsefesinin Ayırıcı Nitelikleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 1,
+          "bQuestion": 3,
+          "answer": "E",
+          "publisherOutcomeCode": "9.3.5.1",
+          "outcomePath": [
+            "Oran ve orantı kavramlarını kullanarak problemler çözer."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 2,
+          "bQuestion": 2,
+          "answer": "C",
+          "publisherOutcomeCode": "9.3.4",
+          "outcomePath": [
+            "Üslü İfadeler ve Denklemler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 3,
+          "bQuestion": 1,
+          "answer": "A",
+          "publisherOutcomeCode": "9.3.4.2",
+          "outcomePath": [
+            "Köklü ifadeleri içeren denklemleri çözer."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 4,
+          "bQuestion": 7,
+          "answer": "D",
+          "publisherOutcomeCode": "21.3.2",
+          "outcomePath": [
+            "Ondalık Sayılar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 5,
+          "bQuestion": 6,
+          "answer": "B",
+          "publisherOutcomeCode": "9.3.5",
+          "outcomePath": [
+            "Denklemler ve Eşitsizliklerle İlgili Uygulamalar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 6,
+          "bQuestion": 5,
+          "answer": "A",
+          "publisherOutcomeCode": "21.1.5",
+          "outcomePath": [
+            "Asal Sayılar ve Aralarında Asal Sayılar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 7,
+          "bQuestion": 4,
+          "answer": "B",
+          "publisherOutcomeCode": "21.5.3",
+          "outcomePath": [
+            "Mutlak Değerli Eşitsizlikler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 8,
+          "bQuestion": 11,
+          "answer": "D",
+          "publisherOutcomeCode": "9.3.1",
+          "outcomePath": [
+            "Sayı Kümeleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 9,
+          "bQuestion": 10,
+          "answer": "C",
+          "publisherOutcomeCode": "9.3.1",
+          "outcomePath": [
+            "Sayı Kümeleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 10,
+          "bQuestion": 9,
+          "answer": "A",
+          "publisherOutcomeCode": "9.2.2.1",
+          "outcomePath": [
+            "Kümelerde birleşim, kesişim, fark, tümleme işlemleri yardımıyla problemler çözer."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 11,
+          "bQuestion": 8,
+          "answer": "B",
+          "publisherOutcomeCode": "9.1.1.3",
+          "outcomePath": [
+            "Koşullu önermeyi ve iki yönlü koşullu önermeyi açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 12,
+          "bQuestion": 15,
+          "answer": "A",
+          "publisherOutcomeCode": "21.1.5",
+          "outcomePath": [
+            "Asal Sayılar ve Aralarında Asal Sayılar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 13,
+          "bQuestion": 14,
+          "answer": "B",
+          "publisherOutcomeCode": "9.22.1",
+          "outcomePath": [
+            "Gerçek Sayılarda Tanımlı Doğrusal Fonksiyonlar ve Nitel Özellikleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 14,
+          "bQuestion": 13,
+          "answer": "B",
+          "publisherOutcomeCode": "9.3.2",
+          "outcomePath": [
+            "Bölünebilme Kuralları"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 15,
+          "bQuestion": 12,
+          "answer": "A",
+          "publisherOutcomeCode": "21.1.4",
+          "outcomePath": [
+            "Ardışık Sayılar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 16,
+          "bQuestion": 19,
+          "answer": "A",
+          "publisherOutcomeCode": "9.5.1.1",
+          "outcomePath": [
+            "Verileri merkezî eğilim ve yayılım ölçülerini hesaplayarak yorumlar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 17,
+          "bQuestion": 18,
+          "answer": "B",
+          "publisherOutcomeCode": "21.8.1",
+          "outcomePath": [
+            "Oran ve Orantı"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 18,
+          "bQuestion": 17,
+          "answer": "D",
+          "publisherOutcomeCode": "21.8.2",
+          "outcomePath": [
+            "Sayı Problemleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 19,
+          "bQuestion": 16,
+          "answer": "D",
+          "publisherOutcomeCode": "21.8.5",
+          "outcomePath": [
+            "Yüzde, Kar-Zarar Problemleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 20,
+          "bQuestion": 23,
+          "answer": "A",
+          "publisherOutcomeCode": "21.8.3",
+          "outcomePath": [
+            "Kesir Problemleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 21,
+          "bQuestion": 22,
+          "answer": "E",
+          "publisherOutcomeCode": "21.8.4",
+          "outcomePath": [
+            "Yaş Problemleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 22,
+          "bQuestion": 21,
+          "answer": "E",
+          "publisherOutcomeCode": "21.8.8",
+          "outcomePath": [
+            "Hareket Problemleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 23,
+          "bQuestion": 20,
+          "answer": "C",
+          "publisherOutcomeCode": "21.8.10",
+          "outcomePath": [
+            "Rutin Olmayan Problemler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 24,
+          "bQuestion": 27,
+          "answer": "E",
+          "publisherOutcomeCode": "21.11.2",
+          "outcomePath": [
+            "Verilerin Grafikle Gösterilmesi"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 25,
+          "bQuestion": 26,
+          "answer": "E",
+          "publisherOutcomeCode": "21.8.2",
+          "outcomePath": [
+            "Sayı Problemleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 26,
+          "bQuestion": 25,
+          "answer": "A",
+          "publisherOutcomeCode": "21.8.10",
+          "outcomePath": [
+            "Rutin Olmayan Problemler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 27,
+          "bQuestion": 24,
+          "answer": "A",
+          "publisherOutcomeCode": "21.8.10",
+          "outcomePath": [
+            "Rutin Olmayan Problemler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 28,
+          "bQuestion": 30,
+          "answer": "A",
+          "publisherOutcomeCode": "21.8.2",
+          "outcomePath": [
+            "Sayı Problemleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 29,
+          "bQuestion": 29,
+          "answer": "B",
+          "publisherOutcomeCode": "21.12.2",
+          "outcomePath": [
+            "Permütasyon"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Matematik-1",
+          "aQuestion": 30,
+          "bQuestion": 28,
+          "answer": "D",
+          "publisherOutcomeCode": "21.13.1",
+          "outcomePath": [
+            "Basit Olayların Olasılıkları"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Geometri",
+          "aQuestion": 31,
+          "bQuestion": 33,
+          "answer": "D",
+          "publisherOutcomeCode": "21.1.1",
+          "outcomePath": [
+            "Geometrik Kavramlar ve Doğruda Açılar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Geometri",
+          "aQuestion": 32,
+          "bQuestion": 32,
+          "answer": "D",
+          "publisherOutcomeCode": "21.1.2",
+          "outcomePath": [
+            "Üçgende Açılar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Geometri",
+          "aQuestion": 33,
+          "bQuestion": 31,
+          "answer": "C",
+          "publisherOutcomeCode": "21.2.1",
+          "outcomePath": [
+            "Dik Üçgen ve Pisagor Teoremi"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Geometri",
+          "aQuestion": 34,
+          "bQuestion": 35,
+          "answer": "E",
+          "publisherOutcomeCode": "21.4.1",
+          "outcomePath": [
+            "Üçgende Alan"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Geometri",
+          "aQuestion": 35,
+          "bQuestion": 34,
+          "answer": "C",
+          "publisherOutcomeCode": "21.5.6",
+          "outcomePath": [
+            "Dikdörtgen"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Geometri",
+          "aQuestion": 36,
+          "bQuestion": 37,
+          "answer": "C",
+          "publisherOutcomeCode": "21.5.3",
+          "outcomePath": [
+            "Yamuk"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Geometri",
+          "aQuestion": 37,
+          "bQuestion": 36,
+          "answer": "D",
+          "publisherOutcomeCode": "21.5.7",
+          "outcomePath": [
+            "Kare"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Geometri",
+          "aQuestion": 38,
+          "bQuestion": 40,
+          "answer": "B",
+          "publisherOutcomeCode": "21.5.1",
+          "outcomePath": [
+            "Çokgenler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Geometri",
+          "aQuestion": 39,
+          "bQuestion": 39,
+          "answer": "A",
+          "publisherOutcomeCode": "21.7.1",
+          "outcomePath": [
+            "Prizmalar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Matematik",
+          "subject": "Geometri",
+          "aQuestion": 40,
+          "bQuestion": 38,
+          "answer": "D",
+          "publisherOutcomeCode": "21.7.1",
+          "outcomePath": [
+            "Prizmalar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Fizik",
+          "aQuestion": 1,
+          "bQuestion": 2,
+          "answer": "C",
+          "publisherOutcomeCode": "21.1.2",
+          "outcomePath": [
+            "Fiziksel Niceliklerin Sınıflandırılması"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Fizik",
+          "aQuestion": 2,
+          "bQuestion": 1,
+          "answer": "B",
+          "publisherOutcomeCode": "21.3.3",
+          "outcomePath": [
+            "Kaldırma Kuvveti"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Fizik",
+          "aQuestion": 3,
+          "bQuestion": 6,
+          "answer": "C",
+          "publisherOutcomeCode": "21.5.3",
+          "outcomePath": [
+            "İvme"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Fizik",
+          "aQuestion": 4,
+          "bQuestion": 5,
+          "answer": "D",
+          "publisherOutcomeCode": "21.4.1",
+          "outcomePath": [
+            "Isı, Sıcaklık ve İç Enerji"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Fizik",
+          "aQuestion": 5,
+          "bQuestion": 4,
+          "answer": "C",
+          "publisherOutcomeCode": "21.8.4",
+          "outcomePath": [
+            "Elektriksel Güç ve Enerji"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Fizik",
+          "aQuestion": 6,
+          "bQuestion": 3,
+          "answer": "A",
+          "publisherOutcomeCode": "21.9.1",
+          "outcomePath": [
+            "Dalgalarla İlgili Temel Kavramlar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Fizik",
+          "aQuestion": 7,
+          "bQuestion": 7,
+          "answer": "A",
+          "publisherOutcomeCode": "21.10.5",
+          "outcomePath": [
+            "Küresel Aynalar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Kimya",
+          "aQuestion": 8,
+          "bQuestion": 8,
+          "answer": "B",
+          "publisherOutcomeCode": "9.1.4.3",
+          "outcomePath": [
+            "Kimya laboratuvarında kullanılan bazı temel malzemeleri tanır."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Kimya",
+          "aQuestion": 9,
+          "bQuestion": 12,
+          "answer": "B",
+          "publisherOutcomeCode": "9.2.3.3",
+          "outcomePath": [
+            "Periyodik özelliklerin değişme eğilimlerini açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Kimya",
+          "aQuestion": 10,
+          "bQuestion": 11,
+          "answer": "C",
+          "publisherOutcomeCode": "9.3.3",
+          "outcomePath": [
+            "Güçlü Etkileşimler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Kimya",
+          "aQuestion": 11,
+          "bQuestion": 10,
+          "answer": "E",
+          "publisherOutcomeCode": "9.4.2",
+          "outcomePath": [
+            "Katılar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Kimya",
+          "aQuestion": 12,
+          "bQuestion": 9,
+          "answer": "A",
+          "publisherOutcomeCode": "10.1.4",
+          "outcomePath": [
+            "Kimyasal Tepkimelerde Hesaplamalar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Kimya",
+          "aQuestion": 13,
+          "bQuestion": 13,
+          "answer": "D",
+          "publisherOutcomeCode": "10.2.1.4",
+          "outcomePath": [
+            "Çözeltilerin özelliklerini günlük hayattan örneklerle açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Kimya",
+          "aQuestion": 14,
+          "bQuestion": 14,
+          "answer": "D",
+          "publisherOutcomeCode": "10.3.2",
+          "outcomePath": [
+            "Asitlerin ve Bazların Tepkimeleri"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Biyoloji",
+          "aQuestion": 15,
+          "bQuestion": 15,
+          "answer": "B",
+          "publisherOutcomeCode": "21.1.2.4",
+          "outcomePath": [
+            "Organik Bileşikler"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Biyoloji",
+          "aQuestion": 16,
+          "bQuestion": 18,
+          "answer": "D",
+          "publisherOutcomeCode": "21.2.2",
+          "outcomePath": [
+            "Hücrenin Yapısı"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Biyoloji",
+          "aQuestion": 17,
+          "bQuestion": 17,
+          "answer": "C",
+          "publisherOutcomeCode": "21.3.3.4",
+          "outcomePath": [
+            "Hayvanlar"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Biyoloji",
+          "aQuestion": 18,
+          "bQuestion": 16,
+          "answer": "C",
+          "publisherOutcomeCode": "21.4.5",
+          "outcomePath": [
+            "Mitoz - Mayoz Karşılaştırma"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Biyoloji",
+          "aQuestion": 19,
+          "bQuestion": 20,
+          "answer": "A",
+          "publisherOutcomeCode": "21.5.7",
+          "outcomePath": [
+            "Kan Grupları"
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "TYT Fen",
+          "subject": "Biyoloji",
+          "aQuestion": 20,
+          "bQuestion": 19,
+          "answer": "B",
+          "publisherOutcomeCode": "21.6.2",
+          "outcomePath": [
+            "Güncel Çevre Sorunları"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ankara",
+      "publisher": "Ankara Yayınları",
+      "title": "8. Sınıf HBS",
+      "academicYear": "2026-2027",
+      "examType": "LGS",
+      "gradeLevel": 8,
+      "sourceExamId": "10745",
+      "sourceNotice": "Kullanıcı tarafından sağlanan kazanımlı cevap anahtarı; orijinal yayınevi etiketi korunur, MEB eşleştirmesi ayrıca doğrulanır.",
+      "questions": [
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 1,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.3.2.1",
+          "outcomePath": [
+            "Bağlamdan yararlanarak bilmediği kelime ve kelime gruplarının anlamını tahmin eder."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 2,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.4.1.16",
+          "outcomePath": [
+            "Yazdıklarını düzenler."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 3,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.3.2.6",
+          "outcomePath": [
+            "Basit, türemiş ve birleşik fiilleri ayırt eder."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 4,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.3.3.11",
+          "outcomePath": [
+            "Metinde ele alınan sorunlara farklı çözümler üretir."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 5,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.3.3.5",
+          "outcomePath": [
+            "Metindeki yardımcı fikirleri belirler."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 6,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.4.1.16",
+          "outcomePath": [
+            "Yazdıklarını düzenler."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 7,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.3.3.3",
+          "outcomePath": [
+            "Metnin konusunu belirler."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 8,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.3.2.1",
+          "outcomePath": [
+            "Bağlamdan yararlanarak bilmediği kelime ve kelime gruplarının anlamını tahmin eder."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 9,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.3.3.15",
+          "outcomePath": [
+            "Okudukları ile ilgili çıkarımlarda bulunur."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 10,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.3.3.21",
+          "outcomePath": [
+            "Grafik, tablo ve çizelgeyle sunulan bilgileri yorumlar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 11,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.3.3.15",
+          "outcomePath": [
+            "Okudukları ile ilgili çıkarımlarda bulunur."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 12,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.3.3.23",
+          "outcomePath": [
+            "Metindeki anlatım biçimlerini belirler."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 13,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.3.3.25",
+          "outcomePath": [
+            "Metindeki iş ve işlem basamaklarını kavrar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 14,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.3.2.9",
+          "outcomePath": [
+            "Anlatım bozukluklarını tespit eder."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Türkçe",
+          "subject": "Türkçe",
+          "aQuestion": 15,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.3.3.17",
+          "outcomePath": [
+            "Görsellerle ilgili soruları cevaplar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Sosyal Bilgiler",
+          "subject": "SOSYAL BİLGİLER",
+          "aQuestion": 1,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.3.1.3",
+          "outcomePath": [
+            "Örnek incelemeler yoluyla göçün neden ve sonuçlarını tartışır."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Sosyal Bilgiler",
+          "subject": "SOSYAL BİLGİLER",
+          "aQuestion": 2,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.2.1.3",
+          "outcomePath": [
+            "Avrupa'daki gelişmelerle bağlantılı olarak Osmanlı Devleti'ni değişime zorlayan süreçleri kavrar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Sosyal Bilgiler",
+          "subject": "SOSYAL BİLGİLER",
+          "aQuestion": 3,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.1.1.1",
+          "outcomePath": [
+            "İletişimi etkileyen tutum ve davranışları analiz ederek kendi tutum ve davranışlarını sorgular."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Sosyal Bilgiler",
+          "subject": "SOSYAL BİLGİLER",
+          "aQuestion": 4,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.5.1.1",
+          "outcomePath": [
+            "Üretimde ve yönetimde toprağın önemini geçmişten ve günümüzden örneklerle açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Sosyal Bilgiler",
+          "subject": "SOSYAL BİLGİLER",
+          "aQuestion": 5,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.2.1.1",
+          "outcomePath": [
+            "Osmanlı Devleti'nin siyasi güç olarak ortaya çıkış sürecini ve bu süreci etkileyen faktörleri açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Sosyal Bilgiler",
+          "subject": "SOSYAL BİLGİLER",
+          "aQuestion": 6,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.3.1.2",
+          "outcomePath": [
+            "Türkiye'de nüfusun dağılışını etkileyen faktörlerden hareketle Türkiye'nin demografik özelliklerini yorumlar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Sosyal Bilgiler",
+          "subject": "SOSYAL BİLGİLER",
+          "aQuestion": 7,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.7.1.2",
+          "outcomePath": [
+            "Türkiye'nin ilişkide olduğu ekonomik bölge ve kuruluşları tanır."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Sosyal Bilgiler",
+          "subject": "SOSYAL BİLGİLER",
+          "aQuestion": 8,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.6.1.2",
+          "outcomePath": [
+            "Atatürk'ün Türk demokrasisinin gelişimine katkılarını açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Sosyal Bilgiler",
+          "subject": "SOSYAL BİLGİLER",
+          "aQuestion": 9,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.6.1.3",
+          "outcomePath": [
+            "Türkiye Cumhuriyeti Devleti'nin temel niteliklerini toplumsal hayattaki uygulamalarla ilişkilendirir."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Sosyal Bilgiler",
+          "subject": "SOSYAL BİLGİLER",
+          "aQuestion": 10,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.4.1.2",
+          "outcomePath": [
+            "Türk-İslam medeniyetinde yetişen bilginlerin bilimsel gelişme sürecine katkılarını tartışır."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Din Kültürü",
+          "subject": "Din K.ve A.B.",
+          "aQuestion": 1,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.5.1.2",
+          "outcomePath": [
+            "İslam düşüncesinde ortaya çıkan yorum biçimlerini sınıflandırır."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Din Kültürü",
+          "subject": "Din K.ve A.B.",
+          "aQuestion": 2,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.2.1.2",
+          "outcomePath": [
+            "Haccın yapılışını özetler."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Din Kültürü",
+          "subject": "Din K.ve A.B.",
+          "aQuestion": 3,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.1.1.2",
+          "outcomePath": [
+            "Melekleri özellikleri ve görevlerine göre sınıflandırır."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Din Kültürü",
+          "subject": "Din K.ve A.B.",
+          "aQuestion": 4,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.3.1.1",
+          "outcomePath": [
+            "Güzel ahlaki tutum ve davranışları örneklerle açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Din Kültürü",
+          "subject": "Din K.ve A.B.",
+          "aQuestion": 5,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.3.1.5",
+          "outcomePath": [
+            "Felak suresini okur, anlamını söyler."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Din Kültürü",
+          "subject": "Din K.ve A.B.",
+          "aQuestion": 6,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.4.1.2",
+          "outcomePath": [
+            "Hz. Muhammed'in (s.a.v.) peygamberlik yönüyle ilgili özelliklerini ayırt eder."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Din Kültürü",
+          "subject": "Din K.ve A.B.",
+          "aQuestion": 7,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.1.1.4",
+          "outcomePath": [
+            "Ahiret hayatının aşamalarını açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Din Kültürü",
+          "subject": "Din K.ve A.B.",
+          "aQuestion": 8,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.4.1.1",
+          "outcomePath": [
+            "Hz. Muhammed'in (s.a.v.) insani yönünü ayetlerden hareketle yorumlar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Din Kültürü",
+          "subject": "Din K.ve A.B.",
+          "aQuestion": 9,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.2.1.5",
+          "outcomePath": [
+            "Hz. İsmail'in (a.s.) hayatını ana hatlarıyla tanır."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Din Kültürü",
+          "subject": "Din K.ve A.B.",
+          "aQuestion": 10,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.5.1.1",
+          "outcomePath": [
+            "Dinin farklı yorum biçimleri olabileceğinin farkına varır."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "İngilizce",
+          "subject": "İngilizce",
+          "aQuestion": 1,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.5.3.1",
+          "outcomePath": [
+            "Students will be able to state their preferences."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "İngilizce",
+          "subject": "İngilizce",
+          "aQuestion": 2,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.1.2.1",
+          "outcomePath": [
+            "Students will be able to talk about other people's appearances and personalities."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "İngilizce",
+          "subject": "İngilizce",
+          "aQuestion": 3,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.7.4.1",
+          "outcomePath": [
+            "Students will be able to understand short and simple texts about predictions."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "İngilizce",
+          "subject": "İngilizce",
+          "aQuestion": 4,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.2.5.1",
+          "outcomePath": [
+            "Students will be able to write pieces about routines/daily activities by using frequency adverbs."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "İngilizce",
+          "subject": "İngilizce",
+          "aQuestion": 5,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.4.2.1",
+          "outcomePath": [
+            "Students will be able to ask people questions about characteristics of wild animals."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "İngilizce",
+          "subject": "İngilizce",
+          "aQuestion": 6,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.1.1.1",
+          "outcomePath": [
+            "Students will be able to understand clear, standard speech on appearances and personalities."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "İngilizce",
+          "subject": "İngilizce",
+          "aQuestion": 7,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.8.5.1",
+          "outcomePath": [
+            "Students will be able to write pieces about explanations with reasons."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "İngilizce",
+          "subject": "İngilizce",
+          "aQuestion": 8,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.6.4.1",
+          "outcomePath": [
+            "Students will be able to understand texts about celebrations."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "İngilizce",
+          "subject": "İngilizce",
+          "aQuestion": 9,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.9.5.1",
+          "outcomePath": [
+            "Students will be able to write short, simple messages about environment."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "İngilizce",
+          "subject": "İngilizce",
+          "aQuestion": 10,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.3.3.1",
+          "outcomePath": [
+            "Students will be able to describe past events and experiences."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 1,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.1.2.1",
+          "outcomePath": [
+            "Rasyonel sayıları tanır ve sayı doğrusunda gösterir."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 2,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.3.2.1",
+          "outcomePath": [
+            "Düzgün çokgenlerin kenar ve açı özelliklerini açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 3,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.1.3.4",
+          "outcomePath": [
+            "Rasyonel sayıların kare ve küplerini hesaplar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 4,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.2.2.4",
+          "outcomePath": [
+            "Birinci dereceden bir bilinmeyenli denklem kurmayı gerektiren problemleri çözer."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 5,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.1.1.4",
+          "outcomePath": [
+            "Tam sayıların kendileri ile tekrarlı çarpımını üslü nicelik olarak ifade eder."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 6,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.1.5.2",
+          "outcomePath": [
+            "Bir çokluğu diğer bir çokluğun yüzdesi olarak hesaplar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 7,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.3.4.1",
+          "outcomePath": [
+            "Üç boyutlu cisimlerin farklı yönlerden iki boyutlu görünümlerini çizer."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 8,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.4.1.2",
+          "outcomePath": [
+            "Bir veri grubuna ait ortalama, ortanca ve tepe değeri bulur ve yorumlar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 9,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.1.3.3",
+          "outcomePath": [
+            "Rasyonel sayılarla çok adımlı işlemleri yapar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 10,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.3.1.2",
+          "outcomePath": [
+            "İki paralel doğruyla bir keseninin oluşturduğu yöndeş, ters, iç ters, dış ters açıları belirleyerek özelliklerini inceler; oluşan açıların eş veya bütünler olanlarını belirler; ilgili problemleri çözer."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 11,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.3.3.2",
+          "outcomePath": [
+            "Çemberin ve çember parçasının uzunluğunu hesaplar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 12,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.2.1.2",
+          "outcomePath": [
+            "Bir doğal sayı ile bir cebirsel ifadeyi çarpar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 13,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.4.1.4",
+          "outcomePath": [
+            "Verileri sütun, daire veya çizgi grafiği ile gösterir ve bu gösterimler arasında uygun olan dönüşümleri yapar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 14,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.2.1.3",
+          "outcomePath": [
+            "Sayı örüntülerinin kuralını harfle ifade eder, kuralı harfle ifade edilen örüntünün istenilen terimini bulur."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Matematik",
+          "subject": "Matematik",
+          "aQuestion": 15,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.1.4.4",
+          "outcomePath": [
+            "Doğru orantılı iki çokluk arasındaki ilişkiyi ifade eder."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 1,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.1.1.1",
+          "outcomePath": [
+            "Uzay teknolojilerini açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 2,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.4.3.3",
+          "outcomePath": [
+            "Çözünme hızına etki eden faktörleri deney yaparak belirler."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 3,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.5.1.1",
+          "outcomePath": [
+            "Işığın madde ile etkileşimi sonucunda madde tarafından soğurulabileceğini keşfeder."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 4,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.1.2.4.3",
+          "outcomePath": [
+            "Evren kavramını açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 5,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.5.2.2",
+          "outcomePath": [
+            "Düz, çukur ve tümsek aynalarda oluşan görüntüleri karşılaştırır."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 6,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.4.2.1",
+          "outcomePath": [
+            "Saf maddeleri, element ve bileşik olarak sınıflandırarak örnekler verir."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 7,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.6.2.2",
+          "outcomePath": [
+            "Bitki ve hayvanlardaki büyüme ve gelişme süreçlerini örnekler vererek açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 8,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.2.2.2",
+          "outcomePath": [
+            "Mitozun birbirini takip eden farklı evrelerden oluştuğunu açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 9,
+          "bQuestion": 0,
+          "answer": "B",
+          "publisherOutcomeCode": "7.2.3.3",
+          "outcomePath": [
+            "Mayoz ve mitoz arasındaki farkları karşılaştırır."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 10,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.7.1.2",
+          "outcomePath": [
+            "Ampullerin seri ve paralel bağlandığı durumlardaki parlaklıklarını devre üzerinde gözlemleyerek çıkarımda bulunur."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 11,
+          "bQuestion": 0,
+          "answer": "C",
+          "publisherOutcomeCode": "7.3.2.1",
+          "outcomePath": [
+            "Fiziksel anlamda yapılan işin, uygulanan kuvvet ve alınan yolla ilişkili olduğunu açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 12,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.3.1.1",
+          "outcomePath": [
+            "Kütleye etki eden yer çekimi kuvvetini ağırlık olarak adlandırır."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 13,
+          "bQuestion": 0,
+          "answer": "A",
+          "publisherOutcomeCode": "7.5.3.3",
+          "outcomePath": [
+            "İnce ve kalın kenarlı merceklerin odak noktalarını deneyerek belirler."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 14,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.1.2.2",
+          "outcomePath": [
+            "Yıldız kavramını açıklar."
+          ]
+        },
+        {
+          "booklet": "A",
+          "test": "Fen Bilimleri",
+          "subject": "Fen",
+          "aQuestion": 15,
+          "bQuestion": 0,
+          "answer": "D",
+          "publisherOutcomeCode": "7.3.3.1",
+          "outcomePath": [
+            "Kinetik ve potansiyel enerji türlerinin birbirine dönüşümünden hareketle enerjinin korunduğu sonucunu çıkarır."
+          ]
+        }
+      ]
+    }
+  ]
+}

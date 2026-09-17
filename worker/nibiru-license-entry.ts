@@ -1,0 +1,376 @@
+import app from './calibration-v2-entry';
+import type { AuthUser, Env } from './types';
+import { getAuthUser } from './lib/auth';
+import { all, audit, badRequest, forbidden, json, one, uuid } from './lib/db';
+import { activateAnnual, getEffectiveLicense, licenseAccessMessage, setLicenseStatus, startTrial } from './lib/license';
+import { runNibiru } from './lib/nibiru';
+import { nibiruRoutingMatrix, probeNibiruModels } from './lib/nibiru-model-router';
+import { extractWhatsAppMessages, sendWhatsAppText, verifyWhatsAppSignature, whatsappReady } from './lib/whatsapp';
+
+const WHATSAPP_ROLES = new Set(['PARENT','TEACHER','GUIDANCE_TEACHER','INSTITUTION_MANAGER']);
+
+const AI_AGENT_WORKFLOWS = [
+  { key:'monitor', file:'agent-izleyici.yml', name:'İzleyici', description:'Production domain ve subdomain uptime kontrolü', label:'izleyici-ajan', cadence:'Her 15 dakika', tier:'free' },
+  { key:'content', file:'agent-icerik-tarama.yml', name:'İçerik Eksik Tarayıcı', description:'NEEDS_DEFINITION ve CONTENT_REQUIRED işaretlerini tarar', label:'icerik-tarama-ajani', cadence:'Haftalık · Pazartesi', tier:'free' },
+  { key:'load', file:'agent-yuk-testi.yml', name:'Yük Testi', description:'Yalnız staging/demo hedefinde k6 testi çalıştırır', label:'yuk-testi-ajani', cadence:'Haftalık · Çarşamba', tier:'free' },
+  { key:'deployGuard', file:'agent-deploy-dogrulayici.yml', name:'Deploy Doğrulayıcı', description:'Cloudflare zone ve production güvenlik ön koşullarını denetler', label:'—', cadence:'Deploy öncesi / manuel', tier:'free' },
+  { key:'ci', file:'agent-ci-saglik.yml', name:'CI Sağlık', description:'Typecheck, test ve frontend build zincirini doğrular', label:'ci-saglik-ajani', cadence:'Günlük · 02:00 UTC', tier:'free' },
+  { key:'d1', file:'agent-d1-sema.yml', name:'D1 Şema Denetimi', description:'Migration sürümlerini ve yerel D1 uygulamasını kontrol eder', label:'d1-sema-ajani', cadence:'Haftalık · Pazartesi', tier:'free' },
+  { key:'routes', file:'agent-route-denetim.yml', name:'Route/Entry Denetimi', description:'Gerçek Worker entry zinciri ve kritik route referanslarını tarar', label:'route-denetim-ajani', cadence:'Haftalık · Salı', tier:'free' },
+  { key:'tenant', file:'agent-tenant-guvenlik.yml', name:'Tenant Güvenlik Denetimi', description:'Kurum izolasyonu ve yetki sınırı testlerini çalıştırır', label:'tenant-guvenlik-ajani', cadence:'Haftalık · Salı', tier:'free' },
+  { key:'kvkk', file:'agent-kvkk-denetim.yml', name:'KVKK Denetimi', description:'Privacy, redaksiyon ve hassas veri güvenlik testlerini çalıştırır', label:'kvkk-denetim-ajani', cadence:'Haftalık · Çarşamba', tier:'free' },
+  { key:'dependencies', file:'agent-dependency-guvenlik.yml', name:'Bağımlılık Güvenliği', description:'Production npm bağımlılıklarında yüksek riskli açık arar', label:'dependency-guvenlik-ajani', cadence:'Haftalık · Çarşamba', tier:'free' },
+  { key:'frontend', file:'agent-frontend-erisim.yml', name:'Frontend Erişilebilirlik', description:'TSX/JSX img ve input temel erişilebilirlik kontrollerini yapar', label:'frontend-erisim-ajani', cadence:'Haftalık · Perşembe', tier:'free' },
+  { key:'api', file:'agent-api-saglik.yml', name:'API Sağlık Kontrolü', description:'app, demo ve sonuc public health endpointlerini GET ile denetler', label:'api-saglik-ajani', cadence:'Her 30 dakika', tier:'free' },
+  { key:'demo', file:'agent-demo-veri.yml', name:'Demo Veri İdempotensi', description:'Sentetik demo seed üretimini ve yerel tekrar çalışmayı doğrular', label:'demo-veri-ajani', cadence:'Haftalık · Perşembe', tier:'free' },
+  { key:'contentQuality', file:'agent-icerik-kalite.yml', name:'İçerik Kalitesi', description:'Eksik veya insan doğrulaması bekleyen içerik işaretlerini raporlar', label:'icerik-kalite-ajani', cadence:'Haftalık · Pazartesi', tier:'free' },
+  { key:'performance', file:'agent-performans.yml', name:'Hafif Performans', description:'Beş public domain üzerinde düşük hacimli GET sürelerini ölçer', label:'performans-ajani', cadence:'Her saat', tier:'free' },
+  { key:'release', file:'agent-release-hazirlik.yml', name:'Release Hazırlık', description:'Production release checklist ve çözülmemiş placeholder ayarlarını kontrol eder', label:'release-hazirlik-ajani', cadence:'Haftalık · Cuma', tier:'free' },
+  { key:'dedupe', file:'agent-issue-tekillestirme.yml', name:'Issue Tekilleştirme', description:'Ajanların açtığı açık Issue tekrarlarını bulur', label:'issue-tekillestirme-ajani', cadence:'Hafta içi günlük', tier:'free' },
+  { key:'status', file:'agent-durum-raporu.yml', name:'AI Ekip Durum Raporu', description:'Ajan workflow ve son çalışma özetini tek raporda toplar', label:'ajan-durum-raporu', cadence:'Günlük · 09:00 UTC', tier:'free' },
+  { key:'triage', file:'agent-triyaj.yml', name:'Triyaj', description:'Yeni Issue kayıtlarını sınıflandırır', label:'—', cadence:'Issue açıldığında', tier:'paid', paused:true },
+  { key:'code', file:'agent-kod-yazici.yml', name:'Kod Yazıcı', description:'Düşük riskli fix için PR önerisi üretir', label:'ajan-fix-dene', cadence:'Etiketlendiğinde', tier:'paid', paused:true },
+] as const;
+
+function githubAgentRepo(env:Env){
+  const candidate=env.GITHUB_AGENT_REPO?.trim()||'yildizyayin/yildiz-sinav';
+  return candidate==='yildizyayin/yildiz-sinav'?candidate:'yildizyayin/yildiz-sinav';
+}
+
+async function githubAgentRequest<T>(env:Env,path:string,init:RequestInit={}):Promise<T>{
+  if(!env.GITHUB_AGENT_TOKEN)throw new Error('GITHUB_AGENT_TOKEN Cloudflare Secret olarak tanımlı değil.');
+  const headers=new Headers(init.headers||{});
+  headers.set('Accept','application/vnd.github+json');
+  headers.set('X-GitHub-Api-Version','2022-11-28');
+  headers.set('User-Agent','yildiz-sinav-ai-agent-center');
+  headers.set('Authorization',`Bearer ${env.GITHUB_AGENT_TOKEN}`);
+  const response=await fetch(`https://api.github.com/repos/${githubAgentRepo(env)}/${path}`,{...init,headers});
+  const text=await response.text();
+  let payload:any=null;try{payload=text?JSON.parse(text):null}catch{}
+  if(!response.ok)throw new Error(`GitHub API ${response.status}: ${payload?.message||'İstek başarısız.'}`);
+  return payload as T;
+}
+
+function agentActionsUrl(env:Env,file:string){return `https://github.com/${githubAgentRepo(env)}/actions/workflows/${file}`}
+
+async function ensureAgentLabel(env:Env,name:string,color:string,description:string){
+  const payload={name,color,description};
+  try{
+    await githubAgentRequest(env,'issues/labels',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  }catch(error){
+    if(!(error instanceof Error)||!error.message.includes('GitHub API 422'))throw error;
+    await githubAgentRequest(env,`issues/labels/${encodeURIComponent(name)}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({color,description})});
+  }
+}
+
+async function aiAgentOverview(env:Env,user:AuthUser){
+  if(user.role!=='SUPER_ADMIN')return forbidden('AI Ajan Merkezi yalnızca Süper Admin tarafından kullanılabilir.');
+  const repository=githubAgentRepo(env);
+  const base=AI_AGENT_WORKFLOWS.map(workflow=>({...workflow,actionsUrl:agentActionsUrl(env,workflow.file),available:false,lastRun:null as any,error:null as string|null}));
+  if(!env.GITHUB_AGENT_TOKEN)return json({ok:true,repository,configured:false,apiReachable:false,workflows:base,issues:[],instructionIssues:[],issueCounts:{},setup:{githubToken:false,onayWorkerUrl:Boolean(env.ONAY_WORKER_URL),actionsSecretsVisible:false}});
+
+  try{
+    const [workflowList,issueList]=await Promise.all([
+      githubAgentRequest<any>(env,'actions/workflows?per_page=100'),
+      githubAgentRequest<any>(env,'issues?state=open&per_page=100&sort=updated&direction=desc'),
+    ]);
+    const availablePaths=new Set((workflowList?.workflows||[]).map((workflow:any)=>String(workflow.path||'')));
+    const runs=await Promise.all(base.map(async workflow=>{
+      try{
+        const result=await githubAgentRequest<any>(env,`actions/workflows/${workflow.file}/runs?per_page=5`);
+        const latest=result?.workflow_runs?.[0];
+        return {...workflow,available:availablePaths.has(`.github/workflows/${workflow.file}`),lastRun:latest?{id:latest.id,status:latest.status,conclusion:latest.conclusion,createdAt:latest.created_at,updatedAt:latest.updated_at,htmlUrl:latest.html_url,runNumber:latest.run_number,event:latest.event}:null};
+      }catch(error){return {...workflow,available:availablePaths.has(`.github/workflows/${workflow.file}`),error:error instanceof Error?error.message:'Workflow çalıştırma geçmişi okunamadı.'};}
+    }));
+    const trackedLabels=['izleyici-ajan','icerik-tarama-ajani','acil','ajan-talimatı','yuk-testi-ajani','ajan-fix-dene','ci-saglik-ajani','d1-sema-ajani','route-denetim-ajani','tenant-guvenlik-ajani','kvkk-denetim-ajani','dependency-guvenlik-ajani','frontend-erisim-ajani','api-saglik-ajani','demo-veri-ajani','icerik-kalite-ajani','performans-ajani','release-hazirlik-ajani','issue-tekillestirme-ajani','ajan-durum-raporu'];
+    const issues=(issueList||[]).filter((issue:any)=>{
+      if(issue.pull_request||!Array.isArray(issue.labels))return false;
+      const labels=issue.labels.map((label:any)=>typeof label==='string'?label:label.name).filter(Boolean);
+      return labels.some((label:string)=>trackedLabels.includes(label));
+    }).map((issue:any)=>({number:issue.number,title:issue.title,state:issue.state,htmlUrl:issue.html_url,updatedAt:issue.updated_at,labels:issue.labels.map((label:any)=>typeof label==='string'?label:label.name).filter(Boolean)}));
+    const issueCounts=Object.fromEntries(trackedLabels.map(label=>[label,issues.filter((issue:any)=>issue.labels.includes(label)).length]));
+    const instructionIssues=issues.filter((issue:any)=>issue.labels.includes('ajan-talimatı')).map((issue:any)=>({number:issue.number,title:issue.title,state:issue.state,htmlUrl:issue.html_url,updatedAt:issue.updated_at,labels:issue.labels}));
+    return json({ok:true,repository,configured:true,apiReachable:true,workflows:runs,issues:issues.slice(0,30),instructionIssues:instructionIssues.slice(0,30),issueCounts,setup:{githubToken:true,onayWorkerUrl:Boolean(env.ONAY_WORKER_URL),actionsSecretsVisible:false}});
+  }catch(error){
+    return json({ok:true,repository,configured:true,apiReachable:false,workflows:base,issues:[],instructionIssues:[],issueCounts:{},setup:{githubToken:true,onayWorkerUrl:Boolean(env.ONAY_WORKER_URL),actionsSecretsVisible:false},warning:error instanceof Error?error.message:'GitHub durumu okunamadı.'});
+  }
+}
+
+async function createAiAgentInstruction(request:Request,env:Env,user:AuthUser){
+  if(user.role!=='SUPER_ADMIN')return forbidden('AI ajan talimatlarını yalnızca Süper Admin oluşturabilir.');
+  if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+  if(!env.GITHUB_AGENT_TOKEN)return apiError(503,'GITHUB_AGENT_NOT_CONFIGURED','GITHUB_AGENT_TOKEN Cloudflare Secret olarak tanımlı değil.');
+  const body=await request.json<{workflow?:string;title?:string;instruction?:string;priority?:string}>();
+  const workflow=AI_AGENT_WORKFLOWS.find(item=>item.file===body.workflow);
+  if(!workflow)return badRequest('Bu workflow AI ajan allowlistinde değil.');
+  if(workflow.tier==='paid')return apiError(402,'AGENT_PAUSED',workflow.name+' ajanı şimdilik kredi beklediği için talimat alamaz.');
+  const title=String(body.title||'').trim();
+  const instruction=String(body.instruction||'').trim();
+  const priority=String(body.priority||'normal').trim();
+  if(title.length<3||title.length>160)return badRequest('Talimat başlığı 3–160 karakter arasında olmalıdır.');
+  if(instruction.length<10||instruction.length>5000)return badRequest('Talimat metni 10–5000 karakter arasında olmalıdır.');
+  if(!['low','normal','high','urgent'].includes(priority))return badRequest('Talimat önceliği geçersiz.');
+  const labels=['ajan-talimatı'];
+  if(workflow.label&&workflow.label!=='—')labels.push(workflow.label);
+  if(priority==='urgent')labels.push('acil');
+  for(const label of labels)await ensureAgentLabel(env,label,label==='acil'?'d93f0b':'0366d6',label==='ajan-talimatı'?'Agent Center üzerinden verilen ajan görevi':label==='acil'?'İnsan müdahalesi gerektiren acil talimat':workflow.name+' ajanı talimatı');
+  const issueBody=[
+    '## AI Ajan Talimatı',
+    '',
+    '**Hedef ajan:** '+workflow.name,
+    '**Öncelik:** '+priority,
+    '**Oluşturulma:** '+new Date().toISOString(),
+    '',
+    instruction,
+    '',
+    '### Güvenlik sınırı',
+    '- Production deploy, production D1 ve ücretli Anthropic ajanları bu talimat kuyruğundan çalıştırılamaz.',
+    '- Yük testi yalnızca staging/demo hedefinde yürütülür.',
+    '',
+    '_Bu görev Agent Center üzerinden oluşturuldu ve denetlenebilir GitHub Issue olarak saklanır._',
+  ].join('\n');
+  try{
+    const issue=await githubAgentRequest<any>(env,'issues',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:'🧭 '+workflow.name+': '+title,labels,body:issueBody})});
+    return json({ok:true,message:workflow.name+' ajanına talimat kuyruğa alındı.',instruction:{number:issue.number,title:issue.title,htmlUrl:issue.html_url,state:issue.state,labels:issue.labels?.map((label:any)=>typeof label==='string'?label:label.name)||[]}});
+  }catch(error){return apiError(502,'AGENT_INSTRUCTION_FAILED',error instanceof Error?error.message:'Ajan talimatı oluşturulamadı.');}
+}
+
+async function dispatchAiAgent(request:Request,env:Env,user:AuthUser){
+  if(user.role!=='SUPER_ADMIN')return forbidden("AI ajan workflow'larını yalnızca Süper Admin tetikleyebilir.");
+  if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+  if(!env.GITHUB_AGENT_TOKEN)return apiError(503,'GITHUB_AGENT_NOT_CONFIGURED','GITHUB_AGENT_TOKEN Cloudflare Secret olarak tanımlı değil.');
+  const body=await request.json<{workflow?:string;inputs?:Record<string,unknown>}>();
+  const workflow=AI_AGENT_WORKFLOWS.find(item=>item.file===body.workflow);
+  if(!workflow)return badRequest('Bu workflow AI ajan allowlistinde değil.');
+  if(workflow.tier==='paid')return apiError(402,'AGENT_PAUSED',`${workflow.name} ajanı şimdilik kredi gerektirdiği için duraklatıldı.`);
+  const rawInputs=body.inputs&&typeof body.inputs==='object'&&!Array.isArray(body.inputs)?body.inputs:{};
+  const allowedInputs=new Set(['issue_number','sanal_kullanici_sayisi']);
+  if(Object.keys(rawInputs).some(key=>!allowedInputs.has(key)))return badRequest('Workflow input alanı geçersiz.');
+  const inputs:Record<string,string>={};
+  for(const [key,value] of Object.entries(rawInputs))inputs[key]=String(value);
+  if(workflow.file==='agent-yuk-testi.yml'&&inputs.sanal_kullanici_sayisi&&!/^[1-9][0-9]{0,5}$/.test(inputs.sanal_kullanici_sayisi))return badRequest('Sanal kullanıcı sayısı 1–999999 arasında olmalıdır.');
+  try{
+    await githubAgentRequest(env,`actions/workflows/${workflow.file}/dispatches`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ref:'main',inputs})});
+    return json({ok:true,workflow:workflow.file,message:`${workflow.name} ajanı main dalında tetiklendi.`});
+  }catch(error){return apiError(502,'GITHUB_DISPATCH_FAILED',error instanceof Error?error.message:'Workflow tetiklenemedi.');}
+}
+
+function apiError(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
+
+async function sha256Hex(value:string){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+
+function secureSixDigits(){
+  const limit=4294000000;
+  let n=0;
+  do{n=crypto.getRandomValues(new Uint32Array(1))[0]}while(n>=limit);
+  return String(n%1000000).padStart(6,'0');
+}
+
+async function requireUser(env:Env,request:Request):Promise<AuthUser|Response>{return (await getAuthUser(env,request))||apiError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.')}
+function isResponse(v:AuthUser|Response):v is Response{return v instanceof Response}
+
+async function settings(env:Env){return one<any>(env.DB.prepare(`SELECT * FROM nibiru_settings WHERE id='platform'`))}
+
+async function institutionBlock(env:Env,user:AuthUser){
+  if(!user.institution_id)return null;
+  const institution=await one<{status:string}>(env.DB.prepare(`SELECT status FROM institutions WHERE id=?`).bind(user.institution_id));
+  if(!institution||institution.status==='PASSIVE')return {code:'INSTITUTION_PASSIVE',message:'Kurum hesabınız şu anda aktif değildir.'};
+  const license=await getEffectiveLicense(env,user.institution_id);
+  if(license.locked)return {code:'LICENSE_EXPIRED',message:licenseAccessMessage(license),license};
+  return null;
+}
+
+async function userFromIdentity(env:Env,phone:string):Promise<AuthUser|null>{
+  return one<AuthUser>(env.DB.prepare(`SELECT u.id,u.institution_id,u.student_id,u.role,u.display_name,u.email,u.username FROM nibiru_whatsapp_identities wi JOIN users u ON u.id=wi.user_id WHERE wi.phone_e164=? AND wi.status='VERIFIED' AND u.active=1 LIMIT 1`).bind(phone));
+}
+
+async function pairByCode(env:Env,phone:string,code:string){
+  const hash=await sha256Hex(code);
+  const now=new Date().toISOString();
+  const row=await one<any>(env.DB.prepare(`SELECT pc.id,pc.user_id,u.role,u.active FROM nibiru_pairing_codes pc JOIN users u ON u.id=pc.user_id WHERE pc.code_hash=? AND pc.used_at IS NULL AND pc.expires_at>? LIMIT 1`).bind(hash,now));
+  if(!row||!row.active||!WHATSAPP_ROLES.has(row.role))return null;
+  await env.DB.batch([
+    env.DB.prepare(`DELETE FROM nibiru_whatsapp_identities WHERE user_id=? OR phone_e164=?`).bind(row.user_id,phone),
+    env.DB.prepare(`INSERT INTO nibiru_whatsapp_identities(id,user_id,phone_e164,status,verification_method,verified_at,last_seen_at) VALUES(?,?,?,'VERIFIED','PAIRING_CODE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`).bind(uuid('nibi'),row.user_id,phone),
+    env.DB.prepare(`UPDATE nibiru_pairing_codes SET used_at=CURRENT_TIMESTAMP WHERE id=?`).bind(row.id),
+  ]);
+  return userFromIdentity(env,phone);
+}
+
+function identityHelp(){return `🤖 Nibiru: Ben Anunex’in yapay zekâ akademik asistanıyım. Bu WhatsApp numarası henüz bir kullanıcı hesabına bağlanmamış. Kurumunuzdan Nibiru eşleştirme kodu alın ve “BAĞLA 123456” şeklinde gönderin.`}
+
+async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type:string;text:string|null}){
+  const seen=await one(env.DB.prepare(`SELECT provider_message_id FROM nibiru_whatsapp_receipts WHERE provider_message_id=?`).bind(message.id));
+  if(seen)return;
+  await env.DB.prepare(`INSERT INTO nibiru_whatsapp_receipts(provider_message_id,phone_e164) VALUES(?,?)`).bind(message.id,message.from).run();
+  try{
+    const s=await settings(env);
+    if(!s?.enabled||!s?.whatsapp_enabled){await env.DB.prepare(`UPDATE nibiru_whatsapp_receipts SET processed_at=CURRENT_TIMESTAMP WHERE provider_message_id=?`).bind(message.id).run();return}
+    if(message.type!=='text'||!message.text){await sendWhatsAppText(env,message.from,'🤖 Nibiru: Şu anda WhatsApp üzerinden metin mesajlarını yanıtlayabiliyorum. Öğrenci gelişimi, sınavlar ve kazanımlar hakkında yazarak sorabilirsiniz.');return}
+    const pair=message.text.match(/^\s*(?:BAĞLA|BAGLA)\s+(\d{6})\s*$/i);
+    if(pair){
+      const linked=await pairByCode(env,message.from,pair[1]);
+      if(!linked){await sendWhatsAppText(env,message.from,'🤖 Nibiru: Eşleştirme kodu geçersiz veya süresi dolmuş. Kurumunuzdan yeni bir kod isteyebilirsiniz.');return}
+      const blocked=await institutionBlock(env,linked);
+      if(blocked){await sendWhatsAppText(env,message.from,`🤖 Nibiru: ${blocked.message}`);return}
+      await sendWhatsAppText(env,message.from,`🤖 Nibiru: Eşleştirme tamamlandı. Merhaba ${linked.display_name}. Ben yapay zekâ akademik asistanınızım. Yetkiniz kapsamındaki öğrenci gelişimi, sınavlar, kazanımlar ve çalışma önerileri hakkında bana yazabilirsiniz.`);
+      return;
+    }
+    const user=await userFromIdentity(env,message.from);
+    if(!user){await sendWhatsAppText(env,message.from,identityHelp());await env.DB.prepare(`INSERT INTO nibiru_audit_events(id,channel,role,intent,outcome,message_chars) VALUES(?,'WHATSAPP',NULL,'IDENTITY','UNVERIFIED',?)`).bind(uuid('niba'),message.text.length).run();return}
+    if(!WHATSAPP_ROLES.has(user.role)){await sendWhatsAppText(env,message.from,'🤖 Nibiru: Bu kullanıcı rolü için WhatsApp erişimi etkin değildir.');return}
+    const blocked=await institutionBlock(env,user);
+    if(blocked){await sendWhatsAppText(env,message.from,`🤖 Nibiru: ${blocked.message}`);return}
+    const result=await runNibiru(env,user,message.text,'WHATSAPP',message.from);
+    await sendWhatsAppText(env,message.from,result.answer);
+    await env.DB.prepare(`UPDATE nibiru_whatsapp_identities SET last_seen_at=CURRENT_TIMESTAMP WHERE phone_e164=?`).bind(message.from).run();
+  }catch(error){
+    console.error(JSON.stringify({event:'nibiru_whatsapp_error',messageId:message.id,error:error instanceof Error?error.message:String(error)}));
+    try{await sendWhatsAppText(env,message.from,'🤖 Nibiru: Şu anda akademik veriye erişirken kısa süreli bir sorun oluştu. Lütfen daha sonra yeniden deneyin.')}catch{}
+  }finally{
+    await env.DB.prepare(`UPDATE nibiru_whatsapp_receipts SET processed_at=CURRENT_TIMESTAMP WHERE provider_message_id=?`).bind(message.id).run();
+  }
+}
+
+async function whatsappWebhook(request:Request,env:Env,ctx:ExecutionContext){
+  const url=new URL(request.url);
+  if(request.method==='GET'){
+    const mode=url.searchParams.get('hub.mode'),token=url.searchParams.get('hub.verify_token'),challenge=url.searchParams.get('hub.challenge')||'';
+    if(mode==='subscribe'&&env.WHATSAPP_VERIFY_TOKEN&&token===env.WHATSAPP_VERIFY_TOKEN)return new Response(challenge,{status:200,headers:{'Content-Type':'text/plain'}});
+    return new Response('Forbidden',{status:403});
+  }
+  if(request.method!=='POST')return new Response('Method Not Allowed',{status:405});
+  const raw=await request.arrayBuffer();
+  if(env.WHATSAPP_APP_SECRET){const valid=await verifyWhatsAppSignature(env.WHATSAPP_APP_SECRET,raw,request.headers.get('X-Hub-Signature-256'));if(!valid)return new Response('Invalid signature',{status:401})}
+  else if(env.ENVIRONMENT==='production')return new Response('WhatsApp app secret not configured',{status:503});
+  let payload:any;try{payload=JSON.parse(new TextDecoder().decode(raw))}catch{return new Response('Bad Request',{status:400})}
+  const messages=extractWhatsAppMessages(payload);
+  if(messages.length)ctx.waitUntil(Promise.all(messages.map(m=>handleWhatsAppMessage(env,m))).then(()=>undefined));
+  return new Response('EVENT_RECEIVED',{status:200});
+}
+
+async function nibiruSettings(request:Request,env:Env,user:AuthUser){
+  if(user.role!=='SUPER_ADMIN'&&user.role!=='INSTITUTION_MANAGER')return forbidden();
+  if(request.method==='GET'){
+    const row=await settings(env);
+    return json({ok:true,settings:row,ai:{bindingReady:Boolean(env.AI),routing:nibiruRoutingMatrix(env)},provider:{ready:whatsappReady(env),verifyToken:Boolean(env.WHATSAPP_VERIFY_TOKEN),appSecret:Boolean(env.WHATSAPP_APP_SECRET),accessToken:Boolean(env.WHATSAPP_ACCESS_TOKEN),phoneNumberId:Boolean(env.WHATSAPP_PHONE_NUMBER_ID)}});
+  }
+  if(request.method==='PUT'){
+    if(user.role!=='SUPER_ADMIN')return forbidden('Nibiru platform ayarlarını yalnız Süper Admin değiştirebilir.');
+    const body=await request.json<{enabled?:boolean;whatsappEnabled?:boolean;publicWhatsappNumber?:string|null}>();
+    await env.DB.prepare(`UPDATE nibiru_settings SET enabled=?,whatsapp_enabled=?,public_whatsapp_number=?,updated_by=?,updated_at=CURRENT_TIMESTAMP WHERE id='platform'`).bind(body.enabled===false?0:1,body.whatsappEnabled?1:0,body.publicWhatsappNumber?.trim()||null,user.id).run();
+    await audit(env.DB,user.id,null,'NIBIRU_SETTINGS_UPDATED','nibiru_settings','platform',{enabled:body.enabled!==false,whatsappEnabled:Boolean(body.whatsappEnabled)});
+    return nibiruSettings(new Request(request.url,{method:'GET',headers:request.headers}),env,user);
+  }
+  return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+}
+
+async function nibiruUsers(env:Env,user:AuthUser,url:URL){
+  if(user.role!=='SUPER_ADMIN'&&user.role!=='INSTITUTION_MANAGER')return forbidden();
+  const institutionId=user.role==='SUPER_ADMIN'?(url.searchParams.get('institutionId')||null):user.institution_id;
+  if(user.role==='INSTITUTION_MANAGER'&&!institutionId)return forbidden();
+  const rows=await all<any>(env.DB.prepare(`SELECT u.id,u.institution_id,u.role,u.display_name,u.email,u.phone,u.username,wi.phone_e164,wi.status whatsapp_status,wi.last_seen_at FROM users u LEFT JOIN nibiru_whatsapp_identities wi ON wi.user_id=u.id WHERE u.active=1 AND u.role IN ('PARENT','TEACHER','GUIDANCE_TEACHER','INSTITUTION_MANAGER') ${institutionId?'AND u.institution_id=?':''} ORDER BY u.role,u.display_name`).bind(...(institutionId?[institutionId]:[])));
+  return json({ok:true,users:rows});
+}
+
+async function createPairing(request:Request,env:Env,user:AuthUser){
+  if(user.role!=='SUPER_ADMIN'&&user.role!=='INSTITUTION_MANAGER')return forbidden();
+  const body=await request.json<{userId?:string}>();if(!body.userId)return badRequest('Kullanıcı seçilmelidir.');
+  const target=await one<any>(env.DB.prepare(`SELECT id,institution_id,role,display_name,active FROM users WHERE id=?`).bind(body.userId));
+  if(!target||!target.active||!WHATSAPP_ROLES.has(target.role))return badRequest('Bu kullanıcı Nibiru WhatsApp için uygun değil.');
+  if(user.role!=='SUPER_ADMIN'&&target.institution_id!==user.institution_id)return forbidden();
+  const code=secureSixDigits(),hash=await sha256Hex(code),expires=new Date(Date.now()+15*60000).toISOString();
+  await env.DB.prepare(`UPDATE nibiru_pairing_codes SET used_at=CURRENT_TIMESTAMP WHERE user_id=? AND used_at IS NULL`).bind(target.id).run();
+  await env.DB.prepare(`INSERT INTO nibiru_pairing_codes(id,user_id,code_hash,expires_at,created_by) VALUES(?,?,?,?,?)`).bind(uuid('nibc'),target.id,hash,expires,user.id).run();
+  await audit(env.DB,user.id,target.institution_id,'NIBIRU_PAIRING_CODE_CREATED','user',target.id,{expiresAt:expires,role:target.role});
+  return json({ok:true,code,expiresAt:expires,user:{id:target.id,displayName:target.display_name,role:target.role},instruction:`WhatsApp'tan “BAĞLA ${code}” yazın.`});
+}
+
+async function nibiruAiProbe(request:Request,env:Env,user:AuthUser){
+  if(user.role!=='SUPER_ADMIN')return forbidden("Nibiru sağlayıcı probe'u yalnız Süper Admin çalıştırabilir.");
+  if(env.ENVIRONMENT==='production')return apiError(403,'STAGING_ONLY',"AI sağlayıcı probe'u üretimde kapalıdır.");
+  if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Probe yalnız POST ile çalıştırılabilir.');
+  const probe=await probeNibiruModels(env);
+  return json({
+    ok:probe.ok,
+    environment:env.ENVIRONMENT||'unknown',
+    bindingReady:Boolean(env.AI),
+    freeMode:true,
+    paidPlanRequired:false,
+    routing:nibiruRoutingMatrix(env),
+    probe,
+  });
+}
+
+async function nibiruChat(request:Request,env:Env,user:AuthUser){
+  if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+  const body=await request.json<{message?:string;labStudentId?:string}>();const message=body.message?.trim()||'';
+  if(!message||message.length>1200)return badRequest('Mesaj 1–1200 karakter arasında olmalıdır.');
+  const blocked=await institutionBlock(env,user);
+  if(blocked)return json({ok:true,answer:`🤖 Nibiru: ${blocked.message}`,intent:'ACCESS',locked:true});
+  const result=await runNibiru(env,user,message,'WEB',user.id,{labStudentId:body.labStudentId||null});
+  return json({ok:true,...result});
+}
+
+async function licenseStatus(env:Env,user:AuthUser){if(!user.institution_id)return json({ok:true,license:null});return json({ok:true,license:await getEffectiveLicense(env,user.institution_id)})}
+
+async function adminLicenses(env:Env,user:AuthUser){
+  if(user.role!=='SUPER_ADMIN')return forbidden();
+  const institutions=await all<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,i.status,i.demo_mode,(SELECT count(DISTINCT se.student_id) FROM student_enrollments se WHERE se.institution_id=i.id AND se.status='ACTIVE') student_count FROM institutions i ORDER BY i.name`));
+  const items=[];for(const institution of institutions)items.push({...institution,license:await getEffectiveLicense(env,institution.id)});
+  return json({ok:true,licenses:items});
+}
+
+async function licenseMutation(request:Request,env:Env,user:AuthUser,kind:'trial'|'annual'|'status'){
+  if(user.role!=='SUPER_ADMIN')return forbidden('Lisans yönetimini yalnız Süper Admin kullanabilir.');
+  const body=await request.json<any>();const institutionId=String(body.institutionId||'');if(!institutionId)return badRequest('Kurum seçilmelidir.');
+  try{
+    if(kind==='trial')return json({ok:true,license:await startTrial(env,institutionId,user,Number(body.days||7),body.note)});
+    if(kind==='annual'){const mode=body.mode==='RESET_DATA'?'RESET_DATA':'KEEP_DATA';return json({ok:true,...await activateAnnual(env,institutionId,user,mode,Number(body.days||365),body.note)});}
+    const status=body.status;if(!['ACTIVE','SUSPENDED','CANCELLED'].includes(status))return badRequest('Geçersiz lisans durumu.');
+    return json({ok:true,license:await setLicenseStatus(env,institutionId,user,status)});
+  }catch(error){return apiError(400,'LICENSE_OPERATION_FAILED',error instanceof Error?error.message:'Lisans işlemi tamamlanamadı.')}
+}
+
+async function nibiruAudit(env:Env,user:AuthUser,url:URL){
+  if(user.role!=='SUPER_ADMIN'&&user.role!=='INSTITUTION_MANAGER')return forbidden();
+  const institutionId=user.role==='SUPER_ADMIN'?(url.searchParams.get('institutionId')||null):user.institution_id;
+  const rows=await all<any>(env.DB.prepare(`SELECT a.*,u.display_name FROM nibiru_audit_events a LEFT JOIN users u ON u.id=a.user_id ${institutionId?'WHERE a.institution_id=?':''} ORDER BY a.created_at DESC LIMIT 100`).bind(...(institutionId?[institutionId]:[])));
+  return json({ok:true,events:rows});
+}
+
+function canPassLocked(path:string){return path.startsWith('/api/auth/')||path==='/api/license/status'||path==='/api/nibiru/chat'||path==='/api/public-config'}
+
+export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
+  const url=new URL(request.url),path=url.pathname;
+  if(path==='/api/nibiru/whatsapp/webhook')return whatsappWebhook(request,env,ctx);
+
+  if(path==='/api/ai-agents'||path==='/api/ai-agents/dispatch'||path==='/api/nibiru/settings'||path==='/api/nibiru/users'||path==='/api/nibiru/pairing-code'||path==='/api/nibiru/chat'||path==='/api/nibiru/ai/probe'||path==='/api/nibiru/audit'||path==='/api/license/status'||path==='/api/admin/licenses'||path.startsWith('/api/admin/licenses/')){
+    const userOr=await requireUser(env,request);if(isResponse(userOr))return userOr;const user=userOr;
+    if(user.role!=='SUPER_ADMIN'&&user.institution_id&&path!=='/api/license/status'&&path!=='/api/nibiru/chat'){
+      const blocked=await institutionBlock(env,user);
+      if(blocked)return apiError(blocked.code==='LICENSE_EXPIRED'?402:403,blocked.code,blocked.message,'license' in blocked?blocked.license:undefined);
+    }
+    if(path==='/api/ai-agents'&&request.method==='GET')return aiAgentOverview(env,user);
+    if(path==='/api/ai-agents/instructions'&&request.method==='POST')return createAiAgentInstruction(request,env,user);
+    if(path==='/api/ai-agents/dispatch')return dispatchAiAgent(request,env,user);
+    if(path==='/api/nibiru/ai/probe')return nibiruAiProbe(request,env,user);
+    if(path==='/api/nibiru/settings')return nibiruSettings(request,env,user);
+    if(path==='/api/nibiru/users'&&request.method==='GET')return nibiruUsers(env,user,url);
+    if(path==='/api/nibiru/pairing-code'&&request.method==='POST')return createPairing(request,env,user);
+    if(path==='/api/nibiru/chat')return nibiruChat(request,env,user);
+    if(path==='/api/nibiru/audit'&&request.method==='GET')return nibiruAudit(env,user,url);
+    if(path==='/api/license/status'&&request.method==='GET')return licenseStatus(env,user);
+    if(path==='/api/admin/licenses'&&request.method==='GET')return adminLicenses(env,user);
+    if(path==='/api/admin/licenses/trial'&&request.method==='POST')return licenseMutation(request,env,user,'trial');
+    if(path==='/api/admin/licenses/annual'&&request.method==='POST')return licenseMutation(request,env,user,'annual');
+    if(path==='/api/admin/licenses/status'&&request.method==='POST')return licenseMutation(request,env,user,'status');
+    return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+  }
+
+  if(path.startsWith('/api/')&&!canPassLocked(path)){
+    const user=await getAuthUser(env,request);
+    if(user?.institution_id){const blocked=await institutionBlock(env,user);if(blocked)return apiError(blocked.code==='LICENSE_EXPIRED'?402:403,blocked.code,blocked.message,'license' in blocked?blocked.license:undefined)}
+  }
+  return app.fetch(request,env);
+}} satisfies ExportedHandler<Env>;

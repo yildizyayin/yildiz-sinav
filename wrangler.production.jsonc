@@ -1,0 +1,40 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "yildiz-sinav-prod",
+  "main": "./worker/privacy-export-entry.ts",
+  "compatibility_date": "2026-08-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1
+  },
+  "triggers": {
+    "crons": ["*/15 * * * *"]
+  },
+  "assets": {
+    "directory": "./dist/client",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "FILES"
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "vars": {
+    "ENVIRONMENT": "production",
+    "PRODUCT_NAME": "Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu",
+    "NIBIRU_AI_MODEL": "@cf/zai-org/glm-4.7-flash",
+    "WHATSAPP_GRAPH_API_VERSION": "v25.0",
+    "TURNSTILE_SITE_KEY": "1x00000000000000000000BB"
+  }
+}

@@ -1,0 +1,41 @@
+name: "Ücretsiz Ajan - İçerik Kalitesi"
+
+on:
+  schedule:
+    - cron: "30 6 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Eksik/uygunsuz içerik işaretlerini tara
+        id: verify
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          PATTERNS='NEEDS_DEFINITION|CONTENT_REQUIRED|TODO_MEB|TODO_RESMI_VERI'
+          rg -n --glob '*.ts' --glob '*.tsx' --glob '*.json' "$PATTERNS" . > agent-content-quality-report.md
+          scan_status=$?
+          if [ "$scan_status" -eq 1 ]; then echo >> agent-content-quality-report.md; echo "Yukarıdaki işaretler insan içerik doğrulaması gerektiriyor." >> agent-content-quality-report.md; exit 1; fi
+          if [ "$scan_status" -gt 1 ]; then echo "İçerik taraması çalıştırılamadı." > agent-content-quality-report.md; exit 1; fi
+          echo "Eksik içerik işareti bulunmadı." > agent-content-quality-report.md
+      - name: Raporu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
+        with:
+          report-file: agent-content-quality-report.md
+          title: "İçerik Kalitesi Ajanı Raporu"
+          label: "icerik-kalite-ajani"
+          status: ${{ steps.verify.outcome }}
+          close-on-success: "true"
+          label-color: "5319e7"
+      - name: Başarısızsa workflow'u işaretle
+        if: steps.verify.outcome == 'failure'
+        run: exit 1

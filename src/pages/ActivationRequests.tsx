@@ -1,0 +1,14 @@
+import { useEffect,useState } from 'react';
+import { CheckCircle2,Clock3,RefreshCw,XCircle } from 'lucide-react';
+import { api } from '../api';
+import { useAuth } from '../auth';
+
+export function ActivationRequests(){
+ const{user}=useAuth();const[rows,setRows]=useState<any[]>([]);const[error,setError]=useState('');const[notice,setNotice]=useState('');const[busy,setBusy]=useState('');
+ const load=async()=>{setError('');try{const r=await api<any>('/api/activation-requests');setRows(r.requests||[])}catch(e:any){setError(e.message)}};
+ useEffect(()=>{void load()},[]);
+ const decide=async(id:string,decision:'APPROVE'|'REJECT')=>{const note=prompt(decision==='APPROVE'?'Onay notu (isteğe bağlı)':'Red nedeni (isteğe bağlı)')||'';setBusy(id);setError('');try{const r=await api<any>(`/api/activation-requests/${id}/decision`,{method:'POST',body:JSON.stringify({decision,note})});setNotice(r.status==='APPROVED'?'Öğrenci aktif edildi ve geçmiş sınavları korundu.':'Talep reddedildi.');await load()}catch(e:any){setError(e.message)}finally{setBusy('')}};
+ return <><div className="page-head"><div><span className="eyebrow">Misafir → aktif öğrenci</span><h1>Aktivasyon Talepleri</h1><p>{user?.role==='SUPER_ADMIN'?'Kurumların gönderdiği talepleri ödeme/onay sonrası sonuçlandırın.':'Kurumunuzdan gönderilen aktivasyon taleplerinin durumunu takip edin.'}</p></div><button className="ghost" onClick={()=>void load()}><RefreshCw size={16}/> Yenile</button></div>
+ {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
+ <div className="table-card"><table><thead><tr><th>Öğrenci</th><th>Kurum</th><th>Sınıf</th><th>Talep</th><th>Durum</th><th>Not</th>{user?.role==='SUPER_ADMIN'&&<th></th>}</tr></thead><tbody>{rows.map((r:any)=><tr key={r.id}><td><strong>{r.student_name}</strong><small>No: {r.student_number||'—'}</small></td><td>{r.institution_name}</td><td>{r.grade_level?`${r.grade_level}/${r.section||'—'}`:'—'}</td><td>{r.requested_by_name||'—'}<small>{r.requested_at?new Date(r.requested_at).toLocaleString('tr-TR'):''}</small></td><td><span className={`status ${r.status==='APPROVED'?'ok':r.status==='PENDING'?'warn':r.status==='REJECTED'?'off':'neutral'}`}>{r.status==='PENDING'?<><Clock3 size={13}/> Bekliyor</>:r.status==='APPROVED'?<><CheckCircle2 size={13}/> Onaylandı</>:r.status==='REJECTED'?<><XCircle size={13}/> Reddedildi</>:r.status}</span></td><td>{r.decision_note||r.note||'—'}</td>{user?.role==='SUPER_ADMIN'&&<td>{r.status==='PENDING'&&<div style={{display:'flex',gap:6}}><button className="primary subtle" disabled={busy===r.id} onClick={()=>void decide(r.id,'APPROVE')}><CheckCircle2 size={14}/> Onayla</button><button className="danger subtle" disabled={busy===r.id} onClick={()=>void decide(r.id,'REJECT')}><XCircle size={14}/> Reddet</button></div>}</td>}</tr>)}</tbody></table>{!rows.length&&<div className="empty">Aktivasyon talebi bulunmuyor.</div>}</div></>;
+}

@@ -1,0 +1,55 @@
+name: "Ücretsiz Ajan - Bağımlılık Güvenliği"
+
+on:
+  schedule:
+    - cron: "30 4 * * 3"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: NPM audit
+        id: verify
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          npm install --no-audit --no-fund
+          npm audit --omit=dev --audit-level=high --json > agent-audit.json 2> agent-audit-error.log
+          audit_status=$?
+          node <<'NODE' > agent-dependency-report.md
+          const fs = require('fs');
+          let payload = {};
+          try { payload = JSON.parse(fs.readFileSync('agent-audit.json','utf8')); } catch {}
+          const v = payload.metadata?.vulnerabilities || {};
+          console.log(`npm audit çıkış kodu: audit sonucu ayrıntılı logda`);
+          console.log(`high: ${v.high || 0} | critical: ${v.critical || 0} | moderate: ${v.moderate || 0} | low: ${v.low || 0}`);
+          if (!Object.keys(payload).length && fs.existsSync('agent-audit-error.log')) console.log(fs.readFileSync('agent-audit-error.log','utf8').slice(0,4000));
+          NODE
+          if [ "$audit_status" -ne 0 ]; then
+            echo "Yüksek/critical güvenlik bulgusu veya audit hatası var." >> agent-dependency-report.md
+            exit 1
+          fi
+          echo "Yüksek/critical npm bulgusu bulunmadı." >> agent-dependency-report.md
+      - name: Raporu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
+        with:
+          report-file: agent-dependency-report.md
+          title: "Bağımlılık Güvenliği Ajanı Raporu"
+          label: "dependency-guvenlik-ajani"
+          status: ${{ steps.verify.outcome }}
+          close-on-success: "true"
+          label-color: "5319e7"
+      - name: Başarısızsa workflow'u işaretle
+        if: steps.verify.outcome == 'failure'
+        run: exit 1

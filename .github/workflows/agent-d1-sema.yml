@@ -1,0 +1,68 @@
+name: "Ücretsiz Ajan - D1 Şema Denetimi"
+
+on:
+  schedule:
+    - cron: "30 2 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Migration sırası ve yerel D1 uygulaması
+        id: verify
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          : > agent-d1-report.md
+          node <<'NODE' >> agent-d1-report.md 2>&1
+          const fs = require('fs');
+          const files = fs.readdirSync('migrations').filter(name => name.endsWith('.sql')).sort();
+          const versions = new Map();
+          const duplicates = [];
+          for (const file of files) {
+            const version = file.split('_', 1)[0];
+            if (!/^\d+$/.test(version)) continue;
+            if (versions.has(version)) duplicates.push(`${version}: ${versions.get(version)} + ${file}`);
+            else versions.set(version, file);
+          }
+          console.log(`Migration dosyası: ${files.length}`);
+          if (duplicates.length) {
+            console.log('Tekrarlanan migration sürümleri:');
+            console.log(duplicates.join('\n'));
+            process.exitCode = 1;
+          } else console.log('Tekrarlanan migration sürümü bulunamadı.');
+          NODE
+          static_status=$?
+          npm install --no-audit --no-fund >> agent-d1-report.md 2>&1
+          install_status=$?
+          if [ "$install_status" -eq 0 ]; then
+            npx wrangler d1 migrations apply DB --local --persist-to=.wrangler/agent-d1 >> agent-d1-report.md 2>&1
+            d1_status=$?
+          else
+            d1_status=$install_status
+          fi
+          if [ "$static_status" -ne 0 ] || [ "$d1_status" -ne 0 ]; then exit 1; fi
+          echo "D1 migration kontrolü başarılı." >> agent-d1-report.md
+      - name: Raporu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
+        with:
+          report-file: agent-d1-report.md
+          title: "D1 Şema Ajanı Raporu"
+          label: "d1-sema-ajani"
+          status: ${{ steps.verify.outcome }}
+          close-on-success: "true"
+          label-color: "5319e7"
+      - name: Başarısızsa workflow'u işaretle
+        if: steps.verify.outcome == 'failure'
+        run: exit 1

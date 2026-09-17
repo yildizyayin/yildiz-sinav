@@ -1,0 +1,50 @@
+name: "Ücretsiz Ajan - Release Hazırlık"
+
+on:
+  schedule:
+    - cron: "0 7 * * 5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Üretim release checklist
+        id: verify
+        continue-on-error: true
+        shell: bash
+        run: |
+          node <<'NODE' > agent-release-report.md
+          const fs = require('fs');
+          const checks = [
+            ['Production entry','wrangler.production.jsonc',/privacy-export-entry\.ts/],
+            ['Result entry','wrangler.result.production.jsonc',/result-worker-entry\.ts/],
+            ['Production deploy guard','.github/workflows/deploy-production.yml',/agent-deploy-dogrulayici\.yml/],
+            ['All monitor domains','.github/workflows/agent-izleyici.yml',/anunex\.com/],
+            ['Agent center route','src/App.tsx',/agent-center/],
+          ];
+          const failures = [];
+          for (const [label,file,pattern] of checks) if (!fs.existsSync(file) || !pattern.test(fs.readFileSync(file,'utf8'))) failures.push(`${label}: eksik`);
+          const resultConfig = fs.readFileSync('wrangler.result.production.jsonc','utf8');
+          if (resultConfig.includes('__RESOLVED_FROM_PRODUCTION__') || resultConfig.includes('00000000-0000-0000-0000-000000000000')) failures.push('Result production D1/R2 gerçek kaynakları henüz çözülmemiş placeholder içeriyor');
+          console.log(failures.length ? failures.join('\n') : 'Release checklist temiz.');
+          if (failures.length) process.exitCode = 1;
+          NODE
+      - name: Raporu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
+        with:
+          report-file: agent-release-report.md
+          title: "Release Hazırlık Ajanı Raporu"
+          label: "release-hazirlik-ajani"
+          status: ${{ steps.verify.outcome }}
+          close-on-success: "true"
+          label-color: "7057ff"
+      - name: Başarısızsa workflow'u işaretle
+        if: steps.verify.outcome == 'failure'
+        run: exit 1

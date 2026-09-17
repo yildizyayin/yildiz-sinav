@@ -1,0 +1,4 @@
+.nibiru-interactive .nibiru-sphere{transform:translate3d(var(--nibiru-gaze-x,0),var(--nibiru-gaze-y,0),0)}
+.nibiru-interactive:after{content:"";position:absolute;inset:-14%;z-index:0;border-radius:50%;background:radial-gradient(circle,rgba(114,167,255,.14),transparent 70%);animation:nibiru-presence 3.8s ease-in-out infinite}
+@keyframes nibiru-presence{0%,100%{transform:scale(.92);opacity:.45}50%{transform:scale(1.08);opacity:.9}}
+@media(prefers-reduced-motion:reduce){.nibiru-interactive:after{animation:none}}

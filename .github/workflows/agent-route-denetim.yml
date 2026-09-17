@@ -1,0 +1,59 @@
+name: "Ücretsiz Ajan - Route ve Entry Denetimi"
+
+on:
+  schedule:
+    - cron: "0 3 * * 2"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Gerçek route/entry zincirini doğrula
+        id: verify
+        continue-on-error: true
+        shell: bash
+        run: |
+          node <<'NODE' > agent-route-report.md
+          const fs = require('fs');
+          const required = [
+            'worker/privacy-smoke-entry.ts','worker/privacy-export-entry.ts',
+            'worker/result-worker-entry.ts','worker/nibiru-license-entry.ts',
+            'src/App.tsx','src/pages/AgentCenter.tsx',
+            'wrangler.production.jsonc','wrangler.result.production.jsonc',
+          ];
+          const missing = required.filter(file => !fs.existsSync(file));
+          const checks = [
+            ['wrangler.production.jsonc','privacy-export-entry.ts'],
+            ['wrangler.result.production.jsonc','result-worker-entry.ts'],
+            ['src/App.tsx','agent-center'],
+            ['worker/nibiru-license-entry.ts','/api/ai-agents'],
+          ];
+          const broken = checks.filter(([file, needle]) => !fs.readFileSync(file, 'utf8').includes(needle));
+          const config = fs.readFileSync('wrangler.result.production.jsonc','utf8');
+          const placeholders = ['__RESOLVED_FROM_PRODUCTION__','00000000-0000-0000-0000-000000000000'].filter(value => config.includes(value));
+          console.log(`Beklenen dosya sayısı: ${required.length}`);
+          if (missing.length) console.log(`Eksik dosyalar:\n- ${missing.join('\n- ')}`);
+          if (broken.length) console.log(`Kırık referanslar:\n- ${broken.map(([file,needle]) => `${file} -> ${needle}`).join('\n- ')}`);
+          if (placeholders.length) console.log(`Çözülmemiş production result ayarı: ${placeholders.join(', ')}`);
+          if (!missing.length && !broken.length && !placeholders.length) console.log('Route ve entry referansları tutarlı.');
+          if (missing.length || broken.length || placeholders.length) process.exitCode = 1;
+          NODE
+      - name: Raporu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
+        with:
+          report-file: agent-route-report.md
+          title: "Route/Entry Denetim Ajanı Raporu"
+          label: "route-denetim-ajani"
+          status: ${{ steps.verify.outcome }}
+          close-on-success: "true"
+          label-color: "fbca04"
+      - name: Başarısızsa workflow'u işaretle
+        if: steps.verify.outcome == 'failure'
+        run: exit 1
