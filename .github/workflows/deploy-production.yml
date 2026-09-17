@@ -182,7 +182,7 @@ jobs:
                   --request DELETE \
                   --header "$auth_header" \
                   "$endpoint/$domain_id")"
-                if [[ "$status" -lt 200 || "$status" -ge 300 ]] || ! jq -e '.success == true' "$response" >/dev/null; then
+                if [[ "$status" -lt 200 || "$status" -ge 300 ]]; then
                   echo "Cloudflare could not detach the previous $hostname mapping (HTTP $status)." >&2
                   jq -c '{success,errors,messages}' "$response" >&2 || true
                   cleanup
