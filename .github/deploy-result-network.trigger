@@ -1,1 +1,1 @@
-result network deployment marker — optical camera geometry and batch binding fix
+result network deployment marker — optical geometry, camera batch binding and source layout fix

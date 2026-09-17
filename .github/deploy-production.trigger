@@ -1,1 +1,1 @@
-one-shot production deployment marker — optical camera geometry and batch binding fix
+one-shot production deployment marker — optical geometry, camera batch binding and source layout fix
