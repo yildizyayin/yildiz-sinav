@@ -121,3 +121,20 @@ describe('fixed width sample analysis', () => {
     expect((result?.answerBlocks.length || 0)).toBeGreaterThan(0);
   });
 });
+
+
+describe('TYT optional answer-key envelope', () => {
+  it('keeps 120 scored questions and five separate optional philosophy answers', () => {
+    const tytSubjects = [
+      { id: 'tyt_tur', code: 'TYT_TUR', name: 'Türkçe' },
+      { id: 'tyt_fel', code: 'TYT_FEL', name: 'Felsefe (seçmeli)' },
+    ];
+    const result = parseAnswerKeyText(`TYT_TUR: ${'A'.repeat(40)}
+TYT_FEL: ABCDE`, tytSubjects);
+    expect(result.questionCounts.tyt_tur).toBe(40);
+    expect(result.questionCounts.tyt_fel).toBe(5);
+    const tyt = EXAM_TEMPLATES.find((x) => x.key === 'TYT');
+    expect(tyt?.sections.reduce((n, x) => n + x.questionCount, 0)).toBe(120);
+    expect(tyt?.optionalSections?.[0]).toMatchObject({ subjectCode: 'TYT_FEL', questionCount: 5, answerKeyOnly: true });
+  });
+});
