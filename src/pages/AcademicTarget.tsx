@@ -1,7 +1,8 @@
 import { useEffect,useMemo,useState } from 'react';
-import { Bot,CheckCircle2,ExternalLink,GraduationCap,Search,Target,TrendingDown,TrendingUp } from 'lucide-react';
+import { CheckCircle2,ExternalLink,GraduationCap,Search,Target,TrendingDown,TrendingUp } from 'lucide-react';
 import { api } from '../api';
 import { useAuth } from '../auth';
+import { NibiruMark } from '../components/NibiruMark';
 
 function trendLabel(value:string){return value==='RISING'?'Yükseliyor':value==='FALLING'?'Dikkat gerekiyor':value==='STABLE'?'Dengeli':'Veri bekleniyor'}
 function pct(v:any){return v==null?'—':`%${Number(v).toLocaleString('tr-TR',{maximumFractionDigits:3})}`}
@@ -27,8 +28,8 @@ export function AcademicTarget(){
     <div className="kpi-card"><span>Karşılaştırılan Sınav</span><strong>{analysis.analysis?.examCount||0}</strong></div>
     <div className="kpi-card"><span>Gidişat</span><strong>{trendLabel(analysis.analysis?.trend)}</strong></div>
    </div>
-   <div className="panel"><div className="panel-head"><div><h2>🤖 Nibiru hedef analizi</h2><p>Resmî hedef verisi ile yalnız sistemdeki doğrulanmış sınav sonuçların karşılaştırılır.</p></div>{analysis.analysis?.trend==='RISING'?<TrendingUp/>:<TrendingDown/>}</div>
-    <div className="alert info"><Bot size={18}/><div><strong>{analysis.target.target_type==='LGS_SCHOOL'?`${analysis.target.school_city} · ${analysis.target.school_district||''}`:`${analysis.target.university_name} · ${analysis.target.score_type}`}</strong><span>{analysis.analysis?.officialNetProfile?'Resmî kaynakta net profili mevcut; ders bazlı farklar doğrudan bu profil üzerinden hesaplanıyor.':'Resmî net profili henüz veri havuzuna aktarılmamış; Nibiru net uydurmaz ve yalnız mevcut resmî göstergeleri kullanır.'}</span></div></div>
+   <div className="panel"><div className="panel-head"><div><h2>Nibiru hedef analizi</h2><p>Resmî hedef verisi ile yalnız sistemdeki doğrulanmış sınav sonuçların karşılaştırılır.</p></div>{analysis.analysis?.trend==='RISING'?<TrendingUp/>:<TrendingDown/>}</div>
+    <div className="alert info"><NibiruMark size={22} state="active"/><div><strong>{analysis.target.target_type==='LGS_SCHOOL'?`${analysis.target.school_city} · ${analysis.target.school_district||''}`:`${analysis.target.university_name} · ${analysis.target.score_type}`}</strong><span>{analysis.analysis?.officialNetProfile?'Resmî kaynakta net profili mevcut; ders bazlı farklar doğrudan bu profil üzerinden hesaplanıyor.':'Resmî net profili henüz veri havuzuna aktarılmamış; Nibiru net uydurmaz ve yalnız mevcut resmî göstergeleri kullanır.'}</span></div></div>
     {gaps.length>0&&<><h3>Hedef net profiline göre öncelikler</h3><div className="metrics">{gaps.map((g:any)=><div key={g.metric}><span>{g.metric}</span><strong>{num(g.current)} → {num(g.target)}</strong><small>Fark +{num(g.gap)} net</small></div>)}</div></>}
     <h3>Gelişime açık kazanımlar</h3><div className="table-card"><table><thead><tr><th>Ders</th><th>Kazanım</th><th>Kanıt</th><th>Başarı</th></tr></thead><tbody>{(analysis.analysis?.weakOutcomes||[]).map((x:any,i:number)=><tr key={i}><td>{x.subject_name}</td><td>{x.title}</td><td>{x.evidence}</td><td>{pct(x.avg_success)}</td></tr>)}</tbody></table>{!(analysis.analysis?.weakOutcomes||[]).length&&<div className="empty">Kazanım düzeyinde yeterli kanıt henüz oluşmadı.</div>}</div>
     <div className="muted" style={{marginTop:12}}>Kaynak: {analysis.analysis?.source?.kind} · {analysis.analysis?.source?.year}. Nibiru rehberlik amaçlı analiz yapar; yerleşme garantisi vermez.</div>
