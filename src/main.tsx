@@ -12,6 +12,7 @@ import './student-enhancements.css';
 import './operations-ui.css';
 import './exam-builder.css';
 import './exam-builder-reference.css';
+import './exam-definition-professional.css';
 import './campaign-ui.css';
 import './brand-lock.css';
 import './profession-targets.css';
