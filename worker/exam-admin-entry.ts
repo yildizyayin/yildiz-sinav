@@ -327,7 +327,7 @@ async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
     LEFT JOIN institutions i ON i.id=e.institution_id
     LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id
     LEFT JOIN scoring_rules sr ON sr.id=srv.rule_id
-    WHERE ${where}
+    WHERE ${where} AND e.status <> 'ARCHIVED'
     ORDER BY CASE e.status WHEN 'DRAFT' THEN 0 WHEN 'ACTIVE' THEN 1 ELSE 2 END,coalesce(e.exam_date,'9999-12-31') DESC,e.title
   `).bind(...params));
   return Response.json({ ok: true, exams });
@@ -397,6 +397,87 @@ async function createDefinition(request: Request, env: Env, user: AuthUser): Pro
   ).run();
   await audit(env.DB, user.id, institutionId, 'EXAM_DEFINITION_CREATED', 'exam', id, { ownerType, academicYear, title, examType, gradeLevel, resultNetworkEnabled });
   return Response.json({ ok: true, id }, { status: 201 });
+}
+
+
+async function cloneDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
+  const source = await managedExam(env, user, examId);
+  if (!source) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
+  const [subjects, booklets, questions, answerKeys, questionOutcomes, optionalAnswerKeys, bookletOrders, institutions, assets, opticalBindings] = await Promise.all([
+    all<any>(env.DB.prepare('SELECT subject_id,question_count,sort_order,wrong_divisor,question_start,question_end,option_count FROM exam_subjects WHERE exam_id=? ORDER BY sort_order').bind(examId)),
+    all<any>(env.DB.prepare('SELECT code,active FROM exam_booklets WHERE exam_id=? ORDER BY code').bind(examId)),
+    all<any>(env.DB.prepare('SELECT id,subject_id,question_no,global_no,option_count,question_status FROM exam_questions WHERE exam_id=? ORDER BY global_no').bind(examId)),
+    all<any>(env.DB.prepare('SELECT exam_question_id,booklet_code,correct_answer,option_count,accepted_answers,question_status FROM answer_keys WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)').bind(examId)),
+    all<any>(env.DB.prepare('SELECT exam_question_id,outcome_id FROM question_outcomes WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)').bind(examId)),
+    all<any>(env.DB.prepare('SELECT subject_id,booklet_code,question_no,correct_answer,option_count,accepted_answers,question_status FROM exam_optional_answer_keys WHERE exam_id=?').bind(examId)),
+    all<any>(env.DB.prepare('SELECT exam_question_id,booklet_code,printed_question_no FROM exam_question_booklet_orders WHERE exam_id=?').bind(examId)),
+    all<any>(env.DB.prepare('SELECT institution_id,enabled FROM exam_institutions WHERE exam_id=?').bind(examId)),
+    all<any>(env.DB.prepare('SELECT asset_type,booklet_code,r2_key,file_name,mime_type,byte_size,version,status,visibility,metadata_json,archived_at FROM exam_document_assets WHERE exam_id=?').bind(examId)),
+    all<any>(env.DB.prepare('SELECT booklet_code,optical_template_version_id,input_modes_json,active FROM exam_optical_bindings WHERE exam_id=?').bind(examId)),
+  ]);
+  const id = uuid('exam');
+  const title = `${String(source.title || 'Sınav')} (Kopya)`.slice(0, 200);
+  const statements: D1PreparedStatement[] = [env.DB.prepare(`INSERT INTO exams (id,owner_type,institution_id,academic_year,title,exam_type,grade_level,exam_date,status,scoring_rule_version_id,sponsor_mode,created_by,publisher_name,session_label,description,result_network_enabled,scoring_override_json,scoring_settings_json,outcome_mode)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(
+    id, source.owner_type, source.institution_id || null, source.academic_year, title, source.exam_type, source.grade_level ?? null,
+    source.exam_date || null, 'DRAFT', source.scoring_rule_version_id || null, source.sponsor_mode || 'INSTITUTION', user.id,
+    source.publisher_name || null, source.session_label || null, source.description || null, 0, source.scoring_override_json || null,
+    source.scoring_settings_json || null, source.outcome_mode || 'OPTIONAL',
+  )];
+  for (const row of subjects) statements.push(env.DB.prepare('INSERT INTO exam_subjects (id,exam_id,subject_id,question_count,sort_order,wrong_divisor,question_start,question_end,option_count) VALUES(?,?,?,?,?,?,?,?,?)').bind(
+    uuid('es'), id, row.subject_id, row.question_count, row.sort_order, row.wrong_divisor, row.question_start || 1,
+    row.question_end || (Number(row.question_start || 1) + Number(row.question_count || 0) - 1), row.option_count || 5,
+  ));
+  for (const row of booklets) statements.push(env.DB.prepare('INSERT INTO exam_booklets (id,exam_id,code,active) VALUES(?,?,?,?)').bind(uuid('book'), id, row.code, row.active ? 1 : 0));
+  const questionIds = new Map<string, string>();
+  for (const row of questions) {
+    const nextId = uuid('q'); questionIds.set(row.id, nextId);
+    statements.push(env.DB.prepare('INSERT INTO exam_questions (id,exam_id,subject_id,question_no,global_no,option_count,question_status) VALUES(?,?,?,?,?,?,?)').bind(
+      nextId, id, row.subject_id, row.question_no, row.global_no, row.option_count || 5, row.question_status || 'ACTIVE',
+    ));
+  }
+  for (const row of answerKeys) {
+    const nextQuestionId = questionIds.get(row.exam_question_id); if (!nextQuestionId) continue;
+    statements.push(env.DB.prepare('INSERT INTO answer_keys (id,exam_question_id,booklet_code,correct_answer,option_count,accepted_answers,question_status) VALUES(?,?,?,?,?,?,?)').bind(
+      uuid('ak'), nextQuestionId, row.booklet_code, row.correct_answer, row.option_count || 5, row.accepted_answers || row.correct_answer || '', row.question_status || 'ACTIVE',
+    ));
+  }
+  for (const row of questionOutcomes) {
+    const nextQuestionId = questionIds.get(row.exam_question_id);
+    if (nextQuestionId) statements.push(env.DB.prepare('INSERT INTO question_outcomes (exam_question_id,outcome_id) VALUES(?,?)').bind(nextQuestionId, row.outcome_id));
+  }
+  for (const row of optionalAnswerKeys) statements.push(env.DB.prepare('INSERT INTO exam_optional_answer_keys (id,exam_id,subject_id,booklet_code,question_no,correct_answer,option_count,accepted_answers,question_status) VALUES(?,?,?,?,?,?,?,?,?)').bind(
+    uuid('oak'), id, row.subject_id, row.booklet_code, row.question_no, row.correct_answer, row.option_count || 4, row.accepted_answers || row.correct_answer || '', row.question_status || 'ACTIVE',
+  ));
+  for (const row of bookletOrders) {
+    const nextQuestionId = questionIds.get(row.exam_question_id);
+    if (nextQuestionId) statements.push(env.DB.prepare('INSERT INTO exam_question_booklet_orders (id,exam_id,exam_question_id,booklet_code,printed_question_no) VALUES(?,?,?,?,?)').bind(
+      uuid('eqbo'), id, nextQuestionId, row.booklet_code, row.printed_question_no,
+    ));
+  }
+  for (const row of institutions) statements.push(env.DB.prepare('INSERT INTO exam_institutions (id,exam_id,institution_id,enabled) VALUES(?,?,?,?)').bind(uuid('ei'), id, row.institution_id, row.enabled ? 1 : 0));
+  for (const row of assets) statements.push(env.DB.prepare('INSERT INTO exam_document_assets (id,exam_id,asset_type,booklet_code,r2_key,file_name,mime_type,byte_size,version,status,visibility,metadata_json,created_by,archived_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(
+    uuid('eda'), id, row.asset_type, row.booklet_code, row.r2_key, row.file_name, row.mime_type, row.byte_size || 0, row.version || 1,
+    row.status || 'READY', row.visibility || 'INSTITUTION_TEACHER', row.metadata_json || null, user.id, row.archived_at || null,
+  ));
+  for (const row of opticalBindings) statements.push(env.DB.prepare('INSERT INTO exam_optical_bindings (id,exam_id,booklet_code,optical_template_version_id,input_modes_json,active,created_by) VALUES(?,?,?,?,?,?,?)').bind(
+    uuid('eob'), id, row.booklet_code, row.optical_template_version_id, row.input_modes_json || '["TXT","DAT","CAMERA"]', row.active ? 1 : 0, user.id,
+  ));
+  await env.DB.batch(statements);
+  await audit(env.DB, user.id, source.institution_id || null, 'EXAM_DEFINITION_CLONED', 'exam', id, { sourceExamId: examId, title });
+  return Response.json({ ok: true, id, sourceId: examId }, { status: 201 });
+}
+
+async function archiveDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
+  const exam = await managedExam(env, user, examId);
+  if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
+  if (exam.status === 'ARCHIVED') return Response.json({ ok: true, archived: true });
+  if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Yayınlanmış veya kapanmış sınav silinemez. Önce sınavı taslak durumuna alın.');
+  const participants = await one<{ count: number }>(env.DB.prepare('SELECT count(*) count FROM exam_participants WHERE exam_id=?').bind(examId));
+  if (Number(participants?.count || 0) > 0) return err(409, 'EXAM_HAS_PARTICIPANTS', 'Katılımcısı bulunan sınav arşivlenemez.');
+  await env.DB.prepare("UPDATE exams SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='DRAFT'").bind(examId).run();
+  await audit(env.DB, user.id, exam.institution_id || null, 'EXAM_DEFINITION_ARCHIVED', 'exam', examId, { title: exam.title });
+  return Response.json({ ok: true, archived: true });
 }
 
 async function readiness(env: Env, examId: string): Promise<any> {
@@ -781,10 +862,14 @@ export default {
       return err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     }
 
+    const clone = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/clone$/);
+    if (clone) return request.method === 'POST' ? cloneDefinition(env, auth, clone[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+
     const detail = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)$/);
     if (detail) {
       if (request.method === 'GET') return getDefinition(env, auth, detail[1]);
       if (request.method === 'PATCH') return updateGeneral(request, env, auth, detail[1]);
+      if (request.method === 'DELETE') return archiveDefinition(env, auth, detail[1]);
       return err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     }
     const structure = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/structure$/);

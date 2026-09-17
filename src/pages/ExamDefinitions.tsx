@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Archive, ArrowRight, BookOpenCheck, Check, CheckCircle2, CircleAlert, Clock3, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, PlayCircle, Printer, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, UploadCloud, Workflow } from 'lucide-react';
+import { Archive, ArrowLeft, ArrowRight, BookOpenCheck, Check, CheckCircle2, CircleAlert, Clock3, Copy, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, Pencil, PlayCircle, Printer, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, Trash2, UploadCloud, Workflow } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
@@ -69,6 +69,7 @@ export function ExamDefinitions() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [rowActionBusy, setRowActionBusy] = useState('');
 
   const [createMethod, setCreateMethod] = useState<CreateMethod>('ANSWER_KEY');
   const [builderStep, setBuilderStep] = useState<BuilderStep>(1);
@@ -128,6 +129,32 @@ export function ExamDefinitions() {
     if (!createForm.institutionId && data.institutions?.[0]?.id) setCreateForm((f) => ({ ...f, institutionId: data.institutions[0].id }));
   };
   const loadRows = async () => { const data = await api<any>('/api/exam-definitions'); setRows(data.exams || []); };
+
+  const openExam = (id: string) => {
+    setError(''); setNotice(''); setDetail(null); setSelectedId(id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  const returnToList = () => {
+    setSelectedId(''); setDetail(null); setCreatedExamId('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  const cloneExam = async (id: string) => {
+    setRowActionBusy(id); setError('');
+    try {
+      const copied = await api<any>(`/api/exam-definitions/${id}/clone`, { method: 'POST' });
+      await loadRows(); setCreatedExamId(copied.id); setDetail(null); setSelectedId(copied.id);
+      setNotice('Sınav kopyalandı ve yeni taslak çalışma alanı açıldı.');
+    } catch (e: any) { setError(e.message); } finally { setRowActionBusy(''); }
+  };
+  const archiveExam = async (id: string, title: string) => {
+    if (!confirm(`“${title}” sınavını listeden kaldırıp arşivlemek istiyor musunuz? Veriler geri dönüşsüz silinmeyecek.`)) return;
+    setRowActionBusy(id); setError('');
+    try {
+      await api(`/api/exam-definitions/${id}`, { method: 'DELETE' });
+      if (selectedId === id) returnToList();
+      await loadRows(); setNotice('Sınav arşivlendi; aktif sınav listesinden kaldırıldı.');
+    } catch (e: any) { setError(e.message); } finally { setRowActionBusy(''); }
+  };
   const loadDetail = async (id: string) => {
     if (!id) { setDetail(null); return; }
     const data = await api<any>(`/api/exam-definitions/${id}`);
@@ -488,7 +515,7 @@ export function ExamDefinitions() {
   };
 
   return <>
-    <div className="exam-simple-shell">
+    {!selectedId && <div className="exam-simple-shell">
       <div className="exam-simple-head">
         <div><span className="eyebrow">SINAV MERKEZİ</span><h1>Sınavlar</h1><p>Sınav kartını oluşturun veya mevcut sınava sonuç yükleyin.</p></div>
         <div className="exam-simple-actions"><Link className="secondary" to="/exam-center?mode=upload"><UploadCloud size={16}/> Sınav Yükle</Link><a className="primary" href="#exam-card" onClick={() => { setSelectedId(''); setCreatedExamId(''); setBuilderStep(1); }}><FileText size={16}/> Sınav Ekle</a></div>
@@ -552,14 +579,20 @@ export function ExamDefinitions() {
       </section>}
 
       <div className="exam-simple-actions-footer"><button type="button" className="secondary" disabled={busy || builderStep === 1} onClick={() => setBuilderStep((current) => Math.max(1, current - 1) as BuilderStep)}>Geri</button><div className="builder-footer-status">Adım {builderStep}/4 <span>{stepReady(builderStep) ? 'Hazır' : 'Eksik alan var'}</span></div>{builderStep < 4 ? <button type="button" className="primary" disabled={busy} onClick={nextBuilderStep}>Devam et <ArrowRight size={16}/></button> : <><button type="button" className="secondary" disabled={busy} onClick={() => void createExam(true)}><Save size={16}/> Taslak Olarak Kaydet</button><button type="button" className="primary" disabled={busy || !stepReady(4)} onClick={() => void createExam()}><Check size={17}/> Sınavı Kaydet</button></>}</div>
-    </div>
+    </div>}
 
+    {!selectedId && <>
     <div className="exam-list-heading"><div><h2>Kayıtlı sınavlar</h2><p>Oluşturduğunuz sınavları buradan açıp düzenleyebilirsiniz.</p></div></div>
-    <div className="table-card" style={{ marginBottom: 20 }}><table><thead><tr><th>Sınav</th><th>Tür / Sınıf</th><th>Durum</th><th>Platform</th><th>Ders / Soru</th><th>Cevap</th><th>Kazanım</th><th></th></tr></thead><tbody>{rows.map((r) => <tr key={r.id}><td><strong>{r.title}</strong><br /><small>{r.academic_year}{r.publisher_name ? ` · ${r.publisher_name}` : ''}{r.institution_name ? ` · ${r.institution_name}` : ''}</small></td><td>{r.exam_type} · {r.grade_level ? `${r.grade_level}. sınıf` : '-'}</td><td><span className={`status ${r.status === 'ACTIVE' ? 'ok' : 'neutral'}`}>{r.status}</span></td><td>{r.result_network_enabled ? <span className="status ok">Sonuç ağı</span> : <span className="status neutral">app</span>}</td><td>{r.subject_count} / {r.question_count}</td><td>{r.answer_count}</td><td>{r.outcome_mapped_count}</td><td><button className="ghost" onClick={() => setSelectedId(r.id)}>Aç / Düzenle</button></td></tr>)}</tbody></table></div>
+    <div className="table-card exam-definitions-table"><table><thead><tr><th>Sınav</th><th>Tür / Sınıf</th><th>Durum</th><th>Platform</th><th>Ders / Soru</th><th>Cevap</th><th>Kazanım</th><th>İşlemler</th></tr></thead><tbody>{rows.map((r) => <tr key={r.id} className="exam-list-row" onClick={() => openExam(r.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openExam(r.id); } }} tabIndex={0}><td><strong>{r.title}</strong><br /><small>{r.academic_year}{r.publisher_name ? ` · ${r.publisher_name}` : ''}{r.institution_name ? ` · ${r.institution_name}` : ''}</small></td><td>{r.exam_type} · {r.grade_level ? `${r.grade_level}. sınıf` : '-'}</td><td><span className={`status ${r.status === 'ACTIVE' ? 'ok' : 'neutral'}`}>{r.status}</span></td><td>{r.result_network_enabled ? <span className="status ok">Sonuç ağı</span> : <span className="status neutral">app</span>}</td><td>{r.subject_count} / {r.question_count}</td><td>{r.answer_count}</td><td>{r.outcome_mapped_count}</td><td><div className="exam-list-actions" onClick={(e) => e.stopPropagation()}><button className="exam-action-open" disabled={rowActionBusy === r.id} onClick={() => openExam(r.id)}><Eye size={14} /> Aç</button><button className="ghost" disabled={rowActionBusy === r.id} onClick={() => openExam(r.id)}><Pencil size={14} /> Düzenle</button><button className="ghost" disabled={rowActionBusy === r.id} onClick={() => void cloneExam(r.id)}><Copy size={14} /> Kopyala</button><button className="exam-action-danger" disabled={rowActionBusy === r.id} onClick={() => void archiveExam(r.id, r.title)}><Trash2 size={14} /> Sil</button></div></td></tr>)}</tbody></table></div>
+    </>}
+
+    {selectedId && <div className="exam-workspace-view">
+      <div className="exam-workspace-backbar"><button type="button" className="ghost" onClick={returnToList}><ArrowLeft size={16} /> Sınav listesine dön</button><span>Sınav Merkezi <b>/</b> Çalışma alanı</span></div>
+      {!detail && <div className="exam-workspace-loading"><RefreshCw size={18} className="spin" /> Sınav çalışma alanı hazırlanıyor…</div>}
 
     {detail && <>
-      <div className="section-head"><div><h2>{detail.exam.title}</h2><p>{detail.exam.exam_type} · {detail.exam.grade_level}. sınıf · {detail.exam.status === 'DRAFT' ? 'Düzenlenebilir taslak' : 'Yayında'}{detail.exam.outcome_mode === 'OFFICIAL_REQUIRED' ? ' · doğrulanmış kazanım zorunlu' : ''}{detail.exam.result_network_enabled ? ' · sonuc.anunex.com seçili' : ''}</p></div>{detail.exam.status === 'DRAFT' && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="secondary" disabled={busy} onClick={saveGeneral}><Save size={16} /> Kartı güncelle</button><button className="primary" disabled={busy || !detail.readiness?.ready_to_publish} onClick={publish}><Send size={17} /> Sınavı Yayınla</button></div>}</div>
-      <div className="kpi-grid" style={{ marginBottom: 20 }}><div className="kpi-card"><span>Soru</span><strong>{detail.readiness?.actual_questions || 0}/{detail.readiness?.expected_questions || 0}</strong></div><div className="kpi-card"><span>Cevap</span><strong>{detail.readiness?.actual_answers || 0}/{detail.readiness?.expected_answers || 0}</strong></div><div className="kpi-card"><span>Kazanımlı Soru</span><strong>{detail.readiness?.outcome_mapped_questions || 0}</strong></div><div className="kpi-card"><span>Hazır mı?</span><strong>{detail.readiness?.ready_to_publish ? 'Evet' : 'Eksik var'}</strong></div></div>
+      <div className="exam-workspace-header"><div className="workspace-title"><span className="eyebrow">SINAV ÇALIŞMA ALANI</span><h1>{detail.exam.title}</h1><p>{detail.exam.exam_type} · {detail.exam.grade_level ? `${detail.exam.grade_level}. sınıf` : 'Sınıf belirtilmemiş'} · {detail.exam.status === 'DRAFT' ? 'Düzenlenebilir taslak' : detail.exam.status === 'ACTIVE' ? 'Yayında' : 'Kapalı'}{detail.exam.outcome_mode === 'OFFICIAL_REQUIRED' ? ' · doğrulanmış kazanım zorunlu' : ''}{detail.exam.result_network_enabled ? ' · sonuc.anunex.com seçili' : ''}</p></div><div className="exam-workspace-actions"><button className="secondary" onClick={() => document.getElementById('exam-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}><Pencil size={15} /> Düzenle</button><button className="ghost" disabled={rowActionBusy === selectedId} onClick={() => void cloneExam(selectedId)}><Copy size={15} /> Kopyala</button><button className="exam-action-danger" disabled={rowActionBusy === selectedId} onClick={() => void archiveExam(selectedId, detail.exam.title)}><Trash2 size={15} /> Sil</button><Link className="secondary" to="/exam-center?mode=upload"><UploadCloud size={15} /> Sonuç yükle</Link>{detail.exam.status === 'DRAFT' && <button className="secondary" disabled={busy} onClick={saveGeneral}><Save size={15} /> Kartı güncelle</button>}{detail.exam.status === 'DRAFT' && <button className="primary" disabled={busy || !detail.readiness?.ready_to_publish} onClick={publish}><Send size={16} /> Sınavı yayınla</button>}</div></div>
+      <div id="exam-editor" className="kpi-grid" style={{ marginBottom: 20 }}><div className="kpi-card"><span>Soru</span><strong>{detail.readiness?.actual_questions || 0}/{detail.readiness?.expected_questions || 0}</strong></div><div className="kpi-card"><span>Cevap</span><strong>{detail.readiness?.actual_answers || 0}/{detail.readiness?.expected_answers || 0}</strong></div><div className="kpi-card"><span>Kazanımlı Soru</span><strong>{detail.readiness?.outcome_mapped_questions || 0}</strong></div><div className="kpi-card"><span>Hazır mı?</span><strong>{detail.readiness?.ready_to_publish ? 'Evet' : 'Eksik var'}</strong></div></div>
       {detail.exam.status === 'DRAFT' && <>
         <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Dersler ve soru aralıkları</h2><p>Başlangıç/bitiş numarası ve 4 veya 5 şık yapısı soru tanımının parçasıdır.</p></div></div><label>Kitapçıklar<input value={booklets} onChange={(e) => setBooklets(e.target.value)} /></label><div className="cards-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div style={{ flex: 1 }}><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label><label className="compact-field">Yanlış götürme<input type="number" step="0.5" value={cfg.wrongDivisor} onChange={(e) => patchSubject(s.id, { wrongDivisor: Number(e.target.value) })} /></label></>}</div>; })}</div><button className="secondary" onClick={saveStructure}><Save size={16} /> Yapıyı Kaydet</button></div>
 
@@ -583,5 +616,6 @@ export function ExamDefinitions() {
       </section>
       {!detail.readiness?.ready_to_publish && <div className="alert warning"><CircleAlert size={16} /> Yayın için soru sayısı, bütün kitapçık cevapları ve doğrulanmış puanlama kuralı tamamlanmalıdır.{outcomeRequired ? ' Kazanımlı sınavda ayrıca her soru kazanıma bağlanmalıdır.' : ''}</div>}
     </>}
+    </div>}
   </>;
 }
