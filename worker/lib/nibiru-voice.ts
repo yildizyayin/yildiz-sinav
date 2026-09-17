@@ -19,7 +19,7 @@ function pemToArrayBuffer(pem:string):ArrayBuffer{const clean=pem.replace(/-----
 
 export function prepareNibiruSpeechText(value:string){
  return String(value||'')
-  .replace(/^\s*🤖\s*Nibiru\s*:\s*/i,'')
+  .replace(/^\s*(?:\u{1F916}\s*)?Nibiru\s*:\s*/iu,'')
   .replace(/```[\s\S]*?```/g,' ')
   .replace(/[*_#>`~]/g,'')
   .replace(/https?:\/\/\S+/g,'bağlantı')
@@ -38,7 +38,7 @@ export function voiceProviderStatus(env:Env){
   google:{ready:googleConfigured,provider:'GOOGLE_WAVENET',voice:env.NIBIRU_GOOGLE_TTS_VOICE||'tr-TR-Wavenet-E',detail:googleConfigured?'Google Cloud servis hesabı tanımlı.':'GOOGLE_TTS_SERVICE_ACCOUNT_JSON secret bekleniyor.'},
   openaiDirect:{ready:directOpenAi,provider:'OPENAI_GPT4O_MINI_TTS',model:env.NIBIRU_OPENAI_DIRECT_TTS_MODEL||'gpt-4o-mini-tts',detail:directOpenAi?'OpenAI TTS secret tanımlı.':'OPENAI_TTS_API_KEY opsiyonel; Unified Billing fallback kullanılabilir.'},
   openaiUnified:{ready:unified,provider:'CLOUDFLARE_AI_GATEWAY_UNIFIED',standardModel:env.NIBIRU_OPENAI_TTS_MODEL||'openai/tts-1',premiumModel:env.NIBIRU_OPENAI_TTS_HD_MODEL||'openai/tts-1-hd',detail:unified?'Workers AI binding üzerinden Unified Billing çağrısına hazır.':'Workers AI binding eksik.'},
-  standardReady:googleConfigured||unified,
+  standardReady:googleConfigured||unified||directOpenAi,
   premiumReady:directOpenAi||unified||googleConfigured,
  };
 }
