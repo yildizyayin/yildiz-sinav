@@ -46,7 +46,7 @@ export function ExamCenter(){
     {error&&<div className="alert error">{error}</div>}
     <div className="exam-entry-grid">
       <section className="exam-entry-card primary-entry"><div className="entry-icon"><Search size={24}/></div><h2>Kayıtlı Sınavı Değerlendir</h2><p>Süper Admin tarafından tanımlanan merkezi, zincir veya kurum sınavını bulun; optikleri yükleyin ve sonuçları alın.</p><div className="exam-workflow-strip"><span>1 · Sınavı seç</span><span>2 · Cevapları yükle</span><span>3 · Kontrol et ve sonuçlandır</span></div><div className="entry-actions"><button className="primary" onClick={()=>setEntryMode('CATALOG')}>Kayıtlı Sınavları Aç <ChevronRight size={17}/></button></div></section>
-      <section className="exam-entry-card"><div className="entry-icon"><FilePlus2 size={24}/></div><h2>Kurum Sınavı Oluştur / Yükle</h2><p>5–12. sınıf, LGS, TYT, AYT veya sözel–sayısal bileşik modeli seçin; cevap anahtarından kendi sınavınızı oluşturun.</p><div className="exam-workflow-strip"><span>Hazır puanlama</span><span>Oturum birleştirme</span><span>Karne ve rapor</span></div><div className="entry-actions"><Link className="primary" to="/exam-definitions">Yeni Sınav Oluştur <ChevronRight size={17}/></Link></div></section>
+      <section className="exam-entry-card"><div className="entry-icon"><FilePlus2 size={24}/></div><h2>Kurum Sınavı Oluştur / Yükle</h2><p>5–12. sınıf, LGS, TYT, AYT veya sözel–sayısal bileşik modeli seçin; cevap anahtarından kendi sınavınızı oluşturun.</p><div className="exam-workflow-strip"><span>Hazır puanlama</span><span>Oturum birleştirme</span><span>Karne ve rapor</span></div><div className="entry-actions"><Link className="primary" to="/exam-definitions">Sınav Ekle <ChevronRight size={17}/></Link></div></section>
     </div>
     <div className="panel"><div className="panel-head"><div><h2>Sınav süreci tek merkezde</h2><p>Optik hazırlama, kamera okuma, hata kontrolü, değerlendirme, sıralama ve raporlar aynı sınav kaydı üzerinden ilerler.</p></div><CheckCircle2 size={22}/></div><div className="scope-tabs"><span className="scope-badge central"><Globe2 size={13}/> Türkiye Geneli</span><span className="scope-badge network"><Network size={13}/> Zincir Kurum</span><span className="scope-badge institution"><Building2 size={13}/> Kurum / Sınıf / Şube</span></div></div>
   </>;
@@ -90,7 +90,7 @@ export function ExamCenter(){
       {isSuper&&<CatalogEditor exam={selected} onSaved={async()=>{await load();setSelected(null)}} onError={setError} onNotice={setNotice}/>} 
     </div>}
 
-    {isSuper&&<div className="panel"><div className="panel-head"><div><h2>Merkez yönetim araçları</h2><p>Yayınevi sınavı, cevap anahtarı, kazanım ve optik tanımları kurum ekranından ayrıdır.</p></div></div><div style={{display:'flex',gap:10,flexWrap:'wrap'}}><Link className="secondary" to="/exam-definitions">Gelişmiş Sınav Tanımı</Link><Link className="secondary" to="/opticals">Optik Şablon Merkezi</Link><Link className="secondary" to="/enterprise">Zincir / Yayınevi Yönetimi</Link></div></div>}
+    {isSuper&&<div className="panel"><div className="panel-head"><div><h2>Merkez yönetim araçları</h2><p>Yayınevi sınavı, cevap anahtarı, kazanım ve optik tanımları kurum ekranından ayrıdır.</p></div></div><div style={{display:'flex',gap:10,flexWrap:'wrap'}}><Link className="secondary" to="/exam-definitions">Sınav Ekle</Link><Link className="secondary" to="/opticals">Optik Şablon Merkezi</Link><Link className="secondary" to="/enterprise">Zincir / Yayınevi Yönetimi</Link></div></div>}
   </>;
 }
 
