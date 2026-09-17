@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { answerStringValid, canManageExamDefinitions, normalizeBookletCodes, ownerTypeAllowed } from '../worker/exam-admin-entry';
+import { answerStringValid, canManageExamDefinitions, normalizeAcceptedAnswers, normalizeBookletCodes, ownerTypeAllowed } from '../worker/exam-admin-entry';
 
 describe('exam definition center rules', () => {
   it('allows only super admin and institution manager to manage definitions', () => {
@@ -30,5 +30,12 @@ describe('exam definition center rules', () => {
     expect(answerStringValid('ABC?E', 5)).toBe(false);
     expect(answerStringValid('ABCD', 4, 4)).toBe(true);
     expect(answerStringValid('ABCE', 4, 4)).toBe(false);
+  });
+
+  it('falls back to the primary answer when accepted answers are empty', () => {
+    expect(normalizeAcceptedAnswers([], 'A')).toEqual(['A']);
+    expect(normalizeAcceptedAnswers([''], 'C')).toEqual(['C']);
+    expect(normalizeAcceptedAnswers('A|B', 'A')).toEqual(['A', 'B']);
+    expect(normalizeAcceptedAnswers(['A', 'B'], 'A')).toEqual(['A', 'B']);
   });
 });

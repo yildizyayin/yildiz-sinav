@@ -129,8 +129,7 @@ describe('TYT optional answer-key envelope', () => {
       { id: 'tyt_tur', code: 'TYT_TUR', name: 'Türkçe' },
       { id: 'tyt_fel', code: 'TYT_FEL', name: 'Felsefe (seçmeli)' },
     ];
-    const result = parseAnswerKeyText(`TYT_TUR: ${'A'.repeat(40)}
-TYT_FEL: ABCDE`, tytSubjects);
+    const result = parseAnswerKeyText('TYT_TUR: ' + 'A'.repeat(40) + '\nTYT_FEL: ABCDE', tytSubjects);
     expect(result.questionCounts.tyt_tur).toBe(40);
     expect(result.questionCounts.tyt_fel).toBe(5);
     const tyt = EXAM_TEMPLATES.find((x) => x.key === 'TYT');

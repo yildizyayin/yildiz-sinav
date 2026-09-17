@@ -1,1 +1,1 @@
-one-shot production deployment marker — canonical Nibiru design
+one-shot production deployment marker — optical geometry, camera batch binding and source layout fix
