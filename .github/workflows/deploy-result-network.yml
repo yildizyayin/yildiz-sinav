@@ -8,8 +8,8 @@ on:
         required: true
         default: false
         type: boolean
-  # Push marker worker'ı yeniden deploy eder; domain ve Turnstile değişikliği
-  # yalnızca attach_domain=true ile açıkça başlatılan manuel akışta yapılır.
+  # Final push marker, doğrulama sonrasında sonuç Worker'ını ve sonuc.anunex.com
+  # Turnstile/domain bağını birlikte günceller; manuel akış aynı seçeneği korur.
   push:
     branches:
       - main
@@ -56,7 +56,7 @@ jobs:
 
 
       - name: Authorize sonuc.anunex.com on the production Turnstile widget
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.attach_domain == true }}
+        if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.attach_domain == true) }}
         shell: bash
         run: |
           set -euo pipefail
@@ -167,7 +167,7 @@ jobs:
 
       - name: Attach sonuc.anunex.com
         id: attach
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.attach_domain == true }}
+        if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.attach_domain == true) }}
         shell: bash
         run: |
           set -euo pipefail
@@ -226,7 +226,7 @@ jobs:
           fi
 
       - name: Verify sonuc.anunex.com after attachment
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.attach_domain == true }}
+        if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.attach_domain == true) }}
         env:
           RESULT_BASE_URL: https://sonuc.anunex.com
         run: node scripts/live-result-network-smoke.mjs
