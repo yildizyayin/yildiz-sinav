@@ -22,7 +22,7 @@ permissions:
 
 concurrency:
   group: production-result-network
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   dogrula:

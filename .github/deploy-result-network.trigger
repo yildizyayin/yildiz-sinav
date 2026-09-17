@@ -1,1 +1,1 @@
-result network deployment marker — include canonical Nibiru design
+result network deployment marker — supersede stale pending runs
