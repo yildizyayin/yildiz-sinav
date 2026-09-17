@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Archive, ArrowLeft, BarChart3, Building2, CheckCircle2, ChevronRight, FilePlus2, FileText, FileUp, Globe2, LockKeyhole, Network, Play, RefreshCw, ScanLine, Search, Send, Settings2, Sparkles, TriangleAlert, UploadCloud, Save } from 'lucide-react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { api, ApiError, qs } from '../api';
 import { useAuth } from '../auth';
 import { NibiruMark } from '../components/NibiruMark';
@@ -13,14 +13,17 @@ type ExamRow = {
 
 export function ExamCenter(){
   const {user}=useAuth();
+  const location=useLocation(); const navigate=useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const modeParam = searchParams.get('mode');
+  const routedEntryMode = location.pathname.endsWith('/upload') || location.pathname.endsWith('/catalog') || modeParam === 'upload' || modeParam === 'catalog' ? 'CATALOG' as const : null;
+  const entryLabel = location.pathname.endsWith('/catalog') ? 'KATALOGDAN EKLE' : 'YÜKLE VE DEĞERLENDİR';
   const [rows,setRows]=useState<ExamRow[]>([]); const [q,setQ]=useState(''); const [scope,setScope]=useState(''); const [selected,setSelected]=useState<ExamRow|null>(null);
   const [files,setFiles]=useState<File[]>([]); const [fileIndex,setFileIndex]=useState(0); const file=files[fileIndex]||null; const [preview,setPreview]=useState<any>(null); const [batch,setBatch]=useState<any>(null); const [templates,setTemplates]=useState<any[]>([]); const [templateId,setTemplateId]=useState('');
   const [loading,setLoading]=useState(false); const [error,setError]=useState(''); const [notice,setNotice]=useState(''); const [stats,setStats]=useState<any>(null);
-  const [entryMode,setEntryMode]=useState<'CATALOG'|null>(() => modeParam === 'upload' || modeParam === 'catalog' ? 'CATALOG' : null);
+  const [entryMode,setEntryMode]=useState<'CATALOG'|null>(routedEntryMode);
   const isSuper=user?.role==='SUPER_ADMIN';
-  useEffect(() => { if (modeParam === 'upload' || modeParam === 'catalog') setEntryMode('CATALOG'); }, [modeParam]);
+  useEffect(() => { setEntryMode(routedEntryMode); }, [routedEntryMode]);
 
   const load=async()=>{const r=await api<any>(`/api/platform/exam-center/catalog${qs({q:q||null,scope:scope||null})}`);setRows(r.exams||[]);if(selected){const fresh=(r.exams||[]).find((x:ExamRow)=>x.id===selected.id);if(fresh)setSelected(fresh)}};
   useEffect(()=>{void load().catch(e=>setError(e.message))},[]);
@@ -52,7 +55,7 @@ export function ExamCenter(){
           <div className="exam-center-brand-row"><span className="exam-center-kicker">ANUNEX · SINAV MERKEZİ</span><span className="exam-center-live"><span/> Nibiru hazır</span></div>
           <h1>Sınavı kurun, okutun, sonucu yönetin.</h1>
           <p>Tanımlı sınavlar, kazanımlı cevap anahtarları, optik dosyaları ve sonuç yayınını tek çalışma alanında yönetin.</p>
-          <div className="exam-center-hero-actions"><Link className="primary" to="/exam-definitions"><FilePlus2 size={17}/> Sınav Ekle</Link><Link className="ghost light" to="/exam-center?mode=upload"><UploadCloud size={17}/> Sınav Yükle</Link></div>
+          <div className="exam-center-hero-actions"><Link className="primary" to="/exam-definitions"><FilePlus2 size={17}/> Sınav Ekle</Link><Link className="ghost light" to="/exam-center/upload"><UploadCloud size={17}/> Sınav Yükle</Link></div>
         </div>
         <div className="exam-center-nibiru-orb" aria-label="Nibiru sınav değerlendirme asistanı"><NibiruMark size={78} state="active" showWordmark/><span>Değerlendirme asistanı</span><small>Akışınızı kontrol eder</small></div>
       </section>
@@ -61,7 +64,7 @@ export function ExamCenter(){
           <div className="exam-center-section-head"><div><span className="eyebrow">HIZLI İŞLEMLER</span><h2>Bugün ne yapmak istiyorsunuz?</h2><p>En sık kullanılan işlemlere tek dokunuşla geçin.</p></div><span className="exam-center-count">{readyRows.length} kayıtlı sınav</span></div>
           <div className="exam-center-action-grid">
             <Link className="exam-center-action-card exam-center-action-blue" to="/exam-definitions"><span className="exam-center-action-icon"><FilePlus2 size={20}/></span><span><strong>Sınav Ekle</strong><small>Sınav kartı, cevap anahtarı ve yayın ayarları</small></span><ChevronRight size={17}/></Link>
-            <Link className="exam-center-action-card exam-center-action-violet" to="/exam-center?mode=upload"><span className="exam-center-action-icon"><FileUp size={20}/></span><span><strong>Sınav Yükle</strong><small>TXT, DAT, FMT veya kamera verisini değerlendir</small></span><ChevronRight size={17}/></Link>
+            <Link className="exam-center-action-card exam-center-action-violet" to="/exam-center/upload"><span className="exam-center-action-icon"><FileUp size={20}/></span><span><strong>Sınav Yükle</strong><small>TXT, DAT, FMT veya kamera verisini değerlendir</small></span><ChevronRight size={17}/></Link>
             <Link className="exam-center-action-card exam-center-action-teal" to="/opticals"><span className="exam-center-action-icon"><ScanLine size={20}/></span><span><strong>Optik Tanımla</strong><small>FMT, manuel alan ve kamera okuma referansları</small></span><ChevronRight size={17}/></Link>
             <Link className="exam-center-action-card exam-center-action-amber" to="/exam-definitions"><span className="exam-center-action-icon"><Archive size={20}/></span><span><strong>Belge arşivi</strong><small>Kazanımlı anahtar, PDF, logo ve video bağlantıları</small></span><ChevronRight size={17}/></Link>
           </div>
@@ -76,7 +79,7 @@ export function ExamCenter(){
   </>;
 
   return <>
-    <div className="page-head exam-operation-head"><div><span className="eyebrow">SINAV MERKEZİ / YÜKLE VE DEĞERLENDİR</span><h1>Sınavı seçin, sonucu güvenle tamamlayın</h1><p>Tek bir çalışma alanında sınavı bulun, TXT / DAT / CSV / FMT verisini kontrol edin ve sonuçları yayınlamaya hazır hâle getirin.</p></div><div className="exam-operation-head-actions"><button className="ghost" onClick={()=>{setEntryMode(null);setSearchParams({})}}><ArrowLeft size={16}/> Merkeze dön</button><button className="ghost" onClick={()=>void load()}><RefreshCw size={16}/> Yenile</button></div></div>
+    <div className="page-head exam-operation-head"><div><span className="eyebrow">{`SINAV MERKEZİ / ${entryLabel}`}</span><h1>{location.pathname.endsWith('/catalog')?'Katalogdan sınav seçin':'Sınavı seçin, sonucu güvenle tamamlayın'}</h1><p>Tek bir çalışma alanında sınavı bulun, TXT / DAT / CSV / FMT verisini kontrol edin ve sonuçları yayınlamaya hazır hâle getirin.</p></div><div className="exam-operation-head-actions"><button className="ghost" onClick={()=>{setEntryMode(null);navigate('/exam-center')}}><ArrowLeft size={16}/> Merkeze dön</button><button className="ghost" onClick={()=>void load()}><RefreshCw size={16}/> Yenile</button></div></div>
     {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
     <div className="exam-operation-stepper" aria-label="Sınav değerlendirme adımları">
       <div className={activeOperationStep >= 1 ? 'active' : ''}><span>01</span><div><strong>Sınavı seç</strong><small>Yayınlanmış sınavı bul</small></div></div>

@@ -134,7 +134,8 @@ export function ExamDefinitions() {
     setDetail(data);
     const examType = String(data.exam.exam_type || 'STANDARD');
     setChoiceKey(examType === 'STANDARD' ? `STD_${data.exam.grade_level}` : examType === 'CUSTOM' ? 'CUSTOM' : examType === 'MIDDLE_COMPOSITE' ? `MID_${data.exam.grade_level}` : examType);
-    setCreateForm((f) => ({ ...f, publisherName: data.exam.publisher_name || '', sessionLabel: data.exam.session_label || '', description: data.exam.description || '', resultNetworkEnabled: Boolean(data.exam.result_network_enabled), gradeLevel: String(data.exam.grade_level || f.gradeLevel), scoringRuleVersionId: data.exam.scoring_rule_version_id || '' }));
+    setCreateForm((f) => ({ ...f, ownerType: data.exam.owner_type || f.ownerType, institutionId: data.exam.institution_id || f.institutionId, academicYear: data.exam.academic_year || f.academicYear, title: data.exam.title || '', examDate: data.exam.exam_date || '', publisherName: data.exam.publisher_name || '', sessionLabel: data.exam.session_label || '', description: data.exam.description || '', resultNetworkEnabled: Boolean(data.exam.result_network_enabled), gradeLevel: String(data.exam.grade_level || f.gradeLevel), scoringRuleVersionId: data.exam.scoring_rule_version_id || '' }));
+    setDefinitionMode(data.exam.outcome_mode === 'OFFICIAL_REQUIRED' ? 'OUTCOME' : 'STANDARD');
     try { const savedSettings = JSON.parse(data.exam.scoring_settings_json || '{}'); if (savedSettings.show) setResultSettings((current) => ({ ...current, ...savedSettings.show, rankingScopes: savedSettings.rankingScopes || current.rankingScopes, includeObp: Boolean(savedSettings.includeObp) })); } catch { /* legacy exam without result settings */ }
     try { const savedOverride = JSON.parse(data.exam.scoring_override_json || '{}'); if (savedOverride.wrongMode) { const scoreScale = Number(savedOverride.scoreScale || 100); setCustomScoring((current) => ({ ...current, wrongMode: savedOverride.wrongMode, wrongDivisor: Number(savedOverride.wrongDivisor || current.wrongDivisor), scale: [100, 500, 1000].includes(scoreScale) ? scoreScale : 0, customScale: scoreScale, weights: savedOverride.weights || current.weights })); } } catch { /* legacy exam without custom scoring */ }
     setBooklets((data.booklets || []).map((b: any) => b.code).join(','));
@@ -163,6 +164,7 @@ export function ExamDefinitions() {
     setCreateForm((f) => ({ ...f, gradeLevel: String(selectedChoice.gradeLevel || f.gradeLevel) }));
   }, [choiceKey]);
   useEffect(() => { if (selectedId) void loadDetail(selectedId).catch((e) => setError(e.message)); }, [selectedId]);
+  useEffect(() => { if (user) setCreateForm((f) => ({ ...f, ownerType: user.role === 'SUPER_ADMIN' ? f.ownerType : 'INSTITUTION' })); }, [user?.role]);
 
   const selectedSubjectIds = useMemo(() => new Set(subjects.map((s) => s.subjectId)), [subjects]);
   const visibleSubjects = useMemo(() => (options.subjects || []).filter((subject: any) => {
@@ -228,6 +230,7 @@ export function ExamDefinitions() {
 
   const readAnswerFile = async (file?: File) => {
     if (!file) return;
+    if (file.size > 10 * 1024 * 1024) { setError('Cevap anahtarı dosyası 10 MB sınırını geçemez.'); return; }
     setAnswerKeyFile(file);
     let text = '';
     if (file.name.toLowerCase().endsWith('.xlsx')) {
@@ -240,46 +243,42 @@ export function ExamDefinitions() {
   };
 
   const downloadOutcomeTemplate = () => {
-    const bookletCodes = [...new Set(booklets.split(',').map((value) => value.trim().toUpperCase()).filter(Boolean))];
-    const codes = bookletCodes.length ? bookletCodes : ['A', 'B'];
-    const questionColumns = ['A', 'B', 'C', 'D'].map((code) => `${code} Soru`);
-    const headers = ['Kitapçık', 'Test', 'Ders', ...questionColumns, 'Cevap', 'Şık Sayısı', 'Kabul Edilen Cevaplar', 'Durum', 'Kazanım Kodu', 'Kazanım-1', 'Kazanım-2', 'Kazanım-3', 'Kazanım-4', 'Kazanım-5', 'Kazanım-6', 'Ünite', 'Konu', 'Alt Konu', 'Üst Kazanım Kodu'];
-    const rows = selectedTemplate.sections.flatMap((item) => Array.from({ length: item.questionCount }, (_, index) => {
-      const question = item.questionStart + index;
-      const bookletQuestions = ['A', 'B', 'C', 'D'].map((code) => codes.includes(code) ? question : '');
-      return [codes[0], item.label, item.label, ...bookletQuestions, '', item.optionCount, '', 'ACTIVE', '', '', '', '', '', '', '', '', '', '', ''];
-    }));
+    const bookletCodes = [...new Set(booklets.split(',').map((value) => value.trim().toUpperCase()).filter((value) => /^[A-D]$/.test(value)))];
+    const codes = bookletCodes.length ? bookletCodes : ['A'];
+    const headers = ['Kitapçık', 'Test', 'Ders', ...codes.map((code) => `${code} Soru`), ...codes.map((code) => `${code} Cevap`), 'Şık Sayısı', 'Kabul Edilen Cevaplar', 'Durum', 'Kazanım Kodu', 'Kazanım-1', 'Kazanım-2', 'Kazanım-3', 'Kazanım-4', 'Kazanım-5', 'Kazanım-6', 'Ünite', 'Konu', 'Alt Konu', 'Üst Kazanım Kodu'];
+    const rows = selectedTemplate.sections.flatMap((item) => Array.from({ length: item.questionCount }, (_, index) => [
+      codes[0], item.label, item.subjectCode, ...codes.map(() => item.questionStart + index), ...codes.map(() => ''), item.optionCount, '', 'ACTIVE', '', '', '', '', '', '', '', '', '', '', '',
+    ]));
     const instructions = [
-      ['ANUNEX kazanımlı cevap anahtarı şablonu', selectedTemplate.label],
-      ['Kullanım', 'Her bilgi ayrı hücrede tutulur. Soru numaralarını A/B/C/D kitapçıklarına göre düzenleyin; Cevap, Şık Sayısı ve kazanım alanlarını doldurup dosyayı .xlsx olarak yükleyin.'],
-      ['Zorunlu alanlar', 'Kitapçık, Test veya Ders, en az bir kitapçık soru numarası, Cevap ve Kazanım Kodu ya da Kazanım-1.'],
-      ['Soru durumu', 'ACTIVE = aktif, CANCELLED = iptal, EXCLUDED = değerlendirme dışı. Birden fazla kabul edilen cevap için A|B biçimini kullanın.'],
+      ['Alan', 'Kullanım'],
+      ['Kitapçık', 'A/B/C/D kitapçık kodunu belirtir. Bir satırdaki soru numaraları aynı mantıksal sorunun basılı numaralarıdır.'],
+      ['A/B/C/D Soru', 'Her kitapçığın basılı soru numarasını ayrı sütunda tutun; sütunları tek hücrede birleştirmeyin.'],
+      ['A/B/C/D Cevap', 'Her kitapçığın doğru cevabını ayrı sütunda girin. Ortak Cevap alanı kullanılacaksa kitapçık cevabı boş bırakılabilir.'],
+      ['Şık Sayısı', '4 veya 5 girin. 4 şıklı sorularda E kullanılamaz.'],
+      ['Kazanım-1 ... Kazanım-6', 'Bir sorunun birden fazla kazanım açıklaması varsa her birini kendi sütununda bırakın. Sistem bunları kaybetmeden içe aktarır.'],
+      ['Durum', 'ACTIVE, CANCELLED veya EXCLUDED kullanın. İptal/değerlendirme dışı sorular ayrıca izlenir.'],
+      ['Yayın öncesi', 'Sınav kartı ve otomatik eşleştirme sonuçları kontrol edilmeden yayın yapılmaz; resmî puan kuralları değiştirilmez.'],
     ];
     const workbook = XLSX.utils.book_new();
-    const sheet = XLSX.utils.aoa_to_sheet([
-      [createForm.publisherName || 'Yayınevi', null, createForm.title || selectedTemplate.label],
-      [createForm.academicYear, null, `${selectedTemplate.gradeLevel || createForm.gradeLevel || ''}. Sınıf`],
-      headers,
-      ...rows,
-    ]);
-    const guide = XLSX.utils.aoa_to_sheet(instructions);
-    XLSX.utils.book_append_sheet(workbook, sheet, 'Cevap Anahtarı');
-    XLSX.utils.book_append_sheet(workbook, guide, 'Kullanım');
-    const output = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const url = URL.createObjectURL(new Blob([output], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
-    const anchor = document.createElement('a'); anchor.href = url; anchor.download = `${selectedTemplate.key.toLowerCase()}-kazanimli-cevap-anahtari-sablonu.xlsx`; anchor.click(); URL.revokeObjectURL(url);
+    const answerSheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    const instructionSheet = XLSX.utils.aoa_to_sheet(instructions);
+    answerSheet['!cols'] = headers.map((header) => ({ wch: Math.max(12, Math.min(28, header.length + 3)) }));
+    instructionSheet['!cols'] = [{ wch: 28 }, { wch: 110 }];
+    XLSX.utils.book_append_sheet(workbook, answerSheet, 'Kazanımlı Cevap Anahtarı');
+    XLSX.utils.book_append_sheet(workbook, instructionSheet, 'Kullanım');
+    XLSX.writeFile(workbook, `${selectedTemplate.key.toLowerCase()}-kazanimli-cevap-anahtari-sablonu.xlsx`);
   };
 
-  const createExam = async () => {
+  const createExam = async (draftOnly = false) => {
     setBusy(true); setError(''); setNotice('');
     try {
       const requiresOfficialOutcomes = definitionMode === 'OUTCOME' || Boolean(selectedTemplate.requiresOutcomes);
       if (!createForm.title.trim()) throw new Error('Sınav adı gereklidir.');
       if (!createForm.publisherName.trim()) throw new Error('Yayınevi adı gereklidir.');
       if (!createForm.sessionLabel.trim()) throw new Error('Oturum / bölüm bilgisi gereklidir.');
-      if (!subjects.length) throw new Error('En az bir test/ders tanımlayın veya hazır şablon uygulayın.');
+      if (!draftOnly && !subjects.length) throw new Error('En az bir test/ders tanımlayın veya hazır şablon uygulayın.');
       if (user?.role === 'SUPER_ADMIN' && createForm.ownerType === 'INSTITUTION' && !createForm.institutionId) throw new Error('Kuruma özel sınav için kurum seçilmelidir.');
-      if (createMethod === 'ANSWER_KEY' && !keyEntries.length) throw new Error('Önce cevap anahtarını yükleyin veya yapıştırıp analiz edin.');
+      if (!draftOnly && createMethod === 'ANSWER_KEY' && !keyEntries.length) throw new Error('Önce cevap anahtarını yükleyin veya yapıştırıp analiz edin.');
       const scoringVersion = options.scoringVersions?.find((x: any) => x.id === createForm.scoringRuleVersionId);
       const scoringSettings = { show: { correct: resultSettings.correct, wrong: resultSettings.wrong, blank: resultSettings.blank, net: resultSettings.net, branchNet: resultSettings.branchNet, successPercent: resultSettings.successPercent, rawScore: resultSettings.rawScore, standardScore: resultSettings.standardScore, branchScore: resultSettings.branchScore, totalScore: resultSettings.totalScore, ranking: resultSettings.ranking, percentile: resultSettings.percentile }, rankingScopes: resultSettings.rankingScopes, includeObp: resultSettings.includeObp };
       const created = await api<any>('/api/exam-definitions', { method: 'POST', body: JSON.stringify({
@@ -322,8 +321,9 @@ export function ExamDefinitions() {
       setOutcomeRequired(requiresOfficialOutcomes);
       setSelectedId(created.id);
       setCreatedExamId(created.id);
-      setCreateForm((f) => ({ ...f, title: '' }));
-      setNotice(documentFailures.length ? `Sınav oluşturuldu; bazı belgeler daha sonra tekrar yüklenmeli: ${documentFailures.join(' · ')}` : definitionMode === 'OUTCOME' ? 'Sınav oluşturuldu. Şimdi soru-kazanım eşleştirmelerini tamamlayın.' : 'Sınav cevap anahtarından oluşturuldu. Kontrol edip yayınlayabilirsiniz.');
+      setNotice(documentFailures.length ? `Sınav oluşturuldu; bazı belgeler daha sonra tekrar yüklenmeli: ${documentFailures.join(' · ')}` : draftOnly
+        ? 'Taslak kalıcı olarak kaydedildi. Sınav kartından düzenlemeye devam edebilirsiniz.'
+        : definitionMode === 'OUTCOME' ? 'Sınav taslak olarak oluşturuldu. Şimdi soru-kazanım eşleştirmelerini tamamlayın.' : 'Sınav taslak olarak oluşturuldu. Kontrol edip yayınlayabilirsiniz.');
       await loadRows();
     } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
@@ -479,7 +479,9 @@ export function ExamDefinitions() {
       {builderStep === 1 && <section id="exam-card" className="exam-simple-card builder-current-step">
         <div className="exam-simple-card-head"><span className="simple-number">01</span><div><h2>Sınav bilgileri</h2><p>Yeni sınav için temel kart bilgilerini girin.</p></div></div>
         <div className="form-grid builder-form-grid exam-card-grid">
-          <label>Yayınevi adı *<input value={createForm.publisherName} onChange={(e) => setCreateForm((f) => ({ ...f, publisherName: e.target.value }))} placeholder="Örn. ANUNEX Yayınları" /></label>
+          <label>Yayınevi / kurum adı *<input value={createForm.publisherName} onChange={(e) => setCreateForm((f) => ({ ...f, publisherName: e.target.value }))} placeholder={user?.role === 'SUPER_ADMIN' ? 'Yayınevi seçin veya yazın...' : 'Kurum yayınevi adını girin...'} /></label>
+          <label>Sınav kapsamı *<select value={createForm.ownerType} onChange={(e) => setCreateForm((f) => ({ ...f, ownerType: e.target.value }))} disabled={user?.role !== 'SUPER_ADMIN'}><option value="CENTRAL">Merkezi / Türkiye geneli</option><option value="INSTITUTION">Kurum sınavı</option></select></label>
+          {createForm.ownerType === 'INSTITUTION' && user?.role === 'SUPER_ADMIN' && <label>Kurum *<select value={createForm.institutionId} onChange={(e) => setCreateForm((f) => ({ ...f, institutionId: e.target.value }))}><option value="">Kurum seçin</option>{options.institutions?.map((institution: any) => <option key={institution.id} value={institution.id}>{institution.name}</option>)}</select></label>}
           <label>Sınav adı *<input value={createForm.title} onChange={(e) => setCreateForm((f) => ({ ...f, title: e.target.value }))} placeholder="Örn. TYT Türkiye Geneli Deneme 1" /></label>
           <label>Sınav türü *<select value={choiceKey} onChange={(e) => setChoiceKey(e.target.value)}>{EXAM_CHOICES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}</select></label>
           <label>Eğitim yılı *<input value={createForm.academicYear} onChange={(e) => setCreateForm((f) => ({ ...f, academicYear: e.target.value }))} /></label>
@@ -495,8 +497,8 @@ export function ExamDefinitions() {
         <div className="exam-simple-card-head"><span className="simple-number">02</span><div><h2>Cevap anahtarı</h2><p>Hazır şablon ve CSV/XLSX dosyasıyla hızlıca eşleştirin.</p></div></div>
         <div className="simple-method-row"><button type="button" className={createMethod === 'ANSWER_KEY' ? 'active' : ''} onClick={() => setCreateMethod('ANSWER_KEY')}><FileUp size={16}/> Hazır şablon / dosya</button><button type="button" className={createMethod === 'MANUAL' ? 'active' : ''} onClick={() => setCreateMethod('MANUAL')}><BookOpenCheck size={16}/> Kendin oluştur</button></div>
         {createMethod === 'ANSWER_KEY' ? <>
-          <div className="simple-file-row"><label><span>Hazır sınav şablonu</span><select value={templateKey} onChange={(e) => { const key = e.target.value; const chosen = EXAM_TEMPLATES.find((template) => template.key === key); setTemplateKey(key); setOutcomeRequired(Boolean(chosen?.requiresOutcomes)); setDefinitionMode(chosen?.requiresOutcomes ? 'OUTCOME' : 'STANDARD'); const baseKey = key.endsWith('_OUTCOME') ? key.slice(0, -8) : key; const nextChoice = baseKey === 'SCHOOL_5' || baseKey === 'SCHOOL_6' || baseKey === 'SCHOOL_7' ? `STD_${baseKey.slice(-1)}` : baseKey; if (EXAM_CHOICES.some((choice) => choice.key === nextChoice)) setChoiceKey(nextChoice); }}>{EXAM_TEMPLATES.map((template) => <option key={template.key} value={template.key}>{template.label}</option>)}</select></label><div className="simple-template-note"><strong>{selectedTemplate.label}</strong><span>{selectedTemplate.description}</span><div><button type="button" className="ghost" onClick={downloadOutcomeTemplate}>Kazanımlı şablonu indir</button><button type="button" className="secondary" onClick={() => applyTemplate()}>Şablonu uygula</button></div></div></div>
-          <div className="simple-file-row"><label className="simple-upload"><span>Kazanımlı cevap anahtarı (.xlsx / .csv)</span><input type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(e) => void readAnswerFile(e.target.files?.[0])} /><small className="field-help">Şablon indirildiğinde her başlık ayrı Excel hücresinde gelir; A/B/C/D soru numaraları aynı satırda eşleştirilir.</small></label><label><span>Kitapçıklar</span><input value={booklets} onChange={(e) => setBooklets(e.target.value)} placeholder="A veya A,B,C,D" /><small className="field-help">Dosyada bulunan kitapçıkları virgülle yazın.</small></label></div>
+          <div className="simple-file-row"><label><span>Hazır sınav şablonu</span><select value={templateKey} onChange={(e) => { const key = e.target.value; const chosen = EXAM_TEMPLATES.find((template) => template.key === key); setTemplateKey(key); setOutcomeRequired(Boolean(chosen?.requiresOutcomes)); setDefinitionMode(chosen?.requiresOutcomes ? 'OUTCOME' : 'STANDARD'); const baseKey = key.endsWith('_OUTCOME') ? key.slice(0, -8) : key; const nextChoice = baseKey === 'SCHOOL_5' || baseKey === 'SCHOOL_6' || baseKey === 'SCHOOL_7' ? `STD_${baseKey.slice(-1)}` : baseKey; if (EXAM_CHOICES.some((choice) => choice.key === nextChoice)) setChoiceKey(nextChoice); }}>{EXAM_TEMPLATES.map((template) => <option key={template.key} value={template.key}>{template.label}</option>)}</select></label><div className="simple-template-note"><strong>{selectedTemplate.label}</strong><span>{selectedTemplate.description}</span><div><button type="button" className="ghost" onClick={downloadOutcomeTemplate}>Kazanımlı XLSX indir</button><button type="button" className="secondary" onClick={() => applyTemplate()}>Şablonu uygula</button></div></div></div>
+          <div className="simple-file-row"><label className="simple-upload"><span>Kazanımlı cevap anahtarı (.xlsx / .csv / .txt)</span><input type="file" accept=".csv,.xlsx,.txt,text/csv,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(e) => void readAnswerFile(e.target.files?.[0])} /><small className="field-help">Şablon indirildiğinde her başlık ayrı Excel hücresinde gelir; A/B/C/D soru numaraları aynı satırda eşleştirilir.</small></label><label><span>Kitapçıklar</span><input value={booklets} onChange={(e) => setBooklets(e.target.value)} placeholder="A veya A,B,C,D" /><small className="field-help">Dosyada bulunan kitapçıkları virgülle yazın.</small></label></div>
           <details className="simple-details"><summary>Metin olarak cevap anahtarı gir</summary><textarea rows={5} value={answerKeyText} onChange={(e) => setAnswerKeyText(e.target.value)} placeholder={'MAT: ABCDEABCDE\nTUR: ABCDEABCDE\nFEN: ABCDEABCDE'} /><button type="button" className="secondary" onClick={() => analyseKey()}><FileUp size={15}/> Anahtarı analiz et</button></details>
           {analysis && <div className={analysis.unknownLines.length || analysis.warnings?.length ? 'builder-analysis warning' : 'builder-analysis success'}><strong>{Object.keys(analysis.questionCounts).length} ders bulundu.</strong> {analysis.detectedFormat === 'WIDE_BOOKLET_TABLE' ? 'Gönderdiğiniz geniş kitapçık tablosu algılandı.' : ''} Kitapçıklar: {analysis.detectedBooklets.join(', ')}. {analysis.unknownLines.length ? `${analysis.unknownLines.length} satır kontrol edilmeli.` : 'Soru sayıları otomatik çıkarıldı.'} {analysis.warnings?.join(' ')}</div>}
           {analysis && (analysis.unknownLines.length > 0 || analysis.warnings?.length) && <details className="answer-analysis-issues"><summary>Kontrol edilmesi gerekenleri göster</summary>{analysis.warnings?.map((warning) => <div key={warning}>• {warning}</div>)}{analysis.unknownLines.slice(0, 12).map((line, index) => <div key={`${line}-${index}`}>• Satır {index + 1}: {line}</div>)}{analysis.unknownLines.length > 12 && <small>İlk 12 satır gösteriliyor; kalan kayıtlar yükleme öncesi ayrıca işaretlenir.</small>}</details>}
@@ -529,7 +531,7 @@ export function ExamDefinitions() {
         <div className="exam-review-strip"><div><span>Sınav kartı</span><strong>{createForm.title || 'Eksik'}</strong></div><div><span>Yapı</span><strong>{subjects.length ? `${subjects.length} test · ${totalConfiguredQuestions} soru` : 'Eksik'}</strong></div><div><span>Cevap anahtarı</span><strong>{keyEntries.length ? `${totalAnswerSlots} cevap · ${booklets}` : 'Manuel yapı'}</strong></div><div><span>Belge</span><strong>{pendingDocuments.length + pendingVideos.length ? `${pendingDocuments.length + pendingVideos.length} bekleyen` : 'İsteğe bağlı'}</strong></div></div>
       </section>}
 
-      <div className="exam-simple-actions-footer"><button type="button" className="secondary" disabled={busy || builderStep === 1} onClick={() => setBuilderStep((current) => Math.max(1, current - 1) as BuilderStep)}>Geri</button><div className="builder-footer-status">Adım {builderStep}/4 <span>{stepReady(builderStep) ? 'Hazır' : 'Eksik alan var'}</span></div>{builderStep < 4 ? <button type="button" className="primary" disabled={busy} onClick={nextBuilderStep}>Devam et <ArrowRight size={16}/></button> : <><button type="button" className="secondary" disabled={busy} onClick={() => setNotice('Taslak bilgileri bu oturumda hazır. Sınavı kaydettiğinizde kalıcı olarak oluşturulur.')}><Save size={16}/> Taslak Kaydet</button><button type="button" className="primary" disabled={busy || !stepReady(4)} onClick={createExam}><Check size={17}/> Sınavı Kaydet</button></>}</div>
+      <div className="exam-simple-actions-footer"><button type="button" className="secondary" disabled={busy || builderStep === 1} onClick={() => setBuilderStep((current) => Math.max(1, current - 1) as BuilderStep)}>Geri</button><div className="builder-footer-status">Adım {builderStep}/4 <span>{stepReady(builderStep) ? 'Hazır' : 'Eksik alan var'}</span></div>{builderStep < 4 ? <button type="button" className="primary" disabled={busy} onClick={nextBuilderStep}>Devam et <ArrowRight size={16}/></button> : <><button type="button" className="secondary" disabled={busy} onClick={() => void createExam(true)}><Save size={16}/> Taslak Olarak Kaydet</button><button type="button" className="primary" disabled={busy || !stepReady(4)} onClick={() => void createExam()}><Check size={17}/> Sınavı Kaydet</button></>}</div>
     </div>
 
     <div className="exam-list-heading"><div><h2>Kayıtlı sınavlar</h2><p>Oluşturduğunuz sınavları buradan açıp düzenleyebilirsiniz.</p></div></div>
