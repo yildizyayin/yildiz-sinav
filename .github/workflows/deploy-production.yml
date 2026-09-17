@@ -2,6 +2,10 @@ name: Deploy Production Cloudflare Worker
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/deploy-production.trigger'
 
 permissions:
   contents: read
