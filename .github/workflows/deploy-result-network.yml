@@ -37,6 +37,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PROD_TURNSTILE_API_TOKEN: ${{ secrets.PROD_TURNSTILE_API_TOKEN }}
       PROD_TURNSTILE_SITE_KEY: ${{ vars.PROD_TURNSTILE_SITE_KEY }}
       PROD_TURNSTILE_SECRET_KEY: ${{ secrets.PROD_TURNSTILE_SECRET_KEY }}
       PROD_SESSION_SECRET: ${{ secrets.PROD_SESSION_SECRET }}
@@ -61,7 +62,8 @@ jobs:
         run: |
           set -euo pipefail
           endpoint="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/challenges/widgets/$PROD_TURNSTILE_SITE_KEY"
-          auth_header="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          turnstile_token="${PROD_TURNSTILE_API_TOKEN:-$CLOUDFLARE_API_TOKEN}"
+          auth_header="Authorization: Bearer $turnstile_token"
 
           detail_status="$(curl --silent --show-error \
             --output result-turnstile-detail.json \
@@ -69,9 +71,14 @@ jobs:
             --header "$auth_header" \
             "$endpoint")"
           if [[ "$detail_status" -lt 200 || "$detail_status" -ge 300 ]] || ! jq -e '.success == true and (.result.sitekey | length > 0)' result-turnstile-detail.json >/dev/null; then
-            echo "Cloudflare Turnstile widget could not be read (HTTP $detail_status). The API token needs Turnstile Sites Read/Write permission." >&2
+            echo "Cloudflare Turnstile widget could not be read (HTTP $detail_status). Configure a token with Turnstile Sites Read/Write permission; the optional secret name is PROD_TURNSTILE_API_TOKEN." >&2
             jq -c '{success,errors,messages}' result-turnstile-detail.json >&2 || true
             exit 1
+          fi
+
+          if jq -e '.result.domains | index("sonuc.anunex.com") != null' result-turnstile-detail.json >/dev/null; then
+            echo "Turnstile hostname authorization already exists for sonuc.anunex.com."
+            exit 0
           fi
 
           jq '.result | {
@@ -95,7 +102,11 @@ jobs:
             --data-binary @result-turnstile-update.json \
             "$endpoint")"
           if [[ "$update_status" -lt 200 || "$update_status" -ge 300 ]] || ! jq -e '.success == true and (.result.domains | index("sonuc.anunex.com") != null)' result-turnstile-response.json >/dev/null; then
-            echo "Cloudflare could not authorize sonuc.anunex.com on the Turnstile widget (HTTP $update_status)." >&2
+            if [[ "$update_status" == "403" ]]; then
+              echo "Cloudflare Turnstile update was rejected (HTTP 403). Configure PROD_TURNSTILE_API_TOKEN with Turnstile Sites Write permission, or grant that permission to CLOUDFLARE_API_TOKEN." >&2
+            else
+              echo "Cloudflare could not authorize sonuc.anunex.com on the Turnstile widget (HTTP $update_status)." >&2
+            fi
             jq -c '{success,errors,messages}' result-turnstile-response.json >&2 || true
             exit 1
           fi
