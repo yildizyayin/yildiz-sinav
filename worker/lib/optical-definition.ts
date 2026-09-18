@@ -1,5 +1,11 @@
 export type DefinitionSection = 'parser' | 'camera' | 'print' | 'fiducials';
 
+function normalizeParserSlice(value: any): any {
+  if (!value || typeof value !== 'object') return value;
+  if (value.end == null && value.length != null && value.start != null) return { ...value, end: Number(value.start) + Number(value.length) };
+  return value;
+}
+
 export interface ValidationResult {
   valid: boolean;
   errors: string[];
@@ -56,26 +62,27 @@ export function validateParserDefinition(input: unknown): ValidationResult {
   const errors: string[] = [];
   if (def.type === 'delimited') {
     if (typeof def.delimiter !== 'string' || ![',', ';', '\t'].includes(def.delimiter)) errors.push('Delimited parser için delimiter , ; veya tab olmalıdır.');
-  } else if (def.type === 'fixed-width') {
-    const recordLength = Number(def.recordLength);
+  } else if (def.type === 'fixed-width' || def.type === 'fmt') {
+    const source = def.type === 'fmt' && def.fixedWidth && typeof def.fixedWidth === 'object' ? def.fixedWidth : def;
+    const recordLength = Number(source.recordLength ?? def.recordLength);
     if (!Number.isInteger(recordLength) || recordLength <= 0 || recordLength > 5000) errors.push('recordLength 1-5000 arasında tam sayı olmalıdır.');
-    const fields = def.fields || {};
-    errors.push(...validateSlice('fields.name', fields.name, recordLength));
-    if (fields.student_number) errors.push(...validateSlice('fields.student_number', fields.student_number, recordLength));
-    if (fields.class) errors.push(...validateSlice('fields.class', fields.class, recordLength));
-    if (fields.booklet) errors.push(...validateSlice('fields.booklet', fields.booklet, recordLength));
-    const answers = def.answers;
+    const fields = source.fields || def.fields || {};
+    errors.push(...validateSlice('fields.name', normalizeParserSlice(fields.name), recordLength));
+    if (fields.student_number) errors.push(...validateSlice('fields.student_number', normalizeParserSlice(fields.student_number), recordLength));
+    if (fields.class) errors.push(...validateSlice('fields.class', normalizeParserSlice(fields.class), recordLength));
+    if (fields.booklet) errors.push(...validateSlice('fields.booklet', normalizeParserSlice(fields.booklet), recordLength));
+    const answers = source.answers || def.answers;
     if (!answers || typeof answers !== 'object' || Array.isArray(answers) || Object.keys(answers).length === 0) {
       errors.push('En az bir ders cevap bloğu answers içinde tanımlanmalıdır.');
     } else {
       for (const [code, range] of Object.entries(answers)) {
         if (!/^[A-Za-z0-9_ÇĞİÖŞÜçğıöşü-]{1,24}$/.test(code)) errors.push(`Geçersiz ders kodu: ${code}`);
-        errors.push(...validateSlice(`answers.${code}`, range, recordLength));
+        errors.push(...validateSlice(`answers.${code}`, normalizeParserSlice(range), recordLength));
       }
     }
-    if (def.signature != null && typeof def.signature !== 'string') errors.push('signature metin olmalıdır.');
+    if ((source.signature ?? def.signature) != null && typeof (source.signature ?? def.signature) !== 'string') errors.push('signature metin olmalıdır.');
   } else {
-    errors.push("Parser type 'fixed-width' veya 'delimited' olmalıdır.");
+    errors.push("Parser type 'fmt', 'fixed-width' veya 'delimited' olmalıdır.");
   }
   return { valid: errors.length === 0, errors };
 }
