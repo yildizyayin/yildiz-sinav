@@ -17,7 +17,7 @@ export function NibiruPlanetarySystem({size=520,state='idle',compact=false}:{siz
   <div className="nibiru-space" aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/><i/><i/></div>
   <div className="nibiru-corona" aria-hidden="true"><b/><b/><b/></div>
   <div className="nibiru-star-shell">
-   <svg className="nibiru-star-art" viewBox="0 0 500 500" role="img" aria-label="Canlı Nibiru yıldız gezegeni">
+   <svg className="nibiru-star-art" viewBox="0 0 500 500" role="img" aria-label="Canlı Nibiru akademik zekâ sistemi">
     <defs>
      <radialGradient id={'body'+id} cx="36%" cy="30%" r="72%">
       <stop offset="0" stopColor="#ffffff"/><stop offset=".12" stopColor="#b9e6ff"/><stop offset=".34" stopColor="#6f7cff"/><stop offset=".61" stopColor="#3833a9"/><stop offset=".84" stopColor="#121643"/><stop offset="1" stopColor="#050817"/>
