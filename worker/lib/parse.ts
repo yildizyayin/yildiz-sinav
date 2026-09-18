@@ -1,4 +1,5 @@
 import type { CanonicalRecord } from '../types';
+import { fixedWidthFromDefinition } from './fmt';
 
 export interface ParserTemplate {
   id: string;
@@ -68,19 +69,20 @@ export function parseUploadedText(text: string, fileName: string, templates: Par
     .map((t) => ({ template: t, def: safeJson(t.parser_definition) }))
     .filter((x) => {
       const def = x.def as Record<string, unknown> | null;
-      return !!def && def.type === 'fixed-width';
+      const fixed = fixedWidthFromDefinition(def);
+      return !!fixed && fixed.type === 'fixed-width';
     });
 
   const lines = normalizedText.split('\n').filter((line) => line.length > 0);
   const matches = viable.filter((x) => {
-    const def = x.def as any;
+    const def = fixedWidthFromDefinition(x.def as any) as any;
     if (typeof def.recordLength === 'number' && lines.some((line) => line.length !== def.recordLength)) return false;
     if (typeof def.signature === 'string' && def.signature && !normalizedText.includes(def.signature)) return false;
     return true;
   });
 
   if (matches.length === 1) {
-    return parseFixedWidth(lines, fileName, matches[0].template.id, matches[0].template.name, matches[0].def as any);
+    return parseFixedWidth(lines, fileName, matches[0].template.id, matches[0].template.name, fixedWidthFromDefinition(matches[0].def as any) as any);
   }
   if (matches.length > 1) {
     return { confidence: 0.5, ambiguous: true, records: [], issues: ['Birden fazla optik şablonu dosyayla eşleşiyor. Manuel seçim gerekli.'] };
@@ -93,7 +95,7 @@ export function parseWithTemplate(text: string, fileName: string, template: Pars
   const def = safeJson(template.parser_definition) as any;
   if (!def) return { confidence: 0, ambiguous: false, records: [], issues: ['Seçilen optik şablonun parser tanımı yok.'] };
   const normalized = normalizeNewlines(text);
-  if (def.type === 'fixed-width') return parseFixedWidth(normalized.split('\n').filter((line) => line.length > 0), fileName, template.id, template.name, def);
+  if (def.type === 'fixed-width' || def.type === 'fmt') return parseFixedWidth(normalized.split('\n').filter((line) => line.length > 0), fileName, template.id, template.name, fixedWidthFromDefinition(def));
   if (def.type === 'delimited') return parseDelimited(normalized, fileName, template.id, template.name, def.delimiter);
   return { confidence: 0, ambiguous: false, records: [], issues: ['Desteklenmeyen parser türü.'] };
 }
@@ -103,6 +105,7 @@ function parseDelimited(text: string, fileName: string, templateId?: string, tem
   const delimiter = forcedDelimiter || detectDelimiter(lines[0]);
   const headers = splitDelimited(lines[0], delimiter).map((x) => x.trim().toLowerCase());
   const find = (...names: string[]) => headers.findIndex((h) => names.includes(h));
+  const tcknIdx = find('tckn', 'tc_kimlik', 'tc_kimlik_no', 't.c.kimlik', 'national_id');
   const noIdx = find('student_number', 'ogrenci_no', 'öğrenci_no', 'no', 'student_no');
   const nameIdx = find('name', 'ad_soyad', 'adsoyad', 'ogrenci', 'öğrenci');
   const classIdx = find('class', 'sinif', 'sınıf', 'class_name');
@@ -130,6 +133,7 @@ function parseDelimited(text: string, fileName: string, templateId?: string, tem
     if (!name) issues.push('Ad soyad boş.');
     records.push({
       row_no: i,
+      tckn: tcknIdx >= 0 ? (cols[tcknIdx] || '').replace(/\D/g, '') || undefined : undefined,
       student_number: noIdx >= 0 ? (cols[noIdx] || '').trim() : undefined,
       name,
       class_name: className || undefined,
@@ -164,6 +168,8 @@ function parseFixedWidth(lines: string[], fileName: string, templateId: string, 
     const pickRaw = (f: any) => f ? line.slice(Number(f.start), Number(f.end)) : '';
     const className = pick(fields.class);
     const parsedClass = parseClass(className);
+    const tckn = pick(fields.tckn);
+    const studentNumber = pick(fields.student_number) || (!tckn ? fallbackStudentNumber(line, answersDef) : '');
     const answers: Record<string, string> = {};
     const issues: string[] = [];
     for (const [code, f] of Object.entries<any>(answersDef)) {
@@ -173,7 +179,8 @@ function parseFixedWidth(lines: string[], fileName: string, templateId: string, 
     }
     records.push({
       row_no: i + 1,
-      student_number: pick(fields.student_number) || fallbackStudentNumber(line, answersDef) || undefined,
+      student_number: studentNumber || undefined,
+      tckn: tckn || undefined,
       name: pick(fields.name),
       class_name: className || undefined,
       grade_level: parsedClass.grade,
