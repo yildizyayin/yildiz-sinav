@@ -1,148 +1,131 @@
 # Live Staging Smoke Report
 
 - Target: `https://demo.anunex.com`
-- Time: `2026-09-18T19:29:46.357Z`
-- Result: **FAILED**
-- Passed checks before finish: **0**
+- Time: `2026-09-18T19:33:23.147Z`
+- Result: **PASSED**
+- Passed checks before finish: **17**
 
 ## Checks
 
-- No checks completed.
-
-## Failure
-
-```text
-Error: Expected staging environment
-{
-  "ok": true,
-  "productName": "Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu",
-  "turnstileSiteKey": "0x4AAAAAAEeOH-5KgRCJKsu1",
-  "environment": "production",
-  "superAdminMfaEnabled": false
-}
-    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke-v2.mjs:13:21)
-    at main (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke-v2.mjs:94:3)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-```
+- ✅ **Public config** — Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu / staging
+- ✅ **Unauthenticated API boundary**
+- ✅ **Turnstile server validation**
+- ✅ **Manager tenant dashboard** — 162 active / 45 guest / 21 applied exams
+- ✅ **Active/guest student separation** — 162 / 45
+- ✅ **110-person exam matching preview** — 20 core active + 45 known guest + 0 new guest
+- ✅ **110-person chunked exam evaluation** — 65 committed in 13 safe chunks
+- ✅ **Repeat guest identity matching** — still 45 guests; no duplicates
+- ✅ **Student dashboard data** — 2 developing outcomes
+- ✅ **Student self-service + IDOR boundary** — 9 visible exams
+- ✅ **Parent linked-child boundary** — 7/A
+- ✅ **Branch teacher dashboard scope** — 1 classes / 20 students
+- ✅ **Branch teacher subject scope** — Matematik
+- ✅ **Guidance dashboard scope** — 1 classes / 20 students
+- ✅ **Guidance teacher all-subject scope** — Fen Bilimleri, Matematik, Türkçe
+- ✅ **Super Admin institution access**
+- ✅ **Session revocation on logout**
 
 ## Mandatory KVKK / privacy-by-design live gate
 
 - Environment: staging
 - Suite: `kvkk-live-v1`
-- Result: **FAILED**
-- Synthetic-only checks completed: **0**
-- ❌ **KVKK smoke failure** — `NOT_STAGING`
+- Result: **PASSED**
+- Synthetic-only checks completed: **17**
+- ✅ **Cross-tenant read/write denial**
+- ✅ **Student self scope**
+- ✅ **Parent linked-child scope**
+- ✅ **Teacher assignment scope**
+- ✅ **Guidance-only raw assessment boundary**
+- ✅ **Logout session revocation**
+- ✅ **AI outbound redaction / pseudonymization**
+- ✅ **WhatsApp academic-detail minimization**
+- ✅ **Protected export authorization + audit evidence**
+- ✅ **Notice version + acknowledgement evidence**
+- ✅ **Purpose-specific consent grant + withdrawal**
+- ✅ **Synthetic anonymization job enters legal-review gate**
+- ✅ **Provider/transfer registry completeness with release still blocked**
+- ✅ **Incident-response 72-hour timer**
+- ✅ **Camera raw-frame server rejection**
+- ✅ **Voice raw-audio ephemeral / voiceprint disabled**
+- ✅ **Smoke output contains no raw PII/secrets**
 
 ## Final platform feature checks
 
-- ❌ **Final feature smoke failure**
-
-```text
-Error: POST /api/auth/login expected 200, got 400
-{
-  "ok": false,
-  "error": {
-    "code": "invalid-input-response",
-    "message": "Robot doğrulaması başarısız."
-  }
-}
-    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:11:392)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async login (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:13:45)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:19:16
-```
+- ✅ **Nibiru manager AI transparency + institution scope** — TODAY_STATUS
+- ✅ **Nibiru WhatsApp role pairing preparation** — parent/teacher/manager role-safe pairing codes
+- ✅ **Optik 840 + printer calibration + personalized print flow** — 20 students · A/B set recognized · existing assignments preserved · Canon Öğretmenler Odası
+- ✅ **License rollout backward compatibility** — LEGACY · LEGACY_ACTIVE
+- ✅ **Activation request + notification flow** — manager request → Super Admin decision → manager notification
+- ✅ **Student wrong/blank learning flow** — 4 question rows available
+- ✅ **Nibiru parent context + non-academic redirect** — student-linked context · AI disclosure · safe redirect
+- ✅ **Parent weekly summary + notification flow** — 0 exams in last 7 days
+- ✅ **Demo identity preservation** — 45 guests preserved after rejected smoke request
 
 ## Nibiru academic growth / communication checks
 
-- ❌ **Academic growth smoke failure**
-
-```text
-Error: POST /api/auth/login expected 200, got 400
-{
-  "ok": false,
-  "error": {
-    "code": "invalid-input-response",
-    "message": "Robot doğrulaması başarısız."
-  }
-}
-    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-academic-growth-smoke.mjs:11:392)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async login (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-academic-growth-smoke.mjs:12:45)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-academic-growth-smoke.mjs:16:16
-```
+- ✅ **Official academic target source registry** — MEB Rota Maarif + e-Okul + ÖSYM + YÖK Atlas
+- ✅ **Official target search boundaries** — LGS 0 · YKS 0 verified rows currently loaded
+- ✅ **Institution announcement center** — panel + WhatsApp-template + SMS-fallback ledger ready
+- ✅ **Worksheet calendar + Nibiru guidance** — 5 published calendar rows visible
+- ✅ **Teacher communication + worksheet scope** — role-scoped endpoints available
+- ✅ **Student target eligibility + analysis boundary** — grade 7 · target not set
+- ✅ **Super Admin official-source governance** — source URL + official flag enforced
+- ✅ **Official question intelligence registry** — MEB LGS + ÖSYM YKS + EBA/OGM references · protected text not copied
+- ✅ **Official question intelligence authorization** — Super Admin only status/source governance
+- ✅ **Official outcome-history contract** — 0 outcome rows · historical priority is explicitly not a prediction guarantee
 
 ## Standard package acceptance
 
+- ✅ **Standard readiness gate** — core ready · external setup 2
+- ✅ **External provider activation contract** — YouTube setup · WhatsApp setup
+- ✅ **Standard question bank** — 32 approved printable questions
+- ✅ **Education Coach verified mastery cycle** — 3 tasks · existing mastered evidence reused · progress 0%
+- ✅ **Zero Error exam source** — institution exams are selectable, not only central snapshots
 - ❌ **Standard acceptance failure**
 
 ```text
-Error: POST /api/auth/login expected 200, got 400
+Error: GET /api/student-standard/exam-review?examId=exam_hist_08 expected 200, got 500
 {
   "ok": false,
   "error": {
-    "code": "invalid-input-response",
-    "message": "Robot doğrulaması başarısız."
+    "code": "SERVER_ERROR",
+    "message": "Sunucu hatası oluştu.",
+    "requestId": "a3d2c9b72dcb69bf"
   }
 }
     at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:6:476)
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async login (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:7:45)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:10:14
+    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:58:15
 ```
 
 ## Standard final closure
 
-- ❌ **Standard final closure failure**
-
-```text
-Error: super login failed
-{
-  "ok": false,
-  "error": {
-    "code": "invalid-input-response",
-    "message": "Robot doğrulaması başarısız."
-  }
-}
-    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:4:36)
-    at login (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:6:269)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:11:14
-```
+- ✅ **Standard package final readiness** — sale ready · optional channels 2
+- ✅ **Student personalization + countdown** — preferences persisted · live countdown + flip clock context
+- ✅ **Basic results + outcome analysis** — 9 exams · 6 outcome rows
+- ✅ **Role-safe consumable worksheet** — 7. Sınıf Sayısal Föy 1 · PDF + answer key + 40 question supports
+- ✅ **Real registered micro-learning route** — solution + topic video available without YouTube API auto-discovery
 
 ## Counselor-approved RBA / guidance governance
 
-- ❌ **Guidance governance failure**
-
-```text
-Error: POST /api/auth/login expected 200, got 400
-{
-  "ok": false,
-  "error": {
-    "code": "invalid-input-response",
-    "message": "Robot doğrulaması başarısız."
-  }
-}
-    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-guidance-governance-smoke.mjs:6:392)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async login (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-guidance-governance-smoke.mjs:7:45)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-guidance-governance-smoke.mjs:11:16
-```
+- ✅ **Educational instrument registry** — RBA + counselor approval policy
+- ✅ **Pre-approval student boundary** — questions/submission blocked
+- ✅ **Real counselor approval** — assigned GUIDANCE_TEACHER opened assessment
+- ✅ **Student assessment submission** — released only after counselor approval
+- ✅ **Counselor review gate** — derived scores accepted into development signals
+- ✅ **Nibiru reviewed-development context** — only REVIEWED educational signals used
 
 ## Student Intelligence / Learning Graph
 
-- ❌ **Student Intelligence failure**
+- ✅ **Persistent student intelligence profile** — v94 · 174 evidence · 3 subjects
+- ✅ **Idempotent refresh + versioned history** — 50 history snapshots
+- ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
+- ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
+- ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
+- ✅ **Counselor-reviewed development integration** — 882 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v94 · 2 compact priorities · EDUCATION_COACH
 
-```text
-Error: POST /api/auth/login expected 200, got 400
-{
-  "ok": false,
-  "error": {
-    "code": "invalid-input-response",
-    "message": "Robot doğrulaması başarısız."
-  }
-}
-    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-student-intelligence-smoke.mjs:6:392)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async login (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-student-intelligence-smoke.mjs:7:45)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-student-intelligence-smoke.mjs:11:16
-```
+## 100K Queue kapasite kabulü
+
+- ✅ **Başarılı** — 100.000 izole sentetik kayıt · 1000 Queue parçası · 0 başarısız parça · son 30 günlük kanıt yeniden kullanıldı
+- Run: `cap_f55767b0-a5d9-493b-b86f-891ee4a65ea5`
