@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://demo.anunex.com`
-- Time: `2026-09-18T19:25:34.501Z`
+- Time: `2026-09-18T19:29:46.357Z`
 - Result: **FAILED**
 - Passed checks before finish: **0**
 
