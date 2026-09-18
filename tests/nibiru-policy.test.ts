@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { detectNibiruIntent } from '../worker/lib/nibiru';
+import { detectNibiruIntent, shouldUseAiAnswer } from '../worker/lib/nibiru';
 import { normalizeWhatsAppPhone } from '../worker/lib/whatsapp';
 
 describe('Nibiru intent policy', () => {
@@ -21,6 +21,22 @@ describe('Nibiru intent policy', () => {
 
   it('uses previous conversation intent for short follow-up context', () => {
     expect(detectNibiruIntent('Ne oldu?', 'LATEST_EXAM')).toBe('LATEST_EXAM');
+  });
+
+  it('sends differently phrased latest-exam questions to the AI answer path', () => {
+    const questions = [
+      'Son sınavımda ne yaptım?',
+      'En son denemem nasıl geçti?',
+      'Sonuçlarımı açıklar mısın?',
+      'Son denemede kaç net yaptım?',
+      'Geçen sınavdaki durumum ne?',
+    ];
+
+    for (const question of questions) {
+      const intent = detectNibiruIntent(question);
+      expect(intent).toBe('LATEST_EXAM');
+      expect(shouldUseAiAnswer(intent, { student:{ id:'student-1' }, latestExam:{ id:'exam-1' } })).toBe(true);
+    }
   });
 });
 

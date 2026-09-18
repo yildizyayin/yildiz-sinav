@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { answerStringValid, canManageExamDefinitions, normalizeBookletCodes, ownerTypeAllowed } from '../worker/exam-admin-entry';
+import { answerStringValid, canManageExamDefinitions, normalizeAcceptedAnswers, normalizeBookletCodes, ownerTypeAllowed } from '../worker/exam-admin-entry';
 
 describe('exam definition center rules', () => {
   it('allows only super admin and institution manager to manage definitions', () => {

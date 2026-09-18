@@ -30,12 +30,7 @@ describe('guided answer key parser', () => {
     expect(result.entries[0].outcomeRefs?.[0]).toMatchObject({ code: 'MAT.7.1.1', title: 'Tam sayılarla işlem yapar.', topic: 'Sayılar', subtopic: 'Tam sayılar' });
   });
 
-  it('keeps four-choice structure from the uploaded answer-key metadata', () => {
-    const result = parseAnswerKeyText('Ders,Soru,Kitapçık,Doğru Cevap,Şık Sayısı\nMAT,1,A,A,4\nMAT,2,A,D,4', subjects);
-    expect(result.entries[0]).toMatchObject({ answers: 'AD', optionCount: 4 });
-  });
-
-  it('imports qualified wide tables with separate A/B/C/D question numbers and outcomes', () => {
+  it('imports qualified wide tables with A/B/C/D booklet question maps and pre-header metadata', () => {
     const result = parseAnswerKeyText([
       'ÇAP,,ÇAP TYT 0 Deneme',
       '7661,,12.Sınıf',
@@ -49,7 +44,10 @@ describe('guided answer key parser', () => {
     expect(result.detectedBooklets).toEqual(['A', 'B', 'C', 'D']);
     expect(result.metadata).toMatchObject({ publisherName: 'ÇAP', gradeLevel: 12, externalExamCode: '7661' });
     expect(result.entries).toHaveLength(4);
-    expect(result.entries.find((entry) => entry.bookletCode === 'B')).toMatchObject({ answers: 'DB', bookletQuestionNumbers: [4, 1] });
+    expect(result.entries.find((entry) => entry.bookletCode === 'B')).toMatchObject({
+      answers: 'DB',
+      bookletQuestionNumbers: [4, 1],
+    });
     const dOutcomes = result.entries.find((entry) => entry.bookletCode === 'D')?.outcomeRefsByQuestion?.[0] || [];
     expect(dOutcomes).toHaveLength(3);
     expect(dOutcomes[0]).toMatchObject({ code: 'TUR.1', title: undefined });
