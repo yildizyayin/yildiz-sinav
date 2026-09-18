@@ -39,3 +39,7 @@
 @keyframes miniNibiru{50%{transform:scale(1.08);box-shadow:0 0 0 3px rgba(98,174,255,.18),0 0 24px rgba(92,116,255,.9)}}@keyframes messageReveal{0%,4%{opacity:0;transform:translateY(10px)}8%,88%{opacity:1;transform:none}96%,100%{opacity:0}}
 @media(max-width:1100px){.real-story-grid{grid-template-columns:1fr}.whatsapp-phone-story{grid-template-columns:minmax(300px,390px) 1fr;max-width:820px;margin:auto}}
 @media(max-width:700px){.header-nibiru small{display:none}.real-story-grid{margin-top:26px}.whatsapp-phone-story{grid-template-columns:1fr}.phone-hardware{min-height:700px;max-width:380px;margin:auto}.story-explain{padding:8px 4px}.youtube-learning-story{padding:18px 12px}.video-candidate-list>button{grid-template-columns:76px 1fr auto}.video-candidate-list>button>b{display:none}}
+.header-nibiru i,.wa-nibiru-avatar{background:radial-gradient(circle at 33% 27%,#fff 0 7%,#9eeeff 15%,#4ad9ff 42%,#1456b8 69%,#061947 100%);box-shadow:0 0 0 2px rgba(98,174,255,.2),0 0 16px rgba(74,190,255,.7)}
+.nibiru-video-advice{background:linear-gradient(115deg,#12285b,#0d4d9e)}
+.ask-nibiru{border-color:rgba(91,210,255,.35);background:linear-gradient(135deg,rgba(30,122,210,.5),rgba(24,82,181,.42))}
+.conversation-nibiru>div{background:rgba(8,38,91,.9);border-color:rgba(104,224,255,.25)}
