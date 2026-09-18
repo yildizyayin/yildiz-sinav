@@ -1,7 +1,7 @@
 import accessApp from './access-entry';
 import type { AuthUser, Env, Role } from './types';
 import { getAuthUser } from './lib/auth';
-import { all, audit, one, uuid } from './lib/db';
+import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './lib/db';
 
 export type ExamOwnerType = 'CENTRAL' | 'INSTITUTION';
 
@@ -29,8 +29,219 @@ export function answerStringValid(value: string, questionCount: number, optionCo
   return value.length === questionCount && pattern.test(value);
 }
 
+/** Empty alternative-answer cells mean “accept the primary answer”. */
+export function normalizeAcceptedAnswers(value: unknown, primary: string): string[] {
+  const raw = Array.isArray(value)
+    ? value.reduce<unknown[]>((all, item) => all.concat(Array.isArray(item) ? item : [item]), [])
+    : typeof value === 'string' ? value.split(/[|/,]/) : [];
+  const normalized = [...new Set(raw.map((item) => String(item ?? '').trim().toUpperCase()).filter(Boolean))];
+  return normalized.length ? normalized : [primary];
+}
+
 function err(status: number, code: string, message: string, details?: unknown): Response {
   return Response.json({ ok: false, error: { code, message, ...(details === undefined ? {} : { details }) } }, { status });
+}
+
+const CONTENT_ROLES: Role[] = ['SUPER_ADMIN', 'INSTITUTION_MANAGER', 'TEACHER', 'GUIDANCE_TEACHER', 'STUDENT', 'PARENT'];
+
+function safeAssetName(value: string): string {
+  return value.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/-+/g, '-').slice(0, 120) || 'dosya';
+}
+
+function validHttpUrl(value: string): boolean {
+  try { const url = new URL(value); return url.protocol === 'https:' && url.hostname.length > 2; } catch { return false; }
+}
+
+async function contentUser(env: Env, request: Request): Promise<AuthUser | Response> {
+  const user = await getAuthUser(env, request);
+  if (!user) return err(401, 'UNAUTHENTICATED', 'Oturum açmanız gerekiyor.');
+  if (!CONTENT_ROLES.includes(user.role)) return forbidden();
+  return user;
+}
+
+async function contentExam(env: Env, user: AuthUser, examId: string): Promise<any | null> {
+  const exam = await one<any>(env.DB.prepare('SELECT * FROM exams WHERE id=?').bind(examId));
+  if (!exam) return null;
+  if (user.role === 'SUPER_ADMIN') return exam;
+  if (user.role === 'STUDENT') {
+    return user.student_id && await one(env.DB.prepare('SELECT 1 FROM exam_participants WHERE exam_id=? AND student_id=?').bind(examId, user.student_id)) ? exam : null;
+  }
+  if (user.role === 'PARENT') {
+    return await one(env.DB.prepare(`SELECT 1 FROM exam_participants ep JOIN parent_student_links p ON p.student_id=ep.student_id AND p.parent_user_id=? AND p.active=1 WHERE ep.exam_id=? LIMIT 1`).bind(user.id, examId)) ? exam : null;
+  }
+  if (!user.institution_id) return null;
+  return exam.owner_type === 'CENTRAL'
+    ? await one(env.DB.prepare('SELECT 1 FROM exam_institutions WHERE exam_id=? AND institution_id=? AND enabled=1').bind(examId, user.institution_id)) ? exam : null
+    : exam.institution_id === user.institution_id ? exam : null;
+}
+
+function pdfAscii(value: unknown): string {
+  return String(value ?? '').replace(/İ|ı/g, 'i').replace(/Ğ|ğ/g, 'g').replace(/Ş|ş/g, 's').replace(/Ü|ü/g, 'u').replace(/Ö|ö/g, 'o').replace(/Ç|ç/g, 'c').replace(/[^ -~]/g, '?');
+}
+function pdfEscape(value: unknown): string { return pdfAscii(value).replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)'); }
+function pdfLine(commands: string[], x: number, y: number, value: unknown, size = 10, color = '0.05 0.14 0.35') { commands.push(`${color} rg BT /F1 ${size} Tf ${x} ${y} Td (${pdfEscape(value)}) Tj ET`); }
+function makeAnswerKeyPdf(title: string, publisher: string, booklet: string, rows: any[], logoFileName?: string | null): ArrayBuffer {
+  const enc = new TextEncoder(); const commands: string[] = [];
+  commands.push('0.96 0.98 1 rg 0 0 595 842 re f', '0.10 0.35 0.85 rg 0 790 595 52 re f');
+  pdfLine(commands, 34, 812, 'ANUNEX', 22, '1 1 1'); pdfLine(commands, 34, 798, 'SINAV SONUCLARI VE KAZANIM ARSIVI', 7, '0.82 0.90 1');
+  pdfLine(commands, 390, 814, publisher || 'Yayinevi', 10, '1 1 1'); pdfLine(commands, 390, 800, title, 8, '0.82 0.90 1');
+  pdfLine(commands, 34, 766, 'Cevap Anahtari', 17); pdfLine(commands, 34, 748, `${title} · Kitapcik ${booklet}`, 9, '0.25 0.32 0.45');
+  if (logoFileName) pdfLine(commands, 34, 732, `Yayinevi logosu arsivlendi: ${logoFileName}`, 7, '0.32 0.40 0.55');
+  let y = 704; let lastSubject = '';
+  for (const row of rows) {
+    if (y < 80) break;
+    if (row.subject_name !== lastSubject) { commands.push('0.86 0.92 1 rg 32 ' + (y - 7) + ' 531 24 re f'); pdfLine(commands, 42, y, row.subject_name, 10); y -= 30; lastSubject = row.subject_name; }
+    pdfLine(commands, 46, y, `${row.question_no}.`, 8); pdfLine(commands, 80, y, row.correct_answer || '—', 10, '0.10 0.35 0.85'); pdfLine(commands, 122, y, row.status === 'CANCELLED' ? 'Iptal' : row.status === 'EXCLUDED' ? 'Degerlendirme disi' : 'Aktif', 7, '0.28 0.36 0.50');
+    pdfLine(commands, 250, y, row.outcome_text || 'Kazanimsiz', 7, '0.28 0.36 0.50'); y -= 20;
+  }
+  pdfLine(commands, 34, 45, 'Bu belge ANUNEX merkezi sinav kaydindan uretilmistir.', 7, '0.35 0.43 0.55');
+  const objects: string[] = []; const add = (s: string) => { objects.push(s); return objects.length; }; const font = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+  const content = commands.join('\n'); const stream = add(`<< /Length ${enc.encode(content).length} >>\nstream\n${content}\nendstream`); const page = add(`<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ${font} 0 R >> >> /Contents ${stream} 0 R >>`); const pages = add(`<< /Type /Pages /Kids [${page} 0 R] /Count 1 >>`); const catalog = add(`<< /Type /Catalog /Pages ${pages} 0 R >>`);
+  let out = '%PDF-1.4\n%\xFF\xFF\xFF\xFF\n'; const offsets = [0]; for (let i = 0; i < objects.length; i++) { offsets.push(enc.encode(out).length); out += `${i + 1} 0 obj\n${objects[i]}\nendobj\n`; } const xref = enc.encode(out).length; out += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`; for (let i = 1; i <= objects.length; i++) out += `${String(offsets[i]).padStart(10, '0')} 00000 n \n`; out += `trailer\n<< /Size ${objects.length + 1} /Root ${catalog} 0 R >>\nstartxref\n${xref}\n%%EOF\n`; return enc.encode(out).buffer;
+}
+
+async function contentList(env: Env, user: AuthUser, examId: string): Promise<Response> {
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Bu sınav içeriğine erişilemiyor.');
+  const assetVisibility = user.role === 'SUPER_ADMIN' ? null : user.role === 'STUDENT' || user.role === 'PARENT' ? 'STUDENT' : 'INSTITUTION_TEACHER';
+  const [assets, videos, opticalBindings, opticals] = await Promise.all([
+    all<any>(env.DB.prepare(`SELECT id,asset_type,booklet_code,file_name,mime_type,byte_size,version,status,visibility,metadata_json,created_at FROM exam_document_assets WHERE exam_id=? AND status='READY' AND (? IS NULL OR visibility IN (?, 'PUBLIC')) ORDER BY created_at DESC`).bind(examId, assetVisibility, assetVisibility)),
+    all<any>(env.DB.prepare(`SELECT id,exam_question_id,outcome_id,link_type,provider,url,title,description,status,publish_at,published_at,visibility,link_status,last_checked_at FROM video_links WHERE exam_id=? AND ((status='PUBLISHED' AND (publish_at IS NULL OR publish_at<=CURRENT_TIMESTAMP) AND visibility IN ('PUBLIC','STUDENT_TEACHER')) OR ? IN ('SUPER_ADMIN','INSTITUTION_MANAGER')) ORDER BY coalesce(published_at,publish_at,updated_at) DESC`).bind(examId, user.role)),
+    all<any>(env.DB.prepare(`SELECT b.id,b.booklet_code,b.optical_template_version_id,b.input_modes_json,b.active,t.name template_name,t.vendor,v.version template_version,v.page_width_mm,v.page_height_mm FROM exam_optical_bindings b JOIN optical_template_versions v ON v.id=b.optical_template_version_id JOIN optical_templates t ON t.id=v.template_id WHERE b.exam_id=? AND b.active=1 ORDER BY b.booklet_code`).bind(examId)),
+    ['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)
+      ? all<any>(env.DB.prepare(`SELECT v.id version_id,t.name,t.vendor,v.version,v.page_width_mm,v.page_height_mm FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id LEFT JOIN optical_definition_validations d ON d.optical_template_version_id=v.id WHERE t.active=1 AND t.status='READY' AND v.active=1 AND v.parser_definition IS NOT NULL AND coalesce(d.parser_test_passed,0)=1 ORDER BY t.name,v.version`))
+      : Promise.resolve([]),
+  ]);
+  return json({ ok: true, exam: { id: exam.id, title: exam.title, publisherName: exam.publisher_name }, assets, videos, opticalBindings, opticals });
+}
+
+async function replaceExamOptical(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden();
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.');
+  if (exam.owner_type === 'CENTRAL' && user.role !== 'SUPER_ADMIN') return forbidden('Merkezi sınav optik bağını yalnız Super Admin yönetebilir.');
+  const body = await request.json<{ opticalTemplateVersionId?: string; bookletCodes?: string[]; inputModes?: string[] }>();
+  const versionId = String(body.opticalTemplateVersionId || '').trim();
+  const version = await one<any>(env.DB.prepare(`SELECT v.id,t.name,t.status,v.active,v.parser_definition,v.camera_geometry,v.print_fields,v.fiducials,coalesce(d.parser_test_passed,0) parser_test_passed FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id LEFT JOIN optical_definition_validations d ON d.optical_template_version_id=v.id WHERE v.id=? AND t.active=1`).bind(versionId));
+  if (!version || !version.active || version.status !== 'READY') return badRequest('Yalnız yayındaki READY optik sürümü bağlanabilir.', 'OPTICAL_NOT_READY');
+  const modes = [...new Set((body.inputModes || ['TXT', 'DAT', 'CAMERA']).map((x) => String(x).toUpperCase()).filter((x) => ['TXT', 'DAT', 'CAMERA'].includes(x)))];
+  if (!modes.length) return badRequest('En az bir okuma yöntemi seçilmelidir.');
+  if (!version.parser_definition && modes.some((x) => x === 'TXT' || x === 'DAT')) return badRequest('TXT/DAT okuması için parser tanımı tamamlanmalıdır.');
+  if (!version.camera_geometry || !version.fiducials) { if (modes.includes('CAMERA')) return badRequest('Telefon kamerası için kamera geometrisi ve referans hedefleri tamamlanmalıdır.'); }
+  if (modes.includes('TXT') || modes.includes('DAT')) { if (!Number(version.parser_test_passed)) return badRequest('TXT/DAT için örnek dosya parser testi başarıyla tamamlanmalıdır.'); }
+  const available = await all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code').bind(examId));
+  const allowed = new Set(available.map((x) => x.code)); const bookletCodes = [...new Set((body.bookletCodes?.length ? body.bookletCodes : available.map((x) => x.code)).map((x) => String(x).trim().toUpperCase()).filter((x) => allowed.has(x)))];
+  if (!bookletCodes.length) return badRequest('Sınavda tanımlı kitapçıklardan en az biri seçilmelidir.');
+  const statements: D1PreparedStatement[] = [env.DB.prepare('UPDATE exam_optical_bindings SET active=0,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?').bind(examId)];
+  for (const bookletCode of bookletCodes) statements.push(env.DB.prepare(`INSERT INTO exam_optical_bindings(id,exam_id,booklet_code,optical_template_version_id,input_modes_json,active,created_by) VALUES(?,?,?,?,?,1,?)`).bind(uuid('eob'), examId, bookletCode, versionId, JSON.stringify(modes), user.id));
+  await env.DB.batch(statements); await audit(env.DB, user.id, exam.institution_id, 'EXAM_OPTICAL_BOUND', 'exam', examId, { opticalTemplateVersionId: versionId, bookletCodes, inputModes: modes });
+  return json({ ok: true, versionId, bookletCodes, inputModes: modes });
+}
+
+async function uploadContentAsset(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden();
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.');
+  if (exam.owner_type === 'CENTRAL' && user.role !== 'SUPER_ADMIN') return forbidden('Merkezi sınav arşivini yalnız Super Admin yönetebilir.');
+
+  const form = await request.formData();
+  const file = form.get('file');
+  if (!(file instanceof File)) return badRequest('Bir dosya seçilmelidir.');
+
+  const requestedType = String(form.get('assetType') || '').toUpperCase();
+  const documentKind = String(form.get('documentKind') || requestedType).toUpperCase();
+  const kindToAssetType: Record<string, string> = {
+    ANSWER_KEY_PDF: 'SOURCE_ANSWER_KEY',
+    OUTCOME_TABLE: 'QUALIFIED_ANSWER_KEY',
+    EXAM_PDF: 'EXAM_PDF',
+    PUBLISHER_LOGO: 'PUBLISHER_LOGO',
+    OPTICAL_DOCUMENT: 'OTHER',
+    SEKONIC: 'OTHER',
+    BICOM: 'OTHER',
+    OTHER_DIGITAL_FILE: 'OTHER',
+  };
+  const rawType = kindToAssetType[documentKind] || requestedType;
+  const allowedTypes = ['QUALIFIED_ANSWER_KEY', 'SOURCE_ANSWER_KEY', 'EXAM_PDF', 'PUBLISHER_LOGO', 'OTHER'];
+  const allowedKinds = ['ANSWER_KEY_PDF', 'OUTCOME_TABLE', 'EXAM_PDF', 'PUBLISHER_LOGO', 'OPTICAL_DOCUMENT', 'SEKONIC', 'BICOM', 'OTHER_DIGITAL_FILE', ...allowedTypes];
+  if (!allowedTypes.includes(rawType) || !allowedKinds.includes(documentKind)) return badRequest('Geçersiz arşiv belge türü.');
+
+  const max = rawType === 'PUBLISHER_LOGO' ? 5 * 1024 * 1024 : 30 * 1024 * 1024;
+  if (file.size > max) return badRequest('Dosya boyutu sınırı aşıyor.');
+  const mime = file.type || 'application/octet-stream';
+  const extension = file.name.toLowerCase().match(/\.([a-z0-9]+)$/)?.[1] || '';
+  const isImage = mime.startsWith('image/') || ['png', 'jpg', 'jpeg', 'svg', 'webp'].includes(extension);
+  const structuredFile = ['pdf', 'csv', 'xlsx'].includes(extension) || ['application/pdf', 'text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].includes(mime);
+  const opticalSourceFile = [...['txt', 'dat', 'fmt', 'zip'], ...['pdf', 'csv', 'xlsx']].includes(extension) || structuredFile;
+
+  if (documentKind === 'PUBLISHER_LOGO' && !isImage) return badRequest('Yayınevi logosu PNG, JPG, SVG veya WEBP olmalıdır.');
+  if (['ANSWER_KEY_PDF', 'OUTCOME_TABLE', 'EXAM_PDF'].includes(documentKind) && !structuredFile) return badRequest('Bu belge türü için PDF, CSV veya XLSX dosyası yükleyin.');
+  if (['OPTICAL_DOCUMENT', 'SEKONIC', 'BICOM'].includes(documentKind) && !opticalSourceFile) return badRequest('Optik kaynak için PDF, CSV, XLSX, TXT, DAT, FMT veya ZIP dosyası yükleyin.');
+
+  const bookletCode = normalizeBookletCodes([form.get('bookletCode')])[0] || 'A';
+  const title = String(form.get('title') || file.name).trim().slice(0, 200) || file.name;
+  const current = await one<{ version: number }>(env.DB.prepare('SELECT max(version) version FROM exam_document_assets WHERE exam_id=? AND asset_type=? AND booklet_code=?').bind(examId, rawType, bookletCode));
+  const version = Number(current?.version || 0) + 1;
+  const key = `exams/${exam.academic_year}/${examId}/archive/${documentKind.toLowerCase()}/v${version}-${Date.now()}-${safeAssetName(file.name)}`;
+  await env.FILES.put(key, file.stream(), { httpMetadata: { contentType: mime, cacheControl: 'private, no-store' } });
+  const id = uuid('eda');
+  const metadata = {
+    source: String(form.get('source') || 'SUPER_ADMIN_ARCHIVE_UPLOAD'),
+    documentKind,
+    title,
+    originalAssetType: requestedType || rawType,
+  };
+  const visibility = documentKind === 'EXAM_PDF' ? 'STUDENT' : 'INSTITUTION_TEACHER';
+  await env.DB.prepare(`INSERT INTO exam_document_assets(id,exam_id,asset_type,booklet_code,r2_key,file_name,mime_type,byte_size,version,visibility,metadata_json,created_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`)
+    .bind(id, examId, rawType, bookletCode, key, file.name, mime, file.size, version, visibility, JSON.stringify(metadata), user.id).run();
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_ARCHIVE_ASSET_UPLOADED', 'exam', examId, { assetType: rawType, documentKind, bookletCode, title, version, fileName: file.name, byteSize: file.size });
+  return json({ ok: true, id, version, assetType: rawType, documentKind, bookletCode }, 201);
+}
+
+async function generatePlainAnswerKey(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden();
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.');
+  if (exam.owner_type === 'CENTRAL' && user.role !== 'SUPER_ADMIN') return forbidden('Merkezi sınav PDF arşivini yalnız Super Admin yönetebilir.');
+  const booklet = (new URL(request.url).searchParams.get('booklet') || 'A').trim().toUpperCase();
+  const rows = await all<any>(env.DB.prepare(`SELECT s.name subject_name,q.question_no,ak.correct_answer,ak.question_status status,GROUP_CONCAT(DISTINCT o.code || ' · ' || o.title) outcome_text FROM exam_questions q JOIN subjects s ON s.id=q.subject_id LEFT JOIN answer_keys ak ON ak.exam_question_id=q.id AND ak.booklet_code=? LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id LEFT JOIN outcomes o ON o.id=qo.outcome_id WHERE q.exam_id=? GROUP BY q.id ORDER BY q.global_no`).bind(booklet, examId));
+  if (!rows.length) return badRequest('Önce sınavın cevap anahtarını kaydedin.');
+  const logo = await one<{ file_name: string }>(env.DB.prepare(`SELECT file_name FROM exam_document_assets WHERE exam_id=? AND asset_type='PUBLISHER_LOGO' AND status='READY' ORDER BY version DESC LIMIT 1`).bind(examId));
+  const bytes = makeAnswerKeyPdf(exam.title, exam.publisher_name || '', booklet, rows, logo?.file_name); const versionRow = await one<{ version: number }>(env.DB.prepare(`SELECT max(version) version FROM exam_document_assets WHERE exam_id=? AND asset_type='PLAIN_ANSWER_KEY_PDF' AND booklet_code=?`).bind(examId, booklet)); const version = Number(versionRow?.version || 0) + 1;
+  const fileName = `${safeAssetName(exam.title)}-${booklet}-cevap-anahtari.pdf`; const key = `exams/${exam.academic_year}/${examId}/archive/plain-answer-key/v${version}-${booklet}.pdf`; await env.FILES.put(key, bytes, { httpMetadata: { contentType: 'application/pdf', cacheControl: 'private, no-store' } });
+  const id = uuid('eda'); await env.DB.prepare(`INSERT INTO exam_document_assets(id,exam_id,asset_type,booklet_code,r2_key,file_name,mime_type,byte_size,version,visibility,metadata_json,created_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id, examId, 'PLAIN_ANSWER_KEY_PDF', booklet, key, fileName, 'application/pdf', bytes.byteLength, version, 'STUDENT', JSON.stringify({ generatedFrom: 'ANSWER_KEYS', publisherLogoFile: logo?.file_name || null }), user.id).run();
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_PLAIN_ANSWER_KEY_GENERATED', 'exam', examId, { booklet, version, byteSize: bytes.byteLength });
+  return new Response(bytes, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${fileName}"`, 'Cache-Control': 'private, no-store', 'X-Anunex-Archive-Asset-Id': id } });
+}
+
+async function createExamVideo(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden(); const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.');
+  if (exam.owner_type === 'CENTRAL' && user.role !== 'SUPER_ADMIN') return forbidden('Merkezi sınav videolarını yalnız Super Admin yönetebilir.');
+  const body = await request.json<{ url?: string; title?: string; description?: string; linkType?: 'EXAM' | 'SOLUTION' | 'TOPIC'; examQuestionId?: string | null; outcomeId?: string | null; publishMode?: 'DRAFT' | 'NOW' | 'SCHEDULED'; publishAt?: string | null; visibility?: 'STUDENT_TEACHER' | 'PUBLIC' }>();
+  const url = String(body.url || '').trim(); const title = String(body.title || '').trim(); if (!validHttpUrl(url) || !title) return badRequest('HTTPS video bağlantısı ve başlık zorunludur.');
+  const linkType = body.linkType || 'EXAM'; if (linkType !== 'EXAM' && !body.examQuestionId && !body.outcomeId) return badRequest('Çözüm veya konu videosu soru ya da kazanıma bağlanmalıdır.');
+  if (body.examQuestionId && !(await one(env.DB.prepare('SELECT 1 FROM exam_questions WHERE id=? AND exam_id=?').bind(body.examQuestionId, examId)))) return badRequest('Video sorusu bu sınava ait değil.');
+  if (body.outcomeId && !(await one(env.DB.prepare('SELECT 1 FROM outcomes o JOIN question_outcomes qo ON qo.outcome_id=o.id JOIN exam_questions q ON q.id=qo.exam_question_id WHERE o.id=? AND q.exam_id=?').bind(body.outcomeId, examId)))) return badRequest('Video kazanımı bu sınava ait değil.');
+  let status: 'DRAFT' | 'SCHEDULED' | 'PUBLISHED' = 'DRAFT'; let publishAt: string | null = null; const mode = body.publishMode || 'DRAFT'; if (mode === 'NOW') status = 'PUBLISHED'; else if (mode === 'SCHEDULED') { const date = body.publishAt ? new Date(body.publishAt) : null; if (!date || Number.isNaN(date.getTime()) || date.getTime() <= Date.now()) return badRequest('Planlı yayın tarihi gelecekte olmalıdır.'); status = 'SCHEDULED'; publishAt = date.toISOString(); }
+  const id = uuid('vid'); await env.DB.prepare(`INSERT INTO video_links(id,exam_id,exam_question_id,outcome_id,link_type,provider,url,title,description,approved,status,publish_at,published_at,visibility,link_status,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,'UNKNOWN',CURRENT_TIMESTAMP)`).bind(id, examId, body.examQuestionId || null, body.outcomeId || null, linkType, 'EXTERNAL', url, title, body.description?.trim() || null, status === 'PUBLISHED' ? 1 : 0, status, publishAt, status === 'PUBLISHED' ? new Date().toISOString() : null, body.visibility || 'STUDENT_TEACHER').run();
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_VIDEO_CREATED', 'exam', examId, { videoId: id, linkType, status, publishAt }); return json({ ok: true, id, status }, 201);
+}
+
+async function updateExamVideo(request: Request, env: Env, user: AuthUser, examId: string, videoId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden(); const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.'); if (exam.owner_type === 'CENTRAL' && user.role !== 'SUPER_ADMIN') return forbidden('Merkezi sınav videolarını yalnız Super Admin yönetebilir.'); const body = await request.json<{ status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'; publishAt?: string | null }>(); const next = body.status; if (!next || !['DRAFT', 'PUBLISHED', 'ARCHIVED'].includes(next)) return badRequest('Geçersiz video durumu.'); const row = await one<any>(env.DB.prepare('SELECT id FROM video_links WHERE id=? AND exam_id=?').bind(videoId, examId)); if (!row) return notFound('Video bulunamadı.'); const published = next === 'PUBLISHED' ? 1 : 0; await env.DB.prepare(`UPDATE video_links SET status=?,approved=?,publish_at=?,published_at=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND exam_id=?`).bind(next, published, next === 'PUBLISHED' ? null : body.publishAt || null, next === 'PUBLISHED' ? new Date().toISOString() : null, videoId, examId).run(); await audit(env.DB, user.id, exam.institution_id, 'EXAM_VIDEO_STATUS_CHANGED', 'video_link', videoId, { status: next }); return json({ ok: true, status: next });
+}
+
+async function checkExamVideo(env: Env, user: AuthUser, examId: string, videoId: string): Promise<Response> {
+  if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)) return forbidden();
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Sınav tanımı bulunamadı.');
+  const row = await one<any>(env.DB.prepare('SELECT id,url FROM video_links WHERE id=? AND exam_id=?').bind(videoId, examId)); if (!row) return notFound('Video bulunamadı.');
+  let status: 'OK' | 'BROKEN' = 'BROKEN';
+  try { const response = await fetch(row.url, { method: 'HEAD', redirect: 'manual' }); status = response.status >= 200 && response.status < 400 ? 'OK' : 'BROKEN'; } catch { status = 'BROKEN'; }
+  await env.DB.prepare('UPDATE video_links SET link_status=?,last_checked_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(status, videoId).run();
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_VIDEO_LINK_CHECKED', 'video_link', videoId, { linkStatus: status }); return json({ ok: true, linkStatus: status });
+}
+
+async function downloadExamAsset(request: Request, env: Env, user: AuthUser, examId: string, assetId: string): Promise<Response> {
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Bu sınav arşivine erişilemiyor.'); const visibility = user.role === 'SUPER_ADMIN' ? null : user.role === 'STUDENT' || user.role === 'PARENT' ? 'STUDENT' : 'INSTITUTION_TEACHER'; const asset = await one<any>(env.DB.prepare(`SELECT * FROM exam_document_assets WHERE id=? AND exam_id=? AND status=? AND (? IS NULL OR visibility IN (?, 'PUBLIC'))`).bind(assetId, examId, 'READY', visibility, visibility)); if (!asset) return notFound('Arşiv belgesi bulunamadı.'); const object = await env.FILES.get(asset.r2_key); if (!object) return notFound('Arşiv dosyası depolamada bulunamadı.'); await audit(env.DB, user.id, exam.institution_id, 'EXAM_ARCHIVE_ASSET_DOWNLOADED', 'exam_document_asset', assetId, { assetType: asset.asset_type }); const headers = new Headers({ 'Content-Type': asset.mime_type, 'Content-Disposition': `attachment; filename="${safeAssetName(asset.file_name)}"`, 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' }); object.writeHttpMetadata(headers); return new Response(object.body, { headers });
+}
+
+export async function publishScheduledExamVideos(env: Env): Promise<void> {
+  try { await env.DB.prepare(`UPDATE video_links SET status='PUBLISHED',approved=1,published_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE status='SCHEDULED' AND publish_at IS NOT NULL AND publish_at<=CURRENT_TIMESTAMP`).run(); } catch (error) { console.error('Scheduled exam video promotion failed', error); }
 }
 
 async function actor(env: Env, request: Request): Promise<AuthUser | Response> {
@@ -146,10 +357,10 @@ async function createDefinition(request: Request, env: Env, user: AuthUser): Pro
   const academicYear = body.academicYear?.trim() || '';
   const examType = body.examType?.trim().toUpperCase() || '';
   if (!title || !/^20\d{2}-20\d{2}$/.test(academicYear) || !examType) return err(400, 'VALIDATION_ERROR', 'Sınav adı, eğitim yılı ve sınav türü gereklidir.');
-  const publisherName = body.publisherName?.trim() || (ownerType === 'INSTITUTION' ? 'Kurum Sınavı' : '');
+  const publisherName = body.publisherName?.trim() || '';
   const sessionLabel = body.sessionLabel?.trim() || '';
   const description = body.description?.trim() || '';
-  if (!publisherName) return err(400, 'VALIDATION_ERROR', 'Merkezi sınav için yayınevi adı gereklidir.');
+  if (!publisherName || !sessionLabel || !description) return err(400, 'VALIDATION_ERROR', 'Yayınevi adı, oturum/bölüm ve açıklama/not gereklidir.');
   if (publisherName && publisherName.length > 160) return err(400, 'VALIDATION_ERROR', 'Yayınevi adı 160 karakteri geçemez.');
   if (sessionLabel && sessionLabel.length > 120) return err(400, 'VALIDATION_ERROR', 'Oturum / bölüm 120 karakteri geçemez.');
   if (description && description.length > 2000) return err(400, 'VALIDATION_ERROR', 'Açıklama 2000 karakteri geçemez.');
@@ -200,21 +411,21 @@ async function readiness(env: Env, examId: string): Promise<any> {
       (SELECT e.outcome_mode FROM exams e WHERE e.id=?) outcome_mode,
       (SELECT count(DISTINCT qo.exam_question_id) FROM question_outcomes qo JOIN exam_questions q ON q.id=qo.exam_question_id WHERE q.exam_id=?) outcome_mapped_questions,
       (SELECT coalesce(srv.verified,0) FROM exams e LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id WHERE e.id=?) scoring_verified
-  `).bind(examId, examId, examId, examId, examId, examId, examId, examId, examId));
+  `).bind(examId, examId, examId, examId, examId, examId, examId, examId));
   const expectedAnswers = Number(row?.expected_questions || 0) * Number(row?.booklet_count || 0);
   const readyToPublish = Number(row?.subject_count || 0) > 0
     && Number(row?.booklet_count || 0) > 0
     && Number(row?.actual_questions || 0) === Number(row?.expected_questions || 0)
     && Number(row?.actual_answers || 0) === expectedAnswers
     && Number(row?.scoring_verified || 0) === 1
-    && (row?.outcome_mode !== 'OFFICIAL_REQUIRED' || Number(row?.outcome_mapped_questions || 0) >= Number(row?.active_expected_questions || 0));
+    && (row?.outcome_mode !== 'OFFICIAL_REQUIRED' || Number(row?.outcome_mapped_questions || 0) >= Number(row?.expected_questions || 0));
   return { ...row, expected_answers: expectedAnswers, ready_to_publish: readyToPublish };
 }
 
 async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
-  const [subjects, booklets, institutions, keys, ready] = await Promise.all([
+  const [subjects, booklets, institutions, keys, optionalAnswerKey, ready] = await Promise.all([
     all<any>(env.DB.prepare(`SELECT es.*,s.code,s.name,s.category FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order,s.name`).bind(examId)),
     all<any>(env.DB.prepare(`SELECT id,code,active FROM exam_booklets WHERE exam_id=? ORDER BY code`).bind(examId)),
     all<any>(env.DB.prepare(`SELECT ei.institution_id,ei.enabled,i.name,i.code FROM exam_institutions ei JOIN institutions i ON i.id=ei.institution_id WHERE ei.exam_id=? ORDER BY i.name`).bind(examId)),
@@ -232,16 +443,22 @@ async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<
       GROUP BY q.id,ak.booklet_code
       ORDER BY q.global_no,ak.booklet_code
     `).bind(examId)),
+    all<any>(env.DB.prepare(`
+      SELECT oak.subject_id,s.code,s.name,oak.booklet_code,oak.question_no,oak.correct_answer,
+             oak.option_count answer_option_count,oak.accepted_answers,oak.question_status answer_question_status
+      FROM exam_optional_answer_keys oak JOIN subjects s ON s.id=oak.subject_id
+      WHERE oak.exam_id=? ORDER BY s.name,oak.booklet_code,oak.question_no
+    `).bind(examId)),
     readiness(env, examId),
   ]);
-  return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, readiness: ready });
+  return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, optionalAnswerKey, readiness: ready });
 }
 
 async function updateGeneral(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Aktif veya kapanmış sınavın temel tanımı değiştirilemez.');
-  const body = await request.json<{ title?: string; examType?: string; gradeLevel?: number | null; examDate?: string | null; scoringRuleVersionId?: string | null; publisherName?: string | null; sessionLabel?: string | null; description?: string | null; resultNetworkEnabled?: boolean; scoringOverride?: Record<string, unknown> | null; scoringSettings?: Record<string, unknown> | null; outcomeMode?: 'OPTIONAL' | 'OFFICIAL_REQUIRED' }>();
+  const body = await request.json<{ title?: string; examType?: string; gradeLevel?: number | null; examDate?: string | null; scoringRuleVersionId?: string | null; publisherName?: string | null; sessionLabel?: string | null; description?: string | null; resultNetworkEnabled?: boolean; scoringOverride?: Record<string, unknown> | null; scoringSettings?: Record<string, unknown> | null; outcomeMode?: 'OPTIONAL' | 'OFFICIAL_REQUIRED'; reason?: string | null }>();
   const title = body.title?.trim() || exam.title;
   const examType = body.examType?.trim().toUpperCase() || exam.exam_type;
   const gradeLevel = body.gradeLevel === undefined ? exam.grade_level : body.gradeLevel == null ? null : Number(body.gradeLevel);
@@ -268,10 +485,28 @@ async function updateGeneral(request: Request, env: Env, user: AuthUser, examId:
     ? (body.resultNetworkEnabled ? 1 : 0)
     : Number(exam.result_network_enabled || 0);
   const outcomeMode = body.outcomeMode === undefined ? (exam.outcome_mode || 'OPTIONAL') : body.outcomeMode === 'OFFICIAL_REQUIRED' ? 'OFFICIAL_REQUIRED' : 'OPTIONAL';
+  const examDate = body.examDate === undefined ? exam.exam_date : body.examDate || null;
+  const reason = body.reason?.trim() || 'Sınav yönetim ekranı güncellemesi.';
+  if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Değişiklik gerekçesi 500 karakteri geçemez.');
+  const before = {
+    title: exam.title,
+    examType: exam.exam_type,
+    gradeLevel: exam.grade_level,
+    examDate: exam.exam_date,
+    scoringRuleVersionId: exam.scoring_rule_version_id,
+    publisherName: exam.publisher_name,
+    sessionLabel: exam.session_label,
+    description: exam.description,
+    resultNetworkEnabled: Number(exam.result_network_enabled || 0),
+    scoringOverride: exam.scoring_override_json,
+    scoringSettings: exam.scoring_settings_json,
+    outcomeMode: exam.outcome_mode || 'OPTIONAL',
+  };
+  const after = { title, examType, gradeLevel, examDate, scoringRuleVersionId, publisherName, sessionLabel, description, resultNetworkEnabled, scoringOverride, scoringSettings, outcomeMode };
   await env.DB.prepare(`UPDATE exams SET title=?,exam_type=?,grade_level=?,exam_date=?,scoring_rule_version_id=?,publisher_name=?,session_label=?,description=?,result_network_enabled=?,scoring_override_json=?,scoring_settings_json=?,outcome_mode=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
-    .bind(title, examType, gradeLevel, body.examDate === undefined ? exam.exam_date : body.examDate || null,
+    .bind(title, examType, gradeLevel, examDate,
       scoringRuleVersionId, publisherName, sessionLabel, description, resultNetworkEnabled, scoringOverride, scoringSettings, outcomeMode, examId).run();
-  await audit(env.DB, user.id, exam.institution_id, 'EXAM_DEFINITION_UPDATED', 'exam', examId, { title, examType, gradeLevel });
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_DEFINITION_UPDATED', 'exam', examId, { before, after, reason });
   return Response.json({ ok: true });
 }
 
@@ -281,7 +516,9 @@ async function replaceStructure(request: Request, env: Env, user: AuthUser, exam
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Sınav yapısı yalnız taslak durumunda değiştirilebilir.');
   const participant = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM exam_participants WHERE exam_id=?').bind(examId));
   if ((participant?.c || 0) > 0) return err(409, 'EXAM_HAS_RESULTS', 'Katılımcısı bulunan sınavın soru yapısı değiştirilemez.');
-  const body = await request.json<{ booklets?: unknown[]; subjects?: Array<{ subjectId?: string; questionCount?: number; questionStart?: number; questionEnd?: number; optionCount?: 4 | 5; questionStatus?: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'; wrongDivisor?: number; sortOrder?: number }> }>();
+  const previousBooklets = await all<any>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code').bind(examId));
+  const previousSubjects = await all<any>(env.DB.prepare('SELECT subject_id,question_count,question_start,question_end,option_count,wrong_divisor,sort_order FROM exam_subjects WHERE exam_id=? ORDER BY sort_order').bind(examId));
+  const body = await request.json<{ booklets?: unknown[]; subjects?: Array<{ subjectId?: string; questionCount?: number; questionStart?: number; questionEnd?: number; optionCount?: 4 | 5; questionStatus?: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'; wrongDivisor?: number; sortOrder?: number }>; reason?: string | null }>();
   const booklets = normalizeBookletCodes(body.booklets || []);
   if (!booklets.length || booklets.length > 8) return err(400, 'INVALID_BOOKLETS', 'En az 1, en fazla 8 geçerli kitapçık tanımlayın.');
   const subjects = (body.subjects || []).map((s, index) => ({
@@ -302,11 +539,13 @@ async function replaceStructure(request: Request, env: Env, user: AuthUser, exam
     const subject = await one(env.DB.prepare('SELECT id FROM subjects WHERE id=? AND active=1').bind(s.subjectId));
     if (!subject) return err(404, 'SUBJECT_NOT_FOUND', 'Seçilen derslerden biri bulunamadı.');
   }
+  const reason = body.reason?.trim() || 'Sınav soru yapısı güncellemesi.';
+  if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Değişiklik gerekçesi 500 karakteri geçemez.');
 
   const statements: D1PreparedStatement[] = [
     env.DB.prepare(`DELETE FROM question_outcomes WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
     env.DB.prepare(`DELETE FROM answer_keys WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
-    env.DB.prepare('DELETE FROM exam_question_booklet_orders WHERE exam_id=?').bind(examId),
+    env.DB.prepare(`DELETE FROM exam_question_booklet_orders WHERE exam_id=?`).bind(examId),
     env.DB.prepare('DELETE FROM exam_questions WHERE exam_id=?').bind(examId),
     env.DB.prepare('DELETE FROM exam_subjects WHERE exam_id=?').bind(examId),
     env.DB.prepare('DELETE FROM exam_booklets WHERE exam_id=?').bind(examId),
@@ -322,7 +561,11 @@ async function replaceStructure(request: Request, env: Env, user: AuthUser, exam
   }
   for (const code of booklets) statements.push(env.DB.prepare(`INSERT INTO exam_booklets (id,exam_id,code,active) VALUES(?,?,?,1)`).bind(uuid('book'), examId, code));
   await env.DB.batch(statements);
-  await audit(env.DB, user.id, exam.institution_id, 'EXAM_STRUCTURE_REPLACED', 'exam', examId, { booklets, subjects });
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_STRUCTURE_REPLACED', 'exam', examId, {
+    before: { booklets: previousBooklets.map((row) => row.code), subjects: previousSubjects },
+    after: { booklets, subjects },
+    reason,
+  });
   return Response.json({ ok: true, questionCount: globalNo - 1, booklets });
 }
 
@@ -334,6 +577,7 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
     entries?: Array<{ subjectId?: string; bookletCode?: string; answers?: string; optionCount?: 4 | 5; acceptedAnswers?: Array<string | string[]>; questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>; bookletQuestionNumbers?: number[] }>;
     outcomeMappings?: Array<{ subjectId?: string; questionNo?: number; outcomeId?: string }>;
     outcomeMode?: 'OPTIONAL' | 'OFFICIAL_REQUIRED';
+    reason?: string | null;
   }>();
   const subjects = await all<any>(env.DB.prepare(`SELECT subject_id,question_count,question_start,question_end,option_count FROM exam_subjects WHERE exam_id=? ORDER BY sort_order`).bind(examId));
   const booklets = await all<{ code: string }>(env.DB.prepare(`SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code`).bind(examId));
@@ -345,6 +589,16 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
     const answers = String(entry.answers || '').replace(/\s+/g, '').toUpperCase();
     const optionCount = entry.optionCount === 4 ? 4 : 5;
     entryMap.set(`${subjectId}::${bookletCode}`, { answers, optionCount, acceptedAnswers: entry.acceptedAnswers, questionStatuses: entry.questionStatuses, bookletQuestionNumbers: entry.bookletQuestionNumbers });
+  }
+  const structureSubjectIds = new Set(subjects.map((subject) => String(subject.subject_id)));
+  const optionalEntries = [...entryMap.entries()].filter(([key]) => !structureSubjectIds.has(key.split('::')[0]));
+  for (const [key, entry] of optionalEntries) {
+    const [subjectId, bookletCode] = key.split('::');
+    const subject = await one<{ id: string; code: string }>(env.DB.prepare('SELECT id,code FROM subjects WHERE id=? AND active=1').bind(subjectId));
+    if (!subject || subject.code !== 'TYT_FEL') return err(400, 'OPTIONAL_SUBJECT_NOT_ALLOWED', 'Yalnız TYT seçmeli Felsefe alanı cevap anahtarına eklenebilir.');
+    if (!booklets.some((booklet) => booklet.code === bookletCode)) return err(400, 'INVALID_BOOKLET', 'Seçmeli cevap anahtarındaki kitapçık kodu sınav yapısıyla uyuşmuyor.');
+    if (!answerStringValid(entry.answers, 5, entry.optionCount)) return err(400, 'OPTIONAL_ANSWER_KEY_INCOMPLETE', 'TYT seçmeli Felsefe cevap anahtarı her kitapçık için 5 cevap olmalıdır.');
+    if (entry.acceptedAnswers && entry.acceptedAnswers.length !== 5) return err(400, 'OPTIONAL_ACCEPTED_ANSWERS_INCOMPLETE', 'TYT seçmeli Felsefe kabul edilen cevapları 5 soru olmalıdır.');
   }
   for (const subject of subjects) {
     for (const booklet of booklets) {
@@ -365,10 +619,13 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
   const questions = await all<any>(env.DB.prepare(`SELECT id,subject_id,question_no,option_count FROM exam_questions WHERE exam_id=? ORDER BY global_no`).bind(examId));
   const questionMap = new Map(questions.map((q) => [`${q.subject_id}::${q.question_no}`, q]));
   const outcomeMode = body.outcomeMode === 'OFFICIAL_REQUIRED' || exam.outcome_mode === 'OFFICIAL_REQUIRED' ? 'OFFICIAL_REQUIRED' : 'OPTIONAL';
+  const reason = body.reason?.trim() || 'Sınav cevap anahtarı güncellemesi.';
+  if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Değişiklik gerekçesi 500 karakteri geçemez.');
   const statements: D1PreparedStatement[] = [
     env.DB.prepare(`DELETE FROM answer_keys WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
     env.DB.prepare(`DELETE FROM exam_question_booklet_orders WHERE exam_id=?`).bind(examId),
     env.DB.prepare(`DELETE FROM question_outcomes WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
+    env.DB.prepare('DELETE FROM exam_optional_answer_keys WHERE exam_id=?').bind(examId),
   ];
   for (const subject of subjects) {
     for (const booklet of booklets) {
@@ -379,9 +636,8 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
         if (!question) return err(500, 'QUESTION_STRUCTURE_ERROR', 'Soru yapısı cevap anahtarıyla uyuşmuyor.');
         const primary = entry.answers[offset];
         const acceptedRaw = entry.acceptedAnswers?.[offset];
-        const accepted = Array.isArray(acceptedRaw) ? acceptedRaw : typeof acceptedRaw === 'string' ? acceptedRaw.split(/[|/,]/) : [primary];
         const allowed = entry.optionCount === 4 ? /^[A-D]$/ : /^[A-E]$/;
-        const normalizedAccepted = [...new Set(accepted.map((x) => String(x).trim().toUpperCase()).filter(Boolean))];
+        const normalizedAccepted = normalizeAcceptedAnswers(acceptedRaw, primary);
         if (!normalizedAccepted.length || normalizedAccepted.some((x) => !allowed.test(x))) return err(400, 'INVALID_ACCEPTED_ANSWER', `${subject.subject_id} / ${n} kabul edilen cevapları geçersiz.`);
         const status = entry.questionStatuses?.[offset] || 'ACTIVE';
         statements.push(env.DB.prepare(`UPDATE exam_questions SET option_count=?,question_status=? WHERE id=?`).bind(entry.optionCount, status, question.id));
@@ -391,6 +647,16 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
         statements.push(env.DB.prepare(`INSERT INTO exam_question_booklet_orders (id,exam_id,exam_question_id,booklet_code,printed_question_no) VALUES(?,?,?,?,?)`)
           .bind(uuid('eqbo'), examId, question.id, booklet.code, printedQuestionNo));
       }
+    }
+  }
+  for (const [key, entry] of optionalEntries) {
+    const [subjectId, bookletCode] = key.split('::');
+    for (let offset = 0; offset < 5; offset++) {
+      const primary = entry.answers[offset];
+      const accepted = normalizeAcceptedAnswers(entry.acceptedAnswers?.[offset], primary);
+      if (accepted.some((answer) => !(entry.optionCount === 4 ? /^[A-D]$/ : /^[A-E]$/).test(answer))) return err(400, 'INVALID_OPTIONAL_ACCEPTED_ANSWER', `${subjectId} / ${offset + 1} seçmeli kabul edilen cevabı geçersiz.`);
+      statements.push(env.DB.prepare(`INSERT INTO exam_optional_answer_keys (id,exam_id,subject_id,booklet_code,question_no,correct_answer,option_count,accepted_answers,question_status) VALUES(?,?,?,?,?,?,?,?,?)`)
+        .bind(uuid('oak'), examId, subjectId, bookletCode, offset + 1, primary, entry.optionCount, JSON.stringify(accepted), entry.questionStatuses?.[offset] || 'ACTIVE'));
     }
   }
 
@@ -414,7 +680,7 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
   }
   if (outcomeMode !== exam.outcome_mode) statements.push(env.DB.prepare('UPDATE exams SET outcome_mode=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(outcomeMode, examId));
   await env.DB.batch(statements);
-  await audit(env.DB, user.id, exam.institution_id, 'EXAM_ANSWER_KEY_REPLACED', 'exam', examId, { entryCount: entryMap.size, outcomeMappingCount: seenMappings.size });
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_ANSWER_KEY_REPLACED', 'exam', examId, { before: { entryCount: subjects.length * booklets.length, outcomeMappingCount: 'existing' }, after: { entryCount: entryMap.size, outcomeMappingCount: seenMappings.size }, reason });
   return Response.json({ ok: true, answerCount: subjects.reduce((sum, s) => sum + Number(s.question_count), 0) * booklets.length, outcomeMappingCount: seenMappings.size });
 }
 
@@ -422,22 +688,25 @@ async function replaceInstitutions(request: Request, env: Env, user: AuthUser, e
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (user.role !== 'SUPER_ADMIN' || exam.owner_type !== 'CENTRAL') return err(403, 'FORBIDDEN', 'Kurum dağıtımı yalnız merkezi sınavlarda Super Admin tarafından yönetilir.');
-  const body = await request.json<{ institutionIds?: string[] }>();
+  const body = await request.json<{ institutionIds?: string[]; reason?: string | null }>();
   const ids = [...new Set((body.institutionIds || []).map((x) => String(x).trim()).filter(Boolean))];
   for (const id of ids) {
     if (!(await one(env.DB.prepare('SELECT id FROM institutions WHERE id=?').bind(id)))) return err(404, 'INSTITUTION_NOT_FOUND', 'Seçilen kurumlardan biri bulunamadı.');
   }
+  const previous = await all<{ institution_id: string }>(env.DB.prepare('SELECT institution_id FROM exam_institutions WHERE exam_id=? AND enabled=1 ORDER BY institution_id').bind(examId));
+  const reason = body.reason?.trim() || 'Sınav kurum dağıtımı güncellemesi.';
+  if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Değişiklik gerekçesi 500 karakteri geçemez.');
   const statements: D1PreparedStatement[] = [env.DB.prepare('DELETE FROM exam_institutions WHERE exam_id=?').bind(examId)];
   for (const institutionId of ids) statements.push(env.DB.prepare(`INSERT INTO exam_institutions (id,exam_id,institution_id,enabled) VALUES(?,?,?,1)`).bind(uuid('ei'), examId, institutionId));
   await env.DB.batch(statements);
-  await audit(env.DB, user.id, null, 'EXAM_INSTITUTIONS_REPLACED', 'exam', examId, { institutionIds: ids });
+  await audit(env.DB, user.id, null, 'EXAM_INSTITUTIONS_REPLACED', 'exam', examId, { before: { institutionIds: previous.map((row) => row.institution_id) }, after: { institutionIds: ids }, reason });
   return Response.json({ ok: true, institutionCount: ids.length });
 }
 
 async function setStatus(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
-  const body = await request.json<{ status?: 'DRAFT' | 'ACTIVE' | 'CLOSED' | 'ARCHIVED' }>();
+  const body = await request.json<{ status?: 'DRAFT' | 'ACTIVE' | 'CLOSED' | 'ARCHIVED'; reason?: string | null }>();
   const next = body.status;
   if (!next || !['DRAFT','ACTIVE','CLOSED','ARCHIVED'].includes(next)) return err(400, 'INVALID_STATUS', 'Geçersiz sınav durumu.');
   const allowed: Record<string, string[]> = { DRAFT: ['ACTIVE','ARCHIVED'], ACTIVE: ['CLOSED','ARCHIVED'], CLOSED: ['ARCHIVED'], ARCHIVED: [] };
@@ -450,6 +719,8 @@ async function setStatus(request: Request, env: Env, user: AuthUser, examId: str
       if (!assigned?.c) return err(409, 'INSTITUTION_ASSIGNMENT_REQUIRED', 'Merkezi sınavı yayınlamadan önce en az bir kurum seçin.');
     }
   }
+  const reason = body.reason?.trim() || `Sınav durumu ${next} olarak güncellendi.`;
+  if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Durum değişikliği gerekçesi 500 karakteri geçemez.');
   await env.DB.prepare('UPDATE exams SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(next, examId).run();
   if (next === 'ACTIVE') {
     if (Number(exam.result_network_enabled || 0) === 1) {
@@ -465,7 +736,7 @@ async function setStatus(request: Request, env: Env, user: AuthUser, examId: str
   if (next === 'ARCHIVED') {
     await env.DB.prepare(`UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'`).bind(examId).run();
   }
-  await audit(env.DB, user.id, exam.institution_id, `EXAM_STATUS_${next}`, 'exam', examId, { previous: exam.status, next });
+  await audit(env.DB, user.id, exam.institution_id, `EXAM_STATUS_${next}`, 'exam', examId, { before: { status: exam.status }, after: { status: next }, reason });
   return Response.json({ ok: true, status: next });
 }
 
@@ -494,6 +765,45 @@ export default {
     if (filteredCatalog) return filteredCatalog;
 
     const url = new URL(request.url);
+    const plainPdfMatch = url.pathname.match(/^\/api\/exam-content\/([^/]+)\/plain-answer-key\.pdf$/);
+    if (plainPdfMatch) {
+      const auth = await contentUser(env, request);
+      if (auth instanceof Response) return auth;
+      return request.method === 'POST' ? generatePlainAnswerKey(request, env, auth, plainPdfMatch[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
+    const videoCheckMatch = url.pathname.match(/^\/api\/exam-content\/([^/]+)\/videos\/([^/]+)\/check$/);
+    if (videoCheckMatch) {
+      const auth = await contentUser(env, request);
+      if (auth instanceof Response) return auth;
+      return request.method === 'POST' ? checkExamVideo(env, auth, videoCheckMatch[1], videoCheckMatch[2]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
+    const opticalBindingMatch = url.pathname.match(/^\/api\/exam-content\/([^/]+)\/optical$/);
+    if (opticalBindingMatch) {
+      const auth = await contentUser(env, request);
+      if (auth instanceof Response) return auth;
+      return request.method === 'PUT' ? replaceExamOptical(request, env, auth, opticalBindingMatch[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
+    const contentMatch = url.pathname.match(/^\/api\/exam-content\/([^/]+)(?:\/assets\/([^/]+))?(?:\/videos(?:\/([^/]+))?)?$/);
+    if (contentMatch) {
+      const auth = await contentUser(env, request);
+      if (auth instanceof Response) return auth;
+      const examId = contentMatch[1];
+      if (contentMatch[2] && request.method === 'GET') return downloadExamAsset(request, env, auth, examId, contentMatch[2]);
+      if (contentMatch[3]) {
+        if (request.method === 'PATCH') return updateExamVideo(request, env, auth, examId, contentMatch[3]);
+        if (request.method === 'POST' && url.pathname.endsWith('/check')) return checkExamVideo(env, auth, examId, contentMatch[3]);
+        return err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+      }
+      if (url.pathname.endsWith('/videos') && request.method === 'POST') return createExamVideo(request, env, auth, examId);
+      if (url.pathname.endsWith('/plain-answer-key.pdf') && request.method === 'POST') return generatePlainAnswerKey(request, env, auth, examId);
+      return request.method === 'GET' ? contentList(env, auth, examId) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
+    const uploadMatch = url.pathname.match(/^\/api\/exam-content\/([^/]+)\/assets$/);
+    if (uploadMatch) {
+      const auth = await contentUser(env, request);
+      if (auth instanceof Response) return auth;
+      return request.method === 'POST' ? uploadContentAsset(request, env, auth, uploadMatch[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
     if (!url.pathname.startsWith('/api/exam-definitions')) return accessApp.fetch(request, env);
     const auth = await actor(env, request);
     if (auth instanceof Response) return auth;
@@ -521,5 +831,9 @@ export default {
     if (status) return request.method === 'PATCH' ? setStatus(request, env, auth, status[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
 
     return err(404, 'NOT_FOUND', 'Sınav tanımı API yolu bulunamadı.');
+  },
+  async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext) {
+    await publishScheduledExamVideos(env);
+    if ('scheduled' in accessApp && typeof accessApp.scheduled === 'function') return accessApp.scheduled(event, env, ctx);
   },
 } satisfies ExportedHandler<Env>;

@@ -9,12 +9,14 @@ function err(status:number,code:string,message:string,details?:unknown){return j
 async function auth(env:Env,request:Request){const u=await getAuthUser(env,request);return u||err(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.')}
 function placeholders(items:unknown[]){return items.map(()=>'?').join(',')}
 
-async function listCameraTemplates(env:Env,user:AuthUser):Promise<Response>{
+async function listCameraTemplates(env:Env,user:AuthUser,url?:URL):Promise<Response>{
  if(!canEvaluateExam(user.role))return forbidden();
+ const examId=url?.searchParams.get('examId')?.trim() || '';
+ const scope=examId?' AND EXISTS (SELECT 1 FROM exam_optical_bindings b WHERE b.exam_id=? AND b.optical_template_version_id=v.id AND b.active=1)':'';
  const rows=await all<any>(env.DB.prepare(`SELECT v.id,t.name,t.vendor,v.version,v.page_width_mm,v.page_height_mm,v.camera_geometry,v.fiducials
    FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id
    WHERE t.active=1 AND t.status='READY' AND v.active=1 AND v.camera_geometry IS NOT NULL AND v.fiducials IS NOT NULL
-   ORDER BY t.name,v.version`));
+   ${scope} ORDER BY t.name,v.version`).bind(...(examId?[examId]:[])));
  return json({ok:true,templates:rows.map(r=>({id:r.id,name:r.name,vendor:r.vendor,version:r.version,pageWidthMm:Number(r.page_width_mm),pageHeightMm:Number(r.page_height_mm),cameraGeometry:JSON.parse(r.camera_geometry),fiducials:JSON.parse(r.fiducials)}))});
 }
 
@@ -42,7 +44,7 @@ async function assertExamScope(env:Env,user:AuthUser,examId:string,institutionId
 }
 
 async function loadCandidates(env:Env,institutionId:string,seasonId:string){
- const rows=await all<any>(env.DB.prepare(`SELECT s.id student_id,s.status,s.normalized_name,s.first_name,s.last_name,e.student_number,e.grade_level,e.section,e.class_id,c.name class_name
+ const rows=await all<any>(env.DB.prepare(`SELECT s.id student_id,s.status,s.normalized_name,s.first_name,s.last_name,s.tckn,e.student_number,e.grade_level,e.section,e.class_id,c.name class_name
    FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id LEFT JOIN classes c ON c.id=e.class_id
    WHERE e.institution_id=? AND e.season_id=? AND e.status='ACTIVE' AND s.status IN ('ACTIVE','GUEST')`).bind(institutionId,seasonId));
  return rows;
@@ -58,26 +60,36 @@ function hydrateIdentity(record:CanonicalRecord,candidates:any[]):CanonicalRecor
 
 function normalizeRecord(raw:any,index:number,templateName:string):CanonicalRecord{
  const answers:Record<string,string>={};for(const [k,v] of Object.entries(raw?.answers_by_subject||{}))answers[String(k).toUpperCase()]=String(v??'').toUpperCase().replace(/[^ABCDE_]/g,'_');
- return {row_no:index+1,student_number:raw?.student_number?String(raw.student_number).trim():undefined,name:String(raw?.name||'').trim(),class_name:raw?.class_name?String(raw.class_name):undefined,grade_level:Number.isFinite(Number(raw?.grade_level))?Number(raw.grade_level):undefined,section:raw?.section?String(raw.section).trim().toUpperCase():undefined,booklet:raw?.booklet?String(raw.booklet).trim().toUpperCase():undefined,answers_by_subject:answers,source_type:'CAMERA',source_template:templateName,confidence:Math.max(0,Math.min(1,Number(raw?.confidence)||0)),issues:Array.isArray(raw?.issues)?raw.issues.map(String):[]};
+ return {row_no:index+1,student_number:raw?.student_number?String(raw.student_number).trim():undefined,tckn:raw?.tckn?String(raw.tckn).replace(/\D/g,''):undefined,name:String(raw?.name||'').trim(),class_name:raw?.class_name?String(raw.class_name):undefined,grade_level:Number.isFinite(Number(raw?.grade_level))?Number(raw?.grade_level):undefined,section:raw?.section?String(raw.section).trim().toUpperCase():undefined,booklet:raw?.booklet?String(raw.booklet).trim().toUpperCase():undefined,answers_by_subject:answers,source_type:'CAMERA',source_template:templateName,confidence:Math.max(0,Math.min(1,Number(raw?.confidence)||0)),issues:Array.isArray(raw?.issues)?raw.issues.map(String):[]};
 }
 
 async function cameraPreview(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
  if(!canEvaluateExam(user.role))return forbidden();
- const body=await request.json<{institutionId?:string;templateVersionId?:string;records?:any[]}>();
+ const body=await request.json<{institutionId?:string;templateVersionId?:string;bookletCode?:string;records?:any[]}>();
  const institutionId=user.role==='SUPER_ADMIN'?(body.institutionId||''):user.institution_id||'';if(!institutionId)return badRequest('Kurum seçilmelidir.');
  const instCheck=await assertInstitutionScope(env,user,institutionId);if(instCheck.response)return instCheck.response;
  const examCheck=await assertExamScope(env,user,examId,institutionId);if(examCheck.response)return examCheck.response;
  const season=await currentSeason(env,institutionId);if(!season)return badRequest('Kurum için aktif/uygun sezon bulunamadı.','SEASON_REQUIRED');
- if(!body.templateVersionId)return badRequest('Kamera optik şablonu belirlenmelidir.');
- const template=await one<any>(env.DB.prepare(`SELECT v.id,t.name,t.status,v.active FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=?`).bind(body.templateVersionId));
+ let templateVersionId=body.templateVersionId?.trim() || '';
+ if(!templateVersionId){
+  const requestedBooklet=(body.bookletCode||'A').trim().toUpperCase();
+  const binding=await one<{optical_template_version_id:string}>(env.DB.prepare(`SELECT optical_template_version_id FROM exam_optical_bindings WHERE exam_id=? AND booklet_code=? AND active=1`).bind(examId,requestedBooklet));
+  if(binding?.optical_template_version_id) templateVersionId=binding.optical_template_version_id;
+  else {
+   const fallback=await one<{optical_template_version_id:string}>(env.DB.prepare(`SELECT optical_template_version_id FROM exam_optical_bindings WHERE exam_id=? AND active=1 ORDER BY booklet_code LIMIT 1`).bind(examId));
+   templateVersionId=fallback?.optical_template_version_id || '';
+  }
+ }
+ if(!templateVersionId)return badRequest('Bu sınava yayınlanmış optik bağlanmamış. Önce Sınav > Optik/FMT Tanımları alanından optiği bağlayın.','EXAM_OPTICAL_BINDING_REQUIRED');
+ const template=await one<any>(env.DB.prepare(`SELECT v.id,t.name,t.status,v.active FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=?`).bind(templateVersionId));
  if(!template||template.status!=='READY'||!template.active)return badRequest('Seçilen kamera şablonu yayında ve READY durumda değil.','CAMERA_TEMPLATE_NOT_READY');
  const rawRecords=Array.isArray(body.records)?body.records:[];if(!rawRecords.length)return badRequest('Kamera kaydı bulunamadı.');if(rawRecords.length>500)return badRequest('Tek kamera oturumunda en fazla 500 optik gönderilebilir.');
  const candidates=await loadCandidates(env,institutionId,season.id);
- const candidateForMatch:MatchCandidate[]=candidates.map(c=>({student_id:c.student_id,status:c.status,normalized_name:c.normalized_name,student_number:c.student_number,grade_level:c.grade_level,section:c.section}));
+ const candidateForMatch:MatchCandidate[]=candidates.map(c=>({student_id:c.student_id,status:c.status,normalized_name:c.normalized_name,tckn:c.tckn,student_number:c.student_number,grade_level:c.grade_level,section:c.section}));
  const subjects=await all<any>(env.DB.prepare(`SELECT s.code,es.question_count FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=?`).bind(examId));
  const booklets=await all<any>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1').bind(examId));
  const allowedSubjects=new Map(subjects.map(s=>[String(s.code).toUpperCase(),Number(s.question_count)]));const allowedBooklets=new Set(booklets.map(b=>String(b.code).toUpperCase()));
- const batchId=uuid('batch');await env.DB.prepare(`INSERT INTO scan_batches (id,exam_id,institution_id,season_id,source_type,optical_template_version_id,detection_confidence,status,created_by) VALUES(?,?,?,?, 'CAMERA',?,?, 'PREVIEW',?)`).bind(batchId,examId,institutionId,season.id,body.templateVersionId,0,user.id).run();
+ const batchId=uuid('batch');await env.DB.prepare(`INSERT INTO scan_batches (id,exam_id,institution_id,season_id,source_type,optical_template_version_id,detection_confidence,status,created_by) VALUES(?,?,?,?, 'CAMERA',?,?, 'PREVIEW',?)`).bind(batchId,examId,institutionId,season.id,templateVersionId,0,user.id).run();
  const counts={active:0,guest:0,newGuest:0,ambiguous:0,invalid:0};let confTotal=0;
  for(let i=0;i<rawRecords.length;i++){
    let record=hydrateIdentity(normalizeRecord(rawRecords[i],i,template.name),candidates);const issues=[...record.issues];
@@ -93,16 +105,17 @@ async function cameraPreview(request:Request,env:Env,user:AuthUser,examId:string
  }
  const issueCount=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND (match_status IN ('AMBIGUOUS','INVALID') OR issues_json!='[]')`).bind(batchId));const status=(issueCount?.c||0)>0?'NEEDS_REVIEW':'READY';const confidence=rawRecords.length?confTotal/rawRecords.length:0;
  await env.DB.prepare('UPDATE scan_batches SET status=?,detection_confidence=? WHERE id=?').bind(status,confidence,batchId).run();
- await audit(env.DB,user.id,institutionId,'CAMERA_SCAN_PREVIEWED','scan_batch',batchId,{examId,total:rawRecords.length,counts,templateVersionId:body.templateVersionId,confidence});
- return json({ok:true,batchId,detection:{templateId:body.templateVersionId,templateName:template.name,confidence},counts,total:rawRecords.length,status});
+ await audit(env.DB,user.id,institutionId,'CAMERA_SCAN_PREVIEWED','scan_batch',batchId,{examId,total:rawRecords.length,counts,templateVersionId,confidence});
+ return json({ok:true,batchId,detection:{templateId:templateVersionId,templateName:template.name,confidence},counts,total:rawRecords.length,status});
 }
 
 async function patchCameraIdentity(request:Request,env:Env,user:AuthUser,batchId:string,recordId:string):Promise<Response>{
  if(!canEvaluateExam(user.role))return forbidden();const batch=await one<any>(env.DB.prepare(`SELECT * FROM scan_batches WHERE id=? AND source_type='CAMERA'`).bind(batchId));if(!batch)return notFound('Kamera batch bulunamadı.');const scope=await assertInstitutionScope(env,user,batch.institution_id);if(scope.response)return scope.response;
  const row=await one<any>(env.DB.prepare('SELECT * FROM scan_records WHERE id=? AND batch_id=?').bind(recordId,batchId));if(!row)return notFound('Kamera kaydı bulunamadı.');const body=await request.json<{name?:string;studentNumber?:string;gradeLevel?:number;section?:string;className?:string;booklet?:string}>();let canonical=JSON.parse(row.canonical_json) as CanonicalRecord;canonical={...canonical,name:body.name!=null?String(body.name).trim():canonical.name,student_number:body.studentNumber!=null?String(body.studentNumber).trim():canonical.student_number,grade_level:body.gradeLevel!=null?Number(body.gradeLevel):canonical.grade_level,section:body.section!=null?String(body.section).trim().toUpperCase():canonical.section,class_name:body.className!=null?String(body.className).trim():canonical.class_name,booklet:body.booklet!=null?String(body.booklet).trim().toUpperCase():canonical.booklet};
  const candidates=await loadCandidates(env,batch.institution_id,batch.season_id);canonical=hydrateIdentity(canonical,candidates);canonical.issues=canonical.issues.filter(x=>!x.startsWith('Kamera okuma güveni düşük'));
- const match=matchParticipant(canonical,candidates.map(c=>({student_id:c.student_id,status:c.status,normalized_name:c.normalized_name,student_number:c.student_number,grade_level:c.grade_level,section:c.section})));
- await env.DB.prepare('UPDATE scan_records SET canonical_json=?,matched_student_id=?,match_status=?,match_confidence=?,issues_json=? WHERE id=? AND batch_id=?').bind(JSON.stringify(canonical),match.student_id||null,match.status,match.confidence,JSON.stringify([...canonical.issues,...match.issues]),recordId,batchId).run();await refreshBatchStatus(env,batchId);return json({ok:true,match});
+ const match=matchParticipant(canonical,candidates.map(c=>({student_id:c.student_id,status:c.status,normalized_name:c.normalized_name,tckn:c.tckn,student_number:c.student_number,grade_level:c.grade_level,section:c.section})));
+ const resolved=!canonical.issues.length&&!match.issues.length&&['ACTIVE_MATCH','GUEST_MATCH'].includes(match.status);
+ await env.DB.prepare(`UPDATE scan_records SET canonical_json=?,matched_student_id=?,match_status=?,match_confidence=?,resolution_status=?,issues_json=? WHERE id=? AND batch_id=?`).bind(JSON.stringify(canonical),match.student_id||null,match.status,match.confidence,resolved?'RESOLVED':'PENDING',JSON.stringify([...canonical.issues,...match.issues]),recordId,batchId).run();await refreshBatchStatus(env,batchId);return json({ok:true,match});
 }
 
 async function acceptCameraIssues(env:Env,user:AuthUser,batchId:string,recordId:string):Promise<Response>{

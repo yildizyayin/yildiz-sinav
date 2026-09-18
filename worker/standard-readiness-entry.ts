@@ -107,6 +107,37 @@ async function guidanceApi(request:Request,env:Env){
  try{const payload=await buildStudentTargetAnalysisV2(env,user);const extension=await guidanceAssessmentChatExtension(env,user,'');return json({ok:true,...payload,guidance:{summary:guidanceSummary(payload),policy:'Resmî hedef profili yoksa net/rank farkı tahmin edilmez; kurum içi sıra ÖSYM başarı sırası sayılmaz. Yalnız gerçek rehber öğretmen tarafından incelenmiş RBA/rehberlik sonuçları gelişim bağlamına girer.',development:extension.development}});}catch{return fail(400,'GUIDANCE_ROUTE_FAILED','Rehber Öğretmen hedef rotası oluşturulamadı.');}
 }
 
+async function capabilityLabApi(request:Request,env:Env){
+  const user=await getAuthUser(env,request);
+  if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
+  if(user.role!=='SUPER_ADMIN')return fail(403,'SUPER_ADMIN_ONLY','Nibiru Yetenek Laboratuvarı yalnızca Süper Admin içindir.');
+  if(request.method!=='GET')return fail(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+  const institution=await one<any>(env.DB.prepare(`SELECT id,name,code FROM institutions WHERE demo_mode=1 AND code='NIBIRU-LAB' LIMIT 1`));
+  if(!institution)return json({ok:true,enabled:false,students:[],message:'Yetenek Laboratuvarı henüz kurulmamış.'});
+  const students=await all<any>(env.DB.prepare(`
+    SELECT s.id,s.first_name,s.last_name,e.grade_level,e.section,e.student_number,c.name class_name
+    FROM student_entities s
+    JOIN student_enrollments e ON e.student_id=s.id AND e.institution_id=? AND e.status='ACTIVE'
+    LEFT JOIN classes c ON c.id=e.class_id
+    WHERE s.status='ACTIVE'
+    ORDER BY s.last_name,s.first_name
+  `).bind(institution.id));
+  const exams=await all<any>(env.DB.prepare(`SELECT id,title,exam_date,exam_type FROM exams WHERE institution_id=? ORDER BY exam_date DESC LIMIT 6`).bind(institution.id));
+  const outcomeCount=await one<{c:number}>(env.DB.prepare(`SELECT COUNT(*) c FROM outcomes WHERE curriculum_version_id='cv_nibiru_lab_2627' AND active=1`));
+  const questionCount=await one<{c:number}>(env.DB.prepare(`SELECT COUNT(*) c FROM question_bank WHERE source_label='ANUNEX Nibiru Yetenek Laboratuvarı' AND review_status='APPROVED'`));
+  return json({
+    ok:true,
+    enabled:true,
+    synthetic:true,
+    institution:{id:institution.id,name:institution.name,code:institution.code},
+    students,
+    exams,
+    metrics:{outcomes:Number(outcomeCount?.c||0),approvedQuestions:Number(questionCount?.c||0)},
+    prompts:['Son sınav ne oldu?','Hangi kazanımlarda zorlanıyor?','Son iki sınav arasında nasıl bir gelişim var?','Bugün ne çalışmalıyız?'],
+    notice:'Bu alan yalnızca sentetik kabul testi içindir; gerçek kişi veya kurum verisi içermez.',
+  });
+}
+
 async function orchestratedNibiruChat(request:Request,env:Env,ctx:ExecutionContext){
   const user=await getAuthUser(env,request);if(!user)return app.fetch(request,env,ctx);
   let message='';try{const body=await request.clone().json<{message?:string}>();message=body.message?.trim()||''}catch{}
@@ -149,6 +180,7 @@ export default {
     const routedEnv=withNibiruAiRouter(env),url=new URL(request.url);
     if(url.pathname==='/api/standard-readiness'&&request.method==='GET')return readiness(request,routedEnv);
     if(url.pathname==='/api/nibiru/ai-routing'&&request.method==='GET')return routingApi(request,routedEnv);
+    if(url.pathname==='/api/nibiru/lab'&&request.method==='GET')return capabilityLabApi(request,routedEnv);
     if(url.pathname.startsWith('/api/nibiru/coach/'))return coachApi(request,routedEnv,url);
     if(url.pathname.startsWith('/api/nibiru/guidance/')&&url.pathname!=='/api/nibiru/guidance/route'){
       const user=await getAuthUser(routedEnv,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const handled=await handleGuidanceAssessmentApi(request,routedEnv,user,url);if(handled)return handled;

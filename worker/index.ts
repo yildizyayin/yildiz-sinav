@@ -50,6 +50,8 @@ export default {
 
       const scanResolveMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)\/records\/([^/]+)\/resolve$/);
       if (scanResolveMatch) return request.method === 'POST' ? resolveScanRecord(request, env, user, scanResolveMatch[1], scanResolveMatch[2]) : methodNotAllowed();
+      const scanCandidatesMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)\/records\/([^/]+)\/candidates$/);
+      if (scanCandidatesMatch) return request.method === 'GET' ? searchScanCandidates(env, user, scanCandidatesMatch[1], scanCandidatesMatch[2], url) : methodNotAllowed();
       const scanEvaluateMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)\/evaluate$/);
       if (scanEvaluateMatch) return request.method === 'POST' ? evaluateBatch(env, user, scanEvaluateMatch[1]) : methodNotAllowed();
       const scanBatchMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)$/);
@@ -68,7 +70,7 @@ export default {
       if (url.pathname === '/api/classes' && request.method === 'GET') return listClasses(env, user, url);
       if (url.pathname === '/api/teacher/insights' && request.method === 'GET') return teacherInsights(env, user, url);
 
-      if (url.pathname === '/api/optical-templates' && request.method === 'GET') return listOpticalTemplates(env, user);
+      if (url.pathname === '/api/optical-templates' && request.method === 'GET') return listOpticalTemplates(env, user, url);
       if (url.pathname === '/api/printer-profiles') {
         if (request.method === 'GET') return listPrinterProfiles(env, user, url);
         if (request.method === 'POST') return createPrinterProfile(request, env, user);
@@ -232,7 +234,9 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
   if (inst.status === 'PASSIVE') return badRequest('Pasif kurumda sınav değerlendirilemez.', 'INSTITUTION_PASSIVE');
   const season = await ensureSeason(env.DB, institutionId, exam.academic_year);
   const text = decodeUploadedBytes(await file.arrayBuffer());
-  const templates = await all<ParserTemplate>(env.DB.prepare(`SELECT v.id, t.name, v.parser_definition FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.active=1 AND t.active=1`));
+  const globalTemplates = await all<ParserTemplate>(env.DB.prepare(`SELECT v.id, t.name, v.parser_definition FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.active=1 AND t.active=1`));
+  const boundTemplates = await all<ParserTemplate>(env.DB.prepare(`SELECT DISTINCT v.id, t.name, v.parser_definition FROM exam_optical_bindings b JOIN optical_template_versions v ON v.id=b.optical_template_version_id JOIN optical_templates t ON t.id=v.template_id WHERE b.exam_id=? AND b.active=1 AND v.active=1 AND t.active=1 AND v.parser_definition IS NOT NULL`).bind(examId));
+  const templates = boundTemplates.length ? boundTemplates : globalTemplates;
   const manualTemplateId = form.get('templateVersionId')?.toString();
   let parsed;
   if (manualTemplateId) {
@@ -248,7 +252,8 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
   await env.DB.prepare(`INSERT INTO scan_batches (id,exam_id,institution_id,season_id,source_type,optical_template_version_id,detection_confidence,status,created_by) VALUES(?,?,?,?,?,?,?,?,?)`)
     .bind(batchId, examId, institutionId, season.id, parsed.records[0]?.source_type || 'TXT', parsed.templateId || null, parsed.confidence, batchStatus, user.id).run();
 
-  const counts = { active: 0, guest: 0, newGuest: 0, ambiguous: 0, invalid: 0 };
+  const counts = { active: 0, guest: 0, newGuest: 0, ambiguous: 0, invalid: 0, pending: 0, cancelled: 0 };
+  const recordStatements: D1PreparedStatement[] = [];
   for (const record of parsed.records) {
     const match = matchParticipant(record, candidates);
     if (match.status === 'ACTIVE_MATCH') counts.active++;
@@ -256,10 +261,15 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
     if (match.status === 'NEW_GUEST') counts.newGuest++;
     if (match.status === 'AMBIGUOUS') counts.ambiguous++;
     if (match.status === 'INVALID') counts.invalid++;
-    await env.DB.prepare(`INSERT INTO scan_records (id,batch_id,row_no,canonical_json,matched_student_id,match_status,match_confidence,issues_json) VALUES(?,?,?,?,?,?,?,?)`)
-      .bind(uuid('scan'), batchId, record.row_no, JSON.stringify(record), match.student_id || null, match.status, match.confidence, JSON.stringify([...record.issues, ...match.issues])).run();
+    if (['NEW_GUEST', 'AMBIGUOUS', 'INVALID'].includes(match.status) || record.issues.length || match.issues.length) counts.pending++;
+    // Matching can use T.C. identity, but the raw value is not persisted in
+    // the scan payload or copied to audit/result-network data.
+    const storedRecord = { ...record, tckn: undefined };
+    recordStatements.push(env.DB.prepare(`INSERT INTO scan_records (id,batch_id,row_no,canonical_json,matched_student_id,match_status,match_confidence,issues_json) VALUES(?,?,?,?,?,?,?,?)`)
+      .bind(uuid('scan'), batchId, record.row_no, JSON.stringify(storedRecord), match.student_id || null, match.status, match.confidence, JSON.stringify([...record.issues, ...match.issues])));
   }
-  const finalStatus = counts.ambiguous || counts.invalid ? 'NEEDS_REVIEW' : 'READY';
+  for (let i = 0; i < recordStatements.length; i += 80) await env.DB.batch(recordStatements.slice(i, i + 80));
+  const finalStatus = counts.pending ? 'NEEDS_REVIEW' : 'READY';
   await env.DB.prepare('UPDATE scan_batches SET status=? WHERE id=?').bind(finalStatus, batchId).run();
   await audit(env.DB, user.id, institutionId, 'EXAM_FILE_PREVIEWED', 'scan_batch', batchId, { examId, rows: parsed.records.length, counts, template: parsed.templateName });
   return json({ ok: true, batchId, detection: { templateId: parsed.templateId, templateName: parsed.templateName, confidence: parsed.confidence }, counts, total: parsed.records.length, status: finalStatus });
@@ -271,7 +281,17 @@ export async function getScanBatch(env: Env, user: AuthUser, batchId: string): P
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
   const records = await all<any>(env.DB.prepare(`SELECT r.*, s.first_name || ' ' || s.last_name matched_name FROM scan_records r LEFT JOIN student_entities s ON s.id=r.matched_student_id WHERE batch_id=? ORDER BY row_no`).bind(batchId));
-  return json({ ok: true, batch, records: records.map((r) => ({ ...r, canonical: JSON.parse(r.canonical_json), issues: r.issues_json ? JSON.parse(r.issues_json) : [] })) });
+  const mapped = records.map((r) => ({ ...r, canonical: JSON.parse(r.canonical_json), issues: r.issues_json ? JSON.parse(r.issues_json) : [] }));
+  const counts = {
+    active: mapped.filter((r) => r.match_status === 'ACTIVE_MATCH').length,
+    guest: mapped.filter((r) => r.match_status === 'GUEST_MATCH').length,
+    newGuest: mapped.filter((r) => r.match_status === 'NEW_GUEST').length,
+    ambiguous: mapped.filter((r) => r.match_status === 'AMBIGUOUS').length,
+    invalid: mapped.filter((r) => r.match_status === 'INVALID' && r.resolution_status !== 'CANCELLED').length,
+    cancelled: mapped.filter((r) => r.resolution_status === 'CANCELLED').length,
+    pending: mapped.filter((r) => r.resolution_status !== 'CANCELLED' && r.resolution_status !== 'RESOLVED' && (['NEW_GUEST', 'AMBIGUOUS', 'INVALID'].includes(r.match_status) || r.issues.length > 0)).length,
+  };
+  return json({ ok: true, batch, records: mapped, counts });
 }
 
 export async function resolveScanRecord(request: Request, env: Env, user: AuthUser, batchId: string, recordId: string): Promise<Response> {
@@ -279,18 +299,62 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
   const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
-  const body = await request.json<{ studentId?: string; asNewGuest?: boolean }>();
-  if (body.studentId) {
+  const before = await one<any>(env.DB.prepare('SELECT matched_student_id,match_status,match_confidence,resolution_status,issues_json FROM scan_records WHERE id=? AND batch_id=?').bind(recordId, batchId));
+  if (!before) return notFound('Optik satırı bulunamadı.');
+  const body = await request.json<{ studentId?: string; asNewGuest?: boolean; action?: 'MATCH' | 'GUEST' | 'CANCEL' }>();
+  const action = body.action || (body.studentId ? 'MATCH' : body.asNewGuest ? 'GUEST' : null);
+  let resolvedMatchStatus = before.match_status;
+  if (action === 'MATCH' && body.studentId) {
     const candidate = await one<any>(env.DB.prepare(`SELECT s.id,s.status FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id WHERE s.id=? AND e.institution_id=? AND e.season_id=?`).bind(body.studentId, batch.institution_id, batch.season_id));
     if (!candidate) return badRequest('Seçilen öğrenci bu kurum/sezonda bulunamadı.');
-    await env.DB.prepare(`UPDATE scan_records SET matched_student_id=?, match_status=?, match_confidence=1, issues_json='[]' WHERE id=? AND batch_id=?`)
-      .bind(candidate.id, candidate.status === 'ACTIVE' ? 'ACTIVE_MATCH' : 'GUEST_MATCH', recordId, batchId).run();
-  } else if (body.asNewGuest) {
-    await env.DB.prepare(`UPDATE scan_records SET matched_student_id=NULL, match_status='NEW_GUEST', match_confidence=1, issues_json='[]' WHERE id=? AND batch_id=?`).bind(recordId, batchId).run();
-  } else return badRequest('Eşleştirme seçimi eksik.');
-  const problem = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND match_status IN ('AMBIGUOUS','INVALID')`).bind(batchId));
+    resolvedMatchStatus = candidate.status === 'ACTIVE' ? 'ACTIVE_MATCH' : 'GUEST_MATCH';
+    await env.DB.prepare(`UPDATE scan_records SET matched_student_id=?, match_status=?, match_confidence=1, resolution_status='RESOLVED', issues_json='[]' WHERE id=? AND batch_id=?`)
+      .bind(candidate.id, resolvedMatchStatus, recordId, batchId).run();
+  } else if (action === 'GUEST') {
+    await env.DB.prepare(`UPDATE scan_records SET matched_student_id=NULL, match_status='GUEST_MATCH', match_confidence=1, resolution_status='RESOLVED', issues_json='[]' WHERE id=? AND batch_id=?`).bind(recordId, batchId).run();
+  } else if (action === 'CANCEL') {
+    await env.DB.prepare(`UPDATE scan_records SET matched_student_id=NULL, match_status='INVALID', match_confidence=0, resolution_status='CANCELLED', issues_json=? WHERE id=? AND batch_id=?`).bind(JSON.stringify(['Kurum tarafından iptal edildi.']), recordId, batchId).run();
+  } else return badRequest('Eşleştirme kararı eksik.');
+  const problem = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND resolution_status!='CANCELLED' AND resolution_status!='RESOLVED' AND match_status IN ('NEW_GUEST','AMBIGUOUS','INVALID')`).bind(batchId));
   await env.DB.prepare('UPDATE scan_batches SET status=? WHERE id=?').bind((problem?.c ?? 0) ? 'NEEDS_REVIEW' : 'READY', batchId).run();
+  const after = action === 'MATCH'
+    ? { matchedStudentId: body.studentId || null, matchStatus: resolvedMatchStatus, resolutionStatus: 'RESOLVED', issueCount: 0 }
+    : action === 'GUEST'
+      ? { matchedStudentId: null, matchStatus: 'GUEST_MATCH', resolutionStatus: 'RESOLVED', issueCount: 0 }
+      : { matchedStudentId: null, matchStatus: 'INVALID', resolutionStatus: 'CANCELLED', issueCount: 1 };
+  let beforeIssueCount = 0;
+  try {
+    const issues = JSON.parse(before.issues_json || '[]');
+    beforeIssueCount = Array.isArray(issues) ? issues.length : 0;
+  } catch {
+    beforeIssueCount = 0;
+  }
+  await audit(env.DB, user.id, batch.institution_id, 'SCAN_RECORD_DECISION_RECORDED', 'scan_record', recordId, {
+    batchId,
+    decision: action,
+    before: { matchedStudentId: before.matched_student_id, matchStatus: before.match_status, resolutionStatus: before.resolution_status, issueCount: beforeIssueCount },
+    after,
+    reason: action === 'MATCH' ? 'Kurum tarafından öğrenciyle eşleştirildi.' : action === 'GUEST' ? 'Kurum tarafından misafir olarak işaretlendi.' : 'Kurum tarafından iptal edildi.',
+  });
   return json({ ok: true });
+}
+
+export async function searchScanCandidates(env: Env, user: AuthUser, batchId: string, recordId: string, url: URL): Promise<Response> {
+  if (!canEvaluateExam(user.role)) return forbidden();
+  const batch = await one<any>(env.DB.prepare('SELECT institution_id,season_id FROM scan_batches WHERE id=?').bind(batchId));
+  if (!batch) return notFound();
+  if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
+  const record = await one<any>(env.DB.prepare('SELECT id FROM scan_records WHERE id=? AND batch_id=?').bind(recordId, batchId));
+  if (!record) return notFound('Optik satırı bulunamadı.');
+  const q = normalizeName(url.searchParams.get('q') || '').slice(0, 80);
+  const like = `%${q}%`;
+  const rows = await all<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name,s.status,e.student_number,e.grade_level,e.section,e.class_id
+    FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id
+    WHERE e.institution_id=? AND e.season_id=? AND e.status='ACTIVE' AND s.status IN ('ACTIVE','GUEST')
+      AND (?='' OR s.normalized_name LIKE ? OR e.student_number LIKE ?)
+    ORDER BY CASE WHEN e.student_number=? THEN 0 WHEN s.normalized_name=? THEN 1 ELSE 2 END,e.grade_level,e.section,s.normalized_name
+    LIMIT 30`).bind(batch.institution_id, batch.season_id, q, like, like, q, q));
+  return json({ ok: true, candidates: rows });
 }
 
 export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {
@@ -313,10 +377,11 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   const records = await all<any>(env.DB.prepare(`SELECT * FROM scan_records WHERE batch_id=? ORDER BY row_no`).bind(batchId));
   let processed = 0;
   for (const row of records) {
+    if (row.resolution_status === 'CANCELLED') continue;
     const record = JSON.parse(row.canonical_json) as CanonicalRecord;
     let studentId = row.matched_student_id as string | null;
     let studentStatus = row.match_status === 'ACTIVE_MATCH' ? 'ACTIVE' : 'GUEST';
-    if (row.match_status === 'NEW_GUEST') {
+    if (row.match_status === 'NEW_GUEST' || (row.match_status === 'GUEST_MATCH' && !studentId)) {
       const names = splitName(record.name);
       studentId = uuid('stu');
       await env.DB.prepare(`INSERT INTO student_entities (id,first_name,last_name,normalized_name,status) VALUES(?,?,?,?, 'GUEST')`).bind(studentId, names.firstName, names.lastName, normalizeName(record.name)).run();
@@ -531,11 +596,15 @@ async function teacherInsights(env: Env, user: AuthUser, url: URL): Promise<Resp
   return json({ ok: true, outcomes: filtered.slice(0, 50) });
 }
 
-async function listOpticalTemplates(env: Env, user: AuthUser): Promise<Response> {
+async function listOpticalTemplates(env: Env, user: AuthUser, url: URL): Promise<Response> {
   if (!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role)) return forbidden();
-  const rows = await all<any>(env.DB.prepare(`SELECT t.id template_id,t.name,t.vendor,t.status,v.id version_id,v.version,v.page_width_mm,v.page_height_mm,
+  const institutionId = user.role === 'SUPER_ADMIN' ? url.searchParams.get('institutionId') : user.institution_id;
+  const scope = user.role === 'SUPER_ADMIN' && !institutionId
+    ? { sql: '', params: [] as unknown[] }
+    : { sql: ` AND (t.owner_type='CENTRAL' OR (t.owner_type='INSTITUTION' AND t.owner_id=?))`, params: [institutionId] };
+  const rows = await all<any>(env.DB.prepare(`SELECT t.id template_id,t.name,t.vendor,t.status,t.owner_type,t.owner_id,v.id version_id,v.version,v.page_width_mm,v.page_height_mm,
     v.parser_definition IS NOT NULL has_parser,v.camera_geometry IS NOT NULL has_camera,v.print_fields IS NOT NULL has_print
-    FROM optical_templates t LEFT JOIN optical_template_versions v ON v.template_id=t.id AND v.active=1 WHERE t.active=1 ORDER BY t.name`));
+    FROM optical_templates t LEFT JOIN optical_template_versions v ON v.template_id=t.id AND v.active=1 WHERE t.active=1 ${scope.sql} ORDER BY t.name`).bind(...scope.params));
   return json({ ok: true, templates: rows });
 }
 
@@ -577,7 +646,7 @@ async function startCalibration(request: Request, env: Env, user: AuthUser): Pro
   if (!body.printerProfileId || !body.templateVersionId) return badRequest('Yazıcı ve optik seçilmelidir.');
   const printer = await one<any>(env.DB.prepare('SELECT * FROM printer_profiles WHERE id=?').bind(body.printerProfileId));
   if (!printer || !(await userCanAccessInstitution(env.DB, user, printer.institution_id))) return forbidden();
-  const template = await one<any>(env.DB.prepare(`SELECT v.*,t.name template_name FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=?`).bind(body.templateVersionId));
+  const template = await one<any>(env.DB.prepare(`SELECT v.*,t.name template_name,t.owner_type,t.owner_id FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=? AND t.active=1 AND (t.owner_type='CENTRAL' OR (t.owner_type='INSTITUTION' AND t.owner_id=?))`).bind(body.templateVersionId, printer.institution_id));
   if (!template) return notFound('Optik şablon bulunamadı.');
   let calibration = await one<any>(env.DB.prepare('SELECT * FROM printer_optical_calibrations WHERE printer_profile_id=? AND optical_template_version_id=?').bind(printer.id, template.id));
   if (!calibration) {
@@ -620,12 +689,18 @@ async function saveCalibrationAttempt(request: Request, env: Env, user: AuthUser
 async function opticalPrepare(env: Env, user: AuthUser, url: URL): Promise<Response> {
   if (!roleCanManageInstitution(user.role)) return forbidden();
   const classId = url.searchParams.get('classId');
-  const templateVersionId = url.searchParams.get('templateVersionId');
+  let templateVersionId = url.searchParams.get('templateVersionId');
+  const examId = url.searchParams.get('examId');
+  if (!templateVersionId && examId) {
+    const requestedBooklet = (url.searchParams.get('bookletSet') || 'A').split(',')[0].trim().toUpperCase();
+    const binding = await one<{ optical_template_version_id: string }>(env.DB.prepare(`SELECT b.optical_template_version_id FROM exam_optical_bindings b WHERE b.exam_id=? AND b.booklet_code=? AND b.active=1`).bind(examId, requestedBooklet));
+    templateVersionId = binding?.optical_template_version_id || null;
+  }
   const sort = url.searchParams.get('sort') === 'name' ? 'name' : 'number';
   if (!classId || !templateVersionId) return badRequest('Sınıf ve optik şablon seçilmelidir.');
   const c = await one<any>(env.DB.prepare('SELECT * FROM classes WHERE id=?').bind(classId));
   if (!c || !(await userCanAccessInstitution(env.DB, user, c.institution_id))) return forbidden();
-  const template = await one<any>(env.DB.prepare(`SELECT v.*,t.name FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=?`).bind(templateVersionId));
+  const template = await one<any>(env.DB.prepare(`SELECT v.*,t.name,t.owner_type,t.owner_id FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=? AND t.active=1 AND (t.owner_type='CENTRAL' OR (t.owner_type='INSTITUTION' AND t.owner_id=?))`).bind(templateVersionId, c.institution_id));
   if (!template) return notFound('Optik şablon bulunamadı.');
   if (!template.print_fields) return badRequest('Bu optik için baskı koordinatları henüz tanımlanmamış.', 'TEMPLATE_DEFINITION_REQUIRED');
   const rows = await all<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name,e.student_number,e.grade_level,e.section FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.class_id=? AND s.status='ACTIVE' ORDER BY ${sort === 'name' ? 's.normalized_name' : `cast(e.student_number as integer),e.student_number`}`).bind(classId));
@@ -809,7 +884,7 @@ async function currentSeason(db: D1Database, institutionId: string): Promise<any
 }
 
 async function loadStudentCandidates(db: D1Database, institutionId: string, seasonId: string): Promise<MatchCandidate[]> {
-  return all<MatchCandidate>(db.prepare(`SELECT s.id student_id,s.status,s.normalized_name,e.student_number,e.grade_level,e.section FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id WHERE e.institution_id=? AND e.season_id=? AND s.status IN ('ACTIVE','GUEST')`).bind(institutionId, seasonId));
+  return all<MatchCandidate>(db.prepare(`SELECT s.id student_id,s.status,s.normalized_name,s.tckn,e.student_number,e.grade_level,e.section FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id WHERE e.institution_id=? AND e.season_id=? AND s.status IN ('ACTIVE','GUEST')`).bind(institutionId, seasonId));
 }
 
 function resolveInstitutionId(user: AuthUser, requested: string | null): string | null {
