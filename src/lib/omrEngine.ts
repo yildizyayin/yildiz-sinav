@@ -70,6 +70,13 @@ export function captureVideoFrame(video:HTMLVideoElement,maxWidth=1800):ImageDat
  const ctx=canvas.getContext('2d',{willReadFrequently:true});if(!ctx)throw new Error('Kamera görüntüsü işlenemedi.');ctx.drawImage(video,0,0,canvas.width,canvas.height);return ctx.getImageData(0,0,canvas.width,canvas.height);
 }
 
+export async function imageFileToImageData(file:File,maxWidth=1800):Promise<ImageData>{
+ const bitmap=await createImageBitmap(file);const scale=Math.min(1,maxWidth/Math.max(1,bitmap.width));
+ const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+ const ctx=canvas.getContext('2d',{willReadFrequently:true});if(!ctx){bitmap.close();throw new Error('Fotoğraf görüntüsü işlenemedi.');}
+ ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();return ctx.getImageData(0,0,canvas.width,canvas.height);
+}
+
 function estimateAlignment(image:ImageDataLike,template:OmrTemplateRuntime):{transform:Transform|null;confidence:number;found:number;issues:string[]}{
  const targets=Array.isArray(template.fiducials?.targets)?template.fiducials.targets:[];
  const expected=targets.map((t:any)=>({xMm:Number(Array.isArray(t)?t[0]:t.xMm??t.x),yMm:Number(Array.isArray(t)?t[1]:t.yMm??t.y)})).filter((p:any)=>Number.isFinite(p.xMm)&&Number.isFinite(p.yMm));

@@ -16,7 +16,9 @@ export type ParsedAnswerEntry = {
   acceptedAnswers?: Array<string | string[]>;
   questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>;
   outcomeRefs?: Array<OutcomeReference | null>;
+  /** All outcome references supplied for each logical question. */
   outcomeRefsByQuestion?: Array<OutcomeReference[]>;
+  /** Printed question number for each logical question, keyed by booklet. */
   bookletQuestionNumbers?: number[];
 };
 export type ParsedAnswerKey = {
@@ -70,6 +72,7 @@ export type ExamTemplate = {
   editable?: boolean;
   requiresOutcomes?: boolean;
   outcomeAuthority?: 'MEB' | 'ÖSYM';
+  optionalSections?: Array<ExamTemplateSection & { subjectCode: string }>;
 };
 
 export const EXAM_CHOICES: ExamChoice[] = [
@@ -238,15 +241,21 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
   const lines = text.replace(/^\uFEFF/, '').replace(/\r/g, '').split('\n').filter((line) => line.trim());
   const cleanBooklet = (value: string) => String(value || defaultBooklet).trim().toUpperCase() || defaultBooklet.toUpperCase();
   const unique = <T,>(values: T[]) => [...new Set(values)];
+
+  // XLSX exports frequently contain publisher/title rows before the actual
+  // header. Scan a short prefix instead of assuming row one is the header.
   let headerIndex = -1;
   let tableHeaders: string[] = [];
   for (let index = 0; index < Math.min(lines.length, 15); index++) {
     const candidate = splitDelimitedLine(lines[index]).map(norm);
     const hasSubject = candidate.some((x) => ['DERS', 'TEST', 'SUBJECT', 'SUBJECTCODE', 'DERSKODU'].includes(x));
-    const hasAnswer = candidate.some((x) => ['CEVAP', 'DOGRUCEVAP', 'ANSWER', 'CORRECTANSWER', 'DOGRU'].includes(x)) || candidate.some((x) => /^[A-D]CEVAP$/.test(x));
-    const hasQuestion = candidate.some((x) => ['SORU', 'SORUNO', 'QUESTION', 'QUESTIONNO', 'SORUNUMARASI'].includes(x)) || candidate.some((x) => /^[A-D]SORU$/.test(x));
+    const hasAnswer = candidate.some((x) => ['CEVAP', 'DOGRUCEVAP', 'ANSWER', 'CORRECTANSWER', 'DOGRU'].includes(x))
+      || candidate.some((x) => /^[A-D]CEVAP$/.test(x));
+    const hasQuestion = candidate.some((x) => ['SORU', 'SORUNO', 'QUESTION', 'QUESTIONNO', 'SORUNUMARASI'].includes(x))
+      || candidate.some((x) => /^[A-D]SORU$/.test(x));
     if (hasSubject && hasAnswer && hasQuestion) { headerIndex = index; tableHeaders = candidate; break; }
   }
+
   const metadata = (() => {
     if (headerIndex <= 0) return undefined;
     const rows = lines.slice(0, headerIndex).flatMap((line) => splitDelimitedLine(line).map((value) => value.trim()).filter(Boolean));
@@ -255,8 +264,9 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
     const title = rows.find((value) => /TYT|AYT|YDT|LGS|SINAV|HAZIR|BULUNUS|DENEME/i.test(value) && value.length > 4);
     const publisherName = rows.find((value) => /[A-Za-zÇĞİÖŞÜçğıöşü]/.test(value) && !/SINIF|SINAV|TYT|AYT|YDT|LGS/i.test(value)) || rows[0];
     const externalExamCode = rows.find((value) => /^\d{3,12}$/.test(value));
+    const gradeLevel = gradeMatches[0];
     if (new Set(gradeMatches).size > 1) warnings.push(`Dosya üst bilgisinde birden fazla sınıf bilgisi bulundu: ${unique(gradeMatches).join(', ')}. Yayınlamadan önce sınav kartını kontrol edin.`);
-    return { publisherName, title, gradeLevel: gradeMatches[0], externalExamCode };
+    return { publisherName, title, gradeLevel, externalExamCode };
   })();
 
   if (headerIndex >= 0) {
@@ -274,30 +284,61 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
     const topicColumn = tableHeaderIndex(tableHeaders, ['KONU', 'TOPIC']);
     const subtopicColumn = tableHeaderIndex(tableHeaders, ['ALTKONU', 'SUBTOPIC', 'ALTKAZANIM']);
     const parentCodeColumn = tableHeaderIndex(tableHeaders, ['PARENTCODE', 'USTKAZANIMKODU', 'ALTKAZANIMKODU']);
-    const bookletQuestionColumns = Object.fromEntries(tableHeaders.map((header, index) => { const match = header.match(/^([A-D])SORU$/); return match ? [match[1], index] : null; }).filter((value): value is [string, number] => Boolean(value)));
-    const bookletAnswerColumns = Object.fromEntries(tableHeaders.map((header, index) => { const match = header.match(/^([A-D])(?:CEVAP|DOGRUCEVAP)$/); return match ? [match[1], index] : null; }).filter((value): value is [string, number] => Boolean(value)));
-    const bookletCodes = unique([...Object.keys(bookletQuestionColumns), ...Object.keys(bookletAnswerColumns), ...(bookletColumn >= 0 ? lines.slice(headerIndex + 1).map((line) => cleanBooklet(splitDelimitedLine(line)[bookletColumn] || '')).filter(Boolean) : [])]);
+    const bookletQuestionColumns = Object.fromEntries(tableHeaders
+      .map((header, index) => { const match = header.match(/^([A-D])SORU$/); return match ? [match[1], index] : null; })
+      .filter((value): value is [string, number] => Boolean(value)));
+    const bookletAnswerColumns = Object.fromEntries(tableHeaders
+      .map((header, index) => { const match = header.match(/^([A-D])(?:CEVAP|DOGRUCEVAP)$/); return match ? [match[1], index] : null; })
+      .filter((value): value is [string, number] => Boolean(value)));
+    const bookletCodes = unique([
+      ...Object.keys(bookletQuestionColumns),
+      ...Object.keys(bookletAnswerColumns),
+      ...(bookletColumn >= 0 ? lines.slice(headerIndex + 1).map((line) => cleanBooklet(splitDelimitedLine(line)[bookletColumn] || '')).filter(Boolean) : []),
+    ]);
     if (!bookletCodes.length) bookletCodes.push(defaultBooklet.toUpperCase());
     for (const code of bookletCodes) if (!detectedBooklets.includes(code)) detectedBooklets.push(code);
     const primaryBooklet = bookletCodes.includes('A') ? 'A' : bookletCodes[0];
-    type ParsedRow = { subject: SubjectOption; canonicalQuestion: number; questionNumbers: Record<string, number>; answers: Record<string, string>; commonAnswer: string; accepted: string[]; status: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'; outcomes: OutcomeReference[]; optionCount: 4 | 5 };
+
+    type ParsedRow = {
+      subject: SubjectOption;
+      canonicalQuestion: number;
+      questionNumbers: Record<string, number>;
+      answers: Record<string, string>;
+      commonAnswer: string;
+      accepted: string[];
+      status: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED';
+      outcomes: OutcomeReference[];
+      optionCount: 4 | 5;
+    };
     const grouped = new Map<string, ParsedRow[]>();
+
     for (const line of lines.slice(headerIndex + 1)) {
       const cells = splitDelimitedLine(line);
-      const subject = subjectForToken(String((subjectColumn >= 0 ? cells[subjectColumn] : '') || (testColumn >= 0 ? cells[testColumn] : '') || '').trim(), subjects);
+      const subjectToken = String((subjectColumn >= 0 ? cells[subjectColumn] : '') || (testColumn >= 0 ? cells[testColumn] : '') || '').trim();
+      const subject = subjectForToken(subjectToken, subjects);
       const questionNumbers: Record<string, number> = {};
-      for (const [code, column] of Object.entries(bookletQuestionColumns)) { const value = Number(cells[column]); if (Number.isInteger(value) && value > 0) questionNumbers[code] = value; }
-      if (!Object.keys(questionNumbers).length && questionColumn >= 0) { const value = Number(cells[questionColumn]); if (Number.isInteger(value) && value > 0) questionNumbers[cleanBooklet(bookletColumn >= 0 ? cells[bookletColumn] : primaryBooklet)] = value; }
+      for (const [code, column] of Object.entries(bookletQuestionColumns)) {
+        const value = Number(cells[column]);
+        if (Number.isInteger(value) && value > 0) questionNumbers[code] = value;
+      }
+      if (!Object.keys(questionNumbers).length && questionColumn >= 0) {
+        const value = Number(cells[questionColumn]);
+        if (Number.isInteger(value) && value > 0) questionNumbers[cleanBooklet(bookletColumn >= 0 ? cells[bookletColumn] : primaryBooklet)] = value;
+      }
       const canonicalQuestion = questionNumbers[primaryBooklet] || Object.values(questionNumbers)[0];
       const commonAnswer = cleanAnswers(answerColumn >= 0 ? cells[answerColumn] || '' : '').slice(0, 1);
       const answers: Record<string, string> = {};
       for (const [code, column] of Object.entries(bookletAnswerColumns)) answers[code] = cleanAnswers(cells[column] || '').slice(0, 1);
       for (const code of Object.keys(questionNumbers)) if (!answers[code]) answers[code] = commonAnswer;
-      if (!subject || !Number.isInteger(canonicalQuestion) || canonicalQuestion < 1 || !Object.keys(questionNumbers).length || (!commonAnswer && !Object.values(answers).some(Boolean))) { unknownLines.push(line); continue; }
+      if (!subject || !Number.isInteger(canonicalQuestion) || canonicalQuestion < 1 || !Object.keys(questionNumbers).length || !commonAnswer && !Object.values(answers).some(Boolean)) {
+        unknownLines.push(line);
+        continue;
+      }
       const acceptedRaw = String(acceptedColumn >= 0 ? cells[acceptedColumn] || commonAnswer : commonAnswer);
       const accepted = unique(acceptedRaw.split(/[|\/,]/).map((value) => cleanAnswers(value).slice(0, 1)).filter(Boolean));
       const statusValue = norm(statusColumn >= 0 ? cells[statusColumn] || '' : 'ACTIVE');
-      const status = statusValue === 'CANCELLED' || statusValue === 'IPTAL' ? 'CANCELLED' : statusValue === 'EXCLUDED' || statusValue === 'DEGERLENDIRMEDISI' ? 'EXCLUDED' : 'ACTIVE';
+      const status = statusValue === 'CANCELLED' || statusValue === 'IPTAL' ? 'CANCELLED'
+        : statusValue === 'EXCLUDED' || statusValue === 'DEGERLENDIRMEDISI' ? 'EXCLUDED' : 'ACTIVE';
       const primaryOutcome: OutcomeReference = {
         code: String(outcomeCodeColumn >= 0 ? cells[outcomeCodeColumn] || '' : '').trim() || undefined,
         title: String(outcomeTitleColumn >= 0 ? cells[outcomeTitleColumn] || '' : '').trim() || undefined,
@@ -307,51 +348,59 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
         parentCode: String(parentCodeColumn >= 0 ? cells[parentCodeColumn] || '' : '').trim() || undefined,
       };
       const outcomes = [primaryOutcome];
-      for (const [column, header] of tableHeaders.entries()) { if (!/^KAZANIM\d+$/.test(header) || column === outcomeTitleColumn) continue; const title = String(cells[column] || '').trim(); if (title) outcomes.push({ title }); }
-      const optionCount = optionColumn >= 0
-        ? (Number(cells[optionColumn] || 5) === 4 ? 4 : 5)
-        : 5;
+      for (const [column, header] of tableHeaders.entries()) {
+        if (!/^KAZANIM\d+$/.test(header) || column === outcomeTitleColumn) continue;
+        const title = String(cells[column] || '').trim();
+        if (title) outcomes.push({ title });
+      }
+      const optionCount = Object.values(answers).some((answer) => answer === 'E') || commonAnswer === 'E' ? 5 : 4;
       const row: ParsedRow = { subject, canonicalQuestion, questionNumbers, answers, commonAnswer, accepted: accepted.length ? accepted : [commonAnswer], status, outcomes: unique(outcomes.filter((outcome) => outcome.code || outcome.title || outcome.topic || outcome.subtopic) as any[]), optionCount };
-      const rows = grouped.get(subject.id) || []; rows.push(row); grouped.set(subject.id, rows);
+      const rows = grouped.get(subject.id) || [];
+      rows.push(row);
+      grouped.set(subject.id, rows);
     }
+
     for (const [subjectId, rows] of grouped.entries()) {
-      const sorted = rows.sort((a, b) => a.canonicalQuestion - b.canonicalQuestion); const start = sorted[0]?.canonicalQuestion || 1;
-      questionStarts[subjectId] = start; questionCounts[subjectId] = sorted.length; questionCountsByBooklet[subjectId] = {};
+      const sorted = rows.sort((a, b) => a.canonicalQuestion - b.canonicalQuestion);
+      const start = sorted[0]?.canonicalQuestion || 1;
+      questionStarts[subjectId] = start;
+      questionCounts[subjectId] = sorted.length;
+      questionCountsByBooklet[subjectId] = {};
       if (sorted.some((row, index) => row.canonicalQuestion !== start + index)) warnings.push(`${subjectId} soruları ardışık değil; soru aralığını ve kitapçık eşleşmesini kontrol edin.`);
       for (const booklet of bookletCodes) {
         const answers = sorted.map((row) => row.answers[booklet] || row.commonAnswer || '').join('');
         const bookletQuestionNumbers = sorted.map((row) => row.questionNumbers[booklet] || row.canonicalQuestion);
-        entries.push({ subjectId, bookletCode: booklet, answers, optionCount: sorted.some((row) => row.optionCount === 5) ? 5 : 4, acceptedAnswers: sorted.map((row) => row.accepted), questionStatuses: sorted.map((row) => row.status), outcomeRefs: sorted.map((row) => row.outcomes[0] || null), outcomeRefsByQuestion: sorted.map((row) => row.outcomes), bookletQuestionNumbers });
+        const acceptedAnswers = sorted.map((row) => row.accepted);
+        const questionStatuses = sorted.map((row) => row.status);
+        const outcomeRefs = sorted.map((row) => row.outcomes[0] || null);
+        const outcomeRefsByQuestion = sorted.map((row) => row.outcomes);
+        entries.push({ subjectId, bookletCode: booklet, answers, optionCount: sorted.some((row) => row.optionCount === 5) ? 5 : 4, acceptedAnswers, questionStatuses, outcomeRefs, outcomeRefsByQuestion, bookletQuestionNumbers });
         questionCountsByBooklet[subjectId][booklet] = sorted.length;
       }
     }
     return { entries, questionCounts, questionStarts, questionCountsByBooklet, unknownLines, detectedBooklets, metadata, warnings, detectedFormat: Object.keys(bookletQuestionColumns).length ? 'WIDE_BOOKLET_TABLE' : 'TABULAR' };
   }
+
   let booklet = defaultBooklet.toUpperCase();
   if (!detectedBooklets.includes(booklet)) detectedBooklets.push(booklet);
-
   for (const rawLine of text.replace(/\r/g, '').split('\n')) {
     const line = rawLine.trim();
     if (!line || line.startsWith('#')) continue;
-
     const bookletMatch = line.match(/^\[?\s*(?:KITAP(?:Ç|C)IK\s*)?([A-Z0-9]{1,4})\s*\]?$/i);
     if (bookletMatch && !/[ABCDE]{5,}/i.test(line)) {
       booklet = bookletMatch[1].toUpperCase();
       if (!detectedBooklets.includes(booklet)) detectedBooklets.push(booklet);
       continue;
     }
-
     const match = line.match(/^(.+?)\s*[:;,=|\t]\s*([ABCDE\s._-]+)$/i) || line.match(/^([^\s]+)\s+([ABCDE]{4,})$/i);
     if (!match) { unknownLines.push(line); continue; }
     const subject = subjectForToken(match[1], subjects);
     const answers = cleanAnswers(match[2]);
     if (!subject || !answers) { unknownLines.push(line); continue; }
-
     entries.push({ subjectId: subject.id, bookletCode: booklet, answers });
     questionStarts[subject.id] = questionStarts[subject.id] || 1;
     questionCounts[subject.id] = Math.max(questionCounts[subject.id] || 0, answers.length);
   }
-
   return { entries, questionCounts, questionStarts, unknownLines, detectedBooklets, warnings, detectedFormat: entries.length ? 'TEXT' : undefined };
 }
 
