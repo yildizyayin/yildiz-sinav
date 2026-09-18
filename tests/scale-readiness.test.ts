@@ -10,8 +10,11 @@ const privacyLifecycleRoot=readFileSync(new URL('../worker/privacy-lifecycle-ent
 const privacyMinimizationRoot=readFileSync(new URL('../worker/privacy-minimization-entry.ts',import.meta.url),'utf8');
 const privacyExportRoot=readFileSync(new URL('../worker/privacy-export-entry.ts',import.meta.url),'utf8');
 const privacySmokeRoot=readFileSync(new URL('../worker/privacy-smoke-entry.ts',import.meta.url),'utf8');
+const localCapacity=readFileSync(new URL('../scripts/local-capacity-smoke.mjs',import.meta.url),'utf8');
 const staging=readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8');
 const production=readFileSync(new URL('../wrangler.production.jsonc',import.meta.url),'utf8');
+const stagingWorkflow=readFileSync(new URL('../.github/workflows/deploy.yml',import.meta.url),'utf8');
+const productionWorkflow=readFileSync(new URL('../.github/workflows/deploy-app-production.yml',import.meta.url),'utf8');
 
 describe('Anunex scale readiness',()=>{
   it('routes staging through synthetic smoke evidence while production keeps the audited privacy chain',()=>{
@@ -51,5 +54,20 @@ describe('Anunex scale readiness',()=>{
     expect(source).toContain("key:'LIVE_100K_BENCHMARK'");
     expect(source).toContain("status:'PENDING'");
     expect(source).toContain('Queue/Workflow by measured threshold');
+  });
+
+  it('keeps synthetic migration fixtures outside the capacity-write assertion',()=>{
+    expect(localCapacity).toContain('baselineStudentRows');
+    expect(localCapacity).toContain('studentRows===baselineStudentRows');
+  });
+
+  it('keeps demo on the staging Worker and app production isolated',()=>{
+    expect(stagingWorkflow).toContain('SMOKE_BASE_URL: https://demo.anunex.com');
+    expect(stagingWorkflow).toContain('Attach demo domain to staging Worker');
+    expect(stagingWorkflow).toContain('hostname:"demo.anunex.com"');
+    expect(stagingWorkflow).toContain('service:"yildiz-sinav-v1"');
+    expect(stagingWorkflow).toContain('environment:"staging"');
+    expect(productionWorkflow).toContain('attach_domain app.anunex.com yildiz-sinav-prod');
+    expect(productionWorkflow).not.toContain('attach_domain demo.anunex.com');
   });
 });
