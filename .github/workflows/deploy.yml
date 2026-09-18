@@ -96,23 +96,18 @@ jobs:
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: npx wrangler deploy
 
-      - name: Attach demo domain to staging Worker
+      - name: Verify demo domain serves staging Worker
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         shell: bash
         run: |
           set -euo pipefail
-          endpoint="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains"
           response="$(mktemp)"
           curl --fail-with-body --silent --show-error \
-            "$endpoint" \
-            --request PUT \
-            --header 'Content-Type: application/json' \
-            --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            --data "$(jq -n '{hostname:"demo.anunex.com",service:"yildiz-sinav-v1",environment:"staging",zone_name:"anunex.com"}')" \
+            "https://demo.anunex.com/api/config" \
             --output "$response"
-          jq -e '.success == true and .result.hostname == "demo.anunex.com" and .result.service == "yildiz-sinav-v1" and (.result.environment // "staging") == "staging"' "$response" >/dev/null
+          jq -e '.environment == "staging"' "$response" >/dev/null
           rm -f "$response"
-          echo "demo.anunex.com attached to the staging Worker."
+          echo "demo.anunex.com serves the staging Worker."
 
       - name: Sync WhatsApp secrets to staging Worker
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
