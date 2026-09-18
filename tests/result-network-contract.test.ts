@@ -45,6 +45,20 @@ describe('ANUNEX result network contract',()=>{
   expect(source).toContain("UPDATE sessions SET revoked_at=CURRENT_TIMESTAMP WHERE user_id IN (SELECT id FROM users WHERE institution_id=?)");
   expect(source).toContain("'INSTITUTION_ALREADY_EXISTS'");
  });
+ it('keeps result network institution creation and lifecycle changes Super Admin only',()=>{
+  expect(source).toContain("if(user.role!=='SUPER_ADMIN')return forbidden('Sonuç ağı kurumu yalnız Süper Admin oluşturabilir.')");
+  expect(source).toContain("if(user.role!=='SUPER_ADMIN')return forbidden('Kurum yaşam döngüsünü yalnız Süper Admin yönetebilir.')");
+  expect(source).toContain("if(p==='/api/admin/result-network/institutions'&&request.method==='POST'){const user=await requireSuper(request,env)");
+  expect(source).toContain("if(lifecycle&&request.method==='POST'){const user=await requireSuper(request,env)");
+ });
+ it('supports audited existing-institution edits without a physical delete route',()=>{
+  expect(source).toContain('async function updateNetworkInstitution');
+  expect(source).toContain("if(user.role!=='SUPER_ADMIN')return forbidden('Kurum bilgilerini yalnız Süper Admin düzenleyebilir.')");
+  expect(source).toContain("RESULT_INSTITUTION_UPDATED");
+  expect(source).toContain("before:{name:before.name,code:before.code,city:before.city,district:before.district},after");
+  expect(source).toContain("institutionEdit&&request.method==='PATCH'");
+  expect(source).not.toContain("/api/admin/result-network/institutions/([^/]+)/delete");
+ });
  it('refreshes single-use Turnstile tokens after a failed result lookup or operator login',()=>{
   expect(portal).toContain('const refreshTurnstile=()=>');
   expect(portal).toContain('key={turnstileCycle}');
