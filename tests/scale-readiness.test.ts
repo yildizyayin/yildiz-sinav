@@ -63,10 +63,11 @@ describe('Anunex scale readiness',()=>{
 
   it('keeps demo on the staging Worker and app production isolated',()=>{
     expect(stagingWorkflow).toContain('SMOKE_BASE_URL: https://demo.anunex.com');
-    expect(stagingWorkflow).toContain('Attach demo domain to staging Worker');
-    expect(stagingWorkflow).toContain('hostname:"demo.anunex.com"');
-    expect(stagingWorkflow).toContain('service:"yildiz-sinav-v1"');
-    expect(stagingWorkflow).toContain('environment:"staging"');
+    expect(staging).toContain('"pattern": "demo.anunex.com"');
+    expect(staging).toContain('"custom_domain": true');
+    expect(stagingWorkflow).toContain('Verify demo domain serves staging Worker');
+    expect(stagingWorkflow).toContain('https://demo.anunex.com/api/config');
+    expect(stagingWorkflow).toContain('.environment == "staging"');
     expect(productionWorkflow).toContain('attach_domain app.anunex.com yildiz-sinav-prod');
     expect(productionWorkflow).not.toContain('attach_domain demo.anunex.com');
   });
