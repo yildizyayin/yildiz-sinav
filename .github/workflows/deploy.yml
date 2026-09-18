@@ -29,6 +29,8 @@ jobs:
       WHATSAPP_APP_SECRET: ${{ secrets.WHATSAPP_APP_SECRET }}
       WHATSAPP_ACCESS_TOKEN: ${{ secrets.WHATSAPP_ACCESS_TOKEN }}
       WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
+      GOOGLE_TTS_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_TTS_SERVICE_ACCOUNT_JSON }}
+      OPENAI_TTS_API_KEY: ${{ secrets.OPENAI_TTS_API_KEY }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -94,6 +96,24 @@ jobs:
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: npx wrangler deploy
 
+      - name: Attach demo domain to staging Worker
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          endpoint="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains"
+          response="$(mktemp)"
+          curl --fail-with-body --silent --show-error \
+            "$endpoint" \
+            --request PUT \
+            --header 'Content-Type: application/json' \
+            --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            --data "$(jq -n '{hostname:"demo.anunex.com",service:"yildiz-sinav-v1",environment:"staging",zone_name:"anunex.com"}')" \
+            --output "$response"
+          jq -e '.success == true and .result.hostname == "demo.anunex.com" and .result.service == "yildiz-sinav-v1" and (.result.environment // "staging") == "staging"' "$response" >/dev/null
+          rm -f "$response"
+          echo "demo.anunex.com attached to the staging Worker."
+
       - name: Sync WhatsApp secrets to staging Worker
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         shell: bash
@@ -110,6 +130,8 @@ jobs:
           put_secret WHATSAPP_APP_SECRET
           put_secret WHATSAPP_ACCESS_TOKEN
           put_secret WHATSAPP_PHONE_NUMBER_ID
+          put_secret GOOGLE_TTS_SERVICE_ACCOUNT_JSON
+          put_secret OPENAI_TTS_API_KEY
 
       - name: Live WhatsApp webhook handshake
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && env.WHATSAPP_VERIFY_TOKEN != '' }}
