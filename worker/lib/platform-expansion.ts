@@ -320,10 +320,20 @@ async function listQuestions(request:Request,env:Env,user:AuthUser):Promise<Resp
   if(reviewStatus){if(!['DRAFT','REVIEW','APPROVED','REJECTED','ARCHIVED'].includes(reviewStatus))return badRequest('Geçersiz inceleme durumu.','INVALID_STATUS');wh.push('q.review_status=?');ps.push(reviewStatus);}
   if(user.role!=='SUPER_ADMIN') { wh.push(`(q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`); ps.push(user.institution_id); }
   if(user.role==='TEACHER') wh.push(`q.subject_id IN (SELECT ta.subject_id FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND ta.assignment_type='SUBJECT')`),ps.push(user.id,user.institution_id);
-  const rows=await all<any>(env.DB.prepare(`SELECT q.*,COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,s.name subject_name,
-    EXISTS(SELECT 1 FROM question_learning_links ql WHERE ql.question_id=q.id) has_learning_link,
-    (SELECT COUNT(*) FROM question_assets qa WHERE qa.question_id=q.id) asset_count
-    FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')} ORDER BY q.created_at DESC LIMIT 300`).bind(...ps));
+  let rows:any[];
+  try{
+    rows=await all<any>(env.DB.prepare(`SELECT q.*,COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,s.name subject_name,
+      EXISTS(SELECT 1 FROM question_learning_links ql WHERE ql.question_id=q.id) has_learning_link,
+      (SELECT COUNT(*) FROM question_assets qa WHERE qa.question_id=q.id) asset_count
+      FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')} ORDER BY q.created_at DESC LIMIT 300`).bind(...ps));
+  }catch{
+    // The core bank predates the optional learning/media relations. Read the
+    // questions without those enrichments until the pending migration lands.
+    const fallbackWhere=wh.map(condition=>condition.replace(/COALESCE\(q\.difficulty_level,q\.difficulty,3\)/g,'q.difficulty'));
+    rows=await all<any>(env.DB.prepare(`SELECT q.*,q.difficulty difficulty_level,s.name subject_name,
+      0 has_learning_link,0 asset_count
+      FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${fallbackWhere.join(' AND ')} ORDER BY q.created_at DESC LIMIT 300`).bind(...ps));
+  }
   const hydrated=await hydrateQuestionMedia(env,rows);
   return json({ok:true,questions:hydrated.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined}))});
 }

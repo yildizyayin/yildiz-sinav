@@ -105,10 +105,27 @@ async function directOpenAiSpeak(env:Env,text:string,speed:number):Promise<Voice
 
 async function unifiedOpenAiSpeak(env:Env,text:string,speed:number,hd:boolean):Promise<VoiceAudio>{
  if(!env.AI)throw new Error('OPENAI_UNIFIED_NOT_CONFIGURED');const model=hd?(env.NIBIRU_OPENAI_TTS_HD_MODEL||'openai/tts-1-hd'):(env.NIBIRU_OPENAI_TTS_MODEL||'openai/tts-1');const voice=env.NIBIRU_OPENAI_TTS_VOICE||'coral';
- const response:any=await env.AI.run(model as any,{response_format:'mp3',speed,text,voice} as any,{gateway:{id:env.NIBIRU_AI_GATEWAY_ID||'default',skipCache:true,collectLog:true,metadata:{app:'nibiru',modality:'tts',language:'tr',quality:hd?'premium':'standard'}}} as any);
- if(response instanceof Response)return{bytes:new Uint8Array(await response.arrayBuffer()),contentType:response.headers.get('content-type')||'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model};
- const audioUrl=String(response?.audio||response?.result?.audio||'');if(!audioUrl)throw new Error('OPENAI_UNIFIED_TTS_EMPTY');const audio=await fetch(audioUrl);if(!audio.ok)throw new Error('OPENAI_UNIFIED_TTS_FETCH_FAILED');
- return{bytes:new Uint8Array(await audio.arrayBuffer()),contentType:audio.headers.get('content-type')||'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model};
+ try{
+  const response:any=await env.AI.run(model as any,{response_format:'mp3',speed,text,voice} as any,{gateway:{id:env.NIBIRU_AI_GATEWAY_ID||'default',skipCache:true,collectLog:true,metadata:{app:'nibiru',modality:'tts',language:'tr',quality:hd?'premium':'standard'}}} as any);
+  if(response instanceof Response)return{bytes:new Uint8Array(await response.arrayBuffer()),contentType:response.headers.get('content-type')||'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model};
+  const audioUrl=String(response?.audio||response?.result?.audio||'');if(!audioUrl)throw new Error('OPENAI_UNIFIED_TTS_EMPTY');const audio=await fetch(audioUrl);if(!audio.ok)throw new Error('OPENAI_UNIFIED_TTS_FETCH_FAILED');
+  return{bytes:new Uint8Array(await audio.arrayBuffer()),contentType:audio.headers.get('content-type')||'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model};
+ }catch(primaryError){
+  // The OpenAI-compatible unified route may be unavailable in a newly
+  // provisioned account. Keep the no-secret Workers AI voice path alive with
+  // Cloudflare's multilingual MeloTTS model instead of returning a 502.
+  const fallbackModel='@cf/myshell-ai/melotts';
+  try{
+   const response:any=await env.AI.run(fallbackModel as any,{prompt:text,lang:'tr'} as any,{returnRawResponse:true} as any);
+   if(response instanceof Response)return{bytes:new Uint8Array(await response.arrayBuffer()),contentType:response.headers.get('content-type')||'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model:fallbackModel};
+   if(response instanceof Uint8Array)return{bytes:response,contentType:'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model:fallbackModel};
+   throw new Error('OPENAI_UNIFIED_TTS_FALLBACK_EMPTY');
+  }catch(fallbackError){
+   const primary=primaryError instanceof Error?primaryError.message:'PRIMARY_TTS_FAILED';
+   const fallback=fallbackError instanceof Error?fallbackError.message:'FALLBACK_TTS_FAILED';
+   throw new Error(`OPENAI_UNIFIED_TTS_FAILED:${primary}|${fallback}`);
+  }
+ }
 }
 
 export async function speakNibiru(env:Env,value:string,mode:NibiruVoiceMode='STANDARD'){
