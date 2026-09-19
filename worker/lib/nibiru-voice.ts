@@ -115,16 +115,24 @@ async function unifiedOpenAiSpeak(env:Env,text:string,speed:number,hd:boolean):P
   // provisioned account. Keep the no-secret Workers AI voice path alive with
   // Cloudflare's multilingual MeloTTS model instead of returning a 502.
   const fallbackModel='@cf/myshell-ai/melotts';
-  try{
-   const response:any=await env.AI.run(fallbackModel as any,{prompt:text,lang:'tr'} as any,{returnRawResponse:true} as any);
-   if(response instanceof Response)return{bytes:new Uint8Array(await response.arrayBuffer()),contentType:response.headers.get('content-type')||'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model:fallbackModel};
-   if(response instanceof Uint8Array)return{bytes:response,contentType:'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model:fallbackModel};
-   throw new Error('OPENAI_UNIFIED_TTS_FALLBACK_EMPTY');
-  }catch(fallbackError){
-   const primary=primaryError instanceof Error?primaryError.message:'PRIMARY_TTS_FAILED';
-   const fallback=fallbackError instanceof Error?fallbackError.message:'FALLBACK_TTS_FAILED';
-   throw new Error(`OPENAI_UNIFIED_TTS_FAILED:${primary}|${fallback}`);
+  let fallbackError:unknown=null;
+  for(const lang of ['tr','en']){
+   try{
+    const response:any=await env.AI.run(fallbackModel as any,{prompt:text,lang} as any,{returnRawResponse:true} as any);
+    if(response instanceof Response){
+     const contentType=response.headers.get('content-type')||'';const bytes=new Uint8Array(await response.arrayBuffer());
+     // Workers AI returns JSON for model errors. Never expose that JSON as
+     // if it were playable audio; try the documented default language next.
+     if(!contentType.toLowerCase().includes('audio/')||bytes.length<=100)throw new Error(`MELOTTS_${lang.toUpperCase()}_NOT_AUDIO`);
+     return{bytes,contentType,provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model:fallbackModel};
+    }
+    if(response instanceof Uint8Array&&response.length>100)return{bytes:response,contentType:'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model:fallbackModel};
+    throw new Error(`MELOTTS_${lang.toUpperCase()}_EMPTY`);
+   }catch(error){fallbackError=error;}
   }
+  const primary=primaryError instanceof Error?primaryError.message:'PRIMARY_TTS_FAILED';
+  const fallback=fallbackError instanceof Error?fallbackError.message:'FALLBACK_TTS_FAILED';
+  throw new Error(`OPENAI_UNIFIED_TTS_FAILED:${primary}|${fallback}`);
  }
 }
 
