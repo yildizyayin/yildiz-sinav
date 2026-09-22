@@ -60,7 +60,7 @@ export function defaultManualFields(): ManualOpticalField[] {
 }
 
 export function defaultManualAnswerBlocks(): ManualAnswerBlock[] {
-  return Array.from({ length: 13 }, (_, index) => ({
+  return Array.from({ length: 15 }, (_, index) => ({
     code: `TEST-${index + 1}`,
     label: `Test-${index + 1}`,
     enabled: false,
