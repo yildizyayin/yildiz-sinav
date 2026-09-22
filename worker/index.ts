@@ -677,7 +677,7 @@ async function listOpticalTemplates(env: Env, user: AuthUser, url: URL): Promise
       };
   const rows = await all<any>(env.DB.prepare(`SELECT t.id template_id,t.name,t.vendor,t.status,t.owner_type,t.owner_id,v.id version_id,v.version,v.page_width_mm,v.page_height_mm,
     v.parser_definition IS NOT NULL has_parser,v.camera_geometry IS NOT NULL has_camera,v.print_fields IS NOT NULL has_print
-    FROM optical_templates t LEFT JOIN optical_template_versions v ON v.template_id=t.id AND v.active=1 WHERE t.active=1 ${scope.sql} ORDER BY t.name`).bind(...scope.params));
+    FROM optical_templates t LEFT JOIN optical_template_versions v ON v.template_id=t.id AND v.active=1 WHERE t.active=1 ${scope.sql} ORDER BY t.sort_order,t.name`).bind(...scope.params));
   return json({ ok: true, templates: rows });
 }
 

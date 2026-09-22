@@ -81,25 +81,29 @@ async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
         params: [user.institution_id],
       };
   const rows = await all<any>(env.DB.prepare(`
-    SELECT t.id,t.name,t.vendor,t.status,t.active,t.owner_type,t.owner_id,t.created_at,
+    SELECT t.id,t.name,t.vendor,t.form_type,t.sort_order,t.status,t.active,t.owner_type,t.owner_id,t.created_at,
       (SELECT count(*) FROM optical_template_versions v WHERE v.template_id=t.id) version_count,
       (SELECT v.id FROM optical_template_versions v WHERE v.template_id=t.id AND v.active=1 ORDER BY v.created_at DESC LIMIT 1) active_version_id,
       (SELECT v.version FROM optical_template_versions v WHERE v.template_id=t.id AND v.active=1 ORDER BY v.created_at DESC LIMIT 1) active_version
     FROM optical_templates t
     WHERE t.active=1 ${scope.sql}
-    ORDER BY t.active DESC,t.name
+    ORDER BY t.active DESC,t.sort_order,t.name
   `).bind(...scope.params));
   return json({ ok: true, templates: rows });
 }
 
 async function createTemplate(request: Request, env: Env, actor: AuthUser): Promise<Response> {
-  const body = await request.json<{ name?: string; vendor?: string; version?: string; pageWidthMm?: number; pageHeightMm?: number }>();
+  const body = await request.json<{ name?: string; vendor?: string; version?: string; formType?: string; sortOrder?: number; pageWidthMm?: number; pageHeightMm?: number }>();
   const name = body.name?.trim() || '';
   const vendor = body.vendor?.trim() || null;
   const version = body.version?.trim() || 'v1';
+  const formType = String(body.formType || 'FMT').toUpperCase();
+  const sortOrder = Number(body.sortOrder ?? 1);
   const pageWidthMm = Number(body.pageWidthMm ?? 210);
   const pageHeightMm = Number(body.pageHeightMm ?? 297);
   if (!name) return badRequest('Optik adı gereklidir.');
+  if (!['FMT','TXT','PHOTO','MANUAL'].includes(formType)) return badRequest('Form türü geçersiz.');
+  if (!Number.isInteger(sortOrder) || sortOrder < 1) return badRequest('Form sırası pozitif tam sayı olmalıdır.');
   if (!Number.isFinite(pageWidthMm) || pageWidthMm <= 0 || !Number.isFinite(pageHeightMm) || pageHeightMm <= 0) return badRequest('Sayfa ölçüleri geçersiz.');
   const ownerType = actor.role === 'SUPER_ADMIN' ? 'CENTRAL' : 'INSTITUTION';
   const ownerId = actor.role === 'SUPER_ADMIN' ? null : actor.institution_id;
@@ -108,11 +112,11 @@ async function createTemplate(request: Request, env: Env, actor: AuthUser): Prom
   const templateId = uuid('opt');
   const versionId = uuid('optv');
   await env.DB.batch([
-    env.DB.prepare(`INSERT INTO optical_templates (id,name,vendor,status,active,owner_type,owner_id) VALUES (?,?,?,'NEEDS_DEFINITION',1,?,?)`).bind(templateId, name, vendor, ownerType, ownerId),
+    env.DB.prepare(`INSERT INTO optical_templates (id,name,vendor,form_type,sort_order,status,active,owner_type,owner_id) VALUES (?,?,?, ?, ?,'NEEDS_DEFINITION',1,?,?)`).bind(templateId, name, vendor, formType, sortOrder, ownerType, ownerId),
     env.DB.prepare(`INSERT INTO optical_template_versions (id,template_id,version,page_width_mm,page_height_mm,active) VALUES (?,?,?,?,?,0)`).bind(versionId, templateId, version, pageWidthMm, pageHeightMm),
     env.DB.prepare(`INSERT INTO optical_definition_validations (optical_template_version_id) VALUES (?)`).bind(versionId),
   ]);
-  await audit(env.DB, actor.id, actor.institution_id || null, 'OPTICAL_TEMPLATE_CREATED', 'optical_template', templateId, { name, vendor, version, pageWidthMm, pageHeightMm, ownerType });
+  await audit(env.DB, actor.id, actor.institution_id || null, 'OPTICAL_TEMPLATE_CREATED', 'optical_template', templateId, { name, vendor, version, formType, sortOrder, pageWidthMm, pageHeightMm, ownerType });
   return json({ ok: true, templateId, versionId, ownerType, ownerId }, 201);
 }
 
@@ -120,17 +124,21 @@ async function updateTemplate(request: Request, env: Env, actor: AuthUser, templ
   const template = await one<any>(env.DB.prepare('SELECT * FROM optical_templates WHERE id=?').bind(templateId));
   if (!template) return notFound('Optik şablon bulunamadı.');
   if (!canEditTemplate(actor, template)) return forbidden('Bu optik şablonu düzenleme yetkiniz bulunmuyor.');
-  const body = await request.json<{ name?: string; vendor?: string | null; reason?: string | null }>();
+  const body = await request.json<{ name?: string; vendor?: string | null; formType?: string; sortOrder?: number; reason?: string | null }>();
   const name = body.name?.trim() || '';
   const vendor = body.vendor?.trim() || null;
+  const formType = String(body.formType || template.form_type || 'FMT').toUpperCase();
+  const sortOrder = Number(body.sortOrder ?? template.sort_order ?? 1);
   if (!name) return badRequest('Optik adı gereklidir.');
+  if (!['FMT','TXT','PHOTO','MANUAL'].includes(formType)) return badRequest('Form türü geçersiz.');
+  if (!Number.isInteger(sortOrder) || sortOrder < 1) return badRequest('Form sırası pozitif tam sayı olmalıdır.');
   const duplicate = await one(env.DB.prepare(`SELECT id FROM optical_templates WHERE id<>? AND lower(name)=lower(?) AND coalesce(lower(vendor),'')=coalesce(lower(?),'') AND owner_type=? AND coalesce(owner_id,'')=coalesce(?, '')`).bind(templateId, name, vendor, template.owner_type, template.owner_id));
   if (duplicate) return error(409, 'TEMPLATE_EXISTS', 'Aynı ad ve üreticiyle başka bir optik şablon zaten bulunuyor.');
   const reason = body.reason?.trim() || 'Optik yönetim ekranı güncellemesi.';
   if (reason.length > 500) return badRequest('Değişiklik gerekçesi 500 karakteri geçemez.');
-  await env.DB.prepare('UPDATE optical_templates SET name=?,vendor=? WHERE id=?').bind(name, vendor, templateId).run();
-  await audit(env.DB, actor.id, null, 'OPTICAL_TEMPLATE_UPDATED', 'optical_template', templateId, { before: { name: template.name, vendor: template.vendor }, after: { name, vendor }, reason });
-  return json({ ok: true, template: { ...template, name, vendor } });
+  await env.DB.prepare('UPDATE optical_templates SET name=?,vendor=?,form_type=?,sort_order=? WHERE id=?').bind(name, vendor, formType, sortOrder, templateId).run();
+  await audit(env.DB, actor.id, null, 'OPTICAL_TEMPLATE_UPDATED', 'optical_template', templateId, { before: { name: template.name, vendor: template.vendor, formType: template.form_type, sortOrder: template.sort_order }, after: { name, vendor, formType, sortOrder }, reason });
+  return json({ ok: true, template: { ...template, name, vendor, form_type: formType, sort_order: sortOrder } });
 }
 
 async function getTemplateDetail(env: Env, user: AuthUser, templateId: string): Promise<Response> {

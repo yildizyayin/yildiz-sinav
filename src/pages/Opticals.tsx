@@ -275,11 +275,12 @@ export function Opticals() {
       vendor: "",
       version: "v1",
       formType: "FMT" as Method,
+      sortOrder: 1,
       pageWidthMm: 210,
       pageHeightMm: 297,
     }),
     [newVersion, setNewVersion] = useState("");
-  const [editTemplate, setEditTemplate] = useState({ name: "", vendor: "" });
+  const [editTemplate, setEditTemplate] = useState({ name: "", vendor: "", formType: "FMT" as Method, sortOrder: 1 });
   const [photo, setPhoto] = useState<File | null>(null),
     [photoUrl, setPhotoUrl] = useState(""),
     [suggestions, setSuggestions] = useState<Suggestion[]>([]),
@@ -337,6 +338,8 @@ export function Opticals() {
     setEditTemplate({
       name: r.template?.name || "",
       vendor: r.template?.vendor || "",
+      formType: (r.template?.form_type || "FMT") as Method,
+      sortOrder: Number(r.template?.sort_order || 1),
     });
     if (
       !selectedVersionId ||
@@ -1064,6 +1067,15 @@ export function Opticals() {
               </select>
             </label>
             <label>
+              Sıra
+              <input
+                type="number"
+                min="1"
+                value={newTemplate.sortOrder}
+                onChange={(e) => setNewTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) }))}
+              />
+            </label>
+            <label>
               Genişlik mm
               <input
                 type="number"
@@ -1224,6 +1236,29 @@ export function Opticals() {
                   onChange={(e) =>
                     setEditTemplate((x) => ({ ...x, vendor: e.target.value }))
                   }
+                />
+              </label>
+              <label>
+                Form türü
+                <select
+                  value={editTemplate.formType}
+                  onChange={(e) => setEditTemplate((x) => ({ ...x, formType: e.target.value as Method }))}
+                  disabled={templateDetail.template?.status === "ARCHIVED"}
+                >
+                  <option value="FMT">FMT</option>
+                  <option value="TXT">TXT / DAT</option>
+                  <option value="PHOTO">Fotoğraf / kamera</option>
+                  <option value="MANUAL">Manuel parametre</option>
+                </select>
+              </label>
+              <label>
+                Sıra
+                <input
+                  type="number"
+                  min="1"
+                  value={editTemplate.sortOrder}
+                  onChange={(e) => setEditTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) }))}
+                  disabled={templateDetail.template?.status === "ARCHIVED"}
                 />
               </label>
             </div>
