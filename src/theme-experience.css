@@ -153,3 +153,16 @@
 .app-shell[data-panel-module="exam-center"] .primary,.app-shell[data-panel-module="exam-center"] .exam-center-page .primary{background:linear-gradient(105deg,#b85f3e,#d9854d);box-shadow:0 9px 20px rgba(173,91,61,.22)}
 .app-shell[data-panel-module="exam-center"] .primary:hover,.app-shell[data-panel-module="exam-center"] .exam-center-page .primary:hover{filter:brightness(.94)}
 .app-shell[data-panel-module="exam-center"] .secondary{border-color:#e2c5b0;color:#8d4c34;background:#fffaf5}
+
+/* Sol menüde aktif bölüm, açılan çalışma alanının rengine eşlik eder. */
+.app-shell[data-panel-module="general"]{--nav-module-start:#315efb;--nav-module-end:#607cff;--nav-module-ink:#fff;--nav-module-shadow:rgba(49,94,251,.28);--nav-module-hover:rgba(96,124,255,.2)}
+.app-shell[data-panel-module="exam-center"]{--nav-module-start:#a94f34;--nav-module-end:#d9854d;--nav-module-ink:#fff;--nav-module-shadow:rgba(173,91,61,.34);--nav-module-hover:rgba(217,133,77,.22)}
+.app-shell[data-panel-module="optical-operations"]{--nav-module-start:#087f78;--nav-module-end:#20b49e;--nav-module-ink:#fff;--nav-module-shadow:rgba(15,159,140,.3);--nav-module-hover:rgba(32,180,158,.2)}
+.app-shell[data-panel-module="content-center"]{--nav-module-start:#6742c8;--nav-module-end:#8b6cf0;--nav-module-ink:#fff;--nav-module-shadow:rgba(118,87,255,.3);--nav-module-hover:rgba(139,108,240,.22)}
+.app-shell[data-panel-module="guidance-center"]{--nav-module-start:#4462b2;--nav-module-end:#708bdd;--nav-module-ink:#fff;--nav-module-shadow:rgba(83,111,196,.3);--nav-module-hover:rgba(112,139,221,.22)}
+.app-shell[data-panel-module="planning-center"]{--nav-module-start:#9b640b;--nav-module-end:#d39a2f;--nav-module-ink:#fff;--nav-module-shadow:rgba(189,125,16,.3);--nav-module-hover:rgba(211,154,47,.22)}
+.app-shell[data-panel-module="results-center"]{--nav-module-start:#1f62aa;--nav-module-end:#3e8cda;--nav-module-ink:#fff;--nav-module-shadow:rgba(38,114,200,.3);--nav-module-hover:rgba(62,140,218,.22)}
+.app-shell[data-panel-module="ai-center"]{--nav-module-start:#6040bb;--nav-module-end:#906df3;--nav-module-ink:#fff;--nav-module-shadow:rgba(118,87,255,.32);--nav-module-hover:rgba(144,109,243,.22)}
+.app-shell[data-panel-module] .nav-item.active{background:linear-gradient(105deg,var(--nav-module-start),var(--nav-module-end));color:var(--nav-module-ink);box-shadow:0 9px 22px var(--nav-module-shadow)}
+.app-shell[data-panel-module] .nav-item:not(.active):hover{background:var(--nav-module-hover);color:#fff}
+.app-shell[data-panel-module] .nav-item.active svg{color:currentColor}
