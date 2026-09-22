@@ -40,7 +40,7 @@ export function AdminCommandCenter() {
 
   return <div className="admin-command-center admin-operational-home">
     <header className="admin-home-header">
-      <div><span className="eyebrow">ANUNEX · SÜPER ADMİN</span><h1>Yönetim özeti</h1><p>Platformdaki kritik işlemleri, bekleyen işleri ve sistem durumunu tek ekrandan izleyin.</p></div>
+      <div><span className="eyebrow">ANUNEX · SÜPER ADMİN</span><h1>Yönetim özeti</h1></div>
       <div className="admin-home-header-actions"><Link className="primary" to="/exam-definitions"><Plus size={17} /> Sınav Ekle</Link><Link className="secondary" to="/exam-center?mode=upload"><FileUp size={17} /> Sınav Yükle</Link></div>
     </header>
 

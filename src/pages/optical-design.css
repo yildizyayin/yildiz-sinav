@@ -1,6 +1,13 @@
 .optical-design-page { display: grid; gap: 18px; }
 .optical-card-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
 .optical-card-actions button { min-height: 36px; padding: 8px 11px; }
+.optical-card-menu-wrap { position: relative; }
+.optical-card-menu-button { width: 34px; min-width: 34px; height: 34px; min-height: 34px; padding: 0; color: var(--muted); }
+.optical-card-menu { position: absolute; z-index: 5; top: 40px; right: 0; min-width: 142px; padding: 5px; border: 1px solid var(--border); border-radius: 10px; background: #fff; box-shadow: 0 14px 30px rgba(16,24,40,.14); }
+.optical-card-menu button { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 34px; padding: 7px 9px; border: 0; border-radius: 7px; background: transparent; color: var(--ink); font-size: 11px; font-weight: 750; text-align: left; }
+.optical-card-menu button:hover { background: #f5f7fb; }
+.optical-card-menu button:disabled { cursor: not-allowed; opacity: .45; }
+.optical-card-status { min-height: 19px; margin: -4px 0 7px; }
 .optical-design-head { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; }
 .optical-design-actions, .optical-design-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .optical-design-selector { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(280px, 1.5fr); gap: 18px; align-items: end; }

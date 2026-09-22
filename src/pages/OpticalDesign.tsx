@@ -133,16 +133,11 @@ export function OpticalDesign() {
     <div className="optical-design-page">
       <div className="page-head optical-design-head">
         <div>
-          <span className="eyebrow">Optik Form Tasarımcısı</span>
-          <h1>Baskı şablonunu tanımla</h1>
-          <p>
-            Bu ekran yalnız basılacak alanları ve konumlarını yönetir. Okuma
-            geometrisi için Optik Tanımlama, öğrenci bazlı çıktı için Optik Basma
-            ekranını kullanın.
-          </p>
+          <span className="eyebrow">PHOBOS · OPTİK FORM TASARIMCISI</span>
+          <h1>Optik Form Tasarımcısı</h1>
         </div>
         <div className="optical-design-actions">
-          <Link className="ghost" to="/opticals"><ArrowLeft size={16} /> Optik Tanımlama</Link>
+          <Link className="ghost" to="/opticals"><ArrowLeft size={16} /> Optik Tanımla</Link>
           <Link className="secondary" to="/optical-prepare"><ScanLine size={16} /> Optik Basma</Link>
         </div>
       </div>

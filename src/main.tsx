@@ -16,6 +16,7 @@ import './campaign-ui.css';
 import './brand-lock.css';
 import './profession-targets.css';
 import './pages/admin-command-center.css';
+import './pages/admin-operational-home.css';
 import './pages/optical-design.css';
 import './theme-experience.css';
 

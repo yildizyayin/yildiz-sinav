@@ -9,6 +9,7 @@ import {
   FileUp,
   FlaskConical,
   MousePointer2,
+  MoreVertical,
   Pencil,
   Plus,
   Save,
@@ -268,6 +269,7 @@ export function Opticals() {
   const [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
     [busy, setBusy] = useState(false);
+  const [openCardMenu, setOpenCardMenu] = useState<string | null>(null);
   const [newTemplate, setNewTemplate] = useState({
       name: "",
       vendor: "",
@@ -975,13 +977,8 @@ export function Opticals() {
     >
       <div className="page-head">
         <div>
-          <span className="eyebrow">Optik Tanımlama Merkezi</span>
-          <h1>Okuma tanımını oluştur</h1>
-          <p>
-            FMT, TXT, DAT, fotoğraf ve kamera geometrisiyle öğrenci/cevap
-            alanlarını tanımlayın. Baskı şablonu ve yazdırma ayrı çalışma
-            alanlarında yönetilir.
-          </p>
+          <span className="eyebrow">PHOBOS · OPTİK MERKEZİ</span>
+          <h1>Optik Tanımla</h1>
         </div>
       </div>
       {error && <div className="alert error">{error}</div>}
@@ -1082,35 +1079,29 @@ export function Opticals() {
                 <div className="quick-icon">
                   <ScanLine />
                 </div>
-                {t.status === "READY" ? (
-                  <span className="verified">
-                    <CheckCircle2 size={14} /> Hazır
-                  </span>
-                ) : t.status === "ARCHIVED" ? (
-                  <span className="warning">
-                    <CircleAlert size={14} /> Arşivlendi
-                  </span>
-                ) : (
-                  <span className="warning">
-                    <CircleAlert size={14} /> Okuma tanımı sürüyor
-                  </span>
-                )}
+                <div className="optical-card-menu-wrap">
+                  <button
+                    className="icon-button optical-card-menu-button"
+                    aria-label={`${t.name} işlemleri`}
+                    aria-expanded={openCardMenu === t.id}
+                    onClick={() => setOpenCardMenu((current) => current === t.id ? null : t.id)}
+                  >
+                    <MoreVertical size={17} />
+                  </button>
+                  {openCardMenu === t.id && <div className="optical-card-menu" role="menu">
+                    <button role="menuitem" onClick={() => { setSelectedTemplateId(t.id); setOpenCardMenu(null); }}><Pencil size={14} /> Düzenle</button>
+                    <button role="menuitem" disabled={busy || t.status === "ARCHIVED"} onClick={() => { setOpenCardMenu(null); void copyTemplateVersion(t.id); }}><CopyPlus size={14} /> Kopyala</button>
+                    <button role="menuitem" disabled={busy || t.status === "ARCHIVED"} onClick={() => { setOpenCardMenu(null); void deleteTemplate(t.id); }}><Trash2 size={14} /> Sil</button>
+                  </div>}
+                </div>
+              </div>
+              <div className="optical-card-status">
+                {t.status === "READY" ? <span className="verified"><CheckCircle2 size={14} /> Hazır</span> : t.status === "ARCHIVED" ? <span className="warning"><CircleAlert size={14} /> Arşivlendi</span> : <span className="warning"><CircleAlert size={14} /> Okuma tanımı sürüyor</span>}
               </div>
               <h3>{t.name}</h3>
               <p>
                 {t.vendor || "Genel"} · {t.version_count} sürüm
               </p>
-              <div className="optical-card-actions">
-                <button className="primary" onClick={() => setSelectedTemplateId(t.id)}>
-                  <Pencil size={15} /> Düzenle
-                </button>
-                <button className="secondary" disabled={busy || t.status === "ARCHIVED"} onClick={() => void copyTemplateVersion(t.id)}>
-                  <CopyPlus size={15} /> Kopyala
-                </button>
-                <button className="ghost" disabled={busy || t.status === "ARCHIVED"} onClick={() => void deleteTemplate(t.id)}>
-                  <Trash2 size={15} /> Sil / Arşivle
-                </button>
-              </div>
             </div>
           ))}
         </div>

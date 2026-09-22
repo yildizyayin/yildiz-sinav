@@ -24,7 +24,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/reports',label:'Raporlar',icon:BarChart3},
     ]},
     { label:'OPTİK İŞLEMLERİ', items:[
-      {to:'/opticals',label:'Optik Tanımlama',icon:ScanLine},
+      {to:'/opticals',label:'Optik Tanımla',icon:ScanLine},
       {to:'/optical-design',label:'Optik Form Tasarımcısı',icon:Printer},
       {to:'/optical-prepare',label:'Optik Basma',icon:Printer},
       {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
@@ -75,7 +75,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/reports',label:'Raporlar',icon:BarChart3},
     ]},
     { label:'OPTİK İŞLEMLERİ', items:[
-      {to:'/opticals',label:'Optik Tanımlama',icon:ScanLine},
+      {to:'/opticals',label:'Optik Tanımla',icon:ScanLine},
       {to:'/optical-design',label:'Optik Form Tasarımcısı',icon:Printer},
       {to:'/optical-prepare',label:'Optik Basma',icon:Printer},
       {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
@@ -119,7 +119,7 @@ const nav: Record<Role, NavItem[]> = {
     { to: '/academic-target-admin', label: 'Resmî Hedef Verileri', icon: Target }, { to: '/official-question-intelligence', label: 'Çıkmış Soru & Kazanım', icon: BarChart3 }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/curriculum', label: 'Müfredat & Kazanımlar', icon: BookMarked },
     { to: '/exam-definitions', label: 'Sınav Ekle', icon: ClipboardCheck }, { to: '/exams', label: 'Sınav Listesi', icon: ClipboardCheck },
     { to: '/students', label: 'Öğrenciler', icon: Users }, { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange },
-    { to: '/opticals', label: 'Optik Tanımlama', icon: ScanLine }, { to: '/optical-design', label: 'Optik Form Tasarımcısı', icon: Printer }, { to: '/optical-prepare', label: 'Optik Basma', icon: Printer }, { to: '/camera-test', label: 'Kamera Test Optiği', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: Printer },
+    { to: '/opticals', label: 'Optik Tanımla', icon: ScanLine }, { to: '/optical-design', label: 'Optik Form Tasarımcısı', icon: Printer }, { to: '/optical-prepare', label: 'Optik Basma', icon: Printer }, { to: '/camera-test', label: 'Optik Test Merkezi', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: Printer },
     { to: '/worksheet-admin', label: 'Föy Merkezi', icon: BookOpenCheck }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/bulk-operations', label: 'Toplu İşlemler', icon: Layers3 }, { to: '/demo-mode', label: 'Sentetik Demo', icon: FlaskConical }, { to: '/scale', label: 'Ölçek Altyapısı', icon: Database },
     { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/reports', label: 'Raporlar', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
@@ -128,8 +128,8 @@ const nav: Record<Role, NavItem[]> = {
     { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Enterprise / Campus', icon: Building2,feature:'ENTERPRISE' },
     { to: '/announcements', label: 'Duyuru Merkezi', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/exam-definitions', label: 'Sınav Ekle', icon: ClipboardCheck }, { to: '/students', label: 'Öğrenciler', icon: Users },
     { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck },
-    { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange }, { to: '/opticals', label: 'Optik Tanımlama', icon: ScanLine }, { to: '/optical-design', label: 'Optik Form Tasarımcısı', icon: Printer }, { to: '/optical-prepare', label: 'Optik Basma', icon: Printer },
-    { to: '/camera-test', label: 'Kamera Test Optiği', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: ScanLine }, { to: '/bulk-operations', label: 'Toplu İşlemler', icon: Layers3 }, { to: '/reports', label: 'Raporlar', icon: BarChart3 },
+    { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange }, { to: '/opticals', label: 'Optik Tanımla', icon: ScanLine }, { to: '/optical-design', label: 'Optik Form Tasarımcısı', icon: Printer }, { to: '/optical-prepare', label: 'Optik Basma', icon: Printer },
+    { to: '/camera-test', label: 'Optik Test Merkezi', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: ScanLine }, { to: '/bulk-operations', label: 'Toplu İşlemler', icon: Layers3 }, { to: '/reports', label: 'Raporlar', icon: BarChart3 },
     { to: '/worksheets', label: 'Föy Merkezi', icon: BookOpenCheck }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   TEACHER: [
