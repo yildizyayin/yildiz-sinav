@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Archive, ArrowLeft, BarChart3, Ban, Building2, CheckCircle2, ChevronRight, Database, Eraser, FilePlus2, FileUp, Globe2, LockKeyhole, Network, Play, Printer, RefreshCw, Save, ScanLine, Search, Send, Settings2, TriangleAlert, UserRoundCheck, X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { ArrowLeft, BarChart3, Ban, Building2, CheckCircle2, ChevronRight, FilePlus2, FileUp, Globe2, LockKeyhole, Network, Play, RefreshCw, Save, Search, Send, Settings2, TriangleAlert, UserRoundCheck, X } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api, ApiError, qs } from '../api';
 import { useAuth } from '../auth';
@@ -48,26 +48,17 @@ export function ExamCenter(){
   const reviewCounts=useMemo(()=>{const rs=batch?.records||[];return {active:rs.filter((r:any)=>r.match_status==='ACTIVE_MATCH').length,guest:rs.filter((r:any)=>r.match_status==='GUEST_MATCH').length,newGuest:rs.filter((r:any)=>r.match_status==='NEW_GUEST').length,cancelled:rs.filter((r:any)=>r.resolution_status==='CANCELLED').length,pending:reviewRows.length}},[batch,reviewRows.length]);
   const activeOperationStep = preview ? 3 : selected ? 2 : 1;
 
-  if(!entryMode)return <div className="exam-center-page exam-center-overview">
-    <section className="exam-mars-hero"><div className="mars-stars"/><div className="mars-orbit mars-orbit-one"/><div className="mars-orbit mars-orbit-two"/><div className="mars-planet"><span className="mars-crater crater-one"/><span className="mars-crater crater-two"/><span className="mars-crater crater-three"/></div><div className="mars-hero-copy"><span className="eyebrow">ANUNEX · SINAV MERKEZİ</span><h1>Sınav Merkezi</h1></div><div className="mars-signal"><span/><span/><span/></div></section>
-    <div className="exam-center-simple-head"><div><span className="eyebrow">SINAV MERKEZİ</span><h1>Sınavlar</h1></div><div className="exam-center-simple-actions"><Link className="secondary" to="/exam-center?mode=upload"><FileUp size={16}/> Sınav Yükle</Link><Link className="secondary" to="/opticals"><ScanLine size={16}/> Optik Tanımla</Link><Link className="primary" to="/exam-definitions"><FilePlus2 size={16}/> Sınav Ekle</Link></div></div>
+  if(!entryMode)return <>
+    <section className="exam-mars-hero"><div className="mars-stars"/><div className="mars-orbit mars-orbit-one"/><div className="mars-orbit mars-orbit-two"/><div className="mars-planet"><span className="mars-crater crater-one"/><span className="mars-crater crater-two"/><span className="mars-crater crater-three"/></div><div className="mars-hero-copy"><span className="eyebrow">ANUNEX · SINAV MERKEZİ</span><h1>Sınav operasyonunun<br/><em>Mars üssü.</em></h1><p>Dosyadan sonuca kadar her adım tek merkezde. Optik okuma, eşleştirme ve değerlendirme ışık hızında ilerler.</p><div className="mars-hero-metrics"><span><strong>01</strong> sınavı seç</span><span><strong>02</strong> optiği yükle</span><span><strong>03</strong> sonucu yayınla</span></div></div><div className="mars-signal"><span/><span/><span/></div></section>
+    <div className="exam-center-simple-head"><div><span className="eyebrow">SINAV MERKEZİ</span><h1>Sınavlar</h1><p>Sınavı ekleyin, yükleyin veya kayıtlı sınavınızı açın.</p></div><div className="exam-center-simple-actions"><Link className="secondary" to="/exam-center?mode=upload"><FileUp size={16}/> Sınav Yükle</Link><Link className="primary" to="/exam-definitions"><FilePlus2 size={16}/> Sınav Ekle</Link></div></div>
     {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
-    <section className="exam-center-tool-grid" aria-label="Sınav merkezi işlemleri">
-      <CenterTool to="/exam-definitions" icon={<FilePlus2/>} title="Sınav Ekle / Oluştur" text="Sınav kartı, cevap anahtarı ve kazanım tanımı" tone="blue"/>
-      <CenterTool to="/exam-center?mode=upload" icon={<FileUp/>} title="Sınav Yükle / Değerlendir" text="TXT, DAT, CSV, FMT ve öğrenci eşleştirme" tone="violet"/>
-      <CenterTool to="/opticals" icon={<ScanLine/>} title="Optik Tanımla" text="Optik ekle, düzenle, sil/arşivle veya yeni sürüme kopyala" tone="orange"/>
-      <CenterTool to="/optical-prepare" icon={<Printer/>} title="Optik Basma" text="Tanımlı optiği yazıcı ve öğrenci listesiyle bas" tone="sand"/>
-      <CenterTool to="/exam-definitions" icon={<Archive/>} title="Belge Arşivi" text="Cevap anahtarı, kazanım, PDF, optik ve video" tone="green"/>
-      <CenterTool to="/transfers" icon={<Database/>} title="Veri Düzenleme" text="Edesis, Okulizyon ve CSV aktarımını kontrol et" tone="teal"/>
-      <CenterTool to="/reports" icon={<BarChart3/>} title="Raporlar" text="Sınav, katılım, kurum ve gelişim raporları" tone="indigo"/>
-      {isSuper&&<CenterTool to="/data-lifecycle" icon={<Eraser/>} title="Veri Silme" text="Doğrulanmış talep ve kontrollü silme yaşam döngüsü" tone="red"/>}
-    </section>
+    <div className="exam-center-quick-help"><span><CheckCircle2 size={15}/> Sınav Ekle: kart + cevap anahtarı</span><span><CheckCircle2 size={15}/> Sınav Yükle: DAT / TXT / FMT / kamera</span><span><CheckCircle2 size={15}/> Optik / FMT: sonradan bağlanır</span></div>
     <section className="panel exam-center-simple-list"><div className="panel-head"><div><h2>Kayıtlı sınavlar</h2><p>Bir sınavı seçerek yükleme ve değerlendirme ekranına geçin.</p></div><button className="ghost" onClick={()=>void load()}><RefreshCw size={15}/> Yenile</button></div>
       {readyRows.length ? <div className="table-card"><table><thead><tr><th>Sınav</th><th>Tür / sınıf</th><th>Katılım</th><th>Kitapçık</th><th>Durum</th><th></th></tr></thead><tbody>{readyRows.slice(0,8).map((r)=><tr key={r.id}><td><strong>{r.title}</strong><br/><small>{r.academic_year}{r.publisher_name?` · ${r.publisher_name}`:''}</small></td><td>{r.exam_type} · {r.grade_level?`${r.grade_level}. sınıf`:'-'}</td><td>{r.participant_count||0}</td><td>{r.booklet_codes||'—'}</td><td><span className={`status ${r.status==='ACTIVE'?'ok':'neutral'}`}>{r.status==='ACTIVE'?'Hazır':'Kapalı'}</span></td><td><button className="primary" onClick={()=>{setSelected(r);setStats(null);resetUpload();setEntryMode('CATALOG')}}>Sınavı aç</button></td></tr>)}</tbody></table></div> : <div className="empty-state"><FilePlus2/><strong>Henüz değerlendirilebilir sınav yok</strong><span>Önce Sınav Ekle ile bir sınav kartı oluşturun.</span></div>}
     </section>
-  </div>;
+  </>;
 
-  return <div className="exam-center-page exam-center-operation">
+  return <>
     <div className="page-head exam-operation-head"><div><span className="eyebrow">SINAV MERKEZİ / YÜKLE VE DEĞERLENDİR</span><h1>Sınavı seçin, sonucu güvenle tamamlayın</h1><p>Tek bir çalışma alanında sınavı bulun, TXT / DAT / CSV / FMT verisini kontrol edin ve sonuçları yayınlamaya hazır hâle getirin.</p></div><div className="exam-operation-head-actions"><button className="ghost" onClick={()=>{setEntryMode(null);setSearchParams({})}}><ArrowLeft size={16}/> Merkeze dön</button><button className="ghost" onClick={()=>void load()}><RefreshCw size={16}/> Yenile</button></div></div>
     {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
     <div className="exam-operation-stepper" aria-label="Sınav değerlendirme adımları">
@@ -107,12 +98,8 @@ export function ExamCenter(){
       {isSuper&&<CatalogEditor exam={selected} onSaved={async()=>{await load();setSelected(null)}} onError={setError} onNotice={setNotice}/>} 
     </div>}
 
-    {isSuper&&<div className="panel"><div className="panel-head"><div><h2>Merkez yönetim araçları</h2><p>Yayınevi sınavı, cevap anahtarı, kazanım ve optik tanımları kurum ekranından ayrıdır.</p></div></div><div style={{display:'flex',gap:10,flexWrap:'wrap'}}><Link className="secondary" to="/exam-definitions">Sınav Ekle</Link><Link className="secondary" to="/opticals">Optik Tanımlama</Link><Link className="secondary" to="/optical-design">Optik Form Tasarımcısı</Link><Link className="secondary" to="/optical-prepare">Optik Basma</Link><Link className="secondary" to="/enterprise">Zincir / Yayınevi Yönetimi</Link></div></div>}
-  </div>;
-}
-
-function CenterTool({to,icon,title,text,tone}:{to:string;icon:ReactNode;title:string;text:string;tone:string}){
-  return <Link className={`exam-center-tool-card tone-${tone}`} to={to}><span className="exam-center-tool-icon">{icon}</span><span className="exam-center-tool-copy"><strong>{title}</strong><small>{text}</small></span><ChevronRight size={16}/></Link>;
+    {isSuper&&<div className="panel"><div className="panel-head"><div><h2>Merkez yönetim araçları</h2><p>Yayınevi sınavı, cevap anahtarı, kazanım ve optik tanımları kurum ekranından ayrıdır.</p></div></div><div style={{display:'flex',gap:10,flexWrap:'wrap'}}><Link className="secondary" to="/exam-definitions">Sınav Ekle</Link><Link className="secondary" to="/opticals">Optik Tanımla</Link><Link className="secondary" to="/optical-design">Optik Form Tasarımcısı</Link><Link className="secondary" to="/optical-prepare">Optik Basma</Link><Link className="secondary" to="/enterprise">Zincir / Yayınevi Yönetimi</Link></div></div>}
+  </>;
 }
 
 function CatalogEditor({exam,onSaved,onError,onNotice}:{exam:ExamRow;onSaved:()=>Promise<void>;onError:(x:string)=>void;onNotice:(x:string)=>void}){
