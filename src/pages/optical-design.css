@@ -34,5 +34,32 @@
 .optical-tree-template button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
 .optical-tree-template button small { color: var(--muted); font-size: 10px; }
 .optical-form-cards { min-width: 0; margin-bottom: 0 !important; }
+.optical-form-tree-actions { display: flex; justify-content: flex-end; margin: -4px 0 2px; }
+.optical-card-title { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.optical-card-title h3 { margin: 0; }
+.optical-form-dialog-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 22px; background: rgba(15, 23, 42, .48); }
+.optical-form-dialog { width: min(100%, 980px); max-height: min(88vh, 760px); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #d9e0ec; border-radius: 8px; background: #fff; box-shadow: 0 24px 70px rgba(15, 23, 42, .28); }
+.optical-form-dialog-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #e3e8f0; }
+.optical-form-dialog-head h2 { display: flex; align-items: center; gap: 8px; margin: 0; color: #1774ee; font-size: 18px; }
+.optical-form-dialog-body { overflow: auto; padding: 20px 24px 18px; }
+.optical-schoolizyon-top-fields { display: grid; grid-template-columns: minmax(220px, 1.35fr) 100px minmax(170px, 1fr); gap: 13px 18px; align-items: end; }
+.optical-schoolizyon-top-fields label { display: grid; gap: 6px; color: #46546b; font-size: 11px; font-weight: 800; }
+.optical-schoolizyon-top-fields input, .optical-schoolizyon-top-fields select { min-height: 40px; margin: 0; border-color: #cfd9e8; border-radius: 5px; font-size: 13px; }
+.optical-user-picker { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0; }
+.optical-user-picker input { border-radius: 5px 0 0 5px; }
+.optical-user-picker button { min-height: 40px; padding: 0 13px; border-radius: 0 5px 5px 0; }
+.optical-schoolizyon-section-head { display: grid; grid-template-columns: minmax(150px, 1fr) 76px 76px; gap: 10px; align-items: center; margin-top: 22px; padding: 0 8px 8px; border-bottom: 1px dashed #a8b8ce; color: #42516a; font-size: 11px; font-weight: 800; }
+.optical-schoolizyon-columns { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 16px; padding-top: 7px; }
+.optical-schoolizyon-columns > div { min-width: 0; }
+.optical-schoolizyon-row { display: grid; grid-template-columns: minmax(0, 1fr) 76px 76px; gap: 10px; align-items: center; min-height: 38px; }
+.optical-schoolizyon-name { display: flex; align-items: center; gap: 7px; min-width: 0; color: #46546b; font-size: 11px; font-weight: 650; }
+.optical-schoolizyon-name input { width: 16px; min-width: 16px; min-height: 16px; margin: 0; accent-color: #2875f0; }
+.optical-schoolizyon-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.optical-schoolizyon-row > input { width: 100%; min-height: 31px; margin: 0; padding: 6px 8px; border: 1px solid #cfd9e8; border-radius: 4px; color: #26364f; font-size: 12px; }
+.optical-form-dialog-footer { display: flex; justify-content: center; gap: 8px; padding: 15px 22px; border-top: 1px solid #e3e8f0; background: #fbfcfe; }
+.optical-form-dialog-footer button { min-width: 120px; }
+.different-save { min-height: 40px; padding: 0 15px; border: 1px solid #e9b300; border-radius: 7px; background: #f5bc00; color: #fff; font-weight: 800; cursor: pointer; }
+.different-save:disabled { cursor: not-allowed; opacity: .5; }
 @media (max-width: 850px) { .optical-design-head, .optical-design-selector { display: grid; grid-template-columns: 1fr; } .optical-design-field { grid-template-columns: 1fr 1fr; } .optical-design-field label:first-child { grid-column: 1 / -1; } .optical-design-field button { width: max-content; } }
 @media (max-width: 900px) { .optical-tree-layout { grid-template-columns: 1fr; } .optical-form-tree { order: 0; } .optical-form-cards { order: 1; } }
+@media (max-width: 760px) { .optical-form-dialog-backdrop { padding: 8px; } .optical-form-dialog { max-height: 94vh; } .optical-schoolizyon-top-fields { grid-template-columns: 1fr 1fr; } .optical-schoolizyon-top-fields label:first-child, .optical-schoolizyon-top-fields label:nth-child(4), .optical-schoolizyon-top-fields label:nth-child(5), .optical-schoolizyon-top-fields label:nth-child(6) { grid-column: 1 / -1; } .optical-schoolizyon-columns { grid-template-columns: 1fr; } .optical-form-dialog-footer { flex-wrap: wrap; } }
