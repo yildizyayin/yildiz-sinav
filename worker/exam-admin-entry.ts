@@ -510,6 +510,57 @@ async function updateGeneral(request: Request, env: Env, user: AuthUser, examId:
   return Response.json({ ok: true });
 }
 
+async function copyDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
+  const source = await managedExam(env, user, examId);
+  if (!source) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
+  const id = uuid('exam');
+  const title = `${source.title} - Kopya`;
+  const statements: D1PreparedStatement[] = [env.DB.prepare(`
+    INSERT INTO exams (id,owner_type,institution_id,academic_year,title,exam_type,grade_level,exam_date,status,scoring_rule_version_id,sponsor_mode,created_by,publisher_name,session_label,description,result_network_enabled,scoring_override_json,scoring_settings_json,outcome_mode)
+    VALUES (?,?,?,?,?,?,?,?, 'DRAFT',?,?,?,?,?,?,?,?,?,?)
+  `).bind(id, source.owner_type, source.institution_id, source.academic_year, title, source.exam_type, source.grade_level, source.exam_date, source.scoring_rule_version_id, source.sponsor_mode, user.id, source.publisher_name, source.session_label, source.description, 0, source.scoring_override_json, source.scoring_settings_json, source.outcome_mode || 'OPTIONAL')];
+  const booklets = await all<any>(env.DB.prepare('SELECT code,active FROM exam_booklets WHERE exam_id=?').bind(examId));
+  for (const booklet of booklets) statements.push(env.DB.prepare('INSERT INTO exam_booklets (id,exam_id,code,active) VALUES(?,?,?,?)').bind(uuid('book'), id, booklet.code, booklet.active));
+  const subjects = await all<any>(env.DB.prepare('SELECT subject_id,question_count,question_start,question_end,option_count,wrong_divisor,sort_order FROM exam_subjects WHERE exam_id=?').bind(examId));
+  for (const subject of subjects) statements.push(env.DB.prepare('INSERT INTO exam_subjects (id,exam_id,subject_id,question_count,question_start,question_end,option_count,wrong_divisor,sort_order) VALUES(?,?,?,?,?,?,?,?,?)').bind(uuid('es'), id, subject.subject_id, subject.question_count, subject.question_start, subject.question_end, subject.option_count, subject.wrong_divisor, subject.sort_order));
+  const oldQuestions = await all<any>(env.DB.prepare('SELECT id,subject_id,question_no,global_no,option_count,question_status FROM exam_questions WHERE exam_id=? ORDER BY global_no').bind(examId));
+  const questionMap = new Map<string, string>();
+  for (const question of oldQuestions) {
+    const nextId = uuid('eq'); questionMap.set(question.id, nextId);
+    statements.push(env.DB.prepare('INSERT INTO exam_questions (id,exam_id,subject_id,question_no,global_no,option_count,question_status) VALUES(?,?,?,?,?,?,?)').bind(nextId, id, question.subject_id, question.question_no, question.global_no, question.option_count, question.question_status));
+  }
+  const oldKeys = await all<any>(env.DB.prepare('SELECT exam_question_id,booklet_code,correct_answer,option_count,accepted_answers,question_status FROM answer_keys WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)').bind(examId));
+  for (const key of oldKeys) { const nextQuestionId = questionMap.get(key.exam_question_id); if (nextQuestionId) statements.push(env.DB.prepare('INSERT INTO answer_keys (id,exam_question_id,booklet_code,correct_answer,option_count,accepted_answers,question_status) VALUES(?,?,?,?,?,?,?)').bind(uuid('ak'), nextQuestionId, key.booklet_code, key.correct_answer, key.option_count, key.accepted_answers, key.question_status)); }
+  const oldOrders = await all<any>(env.DB.prepare('SELECT exam_question_id,exam_id,booklet_code,printed_question_no FROM exam_question_booklet_orders WHERE exam_id=?').bind(examId));
+  for (const order of oldOrders) { const nextQuestionId = questionMap.get(order.exam_question_id); if (nextQuestionId) statements.push(env.DB.prepare('INSERT INTO exam_question_booklet_orders (id,exam_id,exam_question_id,booklet_code,printed_question_no) VALUES(?,?,?,?,?)').bind(uuid('eqbo'), id, nextQuestionId, order.booklet_code, order.printed_question_no)); }
+  const oldMappings = await all<any>(env.DB.prepare('SELECT exam_question_id,outcome_id FROM question_outcomes WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)').bind(examId));
+  for (const mapping of oldMappings) { const nextQuestionId = questionMap.get(mapping.exam_question_id); if (nextQuestionId) statements.push(env.DB.prepare('INSERT INTO question_outcomes (exam_question_id,outcome_id) VALUES(?,?)').bind(nextQuestionId, mapping.outcome_id)); }
+  const optionalKeys = await all<any>(env.DB.prepare('SELECT subject_id,booklet_code,question_no,correct_answer,option_count,accepted_answers,question_status FROM exam_optional_answer_keys WHERE exam_id=?').bind(examId));
+  for (const key of optionalKeys) statements.push(env.DB.prepare('INSERT INTO exam_optional_answer_keys (id,exam_id,subject_id,booklet_code,question_no,correct_answer,option_count,accepted_answers,question_status) VALUES(?,?,?,?,?,?,?,?,?)').bind(uuid('oak'), id, key.subject_id, key.booklet_code, key.question_no, key.correct_answer, key.option_count, key.accepted_answers, key.question_status));
+  await env.DB.batch(statements);
+  await audit(env.DB, user.id, source.institution_id, 'EXAM_DEFINITION_COPIED', 'exam', id, { sourceExamId: examId, title });
+  return Response.json({ ok: true, id }, { status: 201 });
+}
+
+async function deleteDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
+  const exam = await managedExam(env, user, examId);
+  if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
+  if (exam.status !== 'DRAFT') return err(409, 'EXAM_NOT_DRAFT', 'Yayınlanmış veya arşivlenmiş sınav silinemez; önce arşiv durumunu kullanın.');
+  const participant = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM exam_participants WHERE exam_id=?').bind(examId));
+  if ((participant?.c || 0) > 0) return err(409, 'EXAM_HAS_RESULTS', 'Katılımcısı bulunan sınav silinemez; arşivleyin.');
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM exam_channel_publications WHERE exam_id=?').bind(examId),
+    env.DB.prepare('DELETE FROM exam_institutions WHERE exam_id=?').bind(examId),
+    env.DB.prepare('DELETE FROM exam_optical_bindings WHERE exam_id=?').bind(examId),
+    env.DB.prepare('DELETE FROM exam_optional_answer_keys WHERE exam_id=?').bind(examId),
+    env.DB.prepare('DELETE FROM exam_document_assets WHERE exam_id=?').bind(examId),
+    env.DB.prepare('DELETE FROM video_links WHERE exam_id=?').bind(examId),
+    env.DB.prepare('DELETE FROM exams WHERE id=?').bind(examId),
+  ]);
+  await audit(env.DB, user.id, exam.institution_id, 'EXAM_DEFINITION_DELETED', 'exam', examId, { title: exam.title });
+  return Response.json({ ok: true });
+}
+
 async function replaceStructure(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
@@ -819,8 +870,11 @@ export default {
     if (detail) {
       if (request.method === 'GET') return getDefinition(env, auth, detail[1]);
       if (request.method === 'PATCH') return updateGeneral(request, env, auth, detail[1]);
+      if (request.method === 'DELETE') return deleteDefinition(env, auth, detail[1]);
       return err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     }
+    const copy = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/copy$/);
+    if (copy) return request.method === 'POST' ? copyDefinition(env, auth, copy[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     const structure = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/structure$/);
     if (structure) return request.method === 'PUT' ? replaceStructure(request, env, auth, structure[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     const answerKey = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/answer-key$/);

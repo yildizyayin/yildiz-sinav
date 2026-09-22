@@ -273,14 +273,15 @@ export function Opticals() {
   const [newTemplate, setNewTemplate] = useState({
       name: "",
       vendor: "",
+      opticalCode: "",
       version: "v1",
-      formType: "FMT" as Method,
+      formType: "MANUAL" as Method,
       sortOrder: 1,
       pageWidthMm: 210,
       pageHeightMm: 297,
     }),
     [newVersion, setNewVersion] = useState("");
-  const [editTemplate, setEditTemplate] = useState({ name: "", vendor: "", formType: "FMT" as Method, sortOrder: 1 });
+  const [editTemplate, setEditTemplate] = useState({ name: "", vendor: "", opticalCode: "", formType: "MANUAL" as Method, sortOrder: 1 });
   const [photo, setPhoto] = useState<File | null>(null),
     [photoUrl, setPhotoUrl] = useState(""),
     [suggestions, setSuggestions] = useState<Suggestion[]>([]),
@@ -338,7 +339,8 @@ export function Opticals() {
     setEditTemplate({
       name: r.template?.name || "",
       vendor: r.template?.vendor || "",
-      formType: (r.template?.form_type || "FMT") as Method,
+      opticalCode: r.template?.optical_code || "",
+      formType: (r.template?.form_type || "MANUAL") as Method,
       sortOrder: Number(r.template?.sort_order || 1),
     });
     if (
@@ -1019,95 +1021,38 @@ export function Opticals() {
         <div className="panel" style={{ marginBottom: 20 }}>
           <div className="panel-head">
             <div>
-              <h2>Optik Form Ekle</h2>
+              <h2>Optik kartı</h2>
             </div>
             <ScanLine />
           </div>
           <div className="form-grid">
             <label>
-              Optik adı
-              <input
-                value={newTemplate.name}
-                onChange={(e) =>
-                  setNewTemplate((x) => ({ ...x, name: e.target.value }))
-                }
-                placeholder="Örn. Optik 840"
-              />
-            </label>
-            <label>
-              Kaynak / üretici
+              Yayınevi *
               <input
                 value={newTemplate.vendor}
                 onChange={(e) =>
                   setNewTemplate((x) => ({ ...x, vendor: e.target.value }))
                 }
+                placeholder="Örn. Çap Yayınları"
               />
             </label>
             <label>
-              Sürüm
+              Optik kodu *
               <input
-                value={newTemplate.version}
+                value={newTemplate.opticalCode}
                 onChange={(e) =>
-                  setNewTemplate((x) => ({ ...x, version: e.target.value }))
+                  setNewTemplate((x) => ({ ...x, opticalCode: e.target.value, name: e.target.value }))
                 }
-              />
-            </label>
-            <label>
-              Form türü
-              <select
-                value={newTemplate.formType}
-                onChange={(e) =>
-                  setNewTemplate((x) => ({ ...x, formType: e.target.value as Method }))
-                }
-              >
-                <option value="FMT">FMT</option>
-                <option value="TXT">TXT / DAT</option>
-                <option value="PHOTO">Fotoğraf / kamera</option>
-                <option value="MANUAL">Manuel parametre</option>
-              </select>
-            </label>
-            <label>
-              Sıra
-              <input
-                type="number"
-                min="1"
-                value={newTemplate.sortOrder}
-                onChange={(e) => setNewTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) }))}
-              />
-            </label>
-            <label>
-              Genişlik mm
-              <input
-                type="number"
-                value={newTemplate.pageWidthMm}
-                onChange={(e) =>
-                  setNewTemplate((x) => ({
-                    ...x,
-                    pageWidthMm: Number(e.target.value),
-                  }))
-                }
-              />
-            </label>
-            <label>
-              Yükseklik mm
-              <input
-                type="number"
-                value={newTemplate.pageHeightMm}
-                onChange={(e) =>
-                  setNewTemplate((x) => ({
-                    ...x,
-                    pageHeightMm: Number(e.target.value),
-                  }))
-                }
+                placeholder="Örn. OPT-840"
               />
             </label>
           </div>
           <button
             className="primary"
-            disabled={busy || !newTemplate.name.trim()}
+            disabled={busy || !newTemplate.vendor.trim() || !newTemplate.opticalCode.trim()}
             onClick={createTemplate}
           >
-            <Plus size={16} /> Optik Formu Ekle
+            <Plus size={16} /> Parametreleri Gir
           </button>
         </div>
       </div>
@@ -1185,7 +1130,7 @@ export function Opticals() {
               </div>
               <h3>{t.name}</h3>
               <p>
-                {t.owner_type === "CENTRAL" ? "Ana Havuz" : "Kurum özel"} · {t.vendor || "Genel"} · {t.version_count} sürüm
+                {t.owner_type === "CENTRAL" ? "Ana Havuz" : "Kurum özel"} · {t.vendor || "Genel"} · Optik kodu: {t.optical_code || "—"} · {t.version_count} sürüm
               </p>
             </div>
           ))}
@@ -1230,12 +1175,20 @@ export function Opticals() {
                 />
               </label>
               <label>
-                Kaynak / üretici
+                Yayınevi
                 <input
                   value={editTemplate.vendor}
                   onChange={(e) =>
                     setEditTemplate((x) => ({ ...x, vendor: e.target.value }))
                   }
+                />
+              </label>
+              <label>
+                Optik kodu
+                <input
+                  value={editTemplate.opticalCode}
+                  onChange={(e) => setEditTemplate((x) => ({ ...x, opticalCode: e.target.value }))}
+                  disabled={templateDetail.template?.status === "ARCHIVED"}
                 />
               </label>
               <label>
