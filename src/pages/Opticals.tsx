@@ -17,8 +17,11 @@ import {
   Send,
   Sparkles,
   Trash2,
+  UserRoundPlus,
+  X,
 } from "lucide-react";
 import { api } from "../api";
+import { useAuth } from "../auth";
 import { Link } from "react-router-dom";
 import { analyzeFixedWidthSample } from "../lib/guidedDefinitions";
 import {
@@ -31,6 +34,7 @@ import {
 
 type Section = "parser" | "camera" | "fiducials";
 type Method = "FMT" | "PHOTO" | "TXT" | "MANUAL";
+type OpticalFormDialogMode = "create" | "edit";
 type Suggestion = { xPct: number; yPct: number; wPct: number; hPct: number };
 type Region = {
   id: string;
@@ -260,6 +264,7 @@ async function detectDenseRegions(file: File): Promise<Suggestion[]> {
 }
 
 export function Opticals() {
+  const { user } = useAuth();
   const [templates, setTemplates] = useState<any[]>([]),
     [templateDetail, setTemplateDetail] = useState<any>(null),
     [versionDetail, setVersionDetail] = useState<any>(null);
@@ -270,6 +275,8 @@ export function Opticals() {
     [notice, setNotice] = useState(""),
     [busy, setBusy] = useState(false);
   const [openCardMenu, setOpenCardMenu] = useState<string | null>(null);
+  const [formDialogOpen, setFormDialogOpen] = useState(false);
+  const [formDialogMode, setFormDialogMode] = useState<OpticalFormDialogMode>("create");
   const [newTemplate, setNewTemplate] = useState({
       name: "",
       vendor: "",
@@ -413,7 +420,28 @@ export function Opticals() {
     return () => URL.revokeObjectURL(url);
   }, [photo]);
 
+  const persistManualDialogDefinition = async (versionId: string) => {
+    if (!versionId) return;
+    const largestEnd = Math.max(
+      0,
+      ...manualFields.filter((field) => field.enabled).map((field) => Number(field.start || 0) + Number(field.length || 0)),
+      ...manualAnswers.filter((block) => block.enabled).map((block) => Number(block.start || 0) + Number(block.length || 0)),
+    );
+    const recordLength = manualRecordLength || largestEnd;
+    if (!recordLength || !manualFields.some((field) => field.key === "name" && field.enabled && field.length > 0) || !manualAnswers.some((block) => block.enabled && block.length > 0)) return;
+    const definition = buildManualParserDefinition(recordLength, manualFields, manualAnswers, manualIndexBase);
+    await api(`/api/optical-definition-versions/${versionId}/parser`, { method: "PUT", body: JSON.stringify({ definition }) });
+  };
+
   const createTemplate = async () => {
+    if (!newTemplate.name.trim()) {
+      setError("Form adı gereklidir.");
+      return;
+    }
+    if (!newTemplate.vendor.trim() || !newTemplate.opticalCode.trim()) {
+      setError("Yayınevi ve optik kodu gereklidir.");
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -425,6 +453,8 @@ export function Opticals() {
       setSelectedTemplateId(r.templateId);
       setSelectedVersionId(r.versionId);
       setMethod(newTemplate.formType);
+      if (newTemplate.formType === "MANUAL") await persistManualDialogDefinition(r.versionId);
+      setFormDialogOpen(false);
       setNotice(
         "Okuma tanımı taslağı oluşturuldu. FMT/TXT/DAT eşlemesini veya fotoğraf/kamera geometrisini tamamlayın; baskı tasarımı ayrı ekrandadır.",
       );
@@ -433,6 +463,36 @@ export function Opticals() {
     } finally {
       setBusy(false);
     }
+  };
+  const openCreateForm = () => {
+    setFormDialogMode("create");
+    setFormDialogOpen(true);
+    setNewTemplate((current) => ({ ...current, name: "", vendor: "", opticalCode: "", formType: "MANUAL", sortOrder: 1, version: "v1" }));
+    setManualRecordLength(0);
+    setManualIndexBase(0);
+    setManualFields(defaultManualFields());
+    setManualAnswers(defaultManualAnswerBlocks());
+    setError("");
+  };
+  const openEditForm = (templateId: string) => {
+    setFormDialogMode("edit");
+    setFormDialogOpen(true);
+    setSelectedTemplateId(templateId);
+    setOpenCardMenu(null);
+    setError("");
+  };
+  const saveDifferentForm = () => {
+    const source = formDialogMode === "edit" ? editTemplate : newTemplate;
+    setNewTemplate((current) => ({
+      ...current,
+      name: source.name ? `${source.name} - Kopya` : "",
+      vendor: source.vendor,
+      opticalCode: source.opticalCode ? `${source.opticalCode}-KOPYA` : "",
+      formType: source.formType,
+      sortOrder: source.sortOrder,
+    }));
+    setFormDialogMode("create");
+    setNotice("Farklı kaydet için yeni optik form taslağı hazırlandı; kodu ve adı değiştirebilirsiniz.");
   };
   const createVersion = async () => {
     if (!selectedTemplateId || !newVersion.trim()) return;
@@ -500,6 +560,15 @@ export function Opticals() {
     } finally {
       setBusy(false);
     }
+  };
+  const saveFormDialog = async () => {
+    if (formDialogMode === "create") {
+      await createTemplate();
+      return;
+    }
+    await saveTemplate();
+    if (editTemplate.formType === "MANUAL") await persistManualDialogDefinition(selectedVersionId);
+    setFormDialogOpen(false);
   };
   const deleteTemplate = async (templateId = selectedTemplateId) => {
     if (
@@ -1017,45 +1086,63 @@ export function Opticals() {
       </div>
       {error && <div className="alert error">{error}</div>}
       {notice && <div className="alert success">{notice}</div>}
-      <div className="optical-definition-create-shell">
-        <div className="panel" style={{ marginBottom: 20 }}>
-          <div className="panel-head">
-            <div>
-              <h2>Optik kartı</h2>
-            </div>
-            <ScanLine />
-          </div>
-          <div className="form-grid">
-            <label>
-              Yayınevi *
-              <input
-                value={newTemplate.vendor}
-                onChange={(e) =>
-                  setNewTemplate((x) => ({ ...x, vendor: e.target.value }))
-                }
-                placeholder="Örn. Çap Yayınları"
-              />
-            </label>
-            <label>
-              Optik kodu *
-              <input
-                value={newTemplate.opticalCode}
-                onChange={(e) =>
-                  setNewTemplate((x) => ({ ...x, opticalCode: e.target.value, name: e.target.value }))
-                }
-                placeholder="Örn. OPT-840"
-              />
-            </label>
-          </div>
-          <button
-            className="primary"
-            disabled={busy || !newTemplate.vendor.trim() || !newTemplate.opticalCode.trim()}
-            onClick={createTemplate}
-          >
-            <Plus size={16} /> Parametreleri Gir
-          </button>
-        </div>
+      <div className="optical-form-tree-actions">
+        <button className="primary" type="button" onClick={openCreateForm}>
+          <Plus size={16} /> Optik Form Ekle
+        </button>
       </div>
+      {formDialogOpen && (() => {
+        const form = formDialogMode === "edit" ? editTemplate : newTemplate;
+        const fieldByKey = (key: string) => manualFields.find((field) => field.key === key);
+        const identityColumns = [
+          ["student_number", "first_name", "last_name", "name", "class", "grade_class", "section", "booklet", "tckn"],
+          ["phone", "gender", "track", "school_type", "institution_code"],
+        ];
+        const renderField = (key: string) => {
+          const field = fieldByKey(key);
+          if (!field) return null;
+          return <div className="optical-schoolizyon-row" key={field.key}>
+            <label className="optical-schoolizyon-name"><input type="checkbox" checked={field.enabled} onChange={(e) => setManualFields((items) => items.map((item) => item.key === field.key ? { ...item, enabled: e.target.checked } : item))} /> <span>{field.label}</span></label>
+            <input aria-label={`${field.label} başlangıç`} type="number" min="0" value={field.start || ""} onChange={(e) => setManualFields((items) => items.map((item) => item.key === field.key ? { ...item, start: Number(e.target.value) || 0 } : item))} />
+            <input aria-label={`${field.label} uzunluk`} type="number" min="0" value={field.length || ""} onChange={(e) => setManualFields((items) => items.map((item) => item.key === field.key ? { ...item, length: Number(e.target.value) || 0 } : item))} />
+          </div>;
+        };
+        const renderTest = (block: ManualAnswerBlock) => <div className="optical-schoolizyon-row" key={block.code}>
+          <label className="optical-schoolizyon-name"><input type="checkbox" checked={block.enabled} onChange={(e) => setManualAnswers((items) => items.map((item) => item.code === block.code ? { ...item, enabled: e.target.checked } : item))} /> <span>{block.label}</span></label>
+          <input aria-label={`${block.label} başlangıç`} type="number" min="0" value={block.start || ""} onChange={(e) => setManualAnswers((items) => items.map((item) => item.code === block.code ? { ...item, start: Number(e.target.value) || 0 } : item))} />
+          <input aria-label={`${block.label} uzunluk`} type="number" min="0" value={block.length || ""} onChange={(e) => setManualAnswers((items) => items.map((item) => item.code === block.code ? { ...item, length: Number(e.target.value) || 0 } : item))} />
+        </div>;
+        const ownerLabel = user?.role === "SUPER_ADMIN" ? "Ana Havuz · Süper Admin" : "Kurum optiği · mevcut kurum";
+        return <div className="optical-form-dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setFormDialogOpen(false); }}>
+          <section className="optical-form-dialog" role="dialog" aria-modal="true" aria-labelledby="optical-form-dialog-title">
+            <div className="optical-form-dialog-head">
+              <h2 id="optical-form-dialog-title"><UserRoundPlus size={19} /> Optik Form</h2>
+              <button type="button" className="icon-button" aria-label="Pencereyi kapat" onClick={() => setFormDialogOpen(false)}><X size={18} /></button>
+            </div>
+            <div className="optical-form-dialog-body">
+              <div className="optical-schoolizyon-top-fields">
+                <label>Form Adı *<input value={form.name} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, name: e.target.value })) : setNewTemplate((x) => ({ ...x, name: e.target.value }))} placeholder="Form adı" /></label>
+                <label>Sıra<input type="number" min="1" value={form.sortOrder || 1} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 })) : setNewTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 }))} /></label>
+                <label>Form Türü *<select value={form.formType} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, formType: e.target.value as Method })) : setNewTemplate((x) => ({ ...x, formType: e.target.value as Method }))}><option value="MANUAL">Kullanıcıya özel</option><option value="FMT">FMT</option><option value="TXT">TXT / DAT</option><option value="PHOTO">Fotoğraf / kamera</option></select></label>
+                <label>Yayınevi *<input value={form.vendor} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, vendor: e.target.value })) : setNewTemplate((x) => ({ ...x, vendor: e.target.value }))} placeholder="Yayınevi" /></label>
+                <label>Optik kodu *<input value={form.opticalCode} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, opticalCode: e.target.value })) : setNewTemplate((x) => ({ ...x, opticalCode: e.target.value }))} placeholder="Optik kodu" /></label>
+                <label>Kullanıcı *<div className="optical-user-picker"><input value={ownerLabel} readOnly /><button type="button" className="secondary" onClick={() => setNotice(`${ownerLabel} seçildi.`)}>Seç</button></div></label>
+              </div>
+              <div className="optical-schoolizyon-section-head"><strong>Alan</strong><span>Baş.</span><span>Uz.</span></div>
+              <div className="optical-schoolizyon-columns">
+                <div>{identityColumns[0].map(renderField)}</div>
+                <div>{identityColumns[1].map(renderField)}{manualAnswers.slice(0, 4).map(renderTest)}</div>
+                <div>{manualAnswers.slice(4, 15).map(renderTest)}</div>
+              </div>
+            </div>
+            <div className="optical-form-dialog-footer">
+              <button type="button" className="primary" disabled={busy || !form.name.trim() || !form.vendor.trim() || !form.opticalCode.trim()} onClick={() => void saveFormDialog()}><Save size={16} /> Kaydet</button>
+              <button type="button" className="different-save" disabled={busy || !form.name.trim() || !form.vendor.trim() || !form.opticalCode.trim()} onClick={saveDifferentForm}>Farklı Kaydet</button>
+              <button type="button" className="secondary" onClick={() => setFormDialogOpen(false)}>Vazgeç</button>
+            </div>
+          </section>
+        </div>;
+      })()}
       <div className="optical-definition-list-shell">
         <div className="optical-tree-layout">
           <aside className="optical-form-tree panel">
@@ -1119,7 +1206,7 @@ export function Opticals() {
                     <MoreVertical size={17} />
                   </button>
                   {openCardMenu === t.id && <div className="optical-card-menu" role="menu">
-                    <button role="menuitem" onClick={() => { setSelectedTemplateId(t.id); setOpenCardMenu(null); }}><Pencil size={14} /> Düzenle</button>
+                    <button role="menuitem" onClick={() => openEditForm(t.id)}><Pencil size={14} /> Düzenle</button>
                     <button role="menuitem" disabled={busy || t.status === "ARCHIVED"} onClick={() => { setOpenCardMenu(null); void copyTemplateVersion(t.id); }}><CopyPlus size={14} /> Kopyala</button>
                     <button role="menuitem" disabled={busy || t.status === "ARCHIVED"} onClick={() => { setOpenCardMenu(null); void deleteTemplate(t.id); }}><Trash2 size={14} /> Sil</button>
                   </div>}
@@ -1128,7 +1215,7 @@ export function Opticals() {
               <div className="optical-card-status">
                 {t.status === "READY" ? <span className="verified"><CheckCircle2 size={14} /> Hazır</span> : t.status === "ARCHIVED" ? <span className="warning"><CircleAlert size={14} /> Arşivlendi</span> : <span className="warning"><CircleAlert size={14} /> Okuma tanımı sürüyor</span>}
               </div>
-              <h3>{t.name}</h3>
+              <button type="button" className="optical-card-title" onClick={() => openEditForm(t.id)}><h3>{t.name}</h3></button>
               <p>
                 {t.owner_type === "CENTRAL" ? "Ana Havuz" : "Kurum özel"} · {t.vendor || "Genel"} · Optik kodu: {t.optical_code || "—"} · {t.version_count} sürüm
               </p>
