@@ -146,3 +146,10 @@
 .optical-manual-answer-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .optical-card-open{display:block;margin-top:14px;color:var(--workspace-accent,#0f9f8c);font-size:12px;font-weight:800}
 @media(max-width:700px){.optical-manual-row{grid-template-columns:minmax(130px,1fr) 45px repeat(3,minmax(72px,1fr));gap:5px;padding:7px}.optical-manual-answer-meta{grid-template-columns:1fr}.optical-manual-head{font-size:9px}}
+
+/* Sınav Merkezi'nin çalışma yüzeyi: Mars toprağı ve kiremit buton standardı. */
+.app-shell[data-panel-module="exam-center"]{--workspace-accent:#b85f3e;--workspace-soft:#fff4ea;background:linear-gradient(180deg,#fbefe5 0,#fffaf6 42%,var(--canvas,#f5f7fb) 100%)}
+.app-shell[data-panel-module="exam-center"] .page-head .eyebrow,.app-shell[data-panel-module="exam-center"] .section-head h2{color:#a34e35}
+.app-shell[data-panel-module="exam-center"] .primary,.app-shell[data-panel-module="exam-center"] .exam-center-page .primary{background:linear-gradient(105deg,#b85f3e,#d9854d);box-shadow:0 9px 20px rgba(173,91,61,.22)}
+.app-shell[data-panel-module="exam-center"] .primary:hover,.app-shell[data-panel-module="exam-center"] .exam-center-page .primary:hover{filter:brightness(.94)}
+.app-shell[data-panel-module="exam-center"] .secondary{border-color:#e2c5b0;color:#8d4c34;background:#fffaf5}

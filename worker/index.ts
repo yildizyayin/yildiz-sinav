@@ -140,18 +140,78 @@ async function rejectIfPassiveInstitution(env: Env, user: AuthUser): Promise<Res
 
 async function dashboard(env: Env, user: AuthUser): Promise<Response> {
   if (user.role === 'SUPER_ADMIN') {
-    const [institutions, activeStudents, guests, todayResults, passive] = await Promise.all([
+    const [
+      institutions,
+      activeInstitutions,
+      passiveInstitutions,
+      activeStudents,
+      guests,
+      exams,
+      activeExams,
+      todayResults,
+      pendingScans,
+      readyOpticals,
+      opticalDefinitions,
+      pendingActivations,
+      licenseWarnings,
+      approvedDealers,
+      activeUsers,
+      recentActivity,
+    ] = await Promise.all([
       one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM institutions')),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM institutions WHERE status='ACTIVE'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM institutions WHERE status='PASSIVE'`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM student_entities WHERE status='ACTIVE'`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM student_entities WHERE status='GUEST'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exams WHERE status<>'ARCHIVED'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exams WHERE status='ACTIVE'`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exam_results WHERE date(created_at)=date('now')`)),
-      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM institutions WHERE status='PASSIVE'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_batches WHERE status IN ('PREVIEW','NEEDS_REVIEW')`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM optical_templates WHERE status='READY' AND active=1`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM optical_templates WHERE status='NEEDS_DEFINITION' AND active=1`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM activation_requests WHERE status='PENDING'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM institution_licenses WHERE status IN ('EXPIRED','SUSPENDED') OR date(coalesce(license_expires_at,trial_expires_at)) <= date('now','+30 day')`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM result_network_dealers WHERE status='APPROVED'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM users WHERE active=1`)),
+      all<any>(env.DB.prepare(`
+        SELECT a.action,a.entity_type,a.entity_id,a.created_at,coalesce(u.display_name,'Sistem') actor_name
+        FROM audit_logs a LEFT JOIN users u ON u.id=a.actor_user_id
+        ORDER BY a.created_at DESC LIMIT 8
+      `)),
     ]);
+    const count = (row: { c: number } | null | undefined) => row?.c ?? 0;
     return json({ ok: true, cards: [
-      { label: 'Kurum', value: institutions?.c ?? 0 }, { label: 'Aktif Öğrenci', value: activeStudents?.c ?? 0 },
-      { label: 'Misafir Öğrenci', value: guests?.c ?? 0 }, { label: 'Bugün Değerlendirilen', value: todayResults?.c ?? 0 },
-      { label: 'Pasif Kurum', value: passive?.c ?? 0 },
-    ] });
+      { label: 'Aktif Kurum', value: count(activeInstitutions) },
+      { label: 'Aktif Öğrenci', value: count(activeStudents) },
+      { label: 'Tanımlı Sınav', value: count(exams) },
+      { label: 'Bugün Değerlendirilen', value: count(todayResults) },
+      { label: 'Bekleyen Optik', value: count(pendingScans) },
+      { label: 'Yayındaki Sınav', value: count(activeExams) },
+      { label: 'Hazır Optik', value: count(readyOpticals) },
+      { label: 'Lisans Uyarısı', value: count(licenseWarnings) },
+    ],
+    pending: {
+      scanReview: count(pendingScans),
+      opticalDefinitions: count(opticalDefinitions),
+      activationRequests: count(pendingActivations),
+      licenseWarnings: count(licenseWarnings),
+    },
+    institutionSummary: {
+      total: count(institutions),
+      active: count(activeInstitutions),
+      passive: count(passiveInstitutions),
+      guests: count(guests),
+      activeUsers: count(activeUsers),
+      approvedDealers: count(approvedDealers),
+    },
+    recentActivity,
+    systemHealth: [
+      { key: 'api', label: 'API / Worker', status: 'READY', detail: 'Yanıt veriyor' },
+      { key: 'database', label: 'D1 veri tabanı', status: 'READY', detail: 'Sorgular çalışıyor' },
+      { key: 'optical', label: 'Optik motoru', status: count(readyOpticals) ? 'READY' : 'ACTION', detail: `${count(readyOpticals)} hazır tanım` },
+      { key: 'results', label: 'Sonuç ağı', status: count(activeExams) ? 'READY' : 'EMPTY', detail: `${count(activeExams)} yayınlanabilir sınav` },
+    ],
+    });
   }
   if (user.role === 'STUDENT') {
     if (!user.student_id) return badRequest('Öğrenci hesabı bağlı değil.');
