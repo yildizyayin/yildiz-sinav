@@ -128,10 +128,14 @@ export function ExamDefinitions() {
     setCreateForm((f) => ({ ...f, scoringRuleVersionId: preferredScoring }));
     if (!createForm.institutionId && data.institutions?.[0]?.id) setCreateForm((f) => ({ ...f, institutionId: data.institutions[0].id }));
   };
-  const loadRows = async () => { const data = await api<any>('/api/exam-definitions'); setRows(data.exams || []); };
+  const loadRows = async () => {
+    const data = await api<any>('/api/exam-definitions');
+    setRows(Array.isArray(data.exams) ? data.exams : []);
+  };
   const loadDetail = async (id: string) => {
     if (!id) { setDetail(null); return; }
     const data = await api<any>(`/api/exam-definitions/${id}`);
+    if (!data?.exam?.id) throw new Error('Sınav kaydı okunamadı. Listeyi yenileyip tekrar deneyin.');
     setDetail(data);
     const examType = String(data.exam.exam_type || 'STANDARD');
     setChoiceKey(examType === 'STANDARD' ? `STD_${data.exam.grade_level}` : examType === 'CUSTOM' ? 'CUSTOM' : examType === 'MIDDLE_COMPOSITE' ? `MID_${data.exam.grade_level}` : examType);
@@ -414,6 +418,13 @@ export function ExamDefinitions() {
     setError('');
   };
 
+  const openExamDefinition = (id: string) => {
+    setOpenExamMenu(null);
+    setError('');
+    setSelectedId(id);
+    window.setTimeout(() => document.getElementById('exam-definition-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+  };
+
   const copyExamToDraft = () => {
     if (!detail) return;
     setCreateForm((current) => ({
@@ -621,10 +632,10 @@ export function ExamDefinitions() {
 
     <div className="exam-definition-list-shell">
       <div className="exam-list-heading"><div><h2>Kayıtlı sınavlar</h2><p>Bir sınavı açtığınızda ayrı çalışma alanında düzenleme araçları görünür.</p></div></div>
-      <div className="table-card" style={{ marginBottom: 20 }}><table><thead><tr><th>Sınav</th><th>Tür / Sınıf</th><th>Durum</th><th>Platform</th><th>Ders / Soru</th><th>Cevap</th><th>Kazanım</th><th>İşlem</th></tr></thead><tbody>{rows.map((r) => <tr key={r.id}><td><button type="button" className="link-button" onClick={() => { setOpenExamMenu(null); setSelectedId(r.id); }}><strong>{r.title}</strong></button><small>{r.academic_year}{r.publisher_name ? ` · ${r.publisher_name}` : ''}{r.institution_name ? ` · ${r.institution_name}` : ''}</small></td><td>{r.exam_type} · {r.grade_level ? `${r.grade_level}. sınıf` : '-'}</td><td><span className={`status ${r.status === 'ACTIVE' ? 'ok' : 'neutral'}`}>{r.status}</span></td><td>{r.result_network_enabled ? <span className="status ok">Sonuç ağı</span> : <span className="status neutral">app</span>}</td><td>{r.subject_count} / {r.question_count}</td><td>{r.answer_count}</td><td>{r.outcome_mapped_count}</td><td><div style={{ position: 'relative', display: 'flex', gap: 6, justifyContent: 'flex-end' }}><button className="secondary subtle" onClick={() => setSelectedId(r.id)}><Eye size={14} /> Görüntüle</button><button type="button" className="icon-button" aria-label={`${r.title} işlemleri`} aria-expanded={openExamMenu === r.id} onClick={() => setOpenExamMenu((current) => current === r.id ? null : r.id)}><MoreVertical size={17} /></button>{openExamMenu === r.id && <div className="exam-row-menu" role="menu"><button role="menuitem" onClick={() => { setOpenExamMenu(null); setSelectedId(r.id); }}><Eye size={14} /> Görüntüle / Düzenle</button><button role="menuitem" onClick={() => void copyExamById(r.id)}><Copy size={14} /> Kopyala</button>{r.status !== 'ARCHIVED' && <button role="menuitem" onClick={() => void archiveExamById(r.id)}><Archive size={14} /> Arşivle</button>}{r.status === 'DRAFT' && <button role="menuitem" onClick={() => void deleteExamById(r.id)}><Trash2 size={14} /> Sil</button>}</div>}</div></td></tr>)}</tbody></table></div>
+      <div className="table-card" style={{ marginBottom: 20 }}><table><thead><tr><th>Sınav</th><th>Tür / Sınıf</th><th>Durum</th><th>Platform</th><th>Ders / Soru</th><th>Cevap</th><th>Kazanım</th><th>İşlem</th></tr></thead><tbody>{rows.map((r) => <tr key={r.id}><td><button type="button" className="link-button" onClick={() => openExamDefinition(r.id)}><strong>{r.title}</strong></button><small>{r.academic_year}{r.publisher_name ? ` · ${r.publisher_name}` : ''}{r.institution_name ? ` · ${r.institution_name}` : ''}</small></td><td>{r.exam_type} · {r.grade_level ? `${r.grade_level}. sınıf` : '-'}</td><td><span className={`status ${r.status === 'ACTIVE' ? 'ok' : 'neutral'}`}>{r.status}</span></td><td>{r.result_network_enabled ? <span className="status ok">Sonuç ağı</span> : <span className="status neutral">app</span>}</td><td>{r.subject_count} / {r.question_count}</td><td>{r.answer_count}</td><td>{r.outcome_mapped_count}</td><td><div style={{ position: 'relative', display: 'flex', gap: 6, justifyContent: 'flex-end' }}><button className="secondary subtle" onClick={() => openExamDefinition(r.id)}><Eye size={14} /> Görüntüle</button><button type="button" className="icon-button" aria-label={`${r.title} işlemleri`} aria-expanded={openExamMenu === r.id} onClick={() => setOpenExamMenu((current) => current === r.id ? null : r.id)}><MoreVertical size={17} /></button>{openExamMenu === r.id && <div className="exam-row-menu" role="menu"><button role="menuitem" onClick={() => openExamDefinition(r.id)}><Eye size={14} /> Görüntüle / Düzenle</button><button role="menuitem" onClick={() => void copyExamById(r.id)}><Copy size={14} /> Kopyala</button>{r.status !== 'ARCHIVED' && <button role="menuitem" onClick={() => void archiveExamById(r.id)}><Archive size={14} /> Arşivle</button>}{r.status === 'DRAFT' && <button role="menuitem" onClick={() => void deleteExamById(r.id)}><Trash2 size={14} /> Sil</button>}</div>}</div></td></tr>)}</tbody></table></div>
     </div>
 
-    <div className="exam-definition-detail-shell">
+    <div id="exam-definition-detail" className="exam-definition-detail-shell">
     {detail && <>
       <div className="exam-detail-toolbar"><button className="ghost" onClick={closeDetail}><ArrowLeft size={16} /> Sınav listesine dön</button><div className="exam-detail-actions"><button className="secondary" disabled={busy} onClick={() => void copyExamById(selectedId)}><Copy size={16} /> Kopyala</button>{detail.exam.status !== 'ARCHIVED' && <button className="danger" disabled={busy} onClick={() => void archiveExam()}><Trash2 size={16} /> Arşivle</button>}{detail.exam.status === 'DRAFT' && <button className="danger" disabled={busy} onClick={() => void deleteExamById(selectedId)}><Trash2 size={16} /> Sil</button>}<div style={{ position: 'relative' }}><button type="button" className="icon-button" aria-label="Sınav işlemleri" aria-expanded={openExamMenu === `detail-${selectedId}`} onClick={() => setOpenExamMenu((current) => current === `detail-${selectedId}` ? null : `detail-${selectedId}`)}><MoreVertical size={18} /></button>{openExamMenu === `detail-${selectedId}` && <div className="exam-row-menu exam-detail-menu" role="menu"><button role="menuitem" onClick={() => setOpenExamMenu(null)}><Eye size={14} /> Görüntüle / Düzenle</button><button role="menuitem" onClick={() => void copyExamById(selectedId)}><Copy size={14} /> Kopyala</button>{detail.exam.status !== 'ARCHIVED' && <button role="menuitem" onClick={() => void archiveExam()}><Archive size={14} /> Arşivle</button>}{detail.exam.status === 'DRAFT' && <button role="menuitem" onClick={() => void deleteExamById(selectedId)}><Trash2 size={14} /> Sil</button>}</div>}</div></div></div>
       <div className="section-head"><div><h2>{detail.exam.title}</h2><p>{detail.exam.exam_type} · {detail.exam.grade_level}. sınıf · {detail.exam.status === 'DRAFT' ? 'Düzenlenebilir taslak' : detail.exam.status === 'ARCHIVED' ? 'Arşivlendi' : 'Yayında'}{detail.exam.outcome_mode === 'OFFICIAL_REQUIRED' ? ' · doğrulanmış kazanım zorunlu' : ''}{detail.exam.result_network_enabled ? ' · sonuc.anunex.com seçili' : ''}</p></div>{detail.exam.status === 'DRAFT' && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="secondary" disabled={busy} onClick={saveGeneral}><Save size={16} /> Kartı güncelle</button><button className="primary" disabled={busy || !detail.readiness?.ready_to_publish} onClick={publish}><Send size={17} /> Sınavı Yayınla</button></div>}</div>
