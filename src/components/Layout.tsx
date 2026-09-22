@@ -24,8 +24,8 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/reports',label:'Raporlar',icon:BarChart3},
     ]},
     { label:'OPTİK İŞLEMLERİ', items:[
-      {to:'/opticals',label:'Optik Tanımla',icon:ScanLine},
-      {to:'/optical-design',label:'Optik Form Tasarımcısı',icon:Printer},
+      {to:'/opticals',label:'Optik Form Ağacı',icon:ScanLine},
+      {to:'/optical-design',label:'Optik Form Düzenle',icon:Printer},
       {to:'/optical-prepare',label:'Optik Basma',icon:Printer},
       {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
       {to:'/calibration',label:'Kalibrasyon',icon:Printer},
@@ -75,8 +75,8 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/reports',label:'Raporlar',icon:BarChart3},
     ]},
     { label:'OPTİK İŞLEMLERİ', items:[
-      {to:'/opticals',label:'Optik Tanımla',icon:ScanLine},
-      {to:'/optical-design',label:'Optik Form Tasarımcısı',icon:Printer},
+      {to:'/opticals',label:'Optik Form Ağacı',icon:ScanLine},
+      {to:'/optical-design',label:'Optik Form Düzenle',icon:Printer},
       {to:'/optical-prepare',label:'Optik Basma',icon:Printer},
       {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
       {to:'/calibration',label:'Kalibrasyon',icon:ScanLine},
@@ -119,7 +119,7 @@ const nav: Record<Role, NavItem[]> = {
     { to: '/academic-target-admin', label: 'Resmî Hedef Verileri', icon: Target }, { to: '/official-question-intelligence', label: 'Çıkmış Soru & Kazanım', icon: BarChart3 }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/curriculum', label: 'Müfredat & Kazanımlar', icon: BookMarked },
     { to: '/exam-definitions', label: 'Sınav Ekle', icon: ClipboardCheck }, { to: '/exams', label: 'Sınav Listesi', icon: ClipboardCheck },
     { to: '/students', label: 'Öğrenciler', icon: Users }, { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange },
-    { to: '/opticals', label: 'Optik Tanımla', icon: ScanLine }, { to: '/optical-design', label: 'Optik Form Tasarımcısı', icon: Printer }, { to: '/optical-prepare', label: 'Optik Basma', icon: Printer }, { to: '/camera-test', label: 'Optik Test Merkezi', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: Printer },
+    { to: '/opticals', label: 'Optik Form Ağacı', icon: ScanLine }, { to: '/optical-design', label: 'Optik Form Düzenle', icon: Printer }, { to: '/optical-prepare', label: 'Optik Basma', icon: Printer }, { to: '/camera-test', label: 'Optik Test Merkezi', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: Printer },
     { to: '/worksheet-admin', label: 'Föy Merkezi', icon: BookOpenCheck }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/bulk-operations', label: 'Toplu İşlemler', icon: Layers3 }, { to: '/demo-mode', label: 'Sentetik Demo', icon: FlaskConical }, { to: '/scale', label: 'Ölçek Altyapısı', icon: Database },
     { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/reports', label: 'Raporlar', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
@@ -128,7 +128,7 @@ const nav: Record<Role, NavItem[]> = {
     { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Enterprise / Campus', icon: Building2,feature:'ENTERPRISE' },
     { to: '/announcements', label: 'Duyuru Merkezi', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/exam-definitions', label: 'Sınav Ekle', icon: ClipboardCheck }, { to: '/students', label: 'Öğrenciler', icon: Users },
     { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck },
-    { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange }, { to: '/opticals', label: 'Optik Tanımla', icon: ScanLine }, { to: '/optical-design', label: 'Optik Form Tasarımcısı', icon: Printer }, { to: '/optical-prepare', label: 'Optik Basma', icon: Printer },
+    { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange }, { to: '/opticals', label: 'Optik Form Ağacı', icon: ScanLine }, { to: '/optical-design', label: 'Optik Form Düzenle', icon: Printer }, { to: '/optical-prepare', label: 'Optik Basma', icon: Printer },
     { to: '/camera-test', label: 'Optik Test Merkezi', icon: Camera }, { to: '/calibration', label: 'Kalibrasyon', icon: ScanLine }, { to: '/bulk-operations', label: 'Toplu İşlemler', icon: Layers3 }, { to: '/reports', label: 'Raporlar', icon: BarChart3 },
     { to: '/worksheets', label: 'Föy Merkezi', icon: BookOpenCheck }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
@@ -162,7 +162,7 @@ export function Layout() {
   useEffect(()=>{const refresh=()=>setThemeRevision(value=>value+1);window.addEventListener('anunex-theme-change',refresh);return()=>window.removeEventListener('anunex-theme-change',refresh)},[]);
   const visibleNav=useMemo(()=>user?nav[user.role].filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature)):[],[user,enabledFeatures]);
   const location=useLocation();
-  const moduleView=location.pathname.startsWith('/exam-center')||location.pathname.startsWith('/exams')||location.pathname.startsWith('/exam-definitions')||location.pathname.startsWith('/exams/')?'exam-center':location.pathname.startsWith('/opticals')||location.pathname.startsWith('/optical-')||location.pathname.startsWith('/calibration')||location.pathname.startsWith('/camera-test')?'optical-operations':location.pathname.startsWith('/content-center')||location.pathname.startsWith('/worksheet')||location.pathname.startsWith('/outcomes')?'content-center':location.pathname.startsWith('/guidance')?'guidance-center':location.pathname.startsWith('/attendance')||location.pathname.startsWith('/assignments')||location.pathname.startsWith('/worksheet-calendar')?'planning-center':location.pathname.startsWith('/reports')||location.pathname.startsWith('/result-network')?'results-center':location.pathname.startsWith('/nibiru')||location.pathname.startsWith('/agent-center')?'ai-center':'general';
+  const moduleView=location.pathname.startsWith('/exam-center')||location.pathname.startsWith('/exams')||location.pathname.startsWith('/exam-definitions')||location.pathname.startsWith('/exams/')?'exam-center':location.pathname.startsWith('/optical-prepare')?'deimos-printing':location.pathname.startsWith('/opticals')||location.pathname.startsWith('/optical-design')?'phobos-optical':location.pathname.startsWith('/optical-')||location.pathname.startsWith('/calibration')||location.pathname.startsWith('/camera-test')?'optical-operations':location.pathname.startsWith('/content-center')||location.pathname.startsWith('/worksheet')||location.pathname.startsWith('/outcomes')?'content-center':location.pathname.startsWith('/guidance')?'guidance-center':location.pathname.startsWith('/attendance')||location.pathname.startsWith('/assignments')||location.pathname.startsWith('/worksheet-calendar')?'planning-center':location.pathname.startsWith('/reports')||location.pathname.startsWith('/result-network')?'results-center':location.pathname.startsWith('/nibiru')||location.pathname.startsWith('/agent-center')?'ai-center':'general';
   const groupedItems=useMemo(()=>{
     if(!user || (user.role!=='SUPER_ADMIN' && user.role!=='INSTITUTION_MANAGER')) return null;
     return groupedNav[user.role].map(group=>({...group,items:group.items.filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature))}));

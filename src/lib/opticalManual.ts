@@ -1,7 +1,10 @@
 export type ManualOpticalFieldKey =
   | 'student_number'
+  | 'first_name'
+  | 'last_name'
   | 'name'
   | 'class'
+  | 'grade_class'
   | 'section'
   | 'booklet'
   | 'tckn'
@@ -31,9 +34,12 @@ export type ManualAnswerBlock = {
 
 export const MANUAL_OPTICAL_FIELDS: Array<Pick<ManualOpticalField, 'key' | 'label'>> = [
   { key: 'student_number', label: 'Öğrenci No' },
-  { key: 'name', label: 'Ad Soyad' },
+  { key: 'first_name', label: 'Adı' },
+  { key: 'last_name', label: 'Soyadı' },
+  { key: 'name', label: 'Ad, Soyad' },
   { key: 'class', label: 'Sınıf' },
-  { key: 'section', label: 'Şube' },
+  { key: 'grade_class', label: 'Sınıf-Sınıf' },
+  { key: 'section', label: 'Sınıf-Şube' },
   { key: 'booklet', label: 'Kitapçık' },
   { key: 'tckn', label: 'T.C. Kimlik No' },
   { key: 'phone', label: 'Telefon' },
@@ -76,7 +82,8 @@ export function buildManualParserDefinition(
     if (!field.enabled || field.length <= 0) continue;
     const start = Math.max(0, Math.trunc(field.start) - indexBase);
     const length = Math.trunc(field.length);
-    fieldMap[field.key] = { start, end: start + length, length, label: field.label };
+    const parserKey = field.key === 'grade_class' ? 'class' : field.key;
+    fieldMap[parserKey] = { start, end: start + length, length, label: field.label };
   }
   const answerMap: Record<string, { start: number; end: number; length: number; questionCount: number; options: number; label?: string }> = {};
   for (const block of answers) {

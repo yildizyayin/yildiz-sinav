@@ -137,6 +137,26 @@
 .app-shell[data-panel-module="optical-operations"] .optical-detail-toolbar .ghost{color:var(--workspace-accent);padding-left:0}
 @media(max-width:600px){.app-shell[data-panel-module="optical-operations"] .optical-detail-toolbar{align-items:flex-start;flex-direction:column}}
 
+/* Phobos: optical form tree and definition work surface. */
+.app-shell[data-panel-module="phobos-optical"]{--workspace-accent:#b85f3e;--workspace-soft:#fff1e5;background:linear-gradient(180deg,#fbefe5 0,#fffaf6 42%,var(--canvas,#f5f7fb) 100%)}
+.app-shell[data-panel-module="phobos-optical"] .page-head .eyebrow,.app-shell[data-panel-module="phobos-optical"] .section-head h2{color:#a34e35}
+.app-shell[data-panel-module="phobos-optical"] .primary{background:linear-gradient(105deg,#b85f3e,#d9854d);box-shadow:0 9px 20px rgba(173,91,61,.22)}
+.app-shell[data-panel-module="phobos-optical"] .primary:hover{filter:brightness(.94)}
+.app-shell[data-panel-module="phobos-optical"] .optical-definition-detail-shell{display:none}
+.app-shell[data-panel-module="phobos-optical"] .optical-definition-page.detail-mode .optical-definition-create-shell,
+.app-shell[data-panel-module="phobos-optical"] .optical-definition-page.detail-mode .optical-definition-list-shell{display:none}
+.app-shell[data-panel-module="phobos-optical"] .optical-definition-page.detail-mode .optical-definition-detail-shell{display:block}
+.app-shell[data-panel-module="phobos-optical"] .optical-detail-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:4px 0 8px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.app-shell[data-panel-module="phobos-optical"] .optical-detail-toolbar .ghost{color:var(--workspace-accent);padding-left:0}
+.app-shell[data-panel-module="phobos-optical"] .nav-item.active{background:linear-gradient(105deg,#a94f34,#d9854d);color:#fff;box-shadow:0 9px 22px rgba(173,91,61,.34)}
+
+/* Deimos: printing is a separate station with its own work surface. */
+.app-shell[data-panel-module="deimos-printing"]{--workspace-accent:#536b86;--workspace-soft:#edf3f8;background:linear-gradient(180deg,#f1f6fa 0,#fbfcfd 42%,var(--canvas,#f5f7fb) 100%)}
+.app-shell[data-panel-module="deimos-printing"] .page-head .eyebrow,.app-shell[data-panel-module="deimos-printing"] .section-head h2{color:#405a76}
+.app-shell[data-panel-module="deimos-printing"] .primary{background:linear-gradient(105deg,#536b86,#718da9);box-shadow:0 9px 20px rgba(64,90,118,.2)}
+.app-shell[data-panel-module="deimos-printing"] .primary:hover{filter:brightness(.94)}
+.app-shell[data-panel-module="deimos-printing"] .nav-item.active{background:linear-gradient(105deg,#405a76,#718da9);color:#fff;box-shadow:0 9px 22px rgba(64,90,118,.3)}
+
 .optical-manual-table{display:flex;flex-direction:column;gap:6px;margin:10px 0 18px;overflow:auto}
 .optical-manual-row{display:grid;grid-template-columns:minmax(150px,1.3fr) 64px repeat(3,minmax(82px,1fr));gap:8px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface,#fff)}
 .optical-manual-row input,.optical-manual-row select{margin-top:0;min-height:36px;padding:6px 8px}

@@ -67,9 +67,15 @@ export function validateParserDefinition(input: unknown): ValidationResult {
     const recordLength = Number(source.recordLength ?? def.recordLength);
     if (!Number.isInteger(recordLength) || recordLength <= 0 || recordLength > 5000) errors.push('recordLength 1-5000 arasında tam sayı olmalıdır.');
     const fields = source.fields || def.fields || {};
-    errors.push(...validateSlice('fields.name', normalizeParserSlice(fields.name), recordLength));
+    if (fields.name) errors.push(...validateSlice('fields.name', normalizeParserSlice(fields.name), recordLength));
+    else if (fields.first_name && fields.last_name) {
+      errors.push(...validateSlice('fields.first_name', normalizeParserSlice(fields.first_name), recordLength));
+      errors.push(...validateSlice('fields.last_name', normalizeParserSlice(fields.last_name), recordLength));
+    } else errors.push('fields.name veya fields.first_name + fields.last_name alanları tanımlanmalıdır.');
     if (fields.student_number) errors.push(...validateSlice('fields.student_number', normalizeParserSlice(fields.student_number), recordLength));
     if (fields.class) errors.push(...validateSlice('fields.class', normalizeParserSlice(fields.class), recordLength));
+    if (fields.grade_class) errors.push(...validateSlice('fields.grade_class', normalizeParserSlice(fields.grade_class), recordLength));
+    if (fields.section) errors.push(...validateSlice('fields.section', normalizeParserSlice(fields.section), recordLength));
     if (fields.booklet) errors.push(...validateSlice('fields.booklet', normalizeParserSlice(fields.booklet), recordLength));
     const answers = source.answers || def.answers;
     if (!answers || typeof answers !== 'object' || Array.isArray(answers) || Object.keys(answers).length === 0) {

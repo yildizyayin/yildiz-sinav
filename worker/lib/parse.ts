@@ -166,7 +166,7 @@ function parseFixedWidth(lines: string[], fileName: string, templateId: string, 
     const line = lines[i];
     const pick = (f: any) => f ? line.slice(Number(f.start), Number(f.end)).trim() : '';
     const pickRaw = (f: any) => f ? line.slice(Number(f.start), Number(f.end)) : '';
-    const className = pick(fields.class);
+    const className = pick(fields.class) || pick(fields.grade_class) || pick(fields.section);
     const parsedClass = parseClass(className);
     const tckn = pick(fields.tckn);
     const studentNumber = pick(fields.student_number) || (!tckn ? fallbackStudentNumber(line, answersDef) : '');
@@ -181,7 +181,7 @@ function parseFixedWidth(lines: string[], fileName: string, templateId: string, 
       row_no: i + 1,
       student_number: studentNumber || undefined,
       tckn: tckn || undefined,
-      name: pick(fields.name),
+      name: pick(fields.name) || [pick(fields.first_name), pick(fields.last_name)].filter(Boolean).join(' '),
       class_name: className || undefined,
       grade_level: parsedClass.grade,
       section: parsedClass.section,

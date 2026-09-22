@@ -201,12 +201,8 @@ export function OpticalPrepare() {
       <style>{`@media print{body *{visibility:hidden!important}.optical-print-root,.optical-print-root *{visibility:visible!important}.optical-print-root{position:absolute!important;left:0;top:0;width:100%;}.optical-controls{display:none!important}.print-optical-page{margin:0!important;border:0!important;box-shadow:none!important;page-break-after:always;break-after:page}.print-optical-page:last-child{page-break-after:auto;break-after:auto}@page{margin:0}}`}</style>
       <div className="page-head optical-controls">
         <div>
-          <span className="eyebrow">Optik Merkezi · Baskı</span>
+          <span className="eyebrow">DEIMOS · OPTİK BASMA</span>
           <h1>Optik Basma</h1>
-          <p>
-            Tanımı ve baskı tasarımı tamamlanmış optikleri sınıf/sınav bazında
-            hazırlayın. Yazıcı kalibrasyonu baskıdan önce kontrol edilir.
-          </p>
         </div>
         <button className="ghost" onClick={() => void loadScope()}>
           <RefreshCw size={16} /> Yenile
@@ -216,15 +212,11 @@ export function OpticalPrepare() {
       <div className="panel optical-controls">
         <div className="panel-head">
           <div>
-            <h2>Baskıya hazır optikler</h2>
-            <p>
-              Tanımı ve baskı tasarımı tamamlanmış optikleri seçin. Yeni
-              tasarımlar Optik Form Tasarımcısı ekranından eklenir.
-            </p>
+            <h2>Baskı seçimi</h2>
           </div>
           <div className="optical-design-actions">
-            <Link className="secondary" to="/opticals">Optik Tanımla</Link>
-            <Link className="ghost" to="/optical-design">Optik Tasarla</Link>
+            <Link className="secondary" to="/opticals">Phobos · Form Ağacı</Link>
+            <Link className="ghost" to="/optical-design">Phobos · Form Düzenle</Link>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

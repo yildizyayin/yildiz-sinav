@@ -64,7 +64,22 @@ function readinessFor(row: any) {
 }
 
 async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
-  const scope = user.role === 'SUPER_ADMIN' ? { sql: '', params: [] as unknown[] } : { sql: ` AND (t.owner_type='CENTRAL' OR (t.owner_type='INSTITUTION' AND t.owner_id=?))`, params: [user.institution_id] };
+  const scope = user.role === 'SUPER_ADMIN'
+    ? { sql: '', params: [] as unknown[] }
+    : {
+        sql: ` AND (
+          (t.owner_type='INSTITUTION' AND t.owner_id=?)
+          OR (
+            t.owner_type='CENTRAL'
+            AND t.status='READY'
+            AND EXISTS (
+              SELECT 1 FROM optical_template_versions published
+              WHERE published.template_id=t.id AND published.active=1
+            )
+          )
+        )`,
+        params: [user.institution_id],
+      };
   const rows = await all<any>(env.DB.prepare(`
     SELECT t.id,t.name,t.vendor,t.status,t.active,t.owner_type,t.owner_id,t.created_at,
       (SELECT count(*) FROM optical_template_versions v WHERE v.template_id=t.id) version_count,
@@ -109,7 +124,7 @@ async function updateTemplate(request: Request, env: Env, actor: AuthUser, templ
   const name = body.name?.trim() || '';
   const vendor = body.vendor?.trim() || null;
   if (!name) return badRequest('Optik adı gereklidir.');
-  const duplicate = await one(env.DB.prepare(`SELECT id FROM optical_templates WHERE id<>? AND lower(name)=lower(?) AND coalesce(lower(vendor),'')=coalesce(lower(?),'')`).bind(templateId, name, vendor));
+  const duplicate = await one(env.DB.prepare(`SELECT id FROM optical_templates WHERE id<>? AND lower(name)=lower(?) AND coalesce(lower(vendor),'')=coalesce(lower(?),'') AND owner_type=? AND coalesce(owner_id,'')=coalesce(?, '')`).bind(templateId, name, vendor, template.owner_type, template.owner_id));
   if (duplicate) return error(409, 'TEMPLATE_EXISTS', 'Aynı ad ve üreticiyle başka bir optik şablon zaten bulunuyor.');
   const reason = body.reason?.trim() || 'Optik yönetim ekranı güncellemesi.';
   if (reason.length > 500) return badRequest('Değişiklik gerekçesi 500 karakteri geçemez.');

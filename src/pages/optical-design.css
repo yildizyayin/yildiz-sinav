@@ -19,4 +19,20 @@
 .optical-design-sheet { position: relative; width: min(100%, 480px); min-width: 280px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 12px 30px rgba(20, 35, 60, .12); background-image: linear-gradient(#eef2f7 1px, transparent 1px), linear-gradient(90deg, #eef2f7 1px, transparent 1px); background-size: 10% 10%; }
 .optical-design-preview-field { position: absolute; transform: translate(-2px, -2px); border: 1px solid #3867e8; border-radius: 4px; padding: 3px 5px; color: #12306d; background: rgba(224, 234, 255, .9); white-space: nowrap; font-weight: 700; }
 .optical-definition-separation { background: linear-gradient(135deg, rgba(37, 99, 235, .06), rgba(20, 184, 166, .08)); }
+.optical-tree-layout { display: grid; grid-template-columns: minmax(250px, .72fr) minmax(0, 1.5fr); gap: 18px; align-items: start; margin-bottom: 20px; }
+.optical-form-tree { min-height: 100%; padding: 16px; }
+.optical-form-tree .panel-head { margin-bottom: 12px; }
+.optical-tree-group { display: grid; gap: 9px; margin-top: 14px; }
+.optical-tree-root { display: grid; gap: 2px; padding: 10px 11px; border-radius: 11px; background: #fff4ea; border: 1px solid #efd2bd; color: #7d402c; }
+.optical-tree-root span { color: #9b6a56; font-size: 11px; }
+.optical-tree-vendor { position: relative; display: grid; gap: 6px; padding: 8px 0 2px 18px; color: var(--ink); font-size: 12px; }
+.optical-tree-line { position: absolute; left: 7px; top: 0; bottom: 10px; border-left: 1px solid #dfc3b0; }
+.optical-tree-template { position: relative; display: flex; align-items: stretch; gap: 7px; padding-left: 9px; }
+.optical-tree-branch { width: 11px; margin-top: 17px; border-top: 1px solid #dfc3b0; }
+.optical-tree-template button { display: grid; gap: 2px; flex: 1; min-width: 0; padding: 8px 9px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--ink); text-align: left; cursor: pointer; }
+.optical-tree-template button:hover,.optical-tree-template button.selected { border-color: #e5bda5; background: #fff8f3; }
+.optical-tree-template button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
+.optical-tree-template button small { color: var(--muted); font-size: 10px; }
+.optical-form-cards { min-width: 0; margin-bottom: 0 !important; }
 @media (max-width: 850px) { .optical-design-head, .optical-design-selector { display: grid; grid-template-columns: 1fr; } .optical-design-field { grid-template-columns: 1fr 1fr; } .optical-design-field label:first-child { grid-column: 1 / -1; } .optical-design-field button { width: max-content; } }
+@media (max-width: 900px) { .optical-tree-layout { grid-template-columns: 1fr; } .optical-form-tree { order: 0; } .optical-form-cards { order: 1; } }

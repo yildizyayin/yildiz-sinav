@@ -111,7 +111,7 @@ function manualFieldFromDefinition(
   definition: any,
 ) {
   return fields.map((field) => {
-    const saved = definition?.fields?.[field.key];
+    const saved = definition?.fields?.[field.key] || (field.key === "grade_class" ? definition?.fields?.class : null);
     if (!saved) return field;
     const start = Number(saved.start || 0);
     const end = Number(saved.end || start);
@@ -274,6 +274,7 @@ export function Opticals() {
       name: "",
       vendor: "",
       version: "v1",
+      formType: "FMT" as Method,
       pageWidthMm: 210,
       pageHeightMm: 297,
     }),
@@ -418,6 +419,7 @@ export function Opticals() {
       await loadTemplates();
       setSelectedTemplateId(r.templateId);
       setSelectedVersionId(r.versionId);
+      setMethod(newTemplate.formType);
       setNotice(
         "Okuma tanımı taslağı oluşturuldu. FMT/TXT/DAT eşlemesini veya fotoğraf/kamera geometrisini tamamlayın; baskı tasarımı ayrı ekrandadır.",
       );
@@ -970,6 +972,33 @@ export function Opticals() {
     setVersionDetail(null);
     setError("");
   };
+  const opticalTree = useMemo(() => {
+    const groups = [
+      {
+        key: "CENTRAL",
+        label: "Ana Havuz",
+        detail: "Süper Admin yayınları",
+        items: templates.filter((item) => item.owner_type === "CENTRAL"),
+      },
+      {
+        key: "INSTITUTION",
+        label: "Kurum Optikleri",
+        detail: "Bu kuruma özel · ana havuza girmez",
+        items: templates.filter((item) => item.owner_type === "INSTITUTION"),
+      },
+    ];
+    return groups.filter((group) => group.items.length > 0).map((group) => {
+      const vendors = new Map<string, any[]>();
+      group.items.forEach((item) => {
+        const vendor = item.vendor?.trim() || "Üretici belirtilmemiş";
+        vendors.set(vendor, [...(vendors.get(vendor) || []), item]);
+      });
+      return {
+        ...group,
+        vendors: [...vendors.entries()].sort(([a], [b]) => a.localeCompare(b, "tr")),
+      };
+    });
+  }, [templates]);
 
   return (
     <div
@@ -978,7 +1007,7 @@ export function Opticals() {
       <div className="page-head">
         <div>
           <span className="eyebrow">PHOBOS · OPTİK MERKEZİ</span>
-          <h1>Optik Tanımla</h1>
+          <h1>Optik Form Ağacı</h1>
         </div>
       </div>
       {error && <div className="alert error">{error}</div>}
@@ -987,12 +1016,7 @@ export function Opticals() {
         <div className="panel" style={{ marginBottom: 20 }}>
           <div className="panel-head">
             <div>
-              <h2>Yeni okuma tanımı</h2>
-              <p>
-                Optiğin adı, üreticisi, sayfa ölçüsü ve sürümüyle okuma tanımını
-                başlatın. Baskı alanlarını daha sonra Optik Form Tasarımcısı'nda
-                ekleyin.
-              </p>
+              <h2>Optik Form Ekle</h2>
             </div>
             <ScanLine />
           </div>
@@ -1026,6 +1050,20 @@ export function Opticals() {
               />
             </label>
             <label>
+              Form türü
+              <select
+                value={newTemplate.formType}
+                onChange={(e) =>
+                  setNewTemplate((x) => ({ ...x, formType: e.target.value as Method }))
+                }
+              >
+                <option value="FMT">FMT</option>
+                <option value="TXT">TXT / DAT</option>
+                <option value="PHOTO">Fotoğraf / kamera</option>
+                <option value="MANUAL">Manuel parametre</option>
+              </select>
+            </label>
+            <label>
               Genişlik mm
               <input
                 type="number"
@@ -1057,12 +1095,47 @@ export function Opticals() {
             disabled={busy || !newTemplate.name.trim()}
             onClick={createTemplate}
           >
-            <Plus size={16} /> Optiği Tanıtmaya Başla
+            <Plus size={16} /> Optik Formu Ekle
           </button>
         </div>
       </div>
       <div className="optical-definition-list-shell">
-        <div className="exam-grid" style={{ marginBottom: 20 }}>
+        <div className="optical-tree-layout">
+          <aside className="optical-form-tree panel">
+            <div className="panel-head">
+              <div>
+                <h2>Optik Form Ağacı</h2>
+                <span className="muted">Phobos · optik tanımlama</span>
+              </div>
+              <ScanLine size={18} />
+            </div>
+            {opticalTree.length === 0 && <div className="empty-state"><ScanLine size={22} /><span>Henüz optik form yok.</span></div>}
+            {opticalTree.map((group) => (
+              <div className="optical-tree-group" key={group.key}>
+                <div className="optical-tree-root"><strong>{group.label}</strong><span>{group.detail}</span></div>
+                {group.vendors.map(([vendor, items]) => (
+                  <div className="optical-tree-vendor" key={`${group.key}-${vendor}`}>
+                    <span className="optical-tree-line" />
+                    <strong>{vendor}</strong>
+                    {items.map((item) => (
+                      <div className="optical-tree-template" key={item.id}>
+                        <span className="optical-tree-branch" />
+                        <button
+                          type="button"
+                          className={selectedTemplateId === item.id ? "selected" : ""}
+                          onClick={() => setSelectedTemplateId(item.id)}
+                        >
+                          <span>{item.name}</span>
+                          <small>{item.active_version || "Taslak"} · {item.version_count} sürüm</small>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </aside>
+          <div className="exam-grid optical-form-cards">
           {templates.map((t) => (
             <div
               key={t.id}
@@ -1100,10 +1173,11 @@ export function Opticals() {
               </div>
               <h3>{t.name}</h3>
               <p>
-                {t.vendor || "Genel"} · {t.version_count} sürüm
+                {t.owner_type === "CENTRAL" ? "Ana Havuz" : "Kurum özel"} · {t.vendor || "Genel"} · {t.version_count} sürüm
               </p>
             </div>
           ))}
+          </div>
         </div>
       </div>
       <div className="optical-definition-detail-shell">
