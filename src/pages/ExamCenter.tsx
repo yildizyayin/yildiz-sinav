@@ -50,13 +50,13 @@ export function ExamCenter(){
 
   if(!entryMode)return <div className="exam-center-page exam-center-overview">
     <section className="exam-mars-hero"><div className="mars-stars"/><div className="mars-orbit mars-orbit-one"/><div className="mars-orbit mars-orbit-two"/><div className="mars-planet"><span className="mars-crater crater-one"/><span className="mars-crater crater-two"/><span className="mars-crater crater-three"/></div><div className="mars-hero-copy"><span className="eyebrow">ANUNEX · SINAV MERKEZİ</span><h1>Sınav Merkezi</h1></div><div className="mars-signal"><span/><span/><span/></div></section>
-    <div className="exam-center-simple-head"><div><span className="eyebrow">SINAV MERKEZİ</span><h1>Sınavlar</h1></div><div className="exam-center-simple-actions"><Link className="secondary" to="/exam-center?mode=upload"><FileUp size={16}/> Sınav Yükle</Link><Link className="primary" to="/exam-definitions"><FilePlus2 size={16}/> Sınav Ekle</Link></div></div>
+    <div className="exam-center-simple-head"><div><span className="eyebrow">SINAV MERKEZİ</span><h1>Sınavlar</h1></div><div className="exam-center-simple-actions"><Link className="secondary" to="/exam-center?mode=upload"><FileUp size={16}/> Sınav Yükle</Link><Link className="secondary" to="/opticals"><ScanLine size={16}/> Optik Tanımla</Link><Link className="primary" to="/exam-definitions"><FilePlus2 size={16}/> Sınav Ekle</Link></div></div>
     {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
     <section className="exam-center-tool-grid" aria-label="Sınav merkezi işlemleri">
       <CenterTool to="/exam-definitions" icon={<FilePlus2/>} title="Sınav Ekle / Oluştur" text="Sınav kartı, cevap anahtarı ve kazanım tanımı" tone="blue"/>
       <CenterTool to="/exam-center?mode=upload" icon={<FileUp/>} title="Sınav Yükle / Değerlendir" text="TXT, DAT, CSV, FMT ve öğrenci eşleştirme" tone="violet"/>
-      <CenterTool to="/opticals" icon={<ScanLine/>} title="Optik Merkezi" text="FMT, fotoğraf, TXT/DAT ve manuel optik tanımı" tone="orange"/>
-      <CenterTool to="/optical-prepare" icon={<Printer/>} title="Optik Hazırla / Bas" text="Tanımlı optiği öğrenci ve sınava göre hazırla" tone="sand"/>
+      <CenterTool to="/opticals" icon={<ScanLine/>} title="Optik Tanımla" text="Optik ekle, düzenle, sil/arşivle veya yeni sürüme kopyala" tone="orange"/>
+      <CenterTool to="/optical-prepare" icon={<Printer/>} title="Optik Basma" text="Tanımlı optiği yazıcı ve öğrenci listesiyle bas" tone="sand"/>
       <CenterTool to="/exam-definitions" icon={<Archive/>} title="Belge Arşivi" text="Cevap anahtarı, kazanım, PDF, optik ve video" tone="green"/>
       <CenterTool to="/transfers" icon={<Database/>} title="Veri Düzenleme" text="Edesis, Okulizyon ve CSV aktarımını kontrol et" tone="teal"/>
       <CenterTool to="/reports" icon={<BarChart3/>} title="Raporlar" text="Sınav, katılım, kurum ve gelişim raporları" tone="indigo"/>
@@ -107,7 +107,7 @@ export function ExamCenter(){
       {isSuper&&<CatalogEditor exam={selected} onSaved={async()=>{await load();setSelected(null)}} onError={setError} onNotice={setNotice}/>} 
     </div>}
 
-    {isSuper&&<div className="panel"><div className="panel-head"><div><h2>Merkez yönetim araçları</h2><p>Yayınevi sınavı, cevap anahtarı, kazanım ve optik tanımları kurum ekranından ayrıdır.</p></div></div><div style={{display:'flex',gap:10,flexWrap:'wrap'}}><Link className="secondary" to="/exam-definitions">Sınav Ekle</Link><Link className="secondary" to="/opticals">Optik Şablon Merkezi</Link><Link className="secondary" to="/enterprise">Zincir / Yayınevi Yönetimi</Link></div></div>}
+    {isSuper&&<div className="panel"><div className="panel-head"><div><h2>Merkez yönetim araçları</h2><p>Yayınevi sınavı, cevap anahtarı, kazanım ve optik tanımları kurum ekranından ayrıdır.</p></div></div><div style={{display:'flex',gap:10,flexWrap:'wrap'}}><Link className="secondary" to="/exam-definitions">Sınav Ekle</Link><Link className="secondary" to="/opticals">Optik Tanımlama</Link><Link className="secondary" to="/optical-design">Optik Form Tasarımcısı</Link><Link className="secondary" to="/optical-prepare">Optik Basma</Link><Link className="secondary" to="/enterprise">Zincir / Yayınevi Yönetimi</Link></div></div>}
   </div>;
 }
 

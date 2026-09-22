@@ -448,6 +448,32 @@ export function Opticals() {
       setBusy(false);
     }
   };
+  const copyTemplateVersion = async (templateId: string) => {
+    setBusy(true);
+    setError("");
+    try {
+      const detail = await api<any>(`/api/optical-definitions/${templateId}`);
+      const versions = detail.versions || [];
+      const numbers = versions
+        .map((item: any) => Number(String(item.version || "").replace(/[^0-9]/g, "")))
+        .filter((item: number) => Number.isFinite(item));
+      const nextVersion = `v${Math.max(1, ...numbers) + 1}`;
+      const source = versions.find((item: any) => item.active) || versions[0];
+      const result = await api<any>(`/api/optical-definitions/${templateId}/versions`, {
+        method: "POST",
+        body: JSON.stringify({ version: nextVersion, cloneFromVersionId: source?.id || null }),
+      });
+      await loadTemplate(templateId);
+      setSelectedTemplateId(templateId);
+      setSelectedVersionId(result.versionId);
+      setNewVersion("");
+      setNotice(`${nextVersion} taslak sürümü oluşturuldu. Kaynak optik değişmeden korunuyor.`);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
   const saveTemplate = async () => {
     if (!selectedTemplateId || !editTemplate.name.trim()) return;
     setBusy(true);
@@ -466,9 +492,9 @@ export function Opticals() {
       setBusy(false);
     }
   };
-  const deleteTemplate = async () => {
+  const deleteTemplate = async (templateId = selectedTemplateId) => {
     if (
-      !selectedTemplateId ||
+      !templateId ||
       !confirm(
         "Bu optik silinsin mi? Kullanılmış kayıtlar korunur ve optik güvenli biçimde arşivlenir.",
       )
@@ -477,13 +503,15 @@ export function Opticals() {
     setBusy(true);
     setError("");
     try {
-      await api(`/api/optical-definitions/${selectedTemplateId}`, {
+      await api(`/api/optical-definitions/${templateId}`, {
         method: "DELETE",
       });
-      setSelectedTemplateId("");
-      setSelectedVersionId("");
-      setTemplateDetail(null);
-      setVersionDetail(null);
+      if (selectedTemplateId === templateId) {
+        setSelectedTemplateId("");
+        setSelectedVersionId("");
+        setTemplateDetail(null);
+        setVersionDetail(null);
+      }
       await loadTemplates();
       setNotice("Optik arşivlendi. Geçmiş sınav kayıtları korunuyor.");
     } catch (e: any) {
@@ -1039,13 +1067,11 @@ export function Opticals() {
       <div className="optical-definition-list-shell">
         <div className="exam-grid" style={{ marginBottom: 20 }}>
           {templates.map((t) => (
-            <button
+            <div
               key={t.id}
               className="exam-card"
-              onClick={() => setSelectedTemplateId(t.id)}
               style={{
                 textAlign: "left",
-                cursor: "pointer",
                 outline:
                   selectedTemplateId === t.id
                     ? "2px solid currentColor"
@@ -1074,8 +1100,18 @@ export function Opticals() {
               <p>
                 {t.vendor || "Genel"} · {t.version_count} sürüm
               </p>
-              <span className="optical-card-open">Tanımı aç →</span>
-            </button>
+              <div className="optical-card-actions">
+                <button className="primary" onClick={() => setSelectedTemplateId(t.id)}>
+                  <Pencil size={15} /> Düzenle
+                </button>
+                <button className="secondary" disabled={busy || t.status === "ARCHIVED"} onClick={() => void copyTemplateVersion(t.id)}>
+                  <CopyPlus size={15} /> Kopyala
+                </button>
+                <button className="ghost" disabled={busy || t.status === "ARCHIVED"} onClick={() => void deleteTemplate(t.id)}>
+                  <Trash2 size={15} /> Sil / Arşivle
+                </button>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -1143,9 +1179,9 @@ export function Opticals() {
                 disabled={
                   busy || templateDetail.template?.status === "ARCHIVED"
                 }
-                onClick={deleteTemplate}
+                onClick={() => void deleteTemplate()}
               >
-                <Trash2 size={16} /> Optiği Arşivle
+                <Trash2 size={16} /> Sil / Arşivle
               </button>
             </div>
             <div className="form-grid" style={{ marginTop: 16 }}>

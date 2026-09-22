@@ -1,4 +1,6 @@
 .optical-design-page { display: grid; gap: 18px; }
+.optical-card-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.optical-card-actions button { min-height: 36px; padding: 8px 11px; }
 .optical-design-head { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; }
 .optical-design-actions, .optical-design-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .optical-design-selector { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(280px, 1.5fr); gap: 18px; align-items: end; }
