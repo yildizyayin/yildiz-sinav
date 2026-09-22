@@ -1,0 +1,13 @@
+.optical-design-page { display: grid; gap: 18px; }
+.optical-design-head { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; }
+.optical-design-actions, .optical-design-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.optical-design-selector { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(280px, 1.5fr); gap: 18px; align-items: end; }
+.optical-design-fields { display: grid; gap: 10px; }
+.optical-design-field { display: grid; grid-template-columns: minmax(180px, 1.7fr) repeat(3, minmax(90px, .7fr)) auto; gap: 10px; align-items: end; padding: 12px; border: 1px solid var(--border, #dfe5f0); border-radius: 12px; background: color-mix(in srgb, var(--surface, #fff) 88%, var(--accent, #2d63ff)); }
+.optical-design-field label { min-width: 0; }
+.optical-design-field button { height: 42px; }
+.optical-design-preview-shell { display: flex; justify-content: center; padding: 18px; border-radius: 14px; background: #eef2f7; overflow: auto; }
+.optical-design-sheet { position: relative; width: min(100%, 480px); min-width: 280px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 12px 30px rgba(20, 35, 60, .12); background-image: linear-gradient(#eef2f7 1px, transparent 1px), linear-gradient(90deg, #eef2f7 1px, transparent 1px); background-size: 10% 10%; }
+.optical-design-preview-field { position: absolute; transform: translate(-2px, -2px); border: 1px solid #3867e8; border-radius: 4px; padding: 3px 5px; color: #12306d; background: rgba(224, 234, 255, .9); white-space: nowrap; font-weight: 700; }
+.optical-definition-separation { background: linear-gradient(135deg, rgba(37, 99, 235, .06), rgba(20, 184, 166, .08)); }
+@media (max-width: 850px) { .optical-design-head, .optical-design-selector { display: grid; grid-template-columns: 1fr; } .optical-design-field { grid-template-columns: 1fr 1fr; } .optical-design-field label:first-child { grid-column: 1 / -1; } .optical-design-field button { width: max-content; } }
