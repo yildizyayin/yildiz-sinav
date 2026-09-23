@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Archive, ArrowLeft, ArrowRight, BookOpenCheck, Check, CheckCircle2, CircleAlert, Clock3, Copy, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, MoreVertical, PlayCircle, Printer, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, Trash2, UploadCloud, Workflow } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { api, qs } from '../api';
@@ -61,9 +61,10 @@ function safeDownloadName(value: string) {
 
 export function ExamDefinitions() {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [options, setOptions] = useState<any>({ subjects: [], scoringVersions: [], institutions: [], outcomes: [] });
   const [rows, setRows] = useState<any[]>([]);
-  const [selectedId, setSelectedId] = useState('');
+  const [selectedId, setSelectedId] = useState(() => searchParams.get('examId') || '');
   const [createdExamId, setCreatedExamId] = useState('');
   const [detail, setDetail] = useState<any>(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -187,6 +188,10 @@ export function ExamDefinitions() {
       .catch((e) => setError(e.message || 'Sınav ayrıntıları yüklenemedi.'))
       .finally(() => setDetailLoading(false));
   }, [selectedId]);
+  useEffect(() => {
+    const queryId = searchParams.get('examId') || '';
+    if (queryId !== selectedId) setSelectedId(queryId);
+  }, [searchParams, selectedId]);
 
   const selectedSubjectIds = useMemo(() => new Set(subjects.map((s) => s.subjectId)), [subjects]);
   const visibleSubjects = useMemo(() => (options.subjects || []).filter((subject: any) => {
@@ -464,6 +469,7 @@ export function ExamDefinitions() {
 
   const closeDetail = () => {
     setSelectedId('');
+    setSearchParams({});
     setDetail(null);
     setDetailLoading(false);
     setContent({ assets: [], videos: [] });
@@ -473,6 +479,7 @@ export function ExamDefinitions() {
   const openExamDefinition = (id: string) => {
     setOpenExamMenu(null);
     setError('');
+    setSearchParams({ examId: id });
     setSelectedId(id);
     window.setTimeout(() => document.getElementById('exam-definition-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
   };
@@ -508,6 +515,7 @@ export function ExamDefinitions() {
     setAnalysis(null);
     setContent({ assets: [], videos: [] });
     setSelectedId('');
+    setSearchParams({});
     setDetail(null);
     setCreatedExamId('');
     setBuilderStep(1);
