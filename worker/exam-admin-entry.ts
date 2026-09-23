@@ -433,7 +433,9 @@ async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<
       SELECT q.id question_id,q.subject_id,q.question_no,q.global_no,q.option_count question_option_count,q.question_status question_status,
              ak.booklet_code,ak.correct_answer,ak.option_count answer_option_count,ak.accepted_answers,ak.question_status answer_question_status,
              bqo.printed_question_no,
-             group_concat(DISTINCT qo.outcome_id) outcome_ids,group_concat(DISTINCT o.code) outcome_codes,group_concat(DISTINCT o.title) outcome_titles
+             group_concat(DISTINCT qo.outcome_id) outcome_ids,group_concat(DISTINCT o.code) outcome_codes,group_concat(DISTINCT o.title) outcome_titles,
+             (SELECT pol.label_path_json FROM question_publisher_outcomes qpo JOIN publisher_outcome_labels pol ON pol.id=qpo.publisher_outcome_id WHERE qpo.exam_question_id=q.id ORDER BY pol.created_at LIMIT 1) publisher_outcome_json,
+             (SELECT pol.mapping_status FROM question_publisher_outcomes qpo JOIN publisher_outcome_labels pol ON pol.id=qpo.publisher_outcome_id WHERE qpo.exam_question_id=q.id ORDER BY pol.created_at LIMIT 1) publisher_mapping_status
       FROM exam_questions q
       LEFT JOIN answer_keys ak ON ak.exam_question_id=q.id
       LEFT JOIN exam_question_booklet_orders bqo ON bqo.exam_question_id=q.id AND bqo.booklet_code=ak.booklet_code
@@ -535,6 +537,8 @@ async function copyDefinition(env: Env, user: AuthUser, examId: string): Promise
   for (const order of oldOrders) { const nextQuestionId = questionMap.get(order.exam_question_id); if (nextQuestionId) statements.push(env.DB.prepare('INSERT INTO exam_question_booklet_orders (id,exam_id,exam_question_id,booklet_code,printed_question_no) VALUES(?,?,?,?,?)').bind(uuid('eqbo'), id, nextQuestionId, order.booklet_code, order.printed_question_no)); }
   const oldMappings = await all<any>(env.DB.prepare('SELECT exam_question_id,outcome_id FROM question_outcomes WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)').bind(examId));
   for (const mapping of oldMappings) { const nextQuestionId = questionMap.get(mapping.exam_question_id); if (nextQuestionId) statements.push(env.DB.prepare('INSERT INTO question_outcomes (exam_question_id,outcome_id) VALUES(?,?)').bind(nextQuestionId, mapping.outcome_id)); }
+  const oldPublisherMappings = await all<any>(env.DB.prepare('SELECT qpo.exam_question_id,qpo.publisher_outcome_id FROM question_publisher_outcomes qpo JOIN exam_questions q ON q.id=qpo.exam_question_id WHERE q.exam_id=?').bind(examId));
+  for (const mapping of oldPublisherMappings) { const nextQuestionId = questionMap.get(mapping.exam_question_id); if (nextQuestionId) statements.push(env.DB.prepare('INSERT INTO question_publisher_outcomes (exam_question_id,publisher_outcome_id) VALUES(?,?)').bind(nextQuestionId, mapping.publisher_outcome_id)); }
   const optionalKeys = await all<any>(env.DB.prepare('SELECT subject_id,booklet_code,question_no,correct_answer,option_count,accepted_answers,question_status FROM exam_optional_answer_keys WHERE exam_id=?').bind(examId));
   for (const key of optionalKeys) statements.push(env.DB.prepare('INSERT INTO exam_optional_answer_keys (id,exam_id,subject_id,booklet_code,question_no,correct_answer,option_count,accepted_answers,question_status) VALUES(?,?,?,?,?,?,?,?,?)').bind(uuid('oak'), id, key.subject_id, key.booklet_code, key.question_no, key.correct_answer, key.option_count, key.accepted_answers, key.question_status));
   await env.DB.batch(statements);
@@ -625,7 +629,7 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Cevap anahtarı yalnız taslak sınavda değiştirilebilir.');
   const body = await request.json<{
-    entries?: Array<{ subjectId?: string; bookletCode?: string; answers?: string; optionCount?: 4 | 5; acceptedAnswers?: Array<string | string[]>; questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>; bookletQuestionNumbers?: number[] }>;
+    entries?: Array<{ subjectId?: string; bookletCode?: string; answers?: string; optionCount?: 4 | 5; acceptedAnswers?: Array<string | string[]>; questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>; bookletQuestionNumbers?: number[]; outcomeRefs?: Array<{ code?: string; title?: string; publisherCode?: string; publisherTitle?: string; officialCode?: string } | null>; outcomeRefsByQuestion?: Array<Array<{ code?: string; title?: string; publisherCode?: string; publisherTitle?: string; officialCode?: string }>> }>;
     outcomeMappings?: Array<{ subjectId?: string; questionNo?: number; outcomeId?: string }>;
     outcomeMode?: 'OPTIONAL' | 'OFFICIAL_REQUIRED';
     reason?: string | null;
@@ -633,13 +637,13 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
   const subjects = await all<any>(env.DB.prepare(`SELECT subject_id,question_count,question_start,question_end,option_count FROM exam_subjects WHERE exam_id=? ORDER BY sort_order`).bind(examId));
   const booklets = await all<{ code: string }>(env.DB.prepare(`SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code`).bind(examId));
   if (!subjects.length || !booklets.length) return err(409, 'STRUCTURE_REQUIRED', 'Önce ders ve kitapçık yapısını kaydedin.');
-  const entryMap = new Map<string, { answers: string; optionCount: 4 | 5; acceptedAnswers?: Array<string | string[]>; questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>; bookletQuestionNumbers?: number[] }>();
+  const entryMap = new Map<string, { answers: string; optionCount: 4 | 5; acceptedAnswers?: Array<string | string[]>; questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>; bookletQuestionNumbers?: number[]; outcomeRefs?: Array<{ code?: string; title?: string; publisherCode?: string; publisherTitle?: string; officialCode?: string } | null>; outcomeRefsByQuestion?: Array<Array<{ code?: string; title?: string; publisherCode?: string; publisherTitle?: string; officialCode?: string }>> }>();
   for (const entry of body.entries || []) {
     const subjectId = String(entry.subjectId || '');
     const bookletCode = String(entry.bookletCode || '').trim().toUpperCase();
     const answers = String(entry.answers || '').replace(/\s+/g, '').toUpperCase();
     const optionCount = entry.optionCount === 4 ? 4 : 5;
-    entryMap.set(`${subjectId}::${bookletCode}`, { answers, optionCount, acceptedAnswers: entry.acceptedAnswers, questionStatuses: entry.questionStatuses, bookletQuestionNumbers: entry.bookletQuestionNumbers });
+    entryMap.set(`${subjectId}::${bookletCode}`, { answers, optionCount, acceptedAnswers: entry.acceptedAnswers, questionStatuses: entry.questionStatuses, bookletQuestionNumbers: entry.bookletQuestionNumbers, outcomeRefs: entry.outcomeRefs, outcomeRefsByQuestion: entry.outcomeRefsByQuestion });
   }
   const structureSubjectIds = new Set(subjects.map((subject) => String(subject.subject_id)));
   const optionalEntries = [...entryMap.entries()].filter(([key]) => !structureSubjectIds.has(key.split('::')[0]));
@@ -676,8 +680,32 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
     env.DB.prepare(`DELETE FROM answer_keys WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
     env.DB.prepare(`DELETE FROM exam_question_booklet_orders WHERE exam_id=?`).bind(examId),
     env.DB.prepare(`DELETE FROM question_outcomes WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
+    env.DB.prepare(`DELETE FROM question_publisher_outcomes WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
     env.DB.prepare('DELETE FROM exam_optional_answer_keys WHERE exam_id=?').bind(examId),
   ];
+  const publisher = exam.publisher_name
+    ? await one<{ id: string }>(env.DB.prepare('SELECT id FROM publishers WHERE lower(name)=lower(?) OR lower(code)=lower(?) LIMIT 1').bind(String(exam.publisher_name).trim(), String(exam.publisher_name).trim()))
+    : null;
+  const publisherLabelIds = new Map<string, string>();
+  const publisherLabelsByQuestion = new Map<string, string[]>();
+  const programCode = ['TYT', 'AYT'].includes(String(exam.exam_type || '').toUpperCase()) ? String(exam.exam_type).toUpperCase() : 'SCHOOL';
+  const ensurePublisherLabel = async (questionId: string, subjectId: string, reference: any) => {
+    if (!reference || !(reference.publisherTitle || reference.publisherCode || reference.officialCode || reference.code || reference.title)) return;
+    const publisherTitle = String(reference.publisherTitle || reference.title || '').trim() || null;
+    const publisherCode = String(reference.publisherCode || (!publisherTitle ? reference.code || reference.officialCode : '') || '').trim() || null;
+    const labelPath = JSON.stringify({ publisherCode, publisherTitle, officialCode: reference.officialCode || reference.code || null, unit: reference.unit || null, topic: reference.topic || null, subtopic: reference.subtopic || null, parentCode: reference.parentCode || null });
+    const cacheKey = `${subjectId}::${publisherCode || ''}::${labelPath}`;
+    let labelId = publisherLabelIds.get(cacheKey);
+    if (!labelId) {
+      const existing = await one<{ id: string }>(env.DB.prepare(`SELECT id FROM publisher_outcome_labels WHERE publisher_id IS ? AND academic_year=? AND program_code=? AND subject_id=? AND coalesce(publisher_code,'')=coalesce(?, '') AND label_path_json=? LIMIT 1`).bind(publisher?.id || null, exam.academic_year, programCode, subjectId, publisherCode, labelPath));
+      labelId = existing?.id || uuid('pol');
+      if (!existing) statements.push(env.DB.prepare(`INSERT INTO publisher_outcome_labels (id,publisher_id,academic_year,program_code,grade_level,subject_id,publisher_code,label_path_json,detected_grade_level,mapping_status,confidence) VALUES(?,?,?,?,?,?,?,?,?,'REVIEW_REQUIRED',0)`).bind(labelId, publisher?.id || null, exam.academic_year, programCode, exam.grade_level || null, subjectId, publisherCode, labelPath, exam.grade_level || null));
+      publisherLabelIds.set(cacheKey, labelId);
+    }
+    const linked = publisherLabelsByQuestion.get(questionId) || [];
+    if (!linked.includes(labelId)) linked.push(labelId);
+    publisherLabelsByQuestion.set(questionId, linked);
+  };
   for (const subject of subjects) {
     for (const booklet of booklets) {
       const entry = entryMap.get(`${subject.subject_id}::${booklet.code}`)!;
@@ -697,6 +725,8 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
         const printedQuestionNo = Number(entry.bookletQuestionNumbers?.[offset] || n);
         statements.push(env.DB.prepare(`INSERT INTO exam_question_booklet_orders (id,exam_id,exam_question_id,booklet_code,printed_question_no) VALUES(?,?,?,?,?)`)
           .bind(uuid('eqbo'), examId, question.id, booklet.code, printedQuestionNo));
+        const reference = entry.outcomeRefsByQuestion?.[offset]?.[0] || entry.outcomeRefs?.[offset];
+        await ensurePublisherLabel(question.id, subject.subject_id, reference);
       }
     }
   }
@@ -728,7 +758,11 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
     if (seenMappings.has(key)) continue;
     seenMappings.add(key);
     statements.push(env.DB.prepare(`INSERT INTO question_outcomes (exam_question_id,outcome_id) VALUES(?,?)`).bind(question.id, outcomeId));
+    for (const publisherOutcomeId of publisherLabelsByQuestion.get(question.id) || []) {
+      statements.push(env.DB.prepare(`UPDATE publisher_outcome_labels SET canonical_outcome_id=?,mapping_status='APPROVED',confidence=1,reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP WHERE id=?`).bind(outcomeId, user.id, publisherOutcomeId));
+    }
   }
+  for (const [questionId, labelIds] of publisherLabelsByQuestion.entries()) for (const publisherOutcomeId of labelIds) statements.push(env.DB.prepare(`INSERT OR IGNORE INTO question_publisher_outcomes (exam_question_id,publisher_outcome_id) VALUES(?,?)`).bind(questionId, publisherOutcomeId));
   if (outcomeMode !== exam.outcome_mode) statements.push(env.DB.prepare('UPDATE exams SET outcome_mode=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(outcomeMode, examId));
   await env.DB.batch(statements);
   await audit(env.DB, user.id, exam.institution_id, 'EXAM_ANSWER_KEY_REPLACED', 'exam', examId, { before: { entryCount: subjects.length * booklets.length, outcomeMappingCount: 'existing' }, after: { entryCount: entryMap.size, outcomeMappingCount: seenMappings.size }, reason });

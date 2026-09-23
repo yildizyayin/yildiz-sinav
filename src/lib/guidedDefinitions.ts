@@ -2,6 +2,11 @@ export type SubjectOption = { id: string; code: string; name: string };
 export type OutcomeReference = {
   code?: string;
   title?: string;
+  /** The label/code supplied by the publisher; never treated as official by itself. */
+  publisherCode?: string;
+  publisherTitle?: string;
+  /** An official code supplied alongside the publisher label in a source workbook. */
+  officialCode?: string;
   unit?: string;
   topic?: string;
   subtopic?: string;
@@ -177,9 +182,10 @@ export function matchOfficialOutcome(reference: OutcomeReference | null | undefi
   const candidates = catalog.filter((outcome) => outcome.subject_id === subjectId);
   const verified = candidates.filter((outcome) => Number(outcome.official) === 1 && Number(outcome.verified) === 1);
   if (!verified.length) return { reason: 'UNVERIFIED' };
-  if (reference.code) {
-    const allByCode = candidates.filter((outcome) => normalizeCatalogText(outcome.code) === normalizeCatalogText(reference.code));
-    const byCode = verified.filter((outcome) => normalizeCatalogText(outcome.code) === normalizeCatalogText(reference.code));
+  const referenceCode = reference.officialCode || reference.code;
+  if (referenceCode) {
+    const allByCode = candidates.filter((outcome) => normalizeCatalogText(outcome.code) === normalizeCatalogText(referenceCode));
+    const byCode = verified.filter((outcome) => normalizeCatalogText(outcome.code) === normalizeCatalogText(referenceCode));
     if (byCode.length === 1) return { outcomeId: byCode[0].id, reason: 'CODE' };
     if (byCode.length > 1) return { reason: 'AMBIGUOUS' };
     if (allByCode.length) return { reason: 'UNVERIFIED' };
@@ -193,6 +199,130 @@ export function matchOfficialOutcome(reference: OutcomeReference | null | undefi
     if (byTitle.length > 1) return { reason: 'AMBIGUOUS' };
   }
   return { reason: 'MISSING' };
+}
+
+function cellText(value: unknown): string {
+  return String(value ?? '').replace(/\u00a0/g, ' ').trim();
+}
+
+function columnLabel(index: number): string {
+  let value = '';
+  for (let current = index; current >= 0; current = Math.floor(current / 26) - 1) value = String.fromCharCode(65 + (current % 26)) + value;
+  return value;
+}
+
+function looksLikeOfficialOutcomeCode(value: string): boolean {
+  return /^\d{1,3}(?:\.\d+){1,6}$/.test(value) || /^[A-ZÇĞİÖŞÜ]{1,10}[._-]\d+(?:[._-]\d+)*$/i.test(value);
+}
+
+function workbookHeaderIndex(headers: string[], matcher: RegExp): number {
+  return headers.findIndex((header) => matcher.test(norm(header)));
+}
+
+/**
+ * Parses the multi-section XLSX layout used by the publisher export shared by
+ * the user.  It intentionally keeps the publisher label and the official code
+ * as separate pieces of information.  The official code is only a candidate
+ * for the verified MEB catalog; it is not accepted as an official mapping until
+ * matchOfficialOutcome/backend validation succeeds.
+ */
+export function parseAnswerKeyWorkbookRows(rows: unknown[][], subjects: SubjectOption[], defaultBooklet = 'A'): ParsedAnswerKey {
+  const values = rows.map((row) => row.map(cellText));
+  const answerSection = values.findIndex((row) => row.some((cell) => norm(cell) === 'CEVAPANAHTARI'));
+  const headerIndex = answerSection >= 0
+    ? values.findIndex((row, index) => index > answerSection && row.some((cell) => norm(cell).includes('DOGRUCEVAP')))
+    : values.findIndex((row) => row.some((cell) => norm(cell).includes('DOGRUCEVAP')));
+  if (headerIndex < 0) return parseAnswerKeyText(values.map((row) => row.join(',')).join('\n'), subjects, defaultBooklet);
+
+  const headers = values[headerIndex] || [];
+  const testNoColumn = workbookHeaderIndex(headers, /TESTNO/) >= 0 ? workbookHeaderIndex(headers, /TESTNO/) : 0;
+  const testNameColumn = workbookHeaderIndex(headers, /TESTADI|ACIKLAMATESTADI/) >= 0 ? workbookHeaderIndex(headers, /TESTADI|ACIKLAMATESTADI/) : 2;
+  const answerColumn = workbookHeaderIndex(headers, /DOGRUCEVAP/) >= 0 ? workbookHeaderIndex(headers, /DOGRUCEVAP/) : 8;
+  const publisherTitleColumn = workbookHeaderIndex(headers, /KAZANIMKODU|KAZANIM/) >= 0 ? workbookHeaderIndex(headers, /KAZANIMKODU|KAZANIM/) : 10;
+  const questionColumns: Record<string, number> = {};
+  for (const booklet of ['A', 'B', 'C', 'D']) {
+    const column = workbookHeaderIndex(headers, new RegExp(`${booklet}SORUNO`));
+    if (column >= 0) questionColumns[booklet] = column;
+  }
+
+  const testNames = new Map<string, string>();
+  for (const row of values.slice(0, headerIndex)) {
+    const testNo = cellText(row[0]);
+    if (!/^\d+$/.test(testNo)) continue;
+    const candidate = row.find((cell, index) => index > 0 && /[A-Za-zÇĞİÖŞÜçğıöşü]/.test(cell) && !/TEST|KİTAPÇIK|KITAPCIK/i.test(cell));
+    if (candidate) testNames.set(testNo, candidate);
+  }
+
+  const metadataRows = values.slice(0, Math.max(0, answerSection >= 0 ? answerSection : headerIndex));
+  const metadataValues = metadataRows.flatMap((row) => row.filter(Boolean));
+  const title = metadataRows
+    .map((row) => { const labelIndex = row.findIndex((value) => norm(value) === 'SINAVADI'); return labelIndex >= 0 ? row.slice(labelIndex + 1).find((value) => value && norm(value) !== 'SINAVADI') : undefined; })
+    .find(Boolean) || undefined;
+  const publisherName = metadataValues.find((value) => /[A-Za-zÇĞİÖŞÜçğıöşü]/.test(value) && !/SINAV|SINIF|TYT|AYT|YDT|LGS|FORMUL|FORMÜL|DERS|TEST/i.test(value)) || undefined;
+  const gradeLabelIndex = metadataValues.findIndex((value) => ['SINIF', 'SINIFLAR'].includes(norm(value)));
+  const gradeValue = gradeLabelIndex >= 0 ? metadataValues[gradeLabelIndex + 1] || '' : '';
+  const gradeLevel = Number(String(gradeValue).match(/(?:^|\D)([1-9]|1[0-2])(?:\D|$)/)?.[1] || 0) || undefined;
+  const optionLabelIndex = metadataValues.findIndex((value) => norm(value) === 'SECENEKSAYISI');
+  const optionCount = (Number(optionLabelIndex >= 0 ? metadataValues[optionLabelIndex + 1] : '') || undefined) as 4 | 5 | undefined;
+  const warnings: string[] = [];
+  const unknownLines: string[] = [];
+  const grouped = new Map<string, Array<{ questionNumbers: Record<string, number>; answer: string; reference: OutcomeReference | null; }>>();
+  const detectedBooklets: string[] = [];
+
+  for (const row of values.slice(headerIndex + 1)) {
+    if (!row.some(Boolean)) continue;
+    const testNo = cellText(row[testNoColumn]);
+    const subjectToken = cellText(row[testNameColumn]) || testNames.get(testNo) || '';
+    const subject = subjectForToken(subjectToken, subjects);
+    const questionNumbers: Record<string, number> = {};
+    for (const [booklet, column] of Object.entries(questionColumns)) {
+      const value = Number(row[column]);
+      if (Number.isInteger(value) && value > 0) questionNumbers[booklet] = value;
+    }
+    const answer = cleanAnswers(row[answerColumn] || '').slice(0, 1);
+    const publisherTitle = cellText(row[publisherTitleColumn]);
+    const officialCode = row
+      .slice(Math.max(publisherTitleColumn + 1, 0))
+      .map(cellText)
+      .find((value) => looksLikeOfficialOutcomeCode(value));
+    const publisherCode = publisherTitle && looksLikeOfficialOutcomeCode(publisherTitle) ? publisherTitle : undefined;
+    const reference = publisherTitle || officialCode
+      ? { code: officialCode || publisherCode, title: publisherTitle && !looksLikeOfficialOutcomeCode(publisherTitle) ? publisherTitle : undefined, publisherCode, publisherTitle: publisherTitle || undefined, officialCode }
+      : null;
+    const primaryQuestion = Object.values(questionNumbers)[0];
+    if (!subject || !primaryQuestion || !answer) {
+      unknownLines.push(row.map((cell, index) => cell ? `${columnLabel(index)}=${cell}` : '').filter(Boolean).join(' | '));
+      continue;
+    }
+    for (const booklet of Object.keys(questionNumbers)) if (!detectedBooklets.includes(booklet)) detectedBooklets.push(booklet);
+    const group = grouped.get(subject.id) || [];
+    group.push({ questionNumbers, answer, reference });
+    grouped.set(subject.id, group);
+  }
+
+  if (!detectedBooklets.length) detectedBooklets.push(defaultBooklet.toUpperCase());
+  const entries: ParsedAnswerEntry[] = [];
+  const questionCounts: Record<string, number> = {};
+  const questionStarts: Record<string, number> = {};
+  const questionCountsByBooklet: Record<string, Record<string, number>> = {};
+  for (const [subjectId, rawRows] of grouped.entries()) {
+    const sorted = rawRows.sort((a, b) => (Object.values(a.questionNumbers)[0] || 0) - (Object.values(b.questionNumbers)[0] || 0));
+    const start = Object.values(sorted[0]?.questionNumbers || {})[0] || 1;
+    questionStarts[subjectId] = start;
+    questionCounts[subjectId] = sorted.length;
+    questionCountsByBooklet[subjectId] = {};
+    for (const booklet of detectedBooklets) {
+      const questionNumbers = sorted.map((row) => row.questionNumbers[booklet] || Object.values(row.questionNumbers)[0]);
+      const refs = sorted.map((row) => row.reference);
+      entries.push({ subjectId, bookletCode: booklet, answers: sorted.map((row) => row.answer).join(''), optionCount: optionCount || 5, acceptedAnswers: sorted.map((row) => [row.answer]), questionStatuses: sorted.map(() => 'ACTIVE'), outcomeRefs: refs, outcomeRefsByQuestion: refs.map((ref) => ref ? [ref] : []), bookletQuestionNumbers: questionNumbers });
+      questionCountsByBooklet[subjectId][booklet] = questionNumbers.length;
+    }
+  }
+  if (!entries.length) warnings.push('CEVAP ANAHTARI bölümünde işlenebilir soru satırı bulunamadı.');
+  return {
+    entries, questionCounts, questionStarts, questionCountsByBooklet, unknownLines, detectedBooklets,
+    metadata: { title, publisherName, gradeLevel }, warnings, detectedFormat: 'WIDE_BOOKLET_TABLE',
+  };
 }
 
 function subjectForToken(token: string, subjects: SubjectOption[]): SubjectOption | undefined {
@@ -339,9 +469,14 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
       const statusValue = norm(statusColumn >= 0 ? cells[statusColumn] || '' : 'ACTIVE');
       const status = statusValue === 'CANCELLED' || statusValue === 'IPTAL' ? 'CANCELLED'
         : statusValue === 'EXCLUDED' || statusValue === 'DEGERLENDIRMEDISI' ? 'EXCLUDED' : 'ACTIVE';
+      const rawOutcomeCode = String(outcomeCodeColumn >= 0 ? cells[outcomeCodeColumn] || '' : '').trim();
+      const rawOutcomeTitle = String(outcomeTitleColumn >= 0 ? cells[outcomeTitleColumn] || '' : '').trim();
+      const codeIsLikelyCode = looksLikeOfficialOutcomeCode(rawOutcomeCode) || /^[A-ZÇĞİÖŞÜ]{1,12}[._-]?\d/i.test(rawOutcomeCode);
       const primaryOutcome: OutcomeReference = {
-        code: String(outcomeCodeColumn >= 0 ? cells[outcomeCodeColumn] || '' : '').trim() || undefined,
-        title: String(outcomeTitleColumn >= 0 ? cells[outcomeTitleColumn] || '' : '').trim() || undefined,
+        code: codeIsLikelyCode ? rawOutcomeCode || undefined : undefined,
+        title: rawOutcomeTitle || (!codeIsLikelyCode ? rawOutcomeCode || undefined : undefined),
+        publisherCode: rawOutcomeCode || undefined,
+        publisherTitle: rawOutcomeTitle || (!codeIsLikelyCode ? rawOutcomeCode || undefined : undefined),
         unit: String(unitColumn >= 0 ? cells[unitColumn] || '' : '').trim() || undefined,
         topic: String(topicColumn >= 0 ? cells[topicColumn] || '' : '').trim() || undefined,
         subtopic: String(subtopicColumn >= 0 ? cells[subtopicColumn] || '' : '').trim() || undefined,

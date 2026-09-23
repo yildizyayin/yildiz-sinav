@@ -4,7 +4,7 @@ import { Archive, ArrowLeft, ArrowRight, BookOpenCheck, Check, CheckCircle2, Cir
 import * as XLSX from 'xlsx';
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
-import { EXAM_CHOICES, EXAM_TEMPLATES, cleanAnswers, matchOfficialOutcome, parseAnswerKeyText, type ExamTemplate, type OutcomeCatalogEntry, type ParsedAnswerEntry, type SubjectOption } from '../lib/guidedDefinitions';
+import { EXAM_CHOICES, EXAM_TEMPLATES, cleanAnswers, matchOfficialOutcome, parseAnswerKeyText, parseAnswerKeyWorkbookRows, type ExamTemplate, type OutcomeCatalogEntry, type ParsedAnswerEntry, type SubjectOption } from '../lib/guidedDefinitions';
 
 type SubjectConfig = { subjectId: string; questionCount: number; questionStart: number; questionEnd: number; optionCount: 4 | 5; questionStatus: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'; wrongDivisor: number; sortOrder: number };
 type OutcomeMap = { subjectId: string; questionNo: number; outcomeId: string };
@@ -148,7 +148,7 @@ export function ExamDefinitions() {
     for (const s of data.subjects || []) for (const b of data.booklets || []) {
       const answers = (data.answerKey || []).filter((x: any) => x.subject_id === s.subject_id && x.booklet_code === b.code).sort((a: any, b2: any) => a.question_no - b2.question_no).map((x: any) => x.correct_answer || '').join('');
       const keyRows = (data.answerKey || []).filter((x: any) => x.subject_id === s.subject_id && x.booklet_code === b.code).sort((a: any, b2: any) => a.question_no - b2.question_no);
-      entries.push({ subjectId: s.subject_id, bookletCode: b.code, answers, optionCount: Number(keyRows[0]?.answer_option_count || s.option_count || 5) === 4 ? 4 : 5, ...(keyRows.length ? { acceptedAnswers: keyRows.map((x: any) => { try { const parsed = JSON.parse(x.accepted_answers || '[]'); return Array.isArray(parsed) ? parsed : [x.correct_answer]; } catch { return [x.correct_answer]; } }), questionStatuses: keyRows.map((x: any) => x.answer_question_status || x.question_status || 'ACTIVE'), bookletQuestionNumbers: keyRows.map((x: any) => Number(x.printed_question_no || x.question_no)), outcomeRefs: keyRows.map((x: any) => { const code = String(x.outcome_codes || '').split(',')[0].trim(); const title = String(x.outcome_titles || '').split(',')[0].trim(); return code || title ? { code: code || undefined, title: title || undefined } : null; }) } : {}) });
+      entries.push({ subjectId: s.subject_id, bookletCode: b.code, answers, optionCount: Number(keyRows[0]?.answer_option_count || s.option_count || 5) === 4 ? 4 : 5, ...(keyRows.length ? { acceptedAnswers: keyRows.map((x: any) => { try { const parsed = JSON.parse(x.accepted_answers || '[]'); return Array.isArray(parsed) ? parsed : [x.correct_answer]; } catch { return [x.correct_answer]; } }), questionStatuses: keyRows.map((x: any) => x.answer_question_status || x.question_status || 'ACTIVE'), bookletQuestionNumbers: keyRows.map((x: any) => Number(x.printed_question_no || x.question_no)), outcomeRefs: keyRows.map((x: any) => { const code = String(x.outcome_codes || '').split(',')[0].trim(); const title = String(x.outcome_titles || '').split(',')[0].trim(); let publisher: any = null; try { publisher = x.publisher_outcome_json ? JSON.parse(x.publisher_outcome_json) : null; } catch { publisher = null; } return code || title || publisher?.publisherTitle || publisher?.publisherCode ? { code: code || publisher?.officialCode || undefined, title: title || publisher?.publisherTitle || undefined, ...publisher } : null; }) } : {}) });
     }
     for (const group of Object.values((data.optionalAnswerKey || []).reduce((acc: Record<string, any>, row: any) => {
       const key = `${row.subject_id}::${row.booklet_code}`;
@@ -243,10 +243,9 @@ export function ExamDefinitions() {
     setNotice(`${matched} kazanım doğrulanmış MEB/ÖSYM kataloğuyla eşleşti; ${ambiguous + missing + unverified} kayıt manuel kontrol bekliyor.`);
   };
 
-  const analyseKey = (text = answerKeyText) => {
-    const result = parseAnswerKeyText(text, options.subjects as SubjectOption[]);
+  const applyAnalysis = (result: ReturnType<typeof parseAnswerKeyText>) => {
     setAnalysis(result);
-    if (!result.entries.length) { setError('Cevap anahtarında ders satırı bulunamadı. Örnek: MAT: ABCDE... veya TUR;ABCDE...'); return; }
+    if (!result.entries.length) { setError('Cevap anahtarında işlenebilir soru satırı bulunamadı. Referans şablonda CEVAP ANAHTARI bölümünü ve test adlarını kontrol edin.'); return; }
     setError('');
     setBooklets(result.detectedBooklets.join(','));
     setKeyEntries(result.entries);
@@ -257,6 +256,8 @@ export function ExamDefinitions() {
     else if (detectedTitleNorm.includes('YDT')) setChoiceKey('YDT');
     else if (detectedTitleNorm.includes('LGS')) setChoiceKey('LGS');
     setCreateForm((current) => ({ ...current, title: current.title || result.metadata?.title || '', publisherName: current.publisherName || result.metadata?.publisherName || '', gradeLevel: (!current.gradeLevel || current.gradeLevel === String(selectedChoice.gradeLevel || 7)) ? String(result.metadata?.gradeLevel || current.gradeLevel || selectedChoice.gradeLevel || '') : current.gradeLevel, description: current.description || (result.detectedFormat === 'WIDE_BOOKLET_TABLE' ? 'Kazanımlı cevap anahtarından otomatik oluşturuldu; yayın öncesi kontrol edilmelidir.' : '') }));
+    const hasPublisherOutcomes = result.entries.some((entry) => (entry.outcomeRefs || []).some((reference) => Boolean(reference?.publisherTitle || reference?.publisherCode || reference?.officialCode || reference?.code || reference?.title)));
+    if (hasPublisherOutcomes) { setOutcomeRequired(true); setDefinitionMode('OUTCOME'); }
     const mappingSummary = autoMatchOutcomes(result);
     const cfg = Object.entries(result.questionCounts).map(([subjectId, questionCount], index) => { const questionStart = result.questionStarts[subjectId] || 1; const optionCount = result.entries.find((entry) => entry.subjectId === subjectId)?.optionCount || 5; return { subjectId, questionCount, questionStart, questionEnd: questionStart + questionCount - 1, optionCount, questionStatus: 'ACTIVE' as const, wrongDivisor: selectedChoice.defaultWrongDivisor, sortOrder: index + 1 }; });
     setSubjects(cfg);
@@ -265,6 +266,8 @@ export function ExamDefinitions() {
     setNotice(`Cevap anahtarı analiz edildi: ${cfg.length} ders, ${cfg.reduce((n, x) => n + x.questionCount, 0)} soru, ${result.detectedBooklets.length} kitapçık.${outcomeNotice}${warningNotice}`);
   };
 
+  const analyseKey = (text = answerKeyText) => applyAnalysis(parseAnswerKeyText(text, options.subjects as SubjectOption[]));
+
   const readAnswerFile = async (file?: File) => {
     if (!file) return;
     setAnswerKeyFile(file);
@@ -272,20 +275,60 @@ export function ExamDefinitions() {
     if (file.name.toLowerCase().endsWith('.xlsx')) {
       const workbook = XLSX.read(await file.arrayBuffer(), { type: 'array' });
       const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = firstSheet ? XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' }) as unknown[][] : [];
       text = firstSheet ? XLSX.utils.sheet_to_csv(firstSheet) : '';
+      setAnswerKeyText(text);
+      applyAnalysis(parseAnswerKeyWorkbookRows(rows, options.subjects as SubjectOption[]));
+      return;
     } else text = await file.text();
     setAnswerKeyText(text);
     analyseKey(text);
   };
 
   const downloadOutcomeTemplate = () => {
-    const escapeCsv = (value: string | number) => `"${String(value).replace(/"/g, '""')}"`;
-    const headers = ['Ders', 'Soru', 'Kitapçık', 'Doğru Cevap', 'Şık Sayısı', 'Kabul Edilen Cevaplar', 'Durum', 'Kazanım Kodu', 'Kazanım Açıklaması', 'Ünite', 'Konu', 'Alt Konu', 'Üst Kazanım Kodu'];
+    const columnCount = 36;
     const bookletCodes = [...new Set(booklets.split(',').map((value) => value.trim().toUpperCase()).filter(Boolean))];
-    const rows = (bookletCodes.length ? bookletCodes : ['A']).flatMap((booklet) => selectedTemplate.sections.flatMap((item) => Array.from({ length: item.questionCount }, (_, index) => [item.subjectCode, item.questionStart + index, booklet, '', item.optionCount, '', 'ACTIVE', '', '', '', '', '', ''])));
-    const csv = [headers, ...rows].map((row) => row.map(escapeCsv).join(',')).join('\n');
-    const url = URL.createObjectURL(new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' }));
-    const anchor = document.createElement('a'); anchor.href = url; anchor.download = `${selectedTemplate.key.toLowerCase()}-kazanimli-cevap-anahtari-sablonu.csv`; anchor.click(); URL.revokeObjectURL(url);
+    const templateBooklets = bookletCodes.length ? bookletCodes : ['A'];
+    const rows: any[][] = Array.from({ length: 36 + selectedTemplate.sections.reduce((sum, item) => sum + item.questionCount, 0) }, () => Array(columnCount).fill(''));
+    const put = (row: number, column: number, value: string | number) => { rows[row][column] = value; };
+    put(0, 0, 'ANUNEX · SINAV YÜKLEME ŞABLONU');
+    put(1, 0, 'SINAV ADI'); put(1, 5, createForm.title || 'TYT 1. DENEME');
+    put(2, 0, 'SINAV DETAY BİLGİLERİ');
+    put(3, 0, 'Sınıf'); put(3, 5, createForm.gradeLevel || selectedChoice.gradeLevel || ''); put(3, 8, 'Yayınevi'); put(3, 13, createForm.publisherName || '');
+    put(4, 0, 'Sınav türü'); put(4, 5, selectedChoice.examType); put(4, 8, 'Oturum / bölüm'); put(4, 13, createForm.sessionLabel || '');
+    put(5, 0, 'Seçenek sayısı'); put(5, 5, selectedTemplate.sections[0]?.optionCount || 5); put(5, 8, 'Kitapçıklar'); put(5, 13, templateBooklets.join(','));
+    put(7, 0, 'TEST İSİMLERİ VE SORU ARALIKLARI');
+    put(8, 0, 'Test No'); put(8, 2, 'Test Adı'); put(8, 4, 'Ders Kodu'); put(8, 6, 'İlk Soru No'); put(8, 8, 'Son Soru No'); put(8, 10, 'Kitapçıklar');
+    selectedTemplate.sections.forEach((item, index) => { const row = 9 + index; const subjectLabel = options.subjects?.find((subject: any) => subject.code === item.subjectCode)?.name || item.label; put(row, 0, index + 1); put(row, 2, subjectLabel); put(row, 4, item.subjectCode); put(row, 6, item.questionStart); put(row, 8, item.questionEnd); put(row, 10, templateBooklets.join(',')); });
+    put(25, 0, 'DERSLER VE TESTLERE GÖRE SORU DAĞILIMI');
+    put(26, 0, 'Ders Kodu'); put(26, 2, 'Test No'); put(26, 4, 'İlk Soru No'); put(26, 6, 'Son Soru No'); put(26, 8, 'Alternatif Sıra'); put(26, 10, 'Kazanım Ders Kodu');
+    selectedTemplate.sections.forEach((item, index) => { const row = 27 + index; put(row, 0, item.subjectCode); put(row, 2, index + 1); put(row, 4, item.questionStart); put(row, 6, item.questionEnd); put(row, 10, item.subjectCode); });
+    const answerHeaderRow = 34;
+    put(answerHeaderRow - 1, 0, 'CEVAP ANAHTARI');
+    put(answerHeaderRow, 0, 'Test No'); put(answerHeaderRow, 2, 'Açıklama / Test Adı'); put(answerHeaderRow, 4, 'A Soru No'); put(answerHeaderRow, 6, 'B Soru No'); put(answerHeaderRow, 8, 'Doğru Cevap'); put(answerHeaderRow, 10, 'Yayınevi Kazanımı'); put(answerHeaderRow, 24, 'MEB Kazanım Kodu'); put(answerHeaderRow, 26, 'MEB Kazanım Adı'); put(answerHeaderRow, 28, 'Durum'); put(answerHeaderRow, 30, 'Şık Sayısı');
+    let answerRow = answerHeaderRow + 1;
+    selectedTemplate.sections.forEach((item, testIndex) => {
+      for (let offset = 0; offset < item.questionCount; offset++) {
+        const subjectLabel = options.subjects?.find((subject: any) => subject.code === item.subjectCode)?.name || item.label; put(answerRow, 0, testIndex + 1); put(answerRow, 2, subjectLabel); put(answerRow, 4, item.questionStart + offset); if (templateBooklets.includes('B')) put(answerRow, 6, item.questionStart + offset); put(answerRow, 8, ''); put(answerRow, 10, ''); put(answerRow, 24, ''); put(answerRow, 26, ''); put(answerRow, 28, 'ACTIVE'); put(answerRow, 30, item.optionCount); answerRow++;
+      }
+    });
+    const worksheet = XLSX.utils.aoa_to_sheet(rows);
+    worksheet['!merges'] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 35 } }, { s: { r: 2, c: 0 }, e: { r: 2, c: 35 } },
+      { s: { r: 7, c: 0 }, e: { r: 7, c: 35 } }, { s: { r: 25, c: 0 }, e: { r: 25, c: 35 } }, { s: { r: 33, c: 0 }, e: { r: 33, c: 35 } },
+    ];
+    worksheet['!cols'] = Array.from({ length: columnCount }, (_, index) => ({ wch: [0, 1, 2, 3].includes(index) ? 16 : index === 10 ? 34 : index === 24 || index === 26 ? 26 : 12 }));
+    const blue = '0067E8'; const pink = 'F3DDF0'; const white = 'FFFFFF';
+    const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1:AJ1');
+    for (let row = range.s.r; row <= range.e.r; row++) for (let column = range.s.c; column <= range.e.c; column++) {
+      const cell = worksheet[XLSX.utils.encode_cell({ r: row, c: column })];
+      if (!cell) continue;
+      const sectionRow = [0, 2, 7, 25, 33].includes(row);
+      const headerRow = [8, 26, 34].includes(row);
+      cell.s = { fill: { fgColor: { rgb: sectionRow || headerRow ? blue : pink } }, font: { bold: sectionRow || headerRow, color: { rgb: sectionRow || headerRow ? white : '111827' } }, alignment: { vertical: 'center', wrapText: true }, border: { top: { style: 'thin', color: { rgb: 'FFFFFF' } }, bottom: { style: 'thin', color: { rgb: 'FFFFFF' } }, left: { style: 'thin', color: { rgb: 'FFFFFF' } }, right: { style: 'thin', color: { rgb: 'FFFFFF' } } } };
+    }
+    const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, worksheet, 'Sınav Yükleme');
+    XLSX.writeFile(workbook, `${selectedTemplate.key.toLowerCase()}-sinav-yukleme-sablonu.xlsx`);
   };
 
   const createExam = async () => {
@@ -595,9 +638,9 @@ export function ExamDefinitions() {
         <div className="simple-method-row"><button type="button" className={createMethod === 'ANSWER_KEY' ? 'active' : ''} onClick={() => setCreateMethod('ANSWER_KEY')}><FileUp size={16}/> Hazır şablon / dosya</button><button type="button" className={createMethod === 'MANUAL' ? 'active' : ''} onClick={() => setCreateMethod('MANUAL')}><BookOpenCheck size={16}/> Kendin oluştur</button></div>
         {createMethod === 'ANSWER_KEY' ? <>
           <div className="simple-file-row"><label><span>Hazır sınav şablonu</span><select value={templateKey} onChange={(e) => { const key = e.target.value; const chosen = EXAM_TEMPLATES.find((template) => template.key === key); setTemplateKey(key); setOutcomeRequired(Boolean(chosen?.requiresOutcomes)); setDefinitionMode(chosen?.requiresOutcomes ? 'OUTCOME' : 'STANDARD'); const baseKey = key.endsWith('_OUTCOME') ? key.slice(0, -8) : key; const nextChoice = baseKey === 'SCHOOL_5' || baseKey === 'SCHOOL_6' || baseKey === 'SCHOOL_7' ? `STD_${baseKey.slice(-1)}` : baseKey; if (EXAM_CHOICES.some((choice) => choice.key === nextChoice)) setChoiceKey(nextChoice); }}>{EXAM_TEMPLATES.map((template) => <option key={template.key} value={template.key}>{template.label}</option>)}</select></label><div className="simple-template-note"><strong>{selectedTemplate.label}</strong><span>{selectedTemplate.description}</span><div><button type="button" className="ghost" onClick={downloadOutcomeTemplate}>Kazanımlı şablonu indir</button><button type="button" className="secondary" onClick={() => applyTemplate()}>Şablonu uygula</button></div></div></div>
-          <div className="simple-file-row"><label className="simple-upload"><span>Kazanımlı cevap anahtarı (.csv / .xlsx)</span><input type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(e) => void readAnswerFile(e.target.files?.[0])} /></label><label><span>Kitapçıklar</span><input value={booklets} onChange={(e) => setBooklets(e.target.value)} placeholder="A veya A,B" /></label></div>
+          <div className="simple-file-row"><label className="simple-upload"><span>Kazanımlı cevap anahtarı (.xlsx / .csv)</span><input type="file" accept=".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(e) => void readAnswerFile(e.target.files?.[0])} /></label><label><span>Kitapçıklar</span><input value={booklets} onChange={(e) => setBooklets(e.target.value)} placeholder="A veya A,B" /></label></div>
           <details className="simple-details"><summary>Metin olarak cevap anahtarı gir</summary><textarea rows={5} value={answerKeyText} onChange={(e) => setAnswerKeyText(e.target.value)} placeholder={'MAT: ABCDEABCDE\nTUR: ABCDEABCDE\nFEN: ABCDEABCDE'} /><button type="button" className="secondary" onClick={() => analyseKey()}><FileUp size={15}/> Anahtarı analiz et</button></details>
-          {analysis && <div className={analysis.unknownLines.length || analysis.warnings?.length ? 'builder-analysis warning' : 'builder-analysis success'}><strong>{Object.keys(analysis.questionCounts).length} ders bulundu.</strong> {analysis.detectedFormat === 'WIDE_BOOKLET_TABLE' ? ' Geniş kitapçık tablosu algılandı.' : ''} Kitapçıklar: {analysis.detectedBooklets.join(', ')}. {analysis.unknownLines.length ? `${analysis.unknownLines.length} satır kontrol edilmeli.` : 'Soru sayıları otomatik çıkarıldı.'} {analysis.warnings?.join(' ')}</div>}
+          {analysis && <div className={analysis.unknownLines.length || analysis.warnings?.length ? 'builder-analysis warning' : 'builder-analysis success'}><strong>{Object.keys(analysis.questionCounts).length} ders bulundu.</strong> {analysis.detectedFormat === 'WIDE_BOOKLET_TABLE' ? 'Referans Excel düzeni algılandı: test/soru aralığı ve kitapçık sırası korundu.' : ''} Kitapçıklar: {analysis.detectedBooklets.join(', ')}. Yayınevi kazanımları ayrı tutulur; MEB kodu/kazanımı yalnız doğrulanmış katalogdan eşleştirilir. {analysis.unknownLines.length ? `${analysis.unknownLines.length} satır kontrol edilmeli.` : 'Soru sayıları otomatik çıkarıldı.'} {analysis.warnings?.join(' ')}</div>}
         </> : <div className="cards-list builder-subject-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" min="1" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" min={cfg.questionStart} value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label></>}</div>; })}</div>}
       </section>}
 
@@ -644,7 +687,7 @@ export function ExamDefinitions() {
         <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Dersler ve soru aralıkları</h2><p>Başlangıç/bitiş numarası ve 4 veya 5 şık yapısı soru tanımının parçasıdır.</p></div></div><label>Kitapçıklar<input value={booklets} onChange={(e) => setBooklets(e.target.value)} /></label><div className="cards-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div style={{ flex: 1 }}><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label><label className="compact-field">Yanlış götürme<input type="number" step="0.5" value={cfg.wrongDivisor} onChange={(e) => patchSubject(s.id, { wrongDivisor: Number(e.target.value) })} /></label></>}</div>; })}</div><button className="secondary" onClick={saveStructure}><Save size={16} /> Yapıyı Kaydet</button></div>
 
         {!!detail.subjects?.length && !!detail.booklets?.length && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Cevap anahtarı</h2><p>Doğru cevap, alternatif kabul, soru durumu ve kazanım bağlantısı aynı tanımda tutulur.</p></div><CheckCircle2 /></div>{detail.subjects.map((s: any) => <div key={s.subject_id} style={{ padding: 14, marginBottom: 12, border: '1px solid var(--border,#e5e7eb)', borderRadius: 12 }}><strong>{s.name} · {s.question_count} soru · {s.option_count || 5} şık</strong>{detail.booklets.map((b: any) => { const entry = keyEntries.find((x) => x.subjectId === s.subject_id && x.bookletCode === b.code); return <div key={b.code}><label>{b.code} Kitapçığı<input value={entry?.answers || ''} onChange={(e) => setKey(s.subject_id, b.code, e.target.value)} placeholder={`${s.question_count} cevap`} /><small>{entry?.answers.length || 0}/{s.question_count}</small></label><div className="question-meta-grid">{Array.from({ length: Number(s.question_count) }, (_, index) => { const questionNo = Number(s.question_start || 1) + index; const status = entry?.questionStatuses?.[index] || 'ACTIVE'; const accepted = entry?.acceptedAnswers?.[index]; const acceptedText = Array.isArray(accepted) ? accepted.join('|') : accepted || entry?.answers?.[index] || ''; return <div key={questionNo}><strong>{questionNo}</strong><select aria-label={`${b.code} ${questionNo} durumu`} value={status} onChange={(e) => setQuestionMetadata(s.subject_id, b.code, index, { status: e.target.value as any })}><option value="ACTIVE">Aktif</option><option value="CANCELLED">İptal</option><option value="EXCLUDED">Değerlendirme dışı</option></select><input aria-label={`${b.code} ${questionNo} kabul`} value={acceptedText} onChange={(e) => setQuestionMetadata(s.subject_id, b.code, index, { accepted: e.target.value })} placeholder="A veya A|B" /></div>; })}</div></div>; })}</div>)}<label style={{ display: 'flex', gap: 8, alignItems: 'center' }}><input type="checkbox" checked={outcomeRequired} onChange={(e) => setOutcomeRequired(e.target.checked)} /> Bu sınav kazanımlı; bütün sorular kazanıma bağlanacak.</label>
-        {outcomeRequired && <div style={{ marginTop: 14 }}><div className="panel-head"><div><h3>Kazanım eşleştirme</h3><p>Yalnız sistemde doğrulanmış MEB/ÖSYM katalog kayıtları yayınlanabilir.</p></div><button type="button" className="secondary" disabled={busy} onClick={rematchSavedOutcomes}><Sparkles size={15} /> Kazanımları eşleştir</button></div>{detail.subjects.map((s: any) => <div key={s.subject_id} style={{ marginBottom: 18 }}><h3>{s.name} kazanımları</h3><div className="form-grid">{Array.from({ length: Number(s.question_count) }, (_, i) => Number(s.question_start || 1) + i).map((q) => <label key={q}>Soru {q}<select value={outcomeMappings.find((x) => x.subjectId === s.subject_id && x.questionNo === q)?.outcomeId || ''} onChange={(e) => setOutcome(s.subject_id, q, e.target.value)}><option value="">Kazanım seç</option>{options.outcomes?.filter((o: any) => o.subject_id === s.subject_id && Number(o.official) === 1 && Number(o.verified) === 1).map((o: any) => <option key={o.id} value={o.id}>{o.code ? `${o.code} · ` : ''}{o.title}</option>)}</select></label>)}</div></div>)}</div>}
+        {outcomeRequired && <div style={{ marginTop: 14 }}><div className="panel-head"><div><h3>Kazanım eşleştirme</h3><p>Yayınevinin verdiği ifade korunur. Otomatik seçim yalnız doğrulanmış resmî MEB/ÖSYM kaydıyla yapılır; eşleşmeyen satır manuel inceleme bekler.</p></div><button type="button" className="secondary" disabled={busy} onClick={rematchSavedOutcomes}><Sparkles size={15} /> Kazanımları eşleştir</button></div>{detail.subjects.map((s: any) => <div key={s.subject_id} style={{ marginBottom: 18 }}><h3>{s.name} kazanımları</h3><div className="form-grid">{Array.from({ length: Number(s.question_count) }, (_, i) => Number(s.question_start || 1) + i).map((q) => { const source = keyEntries.find((entry) => entry.subjectId === s.subject_id && entry.bookletCode === (booklets.split(',')[0] || 'A'))?.outcomeRefs?.[q - Number(s.question_start || 1)] || null; return <label key={q}>Soru {q}{source?.publisherTitle && <small style={{ display: 'block', color: '#64748b', margin: '4px 0' }}>Yayınevi: {source.publisherTitle}{source.officialCode ? ` · MEB kodu: ${source.officialCode}` : ''}</small>}<select value={outcomeMappings.find((x) => x.subjectId === s.subject_id && x.questionNo === q)?.outcomeId || ''} onChange={(e) => setOutcome(s.subject_id, q, e.target.value)}><option value="">MEB kazanımı seç</option>{options.outcomes?.filter((o: any) => o.subject_id === s.subject_id && Number(o.official) === 1 && Number(o.verified) === 1).map((o: any) => <option key={o.id} value={o.id}>{o.code ? `${o.code} · ` : ''}{o.title}</option>)}</select></label>; })}</div></div>)}</div>}
           <button className="primary" onClick={saveAnswerKey}><Save size={16} /> Cevap Anahtarı ve Kazanımları Kaydet</button></div>}
 
         {detail.exam.owner_type === 'CENTRAL' && user?.role === 'SUPER_ADMIN' && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Hangi kurumlar kullanacak?</h2><p>Merkezi sınav yalnız seçtiğiniz kurumlarda görünür.</p></div></div><div className="cards-list">{options.institutions?.map((i: any) => <label className="list-card" key={i.id}><input type="checkbox" checked={assignedInstitutions.includes(i.id)} onChange={(e) => setAssignedInstitutions((x) => e.target.checked ? [...new Set([...x, i.id])] : x.filter((id) => id !== i.id))} /><div><strong>{i.name}</strong><span>{i.status}</span></div></label>)}</div><button className="secondary" onClick={saveInstitutions}><Save size={16} /> Kurumları Kaydet</button></div>}
