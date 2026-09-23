@@ -18,4 +18,9 @@ Her değişiklik şu bilgilerle eklenir:
 - Test sonucu
 - Canlı doğrulama sonucu
 - Bilinen sınırlama
+## 2026-09-23 — Salt-okuma Sınav Merkezi denetimi
 
+- Aç eyleminin gerçek detay çalışma alanına değil, aynı bileşendeki seçili satıra bağlandığı tespit edildi.
+- Dosya yükleme kartının yalnızca INSTITUTION_MANAGER rolünde gösterildiği tespit edildi; SUPER_ADMIN için görünürlük açığı kaydedildi.
+- mode=upload bağlantısının ayrı bir yükleme çalışma alanı oluşturmadığı kaydedildi.
+- Bu bulgular kod değişikliği yapılmadan önceki hata haritası olarak kabul edildi.

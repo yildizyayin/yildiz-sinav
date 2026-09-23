@@ -33,4 +33,10 @@ Bu belge, planı değil doğrulanmış durumu tutar. Kullanıcı bildirimi ile g
 3. Gerçek dosya seçimi ve yükleme akışı.
 4. API hata kayıtlarının kullanıcıya görünür ve anlamlı gösterilmesi.
 5. Optik form parametrelerinin gerçek örnekle doğrulanması.
+## 2026-09-23 salt-okuma denetimi bulguları
 
+- Sınav Merkezi içindeki Aç eylemi ExamCenter bileşeninde yalnızca satırı seçiyor; ExamDefinitions içindeki gerçek detay çalışma alanına yönlendirme yapmıyor. Bu nedenle kullanıcı sınav açılmadı sanıyor.
+- Dosya yükleme kartı ExamCenter içinde yalnızca INSTITUTION_MANAGER rolü için oluşturuluyor. Rota SUPER_ADMIN rolünü kabul etse de Süper Admin için upload kartı görünmüyor.
+- Sınav Yükle bağlantısı aynı ExamCenter bileşenini mode=upload parametresiyle açıyor; bağımsız bir yükleme çalışma alanı değil. Bu yapı, butonun klasör gibi görünüp işlevsiz algılanmasına neden olabiliyor.
+- Katalog, sınav detay ve dosya önizleme API rotaları kaynak kodda mevcut; fakat yetkili canlı kullanıcıyla uçtan uca doğrulanmadıkları için çalışan kabul edilmiyor.
+- Yetkili canlı oturum bulunmadığından anonim canlı kontrol yalnızca giriş ekranına yönlendirmeyi doğruladı. Canlı kullanıcı akışı hâlâ açık kabul testidir.
