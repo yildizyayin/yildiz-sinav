@@ -24,3 +24,8 @@ Her değişiklik şu bilgilerle eklenir:
 - Dosya yükleme kartının yalnızca INSTITUTION_MANAGER rolünde gösterildiği tespit edildi; SUPER_ADMIN için görünürlük açığı kaydedildi.
 - mode=upload bağlantısının ayrı bir yükleme çalışma alanı oluşturmadığı kaydedildi.
 - Bu bulgular kod değişikliği yapılmadan önceki hata haritası olarak kabul edildi.
+## 2026-09-23 — Hedefli Sınav Merkezi düzeltmesi
+
+- Kayıtlı sınavdaki Sınavı aç eylemi gerçek sınav detay çalışma alanına bağlandı.
+- Süper Admin için dosya yükleme kartı görünür hale getirildi.
+- Production onayı verilmedi; canlı kabul testi bekleniyor.

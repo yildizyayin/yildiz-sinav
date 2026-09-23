@@ -40,3 +40,10 @@ Bu belge, planı değil doğrulanmış durumu tutar. Kullanıcı bildirimi ile g
 - Sınav Yükle bağlantısı aynı ExamCenter bileşenini mode=upload parametresiyle açıyor; bağımsız bir yükleme çalışma alanı değil. Bu yapı, butonun klasör gibi görünüp işlevsiz algılanmasına neden olabiliyor.
 - Katalog, sınav detay ve dosya önizleme API rotaları kaynak kodda mevcut; fakat yetkili canlı kullanıcıyla uçtan uca doğrulanmadıkları için çalışan kabul edilmiyor.
 - Yetkili canlı oturum bulunmadığından anonim canlı kontrol yalnızca giriş ekranına yönlendirmeyi doğruladı. Canlı kullanıcı akışı hâlâ açık kabul testidir.
+## 2026-09-23 hedefli düzeltme durumu
+
+- Sınav Merkezi kayıt listesindeki Sınavı aç eylemi sınav detay çalışma alanına yönlendirecek şekilde dalda düzeltildi.
+- Süper Admin için dosya yükleme kartının görünürlük koşulu düzeltildi.
+- Kod commit’i: 2f1110fcc61b139c2ce1f36f94851161ae5aaa3c.
+- Doğrulama workflow’u #78 ön kontrolde başarılı; üretim işi korumalı onay bekliyor.
+- Canlı kullanıcı kabul testi yapılmadığı için bu düzeltme henüz CANLIDA DOĞRULANDI değildir.
