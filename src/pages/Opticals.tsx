@@ -421,16 +421,23 @@ export function Opticals() {
   }, [photo]);
 
   const persistManualDialogDefinition = async (versionId: string) => {
-    if (!versionId) return;
+    if (!versionId) return { saved: false, reason: "Sürüm oluşturulamadı." };
     const largestEnd = Math.max(
       0,
       ...manualFields.filter((field) => field.enabled).map((field) => Number(field.start || 0) + Number(field.length || 0)),
       ...manualAnswers.filter((block) => block.enabled).map((block) => Number(block.start || 0) + Number(block.length || 0)),
     );
     const recordLength = manualRecordLength || largestEnd;
-    if (!recordLength || !manualFields.some((field) => field.key === "name" && field.enabled && field.length > 0) || !manualAnswers.some((block) => block.enabled && block.length > 0)) return;
+    if (!recordLength) return { saved: false, reason: "Kayıt uzunluğu, girilen alanların bitişlerinden hesaplanamadı." };
+    if (!manualFields.some((field) => field.key === "name" && field.enabled && field.length > 0)) {
+      return { saved: false, reason: "Ad, Soyad alanını etkinleştirip başlangıç ve uzunluk girin." };
+    }
+    if (!manualAnswers.some((block) => block.enabled && block.length > 0)) {
+      return { saved: false, reason: "En az bir Test/cevap bloğunu etkinleştirip başlangıç ve uzunluk girin." };
+    }
     const definition = buildManualParserDefinition(recordLength, manualFields, manualAnswers, manualIndexBase);
     await api(`/api/optical-definition-versions/${versionId}/parser`, { method: "PUT", body: JSON.stringify({ definition }) });
+    return { saved: true, reason: "" };
   };
 
   const createTemplate = async () => {
@@ -453,11 +460,14 @@ export function Opticals() {
       setSelectedTemplateId(r.templateId);
       setSelectedVersionId(r.versionId);
       setMethod(newTemplate.formType);
-      if (newTemplate.formType === "MANUAL") await persistManualDialogDefinition(r.versionId);
+      const manualResult = newTemplate.formType === "MANUAL"
+        ? await persistManualDialogDefinition(r.versionId)
+        : { saved: true, reason: "" };
+      await loadVersion(r.versionId);
       setFormDialogOpen(false);
-      setNotice(
-        "Okuma tanımı taslağı oluşturuldu. FMT/TXT/DAT eşlemesini veya fotoğraf/kamera geometrisini tamamlayın; baskı tasarımı ayrı ekrandadır.",
-      );
+      setNotice(manualResult.saved
+        ? "Optik kartı ve manuel okuma parametreleri kaydedildi."
+        : `Optik kartı kaydedildi. Manuel okuma parametreleri henüz kaydedilmedi: ${manualResult.reason}`);
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -473,6 +483,7 @@ export function Opticals() {
     setManualFields(defaultManualFields());
     setManualAnswers(defaultManualAnswerBlocks());
     setError("");
+    setNotice("");
   };
   const openEditForm = (templateId: string) => {
     setFormDialogMode("edit");
@@ -480,6 +491,7 @@ export function Opticals() {
     setSelectedTemplateId(templateId);
     setOpenCardMenu(null);
     setError("");
+    setNotice("");
   };
   const saveDifferentForm = () => {
     const source = formDialogMode === "edit" ? editTemplate : newTemplate;
@@ -544,7 +556,14 @@ export function Opticals() {
     }
   };
   const saveTemplate = async () => {
-    if (!selectedTemplateId || !editTemplate.name.trim()) return;
+    if (!selectedTemplateId) {
+      setError("Düzenlenecek optik form seçilemedi. Listeyi yenileyip tekrar deneyin.");
+      return false;
+    }
+    if (!editTemplate.name.trim()) {
+      setError("Form adı gereklidir.");
+      return false;
+    }
     setBusy(true);
     setError("");
     try {
@@ -554,9 +573,10 @@ export function Opticals() {
       });
       await loadTemplates();
       await loadTemplate(selectedTemplateId);
-      setNotice("Optik kartı güncellendi.");
+      return true;
     } catch (e: any) {
       setError(e.message);
+      return false;
     } finally {
       setBusy(false);
     }
@@ -566,9 +586,16 @@ export function Opticals() {
       await createTemplate();
       return;
     }
-    await saveTemplate();
-    if (editTemplate.formType === "MANUAL") await persistManualDialogDefinition(selectedVersionId);
+    const templateSaved = await saveTemplate();
+    if (!templateSaved) return;
+    const manualResult = editTemplate.formType === "MANUAL"
+      ? await persistManualDialogDefinition(selectedVersionId)
+      : { saved: true, reason: "" };
+    if (selectedVersionId) await loadVersion(selectedVersionId);
     setFormDialogOpen(false);
+    setNotice(manualResult.saved
+      ? "Optik kartı ve manuel okuma parametreleri güncellendi."
+      : `Optik kartı güncellendi. Manuel okuma parametreleri henüz kaydedilmedi: ${manualResult.reason}`);
   };
   const deleteTemplate = async (templateId = selectedTemplateId) => {
     if (
@@ -1120,13 +1147,15 @@ export function Opticals() {
               <button type="button" className="icon-button" aria-label="Pencereyi kapat" onClick={() => setFormDialogOpen(false)}><X size={18} /></button>
             </div>
             <div className="optical-form-dialog-body">
+              {error && <div className="alert error optical-form-dialog-feedback">{error}</div>}
+              {notice && <div className="alert info optical-form-dialog-feedback">{notice}</div>}
               <div className="optical-schoolizyon-top-fields">
-                <label>Form Adı *<input value={form.name} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, name: e.target.value })) : setNewTemplate((x) => ({ ...x, name: e.target.value }))} placeholder="Form adı" /></label>
-                <label>Sıra<input type="number" min="1" value={form.sortOrder || 1} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 })) : setNewTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 }))} /></label>
-                <label>Form Türü *<select value={form.formType} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, formType: e.target.value as Method })) : setNewTemplate((x) => ({ ...x, formType: e.target.value as Method }))}><option value="MANUAL">Kullanıcıya özel</option><option value="FMT">FMT</option><option value="TXT">TXT / DAT</option><option value="PHOTO">Fotoğraf / kamera</option></select></label>
-                <label>Yayınevi *<input value={form.vendor} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, vendor: e.target.value })) : setNewTemplate((x) => ({ ...x, vendor: e.target.value }))} placeholder="Yayınevi" /></label>
-                <label>Optik kodu *<input value={form.opticalCode} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, opticalCode: e.target.value })) : setNewTemplate((x) => ({ ...x, opticalCode: e.target.value }))} placeholder="Optik kodu" /></label>
-                <label>Kullanıcı *<div className="optical-user-picker"><input value={ownerLabel} readOnly /><button type="button" className="secondary" onClick={() => setNotice(`${ownerLabel} seçildi.`)}>Seç</button></div></label>
+                <label className="dialog-field-name">Form Adı *<input value={form.name} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, name: e.target.value })) : setNewTemplate((x) => ({ ...x, name: e.target.value }))} placeholder="Form adı" /></label>
+                <label className="dialog-field-order">Sıra<input type="number" min="1" value={form.sortOrder || 1} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 })) : setNewTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 }))} /></label>
+                <label className="dialog-field-type">Form Türü *<select value={form.formType} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, formType: e.target.value as Method })) : setNewTemplate((x) => ({ ...x, formType: e.target.value as Method }))}><option value="MANUAL">Kullanıcıya özel</option><option value="FMT">FMT</option><option value="TXT">TXT / DAT</option><option value="PHOTO">Fotoğraf / kamera</option></select></label>
+                <label className="dialog-field-publisher">Yayınevi *<input value={form.vendor} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, vendor: e.target.value })) : setNewTemplate((x) => ({ ...x, vendor: e.target.value }))} placeholder="Yayınevi" /></label>
+                <label className="dialog-field-code">Optik kodu *<input value={form.opticalCode} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, opticalCode: e.target.value })) : setNewTemplate((x) => ({ ...x, opticalCode: e.target.value }))} placeholder="Optik kodu" /></label>
+                <label className="dialog-field-owner">Kullanıcı *<div className="optical-user-picker"><input value={ownerLabel} readOnly /><button type="button" className="secondary" onClick={() => setNotice(`${ownerLabel} seçildi.`)}>Seç</button></div></label>
               </div>
               <div className="optical-schoolizyon-section-head"><strong>Alan</strong><span>Baş.</span><span>Uz.</span></div>
               <div className="optical-schoolizyon-columns">

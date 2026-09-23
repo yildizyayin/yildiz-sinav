@@ -42,13 +42,23 @@
 .optical-form-dialog-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #e3e8f0; }
 .optical-form-dialog-head h2 { display: flex; align-items: center; gap: 8px; margin: 0; color: #1774ee; font-size: 18px; }
 .optical-form-dialog-body { overflow: auto; padding: 20px 24px 18px; }
+.optical-form-dialog-feedback { margin: 0 0 14px; }
 .optical-schoolizyon-top-fields { display: grid; grid-template-columns: minmax(220px, 1.35fr) 100px minmax(170px, 1fr); gap: 13px 18px; align-items: end; }
 .optical-schoolizyon-top-fields label { display: grid; gap: 6px; color: #46546b; font-size: 11px; font-weight: 800; }
+.optical-schoolizyon-top-fields .dialog-field-name,
+.optical-schoolizyon-top-fields .dialog-field-order,
+.optical-schoolizyon-top-fields .dialog-field-type { color: #3569c8; }
+.optical-schoolizyon-top-fields .dialog-field-publisher { color: #9a5a20; }
+.optical-schoolizyon-top-fields .dialog-field-code { color: #6f4bb3; }
+.optical-schoolizyon-top-fields .dialog-field-owner { color: #18786e; }
+.optical-schoolizyon-top-fields label input,
+.optical-schoolizyon-top-fields label select { color: #243654; font-weight: 600; }
 .optical-schoolizyon-top-fields input, .optical-schoolizyon-top-fields select { min-height: 40px; margin: 0; border-color: #cfd9e8; border-radius: 5px; font-size: 13px; }
 .optical-user-picker { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0; }
 .optical-user-picker input { border-radius: 5px 0 0 5px; }
 .optical-user-picker button { min-height: 40px; padding: 0 13px; border-radius: 0 5px 5px 0; }
-.optical-schoolizyon-section-head { display: grid; grid-template-columns: minmax(150px, 1fr) 76px 76px; gap: 10px; align-items: center; margin-top: 22px; padding: 0 8px 8px; border-bottom: 1px dashed #a8b8ce; color: #42516a; font-size: 11px; font-weight: 800; }
+.optical-schoolizyon-section-head { display: grid; grid-template-columns: minmax(150px, 1fr) 76px 76px; gap: 10px; align-items: center; margin-top: 22px; padding: 0 8px 8px; border-bottom: 1px dashed #a8b8ce; color: #3569c8; font-size: 11px; font-weight: 800; }
+.optical-schoolizyon-section-head span { color: #71809a; font-weight: 700; }
 .optical-schoolizyon-columns { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 16px; padding-top: 7px; }
 .optical-schoolizyon-columns > div { min-width: 0; }
 .optical-schoolizyon-row { display: grid; grid-template-columns: minmax(0, 1fr) 76px 76px; gap: 10px; align-items: center; min-height: 38px; }
