@@ -66,6 +66,7 @@ export function ExamDefinitions() {
   const [selectedId, setSelectedId] = useState('');
   const [createdExamId, setCreatedExamId] = useState('');
   const [detail, setDetail] = useState<any>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
@@ -178,7 +179,14 @@ export function ExamDefinitions() {
     setTemplateKey((current) => current === `${nextTemplate}_OUTCOME` && EXAM_TEMPLATES.some((x) => x.key === current) ? current : (EXAM_TEMPLATES.some((x) => x.key === nextTemplate) ? nextTemplate : 'CUSTOM'));
     setCreateForm((f) => ({ ...f, gradeLevel: String(selectedChoice.gradeLevel || f.gradeLevel) }));
   }, [choiceKey]);
-  useEffect(() => { if (selectedId) void loadDetail(selectedId).catch((e) => setError(e.message)); }, [selectedId]);
+  useEffect(() => {
+    if (!selectedId) return;
+    setDetail(null);
+    setDetailLoading(true);
+    void loadDetail(selectedId)
+      .catch((e) => setError(e.message || 'Sınav ayrıntıları yüklenemedi.'))
+      .finally(() => setDetailLoading(false));
+  }, [selectedId]);
 
   const selectedSubjectIds = useMemo(() => new Set(subjects.map((s) => s.subjectId)), [subjects]);
   const visibleSubjects = useMemo(() => (options.subjects || []).filter((subject: any) => {
@@ -457,6 +465,7 @@ export function ExamDefinitions() {
   const closeDetail = () => {
     setSelectedId('');
     setDetail(null);
+    setDetailLoading(false);
     setContent({ assets: [], videos: [] });
     setError('');
   };
@@ -609,7 +618,7 @@ export function ExamDefinitions() {
     setError(''); setBuilderStep((current) => current === 4 ? 4 : (current + 1) as BuilderStep);
   };
 
-  return <div className={`exam-definition-page ${detail && selectedId ? 'detail-mode' : ''}`}>
+  return <div className={`exam-definition-page ${selectedId ? 'detail-mode' : ''}`}>
     <div className="exam-simple-shell">
       <div className="exam-simple-head">
         <div><span className="eyebrow">SINAV MERKEZİ</span><h1>Sınavlar</h1><p>Sınav kartını oluşturun veya mevcut sınava sonuç yükleyin.</p></div>
@@ -679,6 +688,8 @@ export function ExamDefinitions() {
     </div>
 
     <div id="exam-definition-detail" className="exam-definition-detail-shell">
+    {detailLoading && !detail && <div className="panel detail-loading"><RefreshCw size={18} className="spin" /><strong>Sınav ayrıntıları yükleniyor…</strong><span>Kayıt ve cevap anahtarı bilgileri getiriliyor.</span></div>}
+    {!detailLoading && !detail && selectedId && <div className="panel detail-loading"><CircleAlert size={18} /><strong>Sınav ayrıntıları açılamadı.</strong><span>{error || 'Listeyi yenileyip tekrar deneyin.'}</span><button type="button" className="secondary" onClick={() => { setError(''); setDetailLoading(true); void loadDetail(selectedId).catch((e) => setError(e.message || 'Sınav ayrıntıları yüklenemedi.')).finally(() => setDetailLoading(false)); }}>Tekrar dene</button></div>}
     {detail && <>
       <div className="exam-detail-toolbar"><button className="ghost" onClick={closeDetail}><ArrowLeft size={16} /> Sınav listesine dön</button><div className="exam-detail-actions"><button className="secondary" disabled={busy} onClick={() => void copyExamById(selectedId)}><Copy size={16} /> Kopyala</button>{detail.exam.status !== 'ARCHIVED' && <button className="danger" disabled={busy} onClick={() => void archiveExam()}><Trash2 size={16} /> Arşivle</button>}{detail.exam.status === 'DRAFT' && <button className="danger" disabled={busy} onClick={() => void deleteExamById(selectedId)}><Trash2 size={16} /> Sil</button>}<div style={{ position: 'relative' }}><button type="button" className="icon-button" aria-label="Sınav işlemleri" aria-expanded={openExamMenu === `detail-${selectedId}`} onClick={() => setOpenExamMenu((current) => current === `detail-${selectedId}` ? null : `detail-${selectedId}`)}><MoreVertical size={18} /></button>{openExamMenu === `detail-${selectedId}` && <div className="exam-row-menu exam-detail-menu" role="menu"><button role="menuitem" onClick={() => setOpenExamMenu(null)}><Eye size={14} /> Görüntüle / Düzenle</button><button role="menuitem" onClick={() => void copyExamById(selectedId)}><Copy size={14} /> Kopyala</button>{detail.exam.status !== 'ARCHIVED' && <button role="menuitem" onClick={() => void archiveExam()}><Archive size={14} /> Arşivle</button>}{detail.exam.status === 'DRAFT' && <button role="menuitem" onClick={() => void deleteExamById(selectedId)}><Trash2 size={14} /> Sil</button>}</div>}</div></div></div>
       <div className="section-head"><div><h2>{detail.exam.title}</h2><p>{detail.exam.exam_type} · {detail.exam.grade_level}. sınıf · {detail.exam.status === 'DRAFT' ? 'Düzenlenebilir taslak' : detail.exam.status === 'ARCHIVED' ? 'Arşivlendi' : 'Yayında'}{detail.exam.outcome_mode === 'OFFICIAL_REQUIRED' ? ' · doğrulanmış kazanım zorunlu' : ''}{detail.exam.result_network_enabled ? ' · sonuc.anunex.com seçili' : ''}</p></div>{detail.exam.status === 'DRAFT' && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="secondary" disabled={busy} onClick={saveGeneral}><Save size={16} /> Kartı güncelle</button><button className="primary" disabled={busy || !detail.readiness?.ready_to_publish} onClick={publish}><Send size={17} /> Sınavı Yayınla</button></div>}</div>

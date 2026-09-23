@@ -124,6 +124,7 @@
 .app-shell[data-panel-module="exam-center"] .exam-definition-page.detail-mode .exam-simple-shell,
 .app-shell[data-panel-module="exam-center"] .exam-definition-page.detail-mode .exam-definition-list-shell{display:none}
 .app-shell[data-panel-module="exam-center"] .exam-definition-page.detail-mode .exam-definition-detail-shell{display:block}
+.app-shell[data-panel-module="exam-center"] .detail-loading{display:grid;justify-items:center;gap:8px;padding:42px 20px;color:var(--muted);text-align:center}.app-shell[data-panel-module="exam-center"] .detail-loading strong{color:var(--ink);font-size:15px}.app-shell[data-panel-module="exam-center"] .detail-loading svg{color:var(--workspace-accent)}.app-shell[data-panel-module="exam-center"] .detail-loading .spin{animation:exam-detail-spin 1s linear infinite}@keyframes exam-detail-spin{to{transform:rotate(360deg)}}
 .app-shell[data-panel-module="exam-center"] .exam-detail-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:4px 0 8px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .app-shell[data-panel-module="exam-center"] .exam-detail-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .app-shell[data-panel-module="exam-center"] .exam-detail-toolbar .ghost{color:var(--workspace-accent);padding-left:0}
