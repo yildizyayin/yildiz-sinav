@@ -69,6 +69,7 @@ import { MarketingHome } from './pages/MarketingHome';
 import { ResultPortal } from './pages/ResultPortal';
 import { ResultNetworkAdmin } from './pages/ResultNetworkAdmin';
 import { AdminCommandCenter } from './pages/AdminCommandCenter';
+import { ChangePassword } from './pages/ChangePassword';
 
 const ALL_ROLES: Role[] = ['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT'];
 function RoleGate({allowed,children}:{allowed:Role[];children:React.ReactNode}){const{user}=useAuth();if(!user||!allowed.includes(user.role))return <Navigate to="/" replace/>;return <>{children}</>}
@@ -85,9 +86,10 @@ export default function App(){
  if(isMarketingHost)return <MarketingHome/>;
  if(loading)return <div className="boot">Anunex yükleniyor…</div>;
  if(!user&&location.pathname!=='/login')return <Navigate to="/login" replace/>;
+ if(user&&user.must_change_password&&location.pathname!=='/change-password')return <Navigate to="/change-password" replace/>;
  if(user&&location.pathname==='/login')return <Navigate to="/" replace/>;
  return <Routes>
-  <Route path="/login" element={<Login/>}/><Route element={<Layout/>}><Route index element={<Home/>}/>
+  <Route path="/login" element={<Login/>}/><Route path="/change-password" element={<ChangePassword/>}/><Route element={<Layout/>}><Route index element={<Home/>}/>
   <Route path="admin-center" element={<RoleGate allowed={['SUPER_ADMIN']}><AdminCommandCenter/></RoleGate>}/>
   <Route path="standard-readiness" element={<RoleGate allowed={['SUPER_ADMIN']}><StandardReadiness/></RoleGate>}/>
   <Route path="theme-management" element={<RoleGate allowed={['SUPER_ADMIN']}><ThemeManagement/></RoleGate>}/>
@@ -108,3 +110,4 @@ export default function App(){
   <Route path="content-center" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><ContentCenter/></RoleGate>}/><Route path="student-growth" element={<RoleGate allowed={['STUDENT']}><StudentGrowthCenter/></RoleGate>}/><Route path="premium" element={<RoleGate allowed={['STUDENT']}><PremiumCenter/></RoleGate>}/><Route path="enterprise" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><EnterpriseCenter/></RoleGate>}/><Route path="guidance-tests" element={<RoleGate allowed={['STUDENT','GUIDANCE_TEACHER']}><GuidanceTests/></RoleGate>}/><Route path="guidance-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><GuidanceAdmin/></RoleGate>}/>
   <Route path="*" element={<Navigate to="/" replace/>}/></Route></Routes>
 }
+
