@@ -197,7 +197,7 @@ async function pairByCode(env:Env,phone:string,code:string){
   return userFromIdentity(env,phone);
 }
 
-function identityHelp(){return `🤖 Nibiru: Ben Anunex’in yapay zekâ akademik asistanıyım. Bu WhatsApp numarası henüz bir kullanıcı hesabına bağlanmamış. Kurumunuzdan Nibiru eşleştirme kodu alın ve “BAĞLA 123456” şeklinde gönderin.`}
+function identityHelp(){return `Nibiru: Ben Anunex’in yapay zekâ akademik asistanıyım. Bu WhatsApp numarası henüz bir kullanıcı hesabına bağlanmamış. Kurumunuzdan Nibiru eşleştirme kodu alın ve “BAĞLA 123456” şeklinde gönderin.`}
 
 async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type:string;text:string|null}){
   const seen=await one(env.DB.prepare(`SELECT provider_message_id FROM nibiru_whatsapp_receipts WHERE provider_message_id=?`).bind(message.id));
@@ -206,27 +206,27 @@ async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type
   try{
     const s=await settings(env);
     if(!s?.enabled||!s?.whatsapp_enabled){await env.DB.prepare(`UPDATE nibiru_whatsapp_receipts SET processed_at=CURRENT_TIMESTAMP WHERE provider_message_id=?`).bind(message.id).run();return}
-    if(message.type!=='text'||!message.text){await sendWhatsAppText(env,message.from,'🤖 Nibiru: Şu anda WhatsApp üzerinden metin mesajlarını yanıtlayabiliyorum. Öğrenci gelişimi, sınavlar ve kazanımlar hakkında yazarak sorabilirsiniz.');return}
+    if(message.type!=='text'||!message.text){await sendWhatsAppText(env,message.from,'Nibiru: Şu anda WhatsApp üzerinden metin mesajlarını yanıtlayabiliyorum. Öğrenci gelişimi, sınavlar ve kazanımlar hakkında yazarak sorabilirsiniz.');return}
     const pair=message.text.match(/^\s*(?:BAĞLA|BAGLA)\s+(\d{6})\s*$/i);
     if(pair){
       const linked=await pairByCode(env,message.from,pair[1]);
-      if(!linked){await sendWhatsAppText(env,message.from,'🤖 Nibiru: Eşleştirme kodu geçersiz veya süresi dolmuş. Kurumunuzdan yeni bir kod isteyebilirsiniz.');return}
+      if(!linked){await sendWhatsAppText(env,message.from,'Nibiru: Eşleştirme kodu geçersiz veya süresi dolmuş. Kurumunuzdan yeni bir kod isteyebilirsiniz.');return}
       const blocked=await institutionBlock(env,linked);
-      if(blocked){await sendWhatsAppText(env,message.from,`🤖 Nibiru: ${blocked.message}`);return}
-      await sendWhatsAppText(env,message.from,`🤖 Nibiru: Eşleştirme tamamlandı. Merhaba ${linked.display_name}. Ben yapay zekâ akademik asistanınızım. Yetkiniz kapsamındaki öğrenci gelişimi, sınavlar, kazanımlar ve çalışma önerileri hakkında bana yazabilirsiniz.`);
+      if(blocked){await sendWhatsAppText(env,message.from,`Nibiru: ${blocked.message}`);return}
+      await sendWhatsAppText(env,message.from,`Nibiru: Eşleştirme tamamlandı. Merhaba ${linked.display_name}. Ben yapay zekâ akademik asistanınızım. Yetkiniz kapsamındaki öğrenci gelişimi, sınavlar, kazanımlar ve çalışma önerileri hakkında bana yazabilirsiniz.`);
       return;
     }
     const user=await userFromIdentity(env,message.from);
     if(!user){await sendWhatsAppText(env,message.from,identityHelp());await env.DB.prepare(`INSERT INTO nibiru_audit_events(id,channel,role,intent,outcome,message_chars) VALUES(?,'WHATSAPP',NULL,'IDENTITY','UNVERIFIED',?)`).bind(uuid('niba'),message.text.length).run();return}
-    if(!WHATSAPP_ROLES.has(user.role)){await sendWhatsAppText(env,message.from,'🤖 Nibiru: Bu kullanıcı rolü için WhatsApp erişimi etkin değildir.');return}
+    if(!WHATSAPP_ROLES.has(user.role)){await sendWhatsAppText(env,message.from,'Nibiru: Bu kullanıcı rolü için WhatsApp erişimi etkin değildir.');return}
     const blocked=await institutionBlock(env,user);
-    if(blocked){await sendWhatsAppText(env,message.from,`🤖 Nibiru: ${blocked.message}`);return}
+    if(blocked){await sendWhatsAppText(env,message.from,`Nibiru: ${blocked.message}`);return}
     const result=await runNibiru(env,user,message.text,'WHATSAPP',message.from);
     await sendWhatsAppText(env,message.from,result.answer);
     await env.DB.prepare(`UPDATE nibiru_whatsapp_identities SET last_seen_at=CURRENT_TIMESTAMP WHERE phone_e164=?`).bind(message.from).run();
   }catch(error){
     console.error(JSON.stringify({event:'nibiru_whatsapp_error',messageId:message.id,error:error instanceof Error?error.message:String(error)}));
-    try{await sendWhatsAppText(env,message.from,'🤖 Nibiru: Şu anda akademik veriye erişirken kısa süreli bir sorun oluştu. Lütfen daha sonra yeniden deneyin.')}catch{}
+    try{await sendWhatsAppText(env,message.from,'Nibiru: Şu anda akademik veriye erişirken kısa süreli bir sorun oluştu. Lütfen daha sonra yeniden deneyin.')}catch{}
   }finally{
     await env.DB.prepare(`UPDATE nibiru_whatsapp_receipts SET processed_at=CURRENT_TIMESTAMP WHERE provider_message_id=?`).bind(message.id).run();
   }

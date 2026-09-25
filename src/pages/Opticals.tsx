@@ -1,125 +1,2524 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Camera, CheckCircle2, CircleAlert, CopyPlus, FileText, FileUp, FlaskConical, MousePointer2, Pencil, Plus, Save, ScanLine, Send, Sparkles, Trash2 } from 'lucide-react';
-import { api } from '../api';
-import { analyzeFixedWidthSample } from '../lib/guidedDefinitions';
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  ArrowLeft,
+  Camera,
+  CheckCircle2,
+  CircleAlert,
+  CopyPlus,
+  FileText,
+  FileUp,
+  FlaskConical,
+  MousePointer2,
+  MoreVertical,
+  Pencil,
+  Plus,
+  Save,
+  ScanLine,
+  Send,
+  Sparkles,
+  Trash2,
+  UserRoundPlus,
+  X,
+} from "lucide-react";
+import { api } from "../api";
+import { useAuth } from "../auth";
+import { Link } from "react-router-dom";
+import { analyzeFixedWidthSample } from "../lib/guidedDefinitions";
+import {
+  buildManualParserDefinition,
+  defaultManualAnswerBlocks,
+  defaultManualFields,
+  type ManualOpticalField,
+  type ManualAnswerBlock,
+} from "../lib/opticalManual";
 
-type Section = 'parser' | 'camera' | 'print' | 'fiducials';
-type Method = 'FMT' | 'PHOTO' | 'TXT' | 'MANUAL';
+type Section = "parser" | "camera" | "fiducials";
+type Method = "FMT" | "PHOTO" | "TXT" | "MANUAL";
+type OpticalFormDialogMode = "create" | "edit";
 type Suggestion = { xPct: number; yPct: number; wPct: number; hPct: number };
-type Region = { id: string; type: string; purpose?: string; subjectCode?: string; questionCount?: number; options?: string[]; positions?: number; values?: string[]; markThreshold?: number; doubleMarkDelta?: number; bubbleRadiusMm?: number; xMm: number; yMm: number; widthMm: number; heightMm: number };
+type Region = {
+  id: string;
+  type: string;
+  subjectCode?: string;
+  xMm: number;
+  yMm: number;
+  widthMm: number;
+  heightMm: number;
+};
 type AnswerRange = { subjectCode: string; start: number; end: number };
 type PrintField = { key: string; xMm: number; yMm: number };
 
 const EXAMPLES: Record<Section, unknown> = {
-  parser: { type: 'fixed-width', recordLength: 120, fields: { student_number: { start: 0, end: 8 }, name: { start: 8, end: 38 }, class: { start: 38, end: 42 }, booklet: { start: 42, end: 43 } }, answers: { MAT: { start: 43, end: 63 } } },
-  camera: { regions: [{ id: 'answers-main', type: 'answers', xMm: 20, yMm: 80, widthMm: 160, heightMm: 150 }] },
-  print: { fields: [{ key: 'studentName', xMm: 15, yMm: 15 }, { key: 'studentNumber', xMm: 125, yMm: 15 }, { key: 'class', xMm: 165, yMm: 15 }, { key: 'bookletCode', xMm: 190, yMm: 15 }, { key: 'institutionCode', xMm: 15, yMm: 27 }, { key: 'examTitle', xMm: 70, yMm: 27 }] },
-  fiducials: { targets: [[8, 8], [202, 8], [8, 289]] },
+  parser: {
+    type: "fixed-width",
+    recordLength: 120,
+    fields: {
+      student_number: { start: 0, end: 8 },
+      name: { start: 8, end: 38 },
+      class: { start: 38, end: 42 },
+      booklet: { start: 42, end: 43 },
+    },
+    answers: { MAT: { start: 43, end: 63 } },
+  },
+  camera: {
+    regions: [
+      {
+        id: "answers-main",
+        type: "answers",
+        xMm: 20,
+        yMm: 80,
+        widthMm: 160,
+        heightMm: 150,
+      },
+    ],
+  },
+  fiducials: {
+    targets: [
+      [8, 8],
+      [202, 8],
+      [8, 289],
+    ],
+  },
 };
 
-function pretty(value: unknown) { if (!value) return ''; try { return JSON.stringify(typeof value === 'string' ? JSON.parse(value) : value, null, 2); } catch { return String(value); } }
-function parseJson(value: unknown): any { if (!value) return null; if (typeof value === 'object') return value; try { return JSON.parse(String(value)); } catch { return null; } }
-function assetLabel(value: string) { return value === 'BLANK_FORM' ? 'Boş Form / Baskı Tabanı' : value === 'FMT_SAMPLE' ? 'TXT / DAT / FMT Örneği' : 'Baskı Tabanı'; }
+function pretty(value: unknown) {
+  if (!value) return "";
+  try {
+    return JSON.stringify(
+      typeof value === "string" ? JSON.parse(value) : value,
+      null,
+      2,
+    );
+  } catch {
+    return String(value);
+  }
+}
+function parseJson(value: unknown): any {
+  if (!value) return null;
+  if (typeof value === "object") return value;
+  try {
+    return JSON.parse(String(value));
+  } catch {
+    return null;
+  }
+}
+function assetLabel(value: string) {
+  return value === "BLANK_FORM"
+    ? "Boş Form / Baskı Tabanı"
+    : value === "FMT_SAMPLE"
+      ? "TXT / DAT / FMT Örneği"
+      : "Baskı Tabanı";
+}
+
+function manualFieldFromDefinition(
+  fields: ManualOpticalField[],
+  definition: any,
+) {
+  return fields.map((field) => {
+    const saved = definition?.fields?.[field.key] || (field.key === "grade_class" ? definition?.fields?.class : null);
+    if (!saved) return field;
+    const start = Number(saved.start || 0);
+    const end = Number(saved.end || start);
+    return { ...field, enabled: true, start, length: Math.max(0, end - start) };
+  });
+}
+
+function manualAnswersFromDefinition(
+  blocks: ManualAnswerBlock[],
+  definition: any,
+) {
+  const saved = definition?.answers || {};
+  const known = blocks.map((block) => {
+    const match =
+      saved[block.code] ||
+      saved[block.code.replace("TEST-", "TEST")] ||
+      saved[block.label] ||
+      saved[block.label.toUpperCase()];
+    if (!match) return block;
+    const start = Number(match.start || 0);
+    const end = Number(match.end || start);
+    return {
+      ...block,
+      enabled: true,
+      start,
+      length: Math.max(0, end - start),
+      questionCount: Number(match.questionCount || end - start),
+      options: Number(match.options || 5) === 4 ? (4 as const) : (5 as const),
+    };
+  });
+  const knownCodes = new Set(
+    known.filter((block) => block.enabled).map((block) => block.code),
+  );
+  for (const [code, value] of Object.entries<any>(saved)) {
+    if (knownCodes.has(code)) continue;
+    const targetIndex = known.findIndex((block) => !block.enabled);
+    if (targetIndex < 0) break;
+    const start = Number(value.start || 0);
+    const end = Number(value.end || start);
+    known[targetIndex] = {
+      code,
+      label: value.label || code,
+      enabled: true,
+      start,
+      length: Math.max(0, end - start),
+      questionCount: Number(value.questionCount || end - start),
+      options: Number(value.options || 5) === 4 ? 4 : 5,
+    };
+    knownCodes.add(code);
+  }
+  return known;
+}
 
 async function detectDenseRegions(file: File): Promise<Suggestion[]> {
   const bitmap = await createImageBitmap(file);
-  const scale = Math.min(1, 720 / bitmap.width), width = Math.max(1, Math.round(bitmap.width * scale)), height = Math.max(1, Math.round(bitmap.height * scale));
-  const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
-  const ctx = canvas.getContext('2d', { willReadFrequently: true }); if (!ctx) { bitmap.close(); return []; }
-  ctx.drawImage(bitmap, 0, 0, width, height); bitmap.close(); const data = ctx.getImageData(0, 0, width, height).data;
-  const cols = 24, rows = 34, cw = width / cols, ch = height / rows;
-  const active = Array.from({ length: rows }, () => Array<boolean>(cols).fill(false));
-  for (let gy = 0; gy < rows; gy++) for (let gx = 0; gx < cols; gx++) {
-    let dark = 0, total = 0; const x0 = Math.floor(gx * cw), x1 = Math.ceil((gx + 1) * cw), y0 = Math.floor(gy * ch), y1 = Math.ceil((gy + 1) * ch);
-    for (let y = y0; y < Math.min(height, y1); y += 2) for (let x = x0; x < Math.min(width, x1); x += 2) { const i = (y * width + x) * 4; const lum = .2126 * data[i] + .7152 * data[i + 1] + .0722 * data[i + 2]; if (lum < 145) dark++; total++; }
-    active[gy][gx] = total > 0 && dark / total > .075;
+  const scale = Math.min(1, 720 / bitmap.width),
+    width = Math.max(1, Math.round(bitmap.width * scale)),
+    height = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) {
+    bitmap.close();
+    return [];
   }
-  const seen = Array.from({ length: rows }, () => Array<boolean>(cols).fill(false)), out: Suggestion[] = [];
-  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
-    if (!active[y][x] || seen[y][x]) continue; const stack: Array<[number, number]> = [[x, y]]; seen[y][x] = true;
-    let minX = x, maxX = x, minY = y, maxY = y, count = 0;
-    while (stack.length) { const [cx, cy] = stack.pop()!; count++; minX = Math.min(minX, cx); maxX = Math.max(maxX, cx); minY = Math.min(minY, cy); maxY = Math.max(maxY, cy); for (const [nx, ny] of [[cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]] as Array<[number, number]>) if (nx >= 0 && ny >= 0 && nx < cols && ny < rows && active[ny][nx] && !seen[ny][nx]) { seen[ny][nx] = true; stack.push([nx, ny]); } }
-    if (count < 2) continue; const w = maxX - minX + 1, h = maxY - minY + 1; if (w * h > cols * rows * .35) continue;
-    out.push({ xPct: minX / cols * 100, yPct: minY / rows * 100, wPct: w / cols * 100, hPct: h / rows * 100 });
-  }
+  ctx.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close();
+  const data = ctx.getImageData(0, 0, width, height).data;
+  const cols = 24,
+    rows = 34,
+    cw = width / cols,
+    ch = height / rows;
+  const active = Array.from({ length: rows }, () =>
+    Array<boolean>(cols).fill(false),
+  );
+  for (let gy = 0; gy < rows; gy++)
+    for (let gx = 0; gx < cols; gx++) {
+      let dark = 0,
+        total = 0;
+      const x0 = Math.floor(gx * cw),
+        x1 = Math.ceil((gx + 1) * cw),
+        y0 = Math.floor(gy * ch),
+        y1 = Math.ceil((gy + 1) * ch);
+      for (let y = y0; y < Math.min(height, y1); y += 2)
+        for (let x = x0; x < Math.min(width, x1); x += 2) {
+          const i = (y * width + x) * 4;
+          const lum =
+            0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+          if (lum < 145) dark++;
+          total++;
+        }
+      active[gy][gx] = total > 0 && dark / total > 0.075;
+    }
+  const seen = Array.from({ length: rows }, () =>
+      Array<boolean>(cols).fill(false),
+    ),
+    out: Suggestion[] = [];
+  for (let y = 0; y < rows; y++)
+    for (let x = 0; x < cols; x++) {
+      if (!active[y][x] || seen[y][x]) continue;
+      const stack: Array<[number, number]> = [[x, y]];
+      seen[y][x] = true;
+      let minX = x,
+        maxX = x,
+        minY = y,
+        maxY = y,
+        count = 0;
+      while (stack.length) {
+        const [cx, cy] = stack.pop()!;
+        count++;
+        minX = Math.min(minX, cx);
+        maxX = Math.max(maxX, cx);
+        minY = Math.min(minY, cy);
+        maxY = Math.max(maxY, cy);
+        for (const [nx, ny] of [
+          [cx + 1, cy],
+          [cx - 1, cy],
+          [cx, cy + 1],
+          [cx, cy - 1],
+        ] as Array<[number, number]>)
+          if (
+            nx >= 0 &&
+            ny >= 0 &&
+            nx < cols &&
+            ny < rows &&
+            active[ny][nx] &&
+            !seen[ny][nx]
+          ) {
+            seen[ny][nx] = true;
+            stack.push([nx, ny]);
+          }
+      }
+      if (count < 2) continue;
+      const w = maxX - minX + 1,
+        h = maxY - minY + 1;
+      if (w * h > cols * rows * 0.35) continue;
+      out.push({
+        xPct: (minX / cols) * 100,
+        yPct: (minY / rows) * 100,
+        wPct: (w / cols) * 100,
+        hPct: (h / rows) * 100,
+      });
+    }
   return out.sort((a, b) => b.wPct * b.hPct - a.wPct * a.hPct).slice(0, 16);
 }
 
 export function Opticals() {
-  const [templates, setTemplates] = useState<any[]>([]), [templateDetail, setTemplateDetail] = useState<any>(null), [versionDetail, setVersionDetail] = useState<any>(null);
-  const [selectedTemplateId, setSelectedTemplateId] = useState(''), [selectedVersionId, setSelectedVersionId] = useState(''), [method, setMethod] = useState<Method>('FMT');
-  const [error, setError] = useState(''), [notice, setNotice] = useState(''), [busy, setBusy] = useState(false);
-  const [newTemplate, setNewTemplate] = useState({ name: '', vendor: '', version: 'v1', pageWidthMm: 210, pageHeightMm: 297 }), [newVersion, setNewVersion] = useState('');
-  const [editTemplate, setEditTemplate] = useState({ name: '', vendor: '' });
-  const [photo, setPhoto] = useState<File | null>(null), [photoUrl, setPhotoUrl] = useState(''), [suggestions, setSuggestions] = useState<Suggestion[]>([]), [regions, setRegions] = useState<Region[]>([]);
-  const [fiducials, setFiducials] = useState<Array<[number, number]>>([]), [drawMode, setDrawMode] = useState<'REGION' | 'FIDUCIAL'>('REGION'), [regionKind, setRegionKind] = useState('answers'), [regionSubject, setRegionSubject] = useState('MAT'), [regionQuestionCount, setRegionQuestionCount] = useState(40), [regionOptionCount, setRegionOptionCount] = useState(5), [identityPositions, setIdentityPositions] = useState(5);
-  const startRef = useRef<{ x: number; y: number } | null>(null); const [draft, setDraft] = useState<Suggestion | null>(null);
-  const [sample, setSample] = useState<File | null>(null), [sampleText, setSampleText] = useState(''), [fixed, setFixed] = useState<any>(null), [parserTest, setParserTest] = useState<any>(null);
-  const [fmtFile, setFmtFile] = useState<File | null>(null), [fmtDefinition, setFmtDefinition] = useState<any>(null);
-  const [fieldRanges, setFieldRanges] = useState({ studentStart: 0, studentEnd: 0, nameStart: 0, nameEnd: 0, classStart: 0, classEnd: 0, bookletStart: 0, bookletEnd: 0 }), [answerRanges, setAnswerRanges] = useState<AnswerRange[]>([]);
-  const [printFields, setPrintFields] = useState<PrintField[]>([]), [advanced, setAdvanced] = useState<Record<Section, string>>({ parser: '', camera: '', print: '', fiducials: '' });
-  const selectedVersion = versionDetail?.version, readiness = versionDetail?.readiness, pageW = Number(selectedVersion?.page_width_mm || 210), pageH = Number(selectedVersion?.page_height_mm || 297);
+  const { user } = useAuth();
+  const [templates, setTemplates] = useState<any[]>([]),
+    [templateDetail, setTemplateDetail] = useState<any>(null),
+    [versionDetail, setVersionDetail] = useState<any>(null);
+  const [selectedTemplateId, setSelectedTemplateId] = useState(""),
+    [selectedVersionId, setSelectedVersionId] = useState(""),
+    [method, setMethod] = useState<Method>("FMT");
+  const [error, setError] = useState(""),
+    [notice, setNotice] = useState(""),
+    [busy, setBusy] = useState(false);
+  const [openCardMenu, setOpenCardMenu] = useState<string | null>(null);
+  const [formDialogOpen, setFormDialogOpen] = useState(false);
+  const [formDialogMode, setFormDialogMode] = useState<OpticalFormDialogMode>("create");
+  const [newTemplate, setNewTemplate] = useState({
+      name: "",
+      vendor: "",
+      opticalCode: "",
+      version: "v1",
+      formType: "MANUAL" as Method,
+      sortOrder: 1,
+      pageWidthMm: 210,
+      pageHeightMm: 297,
+    }),
+    [newVersion, setNewVersion] = useState("");
+  const [editTemplate, setEditTemplate] = useState({ name: "", vendor: "", opticalCode: "", formType: "MANUAL" as Method, sortOrder: 1 });
+  const [photo, setPhoto] = useState<File | null>(null),
+    [photoUrl, setPhotoUrl] = useState(""),
+    [suggestions, setSuggestions] = useState<Suggestion[]>([]),
+    [regions, setRegions] = useState<Region[]>([]);
+  const [fiducials, setFiducials] = useState<Array<[number, number]>>([]),
+    [drawMode, setDrawMode] = useState<"REGION" | "FIDUCIAL">("REGION"),
+    [regionKind, setRegionKind] = useState("answers"),
+    [regionSubject, setRegionSubject] = useState("MAT");
+  const startRef = useRef<{ x: number; y: number } | null>(null);
+  const [draft, setDraft] = useState<Suggestion | null>(null);
+  const [sample, setSample] = useState<File | null>(null),
+    [sampleText, setSampleText] = useState(""),
+    [fixed, setFixed] = useState<any>(null),
+    [parserTest, setParserTest] = useState<any>(null);
+  const [fmtFile, setFmtFile] = useState<File | null>(null),
+    [fmtDefinition, setFmtDefinition] = useState<any>(null);
+  const [fieldRanges, setFieldRanges] = useState({
+      tcknStart: 0,
+      tcknEnd: 0,
+      studentStart: 0,
+      studentEnd: 0,
+      nameStart: 0,
+      nameEnd: 0,
+      classStart: 0,
+      classEnd: 0,
+      bookletStart: 0,
+      bookletEnd: 0,
+    }),
+    [answerRanges, setAnswerRanges] = useState<AnswerRange[]>([]);
+  const [manualRecordLength, setManualRecordLength] = useState(0),
+    [manualIndexBase, setManualIndexBase] = useState<0 | 1>(0);
+  const [manualFields, setManualFields] =
+      useState<ManualOpticalField[]>(defaultManualFields),
+    [manualAnswers, setManualAnswers] = useState<ManualAnswerBlock[]>(
+      defaultManualAnswerBlocks,
+    );
+  const [printFields, setPrintFields] = useState<PrintField[]>([]),
+    [advanced, setAdvanced] = useState<Record<Section, string>>({
+      parser: "",
+      camera: "",
+      fiducials: "",
+    });
+  const selectedVersion = versionDetail?.version,
+    readiness = versionDetail?.readiness,
+    pageW = Number(selectedVersion?.page_width_mm || 210),
+    pageH = Number(selectedVersion?.page_height_mm || 297);
 
-  const loadTemplates = async () => { const r = await api<any>('/api/optical-definitions'); setTemplates(r.templates || []); };
-  const loadTemplate = async (id: string) => { const r = await api<any>(`/api/optical-definitions/${id}`); setTemplateDetail(r); setEditTemplate({ name: r.template?.name || '', vendor: r.template?.vendor || '' }); if (!selectedVersionId || !(r.versions || []).some((v: any) => v.id === selectedVersionId)) setSelectedVersionId(r.versions?.[0]?.id || ''); };
-  const loadVersion = async (id: string) => {
-    const r = await api<any>(`/api/optical-definition-versions/${id}`); setVersionDetail(r); setParserTest(null);
-    const camera = parseJson(r.version.camera_geometry), fid = parseJson(r.version.fiducials), print = parseJson(r.version.print_fields);
-    setRegions((camera?.regions || []).map((x: any, i: number) => ({ ...x, id: x.id || `region-${i + 1}`, type: x.type || 'answers', purpose: x.purpose, subjectCode: x.subjectCode, questionCount: x.questionCount != null ? Number(x.questionCount) : undefined, options: Array.isArray(x.options) ? x.options.map(String) : undefined, positions: x.positions != null ? Number(x.positions) : undefined, values: Array.isArray(x.values) ? x.values.map(String) : undefined, markThreshold: x.markThreshold != null ? Number(x.markThreshold) : undefined, doubleMarkDelta: x.doubleMarkDelta != null ? Number(x.doubleMarkDelta) : undefined, bubbleRadiusMm: x.bubbleRadiusMm != null ? Number(x.bubbleRadiusMm) : undefined, xMm: Number(x.xMm), yMm: Number(x.yMm), widthMm: Number(x.widthMm), heightMm: Number(x.heightMm) })));
-    setFiducials((fid?.targets || []).map((x: any): [number, number] => Array.isArray(x) ? [Number(x[0]), Number(x[1])] : [Number(x.xMm), Number(x.yMm)]));
-    const loadedFields = Array.isArray(print?.fields) ? print.fields : [];
-    setPrintFields(loadedFields.map((x: any) => ({ key: x.key, xMm: Number(x.xMm), yMm: Number(x.yMm) })));
-    setAdvanced({ parser: pretty(r.version.parser_definition), camera: pretty(r.version.camera_geometry), print: pretty(r.version.print_fields), fiducials: pretty(r.version.fiducials) });
-    const parser = parseJson(r.version.parser_definition); setFmtDefinition(parser?.type === 'fmt' ? parser : null);
+  const loadTemplates = async () => {
+    const r = await api<any>("/api/optical-definitions");
+    setTemplates(r.templates || []);
   };
-  useEffect(() => { void loadTemplates().catch((e) => setError(e.message)); }, []);
-  useEffect(() => { if (selectedTemplateId) void loadTemplate(selectedTemplateId).catch((e) => setError(e.message)); }, [selectedTemplateId]);
-  useEffect(() => { if (selectedVersionId) void loadVersion(selectedVersionId).catch((e) => setError(e.message)); }, [selectedVersionId]);
-  useEffect(() => { if (!photo) { setPhotoUrl(''); return; } const url = URL.createObjectURL(photo); setPhotoUrl(url); return () => URL.revokeObjectURL(url); }, [photo]);
+  const loadTemplate = async (id: string) => {
+    const r = await api<any>(`/api/optical-definitions/${id}`);
+    setTemplateDetail(r);
+    setEditTemplate({
+      name: r.template?.name || "",
+      vendor: r.template?.vendor || "",
+      opticalCode: r.template?.optical_code || "",
+      formType: (r.template?.form_type || "MANUAL") as Method,
+      sortOrder: Number(r.template?.sort_order || 1),
+    });
+    if (
+      !selectedVersionId ||
+      !(r.versions || []).some((v: any) => v.id === selectedVersionId)
+    )
+      setSelectedVersionId(r.versions?.[0]?.id || "");
+  };
+  const loadVersion = async (id: string) => {
+    const r = await api<any>(`/api/optical-definition-versions/${id}`);
+    setVersionDetail(r);
+    setParserTest(null);
+    const camera = parseJson(r.version.camera_geometry),
+      fid = parseJson(r.version.fiducials);
+    setRegions(
+      (camera?.regions || []).map((x: any, i: number) => ({
+        id: x.id || `region-${i + 1}`,
+        type: x.type || "answers",
+        subjectCode: x.subjectCode,
+        xMm: Number(x.xMm),
+        yMm: Number(x.yMm),
+        widthMm: Number(x.widthMm),
+        heightMm: Number(x.heightMm),
+      })),
+    );
+    setFiducials(
+      (fid?.targets || []).map((x: any): [number, number] =>
+        Array.isArray(x)
+          ? [Number(x[0]), Number(x[1])]
+          : [Number(x.xMm), Number(x.yMm)],
+      ),
+    );
+    setAdvanced({
+      parser: pretty(r.version.parser_definition),
+      camera: pretty(r.version.camera_geometry),
+      fiducials: pretty(r.version.fiducials),
+    });
+    const parser = parseJson(r.version.parser_definition);
+    setFmtDefinition(parser?.type === "fmt" ? parser : null);
+    const fixedParser = parser?.type === "fmt" ? parser.fixedWidth : parser;
+    if (fixedParser) {
+      setManualRecordLength(Number(fixedParser.recordLength || 0));
+      setManualIndexBase(parser?.indexBase === 1 ? 1 : 0);
+      setManualFields(
+        manualFieldFromDefinition(defaultManualFields(), fixedParser),
+      );
+      setManualAnswers(
+        manualAnswersFromDefinition(defaultManualAnswerBlocks(), fixedParser),
+      );
+    }
+  };
+  useEffect(() => {
+    void loadTemplates().catch((e) => setError(e.message));
+  }, []);
+  useEffect(() => {
+    if (selectedTemplateId)
+      void loadTemplate(selectedTemplateId).catch((e) => setError(e.message));
+  }, [selectedTemplateId]);
+  useEffect(() => {
+    if (selectedVersionId)
+      void loadVersion(selectedVersionId).catch((e) => setError(e.message));
+  }, [selectedVersionId]);
+  useEffect(() => {
+    if (!photo) {
+      setPhotoUrl("");
+      return;
+    }
+    const url = URL.createObjectURL(photo);
+    setPhotoUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [photo]);
 
-  const createTemplate = async () => { setBusy(true); setError(''); try { const r = await api<any>('/api/optical-definitions', { method: 'POST', body: JSON.stringify(newTemplate) }); await loadTemplates(); setSelectedTemplateId(r.templateId); setSelectedVersionId(r.versionId); setNotice('Optik taslağı ve baskı başlangıç şablonu oluşturuldu. Boş optik görselini ekleyin; ardından yalnız gerekli X/Y ince ayarlarını yapın.'); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
-  const createVersion = async () => { if (!selectedTemplateId || !newVersion.trim()) return; setBusy(true); try { const r = await api<any>(`/api/optical-definitions/${selectedTemplateId}/versions`, { method: 'POST', body: JSON.stringify({ version: newVersion.trim(), cloneFromVersionId: selectedVersionId || null }) }); await loadTemplate(selectedTemplateId); setSelectedVersionId(r.versionId); setNewVersion(''); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
-  const saveTemplate = async () => { if (!selectedTemplateId || !editTemplate.name.trim()) return; setBusy(true); setError(''); try { await api(`/api/optical-definitions/${selectedTemplateId}`, { method: 'PATCH', body: JSON.stringify(editTemplate) }); await loadTemplates(); await loadTemplate(selectedTemplateId); setNotice('Optik kartı güncellendi.'); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
-  const deleteTemplate = async () => { if (!selectedTemplateId || !confirm('Bu optik silinsin mi? Kullanılmış kayıtlar korunur ve optik güvenli biçimde arşivlenir.')) return; setBusy(true); setError(''); try { await api(`/api/optical-definitions/${selectedTemplateId}`, { method: 'DELETE' }); setSelectedTemplateId(''); setSelectedVersionId(''); setTemplateDetail(null); setVersionDetail(null); await loadTemplates(); setNotice('Optik arşivlendi. Geçmiş sınav kayıtları korunuyor.'); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
-  const deleteVersion = async (versionId: string) => { if (!confirm('Bu taslak sürüm silinsin mi? Kullanılmış sürümler silinemez.')) return; setBusy(true); setError(''); try { await api(`/api/optical-definition-versions/${versionId}`, { method: 'DELETE' }); setSelectedVersionId(''); setVersionDetail(null); await loadTemplate(selectedTemplateId); setNotice('Optik taslak sürümü silindi.'); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
+  const persistManualDialogDefinition = async (versionId: string) => {
+    if (!versionId) return { saved: false, reason: "Sürüm oluşturulamadı." };
+    const largestEnd = Math.max(
+      0,
+      ...manualFields.filter((field) => field.enabled).map((field) => Number(field.start || 0) + Number(field.length || 0)),
+      ...manualAnswers.filter((block) => block.enabled).map((block) => Number(block.start || 0) + Number(block.length || 0)),
+    );
+    const recordLength = manualRecordLength || largestEnd;
+    if (!recordLength) return { saved: false, reason: "Kayıt uzunluğu, girilen alanların bitişlerinden hesaplanamadı." };
+    if (!manualFields.some((field) => field.key === "name" && field.enabled && field.length > 0)) {
+      return { saved: false, reason: "Ad, Soyad alanını etkinleştirip başlangıç ve uzunluk girin." };
+    }
+    if (!manualAnswers.some((block) => block.enabled && block.length > 0)) {
+      return { saved: false, reason: "En az bir Test/cevap bloğunu etkinleştirip başlangıç ve uzunluk girin." };
+    }
+    const definition = buildManualParserDefinition(recordLength, manualFields, manualAnswers, manualIndexBase);
+    await api(`/api/optical-definition-versions/${versionId}/parser`, { method: "PUT", body: JSON.stringify({ definition }) });
+    return { saved: true, reason: "" };
+  };
 
-  const pointPct = (e: React.PointerEvent<HTMLDivElement>) => { const b = e.currentTarget.getBoundingClientRect(); return { x: Math.max(0, Math.min(100, (e.clientX - b.left) / b.width * 100)), y: Math.max(0, Math.min(100, (e.clientY - b.top) / b.height * 100)) }; };
-  const addRegion = (s: Suggestion) => setRegions((x) => { const base: Region = { id: `region-${x.length + 1}`, type: regionKind === 'booklet' ? 'bubble-grid' : regionKind, purpose: regionKind === 'answers' ? 'answers' : regionKind === 'bubble-grid' ? 'student-number' : 'booklet', subjectCode: regionKind === 'answers' ? regionSubject.trim().toUpperCase() : undefined, xMm: s.xPct / 100 * pageW, yMm: s.yPct / 100 * pageH, widthMm: s.wPct / 100 * pageW, heightMm: s.hPct / 100 * pageH }; if (regionKind === 'answers') return [...x, { ...base, questionCount: Math.max(1, Math.round(regionQuestionCount)), options: Array.from({ length: Math.max(2, Math.min(5, Math.round(regionOptionCount))) }, (_, i) => String.fromCharCode(65 + i)), markThreshold: 0.48, doubleMarkDelta: 0.08 }]; if (regionKind === 'bubble-grid') return [...x, { ...base, positions: Math.max(1, Math.round(identityPositions)), values: ['0','1','2','3','4','5','6','7','8','9'], markThreshold: 0.48, doubleMarkDelta: 0.08 }]; return [...x, { ...base, positions: 1, values: ['A','B','C','D'], markThreshold: 0.48, doubleMarkDelta: 0.08 }]; });
-  const onDown = (e: React.PointerEvent<HTMLDivElement>) => { if (!photoUrl || selectedVersion?.active) return; const p = pointPct(e); if (drawMode === 'FIDUCIAL') { const pair: [number, number] = [p.x / 100 * pageW, p.y / 100 * pageH]; setFiducials((x) => [...x, pair].slice(-8)); return; } startRef.current = p; setDraft({ xPct: p.x, yPct: p.y, wPct: 0, hPct: 0 }); e.currentTarget.setPointerCapture(e.pointerId); };
-  const onMove = (e: React.PointerEvent<HTMLDivElement>) => { if (!startRef.current || drawMode !== 'REGION') return; const p = pointPct(e), s = startRef.current; setDraft({ xPct: Math.min(s.x, p.x), yPct: Math.min(s.y, p.y), wPct: Math.abs(p.x - s.x), hPct: Math.abs(p.y - s.y) }); };
-  const onUp = () => { if (draft && draft.wPct >= 1 && draft.hPct >= 1) addRegion(draft); startRef.current = null; setDraft(null); };
-  const analysePhoto = async () => { if (!photo) return; setBusy(true); try { const found = await detectDenseRegions(photo); setSuggestions(found); setNotice(found.length ? `${found.length} yoğun bölge bulundu. Turuncu önerilere tıklayın veya alanı elle çizin; alanın anlamını siz onaylayın.` : 'Otomatik öneri bulunamadı; alanları fotoğraf üzerinde elle çizebilirsiniz.'); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
-  const savePhoto = async () => { if (!selectedVersionId) return; if (!regions.length) return setError('En az bir okuma alanı çizmelisiniz.'); if (fiducials.length < 3) return setError('En az 3 gerçek referans noktası işaretleyin.'); setBusy(true); try { await api(`/api/optical-definition-versions/${selectedVersionId}/camera`, { method: 'PUT', body: JSON.stringify({ definition: { regions } }) }); await api(`/api/optical-definition-versions/${selectedVersionId}/fiducials`, { method: 'PUT', body: JSON.stringify({ definition: { targets: fiducials } }) }); if (photo) { const fd = new FormData(); fd.append('file', photo); fd.append('assetType', 'BLANK_FORM'); await api(`/api/optical-definition-versions/${selectedVersionId}/assets`, { method: 'POST', body: fd }); } setNotice('Boş optik, kamera geometrisi ve referans noktaları kaydedildi. Bu görsel artık kişiselleştirilmiş baskının tabanıdır; baskı alanlarında yalnız küçük koordinat düzeltmeleri yapmanız yeterli.'); await loadVersion(selectedVersionId); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
+  const createTemplate = async () => {
+    if (!newTemplate.name.trim()) {
+      setError("Form adı gereklidir.");
+      return;
+    }
+    if (!newTemplate.vendor.trim() || !newTemplate.opticalCode.trim()) {
+      setError("Yayınevi ve optik kodu gereklidir.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    try {
+      const r = await api<any>("/api/optical-definitions", {
+        method: "POST",
+        body: JSON.stringify(newTemplate),
+      });
+      await loadTemplates();
+      setSelectedTemplateId(r.templateId);
+      setSelectedVersionId(r.versionId);
+      setMethod(newTemplate.formType);
+      const manualResult = newTemplate.formType === "MANUAL"
+        ? await persistManualDialogDefinition(r.versionId)
+        : { saved: true, reason: "" };
+      await loadVersion(r.versionId);
+      setFormDialogOpen(false);
+      setNotice(manualResult.saved
+        ? "Optik kartı ve manuel okuma parametreleri kaydedildi."
+        : `Optik kartı kaydedildi. Manuel okuma parametreleri henüz kaydedilmedi: ${manualResult.reason}`);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const openCreateForm = () => {
+    setFormDialogMode("create");
+    setFormDialogOpen(true);
+    setNewTemplate((current) => ({ ...current, name: "", vendor: "", opticalCode: "", formType: "MANUAL", sortOrder: 1, version: "v1" }));
+    setManualRecordLength(0);
+    setManualIndexBase(0);
+    setManualFields(defaultManualFields());
+    setManualAnswers(defaultManualAnswerBlocks());
+    setError("");
+    setNotice("");
+  };
+  const openEditForm = (templateId: string) => {
+    setFormDialogMode("edit");
+    setFormDialogOpen(true);
+    setSelectedTemplateId(templateId);
+    setOpenCardMenu(null);
+    setError("");
+    setNotice("");
+  };
+  const saveDifferentForm = () => {
+    const source = formDialogMode === "edit" ? editTemplate : newTemplate;
+    setNewTemplate((current) => ({
+      ...current,
+      name: source.name ? `${source.name} - Kopya` : "",
+      vendor: source.vendor,
+      opticalCode: source.opticalCode ? `${source.opticalCode}-KOPYA` : "",
+      formType: source.formType,
+      sortOrder: source.sortOrder,
+    }));
+    setFormDialogMode("create");
+    setNotice("Farklı kaydet için yeni optik form taslağı hazırlandı; kodu ve adı değiştirebilirsiniz.");
+  };
+  const createVersion = async () => {
+    if (!selectedTemplateId || !newVersion.trim()) return;
+    setBusy(true);
+    try {
+      const r = await api<any>(
+        `/api/optical-definitions/${selectedTemplateId}/versions`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            version: newVersion.trim(),
+            cloneFromVersionId: selectedVersionId || null,
+          }),
+        },
+      );
+      await loadTemplate(selectedTemplateId);
+      setSelectedVersionId(r.versionId);
+      setNewVersion("");
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const copyTemplateVersion = async (templateId: string) => {
+    setBusy(true);
+    setError("");
+    try {
+      const detail = await api<any>(`/api/optical-definitions/${templateId}`);
+      const versions = detail.versions || [];
+      const numbers = versions
+        .map((item: any) => Number(String(item.version || "").replace(/[^0-9]/g, "")))
+        .filter((item: number) => Number.isFinite(item));
+      const nextVersion = `v${Math.max(1, ...numbers) + 1}`;
+      const source = versions.find((item: any) => item.active) || versions[0];
+      const result = await api<any>(`/api/optical-definitions/${templateId}/versions`, {
+        method: "POST",
+        body: JSON.stringify({ version: nextVersion, cloneFromVersionId: source?.id || null }),
+      });
+      await loadTemplate(templateId);
+      setSelectedTemplateId(templateId);
+      setSelectedVersionId(result.versionId);
+      setNewVersion("");
+      setNotice(`${nextVersion} taslak sürümü oluşturuldu. Kaynak optik değişmeden korunuyor.`);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const saveTemplate = async () => {
+    if (!selectedTemplateId) {
+      setError("Düzenlenecek optik form seçilemedi. Listeyi yenileyip tekrar deneyin.");
+      return false;
+    }
+    if (!editTemplate.name.trim()) {
+      setError("Form adı gereklidir.");
+      return false;
+    }
+    setBusy(true);
+    setError("");
+    try {
+      await api(`/api/optical-definitions/${selectedTemplateId}`, {
+        method: "PATCH",
+        body: JSON.stringify(editTemplate),
+      });
+      await loadTemplates();
+      await loadTemplate(selectedTemplateId);
+      return true;
+    } catch (e: any) {
+      setError(e.message);
+      return false;
+    } finally {
+      setBusy(false);
+    }
+  };
+  const saveFormDialog = async () => {
+    if (formDialogMode === "create") {
+      await createTemplate();
+      return;
+    }
+    const templateSaved = await saveTemplate();
+    if (!templateSaved) return;
+    const manualResult = editTemplate.formType === "MANUAL"
+      ? await persistManualDialogDefinition(selectedVersionId)
+      : { saved: true, reason: "" };
+    if (selectedVersionId) await loadVersion(selectedVersionId);
+    setFormDialogOpen(false);
+    setNotice(manualResult.saved
+      ? "Optik kartı ve manuel okuma parametreleri güncellendi."
+      : `Optik kartı güncellendi. Manuel okuma parametreleri henüz kaydedilmedi: ${manualResult.reason}`);
+  };
+  const deleteTemplate = async (templateId = selectedTemplateId) => {
+    if (
+      !templateId ||
+      !confirm(
+        "Bu optik silinsin mi? Kullanılmış kayıtlar korunur ve optik güvenli biçimde arşivlenir.",
+      )
+    )
+      return;
+    setBusy(true);
+    setError("");
+    try {
+      await api(`/api/optical-definitions/${templateId}`, {
+        method: "DELETE",
+      });
+      if (selectedTemplateId === templateId) {
+        setSelectedTemplateId("");
+        setSelectedVersionId("");
+        setTemplateDetail(null);
+        setVersionDetail(null);
+      }
+      await loadTemplates();
+      setNotice("Optik arşivlendi. Geçmiş sınav kayıtları korunuyor.");
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const deleteVersion = async (versionId: string) => {
+    if (
+      !confirm("Bu taslak sürüm silinsin mi? Kullanılmış sürümler silinemez.")
+    )
+      return;
+    setBusy(true);
+    setError("");
+    try {
+      await api(`/api/optical-definition-versions/${versionId}`, {
+        method: "DELETE",
+      });
+      setSelectedVersionId("");
+      setVersionDetail(null);
+      await loadTemplate(selectedTemplateId);
+      setNotice("Optik taslak sürümü silindi.");
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
 
-  const importFmt = async () => { if (!selectedVersionId || !fmtFile) return; setBusy(true); setError(''); try { const fd = new FormData(); fd.append('file', fmtFile); const r = await api<any>(`/api/optical-definition-versions/${selectedVersionId}/fmt`, { method: 'POST', body: fd }); setFmtDefinition(r.definition); setNotice(`FMT okundu: ${Object.keys(r.definition.fields || {}).length} kimlik alanı, ${Object.keys(r.definition.answers || {}).length} test bloğu. Başlangıç/uzunluk/bitiş eşlemesini kontrol edin.`); await loadVersion(selectedVersionId); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
-  const updateFmtSlice = (group: 'fields' | 'answers', code: string, key: 'start' | 'end' | 'length', value: number) => setFmtDefinition((d: any) => { const current = d[group]?.[code] || {}; const next = { ...current, [key]: value }; if (key === 'start') next.end = value + Number((current.length ?? (current.end - current.start)) || 1); if (key === 'length') next.end = Number(current.start || 0) + value; if (key === 'end') next.length = value - Number(current.start || 0); return { ...d, [group]: { ...d[group], [code]: next } }; });
-  const saveFmtMapping = async () => { if (!selectedVersionId || !fmtDefinition) return; setBusy(true); setError(''); try { const definition = { ...fmtDefinition, fixedWidth: { ...fmtDefinition.fixedWidth, type: 'fixed-width', recordLength: fmtDefinition.recordLength, fields: fmtDefinition.fields, answers: fmtDefinition.answers } }; await api(`/api/optical-definition-versions/${selectedVersionId}/parser`, { method: 'PUT', body: JSON.stringify({ definition }) }); setFmtDefinition(definition); setNotice('FMT eşlemesi kaydedildi. Gerçek TXT/DAT örneğini yüklediğinizde test sonucu ayrıca doğrulanır.'); await loadVersion(selectedVersionId); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
-  const readSample = async (file?: File) => { if (!file) return; setSample(file); const text = await file.text(); setSampleText(text); const s = analyzeFixedWidthSample(text); setFixed(s); setParserTest(null); if (!s) return setError('TXT/DAT yapısı otomatik analiz edilemedi. Manuel tanım kullanabilirsiniz.'); setFieldRanges({ studentStart: s.studentNumber?.start ?? 0, studentEnd: s.studentNumber?.end ?? 0, nameStart: s.name?.start ?? 0, nameEnd: s.name?.end ?? 0, classStart: 0, classEnd: 0, bookletStart: 0, bookletEnd: 0 }); setAnswerRanges(s.answerBlocks.map((x, i) => ({ subjectCode: i === 0 ? 'MAT' : '', start: x.start, end: x.end }))); setNotice(`TXT/DAT analiz edildi: ${s.recordLength} karakter, ${s.answerBlocks.length} olası cevap bloğu.`); };
-  const buildParser = () => { if (!fixed) return null; const fields: any = { name: { start: fieldRanges.nameStart, end: fieldRanges.nameEnd } }; if (fieldRanges.studentEnd > fieldRanges.studentStart) fields.student_number = { start: fieldRanges.studentStart, end: fieldRanges.studentEnd }; if (fieldRanges.classEnd > fieldRanges.classStart) fields.class = { start: fieldRanges.classStart, end: fieldRanges.classEnd }; if (fieldRanges.bookletEnd > fieldRanges.bookletStart) fields.booklet = { start: fieldRanges.bookletStart, end: fieldRanges.bookletEnd }; const answers: any = {}; for (const r of answerRanges) if (r.subjectCode.trim() && r.end > r.start) answers[r.subjectCode.trim().toUpperCase()] = { start: r.start, end: r.end }; return { type: 'fixed-width', recordLength: fixed.recordLength, signature: '', fields, answers }; };
-  const saveParser = async () => { if (!selectedVersionId || !sample || !sampleText) return; const parser = buildParser(); if (!parser) return; setBusy(true); try { await api(`/api/optical-definition-versions/${selectedVersionId}/parser`, { method: 'PUT', body: JSON.stringify({ definition: parser }) }); const r = await api<any>(`/api/optical-definition-versions/${selectedVersionId}/test-parser`, { method: 'POST', body: JSON.stringify({ sampleText, fileName: sample.name }) }); setParserTest(r); if (r.passed) { const fd = new FormData(); fd.append('file', sample); fd.append('assetType', 'FMT_SAMPLE'); await api(`/api/optical-definition-versions/${selectedVersionId}/assets`, { method: 'POST', body: fd }); } setNotice(r.passed ? `${r.recordCount} kayıt başarıyla okundu.` : 'Parser testi geçmedi; başlangıç/bitiş alanlarını düzeltin.'); await loadVersion(selectedVersionId); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
-  const savePrint = async () => { if (!selectedVersionId || !printFields.length) return setError('En az bir baskı alanı ekleyin.'); setBusy(true); try { await api(`/api/optical-definition-versions/${selectedVersionId}/print`, { method: 'PUT', body: JSON.stringify({ definition: { fields: printFields } }) }); setNotice('Baskı alanları kaydedildi. Bu optik artık Optik Hazırla / Bas ekranında kalıcı şablon olarak kullanılabilir.'); await loadVersion(selectedVersionId); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
-  const saveAdvanced = async (section: Section) => { if (!selectedVersionId) return; setBusy(true); try { await api(`/api/optical-definition-versions/${selectedVersionId}/${section}`, { method: 'PUT', body: JSON.stringify({ definition: JSON.parse(advanced[section]) }) }); await loadVersion(selectedVersionId); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
-  const publish = async () => { if (!selectedVersionId || !confirm('Bu optik sürümü READY durumuna alınsın mı?')) return; setBusy(true); try { await api(`/api/optical-definition-versions/${selectedVersionId}/publish`, { method: 'POST' }); setNotice('Optik sürümü yayına alındı.'); await loadTemplates(); await loadTemplate(selectedTemplateId); await loadVersion(selectedVersionId); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
-  const readinessCards = useMemo(() => [['FMT / Parser', readiness?.parser && readiness?.parserTestPassed], ['Kamera', readiness?.camera], ['Referans', readiness?.fiducials], ['Baskı', readiness?.print]], [readiness]);
+  const pointPct = (e: React.PointerEvent<HTMLDivElement>) => {
+    const b = e.currentTarget.getBoundingClientRect();
+    return {
+      x: Math.max(0, Math.min(100, ((e.clientX - b.left) / b.width) * 100)),
+      y: Math.max(0, Math.min(100, ((e.clientY - b.top) / b.height) * 100)),
+    };
+  };
+  const addRegion = (s: Suggestion) =>
+    setRegions((x) => [
+      ...x,
+      {
+        id: `region-${x.length + 1}`,
+        type: regionKind,
+        subjectCode:
+          regionKind === "answers"
+            ? regionSubject.trim().toUpperCase()
+            : undefined,
+        xMm: (s.xPct / 100) * pageW,
+        yMm: (s.yPct / 100) * pageH,
+        widthMm: (s.wPct / 100) * pageW,
+        heightMm: (s.hPct / 100) * pageH,
+      },
+    ]);
+  const onDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!photoUrl || selectedVersion?.active) return;
+    const p = pointPct(e);
+    if (drawMode === "FIDUCIAL") {
+      const pair: [number, number] = [(p.x / 100) * pageW, (p.y / 100) * pageH];
+      setFiducials((x) => [...x, pair].slice(-8));
+      return;
+    }
+    startRef.current = p;
+    setDraft({ xPct: p.x, yPct: p.y, wPct: 0, hPct: 0 });
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!startRef.current || drawMode !== "REGION") return;
+    const p = pointPct(e),
+      s = startRef.current;
+    setDraft({
+      xPct: Math.min(s.x, p.x),
+      yPct: Math.min(s.y, p.y),
+      wPct: Math.abs(p.x - s.x),
+      hPct: Math.abs(p.y - s.y),
+    });
+  };
+  const onUp = () => {
+    if (draft && draft.wPct >= 1 && draft.hPct >= 1) addRegion(draft);
+    startRef.current = null;
+    setDraft(null);
+  };
+  const analysePhoto = async () => {
+    if (!photo) return;
+    setBusy(true);
+    try {
+      const found = await detectDenseRegions(photo);
+      setSuggestions(found);
+      setNotice(
+        found.length
+          ? `${found.length} yoğun bölge bulundu. Turuncu önerilere tıklayın veya alanı elle çizin; alanın anlamını siz onaylayın.`
+          : "Otomatik öneri bulunamadı; alanları fotoğraf üzerinde elle çizebilirsiniz.",
+      );
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const savePhoto = async () => {
+    if (!selectedVersionId) return;
+    if (!regions.length) return setError("En az bir okuma alanı çizmelisiniz.");
+    if (fiducials.length < 3)
+      return setError("En az 3 gerçek referans noktası işaretleyin.");
+    setBusy(true);
+    try {
+      await api(
+        `/api/optical-definition-versions/${selectedVersionId}/camera`,
+        { method: "PUT", body: JSON.stringify({ definition: { regions } }) },
+      );
+      await api(
+        `/api/optical-definition-versions/${selectedVersionId}/fiducials`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ definition: { targets: fiducials } }),
+        },
+      );
+      if (photo) {
+        const fd = new FormData();
+        fd.append("file", photo);
+        fd.append("assetType", "BLANK_FORM");
+        await api(
+          `/api/optical-definition-versions/${selectedVersionId}/assets`,
+          { method: "POST", body: fd },
+        );
+      }
+      setNotice(
+        "Boş optik, kamera geometrisi ve referans noktaları kaydedildi. Baskı alanlarını Optik Form Tasarımcısı ekranında ayrıca tanımlayabilirsiniz.",
+      );
+      await loadVersion(selectedVersionId);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
 
-  return <>
-    <div className="page-head"><div><span className="eyebrow">Optik Tanıtma</span><h1>Bir kez tanıt, okumada ve baskıda sürekli kullan</h1><p>Optik 840, Optik 129 veya yeni bir formu bir kez tanımlayın. Sistem okuma geometrisini, boş baskı tabanını ve kişiselleştirme alanlarını aynı sürümde saklar.</p></div></div>
-    {error && <div className="alert error">{error}</div>}{notice && <div className="alert success">{notice}</div>}
-    <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Yeni optik</h2><p>Optiğe ad verdiğiniz anda öğrenci, sınıf, kitapçık, kurum ve sınav alanları için baskı başlangıç şablonu otomatik oluşur.</p></div><ScanLine /></div><div className="form-grid"><label>Optik adı<input value={newTemplate.name} onChange={(e) => setNewTemplate((x) => ({ ...x, name: e.target.value }))} placeholder="Örn. Optik 840" /></label><label>Kaynak / üretici<input value={newTemplate.vendor} onChange={(e) => setNewTemplate((x) => ({ ...x, vendor: e.target.value }))} /></label><label>Sürüm<input value={newTemplate.version} onChange={(e) => setNewTemplate((x) => ({ ...x, version: e.target.value }))} /></label><label>Genişlik mm<input type="number" value={newTemplate.pageWidthMm} onChange={(e) => setNewTemplate((x) => ({ ...x, pageWidthMm: Number(e.target.value) }))} /></label><label>Yükseklik mm<input type="number" value={newTemplate.pageHeightMm} onChange={(e) => setNewTemplate((x) => ({ ...x, pageHeightMm: Number(e.target.value) }))} /></label></div><button className="primary" disabled={busy || !newTemplate.name.trim()} onClick={createTemplate}><Plus size={16} /> Optiği Tanıtmaya Başla</button></div>
-    <div className="exam-grid" style={{ marginBottom: 20 }}>{templates.map((t) => <button key={t.id} className="exam-card" onClick={() => setSelectedTemplateId(t.id)} style={{ textAlign: 'left', cursor: 'pointer', outline: selectedTemplateId === t.id ? '2px solid currentColor' : 'none' }}><div className="exam-top"><div className="quick-icon"><ScanLine /></div>{t.status === 'READY' ? <span className="verified"><CheckCircle2 size={14} /> Hazır</span> : t.status === 'ARCHIVED' ? <span className="warning"><CircleAlert size={14} /> Arşivlendi</span> : <span className="warning"><CircleAlert size={14} /> Okuma tanımı sürüyor</span>}</div><h3>{t.name}</h3><p>{t.vendor || 'Genel'} · {t.version_count} sürüm</p></button>)}</div>
-    {templateDetail && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Optik kartını düzenle</h2><p>Ad ve üretici bilgisi tüm sürümlerde güncellenir. Yayındaki sürümün okuma alanları yeni sürüm açılmadan değiştirilemez.</p></div><Pencil /></div><div className="form-grid"><label>Optik adı<input value={editTemplate.name} onChange={(e) => setEditTemplate((x) => ({ ...x, name: e.target.value }))} /></label><label>Kaynak / üretici<input value={editTemplate.vendor} onChange={(e) => setEditTemplate((x) => ({ ...x, vendor: e.target.value }))} /></label></div><div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="primary" disabled={busy || templateDetail.template?.status === 'ARCHIVED' || !editTemplate.name.trim()} onClick={saveTemplate}><Save size={16} /> Düzenlemeyi Kaydet</button><button className="ghost" disabled={busy || templateDetail.template?.status === 'ARCHIVED'} onClick={deleteTemplate}><Trash2 size={16} /> Optiği Sil</button></div><div className="form-grid" style={{ marginTop: 16 }}><label>Sürüm<select value={selectedVersionId} onChange={(e) => setSelectedVersionId(e.target.value)}>{templateDetail.versions?.map((v: any) => <option key={v.id} value={v.id}>{v.version}{v.active ? ' · AKTİF' : ''}</option>)}</select></label><label>Yeni sürüm<input value={newVersion} onChange={(e) => setNewVersion(e.target.value)} placeholder="v2" /></label></div><div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="secondary" disabled={!newVersion.trim() || busy || templateDetail.template?.status === 'ARCHIVED'} onClick={createVersion}><CopyPlus size={16} /> Kopyala / Yeni Taslak Sürüm</button></div>{templateDetail.versions?.map((v: any) => <div className="list-card" key={v.id} style={{ marginTop: 8 }}><div><strong>{v.version}</strong><span>{v.active ? 'Yayında · kilitli' : 'Taslak sürüm'} · {v.has_parser && v.has_camera && v.has_print && v.has_fiducials ? 'Tanım dolu' : 'Tanım eksik'}</span></div><div style={{ display: 'flex', gap: 8 }}><button className="ghost" onClick={() => setSelectedVersionId(v.id)}>Aç</button>{!v.active && <button className="ghost" disabled={busy} onClick={() => void deleteVersion(v.id)}><Trash2 size={14} /> Sil</button>}</div></div>)}</div>}
-    {versionDetail && <>
-      <div className="summary-strip" style={{ marginBottom: 20 }}>{readinessCards.map(([label, ok]) => <div className="kpi-card" key={String(label)}><span>{String(label)}</span><strong>{ok ? 'Hazır' : 'Eksik'}</strong></div>)}</div>
-      {selectedVersion?.active ? <div className="alert success">Bu sürüm yayında ve kilitli. Değişiklik için yeni sürüm açın.</div> : <>
-        <div className="panel" style={{ marginBottom: 20 }}><div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}><button className={method === 'FMT' ? 'primary' : 'secondary'} onClick={() => setMethod('FMT')}><FileText size={16} /> FMT ile Tanımla · Birincil</button><button className={method === 'PHOTO' ? 'primary' : 'secondary'} onClick={() => setMethod('PHOTO')}><Camera size={16} /> Fotoğraftan Tanımla</button><button className={method === 'TXT' ? 'primary' : 'secondary'} onClick={() => setMethod('TXT')}><FileText size={16} /> TXT / DAT Alternatif</button><button className={method === 'MANUAL' ? 'primary' : 'secondary'} onClick={() => setMethod('MANUAL')}><MousePointer2 size={16} /> Manuel / Gelişmiş</button></div></div>
-        {method === 'FMT' && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>FMT optik tanımlama</h2><p>FMT dosyası alan kodlarını, başlangıç–uzunluk–bitiş konumlarını ve test bloklarını otomatik çıkarır. Okulizyon benzeri eşleştirme tablosundan son kontrolü siz yaparsınız.</p></div><FileText /></div><div className="form-grid"><label>FMT dosyası<input type="file" accept=".fmt,.json,.txt,text/plain,application/json" onChange={(e) => setFmtFile(e.target.files?.[0] || null)} /></label><label>Kaynak önceliği<input value="FMT → TXT/DAT → manuel" readOnly /></label></div><button className="secondary" disabled={!fmtFile || busy} onClick={() => void importFmt()}><FileUp size={16} /> FMT'yi Oku ve Alanları Getir</button>{fmtDefinition && <><div className="alert success" style={{ marginTop: 12 }}>Form: {fmtDefinition.formName || 'Tanımsız'} · Kayıt uzunluğu: {fmtDefinition.recordLength} · Başlangıç tabanı: {fmtDefinition.indexBase === 1 ? '1' : '0'}</div><h3>Kimlik ve form alanları</h3><div className="list-card" style={{ display: 'grid', gridTemplateColumns: '1.3fr repeat(3, minmax(90px, 1fr))', gap: 8, alignItems: 'end' }}><strong>Alan</strong><strong>Başlangıç</strong><strong>Uzunluk</strong><strong>Bitiş</strong>{Object.entries<any>(fmtDefinition.fields || {}).map(([code, f]) => <span key={code} style={{ display: 'contents' }}><strong>{code}</strong><input type="number" value={f.start} onChange={(e) => updateFmtSlice('fields', code, 'start', Number(e.target.value))} /><input type="number" value={f.length ?? f.end - f.start} onChange={(e) => updateFmtSlice('fields', code, 'length', Number(e.target.value))} /><input type="number" value={f.end} onChange={(e) => updateFmtSlice('fields', code, 'end', Number(e.target.value))} /></span>)}</div><h3>Test / ders cevap blokları</h3><div className="list-card" style={{ display: 'grid', gridTemplateColumns: '1.3fr repeat(4, minmax(80px, 1fr))', gap: 8, alignItems: 'end' }}><strong>Test</strong><strong>Başlangıç</strong><strong>Uzunluk</strong><strong>Bitiş</strong><strong>Soru</strong>{Object.entries<any>(fmtDefinition.answers || {}).map(([code, f]) => <span key={code} style={{ display: 'contents' }}><strong>{code}</strong><input type="number" value={f.start} onChange={(e) => updateFmtSlice('answers', code, 'start', Number(e.target.value))} /><input type="number" value={f.length ?? f.end - f.start} onChange={(e) => updateFmtSlice('answers', code, 'length', Number(e.target.value))} /><input type="number" value={f.end} onChange={(e) => updateFmtSlice('answers', code, 'end', Number(e.target.value))} /><input type="number" value={f.questionCount || f.end - f.start} onChange={(e) => setFmtDefinition((d: any) => ({ ...d, answers: { ...d.answers, [code]: { ...d.answers[code], questionCount: Number(e.target.value) } } }))} /></span>)}</div><button className="primary" disabled={busy} onClick={() => void saveFmtMapping()}><Save size={16} /> FMT Eşlemesini Kaydet</button></>}</div>}
-        {method === 'PHOTO' && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Fotoğraftan Optik Tanımla</h2><p>Boş ve düz çekilmiş optik hem kamera tanımı hem de kişiselleştirilmiş baskı tabanı olarak saklanır.</p></div><Sparkles /></div><div className="form-grid"><label>Optik fotoğrafı<input type="file" accept="image/*" onChange={(e) => { setPhoto(e.target.files?.[0] || null); setSuggestions([]); }} /></label><label>Alan türü<select value={regionKind} onChange={(e) => setRegionKind(e.target.value)}><option value="answers">Ders cevap alanı</option><option value="bubble-grid">Öğrenci No</option><option value="booklet">Kitapçık</option></select></label>{regionKind === 'answers' && <label>Ders kodu<input value={regionSubject} onChange={(e) => setRegionSubject(e.target.value.toUpperCase())} placeholder="MAT" /></label>}{regionKind === 'answers' && <><label>Soru sayısı<input type="number" min="1" max="500" value={regionQuestionCount} onChange={(e) => setRegionQuestionCount(Number(e.target.value))} /></label><label>Şık sayısı<select value={regionOptionCount} onChange={(e) => setRegionOptionCount(Number(e.target.value))}><option value="4">4</option><option value="5">5</option></select></label></>}{regionKind === 'bubble-grid' && <label>Hane sayısı<input type="number" min="1" max="20" value={identityPositions} onChange={(e) => setIdentityPositions(Number(e.target.value))} /></label>}</div><div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}><button className="secondary" disabled={!photo || busy} onClick={() => void analysePhoto()}><Sparkles size={16} /> Fotoğrafı Analiz Et</button><button className={drawMode === 'REGION' ? 'primary' : 'secondary'} onClick={() => setDrawMode('REGION')}>Alan Çiz</button><button className={drawMode === 'FIDUCIAL' ? 'primary' : 'secondary'} onClick={() => setDrawMode('FIDUCIAL')}>Referans Noktası</button><button className="ghost" onClick={() => { setRegions([]); setFiducials([]); }}>Temizle</button></div>{photoUrl && <div onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} style={{ position: 'relative', maxWidth: 850, border: '1px solid var(--border,#e5e7eb)', borderRadius: 12, overflow: 'hidden', touchAction: 'none', cursor: drawMode === 'REGION' ? 'crosshair' : 'copy' }}><img src={photoUrl} alt="Optik" style={{ width: '100%', display: 'block', pointerEvents: 'none' }} />{suggestions.map((s, i) => <button key={i} title="Öneriyi seçili alan türüyle ekle" onClick={(e) => { e.stopPropagation(); addRegion(s); }} style={{ position: 'absolute', left: `${s.xPct}%`, top: `${s.yPct}%`, width: `${s.wPct}%`, height: `${s.hPct}%`, border: '2px dashed #f59e0b', background: 'rgba(245,158,11,.08)' }} />)}{regions.map((r) => <div key={r.id} style={{ position: 'absolute', left: `${r.xMm / pageW * 100}%`, top: `${r.yMm / pageH * 100}%`, width: `${r.widthMm / pageW * 100}%`, height: `${r.heightMm / pageH * 100}%`, border: '2px solid #2563eb', background: 'rgba(37,99,235,.12)', pointerEvents: 'none', fontSize: 11 }}>{r.subjectCode || r.type}</div>)}{fiducials.map((p, i) => <div key={i} style={{ position: 'absolute', left: `${p[0] / pageW * 100}%`, top: `${p[1] / pageH * 100}%`, width: 12, height: 12, borderRadius: '50%', background: '#dc2626', border: '2px solid white', transform: 'translate(-50%,-50%)', pointerEvents: 'none' }} />)}{draft && <div style={{ position: 'absolute', left: `${draft.xPct}%`, top: `${draft.yPct}%`, width: `${draft.wPct}%`, height: `${draft.hPct}%`, border: '2px solid #16a34a', background: 'rgba(22,163,74,.1)', pointerEvents: 'none' }} />}</div>}<div className="alert warning" style={{ marginTop: 12 }}>Referans noktası yalnız optikte gerçekten bulunan hizalama işaretidir. En az 3 gerçek nokta gerekir. İşaretlenen: {fiducials.length}</div>{regions.map((r) => <div className="list-card" key={r.id}><div style={{ flex: 1 }}><strong>{r.subjectCode || (r.purpose === 'student-number' ? 'Öğrenci No' : r.purpose === 'booklet' ? 'Kitapçık' : r.type)}</strong><span>{r.xMm.toFixed(1)}, {r.yMm.toFixed(1)} · {r.widthMm.toFixed(1)}×{r.heightMm.toFixed(1)} mm{r.questionCount ? ` · ${r.questionCount} soru / ${(r.options || []).length} şık` : r.positions ? ` · ${r.positions} hane` : ''}</span></div><button className="ghost" onClick={() => setRegions((x) => x.filter((z) => z.id !== r.id))}>Sil</button></div>)}<button className="primary" disabled={!photo || !regions.length || fiducials.length < 3 || busy} onClick={savePhoto}><Save size={16} /> Fotoğraf Tanımını Kaydet</button></div>}
-        {method === 'TXT' && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>TXT / DAT'den Tanımla</h2><p>Örnek dosya alan önerisi üretir; siz başlangıç/bitişleri doğrularsınız ve gerçek dosyayla test edilir.</p></div><FlaskConical /></div><input type="file" accept=".txt,.dat,text/plain" onChange={(e) => void readSample(e.target.files?.[0])} />{fixed && <><div className="alert success">Kayıt uzunluğu: {fixed.recordLength} · Olası cevap bloğu: {fixed.answerBlocks.length}</div><div className="form-grid">{([['studentStart','Öğrenci No başlangıç'],['studentEnd','Öğrenci No bitiş'],['nameStart','Ad Soyad başlangıç'],['nameEnd','Ad Soyad bitiş'],['classStart','Sınıf başlangıç'],['classEnd','Sınıf bitiş'],['bookletStart','Kitapçık başlangıç'],['bookletEnd','Kitapçık bitiş']] as Array<[keyof typeof fieldRanges,string]>).map(([k,l]) => <label key={k}>{l}<input type="number" value={fieldRanges[k]} onChange={(e) => setFieldRanges((x) => ({ ...x, [k]: Number(e.target.value) }))} /></label>)}</div><h3>Cevap blokları</h3>{answerRanges.map((r, i) => <div className="form-grid" key={i}><label>Ders kodu<input value={r.subjectCode} onChange={(e) => setAnswerRanges((x) => x.map((z,j) => j === i ? { ...z, subjectCode: e.target.value.toUpperCase() } : z))} /></label><label>Başlangıç<input type="number" value={r.start} onChange={(e) => setAnswerRanges((x) => x.map((z,j) => j === i ? { ...z, start: Number(e.target.value) } : z))} /></label><label>Bitiş<input type="number" value={r.end} onChange={(e) => setAnswerRanges((x) => x.map((z,j) => j === i ? { ...z, end: Number(e.target.value) } : z))} /></label></div>)}<button className="secondary" onClick={() => setAnswerRanges((x) => [...x, { subjectCode: '', start: 0, end: 0 }])}><Plus size={15} /> Cevap Bloğu Ekle</button><button className="primary" disabled={busy || fieldRanges.nameEnd <= fieldRanges.nameStart || !answerRanges.some((x) => x.subjectCode && x.end > x.start)} onClick={saveParser}><FlaskConical size={16} /> Kaydet ve Gerçek Dosyayla Test Et</button>{parserTest && <div className={parserTest.passed ? 'alert success' : 'alert error'}><strong>{parserTest.passed ? 'Test başarılı' : 'Test başarısız'}</strong> · {parserTest.recordCount} kayıt · %{Math.round((parserTest.confidence || 0) * 100)}</div>}</>}</div>}
-        <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Kişiye özel baskı alanları</h2><p>Başlangıç alanları otomatik gelir. Gerçek boş optikte ad, öğrenci no, sınıf, kitapçık ve sınav alanlarına göre yalnız X/Y konumlarını ince ayarlayın.</p></div></div><div className="alert info">Bu baskı tanımı, aynı optiğin kamera/TXT tanımıyla birlikte sürümlenir. Bir kez doğruladığınızda Optik Hazırla / Bas ekranında kalıcı şablon olur.</div><button className="secondary" onClick={() => setPrintFields((x) => [...x, { key: 'studentName', xMm: 0, yMm: 0 }])}><Plus size={15} /> Alan Ekle</button>{printFields.map((f, i) => <div className="form-grid" key={i}><label>Alan<select value={f.key} onChange={(e) => setPrintFields((x) => x.map((z,j) => j === i ? { ...z, key: e.target.value } : z))}><option value="studentName">Ad Soyad</option><option value="studentNumber">Öğrenci No</option><option value="class">Sınıf</option><option value="section">Şube</option><option value="institutionCode">Kurum Kodu</option><option value="bookletCode">Kitapçık Kodu</option><option value="examTitle">Sınav Adı</option><option value="examCode">Sınav Kodu</option><option value="qr">QR</option><option value="barcode">Barkod</option><option value="studentNumberBubbles">Öğrenci No Baloncukları</option></select></label><label>X mm<input type="number" step="0.1" value={f.xMm} onChange={(e) => setPrintFields((x) => x.map((z,j) => j === i ? { ...z, xMm: Number(e.target.value) } : z))} /></label><label>Y mm<input type="number" step="0.1" value={f.yMm} onChange={(e) => setPrintFields((x) => x.map((z,j) => j === i ? { ...z, yMm: Number(e.target.value) } : z))} /></label><button className="ghost" onClick={() => setPrintFields((x) => x.filter((_,j) => j !== i))}>Sil</button></div>)}<button className="primary" disabled={!printFields.length || busy} onClick={savePrint}><Save size={16} /> Baskı Alanlarını Kaydet</button></div>
-        {method === 'MANUAL' && <div className="panel" style={{ marginBottom: 20 }}><h2>Manuel / Gelişmiş</h2>{(['parser','camera','print','fiducials'] as Section[]).map((section) => <details key={section}><summary>{section.toUpperCase()}</summary><textarea rows={10} value={advanced[section] || pretty(EXAMPLES[section])} onChange={(e) => setAdvanced((x) => ({ ...x, [section]: e.target.value }))} style={{ width: '100%', fontFamily: 'ui-monospace,monospace' }} /><button className="secondary" onClick={() => void saveAdvanced(section)}><Save size={15} /> Kaydet</button></details>)}</div>}
-      </>}
-      <div className="panel"><div className="panel-head"><div><h2>Yayın kontrolü</h2><p>READY için FMT/Parser tanımı ve örnek kayıt testi, fotoğraf/kamera, gerçek referans noktaları ve baskı alanları tamamlanır. TXT/DAT örneği FMT tanımının çalıştığını kanıtlamak için kullanılabilir.</p></div>{readiness?.ready ? <CheckCircle2 /> : <CircleAlert />}</div>{!readiness?.ready && <div className="alert warning">{(readiness?.errors || []).join(' · ')}</div>}<button className="primary" disabled={!readiness?.ready || selectedVersion?.active || busy} onClick={publish}><Send size={16} /> Optiği Yayınla</button></div>
-      <div className="panel" style={{ marginTop: 20 }}><div className="panel-head"><div><h2>Referans dosyaları</h2><p>Boş form baskı tabanı, fotoğraf ve TXT/DAT örnekleri sürüme bağlı saklanır.</p></div><FileUp /></div>{(versionDetail.assets || []).map((a: any) => <div className="list-card" key={a.id}><div><strong>{assetLabel(a.asset_type)}</strong><span>{a.file_name}</span></div></div>)}</div>
-    </>}
-  </>;
+  const importFmt = async () => {
+    if (!selectedVersionId || !fmtFile) return;
+    setBusy(true);
+    setError("");
+    try {
+      const fd = new FormData();
+      fd.append("file", fmtFile);
+      const r = await api<any>(
+        `/api/optical-definition-versions/${selectedVersionId}/fmt`,
+        { method: "POST", body: fd },
+      );
+      setFmtDefinition(r.definition);
+      setNotice(
+        `FMT okundu: ${Object.keys(r.definition.fields || {}).length} kimlik alanı, ${Object.keys(r.definition.answers || {}).length} test bloğu. Başlangıç/uzunluk/bitiş eşlemesini kontrol edin.`,
+      );
+      await loadVersion(selectedVersionId);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const updateFmtSlice = (
+    group: "fields" | "answers",
+    code: string,
+    key: "start" | "end" | "length",
+    value: number,
+  ) =>
+    setFmtDefinition((d: any) => {
+      const current = d[group]?.[code] || {};
+      const next = { ...current, [key]: value };
+      if (key === "start")
+        next.end =
+          value + Number((current.length ?? current.end - current.start) || 1);
+      if (key === "length") next.end = Number(current.start || 0) + value;
+      if (key === "end") next.length = value - Number(current.start || 0);
+      return { ...d, [group]: { ...d[group], [code]: next } };
+    });
+  const saveFmtMapping = async () => {
+    if (!selectedVersionId || !fmtDefinition) return;
+    setBusy(true);
+    setError("");
+    try {
+      const definition = {
+        ...fmtDefinition,
+        fixedWidth: {
+          ...fmtDefinition.fixedWidth,
+          type: "fixed-width",
+          recordLength: fmtDefinition.recordLength,
+          fields: fmtDefinition.fields,
+          answers: fmtDefinition.answers,
+        },
+      };
+      await api(
+        `/api/optical-definition-versions/${selectedVersionId}/parser`,
+        { method: "PUT", body: JSON.stringify({ definition }) },
+      );
+      setFmtDefinition(definition);
+      setNotice(
+        "FMT eşlemesi kaydedildi. Gerçek TXT/DAT örneğini yüklediğinizde test sonucu ayrıca doğrulanır.",
+      );
+      await loadVersion(selectedVersionId);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const readSample = async (file?: File) => {
+    if (!file) return;
+    setSample(file);
+    const text = await file.text();
+    setSampleText(text);
+    const s = analyzeFixedWidthSample(text);
+    setFixed(s);
+    setParserTest(null);
+    if (!s)
+      return setError(
+        "TXT/DAT yapısı otomatik analiz edilemedi. Manuel tanım kullanabilirsiniz.",
+      );
+    setManualRecordLength(s.recordLength);
+    setFieldRanges({
+      tcknStart: 0,
+      tcknEnd: 0,
+      studentStart: s.studentNumber?.start ?? 0,
+      studentEnd: s.studentNumber?.end ?? 0,
+      nameStart: s.name?.start ?? 0,
+      nameEnd: s.name?.end ?? 0,
+      classStart: 0,
+      classEnd: 0,
+      bookletStart: 0,
+      bookletEnd: 0,
+    });
+    setManualFields((current) =>
+      current.map((field) =>
+        field.key === "student_number"
+          ? {
+              ...field,
+              enabled: Boolean(s.studentNumber),
+              start: s.studentNumber?.start ?? 0,
+              length: s.studentNumber
+                ? s.studentNumber.end - s.studentNumber.start
+                : 0,
+            }
+          : field.key === "name"
+            ? {
+                ...field,
+                enabled: Boolean(s.name),
+                start: s.name?.start ?? 0,
+                length: s.name ? s.name.end - s.name.start : 0,
+              }
+            : field,
+      ),
+    );
+    setAnswerRanges(
+      s.answerBlocks.map((x, i) => ({
+        subjectCode: i === 0 ? "MAT" : "",
+        start: x.start,
+        end: x.end,
+      })),
+    );
+    setNotice(
+      `TXT/DAT analiz edildi: ${s.recordLength} karakter, ${s.answerBlocks.length} olası cevap bloğu.`,
+    );
+  };
+  const buildParser = () => {
+    if (!fixed) return null;
+    const fields: any = {
+      name: { start: fieldRanges.nameStart, end: fieldRanges.nameEnd },
+    };
+    if (fieldRanges.tcknEnd > fieldRanges.tcknStart)
+      fields.tckn = { start: fieldRanges.tcknStart, end: fieldRanges.tcknEnd };
+    if (fieldRanges.studentEnd > fieldRanges.studentStart)
+      fields.student_number = {
+        start: fieldRanges.studentStart,
+        end: fieldRanges.studentEnd,
+      };
+    if (fieldRanges.classEnd > fieldRanges.classStart)
+      fields.class = {
+        start: fieldRanges.classStart,
+        end: fieldRanges.classEnd,
+      };
+    if (fieldRanges.bookletEnd > fieldRanges.bookletStart)
+      fields.booklet = {
+        start: fieldRanges.bookletStart,
+        end: fieldRanges.bookletEnd,
+      };
+    const answers: any = {};
+    for (const r of answerRanges)
+      if (r.subjectCode.trim() && r.end > r.start)
+        answers[r.subjectCode.trim().toUpperCase()] = {
+          start: r.start,
+          end: r.end,
+        };
+    return {
+      type: "fixed-width",
+      recordLength: fixed.recordLength,
+      signature: "",
+      fields,
+      answers,
+    };
+  };
+  const saveParser = async () => {
+    if (!selectedVersionId || !sample || !sampleText) return;
+    const parser = buildParser();
+    if (!parser) return;
+    setBusy(true);
+    try {
+      await api(
+        `/api/optical-definition-versions/${selectedVersionId}/parser`,
+        { method: "PUT", body: JSON.stringify({ definition: parser }) },
+      );
+      const r = await api<any>(
+        `/api/optical-definition-versions/${selectedVersionId}/test-parser`,
+        {
+          method: "POST",
+          body: JSON.stringify({ sampleText, fileName: sample.name }),
+        },
+      );
+      setParserTest(r);
+      if (r.passed) {
+        const fd = new FormData();
+        fd.append("file", sample);
+        fd.append("assetType", "FMT_SAMPLE");
+        await api(
+          `/api/optical-definition-versions/${selectedVersionId}/assets`,
+          { method: "POST", body: fd },
+        );
+      }
+      setNotice(
+        r.passed
+          ? `${r.recordCount} kayıt başarıyla okundu.`
+          : "Parser testi geçmedi; başlangıç/bitiş alanlarını düzeltin.",
+      );
+      await loadVersion(selectedVersionId);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const saveManualDefinition = async () => {
+    if (!selectedVersionId) return;
+    if (!manualRecordLength || manualRecordLength < 1)
+      return setError("Kayıt uzunluğu girilmelidir.");
+    const definition = buildManualParserDefinition(
+      manualRecordLength,
+      manualFields,
+      manualAnswers,
+      manualIndexBase,
+    );
+    if (!definition.fields.name)
+      return setError(
+        "Ad Soyad alanını etkinleştirin ve başlangıç/uzunluk girin.",
+      );
+    if (!Object.keys(definition.answers).length)
+      return setError("En az bir test/cevap bloğunu etkinleştirin.");
+    setBusy(true);
+    setError("");
+    try {
+      await api(
+        `/api/optical-definition-versions/${selectedVersionId}/parser`,
+        { method: "PUT", body: JSON.stringify({ definition }) },
+      );
+      if (sample && sampleText) {
+        const r = await api<any>(
+          `/api/optical-definition-versions/${selectedVersionId}/test-parser`,
+          {
+            method: "POST",
+            body: JSON.stringify({ sampleText, fileName: sample.name }),
+          },
+        );
+        setParserTest(r);
+        if (r.passed) {
+          const fd = new FormData();
+          fd.append("file", sample);
+          fd.append("assetType", "FMT_SAMPLE");
+          await api(
+            `/api/optical-definition-versions/${selectedVersionId}/assets`,
+            { method: "POST", body: fd },
+          );
+        }
+        setNotice(
+          r.passed
+            ? `${r.recordCount} kayıt başarıyla okundu; manuel optik tanımı doğrulandı.`
+            : "Parametreler kaydedildi ancak örnek dosya testi geçmedi. Alanları kontrol edin.",
+        );
+      } else
+        setNotice(
+          "Manuel optik parametreleri kaydedildi. Yayınlamak için gerçek TXT/DAT örneğini yükleyip test edin.",
+        );
+      await loadVersion(selectedVersionId);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const savePrint = async () => {
+    if (!selectedVersionId || !printFields.length) return;
+    await api(`/api/optical-definition-versions/${selectedVersionId}/print`, {
+      method: "PUT",
+      body: JSON.stringify({ definition: { fields: printFields } }),
+    });
+  };
+  const saveAdvanced = async (section: Section) => {
+    if (!selectedVersionId) return;
+    setBusy(true);
+    try {
+      await api(
+        `/api/optical-definition-versions/${selectedVersionId}/${section}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ definition: JSON.parse(advanced[section]) }),
+        },
+      );
+      await loadVersion(selectedVersionId);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const publish = async () => {
+    if (
+      !selectedVersionId ||
+      !confirm("Bu optik sürümü READY durumuna alınsın mı?")
+    )
+      return;
+    setBusy(true);
+    try {
+      await api(
+        `/api/optical-definition-versions/${selectedVersionId}/publish`,
+        { method: "POST" },
+      );
+      setNotice("Optik sürümü yayına alındı.");
+      await loadTemplates();
+      await loadTemplate(selectedTemplateId);
+      await loadVersion(selectedVersionId);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const readinessCards = useMemo(
+    () => [
+      ["FMT / Parser", readiness?.parser && readiness?.parserTestPassed],
+      ["Kamera", readiness?.camera],
+      ["Referans", readiness?.fiducials],
+    ],
+    [readiness],
+  );
+  const closeTemplate = () => {
+    setSelectedTemplateId("");
+    setSelectedVersionId("");
+    setTemplateDetail(null);
+    setVersionDetail(null);
+    setError("");
+  };
+  const opticalTree = useMemo(() => {
+    const groups = [
+      {
+        key: "CENTRAL",
+        label: "Ana Havuz",
+        detail: "Süper Admin yayınları",
+        items: templates.filter((item) => item.owner_type === "CENTRAL"),
+      },
+      {
+        key: "INSTITUTION",
+        label: "Kurum Optikleri",
+        detail: "Bu kuruma özel · ana havuza girmez",
+        items: templates.filter((item) => item.owner_type === "INSTITUTION"),
+      },
+    ];
+    return groups.filter((group) => group.items.length > 0).map((group) => {
+      const vendors = new Map<string, any[]>();
+      group.items.forEach((item) => {
+        const vendor = item.vendor?.trim() || "Üretici belirtilmemiş";
+        vendors.set(vendor, [...(vendors.get(vendor) || []), item]);
+      });
+      return {
+        ...group,
+        vendors: [...vendors.entries()].sort(([a], [b]) => a.localeCompare(b, "tr")),
+      };
+    });
+  }, [templates]);
+
+  return (
+    <div
+      className={`optical-definition-page ${templateDetail && selectedTemplateId ? "detail-mode" : ""}`}
+    >
+      <div className="page-head">
+        <div>
+          <span className="eyebrow">PHOBOS · OPTİK MERKEZİ</span>
+          <h1>Optik Form Ağacı</h1>
+        </div>
+      </div>
+      {error && <div className="alert error">{error}</div>}
+      {notice && <div className="alert success">{notice}</div>}
+      <div className="optical-form-tree-actions">
+        <button className="primary" type="button" onClick={openCreateForm}>
+          <Plus size={16} /> Optik Form Ekle
+        </button>
+      </div>
+      {formDialogOpen && (() => {
+        const form = formDialogMode === "edit" ? editTemplate : newTemplate;
+        const fieldByKey = (key: string) => manualFields.find((field) => field.key === key);
+        const identityColumns = [
+          ["student_number", "first_name", "last_name", "name", "class", "grade_class", "section", "booklet", "tckn"],
+          ["phone", "gender", "track", "school_type", "institution_code"],
+        ];
+        const renderField = (key: string) => {
+          const field = fieldByKey(key);
+          if (!field) return null;
+          return <div className="optical-schoolizyon-row" key={field.key}>
+            <label className="optical-schoolizyon-name"><input type="checkbox" checked={field.enabled} onChange={(e) => setManualFields((items) => items.map((item) => item.key === field.key ? { ...item, enabled: e.target.checked } : item))} /> <span>{field.label}</span></label>
+            <input aria-label={`${field.label} başlangıç`} type="number" min="0" value={field.start || ""} onChange={(e) => setManualFields((items) => items.map((item) => item.key === field.key ? { ...item, start: Number(e.target.value) || 0 } : item))} />
+            <input aria-label={`${field.label} uzunluk`} type="number" min="0" value={field.length || ""} onChange={(e) => setManualFields((items) => items.map((item) => item.key === field.key ? { ...item, length: Number(e.target.value) || 0 } : item))} />
+          </div>;
+        };
+        const renderTest = (block: ManualAnswerBlock) => <div className="optical-schoolizyon-row" key={block.code}>
+          <label className="optical-schoolizyon-name"><input type="checkbox" checked={block.enabled} onChange={(e) => setManualAnswers((items) => items.map((item) => item.code === block.code ? { ...item, enabled: e.target.checked } : item))} /> <span>{block.label}</span></label>
+          <input aria-label={`${block.label} başlangıç`} type="number" min="0" value={block.start || ""} onChange={(e) => setManualAnswers((items) => items.map((item) => item.code === block.code ? { ...item, start: Number(e.target.value) || 0 } : item))} />
+          <input aria-label={`${block.label} uzunluk`} type="number" min="0" value={block.length || ""} onChange={(e) => setManualAnswers((items) => items.map((item) => item.code === block.code ? { ...item, length: Number(e.target.value) || 0 } : item))} />
+        </div>;
+        const ownerLabel = user?.role === "SUPER_ADMIN" ? "Ana Havuz · Süper Admin" : "Kurum optiği · mevcut kurum";
+        return <div className="optical-form-dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setFormDialogOpen(false); }}>
+          <section className="optical-form-dialog" role="dialog" aria-modal="true" aria-labelledby="optical-form-dialog-title">
+            <div className="optical-form-dialog-head">
+              <h2 id="optical-form-dialog-title"><UserRoundPlus size={19} /> Optik Form</h2>
+              <button type="button" className="icon-button" aria-label="Pencereyi kapat" onClick={() => setFormDialogOpen(false)}><X size={18} /></button>
+            </div>
+            <div className="optical-form-dialog-body">
+              {error && <div className="alert error optical-form-dialog-feedback">{error}</div>}
+              {notice && <div className="alert info optical-form-dialog-feedback">{notice}</div>}
+              <div className="optical-schoolizyon-top-fields">
+                <label className="dialog-field-name">Form Adı *<input value={form.name} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, name: e.target.value })) : setNewTemplate((x) => ({ ...x, name: e.target.value }))} placeholder="Form adı" /></label>
+                <label className="dialog-field-order">Sıra<input type="number" min="1" value={form.sortOrder || 1} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 })) : setNewTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 }))} /></label>
+                <label className="dialog-field-type">Form Türü *<select value={form.formType} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, formType: e.target.value as Method })) : setNewTemplate((x) => ({ ...x, formType: e.target.value as Method }))}><option value="MANUAL">Kullanıcıya özel</option><option value="FMT">FMT</option><option value="TXT">TXT / DAT</option><option value="PHOTO">Fotoğraf / kamera</option></select></label>
+                <label className="dialog-field-publisher">Yayınevi *<input value={form.vendor} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, vendor: e.target.value })) : setNewTemplate((x) => ({ ...x, vendor: e.target.value }))} placeholder="Yayınevi" /></label>
+                <label className="dialog-field-code">Optik kodu *<input value={form.opticalCode} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, opticalCode: e.target.value })) : setNewTemplate((x) => ({ ...x, opticalCode: e.target.value }))} placeholder="Optik kodu" /></label>
+                <label className="dialog-field-owner">Kullanıcı *<div className="optical-user-picker"><input value={ownerLabel} readOnly /><button type="button" className="secondary" onClick={() => setNotice(`${ownerLabel} seçildi.`)}>Seç</button></div></label>
+              </div>
+              <div className="optical-schoolizyon-section-head"><strong>Alan</strong><span>Baş.</span><span>Uz.</span></div>
+              <div className="optical-schoolizyon-columns">
+                <div>{identityColumns[0].map(renderField)}</div>
+                <div>{identityColumns[1].map(renderField)}{manualAnswers.slice(0, 4).map(renderTest)}</div>
+                <div>{manualAnswers.slice(4, 15).map(renderTest)}</div>
+              </div>
+            </div>
+            <div className="optical-form-dialog-footer">
+              <button type="button" className="primary" disabled={busy || !form.name.trim() || !form.vendor.trim() || !form.opticalCode.trim()} onClick={() => void saveFormDialog()}><Save size={16} /> Kaydet</button>
+              <button type="button" className="different-save" disabled={busy || !form.name.trim() || !form.vendor.trim() || !form.opticalCode.trim()} onClick={saveDifferentForm}>Farklı Kaydet</button>
+              <button type="button" className="secondary" onClick={() => setFormDialogOpen(false)}>Vazgeç</button>
+            </div>
+          </section>
+        </div>;
+      })()}
+      <div className="optical-definition-list-shell">
+        <div className="optical-tree-layout">
+          <aside className="optical-form-tree panel">
+            <div className="panel-head">
+              <div>
+                <h2>Optik Form Ağacı</h2>
+                <span className="muted">Phobos · optik tanımlama</span>
+              </div>
+              <ScanLine size={18} />
+            </div>
+            {opticalTree.length === 0 && <div className="empty-state"><ScanLine size={22} /><span>Henüz optik form yok.</span></div>}
+            {opticalTree.map((group) => (
+              <div className="optical-tree-group" key={group.key}>
+                <div className="optical-tree-root"><strong>{group.label}</strong><span>{group.detail}</span></div>
+                {group.vendors.map(([vendor, items]) => (
+                  <div className="optical-tree-vendor" key={`${group.key}-${vendor}`}>
+                    <span className="optical-tree-line" />
+                    <strong>{vendor}</strong>
+                    {items.map((item) => (
+                      <div className="optical-tree-template" key={item.id}>
+                        <span className="optical-tree-branch" />
+                        <button
+                          type="button"
+                          className={selectedTemplateId === item.id ? "selected" : ""}
+                          onClick={() => setSelectedTemplateId(item.id)}
+                        >
+                          <span>{item.name}</span>
+                          <small>{item.active_version || "Taslak"} · {item.version_count} sürüm</small>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </aside>
+          <div className="exam-grid optical-form-cards">
+          {templates.map((t) => (
+            <div
+              key={t.id}
+              className="exam-card"
+              style={{
+                textAlign: "left",
+                outline:
+                  selectedTemplateId === t.id
+                    ? "2px solid currentColor"
+                    : "none",
+              }}
+            >
+              <div className="exam-top">
+                <div className="quick-icon">
+                  <ScanLine />
+                </div>
+                <div className="optical-card-menu-wrap">
+                  <button
+                    className="icon-button optical-card-menu-button"
+                    aria-label={`${t.name} işlemleri`}
+                    aria-expanded={openCardMenu === t.id}
+                    onClick={() => setOpenCardMenu((current) => current === t.id ? null : t.id)}
+                  >
+                    <MoreVertical size={17} />
+                  </button>
+                  {openCardMenu === t.id && <div className="optical-card-menu" role="menu">
+                    <button role="menuitem" onClick={() => openEditForm(t.id)}><Pencil size={14} /> Düzenle</button>
+                    <button role="menuitem" disabled={busy || t.status === "ARCHIVED"} onClick={() => { setOpenCardMenu(null); void copyTemplateVersion(t.id); }}><CopyPlus size={14} /> Kopyala</button>
+                    <button role="menuitem" disabled={busy || t.status === "ARCHIVED"} onClick={() => { setOpenCardMenu(null); void deleteTemplate(t.id); }}><Trash2 size={14} /> Sil</button>
+                  </div>}
+                </div>
+              </div>
+              <div className="optical-card-status">
+                {t.status === "READY" ? <span className="verified"><CheckCircle2 size={14} /> Hazır</span> : t.status === "ARCHIVED" ? <span className="warning"><CircleAlert size={14} /> Arşivlendi</span> : <span className="warning"><CircleAlert size={14} /> Okuma tanımı sürüyor</span>}
+              </div>
+              <button type="button" className="optical-card-title" onClick={() => openEditForm(t.id)}><h3>{t.name}</h3></button>
+              <p>
+                {t.owner_type === "CENTRAL" ? "Ana Havuz" : "Kurum özel"} · {t.vendor || "Genel"} · Optik kodu: {t.optical_code || "—"} · {t.version_count} sürüm
+              </p>
+            </div>
+          ))}
+          </div>
+        </div>
+      </div>
+      <div className="optical-definition-detail-shell">
+        <div className="optical-detail-toolbar">
+          <button className="ghost" onClick={closeTemplate}>
+            <ArrowLeft size={16} /> Optik listesine dön
+          </button>
+          {templateDetail && (
+            <span className="status neutral">
+              {templateDetail.template?.status === "READY"
+                ? "Yayında"
+                : templateDetail.template?.status === "ARCHIVED"
+                  ? "Arşivlendi"
+                  : "Taslak çalışma alanı"}
+            </span>
+          )}
+        </div>
+        {templateDetail && (
+          <div className="panel" style={{ marginBottom: 20 }}>
+            <div className="panel-head">
+              <div>
+                <h2>{templateDetail.template?.name} · Optik kartı</h2>
+                <p>
+                  Ad ve üretici bilgisi tüm sürümlerde güncellenir. Yayındaki
+                  sürümün okuma alanları yeni sürüm açılmadan değiştirilemez.
+                </p>
+              </div>
+              <Pencil />
+            </div>
+            <div className="form-grid">
+              <label>
+                Optik adı
+                <input
+                  value={editTemplate.name}
+                  onChange={(e) =>
+                    setEditTemplate((x) => ({ ...x, name: e.target.value }))
+                  }
+                />
+              </label>
+              <label>
+                Yayınevi
+                <input
+                  value={editTemplate.vendor}
+                  onChange={(e) =>
+                    setEditTemplate((x) => ({ ...x, vendor: e.target.value }))
+                  }
+                />
+              </label>
+              <label>
+                Optik kodu
+                <input
+                  value={editTemplate.opticalCode}
+                  onChange={(e) => setEditTemplate((x) => ({ ...x, opticalCode: e.target.value }))}
+                  disabled={templateDetail.template?.status === "ARCHIVED"}
+                />
+              </label>
+              <label>
+                Form türü
+                <select
+                  value={editTemplate.formType}
+                  onChange={(e) => setEditTemplate((x) => ({ ...x, formType: e.target.value as Method }))}
+                  disabled={templateDetail.template?.status === "ARCHIVED"}
+                >
+                  <option value="FMT">FMT</option>
+                  <option value="TXT">TXT / DAT</option>
+                  <option value="PHOTO">Fotoğraf / kamera</option>
+                  <option value="MANUAL">Manuel parametre</option>
+                </select>
+              </label>
+              <label>
+                Sıra
+                <input
+                  type="number"
+                  min="1"
+                  value={editTemplate.sortOrder}
+                  onChange={(e) => setEditTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) }))}
+                  disabled={templateDetail.template?.status === "ARCHIVED"}
+                />
+              </label>
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button
+                className="primary"
+                disabled={
+                  busy ||
+                  templateDetail.template?.status === "ARCHIVED" ||
+                  !editTemplate.name.trim()
+                }
+                onClick={saveTemplate}
+              >
+                <Save size={16} /> Düzenlemeyi Kaydet
+              </button>
+              <button
+                className="ghost"
+                disabled={
+                  busy || templateDetail.template?.status === "ARCHIVED"
+                }
+                onClick={() => void deleteTemplate()}
+              >
+                <Trash2 size={16} /> Sil / Arşivle
+              </button>
+            </div>
+            <div className="form-grid" style={{ marginTop: 16 }}>
+              <label>
+                Sürüm
+                <select
+                  value={selectedVersionId}
+                  onChange={(e) => setSelectedVersionId(e.target.value)}
+                >
+                  {templateDetail.versions?.map((v: any) => (
+                    <option key={v.id} value={v.id}>
+                      {v.version}
+                      {v.active ? " · AKTİF" : ""}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Yeni sürüm
+                <input
+                  value={newVersion}
+                  onChange={(e) => setNewVersion(e.target.value)}
+                  placeholder="v2"
+                />
+              </label>
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button
+                className="secondary"
+                disabled={
+                  !newVersion.trim() ||
+                  busy ||
+                  templateDetail.template?.status === "ARCHIVED"
+                }
+                onClick={createVersion}
+              >
+                <CopyPlus size={16} /> Kopyala / Yeni Taslak Sürüm
+              </button>
+            </div>
+            {templateDetail.versions?.map((v: any) => (
+              <div className="list-card" key={v.id} style={{ marginTop: 8 }}>
+                <div>
+                  <strong>{v.version}</strong>
+                  <span>
+                    {v.active ? "Yayında · kilitli" : "Taslak sürüm"} ·{" "}
+                    {v.has_parser && v.has_camera && v.has_fiducials
+                      ? "Okuma tanımı dolu"
+                      : "Okuma tanımı eksik"} · {v.has_print ? "Baskı tasarımı hazır" : "Baskı tasarımı bekliyor"}
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button
+                    className="ghost"
+                    onClick={() => setSelectedVersionId(v.id)}
+                  >
+                    Aç
+                  </button>
+                  {!v.active && (
+                    <button
+                      className="ghost"
+                      disabled={busy}
+                      onClick={() => void deleteVersion(v.id)}
+                    >
+                      <Trash2 size={14} /> Sil
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {versionDetail && (
+          <>
+            <div className="summary-strip" style={{ marginBottom: 20 }}>
+              {readinessCards.map(([label, ok]) => (
+                <div className="kpi-card" key={String(label)}>
+                  <span>{String(label)}</span>
+                  <strong>{ok ? "Hazır" : "Eksik"}</strong>
+                </div>
+              ))}
+            </div>
+            {selectedVersion?.active ? (
+              <div className="alert success">
+                Bu sürüm yayında ve kilitli. Değişiklik için yeni sürüm açın.
+              </div>
+            ) : (
+              <>
+                <div className="panel" style={{ marginBottom: 20 }}>
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    <button
+                      className={method === "FMT" ? "primary" : "secondary"}
+                      onClick={() => setMethod("FMT")}
+                    >
+                      <FileText size={16} /> FMT ile Tanımla · Birincil
+                    </button>
+                    <button
+                      className={method === "PHOTO" ? "primary" : "secondary"}
+                      onClick={() => setMethod("PHOTO")}
+                    >
+                      <Camera size={16} /> Fotoğraftan Tanımla
+                    </button>
+                    <button
+                      className={method === "TXT" ? "primary" : "secondary"}
+                      onClick={() => setMethod("TXT")}
+                    >
+                      <FileText size={16} /> TXT / DAT Alternatif
+                    </button>
+                    <button
+                      className={method === "MANUAL" ? "primary" : "secondary"}
+                      onClick={() => setMethod("MANUAL")}
+                    >
+                      <MousePointer2 size={16} /> Manuel / Gelişmiş
+                    </button>
+                  </div>
+                </div>
+                {method === "FMT" && (
+                  <div className="panel" style={{ marginBottom: 20 }}>
+                    <div className="panel-head">
+                      <div>
+                        <h2>FMT optik tanımlama</h2>
+                        <p>
+                          FMT dosyası alan kodlarını, başlangıç–uzunluk–bitiş
+                          konumlarını ve test bloklarını otomatik çıkarır.
+                          Okulizyon benzeri eşleştirme tablosundan son kontrolü
+                          siz yaparsınız.
+                        </p>
+                      </div>
+                      <FileText />
+                    </div>
+                    <div className="form-grid">
+                      <label>
+                        FMT dosyası
+                        <input
+                          type="file"
+                          accept=".fmt,.json,.txt,text/plain,application/json"
+                          onChange={(e) =>
+                            setFmtFile(e.target.files?.[0] || null)
+                          }
+                        />
+                      </label>
+                      <label>
+                        Kaynak önceliği
+                        <input value="FMT → TXT/DAT → manuel" readOnly />
+                      </label>
+                    </div>
+                    <button
+                      className="secondary"
+                      disabled={!fmtFile || busy}
+                      onClick={() => void importFmt()}
+                    >
+                      <FileUp size={16} /> FMT'yi Oku ve Alanları Getir
+                    </button>
+                    {fmtDefinition && (
+                      <>
+                        <div
+                          className="alert success"
+                          style={{ marginTop: 12 }}
+                        >
+                          Form: {fmtDefinition.formName || "Tanımsız"} · Kayıt
+                          uzunluğu: {fmtDefinition.recordLength} · Başlangıç
+                          tabanı: {fmtDefinition.indexBase === 1 ? "1" : "0"}
+                        </div>
+                        <h3>Kimlik ve form alanları</h3>
+                        <div
+                          className="list-card"
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns:
+                              "1.3fr repeat(3, minmax(90px, 1fr))",
+                            gap: 8,
+                            alignItems: "end",
+                          }}
+                        >
+                          <strong>Alan</strong>
+                          <strong>Başlangıç</strong>
+                          <strong>Uzunluk</strong>
+                          <strong>Bitiş</strong>
+                          {Object.entries<any>(fmtDefinition.fields || {}).map(
+                            ([code, f]) => (
+                              <span key={code} style={{ display: "contents" }}>
+                                <strong>{code}</strong>
+                                <input
+                                  type="number"
+                                  value={f.start}
+                                  onChange={(e) =>
+                                    updateFmtSlice(
+                                      "fields",
+                                      code,
+                                      "start",
+                                      Number(e.target.value),
+                                    )
+                                  }
+                                />
+                                <input
+                                  type="number"
+                                  value={f.length ?? f.end - f.start}
+                                  onChange={(e) =>
+                                    updateFmtSlice(
+                                      "fields",
+                                      code,
+                                      "length",
+                                      Number(e.target.value),
+                                    )
+                                  }
+                                />
+                                <input
+                                  type="number"
+                                  value={f.end}
+                                  onChange={(e) =>
+                                    updateFmtSlice(
+                                      "fields",
+                                      code,
+                                      "end",
+                                      Number(e.target.value),
+                                    )
+                                  }
+                                />
+                              </span>
+                            ),
+                          )}
+                        </div>
+                        <h3>Test / ders cevap blokları</h3>
+                        <div
+                          className="list-card"
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns:
+                              "1.3fr repeat(4, minmax(80px, 1fr))",
+                            gap: 8,
+                            alignItems: "end",
+                          }}
+                        >
+                          <strong>Test</strong>
+                          <strong>Başlangıç</strong>
+                          <strong>Uzunluk</strong>
+                          <strong>Bitiş</strong>
+                          <strong>Soru</strong>
+                          {Object.entries<any>(fmtDefinition.answers || {}).map(
+                            ([code, f]) => (
+                              <span key={code} style={{ display: "contents" }}>
+                                <strong>{code}</strong>
+                                <input
+                                  type="number"
+                                  value={f.start}
+                                  onChange={(e) =>
+                                    updateFmtSlice(
+                                      "answers",
+                                      code,
+                                      "start",
+                                      Number(e.target.value),
+                                    )
+                                  }
+                                />
+                                <input
+                                  type="number"
+                                  value={f.length ?? f.end - f.start}
+                                  onChange={(e) =>
+                                    updateFmtSlice(
+                                      "answers",
+                                      code,
+                                      "length",
+                                      Number(e.target.value),
+                                    )
+                                  }
+                                />
+                                <input
+                                  type="number"
+                                  value={f.end}
+                                  onChange={(e) =>
+                                    updateFmtSlice(
+                                      "answers",
+                                      code,
+                                      "end",
+                                      Number(e.target.value),
+                                    )
+                                  }
+                                />
+                                <input
+                                  type="number"
+                                  value={f.questionCount || f.end - f.start}
+                                  onChange={(e) =>
+                                    setFmtDefinition((d: any) => ({
+                                      ...d,
+                                      answers: {
+                                        ...d.answers,
+                                        [code]: {
+                                          ...d.answers[code],
+                                          questionCount: Number(e.target.value),
+                                        },
+                                      },
+                                    }))
+                                  }
+                                />
+                              </span>
+                            ),
+                          )}
+                        </div>
+                        <button
+                          className="primary"
+                          disabled={busy}
+                          onClick={() => void saveFmtMapping()}
+                        >
+                          <Save size={16} /> FMT Eşlemesini Kaydet
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+                {method === "PHOTO" && (
+                  <div className="panel" style={{ marginBottom: 20 }}>
+                    <div className="panel-head">
+                      <div>
+                        <h2>Fotoğraftan Optik Tanımla</h2>
+                        <p>
+                          Boş ve düz çekilmiş optik, okuma geometrisi ve kamera
+                          doğrulaması için saklanır. Baskı tasarımı ayrı ekrandadır.
+                        </p>
+                      </div>
+                      <Sparkles />
+                    </div>
+                    <div className="form-grid">
+                      <label>
+                        Optik fotoğrafı
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            setPhoto(e.target.files?.[0] || null);
+                            setSuggestions([]);
+                          }}
+                        />
+                      </label>
+                      <label>
+                        Alan türü
+                        <select
+                          value={regionKind}
+                          onChange={(e) => setRegionKind(e.target.value)}
+                        >
+                          <option value="answers">Ders cevap alanı</option>
+                          <option value="bubble-grid">
+                            Öğrenci No / Kodlama
+                          </option>
+                          <option value="booklet">Kitapçık</option>
+                        </select>
+                      </label>
+                      {regionKind === "answers" && (
+                        <label>
+                          Ders kodu
+                          <input
+                            value={regionSubject}
+                            onChange={(e) =>
+                              setRegionSubject(e.target.value.toUpperCase())
+                            }
+                            placeholder="MAT"
+                          />
+                        </label>
+                      )}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 8,
+                        flexWrap: "wrap",
+                        marginBottom: 12,
+                      }}
+                    >
+                      <button
+                        className="secondary"
+                        disabled={!photo || busy}
+                        onClick={() => void analysePhoto()}
+                      >
+                        <Sparkles size={16} /> Fotoğrafı Analiz Et
+                      </button>
+                      <button
+                        className={
+                          drawMode === "REGION" ? "primary" : "secondary"
+                        }
+                        onClick={() => setDrawMode("REGION")}
+                      >
+                        Alan Çiz
+                      </button>
+                      <button
+                        className={
+                          drawMode === "FIDUCIAL" ? "primary" : "secondary"
+                        }
+                        onClick={() => setDrawMode("FIDUCIAL")}
+                      >
+                        Referans Noktası
+                      </button>
+                      <button
+                        className="ghost"
+                        onClick={() => {
+                          setRegions([]);
+                          setFiducials([]);
+                        }}
+                      >
+                        Temizle
+                      </button>
+                    </div>
+                    {photoUrl && (
+                      <div
+                        onPointerDown={onDown}
+                        onPointerMove={onMove}
+                        onPointerUp={onUp}
+                        style={{
+                          position: "relative",
+                          maxWidth: 850,
+                          border: "1px solid var(--border,#e5e7eb)",
+                          borderRadius: 12,
+                          overflow: "hidden",
+                          touchAction: "none",
+                          cursor: drawMode === "REGION" ? "crosshair" : "copy",
+                        }}
+                      >
+                        <img
+                          src={photoUrl}
+                          alt="Optik"
+                          style={{
+                            width: "100%",
+                            display: "block",
+                            pointerEvents: "none",
+                          }}
+                        />
+                        {suggestions.map((s, i) => (
+                          <button
+                            key={i}
+                            title="Öneriyi seçili alan türüyle ekle"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              addRegion(s);
+                            }}
+                            style={{
+                              position: "absolute",
+                              left: `${s.xPct}%`,
+                              top: `${s.yPct}%`,
+                              width: `${s.wPct}%`,
+                              height: `${s.hPct}%`,
+                              border: "2px dashed #f59e0b",
+                              background: "rgba(245,158,11,.08)",
+                            }}
+                          />
+                        ))}
+                        {regions.map((r) => (
+                          <div
+                            key={r.id}
+                            style={{
+                              position: "absolute",
+                              left: `${(r.xMm / pageW) * 100}%`,
+                              top: `${(r.yMm / pageH) * 100}%`,
+                              width: `${(r.widthMm / pageW) * 100}%`,
+                              height: `${(r.heightMm / pageH) * 100}%`,
+                              border: "2px solid #2563eb",
+                              background: "rgba(37,99,235,.12)",
+                              pointerEvents: "none",
+                              fontSize: 11,
+                            }}
+                          >
+                            {r.subjectCode || r.type}
+                          </div>
+                        ))}
+                        {fiducials.map((p, i) => (
+                          <div
+                            key={i}
+                            style={{
+                              position: "absolute",
+                              left: `${(p[0] / pageW) * 100}%`,
+                              top: `${(p[1] / pageH) * 100}%`,
+                              width: 12,
+                              height: 12,
+                              borderRadius: "50%",
+                              background: "#dc2626",
+                              border: "2px solid white",
+                              transform: "translate(-50%,-50%)",
+                              pointerEvents: "none",
+                            }}
+                          />
+                        ))}
+                        {draft && (
+                          <div
+                            style={{
+                              position: "absolute",
+                              left: `${draft.xPct}%`,
+                              top: `${draft.yPct}%`,
+                              width: `${draft.wPct}%`,
+                              height: `${draft.hPct}%`,
+                              border: "2px solid #16a34a",
+                              background: "rgba(22,163,74,.1)",
+                              pointerEvents: "none",
+                            }}
+                          />
+                        )}
+                      </div>
+                    )}
+                    <div className="alert warning" style={{ marginTop: 12 }}>
+                      Referans noktası yalnız optikte gerçekten bulunan hizalama
+                      işaretidir. En az 3 gerçek nokta gerekir. İşaretlenen:{" "}
+                      {fiducials.length}
+                    </div>
+                    {regions.map((r) => (
+                      <div className="list-card" key={r.id}>
+                        <div style={{ flex: 1 }}>
+                          <strong>{r.subjectCode || r.type}</strong>
+                          <span>
+                            {r.xMm.toFixed(1)}, {r.yMm.toFixed(1)} ·{" "}
+                            {r.widthMm.toFixed(1)}×{r.heightMm.toFixed(1)} mm
+                          </span>
+                        </div>
+                        <button
+                          className="ghost"
+                          onClick={() =>
+                            setRegions((x) => x.filter((z) => z.id !== r.id))
+                          }
+                        >
+                          Sil
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      className="primary"
+                      disabled={
+                        !photo ||
+                        !regions.length ||
+                        fiducials.length < 3 ||
+                        busy
+                      }
+                      onClick={savePhoto}
+                    >
+                      <Save size={16} /> Fotoğraf Tanımını Kaydet
+                    </button>
+                  </div>
+                )}
+                {method === "TXT" && (
+                  <div className="panel" style={{ marginBottom: 20 }}>
+                    <div className="panel-head">
+                      <div>
+                        <h2>TXT / DAT / FMT parametreleri</h2>
+                        <p>
+                          Okulizyon’daki başlangıç–uzunluk mantığıyla alanları
+                          tanımlayın. FMT koordinatlarını referans alıp gerçek
+                          TXT/DAT satırıyla doğrulayabilirsiniz.
+                        </p>
+                      </div>
+                      <FlaskConical />
+                    </div>
+                    <input
+                      type="file"
+                      accept=".txt,.dat,.fmt,text/plain"
+                      onChange={(e) => void readSample(e.target.files?.[0])}
+                    />
+                    {fixed && (
+                      <>
+                        <div className="alert success">
+                          Kayıt uzunluğu: {fixed.recordLength} · Olası cevap
+                          bloğu: {fixed.answerBlocks.length}
+                        </div>
+                        <div className="form-grid">
+                          {(
+                            [
+                              ["tcknStart", "T.C. Kimlik başlangıç"],
+                              ["tcknEnd", "T.C. Kimlik bitiş"],
+                              ["studentStart", "Öğrenci No başlangıç"],
+                              ["studentEnd", "Öğrenci No bitiş"],
+                              ["nameStart", "Ad Soyad başlangıç"],
+                              ["nameEnd", "Ad Soyad bitiş"],
+                              ["classStart", "Sınıf başlangıç"],
+                              ["classEnd", "Sınıf bitiş"],
+                              ["bookletStart", "Kitapçık başlangıç"],
+                              ["bookletEnd", "Kitapçık bitiş"],
+                            ] as Array<[keyof typeof fieldRanges, string]>
+                          ).map(([k, l]) => (
+                            <label key={k}>
+                              {l}
+                              <input
+                                type="number"
+                                value={fieldRanges[k]}
+                                onChange={(e) =>
+                                  setFieldRanges((x) => ({
+                                    ...x,
+                                    [k]: Number(e.target.value),
+                                  }))
+                                }
+                              />
+                            </label>
+                          ))}
+                        </div>
+                        <h3>Cevap blokları</h3>
+                        {answerRanges.map((r, i) => (
+                          <div className="form-grid" key={i}>
+                            <label>
+                              Ders kodu
+                              <input
+                                value={r.subjectCode}
+                                onChange={(e) =>
+                                  setAnswerRanges((x) =>
+                                    x.map((z, j) =>
+                                      j === i
+                                        ? {
+                                            ...z,
+                                            subjectCode:
+                                              e.target.value.toUpperCase(),
+                                          }
+                                        : z,
+                                    ),
+                                  )
+                                }
+                              />
+                            </label>
+                            <label>
+                              Başlangıç
+                              <input
+                                type="number"
+                                value={r.start}
+                                onChange={(e) =>
+                                  setAnswerRanges((x) =>
+                                    x.map((z, j) =>
+                                      j === i
+                                        ? {
+                                            ...z,
+                                            start: Number(e.target.value),
+                                          }
+                                        : z,
+                                    ),
+                                  )
+                                }
+                              />
+                            </label>
+                            <label>
+                              Bitiş
+                              <input
+                                type="number"
+                                value={r.end}
+                                onChange={(e) =>
+                                  setAnswerRanges((x) =>
+                                    x.map((z, j) =>
+                                      j === i
+                                        ? { ...z, end: Number(e.target.value) }
+                                        : z,
+                                    ),
+                                  )
+                                }
+                              />
+                            </label>
+                          </div>
+                        ))}
+                        <button
+                          className="secondary"
+                          onClick={() =>
+                            setAnswerRanges((x) => [
+                              ...x,
+                              { subjectCode: "", start: 0, end: 0 },
+                            ])
+                          }
+                        >
+                          <Plus size={15} /> Cevap Bloğu Ekle
+                        </button>
+                        <button
+                          className="primary"
+                          disabled={
+                            busy ||
+                            fieldRanges.nameEnd <= fieldRanges.nameStart ||
+                            !answerRanges.some(
+                              (x) => x.subjectCode && x.end > x.start,
+                            )
+                          }
+                          onClick={saveParser}
+                        >
+                          <FlaskConical size={16} /> Parametreleri Kaydet ve
+                          Gerçek Dosyayla Test Et
+                        </button>
+                        {parserTest && (
+                          <div
+                            className={
+                              parserTest.passed
+                                ? "alert success"
+                                : "alert error"
+                            }
+                          >
+                            <strong>
+                              {parserTest.passed
+                                ? "Test başarılı"
+                                : "Test başarısız"}
+                            </strong>{" "}
+                            · {parserTest.recordCount} kayıt · %
+                            {Math.round((parserTest.confidence || 0) * 100)}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+                {false && <div className="panel" style={{ marginBottom: 20 }}>
+                  <div className="panel-head">
+                    <div>
+                      <h2>Kişiye özel baskı alanları</h2>
+                      <p>
+                        Başlangıç alanları otomatik gelir. Gerçek boş optikte
+                        ad, öğrenci no, sınıf, kitapçık ve sınav alanlarına göre
+                        yalnız X/Y konumlarını ince ayarlayın.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="alert info">
+                    Bu baskı tanımı, aynı optiğin kamera/TXT tanımıyla birlikte
+                    sürümlenir. Bir kez doğruladığınızda Optik Hazırla / Bas
+                    ekranında kalıcı şablon olur.
+                  </div>
+                  <button
+                    className="secondary"
+                    onClick={() =>
+                      setPrintFields((x) => [
+                        ...x,
+                        { key: "studentName", xMm: 0, yMm: 0 },
+                      ])
+                    }
+                  >
+                    <Plus size={15} /> Alan Ekle
+                  </button>
+                  {printFields.map((f, i) => (
+                    <div className="form-grid" key={i}>
+                      <label>
+                        Alan
+                        <select
+                          value={f.key}
+                          onChange={(e) =>
+                            setPrintFields((x) =>
+                              x.map((z, j) =>
+                                j === i ? { ...z, key: e.target.value } : z,
+                              ),
+                            )
+                          }
+                        >
+                          <option value="studentName">Ad Soyad</option>
+                          <option value="studentNumber">Öğrenci No</option>
+                          <option value="class">Sınıf</option>
+                          <option value="section">Şube</option>
+                          <option value="institutionCode">Kurum Kodu</option>
+                          <option value="bookletCode">Kitapçık Kodu</option>
+                          <option value="examTitle">Sınav Adı</option>
+                          <option value="examCode">Sınav Kodu</option>
+                          <option value="qr">QR</option>
+                          <option value="barcode">Barkod</option>
+                          <option value="studentNumberBubbles">
+                            Öğrenci No Baloncukları
+                          </option>
+                        </select>
+                      </label>
+                      <label>
+                        X mm
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={f.xMm}
+                          onChange={(e) =>
+                            setPrintFields((x) =>
+                              x.map((z, j) =>
+                                j === i
+                                  ? { ...z, xMm: Number(e.target.value) }
+                                  : z,
+                              ),
+                            )
+                          }
+                        />
+                      </label>
+                      <label>
+                        Y mm
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={f.yMm}
+                          onChange={(e) =>
+                            setPrintFields((x) =>
+                              x.map((z, j) =>
+                                j === i
+                                  ? { ...z, yMm: Number(e.target.value) }
+                                  : z,
+                              ),
+                            )
+                          }
+                        />
+                      </label>
+                      <button
+                        className="ghost"
+                        onClick={() =>
+                          setPrintFields((x) => x.filter((_, j) => j !== i))
+                        }
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    className="primary"
+                    disabled={!printFields.length || busy}
+                    onClick={savePrint}
+                  >
+                    <Save size={16} /> Baskı Alanlarını Kaydet
+                  </button>
+                </div>}
+                <div className="panel optical-definition-separation" style={{ marginBottom: 20 }}>
+                  <div className="panel-head">
+                    <div>
+                      <h2>Baskı tasarımı ayrı çalışma alanında</h2>
+                      <p>
+                        Öğrenci, sınıf, kitapçık, QR ve diğer basılacak alanları
+                        Optik Form Tasarımcısı ekranında konumlandırın. Bu ekran
+                        yalnız okuma geometrisini ve dosya eşlemesini yönetir.
+                      </p>
+                    </div>
+                    <Link className="secondary" to={`/optical-design?versionId=${selectedVersionId}`}>
+                      Optik Form Tasarımcısını Aç
+                    </Link>
+                  </div>
+                </div>
+                {method === "MANUAL" && (
+                  <div className="panel" style={{ marginBottom: 20 }}>
+                    <div className="panel-head">
+                      <div>
+                        <h2>Manuel optik tanımı</h2>
+                        <p>
+                          Okulizyon’daki Baş./Uz. mantığıyla alanları seçin.
+                          Kurum kendi optiğini FMT olmadan da kayıt uzunluğu ve
+                          parametreleri girerek tanımlayabilir.
+                        </p>
+                      </div>
+                      <MousePointer2 />
+                    </div>
+                    <div className="form-grid">
+                      <label>
+                        Form adı
+                        <input
+                          value={templateDetail?.template?.name || ""}
+                          readOnly
+                        />
+                      </label>
+                      <label>
+                        Kayıt uzunluğu
+                        <input
+                          type="number"
+                          min="1"
+                          value={manualRecordLength || ""}
+                          onChange={(e) =>
+                            setManualRecordLength(Number(e.target.value))
+                          }
+                          placeholder="Örn. 222"
+                        />
+                      </label>
+                      <label>
+                        Başlangıç tabanı
+                        <select
+                          value={manualIndexBase}
+                          onChange={(e) =>
+                            setManualIndexBase(
+                              Number(e.target.value) === 1 ? 1 : 0,
+                            )
+                          }
+                        >
+                          <option value="0">0 tabanlı</option>
+                          <option value="1">1 tabanlı (FMT)</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div className="alert info">
+                      Başlangıç ve uzunluk değerleri kayıt satırındaki karakter
+                      konumlarıdır. Sistem bitişi otomatik hesaplar; Ad Soyad ve
+                      en az bir Test alanı zorunludur.
+                    </div>
+                    <h3>Kimlik ve form alanları</h3>
+                    <div className="optical-manual-table">
+                      <div className="optical-manual-row optical-manual-head">
+                        <span>Alan</span>
+                        <span>Aktif</span>
+                        <span>Baş.</span>
+                        <span>Uz.</span>
+                        <span>Bitiş</span>
+                      </div>
+                      {manualFields.map((field) => (
+                        <div className="optical-manual-row" key={field.key}>
+                          <strong>{field.label}</strong>
+                          <input
+                            type="checkbox"
+                            checked={field.enabled}
+                            onChange={(e) =>
+                              setManualFields((items) =>
+                                items.map((item) =>
+                                  item.key === field.key
+                                    ? { ...item, enabled: e.target.checked }
+                                    : item,
+                                ),
+                              )
+                            }
+                          />
+                          <input
+                            type="number"
+                            min="0"
+                            disabled={!field.enabled}
+                            value={field.start}
+                            onChange={(e) =>
+                              setManualFields((items) =>
+                                items.map((item) =>
+                                  item.key === field.key
+                                    ? { ...item, start: Number(e.target.value) }
+                                    : item,
+                                ),
+                              )
+                            }
+                          />
+                          <input
+                            type="number"
+                            min="0"
+                            disabled={!field.enabled}
+                            value={field.length}
+                            onChange={(e) =>
+                              setManualFields((items) =>
+                                items.map((item) =>
+                                  item.key === field.key
+                                    ? {
+                                        ...item,
+                                        length: Number(e.target.value),
+                                      }
+                                    : item,
+                                ),
+                              )
+                            }
+                          />
+                          <span>
+                            {field.enabled && field.length > 0
+                              ? field.start + field.length
+                              : "—"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <h3>Test / cevap alanları</h3>
+                    <div className="optical-manual-table">
+                      <div className="optical-manual-row optical-manual-head">
+                        <span>Test</span>
+                        <span>Aktif</span>
+                        <span>Baş.</span>
+                        <span>Uz.</span>
+                        <span>Soru / Şık</span>
+                      </div>
+                      {manualAnswers.map((block, index) => (
+                        <div
+                          className="optical-manual-row"
+                          key={`${block.code}-${index}`}
+                        >
+                          <input
+                            value={block.code}
+                            disabled={!block.enabled}
+                            onChange={(e) =>
+                              setManualAnswers((items) =>
+                                items.map((item, i) =>
+                                  i === index
+                                    ? {
+                                        ...item,
+                                        code: e.target.value.toUpperCase(),
+                                      }
+                                    : item,
+                                ),
+                              )
+                            }
+                          />
+                          <input
+                            type="checkbox"
+                            checked={block.enabled}
+                            onChange={(e) =>
+                              setManualAnswers((items) =>
+                                items.map((item, i) =>
+                                  i === index
+                                    ? { ...item, enabled: e.target.checked }
+                                    : item,
+                                ),
+                              )
+                            }
+                          />
+                          <input
+                            type="number"
+                            min="0"
+                            disabled={!block.enabled}
+                            value={block.start}
+                            onChange={(e) =>
+                              setManualAnswers((items) =>
+                                items.map((item, i) =>
+                                  i === index
+                                    ? { ...item, start: Number(e.target.value) }
+                                    : item,
+                                ),
+                              )
+                            }
+                          />
+                          <input
+                            type="number"
+                            min="0"
+                            disabled={!block.enabled}
+                            value={block.length}
+                            onChange={(e) =>
+                              setManualAnswers((items) =>
+                                items.map((item, i) =>
+                                  i === index
+                                    ? {
+                                        ...item,
+                                        length: Number(e.target.value),
+                                      }
+                                    : item,
+                                ),
+                              )
+                            }
+                          />
+                          <span className="optical-manual-answer-meta">
+                            <input
+                              type="number"
+                              min="1"
+                              disabled={!block.enabled}
+                              value={block.questionCount}
+                              onChange={(e) =>
+                                setManualAnswers((items) =>
+                                  items.map((item, i) =>
+                                    i === index
+                                      ? {
+                                          ...item,
+                                          questionCount: Number(e.target.value),
+                                        }
+                                      : item,
+                                  ),
+                                )
+                              }
+                            />
+                            <select
+                              disabled={!block.enabled}
+                              value={block.options}
+                              onChange={(e) =>
+                                setManualAnswers((items) =>
+                                  items.map((item, i) =>
+                                    i === index
+                                      ? {
+                                          ...item,
+                                          options:
+                                            Number(e.target.value) === 4
+                                              ? 4
+                                              : 5,
+                                        }
+                                      : item,
+                                  ),
+                                )
+                              }
+                            >
+                              <option value="4">4 şık</option>
+                              <option value="5">5 şık</option>
+                            </select>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="form-grid" style={{ marginTop: 14 }}>
+                      <label>
+                        Gerçek TXT / DAT örneği ile doğrula
+                        <input
+                          type="file"
+                          accept=".txt,.dat,.csv,text/plain,text/csv"
+                          onChange={(e) => void readSample(e.target.files?.[0])}
+                        />
+                      </label>
+                      <div className="alert info">
+                        {sample
+                          ? `${sample.name} seçildi; kaydetme sırasında parser testi çalışır.`
+                          : "Örnek dosya seçilmezse tanım taslak olarak kaydedilir ve yayın kilidi açık kalır."}
+                      </div>
+                    </div>
+                    <button
+                      className="primary"
+                      disabled={busy || !manualRecordLength}
+                      onClick={() => void saveManualDefinition()}
+                    >
+                      <Save size={16} /> Parametreleri Kaydet ve Test Et
+                    </button>
+                  </div>
+                )}
+                {method === "MANUAL" && (
+                  <div className="panel" style={{ marginBottom: 20 }}>
+                    <h2>Manuel / Gelişmiş JSON</h2>
+                    {(
+                      ["parser", "camera", "fiducials"] as Section[]
+                    ).map((section) => (
+                      <details key={section}>
+                        <summary>{section.toUpperCase()}</summary>
+                        <textarea
+                          rows={10}
+                          value={advanced[section] || pretty(EXAMPLES[section])}
+                          onChange={(e) =>
+                            setAdvanced((x) => ({
+                              ...x,
+                              [section]: e.target.value,
+                            }))
+                          }
+                          style={{
+                            width: "100%",
+                            fontFamily: "ui-monospace,monospace",
+                          }}
+                        />
+                        <button
+                          className="secondary"
+                          onClick={() => void saveAdvanced(section)}
+                        >
+                          <Save size={15} /> Kaydet
+                        </button>
+                      </details>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+            <div className="panel">
+              <div className="panel-head">
+                <div>
+                  <h2>Yayın kontrolü</h2>
+                  <p>
+                    READY için FMT/Parser tanımı ve örnek kayıt testi,
+                    fotoğraf/kamera, gerçek referans noktaları ve baskı tasarımı
+                    tamamlanır. TXT/DAT örneği FMT tanımının çalıştığını
+                    kanıtlamak için kullanılabilir. Baskı tasarımını ayrı
+                    çalışma alanında tamamlayın.
+                  </p>
+                </div>
+                {readiness?.ready ? <CheckCircle2 /> : <CircleAlert />}
+              </div>
+              {!readiness?.ready && (
+                <div className="alert warning">
+                  {(readiness?.errors || []).join(" · ")}
+                </div>
+              )}
+              <button
+                className="primary"
+                disabled={!readiness?.ready || selectedVersion?.active || busy}
+                onClick={publish}
+              >
+                <Send size={16} /> Optiği Yayınla
+              </button>
+              <Link
+                className="secondary"
+                to={`/optical-design?versionId=${selectedVersionId}`}
+                style={{ marginLeft: 8 }}
+              >
+                Baskı tasarımına geç
+              </Link>
+            </div>
+            <div className="panel" style={{ marginTop: 20 }}>
+              <div className="panel-head">
+                <div>
+                  <h2>Referans dosyaları</h2>
+                  <p>
+                    Boş form baskı tabanı, fotoğraf ve TXT/DAT örnekleri sürüme
+                    bağlı saklanır.
+                  </p>
+                </div>
+                <FileUp />
+              </div>
+              {(versionDetail.assets || []).map((a: any) => (
+                <div className="list-card" key={a.id}>
+                  <div>
+                    <strong>{assetLabel(a.asset_type)}</strong>
+                    <span>{a.file_name}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }

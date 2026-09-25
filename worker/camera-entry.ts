@@ -44,7 +44,7 @@ async function assertExamScope(env:Env,user:AuthUser,examId:string,institutionId
 }
 
 async function loadCandidates(env:Env,institutionId:string,seasonId:string){
- const rows=await all<any>(env.DB.prepare(`SELECT s.id student_id,s.status,s.normalized_name,s.first_name,s.last_name,e.student_number,e.grade_level,e.section,e.class_id,c.name class_name
+ const rows=await all<any>(env.DB.prepare(`SELECT s.id student_id,s.status,s.normalized_name,s.first_name,s.last_name,s.tckn,e.student_number,e.grade_level,e.section,e.class_id,c.name class_name
    FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id LEFT JOIN classes c ON c.id=e.class_id
    WHERE e.institution_id=? AND e.season_id=? AND e.status='ACTIVE' AND s.status IN ('ACTIVE','GUEST')`).bind(institutionId,seasonId));
  return rows;
@@ -60,7 +60,7 @@ function hydrateIdentity(record:CanonicalRecord,candidates:any[]):CanonicalRecor
 
 function normalizeRecord(raw:any,index:number,templateName:string):CanonicalRecord{
  const answers:Record<string,string>={};for(const [k,v] of Object.entries(raw?.answers_by_subject||{}))answers[String(k).toUpperCase()]=String(v??'').toUpperCase().replace(/[^ABCDE_]/g,'_');
- return {row_no:index+1,student_number:raw?.student_number?String(raw.student_number).trim():undefined,name:String(raw?.name||'').trim(),class_name:raw?.class_name?String(raw.class_name):undefined,grade_level:Number.isFinite(Number(raw?.grade_level))?Number(raw.grade_level):undefined,section:raw?.section?String(raw.section).trim().toUpperCase():undefined,booklet:raw?.booklet?String(raw.booklet).trim().toUpperCase():undefined,answers_by_subject:answers,source_type:'CAMERA',source_template:templateName,confidence:Math.max(0,Math.min(1,Number(raw?.confidence)||0)),issues:Array.isArray(raw?.issues)?raw.issues.map(String):[]};
+ return {row_no:index+1,student_number:raw?.student_number?String(raw.student_number).trim():undefined,tckn:raw?.tckn?String(raw.tckn).replace(/\D/g,''):undefined,name:String(raw?.name||'').trim(),class_name:raw?.class_name?String(raw.class_name):undefined,grade_level:Number.isFinite(Number(raw?.grade_level))?Number(raw?.grade_level):undefined,section:raw?.section?String(raw.section).trim().toUpperCase():undefined,booklet:raw?.booklet?String(raw.booklet).trim().toUpperCase():undefined,answers_by_subject:answers,source_type:'CAMERA',source_template:templateName,confidence:Math.max(0,Math.min(1,Number(raw?.confidence)||0)),issues:Array.isArray(raw?.issues)?raw.issues.map(String):[]};
 }
 
 async function cameraPreview(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
@@ -85,7 +85,7 @@ async function cameraPreview(request:Request,env:Env,user:AuthUser,examId:string
  if(!template||template.status!=='READY'||!template.active)return badRequest('Seçilen kamera şablonu yayında ve READY durumda değil.','CAMERA_TEMPLATE_NOT_READY');
  const rawRecords=Array.isArray(body.records)?body.records:[];if(!rawRecords.length)return badRequest('Kamera kaydı bulunamadı.');if(rawRecords.length>500)return badRequest('Tek kamera oturumunda en fazla 500 optik gönderilebilir.');
  const candidates=await loadCandidates(env,institutionId,season.id);
- const candidateForMatch:MatchCandidate[]=candidates.map(c=>({student_id:c.student_id,status:c.status,normalized_name:c.normalized_name,student_number:c.student_number,grade_level:c.grade_level,section:c.section}));
+ const candidateForMatch:MatchCandidate[]=candidates.map(c=>({student_id:c.student_id,status:c.status,normalized_name:c.normalized_name,tckn:c.tckn,student_number:c.student_number,grade_level:c.grade_level,section:c.section}));
  const subjects=await all<any>(env.DB.prepare(`SELECT s.code,es.question_count FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=?`).bind(examId));
  const booklets=await all<any>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1').bind(examId));
  const allowedSubjects=new Map(subjects.map(s=>[String(s.code).toUpperCase(),Number(s.question_count)]));const allowedBooklets=new Set(booklets.map(b=>String(b.code).toUpperCase()));
@@ -113,8 +113,9 @@ async function patchCameraIdentity(request:Request,env:Env,user:AuthUser,batchId
  if(!canEvaluateExam(user.role))return forbidden();const batch=await one<any>(env.DB.prepare(`SELECT * FROM scan_batches WHERE id=? AND source_type='CAMERA'`).bind(batchId));if(!batch)return notFound('Kamera batch bulunamadı.');const scope=await assertInstitutionScope(env,user,batch.institution_id);if(scope.response)return scope.response;
  const row=await one<any>(env.DB.prepare('SELECT * FROM scan_records WHERE id=? AND batch_id=?').bind(recordId,batchId));if(!row)return notFound('Kamera kaydı bulunamadı.');const body=await request.json<{name?:string;studentNumber?:string;gradeLevel?:number;section?:string;className?:string;booklet?:string}>();let canonical=JSON.parse(row.canonical_json) as CanonicalRecord;canonical={...canonical,name:body.name!=null?String(body.name).trim():canonical.name,student_number:body.studentNumber!=null?String(body.studentNumber).trim():canonical.student_number,grade_level:body.gradeLevel!=null?Number(body.gradeLevel):canonical.grade_level,section:body.section!=null?String(body.section).trim().toUpperCase():canonical.section,class_name:body.className!=null?String(body.className).trim():canonical.class_name,booklet:body.booklet!=null?String(body.booklet).trim().toUpperCase():canonical.booklet};
  const candidates=await loadCandidates(env,batch.institution_id,batch.season_id);canonical=hydrateIdentity(canonical,candidates);canonical.issues=canonical.issues.filter(x=>!x.startsWith('Kamera okuma güveni düşük'));
- const match=matchParticipant(canonical,candidates.map(c=>({student_id:c.student_id,status:c.status,normalized_name:c.normalized_name,student_number:c.student_number,grade_level:c.grade_level,section:c.section})));
- await env.DB.prepare('UPDATE scan_records SET canonical_json=?,matched_student_id=?,match_status=?,match_confidence=?,issues_json=? WHERE id=? AND batch_id=?').bind(JSON.stringify(canonical),match.student_id||null,match.status,match.confidence,JSON.stringify([...canonical.issues,...match.issues]),recordId,batchId).run();await refreshBatchStatus(env,batchId);return json({ok:true,match});
+ const match=matchParticipant(canonical,candidates.map(c=>({student_id:c.student_id,status:c.status,normalized_name:c.normalized_name,tckn:c.tckn,student_number:c.student_number,grade_level:c.grade_level,section:c.section})));
+ const resolved=!canonical.issues.length&&!match.issues.length&&['ACTIVE_MATCH','GUEST_MATCH'].includes(match.status);
+ await env.DB.prepare(`UPDATE scan_records SET canonical_json=?,matched_student_id=?,match_status=?,match_confidence=?,resolution_status=?,issues_json=? WHERE id=? AND batch_id=?`).bind(JSON.stringify(canonical),match.student_id||null,match.status,match.confidence,resolved?'RESOLVED':'PENDING',JSON.stringify([...canonical.issues,...match.issues]),recordId,batchId).run();await refreshBatchStatus(env,batchId);return json({ok:true,match});
 }
 
 async function acceptCameraIssues(env:Env,user:AuthUser,batchId:string,recordId:string):Promise<Response>{

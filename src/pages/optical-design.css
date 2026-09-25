@@ -1,0 +1,75 @@
+.optical-design-page { display: grid; gap: 18px; }
+.optical-card-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.optical-card-actions button { min-height: 36px; padding: 8px 11px; }
+.optical-card-menu-wrap { position: relative; }
+.optical-card-menu-button { width: 34px; min-width: 34px; height: 34px; min-height: 34px; padding: 0; color: var(--muted); }
+.optical-card-menu { position: absolute; z-index: 5; top: 40px; right: 0; min-width: 142px; padding: 5px; border: 1px solid var(--border); border-radius: 10px; background: #fff; box-shadow: 0 14px 30px rgba(16,24,40,.14); }
+.optical-card-menu button { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 34px; padding: 7px 9px; border: 0; border-radius: 7px; background: transparent; color: var(--ink); font-size: 11px; font-weight: 750; text-align: left; }
+.optical-card-menu button:hover { background: #f5f7fb; }
+.optical-card-menu button:disabled { cursor: not-allowed; opacity: .45; }
+.optical-card-status { min-height: 19px; margin: -4px 0 7px; }
+.optical-design-head { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; }
+.optical-design-actions, .optical-design-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.optical-design-selector { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(280px, 1.5fr); gap: 18px; align-items: end; }
+.optical-design-fields { display: grid; gap: 10px; }
+.optical-design-field { display: grid; grid-template-columns: minmax(180px, 1.7fr) repeat(3, minmax(90px, .7fr)) auto; gap: 10px; align-items: end; padding: 12px; border: 1px solid var(--border, #dfe5f0); border-radius: 12px; background: color-mix(in srgb, var(--surface, #fff) 88%, var(--accent, #2d63ff)); }
+.optical-design-field label { min-width: 0; }
+.optical-design-field button { height: 42px; }
+.optical-design-preview-shell { display: flex; justify-content: center; padding: 18px; border-radius: 14px; background: #eef2f7; overflow: auto; }
+.optical-design-sheet { position: relative; width: min(100%, 480px); min-width: 280px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 12px 30px rgba(20, 35, 60, .12); background-image: linear-gradient(#eef2f7 1px, transparent 1px), linear-gradient(90deg, #eef2f7 1px, transparent 1px); background-size: 10% 10%; }
+.optical-design-preview-field { position: absolute; transform: translate(-2px, -2px); border: 1px solid #3867e8; border-radius: 4px; padding: 3px 5px; color: #12306d; background: rgba(224, 234, 255, .9); white-space: nowrap; font-weight: 700; }
+.optical-definition-separation { background: linear-gradient(135deg, rgba(37, 99, 235, .06), rgba(20, 184, 166, .08)); }
+.optical-tree-layout { display: grid; grid-template-columns: minmax(250px, .72fr) minmax(0, 1.5fr); gap: 18px; align-items: start; margin-bottom: 20px; }
+.optical-form-tree { min-height: 100%; padding: 16px; }
+.optical-form-tree .panel-head { margin-bottom: 12px; }
+.optical-tree-group { display: grid; gap: 9px; margin-top: 14px; }
+.optical-tree-root { display: grid; gap: 2px; padding: 10px 11px; border-radius: 11px; background: #fff4ea; border: 1px solid #efd2bd; color: #7d402c; }
+.optical-tree-root span { color: #9b6a56; font-size: 11px; }
+.optical-tree-vendor { position: relative; display: grid; gap: 6px; padding: 8px 0 2px 18px; color: var(--ink); font-size: 12px; }
+.optical-tree-line { position: absolute; left: 7px; top: 0; bottom: 10px; border-left: 1px solid #dfc3b0; }
+.optical-tree-template { position: relative; display: flex; align-items: stretch; gap: 7px; padding-left: 9px; }
+.optical-tree-branch { width: 11px; margin-top: 17px; border-top: 1px solid #dfc3b0; }
+.optical-tree-template button { display: grid; gap: 2px; flex: 1; min-width: 0; padding: 8px 9px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--ink); text-align: left; cursor: pointer; }
+.optical-tree-template button:hover,.optical-tree-template button.selected { border-color: #e5bda5; background: #fff8f3; }
+.optical-tree-template button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
+.optical-tree-template button small { color: var(--muted); font-size: 10px; }
+.optical-form-cards { min-width: 0; margin-bottom: 0 !important; }
+.optical-form-tree-actions { display: flex; justify-content: flex-end; margin: -4px 0 2px; }
+.optical-card-title { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.optical-card-title h3 { margin: 0; }
+.optical-form-dialog-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 22px; background: rgba(15, 23, 42, .48); }
+.optical-form-dialog { width: min(100%, 980px); max-height: min(88vh, 760px); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #d9e0ec; border-radius: 8px; background: #fff; box-shadow: 0 24px 70px rgba(15, 23, 42, .28); }
+.optical-form-dialog-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #e3e8f0; }
+.optical-form-dialog-head h2 { display: flex; align-items: center; gap: 8px; margin: 0; color: #1774ee; font-size: 18px; }
+.optical-form-dialog-body { overflow: auto; padding: 20px 24px 18px; }
+.optical-form-dialog-feedback { margin: 0 0 14px; }
+.optical-schoolizyon-top-fields { display: grid; grid-template-columns: minmax(220px, 1.35fr) 100px minmax(170px, 1fr); gap: 13px 18px; align-items: end; }
+.optical-schoolizyon-top-fields label { display: grid; gap: 6px; color: #46546b; font-size: 11px; font-weight: 800; }
+.optical-schoolizyon-top-fields .dialog-field-name,
+.optical-schoolizyon-top-fields .dialog-field-order,
+.optical-schoolizyon-top-fields .dialog-field-type { color: #3569c8; }
+.optical-schoolizyon-top-fields .dialog-field-publisher { color: #9a5a20; }
+.optical-schoolizyon-top-fields .dialog-field-code { color: #6f4bb3; }
+.optical-schoolizyon-top-fields .dialog-field-owner { color: #18786e; }
+.optical-schoolizyon-top-fields label input,
+.optical-schoolizyon-top-fields label select { color: #243654; font-weight: 600; }
+.optical-schoolizyon-top-fields input, .optical-schoolizyon-top-fields select { min-height: 40px; margin: 0; border-color: #cfd9e8; border-radius: 5px; font-size: 13px; }
+.optical-user-picker { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0; }
+.optical-user-picker input { border-radius: 5px 0 0 5px; }
+.optical-user-picker button { min-height: 40px; padding: 0 13px; border-radius: 0 5px 5px 0; }
+.optical-schoolizyon-section-head { display: grid; grid-template-columns: minmax(150px, 1fr) 76px 76px; gap: 10px; align-items: center; margin-top: 22px; padding: 0 8px 8px; border-bottom: 1px dashed #a8b8ce; color: #3569c8; font-size: 11px; font-weight: 800; }
+.optical-schoolizyon-section-head span { color: #71809a; font-weight: 700; }
+.optical-schoolizyon-columns { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 16px; padding-top: 7px; }
+.optical-schoolizyon-columns > div { min-width: 0; }
+.optical-schoolizyon-row { display: grid; grid-template-columns: minmax(0, 1fr) 76px 76px; gap: 10px; align-items: center; min-height: 38px; }
+.optical-schoolizyon-name { display: flex; align-items: center; gap: 7px; min-width: 0; color: #46546b; font-size: 11px; font-weight: 650; }
+.optical-schoolizyon-name input { width: 16px; min-width: 16px; min-height: 16px; margin: 0; accent-color: #2875f0; }
+.optical-schoolizyon-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.optical-schoolizyon-row > input { width: 100%; min-height: 31px; margin: 0; padding: 6px 8px; border: 1px solid #cfd9e8; border-radius: 4px; color: #26364f; font-size: 12px; }
+.optical-form-dialog-footer { display: flex; justify-content: center; gap: 8px; padding: 15px 22px; border-top: 1px solid #e3e8f0; background: #fbfcfe; }
+.optical-form-dialog-footer button { min-width: 120px; }
+.different-save { min-height: 40px; padding: 0 15px; border: 1px solid #e9b300; border-radius: 7px; background: #f5bc00; color: #fff; font-weight: 800; cursor: pointer; }
+.different-save:disabled { cursor: not-allowed; opacity: .5; }
+@media (max-width: 850px) { .optical-design-head, .optical-design-selector { display: grid; grid-template-columns: 1fr; } .optical-design-field { grid-template-columns: 1fr 1fr; } .optical-design-field label:first-child { grid-column: 1 / -1; } .optical-design-field button { width: max-content; } }
+@media (max-width: 900px) { .optical-tree-layout { grid-template-columns: 1fr; } .optical-form-tree { order: 0; } .optical-form-cards { order: 1; } }
+@media (max-width: 760px) { .optical-form-dialog-backdrop { padding: 8px; } .optical-form-dialog { max-height: 94vh; } .optical-schoolizyon-top-fields { grid-template-columns: 1fr 1fr; } .optical-schoolizyon-top-fields label:first-child, .optical-schoolizyon-top-fields label:nth-child(4), .optical-schoolizyon-top-fields label:nth-child(5), .optical-schoolizyon-top-fields label:nth-child(6) { grid-column: 1 / -1; } .optical-schoolizyon-columns { grid-template-columns: 1fr; } .optical-form-dialog-footer { flex-wrap: wrap; } }

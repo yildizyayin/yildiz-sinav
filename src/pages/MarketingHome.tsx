@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, BarChart3, BookOpen, BookOpenCheck, BrainCircuit, Building2, CalendarClock, Camera, Check, CheckCircle2, ChevronRight, ClipboardCheck, FileText, Gamepad2, GraduationCap, HeartHandshake, Layers3, LineChart, LockKeyhole, MapPin, MessageCircle, Mic2, Monitor, Network, Phone, PlayCircle, ScanLine, Send, ShieldCheck, Sparkles, Target, Trophy, UserRoundCheck, Users, Volume2 } from 'lucide-react';
 import { AnunexBrand } from '../components/AnunexBrand';
 import { NibiruMark } from '../components/NibiruMark';
-import { NibiruPlanetarySystem } from '../components/NibiruPlanetarySystem';
 import './marketing-home.css';
 import './marketing-premium.css';
 
@@ -48,22 +47,6 @@ const nibiruConversations=[
  {key:'goal',label:'Hedef meslek',audience:'Öğrenci',initial:'Z',question:'Hedefime yaklaşıyor muyum?',identity:'Hedef program · Tıp Fakültesi',title:'Evet Zeynep; yönün doğru, planı biraz dengeleyeceğiz.',body:'Fen ivmen güçlü. Türkçe hızın hedef sıralaman için bu hafta öncelik olmalı.',tasks:['Paragraf · günlük 25 soru','Kimya · 2 kazanım tekrarı','Cumartesi TYT simülasyonu'],signoff:'Bugünün küçük adımları geleceğin doktorunu inşa ediyor.'}
 ] as const;
 
-async function playNibiruVoice(scenario:string,text:string){
- try{
-  const response=await fetch('/api/public/nibiru/voice-demo?scenario='+encodeURIComponent(scenario));
-  if(!response.ok)throw new Error('voice');
-  const url=URL.createObjectURL(await response.blob());
-  const audio=new Audio(url);audio.onended=()=>URL.revokeObjectURL(url);await audio.play();return;
- }catch{}
- if(!('speechSynthesis'in window))return;
- window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);
- utterance.lang='tr-TR';utterance.rate=.94;utterance.pitch=1.02;
- const voices=window.speechSynthesis.getVoices();
- utterance.voice=voices.find(v=>v.lang.toLowerCase().startsWith('tr'))||null;window.speechSynthesis.speak(utterance);
-}
-
-
-
 const studentJourney=[
   {icon:Target,title:'Hedefini tanır',text:'LGS hedef lisesi veya YKS hedef programı; resmî veri ve öğrencinin gerçek gelişimi birlikte izlenir.'},
   {icon:CalendarClock,title:'Bugünü planlar',text:'Nibiru; ödev, eksik kazanım ve yaklaşan sınava göre uygulanabilir günlük rota hazırlar.'},
@@ -84,6 +67,10 @@ export function MarketingHome(){
   const [activeRole,setActiveRole]=useState<ShowcaseKey>('student');
   const [activeConversation,setActiveConversation]=useState(0);
   const [nibiruOpen,setNibiruOpen]=useState(true);
+  const [voicePlaying,setVoicePlaying]=useState(false);
+  const [voiceError,setVoiceError]=useState('');
+  const voiceAudioRef=useRef<HTMLAudioElement|null>(null);
+  const voiceUrlRef=useRef<string|null>(null);
   const conversation=nibiruConversations[activeConversation];
   const role=useMemo(()=>roleShowcases[activeRole],[activeRole]);
   useEffect(()=>{
@@ -91,9 +78,37 @@ export function MarketingHome(){
     document.documentElement.classList.add('marketing-document');
     return()=>document.documentElement.classList.remove('marketing-document');
   },[]);
+  useEffect(()=>()=>{
+    window.speechSynthesis?.cancel();
+    voiceAudioRef.current?.pause();
+    if(voiceUrlRef.current)URL.revokeObjectURL(voiceUrlRef.current);
+  },[]);
+  const playNibiruVoice=async(scenario:string,text:string)=>{
+    setVoiceError('');
+    setVoicePlaying(true);
+    voiceAudioRef.current?.pause();
+    if(voiceUrlRef.current){URL.revokeObjectURL(voiceUrlRef.current);voiceUrlRef.current=null}
+    try{
+      const response=await fetch(`${APP_URL}/api/public/nibiru/voice-demo?scenario=${encodeURIComponent(scenario)}`);
+      if(!response.ok)throw new Error('voice');
+      const url=URL.createObjectURL(await response.blob());voiceUrlRef.current=url;
+      const audio=new Audio(url);voiceAudioRef.current=audio;
+      const finish=()=>{if(voiceAudioRef.current===audio)voiceAudioRef.current=null;URL.revokeObjectURL(url);if(voiceUrlRef.current===url)voiceUrlRef.current=null;setVoicePlaying(false)};
+      audio.onended=finish;audio.onerror=()=>{finish();setVoiceError('Nibiru sesi oynatılamadı.')};
+      await audio.play();return;
+    }catch{
+      voiceAudioRef.current=null;
+      if(voiceUrlRef.current){URL.revokeObjectURL(voiceUrlRef.current);voiceUrlRef.current=null}
+    }
+    if(!('speechSynthesis' in window)){setVoicePlaying(false);setVoiceError('Bu tarayıcı sesli yanıtı desteklemiyor.');return}
+    window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);
+    utterance.lang='tr-TR';utterance.rate=.94;utterance.pitch=1.02;
+    const voices=window.speechSynthesis.getVoices();utterance.voice=voices.find(v=>v.lang.toLowerCase().startsWith('tr'))||null;
+    utterance.onend=()=>setVoicePlaying(false);utterance.onerror=()=>{setVoicePlaying(false);setVoiceError('Nibiru sesi başlatılamadı.')};window.speechSynthesis.speak(utterance);
+  };
   return <div className="marketing-home">
     <header className="marketing-header">
-      <a href="#top" className="marketing-logo"><AnunexBrand tagline/><span className="header-nibiru"><NibiruMark size={24} state="active"/><span><b>NIBIRU AI</b><small>Öğrenmenin yaşayan zekâsı</small></span></span></a>
+      <a href="#top" className="marketing-logo"><AnunexBrand tagline/><span className="header-nibiru"><NibiruMark size={16} state="active" title="Nibiru"/><b>NIBIRU</b><small>Öğrenmenin yaşayan zekâsı</small></span></a>
       <nav aria-label="Tanıtım menüsü"><a href="#platform">Platform</a><a href="#nibiru">Nibiru</a><a href="#roller">Paneller</a><a href="#oyunlar">Mini Oyunlar</a><a href="#entegrasyon">Entegrasyonlar</a><a href="#iletisim">İletişim</a></nav>
       <div className="marketing-actions"><a className="marketing-link" href={DEMO_URL}>Demo</a><a className="marketing-button small" href={APP_URL}>Sisteme Giriş <ArrowRight size={16}/></a></div>
     </header>
@@ -124,14 +139,14 @@ export function MarketingHome(){
 
       <section className="nibiru-section nibiru-planet-section" id="nibiru">
         <div className="nibiru-stage nibiru-live-stage">
-          <NibiruPlanetarySystem size={560} state={nibiruOpen?'speaking':'idle'}/>
-          <div className="live-signal"><i/><span>{nibiruOpen?'Nibiru bağlamı analiz ediyor':'Nibiru çevrimiçi'}</span></div>
+          <NibiruMark size={560} state={voicePlaying?'speaking':nibiruOpen?'active':'idle'} interactive/>
+          <div className="live-signal"><i/><span>{voicePlaying?'Nibiru sizinle konuşuyor':nibiruOpen?'Nibiru bağlamı analiz ediyor':'Nibiru çevrimiçi'}</span></div>
         </div>
         <div className="nibiru-copy"><span>NIBIRU · ANUNEX’İN AKADEMİK ZEKA ÇEKİRDEĞİ</span><h2>Tek bir yapay zekâ değil.<br/><em>Uzmanların ortak yörüngesi.</em></h2><p>Merkezde Nibiru; çevresinde ölçme, rehberlik, branş, veli, kurum, içerik ve video uzmanları. Kullanıcıyı, rolünü ve yalnızca yetkili verisini tanır; doğru uzmanı doğru anda devreye alır.</p>
           <div className="nibiru-tabs" role="tablist" aria-label="Nibiru örnek görüşmeleri">{nibiruConversations.map((item,index)=><button key={item.key} type="button" role="tab" aria-selected={activeConversation===index} className={activeConversation===index?'active':''} onClick={()=>{setActiveConversation(index);setNibiruOpen(true)}}>{item.label}</button>)}</div>
           <div className="nibiru-conversation multi-conversation" aria-live="polite">
             <div className="conversation-user"><span><small>{conversation.audience}</small>{conversation.question}</span><div>{conversation.initial}</div></div>
-            {nibiruOpen?<div className="conversation-nibiru"><NibiruMark size={34} state="speaking"/><div><small className="identity-recognition"><ShieldCheck/> {conversation.identity}</small><strong>{conversation.title}</strong><p>{conversation.body}</p><ul>{conversation.tasks.map(task=><li key={task}><CheckCircle2/> {task}</li>)}</ul><p className="career-signoff">{conversation.signoff}</p><button type="button" onClick={()=>playNibiruVoice(conversation.key,[conversation.title,conversation.body,...conversation.tasks,conversation.signoff].join(' '))}><Volume2/> Gerçek rehber sesinden dinle</button></div></div>:<button className="ask-nibiru" type="button" onClick={()=>setNibiruOpen(true)}><Sparkles/> Nibiru’ya sor <Send/></button>}
+            {nibiruOpen?<div className="conversation-nibiru"><NibiruMark size={34} state={voicePlaying?'speaking':'active'}/><div><small className="identity-recognition"><ShieldCheck/> {conversation.identity}</small><strong>{conversation.title}</strong><p>{conversation.body}</p><ul>{conversation.tasks.map(task=><li key={task}><CheckCircle2/> {task}</li>)}</ul><p className="career-signoff">{conversation.signoff}</p><button type="button" onClick={()=>void playNibiruVoice(conversation.key,[conversation.title,conversation.body,...conversation.tasks,conversation.signoff].join(' '))} disabled={voicePlaying}><Volume2/> {voicePlaying?'Nibiru konuşuyor…':'Gerçek rehber sesinden dinle'}</button>{voiceError&&<small className="voice-error" role="status">{voiceError}</small>}</div></div>:<button className="ask-nibiru" type="button" onClick={()=>setNibiruOpen(true)}><Sparkles/> Nibiru’ya sor <Send/></button>}
           </div>
           <div className="nibiru-capabilities"><div><Sparkles/><span><strong>Tanır</strong><small>Rolü ve doğrulanmış bağlamı bilir</small></span></div><div><LineChart/><span><strong>Birleştirir</strong><small>Uzman zekâları tek yanıtta buluşturur</small></span></div><div><Mic2/><span><strong>İnsan gibi iletişim kurar</strong><small>Sıcak, öğretici ve güven veren ses</small></span></div><div><LockKeyhole/><span><strong>Sınırlarını korur</strong><small>Yetki, KVKK ve mahremiyet önce gelir</small></span></div></div>
         </div>
@@ -162,7 +177,7 @@ export function MarketingHome(){
         <div className="connected-heading"><span>GERÇEK İLETİŞİM · GERÇEK ÖĞRENME AKIŞI</span><h2>Nibiru yalnız cevap vermez.<br/><em>Kimi dinlediğini ve neyi koruması gerektiğini bilir.</em></h2><p>WhatsApp görüşmesi doğrulanmış veli kimliğiyle, YouTube seçimi öğrencinin gerçek sınav kazanımıyla çalışır. Hassas sonuçlar mesajda açık bırakılmaz; güvenli ANUNEX bağlantısıyla paylaşılır.</p></div>
         <div className="real-story-grid">
           <article className="whatsapp-phone-story">
-            <div className="phone-hardware"><div className="phone-island"/><div className="wa-header"><button aria-label="Geri">‹</button><span className="wa-nibiru-avatar"/><div><strong>Nibiru · ANUNEX</strong><small><i/> Akademik asistan · çevrimiçi</small></div></div>
+            <div className="phone-hardware"><div className="phone-island"/><div className="wa-header"><button aria-label="Geri">‹</button><NibiruMark size={40} state="active" title="Nibiru"/><div><strong>Nibiru · ANUNEX</strong><small><i/> Akademik asistan · çevrimiçi</small></div></div>
               <div className="wa-encryption"><LockKeyhole/> Mesajlar kurum politikası ve KVKK sınırlarında işlenir.</div>
               <div className="wa-chat-thread">
                 <div className="wa-day">BUGÜN</div>
@@ -180,7 +195,7 @@ export function MarketingHome(){
           </article>
           <article className="youtube-learning-story">
             <div className="youtube-result-head"><div><span>ANUNEX · SINAV SONUCU</span><h3>Matematik · Çarpanlar ve Katlar</h3><p>Aras Bulut bu kazanımda 4 sorunun 2’sinde desteğe ihtiyaç duyuyor.</p></div><span className="yt-score">2 / 4</span></div>
-            <div className="nibiru-video-advice"><span className="wa-nibiru-avatar"/><div><strong>Nibiru önerisi</strong><p>Önce 4 dakika 18 saniyelik öğretmen onaylı özeti izlemeni öneriyorum. Ardından sana üç kısa kontrol sorusu hazırlayacağım.</p></div></div>
+            <div className="nibiru-video-advice"><NibiruMark size={40} state="thinking" title="Nibiru"/><div><strong>Nibiru önerisi</strong><p>Önce 4 dakika 18 saniyelik öğretmen onaylı özeti izlemeni öneriyorum. Ardından sana üç kısa kontrol sorusu hazırlayacağım.</p></div></div>
             <div className="video-candidate-list">
               {[
                ['01','Çarpanlar ve Katlar · Hızlı Konu Özeti','4:18','1,2 Mn izlenme','Öğretmen onaylı','ÖNERİLEN'],

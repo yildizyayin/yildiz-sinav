@@ -20,8 +20,9 @@ Bu belge ANUNEX ve Nibiru'nun tüm web, mobil, panel, sunum ve iletişim yüzeyl
 ## 3. Nibiru kimliği
 
 - Nibiru bir robot veya insan karakteri değildir.
-- Sabit işareti mor-mavi yaşayan çekirdek, iki yörünge ve ışık sinyalinden oluşur.
-- Nibiru'nun temel biçimi sabittir; yalnız durum animasyonu değişebilir: pasif, aktif, dinliyor, düşünüyor, konuşuyor.
+- Sabit işareti tek bir mor-mavi yaşayan zekâ küresi, iç akışkan ışık katmanları ve dış tepki halkalarından oluşur.
+- Nibiru'nun temel biçimi ve oranı sabittir; yalnız iç akış, parlama ve tepki halkalarının durumu değişebilir: pasif, aktif, dinliyor, düşünüyor, konuşuyor.
+- Küçük ikon, panel işareti, tanıtım görseli, mobil kullanım ve sonuç ekranı aynı görsel karakteri kullanır; robot/avatar, sohbet balonu ve ayrı gezegen karakterleri kullanılmaz.
 - Nibiru; doğrulanmış veriyi dinler, analiz eder, önerir ve yönlendirir. Veri yoksa tahmin yürütmez.
 
 ## 4. Ana renkler
