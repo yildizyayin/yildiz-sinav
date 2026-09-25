@@ -9,7 +9,7 @@ permissions:
 
 concurrency:
   group: production-deploy
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   dogrula:

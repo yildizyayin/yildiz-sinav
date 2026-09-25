@@ -4,8 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths:
-      - '.github/deploy-production.trigger'
 
 permissions:
   contents: read
@@ -13,7 +11,7 @@ permissions:
 
 concurrency:
   group: production-deploy
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   dogrula:
@@ -34,8 +32,6 @@ jobs:
       PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
       PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
       PROD_WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.PROD_WHATSAPP_PHONE_NUMBER_ID }}
-      PROD_GOOGLE_TTS_SERVICE_ACCOUNT_JSON: ${{ secrets.PROD_GOOGLE_TTS_SERVICE_ACCOUNT_JSON }}
-      PROD_OPENAI_TTS_API_KEY: ${{ secrets.PROD_OPENAI_TTS_API_KEY }}
       PROD_BASE_URL: https://app.anunex.com
     steps:
       - uses: actions/checkout@v5
@@ -143,94 +139,28 @@ jobs:
           put_prod_secret PROD_WHATSAPP_APP_SECRET WHATSAPP_APP_SECRET
           put_prod_secret PROD_WHATSAPP_ACCESS_TOKEN WHATSAPP_ACCESS_TOKEN
           put_prod_secret PROD_WHATSAPP_PHONE_NUMBER_ID WHATSAPP_PHONE_NUMBER_ID
-          put_prod_secret PROD_GOOGLE_TTS_SERVICE_ACCOUNT_JSON GOOGLE_TTS_SERVICE_ACCOUNT_JSON
-          put_prod_secret PROD_OPENAI_TTS_API_KEY OPENAI_TTS_API_KEY
 
       - name: Attach licensed application domain
         shell: bash
         run: |
-          set -euo pipefail
           attach_domain() {
             local hostname="$1"
             local service="$2"
-            local endpoint="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains"
-            local auth_header="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
-            local current response domain_id status
-            current="$(mktemp)"
+            local response
             response="$(mktemp)"
-            cleanup() { rm -f "$current" "$response"; }
-            trap cleanup RETURN
-
-            if ! curl --fail-with-body --silent --show-error \
-              --header "$auth_header" \
-              "$endpoint?hostname=$hostname" \
-              --output "$current"; then
-              echo "Cloudflare could not inspect $hostname before attachment." >&2
-              cleanup
-              return 1
-            fi
-            if ! jq -e --arg hostname "$hostname" --arg service "$service" \
-              '.success == true and any(.result[]?; .hostname == $hostname and .service == $service)' \
-              "$current" >/dev/null; then
-              domain_id="$(jq -r --arg hostname "$hostname" \
-                '.result[]? | select(.hostname == $hostname) | .id // empty' "$current" | head -1)"
-              if [ -n "$domain_id" ]; then
-                echo "$hostname is attached to another Worker; rebinding it to $service."
-                status="$(curl --silent --show-error \
-                  --output "$response" \
-                  --write-out '%{http_code}' \
-                  --request DELETE \
-                  --header "$auth_header" \
-                  "$endpoint/$domain_id")"
-                if [[ "$status" -lt 200 || "$status" -ge 300 ]]; then
-                  echo "Cloudflare could not detach the previous $hostname mapping (HTTP $status)." >&2
-                  jq -c '{success,errors,messages}' "$response" >&2 || true
-                  cleanup
-                  return 1
-                fi
-                for attempt in {1..10}; do
-                  current="$(curl --fail-with-body --silent --show-error \
-                    --header "$auth_header" \
-                    "$endpoint?hostname=$hostname")"
-                  if ! jq -e --arg hostname "$hostname" \
-                    'any(.result[]?; .hostname == $hostname)' "$current" >/dev/null; then
-                    break
-                  fi
-                  sleep 2
-                done
-                if jq -e --arg hostname "$hostname" \
-                  'any(.result[]?; .hostname == $hostname)' "$current" >/dev/null; then
-                  echo "Cloudflare accepted the detach request but $hostname is still attached." >&2
-                  cleanup
-                  return 1
-                fi
-              fi
-            else
-              echo "$hostname is already attached to $service."
-              cleanup
-              return 0
-            fi
-
-            status="$(curl --silent --show-error \
-              --output "$response" \
-              --write-out '%{http_code}' \
+            curl --fail-with-body --silent --show-error \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains" \
               --request PUT \
               --header 'Content-Type: application/json' \
-              --header "$auth_header" \
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
               --data "$(jq -n --arg hostname "$hostname" --arg service "$service" '{hostname:$hostname,service:$service,zone_name:"anunex.com"}')" \
-              "$endpoint")"
-            if [[ "$status" -lt 200 || "$status" -ge 300 ]] || ! jq -e --arg hostname "$hostname" --arg service "$service" \
-              '.success == true and .result.hostname == $hostname and .result.service == $service' "$response" >/dev/null; then
-              echo "Cloudflare could not attach $hostname to $service (HTTP $status)." >&2
-              jq -c '{success,errors,messages}' "$response" >&2 || true
-              cleanup
-              return 1
-            fi
+              --output "$response"
+            jq -e --arg hostname "$hostname" --arg service "$service" \
+              '.success == true and .result.hostname == $hostname and .result.service == $service' "$response" >/dev/null
+            rm -f "$response"
             echo "$hostname attached to $service."
-            cleanup
           }
           attach_domain app.anunex.com yildiz-sinav-prod
-          attach_domain demo.anunex.com yildiz-sinav-prod
 
       - name: Read-only production smoke acceptance
         run: node scripts/live-production-smoke.mjs

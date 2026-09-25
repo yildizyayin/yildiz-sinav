@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://demo.anunex.com`
-- Time: `2026-09-17T09:35:56.662Z`
+- Time: `2026-09-19T15:22:16.236Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -81,22 +81,12 @@
 - ✅ **Standard question bank** — 32 approved printable questions
 - ✅ **Education Coach verified mastery cycle** — 3 tasks · existing mastered evidence reused · progress 0%
 - ✅ **Zero Error exam source** — institution exams are selectable, not only central snapshots
-- ❌ **Standard acceptance failure**
-
-```text
-Error: GET /api/student-standard/exam-review?examId=exam_hist_08 expected 200, got 500
-{
-  "ok": false,
-  "error": {
-    "code": "SERVER_ERROR",
-    "message": "Sunucu hatası oluştu.",
-    "requestId": "a3c720facb42ab5c"
-  }
-}
-    at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:6:476)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:58:15
-```
+- ✅ **Correct / wrong / blank question review** — all answer states available
+- ✅ **Publisher solution + topic micro-learning contract** — registered video path
+- ✅ **Kişiye Özel Kitap** — 2 outcomes · 6 questions
+- ✅ **Sıfır Hata Kitapçığı** — 2 wrong · 2 blank · 8 practice
+- ✅ **5–12 educational game catalog** — 5 age-appropriate games for grade 5
+- ✅ **12th-grade YKS target engine** — maximum 3 targets · official data gate active
 
 ## Standard final closure
 
@@ -117,13 +107,13 @@ Error: GET /api/student-standard/exam-review?examId=exam_hist_08 expected 200, g
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v91 · 174 evidence · 3 subjects
+- ✅ **Persistent student intelligence profile** — v98 · 174 evidence · 3 subjects
 - ✅ **Idempotent refresh + versioned history** — 50 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 855 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v91 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 918 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v98 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 

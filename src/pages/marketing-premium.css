@@ -24,6 +24,12 @@
 .marketing-home p,.marketing-home li{font-size:max(15px,1rem)}.marketing-home small{font-size:max(12px,.78rem)}
 @media(max-width:900px){.nibiru-planet-section .nibiru-stage{min-height:460px;padding:10px}.channel-scenarios{grid-template-columns:1fr}.nibiru-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px}.nibiru-tabs button{white-space:nowrap}}
 
+/* A reference: Nibiru stays a single blue/cyan glass orb on every surface. */
+.nibiru-section{background:radial-gradient(circle at 23% 50%,#164b9b 0,#102f73 28%,#071a44 58%,#030d24 100%)}
+.nibiru-section:after{display:none}
+.nibiru-copy h2 em{color:#79e6ff}
+.nibiru-rings{display:none}
+
 /* Canonical Nibiru brand lockup */
 .marketing-logo{display:grid!important;gap:7px}.header-nibiru{display:grid;grid-template-columns:14px auto 1fr;align-items:center;gap:6px;padding-left:3px;color:#405479;letter-spacing:.08em}.header-nibiru i,.wa-nibiru-avatar{display:inline-block;border-radius:50%;background:radial-gradient(circle at 33% 27%,#fff 0 7%,#9eeeff 15%,#716cff 42%,#28247c 69%,#090d2a 100%);box-shadow:0 0 0 2px rgba(98,174,255,.2),0 0 16px rgba(92,116,255,.7);animation:miniNibiru 3s ease-in-out infinite}.header-nibiru i{width:14px;height:14px}.header-nibiru b{font-size:10px;letter-spacing:.18em;color:#1d3870}.header-nibiru small{font-size:9px!important;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#71819d}
 .connected-real-stories{padding-bottom:120px}.connected-real-stories .connected-heading{max-width:920px}.connected-real-stories .connected-heading h2 em{font-style:normal;color:#4478f2}.real-story-grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,1.28fr);gap:36px;max-width:1280px;margin:42px auto 0;align-items:start}
@@ -33,11 +39,7 @@
 @keyframes miniNibiru{50%{transform:scale(1.08);box-shadow:0 0 0 3px rgba(98,174,255,.18),0 0 24px rgba(92,116,255,.9)}}@keyframes messageReveal{0%,4%{opacity:0;transform:translateY(10px)}8%,88%{opacity:1;transform:none}96%,100%{opacity:0}}
 @media(max-width:1100px){.real-story-grid{grid-template-columns:1fr}.whatsapp-phone-story{grid-template-columns:minmax(300px,390px) 1fr;max-width:820px;margin:auto}}
 @media(max-width:700px){.header-nibiru small{display:none}.real-story-grid{margin-top:26px}.whatsapp-phone-story{grid-template-columns:1fr}.phone-hardware{min-height:700px;max-width:380px;margin:auto}.story-explain{padding:8px 4px}.youtube-learning-story{padding:18px 12px}.video-candidate-list>button{grid-template-columns:76px 1fr auto}.video-candidate-list>button>b{display:none}}
-
-/* A reference: Nibiru stays a single blue/cyan glass orb on every surface. */
 .header-nibiru i,.wa-nibiru-avatar{background:radial-gradient(circle at 33% 27%,#fff 0 7%,#9eeeff 15%,#4ad9ff 42%,#1456b8 69%,#061947 100%);box-shadow:0 0 0 2px rgba(98,174,255,.2),0 0 16px rgba(74,190,255,.7)}
 .nibiru-video-advice{background:linear-gradient(115deg,#12285b,#0d4d9e)}
-
-/* A reference: keep all Nibiru conversation controls blue/cyan. */
 .ask-nibiru{border-color:rgba(91,210,255,.35);background:linear-gradient(135deg,rgba(30,122,210,.5),rgba(24,82,181,.42))}
 .conversation-nibiru>div{background:rgba(8,38,91,.9);border-color:rgba(104,224,255,.25)}

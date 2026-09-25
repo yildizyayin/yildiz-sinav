@@ -119,3 +119,70 @@
 @media(max-width:900px){.appearance-theme-grid{grid-template-columns:1fr 1fr}.app-shell[data-panel-module="exam-center"] .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.appearance-theme-grid{grid-template-columns:1fr}.app-shell[data-panel-module="exam-center"] .kpi-grid{grid-template-columns:1fr}}
 .app-shell[data-panel-module="exam-center"]{--workspace-accent:#2563eb;--workspace-soft:#eef4ff;background:linear-gradient(180deg,#f3f7ff 0,#f8fbff 42%,var(--canvas,#f5f7fb) 100%)}.app-shell[data-panel-module="exam-center"] .page-wrap{max-width:1480px}.app-shell[data-panel-module="exam-center"] .exam-simple-shell{position:relative}.app-shell[data-panel-module="exam-center"] .exam-simple-shell:before{content:"";position:absolute;left:-20px;right:-20px;top:-30px;height:180px;z-index:-1;border-radius:0 0 40px 40px;background:radial-gradient(circle at 82% 0,rgba(37,99,235,.12),transparent 34%),linear-gradient(180deg,#edf4ff,transparent)}.app-shell[data-panel-module="optical-operations"]{--workspace-accent:#0f9f8c;--workspace-soft:#e9fbf6;background:linear-gradient(180deg,#f1fbfa 0,#f8fbfb 38%,var(--canvas,#f5f7fb) 100%)}.app-shell[data-panel-module="content-center"]{--workspace-accent:#7657ff;--workspace-soft:#f3efff;background:linear-gradient(180deg,#f7f4ff 0,#fbfbff 38%,var(--canvas,#f5f7fb) 100%)}.app-shell[data-panel-module="guidance-center"]{--workspace-accent:#536fc4;--workspace-soft:#eef2ff;background:linear-gradient(180deg,#f3f6ff 0,#fbfcff 42%,var(--canvas,#f5f7fb) 100%)}.app-shell[data-panel-module="planning-center"]{--workspace-accent:#bd7d10;--workspace-soft:#fff7e6;background:linear-gradient(180deg,#fffaf0 0,#fffdf9 42%,var(--canvas,#f5f7fb) 100%)}.app-shell[data-panel-module="results-center"]{--workspace-accent:#2672c8;--workspace-soft:#eaf3ff;background:linear-gradient(180deg,#f1f7ff 0,#fbfdff 42%,var(--canvas,#f5f7fb) 100%)}.app-shell[data-panel-module="ai-center"]{--workspace-accent:#7657ff;--workspace-soft:#f3efff;background:radial-gradient(circle at 88% 0,rgba(118,87,255,.1),transparent 30%),linear-gradient(180deg,#f7f4ff 0,#fbfbff 42%,var(--canvas,#f5f7fb) 100%)}.app-shell[data-panel-module]:not([data-panel-module="general"]) .page-head h1,.app-shell[data-panel-module]:not([data-panel-module="general"]) .section-head h2{letter-spacing:-.035em}.app-shell[data-panel-module]:not([data-panel-module="general"]) .page-head .eyebrow{color:var(--workspace-accent)}.app-shell[data-panel-module]:not([data-panel-module="general"]) .primary{background:var(--workspace-accent)}.app-shell[data-panel-module]:not([data-panel-module="general"]) .primary:hover{filter:brightness(.93)}@media(max-width:760px){.app-shell[data-panel-module="exam-center"] .exam-simple-shell:before{left:-13px;right:-13px;top:-18px;height:140px;border-radius:0 0 24px 24px}}
+
+.app-shell[data-panel-module="exam-center"] .exam-definition-detail-shell{display:none}
+.app-shell[data-panel-module="exam-center"] .exam-definition-page.detail-mode .exam-simple-shell,
+.app-shell[data-panel-module="exam-center"] .exam-definition-page.detail-mode .exam-definition-list-shell{display:none}
+.app-shell[data-panel-module="exam-center"] .exam-definition-page.detail-mode .exam-definition-detail-shell{display:block}
+.app-shell[data-panel-module="exam-center"] .exam-detail-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:4px 0 8px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.app-shell[data-panel-module="exam-center"] .exam-detail-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.app-shell[data-panel-module="exam-center"] .exam-detail-toolbar .ghost{color:var(--workspace-accent);padding-left:0}
+@media(max-width:600px){.app-shell[data-panel-module="exam-center"] .exam-detail-toolbar{align-items:flex-start;flex-direction:column}.app-shell[data-panel-module="exam-center"] .exam-detail-actions{width:100%}.app-shell[data-panel-module="exam-center"] .exam-detail-actions button{flex:1}}
+
+.app-shell[data-panel-module="optical-operations"] .optical-definition-detail-shell{display:none}
+.app-shell[data-panel-module="optical-operations"] .optical-definition-page.detail-mode .optical-definition-create-shell,
+.app-shell[data-panel-module="optical-operations"] .optical-definition-page.detail-mode .optical-definition-list-shell{display:none}
+.app-shell[data-panel-module="optical-operations"] .optical-definition-page.detail-mode .optical-definition-detail-shell{display:block}
+.app-shell[data-panel-module="optical-operations"] .optical-detail-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:4px 0 8px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.app-shell[data-panel-module="optical-operations"] .optical-detail-toolbar .ghost{color:var(--workspace-accent);padding-left:0}
+@media(max-width:600px){.app-shell[data-panel-module="optical-operations"] .optical-detail-toolbar{align-items:flex-start;flex-direction:column}}
+
+/* Phobos: optical form tree and definition work surface. */
+.app-shell[data-panel-module="phobos-optical"]{--workspace-accent:#b85f3e;--workspace-soft:#fff1e5;background:linear-gradient(180deg,#fbefe5 0,#fffaf6 42%,var(--canvas,#f5f7fb) 100%)}
+.app-shell[data-panel-module="phobos-optical"] .page-head .eyebrow,.app-shell[data-panel-module="phobos-optical"] .section-head h2{color:#a34e35}
+.app-shell[data-panel-module="phobos-optical"] .primary{background:linear-gradient(105deg,#b85f3e,#d9854d);box-shadow:0 9px 20px rgba(173,91,61,.22)}
+.app-shell[data-panel-module="phobos-optical"] .primary:hover{filter:brightness(.94)}
+.app-shell[data-panel-module="phobos-optical"] .optical-definition-detail-shell{display:none}
+.app-shell[data-panel-module="phobos-optical"] .optical-definition-page.detail-mode .optical-definition-create-shell,
+.app-shell[data-panel-module="phobos-optical"] .optical-definition-page.detail-mode .optical-definition-list-shell{display:none}
+.app-shell[data-panel-module="phobos-optical"] .optical-definition-page.detail-mode .optical-definition-detail-shell{display:block}
+.app-shell[data-panel-module="phobos-optical"] .optical-detail-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:4px 0 8px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.app-shell[data-panel-module="phobos-optical"] .optical-detail-toolbar .ghost{color:var(--workspace-accent);padding-left:0}
+.app-shell[data-panel-module="phobos-optical"] .nav-item.active{background:linear-gradient(105deg,#a94f34,#d9854d);color:#fff;box-shadow:0 9px 22px rgba(173,91,61,.34)}
+
+/* Deimos: printing is a separate station with its own work surface. */
+.app-shell[data-panel-module="deimos-printing"]{--workspace-accent:#536b86;--workspace-soft:#edf3f8;background:linear-gradient(180deg,#f1f6fa 0,#fbfcfd 42%,var(--canvas,#f5f7fb) 100%)}
+.app-shell[data-panel-module="deimos-printing"] .page-head .eyebrow,.app-shell[data-panel-module="deimos-printing"] .section-head h2{color:#405a76}
+.app-shell[data-panel-module="deimos-printing"] .primary{background:linear-gradient(105deg,#536b86,#718da9);box-shadow:0 9px 20px rgba(64,90,118,.2)}
+.app-shell[data-panel-module="deimos-printing"] .primary:hover{filter:brightness(.94)}
+.app-shell[data-panel-module="deimos-printing"] .nav-item.active{background:linear-gradient(105deg,#405a76,#718da9);color:#fff;box-shadow:0 9px 22px rgba(64,90,118,.3)}
+
+.optical-manual-table{display:flex;flex-direction:column;gap:6px;margin:10px 0 18px;overflow:auto}
+.optical-manual-row{display:grid;grid-template-columns:minmax(150px,1.3fr) 64px repeat(3,minmax(82px,1fr));gap:8px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface,#fff)}
+.optical-manual-row input,.optical-manual-row select{margin-top:0;min-height:36px;padding:6px 8px}
+.optical-manual-row input[type="checkbox"]{width:18px;min-height:auto;justify-self:center}
+.optical-manual-row strong,.optical-manual-row span{font-size:12px}
+.optical-manual-head{border:none;background:var(--workspace-soft,#f3f7ff);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.optical-manual-answer-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.optical-card-open{display:block;margin-top:14px;color:var(--workspace-accent,#0f9f8c);font-size:12px;font-weight:800}
+@media(max-width:700px){.optical-manual-row{grid-template-columns:minmax(130px,1fr) 45px repeat(3,minmax(72px,1fr));gap:5px;padding:7px}.optical-manual-answer-meta{grid-template-columns:1fr}.optical-manual-head{font-size:9px}}
+
+/* Sınav Merkezi'nin çalışma yüzeyi: Mars toprağı ve kiremit buton standardı. */
+.app-shell[data-panel-module="exam-center"]{--workspace-accent:#b85f3e;--workspace-soft:#fff4ea;background:linear-gradient(180deg,#fbefe5 0,#fffaf6 42%,var(--canvas,#f5f7fb) 100%)}
+.app-shell[data-panel-module="exam-center"] .page-head .eyebrow,.app-shell[data-panel-module="exam-center"] .section-head h2{color:#a34e35}
+.app-shell[data-panel-module="exam-center"] .primary,.app-shell[data-panel-module="exam-center"] .exam-center-page .primary{background:linear-gradient(105deg,#b85f3e,#d9854d);box-shadow:0 9px 20px rgba(173,91,61,.22)}
+.app-shell[data-panel-module="exam-center"] .primary:hover,.app-shell[data-panel-module="exam-center"] .exam-center-page .primary:hover{filter:brightness(.94)}
+.app-shell[data-panel-module="exam-center"] .secondary{border-color:#e2c5b0;color:#8d4c34;background:#fffaf5}
+
+/* Sol menüde aktif bölüm, açılan çalışma alanının rengine eşlik eder. */
+.app-shell[data-panel-module="general"]{--nav-module-start:#315efb;--nav-module-end:#607cff;--nav-module-ink:#fff;--nav-module-shadow:rgba(49,94,251,.28);--nav-module-hover:rgba(96,124,255,.2)}
+.app-shell[data-panel-module="exam-center"]{--nav-module-start:#a94f34;--nav-module-end:#d9854d;--nav-module-ink:#fff;--nav-module-shadow:rgba(173,91,61,.34);--nav-module-hover:rgba(217,133,77,.22)}
+.app-shell[data-panel-module="optical-operations"]{--nav-module-start:#087f78;--nav-module-end:#20b49e;--nav-module-ink:#fff;--nav-module-shadow:rgba(15,159,140,.3);--nav-module-hover:rgba(32,180,158,.2)}
+.app-shell[data-panel-module="content-center"]{--nav-module-start:#6742c8;--nav-module-end:#8b6cf0;--nav-module-ink:#fff;--nav-module-shadow:rgba(118,87,255,.3);--nav-module-hover:rgba(139,108,240,.22)}
+.app-shell[data-panel-module="guidance-center"]{--nav-module-start:#4462b2;--nav-module-end:#708bdd;--nav-module-ink:#fff;--nav-module-shadow:rgba(83,111,196,.3);--nav-module-hover:rgba(112,139,221,.22)}
+.app-shell[data-panel-module="planning-center"]{--nav-module-start:#9b640b;--nav-module-end:#d39a2f;--nav-module-ink:#fff;--nav-module-shadow:rgba(189,125,16,.3);--nav-module-hover:rgba(211,154,47,.22)}
+.app-shell[data-panel-module="results-center"]{--nav-module-start:#1f62aa;--nav-module-end:#3e8cda;--nav-module-ink:#fff;--nav-module-shadow:rgba(38,114,200,.3);--nav-module-hover:rgba(62,140,218,.22)}
+.app-shell[data-panel-module="ai-center"]{--nav-module-start:#6040bb;--nav-module-end:#906df3;--nav-module-ink:#fff;--nav-module-shadow:rgba(118,87,255,.32);--nav-module-hover:rgba(144,109,243,.22)}
+.app-shell[data-panel-module] .nav-item.active{background:linear-gradient(105deg,var(--nav-module-start),var(--nav-module-end));color:var(--nav-module-ink);box-shadow:0 9px 22px var(--nav-module-shadow)}
+.app-shell[data-panel-module] .nav-item:not(.active):hover{background:var(--nav-module-hover);color:#fff}
+.app-shell[data-panel-module] .nav-item.active svg{color:currentColor}

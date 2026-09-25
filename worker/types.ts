@@ -87,6 +87,7 @@ export interface AuthUser {
 export interface CanonicalRecord {
   row_no: number;
   student_number?: string;
+  tckn?: string;
   name: string;
   class_name?: string;
   grade_level?: number;
@@ -103,6 +104,7 @@ export interface MatchCandidate {
   student_id: string;
   status: 'ACTIVE' | 'GUEST' | 'ARCHIVED';
   normalized_name: string;
+  tckn: string | null;
   student_number: string | null;
   grade_level: number | null;
   section: string | null;

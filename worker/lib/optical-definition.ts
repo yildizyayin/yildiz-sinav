@@ -67,9 +67,15 @@ export function validateParserDefinition(input: unknown): ValidationResult {
     const recordLength = Number(source.recordLength ?? def.recordLength);
     if (!Number.isInteger(recordLength) || recordLength <= 0 || recordLength > 5000) errors.push('recordLength 1-5000 arasında tam sayı olmalıdır.');
     const fields = source.fields || def.fields || {};
-    errors.push(...validateSlice('fields.name', normalizeParserSlice(fields.name), recordLength));
+    if (fields.name) errors.push(...validateSlice('fields.name', normalizeParserSlice(fields.name), recordLength));
+    else if (fields.first_name && fields.last_name) {
+      errors.push(...validateSlice('fields.first_name', normalizeParserSlice(fields.first_name), recordLength));
+      errors.push(...validateSlice('fields.last_name', normalizeParserSlice(fields.last_name), recordLength));
+    } else errors.push('fields.name veya fields.first_name + fields.last_name alanları tanımlanmalıdır.');
     if (fields.student_number) errors.push(...validateSlice('fields.student_number', normalizeParserSlice(fields.student_number), recordLength));
     if (fields.class) errors.push(...validateSlice('fields.class', normalizeParserSlice(fields.class), recordLength));
+    if (fields.grade_class) errors.push(...validateSlice('fields.grade_class', normalizeParserSlice(fields.grade_class), recordLength));
+    if (fields.section) errors.push(...validateSlice('fields.section', normalizeParserSlice(fields.section), recordLength));
     if (fields.booklet) errors.push(...validateSlice('fields.booklet', normalizeParserSlice(fields.booklet), recordLength));
     const answers = source.answers || def.answers;
     if (!answers || typeof answers !== 'object' || Array.isArray(answers) || Object.keys(answers).length === 0) {
@@ -112,34 +118,46 @@ export function validateCameraGeometry(input: unknown, pageWidthMm: number, page
   if (!Array.isArray(regions) || regions.length === 0) return { valid: false, errors: ['Kamera geometrisinde en az bir region tanımlanmalıdır.'] };
   let hasAnswers = false;
   for (let i = 0; i < regions.length; i++) {
-    const region: any = regions[i];
+    const region = regions[i];
     if (!region || typeof region !== 'object') { errors.push(`regions[${i}] nesne olmalıdır.`); continue; }
     if (typeof region.id !== 'string' || !region.id.trim()) errors.push(`regions[${i}].id gereklidir.`);
     if (typeof region.type !== 'string' || !region.type.trim()) errors.push(`regions[${i}].type gereklidir.`);
-    const purpose = String(region.purpose || '').trim().toLowerCase();
-    const answerRegion = purpose === 'answers' || region.type === 'answers' || (region.type === 'bubble-grid' && !purpose);
-    if (answerRegion) {
-      hasAnswers = true;
-      if (!String(region.subjectCode || '').trim()) errors.push(`regions[${i}].subjectCode gereklidir.`);
-      const cells = Array.isArray(region.cells) && region.cells.length > 0;
-      const questionCount = Number(region.questionCount ?? region.rows ?? 0);
-      if (!cells && (!Number.isInteger(questionCount) || questionCount < 1 || questionCount > 500)) errors.push(`regions[${i}] için 1-500 arasında questionCount veya cells tanımlanmalıdır.`);
-      if (!cells) {
-        const options = Array.isArray(region.options) ? region.options.map(String).filter(Boolean) : [];
-        if (options.length < 2 || options.length > 5) errors.push(`regions[${i}].options 2-5 şık içermelidir.`);
+    if (region.type === 'answers' || region.type === 'bubble-grid') hasAnswers = true;
+    const purpose = typeof region.purpose === 'string' ? region.purpose.trim().toLowerCase() : '';
+    if (purpose === 'answers') {
+      const questionCount = Number(region.questionCount);
+      if (!Number.isInteger(questionCount) || questionCount < 1 || questionCount > 500) {
+        errors.push(`regions[${i}].questionCount 1-500 arasında tam sayı olmalıdır.`);
       }
-    } else if (purpose === 'student-number' || purpose === 'student_number') {
-      const positions = Number(region.positions || 0);
-      if (!Number.isInteger(positions) || positions < 1 || positions > 20) errors.push(`regions[${i}] öğrenci no için 1-20 hane tanımlanmalıdır.`);
-    } else if (purpose === 'booklet') {
-      const positions = Number(region.positions || 0);
-      const values = Array.isArray(region.values) ? region.values.map((x: unknown) => String(x).toUpperCase()) : [];
-      if (positions !== 1) errors.push(`regions[${i}] kitapçık için positions=1 olmalıdır.`);
-      if (!['A','B','C','D'].every((code) => values.includes(code))) errors.push(`regions[${i}] kitapçık değerleri A/B/C/D olmalıdır.`);
+      if (typeof region.subjectCode !== 'string' || !region.subjectCode.trim()) {
+        errors.push(`regions[${i}].subjectCode gereklidir.`);
+      }
+      if (!Array.isArray(region.options) || region.options.length < 2) {
+        errors.push(`regions[${i}].options en az iki seçenek içermelidir.`);
+      }
+    }
+    if (purpose === 'student-number') {
+      const positions = Number(region.positions);
+      if (!Number.isInteger(positions) || positions < 1) {
+        errors.push(`regions[${i}] öğrenci numarası bölgesinde positions pozitif tam sayı olmalıdır.`);
+      }
+    }
+    if (purpose === 'booklet') {
+      const positions = Number(region.positions);
+      if (!Number.isInteger(positions) || positions < 1) {
+        errors.push(`regions[${i}] kitapçık bölgesinde positions pozitif tam sayı olmalıdır.`);
+      }
+      if (!Array.isArray(region.values) || region.values.length < 2) {
+        errors.push(`regions[${i}] kitapçık bölgesinde values en az iki değer içermelidir.`);
+      }
+      const identityKey = region.identityKey ?? region.identityField ?? region.fieldKey ?? region.key;
+      if (typeof identityKey !== 'string' || !identityKey.trim()) {
+        errors.push(`regions[${i}] kitapçık bölgesi için açık kimlik metadatası (identityKey) gereklidir.`);
+      }
     }
     errors.push(...validateRect(`regions[${i}]`, region, pageWidthMm, pageHeightMm));
   }
-  if (!hasAnswers) errors.push("Kamera geometrisinde 'answers' türünde uygulanabilir cevap bölgesi bulunmalıdır.");
+  if (!hasAnswers) errors.push("Kamera geometrisinde 'answers' veya 'bubble-grid' türünde cevap bölgesi bulunmalıdır.");
   return { valid: errors.length === 0, errors };
 }
 

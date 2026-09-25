@@ -96,6 +96,19 @@ jobs:
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: npx wrangler deploy
 
+      - name: Verify demo domain serves staging Worker
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          response="$(mktemp)"
+          curl --fail-with-body --silent --show-error \
+            "https://demo.anunex.com/api/config" \
+            --output "$response"
+          jq -e '.environment == "staging"' "$response" >/dev/null
+          rm -f "$response"
+          echo "demo.anunex.com serves the staging Worker."
+
       - name: Sync WhatsApp secrets to staging Worker
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         shell: bash

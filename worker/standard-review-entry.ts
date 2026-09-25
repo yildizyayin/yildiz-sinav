@@ -31,7 +31,15 @@ async function examReview(request:Request,env:Env){
     WHERE ep.student_id=? AND e.id=?
     ORDER BY coalesce(q.global_no,9999),s.name,q.question_no`).bind(user.student_id,examId));
   if(!rows.length)return fail(404,'REVIEW_NOT_FOUND','Bu sınav için incelenebilir öğrenci cevabı bulunamadı.');
-  const videos=await all<any>(env.DB.prepare(`SELECT id,title,url,link_type,description,published_at FROM video_links WHERE exam_id=? AND status='PUBLISHED' AND approved=1 AND (publish_at IS NULL OR publish_at<=CURRENT_TIMESTAMP) ORDER BY published_at DESC`).bind(examId));
+  let videos:any[]=[];
+  try{
+    videos=await all<any>(env.DB.prepare(`SELECT id,title,url,link_type,description,published_at FROM video_links WHERE exam_id=? AND status='PUBLISHED' AND approved=1 AND (publish_at IS NULL OR publish_at<=CURRENT_TIMESTAMP) ORDER BY published_at DESC`).bind(examId));
+  }catch{
+    // `description` belongs to the newer video archive schema. The student
+    // review must remain usable while an older staging DB is being migrated.
+    videos=await all<any>(env.DB.prepare(`SELECT id,title,url,link_type,published_at FROM video_links WHERE exam_id=? AND status='PUBLISHED' AND approved=1 AND (publish_at IS NULL OR publish_at<=CURRENT_TIMESTAMP) ORDER BY published_at DESC`).bind(examId));
+    videos=videos.map(video=>({...video,description:null}));
+  }
   return json({ok:true,exam:{id:examId,title:rows[0].exam_title,examDate:rows[0].exam_date},answers:rows,videos});
 }
 

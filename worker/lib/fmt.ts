@@ -136,7 +136,71 @@ function rowsToObject(text: string): any {
   return raw;
 }
 
+function proprietaryLabel(value: string): string {
+  return value.trim().toLocaleUpperCase('tr-TR').replace(/İ/g, 'I').replace(/Ö/g, 'O').replace(/Ü/g, 'U').replace(/Ş/g, 'S').replace(/Ğ/g, 'G').replace(/Ç/g, 'C');
+}
+
+function parseSekonicRows(text: string, fileName: string): FmtDefinition | null {
+  const rows = text.replace(/^\uFEFF/, '').split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  const mapped = rows.map((line) => line.split('=')).filter((parts) => parts.length >= 9 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[1]) && /^\d+$/.test(parts[2]) && /^\d+$/.test(parts[3]))
+    .map((parts) => ({ xStart: Number(parts[0]), xEnd: Number(parts[1]), yStart: Number(parts[2]), yEnd: Number(parts[3]), label: parts[8]?.trim() || '' }));
+  if (!mapped.length || !mapped.some((row) => proprietaryLabel(row.label) === 'OGRENCI NO')) return null;
+
+  const answerLabels: Record<string, string> = {
+    TURKCE: 'TUR',
+    'SOSYAL BILIMLER': 'SOS',
+    MATEMATIK: 'MAT',
+    'FEN BILIMLERI': 'FEN',
+    SOSYAL: 'SOS',
+    DIN: 'DIN',
+    INGILIZCE: 'ING',
+    FEN: 'FEN',
+  };
+  const answerRows = mapped.filter((row) => answerLabels[proprietaryLabel(row.label)]).sort((a, b) => a.yStart - b.yStart);
+  if (!answerRows.length) return null;
+  const totalQuestions = answerRows.reduce((total, row) => total + Math.max(1, row.xEnd - row.xStart + 1), 0);
+  const isOptic129 = answerRows.length === 4 && totalQuestions === 166;
+  const isOptic7108 = answerRows.length === 6 && totalQuestions === 120;
+  if (!isOptic129 && !isOptic7108) return null;
+  const fields: Record<string, FmtSlice> = isOptic129 ? {
+    institution_code: { start: 0, end: 10, length: 10, label: 'OKUL KODU' },
+    student_number: { start: 11, end: 16, length: 5, label: 'ÖĞRENCİ NO' },
+    name: { start: 16, end: 36, length: 20, label: 'ADI SOYADI' },
+    tckn: { start: 36, end: 48, length: 12, label: 'TC/TEL' },
+    class: { start: 48, end: 51, length: 3, label: 'SINIF' },
+    booklet: { start: 55, end: 56, length: 1, label: 'KİTAPÇIK' },
+  } : {
+    institution_code: { start: 0, end: 10, length: 10, label: 'OKUL KODU' },
+    student_number: { start: 10, end: 15, length: 5, label: 'ÖĞRENCİ NO' },
+    name: { start: 15, end: 35, length: 20, label: 'ADI / SOYADI' },
+    class: { start: 35, end: 37, length: 2, label: 'SINIF' },
+    tckn: { start: 37, end: 50, length: 13, label: 'TC/TEL' },
+    booklet: { start: 50, end: 51, length: 1, label: 'KİTAPÇIK TÜRÜ' },
+  };
+  const answerStart = isOptic129 ? 56 : 51;
+  let answerOffset = answerStart;
+  const answers: Record<string, FmtSlice & { questionCount?: number }> = {};
+  for (const row of answerRows) {
+    const questionCount = Math.max(1, row.xEnd - row.xStart + 1);
+    const code = answerLabels[proprietaryLabel(row.label)];
+    const normalizedCode = isOptic129 ? ({ TUR: 'TYT_TUR', SOS: 'TYT_SOS', MAT: 'TYT_MAT', FEN: 'TYT_FEN' }[code] || code) : code;
+    answers[normalizedCode] = { start: answerOffset, end: answerOffset + questionCount, length: questionCount, questionCount, label: row.label, options: isOptic129 ? 5 : 4 };
+    answerOffset += questionCount;
+  }
+  const recordLength = answerOffset;
+  const signature = fileName.toLocaleUpperCase('tr-TR').includes('129') ? '129' : fileName.toLocaleUpperCase('tr-TR').includes('7108') ? '7108' : undefined;
+  const formName = isOptic129 ? 'Sekonic Optik 129' : 'Sekonic Optik 7108';
+  const fixedWidth = { type: 'fixed-width' as const, recordLength, fields, answers, ...(signature ? { signature } : {}) };
+  return {
+    type: 'fmt', version: '1', source: 'FMT', formName, formType: isOptic129 ? 'TYT' : 'LGS', recordLength, indexBase: 0,
+    fields, answers, fixedWidth,
+    metadata: { format: 'SEKONIC_PROPRIETARY', answerStart: String(answerStart), sourceFile: fileName },
+  };
+}
+
 export function parseFmtText(text: string, fileName = 'definition.fmt'): { ok: boolean; definition?: FmtDefinition; errors: string[]; warnings: string[] } {
+  const proprietary = parseSekonicRows(text, fileName);
+  if (proprietary) return { ok: true, definition: proprietary, errors: [], warnings: [`Sekonic özel FMT biçimi tanındı; TXT/DAT sabit kayıt eşlemesi ${proprietary.formName || 'form'} yerleşimine göre oluşturuldu.`] };
   let raw: any;
   try { raw = JSON.parse(text); } catch { raw = rowsToObject(text); }
   const definition = normalizeObject(raw);
