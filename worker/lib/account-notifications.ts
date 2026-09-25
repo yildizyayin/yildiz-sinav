@@ -57,9 +57,24 @@ export function normalizeNotificationChannels(value: unknown): AccountNotificati
 }
 
 export function generateTemporaryPassword(): string {
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#';
+  const upper = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+  const lower = 'abcdefghijkmnopqrstuvwxyz';
+  const digits = '23456789';
+  const symbols = '!@#';
+  const alphabet = `${upper}${lower}${digits}${symbols}`;
   const bytes = crypto.getRandomValues(new Uint8Array(12));
-  return Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join('');
+  const password = [
+    upper[bytes[0] % upper.length],
+    lower[bytes[1] % lower.length],
+    digits[bytes[2] % digits.length],
+    symbols[bytes[3] % symbols.length],
+    ...Array.from(bytes.slice(4), (byte) => alphabet[byte % alphabet.length]),
+  ];
+  for (let index = password.length - 1; index > 0; index -= 1) {
+    const swap = bytes[index % bytes.length] % (index + 1);
+    [password[index], password[swap]] = [password[swap], password[index]];
+  }
+  return password.join('');
 }
 
 function normalizePhone(value: string | null): string | null {
