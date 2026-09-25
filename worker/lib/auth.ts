@@ -54,7 +54,7 @@ export async function getAuthUser(env: Env, request: Request): Promise<AuthUser 
   if (!rawToken) return null;
   const tokenHash = await sha256Hex(rawToken);
   const row = await one<AuthUser & { expires_at: string; revoked_at: string | null; active: number; institution_status: string | null }>(
-    env.DB.prepare(`SELECT u.id, u.institution_id, u.student_id, u.role, u.display_name, u.email, u.username,
+    env.DB.prepare(`SELECT u.id, u.institution_id, u.student_id, u.role, u.display_name, u.email, u.username, u.must_change_password,
       s.expires_at, s.revoked_at, u.active, i.status AS institution_status
       FROM sessions s
       JOIN users u ON u.id = s.user_id
@@ -70,10 +70,11 @@ export async function getAuthUser(env: Env, request: Request): Promise<AuthUser 
     display_name: row.display_name,
     email: row.email,
     username: row.username,
+    must_change_password: Boolean(row.must_change_password),
   };
 }
 
-export async function createSession(env: Env, userId: string, request: Request, remember: boolean): Promise<Response> {
+export async function createSession(env: Env, userId: string, request: Request, remember: boolean, mustChangePassword = false): Promise<Response> {
   const raw = bytesToBase64(crypto.getRandomValues(new Uint8Array(32))).replace(/[+/=]/g, 'x');
   const hash = await sha256Hex(raw);
   const days = remember ? 30 : 1;
@@ -85,7 +86,7 @@ export async function createSession(env: Env, userId: string, request: Request, 
     .run();
   const secure = env.ENVIRONMENT === 'production' ? '; Secure' : '';
   const cookie = `${SESSION_COOKIE}=${encodeURIComponent(raw)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${days * 86400}${secure}`;
-  return json({ ok: true }, 200, { 'Set-Cookie': cookie });
+  return json({ ok: true, mustChangePassword }, 200, { 'Set-Cookie': cookie });
 }
 
 export async function revokeSession(env: Env, request: Request): Promise<Response> {
@@ -127,3 +128,4 @@ export async function recordLoginAttempt(env: Env, identifier: string, success: 
     .bind(uuid('log'), identifierHash, success ? 1 : 0, ipHash)
     .run();
 }
+
