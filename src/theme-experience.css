@@ -173,6 +173,12 @@
 .app-shell[data-panel-module="exam-center"] .primary,.app-shell[data-panel-module="exam-center"] .exam-center-page .primary{background:linear-gradient(105deg,#b85f3e,#d9854d);box-shadow:0 9px 20px rgba(173,91,61,.22)}
 .app-shell[data-panel-module="exam-center"] .primary:hover,.app-shell[data-panel-module="exam-center"] .exam-center-page .primary:hover{filter:brightness(.94)}
 .app-shell[data-panel-module="exam-center"] .secondary{border-color:#e2c5b0;color:#8d4c34;background:#fffaf5}
+.app-shell[data-panel-module="exam-center"] .sidebar{background:linear-gradient(180deg,#29150f 0%,#4b2519 54%,#1e100c 100%);box-shadow:16px 0 48px rgba(83,39,24,.18)}
+.app-shell[data-panel-module="exam-center"] .topbar{background:rgba(255,250,246,.93);border-bottom-color:#ecd0bd}
+.app-shell[data-panel-module="exam-center"] .nav-group-toggle{color:#d9ad94}
+.app-shell[data-panel-module="exam-center"] .nav-group-toggle:hover{color:#fff5ed}
+.app-shell[data-panel-module="exam-center"] .nav-subitems{border-left-color:rgba(224,157,113,.42)}
+.nav-item-parent>.nav-item{position:relative}.nav-parent-chevron{margin-left:auto;opacity:.75;transition:transform .18s ease}.nav-item-parent.has-active-child>.nav-item .nav-parent-chevron{transform:rotate(90deg)}.nav-subitems{display:flex;flex-direction:column;gap:2px;margin:2px 0 3px 19px;padding-left:8px;border-left:1px solid rgba(143,167,210,.35)}.nav-subitems .nav-item{min-height:33px;padding:7px 9px;border-radius:9px;font-size:11px}.nav-subitems .nav-item svg{width:15px;height:15px}
 
 /* Sol menüde aktif bölüm, açılan çalışma alanının rengine eşlik eder. */
 .app-shell[data-panel-module="general"]{--nav-module-start:#315efb;--nav-module-end:#607cff;--nav-module-ink:#fff;--nav-module-shadow:rgba(49,94,251,.28);--nav-module-hover:rgba(96,124,255,.2)}
