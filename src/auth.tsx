@@ -10,6 +10,7 @@ export interface CurrentUser {
   display_name: string;
   email: string | null;
   username: string | null;
+  must_change_password?: boolean;
 }
 
 interface AuthState {
@@ -51,3 +52,4 @@ export function useAuth() {
   if (!value) throw new Error('AuthProvider missing');
   return value;
 }
+
