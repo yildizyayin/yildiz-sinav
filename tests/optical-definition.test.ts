@@ -105,4 +105,35 @@ describe('optical definition validation', () => {
     const after = definitionReadiness({ parser, camera, print, fiducials, pageWidthMm: 210, pageHeightMm: 297, parserTestPassed: true });
     expect(after.ready).toBe(true);
   });
+
+  it('allows manual parser publication without optional camera, print, or fiducials', () => {
+    const result = definitionReadiness({
+      parser,
+      camera: null,
+      print: null,
+      fiducials: null,
+      pageWidthMm: 210,
+      pageHeightMm: 297,
+      parserTestPassed: true,
+    });
+    expect(result.ready).toBe(true);
+    expect(result.camera).toBe(true);
+    expect(result.print).toBe(true);
+    expect(result.fiducials).toBe(true);
+    expect(result.errors).toEqual([]);
+  });
+
+  it('rejects an explicitly started but incomplete optional camera definition', () => {
+    const result = definitionReadiness({
+      parser,
+      camera: { regions: [] },
+      print: null,
+      fiducials: null,
+      pageWidthMm: 210,
+      pageHeightMm: 297,
+      parserTestPassed: true,
+    });
+    expect(result.ready).toBe(false);
+    expect(result.camera).toBe(false);
+  });
 });

@@ -202,13 +202,29 @@ export function validateFiducials(input: unknown, pageWidthMm: number, pageHeigh
   return { valid: errors.length === 0, errors };
 }
 
+function hasOptionalDefinition(input: unknown): boolean {
+  if (input == null || input === '') return false;
+  if (typeof input === 'object' && !Array.isArray(input)) {
+    return Object.keys(input as object).length > 0;
+  }
+  return true;
+}
+
 export function definitionReadiness(
   values: { parser: unknown; camera: unknown; print: unknown; fiducials: unknown; pageWidthMm: number; pageHeightMm: number; parserTestPassed: boolean },
 ): DefinitionReadiness {
   const parser = validateParserDefinition(values.parser);
-  const camera = validateCameraGeometry(values.camera, values.pageWidthMm, values.pageHeightMm);
-  const print = validatePrintFields(values.print, values.pageWidthMm, values.pageHeightMm);
-  const fiducials = validateFiducials(values.fiducials, values.pageWidthMm, values.pageHeightMm);
+  // Manuel TXT/DAT/FMT tanımı yayın kapısının temelidir. Kamera, baskı ve
+  // referans noktaları yalnızca kullanıcı tanımladıysa doğrulanır.
+  const camera = hasOptionalDefinition(values.camera)
+    ? validateCameraGeometry(values.camera, values.pageWidthMm, values.pageHeightMm)
+    : { valid: true, errors: [] };
+  const print = hasOptionalDefinition(values.print)
+    ? validatePrintFields(values.print, values.pageWidthMm, values.pageHeightMm)
+    : { valid: true, errors: [] };
+  const fiducials = hasOptionalDefinition(values.fiducials)
+    ? validateFiducials(values.fiducials, values.pageWidthMm, values.pageHeightMm)
+    : { valid: true, errors: [] };
   const errors = [
     ...parser.errors.map((x) => `Parser: ${x}`),
     ...camera.errors.map((x) => `Kamera: ${x}`),
