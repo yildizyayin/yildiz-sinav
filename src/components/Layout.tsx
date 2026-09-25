@@ -7,7 +7,7 @@ import { LicenseBoundary } from './LicenseBoundary';
 import { NibiruMark,NibiruNavIcon } from './NibiruMark';
 import { AnunexBrand } from './AnunexBrand';
 
-type NavItem={to:string;label:string;icon:any;feature?:string};
+type NavItem={to:string;label:string;icon:any;feature?:string;children?:NavItem[]};
 type NavGroup={label:string;items:NavItem[]};
 type GroupedRole='SUPER_ADMIN'|'INSTITUTION_MANAGER';
 
@@ -19,16 +19,17 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/standard-readiness',label:'Hazırlık Merkezi',icon:ShieldCheck},
     ]},
     { label:'SINAV MERKEZİ', items:[
-      {to:'/exam-center',label:'Sınav Merkezi',icon:ClipboardCheck},
+      {to:'/exam-center',label:'Sınav Merkezi',icon:ClipboardCheck,children:[
+        {to:'/opticals',label:'Optik Form Ağacı',icon:ScanLine},
+        {to:'/optical-design',label:'Optik Form Düzenle',icon:Printer},
+        {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
+        {to:'/calibration',label:'Kalibrasyon',icon:Printer},
+      ]},
       {to:'/exams',label:'Sınavlar',icon:ClipboardCheck},
       {to:'/reports',label:'Raporlar',icon:BarChart3},
     ]},
-    { label:'OPTİK İŞLEMLERİ', items:[
-      {to:'/opticals',label:'Optik Form Ağacı',icon:ScanLine},
-      {to:'/optical-design',label:'Optik Form Düzenle',icon:Printer},
+    { label:'OPTİK BASMA', items:[
       {to:'/optical-prepare',label:'Optik Basma',icon:Printer},
-      {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
-      {to:'/calibration',label:'Kalibrasyon',icon:Printer},
     ]},
     { label:'İÇERİK VE BELGELER', items:[
       {to:'/content-center',label:'Soru Havuzu & Studio',icon:Layers3,feature:'QUESTION_BANK'},
@@ -70,16 +71,17 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
   INSTITUTION_MANAGER: [
     { label:'GENEL', items:[{to:'/',label:'Ana Sayfa',icon:Home}]},
     { label:'SINAV MERKEZİ', items:[
-      {to:'/exam-center',label:'Sınav Merkezi',icon:ClipboardCheck},
+      {to:'/exam-center',label:'Sınav Merkezi',icon:ClipboardCheck,children:[
+        {to:'/opticals',label:'Optik Form Ağacı',icon:ScanLine},
+        {to:'/optical-design',label:'Optik Form Düzenle',icon:Printer},
+        {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
+        {to:'/calibration',label:'Kalibrasyon',icon:Printer},
+      ]},
       {to:'/exams',label:'Sınavlar',icon:ClipboardCheck},
       {to:'/reports',label:'Raporlar',icon:BarChart3},
     ]},
-    { label:'OPTİK İŞLEMLERİ', items:[
-      {to:'/opticals',label:'Optik Form Ağacı',icon:ScanLine},
-      {to:'/optical-design',label:'Optik Form Düzenle',icon:Printer},
+    { label:'OPTİK BASMA', items:[
       {to:'/optical-prepare',label:'Optik Basma',icon:Printer},
-      {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
-      {to:'/calibration',label:'Kalibrasyon',icon:ScanLine},
     ]},
     { label:'İÇERİK VE BELGELER', items:[
       {to:'/content-center',label:'Soru Havuzu & Studio',icon:Layers3,feature:'QUESTION_BANK'},
@@ -172,6 +174,17 @@ export function Layout() {
     const path=to.split('?')[0];
     return path==='/' ? location.pathname==='/' : location.pathname===path || location.pathname.startsWith(path+'/');
   };
+  const hasActiveChild=(item:NavItem)=>Boolean(item.children?.some(child=>isRouteActive(child.to)));
+  const renderGroupedItem=(item:NavItem,index:number,groupLabel:string):any=>{
+    const Icon=item.icon;
+    const exact=item.to==='/'||item.to==='/exam-center'||item.to==='/exam-center/upload'||item.to==='/exam-center/catalog';
+    const children=item.children||[];
+    if(!children.length) return <NavLink key={`${groupLabel}-${item.to}-${index}`} to={item.to} end={exact} onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={18}/><span>{item.label}</span></NavLink>;
+    return <div className={`nav-item-parent ${hasActiveChild(item)?'has-active-child':''}`} key={`${groupLabel}-${item.to}-${index}`}>
+      <NavLink to={item.to} end={exact} onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={18}/><span>{item.label}</span><ChevronRight className="nav-parent-chevron" size={14}/></NavLink>
+      <div className="nav-subitems">{children.map((child,childIndex)=>renderGroupedItem(child,childIndex,`${groupLabel}-${item.to}`))}</div>
+    </div>;
+  };
   if (!user) return null;
   const allowedThemeKeys=(panelExperience?.allowedThemes||[]).map((theme:any)=>String(theme.theme_key));
   const storedTheme=useMemo(()=>typeof window==='undefined'?null:window.localStorage.getItem('anunex-panel-theme'),[themeRevision]);
@@ -183,11 +196,11 @@ export function Layout() {
       <div className="nibiru-sidebar-card"><NibiruMark size={36} state="active"/><div><strong>Nibiru AI</strong><span>Canlı akademik zekâ</span></div><ChevronRight size={16}/></div>
       <nav className={groupedItems ? 'grouped-sidebar-nav' : undefined}>
         {groupedItems ? groupedItems.map((group) => {
-          const activeGroup=group.items.some(item=>isRouteActive(item.to));
+          const activeGroup=group.items.some(item=>isRouteActive(item.to)||hasActiveChild(item));
           const open=openGroups[group.label] ?? activeGroup;
           return <section className={`nav-group ${open?'open':''}`} key={group.label}>
             <button type="button" className="nav-group-toggle" aria-expanded={open} onClick={()=>setOpenGroups(current=>({...current,[group.label]:!open}))}><span>{group.label}</span><ChevronRight size={14}/></button>
-            {open && <div className="nav-group-items">{group.items.map((item,index) => { const Icon=item.icon; const exact=item.to==='/'||item.to==='/exam-center'||item.to==='/exam-center/upload'||item.to==='/exam-center/catalog'; return <NavLink key={`${group.label}-${item.to}-${index}`} to={item.to} end={exact} onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={18}/><span>{item.label}</span></NavLink>; })}</div>}
+            {open && <div className="nav-group-items">{group.items.map((item,index)=>renderGroupedItem(item,index,group.label))}</div>}
           </section>;
         }) : visibleNav.map((item) => { const Icon=item.icon; return <NavLink key={item.to} to={item.to} end={item.to==='/' } onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}
       </nav>

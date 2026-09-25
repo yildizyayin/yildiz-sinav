@@ -123,10 +123,24 @@ describe('optical definition validation', () => {
     expect(result.errors).toEqual([]);
   });
 
+  it('treats serialized empty optional sections as absent', () => {
+    const result = definitionReadiness({
+      parser,
+      camera: '{"regions":[]}',
+      print: '{"fields":[]}',
+      fiducials: '{"targets":[]}',
+      pageWidthMm: 210,
+      pageHeightMm: 297,
+      parserTestPassed: true,
+    });
+    expect(result.ready).toBe(true);
+    expect(result.errors).toEqual([]);
+  });
+
   it('rejects an explicitly started but incomplete optional camera definition', () => {
     const result = definitionReadiness({
       parser,
-      camera: { regions: [] },
+      camera: { regions: [], configured: true },
       print: null,
       fiducials: null,
       pageWidthMm: 210,
