@@ -31,6 +31,12 @@ jobs:
       WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
       GOOGLE_TTS_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_TTS_SERVICE_ACCOUNT_JSON }}
       OPENAI_TTS_API_KEY: ${{ secrets.OPENAI_TTS_API_KEY }}
+      ACCOUNT_NOTIFICATION_SECRET: ${{ secrets.ACCOUNT_NOTIFICATION_SECRET }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      MAIL_FROM_ADDRESS: ${{ vars.MAIL_FROM_ADDRESS }}
+      TWILIO_ACCOUNT_SID: ${{ vars.TWILIO_ACCOUNT_SID }}
+      TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+      TWILIO_FROM_NUMBER: ${{ vars.TWILIO_FROM_NUMBER }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -88,6 +94,14 @@ jobs:
             echo "WhatsApp deployment will remain partially configured until all four secrets are present."
           fi
 
+      - name: Account notification provider readiness
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        shell: bash
+        run: |
+          for name in ACCOUNT_NOTIFICATION_SECRET RESEND_API_KEY MAIL_FROM_ADDRESS TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_FROM_NUMBER; do
+            if [ -z "${!name}" ]; then echo "$name is not configured; the related account notification channel will remain inactive."; fi
+          done
+
       - name: Apply D1 migrations before deploy
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: npx wrangler d1 migrations apply DB --remote
@@ -127,6 +141,12 @@ jobs:
           put_secret WHATSAPP_PHONE_NUMBER_ID
           put_secret GOOGLE_TTS_SERVICE_ACCOUNT_JSON
           put_secret OPENAI_TTS_API_KEY
+          put_secret ACCOUNT_NOTIFICATION_SECRET
+          put_secret RESEND_API_KEY
+          put_secret MAIL_FROM_ADDRESS
+          put_secret TWILIO_ACCOUNT_SID
+          put_secret TWILIO_AUTH_TOKEN
+          put_secret TWILIO_FROM_NUMBER
 
       - name: Live WhatsApp webhook handshake
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && env.WHATSAPP_VERIFY_TOKEN != '' }}
@@ -219,3 +239,4 @@ jobs:
             git commit -m "chore: update live smoke report [skip ci]"
             git push
           fi
+

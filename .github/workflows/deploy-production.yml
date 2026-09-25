@@ -28,6 +28,12 @@ jobs:
       PROD_TURNSTILE_SITE_KEY: ${{ vars.PROD_TURNSTILE_SITE_KEY }}
       PROD_TURNSTILE_SECRET_KEY: ${{ secrets.PROD_TURNSTILE_SECRET_KEY }}
       PROD_SESSION_SECRET: ${{ secrets.PROD_SESSION_SECRET }}
+      PROD_ACCOUNT_NOTIFICATION_SECRET: ${{ secrets.PROD_ACCOUNT_NOTIFICATION_SECRET }}
+      PROD_RESEND_API_KEY: ${{ secrets.PROD_RESEND_API_KEY }}
+      PROD_MAIL_FROM_ADDRESS: ${{ vars.PROD_MAIL_FROM_ADDRESS }}
+      PROD_TWILIO_ACCOUNT_SID: ${{ vars.PROD_TWILIO_ACCOUNT_SID }}
+      PROD_TWILIO_AUTH_TOKEN: ${{ secrets.PROD_TWILIO_AUTH_TOKEN }}
+      PROD_TWILIO_FROM_NUMBER: ${{ vars.PROD_TWILIO_FROM_NUMBER }}
       PROD_WHATSAPP_VERIFY_TOKEN: ${{ secrets.PROD_WHATSAPP_VERIFY_TOKEN }}
       PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
       PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
@@ -62,6 +68,13 @@ jobs:
           else
             echo "Production deploy may continue, but WhatsApp remains inactive until all four values are configured."
           fi
+
+      - name: Account notification provider readiness
+        shell: bash
+        run: |
+          for name in PROD_ACCOUNT_NOTIFICATION_SECRET PROD_RESEND_API_KEY PROD_MAIL_FROM_ADDRESS PROD_TWILIO_ACCOUNT_SID PROD_TWILIO_AUTH_TOKEN PROD_TWILIO_FROM_NUMBER; do
+            if [ -z "${!name}" ]; then echo "$name is not configured; the related account notification channel will remain inactive."; fi
+          done
 
       - name: Install dependencies
         run: npm install
@@ -122,6 +135,25 @@ jobs:
         run: |
           printf '%s' "$PROD_TURNSTILE_SECRET_KEY" | npx wrangler secret put TURNSTILE_SECRET_KEY --config wrangler.production.jsonc
           printf '%s' "$PROD_SESSION_SECRET" | npx wrangler secret put SESSION_SECRET --config wrangler.production.jsonc
+
+      - name: Sync account notification secrets to production Worker
+        shell: bash
+        run: |
+          put_prod_secret() {
+            local source="$1"
+            local target="$2"
+            local value="${!source}"
+            if [ -n "$value" ]; then
+              printf '%s' "$value" | npx wrangler secret put "$target" --config wrangler.production.jsonc >/dev/null
+              echo "$target synced."
+            fi
+          }
+          put_prod_secret PROD_ACCOUNT_NOTIFICATION_SECRET ACCOUNT_NOTIFICATION_SECRET
+          put_prod_secret PROD_RESEND_API_KEY RESEND_API_KEY
+          put_prod_secret PROD_MAIL_FROM_ADDRESS MAIL_FROM_ADDRESS
+          put_prod_secret PROD_TWILIO_ACCOUNT_SID TWILIO_ACCOUNT_SID
+          put_prod_secret PROD_TWILIO_AUTH_TOKEN TWILIO_AUTH_TOKEN
+          put_prod_secret PROD_TWILIO_FROM_NUMBER TWILIO_FROM_NUMBER
 
       - name: Sync WhatsApp secrets to production Worker
         shell: bash
@@ -269,3 +301,4 @@ jobs:
           echo "Licensed app: https://app.anunex.com"
           echo "Public website: https://anunex.com"
           echo "WhatsApp secrets were synced only when production environment values were present."
+

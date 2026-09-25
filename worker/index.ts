@@ -1,6 +1,6 @@
 import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
 import { audit, badRequest, forbidden, json, methodNotAllowed, normalizeName, notFound, one, all, splitName, uuid } from './lib/db';
-import { createSession, getAuthUser, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
+import { createSession, getAuthUser, hashPassword, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
 import { canAccessSubjectForClass, canEvaluateExam, loadPermissionScope, roleCanManageInstitution } from './lib/permissions';
 import { matchParticipant } from './lib/matching';
 import { decodeUploadedBytes, parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib/parse';
@@ -8,6 +8,9 @@ import { assertScoringRuleVerified, calculateOverall, calculateSubjectScore } fr
 import { masteryStatus } from './lib/outcome';
 import { calibrationWithinTolerance, nextCalibrationStatus, type CalibrationMetrics } from './lib/calibration';
 import { recordExamAssessments, recordExamEvidenceAudit } from './lib/assessment-ledger';
+import { startTrial } from './lib/license';
+import { generatedInstitutionCode, normalizeInstitutionCreateBody, type InstitutionCreateBody } from './lib/institution-onboarding';
+import { createAccountNotificationBatch } from './lib/account-notifications';
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -35,12 +38,17 @@ export default {
         const institution = user.institution_id ? await one<{ status: string; name: string }>(env.DB.prepare('SELECT status, name FROM institutions WHERE id = ?').bind(user.institution_id)) : null;
         return json({ ok: true, user, institution });
       }
+      if (url.pathname === '/api/auth/change-password' && request.method === 'POST') return changePassword(request, env, user);
 
       const passive = await rejectIfPassiveInstitution(env, user);
       if (passive) return passive;
 
       if (url.pathname === '/api/dashboard' && request.method === 'GET') return dashboard(env, user);
-      if (url.pathname === '/api/institutions') return request.method === 'GET' ? listInstitutions(env, user) : methodNotAllowed();
+      if (url.pathname === '/api/institutions') {
+        if (request.method === 'GET') return listInstitutions(env, user);
+        if (request.method === 'POST') return createInstitution(request, env, user);
+        return methodNotAllowed();
+      }
       const institutionStatusMatch = url.pathname.match(/^\/api\/institutions\/([^/]+)\/status$/);
       if (institutionStatusMatch) return request.method === 'POST' ? setInstitutionStatus(request, env, user, institutionStatusMatch[1]) : methodNotAllowed();
 
@@ -128,7 +136,22 @@ async function login(request: Request, env: Env): Promise<Response> {
     if (student?.status === 'GUEST') return json({ ok: false, error: { code: 'GUEST_NO_LOGIN', message: 'Misafir öğrencilerin sistem girişi bulunmaz.' } }, 403);
   }
   await recordLoginAttempt(env, identifier, true, request);
-  return createSession(env, row.id, request, Boolean(body.remember));
+  return createSession(env, row.id, request, Boolean(body.remember), Boolean(row.must_change_password));
+}
+
+async function changePassword(request: Request, env: Env, user: AuthUser): Promise<Response> {
+  const body = await request.json<{ currentPassword?: string; newPassword?: string }>().catch(() => ({} as { currentPassword?: string; newPassword?: string }));
+  const currentPassword = body.currentPassword || '';
+  const newPassword = body.newPassword || '';
+  if (!currentPassword || newPassword.length < 8) return badRequest('Mevcut şifre ve en az 8 karakterli yeni şifre gereklidir.');
+  if (currentPassword === newPassword) return badRequest('Yeni şifre mevcut şifreden farklı olmalıdır.');
+  const row = await one<any>(env.DB.prepare('SELECT password_hash,password_salt,password_iterations FROM users WHERE id=? AND active=1').bind(user.id));
+  if (!row || !(await verifyPassword(currentPassword, row.password_salt, row.password_hash, row.password_iterations))) return json({ ok: false, error: { code: 'CURRENT_PASSWORD_INVALID', message: 'Mevcut şifre hatalı.' } }, 400);
+  const passwordData = await hashPassword(newPassword);
+  await env.DB.prepare(`UPDATE users SET password_hash=?,password_salt=?,password_iterations=?,password_algo='PBKDF2-SHA256-v1',must_change_password=0,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
+    .bind(passwordData.hash, passwordData.salt, passwordData.iterations, user.id).run();
+  await audit(env.DB, user.id, user.institution_id, 'PASSWORD_CHANGED', 'user', user.id, { forced: Boolean(user.must_change_password) });
+  return json({ ok: true, mustChangePassword: false });
 }
 
 async function rejectIfPassiveInstitution(env: Env, user: AuthUser): Promise<Response | null> {
@@ -244,10 +267,96 @@ async function dashboard(env: Env, user: AuthUser): Promise<Response> {
 async function listInstitutions(env: Env, user: AuthUser): Promise<Response> {
   if (user.role !== 'SUPER_ADMIN') return forbidden();
   const rows = await all<any>(env.DB.prepare(`SELECT i.*,
+    l.plan_code license_plan,l.status license_status,l.trial_expires_at,l.license_expires_at,
+    (SELECT s.academic_year FROM institution_seasons s WHERE s.institution_id=i.id ORDER BY CASE s.status WHEN 'ACTIVE' THEN 0 ELSE 1 END,s.created_at DESC LIMIT 1) academic_year,
+    (SELECT count(*) FROM users u WHERE u.institution_id=i.id AND u.role='INSTITUTION_MANAGER' AND u.active=1) manager_count,
     (SELECT count(DISTINCT e.student_id) FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.institution_id=i.id AND s.status='ACTIVE') active_students,
     (SELECT count(DISTINCT e.student_id) FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.institution_id=i.id AND s.status='GUEST') guest_students
-    FROM institutions i ORDER BY i.name`));
+    FROM institutions i LEFT JOIN institution_licenses l ON l.institution_id=i.id ORDER BY i.name`));
   return json({ ok: true, institutions: rows });
+}
+
+async function createInstitution(request: Request, env: Env, user: AuthUser): Promise<Response> {
+  if (user.role !== 'SUPER_ADMIN') return forbidden('Kurum açma yetkisi yalnızca Süper Admin hesabındadır.');
+
+  const body = await request.json<InstitutionCreateBody>().catch(() => ({} as InstitutionCreateBody));
+  let input;
+  try {
+    input = normalizeInstitutionCreateBody(body);
+  } catch (error) {
+    return badRequest(error instanceof Error ? error.message : 'Kurum bilgileri geçersiz.', 'VALIDATION_ERROR');
+  }
+
+  const institutionId = uuid('inst');
+  const seasonId = uuid('season');
+  const managerId = uuid('usr');
+  const institutionCode = input.code || input.mebCode || generatedInstitutionCode(institutionId);
+  const existingInstitution = await one<any>(env.DB.prepare(`SELECT id FROM institutions WHERE code=? OR (? IS NOT NULL AND meb_code=?) LIMIT 1`).bind(institutionCode, input.mebCode, input.mebCode));
+  if (existingInstitution) return json({ ok: false, error: { code: 'INSTITUTION_EXISTS', message: 'Bu kurum kodu veya MEB kodu zaten kayıtlı.' } }, 409);
+
+  if (input.manager.email) {
+    const duplicate = await one<any>(env.DB.prepare('SELECT id FROM users WHERE lower(email)=lower(?) LIMIT 1').bind(input.manager.email));
+    if (duplicate) return json({ ok: false, error: { code: 'EMAIL_EXISTS', message: 'Kurum yöneticisinin e-posta adresi zaten kullanılıyor.' } }, 409);
+  }
+  if (input.manager.username) {
+    const duplicate = await one<any>(env.DB.prepare('SELECT id FROM users WHERE lower(username)=lower(?) LIMIT 1').bind(input.manager.username));
+    if (duplicate) return json({ ok: false, error: { code: 'USERNAME_EXISTS', message: 'Kurum yöneticisinin kullanıcı adı zaten kullanılıyor.' } }, 409);
+  }
+
+  const passwordData = await hashPassword(input.manager.password);
+  const featureRows = input.features.length
+    ? await all<{ feature_key: string }>(env.DB.prepare(`SELECT feature_key FROM platform_features WHERE feature_key IN (${input.features.map(() => '?').join(',')})`).bind(...input.features))
+    : [];
+  const featureKeys = new Set(featureRows.map((row) => row.feature_key));
+  const now = new Date().toISOString();
+
+  const statements = [
+    env.DB.prepare(`INSERT INTO institutions
+      (id,name,code,city,district,contact_name,contact_phone,contact_email,status,source_type,meb_code,institution_type,ownership,education_level,official_url,address,package_code,user_limit)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(
+      institutionId, input.name, institutionCode, input.city, input.district, input.contactName, input.contactPhone, input.contactEmail,
+      'ACTIVE', input.sourceType, input.mebCode, input.institutionType, input.ownership, input.educationLevel, input.officialUrl, input.address, input.packageCode, input.userLimit,
+    ),
+    env.DB.prepare(`INSERT INTO institution_seasons (id,institution_id,academic_year,status,started_at) VALUES (?,?,?,'ACTIVE',?)`).bind(seasonId, institutionId, input.academicYear, now),
+    env.DB.prepare(`INSERT INTO institution_license_state (id,institution_id,season_id,licensed_student_limit,licensed_student_count,agreement_status,note) VALUES (?,?,?,? ,0,'ACTIVE',?)`).bind(uuid('licstate'), institutionId, seasonId, input.studentLimit, `Kurum açılışı · ${input.packageCode}`),
+    env.DB.prepare(`INSERT INTO users (id,institution_id,role,display_name,email,phone,username,password_hash,password_salt,password_iterations,password_algo,must_change_password,active)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,1,1)`).bind(
+      managerId, institutionId, 'INSTITUTION_MANAGER', input.manager.displayName, input.manager.email, input.manager.phone, input.manager.username,
+      passwordData.hash, passwordData.salt, passwordData.iterations, 'PBKDF2-SHA256-v1',
+    ),
+    env.DB.prepare(`INSERT INTO institution_access_controls (institution_id,lifecycle_status,updated_by) VALUES (?,'ACTIVE',?)`).bind(institutionId, user.id),
+    env.DB.prepare(`INSERT INTO institution_governance_events (id,institution_id,actor_user_id,action,next_status,metadata_json) VALUES (?,?,?,'CREATE','ACTIVE',?)`).bind(
+      uuid('ige'), institutionId, user.id, JSON.stringify({ sourceType: input.sourceType, packageCode: input.packageCode, academicYear: input.academicYear }),
+    ),
+    env.DB.prepare(`INSERT INTO audit_logs (id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES (?,?,?,'INSTITUTION_CREATED','institution',?,?)`).bind(
+      uuid('aud'), user.id, institutionId, institutionId, JSON.stringify({ sourceType: input.sourceType, packageCode: input.packageCode, academicYear: input.academicYear, managerRole: 'INSTITUTION_MANAGER' }),
+    ),
+    ...[...featureKeys].map((featureKey) => env.DB.prepare(`INSERT INTO institution_feature_overrides (institution_id,feature_key,enabled,updated_at) VALUES (?,?,1,CURRENT_TIMESTAMP)`).bind(institutionId, featureKey)),
+  ];
+
+  try {
+    await env.DB.batch(statements);
+    const license = input.startTrial ? await startTrial(env, institutionId, user, 7, 'Kurum açılışında otomatik başlatıldı.') : null;
+    const notification = await createAccountNotificationBatch(env, user.id, institutionId, [{
+      userId: managerId,
+      displayName: input.manager.displayName,
+      username: input.manager.username,
+      email: input.manager.email,
+      phone: input.manager.phone,
+      password: input.manager.password,
+    }], ['EMAIL', 'SMS']);
+    return json({
+      ok: true,
+      institution: { id: institutionId, name: input.name, code: institutionCode, mebCode: input.mebCode, academicYear: input.academicYear, packageCode: input.packageCode },
+      manager: { id: managerId, displayName: input.manager.displayName, email: input.manager.email, username: input.manager.username },
+      notification,
+      license,
+    }, 201);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '';
+    if (/UNIQUE|constraint/i.test(message)) return json({ ok: false, error: { code: 'INSTITUTION_EXISTS', message: 'Kurum kodu, MEB kodu veya yönetici giriş bilgisi zaten kayıtlı.' } }, 409);
+    throw error;
+  }
 }
 
 async function setInstitutionStatus(request: Request, env: Env, user: AuthUser, institutionId: string): Promise<Response> {
@@ -1029,3 +1138,4 @@ function parseGenericStudentImport(text: string): Array<{ external_id?: string; 
 function safeFileName(name: string): string {
   return name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/-+/g,'-').slice(0,120) || 'file';
 }
+

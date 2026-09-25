@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://demo.anunex.com`
-- Time: `2026-09-19T15:22:16.236Z`
+- Time: `2026-09-25T19:14:43.494Z`
 - Result: **PASSED**
 - Passed checks before finish: **17**
 
@@ -53,13 +53,79 @@
 
 - ✅ **Nibiru manager AI transparency + institution scope** — TODAY_STATUS
 - ✅ **Nibiru WhatsApp role pairing preparation** — parent/teacher/manager role-safe pairing codes
-- ✅ **Optik 840 + printer calibration + personalized print flow** — 20 students · A/B set recognized · existing assignments preserved · Canon Öğretmenler Odası
-- ✅ **License rollout backward compatibility** — LEGACY · LEGACY_ACTIVE
-- ✅ **Activation request + notification flow** — manager request → Super Admin decision → manager notification
-- ✅ **Student wrong/blank learning flow** — 4 question rows available
-- ✅ **Nibiru parent context + non-academic redirect** — student-linked context · AI disclosure · safe redirect
-- ✅ **Parent weekly summary + notification flow** — 0 exams in last 7 days
-- ✅ **Demo identity preservation** — 45 guests preserved after rejected smoke request
+- ❌ **Final feature smoke failure**
+
+```text
+Error: Optik 840 did not receive migration-generated print fields
+{
+  "ok": true,
+  "templates": [
+    {
+      "template_id": "opt_demo",
+      "name": "Demo Kişisel Optik",
+      "vendor": "Platform",
+      "status": "READY",
+      "owner_type": "CENTRAL",
+      "owner_id": null,
+      "version_id": "optv_demo",
+      "version": "v1",
+      "page_width_mm": 210,
+      "page_height_mm": 297,
+      "has_parser": 1,
+      "has_camera": 1,
+      "has_print": 1
+    },
+    {
+      "template_id": "opt129",
+      "name": "Optik 129",
+      "vendor": "Sekonic",
+      "status": "READY",
+      "owner_type": "CENTRAL",
+      "owner_id": null,
+      "version_id": "v_opt129",
+      "version": "placeholder",
+      "page_width_mm": 210,
+      "page_height_mm": 297,
+      "has_parser": 0,
+      "has_camera": 0,
+      "has_print": 1
+    },
+    {
+      "template_id": "opt129",
+      "name": "Optik 129",
+      "vendor": "Sekonic",
+      "status": "READY",
+      "owner_type": "CENTRAL",
+      "owner_id": null,
+      "version_id": "v_opt129_sekonic",
+      "version": "sekonic-fmt-2026-09",
+      "page_width_mm": 210,
+      "page_height_mm": 297,
+      "has_parser": 1,
+      "has_camera": 0,
+      "has_print": 1
+    },
+    {
+      "template_id": "opt7108",
+      "name": "Optik 7108 LGS",
+      "vendor": "Sekonic",
+      "status": "READY",
+      "owner_type": "CENTRAL",
+      "owner_id": null,
+      "version_id": "v_opt7108_sekonic",
+      "version": "sekonic-fmt-2026-09",
+      "page_width_mm": 210,
+      "page_height_mm": 297,
+      "has_parser": 1,
+      "has_camera": 0,
+      "has_print": 1
+    }
+  ]
+}
+    at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:9:36)
+    at file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:41:2
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+```
 
 ## Nibiru academic growth / communication checks
 
@@ -107,13 +173,13 @@
 
 ## Student Intelligence / Learning Graph
 
-- ✅ **Persistent student intelligence profile** — v98 · 174 evidence · 3 subjects
+- ✅ **Persistent student intelligence profile** — v101 · 174 evidence · 3 subjects
 - ✅ **Idempotent refresh + versioned history** — 50 history snapshots
 - ✅ **Live outcome → evidence → Learning Graph sync** — 6 outcome nodes · 2 current priorities
 - ✅ **Parent-safe intelligence scope** — academic view retained · counselor dimensions masked
 - ✅ **Branch teacher subject boundary** — Matematik only · cross-domain history blocked
-- ✅ **Counselor-reviewed development integration** — 918 reviewed signals · no raw responses
-- ✅ **Nibiru common intelligence context** — profile v98 · 2 compact priorities · EDUCATION_COACH
+- ✅ **Counselor-reviewed development integration** — 945 reviewed signals · no raw responses
+- ✅ **Nibiru common intelligence context** — profile v101 · 2 compact priorities · EDUCATION_COACH
 
 ## 100K Queue kapasite kabulü
 

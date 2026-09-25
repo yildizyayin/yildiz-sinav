@@ -2,6 +2,7 @@ import secureApp from './secure-entry';
 import type { AuthUser, Env, Role } from './types';
 import { getAuthUser, hashPassword } from './lib/auth';
 import { all, audit, one, uuid } from './lib/db';
+import { createAccountNotificationBatch, generateTemporaryPassword, listAccountNotificationDeliveries, dispatchAccountNotificationBatch, type AccountNotificationRecipient } from './lib/account-notifications';
 
 const STAFF_ROLES: Role[] = ['INSTITUTION_MANAGER', 'TEACHER', 'GUIDANCE_TEACHER'];
 
@@ -71,6 +72,7 @@ async function createUser(request: Request, env: Env, actor: AuthUser): Promise<
     phone?: string;
     username?: string;
     password?: string;
+    notifyChannels?: string[];
   }>();
   const institutionId = requestedInstitutionId(actor, new URL(request.url), body.institutionId || null);
   if (!institutionId) return responseError(400, 'INSTITUTION_REQUIRED', 'Kurum seçilmelidir.');
@@ -96,11 +98,78 @@ async function createUser(request: Request, env: Env, actor: AuthUser): Promise<
   const passwordData = await hashPassword(password);
   const id = uuid('usr');
   await env.DB.prepare(`
-    INSERT INTO users (id,institution_id,role,display_name,email,phone,username,password_hash,password_salt,password_iterations,password_algo,active)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,1)
+    INSERT INTO users (id,institution_id,role,display_name,email,phone,username,password_hash,password_salt,password_iterations,password_algo,must_change_password,active)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,1,1)
   `).bind(id, institutionId, body.role, displayName, email, phone, username, passwordData.hash, passwordData.salt, passwordData.iterations, 'PBKDF2-SHA256-v1').run();
   await audit(env.DB, actor.id, institutionId, 'USER_CREATED', 'user', id, { role: body.role, displayName, email, username });
-  return Response.json({ ok: true, id }, { status: 201 });
+  const notification = await createAccountNotificationBatch(env, actor.id, institutionId, [{ userId: id, displayName, username, email, phone, password }], body.notifyChannels);
+  return Response.json({ ok: true, id, notification }, { status: 201 });
+}
+
+type BulkUserRow = {
+  role?: Role;
+  displayName?: string;
+  email?: string;
+  phone?: string;
+  username?: string;
+  password?: string;
+};
+
+async function createUsersBulk(request: Request, env: Env, actor: AuthUser): Promise<Response> {
+  if (!canManageUsers(actor.role)) return responseError(403, 'FORBIDDEN', 'Toplu kullanıcı oluşturma yetkiniz bulunmuyor.');
+  const body = await request.json<{ institutionId?: string; users?: BulkUserRow[]; notifyChannels?: string[] }>();
+  const institutionId = requestedInstitutionId(actor, new URL(request.url), body.institutionId || null);
+  if (!institutionId) return responseError(400, 'INSTITUTION_REQUIRED', 'Kurum seçilmelidir.');
+  if (!(await ensureInstitutionAccess(env, actor, institutionId))) return responseError(403, 'FORBIDDEN', 'Bu kuruma erişim yetkiniz bulunmuyor.');
+  const rows = Array.isArray(body.users) ? body.users.slice(0, 500) : [];
+  if (!rows.length) return responseError(400, 'ROWS_REQUIRED', 'Toplu kayıt için en az bir satır gereklidir.');
+
+  const created: AccountNotificationRecipient[] = [];
+  const errors: Array<{ row: number; message: string }> = [];
+  const seenEmails = new Set<string>();
+  const seenUsernames = new Set<string>();
+  const statements: D1PreparedStatement[] = [];
+  for (const [index, row] of rows.entries()) {
+    const role = row.role;
+    const displayName = String(row.displayName || '').trim();
+    const email = String(row.email || '').trim().toLowerCase() || null;
+    const username = String(row.username || '').trim().toLowerCase() || null;
+    const phone = String(row.phone || '').trim() || null;
+    const password = row.password || generateTemporaryPassword();
+    if (!role || !manageableRoles(actor.role).includes(role) || !displayName || (!email && !username) || password.length < 8) {
+      errors.push({ row: index + 1, message: 'Rol, ad soyad, e-posta/kullanıcı adı ve en az 8 karakterli şifre gereklidir.' });
+      continue;
+    }
+    if ((email && seenEmails.has(email)) || (username && seenUsernames.has(username))) { errors.push({ row: index + 1, message: 'Aynı e-posta veya kullanıcı adı toplu dosyada tekrar ediyor.' }); continue; }
+    if (email) seenEmails.add(email);
+    if (username) seenUsernames.add(username);
+    const duplicate = await one<any>(env.DB.prepare('SELECT id FROM users WHERE (? IS NOT NULL AND lower(email)=lower(?)) OR (? IS NOT NULL AND lower(username)=lower(?)) LIMIT 1').bind(email, email, username, username));
+    if (duplicate) { errors.push({ row: index + 1, message: 'E-posta veya kullanıcı adı sistemde zaten kullanılıyor.' }); continue; }
+    const id = uuid('usr');
+    const passwordData = await hashPassword(password);
+    statements.push(env.DB.prepare(`INSERT INTO users (id,institution_id,role,display_name,email,phone,username,password_hash,password_salt,password_iterations,password_algo,must_change_password,active) VALUES (?,?,?,?,?,?,?,?,?,?,?,1,1)`).bind(id, institutionId, role, displayName, email, phone, username, passwordData.hash, passwordData.salt, passwordData.iterations, 'PBKDF2-SHA256-v1'));
+    statements.push(env.DB.prepare(`INSERT INTO audit_logs (id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES (?,?,?,'USER_CREATED','user',?,?)`).bind(uuid('aud'), actor.id, institutionId, id, JSON.stringify({ role, source: 'BULK', row: index + 1 })));
+    created.push({ userId: id, displayName, username, email, phone, password });
+  }
+  if (statements.length) await env.DB.batch(statements);
+  const notification = created.length ? await createAccountNotificationBatch(env, actor.id, institutionId, created, body.notifyChannels) : null;
+  return Response.json({ ok: true, created: created.length, skipped: errors.length, errors, notification }, { status: created.length ? 201 : 400 });
+}
+
+async function accountNotificationList(env: Env, actor: AuthUser, url: URL): Promise<Response> {
+  if (!canManageUsers(actor.role)) return responseError(403, 'FORBIDDEN', 'Bildirim kayıtlarına erişim yetkiniz bulunmuyor.');
+  const institutionId = requestedInstitutionId(actor, url);
+  if (!institutionId || !(await ensureInstitutionAccess(env, actor, institutionId))) return responseError(403, 'FORBIDDEN', 'Bu kuruma erişim yetkiniz bulunmuyor.');
+  const deliveries = await listAccountNotificationDeliveries(env, institutionId);
+  return Response.json({ ok: true, deliveries, provider: { email: Boolean(env.RESEND_API_KEY && env.MAIL_FROM_ADDRESS), sms: Boolean(env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN && env.TWILIO_FROM_NUMBER) } });
+}
+
+async function retryAccountNotifications(request: Request, env: Env, actor: AuthUser, batchId: string): Promise<Response> {
+  if (!canManageUsers(actor.role)) return responseError(403, 'FORBIDDEN', 'Bildirimleri yeniden gönderme yetkiniz bulunmuyor.');
+  const batch = await one<any>(env.DB.prepare('SELECT id,institution_id FROM account_notification_batches WHERE id=?').bind(batchId));
+  if (!batch || !(await ensureInstitutionAccess(env, actor, batch.institution_id))) return responseError(404, 'NOT_FOUND', 'Bildirim paketi bulunamadı.');
+  const result = await dispatchAccountNotificationBatch(env, batchId);
+  return Response.json({ ok: true, ...result });
 }
 
 async function setUserStatus(request: Request, env: Env, actor: AuthUser, targetId: string): Promise<Response> {
@@ -236,6 +305,25 @@ export default {
       return responseError(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     }
 
+    if (url.pathname === '/api/users/bulk' && request.method === 'POST') {
+      const auth = await requireUser(env, request);
+      if (auth instanceof Response) return auth;
+      return createUsersBulk(request, env, auth);
+    }
+
+    if (url.pathname === '/api/account-notifications' && request.method === 'GET') {
+      const auth = await requireUser(env, request);
+      if (auth instanceof Response) return auth;
+      return accountNotificationList(env, auth, url);
+    }
+
+    const notificationRetryMatch = url.pathname.match(/^\/api\/account-notifications\/([^/]+)\/retry$/);
+    if (notificationRetryMatch && request.method === 'POST') {
+      const auth = await requireUser(env, request);
+      if (auth instanceof Response) return auth;
+      return retryAccountNotifications(request, env, auth, notificationRetryMatch[1]);
+    }
+
     const statusMatch = url.pathname.match(/^\/api\/users\/([^/]+)\/status$/);
     if (statusMatch) {
       const auth = await requireUser(env, request);
@@ -275,3 +363,4 @@ export default {
     return secureApp.fetch(request, env);
   },
 } satisfies ExportedHandler<Env>;
+
