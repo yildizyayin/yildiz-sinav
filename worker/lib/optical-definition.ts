@@ -204,8 +204,18 @@ export function validateFiducials(input: unknown, pageWidthMm: number, pageHeigh
 
 function hasOptionalDefinition(input: unknown): boolean {
   if (input == null || input === '') return false;
-  if (typeof input === 'object' && !Array.isArray(input)) {
-    return Object.keys(input as object).length > 0;
+  let value = input;
+  if (typeof value === 'string') {
+    try {
+      value = JSON.parse(value);
+    } catch {
+      return true;
+    }
+  }
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    const entries = Object.values(value as object);
+    if (!entries.length) return false;
+    return entries.some((entry) => entry != null && entry !== '' && !(Array.isArray(entry) && entry.length === 0));
   }
   return true;
 }
