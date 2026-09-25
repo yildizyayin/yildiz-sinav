@@ -385,6 +385,8 @@ export function Opticals() {
       camera: pretty(r.version.camera_geometry),
       fiducials: pretty(r.version.fiducials),
     });
+    const print = parseJson(r.version.print_fields);
+    setPrintFields(Array.isArray(print?.fields) ? print.fields : []);
     const parser = parseJson(r.version.parser_definition);
     setFmtDefinition(parser?.type === "fmt" ? parser : null);
     const fixedParser = parser?.type === "fmt" ? parser.fixedWidth : parser;
@@ -1013,10 +1015,20 @@ export function Opticals() {
   };
   const savePrint = async () => {
     if (!selectedVersionId || !printFields.length) return;
-    await api(`/api/optical-definition-versions/${selectedVersionId}/print`, {
-      method: "PUT",
-      body: JSON.stringify({ definition: { fields: printFields } }),
-    });
+    setBusy(true);
+    setError("");
+    try {
+      await api(`/api/optical-definition-versions/${selectedVersionId}/print`, {
+        method: "PUT",
+        body: JSON.stringify({ definition: { fields: printFields } }),
+      });
+      setNotice("Baskı alanları kaydedildi.");
+      await loadVersion(selectedVersionId);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
   };
   const saveAdvanced = async (section: Section) => {
     if (!selectedVersionId) return;
@@ -1037,11 +1049,13 @@ export function Opticals() {
     }
   };
   const publish = async () => {
-    if (
-      !selectedVersionId ||
-      !confirm("Bu optik sürümü READY durumuna alınsın mı?")
-    )
+    if (!selectedVersionId) return;
+    if (selectedVersion?.active) return;
+    if (!readiness?.ready) {
+      setError(`Optik yayınlanmaya hazır değil: ${(readiness?.errors || []).join(" · ")}`);
       return;
+    }
+    if (!confirm("Bu optik sürümü READY durumuna alınsın mı?")) return;
     setBusy(true);
     try {
       await api(
@@ -2483,10 +2497,10 @@ export function Opticals() {
               )}
               <button
                 className="primary"
-                disabled={!readiness?.ready || selectedVersion?.active || busy}
+                disabled={selectedVersion?.active || busy}
                 onClick={publish}
               >
-                <Send size={16} /> Optiği Yayınla
+                <Send size={16} /> {readiness?.ready ? "Optiği Yayınla" : "Eksikleri tamamla ve yayınla"}
               </button>
               <Link
                 className="secondary"
