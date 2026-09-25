@@ -123,6 +123,38 @@ export function validateCameraGeometry(input: unknown, pageWidthMm: number, page
     if (typeof region.id !== 'string' || !region.id.trim()) errors.push(`regions[${i}].id gereklidir.`);
     if (typeof region.type !== 'string' || !region.type.trim()) errors.push(`regions[${i}].type gereklidir.`);
     if (region.type === 'answers' || region.type === 'bubble-grid') hasAnswers = true;
+    const purpose = typeof region.purpose === 'string' ? region.purpose.trim().toLowerCase() : '';
+    if (purpose === 'answers') {
+      const questionCount = Number(region.questionCount);
+      if (!Number.isInteger(questionCount) || questionCount < 1 || questionCount > 500) {
+        errors.push(`regions[${i}].questionCount 1-500 arasında tam sayı olmalıdır.`);
+      }
+      if (typeof region.subjectCode !== 'string' || !region.subjectCode.trim()) {
+        errors.push(`regions[${i}].subjectCode gereklidir.`);
+      }
+      if (!Array.isArray(region.options) || region.options.length < 2) {
+        errors.push(`regions[${i}].options en az iki seçenek içermelidir.`);
+      }
+    }
+    if (purpose === 'student-number') {
+      const positions = Number(region.positions);
+      if (!Number.isInteger(positions) || positions < 1) {
+        errors.push(`regions[${i}] öğrenci numarası bölgesinde positions pozitif tam sayı olmalıdır.`);
+      }
+    }
+    if (purpose === 'booklet') {
+      const positions = Number(region.positions);
+      if (!Number.isInteger(positions) || positions < 1) {
+        errors.push(`regions[${i}] kitapçık bölgesinde positions pozitif tam sayı olmalıdır.`);
+      }
+      if (!Array.isArray(region.values) || region.values.length < 2) {
+        errors.push(`regions[${i}] kitapçık bölgesinde values en az iki değer içermelidir.`);
+      }
+      const identityKey = region.identityKey ?? region.identityField ?? region.fieldKey ?? region.key;
+      if (typeof identityKey !== 'string' || !identityKey.trim()) {
+        errors.push(`regions[${i}] kitapçık bölgesi için açık kimlik metadatası (identityKey) gereklidir.`);
+      }
+    }
     errors.push(...validateRect(`regions[${i}]`, region, pageWidthMm, pageHeightMm));
   }
   if (!hasAnswers) errors.push("Kamera geometrisinde 'answers' veya 'bubble-grid' türünde cevap bölgesi bulunmalıdır.");
