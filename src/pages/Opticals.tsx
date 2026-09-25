@@ -1074,9 +1074,10 @@ export function Opticals() {
   };
   const readinessCards = useMemo(
     () => [
-      ["FMT / Parser", readiness?.parser && readiness?.parserTestPassed],
-      ["Kamera", readiness?.camera],
-      ["Referans", readiness?.fiducials],
+      ["Manuel okuma", readiness?.parser && readiness?.parserTestPassed],
+      ["Kamera (isteğe bağlı)", readiness?.camera],
+      ["Baskı (isteğe bağlı)", readiness?.print],
+      ["Referans (kamera için)", readiness?.fiducials],
     ],
     [readiness],
   );
@@ -1410,9 +1411,9 @@ export function Opticals() {
                   <strong>{v.version}</strong>
                   <span>
                     {v.active ? "Yayında · kilitli" : "Taslak sürüm"} ·{" "}
-                    {v.has_parser && v.has_camera && v.has_fiducials
-                      ? "Okuma tanımı dolu"
-                      : "Okuma tanımı eksik"} · {v.has_print ? "Baskı tasarımı hazır" : "Baskı tasarımı bekliyor"}
+                    {v.has_parser
+                      ? "Manuel okuma tanımı dolu"
+                      : "Manuel okuma tanımı eksik"} · {v.has_camera ? "Kamera tanımı var" : "Kamera isteğe bağlı"}
                   </span>
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
@@ -2481,11 +2482,11 @@ export function Opticals() {
                 <div>
                   <h2>Yayın kontrolü</h2>
                   <p>
-                    READY için FMT/Parser tanımı ve örnek kayıt testi,
-                    fotoğraf/kamera, gerçek referans noktaları ve baskı tasarımı
-                    tamamlanır. TXT/DAT örneği FMT tanımının çalıştığını
-                    kanıtlamak için kullanılabilir. Baskı tasarımını ayrı
-                    çalışma alanında tamamlayın.
+                    Yayın için zorunlu temel manuel FMT/TXT/DAT tanımı ve
+                    gerçek örnek kayıt testidir. Kamera, referans noktaları ve
+                    baskı tasarımı isteğe bağlıdır; tanımlanırsa ayrıca
+                    doğrulanır. Kamera kullanıldığında manuel alan tanımı
+                    öğrenci no, kitapçık ve cevap bölgelerinin kaynağıdır.
                   </p>
                 </div>
                 {readiness?.ready ? <CheckCircle2 /> : <CircleAlert />}
