@@ -27,6 +27,7 @@ import { Reports } from './pages/Reports';
 import { Children } from './pages/Children';
 import { Transfers } from './pages/Transfers';
 import { OpticalPrepare } from './pages/OpticalPrepare';
+import { OpticalDesign } from './pages/OpticalDesign';
 import { Calibration } from './pages/Calibration';
 import { Opticals } from './pages/Opticals';
 import { UsersPage } from './pages/Users';
@@ -68,6 +69,7 @@ import { MarketingHome } from './pages/MarketingHome';
 import { ResultPortal } from './pages/ResultPortal';
 import { ResultNetworkAdmin } from './pages/ResultNetworkAdmin';
 import { AdminCommandCenter } from './pages/AdminCommandCenter';
+import { ChangePassword } from './pages/ChangePassword';
 
 const ALL_ROLES: Role[] = ['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT'];
 function RoleGate({allowed,children}:{allowed:Role[];children:React.ReactNode}){const{user}=useAuth();if(!user||!allowed.includes(user.role))return <Navigate to="/" replace/>;return <>{children}</>}
@@ -84,9 +86,10 @@ export default function App(){
  if(isMarketingHost)return <MarketingHome/>;
  if(loading)return <div className="boot">Anunex yükleniyor…</div>;
  if(!user&&location.pathname!=='/login')return <Navigate to="/login" replace/>;
+ if(user&&user.must_change_password&&location.pathname!=='/change-password')return <Navigate to="/change-password" replace/>;
  if(user&&location.pathname==='/login')return <Navigate to="/" replace/>;
  return <Routes>
-  <Route path="/login" element={<Login/>}/><Route element={<Layout/>}><Route index element={<Home/>}/>
+  <Route path="/login" element={<Login/>}/><Route path="/change-password" element={<ChangePassword/>}/><Route element={<Layout/>}><Route index element={<Home/>}/>
   <Route path="admin-center" element={<RoleGate allowed={['SUPER_ADMIN']}><AdminCommandCenter/></RoleGate>}/>
   <Route path="standard-readiness" element={<RoleGate allowed={['SUPER_ADMIN']}><StandardReadiness/></RoleGate>}/>
   <Route path="theme-management" element={<RoleGate allowed={['SUPER_ADMIN']}><ThemeManagement/></RoleGate>}/>
@@ -103,7 +106,8 @@ export default function App(){
   <Route path="students" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Students/></RoleGate>}/><Route path="activation-requests" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><ActivationRequests/></RoleGate>}/><Route path="users" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><UsersPage/></RoleGate>}/><Route path="access-accounts" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><AccessAccounts/></RoleGate>}/><Route path="teacher-assignments" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><TeacherAssignments/></RoleGate>}/><Route path="seasons" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Seasons/></RoleGate>}/>
   <Route path="classes" element={<RoleGate allowed={['TEACHER','GUIDANCE_TEACHER']}><Classes/></RoleGate>}/><Route path="outcomes" element={<RoleGate allowed={['TEACHER','GUIDANCE_TEACHER','STUDENT']}><Outcomes/></RoleGate>}/><Route path="worksheets" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><Worksheets/></RoleGate>}/><Route path="worksheet-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><WorksheetAdmin/></RoleGate>}/><Route path="reports" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','PARENT']}><Reports/></RoleGate>}/>
   <Route path="my-results" element={<RoleGate allowed={['STUDENT']}><StudentExamResults/></RoleGate>}/><Route path="student-report" element={<RoleGate allowed={['STUDENT']}><Reports/></RoleGate>}/><Route path="wrong-answers" element={<RoleGate allowed={['STUDENT']}><WrongAnswers/></RoleGate>}/><Route path="children" element={<RoleGate allowed={['PARENT']}><Children/></RoleGate>}/><Route path="weekly-summary" element={<RoleGate allowed={['PARENT']}><WeeklySummary/></RoleGate>}/>
-  <Route path="transfers" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Transfers/></RoleGate>}/><Route path="optical-prepare" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><OpticalPrepare/></RoleGate>}/><Route path="calibration" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Calibration/></RoleGate>}/><Route path="opticals" element={<RoleGate allowed={['SUPER_ADMIN']}><Opticals/></RoleGate>}/><Route path="bulk-operations" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><BulkOperations/></RoleGate>}/><Route path="demo-mode" element={<RoleGate allowed={['SUPER_ADMIN']}><DemoMode/></RoleGate>}/><Route path="scale" element={<RoleGate allowed={['SUPER_ADMIN']}><ScaleInfrastructure/></RoleGate>}/><Route path="feature-lab" element={<RoleGate allowed={['SUPER_ADMIN']}><FeatureLab/></RoleGate>}/>
+  <Route path="transfers" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Transfers/></RoleGate>}/><Route path="optical-design" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><OpticalDesign/></RoleGate>}/><Route path="optical-prepare" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><OpticalPrepare/></RoleGate>}/><Route path="calibration" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Calibration/></RoleGate>}/><Route path="opticals" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Opticals/></RoleGate>}/><Route path="bulk-operations" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><BulkOperations/></RoleGate>}/><Route path="demo-mode" element={<RoleGate allowed={['SUPER_ADMIN']}><DemoMode/></RoleGate>}/><Route path="scale" element={<RoleGate allowed={['SUPER_ADMIN']}><ScaleInfrastructure/></RoleGate>}/><Route path="feature-lab" element={<RoleGate allowed={['SUPER_ADMIN']}><FeatureLab/></RoleGate>}/>
   <Route path="content-center" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><ContentCenter/></RoleGate>}/><Route path="student-growth" element={<RoleGate allowed={['STUDENT']}><StudentGrowthCenter/></RoleGate>}/><Route path="premium" element={<RoleGate allowed={['STUDENT']}><PremiumCenter/></RoleGate>}/><Route path="enterprise" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><EnterpriseCenter/></RoleGate>}/><Route path="guidance-tests" element={<RoleGate allowed={['STUDENT','GUIDANCE_TEACHER']}><GuidanceTests/></RoleGate>}/><Route path="guidance-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><GuidanceAdmin/></RoleGate>}/>
   <Route path="*" element={<Navigate to="/" replace/>}/></Route></Routes>
 }
+

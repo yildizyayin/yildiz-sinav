@@ -1,6 +1,6 @@
 import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
 import { audit, badRequest, forbidden, json, methodNotAllowed, normalizeName, notFound, one, all, splitName, uuid } from './lib/db';
-import { createSession, getAuthUser, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
+import { createSession, getAuthUser, hashPassword, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
 import { canAccessSubjectForClass, canEvaluateExam, loadPermissionScope, roleCanManageInstitution } from './lib/permissions';
 import { matchParticipant } from './lib/matching';
 import { decodeUploadedBytes, parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib/parse';
@@ -8,6 +8,9 @@ import { assertScoringRuleVerified, calculateOverall, calculateSubjectScore } fr
 import { masteryStatus } from './lib/outcome';
 import { calibrationWithinTolerance, nextCalibrationStatus, type CalibrationMetrics } from './lib/calibration';
 import { recordExamAssessments, recordExamEvidenceAudit } from './lib/assessment-ledger';
+import { startTrial } from './lib/license';
+import { generatedInstitutionCode, normalizeInstitutionCreateBody, type InstitutionCreateBody } from './lib/institution-onboarding';
+import { createAccountNotificationBatch } from './lib/account-notifications';
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -35,12 +38,17 @@ export default {
         const institution = user.institution_id ? await one<{ status: string; name: string }>(env.DB.prepare('SELECT status, name FROM institutions WHERE id = ?').bind(user.institution_id)) : null;
         return json({ ok: true, user, institution });
       }
+      if (url.pathname === '/api/auth/change-password' && request.method === 'POST') return changePassword(request, env, user);
 
       const passive = await rejectIfPassiveInstitution(env, user);
       if (passive) return passive;
 
       if (url.pathname === '/api/dashboard' && request.method === 'GET') return dashboard(env, user);
-      if (url.pathname === '/api/institutions') return request.method === 'GET' ? listInstitutions(env, user) : methodNotAllowed();
+      if (url.pathname === '/api/institutions') {
+        if (request.method === 'GET') return listInstitutions(env, user);
+        if (request.method === 'POST') return createInstitution(request, env, user);
+        return methodNotAllowed();
+      }
       const institutionStatusMatch = url.pathname.match(/^\/api\/institutions\/([^/]+)\/status$/);
       if (institutionStatusMatch) return request.method === 'POST' ? setInstitutionStatus(request, env, user, institutionStatusMatch[1]) : methodNotAllowed();
 
@@ -50,6 +58,8 @@ export default {
 
       const scanResolveMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)\/records\/([^/]+)\/resolve$/);
       if (scanResolveMatch) return request.method === 'POST' ? resolveScanRecord(request, env, user, scanResolveMatch[1], scanResolveMatch[2]) : methodNotAllowed();
+      const scanCandidatesMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)\/records\/([^/]+)\/candidates$/);
+      if (scanCandidatesMatch) return request.method === 'GET' ? searchScanCandidates(env, user, scanCandidatesMatch[1], scanCandidatesMatch[2], url) : methodNotAllowed();
       const scanEvaluateMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)\/evaluate$/);
       if (scanEvaluateMatch) return request.method === 'POST' ? evaluateBatch(env, user, scanEvaluateMatch[1]) : methodNotAllowed();
       const scanBatchMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)$/);
@@ -68,7 +78,7 @@ export default {
       if (url.pathname === '/api/classes' && request.method === 'GET') return listClasses(env, user, url);
       if (url.pathname === '/api/teacher/insights' && request.method === 'GET') return teacherInsights(env, user, url);
 
-      if (url.pathname === '/api/optical-templates' && request.method === 'GET') return listOpticalTemplates(env, user);
+      if (url.pathname === '/api/optical-templates' && request.method === 'GET') return listOpticalTemplates(env, user, url);
       if (url.pathname === '/api/printer-profiles') {
         if (request.method === 'GET') return listPrinterProfiles(env, user, url);
         if (request.method === 'POST') return createPrinterProfile(request, env, user);
@@ -126,7 +136,22 @@ async function login(request: Request, env: Env): Promise<Response> {
     if (student?.status === 'GUEST') return json({ ok: false, error: { code: 'GUEST_NO_LOGIN', message: 'Misafir öğrencilerin sistem girişi bulunmaz.' } }, 403);
   }
   await recordLoginAttempt(env, identifier, true, request);
-  return createSession(env, row.id, request, Boolean(body.remember));
+  return createSession(env, row.id, request, Boolean(body.remember), Boolean(row.must_change_password));
+}
+
+async function changePassword(request: Request, env: Env, user: AuthUser): Promise<Response> {
+  const body = await request.json<{ currentPassword?: string; newPassword?: string }>().catch(() => ({} as { currentPassword?: string; newPassword?: string }));
+  const currentPassword = body.currentPassword || '';
+  const newPassword = body.newPassword || '';
+  if (!currentPassword || newPassword.length < 8) return badRequest('Mevcut şifre ve en az 8 karakterli yeni şifre gereklidir.');
+  if (currentPassword === newPassword) return badRequest('Yeni şifre mevcut şifreden farklı olmalıdır.');
+  const row = await one<any>(env.DB.prepare('SELECT password_hash,password_salt,password_iterations FROM users WHERE id=? AND active=1').bind(user.id));
+  if (!row || !(await verifyPassword(currentPassword, row.password_salt, row.password_hash, row.password_iterations))) return json({ ok: false, error: { code: 'CURRENT_PASSWORD_INVALID', message: 'Mevcut şifre hatalı.' } }, 400);
+  const passwordData = await hashPassword(newPassword);
+  await env.DB.prepare(`UPDATE users SET password_hash=?,password_salt=?,password_iterations=?,password_algo='PBKDF2-SHA256-v1',must_change_password=0,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
+    .bind(passwordData.hash, passwordData.salt, passwordData.iterations, user.id).run();
+  await audit(env.DB, user.id, user.institution_id, 'PASSWORD_CHANGED', 'user', user.id, { forced: Boolean(user.must_change_password) });
+  return json({ ok: true, mustChangePassword: false });
 }
 
 async function rejectIfPassiveInstitution(env: Env, user: AuthUser): Promise<Response | null> {
@@ -138,18 +163,78 @@ async function rejectIfPassiveInstitution(env: Env, user: AuthUser): Promise<Res
 
 async function dashboard(env: Env, user: AuthUser): Promise<Response> {
   if (user.role === 'SUPER_ADMIN') {
-    const [institutions, activeStudents, guests, todayResults, passive] = await Promise.all([
+    const [
+      institutions,
+      activeInstitutions,
+      passiveInstitutions,
+      activeStudents,
+      guests,
+      exams,
+      activeExams,
+      todayResults,
+      pendingScans,
+      readyOpticals,
+      opticalDefinitions,
+      pendingActivations,
+      licenseWarnings,
+      approvedDealers,
+      activeUsers,
+      recentActivity,
+    ] = await Promise.all([
       one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM institutions')),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM institutions WHERE status='ACTIVE'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM institutions WHERE status='PASSIVE'`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM student_entities WHERE status='ACTIVE'`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM student_entities WHERE status='GUEST'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exams WHERE status<>'ARCHIVED'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exams WHERE status='ACTIVE'`)),
       one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exam_results WHERE date(created_at)=date('now')`)),
-      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM institutions WHERE status='PASSIVE'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_batches WHERE status IN ('PREVIEW','NEEDS_REVIEW')`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM optical_templates WHERE status='READY' AND active=1`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM optical_templates WHERE status='NEEDS_DEFINITION' AND active=1`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM activation_requests WHERE status='PENDING'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM institution_licenses WHERE status IN ('EXPIRED','SUSPENDED') OR date(coalesce(license_expires_at,trial_expires_at)) <= date('now','+30 day')`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM result_network_dealers WHERE status='APPROVED'`)),
+      one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM users WHERE active=1`)),
+      all<any>(env.DB.prepare(`
+        SELECT a.action,a.entity_type,a.entity_id,a.created_at,coalesce(u.display_name,'Sistem') actor_name
+        FROM audit_logs a LEFT JOIN users u ON u.id=a.actor_user_id
+        ORDER BY a.created_at DESC LIMIT 8
+      `)),
     ]);
+    const count = (row: { c: number } | null | undefined) => row?.c ?? 0;
     return json({ ok: true, cards: [
-      { label: 'Kurum', value: institutions?.c ?? 0 }, { label: 'Aktif Öğrenci', value: activeStudents?.c ?? 0 },
-      { label: 'Misafir Öğrenci', value: guests?.c ?? 0 }, { label: 'Bugün Değerlendirilen', value: todayResults?.c ?? 0 },
-      { label: 'Pasif Kurum', value: passive?.c ?? 0 },
-    ] });
+      { label: 'Aktif Kurum', value: count(activeInstitutions) },
+      { label: 'Aktif Öğrenci', value: count(activeStudents) },
+      { label: 'Tanımlı Sınav', value: count(exams) },
+      { label: 'Bugün Değerlendirilen', value: count(todayResults) },
+      { label: 'Bekleyen Optik', value: count(pendingScans) },
+      { label: 'Yayındaki Sınav', value: count(activeExams) },
+      { label: 'Hazır Optik', value: count(readyOpticals) },
+      { label: 'Lisans Uyarısı', value: count(licenseWarnings) },
+    ],
+    pending: {
+      scanReview: count(pendingScans),
+      opticalDefinitions: count(opticalDefinitions),
+      activationRequests: count(pendingActivations),
+      licenseWarnings: count(licenseWarnings),
+    },
+    institutionSummary: {
+      total: count(institutions),
+      active: count(activeInstitutions),
+      passive: count(passiveInstitutions),
+      guests: count(guests),
+      activeUsers: count(activeUsers),
+      approvedDealers: count(approvedDealers),
+    },
+    recentActivity,
+    systemHealth: [
+      { key: 'api', label: 'API / Worker', status: 'READY', detail: 'Yanıt veriyor' },
+      { key: 'database', label: 'D1 veri tabanı', status: 'READY', detail: 'Sorgular çalışıyor' },
+      { key: 'optical', label: 'Optik motoru', status: count(readyOpticals) ? 'READY' : 'ACTION', detail: `${count(readyOpticals)} hazır tanım` },
+      { key: 'results', label: 'Sonuç ağı', status: count(activeExams) ? 'READY' : 'EMPTY', detail: `${count(activeExams)} yayınlanabilir sınav` },
+    ],
+    });
   }
   if (user.role === 'STUDENT') {
     if (!user.student_id) return badRequest('Öğrenci hesabı bağlı değil.');
@@ -182,10 +267,96 @@ async function dashboard(env: Env, user: AuthUser): Promise<Response> {
 async function listInstitutions(env: Env, user: AuthUser): Promise<Response> {
   if (user.role !== 'SUPER_ADMIN') return forbidden();
   const rows = await all<any>(env.DB.prepare(`SELECT i.*,
+    l.plan_code license_plan,l.status license_status,l.trial_expires_at,l.license_expires_at,
+    (SELECT s.academic_year FROM institution_seasons s WHERE s.institution_id=i.id ORDER BY CASE s.status WHEN 'ACTIVE' THEN 0 ELSE 1 END,s.created_at DESC LIMIT 1) academic_year,
+    (SELECT count(*) FROM users u WHERE u.institution_id=i.id AND u.role='INSTITUTION_MANAGER' AND u.active=1) manager_count,
     (SELECT count(DISTINCT e.student_id) FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.institution_id=i.id AND s.status='ACTIVE') active_students,
     (SELECT count(DISTINCT e.student_id) FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.institution_id=i.id AND s.status='GUEST') guest_students
-    FROM institutions i ORDER BY i.name`));
+    FROM institutions i LEFT JOIN institution_licenses l ON l.institution_id=i.id ORDER BY i.name`));
   return json({ ok: true, institutions: rows });
+}
+
+async function createInstitution(request: Request, env: Env, user: AuthUser): Promise<Response> {
+  if (user.role !== 'SUPER_ADMIN') return forbidden('Kurum açma yetkisi yalnızca Süper Admin hesabındadır.');
+
+  const body = await request.json<InstitutionCreateBody>().catch(() => ({} as InstitutionCreateBody));
+  let input;
+  try {
+    input = normalizeInstitutionCreateBody(body);
+  } catch (error) {
+    return badRequest(error instanceof Error ? error.message : 'Kurum bilgileri geçersiz.', 'VALIDATION_ERROR');
+  }
+
+  const institutionId = uuid('inst');
+  const seasonId = uuid('season');
+  const managerId = uuid('usr');
+  const institutionCode = input.code || input.mebCode || generatedInstitutionCode(institutionId);
+  const existingInstitution = await one<any>(env.DB.prepare(`SELECT id FROM institutions WHERE code=? OR (? IS NOT NULL AND meb_code=?) LIMIT 1`).bind(institutionCode, input.mebCode, input.mebCode));
+  if (existingInstitution) return json({ ok: false, error: { code: 'INSTITUTION_EXISTS', message: 'Bu kurum kodu veya MEB kodu zaten kayıtlı.' } }, 409);
+
+  if (input.manager.email) {
+    const duplicate = await one<any>(env.DB.prepare('SELECT id FROM users WHERE lower(email)=lower(?) LIMIT 1').bind(input.manager.email));
+    if (duplicate) return json({ ok: false, error: { code: 'EMAIL_EXISTS', message: 'Kurum yöneticisinin e-posta adresi zaten kullanılıyor.' } }, 409);
+  }
+  if (input.manager.username) {
+    const duplicate = await one<any>(env.DB.prepare('SELECT id FROM users WHERE lower(username)=lower(?) LIMIT 1').bind(input.manager.username));
+    if (duplicate) return json({ ok: false, error: { code: 'USERNAME_EXISTS', message: 'Kurum yöneticisinin kullanıcı adı zaten kullanılıyor.' } }, 409);
+  }
+
+  const passwordData = await hashPassword(input.manager.password);
+  const featureRows = input.features.length
+    ? await all<{ feature_key: string }>(env.DB.prepare(`SELECT feature_key FROM platform_features WHERE feature_key IN (${input.features.map(() => '?').join(',')})`).bind(...input.features))
+    : [];
+  const featureKeys = new Set(featureRows.map((row) => row.feature_key));
+  const now = new Date().toISOString();
+
+  const statements = [
+    env.DB.prepare(`INSERT INTO institutions
+      (id,name,code,city,district,contact_name,contact_phone,contact_email,status,source_type,meb_code,institution_type,ownership,education_level,official_url,address,package_code,user_limit)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(
+      institutionId, input.name, institutionCode, input.city, input.district, input.contactName, input.contactPhone, input.contactEmail,
+      'ACTIVE', input.sourceType, input.mebCode, input.institutionType, input.ownership, input.educationLevel, input.officialUrl, input.address, input.packageCode, input.userLimit,
+    ),
+    env.DB.prepare(`INSERT INTO institution_seasons (id,institution_id,academic_year,status,started_at) VALUES (?,?,?,'ACTIVE',?)`).bind(seasonId, institutionId, input.academicYear, now),
+    env.DB.prepare(`INSERT INTO institution_license_state (id,institution_id,season_id,licensed_student_limit,licensed_student_count,agreement_status,note) VALUES (?,?,?,? ,0,'ACTIVE',?)`).bind(uuid('licstate'), institutionId, seasonId, input.studentLimit, `Kurum açılışı · ${input.packageCode}`),
+    env.DB.prepare(`INSERT INTO users (id,institution_id,role,display_name,email,phone,username,password_hash,password_salt,password_iterations,password_algo,must_change_password,active)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,1,1)`).bind(
+      managerId, institutionId, 'INSTITUTION_MANAGER', input.manager.displayName, input.manager.email, input.manager.phone, input.manager.username,
+      passwordData.hash, passwordData.salt, passwordData.iterations, 'PBKDF2-SHA256-v1',
+    ),
+    env.DB.prepare(`INSERT INTO institution_access_controls (institution_id,lifecycle_status,updated_by) VALUES (?,'ACTIVE',?)`).bind(institutionId, user.id),
+    env.DB.prepare(`INSERT INTO institution_governance_events (id,institution_id,actor_user_id,action,next_status,metadata_json) VALUES (?,?,?,'CREATE','ACTIVE',?)`).bind(
+      uuid('ige'), institutionId, user.id, JSON.stringify({ sourceType: input.sourceType, packageCode: input.packageCode, academicYear: input.academicYear }),
+    ),
+    env.DB.prepare(`INSERT INTO audit_logs (id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES (?,?,?,'INSTITUTION_CREATED','institution',?,?)`).bind(
+      uuid('aud'), user.id, institutionId, institutionId, JSON.stringify({ sourceType: input.sourceType, packageCode: input.packageCode, academicYear: input.academicYear, managerRole: 'INSTITUTION_MANAGER' }),
+    ),
+    ...[...featureKeys].map((featureKey) => env.DB.prepare(`INSERT INTO institution_feature_overrides (institution_id,feature_key,enabled,updated_at) VALUES (?,?,1,CURRENT_TIMESTAMP)`).bind(institutionId, featureKey)),
+  ];
+
+  try {
+    await env.DB.batch(statements);
+    const license = input.startTrial ? await startTrial(env, institutionId, user, 7, 'Kurum açılışında otomatik başlatıldı.') : null;
+    const notification = await createAccountNotificationBatch(env, user.id, institutionId, [{
+      userId: managerId,
+      displayName: input.manager.displayName,
+      username: input.manager.username,
+      email: input.manager.email,
+      phone: input.manager.phone,
+      password: input.manager.password,
+    }], ['EMAIL', 'SMS']);
+    return json({
+      ok: true,
+      institution: { id: institutionId, name: input.name, code: institutionCode, mebCode: input.mebCode, academicYear: input.academicYear, packageCode: input.packageCode },
+      manager: { id: managerId, displayName: input.manager.displayName, email: input.manager.email, username: input.manager.username },
+      notification,
+      license,
+    }, 201);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '';
+    if (/UNIQUE|constraint/i.test(message)) return json({ ok: false, error: { code: 'INSTITUTION_EXISTS', message: 'Kurum kodu, MEB kodu veya yönetici giriş bilgisi zaten kayıtlı.' } }, 409);
+    throw error;
+  }
 }
 
 async function setInstitutionStatus(request: Request, env: Env, user: AuthUser, institutionId: string): Promise<Response> {
@@ -250,7 +421,8 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
   await env.DB.prepare(`INSERT INTO scan_batches (id,exam_id,institution_id,season_id,source_type,optical_template_version_id,detection_confidence,status,created_by) VALUES(?,?,?,?,?,?,?,?,?)`)
     .bind(batchId, examId, institutionId, season.id, parsed.records[0]?.source_type || 'TXT', parsed.templateId || null, parsed.confidence, batchStatus, user.id).run();
 
-  const counts = { active: 0, guest: 0, newGuest: 0, ambiguous: 0, invalid: 0 };
+  const counts = { active: 0, guest: 0, newGuest: 0, ambiguous: 0, invalid: 0, pending: 0, cancelled: 0 };
+  const recordStatements: D1PreparedStatement[] = [];
   for (const record of parsed.records) {
     const match = matchParticipant(record, candidates);
     if (match.status === 'ACTIVE_MATCH') counts.active++;
@@ -258,10 +430,15 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
     if (match.status === 'NEW_GUEST') counts.newGuest++;
     if (match.status === 'AMBIGUOUS') counts.ambiguous++;
     if (match.status === 'INVALID') counts.invalid++;
-    await env.DB.prepare(`INSERT INTO scan_records (id,batch_id,row_no,canonical_json,matched_student_id,match_status,match_confidence,issues_json) VALUES(?,?,?,?,?,?,?,?)`)
-      .bind(uuid('scan'), batchId, record.row_no, JSON.stringify(record), match.student_id || null, match.status, match.confidence, JSON.stringify([...record.issues, ...match.issues])).run();
+    if (['NEW_GUEST', 'AMBIGUOUS', 'INVALID'].includes(match.status) || record.issues.length || match.issues.length) counts.pending++;
+    // Matching can use T.C. identity, but the raw value is not persisted in
+    // the scan payload or copied to audit/result-network data.
+    const storedRecord = { ...record, tckn: undefined };
+    recordStatements.push(env.DB.prepare(`INSERT INTO scan_records (id,batch_id,row_no,canonical_json,matched_student_id,match_status,match_confidence,issues_json) VALUES(?,?,?,?,?,?,?,?)`)
+      .bind(uuid('scan'), batchId, record.row_no, JSON.stringify(storedRecord), match.student_id || null, match.status, match.confidence, JSON.stringify([...record.issues, ...match.issues])));
   }
-  const finalStatus = counts.ambiguous || counts.invalid ? 'NEEDS_REVIEW' : 'READY';
+  for (let i = 0; i < recordStatements.length; i += 80) await env.DB.batch(recordStatements.slice(i, i + 80));
+  const finalStatus = counts.pending ? 'NEEDS_REVIEW' : 'READY';
   await env.DB.prepare('UPDATE scan_batches SET status=? WHERE id=?').bind(finalStatus, batchId).run();
   await audit(env.DB, user.id, institutionId, 'EXAM_FILE_PREVIEWED', 'scan_batch', batchId, { examId, rows: parsed.records.length, counts, template: parsed.templateName });
   return json({ ok: true, batchId, detection: { templateId: parsed.templateId, templateName: parsed.templateName, confidence: parsed.confidence }, counts, total: parsed.records.length, status: finalStatus });
@@ -273,7 +450,17 @@ export async function getScanBatch(env: Env, user: AuthUser, batchId: string): P
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
   const records = await all<any>(env.DB.prepare(`SELECT r.*, s.first_name || ' ' || s.last_name matched_name FROM scan_records r LEFT JOIN student_entities s ON s.id=r.matched_student_id WHERE batch_id=? ORDER BY row_no`).bind(batchId));
-  return json({ ok: true, batch, records: records.map((r) => ({ ...r, canonical: JSON.parse(r.canonical_json), issues: r.issues_json ? JSON.parse(r.issues_json) : [] })) });
+  const mapped = records.map((r) => ({ ...r, canonical: JSON.parse(r.canonical_json), issues: r.issues_json ? JSON.parse(r.issues_json) : [] }));
+  const counts = {
+    active: mapped.filter((r) => r.match_status === 'ACTIVE_MATCH').length,
+    guest: mapped.filter((r) => r.match_status === 'GUEST_MATCH').length,
+    newGuest: mapped.filter((r) => r.match_status === 'NEW_GUEST').length,
+    ambiguous: mapped.filter((r) => r.match_status === 'AMBIGUOUS').length,
+    invalid: mapped.filter((r) => r.match_status === 'INVALID' && r.resolution_status !== 'CANCELLED').length,
+    cancelled: mapped.filter((r) => r.resolution_status === 'CANCELLED').length,
+    pending: mapped.filter((r) => r.resolution_status !== 'CANCELLED' && r.resolution_status !== 'RESOLVED' && (['NEW_GUEST', 'AMBIGUOUS', 'INVALID'].includes(r.match_status) || r.issues.length > 0)).length,
+  };
+  return json({ ok: true, batch, records: mapped, counts });
 }
 
 export async function resolveScanRecord(request: Request, env: Env, user: AuthUser, batchId: string, recordId: string): Promise<Response> {
@@ -281,18 +468,62 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
   const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
-  const body = await request.json<{ studentId?: string; asNewGuest?: boolean }>();
-  if (body.studentId) {
+  const before = await one<any>(env.DB.prepare('SELECT matched_student_id,match_status,match_confidence,resolution_status,issues_json FROM scan_records WHERE id=? AND batch_id=?').bind(recordId, batchId));
+  if (!before) return notFound('Optik satırı bulunamadı.');
+  const body = await request.json<{ studentId?: string; asNewGuest?: boolean; action?: 'MATCH' | 'GUEST' | 'CANCEL' }>();
+  const action = body.action || (body.studentId ? 'MATCH' : body.asNewGuest ? 'GUEST' : null);
+  let resolvedMatchStatus = before.match_status;
+  if (action === 'MATCH' && body.studentId) {
     const candidate = await one<any>(env.DB.prepare(`SELECT s.id,s.status FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id WHERE s.id=? AND e.institution_id=? AND e.season_id=?`).bind(body.studentId, batch.institution_id, batch.season_id));
     if (!candidate) return badRequest('Seçilen öğrenci bu kurum/sezonda bulunamadı.');
-    await env.DB.prepare(`UPDATE scan_records SET matched_student_id=?, match_status=?, match_confidence=1, issues_json='[]' WHERE id=? AND batch_id=?`)
-      .bind(candidate.id, candidate.status === 'ACTIVE' ? 'ACTIVE_MATCH' : 'GUEST_MATCH', recordId, batchId).run();
-  } else if (body.asNewGuest) {
-    await env.DB.prepare(`UPDATE scan_records SET matched_student_id=NULL, match_status='NEW_GUEST', match_confidence=1, issues_json='[]' WHERE id=? AND batch_id=?`).bind(recordId, batchId).run();
-  } else return badRequest('Eşleştirme seçimi eksik.');
-  const problem = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND match_status IN ('AMBIGUOUS','INVALID')`).bind(batchId));
+    resolvedMatchStatus = candidate.status === 'ACTIVE' ? 'ACTIVE_MATCH' : 'GUEST_MATCH';
+    await env.DB.prepare(`UPDATE scan_records SET matched_student_id=?, match_status=?, match_confidence=1, resolution_status='RESOLVED', issues_json='[]' WHERE id=? AND batch_id=?`)
+      .bind(candidate.id, resolvedMatchStatus, recordId, batchId).run();
+  } else if (action === 'GUEST') {
+    await env.DB.prepare(`UPDATE scan_records SET matched_student_id=NULL, match_status='GUEST_MATCH', match_confidence=1, resolution_status='RESOLVED', issues_json='[]' WHERE id=? AND batch_id=?`).bind(recordId, batchId).run();
+  } else if (action === 'CANCEL') {
+    await env.DB.prepare(`UPDATE scan_records SET matched_student_id=NULL, match_status='INVALID', match_confidence=0, resolution_status='CANCELLED', issues_json=? WHERE id=? AND batch_id=?`).bind(JSON.stringify(['Kurum tarafından iptal edildi.']), recordId, batchId).run();
+  } else return badRequest('Eşleştirme kararı eksik.');
+  const problem = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND resolution_status!='CANCELLED' AND resolution_status!='RESOLVED' AND match_status IN ('NEW_GUEST','AMBIGUOUS','INVALID')`).bind(batchId));
   await env.DB.prepare('UPDATE scan_batches SET status=? WHERE id=?').bind((problem?.c ?? 0) ? 'NEEDS_REVIEW' : 'READY', batchId).run();
+  const after = action === 'MATCH'
+    ? { matchedStudentId: body.studentId || null, matchStatus: resolvedMatchStatus, resolutionStatus: 'RESOLVED', issueCount: 0 }
+    : action === 'GUEST'
+      ? { matchedStudentId: null, matchStatus: 'GUEST_MATCH', resolutionStatus: 'RESOLVED', issueCount: 0 }
+      : { matchedStudentId: null, matchStatus: 'INVALID', resolutionStatus: 'CANCELLED', issueCount: 1 };
+  let beforeIssueCount = 0;
+  try {
+    const issues = JSON.parse(before.issues_json || '[]');
+    beforeIssueCount = Array.isArray(issues) ? issues.length : 0;
+  } catch {
+    beforeIssueCount = 0;
+  }
+  await audit(env.DB, user.id, batch.institution_id, 'SCAN_RECORD_DECISION_RECORDED', 'scan_record', recordId, {
+    batchId,
+    decision: action,
+    before: { matchedStudentId: before.matched_student_id, matchStatus: before.match_status, resolutionStatus: before.resolution_status, issueCount: beforeIssueCount },
+    after,
+    reason: action === 'MATCH' ? 'Kurum tarafından öğrenciyle eşleştirildi.' : action === 'GUEST' ? 'Kurum tarafından misafir olarak işaretlendi.' : 'Kurum tarafından iptal edildi.',
+  });
   return json({ ok: true });
+}
+
+export async function searchScanCandidates(env: Env, user: AuthUser, batchId: string, recordId: string, url: URL): Promise<Response> {
+  if (!canEvaluateExam(user.role)) return forbidden();
+  const batch = await one<any>(env.DB.prepare('SELECT institution_id,season_id FROM scan_batches WHERE id=?').bind(batchId));
+  if (!batch) return notFound();
+  if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
+  const record = await one<any>(env.DB.prepare('SELECT id FROM scan_records WHERE id=? AND batch_id=?').bind(recordId, batchId));
+  if (!record) return notFound('Optik satırı bulunamadı.');
+  const q = normalizeName(url.searchParams.get('q') || '').slice(0, 80);
+  const like = `%${q}%`;
+  const rows = await all<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name,s.status,e.student_number,e.grade_level,e.section,e.class_id
+    FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id
+    WHERE e.institution_id=? AND e.season_id=? AND e.status='ACTIVE' AND s.status IN ('ACTIVE','GUEST')
+      AND (?='' OR s.normalized_name LIKE ? OR e.student_number LIKE ?)
+    ORDER BY CASE WHEN e.student_number=? THEN 0 WHEN s.normalized_name=? THEN 1 ELSE 2 END,e.grade_level,e.section,s.normalized_name
+    LIMIT 30`).bind(batch.institution_id, batch.season_id, q, like, like, q, q));
+  return json({ ok: true, candidates: rows });
 }
 
 export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {
@@ -315,10 +546,11 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   const records = await all<any>(env.DB.prepare(`SELECT * FROM scan_records WHERE batch_id=? ORDER BY row_no`).bind(batchId));
   let processed = 0;
   for (const row of records) {
+    if (row.resolution_status === 'CANCELLED') continue;
     const record = JSON.parse(row.canonical_json) as CanonicalRecord;
     let studentId = row.matched_student_id as string | null;
     let studentStatus = row.match_status === 'ACTIVE_MATCH' ? 'ACTIVE' : 'GUEST';
-    if (row.match_status === 'NEW_GUEST') {
+    if (row.match_status === 'NEW_GUEST' || (row.match_status === 'GUEST_MATCH' && !studentId)) {
       const names = splitName(record.name);
       studentId = uuid('stu');
       await env.DB.prepare(`INSERT INTO student_entities (id,first_name,last_name,normalized_name,status) VALUES(?,?,?,?, 'GUEST')`).bind(studentId, names.firstName, names.lastName, normalizeName(record.name)).run();
@@ -533,11 +765,28 @@ async function teacherInsights(env: Env, user: AuthUser, url: URL): Promise<Resp
   return json({ ok: true, outcomes: filtered.slice(0, 50) });
 }
 
-async function listOpticalTemplates(env: Env, user: AuthUser): Promise<Response> {
+async function listOpticalTemplates(env: Env, user: AuthUser, url: URL): Promise<Response> {
   if (!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role)) return forbidden();
-  const rows = await all<any>(env.DB.prepare(`SELECT t.id template_id,t.name,t.vendor,t.status,v.id version_id,v.version,v.page_width_mm,v.page_height_mm,
+  const institutionId = user.role === 'SUPER_ADMIN' ? url.searchParams.get('institutionId') : user.institution_id;
+  const scope = user.role === 'SUPER_ADMIN' && !institutionId
+    ? { sql: '', params: [] as unknown[] }
+    : {
+        sql: ` AND (
+          (t.owner_type='INSTITUTION' AND t.owner_id=?)
+          OR (
+            t.owner_type='CENTRAL'
+            AND t.status='READY'
+            AND EXISTS (
+              SELECT 1 FROM optical_template_versions published
+              WHERE published.template_id=t.id AND published.active=1
+            )
+          )
+        )`,
+        params: [institutionId],
+      };
+  const rows = await all<any>(env.DB.prepare(`SELECT t.id template_id,t.name,t.vendor,t.status,t.owner_type,t.owner_id,v.id version_id,v.version,v.page_width_mm,v.page_height_mm,
     v.parser_definition IS NOT NULL has_parser,v.camera_geometry IS NOT NULL has_camera,v.print_fields IS NOT NULL has_print
-    FROM optical_templates t LEFT JOIN optical_template_versions v ON v.template_id=t.id AND v.active=1 WHERE t.active=1 ORDER BY t.name`));
+    FROM optical_templates t LEFT JOIN optical_template_versions v ON v.template_id=t.id AND v.active=1 WHERE t.active=1 ${scope.sql} ORDER BY t.sort_order,t.name`).bind(...scope.params));
   return json({ ok: true, templates: rows });
 }
 
@@ -579,7 +828,7 @@ async function startCalibration(request: Request, env: Env, user: AuthUser): Pro
   if (!body.printerProfileId || !body.templateVersionId) return badRequest('Yazıcı ve optik seçilmelidir.');
   const printer = await one<any>(env.DB.prepare('SELECT * FROM printer_profiles WHERE id=?').bind(body.printerProfileId));
   if (!printer || !(await userCanAccessInstitution(env.DB, user, printer.institution_id))) return forbidden();
-  const template = await one<any>(env.DB.prepare(`SELECT v.*,t.name template_name FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=?`).bind(body.templateVersionId));
+  const template = await one<any>(env.DB.prepare(`SELECT v.*,t.name template_name,t.owner_type,t.owner_id FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=? AND t.active=1 AND (t.owner_type='CENTRAL' OR (t.owner_type='INSTITUTION' AND t.owner_id=?))`).bind(body.templateVersionId, printer.institution_id));
   if (!template) return notFound('Optik şablon bulunamadı.');
   let calibration = await one<any>(env.DB.prepare('SELECT * FROM printer_optical_calibrations WHERE printer_profile_id=? AND optical_template_version_id=?').bind(printer.id, template.id));
   if (!calibration) {
@@ -633,7 +882,7 @@ async function opticalPrepare(env: Env, user: AuthUser, url: URL): Promise<Respo
   if (!classId || !templateVersionId) return badRequest('Sınıf ve optik şablon seçilmelidir.');
   const c = await one<any>(env.DB.prepare('SELECT * FROM classes WHERE id=?').bind(classId));
   if (!c || !(await userCanAccessInstitution(env.DB, user, c.institution_id))) return forbidden();
-  const template = await one<any>(env.DB.prepare(`SELECT v.*,t.name FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=?`).bind(templateVersionId));
+  const template = await one<any>(env.DB.prepare(`SELECT v.*,t.name,t.owner_type,t.owner_id FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=? AND t.active=1 AND (t.owner_type='CENTRAL' OR (t.owner_type='INSTITUTION' AND t.owner_id=?))`).bind(templateVersionId, c.institution_id));
   if (!template) return notFound('Optik şablon bulunamadı.');
   if (!template.print_fields) return badRequest('Bu optik için baskı koordinatları henüz tanımlanmamış.', 'TEMPLATE_DEFINITION_REQUIRED');
   const rows = await all<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name,e.student_number,e.grade_level,e.section FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.class_id=? AND s.status='ACTIVE' ORDER BY ${sort === 'name' ? 's.normalized_name' : `cast(e.student_number as integer),e.student_number`}`).bind(classId));
@@ -817,7 +1066,7 @@ async function currentSeason(db: D1Database, institutionId: string): Promise<any
 }
 
 async function loadStudentCandidates(db: D1Database, institutionId: string, seasonId: string): Promise<MatchCandidate[]> {
-  return all<MatchCandidate>(db.prepare(`SELECT s.id student_id,s.status,s.normalized_name,e.student_number,e.grade_level,e.section FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id WHERE e.institution_id=? AND e.season_id=? AND s.status IN ('ACTIVE','GUEST')`).bind(institutionId, seasonId));
+  return all<MatchCandidate>(db.prepare(`SELECT s.id student_id,s.status,s.normalized_name,s.tckn,e.student_number,e.grade_level,e.section FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id WHERE e.institution_id=? AND e.season_id=? AND s.status IN ('ACTIVE','GUEST')`).bind(institutionId, seasonId));
 }
 
 function resolveInstitutionId(user: AuthUser, requested: string | null): string | null {
@@ -889,3 +1138,4 @@ function parseGenericStudentImport(text: string): Array<{ external_id?: string; 
 function safeFileName(name: string): string {
   return name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/-+/g,'-').slice(0,120) || 'file';
 }
+

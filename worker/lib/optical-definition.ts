@@ -67,9 +67,15 @@ export function validateParserDefinition(input: unknown): ValidationResult {
     const recordLength = Number(source.recordLength ?? def.recordLength);
     if (!Number.isInteger(recordLength) || recordLength <= 0 || recordLength > 5000) errors.push('recordLength 1-5000 arasında tam sayı olmalıdır.');
     const fields = source.fields || def.fields || {};
-    errors.push(...validateSlice('fields.name', normalizeParserSlice(fields.name), recordLength));
+    if (fields.name) errors.push(...validateSlice('fields.name', normalizeParserSlice(fields.name), recordLength));
+    else if (fields.first_name && fields.last_name) {
+      errors.push(...validateSlice('fields.first_name', normalizeParserSlice(fields.first_name), recordLength));
+      errors.push(...validateSlice('fields.last_name', normalizeParserSlice(fields.last_name), recordLength));
+    } else errors.push('fields.name veya fields.first_name + fields.last_name alanları tanımlanmalıdır.');
     if (fields.student_number) errors.push(...validateSlice('fields.student_number', normalizeParserSlice(fields.student_number), recordLength));
     if (fields.class) errors.push(...validateSlice('fields.class', normalizeParserSlice(fields.class), recordLength));
+    if (fields.grade_class) errors.push(...validateSlice('fields.grade_class', normalizeParserSlice(fields.grade_class), recordLength));
+    if (fields.section) errors.push(...validateSlice('fields.section', normalizeParserSlice(fields.section), recordLength));
     if (fields.booklet) errors.push(...validateSlice('fields.booklet', normalizeParserSlice(fields.booklet), recordLength));
     const answers = source.answers || def.answers;
     if (!answers || typeof answers !== 'object' || Array.isArray(answers) || Object.keys(answers).length === 0) {
@@ -117,6 +123,38 @@ export function validateCameraGeometry(input: unknown, pageWidthMm: number, page
     if (typeof region.id !== 'string' || !region.id.trim()) errors.push(`regions[${i}].id gereklidir.`);
     if (typeof region.type !== 'string' || !region.type.trim()) errors.push(`regions[${i}].type gereklidir.`);
     if (region.type === 'answers' || region.type === 'bubble-grid') hasAnswers = true;
+    const purpose = typeof region.purpose === 'string' ? region.purpose.trim().toLowerCase() : '';
+    if (purpose === 'answers') {
+      const questionCount = Number(region.questionCount);
+      if (!Number.isInteger(questionCount) || questionCount < 1 || questionCount > 500) {
+        errors.push(`regions[${i}].questionCount 1-500 arasında tam sayı olmalıdır.`);
+      }
+      if (typeof region.subjectCode !== 'string' || !region.subjectCode.trim()) {
+        errors.push(`regions[${i}].subjectCode gereklidir.`);
+      }
+      if (!Array.isArray(region.options) || region.options.length < 2) {
+        errors.push(`regions[${i}].options en az iki seçenek içermelidir.`);
+      }
+    }
+    if (purpose === 'student-number') {
+      const positions = Number(region.positions);
+      if (!Number.isInteger(positions) || positions < 1) {
+        errors.push(`regions[${i}] öğrenci numarası bölgesinde positions pozitif tam sayı olmalıdır.`);
+      }
+    }
+    if (purpose === 'booklet') {
+      const positions = Number(region.positions);
+      if (!Number.isInteger(positions) || positions < 1) {
+        errors.push(`regions[${i}] kitapçık bölgesinde positions pozitif tam sayı olmalıdır.`);
+      }
+      if (!Array.isArray(region.values) || region.values.length < 2) {
+        errors.push(`regions[${i}] kitapçık bölgesinde values en az iki değer içermelidir.`);
+      }
+      const identityKey = region.identityKey ?? region.identityField ?? region.fieldKey ?? region.key;
+      if (typeof identityKey !== 'string' || !identityKey.trim()) {
+        errors.push(`regions[${i}] kitapçık bölgesi için açık kimlik metadatası (identityKey) gereklidir.`);
+      }
+    }
     errors.push(...validateRect(`regions[${i}]`, region, pageWidthMm, pageHeightMm));
   }
   if (!hasAnswers) errors.push("Kamera geometrisinde 'answers' veya 'bubble-grid' türünde cevap bölgesi bulunmalıdır.");
@@ -164,13 +202,39 @@ export function validateFiducials(input: unknown, pageWidthMm: number, pageHeigh
   return { valid: errors.length === 0, errors };
 }
 
+function hasOptionalDefinition(input: unknown): boolean {
+  if (input == null || input === '') return false;
+  let value = input;
+  if (typeof value === 'string') {
+    try {
+      value = JSON.parse(value);
+    } catch {
+      return true;
+    }
+  }
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    const entries = Object.values(value as object);
+    if (!entries.length) return false;
+    return entries.some((entry) => entry != null && entry !== '' && !(Array.isArray(entry) && entry.length === 0));
+  }
+  return true;
+}
+
 export function definitionReadiness(
   values: { parser: unknown; camera: unknown; print: unknown; fiducials: unknown; pageWidthMm: number; pageHeightMm: number; parserTestPassed: boolean },
 ): DefinitionReadiness {
   const parser = validateParserDefinition(values.parser);
-  const camera = validateCameraGeometry(values.camera, values.pageWidthMm, values.pageHeightMm);
-  const print = validatePrintFields(values.print, values.pageWidthMm, values.pageHeightMm);
-  const fiducials = validateFiducials(values.fiducials, values.pageWidthMm, values.pageHeightMm);
+  // Manuel TXT/DAT/FMT tanımı yayın kapısının temelidir. Kamera, baskı ve
+  // referans noktaları yalnızca kullanıcı tanımladıysa doğrulanır.
+  const camera = hasOptionalDefinition(values.camera)
+    ? validateCameraGeometry(values.camera, values.pageWidthMm, values.pageHeightMm)
+    : { valid: true, errors: [] };
+  const print = hasOptionalDefinition(values.print)
+    ? validatePrintFields(values.print, values.pageWidthMm, values.pageHeightMm)
+    : { valid: true, errors: [] };
+  const fiducials = hasOptionalDefinition(values.fiducials)
+    ? validateFiducials(values.fiducials, values.pageWidthMm, values.pageHeightMm)
+    : { valid: true, errors: [] };
   const errors = [
     ...parser.errors.map((x) => `Parser: ${x}`),
     ...camera.errors.map((x) => `Kamera: ${x}`),

@@ -3,6 +3,22 @@ import { normalizeName } from './db';
 
 export function matchParticipant(record: CanonicalRecord, candidates: MatchCandidate[]): MatchResult {
   const name = normalizeName(record.name || '');
+  const tckn = (record.tckn || '').replace(/\D/g, '');
+  if (tckn) {
+    const byTckn = candidates.filter((c) => (c.tckn || '').replace(/\D/g, '') === tckn);
+    if (byTckn.length === 1) {
+      const c = byTckn[0];
+      const nameScore = name ? (c.normalized_name === name ? 1 : similarity(c.normalized_name, name)) : 0.99;
+      return {
+        status: c.status === 'ACTIVE' ? 'ACTIVE_MATCH' : 'GUEST_MATCH',
+        student_id: c.student_id,
+        confidence: Math.max(0.98, nameScore),
+        issues: name && nameScore < 0.55 ? ['T.C. kimlik numarası eşleşti ancak ad soyad farklı görünüyor.'] : [],
+      };
+    }
+    if (byTckn.length > 1) return { status: 'AMBIGUOUS', confidence: 0.35, issues: ['Aynı T.C. kimlik numarasına sahip birden fazla kayıt bulundu.'], candidates: byTckn.map((c) => c.student_id) };
+  }
+
   if (!name) return { status: 'INVALID', confidence: 0, issues: ['Ad soyad okunamadı.'] };
 
   const studentNo = (record.student_number || '').trim();

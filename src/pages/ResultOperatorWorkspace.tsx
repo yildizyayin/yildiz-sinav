@@ -1,5 +1,5 @@
 import { useEffect,useState } from 'react';
-import { CheckCircle2,Download,FileKey2,FileUp,Printer,RefreshCw,ScanLine,ShieldCheck,TriangleAlert } from 'lucide-react';
+import { Ban,CheckCircle2,Download,FileKey2,FileUp,Printer,RefreshCw,ScanLine,Search,ShieldCheck,TriangleAlert,UserCheck,UserX } from 'lucide-react';
 import { api,ApiError } from '../api';
 
 type Props={mode:'INSTITUTION'|'DEALER';access:any};
@@ -13,6 +13,10 @@ export function ResultOperatorWorkspace({mode,access}:Props){
  const[preview,setPreview]=useState<any>(null);
  const[batch,setBatch]=useState<any>(null);
  const[report,setReport]=useState<any>(null);
+ const[candidateQueries,setCandidateQueries]=useState<Record<string,string>>({});
+ const[candidates,setCandidates]=useState<Record<string,any[]>>({});
+ const[resolving,setResolving]=useState('');
+ const[reviewTab,setReviewTab]=useState<'UNMATCHED'|'ALL'>('UNMATCHED');
  const[busy,setBusy]=useState(false);
  const[error,setError]=useState('');
  const[notice,setNotice]=useState('');
@@ -40,10 +44,21 @@ export function ResultOperatorWorkspace({mode,access}:Props){
    else setError('Dosya okunamadı.');
   }finally{setBusy(false)}
  };
- const resolveGuest=async(recordId:string)=>{
+ const resolveRecord=async(recordId:string,action:'MATCH'|'GUEST'|'CANCEL',studentId?:string)=>{
   if(!preview?.batchId)return;
+  setBusy(true);setResolving(recordId);setError('');setNotice('');
+  try{
+   await api(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/records/${recordId}/resolve`,{method:'POST',body:JSON.stringify({action,studentId})});
+   await loadBatch(preview.batchId);setCandidates(current=>({...current,[recordId]:[]}));
+   setNotice(action==='MATCH'?'Öğrenci eşleştirildi.':action==='GUEST'?'Kayıt misafir öğrenci olarak işaretlendi.':'Kayıt iptal edildi; değerlendirmeye alınmayacak.');
+  }catch(e:any){setError(e.message)}finally{setBusy(false);setResolving('')}
+ };
+ const searchCandidates=async(recordId:string)=>{
+  if(!preview?.batchId)return;
+  const query=(candidateQueries[recordId]||'').trim();
+  if(query.length<2){setError('Eşleştirme araması için en az 2 karakter girin.');return}
   setBusy(true);setError('');
-  try{await api(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/records/${recordId}/resolve`,{method:'POST',body:JSON.stringify({asNewGuest:true})});await loadBatch(preview.batchId)}
+  try{const result=await api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/records/${recordId}/candidates?q=${encodeURIComponent(query)}`);setCandidates(current=>({...current,[recordId]:result.candidates||[]}))}
   catch(e:any){setError(e.message)}finally{setBusy(false)}
  };
  const evaluate=async()=>{
@@ -63,8 +78,9 @@ export function ResultOperatorWorkspace({mode,access}:Props){
  };
  const loadReport=async()=>{if(!preview?.batchId)return;setBusy(true);setError('');try{setReport(await api(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/report`))}catch(e:any){setError(e.message)}finally{setBusy(false)}};
  const exportReport=()=>{const rows=report?.rows||[];downloadCsv('anunex-kurum-sonuc-listesi.csv',['Öğrenci No','Ad Soyad','Sınıf/Şube','Doğru','Yanlış','Boş','Net','Puan','Şube Sırası','Sınıf Düzeyi Sırası','Kurum Sırası','Kurum Ağı Sırası','İlçe Sırası','İl Sırası','Türkiye Sırası'],rows.map((x:any)=>[x.student_number_snapshot,x.name_snapshot,x.class_snapshot,x.correct_count,x.wrong_count,x.blank_count,x.net,x.score,rank(x.class_rank,x.class_count),rank(x.grade_rank,x.grade_count),rank(x.institution_rank,x.institution_count),rank(x.network_rank,x.network_count),rank(x.district_rank,x.district_count),rank(x.city_rank,x.city_count),rank(x.national_rank,x.national_count)]))};
- const reset=()=>{setFile(null);setPreview(null);setBatch(null);setReport(null);setError('');setNotice('')};
- const reviewRows=(batch?.records||[]).filter((row:any)=>['AMBIGUOUS','INVALID'].includes(row.match_status)||(row.issues||[]).length>0);
+ const reset=()=>{setFile(null);setPreview(null);setBatch(null);setReport(null);setCandidates({});setCandidateQueries({});setError('');setNotice('')};
+ const pendingRows=(batch?.records||[]).filter((row:any)=>row.resolution_status!=='CANCELLED'&&row.resolution_status!=='RESOLVED'&&(['NEW_GUEST','AMBIGUOUS','INVALID'].includes(row.match_status)||(row.issues||[]).length>0));
+ const reviewRows=reviewTab==='UNMATCHED'?pendingRows.filter((row:any)=>['NEW_GUEST','AMBIGUOUS','INVALID'].includes(row.match_status)):pendingRows;
  const ready=batch?.batch?.status==='READY'||batch?.batch?.status==='COMMITTED';
 
  return <section className="panel result-operator-workspace" style={{marginTop:18}}>
@@ -82,9 +98,13 @@ export function ResultOperatorWorkspace({mode,access}:Props){
    {!catalog.opticals.length&&<div className="alert warning"><TriangleAlert/> Aktif FMT/parser tanımlı optik bulunmuyor.</div>}
    <button className="primary huge" disabled={busy||!file||!institutionId||!examId||!templateVersionId} onClick={()=>void upload()}><FileUp/> {busy?'Dosya okunuyor…':'Dosyayı yükle ve kontrol et'}</button>
   </div>:<>
-   <div className="summary-strip"><Summary label="Toplam" value={preview.total}/><Summary label="Aktif eşleşti" value={preview.counts?.active}/><Summary label="Bilinen misafir" value={preview.counts?.guest}/><Summary label="Yeni misafir" value={preview.counts?.newGuest}/><Summary label="Kontrol" value={reviewRows.length} warn/></div>
+   <div className="summary-strip"><Summary label="Toplam" value={preview.total}/><Summary label="Aktif eşleşti" value={batch?.counts?.active??preview.counts?.active}/><Summary label="Bilinen misafir" value={batch?.counts?.guest??preview.counts?.guest}/><Summary label="Yeni misafir" value={batch?.counts?.newGuest??preview.counts?.newGuest}/><Summary label="Kontrol" value={pendingRows.length} warn/></div>
    <div className="panel-head"><div><h3>5 · Eşleşme kontrolü</h3><p>{preview.detection?.templateName} · algılama güveni %{Math.round(Number(preview.detection?.confidence||0)*100)}</p></div><button className="ghost" onClick={reset}><RefreshCw/> Yeni dosya</button></div>
-   {reviewRows.map((row:any)=><div className="issue-row" key={row.id}><div><strong>{row.canonical?.name||`Satır ${row.row_no}`}</strong><span>{(row.issues||[]).join(' · ')||row.match_status}</span></div>{['AMBIGUOUS','INVALID'].includes(row.match_status)&&<button className="secondary" disabled={busy} onClick={()=>void resolveGuest(row.id)}>Misafir öğrenci olarak kabul et</button>}</div>)}
+   <div className="tabs result-review-tabs"><button className={reviewTab==='UNMATCHED'?'active':''} onClick={()=>setReviewTab('UNMATCHED')}>Kayıtsız öğrenciler ({pendingRows.filter((row:any)=>['NEW_GUEST','AMBIGUOUS','INVALID'].includes(row.match_status)).length})</button><button className={reviewTab==='ALL'?'active':''} onClick={()=>setReviewTab('ALL')}>Tüm kontroller ({pendingRows.length})</button></div>
+   {reviewRows.map((row:any)=>{
+    const query=candidateQueries[row.id]??row.canonical?.student_number??row.canonical?.name??'';
+    return <div className="issue-row" key={row.id}><div><strong>{row.canonical?.name||`Satır ${row.row_no}`}</strong><span>{row.canonical?.student_number?`Öğrenci No: ${row.canonical.student_number} · `:''}{(row.issues||[]).join(' · ')||'Kayıtlı öğrenci eşleşmesi bulunamadı.'}</span></div><div className="result-review-actions"><div className="result-candidate-search"><input aria-label={`${row.row_no}. satır öğrenci araması`} value={query} placeholder="Öğrenci no veya isim" onChange={e=>setCandidateQueries(current=>({...current,[row.id]:e.target.value}))}/><button className="ghost" disabled={busy} onClick={()=>void searchCandidates(row.id)}><Search/> Ara</button></div>{(candidates[row.id]||[]).map((candidate:any)=><div className="result-candidate" key={candidate.id}><span><strong>{candidate.first_name} {candidate.last_name}</strong><small>{candidate.student_number} · {candidate.grade_level}. sınıf {candidate.section||''} · {candidate.status==='GUEST'?'Misafir':'Kayıtlı'}</small></span><button className="secondary" disabled={busy} onClick={()=>void resolveRecord(row.id,'MATCH',candidate.id)}><UserCheck/> Eşleştir</button></div>)}<div className="result-decision-buttons"><button className="secondary" disabled={busy||resolving===row.id} onClick={()=>void resolveRecord(row.id,'GUEST')}><UserX/> Misafir</button><button className="ghost" disabled={busy||resolving===row.id} onClick={()=>void resolveRecord(row.id,'CANCEL')}><Ban/> İptal</button></div></div></div>;
+   })}
    {batch?.batch?.status==='NEEDS_REVIEW'&&<div className="alert warning"><TriangleAlert/> Sorunlu satırlar çözülmeden değerlendirme başlatılmaz.</div>}
    {batch?.batch?.status!=='COMMITTED'&&<button className="primary huge" disabled={busy||!ready} onClick={()=>void evaluate()}><ScanLine/> {busy?'Değerlendiriliyor…':'6 · Sınavı değerlendir'}</button>}
    {batch?.batch?.status==='COMMITTED'&&<><div className="success-box"><CheckCircle2/><div><strong>Değerlendirme tamamlandı</strong><span>{preview.evaluated||preview.total} katılımcının sonucu işlendi. Erişim kartını bir kez indirip kurum yetkilisine güvenli kanaldan teslim edin.</span></div></div><div className="result-completion-actions"><button className="secondary" disabled={busy} onClick={()=>void generateAccessCodes()}><FileKey2/> Öğrenci erişim kartlarını üret</button><button className="secondary" disabled={busy} onClick={()=>void loadReport()}><Download/> Kurum sonuç listesini hazırla</button></div>{report&&<section className="result-report-preview"><div className="panel-head"><div><h3>Yayın ve sıralama kontrolü</h3><p>{report.publication?.rankingFrozenAt?`Sıralama ${new Date(report.publication.rankingFrozenAt).toLocaleString('tr-TR')} tarihinde donduruldu.`:'Kurum ve şube sıraları hazır. İlçe, il ve Türkiye sıraları Süper Admin genel yayını tamamlayınca kesinleşir.'}</p></div><div className="result-completion-actions"><button className="ghost" onClick={exportReport}><Download/> Excel / CSV</button><button className="ghost" onClick={()=>window.print()}><Printer/> PDF yazdır</button></div></div><div className="table-card"><table><thead><tr><th>Öğrenci</th><th>D/Y/B</th><th>Net</th><th>Şube</th><th>Kurum</th><th>İlçe</th><th>İl</th><th>Türkiye</th></tr></thead><tbody>{report.rows.slice(0,200).map((x:any)=><tr key={x.participant_id}><td><strong>{x.name_snapshot}</strong><small>{x.student_number_snapshot} · {x.class_snapshot||'—'}</small></td><td>{x.correct_count}/{x.wrong_count}/{x.blank_count}</td><td><strong>{Number(x.net).toLocaleString('tr-TR')}</strong></td><td>{rank(x.class_rank,x.class_count)}</td><td>{rank(x.institution_rank,x.institution_count)}</td><td>{rank(x.district_rank,x.district_count)}</td><td>{rank(x.city_rank,x.city_count)}</td><td>{rank(x.national_rank,x.national_count)}</td></tr>)}</tbody></table></div>{report.rows.length>200&&<p className="muted">Ekranda ilk 200 kayıt gösterilir; indirilen dosyada {report.rows.length.toLocaleString('tr-TR')} öğrencinin tamamı bulunur.</p>}</section>}</>}

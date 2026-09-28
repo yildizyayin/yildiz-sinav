@@ -132,7 +132,10 @@ async function canManageExam(env: Env,user:AuthUser,profile:any):Promise<boolean
 
 async function listExamCatalog(request: Request, env: Env, user: AuthUser): Promise<Response> {
   const url=new URL(request.url); const q=(url.searchParams.get('q')||'').trim(); const scope=url.searchParams.get('scope');
-  const params:any[]=[]; const where=[`e.status IN ('ACTIVE','CLOSED')`];
+  // Sınav Ekle yeni kaydı önce DRAFT oluşturur. Sınav Yükle ekranı,
+  // yapılandırması tamamlanmadan önce de bu sınava veri bağlayabilmelidir;
+  // arşivlenen kayıtlar seçimden çıkarılır.
+  const params:any[]=[]; const where=[`e.status IN ('DRAFT','ACTIVE','CLOSED')`];
   if(scope){where.push('COALESCE(p.scope,\'INSTITUTION\')=?');params.push(scope);}
   if(q){where.push(`(e.title LIKE ? OR p.catalog_code LIKE ? OR pub.name LIKE ?)`); const s=`%${q}%`;params.push(s,s,s);}
   if(user.role!=='SUPER_ADMIN'){
@@ -141,7 +144,7 @@ async function listExamCatalog(request: Request, env: Env, user: AuthUser): Prom
   }
   const rows=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.grade_level,e.academic_year,e.exam_date,e.status,
     COALESCE(p.scope,'INSTITUTION') scope,p.catalog_code,p.verified_catalog,p.result_freeze_status,p.snapshot_version,p.published_at,
-    pub.name publisher_name,n.name network_name,
+    COALESCE(pub.name,e.publisher_name) publisher_name,n.name network_name,
     (SELECT COUNT(*) FROM exam_participants ep WHERE ep.exam_id=e.id) participant_count,
     (SELECT GROUP_CONCAT(code) FROM exam_booklets b WHERE b.exam_id=e.id AND b.active=1) booklet_codes
     FROM exams e LEFT JOIN exam_delivery_profiles p ON p.exam_id=e.id LEFT JOIN publishers pub ON pub.id=p.publisher_id LEFT JOIN institution_networks n ON n.id=p.network_id
@@ -320,10 +323,20 @@ async function listQuestions(request:Request,env:Env,user:AuthUser):Promise<Resp
   if(reviewStatus){if(!['DRAFT','REVIEW','APPROVED','REJECTED','ARCHIVED'].includes(reviewStatus))return badRequest('Geçersiz inceleme durumu.','INVALID_STATUS');wh.push('q.review_status=?');ps.push(reviewStatus);}
   if(user.role!=='SUPER_ADMIN') { wh.push(`(q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`); ps.push(user.institution_id); }
   if(user.role==='TEACHER') wh.push(`q.subject_id IN (SELECT ta.subject_id FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND ta.assignment_type='SUBJECT')`),ps.push(user.id,user.institution_id);
-  const rows=await all<any>(env.DB.prepare(`SELECT q.*,COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,s.name subject_name,
-    EXISTS(SELECT 1 FROM question_learning_links ql WHERE ql.question_id=q.id) has_learning_link,
-    (SELECT COUNT(*) FROM question_assets qa WHERE qa.question_id=q.id) asset_count
-    FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')} ORDER BY q.created_at DESC LIMIT 300`).bind(...ps));
+  let rows:any[];
+  try{
+    rows=await all<any>(env.DB.prepare(`SELECT q.*,COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,s.name subject_name,
+      EXISTS(SELECT 1 FROM question_learning_links ql WHERE ql.question_id=q.id) has_learning_link,
+      (SELECT COUNT(*) FROM question_assets qa WHERE qa.question_id=q.id) asset_count
+      FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')} ORDER BY q.created_at DESC LIMIT 300`).bind(...ps));
+  }catch{
+    // The core bank predates the optional learning/media relations. Read the
+    // questions without those enrichments until the pending migration lands.
+    const fallbackWhere=wh.map(condition=>condition.replace(/COALESCE\(q\.difficulty_level,q\.difficulty,3\)/g,'q.difficulty'));
+    rows=await all<any>(env.DB.prepare(`SELECT q.*,q.difficulty difficulty_level,s.name subject_name,
+      0 has_learning_link,0 asset_count
+      FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${fallbackWhere.join(' AND ')} ORDER BY q.created_at DESC LIMIT 300`).bind(...ps));
+  }
   const hydrated=await hydrateQuestionMedia(env,rows);
   return json({ok:true,questions:hydrated.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined}))});
 }

@@ -61,6 +61,25 @@ describe('optical definition validation', () => {
     expect(result.errors.some((x) => x.includes('cevap bölgesi'))).toBe(true);
   });
 
+  it('rejects a drawn answer rectangle without executable question metadata', () => {
+    const result = validateCameraGeometry({
+      regions: [{ id: 'answers', type: 'answers', purpose: 'answers', subjectCode: 'MAT', xMm: 10, yMm: 10, widthMm: 100, heightMm: 100 }],
+    }, 210, 297);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((x) => x.includes('questionCount'))).toBe(true);
+  });
+
+  it('requires explicit identity metadata for booklet regions', () => {
+    const result = validateCameraGeometry({
+      regions: [
+        { id: 'answers', type: 'answers', purpose: 'answers', subjectCode: 'MAT', questionCount: 10, options: ['A', 'B', 'C', 'D'], xMm: 10, yMm: 10, widthMm: 100, heightMm: 100 },
+        { id: 'booklet', type: 'bubble-grid', purpose: 'booklet', positions: 2, values: ['A', 'B'], xMm: 10, yMm: 120, widthMm: 40, heightMm: 20 },
+      ],
+    }, 210, 297);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((x) => x.includes('kitapçık'))).toBe(true);
+  });
+
   it('accepts exam and booklet fields in printable optical definitions', () => {
     expect(validatePrintFields(print, 210, 297)).toEqual({ valid: true, errors: [] });
   });
@@ -85,5 +104,50 @@ describe('optical definition validation', () => {
 
     const after = definitionReadiness({ parser, camera, print, fiducials, pageWidthMm: 210, pageHeightMm: 297, parserTestPassed: true });
     expect(after.ready).toBe(true);
+  });
+
+  it('allows manual parser publication without optional camera, print, or fiducials', () => {
+    const result = definitionReadiness({
+      parser,
+      camera: null,
+      print: null,
+      fiducials: null,
+      pageWidthMm: 210,
+      pageHeightMm: 297,
+      parserTestPassed: true,
+    });
+    expect(result.ready).toBe(true);
+    expect(result.camera).toBe(true);
+    expect(result.print).toBe(true);
+    expect(result.fiducials).toBe(true);
+    expect(result.errors).toEqual([]);
+  });
+
+  it('treats serialized empty optional sections as absent', () => {
+    const result = definitionReadiness({
+      parser,
+      camera: '{"regions":[]}',
+      print: '{"fields":[]}',
+      fiducials: '{"targets":[]}',
+      pageWidthMm: 210,
+      pageHeightMm: 297,
+      parserTestPassed: true,
+    });
+    expect(result.ready).toBe(true);
+    expect(result.errors).toEqual([]);
+  });
+
+  it('rejects an explicitly started but incomplete optional camera definition', () => {
+    const result = definitionReadiness({
+      parser,
+      camera: { regions: [], configured: true },
+      print: null,
+      fiducials: null,
+      pageWidthMm: 210,
+      pageHeightMm: 297,
+      parserTestPassed: true,
+    });
+    expect(result.ready).toBe(false);
+    expect(result.camera).toBe(false);
   });
 });

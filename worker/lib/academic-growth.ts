@@ -156,15 +156,15 @@ export async function buildTargetAnalysis(env: Env, user: AuthUser, studentId: s
 }
 
 export function targetNibiruAnswer(payload: any) {
-  const target=payload?.target,analysis=payload?.analysis;if(!target)return '🤖 Nibiru: Henüz bir akademik hedef belirlememişsin. 8. sınıftaysan hedef lise, 12. sınıftaysan hedef üniversite programı seçebilirsin.';
-  if(!analysis)return '🤖 Nibiru: Hedefin kayıtlı ancak karşılaştırma yapacak yeterli sınav verisi henüz oluşmadı.';
+  const target=payload?.target,analysis=payload?.analysis;if(!target)return 'Nibiru: Henüz bir akademik hedef belirlememişsin. 8. sınıftaysan hedef lise, 12. sınıftaysan hedef üniversite programı seçebilirsin.';
+  if(!analysis)return 'Nibiru: Hedefin kayıtlı ancak karşılaştırma yapacak yeterli sınav verisi henüz oluşmadı.';
   const name=target.target_type==='LGS_SCHOOL'?target.school_name:`${target.university_name} · ${target.program_name}`;
   const trend=analysis.trend==='RISING'?'Son sınavlarında olumlu bir gelişim var.':analysis.trend==='FALLING'?'Son sınavlarında gerileme görülüyor; kısa bir pekiştirme planı yararlı olabilir.':analysis.trend==='STABLE'?'Son sınavların genel olarak dengeli seyrediyor.':'Gelişim eğilimi için daha fazla sınav verisi gerekiyor.';
   const gaps=(analysis.gaps||[]).filter((x:any)=>x.gap>0).slice(0,3);
   const gapText=gaps.length?` Hedef net profiline göre öncelikli farklar: ${gaps.map((x:any)=>`${x.metric} +${x.gap} net`).join(', ')}.`:'';
   const weak=(analysis.weakOutcomes||[]).slice(0,3);const weakText=weak.length?` Pekiştirmeni önerdiğim alanlar: ${weak.map((x:any)=>`${x.subject_name} – ${x.title}`).join('; ')}.`:'';
   const source=`Kaynak: ${analysis.source.kind}, ${analysis.source.year}.`;
-  return `🤖 Nibiru: Hedefin ${name}. Bugüne kadar karşılaştırmaya uygun ${analysis.examCount} sınavını değerlendirdim. ${trend}${gapText}${weakText} ${source} Bu değerlendirme rehberlik amaçlıdır; yerleştirme garantisi vermez.`;
+  return `Nibiru: Hedefin ${name}. Bugüne kadar karşılaştırmaya uygun ${analysis.examCount} sınavını değerlendirdim. ${trend}${gapText}${weakText} ${source} Bu değerlendirme rehberlik amaçlıdır; yerleştirme garantisi vermez.`;
 }
 
 export async function getTargetAnalysis(env: Env, user: AuthUser, url: URL) {

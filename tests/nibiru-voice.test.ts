@@ -1,5 +1,6 @@
 import { describe,expect,it } from 'vitest';
 import { buildVoiceProviderPlan,prepareNibiruSpeechText,voiceProviderStatus } from '../worker/lib/nibiru-voice';
+import { addPublicVoiceCors } from '../worker/nibiru-voice-entry';
 import type { Env } from '../worker/types';
 
 function env(values:Partial<Env>={}):Env{return values as Env}
@@ -12,6 +13,12 @@ describe('Nibiru Voice provider policy',()=>{
   expect(text).not.toContain('**');
   expect(text).not.toContain('https://');
   expect(text).toContain('Şimdi');
+ });
+
+ it('keeps the public voice demo readable from the ANUNEX marketing origin',()=>{
+  const headers=addPublicVoiceCors(new Request('https://app.anunex.com/api/public/nibiru/voice-demo',{headers:{Origin:'https://anunex.com'}}),new Headers({'content-type':'audio/mpeg'}));
+  expect(headers.get('access-control-allow-origin')).toBe('https://anunex.com');
+  expect(headers.get('vary')).toBe('Origin');
  });
 
  it('uses Unified Billing standard TTS when Google is not configured',()=>{
@@ -28,6 +35,11 @@ describe('Nibiru Voice provider policy',()=>{
  it('uses direct GPT-4o Mini TTS first in premium mode when secret exists',()=>{
   const plan=buildVoiceProviderPlan(env({AI:ai,OPENAI_TTS_API_KEY:'secret'}),'PREMIUM');
   expect(plan.providers[0]).toBe('OPENAI_GPT4O_MINI_TTS');
+ });
+
+ it('keeps standard voice enabled when only direct OpenAI TTS is configured',()=>{
+  const status=voiceProviderStatus(env({OPENAI_TTS_API_KEY:'secret'}));
+  expect(status.standardReady).toBe(true);
  });
 
  it('uses Unified HD first in premium mode without direct OpenAI key',()=>{

@@ -2,6 +2,7 @@ import managementApp from './management-entry';
 import type { AuthUser, Env, Role } from './types';
 import { getAuthUser, hashPassword } from './lib/auth';
 import { all, audit, one, uuid } from './lib/db';
+import { createAccountNotificationBatch, generateTemporaryPassword, type AccountNotificationRecipient } from './lib/account-notifications';
 
 export function canManageAccessAccounts(role: Role): boolean {
   return role === 'SUPER_ADMIN' || role === 'INSTITUTION_MANAGER';
@@ -77,7 +78,7 @@ async function listAccessAccounts(env: Env, actor: AuthUser, url: URL): Promise<
 }
 
 async function createStudentAccount(request: Request, env: Env, actor: AuthUser, studentId: string): Promise<Response> {
-  const body = await request.json<{ institutionId?: string; email?: string; username?: string; password?: string }>();
+  const body = await request.json<{ institutionId?: string; email?: string; username?: string; phone?: string; password?: string; notifyChannels?: string[] }>();
   const row = await one<any>(env.DB.prepare(`
     SELECT s.id,s.first_name,s.last_name,s.status,e.institution_id
     FROM student_entities s
@@ -95,6 +96,7 @@ async function createStudentAccount(request: Request, env: Env, actor: AuthUser,
 
   const email = body.email?.trim().toLowerCase() || null;
   const username = body.username?.trim().toLowerCase() || null;
+  const phone = body.phone?.trim() || null;
   const password = body.password || '';
   if ((!email && !username) || password.length < 8) return error(400, 'VALIDATION_ERROR', 'E-posta veya kullanıcı adı ile en az 8 karakterli şifre gereklidir.');
   const duplicate = await identifierAvailable(env, email, username);
@@ -103,11 +105,12 @@ async function createStudentAccount(request: Request, env: Env, actor: AuthUser,
   const passwordData = await hashPassword(password);
   const id = uuid('usr');
   await env.DB.prepare(`
-    INSERT INTO users (id,institution_id,student_id,role,display_name,email,username,password_hash,password_salt,password_iterations,password_algo,active)
-    VALUES (?,?,?,'STUDENT',?,?,?,?,?,?,?,'PBKDF2-SHA256-v1',1)
-  `).bind(id, institutionId, studentId, `${row.first_name} ${row.last_name}`, email, username, passwordData.hash, passwordData.salt, passwordData.iterations).run();
+    INSERT INTO users (id,institution_id,student_id,role,display_name,email,phone,username,password_hash,password_salt,password_iterations,password_algo,must_change_password,active)
+    VALUES (?,?,?,'STUDENT',?,?,?,?,?,?,?,'PBKDF2-SHA256-v1',1,1)
+  `).bind(id, institutionId, studentId, `${row.first_name} ${row.last_name}`, email, phone, username, passwordData.hash, passwordData.salt, passwordData.iterations).run();
   await audit(env.DB, actor.id, institutionId, 'STUDENT_ACCESS_CREATED', 'user', id, { studentId, email, username });
-  return Response.json({ ok: true, userId: id, studentId }, { status: 201 });
+  const notification = await createAccountNotificationBatch(env, actor.id, institutionId, [{ userId: id, displayName: `${row.first_name} ${row.last_name}`, username, email, phone, password }], body.notifyChannels);
+  return Response.json({ ok: true, userId: id, studentId, notification }, { status: 201 });
 }
 
 async function activeStudentInInstitution(env: Env, studentId: string, institutionId: string): Promise<boolean> {
@@ -129,6 +132,7 @@ async function createParentAccount(request: Request, env: Env, actor: AuthUser):
     phone?: string;
     username?: string;
     password?: string;
+    notifyChannels?: string[];
     studentIds?: string[];
     relationship?: string;
   }>();
@@ -151,15 +155,93 @@ async function createParentAccount(request: Request, env: Env, actor: AuthUser):
   const passwordData = await hashPassword(password);
   const userId = uuid('usr');
   await env.DB.prepare(`
-    INSERT INTO users (id,institution_id,role,display_name,email,phone,username,password_hash,password_salt,password_iterations,password_algo,active)
-    VALUES (?,?,'PARENT',?,?,?,?,?,?,?,?,1)
+    INSERT INTO users (id,institution_id,role,display_name,email,phone,username,password_hash,password_salt,password_iterations,password_algo,must_change_password,active)
+    VALUES (?,?,'PARENT',?,?,?,?,?,?,?,?,1,1)
   `).bind(userId, institutionId, displayName, email, phone, username, passwordData.hash, passwordData.salt, passwordData.iterations, 'PBKDF2-SHA256-v1').run();
   for (const studentId of studentIds) {
     await env.DB.prepare(`INSERT INTO parent_student_links (id,parent_user_id,student_id,relationship,active) VALUES (?,?,?,?,1)`)
       .bind(uuid('plink'), userId, studentId, body.relationship?.trim() || 'Veli').run();
   }
   await audit(env.DB, actor.id, institutionId, 'PARENT_ACCESS_CREATED', 'user', userId, { studentIds, email, username });
-  return Response.json({ ok: true, userId, linkedStudents: studentIds.length }, { status: 201 });
+  const notification = await createAccountNotificationBatch(env, actor.id, institutionId, [{ userId: userId, displayName, username, email, phone, password }], body.notifyChannels);
+  return Response.json({ ok: true, userId, linkedStudents: studentIds.length, notification }, { status: 201 });
+}
+
+type BulkStudentAccountRow = { studentId?: string; email?: string; username?: string; phone?: string; password?: string };
+type BulkParentAccountRow = { displayName?: string; email?: string; username?: string; phone?: string; password?: string; relationship?: string; studentIds?: string[] };
+
+async function createStudentAccountsBulk(request: Request, env: Env, actor: AuthUser): Promise<Response> {
+  const body = await request.json<{ institutionId?: string; students?: BulkStudentAccountRow[]; notifyChannels?: string[] }>();
+  const institutionId = institutionFrom(actor, new URL(request.url), body.institutionId || null);
+  if (!institutionId || !(await ensureInstitution(env, actor, institutionId))) return error(403, 'FORBIDDEN', 'Bu kuruma erişim yetkiniz bulunmuyor.');
+  const rows = Array.isArray(body.students) ? body.students.slice(0, 500) : [];
+  if (!rows.length) return error(400, 'ROWS_REQUIRED', 'Toplu öğrenci hesabı için en az bir satır gereklidir.');
+  const created: AccountNotificationRecipient[] = [];
+  const errors: Array<{ row: number; message: string }> = [];
+  const statements: D1PreparedStatement[] = [];
+  const seenStudents = new Set<string>();
+  const seenEmails = new Set<string>();
+  const seenUsernames = new Set<string>();
+  for (const [index, row] of rows.entries()) {
+    if (!row.studentId || seenStudents.has(row.studentId)) { errors.push({ row: index + 1, message: 'Öğrenci kimliği eksik veya tekrar ediyor.' }); continue; }
+    seenStudents.add(row.studentId);
+    const student = await one<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name,s.status,e.institution_id FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id JOIN institution_seasons se ON se.id=e.season_id WHERE s.id=? AND e.institution_id=? AND e.status='ACTIVE' AND se.status='ACTIVE' ORDER BY e.created_at DESC LIMIT 1`).bind(row.studentId, institutionId));
+    if (!student || !studentEligibleForAccount(student.status)) { errors.push({ row: index + 1, message: 'Öğrenci aktif değil veya bu kuruma bağlı değil.' }); continue; }
+    const existing = await one<any>(env.DB.prepare(`SELECT id FROM users WHERE student_id=? AND role='STUDENT' LIMIT 1`).bind(row.studentId));
+    if (existing) { errors.push({ row: index + 1, message: 'Bu öğrencinin giriş hesabı zaten var.' }); continue; }
+    const email = String(row.email || '').trim().toLowerCase() || null;
+    const username = String(row.username || '').trim().toLowerCase() || null;
+    const phone = String(row.phone || '').trim() || null;
+    const password = row.password || generateTemporaryPassword();
+    if ((!email && !username) || password.length < 8) { errors.push({ row: index + 1, message: 'E-posta veya kullanıcı adı ve en az 8 karakterli şifre gereklidir.' }); continue; }
+    if ((email && seenEmails.has(email)) || (username && seenUsernames.has(username))) { errors.push({ row: index + 1, message: 'Aynı e-posta veya kullanıcı adı toplu dosyada tekrar ediyor.' }); continue; }
+    if (email) seenEmails.add(email);
+    if (username) seenUsernames.add(username);
+    const duplicate = await identifierAvailable(env, email, username);
+    if (duplicate) { errors.push({ row: index + 1, message: 'E-posta veya kullanıcı adı sistemde zaten kullanılıyor.' }); continue; }
+    const id = uuid('usr');
+    const passwordData = await hashPassword(password);
+    const displayName = `${student.first_name} ${student.last_name}`;
+    statements.push(env.DB.prepare(`INSERT INTO users (id,institution_id,student_id,role,display_name,email,phone,username,password_hash,password_salt,password_iterations,password_algo,must_change_password,active) VALUES (?,?,?,'STUDENT',?,?,?,?,?,?,?,'PBKDF2-SHA256-v1',1,1)`).bind(id, institutionId, row.studentId, displayName, email, phone, username, passwordData.hash, passwordData.salt, passwordData.iterations));
+    statements.push(env.DB.prepare(`INSERT INTO audit_logs (id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES (?,?,?,'STUDENT_ACCESS_CREATED','user',?,?)`).bind(uuid('aud'), actor.id, institutionId, id, JSON.stringify({ studentId: row.studentId, source: 'BULK', row: index + 1 })));
+    created.push({ userId: id, displayName, username, email, phone, password });
+  }
+  if (statements.length) await env.DB.batch(statements);
+  const notification = created.length ? await createAccountNotificationBatch(env, actor.id, institutionId, created, body.notifyChannels) : null;
+  return Response.json({ ok: true, created: created.length, skipped: errors.length, errors, notification }, { status: created.length ? 201 : 400 });
+}
+
+async function createParentAccountsBulk(request: Request, env: Env, actor: AuthUser): Promise<Response> {
+  const body = await request.json<{ institutionId?: string; parents?: BulkParentAccountRow[]; notifyChannels?: string[] }>();
+  const institutionId = institutionFrom(actor, new URL(request.url), body.institutionId || null);
+  if (!institutionId || !(await ensureInstitution(env, actor, institutionId))) return error(403, 'FORBIDDEN', 'Bu kuruma erişim yetkiniz bulunmuyor.');
+  const rows = Array.isArray(body.parents) ? body.parents.slice(0, 500) : [];
+  if (!rows.length) return error(400, 'ROWS_REQUIRED', 'Toplu veli hesabı için en az bir satır gereklidir.');
+  const created: AccountNotificationRecipient[] = [];
+  const errors: Array<{ row: number; message: string }> = [];
+  for (const [index, row] of rows.entries()) {
+    const displayName = String(row.displayName || '').trim();
+    const email = String(row.email || '').trim().toLowerCase() || null;
+    const username = String(row.username || '').trim().toLowerCase() || null;
+    const phone = String(row.phone || '').trim() || null;
+    const studentIds = [...new Set(Array.isArray(row.studentIds) ? row.studentIds : [])];
+    const password = row.password || generateTemporaryPassword();
+    if (!displayName || (!email && !username) || !studentIds.length || password.length < 8) { errors.push({ row: index + 1, message: 'Ad, e-posta/kullanıcı adı, şifre ve öğrenci bağlantısı gereklidir.' }); continue; }
+    const duplicate = await identifierAvailable(env, email, username);
+    if (duplicate) { errors.push({ row: index + 1, message: 'E-posta veya kullanıcı adı sistemde zaten kullanılıyor.' }); continue; }
+    let valid = true;
+    for (const studentId of studentIds) if (!(await activeStudentInInstitution(env, studentId, institutionId))) valid = false;
+    if (!valid) { errors.push({ row: index + 1, message: 'Bağlanan öğrencilerden biri aktif değil veya kuruma bağlı değil.' }); continue; }
+    const userId = uuid('usr');
+    const passwordData = await hashPassword(password);
+    const statements: D1PreparedStatement[] = [env.DB.prepare(`INSERT INTO users (id,institution_id,role,display_name,email,phone,username,password_hash,password_salt,password_iterations,password_algo,must_change_password,active) VALUES (?,?,'PARENT',?,?,?,?,?,?,?,'PBKDF2-SHA256-v1',1,1)`).bind(userId, institutionId, displayName, email, phone, username, passwordData.hash, passwordData.salt, passwordData.iterations)];
+    for (const studentId of studentIds) statements.push(env.DB.prepare(`INSERT INTO parent_student_links (id,parent_user_id,student_id,relationship,active) VALUES (?,?,?,?,1)`).bind(uuid('plink'), userId, studentId, String(row.relationship || 'Veli').trim() || 'Veli'));
+    statements.push(env.DB.prepare(`INSERT INTO audit_logs (id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES (?,?,?,'PARENT_ACCESS_CREATED','user',?,?)`).bind(uuid('aud'), actor.id, institutionId, userId, JSON.stringify({ studentIds, source: 'BULK', row: index + 1 })));
+    await env.DB.batch(statements);
+    created.push({ userId, displayName, username, email, phone, password });
+  }
+  const notification = created.length ? await createAccountNotificationBatch(env, actor.id, institutionId, created, body.notifyChannels) : null;
+  return Response.json({ ok: true, created: created.length, skipped: errors.length, errors, notification }, { status: created.length ? 201 : 400 });
 }
 
 async function linkParentStudent(request: Request, env: Env, actor: AuthUser, parentUserId: string): Promise<Response> {
@@ -219,6 +301,18 @@ export default {
       return createParentAccount(request, env, actor);
     }
 
+    if (url.pathname === '/api/students/access-accounts/bulk' && request.method === 'POST') {
+      const actor = await requireActor(env, request);
+      if (actor instanceof Response) return actor;
+      return createStudentAccountsBulk(request, env, actor);
+    }
+
+    if (url.pathname === '/api/parent-access/bulk' && request.method === 'POST') {
+      const actor = await requireActor(env, request);
+      if (actor instanceof Response) return actor;
+      return createParentAccountsBulk(request, env, actor);
+    }
+
     const parentLinkMatch = url.pathname.match(/^\/api\/parents\/([^/]+)\/links$/);
     if (parentLinkMatch && request.method === 'POST') {
       const actor = await requireActor(env, request);
@@ -243,3 +337,4 @@ export default {
     return managementApp.fetch(request, env);
   },
 } satisfies ExportedHandler<Env>;
+

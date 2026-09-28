@@ -36,4 +36,15 @@ describe('official curriculum import',()=>{
   const r=parseCurriculumCsv(text,'TYT',null);
   expect(r.rows[0].gradeLevel).toBeNull();
  });
+
+ it('preserves unit/topic hierarchy and accepts non-outcome nodes without codes',()=>{
+  const text='subject_code,grade_level,node_type,parent_code,unit,topic,subtopic,outcome_code,title\nMAT,7,UNIT,,Sayılar,,,,Sayılar ünitesi\nMAT,7,TOPIC,MAT.7.U1,Sayılar,,,,Tam sayılar\nMAT,7,SUB_OUTCOME,MAT.7.1,Sayılar,Tam sayılar,İşlemler,MAT.7.1.1,Tam sayılarla işlem yapar.';
+  const r=parseCurriculumCsv(text,'SCHOOL',7);
+  expect(r.errors).toEqual([]);
+  expect(r.rows).toHaveLength(3);
+  expect(r.rows[0]).toMatchObject({nodeType:'UNIT',unit:'Sayılar',outcomeCode:null});
+  expect(r.rows[1]).toMatchObject({nodeType:'TOPIC',parentCode:'MAT.7.U1'});
+  expect(r.rows[2]).toMatchObject({nodeType:'SUB_OUTCOME',parentCode:'MAT.7.1',outcomeCode:'MAT.7.1.1'});
+  expect(r.rows.every(row=>row.issues.length===0)).toBe(true);
+ });
 });

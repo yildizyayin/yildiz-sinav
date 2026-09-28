@@ -45,6 +45,13 @@ export interface Env {
   WHATSAPP_ACCESS_TOKEN?: string;
   WHATSAPP_PHONE_NUMBER_ID?: string;
   WHATSAPP_GRAPH_API_VERSION?: string;
+  // Account access notifications. Secrets stay in Cloudflare Secrets; the sender address/from number may be vars.
+  ACCOUNT_NOTIFICATION_SECRET?: string;
+  RESEND_API_KEY?: string;
+  MAIL_FROM_ADDRESS?: string;
+  TWILIO_ACCOUNT_SID?: string;
+  TWILIO_AUTH_TOKEN?: string;
+  TWILIO_FROM_NUMBER?: string;
   TELEGRAM_BOT_TOKEN?: string;
   TELEGRAM_WEBHOOK_SECRET?: string;
   // AI ajan merkezi yalnızca allowlist'teki workflow'ları izler/tetikler.
@@ -82,11 +89,13 @@ export interface AuthUser {
   display_name: string;
   email: string | null;
   username: string | null;
+  must_change_password?: boolean;
 }
 
 export interface CanonicalRecord {
   row_no: number;
   student_number?: string;
+  tckn?: string;
   name: string;
   class_name?: string;
   grade_level?: number;
@@ -103,6 +112,7 @@ export interface MatchCandidate {
   student_id: string;
   status: 'ACTIVE' | 'GUEST' | 'ARCHIVED';
   normalized_name: string;
+  tckn: string | null;
   student_number: string | null;
   grade_level: number | null;
   section: string | null;
@@ -125,3 +135,4 @@ export interface PermissionScope {
   guidanceClassIds: string[];
   subjectClassAssignments: Array<{ classId: string; subjectId: string }>;
 }
+

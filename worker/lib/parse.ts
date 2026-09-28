@@ -105,6 +105,7 @@ function parseDelimited(text: string, fileName: string, templateId?: string, tem
   const delimiter = forcedDelimiter || detectDelimiter(lines[0]);
   const headers = splitDelimited(lines[0], delimiter).map((x) => x.trim().toLowerCase());
   const find = (...names: string[]) => headers.findIndex((h) => names.includes(h));
+  const tcknIdx = find('tckn', 'tc_kimlik', 'tc_kimlik_no', 't.c.kimlik', 'national_id');
   const noIdx = find('student_number', 'ogrenci_no', 'öğrenci_no', 'no', 'student_no');
   const nameIdx = find('name', 'ad_soyad', 'adsoyad', 'ogrenci', 'öğrenci');
   const classIdx = find('class', 'sinif', 'sınıf', 'class_name');
@@ -132,6 +133,7 @@ function parseDelimited(text: string, fileName: string, templateId?: string, tem
     if (!name) issues.push('Ad soyad boş.');
     records.push({
       row_no: i,
+      tckn: tcknIdx >= 0 ? (cols[tcknIdx] || '').replace(/\D/g, '') || undefined : undefined,
       student_number: noIdx >= 0 ? (cols[noIdx] || '').trim() : undefined,
       name,
       class_name: className || undefined,
@@ -164,8 +166,10 @@ function parseFixedWidth(lines: string[], fileName: string, templateId: string, 
     const line = lines[i];
     const pick = (f: any) => f ? line.slice(Number(f.start), Number(f.end)).trim() : '';
     const pickRaw = (f: any) => f ? line.slice(Number(f.start), Number(f.end)) : '';
-    const className = pick(fields.class);
+    const className = pick(fields.class) || pick(fields.grade_class) || pick(fields.section);
     const parsedClass = parseClass(className);
+    const tckn = pick(fields.tckn);
+    const studentNumber = pick(fields.student_number) || (!tckn ? fallbackStudentNumber(line, answersDef) : '');
     const answers: Record<string, string> = {};
     const issues: string[] = [];
     for (const [code, f] of Object.entries<any>(answersDef)) {
@@ -175,8 +179,9 @@ function parseFixedWidth(lines: string[], fileName: string, templateId: string, 
     }
     records.push({
       row_no: i + 1,
-      student_number: pick(fields.student_number) || fallbackStudentNumber(line, answersDef) || undefined,
-      name: pick(fields.name),
+      student_number: studentNumber || undefined,
+      tckn: tckn || undefined,
+      name: pick(fields.name) || [pick(fields.first_name), pick(fields.last_name)].filter(Boolean).join(' '),
       class_name: className || undefined,
       grade_level: parsedClass.grade,
       section: parsedClass.section,

@@ -15,13 +15,23 @@ const PUBLIC_VOICE_SCENARIOS:Record<string,string>={
  'goal':'Evet Zeynep, yönün doğru. Fen ivmen güçlü. Türkçe hızın için paragraf, kimyada iki kazanım tekrarı ve cumartesi denemesi planladım. Bugünün küçük adımları geleceğin doktorunu inşa ediyor.'
 };
 
+const PUBLIC_VOICE_ORIGINS=new Set(['https://anunex.com','https://www.anunex.com','http://localhost:5173','http://127.0.0.1:5173']);
+
+export function addPublicVoiceCors(request:Request,headers:Headers){
+ const origin=request.headers.get('Origin');
+ if(origin&&PUBLIC_VOICE_ORIGINS.has(origin)){headers.set('access-control-allow-origin',origin);headers.set('vary','Origin')}
+ headers.set('cross-origin-resource-policy','cross-origin');
+ return headers;
+}
+
 async function publicVoiceDemo(request:Request,env:Env){
  const key=new URL(request.url).searchParams.get('scenario')||'';
  const text=PUBLIC_VOICE_SCENARIOS[key];
  if(!text)return fail(404,'VOICE_SCENARIO_NOT_FOUND','Tanımlı ses senaryosu bulunamadı.');
  try{
   const result=await speakNibiru(env,text,'PREMIUM');
-  return new Response(strictArrayBuffer(result.audio.bytes),{status:200,headers:{'content-type':result.audio.contentType,'cache-control':'public, max-age=86400, s-maxage=604800, immutable','x-nibiru-voice-provider':result.audio.provider,'x-content-type-options':'nosniff'}});
+  const headers=addPublicVoiceCors(request,new Headers({'content-type':result.audio.contentType,'cache-control':'public, max-age=86400, s-maxage=604800, immutable','x-nibiru-voice-provider':result.audio.provider,'x-content-type-options':'nosniff'}));
+  return new Response(strictArrayBuffer(result.audio.bytes),{status:200,headers});
  }catch(error){return voiceError(error)}
 }
 

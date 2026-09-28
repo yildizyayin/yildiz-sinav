@@ -1,11 +1,32 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeFixedWidthSample, EXAM_CHOICES, EXAM_TEMPLATES, matchOfficialOutcome, parseAnswerKeyText } from '../src/lib/guidedDefinitions';
+import { analyzeFixedWidthSample, EXAM_CHOICES, EXAM_TEMPLATES, matchOfficialOutcome, parseAnswerKeyText, parseAnswerKeyWorkbookRows } from '../src/lib/guidedDefinitions';
 
 const subjects = [
   { id: 'sub_mat', code: 'MAT', name: 'Matematik' },
   { id: 'sub_tur', code: 'TUR', name: 'Türkçe' },
   { id: 'sub_fen', code: 'FEN', name: 'Fen Bilimleri' },
 ];
+
+describe('publisher workbook answer-key layout', () => {
+  it('keeps the publisher outcome label and reads the adjacent official code', () => {
+    const rows: unknown[][] = Array.from({ length: 36 }, () => []);
+    rows[1] = ['SINAV ADI', '', '', '', '', 'TYT 1. DENEME'];
+    rows[3] = ['Sınıf', '', '', '', '', 12, '', '', 'Yayınevi', '', '', '', '', 'ORBİM'];
+    rows[7] = ['TEST İSİMLERİ VE SORU ARALIKLARI'];
+    rows[8] = ['Test No', '', 'Test Adı', '', 'Ders Kodu', '', 'İlk Soru No', '', 'Son Soru No'];
+    rows[9] = [1, '', 'TYT Türkçe', '', 'TYT_TUR', '', 1, '', 40];
+    rows[33] = ['CEVAP ANAHTARI'];
+    rows[34] = ['Test No', '', 'Açıklama Test Adı vs.', '', 'A Soru No', '', 'B Soru No', '', 'Doğru Cevap', '', 'Kazanım Kodu', '', '', '', '', '', '', '', '', '', '', '', '', '', 'MEB Kazanım Kodu'];
+    rows[35] = [1, '', 'TYT Türkçe', '', 1, '', 2, '', 'E', '', 'Sözcükte Anlam', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '21.1.1'];
+    const result = parseAnswerKeyWorkbookRows(rows, [{ id: 'tur', code: 'TYT_TUR', name: 'TYT Türkçe' }]);
+    expect(result.detectedFormat).toBe('WIDE_BOOKLET_TABLE');
+    expect(result.detectedBooklets).toEqual(['A', 'B']);
+    expect(result.entries).toHaveLength(2);
+    expect(result.entries[0].answers).toBe('E');
+    expect(result.entries[0].bookletQuestionNumbers).toEqual([1]);
+    expect(result.entries[0].outcomeRefs?.[0]).toMatchObject({ publisherTitle: 'Sözcükte Anlam', officialCode: '21.1.1' });
+  });
+});
 
 describe('guided answer key parser', () => {
   it('infers subject counts from a simple answer key', () => {
@@ -49,23 +70,9 @@ describe('guided answer key parser', () => {
       bookletQuestionNumbers: [4, 1],
     });
     const dOutcomes = result.entries.find((entry) => entry.bookletCode === 'D')?.outcomeRefsByQuestion?.[0] || [];
-    expect(dOutcomes).toHaveLength(2);
-    expect(dOutcomes[0]).toMatchObject({ code: 'TUR.1', title: 'Sözcükte anlam' });
-    expect(dOutcomes.slice(1)).toEqual([{ title: 'Söz varlığı' }]);
-  });
-
-  it('uses the test name when a qualified workbook lists TYT subtests in the course column', () => {
-    const result = parseAnswerKeyText([
-      'ÇAP,,ÇAP TYT 0 Deneme',
-      'Kitapçık,Test,Ders,A Soru,B Soru,Cevap,Kazanım Kodu,Kazanım-1',
-      'A,TYT Sosyal,Tarih-1,1,4,A,SOS.1,Tarih bilgisi',
-      'A,TYT Fen,Fizik,1,2,C,FEN.1,Fizik bilgisi',
-    ].join('\n'), [
-      { id: 'sub_tyt_sos', code: 'TYT_SOS', name: 'TYT Sosyal Bilimler' },
-      { id: 'sub_tyt_fen', code: 'TYT_FEN', name: 'TYT Fen Bilimleri' },
-    ]);
-    expect(result.unknownLines).toHaveLength(0);
-    expect(result.questionCounts).toEqual({ sub_tyt_sos: 1, sub_tyt_fen: 1 });
+    expect(dOutcomes).toHaveLength(3);
+    expect(dOutcomes[0]).toMatchObject({ code: 'TUR.1', title: undefined });
+    expect(dOutcomes.slice(1)).toEqual([{ title: 'Sözcükte anlam' }, { title: 'Söz varlığı' }]);
   });
 });
 

@@ -60,7 +60,7 @@ export default {
             const payload=await buildStudentTargetAnalysisV2(env,user);
             return json({ok:true,answer:targetNibiruAnswer(payload),intent:'ACADEMIC_TARGET',studentId:user.student_id,target:payload.target,analysis:payload.analysis,outcome:'ANSWERED'});
           }catch{
-            return json({ok:true,answer:'🤖 Nibiru: Hedef analizine erişirken doğrulanmış öğrenci verisini alamadım. Kurum yöneticinizden öğrenci kaydınızı kontrol etmesini isteyebilirsiniz.',intent:'ACADEMIC_TARGET',outcome:'DENIED'});
+            return json({ok:true,answer:'Nibiru: Hedef analizine erişirken doğrulanmış öğrenci verisini alamadım. Kurum yöneticinizden öğrenci kaydınızı kontrol etmesini isteyebilirsiniz.',intent:'ACADEMIC_TARGET',outcome:'DENIED'});
           }
         }
         if(message&&['TEACHER','GUIDANCE_TEACHER','INSTITUTION_MANAGER'].includes(user.role)&&WORKSHEET_INTENT.test(message)){

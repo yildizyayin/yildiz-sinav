@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1100" viewBox="0 0 1440 1100">
+  <rect width="1440" height="1100" fill="#f4f7fc"/>
+  <rect x="0" y="0" width="250" height="1100" fill="#101d3b"/>
+  <text x="32" y="55" fill="#fff" font-family="Arial" font-size="24" font-weight="700">ANUNEX</text>
+  <text x="32" y="82" fill="#91a7d2" font-family="Arial" font-size="11">BİLGİNİN YÖRÜNGESİNDE</text>
+  <text x="32" y="145" fill="#91a7d2" font-family="Arial" font-size="11" font-weight="700">SINAV MERKEZİ</text>
+  <rect x="20" y="165" width="210" height="45" rx="10" fill="#315efb"/>
+  <text x="43" y="193" fill="#fff" font-family="Arial" font-size="14" font-weight="700">✦  Sınav Ekle</text>
+  <text x="43" y="245" fill="#aebddd" font-family="Arial" font-size="13">Sınavlar</text>
+  <text x="43" y="285" fill="#aebddd" font-family="Arial" font-size="13">Sonuç Ağı</text>
+  <text x="43" y="325" fill="#aebddd" font-family="Arial" font-size="13">Kazanımlar</text>
+  <rect x="280" y="36" width="1120" height="80" rx="18" fill="#fff" stroke="#dfe6f2"/>
+  <text x="310" y="66" fill="#315efb" font-family="Arial" font-size="11" font-weight="700">SINAV MERKEZİ / OLUŞTUR</text>
+  <text x="310" y="96" fill="#18243d" font-family="Arial" font-size="25" font-weight="700">Yeni sınav oluştur</text>
+  <text x="1090" y="81" fill="#315efb" font-family="Arial" font-size="12" font-weight="700">✦ Atlas çalışma alanı</text>
+
+  <rect x="280" y="140" width="780" height="290" rx="20" fill="#fff" stroke="#dfe6f2"/>
+  <rect x="305" y="165" width="38" height="38" rx="11" fill="#edf3ff"/>
+  <text x="317" y="190" fill="#315efb" font-family="Arial" font-size="13" font-weight="700">01</text>
+  <text x="360" y="173" fill="#315efb" font-family="Arial" font-size="10" font-weight="700">MODEL</text>
+  <text x="360" y="198" fill="#18243d" font-family="Arial" font-size="20" font-weight="700">Sınav modelini seçin</text>
+  <text x="360" y="220" fill="#78869c" font-family="Arial" font-size="12">Ders listesi, soru yapısı ve puanlama kuralı hazırlanır.</text>
+  <rect x="305" y="247" width="175" height="76" rx="12" fill="#f1f5ff" stroke="#8eadff" stroke-width="2"/>
+  <text x="322" y="273" fill="#18243d" font-family="Arial" font-size="13" font-weight="700">7. Sınıf</text>
+  <text x="322" y="295" fill="#78869c" font-family="Arial" font-size="10">Genel ders sınavı</text>
+  <rect x="493" y="247" width="175" height="76" rx="12" fill="#fbfcff" stroke="#dfe6f2"/>
+  <text x="510" y="273" fill="#18243d" font-family="Arial" font-size="13" font-weight="700">LGS</text>
+  <text x="510" y="295" fill="#78869c" font-family="Arial" font-size="10">MEB resmî profil</text>
+  <rect x="681" y="247" width="175" height="76" rx="12" fill="#fbfcff" stroke="#dfe6f2"/>
+  <text x="698" y="273" fill="#18243d" font-family="Arial" font-size="13" font-weight="700">TYT</text>
+  <text x="698" y="295" fill="#78869c" font-family="Arial" font-size="10">ÖSYM resmî profil</text>
+  <rect x="869" y="247" width="165" height="76" rx="12" fill="#fbfcff" stroke="#dfe6f2"/>
+  <text x="886" y="273" fill="#18243d" font-family="Arial" font-size="13" font-weight="700">Özel Sınav</text>
+  <text x="886" y="295" fill="#78869c" font-family="Arial" font-size="10">Kurum standardı</text>
+  <line x1="305" y1="350" x2="1035" y2="350" stroke="#e5eaf2"/>
+  <text x="305" y="380" fill="#18243d" font-family="Arial" font-size="12" font-weight="700">Değerlendirme tipi</text>
+  <rect x="775" y="362" width="255" height="38" rx="10" fill="#f5f7fb"/>
+  <rect x="779" y="366" width="118" height="30" rx="8" fill="#fff"/>
+  <text x="804" y="386" fill="#315efb" font-family="Arial" font-size="11" font-weight="700">Standart</text>
+  <text x="920" y="386" fill="#78869c" font-family="Arial" font-size="11" font-weight="700">✦ Kazanımlı</text>
+
+  <rect x="280" y="450" width="780" height="302" rx="20" fill="#fff" stroke="#dfe6f2"/>
+  <rect x="305" y="475" width="38" height="38" rx="11" fill="#edf3ff"/>
+  <text x="317" y="500" fill="#315efb" font-family="Arial" font-size="13" font-weight="700">02</text>
+  <text x="360" y="483" fill="#315efb" font-family="Arial" font-size="10" font-weight="700">İÇERİK</text>
+  <text x="360" y="508" fill="#18243d" font-family="Arial" font-size="20" font-weight="700">Sınav verisini nasıl ekleyelim?</text>
+  <text x="360" y="530" fill="#78869c" font-family="Arial" font-size="12">Hazır şablon veya kendin oluştur akışı.</text>
+  <rect x="305" y="554" width="355" height="58" rx="12" fill="#f1f5ff" stroke="#8eadff"/>
+  <text x="326" y="580" fill="#18243d" font-family="Arial" font-size="12" font-weight="700">⇧  Hazır şablon kullan</text>
+  <text x="326" y="598" fill="#78869c" font-family="Arial" font-size="10">CSV/XLSX kazanımlı cevap anahtarını eşleştir</text>
+  <rect x="674" y="554" width="355" height="58" rx="12" fill="#fbfcff" stroke="#dfe6f2"/>
+  <text x="695" y="580" fill="#18243d" font-family="Arial" font-size="12" font-weight="700">▣  Kendin oluştur</text>
+  <text x="695" y="598" fill="#78869c" font-family="Arial" font-size="10">Ders, aralık, şık ve cevap yapısını tanımla</text>
+  <rect x="305" y="631" width="350" height="44" rx="9" fill="#f8faff" stroke="#dbe5f7"/>
+  <text x="322" y="658" fill="#18243d" font-family="Arial" font-size="11" font-weight="700">TYT Şablonu</text>
+  <rect x="665" y="631" width="364" height="44" rx="9" fill="#f8faff" stroke="#dbe5f7"/>
+  <text x="682" y="658" fill="#78869c" font-family="Arial" font-size="10">Türkçe 40 · Sosyal 20 · Matematik 40 · Fen 20</text>
+  <rect x="305" y="693" width="724" height="36" rx="8" fill="#eefbf6"/>
+  <text x="325" y="716" fill="#087a57" font-family="Arial" font-size="11" font-weight="700">✓  Şablon yapısı hazır: 4 test · 120 soru · 5 şık</text>
+
+  <rect x="280" y="772" width="780" height="268" rx="20" fill="#fff" stroke="#dfe6f2"/>
+  <rect x="305" y="797" width="38" height="38" rx="11" fill="#edf3ff"/>
+  <text x="317" y="822" fill="#315efb" font-family="Arial" font-size="13" font-weight="700">03</text>
+  <text x="360" y="805" fill="#315efb" font-family="Arial" font-size="10" font-weight="700">KÜNYE + PUANLAMA</text>
+  <text x="360" y="830" fill="#18243d" font-family="Arial" font-size="20" font-weight="700">Sınav bilgilerini tamamlayın</text>
+  <rect x="305" y="860" width="225" height="38" rx="8" fill="#fff" stroke="#dfe6f2"/><text x="322" y="884" fill="#9aa7bb" font-family="Arial" font-size="11">Yayınevi adı</text>
+  <rect x="542" y="860" width="225" height="38" rx="8" fill="#fff" stroke="#dfe6f2"/><text x="559" y="884" fill="#9aa7bb" font-family="Arial" font-size="11">Sınav adı</text>
+  <rect x="779" y="860" width="250" height="38" rx="8" fill="#fff" stroke="#dfe6f2"/><text x="796" y="884" fill="#9aa7bb" font-family="Arial" font-size="11">Puanlama profili · Kilitli resmî</text>
+  <rect x="305" y="912" width="724" height="48" rx="9" fill="#f1f5ff" stroke="#c6d5f4"/>
+  <text x="325" y="933" fill="#18243d" font-family="Arial" font-size="11" font-weight="700">☐  Bu sınav sonuc.anunex.com'da yayınlansın</text>
+  <text x="325" y="950" fill="#78869c" font-family="Arial" font-size="10">Aktivasyon onayından sonra ortak sonuç kataloğuna açılır.</text>
+  <rect x="280" y="1060" width="780" height="1" fill="#dfe6f2"/>
+
+  <rect x="1080" y="140" width="320" height="360" rx="20" fill="#fff" stroke="#dfe6f2"/>
+  <text x="1110" y="175" fill="#315efb" font-family="Arial" font-size="10" font-weight="700">ÖNİZLEME</text>
+  <text x="1110" y="215" fill="#18243d" font-family="Arial" font-size="22" font-weight="700">Yeni sınav</text>
+  <text x="1110" y="240" fill="#78869c" font-family="Arial" font-size="12">7. Sınıf · 2026-2027</text>
+  <rect x="1110" y="265" width="120" height="70" rx="12" fill="#f5f7fc"/><text x="1130" y="295" fill="#18243d" font-family="Arial" font-size="25" font-weight="700">120</text><text x="1130" y="315" fill="#78869c" font-family="Arial" font-size="10">toplam soru</text>
+  <rect x="1240" y="265" width="120" height="70" rx="12" fill="#f5f7fc"/><text x="1260" y="295" fill="#18243d" font-family="Arial" font-size="25" font-weight="700">0</text><text x="1260" y="315" fill="#78869c" font-family="Arial" font-size="10">cevap alanı</text>
+  <text x="1110" y="375" fill="#78869c" font-family="Arial" font-size="11">01  Sınav adı                 Bekliyor</text>
+  <text x="1110" y="410" fill="#087a57" font-family="Arial" font-size="11">02  Ders yapısı               6 ders</text>
+  <text x="1110" y="445" fill="#9aa7bb" font-family="Arial" font-size="11">03  Cevap anahtarı             Bekliyor</text>
+  <rect x="1110" y="465" width="250" height="1" fill="#e5eaf2"/>
+  <text x="1110" y="490" fill="#6553bd" font-family="Arial" font-size="10">✦ Kazanımlı seçtiğinizde her soru</text>
+  <text x="1110" y="506" fill="#6553bd" font-family="Arial" font-size="10">bir kazanıma bağlanabilir.</text>
+
+  <text x="1080" y="555" fill="#315efb" font-family="Arial" font-size="11" font-weight="700">BU GÖRÜNÜMDEKİ NOT</text>
+  <text x="1080" y="582" fill="#18243d" font-family="Arial" font-size="12" font-weight="700">Puanlama ayrı bir adım</text>
+  <text x="1080" y="604" fill="#78869c" font-family="Arial" font-size="11">olarak değil, künye kartının</text>
+  <text x="1080" y="622" fill="#78869c" font-family="Arial" font-size="11">içinde görünüyor. Dört kartlı</text>
+  <text x="1080" y="640" fill="#78869c" font-family="Arial" font-size="11">akış isteniyorsa ayrıştırılmalı.</text>
+  <rect x="1080" y="665" width="320" height="100" rx="14" fill="#fff5e3" stroke="#f1d8a4"/>
+  <text x="1100" y="695" fill="#a56808" font-family="Arial" font-size="11" font-weight="700">İnceleme noktası</text>
+  <text x="1100" y="719" fill="#a56808" font-family="Arial" font-size="10">Künye alanları ve puanlama</text>
+  <text x="1100" y="737" fill="#a56808" font-family="Arial" font-size="10">aynı kartta; yayın ayarı da</text>
+  <text x="1100" y="755" fill="#a56808" font-family="Arial" font-size="10">kartın altında yer alıyor.</text>
+</svg>
