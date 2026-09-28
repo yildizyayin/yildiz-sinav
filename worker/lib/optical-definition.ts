@@ -224,8 +224,8 @@ export function definitionReadiness(
   values: { parser: unknown; camera: unknown; print: unknown; fiducials: unknown; pageWidthMm: number; pageHeightMm: number; parserTestPassed: boolean },
 ): DefinitionReadiness {
   const parser = validateParserDefinition(values.parser);
-  // Manuel TXT/DAT/FMT tanımı yayın kapısının temelidir. Kamera, baskı ve
-  // referans noktaları yalnızca kullanıcı tanımladıysa doğrulanır.
+  // Manuel TXT/DAT/FMT yayını okuma tanımına bağlıdır. Kamera ve referans
+  // noktaları tanımlandıysa doğrulanır. Baskı doğrulaması ayrı modüle aittir.
   const camera = hasOptionalDefinition(values.camera)
     ? validateCameraGeometry(values.camera, values.pageWidthMm, values.pageHeightMm)
     : { valid: true, errors: [] };
@@ -238,7 +238,6 @@ export function definitionReadiness(
   const errors = [
     ...parser.errors.map((x) => `Parser: ${x}`),
     ...camera.errors.map((x) => `Kamera: ${x}`),
-    ...print.errors.map((x) => `Baskı: ${x}`),
     ...fiducials.errors.map((x) => `Referans: ${x}`),
     ...(values.parserTestPassed ? [] : ['Parser: örnek TXT/DAT testi başarıyla tamamlanmalıdır.']),
   ];
@@ -248,7 +247,8 @@ export function definitionReadiness(
     print: print.valid,
     fiducials: fiducials.valid,
     parserTestPassed: values.parserTestPassed,
-    ready: parser.valid && camera.valid && print.valid && fiducials.valid && values.parserTestPassed,
+    ready: parser.valid && camera.valid && fiducials.valid && values.parserTestPassed,
     errors,
   };
 }
+
