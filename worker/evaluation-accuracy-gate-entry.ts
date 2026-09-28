@@ -5,14 +5,14 @@ import { badRequest, forbidden, json, notFound, one } from './lib/db';
 import { canEvaluateExam } from './lib/permissions';
 
 /**
- * Production correctness gate for the legacy chunked evaluator.
+ * Production correctness gate for semantics not yet part of the core TYT score envelope.
  *
- * The exam-definition model already supports booklet-specific printed order,
- * alternative accepted answers and CANCELLED/EXCLUDED questions. Until the
- * chunked evaluator consumes those semantics directly, it must never silently
- * score such an exam with canonical question order / primary-answer-only logic.
+ * The native evaluator consumes booklet-specific printed order, alternative accepted
+ * answers and CANCELLED/EXCLUDED question states directly. The five-question optional
+ * TYT Philosophy branch remains outside the 120-question scored envelope, so an exam
+ * carrying that optional key is held until its separate evidence-only path is wired.
  */
-async function assertLegacyEvaluatorSafe(request: Request, env: Env, batchId: string): Promise<Response | null> {
+async function assertEvaluationSafe(request: Request, env: Env, batchId: string): Promise<Response | null> {
   const user = await getAuthUser(env, request);
   if (!user) return json({ ok: false, error: { code: 'UNAUTHENTICATED', message: 'Oturum açmanız gerekiyor.' } }, 401);
   if (!canEvaluateExam(user.role)) return forbidden();
@@ -21,33 +21,10 @@ async function assertLegacyEvaluatorSafe(request: Request, env: Env, batchId: st
   if (!batch) return notFound('Değerlendirme paketi bulunamadı.');
   if (user.role !== 'SUPER_ADMIN' && user.institution_id !== batch.institution_id) return forbidden();
 
-  const unsafe = await one<{ c: number }>(env.DB.prepare(`
-    SELECT count(*) c FROM (
-      SELECT q.id
-      FROM exam_questions q
-      JOIN answer_keys ak ON ak.exam_question_id=q.id
-      LEFT JOIN exam_question_booklet_orders bqo
-        ON bqo.exam_question_id=q.id AND bqo.booklet_code=ak.booklet_code
-      WHERE q.exam_id=?
-        AND (
-          coalesce(bqo.printed_question_no,q.question_no)<>q.question_no
-          OR coalesce(ak.question_status,q.question_status,'ACTIVE')<>'ACTIVE'
-          OR (
-            trim(coalesce(ak.accepted_answers,''))<>''
-            AND trim(coalesce(ak.accepted_answers,''))<>ak.correct_answer
-            AND trim(coalesce(ak.accepted_answers,''))<>json_array(ak.correct_answer)
-          )
-        )
-      UNION ALL
-      SELECT oak.id
-      FROM exam_optional_answer_keys oak
-      WHERE oak.exam_id=?
-    ) risk
-  `).bind(batch.exam_id, batch.exam_id));
-
-  if (Number(unsafe?.c || 0) > 0) {
+  const optional = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM exam_optional_answer_keys WHERE exam_id=?').bind(batch.exam_id));
+  if (Number(optional?.c || 0) > 0) {
     return badRequest(
-      'Bu sınav farklı kitapçık soru sırası, alternatif cevap, iptal/değerlendirme dışı soru veya TYT seçmeli dalı içeriyor. Doğruluk koruması nedeniyle eski değerlendirme motoru çalıştırılmadı.',
+      'Bu TYT sınavında 120 soruluk ana puan zarfına ek seçmeli Felsefe cevap anahtarı bulunuyor. Seçmeli dal ana puanı değiştirmeden ayrı kanıt akışına bağlanana kadar değerlendirme doğruluk korumasıyla durduruldu.',
       'EVALUATION_ACCURACY_GATE',
     );
   }
@@ -59,7 +36,7 @@ export default {
     const url = new URL(request.url);
     const match = url.pathname.match(/^\/api\/scan-batches\/([^/]+)\/evaluate$/);
     if (!match || request.method !== 'POST') return chunkedEvaluationApp.fetch(request, env);
-    const blocked = await assertLegacyEvaluatorSafe(request, env, match[1]);
+    const blocked = await assertEvaluationSafe(request, env, match[1]);
     if (blocked) return blocked;
     return chunkedEvaluationApp.fetch(request, env);
   },
