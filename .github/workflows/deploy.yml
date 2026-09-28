@@ -2,6 +2,17 @@ name: Deploy Cloudflare Worker
 
 on:
   workflow_dispatch:
+    inputs:
+      reseed_demo:
+        description: 'Reload synthetic staging demo fixtures before acceptance tests'
+        required: false
+        default: false
+        type: boolean
+      full_acceptance:
+        description: 'Run write-heavy live acceptance/KVKK suites after deploy'
+        required: false
+        default: false
+        type: boolean
   push:
     branches: [staging]
     paths-ignore:
@@ -77,6 +88,7 @@ jobs:
           }
           ensure_queue yildiz-sinav-scale-staging
           ensure_queue yildiz-sinav-scale-staging-dlq
+
       - name: WhatsApp secret readiness
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         shell: bash
@@ -123,7 +135,7 @@ jobs:
           rm -f "$response"
           echo "demo.anunex.com serves the staging Worker."
 
-      - name: Sync WhatsApp secrets to staging Worker
+      - name: Sync optional provider secrets to staging Worker
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         shell: bash
         run: |
@@ -149,11 +161,14 @@ jobs:
           put_secret TWILIO_FROM_NUMBER
 
       - name: Live WhatsApp webhook handshake
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && env.WHATSAPP_VERIFY_TOKEN != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && env.WHATSAPP_VERIFY_TOKEN != '' }}
         run: node scripts/live-whatsapp-smoke.mjs
 
-      - name: Load synthetic staging demo data idempotently
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+      # Staging fixtures are intentionally NOT reloaded on every push. Even idempotent
+      # fixture suites can consume D1 row-write quota through mutable acceptance data.
+      # Re-seed only when a human explicitly requests it from workflow_dispatch.
+      - name: Load synthetic staging demo data on demand
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reseed_demo && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: |
           npm run seed:generate
           npm run seed:privacy:generate
@@ -171,59 +186,61 @@ jobs:
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-nibiru-ai-probe.mjs
 
+      # Push deploys are deliberately read-light/write-free after deployment. The full
+      # acceptance suite mutates staging data and is reserved for explicit milestone runs.
       - name: Live staging smoke tests
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: |
           rm -f LIVE_SMOKE_REPORT.md
           node scripts/live-smoke-v2.mjs
 
       - name: Mandatory live KVKK/privacy security gate
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: npm run test:privacy:live
 
       - name: Live final platform feature tests
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-final-features-smoke.mjs
 
       - name: Live Nibiru academic growth tests
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-academic-growth-smoke.mjs
 
       - name: Live Standard package acceptance
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-standard-smoke.mjs
 
       - name: Live Standard final closure
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-standard-closure-smoke.mjs
 
       - name: Live counselor-approved guidance governance
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-guidance-governance-smoke.mjs
 
       - name: Live Student Intelligence / Learning Graph
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-student-intelligence-smoke.mjs
 
       - name: Live official education knowledge trust
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-official-knowledge-smoke.mjs
 
       - name: Live content and question provenance
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-content-question-backbone-smoke.mjs
 
       - name: Optional live Nibiru voice activation
         continue-on-error: true
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-nibiru-voice-smoke.mjs
 
       - name: Live 100K Queue capacity acceptance
-        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-capacity-smoke.mjs
 
       - name: Persist live smoke report
-        if: ${{ always() && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.full_acceptance && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: |
           if [ ! -f LIVE_SMOKE_REPORT.md ]; then
             echo "# Live Staging Smoke Report" > LIVE_SMOKE_REPORT.md
@@ -239,4 +256,3 @@ jobs:
             git commit -m "chore: update live smoke report [skip ci]"
             git push
           fi
-
