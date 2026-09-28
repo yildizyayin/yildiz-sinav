@@ -453,7 +453,9 @@ async function readiness(env: Env, examId: string): Promise<any> {
 async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await visibleExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
-  const [subjects, booklets, institutions, keys, optionalAnswerKey, ready] = await Promise.all([
+  let loaded: any[];
+  try {
+    loaded = await Promise.all([
     all<any>(env.DB.prepare(`SELECT es.*,s.code,s.name,s.category FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order,s.name`).bind(examId)),
     all<any>(env.DB.prepare(`SELECT id,code,active FROM exam_booklets WHERE exam_id=? ORDER BY code`).bind(examId)),
     all<any>(env.DB.prepare(`SELECT ei.institution_id,ei.enabled,i.name,i.code FROM exam_institutions ei JOIN institutions i ON i.id=ei.institution_id WHERE ei.exam_id=? ORDER BY i.name`).bind(examId)),
@@ -480,7 +482,12 @@ async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<
       WHERE oak.exam_id=? ORDER BY s.name,oak.booklet_code,oak.question_no
     `).bind(examId)),
     readiness(env, examId),
-  ]);
+    ]);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return err(500, 'EXAM_DEFINITION_READ_FAILED', env.ENVIRONMENT === 'staging' ? `Sınav detayı okunamadı: ${message}` : 'Sınav detayı okunamadı.');
+  }
+  const [subjects, booklets, institutions, keys, optionalAnswerKey, ready] = loaded;
   return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, optionalAnswerKey, readiness: ready });
 }
 
