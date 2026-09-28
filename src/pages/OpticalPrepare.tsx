@@ -215,8 +215,8 @@ export function OpticalPrepare() {
             <h2>Baskı seçimi</h2>
           </div>
           <div className="optical-design-actions">
-            <Link className="secondary" to="/opticals">Phobos · Form Ağacı</Link>
-            <Link className="ghost" to="/optical-design">Phobos · Form Düzenle</Link>
+            <Link className="secondary" to="/optical-design">Baskı Şablonu Tasarla</Link>
+            <Link className="ghost" to="/calibration">Yazıcı Kalibrasyonu</Link>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -538,3 +538,4 @@ function BubbleNumber({
     </div>
   );
 }
+

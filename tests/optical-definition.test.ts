@@ -137,6 +137,23 @@ describe('optical definition validation', () => {
     expect(result.errors).toEqual([]);
   });
 
+  it('keeps reading publication independent from invalid print drafts', () => {
+    for (const draft of ['{broken', { fields: [{ key: 'studentName', xMm: 220, yMm: 20 }] }]) {
+      const result = definitionReadiness({
+        parser, camera: null, print: draft, fiducials: null,
+        pageWidthMm: 210, pageHeightMm: 297, parserTestPassed: true,
+      });
+      expect(result.ready).toBe(true);
+      expect(result.errors).toEqual([]);
+      expect(result.print).toBe(false);
+      expect(validatePrintFields(draft, 210, 297).valid).toBe(false);
+      expect(definitionReadiness({
+        parser, camera: null, print: draft, fiducials: null,
+        pageWidthMm: 210, pageHeightMm: 297, parserTestPassed: false,
+      }).ready).toBe(false);
+    }
+  });
+
   it('rejects an explicitly started but incomplete optional camera definition', () => {
     const result = definitionReadiness({
       parser,
@@ -151,3 +168,4 @@ describe('optical definition validation', () => {
     expect(result.camera).toBe(false);
   });
 });
+

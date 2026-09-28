@@ -22,7 +22,6 @@ import {
 } from "lucide-react";
 import { api } from "../api";
 import { useAuth } from "../auth";
-import { Link } from "react-router-dom";
 import { analyzeFixedWidthSample } from "../lib/guidedDefinitions";
 import {
   buildManualParserDefinition,
@@ -46,7 +45,6 @@ type Region = {
   heightMm: number;
 };
 type AnswerRange = { subjectCode: string; start: number; end: number };
-type PrintField = { key: string; xMm: number; yMm: number };
 
 const EXAMPLES: Record<Section, unknown> = {
   parser: {
@@ -104,10 +102,10 @@ function parseJson(value: unknown): any {
 }
 function assetLabel(value: string) {
   return value === "BLANK_FORM"
-    ? "Boş Form / Baskı Tabanı"
+    ? "Boş Optik Form"
     : value === "FMT_SAMPLE"
       ? "TXT / DAT / FMT Örneği"
-      : "Baskı Tabanı";
+      : "Boş Optik Form";
 }
 
 function manualFieldFromDefinition(
@@ -325,8 +323,7 @@ export function Opticals() {
     [manualAnswers, setManualAnswers] = useState<ManualAnswerBlock[]>(
       defaultManualAnswerBlocks,
     );
-  const [printFields, setPrintFields] = useState<PrintField[]>([]),
-    [advanced, setAdvanced] = useState<Record<Section, string>>({
+  const [advanced, setAdvanced] = useState<Record<Section, string>>({
       parser: "",
       camera: "",
       fiducials: "",
@@ -385,8 +382,6 @@ export function Opticals() {
       camera: pretty(r.version.camera_geometry),
       fiducials: pretty(r.version.fiducials),
     });
-    const print = parseJson(r.version.print_fields);
-    setPrintFields(Array.isArray(print?.fields) ? print.fields : []);
     const parser = parseJson(r.version.parser_definition);
     setFmtDefinition(parser?.type === "fmt" ? parser : null);
     const fixedParser = parser?.type === "fmt" ? parser.fixedWidth : parser;
@@ -745,7 +740,7 @@ export function Opticals() {
         );
       }
       setNotice(
-        "Boş optik, kamera geometrisi ve referans noktaları kaydedildi. Baskı alanlarını Optik Form Tasarımcısı ekranında ayrıca tanımlayabilirsiniz.",
+        "Boş optik, kamera geometrisi ve referans noktaları kaydedildi.",
       );
       await loadVersion(selectedVersionId);
     } catch (e: any) {
@@ -1013,23 +1008,6 @@ export function Opticals() {
       setBusy(false);
     }
   };
-  const savePrint = async () => {
-    if (!selectedVersionId || !printFields.length) return;
-    setBusy(true);
-    setError("");
-    try {
-      await api(`/api/optical-definition-versions/${selectedVersionId}/print`, {
-        method: "PUT",
-        body: JSON.stringify({ definition: { fields: printFields } }),
-      });
-      setNotice("Baskı alanları kaydedildi.");
-      await loadVersion(selectedVersionId);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setBusy(false);
-    }
-  };
   const saveAdvanced = async (section: Section) => {
     if (!selectedVersionId) return;
     setBusy(true);
@@ -1076,7 +1054,6 @@ export function Opticals() {
     () => [
       ["Manuel okuma", readiness?.parser && readiness?.parserTestPassed],
       ["Kamera (isteğe bağlı)", readiness?.camera],
-      ["Baskı (isteğe bağlı)", readiness?.print],
       ["Referans (kamera için)", readiness?.fiducials],
     ],
     [readiness],
@@ -1681,7 +1658,7 @@ export function Opticals() {
                         <h2>Fotoğraftan Optik Tanımla</h2>
                         <p>
                           Boş ve düz çekilmiş optik, okuma geometrisi ve kamera
-                          doğrulaması için saklanır. Baskı tasarımı ayrı ekrandadır.
+                          doğrulaması için saklanır.
                         </p>
                       </div>
                       <Sparkles />
@@ -2056,129 +2033,6 @@ export function Opticals() {
                     )}
                   </div>
                 )}
-                {false && <div className="panel" style={{ marginBottom: 20 }}>
-                  <div className="panel-head">
-                    <div>
-                      <h2>Kişiye özel baskı alanları</h2>
-                      <p>
-                        Başlangıç alanları otomatik gelir. Gerçek boş optikte
-                        ad, öğrenci no, sınıf, kitapçık ve sınav alanlarına göre
-                        yalnız X/Y konumlarını ince ayarlayın.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="alert info">
-                    Bu baskı tanımı, aynı optiğin kamera/TXT tanımıyla birlikte
-                    sürümlenir. Bir kez doğruladığınızda Optik Hazırla / Bas
-                    ekranında kalıcı şablon olur.
-                  </div>
-                  <button
-                    className="secondary"
-                    onClick={() =>
-                      setPrintFields((x) => [
-                        ...x,
-                        { key: "studentName", xMm: 0, yMm: 0 },
-                      ])
-                    }
-                  >
-                    <Plus size={15} /> Alan Ekle
-                  </button>
-                  {printFields.map((f, i) => (
-                    <div className="form-grid" key={i}>
-                      <label>
-                        Alan
-                        <select
-                          value={f.key}
-                          onChange={(e) =>
-                            setPrintFields((x) =>
-                              x.map((z, j) =>
-                                j === i ? { ...z, key: e.target.value } : z,
-                              ),
-                            )
-                          }
-                        >
-                          <option value="studentName">Ad Soyad</option>
-                          <option value="studentNumber">Öğrenci No</option>
-                          <option value="class">Sınıf</option>
-                          <option value="section">Şube</option>
-                          <option value="institutionCode">Kurum Kodu</option>
-                          <option value="bookletCode">Kitapçık Kodu</option>
-                          <option value="examTitle">Sınav Adı</option>
-                          <option value="examCode">Sınav Kodu</option>
-                          <option value="qr">QR</option>
-                          <option value="barcode">Barkod</option>
-                          <option value="studentNumberBubbles">
-                            Öğrenci No Baloncukları
-                          </option>
-                        </select>
-                      </label>
-                      <label>
-                        X mm
-                        <input
-                          type="number"
-                          step="0.1"
-                          value={f.xMm}
-                          onChange={(e) =>
-                            setPrintFields((x) =>
-                              x.map((z, j) =>
-                                j === i
-                                  ? { ...z, xMm: Number(e.target.value) }
-                                  : z,
-                              ),
-                            )
-                          }
-                        />
-                      </label>
-                      <label>
-                        Y mm
-                        <input
-                          type="number"
-                          step="0.1"
-                          value={f.yMm}
-                          onChange={(e) =>
-                            setPrintFields((x) =>
-                              x.map((z, j) =>
-                                j === i
-                                  ? { ...z, yMm: Number(e.target.value) }
-                                  : z,
-                              ),
-                            )
-                          }
-                        />
-                      </label>
-                      <button
-                        className="ghost"
-                        onClick={() =>
-                          setPrintFields((x) => x.filter((_, j) => j !== i))
-                        }
-                      >
-                        Sil
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    className="primary"
-                    disabled={!printFields.length || busy}
-                    onClick={savePrint}
-                  >
-                    <Save size={16} /> Baskı Alanlarını Kaydet
-                  </button>
-                </div>}
-                <div className="panel optical-definition-separation" style={{ marginBottom: 20 }}>
-                  <div className="panel-head">
-                    <div>
-                      <h2>Baskı tasarımı ayrı çalışma alanında</h2>
-                      <p>
-                        Öğrenci, sınıf, kitapçık, QR ve diğer basılacak alanları
-                        Optik Form Tasarımcısı ekranında konumlandırın. Bu ekran
-                        yalnız okuma geometrisini ve dosya eşlemesini yönetir.
-                      </p>
-                    </div>
-                    <Link className="secondary" to={`/optical-design?versionId=${selectedVersionId}`}>
-                      Optik Form Tasarımcısını Aç
-                    </Link>
-                  </div>
-                </div>
                 {method === "MANUAL" && (
                   <div className="panel" style={{ marginBottom: 20 }}>
                     <div className="panel-head">
@@ -2483,9 +2337,8 @@ export function Opticals() {
                   <h2>Yayın kontrolü</h2>
                   <p>
                     Yayın için zorunlu temel manuel FMT/TXT/DAT tanımı ve
-                    gerçek örnek kayıt testidir. Kamera, referans noktaları ve
-                    baskı tasarımı isteğe bağlıdır; tanımlanırsa ayrıca
-                    doğrulanır. Kamera kullanıldığında manuel alan tanımı
+                    gerçek örnek kayıt testidir. Kamera ve referans noktaları
+                    isteğe bağlıdır; tanımlanırsa ayrıca doğrulanır. Kamera kullanıldığında manuel alan tanımı
                     öğrenci no, kitapçık ve cevap bölgelerinin kaynağıdır.
                   </p>
                 </div>
@@ -2503,20 +2356,13 @@ export function Opticals() {
               >
                 <Send size={16} /> {readiness?.ready ? "Optiği Yayınla" : "Eksikleri tamamla ve yayınla"}
               </button>
-              <Link
-                className="secondary"
-                to={`/optical-design?versionId=${selectedVersionId}`}
-                style={{ marginLeft: 8 }}
-              >
-                Baskı tasarımına geç
-              </Link>
             </div>
             <div className="panel" style={{ marginTop: 20 }}>
               <div className="panel-head">
                 <div>
                   <h2>Referans dosyaları</h2>
                   <p>
-                    Boş form baskı tabanı, fotoğraf ve TXT/DAT örnekleri sürüme
+                    Boş optik form, fotoğraf ve TXT/DAT örnekleri sürüme
                     bağlı saklanır.
                   </p>
                 </div>
@@ -2537,3 +2383,4 @@ export function Opticals() {
     </div>
   );
 }
+
