@@ -1,7 +1,7 @@
 # Live Staging Smoke Report
 
 - Target: `https://demo.anunex.com`
-- Time: `2026-09-28T13:34:32.405Z`
+- Time: `2026-09-28T13:43:45.963Z`
 - Result: **FAILED**
 - Passed checks before finish: **5**
 
@@ -22,7 +22,7 @@ Error: POST /api/exams/exam_demo_active/preview-file expected 200, got 500
   "error": {
     "code": "SERVER_ERROR",
     "message": "Sunucu hatası oluştu.",
-    "requestId": "a42320472aaa3588"
+    "requestId": "a4232dcb39785d6e"
   }
 }
     at request (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-smoke-v2.mjs:44:43)
@@ -56,7 +56,7 @@ Error: POST /api/nibiru/pairing-code expected 200, got 500
   "error": {
     "code": "SERVER_ERROR",
     "message": "Sunucu hatası oluştu.",
-    "requestId": "a42320cafc886bce"
+    "requestId": "a4232e3fe8ba69d8"
   }
 }
     at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-final-features-smoke.mjs:11:392)
@@ -95,7 +95,7 @@ Error: POST /api/student-books/personal expected 201, got 500
   "error": {
     "code": "SERVER_ERROR",
     "message": "Sunucu hatası oluştu.",
-    "requestId": "a423210ff84b6bce"
+    "requestId": "a4232e825d4d2549"
   }
 }
     at req (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-smoke.mjs:6:476)
@@ -115,7 +115,7 @@ Error: PATCH /api/student-standard/preferences failed with 500
   "error": {
     "code": "SERVER_ERROR",
     "message": "Sunucu hatası oluştu.",
-    "requestId": "a423211c298a710b"
+    "requestId": "a4232e8d8dcc92d0"
   }
 }
     at assert (file:///home/runner/work/yildiz-sinav/yildiz-sinav/scripts/live-standard-closure-smoke.mjs:4:36)
