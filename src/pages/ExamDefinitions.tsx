@@ -178,7 +178,6 @@ export function ExamDefinitions() {
     setTemplateKey((current) => current === `${nextTemplate}_OUTCOME` && EXAM_TEMPLATES.some((x) => x.key === current) ? current : (EXAM_TEMPLATES.some((x) => x.key === nextTemplate) ? nextTemplate : 'CUSTOM'));
     setCreateForm((f) => ({ ...f, gradeLevel: String(selectedChoice.gradeLevel || f.gradeLevel) }));
   }, [choiceKey]);
-  useEffect(() => { if (selectedId) void loadDetail(selectedId).catch((e) => setError(e.message)); }, [selectedId]);
 
   const selectedSubjectIds = useMemo(() => new Set(subjects.map((s) => s.subjectId)), [subjects]);
   const visibleSubjects = useMemo(() => (options.subjects || []).filter((subject: any) => {
@@ -381,7 +380,7 @@ export function ExamDefinitions() {
       setPendingDocuments([]);
       setPendingVideos([]);
       setOutcomeRequired(requiresOfficialOutcomes);
-      setSelectedId(created.id);
+      openExamDefinition(created.id);
       setCreatedExamId(created.id);
       setCreateForm((f) => ({ ...f, title: '' }));
       setNotice(documentFailures.length ? `Sınav oluşturuldu; bazı belgeler daha sonra tekrar yüklenmeli: ${documentFailures.join(' · ')}` : definitionMode === 'OUTCOME' ? 'Sınav oluşturuldu. Şimdi soru-kazanım eşleştirmelerini tamamlayın.' : 'Sınav cevap anahtarından oluşturuldu. Kontrol edip yayınlayabilirsiniz.');
@@ -464,8 +463,11 @@ export function ExamDefinitions() {
   const openExamDefinition = (id: string) => {
     setOpenExamMenu(null);
     setError('');
+    setDetail(null);
     setSelectedId(id);
-    window.setTimeout(() => document.getElementById('exam-definition-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+    void loadDetail(id)
+      .then(() => window.setTimeout(() => document.getElementById('exam-definition-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0))
+      .catch((e) => setError(e.message));
   };
 
   const copyExamToDraft = () => {
@@ -526,7 +528,7 @@ export function ExamDefinitions() {
 
   const copyExamById = async (id: string) => {
     setBusy(true); setError(''); setOpenExamMenu(null);
-    try { const result = await api<any>(`/api/exam-definitions/${id}/copy`, { method: 'POST' }); await loadRows(); setSelectedId(result.id); setNotice('Sınav kopyası oluşturuldu ve taslak olarak açıldı.'); } catch (e: any) { setError(e.message); } finally { setBusy(false); }
+    try { const result = await api<any>(`/api/exam-definitions/${id}/copy`, { method: 'POST' }); await loadRows(); openExamDefinition(result.id); setNotice('Sınav kopyası oluşturuldu ve taslak olarak açıldı.'); } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
 
   const deleteExamById = async (id: string) => {
@@ -588,7 +590,7 @@ export function ExamDefinitions() {
   const selectedScoring = options.scoringVersions?.find((x: any) => x.id === createForm.scoringRuleVersionId);
   const isCustomScoring = selectedScoring?.rule_code === 'CUSTOM_EXAM';
   const canEditDetail = user?.role === 'SUPER_ADMIN' || detail?.exam?.owner_type === 'INSTITUTION';
-  const rowActions = (r: any, canManageRow: boolean) => <div style={{ position: 'relative', display: 'flex', gap: 6, justifyContent: 'flex-end' }}><button className="secondary subtle" onClick={() => openExamDefinition(r.id)}><Eye size={14} /> Görüntüle</button>{canManageRow ? <><button type="button" className="icon-button" aria-label={`${r.title} işlemleri`} aria-expanded={openExamMenu === r.id} onClick={() => setOpenExamMenu((current) => current === r.id ? null : r.id)}><MoreVertical size={17} /></button>{openExamMenu === r.id && <div className="exam-row-menu" role="menu"><button role="menuitem" onClick={() => openExamDefinition(r.id)}><Eye size={14} /> Görüntüle / Düzenle</button><button role="menuitem" onClick={() => void copyExamById(r.id)}><Copy size={14} /> Kopyala</button>{r.status !== 'ARCHIVED' && <button role="menuitem" onClick={() => void archiveExamById(r.id)}><Archive size={14} /> Arşivle</button>}{r.status === 'DRAFT' && <button role="menuitem" onClick={() => void deleteExamById(r.id)}><Trash2 size={14} /> Sil</button>}</div>}</> : <span className="status neutral">Görüntüleme</span>}</div>;
+  const rowActions = (r: any, canManageRow: boolean) => <div style={{ position: 'relative', display: 'flex', gap: 6, justifyContent: 'flex-end' }}><button type="button" className="secondary subtle" onClick={() => openExamDefinition(r.id)}><Eye size={14} /> Görüntüle</button>{canManageRow ? <><button type="button" className="icon-button" aria-label={`${r.title} işlemleri`} aria-expanded={openExamMenu === r.id} onClick={() => setOpenExamMenu((current) => current === r.id ? null : r.id)}><MoreVertical size={17} /></button>{openExamMenu === r.id && <div className="exam-row-menu" role="menu"><button type="button" role="menuitem" onClick={() => openExamDefinition(r.id)}><Eye size={14} /> Görüntüle / Düzenle</button><button type="button" role="menuitem" onClick={() => void copyExamById(r.id)}><Copy size={14} /> Kopyala</button>{r.status !== 'ARCHIVED' && <button type="button" role="menuitem" onClick={() => void archiveExamById(r.id)}><Archive size={14} /> Arşivle</button>}{r.status === 'DRAFT' && <button type="button" role="menuitem" onClick={() => void deleteExamById(r.id)}><Trash2 size={14} /> Sil</button>}</div>}</> : <span className="status neutral">Görüntüleme</span>}</div>;
 
   const stepReady = (step: BuilderStep) => {
     if (step === 1) return Boolean(createForm.title.trim() && createForm.publisherName.trim() && createForm.sessionLabel.trim());
