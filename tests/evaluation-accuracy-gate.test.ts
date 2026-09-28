@@ -10,21 +10,16 @@ describe('exam evaluation accuracy gate', () => {
     expect(rootSource).toMatch(/scan-batches\\\/\[\^\/\]\+\\\/evaluate[\s\S]*evaluationAccuracyGateApp\.fetch/);
   });
 
-  it('blocks booklet reordering until the evaluator uses printed question order', () => {
-    expect(gateSource).toContain('exam_question_booklet_orders');
-    expect(gateSource).toContain('printed_question_no');
-    expect(gateSource).toContain("coalesce(bqo.printed_question_no,q.question_no)<>q.question_no");
-  });
-
-  it('blocks non-active and alternative-answer semantics from legacy scoring', () => {
-    expect(gateSource).toContain('accepted_answers');
-    expect(gateSource).toContain('question_status');
-    expect(gateSource).toContain("<>'ACTIVE'");
-  });
-
-  it('blocks TYT optional answer-key branches from the legacy evaluator', () => {
+  it('keeps only the TYT optional branch behind the temporary gate', () => {
     expect(gateSource).toContain('exam_optional_answer_keys');
     expect(gateSource).toContain('EVALUATION_ACCURACY_GATE');
+    expect(gateSource).not.toContain('exam_question_booklet_orders');
+    expect(gateSource).not.toContain('accepted_answers');
+  });
+
+  it('states that optional philosophy stays outside the 120-question scored envelope', () => {
+    expect(gateSource).toContain('120 soruluk ana puan zarfına ek seçmeli Felsefe');
+    expect(gateSource).toContain('ana puanı değiştirmeden');
   });
 
   it('keeps tenant and evaluator-role checks in front of scoring', () => {
