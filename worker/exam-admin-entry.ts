@@ -275,6 +275,25 @@ async function managedExam(env: Env, user: AuthUser, examId: string): Promise<an
   return exam;
 }
 
+async function visibleExam(env: Env, user: AuthUser, examId: string): Promise<any | null> {
+  const exam = await one<any>(env.DB.prepare(`
+    SELECT e.*,srv.verified scoring_verified,sr.name scoring_name,sr.authority scoring_authority
+    FROM exams e
+    LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id
+    LEFT JOIN scoring_rules sr ON sr.id=srv.rule_id
+    WHERE e.id=?
+  `).bind(examId));
+  if (!exam) return null;
+  if (user.role === 'SUPER_ADMIN') return exam;
+  if (!user.institution_id) return null;
+  if (exam.owner_type === 'INSTITUTION') return exam.institution_id === user.institution_id ? exam : null;
+  if (exam.owner_type === 'CENTRAL') {
+    const assigned = await one(env.DB.prepare('SELECT 1 FROM exam_institutions WHERE exam_id=? AND institution_id=? AND enabled=1').bind(examId, user.institution_id));
+    return assigned ? exam : null;
+  }
+  return null;
+}
+
 async function options(env: Env, user: AuthUser, url: URL): Promise<Response> {
   const gradeLevelRaw = url.searchParams.get('gradeLevel');
   const subjectId = url.searchParams.get('subjectId');
@@ -311,8 +330,17 @@ async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
   const params: unknown[] = [];
   let where = '1=1';
   if (user.role === 'INSTITUTION_MANAGER') {
-    where += ` AND e.owner_type='INSTITUTION' AND e.institution_id=?`;
-    params.push(user.institution_id);
+    if (!user.institution_id) where += ' AND 1=0';
+    else {
+      where += ` AND (
+        (e.owner_type='INSTITUTION' AND e.institution_id=?)
+        OR (e.owner_type='CENTRAL' AND EXISTS(
+          SELECT 1 FROM exam_institutions ei
+          WHERE ei.exam_id=e.id AND ei.institution_id=? AND ei.enabled=1
+        ))
+      )`;
+      params.push(user.institution_id, user.institution_id);
+    }
   }
   const exams = await all<any>(env.DB.prepare(`
     SELECT e.*,i.name institution_name,srv.verified scoring_verified,sr.name scoring_name,
@@ -423,7 +451,7 @@ async function readiness(env: Env, examId: string): Promise<any> {
 }
 
 async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
-  const exam = await managedExam(env, user, examId);
+  const exam = await visibleExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   const [subjects, booklets, institutions, keys, optionalAnswerKey, ready] = await Promise.all([
     all<any>(env.DB.prepare(`SELECT es.*,s.code,s.name,s.category FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order,s.name`).bind(examId)),
