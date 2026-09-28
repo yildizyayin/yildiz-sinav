@@ -439,7 +439,7 @@ async function readiness(env: Env, examId: string): Promise<any> {
       (SELECT e.outcome_mode FROM exams e WHERE e.id=?) outcome_mode,
       (SELECT count(DISTINCT qo.exam_question_id) FROM question_outcomes qo JOIN exam_questions q ON q.id=qo.exam_question_id WHERE q.exam_id=?) outcome_mapped_questions,
       (SELECT coalesce(srv.verified,0) FROM exams e LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id WHERE e.id=?) scoring_verified
-  `).bind(examId, examId, examId, examId, examId, examId, examId, examId));
+  `).bind(examId, examId, examId, examId, examId, examId, examId, examId, examId));
   const expectedAnswers = Number(row?.expected_questions || 0) * Number(row?.booklet_count || 0);
   const readyToPublish = Number(row?.subject_count || 0) > 0
     && Number(row?.booklet_count || 0) > 0
@@ -453,9 +453,7 @@ async function readiness(env: Env, examId: string): Promise<any> {
 async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await visibleExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
-  let loaded: any[];
-  try {
-    loaded = await Promise.all([
+  const [subjects, booklets, institutions, keys, optionalAnswerKey, ready] = await Promise.all([
     all<any>(env.DB.prepare(`SELECT es.*,s.code,s.name,s.category FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order,s.name`).bind(examId)),
     all<any>(env.DB.prepare(`SELECT id,code,active FROM exam_booklets WHERE exam_id=? ORDER BY code`).bind(examId)),
     all<any>(env.DB.prepare(`SELECT ei.institution_id,ei.enabled,i.name,i.code FROM exam_institutions ei JOIN institutions i ON i.id=ei.institution_id WHERE ei.exam_id=? ORDER BY i.name`).bind(examId)),
@@ -482,12 +480,7 @@ async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<
       WHERE oak.exam_id=? ORDER BY s.name,oak.booklet_code,oak.question_no
     `).bind(examId)),
     readiness(env, examId),
-    ]);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    return err(500, 'EXAM_DEFINITION_READ_FAILED', env.ENVIRONMENT === 'staging' ? `Sınav detayı okunamadı: ${message}` : 'Sınav detayı okunamadı.');
-  }
-  const [subjects, booklets, institutions, keys, optionalAnswerKey, ready] = loaded;
+  ]);
   return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, optionalAnswerKey, readiness: ready });
 }
 
