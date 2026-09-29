@@ -37,6 +37,6 @@ describe('preview optical policy gate', () => {
   it('keeps an explicit exam binding authoritative', () => {
     expect(source).toContain('if (bound.length)');
     expect(source).toContain('OPTICAL_TEMPLATE_NOT_BOUND');
-    expect(source.indexOf('if (bound.length)')).toBeLessThan(source.indexOf('loadFallbackCandidates'));
+    expect(source).toMatch(/if \(bound\.length\)[\s\S]*const fallback = await loadFallbackCandidates/);
   });
 });
