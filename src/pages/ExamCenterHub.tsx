@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FilePlus2, FileUp, RefreshCw } from 'lucide-react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
 import { ExamCenter } from './ExamCenter';
 import '../exam-mars.css';
@@ -13,6 +13,7 @@ type ExamRow = {
 export function ExamCenterHub(){
   const [params]=useSearchParams();
   const mode=params.get('mode');
+  const examId=params.get('examId');
   const [rows,setRows]=useState<ExamRow[]>([]);
   const [error,setError]=useState('');
   const [loading,setLoading]=useState(false);
@@ -26,6 +27,7 @@ export function ExamCenterHub(){
   useEffect(()=>{void load()},[]);
   const visible=useMemo(()=>rows.filter(r=>r.status!=='ARCHIVED'),[rows]);
 
+  if(mode==='upload'&&examId) return <Navigate to={`/exams/${encodeURIComponent(examId)}/evaluate`} replace/>;
   if(mode==='upload'||mode==='catalog') return <ExamCenter/>;
 
   return <>
