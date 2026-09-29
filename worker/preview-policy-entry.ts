@@ -1,8 +1,9 @@
-import app from './privacy-smoke-entry';
 import type { AuthUser, CapacityJobMessage, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, badRequest, forbidden, json } from './lib/db';
 import { canEvaluateExam } from './lib/permissions';
+
+type PreviewApp = typeof import('./privacy-export-entry').default;
 
 type OpticalCandidate = {
   id: string;
@@ -76,7 +77,7 @@ function rebuildRequestWithTemplate(request: Request, form: FormData, templateVe
   });
 }
 
-async function enforcePreviewOpticalPolicy(request: Request, env: Env, ctx: ExecutionContext, examId: string): Promise<Response> {
+async function enforcePreviewOpticalPolicy(request: Request, env: Env, ctx: ExecutionContext, examId: string, app: PreviewApp): Promise<Response> {
   const user = await getAuthUser(env, request);
   if (!user) return unauthenticated();
   if (!canEvaluateExam(user.role)) return forbidden('Bu sınavı değerlendirme yetkiniz bulunmuyor.');
@@ -120,12 +121,13 @@ async function enforcePreviewOpticalPolicy(request: Request, env: Env, ctx: Exec
   return app.fetch(rebuildRequestWithTemplate(request, form, fallback[0].id), env, ctx);
 }
 
-export default {
+export function createPreviewPolicyEntry(app: PreviewApp): ExportedHandler<Env, CapacityJobMessage> {
+  return {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const preview = url.pathname.match(/^\/api\/exams\/([^/]+)\/preview-file$/);
     if (preview && request.method === 'POST') {
-      return enforcePreviewOpticalPolicy(request, env, ctx, preview[1]);
+      return enforcePreviewOpticalPolicy(request, env, ctx, preview[1], app);
     }
     return app.fetch(request, env, ctx);
   },
@@ -135,4 +137,5 @@ export default {
   async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext) {
     return app.scheduled(event, env, ctx);
   },
-} satisfies ExportedHandler<Env, CapacityJobMessage>;
+  };
+}
