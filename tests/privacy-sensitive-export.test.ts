@@ -5,6 +5,8 @@ const source = readFileSync(new URL('../worker/privacy-export-entry.ts', import.
 const smokeSource = readFileSync(new URL('../worker/privacy-smoke-entry.ts', import.meta.url), 'utf8');
 const staging = readFileSync(new URL('../wrangler.jsonc', import.meta.url), 'utf8');
 const production = readFileSync(new URL('../wrangler.production.jsonc', import.meta.url), 'utf8');
+const stagingEntry = readFileSync(new URL('../worker/preview-policy-staging-entry.ts', import.meta.url), 'utf8');
+const productionEntry = readFileSync(new URL('../worker/preview-policy-production-entry.ts', import.meta.url), 'utf8');
 
 describe('sensitive privacy export boundary', () => {
   it('requires an authenticated Super Admin before exporting the DSR register', () => {
@@ -35,8 +37,11 @@ describe('sensitive privacy export boundary', () => {
   });
 
   it('keeps the audited export wrapper in both deployment chains', () => {
-    expect(staging).toContain('"main": "./worker/privacy-smoke-entry.ts"');
+    expect(staging).toContain('"main": "./worker/preview-policy-staging-entry.ts"');
     expect(smokeSource).toContain("import app from './privacy-export-entry'");
-    expect(production).toContain('"main": "./worker/privacy-export-entry.ts"');
+    expect(production).toContain('"main": "./worker/preview-policy-production-entry.ts"');
+    expect(stagingEntry).toContain("import app from './privacy-smoke-entry'");
+    expect(productionEntry).toContain("import app from './privacy-export-entry'");
+    expect(productionEntry).not.toContain('privacy-smoke-entry');
   });
 });
