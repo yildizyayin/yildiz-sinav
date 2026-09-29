@@ -13,13 +13,18 @@ const privacySmokeRoot=readFileSync(new URL('../worker/privacy-smoke-entry.ts',i
 const localCapacity=readFileSync(new URL('../scripts/local-capacity-smoke.mjs',import.meta.url),'utf8');
 const staging=readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8');
 const production=readFileSync(new URL('../wrangler.production.jsonc',import.meta.url),'utf8');
+const stagingEntry=readFileSync(new URL('../worker/preview-policy-staging-entry.ts',import.meta.url),'utf8');
+const productionEntry=readFileSync(new URL('../worker/preview-policy-production-entry.ts',import.meta.url),'utf8');
 const stagingWorkflow=readFileSync(new URL('../.github/workflows/deploy.yml',import.meta.url),'utf8');
 const productionWorkflow=readFileSync(new URL('../.github/workflows/deploy-app-production.yml',import.meta.url),'utf8');
 
 describe('Anunex scale readiness',()=>{
   it('routes staging through synthetic smoke evidence while production keeps the audited privacy chain',()=>{
-    expect(staging).toContain('"main": "./worker/privacy-smoke-entry.ts"');
-    expect(production).toContain('"main": "./worker/privacy-export-entry.ts"');
+    expect(staging).toContain('"main": "./worker/preview-policy-staging-entry.ts"');
+    expect(production).toContain('"main": "./worker/preview-policy-production-entry.ts"');
+    expect(stagingEntry).toContain("import app from './privacy-smoke-entry'");
+    expect(productionEntry).toContain("import app from './privacy-export-entry'");
+    expect(productionEntry).not.toContain('privacy-smoke-entry');
     expect(privacySmokeRoot).toContain("import app from './privacy-export-entry'");
     expect(privacySmokeRoot).toContain("env.ENVIRONMENT !== 'staging'");
     expect(privacyExportRoot).toContain("import app from './privacy-minimization-entry'");
