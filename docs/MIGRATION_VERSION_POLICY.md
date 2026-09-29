@@ -25,3 +25,7 @@ The allowlist is not permission to add another file under those prefixes. If any
 ## Production rule
 
 Never rename, delete, reorder, or edit an already-applied migration merely to make numbering look sequential. Fix production schema forward with a new uniquely numbered migration and keep the historical audit trail intact.
+
+## Automated checks
+
+`migrations/policy/existing-migrations.json` pins the filenames and SHA-256 contents of the 65 migration files present when this policy was introduced. CI and the schema agent run `node scripts/check-migration-policy.mjs`; it rejects edits, removal, renaming, reused numbers and new prefixes below `0058`. CI also applies the complete migration chain to a clean local D1 database. The next migration starts at `0058_...sql`.
