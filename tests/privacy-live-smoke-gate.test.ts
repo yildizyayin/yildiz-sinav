@@ -8,11 +8,16 @@ const workflow = readFileSync(new URL('../.github/workflows/deploy.yml', import.
 const packageJson = readFileSync(new URL('../package.json', import.meta.url), 'utf8');
 const staging = readFileSync(new URL('../wrangler.jsonc', import.meta.url), 'utf8');
 const production = readFileSync(new URL('../wrangler.production.jsonc', import.meta.url), 'utf8');
+const stagingEntry = readFileSync(new URL('../worker/preview-policy-staging-entry.ts', import.meta.url), 'utf8');
+const productionEntry = readFileSync(new URL('../worker/preview-policy-production-entry.ts', import.meta.url), 'utf8');
 
 describe('mandatory live KVKK/privacy security gate', () => {
   it('keeps synthetic diagnostics staging-only and outside the production entrypoint', () => {
-    expect(staging).toContain('"main": "./worker/privacy-smoke-entry.ts"');
-    expect(production).toContain('"main": "./worker/privacy-export-entry.ts"');
+    expect(staging).toContain('"main": "./worker/preview-policy-staging-entry.ts"');
+    expect(production).toContain('"main": "./worker/preview-policy-production-entry.ts"');
+    expect(stagingEntry).toContain("import app from './privacy-smoke-entry'");
+    expect(productionEntry).toContain("import app from './privacy-export-entry'");
+    expect(productionEntry).not.toContain('privacy-smoke-entry');
     expect(production).not.toContain('privacy-smoke-entry');
     expect(wrapper).toContain("env.ENVIRONMENT !== 'staging'");
     expect(wrapper).toContain("user.role !== 'SUPER_ADMIN'");
