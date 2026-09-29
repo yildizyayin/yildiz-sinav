@@ -7,8 +7,8 @@ const productionConfig = readFileSync(new URL('../wrangler.production.jsonc', im
 
 describe('preview optical policy gate', () => {
   it('runs before preview-file in staging and production', () => {
-    expect(stagingConfig).toContain('"main": "./worker/preview-policy-entry.ts"');
-    expect(productionConfig).toContain('"main": "./worker/preview-policy-entry.ts"');
+    expect(stagingConfig).toContain('"main": "./worker/preview-policy-staging-entry.ts"');
+    expect(productionConfig).toContain('"main": "./worker/preview-policy-production-entry.ts"');
     expect(source).toContain("/preview-file$/");
   });
 
