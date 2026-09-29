@@ -24,56 +24,7 @@ jobs:
         run: |
           set +e
           : > agent-d1-report.md
-          node <<'NODE' >> agent-d1-report.md 2>&1
-          const fs = require('fs');
-          const files = fs.readdirSync('migrations').filter(name => name.endsWith('.sql')).sort();
-          const groups = new Map();
-          for (const file of files) {
-            const version = file.split('_', 1)[0];
-            if (!/^\d+$/.test(version)) continue;
-            const list = groups.get(version) || [];
-            list.push(file);
-            groups.set(version, list);
-          }
-
-          // These collisions predate the unique-version policy and may already be recorded
-          // by D1 under their exact historical filenames. Renaming them can make Wrangler
-          // treat old migrations as new, so the immutable filenames are explicitly allowlisted.
-          const legacy = new Map(Object.entries({
-            '0023': ['0023_coach_mastery_cycle.sql', '0023_student_intelligence_profile.sql'],
-            '0024': ['0024_nibiru_whatsapp_public_number.sql', '0024_product_completion_center.sql', '0024_scale_readiness_indexes.sql'],
-            '0032': ['0032_approved_theme_catalog.sql', '0032_exam_scoring_presets.sql'],
-            '0033': ['0033_publisher_outcome_mapping.sql', '0033_results_network_targets_attendance.sql'],
-            '0042': ['0042_official_outcome_matching.sql', '0042_tyt_optional_philosophy.sql'],
-            '0043': ['0043_exam_booklet_question_orders.sql', '0043_exam_content_archive.sql'],
-            '0045': ['0045_exam_booklet_question_orders.sql', '0045_nibiru_session_routing.sql'],
-          }));
-
-          const historical = [];
-          const violations = [];
-          for (const [version, group] of groups) {
-            if (group.length < 2) continue;
-            const expected = legacy.get(version);
-            const actual = [...group].sort();
-            const approved = expected && JSON.stringify(actual) === JSON.stringify([...expected].sort());
-            if (approved) historical.push(`${version}: ${actual.join(' + ')}`);
-            else violations.push(`${version}: ${actual.join(' + ')}`);
-          }
-
-          console.log(`Migration dosyası: ${files.length}`);
-          if (historical.length) {
-            console.log('Tarihsel/immutable migration çakışmaları (allowlist):');
-            console.log(historical.join('\n'));
-          }
-          if (violations.length) {
-            console.log('YENİ veya değişmiş migration sürüm çakışmaları:');
-            console.log(violations.join('\n'));
-            console.log('Yeni migration dosyaları benzersiz sayısal önek kullanmalıdır. Tarihsel dosyaları yeniden adlandırmayın.');
-            process.exitCode = 1;
-          } else {
-            console.log('Yeni migration sürüm çakışması bulunamadı.');
-          }
-          NODE
+          node scripts/check-migration-policy.mjs >> agent-d1-report.md 2>&1
           static_status=$?
           npm install --no-audit --no-fund >> agent-d1-report.md 2>&1
           install_status=$?
