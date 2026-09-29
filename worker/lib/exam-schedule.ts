@@ -51,13 +51,16 @@ export async function saveExamSchedule(request:Request,env:Env,user:AuthUser,exa
   const body:any=await request.json().catch(()=>({}));
   const verdict=validateExamSchedule(body);
   if(!verdict.ok)return badRequest(verdict.message,'INVALID_EXAM_SCHEDULE');
-  const current=await one<any>(env.DB.prepare(`SELECT e.application_start_at,e.application_end_at,p.result_publish_at
+  const current=await one<any>(env.DB.prepare(`SELECT e.application_start_at,e.application_end_at,p.result_publish_at,p.result_freeze_status,p.published_at
     FROM exams e LEFT JOIN exam_delivery_profiles p ON p.exam_id=e.id WHERE e.id=?`).bind(examId));
   const applicationStartAt=verdict.value.applicationStartAt===undefined?current?.application_start_at??null:verdict.value.applicationStartAt;
   const applicationEndAt=verdict.value.applicationEndAt===undefined?current?.application_end_at??null:verdict.value.applicationEndAt;
   const resultPublishAt=verdict.value.resultPublishAt===undefined?current?.result_publish_at??null:verdict.value.resultPublishAt;
   const finalVerdict=validateExamSchedule({applicationStartAt,applicationEndAt,resultPublishAt});
   if(!finalVerdict.ok)return badRequest(finalVerdict.message,'INVALID_EXAM_SCHEDULE');
+  if(current?.result_freeze_status==='PUBLISHED'&&body.resultPublishAt!==undefined&&resultPublishAt!==current?.result_publish_at){
+    return badRequest('Yayınlanmış bir sonuç yeniden geleceğe planlanamaz. Yayın zamanı değiştirilemez.','RESULT_ALREADY_PUBLISHED');
+  }
   await env.DB.batch([
     env.DB.prepare(`UPDATE exams SET application_start_at=?,application_end_at=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(applicationStartAt,applicationEndAt,examId),
     env.DB.prepare(`INSERT INTO exam_delivery_profiles(exam_id,result_publish_at,updated_at) VALUES(?,?,CURRENT_TIMESTAMP)
@@ -86,8 +89,8 @@ export async function publishScheduledExamResults(env:Env):Promise<number>{
 }
 
 export async function resultsAvailableNow(env:Env,examId:string):Promise<boolean>{
-  const row=await one<any>(env.DB.prepare(`SELECT result_freeze_status,published_at,result_publish_at FROM exam_delivery_profiles WHERE exam_id=?`).bind(examId));
-  if(row?.result_freeze_status!=='PUBLISHED'||!row?.published_at)return false;
-  if(!row.result_publish_at)return true;
-  return new Date(row.result_publish_at).getTime()<=Date.now();
+  const row=await one<{available:number}>(env.DB.prepare(`SELECT CASE WHEN result_freeze_status='PUBLISHED' AND published_at IS NOT NULL
+    AND (result_publish_at IS NULL OR datetime(result_publish_at)<=CURRENT_TIMESTAMP) THEN 1 ELSE 0 END available
+    FROM exam_delivery_profiles WHERE exam_id=?`).bind(examId));
+  return Number(row?.available||0)===1;
 }
