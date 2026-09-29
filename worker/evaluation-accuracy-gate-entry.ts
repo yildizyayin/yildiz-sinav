@@ -20,7 +20,7 @@ export default {
     if (!response.ok) return response;
 
     try {
-      const payload = await response.clone().json<any>();
+      const payload = await response.clone().json() as any;
       if (payload?.ok) await persistTytOptionalPhilosophyEvidence(env, match[1]);
       return response;
     } catch (error) {
