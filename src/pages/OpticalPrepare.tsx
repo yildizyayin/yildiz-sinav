@@ -37,6 +37,7 @@ export function OpticalPrepare() {
   const [bookletSet, setBookletSet] = useState("");
   const [sort, setSort] = useState("number");
   const [data, setData] = useState<any>(null);
+  const [preparedScope, setPreparedScope] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -106,6 +107,8 @@ export function OpticalPrepare() {
   );
   const calibrationReady = isPrintCalibrationReady(calibration);
   const correction = calibrationCorrection(calibration);
+  const currentScope = JSON.stringify([institutionId, classId, templateId, examId, bookletSet, sort]);
+  const printReady = calibrationReady && !!data && preparedScope === currentScope && data.template?.id === templateId;
   const load = async () => {
     setBusy(true);
     setError("");
@@ -114,6 +117,7 @@ export function OpticalPrepare() {
         `/api/optical-prepare${qs({ institutionId: user?.role === "SUPER_ADMIN" ? institutionId : null, classId, templateVersionId: templateId, examId: examId || null, bookletSet: bookletSet || null, sort })}`,
       );
       setData(r);
+      setPreparedScope(currentScope);
       setSelected(r.students.map((s: any) => s.id));
     } catch (e) {
       setError(e instanceof ApiError ? e.message : "Optikler hazırlanamadı.");
@@ -188,9 +192,9 @@ export function OpticalPrepare() {
     );
   };
   const printNow = () => {
-    if (!calibrationReady) {
+    if (!printReady) {
       setError(
-        "Bu yazıcı + optik kombinasyonu kalibre edilmeden hassas optik baskısı başlatılamaz. Önce Kalibrasyon ekranını tamamlayın.",
+        "Baskı için güncel seçimi yeniden hazırlayın ve seçili yazıcı + optik kalibrasyonunu tamamlayın.",
       );
       return;
     }
@@ -198,7 +202,8 @@ export function OpticalPrepare() {
   };
   return (
     <>
-      <style>{`@media print{body *{visibility:hidden!important}.optical-print-root,.optical-print-root *{visibility:visible!important}.optical-print-root{position:absolute!important;left:0;top:0;width:100%;}.optical-controls{display:none!important}.print-optical-page{margin:0!important;border:0!important;box-shadow:none!important;page-break-after:always;break-after:page}.print-optical-page:last-child{page-break-after:auto;break-after:auto}@page{margin:0}}`}</style>
+      <style>{`@media print{body *{visibility:hidden!important}.optical-print-root,.optical-print-root *{visibility:visible!important}.optical-print-root{position:absolute!important;left:0;top:0;width:100%;}.optical-controls{display:none!important}.print-optical-page{margin:0!important;border:0!important;box-shadow:none!important;page-break-after:always;break-after:page}.print-optical-page:last-child{page-break-after:auto;break-after:auto}@page{margin:0}}${!printReady || busy ? "@media print{.optical-print-root,.optical-print-root *{visibility:hidden!important;display:none!important}.optical-print-blocked{display:block!important;visibility:visible!important;position:absolute;left:0;top:0;padding:20mm}}" : ""}.optical-print-blocked{display:none}`}</style>
+      <div className="optical-print-blocked">Baskı hazır değil. Güncel seçimi yeniden hazırlayın ve yazıcı kalibrasyonunu tamamlayın.</div>
       <div className="page-head optical-controls">
         <div>
           <span className="eyebrow">DEIMOS · OPTİK BASMA</span>
@@ -372,6 +377,7 @@ export function OpticalPrepare() {
               <h2>
                 {data.class.name} · {data.students.length} öğrenci
               </h2>
+              {!printReady && <p className="alert warning">Seçim değiştiyse baskıyı yeniden hazırlayın; seçili yazıcının kalibrasyonu hazır olmalıdır.</p>}
               <p>
                 Seçili {students.length} optik basılacak. İşletim sistemi
                 penceresinde kayıtlı profile karşılık gelen fiziksel yazıcıyı
@@ -380,7 +386,7 @@ export function OpticalPrepare() {
             </div>
             <button
               className="primary"
-              disabled={!students.length || !calibrationReady}
+              disabled={busy || !students.length || !printReady}
               onClick={printNow}
             >
               <Printer size={17} /> Seçilenleri Yazdır
