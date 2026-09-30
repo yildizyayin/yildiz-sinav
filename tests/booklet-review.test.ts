@@ -27,3 +27,12 @@ describe('manual booklet review', () => {
     expect(compareBooklets(record, ['A'], subjects, keys.slice(0, 1))[0]).toMatchObject({ available: false, net: null });
   });
 });
+
+it('uses printed order, accepted answers, excluded questions and underscore blanks consistently', () => {
+  const preview = compareBooklets({ ...record, answers_by_subject: { MAT: 'C_' } }, ['A'], subjects, [
+    { ...keys[0], printed_question_no: 2, question_status: 'EXCLUDED' },
+    { ...keys[1], printed_question_no: 1, accepted_answers: '["B","C"]' },
+  ])[0];
+  expect(preview).toMatchObject({ available: true, correct: 1, wrong: 0, blank: 0, net: 1 });
+  expect(compareBooklets({ ...record, answers_by_subject: { MAT: '__' } }, ['A'], subjects, keys)[0]).toMatchObject({ correct: 0, wrong: 0, blank: 2, net: 0 });
+});
