@@ -1,3 +1,4 @@
+import { canReadPrintTemplate } from './lib/optical-print-access';
 import finalApp from './final-entry';
 import type { AuthUser, Env } from './types';
 import { getAuthUser, hashPassword } from './lib/auth';
@@ -54,8 +55,9 @@ async function opticalPrepareV2(env:Env,user:AuthUser,url:URL):Promise<Response>
   if(!classId||!templateVersionId)return apiError(400,'VALIDATION_ERROR','Sınıf ve optik şablon seçilmelidir.');
   const cls=await one<any>(env.DB.prepare('SELECT * FROM classes WHERE id=?').bind(classId));
   if(!cls||!(await ensureInstitution(env,user,cls.institution_id)))return apiError(403,'FORBIDDEN','Bu sınıfa erişim yetkiniz yok.');
-  const template=await one<any>(env.DB.prepare(`SELECT v.*,t.name FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=? AND v.active=1`).bind(templateVersionId));
+  const template=await one<any>(env.DB.prepare(`SELECT v.*,t.name,t.owner_type,t.owner_id,t.status template_status FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=? AND v.active=1 AND t.active=1`).bind(templateVersionId));
   if(!template)return apiError(404,'NOT_FOUND','Optik şablon bulunamadı.');
+  if(!canReadPrintTemplate(user,template))return apiError(403,'FORBIDDEN','Bu optik şablona erişim yetkiniz yok.');
   if(!template.print_fields)return apiError(400,'TEMPLATE_DEFINITION_REQUIRED','Bu optik için baskı koordinatları henüz tanımlanmamış.');
   const institution=await one<any>(env.DB.prepare('SELECT id,name,code FROM institutions WHERE id=?').bind(cls.institution_id));
   let exam:any=null;
@@ -66,7 +68,8 @@ async function opticalPrepareV2(env:Env,user:AuthUser,url:URL):Promise<Response>
     bookletCodes=(await all<{code:string}>(env.DB.prepare(`SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code`).bind(examId))).map(x=>x.code);
   }
   const requestedBooklets=(url.searchParams.get('bookletSet')||'').split(',').map(x=>x.trim().toUpperCase()).filter(Boolean);
-  if(requestedBooklets.length)bookletCodes=requestedBooklets;
+  if(requestedBooklets.some(code=>!['A','B','C','D'].includes(code)||(examId&&!bookletCodes.includes(code))))return apiError(400,'BOOKLET_INVALID','Seçilen kitapçık sınavda tanımlı değil.');
+  if(requestedBooklets.length)bookletCodes=[...new Set(requestedBooklets)];
   if(!bookletCodes.length)bookletCodes=['A'];
   const rows=await all<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name,e.student_number,e.grade_level,e.section FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.class_id=? AND e.status='ACTIVE' AND s.status='ACTIVE' ORDER BY ${sort==='name'?'s.normalized_name':`cast(e.student_number as integer),e.student_number,s.normalized_name`}`).bind(classId));
   const participants=examId?await all<any>(env.DB.prepare(`SELECT student_id,booklet_code FROM exam_participants WHERE exam_id=? AND institution_id=? AND student_id IS NOT NULL`).bind(examId,cls.institution_id)):[];
