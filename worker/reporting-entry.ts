@@ -65,7 +65,8 @@ function placeholders(items:string[]){return items.map(()=>'?').join(',')}
 async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Promise<Response>{
   const access=await studentAccess(env,user,studentId);if(!access.allowed||!access.student)return forbidden('Bu öğrenci için birleşik rapor erişiminiz bulunmuyor.');
   const examParams:any[]=[studentId];let examAccessSql='';
-  if(access.subjectFilter?.length){examAccessSql=` AND EXISTS (SELECT 1 FROM subject_results sr2 WHERE sr2.participant_id=ep.id AND sr2.subject_id IN (${placeholders(access.subjectFilter)}))`;examParams.push(...access.subjectFilter)}
+  if(user.role==='STUDENT'||user.role==='PARENT')examAccessSql+=` AND EXISTS (SELECT 1 FROM exam_delivery_profiles publication WHERE publication.exam_id=e.id AND publication.result_freeze_status='PUBLISHED' AND publication.published_at IS NOT NULL AND (publication.result_publish_at IS NULL OR datetime(publication.result_publish_at)<=CURRENT_TIMESTAMP))`;
+  if(access.subjectFilter?.length){examAccessSql+=` AND EXISTS (SELECT 1 FROM subject_results sr2 WHERE sr2.participant_id=ep.id AND sr2.subject_id IN (${placeholders(access.subjectFilter)}))`;examParams.push(...access.subjectFilter)}
   const allExams=await all<any>(env.DB.prepare(`SELECT e.id exam_id,e.title,e.exam_date,e.exam_type,er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.success_percent,er.institution_rank,ep.booklet_code
     FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id
     WHERE ep.student_id=? ${examAccessSql} ORDER BY coalesce(e.exam_date,er.created_at) DESC LIMIT 100`).bind(...examParams));
