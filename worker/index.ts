@@ -461,7 +461,7 @@ export async function getScanBatch(env: Env, user: AuthUser, batchId: string): P
     const [booklets, subjects, keys] = await Promise.all([
       all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code').bind(batch.exam_id)),
       all<{ subject_id: string; code: string; question_count: number; wrong_divisor: number }>(env.DB.prepare('SELECT es.subject_id,s.code,es.question_count,es.wrong_divisor FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=?').bind(batch.exam_id)),
-      all<{ subject_id: string; booklet_code: string; question_no: number; correct_answer: string }>(env.DB.prepare('SELECT q.subject_id,ak.booklet_code,q.question_no,ak.correct_answer FROM exam_questions q JOIN answer_keys ak ON ak.exam_question_id=q.id WHERE q.exam_id=?').bind(batch.exam_id)),
+      all<{ subject_id: string; booklet_code: string; question_no: number; correct_answer: string; printed_question_no?: number; accepted_answers?: string | null; question_status?: string }>(env.DB.prepare('SELECT q.subject_id,ak.booklet_code,q.question_no,ak.correct_answer,ak.accepted_answers,coalesce(ak.question_status,q.question_status,\'ACTIVE\') question_status,coalesce(bqo.printed_question_no,q.question_no) printed_question_no FROM exam_questions q JOIN answer_keys ak ON ak.exam_question_id=q.id LEFT JOIN exam_question_booklet_orders bqo ON bqo.exam_question_id=q.id AND bqo.booklet_code=ak.booklet_code WHERE q.exam_id=?').bind(batch.exam_id)),
     ]);
     const codes = booklets.map((b) => b.code);
     for (const row of pendingBooklet) row.bookletOptions = compareBooklets(row.canonical, codes, subjects, keys);
@@ -514,7 +514,7 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
     if (!allowed.some((b) => b.code.toUpperCase() === code)) return badRequest('Seçilen kitapçık sınavda tanımlı değil.');
     const [subjects, keys] = await Promise.all([
       all<{ subject_id: string; code: string; question_count: number; wrong_divisor: number }>(env.DB.prepare('SELECT es.subject_id,s.code,es.question_count,es.wrong_divisor FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=?').bind(batch.exam_id)),
-      all<{ subject_id: string; booklet_code: string; question_no: number; correct_answer: string }>(env.DB.prepare('SELECT q.subject_id,ak.booklet_code,q.question_no,ak.correct_answer FROM exam_questions q JOIN answer_keys ak ON ak.exam_question_id=q.id WHERE q.exam_id=?').bind(batch.exam_id)),
+      all<{ subject_id: string; booklet_code: string; question_no: number; correct_answer: string; printed_question_no?: number; accepted_answers?: string | null; question_status?: string }>(env.DB.prepare('SELECT q.subject_id,ak.booklet_code,q.question_no,ak.correct_answer,ak.accepted_answers,coalesce(ak.question_status,q.question_status,\'ACTIVE\') question_status,coalesce(bqo.printed_question_no,q.question_no) printed_question_no FROM exam_questions q JOIN answer_keys ak ON ak.exam_question_id=q.id LEFT JOIN exam_question_booklet_orders bqo ON bqo.exam_question_id=q.id AND bqo.booklet_code=ak.booklet_code WHERE q.exam_id=?').bind(batch.exam_id)),
     ]);
     if (!compareBooklets(canonical, [code], subjects, keys)[0].available) return badRequest('Kitapçık için ders yanıtı veya cevap anahtarı eksik.');
     canonical.booklet = code;
