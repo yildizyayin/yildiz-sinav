@@ -1,0 +1,36 @@
+import { describe, expect, it, vi } from 'vitest';
+import { evaluateBatch } from '../worker/index';
+vi.mock('../worker/lib/assessment-ledger', () => ({ recordExamAssessments: vi.fn(async () => 0), recordExamEvidenceAudit: vi.fn(async () => {}) }));
+const user = { id: 'manager', role: 'INSTITUTION_MANAGER', institution_id: 'school' } as any;
+function fixture(incomplete = false) {
+  const writes: { sql: string; args: any[] }[] = [];
+  const keys = [
+    { question_id: 'q1', subject_id: 'math', question_no: 1, printed_question_no: 2, booklet_code: 'B', correct_answer: 'A', question_status: 'EXCLUDED' },
+    { question_id: 'q2', subject_id: 'math', question_no: 2, printed_question_no: 1, booklet_code: 'B', correct_answer: 'B', accepted_answers: '["B","C"]' },
+    { question_id: 'q3', subject_id: 'math', question_no: 3, printed_question_no: 3, booklet_code: 'B', correct_answer: 'A' },
+  ];
+  const env = { DB: { prepare: (sql: string) => ({ bind: (...args: any[]) => ({
+    first: async () => sql.includes('FROM scan_batches') ? { id: 'batch', exam_id: 'exam', institution_id: 'school', season_id: 'season', status: 'READY' }
+      : sql.includes('count(*)') ? { c: 0 }
+      : sql.includes('FROM exams e LEFT JOIN scoring_rule_versions') ? { id: 'exam', scoring_version_id: 'score', verified: 1 } : null,
+    all: async () => ({ results: sql.includes('FROM exam_subjects') ? [{ subject_id: 'math', code: 'MAT', question_count: 3, wrong_divisor: 4 }]
+      : sql.includes('FROM exam_booklets') ? [{ code: 'B' }]
+      : sql.includes('FROM exam_questions q JOIN subjects') ? (incomplete ? keys.slice(0, 2) : keys)
+      : sql.includes('SELECT * FROM scan_records') ? [{ id: 'scan', row_no: 1, matched_student_id: 'student', match_status: 'ACTIVE_MATCH', canonical_json: JSON.stringify({ name: 'Ada Test', booklet: 'B', answers_by_subject: { MAT: 'C_D' }, confidence: 1 }) }] : [] }),
+    run: async () => { writes.push({ sql, args }); return { success: true }; },
+  }) }) } } as any;
+  return { writes, evaluate: () => evaluateBatch(env, user, 'batch') };
+}
+describe('Result Network evaluation native semantics', () => {
+  it('uses printed order, accepted answers and exclusion when writing results', async () => {
+    const f = fixture(); expect((await f.evaluate()).status).toBe(200);
+    const answers = f.writes.filter(w => w.sql.includes('INSERT INTO student_answers'));
+    expect(answers.map(w => [w.args[2], w.args[3], w.args[4]])).toEqual([['q2', 'C', 'CORRECT'], ['q1', null, 'INVALID'], ['q3', 'D', 'WRONG']]);
+    const result = f.writes.find(w => w.sql.includes('INSERT INTO subject_results'))!;
+    expect(result.args.slice(3)).toEqual([1, 1, 0, 0.75, 37.5]);
+  });
+  it('rejects an incomplete answer key before any write', async () => {
+    const f = fixture(true); const response = await f.evaluate(); expect(response.status).toBe(400);
+    expect((await response.json() as any).error.code).toBe('ANSWER_KEY_INCOMPLETE'); expect(f.writes).toEqual([]);
+  });
+});
