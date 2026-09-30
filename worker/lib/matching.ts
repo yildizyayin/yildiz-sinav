@@ -19,19 +19,17 @@ export function matchParticipant(record: CanonicalRecord, candidates: MatchCandi
     if (byTckn.length > 1) return { status: 'AMBIGUOUS', confidence: 0.35, issues: ['Aynı T.C. kimlik numarasına sahip birden fazla kayıt bulundu.'], candidates: byTckn.map((c) => c.student_id) };
   }
 
-  if (!name) return { status: 'INVALID', confidence: 0, issues: ['Ad soyad okunamadı.'] };
-
   const studentNo = (record.student_number || '').trim();
   if (studentNo) {
     const byNo = candidates.filter((c) => (c.student_number || '').trim() === studentNo);
     if (byNo.length === 1) {
       const c = byNo[0];
-      const nameScore = c.normalized_name === name ? 1 : similarity(c.normalized_name, name);
+      const nameScore = name ? (c.normalized_name === name ? 1 : similarity(c.normalized_name, name)) : 0.97;
       return {
         status: c.status === 'ACTIVE' ? 'ACTIVE_MATCH' : 'GUEST_MATCH',
         student_id: c.student_id,
         confidence: Math.max(0.92, nameScore),
-        issues: nameScore < 0.55 ? ['Öğrenci numarası eşleşti ancak ad soyad farklı görünüyor.'] : [],
+        issues: name && nameScore < 0.55 ? ['Öğrenci numarası eşleşti ancak ad soyad farklı görünüyor.'] : [],
       };
     }
     if (byNo.length > 1) {
@@ -43,6 +41,8 @@ export function matchParticipant(record: CanonicalRecord, candidates: MatchCandi
       return { status: 'AMBIGUOUS', confidence: 0.4, issues: ['Aynı öğrenci numarasına sahip birden fazla kayıt bulundu.'], candidates: byNo.map((c) => c.student_id) };
     }
   }
+
+  if (!name) return { status: 'INVALID', confidence: 0, issues: ['Ad soyad okunamadı.'] };
 
   const exactName = candidates.filter((c) => c.normalized_name === name);
   const narrowed = exactName.filter((c) => {
