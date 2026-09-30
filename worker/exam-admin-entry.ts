@@ -105,7 +105,7 @@ async function contentList(env: Env, user: AuthUser, examId: string): Promise<Re
   const assetVisibility = user.role === 'SUPER_ADMIN' ? null : user.role === 'STUDENT' || user.role === 'PARENT' ? 'STUDENT' : 'INSTITUTION_TEACHER';
   const [assets, videos, opticalBindings, opticals] = await Promise.all([
     all<any>(env.DB.prepare(`SELECT id,asset_type,booklet_code,file_name,mime_type,byte_size,version,status,visibility,metadata_json,created_at FROM exam_document_assets WHERE exam_id=? AND status='READY' AND (? IS NULL OR visibility IN (?, 'PUBLIC')) ORDER BY created_at DESC`).bind(examId, assetVisibility, assetVisibility)),
-    all<any>(env.DB.prepare(`SELECT id,exam_question_id,outcome_id,link_type,provider,url,title,description,status,publish_at,published_at,visibility,link_status,last_checked_at FROM video_links WHERE exam_id=? AND ((status='PUBLISHED' AND (publish_at IS NULL OR publish_at<=CURRENT_TIMESTAMP) AND visibility IN ('PUBLIC','STUDENT_TEACHER')) OR ? IN ('SUPER_ADMIN','INSTITUTION_MANAGER')) ORDER BY coalesce(published_at,publish_at,updated_at) DESC`).bind(examId, user.role)),
+    all<any>(env.DB.prepare(`SELECT id,exam_question_id,outcome_id,link_type,provider,url,title,description,status,publish_at,published_at,visibility,link_status,last_checked_at FROM video_links WHERE exam_id=? AND ((status='PUBLISHED' AND (publish_at IS NULL OR datetime(publish_at)<=CURRENT_TIMESTAMP) AND visibility IN ('PUBLIC','STUDENT_TEACHER')) OR ? IN ('SUPER_ADMIN','INSTITUTION_MANAGER')) ORDER BY coalesce(published_at,publish_at,updated_at) DESC`).bind(examId, user.role)),
     all<any>(env.DB.prepare(`SELECT b.id,b.booklet_code,b.optical_template_version_id,b.input_modes_json,b.active,t.name template_name,t.vendor,v.version template_version,v.page_width_mm,v.page_height_mm FROM exam_optical_bindings b JOIN optical_template_versions v ON v.id=b.optical_template_version_id JOIN optical_templates t ON t.id=v.template_id WHERE b.exam_id=? AND b.active=1 ORDER BY b.booklet_code`).bind(examId)),
     ['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)
       ? all<any>(env.DB.prepare(`SELECT v.id version_id,t.name,t.vendor,v.version,v.page_width_mm,v.page_height_mm FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id LEFT JOIN optical_definition_validations d ON d.optical_template_version_id=v.id WHERE t.active=1 AND t.status='READY' AND v.active=1 AND v.parser_definition IS NOT NULL AND coalesce(d.parser_test_passed,0)=1 ORDER BY t.name,v.version`))
@@ -241,7 +241,7 @@ async function downloadExamAsset(request: Request, env: Env, user: AuthUser, exa
 }
 
 export async function publishScheduledExamVideos(env: Env): Promise<void> {
-  try { await env.DB.prepare(`UPDATE video_links SET status='PUBLISHED',approved=1,published_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE status='SCHEDULED' AND publish_at IS NOT NULL AND publish_at<=CURRENT_TIMESTAMP`).run(); } catch (error) { console.error('Scheduled exam video promotion failed', error); }
+  try { await env.DB.prepare(`UPDATE video_links SET status='PUBLISHED',approved=1,published_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE status='SCHEDULED' AND publish_at IS NOT NULL AND datetime(publish_at)<=CURRENT_TIMESTAMP`).run(); } catch (error) { console.error('Scheduled exam video promotion failed', error); }
 }
 
 async function actor(env: Env, request: Request): Promise<AuthUser | Response> {
