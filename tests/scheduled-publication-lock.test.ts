@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import { expect,it } from 'vitest';
 import { publishScheduledExamResults } from '../worker/lib/exam-schedule';
@@ -18,6 +19,7 @@ function fixture(failAudit=false,changeVersion=false){
       return {meta:{changes:Number(db.prepare(sql).run(...args).changes)}};
     },
   }}
+  db.exec(readFileSync(new URL('../migrations/0059_exam_operation_write_guards.sql',import.meta.url),'utf8'));
   const env={DB:{prepare:statement,batch:async(statements:any[])=>{db.exec('BEGIN');try{const rows=[];for(const stmt of statements)rows.push(await stmt.run());db.exec('COMMIT');return rows}catch(error){db.exec('ROLLBACK');throw error}}}} as any;
   return {db,run:()=>publishScheduledExamResults(env)};
 }
