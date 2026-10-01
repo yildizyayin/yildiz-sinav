@@ -14,8 +14,10 @@ export const REPORT_SNAPSHOT_SQL = `UPDATE exam_result_snapshots AS snap SET pay
     FROM subject_results sr JOIN subjects s ON s.id=sr.subject_id WHERE sr.participant_id=snap.participant_id)),
   'outcomes',json((SELECT json_group_array(json_object('outcome_id',o.id,'code',o.code,'topic',o.topic,'subtopic',o.subtopic,'title',o.title,
     'subject_id',s.id,'subject_name',s.name,'evidence_count',r.evidence_count,'correct_count',r.correct_count))
-    FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id
-    WHERE r.student_id=snap.student_id AND r.exam_id=snap.exam_id)),
+    FROM (SELECT qo.outcome_id,COUNT(*) evidence_count,SUM(CASE WHEN sa.status='CORRECT' THEN 1 ELSE 0 END) correct_count
+      FROM student_answers sa JOIN question_outcomes qo ON qo.exam_question_id=sa.exam_question_id
+      WHERE sa.participant_id=snap.participant_id AND sa.status<>'INVALID' GROUP BY qo.outcome_id) r
+    JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id)),
   'optionalPhilosophy',json((SELECT json_group_array(json_object('subject_id',r.subject_id,'booklet_code',r.booklet_code,
     'correct_count',r.correct_count,'wrong_count',r.wrong_count,'blank_count',r.blank_count,'invalid_count',r.invalid_count,
     'evidence_count',r.evidence_count,'success_percent',r.success_percent))
