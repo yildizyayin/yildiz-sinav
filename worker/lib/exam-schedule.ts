@@ -38,7 +38,7 @@ async function canManageSchedule(env:Env,user:AuthUser,examId:string){
 
 export async function getExamSchedule(env:Env,user:AuthUser,examId:string):Promise<Response>{
   if(!await canManageSchedule(env,user,examId))return forbidden();
-  const row=await one<any>(env.DB.prepare(`SELECT e.id,e.application_start_at,e.application_end_at,p.result_publish_at,p.result_freeze_status,p.published_at
+  const row=await one<any>(env.DB.prepare(`SELECT e.id,e.application_start_at,e.application_end_at,p.result_publish_at,p.result_freeze_status,p.published_at,p.snapshot_version
     FROM exams e LEFT JOIN exam_delivery_profiles p ON p.exam_id=e.id WHERE e.id=?`).bind(examId));
   if(!row)return notFound('Sınav bulunamadı.');
   return json({ok:true,schedule:row});
