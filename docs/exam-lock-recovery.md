@@ -9,3 +9,6 @@ Kurtarma için gereken teknik kapanış: kilit sahipliğinin her sonuç yazı gr
 Gerekli kabul testleri: A yavaşlar → sahiplik iptal edilir → B başlar → A devam edip yazmaya çalışır → A'nın yazısı reddedilir; B'nin kilidi A'nın finally'siyle silinmez. Crash/DB rollback ve kısmi chunk/optional failure yeniden denemeleri ayrı doğrulanır.
 
 Kurtarma kapanmadan migration0058'in üretim işletim hazırlığı tamamlandı denmez. Diagnostic API canlıya alınmadı; güvenli unlock endpoint'i veya otomatik unlock bulunmuyor. Capacity hedefleriyle birlikte release kapısıdır.
+
+## Implemented recovery (2026-10-01)
+SuperAdmin diagnostics return a SHA-256 fingerprint, never the owner token. POST /api/platform/exam-center/operation-locks/recover requires examId, the observed fingerprint and a 10–1000 character reason. Audit and exact-owner deletion use one transaction. A changed lock returns 409. The ExamDetail control explains unknown liveness and partial completed writes; no retry is started automatically. Write fencing rejects resumed revoked owners. Migration 0059, actual D1 execution and Preview/production verification remain pending. Earlier prerequisite notes describe the design history; fencing and this endpoint now exist in branch code.
