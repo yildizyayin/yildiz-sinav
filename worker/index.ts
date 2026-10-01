@@ -567,6 +567,8 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
   return withExamOperationLock(env,batch.exam_id,'EVALUATE',async(env)=>{
+  const networkPublication=await one<any>(env.DB.prepare("SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND status IN ('PUBLISHED','ARCHIVED') AND ranking_frozen_at IS NOT NULL LIMIT 1").bind(batch.exam_id));
+  if(networkPublication)return badRequest('Sonuç Ağı yayını düzeltmeye açılmadan değerlendirme yapılamaz.','RESULTS_FROZEN');
   const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
   if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status)) {
     return badRequest('Dondurulmuş veya yayımlanmış sonuçlar yeniden değerlendirilemez. Düzeltme için yeni sonuç sürümü hazırlanmalıdır.', 'RESULTS_FROZEN');
