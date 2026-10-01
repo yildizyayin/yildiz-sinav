@@ -21,3 +21,6 @@ export function snapshotSummary(row:any):any|null {
 export function snapshotDetail(payload:any){
  return {subjects:payload.subjects.map((s:any)=>({...s,subject:s.subject_name})),outcomes:payload.outcomes.slice(0,100).map((o:any)=>({...o,outcome:o.title,success_rate:o.evidence_count>0?100*o.correct_count/o.evidence_count:null,mastery_status:null})),optionalPhilosophy:payload.optionalPhilosophy||[]};
 }
+
+// Institution scope is checked before reading the publication payload.
+export const NETWORK_INSTITUTION_SNAPSHOT_SQL = `SELECT s.*,ea.exam_id FROM result_access_identities rai JOIN result_network_institutions rni ON rni.id=rai.result_institution_id JOIN exam_administrations ea ON ea.id=rai.administration_id LEFT JOIN exam_result_snapshots s ON s.participant_id=rai.participant_id AND s.exam_id=ea.exam_id AND s.snapshot_version=ea.published_snapshot_version WHERE ea.id=? AND ea.channel='RESULT_NETWORK' AND ea.status IN ('PUBLISHED','ARCHIVED') AND (rni.licensed_institution_id=? OR rni.meb_code=(SELECT code FROM institutions WHERE id=?)) ORDER BY s.net DESC,s.participant_id LIMIT 20000`;
