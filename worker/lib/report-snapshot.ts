@@ -9,6 +9,7 @@ export const REPORT_SNAPSHOT_SQL = `UPDATE exam_result_snapshots AS snap SET pay
     'net',snap.net,'score',snap.score,'success_percent',er.success_percent,
     'institution_rank',snap.institution_rank,'booklet_code',ep.booklet_code)
     FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.id=snap.participant_id),
+  'participant',(SELECT json_object('name_snapshot',ep.name_snapshot,'student_number_snapshot',ep.student_number_snapshot,'class_snapshot',ep.class_snapshot) FROM exam_participants ep WHERE ep.id=snap.participant_id),
   'wrongQuestionIds',json((SELECT json_group_array(sa.exam_question_id) FROM student_answers sa WHERE sa.participant_id=snap.participant_id AND sa.status='WRONG')),
   'subjects',json((SELECT json_group_array(json_object('subject_id',s.id,'subject_code',s.code,'subject_name',s.name,
     'correct_count',sr.correct_count,'wrong_count',sr.wrong_count,'blank_count',sr.blank_count,'net',sr.net,'success_percent',sr.success_percent))
