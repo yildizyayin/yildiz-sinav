@@ -27,6 +27,7 @@ it('captures independent report evidence once per version with real SQLite JSON'
       INSERT INTO question_outcomes VALUES('q1','o'),('q2','o'),('q3','o');
       INSERT INTO student_answers VALUES('p','q1','CORRECT'),('p','q2','CORRECT'),('p','q3','INVALID'),('other-institution','q1','WRONG');
       INSERT INTO tyt_optional_philosophy_results VALUES('p','fel','B',1,1,3,0,5,20);`);
+    db.exec("ALTER TABLE exams ADD COLUMN academic_year TEXT DEFAULT '2026-2027'");
     db.prepare(REPORT_SNAPSHOT_SQL).run('e',1);
     const read=()=>JSON.parse((db.prepare('SELECT payload_json FROM exam_result_snapshots').get() as any).payload_json);
     expect(read().subjects[0].net).toBe(2);
