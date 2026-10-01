@@ -4,6 +4,7 @@ import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
 import { hydrateQuestionMedia } from './question-content';
 import { recordAssessmentRun } from './assessment-ledger';
 import { renderStudioPdf } from './studio-pdf';
+import { captureReportSnapshot } from './report-snapshot';
 
 const NEXT_FEATURES = new Set([
   'LEARNING_GRAPH','QUESTION_BANK','RECOVERY','RBA','MEMBERSHIP','LIVE','STUDIO','PHYSICAL_BRIDGE','GAMES','CAMPUS','ENTERPRISE','PUBLISHER','ADMISSIONS','GUIDANCE_TESTS','BOARD','MOBILE_API','VIDEO_LIBRARY',
@@ -197,8 +198,9 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
       RANK() OVER(PARTITION BY ep.institution_id,COALESCE(se.grade_level,e.grade_level) ORDER BY COALESCE(er.score,er.net) DESC),COUNT(*) OVER(PARTITION BY ep.institution_id,COALESCE(se.grade_level,e.grade_level)),
       RANK() OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,'') ORDER BY COALESCE(er.score,er.net) DESC),COUNT(*) OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,''))
     FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id JOIN exams e ON e.id=ep.exam_id JOIN institutions i ON i.id=ep.institution_id
-    LEFT JOIN student_enrollments se ON se.student_id=ep.student_id AND se.institution_id=ep.institution_id AND se.status='ACTIVE'
+    LEFT JOIN student_enrollments se ON se.id=(SELECT historical.id FROM student_enrollments historical WHERE historical.student_id=ep.student_id AND historical.institution_id=ep.institution_id AND historical.season_id=ep.season_id ORDER BY historical.created_at DESC,historical.id LIMIT 1)
     WHERE ep.exam_id=?`).bind(version,networkId,networkId,networkId,examId).run();
+  await captureReportSnapshot(env, examId, version);
   const stats=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT institution_id) institution_count,COUNT(DISTINCT city) city_count FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version));
   await env.DB.batch([
     env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='FROZEN',freeze_at=CURRENT_TIMESTAMP,snapshot_version=?,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?`).bind(version,examId),
