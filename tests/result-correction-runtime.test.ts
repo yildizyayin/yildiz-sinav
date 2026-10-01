@@ -6,6 +6,7 @@ function fixture(scope='INSTITUTION', failAudit=false, racePublish=false){
   const db=new DatabaseSync(':memory:');
   db.exec(`CREATE TABLE exam_delivery_profiles(exam_id TEXT,snapshot_version INTEGER,result_freeze_status TEXT,published_at TEXT,result_publish_at TEXT,freeze_at TEXT,updated_at TEXT);
     CREATE TABLE exam_result_snapshots(exam_id TEXT,snapshot_version INTEGER,payload_json TEXT);
+    CREATE TABLE exam_operation_locks(exam_id TEXT PRIMARY KEY,owner_token TEXT,operation TEXT);
     CREATE TABLE scan_batches(id TEXT,exam_id TEXT,status TEXT);
     CREATE TABLE scan_evaluation_progress(batch_id TEXT);
     INSERT INTO scan_batches VALUES('batch','exam','COMMITTED'),('foreign','other','COMMITTED');
