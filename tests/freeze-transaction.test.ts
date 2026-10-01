@@ -1,6 +1,8 @@
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
 import { expect,it } from 'vitest';
+import { freezeAndPublishAdministration } from '../worker/result-network-entry';
+import { reopenNetworkResults } from '../worker/lib/result-network-correction';
 import { handlePlatformApi } from '../worker/lib/platform-expansion';
 
 function fixture(failAudit=false){
@@ -29,7 +31,7 @@ function fixture(failAudit=false){
     CREATE TABLE exam_publication_stats(exam_id TEXT,snapshot_version INTEGER,institution_count INTEGER,participant_count INTEGER,city_count INTEGER,payload_json TEXT);
     CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
     INSERT INTO exam_result_snapshots(id,exam_id,participant_id,snapshot_version,institution_id,net,payload_json) VALUES('previous','e','p',0,'school',1,'previous-payload');`);
-  db.exec("ALTER TABLE exams ADD COLUMN academic_year TEXT DEFAULT '2026-2027'");
+  db.exec("ALTER TABLE exams ADD COLUMN academic_year TEXT DEFAULT '2026-2027';ALTER TABLE exam_participants ADD COLUMN name_snapshot TEXT;ALTER TABLE exam_participants ADD COLUMN student_number_snapshot TEXT");
   function statement(sql:string,args:any[]=[]):any{return {
     bind:(...values:any[])=>statement(sql,values),
     first:async()=>sql.includes('SELECT p.*,e.title')?{...db.prepare('SELECT * FROM exam_delivery_profiles').get(),scope:'INSTITUTION',institution_id:'school'}:db.prepare(sql).get(...args),
@@ -37,7 +39,7 @@ function fixture(failAudit=false){
   }}
   db.exec(readFileSync(new URL('../migrations/0059_exam_operation_write_guards.sql',import.meta.url),'utf8'));
   const env={DB:{prepare:statement,batch:async(statements:any[])=>{db.exec('BEGIN');try{const rows=[];for(const s of statements)rows.push(await s.run());db.exec('COMMIT');return rows}catch(error){db.exec('ROLLBACK');throw error}}}} as any;
-  return {db,run:()=>handlePlatformApi(new Request('https://test/api/platform/exam-center/e/freeze',{method:'POST'}),env,{id:'user',role:'INSTITUTION_MANAGER',institution_id:'school'} as any)};
+  return {db,env,run:()=>handlePlatformApi(new Request('https://test/api/platform/exam-center/e/freeze',{method:'POST'}),env,{id:'user',role:'INSTITUTION_MANAGER',institution_id:'school'} as any)};
 }
 it('commits snapshot payload, historical grade, statistics, profile and audit together',async()=>{
   const f=fixture();try{
@@ -63,4 +65,26 @@ it('allocates above snapshots from other publication channels without overwritin
     const response=(await f.run())!;expect((await response.json() as any).version).toBe(8);
     expect((f.db.prepare('SELECT payload_json FROM exam_result_snapshots WHERE snapshot_version=7').get() as any).payload_json).toBe('network-payload');
   }finally{f.db.close()}
+});
+
+it('requires completed reevaluation after network withdrawal and publishes a new preserved version',async()=>{
+ const f=fixture();try{
+ await f.run();
+ f.db.exec(`CREATE TABLE exam_administrations(id TEXT,exam_id TEXT,channel TEXT,status TEXT,published_snapshot_version INTEGER,published_at TEXT,ranking_frozen_at TEXT,retention_due_at TEXT,participant_count INTEGER,institution_count INTEGER);
+ INSERT INTO exam_administrations VALUES('admin','e','RESULT_NETWORK','PUBLISHED',1,'old','old','2099',1,1);
+ CREATE TABLE result_access_identities(administration_id TEXT,participant_id TEXT,expires_at TEXT);INSERT INTO result_access_identities VALUES('admin','p','2099');
+ CREATE TABLE institution_network_members(institution_id TEXT,network_id TEXT,active INTEGER,joined_at TEXT);
+ CREATE TABLE scan_records(batch_id TEXT,resolution_status TEXT);
+ INSERT INTO scan_batches VALUES('b','e','COMMITTED');INSERT INTO scan_records VALUES('b','MATCHED');`);
+ const user={id:'super',role:'SUPER_ADMIN'} as any;
+ expect((await reopenNetworkResults(new Request('https://test',{method:'POST',body:JSON.stringify({expectedSnapshotVersion:1,reason:'Cevap anahtarı düzeltmesi'})}),f.env,user,'admin')).status).toBe(200);
+ const publish=()=>freezeAndPublishAdministration(new Request('https://test',{method:'POST'}),f.env,user,'admin');
+ expect((await publish()).status).toBe(400);
+ f.db.exec("UPDATE exam_results SET net=7;UPDATE scan_batches SET status='COMMITTED' WHERE id='b'");
+ const response=await publish();expect(response.status).toBe(200);expect((await response.json() as any).snapshotVersion).toBe(2);
+ expect((f.db.prepare('SELECT published_snapshot_version,status FROM exam_administrations').get() as any)).toEqual({published_snapshot_version:2,status:'PUBLISHED'});
+ const snapshots=f.db.prepare('SELECT payload_json FROM exam_result_snapshots WHERE snapshot_version IN(1,2) ORDER BY snapshot_version').all() as any[];
+ expect(JSON.parse(snapshots[0].payload_json).exam.net).toBe(2);expect(JSON.parse(snapshots[1].payload_json).exam.net).toBe(7);
+ expect((await publish()).status).toBe(400);
+ }finally{f.db.close()}
 });
