@@ -566,7 +566,7 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
-  return withExamOperationLock(env,batch.exam_id,'EVALUATE',async()=>{
+  return withExamOperationLock(env,batch.exam_id,'EVALUATE',async(env)=>{
   const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
   if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status)) {
     return badRequest('Dondurulmuş veya yayımlanmış sonuçlar yeniden değerlendirilemez. Düzeltme için yeni sonuç sürümü hazırlanmalıdır.', 'RESULTS_FROZEN');
@@ -692,6 +692,7 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   try {
     await persistTytOptionalPhilosophyEvidence(env, batchId);
   } catch (error) {
+    if(error instanceof Error&&error.message.includes('EXAM_OPERATION_OWNERSHIP_LOST'))throw error;
     console.error('TYT optional philosophy evidence persistence failed', error);
     return json({ ok: false, error: {
       code: 'TYT_OPTIONAL_EVIDENCE_FAILED',
