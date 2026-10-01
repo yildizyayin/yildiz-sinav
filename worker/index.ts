@@ -3,6 +3,7 @@ import { audit, badRequest, forbidden, json, methodNotAllowed, normalizeName, no
 import { createSession, getAuthUser, hashPassword, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
 import { canAccessSubjectForClass, canEvaluateExam, loadPermissionScope, roleCanManageInstitution } from './lib/permissions';
 import { evaluateAnswer } from './lib/answer-evaluation';
+import { persistTytOptionalPhilosophyEvidence } from './tyt-optional-philosophy-evaluation';
 import { matchParticipant } from './lib/matching';
 import { bookletIssue, compareBooklets, isBookletIssue } from './lib/booklet-review';
 import { decodeUploadedBytes, parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib/parse';
@@ -682,6 +683,15 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
     WHERE participant_id IN (SELECT id FROM exam_participants WHERE exam_id=? AND institution_id=?)`).bind(exam.id, batch.institution_id, exam.id, batch.institution_id).run();
   const ledgerCount=await recordExamAssessments(env,batchId);
   await recordExamEvidenceAudit(env,user.id,batch.institution_id,batchId,ledgerCount);
+  try {
+    await persistTytOptionalPhilosophyEvidence(env, batchId);
+  } catch (error) {
+    console.error('TYT optional philosophy evidence persistence failed', error);
+    return json({ ok: false, error: {
+      code: 'TYT_OPTIONAL_EVIDENCE_FAILED',
+      message: 'TYT seçmeli Felsefe kanıt sonucu kaydedilemedi. Ana 120 soruluk değerlendirme değiştirilmedi; işlem güvenli şekilde tekrar denenebilir.',
+    } }, 500);
+  }
   await env.DB.prepare(`UPDATE scan_batches SET status='COMMITTED' WHERE id=?`).bind(batchId).run();
   await audit(env.DB, user.id, batch.institution_id, 'EXAM_EVALUATED', 'scan_batch', batchId, { examId: exam.id, processed });
   return json({ ok: true, processed, batchId, examId: exam.id });
@@ -1187,4 +1197,3 @@ function parseGenericStudentImport(text: string): Array<{ external_id?: string; 
 function safeFileName(name: string): string {
   return name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/-+/g,'-').slice(0,120) || 'file';
 }
-
