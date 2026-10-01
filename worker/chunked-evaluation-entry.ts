@@ -73,6 +73,10 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
   const access = await ensureAccess(env, request, batch);
   if (access.response || !access.user) return access.response!;
   const user = access.user;
+  const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
+  if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status)) {
+    return badRequest('Dondurulmuş veya yayımlanmış sonuçlar yeniden değerlendirilemez. Düzeltme için yeni sonuç sürümü hazırlanmalıdır.', 'RESULTS_FROZEN');
+  }
 
   const totalRow = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM scan_records WHERE batch_id=?').bind(batchId));
   const total = Number(totalRow?.c || 0);
