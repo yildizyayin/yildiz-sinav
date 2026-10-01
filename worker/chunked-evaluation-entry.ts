@@ -299,11 +299,12 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
 async function evaluateChunk(request:Request,env:Env,batchId:string):Promise<Response>{
   const batch=await one<AnyRow>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));if(!batch)return notFound();
   const access=await ensureAccess(env,request,batch);if(access.response||!access.user)return access.response!;
-  return withExamOperationLock(env,batch.exam_id,'EVALUATE',async()=>{
+  return withExamOperationLock(env,batch.exam_id,'EVALUATE',async(env)=>{
     const response=await evaluateChunkUnlocked(request,env,batchId);if(!response.ok)return response;
     const payload=await response.clone().json() as any;
     if(payload?.ok){try{await persistTytOptionalPhilosophyEvidence(env,batchId)}catch(error){
-      console.error('TYT optional philosophy evidence persistence failed',error);
+      if(error instanceof Error&&error.message.includes('EXAM_OPERATION_OWNERSHIP_LOST'))throw error;
+    console.error('TYT optional philosophy evidence persistence failed',error);
       await env.DB.prepare("UPDATE scan_batches SET status='READY' WHERE id=?").bind(batchId).run();
       return json({ok:false,error:{code:'TYT_OPTIONAL_EVIDENCE_FAILED',message:'TYT seçmeli Felsefe kanıt sonucu kaydedilemedi. Ana 120 soruluk değerlendirme değiştirilmedi; işlem güvenli şekilde tekrar denenebilir.'}},500);
     }}
