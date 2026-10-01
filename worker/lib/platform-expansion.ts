@@ -219,6 +219,27 @@ async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response
   return json({ok:true,published:true,version:p.snapshot_version});
 }
 
+async function reopenExamResults(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
+  const p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
+  if(!await canManageExam(env,user,p)||p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden();
+  const body=await requestBody(request);const reason=typeof body.reason==='string'?body.reason.trim():'';
+  const version=body.expectedSnapshotVersion;
+  if(reason.length<10||reason.length>1000)return badRequest('10–1000 karakter uzunluğunda düzeltme gerekçesi girin.','CORRECTION_REASON_REQUIRED');
+  if(!Number.isSafeInteger(version)||version<1)return badRequest('Güncel sonuç sürümü gereklidir.','SNAPSHOT_VERSION_REQUIRED');
+  if(!['FROZEN','PUBLISHED'].includes(p.result_freeze_status)||Number(p.snapshot_version)!==version)return json({ok:false,error:{code:'SNAPSHOT_STATE_CHANGED',message:'Sonuç durumu değişti. Sayfayı yenileyin.'}},409);
+  const guard=`EXISTS (SELECT 1 FROM exam_delivery_profiles WHERE exam_id=? AND snapshot_version=? AND result_freeze_status=?)`;
+  const changes=await env.DB.batch([
+    env.DB.prepare(`DELETE FROM scan_evaluation_progress WHERE batch_id IN (SELECT id FROM scan_batches WHERE exam_id=?) AND ${guard}`).bind(examId,examId,version,p.result_freeze_status),
+    env.DB.prepare(`UPDATE scan_batches SET status='READY' WHERE exam_id=? AND status='COMMITTED' AND ${guard}`).bind(examId,examId,version,p.result_freeze_status),
+    env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='OPEN',published_at=NULL,result_publish_at=NULL,freeze_at=NULL,updated_at=CURRENT_TIMESTAMP
+      WHERE exam_id=? AND snapshot_version=? AND result_freeze_status=?`).bind(examId,version,p.result_freeze_status),
+  ]);
+  const changed=changes[2];
+  if(!changed.meta?.changes)return json({ok:false,error:{code:'SNAPSHOT_STATE_CHANGED',message:'Sonuç durumu değişti. Sayfayı yenileyin.'}},409);
+  await audit(env.DB,user.id,p.institution_id,'EXAM_RESULTS_REOPENED','exam',examId,{reason,previousVersion:version,previousState:p.result_freeze_status,publicationWithdrawn:p.result_freeze_status==='PUBLISHED'});
+  return json({ok:true,examId,previousVersion:version,state:'OPEN',publicationWithdrawn:p.result_freeze_status==='PUBLISHED',requiresFreezeAndPublish:true});
+}
+
 async function examStats(env:Env,user:AuthUser,examId:string):Promise<Response>{
   const p=await examProfile(env,examId); if(!p)return notFound();
   const institutionScope=user.role==='SUPER_ADMIN'?null:user.institution_id;
@@ -654,6 +675,7 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   let m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/profile$/);if(m&&request.method==='PUT')return updateExamProfile(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/freeze$/);if(m&&request.method==='POST')return freezeExam(env,user,m[1]);
   m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/publish$/);if(m&&request.method==='POST')return publishExam(env,user,m[1]);
+  m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/reopen-results$/);if(m&&request.method==='POST')return reopenExamResults(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/stats$/);if(m&&request.method==='GET')return examStats(env,user,m[1]);
   m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/result$/);if(m&&request.method==='GET')return studentExamResult(request,env,user,m[1]);
 
