@@ -2,6 +2,7 @@ import type { AuthUser,Env } from './types';
 import { getAuthUser,hashPassword,verifyPassword,verifyTurnstile } from './lib/auth';
 import { all,audit,badRequest,forbidden,json,normalizeName,one,uuid } from './lib/db';
 import { evaluateBatch,getScanBatch,previewExamFile,resolveScanRecord,searchScanCandidates } from './index';
+import { captureReportSnapshot } from './lib/report-snapshot';
 
 const COOKIE='anunex_result_session';
 const SIX_HOURS=6*60*60*1000;
@@ -117,7 +118,7 @@ async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthU
    (SELECT inm.network_id FROM institution_network_members inm WHERE inm.institution_id=ep.institution_id AND inm.active=1 ORDER BY inm.joined_at LIMIT 1) network_id,
    i.city,i.district,COALESCE(se.grade_level,e.grade_level) grade_level,ep.class_snapshot,er.score,er.net,er.correct_count
    FROM result_access_identities rai JOIN exam_results er ON er.participant_id=rai.participant_id JOIN exam_participants ep ON ep.id=er.participant_id JOIN exams e ON e.id=ep.exam_id JOIN institutions i ON i.id=ep.institution_id
-   LEFT JOIN student_enrollments se ON se.student_id=ep.student_id AND se.institution_id=ep.institution_id AND se.status='ACTIVE' WHERE rai.administration_id=? AND ep.exam_id=?)
+   LEFT JOIN student_enrollments se ON se.id=(SELECT historical.id FROM student_enrollments historical WHERE historical.student_id=ep.student_id AND historical.institution_id=ep.institution_id AND historical.season_id=ep.season_id ORDER BY historical.created_at DESC,historical.id LIMIT 1) WHERE rai.administration_id=? AND ep.exam_id=?)
   SELECT 'snap_'||lower(hex(randomblob(16))),exam_id,participant_id,?,student_id,institution_id,network_id,city,district,grade_level,class_snapshot,score,net,
    RANK() OVER(ORDER BY COALESCE(score,net) DESC,correct_count DESC),COUNT(*) OVER(),
    RANK() OVER(PARTITION BY COALESCE(city,'') ORDER BY COALESCE(score,net) DESC,correct_count DESC),COUNT(*) OVER(PARTITION BY COALESCE(city,'')),
@@ -127,6 +128,7 @@ async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthU
    RANK() OVER(PARTITION BY institution_id,grade_level ORDER BY COALESCE(score,net) DESC,correct_count DESC),COUNT(*) OVER(PARTITION BY institution_id,grade_level),
    RANK() OVER(PARTITION BY institution_id,COALESCE(class_snapshot,'') ORDER BY COALESCE(score,net) DESC,correct_count DESC),COUNT(*) OVER(PARTITION BY institution_id,COALESCE(class_snapshot,''))
   FROM base`).bind(id,row.exam_id,version).run();
+ await captureReportSnapshot(env, row.exam_id, version);
  const academicEnd=Number(String(row.academic_year).slice(0,4))+1,sept30=new Date(`${academicEnd}-09-30T23:59:59.000Z`),ninetyDays=new Date(Date.now()+90*86400000),due=(ninetyDays>sept30?ninetyDays:sept30).toISOString();
  await env.DB.batch([
   env.DB.prepare(`UPDATE exam_administrations SET status='PUBLISHED',published_at=CURRENT_TIMESTAMP,retention_due_at=?,ranking_frozen_at=CURRENT_TIMESTAMP,participant_count=?,institution_count=? WHERE id=?`).bind(due,totals.participant_count,totals.institution_count,id),

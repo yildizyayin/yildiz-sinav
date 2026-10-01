@@ -1,9 +1,11 @@
 import type { AuthUser, Env } from '../types';
-import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './db';
+import { all, audit, badRequest, forbidden, json, notFound, one, uuid, sanitizeAuditDetails } from './db';
 import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
 import { hydrateQuestionMedia } from './question-content';
 import { recordAssessmentRun } from './assessment-ledger';
 import { renderStudioPdf } from './studio-pdf';
+import { captureReportSnapshot } from './report-snapshot';
+import { withExamOperationLock } from './exam-operation-lock';
 
 const NEXT_FEATURES = new Set([
   'LEARNING_GRAPH','QUESTION_BANK','RECOVERY','RBA','MEMBERSHIP','LIVE','STUDIO','PHYSICAL_BRIDGE','GAMES','CAMPUS','ENTERPRISE','PUBLISHER','ADMISSIONS','GUIDANCE_TESTS','BOARD','MOBILE_API','VIDEO_LIBRARY',
@@ -177,8 +179,10 @@ async function updateExamProfile(request:Request,env:Env,user:AuthUser,examId:st
 }
 
 async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
-  const p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
+  let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
   if(p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden('Merkezi sınav sıralamasını yalnız Süper Admin dondurabilir.');
+  return withExamOperationLock(env,examId,'FREEZE',async()=>{
+    p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   const version=Number(p.snapshot_version||0)+1; const networkId=p.scope==='NETWORK'?p.network_id:null;
   const participantCountRow=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).bind(examId));
   if(!Number(participantCountRow?.count||0))return badRequest('Sonuçlandırılmış katılımcı bulunmuyor.','NO_RESULTS');
@@ -197,8 +201,9 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
       RANK() OVER(PARTITION BY ep.institution_id,COALESCE(se.grade_level,e.grade_level) ORDER BY COALESCE(er.score,er.net) DESC),COUNT(*) OVER(PARTITION BY ep.institution_id,COALESCE(se.grade_level,e.grade_level)),
       RANK() OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,'') ORDER BY COALESCE(er.score,er.net) DESC),COUNT(*) OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,''))
     FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id JOIN exams e ON e.id=ep.exam_id JOIN institutions i ON i.id=ep.institution_id
-    LEFT JOIN student_enrollments se ON se.student_id=ep.student_id AND se.institution_id=ep.institution_id AND se.status='ACTIVE'
+    LEFT JOIN student_enrollments se ON se.id=(SELECT historical.id FROM student_enrollments historical WHERE historical.student_id=ep.student_id AND historical.institution_id=ep.institution_id AND historical.season_id=ep.season_id ORDER BY historical.created_at DESC,historical.id LIMIT 1)
     WHERE ep.exam_id=?`).bind(version,networkId,networkId,networkId,examId).run();
+  await captureReportSnapshot(env, examId, version);
   const stats=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT institution_id) institution_count,COUNT(DISTINCT city) city_count FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version));
   await env.DB.batch([
     env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='FROZEN',freeze_at=CURRENT_TIMESTAMP,snapshot_version=?,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?`).bind(version,examId),
@@ -207,14 +212,50 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
   ]);
   await audit(env.DB,user.id,user.institution_id,'EXAM_RESULTS_FROZEN','exam',examId,{version,participants:stats?.participant_count||0});
   return json({ok:true,examId,version,stats});
+  });
 }
 
 async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
-  const p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
+  let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
+  return withExamOperationLock(env,examId,'PUBLISH',async()=>{
+    p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   if(p.result_freeze_status!=='FROZEN')return badRequest('Önce sıralama snapshotını dondurun.','NOT_FROZEN');
-  await env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='PUBLISHED',published_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?`).bind(examId).run();
-  await audit(env.DB,user.id,user.institution_id,'EXAM_RESULTS_PUBLISHED','exam',examId,{version:p.snapshot_version});
+  const writes=await env.DB.batch([
+    env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json)
+      SELECT ?,?,?,'EXAM_RESULTS_PUBLISHED','exam',?,? WHERE EXISTS (SELECT 1 FROM exam_delivery_profiles WHERE exam_id=? AND snapshot_version=? AND result_freeze_status='FROZEN')`)
+      .bind(uuid('aud'),user.id,p.institution_id,examId,JSON.stringify({version:p.snapshot_version}),examId,p.snapshot_version),
+    env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='PUBLISHED',published_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE exam_id=? AND snapshot_version=? AND result_freeze_status='FROZEN'`).bind(examId,p.snapshot_version),
+  ]);
+  const published=writes[1];
+  if(!published.meta?.changes)return json({ok:false,error:{code:'SNAPSHOT_STATE_CHANGED',message:'Sonuç durumu değişti. Sayfayı yenileyin.'}},409);
   return json({ok:true,published:true,version:p.snapshot_version});
+  });
+}
+
+async function reopenExamResults(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
+  let p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
+  if(!await canManageExam(env,user,p)||p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden();
+  return withExamOperationLock(env,examId,'REOPEN',async()=>{
+    p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
+  const body=await requestBody(request);const reason=typeof body.reason==='string'?body.reason.trim():'';
+  const version=body.expectedSnapshotVersion;
+  if(reason.length<10||reason.length>1000)return badRequest('10–1000 karakter uzunluğunda düzeltme gerekçesi girin.','CORRECTION_REASON_REQUIRED');
+  if(!Number.isSafeInteger(version)||version<1)return badRequest('Güncel sonuç sürümü gereklidir.','SNAPSHOT_VERSION_REQUIRED');
+  if(!['FROZEN','PUBLISHED'].includes(p.result_freeze_status)||Number(p.snapshot_version)!==version)return json({ok:false,error:{code:'SNAPSHOT_STATE_CHANGED',message:'Sonuç durumu değişti. Sayfayı yenileyin.'}},409);
+  const guard=`EXISTS (SELECT 1 FROM exam_delivery_profiles WHERE exam_id=? AND snapshot_version=? AND result_freeze_status=?)`;
+  const details=JSON.stringify(sanitizeAuditDetails({reason,previousVersion:version,previousState:p.result_freeze_status,publicationWithdrawn:p.result_freeze_status==='PUBLISHED'}));
+  const changes=await env.DB.batch([
+    env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json)
+      SELECT ?,?,?,'EXAM_RESULTS_REOPENED','exam',?,? WHERE ${guard}`).bind(uuid('aud'),user.id,p.institution_id,examId,details,examId,version,p.result_freeze_status),
+    env.DB.prepare(`DELETE FROM scan_evaluation_progress WHERE batch_id IN (SELECT id FROM scan_batches WHERE exam_id=?) AND ${guard}`).bind(examId,examId,version,p.result_freeze_status),
+    env.DB.prepare(`UPDATE scan_batches SET status='READY' WHERE exam_id=? AND status='COMMITTED' AND ${guard}`).bind(examId,examId,version,p.result_freeze_status),
+    env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='OPEN',published_at=NULL,result_publish_at=NULL,freeze_at=NULL,updated_at=CURRENT_TIMESTAMP
+      WHERE exam_id=? AND snapshot_version=? AND result_freeze_status=?`).bind(examId,version,p.result_freeze_status),
+  ]);
+  const changed=changes[3];
+  if(!changed.meta?.changes)return json({ok:false,error:{code:'SNAPSHOT_STATE_CHANGED',message:'Sonuç durumu değişti. Sayfayı yenileyin.'}},409);
+  return json({ok:true,examId,previousVersion:version,state:'OPEN',publicationWithdrawn:p.result_freeze_status==='PUBLISHED',requiresFreezeAndPublish:true});
+  });
 }
 
 async function examStats(env:Env,user:AuthUser,examId:string):Promise<Response>{
@@ -652,6 +693,7 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   let m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/profile$/);if(m&&request.method==='PUT')return updateExamProfile(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/freeze$/);if(m&&request.method==='POST')return freezeExam(env,user,m[1]);
   m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/publish$/);if(m&&request.method==='POST')return publishExam(env,user,m[1]);
+  m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/reopen-results$/);if(m&&request.method==='POST')return reopenExamResults(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/stats$/);if(m&&request.method==='GET')return examStats(env,user,m[1]);
   m=p.match(/^\/api\/platform\/exam-center\/([^/]+)\/result$/);if(m&&request.method==='GET')return studentExamResult(request,env,user,m[1]);
 
