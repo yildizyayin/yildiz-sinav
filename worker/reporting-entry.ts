@@ -62,24 +62,40 @@ async function listStudents(env:Env,user:AuthUser,url:URL):Promise<Response>{
 
 function placeholders(items:string[]){return items.map(()=>'?').join(',')}
 
+
+function mergeSnapshotOutcomes(rows:any[]):any[]{
+  const grouped=new Map<string,any>();
+  for(const row of rows){const previous=grouped.get(row.outcome_id);if(previous){previous.evidence_count+=Number(row.evidence_count||0);previous.correct_count+=Number(row.correct_count||0)}else grouped.set(row.outcome_id,{...row,evidence_count:Number(row.evidence_count||0),correct_count:Number(row.correct_count||0)})}
+  return [...grouped.values()];
+}
+
 async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Promise<Response>{
   const access=await studentAccess(env,user,studentId);if(!access.allowed||!access.student)return forbidden('Bu öğrenci için birleşik rapor erişiminiz bulunmuyor.');
+  const publishedView=user.role==='STUDENT'||user.role==='PARENT';
   const examParams:any[]=[studentId];let examAccessSql='';
   if(user.role==='STUDENT'||user.role==='PARENT')examAccessSql+=` AND EXISTS (SELECT 1 FROM exam_delivery_profiles publication WHERE publication.exam_id=e.id AND publication.result_freeze_status='PUBLISHED' AND publication.published_at IS NOT NULL AND (publication.result_publish_at IS NULL OR datetime(publication.result_publish_at)<=CURRENT_TIMESTAMP))`;
   if(access.subjectFilter?.length){examAccessSql+=` AND EXISTS (SELECT 1 FROM subject_results sr2 WHERE sr2.participant_id=ep.id AND sr2.subject_id IN (${placeholders(access.subjectFilter)}))`;examParams.push(...access.subjectFilter)}
-  const allExams=await all<any>(env.DB.prepare(`SELECT e.id exam_id,e.title,e.exam_date,e.exam_type,er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.success_percent,er.institution_rank,ep.booklet_code
+  const snapshotRows=publishedView?await all<any>(env.DB.prepare(`SELECT snap.exam_id,snap.payload_json,snap.snapshot_version FROM exam_result_snapshots snap
+    JOIN exam_delivery_profiles p ON p.exam_id=snap.exam_id AND p.snapshot_version=snap.snapshot_version
+    WHERE snap.student_id=? AND p.result_freeze_status='PUBLISHED' AND p.published_at IS NOT NULL
+    AND (p.result_publish_at IS NULL OR datetime(p.result_publish_at)<=CURRENT_TIMESTAMP) ORDER BY p.published_at DESC LIMIT 100`).bind(studentId)):[];
+  const snapshotPayloads=snapshotRows.map(row=>{try{const data=JSON.parse(row.payload_json||'null');return data?.schemaVersion===1&&data.exam&&Array.isArray(data.subjects)&&Array.isArray(data.outcomes)?{...row,data}:null}catch{return null}});
+  const unavailableSnapshotExamIds=snapshotRows.filter((_,i)=>!snapshotPayloads[i]).map(row=>row.exam_id);
+  const usableSnapshots=snapshotPayloads.filter((row):row is NonNullable<typeof row>=>!!row);
+  const allExams=publishedView?usableSnapshots.map(row=>({...row.data.exam,snapshot_version:row.snapshot_version})):
+    await all<any>(env.DB.prepare(`SELECT e.id exam_id,e.title,e.exam_date,e.exam_type,er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.success_percent,er.institution_rank,ep.booklet_code
     FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id
     WHERE ep.student_id=? ${examAccessSql} ORDER BY coalesce(e.exam_date,er.created_at) DESC LIMIT 100`).bind(...examParams));
   const availableIds=new Set(allExams.map(x=>String(x.exam_id)));const requested=(url.searchParams.get('examIds')||'').split(',').map(x=>x.trim()).filter(Boolean);const selectedIds=(requested.length?requested.filter(x=>availableIds.has(x)):allExams.slice(0,20).map(x=>String(x.exam_id)));
-  if(!selectedIds.length)return json({ok:true,student:access.student,restrictedToSubjects:access.restricted,availableExams:allExams,selectedExamIds:[],exams:[],subjectTrend:[],subjectSummary:[],outcomes:[],developing:[],strong:[],summary:null});
+  if(!selectedIds.length)return json({ok:true,student:access.student,restrictedToSubjects:access.restricted,availableExams:allExams,unavailableSnapshotExamIds,selectedExamIds:[],exams:[],subjectTrend:[],subjectSummary:[],outcomes:[],developing:[],strong:[],summary:null});
   const examSet=new Set(selectedIds);const selectedExams=allExams.filter(x=>examSet.has(String(x.exam_id)));
   const examSql=placeholders(selectedIds);const subjectParams:any[]=[studentId,...selectedIds];let subjectFilterSql='';if(access.subjectFilter?.length){subjectFilterSql=` AND sr.subject_id IN (${placeholders(access.subjectFilter)})`;subjectParams.push(...access.subjectFilter)}
-  const subjectTrend=await all<any>(env.DB.prepare(`SELECT e.id exam_id,e.title,e.exam_date,s.id subject_id,s.code subject_code,s.name subject_name,sr.correct_count,sr.wrong_count,sr.blank_count,sr.net,sr.success_percent
+  const subjectTrend=publishedView?usableSnapshots.filter(row=>examSet.has(String(row.exam_id))).flatMap(row=>row.data.subjects.map((subject:any)=>({...subject,exam_id:row.exam_id,title:row.data.exam.title,exam_date:row.data.exam.exam_date}))):await all<any>(env.DB.prepare(`SELECT e.id exam_id,e.title,e.exam_date,s.id subject_id,s.code subject_code,s.name subject_name,sr.correct_count,sr.wrong_count,sr.blank_count,sr.net,sr.success_percent
     FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN subject_results sr ON sr.participant_id=ep.id JOIN subjects s ON s.id=sr.subject_id
     WHERE ep.student_id=? AND ep.exam_id IN (${examSql}) ${subjectFilterSql}
     ORDER BY s.name,coalesce(e.exam_date,e.created_at),e.title`).bind(...subjectParams));
   const outcomeParams:any[]=[studentId,...selectedIds];let outcomeFilterSql='';if(access.subjectFilter?.length){outcomeFilterSql=` AND o.subject_id IN (${placeholders(access.subjectFilter)})`;outcomeParams.push(...access.subjectFilter)}
-  const outcomeRaw=await all<any>(env.DB.prepare(`SELECT o.id outcome_id,o.code,o.topic,o.subtopic,o.title,s.id subject_id,s.name subject_name,sum(r.evidence_count) evidence_count,sum(r.correct_count) correct_count
+  const outcomeRaw=publishedView?mergeSnapshotOutcomes(usableSnapshots.filter(row=>examSet.has(String(row.exam_id))).flatMap(row=>row.data.outcomes)):await all<any>(env.DB.prepare(`SELECT o.id outcome_id,o.code,o.topic,o.subtopic,o.title,s.id subject_id,s.name subject_name,sum(r.evidence_count) evidence_count,sum(r.correct_count) correct_count
     FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id
     WHERE r.student_id=? AND r.exam_id IN (${examSql}) ${outcomeFilterSql}
     GROUP BY o.id,o.code,o.topic,o.subtopic,o.title,s.id,s.name ORDER BY s.name,o.topic,o.title`).bind(...outcomeParams));
@@ -88,7 +104,7 @@ async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Pr
   const subjectSummary=[...subjectGroups.values()].map(rows=>{const ordered=[...rows].sort((a,b)=>String(a.exam_date||'').localeCompare(String(b.exam_date||'')));const first=ordered[0],last=ordered.at(-1);const avg=rows.reduce((s,r)=>s+Number(r.net||0),0)/rows.length;return {subject_id:first.subject_id,subject_name:first.subject_name,exam_count:rows.length,first_net:Number(first.net||0),last_net:Number(last?.net||0),delta_net:Number((Number(last?.net||0)-Number(first.net||0)).toFixed(4)),average_net:Number(avg.toFixed(4))}});
   let summary:any=null;let examsForClient=selectedExams;
   if(access.restricted){examsForClient=selectedExams.map(({correct_count,wrong_count,blank_count,net,score,success_percent,institution_rank,...rest})=>rest)}else{const chronological=[...selectedExams].sort((a,b)=>String(a.exam_date||'').localeCompare(String(b.exam_date||'')));const first=chronological[0],last=chronological.at(-1);const avg=selectedExams.reduce((s,e)=>s+Number(e.net||0),0)/selectedExams.length;summary={exam_count:selectedExams.length,first_net:Number(first?.net||0),last_net:Number(last?.net||0),delta_net:Number((Number(last?.net||0)-Number(first?.net||0)).toFixed(4)),average_net:Number(avg.toFixed(4)),latest_rank:last?.institution_rank||null}}
-  return json({ok:true,student:access.student,restrictedToSubjects:access.restricted,availableExams:allExams.map(e=>access.restricted?{exam_id:e.exam_id,title:e.title,exam_date:e.exam_date,exam_type:e.exam_type}:e),selectedExamIds:selectedIds,exams:examsForClient,summary,subjectTrend,subjectSummary,outcomes,developing:outcomes.filter(o=>o.mastery_status==='DEVELOPING').sort((a,b)=>a.success_rate-b.success_rate),strong:outcomes.filter(o=>o.mastery_status==='STRONG').sort((a,b)=>b.success_rate-a.success_rate)});
+  return json({ok:true,student:access.student,unavailableSnapshotExamIds,restrictedToSubjects:access.restricted,availableExams:allExams.map(e=>access.restricted?{exam_id:e.exam_id,title:e.title,exam_date:e.exam_date,exam_type:e.exam_type}:e),selectedExamIds:selectedIds,exams:examsForClient,summary,subjectTrend,subjectSummary,outcomes,developing:outcomes.filter(o=>o.mastery_status==='DEVELOPING').sort((a,b)=>a.success_rate-b.success_rate),strong:outcomes.filter(o=>o.mastery_status==='STRONG').sort((a,b)=>b.success_rate-a.success_rate)});
 }
 
 export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
