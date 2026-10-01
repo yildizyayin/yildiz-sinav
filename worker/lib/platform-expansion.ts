@@ -5,7 +5,7 @@ import { hydrateQuestionMedia } from './question-content';
 import { recordAssessmentRun } from './assessment-ledger';
 import { renderStudioPdf } from './studio-pdf';
 import { REPORT_SNAPSHOT_SQL } from './report-snapshot';
-import { withExamOperationLock, listExamOperationLocks } from './exam-operation-lock';
+import { withExamOperationLock, listExamOperationLocks, recoverExamOperationLock } from './exam-operation-lock';
 
 const NEXT_FEATURES = new Set([
   'LEARNING_GRAPH','QUESTION_BANK','RECOVERY','RBA','MEMBERSHIP','LIVE','STUDIO','PHYSICAL_BRIDGE','GAMES','CAMPUS','ENTERPRISE','PUBLISHER','ADMISSIONS','GUIDANCE_TESTS','BOARD','MOBILE_API','VIDEO_LIBRARY',
@@ -691,6 +691,7 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(!p.startsWith('/api/platform/'))return null;
   if(p==='/api/platform/overview'&&request.method==='GET')return overview(env,user);
   if(p==='/api/platform/exam-center/operation-locks'&&request.method==='GET')return listExamOperationLocks(env,user);
+  if(p==='/api/platform/exam-center/operation-locks/recover'&&request.method==='POST')return recoverExamOperationLock(request,env,user);
   if(p==='/api/platform/features'&&request.method==='GET')return listFeatures(env,user);
   if(p==='/api/platform/features'&&request.method==='PUT')return setFeature(request,env,user);
 
