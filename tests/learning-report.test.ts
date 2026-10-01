@@ -24,3 +24,11 @@ describe('learning report calculation contract', () => {
     expect(result.summaries[0].firstAttempt.evidenceCount).toBe(1);
   });
 });
+
+it('rejects conflicting copies of one response instead of silently selecting one', () => {
+  expect(() => buildLearningReport(selection, [row,{ ...row, status:'CORRECT' }])).toThrow('REPORT_EVIDENCE_CONFLICT');
+});
+it('rejects invalid runtime visibility and answer status', () => {
+  expect(() => buildLearningReport({ ...selection, visibility:'UNKNOWN' } as any, [row])).toThrow('REPORT_VISIBILITY_INVALID');
+  expect(() => buildLearningReport(selection, [{ ...row, status:'UNKNOWN' } as any])).toThrow('REPORT_EVIDENCE_INVALID');
+});
