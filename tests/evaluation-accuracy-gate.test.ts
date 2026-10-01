@@ -13,9 +13,10 @@ describe('exam evaluation accuracy wrapper', () => {
   });
 
   it('evaluates the official score first and persists optional evidence afterwards', () => {
-    expect(gateSource).toContain('chunkedEvaluationApp.fetch');
-    expect(gateSource).toContain('persistTytOptionalPhilosophyEvidence');
-    expect(gateSource.indexOf('chunkedEvaluationApp.fetch')).toBeLessThan(gateSource.indexOf('persistTytOptionalPhilosophyEvidence(env'));
+    const chunkSource=readFileSync(new URL('../worker/chunked-evaluation-entry.ts', import.meta.url),'utf8');
+    expect(gateSource).toContain('export default chunkedEvaluationApp');
+    expect(chunkSource).toContain('persistTytOptionalPhilosophyEvidence');
+    expect(chunkSource.indexOf('const response=await evaluateChunkUnlocked')).toBeLessThan(chunkSource.indexOf('await persistTytOptionalPhilosophyEvidence(env'));
     expect(gateSource).not.toContain('EVALUATION_ACCURACY_GATE');
   });
 
