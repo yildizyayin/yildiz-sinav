@@ -4,7 +4,7 @@ import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
 import { hydrateQuestionMedia } from './question-content';
 import { recordAssessmentRun } from './assessment-ledger';
 import { renderStudioPdf } from './studio-pdf';
-import { captureReportSnapshot } from './report-snapshot';
+import { REPORT_SNAPSHOT_SQL } from './report-snapshot';
 import { withExamOperationLock } from './exam-operation-lock';
 
 const NEXT_FEATURES = new Set([
@@ -185,11 +185,13 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)`).bind(examId));
   if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
-  const version=Number(p.snapshot_version||0)+1; const networkId=p.scope==='NETWORK'?p.network_id:null;
+  const lastSnapshot=await one<{version:number}>(env.DB.prepare('SELECT MAX(snapshot_version) version FROM exam_result_snapshots WHERE exam_id=?').bind(examId));
+  const version=Math.max(Number(p.snapshot_version||0),Number(lastSnapshot?.version||0))+1; const networkId=p.scope==='NETWORK'?p.network_id:null;
   const participantCountRow=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).bind(examId));
   if(!Number(participantCountRow?.count||0))return badRequest('Sonuçlandırılmış katılımcı bulunmuyor.','NO_RESULTS');
-  await env.DB.prepare(`DELETE FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version).run();
-  await env.DB.prepare(`INSERT INTO exam_result_snapshots(
+  await env.DB.batch([
+    env.DB.prepare(`DELETE FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version),
+    env.DB.prepare(`INSERT INTO exam_result_snapshots(
     id,exam_id,participant_id,snapshot_version,student_id,institution_id,network_id,city,district,grade_level,class_snapshot,score,net,
     national_rank,national_count,city_rank,city_count,district_rank,district_count,network_rank,network_count,institution_rank,institution_count,grade_rank,grade_count,class_rank,class_count)
     SELECT 'snap_'||lower(hex(randomblob(16))), ep.exam_id,ep.id,?,ep.student_id,ep.institution_id,?,i.city,i.district,
@@ -204,15 +206,16 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
       RANK() OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,'') ORDER BY COALESCE(er.score,er.net) DESC),COUNT(*) OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,''))
     FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id JOIN exams e ON e.id=ep.exam_id JOIN institutions i ON i.id=ep.institution_id
     LEFT JOIN student_enrollments se ON se.id=(SELECT historical.id FROM student_enrollments historical WHERE historical.student_id=ep.student_id AND historical.institution_id=ep.institution_id AND historical.season_id=ep.season_id ORDER BY historical.created_at DESC,historical.id LIMIT 1)
-    WHERE ep.exam_id=?`).bind(version,networkId,networkId,networkId,examId).run();
-  await captureReportSnapshot(env, examId, version);
-  const stats=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT institution_id) institution_count,COUNT(DISTINCT city) city_count FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version));
-  await env.DB.batch([
+    WHERE ep.exam_id=?`).bind(version,networkId,networkId,networkId,examId),
+    env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(examId,version),
+    env.DB.prepare(`INSERT INTO exam_publication_stats(exam_id,snapshot_version,institution_count,participant_count,city_count,payload_json)
+      SELECT ?,?,COUNT(DISTINCT institution_id),COUNT(*),COUNT(DISTINCT city),? FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`)
+      .bind(examId,version,JSON.stringify({scope:p.scope,networkId}),examId,version),
     env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='FROZEN',freeze_at=CURRENT_TIMESTAMP,snapshot_version=?,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?`).bind(version,examId),
-    env.DB.prepare(`INSERT INTO exam_publication_stats(exam_id,snapshot_version,institution_count,participant_count,city_count,payload_json) VALUES(?,?,?,?,?,?)`)
-      .bind(examId,version,stats?.institution_count||0,stats?.participant_count||0,stats?.city_count||0,JSON.stringify({scope:p.scope,networkId})),
+    env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,'EXAM_RESULTS_FROZEN','exam',?,?)`)
+      .bind(uuid('aud'),user.id,p.institution_id,examId,JSON.stringify({version,participants:Number(participantCountRow?.count||0)})),
   ]);
-  await audit(env.DB,user.id,user.institution_id,'EXAM_RESULTS_FROZEN','exam',examId,{version,participants:stats?.participant_count||0});
+  const stats=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT institution_id) institution_count,COUNT(DISTINCT city) city_count FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version));
   return json({ok:true,examId,version,stats});
   });
 }
