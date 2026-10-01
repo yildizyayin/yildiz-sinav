@@ -29,6 +29,7 @@ function fixture(failAudit=false){
     CREATE TABLE exam_publication_stats(exam_id TEXT,snapshot_version INTEGER,institution_count INTEGER,participant_count INTEGER,city_count INTEGER,payload_json TEXT);
     CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
     INSERT INTO exam_result_snapshots(id,exam_id,participant_id,snapshot_version,institution_id,net,payload_json) VALUES('previous','e','p',0,'school',1,'previous-payload');`);
+  db.exec("ALTER TABLE exams ADD COLUMN academic_year TEXT DEFAULT '2026-2027'");
   function statement(sql:string,args:any[]=[]):any{return {
     bind:(...values:any[])=>statement(sql,values),
     first:async()=>sql.includes('SELECT p.*,e.title')?{...db.prepare('SELECT * FROM exam_delivery_profiles').get(),scope:'INSTITUTION',institution_id:'school'}:db.prepare(sql).get(...args),
