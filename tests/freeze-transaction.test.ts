@@ -34,6 +34,7 @@ function fixture(failAudit=false){
     first:async()=>sql.includes('SELECT p.*,e.title')?{...db.prepare('SELECT * FROM exam_delivery_profiles').get(),scope:'INSTITUTION',institution_id:'school'}:db.prepare(sql).get(...args),
     run:async()=>{if(failAudit&&sql.includes('INSERT INTO audit_logs'))throw new Error('AUDIT_FAILED');return {meta:{changes:Number(db.prepare(sql).run(...args).changes)}}},
   }}
+  db.exec(readFileSync(new URL('../migrations/0059_exam_operation_write_guards.sql',import.meta.url),'utf8'));
   const env={DB:{prepare:statement,batch:async(statements:any[])=>{db.exec('BEGIN');try{const rows=[];for(const s of statements)rows.push(await s.run());db.exec('COMMIT');return rows}catch(error){db.exec('ROLLBACK');throw error}}}} as any;
   return {db,run:()=>handlePlatformApi(new Request('https://test/api/platform/exam-center/e/freeze',{method:'POST'}),env,{id:'user',role:'INSTITUTION_MANAGER',institution_id:'school'} as any)};
 }
