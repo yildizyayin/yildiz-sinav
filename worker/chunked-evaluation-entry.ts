@@ -75,7 +75,7 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
   const access = await ensureAccess(env, request, batch);
   if (access.response || !access.user) return access.response!;
   const user = access.user;
-  const networkPublication=await one<any>(env.DB.prepare("SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND status IN ('PUBLISHED','ARCHIVED') AND ranking_frozen_at IS NOT NULL LIMIT 1").bind(batch.exam_id));
+  const networkPublication=await one<any>(env.DB.prepare("SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND ranking_frozen_at IS NOT NULL LIMIT 1").bind(batch.exam_id));
   if(networkPublication)return badRequest('Sonuç Ağı yayını düzeltmeye açılmadan değerlendirme yapılamaz.','RESULTS_FROZEN');
   const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
   if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status)) {
