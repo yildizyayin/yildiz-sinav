@@ -9,14 +9,23 @@ function err(status:number,code:string,message:string,details?:unknown){return j
 async function auth(env:Env,request:Request){const u=await getAuthUser(env,request);return u||err(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.')}
 function placeholders(items:unknown[]){return items.map(()=>'?').join(',')}
 
-async function listCameraTemplates(env:Env,user:AuthUser,url?:URL):Promise<Response>{
+async function listCameraTemplates(env:Env,user:AuthUser,url:URL):Promise<Response>{
  if(!canEvaluateExam(user.role))return forbidden();
- const examId=url?.searchParams.get('examId')?.trim() || '';
- const scope=examId?' AND EXISTS (SELECT 1 FROM exam_optical_bindings b WHERE b.exam_id=? AND b.optical_template_version_id=v.id AND b.active=1)':'';
- const rows=await all<any>(env.DB.prepare(`SELECT v.id,t.name,t.vendor,v.version,v.page_width_mm,v.page_height_mm,v.camera_geometry,v.fiducials
-   FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id
-   WHERE t.active=1 AND t.status='READY' AND v.active=1 AND v.camera_geometry IS NOT NULL AND v.fiducials IS NOT NULL
-   ${scope} ORDER BY t.name,v.version`).bind(...(examId?[examId]:[])));
+ const examId=url.searchParams.get('examId')?.trim() || '';
+ if(!examId)return badRequest('Sınav seçilmelidir.','EXAM_REQUIRED');
+ const institutionId=user.role==='SUPER_ADMIN'?(url.searchParams.get('institutionId')?.trim()||''):(user.institution_id||'');
+ if(!institutionId)return badRequest('Kurum seçilmelidir.','INSTITUTION_REQUIRED');
+ const institution=await assertInstitutionScope(env,user,institutionId);if(institution.response)return institution.response;
+ const exam=await assertExamScope(env,user,examId,institutionId);if(exam.response)return exam.response;
+ const rows=await all<any>(env.DB.prepare(`SELECT DISTINCT v.id,t.name,t.vendor,v.version,v.page_width_mm,v.page_height_mm,v.camera_geometry,v.fiducials
+   FROM exam_optical_bindings b
+   JOIN optical_template_versions v ON v.id=b.optical_template_version_id
+   JOIN optical_templates t ON t.id=v.template_id
+   JOIN optical_definition_validations d ON d.optical_template_version_id=v.id
+   WHERE b.exam_id=? AND b.active=1 AND t.active=1 AND t.status='READY' AND v.active=1
+     AND d.parser_test_passed=1 AND v.camera_geometry IS NOT NULL AND v.fiducials IS NOT NULL
+     AND (t.owner_type='CENTRAL' OR (t.owner_type='INSTITUTION' AND t.owner_id=?))
+   ORDER BY t.name,v.version`).bind(examId,institutionId));
  return json({ok:true,templates:rows.map(r=>({id:r.id,name:r.name,vendor:r.vendor,version:r.version,pageWidthMm:Number(r.page_width_mm),pageHeightMm:Number(r.page_height_mm),cameraGeometry:JSON.parse(r.camera_geometry),fiducials:JSON.parse(r.fiducials)}))});
 }
 
@@ -70,19 +79,24 @@ async function cameraPreview(request:Request,env:Env,user:AuthUser,examId:string
  const instCheck=await assertInstitutionScope(env,user,institutionId);if(instCheck.response)return instCheck.response;
  const examCheck=await assertExamScope(env,user,examId,institutionId);if(examCheck.response)return examCheck.response;
  const season=await currentSeason(env,institutionId);if(!season)return badRequest('Kurum için aktif/uygun sezon bulunamadı.','SEASON_REQUIRED');
+ const requestedBooklet=(body.bookletCode||'').trim().toUpperCase();
+ const bindings=await all<{optical_template_version_id:string;booklet_code:string}>(env.DB.prepare(`SELECT optical_template_version_id,booklet_code FROM exam_optical_bindings WHERE exam_id=? AND active=1 ORDER BY booklet_code`).bind(examId));
+ if(!bindings.length)return badRequest('Bu sınava yayınlanmış optik bağlanmamış.','EXAM_OPTICAL_BINDING_REQUIRED');
  let templateVersionId=body.templateVersionId?.trim() || '';
+ if(templateVersionId&&!bindings.some(b=>b.optical_template_version_id===templateVersionId&&(!requestedBooklet||b.booklet_code===requestedBooklet)))
+  return badRequest('Seçilen kamera optiği bu sınav/kitapçığa bağlı değil.','CAMERA_TEMPLATE_NOT_BOUND');
  if(!templateVersionId){
-  const requestedBooklet=(body.bookletCode||'A').trim().toUpperCase();
-  const binding=await one<{optical_template_version_id:string}>(env.DB.prepare(`SELECT optical_template_version_id FROM exam_optical_bindings WHERE exam_id=? AND booklet_code=? AND active=1`).bind(examId,requestedBooklet));
-  if(binding?.optical_template_version_id) templateVersionId=binding.optical_template_version_id;
-  else {
-   const fallback=await one<{optical_template_version_id:string}>(env.DB.prepare(`SELECT optical_template_version_id FROM exam_optical_bindings WHERE exam_id=? AND active=1 ORDER BY booklet_code LIMIT 1`).bind(examId));
-   templateVersionId=fallback?.optical_template_version_id || '';
-  }
+  const eligible=requestedBooklet?bindings.filter(b=>b.booklet_code===requestedBooklet):bindings;
+  const ids=[...new Set(eligible.map(b=>b.optical_template_version_id))];
+  if(ids.length!==1)return badRequest('Kamera optiği ve kitapçık seçilmelidir.','CAMERA_TEMPLATE_REQUIRED');
+  templateVersionId=ids[0];
  }
- if(!templateVersionId)return badRequest('Bu sınava yayınlanmış optik bağlanmamış. Önce Sınav > Optik/FMT Tanımları alanından optiği bağlayın.','EXAM_OPTICAL_BINDING_REQUIRED');
- const template=await one<any>(env.DB.prepare(`SELECT v.id,t.name,t.status,v.active FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.id=?`).bind(templateVersionId));
- if(!template||template.status!=='READY'||!template.active)return badRequest('Seçilen kamera şablonu yayında ve READY durumda değil.','CAMERA_TEMPLATE_NOT_READY');
+ const template=await one<any>(env.DB.prepare(`SELECT v.id,t.name,t.status,t.active template_active,v.active,d.parser_test_passed
+   FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id
+   LEFT JOIN optical_definition_validations d ON d.optical_template_version_id=v.id
+   WHERE v.id=? AND (t.owner_type='CENTRAL' OR (t.owner_type='INSTITUTION' AND t.owner_id=?))`).bind(templateVersionId,institutionId));
+ if(!template||template.status!=='READY'||!template.template_active||!template.active||Number(template.parser_test_passed)!==1)
+  return badRequest('Seçilen kamera şablonu kurum erişiminde ve yayına hazır değil.','CAMERA_TEMPLATE_NOT_READY');
  const rawRecords=Array.isArray(body.records)?body.records:[];if(!rawRecords.length)return badRequest('Kamera kaydı bulunamadı.');if(rawRecords.length>500)return badRequest('Tek kamera oturumunda en fazla 500 optik gönderilebilir.');
  const candidates=await loadCandidates(env,institutionId,season.id);
  const candidateForMatch:MatchCandidate[]=candidates.map(c=>({student_id:c.student_id,status:c.status,normalized_name:c.normalized_name,tckn:c.tckn,student_number:c.student_number,grade_level:c.grade_level,section:c.section}));
@@ -101,7 +115,7 @@ async function cameraPreview(request:Request,env:Env,user:AuthUser,examId:string
    record={...record,issues};const match=matchParticipant(record,candidateForMatch);
    if(match.status==='ACTIVE_MATCH')counts.active++;else if(match.status==='GUEST_MATCH')counts.guest++;else if(match.status==='NEW_GUEST')counts.newGuest++;else if(match.status==='AMBIGUOUS')counts.ambiguous++;else counts.invalid++;
    const combinedIssues=[...issues,...match.issues];confTotal+=record.confidence;
-   await env.DB.prepare(`INSERT INTO scan_records (id,batch_id,row_no,canonical_json,matched_student_id,match_status,match_confidence,issues_json) VALUES(?,?,?,?,?,?,?,?)`).bind(uuid('scan'),batchId,i+1,JSON.stringify(record),match.student_id||null,match.status,match.confidence,JSON.stringify(combinedIssues)).run();
+   await env.DB.prepare(`INSERT INTO scan_records (id,batch_id,row_no,canonical_json,matched_student_id,match_status,match_confidence,issues_json) VALUES(?,?,?,?,?,?,?,?)`).bind(uuid('scan'),batchId,i+1,JSON.stringify({...record,tckn:undefined}),match.student_id||null,match.status,match.confidence,JSON.stringify(combinedIssues)).run();
  }
  const issueCount=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND (match_status IN ('AMBIGUOUS','INVALID') OR issues_json!='[]')`).bind(batchId));const status=(issueCount?.c||0)>0?'NEEDS_REVIEW':'READY';const confidence=rawRecords.length?confTotal/rawRecords.length:0;
  await env.DB.prepare('UPDATE scan_batches SET status=?,detection_confidence=? WHERE id=?').bind(status,confidence,batchId).run();
@@ -115,17 +129,17 @@ async function patchCameraIdentity(request:Request,env:Env,user:AuthUser,batchId
  const candidates=await loadCandidates(env,batch.institution_id,batch.season_id);canonical=hydrateIdentity(canonical,candidates);canonical.issues=canonical.issues.filter(x=>!x.startsWith('Kamera okuma güveni düşük'));
  const match=matchParticipant(canonical,candidates.map(c=>({student_id:c.student_id,status:c.status,normalized_name:c.normalized_name,tckn:c.tckn,student_number:c.student_number,grade_level:c.grade_level,section:c.section})));
  const resolved=!canonical.issues.length&&!match.issues.length&&['ACTIVE_MATCH','GUEST_MATCH'].includes(match.status);
- await env.DB.prepare(`UPDATE scan_records SET canonical_json=?,matched_student_id=?,match_status=?,match_confidence=?,resolution_status=?,issues_json=? WHERE id=? AND batch_id=?`).bind(JSON.stringify(canonical),match.student_id||null,match.status,match.confidence,resolved?'RESOLVED':'PENDING',JSON.stringify([...canonical.issues,...match.issues]),recordId,batchId).run();await refreshBatchStatus(env,batchId);return json({ok:true,match});
+ await env.DB.prepare(`UPDATE scan_records SET canonical_json=?,matched_student_id=?,match_status=?,match_confidence=?,resolution_status=?,issues_json=? WHERE id=? AND batch_id=?`).bind(JSON.stringify({...canonical,tckn:undefined}),match.student_id||null,match.status,match.confidence,resolved?'RESOLVED':'PENDING',JSON.stringify([...canonical.issues,...match.issues]),recordId,batchId).run();await refreshBatchStatus(env,batchId);return json({ok:true,match});
 }
 
 async function acceptCameraIssues(env:Env,user:AuthUser,batchId:string,recordId:string):Promise<Response>{
- if(!canEvaluateExam(user.role))return forbidden();const batch=await one<any>(env.DB.prepare(`SELECT * FROM scan_batches WHERE id=? AND source_type='CAMERA'`).bind(batchId));if(!batch)return notFound();const scope=await assertInstitutionScope(env,user,batch.institution_id);if(scope.response)return scope.response;const row=await one<any>(env.DB.prepare('SELECT match_status,issues_json,canonical_json FROM scan_records WHERE id=? AND batch_id=?').bind(recordId,batchId));if(!row)return notFound();if(['AMBIGUOUS','INVALID'].includes(row.match_status))return badRequest('Önce öğrenci kimliğini düzeltin.');const issues=JSON.parse(row.issues_json||'[]') as string[];if(issues.some(x=>String(x).startsWith('KRİTİK:')))return badRequest('Kritik kamera hatası kabul edilerek geçilemez. Şablon veya kayıt düzeltilmelidir.','CAMERA_CRITICAL_ISSUE',issues);const canonical=JSON.parse(row.canonical_json);canonical.issues=[];await env.DB.prepare(`UPDATE scan_records SET canonical_json=?,issues_json='[]' WHERE id=? AND batch_id=?`).bind(JSON.stringify(canonical),recordId,batchId).run();await refreshBatchStatus(env,batchId);return json({ok:true});
+ if(!canEvaluateExam(user.role))return forbidden();const batch=await one<any>(env.DB.prepare(`SELECT * FROM scan_batches WHERE id=? AND source_type='CAMERA'`).bind(batchId));if(!batch)return notFound();const scope=await assertInstitutionScope(env,user,batch.institution_id);if(scope.response)return scope.response;const row=await one<any>(env.DB.prepare('SELECT match_status,issues_json,canonical_json FROM scan_records WHERE id=? AND batch_id=?').bind(recordId,batchId));if(!row)return notFound();if(['AMBIGUOUS','INVALID'].includes(row.match_status))return badRequest('Önce öğrenci kimliğini düzeltin.');const issues=JSON.parse(row.issues_json||'[]') as string[];if(issues.some(x=>String(x).startsWith('KRİTİK:')))return badRequest('Kritik kamera hatası kabul edilerek geçilemez. Şablon veya kayıt düzeltilmelidir.','CAMERA_CRITICAL_ISSUE',issues);const canonical=JSON.parse(row.canonical_json);canonical.issues=[];await env.DB.prepare(`UPDATE scan_records SET canonical_json=?,issues_json='[]' WHERE id=? AND batch_id=?`).bind(JSON.stringify({...canonical,tckn:undefined}),recordId,batchId).run();await refreshBatchStatus(env,batchId);return json({ok:true});
 }
 
 async function refreshBatchStatus(env:Env,batchId:string){const p=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND (match_status IN ('AMBIGUOUS','INVALID') OR issues_json!='[]')`).bind(batchId));await env.DB.prepare('UPDATE scan_batches SET status=? WHERE id=?').bind((p?.c||0)>0?'NEEDS_REVIEW':'READY',batchId).run()}
 
 export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);try{
- if(url.pathname==='/api/camera/templates'&&request.method==='GET'){const u=await auth(env,request);if(u instanceof Response)return u;return listCameraTemplates(env,u)}
+ if(url.pathname==='/api/camera/templates'&&request.method==='GET'){const u=await auth(env,request);if(u instanceof Response)return u;return listCameraTemplates(env,u,url)}
  const preview=url.pathname.match(/^\/api\/exams\/([^/]+)\/camera-preview$/);if(preview&&request.method==='POST'){const u=await auth(env,request);if(u instanceof Response)return u;return cameraPreview(request,env,u,preview[1])}
  const identity=url.pathname.match(/^\/api\/camera\/scan-batches\/([^/]+)\/records\/([^/]+)\/identity$/);if(identity&&request.method==='POST'){const u=await auth(env,request);if(u instanceof Response)return u;return patchCameraIdentity(request,env,u,identity[1],identity[2])}
  const accept=url.pathname.match(/^\/api\/camera\/scan-batches\/([^/]+)\/records\/([^/]+)\/accept$/);if(accept&&request.method==='POST'){const u=await auth(env,request);if(u instanceof Response)return u;return acceptCameraIssues(env,u,accept[1],accept[2])}
