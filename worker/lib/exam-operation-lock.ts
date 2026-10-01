@@ -1,5 +1,13 @@
-import type { Env } from '../types';
-import { json, uuid } from './db';
+import type { AuthUser, Env } from '../types';
+import { all, forbidden, json, uuid } from './db';
+
+export async function listExamOperationLocks(env:Env,user:AuthUser):Promise<Response>{
+  if(user.role!=='SUPER_ADMIN')return forbidden();
+  const rows=await all<{exam_id:string;operation:string;acquired_at:string;age_seconds:number|null}>(env.DB.prepare(`SELECT exam_id,operation,acquired_at,
+    max(0,CAST((julianday('now')-julianday(acquired_at))*86400 AS INTEGER)) age_seconds
+    FROM exam_operation_locks ORDER BY acquired_at,exam_id LIMIT 101`));
+  return json({ok:true,locks:rows.slice(0,100).map(row=>({...row,liveness:'UNKNOWN'})),hasMore:rows.length>100,recoveryAvailable:false});
+}
 
 // No automatic expiry: a slow owner must not keep writing after another
 // operation steals its lock. Recovery of an abandoned owner is a separate action.
