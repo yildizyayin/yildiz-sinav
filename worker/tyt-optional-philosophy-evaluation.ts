@@ -49,24 +49,33 @@ export async function persistTytOptionalPhilosophyEvidence(env: Env, batchId: st
     WHERE sr.batch_id=?
   `).bind(batchId));
 
-  for (const participant of participants) {
+  const prepared = participants.map((participant) => {
     let record: CanonicalRecord;
-    try { record = JSON.parse(participant.canonical_json) as CanonicalRecord; } catch { continue; }
+    try { record = JSON.parse(participant.canonical_json) as CanonicalRecord; }
+    catch { throw new Error('TYT_OPTIONAL_RECORD_INVALID'); }
 
     const sequence = record.answers_by_subject?.TYT_FEL;
     const booklet = String(participant.booklet_code || record.booklet || '').toUpperCase();
     const bookletKeys = keys.filter((key) => String(key.booklet_code).toUpperCase() === booklet);
 
-    await env.DB.batch([
+    if (sequence != null && sequence !== '' && bookletKeys.length !== 5) {
+      throw new Error(`TYT_OPTIONAL_KEY_INCOMPLETE_${booklet || 'UNKNOWN'}`);
+    }
+    return { participant, sequence, booklet, bookletKeys };
+  });
+
+  for (const { participant, sequence, booklet, bookletKeys } of prepared) {
+    const statements: D1PreparedStatement[] = [
       env.DB.prepare('DELETE FROM tyt_optional_philosophy_answers WHERE participant_id=?').bind(participant.participant_id),
       env.DB.prepare('DELETE FROM tyt_optional_philosophy_results WHERE participant_id=?').bind(participant.participant_id),
-    ]);
+    ];
 
-    if (sequence == null || sequence === '') continue;
-    if (bookletKeys.length !== 5) throw new Error(`TYT_OPTIONAL_KEY_INCOMPLETE_${booklet || 'UNKNOWN'}`);
+    if (sequence == null || sequence === '') {
+      await env.DB.batch(statements);
+      continue;
+    }
 
     let correct = 0, wrong = 0, blank = 0, invalid = 0, evidence = 0;
-    const statements: D1PreparedStatement[] = [];
     for (let i = 0; i < bookletKeys.length; i++) {
       const key = bookletKeys[i];
       const status = assess(sequence[i], key);
