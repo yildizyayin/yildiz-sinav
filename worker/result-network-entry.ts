@@ -108,7 +108,7 @@ async function issueAccess(request:Request,env:Env,user:AuthUser){
 async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthUser,id:string){
  let row=await one<any>(env.DB.prepare(`SELECT ea.*,e.id exam_id,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(id));
  if(!row)return safeError(404,'ADMINISTRATION_NOT_FOUND','Sınav yönetimi bulunamadı.');
- return withExamOperationLock(env,row.exam_id,'RESULT_NETWORK_FREEZE',async()=>{
+ return withExamOperationLock(env,row.exam_id,'RESULT_NETWORK_FREEZE',async(env)=>{
  const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)`).bind(row.exam_id));
  if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
  const totals=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT ep.institution_id) institution_count FROM result_access_identities rai JOIN exam_results er ON er.participant_id=rai.participant_id JOIN exam_participants ep ON ep.id=er.participant_id WHERE rai.administration_id=? AND ep.exam_id=?`).bind(id,row.exam_id));
