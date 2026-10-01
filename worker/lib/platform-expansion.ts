@@ -1,5 +1,5 @@
 import type { AuthUser, Env } from '../types';
-import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './db';
+import { all, audit, badRequest, forbidden, json, notFound, one, uuid, sanitizeAuditDetails } from './db';
 import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
 import { hydrateQuestionMedia } from './question-content';
 import { recordAssessmentRun } from './assessment-ledger';
@@ -214,8 +214,14 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
 async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
   const p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
   if(p.result_freeze_status!=='FROZEN')return badRequest('Önce sıralama snapshotını dondurun.','NOT_FROZEN');
-  await env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='PUBLISHED',published_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?`).bind(examId).run();
-  await audit(env.DB,user.id,user.institution_id,'EXAM_RESULTS_PUBLISHED','exam',examId,{version:p.snapshot_version});
+  const writes=await env.DB.batch([
+    env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json)
+      SELECT ?,?,?,'EXAM_RESULTS_PUBLISHED','exam',?,? WHERE EXISTS (SELECT 1 FROM exam_delivery_profiles WHERE exam_id=? AND snapshot_version=? AND result_freeze_status='FROZEN')`)
+      .bind(uuid('aud'),user.id,p.institution_id,examId,JSON.stringify({version:p.snapshot_version}),examId,p.snapshot_version),
+    env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='PUBLISHED',published_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE exam_id=? AND snapshot_version=? AND result_freeze_status='FROZEN'`).bind(examId,p.snapshot_version),
+  ]);
+  const published=writes[1];
+  if(!published.meta?.changes)return json({ok:false,error:{code:'SNAPSHOT_STATE_CHANGED',message:'Sonuç durumu değişti. Sayfayı yenileyin.'}},409);
   return json({ok:true,published:true,version:p.snapshot_version});
 }
 
@@ -228,15 +234,17 @@ async function reopenExamResults(request:Request,env:Env,user:AuthUser,examId:st
   if(!Number.isSafeInteger(version)||version<1)return badRequest('Güncel sonuç sürümü gereklidir.','SNAPSHOT_VERSION_REQUIRED');
   if(!['FROZEN','PUBLISHED'].includes(p.result_freeze_status)||Number(p.snapshot_version)!==version)return json({ok:false,error:{code:'SNAPSHOT_STATE_CHANGED',message:'Sonuç durumu değişti. Sayfayı yenileyin.'}},409);
   const guard=`EXISTS (SELECT 1 FROM exam_delivery_profiles WHERE exam_id=? AND snapshot_version=? AND result_freeze_status=?)`;
+  const details=JSON.stringify(sanitizeAuditDetails({reason,previousVersion:version,previousState:p.result_freeze_status,publicationWithdrawn:p.result_freeze_status==='PUBLISHED'}));
   const changes=await env.DB.batch([
+    env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json)
+      SELECT ?,?,?,'EXAM_RESULTS_REOPENED','exam',?,? WHERE ${guard}`).bind(uuid('aud'),user.id,p.institution_id,examId,details,examId,version,p.result_freeze_status),
     env.DB.prepare(`DELETE FROM scan_evaluation_progress WHERE batch_id IN (SELECT id FROM scan_batches WHERE exam_id=?) AND ${guard}`).bind(examId,examId,version,p.result_freeze_status),
     env.DB.prepare(`UPDATE scan_batches SET status='READY' WHERE exam_id=? AND status='COMMITTED' AND ${guard}`).bind(examId,examId,version,p.result_freeze_status),
     env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='OPEN',published_at=NULL,result_publish_at=NULL,freeze_at=NULL,updated_at=CURRENT_TIMESTAMP
       WHERE exam_id=? AND snapshot_version=? AND result_freeze_status=?`).bind(examId,version,p.result_freeze_status),
   ]);
-  const changed=changes[2];
+  const changed=changes[3];
   if(!changed.meta?.changes)return json({ok:false,error:{code:'SNAPSHOT_STATE_CHANGED',message:'Sonuç durumu değişti. Sayfayı yenileyin.'}},409);
-  await audit(env.DB,user.id,p.institution_id,'EXAM_RESULTS_REOPENED','exam',examId,{reason,previousVersion:version,previousState:p.result_freeze_status,publicationWithdrawn:p.result_freeze_status==='PUBLISHED'});
   return json({ok:true,examId,previousVersion:version,state:'OPEN',publicationWithdrawn:p.result_freeze_status==='PUBLISHED',requiresFreezeAndPublish:true});
 }
 
