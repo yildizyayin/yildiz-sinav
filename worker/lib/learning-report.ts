@@ -20,12 +20,22 @@ function counts(rows: LearningEvidence[]): Counts {
   return { correct, wrong, blank, evidenceCount, accuracyPercent: evidenceCount ? Math.round(correct / evidenceCount * 10000) / 100 : null };
 }
 export function buildLearningReport(selection: LearningReportSelection, evidence: LearningEvidence[]) {
+  if (!['PUBLISHED','STAFF_PREVIEW'].includes(selection.visibility)) throw new Error('REPORT_VISIBILITY_INVALID');
   const selected = new Set(selection.runIds);
   if (!selected.size) throw new Error('REPORT_SELECTION_REQUIRED');
   const rows = evidence.filter(r => selected.has(r.runId));
   if (rows.some(r => r.studentId !== selection.studentId || r.institutionId !== selection.institutionId || r.academicYear !== selection.academicYear)) throw new Error('REPORT_SCOPE_MISMATCH');
   if (selection.visibility === 'PUBLISHED' && rows.some(r => !r.published)) throw new Error('REPORT_NOT_PUBLISHED');
   if (rows.some(r => !r.questionId || !r.subjectId || !r.curriculumVersion || !Number.isInteger(r.gradeLevel) || !Number.isFinite(Date.parse(r.completedAt)))) throw new Error('REPORT_EVIDENCE_INVALID');
+  const sources = new Set(['EXAM','FOY','QUESTION_BANK','MINI_TEST','MINI_GAME','ASSIGNMENT','EXTERNAL']);
+  const seenEvidence = new Map<string,string>();
+  for (const row of rows) {
+    if (!sources.has(row.source) || !['CORRECT','WRONG','BLANK','INVALID'].includes(row.status)) throw new Error('REPORT_EVIDENCE_INVALID');
+    const key = JSON.stringify([row.runId,row.questionId]);
+    const meaning = JSON.stringify([row.status,row.source,row.subjectId,row.curriculumVersion,row.gradeLevel,row.outcomeId || null,row.published,row.completedAt]);
+    if (seenEvidence.has(key) && seenEvidence.get(key) !== meaning) throw new Error('REPORT_EVIDENCE_CONFLICT');
+    seenEvidence.set(key,meaning);
+  }
   const unavailableRunIds = [...selected].filter(id => !rows.some(r => r.runId === id));
   const excludedGameEvidence = rows.filter(r => r.source === 'MINI_GAME' && !r.academicEvidenceVerified).length;
   const excludedInvalidEvidence = rows.filter(r => r.status === 'INVALID').length;
