@@ -565,6 +565,10 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
+  const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
+  if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status)) {
+    return badRequest('Dondurulmuş veya yayımlanmış sonuçlar yeniden değerlendirilemez. Düzeltme için yeni sonuç sürümü hazırlanmalıdır.', 'RESULTS_FROZEN');
+  }
   if (!['READY','COMMITTED'].includes(batch.status)) return badRequest('Önce sorunlu kayıtları düzeltin.', 'BATCH_NEEDS_REVIEW');
   const unresolvedRows = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND resolution_status!='CANCELLED' AND (match_status IN ('NEW_GUEST','AMBIGUOUS','INVALID') OR issues_json!='[]')`).bind(batchId));
   if ((unresolvedRows?.c || 0) > 0) return badRequest('Önce sorunlu kayıtları düzeltin.', 'BATCH_NEEDS_REVIEW');
