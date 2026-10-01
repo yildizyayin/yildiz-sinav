@@ -2,6 +2,7 @@ import type { AuthUser,Env } from './types';
 import { getAuthUser,hashPassword,verifyPassword,verifyTurnstile } from './lib/auth';
 import { all,audit,badRequest,forbidden,json,normalizeName,one,uuid } from './lib/db';
 import { evaluateBatch,getScanBatch,previewExamFile,resolveScanRecord,searchScanCandidates } from './index';
+import { withExamOperationLock } from './lib/exam-operation-lock';
 import { captureReportSnapshot } from './lib/report-snapshot';
 
 const COOKIE='anunex_result_session';
@@ -105,8 +106,11 @@ async function issueAccess(request:Request,env:Env,user:AuthUser){
 }
 
 async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthUser,id:string){
- const row=await one<any>(env.DB.prepare(`SELECT ea.*,e.id exam_id,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(id));
+ let row=await one<any>(env.DB.prepare(`SELECT ea.*,e.id exam_id,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(id));
  if(!row)return safeError(404,'ADMINISTRATION_NOT_FOUND','Sınav yönetimi bulunamadı.');
+ return withExamOperationLock(env,row.exam_id,'RESULT_NETWORK_FREEZE',async()=>{
+ const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)`).bind(row.exam_id));
+ if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
  const totals=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT ep.institution_id) institution_count FROM result_access_identities rai JOIN exam_results er ON er.participant_id=rai.participant_id JOIN exam_participants ep ON ep.id=er.participant_id WHERE rai.administration_id=? AND ep.exam_id=?`).bind(id,row.exam_id));
  if(!Number(totals?.participant_count||0))return badRequest('Yayımlanacak değerlendirilmiş öğrenci sonucu bulunmuyor.','NO_RESULTS');
  const version=Number((await one<any>(env.DB.prepare(`SELECT MAX(snapshot_version) version FROM exam_result_snapshots WHERE exam_id=?`).bind(row.exam_id)))?.version||0)+1;
@@ -137,6 +141,7 @@ async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthU
  ]);
  await audit(env.DB,user.id,null,'RESULT_RANKINGS_FROZEN_AND_PUBLISHED','exam_administration',id,{examId:row.exam_id,version,participants:totals.participant_count,institutions:totals.institution_count,retentionDueAt:due});
  return json({ok:true,id,status:'PUBLISHED',snapshotVersion:version,participantCount:Number(totals.participant_count),institutionCount:Number(totals.institution_count),retentionDueAt:due});
+ });
 }
 
 async function governanceSnapshot(env:Env){
