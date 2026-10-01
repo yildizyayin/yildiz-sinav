@@ -1,3 +1,5 @@
+import { withExamOperationLock } from './lib/exam-operation-lock';
+import { persistTytOptionalPhilosophyEvidence } from './tyt-optional-philosophy-evaluation';
 import reportingApp from './reporting-entry';
 import type { CanonicalRecord, Env } from './types';
 import { getAuthUser } from './lib/auth';
@@ -10,6 +12,8 @@ const CHUNK_SIZE = 5;
 const MAX_BINDINGS_PER_STATEMENT = 90;
 
 type AnyRow = Record<string, any>;
+import { evaluateAnswer } from './lib/answer-evaluation';
+export { evaluateAnswer, parseAcceptedAnswers } from './lib/answer-evaluation';
 type AnswerStatus = 'CORRECT' | 'WRONG' | 'BLANK' | 'INVALID';
 
 function placeholders(count: number): string {
@@ -34,37 +38,6 @@ function bulkInsert(
     statements.push(db.prepare(sql).bind(...chunk.flat()));
   }
   return statements;
-}
-
-export function parseAcceptedAnswers(value: unknown, primary: string): string[] {
-  const fallback = String(primary || '').trim().toUpperCase();
-  if (Array.isArray(value)) {
-    const parsed = value.map((item) => String(item ?? '').trim().toUpperCase()).filter(Boolean);
-    return [...new Set(parsed.length ? parsed : [fallback])].filter(Boolean);
-  }
-  const raw = String(value ?? '').trim();
-  if (!raw) return fallback ? [fallback] : [];
-  try {
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return parseAcceptedAnswers(parsed, fallback);
-  } catch {
-    // Legacy rows may contain a single answer or delimited text rather than JSON.
-  }
-  const parsed = raw.split(/[|/,;]/).map((item) => item.trim().toUpperCase()).filter(Boolean);
-  return [...new Set(parsed.length ? parsed : [fallback])].filter(Boolean);
-}
-
-export function evaluateAnswer(rawValue: unknown, key: AnyRow): { status: AnswerStatus; contributesToScore: boolean; contributesToOutcome: boolean } {
-  const questionStatus = String(key.question_status || 'ACTIVE').toUpperCase();
-  if (questionStatus === 'CANCELLED' || questionStatus === 'EXCLUDED') {
-    return { status: 'INVALID', contributesToScore: false, contributesToOutcome: false };
-  }
-  const raw = String(rawValue ?? '').trim().toUpperCase();
-  if (!raw || raw === '_') return { status: 'BLANK', contributesToScore: true, contributesToOutcome: true };
-  const accepted = parseAcceptedAnswers(key.accepted_answers, key.correct_answer);
-  return accepted.includes(raw)
-    ? { status: 'CORRECT', contributesToScore: true, contributesToOutcome: true }
-    : { status: 'WRONG', contributesToScore: true, contributesToOutcome: true };
 }
 
 async function ensureAccess(env: Env, request: Request, batch: AnyRow) {
@@ -95,13 +68,17 @@ async function finaliseBatch(env: Env, userId: string, batch: AnyRow, total: num
   return json({ ok: true, done: true, processed: total, processedThisRun: 0, total, remaining: 0, batchId: batch.id, examId: batch.exam_id });
 }
 
-async function evaluateChunk(request: Request, env: Env, batchId: string): Promise<Response> {
+async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string): Promise<Response> {
   const batch = await one<AnyRow>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
 
   const access = await ensureAccess(env, request, batch);
   if (access.response || !access.user) return access.response!;
   const user = access.user;
+  const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
+  if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status)) {
+    return badRequest('Dondurulmuş veya yayımlanmış sonuçlar yeniden değerlendirilemez. Düzeltme için yeni sonuç sürümü hazırlanmalıdır.', 'RESULTS_FROZEN');
+  }
 
   const totalRow = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM scan_records WHERE batch_id=?').bind(batchId));
   const total = Number(totalRow?.c || 0);
@@ -317,6 +294,21 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
   const remaining = Math.max(0, total - processed);
   if (remaining === 0) return finaliseBatch(env, user.id, batch, total);
   return json({ ok: true, done: false, processed, processedThisRun: records.length, total, remaining, batchId, examId: exam.id });
+}
+
+async function evaluateChunk(request:Request,env:Env,batchId:string):Promise<Response>{
+  const batch=await one<AnyRow>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));if(!batch)return notFound();
+  const access=await ensureAccess(env,request,batch);if(access.response||!access.user)return access.response!;
+  return withExamOperationLock(env,batch.exam_id,'EVALUATE',async()=>{
+    const response=await evaluateChunkUnlocked(request,env,batchId);if(!response.ok)return response;
+    const payload=await response.clone().json() as any;
+    if(payload?.ok){try{await persistTytOptionalPhilosophyEvidence(env,batchId)}catch(error){
+      console.error('TYT optional philosophy evidence persistence failed',error);
+      await env.DB.prepare("UPDATE scan_batches SET status='READY' WHERE id=?").bind(batchId).run();
+      return json({ok:false,error:{code:'TYT_OPTIONAL_EVIDENCE_FAILED',message:'TYT seçmeli Felsefe kanıt sonucu kaydedilemedi. Ana 120 soruluk değerlendirme değiştirilmedi; işlem güvenli şekilde tekrar denenebilir.'}},500);
+    }}
+    return response;
+  });
 }
 
 export default {
