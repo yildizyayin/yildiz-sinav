@@ -183,6 +183,8 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
   if(p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden('Merkezi sınav sıralamasını yalnız Süper Admin dondurabilir.');
   return withExamOperationLock(env,examId,'FREEZE',async()=>{
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
+  const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)`).bind(examId));
+  if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
   const version=Number(p.snapshot_version||0)+1; const networkId=p.scope==='NETWORK'?p.network_id:null;
   const participantCountRow=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).bind(examId));
   if(!Number(participantCountRow?.count||0))return badRequest('Sonuçlandırılmış katılımcı bulunmuyor.','NO_RESULTS');
