@@ -4,7 +4,7 @@ vi.mock('../worker/lib/auth', async (original) => ({ ...await original<any>(), g
 import { evaluateBatch } from '../worker/index';
 vi.mock('../worker/lib/assessment-ledger', () => ({ recordExamAssessments: vi.fn(async () => 0), recordExamEvidenceAudit: vi.fn(async () => {}) }));
 const user = { id: 'manager', role: 'INSTITUTION_MANAGER', institution_id: 'school' } as any;
-function fixture(incomplete = false, optional = false, optionalKeyCount = 5, freezeStatus = 'OPEN', busy=false) {
+function fixture(incomplete = false, optional = false, optionalKeyCount = 5, freezeStatus = 'OPEN', busy=false, networkPublished=false) {
   let locked=false;
   const writes: { sql: string; args: any[] }[] = [];
   const keys = [
@@ -15,6 +15,7 @@ function fixture(incomplete = false, optional = false, optionalKeyCount = 5, fre
   const optionalKeys = Array.from({ length: optionalKeyCount }, (_, i) => ({ id: `opt${i}`, subject_id: 'fel', question_no: i + 1, booklet_code: 'B', correct_answer: 'A' }));
   const env = { DB: { batch: async (statements: any[]) => { const results=[];for (const statement of statements) results.push(await statement.run());return results; }, prepare: (sql: string) => ({ bind: (...args: any[]) => ({
     first: async () => sql.includes('FROM scan_batches') ? { id: 'batch', exam_id: 'exam', institution_id: 'school', season_id: 'season', status: 'READY' }
+      : sql.includes('SELECT id FROM exam_administrations') ? (networkPublished ? {id:'publication'} : null)
       : sql.includes('SELECT result_freeze_status') ? { result_freeze_status: freezeStatus }
       : sql.includes('count(*)') ? { c: 0 }
       : sql.includes('FROM exams e LEFT JOIN scoring_rule_versions') ? { id: 'exam', scoring_version_id: 'score', verified: 1 } : null,
@@ -63,6 +64,7 @@ describe('Result Network evaluation native semantics', () => {
     expect(f.writes.filter(w => w.sql.includes('tyt_optional_philosophy'))).toEqual([]);
     expect(f.writes.some(w => w.sql.includes("status='COMMITTED'"))).toBe(false);
   });
+  it('blocks evaluating a frozen Result Network publication even with an open platform profile',async()=>{const f=fixture(false,false,5,'OPEN',false,true);expect((await f.evaluate()).status).toBe(400);expect(f.writes).toEqual([]);});
   it('rejects an incomplete answer key before any write', async () => {
     const f = fixture(true); const response = await f.evaluate(); expect(response.status).toBe(400);
     expect((await response.json() as any).error.code).toBe('ANSWER_KEY_INCOMPLETE'); expect(f.writes).toEqual([]);
