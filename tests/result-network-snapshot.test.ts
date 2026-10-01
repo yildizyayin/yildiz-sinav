@@ -1,7 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import { expect,it } from 'vitest';
 import { handleResultNetworkRequest } from '../worker/result-network-entry';
-import { RESULT_NETWORK_SNAPSHOT_SQL,readNetworkSnapshot,snapshotSummary,snapshotDetail } from '../worker/lib/result-network-snapshot';
+import { RESULT_NETWORK_SNAPSHOT_SQL,NETWORK_INSTITUTION_SNAPSHOT_SQL,readNetworkSnapshot,snapshotSummary,snapshotDetail } from '../worker/lib/result-network-snapshot';
 
 it('pins results to the channel publication and fails closed for missing payloads, expired identities and withdrawn publications',async()=>{
  const db=new DatabaseSync(':memory:');try{
@@ -16,6 +16,9 @@ it('pins results to the channel publication and fails closed for missing payload
  db.prepare('INSERT INTO exam_result_snapshots VALUES(?,?,?,?,?,?)').run('e','p',1,JSON.stringify(payload),1,5);
  db.prepare('INSERT INTO exam_result_snapshots VALUES(?,?,?,?,?,?)').run('e','p',2,JSON.stringify({...payload,exam:{net:99}}),99,100);
  const read=()=>db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('code','ada',6,'number','number','','') as any[];
+ db.exec("ALTER TABLE result_network_institutions ADD COLUMN licensed_institution_id TEXT;CREATE TABLE institutions(id TEXT,code TEXT);INSERT INTO institutions VALUES('institution','code');ALTER TABLE exam_result_snapshots ADD COLUMN net REAL DEFAULT 2");
+ expect(db.prepare(NETWORK_INSTITUTION_SNAPSHOT_SQL).all('admin','institution','institution')).toHaveLength(1);
+ expect(db.prepare(NETWORK_INSTITUTION_SNAPSHOT_SQL).all('admin','foreign','foreign')).toHaveLength(0);
  const identity={meb_code:'code',normalized_name:'ada',grade_level:6,student_number_lookup_token:'number',tckn_lookup_token:null,display_name_snapshot:'School'};
  const prepare=(sql:string,args:any[]=[]):any=>({bind:(...values:any[])=>prepare(sql,values),first:async()=>sql.includes('FROM result_portal_sessions')?identity:db.prepare(sql).get(...args),all:async()=>({results:db.prepare(sql).all(...args)})});
  const env={DB:{prepare}} as any;
