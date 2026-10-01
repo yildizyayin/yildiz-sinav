@@ -1,0 +1,42 @@
+import { DatabaseSync } from 'node:sqlite';
+import { expect,it } from 'vitest';
+import { handleResultNetworkRequest } from '../worker/result-network-entry';
+import { RESULT_NETWORK_SNAPSHOT_SQL,readNetworkSnapshot,snapshotSummary,snapshotDetail } from '../worker/lib/result-network-snapshot';
+
+it('pins results to the channel publication and fails closed for missing payloads, expired identities and withdrawn publications',async()=>{
+ const db=new DatabaseSync(':memory:');try{
+ db.exec(`CREATE TABLE result_access_identities(participant_id TEXT,result_institution_id TEXT,administration_id TEXT,normalized_name TEXT,grade_level INTEGER,student_number_lookup_token TEXT,tckn_lookup_token TEXT,expires_at TEXT);
+ CREATE TABLE result_network_institutions(id TEXT,meb_code TEXT);
+ CREATE TABLE exam_administrations(id TEXT,exam_id TEXT,channel TEXT,status TEXT,published_snapshot_version INTEGER,published_at TEXT);
+ CREATE TABLE exam_result_snapshots(exam_id TEXT,participant_id TEXT,snapshot_version INTEGER,payload_json TEXT,national_rank INTEGER,national_count INTEGER);
+ INSERT INTO result_network_institutions VALUES('school','code');
+ INSERT INTO result_access_identities VALUES('p','school','admin','ada',6,'number',NULL,'2099-01-01');
+ INSERT INTO exam_administrations VALUES('admin','e','RESULT_NETWORK','PUBLISHED',1,'2026-10-01');`);
+ const payload={schemaVersion:1,exam:{exam_id:'e',net:2,title:'Original'},subjects:[{subject_name:'Math',net:2}],outcomes:[{title:'Outcome',evidence_count:2,correct_count:1}],wrongQuestionIds:['q']};
+ db.prepare('INSERT INTO exam_result_snapshots VALUES(?,?,?,?,?,?)').run('e','p',1,JSON.stringify(payload),1,5);
+ db.prepare('INSERT INTO exam_result_snapshots VALUES(?,?,?,?,?,?)').run('e','p',2,JSON.stringify({...payload,exam:{net:99}}),99,100);
+ const read=()=>db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('code','ada',6,'number','number','','') as any[];
+ const identity={meb_code:'code',normalized_name:'ada',grade_level:6,student_number_lookup_token:'number',tckn_lookup_token:null,display_name_snapshot:'School'};
+ const prepare=(sql:string,args:any[]=[]):any=>({bind:(...values:any[])=>prepare(sql,values),first:async()=>sql.includes('FROM result_portal_sessions')?identity:db.prepare(sql).get(...args),all:async()=>({results:db.prepare(sql).all(...args)})});
+ const env={DB:{prepare}} as any;
+ const request=(path:string)=>new Request('https://test'+path,{headers:{cookie:'anunex_result_session=synthetic'}});
+ const response=await handleResultNetworkRequest(request('/api/public/results/student'),env);
+ expect((await response!.json() as any).exams[0].net).toBe(2);
+ db.exec('CREATE TABLE exam_questions(id TEXT,exam_id TEXT,question_no INTEGER);CREATE TABLE video_links(exam_question_id TEXT,title TEXT,url TEXT,link_type TEXT,approved INTEGER)');
+ const detail=await handleResultNetworkRequest(request('/api/public/results/exams/e'),env);
+ expect((await detail!.json() as any).subjects[0].net).toBe(2);
+ expect((await handleResultNetworkRequest(request('/api/public/results/exams/other'),env))!.status).toBe(404);
+ expect(snapshotSummary(read()[0]).net).toBe(2);expect(snapshotSummary(read()[0]).national_rank).toBe(1);
+ expect(snapshotDetail(readNetworkSnapshot(read()[0].payload_json)).outcomes[0].success_rate).toBe(50);
+ expect(db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('code','ada',6,'other','other','','')).toHaveLength(0);
+ expect(db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('other-school','ada',6,'number','number','','')).toHaveLength(0);
+ db.exec('UPDATE exam_administrations SET published_snapshot_version=NULL');
+ expect((await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.status).toBe(409);
+ expect(read()[0].exam_id).toBe('e');expect(snapshotSummary(read()[0])).toBeNull();
+ db.exec("UPDATE exam_administrations SET published_snapshot_version=1,status='READY'");expect(read()).toHaveLength(0);
+ db.exec("UPDATE exam_administrations SET status='PUBLISHED';UPDATE result_access_identities SET expires_at='2000-01-01'");expect(read()).toHaveLength(0);
+ }finally{db.close()}
+});
+it('rejects malformed and unsupported payloads rather than inventing a live result',()=>{
+ for(const value of [null,'broken','{}','{"schemaVersion":2,"exam":{},"subjects":[],"outcomes":[]}'])expect(readNetworkSnapshot(value)).toBeNull();
+});
