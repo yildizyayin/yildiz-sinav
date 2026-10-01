@@ -1,3 +1,5 @@
+import { withExamOperationLock } from './lib/exam-operation-lock';
+import { examPublicationGuard, examCorrectionOpen } from './lib/exam-publication-guard';
 import accessApp from './access-entry';
 import type { AuthUser, Env, Role } from './types';
 import { getAuthUser } from './lib/auth';
@@ -484,7 +486,14 @@ async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<
   return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, optionalAnswerKey, readiness: ready });
 }
 
-async function updateGeneral(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+async function updateGeneral(request: Request, env: Env, user: AuthUser, examId: string):Promise<Response>{
+  const exam=await managedExam(env,user,examId);if(!exam)return notFound();
+  return withExamOperationLock(env,examId,'EXAM_SOURCE_EDIT',async(env)=>{
+    const gate=await examPublicationGuard(env,examId);if(gate)return gate;
+    return updateGeneralUnlocked(request,env,user,examId);
+  });
+}
+async function updateGeneralUnlocked(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Aktif veya kapanmış sınavın temel tanımı değiştirilemez.');
@@ -574,7 +583,14 @@ async function copyDefinition(env: Env, user: AuthUser, examId: string): Promise
   return Response.json({ ok: true, id }, { status: 201 });
 }
 
-async function deleteDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
+async function deleteDefinition(env: Env, user: AuthUser, examId: string):Promise<Response>{
+  const exam=await managedExam(env,user,examId);if(!exam)return notFound();
+  return withExamOperationLock(env,examId,'EXAM_SOURCE_EDIT',async(env)=>{
+    const gate=await examPublicationGuard(env,examId);if(gate)return gate;
+    return deleteDefinitionUnlocked(env,user,examId);
+  });
+}
+async function deleteDefinitionUnlocked(env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_NOT_DRAFT', 'Yayınlanmış veya arşivlenmiş sınav silinemez; önce arşiv durumunu kullanın.');
@@ -593,7 +609,14 @@ async function deleteDefinition(env: Env, user: AuthUser, examId: string): Promi
   return Response.json({ ok: true });
 }
 
-async function replaceStructure(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+async function replaceStructure(request: Request, env: Env, user: AuthUser, examId: string):Promise<Response>{
+  const exam=await managedExam(env,user,examId);if(!exam)return notFound();
+  return withExamOperationLock(env,examId,'EXAM_SOURCE_EDIT',async(env)=>{
+    const gate=await examPublicationGuard(env,examId);if(gate)return gate;
+    return replaceStructureUnlocked(request,env,user,examId);
+  });
+}
+async function replaceStructureUnlocked(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Sınav yapısı yalnız taslak durumunda değiştirilebilir.');
@@ -652,10 +675,17 @@ async function replaceStructure(request: Request, env: Env, user: AuthUser, exam
   return Response.json({ ok: true, questionCount: globalNo - 1, booklets });
 }
 
-async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, examId: string):Promise<Response>{
+  const exam=await managedExam(env,user,examId);if(!exam)return notFound();
+  return withExamOperationLock(env,examId,'EXAM_SOURCE_EDIT',async(env)=>{
+    const gate=await examPublicationGuard(env,examId);if(gate)return gate;
+    return replaceAnswerKeyUnlocked(request,env,user,examId);
+  });
+}
+async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
-  if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Cevap anahtarı yalnız taslak sınavda değiştirilebilir.');
+  if (exam.status !== 'DRAFT'&&!await examCorrectionOpen(env,examId)) return err(409, 'EXAM_LOCKED', 'Cevap anahtarı taslak veya gerekçeyle düzeltmeye açılmış sınavda değiştirilebilir.');
   const body = await request.json<{
     entries?: Array<{ subjectId?: string; bookletCode?: string; answers?: string; optionCount?: 4 | 5; acceptedAnswers?: Array<string | string[]>; questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>; bookletQuestionNumbers?: number[]; outcomeRefs?: Array<{ code?: string; title?: string; publisherCode?: string; publisherTitle?: string; officialCode?: string } | null>; outcomeRefsByQuestion?: Array<Array<{ code?: string; title?: string; publisherCode?: string; publisherTitle?: string; officialCode?: string }>> }>;
     outcomeMappings?: Array<{ subjectId?: string; questionNo?: number; outcomeId?: string }>;
