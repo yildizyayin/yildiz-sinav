@@ -3,7 +3,7 @@ import { getAuthUser,hashPassword,verifyPassword,verifyTurnstile } from './lib/a
 import { all,audit,badRequest,forbidden,json,normalizeName,one,uuid } from './lib/db';
 import { evaluateBatch,getScanBatch,previewExamFile,resolveScanRecord,searchScanCandidates } from './index';
 import { withExamOperationLock } from './lib/exam-operation-lock';
-import { captureReportSnapshot } from './lib/report-snapshot';
+import { REPORT_SNAPSHOT_SQL } from './lib/report-snapshot';
 
 const COOKIE='anunex_result_session';
 const SIX_HOURS=6*60*60*1000;
@@ -114,8 +114,10 @@ async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthU
  const totals=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT ep.institution_id) institution_count FROM result_access_identities rai JOIN exam_results er ON er.participant_id=rai.participant_id JOIN exam_participants ep ON ep.id=er.participant_id WHERE rai.administration_id=? AND ep.exam_id=?`).bind(id,row.exam_id));
  if(!Number(totals?.participant_count||0))return badRequest('Yayımlanacak değerlendirilmiş öğrenci sonucu bulunmuyor.','NO_RESULTS');
  const version=Number((await one<any>(env.DB.prepare(`SELECT MAX(snapshot_version) version FROM exam_result_snapshots WHERE exam_id=?`).bind(row.exam_id)))?.version||0)+1;
- await env.DB.prepare(`DELETE FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(row.exam_id,version).run();
- await env.DB.prepare(`INSERT INTO exam_result_snapshots(
+ const academicEnd=Number(String(row.academic_year).slice(0,4))+1,sept30=new Date(`${academicEnd}-09-30T23:59:59.000Z`),ninetyDays=new Date(Date.now()+90*86400000),due=(ninetyDays>sept30?ninetyDays:sept30).toISOString();
+ await env.DB.batch([
+  env.DB.prepare(`DELETE FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(row.exam_id,version),
+  env.DB.prepare(`INSERT INTO exam_result_snapshots(
    id,exam_id,participant_id,snapshot_version,student_id,institution_id,network_id,city,district,grade_level,class_snapshot,score,net,
    national_rank,national_count,city_rank,city_count,district_rank,district_count,network_rank,network_count,institution_rank,institution_count,grade_rank,grade_count,class_rank,class_count)
   WITH base AS MATERIALIZED (SELECT ep.exam_id,ep.id participant_id,ep.student_id,ep.institution_id,
@@ -131,15 +133,15 @@ async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthU
    RANK() OVER(PARTITION BY institution_id ORDER BY COALESCE(score,net) DESC,correct_count DESC),COUNT(*) OVER(PARTITION BY institution_id),
    RANK() OVER(PARTITION BY institution_id,grade_level ORDER BY COALESCE(score,net) DESC,correct_count DESC),COUNT(*) OVER(PARTITION BY institution_id,grade_level),
    RANK() OVER(PARTITION BY institution_id,COALESCE(class_snapshot,'') ORDER BY COALESCE(score,net) DESC,correct_count DESC),COUNT(*) OVER(PARTITION BY institution_id,COALESCE(class_snapshot,''))
-  FROM base`).bind(id,row.exam_id,version).run();
- await captureReportSnapshot(env, row.exam_id, version);
- const academicEnd=Number(String(row.academic_year).slice(0,4))+1,sept30=new Date(`${academicEnd}-09-30T23:59:59.000Z`),ninetyDays=new Date(Date.now()+90*86400000),due=(ninetyDays>sept30?ninetyDays:sept30).toISOString();
- await env.DB.batch([
+  FROM base`).bind(id,row.exam_id,version),
+  env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(row.exam_id,version),
+
   env.DB.prepare(`UPDATE exam_administrations SET status='PUBLISHED',published_at=CURRENT_TIMESTAMP,retention_due_at=?,ranking_frozen_at=CURRENT_TIMESTAMP,participant_count=?,institution_count=? WHERE id=?`).bind(due,totals.participant_count,totals.institution_count,id),
   env.DB.prepare(`UPDATE result_access_identities SET expires_at=? WHERE administration_id=?`).bind(due,id),
   env.DB.prepare(`INSERT INTO exam_publication_stats(exam_id,snapshot_version,institution_count,participant_count,city_count,payload_json) SELECT ?,?,?,?,COUNT(DISTINCT city),? FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(row.exam_id,version,totals.institution_count,totals.participant_count,JSON.stringify({channel:'RESULT_NETWORK',administrationId:id}),row.exam_id,version),
+  env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'RESULT_RANKINGS_FROZEN_AND_PUBLISHED','exam_administration',?,?)`).bind(uuid('aud'),user.id,id,JSON.stringify({examId:row.exam_id,version,participants:totals.participant_count,institutions:totals.institution_count,retentionDueAt:due})),
  ]);
- await audit(env.DB,user.id,null,'RESULT_RANKINGS_FROZEN_AND_PUBLISHED','exam_administration',id,{examId:row.exam_id,version,participants:totals.participant_count,institutions:totals.institution_count,retentionDueAt:due});
+
  return json({ok:true,id,status:'PUBLISHED',snapshotVersion:version,participantCount:Number(totals.participant_count),institutionCount:Number(totals.institution_count),retentionDueAt:due});
  });
 }
