@@ -13,7 +13,7 @@ function fixture(incomplete = false, optional = false, optionalKeyCount = 5, fre
     { question_id: 'q3', subject_id: 'math', question_no: 3, printed_question_no: 3, booklet_code: 'B', correct_answer: 'A' },
   ];
   const optionalKeys = Array.from({ length: optionalKeyCount }, (_, i) => ({ id: `opt${i}`, subject_id: 'fel', question_no: i + 1, booklet_code: 'B', correct_answer: 'A' }));
-  const env = { DB: { batch: async (statements: any[]) => { for (const statement of statements) await statement.run(); }, prepare: (sql: string) => ({ bind: (...args: any[]) => ({
+  const env = { DB: { batch: async (statements: any[]) => { const results=[];for (const statement of statements) results.push(await statement.run());return results; }, prepare: (sql: string) => ({ bind: (...args: any[]) => ({
     first: async () => sql.includes('FROM scan_batches') ? { id: 'batch', exam_id: 'exam', institution_id: 'school', season_id: 'season', status: 'READY' }
       : sql.includes('SELECT result_freeze_status') ? { result_freeze_status: freezeStatus }
       : sql.includes('count(*)') ? { c: 0 }
@@ -24,7 +24,7 @@ function fixture(incomplete = false, optional = false, optionalKeyCount = 5, fre
       : sql.includes('FROM exam_booklets') ? [{ code: 'B' }]
       : sql.includes('FROM exam_questions q JOIN subjects') ? (incomplete ? keys.slice(0, 2) : keys)
       : sql.includes('SELECT * FROM scan_records') ? [{ id: 'scan', row_no: 1, matched_student_id: 'student', match_status: 'ACTIVE_MATCH', canonical_json: JSON.stringify({ name: 'Ada Test', booklet: 'B', answers_by_subject: { MAT: 'C_D' }, confidence: 1 }) }] : [] }),
-    run: async () => { if(sql.includes('INSERT INTO exam_operation_locks')){if(busy)return {meta:{changes:0}};locked=true;return {meta:{changes:1}}}if(sql.includes('DELETE FROM exam_operation_locks')){locked=false;return {meta:{changes:1}}}if(sql.includes('tyt_optional_philosophy')&&!locked)throw new Error('OPTIONAL_OUTSIDE_LOCK');writes.push({ sql, args }); return { success: true }; },
+    run: async () => { if(sql.includes('exam_operation_write_guards'))return {meta:{changes:1}};if(sql.includes('INSERT INTO exam_operation_locks')){if(busy)return {meta:{changes:0}};locked=true;return {meta:{changes:1}}}if(sql.includes('DELETE FROM exam_operation_locks')){locked=false;return {meta:{changes:1}}}if(sql.includes('tyt_optional_philosophy')&&!locked)throw new Error('OPTIONAL_OUTSIDE_LOCK');writes.push({ sql, args }); return { success: true }; },
   }) }) } } as any;
   return { env, writes, isLocked:()=>locked, evaluate: () => evaluateBatch(env, user, 'batch') };
 }
