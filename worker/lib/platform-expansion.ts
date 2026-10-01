@@ -181,7 +181,7 @@ async function updateExamProfile(request:Request,env:Env,user:AuthUser,examId:st
 async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
   let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
   if(p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden('Merkezi sınav sıralamasını yalnız Süper Admin dondurabilir.');
-  return withExamOperationLock(env,examId,'FREEZE',async()=>{
+  return withExamOperationLock(env,examId,'FREEZE',async(env)=>{
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)`).bind(examId));
   if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
@@ -222,7 +222,7 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
 
 async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
   let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
-  return withExamOperationLock(env,examId,'PUBLISH',async()=>{
+  return withExamOperationLock(env,examId,'PUBLISH',async(env)=>{
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   if(p.result_freeze_status!=='FROZEN')return badRequest('Önce sıralama snapshotını dondurun.','NOT_FROZEN');
   const writes=await env.DB.batch([
@@ -240,7 +240,7 @@ async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response
 async function reopenExamResults(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
   let p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   if(!await canManageExam(env,user,p)||p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden();
-  return withExamOperationLock(env,examId,'REOPEN',async()=>{
+  return withExamOperationLock(env,examId,'REOPEN',async(env)=>{
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   const body=await requestBody(request);const reason=typeof body.reason==='string'?body.reason.trim():'';
   const version=body.expectedSnapshotVersion;
