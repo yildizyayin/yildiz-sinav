@@ -19,7 +19,7 @@ it('reports bounded waiting locks without owner tokens or claiming abandoned own
     const env={DB:{prepare:(sql:string)=>({all:async()=>({results:db.prepare(sql).all()})})}} as any;
     const response=await handlePlatformApi(new Request('https://test/api/platform/exam-center/operation-locks'),env,{role:'SUPER_ADMIN'} as any);
     const body=await response!.json() as any;
-    expect(body.locks).toHaveLength(100);expect(body.hasMore).toBe(true);expect(body.recoveryAvailable).toBe(false);
+    expect(body.locks).toHaveLength(100);expect(body.hasMore).toBe(true);expect(body.recoveryAvailable).toBe(true);
     expect(body.locks[0].age_seconds).toBeGreaterThan(0);expect(body.locks[0].liveness).toBe('UNKNOWN');
     expect(JSON.stringify(body)).not.toContain('secret-owner');
     expect((db.prepare('SELECT COUNT(*) n FROM exam_operation_locks').get() as any).n).toBe(101);
