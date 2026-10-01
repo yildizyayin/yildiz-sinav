@@ -5,6 +5,7 @@ import { hydrateQuestionMedia } from './question-content';
 import { recordAssessmentRun } from './assessment-ledger';
 import { renderStudioPdf } from './studio-pdf';
 import { captureReportSnapshot } from './report-snapshot';
+import { withExamOperationLock } from './exam-operation-lock';
 
 const NEXT_FEATURES = new Set([
   'LEARNING_GRAPH','QUESTION_BANK','RECOVERY','RBA','MEMBERSHIP','LIVE','STUDIO','PHYSICAL_BRIDGE','GAMES','CAMPUS','ENTERPRISE','PUBLISHER','ADMISSIONS','GUIDANCE_TESTS','BOARD','MOBILE_API','VIDEO_LIBRARY',
@@ -178,8 +179,10 @@ async function updateExamProfile(request:Request,env:Env,user:AuthUser,examId:st
 }
 
 async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
-  const p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
+  let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
   if(p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden('Merkezi sınav sıralamasını yalnız Süper Admin dondurabilir.');
+  return withExamOperationLock(env,examId,'FREEZE',async()=>{
+    p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   const version=Number(p.snapshot_version||0)+1; const networkId=p.scope==='NETWORK'?p.network_id:null;
   const participantCountRow=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).bind(examId));
   if(!Number(participantCountRow?.count||0))return badRequest('Sonuçlandırılmış katılımcı bulunmuyor.','NO_RESULTS');
@@ -209,10 +212,13 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
   ]);
   await audit(env.DB,user.id,user.institution_id,'EXAM_RESULTS_FROZEN','exam',examId,{version,participants:stats?.participant_count||0});
   return json({ok:true,examId,version,stats});
+  });
 }
 
 async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
-  const p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
+  let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
+  return withExamOperationLock(env,examId,'PUBLISH',async()=>{
+    p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   if(p.result_freeze_status!=='FROZEN')return badRequest('Önce sıralama snapshotını dondurun.','NOT_FROZEN');
   const writes=await env.DB.batch([
     env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json)
@@ -223,11 +229,14 @@ async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response
   const published=writes[1];
   if(!published.meta?.changes)return json({ok:false,error:{code:'SNAPSHOT_STATE_CHANGED',message:'Sonuç durumu değişti. Sayfayı yenileyin.'}},409);
   return json({ok:true,published:true,version:p.snapshot_version});
+  });
 }
 
 async function reopenExamResults(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
-  const p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
+  let p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   if(!await canManageExam(env,user,p)||p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden();
+  return withExamOperationLock(env,examId,'REOPEN',async()=>{
+    p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   const body=await requestBody(request);const reason=typeof body.reason==='string'?body.reason.trim():'';
   const version=body.expectedSnapshotVersion;
   if(reason.length<10||reason.length>1000)return badRequest('10–1000 karakter uzunluğunda düzeltme gerekçesi girin.','CORRECTION_REASON_REQUIRED');
@@ -246,6 +255,7 @@ async function reopenExamResults(request:Request,env:Env,user:AuthUser,examId:st
   const changed=changes[3];
   if(!changed.meta?.changes)return json({ok:false,error:{code:'SNAPSHOT_STATE_CHANGED',message:'Sonuç durumu değişti. Sayfayı yenileyin.'}},409);
   return json({ok:true,examId,previousVersion:version,state:'OPEN',publicationWithdrawn:p.result_freeze_status==='PUBLISHED',requiresFreezeAndPublish:true});
+  });
 }
 
 async function examStats(env:Env,user:AuthUser,examId:string):Promise<Response>{
