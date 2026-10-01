@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import { expect,it } from 'vitest';
 import { handlePlatformApi } from '../worker/lib/platform-expansion';
@@ -14,6 +15,7 @@ function fixture(scope='INSTITUTION', failAudit=false, racePublish=false){
     CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
     INSERT INTO exam_delivery_profiles VALUES('exam',2,'PUBLISHED','old','future','old',NULL);
     INSERT INTO exam_result_snapshots VALUES('exam',1,'old-one'),('exam',2,'old-two');`);
+  db.exec(readFileSync(new URL('../migrations/0059_exam_operation_write_guards.sql',import.meta.url),'utf8'));
   const env={DB:{batch:async(statements:any[])=>{if(racePublish)db.exec("UPDATE exam_delivery_profiles SET result_freeze_status='OPEN'");db.exec('BEGIN');try{const rows=[];for(const statement of statements)rows.push(await statement.run());db.exec('COMMIT');return rows}catch(error){db.exec('ROLLBACK');throw error}},prepare:(sql:string)=>({bind:(...args:any[])=>({
     first:async()=>sql.includes('SELECT count(*) c FROM scan_batches')?db.prepare(sql).get(...args):sql.includes('SELECT p.*,e.title')?{...db.prepare('SELECT * FROM exam_delivery_profiles').get(),institution_id:'school',scope}:null,
     run:async()=>{if(failAudit&&sql.includes('INSERT INTO audit_logs'))throw new Error('AUDIT_UNAVAILABLE');const r=db.prepare(sql).run(...args);return {success:true,meta:{changes:Number(r.changes)}}},
