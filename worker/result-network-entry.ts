@@ -3,6 +3,7 @@ import { getAuthUser,hashPassword,verifyPassword,verifyTurnstile } from './lib/a
 import { all,audit,badRequest,forbidden,json,normalizeName,one,uuid } from './lib/db';
 import { evaluateBatch,getScanBatch,previewExamFile,resolveScanRecord,searchScanCandidates } from './index';
 import { withExamOperationLock } from './lib/exam-operation-lock';
+import { RESULT_NETWORK_SNAPSHOT_SQL, readNetworkSnapshot, snapshotSummary, snapshotDetail } from './lib/result-network-snapshot';
 import { REPORT_SNAPSHOT_SQL } from './lib/report-snapshot';
 
 const COOKIE='anunex_result_session';
@@ -55,31 +56,23 @@ async function resultIdentity(request:Request,env:Env){const raw=rawCookie(reque
 
 async function studentResults(request:Request,env:Env){
  const identity=await resultIdentity(request,env);if(!identity)return safeError(401,'RESULT_SESSION_REQUIRED','Sonucunuzu yeniden doğrulayın.');
- const rows=await all<any>(env.DB.prepare(`SELECT e.id exam_id,e.title,e.exam_type,e.exam_date,e.academic_year,
-   er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.success_percent,
-   COALESCE(s.class_rank,er.class_rank) class_rank,s.class_count,s.grade_rank,s.grade_count,
-   COALESCE(s.institution_rank,er.institution_rank) institution_rank,s.institution_count,
-   s.district_rank,s.district_count,s.city_rank,s.city_count,s.network_rank,s.network_count,
-   COALESCE(s.national_rank,er.general_rank) national_rank,COALESCE(s.national_count,ea.participant_count) national_count,
-   COALESCE(s.national_rank,er.general_rank) general_rank,COALESCE(s.national_count,ea.participant_count) participant_count
-   FROM result_access_identities peer
-   JOIN result_network_institutions rni ON rni.id=peer.result_institution_id
-   JOIN exam_administrations ea ON ea.id=peer.administration_id
-   JOIN exams e ON e.id=ea.exam_id JOIN exam_results er ON er.participant_id=peer.participant_id
-   LEFT JOIN exam_result_snapshots s ON s.participant_id=peer.participant_id AND s.exam_id=e.id
-    AND s.snapshot_version=(SELECT MAX(s2.snapshot_version) FROM exam_result_snapshots s2 WHERE s2.exam_id=e.id)
-   WHERE rni.meb_code=? AND peer.normalized_name=? AND peer.grade_level=?
-    AND (peer.student_number_lookup_token=? OR peer.tckn_lookup_token=?) AND ea.status='PUBLISHED'
-   ORDER BY e.exam_date DESC,e.created_at DESC LIMIT 50`).bind(identity.meb_code,identity.normalized_name,identity.grade_level,identity.student_number_lookup_token||'',identity.tckn_lookup_token||''));
- const latest=rows[0]||null;const tips=await one<any>(env.DB.prepare(`SELECT tips_json FROM result_ai_tips WHERE identity_id=?`).bind(identity.id));
- return json({ok:true,student:{name:maskName(identity.normalized_name),gradeLevel:identity.grade_level,institution:identity.display_name_snapshot},exams:rows,tips:tips?JSON.parse(tips.tips_json):latest?[`${latest.exam_type} sonuçlarında ${Number(latest.net).toLocaleString('tr-TR')} net yaptın.`,`Yanlışlarını kazanım ve soru bazında inceleyerek bir sonraki çalışma adımını seç.`]:[]});
+ const rows=await all<any>(env.DB.prepare(RESULT_NETWORK_SNAPSHOT_SQL+` ORDER BY ea.published_at DESC,ea.id LIMIT 50`).bind(identity.meb_code,identity.normalized_name,identity.grade_level,identity.student_number_lookup_token||'',identity.student_number_lookup_token||'',identity.tckn_lookup_token||'',identity.tckn_lookup_token||''));
+ const exams=rows.map(snapshotSummary).filter((row):row is NonNullable<typeof row>=>row!==null);
+ exams.sort((a,b)=>String(b.exam_date||'').localeCompare(String(a.exam_date||'')));
+ const unavailableSnapshotExamIds=rows.filter(row=>!readNetworkSnapshot(row.payload_json)).map(row=>row.exam_id);
+ const latest=exams[0]||null;
+ return json({ok:true,student:{name:maskName(identity.normalized_name),gradeLevel:identity.grade_level,institution:identity.display_name_snapshot},exams,unavailableSnapshotExamIds,tips:latest?[`${latest.exam_type} sonuçlarında ${Number(latest.net).toLocaleString('tr-TR')} net yaptın.`,`Yanlışlarını kazanım ve soru bazında inceleyerek bir sonraki çalışma adımını seç.`]:[]});
 }
 
 async function examDetail(request:Request,env:Env,examId:string){
  const identity=await resultIdentity(request,env);if(!identity)return safeError(401,'RESULT_SESSION_REQUIRED','Sonucunuzu yeniden doğrulayın.');
- const peer=await one<any>(env.DB.prepare(`SELECT peer.participant_id FROM result_access_identities peer JOIN result_network_institutions rni ON rni.id=peer.result_institution_id JOIN exam_administrations ea ON ea.id=peer.administration_id WHERE rni.meb_code=? AND peer.normalized_name=? AND peer.grade_level=? AND ea.exam_id=? AND (peer.student_number_lookup_token=? OR peer.tckn_lookup_token=?) AND ea.status='PUBLISHED' LIMIT 1`).bind(identity.meb_code,identity.normalized_name,identity.grade_level,examId,identity.student_number_lookup_token||'',identity.tckn_lookup_token||''));if(!peer)return safeError(404,'RESULT_NOT_FOUND','Sınav sonucu bulunamadı.');
- const [subjects,outcomes,videos]=await Promise.all([all<any>(env.DB.prepare(`SELECT s.name subject,sr.correct_count,sr.wrong_count,sr.blank_count,sr.net,sr.success_percent FROM subject_results sr JOIN subjects s ON s.id=sr.subject_id WHERE sr.participant_id=? ORDER BY s.name`).bind(peer.participant_id)),all<any>(env.DB.prepare(`SELECT o.title outcome,o.topic,o.subtopic,orr.evidence_count,orr.correct_count,orr.success_rate,orr.mastery_status FROM exam_participants ep JOIN outcome_results orr ON orr.student_id=ep.student_id AND orr.exam_id=ep.exam_id JOIN outcomes o ON o.id=orr.outcome_id WHERE ep.id=? ORDER BY orr.success_rate,o.title LIMIT 100`).bind(peer.participant_id)),all<any>(env.DB.prepare(`SELECT DISTINCT vl.title,vl.url,vl.link_type,q.question_no FROM student_answers sa JOIN exam_questions q ON q.id=sa.exam_question_id JOIN video_links vl ON vl.exam_question_id=q.id AND vl.approved=1 WHERE sa.participant_id=? AND sa.status='WRONG' ORDER BY q.question_no LIMIT 50`).bind(peer.participant_id))]);
- return json({ok:true,subjects,outcomes,videos});
+ const peer=await one<any>(env.DB.prepare(RESULT_NETWORK_SNAPSHOT_SQL+` AND ea.exam_id=? LIMIT 1`).bind(identity.meb_code,identity.normalized_name,identity.grade_level,identity.student_number_lookup_token||'',identity.student_number_lookup_token||'',identity.tckn_lookup_token||'',identity.tckn_lookup_token||'',examId));
+ if(!peer)return safeError(404,'RESULT_NOT_FOUND','Sınav sonucu bulunamadı.');
+ const payload=readNetworkSnapshot(peer.payload_json);if(!payload)return safeError(409,'RESULT_SNAPSHOT_UNAVAILABLE','Bu yayının sabit sonuç kaydı bulunmuyor. Kurumunuzla iletişime geçin.');
+ const detail=snapshotDetail(payload);
+ // Video approval can be withdrawn, but question selection is frozen evidence.
+ const videos=Array.isArray(payload.wrongQuestionIds)?await all<any>(env.DB.prepare(`SELECT DISTINCT vl.title,vl.url,vl.link_type,q.question_no FROM exam_questions q JOIN video_links vl ON vl.exam_question_id=q.id AND vl.approved=1 WHERE q.exam_id=? AND q.id IN(SELECT value FROM json_each(?)) ORDER BY q.question_no LIMIT 50`).bind(examId,JSON.stringify(payload.wrongQuestionIds))):[];
+ return json({ok:true,...detail,videos,snapshotVersion:peer.snapshot_version,videoEvidenceUnavailable:!Array.isArray(payload.wrongQuestionIds)});
 }
 
 async function requireSuper(request:Request,env:Env):Promise<AuthUser|Response>{const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(user.role!=='SUPER_ADMIN')return forbidden();return user}
@@ -109,6 +102,8 @@ async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthU
  let row=await one<any>(env.DB.prepare(`SELECT ea.*,e.id exam_id,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(id));
  if(!row)return safeError(404,'ADMINISTRATION_NOT_FOUND','Sınav yönetimi bulunamadı.');
  return withExamOperationLock(env,row.exam_id,'RESULT_NETWORK_FREEZE',async(env)=>{
+ row=await one<any>(env.DB.prepare(`SELECT ea.*,e.id exam_id,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(id));
+ if(!row||!['UPLOADING','READY'].includes(row.status))return badRequest('Sonuç yayını için yönetim hazır olmalıdır. Mevcut yayın yeniden dondurulamaz.','RESULT_PUBLICATION_STATE_CHANGED');
  const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)`).bind(row.exam_id));
  if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
  const totals=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT ep.institution_id) institution_count FROM result_access_identities rai JOIN exam_results er ON er.participant_id=rai.participant_id JOIN exam_participants ep ON ep.id=er.participant_id WHERE rai.administration_id=? AND ep.exam_id=?`).bind(id,row.exam_id));
@@ -136,7 +131,7 @@ async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthU
   FROM base`).bind(id,row.exam_id,version),
   env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(row.exam_id,version),
 
-  env.DB.prepare(`UPDATE exam_administrations SET status='PUBLISHED',published_at=CURRENT_TIMESTAMP,retention_due_at=?,ranking_frozen_at=CURRENT_TIMESTAMP,participant_count=?,institution_count=? WHERE id=?`).bind(due,totals.participant_count,totals.institution_count,id),
+  env.DB.prepare(`UPDATE exam_administrations SET status='PUBLISHED',published_at=CURRENT_TIMESTAMP,retention_due_at=?,ranking_frozen_at=CURRENT_TIMESTAMP,published_snapshot_version=?,participant_count=?,institution_count=? WHERE id=?`).bind(due,version,totals.participant_count,totals.institution_count,id),
   env.DB.prepare(`UPDATE result_access_identities SET expires_at=? WHERE administration_id=?`).bind(due,id),
   env.DB.prepare(`INSERT INTO exam_publication_stats(exam_id,snapshot_version,institution_count,participant_count,city_count,payload_json) SELECT ?,?,?,?,COUNT(DISTINCT city),? FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(row.exam_id,version,totals.institution_count,totals.participant_count,JSON.stringify({channel:'RESULT_NETWORK',administrationId:id}),row.exam_id,version),
   env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'RESULT_RANKINGS_FROZEN_AND_PUBLISHED','exam_administration',?,?)`).bind(uuid('aud'),user.id,id,JSON.stringify({examId:row.exam_id,version,participants:totals.participant_count,institutions:totals.institution_count,retentionDueAt:due})),
