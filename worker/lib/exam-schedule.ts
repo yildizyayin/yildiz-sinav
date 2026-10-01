@@ -78,7 +78,7 @@ export async function publishScheduledExamResults(env:Env):Promise<number>{
     ORDER BY p.result_publish_at ASC LIMIT 100`));
   let count=0;
   for(const row of due){
-    const response=await withExamOperationLock(env,row.exam_id,'AUTO_PUBLISH',async()=>{
+    const response=await withExamOperationLock(env,row.exam_id,'AUTO_PUBLISH',async(env)=>{
       const guard=`exam_id=? AND snapshot_version=? AND result_freeze_status='FROZEN' AND result_publish_at=? AND datetime(result_publish_at)<=CURRENT_TIMESTAMP`;
       const results=await env.DB.batch([
         env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json)
