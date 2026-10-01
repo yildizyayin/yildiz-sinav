@@ -2,6 +2,7 @@ import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
 import { audit, badRequest, forbidden, json, methodNotAllowed, normalizeName, notFound, one, all, splitName, uuid } from './lib/db';
 import { createSession, getAuthUser, hashPassword, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
 import { canAccessSubjectForClass, canEvaluateExam, loadPermissionScope, roleCanManageInstitution } from './lib/permissions';
+import { examPublicationGuard } from './lib/exam-publication-guard';
 import { withExamOperationLock } from './lib/exam-operation-lock';
 import { evaluateAnswer } from './lib/answer-evaluation';
 import { persistTytOptionalPhilosophyEvidence } from './tyt-optional-philosophy-evaluation';
@@ -486,6 +487,11 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
   const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
+  return withExamOperationLock(env,batch.exam_id,'SCAN_RESOLVE',async(env)=>{
+  const currentBatch=await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
+  if(!currentBatch)return notFound();
+  if(currentBatch.status==='COMMITTED')return badRequest('Değerlendirilmiş kayıt değiştirilemez.');
+  const publicationGate=await examPublicationGuard(env,batch.exam_id);if(publicationGate)return publicationGate;
   const before = await one<any>(env.DB.prepare('SELECT matched_student_id,match_status,match_confidence,resolution_status,issues_json,canonical_json FROM scan_records WHERE id=? AND batch_id=?').bind(recordId, batchId));
   if (!before) return notFound('Optik satırı bulunamadı.');
   if (before.resolution_status === 'CANCELLED') return badRequest('İptal edilmiş satır değiştirilemez.');
@@ -541,6 +547,7 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
     after: { matchedStudentId: studentId, matchStatus, resolutionStatus, issueCount: issues.length },
   });
   return json({ ok: true });
+  });
 }
 
 export async function searchScanCandidates(env: Env, user: AuthUser, batchId: string, recordId: string, url: URL): Promise<Response> {
@@ -567,7 +574,7 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
   return withExamOperationLock(env,batch.exam_id,'EVALUATE',async(env)=>{
-  const networkPublication=await one<any>(env.DB.prepare("SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND status IN ('PUBLISHED','ARCHIVED') AND ranking_frozen_at IS NOT NULL LIMIT 1").bind(batch.exam_id));
+  const networkPublication=await one<any>(env.DB.prepare("SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND ranking_frozen_at IS NOT NULL LIMIT 1").bind(batch.exam_id));
   if(networkPublication)return badRequest('Sonuç Ağı yayını düzeltmeye açılmadan değerlendirme yapılamaz.','RESULTS_FROZEN');
   const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
   if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status)) {
