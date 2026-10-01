@@ -4,11 +4,12 @@ import type { Env } from '../types';
 // are never backfilled from mutable results because their original state is unknown.
 export const REPORT_SNAPSHOT_SQL = `UPDATE exam_result_snapshots AS snap SET payload_json=json_object(
   'schemaVersion',1,
-  'exam',(SELECT json_object('exam_id',e.id,'title',e.title,'exam_date',e.exam_date,'exam_type',e.exam_type,
+  'exam',(SELECT json_object('exam_id',e.id,'title',e.title,'exam_date',e.exam_date,'exam_type',e.exam_type,'academic_year',e.academic_year,
     'correct_count',er.correct_count,'wrong_count',er.wrong_count,'blank_count',er.blank_count,
     'net',snap.net,'score',snap.score,'success_percent',er.success_percent,
     'institution_rank',snap.institution_rank,'booklet_code',ep.booklet_code)
     FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.id=snap.participant_id),
+  'wrongQuestionIds',json((SELECT json_group_array(sa.exam_question_id) FROM student_answers sa WHERE sa.participant_id=snap.participant_id AND sa.status='WRONG')),
   'subjects',json((SELECT json_group_array(json_object('subject_id',s.id,'subject_code',s.code,'subject_name',s.name,
     'correct_count',sr.correct_count,'wrong_count',sr.wrong_count,'blank_count',sr.blank_count,'net',sr.net,'success_percent',sr.success_percent))
     FROM subject_results sr JOIN subjects s ON s.id=sr.subject_id WHERE sr.participant_id=snap.participant_id)),
