@@ -1,8 +1,9 @@
 import { sweepRetiredResultArtifacts } from './lib/result-artifact-retention';
+import {consumeResultRetentionQueue,dispatchResultRetentionQueue} from './lib/result-retention-queue';
 import app from './privacy-export-entry';
 import type { Env } from './types';
 import { json } from './lib/db';
-import { handleResultGovernanceMutation, handleResultOperations, purgeExpiredResultNetwork } from './result-network-entry';
+import { handleResultGovernanceMutation, handleResultOperations, purgeExpiredResultNetwork, purgeResultNetworkAdministrationPage, emitResultRetentionNotices } from './result-network-entry';
 
 /**
  * Dedicated production boundary for sonuc.anunex.com.
@@ -43,7 +44,8 @@ export default {
     if (governanceMutation) return governanceMutation;
     return app.fetch(request, env, ctx);
   },
+  async queue(batch:MessageBatch,env:Env){await consumeResultRetentionQueue(batch,env,purgeResultNetworkAdministrationPage)},
   async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil((async()=>{await sweepRetiredResultArtifacts(env);await purgeExpiredResultNetwork(env)})());
+    ctx.waitUntil(env.RESULT_RETENTION_QUEUE_ENABLED==='true'?(async()=>{await emitResultRetentionNotices(env);await dispatchResultRetentionQueue(env)})():(async()=>{await sweepRetiredResultArtifacts(env);await purgeExpiredResultNetwork(env)})());
   },
 } satisfies ExportedHandler<Env>;
