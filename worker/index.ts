@@ -1,3 +1,4 @@
+import { sanitizeAuditDetails } from './lib/db';
 import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
 import { audit, badRequest, forbidden, json, methodNotAllowed, normalizeName, notFound, one, all, splitName, uuid } from './lib/db';
 import { createSession, getAuthUser, hashPassword, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
@@ -537,15 +538,16 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
   } else return badRequest('Eşleştirme veya kitapçık kararı eksik.');
   const unresolved = ['NEW_GUEST','AMBIGUOUS','INVALID'].includes(matchStatus) || issues.length > 0;
   const resolutionStatus = action === 'CANCEL' ? 'CANCELLED' : unresolved ? 'PENDING' : 'RESOLVED';
-  await env.DB.prepare(`UPDATE scan_records SET matched_student_id=?,match_status=?,match_confidence=?,resolution_status=?,issues_json=?,canonical_json=? WHERE id=? AND batch_id=?`)
-    .bind(studentId, matchStatus, confidence, resolutionStatus, JSON.stringify(issues), JSON.stringify({ ...canonical, tckn: undefined }), recordId, batchId).run();
-  const problem = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND resolution_status!='CANCELLED' AND (match_status IN ('NEW_GUEST','AMBIGUOUS','INVALID') OR issues_json!='[]')`).bind(batchId));
-  await env.DB.prepare('UPDATE scan_batches SET status=? WHERE id=?').bind((problem?.c ?? 0) ? 'NEEDS_REVIEW' : 'READY', batchId).run();
-  await audit(env.DB, user.id, batch.institution_id, 'SCAN_RECORD_DECISION_RECORDED', 'scan_record', recordId, {
-    batchId, decision: action, bookletCode: action === 'BOOKLET' ? canonical.booklet : undefined,
-    before: { matchedStudentId: before.matched_student_id, matchStatus: before.match_status, resolutionStatus: before.resolution_status, issueCount: existingIssues.length },
-    after: { matchedStudentId: studentId, matchStatus, resolutionStatus, issueCount: issues.length },
-  });
+  const details={batchId,decision:action,bookletCode:action==='BOOKLET'?canonical.booklet:undefined,
+    before:{matchedStudentId:before.matched_student_id,matchStatus:before.match_status,resolutionStatus:before.resolution_status,issueCount:existingIssues.length},
+    after:{matchedStudentId:studentId,matchStatus,resolutionStatus,issueCount:issues.length}};
+  await env.DB.batch([
+    env.DB.prepare(`UPDATE scan_records SET matched_student_id=?,match_status=?,match_confidence=?,resolution_status=?,issues_json=?,canonical_json=? WHERE id=? AND batch_id=?`)
+      .bind(studentId,matchStatus,confidence,resolutionStatus,JSON.stringify(issues),JSON.stringify({...canonical,tckn:undefined}),recordId,batchId),
+    env.DB.prepare(`UPDATE scan_batches SET status=CASE WHEN EXISTS(SELECT 1 FROM scan_records WHERE batch_id=? AND resolution_status!='CANCELLED' AND (match_status IN ('NEW_GUEST','AMBIGUOUS','INVALID') OR issues_json!='[]')) THEN 'NEEDS_REVIEW' ELSE 'READY' END WHERE id=?`).bind(batchId,batchId),
+    env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)')
+      .bind(uuid('aud'),user.id,batch.institution_id,'SCAN_RECORD_DECISION_RECORDED','scan_record',recordId,JSON.stringify(sanitizeAuditDetails(details))),
+  ]);
   return json({ ok: true });
   });
 }
