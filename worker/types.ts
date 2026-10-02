@@ -7,6 +7,7 @@ export interface Env {
   RESULT_ARTIFACT_READS_ENABLED?: string;
   RESULT_ARTIFACT_CLEANUP_ENABLED?: string;
   RESULT_RETENTION_QUEUE_ENABLED?: string;
+  RESULT_RETENTION_DEADLINE_HOURS?: string;
   RESULT_RETENTION_QUEUE?: Queue;
   // Dedicated private bucket; never reuse public content assets.
   RESULT_FILES?: R2Bucket;
