@@ -4,6 +4,7 @@ import { getAuthUser } from './lib/auth';
 import { all, forbidden, json, notFound, one } from './lib/db';
 import { loadPermissionScope } from './lib/permissions';
 import { masteryStatus } from './lib/outcome';
+import { frozenExamReport } from './lib/frozen-exam-report';
 
 function apiError(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 async function requireUser(env:Env,request:Request){const user=await getAuthUser(env,request);return user||apiError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.')}
@@ -36,6 +37,29 @@ async function studentAccess(env:Env,user:AuthUser,studentId:string):Promise<Stu
 }
 
 async function currentSeason(env:Env,institutionId:string,requested?:string|null){if(requested){const s=await one<any>(env.DB.prepare('SELECT id,academic_year FROM institution_seasons WHERE id=? AND institution_id=?').bind(requested,institutionId));if(s)return s}return one<any>(env.DB.prepare(`SELECT id,academic_year FROM institution_seasons WHERE institution_id=? ORDER BY CASE status WHEN 'ACTIVE' THEN 0 ELSE 1 END,academic_year DESC LIMIT 1`).bind(institutionId))}
+
+export async function selectedFrozenExamReport(env:Env,user:AuthUser,studentId:string,url:URL){
+ const access=await studentAccess(env,user,studentId);if(!access.allowed)return forbidden();
+ const year=url.searchParams.get('academicYear')||'';
+ const ids=[...new Set((url.searchParams.get('examIds')||'').split(',').map(id=>id.trim()).filter(Boolean))];
+ if(!/^\d{4}-\d{4}$/.test(year)||Number(year.slice(5))!==Number(year.slice(0,4))+1||!ids.length||ids.length>20||ids.some(id=>id.length>100))return apiError(400,'REPORT_SELECTION_INVALID','Eğitim yılı ve en fazla 20 sınav seçin.');
+ const staff=['TEACHER','GUIDANCE_TEACHER'].includes(user.role);
+ const params:any[]=[studentId,access.student.institution_id,year,...ids];
+ if(staff)params.push(access.student.season_id);
+ const rows=await all<any>(env.DB.prepare(`SELECT s.exam_id,s.grade_level,s.payload_json,CASE WHEN json_valid(s.payload_json) THEN json_extract(s.payload_json,'$.exam.academic_year') END academic_year
+ FROM exam_result_snapshots s
+ JOIN exam_delivery_profiles p ON p.exam_id=s.exam_id AND p.snapshot_version=s.snapshot_version
+ JOIN exams e ON e.id=s.exam_id
+ JOIN exam_participants ep ON ep.id=s.participant_id AND ep.exam_id=s.exam_id AND ep.student_id=s.student_id AND ep.institution_id=s.institution_id
+ WHERE s.student_id=? AND s.institution_id=? AND CASE WHEN json_valid(s.payload_json) THEN json_extract(s.payload_json,'$.exam.academic_year') END=? AND s.exam_id IN (${ids.map(()=>'?').join(',')})
+ AND p.result_freeze_status='PUBLISHED' AND p.published_at IS NOT NULL
+ AND (p.result_publish_at IS NULL OR datetime(p.result_publish_at)<=CURRENT_TIMESTAMP)
+ ${staff?'AND ep.season_id=?':''} ORDER BY s.exam_id,s.participant_id LIMIT 21`).bind(...params));
+ if(rows.length>20||new Set(rows.map(row=>row.exam_id)).size!==rows.length)return apiError(409,'REPORT_SOURCE_AMBIGUOUS','Sınav katılım kayıtları tekil değil.');
+ return json({ok:true,sourceTypes:['EXAM'],academicYear:year,selectedExamIds:ids,restrictedToSubjects:access.restricted,
+ ...frozenExamReport(rows,access.subjectFilter),unavailableExamIds:staff?[]:ids.filter(id=>!rows.some(row=>row.exam_id===id)),
+ message:'Bu rapor seçilen yayınlanmış sınavların doğruluk özetidir; resmî puan veya beceri düzeyi değildir.'});
+}
 
 async function listStudents(env:Env,user:AuthUser,url:URL):Promise<Response>{
   if(user.role==='STUDENT'){
@@ -107,4 +131,4 @@ async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Pr
   return json({ok:true,student:access.student,unavailableSnapshotExamIds,restrictedToSubjects:access.restricted,availableExams:allExams.map(e=>access.restricted?{exam_id:e.exam_id,title:e.title,exam_date:e.exam_date,exam_type:e.exam_type}:e),selectedExamIds:selectedIds,exams:examsForClient,summary,subjectTrend,subjectSummary,outcomes,developing:outcomes.filter(o=>o.mastery_status==='DEVELOPING').sort((a,b)=>a.success_rate-b.success_rate),strong:outcomes.filter(o=>o.mastery_status==='STRONG').sort((a,b)=>b.success_rate-a.success_rate)});
 }
 
-export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
+export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
