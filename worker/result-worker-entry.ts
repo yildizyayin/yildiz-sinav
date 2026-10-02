@@ -1,3 +1,4 @@
+import {dispatchResultArtifactQueue,consumeResultArtifactQueue} from './lib/result-artifact-queue';
 import {advanceResultArtifactVerification} from './lib/result-artifact-verification';
 import {advanceResultArtifactPreparation} from './lib/result-artifact-preparation';
 import { sweepRetiredResultArtifacts } from './lib/result-artifact-retention';
@@ -46,9 +47,15 @@ export default {
     if (governanceMutation) return governanceMutation;
     return app.fetch(request, env, ctx);
   },
-  async queue(batch:MessageBatch,env:Env){await consumeResultRetentionQueue(batch,env,purgeResultNetworkAdministrationPage)},
+  async queue(batch:MessageBatch,env:Env){
+    const artifactName=env.RESULT_ARTIFACT_QUEUE_NAME||'anunex-result-artifacts',retentionName=env.RESULT_RETENTION_QUEUE_NAME||'anunex-result-retention';
+    if(artifactName===retentionName)throw Error('RESULT_QUEUE_ROUTE_CONFLICT');
+    if(batch.queue===artifactName)await consumeResultArtifactQueue(batch,env);
+    else if(batch.queue===retentionName)await consumeResultRetentionQueue(batch,env,purgeResultNetworkAdministrationPage);
+    else for(const message of batch.messages)message.retry({delaySeconds:300});
+  },
   async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil((async()=>{await advanceResultArtifactPreparation(env);await advanceResultArtifactVerification(env)})());
+    ctx.waitUntil((async()=>{if(env.RESULT_ARTIFACT_QUEUE_ENABLED==='true')await dispatchResultArtifactQueue(env);else{await advanceResultArtifactPreparation(env);await advanceResultArtifactVerification(env)}})());
     ctx.waitUntil(env.RESULT_RETENTION_QUEUE_ENABLED==='true'?(async()=>{await emitResultRetentionNotices(env);await dispatchResultRetentionQueue(env)})():(async()=>{await sweepRetiredResultArtifacts(env);await purgeExpiredResultNetwork(env)})());
   },
 } satisfies ExportedHandler<Env>;
