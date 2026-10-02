@@ -51,3 +51,27 @@ sürümüyle doğrulanmalıdır; net sayısından beceri düzeyi uydurulmaz.
 
 Bu kapsam notu endpoint, dört karne görünümü, PDF veya gerçek kapasite testi
 tamamlandı anlamına gelmez.
+
+## 2 Ekim kaynak incelemesi ve ekran bağlantısı
+
+Raporlar ekranındaki seçili sınav karnesi eğitim yılını, mevcut sınav seçimlerini,
+yükleme durumunu ve kanıt kapsamını gösterir. Eski isteklerin farklı öğrenci veya
+kurum seçimine taşınması engellenir. Tarayıcıda gerçek kullanıcı testi ayrıca gerekir.
+
+`assessment_runs` ve `assessment_responses` (0039) çözüm zamanını ve kaynak türünü
+saklar; tarihsel enrollment, içerik sürümü ve doğrulanmış müfredat sürümü için ayrı
+sabit bağlam alanları yoktur. `assessment-ledger.ts` yanıtları yeniden yazar ve EXAM
+native durumunu boolean'a indirger. Bu nedenle bu kayıtlar dondurulmuş EXAM karne
+kanıtının yerine kullanılamaz.
+
+`platform-expansion.ts` soru pratiğinde ilk learning node bağlantısını saklar ve
+istemcinin runId değerini kabul eder. Birleşik karneye bağlamadan önce run sahibinin,
+kurumunun ve kaynak tipinin sunucuda doğrulanması; tekrarların ayrı denemeler olarak
+korunması ve tüm kazanım bağlarının çözüm anında dondurulması gerekir.
+`coach-mastery-cycle.ts` mini testi öğrenciye bağlar; ancak cevap anahtarını mevcut
+question_bank kaydından okur ve assessment kanıtında tarihsel sürüm sabit değildir.
+Eski kayıtları güncel müfredatla geçmişe dönük tamamlama yapılmayacaktır.
+
+Sıradaki uygulama: kaynak yazıcılarının sahiplik/sürüm tutarlılığı, yeni çözümler
+ için atomik tarihsel kanıt, sonra kaynak seçimi ve ilk/son deneme karşılaştırması.
+Mini oyun yalnız doğrulanmış soru yanıtı ürettiğinde akademik özete katılabilir.
