@@ -11,10 +11,12 @@ async function seed(f:ReturnType<typeof resultRetentionFixture>){
 }
 it('audits at most 50 private files and never certifies rollout from the last page',async()=>{
  const f=resultRetentionFixture(51);await seed(f);let reads=0;const get=f.env.RESULT_FILES.get;f.env.RESULT_FILES.get=async(key:string)=>{reads++;return get(key)};
+ let aggregateReads=0;const prepare=f.env.DB.prepare.bind(f.env.DB);f.env.DB.prepare=(sql:string)=>{if(sql.includes('COUNT(*) expected'))aggregateReads++;return prepare(sql)};
  const first=await(await inspectResultArtifactReadiness(request(),f.env,user,'a')).json() as any;
  expect(first.coverage).toEqual({expected:51,snapshots:51,manifests:51});expect(first.page.checked).toBe(50);expect(first.page.verified).toBe(50);expect(reads).toBe(50);expect(first.nextCursor).toBe('p049');
  const last=await(await inspectResultArtifactReadiness(request(first.nextCursor),f.env,user,'a')).json() as any;
  expect(last.page.verified).toBe(1);expect(last.nextCursor).toBeNull();expect(last.rolloutReady).toBe(false);expect(last.verificationScope).toBe('CURRENT_PAGE_ONLY');expect(JSON.stringify(last)).not.toContain('private-results/');
+ expect(last.coverage).toBeNull();expect(aggregateReads).toBe(1);
 });
 it('distinguishes missing snapshots, manifests, objects and corrupted bytes without returning student data',async()=>{
  const f=resultRetentionFixture(6);await seed(f);
