@@ -448,11 +448,12 @@ async function studentPracticeQuestions(request:Request,env:Env,user:AuthUser):P
   return json({ok:true,questions:hydrated.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined})),progress:{completedToday:Number(today?.count||0)}});
 }
 
-async function submitStudentPractice(request:Request,env:Env,user:AuthUser):Promise<Response>{
+export async function submitStudentPractice(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'QUESTION_BANK');if(gate)return gate;
   if(user.role!=='STUDENT'||!user.student_id)return forbidden('Bu akış yalnızca öğrenci hesabına açıktır.');
   const b=await requestBody(request);const questionId=String(b.questionId||'').trim();if(!questionId)return badRequest('Soru gereklidir.','QUESTION_REQUIRED');
-  const enrollment=await one<any>(env.DB.prepare(`SELECT institution_id FROM student_enrollments WHERE student_id=? AND status='ACTIVE' ORDER BY created_at DESC LIMIT 1`).bind(user.student_id));
+  const enrollment=await one<any>(env.DB.prepare(`SELECT institution_id FROM student_enrollments WHERE student_id=? AND institution_id=? AND status='ACTIVE' ORDER BY created_at DESC LIMIT 1`).bind(user.student_id,user.institution_id));
+  if(!enrollment)return forbidden('Bu kurumda aktif öğrenci kaydınız bulunmuyor.');
   const q=await one<any>(env.DB.prepare(`SELECT q.id,q.correct_answer,q.solution_text,q.owner_type,q.owner_id
     FROM question_bank q WHERE q.id=? AND q.review_status='APPROVED' AND q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')
       AND q.correct_answer IS NOT NULL AND q.options_json IS NOT NULL
@@ -460,7 +461,7 @@ async function submitStudentPractice(request:Request,env:Env,user:AuthUser):Prom
   if(!q)return notFound('Bu soru artık çözülebilir durumda değil.');
   const answer=normalizedPracticeAnswer(b.answer);const correct=answer!==''&&answer===normalizedPracticeAnswer(q.correct_answer);const attemptId=uuid('qpa');
   const links=await all<any>(env.DB.prepare(`SELECT ql.node_id FROM question_learning_links ql JOIN learning_nodes n ON n.id=ql.node_id AND n.node_type='OUTCOME' WHERE ql.question_id=?`).bind(questionId));
-  const result=correct?1:0;const runId=String(b.runId||uuid('asr'));const statements:any[]=[
+  const result=correct?1:0;const runId=uuid('asr');const statements:any[]=[
     env.DB.prepare(`INSERT OR IGNORE INTO assessment_runs(id,institution_id,student_id,source_type,source_id,delivery_mode,status,score,metadata_json,completed_at) VALUES(?,?,?,'QUESTION_BANK',?,'DIGITAL','SCORED',?,?,CURRENT_TIMESTAMP)`).bind(runId,enrollment?.institution_id||user.institution_id||null,user.student_id,questionId,correct?1:0,JSON.stringify({questionPractice:true})),
     env.DB.prepare(`INSERT INTO question_practice_attempts(id,student_id,question_id,selected_answer,is_correct) VALUES(?,?,?,?,?)`).bind(attemptId,user.student_id,questionId,answer||null,correct?1:0),
     env.DB.prepare(`INSERT OR IGNORE INTO assessment_responses(id,run_id,student_id,question_id,node_id,selected_answer,is_correct,source_channel) VALUES(?,?,?,?,?,?,?,'DIGITAL')`).bind(uuid('ars'),runId,user.student_id,questionId,links[0]?.node_id||null,answer||null,correct?1:0)
