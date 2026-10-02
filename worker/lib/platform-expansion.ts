@@ -185,7 +185,7 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)`).bind(examId));
   if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
-  const lastSnapshot=await one<{version:number}>(env.DB.prepare('SELECT MAX(snapshot_version) version FROM exam_result_snapshots WHERE exam_id=?').bind(examId));
+  const lastSnapshot=await one<{version:number}>(env.DB.prepare('SELECT MAX(version) version FROM (SELECT snapshot_version version FROM exam_result_snapshots WHERE exam_id=? UNION ALL SELECT retired_through_version FROM result_artifact_retirements WHERE exam_id=?)').bind(examId,examId));
   const version=Math.max(Number(p.snapshot_version||0),Number(lastSnapshot?.version||0))+1; const networkId=p.scope==='NETWORK'?p.network_id:null;
   const participantCountRow=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).bind(examId));
   if(!Number(participantCountRow?.count||0))return badRequest('Sonuçlandırılmış katılımcı bulunmuyor.','NO_RESULTS');
