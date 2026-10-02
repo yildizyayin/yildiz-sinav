@@ -11,6 +11,17 @@ export const REPORT_SNAPSHOT_SQL = `UPDATE exam_result_snapshots AS snap SET pay
     FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.id=snap.participant_id),
   'participant',(SELECT json_object('name_snapshot',ep.name_snapshot,'student_number_snapshot',ep.student_number_snapshot,'class_snapshot',ep.class_snapshot) FROM exam_participants ep WHERE ep.id=snap.participant_id),
   'wrongQuestionIds',json((SELECT json_group_array(sa.exam_question_id) FROM student_answers sa WHERE sa.participant_id=snap.participant_id AND sa.status='WRONG')),
+  'questionEvidencePolicy','NATIVE_STATUS_AND_CURRICULUM_AT_FREEZE_V1',
+  'questionEvidence',json((SELECT json_group_array(json_object(
+    'questionId',sa.exam_question_id,'status',sa.status,
+    'outcomeRefs',json((SELECT json_group_array(json_object(
+      'outcomeId',o.id,'subjectId',o.subject_id,'curriculumVersionId',cv.id,
+      'academicYear',cv.academic_year,'gradeLevel',cv.grade_level,
+      'programVersion',cv.program_version,'verified',COALESCE(cv.verified,0)))
+      FROM question_outcomes qo JOIN outcomes o ON o.id=qo.outcome_id
+      LEFT JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
+      WHERE qo.exam_question_id=sa.exam_question_id))))
+    FROM student_answers sa WHERE sa.participant_id=snap.participant_id)),
   'subjects',json((SELECT json_group_array(json_object('subject_id',s.id,'subject_code',s.code,'subject_name',s.name,
     'correct_count',sr.correct_count,'wrong_count',sr.wrong_count,'blank_count',sr.blank_count,'net',sr.net,'success_percent',sr.success_percent))
     FROM subject_results sr JOIN subjects s ON s.id=sr.subject_id WHERE sr.participant_id=snap.participant_id)),
