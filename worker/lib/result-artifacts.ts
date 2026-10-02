@@ -3,6 +3,19 @@ import {all,badRequest,forbidden,json,uuid} from './db';
 import {withExamOperationLock} from './exam-operation-lock';
 import {readNetworkSnapshot,snapshotDetail,snapshotSummary} from './result-network-snapshot';
 
+// Call only for a durably retired version. Repeated sweeps catch late writes;
+// an empty sweep is not proof that the version can be forgotten permanently.
+export async function sweepRetiredResultArtifactVersion(bucket:R2Bucket,administrationId:string,version:number){
+ if(typeof administrationId!=='string'||!administrationId.trim()||!Number.isSafeInteger(version)||version<1)throw Error('RESULT_ARTIFACT_CLEANUP_SCOPE_INVALID');
+ const prefix=`private-results/${encodeURIComponent(administrationId)}/v${version}/`;
+ // Restart at the prefix on every retry: deleted-object cursors can skip keys.
+ const page=await bucket.list({prefix,limit:51});
+ if(page.objects.length>51||page.objects.some(object=>!object.key.startsWith(prefix)))throw Error('RESULT_ARTIFACT_CLEANUP_SCOPE_FAILED');
+ const keys=page.objects.slice(0,50).map(object=>object.key);
+ if(keys.length)await bucket.delete(keys);
+ return {deleted:keys.length,hasMore:page.truncated||page.objects.length>50};
+}
+
 export async function encodeResultArtifact(administrationId:string,row:any){
  const payload=readNetworkSnapshot(row.payload_json);
  if(!payload||!row.exam_id||!row.participant_id||!row.institution_id||!Number.isSafeInteger(row.snapshot_version)||row.snapshot_version<1)throw Error('RESULT_ARTIFACT_SOURCE_INVALID');
