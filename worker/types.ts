@@ -3,6 +3,9 @@ export type Role = 'SUPER_ADMIN' | 'INSTITUTION_MANAGER' | 'TEACHER' | 'GUIDANCE
 export interface Env {
   DB: D1Database;
   FILES: R2Bucket;
+  RESULT_ARTIFACTS_ENABLED?: string;
+  // Dedicated private bucket; never reuse public content assets.
+  RESULT_FILES?: R2Bucket;
   AI?: Ai;
   ENVIRONMENT?: string;
   PRODUCT_NAME?: string;
