@@ -7,14 +7,19 @@ it('isolates server-created practice attempts from supplied foreign runs and rej
  try {
   db.exec(`CREATE TABLE platform_features(feature_key TEXT,enabled_default INTEGER);INSERT INTO platform_features VALUES('QUESTION_BANK',1);
    CREATE TABLE institution_feature_overrides(feature_key TEXT,institution_id TEXT,enabled INTEGER);
-   CREATE TABLE student_enrollments(student_id TEXT,institution_id TEXT,status TEXT,created_at TEXT);INSERT INTO student_enrollments VALUES('student','school','ACTIVE','2026');
-   CREATE TABLE question_bank(id TEXT,correct_answer TEXT,solution_text TEXT,owner_type TEXT,owner_id TEXT,review_status TEXT,copyright_status TEXT,options_json TEXT);
-   INSERT INTO question_bank VALUES('q','A',NULL,'PLATFORM',NULL,'APPROVED','OWNED','[]');
-   CREATE TABLE learning_nodes(id TEXT,node_type TEXT);CREATE TABLE question_learning_links(question_id TEXT,node_id TEXT);
+   CREATE TABLE student_enrollments(student_id TEXT,institution_id TEXT,status TEXT,created_at TEXT,id TEXT,season_id TEXT,grade_level INTEGER);INSERT INTO student_enrollments VALUES('student','school','ACTIVE','2026','enrollment','season',7);CREATE TABLE institution_seasons(id TEXT,institution_id TEXT,academic_year TEXT);INSERT INTO institution_seasons VALUES('season','school','2026-2027');
+   CREATE TABLE question_bank(id TEXT,correct_answer TEXT,solution_text TEXT,owner_type TEXT,owner_id TEXT,review_status TEXT,copyright_status TEXT,options_json TEXT,stem_text TEXT,updated_at TEXT,subject_id TEXT,grade_level INTEGER,academic_year TEXT);
+   INSERT INTO question_bank VALUES('q','A',NULL,'PLATFORM',NULL,'APPROVED','OWNED','[]','Synthetic question','2026-10-01','math',7,'2026-2027');
+   CREATE TABLE learning_nodes(id TEXT,node_type TEXT,subject_id TEXT,grade_level INTEGER,academic_year TEXT);CREATE TABLE outcomes(id TEXT,subject_id TEXT,curriculum_version_id TEXT,active INTEGER,grade_level INTEGER);CREATE TABLE curriculum_versions(id TEXT,academic_year TEXT,grade_level INTEGER,program_version TEXT,verified INTEGER);CREATE TABLE question_learning_links(question_id TEXT,node_id TEXT);
    CREATE TABLE assessment_runs(id TEXT PRIMARY KEY,institution_id TEXT,student_id TEXT,source_type TEXT,source_id TEXT,delivery_mode TEXT,status TEXT,score REAL,metadata_json TEXT,completed_at TEXT);
    INSERT INTO assessment_runs VALUES('foreign','other-school','other-student','MINI_TEST','other-source','DIGITAL','SCORED',0,NULL,NULL);
    CREATE TABLE question_practice_attempts(id TEXT PRIMARY KEY,student_id TEXT,question_id TEXT,selected_answer TEXT,is_correct INTEGER);
    CREATE TABLE assessment_responses(id TEXT,run_id TEXT,student_id TEXT,question_id TEXT,node_id TEXT,selected_answer TEXT,is_correct INTEGER,source_channel TEXT,UNIQUE(run_id,question_id));
+   INSERT INTO learning_nodes VALUES('ln_o1','OUTCOME','math',7,'2026-2027'),('custom','OUTCOME','math',7,'2026-2027');
+   INSERT INTO outcomes VALUES('o1','math','cv',1,7);INSERT INTO curriculum_versions VALUES('cv','2026-2027',7,'synthetic-v1',1);
+   INSERT INTO question_learning_links VALUES('q','ln_o1'),('q','custom');
+   CREATE TABLE learning_evidence(id TEXT,student_id TEXT,node_id TEXT,source_type TEXT,source_id TEXT,result REAL,weight REAL);
+   CREATE TABLE student_learning_state(student_id TEXT,node_id TEXT,mastery REAL,confidence REAL,evidence_count INTEGER,last_evidence_at TEXT,updated_at TEXT,PRIMARY KEY(student_id,node_id));
    CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);`);
   const prepare=(sql:string,args:any[]=[]):any=>({bind:(...values:any[])=>prepare(sql,values),first:async()=>db.prepare(sql).get(...args),all:async()=>({results:db.prepare(sql).all(...args)}),run:async()=>db.prepare(sql).run(...args),sql,args});
   const env={DB:{prepare,batch:async(stmts:any[])=>{db.exec('BEGIN');try{const results=stmts.map(x=>db.prepare(x.sql).run(...x.args));db.exec('COMMIT');return results;}catch(e){db.exec('ROLLBACK');throw e;}}}} as any;
@@ -25,6 +30,14 @@ it('isolates server-created practice attempts from supplied foreign runs and rej
   expect(db.prepare("SELECT COUNT(*) n FROM assessment_responses WHERE run_id='foreign'").get()?.n).toBe(0);
   expect(db.prepare("SELECT student_id,source_type FROM assessment_runs WHERE id='foreign'").get()).toMatchObject({student_id:'other-student',source_type:'MINI_TEST'});
   expect(db.prepare("SELECT COUNT(*) n FROM assessment_runs WHERE student_id='student' AND institution_id='school' AND source_type='QUESTION_BANK'").get()?.n).toBe(2);
+  const frozen=JSON.parse(String(db.prepare('SELECT metadata_json FROM assessment_runs WHERE id=?').get(first.runId)?.metadata_json)).frozenEvidence;
+  expect(frozen).toMatchObject({status:'CORRECT',enrollmentId:'enrollment',academicYear:'2026-2027',gradeLevel:7});expect(frozen.contentDigest).toHaveLength(64);expect(frozen.outcomeRefs).toHaveLength(2);expect(frozen.outcomeRefs.find((x:any)=>x.nodeId==='ln_o1')).toMatchObject({curriculumVersionId:'cv',verified:1,programVersion:'synthetic-v1'});expect(frozen.outcomeRefs.find((x:any)=>x.nodeId==='custom')).toMatchObject({curriculumVersionId:null,verified:0});
+  db.exec("UPDATE question_bank SET correct_answer='B',stem_text='Changed';UPDATE institution_seasons SET academic_year='2027-2028';UPDATE curriculum_versions SET verified=0,program_version='changed'");
+  expect(JSON.parse(String(db.prepare('SELECT metadata_json FROM assessment_runs WHERE id=?').get(first.runId)?.metadata_json)).frozenEvidence).toEqual(frozen);
+  db.exec("CREATE TRIGGER reject_response BEFORE INSERT ON assessment_responses BEGIN SELECT RAISE(ABORT,'synthetic failure');END");
+  await expect(send()).rejects.toThrow('synthetic failure');
+  expect(db.prepare('SELECT COUNT(*) n FROM assessment_runs').get()?.n).toBe(3);
+  expect(db.prepare('SELECT COUNT(*) n FROM question_practice_attempts').get()?.n).toBe(2);
   db.exec("UPDATE student_enrollments SET institution_id='other-school'");
   expect((await send()).status).toBe(403);
   expect(db.prepare('SELECT COUNT(*) n FROM question_practice_attempts').get()?.n).toBe(2);
