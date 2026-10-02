@@ -110,12 +110,13 @@ async function createAiAgentInstruction(request:Request,env:Env,user:AuthUser){
   if(title.length<3||title.length>160)return badRequest('Talimat başlığı 3–160 karakter arasında olmalıdır.');
   if(instruction.length<10||instruction.length>5000)return badRequest('Talimat metni 10–5000 karakter arasında olmalıdır.');
   if(!['low','normal','high','urgent'].includes(priority))return badRequest('Talimat önceliği geçersiz.');
-  const labels=['ajan-talimatı'];
-  if(workflow.label&&workflow.label!=='—')labels.push(workflow.label);
+  const labels=['ajan-talimatı','ajan-hedef:'+workflow.key];
   if(priority==='urgent')labels.push('acil');
   for(const label of labels)await ensureAgentLabel(env,label,label==='acil'?'d93f0b':'0366d6',label==='ajan-talimatı'?'Agent Center üzerinden verilen ajan görevi':label==='acil'?'İnsan müdahalesi gerektiren acil talimat':workflow.name+' ajanı talimatı');
   const issueBody=[
+    '<!-- anunex-agent-instruction -->',
     '## AI Ajan Talimatı',
+    'Bu kayıt çalıştırma başlatmaz; rutin ajan denetimleri bu talimatı otomatik uygulamaz.',
     '',
     '**Hedef ajan:** '+workflow.name,
     '**Öncelik:** '+priority,
@@ -131,7 +132,7 @@ async function createAiAgentInstruction(request:Request,env:Env,user:AuthUser){
   ].join('\n');
   try{
     const issue=await githubAgentRequest<any>(env,'issues',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:'🧭 '+workflow.name+': '+title,labels,body:issueBody})});
-    return json({ok:true,message:workflow.name+' ajanına talimat kuyruğa alındı.',instruction:{number:issue.number,title:issue.title,htmlUrl:issue.html_url,state:issue.state,labels:issue.labels?.map((label:any)=>typeof label==='string'?label:label.name)||[]}});
+    return json({ok:true,message:workflow.name+' için görev kaydı oluşturuldu. Çalıştırma başlatılmadı.',executionStarted:false,instruction:{number:issue.number,title:issue.title,htmlUrl:issue.html_url,state:issue.state,labels:issue.labels?.map((label:any)=>typeof label==='string'?label:label.name)||[]}});
   }catch(error){return apiError(502,'AGENT_INSTRUCTION_FAILED',error instanceof Error?error.message:'Ajan talimatı oluşturulamadı.');}
 }
 
