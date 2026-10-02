@@ -109,6 +109,27 @@ The Result Network Super Admin sidebar now has Sonuç Dosyaları. The read-only 
 The current pass indicator requires VERIFIED status, certificate_current=1, exact selected version, a positive integer expected count and equal verified count. PREPARED and Queue DONE have distinct labels and never imply a verified cohort or live-read capacity. Counts are not deletion percentages or continuously available file counts. Fixed operator messages replace raw error details; tokens/cursors are absent from the source DTOs. The responsive view has manual refresh and creates no jobs, publishes no results and changes no flags. Browser interaction/visual QA and real-provider checks are still pending; local status semantics, typecheck and production build are verified.
 # GitHub dağıtımına kaynak bağlantıları
 
+## Ayrı provider testi
+
+`config/result-provider-probe.example.json` yalnız ayrılmış test kaynakları için
+örnektir: bir özel bucket, iki iş kuyruğu ve iki DLQ. Mevcut production kaynakları
+kullanılmaz. Kaynak adları/izinleri doğrulandıktan sonra test Worker'ı bu config ile
+dağıtılır; `PROBE_TOKEN` Wrangler secret olarak tanımlanır. Token kaynak dosyasına,
+komut argümanına veya loga yazılmaz. Tokenı güvenli ortamda girin.
+
+`RESULT_PROBE_URL` ve `RESULT_PROBE_TOKEN` ortam değişkenleriyle
+`node scripts/run-result-provider-probe.mjs` çalıştırılır. İstemci yalnız
+`anunex-result-provider-probe` adıyla başlayan HTTPS workers.dev kök adreslerini
+kabul eder, yönlendirmeleri reddeder. R2 aynı içerik tekrar yazımı ve farklı
+içerikle çakışma kontrolünden sonra iki kuyruğun tüketildiğini en fazla 60 saniye
+bekler. PASS gerçek provider kontrolüdür; D1 iş sayfalama, öğrenci yetkilendirme,
+DLQ tüketimi, kayıp mesaj senaryoları veya 10k/1m kapasite kanıtı değildir.
+
+Test sentetik dosyaları `provider-probes/` altında bırakır. Sonuç kaydedildikten
+sonra yalnız bu ayrılmış Worker/kuyruklar/DLQ/bucket kaldırılır. Worker'a D1,
+öğrenci verisi veya üretim domaini bağlanmaz. Worker yalnız gizli tokenla erişilir;
+örnek yapılandırmanın paketlenmesi gerçek Cloudflare çalıştırması sayılmaz.
+
 `deploy-result-network.yml` mevcut production DB ve içerik `FILES` bağlantılarını
 çözmeye devam eder. Özel sonuç kaynakları için GitHub production ortamı/repo
 değişkenlerinde şu beş ad birlikte tanımlanır:
