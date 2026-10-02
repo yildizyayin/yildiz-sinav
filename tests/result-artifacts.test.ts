@@ -1,5 +1,5 @@
 import {expect,it} from 'vitest';
-import {encodeResultArtifact,storeResultArtifact,prepareResultArtifacts} from '../worker/lib/result-artifacts';
+import {encodeResultArtifact,storeResultArtifact,prepareResultArtifacts,readResultArtifact} from '../worker/lib/result-artifacts';
 const row={exam_id:'e',participant_id:'p',institution_id:'school',snapshot_version:1,national_rank:2,national_count:50,payload_json:JSON.stringify({schemaVersion:1,exam:{exam_id:'e',net:3,title:'Original'},participant:{name_snapshot:'Sensitive name'},subjects:[{subject_name:'Math',net:3}],outcomes:[],wrongQuestionIds:['q']})};
 it('creates deterministic scoped content keys without copying participant names',async()=>{
  const a=await encodeResultArtifact('admin',row),b=await encodeResultArtifact('admin',row);
@@ -19,4 +19,15 @@ it('checks Super Admin and private rollout settings before any database or bucke
  expect((await prepareResultArtifacts(new Request('https://test'),env,{role:'TEACHER'} as any,'admin')).status).toBe(403);
  expect((await prepareResultArtifacts(new Request('https://test'),env,{role:'SUPER_ADMIN'} as any,'admin')).status).toBe(400);
  env.RESULT_ARTIFACTS_ENABLED='true';expect((await prepareResultArtifacts(new Request('https://test'),env,{role:'SUPER_ADMIN'} as any,'admin')).status).toBe(400);
+});
+
+it('validates digest and exact institution/participant/version before returning artifact content',async()=>{
+ const artifact=await encodeResultArtifact('admin',row);
+ const access={administration_id:'admin',exam_id:'e',participant_id:'p',institution_id:'school',snapshot_version:1,object_key:artifact.key,content_sha256:artifact.digest};
+ let reads=0;const bucket={get:async()=>{reads++;return {text:async()=>artifact.body}}} as any;
+ expect((await readResultArtifact(bucket,access)).detail.subjects[0].net).toBe(3);
+ await expect(readResultArtifact(bucket,{...access,institution_id:'foreign'})).rejects.toThrow('RESULT_ARTIFACT_SCOPE_FAILED');
+ const before=reads;await expect(readResultArtifact(bucket,{...access,participant_id:'other'})).rejects.toThrow('RESULT_ARTIFACT_SCOPE_FAILED');expect(reads).toBe(before);
+ await expect(readResultArtifact({get:async()=>({text:async()=>artifact.body+' '})} as any,access)).rejects.toThrow('RESULT_ARTIFACT_INTEGRITY_FAILED');
+ expect(await readResultArtifact({get:async()=>null} as any,access)).toBeNull();
 });
