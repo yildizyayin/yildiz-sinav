@@ -77,3 +77,38 @@ export async function readResultArtifact(bucket:R2Bucket,access:ArtifactAccess):
  if(!Array.isArray(artifact.detail?.subjects)||!Array.isArray(artifact.detail?.outcomes)||!Array.isArray(artifact.detail?.optionalPhilosophy)||!(artifact.wrongQuestionIds===null||Array.isArray(artifact.wrongQuestionIds)))throw Error('RESULT_ARTIFACT_INTEGRITY_FAILED');
  return artifact;
 }
+
+// Bounded operator audit, not a durable completeness certificate or rollout gate.
+export async function inspectResultArtifactReadiness(request:Request,env:Env,user:AuthUser,id:string):Promise<Response>{
+ if(user.role!=='SUPER_ADMIN')return forbidden();
+ if(!env.RESULT_FILES)return json({ok:false,error:{code:'RESULT_PRIVATE_BUCKET_NOT_CONFIGURED',message:'Özel sonuç dosyası bağlantısı tanımlı değil.'}},503);
+ const params=new URL(request.url).searchParams;
+ const version=Number(params.get('expectedSnapshotVersion')),cursor=params.get('cursor')??'';
+ if(!Number.isSafeInteger(version)||version<1||cursor.length>200)return badRequest('Güncel sürüm ve geçerli devam bilgisi gereklidir.');
+ const currentSql=`SELECT exam_id FROM exam_administrations ea WHERE id=? AND channel='RESULT_NETWORK' AND status='PUBLISHED' AND published_snapshot_version=? AND NOT EXISTS(SELECT 1 FROM result_artifact_retirements retired WHERE retired.administration_id=ea.id AND retired.retired_through_version>=ea.published_snapshot_version)`;
+ const current=await env.DB.prepare(currentSql).bind(id,version).first<{exam_id:string}>();
+ if(!current)return json({ok:false,error:{code:'RESULT_PUBLICATION_STATE_CHANGED',message:'Yayın veya sürüm değişti.'}},409);
+ const joins=`FROM result_access_identities rai LEFT JOIN exam_result_snapshots s ON s.participant_id=rai.participant_id AND s.exam_id=? AND s.snapshot_version=? LEFT JOIN result_artifact_manifest m ON m.administration_id=rai.administration_id AND m.participant_id=rai.participant_id AND m.snapshot_version=? LEFT JOIN exam_participants ep ON ep.id=rai.participant_id LEFT JOIN result_network_institutions rni ON rni.id=rai.result_institution_id LEFT JOIN institutions institution ON institution.id=s.institution_id WHERE rai.administration_id=?`;
+ const coverage=await env.DB.prepare(`SELECT COUNT(*) expected,COUNT(s.participant_id) snapshots,COUNT(m.participant_id) manifests ${joins}`).bind(current.exam_id,version,version,id).first<any>();
+ const rows=await all<any>(env.DB.prepare(`SELECT rai.participant_id identity_participant_id,s.*,m.object_key,m.content_sha256,CASE WHEN ep.exam_id=s.exam_id AND ep.institution_id=s.institution_id AND rni.administration_id=rai.administration_id AND (rni.licensed_institution_id=s.institution_id OR (rni.meb_code<>'' AND rni.meb_code=institution.code)) THEN 1 ELSE 0 END scope_valid ${joins} AND rai.participant_id>? ORDER BY rai.participant_id LIMIT 51`).bind(current.exam_id,version,version,id,cursor));
+ const page=rows.slice(0,50),counts={verified:0,missingSnapshot:0,invalidSnapshot:0,missingManifest:0,invalidManifest:0,missingObject:0,invalidObject:0};
+ for(const row of page){
+  if(!row.participant_id){counts.missingSnapshot++;continue}
+  if(row.scope_valid!==1){counts.invalidSnapshot++;continue}
+  let expected:Awaited<ReturnType<typeof encodeResultArtifact>>;
+  try{expected=await encodeResultArtifact(id,row)}catch{counts.invalidSnapshot++;continue}
+  if(!row.object_key||!row.content_sha256){counts.missingManifest++;continue}
+  if(row.object_key!==expected.key||row.content_sha256!==expected.digest){counts.invalidManifest++;continue}
+  // Keep transport failures separate from corrupt content. Never expose raw errors.
+  let object:R2ObjectBody|null;
+  try{object=await env.RESULT_FILES.get(expected.key)}catch{return json({ok:false,error:{code:'RESULT_ARTIFACT_AUDIT_UNAVAILABLE',message:'Özel dosya denetimi tamamlanamadı.'}},503)}
+  if(!object){counts.missingObject++;continue}
+  let body:string;
+  try{body=await object.text()}catch{return json({ok:false,error:{code:'RESULT_ARTIFACT_AUDIT_UNAVAILABLE',message:'Özel dosya denetimi tamamlanamadı.'}},503)}
+  if(body!==expected.body){counts.invalidObject++;continue}
+  counts.verified++;
+ }
+ const final=await env.DB.prepare(currentSql).bind(id,version).first<{exam_id:string}>();
+ if(!final||final.exam_id!==current.exam_id)return json({ok:false,error:{code:'RESULT_PUBLICATION_STATE_CHANGED',message:'Yayın veya sürüm değişti.'}},409);
+ return json({ok:true,snapshotVersion:version,coverage:{expected:Number(coverage?.expected||0),snapshots:Number(coverage?.snapshots||0),manifests:Number(coverage?.manifests||0)},page:{checked:page.length,...counts},nextCursor:rows.length>50?page.at(-1)?.identity_participant_id:null,rolloutReady:false,verificationScope:'CURRENT_PAGE_ONLY',message:'Sayfa denetimi canlıya geçiş veya tüm dosyaların eksiksizliği için kalıcı kanıt değildir.'});
+}
