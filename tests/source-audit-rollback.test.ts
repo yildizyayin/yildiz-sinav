@@ -2,7 +2,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
 import {expect,it} from 'vitest';
 import {resolveScanRecord} from '../worker/index';
-import {replaceAnswerKey,deleteDefinition} from '../worker/exam-admin-entry';
+import {replaceAnswerKey,deleteDefinition,updateGeneral,replaceStructure,replaceInstitutions,setStatus} from '../worker/exam-admin-entry';
 function fixture(failAudit=false){
  const db=new DatabaseSync(':memory:');
  db.exec(`PRAGMA foreign_keys=ON;CREATE TABLE exam_operation_locks(exam_id TEXT PRIMARY KEY REFERENCES exams(id),owner_token TEXT,operation TEXT);
@@ -32,7 +32,8 @@ function fixture(failAudit=false){
  const scan=()=>resolveScanRecord(new Request('https://test',{method:'POST',body:JSON.stringify({action:'CANCEL'})}),env,user,'b','r');
  const key=()=>replaceAnswerKey(new Request('https://test',{method:'PUT',body:JSON.stringify({entries:[{subjectId:'math',bookletCode:'A',answers:'B',optionCount:4,questionStatuses:['EXCLUDED']}],reason:'Synthetic key correction'})}),env,user,'e');
  const remove=()=>deleteDefinition(env,user,'e');
- return {db,scan,key,remove};
+ const edit=(kind:string,body:any)=>({general:updateGeneral,structure:replaceStructure,institutions:replaceInstitutions,status:setStatus}[kind]!)(new Request('https://test',{method:'PUT',body:JSON.stringify(body)}),env,user,'e');
+ return {db,scan,key,remove,edit};
 }
 it('rolls back scan decision and batch status when the audit insert fails',async()=>{const f=fixture(true);try{
  const before=f.db.prepare('SELECT * FROM scan_records').get();await expect(f.scan()).rejects.toThrow('AUDIT_FAILED');
@@ -53,3 +54,20 @@ function prepareDeletion(db:DatabaseSync){db.exec(`CREATE TABLE exam_participant
  CREATE TABLE exam_channel_publications(exam_id TEXT);CREATE TABLE exam_institutions(exam_id TEXT);CREATE TABLE exam_optical_bindings(exam_id TEXT);CREATE TABLE exam_document_assets(exam_id TEXT);CREATE TABLE video_links(exam_id TEXT);`)}
 it('deletes an unused draft and its lock atomically with foreign keys enabled',async()=>{const f=fixture();try{prepareDeletion(f.db);expect((await f.remove()).status).toBe(200);expect(f.db.prepare('SELECT * FROM exams').all()).toHaveLength(0);expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(1)}finally{f.db.close()}});
 it('preserves a draft when deletion audit fails and releases the restored lock',async()=>{const f=fixture(true);try{prepareDeletion(f.db);await expect(f.remove()).rejects.toThrow('AUDIT_FAILED');expect(f.db.prepare('SELECT * FROM exams').all()).toHaveLength(1);expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);expect(f.db.prepare('SELECT * FROM exam_optional_answer_keys').all()).toHaveLength(1)}finally{f.db.close()}});
+
+function prepareEdits(db:DatabaseSync){db.exec(`ALTER TABLE exams ADD COLUMN title TEXT DEFAULT 'Original';ALTER TABLE exams ADD COLUMN grade_level INTEGER DEFAULT 6;ALTER TABLE exams ADD COLUMN exam_date TEXT;ALTER TABLE exams ADD COLUMN session_label TEXT;ALTER TABLE exams ADD COLUMN description TEXT;ALTER TABLE exams ADD COLUMN result_network_enabled INTEGER DEFAULT 1;ALTER TABLE exams ADD COLUMN scoring_override_json TEXT;ALTER TABLE exams ADD COLUMN scoring_settings_json TEXT;ALTER TABLE exams ADD COLUMN updated_at TEXT;
+ CREATE TABLE institutions(id TEXT PRIMARY KEY);INSERT INTO institutions VALUES('old-school'),('new-school');
+ CREATE TABLE exam_institutions(id TEXT,exam_id TEXT,institution_id TEXT,enabled INTEGER);INSERT INTO exam_institutions VALUES('old-assignment','e','old-school',1);
+ CREATE TABLE exam_channel_publications(id TEXT,exam_id TEXT,channel TEXT,status TEXT,published_by TEXT,published_at TEXT,UNIQUE(exam_id,channel));INSERT INTO exam_channel_publications VALUES('publication','e','RESULT_NETWORK','ACTIVE','admin','old');
+ CREATE TABLE exam_participants(exam_id TEXT);CREATE TABLE subjects(id TEXT,active INTEGER);INSERT INTO subjects VALUES('math',1);
+ ALTER TABLE exam_subjects ADD COLUMN id TEXT;ALTER TABLE exam_subjects ADD COLUMN wrong_divisor REAL DEFAULT 4;
+ ALTER TABLE exam_booklets ADD COLUMN id TEXT;`)}
+it.each(['general','structure','institutions','status'])('rolls back %s edits when audit fails',async(kind)=>{
+ const f=fixture(true);try{prepareEdits(f.db);if(kind==='institutions')f.db.exec("UPDATE exams SET owner_type='CENTRAL'");
+ const before={exam:f.db.prepare('SELECT * FROM exams').get(),keys:f.db.prepare('SELECT * FROM answer_keys').all(),questions:f.db.prepare('SELECT * FROM exam_questions').all(),institutions:f.db.prepare('SELECT * FROM exam_institutions').all(),publication:f.db.prepare('SELECT * FROM exam_channel_publications').all()};
+ const bodies:any={general:{title:'Changed'},structure:{booklets:['B'],subjects:[{subjectId:'math',questionCount:1,questionStart:1,questionEnd:1,optionCount:4,wrongDivisor:4}]},institutions:{institutionIds:['new-school']},status:{status:'ARCHIVED'}};
+ await expect(f.edit(kind,bodies[kind])).rejects.toThrow('AUDIT_FAILED');
+ expect(f.db.prepare('SELECT * FROM exams').get()).toEqual(before.exam);expect(f.db.prepare('SELECT * FROM answer_keys').all()).toEqual(before.keys);expect(f.db.prepare('SELECT * FROM exam_questions').all()).toEqual(before.questions);expect(f.db.prepare('SELECT * FROM exam_institutions').all()).toEqual(before.institutions);expect(f.db.prepare('SELECT * FROM exam_channel_publications').all()).toEqual(before.publication);expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);
+ }finally{f.db.close()}
+});
+it('commits status and channel archive with one audit',async()=>{const f=fixture();try{prepareEdits(f.db);expect((await f.edit('status',{status:'ARCHIVED'})).status).toBe(200);expect((f.db.prepare('SELECT status FROM exams').get() as any).status).toBe('ARCHIVED');expect((f.db.prepare('SELECT status FROM exam_channel_publications').get() as any).status).toBe('ARCHIVED');expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(1)}finally{f.db.close()}});
