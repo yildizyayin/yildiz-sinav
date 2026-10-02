@@ -53,7 +53,7 @@ export async function readResultArtifactVerification(env:Env,user:AuthUser,id:st
  if(user.role!=='SUPER_ADMIN')return forbidden();
  if(!enabled(env))return badRequest('Dosya doğrulaması etkin değil.','RESULT_ARTIFACT_VERIFICATION_DISABLED');
  const records=await all<any>(env.DB.prepare(`SELECT v.snapshot_version,v.source_generation,v.status,v.expected_count,v.verified_count,v.last_error_code,v.next_attempt_at,v.verified_at,v.updated_at,CASE WHEN v.status='VERIFIED' AND p.status='PREPARED' AND p.source_generation=v.source_generation AND ea.channel='RESULT_NETWORK' AND ea.status='PUBLISHED' AND ea.published_snapshot_version=v.snapshot_version AND NOT EXISTS(SELECT 1 FROM result_artifact_retirements r WHERE r.administration_id=ea.id AND r.retired_through_version>=v.snapshot_version) THEN 1 ELSE 0 END certificate_current FROM result_artifact_verifications v JOIN result_artifact_preparation_jobs p ON p.administration_id=v.administration_id AND p.snapshot_version=v.snapshot_version JOIN exam_administrations ea ON ea.id=v.administration_id WHERE v.administration_id=? ORDER BY v.snapshot_version DESC LIMIT 11`).bind(id));
- return json({ok:true,records:records.slice(0,10),hasMore:records.length>10,rolloutReady:false,verificationMeaning:'POINT_IN_TIME_FULL_COHORT_PASS'});
+ return json({ok:true,records:records.slice(0,10),hasMore:records.length>10,rolloutReady:false,verificationMeaning:'COMPLETED_FULL_COHORT_PASS'});
 }
 export async function advanceResultArtifactVerification(env:Env){
  if(!enabled(env))return;
