@@ -12,6 +12,8 @@ export async function reopenNetworkResults(request:Request,env:Env,user:AuthUser
  const row=await env.DB.prepare("SELECT exam_id FROM exam_administrations WHERE id=? AND channel='RESULT_NETWORK'").bind(id).first<{exam_id:string}>();
  if(!row)return json({ok:false,error:{code:'ADMINISTRATION_NOT_FOUND',message:'Sınav yönetimi bulunamadı.'}},404);
  return withExamOperationLock(env,row.exam_id,'RESULT_NETWORK_REOPEN',async(env)=>{
+  const retired=await env.DB.prepare('SELECT 1 retired FROM result_artifact_retirements WHERE administration_id=? AND retired_through_version>=?').bind(id,version).first();
+  if(retired)return json({ok:false,error:{code:'RESULT_PUBLICATION_RETIRED',message:'Saklama süresi dolmuş sonuç sürümü yeniden açılamaz.'}},409);
   const guard=`EXISTS(SELECT 1 FROM exam_administrations WHERE id=? AND exam_id=? AND channel='RESULT_NETWORK' AND status='PUBLISHED' AND published_snapshot_version=?)`;
   const results=await env.DB.batch([
    env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) SELECT ?,?,NULL,'RESULT_NETWORK_RESULTS_REOPENED','exam_administration',?,? WHERE ${guard}`).bind(uuid('aud'),user.id,id,JSON.stringify({reason,previousVersion:version,examId:row.exam_id,publicationWithdrawn:true}),id,row.exam_id,version),
