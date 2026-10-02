@@ -33,14 +33,14 @@ export async function storeResultArtifact(bucket:R2Bucket,artifact:Awaited<Retur
 // until private binding, revocation, retention cleanup and load gates pass.
 export async function prepareResultArtifacts(request:Request,env:Env,user:AuthUser,id:string):Promise<Response>{
  if(user.role!=='SUPER_ADMIN')return forbidden();
- if(env.RESULT_ARTIFACTS_ENABLED!=='true'||!env.RESULT_FILES)return badRequest('Sonuç dosyası hazırlama henüz etkinleştirilmedi.','RESULT_ARTIFACTS_DISABLED');
+ if(env.RESULT_ARTIFACTS_ENABLED!=='true'||env.RESULT_ARTIFACT_CLEANUP_ENABLED!=='true'||!env.RESULT_FILES)return badRequest('Sonuç dosyası hazırlama henüz etkinleştirilmedi.','RESULT_ARTIFACTS_DISABLED');
  const body:any=await request.json().catch(()=>({}));
  const version=body.expectedSnapshotVersion,cursor=body.cursor??'';
  if(!Number.isSafeInteger(version)||version<1||typeof cursor!=='string'||cursor.length>200)return badRequest('Güncel sürüm ve geçerli devam bilgisi gereklidir.');
  const administration=await env.DB.prepare("SELECT exam_id FROM exam_administrations WHERE id=? AND channel='RESULT_NETWORK'").bind(id).first<{exam_id:string}>();
  if(!administration)return json({ok:false,error:{code:'ADMINISTRATION_NOT_FOUND',message:'Sınav yönetimi bulunamadı.'}},404);
  return withExamOperationLock(env,administration.exam_id,'RESULT_ARTIFACT_PREPARE',async(env)=>{
-  const current=await env.DB.prepare("SELECT id FROM exam_administrations WHERE id=? AND status='PUBLISHED' AND published_snapshot_version=?").bind(id,version).first();
+  const current=await env.DB.prepare("SELECT id FROM exam_administrations ea WHERE id=? AND status='PUBLISHED' AND published_snapshot_version=? AND NOT EXISTS(SELECT 1 FROM result_artifact_retirements retired WHERE retired.administration_id=ea.id AND retired.retired_through_version>=ea.published_snapshot_version)").bind(id,version).first();
   if(!current)return json({ok:false,error:{code:'RESULT_PUBLICATION_STATE_CHANGED',message:'Yayın veya sürüm değişti.'}},409);
   const rows=await all<any>(env.DB.prepare(`SELECT s.* FROM exam_result_snapshots s JOIN result_access_identities rai ON rai.participant_id=s.participant_id AND rai.administration_id=? WHERE s.exam_id=? AND s.snapshot_version=? AND s.participant_id>? ORDER BY s.participant_id LIMIT 51`).bind(id,administration.exam_id,version,cursor));
   const page=rows.slice(0,50);
@@ -53,7 +53,7 @@ export async function prepareResultArtifacts(request:Request,env:Env,user:AuthUs
   }
   statements.push(env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'RESULT_ARTIFACT_PAGE_PREPARED','exam_administration',?,?)`).bind(uuid('aud'),user.id,id,JSON.stringify({version,count:page.length,hasMore:rows.length>50})));
   await env.DB.batch(statements);
-  return json({ok:true,prepared:page.length,snapshotVersion:version,nextCursor:rows.length>50?page.at(-1)?.participant_id:null,readerEnabled:false});
+  return json({ok:true,prepared:page.length,snapshotVersion:version,nextCursor:rows.length>50?page.at(-1)?.participant_id:null,readerEnabled:env.RESULT_ARTIFACT_READS_ENABLED==='true'});
  });
 }
 
