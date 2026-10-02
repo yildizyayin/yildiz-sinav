@@ -38,6 +38,7 @@ function fixture(failAudit=false){
     run:async()=>{if(failAudit&&sql.includes('INSERT INTO audit_logs'))throw new Error('AUDIT_FAILED');return {meta:{changes:Number(db.prepare(sql).run(...args).changes)}}},
   }}
   db.exec(readFileSync(new URL('../migrations/0059_exam_operation_write_guards.sql',import.meta.url),'utf8'));
+ db.exec(readFileSync(new URL('../migrations/0062_result_artifact_retirement.sql',import.meta.url),'utf8'));
   const env={DB:{prepare:statement,batch:async(statements:any[])=>{db.exec('BEGIN');try{const rows=[];for(const s of statements)rows.push(await s.run());db.exec('COMMIT');return rows}catch(error){db.exec('ROLLBACK');throw error}}}} as any;
   return {db,env,run:()=>handlePlatformApi(new Request('https://test/api/platform/exam-center/e/freeze',{method:'POST'}),env,{id:'user',role:'INSTITUTION_MANAGER',institution_id:'school'} as any)};
 }
@@ -67,6 +68,8 @@ it('allocates above snapshots from other publication channels without overwritin
   }finally{f.db.close()}
 });
 
+it('allocates beyond durable retired versions after their snapshots were deleted',async()=>{const f=fixture();try{f.db.exec("DELETE FROM exam_result_snapshots;INSERT INTO result_artifact_retirements(administration_id,exam_id,retired_through_version) VALUES('retired-admin','e',9)");expect((await (await f.run())!.json() as any).version).toBe(10)}finally{f.db.close()}});
+
 it('requires completed reevaluation after network withdrawal and publishes a new preserved version',async()=>{
  const f=fixture();try{
  await f.run();
@@ -81,9 +84,10 @@ it('requires completed reevaluation after network withdrawal and publishes a new
  const publish=()=>freezeAndPublishAdministration(new Request('https://test',{method:'POST'}),f.env,user,'admin');
  expect((await publish()).status).toBe(400);
  f.db.exec("UPDATE exam_results SET net=7;UPDATE scan_batches SET status='COMMITTED' WHERE id='b'");
- const response=await publish();expect(response.status).toBe(200);expect((await response.json() as any).snapshotVersion).toBe(2);
- expect((f.db.prepare('SELECT published_snapshot_version,status FROM exam_administrations').get() as any)).toEqual({published_snapshot_version:2,status:'PUBLISHED'});
- const snapshots=f.db.prepare('SELECT payload_json FROM exam_result_snapshots WHERE snapshot_version IN(1,2) ORDER BY snapshot_version').all() as any[];
+ f.db.exec("INSERT INTO result_artifact_retirements(administration_id,exam_id,retired_through_version) VALUES('previous-admin','e',7)");
+ const response=await publish();expect(response.status).toBe(200);expect((await response.json() as any).snapshotVersion).toBe(8);
+ expect((f.db.prepare('SELECT published_snapshot_version,status FROM exam_administrations').get() as any)).toEqual({published_snapshot_version:8,status:'PUBLISHED'});
+ const snapshots=f.db.prepare('SELECT payload_json FROM exam_result_snapshots WHERE snapshot_version IN(1,8) ORDER BY snapshot_version').all() as any[];
  expect(JSON.parse(snapshots[0].payload_json).exam.net).toBe(2);expect(JSON.parse(snapshots[1].payload_json).exam.net).toBe(7);
  expect((await publish()).status).toBe(400);
  }finally{f.db.close()}
