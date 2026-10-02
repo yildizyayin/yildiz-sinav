@@ -40,6 +40,7 @@ function fixture(failAudit=false){
   db.exec(readFileSync(new URL('../migrations/0059_exam_operation_write_guards.sql',import.meta.url),'utf8'));
  db.exec(readFileSync(new URL('../migrations/0062_result_artifact_retirement.sql',import.meta.url),'utf8'));
   const env={DB:{prepare:statement,batch:async(statements:any[])=>{db.exec('BEGIN');try{const rows=[];for(const s of statements)rows.push(await s.run());db.exec('COMMIT');return rows}catch(error){db.exec('ROLLBACK');throw error}}}} as any;
+  db.exec("ALTER TABLE outcomes ADD COLUMN curriculum_version_id TEXT;CREATE TABLE curriculum_versions(id TEXT,academic_year TEXT,grade_level INTEGER,program_version TEXT,verified INTEGER)");
   return {db,env,run:()=>handlePlatformApi(new Request('https://test/api/platform/exam-center/e/freeze',{method:'POST'}),env,{id:'user',role:'INSTITUTION_MANAGER',institution_id:'school'} as any)};
 }
 it('commits snapshot payload, historical grade, statistics, profile and audit together',async()=>{
