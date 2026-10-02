@@ -107,3 +107,21 @@ Queue routing fails safely: unknown queue names retry without touching source da
 The Result Network Super Admin sidebar now has Sonuç Dosyaları. The read-only view selects a PUBLISHED administration with a positive current snapshot version, then independently fetches bounded preparation, verification and global Queue diagnostics. Partial endpoint failures are shown separately; disabled preparation/verification are not mistaken for a completed job. Changing selection/version cancels stale result acceptance, and stored responses are scoped to the selected administration/version before rendering.
 
 The current pass indicator requires VERIFIED status, certificate_current=1, exact selected version, a positive integer expected count and equal verified count. PREPARED and Queue DONE have distinct labels and never imply a verified cohort or live-read capacity. Counts are not deletion percentages or continuously available file counts. Fixed operator messages replace raw error details; tokens/cursors are absent from the source DTOs. The responsive view has manual refresh and creates no jobs, publishes no results and changes no flags. Browser interaction/visual QA and real-provider checks are still pending; local status semantics, typecheck and production build are verified.
+# GitHub dağıtımına kaynak bağlantıları
+
+`deploy-result-network.yml` mevcut production DB ve içerik `FILES` bağlantılarını
+çözmeye devam eder. Özel sonuç kaynakları için GitHub production ortamı/repo
+değişkenlerinde şu beş ad birlikte tanımlanır:
+`RESULT_PRIVATE_BUCKET`, `RESULT_ARTIFACT_QUEUE_NAME`,
+`RESULT_ARTIFACT_DLQ_NAME`, `RESULT_RETENTION_QUEUE_NAME`,
+`RESULT_RETENTION_DLQ_NAME`.
+
+Adları mevcut Cloudflare kaynak envanteriyle doğrulayın. Bu adım kaynak oluşturmaz,
+hesap izinlerini doğrulamaz ve kuyrukların başka bir Worker tüketicisi tarafından
+kullanılmadığını kontrol etmez. Özel bucket, içerik FILES bucket'ından farklı;
+iki iş kuyruğu ve iki DLQ birbirinden farklı olmalıdır. Kısmi ayar yayın öncesinde
+hata verir. Beş değişken de boşsa mevcut temel dağıtım korunur.
+
+Bağlantılar tanımlansa bile dosya üretimi, okuma, temizleme, arka plan hazırlama,
+doğrulama ve iki kuyruk bayrakları `false` olarak kalır. Gerçek provider testleri
+ve kontrollü rollout ayrı aşamadır. Bu bölüm üretim yayınını tetiklemez.
