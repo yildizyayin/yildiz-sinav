@@ -33,7 +33,7 @@ export async function storeResultArtifact(bucket:R2Bucket,artifact:Awaited<Retur
 // until private binding, revocation, retention cleanup and load gates pass.
 export async function prepareResultArtifacts(request:Request,env:Env,user:AuthUser,id:string):Promise<Response>{
  if(user.role!=='SUPER_ADMIN')return forbidden();
- if(env.RESULT_ARTIFACTS_ENABLED!=='true'||env.RESULT_ARTIFACT_CLEANUP_ENABLED!=='true'||!env.RESULT_FILES)return badRequest('Sonuç dosyası hazırlama henüz etkinleştirilmedi.','RESULT_ARTIFACTS_DISABLED');
+ if(env.RESULT_ARTIFACTS_ENABLED!=='true'||env.RESULT_ARTIFACT_CLEANUP_ENABLED!=='true'||env.RESULT_RETENTION_QUEUE_ENABLED!=='true'||!env.RESULT_RETENTION_QUEUE||!env.RESULT_FILES)return badRequest('Sonuç dosyası hazırlama henüz etkinleştirilmedi.','RESULT_ARTIFACTS_DISABLED');
  const body:any=await request.json().catch(()=>({}));
  const version=body.expectedSnapshotVersion,cursor=body.cursor??'';
  if(!Number.isSafeInteger(version)||version<1||typeof cursor!=='string'||cursor.length>200)return badRequest('Güncel sürüm ve geçerli devam bilgisi gereklidir.');
