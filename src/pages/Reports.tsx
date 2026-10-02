@@ -13,13 +13,18 @@ export function Reports(){
  const [searchParams,setSearchParams]=useSearchParams();
  const [institutions,setInstitutions]=useState<any[]>([]);
  const [institutionId,setInstitutionId]=useState('');
- const [students,setStudents]=useState<StudentRow[]>([]);
+ const [studentList,setStudentList]=useState<{scope:string;rows:StudentRow[]}>({scope:'',rows:[]});
  const [studentId,setStudentId]=useState('');
  const [rawReport,setReport]=useState<any>(null);
  const [selectedExams,setSelectedExams]=useState<string[]>([]);
  const [error,setError]=useState('');
  const [busy,setBusy]=useState(false);
 
+ const listScope=JSON.stringify([institutionId,user?.id,user?.role]);
+ const currentListScope=useRef(listScope);currentListScope.current=listScope;
+ const listGeneration=useRef(0);
+ const currentStudentId=useRef(studentId);currentStudentId.current=studentId;
+ const students=studentList.scope===listScope?studentList.rows:[];
  const scopeKey=JSON.stringify([studentId,institutionId,user?.id,user?.role]);
  const currentScope=useRef(scopeKey);currentScope.current=scopeKey;
  const requestGeneration=useRef(0);
@@ -35,13 +40,16 @@ export function Reports(){
  };
 
  const loadStudents=async()=>{
-   setError('');setStudents([]);setReport(null);setSelectedExams([]);
+   const requestScope=listScope,attempt=++listGeneration.current,requestedStudent=searchParams.get('studentId');
+   setError('');setStudentList({scope:requestScope,rows:[]});setReport(null);setSelectedExams([]);
+   ++requestGeneration.current;setBusy(false);
    try{
      if(canChooseInstitution&&!institutionId)return;
      const r=await api<any>(`/api/reporting/students${qs({institutionId:canChooseInstitution?institutionId:null})}`);
-     const rows:StudentRow[]=r.students||[];setStudents(rows);
-     setStudentId(resolveReportStudentId(rows,searchParams.get('studentId'),studentId));
-   }catch(e:any){setError(e.message)}
+     if(currentListScope.current!==requestScope||listGeneration.current!==attempt)return;
+     const rows:StudentRow[]=r.students||[];setStudentList({scope:requestScope,rows});
+     setStudentId(resolveReportStudentId(rows,requestedStudent,currentStudentId.current));
+   }catch(e:any){if(currentListScope.current===requestScope&&listGeneration.current===attempt)setError(e.message)}
  };
 
  const loadReport=async(ids?:string[])=>{
@@ -56,8 +64,8 @@ export function Reports(){
  };
 
  useEffect(()=>{void loadInstitutions().catch(e=>setError(e.message))},[]);
- useEffect(()=>{void loadStudents()},[institutionId,user?.role,searchParams.get('studentId')]);
- useEffect(()=>{if(studentId)void loadReport([])},[studentId]);
+ useEffect(()=>{void loadStudents()},[institutionId,user?.id,user?.role,searchParams.get('studentId')]);
+ useEffect(()=>{++requestGeneration.current;setBusy(false);if(studentId)void loadReport([])},[scopeKey,studentList]);
 
  const selectedStudent=useMemo(()=>students.find(s=>s.id===studentId),[students,studentId]);
  const toggleExam=(id:string)=>setSelectedExams(cur=>cur.includes(id)?cur.filter(x=>x!==id):[...cur,id]);
