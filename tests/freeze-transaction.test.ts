@@ -84,6 +84,11 @@ it('requires completed reevaluation after network withdrawal and publishes a new
  const publish=()=>freezeAndPublishAdministration(new Request('https://test',{method:'POST'}),f.env,user,'admin');
  expect((await publish()).status).toBe(400);
  f.db.exec("UPDATE exam_results SET net=7;UPDATE scan_batches SET status='COMMITTED' WHERE id='b'");
+ f.db.exec("INSERT INTO result_access_identities VALUES('admin','missing-participant','2099')");
+ const incompleteCohort=await publish();expect(incompleteCohort.status).toBe(400);expect((await incompleteCohort.json() as any).error.code).toBe('RESULT_COHORT_INCOMPLETE');
+ expect((f.db.prepare('SELECT status FROM exam_administrations').get() as any).status).toBe('READY');
+ expect(f.db.prepare('SELECT * FROM exam_result_snapshots WHERE snapshot_version>1').all()).toHaveLength(0);
+ f.db.exec("DELETE FROM result_access_identities WHERE participant_id='missing-participant'");
  f.db.exec("INSERT INTO result_artifact_retirements(administration_id,exam_id,retired_through_version) VALUES('previous-admin','e',7)");
  const response=await publish();expect(response.status).toBe(200);expect((await response.json() as any).snapshotVersion).toBe(8);
  expect((f.db.prepare('SELECT published_snapshot_version,status FROM exam_administrations').get() as any)).toEqual({published_snapshot_version:8,status:'PUBLISHED'});
