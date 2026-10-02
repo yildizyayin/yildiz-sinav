@@ -15,7 +15,7 @@ function fixture({ status = 'NEW_GUEST', issues = ['Kitapçık: işaretlenmemiş
     all: async () => ({ results: sql.includes('FROM exam_booklets') ? [{ code: 'A' }, { code: 'B' }]
       : sql.includes('FROM exam_subjects') ? [{ subject_id: 'math', code: 'MAT', question_count: 1, wrong_divisor: 4 }]
       : sql.includes('FROM exam_questions') && complete ? [{ subject_id: 'math', booklet_code: 'A', question_no: 1, correct_answer: 'A' }] : [] }),
-    run: async () => { if(sql.includes('exam_operation_locks')||sql.includes('exam_operation_write_guards'))return {meta:{changes:1}};writes.push({ sql, args }); if (sql.includes('UPDATE scan_records SET matched_student_id')) Object.assign(row, { matched_student_id: args[0], match_status: args[1], match_confidence: args[2], resolution_status: args[3], issues_json: args[4], canonical_json: args[5] }); return { success: true }; },
+    run: async () => { if(sql.includes('exam_operation_locks')||sql.includes('exam_operation_write_guards'))return {meta:{changes:1}};writes.push({ sql, args:sql.includes('UPDATE scan_batches')?[['NEW_GUEST','AMBIGUOUS','INVALID'].includes(row.match_status)||row.issues_json!=='[]'?'NEEDS_REVIEW':'READY']:args }); if (sql.includes('UPDATE scan_records SET matched_student_id')) Object.assign(row, { matched_student_id: args[0], match_status: args[1], match_confidence: args[2], resolution_status: args[3], issues_json: args[4], canonical_json: args[5] }); return { success: true }; },
   }) }) } } as any;
   const decide = (body: any) => resolveScanRecord(new Request('https://app.anunex.com/api/resolve', { method: 'POST', body: JSON.stringify(body) }), env, user, 'batch', 'record');
   return { decide, row, writes };
