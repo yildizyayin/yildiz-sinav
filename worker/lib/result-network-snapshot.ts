@@ -7,7 +7,7 @@ export const RESULT_NETWORK_SNAPSHOT_SQL = `SELECT s.*,ea.exam_id FROM result_ac
   AND s.snapshot_version=ea.published_snapshot_version
  WHERE rni.meb_code=? AND peer.normalized_name=? AND peer.grade_level=?
  AND ((?<>'' AND peer.student_number_lookup_token=?) OR (?<>'' AND peer.tckn_lookup_token=?))
- AND peer.expires_at>CURRENT_TIMESTAMP AND ea.channel='RESULT_NETWORK' AND ea.status='PUBLISHED'`;
+ AND peer.expires_at>CURRENT_TIMESTAMP AND ea.channel='RESULT_NETWORK' AND ea.status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM result_artifact_retirements retired WHERE retired.administration_id=ea.id AND retired.retired_through_version>=ea.published_snapshot_version)`;
 
 export function readNetworkSnapshot(raw:unknown):any|null {
  if(typeof raw!=='string')return null;
@@ -23,7 +23,7 @@ export function snapshotDetail(payload:any){
 }
 
 // Institution scope is checked before reading the publication payload.
-export const NETWORK_INSTITUTION_SNAPSHOT_SQL = `SELECT s.*,ea.exam_id FROM result_access_identities rai JOIN result_network_institutions rni ON rni.id=rai.result_institution_id JOIN exam_administrations ea ON ea.id=rai.administration_id LEFT JOIN exam_result_snapshots s ON s.participant_id=rai.participant_id AND s.exam_id=ea.exam_id AND s.snapshot_version=ea.published_snapshot_version WHERE ea.id=? AND ea.channel='RESULT_NETWORK' AND ea.status IN ('PUBLISHED','ARCHIVED') AND (rni.licensed_institution_id=? OR rni.meb_code=(SELECT code FROM institutions WHERE id=?)) ORDER BY s.net DESC,s.participant_id LIMIT 20000`;
+export const NETWORK_INSTITUTION_SNAPSHOT_SQL = `SELECT s.*,ea.exam_id FROM result_access_identities rai JOIN result_network_institutions rni ON rni.id=rai.result_institution_id JOIN exam_administrations ea ON ea.id=rai.administration_id LEFT JOIN exam_result_snapshots s ON s.participant_id=rai.participant_id AND s.exam_id=ea.exam_id AND s.snapshot_version=ea.published_snapshot_version WHERE ea.id=? AND ea.channel='RESULT_NETWORK' AND ea.status IN ('PUBLISHED','ARCHIVED') AND (rni.licensed_institution_id=? OR rni.meb_code=(SELECT code FROM institutions WHERE id=?)) AND NOT EXISTS(SELECT 1 FROM result_artifact_retirements retired WHERE retired.administration_id=ea.id AND retired.retired_through_version>=ea.published_snapshot_version) ORDER BY s.net DESC,s.participant_id LIMIT 20000`;
 
 // Same live access predicates as snapshot reads, but no large payload selected.
 export const RESULT_NETWORK_ARTIFACT_ACCESS_SQL = RESULT_NETWORK_SNAPSHOT_SQL
