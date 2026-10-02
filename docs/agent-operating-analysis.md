@@ -46,3 +46,7 @@ Agent Center GET /api/ai-agents yalnız Super Admin'e açıktır. GITHUB_AGENT_T
 6. Kredi gerektiren ajanlara yalnız gerekince küçük iş verme. Ana kaynak değişiklikleri ve veri güvenliği Sol yüksek; mimari/kapasite bağımsız inceleme Astra yüksek; rapor düzeni ve düşük riskli UI işleri Luna orta. Bu model ayrımı teknik görev planıdır; mevcut workflow'lar otomatik olarak Sol/Luna/Astra kullanmıyor.
 
 Yıllık lisans/eğitim yılı geçişi analiz sınırında kalır. Resmî Maarif ve MEB/ÖSYM içeriği ajanların otomatik karar alanına bırakılmaz. Gerçek private R2/Queue, öğrenci sonuç akışı ve 10k/1m kabul ölçümü yapılmadan hazır ilan edilmez.
+
+## 2 Ekim: görev kayıtlarını koruma düzeltmesi
+
+Ortak rapor action’ı yalnız bot tarafından oluşturulan, ilgili ajan işaretini taşıyan raporları veya eski rapor başlığı/altbilgisini taşıyan bot raporlarını günceller/kapatır. PR’lar, insan kayıtları, talimat etiketi/başlığı/işareti olan kayıtlar korunur. Yeni talimatlar rapor etiketi yerine ajan-hedef:<key> etiketi taşır. Panel ve API görev kaydının yürütme başlatmadığını açıkça belirtir. Rutin denetimin başarılı olması talimatın tamamlandığı anlamına gelmez. Dört test gerçek composite script’i sahte GitHub istemcisiyle çalıştırarak kapanma, güncelleme, ayrı rapor oluşturma ve ajanlar arası işaret ayrımını doğrular. Canlı ajan tetikleme yapılmadı.
