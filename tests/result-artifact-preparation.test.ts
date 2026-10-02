@@ -1,9 +1,9 @@
 import {readFileSync} from 'node:fs';
 import {expect,it} from 'vitest';
 import {resultRetentionFixture} from './helpers/result-retention-fixture';
-import {startResultArtifactPreparation,advanceResultArtifactPreparation} from '../worker/lib/result-artifact-preparation';
+import {startResultArtifactPreparation,advanceResultArtifactPreparation,readResultArtifactPreparation} from '../worker/lib/result-artifact-preparation';
 const user={id:'admin-user',role:'SUPER_ADMIN'} as any;
-function fixture(count=1){const f=resultRetentionFixture(count);f.db.exec(readFileSync(new URL('../migrations/0064_result_artifact_preparation_jobs.sql',import.meta.url),'utf8'));f.env.RESULT_ARTIFACT_BACKGROUND_ENABLED='true';return f}
+function fixture(count=1){const f=resultRetentionFixture(count);for(const migration of ['0064_result_artifact_preparation_jobs','0065_result_artifact_preparation_health'])f.db.exec(readFileSync(new URL('../migrations/'+migration+'.sql',import.meta.url),'utf8'));f.env.RESULT_ARTIFACT_BACKGROUND_ENABLED='true';return f}
 const req=(restart=false)=>new Request('https://test/start',{method:'POST',body:JSON.stringify({expectedSnapshotVersion:2,restart})});
 const job=(f:ReturnType<typeof fixture>)=>f.db.prepare("SELECT * FROM result_artifact_preparation_jobs WHERE administration_id='a'").get() as any;
 it('persists atomic 50-row progress, resumes across scheduler calls and preserves completed jobs on duplicate starts',async()=>{
@@ -16,7 +16,7 @@ it('persists atomic 50-row progress, resumes across scheduler calls and preserve
 it('does not advance on audit rollback and safely retries existing R2 orphans',async()=>{
  const f=fixture();await startResultArtifactPreparation(req(),f.env,user,'a');f.setFailAudit();await advanceResultArtifactPreparation(f.env);
  expect(job(f).prepared_count).toBe(0);expect(f.objects.size).toBe(1);expect(f.db.prepare('SELECT COUNT(*) n FROM result_artifact_manifest').get()!.n).toBe(0);
- f.setFailAudit(false);await advanceResultArtifactPreparation(f.env);expect(job(f).prepared_count).toBe(1);expect(f.objects.size).toBe(1);
+ f.setFailAudit(false);f.db.prepare("UPDATE result_artifact_preparation_jobs SET next_attempt_at=NULL").run();await advanceResultArtifactPreparation(f.env);expect(job(f).prepared_count).toBe(1);expect(f.objects.size).toBe(1);
 });
 it('invalidates cursor progress when cohort/source/publication changes and requires explicit restart',async()=>{
  const f=fixture(51);await startResultArtifactPreparation(req(),f.env,user,'a');await advanceResultArtifactPreparation(f.env);
@@ -41,4 +41,18 @@ it('fences manifest and cursor writes when ownership is revoked during the priva
  const f=fixture();await startResultArtifactPreparation(req(),f.env,user,'a');const put=f.env.RESULT_FILES.put;
  f.env.RESULT_FILES.put=async(...args:any[])=>{f.db.prepare("DELETE FROM exam_operation_locks WHERE exam_id='e'").run();f.db.prepare("INSERT INTO exam_operation_locks VALUES('e','new-owner','TEST')").run();return put(...args)};
  await advanceResultArtifactPreparation(f.env);expect(f.objects.size).toBe(1);expect(job(f).prepared_count).toBe(0);expect(job(f).participant_cursor).toBe('');expect(f.db.prepare('SELECT COUNT(*) n FROM result_artifact_manifest').get()!.n).toBe(0);expect(f.db.prepare("SELECT owner_token FROM exam_operation_locks WHERE exam_id='e'").get()!.owner_token).toBe('new-owner');
+});
+
+it('reports sanitized errors, backs off failures and clears active error metadata after a successful retry',async()=>{
+ const f=fixture();await startResultArtifactPreparation(req(),f.env,user,'a');const put=f.env.RESULT_FILES.put;let calls=0;
+ f.env.RESULT_FILES.put=async()=>{calls++;throw Error('private-token sensitive provider text')};
+ await advanceResultArtifactPreparation(f.env);expect(job(f).last_error_code).toBe('RESULT_ARTIFACT_PREPARATION_FAILED');expect(job(f).failure_count).toBe(1);expect(job(f).prepared_count).toBe(0);expect(job(f).next_attempt_at).toBeTruthy();
+ const diagnostic=await readResultArtifactPreparation(f.env,user,'a');const text=await diagnostic.text();expect(text).toContain('RESULT_ARTIFACT_PREPARATION_FAILED');expect(text).not.toContain('artifact-attempt_');expect(text).not.toContain('private-token');
+ await advanceResultArtifactPreparation(f.env);expect(calls).toBe(1);
+ f.env.RESULT_FILES.put=put;f.db.prepare("UPDATE result_artifact_preparation_jobs SET next_attempt_at=NULL").run();await advanceResultArtifactPreparation(f.env);expect(job(f).status).toBe('PREPARED');expect(job(f).last_error_code).toBeNull();expect(job(f).failure_count).toBe(1);
+});
+it('does not attach a delayed failure to a new restart with a different attempt token',async()=>{
+ const f=fixture();await startResultArtifactPreparation(req(),f.env,user,'a');
+ f.env.RESULT_FILES.put=async()=>{f.db.prepare("UPDATE result_artifact_preparation_jobs SET attempt_token=NULL,prepared_count=0,last_error_code=NULL,failure_count=0").run();throw Error('old-attempt-error')};
+ await advanceResultArtifactPreparation(f.env);expect(job(f).failure_count).toBe(0);expect(job(f).last_error_code).toBeNull();
 });
