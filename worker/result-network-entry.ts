@@ -6,6 +6,7 @@ import { withExamOperationLock } from './lib/exam-operation-lock';
 import { RESULT_NETWORK_SNAPSHOT_SQL, RESULT_NETWORK_ARTIFACT_ACCESS_SQL, NETWORK_INSTITUTION_SNAPSHOT_SQL, readNetworkSnapshot, snapshotSummary, snapshotDetail } from './lib/result-network-snapshot';
 import { prepareResultArtifacts, readResultArtifact } from './lib/result-artifacts';
 import { reopenNetworkResults } from './lib/result-network-correction';
+import { retireResultArtifactVersions } from './lib/result-artifact-retention';
 import { REPORT_SNAPSHOT_SQL } from './lib/report-snapshot';
 
 const COOKIE='anunex_result_session';
@@ -135,7 +136,7 @@ export async function freezeAndPublishAdministration(request:Request,env:Env,use
  if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
  const totals=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT ep.institution_id) institution_count FROM result_access_identities rai JOIN exam_results er ON er.participant_id=rai.participant_id JOIN exam_participants ep ON ep.id=er.participant_id WHERE rai.administration_id=? AND ep.exam_id=?`).bind(id,row.exam_id));
  if(!Number(totals?.participant_count||0))return badRequest('Yayımlanacak değerlendirilmiş öğrenci sonucu bulunmuyor.','NO_RESULTS');
- const version=Number((await one<any>(env.DB.prepare(`SELECT MAX(snapshot_version) version FROM exam_result_snapshots WHERE exam_id=?`).bind(row.exam_id)))?.version||0)+1;
+ const version=Number((await one<any>(env.DB.prepare(`SELECT MAX(version) version FROM (SELECT snapshot_version version FROM exam_result_snapshots WHERE exam_id=? UNION ALL SELECT retired_through_version FROM result_artifact_retirements WHERE exam_id=?)`).bind(row.exam_id,row.exam_id)))?.version||0)+1;
  const academicEnd=Number(String(row.academic_year).slice(0,4))+1,sept30=new Date(`${academicEnd}-09-30T23:59:59.000Z`),ninetyDays=new Date(Date.now()+90*86400000),due=(ninetyDays>sept30?ninetyDays:sept30).toISOString();
  await env.DB.batch([
   env.DB.prepare(`DELETE FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(row.exam_id,version),
@@ -374,10 +375,23 @@ export async function purgeExpiredResultNetwork(env:Env){
  for(const notice of [{type:'NOTICE_90',days:90},{type:'NOTICE_60',days:60},{type:'NOTICE_15',days:15}] as const){await env.DB.prepare(`INSERT INTO result_retention_events(id,administration_id,event_type,summary_json) SELECT 'rre_'||lower(hex(randomblob(16))),ea.id,?,json_object('retentionDueAt',ea.retention_due_at,'daysRemaining',?) FROM exam_administrations ea WHERE ea.channel='RESULT_NETWORK' AND ea.status IN ('PUBLISHED','ARCHIVED') AND ea.retention_due_at IS NOT NULL AND datetime(ea.retention_due_at,?||' days')<=CURRENT_TIMESTAMP AND NOT EXISTS(SELECT 1 FROM result_retention_events re WHERE re.administration_id=ea.id AND re.event_type=?)`).bind(notice.type,notice.days,String(-notice.days),notice.type).run()}
  const rows=await all<any>(env.DB.prepare(`SELECT id,exam_id FROM exam_administrations WHERE channel='RESULT_NETWORK' AND status IN ('PUBLISHED','ARCHIVED') AND retention_due_at IS NOT NULL AND retention_due_at<=CURRENT_TIMESTAMP LIMIT 5`));
  for(const row of rows){
-  const participants=await all<{participant_id:string}>(env.DB.prepare(`SELECT DISTINCT ep.id participant_id FROM exam_participants ep JOIN result_network_institutions rni ON rni.administration_id=? AND (rni.licensed_institution_id=ep.institution_id OR rni.meb_code=(SELECT code FROM institutions WHERE id=ep.institution_id)) WHERE ep.exam_id=?`).bind(row.id,row.exam_id));
-  await env.DB.prepare(`INSERT INTO result_retention_events(id,administration_id,event_type) VALUES(?,?,'PURGE_STARTED')`).bind(uuid('rre'),row.id).run();
-  for(let i=0;i<participants.length;i+=80){const ids=participants.slice(i,i+80).map(x=>x.participant_id);if(ids.length)await env.DB.prepare(`DELETE FROM exam_participants WHERE id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).run()}
-  await env.DB.batch([env.DB.prepare(`DELETE FROM result_network_institutions WHERE administration_id=?`).bind(row.id),env.DB.prepare(`UPDATE exam_administrations SET status='PURGED' WHERE id=?`).bind(row.id),env.DB.prepare(`INSERT INTO result_retention_events(id,administration_id,event_type,summary_json) VALUES(?,?,'PURGE_COMPLETED',?)`).bind(uuid('rre'),row.id,JSON.stringify({participants:participants.length,examDefinitionRetained:true,answerKeysRetained:true,outcomesRetained:true,videosRetained:true}))]);
+  await withExamOperationLock(env,row.exam_id,'RESULT_NETWORK_RETENTION',async(env)=>{
+  const current=await env.DB.prepare("SELECT id FROM exam_administrations WHERE id=? AND exam_id=? AND channel='RESULT_NETWORK' AND status IN ('PUBLISHED','ARCHIVED') AND retention_due_at IS NOT NULL AND retention_due_at<=CURRENT_TIMESTAMP").bind(row.id,row.exam_id).first();
+  if(!current)return json({ok:true,skipped:true});
+  await retireResultArtifactVersions(env,row.id,row.exam_id);
+  const participants=await all<{participant_id:string}>(env.DB.prepare(`SELECT DISTINCT ep.id participant_id FROM exam_participants ep JOIN result_network_institutions rni ON rni.administration_id=? AND (rni.licensed_institution_id=ep.institution_id OR rni.meb_code=(SELECT code FROM institutions WHERE id=ep.institution_id)) WHERE ep.exam_id=? AND NOT EXISTS(SELECT 1 FROM result_access_identities other WHERE other.participant_id=ep.id AND other.administration_id<>rni.administration_id) AND NOT EXISTS(SELECT 1 FROM exam_delivery_profiles licensed WHERE licensed.exam_id=ep.exam_id AND licensed.snapshot_version>0) AND NOT EXISTS(SELECT 1 FROM exam_administrations licensed WHERE licensed.exam_id=ep.exam_id AND licensed.channel='LICENSED') ORDER BY ep.id LIMIT 81`).bind(row.id,row.exam_id));
+  const ids=participants.slice(0,80).map(x=>x.participant_id),hasMore=participants.length>80;
+  const statements=[env.DB.prepare(`INSERT INTO result_retention_events(id,administration_id,event_type,summary_json) VALUES(?,?,'PURGE_STARTED',?)`).bind(uuid('rre'),row.id,JSON.stringify({deletedParticipants:ids.length,hasMore}))];
+  if(ids.length)statements.push(env.DB.prepare(`DELETE FROM exam_participants WHERE id IN (${ids.map(()=>'?').join(',')})`).bind(...ids));
+  if(!hasMore)statements.push(
+   env.DB.prepare(`DELETE FROM result_artifact_manifest WHERE administration_id=?`).bind(row.id),
+   env.DB.prepare(`DELETE FROM result_network_institutions WHERE administration_id=?`).bind(row.id),
+   env.DB.prepare(`UPDATE exam_administrations SET status='PURGED' WHERE id=?`).bind(row.id),
+   env.DB.prepare(`INSERT INTO result_retention_events(id,administration_id,event_type,summary_json) SELECT ?,?,'PURGE_COMPLETED',json_object('participants',COALESCE(SUM(json_extract(summary_json,'$.deletedParticipants')),0),'examDefinitionRetained',json('true'),'answerKeysRetained',json('true'),'outcomesRetained',json('true'),'videosRetained',json('true'),'privateArtifactCleanupPending',json('true')) FROM result_retention_events WHERE administration_id=? AND event_type='PURGE_STARTED'`).bind(uuid('rre'),row.id,row.id)
+  );
+  await env.DB.batch(statements);
+  return json({ok:true});
+  });
  }
 }
 
