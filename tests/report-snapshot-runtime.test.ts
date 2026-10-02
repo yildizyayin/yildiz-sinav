@@ -28,13 +28,21 @@ it('captures independent report evidence once per version with real SQLite JSON'
       INSERT INTO student_answers VALUES('p','q1','CORRECT'),('p','q2','CORRECT'),('p','q3','INVALID'),('other-institution','q1','WRONG');
       INSERT INTO tyt_optional_philosophy_results VALUES('p','fel','B',1,1,3,0,5,20);`);
     db.exec("ALTER TABLE exams ADD COLUMN academic_year TEXT DEFAULT '2026-2027';ALTER TABLE exam_participants ADD COLUMN name_snapshot TEXT;ALTER TABLE exam_participants ADD COLUMN student_number_snapshot TEXT;ALTER TABLE exam_participants ADD COLUMN class_snapshot TEXT");
+    db.exec("ALTER TABLE outcomes ADD COLUMN curriculum_version_id TEXT;CREATE TABLE curriculum_versions(id TEXT,academic_year TEXT,grade_level INTEGER,program_version TEXT,verified INTEGER);INSERT INTO curriculum_versions VALUES('cv','2026-2027',7,'verified-program',1);UPDATE outcomes SET curriculum_version_id='cv'");
     db.prepare(REPORT_SNAPSHOT_SQL).run('e',1);
     const read=()=>JSON.parse((db.prepare('SELECT payload_json FROM exam_result_snapshots').get() as any).payload_json);
     expect(read().subjects[0].net).toBe(2);
     expect(read().outcomes[0].evidence_count).toBe(2);
     expect(read().optionalPhilosophy[0].correct_count).toBe(1);
+    expect(read().questionEvidencePolicy).toBe('NATIVE_STATUS_AND_CURRICULUM_AT_FREEZE_V1');
+    const evidence=read().questionEvidence;
+    expect(evidence).toHaveLength(3);
+    expect(evidence.find((row:any)=>row.questionId==='q3').status).toBe('INVALID');
+    expect(evidence[0].outcomeRefs[0]).toMatchObject({curriculumVersionId:'cv',verified:1,academicYear:'2026-2027',gradeLevel:7});
+    db.exec("UPDATE curriculum_versions SET verified=0,program_version='changed-program'");
     db.exec("UPDATE subject_results SET net=99; UPDATE student_answers SET status='WRONG';");
     db.prepare(REPORT_SNAPSHOT_SQL).run('e',1);
     expect(read().subjects[0].net).toBe(2);expect(read().outcomes[0].correct_count).toBe(2);
+    expect(read().questionEvidence).toEqual(evidence);
   } finally {db.close()}
 });
