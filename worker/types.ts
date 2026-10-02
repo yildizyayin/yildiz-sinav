@@ -66,6 +66,8 @@ export interface Env {
   // Token Cloudflare Secret olarak provision edilmelidir.
   GITHUB_AGENT_TOKEN?: string;
   GITHUB_AGENT_REPO?: string;
+  // Only CI, tenant, KVKK and D1 source auditors; default main. Server-controlled.
+  GITHUB_AGENT_CHECK_REF?: string;
   ONAY_WORKER_URL?: string;
   IYZICO_API_KEY?: string;
   IYZICO_SECRET_KEY?: string;
