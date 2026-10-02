@@ -1,6 +1,24 @@
 import {expect,it} from 'vitest';
-import {encodeResultArtifact,storeResultArtifact,prepareResultArtifacts,readResultArtifact} from '../worker/lib/result-artifacts';
+import {encodeResultArtifact,storeResultArtifact,prepareResultArtifacts,readResultArtifact,sweepRetiredResultArtifactVersion} from '../worker/lib/result-artifacts';
 const row={exam_id:'e',participant_id:'p',institution_id:'school',snapshot_version:1,national_rank:2,national_count:50,payload_json:JSON.stringify({schemaVersion:1,exam:{exam_id:'e',net:3,title:'Original'},participant:{name_snapshot:'Sensitive name'},subjects:[{subject_name:'Math',net:3}],outcomes:[],wrongQuestionIds:['q']})};
+it('bounds version cleanup and preserves newer versions and other administrations across retries',async()=>{
+ const prefix='private-results/admin/v1/';
+ const keys=new Set([...Array.from({length:101},(_,i)=>prefix+i),'private-results/admin/v2/new','private-results/admin/v10/new','private-results/other/v1/new']);
+ const bucket={list:async(options:any)=>{expect(options).toEqual({prefix,limit:51});const matches=[...keys].filter(k=>k.startsWith(options.prefix));return {objects:matches.slice(0,51).map(key=>({key})),truncated:matches.length>51}},delete:async(batch:string[])=>{expect(batch.length).toBeLessThanOrEqual(50);batch.forEach(key=>keys.delete(key))}} as any;
+ expect(await sweepRetiredResultArtifactVersion(bucket,'admin',1)).toEqual({deleted:50,hasMore:true});
+ expect(await sweepRetiredResultArtifactVersion(bucket,'admin',1)).toEqual({deleted:50,hasMore:true});
+ expect(await sweepRetiredResultArtifactVersion(bucket,'admin',1)).toEqual({deleted:1,hasMore:false});
+ keys.add(prefix+'late-write');expect((await sweepRetiredResultArtifactVersion(bucket,'admin',1)).deleted).toBe(1);
+ expect([...keys]).toEqual(['private-results/admin/v2/new','private-results/admin/v10/new','private-results/other/v1/new']);
+});
+it('fails closed before deletion on invalid scope, foreign listed keys or bucket failure',async()=>{
+ let deletes=0;const bucket={list:async()=>({objects:[{key:'private-results/admin/v2/foreign'}],truncated:false}),delete:async()=>{deletes++}} as any;
+ for(const version of [0,-1,1.5,NaN,Number.MAX_SAFE_INTEGER+1])await expect(sweepRetiredResultArtifactVersion(bucket,'admin',version)).rejects.toThrow('RESULT_ARTIFACT_CLEANUP_SCOPE_INVALID');
+ await expect(sweepRetiredResultArtifactVersion(bucket,' ',1)).rejects.toThrow('RESULT_ARTIFACT_CLEANUP_SCOPE_INVALID');
+ await expect(sweepRetiredResultArtifactVersion(bucket,'admin',1)).rejects.toThrow('RESULT_ARTIFACT_CLEANUP_SCOPE_FAILED');expect(deletes).toBe(0);
+ const failing={list:async()=>({objects:[{key:'private-results/admin/v1/file'}],truncated:false}),delete:async()=>{throw Error('R2_UNAVAILABLE')}} as any;
+ await expect(sweepRetiredResultArtifactVersion(failing,'admin',1)).rejects.toThrow('R2_UNAVAILABLE');
+});
 it('creates deterministic scoped content keys without copying participant names',async()=>{
  const a=await encodeResultArtifact('admin',row),b=await encodeResultArtifact('admin',row);
  expect(a).toEqual(b);expect(a.body).not.toContain('Sensitive name');expect(JSON.parse(a.body).summary.net).toBe(3);expect(JSON.parse(a.body).detail.subjects[0].net).toBe(3);
