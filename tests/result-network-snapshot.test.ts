@@ -1,5 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import { expect,it } from 'vitest';
+import { encodeResultArtifact } from '../worker/lib/result-artifacts';
 import { handleResultNetworkRequest } from '../worker/result-network-entry';
 import { RESULT_NETWORK_SNAPSHOT_SQL,NETWORK_INSTITUTION_SNAPSHOT_SQL,readNetworkSnapshot,snapshotSummary,snapshotDetail } from '../worker/lib/result-network-snapshot';
 
@@ -29,6 +30,17 @@ it('pins results to the channel publication and fails closed for missing payload
  const detail=await handleResultNetworkRequest(request('/api/public/results/exams/e'),env);
  expect((await detail!.json() as any).subjects[0].net).toBe(2);
  expect((await handleResultNetworkRequest(request('/api/public/results/exams/other'),env))!.status).toBe(404);
+ db.exec("ALTER TABLE exam_result_snapshots ADD COLUMN institution_id TEXT DEFAULT 'school';CREATE TABLE result_artifact_manifest(administration_id TEXT,participant_id TEXT,snapshot_version INTEGER,object_key TEXT,content_sha256 TEXT)");
+ const artifact=await encodeResultArtifact('admin',read()[0]);
+ db.prepare('INSERT INTO result_artifact_manifest VALUES(?,?,?,?,?)').run('admin','p',1,artifact.key,artifact.digest);
+ let objectReads=0;let artifactBytes=artifact.body;
+ env.RESULT_ARTIFACT_READS_ENABLED='true';env.RESULT_FILES={get:async()=>{objectReads++;return {text:async()=>artifactBytes}}};
+ const artifactResponse=await handleResultNetworkRequest(request('/api/public/results/exams/e'),env);
+ expect((await artifactResponse!.json() as any).resultSource).toBe('PRIVATE_ARTIFACT');expect(objectReads).toBe(1);
+ artifactBytes='corrupted';expect((await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.status).toBe(503);artifactBytes=artifact.body;
+ env.RESULT_FILES.get=async()=>null;
+ expect((await (await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.json() as any).resultSource).toBe('PUBLISHED_SNAPSHOT');
+ env.RESULT_FILES.get=async()=>{objectReads++;return {text:async()=>artifactBytes}};
  expect(snapshotSummary(read()[0]).net).toBe(2);expect(snapshotSummary(read()[0]).national_rank).toBe(1);
  expect(snapshotDetail(readNetworkSnapshot(read()[0].payload_json)).outcomes[0].success_rate).toBe(50);
  expect(db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('code','ada',6,'other','other','','')).toHaveLength(0);
@@ -36,8 +48,8 @@ it('pins results to the channel publication and fails closed for missing payload
  db.exec('UPDATE exam_administrations SET published_snapshot_version=NULL');
  expect((await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.status).toBe(409);
  expect(read()[0].exam_id).toBe('e');expect(snapshotSummary(read()[0])).toBeNull();
- db.exec("UPDATE exam_administrations SET published_snapshot_version=1,status='READY'");expect(read()).toHaveLength(0);
- db.exec("UPDATE exam_administrations SET status='PUBLISHED';UPDATE result_access_identities SET expires_at='2000-01-01'");expect(read()).toHaveLength(0);
+ db.exec("UPDATE exam_administrations SET published_snapshot_version=1,status='READY'");expect(read()).toHaveLength(0);objectReads=0;expect((await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.status).toBe(404);expect(objectReads).toBe(0);
+ db.exec("UPDATE exam_administrations SET status='PUBLISHED';UPDATE result_access_identities SET expires_at='2000-01-01'");expect(read()).toHaveLength(0);expect((await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.status).toBe(404);expect(objectReads).toBe(0);
  }finally{db.close()}
 });
 it('rejects malformed and unsupported payloads rather than inventing a live result',()=>{
