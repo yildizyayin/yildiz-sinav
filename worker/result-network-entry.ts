@@ -138,6 +138,15 @@ export async function freezeAndPublishAdministration(request:Request,env:Env,use
  if(!row||!['UPLOADING','READY'].includes(row.status))return badRequest('Sonuç yayını için yönetim hazır olmalıdır. Mevcut yayın yeniden dondurulamaz.','RESULT_PUBLICATION_STATE_CHANGED');
  const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND (EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id) OR EXISTS(SELECT 1 FROM scan_records sr WHERE sr.batch_id=sb.id AND sr.resolution_status<>'CANCELLED'))`).bind(row.exam_id));
  if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
+ // Every issued identity must have an evaluated participant in this exam and
+ // an institution included by the snapshot query. Do not silently publish a
+ // partial cohort by allowing INNER JOINs to drop incomplete identities.
+ const missing=await one<any>(env.DB.prepare(`SELECT 1 missing FROM result_access_identities rai
+ WHERE rai.administration_id=? AND NOT EXISTS(
+ SELECT 1 FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id
+ JOIN institutions i ON i.id=ep.institution_id
+ WHERE er.participant_id=rai.participant_id AND ep.exam_id=?) LIMIT 1`).bind(id,row.exam_id));
+ if(missing)return badRequest('Erişim kaydı bulunan bazı öğrencilerin sınava ait değerlendirilmiş sonucu veya kurum kaydı eksik. Eksik kayıtları tamamlayın.','RESULT_COHORT_INCOMPLETE');
  const totals=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT ep.institution_id) institution_count FROM result_access_identities rai JOIN exam_results er ON er.participant_id=rai.participant_id JOIN exam_participants ep ON ep.id=er.participant_id WHERE rai.administration_id=? AND ep.exam_id=?`).bind(id,row.exam_id));
  if(!Number(totals?.participant_count||0))return badRequest('Yayımlanacak değerlendirilmiş öğrenci sonucu bulunmuyor.','NO_RESULTS');
  const version=Number((await one<any>(env.DB.prepare(`SELECT MAX(version) version FROM (SELECT snapshot_version version FROM exam_result_snapshots WHERE exam_id=? UNION ALL SELECT retired_through_version FROM result_artifact_retirements WHERE exam_id=?)`).bind(row.exam_id,row.exam_id)))?.version||0)+1;
