@@ -104,7 +104,10 @@ for (const index of [3, 4, 5]) questions.push(await createQuestion({ subjectId: 
 const mathQuestion = await createQuestion({ subjectId: 'sub_mat', outcomeId: 'out_mat_1', index: 6 });
 console.log(`✓ Rich question fixtures — ${questions.length + 1} questions · 4/5 choices · six difficulty levels`);
 
-const practice = await request('/api/platform/student-practice?gradeLevel=7&limit=20', { cookie: student });
+// PR preview databases survive reruns. The unfiltered first page is ordered by
+// difficulty, so older easy questions can displace this level-2 media fixture.
+// Exercise the existing student filters without changing visibility rules.
+const practice = await request('/api/platform/student-practice?gradeLevel=7&subjectId=sub_fen&nodeId=out_fen_1&difficultyLevel=2&limit=20', { cookie: student });
 const visualQuestion = (practice.payload?.questions || []).find((question) => question.id === questions[0].id);
 assert(visualQuestion, 'Student practice did not return the approved visual question', practice.payload);
 assert(!Object.prototype.hasOwnProperty.call(visualQuestion, 'correct_answer'), 'Student practice leaked the correct answer', visualQuestion);
