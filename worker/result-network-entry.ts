@@ -1,3 +1,4 @@
+import {startResultArtifactPreparation,readResultArtifactPreparation} from './lib/result-artifact-preparation';
 import type { AuthUser,Env } from './types';
 import { getAuthUser,hashPassword,verifyPassword,verifyTurnstile } from './lib/auth';
 import { all,audit,badRequest,forbidden,json,normalizeName,one,uuid } from './lib/db';
@@ -265,10 +266,13 @@ export async function handleResultGovernanceMutation(request:Request,env:Env):Pr
  const reopen=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/reopen-results$/);
  const artifacts=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/prepare-artifacts$/);
  const readiness=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/artifact-readiness$/);
- if(!dealerStatus&&!removeScope&&!finalize&&!reopen&&!artifacts&&!readiness)return null;
+ const preparation=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/prepare-artifact-job$/);
+ if(!dealerStatus&&!removeScope&&!finalize&&!reopen&&!artifacts&&!readiness&&!preparation)return null;
  const user=await requireSuper(request,env);if(user instanceof Response)return user;
  if(dealerStatus&&request.method==='POST')return setDealerStatus(request,env,user,dealerStatus[1]);
  if(removeScope&&request.method==='DELETE')return removeDealerScope(env,user,removeScope[1],removeScope[2]);
+ if(preparation&&request.method==='GET')return readResultArtifactPreparation(env,user,preparation[1]);
+ if(preparation&&request.method==='POST')return startResultArtifactPreparation(request,env,user,preparation[1]);
  if(readiness&&request.method==='GET')return inspectResultArtifactReadiness(request,env,user,readiness[1]);
  if(artifacts&&request.method==='POST')return prepareResultArtifacts(request,env,user,artifacts[1]);
  if(reopen&&request.method==='POST')return reopenNetworkResults(request,env,user,reopen[1]);
