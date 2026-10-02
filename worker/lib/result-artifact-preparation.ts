@@ -22,6 +22,7 @@ export async function startResultArtifactPreparation(request:Request,env:Env,use
 }
 // Small scheduled pilot driver. A future producer queue must meet capacity SLOs.
 export async function advanceResultArtifactPreparation(env:Env){
+ if(env.RESULT_ARTIFACT_QUEUE_ENABLED==='true')return;
  if(env.RESULT_ARTIFACT_BACKGROUND_ENABLED!=='true'||env.RESULT_ARTIFACTS_ENABLED!=='true'||env.RESULT_ARTIFACT_CLEANUP_ENABLED!=='true'||env.RESULT_RETENTION_QUEUE_ENABLED!=='true'||!env.RESULT_RETENTION_QUEUE||!env.RESULT_FILES)return;
  const jobs=await all<any>(env.DB.prepare("SELECT administration_id,snapshot_version,actor_user_id FROM result_artifact_preparation_jobs WHERE status='RUNNING' AND (next_attempt_at IS NULL OR next_attempt_at<=CURRENT_TIMESTAMP) ORDER BY COALESCE(last_attempted_at,'0000-01-01'),administration_id LIMIT 2"));
  for(const job of jobs){
