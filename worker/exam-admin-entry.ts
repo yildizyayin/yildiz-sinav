@@ -3,7 +3,7 @@ import { examPublicationGuard, examCorrectionOpen } from './lib/exam-publication
 import accessApp from './access-entry';
 import type { AuthUser, Env, Role } from './types';
 import { getAuthUser } from './lib/auth';
-import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './lib/db';
+import { all, audit, sanitizeAuditDetails, badRequest, forbidden, json, notFound, one, uuid } from './lib/db';
 
 export type ExamOwnerType = 'CENTRAL' | 'INSTITUTION';
 
@@ -483,7 +483,9 @@ async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<
     `).bind(examId)),
     readiness(env, examId),
   ]);
-  return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, optionalAnswerKey, readiness: ready });
+  const correctionOpen=await examCorrectionOpen(env,examId);
+  const publicationBlocked=!!await examPublicationGuard(env,examId);
+  return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, optionalAnswerKey, readiness: ready,answerKeyEditable:!publicationBlocked&&(exam.status==='DRAFT'||correctionOpen),correctionOpen:correctionOpen&&!publicationBlocked });
 }
 
 async function updateGeneral(request: Request, env: Env, user: AuthUser, examId: string):Promise<Response>{
@@ -822,8 +824,8 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
   }
   for (const [questionId, labelIds] of publisherLabelsByQuestion.entries()) for (const publisherOutcomeId of labelIds) statements.push(env.DB.prepare(`INSERT OR IGNORE INTO question_publisher_outcomes (exam_question_id,publisher_outcome_id) VALUES(?,?)`).bind(questionId, publisherOutcomeId));
   if (outcomeMode !== exam.outcome_mode) statements.push(env.DB.prepare('UPDATE exams SET outcome_mode=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(outcomeMode, examId));
+  statements.push(env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)').bind(uuid('aud'),user.id,exam.institution_id,'EXAM_ANSWER_KEY_REPLACED','exam',examId,JSON.stringify(sanitizeAuditDetails({ before: { entryCount: subjects.length * booklets.length, outcomeMappingCount: 'existing' }, after: { entryCount: entryMap.size, outcomeMappingCount: seenMappings.size }, reason }))));
   await env.DB.batch(statements);
-  await audit(env.DB, user.id, exam.institution_id, 'EXAM_ANSWER_KEY_REPLACED', 'exam', examId, { before: { entryCount: subjects.length * booklets.length, outcomeMappingCount: 'existing' }, after: { entryCount: entryMap.size, outcomeMappingCount: seenMappings.size }, reason });
   return Response.json({ ok: true, answerCount: subjects.reduce((sum, s) => sum + Number(s.question_count), 0) * booklets.length, outcomeMappingCount: seenMappings.size });
 }
 
