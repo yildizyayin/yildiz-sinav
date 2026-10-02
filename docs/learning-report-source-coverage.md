@@ -75,3 +75,19 @@ Eski kayıtları güncel müfredatla geçmişe dönük tamamlama yapılmayacakt�
 Sıradaki uygulama: kaynak yazıcılarının sahiplik/sürüm tutarlılığı, yeni çözümler
  için atomik tarihsel kanıt, sonra kaynak seçimi ve ilk/son deneme karşılaştırması.
 Mini oyun yalnız doğrulanmış soru yanıtı ürettiğinde akademik özete katılabilir.
+
+Yeni dijital soru pratiği `assessment_runs.metadata_json.frozenEvidence` içine
+`QUESTION_PRACTICE_READ_CONTEXT_V1` politikasını kaydeder. Native CORRECT/WRONG/BLANK,
+enrollment/season/yıl/sınıf, soru kimliği ve tüm OUTCOME node bağlantıları korunur.
+Resmî outcome bağlantısı yalnız mevcut ln_ kimlik kuralı ve ders/sınıf/yıl uyumu
+ile çözülür; özel veya eksik node doğrulanmamış kalır. Müfredat verified/program
+alanları okunduğu hâliyle saklanır. İçerik SHA-256 özeti değerlendirmede kullanılan
+metin/seçenek/anahtar/ders/sınıf/yıl değerlerinden oluşur; metadata ham anahtar veya
+soru metni taşımaz. Bu özet resmî içerik sürümü değildir.
+
+Kanıt ve yanıt aynı DB.batch içinde kaydedilir; sonraki değişiklikler eski run
+metadata'sını değiştirmez. Kaynak okuma sorguları batch öncesi ayrı olduğundan
+bu politika bütün kaynak tablolarının tek transaction anını garanti etmez.
+Karne okuyucusu bağlam uyumunu ayrıca doğrulamalıdır. Soru ekranda açıldığı anki
+sürüm ile gönderim anındaki sürümün karşılaştırılması henüz yoktur. Bu kanıt
+EXAM-only karne API'sine henüz bağlanmamıştır; eski run kayıtları doldurulmaz.
