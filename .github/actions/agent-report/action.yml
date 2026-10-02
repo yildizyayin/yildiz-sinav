@@ -55,11 +55,21 @@ runs:
               });
             } else throw error;
           }
-          const existing = await github.paginate(github.rest.issues.listForRepo, {
+          const candidates = await github.paginate(github.rest.issues.listForRepo, {
             owner: context.repo.owner, repo: context.repo.repo, state: 'open',
             labels: label, per_page: 100,
           });
+          const marker = `<!-- anunex-agent-report:${encodeURIComponent(label)} -->`;
+          const legacyFooter = '_Bu Issue ilgili GitHub Actions ajanı tarafından idempotent olarak güncellenir._';
+          const existing = candidates.filter(issue => {
+            const labels = (issue.labels || []).map(item => typeof item === 'string' ? item : item.name);
+            const issueBody = issue.body || '';
+            if (issue.pull_request || labels.includes('ajan-talimatı') || issueBody.includes('## AI Ajan Talimatı') || issueBody.includes('<!-- anunex-agent-instruction -->')) return false;
+            if (issue.user?.type !== 'Bot') return false;
+            return issueBody.includes(marker) || (issueBody.startsWith('## Ücretsiz AI ajan raporu\n') && issueBody.includes(legacyFooter));
+          });
           const body = [
+            marker,
             '## Ücretsiz AI ajan raporu', '',
             `**Durum:** ${status}`,
             `**Zaman:** ${new Date().toISOString()}`, '',
