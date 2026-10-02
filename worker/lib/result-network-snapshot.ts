@@ -9,6 +9,15 @@ export const RESULT_NETWORK_SNAPSHOT_SQL = `SELECT s.*,ea.exam_id FROM result_ac
  AND ((?<>'' AND peer.student_number_lookup_token=?) OR (?<>'' AND peer.tckn_lookup_token=?))
  AND peer.expires_at>CURRENT_TIMESTAMP AND ea.channel='RESULT_NETWORK' AND ea.status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM result_artifact_retirements retired WHERE retired.administration_id=ea.id AND retired.retired_through_version>=ea.published_snapshot_version)`;
 
+// Keep the same live authorization and version predicates, while omitting the
+// large subject/outcome details from the list query's D1 response. JSON validity
+// checks retain the detail reader's fail-closed behavior for incomplete payloads.
+export const RESULT_NETWORK_SUMMARY_SQL = RESULT_NETWORK_SNAPSHOT_SQL.replace('SELECT s.*,ea.exam_id', `SELECT ea.exam_id,s.snapshot_version,
+ ${['class','grade','institution','district','city','network','national'].flatMap(scope=>[`s.${scope}_rank`,`s.${scope}_count`]).join(',')},
+ CASE WHEN json_valid(s.payload_json) THEN CASE WHEN json_extract(s.payload_json,'$.schemaVersion')=1
+ AND json_type(s.payload_json,'$.exam')='object' AND json_type(s.payload_json,'$.subjects')='array' AND json_type(s.payload_json,'$.outcomes')='array'
+ THEN json_object('schemaVersion',1,'exam',json_extract(s.payload_json,'$.exam'),'subjects',json('[]'),'outcomes',json('[]')) END END payload_json`);
+
 export function readNetworkSnapshot(raw:unknown):any|null {
  if(typeof raw!=='string')return null;
  try{const p=JSON.parse(raw);return p?.schemaVersion===1&&p.exam&&Array.isArray(p.subjects)&&Array.isArray(p.outcomes)?p:null}catch{return null}
