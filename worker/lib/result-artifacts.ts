@@ -44,22 +44,23 @@ export async function prepareResultArtifacts(request:Request,env:Env,user:AuthUs
  return withExamOperationLock(env,administration.exam_id,'RESULT_ARTIFACT_PREPARE',async(env)=>{
   const current=await env.DB.prepare("SELECT id FROM exam_administrations ea WHERE id=? AND channel='RESULT_NETWORK' AND status='PUBLISHED' AND published_snapshot_version=? AND NOT EXISTS(SELECT 1 FROM result_artifact_retirements retired WHERE retired.administration_id=ea.id AND retired.retired_through_version>=ea.published_snapshot_version)").bind(id,version).first();
   if(!current)return json({ok:false,error:{code:'RESULT_PUBLICATION_STATE_CHANGED',message:'Yayın veya sürüm değişti.'}},409);
-  const job=body.managed===true?await env.DB.prepare("SELECT participant_cursor FROM result_artifact_preparation_jobs WHERE administration_id=? AND snapshot_version=? AND status='RUNNING'").bind(id,version).first<{participant_cursor:string}>():null;
+  const job=body.managed===true?await env.DB.prepare("SELECT participant_cursor,source_generation FROM result_artifact_preparation_jobs WHERE administration_id=? AND snapshot_version=? AND status='RUNNING'").bind(id,version).first<{participant_cursor:string;source_generation:number}>():null;
   if(body.managed===true&&!job)return json({ok:false,error:{code:'RESULT_ARTIFACT_JOB_NOT_RUNNING',message:'Hazırlama kaydı etkin değil.'}},409);
+  if(job&&body.queueToken){
+   const ticket=await env.DB.prepare("SELECT dispatch_token FROM result_artifact_queue_jobs WHERE kind='PREPARE' AND administration_id=? AND snapshot_version=? AND source_generation=? AND dispatch_token=? AND page_cursor=? AND status<>'DONE'").bind(id,version,body.expectedGeneration,body.queueToken,body.expectedCursor).first();
+   if(!ticket||job.source_generation!==body.expectedGeneration||job.participant_cursor!==body.expectedCursor)return json({ok:false,error:{code:'RESULT_ARTIFACT_QUEUE_STALE',message:'Kuyruk kaydı değişti.'}},409);
+  }
   if(job){
    cursor=job.participant_cursor;
    await env.DB.prepare("UPDATE result_artifact_preparation_jobs SET last_attempted_at=CURRENT_TIMESTAMP,attempt_token=? WHERE administration_id=? AND snapshot_version=? AND status='RUNNING'").bind(body.attemptToken,id,version).run();
   }
-  const rows=await all<any>(env.DB.prepare(`SELECT s.*,m.object_key existing_object_key,m.content_sha256 existing_content_sha256,CASE WHEN ep.exam_id=s.exam_id AND ep.institution_id=s.institution_id AND rni.administration_id=rai.administration_id AND (rni.licensed_institution_id=s.institution_id OR (rni.meb_code<>'' AND rni.meb_code=institution.code)) THEN 1 ELSE 0 END scope_valid FROM exam_result_snapshots s JOIN result_access_identities rai ON rai.participant_id=s.participant_id AND rai.administration_id=? LEFT JOIN exam_participants ep ON ep.id=s.participant_id LEFT JOIN result_network_institutions rni ON rni.id=rai.result_institution_id LEFT JOIN institutions institution ON institution.id=s.institution_id LEFT JOIN result_artifact_manifest m ON m.administration_id=rai.administration_id AND m.participant_id=s.participant_id AND m.snapshot_version=s.snapshot_version WHERE s.exam_id=? AND s.snapshot_version=? AND s.participant_id>? ORDER BY s.participant_id LIMIT 51`).bind(id,administration.exam_id,version,cursor));
+  const rows=await all<any>(env.DB.prepare(`SELECT rai.participant_id identity_participant_id,s.*,m.object_key existing_object_key,m.content_sha256 existing_content_sha256,CASE WHEN ep.exam_id=s.exam_id AND ep.institution_id=s.institution_id AND rni.administration_id=rai.administration_id AND (rni.licensed_institution_id=s.institution_id OR (rni.meb_code<>'' AND rni.meb_code=institution.code)) THEN 1 ELSE 0 END scope_valid FROM result_access_identities rai LEFT JOIN exam_result_snapshots s ON s.participant_id=rai.participant_id AND s.exam_id=? AND s.snapshot_version=? LEFT JOIN exam_participants ep ON ep.id=s.participant_id LEFT JOIN result_network_institutions rni ON rni.id=rai.result_institution_id LEFT JOIN institutions institution ON institution.id=s.institution_id LEFT JOIN result_artifact_manifest m ON m.administration_id=rai.administration_id AND m.participant_id=s.participant_id AND m.snapshot_version=s.snapshot_version WHERE rai.administration_id=? AND rai.participant_id>? ORDER BY rai.participant_id LIMIT 51`).bind(administration.exam_id,version,id,cursor));
   const page=rows.slice(0,50);
   // Preflight the entire page before creating any objects.
+  if(page.some(row=>!row.participant_id))return json({ok:false,error:{code:'RESULT_ARTIFACT_SOURCE_INCOMPLETE',message:'Bazı öğrencilerin dondurulmuş sonucu eksik.'}},409);
   if(page.some(row=>row.scope_valid!==1))return json({ok:false,error:{code:'RESULT_ARTIFACT_SOURCE_INVALID',message:'Sonuç kurum kapsamı doğrulanamadı.'}},409);
   const artifacts=await Promise.all(page.map(row=>encodeResultArtifact(id,row)));
   if(page.some((row,i)=>row.existing_object_key&&(row.existing_object_key!==artifacts[i].key||row.existing_content_sha256!==artifacts[i].digest)))return json({ok:false,error:{code:'RESULT_ARTIFACT_MANIFEST_CONFLICT',message:'Dosya kaydı yayın kaynağı ile uyuşmuyor.'}},409);
-  if(job){
-   const missing=await env.DB.prepare(`SELECT rai.participant_id FROM result_access_identities rai LEFT JOIN exam_result_snapshots s ON s.participant_id=rai.participant_id AND s.exam_id=? AND s.snapshot_version=? WHERE rai.administration_id=? AND s.participant_id IS NULL LIMIT 1`).bind(administration.exam_id,version,id).first();
-   if(missing)return json({ok:false,error:{code:'RESULT_ARTIFACT_SOURCE_INCOMPLETE',message:'Bazı öğrencilerin dondurulmuş sonucu eksik.'}},409);
-  }
   const statements:D1PreparedStatement[]=[];
   for(let i=0;i<page.length;i++){
    const artifact=artifacts[i];await storeResultArtifact(env.RESULT_FILES!,artifact);
