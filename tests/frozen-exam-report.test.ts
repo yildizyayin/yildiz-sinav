@@ -17,6 +17,7 @@ it('reads only current published versions and enforces student, institution and 
  const db=new DatabaseSync(':memory:');try{
  db.exec(`CREATE TABLE student_entities(id TEXT,first_name TEXT,last_name TEXT,status TEXT);INSERT INTO student_entities VALUES('student','Synthetic','Student','ACTIVE');
  CREATE TABLE student_enrollments(student_id TEXT,institution_id TEXT,season_id TEXT,class_id TEXT,student_number TEXT,grade_level INTEGER,section TEXT,status TEXT,created_at TEXT);INSERT INTO student_enrollments VALUES('student','school','season','class','1',7,'A','ACTIVE','2026');
+ CREATE TABLE parent_student_links(id TEXT,parent_user_id TEXT,student_id TEXT,active INTEGER);INSERT INTO parent_student_links VALUES('link','parent','student',1);
  CREATE TABLE classes(id TEXT,name TEXT);INSERT INTO classes VALUES('class','7A');CREATE TABLE institutions(id TEXT,name TEXT);INSERT INTO institutions VALUES('school','Synthetic');
  CREATE TABLE exam_result_snapshots(exam_id TEXT,participant_id TEXT,student_id TEXT,institution_id TEXT,snapshot_version INTEGER,grade_level INTEGER,payload_json TEXT);
  CREATE TABLE exams(id TEXT,academic_year TEXT);INSERT INTO exams VALUES('e','2026-2027');
@@ -29,6 +30,13 @@ it('reads only current published versions and enforces student, institution and 
  const student={role:'STUDENT',student_id:'student'} as any;
  expect((await(await selectedFrozenExamReport(env,student,'student',url)).json() as any).groups[0].accuracyPercent).toBe(100);
  expect((await selectedFrozenExamReport(env,{role:'STUDENT',student_id:'foreign'} as any,'student',url)).status).toBe(403);
+ const parent={role:'PARENT',id:'parent'} as any;
+ expect((await selectedFrozenExamReport(env,parent,'student',url)).status).toBe(200);
+ db.exec("UPDATE parent_student_links SET active=0");
+ expect((await selectedFrozenExamReport(env,parent,'student',url)).status).toBe(403);
+ expect((await selectedFrozenExamReport(env,{role:'PARENT',id:'foreign-parent'} as any,'student',url)).status).toBe(403);
+ expect((await selectedFrozenExamReport(env,{role:'INSTITUTION_MANAGER',institution_id:'foreign-school'} as any,'student',url)).status).toBe(403);
+ expect((await selectedFrozenExamReport(env,{role:'INSTITUTION_MANAGER',institution_id:'school'} as any,'student',url)).status).toBe(200);
  const teacher={role:'TEACHER',id:'teacher',institution_id:'school'} as any;
  const branch:any=await(await selectedFrozenExamReport(env,teacher,'student',url)).json();expect(branch.groups).toHaveLength(1);expect(branch.coverage).toBeNull();
  db.exec("UPDATE exam_participants SET season_id='old'");expect((await(await selectedFrozenExamReport(env,teacher,'student',url)).json() as any).groups).toHaveLength(0);
