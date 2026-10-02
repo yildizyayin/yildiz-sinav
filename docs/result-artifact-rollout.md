@@ -1,6 +1,6 @@
 # Prepared result artifacts: gated rollout
 
-Status: code foundation only. No production binding, enabled rollout, artifact reader, cache, or measured 10k/1m capacity yet.
+Status: code foundation only. No production binding, enabled rollout, enabled reader rollout, cache, or measured 10k/1m capacity yet.
 
 The SuperAdmin POST /api/admin/result-network/administrations/:id/prepare-artifacts accepts expectedSnapshotVersion and an optional participant cursor. Each request preflights up to 50 published snapshot records, prepares deterministic artifacts in RESULT_FILES, then commits the manifest page and audit under the exam operation lock with write fencing. A retry never overwrites different stored bytes. The response exposes counts and a continuation cursor, not bucket URLs. Partial R2 success followed by manifest failure leaves unreferenced objects; retries are safe but cleanup is required.
 
@@ -16,3 +16,8 @@ RESULT_ARTIFACTS_ENABLED must equal true and a dedicated private RESULT_FILES bi
 6. Measure private R2 reads, regional cold/warm cache, lookup/verification bursts, D1 query duration and observed origin traffic. Run the existing staged 10k/1m acceptance scenarios with separate identities and correctness oracles.
 
 The previous capacity plan's live-reader findings are historical: student and published institution data now use the channel's immutable snapshot; mutable AI-tip queries were removed. Session D1 checks remain on every request. Both CI and PR Preview succeeded at c96d87dff8d4ec394138af14817c74c462565dfd; earlier provisioning failures must not be treated as a current blocker without rechecking.
+
+## Authorized detail reader (2026-10-02)
+RESULT_ARTIFACT_READS_ENABLED=true plus RESULT_FILES enables the detail path only. It first resolves the live session, then executes the same institution/name/grade/nonempty-lookup-token/expiry/publication/version predicates as the immutable snapshot reader. The authorization query selects manifest key/hash and scope metadata, without selecting the large report payload. The R2 object key must exactly match the administration/version/participant/hash namespace; raw bytes must match SHA-256 and the envelope must match institution, exam, participant and publication version. No public URL is returned.
+
+A missing artifact falls back to a fresh authorized immutable snapshot query. Corrupt or foreign-scope content returns 503 without returning bytes. Current approved video metadata is checked separately against frozen wrong-question IDs. List queries and session D1 validation are unchanged. This reader remains disabled by default, and there is no cache layer yet. Real R2/D1 integration, full session revocation tests, bounded retention cleanup and completeness gates must pass before production activation.
