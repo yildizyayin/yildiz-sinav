@@ -1,3 +1,4 @@
+import {advanceResultArtifactPreparation} from './lib/result-artifact-preparation';
 import { sweepRetiredResultArtifacts } from './lib/result-artifact-retention';
 import {consumeResultRetentionQueue,dispatchResultRetentionQueue} from './lib/result-retention-queue';
 import app from './privacy-export-entry';
@@ -46,6 +47,7 @@ export default {
   },
   async queue(batch:MessageBatch,env:Env){await consumeResultRetentionQueue(batch,env,purgeResultNetworkAdministrationPage)},
   async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext) {
+    ctx.waitUntil(advanceResultArtifactPreparation(env));
     ctx.waitUntil(env.RESULT_RETENTION_QUEUE_ENABLED==='true'?(async()=>{await emitResultRetentionNotices(env);await dispatchResultRetentionQueue(env)})():(async()=>{await sweepRetiredResultArtifacts(env);await purgeExpiredResultNetwork(env)})());
   },
 } satisfies ExportedHandler<Env>;
