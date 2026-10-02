@@ -36,7 +36,7 @@ it('checks Super Admin and private rollout settings before any database or bucke
  const env={DB:{prepare:()=>{throw Error('UNEXPECTED_DB')}},FILES:{put:()=>{throw Error('PUBLIC_BUCKET_USED')}}} as any;
  expect((await prepareResultArtifacts(new Request('https://test'),env,{role:'TEACHER'} as any,'admin')).status).toBe(403);
  expect((await prepareResultArtifacts(new Request('https://test'),env,{role:'SUPER_ADMIN'} as any,'admin')).status).toBe(400);
- env.RESULT_ARTIFACTS_ENABLED='true';expect((await prepareResultArtifacts(new Request('https://test'),env,{role:'SUPER_ADMIN'} as any,'admin')).status).toBe(400);
+ env.RESULT_ARTIFACTS_ENABLED='true';env.RESULT_ARTIFACT_CLEANUP_ENABLED='true';env.RESULT_FILES={put:()=>{throw Error('UNEXPECTED_BUCKET')}};expect((await prepareResultArtifacts(new Request('https://test'),env,{role:'SUPER_ADMIN'} as any,'admin')).status).toBe(400);
 });
 
 it('validates digest and exact institution/participant/version before returning artifact content',async()=>{
