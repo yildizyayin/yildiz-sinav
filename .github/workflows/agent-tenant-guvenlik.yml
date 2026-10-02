@@ -23,7 +23,7 @@ jobs:
         shell: bash
         run: |
           set -eo pipefail
-          { npm install --no-audit --no-fund; npx vitest run --config vitest.config.ts tests/security-boundaries.test.ts tests/access.test.ts tests/production-operations.test.ts tests/result-worker-boundary.test.ts tests/result-network-snapshot.test.ts tests/report-snapshot-runtime.test.ts tests/result-artifact-preparation.test.ts tests/result-artifact-readiness.test.ts tests/result-artifacts.test.ts tests/result-artifact-retention.test.ts tests/result-retention-queue.test.ts tests/result-correction-runtime.test.ts tests/freeze-transaction.test.ts; } 2>&1 | tee agent-tenant-report.md
+          { npm install --no-audit --no-fund; npx vitest run --config vitest.config.ts tests/security-boundaries.test.ts tests/access.test.ts tests/production-operations.test.ts tests/result-worker-boundary.test.ts tests/result-network-snapshot.test.ts tests/report-snapshot-runtime.test.ts tests/result-artifact-verification.test.ts tests/result-artifact-preparation.test.ts tests/result-artifact-readiness.test.ts tests/result-artifacts.test.ts tests/result-artifact-retention.test.ts tests/result-retention-queue.test.ts tests/result-correction-runtime.test.ts tests/freeze-transaction.test.ts; } 2>&1 | tee agent-tenant-report.md
       - name: Raporu yayınla
         if: always()
         uses: ./.github/actions/agent-report
