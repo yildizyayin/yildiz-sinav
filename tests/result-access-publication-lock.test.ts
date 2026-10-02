@@ -64,5 +64,13 @@ it('allows code rotation for an existing participant in the current frozen versi
     expect(f.db.prepare('SELECT * FROM result_access_identities').all()).toHaveLength(1);
     expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(1);
     expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);
+    const priorIdentity = f.db.prepare('SELECT * FROM result_access_identities').get();
+    const priorInstitution = f.db.prepare('SELECT * FROM result_network_institutions').get();
+    f.db.exec(`UPDATE national_institution_directory SET name='Changed synthetic name';
+      CREATE TRIGGER fail_access_audit BEFORE INSERT ON audit_logs BEGIN SELECT RAISE(ABORT,'SYNTHETIC_AUDIT_FAILURE'); END;`);
+    await expect(issueAccess(request(), f.env, user)).rejects.toThrow('SYNTHETIC_AUDIT_FAILURE');
+    expect(f.db.prepare('SELECT * FROM result_access_identities').get()).toEqual(priorIdentity);
+    expect(f.db.prepare('SELECT * FROM result_network_institutions').get()).toEqual(priorInstitution);
+    expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);
   } finally { f.db.close(); }
 });
