@@ -23,13 +23,17 @@ export async function startResultArtifactVerification(request:Request,env:Env,us
   return readResultArtifactVerification(env,user,id);
  });
 }
-export async function verifyResultArtifactPage(env:Env,id:string,version:number):Promise<Response>{
+export async function verifyResultArtifactPage(env:Env,id:string,version:number,expectation?:{expectedGeneration:number;expectedCursor:string;queueToken:string}):Promise<Response>{
  if(!enabled(env))return badRequest('Dosya doğrulaması etkin değil.','RESULT_ARTIFACT_VERIFICATION_DISABLED');
  const admin=await env.DB.prepare("SELECT exam_id FROM exam_administrations WHERE id=? AND channel='RESULT_NETWORK'").bind(id).first<{exam_id:string}>();
  if(!admin)return changed();
  return withExamOperationLock(env,admin.exam_id,'RESULT_ARTIFACT_VERIFY_PAGE',async env=>{
   const job=await env.DB.prepare(`SELECT v.* FROM result_artifact_verifications v JOIN result_artifact_preparation_jobs p ON p.administration_id=v.administration_id AND p.snapshot_version=v.snapshot_version WHERE v.administration_id=? AND v.snapshot_version=? AND v.status='VERIFYING' AND p.status='PREPARED' AND p.source_generation=v.source_generation AND (v.next_attempt_at IS NULL OR v.next_attempt_at<=CURRENT_TIMESTAMP)`).bind(id,version).first<any>();
   if(!job)return changed();
+  if(expectation){
+   const ticket=await env.DB.prepare("SELECT dispatch_token FROM result_artifact_queue_jobs WHERE kind='VERIFY' AND administration_id=? AND snapshot_version=? AND source_generation=? AND dispatch_token=? AND page_cursor=? AND status<>'DONE'").bind(id,version,expectation.expectedGeneration,expectation.queueToken,expectation.expectedCursor).first();
+   if(!ticket||job.source_generation!==expectation.expectedGeneration||job.participant_cursor!==expectation.expectedCursor)return changed();
+  }
   await env.DB.prepare('UPDATE result_artifact_verifications SET last_attempted_at=CURRENT_TIMESTAMP WHERE administration_id=? AND snapshot_version=?').bind(id,version).run();
   const request=new Request('https://internal/audit?expectedSnapshotVersion='+version+'&cursor='+encodeURIComponent(job.participant_cursor));
   const response=await inspectResultArtifactReadiness(request,env,{id:job.actor_user_id,role:'SUPER_ADMIN'} as AuthUser,id,false);
@@ -56,6 +60,7 @@ export async function readResultArtifactVerification(env:Env,user:AuthUser,id:st
  return json({ok:true,records:records.slice(0,10),hasMore:records.length>10,rolloutReady:false,verificationMeaning:'COMPLETED_FULL_COHORT_PASS'});
 }
 export async function advanceResultArtifactVerification(env:Env){
+ if(env.RESULT_ARTIFACT_QUEUE_ENABLED==='true')return;
  if(!enabled(env))return;
  const jobs=await all<any>(env.DB.prepare("SELECT administration_id,snapshot_version FROM result_artifact_verifications WHERE status='VERIFYING' AND (next_attempt_at IS NULL OR next_attempt_at<=CURRENT_TIMESTAMP) ORDER BY COALESCE(last_attempted_at,'0000-01-01'),administration_id LIMIT 2"));
  for(const job of jobs){try{await verifyResultArtifactPage(env,job.administration_id,job.snapshot_version)}catch{/* No raw service/student data logged. Durable cursor remains unchanged. */}}
