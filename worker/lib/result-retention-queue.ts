@@ -78,7 +78,18 @@ export async function consumeResultRetentionQueue(batch:MessageBatch,env:Env,pur
 
 export async function resultRetentionQueueDiagnostics(env:Env,user:AuthUser):Promise<Response>{
  if(user.role!=='SUPER_ADMIN')return forbidden();
+ const configuredDeadline=env.RESULT_RETENTION_DEADLINE_HOURS??'24';
+ if(!/^[1-9][0-9]{0,2}$/.test(configuredDeadline)||Number(configuredDeadline)>720)throw Error('RESULT_RETENTION_DEADLINE_INVALID');
+ const deadlineHours=Number(configuredDeadline);
  const rows=await all<any>(env.DB.prepare(`SELECT kind,administration_id,status,next_dispatch_at,last_dispatched_at,last_processed_at,processed_pages,failure_count,last_error_code,updated_at FROM result_retention_queue_jobs ORDER BY CASE status WHEN 'ERROR' THEN 0 WHEN 'PENDING' THEN 1 ELSE 2 END,updated_at,kind,administration_id LIMIT 101`));
- const counts=await env.DB.prepare(`SELECT count(*) total,SUM(status='PENDING') pending,SUM(status='ERROR') errors,SUM(status='DONE') done,SUM(status<>'DONE' AND next_dispatch_at<=CURRENT_TIMESTAMP) redispatch_due FROM result_retention_queue_jobs`).first();
- return json({ok:true,enabled:active(env),featureEnabled:env.RESULT_RETENTION_QUEUE_ENABLED==='true',configured:!!env.RESULT_RETENTION_QUEUE,jobs:rows.slice(0,100),hasMore:rows.length>100,counts},200);
+ const counts=await env.DB.prepare(`SELECT count(*) total,SUM(status='PENDING') pending,SUM(status='ERROR') errors,SUM(status='DONE') done,SUM(status<>'DONE' AND next_dispatch_at<=CURRENT_TIMESTAMP) redispatch_due,SUM(status<>'DONE' AND datetime(COALESCE(last_processed_at,last_dispatched_at),'+30 minutes')<=CURRENT_TIMESTAMP) stalled FROM result_retention_queue_jobs`).first<any>();
+ // Source-based accounting also catches expired cohorts never dispatched.
+ // This is an operational target, not a statutory retention guarantee.
+ const backlog=await env.DB.prepare(`SELECT count(*) expired_administrations,COALESCE(SUM(datetime(retention_due_at,?)<=CURRENT_TIMESTAMP),0) overdue_administrations,MIN(retention_due_at) oldest_due_at FROM exam_administrations WHERE channel='RESULT_NETWORK' AND status IN ('PUBLISHED','ARCHIVED') AND retention_due_at IS NOT NULL AND retention_due_at<=CURRENT_TIMESTAMP`).bind('+'+deadlineHours+' hours').first<any>();
+ const alerts=[];
+ if(env.RESULT_RETENTION_QUEUE_ENABLED==='true'&&!env.RESULT_RETENTION_QUEUE)alerts.push({code:'QUEUE_BINDING_MISSING',severity:'critical',count:1});
+ if(Number(counts?.errors||0))alerts.push({code:'QUEUE_JOB_ERRORS',severity:'warning',count:Number(counts.errors)});
+ if(Number(counts?.stalled||0))alerts.push({code:'QUEUE_PROGRESS_STALLED',severity:'warning',count:Number(counts.stalled)});
+ if(Number(backlog?.overdue_administrations||0))alerts.push({code:'COHORT_CLEANUP_OVERDUE',severity:'critical',count:Number(backlog.overdue_administrations)});
+ return json({ok:true,enabled:active(env),featureEnabled:env.RESULT_RETENTION_QUEUE_ENABLED==='true',configured:!!env.RESULT_RETENTION_QUEUE,jobs:rows.slice(0,100),hasMore:rows.length>100,counts,backlog,alerts,policy:{deadlineHours,stalledMinutes:30,scope:'COHORT_PURGE',operationalTargetOnly:true}},200);
 }
