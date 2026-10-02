@@ -1,3 +1,4 @@
+import { agentDispatchRef } from './lib/agent-dispatch-policy';
 import app from './calibration-v2-entry';
 import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
@@ -66,7 +67,9 @@ async function ensureAgentLabel(env:Env,name:string,color:string,description:str
 async function aiAgentOverview(env:Env,user:AuthUser){
   if(user.role!=='SUPER_ADMIN')return forbidden('AI Ajan Merkezi yalnızca Süper Admin tarafından kullanılabilir.');
   const repository=githubAgentRepo(env);
-  const base=AI_AGENT_WORKFLOWS.map(workflow=>({...workflow,actionsUrl:agentActionsUrl(env,workflow.file),available:false,lastRun:null as any,error:null as string|null}));
+  let base;
+  try{base=AI_AGENT_WORKFLOWS.map(workflow=>({...workflow,actionsUrl:agentActionsUrl(env,workflow.file),dispatchRef:agentDispatchRef(workflow.file,env.GITHUB_AGENT_CHECK_REF),available:false,lastRun:null as any,error:null as string|null}))}
+  catch{return apiError(503,'AGENT_REF_INVALID','Ajan denetim dalı yapılandırması geçersiz.')}
   if(!env.GITHUB_AGENT_TOKEN)return json({ok:true,repository,configured:false,apiReachable:false,workflows:base,issues:[],instructionIssues:[],issueCounts:{},setup:{githubToken:false,onayWorkerUrl:Boolean(env.ONAY_WORKER_URL),actionsSecretsVisible:false}});
 
   try{
@@ -77,9 +80,9 @@ async function aiAgentOverview(env:Env,user:AuthUser){
     const availablePaths=new Set((workflowList?.workflows||[]).map((workflow:any)=>String(workflow.path||'')));
     const runs=await Promise.all(base.map(async workflow=>{
       try{
-        const result=await githubAgentRequest<any>(env,`actions/workflows/${workflow.file}/runs?per_page=5`);
+        const result=await githubAgentRequest<any>(env,`actions/workflows/${workflow.file}/runs?per_page=5&branch=${encodeURIComponent(workflow.dispatchRef)}`);
         const latest=result?.workflow_runs?.[0];
-        return {...workflow,available:availablePaths.has(`.github/workflows/${workflow.file}`),lastRun:latest?{id:latest.id,status:latest.status,conclusion:latest.conclusion,createdAt:latest.created_at,updatedAt:latest.updated_at,htmlUrl:latest.html_url,runNumber:latest.run_number,event:latest.event}:null};
+        return {...workflow,available:availablePaths.has(`.github/workflows/${workflow.file}`),lastRun:latest?{id:latest.id,status:latest.status,conclusion:latest.conclusion,createdAt:latest.created_at,updatedAt:latest.updated_at,htmlUrl:latest.html_url,runNumber:latest.run_number,event:latest.event,headBranch:latest.head_branch,headSha:latest.head_sha}:null};
       }catch(error){return {...workflow,available:availablePaths.has(`.github/workflows/${workflow.file}`),error:error instanceof Error?error.message:'Workflow çalıştırma geçmişi okunamadı.'};}
     }));
     const trackedLabels=['izleyici-ajan','icerik-tarama-ajani','acil','ajan-talimatı','yuk-testi-ajani','ajan-fix-dene','ci-saglik-ajani','d1-sema-ajani','route-denetim-ajani','tenant-guvenlik-ajani','kvkk-denetim-ajani','dependency-guvenlik-ajani','frontend-erisim-ajani','api-saglik-ajani','demo-veri-ajani','icerik-kalite-ajani','performans-ajani','release-hazirlik-ajani','issue-tekillestirme-ajani','ajan-durum-raporu'];
@@ -150,9 +153,11 @@ async function dispatchAiAgent(request:Request,env:Env,user:AuthUser){
   const inputs:Record<string,string>={};
   for(const [key,value] of Object.entries(rawInputs))inputs[key]=String(value);
   if(workflow.file==='agent-yuk-testi.yml'&&inputs.sanal_kullanici_sayisi&&!/^[1-9][0-9]{0,5}$/.test(inputs.sanal_kullanici_sayisi))return badRequest('Sanal kullanıcı sayısı 1–999999 arasında olmalıdır.');
+  let ref:string;
+  try{ref=agentDispatchRef(workflow.file,env.GITHUB_AGENT_CHECK_REF)}catch{return apiError(503,'AGENT_REF_INVALID','Ajan denetim dalı yapılandırması geçersiz.')}
   try{
-    await githubAgentRequest(env,`actions/workflows/${workflow.file}/dispatches`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ref:'main',inputs})});
-    return json({ok:true,workflow:workflow.file,message:`${workflow.name} ajanı main dalında tetiklendi.`});
+    await githubAgentRequest(env,`actions/workflows/${workflow.file}/dispatches`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ref,inputs})});
+    return json({ok:true,workflow:workflow.file,ref,message:`${workflow.name} ajanı ${ref} dalında tetiklendi. Denetlenen commit çalışma raporunda görünür.`});
   }catch(error){return apiError(502,'GITHUB_DISPATCH_FAILED',error instanceof Error?error.message:'Workflow tetiklenemedi.');}
 }
 
