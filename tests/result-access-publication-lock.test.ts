@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { issueAccess } from '../worker/result-network-entry';
+import { issueAccess, updateNetworkInstitution } from '../worker/result-network-entry';
 import { resultRetentionFixture } from './helpers/result-retention-fixture';
 
 function fixture() {
@@ -12,6 +12,25 @@ function fixture() {
 }
 const request = (participantId = 'p000') => new Request('https://test', { method: 'POST', body: JSON.stringify({ administrationId: 'a', participantId, mebCode: 'code', fullName: 'Sentetik Öğrenci', studentNumber: '123', gradeLevel: 7 }) });
 const user = { id: 'super', role: 'SUPER_ADMIN' } as any;
+
+it('rolls back institution edits on audit failure and commits both on success', async () => {
+  const f = fixture();
+  try {
+    f.db.exec(`ALTER TABLE institutions ADD COLUMN name TEXT DEFAULT 'Original';
+      ALTER TABLE institutions ADD COLUMN city TEXT DEFAULT 'City';
+      ALTER TABLE institutions ADD COLUMN district TEXT DEFAULT 'District';
+      ALTER TABLE institutions ADD COLUMN updated_at TEXT;
+      UPDATE institutions SET code='ANX-TEST';
+      CREATE TRIGGER fail_institution_audit BEFORE INSERT ON audit_logs BEGIN SELECT RAISE(ABORT,'SYNTHETIC_AUDIT_FAILED'); END;`);
+    const update = () => updateNetworkInstitution(new Request('https://test', { method: 'PATCH', body: JSON.stringify({ name: 'Changed' }) }), f.env, user, 'school');
+    await expect(update()).rejects.toThrow('SYNTHETIC_AUDIT_FAILED');
+    expect((f.db.prepare('SELECT name FROM institutions').get() as any).name).toBe('Original');
+    f.db.exec('DROP TRIGGER fail_institution_audit');
+    expect((await update()).status).toBe(200);
+    expect((f.db.prepare('SELECT name FROM institutions').get() as any).name).toBe('Changed');
+    expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(1);
+  } finally { f.db.close(); }
+});
 
 it('blocks identity issuance while another exam operation owns the lock', async () => {
   const f = fixture();
