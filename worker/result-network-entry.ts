@@ -1,3 +1,4 @@
+import {resultArtifactQueueDiagnostics} from './lib/result-artifact-queue';
 import {startResultArtifactVerification,readResultArtifactVerification} from './lib/result-artifact-verification';
 import {startResultArtifactPreparation,readResultArtifactPreparation} from './lib/result-artifact-preparation';
 import type { AuthUser,Env } from './types';
@@ -269,10 +270,12 @@ export async function handleResultGovernanceMutation(request:Request,env:Env):Pr
  const readiness=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/artifact-readiness$/);
  const preparation=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/prepare-artifact-job$/);
  const verification=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/verify-artifact-job$/);
- if(!dealerStatus&&!removeScope&&!finalize&&!reopen&&!artifacts&&!readiness&&!preparation&&!verification)return null;
+ const artifactQueue=path==='/api/admin/result-network/artifact-queue';
+ if(!dealerStatus&&!removeScope&&!finalize&&!reopen&&!artifacts&&!readiness&&!preparation&&!verification&&!artifactQueue)return null;
  const user=await requireSuper(request,env);if(user instanceof Response)return user;
  if(dealerStatus&&request.method==='POST')return setDealerStatus(request,env,user,dealerStatus[1]);
  if(removeScope&&request.method==='DELETE')return removeDealerScope(env,user,removeScope[1],removeScope[2]);
+ if(artifactQueue&&request.method==='GET')return resultArtifactQueueDiagnostics(env,user);
  if(verification&&request.method==='POST')return startResultArtifactVerification(request,env,user,verification[1]);
  if(verification&&request.method==='GET')return readResultArtifactVerification(env,user,verification[1]);
  if(preparation&&request.method==='GET')return readResultArtifactPreparation(env,user,preparation[1]);
