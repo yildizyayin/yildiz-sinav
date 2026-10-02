@@ -1,5 +1,16 @@
 # Birleşik karne için kaynak kapsamı
 
+İlk API: `GET /api/reporting/students/:studentId/frozen-exams`.
+`academicYear=2026-2027` ve comma separated `examIds` (en fazla20) gereklidir.
+Mevcut reporting rol/öğrenci/kurum yetkisi ve branş kapsamı uygulanır. Öğretmen
+kayıtları yetkili mevcut dönemle sınırlıdır. Sadece lisanslı kanaldaki güncel
+yayın sürümü/due cutoff kullanılır; yıl dondurulmuş payload içinden okunur.
+Tek sınavdaki birden fazla katılımcı kaydı hata verir. Özetler ders/müfredat/sınıf
+gruplarıdır; doğrulanmamış veya çelişkili bağlam hariç, iptal paydadan hariçtir.
+Branş görünümünde diğer derslerin coverage/bulunamayan sınavları gösterilmez.
+EXAM dışındaki kaynaklar, tekrar karşılaştırması, dört ekran ve PDF henüz bağlı
+değildir. Bu endpoint resmî puan veya beceri düzeyi hesaplamaz.
+
 Mevcut hesaplama çekirdeği ve adaptör PR #225, `feat/learning-report-calculation-contract`
 dalındadır. Henüz bu endpointlere bağlanmış bir kullanıcı özelliği değildir.
 Uygulama işlemi sırasında bu kaynaklar doğrulanmalı; istemcinin verdiği öğrenci,
