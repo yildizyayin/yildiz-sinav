@@ -5,6 +5,7 @@ export interface Env {
   FILES: R2Bucket;
   RESULT_ARTIFACTS_ENABLED?: string;
   RESULT_ARTIFACT_READS_ENABLED?: string;
+  RESULT_ARTIFACT_CLEANUP_ENABLED?: string;
   // Dedicated private bucket; never reuse public content assets.
   RESULT_FILES?: R2Bucket;
   AI?: Ai;
@@ -139,4 +140,3 @@ export interface PermissionScope {
   guidanceClassIds: string[];
   subjectClassAssignments: Array<{ classId: string; subjectId: string }>;
 }
-
