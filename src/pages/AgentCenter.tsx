@@ -91,7 +91,7 @@ export function AgentCenter() {
         method: 'POST',
         body: JSON.stringify({ workflow: instructionAgent, title: instructionTitle.trim(), instruction: instructionText.trim(), priority: instructionPriority }),
       });
-      setNotice(result.message || 'Ajan talimatı kuyruğa alındı.');
+      setNotice(result.message || 'Görev kaydı oluşturuldu. Çalıştırma başlatılmadı.');
       setInstructionTitle('');
       setInstructionText('');
       setInstructionPriority('normal');
@@ -175,7 +175,7 @@ export function AgentCenter() {
 
     <div className="panel agent-command-panel">
       <div className="panel-head">
-        <div><span className="eyebrow">EKİP KOMUTA MASASI</span><h2>Ajanlara talimat ver</h2><p>Bir free ajan seçin; görev, kapsam veya kontrol notunu denetlenebilir bir GitHub Issue olarak kuyruğa alın.</p></div>
+        <div><span className="eyebrow">EKİP KOMUTA MASASI</span><h2>Ajanlara talimat ver</h2><p>Bir free ajan seçin; görev, kapsam veya kontrol notunu denetlenebilir bir GitHub Issue olarak kaydedin.</p></div>
         <Send className="agent-panel-icon" />
       </div>
       <div className="agent-command-grid">
@@ -200,7 +200,7 @@ export function AgentCenter() {
           <label>Talimat / beklenen çıktı
             <textarea value={instructionText} onChange={(event) => setInstructionText(event.target.value)} placeholder="Ajanın neyi kontrol etmesini, hangi sınırlar içinde çalışmasını veya hangi çıktıyı hazırlamasını istediğinizi yazın." maxLength={5000} rows={6} disabled={instructionBusy} />
           </label>
-          <button className="primary agent-command-submit" type="submit" disabled={instructionBusy || !instructionAgent || !instructionTitle.trim() || !instructionText.trim()}><Send size={15} /> {instructionBusy ? 'Kuyruğa alınıyor…' : 'Talimatı kuyruğa al'}</button>
+          <button className="primary agent-command-submit" type="submit" disabled={instructionBusy || !instructionAgent || !instructionTitle.trim() || !instructionText.trim()}><Send size={15} /> {instructionBusy ? 'Kaydediliyor…' : 'Görev kaydı oluştur'}</button>
           <small className="agent-form-hint">Talimat, seçilen ajan etiketiyle GitHub Issue olarak saklanır. Ücretli ajanlar ve production işlemleri bu formdan çalıştırılamaz.</small>
         </form>
         <div className="agent-command-guide">
@@ -208,8 +208,8 @@ export function AgentCenter() {
           <ol>
             <li>Görevi vereceğiniz ücretsiz ajanı seçin.</li>
             <li>Beklenen kontrolü ve çıktıyı açıkça yazın.</li>
-            <li>Talimat, ilgili ajan kuyruğuna ve GitHub Issue listesine eklenir.</li>
-            <li>Ajan kartındaki <strong>Çalıştır</strong> düğmesiyle kontrolü hemen başlatabilir veya zamanlamasını bekleyebilirsiniz.</li>
+            <li>Talimat, hedef ajan bilgisiyle GitHub Issue olarak kaydedilir; otomatik uygulanmaz.</li>
+            <li>Ajan kartındaki <strong>Çalıştır</strong> düğmesiyle ajanın önceden tanımlanmış rutin denetimini başlatabilirsiniz. Bu işlem yazdığınız talimatı uygulamaz.</li>
           </ol>
           <div className="agent-command-note"><strong>Önemli:</strong> Free ajanlar güvenli, belirlenmiş denetimleri çalıştıran otomasyonlardır. Serbest biçimli kod yazma ve doğal dil yorumlama ücretli Anthropic ajanlarında kapalıdır.</div>
         </div>
