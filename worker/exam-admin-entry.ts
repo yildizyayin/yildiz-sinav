@@ -585,7 +585,7 @@ async function copyDefinition(env: Env, user: AuthUser, examId: string): Promise
   return Response.json({ ok: true, id }, { status: 201 });
 }
 
-async function deleteDefinition(env: Env, user: AuthUser, examId: string):Promise<Response>{
+export async function deleteDefinition(env: Env, user: AuthUser, examId: string):Promise<Response>{
   const exam=await managedExam(env,user,examId);if(!exam)return notFound();
   return withExamOperationLock(env,examId,'EXAM_SOURCE_EDIT',async(env)=>{
     const gate=await examPublicationGuard(env,examId);if(gate)return gate;
@@ -605,9 +605,12 @@ async function deleteDefinitionUnlocked(env: Env, user: AuthUser, examId: string
     env.DB.prepare('DELETE FROM exam_optional_answer_keys WHERE exam_id=?').bind(examId),
     env.DB.prepare('DELETE FROM exam_document_assets WHERE exam_id=?').bind(examId),
     env.DB.prepare('DELETE FROM video_links WHERE exam_id=?').bind(examId),
+    env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)').bind(uuid('aud'),user.id,exam.institution_id,'EXAM_DEFINITION_DELETED','exam',examId,JSON.stringify(sanitizeAuditDetails({title:exam.title}))),
+    // The lock references this exam. Release it inside this transaction so
+    // deletion succeeds with foreign keys enabled; rollback restores it.
+    env.DB.prepare('DELETE FROM exam_operation_locks WHERE exam_id=?').bind(examId),
     env.DB.prepare('DELETE FROM exams WHERE id=?').bind(examId),
   ]);
-  await audit(env.DB, user.id, exam.institution_id, 'EXAM_DEFINITION_DELETED', 'exam', examId, { title: exam.title });
   return Response.json({ ok: true });
 }
 
@@ -677,7 +680,7 @@ async function replaceStructureUnlocked(request: Request, env: Env, user: AuthUs
   return Response.json({ ok: true, questionCount: globalNo - 1, booklets });
 }
 
-async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, examId: string):Promise<Response>{
+export async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, examId: string):Promise<Response>{
   const exam=await managedExam(env,user,examId);if(!exam)return notFound();
   return withExamOperationLock(env,examId,'EXAM_SOURCE_EDIT',async(env)=>{
     const gate=await examPublicationGuard(env,examId);if(gate)return gate;
