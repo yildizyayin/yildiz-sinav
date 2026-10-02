@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import { expect,it } from 'vitest';
 import { encodeResultArtifact } from '../worker/lib/result-artifacts';
@@ -13,6 +14,7 @@ it('pins results to the channel publication and fails closed for missing payload
  INSERT INTO result_network_institutions VALUES('school','code');
  INSERT INTO result_access_identities VALUES('p','school','admin','ada',6,'number',NULL,'2099-01-01');
  INSERT INTO exam_administrations VALUES('admin','e','RESULT_NETWORK','PUBLISHED',1,'2026-10-01');`);
+ db.exec(readFileSync(new URL('../migrations/0062_result_artifact_retirement.sql',import.meta.url),'utf8'));
  const payload={schemaVersion:1,exam:{exam_id:'e',net:2,title:'Original'},subjects:[{subject_name:'Math',net:2}],outcomes:[{title:'Outcome',evidence_count:2,correct_count:1}],wrongQuestionIds:['q']};
  db.prepare('INSERT INTO exam_result_snapshots VALUES(?,?,?,?,?,?)').run('e','p',1,JSON.stringify(payload),1,5);
  db.prepare('INSERT INTO exam_result_snapshots VALUES(?,?,?,?,?,?)').run('e','p',2,JSON.stringify({...payload,exam:{net:99}}),99,100);
@@ -45,6 +47,10 @@ it('pins results to the channel publication and fails closed for missing payload
  expect(snapshotDetail(readNetworkSnapshot(read()[0].payload_json)).outcomes[0].success_rate).toBe(50);
  expect(db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('code','ada',6,'other','other','','')).toHaveLength(0);
  expect(db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('other-school','ada',6,'number','number','','')).toHaveLength(0);
+ db.exec("INSERT INTO result_artifact_retirements(administration_id,exam_id,retired_through_version) VALUES('admin','e',1)");
+ objectReads=0;expect(read()).toHaveLength(0);expect((await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.status).toBe(404);expect(objectReads).toBe(0);
+ expect(db.prepare(NETWORK_INSTITUTION_SNAPSHOT_SQL).all('admin','institution','institution')).toHaveLength(0);
+ db.exec('DELETE FROM result_artifact_retirements');
  db.exec('UPDATE exam_administrations SET published_snapshot_version=NULL');
  expect((await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.status).toBe(409);
  expect(read()[0].exam_id).toBe('e');expect(snapshotSummary(read()[0])).toBeNull();
