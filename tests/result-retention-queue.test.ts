@@ -101,3 +101,13 @@ it('reconciles a crash after the final source commit without leaving a false pen
  expect(f.db.prepare("SELECT status FROM result_retention_queue_jobs WHERE kind='COHORT_PURGE'").get()).toEqual({status:'DONE'});const late=message(lost);await consume(f,late);expect(late.acks).toBe(1);
  }finally{f.db.close()}
 });
+it('reports stalled jobs and overdue source cohorts even before any notification was created',async()=>{
+ const f=fixture();try{
+ let report=await (await resultRetentionQueueDiagnostics(f.env,{role:'SUPER_ADMIN'} as any)).json() as any;
+ expect(report.backlog.overdue_administrations).toBe(1);expect(report.policy.deadlineHours).toBe(24);expect(report.alerts.map((x:any)=>x.code)).toContain('COHORT_CLEANUP_OVERDUE');
+ await dispatchResultRetentionQueue(f.env);f.db.exec("UPDATE result_retention_queue_jobs SET last_dispatched_at='2000-01-01'");
+ report=await (await resultRetentionQueueDiagnostics(f.env,{role:'SUPER_ADMIN'} as any)).json() as any;expect(report.counts.stalled).toBe(1);expect(report.alerts.map((x:any)=>x.code)).toContain('QUEUE_PROGRESS_STALLED');
+ f.env.RESULT_RETENTION_DEADLINE_HOURS='48';expect((await (await resultRetentionQueueDiagnostics(f.env,{role:'SUPER_ADMIN'} as any)).json() as any).policy.deadlineHours).toBe(48);
+ f.env.RESULT_RETENTION_DEADLINE_HOURS='-1';await expect(resultRetentionQueueDiagnostics(f.env,{role:'SUPER_ADMIN'} as any)).rejects.toThrow('RESULT_RETENTION_DEADLINE_INVALID');
+ }finally{f.db.close()}
+});
