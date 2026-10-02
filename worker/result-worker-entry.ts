@@ -1,3 +1,4 @@
+import { sweepRetiredResultArtifacts } from './lib/result-artifact-retention';
 import app from './privacy-export-entry';
 import type { Env } from './types';
 import { json } from './lib/db';
@@ -43,6 +44,6 @@ export default {
     return app.fetch(request, env, ctx);
   },
   async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil(purgeExpiredResultNetwork(env));
+    ctx.waitUntil((async()=>{await sweepRetiredResultArtifacts(env);await purgeExpiredResultNetwork(env)})());
   },
 } satisfies ExportedHandler<Env>;
