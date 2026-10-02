@@ -60,18 +60,22 @@ runs:
             labels: label, per_page: 100,
           });
           const marker = `<!-- anunex-agent-report:${encodeURIComponent(label)} -->`;
+          const refMarker = `<!-- anunex-agent-report-ref:${encodeURIComponent(context.ref || 'unknown')} -->`;
           const legacyFooter = '_Bu Issue ilgili GitHub Actions ajanı tarafından idempotent olarak güncellenir._';
           const existing = candidates.filter(issue => {
             const labels = (issue.labels || []).map(item => typeof item === 'string' ? item : item.name);
             const issueBody = issue.body || '';
             if (issue.pull_request || labels.includes('ajan-talimatı') || issueBody.includes('## AI Ajan Talimatı') || issueBody.includes('<!-- anunex-agent-instruction -->')) return false;
             if (issue.user?.type !== 'Bot') return false;
-            return issueBody.includes(marker) || (issueBody.startsWith('## Ücretsiz AI ajan raporu\n') && issueBody.includes(legacyFooter));
+            return (issueBody.includes(marker) && issueBody.includes(refMarker)) || (context.ref === 'refs/heads/main' && issueBody.startsWith('## Ücretsiz AI ajan raporu\n') && issueBody.includes(legacyFooter));
           });
           const body = [
-            marker,
+            marker, refMarker,
             '## Ücretsiz AI ajan raporu', '',
             `**Durum:** ${status}`,
+            `**Dal:** ${context.ref || 'bilinmiyor'}`,
+            `**Commit:** ${context.sha || 'bilinmiyor'}`,
+            `**Çalışma:** https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
             `**Zaman:** ${new Date().toISOString()}`, '',
             report, '',
             '_Bu Issue ilgili GitHub Actions ajanı tarafından idempotent olarak güncellenir._',
