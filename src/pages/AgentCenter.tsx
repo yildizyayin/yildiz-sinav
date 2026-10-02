@@ -14,6 +14,7 @@ type AgentWorkflow = {
   paused?: boolean;
   actionsUrl: string;
   available: boolean;
+  dispatchRef?: string;
   error?: string | null;
   lastRun?: {
     status: string;
@@ -23,6 +24,8 @@ type AgentWorkflow = {
     htmlUrl: string;
     runNumber: number;
     event: string;
+    headBranch?: string;
+    headSha?: string;
   } | null;
 };
 
@@ -140,7 +143,7 @@ export function AgentCenter() {
       <div>
         <span className="eyebrow">ANUNEX · AI OPERASYON</span>
         <h1>AI Ajan Merkezi</h1>
-        <p>7/24 çalışan GitHub ajanlarının son durumunu, açtıkları Issue kayıtlarını ve manuel tetikleme bağlantılarını tek ekranda izleyin.</p>
+        <p>GitHub ajanlarının son durumunu, açtıkları Issue kayıtlarını ve manuel tetikleme bağlantılarını tek ekranda izleyin.</p>
       </div>
       <button className="ghost" onClick={() => void load()} disabled={busy}><RefreshCw size={16} /> Yenile</button>
     </div>
@@ -151,7 +154,7 @@ export function AgentCenter() {
 
     <div className="summary-strip agent-summary">
       <div className="kpi-card"><span>Toplam ajan</span><strong>{workflows.length || '—'}</strong></div>
-      <div className="kpi-card"><span>Ücretsiz aktif</span><strong>{freeWorkflows.length || '—'}</strong></div>
+      <div className="kpi-card"><span>Ücretsiz tanımlı</span><strong>{freeWorkflows.length || '—'}</strong></div>
       <div className="kpi-card"><span>Kredi bekleyen</span><strong>{pausedWorkflows.length || '0'}</strong></div>
       <div className="kpi-card"><span>Son başarılı</span><strong>{successful || '—'}</strong></div>
       <div className="kpi-card"><span>Şu an çalışan</span><strong>{running || '0'}</strong></div>
@@ -232,6 +235,8 @@ export function AgentCenter() {
           <h3>{workflow.name}</h3>
           <p>{workflow.description}</p>
           <div className="agent-card-meta"><span><Clock3 size={14} /> Son çalışma</span><strong>{date(workflow.lastRun?.updatedAt || workflow.lastRun?.createdAt)}</strong></div>
+          <small>Çalıştırma dalı: {workflow.dispatchRef || 'main'}</small>
+          {workflow.lastRun?.headSha && <small>Son denetim: {workflow.lastRun.headBranch || '—'} · {workflow.lastRun.headSha.slice(0, 12)}</small>}
           {workflow.error && <small className="agent-inline-error">{workflow.error}</small>}
           <div className="agent-card-actions"><a className="secondary subtle" href={workflow.actionsUrl} target="_blank" rel="noreferrer"><ExternalLink size={14} /> Actions’ta aç</a><button className="primary subtle" disabled={busy || !workflow.available} onClick={() => void runWorkflow(workflow)}>{runningWorkflow === workflow.file ? <RefreshCw size={14} className="spin" /> : <Play size={14} />} Çalıştır</button></div>
         </article>;
