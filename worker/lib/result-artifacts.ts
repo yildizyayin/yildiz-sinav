@@ -36,6 +36,7 @@ export async function prepareResultArtifacts(request:Request,env:Env,user:AuthUs
  if(env.RESULT_ARTIFACTS_ENABLED!=='true'||env.RESULT_ARTIFACT_CLEANUP_ENABLED!=='true'||env.RESULT_RETENTION_QUEUE_ENABLED!=='true'||!env.RESULT_RETENTION_QUEUE||!env.RESULT_FILES)return badRequest('Sonuç dosyası hazırlama henüz etkinleştirilmedi.','RESULT_ARTIFACTS_DISABLED');
  const body:any=await request.json().catch(()=>({}));
  if(body.managed===true&&env.RESULT_ARTIFACT_BACKGROUND_ENABLED!=='true')return badRequest('Arka plan dosya hazırlama etkin değil.','RESULT_ARTIFACT_BACKGROUND_DISABLED');
+ if(body.managed===true&&(typeof body.attemptToken!=='string'||body.attemptToken.length>100||!body.attemptToken.startsWith('artifact-attempt_')))return badRequest('Geçerli hazırlama denemesi gereklidir.');
  const version=body.expectedSnapshotVersion;let cursor=body.cursor??'';
  if(!Number.isSafeInteger(version)||version<1||typeof cursor!=='string'||cursor.length>200)return badRequest('Güncel sürüm ve geçerli devam bilgisi gereklidir.');
  const administration=await env.DB.prepare("SELECT exam_id FROM exam_administrations WHERE id=? AND channel='RESULT_NETWORK'").bind(id).first<{exam_id:string}>();
@@ -47,7 +48,7 @@ export async function prepareResultArtifacts(request:Request,env:Env,user:AuthUs
   if(body.managed===true&&!job)return json({ok:false,error:{code:'RESULT_ARTIFACT_JOB_NOT_RUNNING',message:'Hazırlama kaydı etkin değil.'}},409);
   if(job){
    cursor=job.participant_cursor;
-   await env.DB.prepare("UPDATE result_artifact_preparation_jobs SET last_attempted_at=CURRENT_TIMESTAMP WHERE administration_id=? AND snapshot_version=? AND status='RUNNING'").bind(id,version).run();
+   await env.DB.prepare("UPDATE result_artifact_preparation_jobs SET last_attempted_at=CURRENT_TIMESTAMP,attempt_token=? WHERE administration_id=? AND snapshot_version=? AND status='RUNNING'").bind(body.attemptToken,id,version).run();
   }
   const rows=await all<any>(env.DB.prepare(`SELECT s.*,m.object_key existing_object_key,m.content_sha256 existing_content_sha256,CASE WHEN ep.exam_id=s.exam_id AND ep.institution_id=s.institution_id AND rni.administration_id=rai.administration_id AND (rni.licensed_institution_id=s.institution_id OR (rni.meb_code<>'' AND rni.meb_code=institution.code)) THEN 1 ELSE 0 END scope_valid FROM exam_result_snapshots s JOIN result_access_identities rai ON rai.participant_id=s.participant_id AND rai.administration_id=? LEFT JOIN exam_participants ep ON ep.id=s.participant_id LEFT JOIN result_network_institutions rni ON rni.id=rai.result_institution_id LEFT JOIN institutions institution ON institution.id=s.institution_id LEFT JOIN result_artifact_manifest m ON m.administration_id=rai.administration_id AND m.participant_id=s.participant_id AND m.snapshot_version=s.snapshot_version WHERE s.exam_id=? AND s.snapshot_version=? AND s.participant_id>? ORDER BY s.participant_id LIMIT 51`).bind(id,administration.exam_id,version,cursor));
   const page=rows.slice(0,50);
@@ -67,7 +68,7 @@ export async function prepareResultArtifacts(request:Request,env:Env,user:AuthUs
   statements.push(env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'RESULT_ARTIFACT_PAGE_PREPARED','exam_administration',?,?)`).bind(uuid('aud'),user.id,id,JSON.stringify({version,count:page.length,hasMore:rows.length>50})));
   if(job){
    const hasMore=rows.length>50,next=page.at(-1)?.participant_id??cursor;
-   statements.push(env.DB.prepare(`UPDATE result_artifact_preparation_jobs SET participant_cursor=?,prepared_count=prepared_count+?,status=?,updated_at=CURRENT_TIMESTAMP WHERE administration_id=? AND snapshot_version=? AND status='RUNNING' AND participant_cursor=?`).bind(next,page.length,hasMore?'RUNNING':'PREPARED',id,version,cursor));
+   statements.push(env.DB.prepare(`UPDATE result_artifact_preparation_jobs SET participant_cursor=?,prepared_count=prepared_count+?,status=?,last_error_code=NULL,next_attempt_at=NULL,attempt_token=NULL,updated_at=CURRENT_TIMESTAMP WHERE administration_id=? AND snapshot_version=? AND status='RUNNING' AND participant_cursor=? AND attempt_token=?`).bind(next,page.length,hasMore?'RUNNING':'PREPARED',id,version,cursor,body.attemptToken));
   }
   await env.DB.batch(statements);
   return json({ok:true,prepared:page.length,snapshotVersion:version,nextCursor:rows.length>50?page.at(-1)?.participant_id:null,readerEnabled:env.RESULT_ARTIFACT_READS_ENABLED==='true'});
