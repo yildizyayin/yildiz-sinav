@@ -20,7 +20,7 @@ export function frozenExamReport(rows: any[], subjectIds: string[] | null) {
       const first = refs[0], key = JSON.stringify([first.subjectId, first.curriculumVersionId, row.grade_level]);
       let group = groups.get(key);
       if (!group) {
-        group = { subjectId: first.subjectId, curriculumVersionId: first.curriculumVersionId, gradeLevel: row.grade_level, correct: 0, wrong: 0, blank: 0, invalid: 0, examIds: new Set<string>() };
+        group = { subjectId: first.subjectId, subjectName: Array.isArray(payload.subjects)?payload.subjects.find((subject:any)=>subject.subject_id===first.subjectId)?.subject_name||null:null, curriculumVersionId: first.curriculumVersionId, programVersion: typeof first.programVersion==='string'?first.programVersion:null, gradeLevel: row.grade_level, correct: 0, wrong: 0, blank: 0, invalid: 0, examIds: new Set<string>() };
         groups.set(key, group);
       }
       group[evidence.status.toLowerCase()]++;
