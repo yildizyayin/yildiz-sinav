@@ -3,7 +3,7 @@ import {expect,it} from 'vitest';
 import {resultRetentionFixture} from './helpers/result-retention-fixture';
 import {startResultArtifactPreparation,advanceResultArtifactPreparation,readResultArtifactPreparation} from '../worker/lib/result-artifact-preparation';
 const user={id:'admin-user',role:'SUPER_ADMIN'} as any;
-function fixture(count=1){const f=resultRetentionFixture(count);for(const migration of ['0064_result_artifact_preparation_jobs','0065_result_artifact_preparation_health'])f.db.exec(readFileSync(new URL('../migrations/'+migration+'.sql',import.meta.url),'utf8'));f.env.RESULT_ARTIFACT_BACKGROUND_ENABLED='true';return f}
+function fixture(count=1){const f=resultRetentionFixture(count);for(const migration of ['0064_result_artifact_preparation_jobs','0065_result_artifact_preparation_health','0066_result_artifact_verification'])f.db.exec(readFileSync(new URL('../migrations/'+migration+'.sql',import.meta.url),'utf8'));f.env.RESULT_ARTIFACT_BACKGROUND_ENABLED='true';return f}
 const req=(restart=false)=>new Request('https://test/start',{method:'POST',body:JSON.stringify({expectedSnapshotVersion:2,restart})});
 const job=(f:ReturnType<typeof fixture>)=>f.db.prepare("SELECT * FROM result_artifact_preparation_jobs WHERE administration_id='a'").get() as any;
 it('persists atomic 50-row progress, resumes across scheduler calls and preserves completed jobs on duplicate starts',async()=>{
