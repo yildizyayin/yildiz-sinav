@@ -43,3 +43,24 @@ export async function prepareResultArtifacts(request:Request,env:Env,user:AuthUs
   return json({ok:true,prepared:page.length,snapshotVersion:version,nextCursor:rows.length>50?page.at(-1)?.participant_id:null,readerEnabled:false});
  });
 }
+
+export interface ArtifactAccess {
+ administration_id:string;exam_id:string;participant_id:string;institution_id:string;snapshot_version:number;object_key:string|null;content_sha256:string|null;
+}
+// Access must come from the current authorized publication query, never the
+// request body or a cached session. This helper only loads and validates bytes.
+export async function readResultArtifact(bucket:R2Bucket,access:ArtifactAccess):Promise<any|null>{
+ if(!access.object_key||!access.content_sha256)return null;
+ if(!/^[a-f0-9]{64}$/.test(access.content_sha256))throw Error('RESULT_ARTIFACT_INTEGRITY_FAILED');
+ const expected=`private-results/${encodeURIComponent(access.administration_id)}/v${access.snapshot_version}/${encodeURIComponent(access.participant_id)}/${access.content_sha256}.json`;
+ if(access.object_key!==expected)throw Error('RESULT_ARTIFACT_SCOPE_FAILED');
+ const object=await bucket.get(expected);if(!object)return null;
+ const body=await object.text();
+ const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(body));
+ const digest=Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,'0')).join('');
+ if(digest!==access.content_sha256)throw Error('RESULT_ARTIFACT_INTEGRITY_FAILED');
+ let artifact:any;try{artifact=JSON.parse(body)}catch{throw Error('RESULT_ARTIFACT_INTEGRITY_FAILED')}
+ if(artifact.schemaVersion!==1||artifact.administrationId!==access.administration_id||artifact.examId!==access.exam_id||artifact.participantId!==access.participant_id||artifact.institutionId!==access.institution_id||artifact.snapshotVersion!==access.snapshot_version)throw Error('RESULT_ARTIFACT_SCOPE_FAILED');
+ if(!Array.isArray(artifact.detail?.subjects)||!Array.isArray(artifact.detail?.outcomes)||!Array.isArray(artifact.detail?.optionalPhilosophy)||!(artifact.wrongQuestionIds===null||Array.isArray(artifact.wrongQuestionIds)))throw Error('RESULT_ARTIFACT_INTEGRITY_FAILED');
+ return artifact;
+}
