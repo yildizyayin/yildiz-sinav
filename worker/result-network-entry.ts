@@ -3,8 +3,8 @@ import { getAuthUser,hashPassword,verifyPassword,verifyTurnstile } from './lib/a
 import { all,audit,badRequest,forbidden,json,normalizeName,one,uuid } from './lib/db';
 import { evaluateBatch,getScanBatch,previewExamFile,resolveScanRecord,searchScanCandidates } from './index';
 import { withExamOperationLock } from './lib/exam-operation-lock';
-import { RESULT_NETWORK_SNAPSHOT_SQL, NETWORK_INSTITUTION_SNAPSHOT_SQL, readNetworkSnapshot, snapshotSummary, snapshotDetail } from './lib/result-network-snapshot';
-import { prepareResultArtifacts } from './lib/result-artifacts';
+import { RESULT_NETWORK_SNAPSHOT_SQL, RESULT_NETWORK_ARTIFACT_ACCESS_SQL, NETWORK_INSTITUTION_SNAPSHOT_SQL, readNetworkSnapshot, snapshotSummary, snapshotDetail } from './lib/result-network-snapshot';
+import { prepareResultArtifacts, readResultArtifact } from './lib/result-artifacts';
 import { reopenNetworkResults } from './lib/result-network-correction';
 import { REPORT_SNAPSHOT_SQL } from './lib/report-snapshot';
 
@@ -68,13 +68,24 @@ async function studentResults(request:Request,env:Env){
 
 async function examDetail(request:Request,env:Env,examId:string){
  const identity=await resultIdentity(request,env);if(!identity)return safeError(401,'RESULT_SESSION_REQUIRED','Sonucunuzu yeniden doğrulayın.');
- const peer=await one<any>(env.DB.prepare(RESULT_NETWORK_SNAPSHOT_SQL+` AND ea.exam_id=? LIMIT 1`).bind(identity.meb_code,identity.normalized_name,identity.grade_level,identity.student_number_lookup_token||'',identity.student_number_lookup_token||'',identity.tckn_lookup_token||'',identity.tckn_lookup_token||'',examId));
- if(!peer)return safeError(404,'RESULT_NOT_FOUND','Sınav sonucu bulunamadı.');
- const payload=readNetworkSnapshot(peer.payload_json);if(!payload)return safeError(409,'RESULT_SNAPSHOT_UNAVAILABLE','Bu yayının sabit sonuç kaydı bulunmuyor. Kurumunuzla iletişime geçin.');
- const detail=snapshotDetail(payload);
+ const parameters=[identity.meb_code,identity.normalized_name,identity.grade_level,identity.student_number_lookup_token||'',identity.student_number_lookup_token||'',identity.tckn_lookup_token||'',identity.tckn_lookup_token||'',examId];
+ let artifact:any=null;let peer:any=null;
+ if(env.RESULT_ARTIFACT_READS_ENABLED==='true'&&env.RESULT_FILES){
+  peer=await one<any>(env.DB.prepare(RESULT_NETWORK_ARTIFACT_ACCESS_SQL+` AND ea.exam_id=? LIMIT 1`).bind(...parameters));
+  if(!peer)return safeError(404,'RESULT_NOT_FOUND','Sınav sonucu bulunamadı.');
+  try{artifact=await readResultArtifact(env.RESULT_FILES,peer)}catch{return safeError(503,'RESULT_ARTIFACT_UNAVAILABLE','Sonuç dosyası doğrulanamadı. Lütfen tekrar deneyin.')}
+ }
+ let payload:any;
+ if(artifact){payload={wrongQuestionIds:artifact.wrongQuestionIds}}else{
+  // A missing artifact falls back to a freshly authorized immutable snapshot.
+  peer=await one<any>(env.DB.prepare(RESULT_NETWORK_SNAPSHOT_SQL+` AND ea.exam_id=? LIMIT 1`).bind(...parameters));
+  if(!peer)return safeError(404,'RESULT_NOT_FOUND','Sınav sonucu bulunamadı.');
+  payload=readNetworkSnapshot(peer.payload_json);if(!payload)return safeError(409,'RESULT_SNAPSHOT_UNAVAILABLE','Bu yayının sabit sonuç kaydı bulunmuyor. Kurumunuzla iletişime geçin.');
+ }
+ const detail=artifact?artifact.detail:snapshotDetail(payload);
  // Video approval can be withdrawn, but question selection is frozen evidence.
  const videos=Array.isArray(payload.wrongQuestionIds)?await all<any>(env.DB.prepare(`SELECT DISTINCT vl.title,vl.url,vl.link_type,q.question_no FROM exam_questions q JOIN video_links vl ON vl.exam_question_id=q.id AND vl.approved=1 WHERE q.exam_id=? AND q.id IN(SELECT value FROM json_each(?)) ORDER BY q.question_no LIMIT 50`).bind(examId,JSON.stringify(payload.wrongQuestionIds))):[];
- return json({ok:true,...detail,videos,snapshotVersion:peer.snapshot_version,videoEvidenceUnavailable:!Array.isArray(payload.wrongQuestionIds)});
+ return json({ok:true,...detail,videos,snapshotVersion:peer.snapshot_version,resultSource:artifact?'PRIVATE_ARTIFACT':'PUBLISHED_SNAPSHOT',videoEvidenceUnavailable:!Array.isArray(payload.wrongQuestionIds)});
 }
 
 async function requireSuper(request:Request,env:Env):Promise<AuthUser|Response>{const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(user.role!=='SUPER_ADMIN')return forbidden();return user}
