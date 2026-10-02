@@ -3,7 +3,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { expect,it } from 'vitest';
 import { encodeResultArtifact } from '../worker/lib/result-artifacts';
 import { handleResultNetworkRequest } from '../worker/result-network-entry';
-import { RESULT_NETWORK_SNAPSHOT_SQL,NETWORK_INSTITUTION_SNAPSHOT_SQL,readNetworkSnapshot,snapshotSummary,snapshotDetail } from '../worker/lib/result-network-snapshot';
+import { RESULT_NETWORK_SUMMARY_SQL,RESULT_NETWORK_SNAPSHOT_SQL,NETWORK_INSTITUTION_SNAPSHOT_SQL,readNetworkSnapshot,snapshotSummary,snapshotDetail } from '../worker/lib/result-network-snapshot';
 
 it('pins results to the channel publication and fails closed for missing payloads, expired identities and withdrawn publications',async()=>{
  const db=new DatabaseSync(':memory:');try{
@@ -14,11 +14,19 @@ it('pins results to the channel publication and fails closed for missing payload
  INSERT INTO result_network_institutions VALUES('school','code');
  INSERT INTO result_access_identities VALUES('p','school','admin','ada',6,'number',NULL,'2099-01-01');
  INSERT INTO exam_administrations VALUES('admin','e','RESULT_NETWORK','PUBLISHED',1,'2026-10-01');`);
+ for(const scope of ['class','grade','institution','district','city','network'])for(const suffix of ['rank','count'])db.exec(`ALTER TABLE exam_result_snapshots ADD COLUMN ${scope}_${suffix} INTEGER`);
  db.exec(readFileSync(new URL('../migrations/0062_result_artifact_retirement.sql',import.meta.url),'utf8'));
  const payload={schemaVersion:1,exam:{exam_id:'e',net:2,title:'Original'},subjects:[{subject_name:'Math',net:2}],outcomes:[{title:'Outcome',evidence_count:2,correct_count:1}],wrongQuestionIds:['q']};
- db.prepare('INSERT INTO exam_result_snapshots VALUES(?,?,?,?,?,?)').run('e','p',1,JSON.stringify(payload),1,5);
- db.prepare('INSERT INTO exam_result_snapshots VALUES(?,?,?,?,?,?)').run('e','p',2,JSON.stringify({...payload,exam:{net:99}}),99,100);
+ db.prepare('INSERT INTO exam_result_snapshots(exam_id,participant_id,snapshot_version,payload_json,national_rank,national_count) VALUES(?,?,?,?,?,?)').run('e','p',1,JSON.stringify(payload),1,5);
+ db.prepare('INSERT INTO exam_result_snapshots(exam_id,participant_id,snapshot_version,payload_json,national_rank,national_count) VALUES(?,?,?,?,?,?)').run('e','p',2,JSON.stringify({...payload,exam:{net:99}}),99,100);
  const read=()=>db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('code','ada',6,'number','number','','') as any[];
+ const summaries=()=>db.prepare(RESULT_NETWORK_SUMMARY_SQL).all('code','ada',6,'number','number','','') as any[];
+ expect(snapshotSummary(summaries()[0])).toEqual(snapshotSummary(read()[0]));
+ expect(JSON.parse(summaries()[0].payload_json).subjects).toEqual([]);
+ expect(summaries()[0].payload_json.length).toBeLessThan(read()[0].payload_json.length);
+ db.prepare("UPDATE exam_result_snapshots SET payload_json='invalid-json' WHERE snapshot_version=1").run();
+ expect(summaries()[0].payload_json).toBeNull();
+ db.prepare('UPDATE exam_result_snapshots SET payload_json=? WHERE snapshot_version=1').run(JSON.stringify(payload));
  db.exec("ALTER TABLE result_network_institutions ADD COLUMN licensed_institution_id TEXT;CREATE TABLE institutions(id TEXT,code TEXT);INSERT INTO institutions VALUES('institution','code');ALTER TABLE exam_result_snapshots ADD COLUMN net REAL DEFAULT 2");
  expect(db.prepare(NETWORK_INSTITUTION_SNAPSHOT_SQL).all('admin','institution','institution')).toHaveLength(1);
  expect(db.prepare(NETWORK_INSTITUTION_SNAPSHOT_SQL).all('admin','foreign','foreign')).toHaveLength(0);
