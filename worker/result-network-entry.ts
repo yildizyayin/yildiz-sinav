@@ -4,6 +4,7 @@ import { all,audit,badRequest,forbidden,json,normalizeName,one,uuid } from './li
 import { evaluateBatch,getScanBatch,previewExamFile,resolveScanRecord,searchScanCandidates } from './index';
 import { withExamOperationLock } from './lib/exam-operation-lock';
 import { RESULT_NETWORK_SNAPSHOT_SQL, NETWORK_INSTITUTION_SNAPSHOT_SQL, readNetworkSnapshot, snapshotSummary, snapshotDetail } from './lib/result-network-snapshot';
+import { prepareResultArtifacts } from './lib/result-artifacts';
 import { reopenNetworkResults } from './lib/result-network-correction';
 import { REPORT_SNAPSHOT_SQL } from './lib/report-snapshot';
 
@@ -249,10 +250,12 @@ export async function handleResultGovernanceMutation(request:Request,env:Env):Pr
  const removeScope=path.match(/^\/api\/admin\/result-network\/dealers\/([^/]+)\/scopes\/([^/]+)$/);
  const finalize=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/finalize$/);
  const reopen=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/reopen-results$/);
- if(!dealerStatus&&!removeScope&&!finalize&&!reopen)return null;
+ const artifacts=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/prepare-artifacts$/);
+ if(!dealerStatus&&!removeScope&&!finalize&&!reopen&&!artifacts)return null;
  const user=await requireSuper(request,env);if(user instanceof Response)return user;
  if(dealerStatus&&request.method==='POST')return setDealerStatus(request,env,user,dealerStatus[1]);
  if(removeScope&&request.method==='DELETE')return removeDealerScope(env,user,removeScope[1],removeScope[2]);
+ if(artifacts&&request.method==='POST')return prepareResultArtifacts(request,env,user,artifacts[1]);
  if(reopen&&request.method==='POST')return reopenNetworkResults(request,env,user,reopen[1]);
  if(finalize&&request.method==='POST')return freezeAndPublishAdministration(request,env,user,finalize[1]);
  return safeError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
