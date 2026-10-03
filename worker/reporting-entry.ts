@@ -4,6 +4,7 @@ import { getAuthUser } from './lib/auth';
 import { all, forbidden, json, notFound, one } from './lib/db';
 import { loadPermissionScope } from './lib/permissions';
 import { masteryStatus } from './lib/outcome';
+import { frozenPracticeReport } from './lib/frozen-practice-report';
 import { frozenExamReport } from './lib/frozen-exam-report';
 
 function apiError(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
@@ -59,6 +60,27 @@ export async function selectedFrozenExamReport(env:Env,user:AuthUser,studentId:s
  return json({ok:true,sourceTypes:['EXAM'],academicYear:year,selectedExamIds:ids,restrictedToSubjects:access.restricted,
  ...frozenExamReport(rows,access.subjectFilter),unavailableExamIds:staff?[]:ids.filter(id=>!rows.some(row=>row.exam_id===id)),
  message:'Bu rapor seçilen yayınlanmış sınavların doğruluk özetidir; resmî puan veya beceri düzeyi değildir.'});
+}
+
+export async function selectedFrozenPracticeReport(env:Env,user:AuthUser,studentId:string,url:URL){
+ const access=await studentAccess(env,user,studentId);if(!access.allowed)return forbidden();
+ const year=url.searchParams.get('academicYear')||'',repeat=url.searchParams.get('repeatPolicy')||'LATEST';
+ const ids=[...new Set((url.searchParams.get('runIds')||'').split(',').map(x=>x.trim()).filter(Boolean))];
+ if(!/^\d{4}-\d{4}$/.test(year)||Number(year.slice(5))!==Number(year.slice(0,4))+1||!['FIRST','LATEST'].includes(repeat)||!ids.length||ids.length>100||ids.some(x=>x.length>100))return apiError(400,'REPORT_SELECTION_INVALID','Eğitim yılı, tekrar politikası ve en fazla 100 çözüm kaydı seçin.');
+ const staff=['TEACHER','GUIDANCE_TEACHER'].includes(user.role);
+ const params:any[]=[studentId,access.student.institution_id,year,...ids];if(staff)params.push(access.student.season_id);
+ const rows=await all<any>(env.DB.prepare(`SELECT r.id,r.completed_at,r.metadata_json,r.source_type,r.source_id,r.status FROM assessment_runs r
+ JOIN student_enrollments e ON e.id=CASE WHEN json_valid(r.metadata_json) THEN json_extract(r.metadata_json,'$.frozenEvidence.enrollmentId') END AND e.student_id=r.student_id AND e.institution_id=r.institution_id
+ WHERE r.student_id=? AND r.institution_id=? AND r.source_type='QUESTION_BANK' AND r.status='SCORED' AND r.delivery_mode='DIGITAL' AND r.completed_at IS NOT NULL
+ AND CASE WHEN json_valid(r.metadata_json) THEN json_extract(r.metadata_json,'$.frozenEvidence.academicYear') END=?
+ AND e.season_id=CASE WHEN json_valid(r.metadata_json) THEN json_extract(r.metadata_json,'$.frozenEvidence.seasonId') END
+ AND r.source_id=CASE WHEN json_valid(r.metadata_json) THEN json_extract(r.metadata_json,'$.frozenEvidence.questionId') END
+ AND r.id IN (${ids.map(()=>'?').join(',')}) ${staff?'AND e.season_id=?':''} ORDER BY r.completed_at,r.id LIMIT 101`).bind(...params));
+ if(rows.length>100||new Set(rows.map(r=>r.id)).size!==rows.length)return apiError(409,'REPORT_SOURCE_AMBIGUOUS','Çözüm kayıtları tekil değil.');
+ return json({ok:true,academicYear:year,restrictedToSubjects:access.restricted,
+ ...frozenPracticeReport(rows,year,access.subjectFilter,repeat as 'FIRST'|'LATEST'),
+ unavailableRunIds:staff?[]:ids.filter(id=>!rows.some(r=>r.id===id)),
+ message:'Seçili dijital soru pratiği doğruluğu; sınav puanı veya beceri düzeyi değildir. İlk/son politika yalnız seçili kayıtlar içinde uygulanır.'});
 }
 
 async function listStudents(env:Env,user:AuthUser,url:URL):Promise<Response>{
@@ -131,4 +153,4 @@ async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Pr
   return json({ok:true,student:access.student,unavailableSnapshotExamIds,restrictedToSubjects:access.restricted,availableExams:allExams.map(e=>access.restricted?{exam_id:e.exam_id,title:e.title,exam_date:e.exam_date,exam_type:e.exam_type,academic_year:e.academic_year}:e),selectedExamIds:selectedIds,exams:examsForClient,summary,subjectTrend,subjectSummary,outcomes,developing:outcomes.filter(o=>o.mastery_status==='DEVELOPING').sort((a,b)=>a.success_rate-b.success_rate),strong:outcomes.filter(o=>o.mastery_status==='STRONG').sort((a,b)=>b.success_rate-a.success_rate)});
 }
 
-export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
+export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const practice=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-practice$/);if(practice&&request.method==='GET')return selectedFrozenPracticeReport(env,auth,practice[1],url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
