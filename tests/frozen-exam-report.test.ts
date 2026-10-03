@@ -2,7 +2,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { it, expect, vi } from 'vitest';
 vi.mock('../worker/lib/permissions', async original => ({...await original<any>(),loadPermissionScope:async()=>({guidanceClassIds:[],subjectClassAssignments:[{classId:'class',subjectId:'math'}]})}));
 import { frozenExamReport } from '../worker/lib/frozen-exam-report';
-import { selectedFrozenExamReport } from '../worker/reporting-entry';
+import { selectedCombinedFrozenReport, selectedFrozenExamReport } from '../worker/reporting-entry';
 
 const question=(id:string,status:string,subjectId='math')=>({questionId:id,status,outcomeRefs:[{subjectId,curriculumVersionId:'cv',academicYear:'2026-2027',gradeLevel:7,verified:1}]});
 const payload=(questions:any[])=>JSON.stringify({schemaVersion:1,exam:{academic_year:'2026-2027'},questionEvidencePolicy:'NATIVE_STATUS_AND_CURRICULUM_AT_FREEZE_V1',questionEvidence:questions});
@@ -39,6 +39,15 @@ it('reads only current published versions and enforces student, institution and 
  expect((await selectedFrozenExamReport(env,{role:'INSTITUTION_MANAGER',institution_id:'school'} as any,'student',url)).status).toBe(200);
  const teacher={role:'TEACHER',id:'teacher',institution_id:'school'} as any;
  const branch:any=await(await selectedFrozenExamReport(env,teacher,'student',url)).json();expect(branch.groups).toHaveLength(1);expect(branch.coverage).toBeNull();
+ db.exec("ALTER TABLE student_enrollments ADD COLUMN id TEXT;UPDATE student_enrollments SET id='en';CREATE TABLE assessment_runs(id TEXT,completed_at TEXT,metadata_json TEXT,source_type TEXT,source_id TEXT,status TEXT,student_id TEXT,institution_id TEXT,delivery_mode TEXT)");
+ const evidence={policy:'QUESTION_PRACTICE_READ_CONTEXT_V1',enrollmentId:'en',seasonId:'season',academicYear:'2026-2027',gradeLevel:7,questionId:'practice-q',contentDigest:'a'.repeat(64),status:'WRONG',outcomeRefs:[{outcomeId:'o',subjectId:'math',curriculumVersionId:'cv',academicYear:'2026-2027',gradeLevel:7,verified:1}]};
+ db.prepare('INSERT INTO assessment_runs VALUES(?,?,?,?,?,?,?,?,?)').run('run','2026-10-01 12:00:00',JSON.stringify({frozenEvidence:evidence}),'QUESTION_BANK','practice-q','SCORED','student','school','DIGITAL');
+ const combinedUrl=new URL('https://test?academicYear=2026-2027&examIds=e&runIds=run');
+ const combined:any=await(await selectedCombinedFrozenReport(env,student,'student',combinedUrl)).json();
+ expect(combined.sourceTypes).toEqual(['EXAM','QUESTION_BANK']);expect(combined.groups.find((g:any)=>g.subjectId==='math')).toMatchObject({evidenceCount:2,accuracyPercent:50});
+ const teacherCombined:any=await(await selectedCombinedFrozenReport(env,teacher,'student',combinedUrl)).json();expect(teacherCombined.groups).toHaveLength(1);expect(teacherCombined.sourceCoverage.every((s:any)=>s.coverage===null)).toBe(true);
+ expect((await selectedCombinedFrozenReport(env,{role:'STUDENT',student_id:'foreign'} as any,'student',combinedUrl)).status).toBe(403);
+ expect((await selectedCombinedFrozenReport(env,student,'student',new URL('https://test?academicYear=2026-2027'))).status).toBe(400);
  db.exec("UPDATE exam_participants SET season_id='old'");expect((await(await selectedFrozenExamReport(env,teacher,'student',url)).json() as any).groups).toHaveLength(0);
  db.exec("UPDATE exam_delivery_profiles SET result_freeze_status='FROZEN'");expect((await(await selectedFrozenExamReport(env,student,'student',url)).json() as any).unavailableExamIds).toEqual(['e']);
  expect((await selectedFrozenExamReport(env,student,'student',new URL('https://test?academicYear=bad&examIds=e'))).status).toBe(400);
