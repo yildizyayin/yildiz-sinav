@@ -33,7 +33,12 @@ it('discovers only authorized frozen new mini tests with branch eligibility befo
  add('z-duplicate',{questions:[{...question('same'),outcomeRefs:[{...question('same').outcomeRefs[0],verified:0}]},question('same')]});
  add('z-empty',{questions:[]});add('z-scalar-question',{questions:['bad']});add('z-scalar-refs',{questions:[{...question('bad'),outcomeRefs:'bad'}]});
  add('z-invalid-grade',{metadata:{selectionMode:'NEW',practiceOnly:false,miniEvidence:{policy:'MINI_TEST_CONTENT_AT_START_V1',academicYear:'2026-2027',gradeLevel:99,enrollmentId:'en',seasonId:'season',questionEvidence:[question('q')]}}});
- const prepare=(sql:string,args:any[]=[]):any=>({bind:(...values:any[])=>prepare(sql,values),first:async()=>db.prepare(sql).get(...args),all:async()=>({results:db.prepare(sql).all(...args)})});const env={DB:{prepare}} as any;
+ const prepare=(sql:string,args:any[]=[]):any=>{
+  // workerd/D1 caps LIKE/GLOB pattern length at 50; Node SQLite's default
+  // accepts longer patterns and would otherwise miss this provider failure.
+  for(const match of sql.matchAll(/(?:LIKE|GLOB)\s+'([^']*)'/g))if(match[1].length>50)throw Error('D1 pattern limit exceeded');
+  return {bind:(...values:any[])=>prepare(sql,values),first:async()=>db.prepare(sql).get(...args),all:async()=>({results:db.prepare(sql).all(...args)})};
+ };const env={DB:{prepare}} as any;
  const student={role:'STUDENT',student_id:'s'} as any,teacher={id:'teacher',role:'TEACHER',institution_id:'school'} as any;
  const base=new URL('https://test?academicYear=2026-2027&limit=1');
  const ids:string[]=[];let cursor:string|null=null;
