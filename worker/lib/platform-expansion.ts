@@ -456,6 +456,7 @@ export async function studentPracticeQuestions(request:Request,env:Env,user:Auth
     ORDER BY COALESCE(q.difficulty_level,q.difficulty,3),q.created_at DESC LIMIT ?`).bind(...ps,limit));
   const today=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM question_practice_attempts WHERE student_id=? AND created_at>=date('now')`).bind(user.student_id));
   const hydrated=await hydrateQuestionMedia(env,rows);
+  if(hydrated.length)await env.DB.batch(hydrated.map(q=>env.DB.prepare('INSERT OR IGNORE INTO coach_question_exposures(student_id,question_id) VALUES(?,?)').bind(user.student_id,q.id)));
   return json({ok:true,questions:await Promise.all(hydrated.map(async r=>({...r,practiceToken:await practiceContentToken(env,user,enrollment,r),options:parseJson(r.options_json,[]),options_json:undefined,correct_answer:undefined}))),progress:{completedToday:Number(today?.count||0)}});
 }
 
