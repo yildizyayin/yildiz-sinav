@@ -91,3 +91,27 @@ bu politika bütün kaynak tablolarının tek transaction anını garanti etmez.
 Karne okuyucusu bağlam uyumunu ayrıca doğrulamalıdır. Soru ekranda açıldığı anki
 sürüm ile gönderim anındaki sürümün karşılaştırılması henüz yoktur. Bu kanıt
 EXAM-only karne API'sine henüz bağlanmamıştır; eski run kayıtları doldurulmaz.
+
+## 3 Ekim: üç paralel işin entegrasyonu
+
+1. `frozenPracticeReport` yalnız QUESTION_PRACTICE_READ_CONTEXT_V1 kanıtını
+   değerlendirir. FIRST/LATEST politikası aynı soru, içerik özeti, enrollment,
+   eğitim yılı, sınıf ve müfredat bağlamındaki seçili kayıtlar içinde uygulanır.
+   Doğrulanmamış veya karışık kazanımlar kapsam dışında kalır; doğru/yanlış/boş
+   soru bir kez sayılır. Branş dışındaki kanıt ve tanılar gösterilmez.
+2. `GET /api/reporting/students/:studentId/frozen-practice` eğitim yılı ve en fazla
+   100 runIds alır. Mevcut öğrenci/veli/kurum/atanmış öğretmen yetkisi, kayıt sahibi,
+   kurum, kaynak tipi, SCORED/dijital durum ve dondurulmuş enrollment/season/source
+   ilişkisi doğrulanır. Öğretmen kayıtları yetkili güncel dönemle sınırlıdır.
+   Yalnız seçili kayıtların özeti üretilir; raw soru/yanıt/içerik özeti dönmez.
+   Bu API henüz Raporlar ekranına bağlı değildir; FOY/MINI_TEST dahil değildir.
+3. Soru pratiği listesi sunucuda SESSION_SECRET ile imzalanmış, 30 dakikalık
+   doğrulama bilgisi verir. Öğrenci/kurum/dönem/soru/anahtar ve görüntülenen içerik
+   bağlanır; UI gönderimde bunu taşır. Eksik, bozulmuş, süresi dolmuş veya değişmiş
+   içerik yazmadan reddedilir. Anahtar veya anahtarın ham özeti istemciye verilmez.
+   Mevcut secret kullanılır; yeni secret/deploy ayarı yapılmadı. Gönderim okuması ile
+   yazma batch'i arasındaki eşzamanlı kaynak değişiklikleri için kilit garantisi
+   henüz yoktur. Medya dosyasının aynı anahtar altındaki byte değişimi ayrıca
+   sürümlenmelidir. Gerçek tarayıcı kullanıcı testi henüz yapılmadı.
+
+Bu üç parça genel birleşik karneyi veya dört karne görünümünü tamamlamaz.
