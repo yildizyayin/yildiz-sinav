@@ -100,8 +100,8 @@ export function Reports(){
 
     <div className="panel" style={{marginBottom:20}}><div className="panel-head"><div><h2>Raporlanacak sınavlar</h2><p>Varsayılan olarak son 20 sınav seçilir. İstediğiniz sınavları işaretleyip raporu yenileyin.</p></div><button className="secondary" onClick={()=>void loadReport()} disabled={!selectedExams.length||busy}><BarChart3 size={16}/> {busy?'Hazırlanıyor…':'Raporu Güncelle'}</button></div><div className="cards-list">{(report.availableExams||[]).map((e:any)=><label className="list-card" key={e.exam_id} style={{alignItems:'center',cursor:'pointer'}}><input type="checkbox" checked={selectedExams.includes(e.exam_id)} onChange={()=>toggleExam(e.exam_id)}/><div><strong>{e.title}</strong><span>{e.exam_date||'Tarih yok'} · {e.exam_type}</span></div></label>)}</div></div>
 
-    <FrozenExamReport key={studentId} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
-    <FrozenPracticeReport key={studentId} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
+    <FrozenExamReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
+    <FrozenPracticeReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
 
     {report.summary?<div className="kpi-grid" style={{marginBottom:20}}><Kpi label="Sınav" value={report.summary.exam_count}/><Kpi label="İlk Net" value={fmt(report.summary.first_net)}/><Kpi label="Son Net" value={fmt(report.summary.last_net)}/><Kpi label="Net Değişimi" value={`${report.summary.delta_net>0?'+':''}${fmt(report.summary.delta_net)}`}/><Kpi label="Ortalama Net" value={fmt(report.summary.average_net)}/></div>:<div className="alert info">Bu görünüm branş öğretmeni yetkisiyle sınırlandırılmıştır; toplam sınav neti yerine yalnız yetkili branş verileri gösterilir.</div>}
 
