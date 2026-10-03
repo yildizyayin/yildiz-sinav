@@ -157,9 +157,24 @@ Resmî puan, ulusal sıralama veya Maarif beceri düzeyi üretilmez.
 
 Raporlar ekranında soru pratiği seçiminin yanında üstte seçilen aynı eğitim yılı
 sınavlarını ekleme kutusu bulunur. Seçim/yıl/politika değişince eski rapor gizlenir.
-EXAM ve QUESTION_BANK kaynakları isteğe bağlı birleştirilir; FOY ve MINI_TEST henüz
-dahil değildir. PDF ve dört ayrı rol sunumu ayrıca tamamlanacaktır.
+EXAM ve QUESTION_BANK kaynakları isteğe bağlı birleştirilir; MINI_TEST yeni soru testleri de sabit kanıt üzerinden dahil edilir; FOY ve
+mini oyun için bu okuyucular henüz tamamlanmamıştır. PDF ve dört ayrı rol sunumu ayrıca tamamlanacaktır.
 
 Önceki9b6e89 başlığı CI37111702162 ve Preview37111702265 başarıyla tamamlandı;
 izole imzalama anahtarı kurulumu ve canlı smoke düzeltmesi sağlayıcıda geçti.
 Üretimde SESSION_SECRET varlığı henüz doğrulanmadı; üretim anahtarları değişmedi.
+
+## 3 Ekim: mini test keşfi ve birleşik karne seçimi
+
+`mini-test-runs` eğitim yılına göre yetkili tamamlanan NEW mini testleri listeler.
+Her sayfa en fazla 50 kimlik ve UTC tamamlanma zamanı getirir; liste ham soru,
+cevap anahtarı, kazanım başlığı veya başka branş tanıları vermez. Yetki ve geçerli
+sabit kanıt kontrolü sayfalama öncesinde uygulanır. Tekrar çalışmaları ve eski
+kanıtsız kayıtlar akademik seçime girmez.
+
+Raporlar ekranında soru pratiği ve mini test listeleri ayrı yüklenir ve seçilir.
+En fazla 100 pratik çözüm, 20 mini test ve üstte seçilen aynı yılın 20 sınavı
+birleştirilebilir. İlk/son çözüm politikası yalnız soru pratiğine uygulanır.
+Öğrenci, eğitim yılı, kurum/oturum kapsamı veya seçim değişince eski yanıtlar
+gösterilmez. Mini test tek başına da hazırlanabilir. Görsel tasarım/tarayıcı
+doğrulaması ile dört ayrı role özgü PDF sunumları ayrıca tamamlanacaktır.
