@@ -249,6 +249,13 @@ for (const question of detail.payload.questions) {
 }
 const miniTest = await request(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.payload.testId)}/submit`, { method: 'POST', cookie: student, json: { answers } });
 assert(miniTest.payload?.result?.status === 'PASSED', 'Nibiru mini-test did not persist a passing measurement', miniTest.payload);
+const miniReport = await request(`/api/reporting/students/stu_a001/frozen-mini-tests?academicYear=${encodeURIComponent(miniScope.academicYear)}&testIds=${encodeURIComponent(started.payload.testId)}`, { cookie: student });
+const miniGroup = miniReport.payload?.groups?.find((group) => group.subjectId === miniOutcome.subject_id);
+assert(miniGroup?.evidenceCount === detail.payload.questions.length && miniGroup.accuracyPercent === 100 && miniReport.payload?.officialScore == null, 'Frozen mini-test report did not use native submitted evidence', miniReport.payload);
+const combinedMini = await request(`/api/reporting/students/stu_a001/frozen-combined?academicYear=${encodeURIComponent(miniScope.academicYear)}&miniTestIds=${encodeURIComponent(started.payload.testId)}`, { cookie: student });
+assert(combinedMini.payload?.sourceTypes?.includes('MINI_TEST') && combinedMini.payload?.groups?.some((group) => group.evidenceCount === detail.payload.questions.length && group.accuracyPercent === 100), 'Combined report did not include frozen mini-test evidence', combinedMini.payload);
+console.log('✓ Frozen mini-test report — native evidence and combined source');
+
 const finalFeed = await request('/api/platform/assessment-feed', { cookie: student });
 assert(finalFeed.payload?.measurements?.some((measurement) => measurement.source_type === 'MINI_TEST' || measurement.sourceType === 'MINI_TEST'), 'Nibiru mini-test was not included in the unified assessment feed', finalFeed.payload);
 console.log('✓ Nibiru mini-test — visual content, scoring and unified measurement feed');
