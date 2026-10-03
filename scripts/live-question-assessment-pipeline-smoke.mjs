@@ -117,10 +117,11 @@ const media = await request(assetUrl, { cookie: student, expected: 200 });
 assert(media.response.headers.get('content-type')?.startsWith('image/'), 'Question media did not come from R2 with an image content type', media.response.headers.get('content-type'));
 console.log('✓ Student visual practice — media visible, answer hidden, R2 asset reachable');
 
+assert(typeof visualQuestion.practiceToken === 'string' && visualQuestion.practiceToken.length > 20, 'Student practice verification token missing');
 const submitted = await request('/api/platform/student-practice/attempts', {
   method: 'POST',
   cookie: student,
-  json: { questionId: questions[0].id, answer: questions[0].correctAnswer, runId: `asr_${suffix}` },
+  json: { questionId: questions[0].id, answer: questions[0].correctAnswer, practiceToken: visualQuestion.practiceToken },
   expected: 200,
 });
 assert(submitted.payload?.correct === true && submitted.payload?.runId, 'Question practice did not create a scored assessment run', submitted.payload);
