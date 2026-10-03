@@ -96,6 +96,18 @@ jobs:
           echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
           echo "Preview URL: $preview_url" >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Configure isolated practice signing key
+        run: |
+          node --input-type=module <<'JS'
+          import { randomBytes } from 'node:crypto';
+          import { spawnSync } from 'node:child_process';
+          const result = spawnSync('npx', ['wrangler', 'secret', 'put', 'SESSION_SECRET', '--config', 'wrangler.question-pool-preview.json'], {
+            input: randomBytes(32).toString('hex') + '\n', encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
+          });
+          if (result.error || result.status !== 0) throw new Error('Isolated practice signing key setup failed');
+          console.log('Isolated practice signing key configured');
+          JS
+
       - name: Load synthetic staging fixtures
         env:
           CONFIG: wrangler.question-pool-preview.json
