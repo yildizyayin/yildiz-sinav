@@ -83,6 +83,48 @@ export async function selectedFrozenPracticeReport(env:Env,user:AuthUser,student
  message:'Seçili dijital soru pratiği doğruluğu; sınav puanı veya beceri düzeyi değildir. İlk/son politika yalnız seçili kayıtlar içinde uygulanır.'});
 }
 
+export async function listFrozenPracticeRuns(env:Env,user:AuthUser,studentId:string,url:URL){
+ const access=await studentAccess(env,user,studentId);if(!access.allowed)return forbidden();
+ const year=url.searchParams.get('academicYear')||'',limitText=url.searchParams.get('limit')||'50';
+ let cursor:any=null;
+ try{const raw=url.searchParams.get('cursor');if(raw){if(raw.length>512||!/^[A-Za-z0-9_-]+$/.test(raw))throw Error();cursor=JSON.parse(atob(raw.replace(/-/g,'+').replace(/_/g,'/')));if(!Array.isArray(cursor)||cursor.length!==2||typeof cursor[0]!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(cursor[0])||!Number.isFinite(Date.parse(cursor[0]))||new Date(cursor[0]).toISOString()!==cursor[0]||typeof cursor[1]!=='string'||!cursor[1]||cursor[1].length>100)throw Error();}}
+ catch{return apiError(400,'REPORT_CURSOR_INVALID','Çözüm listesi devam anahtarı geçersiz.');}
+ if(!/^\d{4}-\d{4}$/.test(year)||Number(year.slice(5))!==Number(year.slice(0,4))+1||!/^([1-9]|[1-4][0-9]|50)$/.test(limitText))return apiError(400,'REPORT_SELECTION_INVALID','Geçerli eğitim yılı ve 1–50 kayıt sınırı seçin.');
+ const limit=Number(limitText),staff=['TEACHER','GUIDANCE_TEACHER'].includes(user.role);
+ const params:any[]=[studentId,access.student.institution_id,year];if(staff)params.push(access.student.season_id);
+ const subjectSQL=access.subjectFilter?`AND json_extract(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.subjectId') IN (${access.subjectFilter.map(()=>'?').join(',')})`:'';
+ if(access.subjectFilter)params.push(...access.subjectFilter);
+ if(cursor)params.push(cursor[0],cursor[0],cursor[1]);params.push(limit+1);
+ const rows=await all<any>(env.DB.prepare(`WITH safe AS (
+ SELECT r.*,CASE WHEN json_valid(r.metadata_json) THEN r.metadata_json ELSE '{}' END metadata FROM assessment_runs r WHERE r.student_id=? AND r.institution_id=? AND r.source_type='QUESTION_BANK' AND r.status='SCORED' AND r.delivery_mode='DIGITAL'
+ ), eligible AS (
+ SELECT r.id,strftime('%Y-%m-%dT%H:%M:%fZ',r.completed_at) completedAt FROM safe r
+ JOIN student_enrollments e ON e.id=json_extract(r.metadata,'$.frozenEvidence.enrollmentId') AND e.student_id=r.student_id AND e.institution_id=r.institution_id AND e.season_id=json_extract(r.metadata,'$.frozenEvidence.seasonId')
+ WHERE json_extract(r.metadata,'$.frozenEvidence.academicYear')=? ${staff?'AND e.season_id=?':''}
+ AND json_extract(r.metadata,'$.frozenEvidence.policy')='QUESTION_PRACTICE_READ_CONTEXT_V1'
+ AND json_type(r.metadata,'$.frozenEvidence.questionId')='text' AND r.source_id=json_extract(r.metadata,'$.frozenEvidence.questionId') AND length(r.source_id)>0
+ AND json_type(r.metadata,'$.frozenEvidence.enrollmentId')='text' AND length(e.id)>0
+ AND json_type(r.metadata,'$.frozenEvidence.seasonId')='text' AND length(e.season_id)>0
+ AND json_type(r.metadata,'$.frozenEvidence.gradeLevel')='integer' AND json_extract(r.metadata,'$.frozenEvidence.gradeLevel') BETWEEN 1 AND 12
+ AND json_extract(r.metadata,'$.frozenEvidence.status') IN ('CORRECT','WRONG','BLANK')
+ AND json_type(r.metadata,'$.frozenEvidence.contentDigest')='text' AND length(json_extract(r.metadata,'$.frozenEvidence.contentDigest'))=64 AND json_extract(r.metadata,'$.frozenEvidence.contentDigest') NOT GLOB '*[^a-f0-9]*'
+ AND typeof(r.id)='text' AND length(r.id) BETWEEN 1 AND 100 AND typeof(r.completed_at)='text' AND length(r.completed_at)>=19 AND substr(r.completed_at,1,19) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][T ][0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND datetime(r.completed_at) IS NOT NULL
+ AND json_type(r.metadata,'$.frozenEvidence.outcomeRefs')='array' AND json_array_length(r.metadata,'$.frozenEvidence.outcomeRefs')>0
+ AND NOT EXISTS(SELECT 1 FROM json_each(CASE WHEN json_type(r.metadata,'$.frozenEvidence.outcomeRefs')='array' THEN json_extract(r.metadata,'$.frozenEvidence.outcomeRefs') ELSE '[]' END) j WHERE NOT COALESCE(
+ j.type='object' AND json_type(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.verified')='integer' AND json_extract(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.verified')=1
+ AND json_type(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.outcomeId')='text' AND length(json_extract(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.outcomeId'))>0
+ AND json_type(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.subjectId')='text' AND length(json_extract(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.subjectId'))>0
+ AND json_type(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.curriculumVersionId')='text' AND length(json_extract(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.curriculumVersionId'))>0
+ AND json_extract(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.academicYear')=json_extract(r.metadata,'$.frozenEvidence.academicYear')
+ AND json_type(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.gradeLevel')='integer' AND json_extract(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.gradeLevel')=json_extract(r.metadata,'$.frozenEvidence.gradeLevel')
+ AND COALESCE(json_type(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.programVersion'),'null') IN ('null','text') ${subjectSQL},0))
+ AND (SELECT count(DISTINCT json_array(json_extract(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.subjectId'),json_extract(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.curriculumVersionId'),json_extract(CASE WHEN j.type='object' THEN j.value ELSE '{}' END,'$.programVersion'))) FROM json_each(CASE WHEN json_type(r.metadata,'$.frozenEvidence.outcomeRefs')='array' THEN json_extract(r.metadata,'$.frozenEvidence.outcomeRefs') ELSE '[]' END) j)=1
+ ) SELECT DISTINCT id,completedAt FROM eligible WHERE completedAt IS NOT NULL ${cursor?'AND (completedAt<? OR (completedAt=? AND id<?))':''} ORDER BY completedAt DESC,id DESC LIMIT ?`).bind(...params));
+ const runs=rows.slice(0,limit),last=runs[runs.length-1];
+ const nextCursor=rows.length>limit&&last?btoa(JSON.stringify([last.completedAt,last.id])).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''):null;
+ return json({ok:true,academicYear:year,restrictedToSubjects:access.restricted,runs,nextCursor});
+}
+
 async function listStudents(env:Env,user:AuthUser,url:URL):Promise<Response>{
   if(user.role==='STUDENT'){
     if(!user.student_id)return json({ok:true,students:[]});const access=await studentAccess(env,user,user.student_id);return json({ok:true,students:access.allowed?[access.student]:[]});
@@ -153,4 +195,4 @@ async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Pr
   return json({ok:true,student:access.student,unavailableSnapshotExamIds,restrictedToSubjects:access.restricted,availableExams:allExams.map(e=>access.restricted?{exam_id:e.exam_id,title:e.title,exam_date:e.exam_date,exam_type:e.exam_type,academic_year:e.academic_year}:e),selectedExamIds:selectedIds,exams:examsForClient,summary,subjectTrend,subjectSummary,outcomes,developing:outcomes.filter(o=>o.mastery_status==='DEVELOPING').sort((a,b)=>a.success_rate-b.success_rate),strong:outcomes.filter(o=>o.mastery_status==='STRONG').sort((a,b)=>b.success_rate-a.success_rate)});
 }
 
-export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const practice=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-practice$/);if(practice&&request.method==='GET')return selectedFrozenPracticeReport(env,auth,practice[1],url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
+export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const practiceRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/practice-runs$/);if(practiceRuns&&request.method==='GET')return listFrozenPracticeRuns(env,auth,practiceRuns[1],url);const practice=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-practice$/);if(practice&&request.method==='GET')return selectedFrozenPracticeReport(env,auth,practice[1],url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
