@@ -115,3 +115,27 @@ EXAM-only karne API'sine henüz bağlanmamıştır; eski run kayıtları dolduru
    sürümlenmelidir. Gerçek tarayıcı kullanıcı testi henüz yapılmadı.
 
 Bu üç parça genel birleşik karneyi veya dört karne görünümünü tamamlamaz.
+
+## 3 Ekim: seçilebilir soru pratiği ekranı ve listeleme
+
+`GET /api/reporting/students/:studentId/practice-runs` eğitim yılına göre yetkili,
+doğrulanmış kayıtları en fazla 50 öğelik sayfalarla listeler. Liste yalnız kayıt
+kimliği ve UTC tamamlanma zamanı döndürür. Branş ve kanıt doğrulaması SQL LIMIT
+öncesinde uygulanır; başka ders kayıtları sayfalamayı veya devam bilgisini etkilemez.
+Dondurulmuş müfredat kullanılır; canlı kazanım tablosuyla eksik bilgi tamamlanmaz.
+
+Raporlar ekranındaki soru pratiği bölümü yılı, kayıtları ve FIRST/LATEST politikasını
+seçtirir; en fazla 100 kayıtla özeti hazırlar. Sayfa devamları manuel yüklenir.
+Öğrenci/yıl/seçim değişikliği eski yanıtları geçersiz kılar. EXAM ve QUESTION_BANK
+özetleri ayrı gösterilir; farklı kaynak yüzdeleri gelişigüzel ortalanmaz.
+
+Hesaplama doğrulaması dönem kimliği, 1–12 sınıf aralığı ve program sürümü türünü
+kontrol eder. SQL UTC saatleri ve saat dilimli zamanlar aynı UTC karşılaştırmasına
+çevrilir. Tarihsiz veya yalnız tarih taşıyan kayıtlar karne kanıtı sayılmaz.
+
+Önceki PR önizlemesindeki soru pratiği 503 hatası izole Worker'da SESSION_SECRET
+bulunmamasından kaynaklandı. Önizleme iş akışı sadece kendi PR Worker'ına rastgele
+imzalama anahtarı ekler; değer günlüğe yazılmaz. Canlı smoke, soru listesinden
+aldığı practiceToken değerini gönderir. Üretim secretları değiştirilmedi; üretimde
+bu binding'in varlığı yayımdan önce doğrulanmalıdır. Son önizleme başarısı ayrıca
+kontrol edilecektir; gerçek kullanıcı/tarayıcı testi hâlâ ayrıdır.
