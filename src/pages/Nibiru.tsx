@@ -52,6 +52,7 @@ export function Nibiru(){
  return <>
   <div className="page-head nibiru-hero-head"><div className="nibiru-hero-title"><div className="nibiru-canonical-lockup"><AnunexBrand compact tagline={false}/><span className="nibiru-canonical-divider" aria-hidden="true"/><NibiruMark size={52} state={visualState} showWordmark/></div><div><span className="eyebrow">TEK AKADEMİK ZEKÂ KAPISI</span><h1>Nibiru</h1><p>Doğrulanmış akademik veri, rol bazlı yetki ve uzman yapay zekâları tek bir kurumsal kimlik altında birleştirir.</p></div></div><div className="status ok nibiru-orchestration-status"><NibiruMark size={18} state="active" title="Nibiru aktif"/> Uzman orkestrasyonu aktif</div></div>
   {error&&<div className="alert error">{error}</div>}
+  {user?.role==='STUDENT'&&<div className="panel"><CoachPlanCard plan={null} showCatalog/></div>}
   <div className="panel nibiru-chat-panel">
    {user?.role==='SUPER_ADMIN'&&capabilityLab?.enabled&&<div style={{border:'1px solid #9cc5ff',borderRadius:16,padding:16,marginBottom:16,background:'linear-gradient(135deg,#eff6ff,#f8fbff)'}}>
     <div style={{display:'flex',justifyContent:'space-between',gap:12,alignItems:'flex-start',flexWrap:'wrap'}}><div><div className="eyebrow" style={{color:'#1d4ed8'}}>SÜPER ADMİN TEST ALANI</div><strong style={{fontSize:17}}>Nibiru Yetenek Laboratuvarı</strong><div className="muted" style={{marginTop:4}}>{capabilityLab.notice}</div></div><span className="status ok">SENTETİK VERİ</span></div>
