@@ -15,12 +15,12 @@ export function frozenExamReport(rows: any[], subjectIds: string[] | null) {
       if (typeof evidence?.questionId !== 'string' || !evidence.questionId || seen.has(evidence.questionId) || !['CORRECT', 'WRONG', 'BLANK', 'INVALID'].includes(evidence.status)) { excludedEvidence++; continue; }
       seen.add(evidence.questionId);
       if (!refs.length || refs.some((ref: any) => !ref || ref.verified !== 1 || typeof ref.curriculumVersionId !== 'string' || !ref.curriculumVersionId || typeof ref.subjectId !== 'string' || !ref.subjectId || ref.academicYear !== row.academic_year || ref.gradeLevel !== row.grade_level)) { excludedEvidence++; continue; }
-      const contexts = new Set(refs.map((ref: any) => JSON.stringify([ref.subjectId, ref.curriculumVersionId])));
+      const contexts = new Set(refs.map((ref: any) => JSON.stringify([ref.subjectId, ref.curriculumVersionId, ref.programVersion??null])));
       if (contexts.size !== 1) { excludedEvidence++; continue; }
-      const first = refs[0], key = JSON.stringify([first.subjectId, first.curriculumVersionId, row.grade_level]);
+      const first = refs[0], key = JSON.stringify([first.subjectId, first.curriculumVersionId, row.grade_level, row.academic_year, first.programVersion??null]);
       let group = groups.get(key);
       if (!group) {
-        group = { subjectId: first.subjectId, subjectName: Array.isArray(payload.subjects)?payload.subjects.find((subject:any)=>subject.subject_id===first.subjectId)?.subject_name||null:null, curriculumVersionId: first.curriculumVersionId, programVersion: typeof first.programVersion==='string'?first.programVersion:null, gradeLevel: row.grade_level, correct: 0, wrong: 0, blank: 0, invalid: 0, examIds: new Set<string>() };
+        group = { subjectId: first.subjectId, subjectName: Array.isArray(payload.subjects)?payload.subjects.find((subject:any)=>subject.subject_id===first.subjectId)?.subject_name||null:null, curriculumVersionId: first.curriculumVersionId, academicYear:row.academic_year, programVersion: typeof first.programVersion==='string'?first.programVersion:null, gradeLevel: row.grade_level, correct: 0, wrong: 0, blank: 0, invalid: 0, examIds: new Set<string>() };
         groups.set(key, group);
       }
       group[evidence.status.toLowerCase()]++;
