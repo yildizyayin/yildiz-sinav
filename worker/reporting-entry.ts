@@ -7,6 +7,7 @@ import { masteryStatus } from './lib/outcome';
 import { combineFrozenReports } from './lib/combined-frozen-report';
 import { frozenPracticeReport } from './lib/frozen-practice-report';
 import { frozenExamReport } from './lib/frozen-exam-report';
+import { frozenMiniTestReport } from './lib/frozen-mini-test-report';
 
 function apiError(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 async function requireUser(env:Env,request:Request){const user=await getAuthUser(env,request);return user||apiError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.')}
@@ -84,16 +85,42 @@ export async function selectedFrozenPracticeReport(env:Env,user:AuthUser,student
  message:'Seçili dijital soru pratiği doğruluğu; sınav puanı veya beceri düzeyi değildir. İlk/son politika yalnız seçili kayıtlar içinde uygulanır.'});
 }
 
+export async function selectedFrozenMiniTestReport(env:Env,user:AuthUser,studentId:string,url:URL){
+ const access=await studentAccess(env,user,studentId);if(!access.allowed)return forbidden();
+ const year=url.searchParams.get('academicYear')||'';
+ const ids=[...new Set((url.searchParams.get('testIds')||'').split(',').map(id=>id.trim()).filter(Boolean))];
+ if(!/^\d{4}-\d{4}$/.test(year)||Number(year.slice(5))!==Number(year.slice(0,4))+1||!ids.length||ids.length>20||ids.some(id=>id.length>100))return apiError(400,'REPORT_SELECTION_INVALID','Eğitim yılı ve en fazla 20 mini test seçin.');
+ const staff=['TEACHER','GUIDANCE_TEACHER'].includes(user.role);
+ const params:any[]=[studentId,access.student.institution_id,year,...ids];if(staff)params.push(access.student.season_id);
+ const rows=await all<any>(env.DB.prepare(`SELECT r.id,r.metadata_json,r.source_type,r.source_id,r.status FROM assessment_runs r
+ JOIN coach_mini_tests t ON t.id=r.id AND t.id=r.source_id AND t.student_id=r.student_id AND t.assignment_id=r.assignment_id
+ JOIN assignments a ON a.id=t.assignment_id AND a.institution_id=r.institution_id
+ JOIN student_enrollments e ON e.id=CASE WHEN json_valid(r.metadata_json) THEN json_extract(r.metadata_json,'$.miniEvidence.enrollmentId') END AND e.student_id=r.student_id AND e.institution_id=r.institution_id
+ WHERE r.student_id=? AND r.institution_id=? AND r.source_type='MINI_TEST' AND r.status='SCORED' AND r.delivery_mode='DIGITAL' AND r.completed_at IS NOT NULL
+ AND t.selection_mode='NEW' AND t.status IN ('PASSED','FAILED') AND t.submitted_at IS NOT NULL
+ AND CASE WHEN json_valid(r.metadata_json) THEN json_extract(r.metadata_json,'$.selectionMode') END='NEW'
+ AND CASE WHEN json_valid(r.metadata_json) THEN json_extract(r.metadata_json,'$.practiceOnly') END=0
+ AND CASE WHEN json_valid(r.metadata_json) THEN json_type(r.metadata_json,'$.practiceOnly') END='false'
+ AND CASE WHEN json_valid(r.metadata_json) THEN json_extract(r.metadata_json,'$.miniEvidence.academicYear') END=?
+ AND e.season_id=CASE WHEN json_valid(r.metadata_json) THEN json_extract(r.metadata_json,'$.miniEvidence.seasonId') END
+ AND r.id IN (${ids.map(()=>'?').join(',')}) ${staff?'AND e.season_id=?':''} ORDER BY r.id LIMIT 21`).bind(...params));
+ if(rows.length>20||new Set(rows.map(row=>row.id)).size!==rows.length)return apiError(409,'REPORT_SOURCE_AMBIGUOUS','Mini test kayıtları tekil değil.');
+ return json({ok:true,academicYear:year,restrictedToSubjects:access.restricted,
+ ...frozenMiniTestReport(rows,year,access.subjectFilter),unavailableTestIds:staff?[]:ids.filter(id=>!rows.some(row=>row.id===id)),
+ message:'Seçili yeni soru mini testlerinin sabitlenmiş doğruluk özeti; resmî puan veya beceri düzeyi değildir. Tekrar çalışmaları bu rapora katılmaz.'});
+}
+
 export async function selectedCombinedFrozenReport(env:Env,user:AuthUser,studentId:string,url:URL){
  const access=await studentAccess(env,user,studentId);if(!access.allowed)return forbidden();
- const hasExams=Boolean((url.searchParams.get('examIds')||'').trim()),hasPractice=Boolean((url.searchParams.get('runIds')||'').trim());
- if(!hasExams&&!hasPractice)return apiError(400,'REPORT_SELECTION_INVALID','En az bir sınav veya soru pratiği kaydı seçin.');
+ const hasExams=Boolean((url.searchParams.get('examIds')||'').trim()),hasPractice=Boolean((url.searchParams.get('runIds')||'').trim()),hasMini=Boolean((url.searchParams.get('miniTestIds')||'').trim());
+ if(!hasExams&&!hasPractice&&!hasMini)return apiError(400,'REPORT_SELECTION_INVALID','En az bir sınav, soru pratiği veya mini test kaydı seçin.');
  const sources:any[]=[];
  if(hasExams){const r=await selectedFrozenExamReport(env,user,studentId,url);if(!r.ok)return r;sources.push({sourceType:'EXAM',report:await r.json()});}
  if(hasPractice){const r=await selectedFrozenPracticeReport(env,user,studentId,url);if(!r.ok)return r;sources.push({sourceType:'QUESTION_BANK',report:await r.json()});}
+ if(hasMini){const miniUrl=new URL(url);miniUrl.searchParams.set('testIds',url.searchParams.get('miniTestIds')!);const r=await selectedFrozenMiniTestReport(env,user,studentId,miniUrl);if(!r.ok)return r;sources.push({sourceType:'MINI_TEST',report:await r.json()});}
  return json({ok:true,academicYear:url.searchParams.get('academicYear'),restrictedToSubjects:access.restricted,...combineFrozenReports(sources),
- sourceCoverage:sources.map(s=>({sourceType:s.sourceType,coverage:s.report.coverage,unavailableCount:(s.report.unavailableExamIds||s.report.unavailableRunIds||[]).length})),
- message:'Doğruluk soru sayısıyla ağırlıklıdır. Sınav soruları ve seçili ilk/son pratik çözümleri ayrı kanıt olaylarıdır; resmî puan veya beceri düzeyi değildir.'});
+ sourceCoverage:sources.map(s=>({sourceType:s.sourceType,coverage:s.report.coverage,unavailableCount:(s.report.unavailableExamIds||s.report.unavailableRunIds||s.report.unavailableTestIds||[]).length})),
+ message:'Doğruluk soru sayısıyla ağırlıklıdır. Sınav soruları, seçili ilk/son pratik çözümleri ve yeni soru mini testleri ayrı kanıt olaylarıdır; resmî puan veya beceri düzeyi değildir.'});
 }
 
 export async function listFrozenPracticeRuns(env:Env,user:AuthUser,studentId:string,url:URL){
@@ -208,4 +235,4 @@ async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Pr
   return json({ok:true,student:access.student,unavailableSnapshotExamIds,restrictedToSubjects:access.restricted,availableExams:allExams.map(e=>access.restricted?{exam_id:e.exam_id,title:e.title,exam_date:e.exam_date,exam_type:e.exam_type,academic_year:e.academic_year}:e),selectedExamIds:selectedIds,exams:examsForClient,summary,subjectTrend,subjectSummary,outcomes,developing:outcomes.filter(o=>o.mastery_status==='DEVELOPING').sort((a,b)=>a.success_rate-b.success_rate),strong:outcomes.filter(o=>o.mastery_status==='STRONG').sort((a,b)=>b.success_rate-a.success_rate)});
 }
 
-export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const combinedFrozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-combined$/);if(combinedFrozen&&request.method==='GET')return selectedCombinedFrozenReport(env,auth,combinedFrozen[1],url);const practiceRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/practice-runs$/);if(practiceRuns&&request.method==='GET')return listFrozenPracticeRuns(env,auth,practiceRuns[1],url);const practice=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-practice$/);if(practice&&request.method==='GET')return selectedFrozenPracticeReport(env,auth,practice[1],url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
+export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const combinedFrozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-combined$/);if(combinedFrozen&&request.method==='GET')return selectedCombinedFrozenReport(env,auth,combinedFrozen[1],url);const miniTests=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-mini-tests$/);if(miniTests&&request.method==='GET')return selectedFrozenMiniTestReport(env,auth,miniTests[1],url);const practiceRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/practice-runs$/);if(practiceRuns&&request.method==='GET')return listFrozenPracticeRuns(env,auth,practiceRuns[1],url);const practice=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-practice$/);if(practice&&request.method==='GET')return selectedFrozenPracticeReport(env,auth,practice[1],url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
