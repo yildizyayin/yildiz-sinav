@@ -1,5 +1,5 @@
 // Inputs are the authorized source reducers' summaries, never client metrics.
-export function combineFrozenReports(sources:{sourceType:'EXAM'|'QUESTION_BANK';report:any}[]){
+export function combineFrozenReports(sources:{sourceType:'EXAM'|'QUESTION_BANK'|'MINI_TEST';report:any}[]){
  const groups=new Map<string,any>();
  for(const {sourceType,report} of sources)for(const g of report.groups||[]){
   const key=JSON.stringify([g.subjectId,g.curriculumVersionId,g.academicYear,g.gradeLevel,g.programVersion??null]);
