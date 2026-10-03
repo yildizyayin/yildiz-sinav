@@ -19,8 +19,11 @@ it('selects only new verified current tenant questions and permits seen question
  INSERT INTO curriculum_versions VALUES('version',1,'2026-2027',7);
  INSERT INTO student_enrollments VALUES('student','school','ACTIVE','season',7);
  INSERT INTO institution_seasons VALUES('season','school','ACTIVE','2026-2027');
- INSERT INTO coach_mini_tests VALUES('old','student');`);
- const add=(id:string)=>{db.prepare(`INSERT INTO question_bank VALUES(?,?,?,3,3,NULL,'A',7,'2026-2027','math','PLATFORM',NULL,'APPROVED','OWNED','MULTIPLE_CHOICE','2026-10-01')`).run(id,`stem ${id}`,'["a","b"]');db.prepare('INSERT INTO question_learning_links VALUES(?,?)').run(id,'ln_outcome')};
+ INSERT INTO coach_mini_tests VALUES('old','student');
+ ALTER TABLE question_bank ADD COLUMN content_mode TEXT;ALTER TABLE question_bank ADD COLUMN option_count INTEGER;
+ ALTER TABLE curriculum_versions ADD COLUMN program_version TEXT;
+ ALTER TABLE student_enrollments ADD COLUMN id TEXT;UPDATE student_enrollments SET id='enrollment';`);
+ const add=(id:string)=>{db.prepare(`INSERT INTO question_bank(id,stem_text,options_json,difficulty_level,difficulty,solution_text,correct_answer,grade_level,academic_year,subject_id,owner_type,owner_id,review_status,copyright_status,question_type,created_at) VALUES(?,?,?,3,3,NULL,'A',7,'2026-2027','math','PLATFORM',NULL,'APPROVED','OWNED','MULTIPLE_CHOICE','2026-10-01')`).run(id,`stem ${id}`,'["a","b"]');db.prepare('INSERT INTO question_learning_links VALUES(?,?)').run(id,'ln_outcome')};
  ['new','mini','practice','assessment','foreign','draft','wrongyear','duplicate','reservation','ownclone','aaa-privateclone'].forEach(add);
  db.exec(`INSERT INTO coach_mini_test_questions VALUES('old','mini');INSERT INTO question_practice_attempts VALUES('student','practice');INSERT INTO assessment_responses VALUES('student','assessment');INSERT INTO coach_question_exposures VALUES('student','reservation');
  UPDATE question_bank SET owner_type='INSTITUTION',owner_id='other' WHERE id='foreign';UPDATE question_bank SET review_status='DRAFT' WHERE id='draft';UPDATE question_bank SET academic_year='2025-2026' WHERE id='wrongyear';UPDATE question_bank SET stem_text='stem mini' WHERE id='duplicate';UPDATE question_bank SET stem_text='stem new',owner_type='INSTITUTION',owner_id='school' WHERE id='ownclone';UPDATE question_bank SET stem_text='stem new',owner_type='INSTITUTION',owner_id='other' WHERE id='aaa-privateclone';`);
@@ -37,10 +40,10 @@ it('selects only new verified current tenant questions and permits seen question
 it('repeat scoring does not promote mastery or assignment completion',async()=>{
  const {submitCoachMiniTest}=await import('../worker/lib/coach-mastery-cycle');
  const writes:string[]=[];
- const test={id:'test',student_id:'student',status:'READY',selection_mode:'REPEAT',pass_threshold:.8,outcome_id:'outcome',assignment_id:'assignment'};
+ const test={id:'test',student_id:'student',status:'READY',selection_mode:'REPEAT',question_count:5,pass_threshold:.8,outcome_id:'outcome',assignment_id:'assignment'};
  const prepare=(sql:string,args:any[]=[]):any=>({sql,bind:(...values:any[])=>prepare(sql,values),
  first:async()=>sql.includes('coach_mini_tests')?test:null,
- all:async()=>({results:sql.includes('q.correct_answer')?Array.from({length:5},(_,i)=>({question_id:`q${i}`,correct_answer:'A'})):[]}),
+ all:async()=>({results:sql.includes('snapshot_json FROM coach_mini_test_questions')?Array.from({length:5},(_,i)=>({question_id:`q${i}`,snapshot_json:JSON.stringify({schemaVersion:1,question:{id:`q${i}`,stem_text:'stem',correct_answer:'A'},academicYear:'2026-2027',gradeLevel:7,enrollmentId:'enrollment',seasonId:'season',outcomeRefs:[{outcomeId:'outcome',subjectId:'math',curriculumVersionId:'version',academicYear:'2026-2027',gradeLevel:7,verified:1}]})})):[]}),
  run:async()=>{writes.push(sql);return{success:true}}});
  const env={DB:{prepare,batch:async(statements:any[])=>{for(const statement of statements)writes.push(statement.sql);return statements.map(()=>({success:true}))}}} as any;
  const result=await submitCoachMiniTest(env,{role:'STUDENT',id:'user',student_id:'student',institution_id:'school'} as any,'test',Array.from({length:5},(_,i)=>({questionId:`q${i}`,answer:'A'})));
@@ -52,7 +55,7 @@ it('rolls back the whole new test when another request reserves a question first
  const db=new DatabaseSync(':memory:');
  try{
  db.exec(`CREATE TABLE coach_mini_tests(id TEXT,assignment_id TEXT,assignment_item_id TEXT,student_id TEXT,outcome_id TEXT,cycle_no INTEGER,status TEXT,question_count INTEGER,pass_threshold REAL,selection_mode TEXT);
- CREATE TABLE coach_mini_test_questions(test_id TEXT,question_id TEXT,sort_order INTEGER);
+ CREATE TABLE coach_mini_test_questions(test_id TEXT,question_id TEXT,sort_order INTEGER,snapshot_json TEXT);
  CREATE TABLE coach_question_exposures(student_id TEXT,question_id TEXT,PRIMARY KEY(student_id,question_id));`);
  const pool=Array.from({length:5},(_,i)=>({id:`q${i}`}));
  const prepare=(sql:string,args:any[]=[]):any=>({sql,args,bind:(...values:any[])=>prepare(sql,values),first:async()=>sql.includes('FROM assignment_items')?{id:'item',assignment_id:'assignment',outcome_id:'outcome',institution_id:'school',payload_json:'{"kind":"OUTCOME_PRACTICE"}'}:null,all:async()=>({results:pool})});
