@@ -249,14 +249,16 @@ for (const question of detail.payload.questions) {
 }
 const miniTest = await request(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.payload.testId)}/submit`, { method: 'POST', cookie: student, json: { answers } });
 assert(miniTest.payload?.result?.status === 'PASSED', 'Nibiru mini-test did not persist a passing measurement', miniTest.payload);
+const practiceDiscovery = await request(`/api/reporting/students/stu_a001/practice-runs?academicYear=${encodeURIComponent(miniScope.academicYear)}&limit=50`, { cookie: student });
+assert(practiceDiscovery.payload?.runs?.some((run) => run.id === submitted.payload.runId), 'Practice discovery did not return the authorized scored solution', practiceDiscovery.payload);
 const miniDiscovery = await request(`/api/reporting/students/stu_a001/mini-test-runs?academicYear=${encodeURIComponent(miniScope.academicYear)}&limit=50`, { cookie: student });
 assert(miniDiscovery.payload?.runs?.some((run) => run.id === started.payload.testId && !Number.isNaN(Date.parse(run.completedAt))), 'Mini-test discovery did not return the authorized completed NEW test', miniDiscovery.payload);
 assert(miniDiscovery.payload.runs.every((run) => Object.keys(run).every((key) => ['id', 'completedAt'].includes(key))), 'Mini-test discovery leaked question or context details', miniDiscovery.payload);
 const miniReport = await request(`/api/reporting/students/stu_a001/frozen-mini-tests?academicYear=${encodeURIComponent(miniScope.academicYear)}&testIds=${encodeURIComponent(started.payload.testId)}`, { cookie: student });
 const miniGroup = miniReport.payload?.groups?.find((group) => group.subjectId === miniOutcome.subject_id);
 assert(miniGroup?.evidenceCount === detail.payload.questions.length && miniGroup.accuracyPercent === 100 && miniReport.payload?.officialScore == null, 'Frozen mini-test report did not use native submitted evidence', miniReport.payload);
-const combinedMini = await request(`/api/reporting/students/stu_a001/frozen-combined?academicYear=${encodeURIComponent(miniScope.academicYear)}&miniTestIds=${encodeURIComponent(started.payload.testId)}`, { cookie: student });
-assert(combinedMini.payload?.sourceTypes?.includes('MINI_TEST') && combinedMini.payload?.groups?.some((group) => group.evidenceCount === detail.payload.questions.length && group.accuracyPercent === 100), 'Combined report did not include frozen mini-test evidence', combinedMini.payload);
+const combinedMini = await request(`/api/reporting/students/stu_a001/frozen-combined?academicYear=${encodeURIComponent(miniScope.academicYear)}&miniTestIds=${encodeURIComponent(started.payload.testId)}&runIds=${encodeURIComponent(submitted.payload.runId)}`, { cookie: student });
+assert(combinedMini.payload?.sourceTypes?.includes('MINI_TEST') && combinedMini.payload?.sourceTypes?.includes('QUESTION_BANK') && combinedMini.payload?.groups?.some((group) => group.evidenceCount === detail.payload.questions.length + 1 && group.accuracyPercent === 100), 'Combined report did not include frozen mini-test evidence', combinedMini.payload);
 console.log('✓ Frozen mini-test report — native evidence and combined source');
 
 const finalFeed = await request('/api/platform/assessment-feed', { cookie: student });
