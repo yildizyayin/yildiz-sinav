@@ -8,7 +8,7 @@ const MIN_QUESTIONS=5;
 const MAX_QUESTIONS=10;
 
 type MiniTestAnswer={questionId:string;answer:string};
-type EligibleQuestion={id:string;stem_text:string;options_json:string|null;difficulty:number;solution_text:string|null;correct_answer:string};
+type EligibleQuestion={id:string;stem_text:string;options_json:string|null;difficulty:number;solution_text:string|null;correct_answer:string;[key:string]:any};
 
 export function miniTestQuestionCount(available:number,cycleNo:number){
  if(available<MIN_QUESTIONS)return 0;
@@ -25,6 +25,11 @@ function normalizedAnswer(value:unknown){return String(value??'').trim().toLocal
 function parseJson<T>(value:string|null,fallback:T):T{try{return value?JSON.parse(value):fallback}catch{return fallback}}
 function nodeId(outcomeId:string){return `ln_${outcomeId}`}
 
+
+function validMiniSnapshot(value:any){
+ return value?.schemaVersion===1&&typeof value.question?.correct_answer==='string'&&typeof value.question?.stem_text==='string'&&typeof value.academicYear==='string'&&Number.isInteger(value.gradeLevel)&&typeof value.enrollmentId==='string'&&typeof value.seasonId==='string'&&Array.isArray(value.outcomeRefs)&&value.outcomeRefs.length>0&&value.outcomeRefs.every((r:any)=>r.verified===1&&typeof r.outcomeId==='string'&&typeof r.subjectId==='string'&&typeof r.curriculumVersionId==='string'&&r.academicYear===value.academicYear&&r.gradeLevel===value.gradeLevel);
+}
+
 async function scopedItem(env:Env,user:AuthUser,itemId:string){
  if(user.role!=='STUDENT'||!user.student_id)return null;
  return one<any>(env.DB.prepare(`SELECT ai.id,ai.assignment_id,ai.reference_id outcome_id,ai.payload_json,a.institution_id
@@ -38,7 +43,9 @@ async function currentTest(env:Env,studentId:string,itemId:string){
 }
 
 export async function eligibleCoachMiniTestQuestions(env:Env,user:AuthUser,outcomeId:string,mode:'NEW'|'REPEAT'){
- return all<EligibleQuestion>(env.DB.prepare(`SELECT DISTINCT q.id,q.stem_text,q.options_json,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.solution_text,q.correct_answer
+ return all<EligibleQuestion>(env.DB.prepare(`SELECT DISTINCT q.id,q.stem_text,q.options_json,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.solution_text,q.correct_answer,q.content_mode,q.option_count,
+   e.id enrollmentId,e.season_id seasonId,season.academic_year academicYear,e.grade_level gradeLevel,
+   o.id outcomeId,o.subject_id subjectId,cv.id curriculumVersionId,cv.program_version programVersion,cv.verified verified
    FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id
    JOIN outcomes o ON l.node_id='ln_'||o.id
    JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
@@ -77,9 +84,10 @@ export async function startCoachMiniTest(env:Env,user:AuthUser,itemId:string,mod
  const cycleNo=Number(latest?.cycle_no||0)+1;
  const pool=await eligibleCoachMiniTestQuestions(env,user,item.outcome_id,mode);const questionCount=miniTestQuestionCount(pool.length,cycleNo);
  if(!questionCount)return{ok:false,reason:mode==='NEW'?'NEW_QUESTIONS_REQUIRED':'REPEAT_QUESTIONS_REQUIRED',availableQuestionCount:pool.length,requiredQuestionCount:MIN_QUESTIONS,questionMode:mode};
- const selected=pool.slice(0,questionCount),testId=uuid('cmt');
+ const selected=await hydrateQuestionMedia(env,pool.slice(0,questionCount)),testId=uuid('cmt');
+ if(new Set(selected.map(q=>q.id)).size!==selected.length||selected.some(q=>q.enrollmentId!==selected[0].enrollmentId||q.seasonId!==selected[0].seasonId||q.academicYear!==selected[0].academicYear||q.gradeLevel!==selected[0].gradeLevel))return{ok:false,reason:'SNAPSHOT_CONTEXT_AMBIGUOUS'};
  const statements:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO coach_mini_tests(id,assignment_id,assignment_item_id,student_id,outcome_id,cycle_no,status,question_count,pass_threshold,selection_mode) VALUES(?,?,?,?,?,?,'READY',?,?,?)`).bind(testId,item.assignment_id,itemId,user.student_id,item.outcome_id,cycleNo,questionCount,PASS_THRESHOLD,mode)];
- selected.forEach((q,index)=>statements.push(env.DB.prepare(`INSERT INTO coach_mini_test_questions(test_id,question_id,sort_order) VALUES(?,?,?)`).bind(testId,q.id,index+1)));
+ selected.forEach((q,index)=>statements.push(env.DB.prepare(`INSERT INTO coach_mini_test_questions(test_id,question_id,sort_order,snapshot_json) VALUES(?,?,?,?)`).bind(testId,q.id,index+1,JSON.stringify({schemaVersion:1,question:q,academicYear:q.academicYear,gradeLevel:q.gradeLevel,enrollmentId:q.enrollmentId,seasonId:q.seasonId,outcomeRefs:[{outcomeId:q.outcomeId,subjectId:q.subjectId,curriculumVersionId:q.curriculumVersionId,academicYear:q.academicYear,gradeLevel:q.gradeLevel,programVersion:q.programVersion,verified:q.verified}]}))));
  if(mode==='NEW')selected.forEach(q=>statements.push(env.DB.prepare(`INSERT INTO coach_question_exposures(student_id,question_id) VALUES(?,?)`).bind(user.student_id,q.id)));
  try{await env.DB.batch(statements)}catch(error){
   if(mode==='NEW'&&/UNIQUE constraint failed: coach_question_exposures/.test(String(error)))return{ok:false,reason:'NEW_QUESTIONS_REQUIRED',requiredQuestionCount:MIN_QUESTIONS,questionMode:mode,retryRequired:true};
@@ -96,12 +104,15 @@ export async function getCoachMiniTest(env:Env,user:AuthUser,testId:string){
    WHERE t.id=? AND t.student_id=?`).bind(testId,user.student_id));
  if(!test)return{ok:false,reason:'TEST_NOT_FOUND'};
  const submitted=test.status!=='READY';
- const rows=await all<any>(env.DB.prepare(`SELECT tq.question_id id,tq.question_id,tq.sort_order,tq.student_answer,tq.correct,q.stem_text,q.options_json,q.content_mode,q.option_count,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.solution_text,
-   CASE WHEN ?=1 THEN q.correct_answer ELSE NULL END correct_answer
-   FROM coach_mini_test_questions tq JOIN question_bank q ON q.id=tq.question_id
-   WHERE tq.test_id=? ORDER BY tq.sort_order`).bind(submitted?1:0,testId));
- const hydrated=await hydrateQuestionMedia(env,rows);
- return{ok:true,test,questions:hydrated.map(x=>({...x,options:parseJson(x.options_json,[]),options_json:undefined})),followups:await followups(env,user.student_id,testId)};
+ const rows=await all<any>(env.DB.prepare(`SELECT question_id,sort_order,student_answer,correct,snapshot_json FROM coach_mini_test_questions WHERE test_id=? ORDER BY sort_order`).bind(testId));
+ const snapshots=rows.map(x=>parseJson<any>(x.snapshot_json,null));
+ if(!submitted&&(!rows.length||snapshots.some(x=>!validMiniSnapshot(x))))return{ok:false,reason:'SNAPSHOT_REQUIRED'};
+ const questions=rows.map((row,index)=>{
+  const snapshot=snapshots[index];if(!validMiniSnapshot(snapshot))return{id:row.question_id,question_id:row.question_id,sort_order:row.sort_order,student_answer:row.student_answer,correct:row.correct,legacyEvidence:true,stem_text:'Eski sorunun dondurulmuş içeriği mevcut değil',options:[]};
+  const q=snapshot.question;
+  return{id:row.question_id,question_id:row.question_id,sort_order:row.sort_order,student_answer:row.student_answer,correct:row.correct,stem_text:q.stem_text,options:parseJson(q.options_json,[]),content_mode:q.content_mode,option_count:q.option_count,difficulty:q.difficulty,assets:(q.assets||[]).filter((x:any)=>submitted||x.placement!=='SOLUTION'),contentBlocks:(q.contentBlocks||[]).filter((x:any)=>submitted||x.placement!=='SOLUTION'),...(submitted?{solution_text:q.solution_text,correct_answer:q.correct_answer}:{})};
+ });
+ return{ok:true,test,questions,legacyEvidence:snapshots.some(x=>!validMiniSnapshot(x)),followups:await followups(env,user.student_id,testId)};
 }
 
 async function updateLearningState(env:Env,studentId:string,outcomeId:string,testId:string,rate:number,questionCount:number){
@@ -126,7 +137,12 @@ export async function submitCoachMiniTest(env:Env,user:AuthUser,testId:string,an
  if(user.role!=='STUDENT'||!user.student_id)return{ok:false,reason:'STUDENT_ONLY'};
  const test=await one<any>(env.DB.prepare(`SELECT * FROM coach_mini_tests WHERE id=? AND student_id=?`).bind(testId,user.student_id));
  if(!test)return{ok:false,reason:'TEST_NOT_FOUND'};if(test.status!=='READY'){const detail=await getCoachMiniTest(env,user,testId);return{...detail,reused:true};}
- const rows=await all<any>(env.DB.prepare(`SELECT tq.question_id,q.correct_answer FROM coach_mini_test_questions tq JOIN question_bank q ON q.id=tq.question_id WHERE tq.test_id=? ORDER BY tq.sort_order`).bind(testId));
+ const rows=await all<any>(env.DB.prepare(`SELECT question_id,snapshot_json FROM coach_mini_test_questions WHERE test_id=? ORDER BY sort_order`).bind(testId));
+ const snapshots=rows.map(x=>parseJson<any>(x.snapshot_json,null));
+ if(!rows.length||rows.length!==Number(test.question_count)||snapshots.some(x=>!validMiniSnapshot(x)))return{ok:false,reason:'SNAPSHOT_REQUIRED'};
+ const context=snapshots[0];
+ if(snapshots.some(x=>x.academicYear!==context.academicYear||x.gradeLevel!==context.gradeLevel||x.enrollmentId!==context.enrollmentId||x.seasonId!==context.seasonId))return{ok:false,reason:'SNAPSHOT_REQUIRED'};
+ rows.forEach((row,index)=>row.correct_answer=snapshots[index].question.correct_answer);
  const answerMap=new Map((Array.isArray(answers)?answers:[]).map(x=>[String(x.questionId),normalizedAnswer(x.answer)]));
  if(rows.some(x=>!answerMap.has(x.question_id)))return{ok:false,reason:'ALL_QUESTIONS_REQUIRED'};
  const graded=rows.map(x=>({questionId:x.question_id,answer:answerMap.get(x.question_id)||'',correct:(answerMap.get(x.question_id)||'')===normalizedAnswer(x.correct_answer)}));
@@ -137,7 +153,7 @@ export async function submitCoachMiniTest(env:Env,user:AuthUser,testId:string,an
  statements.push(env.DB.prepare(`UPDATE coach_mini_tests SET status=?,correct_count=?,score_percent=?,submitted_at=CURRENT_TIMESTAMP WHERE id=? AND status='READY'`).bind(status,result.correct,result.scorePercent,testId));
  if(!isRepeat)statements.push(env.DB.prepare(`INSERT INTO student_outcome_mastery(student_id,outcome_id,status,cycle_count,last_score,last_test_id,mastered_at,updated_at) VALUES(?,?,?,?,?,?,CASE WHEN ?='MASTERED' THEN CURRENT_TIMESTAMP ELSE NULL END,CURRENT_TIMESTAMP)
    ON CONFLICT(student_id,outcome_id) DO UPDATE SET status=excluded.status,cycle_count=student_outcome_mastery.cycle_count+1,last_score=excluded.last_score,last_test_id=excluded.last_test_id,mastered_at=CASE WHEN excluded.status='MASTERED' THEN CURRENT_TIMESTAMP ELSE student_outcome_mastery.mastered_at END,updated_at=CURRENT_TIMESTAMP`).bind(user.student_id,test.outcome_id,result.passed?'MASTERED':'DEVELOPING',1,result.rate,testId,result.passed?'MASTERED':'DEVELOPING'));
- statements.push(env.DB.prepare(`INSERT OR IGNORE INTO assessment_runs(id,institution_id,student_id,source_type,source_id,assignment_id,delivery_mode,status,score,metadata_json,completed_at) VALUES(?,?,?,'MINI_TEST',?,?,'DIGITAL','SCORED',?,?,CURRENT_TIMESTAMP)`).bind(testId,user.institution_id,user.student_id,testId,test.assignment_id,result.rate,JSON.stringify({outcomeId:test.outcome_id,cycleNo:test.cycle_no,correct:result.correct,total:result.total,scorePercent:result.scorePercent,passThreshold:test.pass_threshold,selectionMode:test.selection_mode||'LEGACY',practiceOnly:isRepeat})));
+ statements.push(env.DB.prepare(`INSERT OR IGNORE INTO assessment_runs(id,institution_id,student_id,source_type,source_id,assignment_id,delivery_mode,status,score,metadata_json,completed_at) VALUES(?,?,?,'MINI_TEST',?,?,'DIGITAL','SCORED',?,?,CURRENT_TIMESTAMP)`).bind(testId,user.institution_id,user.student_id,testId,test.assignment_id,result.rate,JSON.stringify({outcomeId:test.outcome_id,cycleNo:test.cycle_no,correct:result.correct,total:result.total,scorePercent:result.scorePercent,passThreshold:test.pass_threshold,selectionMode:test.selection_mode||'LEGACY',practiceOnly:isRepeat,...(!isRepeat?{miniEvidence:{policy:'MINI_TEST_CONTENT_AT_START_V1',academicYear:context.academicYear,gradeLevel:context.gradeLevel,enrollmentId:context.enrollmentId,seasonId:context.seasonId,questionEvidence:graded.map((x,index)=>({questionId:x.questionId,status:x.answer?(x.correct?'CORRECT':'WRONG'):'BLANK',outcomeRefs:snapshots[index].outcomeRefs}))}}:{})})));
  graded.forEach(x=>statements.push(env.DB.prepare(`INSERT OR IGNORE INTO assessment_responses(id,run_id,student_id,question_id,node_id,selected_answer,is_correct,source_channel) VALUES(?,?,?,?,?,?,?,'DIGITAL')`).bind(uuid('ars'),testId,user.student_id,x.questionId,nodeId(test.outcome_id),x.answer,x.correct?1:0)));
  await env.DB.batch(statements);
  if(!isRepeat)await updateLearningState(env,user.student_id,test.outcome_id,testId,result.rate,result.total);
