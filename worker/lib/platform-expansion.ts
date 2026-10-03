@@ -429,10 +429,21 @@ async function createQuestion(request:Request,env:Env,user:AuthUser):Promise<Res
 
 function normalizedPracticeAnswer(value:unknown){return String(value??'').trim().toLocaleUpperCase('tr-TR');}
 
-async function studentPracticeQuestions(request:Request,env:Env,user:AuthUser):Promise<Response>{
+// Opaque MAC: the answer key and content digest never leave the server.
+export async function practiceContentToken(env:Env,user:AuthUser,enrollment:any,q:any,expires=Date.now()+30*60*1000){
+  if(!env.SESSION_SECRET)throw new Error('Practice signing configuration unavailable');
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(env.SESSION_SECRET),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+  const payload=JSON.stringify(['PRACTICE_CONTENT_V1',user.student_id,user.institution_id,enrollment.enrollment_id,enrollment.season_id,enrollment.academic_year,enrollment.grade_level,expires,q.id,q.stem_text,q.options_json,q.correct_answer,q.updated_at,q.subject_id,q.grade_level,q.academic_year,q.assets||[],q.contentBlocks||[]]);
+  const mac=Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(payload)))).map(x=>x.toString(16).padStart(2,'0')).join('');
+  return `${expires}.${mac}`;
+}
+
+export async function studentPracticeQuestions(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'QUESTION_BANK');if(gate)return gate;
   if(user.role!=='STUDENT'||!user.student_id)return forbidden('Bu akış yalnızca öğrenci hesabına açıktır.');
-  const u=new URL(request.url);const enrollment=await one<any>(env.DB.prepare(`SELECT grade_level,institution_id FROM student_enrollments WHERE student_id=? AND status='ACTIVE' ORDER BY created_at DESC LIMIT 1`).bind(user.student_id));
+  const u=new URL(request.url);const enrollment=await one<any>(env.DB.prepare(`SELECT e.id enrollment_id,e.institution_id,e.season_id,e.grade_level,s.academic_year FROM student_enrollments e LEFT JOIN institution_seasons s ON s.id=e.season_id AND s.institution_id=e.institution_id WHERE e.student_id=? AND e.institution_id=? AND e.status='ACTIVE' ORDER BY e.created_at DESC,e.id DESC LIMIT 1`).bind(user.student_id,user.institution_id));
+  if(!enrollment)return forbidden('Bu kurumda aktif öğrenci kaydınız bulunmuyor.');
+  if(!env.SESSION_SECRET)return json({ok:false,error:{code:'PRACTICE_SIGNING_UNAVAILABLE',message:'Soru doğrulama yapılandırması hazır değil.'}},503);
   const gradeValue=u.searchParams.get('gradeLevel')||enrollment?.grade_level;if(!gradeValue)return badRequest('Öğrencinin aktif sınıf bilgisi bulunamadı.','ENROLLMENT_REQUIRED');
   const grade=Number(gradeValue);if(!Number.isInteger(grade)||grade<1||grade>12)return badRequest('Geçersiz sınıf seviyesi.','INVALID_GRADE');
   const subject=u.searchParams.get('subjectId');const nodeId=u.searchParams.get('nodeId');const difficulty=u.searchParams.get('difficultyLevel');const limit=Math.max(1,Math.min(20,Number(u.searchParams.get('limit')||10)));
@@ -440,12 +451,12 @@ async function studentPracticeQuestions(request:Request,env:Env,user:AuthUser):P
   if(subject){wh.push('q.subject_id=?');ps.push(subject);}if(nodeId){wh.push('EXISTS(SELECT 1 FROM question_learning_links ql WHERE ql.question_id=q.id AND ql.node_id=?)');ps.push(nodeId);}
   if(difficulty){const level=normalizeDifficultyLevel(difficulty);if(!level)return badRequest('Zorluk seviyesi 1 ile 6 arasında olmalıdır.','INVALID_DIFFICULTY');wh.push('COALESCE(q.difficulty_level,q.difficulty,3)=?');ps.push(level);}
   const rows=await all<any>(env.DB.prepare(`SELECT q.id,q.grade_level,q.subject_id,q.topic,q.subtopic,q.question_type,q.content_mode,q.option_count,
-    COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,q.stem_text,q.options_json,q.solution_text,s.name subject_name
+    COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,q.stem_text,q.options_json,q.correct_answer,q.updated_at,q.academic_year,s.name subject_name
     FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')}
     ORDER BY COALESCE(q.difficulty_level,q.difficulty,3),q.created_at DESC LIMIT ?`).bind(...ps,limit));
   const today=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM question_practice_attempts WHERE student_id=? AND created_at>=date('now')`).bind(user.student_id));
   const hydrated=await hydrateQuestionMedia(env,rows);
-  return json({ok:true,questions:hydrated.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined})),progress:{completedToday:Number(today?.count||0)}});
+  return json({ok:true,questions:await Promise.all(hydrated.map(async r=>({...r,practiceToken:await practiceContentToken(env,user,enrollment,r),options:parseJson(r.options_json,[]),options_json:undefined,correct_answer:undefined}))),progress:{completedToday:Number(today?.count||0)}});
 }
 
 export async function submitStudentPractice(request:Request,env:Env,user:AuthUser):Promise<Response>{
@@ -459,6 +470,13 @@ export async function submitStudentPractice(request:Request,env:Env,user:AuthUse
       AND q.correct_answer IS NOT NULL AND q.options_json IS NOT NULL
       AND (q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`).bind(questionId,enrollment?.institution_id||user.institution_id||null));
   if(!q)return notFound('Bu soru artık çözülebilir durumda değil.');
+  if(!env.SESSION_SECRET)return json({ok:false,error:{code:'PRACTICE_SIGNING_UNAVAILABLE',message:'Soru doğrulama yapılandırması hazır değil.'}},503);
+  const token=typeof b.practiceToken==='string'?b.practiceToken:'';const parts=token.split('.');const expires=Number(parts[0]);
+  if(parts.length!==2||!/^[0-9a-f]{64}$/.test(parts[1])||!Number.isSafeInteger(expires)||expires<=Date.now()||expires>Date.now()+30*60*1000)return json({ok:false,error:{code:'PRACTICE_CONTENT_STALE',message:'Soru oturumu geçersiz veya süresi dolmuş. Soruları yeniden yükleyin.'}},409);
+  const [currentContent]=await hydrateQuestionMedia(env,[q]);
+  const expected=await practiceContentToken(env,user,enrollment,currentContent,expires);
+  let difference=0;for(let i=0;i<expected.length;i++)difference|=expected.charCodeAt(i)^token.charCodeAt(i);
+  if(token.length!==expected.length||difference!==0)return json({ok:false,error:{code:'PRACTICE_CONTENT_STALE',message:'Soru içeriği değişti. Soruları yeniden yükleyin.'}},409);
   const answer=normalizedPracticeAnswer(b.answer);const correct=answer!==''&&answer===normalizedPracticeAnswer(q.correct_answer);const attemptId=uuid('qpa');
   const links=await all<any>(env.DB.prepare(`SELECT ql.node_id,o.id outcomeId,o.subject_id subjectId,o.curriculum_version_id curriculumVersionId,cv.academic_year academicYear,cv.grade_level gradeLevel,cv.program_version programVersion,COALESCE(cv.verified,0) verified FROM question_learning_links ql JOIN learning_nodes n ON n.id=ql.node_id AND n.node_type='OUTCOME' LEFT JOIN outcomes o ON n.id='ln_'||o.id AND o.active=1 AND o.subject_id=n.subject_id AND o.grade_level=n.grade_level LEFT JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id AND cv.academic_year=n.academic_year AND cv.grade_level=n.grade_level WHERE ql.question_id=? ORDER BY ql.node_id`).bind(questionId));
   const contentBytes=new TextEncoder().encode(JSON.stringify([q.stem_text,q.options_json,q.correct_answer,q.subject_id,q.grade_level,q.academic_year]));
