@@ -45,5 +45,7 @@ SNAPSHOT_REQUIRED ile engellenir. Görsel URL referansları saklanır; dosya
 baytlarının değişmez arşivi henüz yoktur. Eşzamanlı çift gönderim idempotansı
 ayrıca tamamlanmalıdır. Yeni testlerin native kanıtı frozen-mini-tests API üzerinden öğrenci/veli ve
 yetkili kurum/branş kapsamıyla okunur; birleşik API miniTestIds seçimini destekler.
-Tekrar çalışmaları akademik kanıta eklenmez. Karne ekranındaki mini test keşfi
-ve seçim arayüzü henüz tamamlanmamıştır.
+Tekrar çalışmaları akademik kanıta eklenmez. Karne ekranı tamamlanan yeni mini testleri eğitim yılına göre listeler;
+öğrenci/veli veya yetkili branş/kurum kapsamıyla en fazla 20 mini test seçilir.
+Mini testler tek başına ya da seçili sınav/soru pratiğiyle birleştirilir.
+Tekrar ve sabit kanıtı eksik eski testler listeye katılmaz.
