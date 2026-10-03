@@ -1,7 +1,14 @@
+import { withExamOperationLock } from './lib/exam-operation-lock';
+import { examPublicationGuard, examCorrectionOpen } from './lib/exam-publication-guard';
 import accessApp from './access-entry';
 import type { AuthUser, Env, Role } from './types';
 import { getAuthUser } from './lib/auth';
-import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './lib/db';
+import { all, audit, sanitizeAuditDetails, badRequest, forbidden, json, notFound, one, uuid } from './lib/db';
+
+function examAuditStatement(env:Env,user:AuthUser,institutionId:string|null,action:string,examId:string,details:unknown):D1PreparedStatement{
+  return env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)')
+    .bind(uuid('aud'),user.id,institutionId,action,'exam',examId,JSON.stringify(sanitizeAuditDetails(details)));
+}
 
 export type ExamOwnerType = 'CENTRAL' | 'INSTITUTION';
 
@@ -481,10 +488,19 @@ async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<
     `).bind(examId)),
     readiness(env, examId),
   ]);
-  return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, optionalAnswerKey, readiness: ready });
+  const correctionOpen=await examCorrectionOpen(env,examId);
+  const publicationBlocked=!!await examPublicationGuard(env,examId);
+  return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, optionalAnswerKey, readiness: ready,answerKeyEditable:!publicationBlocked&&(exam.status==='DRAFT'||correctionOpen),correctionOpen:correctionOpen&&!publicationBlocked });
 }
 
-async function updateGeneral(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+export async function updateGeneral(request: Request, env: Env, user: AuthUser, examId: string):Promise<Response>{
+  const exam=await managedExam(env,user,examId);if(!exam)return notFound();
+  return withExamOperationLock(env,examId,'EXAM_SOURCE_EDIT',async(env)=>{
+    const gate=await examPublicationGuard(env,examId);if(gate)return gate;
+    return updateGeneralUnlocked(request,env,user,examId);
+  });
+}
+async function updateGeneralUnlocked(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Aktif veya kapanmış sınavın temel tanımı değiştirilemez.');
@@ -533,10 +549,10 @@ async function updateGeneral(request: Request, env: Env, user: AuthUser, examId:
     outcomeMode: exam.outcome_mode || 'OPTIONAL',
   };
   const after = { title, examType, gradeLevel, examDate, scoringRuleVersionId, publisherName, sessionLabel, description, resultNetworkEnabled, scoringOverride, scoringSettings, outcomeMode };
-  await env.DB.prepare(`UPDATE exams SET title=?,exam_type=?,grade_level=?,exam_date=?,scoring_rule_version_id=?,publisher_name=?,session_label=?,description=?,result_network_enabled=?,scoring_override_json=?,scoring_settings_json=?,outcome_mode=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
+  const update=env.DB.prepare(`UPDATE exams SET title=?,exam_type=?,grade_level=?,exam_date=?,scoring_rule_version_id=?,publisher_name=?,session_label=?,description=?,result_network_enabled=?,scoring_override_json=?,scoring_settings_json=?,outcome_mode=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
     .bind(title, examType, gradeLevel, examDate,
-      scoringRuleVersionId, publisherName, sessionLabel, description, resultNetworkEnabled, scoringOverride, scoringSettings, outcomeMode, examId).run();
-  await audit(env.DB, user.id, exam.institution_id, 'EXAM_DEFINITION_UPDATED', 'exam', examId, { before, after, reason });
+      scoringRuleVersionId, publisherName, sessionLabel, description, resultNetworkEnabled, scoringOverride, scoringSettings, outcomeMode, examId);
+  await env.DB.batch([update,examAuditStatement(env,user,exam.institution_id,'EXAM_DEFINITION_UPDATED',examId,{before,after,reason})]);
   return Response.json({ ok: true });
 }
 
@@ -574,7 +590,14 @@ async function copyDefinition(env: Env, user: AuthUser, examId: string): Promise
   return Response.json({ ok: true, id }, { status: 201 });
 }
 
-async function deleteDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
+export async function deleteDefinition(env: Env, user: AuthUser, examId: string):Promise<Response>{
+  const exam=await managedExam(env,user,examId);if(!exam)return notFound();
+  return withExamOperationLock(env,examId,'EXAM_SOURCE_EDIT',async(env)=>{
+    const gate=await examPublicationGuard(env,examId);if(gate)return gate;
+    return deleteDefinitionUnlocked(env,user,examId);
+  });
+}
+async function deleteDefinitionUnlocked(env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_NOT_DRAFT', 'Yayınlanmış veya arşivlenmiş sınav silinemez; önce arşiv durumunu kullanın.');
@@ -587,13 +610,23 @@ async function deleteDefinition(env: Env, user: AuthUser, examId: string): Promi
     env.DB.prepare('DELETE FROM exam_optional_answer_keys WHERE exam_id=?').bind(examId),
     env.DB.prepare('DELETE FROM exam_document_assets WHERE exam_id=?').bind(examId),
     env.DB.prepare('DELETE FROM video_links WHERE exam_id=?').bind(examId),
+    env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)').bind(uuid('aud'),user.id,exam.institution_id,'EXAM_DEFINITION_DELETED','exam',examId,JSON.stringify(sanitizeAuditDetails({title:exam.title}))),
+    // The lock references this exam. Release it inside this transaction so
+    // deletion succeeds with foreign keys enabled; rollback restores it.
+    env.DB.prepare('DELETE FROM exam_operation_locks WHERE exam_id=?').bind(examId),
     env.DB.prepare('DELETE FROM exams WHERE id=?').bind(examId),
   ]);
-  await audit(env.DB, user.id, exam.institution_id, 'EXAM_DEFINITION_DELETED', 'exam', examId, { title: exam.title });
   return Response.json({ ok: true });
 }
 
-async function replaceStructure(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+export async function replaceStructure(request: Request, env: Env, user: AuthUser, examId: string):Promise<Response>{
+  const exam=await managedExam(env,user,examId);if(!exam)return notFound();
+  return withExamOperationLock(env,examId,'EXAM_SOURCE_EDIT',async(env)=>{
+    const gate=await examPublicationGuard(env,examId);if(gate)return gate;
+    return replaceStructureUnlocked(request,env,user,examId);
+  });
+}
+async function replaceStructureUnlocked(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Sınav yapısı yalnız taslak durumunda değiştirilebilir.');
@@ -643,19 +676,24 @@ async function replaceStructure(request: Request, env: Env, user: AuthUser, exam
     }
   }
   for (const code of booklets) statements.push(env.DB.prepare(`INSERT INTO exam_booklets (id,exam_id,code,active) VALUES(?,?,?,1)`).bind(uuid('book'), examId, code));
+  statements.push(examAuditStatement(env,user,exam.institution_id,'EXAM_STRUCTURE_REPLACED',examId,{
+    before: { booklets: previousBooklets.map(row=>row.code), subjects: previousSubjects }, after: { booklets, subjects }, reason,
+  }));
   await env.DB.batch(statements);
-  await audit(env.DB, user.id, exam.institution_id, 'EXAM_STRUCTURE_REPLACED', 'exam', examId, {
-    before: { booklets: previousBooklets.map((row) => row.code), subjects: previousSubjects },
-    after: { booklets, subjects },
-    reason,
-  });
   return Response.json({ ok: true, questionCount: globalNo - 1, booklets });
 }
 
-async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+export async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, examId: string):Promise<Response>{
+  const exam=await managedExam(env,user,examId);if(!exam)return notFound();
+  return withExamOperationLock(env,examId,'EXAM_SOURCE_EDIT',async(env)=>{
+    const gate=await examPublicationGuard(env,examId);if(gate)return gate;
+    return replaceAnswerKeyUnlocked(request,env,user,examId);
+  });
+}
+async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
-  if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Cevap anahtarı yalnız taslak sınavda değiştirilebilir.');
+  if (exam.status !== 'DRAFT'&&!await examCorrectionOpen(env,examId)) return err(409, 'EXAM_LOCKED', 'Cevap anahtarı taslak veya gerekçeyle düzeltmeye açılmış sınavda değiştirilebilir.');
   const body = await request.json<{
     entries?: Array<{ subjectId?: string; bookletCode?: string; answers?: string; optionCount?: 4 | 5; acceptedAnswers?: Array<string | string[]>; questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>; bookletQuestionNumbers?: number[]; outcomeRefs?: Array<{ code?: string; title?: string; publisherCode?: string; publisherTitle?: string; officialCode?: string } | null>; outcomeRefsByQuestion?: Array<Array<{ code?: string; title?: string; publisherCode?: string; publisherTitle?: string; officialCode?: string }>> }>;
     outcomeMappings?: Array<{ subjectId?: string; questionNo?: number; outcomeId?: string }>;
@@ -792,12 +830,19 @@ async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, exam
   }
   for (const [questionId, labelIds] of publisherLabelsByQuestion.entries()) for (const publisherOutcomeId of labelIds) statements.push(env.DB.prepare(`INSERT OR IGNORE INTO question_publisher_outcomes (exam_question_id,publisher_outcome_id) VALUES(?,?)`).bind(questionId, publisherOutcomeId));
   if (outcomeMode !== exam.outcome_mode) statements.push(env.DB.prepare('UPDATE exams SET outcome_mode=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(outcomeMode, examId));
+  statements.push(env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)').bind(uuid('aud'),user.id,exam.institution_id,'EXAM_ANSWER_KEY_REPLACED','exam',examId,JSON.stringify(sanitizeAuditDetails({ before: { entryCount: subjects.length * booklets.length, outcomeMappingCount: 'existing' }, after: { entryCount: entryMap.size, outcomeMappingCount: seenMappings.size }, reason }))));
   await env.DB.batch(statements);
-  await audit(env.DB, user.id, exam.institution_id, 'EXAM_ANSWER_KEY_REPLACED', 'exam', examId, { before: { entryCount: subjects.length * booklets.length, outcomeMappingCount: 'existing' }, after: { entryCount: entryMap.size, outcomeMappingCount: seenMappings.size }, reason });
   return Response.json({ ok: true, answerCount: subjects.reduce((sum, s) => sum + Number(s.question_count), 0) * booklets.length, outcomeMappingCount: seenMappings.size });
 }
 
-async function replaceInstitutions(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+export async function replaceInstitutions(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
+  if(!await managedExam(env,user,examId))return notFound();
+  return withExamOperationLock(env,examId,'EXAM_SOURCE_EDIT',async(env)=>{
+    const gate=await examPublicationGuard(env,examId);if(gate)return gate;
+    return replaceInstitutionsUnlocked(request,env,user,examId);
+  });
+}
+async function replaceInstitutionsUnlocked(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   if (user.role !== 'SUPER_ADMIN' || exam.owner_type !== 'CENTRAL') return err(403, 'FORBIDDEN', 'Kurum dağıtımı yalnız merkezi sınavlarda Super Admin tarafından yönetilir.');
@@ -811,12 +856,16 @@ async function replaceInstitutions(request: Request, env: Env, user: AuthUser, e
   if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Değişiklik gerekçesi 500 karakteri geçemez.');
   const statements: D1PreparedStatement[] = [env.DB.prepare('DELETE FROM exam_institutions WHERE exam_id=?').bind(examId)];
   for (const institutionId of ids) statements.push(env.DB.prepare(`INSERT INTO exam_institutions (id,exam_id,institution_id,enabled) VALUES(?,?,?,1)`).bind(uuid('ei'), examId, institutionId));
+  statements.push(examAuditStatement(env,user,null,'EXAM_INSTITUTIONS_REPLACED',examId,{before:{institutionIds:previous.map(row=>row.institution_id)},after:{institutionIds:ids},reason}));
   await env.DB.batch(statements);
-  await audit(env.DB, user.id, null, 'EXAM_INSTITUTIONS_REPLACED', 'exam', examId, { before: { institutionIds: previous.map((row) => row.institution_id) }, after: { institutionIds: ids }, reason });
   return Response.json({ ok: true, institutionCount: ids.length });
 }
 
-async function setStatus(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+export async function setStatus(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
+  if(!await managedExam(env,user,examId))return notFound();
+  return withExamOperationLock(env,examId,'EXAM_STATUS_EDIT',env=>setStatusUnlocked(request,env,user,examId));
+}
+async function setStatusUnlocked(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
   const body = await request.json<{ status?: 'DRAFT' | 'ACTIVE' | 'CLOSED' | 'ARCHIVED'; reason?: string | null }>();
@@ -834,22 +883,14 @@ async function setStatus(request: Request, env: Env, user: AuthUser, examId: str
   }
   const reason = body.reason?.trim() || `Sınav durumu ${next} olarak güncellendi.`;
   if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Durum değişikliği gerekçesi 500 karakteri geçemez.');
-  await env.DB.prepare('UPDATE exams SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(next, examId).run();
-  if (next === 'ACTIVE') {
-    if (Number(exam.result_network_enabled || 0) === 1) {
-      await env.DB.prepare(`
-        INSERT INTO exam_channel_publications (id,exam_id,channel,status,published_by,published_at)
-        VALUES(?,?, 'RESULT_NETWORK','ACTIVE',?,CURRENT_TIMESTAMP)
-        ON CONFLICT(exam_id,channel) DO UPDATE SET status='ACTIVE',published_by=excluded.published_by,published_at=excluded.published_at
-      `).bind(uuid('pub'), examId, user.id).run();
-    } else {
-      await env.DB.prepare(`UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'`).bind(examId).run();
-    }
+  const statements=[env.DB.prepare('UPDATE exams SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(next,examId)];
+  if(next==='ACTIVE'&&Number(exam.result_network_enabled||0)===1){
+    statements.push(env.DB.prepare(`INSERT INTO exam_channel_publications(id,exam_id,channel,status,published_by,published_at) VALUES(?,?,'RESULT_NETWORK','ACTIVE',?,CURRENT_TIMESTAMP) ON CONFLICT(exam_id,channel) DO UPDATE SET status='ACTIVE',published_by=excluded.published_by,published_at=excluded.published_at`).bind(uuid('pub'),examId,user.id));
+  }else if(next==='ACTIVE'||next==='ARCHIVED'){
+    statements.push(env.DB.prepare(`UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'`).bind(examId));
   }
-  if (next === 'ARCHIVED') {
-    await env.DB.prepare(`UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'`).bind(examId).run();
-  }
-  await audit(env.DB, user.id, exam.institution_id, `EXAM_STATUS_${next}`, 'exam', examId, { before: { status: exam.status }, after: { status: next }, reason });
+  statements.push(examAuditStatement(env,user,exam.institution_id,`EXAM_STATUS_${next}`,examId,{before: { status: exam.status }, after: { status: next }, reason}));
+  await env.DB.batch(statements);
   return Response.json({ ok: true, status: next });
 }
 

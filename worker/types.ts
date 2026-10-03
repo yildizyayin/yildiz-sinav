@@ -3,6 +3,20 @@ export type Role = 'SUPER_ADMIN' | 'INSTITUTION_MANAGER' | 'TEACHER' | 'GUIDANCE
 export interface Env {
   DB: D1Database;
   FILES: R2Bucket;
+  RESULT_ARTIFACTS_ENABLED?: string;
+  RESULT_ARTIFACT_BACKGROUND_ENABLED?: string;
+  RESULT_ARTIFACT_VERIFICATION_ENABLED?: string;
+  RESULT_ARTIFACT_QUEUE_ENABLED?: string;
+  RESULT_ARTIFACT_QUEUE?: Queue;
+  RESULT_ARTIFACT_QUEUE_NAME?: string;
+  RESULT_ARTIFACT_READS_ENABLED?: string;
+  RESULT_ARTIFACT_CLEANUP_ENABLED?: string;
+  RESULT_RETENTION_QUEUE_ENABLED?: string;
+  RESULT_RETENTION_DEADLINE_HOURS?: string;
+  RESULT_RETENTION_QUEUE?: Queue;
+  RESULT_RETENTION_QUEUE_NAME?: string;
+  // Dedicated private bucket; never reuse public content assets.
+  RESULT_FILES?: R2Bucket;
   AI?: Ai;
   ENVIRONMENT?: string;
   PRODUCT_NAME?: string;
@@ -58,6 +72,8 @@ export interface Env {
   // Token Cloudflare Secret olarak provision edilmelidir.
   GITHUB_AGENT_TOKEN?: string;
   GITHUB_AGENT_REPO?: string;
+  // Only CI, tenant, KVKK and D1 source auditors; default main. Server-controlled.
+  GITHUB_AGENT_CHECK_REF?: string;
   ONAY_WORKER_URL?: string;
   IYZICO_API_KEY?: string;
   IYZICO_SECRET_KEY?: string;
@@ -135,4 +151,3 @@ export interface PermissionScope {
   guidanceClassIds: string[];
   subjectClassAssignments: Array<{ classId: string; subjectId: string }>;
 }
-

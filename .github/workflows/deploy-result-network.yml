@@ -145,10 +145,13 @@ jobs:
           DATABASE_ID: ${{ steps.canonical.outputs.database_id }}
           DATABASE_NAME: ${{ steps.canonical.outputs.database_name }}
           BUCKET_NAME: ${{ steps.canonical.outputs.bucket_name }}
+          RESULT_PRIVATE_BUCKET: ${{ vars.RESULT_PRIVATE_BUCKET }}
+          RESULT_ARTIFACT_QUEUE_NAME: ${{ vars.RESULT_ARTIFACT_QUEUE_NAME }}
+          RESULT_ARTIFACT_DLQ_NAME: ${{ vars.RESULT_ARTIFACT_DLQ_NAME }}
+          RESULT_RETENTION_QUEUE_NAME: ${{ vars.RESULT_RETENTION_QUEUE_NAME }}
+          RESULT_RETENTION_DLQ_NAME: ${{ vars.RESULT_RETENTION_DLQ_NAME }}
         run: |
-          jq --arg id "$DATABASE_ID" --arg name "$DATABASE_NAME" --arg bucket "$BUCKET_NAME" \
-            '.d1_databases[0].database_id=$id | .d1_databases[0].database_name=$name | .r2_buckets[0].bucket_name=$bucket' \
-            wrangler.result.production.jsonc > wrangler.result.production.resolved.json
+          node scripts/materialize-result-config.mjs wrangler.result.production.jsonc wrangler.result.production.resolved.json
 
       - name: Apply canonical production D1 migrations
         run: npx wrangler d1 migrations apply DB --remote --config wrangler.result.production.resolved.json

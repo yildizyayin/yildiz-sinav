@@ -1,3 +1,4 @@
+import { collectAccessCodePages } from '../lib/access-code-pages';
 import { useEffect,useState } from 'react';
 import { Ban,CheckCircle2,Download,FileKey2,FileUp,Printer,RefreshCw,ScanLine,Search,ShieldCheck,TriangleAlert,UserCheck,UserX } from 'lucide-react';
 import { api,ApiError } from '../api';
@@ -73,8 +74,12 @@ export function ResultOperatorWorkspace({mode,access}:Props){
  const downloadCsv=(name:string,headers:string[],rows:any[][])=>{const cell=(value:any)=>`"${String(value??'').replace(/"/g,'""')}"`;const blob=new Blob(['\uFEFF'+[headers,...rows].map(row=>row.map(cell).join(';')).join('\n')],{type:'text/csv;charset=utf-8'});const href=URL.createObjectURL(blob);const a=document.createElement('a');a.href=href;a.download=name;a.click();URL.revokeObjectURL(href)};
  const generateAccessCodes=async()=>{
   if(!preview?.batchId)return;setBusy(true);setError('');setNotice('');
-  try{let cursor='',allCodes:any[]=[];do{const page=await api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/access-codes${cursor?`?cursor=${encodeURIComponent(cursor)}`:''}`,{method:'POST'});allCodes=allCodes.concat(page.codes||[]);cursor=page.nextCursor||''}while(cursor);if(allCodes.length){downloadCsv('anunex-ogrenci-erisim-kartlari.csv',['Öğrenci No','Ad Soyad','Sınıf','Erişim Kodu','Geçerlilik'],allCodes.map(x=>[x.studentNumber,x.fullName,x.gradeLevel,x.accessCode,x.expiresAt]));setNotice(`${allCodes.length} öğrenci erişim kartı üretildi. Kodlar güvenlik gereği yalnız bu indirmede gösterilir.`)}else setNotice('Bu değerlendirmedeki erişim kartları daha önce oluşturulmuş. Mevcut kodlar güvenlik gereği tekrar gösterilmez.')}
-  catch(e:any){setError(e.message)}finally{setBusy(false)}
+  try{
+   const result=await collectAccessCodePages(cursor=>api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/access-codes${cursor?`?cursor=${encodeURIComponent(cursor)}`:''}`,{method:'POST'}));
+   if(result.codes.length){downloadCsv('anunex-ogrenci-erisim-kartlari.csv',['Öğrenci No','Ad Soyad','Sınıf','Erişim Kodu','Geçerlilik'],result.codes.map(x=>[x.studentNumber,x.fullName,x.gradeLevel,x.accessCode,x.expiresAt]));setNotice(result.error?`${result.codes.length} erişim kartı kaydedildi ve indirildi. Kalan öğrenciler için işlemi tekrar başlatın; bu dosyayı saklayın.`:`${result.codes.length} öğrenci erişim kartı üretildi. Kodlar güvenlik gereği yalnız bu indirmede gösterilir.`)}
+   else if(!result.error)setNotice('Bu değerlendirmedeki erişim kartları daha önce oluşturulmuş. Mevcut kodlar güvenlik gereği tekrar gösterilmez.');
+   if(result.error)setError(result.error.message);
+  }catch(e:any){setError(e.message)}finally{setBusy(false)}
  };
  const loadReport=async()=>{if(!preview?.batchId)return;setBusy(true);setError('');try{setReport(await api(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/report`))}catch(e:any){setError(e.message)}finally{setBusy(false)}};
  const exportReport=()=>{const rows=report?.rows||[];downloadCsv('anunex-kurum-sonuc-listesi.csv',['Öğrenci No','Ad Soyad','Sınıf/Şube','Doğru','Yanlış','Boş','Net','Puan','Şube Sırası','Sınıf Düzeyi Sırası','Kurum Sırası','Kurum Ağı Sırası','İlçe Sırası','İl Sırası','Türkiye Sırası'],rows.map((x:any)=>[x.student_number_snapshot,x.name_snapshot,x.class_snapshot,x.correct_count,x.wrong_count,x.blank_count,x.net,x.score,rank(x.class_rank,x.class_count),rank(x.grade_rank,x.grade_count),rank(x.institution_rank,x.institution_count),rank(x.network_rank,x.network_count),rank(x.district_rank,x.district_count),rank(x.city_rank,x.city_count),rank(x.national_rank,x.national_count)]))};

@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { FrozenExamReport } from '../components/FrozenExamReport';
+import { FrozenPracticeReport } from '../components/FrozenPracticeReport';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { BarChart3, Download, Printer, RefreshCw, Target, TrendingUp, UserRound } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { api, qs } from '../api';
@@ -12,13 +14,22 @@ export function Reports(){
  const [searchParams,setSearchParams]=useSearchParams();
  const [institutions,setInstitutions]=useState<any[]>([]);
  const [institutionId,setInstitutionId]=useState('');
- const [students,setStudents]=useState<StudentRow[]>([]);
+ const [studentList,setStudentList]=useState<{scope:string;rows:StudentRow[]}>({scope:'',rows:[]});
  const [studentId,setStudentId]=useState('');
- const [report,setReport]=useState<any>(null);
+ const [rawReport,setReport]=useState<any>(null);
  const [selectedExams,setSelectedExams]=useState<string[]>([]);
  const [error,setError]=useState('');
  const [busy,setBusy]=useState(false);
 
+ const listScope=JSON.stringify([institutionId,user?.id,user?.role]);
+ const currentListScope=useRef(listScope);currentListScope.current=listScope;
+ const listGeneration=useRef(0);
+ const currentStudentId=useRef(studentId);currentStudentId.current=studentId;
+ const students=studentList.scope===listScope?studentList.rows:[];
+ const scopeKey=JSON.stringify([studentId,institutionId,user?.id,user?.role]);
+ const currentScope=useRef(scopeKey);currentScope.current=scopeKey;
+ const requestGeneration=useRef(0);
+ const report=rawReport?._scope===scopeKey?rawReport:null;
  const canChooseInstitution=user?.role==='SUPER_ADMIN';
 
  const loadInstitutions=async()=>{
@@ -30,32 +41,36 @@ export function Reports(){
  };
 
  const loadStudents=async()=>{
-   setError('');setStudents([]);setReport(null);setSelectedExams([]);
+   const requestScope=listScope,attempt=++listGeneration.current,requestedStudent=searchParams.get('studentId');
+   setError('');setStudentList({scope:requestScope,rows:[]});setReport(null);setSelectedExams([]);
+   ++requestGeneration.current;setBusy(false);
    try{
      if(canChooseInstitution&&!institutionId)return;
      const r=await api<any>(`/api/reporting/students${qs({institutionId:canChooseInstitution?institutionId:null})}`);
-     const rows:StudentRow[]=r.students||[];setStudents(rows);
-     setStudentId(resolveReportStudentId(rows,searchParams.get('studentId'),studentId));
-   }catch(e:any){setError(e.message)}
+     if(currentListScope.current!==requestScope||listGeneration.current!==attempt)return;
+     const rows:StudentRow[]=r.students||[];setStudentList({scope:requestScope,rows});
+     setStudentId(resolveReportStudentId(rows,requestedStudent,currentStudentId.current));
+   }catch(e:any){if(currentListScope.current===requestScope&&listGeneration.current===attempt)setError(e.message)}
  };
 
  const loadReport=async(ids?:string[])=>{
-   if(!studentId)return;setBusy(true);setError('');
+   if(!studentId)return;const requestScope=scopeKey,attempt=++requestGeneration.current;setBusy(true);setError('');
    try{
      const examIds=(ids??selectedExams).join(',');
      const r=await api<any>(`/api/reporting/students/${studentId}/combined${qs({examIds:examIds||null})}`);
-     setReport(r);
+     if(currentScope.current!==requestScope||requestGeneration.current!==attempt)return;
+     setReport({...r,_scope:requestScope});
      if(!(ids??selectedExams).length)setSelectedExams(r.selectedExamIds||[]);
-   }catch(e:any){setError(e.message)}finally{setBusy(false)}
+   }catch(e:any){if(currentScope.current===requestScope&&requestGeneration.current===attempt)setError(e.message)}finally{if(currentScope.current===requestScope&&requestGeneration.current===attempt)setBusy(false)}
  };
 
  useEffect(()=>{void loadInstitutions().catch(e=>setError(e.message))},[]);
- useEffect(()=>{void loadStudents()},[institutionId,user?.role,searchParams.get('studentId')]);
- useEffect(()=>{if(studentId)void loadReport([])},[studentId]);
+ useEffect(()=>{void loadStudents()},[institutionId,user?.id,user?.role,searchParams.get('studentId')]);
+ useEffect(()=>{++requestGeneration.current;setBusy(false);if(studentId)void loadReport([])},[scopeKey,studentList]);
 
  const selectedStudent=useMemo(()=>students.find(s=>s.id===studentId),[students,studentId]);
  const toggleExam=(id:string)=>setSelectedExams(cur=>cur.includes(id)?cur.filter(x=>x!==id):[...cur,id]);
- const selectStudent=(id:string)=>{setStudentId(id);if(user?.role==='PARENT'){const next=new URLSearchParams(searchParams);if(id)next.set('studentId',id);else next.delete('studentId');setSearchParams(next,{replace:true});}};
+ const selectStudent=(id:string)=>{setReport(null);setSelectedExams([]);setStudentId(id);if(user?.role==='PARENT'){const next=new URLSearchParams(searchParams);if(id)next.set('studentId',id);else next.delete('studentId');setSearchParams(next,{replace:true});}};
 
  const exportCsv=()=>{
    if(!report)return;
@@ -73,7 +88,7 @@ export function Reports(){
 
    <div className="panel report-controls">
     <div className="form-grid">
-     {canChooseInstitution&&<label>Kurum<select value={institutionId} onChange={e=>setInstitutionId(e.target.value)}><option value="">Kurum seçin</option>{institutions.map(i=><option key={i.id} value={i.id}>{i.name}</option>)}</select></label>}
+     {canChooseInstitution&&<label>Kurum<select value={institutionId} onChange={e=>{setReport(null);setSelectedExams([]);setStudentId('');setInstitutionId(e.target.value)}}><option value="">Kurum seçin</option>{institutions.map(i=><option key={i.id} value={i.id}>{i.name}</option>)}</select></label>}
      {user?.role!=='STUDENT'&&<label>{user?.role==='PARENT'?'Çocuk':'Öğrenci'}<select value={studentId} onChange={e=>selectStudent(e.target.value)}><option value="">{user?.role==='PARENT'?'Çocuk seçin':'Öğrenci seçin'}</option>{students.map(s=><option key={s.id} value={s.id}>{s.first_name} {s.last_name}{s.class_name?` · ${s.class_name}`:''}</option>)}</select></label>}
     </div>
     {!students.length&&<div className="empty">Bu kapsamda raporlanabilir aktif öğrenci bulunmuyor.</div>}
@@ -84,6 +99,9 @@ export function Reports(){
     <div className="section-head"><div><h2>{report.student.first_name} {report.student.last_name}</h2><p>{report.student.institution_name||selectedStudent?.institution_name||''}{report.student.class_name?` · ${report.student.class_name}`:''}{report.restrictedToSubjects?' · Branş yetkisiyle filtrelendi':''}</p></div></div>
 
     <div className="panel" style={{marginBottom:20}}><div className="panel-head"><div><h2>Raporlanacak sınavlar</h2><p>Varsayılan olarak son 20 sınav seçilir. İstediğiniz sınavları işaretleyip raporu yenileyin.</p></div><button className="secondary" onClick={()=>void loadReport()} disabled={!selectedExams.length||busy}><BarChart3 size={16}/> {busy?'Hazırlanıyor…':'Raporu Güncelle'}</button></div><div className="cards-list">{(report.availableExams||[]).map((e:any)=><label className="list-card" key={e.exam_id} style={{alignItems:'center',cursor:'pointer'}}><input type="checkbox" checked={selectedExams.includes(e.exam_id)} onChange={()=>toggleExam(e.exam_id)}/><div><strong>{e.title}</strong><span>{e.exam_date||'Tarih yok'} · {e.exam_type}</span></div></label>)}</div></div>
+
+    <FrozenExamReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
+    <FrozenPracticeReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
 
     {report.summary?<div className="kpi-grid" style={{marginBottom:20}}><Kpi label="Sınav" value={report.summary.exam_count}/><Kpi label="İlk Net" value={fmt(report.summary.first_net)}/><Kpi label="Son Net" value={fmt(report.summary.last_net)}/><Kpi label="Net Değişimi" value={`${report.summary.delta_net>0?'+':''}${fmt(report.summary.delta_net)}`}/><Kpi label="Ortalama Net" value={fmt(report.summary.average_net)}/></div>:<div className="alert info">Bu görünüm branş öğretmeni yetkisiyle sınırlandırılmıştır; toplam sınav neti yerine yalnız yetkili branş verileri gösterilir.</div>}
 

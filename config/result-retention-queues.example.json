@@ -1,0 +1,13 @@
+{
+  "queues": {
+    "producers": [{"binding": "RESULT_RETENTION_QUEUE", "queue": "anunex-result-retention"}],
+    "consumers": [{
+      "queue": "anunex-result-retention",
+      "max_batch_size": 5,
+      "max_batch_timeout": 5,
+      "max_retries": 5,
+      "max_concurrency": 5,
+      "dead_letter_queue": "anunex-result-retention-dlq"
+    }]
+  }
+}

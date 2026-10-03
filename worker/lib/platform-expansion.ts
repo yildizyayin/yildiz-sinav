@@ -4,8 +4,8 @@ import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
 import { hydrateQuestionMedia } from './question-content';
 import { recordAssessmentRun } from './assessment-ledger';
 import { renderStudioPdf } from './studio-pdf';
-import { captureReportSnapshot } from './report-snapshot';
-import { withExamOperationLock } from './exam-operation-lock';
+import { REPORT_SNAPSHOT_SQL } from './report-snapshot';
+import { withExamOperationLock, listExamOperationLocks, recoverExamOperationLock } from './exam-operation-lock';
 
 const NEXT_FEATURES = new Set([
   'LEARNING_GRAPH','QUESTION_BANK','RECOVERY','RBA','MEMBERSHIP','LIVE','STUDIO','PHYSICAL_BRIDGE','GAMES','CAMPUS','ENTERPRISE','PUBLISHER','ADMISSIONS','GUIDANCE_TESTS','BOARD','MOBILE_API','VIDEO_LIBRARY',
@@ -181,13 +181,17 @@ async function updateExamProfile(request:Request,env:Env,user:AuthUser,examId:st
 async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
   let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
   if(p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden('Merkezi sınav sıralamasını yalnız Süper Admin dondurabilir.');
-  return withExamOperationLock(env,examId,'FREEZE',async()=>{
+  return withExamOperationLock(env,examId,'FREEZE',async(env)=>{
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
-  const version=Number(p.snapshot_version||0)+1; const networkId=p.scope==='NETWORK'?p.network_id:null;
+  const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)`).bind(examId));
+  if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
+  const lastSnapshot=await one<{version:number}>(env.DB.prepare('SELECT MAX(version) version FROM (SELECT snapshot_version version FROM exam_result_snapshots WHERE exam_id=? UNION ALL SELECT retired_through_version FROM result_artifact_retirements WHERE exam_id=?)').bind(examId,examId));
+  const version=Math.max(Number(p.snapshot_version||0),Number(lastSnapshot?.version||0))+1; const networkId=p.scope==='NETWORK'?p.network_id:null;
   const participantCountRow=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).bind(examId));
   if(!Number(participantCountRow?.count||0))return badRequest('Sonuçlandırılmış katılımcı bulunmuyor.','NO_RESULTS');
-  await env.DB.prepare(`DELETE FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version).run();
-  await env.DB.prepare(`INSERT INTO exam_result_snapshots(
+  await env.DB.batch([
+    env.DB.prepare(`DELETE FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version),
+    env.DB.prepare(`INSERT INTO exam_result_snapshots(
     id,exam_id,participant_id,snapshot_version,student_id,institution_id,network_id,city,district,grade_level,class_snapshot,score,net,
     national_rank,national_count,city_rank,city_count,district_rank,district_count,network_rank,network_count,institution_rank,institution_count,grade_rank,grade_count,class_rank,class_count)
     SELECT 'snap_'||lower(hex(randomblob(16))), ep.exam_id,ep.id,?,ep.student_id,ep.institution_id,?,i.city,i.district,
@@ -202,22 +206,23 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
       RANK() OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,'') ORDER BY COALESCE(er.score,er.net) DESC),COUNT(*) OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,''))
     FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id JOIN exams e ON e.id=ep.exam_id JOIN institutions i ON i.id=ep.institution_id
     LEFT JOIN student_enrollments se ON se.id=(SELECT historical.id FROM student_enrollments historical WHERE historical.student_id=ep.student_id AND historical.institution_id=ep.institution_id AND historical.season_id=ep.season_id ORDER BY historical.created_at DESC,historical.id LIMIT 1)
-    WHERE ep.exam_id=?`).bind(version,networkId,networkId,networkId,examId).run();
-  await captureReportSnapshot(env, examId, version);
-  const stats=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT institution_id) institution_count,COUNT(DISTINCT city) city_count FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version));
-  await env.DB.batch([
+    WHERE ep.exam_id=?`).bind(version,networkId,networkId,networkId,examId),
+    env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(examId,version),
+    env.DB.prepare(`INSERT INTO exam_publication_stats(exam_id,snapshot_version,institution_count,participant_count,city_count,payload_json)
+      SELECT ?,?,COUNT(DISTINCT institution_id),COUNT(*),COUNT(DISTINCT city),? FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`)
+      .bind(examId,version,JSON.stringify({scope:p.scope,networkId}),examId,version),
     env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='FROZEN',freeze_at=CURRENT_TIMESTAMP,snapshot_version=?,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?`).bind(version,examId),
-    env.DB.prepare(`INSERT INTO exam_publication_stats(exam_id,snapshot_version,institution_count,participant_count,city_count,payload_json) VALUES(?,?,?,?,?,?)`)
-      .bind(examId,version,stats?.institution_count||0,stats?.participant_count||0,stats?.city_count||0,JSON.stringify({scope:p.scope,networkId})),
+    env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,'EXAM_RESULTS_FROZEN','exam',?,?)`)
+      .bind(uuid('aud'),user.id,p.institution_id,examId,JSON.stringify({version,participants:Number(participantCountRow?.count||0)})),
   ]);
-  await audit(env.DB,user.id,user.institution_id,'EXAM_RESULTS_FROZEN','exam',examId,{version,participants:stats?.participant_count||0});
+  const stats=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT institution_id) institution_count,COUNT(DISTINCT city) city_count FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version));
   return json({ok:true,examId,version,stats});
   });
 }
 
 async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
   let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
-  return withExamOperationLock(env,examId,'PUBLISH',async()=>{
+  return withExamOperationLock(env,examId,'PUBLISH',async(env)=>{
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   if(p.result_freeze_status!=='FROZEN')return badRequest('Önce sıralama snapshotını dondurun.','NOT_FROZEN');
   const writes=await env.DB.batch([
@@ -235,7 +240,7 @@ async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response
 async function reopenExamResults(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
   let p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   if(!await canManageExam(env,user,p)||p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden();
-  return withExamOperationLock(env,examId,'REOPEN',async()=>{
+  return withExamOperationLock(env,examId,'REOPEN',async(env)=>{
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   const body=await requestBody(request);const reason=typeof body.reason==='string'?body.reason.trim():'';
   const version=body.expectedSnapshotVersion;
@@ -424,10 +429,21 @@ async function createQuestion(request:Request,env:Env,user:AuthUser):Promise<Res
 
 function normalizedPracticeAnswer(value:unknown){return String(value??'').trim().toLocaleUpperCase('tr-TR');}
 
-async function studentPracticeQuestions(request:Request,env:Env,user:AuthUser):Promise<Response>{
+// Opaque MAC: the answer key and content digest never leave the server.
+export async function practiceContentToken(env:Env,user:AuthUser,enrollment:any,q:any,expires=Date.now()+30*60*1000){
+  if(!env.SESSION_SECRET)throw new Error('Practice signing configuration unavailable');
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(env.SESSION_SECRET),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+  const payload=JSON.stringify(['PRACTICE_CONTENT_V1',user.student_id,user.institution_id,enrollment.enrollment_id,enrollment.season_id,enrollment.academic_year,enrollment.grade_level,expires,q.id,q.stem_text,q.options_json,q.correct_answer,q.updated_at,q.subject_id,q.grade_level,q.academic_year,q.assets||[],q.contentBlocks||[]]);
+  const mac=Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(payload)))).map(x=>x.toString(16).padStart(2,'0')).join('');
+  return `${expires}.${mac}`;
+}
+
+export async function studentPracticeQuestions(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'QUESTION_BANK');if(gate)return gate;
   if(user.role!=='STUDENT'||!user.student_id)return forbidden('Bu akış yalnızca öğrenci hesabına açıktır.');
-  const u=new URL(request.url);const enrollment=await one<any>(env.DB.prepare(`SELECT grade_level,institution_id FROM student_enrollments WHERE student_id=? AND status='ACTIVE' ORDER BY created_at DESC LIMIT 1`).bind(user.student_id));
+  const u=new URL(request.url);const enrollment=await one<any>(env.DB.prepare(`SELECT e.id enrollment_id,e.institution_id,e.season_id,e.grade_level,s.academic_year FROM student_enrollments e LEFT JOIN institution_seasons s ON s.id=e.season_id AND s.institution_id=e.institution_id WHERE e.student_id=? AND e.institution_id=? AND e.status='ACTIVE' ORDER BY e.created_at DESC,e.id DESC LIMIT 1`).bind(user.student_id,user.institution_id));
+  if(!enrollment)return forbidden('Bu kurumda aktif öğrenci kaydınız bulunmuyor.');
+  if(!env.SESSION_SECRET)return json({ok:false,error:{code:'PRACTICE_SIGNING_UNAVAILABLE',message:'Soru doğrulama yapılandırması hazır değil.'}},503);
   const gradeValue=u.searchParams.get('gradeLevel')||enrollment?.grade_level;if(!gradeValue)return badRequest('Öğrencinin aktif sınıf bilgisi bulunamadı.','ENROLLMENT_REQUIRED');
   const grade=Number(gradeValue);if(!Number.isInteger(grade)||grade<1||grade>12)return badRequest('Geçersiz sınıf seviyesi.','INVALID_GRADE');
   const subject=u.searchParams.get('subjectId');const nodeId=u.searchParams.get('nodeId');const difficulty=u.searchParams.get('difficultyLevel');const limit=Math.max(1,Math.min(20,Number(u.searchParams.get('limit')||10)));
@@ -435,28 +451,40 @@ async function studentPracticeQuestions(request:Request,env:Env,user:AuthUser):P
   if(subject){wh.push('q.subject_id=?');ps.push(subject);}if(nodeId){wh.push('EXISTS(SELECT 1 FROM question_learning_links ql WHERE ql.question_id=q.id AND ql.node_id=?)');ps.push(nodeId);}
   if(difficulty){const level=normalizeDifficultyLevel(difficulty);if(!level)return badRequest('Zorluk seviyesi 1 ile 6 arasında olmalıdır.','INVALID_DIFFICULTY');wh.push('COALESCE(q.difficulty_level,q.difficulty,3)=?');ps.push(level);}
   const rows=await all<any>(env.DB.prepare(`SELECT q.id,q.grade_level,q.subject_id,q.topic,q.subtopic,q.question_type,q.content_mode,q.option_count,
-    COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,q.stem_text,q.options_json,q.solution_text,s.name subject_name
+    COALESCE(q.difficulty_level,q.difficulty,3) difficulty_level,q.stem_text,q.options_json,q.correct_answer,q.updated_at,q.academic_year,s.name subject_name
     FROM question_bank q LEFT JOIN subjects s ON s.id=q.subject_id WHERE ${wh.join(' AND ')}
     ORDER BY COALESCE(q.difficulty_level,q.difficulty,3),q.created_at DESC LIMIT ?`).bind(...ps,limit));
   const today=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM question_practice_attempts WHERE student_id=? AND created_at>=date('now')`).bind(user.student_id));
   const hydrated=await hydrateQuestionMedia(env,rows);
-  return json({ok:true,questions:hydrated.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined})),progress:{completedToday:Number(today?.count||0)}});
+  if(hydrated.length)await env.DB.batch(hydrated.map(q=>env.DB.prepare('INSERT OR IGNORE INTO coach_question_exposures(student_id,question_id) VALUES(?,?)').bind(user.student_id,q.id)));
+  return json({ok:true,questions:await Promise.all(hydrated.map(async r=>({...r,practiceToken:await practiceContentToken(env,user,enrollment,r),options:parseJson(r.options_json,[]),options_json:undefined,correct_answer:undefined}))),progress:{completedToday:Number(today?.count||0)}});
 }
 
-async function submitStudentPractice(request:Request,env:Env,user:AuthUser):Promise<Response>{
+export async function submitStudentPractice(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'QUESTION_BANK');if(gate)return gate;
   if(user.role!=='STUDENT'||!user.student_id)return forbidden('Bu akış yalnızca öğrenci hesabına açıktır.');
   const b=await requestBody(request);const questionId=String(b.questionId||'').trim();if(!questionId)return badRequest('Soru gereklidir.','QUESTION_REQUIRED');
-  const enrollment=await one<any>(env.DB.prepare(`SELECT institution_id FROM student_enrollments WHERE student_id=? AND status='ACTIVE' ORDER BY created_at DESC LIMIT 1`).bind(user.student_id));
-  const q=await one<any>(env.DB.prepare(`SELECT q.id,q.correct_answer,q.solution_text,q.owner_type,q.owner_id
+  const enrollment=await one<any>(env.DB.prepare(`SELECT e.id enrollment_id,e.institution_id,e.season_id,e.grade_level,s.academic_year FROM student_enrollments e LEFT JOIN institution_seasons s ON s.id=e.season_id AND s.institution_id=e.institution_id WHERE e.student_id=? AND e.institution_id=? AND e.status='ACTIVE' ORDER BY e.created_at DESC,e.id DESC LIMIT 1`).bind(user.student_id,user.institution_id));
+  if(!enrollment)return forbidden('Bu kurumda aktif öğrenci kaydınız bulunmuyor.');
+  const q=await one<any>(env.DB.prepare(`SELECT q.id,q.correct_answer,q.solution_text,q.owner_type,q.owner_id,q.stem_text,q.options_json,q.updated_at,q.subject_id,q.grade_level,q.academic_year
     FROM question_bank q WHERE q.id=? AND q.review_status='APPROVED' AND q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')
       AND q.correct_answer IS NOT NULL AND q.options_json IS NOT NULL
       AND (q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`).bind(questionId,enrollment?.institution_id||user.institution_id||null));
   if(!q)return notFound('Bu soru artık çözülebilir durumda değil.');
+  if(!env.SESSION_SECRET)return json({ok:false,error:{code:'PRACTICE_SIGNING_UNAVAILABLE',message:'Soru doğrulama yapılandırması hazır değil.'}},503);
+  const token=typeof b.practiceToken==='string'?b.practiceToken:'';const parts=token.split('.');const expires=Number(parts[0]);
+  if(parts.length!==2||!/^[0-9a-f]{64}$/.test(parts[1])||!Number.isSafeInteger(expires)||expires<=Date.now()||expires>Date.now()+30*60*1000)return json({ok:false,error:{code:'PRACTICE_CONTENT_STALE',message:'Soru oturumu geçersiz veya süresi dolmuş. Soruları yeniden yükleyin.'}},409);
+  const [currentContent]=await hydrateQuestionMedia(env,[q]);
+  const expected=await practiceContentToken(env,user,enrollment,currentContent,expires);
+  let difference=0;for(let i=0;i<expected.length;i++)difference|=expected.charCodeAt(i)^token.charCodeAt(i);
+  if(token.length!==expected.length||difference!==0)return json({ok:false,error:{code:'PRACTICE_CONTENT_STALE',message:'Soru içeriği değişti. Soruları yeniden yükleyin.'}},409);
   const answer=normalizedPracticeAnswer(b.answer);const correct=answer!==''&&answer===normalizedPracticeAnswer(q.correct_answer);const attemptId=uuid('qpa');
-  const links=await all<any>(env.DB.prepare(`SELECT ql.node_id FROM question_learning_links ql JOIN learning_nodes n ON n.id=ql.node_id AND n.node_type='OUTCOME' WHERE ql.question_id=?`).bind(questionId));
-  const result=correct?1:0;const runId=String(b.runId||uuid('asr'));const statements:any[]=[
-    env.DB.prepare(`INSERT OR IGNORE INTO assessment_runs(id,institution_id,student_id,source_type,source_id,delivery_mode,status,score,metadata_json,completed_at) VALUES(?,?,?,'QUESTION_BANK',?,'DIGITAL','SCORED',?,?,CURRENT_TIMESTAMP)`).bind(runId,enrollment?.institution_id||user.institution_id||null,user.student_id,questionId,correct?1:0,JSON.stringify({questionPractice:true})),
+  const links=await all<any>(env.DB.prepare(`SELECT ql.node_id,o.id outcomeId,o.subject_id subjectId,o.curriculum_version_id curriculumVersionId,cv.academic_year academicYear,cv.grade_level gradeLevel,cv.program_version programVersion,COALESCE(cv.verified,0) verified FROM question_learning_links ql JOIN learning_nodes n ON n.id=ql.node_id AND n.node_type='OUTCOME' LEFT JOIN outcomes o ON n.id='ln_'||o.id AND o.active=1 AND o.subject_id=n.subject_id AND o.grade_level=n.grade_level LEFT JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id AND cv.academic_year=n.academic_year AND cv.grade_level=n.grade_level WHERE ql.question_id=? ORDER BY ql.node_id`).bind(questionId));
+  const contentBytes=new TextEncoder().encode(JSON.stringify([q.stem_text,q.options_json,q.correct_answer,q.subject_id,q.grade_level,q.academic_year]));
+  const contentDigest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',contentBytes))).map(x=>x.toString(16).padStart(2,'0')).join('');
+  const frozenEvidence={policy:'QUESTION_PRACTICE_READ_CONTEXT_V1',enrollmentId:enrollment.enrollment_id,seasonId:enrollment.season_id,academicYear:enrollment.academic_year??null,gradeLevel:enrollment.grade_level??null,questionId,contentDigest,contentUpdatedAt:q.updated_at??null,status:answer===''?'BLANK':correct?'CORRECT':'WRONG',outcomeRefs:links.map(({node_id,...ref})=>({nodeId:node_id,...ref}))};
+  const result=correct?1:0;const runId=uuid('asr');const statements:any[]=[
+    env.DB.prepare(`INSERT OR IGNORE INTO assessment_runs(id,institution_id,student_id,source_type,source_id,delivery_mode,status,score,metadata_json,completed_at) VALUES(?,?,?,'QUESTION_BANK',?,'DIGITAL','SCORED',?,?,CURRENT_TIMESTAMP)`).bind(runId,enrollment?.institution_id||user.institution_id||null,user.student_id,questionId,correct?1:0,JSON.stringify({questionPractice:true,frozenEvidence})),
     env.DB.prepare(`INSERT INTO question_practice_attempts(id,student_id,question_id,selected_answer,is_correct) VALUES(?,?,?,?,?)`).bind(attemptId,user.student_id,questionId,answer||null,correct?1:0),
     env.DB.prepare(`INSERT OR IGNORE INTO assessment_responses(id,run_id,student_id,question_id,node_id,selected_answer,is_correct,source_channel) VALUES(?,?,?,?,?,?,?,'DIGITAL')`).bind(uuid('ars'),runId,user.student_id,questionId,links[0]?.node_id||null,answer||null,correct?1:0)
   ];
@@ -685,6 +713,8 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   const u=new URL(request.url),p=u.pathname;
   if(!p.startsWith('/api/platform/'))return null;
   if(p==='/api/platform/overview'&&request.method==='GET')return overview(env,user);
+  if(p==='/api/platform/exam-center/operation-locks'&&request.method==='GET')return listExamOperationLocks(env,user);
+  if(p==='/api/platform/exam-center/operation-locks/recover'&&request.method==='POST')return recoverExamOperationLock(request,env,user);
   if(p==='/api/platform/features'&&request.method==='GET')return listFeatures(env,user);
   if(p==='/api/platform/features'&&request.method==='PUT')return setFeature(request,env,user);
 

@@ -1,5 +1,6 @@
+import { withExamOperationLock } from './exam-operation-lock';
 import type { AuthUser, Env } from '../types';
-import { all, audit, badRequest, forbidden, json, notFound, one } from './db';
+import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './db';
 
 export type ExamScheduleInput = {
   applicationStartAt?: string | null;
@@ -77,13 +78,19 @@ export async function publishScheduledExamResults(env:Env):Promise<number>{
     ORDER BY p.result_publish_at ASC LIMIT 100`));
   let count=0;
   for(const row of due){
-    const result=await env.DB.prepare(`UPDATE exam_delivery_profiles
-      SET result_freeze_status='PUBLISHED',published_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP
-      WHERE exam_id=? AND result_freeze_status='FROZEN' AND result_publish_at IS NOT NULL AND datetime(result_publish_at)<=CURRENT_TIMESTAMP`).bind(row.exam_id).run();
-    if(Number(result.meta?.changes||0)>0){
-      count++;
-      await audit(env.DB,null,row.institution_id||null,'EXAM_RESULTS_AUTO_PUBLISHED','exam',row.exam_id,{version:row.snapshot_version,resultPublishAt:row.result_publish_at});
-    }
+    const response=await withExamOperationLock(env,row.exam_id,'AUTO_PUBLISH',async(env)=>{
+      const guard=`exam_id=? AND snapshot_version=? AND result_freeze_status='FROZEN' AND result_publish_at=? AND datetime(result_publish_at)<=CURRENT_TIMESTAMP`;
+      const results=await env.DB.batch([
+        env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json)
+          SELECT ?,NULL,?,'EXAM_RESULTS_AUTO_PUBLISHED','exam',?,? WHERE EXISTS (SELECT 1 FROM exam_delivery_profiles WHERE ${guard})`)
+          .bind(uuid('aud'),row.institution_id||null,row.exam_id,JSON.stringify({version:row.snapshot_version,resultPublishAt:row.result_publish_at}),row.exam_id,row.snapshot_version,row.result_publish_at),
+        env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='PUBLISHED',published_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE ${guard}`)
+          .bind(row.exam_id,row.snapshot_version,row.result_publish_at),
+      ]);
+      return json({published:Number(results[1].meta?.changes||0)>0});
+    });
+    if(response.ok&&(await response.json() as any).published)count++;
+
   }
   return count;
 }

@@ -1,0 +1,21 @@
+{
+  "name": "anunex-result-provider-probe",
+  "main": "../worker/result-provider-probe.ts",
+  "compatibility_date": "2026-08-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "r2_buckets": [{"binding": "RESULT_FILES", "bucket_name": "anunex-result-probe-private"}],
+  "queues": {
+    "producers": [
+      {"binding": "RESULT_ARTIFACT_QUEUE", "queue": "anunex-result-probe-artifacts"},
+      {"binding": "RESULT_RETENTION_QUEUE", "queue": "anunex-result-probe-retention"}
+    ],
+    "consumers": [
+      {"queue": "anunex-result-probe-artifacts", "max_batch_size": 5, "max_retries": 5, "dead_letter_queue": "anunex-result-probe-artifacts-dlq"},
+      {"queue": "anunex-result-probe-retention", "max_batch_size": 5, "max_retries": 5, "dead_letter_queue": "anunex-result-probe-retention-dlq"}
+    ]
+  },
+  "vars": {
+    "RESULT_ARTIFACT_QUEUE_NAME": "anunex-result-probe-artifacts",
+    "RESULT_RETENTION_QUEUE_NAME": "anunex-result-probe-retention"
+  }
+}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Archive, ArrowLeft, BarChart3, CalendarClock, CheckCircle2, Copy, FileUp, MoreVertical, Pencil, RefreshCw, Send, Snowflake, Trash2 } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api';
+import { useAuth } from '../auth';
 import '../exam-mars.css';
 
 function toLocalInput(value?:string|null){
@@ -15,6 +16,11 @@ function toIso(value:string){return value?new Date(value).toISOString():null}
 export function ExamDetail(){
   const {examId=''}=useParams();
   const navigate=useNavigate();
+  const {user}=useAuth();
+  const [locks,setLocks]=useState<any[]>([]);
+  const [lockReason,setLockReason]=useState('');
+  const refreshLocks=async()=>{try{const r=await api<any>('/api/platform/exam-center/operation-locks');setLocks(r.locks.filter((x:any)=>x.exam_id===examId));}catch(e:any){setError(e.message)}};
+  const recoverLock=async(lock:any)=>{setBusy(true);setError('');try{await api('/api/platform/exam-center/operation-locks/recover',{method:'POST',body:JSON.stringify({examId,fingerprint:lock.fingerprint,reason:lockReason.trim()})});setNotice('Kilit kaldırıldı. Tamamlanmış kayıtları ve değerlendirme durumunu kontrol edin; işlem otomatik yeniden başlamaz.');setLockReason('');await refreshLocks();}catch(e:any){setError(e.message)}finally{setBusy(false)}};
   const [detail,setDetail]=useState<any>(null);
   const [schedule,setSchedule]=useState<any>(null);
   const [applicationStart,setApplicationStart]=useState('');
@@ -63,6 +69,8 @@ export function ExamDetail(){
   if(!exam&&!error)return <div className="panel">Sınav detayı yükleniyor…</div>;
 
   return <>
+    {user?.role==='SUPER_ADMIN'&&<section className="panel" style={{marginBottom:16}}><h2>İşlem kilidi kontrolü</h2><p>İşlem yaşı, işlemin durduğunu kanıtlamaz. Kilidi kaldırmak tamamlanmış kayıtları geri almaz; eski işlemin sonraki yazımları durdurulur.</p><button className="ghost" disabled={busy} onClick={()=>void refreshLocks()}>Kilit durumunu kontrol et</button>{locks.map(lock=><div key={lock.fingerprint}><p>{lock.operation} · Başlangıç: {lock.acquired_at} · {lock.age_seconds} saniye · Çalışma durumu bilinmiyor</p><label>Kurtarma gerekçesi<textarea value={lockReason} maxLength={1000} onChange={e=>setLockReason(e.target.value)}/></label><button className="ghost" disabled={busy||lockReason.trim().length<10} onClick={()=>void recoverLock(lock)}>Bu işlem kilidini kaldır</button></div>)}</section>}
+
     <div className="page-head exam-operation-head"><div><span className="eyebrow">SINAV MERKEZİ / SINAV DETAYI</span><h1>{exam?.title||'Sınav detayı'}</h1><p>{[exam?.publisher_name,exam?.exam_type,exam?.academic_year].filter(Boolean).join(' · ')}</p></div><div className="exam-operation-head-actions"><Link className="ghost" to="/exam-center"><ArrowLeft size={16}/> Sınavlara dön</Link><button className="ghost" onClick={()=>void load()} disabled={busy}><RefreshCw size={16}/> Yenile</button><div style={{position:'relative'}}><button className="primary" onClick={()=>setMenu(v=>!v)} aria-label="Sınav işlemleri"><MoreVertical size={18}/></button>{menu&&<div className="panel" style={{position:'absolute',right:0,top:'calc(100% + 8px)',zIndex:20,minWidth:210,padding:8,display:'grid',gap:6}}><Link className="ghost" to={`/exam-definitions?examId=${encodeURIComponent(examId)}`} onClick={()=>setMenu(false)}><Pencil size={15}/> Düzenle</Link><button className="ghost" onClick={()=>void copyExam()}><Copy size={15}/> Kopyala</button><Link className="ghost" to={`/reports?examId=${encodeURIComponent(examId)}`} onClick={()=>setMenu(false)}><BarChart3 size={15}/> Raporlar</Link><button className="ghost" onClick={()=>void archiveExam()} disabled={exam?.status==='ARCHIVED'}><Archive size={15}/> Arşivle</button><button className="ghost" onClick={()=>void deleteExam()}><Trash2 size={15}/> Sil</button></div>}</div></div></div>
     {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
     {exam&&<>

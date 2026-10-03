@@ -6,13 +6,13 @@ vi.mock('../worker/lib/auth', () => ({ getAuthUser: vi.fn() }));
 vi.mock('../worker/answer-correctness-entry', () => ({ default: { fetch: vi.fn() } }));
 function fixture() {
   const db = new DatabaseSync(':memory:');
-  db.exec(`CREATE TABLE exams(id TEXT,title TEXT,exam_date TEXT,exam_type TEXT);
+  db.exec(`CREATE TABLE exams(id TEXT,title TEXT,exam_date TEXT,exam_type TEXT,academic_year TEXT);
     CREATE TABLE exam_participants(id TEXT,exam_id TEXT,student_id TEXT,booklet_code TEXT);
     CREATE TABLE exam_results(participant_id TEXT,correct_count INTEGER,wrong_count INTEGER,blank_count INTEGER,net REAL,score REAL,success_percent REAL,institution_rank INTEGER,created_at TEXT);
     CREATE TABLE exam_delivery_profiles(exam_id TEXT,result_freeze_status TEXT,published_at TEXT,result_publish_at TEXT,snapshot_version INTEGER DEFAULT 1);
     CREATE TABLE exam_result_snapshots(exam_id TEXT,student_id TEXT,snapshot_version INTEGER,payload_json TEXT);`);
   for (const [id,status,date] of [['due','PUBLISHED','2026-09-30T17:00:00Z'],['future','PUBLISHED','2026-09-30T19:00:00Z'],['draft','FROZEN',null]]) {
-    db.prepare('INSERT INTO exams VALUES(?,?,?,?)').run(id,id,'2026-09-30','LGS');
+    db.prepare('INSERT INTO exams VALUES(?,?,?,?,?)').run(id,id,'2026-09-30','LGS','2026-2027');
     db.prepare('INSERT INTO exam_participants VALUES(?,?,?,?)').run(id,id,'student','A');
     db.prepare('INSERT INTO exam_results VALUES(?,1,0,0,1,NULL,100,1,?)').run(id,'2026-09-30');
     db.prepare('INSERT INTO exam_delivery_profiles(exam_id,result_freeze_status,published_at,result_publish_at) VALUES(?,?,?,?)').run(id,status,'2026-09-30',date);

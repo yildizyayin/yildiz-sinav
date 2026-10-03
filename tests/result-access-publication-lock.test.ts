@@ -1,0 +1,95 @@
+import { expect, it } from 'vitest';
+import { issueAccess, updateNetworkInstitution } from '../worker/result-network-entry';
+import { resultRetentionFixture } from './helpers/result-retention-fixture';
+
+function fixture() {
+  const f = resultRetentionFixture();
+  f.db.exec(`CREATE TABLE exams(id TEXT PRIMARY KEY,academic_year TEXT);
+    INSERT INTO exams VALUES('e','2026-2027');
+    CREATE TABLE national_institution_directory(meb_code TEXT,name TEXT,city TEXT,district TEXT,status TEXT);
+    INSERT INTO national_institution_directory VALUES('code','Sentetik kurum','İstanbul','Kartal','ACTIVE');`);
+  return f;
+}
+const request = (participantId = 'p000') => new Request('https://test', { method: 'POST', body: JSON.stringify({ administrationId: 'a', participantId, mebCode: 'code', fullName: 'Sentetik Öğrenci', studentNumber: '123', gradeLevel: 7 }) });
+const user = { id: 'super', role: 'SUPER_ADMIN' } as any;
+
+it('rolls back institution edits on audit failure and commits both on success', async () => {
+  const f = fixture();
+  try {
+    f.db.exec(`ALTER TABLE institutions ADD COLUMN name TEXT DEFAULT 'Original';
+      ALTER TABLE institutions ADD COLUMN city TEXT DEFAULT 'City';
+      ALTER TABLE institutions ADD COLUMN district TEXT DEFAULT 'District';
+      ALTER TABLE institutions ADD COLUMN updated_at TEXT;
+      UPDATE institutions SET code='ANX-TEST';
+      CREATE TRIGGER fail_institution_audit BEFORE INSERT ON audit_logs BEGIN SELECT RAISE(ABORT,'SYNTHETIC_AUDIT_FAILED'); END;`);
+    const update = () => updateNetworkInstitution(new Request('https://test', { method: 'PATCH', body: JSON.stringify({ name: 'Changed' }) }), f.env, user, 'school');
+    await expect(update()).rejects.toThrow('SYNTHETIC_AUDIT_FAILED');
+    expect((f.db.prepare('SELECT name FROM institutions').get() as any).name).toBe('Original');
+    f.db.exec('DROP TRIGGER fail_institution_audit');
+    expect((await update()).status).toBe(200);
+    expect((f.db.prepare('SELECT name FROM institutions').get() as any).name).toBe('Changed');
+    expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(1);
+  } finally { f.db.close(); }
+});
+
+it('blocks identity issuance while another exam operation owns the lock', async () => {
+  const f = fixture();
+  try {
+    f.db.exec("INSERT INTO exam_operation_locks VALUES('e','other-owner','FREEZE')");
+    const response = await issueAccess(request(), f.env, user);
+    expect(response.status).toBe(409);
+    expect((await response.json() as any).error.code).toBe('EXAM_OPERATION_BUSY');
+    expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(0);
+    expect(f.db.prepare('SELECT * FROM result_access_identities').all()).toHaveLength(1);
+  } finally { f.db.close(); }
+});
+
+it('rejects foreign participants and additions to the published cohort before writes', async () => {
+  const f = fixture();
+  try {
+    const foreign = await issueAccess(request('foreign'), f.env, user);
+    expect((await foreign.json() as any).error.code).toBe('RESULT_ACCESS_SCOPE_INVALID');
+    f.db.exec("INSERT INTO exam_participants VALUES('new-participant','e','school')");
+    const added = await issueAccess(request('new-participant'), f.env, user);
+    expect(added.status).toBe(409);
+    expect((await added.json() as any).error.code).toBe('RESULT_COHORT_FROZEN');
+    expect(f.db.prepare('SELECT * FROM result_access_identities').all()).toHaveLength(1);
+    expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);
+    expect((await issueAccess(request(), f.env, { role: 'TEACHER' } as any)).status).toBe(403);
+  } finally { f.db.close(); }
+});
+
+it('allows code rotation for an existing participant in the current frozen version', async () => {
+  const f = fixture();
+  try {
+    f.db.exec(`ALTER TABLE exam_administrations ADD COLUMN published_at TEXT;
+      ALTER TABLE result_network_institutions ADD COLUMN display_name_snapshot TEXT;
+      ALTER TABLE result_network_institutions ADD COLUMN city_snapshot TEXT;
+      ALTER TABLE result_network_institutions ADD COLUMN district_snapshot TEXT;
+      CREATE UNIQUE INDEX rni_scope ON result_network_institutions(administration_id,meb_code);
+      ALTER TABLE result_access_identities ADD COLUMN id TEXT;
+      ALTER TABLE result_access_identities ADD COLUMN grade_level INTEGER;
+      ALTER TABLE result_access_identities ADD COLUMN normalized_name TEXT;
+      ALTER TABLE result_access_identities ADD COLUMN student_number_lookup_token TEXT;
+      ALTER TABLE result_access_identities ADD COLUMN tckn_lookup_token TEXT;
+      ALTER TABLE result_access_identities ADD COLUMN access_code_hash TEXT;
+      ALTER TABLE result_access_identities ADD COLUMN access_code_salt TEXT;
+      ALTER TABLE result_access_identities ADD COLUMN expires_at TEXT;
+      CREATE UNIQUE INDEX rai_scope ON result_access_identities(administration_id,participant_id);`);
+    f.env.RESULT_LOOKUP_SECRET = 'synthetic-secret-only';
+    const response = await issueAccess(request(), f.env, user);
+    expect(response.status).toBe(201);
+    expect((await response.json() as any).oneTimeDisplay).toBe(true);
+    expect(f.db.prepare('SELECT * FROM result_access_identities').all()).toHaveLength(1);
+    expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(1);
+    expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);
+    const priorIdentity = f.db.prepare('SELECT * FROM result_access_identities').get();
+    const priorInstitution = f.db.prepare('SELECT * FROM result_network_institutions').get();
+    f.db.exec(`UPDATE national_institution_directory SET name='Changed synthetic name';
+      CREATE TRIGGER fail_access_audit BEFORE INSERT ON audit_logs BEGIN SELECT RAISE(ABORT,'SYNTHETIC_AUDIT_FAILURE'); END;`);
+    await expect(issueAccess(request(), f.env, user)).rejects.toThrow('SYNTHETIC_AUDIT_FAILURE');
+    expect(f.db.prepare('SELECT * FROM result_access_identities').get()).toEqual(priorIdentity);
+    expect(f.db.prepare('SELECT * FROM result_network_institutions').get()).toEqual(priorInstitution);
+    expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);
+  } finally { f.db.close(); }
+});
