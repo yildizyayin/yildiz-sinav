@@ -53,15 +53,16 @@ const optionSet = (count = 4) => Array.from({ length: count }, (_, index) => ({
   text: `Sentetik seçenek ${String.fromCharCode(65 + index)}`,
 }));
 
-async function createQuestion({ subjectId, outcomeId, index, contentMode = 'TEXT', withImage = false, optionCount = 4 }) {
+async function createQuestion({ subjectId, outcomeId, index, academicYear = '2026-2027', gradeLevel = 7, difficultyLevel = (index % 6) + 1, contentMode = 'TEXT', withImage = false, optionCount = 4 }) {
   const payload = {
     stemText: `PR ${suffix} · soru ${index}`,
-    gradeLevel: 7,
+    academicYear,
+    gradeLevel,
     subjectId,
     topic: 'Soru havuzu staging konusu',
     subtopic: 'Zengin içerik doğrulaması',
     questionType: 'MULTIPLE_CHOICE',
-    difficultyLevel: (index % 6) + 1,
+    difficultyLevel,
     contentMode,
     optionCount,
     options: optionSet(optionCount),
@@ -84,7 +85,7 @@ async function createQuestion({ subjectId, outcomeId, index, contentMode = 'TEXT
   form.set('payload', JSON.stringify({ ...payload, imageAlt: `PR ${suffix} sentetik soru görseli` }));
   form.set('file', new Blob([imageBytes], { type: 'image/png' }), `question-${suffix}.png`);
   const result = await request('/api/platform/questions', { method: 'POST', cookie: admin, form, expected: 201 });
-  assert(result.payload?.id && Number(result.payload?.assetCount) >= 1, 'Image question did not write an R2 asset', result.payload);
+  assert(result.payload?.id && result.payload?.reviewStatus === 'APPROVED' && Number(result.payload?.assetCount) >= 1, 'Image question was not approved with an R2 asset', result.payload);
   return { id: result.payload.id, correctAnswer: payload.correctAnswer, contentMode, assetCount: result.payload.assetCount };
 }
 
@@ -205,15 +206,47 @@ console.log('✓ Unified assessment adapters — FOY + external results visible'
 const plan = await request('/api/nibiru/coach/daily-plan', { method: 'POST', cookie: student, json: {}, expected: [200, 201] });
 const outcomeItem = (plan.payload?.items || []).find((item) => item.payload?.kind === 'OUTCOME_PRACTICE');
 assert(outcomeItem?.id, 'Nibiru did not create an outcome practice item from the seeded evidence', plan.payload);
-const started = await request(`/api/nibiru/coach/items/${encodeURIComponent(outcomeItem.id)}/mini-test`, { method: 'POST', cookie: student, json: {}, expected: [200, 201] });
+// Practice reads and optical/Foy answers above expose the original fixtures.
+// Create a separate, never-read pool only after those adapters have finished.
+// The catalog verifies the outcome against the student's current enrollment;
+// its academic year must also be explicit on each newly uploaded question.
+const [catalog, outcomeEvidence, profile] = await Promise.all([
+  request('/api/nibiru/coach/mini-test-catalog', { cookie: student }),
+  request('/api/my-outcomes', { cookie: student }),
+  request('/api/student-intelligence/profile', { cookie: student }),
+]);
+const miniOutcomeId = outcomeItem.payload.outcomeId || outcomeItem.reference_id;
+assert(catalog.payload?.items?.some((item) => item.id === miniOutcomeId), 'Daily-plan outcome is not in the current verified curriculum catalog', { miniOutcomeId, catalog: catalog.payload });
+const miniOutcome = outcomeEvidence.payload?.outcomes?.find((item) => item.id === miniOutcomeId);
+const miniScope = profile.payload?.profile;
+assert(miniOutcome?.subject_id && miniScope?.academicYear === catalog.payload.academicYear && Number.isInteger(miniScope?.gradeLevel), 'Mini-test fixture enrollment or outcome subject could not be resolved', { miniOutcome, miniScope });
+const miniQuestions = [];
+// Reruns can advance the measurement cycle to ten questions. All fresh items
+// carry media so the visual assertion also holds at every supported test size.
+for (let index = 7; index < 17; index++) {
+  miniQuestions.push(await createQuestion({ subjectId: miniOutcome.subject_id, outcomeId: miniOutcomeId, index, academicYear: miniScope.academicYear, gradeLevel: miniScope.gradeLevel, difficultyLevel: 1, contentMode: 'MIXED', withImage: true, optionCount: index % 2 ? 4 : 5 }));
+}
+console.log(`✓ Fresh NEW mini-test pool — ${miniQuestions.length} approved visual questions · ${miniScope.academicYear} · grade ${miniScope.gradeLevel}`);
+const started = await request(`/api/nibiru/coach/items/${encodeURIComponent(outcomeItem.id)}/mini-test`, { method: 'POST', cookie: student, json: { mode: 'NEW' }, expected: [200, 201] });
 assert(started.payload?.testId && Number(started.payload?.questionCount) >= 5, 'Nibiru mini-test did not start with five questions', started.payload);
+assert(started.payload?.questionMode === 'NEW', 'Nibiru mini-test did not retain NEW selection mode', started.payload);
 const detail = await request(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.payload.testId)}`, { cookie: student });
-assert(detail.payload?.questions?.length >= 5 && detail.payload.questions.every((question) => question.correct_answer == null), 'Nibiru mini-test leaked answers or has too few questions', detail.payload);
+assert(detail.payload?.questions?.length >= 5 && detail.payload.questions.every((question) => question.correct_answer == null && question.solution_text == null), 'Nibiru mini-test leaked answers/solutions or has too few questions', detail.payload);
 assert(detail.payload.questions.some((question) => question.assets?.length), 'Nibiru mini-test did not hydrate question media', detail.payload.questions);
-const answers = detail.payload.questions.map((question) => {
-  const known = questions.concat(mathQuestion).find((item) => item.id === question.question_id);
-  return { questionId: question.question_id, answer: known?.correctAnswer || 'B' };
-});
+assert(detail.payload.questions.some((question) => miniQuestions.some((item) => item.id === question.question_id)), 'Mini-test did not select any fresh fixture questions', detail.payload.questions);
+const answers = [];
+for (const question of detail.payload.questions) {
+  const known = questions.concat(mathQuestion, miniQuestions).find((item) => item.id === question.question_id);
+  let answer = known?.correctAnswer;
+  if (!answer) {
+    // Existing unseen approved questions may share the outcome. Resolve their
+    // actual answer through the admin view instead of guessing a default.
+    const adminQuestion = await request(`/api/platform/questions?subjectId=${encodeURIComponent(miniOutcome.subject_id)}&q=${encodeURIComponent(question.stem_text)}`, { cookie: admin });
+    answer = adminQuestion.payload?.questions?.find((item) => item.id === question.question_id)?.correct_answer;
+  }
+  assert(answer, 'Mini-test selected a question without a known admin answer', { questionId: question.question_id });
+  answers.push({ questionId: question.question_id, answer });
+}
 const miniTest = await request(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.payload.testId)}/submit`, { method: 'POST', cookie: student, json: { answers } });
 assert(miniTest.payload?.result?.status === 'PASSED', 'Nibiru mini-test did not persist a passing measurement', miniTest.payload);
 const finalFeed = await request('/api/platform/assessment-feed', { cookie: student });
