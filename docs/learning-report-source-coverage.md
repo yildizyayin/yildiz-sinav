@@ -139,3 +139,27 @@ imzalama anahtarı ekler; değer günlüğe yazılmaz. Canlı smoke, soru listes
 aldığı practiceToken değerini gönderir. Üretim secretları değiştirilmedi; üretimde
 bu binding'in varlığı yayımdan önce doğrulanmalıdır. Son önizleme başarısı ayrıca
 kontrol edilecektir; gerçek kullanıcı/tarayıcı testi hâlâ ayrıdır.
+
+## 3 Ekim: seçili sınav ve soru pratiği birleşik karne
+
+`GET /api/reporting/students/:studentId/frozen-combined` mevcut yetkili EXAM ve
+QUESTION_BANK okuyucularını kullanır. Eğitim yılı, en fazla 20 examIds, en fazla
+100 runIds ve pratik FIRST/LATEST politikası geçerlidir; en az bir kaynak gerekir.
+Her kaynak hata verirse birleşik rapor da hata verir, sessiz kısmi sonuç dönmez.
+
+Gruplar ders/müfredat/yıl/sınıf/program sürümü aynı olduğunda birleşir. Kaynak
+başarı yüzdeleri ortalanmaz: doğruluk toplam doğru / toplam doğru+yanlış+boş
+olarak hesaplanır. İptaller paydadan hariçtir. Kaynak kırılımı ve kapsam tanıları
+korunur. EXAM soruları ve seçili pratik ilk/son çözümleri ayrı kanıt olaylarıdır;
+kaynaklar arasında aynı soruyu çözmüş olma ihtimali içerik eşleştirmesiyle
+tekilleştirilmez. Bu nedenle politika SOURCE_EVENT_WEIGHTED olarak açıkça adlandırılır.
+Resmî puan, ulusal sıralama veya Maarif beceri düzeyi üretilmez.
+
+Raporlar ekranında soru pratiği seçiminin yanında üstte seçilen aynı eğitim yılı
+sınavlarını ekleme kutusu bulunur. Seçim/yıl/politika değişince eski rapor gizlenir.
+EXAM ve QUESTION_BANK kaynakları isteğe bağlı birleştirilir; FOY ve MINI_TEST henüz
+dahil değildir. PDF ve dört ayrı rol sunumu ayrıca tamamlanacaktır.
+
+Önceki9b6e89 başlığı CI37111702162 ve Preview37111702265 başarıyla tamamlandı;
+izole imzalama anahtarı kurulumu ve canlı smoke düzeltmesi sağlayıcıda geçti.
+Üretimde SESSION_SECRET varlığı henüz doğrulanmadı; üretim anahtarları değişmedi.
