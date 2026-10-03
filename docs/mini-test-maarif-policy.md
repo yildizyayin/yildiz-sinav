@@ -39,5 +39,11 @@ Her resmî öğrenme çıktısı/süreç bileşeni için doğrulanmış soru ban
 zorluk/bağlam çeşitliliği ve beceri rubrikleri hazırlanmalı. Nibiru soru taslakları
 üretebilir, fakat kaynak, cevap/çözüm, yaş/sınıf, telif ve pedagojik inceleme
 onayından geçmeden öğrenciye otomatik sunulmamalıdır. Üretim pipeline'ı ve sınırsız
-onaylı soru içeriği bu değişiklikte tamamlanmış değildir. Mini testin soru/içerik
-sürümünü dondurma ve birleşik karne bağlantısı da ayrıca tamamlanacaktır.
+onaylı soru içeriği bu değişiklikte tamamlanmış değildir. Soru/içerik ve cevap anahtarı 0069 ile test başlangıcında saklanır.
+Gösterim ve puanlama bu sürümü kullanır; eski eksik READY sürümleri
+SNAPSHOT_REQUIRED ile engellenir. Görsel URL referansları saklanır; dosya
+baytlarının değişmez arşivi henüz yoktur. Eşzamanlı çift gönderim idempotansı
+ayrıca tamamlanmalıdır. Yeni testlerin native kanıtı frozen-mini-tests API üzerinden öğrenci/veli ve
+yetkili kurum/branş kapsamıyla okunur; birleşik API miniTestIds seçimini destekler.
+Tekrar çalışmaları akademik kanıta eklenmez. Karne ekranındaki mini test keşfi
+ve seçim arayüzü henüz tamamlanmamıştır.
