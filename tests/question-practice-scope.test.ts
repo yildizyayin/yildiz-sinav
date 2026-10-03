@@ -1,6 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import { expect, it } from 'vitest';
-import { submitStudentPractice } from '../worker/lib/platform-expansion';
+import { submitStudentPractice, practiceContentToken, studentPracticeQuestions } from '../worker/lib/platform-expansion';
 
 it('isolates server-created practice attempts from supplied foreign runs and rejects inactive institution membership', async () => {
  const db=new DatabaseSync(':memory:');
@@ -21,10 +21,20 @@ it('isolates server-created practice attempts from supplied foreign runs and rej
    CREATE TABLE learning_evidence(id TEXT,student_id TEXT,node_id TEXT,source_type TEXT,source_id TEXT,result REAL,weight REAL);
    CREATE TABLE student_learning_state(student_id TEXT,node_id TEXT,mastery REAL,confidence REAL,evidence_count INTEGER,last_evidence_at TEXT,updated_at TEXT,PRIMARY KEY(student_id,node_id));
    CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);`);
+  db.exec(`ALTER TABLE question_bank ADD COLUMN topic TEXT;ALTER TABLE question_bank ADD COLUMN subtopic TEXT;ALTER TABLE question_bank ADD COLUMN question_type TEXT;ALTER TABLE question_bank ADD COLUMN content_mode TEXT;ALTER TABLE question_bank ADD COLUMN option_count INTEGER;ALTER TABLE question_bank ADD COLUMN difficulty_level INTEGER;ALTER TABLE question_bank ADD COLUMN difficulty INTEGER;ALTER TABLE question_bank ADD COLUMN created_at TEXT;
+   ALTER TABLE question_practice_attempts ADD COLUMN created_at TEXT;CREATE TABLE subjects(id TEXT,name TEXT);INSERT INTO subjects VALUES('math','Synthetic math');`);
   const prepare=(sql:string,args:any[]=[]):any=>({bind:(...values:any[])=>prepare(sql,values),first:async()=>db.prepare(sql).get(...args),all:async()=>({results:db.prepare(sql).all(...args)}),run:async()=>db.prepare(sql).run(...args),sql,args});
-  const env={DB:{prepare,batch:async(stmts:any[])=>{db.exec('BEGIN');try{const results=stmts.map(x=>db.prepare(x.sql).run(...x.args));db.exec('COMMIT');return results;}catch(e){db.exec('ROLLBACK');throw e;}}}} as any;
+  const env={SESSION_SECRET:'synthetic-practice-test-secret',DB:{prepare,batch:async(stmts:any[])=>{db.exec('BEGIN');try{const results=stmts.map(x=>db.prepare(x.sql).run(...x.args));db.exec('COMMIT');return results;}catch(e){db.exec('ROLLBACK');throw e;}}}} as any;
   const user={id:'user',role:'STUDENT',student_id:'student',institution_id:'school'} as any;
-  const send=()=>submitStudentPractice(new Request('https://test',{method:'POST',body:JSON.stringify({questionId:'q',answer:'A',runId:'foreign'})}),env,user);
+  const token=async()=>practiceContentToken(env,user,{enrollment_id:'enrollment',season_id:'season',academic_year:db.prepare('SELECT academic_year FROM institution_seasons').get()?.academic_year,grade_level:7},db.prepare('SELECT * FROM question_bank').get());
+  const served=await studentPracticeQuestions(new Request('https://test/api/platform/student-practice?limit=10'),env,user);expect(served.status).toBe(200);
+  const servedBody:any=await served.json();expect(servedBody.questions).toHaveLength(1);expect(servedBody.questions[0].practiceToken).toMatch(/^\d+\.[0-9a-f]{64}$/);expect(servedBody.questions[0]).not.toHaveProperty('correct_answer');expect(servedBody.questions[0]).not.toHaveProperty('solution_text');
+  let practiceToken=servedBody.questions[0].practiceToken;
+  const send=()=>submitStudentPractice(new Request('https://test',{method:'POST',body:JSON.stringify({questionId:'q',answer:'A',runId:'foreign',practiceToken})}),env,user);
+  practiceToken='';const missing=await send();expect(missing.status).toBe(409);expect(await missing.json()).toMatchObject({error:{code:'PRACTICE_CONTENT_STALE',message:expect.any(String)}});practiceToken=servedBody.questions[0].practiceToken;
+  const originalToken=practiceToken;practiceToken=originalToken.slice(0,-1)+(originalToken.endsWith('0')?'1':'0');expect((await send()).status).toBe(409);practiceToken=originalToken;
+  db.exec("UPDATE question_bank SET correct_answer='B'");expect((await send()).status).toBe(409);db.exec("UPDATE question_bank SET correct_answer='A'");
+  practiceToken=await practiceContentToken(env,user,{enrollment_id:'enrollment',season_id:'season',academic_year:'2026-2027',grade_level:7},db.prepare('SELECT * FROM question_bank').get(),Date.now()-1);expect((await send()).status).toBe(409);practiceToken=originalToken;
   const first:any=await(await send()).json(),second:any=await(await send()).json();
   expect(first.ok).toBe(true);expect(first.runId).not.toBe('foreign');expect(second.runId).not.toBe(first.runId);
   expect(db.prepare("SELECT COUNT(*) n FROM assessment_responses WHERE run_id='foreign'").get()?.n).toBe(0);
@@ -33,6 +43,7 @@ it('isolates server-created practice attempts from supplied foreign runs and rej
   const frozen=JSON.parse(String(db.prepare('SELECT metadata_json FROM assessment_runs WHERE id=?').get(first.runId)?.metadata_json)).frozenEvidence;
   expect(frozen).toMatchObject({status:'CORRECT',enrollmentId:'enrollment',academicYear:'2026-2027',gradeLevel:7});expect(frozen.contentDigest).toHaveLength(64);expect(frozen.outcomeRefs).toHaveLength(2);expect(frozen.outcomeRefs.find((x:any)=>x.nodeId==='ln_o1')).toMatchObject({curriculumVersionId:'cv',verified:1,programVersion:'synthetic-v1'});expect(frozen.outcomeRefs.find((x:any)=>x.nodeId==='custom')).toMatchObject({curriculumVersionId:null,verified:0});
   db.exec("UPDATE question_bank SET correct_answer='B',stem_text='Changed';UPDATE institution_seasons SET academic_year='2027-2028';UPDATE curriculum_versions SET verified=0,program_version='changed'");
+  expect((await send()).status).toBe(409);practiceToken=await token();
   expect(JSON.parse(String(db.prepare('SELECT metadata_json FROM assessment_runs WHERE id=?').get(first.runId)?.metadata_json)).frozenEvidence).toEqual(frozen);
   db.exec("CREATE TRIGGER reject_response BEFORE INSERT ON assessment_responses BEGIN SELECT RAISE(ABORT,'synthetic failure');END");
   await expect(send()).rejects.toThrow('synthetic failure');
