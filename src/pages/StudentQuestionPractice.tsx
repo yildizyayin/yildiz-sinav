@@ -41,7 +41,7 @@ export function StudentQuestionPractice() {
   const current = questions[index];
   const submit = async () => {
     if (!current || !answer || result) return;
-    try { setError(''); setResult(await api<any>('/api/platform/student-practice/attempts', { method: 'POST', body: JSON.stringify({ questionId: current.id, answer }) })); setCompletedToday(value => value + 1); }
+    try { setError(''); setResult(await api<any>('/api/platform/student-practice/attempts', { method: 'POST', body: JSON.stringify({ questionId: current.id, answer, practiceToken: current.practiceToken }) })); setCompletedToday(value => value + 1); }
     catch (e: any) { setError(e.message || 'Cevap kontrol edilemedi.'); }
   };
 
