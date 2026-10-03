@@ -1,3 +1,8 @@
+function evidenceTime(value:unknown){
+ if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?$/.test(value))return NaN;
+ return Date.parse(value.replace(' ','T')+(/[Zz]|[+-]\d{2}:\d{2}$/.test(value)?'':'Z'));
+}
+
 // Authorization and source selection belong to the caller. No live content joins.
 export function frozenPracticeReport(rows:any[], academicYear:string, subjectIds:string[]|null, repeatPolicy:'FIRST'|'LATEST'='LATEST') {
   const selected=new Map<string,{row:any,evidence:any}>();
@@ -10,7 +15,7 @@ export function frozenPracticeReport(rows:any[], academicYear:string, subjectIds
     if(evidence.academicYear!==academicYear)continue;
     const refs=Array.isArray(evidence.outcomeRefs)?evidence.outcomeRefs:[];
     if(subjectIds&&(!refs.length||refs.some((ref:any)=>!ref||!subjectIds.includes(ref.subjectId))))continue;
-    if(row.source_type!=='QUESTION_BANK'||row.status!=='SCORED'||typeof row.id!=='string'||!row.id||typeof row.completed_at!=='string'||!Number.isFinite(Date.parse(row.completed_at))||typeof evidence.questionId!=='string'||!evidence.questionId||row.source_id!==evidence.questionId||typeof evidence.contentDigest!=='string'||!/^[a-f0-9]{64}$/.test(evidence.contentDigest)||typeof evidence.enrollmentId!=='string'||!evidence.enrollmentId||!Number.isInteger(evidence.gradeLevel)||!['CORRECT','WRONG','BLANK'].includes(evidence.status)||!refs.length||refs.some((ref:any)=>!ref||ref.verified!==1||typeof ref.outcomeId!=='string'||!ref.outcomeId||typeof ref.subjectId!=='string'||!ref.subjectId||typeof ref.curriculumVersionId!=='string'||!ref.curriculumVersionId||ref.academicYear!==evidence.academicYear||ref.gradeLevel!==evidence.gradeLevel)){
+    if(row.source_type!=='QUESTION_BANK'||row.status!=='SCORED'||typeof row.id!=='string'||!row.id||typeof row.completed_at!=='string'||!Number.isFinite(evidenceTime(row.completed_at))||typeof evidence.questionId!=='string'||!evidence.questionId||row.source_id!==evidence.questionId||typeof evidence.contentDigest!=='string'||!/^[a-f0-9]{64}$/.test(evidence.contentDigest)||typeof evidence.enrollmentId!=='string'||!evidence.enrollmentId||typeof evidence.seasonId!=='string'||!evidence.seasonId||!Number.isInteger(evidence.gradeLevel)||evidence.gradeLevel<1||evidence.gradeLevel>12||!['CORRECT','WRONG','BLANK'].includes(evidence.status)||!refs.length||refs.some((ref:any)=>!ref||ref.verified!==1||(ref.programVersion!=null&&typeof ref.programVersion!=='string')||typeof ref.outcomeId!=='string'||!ref.outcomeId||typeof ref.subjectId!=='string'||!ref.subjectId||typeof ref.curriculumVersionId!=='string'||!ref.curriculumVersionId||ref.academicYear!==evidence.academicYear||ref.gradeLevel!==evidence.gradeLevel)){
       excludedEvidence++;continue;
     }
     const contexts=new Set(refs.map((ref:any)=>JSON.stringify([ref.subjectId,ref.curriculumVersionId,ref.programVersion??null])));
@@ -21,7 +26,7 @@ export function frozenPracticeReport(rows:any[], academicYear:string, subjectIds
     const previous=selected.get(key);
     if(previous){
       repeatedAttempts++;
-      const delta=Date.parse(row.completed_at)-Date.parse(previous.row.completed_at);
+      const delta=evidenceTime(row.completed_at)-evidenceTime(previous.row.completed_at);
       const comparison=delta|| (row.id<previous.row.id?-1:row.id>previous.row.id?1:0);
       if(repeatPolicy==='FIRST'?comparison>=0:comparison<=0)continue;
     }
