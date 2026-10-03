@@ -4,6 +4,7 @@ import { getAuthUser } from './lib/auth';
 import { all, forbidden, json, notFound, one } from './lib/db';
 import { loadPermissionScope } from './lib/permissions';
 import { masteryStatus } from './lib/outcome';
+import { combineFrozenReports } from './lib/combined-frozen-report';
 import { frozenPracticeReport } from './lib/frozen-practice-report';
 import { frozenExamReport } from './lib/frozen-exam-report';
 
@@ -81,6 +82,18 @@ export async function selectedFrozenPracticeReport(env:Env,user:AuthUser,student
  ...frozenPracticeReport(rows,year,access.subjectFilter,repeat as 'FIRST'|'LATEST'),
  unavailableRunIds:staff?[]:ids.filter(id=>!rows.some(r=>r.id===id)),
  message:'Seçili dijital soru pratiği doğruluğu; sınav puanı veya beceri düzeyi değildir. İlk/son politika yalnız seçili kayıtlar içinde uygulanır.'});
+}
+
+export async function selectedCombinedFrozenReport(env:Env,user:AuthUser,studentId:string,url:URL){
+ const access=await studentAccess(env,user,studentId);if(!access.allowed)return forbidden();
+ const hasExams=Boolean((url.searchParams.get('examIds')||'').trim()),hasPractice=Boolean((url.searchParams.get('runIds')||'').trim());
+ if(!hasExams&&!hasPractice)return apiError(400,'REPORT_SELECTION_INVALID','En az bir sınav veya soru pratiği kaydı seçin.');
+ const sources:any[]=[];
+ if(hasExams){const r=await selectedFrozenExamReport(env,user,studentId,url);if(!r.ok)return r;sources.push({sourceType:'EXAM',report:await r.json()});}
+ if(hasPractice){const r=await selectedFrozenPracticeReport(env,user,studentId,url);if(!r.ok)return r;sources.push({sourceType:'QUESTION_BANK',report:await r.json()});}
+ return json({ok:true,academicYear:url.searchParams.get('academicYear'),restrictedToSubjects:access.restricted,...combineFrozenReports(sources),
+ sourceCoverage:sources.map(s=>({sourceType:s.sourceType,coverage:s.report.coverage,unavailableCount:(s.report.unavailableExamIds||s.report.unavailableRunIds||[]).length})),
+ message:'Doğruluk soru sayısıyla ağırlıklıdır. Sınav soruları ve seçili ilk/son pratik çözümleri ayrı kanıt olaylarıdır; resmî puan veya beceri düzeyi değildir.'});
 }
 
 export async function listFrozenPracticeRuns(env:Env,user:AuthUser,studentId:string,url:URL){
@@ -195,4 +208,4 @@ async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Pr
   return json({ok:true,student:access.student,unavailableSnapshotExamIds,restrictedToSubjects:access.restricted,availableExams:allExams.map(e=>access.restricted?{exam_id:e.exam_id,title:e.title,exam_date:e.exam_date,exam_type:e.exam_type,academic_year:e.academic_year}:e),selectedExamIds:selectedIds,exams:examsForClient,summary,subjectTrend,subjectSummary,outcomes,developing:outcomes.filter(o=>o.mastery_status==='DEVELOPING').sort((a,b)=>a.success_rate-b.success_rate),strong:outcomes.filter(o=>o.mastery_status==='STRONG').sort((a,b)=>b.success_rate-a.success_rate)});
 }
 
-export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const practiceRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/practice-runs$/);if(practiceRuns&&request.method==='GET')return listFrozenPracticeRuns(env,auth,practiceRuns[1],url);const practice=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-practice$/);if(practice&&request.method==='GET')return selectedFrozenPracticeReport(env,auth,practice[1],url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
+export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const combinedFrozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-combined$/);if(combinedFrozen&&request.method==='GET')return selectedCombinedFrozenReport(env,auth,combinedFrozen[1],url);const practiceRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/practice-runs$/);if(practiceRuns&&request.method==='GET')return listFrozenPracticeRuns(env,auth,practiceRuns[1],url);const practice=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-practice$/);if(practice&&request.method==='GET')return selectedFrozenPracticeReport(env,auth,practice[1],url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
