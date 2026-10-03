@@ -20,14 +20,14 @@ it('isolates server-created practice attempts from supplied foreign runs and rej
    INSERT INTO question_learning_links VALUES('q','ln_o1'),('q','custom');
    CREATE TABLE learning_evidence(id TEXT,student_id TEXT,node_id TEXT,source_type TEXT,source_id TEXT,result REAL,weight REAL);
    CREATE TABLE student_learning_state(student_id TEXT,node_id TEXT,mastery REAL,confidence REAL,evidence_count INTEGER,last_evidence_at TEXT,updated_at TEXT,PRIMARY KEY(student_id,node_id));
-   CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);`);
+   CREATE TABLE coach_question_exposures(student_id TEXT,question_id TEXT,PRIMARY KEY(student_id,question_id));CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);`);
   db.exec(`ALTER TABLE question_bank ADD COLUMN topic TEXT;ALTER TABLE question_bank ADD COLUMN subtopic TEXT;ALTER TABLE question_bank ADD COLUMN question_type TEXT;ALTER TABLE question_bank ADD COLUMN content_mode TEXT;ALTER TABLE question_bank ADD COLUMN option_count INTEGER;ALTER TABLE question_bank ADD COLUMN difficulty_level INTEGER;ALTER TABLE question_bank ADD COLUMN difficulty INTEGER;ALTER TABLE question_bank ADD COLUMN created_at TEXT;
    ALTER TABLE question_practice_attempts ADD COLUMN created_at TEXT;CREATE TABLE subjects(id TEXT,name TEXT);INSERT INTO subjects VALUES('math','Synthetic math');`);
   const prepare=(sql:string,args:any[]=[]):any=>({bind:(...values:any[])=>prepare(sql,values),first:async()=>db.prepare(sql).get(...args),all:async()=>({results:db.prepare(sql).all(...args)}),run:async()=>db.prepare(sql).run(...args),sql,args});
   const env={SESSION_SECRET:'synthetic-practice-test-secret',DB:{prepare,batch:async(stmts:any[])=>{db.exec('BEGIN');try{const results=stmts.map(x=>db.prepare(x.sql).run(...x.args));db.exec('COMMIT');return results;}catch(e){db.exec('ROLLBACK');throw e;}}}} as any;
   const user={id:'user',role:'STUDENT',student_id:'student',institution_id:'school'} as any;
   const token=async()=>practiceContentToken(env,user,{enrollment_id:'enrollment',season_id:'season',academic_year:db.prepare('SELECT academic_year FROM institution_seasons').get()?.academic_year,grade_level:7},db.prepare('SELECT * FROM question_bank').get());
-  const served=await studentPracticeQuestions(new Request('https://test/api/platform/student-practice?limit=10'),env,user);expect(served.status).toBe(200);
+  const served=await studentPracticeQuestions(new Request('https://test/api/platform/student-practice?limit=10'),env,user);expect(served.status).toBe(200);expect(db.prepare('SELECT COUNT(*) n FROM coach_question_exposures').get()?.n).toBe(1);
   const servedBody:any=await served.json();expect(servedBody.questions).toHaveLength(1);expect(servedBody.questions[0].practiceToken).toMatch(/^\d+\.[0-9a-f]{64}$/);expect(servedBody.questions[0]).not.toHaveProperty('correct_answer');expect(servedBody.questions[0]).not.toHaveProperty('solution_text');
   let practiceToken=servedBody.questions[0].practiceToken;
   const send=()=>submitStudentPractice(new Request('https://test',{method:'POST',body:JSON.stringify({questionId:'q',answer:'A',runId:'foreign',practiceToken})}),env,user);
