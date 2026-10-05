@@ -1,3 +1,4 @@
+import {FrozenOutcomeFeedback} from './FrozenOutcomeFeedback';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { api, qs } from '../api';
 
@@ -109,6 +110,7 @@ export function FrozenPracticeReport({ studentId, exams = [], selectedExamIds = 
   {reportActivityKey === key && reportError && <div className="alert error" role="alert">{reportError}</div>}
   {result && <>
    {result.sourceTypes?.length > 1 && <div className="alert info">Birleşik karnede seçili kaynakların kanıtları soru sayısıyla ağırlıklandırılır. Farklı müfredat sürümleri ayrı gösterilir.</div>}
+   <FrozenOutcomeFeedback feedback={result.outcomeFeedback} groups={result.groups||[]}/>
    {result.sourceCoverage?.map((source: any) => <div key={source.sourceType}>
     <p>{sourceName(source.sourceType)}: {source.unavailableCount || 0} seçili kayıt kullanılamadı{source.coverage ? ' · ' + (source.coverage.excludedEvidence || 0) + ' kanıt kapsam dışında' : ''}</p>
     {source.sourceType === 'QUESTION_BANK' && source.coverage && <p>{source.coverage.repeatedAttempts || 0} tekrar eden pratik çözümü, seçilen ilk/son politikasına göre tekilleştirildi.</p>}
