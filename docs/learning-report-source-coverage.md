@@ -1,5 +1,20 @@
 # Birleşik karne için kaynak kapsamı
 
+## Güncel durum — 5 Ekim 2026
+
+Bu bölüm aşağıdaki tarihli geliştirme notlarının yerini alır; eski notlar tarihçe olarak korunur.
+
+- EXAM, QUESTION_BANK ve NEW MINI_TEST sabit kanıt okuyucuları ve seçilebilir birleşik rapor ekranı bağlıdır.
+- 0075 ile yeni FOY ve MINI_GAME kanıtı çözüm anında dondurulur. FrozenFoyGameReport, Reports ekranına bağlıdır. Föy doğruluk kanıtı uygun müfredat grubunda birleştirilir; mini oyun etkinlik puanı doğru/yanlış/boş ortalamasına eklenmez.
+- PR225 hesaplama/adaptör kodu bu dala entegredir; PR225'in kendisi merge edilmemiştir. Eksik tarihsel kanıt canlı müfredattan doldurulmaz.
+- Yazdır / PDF eylemi rapor bölümlerini aynı belgeye alır. Bu bağlantı ve kapsam testleri vardır; gerçek tarayıcı/mobil, dört role özgü karne tasarımı ve fiziksel PDF doğrulaması tamamlanmış değildir.
+- 0074 medya bütünlüğü ve insan onayında R2 medyasını sabitleme akışı uygulanmıştır. Gerçek medya yükleme/onay etkileşimi ayrıca test edilmelidir.
+- Maarif beceri/rubrik doğrulaması ve resmi puan/ulusal sıralama hesaplaması bu doğruluk birleştirmesinin sonucu değildir.
+- Kod 286e561 sürümünde 139 dosya/637 test, typecheck, build ve migration/tekrarlı seed kontrollerinden geçmiştir. Preview kaynak kontrolü başarılı, sonraki Cloudflare kaynak hazırlama adımı HTTP403 ile başarısızdır; bu sürümün canlı değerlendirme/KVKK kabulü henüz çalışmamıştır.
+
+## Tarihsel geliştirme notları
+
+
 İlk API: `GET /api/reporting/students/:studentId/frozen-exams`.
 `academicYear=2026-2027` ve comma separated `examIds` (en fazla20) gereklidir.
 Mevcut reporting rol/öğrenci/kurum yetkisi ve branş kapsamı uygulanır. Öğretmen
