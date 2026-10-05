@@ -43,7 +43,7 @@
   "0037_seed_sekonic_optical_templates.sql": "0ccfc85b547df1e58dd0da830afea1c506b50b0b615bd320faaad9ec967f98bc",
   "0038_question_difficulty_six_levels.sql": "769ad39205c10672f4fe2a3579484e5c168bfc0499c0265537a8b82aa5e75bf1",
   "0039_assessment_question_media_pipeline.sql": "3a465e10a553cafc82cc170ac7f58479763402a1eaf75e7d591d4fd9d972a97f",
-  "0040_assessment_delivery_closure.sql": "2a8e9b90f17cfd75614e82ed1acb4f62cfd22009cb95d44d698fa35b3f98489",
+  "0040_assessment_delivery_closure.sql": "2a8e9b90f017cfd75614e82ed1acb4f62cfd22009cb95d44d698fa35b3f98489",
   "0041_exam_definition_v1.sql": "91e5b70f1b138e5f180d9db276c8f3da305c07e4b760884dd214f05d6f9c3529",
   "0042_official_outcome_matching.sql": "247aa363dfe490bd6b99eec8c99e40c9c73296ee64fd51edfa0f0a8550948dc3",
   "0042_tyt_optional_philosophy.sql": "dd9f3e0472597ce489e084ec71da26036c84dd4046ba5e00e6f1858fa821238a",
@@ -54,7 +54,7 @@
   "0045_nibiru_session_routing.sql": "c826defb260aead96027a1968b713bd5425903f3d4b226dacfce18e515cded07",
   "0046_groq_privacy_registry.sql": "40b33eda97792667ce1ec631e48d0cd36b03201eaa9dbc087163085a392b35ca",
   "0047_nibiru_voice_health.sql": "ed8d0d83fff76a062654548288a7bfceb941ef7bcc807c237abf257b8add50bf",
-  "0048_nibiru_capability_lab.sql": "52131b53f5be2de3116ea6567a062c667b1b5b2e1558c443c0a3e507baea0b9",
+  "0048_nibiru_capability_lab.sql": "52131b53f5be2de3116ea6567a062c667c1a18b2e1558c443c0a3e507baea0b9",
   "0049_guidance_optical_delivery.sql": "dd23c9dd003e338a2c90e6d699800ce19e732e2e427d1c5460956070637ad6e7",
   "0050_institution_optical_ownership.sql": "6e1136cf9afc6c789f124d20a7c4184bf73b4c1f6e45fe182def61410fbb3aef",
   "0051_optical_form_metadata.sql": "f67f122d0339c93c831a5e09d9661fd063276a65ce3d9a077b83d5c72cb02706",
@@ -62,6 +62,6 @@
   "0053_institution_onboarding.sql": "0fd9e0fbecd63322c3196546716d4026ac211c833145c9fb4ba1690aec49a5a6",
   "0054_account_access_notifications.sql": "eff6e7569ec88aef8c97d3f52d1333390d328590a078b7c4b54c96728f6562b2",
   "0055_tyt_optional_philosophy_results.sql": "896b76922d55a4577f70e9cf5453f7e2b05e9c43df260225007967ce306c8de3",
-  "0056_exam_application_result_schedule.sql": "b56b485871b9bcd3ec79c93defb90f567ed7d71f9745f6290155b6cd9b9c5819",
+  "0056_exam_application_result_schedule.sql": "b56b485871b9bcd6ec79c93defb90f567ed7d71f9745f6290155b6cd9b9c5819",
   "0057_publish_builtin_sekonic_catalog.sql": "ed657b37e0f3fe3ea9d275809ac0790851e6d15cb3d0f839d16b01e801d4af52"
 }
