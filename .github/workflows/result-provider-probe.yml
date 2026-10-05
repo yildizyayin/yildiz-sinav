@@ -79,9 +79,6 @@ jobs:
             > wrangler.result-provider-probe.json
 
           echo "worker=$worker" >> "$GITHUB_OUTPUT"
-          echo "bucket=$bucket" >> "$GITHUB_OUTPUT"
-          echo "aq=$aq" >> "$GITHUB_OUTPUT"
-          echo "rq=$rq" >> "$GITHUB_OUTPUT"
 
       - name: Deploy isolated provider probe
         run: npx wrangler deploy --config wrangler.result-provider-probe.json
@@ -89,20 +86,11 @@ jobs:
       - name: Configure one-time probe token
         shell: bash
         run: |
-          node --input-type=module <<'JS'
-          import { randomBytes } from 'node:crypto';
-          import { spawnSync } from 'node:child_process';
-          const token=randomBytes(32).toString('hex');
-          const put=spawnSync('npx',['wrangler','secret','put','PROBE_TOKEN','--config','wrangler.result-provider-probe.json'],{input:token+'\n',encoding:'utf8',stdio:['pipe','pipe','pipe']});
-          if(put.error||put.status!==0)throw new Error('Probe token setup failed');
-          process.stdout.write(`RESULT_PROBE_TOKEN=${token}\n`);
-          JS
-          token_line="$(node --input-type=module <<'JS'
-          import { randomBytes } from 'node:crypto'; process.stdout.write(randomBytes(32).toString('hex'));
-          JS
-          )"
-          printf '%s' "$token_line" | npx wrangler secret put PROBE_TOKEN --config wrangler.result-provider-probe.json >/dev/null
-          echo "RESULT_PROBE_TOKEN=$token_line" >> "$GITHUB_ENV"
+          set -euo pipefail
+          token="$(node --input-type=module -e "import {randomBytes} from 'node:crypto'; process.stdout.write(randomBytes(32).toString('hex'))")"
+          echo "::add-mask::$token"
+          printf '%s' "$token" | npx wrangler secret put PROBE_TOKEN --config wrangler.result-provider-probe.json >/dev/null
+          echo "RESULT_PROBE_TOKEN=$token" >> "$GITHUB_ENV"
 
       - name: Run isolated conditional R2 and Queue probe
         env:
