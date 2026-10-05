@@ -10,5 +10,5 @@ export function frozenMiniTestReport(rows:any[],academicYear:string,subjectIds:s
   snapshots.push({exam_id:row.id,academic_year:proof.academicYear,grade_level:proof.gradeLevel,payload_json:JSON.stringify({schemaVersion:1,questionEvidencePolicy:'NATIVE_STATUS_AND_CURRICULUM_AT_FREEZE_V1',questionEvidence:proof.questionEvidence})});
  }
  const reduced=frozenExamReport(snapshots,subjectIds);
- return {sourceTypes:['MINI_TEST'],calculationPolicy:'SELECTED_FROZEN_MINI_TEST_QUESTION_ACCURACY_V1',groups:reduced.groups.map(({examCount,...group}:any)=>({...group,testCount:examCount})),coverage:subjectIds?null:{legacyTests,excludedEvidence:reduced.coverage?.excludedEvidence||0},officialScore:null,nationalRank:null};
+ return {outcomes:reduced.outcomes,sourceTypes:['MINI_TEST'],calculationPolicy:'SELECTED_FROZEN_MINI_TEST_QUESTION_ACCURACY_V1',groups:reduced.groups.map(({examCount,...group}:any)=>({...group,testCount:examCount})),coverage:subjectIds?null:{legacyTests,excludedEvidence:reduced.coverage?.excludedEvidence||0},officialScore:null,nationalRank:null};
 }
