@@ -1,3 +1,4 @@
+import {PrivateRubricExportPanel} from './PrivateRubricExportPanel';
 import { useEffect, useRef, useState } from 'react';
 import { api, qs } from '../api';
 
@@ -48,6 +49,7 @@ export function RubricObservationReport({studentId,userId,allowHistory=false,ini
   {!data&&!error&&<p>Gözlemler yükleniyor…</p>}
   {(allowHistory||data?.historyAvailable||history)&&<label><input type="checkbox" checked={history} disabled={busy} onChange={e=>{setHistory(e.target.checked);setEnrollmentId('')}}/> Geçmiş dönemler dahil</label>}
   {data&&<><label>Dönem<select value={enrollmentId} disabled={busy} onChange={e=>setEnrollmentId(e.target.value)}><option value="">Yetkili tüm dönem kayıtları</option>{data.enrollments.map((e:any)=><option key={e.id} value={e.id}>{e.academic_year} · {e.class_name||'Sınıf belirtilmemiş'} · {({ACTIVE:'Aktif',LEFT:'Ayrıldı',GRADUATED:'Mezun',ARCHIVED:'Arşiv'} as Record<string,string>)[e.status]||'Geçmiş kayıt'}</option>)}</select></label><button disabled={busy||!data.observations.length} onClick={()=>void exportCsv()}>Seçili kapsamı CSV indir</button></>}
+  {data&&<PrivateRubricExportPanel key={scope} studentId={studentId} userId={userId} view={history?'history':'current'} enrollmentId={enrollmentId} institutionId={institutionScope}/>}
   {!!writable.length&&<fieldset disabled={busy}><legend>Gerçek gözlem kaydet</legend><label>Dönem ve rubrik<select value={selection} onChange={e=>{setSelection(e.target.value);setLevels({})}}><option value="">Seçin</option>{writable.map((r:any)=><option key={`${r.enrollment_id}:${r.id}`} value={`${r.enrollment_id}:${r.id}`}>{data.enrollments.find((x:any)=>x.id===r.enrollment_id)?.academic_year} · {r.outcome_code} · {r.title} · {r.version_label}</option>)}</select></label>
   {rubric&&<><p>{rubric.task_instructions}</p><p>{rubric.component_code} · {rubric.component_title} · {rubric.source_kind==='OFFICIAL'?'Resmî rubrik':'Öğretmen tasarımı rubrik'}</p>
    {rubric.criteria.map((c:any)=><label key={c.id}>{c.title}<p>{c.description}</p><select value={levels[c.id]||''} onChange={e=>setLevels({...levels,[c.id]:e.target.value})}><option value="">Gözlenen düzeyi seçin</option>{c.levels.map((l:any)=><option key={l.id} value={l.id}>{l.label} · {l.description}</option>)}</select></label>)}
