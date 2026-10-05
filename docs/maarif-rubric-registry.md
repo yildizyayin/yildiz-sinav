@@ -21,10 +21,21 @@ Implementation status: code added; migration, type checking, tests and browser a
 
 The curriculum version detail screen contains source fields, confirmation, structured criterion/level editors and published rubric details.
 
-## Remaining integration
+## Observation integration
 
-Teacher observation capture, exact institution/season/class/subject authorization, immutable observation snapshots, correction/withdrawal history, idempotent submissions and student/parent/branch/guidance report presentation are not implemented by this registry change. Multiple-choice accuracy remains separate from observation evidence.
+Migration 0080 stores append-only observations with an immutable rubric/criteria/source/outcome snapshot. A second append-only table records withdrawal reasons without overwriting evidence.
+
+- GET `/api/learning-observations/students/:studentId` returns the authorized current active enrollment's rubrics and latest 200 unwithdrawn observations. `hasMore` is explicit; this is not a full-history export.
+- POST on that path publishes an explicitly confirmed actual observation. Only TEACHER users with a current SUBJECT assignment matching the exact institution, season, class and subject can write. A guidance assignment alone does not authorize assessing another subject.
+- POST `/api/learning-observations/students/:studentId/:observationId/withdraw` lets the original observer withdraw with a 20–1000 character reason while holding current branch authority. Corrections are new observations; withdrawn evidence is retained and excluded from report display.
+- Student access is own student ID; parent access requires an active link; managers are institution scoped; branch/guidance access matches exact current assignments. No cross-institution or cross-season assignment reuse.
+- Available rubrics must match the active enrollment's academic year, school program and grade through verified curriculum/outcome context. Publication repeats the scope and selected context inside the INSERT to prevent a changed enrollment/assignment from passing a stale precheck.
+- Every criterion must have exactly one selected level from the published rubric. Observation/evidence note, constructive feedback and next step are explicit. The date must be valid, not future, and in the academic year's two calendar years; exact institution term dates are not modeled.
+- Publication request IDs are unique per observer. A canonical payload fingerprint allows identical retries and rejects conflicting reuse. Original records cannot be updated/deleted.
+- Reports embed a separate rubric panel for student, parent, branch, guidance, institution and Super Admin views. Display uses frozen criterion labels/descriptions, not current live rubric labels. No rubric average, official ability score or multiple-choice-to-competency inference is generated.
+
+Historical/left enrollment viewing, archive export/pagination beyond the newest 200 records, broader cohort observation summaries and actual official definitions/content review remain separate work. Current institution/guidance cohort reports do not aggregate these observations.
 
 ## Final-stage checks
 
-Apply migrations in isolation; check foreign keys and immutability triggers; check official and teacher-designed payload validation, duplicate version conflicts, unauthenticated/non-admin rejection, changed curriculum context, UI source confirmation resets and version-switch response isolation. Validate official content and observable level definitions with subject specialists before a pupil pilot.
+Apply migrations in isolation; check foreign keys and immutability triggers; check official and teacher-designed payload validation, duplicate version conflicts, unauthenticated/non-admin rejection, changed curriculum context, UI source confirmation resets and version-switch response isolation. Check all six read roles, cross-institution/class/season/subject rejection, revoked authority at the conditional INSERT, duplicate and conflicting request IDs, unknown/repeated criterion IDs, future/out-of-year dates and original-observer withdrawal. Validate official content and observable level definitions with subject specialists before a pupil pilot.
