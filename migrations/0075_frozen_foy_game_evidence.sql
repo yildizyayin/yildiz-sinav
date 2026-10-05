@@ -11,9 +11,9 @@ CREATE TABLE frozen_foy_response_evidence (
   season_id TEXT NOT NULL REFERENCES institution_seasons(id),
   academic_year TEXT NOT NULL,
   grade_level INTEGER NOT NULL CHECK(grade_level BETWEEN 1 AND 12),
-  subject_id TEXT NOT NULL REFERENCES subjects(id),
-  curriculum_version_id TEXT NOT NULL REFERENCES curriculum_versions(id),
-  program_version TEXT NOT NULL,
+  subject_id TEXT REFERENCES subjects(id),
+  curriculum_version_id TEXT REFERENCES curriculum_versions(id),
+  program_version TEXT,
   outcome_refs_json TEXT NOT NULL,
   result_status TEXT NOT NULL CHECK(result_status IN ('CORRECT','WRONG','BLANK')),
   context_valid INTEGER NOT NULL CHECK(context_valid IN (0,1)),
@@ -30,8 +30,8 @@ BEGIN
     subject_id,curriculum_version_id,program_version,outcome_refs_json,result_status,context_valid,observed_at)
   SELECT NEW.id,r.id,NEW.student_id,r.institution_id,r.assignment_id,e.id,e.season_id,s.academic_year,e.grade_level,
     q.subject_id,
-    COALESCE((SELECT MIN(o.curriculum_version_id) FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE l.question_id=q.id AND o.active=1 AND cv.verified=1 AND o.subject_id=q.subject_id AND o.grade_level=e.grade_level AND cv.grade_level=e.grade_level AND cv.academic_year=s.academic_year),''),
-    COALESCE((SELECT MIN(cv.program_version) FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE l.question_id=q.id AND o.active=1 AND cv.verified=1 AND o.subject_id=q.subject_id AND o.grade_level=e.grade_level AND cv.grade_level=e.grade_level AND cv.academic_year=s.academic_year),''),
+    (SELECT MIN(o.curriculum_version_id) FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE l.question_id=q.id AND o.active=1 AND cv.verified=1 AND o.subject_id=q.subject_id AND o.grade_level=e.grade_level AND cv.grade_level=e.grade_level AND cv.academic_year=s.academic_year),
+    (SELECT MIN(cv.program_version) FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE l.question_id=q.id AND o.active=1 AND cv.verified=1 AND o.subject_id=q.subject_id AND o.grade_level=e.grade_level AND cv.grade_level=e.grade_level AND cv.academic_year=s.academic_year),
     COALESCE((SELECT json_group_array(json_object('outcomeId',x.id,'curriculumVersionId',x.curriculum_version_id,'programVersion',x.program_version,'subjectId',x.subject_id,'gradeLevel',x.grade_level,'academicYear',x.academic_year)) FROM (
       SELECT o.id,o.curriculum_version_id,cv.program_version,o.subject_id,o.grade_level,cv.academic_year
       FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
