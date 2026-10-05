@@ -22,7 +22,7 @@ jobs:
     environment: staging
     env:
       SMOKE_BASE_URL: ${{ secrets.STAGING_URL || vars.STAGING_URL || 'https://demo.anunex.com' }}
-      SMOKE_DEMO_PASSWORD: ${{ secrets.STAGING_DEMO_PASSWORD || 'Demo123!' }}
+      SMOKE_DEMO_PASSWORD: ${{ secrets.STAGING_DEMO_PASSWORD }}
       LOAD_TEST_ALLOWED_ORIGINS: ${{ vars.LOAD_TEST_ALLOWED_ORIGINS || 'https://demo.anunex.com' }}
     steps:
       - uses: actions/checkout@v5
@@ -33,7 +33,9 @@ jobs:
       - name: Require explicit one-million benchmark confirmation
         env:
           CONFIRMATION: ${{ inputs.confirmation }}
-        run: test "$CONFIRMATION" = "RUN_NATIONAL_1000000"
+        run: |
+          test "$CONFIRMATION" = "RUN_NATIONAL_1000000"
+          test -n "$SMOKE_DEMO_PASSWORD" || (echo 'Missing STAGING_DEMO_PASSWORD' >&2 && exit 1)
 
       - name: Validate staging target
         env:
