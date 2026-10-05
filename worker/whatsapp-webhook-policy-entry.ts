@@ -10,7 +10,7 @@ async function persistStatus(env:Env,event:WhatsAppDeliveryStatus){
  if(event.status==='delivered'||event.status==='read')await env.DB.prepare(`UPDATE announcement_deliveries SET status='DELIVERED',delivered_at=COALESCE(delivered_at,?),failure_code=NULL WHERE provider_message_id=? AND channel='WHATSAPP' AND status<>'FAILED'`).bind(occurredAt,event.messageId).run();
  else if(event.status==='failed')await env.DB.prepare(`UPDATE announcement_deliveries SET status='FAILED',failure_code=?,attempted_at=COALESCE(attempted_at,?) WHERE provider_message_id=? AND channel='WHATSAPP'`).bind(failureCode,occurredAt,event.messageId).run();
 }
-export function createWhatsAppWebhookPolicyEntry(app:WrappedApp):ExportedHandler<Env,CapacityJobMessage>{return{
+export function createWhatsAppWebhookPolicyEntry(app:WrappedApp):ExportedHandler<Env,CapacityJobMessage> & Required<Pick<ExportedHandler<Env,CapacityJobMessage>,'fetch'|'queue'|'scheduled'>>{return{
  async fetch(request,env,ctx){
   const url=new URL(request.url);if(url.pathname!=='/api/nibiru/whatsapp/webhook')return app.fetch(request,env,ctx);
   if(request.method==='GET'){
