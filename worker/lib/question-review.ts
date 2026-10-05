@@ -1,6 +1,6 @@
 import type {AuthUser,Env} from '../types';
 import {all,badRequest,forbidden,json,notFound,one} from './db';
-import {verifyQuestionMediaIntegrity} from './question-media-integrity';
+import {sealQuestionMedia,verifyQuestionMediaIntegrity} from './question-media-integrity';
 
 export function normalizeQuestionOrigin(value:unknown):string|null {
  const origin=String(value??'MANUAL').trim().toUpperCase();
@@ -34,9 +34,9 @@ export async function reviewQuestionWithGate(request:Request,env:Env,user:AuthUs
  if(user.role!=='SUPER_ADMIN')return forbidden('Soru onayını yalnız Süper Admin yapabilir.');
  const body:any=await request.json().catch(()=>({}));const status=String(body.status||'').toUpperCase();
  if(!['APPROVED','REJECTED','REVIEW','DRAFT','ARCHIVED'].includes(status))return badRequest('Geçersiz inceleme durumu.','INVALID_STATUS');
- const q=await one<any>(env.DB.prepare(`SELECT * FROM question_bank WHERE id=? AND review_status<>'ARCHIVED'`).bind(id));
+ let q=await one<any>(env.DB.prepare(`SELECT * FROM question_bank WHERE id=? AND review_status<>'ARCHIVED'`).bind(id));
  if(!q)return notFound('Soru bulunamadı.');
- const ai=isAiQuestionOrigin(q.origin_kind);
+ const ai=isAiQuestionOrigin(q.origin_kind);let mediaSealed=false;
  if((ai&&status==='APPROVED')||body.expectedRevision!==undefined){
   if(!Number.isInteger(body.expectedRevision)||body.expectedRevision!==q.review_revision)return json({ok:false,error:{code:'QUESTION_REVIEW_CHANGED',message:'İncelediğiniz soru sürümü değişti. Güncel içeriği yeniden açın.'}},409);
  }
@@ -44,7 +44,18 @@ export async function reviewQuestionWithGate(request:Request,env:Env,user:AuthUs
  if(status==='APPROVED'){
   if(!['OWNED','LICENSED','PUBLIC_DOMAIN','USER_PROVIDED'].includes(q.copyright_status))return badRequest('Kısıtlı telif durumundaki soru onaylanamaz.','COPYRIGHT_BLOCKED');
   if(q.question_type==='MULTIPLE_CHOICE'&&!validMultipleChoiceQuestion(q))return badRequest('Soru seçenekleri ve cevap anahtarı doğrulanamadı.','INVALID_QUESTION_CONTENT');
-  const mediaIntegrity=await verifyQuestionMediaIntegrity(env,id);
+  let mediaIntegrity=await verifyQuestionMediaIntegrity(env,id);
+  if(!mediaIntegrity.ok&&mediaIntegrity.code==='QUESTION_MEDIA_SEAL_REQUIRED'){
+   // The reviewer already witnessed q.review_revision above. Seal only local R2
+   // bytes as a controlled internal mutation, then continue against the new
+   // revision. External/missing/tampered media still fail closed.
+   const sealedResponse=await sealQuestionMedia(env,user,id);
+   if(!sealedResponse.ok)return sealedResponse;
+   const sealed:any=await sealedResponse.json();mediaSealed=Array.isArray(sealed.sealed)&&sealed.sealed.some((asset:any)=>asset?.reused===false);
+   q=await one<any>(env.DB.prepare(`SELECT * FROM question_bank WHERE id=? AND review_status<>'ARCHIVED'`).bind(id));
+   if(!q)return notFound('Soru bulunamadı.');
+   mediaIntegrity=await verifyQuestionMediaIntegrity(env,id);
+  }
   if(!mediaIntegrity.ok)return json({ok:false,error:{code:mediaIntegrity.code,message:mediaIntegrity.message}},409);
   if(ai){
    const year=typeof q.academic_year==='string'?q.academic_year.match(/^(\d{4})-(\d{4})$/):null;
@@ -72,5 +83,5 @@ export async function reviewQuestionWithGate(request:Request,env:Env,user:AuthUs
  // D1 counts the revision trigger too; this primary-key conditional write
  // changes no rows when the fence fails, and at least one when it commits.
  if(Number(result.meta?.changes||0)<1)return json({ok:false,error:{code:'QUESTION_REVIEW_CHANGED',message:'Soru veya program inceleme sırasında değişti. Güncel içeriği yeniden inceleyin.'}},409);
- return json({ok:true,id,status});
+ return json({ok:true,id,status,mediaSealed});
 }
