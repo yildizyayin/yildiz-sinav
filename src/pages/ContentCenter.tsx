@@ -3,6 +3,7 @@ import { BookOpen, Check, CheckCircle2, ChevronRight, Eye, FileText, FileUp, Pla
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
 import './content-center.css';
+import {QuestionPoolCoverage} from '../components/QuestionPoolCoverage';
 
 const difficultyLabels: Record<number, string> = {
   1: 'Başlangıç', 2: 'Kolay', 3: 'Orta', 4: 'Orta-üstü', 5: 'Zor', 6: 'Olimpiyat',
@@ -31,7 +32,7 @@ function reviewLabel(status: string) { return statusLabels[status] || status || 
 
 export function ContentCenter() {
   const { user } = useAuth();
-  const [tab, setTab] = useState<'questions' | 'studio' | 'videos'>('questions');
+  const [tab, setTab] = useState<'questions' | 'studio' | 'videos' | 'coverage'>('questions');
   const [questions, setQuestions] = useState<any[]>([]);
   const [selectedQuestion, setSelectedQuestion] = useState<any | null>(null);
   const [aiReview, setAiReview] = useState<{scope:string;checks:Record<string,boolean>}>({scope:'',checks:{}});
@@ -123,11 +124,13 @@ export function ContentCenter() {
     {notice && <div className="alert success">{notice}</div>}
 
     <div className="content-tabs" role="tablist" aria-label="İçerik modülleri">
+      {user?.role === 'SUPER_ADMIN' && <button className={tab === 'coverage' ? 'active' : ''} onClick={() => setTab('coverage')}>Kazanım kapsamı</button>}
       <button className={tab === 'questions' ? 'active' : ''} onClick={() => setTab('questions')}><BookOpen size={16} /> Soru havuzu <span>{stats?.total ?? questions.length}</span></button>
       <button className={tab === 'studio' ? 'active' : ''} onClick={() => setTab('studio')}><WandSparkles size={16} /> Studio <span>{docs.length}</span></button>
       <button className={tab === 'videos' ? 'active' : ''} onClick={() => setTab('videos')}><PlaySquare size={16} /> Video <span>{videos.length}</span></button>
     </div>
 
+    {tab === 'coverage' && user?.role === 'SUPER_ADMIN' && <QuestionPoolCoverage key={JSON.stringify([user.id,user.role,user.institution_id])}/>}
     {tab === 'questions' && <>
       <div className="content-summary-grid"><div><span>Toplam soru</span><strong>{stats?.total ?? questions.length}</strong><small>arşiv dışı içerik</small></div><div><span>Onaylı</span><strong>{approvedCount}</strong><small>öğrenci akışına açık</small></div><div><span>Kitapta kullanılabilir</span><strong>{printableCount}</strong><small>telif filtresinden geçen</small></div><div><span>Aktif seviye</span><strong>6</strong><small>başlangıçtan olimpiyata</small></div></div>
       <div className="question-workspace">
