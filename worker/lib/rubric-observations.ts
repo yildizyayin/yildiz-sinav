@@ -20,6 +20,19 @@ const rubricJoin=`JOIN curriculum_versions cv ON cv.academic_year=se.academic_ye
 function bounded(value:unknown,min:number,max:number){if(typeof value!=='string'||value.trim().length<min||value.trim().length>max)throw new Error(`Metin ${min}–${max} karakter olmalıdır.`);return value.trim()}
 async function fingerprint(value:string){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));return Array.from(new Uint8Array(bytes)).map(x=>x.toString(16).padStart(2,'0')).join('')}
 
+/** Recheck every private exported record immediately before serving its part. */
+export async function authorizeRubricExportIds(env:Env,user:AuthUser,url:URL,ids:string[]){
+ const historical=url.searchParams.get('view')==='history';
+ if(historical&&!['SUPER_ADMIN','INSTITUTION_MANAGER','STUDENT','PARENT'].includes(user.role))return false;
+ const scope=access(user,'obs.subject_id'),studentId=url.pathname.split('/').pop()!;
+ const enrollmentId=url.searchParams.get('enrollmentId')||'',institutionScope=user.role==='SUPER_ADMIN'?(url.searchParams.get('institutionId')||''):'';
+ for(let offset=0;offset<ids.length;offset+=50){const chunk=ids.slice(offset,offset+50);
+  const rows=await all<any>(env.DB.prepare(`SELECT obs.id ${enrollmentJoin.replace('JOIN classes c',historical?'LEFT JOIN classes c':'JOIN classes c')} JOIN learning_rubric_observations obs ON obs.enrollment_id=e.id AND obs.student_id=e.student_id AND obs.institution_id=e.institution_id AND obs.season_id=e.season_id ${historical?'':'AND obs.class_id=e.class_id'} WHERE e.student_id=? AND ${historical?'1':activeContext} AND (${scope.sql}) ${enrollmentId?'AND e.id=?':''} ${institutionScope?'AND e.institution_id=?':''} AND obs.id IN (${chunk.map(()=>'?').join(',')}) AND NOT EXISTS(SELECT 1 FROM learning_rubric_observation_withdrawals w WHERE w.observation_id=obs.id)`).bind(studentId,...scope.params,...(enrollmentId?[enrollmentId]:[]),...(institutionScope?[institutionScope]:[]),...chunk));
+  if(rows.length!==chunk.length)return false;
+ }
+ return true;
+}
+
 export async function handleRubricObservations(request:Request,env:Env,user:AuthUser):Promise<Response|null>{
  const url=new URL(request.url);
  if(url.pathname==='/api/learning-observations/archive-students'){
