@@ -40,12 +40,13 @@ it('selects only new verified current tenant questions and permits seen question
 it('repeat scoring does not promote mastery or assignment completion',async()=>{
  const {submitCoachMiniTest}=await import('../worker/lib/coach-mastery-cycle');
  const writes:string[]=[];
- const test={id:'test',student_id:'student',status:'READY',selection_mode:'REPEAT',question_count:5,pass_threshold:.8,outcome_id:'outcome',assignment_id:'assignment'};
- const prepare=(sql:string,args:any[]=[]):any=>({sql,bind:(...values:any[])=>prepare(sql,values),
- first:async()=>sql.includes('coach_mini_tests')?test:null,
+ let receipt:any;
+ const test:any={id:'test',student_id:'student',status:'READY',selection_mode:'REPEAT',question_count:5,pass_threshold:.8,outcome_id:'outcome',assignment_id:'assignment'};
+ const prepare=(sql:string,args:any[]=[]):any=>({sql,args,bind:(...values:any[])=>prepare(sql,values),
+ first:async()=>sql.includes('FROM coach_mini_test_submissions')?receipt:sql.includes('coach_mini_tests')?test:null,
  all:async()=>({results:sql.includes('snapshot_json FROM coach_mini_test_questions')?Array.from({length:5},(_,i)=>({question_id:`q${i}`,snapshot_json:JSON.stringify({schemaVersion:1,question:{id:`q${i}`,stem_text:'stem',correct_answer:'A'},academicYear:'2026-2027',gradeLevel:7,enrollmentId:'enrollment',seasonId:'season',outcomeRefs:[{outcomeId:'outcome',subjectId:'math',curriculumVersionId:'version',academicYear:'2026-2027',gradeLevel:7,verified:1}]})})):[]}),
  run:async()=>{writes.push(sql);return{success:true}}});
- const env={DB:{prepare,batch:async(statements:any[])=>{for(const statement of statements)writes.push(statement.sql);return statements.map(()=>({success:true}))}}} as any;
+ const env={DB:{prepare,batch:async(statements:any[])=>{for(const statement of statements){writes.push(statement.sql);if(statement.sql.startsWith('INSERT OR IGNORE INTO coach_mini_test_submissions'))receipt={token:statement.args[0]};if(statement.sql.startsWith('UPDATE coach_mini_tests')){test.status=statement.args[0];test.correct_count=statement.args[1];}}return statements.map(()=>({success:true}))}}} as any;
  const result=await submitCoachMiniTest(env,{role:'STUDENT',id:'user',student_id:'student',institution_id:'school'} as any,'test',Array.from({length:5},(_,i)=>({questionId:`q${i}`,answer:'A'})));
  expect(result).toMatchObject({ok:true,result:{practiceOnly:true,masteryStatus:null,selectionMode:'REPEAT'}});
  expect(writes.some(sql=>sql.includes('student_outcome_mastery')||sql.includes('student_learning_state')||sql.includes('learning_evidence')||sql.includes('UPDATE assignment_items'))).toBe(false);
