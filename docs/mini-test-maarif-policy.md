@@ -1,5 +1,19 @@
 # Mini test: öğrenme çıktısı, yeni sorular ve isteğe bağlı tekrar
 
+## Güncel ek — 5 Ekim, içerik ve geri bildirim
+
+Yeni AI onayında dört kutuya ek olarak çıktı bağlantısı, dil/çeldirici ve benzer
+soru kararının gerekçesi saklanır. Aynı normalize seçenek metinleri reddedilir.
+Yeni mini test başlangıcı çıktı kodu/başlığını da saklar. Sabit birleşik raporda
+çıktı bazlı kanıt ve çalışma önerileri gösterilir; %80 çalışma eşiği MEB beceri
+standardı değildir. 0074 değişmez medya bütünlüğü uygulanmıştır; aşağıdaki eski
+'bayt arşivi yok' geliştirme notu artık güncel durumu anlatmaz. Gerçek medya ve
+sonradan eklenen bu özellikler için kabul testleri bekler.
+
+Resmî süreç/rubrik içeriği ve Türkçe model pilotu tamamlanmış değildir.
+Ayrıntılar: [Maarif kabul sözleşmesi](maarif-formative-quality-acceptance.md).
+
+
 Resmî dayanak: https://tymm.meb.gov.tr/olcme-degerlendirme (3 Ekim 2026).
 MEB aşamalı süreç bileşenlerini yoklama, biçimlendirici geri bildirim ve farklı
 öğrenme kanıtlarıyla değerlendirme ister. Çoktan seçmeli mini test bunlardan
