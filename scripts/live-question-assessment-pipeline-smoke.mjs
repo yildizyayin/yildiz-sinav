@@ -306,6 +306,11 @@ const generationRequest = { outcomeId: miniOutcomeId, expectedContext: jobContex
 await request('/api/question-bank-standard/generation-jobs', { method: 'POST', cookie: teacher, json: generationRequest, expected: 403 });
 const requestedJob = await request('/api/question-bank-standard/generation-jobs', { method: 'POST', cookie: admin, json: generationRequest, expected: 201 });
 assert(requestedJob.payload?.job?.status === 'REQUESTED' && requestedJob.payload.reused === false && requestedJob.payload.job.questionCount === 5, 'Generation request did not persist truthful requested state', requestedJob.payload);
+const runnerState = await request(`/api/question-bank-standard/generation-jobs?academicYear=${encodeURIComponent(miniScope.academicYear)}&status=REQUESTED`, { cookie: admin });
+assert(runnerState.payload?.executionEnabled === false, 'Isolated preview must keep real AI generation disabled', runnerState.payload);
+await request(`/api/question-bank-standard/generation-jobs/${encodeURIComponent(requestedJob.payload.job.id)}/run`, { method: 'POST', cookie: teacher, json: {}, expected: 403 });
+const disabledRun = await request(`/api/question-bank-standard/generation-jobs/${encodeURIComponent(requestedJob.payload.job.id)}/run`, { method: 'POST', cookie: admin, json: {}, expected: 503 });
+assert(disabledRun.payload?.error?.code === 'GENERATION_DISABLED', 'Run route did not enforce the default-off provider gate', disabledRun.payload);
 const replayedJob = await request('/api/question-bank-standard/generation-jobs', { method: 'POST', cookie: admin, json: generationRequest });
 assert(replayedJob.payload?.reused === true && replayedJob.payload.job?.id === requestedJob.payload.job.id, 'Generation request retry created another job', replayedJob.payload);
 await request('/api/question-bank-standard/generation-jobs', { method: 'POST', cookie: admin, json: { ...generationRequest, questionCount: 6 }, expected: 409 });
