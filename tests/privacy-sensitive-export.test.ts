@@ -35,8 +35,15 @@ describe('sensitive privacy export boundary', () => {
   });
 
   it('keeps the audited export wrapper in both deployment chains', () => {
-    expect(staging).toContain('"main": "./worker/privacy-smoke-entry.ts"');
+    expect(staging).toContain('"main": "./worker/preview-policy-staging-entry.ts"');
+
+    for (const mode of ['staging','production']) {
+      const readEntry = (name:string) => readFileSync(new URL('../worker/'+name+'.ts', import.meta.url), 'utf8');
+      expect(readEntry('preview-policy-'+mode+'-entry')).toContain("import app from './optical-print-policy-"+mode+"-entry'");
+      expect(readEntry('optical-print-policy-'+mode+'-entry')).toContain("import app from './whatsapp-webhook-policy-"+mode+"-entry'");
+      expect(readEntry('whatsapp-webhook-policy-'+mode+'-entry')).toContain("import app from './"+(mode==='staging'?'privacy-smoke-entry':'privacy-export-entry')+"'");
+    }
     expect(smokeSource).toContain("import app from './privacy-export-entry'");
-    expect(production).toContain('"main": "./worker/privacy-export-entry.ts"');
+    expect(production).toContain('"main": "./worker/preview-policy-production-entry.ts"');
   });
 });
