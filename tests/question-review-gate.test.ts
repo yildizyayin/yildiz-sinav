@@ -125,3 +125,31 @@ it('uploads explicit AI aliases into REVIEW while valid manual OWNED uploads ret
   }
  }finally{f.db.close();}
 });
+
+it('uses native D1 trigger-inclusive change counts without misreporting committed approval or allowing a stale write',async()=>{
+ const {Miniflare,convertV4MiniflareOptions}=await import('miniflare');
+ const mf=new Miniflare(convertV4MiniflareOptions({name:'question-review-gate',modules:true,script:'export default {fetch(){return new Response("ok")}}',compatibilityDate:'2026-09-01',d1Databases:['DB']}));
+ const f=setup();try{
+  const native=await mf.getD1Database('DB');
+  const tables=f.db.prepare("SELECT name,sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY rowid").all();
+  await native.batch(tables.map(t=>native.prepare(String(t.sql))));
+  for(const table of tables){const rows=f.db.prepare(`SELECT * FROM ${table.name}`).all();if(rows.length)await native.batch(rows.map(row=>native.prepare(`INSERT INTO ${table.name}(${Object.keys(row).join(',')}) VALUES(${Object.keys(row).map(()=>'?').join(',')})`).bind(...Object.values(row))));}
+  const triggers=f.db.prepare("SELECT sql FROM sqlite_master WHERE type='trigger' ORDER BY rowid").all();
+  await native.batch(triggers.map(t=>native.prepare(String(t.sql))));
+  const changes:number[]=[];let beforeWrite:(()=>Promise<void>)|undefined;
+  const wrap=(sql:string,statement:any):any=>({bind:(...args:any[])=>wrap(sql,statement.bind(...args)),first:statement.first.bind(statement),all:statement.all.bind(statement),run:async()=>{if(sql.startsWith('UPDATE question_bank')&&beforeWrite){const fn=beforeWrite;beforeWrite=undefined;await fn();}const r=await statement.run();changes.push(Number(r.meta.changes));return r;}});
+  const env={DB:{prepare:(sql:string)=>wrap(sql,native.prepare(sql))}} as any;
+  const body={status:'APPROVED',checks,expectedRevision:f.revision(),expectedContext:f.context()};
+  const approved=await standard.fetch(f.request(body,'/api/platform/questions/q/review'),env,{} as any);
+  expect(changes).toContain(2);expect(approved.status).toBe(200);
+  expect(await native.prepare("SELECT review_status FROM question_bank WHERE id='q'").first('review_status')).toBe('APPROVED');
+  expect((await standard.fetch(f.request(body),env,{} as any)).status).toBe(409);
+  expect((await standard.fetch(f.request({sourceLabel:'New human provenance'},'/api/question-bank-standard/q'),env,{} as any)).status).toBe(200);
+  expect(await native.prepare("SELECT review_status FROM question_bank WHERE id='q'").first('review_status')).toBe('REVIEW');
+  const expectedRevision=await native.prepare("SELECT review_revision FROM question_bank WHERE id='q'").first('review_revision');
+  beforeWrite=async()=>{await native.prepare("UPDATE question_bank SET solution_text='Concurrent edit' WHERE id='q'").run();};
+  const raced=await standard.fetch(f.request({...body,expectedRevision}),env,{} as any);
+  expect(raced.status).toBe(409);expect(changes.at(-1)).toBe(0);
+  expect(await native.prepare("SELECT review_status FROM question_bank WHERE id='q'").first('review_status')).toBe('REVIEW');
+ }finally{f.db.close();await mf.dispose();}
+},30000);
