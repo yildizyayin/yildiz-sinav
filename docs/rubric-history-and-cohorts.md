@@ -12,7 +12,7 @@ Pages contain up to 200 unwithdrawn observations with keyset `(observed_at DESC,
 
 CSV export walks all pages of the selected authorized scope from the beginning, with a 5000-observation cap. Exceeding the cap fails without downloading a partial CSV. The browser handles UTF-8 BOM, semicolon/quote/newline escaping and spreadsheet formula prefixes. Each row is a frozen rubric criterion with its selected level and observation evidence/feedback/next step. Withdrawal reasons and hidden records are not exported. No server/public artifact or message is created. Changing scope or unmounting suppresses download.
 
-Pagination/export are reads of mutable visibility, not a globally locked point-in-time snapshot. Concurrent publication or withdrawal can affect subsequent pages. Larger archive exports and a dedicated archived-student directory are separate pending work; the Reports student picker still follows its existing active-student/role rules. History for retained prior enrollments of a selectable student is supported.
+Pagination/export are reads of mutable visibility, not a globally locked point-in-time snapshot. Concurrent publication or withdrawal can affect subsequent pages. A separate archive directory lists authorized students with unwithdrawn observations, including departed/archived records, with 50-row keyset pagination. It is restricted to the same history roles; Super Admin must choose an institution and that scope is preserved in the selected history panel. Student/parent links and manager institution scope are checked at the server. The existing active-student picker remains separate. Larger background archive exports are pending.
 
 ## Institution/guidance rubric distribution
 
