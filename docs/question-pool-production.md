@@ -2,7 +2,8 @@
 
 5 Ekim 2026. Bu sürüm, ortak platform havuzunun doğrulanmış aktif çıktıları
 ne kadar karşıladığını ölçer ve eksikler için kalıcı üretim talepleri tutar.
-Soru üreten bir arka plan yürütücüsü veya Cloudflare Queue tüketicisi değildir.
+0073 ile manuel çalıştırılan kontrollü taslak yürütücüsü eklenmiştir. Cloudflare
+Queue tüketicisi veya arka plan cron üretimi yoktur; yürütücü varsayılan kapalıdır.
 
 ## Kapsam hesabı
 
@@ -29,7 +30,8 @@ kapsamındadır, öğrenci verisi döndürmez.
 
 ## Kalıcı talep
 
-0072 question_generation_jobs tablosu REQUESTED/CANCELLED durumlarını tutar.
+0072 question_generation_jobs tablosunu oluşturur; 0073 üretim durumlarını
+REQUESTED/RUNNING/REVIEW_READY/FAILED/CANCELLED olarak genişletir.
 POST /api/question-bank-standard/generation-jobs, çıktı kimliği, ekranda görülen
 CV/yıl/sınıf/ders/program bağlamı, 1..10 soru hedefi ve UUID requestKey ister.
 Doğrulanmış aktif bağlam hem okunurken hem koşullu INSERT sırasında kontrol
@@ -46,12 +48,15 @@ liste sağlar. PATCH /api/question-bank-standard/generation-jobs/:id/cancel
 iptal eder. Bütün işlemler Süper Admin içindir. Talep, üretilmiş veya onaylanmış
 soru değildir; ekran bunu açıkça belirtir.
 
-## Sonraki üretim adımı
+## Kontrollü yürütücü
 
-Yürütücü; talebi kiralayarak almalı, kaynak bağlamını yeniden doğrulamalı,
-sınırlı sayıda taslak üretmeli, çıktı şemasını/cevabı kontrol etmeli, tekrarları
-ayıklamalı ve kaynak talebiyle ilişkilendirerek AI_GENERATED + REVIEW olarak
-atomik kaydetmelidir. Sonra mevcut revizyon/bağlam tanıklı insan incelemesi
-kapısından geçmelidir. Süreç/rubrik görevleri ve anlamsal benzerlik ayrıca
-planlanacaktır. Bu sürüm model çağrısı, ücretli aktivasyon, otomatik onay veya
-üretim ortamı değişikliği yapmaz.
+POST /api/question-bank-standard/generation-jobs/:id/run, etkinleştirme açıkken
+Süper Admin tarafından çalıştırılır. Talebi kiralar, kaynak bağlamını yeniden
+doğrular, sınırlı sayıda taslak üretir ve geçerli çıktıları kaynak talebi/modeli
+ile ilişkilendirerek AI_GENERATED + REVIEW olarak atomik kaydeder. Sonra mevcut
+revizyon/bağlam tanıklı insan incelemesi kapısından geçilir. Otomatik onay yoktur.
+
+Başlangıç modeli GLM-4.7-Flash seçilmiştir. Kodun eklenmesi canlı üretim ayarını
+etkinleştirmez. Ayrıntılar: question-generation-runner.md. Türkçe içerik kalite
+pilotu, anlamsal tekrar kontrolü, süreç/rubrik görevleri ve arka plan otomasyonu
+ayrı işlerdir.
