@@ -1,5 +1,6 @@
 import { FrozenExamReport } from '../components/FrozenExamReport';
 import { FrozenPracticeReport } from '../components/FrozenPracticeReport';
+import { FrozenFoyGameReport } from '../components/FrozenFoyGameReport';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BarChart3, Download, Printer, RefreshCw, Target, TrendingUp, UserRound } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
@@ -102,6 +103,7 @@ export function Reports(){
 
     <FrozenExamReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
     <FrozenPracticeReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
+    <FrozenFoyGameReport key={`${scopeKey}-foy-game`} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
 
     {report.summary?<div className="kpi-grid" style={{marginBottom:20}}><Kpi label="Sınav" value={report.summary.exam_count}/><Kpi label="İlk Net" value={fmt(report.summary.first_net)}/><Kpi label="Son Net" value={fmt(report.summary.last_net)}/><Kpi label="Net Değişimi" value={`${report.summary.delta_net>0?'+':''}${fmt(report.summary.delta_net)}`}/><Kpi label="Ortalama Net" value={fmt(report.summary.average_net)}/></div>:<div className="alert info">Bu görünüm branş öğretmeni yetkisiyle sınırlandırılmıştır; toplam sınav neti yerine yalnız yetkili branş verileri gösterilir.</div>}
 
