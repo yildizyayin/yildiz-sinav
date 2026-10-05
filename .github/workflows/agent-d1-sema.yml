@@ -17,31 +17,14 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      - name: Migration sırası ve yerel D1 uygulaması
+      - name: Migration sürüm politikası ve yerel D1 uygulaması
         id: verify
         continue-on-error: true
         shell: bash
         run: |
           set +e
           : > agent-d1-report.md
-          node <<'NODE' >> agent-d1-report.md 2>&1
-          const fs = require('fs');
-          const files = fs.readdirSync('migrations').filter(name => name.endsWith('.sql')).sort();
-          const versions = new Map();
-          const duplicates = [];
-          for (const file of files) {
-            const version = file.split('_', 1)[0];
-            if (!/^\d+$/.test(version)) continue;
-            if (versions.has(version)) duplicates.push(`${version}: ${versions.get(version)} + ${file}`);
-            else versions.set(version, file);
-          }
-          console.log(`Migration dosyası: ${files.length}`);
-          if (duplicates.length) {
-            console.log('Tekrarlanan migration sürümleri:');
-            console.log(duplicates.join('\n'));
-            process.exitCode = 1;
-          } else console.log('Tekrarlanan migration sürümü bulunamadı.');
-          NODE
+          node scripts/check-migration-policy.mjs >> agent-d1-report.md 2>&1
           static_status=$?
           npm install --no-audit --no-fund >> agent-d1-report.md 2>&1
           install_status=$?
