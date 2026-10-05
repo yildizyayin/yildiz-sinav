@@ -1,7 +1,10 @@
+import {addFrozenOutcomeEvidence,finishFrozenOutcomes} from './frozen-outcome-summary';
+import type {FrozenOutcomeMap} from './frozen-outcome-summary';
 // Callers must authorize snapshots and narrow subject scope before returning
 // diagnostics. This reducer never joins current answers or current curricula.
 export function frozenExamReport(rows: any[], subjectIds: string[] | null) {
   const groups = new Map<string, any>();
+  const outcomeRows: FrozenOutcomeMap = new Map();
   let legacySnapshots = 0, excludedEvidence = 0;
   for (const row of rows) {
     let payload: any;
@@ -25,10 +28,12 @@ export function frozenExamReport(rows: any[], subjectIds: string[] | null) {
       }
       group[evidence.status.toLowerCase()]++;
       group.examIds.add(row.exam_id);
+      addFrozenOutcomeEvidence(outcomeRows, refs, evidence.status, group, Array.isArray(payload.outcomes) ? payload.outcomes : []);
     }
   }
   return {
     calculationPolicy: 'SELECTED_FROZEN_EXAM_QUESTION_ACCURACY_V1',
+    outcomes: finishFrozenOutcomes(outcomeRows),
     groups: [...groups.values()].map(({ examIds, ...group }) => {
       const count = group.correct + group.wrong + group.blank;
       return { ...group, examCount: examIds.size, evidenceCount: count, accuracyPercent: count ? Math.round(group.correct / count * 10000) / 100 : null };
