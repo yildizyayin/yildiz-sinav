@@ -54,7 +54,7 @@ jobs:
           auth="Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
           api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
 
-          bucket_json="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/r2/buckets?name=$(printf '%s' "$bucket" | jq -sRr @uri)")"
+          bucket_json="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/r2/buckets?per_page=1000&name_contains=$(printf '%s' "$bucket" | jq -sRr @uri)")"
           if ! jq -e --arg name "$bucket" '[.. | objects | select(.name? == $name)] | length > 0' <<<"$bucket_json" >/dev/null; then
             create_bucket="$(curl --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' \
               --data "$(jq -nc --arg name "$bucket" '{name:$name,location:"WEUR"}')" --write-out '\n%{http_code}' "$api/r2/buckets" || true)"
