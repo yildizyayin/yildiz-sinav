@@ -23,5 +23,5 @@ const cookie=(verified.response.headers.get('set-cookie')||'').match(/(anunex_re
 if(!cookie)throw new Error('Result session cookie missing');
 const check=await fetch(`${BASE}/api/public/results/student`,{headers:{cookie},redirect:'manual'});if(!check.ok)throw new Error(`Authenticated result summary preflight failed with ${check.status}`);
 const body=await check.json();if(!body?.ok||!Array.isArray(body.exams))throw new Error('Authenticated result summary has unexpected shape');
-if(process.env.GITHUB_ENV){appendFileSync(process.env.GITHUB_ENV,`RESULT_LOAD_COOKIE=${cookie}\n`)}else process.stdout.write(`${cookie}\n`);
+if(process.env.GITHUB_ENV){console.log(`::add-mask::${cookie}`);appendFileSync(process.env.GITHUB_ENV,`RESULT_LOAD_COOKIE=${cookie}\n`)}else process.stdout.write(`${cookie}\n`);
 console.log(`PASS: prepared one synthetic authenticated result session with ${body.exams.length} published exam summaries`);
