@@ -40,6 +40,7 @@ it('both review routes require explicit current-version AI review and validate r
   expect((await handlePlatformOps(f.request({status:'APPROVED'},'/api/platform/questions/q/review'),f.env,user))?.status).toBe(409);
   const payload=()=>({status:'APPROVED',checks,expectedRevision:f.revision(),expectedContext:f.context()});
   expect((await standard.fetch(f.request({status:'APPROVED',expectedRevision:f.revision()}),f.env,{} as any)).status).toBe(400);
+  expect((await standard.fetch(f.request({status:'APPROVED',expectedRevision:f.revision()},'/api/platform/questions/q/review'),f.env,{} as any)).status).toBe(400);
   f.db.exec(`UPDATE question_bank SET copyright_status='RESTRICTED' WHERE id='q'`);
   expect((await handlePlatformOps(f.request(payload(),'/api/platform/questions/q/review'),f.env,user))?.status).toBe(400);
   f.db.exec(`UPDATE question_bank SET copyright_status='OWNED',correct_answer='E' WHERE id='q'`);
