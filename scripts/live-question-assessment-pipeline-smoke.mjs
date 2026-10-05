@@ -247,7 +247,11 @@ for (const question of detail.payload.questions) {
   assert(answer, 'Mini-test selected a question without a known admin answer', { questionId: question.question_id });
   answers.push({ questionId: question.question_id, answer });
 }
-const miniTest = await request(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.payload.testId)}/submit`, { method: 'POST', cookie: student, json: { answers } });
+const duplicateSubmissions = await Promise.all([0, 1].map(() => request(`/api/nibiru/coach/mini-tests/${encodeURIComponent(started.payload.testId)}/submit`, { method: 'POST', cookie: student, json: { answers } })));
+assert(duplicateSubmissions.filter((item) => item.payload?.reused === false).length === 1 && duplicateSubmissions.filter((item) => item.payload?.reused === true).length === 1, 'Concurrent mini submissions did not produce exactly one durable winner', duplicateSubmissions.map((item) => item.payload));
+assert(duplicateSubmissions.every((item) => item.payload?.result?.status === 'PASSED' && item.payload.result.correct === detail.payload.questions.length), 'Concurrent mini submissions did not return the same persisted result', duplicateSubmissions.map((item) => item.payload));
+const miniTest = duplicateSubmissions[0];
+console.log('✓ Concurrent mini-test submission — one winner, stable reused result');
 assert(miniTest.payload?.result?.status === 'PASSED', 'Nibiru mini-test did not persist a passing measurement', miniTest.payload);
 const practiceDiscovery = await request(`/api/reporting/students/stu_a001/practice-runs?academicYear=${encodeURIComponent(miniScope.academicYear)}&limit=50`, { cookie: student });
 assert(practiceDiscovery.payload?.runs?.some((run) => run.id === submitted.payload.runId), 'Practice discovery did not return the authorized scored solution', practiceDiscovery.payload);
@@ -264,5 +268,27 @@ console.log('✓ Frozen mini-test report — native evidence and combined source
 const finalFeed = await request('/api/platform/assessment-feed', { cookie: student });
 assert(finalFeed.payload?.measurements?.some((measurement) => measurement.source_type === 'MINI_TEST' || measurement.sourceType === 'MINI_TEST'), 'Nibiru mini-test was not included in the unified assessment feed', finalFeed.payload);
 console.log('✓ Nibiru mini-test — visual content, scoring and unified measurement feed');
+
+// Explicit AI source is a synthetic declaration; no AI provider is called.
+const aiDraft = await request('/api/platform/questions', { method: 'POST', cookie: admin, expected: 201, json: {
+  stemText: `PR ${suffix} · AI human-review probe`, academicYear: miniScope.academicYear,
+  gradeLevel: miniScope.gradeLevel, subjectId: miniOutcome.subject_id, questionType: 'MULTIPLE_CHOICE',
+  contentMode: 'TEXT', optionCount: 4, options: optionSet(), correctAnswer: 'B',
+  solutionText: 'Synthetic approval-gate probe; no model-generated curriculum content.',
+  sourceLabel: `AI_REVIEW_PROBE_${suffix}`, copyrightStatus: 'OWNED', originKind: 'AI_GENERATED', nodeIds: [miniOutcomeId],
+} });
+assert(aiDraft.payload?.id && aiDraft.payload.reviewStatus === 'REVIEW', 'Explicit AI draft bypassed human review', aiDraft.payload);
+const aiList = await request(`/api/platform/questions?q=${encodeURIComponent(`PR ${suffix} · AI human-review probe`)}`, { cookie: admin });
+const aiQuestion = aiList.payload?.questions?.find(question => question.id === aiDraft.payload.id);
+assert(aiQuestion?.origin_kind === 'AI_GENERATED' && Number.isInteger(aiQuestion.review_revision) && aiQuestion.reviewContext?.length, 'AI draft revision/context is missing', aiQuestion);
+const reviewBody = { status: 'APPROVED', expectedRevision: aiQuestion.review_revision, expectedContext: aiQuestion.reviewContext };
+const unreviewed = await request(`/api/platform/questions/${aiQuestion.id}/review`, { method: 'PATCH', cookie: admin, json: reviewBody, expected: 400 });
+assert(unreviewed.payload?.error?.code === 'HUMAN_REVIEW_REQUIRED', 'Alternative review endpoint bypassed human checks', unreviewed.payload);
+const checks = { answerAndSolution: true, curriculum: true, ageAppropriate: true, originalityAndRights: true };
+const approvedAi = await request(`/api/question-bank-standard/${aiQuestion.id}/review`, { method: 'PATCH', cookie: admin, json: { ...reviewBody, checks } });
+assert(approvedAi.payload?.status === 'APPROVED', 'Reviewed AI draft was not approved', approvedAi.payload);
+const staleAi = await request(`/api/platform/questions/${aiQuestion.id}/review`, { method: 'PATCH', cookie: admin, json: { ...reviewBody, checks }, expected: 409 });
+assert(staleAi.payload?.error?.code === 'QUESTION_REVIEW_CHANGED', 'Stale AI revision was accepted', staleAi.payload);
+console.log('✓ AI human review gate — draft, mandatory checks, verified context, stale revision rejected');
 
 console.log('\nQuestion pool assessment pipeline staging smoke passed.');
