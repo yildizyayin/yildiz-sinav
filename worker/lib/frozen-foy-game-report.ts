@@ -1,3 +1,5 @@
+import {addFrozenOutcomeEvidence,finishFrozenOutcomes} from './frozen-outcome-summary';
+import type {FrozenOutcomeMap} from './frozen-outcome-summary';
 import type {AuthUser,Env} from '../types';
 import {all,forbidden,json,one} from './db';
 import {loadPermissionScope} from './permissions';
@@ -31,15 +33,18 @@ function selected(url:URL,key:string,max:number){
  return ids.length&&ids.length<=max&&ids.every(x=>x.length<=100)?ids:null;
 }
 function groupFoy(rows:any[]){
+ const outcomeRows: FrozenOutcomeMap = new Map();
  const groups=new Map<string,any>();let valid=0,invalid=0;
  for(const row of rows){
   if(Number(row.context_valid)!==1||!row.subject_id||!row.curriculum_version_id||!row.program_version){invalid++;continue;}valid++;
   const key=[row.subject_id,row.curriculum_version_id,row.academic_year,row.grade_level,row.program_version].join('\u001f');
   let g=groups.get(key);if(!g){g={subjectId:row.subject_id,subjectName:null,curriculumVersionId:row.curriculum_version_id,academicYear:row.academic_year,gradeLevel:Number(row.grade_level),programVersion:row.program_version,correct:0,wrong:0,blank:0,evidenceCount:0,accuracy:null};groups.set(key,g);}
+  let refs:any;try{refs=JSON.parse(row.outcome_refs_json||'[]')}catch{refs=[]}
+  if(Array.isArray(refs))addFrozenOutcomeEvidence(outcomeRows,refs,row.result_status,g);
   g.evidenceCount++;if(row.result_status==='CORRECT')g.correct++;else if(row.result_status==='WRONG')g.wrong++;else g.blank++;
  }
  for(const g of groups.values()){const denom=g.correct+g.wrong+g.blank;g.accuracy=denom?Math.round((g.correct/denom)*10000)/100:null;}
- return{groups:[...groups.values()].sort((a,b)=>String(a.subjectId).localeCompare(String(b.subjectId))),validEvidenceCount:valid,invalidEvidenceCount:invalid};
+ return{outcomes:finishFrozenOutcomes(outcomeRows),groups:[...groups.values()].sort((a,b)=>String(a.subjectId).localeCompare(String(b.subjectId))),validEvidenceCount:valid,invalidEvidenceCount:invalid};
 }
 function groupGames(rows:any[]){
  const groups=new Map<string,any>();let valid=0,invalid=0;
@@ -55,7 +60,7 @@ function groupGames(rows:any[]){
 async function foyReport(env:Env,user:AuthUser,studentId:string,url:URL){
  const a=await access(env,user,studentId);if(!a.allowed)return forbidden();const year=url.searchParams.get('academicYear')||'',ids=selected(url,'runIds',50);if(!yearOk(year)||!ids)return fail(400,'REPORT_SELECTION_INVALID','Eğitim yılı ve en fazla 50 föy çözüm kaydı seçin.');
  const params:any[]=[studentId,a.institutionId,year,...ids];let subject='';if(a.subjectFilter){subject=` AND subject_id IN (${a.subjectFilter.map(()=>'?').join(',')})`;params.push(...a.subjectFilter);}if(['TEACHER','GUIDANCE_TEACHER'].includes(user.role)){subject+=' AND season_id=?';params.push(a.seasonId);}if(params.length>100)return fail(400,'REPORT_SCOPE_TOO_LARGE','Rapor kapsamı sınırı aşıyor. Seçimi daraltın.');
- const rows=await all<any>(env.DB.prepare(`SELECT run_id,response_id,academic_year,grade_level,subject_id,curriculum_version_id,program_version,result_status,context_valid,observed_at FROM frozen_foy_response_evidence WHERE student_id=? AND institution_id=? AND academic_year=? AND run_id IN (${ids.map(()=>'?').join(',')})${subject} ORDER BY observed_at,response_id LIMIT 1001`).bind(...params));
+ const rows=await all<any>(env.DB.prepare(`SELECT run_id,response_id,academic_year,grade_level,subject_id,curriculum_version_id,program_version,outcome_refs_json,result_status,context_valid,observed_at FROM frozen_foy_response_evidence WHERE student_id=? AND institution_id=? AND academic_year=? AND run_id IN (${ids.map(()=>'?').join(',')})${subject} ORDER BY observed_at,response_id LIMIT 1001`).bind(...params));
  if(rows.length>1000)return fail(409,'REPORT_SOURCE_AMBIGUOUS','Seçili föy kanıtı güvenli sınırı aşıyor. Seçimi daraltın.');const report=groupFoy(rows),present=new Set(rows.map(r=>r.run_id));
  return json({ok:true,sourceTypes:['FOY'],policy:'FROZEN_FOY_RESPONSE_CONTEXT_V1',academicYear:year,selectedRunIds:ids,restrictedToSubjects:a.restricted,...report,coverage:{selectedRunCount:ids.length,availableRunCount:present.size,validEvidenceCount:report.validEvidenceCount,invalidEvidenceCount:report.invalidEvidenceCount},unavailableRunIds:a.restricted?[]:ids.filter(id=>!present.has(id)),officialScore:null,nationalRank:null,message:'Föy doğruluğu yalnız çözüm anında dondurulmuş, doğrulanmış program bağlamından hesaplanır. Eski veya bağlamsız kayıtlar akademik metriğe katılmaz.'});
 }
