@@ -1,5 +1,16 @@
 # Kontrollü soru taslağı üretimi
 
+## Güncel kalite ekleri — 5 Ekim
+
+Prompt açık Türkçe, sınıfa uygun dil, gerekçeli tek doğru cevap/çeldirici,
+çözüm adımları ve yalnız doğrulanmış çıktı bağlamını ister. Aynı normalize
+seçenekler şema/MC doğrulamasında reddedilir. Gerçek pedagojik doğruluk ve
+semantik özgünlük insan incelemesine bağlıdır. Onay için dört kontrol ve
+revizyon/program tanığı yanında zorunlu qualityReview gerekçeleri kaydedilir.
+Varsayılan kapalı model ayarı değiştirilmedi; gerçek pilot yapılmadı. Yeni kod
+henüz test edilmedi. [Kabul ve pilot planı](maarif-formative-quality-acceptance.md).
+
+
 Seçilen başlangıç modeli: `@cf/zai-org/glm-4.7-flash`. Cloudflare'ın çok dilli
 metin üretimi ve yapılandırılmış cevap arayüzü bulunan modeli olarak tercih
 edildi. Türkçe eğitim içeriği kalitesi için gerçek üretim pilotu henüz
