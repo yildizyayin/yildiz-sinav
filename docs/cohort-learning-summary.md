@@ -24,7 +24,7 @@ Source breakdowns show eligible question counts. Mini-game session/score/duratio
 
 At most five batch queries are used, not a per-student query chain. Each source fetches up to 5001 rows and rejects >5000; combined groups reject >500. No silently truncated report is returned. This is an interactive bounded report, not a million-student export. Institution-wide scopes beyond the cap need a separately designed partitioned/background export; the current UI can choose narrower dates/fewer sources and guidance can choose its class.
 
-Coverage shows admitted source row counts and reducer exclusions/repeated practice counts. Rows with missing/unverifiable frozen year/enrollment context cannot enter the scoped dataset and are not claimed as counted legacy exclusions. Cohort outcome feedback and rubric distributions are not included in this summary.
+Coverage shows admitted source row counts and reducer exclusions/repeated practice counts. Rows with missing/unverifiable frozen year/enrollment context cannot enter the scoped dataset and are not claimed as counted legacy exclusions. Cohort outcome feedback is now included, separated by enrollment class/grade and frozen outcome context, with source breakdowns, participating enrollment counts and frozen-label conflict handling. Outcome rows are not summed into subject totals. More than 1000 outcome groups rejects the report. Rubric distributions remain in their separate rubric-summary panel.
 
 ## Final-stage acceptance
 
