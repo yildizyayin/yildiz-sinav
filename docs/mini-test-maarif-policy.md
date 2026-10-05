@@ -78,3 +78,11 @@ havuz sayısı öğrencinin henüz görmediği soru sayısı değildir.
 REQUESTED üretim talepleri saklanır. Arka plan model yürütücüsü henüz bağlı
 değildir; talep oluşturmak soru üretmek veya onaylamak anlamına gelmez.
 Ayrıntılar: question-pool-production.md.
+
+## 5 Ekim: kontrollü taslak yürütücüsü
+
+0073 ile talep kiralama, sınırlı üretim denemesi, bağlamı yeniden doğrulama ve
+AI_GENERATED + REVIEW taslaklarını kaynak talebi/modeliyle atomik kaydetme
+yapısı eklenir. Başlangıç modeli GLM-4.7-Flash'tır; yürütücü varsayılan kapalıdır.
+Model seçimi sınırsız özgün içerik veya pedagojik doğruluk garantisi değildir.
+İnsan onayı olmadan taslaklar öğrenci havuzuna alınmaz.
