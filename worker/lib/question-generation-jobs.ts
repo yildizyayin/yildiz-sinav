@@ -15,17 +15,23 @@ type JobRow = {
   id: string; request_key: string; outcome_id: string; curriculum_version_id: string;
   academic_year: string; grade_level: number; subject_id: string; program_version: string;
   outcome_code: string | null; outcome_title: string; question_count: number;
-  status: 'REQUESTED' | 'CANCELLED'; created_at: string; cancelled_at: string | null;
+  status: 'REQUESTED' | 'RUNNING' | 'REVIEW_READY' | 'FAILED' | 'CANCELLED'; created_at: string; cancelled_at: string | null;
+  attempt_count: number; generated_count: number; lease_until: string | null; error_code: string | null; completed_at: string | null;
 };
 
 function error(status: number, code: string, message: string): Response {
   return json({ ok: false, error: { code, message } }, status);
 }
-function dto(row: JobRow) {
+export function questionGenerationEnabled(env: Env): boolean {
+  return env.QUESTION_GENERATION_ENABLED === 'true' && !!env.AI;
+}
+export function generationJobDto(row: JobRow) {
   return {
     id: row.id, outcomeId: row.outcome_id, status: row.status,
     questionCount: row.question_count, createdAt: row.created_at,
-    cancelledAt: row.cancelled_at,
+    cancelledAt: row.cancelled_at, attemptCount: row.attempt_count,
+    generatedCount: row.generated_count, leaseUntil: row.lease_until,
+    errorCode: row.error_code, completedAt: row.completed_at,
     context: {
       curriculumVersionId: row.curriculum_version_id, academicYear: row.academic_year,
       gradeLevel: row.grade_level, subjectId: row.subject_id,
@@ -34,7 +40,8 @@ function dto(row: JobRow) {
     },
   };
 }
-const fields = `id,request_key,outcome_id,curriculum_version_id,academic_year,grade_level,subject_id,program_version,outcome_code,outcome_title,question_count,status,created_at,cancelled_at`;
+export const generationJobFields = `id,request_key,outcome_id,curriculum_version_id,academic_year,grade_level,subject_id,program_version,outcome_code,outcome_title,question_count,status,created_at,cancelled_at,attempt_count,generated_count,lease_until,error_code,completed_at`;
+const fields = generationJobFields;
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function validYear(year: unknown): year is string {
   if (typeof year !== 'string' || !/^\d{4}-\d{4}$/.test(year)) return false;
@@ -67,7 +74,7 @@ async function createJob(request: Request, env: Env, user: AuthUser): Promise<Re
   const expected = body.expectedContext as RequestContext;
   const prior = await existingKey(env, body.requestKey);
   if (prior) return samePayload(prior, body.outcomeId, expected, body.questionCount)
-    ? json({ ok: true, job: dto(prior), reused: true })
+    ? json({ ok: true, job: generationJobDto(prior), reused: true })
     : error(409, 'REQUEST_KEY_CONFLICT', 'İstek anahtarı farklı bir istek için kullanıldı.');
 
   // The displayed context is an optimistic witness. The INSERT repeats every
@@ -99,15 +106,15 @@ async function createJob(request: Request, env: Env, user: AuthUser): Promise<Re
     expected.subjectId,expected.programVersion,source.outcomeCode,source.outcomeTitle).run();
   if (Number(inserted.meta?.changes || 0) > 0) {
     const job = await one<JobRow>(env.DB.prepare(`SELECT ${fields} FROM question_generation_jobs WHERE id=?`).bind(id));
-    return json({ ok: true, job: dto(job!), reused: false }, 201);
+    return json({ ok: true, job: generationJobDto(job!), reused: false }, 201);
   }
   // UNIQUE constraints resolve races deterministically: the same key can be
   // retried; a different key cannot silently change an active job's quantity.
   const byKey = await existingKey(env, body.requestKey);
   if (byKey) return samePayload(byKey,body.outcomeId,expected,body.questionCount)
-    ? json({ ok: true, job: dto(byKey), reused: true })
+    ? json({ ok: true, job: generationJobDto(byKey), reused: true })
     : error(409, 'REQUEST_KEY_CONFLICT', 'İstek anahtarı farklı bir istek için kullanıldı.');
-  const active = await one<JobRow>(env.DB.prepare(`SELECT ${fields} FROM question_generation_jobs WHERE outcome_id=? AND curriculum_version_id=? AND status='REQUESTED'`).bind(body.outcomeId,expected.curriculumVersionId));
+  const active = await one<JobRow>(env.DB.prepare(`SELECT ${fields} FROM question_generation_jobs WHERE outcome_id=? AND curriculum_version_id=? AND status IN ('REQUESTED','RUNNING','FAILED')`).bind(body.outcomeId,expected.curriculumVersionId));
   if (active) return error(409, 'GENERATION_JOB_ACTIVE', 'Bu kazanım ve müfredat sürümü için zaten etkin bir istek var.');
   return error(409, 'GENERATION_CONTEXT_CHANGED', 'Kazanım veya doğrulanmış müfredat bağlamı değişti. Listeyi yenileyin.');
 }
@@ -122,7 +129,7 @@ async function listJobs(request: Request, env: Env): Promise<Response> {
   const limit = rawLimit === null ? 20 : Number(rawLimit);
   if (!validYear(academicYear)
     || (outcomeId !== null && (!outcomeId || outcomeId.length > 100))
-    || (status !== null && status !== 'REQUESTED' && status !== 'CANCELLED')
+    || (status !== null && !['REQUESTED','RUNNING','REVIEW_READY','FAILED','CANCELLED'].includes(status))
     || (cursor !== null && (!cursor || cursor.length > 100))
     || (rawLimit !== null && !/^[1-9][0-9]*$/.test(rawLimit))
     || !Number.isInteger(limit) || limit < 1 || limit > 50)
@@ -132,7 +139,7 @@ async function listJobs(request: Request, env: Env): Promise<Response> {
       AND (? IS NULL OR status=?) AND id>?
     ORDER BY id LIMIT ?`).bind(academicYear,outcomeId,outcomeId,status,status,cursor || '',limit + 1));
   const page = rows.slice(0,limit);
-  return json({ ok: true, jobs: page.map(dto), nextCursor: rows.length > limit ? page.at(-1)!.id : null });
+  return json({ ok: true, jobs: page.map(generationJobDto), nextCursor: rows.length > limit ? page.at(-1)!.id : null, executionEnabled: questionGenerationEnabled(env) });
 }
 
 async function cancelJob(env: Env, user: AuthUser, id: string): Promise<Response> {
@@ -140,10 +147,11 @@ async function cancelJob(env: Env, user: AuthUser, id: string): Promise<Response
   // The conditional UPDATE is the sole transition; replaying a cancellation is
   // safe and does not alter its original actor or timestamp.
   await env.DB.prepare(`UPDATE question_generation_jobs SET status='CANCELLED',
-    cancelled_at=CURRENT_TIMESTAMP,cancelled_by=? WHERE id=? AND status='REQUESTED'`).bind(user.id,id).run();
+    cancelled_at=CURRENT_TIMESTAMP,cancelled_by=?,lease_token=NULL,lease_until=NULL,error_code=NULL
+    WHERE id=? AND status IN ('REQUESTED','RUNNING','FAILED')`).bind(user.id,id).run();
   const row = await one<JobRow>(env.DB.prepare(`SELECT ${fields} FROM question_generation_jobs WHERE id=?`).bind(id));
   if (!row) return error(404, 'GENERATION_JOB_NOT_FOUND', 'İstek bulunamadı.');
-  return json({ ok: true, job: dto(row) });
+  return json({ ok: true, job: generationJobDto(row) });
 }
 
 /** A route helper: null means this URL belongs to another worker handler. */
