@@ -1,6 +1,7 @@
 import type { AuthUser,Env } from '../types';
 import { all,badRequest,forbidden,json,notFound,one } from './db';
 import { hydrateQuestionMedia } from './question-content';
+import { reviewQuestionWithGate } from './question-review';
 
 async function canUseDocument(env:Env,user:AuthUser,id:string){
   const row=await one<any>(env.DB.prepare(`SELECT institution_id,created_by FROM studio_documents WHERE id=?`).bind(id));
@@ -22,10 +23,6 @@ async function studioDocument(env:Env,user:AuthUser,id:string){
 
 function parseJson(v:any,f:any){if(typeof v!=='string'||!v)return f;try{return JSON.parse(v)}catch{return f}}
 
-async function reviewQuestion(request:Request,env:Env,user:AuthUser,id:string){
-  if(user.role!=='SUPER_ADMIN')return forbidden();const b:any=await request.json().catch(()=>({}));const status=String(b.status||'APPROVED').toUpperCase();if(!['APPROVED','REJECTED','DRAFT','ARCHIVED'].includes(status))return badRequest('Geçersiz inceleme durumu.');const q=await one<any>(env.DB.prepare(`SELECT id FROM question_bank WHERE id=?`).bind(id));if(!q)return notFound('Soru bulunamadı.');await env.DB.prepare(`UPDATE question_bank SET review_status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(status,id).run();return json({ok:true,id,status});
-}
-
 async function generateQuestion(request:Request,env:Env,user:AuthUser){
   if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden();
   const b:any=await request.json().catch(()=>({}));const prompt=String(b.prompt||'').trim();if(!prompt)return badRequest('Soru üretim talimatı gereklidir.');
@@ -39,7 +36,7 @@ async function generateQuestion(request:Request,env:Env,user:AuthUser){
 export async function handlePlatformOps(request:Request,env:Env,user:AuthUser):Promise<Response|null>{
   const p=new URL(request.url).pathname;
   let m=p.match(/^\/api\/platform\/studio\/([^/]+)$/);if(m&&request.method==='GET')return studioDocument(env,user,m[1]);
-  m=p.match(/^\/api\/platform\/questions\/([^/]+)\/review$/);if(m&&request.method==='PATCH')return reviewQuestion(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/questions\/([^/]+)\/review$/);if(m&&request.method==='PATCH')return reviewQuestionWithGate(request,env,user,m[1]);
   if(p==='/api/platform/questions/generate'&&request.method==='POST')return generateQuestion(request,env,user);
   return null;
 }
