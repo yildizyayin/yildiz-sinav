@@ -1,6 +1,10 @@
 export type Role = 'SUPER_ADMIN' | 'INSTITUTION_MANAGER' | 'TEACHER' | 'GUIDANCE_TEACHER' | 'STUDENT' | 'PARENT';
 
 export interface Env {
+  REPORT_EXPORTS_ENABLED?: string;
+  REPORT_EXPORT_QUEUE?: Queue;
+  REPORT_EXPORT_QUEUE_NAME?: string;
+  REPORT_EXPORT_FILES?: R2Bucket;
   DB: D1Database;
   FILES: R2Bucket;
   RESULT_ARTIFACTS_ENABLED?: string;
