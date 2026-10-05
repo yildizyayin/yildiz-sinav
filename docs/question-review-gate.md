@@ -1,5 +1,17 @@
 # Soru incelemesi ve kaynak beyanı
 
+## Güncel ek — 5 Ekim, gerekçeli içerik incelemesi
+
+AI onayı zorunlu qualityReview alanını da ister: outcomeAlignment,
+languageAndDistractors ve duplicateRationale için 20–1000 karakter; karar
+NO_REPETITION_FOUND veya DISTINCT_APPLICATION. JSON içinde schemaVersion=1
+ile inceleyen ve zamanına bağlı saklanır, yönetim ekranında gösterilir. Revizyon
+ve program tanığı korunur. Aynı normalize seçenek metinleri reddedilir. Bunlar
+insan beyanıdır; otomatik anlamsal benzersizlik veya resmî Maarif rubriği değildir.
+Yeni sözleşme test edilmedi; eski test/smoke onay payloadları son doğrulamada
+uyarlanmalıdır. [Kabul ve pilot planı](maarif-formative-quality-acceptance.md).
+
+
 Açıkça AI/AI_GENERATED/AI_DRAFT/NIBIRU/NIBIRU_AI kaynağıyla girilen soru
 AI_GENERATED olarak saklanır ve otomatik öğrenci havuzuna alınmaz. Geçerli
 MANUAL OWNED Süper Admin yükleme davranışı korunur. AI kaynağı metadata
