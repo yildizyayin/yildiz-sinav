@@ -1,3 +1,4 @@
+import {CohortRubricSummary} from './CohortRubricSummary';
 import {CohortLearningSummary} from './CohortLearningSummary';
 import {useRef,useState} from 'react';
 import {api,qs} from '../api';
@@ -39,5 +40,6 @@ export function InstitutionFrozenReport({institutionId,classScope}:{institutionI
   {error?.key===key&&<div className="alert error" role="alert">{error.message}</div>}
   {result&&<><p>{result.message}</p><div style={{overflowX:'auto'}}><table><thead><tr><th>Sınav</th><th>Sınıf</th><th>Katılım</th><th>Kullanılan / eksik kanıt</th><th>Ortalama net</th><th>Doğruluk</th></tr></thead><tbody>{(result.groups||[]).map((group:any)=><tr key={JSON.stringify([group.examId,group.snapshotVersion,group.gradeLevel,group.className])}><td>{exams.find(exam=>exam.examId===group.examId)?.title||'Sınav'}<br/><small>Yayın sürümü {group.snapshotVersion}</small></td><td>{group.className||'Sınıf bilgisi yok'}</td><td>{group.participantCount}</td><td>{group.usableCount} / {group.unusableCount}</td><td>{group.averageNet==null?'—':Number(group.averageNet).toFixed(2)}</td><td>{group.accuracyPercent==null?'—':`%${Number(group.accuracyPercent).toFixed(1)}`}</td></tr>)}</tbody></table></div>{!result.groups?.length&&<div className="empty">Seçili sınavlarda bu kurum ve yıl için yayınlanmış rapor kanıtı bulunmuyor.</div>}</>}
   <CohortLearningSummary institutionId={institutionId} academicYear={year} examIds={ids} classId={classScope?.id}/>
+  <CohortRubricSummary institutionId={institutionId} academicYear={year} classId={classScope?.id}/>
  </section>;
 }
