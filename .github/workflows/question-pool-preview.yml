@@ -62,8 +62,8 @@ jobs:
           fi
           test -n "$db_id" || (echo "PR D1 database could not be resolved" >&2 && exit 1)
 
-          bucket_response="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/r2/buckets?name=$(printf '%s' "$bucket_name" | jq -sRr @uri)")"
-          bucket_exists="$(jq -r --arg name "$bucket_name" '((.result // .) | map(select(type == "object" and (.name // "") == $name)) | length)' <<<"$bucket_response")"
+          bucket_response="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/r2/buckets?per_page=1000&name_contains=$(printf '%s' "$bucket_name" | jq -sRr @uri)")"
+          bucket_exists="$(jq -r --arg name "$bucket_name" 'if .success != true then error("R2 list failed") else (.result | if type == "object" then .buckets else . end | if type != "array" then error("R2 list shape invalid") else map(select(type == "object" and (.name // "") == $name)) | length end) end' <<<"$bucket_response")"
           if [ "$bucket_exists" = "0" ]; then
             create_response="$(curl --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' --data "$(jq -nc --arg name "$bucket_name" '{name:$name,location:"WEUR"}')" --write-out '\n%{http_code}' "$api/r2/buckets" || true)"
             create_status="$(tail -n1 <<<"$create_response")"
