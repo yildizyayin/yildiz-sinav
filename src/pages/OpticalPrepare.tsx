@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CheckCircle2, Printer, RefreshCw, Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
 import { api, ApiError, qs } from "../api";
@@ -36,57 +36,54 @@ export function OpticalPrepare() {
   const [examId, setExamId] = useState("");
   const [bookletSet, setBookletSet] = useState("");
   const [sort, setSort] = useState("number");
-  const [data, setData] = useState<any>(null);
+  const [rawData, setData] = useState<any>(null);
   const [selected, setSelected] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const scope = `${user?.id || ""}:${user?.role || ""}:${user?.role === "SUPER_ADMIN" ? institutionId : user?.institution_id || ""}`;
+  const scopeRef = useRef(scope); scopeRef.current = scope;
+  const generation = useRef(0);
+  const prepareGeneration = useRef(0);
+  const preparedKey = JSON.stringify([scope, classId, templateId, profileId, examId, bookletSet, sort]);
+  const preparedKeyRef = useRef(preparedKey); preparedKeyRef.current = preparedKey;
+  const data = rawData?._selectionKey === preparedKey ? rawData : null;
   useEffect(() => {
-    void api<any>("/api/optical-templates")
-      .then((t) => {
-        const list = (t.templates || []).filter((x: any) => x.has_print);
-        setTemplates(list);
-        if (list[0]) setTemplateId(list[0].version_id);
-      })
-      .catch((e) => setError(e.message));
-    if (user?.role === "SUPER_ADMIN")
-      void api<any>("/api/institutions")
-        .then((r) => {
-          setInstitutions(r.institutions || []);
-          if (r.institutions?.[0]) setInstitutionId(r.institutions[0].id);
-        })
-        .catch((e) => setError(e.message));
-  }, [user?.role]);
+    let cancelled = false;
+    if (user?.role === "SUPER_ADMIN") void api<any>("/api/institutions").then((r) => {
+      if (cancelled) return;
+      setInstitutions(r.institutions || []);
+      setInstitutionId(r.institutions?.[0]?.id || "");
+    }).catch((e) => { if (!cancelled) setError(e.message); });
+    return () => { cancelled = true; };
+  }, [user?.id, user?.role]);
   const loadScope = async () => {
-    setData(null);
-    setSelected([]);
-    setError("");
+    const key = scope, attempt = ++generation.current;
+    ++prepareGeneration.current;
+    setBusy(false); setData(null); setSelected([]); setError("");
+    setClasses([]); setTemplates([]); setExams([]); setProfiles([]); setCalibrations([]);
+    setClassId(""); setTemplateId(""); setProfileId(""); setExamId(""); setBookletSet("");
+    if (!user || (user.role === "SUPER_ADMIN" && !institutionId)) return;
     try {
-      const suffix = qs({
-        institutionId: user?.role === "SUPER_ADMIN" ? institutionId : null,
-      });
-      const [c, e, p, cal] = await Promise.all([
-        api<any>(`/api/classes${suffix}`),
-        api<any>(`/api/exams${suffix}`),
-        api<any>(`/api/printer-profiles${suffix}`),
-        api<any>(`/api/calibrations${suffix}`),
+      const suffix = qs({ institutionId: user.role === "SUPER_ADMIN" ? institutionId : null });
+      const [c, e, p, cal, t] = await Promise.all([
+        api<any>(`/api/classes${suffix}`), api<any>(`/api/exams${suffix}`),
+        api<any>(`/api/printer-profiles${suffix}`), api<any>(`/api/calibrations${suffix}`),
+        api<any>(`/api/optical-templates${suffix}`),
       ]);
-      setClasses(c.classes || []);
-      setExams(e.exams || []);
-      setProfiles(p.profiles || []);
-      setCalibrations(cal.calibrations || []);
-      setClassId(c.classes?.[0]?.id || "");
-      setProfileId((cur) =>
-        (p.profiles || []).some((x: any) => x.id === cur)
-          ? cur
-          : p.profiles?.[0]?.id || "",
-      );
+      if (scopeRef.current !== key || generation.current !== attempt) return;
+      const list = (t.templates || []).filter((x: any) => x.has_print);
+      setTemplates(list); setTemplateId(list[0]?.version_id || "");
+      setClasses(c.classes || []); setExams(e.exams || []);
+      setProfiles(p.profiles || []); setCalibrations(cal.calibrations || []);
+      setClassId(c.classes?.[0]?.id || ""); setProfileId(p.profiles?.[0]?.id || "");
     } catch (e: any) {
-      setError(e.message);
+      if (scopeRef.current === key && generation.current === attempt) setError(e.message);
     }
   };
   useEffect(() => {
-    if (user?.role !== "SUPER_ADMIN" || institutionId) void loadScope();
-  }, [institutionId, user?.role]);
+    void loadScope();
+    return () => { ++generation.current; ++prepareGeneration.current; };
+  }, [scope]);
   useEffect(() => {
     if (!templateId || !profiles.length) return;
     const ready = calibrations.find(
@@ -107,18 +104,20 @@ export function OpticalPrepare() {
   const calibrationReady = isPrintCalibrationReady(calibration);
   const correction = calibrationCorrection(calibration);
   const load = async () => {
+    const key = preparedKey, attempt = ++prepareGeneration.current;
     setBusy(true);
     setError("");
     try {
       const r = await api<any>(
         `/api/optical-prepare${qs({ institutionId: user?.role === "SUPER_ADMIN" ? institutionId : null, classId, templateVersionId: templateId, examId: examId || null, bookletSet: bookletSet || null, sort })}`,
       );
-      setData(r);
+      if (preparedKeyRef.current !== key || prepareGeneration.current !== attempt) return;
+      setData({ ...r, _selectionKey: key });
       setSelected(r.students.map((s: any) => s.id));
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : "Optikler hazırlanamadı.");
+      if (preparedKeyRef.current === key && prepareGeneration.current === attempt) setError(e instanceof ApiError ? e.message : "Optikler hazırlanamadı.");
     } finally {
-      setBusy(false);
+      if (prepareGeneration.current === attempt) setBusy(false);
     }
   };
   const students = useMemo(
@@ -188,6 +187,7 @@ export function OpticalPrepare() {
     );
   };
   const printNow = () => {
+    if (!data || !students.length) return;
     if (!calibrationReady) {
       setError(
         "Bu yazıcı + optik kombinasyonu kalibre edilmeden hassas optik baskısı başlatılamaz. Önce Kalibrasyon ekranını tamamlayın.",
