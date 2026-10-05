@@ -3,6 +3,7 @@ import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { json,one,all } from './lib/db';
 import { legacyDifficulty, normalizeDifficultyLevel } from './lib/question-bank';
+import { reviewQuestionWithGate,normalizeQuestionOrigin,isAiQuestionOrigin,validMultipleChoiceQuestion } from './lib/question-review';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
 
@@ -16,20 +17,17 @@ async function stats(env:Env){
 
 async function reviewQuestion(request:Request,env:Env,id:string){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(user.role!=='SUPER_ADMIN')return fail(403,'SUPER_ADMIN_ONLY','Soru onayını yalnız Süper Admin yapabilir.');
- const body:any=await request.json().catch(()=>({}));const status=String(body.status||'').toUpperCase();if(!['APPROVED','REJECTED','REVIEW','DRAFT'].includes(status))return fail(400,'INVALID_STATUS','Geçersiz inceleme durumu.');
- const q=await one<any>(env.DB.prepare(`SELECT id,copyright_status FROM question_bank WHERE id=? AND review_status<>'ARCHIVED'`).bind(id));if(!q)return fail(404,'QUESTION_NOT_FOUND','Soru bulunamadı.');
- if(status==='APPROVED'&&!['OWNED','LICENSED','PUBLIC_DOMAIN','USER_PROVIDED'].includes(q.copyright_status))return fail(400,'COPYRIGHT_BLOCKED','Kısıtlı telif durumundaki soru basılabilir havuza onaylanamaz.');
- await env.DB.prepare(`UPDATE question_bank SET review_status=?,reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,rejection_note=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(status,user.id,status==='REJECTED'?String(body.note||'').trim()||null:null,id).run();
- return json({ok:true,id,status});
+ return reviewQuestionWithGate(request,env,user,id);
 }
 
 async function patchQuestion(request:Request,env:Env,id:string){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
  const q=await one<any>(env.DB.prepare(`SELECT * FROM question_bank WHERE id=?`).bind(id));if(!q)return fail(404,'QUESTION_NOT_FOUND','Soru bulunamadı.');
  const can=user.role==='SUPER_ADMIN'||(q.owner_type==='INSTITUTION'&&q.owner_id===user.institution_id&&['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role));if(!can)return fail(403,'FORBIDDEN','Bu soruyu düzenleyemezsiniz.');
- const body:any=await request.json().catch(()=>({}));const copyright=body.copyrightStatus||q.copyright_status;const allowed=['OWNED','LICENSED','PUBLIC_DOMAIN','USER_PROVIDED','RESTRICTED'];if(!allowed.includes(copyright))return fail(400,'INVALID_COPYRIGHT','Geçersiz telif durumu.');
+ const body:any=await request.json().catch(()=>({}));const origin=normalizeQuestionOrigin(body.originKind??q.origin_kind);if(!origin)return fail(400,'INVALID_QUESTION_ORIGIN','Geçersiz soru kaynağı.');if(isAiQuestionOrigin(q.origin_kind)&&!isAiQuestionOrigin(origin))return fail(400,'AI_ORIGIN_IMMUTABLE','AI taslağının kaynak türü değiştirilemez.');const copyright=body.copyrightStatus||q.copyright_status;const allowed=['OWNED','LICENSED','PUBLIC_DOMAIN','USER_PROVIDED','RESTRICTED'];if(!allowed.includes(copyright))return fail(400,'INVALID_COPYRIGHT','Geçersiz telif durumu.');
  const requestedDifficulty=body.difficultyLevel??body.difficulty;const currentDifficulty=normalizeDifficultyLevel(q.difficulty_level??q.difficulty,3);const difficultyLevel=normalizeDifficultyLevel(requestedDifficulty,currentDifficulty);if(!difficultyLevel)return fail(400,'INVALID_DIFFICULTY','Zorluk seviyesi 1 ile 6 arasında olmalıdır.');
- await env.DB.prepare(`UPDATE question_bank SET topic=?,subtopic=?,difficulty=?,difficulty_level=?,source_label=?,copyright_status=?,origin_kind=?,review_status=?,reviewed_by=NULL,reviewed_at=NULL,rejection_note=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(body.topic??q.topic,body.subtopic??q.subtopic,legacyDifficulty(difficultyLevel),difficultyLevel,body.sourceLabel??q.source_label,copyright,body.originKind??q.origin_kind,user.role==='SUPER_ADMIN'&&body.keepApproved? q.review_status:'REVIEW',id).run();
+ const result=await env.DB.prepare(`UPDATE question_bank SET topic=?,subtopic=?,difficulty=?,difficulty_level=?,source_label=?,copyright_status=?,origin_kind=?,review_status=?,reviewed_by=NULL,reviewed_at=NULL,rejection_note=NULL,review_checks_json=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=? AND review_revision=?`).bind(body.topic??q.topic,body.subtopic??q.subtopic,legacyDifficulty(difficultyLevel),difficultyLevel,body.sourceLabel??q.source_label,copyright,origin,user.role==='SUPER_ADMIN'&&body.keepApproved&&!isAiQuestionOrigin(origin)&&['OWNED','LICENSED','PUBLIC_DOMAIN','USER_PROVIDED'].includes(copyright)&&(q.question_type!=='MULTIPLE_CHOICE'||validMultipleChoiceQuestion(q))? q.review_status:'REVIEW',id,q.review_revision).run();
+ if(Number(result.meta?.changes||0)!==1)return fail(409,'QUESTION_REVIEW_CHANGED','Soru düzenleme sırasında değişti. Güncel içeriği yeniden açın.');
  return json({ok:true,id});
 }
 
