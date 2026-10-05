@@ -561,12 +561,13 @@ export async function searchScanCandidates(env: Env, user: AuthUser, batchId: st
   if (!record) return notFound('Optik satırı bulunamadı.');
   const q = normalizeName(url.searchParams.get('q') || '').slice(0, 80);
   const like = `%${q}%`;
+  const identityNumber=/^\d{11}$/.test(q)?q:'';
   const rows = await all<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name,s.status,e.student_number,e.grade_level,e.section,e.class_id
     FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id
     WHERE e.institution_id=? AND e.season_id=? AND e.status='ACTIVE' AND s.status IN ('ACTIVE','GUEST')
-      AND (?='' OR s.normalized_name LIKE ? OR e.student_number LIKE ?)
-    ORDER BY CASE WHEN e.student_number=? THEN 0 WHEN s.normalized_name=? THEN 1 ELSE 2 END,e.grade_level,e.section,s.normalized_name
-    LIMIT 30`).bind(batch.institution_id, batch.season_id, q, like, like, q, q));
+      AND (?='' OR s.normalized_name LIKE ? OR e.student_number LIKE ? OR (?<>'' AND s.tckn=?))
+    ORDER BY CASE WHEN ?<>'' AND s.tckn=? THEN 0 WHEN e.student_number=? THEN 1 WHEN s.normalized_name=? THEN 2 ELSE 3 END,e.grade_level,e.section,s.normalized_name
+    LIMIT 30`).bind(batch.institution_id, batch.season_id, q, like, like, identityNumber, identityNumber, identityNumber, identityNumber, q, q));
   return json({ ok: true, candidates: rows });
 }
 
