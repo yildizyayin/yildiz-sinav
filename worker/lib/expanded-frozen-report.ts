@@ -1,3 +1,4 @@
+import {mergeFrozenOutcomes,outcomeFeedback} from './frozen-outcome-summary';
 type AccuracySource='EXAM'|'QUESTION_BANK'|'MINI_TEST'|'FOY';
 type SourceInput={sourceType:AccuracySource|'COMBINED_BASE';report:any};
 
@@ -30,7 +31,10 @@ export function combineExpandedFrozenReports(sources:SourceInput[],gameActivity:
   }
  }
  const accuracyGroups=[...groups.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([,g])=>{const evidenceCount=g.correct+g.wrong+g.blank;return{...g,evidenceCount,accuracyPercent:evidenceCount?Math.round(g.correct/evidenceCount*10000)/100:null};});
+ const outcomes=mergeFrozenOutcomes(sources);
  return{
+  outcomes,
+  outcomeFeedback:outcomeFeedback(outcomes),
   sourceTypes:[...sourceTypes,...(gameActivity?['MINI_GAME']:[])],
   calculationPolicy:'SELECTED_FROZEN_SOURCE_EVENT_WEIGHTED_ACCURACY_V2',
   groups:accuracyGroups,
