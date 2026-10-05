@@ -34,7 +34,7 @@ Migration 0080 stores append-only observations with an immutable rubric/criteria
 - Publication request IDs are unique per observer. A canonical payload fingerprint allows identical retries and rejects conflicting reuse. Original records cannot be updated/deleted.
 - Reports embed a separate rubric panel for student, parent, branch, guidance, institution and Super Admin views. Display uses frozen criterion labels/descriptions, not current live rubric labels. No rubric average, official ability score or multiple-choice-to-competency inference is generated.
 
-Historical/left enrollment viewing, archive export/pagination beyond the newest 200 records, broader cohort observation summaries and actual official definitions/content review remain separate work. Current institution/guidance cohort reports do not aggregate these observations.
+Historical/left enrollment reads, ordered pagination, bounded whole-scope CSV export and institution/guidance criterion-level distributions are now implemented; see rubric-history-and-cohorts.md for exact authority and limits. Actual official definitions/content review, a dedicated archived-student directory and larger background exports remain pending. Tests and migrations have not run.
 
 ## Final-stage checks
 
