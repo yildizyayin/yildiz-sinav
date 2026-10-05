@@ -125,20 +125,67 @@ export async function selectedCombinedFrozenReport(env:Env,user:AuthUser,student
  message:'Doğruluk soru sayısıyla ağırlıklıdır. Sınav soruları, seçili ilk/son pratik çözümleri ve yeni soru mini testleri ayrı kanıt olaylarıdır; resmî puan veya beceri düzeyi değildir.'});
 }
 
-export async function institutionFrozenSummary(env:Env,user:AuthUser,url:URL){
- if(!['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user.role))return forbidden();
+type GuidanceReportClass={id:string;seasonId:string;academicYear:string};
+async function guidanceReportClass(env:Env,user:AuthUser,url:URL):Promise<GuidanceReportClass|null>{
+ if(user.role!=='GUIDANCE_TEACHER'||!user.institution_id)return null;
+ const id=url.searchParams.get('classId')||'';if(!id||id.length>100)return null;
+ return one<GuidanceReportClass>(env.DB.prepare(`SELECT c.id,c.season_id seasonId,se.academic_year academicYear FROM classes c
+ JOIN institution_seasons se ON se.id=c.season_id AND se.institution_id=c.institution_id AND se.status='ACTIVE'
+ JOIN institutions i ON i.id=c.institution_id AND i.status='ACTIVE'
+ WHERE c.id=? AND c.institution_id=? AND c.active=1 AND EXISTS(SELECT 1 FROM teacher_assignments ta WHERE ta.user_id=? AND ta.class_id=c.id AND ta.season_id=c.season_id AND ta.assignment_type='GUIDANCE' AND ta.active=1)`)
+ .bind(id,user.institution_id,user.id));
+}
+async function listGuidanceReportClasses(env:Env,user:AuthUser,url:URL){
+ if(user.role!=='GUIDANCE_TEACHER'||!user.institution_id)return forbidden();
+ const cursor=url.searchParams.get('cursor')||'';if(cursor.length>100)return apiError(400,'INVALID_CURSOR','Liste devamı geçersiz.');
+ const rows=await all<any>(env.DB.prepare(`SELECT c.id,c.name,se.academic_year academicYear FROM classes c
+ JOIN institution_seasons se ON se.id=c.season_id AND se.institution_id=c.institution_id AND se.status='ACTIVE'
+ JOIN institutions i ON i.id=c.institution_id AND i.status='ACTIVE'
+ WHERE c.institution_id=? AND c.active=1 AND c.id>? AND EXISTS(SELECT 1 FROM teacher_assignments ta WHERE ta.user_id=? AND ta.class_id=c.id AND ta.season_id=c.season_id AND ta.assignment_type='GUIDANCE' AND ta.active=1)
+ ORDER BY c.id LIMIT 51`).bind(user.institution_id,cursor,user.id));
+ return json({ok:true,classes:rows.slice(0,50),nextCursor:rows.length>50?rows[49].id:null});
+}
+async function guidanceFrozenReport(env:Env,user:AuthUser,url:URL,kind:'exams'|'summary'){
+ const cls=await guidanceReportClass(env,user,url);if(!cls)return forbidden();
+ return kind==='exams'?listInstitutionFrozenExams(env,user,url,cls):institutionFrozenSummary(env,user,url,cls);
+}
+
+export async function listInstitutionFrozenExams(env:Env,user:AuthUser,url:URL,classScope?:GuidanceReportClass){
+ if(classScope?user.role!=='GUIDANCE_TEACHER':!['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user.role))return forbidden();
+ const institutionId=user.role==='SUPER_ADMIN'?url.searchParams.get('institutionId'):user.institution_id;if(!institutionId)return apiError(400,'INSTITUTION_REQUIRED','Kurum seçin.');
+ if(!await one(env.DB.prepare("SELECT id FROM institutions WHERE id=? AND status='ACTIVE'").bind(institutionId)))return forbidden();
+ const years=classScope?[{academic_year:classScope.academicYear}]:await all<any>(env.DB.prepare("SELECT academic_year FROM institution_seasons WHERE institution_id=? GROUP BY academic_year ORDER BY MAX(CASE WHEN status='ACTIVE' THEN 1 ELSE 0 END) DESC,academic_year DESC LIMIT 30").bind(institutionId));
+ const year=url.searchParams.get('academicYear')||years[0]?.academic_year||'',cursor=url.searchParams.get('cursor')||'';
+ if(!/^\d{4}-\d{4}$/.test(year)||Number(year.slice(5))!==Number(year.slice(0,4))+1||cursor.length>100)return apiError(400,'REPORT_SELECTION_INVALID','Geçerli eğitim yılı seçin.');
+ if(classScope&&year!==classScope.academicYear)return forbidden();
+ const rows=await all<any>(env.DB.prepare(`WITH frozen AS (
+ SELECT s.exam_id,CASE WHEN json_valid(s.payload_json) THEN s.payload_json ELSE '{}' END payload
+ FROM exam_result_snapshots s JOIN exam_delivery_profiles p ON p.exam_id=s.exam_id AND p.snapshot_version=s.snapshot_version
+ WHERE s.institution_id=? AND s.exam_id>? AND p.result_freeze_status='PUBLISHED' AND p.published_at IS NOT NULL
+ AND (p.result_publish_at IS NULL OR datetime(p.result_publish_at)<=CURRENT_TIMESTAMP)
+ ${classScope?`AND EXISTS(SELECT 1 FROM exam_participants gp JOIN student_enrollments ge ON ge.student_id=s.student_id AND ge.institution_id=s.institution_id AND ge.status='ACTIVE' WHERE gp.id=s.participant_id AND gp.exam_id=s.exam_id AND gp.institution_id=s.institution_id AND gp.student_id=s.student_id AND gp.season_id=? AND ge.class_id=? AND ge.season_id=?)`:''}
+ ) SELECT exam_id examId,MIN(json_extract(payload,'$.exam.title')) title,MIN(json_extract(payload,'$.exam.exam_date')) examDate
+ FROM frozen WHERE json_extract(payload,'$.schemaVersion')=1 AND json_extract(payload,'$.exam.exam_id')=exam_id AND json_extract(payload,'$.exam.academic_year')=?
+ GROUP BY exam_id ORDER BY exam_id LIMIT 51`).bind(institutionId,cursor,...(classScope?[classScope.seasonId,classScope.id,classScope.seasonId]:[]),year));
+ return json({ok:true,academicYear:year,academicYears:years.map(row=>row.academic_year),exams:rows.slice(0,50),nextCursor:rows.length>50?rows[49].examId:null});
+}
+
+export async function institutionFrozenSummary(env:Env,user:AuthUser,url:URL,classScope?:GuidanceReportClass){
+ if(classScope?user.role!=='GUIDANCE_TEACHER':!['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user.role))return forbidden();
  const institutionId=user.role==='SUPER_ADMIN'?url.searchParams.get('institutionId'):user.institution_id;
  const year=url.searchParams.get('academicYear')||'',ids=[...new Set((url.searchParams.get('examIds')||'').split(',').map(id=>id.trim()).filter(Boolean))];
  if(!institutionId||!/^\d{4}-\d{4}$/.test(year)||Number(year.slice(5))!==Number(year.slice(0,4))+1||!ids.length||ids.length>20||ids.some(id=>id.length>100))return apiError(400,'REPORT_SELECTION_INVALID','Kurum, eğitim yılı ve en fazla 20 sınav seçin.');
+ if(classScope&&year!==classScope.academicYear)return forbidden();
  const institution=await one<any>(env.DB.prepare("SELECT id FROM institutions WHERE id=? AND status='ACTIVE'").bind(institutionId));if(!institution)return forbidden();
  const rows=await all<any>(env.DB.prepare(`WITH scoped AS (
   SELECT s.exam_id,s.snapshot_version,s.grade_level,s.class_snapshot,s.student_id,s.participant_id,s.net,
    CASE WHEN json_valid(s.payload_json) THEN s.payload_json ELSE '{}' END payload
   FROM exam_result_snapshots s JOIN exam_delivery_profiles p ON p.exam_id=s.exam_id AND p.snapshot_version=s.snapshot_version
-  JOIN exam_participants ep ON ep.id=s.participant_id AND ep.exam_id=s.exam_id AND ep.institution_id=s.institution_id
+  JOIN exam_participants ep ON ep.id=s.participant_id AND ep.exam_id=s.exam_id AND ep.institution_id=s.institution_id AND ep.student_id IS s.student_id
   WHERE s.institution_id=? AND s.exam_id IN (${ids.map(()=>'?').join(',')})
    AND p.result_freeze_status='PUBLISHED' AND p.published_at IS NOT NULL
    AND (p.result_publish_at IS NULL OR datetime(p.result_publish_at)<=CURRENT_TIMESTAMP)
+   ${classScope?`AND ep.season_id=? AND EXISTS(SELECT 1 FROM student_enrollments ge WHERE ge.student_id=s.student_id AND ge.institution_id=s.institution_id AND ge.status='ACTIVE' AND ge.class_id=? AND ge.season_id=?)`:''}
  ), validated AS (
   SELECT *, CASE WHEN json_extract(payload,'$.schemaVersion')=1 AND json_extract(payload,'$.exam.exam_id')=exam_id
    AND json_type(payload,'$.exam.correct_count') IN ('integer','real') AND json_extract(payload,'$.exam.correct_count')>=0
@@ -152,7 +199,7 @@ export async function institutionFrozenSummary(env:Env,user:AuthUser,url:URL){
  SUM(CASE WHEN usable=1 THEN json_extract(payload,'$.exam.wrong_count') ELSE 0 END) wrong,
  SUM(CASE WHEN usable=1 THEN json_extract(payload,'$.exam.blank_count') ELSE 0 END) blank,
  AVG(CASE WHEN usable=1 THEN net END) averageNet
- FROM validated GROUP BY exam_id,snapshot_version,grade_level,class_snapshot ORDER BY exam_id,grade_level,class_snapshot LIMIT 501`).bind(institutionId,...ids,year));
+ FROM validated GROUP BY exam_id,snapshot_version,grade_level,class_snapshot ORDER BY exam_id,grade_level,class_snapshot LIMIT 501`).bind(institutionId,...ids,...(classScope?[classScope.seasonId,classScope.id,classScope.seasonId]:[]),year));
  if(rows.length>500)return apiError(400,'REPORT_SCOPE_TOO_LARGE','Seçili sınavlardaki sınıf sayısı rapor sınırını aşıyor. Seçimi daraltın.');
  return json({ok:true,academicYear:year,policy:'PUBLISHED_SNAPSHOT_CLASS_AGGREGATES_V1',groups:rows.map(row=>{const denominator=Number(row.correct)+Number(row.wrong)+Number(row.blank);return {...row,unusableCount:Number(row.participantCount)-Number(row.usableCount),accuracyPercent:denominator?Math.round(Number(row.correct)/denominator*10000)/100:null}}),message:'Her sınav ve yayın sürümünün sınıf özeti ayrı hesaplanır. Farklı sınavların netleri ortak kurum ortalamasına dönüştürülmez.'});
 }
@@ -355,4 +402,4 @@ async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Pr
   return json({ok:true,student:access.student,unavailableSnapshotExamIds,restrictedToSubjects:access.restricted,availableExams:allExams.map(e=>access.restricted?{exam_id:e.exam_id,title:e.title,exam_date:e.exam_date,exam_type:e.exam_type,academic_year:e.academic_year}:e),selectedExamIds:selectedIds,exams:examsForClient,summary,subjectTrend,subjectSummary,outcomes,developing:outcomes.filter(o=>o.mastery_status==='DEVELOPING').sort((a,b)=>a.success_rate-b.success_rate),strong:outcomes.filter(o=>o.mastery_status==='STRONG').sort((a,b)=>b.success_rate-a.success_rate)});
 }
 
-export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/institution/frozen-summary'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');return await institutionFrozenSummary(env,auth,url);}const activity=handleFrozenFoyGameReport(request,env,auth);if(activity)return await activity;const expanded=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-expanded$/);if(expanded){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');return await selectedExpandedFrozenReport(request,env,auth,expanded[1],url);}if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const combinedFrozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-combined$/);if(combinedFrozen&&request.method==='GET')return selectedCombinedFrozenReport(env,auth,combinedFrozen[1],url);const miniTests=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-mini-tests$/);if(miniTests&&request.method==='GET')return selectedFrozenMiniTestReport(env,auth,miniTests[1],url);const miniRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/mini-test-runs$/);if(miniRuns&&request.method==='GET')return await listFrozenMiniTestRuns(env,auth,miniRuns[1],url);const practiceRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/practice-runs$/);if(practiceRuns&&request.method==='GET')return listFrozenPracticeRuns(env,auth,practiceRuns[1],url);const practice=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-practice$/);if(practice&&request.method==='GET')return selectedFrozenPracticeReport(env,auth,practice[1],url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
+export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/guidance/classes'||url.pathname==='/api/reporting/guidance/frozen-exams'||url.pathname==='/api/reporting/guidance/frozen-summary'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');if(url.pathname.endsWith('/classes'))return await listGuidanceReportClasses(env,auth,url);return await guidanceFrozenReport(env,auth,url,url.pathname.endsWith('/frozen-exams')?'exams':'summary');}if(url.pathname==='/api/reporting/institution/frozen-exams'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');return await listInstitutionFrozenExams(env,auth,url);}if(url.pathname==='/api/reporting/institution/frozen-summary'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');return await institutionFrozenSummary(env,auth,url);}const activity=handleFrozenFoyGameReport(request,env,auth);if(activity)return await activity;const expanded=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-expanded$/);if(expanded){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');return await selectedExpandedFrozenReport(request,env,auth,expanded[1],url);}if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const combinedFrozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-combined$/);if(combinedFrozen&&request.method==='GET')return selectedCombinedFrozenReport(env,auth,combinedFrozen[1],url);const miniTests=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-mini-tests$/);if(miniTests&&request.method==='GET')return selectedFrozenMiniTestReport(env,auth,miniTests[1],url);const miniRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/mini-test-runs$/);if(miniRuns&&request.method==='GET')return await listFrozenMiniTestRuns(env,auth,miniRuns[1],url);const practiceRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/practice-runs$/);if(practiceRuns&&request.method==='GET')return listFrozenPracticeRuns(env,auth,practiceRuns[1],url);const practice=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-practice$/);if(practice&&request.method==='GET')return selectedFrozenPracticeReport(env,auth,practice[1],url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
