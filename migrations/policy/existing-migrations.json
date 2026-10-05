@@ -62,6 +62,6 @@
   "0053_institution_onboarding.sql": "0fd9e0fbecd63322c3196546716d4026ac211c833145c9fb4ba1690aec49a5a6",
   "0054_account_access_notifications.sql": "eff6e7569ec88aef8c97d3f52d1333390d328590a078b7c4b54c96728f6562b2",
   "0055_tyt_optional_philosophy_results.sql": "896b76922d55a4577f70e9cf5453f7e2b05e9c43df260225007967ce306c8de3",
-  "0056_exam_application_result_schedule.sql": "b56b485871b9bcd6ec79c93defb90f567ed7d71f9745f6290155b6cd9b9c5819",
+  "0056_exam_application_result_schedule.sql": "b56b485871b9bcd3ec79c93defb90f567ed7d71f9745f6290155b6cd9b9c5819",
   "0057_publish_builtin_sekonic_catalog.sql": "ed657b37e0f3fe3ea9d275809ac0790851e6d15cb3d0f839d16b01e801d4af52"
 }
