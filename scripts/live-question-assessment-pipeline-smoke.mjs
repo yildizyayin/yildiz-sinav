@@ -281,7 +281,13 @@ assert(aiDraft.payload?.id && aiDraft.payload.reviewStatus === 'REVIEW', 'Explic
 const aiList = await request(`/api/platform/questions?q=${encodeURIComponent(`PR ${suffix} · AI human-review probe`)}`, { cookie: admin });
 const aiQuestion = aiList.payload?.questions?.find(question => question.id === aiDraft.payload.id);
 assert(aiQuestion?.origin_kind === 'AI_GENERATED' && Number.isInteger(aiQuestion.review_revision) && aiQuestion.reviewContext?.length, 'AI draft revision/context is missing', aiQuestion);
-const reviewBody = { status: 'APPROVED', expectedRevision: aiQuestion.review_revision, expectedContext: aiQuestion.reviewContext };
+const qualityReview = {
+  outcomeAlignment: 'Synthetic API contract fixture bound to the verified preview outcome; not a pedagogical content approval.',
+  languageAndDistractors: 'Synthetic distinct options exercise the preview review contract; no real model quality claim.',
+  duplicateDisposition: 'NO_REPETITION_FOUND',
+  duplicateRationale: `Synthetic isolated preview marker ${suffix}; not a semantic uniqueness benchmark.`,
+};
+const reviewBody = { status: 'APPROVED', expectedRevision: aiQuestion.review_revision, expectedContext: aiQuestion.reviewContext, qualityReview };
 const unreviewed = await request(`/api/platform/questions/${aiQuestion.id}/review`, { method: 'PATCH', cookie: admin, json: reviewBody, expected: 400 });
 assert(unreviewed.payload?.error?.code === 'HUMAN_REVIEW_REQUIRED', 'Alternative review endpoint bypassed human checks', unreviewed.payload);
 const checks = { answerAndSolution: true, curriculum: true, ageAppropriate: true, originalityAndRights: true };
