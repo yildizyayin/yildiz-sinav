@@ -8,6 +8,17 @@ export function normalizeQuestionOrigin(value:unknown):string|null {
  return ['MANUAL','DEMO','IMPORT','IMPORTED','PUBLISHER','OFFICIAL'].includes(origin)?origin:null;
 }
 export function isAiQuestionOrigin(value:unknown){return normalizeQuestionOrigin(value)==='AI_GENERATED';}
+type QualityReview = {
+ outcomeAlignment: string; languageAndDistractors: string;
+ duplicateDisposition: 'NO_REPETITION_FOUND' | 'DISTINCT_APPLICATION';
+ duplicateRationale: string;
+};
+function qualityReview(value:any):QualityReview|null {
+ if(!value||typeof value!=='object'||Array.isArray(value)||!['NO_REPETITION_FOUND','DISTINCT_APPLICATION'].includes(value.duplicateDisposition))return null;
+ const fields=['outcomeAlignment','languageAndDistractors','duplicateRationale'] as const;
+ if(fields.some(key=>typeof value[key]!=='string'||value[key].trim().length<20||value[key].trim().length>1000||/[\u0000-\u001f\u007f]/u.test(value[key].replace(/[\r\n\t]/g,''))))return null;
+ return {outcomeAlignment:value.outcomeAlignment.trim(),languageAndDistractors:value.languageAndDistractors.trim(),duplicateDisposition:value.duplicateDisposition,duplicateRationale:value.duplicateRationale.trim()};
+}
 // Accept the management list's reviewContext DTO or the equivalent canonical
 // fields. The witness binds the human's displayed curriculum to this decision.
 function reviewContextWitness(refs:any[]){
@@ -17,6 +28,8 @@ export function validMultipleChoiceQuestion(q:any){
  let options:any;try{options=JSON.parse(q.options_json)}catch{return false;}
  if(!Array.isArray(options)||![4,5].includes(options.length)||Number(q.option_count??options.length)!==options.length)return false;
  if(options.some((option:any,index:number)=>typeof option==='string'?!option.trim():!option||option.label!==String.fromCharCode(65+index)||typeof option.text!=='string'||!option.text.trim()))return false;
+ const distinctOptions=options.map((option:any)=>(typeof option==='string'?option:option.text).normalize('NFKC').trim().replace(/\s+/gu,' ').toLocaleLowerCase('tr-TR'));
+ if(new Set(distinctOptions).size!==options.length)return false;
  return options.some((_:any,index:number)=>String.fromCharCode(65+index)===q.correct_answer);
 }
 
@@ -40,6 +53,8 @@ export async function reviewQuestionWithGate(request:Request,env:Env,user:AuthUs
  if((ai&&status==='APPROVED')||body.expectedRevision!==undefined){
   if(!Number.isInteger(body.expectedRevision)||body.expectedRevision!==q.review_revision)return json({ok:false,error:{code:'QUESTION_REVIEW_CHANGED',message:'İncelediğiniz soru sürümü değişti. Güncel içeriği yeniden açın.'}},409);
  }
+ const explanation=ai&&status==='APPROVED'?qualityReview(body.qualityReview):null;
+ if(ai&&status==='APPROVED'&&!explanation)return badRequest('Öğrenme çıktısı bağlantısını, dil/çeldirici incelemesini ve benzer soru kararını 20–1000 karakterlik gerekçelerle kaydedin.','QUESTION_QUALITY_REVIEW_REQUIRED');
  const contextParams:any[]=[];let contextFence='';
  if(status==='APPROVED'){
   if(!['OWNED','LICENSED','PUBLIC_DOMAIN','USER_PROVIDED'].includes(q.copyright_status))return badRequest('Kısıtlı telif durumundaki soru onaylanamaz.','COPYRIGHT_BLOCKED');
@@ -77,7 +92,7 @@ export async function reviewQuestionWithGate(request:Request,env:Env,user:AuthUs
    }
   }
  }
- const checks=ai&&status==='APPROVED'?JSON.stringify({answerAndSolution:true,curriculum:true,ageAppropriate:true,originalityAndRights:true}):null;
+ const checks=ai&&status==='APPROVED'?JSON.stringify({answerAndSolution:true,curriculum:true,ageAppropriate:true,originalityAndRights:true,qualityReview:{schemaVersion:1,...explanation}}):null;
  const result=await env.DB.prepare(`UPDATE question_bank SET review_status=?,reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,rejection_note=?,review_checks_json=?,updated_at=CURRENT_TIMESTAMP
  WHERE id=? AND review_revision=?${ai&&status==='APPROVED'?` AND ${AI_REVIEW_CONTEXT_SQL}${contextFence}`:''}`).bind(status,user.id,status==='REJECTED'?String(body.note||'').trim().slice(0,2000)||null:null,checks,id,q.review_revision,...contextParams).run();
  // D1 counts the revision trigger too; this primary-key conditional write
