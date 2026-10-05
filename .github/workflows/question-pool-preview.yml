@@ -47,7 +47,9 @@ jobs:
         run: |
           set -euo pipefail
           key="${PR_NUMBER//[^0-9A-Za-z-]/-}"
-          db_name="yildiz-sinav-qpool-pr-${key}"
+          # Use a fresh synthetic database after the unmerged generator schema revision.
+          # Keep the earlier preview database intact; this does not change production.
+          db_name="yildiz-sinav-qpool-pr-${key}-generation-v2"
           bucket_name="yildiz-sinav-qpool-pr-${key}"
           worker_name="yildiz-sinav-qpool-pr-${key}"
           auth="Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
