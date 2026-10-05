@@ -55,17 +55,21 @@ jobs:
           api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
 
           bucket_json="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/r2/buckets?name=$(printf '%s' "$bucket" | jq -sRr @uri)")"
-          if ! jq -e --arg name "$bucket" 'any((.result // .)[]?; .name == $name)' <<<"$bucket_json" >/dev/null; then
-            curl --fail-with-body --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' \
-              --data "$(jq -nc --arg name "$bucket" '{name:$name,location:"WEUR"}')" "$api/r2/buckets" >/dev/null
+          if ! jq -e --arg name "$bucket" '[.. | objects | select(.name? == $name)] | length > 0' <<<"$bucket_json" >/dev/null; then
+            create_bucket="$(curl --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' \
+              --data "$(jq -nc --arg name "$bucket" '{name:$name,location:"WEUR"}')" --write-out '\n%{http_code}' "$api/r2/buckets" || true)"
+            bucket_status="$(tail -n1 <<<"$create_bucket")"
+            [[ "$bucket_status" =~ ^2[0-9][0-9]$ || "$bucket_status" == "409" ]] || { echo "$create_bucket" >&2; exit 1; }
           fi
 
           queues_json="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/queues?per_page=100")"
           ensure_queue() {
             local name="$1"
-            if ! jq -e --arg name "$name" 'any(.result[]?; .queue_name == $name)' <<<"$queues_json" >/dev/null; then
-              curl --fail-with-body --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' \
-                --data "$(jq -nc --arg name "$name" '{queue_name:$name}')" "$api/queues" >/dev/null
+            if ! jq -e --arg name "$name" '[.. | objects | select(.queue_name? == $name)] | length > 0' <<<"$queues_json" >/dev/null; then
+              create_queue="$(curl --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' \
+                --data "$(jq -nc --arg name "$name" '{queue_name:$name}')" --write-out '\n%{http_code}' "$api/queues" || true)"
+              queue_status="$(tail -n1 <<<"$create_queue")"
+              [[ "$queue_status" =~ ^2[0-9][0-9]$ || "$queue_status" == "409" ]] || { echo "$create_queue" >&2; exit 1; }
             fi
           }
           ensure_queue "$adlq"
