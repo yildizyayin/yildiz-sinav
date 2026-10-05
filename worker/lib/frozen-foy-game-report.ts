@@ -32,7 +32,7 @@ function selected(url:URL,key:string,max:number){
  const ids=[...new Set((url.searchParams.get(key)||'').split(',').map(x=>x.trim()).filter(Boolean))];
  return ids.length&&ids.length<=max&&ids.every(x=>x.length<=100)?ids:null;
 }
-function groupFoy(rows:any[]){
+export function groupFoy(rows:any[]){
  const outcomeRows: FrozenOutcomeMap = new Map();
  const groups=new Map<string,any>();let valid=0,invalid=0;
  for(const row of rows){
@@ -46,7 +46,7 @@ function groupFoy(rows:any[]){
  for(const g of groups.values()){const denom=g.correct+g.wrong+g.blank;g.accuracy=denom?Math.round((g.correct/denom)*10000)/100:null;}
  return{outcomes:finishFrozenOutcomes(outcomeRows),groups:[...groups.values()].sort((a,b)=>String(a.subjectId).localeCompare(String(b.subjectId))),validEvidenceCount:valid,invalidEvidenceCount:invalid};
 }
-function groupGames(rows:any[]){
+export function groupGames(rows:any[]){
  const groups=new Map<string,any>();let valid=0,invalid=0;
  for(const row of rows){
   if(Number(row.context_valid)!==1||!row.subject_id||!row.curriculum_version_id||!row.program_version){invalid++;continue;}valid++;
@@ -54,7 +54,7 @@ function groupGames(rows:any[]){
   let g=groups.get(key);if(!g){g={subjectId:row.subject_id,subjectName:null,curriculumVersionId:row.curriculum_version_id,academicYear:row.academic_year,gradeLevel:Number(row.grade_level),programVersion:row.program_version,sessionCount:0,averageScore:null,totalDurationSeconds:0,totalXp:0};groups.set(key,g);}
   g.sessionCount++;g._score=(g._score||0)+Number(row.score||0);g.totalDurationSeconds+=Number(row.duration_seconds||0);g.totalXp+=Number(row.xp_earned||0);
  }
- for(const g of groups.values()){g.averageScore=g.sessionCount?Math.round((g._score/g.sessionCount)*100)/100:null;delete g._score;}
+ for(const g of groups.values()){g.averageScore=g.sessionCount?Math.round((g._score/g.sessionCount)*100)/100:null;g.totalScore=g._score;delete g._score;}
  return{groups:[...groups.values()].sort((a,b)=>String(a.subjectId).localeCompare(String(b.subjectId))),validSessionCount:valid,invalidSessionCount:invalid};
 }
 async function foyReport(env:Env,user:AuthUser,studentId:string,url:URL){
