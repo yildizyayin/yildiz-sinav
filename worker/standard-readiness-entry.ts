@@ -100,7 +100,7 @@ async function coachApi(request:Request,env:Env,url:URL){
  const submitTest=url.pathname.match(/^\/api\/nibiru\/coach\/mini-tests\/([^/]+)\/submit$/);
  if(submitTest&&request.method==='POST'){
   const body:any=await request.json().catch(()=>({}));const result=await submitCoachMiniTest(env,user,submitTest[1],body.answers);
-  if(!result.ok){if(result.reason==='SNAPSHOT_REQUIRED')return fail(409,'SNAPSHOT_REQUIRED','Bu eski testin sabit soru sürümü bulunmuyor; yeni test başlatın.');if(result.reason==='TEST_NOT_FOUND')return fail(404,'TEST_NOT_FOUND','Mini-test bulunamadı.');if(result.reason==='ALL_QUESTIONS_REQUIRED')return fail(400,'ALL_QUESTIONS_REQUIRED','Mini-testi göndermek için bütün soruları cevaplayın.');return fail(403,result.reason||'MINI_TEST_FAILED','Mini-test gönderilemedi.');}
+  if(!result.ok){if(result.reason==='SUBMISSION_NOT_COMMITTED')return fail(409,'SUBMISSION_NOT_COMMITTED','Test gönderimi tamamlanmadı. Erişim durumunuzu kontrol edip yeniden deneyin.');if(result.reason==='SNAPSHOT_REQUIRED')return fail(409,'SNAPSHOT_REQUIRED','Bu eski testin sabit soru sürümü bulunmuyor; yeni test başlatın.');if(result.reason==='TEST_NOT_FOUND')return fail(404,'TEST_NOT_FOUND','Mini-test bulunamadı.');if(result.reason==='ALL_QUESTIONS_REQUIRED')return fail(400,'ALL_QUESTIONS_REQUIRED','Mini-testi göndermek için bütün soruları cevaplayın.');return fail(403,result.reason||'MINI_TEST_FAILED','Mini-test gönderilemedi.');}
   return json(result);
  }
  const followup=url.pathname.match(/^\/api\/nibiru\/coach\/followups\/([^/]+)\/complete$/);
