@@ -66,3 +66,15 @@ bir metnin AI ile yazıldığını otomatik tespit etme garantisi değildir.
 Serbest prompttan taslak döndüren eski üretici henüz kalıcı, çıktı bazlı ve
 sınırsız onaylı içerik üreten bir pipeline değildir. Çıktı kapsam tablosu,
 onaylı bankanın sürekli beslenmesi ve Maarif süreç/rubrik görevleri ayrı iştir.
+
+## 5 Ekim: kazanım havuzu ve üretim talepleri
+
+Süper Admin kapsam ekranı her doğrulanmış aktif çıktıyı sıfır sorulu olsa da
+listeler. Ortak platform havuzundaki geçerli onaylı farklı sorular, inceleme
+ve taslak kayıtlarından ayrı sayılır; hedef başlangıç için 10'dur. Bu genel
+havuz sayısı öğrencinin henüz görmediği soru sayısı değildir.
+
+0072 ile eksikler için bağlamı sabitlenmiş, idempotent ve iptal edilebilir
+REQUESTED üretim talepleri saklanır. Arka plan model yürütücüsü henüz bağlı
+değildir; talep oluşturmak soru üretmek veya onaylamak anlamına gelmez.
+Ayrıntılar: question-pool-production.md.
