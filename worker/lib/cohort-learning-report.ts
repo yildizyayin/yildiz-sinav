@@ -1,3 +1,4 @@
+import {mergeFrozenOutcomes,outcomeFeedback,outcomeKey} from './frozen-outcome-summary';
 import type {AuthUser,Env} from '../types';
 import {all,forbidden,json,one} from './db';
 import {frozenExamReport} from './frozen-exam-report';
@@ -44,7 +45,7 @@ export async function cohortLearningReport(env:Env,user:AuthUser,url:URL,classSc
  const students=new Map<string,{identity:any;rows:Record<string,any[]>}>();
  const coverage=labels.map((sourceType,index)=>({sourceType,rowCount:batches[index].results.length}));
  batches.forEach((batch,index)=>{for(const row of batch.results){const key=row.cohort_enrollment_id;let s=students.get(key);if(!s){s={identity:row,rows:{}};students.set(key,s)}(s.rows[labels[index]]??=[]).push(row)}});
- const groups=new Map<string,any>(),games=new Map<string,any>();
+ const groups=new Map<string,any>(),games=new Map<string,any>(),outcomeClasses=new Map<string,any>();
  const excluded:Record<string,any[]>={};
  for(const [enrollmentId,student] of students){
   const reports:any[]=[];const r=student.rows;
@@ -55,6 +56,11 @@ export async function cohortLearningReport(env:Env,user:AuthUser,url:URL,classSc
   for(const item of reports)(excluded[item.sourceType]??=[]).push(item.report.coverage||{invalidEvidenceCount:item.report.invalidEvidenceCount||0});
   const merged=combineExpandedFrozenReports(reports,null);
   const cls=student.identity;
+  const classKey=JSON.stringify([cls.cohort_class_id,cls.cohort_grade]);
+  let outcomeClass=outcomeClasses.get(classKey);if(!outcomeClass){outcomeClass={classId:cls.cohort_class_id,className:cls.cohort_class_name,enrollmentGrade:cls.cohort_grade,sources:[],participants:new Map<string,Set<string>>()};outcomeClasses.set(classKey,outcomeClass)}
+  outcomeClass.sources.push({sourceType:'COMBINED_BASE',report:{outcomes:merged.outcomes}});
+  for(const row of merged.outcomes){if(row.evidenceCount>0){const key=outcomeKey(row);if(!outcomeClass.participants.has(key))outcomeClass.participants.set(key,new Set<string>());outcomeClass.participants.get(key).add(enrollmentId)}}
+
   for(const raw of merged.groups){
    const key=JSON.stringify([cls.cohort_class_id,cls.cohort_grade,raw.subjectId,raw.curriculumVersionId,raw.academicYear,raw.gradeLevel,raw.programVersion]);
    let g=groups.get(key);if(!g){g={...raw,classId:cls.cohort_class_id,className:cls.cohort_class_name,enrollmentGrade:cls.cohort_grade,correct:0,wrong:0,blank:0,invalid:0,sourceBreakdown:[],students:new Set<string>()};groups.set(key,g)}
@@ -65,6 +71,8 @@ export async function cohortLearningReport(env:Env,user:AuthUser,url:URL,classSc
   if(r.MINI_GAME){const game=groupGames(r.MINI_GAME);(excluded.MINI_GAME??=[]).push({invalidSessionCount:game.invalidSessionCount});for(const raw of game.groups){const key=JSON.stringify([cls.cohort_class_id,cls.cohort_grade,raw.subjectId,raw.curriculumVersionId,raw.academicYear,raw.gradeLevel,raw.programVersion]);let g=games.get(key);if(!g){g={...raw,classId:cls.cohort_class_id,className:cls.cohort_class_name,enrollmentGrade:cls.cohort_grade,sessionCount:0,totalDurationSeconds:0,totalXp:0,scoreSum:0,students:new Set<string>()};games.set(key,g)}g.sessionCount+=raw.sessionCount;g.totalDurationSeconds+=raw.totalDurationSeconds;g.totalXp+=raw.totalXp;g.scoreSum+=raw.totalScore||0;g.students.add(enrollmentId)}}
  }
  if(groups.size+games.size>500)return fail(400,'REPORT_SCOPE_TOO_LARGE','Sınıf ve program bağlamı sayısı rapor sınırını aşıyor.');
+ const outcomes=[...outcomeClasses.values()].flatMap(cls=>mergeFrozenOutcomes(cls.sources).map(row=>{const breakdown=new Map<string,any>();for(const part of row.sourceBreakdown||[]){let total=breakdown.get(part.sourceType);if(!total){total={sourceType:part.sourceType,correct:0,wrong:0,blank:0,invalid:0,evidenceCount:0};breakdown.set(part.sourceType,total)}for(const field of ['correct','wrong','blank','invalid','evidenceCount'])total[field]+=Number((part as any)[field]||0)}return {...row,sourceBreakdown:[...breakdown.values()],classId:cls.classId,className:cls.className,enrollmentGrade:cls.enrollmentGrade,participatingEnrollmentCount:cls.participants.get(outcomeKey(row))?.size||0}}));
+ if(outcomes.length>1000)return fail(400,'REPORT_SCOPE_TOO_LARGE','Kazanım grubu sayısı 1.000 sınırını aşıyor. Tarih veya kaynak kapsamını daraltın.');
  const totals=(items:any[])=>{const result:Record<string,number>={};for(const item of items)for(const [key,value] of Object.entries(item))if(typeof value==='number')result[key]=(result[key]||0)+value;return result};
- return json({ok:true,academicYear:year,sourceTypes:sources,selectedExamIds:ids,repeatPolicy:repeat,dateRange:fromDate?{fromDate,toDate}:null,policy:'COHORT_FROZEN_EVENT_WEIGHTED_ACCURACY_V1',scope:classScope?'CURRENT_GUIDANCE_CLASS':'INSTITUTION_ACADEMIC_YEAR',sourceCoverage:coverage.map(c=>({...c,excluded:totals(excluded[c.sourceType]||[])})),groups:[...groups.values()].map(({students,...g})=>{const evidenceCount=g.correct+g.wrong+g.blank;return {...g,evidenceCount,participatingEnrollmentCount:students.size,accuracyPercent:evidenceCount?Math.round(g.correct/evidenceCount*10000)/100:null}}),gameGroups:[...games.values()].map(({students,scoreSum,...g})=>({...g,participatingEnrollmentCount:students.size,averageScore:g.sessionCount?Math.round(scoreSum/g.sessionCount*100)/100:null})),officialScore:null,nationalRank:null,message:'Seçili sınavlar ile seçilen yıl/tarih aralığının diğer kaynakları soru olayı sayısıyla ağırlıklandırılır. İlk/son soru pratiği her öğrencinin dönem kaydı içinde uygulanır. Oyunlar ayrı gösterilir. Katılmayan öğrenciler sıfır kabul edilmez; bu oran öğrenci başarı oranlarının basit ortalaması değildir.'});
+ return json({ok:true,academicYear:year,sourceTypes:sources,outcomes,outcomeFeedback:{...outcomeFeedback(outcomes),policy:'COHORT_FROZEN_OUTCOME_FORMATIVE_FEEDBACK_V1'},selectedExamIds:ids,repeatPolicy:repeat,dateRange:fromDate?{fromDate,toDate}:null,policy:'COHORT_FROZEN_EVENT_WEIGHTED_ACCURACY_V1',scope:classScope?'CURRENT_GUIDANCE_CLASS':'INSTITUTION_ACADEMIC_YEAR',sourceCoverage:coverage.map(c=>({...c,excluded:totals(excluded[c.sourceType]||[])})),groups:[...groups.values()].map(({students,...g})=>{const evidenceCount=g.correct+g.wrong+g.blank;return {...g,evidenceCount,participatingEnrollmentCount:students.size,accuracyPercent:evidenceCount?Math.round(g.correct/evidenceCount*10000)/100:null}}),gameGroups:[...games.values()].map(({students,scoreSum,...g})=>({...g,participatingEnrollmentCount:students.size,averageScore:g.sessionCount?Math.round(scoreSum/g.sessionCount*100)/100:null})),officialScore:null,nationalRank:null,message:'Seçili sınavlar ile seçilen yıl/tarih aralığının diğer kaynakları soru olayı sayısıyla ağırlıklandırılır. İlk/son soru pratiği her öğrencinin dönem kaydı içinde uygulanır. Oyunlar ayrı gösterilir. Katılmayan öğrenciler sıfır kabul edilmez; bu oran öğrenci başarı oranlarının basit ortalaması değildir.'});
 }
