@@ -1,4 +1,5 @@
+import {createPrivateRubricExportEntry} from './private-rubric-export-entry';
 import app from './optical-print-policy-production-entry';
 import { createPreviewPolicyEntry } from './preview-policy-entry';
 
-export default createPreviewPolicyEntry(app);
+export default createPrivateRubricExportEntry(createPreviewPolicyEntry(app));
