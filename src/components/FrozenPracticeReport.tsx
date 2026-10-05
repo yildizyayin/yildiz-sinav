@@ -5,7 +5,7 @@ type Run = { id: string; completedAt: string };
 type Source = 'practice' | 'mini-test';
 const sourceName = (source: string) => source === 'EXAM' ? 'Sınav' : source === 'MINI_TEST' ? 'Yeni soru mini testi' : 'Soru pratiği';
 
-function useRunSelection(studentId: string, year: string, source: Source, maximum: number) {
+export function useRunSelection(studentId: string, year: string, source: Source, maximum: number) {
  const scope = JSON.stringify([studentId, year]);
  const [runs, setRuns] = useState<Run[]>([]), [selected, setSelected] = useState<string[]>([]);
  const [cursor, setCursor] = useState<string | null>(null), [loadedScope, setLoadedScope] = useState('');
@@ -43,7 +43,7 @@ function useRunSelection(studentId: string, year: string, source: Source, maximu
  return { runs: loaded ? runs : [], selected: loaded ? selected : [], cursor: loaded ? cursor : null, loaded, restricted: loaded && restricted, busy: activityScope === scope && busy, error: activityScope === scope ? error : '', load, toggle, maximum };
 }
 
-function RunSelector({ selection, title, empty, valid }: { selection: ReturnType<typeof useRunSelection>; title: string; empty: string; valid: boolean }) {
+export function RunSelector({ selection, title, empty, valid }: { selection: ReturnType<typeof useRunSelection>; title: string; empty: string; valid: boolean }) {
  return <div style={{ marginTop: 16 }}>
   <h3>{title}</h3>
   <button className="secondary" onClick={() => void selection.load(false)} disabled={selection.busy || !valid}>{selection.busy ? 'Yükleniyor…' : title + ' Kayıtlarını Yükle'}</button>
