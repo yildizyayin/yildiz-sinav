@@ -1,3 +1,5 @@
+import {addFrozenOutcomeEvidence,finishFrozenOutcomes} from './frozen-outcome-summary';
+import type {FrozenOutcomeMap} from './frozen-outcome-summary';
 function evidenceTime(value:unknown){
  if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?$/.test(value))return NaN;
  return Date.parse(value.replace(' ','T')+(/[Zz]|[+-]\d{2}:\d{2}$/.test(value)?'':'Z'));
@@ -33,12 +35,14 @@ export function frozenPracticeReport(rows:any[], academicYear:string, subjectIds
     selected.set(key,{row,evidence});
   }
   const groups=new Map<string,any>();
+  const outcomeRows: FrozenOutcomeMap = new Map();
   for(const {evidence} of selected.values()){
     const ref=evidence.outcomeRefs[0];
     const key=JSON.stringify([ref.subjectId,ref.curriculumVersionId,evidence.academicYear,evidence.gradeLevel,ref.programVersion??null]);
     let group=groups.get(key);
     if(!group){group={subjectId:ref.subjectId,subjectName:null,curriculumVersionId:ref.curriculumVersionId,programVersion:typeof ref.programVersion==='string'?ref.programVersion:null,academicYear:evidence.academicYear,gradeLevel:evidence.gradeLevel,correct:0,wrong:0,blank:0};groups.set(key,group);}
     group[evidence.status.toLowerCase()]++;
+    addFrozenOutcomeEvidence(outcomeRows,evidence.outcomeRefs,evidence.status,group);
   }
-  return {sourceTypes:['QUESTION_BANK'],calculationPolicy:'SELECTED_FROZEN_PRACTICE_QUESTION_ACCURACY_V1',repeatPolicy,groups:[...groups.entries()].sort(([a],[b])=>a<b?-1:a>b?1:0).map(([,group])=>{const evidenceCount=group.correct+group.wrong+group.blank;return {...group,evidenceCount,accuracyPercent:evidenceCount?Math.round(group.correct/evidenceCount*10000)/100:null};}),coverage:subjectIds?null:{legacyRuns,excludedEvidence,repeatedAttempts},officialScore:null,nationalRank:null};
+  return {outcomes:finishFrozenOutcomes(outcomeRows),sourceTypes:['QUESTION_BANK'],calculationPolicy:'SELECTED_FROZEN_PRACTICE_QUESTION_ACCURACY_V1',repeatPolicy,groups:[...groups.entries()].sort(([a],[b])=>a<b?-1:a>b?1:0).map(([,group])=>{const evidenceCount=group.correct+group.wrong+group.blank;return {...group,evidenceCount,accuracyPercent:evidenceCount?Math.round(group.correct/evidenceCount*10000)/100:null};}),coverage:subjectIds?null:{legacyRuns,excludedEvidence,repeatedAttempts},officialScore:null,nationalRank:null};
 }
