@@ -45,7 +45,7 @@ async function currentTest(env:Env,studentId:string,itemId:string){
 export async function eligibleCoachMiniTestQuestions(env:Env,user:AuthUser,outcomeId:string,mode:'NEW'|'REPEAT'){
  return all<EligibleQuestion>(env.DB.prepare(`SELECT DISTINCT q.id,q.stem_text,q.options_json,COALESCE(q.difficulty_level,q.difficulty,3) difficulty,q.solution_text,q.correct_answer,q.content_mode,q.option_count,
    e.id enrollmentId,e.season_id seasonId,season.academic_year academicYear,e.grade_level gradeLevel,
-   o.id outcomeId,o.subject_id subjectId,cv.id curriculumVersionId,cv.program_version programVersion,cv.verified verified
+   o.id outcomeId,o.code outcomeCode,o.title outcomeTitle,o.subject_id subjectId,cv.id curriculumVersionId,cv.program_version programVersion,cv.verified verified
    FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id
    JOIN outcomes o ON l.node_id='ln_'||o.id
    JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
@@ -87,7 +87,7 @@ export async function startCoachMiniTest(env:Env,user:AuthUser,itemId:string,mod
  const selected=await hydrateQuestionMedia(env,pool.slice(0,questionCount)),testId=uuid('cmt');
  if(new Set(selected.map(q=>q.id)).size!==selected.length||selected.some(q=>q.enrollmentId!==selected[0].enrollmentId||q.seasonId!==selected[0].seasonId||q.academicYear!==selected[0].academicYear||q.gradeLevel!==selected[0].gradeLevel))return{ok:false,reason:'SNAPSHOT_CONTEXT_AMBIGUOUS'};
  const statements:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO coach_mini_tests(id,assignment_id,assignment_item_id,student_id,outcome_id,cycle_no,status,question_count,pass_threshold,selection_mode) VALUES(?,?,?,?,?,?,'READY',?,?,?)`).bind(testId,item.assignment_id,itemId,user.student_id,item.outcome_id,cycleNo,questionCount,PASS_THRESHOLD,mode)];
- selected.forEach((q,index)=>statements.push(env.DB.prepare(`INSERT INTO coach_mini_test_questions(test_id,question_id,sort_order,snapshot_json) VALUES(?,?,?,?)`).bind(testId,q.id,index+1,JSON.stringify({schemaVersion:1,question:q,academicYear:q.academicYear,gradeLevel:q.gradeLevel,enrollmentId:q.enrollmentId,seasonId:q.seasonId,outcomeRefs:[{outcomeId:q.outcomeId,subjectId:q.subjectId,curriculumVersionId:q.curriculumVersionId,academicYear:q.academicYear,gradeLevel:q.gradeLevel,programVersion:q.programVersion,verified:q.verified}]}))));
+ selected.forEach((q,index)=>statements.push(env.DB.prepare(`INSERT INTO coach_mini_test_questions(test_id,question_id,sort_order,snapshot_json) VALUES(?,?,?,?)`).bind(testId,q.id,index+1,JSON.stringify({schemaVersion:1,question:q,academicYear:q.academicYear,gradeLevel:q.gradeLevel,enrollmentId:q.enrollmentId,seasonId:q.seasonId,outcomeRefs:[{outcomeId:q.outcomeId,outcomeCode:q.outcomeCode??null,outcomeTitle:q.outcomeTitle??null,subjectId:q.subjectId,curriculumVersionId:q.curriculumVersionId,academicYear:q.academicYear,gradeLevel:q.gradeLevel,programVersion:q.programVersion,verified:q.verified}]}))));
  if(mode==='NEW')selected.forEach(q=>statements.push(env.DB.prepare(`INSERT INTO coach_question_exposures(student_id,question_id) VALUES(?,?)`).bind(user.student_id,q.id)));
  try{await env.DB.batch(statements)}catch(error){
   if(mode==='NEW'&&/UNIQUE constraint failed: coach_question_exposures/.test(String(error)))return{ok:false,reason:'NEW_QUESTIONS_REQUIRED',requiredQuestionCount:MIN_QUESTIONS,questionMode:mode,retryRequired:true};
