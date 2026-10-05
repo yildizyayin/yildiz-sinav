@@ -2,8 +2,8 @@ import type { AuthUser, Env } from '../types';
 import { all, forbidden, json, notFound, one } from './db';
 
 type AssetRow={
- id:string; question_id:string; r2_key:string|null; external_url:string|null; mime_type:string|null;
- byte_sha256:string|null; byte_size:number|null; sealed_at:string|null;
+ id:string; question_id:string; r2_key?:string|null; external_url?:string|null; mime_type?:string|null;
+ byte_sha256?:string|null; byte_size?:number|null; sealed_at?:string|null;
 };
 type IntegrityResult={ok:true}|{ok:false;code:string;message:string};
 const immutablePrefix='question-media/immutable/';
@@ -17,12 +17,14 @@ async function sha256(bytes:ArrayBuffer){
 function immutableKey(hash:string){return `${immutablePrefix}${hash.slice(0,2)}/${hash}`}
 
 export async function verifyQuestionMediaIntegrity(env:Env,questionId:string):Promise<IntegrityResult>{
- const assets=await all<AssetRow>(env.DB.prepare(`SELECT id,question_id,r2_key,external_url,mime_type,byte_sha256,byte_size,sealed_at
-   FROM question_assets WHERE question_id=? ORDER BY id LIMIT ?`).bind(questionId,maxAssets+1));
+ // SELECT * deliberately avoids coupling the review gate to fixture/schema subsets.
+ // Production migration 0074 supplies the seal fields; any materialized asset row
+ // that lacks them still fails closed below.
+ const assets=await all<AssetRow>(env.DB.prepare(`SELECT * FROM question_assets WHERE question_id=? ORDER BY id LIMIT ?`).bind(questionId,maxAssets+1));
  if(assets.length>maxAssets)return{ok:false,code:'QUESTION_MEDIA_LIMIT',message:'Bir soruda en fazla 20 medya varlığı onaylanabilir.'};
  for(const asset of assets){
   if(asset.external_url)return{ok:false,code:'QUESTION_MEDIA_EXTERNAL_MUTABLE',message:'Harici medya bağlantısı değiştirilebilir olduğu için soru onaylanamaz. Medyayı yerel arşive mühürleyin.'};
-  if(!asset.r2_key||!asset.r2_key.startsWith(immutablePrefix)||!asset.byte_sha256||asset.byte_sha256.length!==64||asset.byte_size===null||!asset.sealed_at)
+  if(!asset.r2_key||!asset.r2_key.startsWith(immutablePrefix)||!asset.byte_sha256||asset.byte_sha256.length!==64||asset.byte_size===null||asset.byte_size===undefined||!asset.sealed_at)
    return{ok:false,code:'QUESTION_MEDIA_SEAL_REQUIRED',message:'Soru medyası içerik özetiyle mühürlenmeden onaylanamaz.'};
   const head=await env.FILES.head(asset.r2_key);
   if(!head)return{ok:false,code:'QUESTION_MEDIA_MISSING',message:'Mühürlü soru medyası depolamada bulunamadı.'};
