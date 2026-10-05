@@ -1,5 +1,21 @@
 # Birleşik karne için kaynak kapsamı
 
+## Güncel uygulama — 5 Ekim, kazanım geri bildirimi
+
+Yeni değişiklikler henüz test edilmedi. EXAM/QUESTION_BANK/NEW MINI_TEST/FOY
+sabit okuyucuları yetkili çıktı bazında doğru/yanlış/boş/INVALID sayısını da
+korur. frozen-combined ve frozen-expanded çıktı geri bildirimi üretir; her iki
+birleşik karne ekranı gösterir. FOY/game ve expanded endpointler artık gerçek
+reporting giriş zincirinde yönlendirilir. Kurum sınav keşfi öğrenci seçiminden
+bağımsızdır; rehberlik sınıf özetleri aktif atama/dönem kapsamındadır.
+
+Çıktı kodu/başlığı yalnız sabit kaynakta varsa gösterilir. Yeni pratik ve mini
+test kanıtları bu etiketleri saklar; 0078 yeni FOY yanıtları için ekler. Eski
+kanıt güncel programla doldurulmaz. Oyun puanı doğruluğa girmez; beceri ve süreç
+bileşeni düzeyi üretilmez. Çıktı satırları ders toplamı için toplanmaz.
+Ayrıntılar: [Maarif kabul sözleşmesi](maarif-formative-quality-acceptance.md).
+
+
 ## Güncel durum — 5 Ekim 2026
 
 Bu bölüm aşağıdaki tarihli geliştirme notlarının yerini alır; eski notlar tarihçe olarak korunur.
