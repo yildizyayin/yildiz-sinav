@@ -1,0 +1,96 @@
+name: Authenticated Result Lookup Load Proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Type RUN_AUTH_RESULT_10000 to authorize staging-only authenticated result load"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: authenticated-result-load-proof
+  cancel-in-progress: false
+
+jobs:
+  authenticated-results:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: staging
+    env:
+      SMOKE_BASE_URL: ${{ secrets.STAGING_URL || vars.STAGING_URL || 'https://demo.anunex.com' }}
+      LOAD_TEST_ALLOWED_ORIGINS: ${{ vars.LOAD_TEST_ALLOWED_ORIGINS || 'https://demo.anunex.com' }}
+      RESULT_LOAD_INSTITUTION_CODE: ${{ secrets.RESULT_LOAD_INSTITUTION_CODE }}
+      RESULT_LOAD_GRADE_LEVEL: ${{ secrets.RESULT_LOAD_GRADE_LEVEL }}
+      RESULT_LOAD_FULL_NAME: ${{ secrets.RESULT_LOAD_FULL_NAME }}
+      RESULT_LOAD_LOOKUP_TYPE: ${{ secrets.RESULT_LOAD_LOOKUP_TYPE }}
+      RESULT_LOAD_LOOKUP_VALUE: ${{ secrets.RESULT_LOAD_LOOKUP_VALUE }}
+      RESULT_LOAD_ACCESS_CODE: ${{ secrets.RESULT_LOAD_ACCESS_CODE }}
+      RESULT_LOAD_TURNSTILE_TOKEN: ${{ secrets.RESULT_LOAD_TURNSTILE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Require explicit authenticated-load confirmation
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          test "$CONFIRMATION" = "RUN_AUTH_RESULT_10000"
+          test -n "$RESULT_LOAD_INSTITUTION_CODE"
+          test -n "$RESULT_LOAD_GRADE_LEVEL"
+          test -n "$RESULT_LOAD_FULL_NAME"
+          test -n "$RESULT_LOAD_LOOKUP_VALUE"
+          test -n "$RESULT_LOAD_ACCESS_CODE"
+
+      - name: Validate staging target
+        env:
+          TARGET_URL: ${{ env.SMOKE_BASE_URL }}
+        run: node scripts/agents/load-target.mjs
+
+      - name: Create one synthetic authenticated result session
+        run: node scripts/prepare-authenticated-result-load.mjs
+
+      - name: Install k6
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            https://github.com/grafana/k6/releases/download/v0.52.0/k6-v0.52.0-linux-amd64.tar.gz \
+            | tar xz --strip-components 1
+
+      - name: Build authenticated result summary load scenario
+        run: |
+          cat > authenticated-result-load.js <<'EOF'
+          import http from 'k6/http';
+          import { check } from 'k6';
+          export const options={
+            scenarios:{authenticated_result:{executor:'constant-vus',vus:10000,duration:'60s',gracefulStop:'15s'}},
+            thresholds:{http_req_failed:['rate<0.05'],http_req_duration:['p(95)<2500']},
+          };
+          export default function(){
+            const res=http.get(`${__ENV.TARGET_URL.replace(/\/$/,'')}/api/public/results/student`,{headers:{Cookie:__ENV.RESULT_LOAD_COOKIE},redirects:0});
+            check(res,{'authenticated result 200':r=>r.status===200,'result payload':r=>{try{return JSON.parse(r.body).ok===true}catch{return false}}});
+          }
+          EOF
+
+      - name: Run 10,000 concurrent authenticated result summary requests
+        env:
+          TARGET_URL: ${{ env.SMOKE_BASE_URL }}
+        run: ./k6 run --summary-export=authenticated-result-k6.json authenticated-result-load.js
+
+      - name: Record exact proof boundary
+        if: always()
+        run: |
+          {
+            echo '### Authenticated result lookup capacity proof'
+            echo '- Target: /api/public/results/student'
+            echo '- Concurrency: 10,000 VUs for 60 seconds'
+            echo '- Identity: one staging-only synthetic published-result identity'
+            echo '- Real student data: NO'
+            echo '- Production traffic: NO'
+            echo '- This proves the authenticated summary read path, not every exam-detail/video path.'
+          } >> "$GITHUB_STEP_SUMMARY"
