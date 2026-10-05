@@ -10,6 +10,15 @@ import { resolveReportStudentId } from '../lib/reportSelection';
 
 type StudentRow = { id:string; first_name:string; last_name:string; student_number?:string; grade_level?:number; section?:string; class_name?:string; institution_name?:string };
 
+const reportViews: Record<string,{title:string;description:string;focus:string}> = {
+ STUDENT:{title:'Bireysel gelişim karnem',description:'Seçtiğin sınav ve çalışmalar üzerinden güçlü alanlarını ve gelişimini incele.',focus:'Önce geliştirilecek kazanımları, sonra bu alanlara ait çalışma sonuçlarını incele.'},
+ PARENT:{title:'Öğrenci gelişim karnesi',description:'Bağlı öğrencinin seçilen sınav ve çalışmalarındaki gelişimini takip edin.',focus:'Sonucu tek sınavla değerlendirmeyin; farklı tarihlerdeki kanıtları birlikte inceleyin.'},
+ TEACHER:{title:'Branş gelişim karnesi',description:'Yetkili olduğunuz öğrencilerin kendi branşınızdaki öğrenme kanıtlarını inceleyin.',focus:'Ders gelişimini ve geliştirilecek kazanımları bir sonraki dersin çalışma planında kullanın.'},
+ GUIDANCE_TEACHER:{title:'Rehberlik gelişim karnesi',description:'Yetkili sınıflarınızdaki öğrencilerin dersler arasındaki gelişimini birlikte inceleyin.',focus:'Destek görüşmesinde güçlü alanları ve gelişim ihtiyacını birlikte ele alın. Bu rapor psikolojik değerlendirme değildir.'},
+ INSTITUTION_MANAGER:{title:'Kurum öğrenci karnesi',description:'Kurumunuzdaki öğrencilerin seçili öğrenme kanıtlarını ve ders gelişimini inceleyin.',focus:'Bu görünüm seçilen öğrenciye aittir. Kurum genelinin ortalaması olarak kullanmayın.'},
+ SUPER_ADMIN:{title:'Öğrenci karne yönetimi',description:'Yetkili kurum ve öğrenciyi seçerek öğrenme kanıtlarını inceleyin.',focus:'Rapor kaynaklarını ve kapsam bilgisini birlikte kontrol edin.'},
+};
+
 export function Reports(){
  const {user}=useAuth();
  const [searchParams,setSearchParams]=useSearchParams();
@@ -32,6 +41,9 @@ export function Reports(){
  const requestGeneration=useRef(0);
  const report=rawReport?._scope===scopeKey?rawReport:null;
  const canChooseInstitution=user?.role==='SUPER_ADMIN';
+ const view=reportViews[user?.role||'']||{title:'Gelişim karnesi',description:'Yetkili olduğunuz öğrenme kanıtlarını inceleyin.',focus:'Kaynak ve kapsam bilgisini kontrol edin.'};
+ const savedExamIds:Array<string>=Array.isArray(report?.selectedExamIds)?report.selectedExamIds:[];
+ const selectionPending=Boolean(report)&&JSON.stringify([...new Set(selectedExams)].sort())!==JSON.stringify([...new Set(savedExamIds)].sort());
 
  const loadInstitutions=async()=>{
    if(!canChooseInstitution)return;
@@ -70,11 +82,11 @@ export function Reports(){
  useEffect(()=>{++requestGeneration.current;setBusy(false);if(studentId)void loadReport([])},[scopeKey,studentList]);
 
  const selectedStudent=useMemo(()=>students.find(s=>s.id===studentId),[students,studentId]);
- const toggleExam=(id:string)=>setSelectedExams(cur=>cur.includes(id)?cur.filter(x=>x!==id):[...cur,id]);
+ const toggleExam=(id:string)=>setSelectedExams(cur=>cur.includes(id)?cur.filter(x=>x!==id):cur.length<20?[...cur,id]:cur);
  const selectStudent=(id:string)=>{setReport(null);setSelectedExams([]);setStudentId(id);if(user?.role==='PARENT'){const next=new URLSearchParams(searchParams);if(id)next.set('studentId',id);else next.delete('studentId');setSearchParams(next,{replace:true});}};
 
  const exportCsv=()=>{
-   if(!report)return;
+   if(!report||selectionPending||busy)return;
    const rows:string[][]=[['Öğrenci','Sınav','Tarih','Ders','Doğru','Yanlış','Boş','Net','Başarı %']];
    const name=`${report.student.first_name} ${report.student.last_name}`;
    for(const r of report.subjectTrend||[])rows.push([name,r.title,r.exam_date||'',r.subject_name,String(r.correct_count??''),String(r.wrong_count??''),String(r.blank_count??''),String(r.net??''),String(r.success_percent??'')]);
@@ -84,7 +96,7 @@ export function Reports(){
  };
 
  return <>
-   <div className="page-head"><div><span className="eyebrow">Birleşik Rapor Merkezi</span><h1>Sonuçlar ve gelişim</h1><p>Seçili sınavları tek raporda karşılaştırın; branş öğretmeni yalnız kendi branşını, rehber öğretmeni yetkili sınıfın tüm derslerini görür.</p></div><div style={{display:'flex',gap:8}}><button className="ghost" onClick={()=>void loadStudents()}><RefreshCw size={16}/> Yenile</button>{report&&<><button className="secondary" onClick={exportCsv}><Download size={16}/> CSV</button><button className="primary" onClick={()=>window.print()}><Printer size={16}/> Yazdır / PDF</button></>}</div></div>
+   <div className="page-head"><div><span className="eyebrow">Birleşik Rapor Merkezi</span><h1>{view.title}</h1><p>{view.description}</p></div><div style={{display:'flex',gap:8}}><button className="ghost" onClick={()=>void loadStudents()}><RefreshCw size={16}/> Yenile</button>{report&&<><button className="secondary" disabled={busy||selectionPending} onClick={exportCsv}><Download size={16}/> CSV</button><button className="primary" disabled={busy||selectionPending} onClick={()=>{if(!busy&&!selectionPending)window.print()}}><Printer size={16}/> Yazdır / PDF</button></>}</div></div>
    {error&&<div className="alert error">{error}</div>}
 
    <div className="panel report-controls">
@@ -97,9 +109,11 @@ export function Reports(){
    </div>
 
    {report&&<>
+    <div className="alert info"><strong>{view.title}</strong><p>{view.focus}</p><p>Sınav, soru pratiği, mini test ve föy kanıtları ilgili bölümlerde seçilebilir. Mini oyun puanı öğrenme etkinliği olarak ayrı gösterilir.</p></div>
+    {selectionPending&&<div className="alert info" role="status">Sınav seçimi değişti. Önce Raporu Güncelle'ye basın; gösterilen sınav özeti son hazırlanan seçime aittir. CSV ve PDF güncellemeden sonra kullanılabilir.</div>}
     <div className="section-head"><div><h2>{report.student.first_name} {report.student.last_name}</h2><p>{report.student.institution_name||selectedStudent?.institution_name||''}{report.student.class_name?` · ${report.student.class_name}`:''}{report.restrictedToSubjects?' · Branş yetkisiyle filtrelendi':''}</p></div></div>
 
-    <div className="panel" style={{marginBottom:20}}><div className="panel-head"><div><h2>Raporlanacak sınavlar</h2><p>Varsayılan olarak son 20 sınav seçilir. İstediğiniz sınavları işaretleyip raporu yenileyin.</p></div><button className="secondary" onClick={()=>void loadReport()} disabled={!selectedExams.length||busy}><BarChart3 size={16}/> {busy?'Hazırlanıyor…':'Raporu Güncelle'}</button></div><div className="cards-list">{(report.availableExams||[]).map((e:any)=><label className="list-card" key={e.exam_id} style={{alignItems:'center',cursor:'pointer'}}><input type="checkbox" checked={selectedExams.includes(e.exam_id)} onChange={()=>toggleExam(e.exam_id)}/><div><strong>{e.title}</strong><span>{e.exam_date||'Tarih yok'} · {e.exam_type}</span></div></label>)}</div></div>
+    <div className="panel" style={{marginBottom:20}}><div className="panel-head"><div><h2>Raporlanacak sınavlar</h2><p>En fazla 20 sınav seçebilirsiniz. Seçimi değiştirince sınav özetini güncelleyin; diğer çalışma kaynakları kendi bölümlerinden seçilir.</p></div><button className="secondary" onClick={()=>void loadReport()} disabled={!selectedExams.length||busy}><BarChart3 size={16}/> {busy?'Hazırlanıyor…':'Raporu Güncelle'}</button></div><div className="cards-list">{(report.availableExams||[]).map((e:any)=><label className="list-card" key={e.exam_id} style={{alignItems:'center',cursor:'pointer'}}><input type="checkbox" checked={selectedExams.includes(e.exam_id)} disabled={!selectedExams.includes(e.exam_id)&&selectedExams.length>=20} onChange={()=>toggleExam(e.exam_id)}/><div><strong>{e.title}</strong><span>{e.exam_date||'Tarih yok'} · {e.exam_type}</span></div></label>)}</div></div>
 
     <FrozenExamReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
     <FrozenPracticeReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
