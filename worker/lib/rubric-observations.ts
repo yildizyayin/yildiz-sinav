@@ -21,7 +21,18 @@ function bounded(value:unknown,min:number,max:number){if(typeof value!=='string'
 async function fingerprint(value:string){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));return Array.from(new Uint8Array(bytes)).map(x=>x.toString(16).padStart(2,'0')).join('')}
 
 export async function handleRubricObservations(request:Request,env:Env,user:AuthUser):Promise<Response|null>{
- const url=new URL(request.url),match=url.pathname.match(/^\/api\/learning-observations\/students\/([^/]+)(?:\/([^/]+)\/withdraw)?$/);
+ const url=new URL(request.url);
+ if(url.pathname==='/api/learning-observations/archive-students'){
+  if(request.method!=='GET')return methodNotAllowed();
+  if(!['SUPER_ADMIN','INSTITUTION_MANAGER','STUDENT','PARENT'].includes(user.role))return forbidden();
+  const cursor=url.searchParams.get('cursor')||'',institutionId=user.role==='SUPER_ADMIN'?url.searchParams.get('institutionId'):null;
+  if(cursor.length>100||institutionId&&institutionId.length>100)return badRequest('Liste veya kurum seçimi geçersiz.');
+  if(user.role==='SUPER_ADMIN'&&!institutionId)return badRequest('Arşiv için kurum seçin.');
+  const scope=access(user);
+  const rows=await all<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name FROM student_entities s WHERE s.id>? AND EXISTS(SELECT 1 FROM student_enrollments e JOIN learning_rubric_observations obs ON obs.enrollment_id=e.id AND obs.student_id=e.student_id AND obs.institution_id=e.institution_id AND obs.season_id=e.season_id WHERE e.student_id=s.id AND (${scope.sql}) ${institutionId?'AND e.institution_id=?':''} AND NOT EXISTS(SELECT 1 FROM learning_rubric_observation_withdrawals w WHERE w.observation_id=obs.id)) ORDER BY s.id LIMIT 51`).bind(cursor,...scope.params,...(institutionId?[institutionId]:[])));
+  return json({ok:true,students:rows.slice(0,50),nextCursor:rows.length>50?rows[49].id:null});
+ }
+ const match=url.pathname.match(/^\/api\/learning-observations\/students\/([^/]+)(?:\/([^/]+)\/withdraw)?$/);
  if(!match)return null;
  const studentId=match[1],withdrawId=match[2];
  if(!withdrawId&&request.method==='GET'){
@@ -29,23 +40,26 @@ export async function handleRubricObservations(request:Request,env:Env,user:Auth
   const historyAvailable=['SUPER_ADMIN','INSTITUTION_MANAGER','STUDENT','PARENT'].includes(user.role);
   if(historical&&!historyAvailable)return forbidden('Geçmiş dönem görünümü bu rol için açık değil.');
   const enrollmentId=url.searchParams.get('enrollmentId')||'';
+  const institutionScope=user.role==='SUPER_ADMIN'?(url.searchParams.get('institutionId')||''):'';
+  if(institutionScope.length>100)return badRequest('Kurum seçimi geçersiz.');
   if(enrollmentId.length>100)return badRequest('Dönem seçimi geçersiz.');
   const cursorText=url.searchParams.get('cursor')||'';
   let cursor:any=null;
-  try{if(cursorText){if(cursorText.length>2000)throw new Error();cursor=JSON.parse(atob(cursorText));if(cursor.studentId!==studentId||cursor.view!==(historical?'history':'current')||cursor.enrollmentId!==enrollmentId||typeof cursor.id!=='string'||!cursor.id||cursor.id.length>100||typeof cursor.observedAt!=='string'||cursor.observedAt.length>40||!Number.isFinite(Date.parse(cursor.observedAt)))throw new Error();}}catch{return badRequest('Liste devamı geçersiz.');}
+  try{if(cursorText){if(cursorText.length>2000)throw new Error();cursor=JSON.parse(atob(cursorText));if(cursor.studentId!==studentId||cursor.view!==(historical?'history':'current')||cursor.enrollmentId!==enrollmentId||cursor.institutionScope!==institutionScope||typeof cursor.id!=='string'||!cursor.id||cursor.id.length>100||typeof cursor.observedAt!=='string'||cursor.observedAt.length>40||!Number.isFinite(Date.parse(cursor.observedAt)))throw new Error();}}catch{return badRequest('Liste devamı geçersiz.');}
   const scope=access(user),rubricScope=access(user,'o.subject_id'),observationScope=access(user,'obs.subject_id');
   const readContext=historical?'1':activeContext;
   const readJoin=historical?enrollmentJoin.replace('JOIN classes c','LEFT JOIN classes c'):enrollmentJoin;
-  const selectedContext=enrollmentId?' AND e.id=?':'';
-  const selectedParams=enrollmentId?[enrollmentId]:[];
-  const enrollments=await all<any>(env.DB.prepare(`SELECT e.id,e.season_id,e.grade_level,e.status,se.academic_year,c.name class_name ${readJoin} WHERE e.student_id=? AND ${readContext} AND (${scope.sql}) ORDER BY se.academic_year DESC,e.id LIMIT 101`).bind(studentId,...scope.params));
+  const institutionWhere=institutionScope?' AND e.institution_id=?':'';
+  const selectedContext=(enrollmentId?' AND e.id=?':'')+institutionWhere;
+  const selectedParams=[...(enrollmentId?[enrollmentId]:[]),...(institutionScope?[institutionScope]:[])];
+  const enrollments=await all<any>(env.DB.prepare(`SELECT e.id,e.season_id,e.grade_level,e.status,se.academic_year,c.name class_name ${readJoin} WHERE e.student_id=? AND ${readContext} AND (${scope.sql}) ${institutionWhere} ORDER BY se.academic_year DESC,e.id LIMIT 101`).bind(studentId,...scope.params,...(institutionScope?[institutionScope]:[])));
   if(!enrollments.length||enrollmentId&&!enrollments.some(e=>e.id===enrollmentId))return forbidden();
   if(enrollments.length>100)return badRequest('Dönem listesi güvenli sınırı aşıyor.');
   const rubrics=historical?[]:await all<any>(env.DB.prepare(`SELECT e.id enrollment_id,r.*,pc.code component_code,pc.title component_title,o.code outcome_code,o.title outcome_title,o.subject_id,CASE WHEN ?='TEACHER' AND EXISTS(SELECT 1 FROM teacher_assignments wa WHERE wa.user_id=? AND wa.institution_id=e.institution_id AND wa.season_id=e.season_id AND wa.class_id=e.class_id AND wa.subject_id=o.subject_id AND wa.assignment_type='SUBJECT' AND wa.active=1) THEN 1 ELSE 0 END can_observe ${enrollmentJoin} ${rubricJoin} WHERE e.student_id=? AND ${activeContext} AND (${rubricScope.sql}) ${selectedContext} ORDER BY r.published_at DESC,r.id`).bind(user.role,user.id,studentId,...rubricScope.params,...selectedParams));
   const cursorWhere=cursor?' AND (obs.observed_at<? OR (obs.observed_at=? AND obs.id<?))':'';
   const rows=await all<any>(env.DB.prepare(`SELECT obs.*,w.withdrawn_at ${readJoin} JOIN learning_rubric_observations obs ON obs.enrollment_id=e.id AND obs.student_id=e.student_id AND obs.institution_id=e.institution_id AND obs.season_id=e.season_id ${historical?'':'AND obs.class_id=e.class_id'} LEFT JOIN learning_rubric_observation_withdrawals w ON w.observation_id=obs.id WHERE e.student_id=? AND ${readContext} AND (${observationScope.sql}) ${selectedContext} AND w.observation_id IS NULL ${cursorWhere} ORDER BY obs.observed_at DESC,obs.id DESC LIMIT 201`).bind(studentId,...observationScope.params,...selectedParams,...(cursor?[cursor.observedAt,cursor.observedAt,cursor.id]:[])));
   const observations=rows.slice(0,200),last=observations[observations.length-1];
-  return json({ok:true,enrollments,rubrics:rubrics.map(r=>({...r,criteria:JSON.parse(r.criteria_json),criteria_json:undefined})),observations:observations.map(r=>({...r,snapshot:JSON.parse(r.snapshot_json),selections:JSON.parse(r.selections_json),snapshot_json:undefined,selections_json:undefined,fingerprint:undefined,request_id:undefined})),hasMore:rows.length>200,nextCursor:rows.length>200?btoa(JSON.stringify({studentId,view:historical?'history':'current',enrollmentId,observedAt:last.observed_at,id:last.id})):null,historyAvailable,canObserve:!historical&&user.role==='TEACHER',policy:{view:historical?'HISTORICAL_AUTHORIZED_ENROLLMENTS':'CURRENT_ACTIVE_ENROLLMENTS',currentActiveEnrollmentOnly:!historical,automaticCompetencyInference:false}});
+  return json({ok:true,enrollments,rubrics:rubrics.map(r=>({...r,criteria:JSON.parse(r.criteria_json),criteria_json:undefined})),observations:observations.map(r=>({...r,snapshot:JSON.parse(r.snapshot_json),selections:JSON.parse(r.selections_json),snapshot_json:undefined,selections_json:undefined,fingerprint:undefined,request_id:undefined})),hasMore:rows.length>200,nextCursor:rows.length>200?btoa(JSON.stringify({studentId,view:historical?'history':'current',enrollmentId,institutionScope,observedAt:last.observed_at,id:last.id})):null,historyAvailable,canObserve:!historical&&user.role==='TEACHER',policy:{view:historical?'HISTORICAL_AUTHORIZED_ENROLLMENTS':'CURRENT_ACTIVE_ENROLLMENTS',currentActiveEnrollmentOnly:!historical,automaticCompetencyInference:false}});
  }
  if(request.method!=='POST')return methodNotAllowed();
  if(user.role!=='TEACHER')return forbidden('Gözlem kaydı için ilgili dersin öğretmen yetkisi gerekir.');
