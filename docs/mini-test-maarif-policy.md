@@ -42,10 +42,27 @@ onayından geçmeden öğrenciye otomatik sunulmamalıdır. Üretim pipeline'ı 
 onaylı soru içeriği bu değişiklikte tamamlanmış değildir. Soru/içerik ve cevap anahtarı 0069 ile test başlangıcında saklanır.
 Gösterim ve puanlama bu sürümü kullanır; eski eksik READY sürümleri
 SNAPSHOT_REQUIRED ile engellenir. Görsel URL referansları saklanır; dosya
-baytlarının değişmez arşivi henüz yoktur. Eşzamanlı çift gönderim idempotansı
-ayrıca tamamlanmalıdır. Yeni testlerin native kanıtı frozen-mini-tests API üzerinden öğrenci/veli ve
+baytlarının değişmez arşivi henüz yoktur. 0070 ile test gönderimi ve bağlı cevap/ölçme/öğrenme/görev/destek/denetim
+yazıları tek atomik batch içinde tekil gönderim kaydıyla korunur. Kaybeden
+eşzamanlı istek ve tekrar gönderim kalıcı kazanan sonucu okur; batch hatası
+testi READY ve yeniden gönderilebilir bırakır. Yeni testlerin native kanıtı frozen-mini-tests API üzerinden öğrenci/veli ve
 yetkili kurum/branş kapsamıyla okunur; birleşik API miniTestIds seçimini destekler.
 Tekrar çalışmaları akademik kanıta eklenmez. Karne ekranı tamamlanan yeni mini testleri eğitim yılına göre listeler;
 öğrenci/veli veya yetkili branş/kurum kapsamıyla en fazla 20 mini test seçilir.
 Mini testler tek başına ya da seçili sınav/soru pratiğiyle birleştirilir.
 Tekrar ve sabit kanıtı eksik eski testler listeye katılmaz.
+
+## 5 Ekim: insan incelemesi kapısı
+
+Açıkça AI kaynaklı olarak kaydedilen taslaklar OWNED olsa da REVIEW durumunda
+saklanır. İki onay API yolu aynı inceleme servisini kullanır. AI taslağı için
+soru/çözüm/kaynak, doğru şık, aynı yıl/sınıf/dersin doğrulanmış aktif çıktısı
+ve dört insan incelemesi kontrolü gerekir. İncelenen soru sürümü değişirse
+eski karar reddedilir. Ekranda incelenen program bağlamı da istekle gönderilir;
+sürüm aynı kalsa bile değişmiş program eski onayı geçersiz kılar. İçerik ekranı AI kaynağını ve öğrenme çıktısı bağlamını
+gösterir. Kaynak beyanı, kaynağı saklanarak korunur; manuel olarak yapıştırılan
+bir metnin AI ile yazıldığını otomatik tespit etme garantisi değildir.
+
+Serbest prompttan taslak döndüren eski üretici henüz kalıcı, çıktı bazlı ve
+sınırsız onaylı içerik üreten bir pipeline değildir. Çıktı kapsam tablosu,
+onaylı bankanın sürekli beslenmesi ve Maarif süreç/rubrik görevleri ayrı iştir.
