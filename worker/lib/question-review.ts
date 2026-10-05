@@ -1,5 +1,6 @@
 import type {AuthUser,Env} from '../types';
 import {all,badRequest,forbidden,json,notFound,one} from './db';
+import {verifyQuestionMediaIntegrity} from './question-media-integrity';
 
 export function normalizeQuestionOrigin(value:unknown):string|null {
  const origin=String(value??'MANUAL').trim().toUpperCase();
@@ -43,6 +44,8 @@ export async function reviewQuestionWithGate(request:Request,env:Env,user:AuthUs
  if(status==='APPROVED'){
   if(!['OWNED','LICENSED','PUBLIC_DOMAIN','USER_PROVIDED'].includes(q.copyright_status))return badRequest('Kısıtlı telif durumundaki soru onaylanamaz.','COPYRIGHT_BLOCKED');
   if(q.question_type==='MULTIPLE_CHOICE'&&!validMultipleChoiceQuestion(q))return badRequest('Soru seçenekleri ve cevap anahtarı doğrulanamadı.','INVALID_QUESTION_CONTENT');
+  const mediaIntegrity=await verifyQuestionMediaIntegrity(env,id);
+  if(!mediaIntegrity.ok)return json({ok:false,error:{code:mediaIntegrity.code,message:mediaIntegrity.message}},409);
   if(ai){
    const year=typeof q.academic_year==='string'?q.academic_year.match(/^(\d{4})-(\d{4})$/):null;
    if(!Number.isInteger(q.grade_level)||q.grade_level<1||q.grade_level>12||!year||Number(year[2])!==Number(year[1])+1||typeof q.subject_id!=='string'||!q.subject_id.trim())return badRequest('AI taslağının eğitim yılı, sınıf ve ders kapsamı geçersiz.','VERIFIED_CURRICULUM_REQUIRED');
