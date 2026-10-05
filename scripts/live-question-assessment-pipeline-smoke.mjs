@@ -291,4 +291,29 @@ const staleAi = await request(`/api/platform/questions/${aiQuestion.id}/review`,
 assert(staleAi.payload?.error?.code === 'QUESTION_REVIEW_CHANGED', 'Stale AI revision was accepted', staleAi.payload);
 console.log('✓ AI human review gate — draft, mandatory checks, verified context, stale revision rejected');
 
+const poolCoverage = await request(`/api/question-bank-standard/coverage?academicYear=${encodeURIComponent(miniScope.academicYear)}&gradeLevel=${miniScope.gradeLevel}&subjectId=${encodeURIComponent(miniOutcome.subject_id)}`, { cookie: admin });
+const coveredOutcome = poolCoverage.payload?.items?.find(item => item.id === miniOutcomeId);
+assert(poolCoverage.payload?.target === 10 && coveredOutcome?.approvedUniqueCount >= 10 && coveredOutcome.missingCount === 0, 'Coverage did not count the fresh approved common-platform pool', poolCoverage.payload);
+await request(`/api/question-bank-standard/coverage?academicYear=${encodeURIComponent(miniScope.academicYear)}`, { cookie: teacher, expected: 403 });
+const jobContext = { curriculumVersionId: coveredOutcome.curriculumVersionId, academicYear: miniScope.academicYear, gradeLevel: coveredOutcome.gradeLevel, subjectId: coveredOutcome.subjectId, programVersion: coveredOutcome.programVersion };
+// This database and outcome are isolated synthetic preview fixtures. Clear only
+// their previous active intent so a failed/rerun smoke cannot manufacture duplicates.
+const priorJobs = await request(`/api/question-bank-standard/generation-jobs?academicYear=${encodeURIComponent(miniScope.academicYear)}&outcomeId=${encodeURIComponent(miniOutcomeId)}&status=REQUESTED&limit=50`, { cookie: admin });
+for (const job of priorJobs.payload?.jobs || []) {
+  if (job.status === 'REQUESTED' && job.context?.curriculumVersionId === jobContext.curriculumVersionId) await request(`/api/question-bank-standard/generation-jobs/${encodeURIComponent(job.id)}/cancel`, { method: 'PATCH', cookie: admin, json: {} });
+}
+const generationRequest = { outcomeId: miniOutcomeId, expectedContext: jobContext, requestKey: crypto.randomUUID(), questionCount: 5 };
+await request('/api/question-bank-standard/generation-jobs', { method: 'POST', cookie: teacher, json: generationRequest, expected: 403 });
+const requestedJob = await request('/api/question-bank-standard/generation-jobs', { method: 'POST', cookie: admin, json: generationRequest, expected: 201 });
+assert(requestedJob.payload?.job?.status === 'REQUESTED' && requestedJob.payload.reused === false && requestedJob.payload.job.questionCount === 5, 'Generation request did not persist truthful requested state', requestedJob.payload);
+const replayedJob = await request('/api/question-bank-standard/generation-jobs', { method: 'POST', cookie: admin, json: generationRequest });
+assert(replayedJob.payload?.reused === true && replayedJob.payload.job?.id === requestedJob.payload.job.id, 'Generation request retry created another job', replayedJob.payload);
+await request('/api/question-bank-standard/generation-jobs', { method: 'POST', cookie: admin, json: { ...generationRequest, questionCount: 6 }, expected: 409 });
+await request('/api/question-bank-standard/generation-jobs', { method: 'POST', cookie: admin, json: { ...generationRequest, requestKey: crypto.randomUUID() }, expected: 409 });
+const cancelledJob = await request(`/api/question-bank-standard/generation-jobs/${encodeURIComponent(requestedJob.payload.job.id)}/cancel`, { method: 'PATCH', cookie: admin, json: {} });
+assert(cancelledJob.payload?.job?.status === 'CANCELLED', 'Generation request cancellation did not persist', cancelledJob.payload);
+const replayCancelled = await request('/api/question-bank-standard/generation-jobs', { method: 'POST', cookie: admin, json: generationRequest });
+assert(replayCancelled.payload?.job?.status === 'CANCELLED' && replayCancelled.payload.job.id === requestedJob.payload.job.id, 'Retry of cancelled intent silently requested another job', replayCancelled.payload);
+console.log('✓ Outcome pool coverage and generation intent — exact context, retry/conflict/cancel guards, no AI provider call');
+
 console.log('\nQuestion pool assessment pipeline staging smoke passed.');
