@@ -1,0 +1,124 @@
+name: Result Provider Isolation Probe
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: result-provider-probe-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: staging
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_WORKERS_SUBDOMAIN: ${{ vars.CLOUDFLARE_WORKERS_SUBDOMAIN || 'rtsgida.workers.dev' }}
+      PR_KEY: ${{ github.event.pull_request.number || github.run_id }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Validate staging credentials
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || (echo "Missing CLOUDFLARE_API_TOKEN" >&2 && exit 1)
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "Missing CLOUDFLARE_ACCOUNT_ID" >&2 && exit 1)
+
+      - name: Provision isolated R2 and Queue resources
+        id: resources
+        shell: bash
+        run: |
+          set -euo pipefail
+          key="${PR_KEY//[^0-9A-Za-z-]/-}"
+          worker="anunex-result-provider-probe-${key}"
+          bucket="anunex-result-probe-${key}"
+          aq="anunex-result-probe-artifacts-${key}"
+          adlq="anunex-result-probe-artifacts-dlq-${key}"
+          rq="anunex-result-probe-retention-${key}"
+          rdlq="anunex-result-probe-retention-dlq-${key}"
+          auth="Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
+          api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
+
+          bucket_json="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/r2/buckets?name=$(printf '%s' "$bucket" | jq -sRr @uri)")"
+          if ! jq -e --arg name "$bucket" 'any((.result // .)[]?; .name == $name)' <<<"$bucket_json" >/dev/null; then
+            curl --fail-with-body --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' \
+              --data "$(jq -nc --arg name "$bucket" '{name:$name,location:"WEUR"}')" "$api/r2/buckets" >/dev/null
+          fi
+
+          queues_json="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/queues?per_page=100")"
+          ensure_queue() {
+            local name="$1"
+            if ! jq -e --arg name "$name" 'any(.result[]?; .queue_name == $name)' <<<"$queues_json" >/dev/null; then
+              curl --fail-with-body --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' \
+                --data "$(jq -nc --arg name "$name" '{queue_name:$name}')" "$api/queues" >/dev/null
+            fi
+          }
+          ensure_queue "$adlq"
+          ensure_queue "$rdlq"
+          ensure_queue "$aq"
+          ensure_queue "$rq"
+
+          jq -n \
+            --arg name "$worker" --arg bucket "$bucket" --arg aq "$aq" --arg adlq "$adlq" --arg rq "$rq" --arg rdlq "$rdlq" \
+            '{name:$name,main:"worker/result-provider-probe.ts",compatibility_date:"2026-08-26",compatibility_flags:["nodejs_compat"],r2_buckets:[{binding:"RESULT_FILES",bucket_name:$bucket}],queues:{producers:[{binding:"RESULT_ARTIFACT_QUEUE",queue:$aq},{binding:"RESULT_RETENTION_QUEUE",queue:$rq}],consumers:[{queue:$aq,max_batch_size:5,max_retries:5,dead_letter_queue:$adlq},{queue:$rq,max_batch_size:5,max_retries:5,dead_letter_queue:$rdlq}]},vars:{RESULT_ARTIFACT_QUEUE_NAME:$aq,RESULT_RETENTION_QUEUE_NAME:$rq}}' \
+            > wrangler.result-provider-probe.json
+
+          echo "worker=$worker" >> "$GITHUB_OUTPUT"
+          echo "bucket=$bucket" >> "$GITHUB_OUTPUT"
+          echo "aq=$aq" >> "$GITHUB_OUTPUT"
+          echo "rq=$rq" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy isolated provider probe
+        run: npx wrangler deploy --config wrangler.result-provider-probe.json
+
+      - name: Configure one-time probe token
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          import { randomBytes } from 'node:crypto';
+          import { spawnSync } from 'node:child_process';
+          const token=randomBytes(32).toString('hex');
+          const put=spawnSync('npx',['wrangler','secret','put','PROBE_TOKEN','--config','wrangler.result-provider-probe.json'],{input:token+'\n',encoding:'utf8',stdio:['pipe','pipe','pipe']});
+          if(put.error||put.status!==0)throw new Error('Probe token setup failed');
+          process.stdout.write(`RESULT_PROBE_TOKEN=${token}\n`);
+          JS
+          token_line="$(node --input-type=module <<'JS'
+          import { randomBytes } from 'node:crypto'; process.stdout.write(randomBytes(32).toString('hex'));
+          JS
+          )"
+          printf '%s' "$token_line" | npx wrangler secret put PROBE_TOKEN --config wrangler.result-provider-probe.json >/dev/null
+          echo "RESULT_PROBE_TOKEN=$token_line" >> "$GITHUB_ENV"
+
+      - name: Run isolated conditional R2 and Queue probe
+        env:
+          RESULT_PROBE_URL: https://${{ steps.resources.outputs.worker }}.${{ env.CLOUDFLARE_WORKERS_SUBDOMAIN }}/
+        run: node scripts/run-result-provider-probe.mjs
+
+      - name: Record provider proof
+        run: |
+          {
+            echo "### Isolated provider probe"
+            echo "- Conditional private R2 write: PASS"
+            echo "- Artifact Queue delivery: PASS"
+            echo "- Retention Queue delivery: PASS"
+            echo "- Scope: synthetic staging-only provider resources; no D1 or student data"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove transient local config
+        if: always()
+        run: rm -f wrangler.result-provider-probe.json
