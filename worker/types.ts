@@ -18,6 +18,8 @@ export interface Env {
   // Dedicated private bucket; never reuse public content assets.
   RESULT_FILES?: R2Bucket;
   AI?: Ai;
+  QUESTION_GENERATION_ENABLED?: string;
+  QUESTION_GENERATION_MODEL?: string;
   ENVIRONMENT?: string;
   PRODUCT_NAME?: string;
   TURNSTILE_SITE_KEY?: string;
