@@ -1,3 +1,4 @@
+import {useRunSelection,RunSelector} from './FrozenPracticeReport';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { api, qs } from '../api';
 
@@ -50,35 +51,40 @@ export function FrozenFoyGameReport({studentId,exams=[],selectedExamIds=[]}:{stu
  const [year,setYear]=useState(''),[includeExams,setIncludeExams]=useState(false),[data,setData]=useState<any>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  const chosenYear=year||years[0]||'',validYear=/^\d{4}-\d{4}$/.test(chosenYear)&&Number(chosenYear.slice(5))===Number(chosenYear.slice(0,4))+1;
  const foy=useFrozenActivitySelection(studentId,chosenYear,'FOY',50),games=useFrozenActivitySelection(studentId,chosenYear,'MINI_GAME',100);
+ const practice=useRunSelection(studentId,chosenYear,'practice',100),mini=useRunSelection(studentId,chosenYear,'mini-test',20);
+ const [repeatPolicy,setRepeatPolicy]=useState<'FIRST'|'LATEST'>('LATEST');
  const examIds=[...new Set(selectedExamIds.filter(id=>exams.some(e=>e.exam_id===id&&e.academic_year===chosenYear)))].sort();
- const scope=JSON.stringify([studentId,chosenYear]),key=JSON.stringify([scope,[...foy.selected].sort(),[...games.selected].sort(),includeExams,examIds]);
+ const scope=JSON.stringify([studentId,chosenYear]),key=JSON.stringify([scope,[...foy.selected].sort(),[...games.selected].sort(),includeExams,examIds,[...practice.selected].sort(),[...mini.selected].sort(),repeatPolicy]);
  const keyRef=useRef(key),generation=useRef(0);keyRef.current=key;
  useEffect(()=>{generation.current++;setData(null);setError('');setBusy(false);setIncludeExams(false)},[scope]);
  useEffect(()=>{generation.current++;setData(null);setError('');setBusy(false)},[key]);
  useEffect(()=>()=>{generation.current++},[]);
- const hasSelection=foy.selected.length>0||games.selected.length>0||(includeExams&&examIds.length>0);
+ const hasSelection=practice.selected.length>0||mini.selected.length>0||foy.selected.length>0||games.selected.length>0||(includeExams&&examIds.length>0);
  const load=async()=>{
   const requestKey=key,attempt=++generation.current;setBusy(true);setError('');setData(null);
   try{
-   const result=await api<any>(`/api/reporting/students/${encodeURIComponent(studentId)}/frozen-expanded${qs({academicYear:chosenYear,foyRunIds:foy.selected.length?foy.selected.join(','):null,gameSessionIds:games.selected.length?games.selected.join(','):null,examIds:includeExams&&examIds.length?examIds.join(','):null})}`);
+   const result=await api<any>(`/api/reporting/students/${encodeURIComponent(studentId)}/frozen-expanded${qs({academicYear:chosenYear,runIds:practice.selected.length?practice.selected.join(','):null,miniTestIds:mini.selected.length?mini.selected.join(','):null,repeatPolicy,foyRunIds:foy.selected.length?foy.selected.join(','):null,gameSessionIds:games.selected.length?games.selected.join(','):null,examIds:includeExams&&examIds.length?examIds.join(','):null})}`);
    if(keyRef.current===requestKey&&generation.current===attempt)setData({key:requestKey,result});
   }catch(e:any){if(keyRef.current===requestKey&&generation.current===attempt)setError(e.message||'Föy ve mini oyun karnesi hazırlanamadı.')}
   finally{if(keyRef.current===requestKey&&generation.current===attempt)setBusy(false)}
  };
  const result=data?.key===key?data.result:null;
- return <section className="panel" style={{marginBottom:20}} aria-label="Föy ve mini oyun karnesi">
-  <div className="panel-head"><div><h2>Föy ve mini oyun karnesi</h2><p>Föy doğruluğunu dondurulmuş soru kanıtıyla izleyin. Mini oyun puanı sınav başarısına çevrilmez; ayrı etkinlik metriği olarak gösterilir.</p></div></div>
+ return <section className="panel" style={{marginBottom:20}} aria-label="Birleşik öğrenme karnesi">
+  <div className="panel-head"><div><h2>Birleşik öğrenme karnesi</h2><p>Sınav, soru pratiği, mini test ve föy kayıtlarını aynı eğitim yılında seçerek birleştirin. Mini oyun puanı sınav başarısına çevrilmez; ayrı etkinlik metriği olarak gösterilir.</p></div></div>
   <div className="form-grid"><label>Eğitim yılı<input value={chosenYear} onChange={e=>setYear(e.target.value)} placeholder="2026-2027" list="foy-game-report-years"/><datalist id="foy-game-report-years">{years.map(value=><option key={value} value={value}/>)}</datalist></label></div>
+  <RunSelector title="Soru pratiği" selection={practice} valid={Boolean(studentId)&&validYear} empty="Bu eğitim yılında rapora uygun soru pratiği bulunmuyor."/>
+  <RunSelector title="Yeni soru mini testi" selection={mini} valid={Boolean(studentId)&&validYear} empty="Bu eğitim yılında tamamlanan yeni soru mini testi bulunmuyor."/>
+  <label>Soru pratiği denemesi<select value={repeatPolicy} onChange={e=>setRepeatPolicy(e.target.value as 'FIRST'|'LATEST')}><option value="FIRST">İlk çözüm</option><option value="LATEST">Son çözüm</option></select></label>
   <Selector title="Föy" selection={foy} valid={Boolean(studentId)&&validYear} source="FOY"/>
   <Selector title="Mini oyun" selection={games} valid={Boolean(studentId)&&validYear} source="MINI_GAME"/>
   <label><input type="checkbox" checked={includeExams} onChange={e=>setIncludeExams(e.target.checked)}/> Üstte seçili, bu eğitim yılındaki {examIds.length} sınavı föy doğruluğuyla karşılaştır</label>
-  <div style={{marginTop:16}}><button className="secondary" disabled={busy||!studentId||!validYear||!hasSelection||(includeExams&&examIds.length>20)} onClick={()=>void load()}>{busy?'Hazırlanıyor…':'Föy ve Oyun Karnesini Hazırla'}</button></div>
+  <div style={{marginTop:16}}><button className="secondary" disabled={busy||!studentId||!validYear||!hasSelection||(includeExams&&examIds.length>20)} onClick={()=>void load()}>{busy?'Hazırlanıyor…':'Birleşik Karneyi Hazırla'}</button></div>
   <p className="muted">Föy kanıtı yalnız çözüm anında dondurulmuş doğrulanmış program bağlamından hesaplanır. Mini oyun puanı doğru/yanlış/boş toplamına katılmaz. Yazdır / PDF ile bu görünüm de çıktıya dahil edilir.</p>
   {error&&<div className="alert error" role="alert">{error}</div>}
   {result&&<>
    <div className="alert info">{result.message}</div>
-   <div style={{overflowX:'auto'}}><table><thead><tr><th>Ders</th><th>Sınıf</th><th>Doğru / Yanlış / Boş</th><th>Kanıt</th><th>Doğruluk</th></tr></thead><tbody>{(result.groups||[]).map((group:any)=><tr key={JSON.stringify([group.subjectId,group.curriculumVersionId,group.academicYear,group.gradeLevel,group.programVersion])}><td>{group.subjectName||'Ders adı mevcut değil'}{group.programVersion&&<><br/><small>{group.programVersion}</small></>}</td><td>{group.gradeLevel}</td><td>{group.correct} / {group.wrong} / {group.blank}</td><td>{group.evidenceCount}{group.sourceBreakdown?.map((part:any)=><div key={part.sourceType}><small>{part.sourceType==='FOY'?'Föy':part.sourceType==='EXAM'?'Sınav':part.sourceType}: {part.evidenceCount}</small></div>)}</td><td>{group.accuracyPercent===null?'—':`%${Number(group.accuracyPercent).toFixed(1)}`}</td></tr>)}</tbody></table></div>
-   {!result.groups?.length&&<div className="empty">Seçili föy/sınav kapsamında doğrulanmış doğruluk kanıtı bulunmuyor.</div>}
+   <div style={{overflowX:'auto'}}><table><thead><tr><th>Ders</th><th>Sınıf</th><th>Doğru / Yanlış / Boş</th><th>Kanıt</th><th>Doğruluk</th></tr></thead><tbody>{(result.groups||[]).map((group:any)=><tr key={JSON.stringify([group.subjectId,group.curriculumVersionId,group.academicYear,group.gradeLevel,group.programVersion])}><td>{group.subjectName||'Ders adı mevcut değil'}{group.programVersion&&<><br/><small>{group.programVersion}</small></>}</td><td>{group.gradeLevel}</td><td>{group.correct} / {group.wrong} / {group.blank}</td><td>{group.evidenceCount}{group.sourceBreakdown?.map((part:any)=><div key={part.sourceType}><small>{part.sourceType==='FOY'?'Föy':part.sourceType==='EXAM'?'Sınav':part.sourceType==='QUESTION_BANK'?'Soru pratiği':part.sourceType==='MINI_TEST'?'Mini test':part.sourceType}: {part.evidenceCount}</small></div>)}</td><td>{group.accuracyPercent===null?'—':`%${Number(group.accuracyPercent).toFixed(1)}`}</td></tr>)}</tbody></table></div>
+   {!result.groups?.length&&<div className="empty">Seçili kaynaklarda doğrulanmış doğruluk kanıtı bulunmuyor.</div>}
    {result.gameActivity&&<div style={{marginTop:16}}><h3>Mini oyun etkinliği</h3><div style={{overflowX:'auto'}}><table><thead><tr><th>Ders</th><th>Sınıf</th><th>Oturum</th><th>Ortalama oyun puanı</th><th>XP</th><th>Süre</th></tr></thead><tbody>{(result.gameActivity.groups||[]).map((group:any)=><tr key={JSON.stringify([group.subjectId,group.curriculumVersionId,group.academicYear,group.gradeLevel,group.programVersion])}><td>{group.subjectName||'Ders adı mevcut değil'}</td><td>{group.gradeLevel}</td><td>{group.sessionCount}</td><td>{group.averageScore==null?'—':Number(group.averageScore).toFixed(1)}</td><td>{group.totalXp}</td><td>{group.totalDurationSeconds} sn</td></tr>)}</tbody></table></div>{!result.gameActivity.groups?.length&&<div className="empty">Seçili mini oyunlarda doğrulanmış program bağlamı bulunmuyor.</div>}</div>}
   </>}
  </section>;
