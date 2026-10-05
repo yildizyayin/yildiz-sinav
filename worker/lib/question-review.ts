@@ -66,6 +66,8 @@ export async function reviewQuestionWithGate(request:Request,env:Env,user:AuthUs
  const checks=ai&&status==='APPROVED'?JSON.stringify({answerAndSolution:true,curriculum:true,ageAppropriate:true,originalityAndRights:true}):null;
  const result=await env.DB.prepare(`UPDATE question_bank SET review_status=?,reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,rejection_note=?,review_checks_json=?,updated_at=CURRENT_TIMESTAMP
  WHERE id=? AND review_revision=?${ai&&status==='APPROVED'?` AND ${AI_REVIEW_CONTEXT_SQL}${contextFence}`:''}`).bind(status,user.id,status==='REJECTED'?String(body.note||'').trim().slice(0,2000)||null:null,checks,id,q.review_revision,...contextParams).run();
- if(Number(result.meta?.changes||0)!==1)return json({ok:false,error:{code:'QUESTION_REVIEW_CHANGED',message:'Soru veya program inceleme sırasında değişti. Güncel içeriği yeniden inceleyin.'}},409);
+ // D1 counts the revision trigger too; this primary-key conditional write
+ // changes no rows when the fence fails, and at least one when it commits.
+ if(Number(result.meta?.changes||0)<1)return json({ok:false,error:{code:'QUESTION_REVIEW_CHANGED',message:'Soru veya program inceleme sırasında değişti. Güncel içeriği yeniden inceleyin.'}},409);
  return json({ok:true,id,status});
 }
