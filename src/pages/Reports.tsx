@@ -1,3 +1,4 @@
+import { RubricArchiveDirectory } from '../components/RubricArchiveDirectory';
 import { RubricObservationReport } from '../components/RubricObservationReport';
 import {GuidanceFrozenReport} from '../components/GuidanceFrozenReport';
 import {InstitutionFrozenReport} from '../components/InstitutionFrozenReport';
@@ -111,6 +112,7 @@ export function Reports(){
     {user?.role==='PARENT'&&students.length>1&&!studentId&&<div className="alert info">Birden fazla bağlı öğrenci var. Gelişimini görmek istediğiniz çocuğu seçin.</div>}
    </div>
 
+   {user&&['SUPER_ADMIN','INSTITUTION_MANAGER','STUDENT','PARENT'].includes(user.role)&&<RubricArchiveDirectory key={listScope} institutionId={canChooseInstitution?institutionId:(user.institution_id||'')} userId={user.id} superAdmin={user.role==='SUPER_ADMIN'}/>}
    {user?.role==='GUIDANCE_TEACHER'&&<GuidanceFrozenReport key={listScope} institutionId={user.institution_id||''}/>}
    {['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user?.role||'')&&<InstitutionFrozenReport key={listScope} institutionId={canChooseInstitution?institutionId:(user?.institution_id||'')}/>}
 
