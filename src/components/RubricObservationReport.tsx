@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { api, qs } from '../api';
 
-export function RubricObservationReport({studentId,userId,allowHistory=false}:{studentId:string;userId:string;allowHistory?:boolean}) {
- const [history,setHistory]=useState(false),[enrollmentId,setEnrollmentId]=useState('');
+export function RubricObservationReport({studentId,userId,allowHistory=false,initialHistory=false,institutionScope}:{studentId:string;userId:string;allowHistory?:boolean;initialHistory?:boolean;institutionScope?:string}) {
+ const [history,setHistory]=useState(initialHistory),[enrollmentId,setEnrollmentId]=useState('');
  const [scopedData,setData]=useState<any>(null),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
  const [selection,setSelection]=useState(''),[levels,setLevels]=useState<Record<string,string>>({});
  const [observedAt,setObservedAt]=useState(()=>new Date().toISOString().slice(0,10));
@@ -10,11 +10,11 @@ export function RubricObservationReport({studentId,userId,allowHistory=false}:{s
  const [confirmed,setConfirmed]=useState(false),[requestId,setRequestId]=useState(()=>crypto.randomUUID());
  const [withdrawId,setWithdrawId]=useState(''),[reason,setReason]=useState('');
  const base=`/api/learning-observations/students/${encodeURIComponent(studentId)}`;
- const scope=JSON.stringify([studentId,userId,history,enrollmentId]);
+ const scope=JSON.stringify([studentId,userId,history,enrollmentId,institutionScope]);
  const currentScope=useRef(scope);currentScope.current=scope;const generation=useRef(0),mounted=useRef(true);
  useEffect(()=>{mounted.current=true;return()=>{mounted.current=false}},[]);
  const data=scopedData?.scope===scope?scopedData.result:null;
- const path=base+qs({view:history?'history':null,enrollmentId:enrollmentId||null});
+ const path=base+qs({view:history?'history':null,enrollmentId:enrollmentId||null,institutionId:institutionScope||null});
  const load=async(cursor?:string)=>{const requested=scope,attempt=++generation.current;const result=await api<any>(path+(cursor?`${path.includes('?')?'&':'?'}cursor=${encodeURIComponent(cursor)}`:''));if(mounted.current&&currentScope.current===requested&&generation.current===attempt)setData((old:any)=>({scope:requested,result:{...result,observations:cursor&&old?.scope===requested?[...new Map([...old.result.observations,...result.observations].map((x:any)=>[x.id,x])).values()]:result.observations}}))};
  useEffect(()=>{setError('');setNotice('');setSelection('');setLevels({});setWithdrawId('');void load().catch(e=>{if(mounted.current&&currentScope.current===scope)setError(e.message)})},[scope]);
  const nextPage=async()=>{if(!data?.nextCursor)return;setBusy(true);setError('');try{await load(data.nextCursor)}catch(e:any){setError(e.message)}finally{setBusy(false)}};
