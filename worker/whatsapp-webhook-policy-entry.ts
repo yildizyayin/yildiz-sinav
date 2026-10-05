@@ -10,8 +10,8 @@ async function persistStatus(env:Env,event:WhatsAppDeliveryStatus){
  if(event.status==='delivered'||event.status==='read')await env.DB.prepare(`UPDATE announcement_deliveries SET status='DELIVERED',delivered_at=COALESCE(delivered_at,?),failure_code=NULL WHERE provider_message_id=? AND channel='WHATSAPP' AND status<>'FAILED'`).bind(occurredAt,event.messageId).run();
  else if(event.status==='failed')await env.DB.prepare(`UPDATE announcement_deliveries SET status='FAILED',failure_code=?,attempted_at=COALESCE(attempted_at,?) WHERE provider_message_id=? AND channel='WHATSAPP'`).bind(failureCode,occurredAt,event.messageId).run();
 }
-export function createWhatsAppWebhookPolicyEntry(app:WrappedApp):ExportedHandler<Env,CapacityJobMessage> & Required<Pick<ExportedHandler<Env,CapacityJobMessage>,'fetch'|'queue'|'scheduled'>>{return{
- async fetch(request,env,ctx){
+export function createWhatsAppWebhookPolicyEntry(app:WrappedApp){return{
+ async fetch(request:Request,env:Env,ctx:ExecutionContext){
   const url=new URL(request.url);if(url.pathname!=='/api/nibiru/whatsapp/webhook')return app.fetch(request,env,ctx);
   if(request.method==='GET'){
    const mode=url.searchParams.get('hub.mode'),token=url.searchParams.get('hub.verify_token'),challenge=url.searchParams.get('hub.challenge')||'';
@@ -29,6 +29,6 @@ export function createWhatsAppWebhookPolicyEntry(app:WrappedApp):ExportedHandler
   // security/status policy. request.clone() above keeps the original body intact.
   return app.fetch(request,env,ctx);
  },
- async queue(batch,env,ctx){if(app.queue)return app.queue(batch,env,ctx);for(const message of batch.messages)message.retry({delaySeconds:30});},
- async scheduled(event,env,ctx){if(app.scheduled)return app.scheduled(event,env,ctx);}
+ async queue(batch:MessageBatch<CapacityJobMessage>,env:Env,ctx:ExecutionContext){if(app.queue)return app.queue(batch,env,ctx);for(const message of batch.messages)message.retry({delaySeconds:30});},
+ async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){if(app.scheduled)return app.scheduled(event,env,ctx);}
 }}
