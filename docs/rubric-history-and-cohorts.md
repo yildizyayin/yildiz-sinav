@@ -1,6 +1,6 @@
 # Rubric history, export and cohort distributions
 
-Status: code added, NOT tested/typechecked/built/migrated or deployed. Migration 0081 adds ordered history/cohort indexes; 0079–0080 remain prerequisites.
+Status: partial local acceptance completed; provider staging and browser acceptance remain pending. All 94 SQL migrations are exercised in the SQLite acceptance fixtures; separate local D1 migration verification is recorded in the continuation log. Migration 0081 adds ordered history/cohort indexes; 0079–0080 remain prerequisites.
 
 ## Individual history
 
@@ -29,3 +29,11 @@ Source >5000 observations or >500 criterion groups fails explicitly; date narrow
 ## Deferred acceptance
 
 Check all history roles, revoked parent links, cross-institution enrollment selection, teacher/guidance historical rejection, moved-class enrollment, inactive old season/class, duplicate timestamp pagination ties and invalid cursor scope. Verify CSV quotation, formula protection, export cap/no partial download, scope switch/unmount and concurrent visibility behavior. Cohort checks: LATEST/ALL, equal timestamp ordering, repeated observations, withdrawn/malformed/conflicting snapshots, rubric version separation, exact guidance assignment, no individual PII and date/group caps. Tests have not run.
+
+## Observation acceptance — 2026-10-06
+
+Twenty-three isolated acceptance cases execute the actual observation handler and SQL against all 94 migrations. They cover frozen rubric/selections, append-only observation and withdrawal triggers, identical request replay versus changed-content conflict, per-observer request identity and repeated authorization. Fourteen context changes are each checked before selection and again immediately before INSERT: assignment activity, institution, season, class, subject and type; enrollment departure/class/grade; student activity; season/class activity; curriculum verification and outcome activity. Unauthorized roles and unrelated institution/student contexts cannot create records.
+
+All six read roles, active parent-link revocation, subject filtering, guidance revocation, authorized departed-enrollment history and staff history rejection are covered. Original-observer withdrawal requires current subject authority, is rechecked at the INSERT, retains the immutable original and excludes it from current/history lists; a correction uses a new request. A 201-record equal-timestamp case checks 200-row pagination without duplicates, cursor scope and revocation between pages.
+
+This is local SQLite/D1-adapter acceptance, not Cloudflare staging or browser verification. Cohort LATEST/ALL, malformed/conflicting frozen definitions, moved-class history, CSV/UI isolation and actual provider acceptance remain open. No production code or schema changed in this acceptance step.
