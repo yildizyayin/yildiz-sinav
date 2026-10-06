@@ -1,5 +1,6 @@
 import type {AuthUser,Env} from '../types';
 import {all,badRequest,forbidden,json,one,uuid} from './db';
+import {cohortReportClassScope} from './cohort-report-class-scope';
 import {stepCohortEventFrame,type CohortFrameStep} from './cohort-event-frame';
 import {cohortLearningReport} from './cohort-learning-report';
 import {cohortReportCsv,finishCohortBackgroundReport,mergeCohortPartition} from './cohort-background-aggregate';
@@ -10,17 +11,20 @@ const fail=(status:number,code:string,message:string)=>json({ok:false,error:{cod
 const actorScope=(u:AuthUser)=>JSON.stringify([u.role,u.institution_id,u.student_id]);
 const asIso=(date:string)=>date.includes('T')?date:date.replace(' ','T')+'Z';
 function selectionOf(value:any,user:AuthUser){
- if(!['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user.role))return null;
+ if(!value||typeof value!=='object'||Array.isArray(value))return null;
+ if(!['SUPER_ADMIN','INSTITUTION_MANAGER','GUIDANCE_TEACHER'].includes(user.role))return null;
  const institutionId=user.role==='SUPER_ADMIN'?value.institutionId:user.institution_id;
  if(typeof institutionId!=='string'||!institutionId||institutionId.length>100||typeof value.academicYear!=='string'||value.academicYear.length>9||!Array.isArray(value.sources)||!value.sources.length||value.sources.length>5||value.sources.some((v:any)=>!['EXAM','QUESTION_BANK','MINI_TEST','FOY','MINI_GAME'].includes(v))||!Array.isArray(value.examIds)||value.examIds.length>20||value.examIds.some((v:any)=>typeof v!=='string'||!v||v.length>100)||!['FIRST','LATEST'].includes(value.repeatPolicy))return null;
  for(const key of ['fromDate','toDate'])if(value[key]!=null&&(typeof value[key]!=='string'||value[key].length>10))return null;
- return {institutionId,academicYear:value.academicYear,sources:[...new Set<string>(value.sources)].sort(),examIds:value.sources.includes('EXAM')?[...new Set<string>(value.examIds)].sort():[],repeatPolicy:value.repeatPolicy,fromDate:value.fromDate||'',toDate:value.toDate||''};
+ if(user.role==='GUIDANCE_TEACHER'){if(typeof value.classId!=='string'||!value.classId||value.classId.length>100||value.seasonId!=null&&(typeof value.seasonId!=='string'||value.seasonId.length>100))return null;}else if(value.classId||value.seasonId)return null;
+ return {...(user.role==='GUIDANCE_TEACHER'?{classId:value.classId,seasonId:value.seasonId||''}:{}),institutionId,academicYear:value.academicYear,sources:[...new Set<string>(value.sources)].sort(),examIds:value.sources.includes('EXAM')?[...new Set<string>(value.examIds)].sort():[],repeatPolicy:value.repeatPolicy,fromDate:value.fromDate||'',toDate:value.toDate||''};
 }
 function sourceUrl(selection:any){const url=new URL('https://internal.invalid/api/reporting/institution/frozen-learning-summary');for(const key of ['institutionId','academicYear','repeatPolicy','fromDate','toDate'])if(selection[key])url.searchParams.set(key,selection[key]);url.searchParams.set('sources',selection.sources.join(','));url.searchParams.set('examIds',selection.examIds.join(','));return url;}
 async function proof(env:Env,user:AuthUser,selection:any,asOf:string){
- const access=await cohortLearningReport(env,user,sourceUrl(selection),undefined,{enrollmentIds:[],asOf});if(!access.ok||!selection.sources.includes('EXAM'))return access;
- const available=await all<any>(env.DB.prepare(`SELECT p.exam_id FROM exam_delivery_profiles p WHERE p.exam_id IN (${selection.examIds.map(()=>'?').join(',')}) AND p.result_freeze_status='PUBLISHED' AND julianday(p.published_at)<=julianday(?) AND (p.result_publish_at IS NULL OR julianday(p.result_publish_at)<=julianday(?)) AND EXISTS(SELECT 1 FROM exam_result_snapshots x JOIN exam_participants ep ON ep.id=x.participant_id AND ep.exam_id=x.exam_id AND ep.student_id=x.student_id AND ep.institution_id=x.institution_id JOIN student_enrollments e ON e.student_id=x.student_id AND e.institution_id=x.institution_id AND e.season_id=ep.season_id JOIN institution_seasons se ON se.id=e.season_id AND se.institution_id=e.institution_id WHERE x.exam_id=p.exam_id AND x.snapshot_version=p.snapshot_version AND x.institution_id=? AND se.academic_year=? AND julianday(e.created_at)<=julianday(?) AND CASE WHEN json_valid(x.payload_json) THEN json_extract(x.payload_json,'$.exam.academic_year') END=? AND CASE WHEN json_valid(x.payload_json) THEN json_extract(x.payload_json,'$.exam.exam_id') END=x.exam_id)`).bind(...selection.examIds,asOf,asOf,selection.institutionId,selection.academicYear,asOf,selection.academicYear));
- return available.length===selection.examIds.length?access:fail(400,'REPORT_EXAM_UNAVAILABLE','Seçili sınavların tümü için bu kurum ve eğitim yılında yayımlanmış dönem kaydı sonucu bulunmuyor. Sınav seçimini kontrol edin.');
+ const classScope=await cohortReportClassScope(env,user,selection);if(user.role==='GUIDANCE_TEACHER'&&!classScope)return forbidden();
+ const access=await cohortLearningReport(env,user,sourceUrl(selection),classScope,{enrollmentIds:[],asOf});if(!access.ok||!selection.sources.includes('EXAM'))return access;
+ const available=await all<any>(env.DB.prepare(`SELECT p.exam_id FROM exam_delivery_profiles p WHERE p.exam_id IN (${selection.examIds.map(()=>'?').join(',')}) AND p.result_freeze_status='PUBLISHED' AND julianday(p.published_at)<=julianday(?) AND (p.result_publish_at IS NULL OR julianday(p.result_publish_at)<=julianday(?)) AND EXISTS(SELECT 1 FROM exam_result_snapshots x JOIN exam_participants ep ON ep.id=x.participant_id AND ep.exam_id=x.exam_id AND ep.student_id=x.student_id AND ep.institution_id=x.institution_id JOIN student_enrollments e ON e.student_id=x.student_id AND e.institution_id=x.institution_id AND e.season_id=ep.season_id JOIN institution_seasons se ON se.id=e.season_id AND se.institution_id=e.institution_id WHERE x.exam_id=p.exam_id AND x.snapshot_version=p.snapshot_version AND x.institution_id=? AND se.academic_year=? AND julianday(e.created_at)<=julianday(?) AND CASE WHEN json_valid(x.payload_json) THEN json_extract(x.payload_json,'$.exam.academic_year') END=? AND CASE WHEN json_valid(x.payload_json) THEN json_extract(x.payload_json,'$.exam.exam_id') END=x.exam_id ${classScope?"AND e.class_id=? AND e.season_id=? AND e.status='ACTIVE'":''})`).bind(...selection.examIds,asOf,asOf,selection.institutionId,selection.academicYear,asOf,selection.academicYear,...(classScope?[classScope.id,classScope.seasonId]:[])));
+ return available.length===selection.examIds.length?access:fail(400,'REPORT_EXAM_UNAVAILABLE','Seçili sınavların tümü için seçilen kapsam ve eğitim yılında yayımlanmış dönem kaydı sonucu bulunmuyor. Sınav seçimini kontrol edin.');
 }
 async function actor(env:Env,job:any){const user=await one<AuthUser>(env.DB.prepare('SELECT id,institution_id,student_id,role,display_name,email,username FROM users WHERE id=? AND active=1').bind(job.actor_user_id));return user&&actorScope(user)===job.actor_scope_json?user:null;}
 async function revision(env:Env,institutionId:string){return one<any>(env.DB.prepare('SELECT COALESCE((SELECT revision FROM cohort_report_revisions WHERE institution_id=?),0) source_revision,revision global_revision FROM cohort_report_global_revision WHERE id=1').bind(institutionId));}
@@ -30,7 +34,7 @@ const sourceChanged=()=>fail(409,'REPORT_SOURCE_CHANGED','Rapor hazırlanırken 
 
 export async function handlePrivateCohortReport(request:Request,env:Env,user:AuthUser):Promise<Response|null>{
  const url=new URL(request.url);if(url.pathname!==base&&!url.pathname.startsWith(base+'/'))return null;
- if(!['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user.role))return forbidden();
+ if(!['SUPER_ADMIN','INSTITUTION_MANAGER','GUIDANCE_TEACHER'].includes(user.role))return forbidden();
  if(!enabled(env)&&request.method==='GET'&&url.pathname===base)return json({ok:true,enabled:false,jobs:[]});
  if(!enabled(env))return fail(503,'COHORT_REPORT_NOT_CONFIGURED','Kurum raporunu arka planda hazırlama henüz etkinleştirilmedi.');
  if(url.pathname===base){
@@ -78,12 +82,13 @@ export async function consumePrivateCohortReports(batch:MessageBatch<any>,env:En
    if(!user){await terminal('REVOKED','REPORT_SCOPE_REVOKED');continue;}
    const access=await proof(env,user,selection,asOf);if(access.status>=500)throw new Error('REPORT_SOURCE_RETRY');if(!access.ok){const detail=await access.json() as any;await terminal(access.status===403?'REVOKED':'FAILED',detail.error?.code||'REPORT_SCOPE_REVOKED');continue;}
    if(!await unchanged(env,job)){await terminal('FAILED','REPORT_SOURCE_CHANGED');continue;}
+   const classScope=await cohortReportClassScope(env,user,selection);if(user.role==='GUIDANCE_TEACHER'&&!classScope){await terminal('REVOKED','REPORT_SCOPE_REVOKED');continue;}
    let frameStep:CohortFrameStep|null=null,report:any=null,ids:string[]=[],more=false;
    if(job.pending_json){const pending=JSON.parse(job.pending_json);frameStep=await stepCohortEventFrame(env,user,selection,job,pending,pending.enrollmentId);more=true;}
    else{
-    const rows=await all<any>(env.DB.prepare('SELECT e.id FROM student_enrollments e JOIN institution_seasons se ON se.id=e.season_id AND se.institution_id=e.institution_id WHERE e.institution_id=? AND se.academic_year=? AND e.id>? AND julianday(e.created_at)<=julianday(?) ORDER BY e.id LIMIT 21').bind(job.institution_id,selection.academicYear,job.enrollment_cursor,asOf));
-    ids=rows.slice(0,20).map(r=>r.id);let response=await cohortLearningReport(env,user,sourceUrl(selection),undefined,{enrollmentIds:ids,asOf});report=await response.json() as any;
-    if(!response.ok&&report.error?.code==='REPORT_SCOPE_TOO_LARGE'&&ids.length>1){ids=ids.slice(0,1);response=await cohortLearningReport(env,user,sourceUrl(selection),undefined,{enrollmentIds:ids,asOf});report=await response.json() as any;}
+    const rows=await all<any>(env.DB.prepare(`SELECT e.id FROM student_enrollments e JOIN institution_seasons se ON se.id=e.season_id AND se.institution_id=e.institution_id WHERE e.institution_id=? AND se.academic_year=? AND e.id>? AND julianday(e.created_at)<=julianday(?) ${classScope?"AND e.class_id=? AND e.season_id=? AND e.status='ACTIVE'":''} ORDER BY e.id LIMIT 21`).bind(job.institution_id,selection.academicYear,job.enrollment_cursor,asOf,...(classScope?[classScope.id,classScope.seasonId]:[])));
+    ids=rows.slice(0,20).map(r=>r.id);let response=await cohortLearningReport(env,user,sourceUrl(selection),classScope,{enrollmentIds:ids,asOf});report=await response.json() as any;
+    if(!response.ok&&report.error?.code==='REPORT_SCOPE_TOO_LARGE'&&ids.length>1){ids=ids.slice(0,1);response=await cohortLearningReport(env,user,sourceUrl(selection),classScope,{enrollmentIds:ids,asOf});report=await response.json() as any;}
     if(response.status>=500)throw new Error('REPORT_SOURCE_RETRY');
     if(!response.ok&&report.error?.code==='REPORT_SCOPE_TOO_LARGE'&&ids.length===1){frameStep=await stepCohortEventFrame(env,user,selection,job,null,ids[0]);report=null;more=true;}
     else{if(!response.ok){await terminal(response.status===403?'REVOKED':'FAILED',report.error?.code||'REPORT_SOURCE_INVALID');continue;}more=rows.length>ids.length;}
