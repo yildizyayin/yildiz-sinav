@@ -12,6 +12,7 @@ import standard from '../worker/question-bank-standard-entry';
 
 const user={id:'admin',role:'SUPER_ADMIN'} as any;
 const checks={answerAndSolution:true,curriculum:true,ageAppropriate:true,originalityAndRights:true};
+const qualityReview={outcomeAlignment:'The item directly assesses the linked learning outcome.',languageAndDistractors:'Wording is clear and distractors are plausible and distinct.',duplicateDisposition:'NO_REPETITION_FOUND',duplicateRationale:'No materially repeated item was found in the reviewed set.'};
 function setup(){
  const db=new DatabaseSync(':memory:');
  db.exec(`CREATE TABLE question_bank(id TEXT PRIMARY KEY,owner_type TEXT DEFAULT 'PLATFORM',owner_id TEXT,academic_year TEXT,grade_level INTEGER,subject_id TEXT,topic TEXT,subtopic TEXT,question_type TEXT,difficulty INTEGER DEFAULT 3,difficulty_level INTEGER DEFAULT 3,content_mode TEXT,option_count INTEGER,prior_grade_refs_json TEXT,lgs_probability REAL,yks_probability REAL,exam_5y_count INTEGER,stem_text TEXT,options_json TEXT,correct_answer TEXT,solution_text TEXT,source_label TEXT,copyright_status TEXT,review_status TEXT,created_by TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP,origin_kind TEXT DEFAULT 'MANUAL',reviewed_by TEXT,reviewed_at TEXT,rejection_note TEXT);
@@ -38,7 +39,7 @@ function setup(){
 it('both review routes require explicit current-version AI review and validate rights/content/context',async()=>{
  const f=setup();try{
   expect((await handlePlatformOps(f.request({status:'APPROVED'},'/api/platform/questions/q/review'),f.env,user))?.status).toBe(409);
-  const payload=()=>({status:'APPROVED',checks,expectedRevision:f.revision(),expectedContext:f.context()});
+  const payload=()=>({status:'APPROVED',checks,qualityReview,expectedRevision:f.revision(),expectedContext:f.context()});
   expect((await standard.fetch(f.request({status:'APPROVED',expectedRevision:f.revision()}),f.env,{} as any)).status).toBe(400);
   expect((await standard.fetch(f.request({status:'APPROVED',expectedRevision:f.revision()},'/api/platform/questions/q/review'),f.env,{} as any)).status).toBe(400);
   f.db.exec(`UPDATE question_bank SET copyright_status='RESTRICTED' WHERE id='q'`);
@@ -50,15 +51,15 @@ it('both review routes require explicit current-version AI review and validate r
   f.db.exec(`UPDATE curriculum_versions SET verified=1`);
   expect((await standard.fetch(f.request(payload()),f.env,{} as any)).status).toBe(200);
   const row=f.db.prepare(`SELECT review_status,reviewed_by,review_checks_json FROM question_bank WHERE id='q'`).get();
-  expect(row?.review_status).toBe('APPROVED');expect(row?.reviewed_by).toBe('admin');expect(JSON.parse(String(row?.review_checks_json))).toEqual(checks);
+  expect(row?.review_status).toBe('APPROVED');expect(row?.reviewed_by).toBe('admin');expect(JSON.parse(String(row?.review_checks_json))).toEqual({...checks,qualityReview:{schemaVersion:1,...qualityReview}});
  }finally{f.db.close();}
 });
 it('bounds AI curriculum review to fifteen references within D1 hundred-parameter limit',async()=>{
  const f=setup();try{
   for(let i=2;i<=15;i++){f.db.prepare(`INSERT INTO outcomes VALUES(?,?,'Synthetic outcome','cv',7,'math',1)`).run(`o${i}`,`O.${i}`);f.db.prepare(`INSERT INTO question_learning_links VALUES('q',?)`).run(`ln_o${i}`);}
-  expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,expectedRevision:f.revision(),expectedContext:f.context()}),f.env,user,'q')).status).toBe(200);
+  expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,qualityReview,expectedRevision:f.revision(),expectedContext:f.context()}),f.env,user,'q')).status).toBe(200);
   f.db.exec(`INSERT INTO outcomes VALUES('o16','O.16','Synthetic outcome','cv',7,'math',1);INSERT INTO question_learning_links VALUES('q','ln_o16')`);
-  expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,expectedRevision:f.revision(),expectedContext:f.context()}),f.env,user,'q')).status).toBe(400);
+  expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,qualityReview,expectedRevision:f.revision(),expectedContext:f.context()}),f.env,user,'q')).status).toBe(400);
  }finally{f.db.close();}
 });
 it('rejects AI null, mismatched year/grade/subject and inactive outcome scope',async()=>{
@@ -68,7 +69,7 @@ it('rejects AI null, mismatched year/grade/subject and inactive outcome scope',a
    `UPDATE question_bank SET subject_id='other' WHERE id='q'`,
    `UPDATE outcomes SET active=0`]){
    f.db.exec(mutation);
-   expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,expectedRevision:f.revision(),expectedContext:f.context()}),f.env,user,'q')).status).toBe(400);
+   expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,qualityReview,expectedRevision:f.revision(),expectedContext:f.context()}),f.env,user,'q')).status).toBe(400);
    f.db.exec(`UPDATE question_bank SET grade_level=7,academic_year='2026-2027',subject_id='math' WHERE id='q';UPDATE curriculum_versions SET grade_level=7;UPDATE outcomes SET grade_level=7,active=1`);
   }
  }finally{f.db.close();}
@@ -78,16 +79,16 @@ it('rejects a displayed curriculum witness when program changes before the revie
   const expectedRevision=f.revision(),expectedContext=f.context();
   f.db.exec(`UPDATE curriculum_versions SET program_version='new displayed program'`);
   expect(f.revision()).toBe(expectedRevision);
-  const response=await reviewQuestionWithGate(f.request({status:'APPROVED',checks,expectedRevision,expectedContext}),f.env,user,'q');
+  const response=await reviewQuestionWithGate(f.request({status:'APPROVED',checks,qualityReview,expectedRevision,expectedContext}),f.env,user,'q');
   expect(response.status).toBe(409);expect((await response.json() as any).error.code).toBe('QUESTION_REVIEW_CONTEXT_CHANGED');
   expect(f.db.prepare(`SELECT review_status FROM question_bank WHERE id='q'`).get()?.review_status).toBe('REVIEW');
-  expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,expectedRevision,expectedContext:f.context()}),f.env,user,'q')).status).toBe(200);
+  expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,qualityReview,expectedRevision,expectedContext:f.context()}),f.env,user,'q')).status).toBe(200);
  }finally{f.db.close();}
 });
 it('invalidates approval on late media changes and revisions both questions on media reassignment',async()=>{
  const f=setup();try{
   f.race(()=>f.db.exec(`INSERT INTO question_assets VALUES('asset','q','https://example.invalid/new-image')`));
-  expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,expectedRevision:f.revision(),expectedContext:f.context()}),f.env,user,'q')).status).toBe(409);
+  expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,qualityReview,expectedRevision:f.revision(),expectedContext:f.context()}),f.env,user,'q')).status).toBe(409);
   expect(f.db.prepare(`SELECT review_status FROM question_bank WHERE id='q'`).get()?.review_status).toBe('REVIEW');
   f.db.exec(`INSERT INTO question_bank(id) VALUES('other')`);
   for(const table of ['question_assets','question_content_blocks']){
@@ -106,7 +107,7 @@ it('rejects content, mapping and program changes during approval and stops AI do
  const f=setup();try{
   for(const sql of [`UPDATE question_bank SET solution_text='changed' WHERE id='q'`,`UPDATE curriculum_versions SET program_version='changed'`,`DELETE FROM question_learning_links WHERE question_id='q'`]){
    f.race(()=>f.db.exec(sql));
-   expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,expectedRevision:f.revision(),expectedContext:f.context()}),f.env,user,'q')).status).toBe(409);
+   expect((await reviewQuestionWithGate(f.request({status:'APPROVED',checks,qualityReview,expectedRevision:f.revision(),expectedContext:f.context()}),f.env,user,'q')).status).toBe(409);
   }
   expect((await standard.fetch(f.request({originKind:'MANUAL',keepApproved:true},'/api/question-bank-standard/q'),f.env,{} as any)).status).toBe(400);
   f.db.exec(`UPDATE question_bank SET review_status='APPROVED' WHERE id='q'`);
@@ -139,7 +140,7 @@ it('uses native D1 trigger-inclusive change counts without misreporting committe
   const changes:number[]=[];let beforeWrite:(()=>Promise<void>)|undefined;
   const wrap=(sql:string,statement:any):any=>({bind:(...args:any[])=>wrap(sql,statement.bind(...args)),first:statement.first.bind(statement),all:statement.all.bind(statement),run:async()=>{if(sql.startsWith('UPDATE question_bank')&&beforeWrite){const fn=beforeWrite;beforeWrite=undefined;await fn();}const r=await statement.run();changes.push(Number(r.meta.changes));return r;}});
   const env={DB:{prepare:(sql:string)=>wrap(sql,native.prepare(sql))}} as any;
-  const body={status:'APPROVED',checks,expectedRevision:f.revision(),expectedContext:f.context()};
+  const body={status:'APPROVED',checks,qualityReview,expectedRevision:f.revision(),expectedContext:f.context()};
   const approved=await standard.fetch(f.request(body,'/api/platform/questions/q/review'),env,{} as any);
   expect(changes).toContain(2);expect(approved.status).toBe(200);
   expect(await native.prepare("SELECT review_status FROM question_bank WHERE id='q'").first('review_status')).toBe('APPROVED');
