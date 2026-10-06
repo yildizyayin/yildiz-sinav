@@ -35,7 +35,7 @@ it('pins the assigned season and rejects another class, institution and withdraw
 
 it('enforces job ownership and source revision at download, including revoke/regrant',async()=>{
  const f=fixture();try{
-  const id=await f.create();const key=`report-exports/${id}/ready.json`;f.objects.set(key,'{"ok":true}');f.db.prepare("UPDATE private_cohort_report_jobs SET status='READY',object_key=? WHERE id=?").run(key,id);
+  const id=await f.create();expect(JSON.parse(String(f.db.prepare('SELECT selection_json FROM private_cohort_report_jobs WHERE id=?').get(id)!.selection_json)).seasonId).toBe('season');const key=`report-exports/${id}/ready.json`;f.objects.set(key,'{"ok":true}');f.db.prepare("UPDATE private_cohort_report_jobs SET status='READY',object_key=? WHERE id=?").run(key,id);
   expect((await f.read(id))!.status).toBe(200);const gets=f.gets();
   expect((await f.read(id,{...f.user,id:'someone-else'}))!.status).toBe(403);expect(f.gets()).toBe(gets);
   f.db.exec('UPDATE teacher_assignments SET active=0');expect((await f.read(id))!.status).toBe(403);
@@ -48,7 +48,8 @@ it('rejects forbidden roles, fails closed when disabled, and does not claim a li
  const f=fixture();try{
   for(const role of ['TEACHER','STUDENT','PARENT'])expect((await handlePrivateCohortReport(new Request('https://test/api/private-cohort-reports'),f.env,{...f.user,role}))!.status).toBe(403);
   const id=await f.create();f.db.prepare("UPDATE private_cohort_report_jobs SET status='RUNNING',lease_token='live',lease_until=datetime('now','+2 minutes') WHERE id=?").run(id);
-  let ack=0,retry=0;await consumePrivateCohortReports({messages:[{body:{schemaVersion:1,jobId:id},ack:()=>ack++,retry:()=>retry++}]} as any,f.env);expect(ack).toBe(1);expect(retry).toBe(0);expect(f.objects.size).toBe(0);
+  const before=f.db.prepare('SELECT status,lease_token,lease_until,step_no,enrollment_cursor FROM private_cohort_report_jobs WHERE id=?').get(id);
+  let ack=0,retry=0;await consumePrivateCohortReports({messages:[{body:{schemaVersion:1,jobId:id},ack:()=>ack++,retry:()=>retry++}]} as any,f.env);expect(ack).toBe(1);expect(retry).toBe(0);expect(f.objects.size).toBe(0);expect(f.db.prepare('SELECT status,lease_token,lease_until,step_no,enrollment_cursor FROM private_cohort_report_jobs WHERE id=?').get(id)).toEqual(before);
   f.env.COHORT_REPORTS_ENABLED='false';expect((await handlePrivateCohortReport(new Request('https://test/api/private-cohort-reports'),f.env,f.user))!.status).toBe(200);expect((await f.read(id))!.status).toBe(503);
  }finally{f.db.close()}
 });
