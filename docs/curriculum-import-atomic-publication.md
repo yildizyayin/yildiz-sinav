@@ -25,3 +25,7 @@ The reader preserves quoted multiline fields, escaped double quotes and physical
 Changing import metadata or the selected file clears the current job/preview and invalidates pending preview/commit responses. Year/program changes clear selected version details; list and detail responses are generation guarded. A stale server request can still finish; UI invalidation does not cancel a committed database transaction.
 
 Deferred checks: comma/semicolon/tab, BOM/CRLF, quoted newlines and delimiters, doubled quotes, unmatched quotes, characters after closing quotes, wrong column count, alias-header duplication, exact node aliases, unknown types and malformed UTF-8. Verify physical row numbers and A/B/A filter switches, rapid version selection, metadata/file changes during preview/commit and component unmount. No test/build/browser run has occurred for these changes.
+
+## Local acceptance — 2026-10-06
+
+Nine publication acceptance cases now pass using all 94 SQL migrations in an isolated SQLite database. They cover forward parent foreign keys, rollback and retry at each of five batch statements, incomplete staging, missing parents, revoked subjects, literal confirmation and registry publication boundaries. Async dispatch is awaited inside the router catch so rejected database operations return the standard 500 response. Provider staging, concurrent commits and maximum-size timing remain pending.
