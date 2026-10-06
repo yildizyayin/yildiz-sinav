@@ -118,3 +118,35 @@ it('keeps a newer lease and cursor intact when an older worker finishes uploadin
   const message=messageFor(id);await consumePrivateCohortReports(message.batch,f.env);expect(message.ack()).toBe(1);expect(f.objects.size).toBe(0);expect(f.db.prepare('SELECT status,lease_token,enrollment_cursor,step_no FROM private_cohort_report_jobs WHERE id=?').get(id)).toMatchObject({status:'RUNNING',lease_token:'new-worker',enrollment_cursor:'new-cursor',step_no:7});
  }finally{f.db.close()}
 });
+
+it('invalidates prepared reports on guidance assignment insert, update and delete',async()=>{
+ const f=fixture();try{
+  await f.create();const revision=()=>Number(f.db.prepare("SELECT revision FROM cohort_report_revisions WHERE institution_id='school'").get()?.revision||0);const before=revision();
+  f.db.exec("INSERT INTO teacher_assignments(id,user_id,institution_id,season_id,class_id,assignment_type) VALUES('extra','guide','school','season','class','GUIDANCE')");expect(revision()).toBe(before+1);
+  f.db.exec("UPDATE teacher_assignments SET active=0 WHERE id='extra'");expect(revision()).toBe(before+2);
+  f.db.exec("DELETE FROM teacher_assignments WHERE id='extra'");expect(revision()).toBe(before+3);
+ }finally{f.db.close()}
+});
+
+it('does not invalidate cohort sources for unrelated subject-only assignment changes',async()=>{
+ const f=fixture();try{
+  await f.create();const revision=()=>Number(f.db.prepare("SELECT revision FROM cohort_report_revisions WHERE institution_id='school'").get()?.revision||0);const before=revision();
+  f.db.exec("INSERT INTO teacher_assignments(id,user_id,institution_id,season_id,class_id,assignment_type) VALUES('subject-only','guide','school','season','class','SUBJECT'); UPDATE teacher_assignments SET active=0 WHERE id='subject-only'; DELETE FROM teacher_assignments WHERE id='subject-only'");expect(revision()).toBe(before);
+ }finally{f.db.close()}
+});
+
+it('increments both institution generations when guidance authority moves away and back',async()=>{
+ const f=fixture();try{
+  await f.create();const revision=(institution:string)=>Number(f.db.prepare('SELECT revision FROM cohort_report_revisions WHERE institution_id=?').get(institution)?.revision||0);const school=revision('school'),foreign=revision('foreign');
+  f.db.exec("UPDATE teacher_assignments SET institution_id='foreign' WHERE id='assignment'");expect(revision('school')).toBe(school+1);expect(revision('foreign')).toBe(foreign+1);
+  f.db.exec("UPDATE teacher_assignments SET institution_id='school' WHERE id='assignment'");expect(revision('school')).toBe(school+2);expect(revision('foreign')).toBe(foreign+2);
+ }finally{f.db.close()}
+});
+
+it('fences all prepared statuses but stops generation churn after expiration',async()=>{
+ const f=fixture();try{
+  const id=await f.create();const revision=()=>Number(f.db.prepare("SELECT revision FROM cohort_report_revisions WHERE institution_id='school'").get()?.revision||0);const before=revision();
+  for(const [n,status] of ['QUEUED','RUNNING','READY'].entries()){f.db.prepare('UPDATE private_cohort_report_jobs SET status=? WHERE id=?').run(status,id);f.db.exec("UPDATE teacher_assignments SET active=1-active WHERE id='assignment'");expect(revision()).toBe(before+n+1);}
+  f.db.prepare("UPDATE private_cohort_report_jobs SET expires_at=datetime('now','-1 minute') WHERE id=?").run(id);f.db.exec("UPDATE teacher_assignments SET active=1-active WHERE id='assignment'");expect(revision()).toBe(before+3);
+ }finally{f.db.close()}
+});
