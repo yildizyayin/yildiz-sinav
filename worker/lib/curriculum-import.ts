@@ -30,11 +30,28 @@ const aliases = {
   title: ['title','outcome','kazanim','kazanım','ogrenme_ciktisi','öğrenme_çıktısı','aciklama','açıklama'],
 } as const;
 
-function normHeader(value:string){return value.trim().toLocaleLowerCase('tr-TR').replace(/\s+/g,'_')}
+function normHeader(value:string){return value.trim().toLowerCase().replace(/\s+/g,'_')}
 
-function detectDelimiter(header:string){const candidates=[',',';','\t'];return candidates.sort((a,b)=>header.split(b).length-header.split(a).length)[0]}
+function detectDelimiter(text:string){
+ const counts=new Map([[',',0],[';',0],['\t',0]]);let quoted=false,started=false;
+ for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){started=true;if(quoted&&text[i+1]==='"')i++;else quoted=!quoted;}else if(!quoted){if(c==='\n'){if(started)break;for(const k of counts.keys())counts.set(k,0);continue;}if(c!==' '&&c!=='\t')started=true;if(counts.has(c))counts.set(c,counts.get(c)!+1);}}
+ return [...counts].sort((a,b)=>b[1]-a[1])[0][0];
+}
 
-function splitCsv(line:string,delimiter:string){const out:string[]=[];let current='';let quoted=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(quoted&&line[i+1]==='"'){current+='"';i++}else quoted=!quoted}else if(c===delimiter&&!quoted){out.push(current);current=''}else current+=c}out.push(current);return out}
+function readCsvRecords(text:string,delimiter:string){
+ const records:{cols:string[];rowNo:number}[]=[];let cols:string[]=[],field='',quoted=false,closed=false,line=1,startLine=1;
+ const finish=()=>{cols.push(field);if(cols.length>1||cols[0].trim())records.push({cols,rowNo:startLine});cols=[];field='';closed=false;};
+ for(let i=0;i<text.length;i++){const c=text[i];
+  if(quoted){if(c==='"'){if(text[i+1]==='"'){field+='"';i++;}else{quoted=false;closed=true;}}else{field+=c;if(c==='\n')line++;}continue;}
+  if(c===delimiter){cols.push(field);field='';closed=false;continue;}
+  if(c==='\n'){finish();line++;startLine=line;continue;}
+  if(closed){if(c===' '||c==='\t')continue;return {records:[],errors:[`${line}. satırda kapanan tırnaktan sonra beklenmeyen karakter var.`]};}
+  if(c==='"'){if(field.trim())return {records:[],errors:[`${line}. satırda alan ortasında tırnak var.`]};field='';quoted=true;continue;}
+  field+=c;
+ }
+ if(quoted)return {records:[],errors:[`${startLine}. satırda açılan tırnak kapanmamış.`]};
+ finish();return {records,errors:[] as string[]};
+}
 
 function indexOf(headers:string[],names:readonly string[]){return headers.findIndex(h=>names.includes(h))}
 
@@ -61,21 +78,26 @@ export function validateCurriculumHierarchy(rows:HierarchyRow[]):void {
 }
 
 export function parseCurriculumCsv(text:string, programCode:'SCHOOL'|'TYT'|'AYT', expectedGrade:number|null):CurriculumParseResult{
-  const normalized=text.replace(/^\uFEFF/,'').replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim();
-  if(!normalized)return {rows:[],delimiter:',',errors:['Dosya boş.']};
-  const lines=normalized.split('\n').filter(line=>line.trim().length>0);
-  if(lines.length<2)return {rows:[],delimiter:',',errors:['Başlık satırı ve en az bir veri satırı gereklidir.']};
-  const delimiter=detectDelimiter(lines[0]);
-  const headers=splitCsv(lines[0],delimiter).map(normHeader);
+  const normalized=text.replace(/^\uFEFF/,'').replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  if(!normalized.trim())return {rows:[],delimiter:',',errors:['Dosya boş.']};
+  const delimiter=detectDelimiter(normalized);const parsed=readCsvRecords(normalized,delimiter);
+  if(parsed.errors.length)return {rows:[],delimiter,errors:parsed.errors};
+  const records=parsed.records;
+  if(records.length<2)return {rows:[],delimiter,errors:['Başlık satırı ve en az bir veri satırı gereklidir.']};
+  const headers=records[0].cols.map(normHeader);
   const subjectIdx=indexOf(headers,aliases.subject);const gradeIdx=indexOf(headers,aliases.grade);const codeIdx=indexOf(headers,aliases.code);const parentCodeIdx=indexOf(headers,aliases.parentCode);const nodeTypeIdx=indexOf(headers,aliases.nodeType);const unitIdx=indexOf(headers,aliases.unit);const topicIdx=indexOf(headers,aliases.topic);const subtopicIdx=indexOf(headers,aliases.subtopic);const titleIdx=indexOf(headers,aliases.title);
   const errors:string[]=[];
+  const allowedHeaders=new Set<string>(Object.values(aliases).flat());
+  if(headers.some(h=>!allowedHeaders.has(h)))errors.push('CSV başlığında boş veya tanınmayan alan var. Belgelenen başlıkları kullanın.');
+  for(const names of Object.values(aliases))if(headers.filter(h=>(names as readonly string[]).includes(h)).length>1)errors.push('Aynı veri alanı için birden fazla başlık kullanılamaz.');
   if(subjectIdx<0)errors.push('Ders kodu sütunu bulunamadı. Örnek: subject_code.');
   if(titleIdx<0)errors.push('Kazanım/öğrenme çıktısı metni sütunu bulunamadı. Örnek: title.');
   if(programCode==='SCHOOL'&&gradeIdx<0&&expectedGrade==null)errors.push('Okul programında sınıf bilgisi dosyada veya import ayarında bulunmalıdır.');
   if(errors.length)return {rows:[],delimiter,errors};
   const rows:CurriculumCsvRow[]=[];const dedupe=new Set<string>();
-  for(let i=1;i<lines.length;i++){
-    const cols=splitCsv(lines[i],delimiter);const issues:string[]=[];
+  for(let i=1;i<records.length;i++){
+    const {cols,rowNo}=records[i];const issues:string[]=[];
+    if(cols.length!==headers.length)issues.push('Satırdaki alan sayısı CSV başlığıyla eşleşmiyor.');
     const subjectCode=(cols[subjectIdx]||'').trim().toLocaleUpperCase('tr-TR');
     const title=(cols[titleIdx]||'').trim();
     const rawGrade=gradeIdx>=0?(cols[gradeIdx]||'').trim():'';
@@ -91,15 +113,17 @@ export function parseCurriculumCsv(text:string, programCode:'SCHOOL'|'TYT'|'AYT'
     if(!title)issues.push('Kazanım/öğrenme çıktısı metni boş.');
     const outcomeCode=codeIdx>=0?(cols[codeIdx]||'').trim()||null:null;
     const parentCode=parentCodeIdx>=0?(cols[parentCodeIdx]||'').trim()||null:null;
-    const rawNodeType=nodeTypeIdx>=0?(cols[nodeTypeIdx]||'').trim().toLocaleUpperCase('tr-TR'):'';
-    const nodeType: CurriculumCsvRow['nodeType'] = rawNodeType.includes('ALT') || rawNodeType.includes('SUB') ? 'SUB_OUTCOME' : rawNodeType.includes('UNIT') || rawNodeType.includes('ÜNİTE') ? 'UNIT' : rawNodeType.includes('TOPIC') || rawNodeType.includes('KONU') ? 'TOPIC' : 'OUTCOME';
+    const rawNodeType=nodeTypeIdx>=0?(cols[nodeTypeIdx]||'').trim().toUpperCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'_'):'';
+    const nodeTypes:Record<string,CurriculumCsvRow['nodeType']>={UNIT:'UNIT',UNITE:'UNIT',TOPIC:'TOPIC',KONU:'TOPIC',OUTCOME:'OUTCOME',KAZANIM:'OUTCOME',OGRENME_CIKTISI:'OUTCOME',SUB_OUTCOME:'SUB_OUTCOME',ALT_KAZANIM:'SUB_OUTCOME',ALT_OGRENME_CIKTISI:'SUB_OUTCOME'};
+    const nodeType=nodeTypes[rawNodeType]||'OUTCOME';
+    if(rawNodeType&&!Object.hasOwn(nodeTypes,rawNodeType))issues.push('Kayıt türü UNIT, TOPIC, OUTCOME veya SUB_OUTCOME olmalıdır.');
     const unit=unitIdx>=0?(cols[unitIdx]||'').trim()||null:null;
     const topic=topicIdx>=0?(cols[topicIdx]||'').trim()||null:null;
     const subtopic=subtopicIdx>=0?(cols[subtopicIdx]||'').trim()||null:null;
-    const dedupeKey=`${subjectCode}|${gradeLevel??''}|${outcomeCode||''}|${title.toLocaleLowerCase('tr-TR')}`;
+    const dedupeKey=JSON.stringify([subjectCode,gradeLevel,outcomeCode,title.toLocaleLowerCase('tr-TR')]);
     if(dedupe.has(dedupeKey))issues.push('Dosyada aynı kazanım/öğrenme çıktısı birden fazla kez bulunuyor.');else dedupe.add(dedupeKey);
     if (nodeType !== 'UNIT' && nodeType !== 'TOPIC' && !outcomeCode) issues.push('Kazanım/öğrenme çıktısı kodu boş.');
-    rows.push({rowNo:i+1,subjectCode,gradeLevel,outcomeCode,parentCode,nodeType,unit,topic,subtopic,title,issues});
+    rows.push({rowNo,subjectCode,gradeLevel,outcomeCode,parentCode,nodeType,unit,topic,subtopic,title,issues});
   }
   validateCurriculumHierarchy(rows);
   return {rows,delimiter,errors};
