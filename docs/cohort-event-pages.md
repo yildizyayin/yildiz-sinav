@@ -33,3 +33,7 @@ Kaynak sayfası en çok 1 MB, kompakt seçilmiş pratik satırı 30.000 bayt, re
 0084 migration'ı 0083 üzerine uygulanmalıdır; hiçbir ortama uygulanmadı. Yeni source page indexleri, geçici seçim tablosu ve pending/step/processed_events sütunlarını ekler. Feature flag, özel queue/DLQ/bucket aynı ana rapor yapılandırmasını kullanır; yeni canlı kaynak açılmadı.
 
 Son testler: 5.000'den fazla tek-enrollment kanıtı; sınırları aşan ve tam sayfa boyunda kayıtlar; FIRST/LATEST'in eski/yeni sayfada farklı sıra ve aynı zamanda Unicode ID ile seçimi; invalid/legacy/duplicate kapsamlarının normal reducer ile eşitliği; çok sayfalı ders/kazanım/oyun katılımcısının bir olması; mini test ve EXAM snapshot kanıtının bölünmemesi; tarih/seçili sınav/yeniden yayınlama/rol değiştirme; crash/duplicate delivery/lease takeover/step fencing; SQL batch rollback ve json_each UPSERT; adaptive prefix; tamamlanmadan CSV'nin reddi; feature off/expiry/abandoned temizliği ve gerçek D1/queue/R2 kaynak maliyeti. Güncel head'de bu testler henüz yapılmadı.
+
+## Rehber sınıfı
+
+GUIDANCE_TEACHER işlerinde aynı kaydedilmiş classId/seasonId kapsamı event frame'e de aktarılır. Identity okuması ve her source page yalnız bu aktif sınıf/dönemin ACTIVE enrollment'larına bağlıdır. READ/PICKS/CLEAN girişinde etkin GUIDANCE assignment yeniden aranır; eski kurum veya eski dönem kapsamına genişleme yapılmaz. Atama revizyonu0085, pending/ready sonuçlar için mevcut generation fence'e dahildir.
