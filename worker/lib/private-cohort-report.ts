@@ -1,5 +1,6 @@
 import type {AuthUser,Env} from '../types';
 import {all,badRequest,forbidden,json,one,uuid} from './db';
+import {stepCohortEventFrame,type CohortFrameStep} from './cohort-event-frame';
 import {cohortLearningReport} from './cohort-learning-report';
 import {cohortReportCsv,finishCohortBackgroundReport,mergeCohortPartition} from './cohort-background-aggregate';
 
@@ -24,7 +25,7 @@ async function proof(env:Env,user:AuthUser,selection:any,asOf:string){
 async function actor(env:Env,job:any){const user=await one<AuthUser>(env.DB.prepare('SELECT id,institution_id,student_id,role,display_name,email,username FROM users WHERE id=? AND active=1').bind(job.actor_user_id));return user&&actorScope(user)===job.actor_scope_json?user:null;}
 async function revision(env:Env,institutionId:string){return one<any>(env.DB.prepare('SELECT COALESCE((SELECT revision FROM cohort_report_revisions WHERE institution_id=?),0) source_revision,revision global_revision FROM cohort_report_global_revision WHERE id=1').bind(institutionId));}
 async function unchanged(env:Env,job:any){const current=await revision(env,job.institution_id);return !!current&&current.source_revision===job.source_revision&&current.global_revision===job.global_revision;}
-const publicJob=(job:any)=>({jobId:job.id,status:job.status,processedEnrollments:job.processed_enrollments,expiresAt:job.expires_at,errorCode:job.error_code});
+const publicJob=(job:any)=>({jobId:job.id,status:job.status,processedEnrollments:job.processed_enrollments,processedEvents:job.processed_events,expiresAt:job.expires_at,errorCode:job.error_code});
 const sourceChanged=()=>fail(409,'REPORT_SOURCE_CHANGED','Rapor hazırlanırken kaynak kayıtları değişti. Güncel verilerle yeniden hazırlayın.');
 
 export async function handlePrivateCohortReport(request:Request,env:Env,user:AuthUser):Promise<Response|null>{
@@ -37,7 +38,7 @@ export async function handlePrivateCohortReport(request:Request,env:Env,user:Aut
    let input:any;try{const raw=url.searchParams.get('selection')||'';if(raw.length>4000)throw new Error();input=JSON.parse(raw)}catch{return badRequest('Rapor seçimi geçersiz.');}
    const selection=selectionOf(input,user);if(!selection)return badRequest('Rapor seçimi geçersiz.');
    const access=await proof(env,user,selection,new Date().toISOString());if(!access.ok)return access;
-   const jobs=await all<any>(env.DB.prepare('SELECT id,status,processed_enrollments,expires_at,error_code FROM private_cohort_report_jobs WHERE actor_user_id=? AND actor_scope_json=? AND selection_json=? AND datetime(expires_at)>CURRENT_TIMESTAMP ORDER BY created_at DESC,id DESC LIMIT 10').bind(user.id,actorScope(user),JSON.stringify(selection)));
+   const jobs=await all<any>(env.DB.prepare('SELECT id,status,processed_enrollments,processed_events,expires_at,error_code FROM private_cohort_report_jobs WHERE actor_user_id=? AND actor_scope_json=? AND selection_json=? AND datetime(expires_at)>CURRENT_TIMESTAMP ORDER BY created_at DESC,id DESC LIMIT 10').bind(user.id,actorScope(user),JSON.stringify(selection)));
    return json({ok:true,enabled:true,jobs:jobs.map(publicJob)});
   }
   if(request.method!=='POST')return fail(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
@@ -69,7 +70,7 @@ export async function handlePrivateCohortReport(request:Request,env:Env,user:Aut
 export async function consumePrivateCohortReports(batch:MessageBatch<any>,env:Env){
  for(const message of batch.messages){const body=message.body;if(!enabled(env)){message.retry({delaySeconds:300});continue;}if(body?.schemaVersion!==1||typeof body.jobId!=='string'||!body.jobId||body.jobId.length>100){message.ack();continue;}
   const token=uuid('lease');let objectKey:string|null=null,committed=false;
-  const terminal=async(status:string,code:string)=>{await env.DB.prepare('UPDATE private_cohort_report_jobs SET status=?,error_code=?,lease_token=NULL,lease_until=NULL,aggregate_json=NULL WHERE id=? AND lease_token=?').bind(status,code,body.jobId,token).run();message.ack()};
+  const terminal=async(status:string,code:string)=>{await env.DB.prepare('UPDATE private_cohort_report_jobs SET status=?,error_code=?,lease_token=NULL,lease_until=NULL,aggregate_json=NULL,pending_json=NULL WHERE id=? AND lease_token=?').bind(status,code,body.jobId,token).run();message.ack()};
   try{
    const claim=await env.DB.prepare("UPDATE private_cohort_report_jobs SET status='RUNNING',lease_token=?,lease_until=datetime('now','+2 minutes') WHERE id=? AND status IN ('QUEUED','RUNNING') AND datetime(expires_at)>CURRENT_TIMESTAMP AND (lease_until IS NULL OR datetime(lease_until)<=CURRENT_TIMESTAMP)").bind(token,body.jobId).run();if(!claim.meta.changes){message.ack();continue;}
    const job=await one<any>(env.DB.prepare('SELECT * FROM private_cohort_report_jobs WHERE id=? AND lease_token=?').bind(body.jobId,token));if(!job){message.ack();continue;}
@@ -77,22 +78,38 @@ export async function consumePrivateCohortReports(batch:MessageBatch<any>,env:En
    if(!user){await terminal('REVOKED','REPORT_SCOPE_REVOKED');continue;}
    const access=await proof(env,user,selection,asOf);if(access.status>=500)throw new Error('REPORT_SOURCE_RETRY');if(!access.ok){const detail=await access.json() as any;await terminal(access.status===403?'REVOKED':'FAILED',detail.error?.code||'REPORT_SCOPE_REVOKED');continue;}
    if(!await unchanged(env,job)){await terminal('FAILED','REPORT_SOURCE_CHANGED');continue;}
-   const rows=await all<any>(env.DB.prepare('SELECT e.id FROM student_enrollments e JOIN institution_seasons se ON se.id=e.season_id AND se.institution_id=e.institution_id WHERE e.institution_id=? AND se.academic_year=? AND e.id>? AND julianday(e.created_at)<=julianday(?) ORDER BY e.id LIMIT 21').bind(job.institution_id,selection.academicYear,job.enrollment_cursor,asOf));
-   let ids=rows.slice(0,20).map(r=>r.id),response=await cohortLearningReport(env,user,sourceUrl(selection),undefined,{enrollmentIds:ids,asOf});
-   let report=await response.json() as any;
-   if(!response.ok&&report.error?.code==='REPORT_SCOPE_TOO_LARGE'&&ids.length>1){ids=ids.slice(0,1);response=await cohortLearningReport(env,user,sourceUrl(selection),undefined,{enrollmentIds:ids,asOf});report=await response.json() as any;}
-   if(response.status>=500)throw new Error('REPORT_SOURCE_RETRY');
-   if(!response.ok){await terminal(response.status===403?'REVOKED':'FAILED',report.error?.code||'REPORT_SOURCE_INVALID');continue;}
-   let aggregate:any;try{aggregate=mergeCohortPartition(job.aggregate_json?JSON.parse(job.aggregate_json):null,report)}catch{await terminal('FAILED','REPORT_AGGREGATE_LIMIT');continue;}
+   let frameStep:CohortFrameStep|null=null,report:any=null,ids:string[]=[],more=false;
+   if(job.pending_json){const pending=JSON.parse(job.pending_json);frameStep=await stepCohortEventFrame(env,user,selection,job,pending,pending.enrollmentId);more=true;}
+   else{
+    const rows=await all<any>(env.DB.prepare('SELECT e.id FROM student_enrollments e JOIN institution_seasons se ON se.id=e.season_id AND se.institution_id=e.institution_id WHERE e.institution_id=? AND se.academic_year=? AND e.id>? AND julianday(e.created_at)<=julianday(?) ORDER BY e.id LIMIT 21').bind(job.institution_id,selection.academicYear,job.enrollment_cursor,asOf));
+    ids=rows.slice(0,20).map(r=>r.id);let response=await cohortLearningReport(env,user,sourceUrl(selection),undefined,{enrollmentIds:ids,asOf});report=await response.json() as any;
+    if(!response.ok&&report.error?.code==='REPORT_SCOPE_TOO_LARGE'&&ids.length>1){ids=ids.slice(0,1);response=await cohortLearningReport(env,user,sourceUrl(selection),undefined,{enrollmentIds:ids,asOf});report=await response.json() as any;}
+    if(response.status>=500)throw new Error('REPORT_SOURCE_RETRY');
+    if(!response.ok&&report.error?.code==='REPORT_SCOPE_TOO_LARGE'&&ids.length===1){frameStep=await stepCohortEventFrame(env,user,selection,job,null,ids[0]);report=null;more=true;}
+    else{if(!response.ok){await terminal(response.status===403?'REVOKED':'FAILED',report.error?.code||'REPORT_SOURCE_INVALID');continue;}more=rows.length>ids.length;}
+   }
+   let aggregate=job.aggregate_json?JSON.parse(job.aggregate_json):null,processed=job.processed_enrollments,cursor=job.enrollment_cursor;
+   if(frameStep){if(frameStep.completedReport){aggregate=mergeCohortPartition(aggregate,frameStep.completedReport);processed++;cursor=frameStep.enrollmentId;}/* Resume the enrollment scan after frame completion; a final empty page finalizes the report. */more=true;}
+   else{aggregate=mergeCohortPartition(aggregate,report);processed+=ids.length;if(ids.length)cursor=ids[ids.length-1];}
    if(!await unchanged(env,job)){await terminal('FAILED','REPORT_SOURCE_CHANGED');continue;}
-   const more=rows.length>ids.length,processed=job.processed_enrollments+ids.length,cursor=ids.length?ids[ids.length-1]:job.enrollment_cursor;
    if(!more){objectKey=`report-exports/${job.id}/${token}.json`;await env.REPORT_EXPORT_FILES!.put(objectKey,JSON.stringify(finishCohortBackgroundReport(aggregate,asOf,processed)),{httpMetadata:{contentType:'application/json;charset=utf-8'},customMetadata:{expiresAt:job.expires_at}});}
-   const result=await env.DB.prepare(`UPDATE private_cohort_report_jobs SET status=?,enrollment_cursor=?,processed_enrollments=?,aggregate_json=?,object_key=?,lease_token=NULL,lease_until=NULL,error_code=NULL WHERE id=? AND lease_token=? AND status='RUNNING' AND enrollment_cursor=? AND datetime(expires_at)>datetime(?) AND COALESCE((SELECT revision FROM cohort_report_revisions WHERE institution_id=private_cohort_report_jobs.institution_id),0)=source_revision AND (SELECT revision FROM cohort_report_global_revision WHERE id=1)=global_revision`).bind(more?'QUEUED':'READY',cursor,processed,more?JSON.stringify(aggregate):null,objectKey,job.id,token,job.enrollment_cursor,new Date().toISOString()).run();
-   committed=!!result.success&&Number(result.meta.changes)===1;
+   const commitAt=new Date().toISOString();
+   const witness=`id=? AND lease_token=? AND status='RUNNING' AND enrollment_cursor=? AND step_no=? AND datetime(expires_at)>datetime(?) AND COALESCE((SELECT revision FROM cohort_report_revisions WHERE institution_id=private_cohort_report_jobs.institution_id),0)=source_revision AND (SELECT revision FROM cohort_report_global_revision WHERE id=1)=global_revision`;
+   const witnessParams=[job.id,token,job.enrollment_cursor,job.step_no,commitAt];
+   const writes:D1PreparedStatement[]=[];
+   if(frameStep?.picks.length){
+    const encoded=JSON.stringify(frameStep.picks);if(new TextEncoder().encode(encoded).length>450000)throw new Error('REPORT_EVENT_TOO_LARGE');
+    const compare=selection.repeatPolicy==='FIRST'?'<':'>';
+    writes.push(env.DB.prepare(`INSERT INTO private_cohort_practice_picks(job_id,enrollment_id,repeat_key,evidence_time,run_id,run_order,row_json) SELECT ?,?,json_extract(value,'$.repeatKey'),json_extract(value,'$.evidenceTime'),json_extract(value,'$.runId'),json_extract(value,'$.runOrder'),json_extract(value,'$.row') FROM json_each(?) WHERE EXISTS(SELECT 1 FROM private_cohort_report_jobs WHERE ${witness}) ON CONFLICT(job_id,enrollment_id,repeat_key) DO UPDATE SET evidence_time=excluded.evidence_time,run_id=excluded.run_id,run_order=excluded.run_order,row_json=excluded.row_json WHERE excluded.evidence_time${compare}private_cohort_practice_picks.evidence_time OR (excluded.evidence_time=private_cohort_practice_picks.evidence_time AND excluded.run_order${compare}private_cohort_practice_picks.run_order)`).bind(job.id,frameStep.enrollmentId,encoded,...witnessParams));
+   }
+   if(frameStep?.deleteKeys.length)writes.push(env.DB.prepare(`DELETE FROM private_cohort_practice_picks WHERE job_id=? AND enrollment_id=? AND rowid IN(SELECT value FROM json_each(?)) AND EXISTS(SELECT 1 FROM private_cohort_report_jobs WHERE ${witness})`).bind(job.id,frameStep.enrollmentId,JSON.stringify(frameStep.deleteKeys),...witnessParams));
+   writes.push(env.DB.prepare(`UPDATE private_cohort_report_jobs SET status=?,enrollment_cursor=?,processed_enrollments=?,processed_events=processed_events+?,aggregate_json=?,pending_json=?,step_no=step_no+1,object_key=?,lease_token=NULL,lease_until=NULL,error_code=NULL WHERE ${witness}`).bind(more?'QUEUED':'READY',cursor,processed,frameStep?.eventCount||0,more?JSON.stringify(aggregate):null,frameStep?.pending?JSON.stringify(frameStep.pending):null,objectKey,...witnessParams));
+   const results=await env.DB.batch(writes);
+   committed=results.every(r=>r.success)&&Number(results[results.length-1].meta.changes)===1;
    if(!committed){if(objectKey)await env.REPORT_EXPORT_FILES!.delete(objectKey);await terminal('FAILED','REPORT_SOURCE_CHANGED');continue;}
    if(more)try{await env.COHORT_REPORT_QUEUE!.send({schemaVersion:1,jobId:job.id})}catch{/* Durable continuation will be picked up by cron. */}
    message.ack();
-  }catch{if(objectKey&&!committed)try{await env.REPORT_EXPORT_FILES!.delete(objectKey)}catch{}try{await env.DB.prepare("UPDATE private_cohort_report_jobs SET lease_token=NULL,lease_until=NULL,error_code='REPORT_RETRY' WHERE id=? AND lease_token=?").bind(body.jobId,token).run()}catch{}message.retry({delaySeconds:60});}
+  }catch(error:any){if(objectKey&&!committed)try{await env.REPORT_EXPORT_FILES!.delete(objectKey)}catch{}if((error.status>=400&&error.status<500)||['REPORT_AGGREGATE_LIMIT','REPORT_AGGREGATE_INVALID','REPORT_EVENT_TOO_LARGE','REPORT_FRAME_INVALID','REPORT_SOURCE_CHANGED'].includes(error.message)){await terminal(error.status===403?'REVOKED':'FAILED',error.message);continue;}try{await env.DB.prepare("UPDATE private_cohort_report_jobs SET lease_token=NULL,lease_until=NULL,error_code='REPORT_RETRY' WHERE id=? AND lease_token=?").bind(body.jobId,token).run()}catch{}message.retry({delaySeconds:60});}
  }
 }
 
@@ -100,6 +117,8 @@ export async function dispatchPrivateCohortReports(env:Env){
  if(!env.REPORT_EXPORT_FILES)return;
  const jobs=enabled(env)?await all<any>(env.DB.prepare("SELECT id FROM private_cohort_report_jobs WHERE status IN ('QUEUED','RUNNING') AND datetime(expires_at)>CURRENT_TIMESTAMP AND (lease_until IS NULL OR datetime(lease_until)<=CURRENT_TIMESTAMP) ORDER BY created_at LIMIT 10")):[];
  for(const job of jobs)try{await env.COHORT_REPORT_QUEUE!.send({schemaVersion:1,jobId:job.id})}catch{}
+ const abandoned=await all<any>(env.DB.prepare("SELECT j.id FROM private_cohort_report_jobs j WHERE j.status IN ('FAILED','REVOKED') AND EXISTS(SELECT 1 FROM private_cohort_practice_picks p WHERE p.job_id=j.id) ORDER BY j.created_at LIMIT 2"));
+ for(const job of abandoned)await env.DB.prepare('DELETE FROM private_cohort_practice_picks WHERE job_id=? AND rowid IN(SELECT rowid FROM private_cohort_practice_picks WHERE job_id=? LIMIT 250)').bind(job.id,job.id).run();
  const expired=await all<any>(env.DB.prepare('SELECT id FROM private_cohort_report_jobs WHERE datetime(expires_at)<=CURRENT_TIMESTAMP AND cleanup_done=0 ORDER BY expires_at LIMIT 2'));
- for(const job of expired){await env.DB.prepare("UPDATE private_cohort_report_jobs SET status='EXPIRED',lease_token=NULL,lease_until=NULL,aggregate_json=NULL WHERE id=?").bind(job.id).run();const objects=await env.REPORT_EXPORT_FILES!.list({prefix:`report-exports/${job.id}/`,limit:5});for(const object of objects.objects)await env.REPORT_EXPORT_FILES!.delete(object.key);if(!objects.truncated)await env.DB.prepare("UPDATE private_cohort_report_jobs SET cleanup_done=1,object_key=NULL,selection_json='{}',actor_scope_json='[]' WHERE id=?").bind(job.id).run();}
+ for(const job of expired){await env.DB.prepare("UPDATE private_cohort_report_jobs SET status='EXPIRED',lease_token=NULL,lease_until=NULL,aggregate_json=NULL,pending_json=NULL WHERE id=?").bind(job.id).run();const objects=await env.REPORT_EXPORT_FILES!.list({prefix:`report-exports/${job.id}/`,limit:5});for(const object of objects.objects)await env.REPORT_EXPORT_FILES!.delete(object.key);await env.DB.prepare('DELETE FROM private_cohort_practice_picks WHERE job_id=? AND rowid IN(SELECT rowid FROM private_cohort_practice_picks WHERE job_id=? LIMIT 250)').bind(job.id,job.id).run();const remaining=await one(env.DB.prepare('SELECT 1 FROM private_cohort_practice_picks WHERE job_id=? LIMIT 1').bind(job.id));if(!objects.truncated&&!remaining)await env.DB.prepare("UPDATE private_cohort_report_jobs SET cleanup_done=1,object_key=NULL,selection_json='{}',actor_scope_json='[]' WHERE id=?").bind(job.id).run();}
 }
