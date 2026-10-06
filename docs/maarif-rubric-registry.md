@@ -53,3 +53,9 @@ For each initial subject/grade pilot: select the applicable approved programme a
 ## Local acceptance — 2026-10-06
 
 Publication acceptance now covers non-admin and unauthenticated rejection, mismatched versions, verification revoked immediately before the component INSERT, duplicate definitions, immutable component/rubric triggers and separate TEACHER_DESIGNED provenance. All 141 test files / 659 tests pass locally; typecheck and production build pass. Observation authorization, withdrawal, browser version-switch behavior and specialist review remain pending. SQLite acceptance does not replace provider staging.
+
+## Grade-scope publication acceptance — 2026-10-06
+
+Both component and rubric publication now require SCHOOL curriculum grade to match outcome grade in the initial lookup and final conditional INSERT. A different or missing curriculum grade and a different outcome grade each return 400 before lookup and 409 if changed immediately before insertion; restoring the context permits publication. Six new cases cover both publication endpoints. Other programme types retain their existing qualification policy.
+
+The application boundary rejects inconsistent legacy definitions; no existing published record is rewritten. The historical 0079 database trigger is unchanged and is not claimed to enforce this new grade policy for direct administrative SQL. No migration was added. Full local validation: 142 files / 694 tests pass; provider staging and specialist content review remain pending.
