@@ -63,6 +63,8 @@ for(const [name,sql] of [
  ['closed season',"UPDATE institution_seasons SET status='CLOSED' WHERE id='season'"],
  ['inactive class',"UPDATE classes SET active=0 WHERE id='class'"],
  ['moved enrollment',"UPDATE student_enrollments SET class_id='other' WHERE id='enrollment'"],
+ ['different curriculum grade',"UPDATE curriculum_versions SET grade_level=8 WHERE id='cv'"],
+ ['missing curriculum grade',"UPDATE curriculum_versions SET grade_level=NULL WHERE id='cv'"],
  ['revoked curriculum',"UPDATE curriculum_versions SET verified=0 WHERE id='cv'"],
  ['inactive outcome',"UPDATE outcomes SET active=0 WHERE id='outcome'"],
  ['different grade',"UPDATE student_enrollments SET grade_level=8 WHERE id='enrollment'"],
