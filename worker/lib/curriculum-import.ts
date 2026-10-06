@@ -38,6 +38,28 @@ function splitCsv(line:string,delimiter:string){const out:string[]=[];let curren
 
 function indexOf(headers:string[],names:readonly string[]){return headers.findIndex(h=>names.includes(h))}
 
+type HierarchyRow=Pick<CurriculumCsvRow,'subjectCode'|'gradeLevel'|'outcomeCode'|'parentCode'|'issues'>;
+
+// Parent codes are local to the same subject and grade. Walk iteratively so a
+// large valid hierarchy does not overflow the JavaScript call stack.
+export function validateCurriculumHierarchy(rows:HierarchyRow[]):void {
+ const key=(r:HierarchyRow,code:string)=>JSON.stringify([r.subjectCode,r.gradeLevel,code]);
+ const byCode=new Map<string,HierarchyRow[]>();
+ for(const r of rows){if(!r.outcomeCode)continue;const k=key(r,r.outcomeCode);const group=byCode.get(k)||[];group.push(r);byCode.set(k,group);}
+ for(const group of byCode.values())if(group.length>1)for(const r of group)r.issues.push('Aynı ders ve sınıfta kayıt kodu tekil olmalıdır.');
+ const parents=new Map<HierarchyRow,HierarchyRow>();
+ for(const r of rows){if(!r.parentCode)continue;const candidates=byCode.get(key(r,r.parentCode))||[];
+  if(candidates.length!==1){r.issues.push('Üst kayıt kodu aynı ders ve sınıfta tek bir kayda karşılık gelmelidir.');continue;}
+  parents.set(r,candidates[0]);
+ }
+ const done=new Set<HierarchyRow>();
+ for(const start of rows){if(done.has(start))continue;const chain:HierarchyRow[]=[];const positions=new Map<HierarchyRow,number>();let current:HierarchyRow|undefined=start;
+  while(current&&!done.has(current)&&!positions.has(current)){positions.set(current,chain.length);chain.push(current);current=parents.get(current);}
+  if(current&&positions.has(current))for(const r of chain.slice(positions.get(current)!))r.issues.push('Üst kayıt bağlantıları döngü oluşturamaz.');
+  for(const r of chain)done.add(r);
+ }
+}
+
 export function parseCurriculumCsv(text:string, programCode:'SCHOOL'|'TYT'|'AYT', expectedGrade:number|null):CurriculumParseResult{
   const normalized=text.replace(/^\uFEFF/,'').replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim();
   if(!normalized)return {rows:[],delimiter:',',errors:['Dosya boş.']};
@@ -79,6 +101,7 @@ export function parseCurriculumCsv(text:string, programCode:'SCHOOL'|'TYT'|'AYT'
     if (nodeType !== 'UNIT' && nodeType !== 'TOPIC' && !outcomeCode) issues.push('Kazanım/öğrenme çıktısı kodu boş.');
     rows.push({rowNo:i+1,subjectCode,gradeLevel,outcomeCode,parentCode,nodeType,unit,topic,subtopic,title,issues});
   }
+  validateCurriculumHierarchy(rows);
   return {rows,delimiter,errors};
 }
 
