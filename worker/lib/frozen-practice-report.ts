@@ -5,8 +5,12 @@ function evidenceTime(value:unknown){
  return Date.parse(value.replace(' ','T')+(/[Zz]|[+-]\d{2}:\d{2}$/.test(value)?'':'Z'));
 }
 
+export type FrozenPracticeSelection={row:any;evidence:any;repeatKey:string;evidenceTimeMillis:number};
+
 // Authorization and source selection belong to the caller. No live content joins.
-export function frozenPracticeReport(rows:any[], academicYear:string, subjectIds:string[]|null, repeatPolicy:'FIRST'|'LATEST'='LATEST') {
+// Keep this selection helper internal to server-side report composition: its rows
+// contain frozen evidence payloads and must never be returned by a public route.
+export function selectFrozenPracticeRows(rows:any[], academicYear:string, subjectIds:string[]|null, repeatPolicy:'FIRST'|'LATEST'='LATEST') {
   const selected=new Map<string,{row:any,evidence:any}>();
   let legacyRuns=0,excludedEvidence=0,repeatedAttempts=0;
   const seenRuns=new Set<string>();
@@ -34,9 +38,14 @@ export function frozenPracticeReport(rows:any[], academicYear:string, subjectIds
     }
     selected.set(key,{row,evidence});
   }
+  return {selected:[...selected.entries()].map(([repeatKey,value])=>({...value,repeatKey,evidenceTimeMillis:evidenceTime(value.row.completed_at)})),coverage:{legacyRuns,excludedEvidence,repeatedAttempts},validAttemptCount:seenRuns.size};
+}
+
+export function frozenPracticeReport(rows:any[], academicYear:string, subjectIds:string[]|null, repeatPolicy:'FIRST'|'LATEST'='LATEST') {
+  const selection=selectFrozenPracticeRows(rows,academicYear,subjectIds,repeatPolicy);
   const groups=new Map<string,any>();
   const outcomeRows: FrozenOutcomeMap = new Map();
-  for(const {evidence} of selected.values()){
+  for(const {evidence} of selection.selected){
     const ref=evidence.outcomeRefs[0];
     const key=JSON.stringify([ref.subjectId,ref.curriculumVersionId,evidence.academicYear,evidence.gradeLevel,ref.programVersion??null]);
     let group=groups.get(key);
@@ -44,5 +53,5 @@ export function frozenPracticeReport(rows:any[], academicYear:string, subjectIds
     group[evidence.status.toLowerCase()]++;
     addFrozenOutcomeEvidence(outcomeRows,evidence.outcomeRefs,evidence.status,group);
   }
-  return {outcomes:finishFrozenOutcomes(outcomeRows),sourceTypes:['QUESTION_BANK'],calculationPolicy:'SELECTED_FROZEN_PRACTICE_QUESTION_ACCURACY_V1',repeatPolicy,groups:[...groups.entries()].sort(([a],[b])=>a<b?-1:a>b?1:0).map(([,group])=>{const evidenceCount=group.correct+group.wrong+group.blank;return {...group,evidenceCount,accuracyPercent:evidenceCount?Math.round(group.correct/evidenceCount*10000)/100:null};}),coverage:subjectIds?null:{legacyRuns,excludedEvidence,repeatedAttempts},officialScore:null,nationalRank:null};
+  return {outcomes:finishFrozenOutcomes(outcomeRows),sourceTypes:['QUESTION_BANK'],calculationPolicy:'SELECTED_FROZEN_PRACTICE_QUESTION_ACCURACY_V1',repeatPolicy,groups:[...groups.entries()].sort(([a],[b])=>a<b?-1:a>b?1:0).map(([,group])=>{const evidenceCount=group.correct+group.wrong+group.blank;return {...group,evidenceCount,accuracyPercent:evidenceCount?Math.round(group.correct/evidenceCount*10000)/100:null};}),coverage:subjectIds?null:selection.coverage,officialScore:null,nationalRank:null};
 }
