@@ -29,3 +29,7 @@ Coverage shows admitted source row counts and reducer exclusions/repeated practi
 ## Final-stage acceptance
 
 Check all unauthorized roles, wrong institution/year/class/season and revoked guidance assignment; independent students solving the same question; FIRST/LATEST and exact ties; all four academic sources; multiple outcome refs; invalid-only groups; NEW versus REVIEW mini tests; year and program separation; mixed guest/canonical exam cohorts; weighted game averages; source/group caps; zero evidence; scoped UI stale-response suppression. Update existing exact game payload fixtures for `totalScore` if needed. No final acceptance has run yet.
+
+## Arka plan kurum raporu
+
+Büyük kurum kapsamları için ayrı, varsayılan kapalı bir hazırlama yolu kodlandı. Dönem kayıtlarına bölünür, kaynak değişiminde geçersiz olur ve tek CSV/aynı panel özeti üretir. Yeni yolun sınırları, staging gereksinimleri ve bekleyen testler [private-cohort-background-report.md](private-cohort-background-report.md) içindedir. Rehber sınıfının arka plan yolu bu tur açılmadı.
