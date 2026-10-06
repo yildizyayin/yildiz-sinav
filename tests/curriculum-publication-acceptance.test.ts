@@ -15,7 +15,7 @@ function fixture(){
  VALUES('job','2026-2027','SCHOOL',7,'IMPORTED','MEB','MEB_TYMM','https://tymm.meb.gov.tr/synthetic-test.pdf','Synthetic test document','synthetic/source.csv','synthetic.csv','synthetic-hash','READY',2,2,0,'admin');
  INSERT INTO curriculum_import_rows(id,job_id,row_no,subject_code,subject_id,grade_level,outcome_code,title,parent_code,node_type,valid,issues_json) VALUES('child','job',1,'SYNTH_MATH','math',7,'C','Synthetic child','P','OUTCOME',1,'[]'),('parent','job',2,'SYNTH_MATH','math',7,'P','Synthetic parent',NULL,'UNIT',1,'[]');`);
  let failAt=-1;let race:(()=>void)|null=null;
- const prepare=(sql:string,args:any[]=[]):any=>({sql,args,bind:(...v:any[])=>prepare(sql,v),first:async()=>db.prepare(sql).get(...args)||null,all:async()=>({success:true,results:db.prepare(sql).all(...args)}),run:async()=>{if(race&&sql.startsWith('INSERT INTO curriculum_process_components')){const hook=race;race=null;hook()}return {success:true,meta:{changes:Number(db.prepare(sql).run(...args).changes)}}}});
+ const prepare=(sql:string,args:any[]=[]):any=>({sql,args,bind:(...v:any[])=>prepare(sql,v),first:async()=>db.prepare(sql).get(...args)||null,all:async()=>({success:true,results:db.prepare(sql).all(...args)}),run:async()=>{if(race&&(sql.startsWith('INSERT INTO curriculum_process_components')||sql.startsWith('INSERT INTO learning_rubric_versions'))){const hook=race;race=null;hook()}return {success:true,meta:{changes:Number(db.prepare(sql).run(...args).changes)}}}});
  const actor:any={id:'admin',role:'SUPER_ADMIN'};const env:any={testActor:actor,DB:{prepare,batch:async(stmts:any[])=>{db.exec('BEGIN');try{const result=stmts.map((s,i)=>{if(i===failAt)throw new Error('synthetic batch failure');return {success:true,meta:{changes:Number(db.prepare(s.sql).run(...s.args).changes)}}});db.exec('COMMIT');return result}catch(e){db.exec('ROLLBACK');throw e}}}};
  const commit=(body:any={confirmedOfficial:true})=>entry.fetch(new Request('https://test/api/curriculum-admin/imports/job/commit',{method:'POST',body:JSON.stringify(body)}),env);
  const component={versionId:'base',outcomeId:'base-outcome',code:'P1',title:'Synthetic process definition',confirmedSource:true,reviewNote:'Synthetic review declaration for this isolated test.',sourceUrl:'https://tymm.meb.gov.tr/synthetic-test.pdf',sourceTitle:'Synthetic test document',sourceLocator:'Synthetic section 1'};
@@ -65,5 +65,21 @@ it('keeps teacher-designed rubric provenance separate and published versions imm
   expect((await publish({...body,versionId:'wrong'}))!.status).toBe(400);expect((await publish({...body,sourceKind:'OFFICIAL'}))!.status).toBe(400);expect((await publish({...body,confirmedSource:'true'}))!.status).toBe(400);
   const response=await publish(body);expect(response!.status).toBe(201);const id=(await response!.json() as any).id;const row=f.db.prepare('SELECT * FROM learning_rubric_versions WHERE id=?').get(id)!;expect(row.source_kind).toBe('TEACHER_DESIGNED');expect(row.source_url).toBeNull();expect(JSON.parse(String(row.criteria_json))).toEqual(body.criteria);expect((await publish(body))!.status).toBe(409);
   expect(()=>f.db.prepare('UPDATE learning_rubric_versions SET title=? WHERE id=?').run('Changed',id)).toThrow('RUBRIC_VERSION_IMMUTABLE');expect(()=>f.db.prepare('DELETE FROM learning_rubric_versions WHERE id=?').run(id)).toThrow('RUBRIC_VERSION_IMMUTABLE');
+ }finally{f.db.close()}
+});
+
+for(const target of ['component','rubric'] as const)for(const [name,change,restore] of [
+ ['different curriculum grade',"UPDATE curriculum_versions SET grade_level=8 WHERE id='base'","UPDATE curriculum_versions SET grade_level=7 WHERE id='base'"],
+ ['missing curriculum grade',"UPDATE curriculum_versions SET grade_level=NULL WHERE id='base'","UPDATE curriculum_versions SET grade_level=7 WHERE id='base'"],
+ ['different outcome grade',"UPDATE outcomes SET grade_level=8 WHERE id='base-outcome'","UPDATE outcomes SET grade_level=7 WHERE id='base-outcome'"],
+] as const)it(`rejects ${name} at ${target} lookup and final publication INSERT`,async()=>{
+ const f=fixture();try{
+  let componentId='';if(target==='rubric')componentId=(await (await f.publish())!.json() as any).id;
+  const body={versionId:'base',componentId,sourceKind:'TEACHER_DESIGNED',versionLabel:'v1',title:'Synthetic rubric',taskInstructions:'Observe the synthetic task and select a level.',reviewNote:'Synthetic isolated test review declaration.',confirmedSource:true,criteria:[{id:'criterion',title:'Observable action',description:'Describe a synthetic observable action.',levels:[{id:'guided',label:'With guidance',description:'Action demonstrated with guidance.'},{id:'independent',label:'Independent',description:'Action demonstrated independently.'}]}]};
+  const publish=()=>target==='component'?f.publish():handleMaarifRegistry(new Request('https://test/api/curriculum-admin/learning-rubrics',{method:'POST',body:JSON.stringify(body)}),f.env,f.actor);
+  const table=target==='component'?'curriculum_process_components':'learning_rubric_versions';
+  f.db.exec(change);expect((await publish())!.status).toBe(400);expect(f.db.prepare(`SELECT count(*) n FROM ${table}`).get()!.n).toBe(0);
+  f.db.exec(restore);f.race(()=>f.db.exec(change));expect((await publish())!.status).toBe(409);expect(f.db.prepare(`SELECT count(*) n FROM ${table}`).get()!.n).toBe(0);
+  f.db.exec(restore);expect((await publish())!.status).toBe(201);
  }finally{f.db.close()}
 });
