@@ -2,6 +2,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {readFileSync,readdirSync} from 'node:fs';
 import {expect,it} from 'vitest';
 import {cohortReportClassScope} from '../worker/lib/cohort-report-class-scope';
+import {frozenPracticeReport} from '../worker/lib/frozen-practice-report';
 import {handlePrivateCohortReport,consumePrivateCohortReports,dispatchPrivateCohortReports} from '../worker/lib/private-cohort-report';
 
 function fixture(){
@@ -73,5 +74,46 @@ it('invalidates source changes both before and during private object reads',asyn
   f.env.REPORT_EXPORT_FILES.get=async(k:string)=>{const result=await original(k);f.db.exec("UPDATE classes SET name='Changed' WHERE id='class'");return result};
   expect((await f.read(id))!.status).toBe(409);expect(f.gets()).toBe(1);
   expect((await f.read(id))!.status).toBe(409);expect(f.gets()).toBe(1);
+ }finally{f.db.close()}
+});
+
+function messageFor(jobId:string){let ack=0,retry=0;return {batch:{messages:[{body:{schemaVersion:1,jobId},ack:()=>ack++,retry:()=>retry++}]} as any,ack:()=>ack,retry:()=>retry};}
+
+for(const policy of ['FIRST','LATEST'] as const)it(`preserves ${policy} across 5001 events and all durable phases without double-counting`,async()=>{
+ const f=fixture();try{
+  f.db.exec("INSERT INTO student_entities(id,first_name,last_name,normalized_name) VALUES('student','Synthetic','Student','synthetic'); INSERT INTO student_enrollments(id,student_id,institution_id,season_id,class_id,grade_level,created_at) VALUES('enrollment','student','school','season','class',7,'2026-09-01 00:00:00')");
+  const insert=f.db.prepare("INSERT INTO assessment_runs(id,institution_id,student_id,source_type,source_id,status,metadata_json,completed_at) VALUES(?,'school','student','QUESTION_BANK','question','SCORED',?,'2026-10-01 12:00:00')");
+  const raw:any[]=[];
+  for(let n=0;n<5001;n++){const id='run'+String(n).padStart(5,'0');const metadata_json=JSON.stringify({frozenEvidence:{policy:'QUESTION_PRACTICE_READ_CONTEXT_V1',academicYear:'2026-2027',questionId:'question',contentDigest:'a'.repeat(64),enrollmentId:'enrollment',seasonId:'season',gradeLevel:7,status:n===0?'WRONG':n===5000?'CORRECT':'BLANK',outcomeRefs:[{verified:1,outcomeId:'outcome',subjectId:'math',curriculumVersionId:'frozen-cv',academicYear:'2026-2027',gradeLevel:7,programVersion:'synthetic'}]}});insert.run(id,metadata_json);raw.push({id,metadata_json,source_type:'QUESTION_BANK',source_id:'question',status:'SCORED',completed_at:'2026-10-01 12:00:00'});}
+  f.selection.sources=['QUESTION_BANK'];f.selection.repeatPolicy=policy;const id=await f.create();let calls=0,observedFrame=false;const phases=new Set<string>();
+  while(calls++<40){const m=messageFor(id);await consumePrivateCohortReports(m.batch,f.env);expect(m.retry()).toBe(0);expect(m.ack()).toBe(1);const job=f.db.prepare('SELECT * FROM private_cohort_report_jobs WHERE id=?').get(id)!;observedFrame ||= !!job.pending_json;if(job.pending_json)phases.add(JSON.parse(String(job.pending_json)).phase);if(job.status==='READY')break;expect(job.status).toBe('QUEUED');}
+  expect(calls).toBeLessThan(40);expect(calls).toBeGreaterThan(20);expect(observedFrame).toBe(true);expect([...phases].sort()).toEqual(['CLEAN','PICKS','READ']);
+  const job=f.db.prepare('SELECT * FROM private_cohort_report_jobs WHERE id=?').get(id)!;expect(job.status).toBe('READY');expect(job.processed_enrollments).toBe(1);expect(job.processed_events).toBe(5001);expect(job.pending_json).toBeNull();expect(f.db.prepare('SELECT count(*) n FROM private_cohort_practice_picks').get()!.n).toBe(0);
+  const response=await f.read(id);expect(response!.status).toBe(200);const report:any=await response!.json();const expected=frozenPracticeReport(raw,'2026-2027',null,policy);
+  expect(report.groups).toHaveLength(1);expect(report.groups[0]).toMatchObject({correct:policy==='LATEST'?1:0,wrong:policy==='FIRST'?1:0,blank:0});expect(report.groups[0]).toMatchObject({correct:expected.groups[0].correct,wrong:expected.groups[0].wrong,blank:expected.groups[0].blank,evidenceCount:1,participatingEnrollmentCount:1});
+  expect(report.sourceCoverage.find((x:any)=>x.sourceType==='QUESTION_BANK')).toMatchObject({rowCount:5001,excluded:{repeatedAttempts:5000}});
+ }finally{f.db.close()}
+},20000);
+
+it('releases a failed object write for retry and completes exactly once on redelivery',async()=>{
+ const f=fixture();try{
+  const id=await f.create();const original=f.env.REPORT_EXPORT_FILES.put;let fail=true;f.env.REPORT_EXPORT_FILES.put=async(...args:any[])=>{if(fail){fail=false;throw new Error('synthetic storage interruption')}return original(...args)};
+  const first=messageFor(id);await consumePrivateCohortReports(first.batch,f.env);expect(first.retry()).toBe(1);expect(first.ack()).toBe(0);const interrupted=f.db.prepare('SELECT * FROM private_cohort_report_jobs WHERE id=?').get(id)!;expect(interrupted.lease_token).toBeNull();expect(interrupted.step_no).toBe(0);expect(interrupted.object_key).toBeNull();expect(f.objects.size).toBe(0);
+  const second=messageFor(id);await consumePrivateCohortReports(second.batch,f.env);expect(second.ack()).toBe(1);expect(second.retry()).toBe(0);const finished=f.db.prepare('SELECT * FROM private_cohort_report_jobs WHERE id=?').get(id)!;expect(finished.status).toBe('READY');expect(finished.step_no).toBe(1);expect(f.objects.size).toBe(1);
+  const duplicate=messageFor(id);await consumePrivateCohortReports(duplicate.batch,f.env);expect(duplicate.ack()).toBe(1);expect(f.objects.size).toBe(1);expect(f.db.prepare('SELECT step_no FROM private_cohort_report_jobs WHERE id=?').get(id)!.step_no).toBe(1);
+ }finally{f.db.close()}
+});
+
+it('rejects a source mutation after object upload and removes its unpublished object',async()=>{
+ const f=fixture();try{
+  const id=await f.create();const original=f.env.REPORT_EXPORT_FILES.put;f.env.REPORT_EXPORT_FILES.put=async(...args:any[])=>{await original(...args);f.db.exec("UPDATE classes SET name='Mutated during upload' WHERE id='class'")};
+  const message=messageFor(id);await consumePrivateCohortReports(message.batch,f.env);expect(message.ack()).toBe(1);expect(message.retry()).toBe(0);expect(f.objects.size).toBe(0);const job=f.db.prepare('SELECT * FROM private_cohort_report_jobs WHERE id=?').get(id)!;expect(job.status).toBe('FAILED');expect(job.error_code).toBe('REPORT_SOURCE_CHANGED');expect(job.step_no).toBe(0);expect(job.object_key).toBeNull();
+ }finally{f.db.close()}
+});
+
+it('keeps a newer lease and cursor intact when an older worker finishes uploading',async()=>{
+ const f=fixture();try{
+  const id=await f.create();const original=f.env.REPORT_EXPORT_FILES.put;f.env.REPORT_EXPORT_FILES.put=async(...args:any[])=>{await original(...args);f.db.prepare("UPDATE private_cohort_report_jobs SET lease_token='new-worker',lease_until=datetime('now','+2 minutes'),enrollment_cursor='new-cursor',step_no=7 WHERE id=?").run(id)};
+  const message=messageFor(id);await consumePrivateCohortReports(message.batch,f.env);expect(message.ack()).toBe(1);expect(f.objects.size).toBe(0);expect(f.db.prepare('SELECT status,lease_token,enrollment_cursor,step_no FROM private_cohort_report_jobs WHERE id=?').get(id)).toMatchObject({status:'RUNNING',lease_token:'new-worker',enrollment_cursor:'new-cursor',step_no:7});
  }finally{f.db.close()}
 });
