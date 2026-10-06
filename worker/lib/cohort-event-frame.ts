@@ -1,4 +1,5 @@
 import type {AuthUser,Env} from '../types';
+import {cohortReportClassScope} from './cohort-report-class-scope';
 import {all,one} from './db';
 import {cohortLearningReport,reduceCohortRows} from './cohort-learning-report';
 import {selectFrozenPracticeRows} from './frozen-practice-report';
@@ -14,18 +15,19 @@ function advance(frame:any,sources:string[]){frame.sourceIndex++;frame.eventCurs
 /** One bounded source page, chosen-practice page or cleanup page per queue continuation. */
 export async function stepCohortEventFrame(env:Env,user:AuthUser,selection:any,job:any,previous:any|null,enrollmentId:string):Promise<CohortFrameStep>{
  const asOf=job.created_at.includes('T')?job.created_at:job.created_at.replace(' ','T')+'Z';
+ const classScope=await cohortReportClassScope(env,user,selection);if(user.role==='GUIDANCE_TEACHER'&&!classScope)throw Object.assign(new Error('REPORT_SCOPE_REVOKED'),{status:403});
  let frame=previous;
  if(!frame){
-  const identity=await one<any>(env.DB.prepare('SELECT e.id cohort_enrollment_id,e.class_id cohort_class_id,c.name cohort_class_name,e.grade_level cohort_grade FROM student_enrollments e JOIN institution_seasons se ON se.id=e.season_id AND se.institution_id=e.institution_id LEFT JOIN classes c ON c.id=e.class_id AND c.institution_id=e.institution_id AND c.season_id=e.season_id WHERE e.id=? AND e.institution_id=? AND se.academic_year=? AND julianday(e.created_at)<=julianday(?)').bind(enrollmentId,job.institution_id,selection.academicYear,asOf));
+  const identity=await one<any>(env.DB.prepare(`SELECT e.id cohort_enrollment_id,e.class_id cohort_class_id,c.name cohort_class_name,e.grade_level cohort_grade FROM student_enrollments e JOIN institution_seasons se ON se.id=e.season_id AND se.institution_id=e.institution_id LEFT JOIN classes c ON c.id=e.class_id AND c.institution_id=e.institution_id AND c.season_id=e.season_id WHERE e.id=? AND e.institution_id=? AND se.academic_year=? AND julianday(e.created_at)<=julianday(?) ${classScope?"AND e.class_id=? AND e.season_id=? AND e.status='ACTIVE'":''}`).bind(enrollmentId,job.institution_id,selection.academicYear,asOf,...(classScope?[classScope.id,classScope.seasonId]:[])));
   if(!identity)throw new Error('REPORT_SOURCE_CHANGED');
-  const response=reduceCohortRows([],[],selection.academicYear,selection.repeatPolicy,selection.sources,selection.examIds,false,selection.fromDate?{fromDate:selection.fromDate,toDate:selection.toDate}:null);
+  const response=reduceCohortRows([],[],selection.academicYear,selection.repeatPolicy,selection.sources,selection.examIds,!!classScope,selection.fromDate?{fromDate:selection.fromDate,toDate:selection.toDate}:null);
   frame={enrollmentId,identity,sourceIndex:0,eventCursor:'',phase:'READ',practiceValidAttempts:0,practicePicked:0,localReport:await response.json()};
  }
  if((frame.phase==='PICKS'&&selection.sources[frame.sourceIndex]!=='QUESTION_BANK')||(frame.phase==='CLEAN'&&frame.sourceIndex!==selection.sources.length)||typeof frame.eventCursor!=='string'||frame.enrollmentId!==enrollmentId||!Number.isInteger(frame.sourceIndex)||frame.sourceIndex<0||frame.sourceIndex>selection.sources.length||!['READ','PICKS','CLEAN'].includes(frame.phase))throw new Error('REPORT_FRAME_INVALID');
  let eventCount=0,picks:any[]=[],deleteKeys:number[]=[];
  if(frame.phase==='READ'){
   const source=selection.sources[frame.sourceIndex];if(!source)throw new Error('REPORT_FRAME_INVALID');
-  const response=await cohortLearningReport(env,user,sourceUrl(selection),undefined,{enrollmentIds:[enrollmentId],asOf,sourcePage:{sourceType:source,afterId:frame.eventCursor}});
+  const response=await cohortLearningReport(env,user,sourceUrl(selection),classScope,{enrollmentIds:[enrollmentId],asOf,sourcePage:{sourceType:source,afterId:frame.eventCursor}});
   if(!response.ok){const r=await response.json() as any;throw Object.assign(new Error(r.error?.code||'REPORT_SOURCE_RETRY'),{status:response.status});}
   const result=await response.json() as any,rows=result.sourcePage.rows;eventCount=result.sourcePage.rowCount;
   if(source==='QUESTION_BANK'){
@@ -39,7 +41,7 @@ export async function stepCohortEventFrame(env:Env,user:AuthUser,selection:any,j
    if(accepted.length<rows.length)result.sourcePage.nextCursor=accepted[accepted.length-1].id;
    eventCount=accepted.length;frame.practiceValidAttempts+=selected.validAttemptCount;addPracticeCoverage(frame,eventCount,selected.coverage);
   }else{
-   const response=reduceCohortRows([{results:rows}],[source],selection.academicYear,selection.repeatPolicy,selection.sources,selection.examIds,false,selection.fromDate?{fromDate:selection.fromDate,toDate:selection.toDate}:null);
+   const response=reduceCohortRows([{results:rows}],[source],selection.academicYear,selection.repeatPolicy,selection.sources,selection.examIds,!!classScope,selection.fromDate?{fromDate:selection.fromDate,toDate:selection.toDate}:null);
    if(!response.ok){const r=await response.json() as any;throw Object.assign(new Error(r.error?.code||'REPORT_AGGREGATE_LIMIT'),{status:response.status});}
    frame.localReport=mergePages(frame.localReport,await response.json());
   }
@@ -48,7 +50,7 @@ export async function stepCohortEventFrame(env:Env,user:AuthUser,selection:any,j
  }else if(frame.phase==='PICKS'){
   const rows=await all<any>(env.DB.prepare('SELECT repeat_key,row_json FROM private_cohort_practice_picks WHERE job_id=? AND enrollment_id=? AND repeat_key>? ORDER BY repeat_key LIMIT 251').bind(job.id,enrollmentId,frame.eventCursor));
   const chosen:any[]=[];let bytes=0;for(const row of rows.slice(0,250)){const size=new TextEncoder().encode(row.row_json).length;if(chosen.length&&bytes+size>1024*1024)break;chosen.push(row);bytes+=size;}const raw=chosen.map(r=>({...JSON.parse(r.row_json),...frame.identity}));
-  const response=reduceCohortRows([{results:raw}],['QUESTION_BANK'],selection.academicYear,selection.repeatPolicy,selection.sources,selection.examIds,false,selection.fromDate?{fromDate:selection.fromDate,toDate:selection.toDate}:null);
+  const response=reduceCohortRows([{results:raw}],['QUESTION_BANK'],selection.academicYear,selection.repeatPolicy,selection.sources,selection.examIds,!!classScope,selection.fromDate?{fromDate:selection.fromDate,toDate:selection.toDate}:null);
   if(!response.ok)throw new Error('REPORT_AGGREGATE_LIMIT');const page=await response.json() as any;page.sourceCoverage=[];
   frame.localReport=mergePages(frame.localReport,page);frame.practicePicked+=chosen.length;
   if(rows.length>chosen.length)frame.eventCursor=chosen[chosen.length-1].repeat_key;
