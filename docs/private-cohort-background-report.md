@@ -58,3 +58,9 @@ Aynı entegrasyon dosyasına beş senaryo daha eklendi. FIRST ve LATEST için ay
 Dosya yazımı kesintisi lease'i serbest bırakıp retry yaptı; sonraki teslim tek READY çıktı üretti ve duplicate teslim sonucu artırmadı. R2 put sırasında kaynak revizyonu değişince atomik ilerleme commit edilmedi, iş FAILED oldu ve yayımlanmamış nesne silindi. Eski worker yükleme sırasında yeni lease/token/cursor/step ile karşılaşınca yeni iş durumunu değiştiremedi ve yalnız kendi nesnesini temizledi.
 
 Bunlar yerel SQLite ve servis taklitleriyle doğrulandı. Gerçek Queue teslim zamanı, D1 trigger-inclusive metadata, R2 hata davranışı, farklı tekrar anahtarları/Unicode tie-break ve çok kaynaklı rapor eşitliği için ek kabul gerekir. Bu tur üretim kodu değiştirilmedi.
+
+## Rehberlik yetkisi değişiklikleri — yerel kabul
+
+94 migration üzerinde dört ek kabul kontrolü geçti: GUIDANCE görevinin INSERT/UPDATE/DELETE işlemleri rapor neslini artırır; yalnız SUBJECT görevi değişiklikleri bu rehberlik tetikleyicisini çalıştırmaz; rehberlik görevi başka kuruma taşınıp geri getirildiğinde iki kurumun nesli de artar; QUEUED/RUNNING/READY raporlar korunurken süresi dolmuş tek rapor için nesil artışı durur. Böylece yetkinin kaldırılıp tekrar verilmesi eski raporu yeniden geçerli yapmaz.
+
+Bu kontroller rehberlik yetkisi tetikleyici matrisi içindir. Tüm sınav/föy/oyun/kazanım kaynaklarının revision matrisi ve çok kaynaklı sayfalama eşdeğerliği henüz tamamlanmadı. SQLite kabulü Cloudflare Queue/R2/D1 staging kanıtı değildir.
