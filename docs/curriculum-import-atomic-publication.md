@@ -17,3 +17,11 @@ D1 transaction behaviour is documented in [Cloudflare's database API](https://de
 ## Final-stage verification
 
 Check interrupted preview, incomplete legacy READY jobs, missing/ambiguous/cross-subject/cross-grade parents, self/multi-node cycles and out-of-order valid hierarchy. Update older parser fixtures that referenced missing parents. Check 10,000-row deep chains without recursion overflow, forward parent foreign keys in a set-based INSERT, injected failure at every batch statement, simultaneous same-job commits, conflicting version names, revoked subject activity, literal confirmation and malformed JSON. Confirm no partial verified version/provenance/outcomes survives failure; successful commit retains exact parent relationships and sanitized audit. Run migrations through 0086 in isolation before staging acceptance.
+
+## CSV and screen isolation
+
+The reader preserves quoted multiline fields, escaped double quotes and physical starting line numbers; delimiter detection counts only outside header quotes. Malformed quotes abort structural parsing. Field-count differences, unknown/empty headers, duplicate semantic headers and unknown node types are explicit validation failures. Empty node types retain the older OUTCOME default; accepted Turkish aliases are exact names, not substring guesses. UTF-8 decoding is strict.
+
+Changing import metadata or the selected file clears the current job/preview and invalidates pending preview/commit responses. Year/program changes clear selected version details; list and detail responses are generation guarded. A stale server request can still finish; UI invalidation does not cancel a committed database transaction.
+
+Deferred checks: comma/semicolon/tab, BOM/CRLF, quoted newlines and delimiters, doubled quotes, unmatched quotes, characters after closing quotes, wrong column count, alias-header duplication, exact node aliases, unknown types and malformed UTF-8. Verify physical row numbers and A/B/A filter switches, rapid version selection, metadata/file changes during preview/commit and component unmount. No test/build/browser run has occurred for these changes.
