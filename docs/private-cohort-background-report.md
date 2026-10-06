@@ -1,6 +1,6 @@
 # Kurum genelinde birleşik raporu arka planda hazırlama
 
-Kodlanmıştır; kurulum ve son aşama doğrulamaları tamamlanmadığı için varsayılan kapalıdır. Mevcut hızlı kurum/rehberlik raporunun 5.000 kaynak kaydı sınırı aynen korunur. Yeni arka plan yolu yalnız Süper Admin ve kendi kurumu için Kurum Yöneticisine açıktır. Rehber sınıfı, branş öğretmeni, öğrenci ve veli bu yeni kurum geneli yolu kullanamaz. Bireysel rubrik CSV kuyruğu ayrıdır.
+Kodlanmıştır; kurulum ve son aşama doğrulamaları tamamlanmadığı için varsayılan kapalıdır. Mevcut hızlı kurum/rehberlik raporunun 5.000 kaynak kaydı sınırı aynen korunur. Kurum geneli arka plan yolu yalnız Süper Admin ve kendi kurumu için Kurum Yöneticisine açıktır. GUIDANCE_TEACHER aynı altyapıyı yalnız atanmış etkin sınıfı ve etkin dönemi için kullanır; kurum geneline erişemez. Branş öğretmeni, öğrenci ve veli bu yolu kullanamaz. Bireysel rubrik CSV kuyruğu ayrıdır.
 
 ## Hesaplama sözleşmesi
 
@@ -21,13 +21,13 @@ Başlangıç revizyonları ve başlangıç zamanı iş INSERT'inin aynı atomik 
 
 `GET/POST /api/private-cohort-reports`, aktöre ait `/:id`, `/:id/result`, `/:id/download`.
 
-Sunucu Kurum Yöneticisi için kurum seçimini oturumdaki kurumdan alır. Seçili her sınav için aynı kurum/yılda yayımlanmış mevcut sürümde bir dönem kaydı sonucu bulunması gerekir; başka kurum, yayımlanmamış, eski veya bu kapsamda yalnız misafir sonucu olan sınav sessizce atlanmaz, seçim hatası verilir. İş sahibi, aktörün rol/kurum/öğrenci bağlamı, aktif kurum ve seçim doğrulanır. Worker her bölümde aktörü DB'den yeniden okur. Sahibi dışında kimse işi okuyamaz. Tarayıcı kapanınca aynı hesap ve seçimin son on işi listelenir. Kaybolan POST yanıtı aynı requestId ile tekrar edebilir; benzersiz anahtar ve çakışma sonrası sorgu tek iş oluşturur.
+Sunucu Kurum Yöneticisi için kurum seçimini oturumdaki kurumdan alır. Seçili her sınav için aynı kurum/yılda yayımlanmış mevcut sürümde bir dönem kaydı sonucu bulunması gerekir; başka kurum, yayımlanmamış, eski veya bu kapsamda yalnız misafir sonucu olan sınav sessizce atlanmaz, seçim hatası verilir. Rehber için classId zorunludur; kurum oturumdan alınır. Etkin sınıf, etkin dönem, seçili yıl ve kurum/dönem/sınıfı eşleşen etkin GUIDANCE ataması DB üzerinden doğrulanır. İlk istekte dönem sunucuda belirlenip seçim JSON'una sabitlenir; sonradan sınıfın dönemi değişirse kapsam sessizce taşınmaz. Kurum geneli rolleri classId/seasonId göndererek farklı kapsam açamaz. İş sahibi, aktörün rol/kurum/öğrenci bağlamı, aktif kurum ve seçim doğrulanır. Worker her bölümde aktörü DB'den yeniden okur. Rehber sınıf/dönem/atama kontrolü hızlı enrollment taraması, kaynak sayfaları, geçici seçim indirgeme ve son indirmede tekrar yapılır. Yalnız ACTIVE enrollment'lar ve aynı sınıf/dönem seçili EXAM kanıtı kullanılır. Arşiv/yıl geçmişine yeni erişim verilmez. Sahibi dışında kimse işi okuyamaz. Tarayıcı kapanınca aynı hesap ve seçimin son on işi listelenir. Kaybolan POST yanıtı aynı requestId ile tekrar edebilir; benzersiz anahtar ve çakışma sonrası sorgu tek iş oluşturur.
 
 Kaynak satırları ve öğrenci/dönem kimlikleri çıktı dosyasına konulmaz. Yalnız toplamlar özel R2 JSON olarak saklanır. Aynı panelde rapor açılır; CSV indirmesi yetkili endpoint üzerinden üretilir. Public bucket, public URL veya signed download URL yoktur. CSV alanları kaçışlanır ve formül başlangıçları etkisizleştirilir. JSON ve CSV yanıtları no-store'dur. İlerleme ve toplama durumu D1'de tutulur; lease token + eski cursor + kaynak revizyonları atomik UPDATE ile yinelenen mesajları ve eski worker'ı sınırlar.
 
 ## Manuel staging kurulumu — henüz yapılmadı
 
-1. Önceki migration'lar, 0083 ve 0084 uygulanmalı; veri üzerine çalıştırılmadı. Trigger ve index etkisi staging kabulünde ölçülmeli.
+1. Önceki migration'lar, 0083, 0084 ve 0085 uygulanmalı; veri üzerine çalıştırılmadı. Trigger ve index etkisi staging kabulünde ölçülmeli.
 2. `REPORT_EXPORT_FILES`: public erişimi olmayan ayrı rapor bucket'ı. `report-exports/` için 48 saat lifecycle yedeği; mevcut bireysel rubrik çıktısıyla aynı özel bucket kullanılabilir.
 3. Kaynak kuyruk: `anunex-cohort-reports-staging`. Binding `COHORT_REPORT_QUEUE`; düz değişken `COHORT_REPORT_QUEUE_NAME` aynı kaynak kuyruğun tam adı. Ayrı DLQ. DLQ bu worker'a kaynak kuyruk olarak bağlanmaz. Tüketici batch size 1 ve başlangıç concurrency 1; staging ölçümleriyle artırılır. Sonuç/sınav/rubrik kuyruğu tekrar kullanılmaz.
 4. Yetkili staging kabulünden sonra `COHORT_REPORTS_ENABLED=true`. Production için ayrı `anunex-cohort-reports-production` kuyruğu, uygun binding ve ayrı ortam kaynakları. Feature flag'in tek başına açılması yeterli değildir.
@@ -38,3 +38,9 @@ Aktör başına iki aktif iş ve kayan 24 saatte on yeni iş. İş oluşturulduk
 ## Son aşamada doğrulanacaklar
 
 Bu kod üzerinde test/build/typecheck/migration/provider/deploy çalıştırılmadı. Kontroller: hızlı raporla çok bölümlü rapor eşitliği; FIRST/LATEST'in sınırlar arasında bozulmaması; oyun puan toplamı; kazanım etiket çelişkileri; başka aktör ve kurum reddi; rol/kurum değişimi; tüm trigger'ların INSERT/UPDATE/DELETE kapsamı ve aktörsüz source değişiklikleri; iş çalışırken yeniden yayınlama/silme; future publish zamanının geçmesi; duplicate delivery, eski lease ve R2 sonrası crash; cursor fencing; günlük limit/idempotency; 24 saat sınırı, flag off cleanup ve lifecycle; tek çok büyük enrollment'ın kaynak ve seçili-practice sayfalarında hızlı raporla eşit toplam vermesi; çok sayfalı kanıtta katılımcının tekrar sayılmaması; tekrar/tie-break politikası ve cleanup crash davranışı; D1/R2/queue kaynak kullanımı ve 10k/1m senaryoları.
+
+## Rehber sınıfı ve izin revizyonu
+
+0085, etkin veya hazır işler varken GUIDANCE atamalarının INSERT/UPDATE/DELETE işlemleri için etkilenen kurumun kaynak revizyonunu artırır. Atama kaldırılıp tekrar eklenirse eski hazır çıktı da geçersiz olur; yeni rapor gerekir. Bu ihtiyatlı kurum revizyonu aynı kurumdaki kurum yöneticisi raporlarını da geçersiz kılabilir. Sınıf/dönem/enrollment değişiklikleri mevcut 0083 trigger'larıyla korunur. Scope helper worker/lib/cohort-report-class-scope.ts içinde; eksik class scope hiçbir zaman rehbere kurum geneli yetki vermez.
+
+Son aşama testlerine ek: başka rehber sınıfı veya branş assignment'ı ile 403; classId olmadan kurum raporu bypass; sahte kurum ve seasonId; eski yıl/pasif dönem/pasif sınıf; seçili sınavın başka sınıfta sonucu olması; worker sürerken assignment revoke veya aynı classId'nin season değişimi; READY sonrası revoke–regrant; uzun geçmişin READ/PICKS/CLEAN fazında scope değişimi; rol değişikliği, aynı hesaptaki farklı sınıf seçimine eski async yanıt uygulanmaması; önceki kurum raporu JSON seçimlerinin listelenmeye devam etmesi. Bu testler ve migration uygulaması henüz çalıştırılmadı.
