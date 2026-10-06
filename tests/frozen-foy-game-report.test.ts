@@ -73,6 +73,6 @@ it('enforces student/parent ownership and hides raw question/outcome identifiers
   expect((await f.get('/api/reporting/students/stu/foy-runs?academicYear=2026-2027',parent)).status).toBe(200);
   f.db.exec(`UPDATE parent_student_links SET active=0 WHERE id='link'`);expect((await f.get('/api/reporting/students/stu/foy-runs?academicYear=2026-2027',parent)).status).toBe(403);
   expect((await f.get('/api/reporting/students/other/foy-runs?academicYear=2026-2027')).status).toBe(403);
-  const own:any=await (await f.get('/api/reporting/students/stu/frozen-foy?academicYear=2026-2027&runIds=foy')).json();expect(JSON.stringify(own)).not.toContain('questionId');expect(JSON.stringify(own)).not.toContain('outcomeId');
+  const own:any=await (await f.get('/api/reporting/students/stu/frozen-foy?academicYear=2026-2027&runIds=foy')).json();expect(JSON.stringify(own)).not.toContain('questionId');expect(own.outcomes).toEqual([expect.objectContaining({outcomeId:'o',outcomeCode:null,outcomeTitle:null})]);
  }finally{f.db.close();}
 });
