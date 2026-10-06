@@ -23,7 +23,7 @@ export function RubricObservationReport({studentId,userId,allowHistory=false,ini
   const requested=scope;setBusy(true);setError('');
   try{
    const rows:any[]=[];let cursor:string|null=null;
-   do{const page=await api<any>(path+(cursor?`${path.includes('?')?'&':'?'}cursor=${encodeURIComponent(cursor)}`:''));if(!mounted.current||currentScope.current!==requested)return;rows.push(...page.observations);if(rows.length>5000)throw new Error('Dışa aktarım 5.000 gözlem sınırını aşıyor. Bir dönem seçerek kapsamı daraltın.');cursor=page.nextCursor||null;}while(cursor);
+   do{const page:any=await api<any>(path+(cursor?`${path.includes('?')?'&':'?'}cursor=${encodeURIComponent(cursor)}`:''));if(!mounted.current||currentScope.current!==requested)return;rows.push(...page.observations);if(rows.length>5000)throw new Error('Dışa aktarım 5.000 gözlem sınırını aşıyor. Bir dönem seçerek kapsamı daraltın.');cursor=page.nextCursor||null;}while(cursor);
    if(!mounted.current||currentScope.current!==requested)return;
    const cell=(value:unknown)=>{let v=String(value??'');if(/^[\s\u0000-\u001f]*[=+\-@]|^[\t\r\n]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};
    const output=[['Eğitim yılı','Gözlem tarihi','Rubrik','Sürüm','Kaynak türü','Öğrenme çıktısı','Süreç','Ölçüt','Gözlenen düzey','Düzey açıklaması','Gözlem kanıtı','Geri bildirim','Sonraki adım']];
