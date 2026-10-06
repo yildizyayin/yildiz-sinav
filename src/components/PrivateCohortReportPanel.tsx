@@ -3,7 +3,7 @@ import {api,qs} from '../api';
 
 type Selection={institutionId:string;academicYear:string;sources:string[];examIds:string[];repeatPolicy:string;fromDate:string;toDate:string};
 const statusLabels:Record<string,string>={QUEUED:'Hazırlama sırasına alındı',RUNNING:'Hazırlanıyor',READY:'Rapor hazır',FAILED:'Hazırlanamadı',REVOKED:'Erişim kapsamı değişti',EXPIRED:'İndirme süresi doldu'};
-const errorLabels:Record<string,string>={REPORT_SOURCE_CHANGED:'Kaynak verisi değişti. Güncel verilerle yeni rapor hazırlayın.',REPORT_EXAM_UNAVAILABLE:'Seçili sınavlardan biri bu kurum ve yıl için yayımlanmış sonuç içermiyor. Sınav seçimini kontrol edin.',REPORT_SCOPE_TOO_LARGE:'Bir dönem kaydında çok fazla kanıt var. Tarih veya kaynak kapsamını daraltın.',REPORT_AGGREGATE_LIMIT:'Raporun sınıf veya kazanım kapsamı çok geniş. Seçimi daraltın.',REPORT_RETRY:'Geçici bir sorun oluştu; hazırlama yeniden denenecek.'};
+const errorLabels:Record<string,string>={REPORT_SOURCE_CHANGED:'Kaynak verisi değişti. Güncel verilerle yeni rapor hazırlayın.',REPORT_EXAM_UNAVAILABLE:'Seçili sınavlardan biri bu kurum ve yıl için yayımlanmış sonuç içermiyor. Sınav seçimini kontrol edin.',REPORT_SCOPE_TOO_LARGE:'Sınıf veya kazanım kapsamı çok geniş. Seçimi daraltın.',REPORT_EVENT_TOO_LARGE:'Tek bir kanıt kaydı güvenli boyut sınırını aşıyor. İçeriği kontrol edin.',REPORT_AGGREGATE_LIMIT:'Raporun sınıf veya kazanım kapsamı çok geniş. Seçimi daraltın.',REPORT_RETRY:'Geçici bir sorun oluştu; hazırlama yeniden denenecek.'};
 export function PrivateCohortReportPanel({selection,userId,onResult}:{selection:Selection;userId:string;onResult:(report:any)=>void}){
  const scope=JSON.stringify([userId,selection]),current=useRef(scope),generation=useRef(0);current.current=scope;
  const [attempt,setAttempt]=useState(0),[state,setState]=useState<any>(null),[error,setError]=useState<any>(null),[busy,setBusy]=useState(false),[enabled,setEnabled]=useState<boolean|null>(null);
@@ -18,7 +18,7 @@ export function PrivateCohortReportPanel({selection,userId,onResult}:{selection:
  {enabled===false&&<p>Arka plan kurum raporu henüz açık değil.</p>}
  {!job&&<button className="secondary" disabled={busy||enabled!==true} onClick={()=>void execute('prepare')}>{busy?'Kaydediliyor…':'Arka planda hazırla'}</button>}
  {error?.scope===scope&&<div className="alert error">{error.message}</div>}
- {job&&<><p>{statusLabels[job.status]||'Durum bekleniyor'} · {job.processedEnrollments??0} dönem kaydı işlendi</p>{job.errorCode&&<p>{errorLabels[job.errorCode]||'Rapor tamamlanamadı. Kapsamı kontrol ederek yeniden hazırlayın.'}</p>}
+ {job&&<><p>{statusLabels[job.status]||'Durum bekleniyor'} · {job.processedEnrollments??0} dönem kaydı işlendi{job.processedEvents>0?` · ${job.processedEvents} uzun geçmiş kaydı tarandı`:""}</p>{job.errorCode&&<p>{errorLabels[job.errorCode]||'Rapor tamamlanamadı. Kapsamı kontrol ederek yeniden hazırlayın.'}</p>}
  <button disabled={busy} onClick={()=>void execute('refresh')}>Durumu yenile</button><button disabled={busy} onClick={()=>{setState(null);setAttempt(a=>a+1);setError(null)}}>Yeni rapor hazırla</button>
  {job.status==='READY'&&<><button disabled={busy} onClick={()=>void execute('open')}>Raporu aç</button><a href={`/api/private-cohort-reports/${encodeURIComponent(job.jobId)}/download`}>CSV indir</a><p>Son indirme: {job.expiresAt?new Date(job.expiresAt.includes('T')?job.expiresAt:job.expiresAt.replace(' ','T')+'Z').toLocaleString('tr-TR'):'—'}</p></>}
  </>}
