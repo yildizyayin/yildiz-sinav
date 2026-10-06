@@ -32,4 +32,4 @@ Check all unauthorized roles, wrong institution/year/class/season and revoked gu
 
 ## Arka plan kurum raporu
 
-Büyük kurum kapsamları için ayrı, varsayılan kapalı bir hazırlama yolu kodlandı. Dönem kayıtlarına bölünür, kaynak değişiminde geçersiz olur ve tek CSV/aynı panel özeti üretir. Yeni yolun sınırları, staging gereksinimleri ve bekleyen testler [private-cohort-background-report.md](private-cohort-background-report.md) içindedir. Rehber sınıfının arka plan yolu bu tur açılmadı.
+Büyük kurum kapsamları için ayrı, varsayılan kapalı bir hazırlama yolu kodlandı. Dönem kayıtlarına bölünür, kaynak değişiminde geçersiz olur ve tek CSV/aynı panel özeti üretir. Yeni yolun sınırları, staging gereksinimleri ve bekleyen testler [private-cohort-background-report.md](private-cohort-background-report.md) içindedir. Rehberin atanmış etkin sınıfı için aynı arka plan yolu da kodlandı; dönem ve GUIDANCE ataması her aşamada tekrar kontrol edilir. Özellik staging kabulüne kadar kapalıdır.
