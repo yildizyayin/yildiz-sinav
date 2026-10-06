@@ -52,6 +52,7 @@ it('rejects forbidden roles, fails closed when disabled, and does not claim a li
   const before=f.db.prepare('SELECT status,lease_token,lease_until,step_no,enrollment_cursor FROM private_cohort_report_jobs WHERE id=?').get(id);
   let ack=0,retry=0;await consumePrivateCohortReports({messages:[{body:{schemaVersion:1,jobId:id},ack:()=>ack++,retry:()=>retry++}]} as any,f.env);expect(ack).toBe(1);expect(retry).toBe(0);expect(f.objects.size).toBe(0);expect(f.db.prepare('SELECT status,lease_token,lease_until,step_no,enrollment_cursor FROM private_cohort_report_jobs WHERE id=?').get(id)).toEqual(before);
   f.env.COHORT_REPORTS_ENABLED='false';expect((await handlePrivateCohortReport(new Request('https://test/api/private-cohort-reports'),f.env,f.user))!.status).toBe(200);expect((await f.read(id))!.status).toBe(503);
+  const sentBefore=f.sent.length;expect((await handlePrivateCohortReport(new Request('https://test/api/private-cohort-reports',{method:'POST',body:JSON.stringify({...f.selection,requestId:'disabled-request',confirmedReport:true})}),f.env,f.user))!.status).toBe(503);expect(f.sent.length).toBe(sentBefore);expect(f.db.prepare('SELECT count(*) n FROM private_cohort_report_jobs').get()!.n).toBe(1);delete f.env.COHORT_REPORTS_ENABLED;expect((await (await handlePrivateCohortReport(new Request('https://test/api/private-cohort-reports'),f.env,f.user))!.json() as any).enabled).toBe(false);
  }finally{f.db.close()}
 });
 
