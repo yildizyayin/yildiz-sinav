@@ -28,6 +28,7 @@ it('selects only new verified current tenant questions and permits seen question
  db.exec(`INSERT INTO coach_mini_test_questions VALUES('old','mini');INSERT INTO question_practice_attempts VALUES('student','practice');INSERT INTO assessment_responses VALUES('student','assessment');INSERT INTO coach_question_exposures VALUES('student','reservation');
  UPDATE question_bank SET owner_type='INSTITUTION',owner_id='other' WHERE id='foreign';UPDATE question_bank SET review_status='DRAFT' WHERE id='draft';UPDATE question_bank SET academic_year='2025-2026' WHERE id='wrongyear';UPDATE question_bank SET stem_text='stem mini' WHERE id='duplicate';UPDATE question_bank SET stem_text='stem new',owner_type='INSTITUTION',owner_id='school' WHERE id='ownclone';UPDATE question_bank SET stem_text='stem new',owner_type='INSTITUTION',owner_id='other' WHERE id='aaa-privateclone';`);
  const prepare=(sql:string,args:any[]=[]):any=>({bind:(...values:any[])=>prepare(sql,values),all:async()=>({results:db.prepare(sql).all(...args)})});
+ db.exec('ALTER TABLE outcomes ADD COLUMN code TEXT; ALTER TABLE outcomes ADD COLUMN title TEXT;');
  const env={DB:{prepare}} as any,user={role:'STUDENT',id:'user',student_id:'student',institution_id:'school'} as any;
  expect((await eligibleCoachMiniTestQuestions(env,user,'outcome','NEW')).map(q=>q.id)).toEqual(['new']);
  const repeat=(await eligibleCoachMiniTestQuestions(env,user,'outcome','REPEAT')).map(q=>q.id);
