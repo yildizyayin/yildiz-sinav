@@ -50,3 +50,11 @@ Son aşama testlerine ek: başka rehber sınıfı veya branş assignment'ı ile 
 `tests/private-cohort-acceptance.test.ts`: gerçek migration dosyalarıyla boş SQLite üzerinde beş entegrasyon testi geçti. D1 adaptörü ve bellek içi R2/Queue taklitleri kullanıldı; bu canlı Cloudflare testi değildir. Kapsam: atanmış sınıf/dönem sabitleme ve kapsam reddi; başka iş sahibi reddi; atama revoke–regrant revizyonuyla eski hazır çıktının reddi; yasak roller ve özellik kapalı davranış; canlı lease sırasında duplicate delivery; süresi geçmiş çıktı için anlık 410; özellik kapalıyken 7 nesne ve 501 geçici seçimin üç temizlik turunda bitmesi; nesne okunurken kaynak değişince çıktı verilmemesi.
 
 Tam yerel regresyon: 140 dosya / 645 test geçti. Önceki kod ağacında typecheck/build, yerel migrationlar 0086'ya kadar ve demo/gizlilik seedlerinin iki tur yüklenmesi geçti; bu tur üretim kodu değişmedi. Rapor hesaplama eşitliği, FIRST/LATEST olay sayfaları, lease crash/takeover, atomik cursor commit ve kaynak trigger'larının tam matrisi ayrıca test edilmelidir. Fiziksel temizleme kapasitesi ve gerçek R2/Queue davranışı staging ölçümü ister.
+
+## Uzun geçmiş ve iş kesintisi kabulü — 6 Ekim 2026
+
+Aynı entegrasyon dosyasına beş senaryo daha eklendi. FIRST ve LATEST için ayrı ayrı, aynı soruya ait 5.001 sabit çözüm kaydı gerçek consumer üzerinden işlendi. Hızlı yolun 5.000 sınırı aşıldı; READ/PICKS/CLEAN fazları ve 20'den fazla devam mesajı gözlendi. Aynı zaman damgasındaki run ID sırası ilk yanlış/son doğru çözümü belirledi; sonuç bir öğrenci, bir soru olayı ve 5.000 tekrar oldu. Geçici seçimler tamamlanınca silindi; olay sayısı 5.001 olarak korundu.
+
+Dosya yazımı kesintisi lease'i serbest bırakıp retry yaptı; sonraki teslim tek READY çıktı üretti ve duplicate teslim sonucu artırmadı. R2 put sırasında kaynak revizyonu değişince atomik ilerleme commit edilmedi, iş FAILED oldu ve yayımlanmamış nesne silindi. Eski worker yükleme sırasında yeni lease/token/cursor/step ile karşılaşınca yeni iş durumunu değiştiremedi ve yalnız kendi nesnesini temizledi.
+
+Bunlar yerel SQLite ve servis taklitleriyle doğrulandı. Gerçek Queue teslim zamanı, D1 trigger-inclusive metadata, R2 hata davranışı, farklı tekrar anahtarları/Unicode tie-break ve çok kaynaklı rapor eşitliği için ek kabul gerekir. Bu tur üretim kodu değiştirilmedi.
