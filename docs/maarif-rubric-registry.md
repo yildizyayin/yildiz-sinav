@@ -39,3 +39,13 @@ Historical/left enrollment reads, ordered pagination, bounded whole-scope CSV ex
 ## Final-stage checks
 
 Apply migrations in isolation; check foreign keys and immutability triggers; check official and teacher-designed payload validation, duplicate version conflicts, unauthenticated/non-admin rejection, changed curriculum context, UI source confirmation resets and version-switch response isolation. Check all six read roles, cross-institution/class/season/subject rejection, revoked authority at the conditional INSERT, duplicate and conflicting request IDs, unknown/repeated criterion IDs, future/out-of-year dates and original-observer withdrawal. Validate official content and observable level definitions with subject specialists before a pupil pilot.
+
+## Curriculum version publication boundary
+
+Both publication POSTs require `versionId` matching the currently selected curriculum version. The active/official/verified context and version are checked again inside the conditional INSERT. A stale outcome or component from another version cannot publish even if its own version is verified. Version switches reset forms, confirmation and loaded definitions; late reads or publication responses cannot replace the current version's data. These changes have not been tested yet.
+
+## Primary-source content review — 2026-10-06
+
+MEB's [Learning Evidence guidance](https://tymm.meb.gov.tr/olcme-degerlendirme), sections on process-component monitoring, multiple evidence methods and constructive feedback, supports retaining explicit teacher observation separately from test accuracy. This is a product interpretation of the guidance, not MEB approval of ANUNEX. The general page does not supply subject-specific rubric criteria or level descriptions. No official definitions were seeded from it.
+
+For each initial subject/grade pilot: select the applicable approved programme and version; record the exact outcome and process-component locator; check task/criteria/level descriptions against the cited document; classify locally designed criteria as TEACHER_DESIGNED; have a subject specialist review observable language and applicability before a pupil pilot. A recommendation to use a rubric is not itself an official rubric definition. Registry records show the publishing administrator's review declaration, not independent specialist approval. Content review remains pending until those actual definitions and reviews exist.
