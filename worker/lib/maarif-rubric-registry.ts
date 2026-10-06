@@ -53,25 +53,26 @@ export async function handleMaarifRegistry(request:Request,env:Env,actor:AuthUse
   const body=JSON.parse(raw);
   if(!body||typeof body!=='object'||body.confirmedSource!==true)throw new Error('Kaynak içeriği ve kayıt açıkça doğrulanmalıdır.');
   const reviewNote=text(body.reviewNote,20,1000);
-  if(componentPath)normalized={outcomeId:text(body.outcomeId,1,100),code:text(body.code,1,100),title:text(body.title,3,1000),reviewNote,...officialSource(body)};
+  const versionId=text(body.versionId,1,100);
+  if(componentPath)normalized={versionId,outcomeId:text(body.outcomeId,1,100),code:text(body.code,1,100),title:text(body.title,3,1000),reviewNote,...officialSource(body)};
   else {
    if(!['OFFICIAL','TEACHER_DESIGNED'].includes(body.sourceKind))throw new Error('Rubrik kaynağı seçilmelidir.');
-   normalized={componentId:text(body.componentId,1,100),versionLabel:text(body.versionLabel,1,80),title:text(body.title,3,200),taskInstructions:text(body.taskInstructions,20,4000),criteria:validateRubricCriteria(body.criteria),sourceKind:body.sourceKind,reviewNote,...(body.sourceKind==='OFFICIAL'?officialSource(body):{sourceUrl:null,sourceTitle:null,sourceLocator:null})};
+   normalized={versionId,componentId:text(body.componentId,1,100),versionLabel:text(body.versionLabel,1,80),title:text(body.title,3,200),taskInstructions:text(body.taskInstructions,20,4000),criteria:validateRubricCriteria(body.criteria),sourceKind:body.sourceKind,reviewNote,...(body.sourceKind==='OFFICIAL'?officialSource(body):{sourceUrl:null,sourceTitle:null,sourceLocator:null})};
   }
  }catch(e){return badRequest(e instanceof Error?e.message:'Kayıt geçersiz.');}
  const n=normalized;
  if(componentPath){
-  const outcome=await one(env.DB.prepare(`SELECT o.id FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE o.id=? AND o.active=1 AND o.official=1 AND cv.verified=1 AND o.node_type IN ('OUTCOME','SUB_OUTCOME')`).bind(n.outcomeId));
+  const outcome=await one(env.DB.prepare(`SELECT o.id FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE o.id=? AND cv.id=? AND o.active=1 AND o.official=1 AND cv.verified=1 AND o.node_type IN ('OUTCOME','SUB_OUTCOME')`).bind(n.outcomeId,n.versionId));
   if(!outcome)return badRequest('Doğrulanmış resmî öğrenme çıktısı seçilmelidir.');
   const id=uuid('pc');
-  const result=await env.DB.prepare(`INSERT INTO curriculum_process_components(id,outcome_id,code,title,source_url,source_title,source_locator,review_note,verified_by) VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(outcome_id,code) DO NOTHING`).bind(id,n.outcomeId,n.code,n.title,n.sourceUrl,n.sourceTitle,n.sourceLocator,n.reviewNote,actor.id).run();
-  if(!result.meta.changes)return json({ok:false,error:{code:'COMPONENT_EXISTS',message:'Bu süreç bileşeni zaten kayıtlı. Düzeltme için yeni müfredat sürümü kullanın.'}},409);
+  const result=await env.DB.prepare(`INSERT INTO curriculum_process_components(id,outcome_id,code,title,source_url,source_title,source_locator,review_note,verified_by) SELECT ?,?,?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE o.id=? AND cv.id=? AND o.active=1 AND o.official=1 AND cv.verified=1 AND o.node_type IN ('OUTCOME','SUB_OUTCOME')) ON CONFLICT(outcome_id,code) DO NOTHING`).bind(id,n.outcomeId,n.code,n.title,n.sourceUrl,n.sourceTitle,n.sourceLocator,n.reviewNote,actor.id,n.outcomeId,n.versionId).run();
+  if(!result.meta.changes)return json({ok:false,error:{code:'COMPONENT_EXISTS',message:'Süreç bileşeni zaten kayıtlı veya seçilen müfredat bağlamı değişti. Kayıtları yenileyin.'}},409);
   return json({ok:true,id},201);
  }
- const component=await one(env.DB.prepare(`SELECT pc.id FROM curriculum_process_components pc JOIN outcomes o ON o.id=pc.outcome_id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE pc.id=? AND o.active=1 AND o.official=1 AND cv.verified=1`).bind(n.componentId));
+ const component=await one(env.DB.prepare(`SELECT pc.id FROM curriculum_process_components pc JOIN outcomes o ON o.id=pc.outcome_id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE pc.id=? AND cv.id=? AND o.active=1 AND o.official=1 AND cv.verified=1`).bind(n.componentId,n.versionId));
  if(!component)return badRequest('Doğrulanmış süreç bileşeni seçilmelidir.');
  const id=uuid('rub');
- const result=await env.DB.prepare(`INSERT INTO learning_rubric_versions(id,component_id,version_label,title,task_instructions,criteria_json,source_kind,source_url,source_title,source_locator,review_note,published_by) SELECT ?,?,?,?,?,?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM curriculum_process_components pc JOIN outcomes o ON o.id=pc.outcome_id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE pc.id=? AND o.active=1 AND o.official=1 AND cv.verified=1) ON CONFLICT(component_id,version_label) DO NOTHING`).bind(id,n.componentId,n.versionLabel,n.title,n.taskInstructions,JSON.stringify(n.criteria),n.sourceKind,n.sourceUrl,n.sourceTitle,n.sourceLocator,n.reviewNote,actor.id,n.componentId).run();
+ const result=await env.DB.prepare(`INSERT INTO learning_rubric_versions(id,component_id,version_label,title,task_instructions,criteria_json,source_kind,source_url,source_title,source_locator,review_note,published_by) SELECT ?,?,?,?,?,?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM curriculum_process_components pc JOIN outcomes o ON o.id=pc.outcome_id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE pc.id=? AND cv.id=? AND o.active=1 AND o.official=1 AND cv.verified=1) ON CONFLICT(component_id,version_label) DO NOTHING`).bind(id,n.componentId,n.versionLabel,n.title,n.taskInstructions,JSON.stringify(n.criteria),n.sourceKind,n.sourceUrl,n.sourceTitle,n.sourceLocator,n.reviewNote,actor.id,n.componentId,n.versionId).run();
  if(!result.meta.changes)return json({ok:false,error:{code:'RUBRIC_CONTEXT_OR_VERSION_CONFLICT',message:'Sürüm zaten kayıtlı veya kaynak bağlamı değişti.'}},409);
  return json({ok:true,id},201);
 }
