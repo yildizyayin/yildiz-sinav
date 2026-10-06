@@ -16,7 +16,7 @@ function access(user:AuthUser,subject?:string,writing=false):{sql:string;params:
 }
 const enrollmentJoin=`FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id JOIN institution_seasons se ON se.id=e.season_id AND se.institution_id=e.institution_id JOIN classes c ON c.id=e.class_id AND c.institution_id=e.institution_id AND c.season_id=e.season_id`;
 const activeContext=`e.status='ACTIVE' AND s.status='ACTIVE' AND se.status='ACTIVE' AND c.active=1`;
-const rubricJoin=`JOIN curriculum_versions cv ON cv.academic_year=se.academic_year AND cv.program_code='SCHOOL' AND cv.verified=1 JOIN outcomes o ON o.curriculum_version_id=cv.id AND o.grade_level=e.grade_level AND o.active=1 AND o.official=1 JOIN curriculum_process_components pc ON pc.outcome_id=o.id JOIN learning_rubric_versions r ON r.component_id=pc.id`;
+const rubricJoin=`JOIN curriculum_versions cv ON cv.academic_year=se.academic_year AND cv.program_code='SCHOOL' AND cv.grade_level=e.grade_level AND cv.verified=1 JOIN outcomes o ON o.curriculum_version_id=cv.id AND o.grade_level=e.grade_level AND o.active=1 AND o.official=1 JOIN curriculum_process_components pc ON pc.outcome_id=o.id JOIN learning_rubric_versions r ON r.component_id=pc.id`;
 function bounded(value:unknown,min:number,max:number){if(typeof value!=='string'||value.trim().length<min||value.trim().length>max)throw new Error(`Metin ${min}–${max} karakter olmalıdır.`);return value.trim()}
 async function fingerprint(value:string){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));return Array.from(new Uint8Array(bytes)).map(x=>x.toString(16).padStart(2,'0')).join('')}
 
