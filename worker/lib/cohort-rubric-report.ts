@@ -19,7 +19,7 @@ export async function cohortRubricReport(env:Env,user:AuthUser,url:URL,classScop
  for(const row of rows){
   let snapshot:any,selections:any[],criteria:any[];
   try{snapshot=JSON.parse(row.snapshot_json);selections=JSON.parse(row.selections_json);if(snapshot?.schemaVersion!==1||snapshot.rubricId!==row.rubric_id||snapshot.academicYear!==year||snapshot.subjectId!==row.subject_id||typeof snapshot.curriculumVersionId!=='string'||!snapshot.curriculumVersionId||!['OFFICIAL','TEACHER_DESIGNED'].includes(snapshot.sourceKind))throw new Error();criteria=validateRubricCriteria(snapshot.criteria);if(!Array.isArray(selections)||selections.length!==criteria.length||criteria.some(c=>{const matches=selections.filter(s=>s?.criterionId===c.id);return matches.length!==1||!c.levels.some((l:any)=>l.id===matches[0].levelId)}))throw new Error();}catch{excludedObservations++;continue;}
-  const signature=JSON.stringify([snapshot.title,snapshot.versionLabel,snapshot.sourceKind,criteria]);
+  const signature=JSON.stringify([snapshot.title,snapshot.versionLabel,snapshot.sourceKind,snapshot.curriculumVersionId,snapshot.subjectId,snapshot.outcomeId,snapshot.outcomeCode,snapshot.outcomeTitle,snapshot.componentCode,snapshot.componentTitle,snapshot.taskInstructions,snapshot.sourceUrl,snapshot.sourceTitle,snapshot.sourceLocator,snapshot.componentSourceUrl,snapshot.componentSourceLocator,criteria]);
   if(signatures.has(row.rubric_id)&&signatures.get(row.rubric_id)!==signature)return fail('RUBRIC_SNAPSHOT_CONFLICT','Aynı rubrik sürümünün kanıt tanımları uyuşmuyor. Rapor hazırlanmadı.',409);
   signatures.set(row.rubric_id,signature);
   const studentRubric=JSON.stringify([row.enrollment_id,row.rubric_id]);
