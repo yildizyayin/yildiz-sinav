@@ -47,3 +47,9 @@ On ek kabul testi: LATEST/ALL eşit tarihli gözlemlerin düzeylerini ve tekrar/
 Enrollment başka sınıfa taşındığında kurum dağılımı ve öğrenci geçmişi gözlemin özgün sınıfını korur; eski ve yeni rehberlik sınıfı bu eski gözlemi güncel sınıf dağılımına katmaz. Ayrılan öğrenci/kapalı sezon/pasif sınıf kurum geçmiş dağılımında korunur, güncel rehberlik yetkisi reddedilir. Geri çekilmiş kayıtlar kurum ve rehberlik dağılımlarından çıkar. Rol/kurum sınırı, UTC gün sınırlarının dahil oluşu ve geçersiz tarih/politika kontrolleri geçti. Dağılım çıktısında bireysel kanıt notu/geri bildirim/işlem kimliği yok; resmî puan veya sayısal beceri puanı çıkarılmaz.
 
 Bu yerel SQLite/D1-adapter kabulüdür. Farklı rubrik sürümlerinin ayrı gruplanması, 5000 kayıt/500 grup sınırları, gerçek UI/CSV ve Cloudflare staging ayrıca bekler. Migration değişmedi.
+
+## Sürüm ve sınır kabulü — 2026-10-07
+
+Üç ek kontrol tamamlandı: aynı ölçüt kimliklerini kullanan iki rubrik sürümü LATEST/ALL politikalarında ayrı gruplar olarak kalır, değişen sürüm etiketi ve düzey adları korunur. Tam 5.000 gözlem her iki politikada kabul edilir; 5.001 gözlemde REPORT_SCOPE_TOO_LARGE döner ve groups/eksik toplam verilmez. Tarih aralığını daraltmak 5.000 geçerli kaydı yeniden raporlanabilir yapar. Tam 500 rubrik/ölçüt grubu kabul edilir; grup501 aynı hata ile reddedilir. Yerel test fixtureları sentetiktir.
+
+Bu sınır kontrolleri üretim kodu veya migration değiştirmedi. UI/CSV davranışı ve sağlayıcı kapasitesi ayrıca doğrulanmalıdır; bu sayılar eşzamanlı kullanıcı yük ölçümü değildir.
