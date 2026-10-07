@@ -35,6 +35,7 @@
     "@cloudflare/workers-types": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "happy-dom": "20.14.5",
     "typescript": "latest",
     "vite": "latest",
     "vitest": "latest",
