@@ -61,3 +61,12 @@ CSV oluşturma ve tüm sayfaları toplama mantığı src/lib/rubricCsvExport.ts 
 Dışa aktarım artık scope metnine ek olarak işlem generation kimliğini kontrol eder. Scope effect ve unmount bu kimliği geçersizleştirir; eski kapsam geri seçilse bile bekleyen eski export dosya/mesaj üretemez. Kapsam değişiminde eski busy durumu temizlenir. Browser artifact yalnız başarılı tam koleksiyon döndükten sonra oluşturulur.
 
 Son yerel takım143 dosya751 test başarılı. Bu testler orchestration/helper iptal mantığı içindir; gerçek React mount/unmount, tarayıcı indirme ve Excel/LibreOffice açılışı manuel/provider kabulünde ayrıca kontrol edilmelidir. Arka plan özel CSV consumer'ının kendi serializer'ı bu refaktörde değiştirilmedi. Okuma sayfaları tek global kilitli snapshot değildir; eşzamanlı withdrawal/yeni kayıt visibility davranışı önceki politikayı korur.
+
+
+## Üç paralel teknik iş — 2026-10-07
+
+Rubrik ekranında yükleme/pagination/yayımlama/geri çekme/CSV tamamlanmaları artık mounted + scope + scope epoch kontrolünden geçer. A/B/A dönüşü eski işlemi yeniden geçerli yapmaz; eski hata, notice ve busy güncellemeleri yeni kapsama taşınmaz. Kapsam değişince gözlem notu, geri bildirim, gelişim adımı, tarih, geri çekme gerekçesi, onay ve requestId sıfırlanır. Sunucuda tamamlanmış eski kapsam yazısı geri alınmaz; yalnız yeni ekrana etkisi engellenir. Gerçek React/browser zamanlama kabulü halen açıktır.
+
+Yeni private-rubric-export kabul dosyasında altı test gerçek handler/consumer ve tüm migrationları uygulanmış SQLite üzerinde; yerel D1 adapter/fake R2/Queue ile CSV BOM/quote/formula/frozen labels, replay/scope conflict/ownership, queued yetki iptali, indirme öncesi yetki ve withdrawal kontrolü, storage retry/duplicate part engeli, süre sonu ve bounded cleanup davranışını doğrular. Cloudflare sağlayıcı kabulü değildir.
+
+Üç çoklu sınıf testi aynı grade/question/outcome için iki şubeyi kurum raporunda ayrı tutar, rehberin tam atanmış şube kapsamını doğrular ve kuyruklu kurum çıktısında katılmayan kayıtları sıfırla ortalamaya katmaz. Hedef cohort dosyası42 test; tüm takım144 dosya760 test başarılı, typecheck başarılı.
