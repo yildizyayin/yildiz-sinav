@@ -1,6 +1,6 @@
 import {collectRubricCsvPages} from '../lib/rubricCsvExport';
 import {PrivateRubricExportPanel} from './PrivateRubricExportPanel';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { api, qs } from '../api';
 
 export function RubricObservationReport({studentId,userId,allowHistory=false,initialHistory=false,institutionScope}:{studentId:string;userId:string;allowHistory?:boolean;initialHistory?:boolean;institutionScope?:string}) {
@@ -13,15 +13,17 @@ export function RubricObservationReport({studentId,userId,allowHistory=false,ini
  const [withdrawId,setWithdrawId]=useState(''),[reason,setReason]=useState('');
  const base=`/api/learning-observations/students/${encodeURIComponent(studentId)}`;
  const scope=JSON.stringify([studentId,userId,history,enrollmentId,institutionScope]);
- const currentScope=useRef(scope);currentScope.current=scope;const generation=useRef(0),mounted=useRef(true),exportGeneration=useRef(0);
- useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;exportGeneration.current++}},[]);
+ const currentScope=useRef(scope),scopeEpoch=useRef(0);const generation=useRef(0),mounted=useRef(true),exportGeneration=useRef(0);
+ useLayoutEffect(()=>{currentScope.current=scope;scopeEpoch.current++},[scope]);
+ useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;scopeEpoch.current++;exportGeneration.current++}},[]);
  const data=scopedData?.scope===scope?scopedData.result:null;
  const path=base+qs({view:history?'history':null,enrollmentId:enrollmentId||null,institutionId:institutionScope||null});
- const load=async(cursor?:string)=>{const requested=scope,attempt=++generation.current;const result=await api<any>(path+(cursor?`${path.includes('?')?'&':'?'}cursor=${encodeURIComponent(cursor)}`:''));if(mounted.current&&currentScope.current===requested&&generation.current===attempt)setData((old:any)=>({scope:requested,result:{...result,observations:cursor&&old?.scope===requested?[...new Map([...old.result.observations,...result.observations].map((x:any)=>[x.id,x])).values()]:result.observations}}))};
- useEffect(()=>{exportGeneration.current++;setBusy(false);setError('');setNotice('');setSelection('');setLevels({});setWithdrawId('');void load().catch(e=>{if(mounted.current&&currentScope.current===scope)setError(e.message)})},[scope]);
- const nextPage=async()=>{if(!data?.nextCursor)return;setBusy(true);setError('');try{await load(data.nextCursor)}catch(e:any){setError(e.message)}finally{setBusy(false)}};
+ const captureScope=()=>{const requested=scope,epoch=scopeEpoch.current;return()=>mounted.current&&currentScope.current===requested&&scopeEpoch.current===epoch};
+ const load=async(cursor?:string)=>{const isCurrent=captureScope(),attempt=++generation.current;try{const result=await api<any>(path+(cursor?`${path.includes('?')?'&':'?'}cursor=${encodeURIComponent(cursor)}`:''));if(isCurrent()&&generation.current===attempt)setData((old:any)=>({scope,result:{...result,observations:cursor&&old?.scope===scope?[...new Map([...old.result.observations,...result.observations].map((x:any)=>[x.id,x])).values()]:result.observations}}))}catch(e){if(isCurrent()&&generation.current===attempt)throw e}};
+ useEffect(()=>{exportGeneration.current++;setData(null);setBusy(false);setError('');setNotice('');setSelection('');setLevels({});setWithdrawId('');setReason('');setEvidenceNote('');setFeedback('');setNextStep('');setObservedAt(new Date().toISOString().slice(0,10));setConfirmed(false);setRequestId(crypto.randomUUID());const isCurrent=captureScope();void load().catch(e=>{if(isCurrent())setError(e.message)})},[scope]);
+ const nextPage=async()=>{if(!data?.nextCursor)return;const isCurrent=captureScope();setBusy(true);setError('');try{await load(data.nextCursor)}catch(e:any){if(isCurrent())setError(e.message)}finally{if(isCurrent())setBusy(false)}};
  const exportCsv=async()=>{
-  const requested=scope,attempt=++exportGeneration.current;const isCurrent=()=>mounted.current&&currentScope.current===requested&&exportGeneration.current===attempt;setBusy(true);setError('');
+  const scopeIsCurrent=captureScope(),attempt=++exportGeneration.current;const isCurrent=()=>scopeIsCurrent()&&exportGeneration.current===attempt;setBusy(true);setError('');
   try{
    const result=await collectRubricCsvPages(cursor=>api<any>(path+(cursor?`${path.includes('?')?'&':'?'}cursor=${encodeURIComponent(cursor)}`:'')),isCurrent);
    if(!result||!isCurrent())return;
@@ -32,14 +34,14 @@ export function RubricObservationReport({studentId,userId,allowHistory=false,ini
  const writable=(data?.rubrics||[]).filter((r:any)=>r.can_observe===1);
  const rubric=writable.find((r:any)=>`${r.enrollment_id}:${r.id}`===selection);
  const publish=async()=>{
-  if(!rubric||!confirmed)return;setBusy(true);setError('');setNotice('');
+  if(!rubric||!confirmed)return;const isCurrent=captureScope();setBusy(true);setError('');setNotice('');
   try{
    await api(base,{method:'POST',body:JSON.stringify({enrollmentId:rubric.enrollment_id,rubricId:rubric.id,requestId,observedAt:`${observedAt}T00:00:00.000Z`,evidenceNote,feedback,nextStep,selections:rubric.criteria.map((c:any)=>({criterionId:c.id,levelId:levels[c.id]})),confirmedObservation:true})});
-   setNotice('Gözlem yayımlandı. Karne bu kaydın rubrik sürümünü ve gözlenen düzeylerini gösterir.');setConfirmed(false);await load();
-  }catch(e:any){setError(e.message)}finally{setBusy(false)}
+   if(!isCurrent())return;setNotice('Gözlem yayımlandı. Karne bu kaydın rubrik sürümünü ve gözlenen düzeylerini gösterir.');setConfirmed(false);await load();
+  }catch(e:any){if(isCurrent())setError(e.message)}finally{if(isCurrent())setBusy(false)}
  };
  const withdraw=async()=>{
-  if(!withdrawId)return;setBusy(true);setError('');setNotice('');try{await api(`${base}/${encodeURIComponent(withdrawId)}/withdraw`,{method:'POST',body:JSON.stringify({reason})});setWithdrawId('');setReason('');setNotice('Gözlem geri çekildi; geçmiş kayıt korundu. Düzeltmeyi yeni gözlem olarak yayımlayın.');await load()}catch(e:any){setError(e.message)}finally{setBusy(false)}
+  if(!withdrawId)return;const isCurrent=captureScope();setBusy(true);setError('');setNotice('');try{await api(`${base}/${encodeURIComponent(withdrawId)}/withdraw`,{method:'POST',body:JSON.stringify({reason})});if(!isCurrent())return;setWithdrawId('');setReason('');setNotice('Gözlem geri çekildi; geçmiş kayıt korundu. Düzeltmeyi yeni gözlem olarak yayımlayın.');await load()}catch(e:any){if(isCurrent())setError(e.message)}finally{if(isCurrent())setBusy(false)}
  };
  return <section className="panel" style={{marginTop:20}}><h2>Süreç ve rubrik gözlemleri</h2><p>{history?'Yetkili geçmiş dönem kayıtlarına ait öğretmen gözlemleri.':'Güncel aktif öğrenci kaydına ait öğretmen gözlemleri.'} Sınav doğruluk oranları ve rubrik düzeyleri ayrı kanıtlardır.</p>
   {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
