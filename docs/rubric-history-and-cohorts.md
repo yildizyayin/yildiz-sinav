@@ -53,3 +53,11 @@ Bu yerel SQLite/D1-adapter kabulüdür. Farklı rubrik sürümlerinin ayrı grup
 Üç ek kontrol tamamlandı: aynı ölçüt kimliklerini kullanan iki rubrik sürümü LATEST/ALL politikalarında ayrı gruplar olarak kalır, değişen sürüm etiketi ve düzey adları korunur. Tam 5.000 gözlem her iki politikada kabul edilir; 5.001 gözlemde REPORT_SCOPE_TOO_LARGE döner ve groups/eksik toplam verilmez. Tarih aralığını daraltmak 5.000 geçerli kaydı yeniden raporlanabilir yapar. Tam 500 rubrik/ölçüt grubu kabul edilir; grup501 aynı hata ile reddedilir. Yerel test fixtureları sentetiktir.
 
 Bu sınır kontrolleri üretim kodu veya migration değiştirmedi. UI/CSV davranışı ve sağlayıcı kapasitesi ayrıca doğrulanmalıdır; bu sayılar eşzamanlı kullanıcı yük ölçümü değildir.
+
+## CSV ve iptal mantığı kabulü — 2026-10-07
+
+CSV oluşturma ve tüm sayfaları toplama mantığı src/lib/rubricCsvExport.ts içinde ayrıldı ve gerçek rapor bileşenine bağlandı.19 birim/async kontrol Türkçe UTF-8 BOM, noktalı virgül/tırnak/satır sonu kaçışı, boş hücre ve10 formül/control-prefix örneğini; dondurulmuş etiketleri; başlangıçtan tüm sayfaları toplama;5000 kabul/5001 hata; son sayfa yetki hatasında kısmi dosya vermeme; döngü yapan cursor reddi; A/B/A ve unmount iptali; iptalden sonra yeni istek başlatmama; bilinmeyen düzeyde boş hücre yerine hata davranışını doğrular.
+
+Dışa aktarım artık scope metnine ek olarak işlem generation kimliğini kontrol eder. Scope effect ve unmount bu kimliği geçersizleştirir; eski kapsam geri seçilse bile bekleyen eski export dosya/mesaj üretemez. Kapsam değişiminde eski busy durumu temizlenir. Browser artifact yalnız başarılı tam koleksiyon döndükten sonra oluşturulur.
+
+Son yerel takım143 dosya751 test başarılı. Bu testler orchestration/helper iptal mantığı içindir; gerçek React mount/unmount, tarayıcı indirme ve Excel/LibreOffice açılışı manuel/provider kabulünde ayrıca kontrol edilmelidir. Arka plan özel CSV consumer'ının kendi serializer'ı bu refaktörde değiştirilmedi. Okuma sayfaları tek global kilitli snapshot değildir; eşzamanlı withdrawal/yeni kayıt visibility davranışı önceki politikayı korur.
