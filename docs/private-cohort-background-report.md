@@ -64,3 +64,11 @@ Bunlar yerel SQLite ve servis taklitleriyle doğrulandı. Gerçek Queue teslim z
 94 migration üzerinde dört ek kabul kontrolü geçti: GUIDANCE görevinin INSERT/UPDATE/DELETE işlemleri rapor neslini artırır; yalnız SUBJECT görevi değişiklikleri bu rehberlik tetikleyicisini çalıştırmaz; rehberlik görevi başka kuruma taşınıp geri getirildiğinde iki kurumun nesli de artar; QUEUED/RUNNING/READY raporlar korunurken süresi dolmuş tek rapor için nesil artışı durur. Böylece yetkinin kaldırılıp tekrar verilmesi eski raporu yeniden geçerli yapmaz.
 
 Bu kontroller rehberlik yetkisi tetikleyici matrisi içindir. Tüm sınav/föy/oyun/kazanım kaynaklarının revision matrisi ve çok kaynaklı sayfalama eşdeğerliği henüz tamamlanmadı. SQLite kabulü Cloudflare Queue/R2/D1 staging kanıtı değildir.
+
+## Kaynak değişikliği ve birleşik sayfalama kabulü — 2026-10-07
+
+Sekiz kaynak için INSERT/UPDATE/DELETE kontrolleri tamamlandı: sınav sonuç snapshotı, sınav katılımcısı, soru pratiği run kaydı, dondurulmuş föy kanıtı, dondurulmuş oyun kanıtı, ödev, koç mini testi ve sınav yayın profili. Her değişim beklenen kurum neslini (yayın profilinde global nesli) tam bir artırıyor; hazırlanmış rapor indirmesi 409 dönüyor ve özel nesneye erişmiyor. Tüm işler sona erdiğinde yeniden ekleme nesli artırmıyor. Foreign key kontrolleri temiz.
+
+FIRST/LATEST birleşik senaryolarında 5.001 soru pratiği kaydı, bir föy sorusu ve bir oyun oturumu gerçek sayfalı consumer yolundan geçiyor. 4.748 tekrar eleniyor, 253 soru pratiği olayı + 1 föy sorusu sayılıyor. 252 ayrı soru ve Unicode run kimlikleriyle eşit zamanlı bir tekrar çifti, senkron kanonik örnek ile aynı doğruluk toplamını üretiyor. Oyun oturumu/70 puan akademik soru doğruluğundan ayrı tutuluyor; resmî puan ve ulusal sıra üretilmiyor. Testler 20'den fazla devam çağrısını doğruluyor.
+
+Bu aşamada üretim kodu veya migration değişmedi. Kurumlar arası kaynak taşıma, enrollment/season/class CRUD matrisinin tamamı, tüm beş kaynak birlikte (sınav/mini test dahil), çoklu öğrenci ve kurum, sağlayıcı staging ve gerçek yük kabulü ayrıca açık. SQLite/D1-adapter testi gerçek Cloudflare Queue/R2 kabulü değildir.
