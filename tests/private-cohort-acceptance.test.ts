@@ -2,6 +2,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {readFileSync,readdirSync} from 'node:fs';
 import {expect,it} from 'vitest';
 import {cohortReportClassScope} from '../worker/lib/cohort-report-class-scope';
+import {cohortLearningReport} from '../worker/lib/cohort-learning-report';
 import {frozenPracticeReport} from '../worker/lib/frozen-practice-report';
 import {handlePrivateCohortReport,consumePrivateCohortReports,dispatchPrivateCohortReports} from '../worker/lib/private-cohort-report';
 
@@ -150,3 +151,57 @@ it('fences all prepared statuses but stops generation churn after expiration',as
   f.db.prepare("UPDATE private_cohort_report_jobs SET expires_at=datetime('now','-1 minute') WHERE id=?").run(id);f.db.exec("UPDATE teacher_assignments SET active=1-active WHERE id='assignment'");expect(revision()).toBe(before+3);
  }finally{f.db.close()}
 });
+
+function seedRevisionSources(f:ReturnType<typeof fixture>){
+ f.db.exec(`INSERT INTO student_entities(id,first_name,last_name,normalized_name) VALUES('student','Synthetic','Student','synthetic');
+ INSERT INTO student_enrollments(id,student_id,institution_id,season_id,class_id,grade_level,created_at) VALUES('enrollment','student','school','season','class',7,'2026-09-01 00:00:00');
+ INSERT INTO subjects(id,code,name) VALUES('math','SYNTH_MATH','Synthetic math');
+ INSERT INTO curriculum_versions(id,academic_year,grade_level,program_version,authority,verified,program_code) VALUES('cv','2026-2027',7,'Synthetic','MEB',1,'SCHOOL');
+ INSERT INTO outcomes(id,curriculum_version_id,subject_id,grade_level,code,title,official) VALUES('outcome','cv','math',7,'SYNTH.1','Synthetic output',1);
+ INSERT INTO exams(id,owner_type,institution_id,academic_year,title,exam_type) VALUES('exam','INSTITUTION','school','2026-2027','Synthetic exam','CUSTOM');
+ INSERT INTO exam_participants(id,exam_id,institution_id,season_id,student_id,name_snapshot,participant_status) VALUES('participant','exam','school','season','student','Synthetic','ACTIVE');
+ INSERT INTO assignments(id,institution_id,season_id,created_by,title) VALUES('homework','school','season','guide','Synthetic task'),('foreign-task','foreign',NULL,'guide','Foreign task');
+ INSERT INTO assignment_items(id,assignment_id,item_type) VALUES('item','homework','TASK');
+ INSERT INTO assessment_runs(id,institution_id,student_id,source_type,status) VALUES('run','school','student','EXTERNAL','SCORED');
+ INSERT INTO assessment_responses(id,run_id,student_id) VALUES('response','run','student');
+ INSERT INTO game_sessions(id,student_id,game_code,score,xp_earned,created_at) VALUES('game','student','SYNTHETIC',70,10,'2026-10-01 12:00:00');
+ DELETE FROM frozen_game_session_evidence WHERE session_id='game';`);
+}
+const sourceMutations=[
+ ['snapshot',"INSERT INTO exam_result_snapshots(id,exam_id,participant_id,snapshot_version,institution_id) VALUES('snapshot','exam','participant',1,'school')","UPDATE exam_result_snapshots SET net=1 WHERE id='snapshot'","DELETE FROM exam_result_snapshots WHERE id='snapshot'",false],
+ ['participant',"INSERT INTO exam_participants(id,exam_id,institution_id,name_snapshot,participant_status) VALUES('extra-participant','exam','school','Synthetic','UNRESOLVED')","UPDATE exam_participants SET name_snapshot='Changed' WHERE id='extra-participant'","DELETE FROM exam_participants WHERE id='extra-participant'",false],
+ ['practice run',"INSERT INTO assessment_runs(id,institution_id,source_type,status) VALUES('extra-run','school','QUESTION_BANK','SCORED')","UPDATE assessment_runs SET status='CANCELLED' WHERE id='extra-run'","DELETE FROM assessment_runs WHERE id='extra-run'",false],
+ ['foy',"INSERT INTO frozen_foy_response_evidence(response_id,run_id,student_id,institution_id,enrollment_id,season_id,academic_year,grade_level,outcome_refs_json,result_status,context_valid) VALUES('response','run','student','school','enrollment','season','2026-2027',7,'[]','CORRECT',0)","UPDATE frozen_foy_response_evidence SET result_status='WRONG' WHERE response_id='response'","DELETE FROM frozen_foy_response_evidence WHERE response_id='response'",false],
+ ['game',"INSERT INTO frozen_game_session_evidence(session_id,student_id,institution_id,enrollment_id,season_id,academic_year,grade_level,game_code,context_valid,score,xp_earned) VALUES('game','student','school','enrollment','season','2026-2027',7,'SYNTHETIC',0,70,10)","UPDATE frozen_game_session_evidence SET score=80 WHERE session_id='game'","DELETE FROM frozen_game_session_evidence WHERE session_id='game'",false],
+ ['assignment',"INSERT INTO assignments(id,institution_id,created_by,title) VALUES('extra-task','school','guide','Synthetic task')","UPDATE assignments SET title='Changed' WHERE id='extra-task'","DELETE FROM assignments WHERE id='extra-task'",false],
+ ['mini test',"INSERT INTO coach_mini_tests(id,assignment_id,assignment_item_id,student_id,outcome_id,question_count) VALUES('mini','homework','item','student','outcome',5)","UPDATE coach_mini_tests SET status='PASSED' WHERE id='mini'","DELETE FROM coach_mini_tests WHERE id='mini'",false],
+ ['delivery profile',"INSERT INTO exam_delivery_profiles(exam_id) VALUES('exam')","UPDATE exam_delivery_profiles SET snapshot_version=1 WHERE exam_id='exam'","DELETE FROM exam_delivery_profiles WHERE exam_id='exam'",true],
+] as const;
+for(const [name,insert,update,remove,global] of sourceMutations)it(`invalidates ready download on ${name} insert/update/delete and stops after expiration`,async()=>{
+ const f=fixture();try{
+  seedRevisionSources(f);const revision=()=>Number(global?f.db.prepare('SELECT revision FROM cohort_report_global_revision WHERE id=1').get()!.revision:f.db.prepare("SELECT revision FROM cohort_report_revisions WHERE institution_id='school'").get()?.revision||0);
+  for(const [n,sql] of [insert,update,remove].entries()){
+   const id=await f.create('matrix-request-'+n),key=`report-exports/${id}/ready.json`;f.objects.set(key,'{}');f.db.prepare("UPDATE private_cohort_report_jobs SET status='READY',object_key=? WHERE id=?").run(key,id);
+   const before=revision();f.db.exec(sql);expect(revision()).toBe(before+1);const gets=f.gets();expect((await f.read(id))!.status).toBe(409);expect(f.gets()).toBe(gets);
+  }
+  f.db.exec("UPDATE private_cohort_report_jobs SET expires_at=datetime('now','-1 minute')");const before=revision();f.db.exec(insert);expect(revision()).toBe(before);expect(f.db.prepare('PRAGMA foreign_key_check').all()).toEqual([]);
+ }finally{f.db.close()}
+});
+
+for(const policy of ['FIRST','LATEST'] as const)it(`matches synchronous mixed-source totals across pages with ${policy} Unicode ties`,async()=>{
+ const f=fixture();try{
+  seedRevisionSources(f);const refs=[{verified:1,outcomeId:'outcome',subjectId:'math',curriculumVersionId:'cv',academicYear:'2026-2027',gradeLevel:7,programVersion:'Synthetic'}];
+  f.db.prepare("INSERT INTO frozen_foy_response_evidence(response_id,run_id,student_id,institution_id,enrollment_id,season_id,academic_year,grade_level,subject_id,curriculum_version_id,program_version,outcome_refs_json,result_status,context_valid,observed_at) VALUES('response','run','student','school','enrollment','season','2026-2027',7,'math','cv','Synthetic',?,'CORRECT',1,'2026-10-01 12:00:00')").run(JSON.stringify(refs));
+  f.db.exec("INSERT INTO frozen_game_session_evidence(session_id,student_id,institution_id,enrollment_id,season_id,academic_year,grade_level,game_code,context_valid,subject_id,curriculum_version_id,program_version,score,xp_earned,observed_at) VALUES('game','student','school','enrollment','season','2026-2027',7,'SYNTHETIC',1,'math','cv','Synthetic',70,10,'2026-10-01 12:00:00')");
+  const add=(id:string,questionId:string,status:string)=>f.db.prepare("INSERT INTO assessment_runs(id,institution_id,student_id,source_type,source_id,status,metadata_json,completed_at) VALUES(?,'school','student','QUESTION_BANK',?,'SCORED',?,'2026-10-01 12:00:00')").run(id,questionId,JSON.stringify({frozenEvidence:{policy:'QUESTION_PRACTICE_READ_CONTEXT_V1',academicYear:'2026-2027',questionId,contentDigest:'a'.repeat(64),enrollmentId:'enrollment',seasonId:'season',gradeLevel:7,status,outcomeRefs:refs}}));
+  for(let n=0;n<252;n++)add('practice-'+String(n).padStart(3,'0'),'soru-İ-'+n,n%2?'WRONG':'CORRECT');add('tie-𐀀','same-question','CORRECT');add('tie-\ue000','same-question','WRONG');
+  const scope=await cohortReportClassScope(f.env,f.user,{...f.selection});const expectedResponse=await cohortLearningReport(f.env,f.user,new URL('https://test/?academicYear=2026-2027&sources=QUESTION_BANK,FOY,MINI_GAME&repeatPolicy='+policy),scope!);expect(expectedResponse.status).toBe(200);const expected:any=await expectedResponse.json();
+  for(let n=0;n<4747;n++)add('repeat-'+String(n).padStart(4,'0'),'soru-İ-'+(n%252),n%2?'WRONG':'CORRECT');
+  f.selection.sources=['QUESTION_BANK','FOY','MINI_GAME'];f.selection.repeatPolicy=policy;const id=await f.create();let calls=0;
+  while(calls++<40){const message=messageFor(id);await consumePrivateCohortReports(message.batch,f.env);expect(message.retry()).toBe(0);if(f.db.prepare('SELECT status FROM private_cohort_report_jobs WHERE id=?').get(id)!.status==='READY')break;}
+  expect(calls).toBeLessThan(40);expect(calls).toBeGreaterThan(20);const report:any=await (await f.read(id))!.json();
+  expect(report.groups).toHaveLength(1);expect(report.groups[0]).toMatchObject({correct:policy==='FIRST'?128:127,wrong:policy==='FIRST'?126:127,blank:0,evidenceCount:254,participatingEnrollmentCount:1});
+  expect(report.groups[0]).toMatchObject({correct:expected.groups[0].correct,wrong:expected.groups[0].wrong,evidenceCount:expected.groups[0].evidenceCount,accuracyPercent:expected.groups[0].accuracyPercent});
+  expect(report.gameGroups).toMatchObject([{sessionCount:1,averageScore:70,totalXp:10,participatingEnrollmentCount:1}]);expect(report.gameGroups[0]).toMatchObject(expected.gameGroups[0]);expect(report.sourceCoverage.find((c:any)=>c.sourceType==='QUESTION_BANK')).toMatchObject({rowCount:5001,excluded:{repeatedAttempts:4748}});expect(report.officialScore).toBeNull();expect(report.nationalRank).toBeNull();
+ }finally{f.db.close()}
+},20000);
