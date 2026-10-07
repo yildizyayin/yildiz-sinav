@@ -1,3 +1,4 @@
+import {collectRubricCsvPages} from '../lib/rubricCsvExport';
 import {PrivateRubricExportPanel} from './PrivateRubricExportPanel';
 import { useEffect, useRef, useState } from 'react';
 import { api, qs } from '../api';
@@ -12,24 +13,20 @@ export function RubricObservationReport({studentId,userId,allowHistory=false,ini
  const [withdrawId,setWithdrawId]=useState(''),[reason,setReason]=useState('');
  const base=`/api/learning-observations/students/${encodeURIComponent(studentId)}`;
  const scope=JSON.stringify([studentId,userId,history,enrollmentId,institutionScope]);
- const currentScope=useRef(scope);currentScope.current=scope;const generation=useRef(0),mounted=useRef(true);
- useEffect(()=>{mounted.current=true;return()=>{mounted.current=false}},[]);
+ const currentScope=useRef(scope);currentScope.current=scope;const generation=useRef(0),mounted=useRef(true),exportGeneration=useRef(0);
+ useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;exportGeneration.current++}},[]);
  const data=scopedData?.scope===scope?scopedData.result:null;
  const path=base+qs({view:history?'history':null,enrollmentId:enrollmentId||null,institutionId:institutionScope||null});
  const load=async(cursor?:string)=>{const requested=scope,attempt=++generation.current;const result=await api<any>(path+(cursor?`${path.includes('?')?'&':'?'}cursor=${encodeURIComponent(cursor)}`:''));if(mounted.current&&currentScope.current===requested&&generation.current===attempt)setData((old:any)=>({scope:requested,result:{...result,observations:cursor&&old?.scope===requested?[...new Map([...old.result.observations,...result.observations].map((x:any)=>[x.id,x])).values()]:result.observations}}))};
- useEffect(()=>{setError('');setNotice('');setSelection('');setLevels({});setWithdrawId('');void load().catch(e=>{if(mounted.current&&currentScope.current===scope)setError(e.message)})},[scope]);
+ useEffect(()=>{exportGeneration.current++;setBusy(false);setError('');setNotice('');setSelection('');setLevels({});setWithdrawId('');void load().catch(e=>{if(mounted.current&&currentScope.current===scope)setError(e.message)})},[scope]);
  const nextPage=async()=>{if(!data?.nextCursor)return;setBusy(true);setError('');try{await load(data.nextCursor)}catch(e:any){setError(e.message)}finally{setBusy(false)}};
  const exportCsv=async()=>{
-  const requested=scope;setBusy(true);setError('');
+  const requested=scope,attempt=++exportGeneration.current;const isCurrent=()=>mounted.current&&currentScope.current===requested&&exportGeneration.current===attempt;setBusy(true);setError('');
   try{
-   const rows:any[]=[];let cursor:string|null=null;
-   do{const page:any=await api<any>(path+(cursor?`${path.includes('?')?'&':'?'}cursor=${encodeURIComponent(cursor)}`:''));if(!mounted.current||currentScope.current!==requested)return;rows.push(...page.observations);if(rows.length>5000)throw new Error('Dışa aktarım 5.000 gözlem sınırını aşıyor. Bir dönem seçerek kapsamı daraltın.');cursor=page.nextCursor||null;}while(cursor);
-   if(!mounted.current||currentScope.current!==requested)return;
-   const cell=(value:unknown)=>{let v=String(value??'');if(/^[\s\u0000-\u001f]*[=+\-@]|^[\t\r\n]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};
-   const output=[['Eğitim yılı','Gözlem tarihi','Rubrik','Sürüm','Kaynak türü','Öğrenme çıktısı','Süreç','Ölçüt','Gözlenen düzey','Düzey açıklaması','Gözlem kanıtı','Geri bildirim','Sonraki adım']];
-   for(const obs of rows)for(const selected of obs.selections){const c=obs.snapshot.criteria.find((x:any)=>x.id===selected.criterionId),l=c?.levels.find((x:any)=>x.id===selected.levelId);output.push([obs.snapshot.academicYear,obs.observed_at,obs.snapshot.title,obs.snapshot.versionLabel,obs.snapshot.sourceKind==='OFFICIAL'?'Resmî doküman':'Öğretmen tasarımı',obs.snapshot.outcomeCode,obs.snapshot.componentCode,c?.title,l?.label,l?.description,obs.evidence_note,obs.feedback,obs.next_step]);}
-   const objectUrl=URL.createObjectURL(new Blob(['\ufeff'+output.map(row=>row.map(cell).join(';')).join('\r\n')],{type:'text/csv;charset=utf-8;'}));const link=document.createElement('a');link.href=objectUrl;link.download='rubrik-gozlemleri.csv';link.click();setTimeout(()=>URL.revokeObjectURL(objectUrl),1000);setNotice(`${rows.length} gözlem kaynak sürümleriyle dışa aktarıldı.`);
-  }catch(e:any){if(mounted.current&&currentScope.current===requested)setError(e.message)}finally{if(mounted.current&&currentScope.current===requested)setBusy(false)}
+   const result=await collectRubricCsvPages(cursor=>api<any>(path+(cursor?`${path.includes('?')?'&':'?'}cursor=${encodeURIComponent(cursor)}`:'')),isCurrent);
+   if(!result||!isCurrent())return;
+   const objectUrl=URL.createObjectURL(new Blob([result.csv],{type:'text/csv;charset=utf-8;'}));const link=document.createElement('a');link.href=objectUrl;link.download='rubrik-gozlemleri.csv';link.click();setTimeout(()=>URL.revokeObjectURL(objectUrl),1000);setNotice(`${result.observationCount} gözlem kaynak sürümleriyle dışa aktarıldı.`);
+  }catch(e:any){if(isCurrent())setError(e.message)}finally{if(isCurrent())setBusy(false)}
  };
  useEffect(()=>{setConfirmed(false);setRequestId(crypto.randomUUID())},[selection,levels,observedAt,evidenceNote,feedback,nextStep]);
  const writable=(data?.rubrics||[]).filter((r:any)=>r.can_observe===1);
