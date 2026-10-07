@@ -18,8 +18,11 @@
     "url": "https://tymm.meb.gov.tr/assets/pdf/ortaokul-matematik-dersi_20260902_111111_630.pdf",
     "coverYear": 2026,
     "locator": "Cover and table of contents",
-    "byteHash": null,
-    "themeContentCorrespondence": "unverified"
+    "byteHash": "75f52f93672c8991eabe102adb37ab4d16de63f35fe8488fc29cdedae9155734",
+    "themeContentCorrespondence": "unverified",
+    "byteLength": 3916466,
+    "retrievedAt": "2026-10-07T17:56:00.258Z",
+    "archiveFilename": "maarif-programme-2026-source-archive.zip"
   },
   "legacyProgramme": {
     "url": "https://tymm.meb.gov.tr/upload/program/2024programmat5678Onayli.pdf",
