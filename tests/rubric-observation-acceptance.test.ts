@@ -1,6 +1,7 @@
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync,readdirSync} from 'node:fs';
 import {expect,it} from 'vitest';
+import {cohortRubricReport} from '../worker/lib/cohort-rubric-report';
 import {handleRubricObservations} from '../worker/lib/rubric-observations';
 
 function fixture(){
@@ -143,4 +144,52 @@ it('pages equal timestamps without duplicates and rechecks cursor scope and auth
   expect((await f.read(f.teacher,query+'&view=history'))!.status).toBe(403);expect((await f.read(f.teacher,query+'&enrollmentId=enrollment'))!.status).toBe(400);expect((await f.read(f.teacher,'?cursor=invalid'))!.status).toBe(400);
   f.db.exec("UPDATE teacher_assignments SET active=0 WHERE id='assignment'");expect((await f.read(f.teacher,query))!.status).toBe(403);
  }finally{f.db.close()}
+});
+
+function copyObservation(f:ReturnType<typeof fixture>,id:string,patch:Record<string,any>={}){
+ const original=f.db.prepare('SELECT * FROM learning_rubric_observations LIMIT 1').get()!;const copy={...original,id,request_id:'clone-request-'+id,...patch};const columns=Object.keys(copy);f.db.prepare(`INSERT INTO learning_rubric_observations(${columns.join(',')}) VALUES(${columns.map(()=>'?').join(',')})`).run(...columns.map(c=>copy[c]));
+}
+const rubricCohort=(f:ReturnType<typeof fixture>,query='',actor:any={id:'manager',role:'INSTITUTION_MANAGER',institution_id:'school'},classScope?:any)=>cohortRubricReport(f.env,actor,new URL('https://test/?academicYear=2026-2027'+query),classScope);
+
+for(const policy of ['LATEST','ALL'])it(`counts ${policy} rubric levels with equal-timestamp ties and distinct participant counts`,async()=>{
+ const f=fixture();try{
+  expect((await f.write())!.status).toBe(201);copyObservation(f,'zz-latest',{selections_json:JSON.stringify([{criterionId:'criterion',levelId:'guided'}])});const r=await rubricCohort(f,'&observationPolicy='+policy);expect(r.status).toBe(200);const data:any=await r.json();expect(data.coverage).toMatchObject({rowCount:2,usedObservations:policy==='LATEST'?1:2,repeatedObservations:policy==='LATEST'?1:0,excludedObservations:0});expect(data.groups).toHaveLength(1);expect(data.groups[0]).toMatchObject({observationCount:policy==='LATEST'?1:2,participatingEnrollmentCount:1,sourceKind:'TEACHER_DESIGNED'});expect(data.groups[0].levels).toMatchObject([{id:'guided',count:1,percent:policy==='LATEST'?100:50},{id:'independent',count:policy==='LATEST'?0:1,percent:policy==='LATEST'?0:50}]);expect(data.officialScore).toBeNull();expect(data.abilityScore).toBeNull();const text=JSON.stringify(data);for(const secret of ['Synthetic evidence recorded','Continue demonstrating','synthetic-request-1','teacher','student_id','evidence_note','feedback'])expect(text).not.toContain(secret);
+ }finally{f.db.close()}
+});
+
+it('uses the older valid observation when a newer frozen snapshot is malformed',async()=>{
+ const f=fixture();try{await f.write();copyObservation(f,'zz-invalid',{snapshot_json:'{}'});const r=await rubricCohort(f);expect(r.status).toBe(200);const data:any=await r.json();expect(data.coverage).toMatchObject({rowCount:2,usedObservations:1,excludedObservations:1,repeatedObservations:0});expect(data.groups[0].levels).toMatchObject([{count:0},{count:1}]);}finally{f.db.close()}
+});
+
+it('rejects conflicting valid definitions for the same frozen rubric even when LATEST would skip one',async()=>{
+ const f=fixture();try{await f.write();const row=f.db.prepare('SELECT snapshot_json FROM learning_rubric_observations LIMIT 1').get()!;const snapshot=JSON.parse(String(row.snapshot_json));copyObservation(f,'zz-conflict',{snapshot_json:JSON.stringify({...snapshot,title:'Conflicting synthetic definition'})});for(const policy of ['LATEST','ALL']){const r=await rubricCohort(f,'&observationPolicy='+policy);expect(r.status).toBe(409);expect(await r.json()).toMatchObject({error:{code:'RUBRIC_SNAPSHOT_CONFLICT'}});}}finally{f.db.close()}
+});
+
+it('retains the original observation class in institution/history reports after an enrollment moves',async()=>{
+ const f=fixture();try{
+  await f.write();f.db.exec("UPDATE student_enrollments SET class_id='other' WHERE id='enrollment'");const manager:any=await (await rubricCohort(f)).json();expect(manager.groups).toMatchObject([{classId:'class',className:'7A',observationCount:1}]);
+  const guide:any={id:'guide',role:'GUIDANCE_TEACHER',institution_id:'school'},scope={id:'class',seasonId:'season',academicYear:'2026-2027'};const old:any=await (await rubricCohort(f,'',guide,scope)).json();expect(old.groups).toEqual([]);
+  f.db.exec("UPDATE teacher_assignments SET class_id='other' WHERE id='guidance'");const moved:any=await (await rubricCohort(f,'',guide,{...scope,id:'other'})).json();expect(moved.groups).toEqual([]);
+  const history:any=await (await f.read({id:'student-user',role:'STUDENT',student_id:'student'} as any,'?view=history'))!.json();expect(history.observations).toMatchObject([{class_id:'class',enrollment_id:'enrollment'}]);expect(history.enrollments).toMatchObject([{class_name:'7B'}]);
+ }finally{f.db.close()}
+});
+
+it('keeps institution distributions for departed enrollment while current guidance context is revoked',async()=>{
+ const f=fixture();try{await f.write();f.db.exec("UPDATE student_enrollments SET status='LEFT'; UPDATE institution_seasons SET status='CLOSED' WHERE id='season'; UPDATE classes SET active=0 WHERE id='class'");expect((await rubricCohort(f)).status).toBe(200);expect((await (await rubricCohort(f)).json() as any).groups[0].observationCount).toBe(1);expect((await rubricCohort(f,'',{id:'guide',role:'GUIDANCE_TEACHER',institution_id:'school'},{id:'class',seasonId:'season',academicYear:'2026-2027'})).status).toBe(403);}finally{f.db.close()}
+});
+
+it('excludes withdrawn records from both institution and guidance distributions',async()=>{
+ const f=fixture();try{const id=(await (await f.write())!.json() as any).id;expect((await f.withdraw(id))!.status).toBe(200);for(const response of [await rubricCohort(f),await rubricCohort(f,'',{id:'guide',role:'GUIDANCE_TEACHER',institution_id:'school'},{id:'class',seasonId:'season',academicYear:'2026-2027'})]){expect(response.status).toBe(200);expect(await response.json()).toMatchObject({groups:[],coverage:{rowCount:0,usedObservations:0}});}}finally{f.db.close()}
+});
+
+it('enforces cohort roles, institution scope and inclusive UTC date bounds',async()=>{
+ const f=fixture();try{await f.write();for(const role of ['TEACHER','STUDENT','PARENT'])expect((await rubricCohort(f,'',{...f.teacher,role})).status).toBe(403);expect((await rubricCohort(f,'',{id:'admin',role:'SUPER_ADMIN'})).status).toBe(400);expect((await (await rubricCohort(f,'',{id:'foreign-manager',role:'INSTITUTION_MANAGER',institution_id:'foreign'})).json() as any).groups).toEqual([]);const exact:any=await (await rubricCohort(f,'&fromDate=2026-10-01&toDate=2026-10-01')).json();expect(exact.groups[0].observationCount).toBe(1);expect((await (await rubricCohort(f,'&fromDate=2026-10-02&toDate=2026-10-02')).json() as any).groups).toEqual([]);for(const query of ['&fromDate=2026-02-30&toDate=2026-03-01','&fromDate=2026-10-01','&observationPolicy=FIRST','&fromDate=2025-10-01&toDate=2025-10-02'])expect((await rubricCohort(f,query)).status).toBe(400);}finally{f.db.close()}
+});
+
+it('rejects one frozen rubric version carrying contradictory curriculum identities',async()=>{
+ const f=fixture();try{await f.write();const row=f.db.prepare('SELECT snapshot_json FROM learning_rubric_observations LIMIT 1').get()!;const snapshot=JSON.parse(String(row.snapshot_json));copyObservation(f,'zz-context-conflict',{snapshot_json:JSON.stringify({...snapshot,curriculumVersionId:'different-curriculum'})});for(const policy of ['LATEST','ALL']){const r=await rubricCohort(f,'&observationPolicy='+policy);expect(r.status).toBe(409);expect(await r.json()).toMatchObject({error:{code:'RUBRIC_SNAPSHOT_CONFLICT'}});}}finally{f.db.close()}
+});
+
+it('rejects conflicting frozen outcome titles under both observation policies',async()=>{
+ const f=fixture();try{await f.write();const row=f.db.prepare('SELECT snapshot_json FROM learning_rubric_observations LIMIT 1').get()!;const snapshot=JSON.parse(String(row.snapshot_json));copyObservation(f,'zz-title-conflict',{snapshot_json:JSON.stringify({...snapshot,outcomeTitle:'Different frozen outcome title'})});for(const policy of ['LATEST','ALL'])expect((await rubricCohort(f,'&observationPolicy='+policy)).status).toBe(409);}finally{f.db.close()}
 });
