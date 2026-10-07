@@ -37,10 +37,25 @@ jobs:
         run: |
           set -euo pipefail
           missing=0
-          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID PROD_SESSION_SECRET PROD_TURNSTILE_SECRET_KEY PROD_TURNSTILE_SITE_KEY PROD_WHATSAPP_VERIFY_TOKEN PROD_WHATSAPP_APP_SECRET PROD_WHATSAPP_ACCESS_TOKEN PROD_WHATSAPP_PHONE_NUMBER_ID; do
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID PROD_SESSION_SECRET PROD_TURNSTILE_SECRET_KEY PROD_TURNSTILE_SITE_KEY; do
             if [ -z "${!name}" ]; then echo "$name: MISSING"; missing=$((missing+1)); else echo "$name: PRESENT"; fi
           done
           test "$missing" -eq 0
+
+      - name: Report optional WhatsApp readiness without activating the channel
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in PROD_WHATSAPP_VERIFY_TOKEN PROD_WHATSAPP_APP_SECRET PROD_WHATSAPP_ACCESS_TOKEN PROD_WHATSAPP_PHONE_NUMBER_ID; do
+            if [ -z "${!name}" ]; then echo "$name: MISSING"; missing=$((missing+1)); else echo "$name: PRESENT"; fi
+          done
+          if [ "$missing" -gt 0 ]; then
+            echo '::warning::WhatsApp is not ready; its configuration is optional for the core production deploy.'
+            echo '- WhatsApp readiness: INCOMPLETE; this check does not activate the channel.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo '- WhatsApp configuration variables: PRESENT; live provider acceptance still required.' >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Verify production Worker exists and inspect binding names only
         shell: bash
@@ -62,7 +77,7 @@ jobs:
         run: |
           {
             echo '### Production readiness preflight'
-            echo '- Required production secret variables: PRESENT'
+            echo '- Required core production secret variables: PRESENT'
             echo '- Production Worker: PRESENT'
             echo '- Required binding names: PRESENT'
             echo '- Deployment performed: NO'
