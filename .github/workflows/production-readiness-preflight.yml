@@ -2,12 +2,21 @@ name: Production Readiness Preflight
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
 
 jobs:
   preflight:
+    # Only this same-repository release branch may inspect production bindings.
+    # Forks and other PRs never receive the production environment.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+       github.event.pull_request.head.ref == 'feat/exam-evaluation-lock-integration')
     runs-on: ubuntu-latest
     environment: production
     env:
