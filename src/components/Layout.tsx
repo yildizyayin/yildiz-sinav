@@ -1,3 +1,4 @@
+import { PageLoader } from './PageLoader';
 import { useEffect,useMemo,useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, Network, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
@@ -212,7 +213,7 @@ export function Layout() {
     <main className="main-area">
       <header className="topbar"><button className="mobile-menu-button" aria-label="Menüyü aç" aria-expanded={mobileNavOpen} onClick={()=>setMobileNavOpen(true)}><Menu size={22}/></button><div className="topbar-context"><span className="eyebrow">2026–2027 Eğitim Dönemi</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Anunex Platform Yönetimi':'')}</strong></div><div className="topbar-actions"><div className="status neutral"><Sparkles size={15}/> Sistem hazır</div><NavLink to="/notifications" className="topbar-icon" aria-label="Bildirimler"><Bell size={19}/><i/></NavLink><NavLink to="/nibiru" className="nibiru-topbar"><NibiruMark size={23} state="active" title="Nibiru AI Akademik Zekâ"/><span>Nibiru AI</span></NavLink></div></header>
       {panelExperience?.specialDay&&<div className="special-day-banner" style={{background:`linear-gradient(90deg,${panelExperience.specialDay.accent_color},${panelExperience.specialDay.accent_color}dd)`}}><Sparkles size={20}/><div><strong>{panelExperience.specialDay.title}</strong><span>{panelExperience.specialDay.short_message}</span></div></div>}
-      <div className="page-wrap"><LicenseBoundary><Outlet/></LicenseBoundary></div>
+      <div className="page-wrap"><LicenseBoundary><PageLoader routeKey={location.pathname+location.search}><Outlet/></PageLoader></LicenseBoundary></div>
     </main>
   </div>;
 }
