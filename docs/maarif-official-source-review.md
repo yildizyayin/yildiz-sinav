@@ -22,6 +22,23 @@ Katalogdaki `publicationAllowed=false`, `contentImported=false`, `expertReview=p
 
 ## Doğrulama
 
+### Belge baytlarını kaydetme
+
+`worker/curriculum-admin-entry.ts` içindeki `sourceHash`, yüklenen kazanım CSV'sinin SHA-256 özetidir. MEB/ÖSYM PDF'sinin özeti veya kaynağın doğruluğuna ilişkin bir tasdik değildir. Bu alanı PDF hash'i ile değiştirmeyin; CSV izlenebilirliği korunmalıdır.
+
+İndirilen dayanak PDF için ayrı yerel inceleme kaydı üretilebilir:
+
+```bash
+node scripts/fingerprint-curriculum-source.mjs /absolute/path/programme.pdf \
+  https://tymm.meb.gov.tr/assets/pdf/ortaokul-matematik-dersi_20260902_111111_630.pdf \
+  'Ortaokul matematik programı 2026' 'Kapak ve ilgili tema bölümü' \
+  '2026-10-07T20:50:35+03:00' > /absolute/path/programme.evidence.json
+```
+
+Tarih, örnekteki değeri kopyalamak yerine gerçek indirme zamanı olmalıdır. Araç ağ isteği yapmaz; kullanıcı dosyasının kaynağa ait olduğunu doğrulamaz. Resmî HTTPS belge adresi, zorunlu kaynak konumu, PDF başlangıç imzası, 50 MiB sınırı ve okuma sırasında dosya değişimi kontrol edilir. İmza kontrolü tam PDF yapı doğrulaması değildir. Hash bütün baytlardan hesaplanır; dosya adı/yerel dizin sonuçta yayımlanmaz. JSON standart çıktıya gelir; hata durumunda çıktı yoktur ve çıkış kodu 1'dir. Shell yönlendirmesi hatada boş çıktı dosyası oluşturabilir; çıkış kodunu kontrol etmeden kanıt dosyasını kullanmayın.
+
+`originAttested`, `pdfStructureValidated`, `contentReviewed` ve `publicationAllowed` false kalır. JSON yalnız inceleme dosyasıdır; mevcut import API tarafından tüketilmez. Gerçek resmî PDF indirilip arşivlenmiş veya hash'i üretilmiş sayılmaz. Yerel kabul: `node --test tests/curriculum-source-fingerprint.node.test.mjs`; sentetik dosya, değişen baytlar, HTML hata gövdesi, boyut sınırı, sahte alan adı ve eksik metadata kontrol edilir.
+
 JSON ayrıştırma, 30 benzersiz tema URL'si, sınıf başına 7/7/9/7 dağılımı, HTTPS/resmî alan adı ve yayın bekleme alanları yerel olarak kontrol edildi. Sınıf dizinindeki bütün tema bağlantıları resmî web kaynağında açıldı. Üretim kodu, migration, test fixture, feature flag ve canlı ortam değiştirilmedi.
 
 İlgili teknik sözleşmeler: [müfredat aktarımı](curriculum-import-atomic-publication.md) ve [süreç/rubrik kayıtları](maarif-rubric-registry.md). Kaynak listesi tamamlanmış olması bu sözleşmelerdeki içerik onayını tamamlamaz.
