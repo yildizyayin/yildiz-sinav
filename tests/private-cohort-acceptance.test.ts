@@ -277,3 +277,43 @@ for(const paged of [false,true])it(`combines all five sources with ${paged?'page
   expect(report.officialScore).toBeNull();expect(report.nationalRank).toBeNull();if(paged)expect(report.sourceCoverage.find((c:any)=>c.sourceType==='QUESTION_BANK').excluded.repeatedAttempts).toBe(5001);expect(f.db.prepare('SELECT count(*) n FROM private_cohort_practice_picks').get()!.n).toBe(0);
  }finally{f.db.close()}
 },30000);
+
+function seedTwoClassPractice(f:ReturnType<typeof fixture>){
+ seedRevisionSources(f);
+ f.db.exec(`INSERT INTO student_entities(id,first_name,last_name,normalized_name) VALUES('class-b-student','Class B','Synthetic','class b'),('class-a-absent','Absent A','Synthetic','absent a'),('class-b-absent','Absent B','Synthetic','absent b');
+ INSERT INTO classes(id,institution_id,season_id,grade_level,section,name) VALUES('empty-class','school','season',7,'C','7C');
+ INSERT INTO student_enrollments(id,student_id,institution_id,season_id,class_id,grade_level,created_at) VALUES('class-b-enrollment','class-b-student','school','season','other',7,'2026-09-01'),('class-a-absent-enrollment','class-a-absent','school','season','class',7,'2026-09-01'),('class-b-absent-enrollment','class-b-absent','school','season','other',7,'2026-09-01');`);
+ const outcomeRefs=[{verified:1,outcomeId:'outcome',subjectId:'math',curriculumVersionId:'cv',academicYear:'2026-2027',gradeLevel:7,programVersion:'Synthetic'}];
+ for(const [student,enrollment,status] of [['student','enrollment','CORRECT'],['class-b-student','class-b-enrollment','WRONG']])f.db.prepare("INSERT INTO assessment_runs(id,institution_id,student_id,source_type,source_id,status,metadata_json,completed_at) VALUES(?,'school',?,'QUESTION_BANK','same-question','SCORED',?,'2026-10-01 12:00:00')").run('class-practice-'+student,student,JSON.stringify({frozenEvidence:{policy:'QUESTION_PRACTICE_READ_CONTEXT_V1',academicYear:'2026-2027',questionId:'same-question',contentDigest:'b'.repeat(64),enrollmentId:enrollment,seasonId:'season',gradeLevel:7,status,outcomeRefs}}));
+}
+
+it('keeps same-grade classes and shared question/outcome separate in institution totals',async()=>{
+ const f=fixture();try{
+  seedTwoClassPractice(f);const actor={...f.user,role:'INSTITUTION_MANAGER'};
+  const response=await cohortLearningReport(f.env,actor,new URL('https://test/?academicYear=2026-2027&sources=QUESTION_BANK'));expect(response.status).toBe(200);const report:any=await response.json();
+  expect(report.groups).toHaveLength(2);expect(report.outcomes).toHaveLength(2);
+  for(const rows of [report.groups,report.outcomes]){
+   expect(rows.find((r:any)=>r.classId==='class')).toMatchObject({className:'7A',enrollmentGrade:7,correct:1,wrong:0,evidenceCount:1,participatingEnrollmentCount:1});
+   expect(rows.find((r:any)=>r.classId==='other')).toMatchObject({className:'7B',enrollmentGrade:7,correct:0,wrong:1,evidenceCount:1,participatingEnrollmentCount:1});
+   expect(rows.some((r:any)=>r.classId==='empty-class')).toBe(false);
+  }
+  expect(report.groups.map((r:any)=>r.accuracyPercent).sort((a:number,b:number)=>a-b)).toEqual([0,100]);expect(report.sourceCoverage[0].rowCount).toBe(2);
+ }finally{f.db.close()}
+});
+
+it('limits guidance report to its exact assigned class and rejects another same-grade class',async()=>{
+ const f=fixture();try{
+  seedTwoClassPractice(f);const selection={...f.selection,sources:['QUESTION_BANK']};const scope=await cohortReportClassScope(f.env,f.user,selection);expect(scope).toBeDefined();
+  expect(await cohortReportClassScope(f.env,f.user,{...selection,classId:'other'})).toBeUndefined();
+  const response=await cohortLearningReport(f.env,f.user,new URL('https://test/?academicYear=2026-2027&sources=QUESTION_BANK'),scope!);expect(response.status).toBe(200);const report:any=await response.json();
+  expect(report.scope).toBe('CURRENT_GUIDANCE_CLASS');expect(report.groups).toHaveLength(1);expect(report.outcomes).toHaveLength(1);expect(report.groups[0]).toMatchObject({classId:'class',correct:1,wrong:0,evidenceCount:1,participatingEnrollmentCount:1,accuracyPercent:100});expect(report.outcomes[0]).toMatchObject({classId:'class',correct:1,wrong:0,participatingEnrollmentCount:1});expect(report.sourceCoverage[0].rowCount).toBe(1);
+ }finally{f.db.close()}
+});
+
+it('preserves two class totals through queued institution export without zero-filling absent enrollments',async()=>{
+ const f=fixture();try{
+  seedTwoClassPractice(f);f.db.exec("UPDATE users SET role='INSTITUTION_MANAGER' WHERE id='guide'");const actor={...f.user,role:'INSTITUTION_MANAGER'};const response=await handlePrivateCohortReport(new Request('https://test/api/private-cohort-reports',{method:'POST',body:JSON.stringify({institutionId:'school',academicYear:'2026-2027',sources:['QUESTION_BANK'],examIds:[],repeatPolicy:'LATEST',requestId:'multi-class-export',confirmedReport:true})}),f.env,actor);expect(response!.status).toBe(202);const id=(await response!.json() as any).jobId;
+  const message=messageFor(id);await consumePrivateCohortReports(message.batch,f.env);expect(message.retry()).toBe(0);expect(message.ack()).toBe(1);expect(f.db.prepare('SELECT status,processed_enrollments FROM private_cohort_report_jobs WHERE id=?').get(id)).toMatchObject({status:'READY',processed_enrollments:4});
+  const download=await f.read(id,actor);expect(download!.status).toBe(200);const report:any=await download!.json();expect(report.groups).toHaveLength(2);expect(report.outcomes).toHaveLength(2);expect(report.groups.find((r:any)=>r.classId==='class')).toMatchObject({correct:1,wrong:0,evidenceCount:1,participatingEnrollmentCount:1,accuracyPercent:100});expect(report.groups.find((r:any)=>r.classId==='other')).toMatchObject({correct:0,wrong:1,evidenceCount:1,participatingEnrollmentCount:1,accuracyPercent:0});expect(report.sourceCoverage[0].rowCount).toBe(2);expect(report.officialScore).toBeNull();expect(report.nationalRank).toBeNull();
+ }finally{f.db.close()}
+});
