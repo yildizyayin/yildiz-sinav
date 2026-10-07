@@ -193,3 +193,33 @@ it('rejects one frozen rubric version carrying contradictory curriculum identiti
 it('rejects conflicting frozen outcome titles under both observation policies',async()=>{
  const f=fixture();try{await f.write();const row=f.db.prepare('SELECT snapshot_json FROM learning_rubric_observations LIMIT 1').get()!;const snapshot=JSON.parse(String(row.snapshot_json));copyObservation(f,'zz-title-conflict',{snapshot_json:JSON.stringify({...snapshot,outcomeTitle:'Different frozen outcome title'})});for(const policy of ['LATEST','ALL'])expect((await rubricCohort(f,'&observationPolicy='+policy)).status).toBe(409);}finally{f.db.close()}
 });
+
+function copyRubric(f:ReturnType<typeof fixture>,id:string,patch:Record<string,any>={}){
+ const row=f.db.prepare("SELECT * FROM learning_rubric_versions WHERE id='rubric'").get()!;const copy={...row,id,version_label:id,...patch};const columns=Object.keys(copy);f.db.prepare(`INSERT INTO learning_rubric_versions(${columns.join(',')}) VALUES(${columns.map(()=>'?').join(',')})`).run(...columns.map(c=>copy[c]));
+}
+
+it('keeps distinct rubric versions separate even when their criterion IDs are the same',async()=>{
+ const f=fixture();try{
+  expect((await f.write())!.status).toBe(201);const changed=f.criteria.map(c=>({...c,title:'Second version criterion',levels:c.levels.map(l=>({...l,label:'V2 '+l.label}))}));copyRubric(f,'rubric-v2',{title:'Synthetic second rubric',criteria_json:JSON.stringify(changed)});
+  expect((await f.write({...f.body,rubricId:'rubric-v2',requestId:'version-two-request',selections:[{criterionId:'criterion',levelId:'guided'}]}))!.status).toBe(201);
+  for(const policy of ['LATEST','ALL']){const r=await rubricCohort(f,'&observationPolicy='+policy);expect(r.status).toBe(200);const report:any=await r.json();expect(report.coverage).toMatchObject({usedObservations:2,repeatedObservations:0});expect(report.groups).toHaveLength(2);expect(report.groups.find((g:any)=>g.rubricId==='rubric')).toMatchObject({versionLabel:'v1',criterionTitle:'Observable action',observationCount:1,levels:[{id:'guided',count:0},{id:'independent',count:1}]});expect(report.groups.find((g:any)=>g.rubricId==='rubric-v2')).toMatchObject({versionLabel:'rubric-v2',criterionTitle:'Second version criterion',observationCount:1,levels:[{id:'guided',label:'V2 With support',count:1},{id:'independent',count:0}]});}
+ }finally{f.db.close()}
+});
+
+it('accepts exactly 5000 observations and rejects 5001 without partial totals under either policy',async()=>{
+ const f=fixture();try{
+  await f.write();for(let n=1;n<5000;n++)copyObservation(f,'limit-'+String(n).padStart(4,'0'));
+  for(const policy of ['LATEST','ALL']){const response=await rubricCohort(f,'&observationPolicy='+policy);expect(response.status).toBe(200);const report:any=await response.json();expect(report.coverage).toMatchObject({rowCount:5000,usedObservations:policy==='LATEST'?1:5000,repeatedObservations:policy==='LATEST'?4999:0});expect(report.groups[0]).toMatchObject({observationCount:policy==='LATEST'?1:5000,participatingEnrollmentCount:1});}
+  copyObservation(f,'zz-overflow',{observed_at:'2026-10-02T12:00:00.000Z'});
+  for(const policy of ['LATEST','ALL']){const response=await rubricCohort(f,'&observationPolicy='+policy);expect(response.status).toBe(400);const error:any=await response.json();expect(error).toMatchObject({error:{code:'REPORT_SCOPE_TOO_LARGE'}});expect(error).not.toHaveProperty('groups');}
+  const narrowed=await rubricCohort(f,'&observationPolicy=ALL&fromDate=2026-10-01&toDate=2026-10-01');expect(narrowed.status).toBe(200);expect(await narrowed.json()).toMatchObject({coverage:{rowCount:5000,usedObservations:5000}});
+ }finally{f.db.close()}
+},20000);
+
+it('accepts 500 criterion groups and rejects group 501 instead of returning truncated distributions',async()=>{
+ const f=fixture();try{
+  await f.write();const snapshot=JSON.parse(String(f.db.prepare('SELECT snapshot_json FROM learning_rubric_observations LIMIT 1').get()!.snapshot_json));
+  for(let n=1;n<=500;n++){const id='group-rubric-'+n;copyRubric(f,id);copyObservation(f,'group-observation-'+n,{rubric_id:id,snapshot_json:JSON.stringify({...snapshot,rubricId:id,versionLabel:id})});if(n===499){const response=await rubricCohort(f);expect(response.status).toBe(200);const report:any=await response.json();expect(report.groups).toHaveLength(500);expect(new Set(report.groups.map((g:any)=>g.rubricId)).size).toBe(500);expect(report.coverage.usedObservations).toBe(500);}}
+  const response=await rubricCohort(f);expect(response.status).toBe(400);const error:any=await response.json();expect(error).toMatchObject({error:{code:'REPORT_SCOPE_TOO_LARGE'}});expect(error).not.toHaveProperty('groups');expect(f.db.prepare('PRAGMA foreign_key_check').all()).toEqual([]);
+ }finally{f.db.close()}
+},20000);
