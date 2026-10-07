@@ -39,3 +39,11 @@ All six read roles, active parent-link revocation, subject filtering, guidance r
 This is local SQLite/D1-adapter acceptance, not Cloudflare staging or browser verification. Cohort LATEST/ALL, malformed/conflicting frozen definitions, moved-class history, CSV/UI isolation and actual provider acceptance remain open. The shared rubric join now requires SCHOOL curriculum grade to match enrollment grade, protecting both lookup and conditional INSERT and suppressing incompatible live rubric choices. Historical frozen observations remain readable under their existing authorization rules. No schema changed.
 
 Final local validation: 142 test files / 684 tests pass; typecheck and production build pass. The existing large client bundle warning remains. Registry-level rejection of inconsistent legacy outcome/version grade definitions is a separate boundary to harden; the observation handler now fails closed for them.
+
+## Rubrik dağılımı ve eski sınıf kabulü — 2026-10-07
+
+On ek kabul testi: LATEST/ALL eşit tarihli gözlemlerin düzeylerini ve tekrar/katılımcı sayılarını doğru ayırır; malformed en yeni snapshot eski geçerli gözlemi gizlemez; aynı rubrik sürümünde çelişen geçerli tanımlar 409 verir. Çelişki imzası artık yalnız başlık/ölçütleri değil, dondurulmuş müfredat, ders, kazanım, süreç bileşeni, görev ve kaynak bilgilerini de karşılaştırır. Aynı rubricId farklı curriculumVersionId taşıdığında önce 200 veren regresyon 409 ile kapatıldı. Tarih ve sınıf gibi gözlem bağlamı bu tanım imzasına dahil değildir.
+
+Enrollment başka sınıfa taşındığında kurum dağılımı ve öğrenci geçmişi gözlemin özgün sınıfını korur; eski ve yeni rehberlik sınıfı bu eski gözlemi güncel sınıf dağılımına katmaz. Ayrılan öğrenci/kapalı sezon/pasif sınıf kurum geçmiş dağılımında korunur, güncel rehberlik yetkisi reddedilir. Geri çekilmiş kayıtlar kurum ve rehberlik dağılımlarından çıkar. Rol/kurum sınırı, UTC gün sınırlarının dahil oluşu ve geçersiz tarih/politika kontrolleri geçti. Dağılım çıktısında bireysel kanıt notu/geri bildirim/işlem kimliği yok; resmî puan veya sayısal beceri puanı çıkarılmaz.
+
+Bu yerel SQLite/D1-adapter kabulüdür. Farklı rubrik sürümlerinin ayrı gruplanması, 5000 kayıt/500 grup sınırları, gerçek UI/CSV ve Cloudflare staging ayrıca bekler. Migration değişmedi.
