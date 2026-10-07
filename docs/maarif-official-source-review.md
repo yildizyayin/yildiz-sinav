@@ -1,6 +1,6 @@
 # Ortaokul matematiği: resmî kaynak inceleme paketi
 
-Durum (2026-10-07): kaynak keşfi tamamlandı; içerik aktarımı, uzman onayı ve eğitim yılı uygulanabilirliği bekliyor. Bu dosya yayın izni veya canlı müfredat tanımı değildir.
+Durum (2026-10-07): kaynak keşfi tamamlandı; içerik aktarımı, uzman onayı ve kesin PDF revizyon onayı bekliyor. 2026–2027 sınıf uygulama kapsamı aşağıda doğrulandı. Bu dosya yayın izni veya canlı müfredat tanımı değildir.
 
 ## Kapsam ve sürüm
 
@@ -12,13 +12,13 @@ Tema sayfalarının 2026 PDF ile satır satır örtüşmesi henüz incelenmedi. 
 
 ## Aktarım öncesindeki işler
 
-1. İlgili eğitim yılı ve sınıf için uygulanacak sürümü resmî uygulama takvimiyle belirle. Sitede 5–8. sınıfların bulunması tüm sınıflarda aynı yıl uygulandığını kanıtlamaz.
+1. 2026–2027 için Maarif uygulaması 5, 6 ve 7. sınıfları kapsar; 8. sınıfta önceki program devam eder. Kaynaklar: [merkezî yıllık plan sayfası](https://tymm.meb.gov.tr/taslak-cerceve-planlari/temel-egitim) ve [Isparta resmî ölçme değerlendirme merkezi duyurusu](https://ispartaodm.meb.gov.tr/www/2026-2027-egitim-ogretim-yili-turkiye-yuzyili-maarif-modeli-taslak-cerceve-planlar-yayimlandi/icerik/120/tr). Bu kapsam doğrulaması indirilen PDF revizyonunun birebir kabul kararını doğrulamaz; o kontrol açıktır. 8. sınıf Maarif içeriğini bu yıl için otomatik etkinleştirmeyin.
 2. Seçilen belgenin asıl dosyasını arşivle, içerik özeti ve değişmez dosya hash'i kaydet; tema sayfalarıyla karşılaştır.
 3. Öğrenme çıktısı ve süreç bileşeni kodlarını, ilişkilerini ve kaynak konumlarını çıkar; branş uzmanı her tanımı belgeyle karşılaştırsın. Bu katalog öğrenme çıktısı metinlerini veya ölçütleri içermez.
 4. Resmî rubrik için ayrı ölçüt/seviye kaynağı ve uzman onayı sağla. Genel değerlendirme açıklamalarından üretilen öğretmen rubriğini OFFICIAL olarak kaydetme.
 5. Onaylanan veriyi mevcut staging/import akışına gönder; yayın öncesi önizleme ve sürüm kapsamını kontrol et. Kaynak URL'sinin resmî alan adı olması içerik doğrulaması değildir.
 
-Katalogdaki `publicationAllowed=false`, `contentImported=false`, `expertReview=pending` ve `academicYearApplicability=unverified` alanları bu açık işleri görünür tutar. Dosya çalışma zamanı tarafından okunmaz; API doğrulamalarını veya yayın kurallarını değiştirmez.
+Katalogdaki `publicationAllowed=false`, `contentImported=false`, `expertReview=pending` ve `academicYearApplicability=grade_rollout_verified; exact_pdf_edition_approval_pending` alanları bu açık işleri görünür tutar. Dosya çalışma zamanı tarafından okunmaz; API doğrulamalarını veya yayın kurallarını değiştirmez.
 
 ## Doğrulama
 
@@ -42,3 +42,15 @@ Tarih, örnekteki değeri kopyalamak yerine gerçek indirme zamanı olmalıdır.
 JSON ayrıştırma, 30 benzersiz tema URL'si, sınıf başına 7/7/9/7 dağılımı, HTTPS/resmî alan adı ve yayın bekleme alanları yerel olarak kontrol edildi. Sınıf dizinindeki bütün tema bağlantıları resmî web kaynağında açıldı. Üretim kodu, migration, test fixture, feature flag ve canlı ortam değiştirilmedi.
 
 İlgili teknik sözleşmeler: [müfredat aktarımı](curriculum-import-atomic-publication.md) ve [süreç/rubrik kayıtları](maarif-rubric-registry.md). Kaynak listesi tamamlanmış olması bu sözleşmelerdeki içerik onayını tamamlamaz.
+
+Tarih doğrulaması artık takvimde bulunmayan günleri ve 24:00 saatini reddeder; geçerli artık yıl 29 Şubat kabul edilir. Node kabul kontrolü bu regresyonları içerir.
+
+## 2026-10-07: üç paralel kabul işi
+
+- Yerel PDF'nin tema başlıkları, Türkçe büyük harf ve boşluk normalizasyonuyla katalogdaki 30 başlıkla eşleşti. Sınıf başına bölüm sayısı 7/7/9/7. İnceleme metadatası `data/maarif/middle-school-mathematics-pdf-comparison.json` içindedir; başlık eşleşmesi içerik eşitliği değildir.
+- Resmî 2026–2027 sınıf uygulama kapsamı katalogdaki `rollout` alanına eklendi. 5–7. sınıflar Maarif; 8. sınıf önceki program. Kesin PDF revizyon onayı, branş uzmanı kontrolü ve yayın izni açık kalır.
+- Kaynak fingerprint tarih kontrolü takvim günlerini doğrular. 2026-02-30, 2026-02-29, 2026-04-31 ve 24:00 reddedilir; 2024-02-29 kabul edilir. Gerçek PDF CLI kontrolünde SHA-256 önceki arşiv değeriyle aynı çıktı. Hatalı tarihte çıkış1 ve boş stdout doğrulandı.
+
+Bu kayıt API veya canlı veri değişikliği değildir. Kod-token sayımı ve başlık karşılaştırması rubrik kriterleri, süreç metinleri veya uzman onayını üretmez.
+
+Canlı 30 tema URL’sinin tamamı başarıyla okundu. Sınıf bazında benzersiz MAT kod kümeleri PDF ile eşleşti: 5=23, 6=24, 7=30, 8=23; PDF-only/web-only fark yok. Regex sayımı bağlamsal kod atıfları içerebilir; bu 100 kodun metin/ilişki uzman onayını veya aktarıma hazır 100 bağımsız kayıt olduğunu kanıtlamaz. Snapshot karşılaştırma JSON dosyasına eklendi.

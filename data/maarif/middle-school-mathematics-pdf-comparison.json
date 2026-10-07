@@ -1,0 +1,680 @@
+{
+  "method": "Turkish uppercase I normalization and whitespace removal; compares theme heading only, not descriptions",
+  "pdfSectionCounts": {
+    "5": 7,
+    "6": 7,
+    "7": 9,
+    "8": 7
+  },
+  "themes": [
+    {
+      "grade": 5,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 5,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/449",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 5,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/450",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 5,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 5,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 5,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/452",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 5,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/455",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 6,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 6,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/457",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 6,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/458",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 6,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/459",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 6,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 6,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/461",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 6,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/462",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 7,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/463",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 7,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/464",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 7,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/465",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 7,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/466",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 7,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 7,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/468",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 7,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/469",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 7,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/470",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 7,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/471",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 8,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/472",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 8,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/473",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 8,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 8,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/475",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 8,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/476",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 8,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/477",
+      "normalizedHeadingFound": true
+    },
+    {
+      "grade": 8,
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/478",
+      "normalizedHeadingFound": true
+    }
+  ],
+  "checkedAt": "2026-10-07",
+  "pdfSha256": "75f52f93672c8991eabe102adb37ab4d16de63f35fe8488fc29cdedae9155734",
+  "semanticContentVerified": false,
+  "publicationAllowed": false,
+  "codeComparison": {
+    "method": "Unique code token set comparison; source HTML may contain contextual references; not semantic/content/rubric or academic-year verification",
+    "pdfCodeCounts": {
+      "5": 23,
+      "6": 24,
+      "7": 30,
+      "8": 23
+    },
+    "webCodeCounts": {
+      "5": 23,
+      "6": 24,
+      "7": 30,
+      "8": 23
+    },
+    "differences": {
+      "5": {
+        "pdfOnly": [],
+        "webOnly": []
+      },
+      "6": {
+        "pdfOnly": [],
+        "webOnly": []
+      },
+      "7": {
+        "pdfOnly": [],
+        "webOnly": []
+      },
+      "8": {
+        "pdfOnly": [],
+        "webOnly": []
+      }
+    },
+    "webCodesByGrade": {
+      "5": [
+        "MAT.5.1.1",
+        "MAT.5.1.2",
+        "MAT.5.1.3",
+        "MAT.5.1.4",
+        "MAT.5.2.1",
+        "MAT.5.2.2",
+        "MAT.5.2.3",
+        "MAT.5.2.4",
+        "MAT.5.3.1",
+        "MAT.5.3.2",
+        "MAT.5.3.3",
+        "MAT.5.3.4",
+        "MAT.5.3.5",
+        "MAT.5.3.6",
+        "MAT.5.3.7",
+        "MAT.5.4.1",
+        "MAT.5.4.2",
+        "MAT.5.4.3",
+        "MAT.5.4.4",
+        "MAT.5.5.1",
+        "MAT.5.5.2",
+        "MAT.5.6.1",
+        "MAT.5.6.2"
+      ],
+      "6": [
+        "MAT.6.1.1",
+        "MAT.6.1.2",
+        "MAT.6.1.3",
+        "MAT.6.1.4",
+        "MAT.6.1.5",
+        "MAT.6.1.6",
+        "MAT.6.1.7",
+        "MAT.6.1.8",
+        "MAT.6.2.1",
+        "MAT.6.2.2",
+        "MAT.6.2.3",
+        "MAT.6.3.1",
+        "MAT.6.3.2",
+        "MAT.6.3.3",
+        "MAT.6.3.4",
+        "MAT.6.4.1",
+        "MAT.6.4.2",
+        "MAT.6.4.3",
+        "MAT.6.4.4",
+        "MAT.6.4.5",
+        "MAT.6.4.6",
+        "MAT.6.5.1",
+        "MAT.6.5.2",
+        "MAT.6.6.1"
+      ],
+      "7": [
+        "MAT.7.1.1",
+        "MAT.7.1.2",
+        "MAT.7.1.3",
+        "MAT.7.1.4",
+        "MAT.7.1.5",
+        "MAT.7.1.6",
+        "MAT.7.1.7",
+        "MAT.7.2.1",
+        "MAT.7.2.2",
+        "MAT.7.2.3",
+        "MAT.7.2.4",
+        "MAT.7.3.1",
+        "MAT.7.3.2",
+        "MAT.7.4.1",
+        "MAT.7.4.10",
+        "MAT.7.4.2",
+        "MAT.7.4.3",
+        "MAT.7.4.4",
+        "MAT.7.4.5",
+        "MAT.7.4.6",
+        "MAT.7.4.7",
+        "MAT.7.4.8",
+        "MAT.7.4.9",
+        "MAT.7.5.1",
+        "MAT.7.5.2",
+        "MAT.7.6.1",
+        "MAT.7.6.2",
+        "MAT.7.7.1",
+        "MAT.7.7.2",
+        "MAT.7.7.3"
+      ],
+      "8": [
+        "MAT.8.1.1",
+        "MAT.8.1.2",
+        "MAT.8.1.3",
+        "MAT.8.1.4",
+        "MAT.8.2.1",
+        "MAT.8.2.2",
+        "MAT.8.2.3",
+        "MAT.8.2.4",
+        "MAT.8.3.1",
+        "MAT.8.3.2",
+        "MAT.8.3.3",
+        "MAT.8.3.4",
+        "MAT.8.3.5",
+        "MAT.8.3.6",
+        "MAT.8.4.1",
+        "MAT.8.4.2",
+        "MAT.8.4.3",
+        "MAT.8.5.1",
+        "MAT.8.5.2",
+        "MAT.8.5.3",
+        "MAT.8.6.1",
+        "MAT.8.6.2",
+        "MAT.8.7.1"
+      ]
+    },
+    "themes": [
+      {
+        "grade": 5,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.5.1.1",
+          "MAT.5.1.2"
+        ],
+        "codeCount": 2
+      },
+      {
+        "grade": 5,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/449",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/449",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.5.1.3",
+          "MAT.5.1.4"
+        ],
+        "codeCount": 2
+      },
+      {
+        "grade": 5,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/450",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/450",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.5.2.1",
+          "MAT.5.2.2",
+          "MAT.5.2.3",
+          "MAT.5.2.4"
+        ],
+        "codeCount": 4
+      },
+      {
+        "grade": 5,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.5.3.1",
+          "MAT.5.3.2",
+          "MAT.5.3.3",
+          "MAT.5.3.4",
+          "MAT.5.3.5",
+          "MAT.5.3.6",
+          "MAT.5.3.7"
+        ],
+        "codeCount": 7
+      },
+      {
+        "grade": 5,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.5.4.1",
+          "MAT.5.4.2",
+          "MAT.5.4.3",
+          "MAT.5.4.4"
+        ],
+        "codeCount": 4
+      },
+      {
+        "grade": 5,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/452",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/452",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.5.5.1",
+          "MAT.5.5.2"
+        ],
+        "codeCount": 2
+      },
+      {
+        "grade": 5,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/455",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/455",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.5.6.1",
+          "MAT.5.6.2"
+        ],
+        "codeCount": 2
+      },
+      {
+        "grade": 6,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.6.1.1",
+          "MAT.6.1.2",
+          "MAT.6.1.3",
+          "MAT.6.1.4"
+        ],
+        "codeCount": 4
+      },
+      {
+        "grade": 6,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/457",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/457",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.6.1.5",
+          "MAT.6.1.6",
+          "MAT.6.1.7",
+          "MAT.6.1.8"
+        ],
+        "codeCount": 4
+      },
+      {
+        "grade": 6,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/458",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/458",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.6.2.1",
+          "MAT.6.2.2",
+          "MAT.6.2.3"
+        ],
+        "codeCount": 3
+      },
+      {
+        "grade": 6,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/459",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/459",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.6.3.1",
+          "MAT.6.3.2",
+          "MAT.6.3.3",
+          "MAT.6.3.4"
+        ],
+        "codeCount": 4
+      },
+      {
+        "grade": 6,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.6.4.1",
+          "MAT.6.4.2",
+          "MAT.6.4.3",
+          "MAT.6.4.4",
+          "MAT.6.4.5",
+          "MAT.6.4.6"
+        ],
+        "codeCount": 6
+      },
+      {
+        "grade": 6,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/461",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/461",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.6.5.1",
+          "MAT.6.5.2"
+        ],
+        "codeCount": 2
+      },
+      {
+        "grade": 6,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/462",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/462",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.6.6.1"
+        ],
+        "codeCount": 1
+      },
+      {
+        "grade": 7,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/463",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/463",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.7.1.1",
+          "MAT.7.1.2",
+          "MAT.7.1.3",
+          "MAT.7.1.4"
+        ],
+        "codeCount": 4
+      },
+      {
+        "grade": 7,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/464",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/464",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.7.1.5",
+          "MAT.7.1.6",
+          "MAT.7.1.7"
+        ],
+        "codeCount": 3
+      },
+      {
+        "grade": 7,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/465",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/465",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.7.2.1",
+          "MAT.7.2.2",
+          "MAT.7.2.3",
+          "MAT.7.2.4"
+        ],
+        "codeCount": 4
+      },
+      {
+        "grade": 7,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/466",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/466",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.7.3.1",
+          "MAT.7.3.2"
+        ],
+        "codeCount": 2
+      },
+      {
+        "grade": 7,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.7.4.1",
+          "MAT.7.4.2",
+          "MAT.7.4.3",
+          "MAT.7.4.4",
+          "MAT.7.4.5",
+          "MAT.7.4.6"
+        ],
+        "codeCount": 6
+      },
+      {
+        "grade": 7,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/468",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/468",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.7.4.10",
+          "MAT.7.4.7",
+          "MAT.7.4.8",
+          "MAT.7.4.9"
+        ],
+        "codeCount": 4
+      },
+      {
+        "grade": 7,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/469",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/469",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.7.5.1",
+          "MAT.7.5.2"
+        ],
+        "codeCount": 2
+      },
+      {
+        "grade": 7,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/470",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/470",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.7.6.1",
+          "MAT.7.6.2"
+        ],
+        "codeCount": 2
+      },
+      {
+        "grade": 7,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/471",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/471",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.7.7.1",
+          "MAT.7.7.2",
+          "MAT.7.7.3"
+        ],
+        "codeCount": 3
+      },
+      {
+        "grade": 8,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/472",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/472",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.8.1.1",
+          "MAT.8.1.2",
+          "MAT.8.1.3",
+          "MAT.8.1.4"
+        ],
+        "codeCount": 4
+      },
+      {
+        "grade": 8,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/473",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/473",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.8.2.1",
+          "MAT.8.2.2",
+          "MAT.8.2.3",
+          "MAT.8.2.4"
+        ],
+        "codeCount": 4
+      },
+      {
+        "grade": 8,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.8.3.1",
+          "MAT.8.3.2",
+          "MAT.8.3.3",
+          "MAT.8.3.4",
+          "MAT.8.3.5",
+          "MAT.8.3.6"
+        ],
+        "codeCount": 6
+      },
+      {
+        "grade": 8,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/475",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/475",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.8.4.1",
+          "MAT.8.4.2",
+          "MAT.8.4.3"
+        ],
+        "codeCount": 3
+      },
+      {
+        "grade": 8,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/476",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/476",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.8.5.1",
+          "MAT.8.5.2",
+          "MAT.8.5.3"
+        ],
+        "codeCount": 3
+      },
+      {
+        "grade": 8,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/477",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/477",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.8.6.1",
+          "MAT.8.6.2"
+        ],
+        "codeCount": 2
+      },
+      {
+        "grade": 8,
+        "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/478",
+        "resolvedUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/478",
+        "httpStatus": 200,
+        "codes": [
+          "MAT.8.7.1"
+        ],
+        "codeCount": 1
+      }
+    ]
+  }
+}

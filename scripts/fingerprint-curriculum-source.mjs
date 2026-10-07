@@ -13,8 +13,15 @@ export async function fingerprintCurriculumSource({ file, sourceUrl, title, loca
         url.hostname === 'osym.gov.tr' || url.hostname.endsWith('.osym.gov.tr'))) {
     throw new Error('Source must be an official HTTPS document URL without credentials, port, query or fragment.');
   }
-  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(?:Z|[+-]\d{2}:\d{2})$/.test(retrievedAt) ||
-      !Number.isFinite(Date.parse(retrievedAt))) {
+  const timestamp = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{3})?(?:Z|[+-](\d{2}):(\d{2}))$/.exec(retrievedAt);
+  const year = Number(timestamp?.[1]);
+  const month = Number(timestamp?.[2]);
+  const day = Number(timestamp?.[3]);
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (!timestamp || month < 1 || month > 12 || day < 1 || day > days[month - 1] ||
+      Number(timestamp[4]) > 23 || Number(timestamp[5]) > 59 || Number(timestamp[6]) > 59 ||
+      Number(timestamp[7] || 0) > 23 || Number(timestamp[8] || 0) > 59 || !Number.isFinite(Date.parse(retrievedAt))) {
     throw new Error('Retrieval timestamp must be an ISO timestamp with timezone.');
   }
   const handle = await open(file, 'r');

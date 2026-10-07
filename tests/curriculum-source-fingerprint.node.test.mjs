@@ -21,6 +21,10 @@ test('fingerprint records all bytes and keeps every publication gate closed', as
     assert.equal(result.contentReviewed, false);
     assert.equal(result.pdfStructureValidated, false);
     assert.equal(result.academicYearApplicability, 'unverified');
+    for (const retrievedAt of ['2026-02-30T12:00:00Z', '2026-02-29T12:00:00Z', '2026-04-31T12:00:00Z', '2026-10-07T24:00:00Z']) {
+      await assert.rejects(fingerprintCurriculumSource({ ...input, retrievedAt }), /timezone/);
+    }
+    assert.equal((await fingerprintCurriculumSource({ ...input, retrievedAt: '2024-02-29T12:00:00Z' })).retrievedAt, '2024-02-29T12:00:00Z');
     await writeFile(file, Buffer.concat([bytes, Buffer.from('Changed')]));
     assert.notEqual((await fingerprintCurriculumSource(input)).sha256, result.sha256);
     await writeFile(file, '<html>Provider error page</html>');

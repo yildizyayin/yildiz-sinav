@@ -12,14 +12,14 @@
   "publicationAllowed": false,
   "contentImported": false,
   "expertReview": "pending",
-  "academicYearApplicability": "unverified",
+  "academicYearApplicability": "grade_rollout_verified; exact_pdf_edition_approval_pending",
   "courseUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ders/ortaokul-matematik-dersi",
   "programme": {
     "url": "https://tymm.meb.gov.tr/assets/pdf/ortaokul-matematik-dersi_20260902_111111_630.pdf",
     "coverYear": 2026,
     "locator": "Cover and table of contents",
     "byteHash": "75f52f93672c8991eabe102adb37ab4d16de63f35fe8488fc29cdedae9155734",
-    "themeContentCorrespondence": "unverified",
+    "themeContentCorrespondence": "theme_headings_and_grade_code_sets_match; semantic_review_pending",
     "byteLength": 3916466,
     "retrievedAt": "2026-10-07T17:56:00.258Z",
     "archiveFilename": "maarif-programme-2026-source-archive.zip"
@@ -197,5 +197,22 @@
       "title": "Ortaokul Matematik Dersi 8.Sınıf 7.Tema: Veriden Olasılığa Teması - Türkiye Yüzyılı Maarif Modeli",
       "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/478"
     }
-  ]
+  ],
+  "rollout": {
+    "academicYear": "2026-2027",
+    "maarifGrades": [
+      5,
+      6,
+      7
+    ],
+    "previousProgrammeGrades": [
+      8
+    ],
+    "exactPdfEditionApproval": "pending",
+    "sources": [
+      "https://tymm.meb.gov.tr/taslak-cerceve-planlari/temel-egitim",
+      "https://ispartaodm.meb.gov.tr/www/2026-2027-egitim-ogretim-yili-turkiye-yuzyili-maarif-modeli-taslak-cerceve-planlar-yayimlandi/icerik/120/tr"
+    ],
+    "checkedAt": "2026-10-07"
+  }
 }
