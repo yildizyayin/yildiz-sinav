@@ -79,6 +79,9 @@ jobs:
         run: npx wrangler deploy --config wrangler.report-acceptance.json
       - name: Execute queue, R2, role and scheduled retention proof
         run: python3 scripts/isolated-private-report-acceptance.py
+      - name: Restore original demo cron and remove isolated temporary cron
+        if: always()
+        run: python3 scripts/isolated-report-provider.py --restore
       - name: Remove transient deployment configuration
         if: always()
         run: rm -f wrangler.report-acceptance.json

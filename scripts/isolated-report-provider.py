@@ -1,4 +1,4 @@
-import json,os,urllib.request,urllib.error,pathlib
+import json,os,sys,urllib.request,urllib.error,pathlib
 
 ACCOUNT='daae7254acbfe5218c52665daaacbd96'
 WORKER='yildiz-sinav-qpool-pr-227'
@@ -16,6 +16,22 @@ def api(path,method='GET',payload=None):
         raise RuntimeError('Provider '+method+' '+path+' failed: HTTP '+str(e.code)+' codes '+str(codes)) from None
     assert data.get('success'), 'Provider rejected request'
     return data['result']
+
+BACKUP=pathlib.Path('tmp/report-acceptance-cron-backup.json')
+def crons(name): return [row['cron'] for row in api('/workers/scripts/'+name+'/schedules')['schedules']]
+if '--restore' in sys.argv:
+    if BACKUP.exists():
+        original=json.loads(BACKUP.read_text())
+        assert original==['*/15 * * * *']
+        api('/workers/scripts/'+WORKER+'/schedules','PUT',[])
+        assert not crons(WORKER)
+        current=crons('yildiz-sinav-v1')
+        assert current in [[],original], 'Demo schedule changed concurrently'
+        api('/workers/scripts/yildiz-sinav-v1/schedules','PUT',[{'cron':cron} for cron in original])
+        assert crons('yildiz-sinav-v1')==original
+        print('PASS: original demo schedule restored; isolated temporary cron removed')
+        BACKUP.unlink()
+    sys.exit(0)
 
 # Reuse the established disposable preview database; never allocate or bind production.
 db=api('/d1/database/'+DATABASE)
@@ -42,6 +58,17 @@ config['name']=WORKER
 config['d1_databases']=[{'binding':'DB','database_name':db['name'],'database_id':DATABASE,'migrations_dir':'migrations'}]
 config['r2_buckets']=[{'binding':'FILES','bucket_name':WORKER},{'binding':'REPORT_EXPORT_FILES','bucket_name':BUCKET}]
 config['queues']={'producers':[{'binding':'REPORT_EXPORT_QUEUE','queue':'anunex-rubric-exports-staging'},{'binding':'COHORT_REPORT_QUEUE','queue':'anunex-cohort-reports-staging'}],'consumers':[{'queue':q,'max_batch_size':5,'max_batch_timeout':5,'max_retries':5,'dead_letter_queue':q+'-dlq'} for q in ['anunex-rubric-exports-staging','anunex-cohort-reports-staging']]}
+# Borrow only the demo staging cron slot during acceptance, restoring it in always().
+settings=api('/workers/scripts/yildiz-sinav-v1/settings')
+bindings=settings['bindings']
+assert any(b.get('name')=='ENVIRONMENT' and b.get('text')=='staging' for b in bindings)
+databases=[b.get('id',b.get('database_id')) for b in bindings if b.get('type')=='d1']
+assert databases and 'c8ba72d6-a7be-498e-9492-1488c660b498' not in databases
+original=crons('yildiz-sinav-v1')
+assert original==['*/15 * * * *'] and not crons(WORKER)
+BACKUP.parent.mkdir(exist_ok=True);BACKUP.write_text(json.dumps(original));BACKUP.chmod(0o600)
+api('/workers/scripts/yildiz-sinav-v1/schedules','PUT',[])
+assert not crons('yildiz-sinav-v1')
 config['triggers']={'crons':['* * * * *']}
 config['vars'].update({'ENVIRONMENT':'staging','REPORT_EXPORTS_ENABLED':'true','COHORT_REPORTS_ENABLED':'true','REPORT_EXPORT_QUEUE_NAME':'anunex-rubric-exports-staging','COHORT_REPORT_QUEUE_NAME':'anunex-cohort-reports-staging'})
 pathlib.Path('wrangler.report-acceptance.json').write_text(json.dumps(config,indent=2))
