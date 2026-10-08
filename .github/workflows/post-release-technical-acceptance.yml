@@ -83,12 +83,16 @@ jobs:
         env:
           SMOKE_BASE_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
         run: node scripts/live-smoke-v2.mjs
+      - name: Verify live tenant-role and KVKK regression
+        env:
+          SMOKE_BASE_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
+        run: npm run test:privacy:live
+      - name: Execute queue, R2, role and scheduled retention proof
+        run: python3 scripts/isolated-private-report-acceptance.py
       - name: Install official Playwright Chromium
         run: npx playwright install --with-deps chromium --only-shell
       - name: Execute six live report roles, PDF, upload matching and camera stream
         run: node scripts/isolated-live-browser-acceptance.mjs
-      - name: Execute queue, R2, role and scheduled retention proof
-        run: python3 scripts/isolated-private-report-acceptance.py
       - name: Restore original demo cron and remove isolated temporary cron
         if: always()
         run: python3 scripts/isolated-report-provider.py --restore

@@ -14,6 +14,9 @@ concurrency:
 
 jobs:
   preview:
+    # The post-release acceptance workflow reuses verified PR-227 resources.
+    # Avoid allocating another database or reseeding that concurrent proof.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref != 'fix/post-release-technical-acceptance'
     runs-on: ubuntu-latest
     environment: staging
     env:
