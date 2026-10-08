@@ -77,6 +77,8 @@ jobs:
       - run: npm run build
       - name: Deploy exact isolated preview with private queues
         run: npx wrangler deploy --config wrangler.report-acceptance.json
+      - name: Prove parser and bind the synthetic exam optical explicitly
+        run: node scripts/isolated-exam-fixture-acceptance.mjs
       - name: Execute synthetic exam upload and role API acceptance
         env:
           SMOKE_BASE_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev

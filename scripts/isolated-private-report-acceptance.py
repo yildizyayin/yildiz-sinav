@@ -2,12 +2,13 @@ import json,os,time,uuid,urllib.request,urllib.error
 BASE='https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev'
 DB='8db26532-eb50-42c9-99f3-00f097127c11'
 def call(path,cookie='',body=None):
-    req=urllib.request.Request(BASE+path,headers={'Content-Type':'application/json','Cookie':cookie},data=None if body is None else json.dumps(body).encode())
+    req=urllib.request.Request(BASE+path,headers={'Content-Type':'application/json','Accept':'application/json','User-Agent':'ANUNEX-synthetic-acceptance/1.0','Cookie':cookie},data=None if body is None else json.dumps(body).encode())
     try: response=urllib.request.urlopen(req,timeout=45)
     except urllib.error.HTTPError as e: response=e
     with response: return response.status,response.headers,response.read()
 def parsed(path,cookie='',body=None,expected=200):
     status,headers,content=call(path,cookie,body)
+    assert headers.get('Content-Type','').startswith('application/json'), (path,status,headers.get('Content-Type',''), 'Expected JSON response')
     data=json.loads(content)
     assert status==expected and data.get('ok'), (path,status,data.get('error'))
     return data
