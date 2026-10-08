@@ -53,8 +53,11 @@ jobs:
           buckets=get("/r2/buckets?per_page=1000")
           rows=buckets["result"]; rows=rows.get("buckets",[]) if isinstance(rows,dict) else rows
           print("REPORT_BUCKET_NAMES "+json.dumps([b.get("name") for b in rows if "report" in b.get("name","")]))
-          for name in ["anunex-result-provider-probe-227","yildiz-sinav-qpool-pr-227"]:
-              print("TEST_CRON_METADATA "+json.dumps({"worker":name,"schedules":get("/workers/scripts/"+name+"/schedules")["result"],"bindings":get("/workers/scripts/"+name+"/settings")["result"].get("bindings",[])}))
+          scripts=get("/workers/scripts")["result"]
+          for script in scripts:
+              name=script["id"]
+              schedules=get("/workers/scripts/"+name+"/schedules")["result"]
+              if schedules.get("schedules"): print("ACTIVE_CRON_METADATA "+json.dumps({"worker":name,"schedules":schedules}))
           PY
 
   isolated-private-reports:
