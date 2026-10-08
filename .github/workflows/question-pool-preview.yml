@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   resource_inventory:
-    name: Read-only Cloudflare resource inventory
+    name: Cloudflare resource inventory and private backups
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: staging
@@ -55,11 +55,13 @@ jobs:
           databases = listing("/d1/database?per_page=100")
           scripts = listing("/workers/scripts?per_page=1000")
           services = listing("/workers/services")
-          report = {"databases": [{"name": d.get("name"), "uuid": d.get("uuid")} for d in databases], "worker_d1_bindings": [], "errors": []}
+          report = {"databases": [{"name": d.get("name"), "uuid": d.get("uuid")} for d in databases], "worker_d1_bindings": [], "worker_r2_bindings": [], "errors": []}
           def inspect(label, path):
               try:
                   settings = get(path)["result"]
                   for binding in settings.get("bindings", []):
+                      if binding.get("type") == "r2_bucket":
+                          report["worker_r2_bindings"].append({"worker": label, "bucket": binding.get("bucket_name")})
                       if binding.get("type") == "d1":
                           report["worker_d1_bindings"].append({"worker": label, "binding": binding.get("name"), "database_id": binding.get("id")})
               except RuntimeError as error:
@@ -77,9 +79,85 @@ jobs:
               for environment in environments:
                   envname = environment["environment"]
                   inspect(name + ":" + envname, "/workers/services/" + quote(name, safe="") + "/environments/" + quote(envname, safe="") + "/settings")
+          with open(os.path.join(os.environ["RUNNER_TEMP"], "anunex-resource-inventory.json"), "w") as file: json.dump(report, file)
           print(json.dumps(report, indent=2))
           print("READ-ONLY INVENTORY: no deletion, export, deployment or billing change.")
           if report["errors"]: raise SystemExit(1)
+          PY
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Install isolated backup CLI
+        run: npm install --prefix "$RUNNER_TEMP/anunex-wrangler" --no-audit --no-fund wrangler@4.148.0
+      - name: Back up four preview databases into verified private R2
+        env:
+          CI: "true"
+          WRANGLER_SEND_METRICS: "false"
+        shell: bash
+        run: |
+          python3 <<'PY'
+          import hashlib, json, os, pathlib, subprocess, urllib.request, urllib.error
+          from urllib.parse import quote
+          inventory = json.loads(pathlib.Path(os.environ["RUNNER_TEMP"], "anunex-resource-inventory.json").read_text())
+          if inventory["errors"]: raise SystemExit("Incomplete resource inventory; no backups attempted")
+          token = os.environ["CLOUDFLARE_API_TOKEN"]
+          base = "https://api.cloudflare.com/client/v4/accounts/" + os.environ["CLOUDFLARE_ACCOUNT_ID"]
+          bucket = "anunex-d1-release-backups"
+          def api(path, method="GET", body=None, allow404=False):
+              request = urllib.request.Request(base + path, data=json.dumps(body).encode() if body is not None else None, method=method, headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"})
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response: data = json.load(response)
+              except urllib.error.HTTPError as error:
+                  if allow404 and error.code == 404: return None
+                  raise RuntimeError("Backup API HTTP " + str(error.code)) from None
+              if not data.get("success"): raise RuntimeError("Backup API success=false")
+              return data["result"]
+          if any(row.get("bucket") == bucket for row in inventory.get("worker_r2_bindings", [])):
+              raise SystemExit("Backup bucket is bound to an application; backup upload forbidden")
+          targets = []
+          for pr in [149,156,211,227]:
+              name = "yildiz-sinav-qpool-pr-" + str(pr)
+              matches = [row for row in inventory["databases"] if row["name"] == name]
+              if len(matches) != 1: raise SystemExit("Preview database identity is ambiguous")
+              target = matches[0]
+              unexpected = [row["worker"] for row in inventory["worker_d1_bindings"] if row["database_id"] == target["uuid"] and row["worker"] not in [name, name + ":production"]]
+              if unexpected: raise SystemExit("Preview database has an unexpected consumer; export stopped")
+              targets.append(target)
+          if api("/r2/buckets/" + bucket, allow404=True) is None:
+              api("/r2/buckets", "POST", {"name": bucket, "locationHint": "WEUR"})
+          managed = api("/r2/buckets/" + bucket + "/domains/managed")
+          custom = api("/r2/buckets/" + bucket + "/domains/custom")
+          if managed.get("enabled") is not False or custom.get("domains") != []:
+              raise SystemExit("Backup bucket privacy is not confirmed; upload forbidden")
+          wrangler = str(pathlib.Path(os.environ["RUNNER_TEMP"], "anunex-wrangler/node_modules/.bin/wrangler"))
+          folder = pathlib.Path(os.environ["RUNNER_TEMP"], "anunex-private-backups")
+          folder.mkdir(mode=0o700, exist_ok=True)
+          def cli(args):
+              result = subprocess.run([wrangler] + args, input="y\n", text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=300)
+              if result.returncode: raise RuntimeError("Wrangler backup operation failed; no deletion performed")
+          prefix = "pr-227/" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"]
+          manifest = {"commit": os.environ["GITHUB_SHA"], "run": os.environ["GITHUB_RUN_ID"], "bucket": bucket, "backups": []}
+          for target in targets:
+              name = target["name"]
+              sql = folder / (name + ".sql")
+              downloaded = folder / (name + ".roundtrip.sql")
+              cli(["d1", "export", name, "--remote", "--output", str(sql)])
+              if not sql.is_file() or sql.stat().st_size == 0: raise RuntimeError("SQL export is empty")
+              digest = hashlib.sha256(sql.read_bytes()).hexdigest()
+              key = prefix + "/" + sql.name
+              cli(["r2", "object", "put", bucket + "/" + key, "--remote", "--file", str(sql)])
+              cli(["r2", "object", "get", bucket + "/" + key, "--remote", "--file", str(downloaded)])
+              if hashlib.sha256(downloaded.read_bytes()).hexdigest() != digest: raise RuntimeError("Remote backup hash verification failed")
+              manifest["backups"].append({"name": name, "uuid": target["uuid"], "key": key, "bytes": sql.stat().st_size, "sha256": digest})
+              print("PRIVATE R2 BACKUP VERIFIED: " + name + "; bytes=" + str(sql.stat().st_size))
+              sql.unlink()
+              downloaded.unlink()
+          path = folder / "manifest.json"
+          path.write_text(json.dumps(manifest, indent=2))
+          cli(["r2", "object", "put", bucket + "/" + prefix + "/manifest.json", "--remote", "--file", str(path)])
+          print(json.dumps(manifest, indent=2))
+          print("No databases, Workers or application files deleted.")
           PY
 
   preview:
