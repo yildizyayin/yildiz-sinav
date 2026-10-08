@@ -46,6 +46,7 @@ jobs:
           def listing(path):
               data = get(path)
               items = data["result"]
+              if isinstance(items, dict): items = items.get("environments", items.get("services"))
               if not isinstance(items, list): raise RuntimeError("Unexpected inventory shape")
               info = data.get("result_info") or {}
               if info.get("total_count", len(items)) > len(items) or info.get("total_pages", 1) > 1:
@@ -68,7 +69,11 @@ jobs:
               inspect(name, "/workers/scripts/" + quote(name, safe="") + "/settings")
           for service in services:
               name = service["id"]
-              environments = listing("/workers/services/" + quote(name, safe="") + "/environments")
+              try:
+                  environments = listing("/workers/services/" + quote(name, safe="") + "/environments")
+              except RuntimeError as error:
+                  report["errors"].append({"worker": name, "error": str(error)})
+                  continue
               for environment in environments:
                   envname = environment["environment"]
                   inspect(name + ":" + envname, "/workers/services/" + quote(name, safe="") + "/environments/" + quote(envname, safe="") + "/settings")
