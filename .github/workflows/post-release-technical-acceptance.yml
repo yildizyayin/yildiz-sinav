@@ -77,6 +77,14 @@ jobs:
       - run: npm run build
       - name: Deploy exact isolated preview with private queues
         run: npx wrangler deploy --config wrangler.report-acceptance.json
+      - name: Execute synthetic exam upload and role API acceptance
+        env:
+          SMOKE_BASE_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
+        run: node scripts/live-smoke-v2.mjs
+      - name: Install official Playwright Chromium
+        run: npx playwright install --with-deps chromium --only-shell
+      - name: Execute six live report roles, PDF, upload matching and camera stream
+        run: node scripts/isolated-live-browser-acceptance.mjs
       - name: Execute queue, R2, role and scheduled retention proof
         run: python3 scripts/isolated-private-report-acceptance.py
       - name: Restore original demo cron and remove isolated temporary cron
