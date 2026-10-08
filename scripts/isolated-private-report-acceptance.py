@@ -14,7 +14,7 @@ def parsed(path,cookie='',body=None,expected=200):
 assert parsed('/api/config').get('environment')=='staging', 'Synthetic acceptance must run in staging'
 sessions={}
 for username in ['manager','math','guidance','student1','parent1']:
-    status,headers,content=call('/api/auth/login',body={'username':username,'password':'Demo123!','remember':True,'turnstileToken':'XXXX.DUMMY.TOKEN.XXXX'})
+    status,headers,content=call('/api/auth/login',body={'identifier':username,'password':'Demo123!','remember':True,'turnstileToken':'XXXX.DUMMY.TOKEN.XXXX'})
     assert status==200, ('Synthetic login failed',username,status)
     cookie=headers.get('Set-Cookie','').split(';')[0]
     assert cookie and '=' in cookie
