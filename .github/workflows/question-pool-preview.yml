@@ -69,6 +69,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          safe_cf_request() {
+            local response status codes
+            response="$(mktemp)"
+            status="$(curl --silent --show-error --output "$response" --write-out '%{http_code}' "$@")"
+            if [[ ! "$status" =~ ^2[0-9][0-9]$ ]]; then
+              codes="$(jq -r '[.errors[]?.code | tostring] | join(",")' "$response" 2>/dev/null || true)"
+              echo "::error::Resource request HTTP $status; Cloudflare error codes: ${codes:-none}" >&2
+              rm -f "$response"
+              return 22
+            fi
+            cat "$response"
+            rm -f "$response"
+          }
           key="${PR_NUMBER//[^0-9A-Za-z-]/-}"
           # Use a fresh synthetic database after the unmerged generator schema revision.
           # Keep the earlier preview database intact; this does not change production.
@@ -78,14 +91,14 @@ jobs:
           auth="Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
           api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
 
-          db_response="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/d1/database?name=$(printf '%s' "$db_name" | jq -sRr @uri)")"
+          db_response="$(safe_cf_request --header "$auth" "$api/d1/database?name=$(printf '%s' "$db_name" | jq -sRr @uri)")"
           db_id="$(jq -r '.result[0].uuid // empty' <<<"$db_response")"
           if [ -z "$db_id" ]; then
-            db_id="$(curl --fail-with-body --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' --data "$(jq -nc --arg name "$db_name" '{name:$name}')" "$api/d1/database" | jq -r '.result.uuid // empty')"
+            db_id="$(safe_cf_request --request POST --header "$auth" --header 'Content-Type: application/json' --data "$(jq -nc --arg name "$db_name" '{name:$name}')" "$api/d1/database" | jq -r '.result.uuid // empty')"
           fi
           test -n "$db_id" || (echo "PR D1 database could not be resolved" >&2 && exit 1)
 
-          bucket_response="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/r2/buckets?per_page=1000&name_contains=$(printf '%s' "$bucket_name" | jq -sRr @uri)")"
+          bucket_response="$(safe_cf_request --header "$auth" "$api/r2/buckets?per_page=1000&name_contains=$(printf '%s' "$bucket_name" | jq -sRr @uri)")"
           bucket_exists="$(jq -r --arg name "$bucket_name" 'if .success != true then error("R2 list failed") else (.result | if type == "object" then .buckets else . end | if type != "array" then error("R2 list shape invalid") else map(select(type == "object" and (.name // "") == $name)) | length end) end' <<<"$bucket_response")"
           if [ "$bucket_exists" = "0" ]; then
             create_response="$(curl --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' --data "$(jq -nc --arg name "$bucket_name" '{name:$name,location:"WEUR"}')" --write-out '\n%{http_code}' "$api/r2/buckets" || true)"
