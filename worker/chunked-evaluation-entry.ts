@@ -1,3 +1,5 @@
+import { withExamOperationLock } from './lib/exam-operation-lock';
+import { persistTytOptionalPhilosophyEvidence } from './tyt-optional-philosophy-evaluation';
 import reportingApp from './reporting-entry';
 import type { CanonicalRecord, Env } from './types';
 import { getAuthUser } from './lib/auth';
@@ -7,11 +9,12 @@ import { assertScoringRuleVerified, calculateOverall, calculateSubjectScore } fr
 import { masteryStatus } from './lib/outcome';
 
 const CHUNK_SIZE = 5;
-// Cloudflare D1 allows at most 100 bound parameters per individual query.
-// Keep headroom for future columns and platform changes.
 const MAX_BINDINGS_PER_STATEMENT = 90;
 
 type AnyRow = Record<string, any>;
+import { evaluateAnswer } from './lib/answer-evaluation';
+export { evaluateAnswer, parseAcceptedAnswers } from './lib/answer-evaluation';
+type AnswerStatus = 'CORRECT' | 'WRONG' | 'BLANK' | 'INVALID';
 
 function placeholders(count: number): string {
   return Array.from({ length: count }, () => '?').join(',');
@@ -65,13 +68,19 @@ async function finaliseBatch(env: Env, userId: string, batch: AnyRow, total: num
   return json({ ok: true, done: true, processed: total, processedThisRun: 0, total, remaining: 0, batchId: batch.id, examId: batch.exam_id });
 }
 
-async function evaluateChunk(request: Request, env: Env, batchId: string): Promise<Response> {
+async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string): Promise<Response> {
   const batch = await one<AnyRow>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
 
   const access = await ensureAccess(env, request, batch);
   if (access.response || !access.user) return access.response!;
   const user = access.user;
+  const networkPublication=await one<any>(env.DB.prepare("SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND ranking_frozen_at IS NOT NULL LIMIT 1").bind(batch.exam_id));
+  if(networkPublication)return badRequest('Sonuç Ağı yayını düzeltmeye açılmadan değerlendirme yapılamaz.','RESULTS_FROZEN');
+  const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
+  if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status)) {
+    return badRequest('Dondurulmuş veya yayımlanmış sonuçlar yeniden değerlendirilemez. Düzeltme için yeni sonuç sürümü hazırlanmalıdır.', 'RESULTS_FROZEN');
+  }
 
   const totalRow = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM scan_records WHERE batch_id=?').bind(batchId));
   const total = Number(totalRow?.c || 0);
@@ -93,11 +102,19 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
     all<AnyRow>(env.DB.prepare(`SELECT es.subject_id,s.code,s.name,es.question_count,es.wrong_divisor
       FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order`).bind(exam.id)),
     all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1').bind(exam.id)),
-    all<AnyRow>(env.DB.prepare(`SELECT q.id question_id,q.subject_id,q.question_no,s.code subject_code,ak.booklet_code,ak.correct_answer,
+    all<AnyRow>(env.DB.prepare(`SELECT q.id question_id,q.subject_id,q.question_no,s.code subject_code,
+      ak.booklet_code,ak.correct_answer,ak.accepted_answers,
+      coalesce(ak.question_status,q.question_status,'ACTIVE') question_status,
+      coalesce(bqo.printed_question_no,q.question_no) printed_question_no,
       group_concat(qo.outcome_id) outcome_ids
-      FROM exam_questions q JOIN subjects s ON s.id=q.subject_id JOIN answer_keys ak ON ak.exam_question_id=q.id
-      LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id WHERE q.exam_id=?
-      GROUP BY q.id,ak.booklet_code ORDER BY q.subject_id,q.question_no`).bind(exam.id)),
+      FROM exam_questions q
+      JOIN subjects s ON s.id=q.subject_id
+      JOIN answer_keys ak ON ak.exam_question_id=q.id
+      LEFT JOIN exam_question_booklet_orders bqo ON bqo.exam_question_id=q.id AND bqo.booklet_code=ak.booklet_code
+      LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id
+      WHERE q.exam_id=?
+      GROUP BY q.id,ak.booklet_code
+      ORDER BY q.subject_id,ak.booklet_code,coalesce(bqo.printed_question_no,q.question_no)`).bind(exam.id)),
     batch.season_id ? all<AnyRow>(env.DB.prepare('SELECT id,grade_level,section FROM classes WHERE season_id=?').bind(batch.season_id)) : Promise.resolve([] as AnyRow[]),
     all<AnyRow>(env.DB.prepare(`SELECT sr.* FROM scan_records sr
       LEFT JOIN scan_evaluation_progress p ON p.batch_id=sr.batch_id AND p.scan_record_id=sr.id
@@ -132,7 +149,7 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
   const existingOutcomeEvidence = existingParticipantIds.length
     ? await all<AnyRow>(env.DB.prepare(`SELECT sa.participant_id,q.subject_id,qo.outcome_id,sa.status
       FROM student_answers sa JOIN exam_questions q ON q.id=sa.exam_question_id JOIN question_outcomes qo ON qo.exam_question_id=q.id
-      WHERE sa.participant_id IN (${placeholders(existingParticipantIds.length)})`).bind(...existingParticipantIds))
+      WHERE sa.participant_id IN (${placeholders(existingParticipantIds.length)}) AND sa.status<>'INVALID'`).bind(...existingParticipantIds))
     : [];
 
   const statements: D1PreparedStatement[] = [];
@@ -145,7 +162,6 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
   const newStudentRows: unknown[][] = [];
   const newEnrollmentRows: unknown[][] = [];
   const newGuestProfileRows: unknown[][] = [];
-  const participantIds: string[] = [];
   const outcomeStudentIds: string[] = [];
 
   for (const item of resolved) {
@@ -154,7 +170,6 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
     if (!booklet || !booklets.some((b) => b.code === booklet)) return badRequest(`Satır ${row.row_no} için geçerli kitapçık türü bulunamadı.`, 'BOOKLET_REQUIRED');
 
     const participantId = participantByStudent.get(studentId) || uuid('part');
-    participantIds.push(participantId);
     outcomeStudentIds.push(studentId);
     const incomingSubjects = subjects.filter((subject) => Object.prototype.hasOwnProperty.call(record.answers_by_subject || {}, subject.code));
     if (!incomingSubjects.length) return badRequest(`Satır ${row.row_no} için sınava ait ders cevap alanı bulunamadı.`, 'ANSWER_SUBJECT_REQUIRED');
@@ -187,27 +202,40 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
       if (evidence.status === 'CORRECT') acc.correct += 1;
       outcomeAccumulator.set(evidence.outcome_id, acc);
     }
+
     for (const subject of incomingSubjects) {
       const answerString = record.answers_by_subject?.[subject.code] || '';
-      const subjectKeys = keyRows.filter((k) => k.subject_id === subject.subject_id && k.booklet_code === booklet).sort((a, b) => Number(a.question_no) - Number(b.question_no));
-      let correct = 0, wrong = 0, blank = 0;
-      for (let i = 0; i < Number(subject.question_count); i++) {
+      const subjectKeys = keyRows
+        .filter((k) => k.subject_id === subject.subject_id && k.booklet_code === booklet)
+        .sort((a, b) => Number(a.printed_question_no) - Number(b.printed_question_no));
+      if (subjectKeys.length !== Number(subject.question_count)) {
+        return badRequest(`${subject.name} için ${booklet} kitapçığı cevap anahtarı eksik.`, 'ANSWER_KEY_INCOMPLETE');
+      }
+
+      let correct = 0, wrong = 0, blank = 0, activeQuestionCount = 0;
+      for (let i = 0; i < subjectKeys.length; i++) {
         const key = subjectKeys[i];
-        if (!key) return badRequest(`${subject.name} ${i + 1}. soru için cevap anahtarı eksik.`, 'ANSWER_KEY_INCOMPLETE');
-        const raw = (answerString[i] || '').toLocaleUpperCase('tr-TR');
-        const isBlank = !raw || raw === '_';
-        const status = isBlank ? 'BLANK' : raw === key.correct_answer ? 'CORRECT' : 'WRONG';
-        if (status === 'CORRECT') correct++; else if (status === 'WRONG') wrong++; else blank++;
-        answerRows.push([uuid('ans'), participantId, key.question_id, isBlank ? null : raw, status, record.confidence]);
-        const outcomeIds = key.outcome_ids ? String(key.outcome_ids).split(',').filter(Boolean) : [];
-        for (const outcomeId of outcomeIds) {
-          const acc = outcomeAccumulator.get(outcomeId) || { evidence: 0, correct: 0 };
-          acc.evidence += 1;
-          if (status === 'CORRECT') acc.correct += 1;
-          outcomeAccumulator.set(outcomeId, acc);
+        const assessed = evaluateAnswer(answerString[i], key);
+        const raw = String(answerString[i] || '').trim().toLocaleUpperCase('tr-TR');
+        if (assessed.contributesToScore) {
+          activeQuestionCount += 1;
+          if (assessed.status === 'CORRECT') correct++;
+          else if (assessed.status === 'WRONG') wrong++;
+          else if (assessed.status === 'BLANK') blank++;
+        }
+        answerRows.push([uuid('ans'), participantId, key.question_id, raw && raw !== '_' ? raw : null, assessed.status, record.confidence]);
+
+        if (assessed.contributesToOutcome) {
+          const outcomeIds = key.outcome_ids ? String(key.outcome_ids).split(',').filter(Boolean) : [];
+          for (const outcomeId of outcomeIds) {
+            const acc = outcomeAccumulator.get(outcomeId) || { evidence: 0, correct: 0 };
+            acc.evidence += 1;
+            if (assessed.status === 'CORRECT') acc.correct += 1;
+            outcomeAccumulator.set(outcomeId, acc);
+          }
         }
       }
-      const score = calculateSubjectScore({ correct, wrong, blank, wrongDivisor: Number(subject.wrong_divisor), questionCount: Number(subject.question_count) });
+      const score = calculateSubjectScore({ correct, wrong, blank, wrongDivisor: Number(subject.wrong_divisor), questionCount: activeQuestionCount });
       subjectScores.push(score);
       subjectResultRows.push([uuid('sr'), participantId, subject.subject_id, correct, wrong, blank, score.net, score.successPercent]);
     }
@@ -268,6 +296,22 @@ async function evaluateChunk(request: Request, env: Env, batchId: string): Promi
   const remaining = Math.max(0, total - processed);
   if (remaining === 0) return finaliseBatch(env, user.id, batch, total);
   return json({ ok: true, done: false, processed, processedThisRun: records.length, total, remaining, batchId, examId: exam.id });
+}
+
+async function evaluateChunk(request:Request,env:Env,batchId:string):Promise<Response>{
+  const batch=await one<AnyRow>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));if(!batch)return notFound();
+  const access=await ensureAccess(env,request,batch);if(access.response||!access.user)return access.response!;
+  return withExamOperationLock(env,batch.exam_id,'EVALUATE',async(env)=>{
+    const response=await evaluateChunkUnlocked(request,env,batchId);if(!response.ok)return response;
+    const payload=await response.clone().json() as any;
+    if(payload?.ok){try{await persistTytOptionalPhilosophyEvidence(env,batchId)}catch(error){
+      if(error instanceof Error&&error.message.includes('EXAM_OPERATION_OWNERSHIP_LOST'))throw error;
+    console.error('TYT optional philosophy evidence persistence failed',error);
+      await env.DB.prepare("UPDATE scan_batches SET status='READY' WHERE id=?").bind(batchId).run();
+      return json({ok:false,error:{code:'TYT_OPTIONAL_EVIDENCE_FAILED',message:'TYT seçmeli Felsefe kanıt sonucu kaydedilemedi. Ana 120 soruluk değerlendirme değiştirilmedi; işlem güvenli şekilde tekrar denenebilir.'}},500);
+    }}
+    return response;
+  });
 }
 
 export default {

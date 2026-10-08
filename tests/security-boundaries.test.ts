@@ -33,7 +33,7 @@ describe('approved V1 security boundaries', () => {
 
   it('records old/new scan decision state in the immutable audit stream', () => {
     expect(workerSource).toMatch(/export async function resolveScanRecord[\s\S]*?const before = await one<any>\([\s\S]*?SCAN_RECORD_DECISION_RECORDED/);
-    expect(workerSource).toMatch(/SCAN_RECORD_DECISION_RECORDED[\s\S]*?before:[\s\S]*?after[,}]/);
+    expect(workerSource).toMatch(/export async function resolveScanRecord[\s\S]*?before:[\s\S]*?after:[\s\S]*?SCAN_RECORD_DECISION_RECORDED/);
   });
 
   it('keeps optical template writes inside the owning institution scope', () => {

@@ -1,9 +1,32 @@
 export type Role = 'SUPER_ADMIN' | 'INSTITUTION_MANAGER' | 'TEACHER' | 'GUIDANCE_TEACHER' | 'STUDENT' | 'PARENT';
 
 export interface Env {
+  COHORT_REPORTS_ENABLED?: string;
+  COHORT_REPORT_QUEUE?: Queue;
+  COHORT_REPORT_QUEUE_NAME?: string;
+  REPORT_EXPORTS_ENABLED?: string;
+  REPORT_EXPORT_QUEUE?: Queue;
+  REPORT_EXPORT_QUEUE_NAME?: string;
+  REPORT_EXPORT_FILES?: R2Bucket;
   DB: D1Database;
   FILES: R2Bucket;
+  RESULT_ARTIFACTS_ENABLED?: string;
+  RESULT_ARTIFACT_BACKGROUND_ENABLED?: string;
+  RESULT_ARTIFACT_VERIFICATION_ENABLED?: string;
+  RESULT_ARTIFACT_QUEUE_ENABLED?: string;
+  RESULT_ARTIFACT_QUEUE?: Queue;
+  RESULT_ARTIFACT_QUEUE_NAME?: string;
+  RESULT_ARTIFACT_READS_ENABLED?: string;
+  RESULT_ARTIFACT_CLEANUP_ENABLED?: string;
+  RESULT_RETENTION_QUEUE_ENABLED?: string;
+  RESULT_RETENTION_DEADLINE_HOURS?: string;
+  RESULT_RETENTION_QUEUE?: Queue;
+  RESULT_RETENTION_QUEUE_NAME?: string;
+  // Dedicated private bucket; never reuse public content assets.
+  RESULT_FILES?: R2Bucket;
   AI?: Ai;
+  QUESTION_GENERATION_ENABLED?: string;
+  QUESTION_GENERATION_MODEL?: string;
   ENVIRONMENT?: string;
   PRODUCT_NAME?: string;
   TURNSTILE_SITE_KEY?: string;
@@ -45,12 +68,21 @@ export interface Env {
   WHATSAPP_ACCESS_TOKEN?: string;
   WHATSAPP_PHONE_NUMBER_ID?: string;
   WHATSAPP_GRAPH_API_VERSION?: string;
+  // Account access notifications. Secrets stay in Cloudflare Secrets; the sender address/from number may be vars.
+  ACCOUNT_NOTIFICATION_SECRET?: string;
+  RESEND_API_KEY?: string;
+  MAIL_FROM_ADDRESS?: string;
+  TWILIO_ACCOUNT_SID?: string;
+  TWILIO_AUTH_TOKEN?: string;
+  TWILIO_FROM_NUMBER?: string;
   TELEGRAM_BOT_TOKEN?: string;
   TELEGRAM_WEBHOOK_SECRET?: string;
   // AI ajan merkezi yalnızca allowlist'teki workflow'ları izler/tetikler.
   // Token Cloudflare Secret olarak provision edilmelidir.
   GITHUB_AGENT_TOKEN?: string;
   GITHUB_AGENT_REPO?: string;
+  // Only CI, tenant, KVKK and D1 source auditors; default main. Server-controlled.
+  GITHUB_AGENT_CHECK_REF?: string;
   ONAY_WORKER_URL?: string;
   IYZICO_API_KEY?: string;
   IYZICO_SECRET_KEY?: string;
@@ -82,6 +114,7 @@ export interface AuthUser {
   display_name: string;
   email: string | null;
   username: string | null;
+  must_change_password?: boolean;
 }
 
 export interface CanonicalRecord {

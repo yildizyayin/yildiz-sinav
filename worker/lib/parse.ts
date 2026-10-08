@@ -95,7 +95,12 @@ export function parseWithTemplate(text: string, fileName: string, template: Pars
   const def = safeJson(template.parser_definition) as any;
   if (!def) return { confidence: 0, ambiguous: false, records: [], issues: ['Seçilen optik şablonun parser tanımı yok.'] };
   const normalized = normalizeNewlines(text);
-  if (def.type === 'fixed-width' || def.type === 'fmt') return parseFixedWidth(normalized.split('\n').filter((line) => line.length > 0), fileName, template.id, template.name, fixedWidthFromDefinition(def));
+  if (def.type === 'fixed-width' || def.type === 'fmt') {
+    const fixed = fixedWidthFromDefinition(def);
+    const lines = normalized.split('\n').filter((line) => line.length > 0);
+    if (!fixed || !lines.length) return { confidence: 0, ambiguous: false, records: [], issues: ['Dosya boş veya sabit uzunluklu şablon geçersiz.'] };
+    return parseFixedWidth(lines, fileName, template.id, template.name, fixed);
+  }
   if (def.type === 'delimited') return parseDelimited(normalized, fileName, template.id, template.name, def.delimiter);
   return { confidence: 0, ambiguous: false, records: [], issues: ['Desteklenmeyen parser türü.'] };
 }
@@ -159,6 +164,10 @@ function fallbackStudentNumber(line: string, answersDef: Record<string, any>): s
 }
 
 function parseFixedWidth(lines: string[], fileName: string, templateId: string, templateName: string, def: any): ParseResult {
+  const invalidRows = typeof def.recordLength === 'number' ? lines.flatMap((line, i) => line.length === def.recordLength ? [] : [i + 1]) : [];
+  if (invalidRows.length || (typeof def.signature === 'string' && def.signature && !lines.join('\n').includes(def.signature))) {
+    return { templateId, templateName, confidence: 0, ambiguous: false, records: [], issues: [invalidRows.length ? `Kayıt uzunluğu şablonla uyuşmuyor. İlk hatalı satırlar: ${invalidRows.slice(0, 10).join(', ')}.` : 'Dosyada şablonun format imzası bulunamadı.'] };
+  }
   const fields = def.fields || {};
   const answersDef = def.answers || {};
   const records: CanonicalRecord[] = [];

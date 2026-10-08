@@ -1,0 +1,8 @@
+.artifact-monitor .admin-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.artifact-monitor .admin-kpi{cursor:default;min-width:0}
+.artifact-monitor .admin-kpi:hover{transform:none}
+.artifact-monitor .admin-kpi strong{font-size:20px;line-height:1.35;overflow-wrap:anywhere}
+.artifact-monitor select{display:block;width:100%;margin-top:8px}
+.artifact-monitor table{width:100%;min-width:720px;text-align:left;border-collapse:collapse}
+.artifact-monitor th,.artifact-monitor td{padding:12px;vertical-align:top;border-bottom:1px solid #dae5f4}
+@media(max-width:700px){.artifact-monitor .admin-kpi-grid{grid-template-columns:1fr}}

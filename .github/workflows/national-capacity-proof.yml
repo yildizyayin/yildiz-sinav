@@ -1,0 +1,86 @@
+name: National Capacity Proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Type RUN_NATIONAL_1000000 to authorize the isolated staging load"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: national-capacity-proof
+  cancel-in-progress: false
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: staging
+    env:
+      SMOKE_BASE_URL: ${{ secrets.STAGING_URL || vars.STAGING_URL || 'https://demo.anunex.com' }}
+      SMOKE_DEMO_PASSWORD: ${{ secrets.STAGING_DEMO_PASSWORD }}
+      LOAD_TEST_ALLOWED_ORIGINS: ${{ vars.LOAD_TEST_ALLOWED_ORIGINS || 'https://demo.anunex.com' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Require explicit one-million benchmark confirmation
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          test "$CONFIRMATION" = "RUN_NATIONAL_1000000"
+          test -n "$SMOKE_DEMO_PASSWORD" || (echo 'Missing STAGING_DEMO_PASSWORD' >&2 && exit 1)
+
+      - name: Validate staging target
+        env:
+          TARGET_URL: ${{ env.SMOKE_BASE_URL }}
+        run: node scripts/agents/load-target.mjs
+
+      - name: Run 15,000 institution / 1,000,000 synthetic student Queue-D1 proof
+        run: node scripts/live-national-capacity-smoke.mjs
+
+      - name: Install k6
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            https://github.com/grafana/k6/releases/download/v0.52.0/k6-v0.52.0-linux-amd64.tar.gz \
+            | tar xz --strip-components 1
+
+      - name: Build 10,000-VU request-layer health probe
+        run: |
+          cat > national-request-layer.js <<'EOF'
+          import http from 'k6/http';
+          import { check } from 'k6';
+          export const options={
+            scenarios:{health_concurrency:{executor:'constant-vus',vus:10000,duration:'60s',gracefulStop:'10s'}},
+            thresholds:{http_req_failed:['rate<0.05'],http_req_duration:['p(95)<2000']},
+          };
+          export default function(){
+            const res=http.get(`${__ENV.TARGET_URL.replace(/\/$/,'')}/api/health`,{redirects:0});
+            check(res,{'health 200':r=>r.status===200});
+          }
+          EOF
+
+      - name: Run 10,000 concurrent request-layer probe
+        id: k6
+        env:
+          TARGET_URL: ${{ env.SMOKE_BASE_URL }}
+        run: ./k6 run --summary-export=national-k6.json national-request-layer.js
+
+      - name: Record exact proof boundaries
+        if: always()
+        run: |
+          {
+            echo '### National capacity proof boundaries'
+            echo '- D1/Queue dataset benchmark target: 15,000 institutions / 1,000,000 synthetic students'
+            echo '- HTTP request-layer concurrency target: 10,000 VUs against /api/health for 60s'
+            echo '- Production traffic used: NO'
+            echo '- Real student data used: NO'
+            echo '- Important: health concurrency is not equivalent to 10,000 simultaneous authenticated result lookups; that remains a separate release test.'
+          } >> "$GITHUB_STEP_SUMMARY"

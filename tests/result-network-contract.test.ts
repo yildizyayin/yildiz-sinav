@@ -22,7 +22,7 @@ describe('ANUNEX result network contract',()=>{
  });
  it('retains exam definitions while purging result identities and participants',()=>{
   expect(source).toContain("status='PURGED'");
-  expect(source).toContain('examDefinitionRetained:true');
+  expect(source).toContain("'examDefinitionRetained',json('true')");
   expect(migration).toContain("catalogue_retention TEXT NOT NULL DEFAULT 'PERMANENT'");
  });
  it('lets only Super Admin manage portal conversion copy while brand marks stay locked in code',()=>{
@@ -89,9 +89,9 @@ describe('ANUNEX result network contract',()=>{
   expect(source).toContain("type:'NOTICE_90'");
   expect(source).toContain("type:'NOTICE_60'");
   expect(source).toContain("type:'NOTICE_15'");
-  expect(source).toContain('answerKeysRetained:true');
-  expect(source).toContain('outcomesRetained:true');
-  expect(source).toContain('videosRetained:true');
+  expect(source).toContain("'answerKeysRetained',json('true')");
+  expect(source).toContain("'outcomesRetained',json('true')");
+  expect(source).toContain("'videosRetained',json('true')");
  });
 });
 

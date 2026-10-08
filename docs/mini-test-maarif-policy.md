@@ -1,0 +1,102 @@
+# Mini test: öğrenme çıktısı, yeni sorular ve isteğe bağlı tekrar
+
+## Güncel ek — 5 Ekim, içerik ve geri bildirim
+
+Yeni AI onayında dört kutuya ek olarak çıktı bağlantısı, dil/çeldirici ve benzer
+soru kararının gerekçesi saklanır. Aynı normalize seçenek metinleri reddedilir.
+Yeni mini test başlangıcı çıktı kodu/başlığını da saklar. Sabit birleşik raporda
+çıktı bazlı kanıt ve çalışma önerileri gösterilir; %80 çalışma eşiği MEB beceri
+standardı değildir. 0074 değişmez medya bütünlüğü uygulanmıştır; aşağıdaki eski
+'bayt arşivi yok' geliştirme notu artık güncel durumu anlatmaz. Gerçek medya ve
+sonradan eklenen bu özellikler için kabul testleri bekler.
+
+Resmî süreç/rubrik içeriği ve Türkçe model pilotu tamamlanmış değildir.
+Ayrıntılar: [Maarif kabul sözleşmesi](maarif-formative-quality-acceptance.md).
+
+
+Resmî dayanak: https://tymm.meb.gov.tr/olcme-degerlendirme (3 Ekim 2026).
+MEB aşamalı süreç bileşenlerini yoklama, biçimlendirici geri bildirim ve farklı
+öğrenme kanıtlarıyla değerlendirme ister. Çoktan seçmeli mini test bunlardan
+biridir; performans görevi, açık uçlu yanıt, öz değerlendirme ve rubrikler ayrıca
+sürüm bazında hazırlanmalıdır. Bu değişiklik tüm Maarif becerilerini ölçtüğünü
+iddia etmez. Mevcut %80 eşiği uygulamanın çalışma eşiğidir, MEB yeterlik standardı
+olarak sunulamaz.
+
+## Uygulanan politika
+
+- Öğrenci kendi aktif kurum/dönem/sınıfındaki doğrulanmış programın her aktif
+  öğrenme çıktısını Nibiru kataloğunda görebilir ve test başlatabilir. Yeni test
+  oluşturmak için günlük eksik kazanım planı gerekmez.
+- Test başlatırken aynı sınıf/yıl/ders/öğrenme çıktısı için onaylı, telif uygun,
+  erişilebilir sorular seçilir. Yeni modda önceki mini test, soru pratiği ve
+  assessment yanıt kayıtlarında bulunan sorular seçilmez. Hazır test devam
+  ettirilebilir; bu yeni test olarak sunulmaz.
+- Aynı metin ve seçeneklerin farklı kimlik/erişilebilir sahip ile kopyalanması
+  yeni soru sayılmaz. Bu kontrol semantik benzerlik veya görsel byte benzerliği
+  garantisi değildir. Dijital soru pratiği listesindeki sunuma hazırlanan sorular da exposure
+  kaydına alınır; yanıt verilmemiş olsa bile yeni mini testte dışlanır. Başka
+  kanallardaki yalnız görüntüleme ve dış baskı olayları için ayrıca kayıt gerekir.
+- Test 5–10 sorudur, toplam test sayısında sabit sınır yoktur. En az 5 yeni soru
+  yoksa NEW_QUESTIONS_REQUIRED ve kullanılabilir/gerekli sayılar döner; sessiz
+  tekrar yapılmaz. Onaylı içerik yokken sınırsız farklı soru iddiası yapılmaz.
+- REPEAT açık öğrenci seçimi ve onay ister, yalnız görülmüş uygun soruları
+  kullanır. Tekrar sonucu practiceOnly olarak saklanır; standart öğrenme kanıtı,
+  kazanım ustalığı veya görev tamamlama yükseltilmez. Legacy testler yeni olarak
+  etiketlenmez.
+- 0068 migration selection_mode ve öğrenci/soru tekil rezervasyonu ekler.
+  NEW test soruları aynı atomik batch'te rezerve edilir; çakışan rezervasyon tüm
+  testi geri alır. Eski mini test soruları rezervasyona aktarılır.
+
+## Kalan içerik işleri
+
+Her resmî öğrenme çıktısı/süreç bileşeni için doğrulanmış soru bankası kapsamı,
+zorluk/bağlam çeşitliliği ve beceri rubrikleri hazırlanmalı. Nibiru soru taslakları
+üretebilir, fakat kaynak, cevap/çözüm, yaş/sınıf, telif ve pedagojik inceleme
+onayından geçmeden öğrenciye otomatik sunulmamalıdır. Üretim pipeline'ı ve sınırsız
+onaylı soru içeriği bu değişiklikte tamamlanmış değildir. Soru/içerik ve cevap anahtarı 0069 ile test başlangıcında saklanır.
+Gösterim ve puanlama bu sürümü kullanır; eski eksik READY sürümleri
+SNAPSHOT_REQUIRED ile engellenir. Görsel URL referansları saklanır; dosya
+baytlarının değişmez arşivi henüz yoktur. 0070 ile test gönderimi ve bağlı cevap/ölçme/öğrenme/görev/destek/denetim
+yazıları tek atomik batch içinde tekil gönderim kaydıyla korunur. Kaybeden
+eşzamanlı istek ve tekrar gönderim kalıcı kazanan sonucu okur; batch hatası
+testi READY ve yeniden gönderilebilir bırakır. Yeni testlerin native kanıtı frozen-mini-tests API üzerinden öğrenci/veli ve
+yetkili kurum/branş kapsamıyla okunur; birleşik API miniTestIds seçimini destekler.
+Tekrar çalışmaları akademik kanıta eklenmez. Karne ekranı tamamlanan yeni mini testleri eğitim yılına göre listeler;
+öğrenci/veli veya yetkili branş/kurum kapsamıyla en fazla 20 mini test seçilir.
+Mini testler tek başına ya da seçili sınav/soru pratiğiyle birleştirilir.
+Tekrar ve sabit kanıtı eksik eski testler listeye katılmaz.
+
+## 5 Ekim: insan incelemesi kapısı
+
+Açıkça AI kaynaklı olarak kaydedilen taslaklar OWNED olsa da REVIEW durumunda
+saklanır. İki onay API yolu aynı inceleme servisini kullanır. AI taslağı için
+soru/çözüm/kaynak, doğru şık, aynı yıl/sınıf/dersin doğrulanmış aktif çıktısı
+ve dört insan incelemesi kontrolü gerekir. İncelenen soru sürümü değişirse
+eski karar reddedilir. Ekranda incelenen program bağlamı da istekle gönderilir;
+sürüm aynı kalsa bile değişmiş program eski onayı geçersiz kılar. İçerik ekranı AI kaynağını ve öğrenme çıktısı bağlamını
+gösterir. Kaynak beyanı, kaynağı saklanarak korunur; manuel olarak yapıştırılan
+bir metnin AI ile yazıldığını otomatik tespit etme garantisi değildir.
+
+Serbest prompttan taslak döndüren eski üretici henüz kalıcı, çıktı bazlı ve
+sınırsız onaylı içerik üreten bir pipeline değildir. Çıktı kapsam tablosu,
+onaylı bankanın sürekli beslenmesi ve Maarif süreç/rubrik görevleri ayrı iştir.
+
+## 5 Ekim: kazanım havuzu ve üretim talepleri
+
+Süper Admin kapsam ekranı her doğrulanmış aktif çıktıyı sıfır sorulu olsa da
+listeler. Ortak platform havuzundaki geçerli onaylı farklı sorular, inceleme
+ve taslak kayıtlarından ayrı sayılır; hedef başlangıç için 10'dur. Bu genel
+havuz sayısı öğrencinin henüz görmediği soru sayısı değildir.
+
+0072 ile eksikler için bağlamı sabitlenmiş, idempotent ve iptal edilebilir
+REQUESTED üretim talepleri saklanır. Arka plan model yürütücüsü henüz bağlı
+değildir; talep oluşturmak soru üretmek veya onaylamak anlamına gelmez.
+Ayrıntılar: question-pool-production.md.
+
+## 5 Ekim: kontrollü taslak yürütücüsü
+
+0073 ile talep kiralama, sınırlı üretim denemesi, bağlamı yeniden doğrulama ve
+AI_GENERATED + REVIEW taslaklarını kaynak talebi/modeliyle atomik kaydetme
+yapısı eklenir. Başlangıç modeli GLM-4.7-Flash'tır; yürütücü varsayılan kapalıdır.
+Model seçimi sınırsız özgün içerik veya pedagojik doğruluk garantisi değildir.
+İnsan onayı olmadan taslaklar öğrenci havuzuna alınmaz.

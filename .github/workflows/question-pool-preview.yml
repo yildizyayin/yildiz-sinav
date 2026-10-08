@@ -41,27 +41,65 @@ jobs:
           test -n "$CLOUDFLARE_API_TOKEN" || (echo "Missing CLOUDFLARE_API_TOKEN" >&2 && exit 1)
           test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "Missing CLOUDFLARE_ACCOUNT_ID" >&2 && exit 1)
 
+      - name: Diagnose staging API access without exposing credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          response_file="$(mktemp)"
+          trap 'rm -f "$response_file"' EXIT
+          check_access() {
+            local label="$1" endpoint="$2" status codes
+            status="$(curl --silent --show-error --output "$response_file" --write-out '%{http_code}' --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" "$endpoint")"
+            codes="$(jq -r '[.errors[]?.code | tostring] | join(",")' "$response_file" 2>/dev/null || true)"
+            echo "$label: HTTP $status; Cloudflare error codes: ${codes:-none}"
+            if [[ ! "$status" =~ ^2[0-9][0-9]$ ]] || ! jq -e '.success == true' "$response_file" >/dev/null 2>&1; then
+              echo "::error::$label access check failed; verify token validity, account scope and product permissions."
+              return 1
+            fi
+          }
+          api="https://api.cloudflare.com/client/v4"
+          failed=0
+          check_access "Token verification" "$api/user/tokens/verify" || failed=1
+          check_access "D1 database list" "$api/accounts/${CLOUDFLARE_ACCOUNT_ID}/d1/database?per_page=1" || failed=1
+          check_access "R2 bucket list" "$api/accounts/${CLOUDFLARE_ACCOUNT_ID}/r2/buckets?per_page=1" || failed=1
+          exit "$failed"
+
       - name: Provision isolated PR D1 and R2 resources
         id: resources
         shell: bash
         run: |
           set -euo pipefail
+          safe_cf_request() {
+            local response status codes
+            response="$(mktemp)"
+            status="$(curl --silent --show-error --output "$response" --write-out '%{http_code}' "$@")"
+            if [[ ! "$status" =~ ^2[0-9][0-9]$ ]]; then
+              codes="$(jq -r '[.errors[]?.code | tostring] | join(",")' "$response" 2>/dev/null || true)"
+              echo "::error::Resource request HTTP $status; Cloudflare error codes: ${codes:-none}" >&2
+              rm -f "$response"
+              return 22
+            fi
+            cat "$response"
+            rm -f "$response"
+          }
           key="${PR_NUMBER//[^0-9A-Za-z-]/-}"
-          db_name="yildiz-sinav-qpool-pr-${key}"
+          # Use a fresh synthetic database after the unmerged generator schema revision.
+          # Keep the earlier preview database intact; this does not change production.
+          db_name="yildiz-sinav-qpool-pr-${key}-generation-v2"
           bucket_name="yildiz-sinav-qpool-pr-${key}"
           worker_name="yildiz-sinav-qpool-pr-${key}"
           auth="Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
           api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
 
-          db_response="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/d1/database?name=$(printf '%s' "$db_name" | jq -sRr @uri)")"
+          db_response="$(safe_cf_request --header "$auth" "$api/d1/database?name=$(printf '%s' "$db_name" | jq -sRr @uri)")"
           db_id="$(jq -r '.result[0].uuid // empty' <<<"$db_response")"
           if [ -z "$db_id" ]; then
-            db_id="$(curl --fail-with-body --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' --data "$(jq -nc --arg name "$db_name" '{name:$name}')" "$api/d1/database" | jq -r '.result.uuid // empty')"
+            db_id="$(safe_cf_request --request POST --header "$auth" --header 'Content-Type: application/json' --data "$(jq -nc --arg name "$db_name" '{name:$name}')" "$api/d1/database" | jq -r '.result.uuid // empty')"
           fi
           test -n "$db_id" || (echo "PR D1 database could not be resolved" >&2 && exit 1)
 
-          bucket_response="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/r2/buckets?name=$(printf '%s' "$bucket_name" | jq -sRr @uri)")"
-          bucket_exists="$(jq -r --arg name "$bucket_name" '((.result // .) | map(select(type == "object" and (.name // "") == $name)) | length)' <<<"$bucket_response")"
+          bucket_response="$(safe_cf_request --header "$auth" "$api/r2/buckets?per_page=1000&name_contains=$(printf '%s' "$bucket_name" | jq -sRr @uri)")"
+          bucket_exists="$(jq -r --arg name "$bucket_name" 'if .success != true then error("R2 list failed") else (.result | if type == "object" then .buckets else . end | if type != "array" then error("R2 list shape invalid") else map(select(type == "object" and (.name // "") == $name)) | length end) end' <<<"$bucket_response")"
           if [ "$bucket_exists" = "0" ]; then
             create_response="$(curl --silent --show-error --request POST --header "$auth" --header 'Content-Type: application/json' --data "$(jq -nc --arg name "$bucket_name" '{name:$name,location:"WEUR"}')" --write-out '\n%{http_code}' "$api/r2/buckets" || true)"
             create_status="$(tail -n1 <<<"$create_response")"
@@ -96,6 +134,18 @@ jobs:
           echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
           echo "Preview URL: $preview_url" >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Configure isolated practice signing key
+        run: |
+          node --input-type=module <<'JS'
+          import { randomBytes } from 'node:crypto';
+          import { spawnSync } from 'node:child_process';
+          const result = spawnSync('npx', ['wrangler', 'secret', 'put', 'SESSION_SECRET', '--config', 'wrangler.question-pool-preview.json'], {
+            input: randomBytes(32).toString('hex') + '\n', encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
+          });
+          if (result.error || result.status !== 0) throw new Error('Isolated practice signing key setup failed');
+          console.log('Isolated practice signing key configured');
+          JS
+
       - name: Load synthetic staging fixtures
         env:
           CONFIG: wrangler.question-pool-preview.json
@@ -112,6 +162,7 @@ jobs:
             tmp/privacy-security-fixture.idempotent.sql; do
             npx wrangler d1 execute DB --remote --config "$CONFIG" --file="$file"
           done
+          npx wrangler d1 execute DB --remote --config "$CONFIG" --file="scripts/fixtures/question-pool-preview-curriculum.sql"
           npx wrangler d1 execute DB --remote --config "$CONFIG" --command="INSERT OR REPLACE INTO institution_feature_overrides(institution_id,feature_key,enabled) VALUES ('inst_demo','LEARNING_GRAPH',1),('inst_demo','QUESTION_BANK',1),('inst_demo','STUDIO',1),('inst_demo','ASSIGNMENTS',1);"
           npx wrangler d1 execute DB --remote --config "$CONFIG" --command="DELETE FROM assessment_responses WHERE student_id='stu_a001'; DELETE FROM assessment_runs WHERE student_id='stu_a001'; DELETE FROM student_outcome_mastery WHERE student_id='stu_a001'; DELETE FROM coach_followup_actions WHERE student_id='stu_a001'; DELETE FROM coach_mini_tests WHERE student_id='stu_a001';"
 

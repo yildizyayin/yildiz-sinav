@@ -28,26 +28,15 @@ jobs:
     timeout-minutes: 20
     env:
       TARGET_URL: ${{ secrets.STAGING_URL || vars.STAGING_URL || 'https://demo.anunex.com' }}
+      LOAD_TEST_ALLOWED_ORIGINS: ${{ vars.LOAD_TEST_ALLOWED_ORIGINS || 'https://demo.anunex.com' }}
       VUS: ${{ inputs.sanal_kullanici_sayisi || '1000' }}
     steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
       - name: Test hedefini doğrula
-        run: |
-          set -euo pipefail
-          case "$TARGET_URL" in
-            https://anunex.com|https://www.anunex.com|https://app.anunex.com|https://sonuc.anunex.com)
-              echo "Production hostname yük testine kapalı: $TARGET_URL" >&2
-              exit 1
-              ;;
-          esac
-          [[ "$TARGET_URL" == https://* || "$TARGET_URL" == http://localhost* ]] || {
-            echo "TARGET_URL staging/test URL'i olmalı: $TARGET_URL" >&2
-            exit 1
-          }
-          [[ "$VUS" =~ ^[1-9][0-9]{0,5}$ ]] || {
-            echo "VUS 1 ile 999999 arasında olmalı." >&2
-            exit 1
-          }
-          echo "Yük testi hedefi: $TARGET_URL; VUS: $VUS"
+        run: node scripts/agents/load-target.mjs
 
       - name: k6 kur
         run: |
@@ -75,7 +64,7 @@ jobs:
           };
 
           export default function () {
-            const res = http.get(__ENV.TARGET_URL);
+            const res = http.get(__ENV.TARGET_URL, { redirects: 0 });
             check(res, { 'status 200': (r) => r.status === 200 });
             sleep(1);
           }
@@ -92,65 +81,37 @@ jobs:
             --summary-export=sonuc.json \
             loadtest.js
 
-      - name: Sonucu Issue olarak paylaş
-        if: ${{ always() }}
-        uses: actions/github-script@v7
+      - name: Sonuç raporunu hazırla
+        if: always()
         env:
           K6_OUTCOME: ${{ steps.k6.outcome }}
-          TARGET_URL: ${{ env.TARGET_URL }}
-          VUS: ${{ env.VUS }}
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          let summary = 'Sonuç dosyası yok; test çalışmamış veya başarısız olabilir.';
+          try {
+            const raw = JSON.parse(fs.readFileSync('sonuc.json', 'utf8'));
+            const p95 = raw.metrics?.http_req_duration?.values?.['p(95)'];
+            const failRate = raw.metrics?.http_req_failed?.values?.rate;
+            if (Number.isFinite(p95) && Number.isFinite(failRate)) summary = `p95: ${p95.toFixed(0)}ms | Hata: ${(failRate * 100).toFixed(2)}%`;
+          } catch {}
+          fs.writeFileSync('agent-load-report.md', [
+            'Ana sayfa GET testi; öğrenci sonuç kapasitesi kanıtı değildir.',
+            `Sanal kullanıcı: ${process.env.VUS}`,
+            `Çalışma sonucu: ${process.env.K6_OUTCOME || 'çalışmadı'}`,
+            summary,
+            'Eşik: p95 < 2000ms, hata < %5. Redirect izlenmez.',
+          ].join('\n'));
+          NODE
+      - name: Raporu yayınla
+        if: always()
+        uses: ./.github/actions/agent-report
         with:
-          script: |
-            const fs = require("fs");
-            let summary = "Sonuç dosyası okunamadı; Actions log'una bak.";
-            try {
-              const raw = JSON.parse(fs.readFileSync("sonuc.json", "utf8"));
-              const p95 = raw.metrics?.http_req_duration?.values?.["p(95)"];
-              const failRate = raw.metrics?.http_req_failed?.values?.rate;
-              summary = `p95 gecikme: ${Number(p95).toFixed(0)}ms | Hata oranı: ${(Number(failRate) * 100).toFixed(2)}%`;
-            } catch {}
-
-            const title = `⚡ Yük Testi Raporu - ${new Date().toISOString().split("T")[0]}`;
-            const existing = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: "open",
-              labels: "yuk-testi-ajani",
-              per_page: 1,
-            });
-            const body = [
-              "**Yük Testi Ajanı otomatik raporu**",
-              "",
-              `Hedef: ${process.env.TARGET_URL}`,
-              `Sanal kullanıcı: ${process.env.VUS}`,
-              `Çalışma sonucu: ${process.env.K6_OUTCOME}`,
-              summary,
-              "",
-              "_Eşik: p95 < 2000ms, hata oranı < %5. Production hostname'leri güvenlik nedeniyle reddedilir._",
-            ].join("\n");
-            if (existing.data[0]) {
-              await github.rest.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.data[0].number,
-                title,
-                body,
-              });
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.data[0].number,
-                body: `Yeni yük testi sonucu: ${summary}`,
-              });
-            } else {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title,
-                labels: ["yuk-testi-ajani"],
-                body,
-              });
-            }
+          report-file: agent-load-report.md
+          title: "Yük Testi Ajanı Raporu"
+          label: "yuk-testi-ajani"
+          status: ${{ steps.k6.outcome || 'failure' }}
+          close-on-success: "false"
 
       - name: Eşik başarısızsa workflow'u başarısız yap
         if: ${{ steps.k6.outcome == 'failure' }}

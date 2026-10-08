@@ -133,12 +133,12 @@ export function OpticalDesign() {
     <div className="optical-design-page">
       <div className="page-head optical-design-head">
         <div>
-          <span className="eyebrow">PHOBOS · OPTİK FORM DÜZENLE</span>
-          <h1>Optik Form Düzenle</h1>
+          <span className="eyebrow">DEIMOS · BASKI ŞABLONU</span>
+          <h1>Baskı Şablonu Tasarla</h1>
         </div>
         <div className="optical-design-actions">
-          <Link className="ghost" to="/opticals"><ArrowLeft size={16} /> Phobos · Form Ağacı</Link>
-          <Link className="secondary" to="/optical-prepare"><ScanLine size={16} /> Optik Basma</Link>
+          <Link className="ghost" to="/optical-prepare"><ArrowLeft size={16} /> Optik Basma</Link>
+          <Link className="secondary" to="/calibration"><ScanLine size={16} /> Yazıcı Kalibrasyonu</Link>
         </div>
       </div>
       {error && <div className="alert error">{error}</div>}
@@ -204,3 +204,4 @@ export function OpticalDesign() {
     </div>
   );
 }
+

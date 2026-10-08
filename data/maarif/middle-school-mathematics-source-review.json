@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-07",
+  "purpose": "Source discovery for human curriculum review; not an import manifest",
+  "subject": "Mathematics",
+  "grades": [
+    5,
+    6,
+    7,
+    8
+  ],
+  "publicationAllowed": false,
+  "contentImported": false,
+  "expertReview": "pending",
+  "academicYearApplicability": "grade_rollout_verified; exact_pdf_edition_approval_pending",
+  "courseUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ders/ortaokul-matematik-dersi",
+  "programme": {
+    "url": "https://tymm.meb.gov.tr/assets/pdf/ortaokul-matematik-dersi_20260902_111111_630.pdf",
+    "coverYear": 2026,
+    "locator": "Cover and table of contents",
+    "byteHash": "75f52f93672c8991eabe102adb37ab4d16de63f35fe8488fc29cdedae9155734",
+    "themeContentCorrespondence": "theme_headings_and_grade_code_sets_match; semantic_review_pending",
+    "byteLength": 3916466,
+    "retrievedAt": "2026-10-07T17:56:00.258Z",
+    "archiveFilename": "maarif-programme-2026-source-archive.zip"
+  },
+  "legacyProgramme": {
+    "url": "https://tymm.meb.gov.tr/upload/program/2024programmat5678Onayli.pdf",
+    "status": "legacy search result; not the current course-page link"
+  },
+  "gradeIndexes": [
+    {
+      "grade": 5,
+      "url": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/6"
+    },
+    {
+      "grade": 6,
+      "url": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/7"
+    },
+    {
+      "grade": 7,
+      "url": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/8"
+    },
+    {
+      "grade": 8,
+      "url": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/9"
+    }
+  ],
+  "themes": [
+    {
+      "grade": 5,
+      "title": "Ortaokul Matematik Dersi 5.Sınıf 1.Tema: Sayılar Ve Nicelikler (1) Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    {
+      "grade": 5,
+      "title": "Ortaokul Matematik Dersi 5.Sınıf 1.Tema: Sayılar Ve Nicelikler (2) Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/449"
+    },
+    {
+      "grade": 5,
+      "title": "Ortaokul Matematik Dersi 5.Sınıf 2.Tema: İşlemlerle Cebirsel Düşünme Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/450"
+    },
+    {
+      "grade": 5,
+      "title": "Ortaokul Matematik Dersi 5.Sınıf 3.Tema: Geometrik Şekiller Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448"
+    },
+    {
+      "grade": 5,
+      "title": "Ortaokul Matematik Dersi 5.Sınıf 4.Tema: Geometrik Nicelikler Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451"
+    },
+    {
+      "grade": 5,
+      "title": "Ortaokul Matematik Dersi 5.Sınıf 5.Tema: İstatistiksel Araştırma Süreci Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/452"
+    },
+    {
+      "grade": 5,
+      "title": "Ortaokul Matematik Dersi 5.Sınıf 6.Tema: Veriden Olasılığa Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/455"
+    },
+    {
+      "grade": 6,
+      "title": "Ortaokul Matematik Dersi 6.Sınıf 1.Tema: Sayılar Ve Nicelikler (1) Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456"
+    },
+    {
+      "grade": 6,
+      "title": "Ortaokul Matematik Dersi 6.Sınıf 1.Tema:Sayılar Ve Nicelikler (2) Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/457"
+    },
+    {
+      "grade": 6,
+      "title": "Ortaokul Matematik Dersi 6.Sınıf 2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/458"
+    },
+    {
+      "grade": 6,
+      "title": "Ortaokul Matematik Dersi 6.Sınıf 3.Tema: Geometrik Şekiller Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/459"
+    },
+    {
+      "grade": 6,
+      "title": "Ortaokul Matematik Dersi 6.Sınıf 4.Tema: Geometrik Nicelikler Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460"
+    },
+    {
+      "grade": 6,
+      "title": "Ortaokul Matematik Dersi 6.Sınıf 5.Tema: İstatistiksel Araştırma Süreci Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/461"
+    },
+    {
+      "grade": 6,
+      "title": "Ortaokul Matematik Dersi 6.Sınıf 6.Tema: Veriden Olasılığa Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/462"
+    },
+    {
+      "grade": 7,
+      "title": "Ortaokul Matematik Dersi 7.Sınıf 1.Tema: Sayılar Ve Nicelikler (1) Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/463"
+    },
+    {
+      "grade": 7,
+      "title": "Ortaokul Matematik Dersi 7.Sınıf 1.Tema: Sayılar Ve Nicelikler (2) Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/464"
+    },
+    {
+      "grade": 7,
+      "title": "Ortaokul Matematik Dersi 7.Sınıf 2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/465"
+    },
+    {
+      "grade": 7,
+      "title": "Ortaokul Matematik Dersi 7.Sınıf 3. Tema: Dönüşüm Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/466"
+    },
+    {
+      "grade": 7,
+      "title": "Ortaokul Matematik Dersi 7.Sınıf 4. Tema: Geometrik Nicelikler (1) Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467"
+    },
+    {
+      "grade": 7,
+      "title": "Ortaokul Matematik Dersi 7.Sınıf 4.Tema: Geometrik Nicelikler (2) Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/468"
+    },
+    {
+      "grade": 7,
+      "title": "Ortaokul Matematik Dersi 7.Sınıf 5.Tema: Geometrik Şekiller Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/469"
+    },
+    {
+      "grade": 7,
+      "title": "Ortaokul Matematik Dersi 7.Sınıf 6.Tema: İstatistiksel Araştırma Süreci Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/470"
+    },
+    {
+      "grade": 7,
+      "title": "Ortaokul Matematik Dersi 7.Sınıf 7.Tema: Veriden Olasılığa Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/471"
+    },
+    {
+      "grade": 8,
+      "title": "Ortaokul Matematik Dersi 8.Sınıf 1.Tema: Sayılar Ve Nicelikler Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/472"
+    },
+    {
+      "grade": 8,
+      "title": "Ortaokul Matematik Dersi 8.Sınıf 2.Tema: Cebirsel Düşünme Ve Değişimler Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/473"
+    },
+    {
+      "grade": 8,
+      "title": "Ortaokul Matematik Dersi 8.Sınıf 3.Tema: Geometrik Şekiller Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474"
+    },
+    {
+      "grade": 8,
+      "title": "Ortaokul Matematik Dersi 8.Sınıf 4.Tema: Geometrik Nicelikler Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/475"
+    },
+    {
+      "grade": 8,
+      "title": "Ortaokul Matematik Dersi 8.Sınıf 5.Tema: Dönüşüm Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/476"
+    },
+    {
+      "grade": 8,
+      "title": "Ortaokul Matematik Dersi 8.Sınıf 6.Tema: İstatistiksel Araştırma Süreci Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/477"
+    },
+    {
+      "grade": 8,
+      "title": "Ortaokul Matematik Dersi 8.Sınıf 7.Tema: Veriden Olasılığa Teması - Türkiye Yüzyılı Maarif Modeli",
+      "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/478"
+    }
+  ],
+  "rollout": {
+    "academicYear": "2026-2027",
+    "maarifGrades": [
+      5,
+      6,
+      7
+    ],
+    "previousProgrammeGrades": [
+      8
+    ],
+    "exactPdfEditionApproval": "pending",
+    "sources": [
+      "https://tymm.meb.gov.tr/taslak-cerceve-planlari/temel-egitim",
+      "https://ispartaodm.meb.gov.tr/www/2026-2027-egitim-ogretim-yili-turkiye-yuzyili-maarif-modeli-taslak-cerceve-planlar-yayimlandi/icerik/120/tr"
+    ],
+    "checkedAt": "2026-10-07"
+  }
+}

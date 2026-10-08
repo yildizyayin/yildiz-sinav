@@ -1,4 +1,5 @@
 import app from './question-bank-standard-entry';
+import { listOutcomeMiniTests,startOutcomeMiniTest } from './lib/mini-test-catalog';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,json,one } from './lib/db';
@@ -75,23 +76,31 @@ async function coachApi(request:Request,env:Env,url:URL){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(user.role!=='STUDENT'||!user.student_id)return fail(403,'STUDENT_ONLY','Eğitim Koçu günlük planı öğrenci hesabına açıktır.');
  if(url.pathname==='/api/nibiru/coach/daily-plan'&&request.method==='GET'){const result=await getTodayCoachPlan(env,user);return json({ok:true,...result});}
  if(url.pathname==='/api/nibiru/coach/daily-plan'&&request.method==='POST'){const result=await createOrReuseDailyCoachPlan(env,user);if(!result.available)return fail(result.reason==='INSUFFICIENT_EVIDENCE'?409:400,result.reason||'COACH_PLAN_UNAVAILABLE','Günlük plan oluşturmak için yeterli doğrulanmış akademik kanıt bulunamadı.');return json({ok:true,...result},result.reused?200:201);}
+ if(url.pathname==='/api/nibiru/coach/mini-test-catalog'&&request.method==='GET')return listOutcomeMiniTests(env,user,url);
+ const startOutcome=url.pathname.match(/^\/api\/nibiru\/coach\/outcomes\/([^/]+)\/mini-test$/);
  const startTest=url.pathname.match(/^\/api\/nibiru\/coach\/items\/([^/]+)\/mini-test$/);
- if(startTest&&request.method==='POST'){
-  const result=await startCoachMiniTest(env,user,startTest[1]);
+ if((startTest||startOutcome)&&request.method==='POST'){
+  const body:any=await request.json().catch(()=>({}));
+  const mode=body.mode??'NEW';
+  if(mode!=='NEW'&&mode!=='REPEAT')return fail(400,'INVALID_QUESTION_MODE','Yeni soru veya tekrar çalışması seçin.');
+  if(mode==='REPEAT'&&body.repeatConsent!==true)return fail(400,'REPEAT_CONSENT_REQUIRED','Tekrar çalışması için daha önce gördüğünüz soruları çözmeyi onaylayın.');
+  const result=startOutcome?await startOutcomeMiniTest(env,user,startOutcome[1],mode):await startCoachMiniTest(env,user,startTest![1],mode);
   if(!result.ok){
+   if(result.reason==='SNAPSHOT_CONTEXT_AMBIGUOUS')return fail(409,result.reason,'Test için tekil öğrenci ve müfredat bağlamı belirlenemedi.');
    if(result.reason==='ITEM_NOT_FOUND')return fail(404,'ITEM_NOT_FOUND','Kazanım görevi bulunamadı.');
    if(result.reason==='SUPPORT_REQUIRED')return json({...result,error:{code:'SUPPORT_REQUIRED',message:'Yeni ölçümden önce açılan destek adımlarından en az birini tamamlayın.'}},409);
+   if(result.reason==='NEW_QUESTIONS_REQUIRED'||result.reason==='REPEAT_QUESTIONS_REQUIRED'){const available=Number(result.availableQuestionCount||0),required=Number(result.requiredQuestionCount||5);return json({...result,error:{code:result.reason,message:mode==='NEW'?`Bu kazanım için ${available} yeni ve doğrulanmış soru kullanılabilir; mini test için en az ${required} soru gerekiyor. Daha önce gördüğünüz sorular otomatik eklenmez.`:`Bu kazanım için ${available} tekrar sorusu kullanılabilir; tekrar çalışması için en az ${required} soru gerekiyor.`,details:{availableQuestionCount:available,requiredQuestionCount:required,questionMode:mode}}},409);}
    if(result.reason==='INSUFFICIENT_VERIFIED_QUESTIONS')return json({...result,error:{code:'INSUFFICIENT_VERIFIED_QUESTIONS',message:'Bu kazanım için mini-test oluşturacak en az 5 onaylı ve telif hakkı uygun soru bulunmuyor.'}},409);
    return fail(400,result.reason||'MINI_TEST_FAILED','Mini-test başlatılamadı.');
   }
   return json(result,result.reused?200:201);
  }
  const miniTest=url.pathname.match(/^\/api\/nibiru\/coach\/mini-tests\/([^/]+)$/);
- if(miniTest&&request.method==='GET'){const result=await getCoachMiniTest(env,user,miniTest[1]);if(!result.ok)return fail(result.reason==='TEST_NOT_FOUND'?404:403,result.reason||'MINI_TEST_FAILED','Mini-test bulunamadı.');return json(result);}
+ if(miniTest&&request.method==='GET'){const result=await getCoachMiniTest(env,user,miniTest[1]);if(!result.ok)return fail(result.reason==='SNAPSHOT_REQUIRED'?409:result.reason==='TEST_NOT_FOUND'?404:403,result.reason||'MINI_TEST_FAILED','Mini-test bulunamadı.');return json(result);}
  const submitTest=url.pathname.match(/^\/api\/nibiru\/coach\/mini-tests\/([^/]+)\/submit$/);
  if(submitTest&&request.method==='POST'){
   const body:any=await request.json().catch(()=>({}));const result=await submitCoachMiniTest(env,user,submitTest[1],body.answers);
-  if(!result.ok){if(result.reason==='TEST_NOT_FOUND')return fail(404,'TEST_NOT_FOUND','Mini-test bulunamadı.');if(result.reason==='ALL_QUESTIONS_REQUIRED')return fail(400,'ALL_QUESTIONS_REQUIRED','Mini-testi göndermek için bütün soruları cevaplayın.');return fail(403,result.reason||'MINI_TEST_FAILED','Mini-test gönderilemedi.');}
+  if(!result.ok){if(result.reason==='SUBMISSION_NOT_COMMITTED')return fail(409,'SUBMISSION_NOT_COMMITTED','Test gönderimi tamamlanmadı. Erişim durumunuzu kontrol edip yeniden deneyin.');if(result.reason==='SNAPSHOT_REQUIRED')return fail(409,'SNAPSHOT_REQUIRED','Bu eski testin sabit soru sürümü bulunmuyor; yeni test başlatın.');if(result.reason==='TEST_NOT_FOUND')return fail(404,'TEST_NOT_FOUND','Mini-test bulunamadı.');if(result.reason==='ALL_QUESTIONS_REQUIRED')return fail(400,'ALL_QUESTIONS_REQUIRED','Mini-testi göndermek için bütün soruları cevaplayın.');return fail(403,result.reason||'MINI_TEST_FAILED','Mini-test gönderilemedi.');}
   return json(result);
  }
  const followup=url.pathname.match(/^\/api\/nibiru\/coach\/followups\/([^/]+)\/complete$/);

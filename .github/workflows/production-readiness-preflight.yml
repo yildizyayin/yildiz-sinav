@@ -1,0 +1,85 @@
+name: Production Readiness Preflight
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    # Only this same-repository release branch may inspect production bindings.
+    # Forks and other PRs never receive the production environment.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+       github.event.pull_request.head.ref == 'feat/exam-evaluation-lock-integration')
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PROD_SESSION_SECRET: ${{ secrets.PROD_SESSION_SECRET }}
+      PROD_TURNSTILE_SECRET_KEY: ${{ secrets.PROD_TURNSTILE_SECRET_KEY }}
+      PROD_TURNSTILE_SITE_KEY: ${{ vars.PROD_TURNSTILE_SITE_KEY }}
+      PROD_WHATSAPP_VERIFY_TOKEN: ${{ secrets.PROD_WHATSAPP_VERIFY_TOKEN }}
+      PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
+      PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
+      PROD_WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.PROD_WHATSAPP_PHONE_NUMBER_ID }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Validate required production configuration without revealing values
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID PROD_SESSION_SECRET PROD_TURNSTILE_SECRET_KEY PROD_TURNSTILE_SITE_KEY; do
+            if [ -z "${!name:-}" ]; then echo "$name: MISSING"; missing=$((missing+1)); else echo "$name: PRESENT"; fi
+          done
+          test "$missing" -eq 0
+
+      - name: Report optional WhatsApp readiness without activating the channel
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in PROD_WHATSAPP_VERIFY_TOKEN PROD_WHATSAPP_APP_SECRET PROD_WHATSAPP_ACCESS_TOKEN PROD_WHATSAPP_PHONE_NUMBER_ID; do
+            if [ -z "${!name:-}" ]; then echo "$name: MISSING"; missing=$((missing+1)); else echo "$name: PRESENT"; fi
+          done
+          if [ "$missing" -gt 0 ]; then
+            echo '::warning::WhatsApp is not ready; its configuration is optional for the core production deploy.'
+            echo '- WhatsApp readiness: INCOMPLETE; this check does not activate the channel.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo '- WhatsApp configuration variables: PRESENT; live provider acceptance still required.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Verify production Worker exists and inspect binding names only
+        shell: bash
+        run: |
+          set -euo pipefail
+          auth="Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
+          api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/scripts/yildiz-sinav-prod"
+          versions="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/versions")"
+          version_id="$(jq -r '.result.items[0].id // .result[0].id // empty' <<<"$versions")"
+          test -n "$version_id" || { echo 'Production Worker version not found.' >&2; exit 1; }
+          detail="$(curl --fail-with-body --silent --show-error --header "$auth" "$api/versions/$version_id")"
+          for binding in DB FILES; do
+            jq -e --arg binding "$binding" 'any(.result.resources.bindings[]?; .name == $binding)' <<<"$detail" >/dev/null \
+              || { echo "Required binding $binding is missing." >&2; exit 1; }
+          done
+          echo 'Production Worker and required binding names are present.'
+
+      - name: Confirm this workflow performs no deployment or mutation
+        run: |
+          {
+            echo '### Production readiness preflight'
+            echo '- Required core production secret variables: PRESENT'
+            echo '- Production Worker: PRESENT'
+            echo '- Required binding names: PRESENT'
+            echo '- Deployment performed: NO'
+            echo '- Secret values printed: NO'
+          } >> "$GITHUB_STEP_SUMMARY"

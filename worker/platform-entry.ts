@@ -7,13 +7,15 @@ import { handlePlatformApi } from './lib/platform-expansion';
 import { handleAdvancedPlatformApi } from './lib/platform-advanced';
 import { materializeNetworkAndPublisherAnalytics, networkRanksForParticipant, publisherQuestionAnalytics } from './lib/platform-ranking';
 import { platformFeatureGate } from './lib/platform-feature-policy';
+import { getExamSchedule, publishScheduledExamResults, resultsAvailableNow, saveExamSchedule } from './lib/exam-schedule';
 
 function edgeCache():Cache{return (caches as unknown as {default:Cache}).default;}
 async function publishedSnapshotVersion(env:Env,examId:string){
   const cache=edgeCache();const key=new Request(`https://platform-cache.invalid/exam-version/${encodeURIComponent(examId)}`);
   const hit=await cache.match(key);if(hit){const p:any=await hit.json().catch(()=>null);if(p?.version)return Number(p.version)}
-  const row=await one<any>(env.DB.prepare(`SELECT snapshot_version,result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?`).bind(examId));
-  if(row?.result_freeze_status!=='PUBLISHED'||!Number(row.snapshot_version))return 0;
+  const row=await one<any>(env.DB.prepare(`SELECT snapshot_version,result_freeze_status,published_at,result_publish_at FROM exam_delivery_profiles WHERE exam_id=?`).bind(examId));
+  if(row?.result_freeze_status!=='PUBLISHED'||!Number(row.snapshot_version)||!row.published_at)return 0;
+  if(row.result_publish_at&&new Date(row.result_publish_at).getTime()>Date.now())return 0;
   const version=Number(row.snapshot_version);ctxWait(cache.put(key,new Response(JSON.stringify({version}),{headers:{'Content-Type':'application/json','Cache-Control':'public,max-age=30'}})));return version;
 }
 function ctxWait(p:Promise<any>){void p.catch(()=>{})}
@@ -51,11 +53,12 @@ async function publishedResultsList(request:Request,env:Env,user:AuthUser):Promi
   const u=new URL(request.url);const requested=u.searchParams.get('studentId');
   if(!await resultStudentAllowed(env,user,requested))return json({ok:false,error:{code:'FORBIDDEN',message:'Bu öğrenci sonucuna erişim yetkiniz yok.'}},403);
   const studentId=user.role==='STUDENT'?user.student_id:requested;if(!studentId)return json({ok:true,results:[]});
-  const rows=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,p.scope,pub.name publisher_name,n.name network_name,s.snapshot_version,s.score,s.net,s.city,s.district,s.grade_level,s.class_snapshot,
+  const rows=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,e.application_start_at,e.application_end_at,p.result_publish_at,p.scope,pub.name publisher_name,n.name network_name,s.snapshot_version,s.score,s.net,s.city,s.district,s.grade_level,s.class_snapshot,
     s.national_rank,s.national_count,s.city_rank,s.city_count,s.district_rank,s.district_count,s.network_rank,s.network_count,s.institution_rank,s.institution_count,s.grade_rank,s.grade_count,s.class_rank,s.class_count,i.name institution_name
     FROM exam_result_snapshots s JOIN exam_delivery_profiles p ON p.exam_id=s.exam_id AND p.snapshot_version=s.snapshot_version AND p.result_freeze_status='PUBLISHED'
     JOIN exams e ON e.id=s.exam_id JOIN institutions i ON i.id=s.institution_id LEFT JOIN publishers pub ON pub.id=p.publisher_id LEFT JOIN institution_networks n ON n.id=p.network_id
-    WHERE s.student_id=? ORDER BY COALESCE(p.published_at,e.exam_date,e.created_at) DESC LIMIT 100`).bind(studentId));
+    WHERE s.student_id=? AND p.published_at IS NOT NULL AND (p.result_publish_at IS NULL OR datetime(p.result_publish_at)<=CURRENT_TIMESTAMP)
+    ORDER BY COALESCE(p.published_at,e.exam_date,e.created_at) DESC LIMIT 100`).bind(studentId));
   return json({ok:true,label:'Yayınlanmış Sınav Sonuçları',results:rows.map((row:any)=>row.scope==='CENTRAL'?row:row.scope==='NETWORK'
     ?{...row,national_rank:null,national_count:null,city_rank:null,city_count:null,district_rank:null,district_count:null}
     :{...row,national_rank:null,national_count:null,city_rank:null,city_count:null,district_rank:null,district_count:null,network_rank:null,network_count:null})});
@@ -63,8 +66,8 @@ async function publishedResultsList(request:Request,env:Env,user:AuthUser):Promi
 
 async function enrichCatalogIds(response:Response,env:Env):Promise<Response>{
   if(!response.ok)return response;const payload:any=await response.clone().json().catch(()=>null);if(!payload?.exams?.length)return response;
-  const profiles=await all<any>(env.DB.prepare(`SELECT exam_id,publisher_id,network_id FROM exam_delivery_profiles`));const map=new Map(profiles.map(x=>[x.exam_id,x]));
-  return json({...payload,exams:payload.exams.map((e:any)=>({...e,publisher_id:map.get(e.id)?.publisher_id||null,network_id:map.get(e.id)?.network_id||null}))});
+  const profiles=await all<any>(env.DB.prepare(`SELECT exam_id,publisher_id,network_id,result_publish_at FROM exam_delivery_profiles`));const map=new Map(profiles.map(x=>[x.exam_id,x]));
+  return json({...payload,exams:payload.exams.map((e:any)=>({...e,publisher_id:map.get(e.id)?.publisher_id||null,network_id:map.get(e.id)?.network_id||null,result_publish_at:map.get(e.id)?.result_publish_at||null}))});
 }
 
 export default {
@@ -77,11 +80,16 @@ export default {
       const catalogPolicy=await centralCatalogPolicy(request,url.pathname);if(catalogPolicy)return catalogPolicy;
       if(url.pathname==='/api/platform/exam-center/results'&&request.method==='GET')return publishedResultsList(request,env,user);
 
+      const scheduleMatch=url.pathname.match(/^\/api\/platform\/exam-center\/([^/]+)\/schedule$/);
+      if(scheduleMatch&&request.method==='GET')return getExamSchedule(env,user,scheduleMatch[1]);
+      if(scheduleMatch&&(request.method==='PUT'||request.method==='PATCH'))return saveExamSchedule(request,env,user,scheduleMatch[1]);
+
       const resultMatchBefore=url.pathname.match(/^\/api\/platform\/exam-center\/([^/]+)\/result$/);
       let resultCacheKey:Request|null=null;
       if(resultMatchBefore&&request.method==='GET'){
         const requestedStudent=url.searchParams.get('studentId');
         if(!await resultStudentAllowed(env,user,requestedStudent))return json({ok:false,error:{code:'FORBIDDEN',message:'Bu öğrenci sonucuna erişim yetkiniz yok.'}},403);
+        if((user.role==='STUDENT'||user.role==='PARENT')&&!await resultsAvailableNow(env,resultMatchBefore[1]))return json({ok:false,error:{code:'RESULT_NOT_PUBLISHED',message:'Bu sınavın sonucu henüz yayınlanmadı.'}},404);
         const version=await publishedSnapshotVersion(env,resultMatchBefore[1]);
         if(version){const studentKey=requestedStudent||user.student_id||'self';resultCacheKey=new Request(`https://platform-cache.invalid/result/${encodeURIComponent(resultMatchBefore[1])}/${version}/${encodeURIComponent(user.id)}/${encodeURIComponent(studentKey)}`);const hit=await edgeCache().match(resultCacheKey);if(hit){const payload=await hit.json();return new Response(JSON.stringify(payload),{status:200,headers:{'Content-Type':'application/json;charset=UTF-8','Cache-Control':'private,no-store','X-Platform-Cache':'HIT'}})}}
       }
@@ -100,6 +108,11 @@ export default {
           await materializeNetworkAndPublisherAnalytics(env, freezeMatch[1], Number(payload.version));
           return json({ ...payload, comparisonScopesReady: true, publisherQuestionAnalyticsReady: true });
         }
+      }
+
+      const publishMatch=url.pathname.match(/^\/api\/platform\/exam-center\/([^/]+)\/publish$/);
+      if(publishMatch&&request.method==='POST'&&response.ok){
+        await env.DB.prepare(`UPDATE exam_delivery_profiles SET result_publish_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?`).bind(publishMatch[1]).run();
       }
 
       const resultMatch = url.pathname.match(/^\/api\/platform\/exam-center\/([^/]+)\/result$/);
@@ -127,6 +140,7 @@ export default {
     return app.fetch(request, env, ctx);
   },
   async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext) {
+    ctx.waitUntil(publishScheduledExamResults(env).then(count=>console.log(JSON.stringify({event:'scheduled_exam_results',count}))));
     if ('scheduled' in app && typeof app.scheduled === 'function') return app.scheduled(event, env, ctx);
   },
 } satisfies ExportedHandler<Env>;

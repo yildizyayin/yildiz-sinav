@@ -14,6 +14,7 @@ type AgentWorkflow = {
   paused?: boolean;
   actionsUrl: string;
   available: boolean;
+  dispatchRef?: string;
   error?: string | null;
   lastRun?: {
     status: string;
@@ -23,6 +24,8 @@ type AgentWorkflow = {
     htmlUrl: string;
     runNumber: number;
     event: string;
+    headBranch?: string;
+    headSha?: string;
   } | null;
 };
 
@@ -91,7 +94,7 @@ export function AgentCenter() {
         method: 'POST',
         body: JSON.stringify({ workflow: instructionAgent, title: instructionTitle.trim(), instruction: instructionText.trim(), priority: instructionPriority }),
       });
-      setNotice(result.message || 'Ajan talimatı kuyruğa alındı.');
+      setNotice(result.message || 'Görev kaydı oluşturuldu. Çalıştırma başlatılmadı.');
       setInstructionTitle('');
       setInstructionText('');
       setInstructionPriority('normal');
@@ -140,7 +143,7 @@ export function AgentCenter() {
       <div>
         <span className="eyebrow">ANUNEX · AI OPERASYON</span>
         <h1>AI Ajan Merkezi</h1>
-        <p>7/24 çalışan GitHub ajanlarının son durumunu, açtıkları Issue kayıtlarını ve manuel tetikleme bağlantılarını tek ekranda izleyin.</p>
+        <p>GitHub ajanlarının son durumunu, açtıkları Issue kayıtlarını ve manuel tetikleme bağlantılarını tek ekranda izleyin.</p>
       </div>
       <button className="ghost" onClick={() => void load()} disabled={busy}><RefreshCw size={16} /> Yenile</button>
     </div>
@@ -151,7 +154,7 @@ export function AgentCenter() {
 
     <div className="summary-strip agent-summary">
       <div className="kpi-card"><span>Toplam ajan</span><strong>{workflows.length || '—'}</strong></div>
-      <div className="kpi-card"><span>Ücretsiz aktif</span><strong>{freeWorkflows.length || '—'}</strong></div>
+      <div className="kpi-card"><span>Ücretsiz tanımlı</span><strong>{freeWorkflows.length || '—'}</strong></div>
       <div className="kpi-card"><span>Kredi bekleyen</span><strong>{pausedWorkflows.length || '0'}</strong></div>
       <div className="kpi-card"><span>Son başarılı</span><strong>{successful || '—'}</strong></div>
       <div className="kpi-card"><span>Şu an çalışan</span><strong>{running || '0'}</strong></div>
@@ -175,7 +178,7 @@ export function AgentCenter() {
 
     <div className="panel agent-command-panel">
       <div className="panel-head">
-        <div><span className="eyebrow">EKİP KOMUTA MASASI</span><h2>Ajanlara talimat ver</h2><p>Bir free ajan seçin; görev, kapsam veya kontrol notunu denetlenebilir bir GitHub Issue olarak kuyruğa alın.</p></div>
+        <div><span className="eyebrow">EKİP KOMUTA MASASI</span><h2>Ajanlara talimat ver</h2><p>Bir free ajan seçin; görev, kapsam veya kontrol notunu denetlenebilir bir GitHub Issue olarak kaydedin.</p></div>
         <Send className="agent-panel-icon" />
       </div>
       <div className="agent-command-grid">
@@ -200,7 +203,7 @@ export function AgentCenter() {
           <label>Talimat / beklenen çıktı
             <textarea value={instructionText} onChange={(event) => setInstructionText(event.target.value)} placeholder="Ajanın neyi kontrol etmesini, hangi sınırlar içinde çalışmasını veya hangi çıktıyı hazırlamasını istediğinizi yazın." maxLength={5000} rows={6} disabled={instructionBusy} />
           </label>
-          <button className="primary agent-command-submit" type="submit" disabled={instructionBusy || !instructionAgent || !instructionTitle.trim() || !instructionText.trim()}><Send size={15} /> {instructionBusy ? 'Kuyruğa alınıyor…' : 'Talimatı kuyruğa al'}</button>
+          <button className="primary agent-command-submit" type="submit" disabled={instructionBusy || !instructionAgent || !instructionTitle.trim() || !instructionText.trim()}><Send size={15} /> {instructionBusy ? 'Kaydediliyor…' : 'Görev kaydı oluştur'}</button>
           <small className="agent-form-hint">Talimat, seçilen ajan etiketiyle GitHub Issue olarak saklanır. Ücretli ajanlar ve production işlemleri bu formdan çalıştırılamaz.</small>
         </form>
         <div className="agent-command-guide">
@@ -208,8 +211,8 @@ export function AgentCenter() {
           <ol>
             <li>Görevi vereceğiniz ücretsiz ajanı seçin.</li>
             <li>Beklenen kontrolü ve çıktıyı açıkça yazın.</li>
-            <li>Talimat, ilgili ajan kuyruğuna ve GitHub Issue listesine eklenir.</li>
-            <li>Ajan kartındaki <strong>Çalıştır</strong> düğmesiyle kontrolü hemen başlatabilir veya zamanlamasını bekleyebilirsiniz.</li>
+            <li>Talimat, hedef ajan bilgisiyle GitHub Issue olarak kaydedilir; otomatik uygulanmaz.</li>
+            <li>Ajan kartındaki <strong>Çalıştır</strong> düğmesiyle ajanın önceden tanımlanmış rutin denetimini başlatabilirsiniz. Bu işlem yazdığınız talimatı uygulamaz.</li>
           </ol>
           <div className="agent-command-note"><strong>Önemli:</strong> Free ajanlar güvenli, belirlenmiş denetimleri çalıştıran otomasyonlardır. Serbest biçimli kod yazma ve doğal dil yorumlama ücretli Anthropic ajanlarında kapalıdır.</div>
         </div>
@@ -232,6 +235,8 @@ export function AgentCenter() {
           <h3>{workflow.name}</h3>
           <p>{workflow.description}</p>
           <div className="agent-card-meta"><span><Clock3 size={14} /> Son çalışma</span><strong>{date(workflow.lastRun?.updatedAt || workflow.lastRun?.createdAt)}</strong></div>
+          <small>Çalıştırma dalı: {workflow.dispatchRef || 'main'}</small>
+          {workflow.lastRun?.headSha && <small>Son denetim: {workflow.lastRun.headBranch || '—'} · {workflow.lastRun.headSha.slice(0, 12)}</small>}
           {workflow.error && <small className="agent-inline-error">{workflow.error}</small>}
           <div className="agent-card-actions"><a className="secondary subtle" href={workflow.actionsUrl} target="_blank" rel="noreferrer"><ExternalLink size={14} /> Actions’ta aç</a><button className="primary subtle" disabled={busy || !workflow.available} onClick={() => void runWorkflow(workflow)}>{runningWorkflow === workflow.file ? <RefreshCw size={14} className="spin" /> : <Play size={14} />} Çalıştır</button></div>
         </article>;

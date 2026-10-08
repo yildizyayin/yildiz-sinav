@@ -18,8 +18,15 @@ const productionWorkflow=readFileSync(new URL('../.github/workflows/deploy-app-p
 
 describe('Anunex scale readiness',()=>{
   it('routes staging through synthetic smoke evidence while production keeps the audited privacy chain',()=>{
-    expect(staging).toContain('"main": "./worker/privacy-smoke-entry.ts"');
-    expect(production).toContain('"main": "./worker/privacy-export-entry.ts"');
+    expect(staging).toContain('"main": "./worker/preview-policy-staging-entry.ts"');
+    expect(production).toContain('"main": "./worker/preview-policy-production-entry.ts"');
+
+    for (const mode of ['staging','production']) {
+      const readEntry = (name:string) => readFileSync(new URL('../worker/'+name+'.ts', import.meta.url), 'utf8');
+      expect(readEntry('preview-policy-'+mode+'-entry')).toContain("import app from './optical-print-policy-"+mode+"-entry'");
+      expect(readEntry('optical-print-policy-'+mode+'-entry')).toContain("import app from './whatsapp-webhook-policy-"+mode+"-entry'");
+      expect(readEntry('whatsapp-webhook-policy-'+mode+'-entry')).toContain("import app from './"+(mode==='staging'?'privacy-smoke-entry':'privacy-export-entry')+"'");
+    }
     expect(privacySmokeRoot).toContain("import app from './privacy-export-entry'");
     expect(privacySmokeRoot).toContain("env.ENVIRONMENT !== 'staging'");
     expect(privacyExportRoot).toContain("import app from './privacy-minimization-entry'");
