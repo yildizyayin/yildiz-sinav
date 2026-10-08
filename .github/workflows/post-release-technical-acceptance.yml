@@ -2,6 +2,7 @@ name: Post-release native browser acceptance
 on:
   push:
     branches: [fix/post-release-technical-acceptance]
+    paths: ['src/**', 'worker/**', 'scripts/isolated-*', 'scripts/browser*', '.github/workflows/authenticated-result-load-proof.yml', '.github/workflows/national-capacity-proof.yml']
   workflow_dispatch:
 permissions:
   contents: read
