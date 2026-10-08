@@ -41,6 +41,29 @@ jobs:
           test -n "$CLOUDFLARE_API_TOKEN" || (echo "Missing CLOUDFLARE_API_TOKEN" >&2 && exit 1)
           test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "Missing CLOUDFLARE_ACCOUNT_ID" >&2 && exit 1)
 
+      - name: Diagnose staging API access without exposing credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          response_file="$(mktemp)"
+          trap 'rm -f "$response_file"' EXIT
+          check_access() {
+            local label="$1" endpoint="$2" status codes
+            status="$(curl --silent --show-error --output "$response_file" --write-out '%{http_code}' --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" "$endpoint")"
+            codes="$(jq -r '[.errors[]?.code | tostring] | join(",")' "$response_file" 2>/dev/null || true)"
+            echo "$label: HTTP $status; Cloudflare error codes: ${codes:-none}"
+            if [[ ! "$status" =~ ^2[0-9][0-9]$ ]] || ! jq -e '.success == true' "$response_file" >/dev/null 2>&1; then
+              echo "::error::$label access check failed; verify token validity, account scope and product permissions."
+              return 1
+            fi
+          }
+          api="https://api.cloudflare.com/client/v4"
+          failed=0
+          check_access "Token verification" "$api/user/tokens/verify" || failed=1
+          check_access "D1 database list" "$api/accounts/${CLOUDFLARE_ACCOUNT_ID}/d1/database?per_page=1" || failed=1
+          check_access "R2 bucket list" "$api/accounts/${CLOUDFLARE_ACCOUNT_ID}/r2/buckets?per_page=1" || failed=1
+          exit "$failed"
+
       - name: Provision isolated PR D1 and R2 resources
         id: resources
         shell: bash
