@@ -54,3 +54,26 @@ jobs:
           rows=buckets["result"]; rows=rows.get("buckets",[]) if isinstance(rows,dict) else rows
           print("REPORT_BUCKET_NAMES "+json.dumps([b.get("name") for b in rows if "report" in b.get("name","")]))
           PY
+
+  isolated-private-reports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Configure private report resources on existing isolated preview only
+        run: python3 scripts/isolated-report-provider.py
+      - run: npm run build
+      - name: Deploy exact isolated preview with private queues
+        run: npx wrangler deploy --config wrangler.report-acceptance.json
+      - name: Execute queue, R2, role and scheduled retention proof
+        run: python3 scripts/isolated-private-report-acceptance.py
+      - name: Remove transient deployment configuration
+        if: always()
+        run: rm -f wrangler.report-acceptance.json

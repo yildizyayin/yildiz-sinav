@@ -27,7 +27,7 @@ try{
     await route.fulfill({status:result[0],contentType:'application/json',body:JSON.stringify(result[1])});
    });
    page=await context.newPage();page.setDefaultTimeout(15_000);
-   page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(request.resourceType()==='script')assets.push(new URL(request.url()).pathname)});
+   page.on('console',message=>{if(message.type()==='error')console.error('Browser console:',message.text())});page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(request.resourceType()==='script')assets.push(new URL(request.url()).pathname)});
    if(failedLoginChunk)await page.route(server.origin+'/'+manifest['src/pages/Login.tsx'].file,route=>route.fulfill({status:404,contentType:'text/javascript',body:'missing'}));
    await run(page,assets);
    assert.deepEqual(unknown,[],'Unexpected API calls need explicit fixtures.');
