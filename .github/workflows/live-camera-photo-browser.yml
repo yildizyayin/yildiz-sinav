@@ -22,3 +22,5 @@ jobs:
       - run: npx playwright install --with-deps chromium --only-shell
       - name: Read the known synthetic optical image in the real browser
         run: node scripts/live-camera-photo-browser.mjs
+      - name: Verify six live report roles and manual booklet matching
+        run: node scripts/isolated-live-browser-acceptance.mjs
