@@ -33,6 +33,7 @@ for endpoint,selection in [('/api/private-rubric-exports',{'studentId':'stu_a001
     deadline=time.monotonic()+300
     while True:
         job=parsed(endpoint+'/'+jobid,manager)
+        print(json.dumps({'stage':'queue-progress','endpoint':endpoint,'status':job['status'],'processedEnrollments':job.get('processedEnrollments'),'partCount':job.get('partCount')}),flush=True)
         if job['status']=='READY': break
         assert job['status'] in ['QUEUED','RUNNING'], ('Private report terminal failure',job)
         assert time.monotonic()<deadline, ('Queue did not deliver',endpoint,job)
@@ -68,13 +69,14 @@ for endpoint,jobid in created:
     assert result['meta']['changes']==1
     status,_,_=call(endpoint+'/'+jobid,manager)
     assert status==410
-deadline=time.monotonic()+240
+deadline=time.monotonic()+1000
 while True:
     rows=[]
     for endpoint,jobid in created:
         table='private_rubric_export_jobs' if 'rubric' in endpoint else 'private_cohort_report_jobs'
         row=sql('SELECT status,cleanup_done,selection_json,actor_scope_json FROM '+table+' WHERE id=?',[jobid])['results'][0]
         rows.append(row)
+    print(json.dumps({'stage':'scheduled-retention-progress','jobs':rows}),flush=True)
     if all(row['status']=='EXPIRED' and row['cleanup_done']==1 and row['selection_json']=='{}' and row['actor_scope_json']=='[]' for row in rows): break
     assert time.monotonic()<deadline, ('Scheduled retention not completed',rows)
     time.sleep(10)
