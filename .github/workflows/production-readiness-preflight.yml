@@ -11,12 +11,12 @@ permissions:
 
 jobs:
   preflight:
-    # Only this same-repository release branch may inspect production bindings.
+    # Only the explicitly trusted same-repository release branches inspect production bindings.
     # Forks and other PRs never receive the production environment.
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.pull_request.head.repo.full_name == github.repository &&
-       github.event.pull_request.head.ref == 'feat/exam-evaluation-lock-integration')
+       contains(fromJSON('["feat/exam-evaluation-lock-integration","fix/post-release-technical-acceptance"]'), github.event.pull_request.head.ref))
     runs-on: ubuntu-latest
     environment: production
     env:
