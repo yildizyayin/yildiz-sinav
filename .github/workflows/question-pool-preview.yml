@@ -13,6 +13,70 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  resource_inventory:
+    name: Read-only Cloudflare resource inventory
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: staging
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Inspect D1 references without exposing credentials or student data
+        shell: bash
+        run: |
+          python3 <<'PY'
+          import json, os, urllib.request, urllib.error
+          from urllib.parse import quote
+          token = os.environ["CLOUDFLARE_API_TOKEN"]
+          account = os.environ["CLOUDFLARE_ACCOUNT_ID"]
+          base = "https://api.cloudflare.com/client/v4/accounts/" + account
+          def get(path):
+              request = urllib.request.Request(base + path, headers={"Authorization": "Bearer " + token})
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      data = json.load(response)
+              except urllib.error.HTTPError as error:
+                  try: codes = [item.get("code") for item in json.load(error).get("errors", [])]
+                  except Exception: codes = []
+                  raise RuntimeError("API HTTP " + str(error.code) + "; codes=" + str(codes)) from None
+              if not data.get("success"):
+                  raise RuntimeError("API success=false; codes=" + str([item.get("code") for item in data.get("errors", [])]))
+              return data
+          def listing(path):
+              data = get(path)
+              items = data["result"]
+              if not isinstance(items, list): raise RuntimeError("Unexpected inventory shape")
+              info = data.get("result_info") or {}
+              if info.get("total_count", len(items)) > len(items) or info.get("total_pages", 1) > 1:
+                  raise RuntimeError("Inventory pagination incomplete; cleanup forbidden")
+              return items
+          databases = listing("/d1/database?per_page=100")
+          scripts = listing("/workers/scripts?per_page=1000")
+          services = listing("/workers/services")
+          report = {"databases": [{"name": d.get("name"), "uuid": d.get("uuid")} for d in databases], "worker_d1_bindings": [], "errors": []}
+          def inspect(label, path):
+              try:
+                  settings = get(path)["result"]
+                  for binding in settings.get("bindings", []):
+                      if binding.get("type") == "d1":
+                          report["worker_d1_bindings"].append({"worker": label, "binding": binding.get("name"), "database_id": binding.get("id")})
+              except RuntimeError as error:
+                  report["errors"].append({"worker": label, "error": str(error)})
+          for script in scripts:
+              name = script["id"]
+              inspect(name, "/workers/scripts/" + quote(name, safe="") + "/settings")
+          for service in services:
+              name = service["id"]
+              environments = listing("/workers/services/" + quote(name, safe="") + "/environments")
+              for environment in environments:
+                  envname = environment["environment"]
+                  inspect(name + ":" + envname, "/workers/services/" + quote(name, safe="") + "/environments/" + quote(envname, safe="") + "/settings")
+          print(json.dumps(report, indent=2))
+          print("READ-ONLY INVENTORY: no deletion, export, deployment or billing change.")
+          if report["errors"]: raise SystemExit(1)
+          PY
+
   preview:
     runs-on: ubuntu-latest
     environment: staging
