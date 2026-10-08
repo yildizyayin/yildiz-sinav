@@ -11,8 +11,8 @@ try{
  const manifest=JSON.parse(await readFile('dist/client/.vite/manifest.json','utf8'));
  async function scenario(name,run,{mobile=false,failedLoginChunk=false}={}){
   const context=await browser.newContext({serviceWorkers:'block',viewport:mobile?{width:390,height:844}:{width:1440,height:900}});
+  let page; const unknown=[],errors=[],assets=[];
   try{
-   const unknown=[],errors=[],assets=[];
    await context.route('**/*',async route=>{
     const url=new URL(route.request().url());
     if(url.origin!==server.origin){await route.abort();return}
@@ -26,14 +26,14 @@ try{
     const result=values[url.pathname];if(!result){unknown.push(url.pathname);await route.abort();return}
     await route.fulfill({status:result[0],contentType:'application/json',body:JSON.stringify(result[1])});
    });
-   const page=await context.newPage();page.setDefaultTimeout(15_000);
+   page=await context.newPage();page.setDefaultTimeout(15_000);
    page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(request.resourceType()==='script')assets.push(new URL(request.url()).pathname)});
    if(failedLoginChunk)await page.route(server.origin+'/'+manifest['src/pages/Login.tsx'].file,route=>route.fulfill({status:404,contentType:'text/javascript',body:'missing'}));
    await run(page,assets);
    assert.deepEqual(unknown,[],'Unexpected API calls need explicit fixtures.');
    if(!failedLoginChunk)assert.deepEqual(errors,[],'Unexpected browser rendering errors.');
    passed.push(name);
-  }finally{await context.close()}
+  }catch(error){console.error(JSON.stringify({scenario:name,url:page?.url(),errors,unknown,body:page?await page.locator('body').innerText().catch(()=>'<unavailable>'):'<no page>'}));throw error}finally{await context.close()}
  }
  await scenario('login controls and rejected credentials',async(page,assets)=>{
   await page.goto(server.origin+'/login');await page.getByRole('heading',{name:'Synthetic acceptance',exact:true}).waitFor();
