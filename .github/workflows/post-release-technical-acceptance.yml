@@ -95,3 +95,65 @@ jobs:
       - name: Remove transient deployment configuration
         if: always()
         run: rm -f wrangler.report-acceptance.json
+
+  capacity-start:
+    needs: isolated-private-reports
+    runs-on: ubuntu-latest
+    outputs:
+      start_at: ${{ steps.start.outputs.start_at }}
+    steps:
+      - id: start
+        run: echo "start_at=$(($(date +%s%3N) + 180000))" >> "$GITHUB_OUTPUT"
+      - name: Record exact free-plan proof boundary
+        run: |
+          {
+            echo '### Staging authenticated capacity boundary'
+            echo '- 10 generators × 1,000 virtual users, coordinated one-request burst: 10,000 requests total.'
+            echo '- One synthetic identity per generator: 10 identities, not 10,000 distinct student identities.'
+            echo '- 1,000,000 HTTP requests BLOCKED: provider reported Workers Free; daily dynamic request allowance is 100,000.'
+            echo '- This is not a sustained 60-second capacity certification or one million simultaneous users.'
+          } >> "$GITHUB_STEP_SUMMARY"
+  authenticated-burst:
+    needs: capacity-start
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1,2,3,4,5,6,7,8,9,10]
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CAPACITY_SHARD: ${{ matrix.shard }}
+      CAPACITY_START_AT: ${{ needs.capacity-start.outputs.start_at }}
+      SMOKE_BASE_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
+      TARGET_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
+      LOAD_TEST_ALLOWED_ORIGINS: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
+      VUS: '1000'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Validate exact isolated staging target
+        run: node scripts/agents/load-target.mjs
+      - name: Prepare one synthetic published result using the real access-issuance API
+        run: node scripts/isolated-result-capacity-fixture.mjs
+      - name: Complete actual result lookup and HMAC code verification
+        run: node scripts/prepare-authenticated-result-load.mjs
+      - name: Install official k6
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location https://github.com/grafana/k6/releases/download/v0.52.0/k6-v0.52.0-linux-amd64.tar.gz | tar xz --strip-components 1
+      - name: Execute coordinated 1000-VU authenticated burst
+        run: ./k6 run --summary-export=capacity-shard-${{ matrix.shard }}.json scripts/isolated-result-burst.js
+      - name: Preserve exact metrics without credentials
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capacity-shard-${{ matrix.shard }}
+          path: capacity-shard-${{ matrix.shard }}.json
+          if-no-files-found: warn
+      - name: Remove only this generator's synthetic data
+        if: always()
+        run: node scripts/isolated-result-capacity-fixture.mjs --cleanup
