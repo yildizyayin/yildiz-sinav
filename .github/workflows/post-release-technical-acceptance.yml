@@ -1,0 +1,56 @@
+name: Post-release native browser acceptance
+on:
+  push:
+    branches: [fix/post-release-technical-acceptance]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: post-release-technical-acceptance
+  cancel-in-progress: false
+jobs:
+  native-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Typecheck and acceptance regression
+        run: npm run typecheck && npm test
+      - name: Install official Playwright Chromium
+        run: npx playwright install --with-deps chromium --only-shell
+      - name: Execute real Chromium interaction scenarios
+        run: npm run test:browser
+      - name: Verify client startup bundle
+        run: npm run test:bundle
+  provider-inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Inspect queue and private report storage metadata only
+        run: |
+          python3 <<'PY'
+          import json,os,urllib.request,urllib.error
+          base="https://api.cloudflare.com/client/v4/accounts/"+os.environ["CLOUDFLARE_ACCOUNT_ID"]
+          def get(path):
+              req=urllib.request.Request(base+path,headers={"Authorization":"Bearer "+os.environ["CLOUDFLARE_API_TOKEN"]})
+              try:
+                  with urllib.request.urlopen(req,timeout=30) as r: data=json.load(r)
+              except urllib.error.HTTPError as e:
+                  raise RuntimeError("Provider metadata access failed: HTTP "+str(e.code)) from None
+              if not data.get("success"): raise RuntimeError("Provider metadata access failed; codes="+str([e.get("code") for e in data.get("errors",[])]))
+              return data
+          queues=get("/queues?page=1&per_page=100")
+          if queues.get("result_info",{}).get("total_pages",1)>1: raise RuntimeError("Queue inventory incomplete")
+          print("QUEUE_METADATA "+json.dumps([{"name":q.get("queue_name"),"id":q.get("queue_id"),"consumers":q.get("consumers",[])} for q in queues["result"]]))
+          buckets=get("/r2/buckets?per_page=1000")
+          rows=buckets["result"]; rows=rows.get("buckets",[]) if isinstance(rows,dict) else rows
+          print("REPORT_BUCKET_NAMES "+json.dumps([b.get("name") for b in rows if "report" in b.get("name","")]))
+          PY
