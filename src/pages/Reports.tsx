@@ -105,8 +105,8 @@ export function Reports(){
 
    <div className="panel report-controls">
     <div className="form-grid">
-     {canChooseInstitution&&<label>Kurum<select value={institutionId} onChange={e=>{setReport(null);setSelectedExams([]);setStudentId('');setInstitutionId(e.target.value)}}><option value="">Kurum seçin</option>{institutions.map(i=><option key={i.id} value={i.id}>{i.name}</option>)}</select></label>}
-     {user?.role!=='STUDENT'&&<label>{user?.role==='PARENT'?'Çocuk':'Öğrenci'}<select value={studentId} onChange={e=>selectStudent(e.target.value)}><option value="">{user?.role==='PARENT'?'Çocuk seçin':'Öğrenci seçin'}</option>{students.map(s=><option key={s.id} value={s.id}>{s.first_name} {s.last_name}{s.class_name?` · ${s.class_name}`:''}</option>)}</select></label>}
+     {canChooseInstitution&&<label>Kurum<select aria-label="Kurum" value={institutionId} onChange={e=>{setReport(null);setSelectedExams([]);setStudentId('');setInstitutionId(e.target.value)}}><option value="">Kurum seçin</option>{institutions.map(i=><option key={i.id} value={i.id}>{i.name}</option>)}</select></label>}
+     {user?.role!=='STUDENT'&&<label>{user?.role==='PARENT'?'Çocuk':'Öğrenci'}<select aria-label={user?.role==='PARENT'?'Çocuk':'Öğrenci'} value={studentId} onChange={e=>selectStudent(e.target.value)}><option value="">{user?.role==='PARENT'?'Çocuk seçin':'Öğrenci seçin'}</option>{students.map(s=><option key={s.id} value={s.id}>{s.first_name} {s.last_name}{s.class_name?` · ${s.class_name}`:''}</option>)}</select></label>}
     </div>
     {!students.length&&<div className="empty">Bu kapsamda raporlanabilir aktif öğrenci bulunmuyor.</div>}
     {user?.role==='PARENT'&&students.length>1&&!studentId&&<div className="alert info">Birden fazla bağlı öğrenci var. Gelişimini görmek istediğiniz çocuğu seçin.</div>}
