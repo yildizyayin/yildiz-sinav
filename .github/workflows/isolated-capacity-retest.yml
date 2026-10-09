@@ -1,0 +1,103 @@
+name: Authenticated isolated capacity retest
+on:
+  push:
+    branches: [fix/post-release-technical-acceptance]
+    paths: ['.github/workflows/isolated-capacity-retest.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: isolated-capacity-retest
+  cancel-in-progress: false
+jobs:
+  proven-product-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CURRENT_SHA: ${{ github.sha }}
+    steps:
+      - name: Require passed live acceptance and identical product source
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          const base='https://api.github.com/repos/yildizyayin/yildiz-sinav';
+          async function get(path){const r=await fetch(base+path,{headers:{Authorization:'Bearer '+process.env.GH_TOKEN,Accept:'application/vnd.github+json'}});assert(r.ok,'Cannot verify acceptance evidence: HTTP '+r.status);return r.json()}
+          const run=await get('/actions/runs/37902532033');
+          assert.equal(run.head_branch,'fix/post-release-technical-acceptance');
+          const deadline=Date.now()+600000;
+          while(true){
+            const {jobs}=await get('/actions/runs/37902532033/jobs?per_page=100');
+            const required=['native-browser','provider-inventory','isolated-private-reports'].map(name=>jobs.find(j=>j.name===name));
+            assert(required.every(Boolean),'Missing required acceptance gate');
+            assert(!required.some(j=>j.status==='completed'&&j.conclusion!=='success'),'Required live acceptance failed');
+            if(required.every(j=>j.conclusion==='success'))break;
+            assert(Date.now()<deadline,'Acceptance gates are still pending');
+            await new Promise(resolve=>setTimeout(resolve,30000));
+          }
+          async function source(sha){const commit=await get('/git/commits/'+sha);const tree=await get('/git/trees/'+commit.tree.sha);return Object.fromEntries(tree.tree.map(e=>[e.path,e.sha]))}
+          const [proof,current]=await Promise.all([source(run.head_sha),source(process.env.CURRENT_SHA)]);
+          for(const path of ['worker','src','migrations','package.json','vite.config.ts'])assert.equal(current[path],proof[path],'Product source differs from live evidence: '+path);
+          console.log(JSON.stringify({status:'passed',liveAcceptanceRun:run.id,proofHead:run.head_sha,currentHead:process.env.CURRENT_SHA,scope:'same product source; native browser, private provider and six-role acceptance passed; only corrected k6 load is repeated'}));
+          JS
+  capacity-start:
+    needs: proven-product-source
+    runs-on: ubuntu-latest
+    outputs:
+      start_at: ${{ steps.start.outputs.start_at }}
+    steps:
+      - id: start
+        run: echo "start_at=$(($(date +%s%3N) + 180000))" >> "$GITHUB_OUTPUT"
+      - name: Record exact free-plan proof boundary
+        run: |
+          {
+            echo '### Staging authenticated capacity boundary'
+            echo '- 10 generators × 1,000 virtual users, coordinated one-request burst: 10,000 requests total.'
+            echo '- One synthetic identity per generator: 10 identities, not 10,000 distinct student identities.'
+            echo '- 1,000,000 HTTP requests BLOCKED: provider reported Workers Free; daily dynamic request allowance is 100,000.'
+            echo '- This is not a sustained 60-second capacity certification or one million simultaneous users.'
+          } >> "$GITHUB_STEP_SUMMARY"
+  authenticated-burst:
+    needs: capacity-start
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1,2,3,4,5,6,7,8,9,10]
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CAPACITY_SHARD: ${{ matrix.shard }}
+      CAPACITY_START_AT: ${{ needs.capacity-start.outputs.start_at }}
+      SMOKE_BASE_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
+      TARGET_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
+      LOAD_TEST_ALLOWED_ORIGINS: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
+      VUS: '1000'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Validate exact isolated staging target
+        run: node scripts/agents/load-target.mjs
+      - name: Prepare one synthetic published result using the real access-issuance API
+        run: node scripts/isolated-result-capacity-fixture.mjs
+      - name: Complete actual result lookup and HMAC code verification
+        run: node scripts/prepare-authenticated-result-load.mjs
+      - name: Install official k6
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location https://github.com/grafana/k6/releases/download/v0.52.0/k6-v0.52.0-linux-amd64.tar.gz | tar xz --strip-components 1
+      - name: Execute coordinated 1000-VU authenticated burst
+        run: ./k6 run --summary-export=capacity-shard-${{ matrix.shard }}.json scripts/isolated-result-burst.js
+      - name: Preserve exact metrics without credentials
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capacity-shard-${{ matrix.shard }}
+          path: capacity-shard-${{ matrix.shard }}.json
+          if-no-files-found: warn
+      - name: Remove only this generator's synthetic data
+        if: always()
+        run: node scripts/isolated-result-capacity-fixture.mjs --cleanup
