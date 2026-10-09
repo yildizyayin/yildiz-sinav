@@ -1,0 +1,36 @@
+name: Nibiru Read-only Account Audit
+on:
+  push:
+    branches: [fix/nibiru-acceptance-20261009]
+    paths: ['.github/workflows/nibiru-account-audit.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  account-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    environment: staging
+    steps:
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Inspect subscription products (no model requests)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          const token=process.env.CLOUDFLARE_API_TOKEN,account=process.env.CLOUDFLARE_ACCOUNT_ID;
+          const response=await fetch('https://api.cloudflare.com/client/v4/accounts/'+account+'/subscriptions',{headers:{authorization:'Bearer '+token},signal:AbortSignal.timeout(20000)});
+          const body=await response.json();
+          if(!response.ok||body.success!==true||!Array.isArray(body.result))throw new Error('SUBSCRIPTION_READ_HTTP_'+response.status);
+          const products=body.result.map(row=>({
+            product:row.rate_plan?.public_name||row.rate_plan?.name||'UNKNOWN',
+            plan:row.rate_plan?.id||'UNKNOWN',
+            paidPrice:Number(row.price)>0||Number(row.rate_plan?.price)>0,
+            status:row.state||'UNKNOWN',
+            paidNamePattern:/paid|standard|enterprise|business|pro/i.test(String(row.rate_plan?.public_name||row.rate_plan?.name||'')),
+          }));
+          console.log(JSON.stringify({inferenceCalls:0,products}));
+          JS
