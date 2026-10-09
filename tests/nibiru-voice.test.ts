@@ -1,9 +1,9 @@
-import { describe,expect,it } from 'vitest';
-import { buildVoiceProviderPlan,prepareNibiruSpeechText,voiceProviderStatus } from '../worker/lib/nibiru-voice';
+import { describe,expect,it,vi } from 'vitest';
+import { buildVoiceProviderPlan,prepareNibiruSpeechText,voiceProviderStatus,speakNibiru,voiceProviderStatusWithHealth } from '../worker/lib/nibiru-voice';
 import { addPublicVoiceCors } from '../worker/nibiru-voice-entry';
 import type { Env } from '../worker/types';
 
-function env(values:Partial<Env>={}):Env{return values as Env}
+function env(values:Partial<Env>={}):Env{return {NIBIRU_PAID_VOICE_ENABLED:'ON',...values} as Env}
 const ai={} as Ai;
 
 describe('Nibiru Voice provider policy',()=>{
@@ -39,7 +39,8 @@ describe('Nibiru Voice provider policy',()=>{
 
  it('keeps standard voice enabled when only direct OpenAI TTS is configured',()=>{
   const status=voiceProviderStatus(env({OPENAI_TTS_API_KEY:'secret'}));
-  expect(status.standardReady).toBe(true);
+  expect(status.standardReady).toBe(false);
+  expect(status.standardConfigured).toBe(true);
  });
 
  it('uses Unified HD first in premium mode without direct OpenAI key',()=>{
@@ -52,8 +53,37 @@ describe('Nibiru Voice provider policy',()=>{
   expect(status.stt.ready).toBe(true);
   expect(status.stt.configured).toBe(true);
   expect(status.stt.model).toBe('@cf/openai/whisper-large-v3-turbo');
-  expect(status.standardReady).toBe(true);
+  expect(status.standardReady).toBe(false);
+  expect(status.standardConfigured).toBe(true);
   expect(status.liveVerified).toBe(false);
   expect(status.openaiUnified.detail).toContain('canlı probe');
+ });
+});
+
+
+describe('Voice acceptance boundaries',()=>{
+ it('blocks paid calls by default without contacting providers',async()=>{
+  const run=vi.fn();
+  const e=env({AI:{run} as unknown as Ai,NIBIRU_PAID_VOICE_ENABLED:undefined});
+  expect(buildVoiceProviderPlan(e,'STANDARD').providers).toEqual([]);
+  await expect(speakNibiru(e,'Türkçe test')).rejects.toThrow('VOICE_PAID_PROVIDERS_DISABLED');
+  expect(run).not.toHaveBeenCalled();
+ });
+ it('does not use English MeloTTS after a Turkish provider failure',async()=>{
+  const run=vi.fn().mockRejectedValue(new Error('unavailable'));
+  await expect(speakNibiru(env({AI:{run} as unknown as Ai}),'Türkçe test')).rejects.toThrow('VOICE_PROVIDER_FAILED');
+  expect(run).toHaveBeenCalledTimes(1);
+  expect(run.mock.calls[0][0]).toBe('openai/tts-1');
+ });
+ it('rejects JSON returned as successful speech',async()=>{
+  const run=vi.fn().mockResolvedValue(new Response(JSON.stringify({error:'model error'}),{headers:{'content-type':'application/json'}}));
+  await expect(speakNibiru(env({AI:{run} as unknown as Ai}),'Türkçe test')).rejects.toThrow('NOT_AUDIO');
+ });
+ it('ignores old MeloTTS success incorrectly recorded as OpenAI',async()=>{
+  const rows=[{provider:'OPENAI_UNIFIED_TTS',model:'@cf/myshell-ai/melotts',mode:'STANDARD',last_success_at:new Date().toISOString()}];
+  const DB={prepare:()=>({all:async()=>({results:rows})})} as unknown as D1Database;
+  const status=await voiceProviderStatusWithHealth(env({AI:ai,DB}));
+  expect(status.openaiUnified.ready).toBe(false);
+  expect(status.standardReady).toBe(false);
  });
 });

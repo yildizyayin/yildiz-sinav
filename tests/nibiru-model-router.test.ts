@@ -127,3 +127,21 @@ describe('Nibiru multi-AI router',()=>{
  });
 
 });
+
+
+describe('Provider acceptance evidence',()=>{
+ it('rejects arbitrary nonempty text in an OK-only probe',async()=>{
+  const AI={run:vi.fn().mockResolvedValue({response:'Model is unavailable'})} as unknown as Ai;
+  const result=await probeNibiruModels({AI,NIBIRU_AI_GATEWAY_ID:'OFF'} as Env);
+  expect(result.ok).toBe(false);
+  expect(result.results.every(row=>row.error==='PROBE_UNEXPECTED_RESPONSE')).toBe(true);
+ });
+ it('separates GLM prompt roles with real newlines',async()=>{
+  const run=vi.fn().mockResolvedValue({response:'OK'});
+  const e={AI:{run},NIBIRU_AI_GATEWAY_ID:'OFF'} as unknown as Env;
+  await probeNibiruModels(e);
+  const glm=run.mock.calls.find(call=>call[0]==='@cf/zai-org/glm-4.7-flash');
+  expect(glm?.[1].prompt).toContain('\nUSER:');
+  expect(glm?.[1].prompt).not.toContain('\\nUSER:');
+ });
+});

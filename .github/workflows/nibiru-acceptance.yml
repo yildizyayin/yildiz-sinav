@@ -1,0 +1,40 @@
+name: Nibiru Bounded Acceptance
+on:
+  push:
+    branches: [fix/nibiru-acceptance-20261009]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nibiru-bounded-acceptance
+  cancel-in-progress: false
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: staging
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Verify Free account before inference
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/check-nibiru-free-account.mjs
+      - name: Real providers and synthetic educational acceptance (maximum nine requests)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx vitest run --config acceptance/vitest.config.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nibiru-bounded-acceptance-${{ github.sha }}
+          path: tmp/nibiru-acceptance/
+          if-no-files-found: warn

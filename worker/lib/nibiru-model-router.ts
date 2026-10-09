@@ -291,7 +291,7 @@ async function callModel(
   const isGlm=item.model===DEFAULT_FAST;
   const input:any=isGlm
     ? {
-        prompt:messages.map(message=>message.role.toUpperCase()+': '+message.content).join('\\n'),
+        prompt:messages.map(message=>message.role.toUpperCase()+': '+message.content).join('\n'),
         temperature:decision.temperature,
         stream:false,
       }
@@ -382,11 +382,11 @@ export async function probeNibiruModels(env:Env):Promise<NibiruProbeResult>{
     return{
       family:item.family,
       model:item.model,
-      ok:Boolean(call.text),
+      ok:call.text?.trim()==='OK',
       transport:call.transport,
       gatewayFallback:call.gatewayFallback,
       preview:call.text?call.text.replace(/\s+/g,' ').slice(0,120):null,
-      error:call.error,
+      error:call.error||(call.text?.trim()==='OK'?null:'PROBE_UNEXPECTED_RESPONSE'),
     };
   }));
   return{

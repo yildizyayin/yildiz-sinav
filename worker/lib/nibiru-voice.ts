@@ -33,13 +33,17 @@ export function voiceProviderStatus(env:Env){
  const googleConfigured=Boolean(env.GOOGLE_TTS_SERVICE_ACCOUNT_JSON);
  const directOpenAi=Boolean(env.OPENAI_TTS_API_KEY);
  const unified=Boolean(env.AI);
+ const paidProvidersAllowed=env.NIBIRU_PAID_VOICE_ENABLED==='ON';
  return {
   stt:{ready:Boolean(env.AI),configured:Boolean(env.AI),provider:'CLOUDFLARE_WORKERS_AI',model:env.NIBIRU_STT_MODEL||'@cf/openai/whisper-large-v3-turbo',detail:env.AI?'Workers AI binding var; canlı probe gerekli.':'Workers AI binding eksik.'},
   google:{ready:false,configured:googleConfigured,provider:'GOOGLE_WAVENET',voice:env.NIBIRU_GOOGLE_TTS_VOICE||'tr-TR-Wavenet-E',detail:googleConfigured?'Google Cloud servis hesabı tanımlı; canlı probe gerekli.':'GOOGLE_TTS_SERVICE_ACCOUNT_JSON secret bekleniyor.'},
   openaiDirect:{ready:false,configured:directOpenAi,provider:'OPENAI_GPT4O_MINI_TTS',model:env.NIBIRU_OPENAI_DIRECT_TTS_MODEL||'gpt-4o-mini-tts',detail:directOpenAi?'OpenAI TTS secret tanımlı; canlı probe gerekli.':'OPENAI_TTS_API_KEY opsiyonel; Unified Billing fallback kullanılabilir.'},
   openaiUnified:{ready:false,configured:unified,provider:'CLOUDFLARE_AI_GATEWAY_UNIFIED',standardModel:env.NIBIRU_OPENAI_TTS_MODEL||'openai/tts-1',premiumModel:env.NIBIRU_OPENAI_TTS_HD_MODEL||'openai/tts-1-hd',detail:unified?'Workers AI binding var; Unified Billing canlı probe gerekli.':'Workers AI binding eksik.'},
-  standardReady:googleConfigured||unified||directOpenAi,
-  premiumReady:directOpenAi||unified||googleConfigured,
+  paidProvidersAllowed,
+  standardConfigured:paidProvidersAllowed&&(googleConfigured||unified||directOpenAi),
+  premiumConfigured:paidProvidersAllowed&&(directOpenAi||unified||googleConfigured),
+  standardReady:false,
+  premiumReady:false,
   liveVerified:false,
  };
 }
@@ -47,6 +51,7 @@ export function voiceProviderStatus(env:Env){
 export function buildVoiceProviderPlan(env:Env,mode:NibiruVoiceMode):VoiceProviderPlan{
  const s=voiceProviderStatus(env);
  const rows:NibiruVoiceProvider[]=[];
+ if(!s.paidProvidersAllowed)return{mode,providers:rows,reason:'Ücretli Türkçe ses sağlayıcıları kapalı. NIBIRU_PAID_VOICE_ENABLED=ON ile açıkça etkinleştirilmelidir.'};
  if(mode==='PREMIUM'){
   if(s.openaiDirect.configured)rows.push('OPENAI_GPT4O_MINI_TTS');
   if(s.openaiUnified.configured)rows.push('OPENAI_UNIFIED_TTS_HD');
@@ -107,42 +112,32 @@ async function unifiedOpenAiSpeak(env:Env,text:string,speed:number,hd:boolean):P
  if(!env.AI)throw new Error('OPENAI_UNIFIED_NOT_CONFIGURED');const model=hd?(env.NIBIRU_OPENAI_TTS_HD_MODEL||'openai/tts-1-hd'):(env.NIBIRU_OPENAI_TTS_MODEL||'openai/tts-1');const voice=env.NIBIRU_OPENAI_TTS_VOICE||'coral';
  try{
   const response:any=await env.AI.run(model as any,{response_format:'mp3',speed,text,voice} as any,{gateway:{id:env.NIBIRU_AI_GATEWAY_ID||'default',skipCache:true,collectLog:true,metadata:{app:'nibiru',modality:'tts',language:'tr',quality:hd?'premium':'standard'}}} as any);
-  if(response instanceof Response)return{bytes:new Uint8Array(await response.arrayBuffer()),contentType:response.headers.get('content-type')||'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model};
+  if(response instanceof Response){
+   const contentType=response.headers.get('content-type')||'';
+   const bytes=new Uint8Array(await response.arrayBuffer());
+   if(!response.ok||!contentType.toLowerCase().startsWith('audio/')||bytes.length<=100)throw new Error('OPENAI_UNIFIED_TTS_NOT_AUDIO');
+   return{bytes,contentType,provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model};
+  }
   const audioUrl=String(response?.audio||response?.result?.audio||'');if(!audioUrl)throw new Error('OPENAI_UNIFIED_TTS_EMPTY');const audio=await fetch(audioUrl);if(!audio.ok)throw new Error('OPENAI_UNIFIED_TTS_FETCH_FAILED');
   return{bytes:new Uint8Array(await audio.arrayBuffer()),contentType:audio.headers.get('content-type')||'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model};
  }catch(primaryError){
-  // The OpenAI-compatible unified route may be unavailable in a newly
-  // provisioned account. Keep the no-secret Workers AI voice path alive with
-  // Cloudflare's multilingual MeloTTS model instead of returning a 502.
-  const fallbackModel='@cf/myshell-ai/melotts';
-  let fallbackError:unknown=null;
-  for(const lang of ['tr','en']){
-   try{
-    const response:any=await env.AI.run(fallbackModel as any,{prompt:text,lang} as any,{returnRawResponse:true} as any);
-    if(response instanceof Response){
-     const contentType=response.headers.get('content-type')||'';const bytes=new Uint8Array(await response.arrayBuffer());
-     // Workers AI returns JSON for model errors. Never expose that JSON as
-     // if it were playable audio; try the documented default language next.
-     if(!contentType.toLowerCase().includes('audio/')||bytes.length<=100)throw new Error(`MELOTTS_${lang.toUpperCase()}_NOT_AUDIO`);
-     return{bytes,contentType,provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model:fallbackModel};
-    }
-    if(response instanceof Uint8Array&&response.length>100)return{bytes:response,contentType:'audio/mpeg',provider:hd?'OPENAI_UNIFIED_TTS_HD':'OPENAI_UNIFIED_TTS',model:fallbackModel};
-    throw new Error(`MELOTTS_${lang.toUpperCase()}_EMPTY`);
-   }catch(error){fallbackError=error;}
-  }
-  const primary=primaryError instanceof Error?primaryError.message:'PRIMARY_TTS_FAILED';
-  const fallback=fallbackError instanceof Error?fallbackError.message:'FALLBACK_TTS_FAILED';
-  throw new Error(`OPENAI_UNIFIED_TTS_FAILED:${primary}|${fallback}`);
+  // Never disguise another model as OpenAI or silently read Turkish in English.
+  throw new Error(`OPENAI_UNIFIED_TTS_FAILED:${primaryError instanceof Error?primaryError.message:'PRIMARY_TTS_FAILED'}`);
  }
 }
 
 export async function speakNibiru(env:Env,value:string,mode:NibiruVoiceMode='STANDARD'){
+ if(env.NIBIRU_PAID_VOICE_ENABLED!=='ON')throw new Error('VOICE_PAID_PROVIDERS_DISABLED');
  const text=prepareNibiruSpeechText(value);if(!text)throw new Error('VOICE_TEXT_EMPTY');const speed=mode==='PREMIUM'?0.93:0.96,plan=buildVoiceProviderPlan(env,mode);const attempts:string[]=[];
  for(const provider of plan.providers){try{
-  if(provider==='GOOGLE_WAVENET')return{audio:await googleSpeak(env,text,speed),plan,attempts};
-  if(provider==='OPENAI_GPT4O_MINI_TTS')return{audio:await directOpenAiSpeak(env,text,speed),plan,attempts};
-  if(provider==='OPENAI_UNIFIED_TTS_HD')return{audio:await unifiedOpenAiSpeak(env,text,speed,true),plan,attempts};
-  if(provider==='OPENAI_UNIFIED_TTS')return{audio:await unifiedOpenAiSpeak(env,text,speed,false),plan,attempts};
+  let audio:VoiceAudio;
+  if(provider==='GOOGLE_WAVENET')audio=await googleSpeak(env,text,speed);
+  else if(provider==='OPENAI_GPT4O_MINI_TTS')audio=await directOpenAiSpeak(env,text,speed);
+  else audio=await unifiedOpenAiSpeak(env,text,speed,provider==='OPENAI_UNIFIED_TTS_HD');
+  if(!audio.contentType.toLowerCase().startsWith('audio/')||audio.bytes.length<=100)throw new Error('VOICE_PROVIDER_NOT_AUDIO');
+  const prefix=new TextDecoder().decode(audio.bytes.subarray(0,64)).trimStart();
+  if(prefix.startsWith('{')||prefix.startsWith('['))throw new Error('VOICE_PROVIDER_NOT_AUDIO');
+  return{audio,plan,attempts};
  }catch(error){attempts.push(`${provider}:${error instanceof Error?error.message:'FAILED'}`)}}
  throw new Error(attempts.length?`VOICE_PROVIDER_FAILED:${attempts.join('|')}`:'VOICE_NOT_CONFIGURED');
 }
@@ -167,15 +162,19 @@ export async function voiceProviderStatusWithHealth(env:Env){
  }
  const googleLive=recentlyVerified(rows,'GOOGLE_WAVENET',base.google.configured);
  const directLive=recentlyVerified(rows,'OPENAI_GPT4O_MINI_TTS',base.openaiDirect.configured);
- const unifiedLive=recentlyVerified(rows,'OPENAI_UNIFIED_TTS',base.openaiUnified.configured);
- const unifiedHdLive=recentlyVerified(rows,'OPENAI_UNIFIED_TTS_HD',base.openaiUnified.configured);
+ const unifiedLive=recentlyVerified(rows.filter(row=>row.model===base.openaiUnified.standardModel),'OPENAI_UNIFIED_TTS',base.openaiUnified.configured);
+ const unifiedHdLive=recentlyVerified(rows.filter(row=>row.model===base.openaiUnified.premiumModel),'OPENAI_UNIFIED_TTS_HD',base.openaiUnified.configured);
+ const standardLive=base.paidProvidersAllowed&&(googleLive||directLive||unifiedLive);
+ const premiumLive=base.paidProvidersAllowed&&(googleLive||directLive||unifiedHdLive);
  return {
   ...base,
   stt:{...base.stt,ready:base.stt.configured},
-  google:{...base.google,ready:googleLive},
-  openaiDirect:{...base.openaiDirect,ready:directLive},
-  openaiUnified:{...base.openaiUnified,ready:unifiedLive||unifiedHdLive},
-  liveVerified:googleLive||directLive||unifiedLive||unifiedHdLive,
+  google:{...base.google,ready:base.paidProvidersAllowed&&googleLive},
+  openaiDirect:{...base.openaiDirect,ready:base.paidProvidersAllowed&&directLive},
+  openaiUnified:{...base.openaiUnified,ready:base.paidProvidersAllowed&&(unifiedLive||unifiedHdLive)},
+  standardReady:standardLive,
+  premiumReady:premiumLive,
+  liveVerified:standardLive||premiumLive,
  };
 }
 

@@ -39,6 +39,7 @@ function fail(status:number,code:string,message:string,details?:unknown){return 
 function strictArrayBuffer(bytes:Uint8Array):ArrayBuffer{const copy=new Uint8Array(bytes.byteLength);copy.set(bytes);return copy.buffer}
 function voiceError(error:unknown){
  const value=error instanceof Error?error.message:String(error||'VOICE_FAILED');
+ if(value.includes('VOICE_PAID_PROVIDERS_DISABLED'))return fail(503,'VOICE_PAID_PROVIDERS_DISABLED','Ücretli ses sağlayıcıları kapalı.');
  if(value.includes('TOO_LARGE'))return fail(413,'VOICE_AUDIO_TOO_LARGE','Ses kaydı en fazla 8 MB olabilir.');
  if(value.includes('EMPTY'))return fail(400,'VOICE_INPUT_EMPTY','Ses veya konuşma metni boş olamaz.');
  if(value.includes('NOT_CONFIGURED'))return fail(503,'VOICE_PROVIDER_NOT_CONFIGURED','Nibiru ses sağlayıcısı henüz etkin değil.');
@@ -49,7 +50,7 @@ function voiceError(error:unknown){
 async function status(request:Request,env:Env){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
  const providers=await voiceProviderStatusWithHealth(env);
- return json({ok:true,environment:env.ENVIRONMENT||'unknown',providers,plans:{standard:buildVoiceProviderPlan(env,'STANDARD'),premium:buildVoiceProviderPlan(env,'PREMIUM')},policy:{language:'tr-TR',interaction:'PUSH_TO_TALK',alwaysListening:false,teacherTone:'Sakin, açık, geliştirici ve kurumsal; MEB ürünü/temsilcisi iddiası yok.',maxAudioBytes:8*1024*1024,maxSpeechChars:3600},activation:{configured:providers.standardReady,liveVerified:providers.liveVerified,liveProbeRequired:true}});
+ return json({ok:true,environment:env.ENVIRONMENT||'unknown',providers,plans:{standard:buildVoiceProviderPlan(env,'STANDARD'),premium:buildVoiceProviderPlan(env,'PREMIUM')},policy:{language:'tr-TR',interaction:'PUSH_TO_TALK',alwaysListening:false,teacherTone:'Sakin, açık, geliştirici ve kurumsal; MEB ürünü/temsilcisi iddiası yok.',maxAudioBytes:8*1024*1024,maxSpeechChars:3600},activation:{configured:providers.standardConfigured,liveVerified:providers.liveVerified,liveProbeRequired:true}});
 }
 
 async function transcribe(request:Request,env:Env){

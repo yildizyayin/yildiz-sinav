@@ -190,7 +190,7 @@ function specialistPersona(specialist: NibiruSpecialist) {
   return personas[specialist];
 }
 
-function systemPrompt(role: AuthUser['role'], specialist: NibiruSpecialist) {
+export function nibiruSystemPrompt(role: AuthUser['role'], specialist: NibiruSpecialist) {
   return `Sen Nibiru'sun. Anunex'in yapay zekâ akademik asistanısın. Kullanıcı rolü: ${role}. Aktif uzman: ${specialist}.
 UZMAN ÇALIŞMA İLKESİ:
 ${specialistPersona(specialist)}
@@ -229,9 +229,9 @@ async function aiAnswer(
     return {text:null,inference:null,blocked:privacyGate.code};
   }
 
-  const prompt = systemPrompt(user.role,decision.specialist) + '\n\nNİYET: ' + intent + '\nKULLANICI MESAJI: ' + message + '\nDOĞRULANMIŞ VERİ BAĞLAMI:\n' + JSON.stringify(context).slice(0,14000);
+  const prompt = nibiruSystemPrompt(user.role,decision.specialist) + '\n\nNİYET: ' + intent + '\nKULLANICI MESAJI: ' + message + '\nDOĞRULANMIŞ VERİ BAĞLAMI:\n' + JSON.stringify(context).slice(0,14000);
   const minimized = minimizeNibiruAiMessages([
-    { role:'system', content:systemPrompt(user.role,decision.specialist) },
+    { role:'system', content:nibiruSystemPrompt(user.role,decision.specialist) },
     { role:'user', content:prompt },
   ]);
   const inference = await runNibiruInference(env,decision,minimized.messages,{
