@@ -11,50 +11,51 @@ jobs:
   account-audit:
     runs-on: ubuntu-latest
     timeout-minutes: 3
-    environment: staging
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - environment: staging
+            worker: yildiz-sinav-v1
+          - environment: production
+            worker: yildiz-sinav-prod
+    environment: ${{ matrix.environment }}
     steps:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      - name: Inspect subscription products (no model requests)
+      - name: Check effective GitHub configuration presence (no values)
         env:
+          AUDIT_ENVIRONMENT: ${{ matrix.environment }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          PROD_YOUTUBE_API_KEY: ${{ secrets.PROD_YOUTUBE_API_KEY }}
+          WHATSAPP_VERIFY_TOKEN: ${{ secrets.WHATSAPP_VERIFY_TOKEN }}
+          WHATSAPP_APP_SECRET: ${{ secrets.WHATSAPP_APP_SECRET }}
+          WHATSAPP_ACCESS_TOKEN: ${{ secrets.WHATSAPP_ACCESS_TOKEN }}
+          WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
+          PROD_WHATSAPP_VERIFY_TOKEN: ${{ secrets.PROD_WHATSAPP_VERIFY_TOKEN }}
+          PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
+          PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
+          PROD_WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.PROD_WHATSAPP_PHONE_NUMBER_ID }}
         run: |
           node --input-type=module <<'JS'
-          const token=process.env.CLOUDFLARE_API_TOKEN,account=process.env.CLOUDFLARE_ACCOUNT_ID;
-          const response=await fetch('https://api.cloudflare.com/client/v4/accounts/'+account+'/subscriptions',{headers:{authorization:'Bearer '+token},signal:AbortSignal.timeout(20000)});
-          const body=await response.json();
-          if(!response.ok||body.success!==true||!Array.isArray(body.result))throw new Error('SUBSCRIPTION_READ_HTTP_'+response.status);
-          const products=body.result.map(row=>({
-            product:row.rate_plan?.public_name||row.rate_plan?.name||'UNKNOWN',
-            plan:row.rate_plan?.id||'UNKNOWN',
-            paidPrice:Number(row.price)>0||Number(row.rate_plan?.price)>0,
-            status:row.state||'UNKNOWN',
-            paidNamePattern:/paid|standard|enterprise|business|pro/i.test(String(row.rate_plan?.public_name||row.rate_plan?.name||'')),
-          }));
-          console.log(JSON.stringify({inferenceCalls:0,products}));
+          const names=['CLOUDFLARE_API_TOKEN','CLOUDFLARE_ACCOUNT_ID','YOUTUBE_API_KEY','PROD_YOUTUBE_API_KEY','WHATSAPP_VERIFY_TOKEN','WHATSAPP_APP_SECRET','WHATSAPP_ACCESS_TOKEN','WHATSAPP_PHONE_NUMBER_ID','PROD_WHATSAPP_VERIFY_TOKEN','PROD_WHATSAPP_APP_SECRET','PROD_WHATSAPP_ACCESS_TOKEN','PROD_WHATSAPP_PHONE_NUMBER_ID'];
+          console.log(JSON.stringify({source:'github-effective-environment',environment:process.env.AUDIT_ENVIRONMENT,configured:Object.fromEntries(names.map(name=>[name,Boolean(process.env[name]?.trim())])),valuesPrinted:false}));
           JS
-      - uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ github.token }}
-          run-id: 37965077065
-          name: nibiru-bounded-acceptance-8fc6aca373e8da68d78751340a390d114e99fe0e
-          path: tmp/provider-evidence
-      - name: Inspect synthetic provider evidence (no inference)
-        run: |
-          node --input-type=module -e "import fs from 'node:fs';console.log(fs.readFileSync('tmp/provider-evidence/providers.json','utf8'))"
-
-
-      - name: Check staging integration secret names only
+      - name: Check Worker integration secret names only
         env:
+          AUDIT_ENVIRONMENT: ${{ matrix.environment }}
+          AUDIT_WORKER: ${{ matrix.worker }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           node --input-type=module <<'JS'
-          const response=await fetch('https://api.cloudflare.com/client/v4/accounts/'+process.env.CLOUDFLARE_ACCOUNT_ID+'/workers/scripts/yildiz-sinav-v1/secrets',{headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN},signal:AbortSignal.timeout(20000)});
+          if(!process.env.CLOUDFLARE_API_TOKEN||!process.env.CLOUDFLARE_ACCOUNT_ID){console.log(JSON.stringify({source:'cloudflare-secret-names',environment:process.env.AUDIT_ENVIRONMENT,secretNamesReadable:false,reason:'AUDIT_CREDENTIALS_ABSENT'}));process.exit(0);}
+          const response=await fetch('https://api.cloudflare.com/client/v4/accounts/'+process.env.CLOUDFLARE_ACCOUNT_ID+'/workers/scripts/'+process.env.AUDIT_WORKER+'/secrets',{headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN},signal:AbortSignal.timeout(20000)});
           const body=await response.json().catch(()=>null);
-          if(!response.ok||!Array.isArray(body?.result)){console.log(JSON.stringify({secretNamesReadable:false,httpStatus:response.status}));process.exit(0);}
+          if(!response.ok||body?.success!==true||!Array.isArray(body?.result)){console.log(JSON.stringify({source:'cloudflare-secret-names',environment:process.env.AUDIT_ENVIRONMENT,secretNamesReadable:false,httpStatus:response.status}));process.exit(0);}
           const names=new Set(body.result.map(item=>item.name));
-          console.log(JSON.stringify({secretNamesReadable:true,stagingOnly:true,configured:Object.fromEntries(['YOUTUBE_API_KEY','WHATSAPP_VERIFY_TOKEN','WHATSAPP_APP_SECRET','WHATSAPP_ACCESS_TOKEN','WHATSAPP_PHONE_NUMBER_ID'].map(name=>[name,names.has(name)])),valuesRead:false}));
+          console.log(JSON.stringify({source:'cloudflare-secret-names',environment:process.env.AUDIT_ENVIRONMENT,worker:process.env.AUDIT_WORKER,secretNamesReadable:true,configured:Object.fromEntries(['YOUTUBE_API_KEY','WHATSAPP_VERIFY_TOKEN','WHATSAPP_APP_SECRET','WHATSAPP_ACCESS_TOKEN','WHATSAPP_PHONE_NUMBER_ID'].map(name=>[name,names.has(name)])),valuesRead:false}));
           JS
