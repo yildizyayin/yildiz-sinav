@@ -59,3 +59,30 @@ jobs:
           const names=new Set(body.result.map(item=>item.name));
           console.log(JSON.stringify({source:'cloudflare-secret-names',environment:process.env.AUDIT_ENVIRONMENT,worker:process.env.AUDIT_WORKER,secretNamesReadable:true,configured:Object.fromEntries(['YOUTUBE_API_KEY','WHATSAPP_VERIFY_TOKEN','WHATSAPP_APP_SECRET','WHATSAPP_ACCESS_TOKEN','WHATSAPP_PHONE_NUMBER_ID'].map(name=>[name,names.has(name)])),valuesRead:false}));
           JS
+
+      - name: Bounded YouTube key acceptance (two read-only API calls)
+        env:
+          AUDIT_ENVIRONMENT: ${{ matrix.environment }}
+          YOUTUBE_API_KEY: ${{ matrix.environment == 'production' && secrets.PROD_YOUTUBE_API_KEY || secrets.YOUTUBE_API_KEY }}
+        run: |
+          node --input-type=module <<'JS'
+          const key=process.env.YOUTUBE_API_KEY;
+          if(!key){console.log(JSON.stringify({source:'youtube-api',environment:process.env.AUDIT_ENVIRONMENT,configured:false,tested:false}));process.exit(0);}
+          const headers={'x-goog-api-key':key};
+          async function read(url){
+            const response=await fetch(url,{headers,signal:AbortSignal.timeout(20000)});
+            const body=await response.json().catch(()=>null);
+            if(!response.ok||!Array.isArray(body?.items)){console.log(JSON.stringify({source:'youtube-api',environment:process.env.AUDIT_ENVIRONMENT,httpStatus:response.status,accepted:false}));process.exit(1);}
+            return body.items;
+          }
+          const search=new URL('https://www.googleapis.com/youtube/v3/search');
+          for(const [name,value] of Object.entries({part:'snippet',type:'video',q:'5 sınıf matematik kesirler konu anlatımı',maxResults:'3',safeSearch:'strict',videoEmbeddable:'true',regionCode:'TR',relevanceLanguage:'tr'}))search.searchParams.set(name,value);
+          const found=await read(search);
+          const ids=found.map(item=>item.id?.videoId).filter(id=>/^[A-Za-z0-9_-]{11}$/.test(id||''));
+          if(!ids.length){console.log(JSON.stringify({source:'youtube-api',environment:process.env.AUDIT_ENVIRONMENT,searchAccepted:true,detailAccepted:false,reason:'NO_VIDEO_RESULTS',calls:1}));process.exit(1);}
+          const details=new URL('https://www.googleapis.com/youtube/v3/videos');
+          details.searchParams.set('part','status,contentDetails');details.searchParams.set('id',ids.join(','));
+          const videos=await read(details);
+          const available=videos.filter(v=>v.status?.privacyStatus==='public'&&v.status?.uploadStatus==='processed'&&v.status?.embeddable===true&&v.contentDetails?.contentRating?.ytRating!=='ytAgeRestricted'&&(!Array.isArray(v.contentDetails?.regionRestriction?.allowed)||v.contentDetails.regionRestriction.allowed.includes('TR'))&&!v.contentDetails?.regionRestriction?.blocked?.includes('TR'));
+          console.log(JSON.stringify({source:'youtube-api',environment:process.env.AUDIT_ENVIRONMENT,searchAccepted:true,detailAccepted:true,calls:2,returnedVideos:videos.length,metadataEligibleVideos:available.length,playbackTested:false,workerSecretSynced:false,valuesPrinted:false}));
+          JS
