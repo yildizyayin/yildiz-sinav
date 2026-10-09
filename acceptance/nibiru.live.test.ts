@@ -1,6 +1,7 @@
 import {afterAll,expect,it} from 'vitest';
-import {mkdirSync,writeFileSync} from 'node:fs';
+import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
 import {checkNibiruAnswer} from '../worker/lib/nibiru-answer-policy';
+import {transcribeNibiruAudio} from '../worker/lib/nibiru-voice';
 import {nibiruSystemPrompt} from '../worker/lib/nibiru';
 import {probeNibiruModels,chooseNibiruModelDecision,runNibiruInference} from '../worker/lib/nibiru-model-router';
 import {routeNibiruSpecialist} from '../worker/lib/nibiru-specialists';
@@ -13,8 +14,8 @@ let calls=0;
 const ai={run:async(model:string,input:any,options?:any)=>{
  if(!token||!account)throw new Error('STAGING_CREDENTIALS_MISSING');
  if(options?.gateway)throw new Error('ACCEPTANCE_GATEWAY_NOT_ALLOWED');
- if(!['@cf/zai-org/glm-4.7-flash','@cf/meta/llama-4-scout-17b-16e-instruct','@cf/nvidia/nemotron-3-120b-a12b'].includes(model))throw new Error('MODEL_NOT_ALLOWLISTED');
- if(++calls>9)throw new Error('ACCEPTANCE_REQUEST_BUDGET_EXCEEDED');
+ if(!['@cf/zai-org/glm-4.7-flash','@cf/meta/llama-4-scout-17b-16e-instruct','@cf/nvidia/nemotron-3-120b-a12b','@cf/openai/whisper-large-v3-turbo'].includes(model))throw new Error('MODEL_NOT_ALLOWLISTED');
+ if(++calls>10)throw new Error('ACCEPTANCE_REQUEST_BUDGET_EXCEEDED');
  const response=await fetch(`https://api.cloudflare.com/client/v4/accounts/${account}/ai/run/${model}`,{
   method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},
   body:JSON.stringify(input),signal:AbortSignal.timeout(75000),
@@ -62,6 +63,12 @@ for(const family of ['FAST','META','NVIDIA'] as const){
   });
  }
 }
+it('Whisper transcribes a synthetic Turkish audio fixture',async()=>{
+ const bytes=new Uint8Array(readFileSync('tmp/nibiru-acceptance/turkish-fixture.wav'));
+ const result=await transcribeNibiruAudio(env,bytes);
+ evidence.push({case:'synthetic-turkish-stt',model:result.model,transcript:result.text});
+ expect(result.text.toLocaleLowerCase('tr-TR')).toMatch(/matematik/);
+});
 afterAll(()=>{
  mkdirSync('tmp/nibiru-acceptance',{recursive:true});
  writeFileSync('tmp/nibiru-acceptance/providers.json',JSON.stringify({time:new Date().toISOString(),transport:'Workers AI REST; gateway disabled',syntheticOnly:true,calls,scope:'Sampled acceptance; not comprehensive MEB certification',evidence},null,2));

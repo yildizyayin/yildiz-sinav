@@ -1,5 +1,5 @@
 import { describe,expect,it,vi } from 'vitest';
-import { buildVoiceProviderPlan,prepareNibiruSpeechText,voiceProviderStatus,speakNibiru,voiceProviderStatusWithHealth } from '../worker/lib/nibiru-voice';
+import { buildVoiceProviderPlan,prepareNibiruSpeechText,voiceProviderStatus,speakNibiru,voiceProviderStatusWithHealth,transcribeNibiruAudio } from '../worker/lib/nibiru-voice';
 import { addPublicVoiceCors } from '../worker/nibiru-voice-entry';
 import type { Env } from '../worker/types';
 
@@ -96,4 +96,28 @@ it('reports STT ready only after matching recent transcription evidence',async()
  expect(status.stt.ready).toBe(true);
  expect(status.stt.liveVerified).toBe(true);
  expect(status.standardReady).toBe(false);
+});
+
+
+it('keeps STT direct when the gateway is explicitly disabled',async()=>{
+ const run=vi.fn().mockResolvedValue({text:'Bugün matematik çalışacağım.'});
+ const result=await transcribeNibiruAudio(env({AI:{run} as unknown as Ai,NIBIRU_AI_GATEWAY_ID:'OFF'}),new Uint8Array([1,2,3]));
+ expect(result.text).toContain('matematik');
+ expect(run.mock.calls[0][2]).toBeUndefined();
+});
+
+it('does not mark Premium ready from a Standard-only speech test',async()=>{
+ const rows=[{provider:'OPENAI_UNIFIED_TTS',model:'openai/tts-1',mode:'STANDARD',last_success_at:new Date().toISOString()}];
+ const DB={prepare:()=>({all:async()=>({results:rows})})} as unknown as D1Database;
+ const status=await voiceProviderStatusWithHealth(env({AI:ai,DB}));
+ expect(status.standardReady).toBe(true);
+ expect(status.premiumReady).toBe(false);
+});
+
+it('expires old transcription success without losing configured state',async()=>{
+ const rows=[{provider:'CLOUDFLARE_WORKERS_AI_STT',model:'@cf/openai/whisper-large-v3-turbo',mode:'STANDARD',last_success_at:new Date(Date.now()-25*60*60*1000).toISOString()}];
+ const DB={prepare:()=>({all:async()=>({results:rows})})} as unknown as D1Database;
+ const status=await voiceProviderStatusWithHealth(env({AI:ai,DB}));
+ expect(status.stt.configured).toBe(true);
+ expect(status.stt.ready).toBe(false);
 });

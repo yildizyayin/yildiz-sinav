@@ -73,7 +73,7 @@ export async function transcribeNibiruAudio(env:Env,bytes:Uint8Array){
  const response:any=await env.AI.run(model as any,{
   audio:base64FromBytes(bytes),task:'transcribe',language:'tr',vad_filter:true,
   initial_prompt:'Türkçe eğitim konuşması. Ders, kazanım, matematik, fen, Türkçe, LGS ve YKS terimlerini doğru yaz.',
- } as any,{gateway:{id:env.NIBIRU_AI_GATEWAY_ID||'default',skipCache:true,collectLog:true,metadata:{app:'nibiru',modality:'stt',language:'tr'}}} as any);
+ } as any,['off','none','disabled','direct'].includes(String(env.NIBIRU_AI_GATEWAY_ID||'default').toLowerCase())?undefined:{gateway:{id:env.NIBIRU_AI_GATEWAY_ID||'default',skipCache:true,collectLog:true,metadata:{app:'nibiru',modality:'stt',language:'tr'}}} as any);
  const text=String(response?.text||response?.transcription_info?.text||'').trim();
  if(!text)throw new Error('VOICE_TRANSCRIPTION_EMPTY');
  return{text,model};
