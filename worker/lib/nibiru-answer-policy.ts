@@ -3,7 +3,7 @@
 export function checkNibiruAnswer(text:string){
  const value=text.normalize('NFKC').toLocaleLowerCase('tr-TR');
  const rules:Array<[string,RegExp]>=[
-  ['OFFICIAL_IMPERSONATION',/meb\s+(?:çalışanıyım|temsilcisiyim|yetkilisiyim)|mill[iî]\s+eğitim\s+bakanlığı(?:nın|'nın)?\s+(?:çalışanıyım|temsilcisiyim)/u],
+  ['OFFICIAL_IMPERSONATION',/meb\s+(?:çalışanıyım|temsilcisiyim|yetkilisiyim|çalışanı\s+yaklaşımıyla|yetkilisi\s+olarak)|mill[iî]\s+eğitim\s+bakanlığı(?:nın|'nın)?\s+(?:çalışanıyım|temsilcisiyim)/u],
   ['DIAGNOSTIC_CLAIM',/(?:tanısı|tanısını)\s+(?:koydum|koyuyorum|koyarım)|(?:kesinlikle|kesin olarak)\s+(?:dehb|adhd|depresyon|otizm)\s+(?:var|hastasısın)/u],
   ['STUDENT_LABEL',/(?:sen|siz|bu öğrenci|öğrencin|çocuğun|çocuğunuz)\s+(?:tembelsin(?:iz)?|başarısızsın(?:ız)?|yetersizsin(?:iz)?|tembeldir|başarısızdır|yetersizdir)/u],
   ['RAW_PERSONAL_IDENTIFIER',/(?<!\d)\d{11}(?!\d)/u],
