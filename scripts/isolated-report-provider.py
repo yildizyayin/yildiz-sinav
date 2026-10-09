@@ -1,4 +1,4 @@
-import json,os,sys,urllib.request,urllib.error,pathlib
+import json,os,sys,time,urllib.request,urllib.error,pathlib
 
 ACCOUNT='daae7254acbfe5218c52665daaacbd96'
 WORKER='yildiz-sinav-qpool-pr-227'
@@ -19,16 +19,24 @@ def api(path,method='GET',payload=None):
 
 BACKUP=pathlib.Path('tmp/report-acceptance-cron-backup.json')
 def crons(name): return [row['cron'] for row in api('/workers/scripts/'+name+'/schedules')['schedules']]
+def wait_crons(name,expected):
+    deadline=time.monotonic()+120
+    while True:
+        current=crons(name)
+        if current==expected: return
+        assert time.monotonic()<deadline, 'Provider schedule did not converge: '+name
+        assert current in [[],['*/15 * * * *'],['* * * * *']], 'Unexpected concurrent schedule change'
+        time.sleep(3)
 if '--restore' in sys.argv:
     if BACKUP.exists():
         original=json.loads(BACKUP.read_text())
         assert original==['*/15 * * * *']
         api('/workers/scripts/'+WORKER+'/schedules','PUT',[])
-        assert not crons(WORKER)
+        wait_crons(WORKER,[])
         current=crons('yildiz-sinav-v1')
         assert current in [[],original], 'Demo schedule changed concurrently'
         api('/workers/scripts/yildiz-sinav-v1/schedules','PUT',[{'cron':cron} for cron in original])
-        assert crons('yildiz-sinav-v1')==original
+        wait_crons('yildiz-sinav-v1',original)
         print('PASS: original demo schedule restored; isolated temporary cron removed')
         BACKUP.unlink()
     sys.exit(0)
@@ -68,7 +76,7 @@ original=crons('yildiz-sinav-v1')
 assert original==['*/15 * * * *'] and not crons(WORKER)
 BACKUP.parent.mkdir(exist_ok=True);BACKUP.write_text(json.dumps(original));BACKUP.chmod(0o600)
 api('/workers/scripts/yildiz-sinav-v1/schedules','PUT',[])
-assert not crons('yildiz-sinav-v1')
+wait_crons('yildiz-sinav-v1',[])
 config['triggers']={'crons':['* * * * *']}
 config['vars'].update({'ENVIRONMENT':'staging','REPORT_EXPORTS_ENABLED':'true','COHORT_REPORTS_ENABLED':'true','REPORT_EXPORT_QUEUE_NAME':'anunex-rubric-exports-staging','COHORT_REPORT_QUEUE_NAME':'anunex-cohort-reports-staging'})
 pathlib.Path('wrangler.report-acceptance.json').write_text(json.dumps(config,indent=2))

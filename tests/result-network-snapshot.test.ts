@@ -71,6 +71,7 @@ it('pins results to the channel publication and fails closed for missing payload
  expect(db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('code','ada',6,'other','other','','')).toHaveLength(0);
  expect(db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('other-school','ada',6,'number','number','','')).toHaveLength(0);
  db.exec("INSERT INTO result_artifact_retirements(administration_id,exam_id,retired_through_version) VALUES('admin','e',1)");
+ const retiredSummary=await (await handleResultNetworkRequest(request('/api/public/results/student'),env))!.json() as any;expect(retiredSummary.exams).toEqual([]);expect(retiredSummary.unavailableSnapshotExamIds).toEqual([]);
  objectReads=0;expect(read()).toHaveLength(0);expect((await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.status).toBe(404);expect(objectReads).toBe(0);
  expect(db.prepare(NETWORK_INSTITUTION_SNAPSHOT_SQL).all('admin','institution','institution')).toHaveLength(0);
  db.exec('DELETE FROM result_artifact_retirements');
