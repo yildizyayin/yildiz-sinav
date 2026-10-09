@@ -56,7 +56,7 @@ async function status(request:Request,env:Env){
 async function transcribe(request:Request,env:Env){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
  const length=Number(request.headers.get('content-length')||0);if(length>8*1024*1024)return fail(413,'VOICE_AUDIO_TOO_LARGE','Ses kaydı en fazla 8 MB olabilir.');
- try{const bytes=new Uint8Array(await request.arrayBuffer());const result=await transcribeNibiruAudio(env,bytes);return json({ok:true,text:result.text,model:result.model,language:'tr'});}catch(error){return voiceError(error)}
+ try{const bytes=new Uint8Array(await request.arrayBuffer());const result=await transcribeNibiruAudio(env,bytes);await recordVoiceProviderProbe(env,'STANDARD','CLOUDFLARE_WORKERS_AI_STT',result.model);return json({ok:true,text:result.text,model:result.model,language:'tr'});}catch(error){return voiceError(error)}
 }
 
 async function speak(request:Request,env:Env){

@@ -1,4 +1,5 @@
 import type { AuthUser, Env } from '../types';
+import {checkNibiruAnswer,NIBIRU_SAFE_ANSWER} from './nibiru-answer-policy';
 import { all, one, uuid } from './db';
 import { createOrReuseDailyCoachPlan, coachPlanSummary, type CoachPlanResult } from './education-coach';
 import { externalPersonalDataGate } from './privacy-external-gate';
@@ -256,6 +257,11 @@ async function aiAnswer(
 
   if (!inference.text) return {text:null,inference,blocked:null};
   const text = inference.text.startsWith(AI_PREFIX) ? inference.text.trim() : AI_PREFIX + ' ' + inference.text.trim();
+  const policy=checkNibiruAnswer(text);
+  if(!policy.ok){
+    console.warn(JSON.stringify({event:'nibiru_answer_policy_blocked',reason:policy.reason,specialist:decision.specialist}));
+    return {text:NIBIRU_SAFE_ANSWER,inference,blocked:policy.reason};
+  }
   return {text,inference,blocked:null};
 }
 

@@ -3,6 +3,7 @@ import type { Env } from '../types';
 export type NibiruVoiceMode='STANDARD'|'PREMIUM';
 export type NibiruVoiceProvider='GOOGLE_WAVENET'|'OPENAI_GPT4O_MINI_TTS'|'OPENAI_UNIFIED_TTS'|'OPENAI_UNIFIED_TTS_HD';
 export type VoiceProviderPlan={mode:NibiruVoiceMode;providers:NibiruVoiceProvider[];reason:string};
+type VoiceHealthProvider=NibiruVoiceProvider|'CLOUDFLARE_WORKERS_AI_STT';
 export type VoiceAudio={bytes:Uint8Array;contentType:string;provider:NibiruVoiceProvider;model:string};
 
 let googleTokenCache:{token:string;expiresAt:number}|null=null;
@@ -35,7 +36,7 @@ export function voiceProviderStatus(env:Env){
  const unified=Boolean(env.AI);
  const paidProvidersAllowed=env.NIBIRU_PAID_VOICE_ENABLED==='ON';
  return {
-  stt:{ready:Boolean(env.AI),configured:Boolean(env.AI),provider:'CLOUDFLARE_WORKERS_AI',model:env.NIBIRU_STT_MODEL||'@cf/openai/whisper-large-v3-turbo',detail:env.AI?'Workers AI binding var; canlı probe gerekli.':'Workers AI binding eksik.'},
+  stt:{ready:false,liveVerified:false,configured:Boolean(env.AI),provider:'CLOUDFLARE_WORKERS_AI',model:env.NIBIRU_STT_MODEL||'@cf/openai/whisper-large-v3-turbo',detail:env.AI?'Workers AI binding var; canlı probe gerekli.':'Workers AI binding eksik.'},
   google:{ready:false,configured:googleConfigured,provider:'GOOGLE_WAVENET',voice:env.NIBIRU_GOOGLE_TTS_VOICE||'tr-TR-Wavenet-E',detail:googleConfigured?'Google Cloud servis hesabı tanımlı; canlı probe gerekli.':'GOOGLE_TTS_SERVICE_ACCOUNT_JSON secret bekleniyor.'},
   openaiDirect:{ready:false,configured:directOpenAi,provider:'OPENAI_GPT4O_MINI_TTS',model:env.NIBIRU_OPENAI_DIRECT_TTS_MODEL||'gpt-4o-mini-tts',detail:directOpenAi?'OpenAI TTS secret tanımlı; canlı probe gerekli.':'OPENAI_TTS_API_KEY opsiyonel; Unified Billing fallback kullanılabilir.'},
   openaiUnified:{ready:false,configured:unified,provider:'CLOUDFLARE_AI_GATEWAY_UNIFIED',standardModel:env.NIBIRU_OPENAI_TTS_MODEL||'openai/tts-1',premiumModel:env.NIBIRU_OPENAI_TTS_HD_MODEL||'openai/tts-1-hd',detail:unified?'Workers AI binding var; Unified Billing canlı probe gerekli.':'Workers AI binding eksik.'},
@@ -145,7 +146,7 @@ export async function speakNibiru(env:Env,value:string,mode:NibiruVoiceMode='STA
 
 type VoiceHealthRow={provider:string;mode:NibiruVoiceMode;model:string;last_success_at:string};
 
-function recentlyVerified(rows:VoiceHealthRow[],provider:NibiruVoiceProvider,configured:boolean){
+function recentlyVerified(rows:VoiceHealthRow[],provider:VoiceHealthProvider,configured:boolean){
  if(!configured)return false;
  const cutoff=Date.now()-24*60*60*1000;
  return rows.some(row=>row.provider===provider&&Date.parse(row.last_success_at)>=cutoff);
@@ -160,15 +161,16 @@ export async function voiceProviderStatusWithHealth(env:Env){
  }catch{
   // A deployment that has not applied the health migration still reports safe configuration state.
  }
- const googleLive=recentlyVerified(rows,'GOOGLE_WAVENET',base.google.configured);
- const directLive=recentlyVerified(rows,'OPENAI_GPT4O_MINI_TTS',base.openaiDirect.configured);
+ const sttLive=recentlyVerified(rows.filter(row=>row.model===base.stt.model),'CLOUDFLARE_WORKERS_AI_STT',base.stt.configured);
+ const googleLive=recentlyVerified(rows.filter(row=>row.model===base.google.voice),'GOOGLE_WAVENET',base.google.configured);
+ const directLive=recentlyVerified(rows.filter(row=>row.model===base.openaiDirect.model),'OPENAI_GPT4O_MINI_TTS',base.openaiDirect.configured);
  const unifiedLive=recentlyVerified(rows.filter(row=>row.model===base.openaiUnified.standardModel),'OPENAI_UNIFIED_TTS',base.openaiUnified.configured);
  const unifiedHdLive=recentlyVerified(rows.filter(row=>row.model===base.openaiUnified.premiumModel),'OPENAI_UNIFIED_TTS_HD',base.openaiUnified.configured);
  const standardLive=base.paidProvidersAllowed&&(googleLive||directLive||unifiedLive);
  const premiumLive=base.paidProvidersAllowed&&(googleLive||directLive||unifiedHdLive);
  return {
   ...base,
-  stt:{...base.stt,ready:base.stt.configured},
+  stt:{...base.stt,ready:sttLive,liveVerified:sttLive},
   google:{...base.google,ready:base.paidProvidersAllowed&&googleLive},
   openaiDirect:{...base.openaiDirect,ready:base.paidProvidersAllowed&&directLive},
   openaiUnified:{...base.openaiUnified,ready:base.paidProvidersAllowed&&(unifiedLive||unifiedHdLive)},
@@ -178,7 +180,7 @@ export async function voiceProviderStatusWithHealth(env:Env){
  };
 }
 
-export async function recordVoiceProviderProbe(env:Env,mode:NibiruVoiceMode,provider:NibiruVoiceProvider,model:string){
+export async function recordVoiceProviderProbe(env:Env,mode:NibiruVoiceMode,provider:VoiceHealthProvider,model:string){
  try{
   await env.DB.prepare(`
    INSERT INTO nibiru_voice_provider_health(provider,mode,model,last_success_at,updated_at)

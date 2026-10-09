@@ -1,5 +1,6 @@
 import {afterAll,expect,it} from 'vitest';
 import {mkdirSync,writeFileSync} from 'node:fs';
+import {checkNibiruAnswer} from '../worker/lib/nibiru-answer-policy';
 import {nibiruSystemPrompt} from '../worker/lib/nibiru';
 import {probeNibiruModels,chooseNibiruModelDecision,runNibiruInference} from '../worker/lib/nibiru-model-router';
 import {routeNibiruSpecialist} from '../worker/lib/nibiru-specialists';
@@ -50,6 +51,7 @@ for(const family of ['FAST','META','NVIDIA'] as const){
    evidence.push({case:scenario,family,model,answer,attempts:result.attempts});
    expect(result.selected?.family).toBe(family);
    expect(answer.length).toBeGreaterThan(20);
+   expect(checkNibiruAnswer(answer).ok).toBe(true);
    expect(answer).toMatch(/Nibiru:/);
    if(scenario==='mathematics')expect(answer).toMatch(/7\s*\/\s*8/);
    else{

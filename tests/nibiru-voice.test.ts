@@ -50,7 +50,7 @@ describe('Nibiru Voice provider policy',()=>{
 
  it('reports Turkish STT configured when Workers AI binding exists',()=>{
   const status=voiceProviderStatus(env({AI:ai}));
-  expect(status.stt.ready).toBe(true);
+  expect(status.stt.ready).toBe(false);
   expect(status.stt.configured).toBe(true);
   expect(status.stt.model).toBe('@cf/openai/whisper-large-v3-turbo');
   expect(status.standardReady).toBe(false);
@@ -86,4 +86,14 @@ describe('Voice acceptance boundaries',()=>{
   expect(status.openaiUnified.ready).toBe(false);
   expect(status.standardReady).toBe(false);
  });
+});
+
+
+it('reports STT ready only after matching recent transcription evidence',async()=>{
+ const rows=[{provider:'CLOUDFLARE_WORKERS_AI_STT',model:'@cf/openai/whisper-large-v3-turbo',mode:'STANDARD',last_success_at:new Date().toISOString()}];
+ const DB={prepare:()=>({all:async()=>({results:rows})})} as unknown as D1Database;
+ const status=await voiceProviderStatusWithHealth(env({AI:ai,DB,NIBIRU_PAID_VOICE_ENABLED:'OFF'}));
+ expect(status.stt.ready).toBe(true);
+ expect(status.stt.liveVerified).toBe(true);
+ expect(status.standardReady).toBe(false);
 });

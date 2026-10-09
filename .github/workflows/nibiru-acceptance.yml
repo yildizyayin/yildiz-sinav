@@ -22,6 +22,8 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - name: Read demo WhatsApp and voice configuration without sending messages
+        run: node scripts/nibiru-demo-readiness.mjs
       - name: Verify Free account before inference
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
