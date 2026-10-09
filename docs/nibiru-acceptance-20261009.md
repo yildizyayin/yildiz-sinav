@@ -31,7 +31,7 @@
 
 ## Remaining acceptance and next-session instructions
 
-1. Recheck stricter follow-up run 37962439334 and its synthetic outputs; do not rely on the earlier automated pass. Sampled acceptance does not certify all Maarif content.
+1. Strict follow-up run 37962439334 passed all eight sampled live cases, 813 offline tests, typecheck and build. Read-only artifact review run 37962698841 confirmed no injected metrics or official impersonation in missing-data answers. Educational quality is still NOT accepted: GLM math says “ortak pay” instead of “ortak payda” in one sentence; Meta math includes a Japanese phrase. Add language/output-quality controls and test wider academic samples before release. Do not mark pedagogical quality or comprehensive Maarif conformity as verified.
 2. Retain the existing bounded guard and teacher review. No verified Free Turkish server TTS provider is configured; paid TTS is OFF. Human audio and voice quality require separate acceptance.
 3. Configure WhatsApp's four credentials and enable it for integration verification. A real outbound acceptance requires an explicitly designated owned test recipient.
 4. Merge/deploy only after provider acceptance is resolved and required release checks are reviewed. Existing draft PR #229 and private D1/R2/capacity work remain separate.
@@ -42,3 +42,10 @@ Official references: [Cloudflare subscription permissions](https://developers.cl
 ## Added roadmap decision — 2026-10-09 19:22 Europe/Istanbul
 
 User requested YouTube integration after Nibiru model, voice and WhatsApp acceptance and before applying the panel design. First audit existing YouTube/video library code and role/license gates. Then implement controlled educational video links/search, question/outcome association and in-panel playback as supported by the verified APIs and existing modules. Final integration scope remains to be agreed; do not duplicate existing capabilities or mark planned items as working. Maintain the Free-scope preference and record integration/test outcomes here.
+
+## Current handoff — token update completed
+
+- Cloudflare permission/Free preflight, exact-OK connectivity for all three configured models and synthetic Turkish Whisper STT are verified.
+- Code revision tested: 74468672d91ab5f6c076a8e66face8e6c38033da. Evidence retained in GitHub run 37962439334.
+- Final output review distinguishes passing bounded automation from remaining terminology/language quality defects. No main merge or deployment has occurred.
+- Next engineering work: Turkish output validation and academic quality lane/review, then WhatsApp setup/owned-recipient acceptance, YouTube activation/audit and design application. Turkish server TTS and logout HTTP 500 remain unresolved.
