@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
 jobs:
   account-audit:
     runs-on: ubuntu-latest
@@ -34,3 +35,12 @@ jobs:
           }));
           console.log(JSON.stringify({inferenceCalls:0,products}));
           JS
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 37960142183
+          name: nibiru-bounded-acceptance-29c4b6a14672cf0fc3e3b46cc8576e4538afb719
+          path: tmp/provider-evidence
+      - name: Inspect synthetic provider evidence (no inference)
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';console.log(fs.readFileSync('tmp/provider-evidence/providers.json','utf8'))"
