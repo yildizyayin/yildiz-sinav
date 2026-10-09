@@ -1,4 +1,5 @@
 import app from './platform-entry';
+import {fetchYoutubeMetadata,youtubeCandidateAvailable} from './lib/youtube-candidate-policy';
 import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, json, one, uuid } from './lib/db';
@@ -145,9 +146,9 @@ async function aiPick(env:Env,query:string,candidates:any[]){
   try{
     const model=env.NIBIRU_AI_MODEL||'@cf/zai-org/glm-4.7-flash';
     const prompt=`Bir öğrenci için yalnız şu mikro konuyu anlatan en uygun kısa YouTube videosunu seç: ${query}. Adaylar: ${candidates.map(x=>`${x.id} | ${x.title} | ${x.duration_seconds}s | ${x.view_count} izlenme`).join('\n')}. 5-12. sınıf öğrencisine uygun, konuya doğrudan odaklanan ve yaklaşık 1-2 dakikalık olanı seç. Yalnız video id döndür.`;
-    const response:any=await env.AI.run(model as any,{messages:[{role:'system',content:'Sen eğitim içerik seçicisisin. Yalnız verilen adaylardan bir video kimliği seç.'},{role:'user',content:prompt}],max_tokens:40,temperature:0});
+    const response:any=await env.AI.run(model as any,{messages:[{role:'system',content:'Sen eğitim içerik seçicisisin. Yalnız verilen adaylardan bir video kimliği seç.'},{role:'user',content:prompt}],max_completion_tokens:64,chat_template_kwargs:{enable_thinking:false},temperature:0});
     const text=typeof response==='string'?response:response?.response||response?.result?.response||response?.choices?.[0]?.message?.content;
-    return candidates.find(x=>String(text||'').includes(x.id))||candidates[0]||null;
+    return candidates.find(x=>String(text||'').trim().replace(/^["'`]|["'`]$/g,'')===x.id)||candidates[0]||null;
   }catch{return candidates[0]||null}
 }
 
@@ -155,21 +156,21 @@ async function youtubeMicroVideo(env:Env,question:any){
   if(!env.YOUTUBE_API_KEY)return {video:null,reason:'YOUTUBE_NOT_CONFIGURED',candidateCount:0};
   if(!question.outcome_title&&!question.topic&&!question.subtopic)return {video:null,reason:'OUTCOME_MAPPING_REQUIRED',candidateCount:0};
   const query=[question.grade_level?`${question.grade_level}. sınıf`:null,question.subject_name,question.topic,question.subtopic,question.outcome_title,'kısa konu anlatımı'].filter(Boolean).join(' ');
-  const cached=await all<any>(env.DB.prepare(`SELECT youtube_video_id id,title,channel_title,url,duration_seconds,view_count,relevance_score,popularity_score,ai_selected FROM youtube_micro_video_candidates WHERE exam_question_id=? AND (expires_at IS NULL OR expires_at>datetime('now')) ORDER BY ai_selected DESC,relevance_score DESC,popularity_score DESC LIMIT 5`).bind(question.question_id));
+  const cached=await all<any>(env.DB.prepare(`SELECT youtube_video_id id,title,channel_title,url,duration_seconds,view_count,relevance_score,popularity_score,ai_selected FROM youtube_micro_video_candidates WHERE exam_question_id=? AND search_query=? AND (expires_at IS NULL OR expires_at>datetime('now')) ORDER BY ai_selected DESC,relevance_score DESC,popularity_score DESC LIMIT 5`).bind(question.question_id,'validated-v2:'+query));
   if(cached.length){const selected=cached.find(x=>x.ai_selected)||cached[0];return {video:selected,reason:'CACHE',candidateCount:cached.length};}
   const searchUrl=new URL('https://www.googleapis.com/youtube/v3/search');searchUrl.searchParams.set('part','snippet');searchUrl.searchParams.set('type','video');searchUrl.searchParams.set('safeSearch','strict');searchUrl.searchParams.set('videoEmbeddable','true');searchUrl.searchParams.set('videoDuration','short');searchUrl.searchParams.set('maxResults','12');searchUrl.searchParams.set('q',query);searchUrl.searchParams.set('key',env.YOUTUBE_API_KEY);
-  const searchRes=await fetch(searchUrl.toString());if(!searchRes.ok)return {video:null,reason:'YOUTUBE_SEARCH_FAILED',candidateCount:0};
-  const search:any=await searchRes.json();const ids=(search.items||[]).map((x:any)=>x.id?.videoId).filter(Boolean);if(!ids.length)return {video:null,reason:'NO_CANDIDATE',candidateCount:0};
+  const search=await fetchYoutubeMetadata(searchUrl);if(!search)return {video:null,reason:'YOUTUBE_SEARCH_FAILED',candidateCount:0};const ids=(search.items||[]).map((x:any)=>x.id?.videoId).filter(Boolean);if(!ids.length)return {video:null,reason:'NO_CANDIDATE',candidateCount:0};
   const detailsUrl=new URL('https://www.googleapis.com/youtube/v3/videos');detailsUrl.searchParams.set('part','snippet,contentDetails,statistics,status');detailsUrl.searchParams.set('id',ids.join(','));detailsUrl.searchParams.set('key',env.YOUTUBE_API_KEY);
-  const detailsRes=await fetch(detailsUrl.toString());if(!detailsRes.ok)return {video:null,reason:'YOUTUBE_DETAILS_FAILED',candidateCount:0};const details:any=await detailsRes.json();
-  let items=(details.items||[]).map((x:any)=>{const duration=parseIsoDuration(x.contentDetails?.duration)||0;const views=Number(x.statistics?.viewCount||0);const rel=relevance(query,x.snippet?.title||'');return {id:x.id,title:x.snippet?.title||'Konu Anlatımı',channel_title:x.snippet?.channelTitle||'',url:`https://www.youtube.com/watch?v=${x.id}`,duration_seconds:duration,view_count:views,relevance_score:rel,popularity_score:Math.log10(Math.max(views,1))};}).filter((x:any)=>x.duration_seconds>=60&&x.duration_seconds<=150&&x.relevance_score>0);
-  if(items.length<3)items=(details.items||[]).map((x:any)=>{const duration=parseIsoDuration(x.contentDetails?.duration)||0;const views=Number(x.statistics?.viewCount||0);const rel=relevance(query,x.snippet?.title||'');return {id:x.id,title:x.snippet?.title||'Konu Anlatımı',channel_title:x.snippet?.channelTitle||'',url:`https://www.youtube.com/watch?v=${x.id}`,duration_seconds:duration,view_count:views,relevance_score:rel,popularity_score:Math.log10(Math.max(views,1))};}).filter((x:any)=>x.duration_seconds>=45&&x.duration_seconds<=180&&x.relevance_score>0);
+  const details=await fetchYoutubeMetadata(detailsUrl);if(!details)return {video:null,reason:'YOUTUBE_DETAILS_FAILED',candidateCount:0};
+  const available=details.items.filter((video:any)=>youtubeCandidateAvailable(video));
+  let items=available.map((x:any)=>{const duration=parseIsoDuration(x.contentDetails?.duration)||0;const views=Number(x.statistics?.viewCount||0);const rel=relevance(query,x.snippet?.title||'');return {id:x.id,title:x.snippet?.title||'Konu Anlatımı',channel_title:x.snippet?.channelTitle||'',url:`https://www.youtube.com/watch?v=${x.id}`,duration_seconds:duration,view_count:views,relevance_score:rel,popularity_score:Math.log10(Math.max(views,1))};}).filter((x:any)=>x.duration_seconds>=60&&x.duration_seconds<=150&&x.relevance_score>0);
+  if(items.length<3)items=available.map((x:any)=>{const duration=parseIsoDuration(x.contentDetails?.duration)||0;const views=Number(x.statistics?.viewCount||0);const rel=relevance(query,x.snippet?.title||'');return {id:x.id,title:x.snippet?.title||'Konu Anlatımı',channel_title:x.snippet?.channelTitle||'',url:`https://www.youtube.com/watch?v=${x.id}`,duration_seconds:duration,view_count:views,relevance_score:rel,popularity_score:Math.log10(Math.max(views,1))};}).filter((x:any)=>x.duration_seconds>=45&&x.duration_seconds<=180&&x.relevance_score>0);
   items.sort((a:any,b:any)=>(b.relevance_score*10+b.popularity_score)-(a.relevance_score*10+a.popularity_score));items=items.slice(0,5);
   if(!items.length)return {video:null,reason:'NO_MICRO_VIDEO',candidateCount:0};
   const selected=await aiPick(env,query,items);
   const expires=new Date(Date.now()+7*86400000).toISOString();
-  for(const item of items)await env.DB.prepare(`INSERT OR REPLACE INTO youtube_micro_video_candidates(id,exam_question_id,outcome_id,grade_level,subject_id,search_query,youtube_video_id,title,channel_title,url,duration_seconds,view_count,relevance_score,popularity_score,ai_selected,safe_search,fetched_at,expires_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP,?)`).bind(uuid('ytm'),question.question_id,question.outcome_id||null,question.grade_level||null,question.subject_id,query,item.id,item.title,item.channel_title,item.url,item.duration_seconds,item.view_count,item.relevance_score,item.popularity_score,item.id===selected?.id?1:0,1,expires).run();
-  return {video:selected,reason:'AI_SELECTED',candidateCount:items.length};
+  for(const item of items)await env.DB.prepare(`INSERT OR REPLACE INTO youtube_micro_video_candidates(id,exam_question_id,outcome_id,grade_level,subject_id,search_query,youtube_video_id,title,channel_title,url,duration_seconds,view_count,relevance_score,popularity_score,ai_selected,safe_search,fetched_at,expires_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP,?)`).bind(uuid('ytm'),question.question_id,question.outcome_id||null,question.grade_level||null,question.subject_id,'validated-v2:'+query,item.id,item.title,item.channel_title,item.url,item.duration_seconds,item.view_count,item.relevance_score,item.popularity_score,item.id===selected?.id?1:0,1,expires).run();
+  return {video:selected,reason:'CANDIDATE_SELECTED',candidateCount:items.length};
 }
 
 async function questionSupport(env:Env,user:AuthUser,url:URL){
@@ -183,7 +184,7 @@ async function questionSupport(env:Env,user:AuthUser,url:URL){
     FROM student_answers sa JOIN exam_participants ep ON ep.id=sa.participant_id JOIN exam_questions q ON q.id=sa.exam_question_id JOIN subjects s ON s.id=q.subject_id LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id LEFT JOIN outcomes o ON o.id=qo.outcome_id WHERE ep.student_id=? AND q.id=? LIMIT 1`).bind(user.student_id,questionId));
   if(!row)return fail(404,'QUESTION_NOT_FOUND','Bu soru öğrenci sonuçlarında bulunamadı.');
   let topicVideo=row.topic_url?{url:row.topic_url,title:row.topic_title||'Konu Anlatımı',source:'REGISTERED'}:null;let selection:any=null;
-  if(!topicVideo){selection=await youtubeMicroVideo(env,row);if(selection.video)topicVideo={...selection.video,source:'YOUTUBE_AI'};}
+  if(!topicVideo){selection=await youtubeMicroVideo(env,row);if(selection.video)topicVideo={...selection.video,source:'YOUTUBE_AI',reviewRequired:true};}
   return json({ok:true,question:{id:row.question_id,questionNo:row.question_no,globalNo:row.global_no,status:row.answer_status,subject:row.subject_name,outcome:row.outcome_title,topic:row.topic,subtopic:row.subtopic},options:{solutionVideo:row.solution_url?{url:row.solution_url,title:row.solution_title||'Video Çözümü',source:'PUBLISHER'}:null,topicVideo},microLearning:selection?{reason:selection.reason,candidateCount:selection.candidateCount}:null});
 }
 

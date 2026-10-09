@@ -6,6 +6,8 @@ export function checkNibiruAnswer(text:string){
   ['OFFICIAL_IMPERSONATION',/meb\s+(?:çalışanıyım|temsilcisiyim|yetkilisiyim|çalışanı\s+yaklaşımıyla|yetkilisi\s+olarak)|mill[iî]\s+eğitim\s+bakanlığı(?:nın|'nın)?\s+(?:çalışanıyım|temsilcisiyim)/u],
   ['DIAGNOSTIC_CLAIM',/(?:tanısı|tanısını)\s+(?:koydum|koyuyorum|koyarım)|(?:kesinlikle|kesin olarak)\s+(?:dehb|adhd|depresyon|otizm)\s+(?:var|hastasısın)/u],
   ['STUDENT_LABEL',/(?:sen|siz|bu öğrenci|öğrencin|çocuğun|çocuğunuz)\s+(?:tembelsin(?:iz)?|başarısızsın(?:ız)?|yetersizsin(?:iz)?|tembeldir|başarısızdır|yetersizdir)/u],
+  ['NON_TURKISH_SCRIPT',/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u],
+  ['ACADEMIC_TERMINOLOGY',/ortak\s+pay(?:ı)?\s+(?:olarak\s+)?(?:yapalım|alalım|seçelim|kullanalım)/u],
   ['RAW_PERSONAL_IDENTIFIER',/(?<!\d)\d{11}(?!\d)/u],
  ];
  const reason=rules.find(([,pattern])=>pattern.test(value))?.[0]||null;
