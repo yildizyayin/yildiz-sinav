@@ -82,6 +82,9 @@ jobs:
       - name: Verify release
         run: npm run typecheck && npm test && npm run build
 
+      - name: Ensure private production report queues and storage
+        run: python3 scripts/provision-production-private-reports.py
+
       - name: Deploy isolated production Worker and resources
         run: npx wrangler deploy --config wrangler.production.jsonc --var ENVIRONMENT:production --var PRODUCT_NAME:"Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY
 
