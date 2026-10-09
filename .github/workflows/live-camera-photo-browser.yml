@@ -24,3 +24,22 @@ jobs:
         run: node scripts/live-camera-photo-browser.mjs
       - name: Verify six live report roles and manual booklet matching
         run: node scripts/isolated-live-browser-acceptance.mjs
+
+  scheduled-diagnostics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Observe actual isolated scheduled invocations without exposing requests or data
+        run: |
+          set -o pipefail
+          timeout 420s npx wrangler tail yildiz-sinav-qpool-pr-227 --format json 2>/dev/null | python3 scripts/scheduled-report-diagnostics.py
+          result=$?
+          if [ "$result" != 0 ] && [ "$result" != 124 ]; then exit "$result"; fi

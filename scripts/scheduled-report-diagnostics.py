@@ -2,6 +2,7 @@ import json,sys
 decoder=json.JSONDecoder()
 buffer=''
 for line in sys.stdin:
+    if not buffer.strip() and not line.lstrip().startswith('{'): continue
     buffer+=line
     while buffer.strip():
         buffer=buffer.lstrip()
