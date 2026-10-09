@@ -136,12 +136,14 @@ describe('Provider acceptance evidence',()=>{
   expect(result.ok).toBe(false);
   expect(result.results.every(row=>row.error==='PROBE_UNEXPECTED_RESPONSE')).toBe(true);
  });
- it('separates GLM prompt roles with real newlines',async()=>{
+ it('preserves GLM system and user roles as structured messages',async()=>{
   const run=vi.fn().mockResolvedValue({response:'OK'});
   const e={AI:{run},NIBIRU_AI_GATEWAY_ID:'OFF'} as unknown as Env;
   await probeNibiruModels(e);
   const glm=run.mock.calls.find(call=>call[0]==='@cf/zai-org/glm-4.7-flash');
-  expect(glm?.[1].prompt).toContain('\nUSER:');
-  expect(glm?.[1].prompt).not.toContain('\\nUSER:');
+  expect(glm?.[1].prompt).toBeUndefined();
+  expect(glm?.[1].messages.map((message:any)=>message.role)).toEqual(['system','user']);
+  const nvidia=run.mock.calls.find(call=>call[0]==='@cf/nvidia/nemotron-3-120b-a12b');
+  expect(nvidia?.[1].chat_template_kwargs).toEqual({enable_thinking:true,low_effort:true,force_nonempty_content:true});
  });
 });

@@ -10,6 +10,7 @@ import type {Env} from '../worker/types';
 const token=process.env.CLOUDFLARE_API_TOKEN;
 const account=process.env.CLOUDFLARE_ACCOUNT_ID;
 const evidence:any[]=[];
+const diagnostics:any[]=[];
 let calls=0;
 const ai={run:async(model:string,input:any,options?:any)=>{
  if(!token||!account)throw new Error('STAGING_CREDENTIALS_MISSING');
@@ -21,6 +22,8 @@ const ai={run:async(model:string,input:any,options?:any)=>{
   body:JSON.stringify(input),signal:AbortSignal.timeout(75000),
  });
  const body:any=await response.json();
+ const result=body.result;
+ diagnostics.push({model,httpStatus:response.status,errorCode:Number(body.errors?.[0]?.code)||0,finishReason:result?.choices?.[0]?.finish_reason??null,usage:result?.usage??null,visibleContentLength:String(result?.response??result?.choices?.[0]?.message?.content??'').length});
  // Do not expose provider messages, headers or credentials in CI logs.
  if(!response.ok||body.success===false)throw new Error(`WORKERS_AI_HTTP_${response.status}_CODE_${Number(body.errors?.[0]?.code)||0}`);
  return body.result;
@@ -42,7 +45,8 @@ for(const family of ['FAST','META','NVIDIA'] as const){
    const decision=chooseNibiruModelDecision(env,{role:'STUDENT'},'GENERAL_ACADEMIC',message,routeNibiruSpecialist({role:'STUDENT'},message));
    const model={FAST:'@cf/zai-org/glm-4.7-flash',META:'@cf/meta/llama-4-scout-17b-16e-instruct',NVIDIA:'@cf/nvidia/nemotron-3-120b-a12b'}[family];
    decision.candidates=[{family,model,purpose:'Isolated synthetic acceptance'}];
-   decision.maxTokens=480;
+   // Match the bounded application subject-reasoning budget.
+   decision.maxTokens=900;
    decision.temperature=0;
    const result=await runNibiruInference(env,decision,[
     {role:'system',content:nibiruSystemPrompt('STUDENT',scenario==='mathematics'?'SUBJECT_TEACHER':'EDUCATION_COACH')},
@@ -53,8 +57,12 @@ for(const family of ['FAST','META','NVIDIA'] as const){
    expect(result.selected?.family).toBe(family);
    expect(answer.length).toBeGreaterThan(20);
    expect(checkNibiruAnswer(answer).ok).toBe(true);
-   expect(answer).toMatch(/Nibiru:/);
-   if(scenario==='mathematics')expect(answer).toMatch(/7\s*\/\s*8/);
+   expect(answer.trim()).toMatch(/^Nibiru:/);
+   if(scenario==='mathematics'){
+    expect(answer).toMatch(/7\s*\/\s*8/);
+    expect(answer).toMatch(/payda/i);
+    expect(answer).not.toMatch(/payların.{0,50}(?:EKOK|en küçük ortak kat)/i);
+   }
    else{
     expect(answer).toMatch(/veri|sonuç|bilgi|tanı/i);
     expect(answer).not.toMatch(/(?:90\s*net|450\s*puan)\s*(?:aldın|aldınız|yaptın|yaptınız)/i);
@@ -71,5 +79,5 @@ it('Whisper transcribes a synthetic Turkish audio fixture',async()=>{
 });
 afterAll(()=>{
  mkdirSync('tmp/nibiru-acceptance',{recursive:true});
- writeFileSync('tmp/nibiru-acceptance/providers.json',JSON.stringify({time:new Date().toISOString(),transport:'Workers AI REST; gateway disabled',syntheticOnly:true,calls,scope:'Sampled acceptance; not comprehensive MEB certification',evidence},null,2));
+ writeFileSync('tmp/nibiru-acceptance/providers.json',JSON.stringify({time:new Date().toISOString(),transport:'Workers AI REST; gateway disabled',syntheticOnly:true,calls,scope:'Sampled acceptance; not comprehensive MEB certification',evidence,diagnostics},null,2));
 });

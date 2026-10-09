@@ -288,14 +288,11 @@ async function callModel(
 ):Promise<ModelCallResult>{
   if(item.family==='GROQ')return callGroqModel(env,item,decision,messages);
   if(!env.AI)return{text:null,transport:'none',gatewayFallback:false,error:'AI_BINDING_MISSING'};
-  const isGlm=item.model===DEFAULT_FAST;
-  const input:any=isGlm
-    ? {
-        prompt:messages.map(message=>message.role.toUpperCase()+': '+message.content).join('\n'),
-        temperature:decision.temperature,
-        stream:false,
-      }
-    : {messages,temperature:decision.temperature,stream:false};
+  // Preserve role boundaries using the provider's documented chat interface.
+  const input:any={messages,temperature:decision.temperature,stream:false};
+  if(item.model===DEFAULT_NVIDIA){
+    input.chat_template_kwargs={enable_thinking:true,low_effort:true,force_nonempty_content:true};
+  }
   if(item.model===DEFAULT_FAST||item.family==='FAST'){
     input.max_completion_tokens=decision.maxTokens;
     input.reasoning_effort='low';
