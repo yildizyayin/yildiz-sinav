@@ -23,7 +23,7 @@
 - Token update propagated: subscription and Workers AI API calls no longer return 403.
 - Read-only account audit found Cloudflare Free plans and R2 Paid activation; R2 is a separate storage product. The preflight excludes R2 from the Workers AI plan classification and still rejects non-Free Workers subscriptions or unknown paid products.
 - Run [37961531111](https://github.com/yildizyayin/yildiz-sinav/actions/runs/37961531111): 812 tests, typecheck and build passed. All three exact-OK connectivity probes passed. Meta and NVIDIA passed both sampled educational cases. Whisper transcribed “Bugün matematik çalışacağım.”
-- GLM's two educational cases were empty: provider HTTP 200, finish_reason length, 900 completion tokens, zero visible content. Replaced ineffective reasoning_effort low with the official template enable_thinking false. Follow-up run [37962037486](https://github.com/yildizyayin/yildiz-sinav/actions/runs/37962037486) PASSED: all eight live acceptance tests, 812 offline tests, typecheck, build and Free preflight. All three models passed both sampled educational cases and exact-OK probes; Turkish Whisper passed.
+- GLM's two educational cases were empty: provider HTTP 200, finish_reason length, 900 completion tokens, zero visible content. Replaced ineffective reasoning_effort low with the official template enable_thinking false. Follow-up run [37962037486](https://github.com/yildizyayin/yildiz-sinav/actions/runs/37962037486) passed the then-current automated checks, but manual output review found a GLM issue: it reused unverified 90-net/450-point claims and said “MEB çalışanı yaklaşımıyla”. This automated pass is insufficient for final educational acceptance. Added an official-role framing guard regression and a missing-evidence test that forbids repeating the injected metrics. Clarified the system policy to distinguish user claims from verified records. Follow-up run: [37962439334](https://github.com/yildizyayin/yildiz-sinav/actions/runs/37962439334).
 - Every live acceptance run is limited to ten allowlisted inference requests; no paid upgrade, external TTS or Gateway billing route.
 - Demo WhatsApp remains disabled/not ready, with all four credential flags false. No outbound message sent. Production configuration is not inferred from demo.
 - Demo voice binding is configured but liveVerified false; these branch corrections are not deployed.
@@ -31,7 +31,7 @@
 
 ## Remaining acceptance and next-session instructions
 
-1. Provider acceptance passed at the branch code revision e8c5246cc43fba1e03fb9fe48ee89609dfe5aacf. Inspect its saved synthetic outputs for review; sampled acceptance does not certify all Maarif content.
+1. Recheck stricter follow-up run 37962439334 and its synthetic outputs; do not rely on the earlier automated pass. Sampled acceptance does not certify all Maarif content.
 2. Retain the existing bounded guard and teacher review. No verified Free Turkish server TTS provider is configured; paid TTS is OFF. Human audio and voice quality require separate acceptance.
 3. Configure WhatsApp's four credentials and enable it for integration verification. A real outbound acceptance requires an explicitly designated owned test recipient.
 4. Merge/deploy only after provider acceptance is resolved and required release checks are reviewed. Existing draft PR #229 and private D1/R2/capacity work remain separate.
