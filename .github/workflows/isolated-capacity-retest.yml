@@ -52,7 +52,7 @@ jobs:
         run: |
           {
             echo '### Staging authenticated capacity boundary'
-            echo '- Diagnostic only: one generator × 2000 virtual users after failed 10,000-request burst.'
+            echo '- Diagnostic only: one generator × 4000 virtual users after failed 10,000-request burst.'
             echo '- One synthetic identity; this bounded run does not certify 10,000 users.'
             echo '- 1,000,000 HTTP requests BLOCKED: provider reported Workers Free; daily dynamic request allowance is 100,000.'
             echo '- This is not a sustained 60-second capacity certification or one million simultaneous users.'
@@ -73,7 +73,7 @@ jobs:
       SMOKE_BASE_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
       TARGET_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
       LOAD_TEST_ALLOWED_ORIGINS: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
-      VUS: '2000'
+      VUS: '4000'
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -85,7 +85,7 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location https://github.com/grafana/k6/releases/download/v0.52.0/k6-v0.52.0-linux-amd64.tar.gz | tar xz --strip-components 1
-      - name: Install bounded diagnostic script (2000 requests, status only)
+      - name: Install bounded diagnostic script (4000 requests, status only)
         run: |
           cat > bounded-capacity-diagnostic.js <<'JS'
           import http from 'k6/http';
@@ -95,7 +95,7 @@ jobs:
           const failures=new Counter('response_failure_kind');
           const launchDelay=new Trend('launch_delay_ms');
           export const options={
-           scenarios:{authenticated_burst:{executor:'per-vu-iterations',vus:2000,iterations:1,maxDuration:'5m'}},
+           scenarios:{authenticated_burst:{executor:'per-vu-iterations',vus:4000,iterations:1,maxDuration:'5m'}},
            thresholds:{http_req_failed:['rate<0.05'],http_req_duration:['p(95)<2500'],checks:['rate>0.99'],launch_delay_ms:['p(99)<2000']},
           };
           export default function(){
@@ -146,7 +146,7 @@ jobs:
               print(json.dumps({'outcome':event.get('outcome'),'errorKind':kind,'exceptionCount':len(event.get('exceptions',[]))}),flush=True)
           PY
           npm exec --yes --package=wrangler@4 -- wrangler --version
-      - name: Execute bounded 2000-VU authenticated diagnostic with sanitized live tail
+      - name: Execute bounded 4000-VU authenticated diagnostic with sanitized live tail
         run: |
           set -uo pipefail
           timeout 120s npm exec --yes --package=wrangler@4 -- wrangler tail yildiz-sinav-qpool-pr-227 --format=json 2>/dev/null | python3 -u bounded-tail-filter.py > sanitized-capacity-tail.jsonl &
