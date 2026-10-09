@@ -9,7 +9,7 @@
 
 ## Implemented fixes
 
-1. GLM prompt roles now use actual newlines.
+1. GLM now uses structured system/user messages. Its fast lane disables template thinking so the bounded completion budget produces visible answers. Nemotron uses its documented low-effort template controls and forces nonempty content.
 2. Provider connectivity requires the requested `OK`, rather than accepting any nonempty error text as success.
 3. Paid Google/OpenAI/Unified TTS requires explicit `NIBIRU_PAID_VOICE_ENABLED=ON`; default is OFF. This opt-in has not been enabled.
 4. Removed silent English MeloTTS fallback and incorrect OpenAI attribution.
@@ -20,22 +20,22 @@
 
 ## Verified evidence
 
-- GitHub run [37958103509](https://github.com/yildizyayin/yildiz-sinav/actions/runs/37958103509): 806 unit/integration tests passed; typecheck and production build passed.
-- Demo read-only check at 2026-10-09 16:14:42 UTC: environment staging; WhatsApp disabled and not ready; all four configuration flags false (verify token, app secret, access token, phone ID). No outbound message sent.
-- Demo voice status: binding configured, liveVerified false. Demo still runs the baseline; code corrections above are not deployed.
-- Demo logout returned HTTP 500 again; local session cookie discarded. Root cause is not established here; keep tracked with other post-release technical issues.
-- Real provider step BLOCKED, not passed: Cloudflare account subscriptions GET returned HTTP 403 (`FREE_PLAN_HTTP_403`). There were zero model/STT inference calls in these runs.
-
-The final code also passed a separate TypeScript check for the live acceptance runner. The final update after this run is documentation and whitespace only.
+- Token update propagated: subscription and Workers AI API calls no longer return 403.
+- Read-only account audit found Cloudflare Free plans and R2 Paid activation; R2 is a separate storage product. The preflight excludes R2 from the Workers AI plan classification and still rejects non-Free Workers subscriptions or unknown paid products.
+- Run [37961531111](https://github.com/yildizyayin/yildiz-sinav/actions/runs/37961531111): 812 tests, typecheck and build passed. All three exact-OK connectivity probes passed. Meta and NVIDIA passed both sampled educational cases. Whisper transcribed “Bugün matematik çalışacağım.”
+- GLM's two educational cases were empty: provider HTTP 200, finish_reason length, 900 completion tokens, zero visible content. Replaced ineffective reasoning_effort low with the official template enable_thinking false. Follow-up run [37962037486](https://github.com/yildizyayin/yildiz-sinav/actions/runs/37962037486) PASSED: all eight live acceptance tests, 812 offline tests, typecheck, build and Free preflight. All three models passed both sampled educational cases and exact-OK probes; Turkish Whisper passed.
+- Every live acceptance run is limited to ten allowlisted inference requests; no paid upgrade, external TTS or Gateway billing route.
+- Demo WhatsApp remains disabled/not ready, with all four credential flags false. No outbound message sent. Production configuration is not inferred from demo.
+- Demo voice binding is configured but liveVerified false; these branch corrections are not deployed.
+- Demo logout returned HTTP 500; root cause remains unresolved and tracked with post-release issues.
 
 ## Remaining acceptance and next-session instructions
 
-1. Verify Free account using a token with **Billing Read** permission on the relevant account, then rerun `Nibiru Bounded Acceptance`. Do not add Billing Write, purchase credits, or bypass the preflight. If a paid subscription is present, conduct a quota audit before inference; the current runner stops.
-2. Inspect real model outputs and mathematical answer (7/8), missing-data handling and injection refusal. Sampled automated checks do not certify all Maarif answers. Keep teacher review for educational content.
-3. Run prepared synthetic Turkish STT acceptance once Free preflight passes. Human-recorded audio and voice quality remain separate acceptance. No verified free Turkish server-side TTS provider is configured in this work; paid TTS remains OFF.
-4. Demo WhatsApp needs its four credentials and platform enablement for live acceptance. Production WhatsApp configuration was not accessible through the demo account and is not inferred from it.
-5. Signed callback, invalid-signature, oversized-body and delivery-receipt tests pass locally. A real outbound WhatsApp acceptance still requires an explicitly designated owned test recipient; do not send to students/parents without authorization.
-6. Do not merge/deploy while provider acceptance is blocked. Do not rerun unrelated large D1/R2 private acceptance just to test Nibiru.
+1. Provider acceptance passed at the branch code revision e8c5246cc43fba1e03fb9fe48ee89609dfe5aacf. Inspect its saved synthetic outputs for review; sampled acceptance does not certify all Maarif content.
+2. Retain the existing bounded guard and teacher review. No verified Free Turkish server TTS provider is configured; paid TTS is OFF. Human audio and voice quality require separate acceptance.
+3. Configure WhatsApp's four credentials and enable it for integration verification. A real outbound acceptance requires an explicitly designated owned test recipient.
+4. Merge/deploy only after provider acceptance is resolved and required release checks are reviewed. Existing draft PR #229 and private D1/R2/capacity work remain separate.
+5. Audit YouTube integration next before applying the panel design. Source already contains learning_videos, VIDEO_LIBRARY licensing, super-admin creation, question support, short-video search, candidate scoring and seven-day cache. This is source evidence only, not a live API acceptance. Verify API activation/quota, approved-channel and curriculum review controls, playback and student access.
 
 Official references: [Cloudflare subscription permissions](https://developers.cloudflare.com/api/resources/accounts/subresources/subscriptions/methods/get/), [Workers AI Free allocation](https://developers.cloudflare.com/workers-ai/platform/pricing/), [Unified Billing](https://developers.cloudflare.com/ai-gateway/features/unified-billing/).
 
