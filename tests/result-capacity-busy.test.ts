@@ -1,5 +1,6 @@
 import {expect,it,vi} from 'vitest';
-import worker,{resultReadOverloaded} from '../worker/privacy-export-entry';
+import worker from '../worker/result-worker-entry';
+import {resultReadOverloaded} from '../worker/privacy-export-entry';
 const overloaded=new Error('D1_ERROR: D1 DB is overloaded. Requests queued for too long. PRIVATE_DIAGNOSTIC');
 it('returns a private retryable busy response only for read-only result access',async()=>{
  const log=vi.spyOn(console,'error').mockImplementation(()=>{});
