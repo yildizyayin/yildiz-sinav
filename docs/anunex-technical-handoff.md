@@ -32,4 +32,27 @@ Sonraki adımlar:
 
 Testler sadece yerleşik yalıtılmış staging Worker/DB ve sentetik hesaplarda yapıldı. Üretim öğrencilerine sentetik veri veya yük testi uygulanmadı. Bulunduğumuz çalışma oturumunda yerel komut çalıştırıcı yanıt vermemeye başladı; GitHub Actions doğrulaması kullanılmaya devam ediyor.
 
-Yeni yoğunluk düzeltmesi: sadece sonuç GET uçlarında doğrulanmış D1 overloaded hatası 503 RESULT_CAPACITY_BUSY ve Retry-After3 döner; mutasyonlar otomatik yeniden denenmez. UI başarılı kod doğrulamasından sonra ayrı READ_RESULTS aşamasına geçer. Sonuç GET hata verirse yalnız GET tekrar edilir; 401 yeniden lookup/doğrulama gerektirir. Yoğunlukta 3 saniye tekrar bekleme, geri dönme/unmount sırasında AbortController, geç yanıt izolasyonu eklendi. Yeni backend ve React akış regresyonları CI ile doğrulanacak.
+Yeni yoğunluk düzeltmesi: sadece sonuç GET uçlarında doğrulanmış D1 overloaded hatası 503 RESULT_CAPACITY_BUSY ve Retry-After3 döner; mutasyonlar otomatik yeniden denenmez. UI başarılı kod doğrulamasından sonra ayrı READ_RESULTS aşamasına geçer. Sonuç GET hata verirse yalnız GET tekrar edilir; 401 yeniden lookup/doğrulama gerektirir. Yoğunlukta 3 saniye tekrar bekleme, geri dönme/unmount sırasında AbortController, geç yanıt izolasyonu eklendi. Yeni backend ve React akış regresyonları doğrulandı: CI run37910951357, 151 dosya / 794 test PASS. Güncel ürün kodu için run37910170694 native-browser 113759858421: 794 test, altı gerçek Chromium senaryosu ve başlangıç paket denetimi PASS. provider-inventory PASS; ancak özel rapor canlı kabulü FAIL. Üretime aktarım yapılmadı.
+
+
+## Son yeniden kabul ve açık hatalar
+
+- run37909721913 / job113751685576: parser, 17 API, 17 KVKK, özel rubric/cohort kuyruk/R2/tekrar teslim/rol izolasyonu PASS. Raporlar READY oldu; yalnız bu çalışmanın iki sentetik raporunun expires_at değeri sona çekildi. 20 dakika sonunda durum READY/cleanup_done=0 kaldı: gerçek zamanlanmış temizleme yeniden kabulü FAIL. Tail'de yalnız 09:14:31 UTC için bir scheduled olay görüldü (ok, retention OK, sıfır exception), bu olay 09:15:05 civarındaki süre sonlandırmadan önceydi. Daha sonra tetikleme görülmedi; bu kayıt tek başına CPU/kota veya temizleme algoritması hatası kanıtı değildir.
+- run37910170694 / job113759859002: aynı test ortamında parser testi 500 SERVER_ERROR verdi; özel rapor adımları çalışmadı. Her iki çalışmanın always-restoration adımı PASS.
+- salt okunur provider tanısı run37912669097: exact preview D1 SELECT CURRENT_TIMESTAMP ve toplam rapor sayıları başarılı; rubric ve cohort tablolarında sekizer temizlenmiş eski iş ve birer süresi dolmuş fakat temizlenmemiş iş var. D1 REST erişimi o anda çalışıyor. Demo cron */15 * * * *, preview cron boş: restorasyon doğrulandı. Python varsayılan istemcisinin config GET 403 hatası bütün tanı işini FAIL yaptı; bu hatayı D1 kota arızası diye yorumlama.
+- run37912862667: sentetik super girişi 200; aynı parser isteği yeniden 500 SERVER_ERROR. Tail bağlantısı doğrulanamadığından kök hata sınıfı elde edilemedi.
+- .github/workflows/isolated-provider-diagnosis.yml yalnız exact preview için metadata okumaları ve bir sentetik parser tanısı içerir; üretim dağıtımı/zamanlama değişikliği yapmaz. Son tanı kaydını okuyarak devam et. Bağlantı doğrulanamazsa ek sentetik parser isteği göndermez.
+- 10.000 burst ve 1.000.000 hedefi hâlâ açık. Otomatik ağır tekrar varsayılan olarak atlanıyor; SKIP kapasite PASS değildir.
+
+Bir sonraki oturum önce PR229 en son başını ve tanı workflow sonucunu okumalı; parser 500 ile cron sonrası temizleme sorununu kapatmalı. Önceki işlevsel PASS sonuçlarını son yeniden kabul FAIL durumunun yerine koymamalı. docs/result-serving-capacity-plan.md dağıtık kapasite için tasarım sözleşmesidir; uygulaması henüz yazılmadı. Fiziksel telefon ve üretim aktivasyonu da açık.
+
+## Sağlayıcı kotası teşhisi — son doğrulama
+
+run37913576384 / job113764263161 sağlayıcı tail API bağlantısını gerçekten kurdu, bir sentetik parser isteğinin 500 SERVER_ERROR sonucunu gördü ve canlı olayını sabit DAILY_LIMIT sınıfında yakaladı (outcome ok, exceptionCount 0). Tail gözlem kaynağı finally içinde silindi; üretim dağıtımı/zamanlama değişikliği yapılmadı. Günlük kota hatası artık doğrulanmış engeldir. Ham hata/veri kaydedilmedi; satır okuma/yazma/Worker istek kotası boyutu henüz ayırt edilmedi. Son boyut tanısı run37913912518 aynı 500 sonucunu tekrar gördü ancak 5 saniye içinde stream olayı alamadı; bu tanı boyutu kanıtlamaz. Körlemesine yeniden istek gönderme.
+
+Cloudflare resmi kaynakları:
+- https://developers.cloudflare.com/d1/platform/pricing/ : Free 5 milyon satır okuma/gün ve 100 bin satır yazma/gün, reset 00:00 UTC.
+- https://developers.cloudflare.com/changelog/product/d1/ : 1 Eylül 2026 sonrası günlük Free satır kotaları sorguları durdurabilir.
+- https://developers.cloudflare.com/workers/platform/pricing/ : Workers Paid hesap başına aylık en az 5 USD, dahil kullanımı aşan tüketim ek ücretlidir. Bu yalnız plan tabanıdır, 10.000/1.000.000 kapasite garantisi değildir.
+
+Kullanıcının ücretsiz kalma tercihi ve ücretli satın alma için ayrı yetki gereği nedeniyle plan yükseltilmedi. Ağır yük tekrarları durduruldu. Kota yenilenmeden veya yeni kaynak bütçesi kararı olmadan canlı yeniden kabul tamamlanamaz. Cron temizliğinin son başarısızlığı bağımsız açık madde olarak kalır; bu teşhis cron olayının neden gelmediğini tek başına kanıtlamaz. Yeni sohbet burada başlamalı; önceki 794 test/altı Chromium PASS korunmalı, canlı özel rapor yeniden kabulü ve yüksek kapasite PASS ilan edilmemeli.
