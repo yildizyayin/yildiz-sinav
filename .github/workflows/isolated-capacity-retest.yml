@@ -1,4 +1,4 @@
-name: Bounded authenticated capacity diagnostics
+name: Isolated authenticated result query profile
 on:
   push:
     branches: [fix/post-release-technical-acceptance]
@@ -121,53 +121,31 @@ jobs:
         run: node scripts/isolated-result-capacity-fixture.mjs
       - name: Complete actual result lookup and HMAC code verification
         run: node scripts/prepare-authenticated-result-load.mjs
-      - name: Observe only sanitized isolated error classifications
+      - name: Profile only synthetic authenticated query and query plan
         run: |
-          cat > bounded-tail-filter.py <<'PY'
-          import json,sys
-          decoder=json.JSONDecoder();buffer=''
-          for line in sys.stdin:
-            if not buffer.strip() and not line.lstrip().startswith('{'):continue
-            buffer+=line
-            while buffer.strip():
-              buffer=buffer.lstrip()
-              try:event,end=decoder.raw_decode(buffer)
-              except json.JSONDecodeError:break
-              buffer=buffer[end:]
-              if not isinstance(event,dict):continue
-              messages=[str(v) for x in event.get('logs',[]) for v in x.get('message',[])]+[str(x.get('message','')) for x in event.get('exceptions',[])]
-              text=' '.join(messages).lower()
-              if 'unhandled_request_error' not in text and not event.get('exceptions') and event.get('outcome')=='ok':continue
-              kind='OTHER'
-              if 'd1' in text and ('overload' in text or 'queued for too long' in text):kind='D1_OVERLOAD'
-              elif 'cpu' in text or event.get('outcome')=='exceededCpu':kind='CPU_LIMIT'
-              elif 'daily' in text and 'limit' in text:kind='DAILY_LIMIT'
-              elif 'network' in text:kind='NETWORK_ERROR'
-              print(json.dumps({'outcome':event.get('outcome'),'errorKind':kind,'exceptionCount':len(event.get('exceptions',[]))}),flush=True)
-          PY
-          npm exec --yes --package=wrangler@4 -- wrangler --version
-      - name: Execute bounded 1000-VU authenticated diagnostic with sanitized live tail
-        run: |
-          set -uo pipefail
-          timeout 120s npm exec --yes --package=wrangler@4 -- wrangler tail yildiz-sinav-qpool-pr-227 --format=json 2>/dev/null | python3 -u bounded-tail-filter.py > sanitized-capacity-tail.jsonl &
-          tail_pid=$!
-          trap 'kill "$tail_pid" 2>/dev/null || true' EXIT
-          sleep 8
-          set +e
-          ./k6 run --summary-export=capacity-shard-${{ matrix.shard }}.json bounded-capacity-diagnostic.js
-          load_status=$?
-          sleep 5
-          cat sanitized-capacity-tail.jsonl
-          exit "$load_status"
-      - name: Preserve exact metrics without credentials
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: capacity-shard-${{ matrix.shard }}
-          path: |
-            capacity-shard-${{ matrix.shard }}.json
-            sanitized-capacity-tail.jsonl
-          if-no-files-found: warn
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {createHash} from 'node:crypto';
+          import {RESULT_NETWORK_AUTHENTICATED_SUMMARY_SQL} from './worker/lib/result-network-snapshot.ts';
+          const account='daae7254acbfe5218c52665daaacbd96',database='8db26532-eb50-42c9-99f3-00f097127c11';
+          assert.equal(process.env.CLOUDFLARE_ACCOUNT_ID,account);
+          async function query(sql,params=[]){
+            const r=await fetch('https://api.cloudflare.com/client/v4/accounts/'+account+'/d1/database/'+database+'/query',{method:'POST',headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN,'content-type':'application/json'},body:JSON.stringify({sql,params})});
+            assert.equal(r.status,200);const data=await r.json();assert(data.success);assert(data.result[0].success);return data.result[0];
+          }
+          const raw=decodeURIComponent(process.env.RESULT_LOAD_COOKIE.split('=').slice(1).join('='));
+          const hash=createHash('sha256').update(raw).digest('hex');
+          const session=await query('SELECT ip_hash FROM result_portal_sessions WHERE token_hash=?',[hash]);
+          assert.equal(session.results.length,1);
+          const params=[hash,session.results[0].ip_hash];
+          const plan=await query('EXPLAIN QUERY PLAN '+RESULT_NETWORK_AUTHENTICATED_SUMMARY_SQL,params);
+          console.log(JSON.stringify({scope:'synthetic isolated query only',plan:plan.results.map(r=>r.detail)}));
+          for(let sample=1;sample<=3;sample++){
+            const result=await query(RESULT_NETWORK_AUTHENTICATED_SUMMARY_SQL,params);
+            assert.equal(result.results.length,1);assert.equal(result.results[0].exam_id,process.env.RESULT_EXPECTED_EXAM_ID);
+            console.log(JSON.stringify({sample,rowsRead:result.meta.rows_read,rowsWritten:result.meta.rows_written,durationMs:result.meta.duration,sqlDurationMs:result.meta.timings?.sql_duration_ms}));
+          }
+          JS
       - name: Remove only this generator's synthetic data
         if: always()
         run: |
