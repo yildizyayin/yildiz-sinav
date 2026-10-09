@@ -2,7 +2,7 @@ name: Live camera photo browser acceptance
 on:
   push:
     branches: [fix/post-release-technical-acceptance]
-    paths: ['scripts/live-camera-photo-browser.mjs', '.github/workflows/live-camera-photo-browser.yml']
+    paths: ['scripts/live-camera-photo-browser.mjs', 'scripts/isolated-live-browser-acceptance.mjs', '.github/workflows/live-camera-photo-browser.yml']
   workflow_dispatch:
 permissions:
   contents: read
