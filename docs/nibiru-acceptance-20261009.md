@@ -38,3 +38,7 @@ The final code also passed a separate TypeScript check for the live acceptance r
 6. Do not merge/deploy while provider acceptance is blocked. Do not rerun unrelated large D1/R2 private acceptance just to test Nibiru.
 
 Official references: [Cloudflare subscription permissions](https://developers.cloudflare.com/api/resources/accounts/subresources/subscriptions/methods/get/), [Workers AI Free allocation](https://developers.cloudflare.com/workers-ai/platform/pricing/), [Unified Billing](https://developers.cloudflare.com/ai-gateway/features/unified-billing/).
+
+## Added roadmap decision — 2026-10-09 19:22 Europe/Istanbul
+
+User requested YouTube integration after Nibiru model, voice and WhatsApp acceptance and before applying the panel design. First audit existing YouTube/video library code and role/license gates. Then implement controlled educational video links/search, question/outcome association and in-panel playback as supported by the verified APIs and existing modules. Final integration scope remains to be agreed; do not duplicate existing capabilities or mark planned items as working. Maintain the Free-scope preference and record integration/test outcomes here.
