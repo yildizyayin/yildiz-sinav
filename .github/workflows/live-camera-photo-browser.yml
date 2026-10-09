@@ -1,0 +1,24 @@
+name: Live camera photo browser acceptance
+on:
+  push:
+    branches: [fix/post-release-technical-acceptance]
+    paths: ['scripts/live-camera-photo-browser.mjs', '.github/workflows/live-camera-photo-browser.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: live-camera-photo-browser
+  cancel-in-progress: true
+jobs:
+  photo-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium --only-shell
+      - name: Read the known synthetic optical image in the real browser
+        run: node scripts/live-camera-photo-browser.mjs

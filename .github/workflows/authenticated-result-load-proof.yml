@@ -22,6 +22,7 @@ jobs:
     environment: staging
     env:
       SMOKE_BASE_URL: ${{ secrets.STAGING_URL || vars.STAGING_URL || 'https://demo.anunex.com' }}
+      VUS: '10000'
       LOAD_TEST_ALLOWED_ORIGINS: ${{ vars.LOAD_TEST_ALLOWED_ORIGINS || 'https://demo.anunex.com' }}
       RESULT_LOAD_INSTITUTION_CODE: ${{ secrets.RESULT_LOAD_INSTITUTION_CODE }}
       RESULT_LOAD_GRADE_LEVEL: ${{ secrets.RESULT_LOAD_GRADE_LEVEL }}
@@ -69,7 +70,7 @@ jobs:
           import { check } from 'k6';
           export const options={
             scenarios:{authenticated_result:{executor:'constant-vus',vus:10000,duration:'60s',gracefulStop:'15s'}},
-            thresholds:{http_req_failed:['rate<0.05'],http_req_duration:['p(95)<2500']},
+            thresholds:{checks:['rate>0.99'],http_req_failed:['rate<0.05'],http_req_duration:['p(95)<2500']},
           };
           export default function(){
             const res=http.get(`${__ENV.TARGET_URL.replace(/\/$/,'')}/api/public/results/student`,{headers:{Cookie:__ENV.RESULT_LOAD_COOKIE},redirects:0});

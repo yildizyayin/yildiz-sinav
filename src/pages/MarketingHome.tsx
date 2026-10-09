@@ -75,6 +75,12 @@ export function MarketingHome(){
   const role=useMemo(()=>roleShowcases[activeRole],[activeRole]);
   useEffect(()=>{
     document.title='ANUNEX — Nibiru AI Destekli Ölçme ve Analiz Platformu';
+    // Optional typography must not make the page's lazy CSS preload fail offline.
+    if(!document.getElementById('marketing-optional-font')){
+      const link=document.createElement('link');link.id='marketing-optional-font';link.rel='stylesheet';
+      link.href='https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap';
+      document.head.appendChild(link);
+    }
     document.documentElement.classList.add('marketing-document');
     return()=>document.documentElement.classList.remove('marketing-document');
   },[]);

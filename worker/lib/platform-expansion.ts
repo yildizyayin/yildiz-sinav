@@ -120,7 +120,7 @@ async function scopedStudentId(env: Env, user: AuthUser, requested?: string | nu
 }
 
 async function examProfile(env: Env, examId: string) {
-  return one<any>(env.DB.prepare(`SELECT p.*,e.title,e.exam_type,e.grade_level,e.academic_year,e.institution_id,e.status exam_status,pub.name publisher_name,n.name network_name
+  return one<any>(env.DB.prepare(`SELECT p.*,e.title,e.exam_type,e.grade_level,e.academic_year,e.institution_id,e.status exam_status,pub.name publisher_name,n.name network_name,COALESCE(p.scope,CASE WHEN e.owner_type='CENTRAL' THEN 'CENTRAL' ELSE 'INSTITUTION' END) scope
     FROM exams e LEFT JOIN exam_delivery_profiles p ON p.exam_id=e.id
     LEFT JOIN publishers pub ON pub.id=p.publisher_id LEFT JOIN institution_networks n ON n.id=p.network_id
     WHERE e.id=?`).bind(examId));
@@ -191,6 +191,7 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
   const participantCountRow=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).bind(examId));
   if(!Number(participantCountRow?.count||0))return badRequest('Sonuçlandırılmış katılımcı bulunmuyor.','NO_RESULTS');
   await env.DB.batch([
+    env.DB.prepare(`INSERT INTO exam_delivery_profiles(exam_id,scope) SELECT ?,? WHERE NOT EXISTS(SELECT 1 FROM exam_delivery_profiles WHERE exam_id=?)`).bind(examId,p.scope,examId),
     env.DB.prepare(`DELETE FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version),
     env.DB.prepare(`INSERT INTO exam_result_snapshots(
     id,exam_id,participant_id,snapshot_version,student_id,institution_id,network_id,city,district,grade_level,class_snapshot,score,net,

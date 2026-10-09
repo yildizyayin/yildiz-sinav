@@ -1,0 +1,111 @@
+name: Isolated provider failure diagnosis
+on:
+  push:
+    branches: [fix/post-release-technical-acceptance]
+    paths: [.github/workflows/isolated-provider-diagnosis.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Inspect exact disposable database and restored schedules without writes
+        run: |
+          python3 <<'PY'
+          import json,os,urllib.request,urllib.error
+          account='daae7254acbfe5218c52665daaacbd96'
+          db='8db26532-eb50-42c9-99f3-00f097127c11'
+          assert os.environ['CLOUDFLARE_ACCOUNT_ID']==account
+          base='https://api.cloudflare.com/client/v4/accounts/'+account
+          def api(path,payload=None):
+              req=urllib.request.Request(base+path,headers={'Authorization':'Bearer '+os.environ['CLOUDFLARE_API_TOKEN'],'Content-Type':'application/json'},data=None if payload is None else json.dumps(payload).encode())
+              try:
+                  with urllib.request.urlopen(req,timeout=30) as response: data=json.load(response)
+              except urllib.error.HTTPError as error:
+                  try: data=json.load(error)
+                  except Exception: data={}
+                  messages=' '.join(str(e.get('message','')) for e in data.get('errors',[])).lower()
+                  category='DAILY_LIMIT' if any(x in messages for x in ['daily','quota','read limit','write limit']) else 'OVERLOAD' if 'overload' in messages else 'SQL_SCHEMA' if any(x in text for x in ['no such table','no such column']) else 'SQL_CONSTRAINT' if 'constraint failed' in text else 'JS_TYPE_ERROR' if any(x in text for x in ['cannot read properties','is not a function','typeerror']) else 'D1_ERROR' if 'd1_error' in text else 'OTHER'
+                  print(json.dumps({'providerStatus':error.code,'codes':[e.get('code') for e in data.get('errors',[])],'category':category}))
+                  return None
+              if not data.get('success'):
+                  print(json.dumps({'providerRejected':True,'codes':[e.get('code') for e in data.get('errors',[])]}))
+                  return None
+              return data['result']
+          metadata=api('/d1/database/'+db)
+          assert metadata and metadata['name']=='yildiz-sinav-qpool-pr-227-generation-v2'
+          for worker in ['yildiz-sinav-qpool-pr-227','yildiz-sinav-v1']:
+              data=api('/workers/scripts/'+worker+'/schedules')
+              print(json.dumps({'worker':worker,'schedules':None if data is None else [x['cron'] for x in data['schedules']]}))
+          queries=[
+            ('database-clock','SELECT CURRENT_TIMESTAMP AS databaseTime,1 AS available'),
+            ('rubric-retention-counts',"SELECT status,cleanup_done,count(*) AS jobCount,sum(CASE WHEN datetime(expires_at)<=CURRENT_TIMESTAMP THEN 1 ELSE 0 END) AS expiredCount FROM private_rubric_export_jobs GROUP BY status,cleanup_done"),
+            ('cohort-retention-counts',"SELECT status,cleanup_done,count(*) AS jobCount,sum(CASE WHEN datetime(expires_at)<=CURRENT_TIMESTAMP THEN 1 ELSE 0 END) AS expiredCount FROM private_cohort_report_jobs GROUP BY status,cleanup_done")
+          ]
+          for label,query in queries:
+              result=api('/d1/database/'+db+'/query',{'sql':query,'params':[]})
+              if result is not None:
+                  for row in result:
+                      print(json.dumps({'scope':label,'success':row.get('success'),'meta':row.get('meta'),'aggregates':row.get('results',[])}))
+          print('PASS: read-only isolated diagnosis; no deployment or schedule mutation')
+          PY
+      - name: Classify one synthetic parser request through a confirmed provider stream
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {setTimeout as pause} from 'node:timers/promises';
+          const account='daae7254acbfe5218c52665daaacbd96';assert.equal(process.env.CLOUDFLARE_ACCOUNT_ID,account);
+          const provider='https://api.cloudflare.com/client/v4/accounts/'+account+'/workers/scripts/yildiz-sinav-qpool-pr-227/tails';
+          async function api(url,method){
+            const response=await fetch(url,{method,headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN},signal:AbortSignal.timeout(30000)});
+            const data=await response.json();
+            console.log(JSON.stringify({providerOperation:method,status:response.status,codes:data.errors?.map(x=>x.code)}));
+            assert(response.ok&&data.success,'Provider tail operation rejected');return data.result;
+          }
+          let tail,socket;let received=0;
+          try{
+            tail=await api(provider,'POST');assert(tail.id&&tail.url);
+            socket=new WebSocket(tail.url,'trace-v1');socket.binaryType='arraybuffer';
+            socket.addEventListener('message',event=>{
+              try{
+                const data=typeof event.data==='string'?event.data:new TextDecoder().decode(event.data);
+                const parsed=JSON.parse(data);received++;
+                const text=JSON.stringify(parsed).toLowerCase();
+                const category=['daily limit','daily row','exceeded your','daily read','daily write'].some(x=>text.includes(x))?'DAILY_LIMIT':text.includes('overloaded')?'D1_OVERLOAD':String(parsed.outcome).toLowerCase().includes('cpu')?'CPU_LIMIT':['no such table','no such column'].some(x=>text.includes(x))?'SQL_SCHEMA':text.includes('constraint failed')?'SQL_CONSTRAINT':['cannot read properties','is not a function','typeerror'].some(x=>text.includes(x))?'JS_TYPE_ERROR':text.includes('d1_error')?'D1_ERROR':'OTHER';
+                console.log(JSON.stringify({eventOutcome:parsed.outcome,category,d1Error:text.includes('d1_error'),readQuota:/rows? read|daily read|read limit/.test(text),writeQuota:/rows? written|daily write|write limit/.test(text),requestQuota:/requests.*limit|limit.*requests/.test(text),exceptionCount:parsed.exceptions?.length||0}));
+              }catch{console.log('STREAM_EVENT_FORMAT_UNRECOGNIZED')}
+            });
+            await new Promise((resolve,reject)=>{
+              const timer=setTimeout(()=>reject(new Error('Provider stream connection timed out')),30000);
+              socket.addEventListener('open',()=>{clearTimeout(timer);resolve()},{once:true});
+              socket.addEventListener('error',()=>{clearTimeout(timer);reject(new Error('Provider stream connection failed'))},{once:true});
+            });
+            console.log('PASS: isolated provider stream connected');
+            socket.send(JSON.stringify({debug:true}));
+            const base='https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev';
+            const headers={'content-type':'application/json','user-agent':'ANUNEX-synthetic-acceptance/1.0'};
+            const config=await fetch(base+'/api/config',{headers,signal:AbortSignal.timeout(30000)});assert.equal(config.status,200);assert.equal((await config.json()).environment,'staging');
+            const login=await fetch(base+'/api/auth/login',{method:'POST',headers,body:JSON.stringify({identifier:'super',password:'Demo123!',turnstileToken:'XXXX.DUMMY.TOKEN.XXXX'}),signal:AbortSignal.timeout(30000)});
+            console.log(JSON.stringify({probe:'synthetic-login',status:login.status}));assert.equal(login.status,200);
+            const cookie=login.headers.get('set-cookie')?.split(';')[0];assert(cookie);console.log('::add-mask::'+cookie);
+            const sampleText='student_number,name,class,booklet,answers_MAT,answers_TUR,answers_FEN\n1001,Aktif1 Öğrenci1,7/A,A,ABCDEABCDE,ABCDEABCDE,ABCDEABCDE\n';
+            const result=await fetch(base+'/api/optical-definition-versions/optv_demo/test-parser',{method:'POST',headers:{...headers,cookie},body:JSON.stringify({sampleText,fileName:'synthetic-parser-proof.csv'}),signal:AbortSignal.timeout(30000)});
+            let data;try{data=await result.json()}catch{}
+            console.log(JSON.stringify({probe:'synthetic-parser',status:result.status,errorCode:data?.error?.code,passed:data?.passed}));
+            await pause(5000);
+            console.log(JSON.stringify({streamEventsReceived:received}));
+            assert.equal(result.status,200);
+          }finally{
+            socket?.close();
+            if(tail?.id)await api(provider+'/'+tail.id,'DELETE');
+          }
+          JS

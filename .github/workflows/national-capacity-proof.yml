@@ -23,6 +23,7 @@ jobs:
     env:
       SMOKE_BASE_URL: ${{ secrets.STAGING_URL || vars.STAGING_URL || 'https://demo.anunex.com' }}
       SMOKE_DEMO_PASSWORD: ${{ secrets.STAGING_DEMO_PASSWORD }}
+      VUS: '10000'
       LOAD_TEST_ALLOWED_ORIGINS: ${{ vars.LOAD_TEST_ALLOWED_ORIGINS || 'https://demo.anunex.com' }}
     steps:
       - uses: actions/checkout@v5
@@ -59,7 +60,7 @@ jobs:
           import { check } from 'k6';
           export const options={
             scenarios:{health_concurrency:{executor:'constant-vus',vus:10000,duration:'60s',gracefulStop:'10s'}},
-            thresholds:{http_req_failed:['rate<0.05'],http_req_duration:['p(95)<2000']},
+            thresholds:{checks:['rate>0.99'],http_req_failed:['rate<0.05'],http_req_duration:['p(95)<2000']},
           };
           export default function(){
             const res=http.get(`${__ENV.TARGET_URL.replace(/\/$/,'')}/api/health`,{redirects:0});

@@ -31,7 +31,7 @@ function fixture(failAudit=false){
     CREATE TABLE exam_publication_stats(exam_id TEXT,snapshot_version INTEGER,institution_count INTEGER,participant_count INTEGER,city_count INTEGER,payload_json TEXT);
     CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
     INSERT INTO exam_result_snapshots(id,exam_id,participant_id,snapshot_version,institution_id,net,payload_json) VALUES('previous','e','p',0,'school',1,'previous-payload');`);
-  db.exec("ALTER TABLE exams ADD COLUMN academic_year TEXT DEFAULT '2026-2027';ALTER TABLE exam_participants ADD COLUMN name_snapshot TEXT;ALTER TABLE exam_participants ADD COLUMN student_number_snapshot TEXT");
+  db.exec("ALTER TABLE exam_delivery_profiles ADD COLUMN scope TEXT DEFAULT 'INSTITUTION';ALTER TABLE exams ADD COLUMN academic_year TEXT DEFAULT '2026-2027';ALTER TABLE exam_participants ADD COLUMN name_snapshot TEXT;ALTER TABLE exam_participants ADD COLUMN student_number_snapshot TEXT");
   function statement(sql:string,args:any[]=[]):any{return {
     bind:(...values:any[])=>statement(sql,values),
     first:async()=>sql.includes('SELECT p.*,e.title')?{...db.prepare('SELECT * FROM exam_delivery_profiles').get(),scope:'INSTITUTION',institution_id:'school'}:db.prepare(sql).get(...args),
@@ -96,5 +96,22 @@ it('requires completed reevaluation after network withdrawal and publishes a new
  const snapshots=f.db.prepare('SELECT payload_json FROM exam_result_snapshots WHERE snapshot_version IN(1,8) ORDER BY snapshot_version').all() as any[];
  expect(JSON.parse(snapshots[0].payload_json).exam.net).toBe(2);expect(JSON.parse(snapshots[1].payload_json).exam.net).toBe(7);
  expect((await publish()).status).toBe(400);
+ }finally{f.db.close()}
+});
+
+it('creates the missing publication profile atomically when freezing an evaluated definition',async()=>{
+ const f=fixture();try{
+  f.db.exec("DELETE FROM exam_delivery_profiles");
+  const response=(await f.run())!;expect(response.status).toBe(200);
+  expect(f.db.prepare('SELECT scope,snapshot_version,result_freeze_status FROM exam_delivery_profiles').get()).toEqual({scope:'INSTITUTION',snapshot_version:1,result_freeze_status:'FROZEN'});
+  expect(f.db.prepare('SELECT * FROM exam_publication_stats').all()).toHaveLength(1);
+ }finally{f.db.close()}
+});
+it('rolls back the newly created publication profile when the freeze transaction fails',async()=>{
+ const f=fixture(true);try{
+  f.db.exec("DELETE FROM exam_delivery_profiles");
+  await expect(f.run()).rejects.toThrow('AUDIT_FAILED');
+  expect(f.db.prepare('SELECT * FROM exam_delivery_profiles').all()).toHaveLength(0);
+  expect(f.db.prepare('SELECT snapshot_version FROM exam_result_snapshots').all()).toEqual([{snapshot_version:0}]);
  }finally{f.db.close()}
 });
