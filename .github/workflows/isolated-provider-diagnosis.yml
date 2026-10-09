@@ -81,7 +81,7 @@ jobs:
                 const parsed=JSON.parse(data);received++;
                 const text=JSON.stringify(parsed).toLowerCase();
                 const category=['daily limit','daily row','exceeded your','daily read','daily write'].some(x=>text.includes(x))?'DAILY_LIMIT':text.includes('overloaded')?'D1_OVERLOAD':String(parsed.outcome).toLowerCase().includes('cpu')?'CPU_LIMIT':['no such table','no such column'].some(x=>text.includes(x))?'SQL_SCHEMA':text.includes('constraint failed')?'SQL_CONSTRAINT':['cannot read properties','is not a function','typeerror'].some(x=>text.includes(x))?'JS_TYPE_ERROR':text.includes('d1_error')?'D1_ERROR':'OTHER';
-                console.log(JSON.stringify({eventOutcome:parsed.outcome,category,exceptionCount:parsed.exceptions?.length||0}));
+                console.log(JSON.stringify({eventOutcome:parsed.outcome,category,d1Error:text.includes('d1_error'),readQuota:/rows? read|daily read|read limit/.test(text),writeQuota:/rows? written|daily write|write limit/.test(text),requestQuota:/requests.*limit|limit.*requests/.test(text),exceptionCount:parsed.exceptions?.length||0}));
               }catch{console.log('STREAM_EVENT_FORMAT_UNRECOGNIZED')}
             });
             await new Promise((resolve,reject)=>{
