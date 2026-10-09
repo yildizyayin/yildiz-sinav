@@ -108,6 +108,12 @@ async function handleFetch(request: Request, env: Env, ctx: ExecutionContext): P
   return exportPrivacyRequests(env, request);
 }
 
+export function resultReadOverloaded(request: Request, error: unknown): boolean {
+  const path = new URL(request.url).pathname;
+  const resultRead = request.method === 'GET' && (path === '/api/public/results/student' || /^\/api\/public\/results\/exams\/[^/]+$/.test(path));
+  return resultRead && error instanceof Error && /\bD1(?:_ERROR)?\b[\s\S]*\boverloaded\b/i.test(error.message);
+}
+
 async function observedFetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const started = Date.now();
   const url = new URL(request.url);
@@ -120,6 +126,9 @@ async function observedFetch(request: Request, env: Env, ctx: ExecutionContext):
     return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
   } catch (error) {
     console.error(JSON.stringify({ event: 'unhandled_request_error', requestId, method: request.method, route: safeObservabilityRoute(url.pathname), durationMs: Date.now() - started, environment: env.ENVIRONMENT || 'unknown', error: error instanceof Error ? error.message : 'UNKNOWN_ERROR' }));
+    if (resultReadOverloaded(request, error)) {
+      return json({ ok: false, error: { code: 'RESULT_CAPACITY_BUSY', message: 'Sonuçlara erişimde yoğunluk var. Birkaç saniye sonra sonuçları yeniden getirin.', details: { retryAfterSeconds: 3 }, requestId } }, 503, { 'Retry-After': '3', 'Cache-Control': 'private, no-store', 'X-Request-Id': requestId });
+    }
     return json({ ok: false, error: { code: 'SERVER_ERROR', message: 'Sunucu hatası oluştu.', requestId } }, 500, { 'X-Request-Id': requestId });
   }
 }
