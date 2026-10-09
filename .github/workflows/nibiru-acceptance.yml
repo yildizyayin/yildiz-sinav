@@ -8,6 +8,7 @@ on:
       - 'tests/**'
       - 'acceptance/**'
       - 'scripts/check-nibiru-free-account.mjs'
+      - 'scripts/nibiru-free-subscription-policy.mjs'
       - 'scripts/nibiru-demo-readiness.mjs'
       - '.github/workflows/nibiru-acceptance.yml'
   workflow_dispatch:
