@@ -52,7 +52,7 @@ jobs:
         run: |
           {
             echo '### Staging authenticated capacity boundary'
-            echo '- Diagnostic only: one generator × 100 virtual users after failed 10,000-request burst.'
+            echo '- Diagnostic only: one generator × 500 virtual users after failed 10,000-request burst.'
             echo '- One synthetic identity; this bounded run does not certify 10,000 users.'
             echo '- 1,000,000 HTTP requests BLOCKED: provider reported Workers Free; daily dynamic request allowance is 100,000.'
             echo '- This is not a sustained 60-second capacity certification or one million simultaneous users.'
@@ -73,7 +73,7 @@ jobs:
       SMOKE_BASE_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
       TARGET_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
       LOAD_TEST_ALLOWED_ORIGINS: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
-      VUS: '100'
+      VUS: '500'
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -85,7 +85,7 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location https://github.com/grafana/k6/releases/download/v0.52.0/k6-v0.52.0-linux-amd64.tar.gz | tar xz --strip-components 1
-      - name: Install bounded diagnostic script (100 requests, status only)
+      - name: Install bounded diagnostic script (500 requests, status only)
         run: |
           cat > bounded-capacity-diagnostic.js <<'JS'
           import http from 'k6/http';
@@ -95,7 +95,7 @@ jobs:
           const failures=new Counter('response_failure_kind');
           const launchDelay=new Trend('launch_delay_ms');
           export const options={
-           scenarios:{authenticated_burst:{executor:'per-vu-iterations',vus:100,iterations:1,maxDuration:'5m'}},
+           scenarios:{authenticated_burst:{executor:'per-vu-iterations',vus:500,iterations:1,maxDuration:'5m'}},
            thresholds:{http_req_failed:['rate<0.05'],http_req_duration:['p(95)<2500'],checks:['rate>0.99'],launch_delay_ms:['p(99)<2000']},
           };
           export default function(){
@@ -117,29 +117,55 @@ jobs:
           JS
       - name: Validate diagnostic k6 syntax before synthetic writes
         run: ./k6 inspect bounded-capacity-diagnostic.js > /dev/null
-      - name: Recover only failed run 37903414741 synthetic fixtures
-        run: |
-          set -euo pipefail
-          for shard in {1..10}; do
-            cleaned=false
-            for attempt in {1..6}; do
-              if GITHUB_RUN_ID=37903414741 CAPACITY_SHARD="$shard" node scripts/isolated-result-capacity-fixture.mjs --cleanup; then cleaned=true; break; fi
-              sleep $((attempt * 5))
-            done
-            test "$cleaned" = true
-          done
       - name: Prepare one synthetic published result using the real access-issuance API
         run: node scripts/isolated-result-capacity-fixture.mjs
       - name: Complete actual result lookup and HMAC code verification
         run: node scripts/prepare-authenticated-result-load.mjs
-      - name: Execute bounded 100-VU authenticated diagnostic
-        run: ./k6 run --summary-export=capacity-shard-${{ matrix.shard }}.json bounded-capacity-diagnostic.js
+      - name: Observe only sanitized isolated error classifications
+        run: |
+          cat > bounded-tail-filter.py <<'PY'
+          import json,sys
+          decoder=json.JSONDecoder();buffer=''
+          for line in sys.stdin:
+            if not buffer.strip() and not line.lstrip().startswith('{'):continue
+            buffer+=line
+            while buffer.strip():
+              buffer=buffer.lstrip()
+              try:event,end=decoder.raw_decode(buffer)
+              except json.JSONDecodeError:break
+              buffer=buffer[end:]
+              if not isinstance(event,dict):continue
+              messages=[str(v) for x in event.get('logs',[]) for v in x.get('message',[])]+[str(x.get('message','')) for x in event.get('exceptions',[])]
+              text=' '.join(messages).lower()
+              if 'unhandled_request_error' not in text and not event.get('exceptions') and event.get('outcome')=='ok':continue
+              kind='OTHER'
+              if 'd1' in text and ('overload' in text or 'queued for too long' in text):kind='D1_OVERLOAD'
+              elif 'cpu' in text or event.get('outcome')=='exceededCpu':kind='CPU_LIMIT'
+              elif 'daily' in text and 'limit' in text:kind='DAILY_LIMIT'
+              elif 'network' in text:kind='NETWORK_ERROR'
+              print(json.dumps({'outcome':event.get('outcome'),'errorKind':kind,'exceptionCount':len(event.get('exceptions',[]))}),flush=True)
+          PY
+          npm exec --yes --package=wrangler@4 -- wrangler --version
+      - name: Execute bounded 500-VU authenticated diagnostic with sanitized live tail
+        run: |
+          set -uo pipefail
+          timeout 120s npm exec --yes --package=wrangler@4 -- wrangler tail yildiz-sinav-qpool-pr-227 --format=json 2>/dev/null | python3 -u bounded-tail-filter.py > sanitized-capacity-tail.jsonl &
+          tail_pid=$!
+          trap 'kill "$tail_pid" 2>/dev/null || true' EXIT
+          sleep 8
+          ./k6 run --summary-export=capacity-shard-${{ matrix.shard }}.json bounded-capacity-diagnostic.js
+          load_status=$?
+          sleep 5
+          cat sanitized-capacity-tail.jsonl
+          exit "$load_status"
       - name: Preserve exact metrics without credentials
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: capacity-shard-${{ matrix.shard }}
-          path: capacity-shard-${{ matrix.shard }}.json
+          path: |
+            capacity-shard-${{ matrix.shard }}.json
+            sanitized-capacity-tail.jsonl
           if-no-files-found: warn
       - name: Remove only this generator's synthetic data
         if: always()
