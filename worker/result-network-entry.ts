@@ -6,7 +6,7 @@ import { getAuthUser,hashPassword,verifyPassword,verifyTurnstile } from './lib/a
 import { all,audit,badRequest,forbidden,json,normalizeName,one,uuid } from './lib/db';
 import { evaluateBatch,getScanBatch,previewExamFile,resolveScanRecord,searchScanCandidates } from './index';
 import { withExamOperationLock } from './lib/exam-operation-lock';
-import { RESULT_NETWORK_SUMMARY_SQL, RESULT_NETWORK_SNAPSHOT_SQL, RESULT_NETWORK_ARTIFACT_ACCESS_SQL, NETWORK_INSTITUTION_SNAPSHOT_SQL, readNetworkSnapshot, snapshotSummary, snapshotDetail } from './lib/result-network-snapshot';
+import { RESULT_NETWORK_IDENTITY_SQL, RESULT_NETWORK_AUTHENTICATED_SUMMARY_SQL, RESULT_NETWORK_SNAPSHOT_SQL, RESULT_NETWORK_ARTIFACT_ACCESS_SQL, NETWORK_INSTITUTION_SNAPSHOT_SQL, readNetworkSnapshot, snapshotSummary, snapshotDetail } from './lib/result-network-snapshot';
 import { prepareResultArtifacts, readResultArtifact, inspectResultArtifactReadiness } from './lib/result-artifacts';
 import { reopenNetworkResults } from './lib/result-network-correction';
 import { retireResultArtifactVersions } from './lib/result-artifact-retention';
@@ -59,14 +59,16 @@ async function verify(request:Request,env:Env){
  const secure=env.ENVIRONMENT==='production'?'; Secure':'';return json({ok:true},200,{'Set-Cookie':`${COOKIE}=${encodeURIComponent(raw)}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${SIX_HOURS/1000}${secure}`});
 }
 
-export async function resultIdentity(request:Request,env:Env){const raw=rawCookie(request,COOKIE);if(!raw)return null;const tokenHash=await sha256(raw),ipHash=await sha256(clientIp(request));return one<any>(env.DB.prepare(`SELECT rai.id,rai.normalized_name,rai.grade_level,rai.student_number_lookup_token,rai.tckn_lookup_token,rni.meb_code,rni.display_name_snapshot FROM result_portal_sessions s JOIN result_access_identities rai ON rai.id=s.identity_id JOIN result_network_institutions rni ON rni.id=rai.result_institution_id WHERE s.token_hash=? AND s.ip_hash=? AND s.revoked_at IS NULL AND s.expires_at>CURRENT_TIMESTAMP AND rai.expires_at>CURRENT_TIMESTAMP`).bind(tokenHash,ipHash))}
+export async function resultIdentity(request:Request,env:Env){const raw=rawCookie(request,COOKIE);if(!raw)return null;const tokenHash=await sha256(raw),ipHash=await sha256(clientIp(request));return one<any>(env.DB.prepare(RESULT_NETWORK_IDENTITY_SQL).bind(tokenHash,ipHash))}
 
 async function studentResults(request:Request,env:Env){
- const identity=await resultIdentity(request,env);if(!identity)return safeError(401,'RESULT_SESSION_REQUIRED','Sonucunuzu yeniden doğrulayın.');
- const rows=await all<any>(env.DB.prepare(RESULT_NETWORK_SUMMARY_SQL+` ORDER BY ea.published_at DESC,ea.id LIMIT 50`).bind(identity.meb_code,identity.normalized_name,identity.grade_level,identity.student_number_lookup_token||'',identity.student_number_lookup_token||'',identity.tckn_lookup_token||'',identity.tckn_lookup_token||''));
+ const raw=rawCookie(request,COOKIE);if(!raw)return safeError(401,'RESULT_SESSION_REQUIRED','Sonucunuzu yeniden doğrulayın.');
+ const [tokenHash,ipHash]=await Promise.all([sha256(raw),sha256(clientIp(request))]);
+ const rows=await all<any>(env.DB.prepare(RESULT_NETWORK_AUTHENTICATED_SUMMARY_SQL).bind(tokenHash,ipHash));
+ const identity=rows[0];if(!identity)return safeError(401,'RESULT_SESSION_REQUIRED','Sonucunuzu yeniden doğrulayın.');
  const exams=rows.map(snapshotSummary).filter((row):row is NonNullable<typeof row>=>row!==null);
  exams.sort((a,b)=>String(b.exam_date||'').localeCompare(String(a.exam_date||'')));
- const unavailableSnapshotExamIds=rows.filter(row=>!readNetworkSnapshot(row.payload_json)).map(row=>row.exam_id);
+ const unavailableSnapshotExamIds=rows.filter(row=>row.exam_id&&!readNetworkSnapshot(row.payload_json)).map(row=>row.exam_id);
  const latest=exams[0]||null;
  return json({ok:true,student:{name:maskName(identity.normalized_name),gradeLevel:identity.grade_level,institution:identity.display_name_snapshot},exams,unavailableSnapshotExamIds,tips:latest?[`${latest.exam_type} sonuçlarında ${Number(latest.net).toLocaleString('tr-TR')} net yaptın.`,`Yanlışlarını kazanım ve soru bazında inceleyerek bir sonraki çalışma adımını seç.`]:[]});
 }
