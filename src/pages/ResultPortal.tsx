@@ -46,7 +46,7 @@ export function ResultPortal(){
    if(controller.signal.aborted)return;
    setStep('READ_RESULTS');
    await loadStudentResults();
-  }catch(e){if(!controller.signal.aborted){setError(e instanceof ApiError?e.message:'Doğrulama yapılamadı.');setBusy(false)}}
+  }catch(e){if(!controller.signal.aborted){setError(e instanceof ApiError?e.message:'Doğrulama yapılamadı.');if(e instanceof ApiError&&e.code==='CHALLENGE_EXPIRED'){setStep('LOOKUP');setChallenge('');setAccessCode('');refreshTurnstile()}setBusy(false)}}
  };
  const operatorLogin=async(e:React.FormEvent)=>{e.preventDefault();setBusy(true);setError('');try{await api('/api/auth/login',{method:'POST',body:JSON.stringify({...operatorForm,remember:operatorRemember,turnstileToken:token})});const profile=await api<any>('/api/admin/result-network/access-profile');const allowed=role==='INSTITUTION'?profile.access?.canManageInstitution:profile.access?.canOperateDealer;if(!allowed){await api('/api/auth/logout',{method:'POST'}).catch(()=>undefined);throw new Error(role==='INSTITUTION'?'Bu hesap kurum sonuç yetkisine sahip değil.':'Bu hesap onaylı bayi ağı yetkisine veya aktif kurum kapsamına sahip değil.')}setOperator(profile.user);setOperatorAccess(profile.access)}catch(e){setError(e instanceof ApiError?e.message:e instanceof Error?e.message:'Yetkili giriş yapılamadı.');refreshTurnstile()}finally{setBusy(false)}};
  const openExam=async(id:string)=>{setBusy(true);setError('');try{setDetail(await api(`/api/public/results/exams/${encodeURIComponent(id)}`))}catch(e){setError(e instanceof ApiError?e.message:'Sınav ayrıntısı açılamadı.')}finally{setBusy(false)}};

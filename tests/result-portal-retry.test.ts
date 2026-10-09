@@ -50,7 +50,7 @@ it('retries only the result GET after a successful one-use code and a busy respo
  expect(container.textContent).toContain('ERİŞİM DOĞRULANDI');
  expect(container.textContent).toContain('Sentetik yoğunluk');
  expect(button('saniye sonra').disabled).toBe(true);
- await act(async()=>{await vi.advanceTimersByTimeAsync(3000)});
+ for(let tick=0;tick<3;tick++){await act(async()=>{await vi.advanceTimersByTimeAsync(1000)});if(tick<2)expect(button('saniye sonra').disabled).toBe(true)}
  await settle(()=>button('Sonuçları yeniden getir').click());
  expect(container.textContent).toContain('ÖĞRENCİ SONUÇ MERKEZİ');
  expect(calls.api.mock.calls.filter(([p])=>p.endsWith('/verify'))).toHaveLength(1);
@@ -77,4 +77,14 @@ it('does not publish a late result after the student leaves and starts a new flo
  await settle(()=>resolve(summary));
  expect(container.textContent).toContain('Kurum ve öğrenci bilgilerin');
  expect(container.textContent).not.toContain('ÖĞRENCİ SONUÇ MERKEZİ');
+});
+
+it('starts a fresh lookup after challenge expiry without attempting a result read',async()=>{
+ const base=calls.api.getMockImplementation()!;
+ calls.api.mockImplementation((path:string,o:any)=>path.endsWith('/verify')?Promise.reject(new ApiError(401,{code:'CHALLENGE_EXPIRED',message:'Sentetik kod doğrulama süresi doldu'})):base(path,o));
+ await reachVerify();await settle(submit);
+ expect(container.textContent).toContain('Kurum ve öğrenci bilgilerin');
+ expect(container.textContent).toContain('Sentetik kod doğrulama süresi doldu');
+ expect(calls.api.mock.calls.filter(([p])=>p.endsWith('/verify'))).toHaveLength(1);
+ expect(calls.api.mock.calls.filter(([p])=>p.endsWith('/student'))).toHaveLength(0);
 });
