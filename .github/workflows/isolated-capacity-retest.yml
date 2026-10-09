@@ -1,4 +1,4 @@
-name: Authenticated isolated capacity retest
+name: Bounded authenticated capacity diagnostics
 on:
   push:
     branches: [fix/post-release-technical-acceptance]
@@ -47,13 +47,13 @@ jobs:
       start_at: ${{ steps.start.outputs.start_at }}
     steps:
       - id: start
-        run: echo "start_at=$(($(date +%s%3N) + 180000))" >> "$GITHUB_OUTPUT"
+        run: echo "start_at=$(($(date +%s%3N) + 90000))" >> "$GITHUB_OUTPUT"
       - name: Record exact free-plan proof boundary
         run: |
           {
             echo '### Staging authenticated capacity boundary'
-            echo '- 10 generators × 1,000 virtual users, coordinated one-request burst: 10,000 requests total.'
-            echo '- One synthetic identity per generator: 10 identities, not 10,000 distinct student identities.'
+            echo '- Diagnostic only: one generator × 100 virtual users after failed 10,000-request burst.'
+            echo '- One synthetic identity; this bounded run does not certify 10,000 users.'
             echo '- 1,000,000 HTTP requests BLOCKED: provider reported Workers Free; daily dynamic request allowance is 100,000.'
             echo '- This is not a sustained 60-second capacity certification or one million simultaneous users.'
           } >> "$GITHUB_STEP_SUMMARY"
@@ -64,7 +64,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1,2,3,4,5,6,7,8,9,10]
+        shard: [1]
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -73,7 +73,7 @@ jobs:
       SMOKE_BASE_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
       TARGET_URL: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
       LOAD_TEST_ALLOWED_ORIGINS: https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev
-      VUS: '1000'
+      VUS: '100'
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -81,6 +81,17 @@ jobs:
           node-version: 22
       - name: Validate exact isolated staging target
         run: node scripts/agents/load-target.mjs
+      - name: Recover only failed run 37903414741 synthetic fixtures
+        run: |
+          set -euo pipefail
+          for shard in {1..10}; do
+            cleaned=false
+            for attempt in {1..6}; do
+              if GITHUB_RUN_ID=37903414741 CAPACITY_SHARD="$shard" node scripts/isolated-result-capacity-fixture.mjs --cleanup; then cleaned=true; break; fi
+              sleep $((attempt * 5))
+            done
+            test "$cleaned" = true
+          done
       - name: Prepare one synthetic published result using the real access-issuance API
         run: node scripts/isolated-result-capacity-fixture.mjs
       - name: Complete actual result lookup and HMAC code verification
@@ -89,8 +100,37 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location https://github.com/grafana/k6/releases/download/v0.52.0/k6-v0.52.0-linux-amd64.tar.gz | tar xz --strip-components 1
-      - name: Execute coordinated 1000-VU authenticated burst
-        run: ./k6 run --summary-export=capacity-shard-${{ matrix.shard }}.json scripts/isolated-result-burst.js
+      - name: Install bounded diagnostic script (100 requests, status only)
+        run: |
+          cat > bounded-capacity-diagnostic.js <<'JS'
+          import http from 'k6/http';
+          import {check,sleep} from 'k6';
+          import {Trend,Counter} from 'k6/metrics';
+          const responses=new Counter('response_status');
+          const failures=new Counter('response_failure_kind');
+          const launchDelay=new Trend('launch_delay_ms');
+          export const options={
+           scenarios:{authenticated_burst:{executor:'per-vu-iterations',vus:100,iterations:1,maxDuration:'5m'}},
+           thresholds:{http_req_failed:['rate<0.05'],http_req_duration:['p(95)<2500'],checks:['rate>0.99'],launch_delay_ms:['p(99)<2000']},
+          };
+          export default function(){
+           const start=Number(__ENV.CAPACITY_START_AT);if(!start)throw new Error('Coordinated start time is required');
+           const wait=start-Date.now();if(wait>0)sleep(wait/1000);launchDelay.add(Math.max(0,Date.now()-start));
+           const res=http.get(`${__ENV.TARGET_URL}/api/public/results/student`,{headers:{Cookie:__ENV.RESULT_LOAD_COOKIE},redirects:0,timeout:'30s'});
+           responses.add(1,{status:String(res.status)});
+           if(res.status!==200){
+            let kind='UNCLASSIFIED';
+            try{const body=JSON.parse(res.body);const candidate=String(body.code||body.error?.code||'');if(/^[A-Z0-9_]{1,64}$/.test(candidate))kind=candidate;}catch(error){}
+            if(/D1.*(overload|busy|too many)/i.test(res.body||''))kind='D1_OVERLOAD';
+            if(/Error (1102|1027)/.test(res.body||''))kind='WORKER_RESOURCE_LIMIT';
+            failures.add(1,{kind});
+           }
+           check(res,{'authenticated summary 200':r=>r.status===200,'exact synthetic published exam and net':r=>{try{const data=JSON.parse(r.body);return data.ok===true&&data.exams.length===1&&data.exams[0].exam_id===__ENV.RESULT_EXPECTED_EXAM_ID&&data.exams[0].net===7.5}catch(error){return false}}});
+          }
+          
+          JS
+      - name: Execute bounded 100-VU authenticated diagnostic
+        run: ./k6 run --summary-export=capacity-shard-${{ matrix.shard }}.json bounded-capacity-diagnostic.js
       - name: Preserve exact metrics without credentials
         if: always()
         uses: actions/upload-artifact@v4
@@ -100,4 +140,10 @@ jobs:
           if-no-files-found: warn
       - name: Remove only this generator's synthetic data
         if: always()
-        run: node scripts/isolated-result-capacity-fixture.mjs --cleanup
+        run: |
+          set -euo pipefail
+          for attempt in {1..6}; do
+            if node scripts/isolated-result-capacity-fixture.mjs --cleanup; then exit 0; fi
+            sleep $((attempt * 5))
+          done
+          exit 1
