@@ -60,3 +60,57 @@ jobs:
           const after=await fetch(base+'/api/auth/me',{headers:{cookie}});
           console.log(JSON.stringify({logoutStatus:logout.status,errorCode:code||null,sessionInvalidated:after.status===401,authAfterLogoutStatus:after.status,clearingCookie:Boolean(logout.headers.get('set-cookie')?.includes('Max-Age=0'))}));
           JS
+
+      - name: Inspect only the demo logout error category (temporary tail)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          const token=process.env.CLOUDFLARE_API_TOKEN,account=process.env.CLOUDFLARE_ACCOUNT_ID;
+          const endpoint='https://api.cloudflare.com/client/v4/accounts/'+account+'/workers/scripts/yildiz-sinav-v1/tails';
+          const headers={authorization:'Bearer '+token};
+          const response=await fetch(endpoint,{method:'POST',headers});
+          const body=await response.json().catch(()=>null);
+          if(!response.ok||!body?.result?.url){console.log(JSON.stringify({tailAvailable:false,httpStatus:response.status}));process.exit(0);}
+          let ws;
+          try{
+            ws=new WebSocket(body.result.url,'trace-v1');ws.binaryType='arraybuffer';
+            const errors=[];
+            ws.onmessage=event=>{
+              try{
+                const text=typeof event.data==='string'?event.data:new TextDecoder().decode(event.data);
+                const item=JSON.parse(text);
+                if(new URL(item.event?.request?.url||'https://invalid').pathname!=='/api/auth/logout')return;
+                for(const log of item.logs||[]){
+                  for(const part of log.message||[]){
+                    try{const value=JSON.parse(part);if(value.event==='unhandled_request_error')errors.push({id:value.requestId,message:String(value.error||'')});}catch{}
+                  }
+                }
+              }catch{}
+            };
+            await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('TAIL_TIMEOUT')),10000);ws.onopen=()=>{clearTimeout(timer);resolve()};ws.onerror=()=>{clearTimeout(timer);reject(new Error('TAIL_UNAVAILABLE'))};});
+            const base='https://demo.anunex.com';
+            const config=await (await fetch(base+'/api/config')).json();
+            if(config.environment!=='staging')throw new Error('STAGING_REQUIRED');
+            const login=await fetch(base+'/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({identifier:'manager',password:'Demo123!',remember:false,turnstileToken:'XXXX.DUMMY.TOKEN.XXXX'})});
+            const cookie=(login.headers.get('set-cookie')||'').match(/yildiz_session=[^;]+/)?.[0];
+            if(!login.ok||!cookie)throw new Error('DEMO_TEST_LOGIN_FAILED');
+            const logout=await fetch(base+'/api/auth/logout',{method:'POST',headers:{'content-type':'application/json',cookie},body:'{}'});
+            const id=logout.headers.get('x-request-id');
+            await new Promise(resolve=>setTimeout(resolve,5000));
+            const own=errors.filter(item=>item.id===id);
+            const categories=own.map(item=>({
+              databaseCodes:item.message.match(/D1_[A-Z_]+|SQLITE_[A-Z_]+/g)||[],
+              missingObject:item.message.match(/no such (?:table|column): [a-zA-Z0-9_.]+/)?.[0]||null,
+              undefinedBinding:/undefined.*not supported|Cannot read properties of undefined/.test(item.message),
+              referenceError:item.message.match(/[a-zA-Z_$][a-zA-Z0-9_$.]* is not defined/)?.[0]||null,
+            }));
+            console.log(JSON.stringify({tailAvailable:true,logoutStatus:logout.status,matchingErrors:own.length,categories}));
+          }catch{console.log(JSON.stringify({tailAvailable:false,code:'TAIL_DIAGNOSTIC_FAILED'}));}
+          finally{
+            ws?.close();
+            const cleanup=await fetch(endpoint+'/'+body.result.id,{method:'DELETE',headers});
+            console.log(JSON.stringify({temporaryTailRemoved:cleanup.ok}));
+          }
+          JS
