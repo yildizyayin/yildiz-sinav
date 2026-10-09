@@ -70,7 +70,7 @@ jobs:
           const token=process.env.CLOUDFLARE_API_TOKEN,account=process.env.CLOUDFLARE_ACCOUNT_ID;
           const endpoint='https://api.cloudflare.com/client/v4/accounts/'+account+'/workers/scripts/yildiz-sinav-v1/tails';
           const headers={authorization:'Bearer '+token};
-          const response=await fetch(endpoint,{method:'POST',headers});
+          const response=await fetch(endpoint,{method:'POST',headers,signal:AbortSignal.timeout(20000)});
           const body=await response.json().catch(()=>null);
           if(!response.ok||!body?.result?.url){console.log(JSON.stringify({tailAvailable:false,httpStatus:response.status}));process.exit(0);}
           let ws;
@@ -84,12 +84,12 @@ jobs:
                 if(new URL(item.event?.request?.url||'https://invalid').pathname!=='/api/auth/logout')return;
                 for(const log of item.logs||[]){
                   for(const part of log.message||[]){
-                    try{const value=JSON.parse(part);if(value.event==='unhandled_request_error')errors.push({id:value.requestId,message:String(value.error||'')});}catch{}
+                    try{const value=JSON.parse(part);if(value.error)errors.push({id:value.requestId,message:String(value.error)});}catch{if(log.level==='error')errors.push({id:null,message:String(part)});}
                   }
                 }
               }catch{}
             };
-            await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('TAIL_TIMEOUT')),10000);ws.onopen=()=>{clearTimeout(timer);resolve()};ws.onerror=()=>{clearTimeout(timer);reject(new Error('TAIL_UNAVAILABLE'))};});
+            await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('TAIL_TIMEOUT')),10000);ws.onopen=()=>{ws.send(JSON.stringify({debug:false}));clearTimeout(timer);resolve()};ws.onerror=()=>{clearTimeout(timer);reject(new Error('TAIL_UNAVAILABLE'))};});
             const base='https://demo.anunex.com';
             const config=await (await fetch(base+'/api/config')).json();
             if(config.environment!=='staging')throw new Error('STAGING_REQUIRED');
@@ -99,7 +99,7 @@ jobs:
             const logout=await fetch(base+'/api/auth/logout',{method:'POST',headers:{'content-type':'application/json',cookie},body:'{}'});
             const id=logout.headers.get('x-request-id');
             await new Promise(resolve=>setTimeout(resolve,5000));
-            const own=errors.filter(item=>item.id===id);
+            const own=errors.filter(item=>item.id===id||!item.id);
             const categories=own.map(item=>({
               databaseCodes:item.message.match(/D1_[A-Z_]+|SQLITE_[A-Z_]+/g)||[],
               missingObject:item.message.match(/no such (?:table|column): [a-zA-Z0-9_.]+/)?.[0]||null,
@@ -110,7 +110,8 @@ jobs:
           }catch{console.log(JSON.stringify({tailAvailable:false,code:'TAIL_DIAGNOSTIC_FAILED'}));}
           finally{
             ws?.close();
-            const cleanup=await fetch(endpoint+'/'+body.result.id,{method:'DELETE',headers});
+            const cleanup=await fetch(endpoint+'/'+body.result.id,{method:'DELETE',headers,signal:AbortSignal.timeout(20000)});
             console.log(JSON.stringify({temporaryTailRemoved:cleanup.ok}));
+            process.exit(cleanup.ok?0:1);
           }
           JS
