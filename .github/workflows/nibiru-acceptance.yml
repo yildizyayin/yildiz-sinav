@@ -9,7 +9,7 @@ on:
       - 'acceptance/**'
       - 'scripts/check-nibiru-free-account.mjs'
       - 'scripts/nibiru-demo-readiness.mjs'
-      - '.github/workflows/nibiru-acceptance.yml' 
+      - '.github/workflows/nibiru-acceptance.yml'
   workflow_dispatch:
 permissions:
   contents: read

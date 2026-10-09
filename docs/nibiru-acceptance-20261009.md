@@ -20,11 +20,13 @@
 
 ## Verified evidence
 
-- GitHub run [37957578161](https://github.com/yildizyayin/yildiz-sinav/actions/runs/37957578161): 803 unit/integration tests passed; typecheck and production build passed.
+- GitHub run [37958103509](https://github.com/yildizyayin/yildiz-sinav/actions/runs/37958103509): 806 unit/integration tests passed; typecheck and production build passed.
 - Demo read-only check at 2026-10-09 16:14:42 UTC: environment staging; WhatsApp disabled and not ready; all four configuration flags false (verify token, app secret, access token, phone ID). No outbound message sent.
 - Demo voice status: binding configured, liveVerified false. Demo still runs the baseline; code corrections above are not deployed.
 - Demo logout returned HTTP 500 again; local session cookie discarded. Root cause is not established here; keep tracked with other post-release technical issues.
 - Real provider step BLOCKED, not passed: Cloudflare account subscriptions GET returned HTTP 403 (`FREE_PLAN_HTTP_403`). There were zero model/STT inference calls in these runs.
+
+The final code also passed a separate TypeScript check for the live acceptance runner. The final update after this run is documentation and whitespace only.
 
 ## Remaining acceptance and next-session instructions
 
