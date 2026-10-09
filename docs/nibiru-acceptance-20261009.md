@@ -113,3 +113,10 @@ Fresh read-only run 37971096622, staging job 113957610706:
 - Existing GitHub protection requires Review deployments -> production -> Approve and deploy on the run page. Despite that UI wording, this workflow only checks presence and performs GET requests; it does not deploy or mutate the app. The connector has no deployment-review action, so account review must be completed by the user. Do not remove/bypass environment protection or infer missing production keys from staging.
 
 Next: once the existing review gate is approved, inspect production job presence results. Then identify naming/environment/synchronization differences before any request to recreate keys.
+
+
+## Production credential audit completed — 2026-10-09 21:10 Europe/Istanbul
+
+Run 37971096622 production job 113957611193 completed successfully after the required environment review. Effective GitHub production context contains CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID, but none of the plain or PROD_ variants of YouTube/WhatsApp integration keys. The production Worker yildiz-sinav-prod secret-name GET also confirms none of YOUTUBE_API_KEY or the four WHATSAPP_* names. This resolves production UNKNOWN from the preceding section. These are presence-only results, no values printed, no deployment or synchronization.
+
+User requested moving on to YouTube and WhatsApp. Proceed with Google project/YouTube Data API v3 activation and API-key setup first, then Meta Cloud API application/test-number setup and webhook integration. Reuse any existing Google/Meta provider configuration if present; the absence of keys in the audited deploy contexts does not prove absence in provider dashboards or another repository. Never ask for raw keys in chat. Save YouTube key as YOUTUBE_API_KEY in staging and PROD_YOUTUBE_API_KEY in production; WhatsApp uses four plain staging and corresponding PROD_ production secrets. Keep paid upgrades off and designate an owned test recipient before outbound delivery.
