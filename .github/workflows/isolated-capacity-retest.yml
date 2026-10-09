@@ -81,21 +81,6 @@ jobs:
           node-version: 22
       - name: Validate exact isolated staging target
         run: node scripts/agents/load-target.mjs
-      - name: Recover only failed run 37903414741 synthetic fixtures
-        run: |
-          set -euo pipefail
-          for shard in {1..10}; do
-            cleaned=false
-            for attempt in {1..6}; do
-              if GITHUB_RUN_ID=37903414741 CAPACITY_SHARD="$shard" node scripts/isolated-result-capacity-fixture.mjs --cleanup; then cleaned=true; break; fi
-              sleep $((attempt * 5))
-            done
-            test "$cleaned" = true
-          done
-      - name: Prepare one synthetic published result using the real access-issuance API
-        run: node scripts/isolated-result-capacity-fixture.mjs
-      - name: Complete actual result lookup and HMAC code verification
-        run: node scripts/prepare-authenticated-result-load.mjs
       - name: Install official k6
         run: |
           set -euo pipefail
@@ -120,15 +105,33 @@ jobs:
            responses.add(1,{status:String(res.status)});
            if(res.status!==200){
             let kind='UNCLASSIFIED';
-            try{const body=JSON.parse(res.body);const candidate=String(body.code||body.error?.code||'');if(/^[A-Z0-9_]{1,64}$/.test(candidate))kind=candidate;}catch(error){}
+            try{const body=JSON.parse(res.body);const candidate=String(body.code||(body.error && body.error.code)||'');if(/^[A-Z0-9_]{1,64}$/.test(candidate))kind=candidate;}catch(error){}
             if(/D1.*(overload|busy|too many)/i.test(res.body||''))kind='D1_OVERLOAD';
             if(/Error (1102|1027)/.test(res.body||''))kind='WORKER_RESOURCE_LIMIT';
             failures.add(1,{kind});
+            console.log(JSON.stringify({status:res.status,failureKind:kind}));
            }
            check(res,{'authenticated summary 200':r=>r.status===200,'exact synthetic published exam and net':r=>{try{const data=JSON.parse(r.body);return data.ok===true&&data.exams.length===1&&data.exams[0].exam_id===__ENV.RESULT_EXPECTED_EXAM_ID&&data.exams[0].net===7.5}catch(error){return false}}});
           }
           
           JS
+      - name: Validate diagnostic k6 syntax before synthetic writes
+        run: ./k6 inspect bounded-capacity-diagnostic.js > /dev/null
+      - name: Recover only failed run 37903414741 synthetic fixtures
+        run: |
+          set -euo pipefail
+          for shard in {1..10}; do
+            cleaned=false
+            for attempt in {1..6}; do
+              if GITHUB_RUN_ID=37903414741 CAPACITY_SHARD="$shard" node scripts/isolated-result-capacity-fixture.mjs --cleanup; then cleaned=true; break; fi
+              sleep $((attempt * 5))
+            done
+            test "$cleaned" = true
+          done
+      - name: Prepare one synthetic published result using the real access-issuance API
+        run: node scripts/isolated-result-capacity-fixture.mjs
+      - name: Complete actual result lookup and HMAC code verification
+        run: node scripts/prepare-authenticated-result-load.mjs
       - name: Execute bounded 100-VU authenticated diagnostic
         run: ./k6 run --summary-export=capacity-shard-${{ matrix.shard }}.json bounded-capacity-diagnostic.js
       - name: Preserve exact metrics without credentials
