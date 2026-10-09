@@ -4,6 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
+    inputs:
+      create_remote_preview:
+        description: 'Create remote D1/R2 preview and load fixtures (consumes account quota)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -13,7 +19,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Verify source without remote fixture writes
+        run: npm run typecheck && npm test && npm run build
+
   preview:
+    # D1 Free quota is account-wide: isolated PR databases still consume it.
+    # Keep source verification automatic; provision/seed only on explicit dispatch.
+    needs: verify
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.create_remote_preview }}
     runs-on: ubuntu-latest
     environment: staging
     env:
@@ -33,13 +57,14 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Verify source before preview
-        run: npm run typecheck && npm test && npm run build
-
       - name: Validate staging credentials
         run: |
           test -n "$CLOUDFLARE_API_TOKEN" || (echo "Missing CLOUDFLARE_API_TOKEN" >&2 && exit 1)
           test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "Missing CLOUDFLARE_ACCOUNT_ID" >&2 && exit 1)
+
+      # Jobs do not share files; recreate the already-verified client assets here.
+      - name: Build preview assets
+        run: npm run build
 
       - name: Diagnose staging API access without exposing credentials
         shell: bash

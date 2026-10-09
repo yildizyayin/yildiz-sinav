@@ -13,6 +13,11 @@ on:
         required: false
         default: false
         type: boolean
+      capacity_acceptance:
+        description: 'Also run 100K remote capacity writes; confirm sufficient account quota first'
+        required: false
+        default: false
+        type: boolean
   push:
     branches: [staging]
     paths-ignore:
@@ -52,6 +57,11 @@ jobs:
       TWILIO_FROM_NUMBER: ${{ vars.TWILIO_FROM_NUMBER }}
     steps:
       - uses: actions/checkout@v5
+      - name: Validate capacity acceptance selection
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.capacity_acceptance && !inputs.full_acceptance }}
+        run: |
+          echo '::error::capacity_acceptance requires full_acceptance; no deployment has been performed.'
+          exit 1
       - uses: actions/setup-node@v5
         with:
           node-version: 22
@@ -239,8 +249,19 @@ jobs:
         run: node scripts/live-nibiru-voice-smoke.mjs
 
       - name: Live 100K Queue capacity acceptance
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && inputs.capacity_acceptance && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}
         run: node scripts/live-capacity-smoke.mjs
+
+      - name: Report capacity acceptance scope
+        if: ${{ always() }}
+        env:
+          CAPACITY_REQUESTED: ${{ github.event_name == 'workflow_dispatch' && inputs.full_acceptance && inputs.capacity_acceptance }}
+        run: |
+          if [ "$CAPACITY_REQUESTED" = 'true' ]; then
+            echo '- 100K capacity acceptance: requested; inspect its step result for evidence.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo '- 100K capacity acceptance: NOT RUN; deploy success does not prove capacity.' >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Persist live smoke report
         if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.full_acceptance && vars.CLOUDFLARE_LOAD_DEMO == 'true' }}

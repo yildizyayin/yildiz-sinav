@@ -1,5 +1,27 @@
 # Nibiru acceptance checkpoint — 2026-10-09
 
+## Latest continuation — release preparation and quota isolation
+
+This section supersedes earlier unresolved-status notes below. Main is still c5d45c30b0f2350b605e304c59b87f3228e7da3b. Draft PR #229 is open, mergeable at inspection, and separate (head 12c9d8b792ffbb31471a851132328cb0cbc90b3a); mergeability is not acceptance evidence. No merge or deployment performed.
+
+- Completed local alignment with the saved Astra/checkpoint revision 256a55dbb938008efc4c71613bfb75dc30c75f1d.
+- Found an avoidable write path: Question Pool PR Preview automatically provisioned D1/R2 and loaded fixtures on every PR update. This is a quota risk, NOT proof of the source of today's exhaustion.
+- Split that workflow: automatic typecheck/tests/build remain on PR events in a credential-free verify job. Remote preview now requires manual workflow_dispatch with create_remote_preview=true, after verify succeeds. Its own job rebuilds client assets because jobs do not share files. Default is false.
+- Separated the 100K staging capacity suite from general full_acceptance. It additionally requires capacity_acceptance=true (default false). Requesting capacity without full acceptance fails before deployment. A workflow summary explicitly reports omitted capacity as NOT RUN, never verified by ordinary deployment success.
+- Both edited workflows parsed successfully; checked defaults, dependencies, write gates, retained source checks, asset build and git whitespace. No new remote fixture, capacity or inference calls were made during this continuation. The previous code acceptance remains 826 tests plus eight bounded live provider cases; these workflow edits were not deployed or exercised against Cloudflare.
+
+### Next exact actions
+
+1. External configuration: add YOUTUBE_API_KEY and the four WHATSAPP_* secrets in GitHub's staging environment. Production uses PROD_YOUTUBE_API_KEY and corresponding PROD_WHATSAPP_* keys. Never paste credentials into chat. The previously verified staging Worker has none of these five keys; this is not a fresh production audit.
+2. After synchronization in an authorized staging release, run bounded YouTube search/detail and browser playback checks. Verify WhatsApp handshake/signature, then delivery only to an explicitly designated owned recipient. Configuration alone is not live acceptance.
+3. After the documented D1 daily reset, verify real logout and necessary write flows. Do not automatically seed a remote PR database or run 100K capacity acceptance as part of this check. Larger capacity work requires a separately reviewed account budget; no paid upgrade is authorized.
+4. Review PR #229's evidence and the production release gates. Then wire the preserved Astra reference to existing real role routes/APIs, including guidance RBA, and verify responsive layouts before design deployment.
+5. Natural Turkish server TTS remains unverified; paid TTS stays OFF. Broader academic review remains necessary beyond the sampled provider cases.
+
+Manual CI controls after these changes reach the relevant branch:
+- Question Pool PR Preview: select the intended source branch, leave create_remote_preview=false for source-only verification; true explicitly provisions and seeds remote resources.
+- Deploy Cloudflare Worker: leave reseed_demo=false; full_acceptance=true runs general mutable acceptance. Leave capacity_acceptance=false unless a separate remote-capacity run and its account budget have been approved. This workflow deploys staging; it is not a read-only configuration check.
+
 ## Source and release state
 
 - Production/main baseline: `c5d45c30b0f2350b605e304c59b87f3228e7da3b`.
