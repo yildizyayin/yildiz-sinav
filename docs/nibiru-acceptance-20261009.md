@@ -59,7 +59,22 @@ User requested YouTube integration after Nibiru model, voice and WhatsApp accept
 - YouTube secret synchronization was missing from deployment workflows. Added optional YOUTUBE_API_KEY to staging and PROD_YOUTUBE_API_KEY-to-YOUTUBE_API_KEY to both production workflows. Staging deploy now explicitly uses the staging GitHub environment. Empty secrets do not overwrite existing Worker values.
 - Demo logout diagnosis run 37966566715 confirmed D1_ERROR: the account exhausted its Free daily row-write allocation. Logout returned 500; reusing the cookie still returned auth/me 200. Temporary tails were deleted. The cause is verified quota exhaustion, not an inferred schema fault.
 - Added explicit HTTP 503 SESSION_REVOCATION_TEMPORARILY_UNAVAILABLE for this observed quota error. Do not clear the cookie or pretend the server session is revoked. Other storage errors remain errors.
-- Local verification after these additions: 826 tests passed, typecheck passed; UI build and workflow YAML validation passed. Final GitHub verification is required for the new combined revision.
+- Local verification after these additions: 826 tests passed, typecheck passed; UI build and workflow YAML validation passed. Final combined revision 5d78da55d859bbaf94e7322c01d31a69b3266917 passed GitHub run 37967035015: 826 tests, typecheck/build, Free preflight and all eight live provider cases.
 - Free D1 writes reset at midnight UTC: 2026-10-10 03:00 Europe/Istanbul. Recheck real logout and data-writing acceptance after reset; do not purchase a plan, bypass the quota or rerun large private capacity fixtures while exhausted.
 - No main merge, staging deploy, production deploy or design deployment performed in this follow-up.
-- Before design release: configure/verify YouTube's key and real search/playback; configure WhatsApp and explicitly designate an owned test recipient for delivery acceptance; verify demo logout after quota reset; review separate PR #229 and production gate; wire the approved Astra prototype to actual role/API pages and verify responsive layouts.
+- Before design release: configure/verify YouTube's key and real search/playback; configure WhatsApp and explicitly designate an owned test recipient for delivery acceptance; verify demo logout after quota reset; review separate PR #229 and production gate; wire the prepared Astra prototype to actual role/API pages and verify responsive layouts.
+
+## Confirmed configuration dependencies and design handoff
+
+Read-only Worker secret-name audit run 37967035074 confirmed that staging Worker yildiz-sinav-v1 has NONE of YOUTUBE_API_KEY, WHATSAPP_VERIFY_TOKEN, WHATSAPP_APP_SECRET, WHATSAPP_ACCESS_TOKEN or WHATSAPP_PHONE_NUMBER_ID. No values were retrieved. Do not infer production configuration from this staging result.
+
+Next steps:
+1. Add YOUTUBE_API_KEY to GitHub staging environment (restrict the Google key to YouTube Data API v3); add PROD_YOUTUBE_API_KEY in production when preparing that release. Existing deployment code now synchronizes them. Enable and verify the API using a bounded search/detail request and playback; do not enable paid billing to bypass quotas.
+2. Add the four WhatsApp settings in staging and production's corresponding PROD_ keys. Verify webhook, signed callbacks and delivery using an explicitly designated owned recipient. No outbound message has been sent in this work.
+3. At/after 2026-10-10 03:00 Europe/Istanbul, recheck D1 write availability and real logout. Free-budget protection must also apply to large fixture/capacity work; the cause of this day's write consumption has not been attributed.
+4. Keep Turkish paid TTS OFF; Turkish STT is verified but natural Turkish server TTS remains a separate pending capability.
+5. Review PR #229 and release gates separately, then apply the prepared Astra design to actual role routes and APIs, test web/mobile, and deploy after the design release is ready.
+
+The existing Astra reference prototype is preserved at docs/design/anunex-super-admin-astra-prototype.html. It is a visual mockup, with simulated forms/actions, NOT a functioning production panel. Existing actual API/permission/RBA/report workflows must be wired; do not replace them with mock interactions. Global design direction remains light/airy content, left navigation, module-specific universe colors and no purple. Panel order: Super Admin, institution/chain, guidance (including RBA), subject teacher, student, parent.
+
+No deployment or merge performed. New-session continuation: read this checkpoint and branch head first; continue the configuration-dependent acceptances and design wiring without repeating completed provider/permission fixes.
