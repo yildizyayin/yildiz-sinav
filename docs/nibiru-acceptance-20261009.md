@@ -100,3 +100,16 @@ Next steps:
 The existing Astra reference prototype is preserved at docs/design/anunex-super-admin-astra-prototype.html. It is a visual mockup, with simulated forms/actions, NOT a functioning production panel. Existing actual API/permission/RBA/report workflows must be wired; do not replace them with mock interactions. Global design direction remains light/airy content, left navigation, module-specific universe colors and no purple. Panel order: Super Admin, institution/chain, guidance (including RBA), subject teacher, student, parent.
 
 No deployment or merge performed. New-session continuation: read this checkpoint and branch head first; continue the configuration-dependent acceptances and design wiring without repeating completed provider/permission fixes.
+
+
+## Credential correction — 2026-10-09 21:08 Europe/Istanbul
+
+User says the keys were saved yesterday. Do not request re-entry before checking production. Historical context confirms repository CLOUDFLARE_API_TOKEN/CLOUDFLARE_ACCOUNT_ID and Cloudflare token updates; it does not establish that YouTube/Meta integration keys were saved.
+
+Fresh read-only run 37971096622, staging job 113957610706:
+- Effective GitHub staging context has CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID. Neither the plain nor PROD_ variant of YouTube or the four WhatsApp secrets is available there.
+- Cloudflare staging Worker yildiz-sinav-v1 still lacks the five integration secret names. Values were not printed/read from Cloudflare. No sync or deployment performed.
+- Production job 113957611193 is WAITING for the existing production environment required reviewer yildizyayin. It has not run, so production key presence remains UNKNOWN.
+- Existing GitHub protection requires Review deployments -> production -> Approve and deploy on the run page. Despite that UI wording, this workflow only checks presence and performs GET requests; it does not deploy or mutate the app. The connector has no deployment-review action, so account review must be completed by the user. Do not remove/bypass environment protection or infer missing production keys from staging.
+
+Next: once the existing review gate is approved, inspect production job presence results. Then identify naming/environment/synchronization differences before any request to recreate keys.
