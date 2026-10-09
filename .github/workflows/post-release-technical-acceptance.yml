@@ -107,7 +107,7 @@ jobs:
         run: rm -f wrangler.report-acceptance.json
 
   capacity-start:
-    needs: isolated-private-reports
+    needs: [native-browser, provider-inventory, isolated-private-reports]
     runs-on: ubuntu-latest
     outputs:
       start_at: ${{ steps.start.outputs.start_at }}

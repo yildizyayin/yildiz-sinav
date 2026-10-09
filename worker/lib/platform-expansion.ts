@@ -120,7 +120,7 @@ async function scopedStudentId(env: Env, user: AuthUser, requested?: string | nu
 }
 
 async function examProfile(env: Env, examId: string) {
-  return one<any>(env.DB.prepare(`SELECT p.*,COALESCE(p.scope,CASE WHEN e.owner_type='CENTRAL' THEN 'CENTRAL' ELSE 'INSTITUTION' END) scope,e.title,e.exam_type,e.grade_level,e.academic_year,e.institution_id,e.status exam_status,pub.name publisher_name,n.name network_name
+  return one<any>(env.DB.prepare(`SELECT p.*,e.title,e.exam_type,e.grade_level,e.academic_year,e.institution_id,e.status exam_status,pub.name publisher_name,n.name network_name,COALESCE(p.scope,CASE WHEN e.owner_type='CENTRAL' THEN 'CENTRAL' ELSE 'INSTITUTION' END) scope
     FROM exams e LEFT JOIN exam_delivery_profiles p ON p.exam_id=e.id
     LEFT JOIN publishers pub ON pub.id=p.publisher_id LEFT JOIN institution_networks n ON n.id=p.network_id
     WHERE e.id=?`).bind(examId));
