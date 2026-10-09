@@ -34,7 +34,7 @@ jobs:
                   try: data=json.load(error)
                   except Exception: data={}
                   messages=' '.join(str(e.get('message','')) for e in data.get('errors',[])).lower()
-                  category='DAILY_LIMIT' if any(x in messages for x in ['daily','quota','read limit','write limit']) else 'OVERLOAD' if 'overload' in messages else 'OTHER'
+                  category='DAILY_LIMIT' if any(x in messages for x in ['daily','quota','read limit','write limit']) else 'OVERLOAD' if 'overload' in messages else 'SQL_SCHEMA' if any(x in text for x in ['no such table','no such column']) else 'SQL_CONSTRAINT' if 'constraint failed' in text else 'JS_TYPE_ERROR' if any(x in text for x in ['cannot read properties','is not a function','typeerror']) else 'D1_ERROR' if 'd1_error' in text else 'OTHER'
                   print(json.dumps({'providerStatus':error.code,'codes':[e.get('code') for e in data.get('errors',[])],'category':category}))
                   return None
               if not data.get('success'):
@@ -62,11 +62,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p tmp
+          npm install --no-audit --no-fund
           cat > tmp/classify.py <<'PY'
-          import json,sys
+          import json,sys,pathlib
           decoder=json.JSONDecoder();buffer=''
           for line in sys.stdin:
-              if not buffer.strip() and not line.lstrip().startswith('{'): continue
+              if not buffer.strip() and not line.lstrip().startswith('{'):
+                  if any(x in line.lower() for x in ['connected to','successfully created tail']): pathlib.Path('tmp/tail-ready').touch()
+                  continue
               buffer+=line
               while buffer.strip():
                   buffer=buffer.lstrip()
@@ -77,13 +80,15 @@ jobs:
                   category='DAILY_LIMIT' if any(x in text for x in ['daily limit','daily row','exceeded your','daily read','daily write']) else 'D1_OVERLOAD' if 'overloaded' in text else 'CPU_LIMIT' if 'cpu' in str(event.get('outcome','')).lower() else 'OTHER'
                   print(json.dumps({'eventOutcome':event.get('outcome'),'category':category,'exceptionCount':len(event.get('exceptions',[]))}),flush=True)
           PY
-          npx --yes wrangler@4.131.1 tail yildiz-sinav-qpool-pr-227 --format json 2>/dev/null | python3 tmp/classify.py > tmp/classifications.jsonl &
+          npx wrangler tail yildiz-sinav-qpool-pr-227 --format json 2>/dev/null | python3 tmp/classify.py > tmp/classifications.jsonl &
           tail_pid=$!
           trap 'kill "$tail_pid" 2>/dev/null || true; cat tmp/classifications.jsonl' EXIT
           node --input-type=module <<'JS'
           import assert from 'node:assert/strict';
           import {setTimeout as pause} from 'node:timers/promises';
-          await pause(15000);
+          import {existsSync} from 'node:fs';
+          for(let attempt=0;attempt<30&&!existsSync('tmp/tail-ready');attempt++)await pause(1000);
+          assert(existsSync('tmp/tail-ready'),'Provider tail connection was not confirmed; no synthetic request sent');
           const base='https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev';
           const headers={'content-type':'application/json','user-agent':'ANUNEX-synthetic-acceptance/1.0'};
           const config=await fetch(base+'/api/config',{headers});assert.equal(config.status,200);
