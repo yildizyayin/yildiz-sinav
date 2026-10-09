@@ -23,11 +23,11 @@ jobs:
           import assert from 'node:assert/strict';
           const base='https://api.github.com/repos/yildizyayin/yildiz-sinav';
           async function get(path){const r=await fetch(base+path,{headers:{Authorization:'Bearer '+process.env.GH_TOKEN,Accept:'application/vnd.github+json'}});assert(r.ok,'Cannot verify acceptance evidence: HTTP '+r.status);return r.json()}
-          const run=await get('/actions/runs/37902532033');
+          const run=await get('/actions/runs/37905550928');
           assert.equal(run.head_branch,'fix/post-release-technical-acceptance');
           const deadline=Date.now()+600000;
           while(true){
-            const {jobs}=await get('/actions/runs/37902532033/jobs?per_page=100');
+            const {jobs}=await get('/actions/runs/37905550928/jobs?per_page=100');
             const required=['native-browser','provider-inventory','isolated-private-reports'].map(name=>jobs.find(j=>j.name===name));
             assert(required.every(Boolean),'Missing required acceptance gate');
             assert(!required.some(j=>j.status==='completed'&&j.conclusion!=='success'),'Required live acceptance failed');
@@ -153,6 +153,7 @@ jobs:
           tail_pid=$!
           trap 'kill "$tail_pid" 2>/dev/null || true' EXIT
           sleep 8
+          set +e
           ./k6 run --summary-export=capacity-shard-${{ matrix.shard }}.json bounded-capacity-diagnostic.js
           load_status=$?
           sleep 5
