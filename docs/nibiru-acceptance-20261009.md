@@ -49,3 +49,17 @@ User requested YouTube integration after Nibiru model, voice and WhatsApp accept
 - Code revision tested: 74468672d91ab5f6c076a8e66face8e6c38033da. Evidence retained in GitHub run 37962439334.
 - Final output review distinguishes passing bounded automation from remaining terminology/language quality defects. No main merge or deployment has occurred.
 - Next engineering work: Turkish output validation and academic quality lane/review, then WhatsApp setup/owned-recipient acceptance, YouTube activation/audit and design application. Turkish server TTS and logout HTTP 500 remain unresolved.
+
+## Remaining technical work — 2026-10-09 follow-up
+
+- Branch code 8fc6aca373e8da68d78751340a390d114e99fe0e passed GitHub run 37965077065: 823 tests, typecheck, build, Free preflight and eight real provider cases (ten requests). Output review run 37965332220 found correct 7/8 explanations, no earlier foreign-script leakage or common-numerator confusion. This is sampled acceptance only.
+- Added bounded final guards for the observed Japanese script leakage and incorrect “ortak pay yapalım” expression. Unsafe output uses the existing safe response; no arbitrary automatic mathematical rewriting.
+- YouTube candidates now require public/processed/embeddable video metadata, non-age-restricted status, valid IDs and availability in TR. Timed provider requests fail safely. New validated-v2 cache namespace excludes older unchecked candidates; seven-day expiry remains. Automatic candidates are marked reviewRequired in student support.
+- Provider status now separates configured from liveVerified; mere secret presence never proves delivery/playback.
+- YouTube secret synchronization was missing from deployment workflows. Added optional YOUTUBE_API_KEY to staging and PROD_YOUTUBE_API_KEY-to-YOUTUBE_API_KEY to both production workflows. Staging deploy now explicitly uses the staging GitHub environment. Empty secrets do not overwrite existing Worker values.
+- Demo logout diagnosis run 37966566715 confirmed D1_ERROR: the account exhausted its Free daily row-write allocation. Logout returned 500; reusing the cookie still returned auth/me 200. Temporary tails were deleted. The cause is verified quota exhaustion, not an inferred schema fault.
+- Added explicit HTTP 503 SESSION_REVOCATION_TEMPORARILY_UNAVAILABLE for this observed quota error. Do not clear the cookie or pretend the server session is revoked. Other storage errors remain errors.
+- Local verification after these additions: 826 tests passed, typecheck passed; UI build and workflow YAML validation passed. Final GitHub verification is required for the new combined revision.
+- Free D1 writes reset at midnight UTC: 2026-10-10 03:00 Europe/Istanbul. Recheck real logout and data-writing acceptance after reset; do not purchase a plan, bypass the quota or rerun large private capacity fixtures while exhausted.
+- No main merge, staging deploy, production deploy or design deployment performed in this follow-up.
+- Before design release: configure/verify YouTube's key and real search/playback; configure WhatsApp and explicitly designate an owned test recipient for delivery acceptance; verify demo logout after quota reset; review separate PR #229 and production gate; wire the approved Astra prototype to actual role/API pages and verify responsive layouts.
