@@ -48,6 +48,6 @@ const authenticatedSummary = RESULT_NETWORK_SUMMARY_SQL
  .replace('rni.meb_code=? AND peer.normalized_name=? AND peer.grade_level=?', 'rni.meb_code=i.meb_code AND peer.normalized_name=i.normalized_name AND peer.grade_level=i.grade_level')
  .replace("(?<>'' AND peer.student_number_lookup_token=?)", "(COALESCE(i.student_number_lookup_token,'')<>'' AND peer.student_number_lookup_token=i.student_number_lookup_token)")
  .replace("(?<>'' AND peer.tckn_lookup_token=?)", "(COALESCE(i.tckn_lookup_token,'')<>'' AND peer.tckn_lookup_token=i.tckn_lookup_token)");
-export const RESULT_NETWORK_AUTHENTICATED_SUMMARY_SQL = `WITH identity AS (${RESULT_NETWORK_IDENTITY_SQL}),summaries AS (${authenticatedSummary})
+export const RESULT_NETWORK_AUTHENTICATED_SUMMARY_SQL = `WITH identity AS MATERIALIZED (${RESULT_NETWORK_IDENTITY_SQL}),summaries AS (${authenticatedSummary})
  SELECT identity.*,summaries.* FROM identity LEFT JOIN summaries ON 1=1
  ORDER BY summaries.published_at DESC,summaries.administration_id LIMIT 50`;
