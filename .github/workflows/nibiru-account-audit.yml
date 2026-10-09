@@ -38,9 +38,25 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 37962439334
-          name: nibiru-bounded-acceptance-74468672d91ab5f6c076a8e66face8e6c38033da
+          run-id: 37965077065
+          name: nibiru-bounded-acceptance-8fc6aca373e8da68d78751340a390d114e99fe0e
           path: tmp/provider-evidence
       - name: Inspect synthetic provider evidence (no inference)
         run: |
           node --input-type=module -e "import fs from 'node:fs';console.log(fs.readFileSync('tmp/provider-evidence/providers.json','utf8'))"
+
+      - name: Diagnose demo logout using only the test account
+        run: |
+          node --input-type=module <<'JS'
+          const base='https://demo.anunex.com';
+          const config=await (await fetch(base+'/api/config')).json();
+          if(config.environment!=='staging')throw new Error('STAGING_REQUIRED');
+          const login=await fetch(base+'/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({identifier:'manager',password:'Demo123!',remember:false,turnstileToken:'XXXX.DUMMY.TOKEN.XXXX'})});
+          const cookie=(login.headers.get('set-cookie')||'').match(/yildiz_session=[^;]+/)?.[0];
+          if(!login.ok||!cookie)throw new Error('DEMO_TEST_LOGIN_FAILED');
+          const logout=await fetch(base+'/api/auth/logout',{method:'POST',headers:{'content-type':'application/json',cookie},body:'{}'});
+          const body=await logout.json().catch(()=>null);
+          const code=String(body?.error?.code||'').replace(/[^A-Z0-9_]/g,'').slice(0,80);
+          const after=await fetch(base+'/api/auth/me',{headers:{cookie}});
+          console.log(JSON.stringify({logoutStatus:logout.status,errorCode:code||null,sessionInvalidated:after.status===401,authAfterLogoutStatus:after.status,clearingCookie:Boolean(logout.headers.get('set-cookie')?.includes('Max-Age=0'))}));
+          JS
