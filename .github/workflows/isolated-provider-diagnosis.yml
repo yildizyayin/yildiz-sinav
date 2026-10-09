@@ -58,52 +58,54 @@ jobs:
                       print(json.dumps({'scope':label,'success':row.get('success'),'meta':row.get('meta'),'aggregates':row.get('results',[])}))
           print('PASS: read-only isolated diagnosis; no deployment or schedule mutation')
           PY
-      - name: Classify one synthetic parser request without printing private payloads
+      - name: Classify one synthetic parser request through a confirmed provider stream
         run: |
-          set -euo pipefail
-          mkdir -p tmp
-          npm install --no-audit --no-fund
-          cat > tmp/classify.py <<'PY'
-          import json,sys,pathlib
-          decoder=json.JSONDecoder();buffer=''
-          for line in sys.stdin:
-              if not buffer.strip() and not line.lstrip().startswith('{'):
-                  if any(x in line.lower() for x in ['connected to','successfully created tail']): pathlib.Path('tmp/tail-ready').touch()
-                  continue
-              buffer+=line
-              while buffer.strip():
-                  buffer=buffer.lstrip()
-                  try: event,end=decoder.raw_decode(buffer)
-                  except json.JSONDecodeError: break
-                  buffer=buffer[end:]
-                  text=json.dumps(event).lower()
-                  category='DAILY_LIMIT' if any(x in text for x in ['daily limit','daily row','exceeded your','daily read','daily write']) else 'D1_OVERLOAD' if 'overloaded' in text else 'CPU_LIMIT' if 'cpu' in str(event.get('outcome','')).lower() else 'OTHER'
-                  print(json.dumps({'eventOutcome':event.get('outcome'),'category':category,'exceptionCount':len(event.get('exceptions',[]))}),flush=True)
-          PY
-          npx wrangler tail yildiz-sinav-qpool-pr-227 --format json 2>tmp/tail-stderr.txt | python3 tmp/classify.py > tmp/classifications.jsonl &
-          tail_pid=$!
-          trap 'kill "$tail_pid" 2>/dev/null || true; cat tmp/classifications.jsonl' EXIT
           node --input-type=module <<'JS'
           import assert from 'node:assert/strict';
           import {setTimeout as pause} from 'node:timers/promises';
-          import {existsSync,readFileSync} from 'node:fs';
-          const connected=()=>existsSync('tmp/tail-ready')||(existsSync('tmp/tail-stderr.txt')&&/connected to|successfully created tail/i.test(readFileSync('tmp/tail-stderr.txt','utf8')));
-          for(let attempt=0;attempt<30&&!connected();attempt++)await pause(1000);
-          const tailDiagnostic=existsSync('tmp/tail-stderr.txt')?readFileSync('tmp/tail-stderr.txt','utf8'):'';
-          console.log(JSON.stringify({tailConnected:connected(),tailAuthError:/authentication|unauthorized|forbidden|10000/i.test(tailDiagnostic),tailConfigError:/invalid configuration|could not resolve|not found/i.test(tailDiagnostic)}));
-          assert(connected(),'Provider tail connection was not confirmed; no synthetic request sent');
-          const base='https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev';
-          const headers={'content-type':'application/json','user-agent':'ANUNEX-synthetic-acceptance/1.0'};
-          const config=await fetch(base+'/api/config',{headers});assert.equal(config.status,200);
-          assert.equal((await config.json()).environment,'staging');
-          const login=await fetch(base+'/api/auth/login',{method:'POST',headers,body:JSON.stringify({identifier:'super',password:'Demo123!',turnstileToken:'XXXX.DUMMY.TOKEN.XXXX'})});
-          console.log(JSON.stringify({probe:'synthetic-login',status:login.status}));
-          assert.equal(login.status,200);
-          const cookie=login.headers.get('set-cookie')?.split(';')[0];assert(cookie);console.log('::add-mask::'+cookie);
-          const sampleText='student_number,name,class,booklet,answers_MAT,answers_TUR,answers_FEN\n1001,Aktif1 Öğrenci1,7/A,A,ABCDEABCDE,ABCDEABCDE,ABCDEABCDE\n';
-          const result=await fetch(base+'/api/optical-definition-versions/optv_demo/test-parser',{method:'POST',headers:{...headers,cookie},body:JSON.stringify({sampleText,fileName:'synthetic-parser-proof.csv'})});
-          let data;try{data=await result.json()}catch{}
-          console.log(JSON.stringify({probe:'synthetic-parser',status:result.status,errorCode:data?.error?.code,passed:data?.passed}));
-          await pause(5000);
-          assert.equal(result.status,200);
+          const account='daae7254acbfe5218c52665daaacbd96';assert.equal(process.env.CLOUDFLARE_ACCOUNT_ID,account);
+          const provider='https://api.cloudflare.com/client/v4/accounts/'+account+'/workers/scripts/yildiz-sinav-qpool-pr-227/tails';
+          async function api(url,method){
+            const response=await fetch(url,{method,headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN},signal:AbortSignal.timeout(30000)});
+            const data=await response.json();
+            console.log(JSON.stringify({providerOperation:method,status:response.status,codes:data.errors?.map(x=>x.code)}));
+            assert(response.ok&&data.success,'Provider tail operation rejected');return data.result;
+          }
+          let tail,socket;let received=0;
+          try{
+            tail=await api(provider,'POST');assert(tail.id&&tail.url);
+            socket=new WebSocket(tail.url,'trace-v1');socket.binaryType='arraybuffer';
+            socket.addEventListener('message',event=>{
+              try{
+                const data=typeof event.data==='string'?event.data:new TextDecoder().decode(event.data);
+                const parsed=JSON.parse(data);received++;
+                const text=JSON.stringify(parsed).toLowerCase();
+                const category=['daily limit','daily row','exceeded your','daily read','daily write'].some(x=>text.includes(x))?'DAILY_LIMIT':text.includes('overloaded')?'D1_OVERLOAD':String(parsed.outcome).toLowerCase().includes('cpu')?'CPU_LIMIT':['no such table','no such column'].some(x=>text.includes(x))?'SQL_SCHEMA':text.includes('constraint failed')?'SQL_CONSTRAINT':['cannot read properties','is not a function','typeerror'].some(x=>text.includes(x))?'JS_TYPE_ERROR':text.includes('d1_error')?'D1_ERROR':'OTHER';
+                console.log(JSON.stringify({eventOutcome:parsed.outcome,category,exceptionCount:parsed.exceptions?.length||0}));
+              }catch{console.log('STREAM_EVENT_FORMAT_UNRECOGNIZED')}
+            });
+            await new Promise((resolve,reject)=>{
+              const timer=setTimeout(()=>reject(new Error('Provider stream connection timed out')),30000);
+              socket.addEventListener('open',()=>{clearTimeout(timer);resolve()},{once:true});
+              socket.addEventListener('error',()=>{clearTimeout(timer);reject(new Error('Provider stream connection failed'))},{once:true});
+            });
+            console.log('PASS: isolated provider stream connected');
+            socket.send(JSON.stringify({debug:true}));
+            const base='https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev';
+            const headers={'content-type':'application/json','user-agent':'ANUNEX-synthetic-acceptance/1.0'};
+            const config=await fetch(base+'/api/config',{headers,signal:AbortSignal.timeout(30000)});assert.equal(config.status,200);assert.equal((await config.json()).environment,'staging');
+            const login=await fetch(base+'/api/auth/login',{method:'POST',headers,body:JSON.stringify({identifier:'super',password:'Demo123!',turnstileToken:'XXXX.DUMMY.TOKEN.XXXX'}),signal:AbortSignal.timeout(30000)});
+            console.log(JSON.stringify({probe:'synthetic-login',status:login.status}));assert.equal(login.status,200);
+            const cookie=login.headers.get('set-cookie')?.split(';')[0];assert(cookie);console.log('::add-mask::'+cookie);
+            const sampleText='student_number,name,class,booklet,answers_MAT,answers_TUR,answers_FEN\n1001,Aktif1 Öğrenci1,7/A,A,ABCDEABCDE,ABCDEABCDE,ABCDEABCDE\n';
+            const result=await fetch(base+'/api/optical-definition-versions/optv_demo/test-parser',{method:'POST',headers:{...headers,cookie},body:JSON.stringify({sampleText,fileName:'synthetic-parser-proof.csv'}),signal:AbortSignal.timeout(30000)});
+            let data;try{data=await result.json()}catch{}
+            console.log(JSON.stringify({probe:'synthetic-parser',status:result.status,errorCode:data?.error?.code,passed:data?.passed}));
+            await pause(5000);
+            console.log(JSON.stringify({streamEventsReceived:received}));
+            assert.equal(result.status,200);
+          }finally{
+            socket?.close();
+            if(tail?.id)await api(provider+'/'+tail.id,'DELETE');
+          }
           JS
