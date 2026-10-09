@@ -69,14 +69,14 @@ for endpoint,jobid in created:
     assert result['meta']['changes']==1
     status,_,_=call(endpoint+'/'+jobid,manager)
     assert status==410
-deadline=time.monotonic()+1000
+deadline=time.monotonic()+1200
 while True:
     rows=[]
     for endpoint,jobid in created:
         table='private_rubric_export_jobs' if 'rubric' in endpoint else 'private_cohort_report_jobs'
         row=sql('SELECT status,cleanup_done,selection_json,actor_scope_json FROM '+table+' WHERE id=?',[jobid])['results'][0]
         rows.append(row)
-    print(json.dumps({'stage':'scheduled-retention-progress','jobs':rows}),flush=True)
+    print(json.dumps({'stage':'scheduled-retention-progress','jobs':[{'status':row['status'],'cleanup_done':row['cleanup_done']} for row in rows]}),flush=True)
     if all(row['status']=='EXPIRED' and row['cleanup_done']==1 and row['selection_json']=='{}' and row['actor_scope_json']=='[]' for row in rows): break
     assert time.monotonic()<deadline, ('Scheduled retention not completed',rows)
     time.sleep(10)

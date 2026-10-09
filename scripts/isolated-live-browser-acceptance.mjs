@@ -16,7 +16,7 @@ try{
    const login=await context.request.post(base+'/api/auth/login',{data:{identifier,password:'Demo123!',remember:false,turnstileToken:'XXXX.DUMMY.TOKEN.XXXX'}});assert.equal(login.status(),200);
    const me=await context.request.get(base+'/api/auth/me');assert.equal((await me.json()).user.role,role);
    page=await context.newPage();page.setDefaultTimeout(30_000);const errors=[];page.on('pageerror',error=>errors.push(error.message));
-   await page.goto(base+'/reports?studentId=stu_a001');await page.getByRole('heading',{name:heading,exact:true}).waitFor();
+   await page.goto(base+(role==='STUDENT'?'/student-report':'/reports')+'?studentId=stu_a001');await page.getByRole('heading',{name:heading,exact:true}).waitFor();
    if(role==='SUPER_ADMIN')await page.getByLabel('Kurum',{exact:true}).selectOption('inst_demo');
    const csv=page.getByRole('button',{name:'CSV',exact:true});await csv.waitFor();await csv.click({trial:true});
    const downloadPromise=page.waitForEvent('download');await csv.click();const download=await downloadPromise;
