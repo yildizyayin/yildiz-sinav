@@ -38,8 +38,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 37960142183
-          name: nibiru-bounded-acceptance-29c4b6a14672cf0fc3e3b46cc8576e4538afb719
+          run-id: 37961531111
+          name: nibiru-bounded-acceptance-ab96055769501648105b369202e722b7ad548247
           path: tmp/provider-evidence
       - name: Inspect synthetic provider evidence (no inference)
         run: |
