@@ -101,6 +101,7 @@ jobs:
             await new Promise(resolve=>setTimeout(resolve,5000));
             const own=errors.filter(item=>item.id===id||!item.id);
             const categories=own.map(item=>({
+              safeError:item.message.replace(/https?:\/\/\S+|Bearer\s+\S+/g,'[redacted]').replace(/\b[A-Za-z0-9_-]{24,}\b/g,'[redacted]').replace(/\b\d{7,}\b/g,'[redacted]').slice(0,350),
               databaseCodes:item.message.match(/D1_[A-Z_]+|SQLITE_[A-Z_]+/g)||[],
               missingObject:item.message.match(/no such (?:table|column): [a-zA-Z0-9_.]+/)?.[0]||null,
               undefinedBinding:/undefined.*not supported|Cannot read properties of undefined/.test(item.message),
