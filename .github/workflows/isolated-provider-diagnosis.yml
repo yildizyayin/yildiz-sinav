@@ -80,15 +80,18 @@ jobs:
                   category='DAILY_LIMIT' if any(x in text for x in ['daily limit','daily row','exceeded your','daily read','daily write']) else 'D1_OVERLOAD' if 'overloaded' in text else 'CPU_LIMIT' if 'cpu' in str(event.get('outcome','')).lower() else 'OTHER'
                   print(json.dumps({'eventOutcome':event.get('outcome'),'category':category,'exceptionCount':len(event.get('exceptions',[]))}),flush=True)
           PY
-          npx wrangler tail yildiz-sinav-qpool-pr-227 --format json 2>/dev/null | python3 tmp/classify.py > tmp/classifications.jsonl &
+          npx wrangler tail yildiz-sinav-qpool-pr-227 --format json 2>tmp/tail-stderr.txt | python3 tmp/classify.py > tmp/classifications.jsonl &
           tail_pid=$!
           trap 'kill "$tail_pid" 2>/dev/null || true; cat tmp/classifications.jsonl' EXIT
           node --input-type=module <<'JS'
           import assert from 'node:assert/strict';
           import {setTimeout as pause} from 'node:timers/promises';
-          import {existsSync} from 'node:fs';
-          for(let attempt=0;attempt<30&&!existsSync('tmp/tail-ready');attempt++)await pause(1000);
-          assert(existsSync('tmp/tail-ready'),'Provider tail connection was not confirmed; no synthetic request sent');
+          import {existsSync,readFileSync} from 'node:fs';
+          const connected=()=>existsSync('tmp/tail-ready')||(existsSync('tmp/tail-stderr.txt')&&/connected to|successfully created tail/i.test(readFileSync('tmp/tail-stderr.txt','utf8')));
+          for(let attempt=0;attempt<30&&!connected();attempt++)await pause(1000);
+          const tailDiagnostic=existsSync('tmp/tail-stderr.txt')?readFileSync('tmp/tail-stderr.txt','utf8'):'';
+          console.log(JSON.stringify({tailConnected:connected(),tailAuthError:/authentication|unauthorized|forbidden|10000/i.test(tailDiagnostic),tailConfigError:/invalid configuration|could not resolve|not found/i.test(tailDiagnostic)}));
+          assert(connected(),'Provider tail connection was not confirmed; no synthetic request sent');
           const base='https://yildiz-sinav-qpool-pr-227.rtsgida.workers.dev';
           const headers={'content-type':'application/json','user-agent':'ANUNEX-synthetic-acceptance/1.0'};
           const config=await fetch(base+'/api/config',{headers});assert.equal(config.status,200);
