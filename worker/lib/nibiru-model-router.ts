@@ -295,7 +295,7 @@ async function callModel(
   }
   if(item.model===DEFAULT_FAST||item.family==='FAST'){
     input.max_completion_tokens=decision.maxTokens;
-    input.reasoning_effort='low';
+    input.chat_template_kwargs={enable_thinking:false};
   }else{
     input.max_tokens=decision.maxTokens;
   }

@@ -142,6 +142,7 @@ describe('Provider acceptance evidence',()=>{
   await probeNibiruModels(e);
   const glm=run.mock.calls.find(call=>call[0]==='@cf/zai-org/glm-4.7-flash');
   expect(glm?.[1].prompt).toBeUndefined();
+  expect(glm?.[1].chat_template_kwargs).toEqual({enable_thinking:false});
   expect(glm?.[1].messages.map((message:any)=>message.role)).toEqual(['system','user']);
   const nvidia=run.mock.calls.find(call=>call[0]==='@cf/nvidia/nemotron-3-120b-a12b');
   expect(nvidia?.[1].chat_template_kwargs).toEqual({enable_thinking:true,low_effort:true,force_nonempty_content:true});
