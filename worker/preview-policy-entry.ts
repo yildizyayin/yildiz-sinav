@@ -7,6 +7,7 @@ type PreviewApp = typeof import('./privacy-export-entry').default;
 
 type OpticalCandidate = {
   id: string;
+  name?: string;
   template_id: string;
   template_status: string;
   template_active: number;
@@ -36,7 +37,7 @@ function candidateAllowed(candidate: OpticalCandidate, institutionId: string): b
 
 async function loadBoundCandidates(env: Env, examId: string): Promise<OpticalCandidate[]> {
   return all<OpticalCandidate>(env.DB.prepare(`
-    SELECT v.id,v.template_id,t.status template_status,t.active template_active,v.active version_active,
+    SELECT v.id,t.name,v.template_id,t.status template_status,t.active template_active,v.active version_active,
            v.parser_definition,coalesce(d.parser_test_passed,0) parser_test_passed,t.owner_type,t.owner_id
     FROM exam_optical_bindings b
     JOIN optical_template_versions v ON v.id=b.optical_template_version_id
@@ -49,7 +50,7 @@ async function loadBoundCandidates(env: Env, examId: string): Promise<OpticalCan
 
 async function loadFallbackCandidates(env: Env, institutionId: string): Promise<OpticalCandidate[]> {
   return all<OpticalCandidate>(env.DB.prepare(`
-    SELECT v.id,v.template_id,t.status template_status,t.active template_active,v.active version_active,
+    SELECT v.id,t.name,v.template_id,t.status template_status,t.active template_active,v.active version_active,
            v.parser_definition,coalesce(d.parser_test_passed,0) parser_test_passed,t.owner_type,t.owner_id
     FROM optical_template_versions v
     JOIN optical_templates t ON t.id=v.template_id
@@ -115,7 +116,7 @@ async function enforcePreviewOpticalPolicy(request: Request, env: Env, ctx: Exec
     return badRequest('Bu kurum için yayına hazır optik tanımı bulunamadı.', 'READY_OPTICAL_REQUIRED');
   }
   if (fallback.length > 1) {
-    return badRequest('Sınava optik bağlayın veya yükleme ekranından kullanılacak optiği seçin.', 'OPTICAL_TEMPLATE_REQUIRED');
+    return badRequest('Sınava optik bağlayın veya yükleme ekranından kullanılacak optiği seçin.', 'OPTICAL_TEMPLATE_REQUIRED', {templates: fallback.map(candidate => ({id:candidate.id,name:candidate.name || candidate.id}))});
   }
 
   return app.fetch(rebuildRequestWithTemplate(request, form, fallback[0].id), env, ctx);

@@ -14,6 +14,7 @@ jobs:
   rapor:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v5
       - name: Workflow ve son çalışmaların özetini çıkar
         env:
           GH_TOKEN: ${{ github.token }}

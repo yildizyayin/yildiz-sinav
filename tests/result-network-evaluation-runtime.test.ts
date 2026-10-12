@@ -18,7 +18,7 @@ function fixture(incomplete = false, optional = false, optionalKeyCount = 5, fre
       : sql.includes('SELECT id FROM exam_administrations') ? (networkPublished ? {id:'publication'} : null)
       : sql.includes('SELECT result_freeze_status') ? { result_freeze_status: freezeStatus }
       : sql.includes('count(*)') ? { c: 0 }
-      : sql.includes('FROM exams e LEFT JOIN scoring_rule_versions') ? { id: 'exam', scoring_version_id: 'score', verified: 1 } : null,
+      : sql.includes('FROM exams e LEFT JOIN scoring_rule_versions') ? { id: 'exam', status: 'ACTIVE', owner_type: 'INSTITUTION', institution_id: 'school', scoring_version_id: 'score', verified: 1 } : null,
     all: async () => ({ results: sql.includes('FROM exam_optional_answer_keys') ? (optional ? optionalKeys : [])
       : sql.includes('SELECT ep.id participant_id') ? [{ participant_id: 'participant', booklet_code: 'B', canonical_json: JSON.stringify({ booklet: 'B', answers_by_subject: { TYT_FEL: 'AB___' } }) }]
       : sql.includes('FROM exam_subjects') ? [{ subject_id: 'math', code: 'MAT', question_count: 3, wrong_divisor: 4 }]

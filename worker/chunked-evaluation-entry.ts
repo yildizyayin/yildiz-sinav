@@ -5,6 +5,8 @@ import type { CanonicalRecord, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, audit, badRequest, forbidden, json, normalizeName, notFound, one, splitName, uuid } from './lib/db';
 import { canEvaluateExam } from './lib/permissions';
+import { examEvaluationAccess } from './lib/exam-evaluation-access';
+import { recordExamAssessments, recordExamEvidenceAudit } from './lib/assessment-ledger';
 import { assertScoringRuleVerified, calculateOverall, calculateSubjectScore } from './lib/scoring';
 import { masteryStatus } from './lib/outcome';
 
@@ -55,6 +57,8 @@ async function ensureAccess(env: Env, request: Request, batch: AnyRow) {
 }
 
 async function finaliseBatch(env: Env, userId: string, batch: AnyRow, total: number): Promise<Response> {
+  const evidenceCount = await recordExamAssessments(env, batch.id);
+  await recordExamEvidenceAudit(env, userId, batch.institution_id, batch.id, evidenceCount);
   await env.DB.prepare(`UPDATE exam_results SET institution_rank=(SELECT rn FROM (
     SELECT er2.id,row_number() OVER (ORDER BY er2.net DESC,er2.correct_count DESC) rn
     FROM exam_results er2 JOIN exam_participants ep2 ON ep2.id=er2.participant_id
@@ -82,7 +86,7 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
     return badRequest('Dondurulmuş veya yayımlanmış sonuçlar yeniden değerlendirilemez. Düzeltme için yeni sonuç sürümü hazırlanmalıdır.', 'RESULTS_FROZEN');
   }
 
-  const totalRow = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM scan_records WHERE batch_id=?').bind(batchId));
+  const totalRow = await one<{ c: number }>(env.DB.prepare("SELECT count(*) c FROM scan_records WHERE batch_id=? AND resolution_status!='CANCELLED'").bind(batchId));
   const total = Number(totalRow?.c || 0);
   const progressRow = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM scan_evaluation_progress WHERE batch_id=?').bind(batchId));
   const alreadyProcessed = Number(progressRow?.c || 0);
@@ -95,6 +99,8 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
     FROM exams e LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id
     LEFT JOIN scoring_rules sr ON sr.id=srv.rule_id WHERE e.id=?`).bind(batch.exam_id));
   if (!exam) return notFound('Sınav bulunamadı.');
+  const examScope = await examEvaluationAccess(env, exam as any, batch.institution_id, true);
+  if (examScope) return examScope;
   if (!exam.scoring_version_id) return badRequest('Sınavın puanlama kuralı tanımlı değil.', 'SCORING_RULE_REQUIRED');
   assertScoringRuleVerified({ verified: exam.verified, authority: exam.authority });
 
@@ -118,7 +124,7 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
     batch.season_id ? all<AnyRow>(env.DB.prepare('SELECT id,grade_level,section FROM classes WHERE season_id=?').bind(batch.season_id)) : Promise.resolve([] as AnyRow[]),
     all<AnyRow>(env.DB.prepare(`SELECT sr.* FROM scan_records sr
       LEFT JOIN scan_evaluation_progress p ON p.batch_id=sr.batch_id AND p.scan_record_id=sr.id
-      WHERE sr.batch_id=? AND p.scan_record_id IS NULL
+      WHERE sr.batch_id=? AND sr.resolution_status!='CANCELLED' AND p.scan_record_id IS NULL
       ORDER BY sr.row_no LIMIT ?`).bind(batchId, CHUNK_SIZE)),
   ]);
 
@@ -129,7 +135,7 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
   for (const item of prepared) {
     const { row, record } = item;
     if (['AMBIGUOUS', 'INVALID'].includes(row.match_status)) return badRequest(`Satır ${row.row_no} için eşleştirme tamamlanmalıdır.`, 'BATCH_NEEDS_REVIEW');
-    if (row.match_status === 'NEW_GUEST') {
+    if (row.match_status === 'NEW_GUEST' || (row.match_status === 'GUEST_MATCH' && !row.matched_student_id)) {
       resolved.push({ row, record, studentId: uuid('stu'), studentStatus: 'GUEST', isNewGuest: true });
     } else {
       if (!row.matched_student_id) return badRequest(`Satır ${row.row_no} için öğrenci eşleştirmesi bulunamadı.`, 'UNRESOLVED_PARTICIPANT');

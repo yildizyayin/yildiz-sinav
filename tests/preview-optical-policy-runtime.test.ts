@@ -50,7 +50,9 @@ describe('Phobos preview runtime policy', () => {
   it('requires selection when multiple safe opticals exist', async () => {
     const { preview, delegated } = fixture([], [candidate('central', 'CENTRAL'), candidate('own', 'INSTITUTION', 'school-a')]);
     const response = await preview();
-    expect((await response.json() as any).error.code).toBe('OPTICAL_TEMPLATE_REQUIRED');
+    const payload = await response.json() as any;
+    expect(payload.error.code).toBe('OPTICAL_TEMPLATE_REQUIRED');
+    expect(payload.error.details.templates.map((template:any)=>template.id)).toEqual(['central','own']);
     expect(delegated).not.toHaveBeenCalled();
   });
 
