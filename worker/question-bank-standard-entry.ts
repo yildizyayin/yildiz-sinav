@@ -59,13 +59,12 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
            AND n.node_type='OUTCOME' AND n.academic_year=j.academic_year
            AND n.grade_level=j.grade_level AND n.subject_id=j.subject_id)
        ORDER BY j.created_at,j.id LIMIT 20`));
-      // Cumulative cap: an unchanged environment budget is NOT a fresh budget
-      // on every cron tick. Count already-produced and currently claimed work.
-      const usage=await one<{used:number}>(env.DB.prepare(`SELECT COALESCE(SUM(
-       CASE WHEN status='REVIEW_READY' THEN generated_count
-            WHEN status='RUNNING' THEN question_count ELSE 0 END),0) used
-       FROM question_generation_jobs WHERE grade_level IN (5,6,7,9,10,11)`));
-      const remainingBudget=Math.max(0,budget-Number(usage?.used??0));
+      // Read from the same atomic reservation ledger used by dispatch.
+      // Historic/manual generation jobs do not consume this pilot's quota.
+      const quota=await one<{question_cap:number;reserved_count:number}>(env.DB.prepare(
+       "SELECT question_cap,reserved_count FROM question_agent_pilot_budget WHERE id='pilot_50'"
+      ));
+      const remainingBudget=quota?Math.max(0,Math.min(budget,Number(quota.question_cap)-Number(quota.reserved_count))):0;
       const plan=planQuestionPilotDispatch(rows.map(r=>({...r,gradeLevel:Number(r.gradeLevel),
        questionCount:Number(r.questionCount),attemptCount:Number(r.attemptCount),
        curriculumVerified:Number(r.curriculumVerified)===1,outcomeActive:Number(r.outcomeActive)===1})),
