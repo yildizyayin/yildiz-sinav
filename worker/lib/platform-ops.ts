@@ -37,7 +37,7 @@ async function generateQuestion(request:Request,env:Env,user:AuthUser){
 export async function handlePlatformOps(request:Request,env:Env,user:AuthUser):Promise<Response|null>{
   const p=new URL(request.url).pathname;
   let m=p.match(/^\/api\/platform\/studio\/([^/]+)\/publish-homework$/);if(m&&request.method==='POST')return publishStudioHomework(request,env,user,m[1]);
-  let m=p.match(/^\/api\/platform\/studio\/([^/]+)$/);if(m&&request.method==='GET')return studioDocument(env,user,m[1]);
+  m=p.match(/^\/api\/platform\/studio\/([^/]+)$/);if(m&&request.method==='GET')return studioDocument(env,user,m[1]);
   m=p.match(/^\/api\/platform\/questions\/([^/]+)\/review$/);if(m&&request.method==='PATCH')return reviewQuestionWithGate(request,env,user,m[1]);
   if(p==='/api/platform/questions/generate'&&request.method==='POST')return generateQuestion(request,env,user);
   return null;
