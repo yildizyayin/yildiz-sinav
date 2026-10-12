@@ -2,6 +2,7 @@ import type { AuthUser,Env } from '../types';
 import {all,one,badRequest,forbidden,json,notFound,uuid} from './db';
 import {planStudioDelivery,resolveStudioDeliveryKind} from './studio-delivery-routing';
 import {validateBookletPermutation} from './studio-booklet-mapping';
+import {buildPositionAnswerKeys} from './studio-position-keys';
 
 /** Single-booklet publication. Multi-booklet position mapping must be completed separately. */
 export async function publishStudioExam(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
@@ -18,13 +19,18 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
  if(!/^[0-9]{4}-[0-9]{4}$/.test(academicYear)||Number(academicYear.slice(5))!==Number(academicYear.slice(0,4))+1)
   return badRequest('Eğitim yılı geçersiz.','INVALID_ACADEMIC_YEAR');
  const booklets=await all<{booklet_code:string}>(env.DB.prepare('SELECT DISTINCT booklet_code FROM studio_document_items WHERE document_id=? ORDER BY booklet_code').bind(documentId));
- if(booklets.length!==1||booklets[0].booklet_code!=='A')
-  return badRequest('A/B eşleme doğrulaması tamamlanmadığı için yalnız A kitapçığı yayına alınabilir.','MULTIBOOKLET_NOT_READY');
+ if(!booklets.length||!booklets.some(b=>b.booklet_code==='A')||booklets.some(b=>!['A','B'].includes(b.booklet_code)))
+  return badRequest('Bu işlem yalnız A veya A/B kitapçıklarını destekler.','BOOKLET_UNSUPPORTED');
  const rows=await all<any>(env.DB.prepare(`SELECT i.question_id,i.sort_order,q.subject_id,q.grade_level,q.academic_year,q.review_status,q.copyright_status,q.correct_answer
  FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code='A' ORDER BY i.sort_order`).bind(documentId));
  const integrity=validateBookletPermutation(rows.map(r=>({bookletCode:'A',questionId:r.question_id,position:Number(r.sort_order),subjectId:r.subject_id,correctAnswer:r.correct_answer})));
  if(!integrity.ok)return badRequest('Kitapçık soru sırası veya cevap anahtarı doğrulanamadı.','BOOKLET_INTEGRITY_FAILED');
- const plan=planStudioDelivery({documentId,institutionId:doc.institution_id,publicationRevision:1,kind:'EXAM',approved:true,questionIds:rows.map(r=>r.question_id),bookletCodes:['A']});
+ const allItems=await all<any>(env.DB.prepare(`SELECT i.booklet_code,i.question_id,i.sort_order,q.subject_id,q.correct_answer
+ FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id
+ WHERE i.document_id=? ORDER BY i.booklet_code,i.sort_order`).bind(documentId));
+ const positionKeys=buildPositionAnswerKeys(allItems.map(i=>({bookletCode:i.booklet_code,questionId:i.question_id,position:Number(i.sort_order),subjectId:i.subject_id,correctAnswer:i.correct_answer})));
+ if(!positionKeys.ok)return badRequest(positionKeys.error,'BOOKLET_MAPPING_INVALID');
+ const plan=planStudioDelivery({documentId,institutionId:doc.institution_id,publicationRevision:1,kind:'EXAM',approved:true,questionIds:rows.map(r=>r.question_id),bookletCodes:positionKeys.codes});
  if(!plan.ok)return badRequest(plan.reason,'INVALID_STUDIO_ITEMS');
  if(rows.some(r=>r.review_status!=='APPROVED'||!['OWNED','LICENSED','PUBLIC_DOMAIN'].includes(r.copyright_status)||r.academic_year!==academicYear||
   (doc.grade_level!==null&&Number(r.grade_level)!==Number(doc.grade_level))||!['A','B','C','D','E'].includes(r.correct_answer)))
@@ -43,7 +49,7 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
  }
  const examId=uuid('exm'),subjects=[...new Set<string>(rows.map(r=>r.subject_id))],operations:D1PreparedStatement[]=[
   env.DB.prepare("INSERT INTO exams(id,owner_type,institution_id,academic_year,title,exam_type,grade_level,status,created_by) VALUES(?,'INSTITUTION',?,?,?,'PRACTICE',?,'DRAFT',?)").bind(examId,doc.institution_id,academicYear,doc.title,doc.grade_level,user.id),
-  env.DB.prepare("INSERT INTO exam_booklets(id,exam_id,code) VALUES(?,?,'A')").bind(uuid('ebk'),examId),
+  ...positionKeys.codes.map(code=>env.DB.prepare("INSERT INTO exam_booklets(id,exam_id,code) VALUES(?,?,?)").bind(uuid('ebk'),examId,code)),
  ];
  for(let index=0;index<subjects.length;index++){
   const subject=subjects[index];const group=rows.filter(r=>r.subject_id===subject);
@@ -51,7 +57,9 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
   for(let j=0;j<group.length;j++){
    const q=group[j],eqId=uuid('eq');
    operations.push(env.DB.prepare('INSERT INTO exam_questions(id,exam_id,subject_id,question_no,global_no) VALUES(?,?,?,?,?)').bind(eqId,examId,subject,j+1,Number(q.sort_order)));
-   operations.push(env.DB.prepare("INSERT INTO answer_keys(id,exam_question_id,booklet_code,correct_answer) VALUES(?,?,'A',?)").bind(uuid('ank'),eqId,q.correct_answer));
+   const position=positionKeys.keys.find(k=>k.position===Number(q.sort_order));
+   if(!position)throw new Error('BOOKLET_POSITION_MISSING');
+   for(const code of positionKeys.codes)operations.push(env.DB.prepare("INSERT INTO answer_keys(id,exam_question_id,booklet_code,correct_answer) VALUES(?,?,?,?)").bind(uuid('ank'),eqId,code,position.answers[code]));
    for(const outcome of byQuestion.get(q.question_id)||[])operations.push(env.DB.prepare('INSERT INTO question_outcomes(exam_question_id,outcome_id) VALUES(?,?)').bind(eqId,outcome));
   }
  }
