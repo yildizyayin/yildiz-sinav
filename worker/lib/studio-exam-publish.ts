@@ -18,6 +18,12 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
  const academicYear=String(payload.academicYear||'');
  if(!/^[0-9]{4}-[0-9]{4}$/.test(academicYear)||Number(academicYear.slice(5))!==Number(academicYear.slice(0,4))+1)
   return badRequest('Eğitim yılı geçersiz.','INVALID_ACADEMIC_YEAR');
+ const scoringId=String(payload.scoringRuleVersionId||'').trim();
+ if(!scoringId||scoringId.length>100)return badRequest('Doğrulanmış puanlama profili seçilmelidir.','SCORING_PROFILE_REQUIRED');
+ const scoring=await one<{id:string}>(env.DB.prepare(
+  'SELECT id FROM scoring_rule_versions WHERE id=? AND verified=1 AND academic_year=?'
+ ).bind(scoringId,academicYear));
+ if(!scoring)return badRequest('Puanlama profili bu eğitim yılı için doğrulanmamış.','SCORING_PROFILE_UNVERIFIED');
  const booklets=await all<{booklet_code:string}>(env.DB.prepare('SELECT DISTINCT booklet_code FROM studio_document_items WHERE document_id=? ORDER BY booklet_code').bind(documentId));
  if(!booklets.length||!booklets.some(b=>b.booklet_code==='A')||booklets.some(b=>!['A','B'].includes(b.booklet_code)))
   return badRequest('Bu işlem yalnız A veya A/B kitapçıklarını destekler.','BOOKLET_UNSUPPORTED');
@@ -48,7 +54,7 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
   if(rows.some(r=>!allowed.has(r.subject_id)))return forbidden('Branş yetkisi dışında sınav.');
  }
  const examId=uuid('exm'),subjects=[...new Set<string>(rows.map(r=>r.subject_id))],operations:D1PreparedStatement[]=[
-  env.DB.prepare("INSERT INTO exams(id,owner_type,institution_id,academic_year,title,exam_type,grade_level,status,created_by) VALUES(?,'INSTITUTION',?,?,?,'PRACTICE',?,'DRAFT',?)").bind(examId,doc.institution_id,academicYear,doc.title,doc.grade_level,user.id),
+  env.DB.prepare("INSERT INTO exams(id,owner_type,institution_id,academic_year,title,exam_type,grade_level,status,created_by,scoring_rule_version_id,outcome_mode) VALUES(?,'INSTITUTION',?,?,?,'PRACTICE',?,'DRAFT',?,?,'OFFICIAL_REQUIRED')").bind(examId,doc.institution_id,academicYear,doc.title,doc.grade_level,user.id,scoring.id),
   ...positionKeys.codes.map(code=>env.DB.prepare("INSERT INTO exam_booklets(id,exam_id,code) VALUES(?,?,?)").bind(uuid('ebk'),examId,code)),
  ];
  for(let index=0;index<subjects.length;index++){
