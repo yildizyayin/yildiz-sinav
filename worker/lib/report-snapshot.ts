@@ -24,11 +24,11 @@ export const REPORT_SNAPSHOT_SQL = `UPDATE exam_result_snapshots AS snap SET pay
        EXISTS (SELECT 1 FROM studio_exam_booklet_outcomes sbo
         JOIN exam_participants ep ON ep.id=sa.participant_id
         JOIN exam_questions eq ON eq.id=sa.exam_question_id
-        WHERE sbo.exam_id=ep.exam_id AND sbo.booklet_code=ep.booklet_code
-        AND sbo.printed_question_no=eq.question_no AND sbo.outcome_id=o.id)
+        WHERE sbo.exam_id=ep.exam_id AND sbo.booklet_code=coalesce(ep.booklet_code,'A')
+        AND sbo.printed_question_no=coalesce(eq.global_no,eq.question_no) AND sbo.outcome_id=o.id)
        OR (NOT EXISTS(SELECT 1 FROM studio_exam_booklet_positions sp
         JOIN exam_participants ep ON ep.exam_id=sp.exam_id
-        WHERE ep.id=sa.participant_id AND sp.booklet_code=ep.booklet_code)
+        WHERE ep.id=sa.participant_id AND sp.booklet_code=coalesce(ep.booklet_code,'A'))
         AND EXISTS(SELECT 1 FROM question_outcomes qo WHERE qo.exam_question_id=sa.exam_question_id AND qo.outcome_id=o.id))
       )))))
     FROM student_answers sa WHERE sa.participant_id=snap.participant_id)),
@@ -42,8 +42,8 @@ export const REPORT_SNAPSHOT_SQL = `UPDATE exam_result_snapshots AS snap SET pay
       JOIN exam_questions eq ON eq.id=sa.exam_question_id
       JOIN outcomes out ON (
        EXISTS (SELECT 1 FROM studio_exam_booklet_outcomes sbo WHERE sbo.exam_id=ep.exam_id
-        AND sbo.booklet_code=ep.booklet_code AND sbo.printed_question_no=eq.question_no AND sbo.outcome_id=out.id)
-       OR (NOT EXISTS(SELECT 1 FROM studio_exam_booklet_positions sp WHERE sp.exam_id=ep.exam_id AND sp.booklet_code=ep.booklet_code)
+        AND sbo.booklet_code=coalesce(ep.booklet_code,'A') AND sbo.printed_question_no=coalesce(eq.global_no,eq.question_no) AND sbo.outcome_id=out.id)
+       OR (NOT EXISTS(SELECT 1 FROM studio_exam_booklet_positions sp WHERE sp.exam_id=ep.exam_id AND sp.booklet_code=coalesce(ep.booklet_code,'A'))
         AND EXISTS(SELECT 1 FROM question_outcomes qo WHERE qo.exam_question_id=eq.id AND qo.outcome_id=out.id))
       )
       JOIN (SELECT id outcome_id FROM outcomes) qo ON qo.outcome_id=out.id
