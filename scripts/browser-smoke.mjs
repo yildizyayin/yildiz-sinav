@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+import {readFile,mkdir} from 'node:fs/promises';
 import {chromium} from 'playwright';
 import {startBrowserSmokeServer} from './browser-smoke-server.mjs';
 
@@ -29,7 +29,12 @@ try{
    const page=await context.newPage();page.setDefaultTimeout(15_000);
    page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(request.resourceType()==='script')assets.push(new URL(request.url()).pathname)});
    if(failedLoginChunk)await page.route(server.origin+'/'+manifest['src/pages/Login.tsx'].file,route=>route.fulfill({status:404,contentType:'text/javascript',body:'missing'}));
-   await run(page,assets);
+   try { await run(page,assets); } catch(error) {
+    await mkdir('tmp/nibiru-calendar-browser',{recursive:true});
+    await page.screenshot({path:`tmp/nibiru-calendar-browser/failure-${name.replaceAll(' ','-')}.png`,fullPage:true});
+    console.error(JSON.stringify({scenario:name,errors,unknown,body:(await page.locator('body').innerText()).slice(0,1500)}));
+    throw error;
+   }
    assert.deepEqual(unknown,[],'Unexpected API calls need explicit fixtures.');
    if(!failedLoginChunk)assert.deepEqual(errors,[],'Unexpected browser rendering errors.');
    passed.push(name);

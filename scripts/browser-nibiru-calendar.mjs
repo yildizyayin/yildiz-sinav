@@ -35,7 +35,7 @@ async function scenario(name,role,run,mobile=false){
   const fixture=fixtures[url.pathname];if(!fixture){unknown.push(url.pathname);await route.abort();return}await route.fulfill({status:fixture[0],contentType:'application/json',body:JSON.stringify(fixture[1])});
  });
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(15000);
- try{await run(page,posts);assert.deepEqual(errors,[]);assert.deepEqual(unknown,[]);await page.screenshot({path:`tmp/nibiru-calendar-browser/${name}.png`,fullPage:true});passed.push(name)}finally{await context.close()}
+ try{await run(page,posts);assert.deepEqual(errors,[]);assert.deepEqual(unknown,[]);await page.screenshot({path:`tmp/nibiru-calendar-browser/${name}.png`,fullPage:true});passed.push(name)}catch(error){await page.screenshot({path:`tmp/nibiru-calendar-browser/failure-${name}.png`,fullPage:true});console.error(JSON.stringify({scenario:name,errors,unknown,body:(await page.locator('body').innerText()).slice(0,1500)}));throw error}finally{await context.close()}
 }
 try{
  await scenario('guest-mobile',null,async(page)=>{await page.goto(server.origin+'/nibiru');await page.getByRole('heading',{name:'Hesabımı tanı'}).waitFor();assert.equal(new URL(page.url()).pathname,'/nibiru');await page.getByLabel('Nibiru hakkında ne öğrenmek istersiniz?').fill('Çocuğumun sonucunu göster');await page.getByRole('button',{name:'Sor',exact:true}).click();await page.getByText('Kişisel bilgileri açmadan önce hesabınızı doğrulayın.',{exact:true}).waitFor();assert.equal(await page.locator('.sidebar').count(),0);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))},true);

@@ -24,9 +24,11 @@ jobs:
       - run: npm run typecheck
       - run: npm test -- --maxWorkers=2 --testTimeout=30000
       - run: npm run build
+        id: build
       - run: npx playwright install --with-deps chromium
       - run: node scripts/browser-smoke.mjs
       - run: node scripts/browser-nibiru-calendar.mjs
+        if: ${{ always() && steps.build.outcome == 'success' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
