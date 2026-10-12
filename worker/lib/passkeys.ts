@@ -81,7 +81,7 @@ export async function handlePasskeys(request:Request,env:Env):Promise<Response>{
    const updated=await env.DB.prepare('UPDATE user_passkeys SET counter=?,last_used_at=CURRENT_TIMESTAMP WHERE credential_id=? AND counter=?').bind(result.authenticationInfo.newCounter,key.credential_id,key.counter).run();
    if(updated.meta.changes!==1)return badRequest('Doğrulamayı yeniden başlatın.','PASSKEY_CONFLICT');
    await recordLoginAttempt(env,`passkey:${request.headers.get('CF-Connecting-IP')||'local'}`,true,request);
-   return createSession(env,key.user_id,request,true);
+   return createSession(env,key.user_id,request,body.remember===true);
   }
   if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED',message:'İlk kullanımda hesabınızı doğrulayın.'}},401);
   if(user.role==='SUPER_ADMIN')return forbidden('Yönetici hesabında mevcut giriş yöntemini kullanın.');

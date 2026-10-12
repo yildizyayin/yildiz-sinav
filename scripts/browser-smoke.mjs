@@ -12,7 +12,7 @@ try{
  async function scenario(name,run,{mobile=false,failedLoginChunk=false}={}){
   const context=await browser.newContext({serviceWorkers:'block',viewport:mobile?{width:390,height:844}:{width:1440,height:900}});
   try{
-   const unknown=[],errors=[],assets=[];
+   const unknown=[],errors=[],assets=[],consoleErrors=[];
    await context.route('**/*',async route=>{
     const url=new URL(route.request().url());
     if(url.origin!==server.origin){await route.abort();return}
@@ -27,13 +27,13 @@ try{
     await route.fulfill({status:result[0],contentType:'application/json',body:JSON.stringify(result[1])});
    });
    const page=await context.newPage();page.setDefaultTimeout(15_000);
-   page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
+   page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text())});
    page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(request.resourceType()==='script')assets.push(new URL(request.url()).pathname)});
    if(failedLoginChunk)await page.route(server.origin+'/'+manifest['src/pages/Login.tsx'].file,route=>route.fulfill({status:404,contentType:'text/javascript',body:'missing'}));
    try { await run(page,assets); } catch(error) {
     await mkdir('tmp/nibiru-calendar-browser',{recursive:true});
     await page.screenshot({path:`tmp/nibiru-calendar-browser/failure-${name.replaceAll(' ','-')}.png`,fullPage:true});
-    console.error(JSON.stringify({scenario:name,errors,unknown,body:(await page.locator('body').innerText()).slice(0,1500)}));
+    console.error(JSON.stringify({scenario:name,errors,consoleErrors,unknown,body:(await page.locator('body').innerText()).slice(0,1500)}));
     throw error;
    }
    assert.deepEqual(unknown,[],'Unexpected API calls need explicit fixtures.');
