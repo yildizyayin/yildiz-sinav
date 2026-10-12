@@ -37,3 +37,15 @@ export function canExecuteScheduledPilot(flags:{
  if(!Number.isSafeInteger(flags.budget)||flags.budget<=0)reasons.push('BUDGET_REQUIRED');
  return {allowed:reasons.length===0,reasons};
 }
+
+/** Service execution identity must come from a separately provisioned database actor,
+ * never from a fabricated SUPER_ADMIN object in a cron invocation.
+ */
+export function validateScheduledActor(actor:{id:string;role:string;active:boolean}|null,expectedId:string|undefined){
+ const reasons:string[]=[];
+ if(!expectedId||!expectedId.trim())reasons.push('SERVICE_ACTOR_NOT_CONFIGURED');
+ if(!actor||!actor.active)reasons.push('SERVICE_ACTOR_NOT_ACTIVE');
+ if(actor?.role!=='SUPER_ADMIN')reasons.push('SERVICE_ACTOR_ROLE_INVALID');
+ if(actor&&expectedId&&actor.id!==expectedId)reasons.push('SERVICE_ACTOR_MISMATCH');
+ return {ok:reasons.length===0,reasons};
+}
