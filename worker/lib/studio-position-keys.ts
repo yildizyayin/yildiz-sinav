@@ -8,6 +8,7 @@ export function buildPositionAnswerKeys(items:readonly BookletRow[]):{ok:true;co
  const main=groups.get('A')!;
  if(!main.length||main.some((q,i)=>q.position!==i+1))return {ok:false,error:'BOOKLET_POSITION_INVALID'};
  const master=new Map(main.map(q=>[q.questionId,q.subjectId+'|'+q.correctAnswer]));
+ if(main.some(q=>q.optionCount===4&&q.correctAnswer==='E'))return {ok:false,error:'BOOKLET_INVALID_ANSWER_FOR_OPTION_COUNT'};
  if(master.size!==main.length)return {ok:false,error:'BOOKLET_DUPLICATE_QUESTION'};
  for(const c of codes){
   const rows=groups.get(c)!;
@@ -15,6 +16,7 @@ export function buildPositionAnswerKeys(items:readonly BookletRow[]):{ok:true;co
   for(let i=0;i<rows.length;i++){
    const q=rows[i];
    if(q.position!==i+1||master.get(q.questionId)!==q.subjectId+'|'+q.correctAnswer)return {ok:false,error:'BOOKLET_QUESTION_SET_MISMATCH'};
+   if(q.optionCount===4&&q.correctAnswer==='E')return {ok:false,error:'BOOKLET_INVALID_ANSWER_FOR_OPTION_COUNT'};
    if(q.subjectId!==main[i].subjectId)return {ok:false,error:'BOOKLET_SUBJECT_POSITION_MISMATCH'};
    if(q.optionCount!==undefined&&main[i].optionCount!==undefined&&q.optionCount!==main[i].optionCount)return {ok:false,error:'BOOKLET_OPTION_COUNT_MISMATCH'};
   }
