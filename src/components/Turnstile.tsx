@@ -38,9 +38,9 @@ export function Turnstile({ siteKey, onToken }: { siteKey: string; onToken: (tok
         'expired-callback': () => onToken(''),
         'error-callback': () => onToken(''),
       });
-    });
+    }).catch(()=>onToken(''));
     return () => { alive = false; if (widgetId && window.turnstile) window.turnstile.remove(widgetId); };
   }, [siteKey, onToken]);
-  if (!siteKey) return <div className="dev-note">Turnstile site key henüz tanımlı değil. Production deploy öncesi zorunlu.</div>;
+  if (!siteKey) return <div className="dev-note">Güvenlik doğrulaması şu anda kullanılamıyor. Sorun sürerse kurum yöneticinize bildirin.</div>;
   return <div ref={ref} className="turnstile-box" />;
 }

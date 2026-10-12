@@ -93,7 +93,17 @@ export async function revokeSession(env: Env, request: Request): Promise<Respons
   const raw = getCookie(request, SESSION_COOKIE);
   if (raw) {
     const hash = await sha256Hex(raw);
-    await env.DB.prepare('UPDATE sessions SET revoked_at = CURRENT_TIMESTAMP WHERE token_hash = ?').bind(hash).run();
+    try {
+      await env.DB.prepare('UPDATE sessions SET revoked_at = CURRENT_TIMESTAMP WHERE token_hash = ?').bind(hash).run();
+    } catch (error) {
+      const message=error instanceof Error?error.message:'';
+      if (/D1_ERROR:.*free tier daily row write limit/i.test(message)) {
+        console.warn(JSON.stringify({event:'session_revocation_temporarily_unavailable',code:'D1_WRITE_QUOTA'}));
+        // The session remains valid: never claim revocation or clear its cookie.
+        return json({ok:false,error:{code:'SESSION_REVOCATION_TEMPORARILY_UNAVAILABLE',message:'Çıkış işlemi şu anda tamamlanamıyor. Lütfen daha sonra tekrar deneyin.'}},503,{'Cache-Control':'no-store'});
+      }
+      throw error;
+    }
   }
   const secure = env.ENVIRONMENT === 'production' ? '; Secure' : '';
   return json({ ok: true }, 200, { 'Set-Cookie': `${SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secure}` });

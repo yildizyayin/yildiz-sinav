@@ -1,0 +1,26 @@
+import { useCallback, useEffect, useState } from 'react';
+import { startAuthentication, startRegistration, browserSupportsWebAuthn } from '@simplewebauthn/browser';
+import { KeyRound, ShieldCheck } from 'lucide-react';
+import { api, post } from '../api';
+import { useAuth } from '../auth';
+import { Turnstile } from './Turnstile';
+
+export function PasskeyAccess(){
+ const {user,refresh}=useAuth();const[password,setPassword]=useState('');const[busy,setBusy]=useState(false);const[notice,setNotice]=useState('');const[error,setError]=useState('');const[keys,setKeys]=useState<any[]>([]);
+ const supported=browserSupportsWebAuthn();
+ const load=async()=>{try{const r=await api('/api/auth/passkeys');setKeys(r.passkeys||[])}catch(e:any){setError(e.message)}};
+ useEffect(()=>{if(user&&user.role!=='SUPER_ADMIN'&&!user.must_change_password)void load()},[user?.id]);
+ const enroll=async()=>{setBusy(true);setError('');setNotice('');try{const r=await post('/api/auth/passkeys/register/options',{password});const response=await startRegistration({optionsJSON:r.options});await post('/api/auth/passkeys/register/verify',{challengeId:r.challengeId,response});setPassword('');setNotice('Geçiş anahtarı hazır. Sonraki erişimde cihazınızla doğrulayabilirsiniz.');await load();await refresh()}catch(e:any){setError(e.name==='NotAllowedError'?'Cihaz doğrulaması iptal edildi.':e.message)}finally{setBusy(false)}};
+ const remove=async(id:string)=>{setBusy(true);setError('');try{await post('/api/auth/passkeys/remove',{credentialId:id,password});setPassword('');await load();setNotice('Geçiş anahtarı kaldırıldı.')}catch(e:any){setError(e.message)}finally{setBusy(false)}};
+ if(!user||user.role==='SUPER_ADMIN'||user.must_change_password)return null;
+ return <details className="panel nibiru-passkey"><summary><KeyRound size={18}/> Hızlı ve güvenli erişim {keys.length>0&&<span className="status ok">{keys.length} geçiş anahtarı</span>}</summary><p>Bu site için geçiş anahtarı oluşturun. Sonraki kullanımda cihazınızın parmak izi, yüz tanıma veya PIN doğrulamasıyla devam edin. Ortak kullanılan cihazda oluşturmayın.</p>{!supported?<div className="alert info">Bu tarayıcı geçiş anahtarı desteklemiyor. Mevcut hesabınızla devam edebilirsiniz.</div>:<><label>Mevcut şifreniz<input type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)}/></label><button className="secondary" disabled={busy||!password} onClick={()=>void enroll()}><ShieldCheck size={16}/> {busy?'Doğrulanıyor…':'Geçiş anahtarı oluştur'}</button>{keys.map(k=><div className="form-row" key={k.id}><span>{k.label}</span><button className="ghost" disabled={busy||!password} onClick={()=>void remove(k.id)}>Kaldır</button></div>)}</>}{notice&&<div className="alert success" role="status">{notice}</div>}{error&&<div className="alert error" role="alert">{error}</div>}</details>;
+}
+
+export function NibiruIdentityForm(){
+ const {refresh}=useAuth();const[identifier,setIdentifier]=useState('');const[password,setPassword]=useState('');const[token,setToken]=useState('');const[config,setConfig]=useState<any>(null);const[busy,setBusy]=useState(false);const[error,setError]=useState('');const[remember,setRemember]=useState(false);
+ useEffect(()=>{void api('/api/config').then(setConfig).catch(()=>setError('Doğrulama ayarları yüklenemedi. Sayfayı yenileyin.'))},[]);
+ const onToken=useCallback((value:string)=>setToken(value),[]);
+ const verify=async(e:React.FormEvent)=>{e.preventDefault();setBusy(true);setError('');try{await post('/api/auth/login',{identifier,password,remember,turnstileToken:token});setPassword('');await refresh()}catch(e:any){setError(e.message)}finally{setBusy(false)}};
+ const passkey=async()=>{setBusy(true);setError('');try{const r=await post('/api/auth/passkeys/login/options',{turnstileToken:token});const response=await startAuthentication({optionsJSON:r.options});await post('/api/auth/passkeys/login/verify',{challengeId:r.challengeId,response,remember});await refresh()}catch(e:any){setError(e.name==='NotAllowedError'?'Cihaz doğrulaması iptal edildi.':e.message)}finally{setBusy(false)}};
+ return <form onSubmit={verify} className="panel nibiru-identity-form"><h2>Hesabımı tanı</h2><p>İlk kullanımda kurumunuzun verdiği hesabı doğrulayın. Telefon numarası tek başına öğrenci bilgilerini açmaz.</p><label>Telefon / kullanıcı adı / e-posta<input autoComplete="username" required value={identifier} onChange={e=>setIdentifier(e.target.value)}/></label><label>Şifre<input type="password" autoComplete="current-password" required value={password} onChange={e=>setPassword(e.target.value)}/></label><label className="check"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/> Bu kişisel cihazda oturumumu hatırla</label><Turnstile siteKey={config?.turnstileSiteKey||''} onToken={onToken}/><button className="primary" disabled={busy||!config}>{busy?'Doğrulanıyor…':'Doğrula ve devam et'}</button>{browserSupportsWebAuthn()&&<button type="button" className="secondary" disabled={busy||!config} onClick={()=>void passkey()}><KeyRound size={16}/> Geçiş anahtarıyla devam et</button>}<small>Geçiş anahtarını önce doğrulanmış hesabınızdan oluşturmanız gerekir.</small>{error&&<div className="alert error" role="alert">{error}</div>}</form>;
+}

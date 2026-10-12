@@ -1,0 +1,88 @@
+name: Nibiru Read-only Account Audit
+on:
+  push:
+    branches: [fix/nibiru-acceptance-20261009]
+    paths: ['.github/workflows/nibiru-account-audit.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  account-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - environment: staging
+            worker: yildiz-sinav-v1
+          - environment: production
+            worker: yildiz-sinav-prod
+    environment: ${{ matrix.environment }}
+    steps:
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Check effective GitHub configuration presence (no values)
+        env:
+          AUDIT_ENVIRONMENT: ${{ matrix.environment }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          PROD_YOUTUBE_API_KEY: ${{ secrets.PROD_YOUTUBE_API_KEY }}
+          WHATSAPP_VERIFY_TOKEN: ${{ secrets.WHATSAPP_VERIFY_TOKEN }}
+          WHATSAPP_APP_SECRET: ${{ secrets.WHATSAPP_APP_SECRET }}
+          WHATSAPP_ACCESS_TOKEN: ${{ secrets.WHATSAPP_ACCESS_TOKEN }}
+          WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
+          PROD_WHATSAPP_VERIFY_TOKEN: ${{ secrets.PROD_WHATSAPP_VERIFY_TOKEN }}
+          PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
+          PROD_WHATSAPP_ACCESS_TOKEN: ${{ secrets.PROD_WHATSAPP_ACCESS_TOKEN }}
+          PROD_WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.PROD_WHATSAPP_PHONE_NUMBER_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          const names=['CLOUDFLARE_API_TOKEN','CLOUDFLARE_ACCOUNT_ID','YOUTUBE_API_KEY','PROD_YOUTUBE_API_KEY','WHATSAPP_VERIFY_TOKEN','WHATSAPP_APP_SECRET','WHATSAPP_ACCESS_TOKEN','WHATSAPP_PHONE_NUMBER_ID','PROD_WHATSAPP_VERIFY_TOKEN','PROD_WHATSAPP_APP_SECRET','PROD_WHATSAPP_ACCESS_TOKEN','PROD_WHATSAPP_PHONE_NUMBER_ID'];
+          console.log(JSON.stringify({source:'github-effective-environment',environment:process.env.AUDIT_ENVIRONMENT,configured:Object.fromEntries(names.map(name=>[name,Boolean(process.env[name]?.trim())])),valuesPrinted:false}));
+          JS
+      - name: Check Worker integration secret names only
+        env:
+          AUDIT_ENVIRONMENT: ${{ matrix.environment }}
+          AUDIT_WORKER: ${{ matrix.worker }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          if(!process.env.CLOUDFLARE_API_TOKEN||!process.env.CLOUDFLARE_ACCOUNT_ID){console.log(JSON.stringify({source:'cloudflare-secret-names',environment:process.env.AUDIT_ENVIRONMENT,secretNamesReadable:false,reason:'AUDIT_CREDENTIALS_ABSENT'}));process.exit(0);}
+          const response=await fetch('https://api.cloudflare.com/client/v4/accounts/'+process.env.CLOUDFLARE_ACCOUNT_ID+'/workers/scripts/'+process.env.AUDIT_WORKER+'/secrets',{headers:{authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN},signal:AbortSignal.timeout(20000)});
+          const body=await response.json().catch(()=>null);
+          if(!response.ok||body?.success!==true||!Array.isArray(body?.result)){console.log(JSON.stringify({source:'cloudflare-secret-names',environment:process.env.AUDIT_ENVIRONMENT,secretNamesReadable:false,httpStatus:response.status}));process.exit(0);}
+          const names=new Set(body.result.map(item=>item.name));
+          console.log(JSON.stringify({source:'cloudflare-secret-names',environment:process.env.AUDIT_ENVIRONMENT,worker:process.env.AUDIT_WORKER,secretNamesReadable:true,configured:Object.fromEntries(['YOUTUBE_API_KEY','WHATSAPP_VERIFY_TOKEN','WHATSAPP_APP_SECRET','WHATSAPP_ACCESS_TOKEN','WHATSAPP_PHONE_NUMBER_ID'].map(name=>[name,names.has(name)])),valuesRead:false}));
+          JS
+
+      - name: Bounded YouTube key acceptance (two read-only API calls)
+        env:
+          AUDIT_ENVIRONMENT: ${{ matrix.environment }}
+          YOUTUBE_API_KEY: ${{ matrix.environment == 'production' && secrets.PROD_YOUTUBE_API_KEY || secrets.YOUTUBE_API_KEY }}
+        run: |
+          node --input-type=module <<'JS'
+          const key=process.env.YOUTUBE_API_KEY;
+          if(!key){console.log(JSON.stringify({source:'youtube-api',environment:process.env.AUDIT_ENVIRONMENT,configured:false,tested:false}));process.exit(0);}
+          const headers={'x-goog-api-key':key};
+          async function read(url){
+            const response=await fetch(url,{headers,signal:AbortSignal.timeout(20000)});
+            const body=await response.json().catch(()=>null);
+            if(!response.ok||!Array.isArray(body?.items)){console.log(JSON.stringify({source:'youtube-api',environment:process.env.AUDIT_ENVIRONMENT,httpStatus:response.status,accepted:false}));process.exit(1);}
+            return body.items;
+          }
+          const search=new URL('https://www.googleapis.com/youtube/v3/search');
+          for(const [name,value] of Object.entries({part:'snippet',type:'video',q:'5 sınıf matematik kesirler konu anlatımı',maxResults:'3',safeSearch:'strict',videoEmbeddable:'true',regionCode:'TR',relevanceLanguage:'tr'}))search.searchParams.set(name,value);
+          const found=await read(search);
+          const ids=found.map(item=>item.id?.videoId).filter(id=>/^[A-Za-z0-9_-]{11}$/.test(id||''));
+          if(!ids.length){console.log(JSON.stringify({source:'youtube-api',environment:process.env.AUDIT_ENVIRONMENT,searchAccepted:true,detailAccepted:false,reason:'NO_VIDEO_RESULTS',calls:1}));process.exit(1);}
+          const details=new URL('https://www.googleapis.com/youtube/v3/videos');
+          details.searchParams.set('part','status,contentDetails');details.searchParams.set('id',ids.join(','));
+          const videos=await read(details);
+          const available=videos.filter(v=>v.status?.privacyStatus==='public'&&v.status?.uploadStatus==='processed'&&v.status?.embeddable===true&&v.contentDetails?.contentRating?.ytRating!=='ytAgeRestricted'&&(!Array.isArray(v.contentDetails?.regionRestriction?.allowed)||v.contentDetails.regionRestriction.allowed.includes('TR'))&&!v.contentDetails?.regionRestriction?.blocked?.includes('TR'));
+          console.log(JSON.stringify({source:'youtube-api',environment:process.env.AUDIT_ENVIRONMENT,searchAccepted:true,detailAccepted:true,calls:2,returnedVideos:videos.length,metadataEligibleVideos:available.length,playbackTested:false,workerSecretSynced:false,valuesPrinted:false}));
+          JS

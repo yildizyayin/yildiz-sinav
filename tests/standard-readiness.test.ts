@@ -25,5 +25,8 @@ describe('Standard package readiness',()=>{
   expect(partial.whatsapp.appSecret).toBe(false);
   const complete=evaluateProviderActivation({youtubeApiKey:'key',whatsappVerifyToken:'verify',whatsappAppSecret:'secret',whatsappAccessToken:'token',whatsappPhoneNumberId:'phone'});
   expect(complete.whatsapp.ready).toBe(true);
+  expect(complete.whatsapp.configured).toBe(true);
+  expect(complete.whatsapp.liveVerified).toBe(false);
+  expect(complete.youtube.liveVerified).toBe(false);
  });
 });

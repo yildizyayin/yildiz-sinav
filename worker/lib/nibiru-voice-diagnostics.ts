@@ -1,4 +1,5 @@
 export type VoiceActivationCode=
+ | 'PAID_VOICE_DISABLED'
  | 'UNIFIED_BILLING_CREDITS_REQUIRED'
  | 'GATEWAY_CONFIGURATION_REQUIRED'
  | 'PROVIDER_CREDENTIAL_REQUIRED'
@@ -19,6 +20,7 @@ function normalized(error:unknown){
 
 export function classifyVoiceActivationFailure(error:unknown):VoiceActivationDiagnostic{
  const message=normalized(error);
+ if(message.includes('voice_paid_providers_disabled'))return{activationCode:'PAID_VOICE_DISABLED',detail:'Ücretli Türkçe ses sağlayıcıları kapalı; yönetici tarafından açıkça etkinleştirme gerekir.',retryable:false};
  if(/credit|billing|balance|prepaid|payment|insufficient|quota.*fund/.test(message))return{
   activationCode:'UNIFIED_BILLING_CREDITS_REQUIRED',
   detail:'Cloudflare AI Gateway Unified Billing için kullanılabilir kredi/billing aktivasyonu gerekli görünüyor.',

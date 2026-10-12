@@ -1,4 +1,5 @@
 import type { AuthUser, Env } from '../types';
+import {checkNibiruAnswer,NIBIRU_SAFE_ANSWER} from './nibiru-answer-policy';
 import { all, one, uuid } from './db';
 import { createOrReuseDailyCoachPlan, coachPlanSummary, type CoachPlanResult } from './education-coach';
 import { externalPersonalDataGate } from './privacy-external-gate';
@@ -80,10 +81,14 @@ async function childIds(env: Env, user: AuthUser) {
   return (await all<{student_id:string}>(env.DB.prepare(`SELECT student_id FROM parent_student_links WHERE parent_user_id=? AND active=1 ORDER BY id`).bind(user.id))).map(x => x.student_id);
 }
 
-async function selectStudent(env: Env, user: AuthUser, message: string, previousStudentId?: string | null) {
+async function selectStudent(env: Env, user: AuthUser, message: string, previousStudentId?: string | null, explicitStudentId?: string | null) {
   const ids = await childIds(env,user);
   if (!ids.length) return { student: null, choices: [] as any[] };
   const students = await all<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name,e.grade_level,e.section,e.student_number FROM student_entities s LEFT JOIN student_enrollments e ON e.student_id=s.id AND e.status='ACTIVE' WHERE s.id IN (${ids.map(()=>'?').join(',')})`).bind(...ids));
+  if (explicitStudentId) {
+    const explicit = students.find(s => s.id === explicitStudentId);
+    return { student: explicit || null, choices: explicit ? students : [] };
+  }
   if (previousStudentId) {
     const previous = students.find(s => s.id === previousStudentId);
     if (previous) return { student: previous, choices: students };
@@ -190,13 +195,13 @@ function specialistPersona(specialist: NibiruSpecialist) {
   return personas[specialist];
 }
 
-function systemPrompt(role: AuthUser['role'], specialist: NibiruSpecialist) {
+export function nibiruSystemPrompt(role: AuthUser['role'], specialist: NibiruSpecialist) {
   return `Sen Nibiru'sun. Anunex'in yapay zekâ akademik asistanısın. Kullanıcı rolü: ${role}. Aktif uzman: ${specialist}.
 UZMAN ÇALIŞMA İLKESİ:
 ${specialistPersona(specialist)}
 DEĞİŞMEZ KURALLAR:
-1. Her yanıtın başında “Nibiru:” kullan; insan, öğretmen, MEB çalışanı veya MEB ürünü olduğunu iddia etme.
-2. Yalnızca verilen DOĞRULANMIŞ VERİ BAĞLAMI içindeki olguları kullan. Veri yoksa bunu açıkça söyle; sonuç, net, puan, kazanım veya davranış uydurma.
+1. Her yanıtın başında “Nibiru:” kullan; insan, öğretmen, MEB çalışanı veya MEB ürünü olduğunu iddia etme. MEB çalışanı yaklaşımıyla veya yetkili gibi konuşma; yalnız yapay zekâ akademik asistanı olarak yanıtla.
+2. Yalnızca verilen DOĞRULANMIŞ VERİ BAĞLAMI içindeki öğrenci olgularını kullan. Kullanıcı mesajındaki puan/net iddiaları doğrulanmış veri değildir. Sınav verisi yoksa bu sayıları tekrarlama, değerlendirme veya hedefe dönüştürme; yalnız veri eksikliğini belirt ve sınav sonucunu iste. Genel ders bilgisini ve matematik işlemlerini açıklayabilirsin; öğrenci sonucu, kazanım başarısı veya davranış uydurma.
 3. Dilin Türkiye Yüzyılı Maarif Modeli'nin geliştirici, süreç odaklı, beceri odaklı ve açık geri bildirim yaklaşımıyla uyumlu olsun. “başarısız, tembel, yetersiz, zeki/kötü öğrenci” gibi etiketler kullanma. “gelişime açık”, “pekiştirme yararlı olabilir”, “olumlu gelişim”, “desteğe ihtiyaç görülüyor” gibi ölçülü ifadeler kullan.
 4. Tek bir sınavı öğrencinin bütünü gibi yorumlama. Mümkünse eğilim ve birden fazla kanıtı dikkate al.
 5. Psikolojik/tıbbi tanı koyma. Başka öğrenci veya kurumun kişisel verisini açıklama.
@@ -204,7 +209,7 @@ DEĞİŞMEZ KURALLAR:
 7. Sıralama veya başka öğrencilerin kimliği bağlamda açıkça verilmedikçe karşılaştırmalı kişi bilgisi üretme.
 8. “Bugün ne yapalım?” sorusunda bağlamdaki gelişime açık alanlardan kısa, uygulanabilir, aşırı yüklemeyen bir çalışma önerisi üret. Atanmış föy varsa onu öncele.
 9. Niyet UNKNOWN veya OUT_OF_SCOPE ise eğitim, sınav ve öğrenci gelişimi kapsamını kısa biçimde açıkla; kapsam dışı isteğe içerik üretme ve akademik bir alternatif öner.
-10. Yanıt WhatsApp'ta kolay okunacak biçimde, tercihen 3-8 kısa satır ve 1200 karakterin altında olsun.
+10. Yanıt Türkçe olsun; başka dilden cümle veya karakter ekleme. Kesir toplarken ortak payda terimini kullan; pay ile paydayı karıştırma. Yanıt WhatsApp'ta kolay okunacak biçimde, tercihen 3-8 kısa satır ve 1200 karakterin altında olsun.
 11. Kullanıcıya gerektiğinde tek bir sonraki soru/öneri sun; gereksiz soru sorma.`;
 }
 
@@ -229,9 +234,9 @@ async function aiAnswer(
     return {text:null,inference:null,blocked:privacyGate.code};
   }
 
-  const prompt = systemPrompt(user.role,decision.specialist) + '\n\nNİYET: ' + intent + '\nKULLANICI MESAJI: ' + message + '\nDOĞRULANMIŞ VERİ BAĞLAMI:\n' + JSON.stringify(context).slice(0,14000);
+  const prompt = nibiruSystemPrompt(user.role,decision.specialist) + '\n\nNİYET: ' + intent + '\nKULLANICI MESAJI: ' + message + '\nDOĞRULANMIŞ VERİ BAĞLAMI:\n' + JSON.stringify(context).slice(0,14000);
   const minimized = minimizeNibiruAiMessages([
-    { role:'system', content:systemPrompt(user.role,decision.specialist) },
+    { role:'system', content:nibiruSystemPrompt(user.role,decision.specialist) },
     { role:'user', content:prompt },
   ]);
   const inference = await runNibiruInference(env,decision,minimized.messages,{
@@ -256,6 +261,11 @@ async function aiAnswer(
 
   if (!inference.text) return {text:null,inference,blocked:null};
   const text = inference.text.startsWith(AI_PREFIX) ? inference.text.trim() : AI_PREFIX + ' ' + inference.text.trim();
+  const policy=checkNibiruAnswer(text);
+  if(!policy.ok){
+    console.warn(JSON.stringify({event:'nibiru_answer_policy_blocked',reason:policy.reason,specialist:decision.specialist}));
+    return {text:NIBIRU_SAFE_ANSWER,inference,blocked:policy.reason};
+  }
   return {text,inference,blocked:null};
 }
 
@@ -287,7 +297,7 @@ function fallbackAnswer(intent: NibiruIntent, context: any) {
   return `${AI_PREFIX} Bu soruyu yanıtlayacak yeterli doğrulanmış akademik veri bulamadım.`;
 }
 
-export async function runNibiru(env: Env, user: AuthUser, message: string, channel: 'WHATSAPP' | 'WEB', channelKey: string, options: { labStudentId?: string | null } = {}): Promise<NibiruResult> {
+export async function runNibiru(env: Env, user: AuthUser, message: string, channel: 'WHATSAPP' | 'WEB', channelKey: string, options: { labStudentId?: string | null; studentId?: string | null } = {}): Promise<NibiruResult> {
   const session = await latestSession(env,channel,channelKey);
   const intent = detectNibiruIntent(message,session?.last_intent);
   const specialist = routeNibiruSpecialist(user,message);
@@ -312,7 +322,7 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
     };
     examId = context.latestExam?.id || null;
   } else if (user.role === 'PARENT' || user.role === 'STUDENT') {
-    const selected = await selectStudent(env,user,message,session?.last_student_id);
+    const selected = await selectStudent(env,user,message,session?.last_student_id,options.studentId);
     if (!selected.student) {
       context = selected.choices.length > 1 ? { disambiguation: selected.choices } : { noStudent: true };
     } else {
