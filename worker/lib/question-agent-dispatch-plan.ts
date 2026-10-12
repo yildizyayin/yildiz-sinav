@@ -49,3 +49,10 @@ export function validateScheduledActor(actor:{id:string;role:string;active:boole
  if(actor&&expectedId&&actor.id!==expectedId)reasons.push('SERVICE_ACTOR_MISMATCH');
  return {ok:reasons.length===0,reasons};
 }
+
+/** The scheduler and generator must agree on human-review availability. */
+export function canDispatchToReviewQueue(input:{reviewAvailable:boolean;reviewSlots:number;questionCount:number}):boolean{
+ return input.reviewAvailable && Number.isSafeInteger(input.reviewSlots)
+  && Number.isSafeInteger(input.questionCount) && input.questionCount>0
+  && input.questionCount<=10 && input.reviewSlots>=input.questionCount;
+}
