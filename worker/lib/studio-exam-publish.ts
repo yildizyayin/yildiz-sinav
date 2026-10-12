@@ -4,6 +4,7 @@ import {planStudioDelivery,resolveStudioDeliveryKind} from './studio-delivery-ro
 import {validateBookletPermutation} from './studio-booklet-mapping';
 import {buildPositionAnswerKeys,canPublishOutcomeAccurateBooklets} from './studio-position-keys';
 import {validateAnswerForOptions} from './question-option-policy';
+import {optionSchemaState} from './option-schema-readiness';
 
 /** Single-booklet publication. Multi-booklet position mapping must be completed separately. */
 export async function publishStudioExam(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
@@ -40,8 +41,13 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
  if(!canPublishOutcomeAccurateBooklets(allItems.map(i=>({bookletCode:i.booklet_code,questionId:i.question_id,position:Number(i.sort_order),subjectId:i.subject_id,correctAnswer:i.correct_answer}))))return badRequest('Farklı soru sıralı kitapçıklar için kazanım eşleştirmesi henüz desteklenmiyor.','BOOKLET_OUTCOME_MAPPING_REQUIRED');
  // Existing D1 CHECK constraints in question_bank/exam_questions/answer_keys only allow 4/5.
  // Reject 3-option publishing explicitly rather than pretending that schema support exists.
- if(allItems.some(i=>Number(i.option_count)===3))
-  return badRequest('Üç seçenekli sorular için veritabanı geçişi henüz uygulanmadı.','THREE_OPTION_SCHEMA_NOT_READY');
+ if(allItems.some(i=>Number(i.option_count)===3)){
+  const schemaRows=await all<{name:string;sql:string|null}>(env.DB.prepare(
+   "SELECT name,sql FROM sqlite_master WHERE type='table' AND name IN ('question_bank','exam_subjects','exam_questions','answer_keys')"
+  ));
+  if(!optionSchemaState(schemaRows).ready)
+   return badRequest('Üç seçenekli sorular için veritabanı geçişi tamamlanmamış.','THREE_OPTION_SCHEMA_NOT_READY');
+ }
  const plan=planStudioDelivery({documentId,institutionId:doc.institution_id,publicationRevision:1,kind:'EXAM',approved:true,questionIds:rows.map(r=>r.question_id),bookletCodes:positionKeys.codes});
  if(!plan.ok)return badRequest(plan.reason,'INVALID_STUDIO_ITEMS');
  if(rows.some(r=>r.review_status!=='APPROVED'||!['OWNED','LICENSED','PUBLIC_DOMAIN'].includes(r.copyright_status)||r.academic_year!==academicYear||
