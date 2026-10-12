@@ -54,6 +54,7 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
   const allowed=new Set(permitted.map(r=>r.subject_id));
   if(rows.some(r=>!allowed.has(r.subject_id)))return forbidden('Branş yetkisi dışında sınav.');
  }
+ const examQuestionIds=new Map<string,string>();
  const examId=uuid('exm'),subjects=[...new Set<string>(rows.map(r=>r.subject_id))],operations:D1PreparedStatement[]=[
   env.DB.prepare("INSERT INTO exams(id,owner_type,institution_id,academic_year,title,exam_type,grade_level,status,created_by,scoring_rule_version_id,outcome_mode) VALUES(?,'INSTITUTION',?,?,?,'PRACTICE',?,'DRAFT',?,?,'OFFICIAL_REQUIRED')").bind(examId,doc.institution_id,academicYear,doc.title,doc.grade_level,user.id,scoring.id),
   ...positionKeys.codes.map(code=>env.DB.prepare("INSERT INTO exam_booklets(id,exam_id,code) VALUES(?,?,?)").bind(uuid('ebk'),examId,code)),
@@ -62,12 +63,22 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
   const subject=subjects[index];const group=rows.filter(r=>r.subject_id===subject);
   operations.push(env.DB.prepare('INSERT INTO exam_subjects(id,exam_id,subject_id,question_count,sort_order) VALUES(?,?,?,?,?)').bind(uuid('esu'),examId,subject,group.length,index+1));
   for(let j=0;j<group.length;j++){
-   const q=group[j],eqId=uuid('eq');
+   const q=group[j],eqId=uuid('eq');examQuestionIds.set(String(q.sort_order),eqId);
    operations.push(env.DB.prepare('INSERT INTO exam_questions(id,exam_id,subject_id,question_no,global_no,option_count) VALUES(?,?,?,?,?,?)').bind(eqId,examId,subject,j+1,Number(q.sort_order),Number(q.option_count)));
    const position=positionKeys.keys.find(k=>k.position===Number(q.sort_order));
    if(!position)throw new Error('BOOKLET_POSITION_MISSING');
    for(const code of positionKeys.codes)operations.push(env.DB.prepare("INSERT INTO answer_keys(id,exam_question_id,booklet_code,correct_answer,option_count,accepted_answers) VALUES(?,?,?,?,?,?)").bind(uuid('ank'),eqId,code,position.answers[code],Number(q.option_count),position.answers[code]));
    for(const outcome of byQuestion.get(q.question_id)||[])operations.push(env.DB.prepare('INSERT INTO question_outcomes(exam_question_id,outcome_id) VALUES(?,?)').bind(eqId,outcome));
+  }
+ }
+ // Persist physical booklet identity and outcome attribution alongside the canonical exam.
+ // The loop above records each A question's canonical row ID.
+ for(const code of positionKeys.codes){
+  for(const row of allItems.filter(item=>item.booklet_code===code)){
+   const eqId=examQuestionIds.get(String(row.sort_order));
+   if(!eqId)throw new Error('EXAM_QUESTION_POSITION_MISSING');
+   operations.push(env.DB.prepare("INSERT INTO studio_exam_booklet_positions(exam_id,booklet_code,printed_question_no,source_question_id,exam_question_id,subject_id) VALUES(?,?,?,?,?,?)").bind(examId,code,Number(row.sort_order),row.question_id,eqId,row.subject_id));
+   for(const outcomeId of byQuestion.get(row.question_id)||[])operations.push(env.DB.prepare("INSERT INTO studio_exam_booklet_outcomes(exam_id,booklet_code,printed_question_no,outcome_id) VALUES(?,?,?,?)").bind(examId,code,Number(row.sort_order),outcomeId));
   }
  }
  operations.push(env.DB.prepare("INSERT INTO studio_delivery_links(id,document_id,institution_id,publication_revision,delivery_kind,destination,external_id,idempotency_key) VALUES(?,?,?,1,'EXAM','EXAM_CENTER',?,?)").bind(uuid('sdl'),documentId,doc.institution_id,examId,plan.plan.idempotencyKey));
