@@ -2,7 +2,7 @@ name: Nibiru Identity Calendar Acceptance
 on:
   push:
     branches: [fix/nibiru-identity-calendar-20261012]
-    paths: ['worker/**', 'src/**', 'tests/**', 'scripts/browser-nibiru-calendar.mjs', 'package*.json', 'migrations/**', '.github/workflows/nibiru-identity-calendar.yml']
+    paths: ['worker/**', 'src/**', 'tests/**', 'scripts/browser-nibiru-calendar.mjs', 'scripts/live-*.mjs', 'package*.json', 'migrations/**', '.github/workflows/nibiru-identity-calendar.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -35,3 +35,20 @@ jobs:
           name: nibiru-calendar-browser-${{ github.sha }}
           path: tmp/nibiru-calendar-browser/
           if-no-files-found: warn
+  live-stage:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      SMOKE_BASE_URL: https://demo.anunex.com
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: node scripts/check-nibiru-free-account.mjs
+      - run: node scripts/live-nibiru-ai-probe.mjs
+      - run: node scripts/live-nibiru-calendar-acceptance.mjs

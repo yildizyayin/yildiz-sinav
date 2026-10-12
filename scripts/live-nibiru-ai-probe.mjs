@@ -7,7 +7,7 @@ function assert(value,message,details){
 }
 
 async function request(path,{method='GET',cookie,json,expected=200}={}){
-  const headers={};
+  const headers={Origin:new URL(BASE).origin};
   if(cookie)headers.Cookie=cookie;
   let body;
   if(json!==undefined){headers['Content-Type']='application/json';body=JSON.stringify(json);}
