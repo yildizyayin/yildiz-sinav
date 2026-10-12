@@ -1,0 +1,22 @@
+/** Map A/B answer keys by physical position, not by the original question identity. */
+export type BookletRow={bookletCode:string;questionId:string;position:number;subjectId:string;correctAnswer:string};
+export type PositionKey={position:number;subjectId:string;answers:Record<string,string>};
+export function buildPositionAnswerKeys(items:readonly BookletRow[]):{ok:true;codes:string[];keys:PositionKey[]}|{ok:false;error:string}{
+ const codes=[...new Set(items.map(i=>i.bookletCode))].sort();
+ if(!codes.includes('A')||codes.some(c=>!['A','B','C','D'].includes(c)))return {ok:false,error:'BOOKLET_CODES_INVALID'};
+ const groups=new Map(codes.map(c=>[c,items.filter(i=>i.bookletCode===c).sort((a,b)=>a.position-b.position)]));
+ const main=groups.get('A')!;
+ if(!main.length||main.some((q,i)=>q.position!==i+1))return {ok:false,error:'BOOKLET_POSITION_INVALID'};
+ const master=new Map(main.map(q=>[q.questionId,q.subjectId+'|'+q.correctAnswer]));
+ if(master.size!==main.length)return {ok:false,error:'BOOKLET_DUPLICATE_QUESTION'};
+ for(const c of codes){
+  const rows=groups.get(c)!;
+  if(rows.length!==main.length||new Set(rows.map(q=>q.questionId)).size!==main.length)return {ok:false,error:'BOOKLET_QUESTION_SET_MISMATCH'};
+  for(let i=0;i<rows.length;i++){
+   const q=rows[i];
+   if(q.position!==i+1||master.get(q.questionId)!==q.subjectId+'|'+q.correctAnswer)return {ok:false,error:'BOOKLET_QUESTION_SET_MISMATCH'};
+   if(q.subjectId!==main[i].subjectId)return {ok:false,error:'BOOKLET_SUBJECT_POSITION_MISMATCH'};
+  }
+ }
+ return {ok:true,codes,keys:main.map((q,i)=>({position:q.position,subjectId:q.subjectId,answers:Object.fromEntries(codes.map(c=>[c,groups.get(c)![i].correctAnswer]))}))};
+}
