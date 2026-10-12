@@ -26,5 +26,9 @@ describe('booklet position answer keys',()=>{
   const unchanged=[...base,...base.map(q=>({...q,bookletCode:'B'}))];
   expect(canPublishOutcomeAccurateBooklets(unchanged)).toBe(true);
  });
+ it('rejects E as a correct answer in a 4-option question',()=>{
+  const bad=[{...base[0],correctAnswer:'E',optionCount:4},{...base[1],optionCount:4}];
+  expect(buildPositionAnswerKeys(bad)).toMatchObject({ok:false,error:'BOOKLET_INVALID_ANSWER_FOR_OPTION_COUNT'});
+ });
 
 });
