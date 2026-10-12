@@ -2,7 +2,7 @@ import type { AuthUser,Env } from '../types';
 import {all,one,badRequest,forbidden,json,notFound,uuid} from './db';
 import {planStudioDelivery,resolveStudioDeliveryKind} from './studio-delivery-routing';
 import {validateBookletPermutation} from './studio-booklet-mapping';
-import {buildPositionAnswerKeys} from './studio-position-keys';
+import {buildPositionAnswerKeys,canPublishOutcomeAccurateBooklets} from './studio-position-keys';
 
 /** Single-booklet publication. Multi-booklet position mapping must be completed separately. */
 export async function publishStudioExam(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
@@ -36,6 +36,7 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
  WHERE i.document_id=? ORDER BY i.booklet_code,i.sort_order`).bind(documentId));
  const positionKeys=buildPositionAnswerKeys(allItems.map(i=>({bookletCode:i.booklet_code,questionId:i.question_id,position:Number(i.sort_order),subjectId:i.subject_id,correctAnswer:i.correct_answer,optionCount:Number(i.option_count)})));
  if(!positionKeys.ok)return badRequest(positionKeys.error,'BOOKLET_MAPPING_INVALID');
+ if(!canPublishOutcomeAccurateBooklets(allItems.map(i=>({bookletCode:i.booklet_code,questionId:i.question_id,position:Number(i.sort_order),subjectId:i.subject_id,correctAnswer:i.correct_answer}))))return badRequest('Farklı soru sıralı kitapçıklar için kazanım eşleştirmesi henüz desteklenmiyor.','BOOKLET_OUTCOME_MAPPING_REQUIRED');
  const plan=planStudioDelivery({documentId,institutionId:doc.institution_id,publicationRevision:1,kind:'EXAM',approved:true,questionIds:rows.map(r=>r.question_id),bookletCodes:positionKeys.codes});
  if(!plan.ok)return badRequest(plan.reason,'INVALID_STUDIO_ITEMS');
  if(rows.some(r=>r.review_status!=='APPROVED'||!['OWNED','LICENSED','PUBLIC_DOMAIN'].includes(r.copyright_status)||r.academic_year!==academicYear||
