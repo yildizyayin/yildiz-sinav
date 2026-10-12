@@ -1,5 +1,8 @@
 import { useEffect,useRef,useState } from 'react';
 import { Mic,Send,Square,Volume2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { PasskeyAccess } from '../components/PasskeyAccess';
+import '../nibiru-direct.css';
 import { api } from '../api';
 import { useAuth } from '../auth';
 import { AnunexBrand } from '../components/AnunexBrand';
@@ -23,13 +26,15 @@ async function responseError(response:Response,fallback:string){
 
 export function Nibiru(){
  const{user}=useAuth();
+ const[students,setStudents]=useState<any[]>([]);const[selectedStudentId,setSelectedStudentId]=useState('');
+ useEffect(()=>{api<any>('/api/nibiru/identity').then(r=>{setStudents(r.students||[]);if(r.students?.length===1)setSelectedStudentId(r.students[0].id)}).catch(()=>setStudents([]))},[user?.id]);
  const[messages,setMessages]=useState<Message[]>([{role:'assistant',text:'Ben Nibiru. Anunex’in yapay zekâ akademik zekâ katmanıyım. Sorunuza göre etkin uzmanlığa yönlenir, yalnızca yetkiniz kapsamındaki doğrulanmış akademik verileri kullanırım.',specialist:'Nibiru Core'}]);
  const[text,setText]=useState('');const[busy,setBusy]=useState(false);const[error,setError]=useState('');const[recording,setRecording]=useState(false);const[voiceBusy,setVoiceBusy]=useState(false);const[playing,setPlaying]=useState<number|null>(null);const[voiceStatus,setVoiceStatus]=useState<any>(null);const[capabilityLab,setCapabilityLab]=useState<any>(null);const[labStudentId,setLabStudentId]=useState('');const endRef=useRef<HTMLDivElement|null>(null);
  const recorderRef=useRef<MediaRecorder|null>(null);const chunksRef=useRef<BlobPart[]>([]);const streamRef=useRef<MediaStream|null>(null);const timerRef=useRef<number|null>(null);const audioRef=useRef<HTMLAudioElement|null>(null);
  useEffect(()=>{endRef.current?.scrollIntoView({behavior:'smooth'})},[messages,busy]);
  useEffect(()=>{api<any>('/api/nibiru/voice/status').then(setVoiceStatus).catch(()=>setVoiceStatus(null));return()=>{if(timerRef.current)window.clearTimeout(timerRef.current);streamRef.current?.getTracks().forEach(t=>t.stop());audioRef.current?.pause()}},[]);
  useEffect(()=>{if(user?.role!=='SUPER_ADMIN')return;api<any>('/api/nibiru/lab').then(result=>{setCapabilityLab(result);if(result?.students?.[0]?.id)setLabStudentId((current:string)=>current||result.students[0].id)}).catch(()=>setCapabilityLab(null))},[user?.role]);
- const ask=async(value?:string)=>{const q=(value??text).trim();if(!q||busy)return;setMessages(x=>[...x,{role:'user',text:q}]);setText('');setBusy(true);setError('');try{const r=await api<any>('/api/nibiru/chat',{method:'POST',body:JSON.stringify({message:q,labStudentId:user?.role==='SUPER_ADMIN'?labStudentId||undefined:undefined})});setMessages(x=>[...x,{role:'assistant',text:r.answer,specialist:r.orchestration?.label,coachPlan:r.coachPlan?.available?r.coachPlan:undefined}])}catch(e:any){setError(e.message||'Nibiru şu anda yanıt veremedi.')}finally{setBusy(false)}};
+ const ask=async(value?:string)=>{const q=(value??text).trim();if(!q||busy)return;if(user?.role==='PARENT'&&students.length>1&&!selectedStudentId){setError('Önce hakkında konuşacağınız öğrenciyi seçin.');return;}setMessages(x=>[...x,{role:'user',text:q}]);setText('');setBusy(true);setError('');try{const r=await api<any>('/api/nibiru/chat',{method:'POST',body:JSON.stringify({message:q,studentId:selectedStudentId||undefined,labStudentId:user?.role==='SUPER_ADMIN'?labStudentId||undefined:undefined})});setMessages(x=>[...x,{role:'assistant',text:r.answer,specialist:r.orchestration?.label,coachPlan:r.coachPlan?.available?r.coachPlan:undefined}])}catch(e:any){setError(e.message||'Nibiru şu anda yanıt veremedi.')}finally{setBusy(false)}};
  const stopRecording=()=>{if(timerRef.current){window.clearTimeout(timerRef.current);timerRef.current=null}if(recorderRef.current?.state==='recording')recorderRef.current.stop()};
  const startRecording=async()=>{
   if(recording){stopRecording();return}setError('');
@@ -52,6 +57,9 @@ export function Nibiru(){
  return <>
   <div className="page-head nibiru-hero-head"><div className="nibiru-hero-title"><div className="nibiru-canonical-lockup"><AnunexBrand compact tagline={false}/><span className="nibiru-canonical-divider" aria-hidden="true"/><NibiruMark size={52} state={visualState} showWordmark/></div><div><span className="eyebrow">TEK AKADEMİK ZEKÂ KAPISI</span><h1>Nibiru</h1><p>Doğrulanmış akademik veri, rol bazlı yetki ve uzman yapay zekâları tek bir kurumsal kimlik altında birleştirir.</p></div></div><div className="status ok nibiru-orchestration-status"><NibiruMark size={18} state="active" title="Nibiru aktif"/> Uzman orkestrasyonu aktif</div></div>
   {error&&<div className="alert error">{error}</div>}
+  <PasskeyAccess/><p className="muted" style={{fontSize:12}}>Başlangıç dönemi: hesap başına günde 30 sohbet isteği. Sağlayıcı kotası ayrıca geçerlidir; takvim ve diğer modüller bu sohbet sınırından etkilenmez.</p>
+  {user?.role==='PARENT'&&students.length>0&&<label className="nibiru-student-select">Hangi öğrencimiz hakkında konuşalım?<select value={selectedStudentId} disabled={busy} onChange={e=>{setSelectedStudentId(e.target.value);setMessages([{role:'assistant',text:'Öğrenci seçiminiz değişti. Yeni sorunuzda seçili öğrencinin yetkili verilerini kullanacağım.'}])}}><option value="">Öğrenci seçin</option>{students.map(s=><option key={s.id} value={s.id}>{s.name} · {s.grade_level}. sınıf</option>)}</select></label>}
+  <div className="nibiru-task-links"><Link to="/calendar">Takvim ve planlarım</Link>{user?.role==='STUDENT'&&<><Link to="/question-practice">Soru çöz</Link><Link to="/my-books">Kitaplarım</Link><Link to="/student-report">Gelişimim</Link></>}{user?.role==='PARENT'&&<><Link to="/children">Çocuklarım</Link><Link to="/weekly-summary">Haftalık gelişim</Link></>}</div>
   {user?.role==='STUDENT'&&<div className="panel"><CoachPlanCard plan={null} showCatalog/></div>}
   <div className="panel nibiru-chat-panel">
    {user?.role==='SUPER_ADMIN'&&capabilityLab?.enabled&&<div style={{border:'1px solid #9cc5ff',borderRadius:16,padding:16,marginBottom:16,background:'linear-gradient(135deg,#eff6ff,#f8fbff)'}}>

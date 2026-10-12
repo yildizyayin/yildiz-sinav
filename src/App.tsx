@@ -4,6 +4,8 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth, type Role } from './auth';
 import { Layout } from './components/Layout';
 
+const NibiruDirect=lazy(()=>import('./pages/NibiruDirect').then(module=>({default:module.NibiruDirect})));
+const CalendarCenter=lazy(()=>import('./pages/CalendarCenter').then(module=>({default:module.CalendarCenter})));
 const Login=lazy(()=>import('./pages/Login').then(module=>({default:module.Login})));
 const StudentStandardHome=lazy(()=>import('./pages/StudentStandardHome').then(module=>({default:module.StudentStandardHome})));
 const StudentTargetsV2=lazy(()=>import('./pages/StudentTargetsV2').then(module=>({default:module.StudentTargetsV2})));
@@ -92,6 +94,7 @@ function AppContent(){
  if(isResultHost)return <ResultPortal/>;
  if(isMarketingHost)return <MarketingHome/>;
  if(loading)return <div className="boot">Anunex yükleniyor…</div>;
+ if((location.pathname==='/nibiru-direct'||(!user&&location.pathname==='/nibiru'))&&!user?.must_change_password)return <NibiruDirect/>;
  if(!user&&location.pathname!=='/login')return <Navigate to="/login" replace/>;
  if(user&&user.must_change_password&&location.pathname!=='/change-password')return <Navigate to="/change-password" replace/>;
  if(user&&location.pathname==='/login')return <Navigate to="/" replace/>;
@@ -104,7 +107,7 @@ function AppContent(){
   <Route path="attendance" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><AttendanceCenter/></RoleGate>}/>
   <Route path="assignments" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><AssignmentsCenter/></RoleGate>}/>
   <Route path="completion-center" element={<RoleGate allowed={['SUPER_ADMIN']}><CompletionCenter/></RoleGate>}/><Route path="membership-orders" element={<RoleGate allowed={['SUPER_ADMIN']}><MembershipOrders/></RoleGate>}/>
-  <Route path="nibiru" element={<RoleGate allowed={ALL_ROLES}><Nibiru/></RoleGate>}/><Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/><Route path="agent-center" element={<RoleGate allowed={['SUPER_ADMIN']}><AgentCenter/></RoleGate>}/>
+  <Route path="calendar" element={<RoleGate allowed={ALL_ROLES}><CalendarCenter/></RoleGate>}/><Route path="nibiru" element={<RoleGate allowed={ALL_ROLES}><Nibiru/></RoleGate>}/><Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/><Route path="agent-center" element={<RoleGate allowed={['SUPER_ADMIN']}><AgentCenter/></RoleGate>}/>
   <Route path="academic-target" element={<RoleGate allowed={['STUDENT']}><StudentTargetsV2/></RoleGate>}/><Route path="student-settings" element={<RoleGate allowed={['STUDENT']}><StudentExperienceSettings/></RoleGate>}/><Route path="student-games" element={<RoleGate allowed={['STUDENT']}><StudentGames/></RoleGate>}/><Route path="question-practice" element={<RoleGate allowed={['STUDENT']}><StudentQuestionPractice/></RoleGate>}/><Route path="question-review" element={<RoleGate allowed={['STUDENT']}><StudentQuestionReview/></RoleGate>}/><Route path="my-books" element={<RoleGate allowed={['STUDENT']}><StudentBooks/></RoleGate>}/>
   <Route path="academic-target-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><AcademicTargetAdmin/></RoleGate>}/><Route path="official-question-intelligence" element={<RoleGate allowed={['SUPER_ADMIN']}><OfficialQuestionIntelligenceAdmin/></RoleGate>}/>
   <Route path="announcements" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><Announcements/></RoleGate>}/><Route path="worksheet-calendar" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><WorksheetCalendar/></RoleGate>}/><Route path="licenses" element={<RoleGate allowed={['SUPER_ADMIN']}><Licenses/></RoleGate>}/><Route path="profile" element={<RoleGate allowed={ALL_ROLES}><Profile/></RoleGate>}/><Route path="notifications" element={<RoleGate allowed={ALL_ROLES}><Notifications/></RoleGate>}/>

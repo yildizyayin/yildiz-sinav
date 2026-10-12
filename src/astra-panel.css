@@ -1,0 +1,44 @@
+/* Adapted from the approved Astra reference; actual React routes and APIs remain authoritative. */
+.app-shell[data-panel-theme="ANUNEX_STANDARD"]{--ink:#26343b;--navy:#26343b;--muted:#737c80;--border:#e7ebe7;--line:#e7ebe7;--brand:#367264;--blue:#367264;--blue2:#28594d;--workspace-accent:#367264;--shadow-soft:0 3px 18px #26343b04;--radius:14px;background:#fafbf9;color:#26343b;grid-template-columns:240px minmax(0,1fr);font-family:Inter,"Segoe UI",Arial,sans-serif}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar{width:240px;background:#f5f7f3;border-right:1px solid #e7ebe7;box-shadow:none;padding:24px 14px 16px;color:#26343b}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .brand{border-bottom:1px solid #e7ebe7;padding:0 8px 20px;color:#26343b}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .brand span{color:#737c80}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .brand .anunex-brand-canonical{color:#26343b}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .brand .anunex-wordmark-canonical strong{color:#26343b}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .brand .anunex-wordmark-canonical small{color:#737c80}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .nibiru-sidebar-card{background:#fff;border:1px solid #e3e8e1;border-radius:10px;color:#344f67;box-shadow:none}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .nibiru-sidebar-card span{color:#737c80}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-item{min-height:39px;border-radius:7px;padding:9px 10px;color:#57615f;font-size:12px;font-weight:500;box-shadow:none;transition:background .15s}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-item svg{color:var(--nav-accent,#56776c);stroke-width:1.7}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-item:hover{background:#ecf0e9;transform:none}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-item.active{background:#e7ece5;color:#233c34;font-weight:600;box-shadow:none;border-left:2px solid var(--nav-accent,#56776c)}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-group-toggle{color:#737c80;font-size:10px;letter-spacing:1.2px;font-weight:500;background:transparent}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-subitems{border-left-color:#dce3d8}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar nav{scrollbar-color:#d4dcd0 transparent}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar-footer{background:#fff;border-color:#e3e8e1;border-radius:10px;color:#26343b}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar-footer strong,.app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar-footer small,.app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar-logout{color:#57615f}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .avatar{background:#eaf3ee;color:#367264}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar{height:72px;background:#fff;border-color:#e7ebe7;box-shadow:none;padding:0 30px}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .page-wrap{max-width:1600px;padding:32px 34px 48px}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] h1{font-weight:550;letter-spacing:-.035em}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] h2,.app-shell[data-panel-theme="ANUNEX_STANDARD"] h3{font-weight:600}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .eyebrow{color:var(--workspace-accent);font-size:10px;letter-spacing:.14em}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .panel,.app-shell[data-panel-theme="ANUNEX_STANDARD"] .table-card{box-shadow:none;background:#fff;border-color:#e7ebe7}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .primary{background:var(--workspace-accent)!important;border-color:var(--workspace-accent);box-shadow:none}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .secondary{background:#fff;color:#344f67;border-color:#dde5de;box-shadow:none}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .admin-home-kpi,.app-shell[data-panel-theme="ANUNEX_STANDARD"] .admin-home-panel{border-color:#e7ebe7;box-shadow:none;border-radius:12px}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .admin-home-kpi:before{height:2px;background:#a7b8a3}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .admin-home-kpi span{font-weight:500;font-size:12px}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .admin-home-kpi strong{font-weight:550;font-size:30px}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .admin-home-kpi small{color:#737c80}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .admin-home-action{box-shadow:none;border-color:#e7ebe7;border-radius:10px}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .admin-home-action:hover{transform:none;background:#f8faf6}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .admin-home-pending-icon.blue{background:#eef3f6;color:#466d86}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="exam-center"]{--workspace-accent:#a75c3c;background:#fbf8f4}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="phobos-optical"],.app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="deimos-printing"]{--workspace-accent:#8c785b;background:#fbf9f4}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="content-center"]{--workspace-accent:#6c8559;background:#fafbf7}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="guidance-center"]{--workspace-accent:#b58b58;background:#fbf9f4}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="planning-center"]{--workspace-accent:#367264;background:#f8fbf8}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="results-center"]{--workspace-accent:#466d86;background:#f8fafb}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="ai-center"]{--workspace-accent:#b38a3e;background:#fcfaf5}
+.app-shell[data-panel-theme="ANUNEX_STANDARD"] .mobile-nav-close{color:#26343b}
+@media(max-width:1000px){.app-shell[data-panel-theme="ANUNEX_STANDARD"]{grid-template-columns:1fr}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:100;transform:translateX(-105%);transition:transform .2s}.app-shell[data-panel-theme="ANUNEX_STANDARD"].nav-open .sidebar{transform:translateX(0)}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .mobile-menu-button,.app-shell[data-panel-theme="ANUNEX_STANDARD"] .mobile-nav-close{display:flex}.app-shell[data-panel-theme="ANUNEX_STANDARD"].nav-open .nav-scrim{display:block;position:fixed;inset:0;background:#26343b55;z-index:90}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .page-wrap{padding:24px 20px}}
+@media(max-width:600px){.app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar{padding:0 14px;height:66px}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .page-wrap{padding:20px 14px}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar-actions>.status{display:none}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .nibiru-topbar span{display:none}}

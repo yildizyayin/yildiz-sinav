@@ -127,3 +127,35 @@ User requested moving on to YouTube and WhatsApp. Proceed with Google project/Yo
 User created a key in Google project anunex-nibiru with YouTube Data API v3 enabled, and reported adding it as YOUTUBE_API_KEY in staging and PROD_YOUTUBE_API_KEY in production. Read-only run 37973511000 staging job 113965849567 confirms effective staging YOUTUBE_API_KEY is present. Two real Google requests (one search, one video-details GET) succeeded; 3 returned videos met the sampled public/processed/embeddable/TR/age metadata conditions. No key values printed. This verifies key/API access, NOT actual browser playback, curriculum quality or end-to-end student support.
 
 Staging Worker secret-name check still lacks YOUTUBE_API_KEY: it has NOT been synchronized. No application deployment or D1 writes occurred. Production job 113965850028 awaits the existing production review gate; its key presence/API result is not yet verified. Ask user to Review deployments -> production -> Approve and deploy for this read-only run, without recreating their key. Next manual provider step: Meta apps dashboard, inspect any existing ANUNEX/Nibiru WhatsApp application before creating a duplicate. WhatsApp secrets remain absent in the fresh staging result.
+
+
+## Continuation — 2026-10-12: direct Nibiru, shared calendar, Astra panel
+
+User decisions supersede the earlier mandatory WhatsApp-before-design order:
+- WhatsApp automation is deferred. All future messages would originate from our own existing Business App number; preserve phone usage. Do not delete/disconnect the account or register as a Tech Provider for other businesses. No provider account or paid subscription created. Coexistence remains unconnected.
+- Nibiru remains ANUNEX's multi-task academic AI, not merely a chatbot. Add direct mobile/web entry, authenticated student/parent recognition and existing task access. No private academic data from a typed phone number alone.
+- User authorized implementing this, shared role/task calendar, and then deploying the planned design for hands-on verification. No new deployment consent needed within this scope; retain existing GitHub production environment review gates.
+
+Implementation branch: fix/nibiru-identity-calendar-20261012, based on acceptance head 455654d5ab61c2f86a90a70d7b616ac42065d2f7. Earlier uncommitted acceptance worktree and separate PR #229 remain untouched. Main baseline remains c5d45c30b0f2350b605e304c59b87f3228e7da3b at inspection.
+
+Implemented for acceptance (NOT yet live):
+- /nibiru-direct standalone entry and /nibiru unauthenticated entry on application hosts. Guest mode is explicitly a deterministic usage guide: no AI calls, personal records, writes or claimed identity. First account verification uses existing login with Turnstile; browser-supported passkeys provide later passwordless verification.
+- Passkeys use pinned SimpleWebAuthn packages, host-specific RP IDs, exact Origin, required user verification, five-minute browser-bound single-use challenges and stored signature counters. Registration/revocation require the current password. Inactive accounts, passive institutions and required password changes block use. Super admin retains existing authentication/MFA and cannot enroll this convenience path. No SMS sending.
+- Active parent links / student enrollments control identity and explicit child selection; revoked links are rechecked on every request. Selected student ID reaches existing Nibiru academic processing.
+- Initial chat budget: 30 requests/account/Istanbul day, reserved atomically before underlying Nibiru invocation. This is not an account-wide Free-provider guarantee. Calendar answers are deterministic and do not consume provider calls.
+- Shared calendar /calendar for all six actual roles. Personal, institution, assigned class/subject, authorized student scopes; teacher subject-class pairs and guidance assignments enforced on the server. Existing exam, homework and worksheet plans read from original records without duplication. New lessons, meetings, guidance/RBA dates, study and reminders; weekly finite recurrence, Istanbul timezone, optimistic edit revision and cancellation/completion. Reminders currently IN_APP while calendar is open, not scheduled push/SMS/WhatsApp delivery. Calendar stores no RBA test responses.
+- Astra reference adapted into the default actual panel shell: light sage navigation, airy white content, copper exam / earth optical / green planning / blue reporting / gold Nibiru accents; existing React routes/APIs and special theme selections preserved. No mock dashboard data added. New Nibiru task links point to existing real modules.
+- Client logout now retains authenticated state on server revocation failure and displays the error, matching the earlier backend quota fix.
+
+Evidence so far:
+- Full suite with controlled local concurrency: 841/841 passed (before four additional direct-access tests). Prior unconstrained run had five test timeouts while multiple builds/migration runtimes competed; no assertion failure, controlled rerun passed.
+- New targeted suites: 19 tests passed (calendar actual SQLite SQL, real WebAuthn ES256 registration/authentication, challenge replay/browser binding/user verification/passive-account guards, Nibiru linked-child and quota routes). Combined suite count is 845 tests.
+- Typecheck and production build passed; migration history policy passed; all 95 migrations applied to local D1. New tables changed during development must be validated again in clean CI. No remote seeding/capacity writes performed.
+- Local Chromium download failed due network proxy returning invalid archives. Browser acceptance is set up in GitHub on this branch: source checks, production build, desktop/mobile all-role calendar, guest access, child selection, Astra home screenshots with explicitly synthetic API fixtures. This complements backend tests; it does not prove live device passkeys or live data flows.
+
+Remaining exact release steps:
+1. Finish GitHub browser/source acceptance and inspect failures/screenshots.
+2. Review and merge the completed release branch when checks pass; do not merge unrelated draft #229. Production deploy retains required account environment approval. Do not bypass reviewers.
+3. After migration/deploy: verify app/demo health, public Nibiru entry, unauthenticated data denial and bounded real logout/write flows; user performs actual phone biometric/passkey and role-data acceptance. No test/real outbound WhatsApp messages.
+4. YouTube run 37973511000 both staging and production jobs completed successfully; earlier note saying production waiting is stale. Production job 113965850028 log review confirms PROD_YOUTUBE_API_KEY present and two real search/detail requests succeeded with 3 metadata-eligible videos. Production Worker YOUTUBE_API_KEY still absent in that audit; deployment must synchronize it. Playback/curriculum review still pending.
+5. Turkish natural server TTS remains unverified and paid voice OFF. Do not present sampled academic tests as complete Maarif/factual certification or scalability acceptance.
