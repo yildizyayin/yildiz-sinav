@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {pilotBatchLimit} from '../worker/lib/question-agent-dispatch-plan';
+import {pilotBatchLimit,canExecuteScheduledPilot} from '../worker/lib/question-agent-dispatch-plan';
 describe('agent pilot batch constraints',()=>{
  it('caps each job at ten',()=>expect(pilotBatchLimit(50,50,50)).toBe(10));
  it('honors remaining budget and review slots',()=>expect(pilotBatchLimit(10,8,3)).toBe(3));
@@ -20,4 +20,15 @@ describe('pilot multi-job dispatch',()=>{
  it('does not select jobs while disabled',()=>{
   expect(planQuestionPilotDispatch([candidate('x')],{enabled:false,budget:10,reviewSlots:10,maxJobs:1,maxQuestions:10}).ids).toEqual([]);
  });
+});
+
+describe('scheduled agent execution rollout',()=>{
+ const ready={dispatchPreview:true,executionEnabled:true,generationEnabled:true,providerAvailable:true,verifiedServiceActor:true,reviewCapacity:10,budget:10};
+ it('refuses execution with no authenticated scheduler actor',()=>expect(canExecuteScheduledPilot({...ready,verifiedServiceActor:false}).reasons).toContain('SERVICE_ACTOR_NOT_VERIFIED'));
+ it('requires an independent execution opt-in',()=>expect(canExecuteScheduledPilot({...ready,executionEnabled:false}).allowed).toBe(false));
+ it('blocks empty reviewer capacity or budget',()=>{
+  expect(canExecuteScheduledPilot({...ready,reviewCapacity:0}).allowed).toBe(false);
+  expect(canExecuteScheduledPilot({...ready,budget:0}).allowed).toBe(false);
+ });
+ it('allows all safeguards present',()=>expect(canExecuteScheduledPilot(ready).allowed).toBe(true));
 });
