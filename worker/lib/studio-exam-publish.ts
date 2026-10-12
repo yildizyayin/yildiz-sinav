@@ -1,6 +1,7 @@
 import type { AuthUser,Env } from '../types';
 import {all,one,badRequest,forbidden,json,notFound,uuid} from './db';
 import {planStudioDelivery,resolveStudioDeliveryKind} from './studio-delivery-routing';
+import {validateBookletPermutation} from './studio-booklet-mapping';
 
 /** Single-booklet publication. Multi-booklet position mapping must be completed separately. */
 export async function publishStudioExam(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
@@ -21,6 +22,8 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
   return badRequest('A/B eşleme doğrulaması tamamlanmadığı için yalnız A kitapçığı yayına alınabilir.','MULTIBOOKLET_NOT_READY');
  const rows=await all<any>(env.DB.prepare(`SELECT i.question_id,i.sort_order,q.subject_id,q.grade_level,q.academic_year,q.review_status,q.copyright_status,q.correct_answer
  FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code='A' ORDER BY i.sort_order`).bind(documentId));
+ const integrity=validateBookletPermutation(rows.map(r=>({bookletCode:'A',questionId:r.question_id,position:Number(r.sort_order),subjectId:r.subject_id,correctAnswer:r.correct_answer})));
+ if(!integrity.ok)return badRequest('Kitapçık soru sırası veya cevap anahtarı doğrulanamadı.','BOOKLET_INTEGRITY_FAILED');
  const plan=planStudioDelivery({documentId,institutionId:doc.institution_id,publicationRevision:1,kind:'EXAM',approved:true,questionIds:rows.map(r=>r.question_id),bookletCodes:['A']});
  if(!plan.ok)return badRequest(plan.reason,'INVALID_STUDIO_ITEMS');
  if(rows.some(r=>r.review_status!=='APPROVED'||!['OWNED','LICENSED','PUBLIC_DOMAIN'].includes(r.copyright_status)||r.academic_year!==academicYear||
