@@ -2,7 +2,7 @@ import app from './student-books-entry';
 import {getQuestionPoolCoverage} from './lib/question-pool-coverage';
 import {handleQuestionGenerationJobs} from './lib/question-generation-jobs';
 import {runQuestionGenerationJob} from './lib/question-generation-runner';
-import {planQuestionPilotDispatch,canExecuteScheduledPilot,validateScheduledActor} from './lib/question-agent-dispatch-plan';
+import {planQuestionPilotDispatch,canExecuteScheduledPilot,validateScheduledActor,canDispatchToReviewQueue} from './lib/question-agent-dispatch-plan';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { json,one,all } from './lib/db';
@@ -94,7 +94,7 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
       const jobId=plan.ids[0];if(!jobId)return;
       // The job runner requires a separate review-capacity flag. Keep scheduler
       // planning and execution aligned, never dispatch when reviewers are unavailable.
-      if((cfg as typeof cfg & {QUESTION_PILOT_REVIEW_AVAILABLE?:string}).QUESTION_PILOT_REVIEW_AVAILABLE!=='true'){
+      if(!canDispatchToReviewQueue({reviewAvailable:(cfg as typeof cfg & {QUESTION_PILOT_REVIEW_AVAILABLE?:string}).QUESTION_PILOT_REVIEW_AVAILABLE==='true',reviewSlots,questionCount:Number(rows.find(r=>r.id===jobId)?.questionCount??0)})){
        console.log('question-agent-execution-blocked',JSON.stringify({reasons:['REVIEW_QUEUE_NOT_AVAILABLE']}));return;
       }
       // A database trigger atomically reserves capacity across concurrent cron
