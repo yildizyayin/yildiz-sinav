@@ -112,12 +112,17 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
       ak.booklet_code,ak.correct_answer,ak.accepted_answers,
       coalesce(ak.question_status,q.question_status,'ACTIVE') question_status,
       coalesce(bqo.printed_question_no,q.question_no) printed_question_no,
-      group_concat(qo.outcome_id) outcome_ids
+      group_concat(DISTINCT coalesce(sbo.outcome_id,qo.outcome_id)) outcome_ids
       FROM exam_questions q
       JOIN subjects s ON s.id=q.subject_id
       JOIN answer_keys ak ON ak.exam_question_id=q.id
       LEFT JOIN exam_question_booklet_orders bqo ON bqo.exam_question_id=q.id AND bqo.booklet_code=ak.booklet_code
       LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id
+        AND NOT EXISTS (SELECT 1 FROM studio_exam_booklet_positions sp
+          WHERE sp.exam_id=q.exam_id AND sp.booklet_code=ak.booklet_code)
+      LEFT JOIN studio_exam_booklet_outcomes sbo ON sbo.exam_id=q.exam_id
+        AND sbo.booklet_code=ak.booklet_code
+        AND sbo.printed_question_no=coalesce(bqo.printed_question_no,q.question_no)
       WHERE q.exam_id=?
       GROUP BY q.id,ak.booklet_code
       ORDER BY q.subject_id,ak.booklet_code,coalesce(bqo.printed_question_no,q.question_no)`).bind(exam.id)),
