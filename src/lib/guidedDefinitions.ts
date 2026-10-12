@@ -140,7 +140,7 @@ const officialTemplate = (baseKey: string, key: string, authority: 'MEB' | 'ÖSY
     key,
     label: `${base.label} · ${authority} Kazanımlı`,
     description: `${base.description} · ${authority} doğrulanmış kazanım kodlarıyla`,
-    requiresOutcomes: true,
+    requiresOutcomes: false,
     outcomeAuthority: authority,
   };
 };
@@ -190,8 +190,8 @@ export function matchOfficialOutcome(reference: OutcomeReference | null | undefi
     if (byCode.length > 1) return { reason: 'AMBIGUOUS' };
     if (allByCode.length) return { reason: 'UNVERIFIED' };
   }
-  if (reference.title) {
-    const title = normalizeCatalogText(reference.title);
+  if (reference.publisherTitle || reference.title) {
+    const title = normalizeCatalogText(reference.publisherTitle || reference.title);
     const byTitle = verified.filter((outcome) => normalizeCatalogText(outcome.title) === title
       && (!reference.topic || normalizeCatalogText(outcome.topic) === normalizeCatalogText(reference.topic))
       && (!reference.subtopic || normalizeCatalogText(outcome.subtopic) === normalizeCatalogText(reference.subtopic)));

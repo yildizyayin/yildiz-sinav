@@ -48,6 +48,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/teacher-assignments',label:'Öğretmen Yetkileri',icon:ShieldCheck},
     ]},
     { label:'PLATFORM', items:[
+      {to:'/exam-channels',label:'Sonuç Yayınları',icon:Globe2},
       {to:'/result-network',label:'Sonuç Ağı',icon:Globe2},
       {to:'/attendance',label:'Yoklama Gözetimi',icon:UserCheck},
       {to:'/nibiru',label:'Nibiru',icon:NibiruNavIcon},
@@ -114,6 +115,7 @@ const nav: Record<Role, NavItem[]> = {
   SUPER_ADMIN: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/standard-readiness', label: 'Standard Hazırlık', icon: ShieldCheck },
     { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck },
+    { to: '/exam-channels', label: 'Sonuç Yayınları', icon: Globe2 },
     { to: '/result-network', label: 'Sonuç Ağı', icon: Globe2 },
     { to: '/attendance', label: 'Yoklama Gözetimi', icon: UserCheck },
     { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle }, { to: '/guidance-admin', label: 'RBA & Rehberlik Testleri', icon: ClipboardCheck }, { to: '/agent-center', label: 'AI Ajan Merkezi', icon: Activity }, { to: '/licenses', label: 'Lisanslar', icon: KeyRound },

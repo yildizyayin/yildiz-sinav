@@ -4,6 +4,8 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { api, ApiError, qs } from '../api';
 import { useAuth } from '../auth';
 import '../exam-mars.css';
+import '../exam-workspace.css';
+import { ExamChannelNotice } from '../components/ExamChannelNotice';
 
 type ExamRow = {
   id:string; title:string; exam_type:string; grade_level:number|null; academic_year:string; exam_date:string|null; status:string;
@@ -50,16 +52,15 @@ export function ExamCenter(){
   const reviewCounts=useMemo(()=>{const rs=batch?.records||[];return {active:rs.filter((r:any)=>r.match_status==='ACTIVE_MATCH').length,guest:rs.filter((r:any)=>r.match_status==='GUEST_MATCH').length,newGuest:rs.filter((r:any)=>r.match_status==='NEW_GUEST').length,cancelled:rs.filter((r:any)=>r.resolution_status==='CANCELLED').length,pending:reviewRows.length}},[batch,reviewRows.length]);
   const activeOperationStep = preview ? 3 : selected ? 2 : 1;
 
-  if(!entryMode)return <>
-    <section className="exam-mars-hero"><div className="mars-stars"/><div className="mars-orbit mars-orbit-one"/><div className="mars-orbit mars-orbit-two"/><div className="mars-planet"><span className="mars-crater crater-one"/><span className="mars-crater crater-two"/><span className="mars-crater crater-three"/></div><div className="mars-hero-copy"><span className="eyebrow">MARS · SINAV MERKEZİ</span><h1>Sınav Merkezi</h1><div className="exam-center-hero-actions"><Link className="secondary" to="/exam-center?mode=upload"><FileUp size={16}/> Sınav Yükle</Link><Link className="primary" to="/exam-definitions"><FilePlus2 size={16}/> Sınav Ekle</Link></div></div><div className="mars-signal"><span/><span/><span/></div></section>
+  if(!entryMode)return <div className="exam-workspace">
     <div className="exam-center-simple-head"><div><span className="eyebrow">SINAV MERKEZİ</span><h1>Sınavlar</h1></div><div className="exam-center-simple-actions"><Link className="secondary" to="/exam-center?mode=upload"><FileUp size={16}/> Sınav Yükle</Link><Link className="primary" to="/exam-definitions"><FilePlus2 size={16}/> Sınav Ekle</Link></div></div>
     {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
     <section className="panel exam-center-simple-list"><div className="panel-head"><div><h2>Kayıtlı sınavlar</h2></div><button className="ghost" onClick={()=>void load()}><RefreshCw size={15}/> Yenile</button></div>
-      {readyRows.length ? <div className="table-card"><table><thead><tr><th>Sınav</th><th>Tür / sınıf</th><th>Katılım</th><th>Kitapçık</th><th>Durum</th><th></th></tr></thead><tbody>{readyRows.slice(0,8).map((r)=><tr key={r.id}><td><strong>{r.title}</strong><br/><small>{r.academic_year}{r.publisher_name?` · ${r.publisher_name}`:''}</small></td><td>{r.exam_type} · {r.grade_level?`${r.grade_level}. sınıf`:'-'}</td><td>{r.participant_count||0}</td><td>{r.booklet_codes||'—'}</td><td><span className={`status ${r.status==='ACTIVE'?'ok':r.status==='DRAFT'?'warn':'neutral'}`}>{r.status==='DRAFT'?'Taslak':r.status==='ACTIVE'?'Hazır':'Kapalı'}</span></td><td><Link className="primary" to={`/exam-center/${encodeURIComponent(r.id)}`}>Sınav detayına git</Link></td></tr>)}</tbody></table></div> : <div className="empty-state"><FilePlus2/><strong>Henüz eklenmiş sınav yok</strong><span>Önce Sınav Ekle ile bir sınav kartı oluşturun.</span></div>}
+      {readyRows.length ? <div className="table-card"><table><thead><tr><th>Sınav</th><th>Tür / sınıf</th><th>Katılım</th><th>Kitapçık</th><th>Durum</th><th></th></tr></thead><tbody>{readyRows.map((r)=><tr key={r.id}><td><strong>{r.title}</strong><br/><small>{r.academic_year}{r.publisher_name?` · ${r.publisher_name}`:''}</small></td><td>{r.exam_type} · {r.grade_level?`${r.grade_level}. sınıf`:'-'}</td><td>{r.participant_count||0}</td><td>{r.booklet_codes||'—'}</td><td><span className={`status ${r.status==='ACTIVE'?'ok':r.status==='DRAFT'?'warn':'neutral'}`}>{r.status==='DRAFT'?'Taslak':r.status==='ACTIVE'?'Hazır':'Kapalı'}</span></td><td><Link className="primary" to={`/exam-center/${encodeURIComponent(r.id)}`}>Sınav detayına git</Link></td></tr>)}</tbody></table></div> : <div className="empty-state"><FilePlus2/><strong>Henüz eklenmiş sınav yok</strong><span>Önce Sınav Ekle ile bir sınav kartı oluşturun.</span></div>}
     </section>
-  </>;
+  </div>;
 
-  return <>
+  return <div className="exam-workspace">
     <div className="page-head exam-operation-head"><div><span className="eyebrow">SINAV MERKEZİ / YÜKLE VE DEĞERLENDİR</span><h1>Sınav değerlendirme</h1></div><div className="exam-operation-head-actions"><button className="ghost" onClick={()=>{setEntryMode(null);setSearchParams({})}}><ArrowLeft size={16}/> Merkeze dön</button><button className="ghost" onClick={()=>void load()}><RefreshCw size={16}/> Yenile</button></div></div>
     {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
     <div className="exam-operation-stepper" aria-label="Sınav değerlendirme adımları">
@@ -77,6 +78,7 @@ export function ExamCenter(){
 
     <div className="table-card exam-center-table exam-selection-table" style={{marginBottom:18}}><table><thead><tr><th>Sınav</th><th>Kapsam</th><th>Katılım</th><th>Kitapçık</th><th>Durum</th><th></th></tr></thead><tbody>{readyRows.map(e=><tr key={e.id} className={selected?.id===e.id?'selected-row':''}><td><strong>{e.title}</strong><small>{[e.publisher_name,e.catalog_code,e.exam_type].filter(Boolean).join(' · ')}</small></td><td><ScopeBadge exam={e}/></td><td><strong>{Number(e.participant_count||0).toLocaleString('tr-TR')}</strong></td><td>{e.booklet_codes||'otomatik'}</td><td><span className={`status ${e.status==='DRAFT'?'warn':e.result_freeze_status==='PUBLISHED'?'ok':e.result_freeze_status==='FROZEN'?'warn':'neutral'}`}>{e.status==='DRAFT'?'Taslak':statusLabel(e.result_freeze_status)}</span></td><td><Link className="secondary subtle" to={e.status==='ACTIVE'?`/exams/${encodeURIComponent(e.id)}/evaluate`:`/exam-center/${encodeURIComponent(e.id)}`}>{e.status==='ACTIVE'?'Veri yükle / değerlendir':'Eksikleri tamamla'} <ChevronRight size={15}/></Link></td></tr>)}{!readyRows.length&&<tr><td colSpan={6}><div className="empty">Aramaya uygun eklenmiş sınav bulunamadı.</div></td></tr>}</tbody></table></div>
 
+    {selected&&<ExamChannelNotice examId={selected.id} refreshKey={notice}/>}
     {selected&&<div className="panel exam-operation-panel" style={{marginBottom:18}}>
       <div className="panel-head"><div><ScopeBadge exam={selected}/><h2 style={{marginTop:8}}>{selected.title}</h2><p>{selected.scope==='CENTRAL'?'Türkiye geneli katılımcılar arasında; il, ilçe, kurum, sınıf ve şube sıralaması.':selected.scope==='NETWORK'?'Zincir kurum ağı içinde Türkiye, il, ilçe, kampüs ve sınıf karşılaştırmaları.':'Kurum, sınıf ve şube sonuçları.'}</p></div><span className={`status ${selected.result_freeze_status==='PUBLISHED'?'ok':selected.result_freeze_status==='FROZEN'?'warn':'neutral'}`}>{statusLabel(selected.result_freeze_status)}</span></div>
 
@@ -100,7 +102,7 @@ export function ExamCenter(){
     </div>}
 
     <div className="panel exam-center-tools"><div className="panel-head"><div><h2>Merkez işlemleri</h2></div></div><div style={{display:'flex',gap:10,flexWrap:'wrap'}}><Link className="secondary" to="/exam-definitions">Sınav Ekle</Link><Link className="secondary" to="/opticals">Optik Tanımla</Link><Link className="secondary" to="/optical-design">Optik Form Tasarımcısı</Link><Link className="secondary" to="/optical-prepare">Optik Basma</Link></div></div>
-  </>;
+  </div>;
 }
 
 function CatalogEditor({exam,onSaved,onError,onNotice}:{exam:ExamRow;onSaved:()=>Promise<void>;onError:(x:string)=>void;onNotice:(x:string)=>void}){

@@ -1,3 +1,5 @@
+import { refreshExamOutcomeAnalysis } from './lib/exam-outcome-history';
+import { examOutcomeScope, scopedOutcomeCatalog, matchScopedOutcome } from './lib/exam-outcome-matching';
 import { withExamOperationLock } from './lib/exam-operation-lock';
 import { examPublicationGuard, examCorrectionOpen } from './lib/exam-publication-guard';
 import { examReadiness as readiness } from './lib/exam-readiness';
@@ -317,21 +319,9 @@ async function options(env: Env, user: AuthUser, url: URL): Promise<Response> {
       ? all<any>(env.DB.prepare(`SELECT id,name,code,city,district,status FROM institutions ORDER BY status,name`))
       : Promise.resolve([]),
   ]);
-  const params: unknown[] = [];
-  let where = 'o.active=1';
-  if (gradeLevel && Number.isInteger(gradeLevel)) { where += ' AND (o.grade_level=? OR o.grade_level IS NULL)'; params.push(gradeLevel); }
-  if (subjectId) { where += ' AND o.subject_id=?'; params.push(subjectId); }
-  const outcomes = await all<any>(env.DB.prepare(`
-    SELECT o.id,o.subject_id,o.grade_level,o.code,o.topic,o.subtopic,o.title,o.official,
-           o.parent_outcome_id,o.node_type,o.unit,coalesce(cv.verified,0) verified,cv.authority,cv.program_code,
-           s.name subject_name
-    FROM outcomes o JOIN subjects s ON s.id=o.subject_id
-    LEFT JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
-    WHERE ${where}
-    ORDER BY s.name,o.topic,o.title
-    LIMIT 1000
-  `).bind(...params));
-  return Response.json({ ok: true, subjects, scoringVersions, institutions, outcomes });
+  const scope = examOutcomeScope({academicYear:url.searchParams.get('academicYear'),gradeLevel,examType:url.searchParams.get('examType')});
+  const outcomes = await scopedOutcomeCatalog(env,scope,subjectId||undefined);
+  return Response.json({ ok: true, subjects, scoringVersions, institutions, outcomes, scope, catalogStatus:outcomes.length ? 'AVAILABLE' : 'EMPTY' });
 }
 
 async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
@@ -717,7 +707,7 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
 
   const questions = await all<any>(env.DB.prepare(`SELECT id,subject_id,question_no,option_count FROM exam_questions WHERE exam_id=? ORDER BY global_no`).bind(examId));
   const questionMap = new Map(questions.map((q) => [`${q.subject_id}::${q.question_no}`, q]));
-  const outcomeMode = body.outcomeMode === 'OFFICIAL_REQUIRED' || exam.outcome_mode === 'OFFICIAL_REQUIRED' ? 'OFFICIAL_REQUIRED' : 'OPTIONAL';
+  const outcomeMode = body.outcomeMode === undefined ? (exam.outcome_mode || 'OPTIONAL') : body.outcomeMode === 'OFFICIAL_REQUIRED' ? 'OFFICIAL_REQUIRED' : 'OPTIONAL';
   const reason = body.reason?.trim() || 'Sınav cevap anahtarı güncellemesi.';
   if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Değişiklik gerekçesi 500 karakteri geçemez.');
   const statements: D1PreparedStatement[] = [
@@ -769,8 +759,8 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
         const printedQuestionNo = Number(entry.bookletQuestionNumbers?.[offset] || n);
         statements.push(env.DB.prepare(`INSERT INTO exam_question_booklet_orders (id,exam_id,exam_question_id,booklet_code,printed_question_no) VALUES(?,?,?,?,?)`)
           .bind(uuid('eqbo'), examId, question.id, booklet.code, printedQuestionNo));
-        const reference = entry.outcomeRefsByQuestion?.[offset]?.[0] || entry.outcomeRefs?.[offset];
-        await ensurePublisherLabel(question.id, subject.subject_id, reference);
+        const references = entry.outcomeRefsByQuestion?.[offset] || (entry.outcomeRefs?.[offset] ? [entry.outcomeRefs[offset]] : []);
+        for(const reference of references)await ensurePublisherLabel(question.id, subject.subject_id, reference);
       }
     }
   }
@@ -785,19 +775,31 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
     }
   }
 
+  const catalog=await scopedOutcomeCatalog(env,examOutcomeScope(exam));
+  const automaticMappings:any[]=[];
+  if(body.outcomeMappings===undefined){
+    const existingMappings=await all<any>(env.DB.prepare('SELECT q.subject_id,q.question_no,qo.outcome_id FROM question_outcomes qo JOIN exam_questions q ON q.id=qo.exam_question_id WHERE q.exam_id=?').bind(examId));
+    for(const m of existingMappings)if(catalog.some(o=>o.id===m.outcome_id&&o.subject_id===m.subject_id))automaticMappings.push({subjectId:m.subject_id,questionNo:m.question_no,outcomeId:m.outcome_id});
+  }
+  for(const [entryKey,entry] of entryMap){
+    const subjectId=entryKey.split('::')[0];
+    const subject=subjects.find(s=>s.subject_id===subjectId);
+    if(!subject)continue;
+    for(let offset=0;offset<Number(subject.question_count);offset++){
+      const refs=entry.outcomeRefsByQuestion?.[offset] || (entry.outcomeRefs?.[offset]?[entry.outcomeRefs[offset]]:[]);
+      for(const ref of refs){const matched=matchScopedOutcome(ref,subjectId,catalog);if(matched.outcomeId)automaticMappings.push({subjectId,questionNo:Number(subject.question_start||1)+offset,outcomeId:matched.outcomeId});}
+    }
+  }
   const seenMappings = new Set<string>();
-  for (const mapping of body.outcomeMappings || []) {
+  for (const mapping of [...automaticMappings,...(body.outcomeMappings || [])]) {
     const subjectId = String(mapping.subjectId || '');
     const questionNo = Number(mapping.questionNo);
     const outcomeId = String(mapping.outcomeId || '');
     if (!subjectId || !Number.isInteger(questionNo) || !outcomeId) continue;
     const question = questionMap.get(`${subjectId}::${questionNo}`);
     if (!question) return err(400, 'QUESTION_NOT_FOUND', 'Kazanım eşleştirmesinde geçersiz soru bulundu.');
-    const outcome = await one<any>(env.DB.prepare(`SELECT o.id,o.subject_id,o.official,coalesce(cv.verified,0) verified
-      FROM outcomes o LEFT JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
-      WHERE o.id=? AND o.active=1`).bind(outcomeId));
-    if (!outcome || outcome.subject_id !== subjectId) return err(400, 'OUTCOME_SUBJECT_MISMATCH', 'Kazanım ilgili dersle eşleşmiyor.');
-    if (outcomeMode === 'OFFICIAL_REQUIRED' && (Number(outcome.official) !== 1 || Number(outcome.verified) !== 1)) return err(400, 'OUTCOME_NOT_VERIFIED', 'Kazanımlı resmî sınavlarda yalnız doğrulanmış MEB/ÖSYM katalog kayıtları kullanılabilir.');
+    const outcome = catalog.find(o=>o.id===outcomeId&&o.subject_id===subjectId);
+    if(!outcome)return err(400,'OUTCOME_SCOPE_MISMATCH','Kazanım doğrulanmış ders, sınıf, yıl ve program kataloğunda bulunmuyor.');
     const key = `${question.id}::${outcomeId}`;
     if (seenMappings.has(key)) continue;
     seenMappings.add(key);
@@ -809,7 +811,7 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
   for (const [questionId, labelIds] of publisherLabelsByQuestion.entries()) for (const publisherOutcomeId of labelIds) statements.push(env.DB.prepare(`INSERT OR IGNORE INTO question_publisher_outcomes (exam_question_id,publisher_outcome_id) VALUES(?,?)`).bind(questionId, publisherOutcomeId));
   if (outcomeMode !== exam.outcome_mode) statements.push(env.DB.prepare('UPDATE exams SET outcome_mode=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(outcomeMode, examId));
   statements.push(env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)').bind(uuid('aud'),user.id,exam.institution_id,'EXAM_ANSWER_KEY_REPLACED','exam',examId,JSON.stringify(sanitizeAuditDetails({ before: { entryCount: subjects.length * booklets.length, outcomeMappingCount: 'existing' }, after: { entryCount: entryMap.size, outcomeMappingCount: seenMappings.size }, reason }))));
-  await env.DB.batch(statements);
+  await refreshExamOutcomeAnalysis(env,examId,user.id,statements);
   return Response.json({ ok: true, answerCount: subjects.reduce((sum, s) => sum + Number(s.question_count), 0) * booklets.length, outcomeMappingCount: seenMappings.size });
 }
 

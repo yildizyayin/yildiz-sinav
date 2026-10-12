@@ -1,3 +1,4 @@
+import {examOutcomePayloadSql} from './lib/exam-outcome-history';
 import { cohortRubricReport } from './lib/cohort-rubric-report';
 import { cohortLearningReport } from './lib/cohort-learning-report';
 import { handleFrozenFoyGameReport } from './lib/frozen-foy-game-report';
@@ -53,7 +54,7 @@ export async function selectedFrozenExamReport(env:Env,user:AuthUser,studentId:s
  const staff=['TEACHER','GUIDANCE_TEACHER'].includes(user.role);
  const params:any[]=[studentId,access.student.institution_id,year,...ids];
  if(staff)params.push(access.student.season_id);
- const rows=await all<any>(env.DB.prepare(`SELECT s.exam_id,s.grade_level,s.payload_json,CASE WHEN json_valid(s.payload_json) THEN json_extract(s.payload_json,'$.exam.academic_year') END academic_year
+ const rows=await all<any>(env.DB.prepare(`SELECT s.exam_id,s.grade_level,${examOutcomePayloadSql('s')} payload_json,CASE WHEN json_valid(s.payload_json) THEN json_extract(s.payload_json,'$.exam.academic_year') END academic_year
  FROM exam_result_snapshots s
  JOIN exam_delivery_profiles p ON p.exam_id=s.exam_id AND p.snapshot_version=s.snapshot_version
  JOIN exams e ON e.id=s.exam_id
@@ -372,7 +373,7 @@ async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Pr
   const examParams:any[]=[studentId];let examAccessSql='';
   if(user.role==='STUDENT'||user.role==='PARENT')examAccessSql+=` AND EXISTS (SELECT 1 FROM exam_delivery_profiles publication WHERE publication.exam_id=e.id AND publication.result_freeze_status='PUBLISHED' AND publication.published_at IS NOT NULL AND (publication.result_publish_at IS NULL OR datetime(publication.result_publish_at)<=CURRENT_TIMESTAMP))`;
   if(access.subjectFilter?.length){examAccessSql+=` AND EXISTS (SELECT 1 FROM subject_results sr2 WHERE sr2.participant_id=ep.id AND sr2.subject_id IN (${placeholders(access.subjectFilter)}))`;examParams.push(...access.subjectFilter)}
-  const snapshotRows=publishedView?await all<any>(env.DB.prepare(`SELECT snap.exam_id,snap.payload_json,snap.snapshot_version FROM exam_result_snapshots snap
+  const snapshotRows=publishedView?await all<any>(env.DB.prepare(`SELECT snap.exam_id,${examOutcomePayloadSql('snap')} payload_json,snap.snapshot_version FROM exam_result_snapshots snap
     JOIN exam_delivery_profiles p ON p.exam_id=snap.exam_id AND p.snapshot_version=snap.snapshot_version
     WHERE snap.student_id=? AND p.result_freeze_status='PUBLISHED' AND p.published_at IS NOT NULL
     AND (p.result_publish_at IS NULL OR datetime(p.result_publish_at)<=CURRENT_TIMESTAMP) ORDER BY p.published_at DESC LIMIT 100`).bind(studentId)):[];

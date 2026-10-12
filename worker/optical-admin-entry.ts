@@ -1,4 +1,4 @@
-import examApp from './exam-admin-entry';
+import examApp from './exam-outcome-matching-entry';
 import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './lib/db';
