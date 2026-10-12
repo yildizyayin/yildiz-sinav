@@ -48,6 +48,14 @@ export async function publishStudioHomework(request:Request,env:Env,user:AuthUse
   env.DB.prepare("INSERT INTO studio_delivery_links(id,document_id,institution_id,publication_revision,delivery_kind,destination,external_id,idempotency_key) VALUES(?,?,?,1,'HOMEWORK','ASSIGNMENTS',?,?)").bind(uuid('sdl'),documentId,doc.institution_id,assignmentId,plan.plan.idempotencyKey),
   env.DB.prepare("UPDATE studio_documents SET status='PUBLISHED',updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='READY'").bind(documentId)
  ];
- try{await env.DB.batch(ops);}catch{return json({ok:false,error:{code:'HOMEWORK_PUBLICATION_FAILED',message:'Ödev kaydı oluşturulamadı.'}},409);}
+ try{await env.DB.batch(ops);}catch{
+  // Competing submissions may lose the unique delivery-key race. D1 batch
+  // rolls back the losing writes; return the winner rather than a false error.
+  const winner=await one<{external_id:string}>(env.DB.prepare(
+   "SELECT external_id FROM studio_delivery_links WHERE document_id=? AND institution_id=? AND delivery_kind='HOMEWORK' AND publication_revision=1"
+  ).bind(documentId,doc.institution_id));
+  if(winner)return json({ok:true,assignmentId:winner.external_id,reused:true});
+  return json({ok:false,error:{code:'HOMEWORK_PUBLICATION_FAILED',message:'Ödev kaydı oluşturulamadı.'}},409);
+ }
  return json({ok:true,assignmentId,reused:false},201);
 }
