@@ -50,3 +50,21 @@ export function planStudioDelivery(input: StudioDeliveryInput): DeliveryResult {
     createAssignmentRecord:input.kind === 'HOMEWORK',
   }};
 }
+
+/**
+ * Translate only explicit Studio workflows. WORKSHEET is not automatically a
+ * homework assignment: the teacher must choose homework delivery explicitly.
+ * PERSONAL_BOOK is a printable product and must never create an exam.
+ */
+export type StoredStudioDocumentType = 'WRITTEN_EXAM' | 'PRACTICE_EXAM' | 'WORKSHEET' | 'PERSONAL_BOOK';
+export function resolveStudioDeliveryKind(
+  documentType: StoredStudioDocumentType,
+  requested: DeliveryKind,
+): {ok:true;kind:DeliveryKind}|{ok:false;reason:string} {
+  if (documentType === 'WRITTEN_EXAM' || documentType === 'PRACTICE_EXAM')
+    return requested === 'EXAM' ? {ok:true,kind:'EXAM'} : {ok:false,reason:'DOCUMENT_DELIVERY_MISMATCH'};
+  if (documentType === 'WORKSHEET')
+    return requested === 'HOMEWORK' || requested === 'MINI_TEST'
+      ? {ok:true,kind:requested} : {ok:false,reason:'DOCUMENT_DELIVERY_MISMATCH'};
+  return {ok:false,reason:'PERSONAL_BOOK_IS_NOT_ASSESSMENT'};
+}
