@@ -21,3 +21,17 @@ export function buildPositionAnswerKeys(items:readonly BookletRow[]):{ok:true;co
  }
  return {ok:true,codes,keys:main.map((q,i)=>({position:q.position,subjectId:q.subjectId,answers:Object.fromEntries(codes.map(c=>[c,groups.get(c)![i].correctAnswer]))}))};
 }
+
+/** Existing question_outcomes is keyed only by exam_question_id (A position).
+ * Reordered booklets must not be released as outcome-accurate until their
+ * per-booklet outcome identity can be persisted and consumed by reports. */
+export function canPublishOutcomeAccurateBooklets(items:readonly BookletRow[]):boolean {
+ const a=items.filter(x=>x.bookletCode==='A');
+ if(!a.length||new Set(a.map(x=>x.position)).size!==a.length)return false;
+ const positions=new Map(a.map(x=>[x.position,x.questionId]));
+ const codes=new Set(items.map(x=>x.bookletCode));
+ return [...codes].every(code=>{
+  const subset=items.filter(x=>x.bookletCode===code);
+  return subset.length===a.length&&subset.every(x=>positions.get(x.position)===x.questionId);
+ });
+}
