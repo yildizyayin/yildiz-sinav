@@ -28,7 +28,7 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
  const allItems=await all<any>(env.DB.prepare(`SELECT i.booklet_code,i.question_id,i.sort_order,q.subject_id,q.correct_answer,q.option_count
  FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id
  WHERE i.document_id=? ORDER BY i.booklet_code,i.sort_order`).bind(documentId));
- const positionKeys=buildPositionAnswerKeys(allItems.map(i=>({bookletCode:i.booklet_code,questionId:i.question_id,position:Number(i.sort_order),subjectId:i.subject_id,correctAnswer:i.correct_answer})));
+ const positionKeys=buildPositionAnswerKeys(allItems.map(i=>({bookletCode:i.booklet_code,questionId:i.question_id,position:Number(i.sort_order),subjectId:i.subject_id,correctAnswer:i.correct_answer,optionCount:Number(i.option_count)})));
  if(!positionKeys.ok)return badRequest(positionKeys.error,'BOOKLET_MAPPING_INVALID');
  const plan=planStudioDelivery({documentId,institutionId:doc.institution_id,publicationRevision:1,kind:'EXAM',approved:true,questionIds:rows.map(r=>r.question_id),bookletCodes:positionKeys.codes});
  if(!plan.ok)return badRequest(plan.reason,'INVALID_STUDIO_ITEMS');
