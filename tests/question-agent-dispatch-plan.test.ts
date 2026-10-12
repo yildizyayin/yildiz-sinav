@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {pilotBatchLimit,canExecuteScheduledPilot,validateScheduledActor} from '../worker/lib/question-agent-dispatch-plan';
+import {pilotBatchLimit,canExecuteScheduledPilot,validateScheduledActor,canDispatchToReviewQueue} from '../worker/lib/question-agent-dispatch-plan';
 describe('agent pilot batch constraints',()=>{
  it('caps each job at ten',()=>expect(pilotBatchLimit(50,50,50)).toBe(10));
  it('honors remaining budget and review slots',()=>expect(pilotBatchLimit(10,8,3)).toBe(3));
@@ -43,4 +43,10 @@ describe('scheduled actor binding',()=>{
   expect(validateScheduledActor({id:'x',role:'SUPER_ADMIN',active:true},'y').ok).toBe(false);
   expect(validateScheduledActor({id:'x',role:'SUPER_ADMIN',active:true},'x').ok).toBe(true);
  });
+});
+
+describe('full batch review capacity',()=>{
+ it('rejects capacity short of the selected batch',()=>expect(canDispatchToReviewQueue({reviewAvailable:true,reviewSlots:5,questionCount:10})).toBe(false));
+ it('blocks a disabled queue',()=>expect(canDispatchToReviewQueue({reviewAvailable:false,reviewSlots:10,questionCount:10})).toBe(false));
+ it('accepts a ready queue with enough slots',()=>expect(canDispatchToReviewQueue({reviewAvailable:true,reviewSlots:10,questionCount:10})).toBe(true));
 });
