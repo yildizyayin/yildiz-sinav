@@ -2,6 +2,7 @@ import app from './student-books-entry';
 import {getQuestionPoolCoverage} from './lib/question-pool-coverage';
 import {handleQuestionGenerationJobs} from './lib/question-generation-jobs';
 import {runQuestionGenerationJob} from './lib/question-generation-runner';
+import {planQuestionPilotDispatch} from './lib/question-agent-dispatch-plan';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { json,one,all } from './lib/db';
@@ -36,4 +37,26 @@ async function patchQuestion(request:Request,env:Env,id:string){
  return json({ok:true,id});
 }
 
-export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{const url=new URL(request.url),p=url.pathname;if(p==='/api/question-bank-standard/coverage'||p.startsWith('/api/question-bank-standard/generation-jobs')){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(p==='/api/question-bank-standard/coverage'&&request.method==='GET')return getQuestionPoolCoverage(request,env,user);const run=p.match(/^\/api\/question-bank-standard\/generation-jobs\/([^/]+)\/run$/);if(run&&request.method==='POST')return runQuestionGenerationJob(request,env,user,run[1]);const response=await handleQuestionGenerationJobs(request,env,user);if(response)return response;return fail(404,'NOT_FOUND','İşlem bulunamadı.');}if(p==='/api/question-bank-standard/stats'&&request.method==='GET'){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return fail(403,'FORBIDDEN','Yetkisiz erişim.');return stats(env)}const review=p.match(/^\/api\/(?:question-bank-standard|platform\/questions)\/([^/]+)\/review$/);if(review&&request.method==='PATCH')return reviewQuestion(request,env,review[1]);const patch=p.match(/^\/api\/question-bank-standard\/([^/]+)$/);if(patch&&request.method==='PATCH')return patchQuestion(request,env,patch[1]);return app.fetch(request,env,ctx);},async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){if('scheduled' in app&&typeof app.scheduled==='function')return app.scheduled(event,env,ctx);}} satisfies ExportedHandler<Env>;
+export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{const url=new URL(request.url),p=url.pathname;if(p==='/api/question-bank-standard/coverage'||p.startsWith('/api/question-bank-standard/generation-jobs')){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(p==='/api/question-bank-standard/coverage'&&request.method==='GET')return getQuestionPoolCoverage(request,env,user);const run=p.match(/^\/api\/question-bank-standard\/generation-jobs\/([^/]+)\/run$/);if(run&&request.method==='POST')return runQuestionGenerationJob(request,env,user,run[1]);const response=await handleQuestionGenerationJobs(request,env,user);if(response)return response;return fail(404,'NOT_FOUND','İşlem bulunamadı.');}if(p==='/api/question-bank-standard/stats'&&request.method==='GET'){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return fail(403,'FORBIDDEN','Yetkisiz erişim.');return stats(env)}const review=p.match(/^\/api\/(?:question-bank-standard|platform\/questions)\/([^/]+)\/review$/);if(review&&request.method==='PATCH')return reviewQuestion(request,env,review[1]);const patch=p.match(/^\/api\/question-bank-standard\/([^/]+)$/);if(patch&&request.method==='PATCH')return patchQuestion(request,env,patch[1]);return app.fetch(request,env,ctx);},async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){
+  // Read-only scheduling preview. No provider requests, job claims or database writes.
+  const cfg=env as Env & {QUESTION_AGENT_DISPATCH_PREVIEW?:string;QUESTION_PILOT_BUDGET_REMAINING?:string;QUESTION_PILOT_REVIEW_SLOTS?:string};
+  if(cfg.QUESTION_AGENT_DISPATCH_PREVIEW==='true'){
+    const budget=Number(cfg.QUESTION_PILOT_BUDGET_REMAINING??'0');
+    const reviewSlots=Number(cfg.QUESTION_PILOT_REVIEW_SLOTS??'0');
+    ctx.waitUntil((async()=>{
+      const rows=await all<any>(env.DB.prepare(`SELECT j.id,j.grade_level gradeLevel,j.academic_year academicYear,
+       j.question_count questionCount,j.status,j.attempt_count attemptCount,
+       cv.verified curriculumVerified,o.active outcomeActive
+       FROM question_generation_jobs j
+       JOIN outcomes o ON o.id=j.outcome_id
+       JOIN curriculum_versions cv ON cv.id=j.curriculum_version_id
+       WHERE j.status='REQUESTED' ORDER BY j.created_at,j.id LIMIT 20`));
+      const plan=planQuestionPilotDispatch(rows.map(r=>({...r,gradeLevel:Number(r.gradeLevel),
+       questionCount:Number(r.questionCount),attemptCount:Number(r.attemptCount),
+       curriculumVerified:Number(r.curriculumVerified)===1,outcomeActive:Number(r.outcomeActive)===1})),
+       {enabled:env.QUESTION_GENERATION_ENABLED==='true'&&!!env.AI,budget,reviewSlots,maxJobs:5,maxQuestions:50});
+      console.log('question-agent-dispatch-preview',JSON.stringify({selected:plan.ids.length,questionCount:plan.questionCount,rejected:plan.rejected.length}));
+    })());
+  }
+  if('scheduled' in app&&typeof app.scheduled==='function')return app.scheduled(event,env,ctx);
+}} satisfies ExportedHandler<Env>;
