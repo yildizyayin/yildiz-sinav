@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS question_agent_pilot_reservations (
 );
 CREATE TRIGGER IF NOT EXISTS question_agent_pilot_reserve_budget
 BEFORE INSERT ON question_agent_pilot_reservations
+WHEN NOT EXISTS(SELECT 1 FROM question_agent_pilot_reservations WHERE job_id=NEW.job_id)
 BEGIN
  UPDATE question_agent_pilot_budget SET reserved_count=reserved_count+NEW.question_count
  WHERE id='pilot_50' AND reserved_count+NEW.question_count<=question_cap;
