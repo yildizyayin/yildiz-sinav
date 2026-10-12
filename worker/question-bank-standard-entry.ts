@@ -2,7 +2,7 @@ import app from './student-books-entry';
 import {getQuestionPoolCoverage} from './lib/question-pool-coverage';
 import {handleQuestionGenerationJobs} from './lib/question-generation-jobs';
 import {runQuestionGenerationJob} from './lib/question-generation-runner';
-import {planQuestionPilotDispatch} from './lib/question-agent-dispatch-plan';
+import {planQuestionPilotDispatch,canExecuteScheduledPilot} from './lib/question-agent-dispatch-plan';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { json,one,all } from './lib/db';
@@ -56,6 +56,18 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
        curriculumVerified:Number(r.curriculumVerified)===1,outcomeActive:Number(r.outcomeActive)===1})),
        {enabled:env.QUESTION_GENERATION_ENABLED==='true'&&!!env.AI,budget,reviewSlots,maxJobs:5,maxQuestions:50});
       console.log('question-agent-dispatch-preview',JSON.stringify({selected:plan.ids.length,questionCount:plan.questionCount,rejected:plan.rejected.length}));
+      const execution=canExecuteScheduledPilot({
+       dispatchPreview:true,
+       executionEnabled:(cfg as typeof cfg & {QUESTION_AGENT_EXECUTION_ENABLED?:string}).QUESTION_AGENT_EXECUTION_ENABLED==='true',
+       generationEnabled:env.QUESTION_GENERATION_ENABLED==='true',
+       providerAvailable:!!env.AI,
+       verifiedServiceActor:false, // no trusted service-auth context exists yet; never forge SUPER_ADMIN
+       reviewCapacity:reviewSlots,budget
+      });
+      if(!execution.allowed)console.log('question-agent-execution-blocked',JSON.stringify({reasons:execution.reasons}));
+      // The existing runner requires an authenticated SUPER_ADMIN. No background
+      // runner invocation is permitted until a separately audited service actor exists.
+
     })());
   }
   if('scheduled' in app&&typeof app.scheduled==='function')return app.scheduled(event,env,ctx);
