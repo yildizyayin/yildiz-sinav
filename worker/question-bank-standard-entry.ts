@@ -92,6 +92,11 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
       if(!actorRow||!actor.ok)return;
       // One job per cron tick until there is an atomic cross-job budget ledger.
       const jobId=plan.ids[0];if(!jobId)return;
+      // The job runner requires a separate review-capacity flag. Keep scheduler
+      // planning and execution aligned, never dispatch when reviewers are unavailable.
+      if((cfg as typeof cfg & {QUESTION_PILOT_REVIEW_AVAILABLE?:string}).QUESTION_PILOT_REVIEW_AVAILABLE!=='true'){
+       console.log('question-agent-execution-blocked',JSON.stringify({reasons:['REVIEW_QUEUE_NOT_AVAILABLE']}));return;
+      }
       // A database trigger atomically reserves capacity across concurrent cron
       // invocations. Never call the model if the reservation is rejected.
       try {
