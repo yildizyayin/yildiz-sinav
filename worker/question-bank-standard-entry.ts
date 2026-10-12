@@ -48,9 +48,17 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
        j.question_count questionCount,j.status,j.attempt_count attemptCount,
        cv.verified curriculumVerified,o.active outcomeActive
        FROM question_generation_jobs j
-       JOIN outcomes o ON o.id=j.outcome_id
+       JOIN outcomes o ON o.id=j.outcome_id AND o.curriculum_version_id=j.curriculum_version_id
+         AND o.grade_level=j.grade_level AND o.subject_id=j.subject_id
+         AND o.title=j.outcome_title AND o.code IS j.outcome_code
        JOIN curriculum_versions cv ON cv.id=j.curriculum_version_id
-       WHERE j.status='REQUESTED' ORDER BY j.created_at,j.id LIMIT 20`));
+         AND cv.academic_year=j.academic_year AND cv.grade_level=j.grade_level
+         AND cv.program_version=j.program_version
+       WHERE j.status='REQUESTED'
+         AND EXISTS(SELECT 1 FROM learning_nodes n WHERE n.id='ln_'||o.id AND n.active=1
+           AND n.node_type='OUTCOME' AND n.academic_year=j.academic_year
+           AND n.grade_level=j.grade_level AND n.subject_id=j.subject_id)
+       ORDER BY j.created_at,j.id LIMIT 20`));
       const plan=planQuestionPilotDispatch(rows.map(r=>({...r,gradeLevel:Number(r.gradeLevel),
        questionCount:Number(r.questionCount),attemptCount:Number(r.attemptCount),
        curriculumVerified:Number(r.curriculumVerified)===1,outcomeActive:Number(r.outcomeActive)===1})),
