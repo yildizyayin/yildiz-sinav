@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {buildPositionAnswerKeys} from '../worker/lib/studio-position-keys';
+import {buildPositionAnswerKeys,canPublishOutcomeAccurateBooklets} from '../worker/lib/studio-position-keys';
 const base=[{bookletCode:'A',questionId:'q1',position:1,subjectId:'math',correctAnswer:'A'},{bookletCode:'A',questionId:'q2',position:2,subjectId:'math',correctAnswer:'C'}];
 describe('booklet position answer keys',()=>{
  it('uses the answer of the question at the same B position',()=>{
@@ -16,6 +16,15 @@ describe('booklet position answer keys',()=>{
    {...base[1],bookletCode:'B',position:1,optionCount:5},
    {...base[0],bookletCode:'B',position:2,optionCount:4}];
   expect(buildPositionAnswerKeys(q)).toMatchObject({ok:false,error:'BOOKLET_OPTION_COUNT_MISMATCH'});
+ });
+ it('blocks reordered B until booklet-specific outcome mapping exists',()=>{
+  const reordered=[...base,{...base[1],bookletCode:'B',position:1},{...base[0],bookletCode:'B',position:2}];
+  expect(buildPositionAnswerKeys(reordered).ok).toBe(true);
+  expect(canPublishOutcomeAccurateBooklets(reordered)).toBe(false);
+ });
+ it('allows identical positions on A/B for reliable outcome mapping',()=>{
+  const unchanged=[...base,...base.map(q=>({...q,bookletCode:'B'}))];
+  expect(canPublishOutcomeAccurateBooklets(unchanged)).toBe(true);
  });
 
 });
