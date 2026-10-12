@@ -1,3 +1,4 @@
+import {validateAnswerForOptions} from './question-option-policy';
 /** Map A/B answer keys by physical position, not by the original question identity. */
 export type BookletRow={bookletCode:string;questionId:string;position:number;subjectId:string;correctAnswer:string;optionCount?:number};
 export type PositionKey={position:number;subjectId:string;answers:Record<string,string>};
@@ -8,7 +9,7 @@ export function buildPositionAnswerKeys(items:readonly BookletRow[]):{ok:true;co
  const main=groups.get('A')!;
  if(!main.length||main.some((q,i)=>q.position!==i+1))return {ok:false,error:'BOOKLET_POSITION_INVALID'};
  const master=new Map(main.map(q=>[q.questionId,q.subjectId+'|'+q.correctAnswer]));
- if(main.some(q=>q.optionCount===4&&q.correctAnswer==='E'))return {ok:false,error:'BOOKLET_INVALID_ANSWER_FOR_OPTION_COUNT'};
+ if(main.some(q=>q.optionCount!==undefined&&!validateAnswerForOptions(q.optionCount,q.correctAnswer)))return {ok:false,error:'BOOKLET_INVALID_ANSWER_FOR_OPTION_COUNT'};
  if(master.size!==main.length)return {ok:false,error:'BOOKLET_DUPLICATE_QUESTION'};
  for(const c of codes){
   const rows=groups.get(c)!;
