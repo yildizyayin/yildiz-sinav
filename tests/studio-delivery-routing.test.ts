@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {planStudioDelivery} from '../worker/lib/studio-delivery-routing';
+import {planStudioDelivery,resolveStudioDeliveryKind} from '../worker/lib/studio-delivery-routing';
 
 const base={documentId:'studio-1',institutionId:'inst-1',publicationRevision:2,approved:true,questionIds:['q1','q2']};
 describe('studio publish destination guard',()=>{
@@ -32,4 +32,21 @@ describe('studio publish destination guard',()=>{
     const h=planStudioDelivery({...base,kind:'HOMEWORK'});
     if(e.ok&&h.ok)expect(e.plan.idempotencyKey).not.toBe(h.plan.idempotencyKey);
   });
+});
+
+describe('real Studio document mapping',()=>{
+ it('allows written and practice exams only into Exam Center',()=>{
+  expect(resolveStudioDeliveryKind('WRITTEN_EXAM','EXAM').ok).toBe(true);
+  expect(resolveStudioDeliveryKind('PRACTICE_EXAM','EXAM').ok).toBe(true);
+  expect(resolveStudioDeliveryKind('WRITTEN_EXAM','HOMEWORK').ok).toBe(false);
+ });
+ it('allows explicit assignment/mini-test delivery for worksheets, never an exam',()=>{
+  expect(resolveStudioDeliveryKind('WORKSHEET','HOMEWORK').ok).toBe(true);
+  expect(resolveStudioDeliveryKind('WORKSHEET','MINI_TEST').ok).toBe(true);
+  expect(resolveStudioDeliveryKind('WORKSHEET','EXAM').ok).toBe(false);
+ });
+ it('does not turn personal books into exams or assignments',()=>{
+  expect(resolveStudioDeliveryKind('PERSONAL_BOOK','EXAM').ok).toBe(false);
+  expect(resolveStudioDeliveryKind('PERSONAL_BOOK','HOMEWORK').ok).toBe(false);
+ });
 });
