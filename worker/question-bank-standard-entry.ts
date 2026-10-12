@@ -77,9 +77,19 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
        verifiedServiceActor:actor.ok, // verified directly from D1; no user object is forged
        reviewCapacity:reviewSlots,budget
       });
-      if(!execution.allowed)console.log('question-agent-execution-blocked',JSON.stringify({reasons:execution.reasons}));
-      // The existing runner requires an authenticated SUPER_ADMIN. No background
-      // runner invocation is permitted until a separately audited service actor exists.
+      if(!execution.allowed){
+       console.log('question-agent-execution-blocked',JSON.stringify({reasons:execution.reasons}));
+       return;
+      }
+      // D1-bound active SUPER_ADMIN, explicitly configured for this internal
+      // scheduled task; this is not an HTTP session or a public API credential.
+      if(!actorRow||!actor.ok)return;
+      // One job per cron tick until there is an atomic cross-job budget ledger.
+      const jobId=plan.ids[0];if(!jobId)return;
+      const result=await runQuestionGenerationJob(new Request('https://internal.invalid/scheduled-question-generation',{method:'POST'}),
+       env,{id:actorRow.id,role:'SUPER_ADMIN',institution_id:null,student_id:null,
+       display_name:'Scheduled Question Agent',email:null,username:null},jobId);
+      console.log('question-agent-execution-result',JSON.stringify({status:result.status,jobId}));
 
     })());
   }
