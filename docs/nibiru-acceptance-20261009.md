@@ -170,3 +170,13 @@ Nine new production-asset browser scenarios passed: mobile guest Nibiru, parent 
 General browser smoke discovered a pre-existing marketing page failure when Google Fonts is unavailable: the remote CSS @import causes Vite lazy CSS preload to reject, displaying the recovery boundary. Retained screenshot/console evidence in GitHub browser artifacts. Removed this external font dependency and retain system fallbacks; verify the original general browser smoke before merge/deploy. Do not bypass the failed check.
 
 Passkey session persistence now honors the user's remember-device choice rather than forcing a 30-day session. Turnstile failure wording is user-facing, and a script load failure no longer becomes an unhandled promise rejection. WhatsApp remains deferred; no phone migration, vendor registration, paid plan or outbound message performed. Main/deploy still unchanged at this checkpoint.
+
+
+### Release state — PR #230 merged
+
+PR #230 merged to main fb281bdee8153ef5ed5eb1985b3d54331e182a7e after all required/source checks passed, including full 845 tests and both general/new desktop/mobile browser suites. Marketing external-font failure is fixed and the original smoke passes. Staging fast-forward was safe: staging head 60d5e07f5f0a0a41c2ddcb6642ff4fcdd2f63306 is an ancestor of the accepted release (no changes discarded).
+
+- Production workflow 38227133465 has passed domain/code validation; deploy-production waits for the existing production required reviewer yildizyayin. Review deployments -> production -> Approve and deploy is the remaining account action, not a request to reauthorize deployment. Connector has no deployment-review mutation; do not bypass the rule.
+- Staging deploy 38227236063 applied the Worker/assets, migrations and YOUTUBE_API_KEY sync. Its final provider smoke failed because the legacy Node probe omitted Origin on POST /api/nibiru/chat. All three real provider probes passed before that HTTP 403; do not weaken the new same-origin guard. Update the six affected CLI helpers to supply Origin and re-verify live staging via the branch workflow.
+- Add bounded staging acceptance of guest/private denial, student1/parent1 identities, one personal calendar event (cancelled afterward), parent exclusion of student's private event, real logout and denied cookie reuse. No remote fixture suite or 100K benchmark, no outbound WhatsApp/SMS, no natural TTS/device-passkey claim.
+- Main code/design is merged. Production is NOT deployed yet; demo source deploy reached Cloudflare but final operational acceptance remains pending the corrected probe.
