@@ -20,3 +20,20 @@ export function planQuestionPilotDispatch(jobs:readonly DispatchCandidate[], cap
  }
  return {ids,rejected,questionCount:total};
 }
+
+/** Execution eligibility is separate from the read-only scheduling preview.
+ * No job is run unless all independent rollout gates are explicitly enabled.
+ */
+export function canExecuteScheduledPilot(flags:{
+ dispatchPreview:boolean;executionEnabled:boolean;generationEnabled:boolean;
+ providerAvailable:boolean;verifiedServiceActor:boolean;reviewCapacity:number;budget:number
+}):{allowed:boolean;reasons:string[]}{
+ const reasons:string[]=[];
+ if(!flags.dispatchPreview)reasons.push('PREVIEW_NOT_ENABLED');
+ if(!flags.executionEnabled)reasons.push('EXECUTION_NOT_ENABLED');
+ if(!flags.generationEnabled||!flags.providerAvailable)reasons.push('AI_NOT_READY');
+ if(!flags.verifiedServiceActor)reasons.push('SERVICE_ACTOR_NOT_VERIFIED');
+ if(!Number.isSafeInteger(flags.reviewCapacity)||flags.reviewCapacity<=0)reasons.push('REVIEW_CAPACITY_REQUIRED');
+ if(!Number.isSafeInteger(flags.budget)||flags.budget<=0)reasons.push('BUDGET_REQUIRED');
+ return {allowed:reasons.length===0,reasons};
+}
