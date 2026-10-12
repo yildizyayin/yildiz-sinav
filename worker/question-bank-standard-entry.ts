@@ -59,10 +59,17 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
            AND n.node_type='OUTCOME' AND n.academic_year=j.academic_year
            AND n.grade_level=j.grade_level AND n.subject_id=j.subject_id)
        ORDER BY j.created_at,j.id LIMIT 20`));
+      // Cumulative cap: an unchanged environment budget is NOT a fresh budget
+      // on every cron tick. Count already-produced and currently claimed work.
+      const usage=await one<{used:number}>(env.DB.prepare(`SELECT COALESCE(SUM(
+       CASE WHEN status='REVIEW_READY' THEN generated_count
+            WHEN status='RUNNING' THEN question_count ELSE 0 END),0) used
+       FROM question_generation_jobs WHERE grade_level IN (5,6,7,9,10,11)`));
+      const remainingBudget=Math.max(0,budget-Number(usage?.used??0));
       const plan=planQuestionPilotDispatch(rows.map(r=>({...r,gradeLevel:Number(r.gradeLevel),
        questionCount:Number(r.questionCount),attemptCount:Number(r.attemptCount),
        curriculumVerified:Number(r.curriculumVerified)===1,outcomeActive:Number(r.outcomeActive)===1})),
-       {enabled:env.QUESTION_GENERATION_ENABLED==='true'&&!!env.AI,budget,reviewSlots,maxJobs:5,maxQuestions:50});
+       {enabled:env.QUESTION_GENERATION_ENABLED==='true'&&!!env.AI,budget:remainingBudget,reviewSlots,maxJobs:5,maxQuestions:Math.min(50,remainingBudget)});
       console.log('question-agent-dispatch-preview',JSON.stringify({selected:plan.ids.length,questionCount:plan.questionCount,rejected:plan.rejected.length}));
       const actorId=(cfg as typeof cfg & {QUESTION_AGENT_SERVICE_ACTOR_ID?:string}).QUESTION_AGENT_SERVICE_ACTOR_ID;
       const actorRow=actorId?await one<{id:string;role:string;active:number}>(env.DB.prepare(
@@ -71,11 +78,11 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
       const actor=validateScheduledActor(actorRow?{id:actorRow.id,role:actorRow.role,active:actorRow.active===1}:null,actorId);
       const execution=canExecuteScheduledPilot({
        dispatchPreview:true,
-       executionEnabled:(cfg as typeof cfg & {QUESTION_AGENT_EXECUTION_ENABLED?:string}).QUESTION_AGENT_EXECUTION_ENABLED==='true',
+       executionEnabled:(cfg as typeof cfg & {QUESTION_AGENT_EXECUTION_ENABLED?:string;QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AGENT_EXECUTION_ENABLED==='true' && (cfg as typeof cfg & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE==='true',
        generationEnabled:env.QUESTION_GENERATION_ENABLED==='true',
        providerAvailable:!!env.AI,
        verifiedServiceActor:actor.ok, // verified directly from D1; no user object is forged
-       reviewCapacity:reviewSlots,budget
+       reviewCapacity:reviewSlots,budget:remainingBudget
       });
       if(!execution.allowed){
        console.log('question-agent-execution-blocked',JSON.stringify({reasons:execution.reasons}));
