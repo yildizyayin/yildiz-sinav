@@ -1,5 +1,6 @@
 import { withExamOperationLock } from './lib/exam-operation-lock';
 import { examPublicationGuard, examCorrectionOpen } from './lib/exam-publication-guard';
+import { examReadiness as readiness } from './lib/exam-readiness';
 import accessApp from './access-entry';
 import type { AuthUser, Env, Role } from './types';
 import { getAuthUser } from './lib/auth';
@@ -434,29 +435,6 @@ async function createDefinition(request: Request, env: Env, user: AuthUser): Pro
   return Response.json({ ok: true, id }, { status: 201 });
 }
 
-async function readiness(env: Env, examId: string): Promise<any> {
-  const row = await one<any>(env.DB.prepare(`
-    SELECT
-      (SELECT count(*) FROM exam_subjects WHERE exam_id=?) subject_count,
-      (SELECT coalesce(sum(question_count),0) FROM exam_subjects WHERE exam_id=?) expected_questions,
-      (SELECT count(*) FROM exam_questions WHERE exam_id=?) actual_questions,
-      (SELECT count(*) FROM exam_questions WHERE exam_id=? AND question_status='ACTIVE') active_expected_questions,
-      (SELECT count(*) FROM exam_booklets WHERE exam_id=? AND active=1) booklet_count,
-      (SELECT count(*) FROM answer_keys ak JOIN exam_questions q ON q.id=ak.exam_question_id WHERE q.exam_id=?) actual_answers,
-      (SELECT e.outcome_mode FROM exams e WHERE e.id=?) outcome_mode,
-      (SELECT count(DISTINCT qo.exam_question_id) FROM question_outcomes qo JOIN exam_questions q ON q.id=qo.exam_question_id WHERE q.exam_id=?) outcome_mapped_questions,
-      (SELECT coalesce(srv.verified,0) FROM exams e LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id WHERE e.id=?) scoring_verified
-  `).bind(examId, examId, examId, examId, examId, examId, examId, examId, examId));
-  const expectedAnswers = Number(row?.expected_questions || 0) * Number(row?.booklet_count || 0);
-  const readyToPublish = Number(row?.subject_count || 0) > 0
-    && Number(row?.booklet_count || 0) > 0
-    && Number(row?.actual_questions || 0) === Number(row?.expected_questions || 0)
-    && Number(row?.actual_answers || 0) === expectedAnswers
-    && Number(row?.scoring_verified || 0) === 1
-    && (row?.outcome_mode !== 'OFFICIAL_REQUIRED' || Number(row?.outcome_mapped_questions || 0) >= Number(row?.expected_questions || 0));
-  return { ...row, expected_answers: expectedAnswers, ready_to_publish: readyToPublish };
-}
-
 async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await visibleExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
@@ -875,10 +853,9 @@ async function setStatusUnlocked(request: Request, env: Env, user: AuthUser, exa
   if (!allowed[exam.status]?.includes(next)) return err(409, 'INVALID_STATUS_TRANSITION', `${exam.status} durumundan ${next} durumuna geçilemez.`);
   if (next === 'ACTIVE') {
     const ready = await readiness(env, examId);
-    if (!ready.ready_to_publish) return err(409, 'EXAM_NOT_READY', 'Sınav yayınlanmaya hazır değil. Ders, kitapçık, tam cevap anahtarı ve doğrulanmış puanlama kuralını kontrol edin.', ready);
-    if (exam.owner_type === 'CENTRAL') {
-      const assigned = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM exam_institutions WHERE exam_id=? AND enabled=1').bind(examId));
-      if (!assigned?.c) return err(409, 'INSTITUTION_ASSIGNMENT_REQUIRED', 'Merkezi sınavı yayınlamadan önce en az bir kurum seçin.');
+    if (!ready.ready_to_publish) {
+      const code = ready.blockers.length === 1 ? ready.blockers[0].code : 'EXAM_NOT_READY';
+      return err(409, code, ready.blockers.map((blocker: {message: string}) => blocker.message).join(' '), ready);
     }
   }
   const reason = body.reason?.trim() || `Sınav durumu ${next} olarak güncellendi.`;

@@ -1,9 +1,10 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Archive, ArrowLeft, ArrowRight, BookOpenCheck, Check, CheckCircle2, CircleAlert, Clock3, Copy, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, MoreVertical, PlayCircle, Printer, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, Trash2, UploadCloud, Workflow } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
+import { ExamReadiness } from '../components/ExamReadiness';
 import { EXAM_CHOICES, EXAM_TEMPLATES, cleanAnswers, matchOfficialOutcome, parseAnswerKeyText, parseAnswerKeyWorkbookRows, type ExamTemplate, type OutcomeCatalogEntry, type ParsedAnswerEntry, type SubjectOption } from '../lib/guidedDefinitions';
 
 type SubjectConfig = { subjectId: string; questionCount: number; questionStart: number; questionEnd: number; optionCount: 4 | 5; questionStatus: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'; wrongDivisor: number; sortOrder: number };
@@ -61,9 +62,11 @@ function safeDownloadName(value: string) {
 
 export function ExamDefinitions() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const requestedExamId = searchParams.get('examId') || '';
   const [options, setOptions] = useState<any>({ subjects: [], scoringVersions: [], institutions: [], outcomes: [] });
   const [rows, setRows] = useState<any[]>([]);
-  const [selectedId, setSelectedId] = useState('');
+  const [selectedId, setSelectedId] = useState(requestedExamId);
   const [createdExamId, setCreatedExamId] = useState('');
   const [detail, setDetail] = useState<any>(null);
   const [error, setError] = useState('');
@@ -114,7 +117,7 @@ export function ExamDefinitions() {
     return data;
   };
 
-  const loadOptions = async (gradeLevel?: number) => {
+  const loadOptions = async (gradeLevel?: number, preserveScoring = false) => {
     const data = await api<any>(`/api/exam-definitions/options${qs({ gradeLevel: gradeLevel || null })}`);
     setOptions(data);
     const preferredRuleCode = selectedChoice.key === 'CUSTOM' ? 'CUSTOM_EXAM'
@@ -125,7 +128,7 @@ export function ExamDefinitions() {
       : selectedChoice.examType === 'TYT_AYT' ? 'OSYM_YKS_SAY'
       : 'SCHOOL_100';
     const preferredScoring = data.scoringVersions?.find((x: any) => x.rule_code === preferredRuleCode)?.id || data.scoringVersions?.[0]?.id || '';
-    setCreateForm((f) => ({ ...f, scoringRuleVersionId: preferredScoring }));
+    if (!selectedId && !preserveScoring) setCreateForm((f) => ({ ...f, scoringRuleVersionId: preferredScoring }));
     if (!createForm.institutionId && data.institutions?.[0]?.id) setCreateForm((f) => ({ ...f, institutionId: data.institutions[0].id }));
   };
   const loadRows = async () => {
@@ -139,7 +142,7 @@ export function ExamDefinitions() {
     setDetail(data);
     const examType = String(data.exam.exam_type || 'STANDARD');
     setChoiceKey(examType === 'STANDARD' ? `STD_${data.exam.grade_level}` : examType === 'CUSTOM' ? 'CUSTOM' : examType === 'MIDDLE_COMPOSITE' ? `MID_${data.exam.grade_level}` : examType);
-    setCreateForm((f) => ({ ...f, publisherName: data.exam.publisher_name || '', sessionLabel: data.exam.session_label || '', description: data.exam.description || '', resultNetworkEnabled: Boolean(data.exam.result_network_enabled), gradeLevel: String(data.exam.grade_level || f.gradeLevel), scoringRuleVersionId: data.exam.scoring_rule_version_id || '' }));
+    setCreateForm((f) => ({ ...f, title: data.exam.title || '', academicYear: data.exam.academic_year || f.academicYear, examDate: data.exam.exam_date || '', ownerType: data.exam.owner_type || f.ownerType, institutionId: data.exam.institution_id || '', publisherName: data.exam.publisher_name || '', sessionLabel: data.exam.session_label || '', description: data.exam.description || '', resultNetworkEnabled: Boolean(data.exam.result_network_enabled), gradeLevel: String(data.exam.grade_level || f.gradeLevel), scoringRuleVersionId: data.exam.scoring_rule_version_id || '' }));
     try { const savedSettings = JSON.parse(data.exam.scoring_settings_json || '{}'); if (savedSettings.show) setResultSettings((current) => ({ ...current, ...savedSettings.show, rankingScopes: savedSettings.rankingScopes || current.rankingScopes, includeObp: Boolean(savedSettings.includeObp) })); } catch { /* legacy exam without result settings */ }
     try { const savedOverride = JSON.parse(data.exam.scoring_override_json || '{}'); if (savedOverride.wrongMode) { const scoreScale = Number(savedOverride.scoreScale || 100); setCustomScoring((current) => ({ ...current, wrongMode: savedOverride.wrongMode, wrongDivisor: Number(savedOverride.wrongDivisor || current.wrongDivisor), scale: [100, 500, 1000].includes(scoreScale) ? scoreScale : 0, customScale: scoreScale, weights: savedOverride.weights || current.weights })); } } catch { /* legacy exam without custom scoring */ }
     setBooklets((data.booklets || []).map((b: any) => b.code).join(','));
@@ -167,10 +170,11 @@ export function ExamDefinitions() {
     setOutcomeRequired(data.exam.outcome_mode === 'OFFICIAL_REQUIRED' || maps.length > 0);
     setAssignedInstitutions((data.institutions || []).filter((x: any) => x.enabled).map((x: any) => x.institution_id));
     try { await loadContent(id); } catch { setContent({ assets: [], videos: [] }); }
-    await loadOptions(Number(data.exam.grade_level) || undefined);
+    await loadOptions(Number(data.exam.grade_level) || undefined, true);
   };
 
   useEffect(() => { void Promise.all([loadRows(), loadOptions(selectedChoice.gradeLevel)]).catch((e) => setError(e.message)); }, []);
+  useEffect(() => { if (requestedExamId) openExamDefinition(requestedExamId); }, [requestedExamId]);
   useEffect(() => { if (user) setCreateForm((f) => ({ ...f, ownerType: user.role === 'SUPER_ADMIN' ? f.ownerType : 'INSTITUTION' })); }, [user?.role]);
   useEffect(() => { void loadOptions(selectedChoice.gradeLevel).catch((e) => setError(e.message)); }, [choiceKey]);
   useEffect(() => {
@@ -331,6 +335,7 @@ export function ExamDefinitions() {
   };
 
   const createExam = async () => {
+    let savedId = '';
     setBusy(true); setError(''); setNotice('');
     try {
       const requiresOfficialOutcomes = definitionMode === 'OUTCOME' || Boolean(selectedTemplate.requiresOutcomes);
@@ -359,6 +364,8 @@ export function ExamDefinitions() {
         scoringSettings,
         outcomeMode: requiresOfficialOutcomes ? 'OFFICIAL_REQUIRED' : 'OPTIONAL',
       }) });
+      savedId = created.id;
+      setCreatedExamId(created.id);
       if (subjects.length) {
         await api(`/api/exam-definitions/${created.id}/structure`, { method: 'PUT', body: JSON.stringify({ booklets: booklets.split(',').map((x) => x.trim()).filter(Boolean), subjects }) });
       }
@@ -383,9 +390,12 @@ export function ExamDefinitions() {
       openExamDefinition(created.id);
       setCreatedExamId(created.id);
       setCreateForm((f) => ({ ...f, title: '' }));
-      setNotice(documentFailures.length ? `Sınav oluşturuldu; bazı belgeler daha sonra tekrar yüklenmeli: ${documentFailures.join(' · ')}` : definitionMode === 'OUTCOME' ? 'Sınav oluşturuldu. Şimdi soru-kazanım eşleştirmelerini tamamlayın.' : 'Sınav cevap anahtarından oluşturuldu. Kontrol edip yayınlayabilirsiniz.');
+      setNotice(documentFailures.length ? `Sınav oluşturuldu; bazı belgeler daha sonra tekrar yüklenmeli: ${documentFailures.join(' · ')}` : definitionMode === 'OUTCOME' ? 'Sınav oluşturuldu. Şimdi soru-kazanım eşleştirmelerini tamamlayın.' : 'Sınav taslak olarak kaydedildi. Eksikleri kontrol edip Sınavı aktifleştir düğmesini kullanın.');
       await loadRows();
-    } catch (e: any) { setError(e.message); } finally { setBusy(false); }
+    } catch (e: any) {
+      if (savedId) { openExamDefinition(savedId); await loadRows().catch(() => undefined); setError(`Sınav taslağı kaydedildi; sonraki adım tamamlanamadı: ${e.message}. Bu kaydı düzenleyerek devam edin.`); }
+      else setError(e.message);
+    } finally { setBusy(false); }
   };
 
   const toggleSubject = (subjectId: string, checked: boolean) => setSubjects((current) => checked
@@ -448,9 +458,9 @@ export function ExamDefinitions() {
   const publish = async () => {
     if (!selectedId) return;
     if (outcomeRequired && Number(detail?.readiness?.outcome_mapped_questions || 0) < Number(detail?.readiness?.active_expected_questions ?? detail?.readiness?.expected_questions ?? 0)) { setError('Kazanımlı sınavda her aktif soru bir kazanıma bağlanmadan yayınlama yapmayın.'); return; }
-    if (!confirm('Sınav değerlendirmeye açılsın mı? Yayından sonra soru yapısı kilitlenecektir.')) return;
+    if (!confirm('Sınav değerlendirmeye açılsın mı? Soru yapısı kilitlenecek; öğrenci sonuçları ayrıca yayınlanacaktır.')) return;
     setBusy(true); setError('');
-    try { await api(`/api/exam-definitions/${selectedId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'ACTIVE' }) }); setNotice('Sınav yayınlandı.'); await loadDetail(selectedId); await loadRows(); } catch (e: any) { setError(e.message); } finally { setBusy(false); }
+    try { await api(`/api/exam-definitions/${selectedId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'ACTIVE' }) }); setNotice('Sınav aktif: optik veri yükleyip değerlendirebilirsiniz. Öğrenci sonuçları henüz yayınlanmadı.'); await loadDetail(selectedId); await loadRows(); } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
 
   const closeDetail = () => {
@@ -674,7 +684,7 @@ export function ExamDefinitions() {
         <div className="exam-review-strip"><div><span>Sınav kartı</span><strong>{createForm.title || 'Eksik'}</strong></div><div><span>Yapı</span><strong>{subjects.length ? `${subjects.length} test · ${totalConfiguredQuestions} soru` : 'Eksik'}</strong></div><div><span>Cevap anahtarı</span><strong>{keyEntries.length ? `${totalAnswerSlots} cevap · ${booklets}` : 'Manuel yapı'}</strong></div><div><span>Belge</span><strong>{pendingDocuments.length + pendingVideos.length ? `${pendingDocuments.length + pendingVideos.length} bekleyen` : 'İsteğe bağlı'}</strong></div></div>
       </section>}
 
-      <div className="exam-simple-actions-footer"><button type="button" className="secondary" disabled={busy || builderStep === 1} onClick={() => setBuilderStep((current) => Math.max(1, current - 1) as BuilderStep)}>Geri</button><div className="builder-footer-status">Adım {builderStep}/4 <span>{stepReady(builderStep) ? 'Hazır' : 'Eksik alan var'}</span></div>{builderStep < 4 ? <button type="button" className="primary" disabled={busy} onClick={nextBuilderStep}>Devam et <ArrowRight size={16}/></button> : <><button type="button" className="secondary" disabled={busy} onClick={() => setNotice('Taslak bilgileri bu oturumda hazır. Sınavı kaydettiğinizde kalıcı olarak oluşturulur.')}><Save size={16}/> Taslak Kaydet</button><button type="button" className="primary" disabled={busy || !stepReady(4)} onClick={createExam}><Check size={17}/> Sınavı Kaydet</button></>}</div>
+      <div className="exam-simple-actions-footer"><button type="button" className="secondary" disabled={busy || builderStep === 1} onClick={() => setBuilderStep((current) => Math.max(1, current - 1) as BuilderStep)}>Geri</button><div className="builder-footer-status">Adım {builderStep}/4 <span>{stepReady(builderStep) ? 'Hazır' : 'Eksik alan var'}</span></div>{builderStep < 4 ? <button type="button" className="primary" disabled={busy} onClick={nextBuilderStep}>Devam et <ArrowRight size={16}/></button> : <button type="button" className="primary" disabled={busy || !stepReady(4)} onClick={createExam}><Save size={17}/> {busy ? 'Kaydediliyor…' : 'Taslak olarak kaydet'}</button>}</div>
     </div>
 
     <div className="exam-definition-list-shell">
@@ -685,7 +695,16 @@ export function ExamDefinitions() {
     <div id="exam-definition-detail" className="exam-definition-detail-shell">
     {detail && <>
       <div className="exam-detail-toolbar"><button className="ghost" onClick={closeDetail}><ArrowLeft size={16} /> Sınav listesine dön</button><div className="exam-detail-actions">{canEditDetail ? <><button className="secondary" disabled={busy} onClick={() => void copyExamById(selectedId)}><Copy size={16} /> Kopyala</button>{detail.exam.status !== 'ARCHIVED' && <button className="danger" disabled={busy} onClick={() => void archiveExam()}><Trash2 size={16} /> Arşivle</button>}{detail.exam.status === 'DRAFT' && <button className="danger" disabled={busy} onClick={() => void deleteExamById(selectedId)}><Trash2 size={16} /> Sil</button>}<div style={{ position: 'relative' }}><button type="button" className="icon-button" aria-label="Sınav işlemleri" aria-expanded={openExamMenu === `detail-${selectedId}`} onClick={() => setOpenExamMenu((current) => current === `detail-${selectedId}` ? null : `detail-${selectedId}`)}><MoreVertical size={18} /></button>{openExamMenu === `detail-${selectedId}` && <div className="exam-row-menu exam-detail-menu" role="menu"><button role="menuitem" onClick={() => setOpenExamMenu(null)}><Eye size={14} /> Görüntüle / Düzenle</button><button role="menuitem" onClick={() => void copyExamById(selectedId)}><Copy size={14} /> Kopyala</button>{detail.exam.status !== 'ARCHIVED' && <button role="menuitem" onClick={() => void archiveExam()}><Archive size={14} /> Arşivle</button>}{detail.exam.status === 'DRAFT' && <button role="menuitem" onClick={() => void deleteExamById(selectedId)}><Trash2 size={14} /> Sil</button>}</div>}</div></> : <span className="status neutral">Merkezi sınav · yalnızca görüntüleme</span>}</div></div>
-      <div className="section-head"><div><h2>{detail.exam.title}</h2><p>{detail.exam.exam_type} · {detail.exam.grade_level}. sınıf · {detail.exam.status === 'DRAFT' ? 'Düzenlenebilir taslak' : detail.exam.status === 'ARCHIVED' ? 'Arşivlendi' : 'Yayında'}{detail.exam.outcome_mode === 'OFFICIAL_REQUIRED' ? ' · doğrulanmış kazanım zorunlu' : ''}{detail.exam.result_network_enabled ? ' · sonuc.anunex.com seçili' : ''}</p></div>{detail.exam.status === 'DRAFT' && canEditDetail && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="secondary" disabled={busy} onClick={saveGeneral}><Save size={16} /> Kartı güncelle</button><button className="primary" disabled={busy || !detail.readiness?.ready_to_publish} onClick={publish}><Send size={17} /> Sınavı Yayınla</button></div>}</div>
+      <div className="section-head"><div><h2>{detail.exam.title}</h2><p>{detail.exam.exam_type} · {detail.exam.grade_level}. sınıf · {detail.exam.status === 'DRAFT' ? 'Düzenlenebilir taslak' : detail.exam.status === 'ARCHIVED' ? 'Arşivlendi' : 'Değerlendirmeye açık'}{detail.exam.outcome_mode === 'OFFICIAL_REQUIRED' ? ' · doğrulanmış kazanım zorunlu' : ''}{detail.exam.result_network_enabled ? ' · sonuc.anunex.com seçili' : ''}</p></div>{detail.exam.status === 'DRAFT' && canEditDetail && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="secondary" disabled={busy} onClick={saveGeneral}><Save size={16} /> Kartı güncelle</button><button className="primary" disabled={busy || !detail.readiness?.ready_to_publish} onClick={publish}><Send size={17} /> Sınavı aktifleştir</button></div>}</div>
+      {error && <div className="alert error">{error}</div>}{notice && <div className="alert success">{notice}</div>}
+      {detail.exam.status === 'DRAFT' && <ExamReadiness readiness={detail.readiness}/>}
+      {detail.exam.status === 'DRAFT' && canEditDetail && <section className="panel" style={{marginBottom:20}}><h2>Sınav kartı ve puanlama</h2><div className="form-grid">
+        <label>Sınav adı<input value={createForm.title} onChange={e=>setCreateForm(f=>({...f,title:e.target.value}))}/></label>
+        <label>Yayınevi<input value={createForm.publisherName} onChange={e=>setCreateForm(f=>({...f,publisherName:e.target.value}))}/></label>
+        <label>Oturum / bölüm<input value={createForm.sessionLabel} onChange={e=>setCreateForm(f=>({...f,sessionLabel:e.target.value}))}/></label>
+        <label>Sınav tarihi<input type="date" value={createForm.examDate} onChange={e=>setCreateForm(f=>({...f,examDate:e.target.value}))}/></label>
+        <label>Puanlama profili<select value={createForm.scoringRuleVersionId} onChange={e=>setCreateForm(f=>({...f,scoringRuleVersionId:e.target.value}))}><option value="">Profil seçin</option>{(options.scoringVersions||[]).map((profile:any)=><option key={profile.id} value={profile.id}>{profile.rule_name||profile.rule_code} · {profile.academic_year||''}</option>)}</select></label>
+      </div><p>Değişiklikleri üstteki Kartı güncelle düğmesiyle kaydedin.</p></section>}
       <div className="kpi-grid" style={{ marginBottom: 20 }}><div className="kpi-card"><span>Soru</span><strong>{detail.readiness?.actual_questions || 0}/{detail.readiness?.expected_questions || 0}</strong></div><div className="kpi-card"><span>Cevap</span><strong>{detail.readiness?.actual_answers || 0}/{detail.readiness?.expected_answers || 0}</strong></div><div className="kpi-card"><span>Kazanımlı Soru</span><strong>{detail.readiness?.outcome_mapped_questions || 0}</strong></div><div className="kpi-card"><span>Hazır mı?</span><strong>{detail.readiness?.ready_to_publish ? 'Evet' : 'Eksik var'}</strong></div></div>
       {(detail.exam.status === 'DRAFT'||detail.answerKeyEditable) && canEditDetail && <>
         {detail.exam.status==='DRAFT'&&<div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Dersler ve soru aralıkları</h2><p>Başlangıç/bitiş numarası ve 4 veya 5 şık yapısı soru tanımının parçasıdır.</p></div></div><label>Kitapçıklar<input value={booklets} onChange={(e) => setBooklets(e.target.value)} /></label><div className="cards-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div style={{ flex: 1 }}><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label><label className="compact-field">Yanlış götürme<input type="number" step="0.5" value={cfg.wrongDivisor} onChange={(e) => patchSubject(s.id, { wrongDivisor: Number(e.target.value) })} /></label></>}</div>; })}</div><button className="secondary" onClick={saveStructure}><Save size={16} /> Yapıyı Kaydet</button></div>}
@@ -708,7 +727,7 @@ export function ExamDefinitions() {
         <div className="panel" style={{ margin: '15px 0 0', background: 'var(--surface-muted, #f7f9ff)' }}><div className="panel-head"><div><h3><Printer size={17} style={{ verticalAlign: 'middle', marginRight: 6 }} /> Optik / FMT tanımı</h3><p>Optik sınav oluşturma adımından ayrıdır; burada sınava bağlanır ve baskı/okuma ekranlarına aktarılır.</p></div><span className={`status ${content.opticalBindings?.length ? 'ok' : 'neutral'}`}>{content.opticalBindings?.length ? 'Bağlı' : 'Henüz bağlı değil'}</span></div><div className="form-grid" style={{ alignItems: 'end' }}><label>Yayınlanmış optik şablon<select value={opticalVersionId} onChange={(e) => setOpticalVersionId(e.target.value)}><option value="">Optik seçin</option>{(content.opticals || []).map((optical: any) => <option key={optical.version_id} value={optical.version_id}>{optical.name}{optical.vendor ? ` · ${optical.vendor}` : ''} · {optical.version}</option>)}</select></label><div><span className="field-label">Kitapçıklar</span><div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>{(detail.booklets || []).map((booklet: any) => <label className="check" key={booklet.code}><input type="checkbox" checked={opticalBooklets.includes(booklet.code)} onChange={(e) => setOpticalBooklets((current) => e.target.checked ? [...new Set([...current, booklet.code])] : current.filter((code) => code !== booklet.code))} /> {booklet.code}</label>)}</div></div><div><span className="field-label">Okuma kanalları</span><div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>{['TXT', 'DAT', 'CAMERA'].map((mode) => <label className="check" key={mode}><input type="checkbox" checked={opticalModes.includes(mode)} onChange={(e) => setOpticalModes((current) => e.target.checked ? [...new Set([...current, mode])] : current.filter((x) => x !== mode))} /> {mode === 'CAMERA' ? 'Telefon kamerası' : mode}</label>)}</div></div><button className="primary" disabled={contentBusy || !opticalVersionId || !opticalBooklets.length} onClick={() => void saveOpticalBinding()}><Save size={16} /> Optiği sınava bağla</button></div>{content.opticalBindings?.length > 0 && <div className="table-card" style={{ marginTop: 12 }}><table><thead><tr><th>Kitapçık</th><th>Optik</th><th>Sürüm</th><th>Okuma</th></tr></thead><tbody>{content.opticalBindings.map((binding: any) => <tr key={binding.id}><td>{binding.booklet_code}</td><td>{binding.template_name}{binding.vendor ? ` · ${binding.vendor}` : ''}</td><td>{binding.template_version}</td><td>{binding.input_modes_json}</td></tr>)}</tbody></table></div>}</div>
         <div className="panel" style={{ margin: '15px 0 0', background: 'var(--surface-muted, #f7f9ff)' }}><div className="panel-head"><div><h3><PlayCircle size={17} style={{ verticalAlign: 'middle', marginRight: 6 }} /> Video çözümü / konu bağlantısı</h3><p>Öğrenci yalnızca sınava katıldıysa, yayınlanmış içeriği kendi sonuç ekranında görür.</p></div></div><div className="form-grid" style={{ alignItems: 'end' }}><label>Video başlığı<input value={videoForm.title} onChange={(e) => setVideoForm((v) => ({ ...v, title: e.target.value }))} placeholder="Örn. TYT Matematik 12. soru çözümü" /></label><label>HTTPS video linki<input value={videoForm.url} onChange={(e) => setVideoForm((v) => ({ ...v, url: e.target.value }))} placeholder="https://..." /></label><label>İçerik türü<select value={videoForm.linkType} onChange={(e) => setVideoForm((v) => ({ ...v, linkType: e.target.value }))}><option value="EXAM">Deneme geneli</option><option value="SOLUTION">Soru çözümü</option><option value="TOPIC">Konu anlatımı</option></select></label><label>Yayın zamanı<select value={videoForm.publishMode} onChange={(e) => setVideoForm((v) => ({ ...v, publishMode: e.target.value }))}><option value="DRAFT">Taslak</option><option value="NOW">Şimdi yayınla</option><option value="SCHEDULED">Tarih planla</option></select></label>{videoForm.publishMode === 'SCHEDULED' && <label><Clock3 size={14} /> İstanbul saati<input type="datetime-local" value={videoForm.publishAt} onChange={(e) => setVideoForm((v) => ({ ...v, publishAt: e.target.value }))} /></label>}<button className="primary" disabled={contentBusy || !videoForm.title || !videoForm.url} onClick={() => void addVideo()}><Save size={16} /> Videoyu kaydet</button></div><div className="table-card" style={{ marginTop: 15 }}><table><thead><tr><th>Başlık</th><th>Tür</th><th>Durum</th><th>Yayın</th><th></th></tr></thead><tbody>{(content.videos || []).map((video: any) => <tr key={video.id}><td><strong>{video.title}</strong><br /><a href={video.url} target="_blank" rel="noreferrer">Bağlantıyı aç</a></td><td>{video.link_type}</td><td><span className={`status ${video.status === 'PUBLISHED' ? 'ok' : 'neutral'}`}>{video.status}</span></td><td>{video.publish_at || video.published_at || '—'}</td><td>{video.status !== 'PUBLISHED' && <button className="ghost" onClick={() => void publishVideo(video.id)}>Yayınla</button>}</td></tr>)}{!content.videos?.length && <tr><td colSpan={5}>Henüz bu sınava bağlı video yok.</td></tr>}</tbody></table></div></div>
       </section>
-      {!detail.readiness?.ready_to_publish && <div className="alert warning"><CircleAlert size={16} /> Yayın için soru sayısı, bütün kitapçık cevapları ve doğrulanmış puanlama kuralı tamamlanmalıdır.{outcomeRequired ? ' Kazanımlı sınavda ayrıca her soru kazanıma bağlanmalıdır.' : ''}</div>}
+
     </>}
     </div>
   </div>;

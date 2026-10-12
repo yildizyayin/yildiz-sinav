@@ -6,6 +6,7 @@ export type AssessmentDelivery = 'DIGITAL' | 'PDF' | 'OPTICAL';
 
 export interface AssessmentResponseInput {
   questionId?: string | null;
+  examQuestionId?: string | null;
   nodeId?: string | null;
   selectedAnswer?: string | null;
   isCorrect?: boolean | null;
@@ -36,6 +37,12 @@ export async function recordAssessmentRun(db: D1Database, input: AssessmentRunIn
     .bind(input.score,input.metadata?JSON.stringify(input.metadata):null,input.id).run();
   await db.prepare('DELETE FROM assessment_responses WHERE run_id=?').bind(input.id).run();
   for (const response of input.responses || []) {
+    if (response.examQuestionId) {
+      await db.prepare(`INSERT OR IGNORE INTO assessment_responses
+        (id,run_id,student_id,exam_question_id,selected_answer,is_correct,source_channel)
+        VALUES(?,?,?,?,?,?,?)`).bind(uuid('ars'),input.id,input.studentId,response.examQuestionId,response.selectedAnswer||null,response.isCorrect==null?null:(response.isCorrect?1:0),response.sourceChannel||input.deliveryMode).run();
+      continue;
+    }
     if (!response.questionId) continue;
     await db.prepare(`INSERT OR IGNORE INTO assessment_responses
       (id,run_id,student_id,question_id,node_id,selected_answer,is_correct,source_channel)
@@ -65,7 +72,7 @@ export async function recordExamAssessments(env: Env, batchId: string): Promise<
       sourceType:'EXAM', sourceId:participant.participant_id, examId:participant.exam_id, bookletCode:participant.booklet_code,
       deliveryMode:deliveryFromScan(participant.source_type), score:Number(result.success_percent||0)/100,
       metadata:{title:participant.title,subjectIds,batchId},
-      responses:answerRows.map(row => ({questionId:row.question_id,selectedAnswer:row.answer,isCorrect:row.status==='CORRECT',sourceChannel:deliveryFromScan(participant.source_type)==='OPTICAL'?'OPTICAL':'PDF'})),
+      responses:answerRows.map(row => ({examQuestionId:row.question_id,selectedAnswer:row.answer,isCorrect:row.status==='CORRECT',sourceChannel:deliveryFromScan(participant.source_type)==='OPTICAL'?'OPTICAL':'PDF'})),
     });
     count++;
   }

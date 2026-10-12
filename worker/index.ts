@@ -4,6 +4,7 @@ import { audit, badRequest, forbidden, json, methodNotAllowed, normalizeName, no
 import { createSession, getAuthUser, hashPassword, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
 import { canAccessSubjectForClass, canEvaluateExam, loadPermissionScope, roleCanManageInstitution } from './lib/permissions';
 import { examPublicationGuard } from './lib/exam-publication-guard';
+import { examEvaluationAccess } from './lib/exam-evaluation-access';
 import { withExamOperationLock } from './lib/exam-operation-lock';
 import { evaluateAnswer } from './lib/answer-evaluation';
 import { persistTytOptionalPhilosophyEvidence } from './tyt-optional-philosophy-evaluation';
@@ -404,6 +405,8 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
   const institutionId = resolveInstitutionId(user, form.get('institutionId')?.toString() || null);
   if (!institutionId) return badRequest('Kurum seçilmelidir.');
   if (!(await userCanAccessInstitution(env.DB, user, institutionId))) return forbidden();
+  const examScope = await examEvaluationAccess(env, exam, institutionId);
+  if (examScope) return examScope;
   const inst = await one<{ status: string }>(env.DB.prepare('SELECT status FROM institutions WHERE id=?').bind(institutionId));
   if (!inst) return notFound('Kurum bulunamadı.');
   if (inst.status === 'PASSIVE') return badRequest('Pasif kurumda sınav değerlendirilemez.', 'INSTITUTION_PASSIVE');
@@ -588,6 +591,8 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   if ((unresolvedRows?.c || 0) > 0) return badRequest('Önce sorunlu kayıtları düzeltin.', 'BATCH_NEEDS_REVIEW');
   const exam = await one<any>(env.DB.prepare(`SELECT e.*, srv.verified, srv.id scoring_version_id, srv.config_json, sr.authority FROM exams e LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id LEFT JOIN scoring_rules sr ON sr.id=srv.rule_id WHERE e.id=?`).bind(batch.exam_id));
   if (!exam) return notFound('Sınav bulunamadı.');
+  const examScope = await examEvaluationAccess(env, exam, batch.institution_id, true);
+  if (examScope) return examScope;
   if (!exam.scoring_version_id) return badRequest('Sınavın puanlama kuralı tanımlı değil.', 'SCORING_RULE_REQUIRED');
   assertScoringRuleVerified({ verified: exam.verified, authority: exam.authority });
   const subjects = await all<any>(env.DB.prepare(`SELECT es.subject_id, s.code, s.name, es.question_count, es.wrong_divisor FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order`).bind(exam.id));
