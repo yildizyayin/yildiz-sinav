@@ -159,3 +159,14 @@ Remaining exact release steps:
 3. After migration/deploy: verify app/demo health, public Nibiru entry, unauthenticated data denial and bounded real logout/write flows; user performs actual phone biometric/passkey and role-data acceptance. No test/real outbound WhatsApp messages.
 4. YouTube run 37973511000 both staging and production jobs completed successfully; earlier note saying production waiting is stale. Production job 113965850028 log review confirms PROD_YOUTUBE_API_KEY present and two real search/detail requests succeeded with 3 metadata-eligible videos. Production Worker YOUTUBE_API_KEY still absent in that audit; deployment must synchronize it. Playback/curriculum review still pending.
 5. Turkish natural server TTS remains unverified and paid voice OFF. Do not present sampled academic tests as complete Maarif/factual certification or scalability acceptance.
+
+
+### GitHub acceptance update — 2026-10-12
+
+PR #230: https://github.com/yildizyayin/yildiz-sinav/pull/230. Source branch fix/nibiru-identity-calendar-20261012. Standard CI and Result Provider Isolation/Question Pool source checks passed on initial revisions. GitHub full controlled suite confirms 845/845 tests, typecheck/build and clean migration application passed.
+
+Nine new production-asset browser scenarios passed: mobile guest Nibiru, parent explicit child selection, calendars for six roles including mobile student navigation, Astra Super Admin dashboard. Backend tests independently exercise actual SQL and real ES256 WebAuthn verification; browser fixtures are synthetic and are not a live data claim. Reviewed artifact screenshots for desktop Super Admin, mobile calendar and guest Nibiru. Mobile screenshot capture now waits for the sidebar close transition.
+
+General browser smoke discovered a pre-existing marketing page failure when Google Fonts is unavailable: the remote CSS @import causes Vite lazy CSS preload to reject, displaying the recovery boundary. Retained screenshot/console evidence in GitHub browser artifacts. Removed this external font dependency and retain system fallbacks; verify the original general browser smoke before merge/deploy. Do not bypass the failed check.
+
+Passkey session persistence now honors the user's remember-device choice rather than forcing a 30-day session. Turnstile failure wording is user-facing, and a script load failure no longer becomes an unhandled promise rejection. WhatsApp remains deferred; no phone migration, vendor registration, paid plan or outbound message performed. Main/deploy still unchanged at this checkpoint.
