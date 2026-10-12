@@ -11,4 +11,11 @@ describe('booklet position answer keys',()=>{
   const q=[base[0],{...base[1],subjectId:'science'},{...base[1],subjectId:'science',bookletCode:'B',position:1},{...base[0],bookletCode:'B',position:2}];
   expect(buildPositionAnswerKeys(q)).toMatchObject({ok:false,error:'BOOKLET_SUBJECT_POSITION_MISMATCH'});
  });
+ it('rejects swapped positions with different 4/5-option format',()=>{
+  const q=[{...base[0],optionCount:4},{...base[1],optionCount:5},
+   {...base[1],bookletCode:'B',position:1,optionCount:5},
+   {...base[0],bookletCode:'B',position:2,optionCount:4}];
+  expect(buildPositionAnswerKeys(q)).toMatchObject({ok:false,error:'BOOKLET_OPTION_COUNT_MISMATCH'});
+ });
+
 });
