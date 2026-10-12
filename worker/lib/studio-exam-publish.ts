@@ -40,7 +40,7 @@ export async function publishStudioExam(request:Request,env:Env,user:AuthUser,do
  const plan=planStudioDelivery({documentId,institutionId:doc.institution_id,publicationRevision:1,kind:'EXAM',approved:true,questionIds:rows.map(r=>r.question_id),bookletCodes:positionKeys.codes});
  if(!plan.ok)return badRequest(plan.reason,'INVALID_STUDIO_ITEMS');
  if(rows.some(r=>r.review_status!=='APPROVED'||!['OWNED','LICENSED','PUBLIC_DOMAIN'].includes(r.copyright_status)||r.academic_year!==academicYear||
-  (doc.grade_level!==null&&Number(r.grade_level)!==Number(doc.grade_level))||!['A','B','C','D','E'].includes(r.correct_answer)||![4,5].includes(Number(r.option_count))))
+  (doc.grade_level!==null&&Number(r.grade_level)!==Number(doc.grade_level))||!['A','B','C','D','E'].includes(r.correct_answer)||![4,5].includes(Number(r.option_count))||(Number(r.option_count)===4&&r.correct_answer==='E')))
   return badRequest('Soru onayı, yıl, sınıf veya cevap anahtarı tutarsız.','QUESTION_NOT_READY');
  const outcomeRows=await all<{question_id:string;outcome_id:string}>(env.DB.prepare(`SELECT DISTINCT i.question_id,o.id outcome_id FROM studio_document_items i
  JOIN question_bank q ON q.id=i.question_id JOIN question_learning_links l ON l.question_id=q.id
