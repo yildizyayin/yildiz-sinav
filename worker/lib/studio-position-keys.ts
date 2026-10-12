@@ -1,5 +1,5 @@
 /** Map A/B answer keys by physical position, not by the original question identity. */
-export type BookletRow={bookletCode:string;questionId:string;position:number;subjectId:string;correctAnswer:string};
+export type BookletRow={bookletCode:string;questionId:string;position:number;subjectId:string;correctAnswer:string;optionCount?:number};
 export type PositionKey={position:number;subjectId:string;answers:Record<string,string>};
 export function buildPositionAnswerKeys(items:readonly BookletRow[]):{ok:true;codes:string[];keys:PositionKey[]}|{ok:false;error:string}{
  const codes=[...new Set(items.map(i=>i.bookletCode))].sort();
@@ -16,6 +16,7 @@ export function buildPositionAnswerKeys(items:readonly BookletRow[]):{ok:true;co
    const q=rows[i];
    if(q.position!==i+1||master.get(q.questionId)!==q.subjectId+'|'+q.correctAnswer)return {ok:false,error:'BOOKLET_QUESTION_SET_MISMATCH'};
    if(q.subjectId!==main[i].subjectId)return {ok:false,error:'BOOKLET_SUBJECT_POSITION_MISMATCH'};
+   if(q.optionCount!==undefined&&main[i].optionCount!==undefined&&q.optionCount!==main[i].optionCount)return {ok:false,error:'BOOKLET_OPTION_COUNT_MISMATCH'};
   }
  }
  return {ok:true,codes,keys:main.map((q,i)=>({position:q.position,subjectId:q.subjectId,answers:Object.fromEntries(codes.map(c=>[c,groups.get(c)![i].correctAnswer]))}))};
