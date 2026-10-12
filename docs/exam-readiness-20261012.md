@@ -32,3 +32,7 @@ Gerçek cihazda duyulabilir Türkçe ses ve production kullanıcı akışı hen�
 5. Mevcut taslağın özel kaydını yalnız yetkili oturumla incele; hangi eksiklerin kaldığını somut göster.
 
 İlgisiz eski çalışma dizinleri ve draft PR #229 değişmedi. Takvim/Nibiru önceki kabul kaydı docs/nibiru-acceptance-20261009.md içindedir.
+
+## GitHub kabul güncellemesi
+PR #232 açıldı. İlk run 38253435302 kaynak kontrolleri, 879 test, 96 temiz migration ve ilk 15 browser senaryosunu geçti. Sınav browser testi kitapçık select alanının erişilebilir adındaki belirsizlikte durdu; select açık aria-label ile düzeltildi. Son kabul tekrar çalıştırılacak; başarısız testi atlamayın. Optik fallback seçiminde birden fazla şablon varsa artık sadece yetkili şablon seçenekleri döner; önce seçenekler dönmediğinden kullanıcı ilerleyemiyordu.
+Dört mevcut rapor ajanının (API sağlık, performans, issue tekilleştirme, ekip durumu) local composite action kullanmadan önce checkout adımı eksikti; mevcut görev/cron/yetkiler korunarak checkout eklendi. Bunlar sürekli izleme ajanlarıdır; bu oturumdaki kodlama alt ajanlarından ayrıdır.

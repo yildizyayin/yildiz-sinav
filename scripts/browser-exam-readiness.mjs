@@ -17,10 +17,10 @@ const base={
  '/api/license/status':{ok:true,license:{locked:false,planCode:'LEGACY'}},
  '/api/nibiru/voice/status':{ok:true,providers:{}},
 };
-async function scenario(name,run,{ready=true,failActivation=false,failEvaluation=false,review=false,role='SUPER_ADMIN'}={}){
+async function scenario(name,run,{ready=true,failActivation=false,failEvaluation=false,review=false,chunked=false,role='SUPER_ADMIN'}={}){
  const context=await browser.newContext({serviceWorkers:'block',viewport:{width:1440,height:1000}});
  const errors=[],unknown=[],requests=[];
- let active=false,committed=false,booklet=false;
+ let active=false,committed=false,booklet=false,evaluationCalls=0;
  await context.route('**/*',async route=>{
   const request=route.request(),url=new URL(request.url());
   if(url.origin!==server.origin){await route.abort();return}
@@ -47,7 +47,8 @@ async function scenario(name,run,{ready=true,failActivation=false,failEvaluation
   if(url.pathname==='/api/scan-batches/synthetic-batch/evaluate'){
    assert.equal(request.method(),'POST');assert(!review||booklet,'Unresolved booklet must prevent evaluation');
    if(failEvaluation){status=409;payload={ok:false,error:{code:'EVALUATION_BLOCKED',message:'Değerlendirme kaydedilmedi; kontrol tekrar gerekli.'}}}
-   else{committed=true;payload={ok:true,processed:1}}
+   else if(chunked && evaluationCalls++===0){payload={ok:true,done:false,processed:0,total:1}}
+   else{committed=true;payload={ok:true,done:true,processed:1,total:1}}
   }
   if(!payload){unknown.push(url.pathname);await route.abort();return}
   await route.fulfill({status,contentType:'application/json',body:JSON.stringify(payload)});
@@ -98,6 +99,10 @@ try{
   await page.getByRole('button',{name:'Başka dosya değerlendir',exact:true}).click();await page.getByRole('button',{name:'Dosyayı Analiz Et',exact:true}).waitFor();
   assert.equal(requests.filter(r=>r.path.endsWith('/evaluate')).length,1);
  });
+ await scenario('chunked-evaluation-completes',async(page,requests)=>{
+  await upload(page);await page.getByRole('button',{name:'SINAVI DEĞERLENDİR',exact:true}).click();await page.getByText('Değerlendirme tamamlandı',{exact:true}).waitFor();
+  assert.equal(requests.filter(r=>r.path.endsWith('/evaluate')).length,2);
+ },{chunked:true});
  await scenario('booklet-review-before-evaluation',async(page,requests)=>{
   await upload(page);await page.getByText('Kitapçık A',{exact:true}).waitFor();await page.getByText('Kitapçık B',{exact:true}).waitFor();
   assert.equal(await page.getByRole('button',{name:'SINAVI DEĞERLENDİR',exact:true}).count(),0);
