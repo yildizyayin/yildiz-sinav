@@ -122,7 +122,7 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
           WHERE sp.exam_id=q.exam_id AND sp.booklet_code=ak.booklet_code)
       LEFT JOIN studio_exam_booklet_outcomes sbo ON sbo.exam_id=q.exam_id
         AND sbo.booklet_code=ak.booklet_code
-        AND sbo.printed_question_no=coalesce(bqo.printed_question_no,q.question_no)
+        AND sbo.printed_question_no=coalesce(bqo.printed_question_no,q.global_no,q.question_no)
       WHERE q.exam_id=?
       GROUP BY q.id,ak.booklet_code
       ORDER BY q.subject_id,ak.booklet_code,coalesce(bqo.printed_question_no,q.question_no)`).bind(exam.id)),
