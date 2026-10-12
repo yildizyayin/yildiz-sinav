@@ -2,7 +2,7 @@ import app from './student-books-entry';
 import {getQuestionPoolCoverage} from './lib/question-pool-coverage';
 import {handleQuestionGenerationJobs} from './lib/question-generation-jobs';
 import {runQuestionGenerationJob} from './lib/question-generation-runner';
-import {planQuestionPilotDispatch,canExecuteScheduledPilot} from './lib/question-agent-dispatch-plan';
+import {planQuestionPilotDispatch,canExecuteScheduledPilot,validateScheduledActor} from './lib/question-agent-dispatch-plan';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { json,one,all } from './lib/db';
@@ -56,12 +56,17 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
        curriculumVerified:Number(r.curriculumVerified)===1,outcomeActive:Number(r.outcomeActive)===1})),
        {enabled:env.QUESTION_GENERATION_ENABLED==='true'&&!!env.AI,budget,reviewSlots,maxJobs:5,maxQuestions:50});
       console.log('question-agent-dispatch-preview',JSON.stringify({selected:plan.ids.length,questionCount:plan.questionCount,rejected:plan.rejected.length}));
+      const actorId=(cfg as typeof cfg & {QUESTION_AGENT_SERVICE_ACTOR_ID?:string}).QUESTION_AGENT_SERVICE_ACTOR_ID;
+      const actorRow=actorId?await one<{id:string;role:string;active:number}>(env.DB.prepare(
+       "SELECT id,role,active FROM users WHERE id=? AND role='SUPER_ADMIN' AND active=1"
+      ).bind(actorId)):null;
+      const actor=validateScheduledActor(actorRow?{id:actorRow.id,role:actorRow.role,active:actorRow.active===1}:null,actorId);
       const execution=canExecuteScheduledPilot({
        dispatchPreview:true,
        executionEnabled:(cfg as typeof cfg & {QUESTION_AGENT_EXECUTION_ENABLED?:string}).QUESTION_AGENT_EXECUTION_ENABLED==='true',
        generationEnabled:env.QUESTION_GENERATION_ENABLED==='true',
        providerAvailable:!!env.AI,
-       verifiedServiceActor:false, // no trusted service-auth context exists yet; never forge SUPER_ADMIN
+       verifiedServiceActor:actor.ok, // verified directly from D1; no user object is forged
        reviewCapacity:reviewSlots,budget
       });
       if(!execution.allowed)console.log('question-agent-execution-blocked',JSON.stringify({reasons:execution.reasons}));
