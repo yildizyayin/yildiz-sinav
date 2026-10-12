@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {planStudioDelivery,resolveStudioDeliveryKind} from '../worker/lib/studio-delivery-routing';
+import {planStudioDelivery,resolveStudioDeliveryKind,validateStudioOutcomeCoverage} from '../worker/lib/studio-delivery-routing';
 
 const base={documentId:'studio-1',institutionId:'inst-1',publicationRevision:2,approved:true,questionIds:['q1','q2']};
 describe('studio publish destination guard',()=>{
@@ -48,5 +48,25 @@ describe('real Studio document mapping',()=>{
  it('does not turn personal books into exams or assignments',()=>{
   expect(resolveStudioDeliveryKind('PERSONAL_BOOK','EXAM').ok).toBe(false);
   expect(resolveStudioDeliveryKind('PERSONAL_BOOK','HOMEWORK').ok).toBe(false);
+ });
+});
+
+describe('official learning outcome release evidence',()=>{
+ const valid={questionId:'q1',gradeLevel:7,subjectId:'math',academicYear:'2026-2027',
+  linkedOutcomeId:'out1',outcomeGradeLevel:7,outcomeSubjectId:'math',
+  curriculumAcademicYear:'2026-2027',curriculumVerified:true,outcomeActive:true};
+ it('accepts every question linked to a verified current outcome',()=>{
+  expect(validateStudioOutcomeCoverage(['q1'],[valid]).ok).toBe(true);
+ });
+ it('rejects missing outcome and mismatched curriculum years',()=>{
+  const check=validateStudioOutcomeCoverage(['q1','q2'],[{...valid,curriculumAcademicYear:'2025-2026'}]);
+  expect(check.ok).toBe(false);
+  expect(check.missingQuestionIds).toEqual(['q1','q2']);
+  expect(check.invalidQuestionIds).toEqual(['q1']);
+ });
+ it('rejects inactive or unverified outcomes even if another valid record exists',()=>{
+  const check=validateStudioOutcomeCoverage(['q1'],[valid,{...valid,curriculumVerified:false}]);
+  expect(check.ok).toBe(false);
+  expect(check.invalidQuestionIds).toEqual(['q1']);
  });
 });
