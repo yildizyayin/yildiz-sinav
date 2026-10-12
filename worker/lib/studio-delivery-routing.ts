@@ -68,3 +68,40 @@ export function resolveStudioDeliveryKind(
       ? {ok:true,kind:requested} : {ok:false,reason:'DOCUMENT_DELIVERY_MISMATCH'};
   return {ok:false,reason:'PERSONAL_BOOK_IS_NOT_ASSESSMENT'};
 }
+
+/**
+ * Publish-time curriculum evidence check, supplied from a tenant-scoped DB query.
+ * Rejects missing/unverified outcome links rather than treating empty metadata
+ * as proof of alignment. The publishing service must validate DB membership too.
+ */
+export type QuestionOutcomeEvidence = {
+  questionId: string;
+  gradeLevel: number;
+  subjectId: string;
+  academicYear: string;
+  linkedOutcomeId: string;
+  outcomeGradeLevel: number;
+  outcomeSubjectId: string;
+  curriculumAcademicYear: string;
+  curriculumVerified: boolean;
+  outcomeActive: boolean;
+};
+export function validateStudioOutcomeCoverage(
+  questionIds: readonly string[],
+  evidence: readonly QuestionOutcomeEvidence[],
+): {ok:boolean;missingQuestionIds:string[];invalidQuestionIds:string[]} {
+  const expected = new Set(questionIds);
+  const matching = new Set<string>();
+  const invalid = new Set<string>();
+  for (const row of evidence) {
+    if (!expected.has(row.questionId)) continue;
+    const valid = Boolean(row.linkedOutcomeId && row.curriculumVerified && row.outcomeActive &&
+      row.gradeLevel === row.outcomeGradeLevel && row.subjectId === row.outcomeSubjectId &&
+      row.academicYear === row.curriculumAcademicYear);
+    if (valid) matching.add(row.questionId);
+    else invalid.add(row.questionId);
+  }
+  const missingQuestionIds = [...expected].filter(id => !matching.has(id));
+  return {ok:missingQuestionIds.length===0&&invalid.size===0,
+    missingQuestionIds,invalidQuestionIds:[...invalid]};
+}
