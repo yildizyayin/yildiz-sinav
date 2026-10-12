@@ -106,7 +106,9 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  if(!prior)return err(404,'GENERATION_JOB_NOT_FOUND');
  if(prior.status==='REVIEW_READY')return json({ok:true,job:generationJobDto(prior as any),reused:true});
  if(prior.status==='CANCELLED')return err(409,'GENERATION_CANCELLED');
- // Apply extra safety limits only to an explicitly enabled automated pilot.\n // Existing manual Super Admin execution retains its current reviewed workflow.\n if ((env as Env & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE === 'true') {
+ // Apply extra safety limits only to an explicitly enabled automated pilot.
+ // Existing manual Super Admin execution retains its current reviewed workflow.
+ if ((env as Env & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE === 'true') {
  const pilotConfig=env as Env & {QUESTION_PILOT_BUDGET_REMAINING?:string;QUESTION_PILOT_REVIEW_AVAILABLE?:string};
  const budgetRaw=pilotConfig.QUESTION_PILOT_BUDGET_REMAINING;
  const budgetRemaining=budgetRaw && budgetRaw.trim()!=='' ? Number(budgetRaw) : NaN;
