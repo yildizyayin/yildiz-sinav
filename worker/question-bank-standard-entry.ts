@@ -93,6 +93,18 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
       if(!actorRow||!actor.ok)return;
       // One job per cron tick until there is an atomic cross-job budget ledger.
       const jobId=plan.ids[0];if(!jobId)return;
+      // A database trigger atomically reserves capacity across concurrent cron
+      // invocations. Never call the model if the reservation is rejected.
+      try {
+       const reservation=await env.DB.prepare(`INSERT OR IGNORE INTO question_agent_pilot_reservations(job_id,question_count)
+        SELECT id,question_count FROM question_generation_jobs
+        WHERE id=? AND status='REQUESTED' AND attempt_count=0 AND question_count BETWEEN 1 AND 10`).bind(jobId).run();
+       if(Number(reservation.meta?.changes||0)!==1){
+        console.log('question-agent-reservation-skipped',JSON.stringify({jobId}));return;
+       }
+      } catch {
+       console.log('question-agent-reservation-denied',JSON.stringify({jobId}));return;
+      }
       const result=await runQuestionGenerationJob(new Request('https://internal.invalid/scheduled-question-generation',{method:'POST'}),
        env,{id:actorRow.id,role:'SUPER_ADMIN',institution_id:null,student_id:null,
        display_name:'Scheduled Question Agent',email:null,username:null},jobId);
