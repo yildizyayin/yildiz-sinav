@@ -45,3 +45,18 @@ describe('pilot reservation failure safety',()=>{
   }finally{db.close();}
  });
 });
+
+describe('scheduled pilot budget source',()=>{
+ it('reports exact remaining budget from the ledger regardless of unrelated historic jobs',()=>{
+  const db=new DatabaseSync(':memory:');
+  try{
+   db.exec("CREATE TABLE question_generation_jobs(id TEXT PRIMARY KEY,status TEXT);");
+   db.exec(readFileSync('migrations/0102_question_agent_pilot_budget.sql','utf8'));
+   db.exec("INSERT INTO question_generation_jobs VALUES('past','REVIEW_READY'),('pilot','REQUESTED')");
+   db.exec("INSERT INTO question_agent_pilot_reservations(job_id,question_count) VALUES('pilot',10)");
+   const quota=db.prepare("SELECT question_cap-reserved_count AS remaining FROM question_agent_pilot_budget WHERE id='pilot_50'").get() as any;
+   expect(quota.remaining).toBe(40);
+   expect((db.prepare('SELECT count(*) AS n FROM question_generation_jobs').get() as any).n).toBe(2);
+  }finally{db.close();}
+ });
+});
