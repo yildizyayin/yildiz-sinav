@@ -13,7 +13,7 @@ const ALLOWED_GRADES = new Set([5,6,7,9,10,11]);
 export function checkQuestionAgentPilot(c:QuestionAgentPilotContext):{ok:boolean;reasons:string[]} {
  const reasons:string[]=[];
  if(!ALLOWED_GRADES.has(c.gradeLevel))reasons.push('GRADE_OUTSIDE_APPROVED_SCOPE');
- if(!/^\\d{4}-\\d{4}$/.test(c.academicYear) ||
+ if(!/^\d{4}-\d{4}$/.test(c.academicYear) ||
    Number(c.academicYear.slice(5))!==Number(c.academicYear.slice(0,4))+1)
    reasons.push('INVALID_ACADEMIC_YEAR');
  if(!c.curriculumVerified || !c.outcomeActive)reasons.push('OFFICIAL_OUTCOME_REQUIRED');
