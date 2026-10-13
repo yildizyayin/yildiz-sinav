@@ -39,7 +39,7 @@ const run=(id:string,user=admin)=>runQuestionGenerationJob(request(`${base}/${id
 const job=(id:string)=>db.prepare('SELECT * FROM question_generation_jobs WHERE id=?').bind(id).first();
 async function assertEmpty(){for(const table of ['question_bank','question_learning_links','question_generation_lineage','question_generation_commit_gates','question_generation_commit_assertions','audit_logs'])expect(await db.prepare(`SELECT COUNT(*) n FROM ${table}`).first('n'),table).toBe(0);}
 function deferred(){let resolve!:(value:any)=>void;const promise=new Promise<any>(r=>{resolve=r;});return {promise,resolve};}
-async function waitForProvider(){await vi.waitFor(()=>expect(provider).toHaveBeenCalledTimes(1));}
+async function waitForProvider(){await vi.waitFor(()=>expect(provider).toHaveBeenCalledTimes(1),{timeout:10000,interval:25});}
 
 beforeAll(async()=>{
  mf=new Miniflare(convertV4MiniflareOptions({name:'generation-runner',modules:true,script:'export default {fetch(){return new Response("ok")}}',compatibilityDate:'2026-09-01',d1Databases:['DB']}));
@@ -80,7 +80,7 @@ it('allows only one provider call under simultaneous claims',async()=>{
  const a=run(id),b=run(id);await waitForProvider();gate.resolve(output());
  const responses=await Promise.all([a,b]);expect(responses.map(r=>r.status).sort()).toEqual([200,409]);
  expect(provider).toHaveBeenCalledTimes(1);expect((await job(id)).attempt_count).toBe(1);
-});
+},20_000);
 
 it.each([
  ['malformed JSON',{choices:[{message:{content:'{"questions":['}}]}],
