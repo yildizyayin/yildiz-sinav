@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {pilotBatchLimit,canExecuteScheduledPilot,validateScheduledActor,canDispatchToReviewQueue,evaluatePilotReadiness,pilotReadinessAccess} from '../worker/lib/question-agent-dispatch-plan';
+import {pilotBatchLimit,canExecuteScheduledPilot,validateScheduledActor,canDispatchToReviewQueue,evaluatePilotReadiness,pilotReadinessAccess,firstScheduledPilotBatch} from '../worker/lib/question-agent-dispatch-plan';
 describe('agent pilot batch constraints',()=>{
  it('caps each job at ten',()=>expect(pilotBatchLimit(50,50,50)).toBe(10));
  it('honors remaining budget and review slots',()=>expect(pilotBatchLimit(10,8,3)).toBe(3));
@@ -78,4 +78,15 @@ describe('ten-question pilot readiness minimum',()=>{
  it('rejects fewer than ten reviewer slots',()=>expect(evaluatePilotReadiness({...ready,reviewSlots:9}).reasons).toContain('REVIEW_CAPACITY_REQUIRED'));
  it('rejects less than ten remaining budget',()=>expect(evaluatePilotReadiness({...ready,remainingBudget:9}).reasons).toContain('BUDGET_EXHAUSTED'));
  it('passes complete ten-question readiness',()=>expect(evaluatePilotReadiness(ready).ready).toBe(true));
+});
+
+describe('first scheduled pilot batch readiness',()=>{
+ it('uses oldest selected batch, not a later larger batch',()=>{
+  expect(firstScheduledPilotBatch([{questionCount:5},{questionCount:10}])).toBe(5);
+  expect(firstScheduledPilotBatch([{questionCount:10},{questionCount:5}])).toBe(10);
+ });
+ it('rejects empty and invalid batches',()=>{
+  expect(firstScheduledPilotBatch([])).toBe(0);
+  expect(firstScheduledPilotBatch([{questionCount:11}])).toBe(0);
+ });
 });
