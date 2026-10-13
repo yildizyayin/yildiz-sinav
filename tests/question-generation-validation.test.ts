@@ -1,5 +1,5 @@
 import {expect,it,vi} from 'vitest';
-import {mechanicalDraftIssues,parseVerification,readAiJson,verifyQuestionDrafts,DEFAULT_QUESTION_VERIFIER_MODEL,outcomeDraftIssues,nearRepeatedStem,officialPilotGuidance} from '../worker/lib/question-generation-validation';
+import {mechanicalDraftIssues,parseVerification,readAiJson,verifyQuestionDrafts,DEFAULT_QUESTION_VERIFIER_MODEL,outcomeDraftIssues,nearRepeatedStem,officialPilotGuidance,turkishCardinal,readingAnswerIssues} from '../worker/lib/question-generation-validation';
 const q=(correctAnswer='C',solutionText='60 × 7 = 420. Doğru cevap A: 420 kg.')=>({stemText:'Ağaçlardan kaç kilogram ürün alınır?',options:['420 kg','600 kg','840 kg','4200 kg'].map((text,i)=>({label:String.fromCharCode(65+i),text})),correctAnswer,solutionText,difficultyLevel:3});
 it('blocks the actual pilot key mismatch and incorrect arithmetic',()=>{
  expect(mechanicalDraftIssues(q())).toContain('ANSWER_VALUE_MISMATCH');
@@ -20,7 +20,7 @@ it('mechanical failure consumes no verification request; independent rejection r
  const env={AI:{run}} as any;
  expect((await verifyQuestionDrafts(env,{},[q()])).ok).toBe(false);expect(run).not.toHaveBeenCalled();
  const result=await verifyQuestionDrafts(env,{},[q('A')]);expect(result.ok).toBe(false);expect(result.unavailable).toBe(false);
- expect(run).toHaveBeenCalledWith(DEFAULT_QUESTION_VERIFIER_MODEL,expect.objectContaining({max_tokens:1500,stream:false}));
+ expect(run).toHaveBeenCalledWith(DEFAULT_QUESTION_VERIFIER_MODEL,expect.objectContaining({max_tokens:2500,stream:false}));
 });
 it('unavailable verification and same-model configuration cannot pass',async()=>{
  const run=vi.fn(async()=>{throw Error('Unavailable');});
@@ -63,4 +63,21 @@ it('keeps twelve-digit choices separate instead of joining them into one oversiz
  draft.options=['473.245.813.592','473.245.831.592','473.254.813.592','473.245.813.529'].map((text,i)=>({label:String.fromCharCode(65+i),text}));
  expect(outcomeDraftIssues(draft,context)).toEqual([]);
  draft.options[0].text='473\u202f245\u202f813\u202f592';expect(outcomeDraftIssues(draft,context)).toEqual([]);
+});
+
+it('computes Turkish cardinal values and blocks the real 201-versus-211 key error',()=>{
+ expect(turkishCardinal('iki yüz bir')).toBe(201);expect(turkishCardinal('iki yüz on bir')).toBe(211);
+ expect(turkishCardinal('yedi yüz sekiz milyar beş yüz doksan dört milyon iki yüz bir bin üç yüz doksan')).toBe(708594201390);
+ expect(turkishCardinal('bir yüz')).toBeNull();expect(turkishCardinal('bir bin')).toBeNull();
+ const draft=q('A');draft.stemText='“yedi yüz sekiz milyar beş yüz doksan dört milyon iki yüz bir bin üç yüz doksan” hangi sayıdır?';
+ draft.options=['708.594.211.390','708.594.213.190','708.594.121.390','708.594.211.490'].map((text,i)=>({label:String.fromCharCode(65+i),text}));
+ expect(readingAnswerIssues(draft)).toContain('NUMBER_WORD_KEY_MISMATCH');
+ draft.options[0].text='708.594.201.390';expect(readingAnswerIssues(draft)).toEqual([]);
+ draft.options[3].text='70.859.421.1390';expect(readingAnswerIssues(draft)).toContain('INVALID_NUMERIC_GROUPING');
+});
+it('accepts exact Euclidean division and en-dash subtraction without inferring intermediate answers',()=>{
+ expect(mechanicalDraftIssues(q('A','23.480 + 5.125 = 28.605. 28.605 – 2.340 = 26.265.'))).toEqual([]);
+ const draft=q('A','6.000 ÷ 28 = 214 tam bölüm, kalan 8.');draft.options[0].text='214 kutu, 8 kurabiye';
+ expect(mechanicalDraftIssues(draft)).toEqual([]);
+ expect(mechanicalDraftIssues({...draft,solutionText:'6.000 ÷ 28 = 214 tam bölüm, kalan 7.'})).toContain('INVALID_ARITHMETIC');
 });
