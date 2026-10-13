@@ -74,3 +74,9 @@ export function evaluatePilotReadiness(input:{
  if(!Number.isSafeInteger(input.remainingBudget)||input.remainingBudget<Math.min(10,input.queuedQuestionCount))reasons.push('BUDGET_EXHAUSTED');
  return {ready:reasons.length===0,reasons};
 }
+
+/** Public HTTP readiness access is restricted; scheduled processing uses no HTTP user. */
+export function pilotReadinessAccess(role:string|null):401|403|200{
+ if(!role)return 401;
+ return role==='SUPER_ADMIN'?200:403;
+}
