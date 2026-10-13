@@ -246,3 +246,31 @@ it('blocks a manual pilot at persisted quota exhaustion before any provider call
  env.QUESTION_AUTOMATED_PILOT_MODE='true';env.QUESTION_PILOT_BUDGET_REMAINING='50';env.QUESTION_PILOT_REVIEW_AVAILABLE='true';await db.exec('UPDATE question_agent_pilot_budget SET reserved_count=50;');
  const id=await create();expect(await (await run(id)).json()).toMatchObject({error:{code:'GENERATION_PILOT_LIMIT'}});expect(provider).not.toHaveBeenCalled();await assertEmpty();
 });
+
+
+it('independently validates before storing drafts and preserves mandatory human review',async()=>{
+ env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';
+ provider.mockResolvedValueOnce(output()).mockResolvedValueOnce({response:JSON.stringify({reviews:[{index:0,valid:true,issues:[]}]}),usage:{total_tokens:100}});
+ const id=await create();expect((await run(id)).status).toBe(200);expect(provider).toHaveBeenCalledTimes(2);
+ expect(await db.prepare('SELECT review_status,copyright_status FROM question_bank').first()).toEqual({review_status:'REVIEW',copyright_status:'RESTRICTED'});
+ const audit:any=await db.prepare("SELECT details_json FROM audit_logs WHERE action='QUESTION_GENERATION_REVIEW_READY'").first();
+ expect(JSON.parse(audit.details_json)).toMatchObject({verification:{ok:true,usage:{total_tokens:100}},humanReviewRequired:true});
+});
+it('failed independent validation creates no bank rows or lineage and records the reason',async()=>{
+ env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';
+ provider.mockResolvedValueOnce(output()).mockResolvedValueOnce({response:JSON.stringify({reviews:[{index:0,valid:false,issues:['Wrong official outcome']}]})});
+ const id=await create();expect((await run(id)).status).toBe(422);
+ expect(await job(id)).toMatchObject({status:'FAILED',error_code:'GENERATION_QUALITY_REJECTED',generated_count:0});
+ for(const table of ['question_bank','question_learning_links','question_generation_lineage','question_generation_commit_gates'])expect(await db.prepare('SELECT COUNT(*) n FROM '+table).first('n')).toBe(0);
+ expect(await db.prepare("SELECT COUNT(*) n FROM audit_logs WHERE action='QUESTION_GENERATION_VERIFICATION_BLOCKED'").first('n')).toBe(1);
+});
+it('a cancellation during independent validation cannot commit drafts',async()=>{
+ env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';
+ const id=await create();
+ provider.mockResolvedValueOnce(output()).mockImplementationOnce(async()=>{
+  const cancelled=await handleQuestionGenerationJobs(request(base+'/'+id+'/cancel','PATCH'),env,admin);
+  expect(cancelled?.status).toBe(200);
+  return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[]}]})};
+ });
+ expect((await run(id)).status).toBe(409);await assertEmpty();
+});
