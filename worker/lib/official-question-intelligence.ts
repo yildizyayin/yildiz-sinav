@@ -119,6 +119,14 @@ async function factRowsForOutcome(env:Env,outcomeId:string,family?:string|null){
     ))${familySql} ORDER BY f.exam_year,f.session_code,f.question_no`).bind(...params));
 }
 
+export function fiveYearOfficialHistory(facts:readonly {exam_year:number|string}[], archiveYears:readonly number[],endYear:number){
+ const startYear=endYear-4;const years=Array.from({length:5},(_,i)=>startYear+i);
+ const covered=new Set(archiveYears.filter(y=>Number.isInteger(y)&&y>=startYear&&y<=endYear));
+ const perYear=years.map(year=>({year,count:facts.filter(f=>Number(f.exam_year)===year).length,sourceAvailable:covered.has(year)}));
+ const lastFiveYearsCount=perYear.reduce((sum,x)=>sum+x.count,0);
+ return {fromYear:startYear,toYear:endYear,lastFiveYearsCount,coveredYears:covered.size,fullyCovered:covered.size===5,perYear};
+}
+
 async function outcomeStats(env:Env,outcomeId:string,family?:string|null){
   const outcome=await one<any>(env.DB.prepare(`SELECT o.id,o.code,o.title,o.grade_level,o.topic,o.subtopic,s.name subject_name FROM outcomes o JOIN subjects s ON s.id=o.subject_id WHERE o.id=?`).bind(outcomeId));if(!outcome)return null;
   const facts=await factRowsForOutcome(env,outcomeId,family);const families=family?[family]:[...new Set(facts.map(x=>String(x.exam_family)))];
@@ -126,7 +134,8 @@ async function outcomeStats(env:Env,outcomeId:string,family?:string|null){
   for(const fam of families){const f=facts.filter(x=>x.exam_family===fam);if(!f.length)continue;const years=[...new Set(f.map(x=>Number(x.exam_year)))].sort((a,b)=>a-b);const fromYear=years[0],toYear=years[years.length-1];const perYear=years.map(y=>({year:y,count:f.filter(x=>Number(x.exam_year)===y).length}));
     const archiveYears=await all<any>(env.DB.prepare(`SELECT DISTINCT exam_year FROM official_exam_archives WHERE exam_family=? AND active=1 AND exam_year BETWEEN ? AND ? ORDER BY exam_year`).bind(fam,fromYear,toYear));const analyzedYears=Math.max(years.length,archiveYears.length||0);const appeared=perYear.filter(x=>x.count>0).length;const avg=f.length/Math.max(1,analyzedYears);const latest=perYear.at(-1)?.count||0;const recent=perYear.slice(-3);const recentAvg=recent.reduce((a,c)=>a+c.count,0)/Math.max(1,recent.length);const consistency=appeared/Math.max(1,analyzedYears);
     const score=Math.min(100,Math.round(consistency*40+Math.min(1,avg/2)*30+Math.min(1,recentAvg/2)*30));const band=score>=65?'HIGH':score>=35?'MEDIUM':'LOW';
-    stats.push({examFamily:fam,fromYear,toYear,totalQuestionCount:f.length,latestYearQuestionCount:latest,yearsAppeared:appeared,yearsAnalyzed:analyzedYears,averagePerYear:Number(avg.toFixed(2)),recentThreeYearAverage:Number(recentAvg.toFixed(2)),historicalPriorityScore:score,historicalPriorityBand:band,perYear});
+    const officialYears=await all<{exam_year:number}>(env.DB.prepare(`SELECT DISTINCT exam_year FROM official_exam_archives WHERE exam_family=? AND active=1 AND exam_year BETWEEN ? AND ?`).bind(fam,new Date().getUTCFullYear()-4,new Date().getUTCFullYear()));const fiveYear=fiveYearOfficialHistory(f,officialYears.map(x=>Number(x.exam_year)),new Date().getUTCFullYear());
+    stats.push({lastFiveYearsCount:fiveYear.fullyCovered?fiveYear.lastFiveYearsCount:null,lastFiveYearsCoverage:fiveYear.coveredYears,lastFiveYearsFrom:fiveYear.fromYear,lastFiveYearsTo:fiveYear.toYear,lastFiveYearsPerYear:fiveYear.perYear,examFamily:fam,fromYear,toYear,totalQuestionCount:f.length,latestYearQuestionCount:latest,yearsAppeared:appeared,yearsAnalyzed:analyzedYears,averagePerYear:Number(avg.toFixed(2)),recentThreeYearAverage:Number(recentAvg.toFixed(2)),historicalPriorityScore:score,historicalPriorityBand:band,perYear});
   }
   return {outcome,stats,facts:facts.slice(-100),disclaimer:'Tarihsel öncelik göstergesi geçmiş resmî sınav dağılımına dayanır; gelecekte soru çıkacağını garanti etmez.'};
 }
