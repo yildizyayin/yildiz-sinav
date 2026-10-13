@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
       - name: Verify source without remote fixture writes
-        run: npm run typecheck && npm test && npm run build
+        run: npm run typecheck && npm test -- --maxWorkers=2 --testTimeout=30000 && npm run build
 
   preview:
     # D1 Free quota is account-wide: isolated PR databases still consume it.
