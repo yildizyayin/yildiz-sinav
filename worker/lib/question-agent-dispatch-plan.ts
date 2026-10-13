@@ -69,9 +69,9 @@ export function evaluatePilotReadiness(input:{
  if(!input.pilotMode||!input.dispatchPreview||!input.executionEnabled)reasons.push('PILOT_GATES_DISABLED');
  if(!input.serviceActorVerified)reasons.push('SERVICE_ACTOR_NOT_VERIFIED');
  if(!Number.isSafeInteger(input.verifiedOutcomeCount)||input.verifiedOutcomeCount<1)reasons.push('VERIFIED_OUTCOMES_MISSING');
- if(!Number.isSafeInteger(input.queuedQuestionCount)||input.queuedQuestionCount<1)reasons.push('NO_QUEUED_QUESTIONS');
- if(!canDispatchToReviewQueue({reviewAvailable:input.reviewAvailable,reviewSlots:input.reviewSlots,questionCount:Math.min(10,input.queuedQuestionCount)}))reasons.push('REVIEW_CAPACITY_REQUIRED');
- if(!Number.isSafeInteger(input.remainingBudget)||input.remainingBudget<Math.min(10,input.queuedQuestionCount))reasons.push('BUDGET_EXHAUSTED');
+ if(!Number.isSafeInteger(input.queuedQuestionCount)||input.queuedQuestionCount<10)reasons.push('TEN_QUESTION_PILOT_NOT_QUEUED');
+ if(!canDispatchToReviewQueue({reviewAvailable:input.reviewAvailable,reviewSlots:input.reviewSlots,questionCount:10}))reasons.push('REVIEW_CAPACITY_REQUIRED');
+ if(!Number.isSafeInteger(input.remainingBudget)||input.remainingBudget<10)reasons.push('BUDGET_EXHAUSTED');
  return {ready:reasons.length===0,reasons};
 }
 
