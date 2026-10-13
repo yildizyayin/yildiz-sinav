@@ -71,3 +71,11 @@ describe('Süper Admin pilot readiness authorization',()=>{
  });
  it('allows only super admin',()=>expect(pilotReadinessAccess('SUPER_ADMIN')).toBe(200));
 });
+
+describe('ten-question pilot readiness minimum',()=>{
+ const ready={aiBindingPresent:true,generationEnabled:true,pilotMode:true,dispatchPreview:true,executionEnabled:true,serviceActorVerified:true,verifiedOutcomeCount:1,queuedQuestionCount:10,reviewAvailable:true,reviewSlots:10,remainingBudget:10};
+ it('rejects fewer than ten queued questions',()=>expect(evaluatePilotReadiness({...ready,queuedQuestionCount:9}).reasons).toContain('TEN_QUESTION_PILOT_NOT_QUEUED'));
+ it('rejects fewer than ten reviewer slots',()=>expect(evaluatePilotReadiness({...ready,reviewSlots:9}).reasons).toContain('REVIEW_CAPACITY_REQUIRED'));
+ it('rejects less than ten remaining budget',()=>expect(evaluatePilotReadiness({...ready,remainingBudget:9}).reasons).toContain('BUDGET_EXHAUSTED'));
+ it('passes complete ten-question readiness',()=>expect(evaluatePilotReadiness(ready).ready).toBe(true));
+});
