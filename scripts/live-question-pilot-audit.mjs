@@ -1,4 +1,4 @@
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
 const base='https://demo.anunex.com',api='https://api.cloudflare.com/client/v4/accounts/'+process.env.CLOUDFLARE_ACCOUNT_ID;
 const report={environment:'staging',model:'@cf/zai-org/glm-4.7-flash',providerCalls:0,generatedQuestions:0};
 async function cf(path,body){const r=await fetch(api+path,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+process.env.CLOUDFLARE_API_TOKEN,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});const p=await r.json();if(!r.ok||!p.success)throw Error('Cloudflare audit failed HTTP '+r.status+' codes '+(p.errors||[]).map(e=>e.code).join(','));return p.result;}
@@ -6,6 +6,20 @@ async function req(path,cookie,body){const r=await fetch(base+path,{method:body?
 try{
  const {r,p}=await req('/api/auth/login',null,{identifier:'super',password:process.env.SMOKE_DEMO_PASSWORD||'Demo123!',turnstileToken:'XXXX.DUMMY.TOKEN.XXXX',remember:false});if(!p.ok)throw Error('Staging admin unavailable');
  const cookie=(r.headers.get('set-cookie')||'').match(/(yildiz_session=[^;]+)/)?.[1];if(!cookie)throw Error('Staging session missing');
+ if(process.env.QUESTION_PILOT_IMPORT_OFFICIAL==='true'){
+ const spec=JSON.parse(await readFile('data/question-pilot-math5-curriculum.json','utf8'));
+ const versions=(await req('/api/curriculum-admin?academicYear='+spec.academicYear,cookie)).p;
+ let version=(versions.versions||[]).find(v=>v.program_version===spec.programVersion);
+ if(!version){
+ const sourceResponse=await fetch(spec.sourceUrl);if(!sourceResponse.ok)throw Error('Official MEB source unavailable');const source=(await sourceResponse.text()).replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/\s+/g,' ');for(const o of spec.outcomes){if(!source.includes(o.code)||!source.includes(o.title))throw Error('Official source text mismatch: '+o.code);}
+ const options=(await req('/api/curriculum-admin/options',cookie)).p;const subject=options.subjects.find(x=>x.code==='MAT');if(!subject)throw Error('Canonical math subject not found');
+ const cell=x=>'"'+String(x??'').replaceAll('"','""')+'"';
+ const csv=[['subject_code','grade_level','outcome_code','title','topic','unit','node_type'],...spec.outcomes.map(o=>[subject.code,spec.gradeLevel,o.code,o.title,o.topic,'Sayılar ve Nicelikler (1)','OUTCOME'])].map(row=>row.map(cell).join(';')).join('\n');
+ const form=new FormData();form.set('file',new Blob([csv],{type:'text/csv'}),'meb-mat5-pilot.csv');for(const key of ['academicYear','gradeLevel','programCode','programVersion','authority','sourceUrl','sourceTitle'])form.set(key,String(spec[key]));
+ const response=await fetch(base+'/api/curriculum-admin/import-preview',{method:'POST',headers:{Origin:base,Cookie:cookie},body:form});const preview=await response.json();if(!response.ok||preview.invalidCount!==0||preview.rowCount!==2)throw Error('Official curriculum preview failed '+JSON.stringify(preview.error||preview));
+ const committed=(await req('/api/curriculum-admin/imports/'+preview.jobId+'/commit',cookie,{confirmedOfficial:true})).p;report.officialImport={versionId:committed.versionId,outcomeCount:committed.outcomeCount,scope:spec.scope};
+ }else report.officialImport={reused:true,versionId:version.id,scope:spec.scope};
+ }
  report.readiness=(await req('/api/question-bank-standard/agent-pilot/readiness',cookie)).p;
  const versions=await cf('/workers/scripts/yildiz-sinav-v1/versions');const version=versions.items?.[0]?.id||versions[0]?.id;if(!version)throw Error('Staging worker version unavailable');const detail=await cf('/workers/scripts/yildiz-sinav-v1/versions/'+version);
  const db=detail.resources.bindings.find(b=>b.name==='DB'&&b.type==='d1');if(!db)throw Error('Staging D1 unavailable');

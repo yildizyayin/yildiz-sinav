@@ -46,12 +46,14 @@ beforeAll(async()=>{
  db=await mf.getD1Database('DB');await db.exec(ddl);
  await db.exec(migration('0072_question_generation_jobs.sql'));
  await db.exec(migration('0073_question_generation_runner.sql'));
+ await db.exec(migration('0102_question_agent_pilot_budget.sql'));
 },20_000);
 afterAll(async()=>{await mf?.dispose();});
 beforeEach(async()=>{
  await db.exec(`DROP TRIGGER IF EXISTS reject_generation_audit;
  DELETE FROM question_generation_commit_assertions; DELETE FROM question_generation_commit_gates;
  DELETE FROM question_generation_lineage; DELETE FROM question_learning_links; DELETE FROM question_bank;
+ DELETE FROM question_agent_pilot_reservations;UPDATE question_agent_pilot_budget SET reserved_count=0;
  DELETE FROM question_generation_jobs; DELETE FROM outcomes; DELETE FROM curriculum_versions; DELETE FROM audit_logs;`);
  await seed();beforeBatch=undefined;afterClaim=undefined;sqlReads.length=0;
  provider=vi.fn(async()=>output());
@@ -219,3 +221,28 @@ it('preserves old REQUESTED and CANCELLED jobs while applying 0072 to 0073',asyn
   expect(after).toHaveLength(2);after.forEach((row:any,i:number)=>{expect(row).toMatchObject(before[i]);expect(row).toMatchObject({attempt_count:0,generated_count:0,lease_token:null,completed_at:null});});
  }finally{await oldMf.dispose();}
 },20_000);
+
+it('rejects five choices at grade 7 without storing an invalid draft',async()=>{
+ const id=await create();provider.mockResolvedValueOnce(output([{...draft(),options:[...draft().options,{label:'E',text:'Five'}]}]));
+ expect((await run(id)).status).toBe(422);await assertEmpty();
+});
+it('requires five choices at grade 9 and preserves the human review gate',async()=>{
+ await db.exec("UPDATE curriculum_versions SET grade_level=9;UPDATE outcomes SET grade_level=9;UPDATE learning_nodes SET grade_level=9;");
+ try{
+ const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:{...context,gradeLevel:9},requestKey:crypto.randomUUID(),questionCount:1}),env,admin)!;expect(res.status).toBe(201);const id=(await res.json() as any).job.id;
+ expect((await run(id)).status).toBe(422);await assertEmpty();
+ provider.mockResolvedValueOnce(output([{...draft(),options:[...draft().options,{label:'E',text:'Five'}]}]));expect((await run(id)).status).toBe(200);
+ expect(await db.prepare('SELECT option_count,review_status,copyright_status FROM question_bank').first()).toMatchObject({option_count:5,review_status:'REVIEW',copyright_status:'RESTRICTED'});
+ expect(provider.mock.calls.at(-1)![1].prompt).toContain('5 distinct nonempty options labeled A-E');
+ }finally{await db.exec('UPDATE learning_nodes SET grade_level=7;');}
+});
+
+it('reserves manual pilot quota before inference and does not charge retries twice',async()=>{
+ env.QUESTION_AUTOMATED_PILOT_MODE='true';env.QUESTION_PILOT_BUDGET_REMAINING='50';env.QUESTION_PILOT_REVIEW_AVAILABLE='true';
+ const id=await create();provider.mockResolvedValueOnce(output([]));expect((await run(id)).status).toBe(422);expect(await db.prepare("SELECT reserved_count FROM question_agent_pilot_budget").first('reserved_count')).toBe(1);
+ provider.mockResolvedValueOnce(output());expect((await run(id)).status).toBe(200);expect(await db.prepare("SELECT reserved_count FROM question_agent_pilot_budget").first('reserved_count')).toBe(1);
+});
+it('blocks a manual pilot at persisted quota exhaustion before any provider call',async()=>{
+ env.QUESTION_AUTOMATED_PILOT_MODE='true';env.QUESTION_PILOT_BUDGET_REMAINING='50';env.QUESTION_PILOT_REVIEW_AVAILABLE='true';await db.exec('UPDATE question_agent_pilot_budget SET reserved_count=50;');
+ const id=await create();expect(await (await run(id)).json()).toMatchObject({error:{code:'GENERATION_PILOT_LIMIT'}});expect(provider).not.toHaveBeenCalled();await assertEmpty();
+});

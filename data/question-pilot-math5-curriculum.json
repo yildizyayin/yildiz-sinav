@@ -1,0 +1,14 @@
+{
+  "academicYear": "2026-2027",
+  "gradeLevel": 5,
+  "programCode": "SCHOOL",
+  "programVersion": "TYMM-2024-MAT5-PILOT-20261013",
+  "authority": "MEB",
+  "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447",
+  "sourceTitle": "Ortaokul Matematik Dersi 5. Sınıf — 1. Tema: Sayılar ve Nicelikler (1)",
+  "scope": "Pilot için iki resmî öğrenme çıktısı; tam müfredat değildir.",
+  "outcomes": [
+    {"code": "MAT.5.1.1", "title": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme", "topic": "Çok Basamaklı Sayıları Okuma ve Yazma"},
+    {"code": "MAT.5.1.2", "title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme", "topic": "Doğal Sayılarla Dört İşlem İçeren Problem Çözme"}
+  ]
+}

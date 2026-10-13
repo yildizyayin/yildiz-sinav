@@ -1,4 +1,4 @@
-name: Question Pilot Readiness
+name: Question Pilot Setup
 on:
   push:
     branches: [feat/question-pilot-20261013]
@@ -15,6 +15,7 @@ jobs:
     timeout-minutes: 5
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      QUESTION_PILOT_IMPORT_OFFICIAL: 'true'
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v5
