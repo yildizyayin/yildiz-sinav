@@ -2,7 +2,8 @@ import type {Env} from '../types';
 export const DEFAULT_QUESTION_VERIFIER_MODEL='@cf/nvidia/nemotron-3-120b-a12b';
 export type CheckedDraft={stemText:string;options:{label:string;text:string}[];correctAnswer:string;solutionText:string;difficultyLevel:number};
 export function readAiJson(raw:any):any {
- const content=raw?.choices?.[0]?.message?.content??raw?.response??raw;
+ const output=Array.isArray(raw?.output)?raw.output.filter((item:any)=>item.type==='message').flatMap((item:any)=>item.content??[]).filter((part:any)=>part.type==='output_text'&&typeof part.text==='string').map((part:any)=>part.text).join(''):null;
+ const content=raw?.choices?.[0]?.message?.content??raw?.response??raw?.output_text??(output||raw);
  let text:string;try{text=typeof content==='string'?content:JSON.stringify(content);}catch{return null;}
  if(typeof text!=='string'||new TextEncoder().encode(text).length>65536)return null;
  try{return JSON.parse(text);}catch{return null;}

@@ -45,3 +45,8 @@ it('detects paraphrased arithmetic tasks despite a swapped option order',()=>{
  expect(nearRepeatedStem('Bir okulda 5. sınıf öğrencileri için 240 adet kitap dağıtılacaktır. Sınıfı 40 öğrenci olan bu okulda, her öğrenciye kaç kitap dağıtılacaktır?','Bir okulda 5. sınıf öğrencileri için 240 adet kitap dağıtılacaktır. Sınıfı 40 öğrenci olan bu okulda, her öğrenciye kaç kitap düşer?')).toBe(true);
  expect(nearRepeatedStem('Kampanyada toplanan kitaplar kutulara yerleştirildiğinde kalan kitap sayısını bulunuz.','Bir takvimde belirli tarihler arasında geçen gün sayısını hesaplayınız.')).toBe(false);
 });
+
+it('reads documented response text without accepting reasoning as draft content',()=>{
+ expect(readAiJson({output_text:'{"questions":[]}'})).toEqual({questions:[]});
+ expect(readAiJson({output:[{type:'reasoning',content:[{type:'output_text',text:'not JSON'}]},{type:'message',content:[{type:'output_text',text:'{"questions":[]}'}]}]})).toEqual({questions:[]});
+});
