@@ -56,3 +56,21 @@ export function canDispatchToReviewQueue(input:{reviewAvailable:boolean;reviewSl
   && Number.isSafeInteger(input.questionCount) && input.questionCount>0
   && input.questionCount<=10 && input.reviewSlots>=input.questionCount;
 }
+
+/** External provider connectivity needs a real smoke run; this is a no-write config gate. */
+export function evaluatePilotReadiness(input:{
+ aiBindingPresent:boolean;generationEnabled:boolean;pilotMode:boolean;dispatchPreview:boolean;
+ executionEnabled:boolean;serviceActorVerified:boolean;verifiedOutcomeCount:number;
+ queuedQuestionCount:number;reviewAvailable:boolean;reviewSlots:number;remainingBudget:number
+}):{ready:boolean;reasons:string[]}{
+ const reasons:string[]=[];
+ if(!input.aiBindingPresent)reasons.push('AI_BINDING_MISSING');
+ if(!input.generationEnabled)reasons.push('GENERATION_DISABLED');
+ if(!input.pilotMode||!input.dispatchPreview||!input.executionEnabled)reasons.push('PILOT_GATES_DISABLED');
+ if(!input.serviceActorVerified)reasons.push('SERVICE_ACTOR_NOT_VERIFIED');
+ if(!Number.isSafeInteger(input.verifiedOutcomeCount)||input.verifiedOutcomeCount<1)reasons.push('VERIFIED_OUTCOMES_MISSING');
+ if(!Number.isSafeInteger(input.queuedQuestionCount)||input.queuedQuestionCount<1)reasons.push('NO_QUEUED_QUESTIONS');
+ if(!canDispatchToReviewQueue({reviewAvailable:input.reviewAvailable,reviewSlots:input.reviewSlots,questionCount:Math.min(10,input.queuedQuestionCount)}))reasons.push('REVIEW_CAPACITY_REQUIRED');
+ if(!Number.isSafeInteger(input.remainingBudget)||input.remainingBudget<Math.min(10,input.queuedQuestionCount))reasons.push('BUDGET_EXHAUSTED');
+ return {ready:reasons.length===0,reasons};
+}
