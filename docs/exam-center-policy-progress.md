@@ -18,11 +18,13 @@ Kompakt sınav merkezi; sevilen sınav ekleme formunu koruma; isteğe bağlı ka
 ## Doğrulama
 - Yerel test paketi: 171 dosya / 899 test başarılı.
 - Migration geçmişi/benzersizlik kontrolü başarılı.
+- GitHub CI, kaynak doğrulama ve dış sağlayıcı izolasyonu başarılı (3376151c sürümü).
+- 6 genel, 9 Nibiru/takvim, 8 sınav değerlendirme browser senaryosu başarılı. Yeni çalışma alanı senaryosunun son yayın ekranı kontrolündeki tam metin seçicisi, hücrenin sürüm alt metnini içerdiği için düzeltilmiştir; son workflow doğrulaması beklenmektedir.
 - UI etkileşim testleri başarılı. Tam browser screenshot kabulü GitHub workflow içerisinde sentetik API fixture kullanır.
 - Gerçek öğrenci sınavları bu kontrollerde değiştirilmedi.
 
 ## Kalan yayın adımları
-1. Son tip/build kontrolleri ve GitHub branch kaydı.
+1. Tamamlandı: son tip/build kontrolleri, GitHub branch ve PR #239 kaydı.
 2. GitHub CI + Exam Center Readiness Acceptance sonuçları; yeni browser senaryoları ve görselleri incele.
 3. Başarılı değişiklikleri main ve staging'e aktar; üretim ve sonuç worker deploy sonuçlarını izle.
 4. Yeni sürümün gerçekten başarılı deploy sonucunu ve sağlık kontrollerini görmeden canlıya alındı deme.
