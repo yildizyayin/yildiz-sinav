@@ -1,7 +1,7 @@
 name: Question Pilot First Ten
 on:
   push:
-    branches: [staging]
+    branches: [staging, feat/question-pilot-20261013]
     paths: ['.github/question-pilot.execute']
   workflow_dispatch:
 permissions:
