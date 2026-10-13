@@ -84,5 +84,5 @@ export function pilotReadinessAccess(role:string|null):401|403|200{
 /** Mirrors cron's oldest-first selection; readiness must not inspect a later batch. */
 export function firstScheduledPilotBatch(rows:readonly {questionCount:number}[]):number{
  const count=rows[0]?.questionCount;
- return Number.isSafeInteger(count)&&count!>=1&&count!<=10?count:0;
+ return Number.isSafeInteger(count)&&count>=1&&count<=10?count:0;
 }
