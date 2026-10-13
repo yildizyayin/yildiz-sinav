@@ -26,7 +26,7 @@ export async function changeChannel(env:Env,user:AuthUser,id:string,channel:Chan
  statements.push(env.DB.prepare(`UPDATE exam_outcome_analysis_revisions SET ${channel==='RESULT_NETWORK'?'published_result_at':'published_app_at'}=CURRENT_TIMESTAMP WHERE exam_id=? AND revision=(SELECT MAX(revision) FROM exam_outcome_analysis_revisions WHERE exam_id=?)`).bind(id,id));
  }else if(['unpublish','remove'].includes(action)){
  statements.push(env.DB.prepare("UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel=?").bind(id,channel),env.DB.prepare("UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel=?").bind(id,channel));
- if(channel==='RESULT_NETWORK')statements.push(env.DB.prepare("UPDATE exam_administrations SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='PUBLISHED'").bind(id));
+
  }else return badRequest('Yayın işlemi desteklenmiyor.');
  statements.push(channelAudit(env,user,exam.institution_id,'EXAM_CHANNEL_'+action.toUpperCase(),id,{channel,sourceRevision:exam.revision}));await env.DB.batch(statements);return json(await channelState(env,id));
  });
@@ -44,7 +44,7 @@ export async function trashExam(env:Env,user:AuthUser,id:string,scope='APP'){
  if(!result||scope==='BOTH')st.push(env.DB.prepare("UPDATE exams SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(id));
  st.push(env.DB.prepare("INSERT INTO exam_channel_publications(id,exam_id,channel,status) VALUES(?,?,'LICENSED','ARCHIVED') ON CONFLICT(exam_id,channel) DO UPDATE SET status='ARCHIVED'").bind(uuid('pub'),id),env.DB.prepare("UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='LICENSED'").bind(id));
  }
- if(scope!=='APP')st.push(env.DB.prepare("UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'").bind(id),env.DB.prepare("UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'").bind(id),env.DB.prepare("UPDATE exam_administrations SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='PUBLISHED'").bind(id));
+ if(scope!=='APP')st.push(env.DB.prepare("UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'").bind(id),env.DB.prepare("UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'").bind(id));
  st.push(channelAudit(env,user,exam.institution_id,'EXAM_TRASHED',id,{scope,resultsPreserved:true}));await env.DB.batch(st);return json({ok:true,scope,resultsPreserved:true});
  });
 }

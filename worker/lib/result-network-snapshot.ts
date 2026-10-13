@@ -7,7 +7,7 @@ export const RESULT_NETWORK_SNAPSHOT_SQL = `SELECT s.*,ea.exam_id FROM result_ac
   AND s.snapshot_version=ea.published_snapshot_version
  WHERE rni.meb_code=? AND peer.normalized_name=? AND peer.grade_level=?
  AND ((?<>'' AND peer.student_number_lookup_token=?) OR (?<>'' AND peer.tckn_lookup_token=?))
- AND peer.expires_at>CURRENT_TIMESTAMP AND ea.channel='RESULT_NETWORK' AND ea.status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM result_artifact_retirements retired WHERE retired.administration_id=ea.id AND retired.retired_through_version>=ea.published_snapshot_version)`;
+ AND peer.expires_at>CURRENT_TIMESTAMP AND ea.channel='RESULT_NETWORK' AND ea.status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM exam_channel_publications pub WHERE pub.exam_id=ea.exam_id AND pub.channel='RESULT_NETWORK' AND pub.status<>'ACTIVE') AND NOT EXISTS(SELECT 1 FROM result_artifact_retirements retired WHERE retired.administration_id=ea.id AND retired.retired_through_version>=ea.published_snapshot_version)`;
 
 // Keep the same live authorization and version predicates, while omitting the
 // large subject/outcome details from the list query's D1 response. JSON validity
