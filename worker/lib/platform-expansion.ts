@@ -139,7 +139,7 @@ async function listExamCatalog(request: Request, env: Env, user: AuthUser): Prom
   // Sınav Ekle yeni kaydı önce DRAFT oluşturur. Sınav Yükle ekranı,
   // yapılandırması tamamlanmadan önce de bu sınava veri bağlayabilmelidir;
   // arşivlenen kayıtlar seçimden çıkarılır.
-  const params:any[]=[]; const where=[`e.status IN ('DRAFT','ACTIVE','CLOSED')`, `NOT EXISTS(SELECT 1 FROM exam_revision_state tr WHERE tr.exam_id=e.id AND tr.app_trashed_at IS NOT NULL)`];
+  const params:any[]=[]; const where=[`e.status IN ('DRAFT','ACTIVE','CLOSED')`, `NOT EXISTS(SELECT 1 FROM exam_revision_state tr WHERE tr.exam_id=e.id AND tr.app_trashed_at IS NOT NULL)`, `(e.status='DRAFT' OR NOT EXISTS(SELECT 1 FROM exam_channel_publications cp WHERE cp.exam_id=e.id AND cp.channel='LICENSED' AND cp.status<>'ACTIVE'))`];
   if(scope){where.push('COALESCE(p.scope,\'INSTITUTION\')=?');params.push(scope);}
   if(q){where.push(`(e.title LIKE ? OR p.catalog_code LIKE ? OR pub.name LIKE ?)`); const s=`%${q}%`;params.push(s,s,s);}
   if(user.role!=='SUPER_ADMIN'){
