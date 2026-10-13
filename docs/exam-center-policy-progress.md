@@ -30,3 +30,10 @@ Kompakt sınav merkezi; sevilen sınav ekleme formunu koruma; isteğe bağlı ka
 4. Yeni sürümün gerçekten başarılı deploy sonucunu ve sağlık kontrollerini görmeden canlıya alındı deme.
 
 Repo: yildizyayin/yildiz-sinav. Çalışma branch: fix/exam-policy-20261012. Sonuç portalı üretimde kanonik APP D1/R2 paylaşır; demo/staging kayıtları üretim sonuç portalına aktarılmaz.
+
+## Yayın kontrol noktası — 13 Ekim 2026
+PR #239 birleştirildi (6b81db25). Son kaynak sürümü 08fdd5f8 için GitHub CI ve 26 browser senaryosu başarılı: https://github.com/yildizyayin/yildiz-sinav/actions/runs/38413634094
+
+Birleştirme sırasında main'de ayrıca Soru Havuzu değişiklikleri vardı. Demo dağıtımı 0102 pilot bütçe migration'ında Cloudflare SQLITE incomplete input hatası aldı. Bu migration demo üzerinde PENDING, üretimdeki son başarılı dağıtım 679f629e olup 0102 içermediğinden uygulanmamış trigger içindeki CASE/END ifadesi SELECT RAISE ... WHERE ile sadeleştirildi (f229bf69). Bütçe, aşım ve tekrar rezervasyon testleri 4/4 geçti. Başarılı yeni remote dağıtım henüz doğrulanmış değil.
+
+Üretim kuyruğunda eski 67ad6d74 sürümünün 38413821707 çalışması production reviewer onayı bekliyor. Sonuç yayını da production reviewer onayı gerektiriyor. Eski sürümü onaylama; güncel deployment çalışmasını kullan. Ortam onayını GitHub bağlantısındaki araçlar değiştiremiyor; bu yetki kullanıcı hesabında.
