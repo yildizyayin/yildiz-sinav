@@ -16,5 +16,5 @@ WHEN NOT EXISTS(SELECT 1 FROM question_agent_pilot_reservations WHERE job_id=NEW
 BEGIN
  UPDATE question_agent_pilot_budget SET reserved_count=reserved_count+NEW.question_count
  WHERE id='pilot_50' AND reserved_count+NEW.question_count<=question_cap;
- SELECT CASE WHEN changes()<>1 THEN RAISE(ABORT,'PILOT_BUDGET_EXHAUSTED') END;
+ SELECT RAISE(ABORT,'PILOT_BUDGET_EXHAUSTED') WHERE changes()<>1;
 END;
