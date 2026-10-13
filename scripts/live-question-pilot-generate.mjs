@@ -44,7 +44,7 @@ try{
  const login=await req('/api/auth/login',{identifier:'super',password:process.env.SMOKE_DEMO_PASSWORD||'Demo123!',turnstileToken:'XXXX.DUMMY.TOKEN.XXXX',remember:false});if(!login.r.ok||!login.p.ok)throw Error('Staging admin session unavailable');cookie=(login.r.headers.get('set-cookie')||'').match(/(yildiz_session=[^;]+)/)?.[1];if(!cookie)throw Error('Staging session missing');
  await quarantineKnownInvalidDrafts();
  await retirePriorBoundedFailure();
- const readiness=(await req('/api/question-bank-standard/agent-pilot/readiness')).p;report.readiness=readiness;if(!readiness.manualPilot?.ready||readiness.manualPilot?.requestProfile!=='VALIDATED_QUESTION_DRAFT_V5')throw Error('Manual pilot gates are not ready');
+ const readiness=(await req('/api/question-bank-standard/agent-pilot/readiness')).p;report.readiness=readiness;if(!readiness.manualPilot?.ready||readiness.manualPilot?.requestProfile!=='VALIDATED_QUESTION_DRAFT_V6')throw Error('Manual pilot gates are not ready');
  const spec=JSON.parse(await readFile('data/question-pilot-math5-curriculum.json','utf8'));const versions=(await req('/api/curriculum-admin?academicYear='+spec.academicYear)).p;const cv=versions.versions?.find(v=>v.program_version===spec.programVersion&&v.verified===1&&v.authority==='MEB'&&v.source_url===spec.sourceUrl);if(!cv)throw Error('Verified official pilot curriculum missing');
  const detail=(await req('/api/curriculum-admin/versions/'+cv.id)).p;const outcomes=detail.outcomes.filter(o=>spec.outcomes.some(s=>s.code===o.code&&s.title===o.title)&&o.official===1&&o.active===1&&o.grade_level===5);if(outcomes.length!==2)throw Error('Official learning outcomes mismatch');
  for(let i=0;i<5;i++){
@@ -61,6 +61,12 @@ try{
    const replacement=await req('/api/question-bank-standard/generation-jobs',{requestKey:key(9000+i),outcomeId:o.id,questionCount:2,expectedContext:{curriculumVersionId:cv.id,academicYear:spec.academicYear,gradeLevel:5,subjectId:o.subject_id,programVersion:spec.programVersion}});
    if(!replacement.r.ok)throw Error('Rejected draft replacement failed');job=replacement.p.job;
   }
+ }
+ if(['FAILED','CANCELLED'].includes(job.status)&&job.attemptCount>=3&&job.generatedCount===0){
+  report.recoveredJobs=[...(report.recoveredJobs||[]),{priorJob:job,action:'REPLACE_EXHAUSTED_REJECTION_RECOVERY',quotaRefunded:false}];
+  const cancelled=await req('/api/question-bank-standard/generation-jobs/'+job.id+'/cancel',{},'PATCH');if(!cancelled.r.ok)throw Error('Bounded recovery could not be retired');
+  const replacement=await req('/api/question-bank-standard/generation-jobs',{requestKey:key(19000+i),outcomeId:o.id,questionCount:2,expectedContext:{curriculumVersionId:cv.id,academicYear:spec.academicYear,gradeLevel:5,subjectId:o.subject_id,programVersion:spec.programVersion}});
+  if(!replacement.r.ok)throw Error('Bounded recovery replacement failed');job=replacement.p.job;
  }
  report.jobs.push(job);
  if(job.status==='REVIEW_READY')continue;
