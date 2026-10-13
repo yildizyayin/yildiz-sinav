@@ -10,6 +10,8 @@ async function query(sql,params=[]){
 }
 async function exportEvidence(){
  const ids=report.jobs.map(j=>j.id);if(ids.length){const marks=ids.map(()=>'?').join(',');report.questions=await query(`SELECT q.id,q.grade_level,q.subject_id,q.option_count,q.stem_text,q.options_json,q.correct_answer,q.solution_text,q.difficulty_level,q.review_status,q.copyright_status,q.source_model,q.source_job_id,o.code outcome_code,o.title outcome_title,cv.verified,cv.source_url FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id JOIN outcomes o ON l.node_id='ln_'||o.id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE q.source_job_id IN (${marks}) ORDER BY q.source_job_id,q.id`,ids);report.usage=await query(`SELECT entity_id job_id,json_extract(details_json,'$.providerUsage') usage_json,json_extract(details_json,'$.verification') verification_json FROM audit_logs WHERE action='QUESTION_GENERATION_REVIEW_READY' AND entity_id IN (${marks}) ORDER BY created_at`,ids);}
+ report.previousLastBatch=await query("SELECT id,stem_text,options_json,correct_answer,solution_text,review_status FROM question_bank WHERE source_job_id=? AND grade_level=5 AND source_model='@cf/zai-org/glm-4.7-flash'",['qgj_3567ea5d-c0b8-4a26-aa8c-ff4be7a5d2ec']);
+ report.verificationBlocks=await query("SELECT entity_id,details_json FROM audit_logs WHERE action='QUESTION_GENERATION_VERIFICATION_BLOCKED' ORDER BY created_at DESC LIMIT 8");
  report.budget=await query("SELECT question_cap,reserved_count FROM question_agent_pilot_budget WHERE id='pilot_50'");report.generatedQuestions=new Set(report.questions.map(q=>q.id)).size;report.publishedQuestions=report.questions.filter(q=>q.review_status==='APPROVED').length;
 }
 async function quarantineKnownInvalidDrafts(){
@@ -52,3 +54,4 @@ report.runRequests=calls;await mkdir('tmp/question-pilot',{recursive:true});awai
 
 // Synthetic original questions contain no student information; expose full evidence for content review.
 console.log('PILOT_CONTENT_EVIDENCE '+JSON.stringify(report.questions));
+console.log('PREVIOUS_LAST_BATCH '+JSON.stringify(report.previousLastBatch||[]));
