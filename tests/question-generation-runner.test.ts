@@ -65,7 +65,7 @@ it('commits only review drafts, links, lineage, job and audit; reuses a complete
  const result=await run(id);expect(result.status).toBe(200);
  const body:any=await result.json();expect(body).toMatchObject({ok:true,reused:false,job:{status:'REVIEW_READY',questionCount:2,generatedCount:2,attemptCount:1}});
  expect(JSON.stringify(body)).not.toMatch(/lease_token|request_key|correctAnswer/);
- expect(provider).toHaveBeenCalledWith(DEFAULT_QUESTION_GENERATION_MODEL,expect.objectContaining({max_completion_tokens:6000,response_format:{type:'json_object'},stream:false}));
+ expect(provider).toHaveBeenCalledWith(DEFAULT_QUESTION_GENERATION_MODEL,expect.objectContaining({max_completion_tokens:6000,response_format:{type:'json_object'},stream:false,chat_template_kwargs:{enable_thinking:false}}));
  const questions=(await db.prepare('SELECT * FROM question_bank').all()).results;expect(questions).toHaveLength(2);
  for(const q of questions){expect(q).toMatchObject({review_status:'REVIEW',origin_kind:'AI_GENERATED',copyright_status:'RESTRICTED',correct_answer:'B',source_model:DEFAULT_QUESTION_GENERATION_MODEL,source_job_id:id,created_by:'admin'});expect(q.source_label).toContain('rights pending human verification');}
  expect(await db.prepare('SELECT count(*) n FROM question_generation_lineage').first('n')).toBe(2);
@@ -233,7 +233,7 @@ it('requires five choices at grade 9 and preserves the human review gate',async(
  expect((await run(id)).status).toBe(422);await assertEmpty();
  provider.mockResolvedValueOnce(output([{...draft(),options:[...draft().options,{label:'E',text:'Five'}]}]));expect((await run(id)).status).toBe(200);
  expect(await db.prepare('SELECT option_count,review_status,copyright_status FROM question_bank').first()).toMatchObject({option_count:5,review_status:'REVIEW',copyright_status:'RESTRICTED'});
- expect(provider.mock.calls.at(-1)![1].prompt).toContain('5 distinct nonempty options labeled A-E');
+ expect(provider.mock.calls.at(-1)![1].messages[0].content).toContain('5 distinct nonempty options labeled A-E');
  }finally{await db.exec('UPDATE learning_nodes SET grade_level=7;');}
 });
 
