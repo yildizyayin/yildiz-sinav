@@ -1,0 +1,30 @@
+name: Question Pilot First Ten
+on:
+  push:
+    branches: [staging]
+    paths: ['.github/question-pilot.execute']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: question-pilot-first-ten
+  cancel-in-progress: false
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: node scripts/live-question-pilot-generate.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-pilot-first-ten-${{ github.sha }}
+          path: tmp/question-pilot/
