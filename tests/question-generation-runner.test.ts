@@ -266,9 +266,11 @@ it('failed independent validation creates no bank rows or lineage and records th
 });
 it('a cancellation during independent validation cannot commit drafts',async()=>{
  env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';
+ const id=await create();
  provider.mockResolvedValueOnce(output()).mockImplementationOnce(async()=>{
-  await db.prepare("UPDATE question_generation_jobs SET status='CANCELLED',lease_token=NULL,lease_until=NULL").run();
+  const cancelled=await handleQuestionGenerationJobs(request(base+'/'+id+'/cancel','PATCH'),env,admin);
+  expect(cancelled?.status).toBe(200);
   return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[]}]})};
  });
- const id=await create();expect((await run(id)).status).toBe(409);await assertEmpty();
+ expect((await run(id)).status).toBe(409);await assertEmpty();
 });
