@@ -2,7 +2,7 @@ import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 const base='https://demo.anunex.com',account=process.env.CLOUDFLARE_ACCOUNT_ID,token=process.env.CLOUDFLARE_API_TOKEN;
 const report={environment:'staging',target:10,providerAttemptLimit:8,maxCompletionTokensPerAttempt:6000,generatedQuestions:0,publishedQuestions:0,jobs:[],questions:[]};let cookie,calls=0;
-async function req(path,body){const r=await fetch(base+path,{method:body?'POST':'GET',headers:{Origin:base,...(cookie?{Cookie:cookie}:{}),...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(120000)});const p=await r.json().catch(()=>({}));return {r,p};}
+async function req(path,body,method=body?'POST':'GET'){const r=await fetch(base+path,{method,headers:{Origin:base,...(cookie?{Cookie:cookie}:{}),...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(120000)});const p=await r.json().catch(()=>({}));return {r,p};}
 async function cf(path,body){const r=await fetch('https://api.cloudflare.com/client/v4/accounts/'+account+path,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});const p=await r.json();if(!r.ok||!p.success)throw Error('Cloudflare verification failed HTTP '+r.status);return p.result;}
 function key(i){let h=createHash('sha256').update('ANUNEX-MAT5-PILOT-20261013-'+i).digest('hex').slice(0,32);h=h.slice(0,12)+'4'+h.slice(13,16)+'8'+h.slice(17);return [h.slice(0,8),h.slice(8,12),h.slice(12,16),h.slice(16,20),h.slice(20)].join('-');}
 async function exportEvidence(){
@@ -13,14 +13,19 @@ async function exportEvidence(){
 try{
  const health=await req('/api/health');if(health.p.environment!=='staging')throw Error('Staging boundary failed');
  const login=await req('/api/auth/login',{identifier:'super',password:process.env.SMOKE_DEMO_PASSWORD||'Demo123!',turnstileToken:'XXXX.DUMMY.TOKEN.XXXX',remember:false});if(!login.r.ok||!login.p.ok)throw Error('Staging admin session unavailable');cookie=(login.r.headers.get('set-cookie')||'').match(/(yildiz_session=[^;]+)/)?.[1];if(!cookie)throw Error('Staging session missing');
- const readiness=(await req('/api/question-bank-standard/agent-pilot/readiness')).p;report.readiness=readiness;if(!readiness.manualPilot?.ready)throw Error('Manual pilot gates are not ready');
+ const readiness=(await req('/api/question-bank-standard/agent-pilot/readiness')).p;report.readiness=readiness;if(!readiness.manualPilot?.ready||readiness.manualPilot?.requestProfile!=='JSON_CHAT_NO_THINKING')throw Error('Manual pilot gates are not ready');
  const spec=JSON.parse(await readFile('data/question-pilot-math5-curriculum.json','utf8'));const versions=(await req('/api/curriculum-admin?academicYear='+spec.academicYear)).p;const cv=versions.versions?.find(v=>v.program_version===spec.programVersion&&v.verified===1&&v.authority==='MEB'&&v.source_url===spec.sourceUrl);if(!cv)throw Error('Verified official pilot curriculum missing');
  const detail=(await req('/api/curriculum-admin/versions/'+cv.id)).p;const outcomes=detail.outcomes.filter(o=>spec.outcomes.some(s=>s.code===o.code&&s.title===o.title)&&o.official===1&&o.active===1&&o.grade_level===5);if(outcomes.length!==2)throw Error('Official learning outcomes mismatch');
  for(let i=0;i<5;i++){
- const o=outcomes[i%outcomes.length];const created=await req('/api/question-bank-standard/generation-jobs',{requestKey:key(i),outcomeId:o.id,questionCount:2,expectedContext:{curriculumVersionId:cv.id,academicYear:spec.academicYear,gradeLevel:5,subjectId:o.subject_id,programVersion:spec.programVersion}});if(!created.r.ok)throw Error('Job creation failed '+(created.p.error?.code||created.r.status));let job=created.p.job;report.jobs.push(job);
+ const o=outcomes[i%outcomes.length];const created=await req('/api/question-bank-standard/generation-jobs',{requestKey:key(i),outcomeId:o.id,questionCount:2,expectedContext:{curriculumVersionId:cv.id,academicYear:spec.academicYear,gradeLevel:5,subjectId:o.subject_id,programVersion:spec.programVersion}});if(!created.r.ok)throw Error('Job creation failed '+(created.p.error?.code||created.r.status));let job=created.p.job;
+ if(job.status==='FAILED'&&job.attemptCount>=3&&job.generatedCount===0){
+ report.recoveredJobs=[...(report.recoveredJobs||[]),{priorJob:job,action:'CANCEL_AND_REPLACE',quotaRefunded:false}];const cancel=await req('/api/question-bank-standard/generation-jobs/'+job.id+'/cancel',{},'PATCH');if(!cancel.r.ok)throw Error('Failed job could not be retired');
+ const replacement=await req('/api/question-bank-standard/generation-jobs',{requestKey:key(5000+i),outcomeId:o.id,questionCount:2,expectedContext:{curriculumVersionId:cv.id,academicYear:spec.academicYear,gradeLevel:5,subjectId:o.subject_id,programVersion:spec.programVersion}});if(!replacement.r.ok)throw Error('Recovery job creation failed');job=replacement.p.job;
+ }
+ report.jobs.push(job);
  if(job.status==='REVIEW_READY')continue;
  for(let retry=0;retry<3&&calls<8;retry++){
- calls++;const run=await req('/api/question-bank-standard/generation-jobs/'+job.id+'/run',{});report.jobs[i]={...job,...run.p.job,error:run.p.error?.code};if(run.r.ok&&run.p.job?.status==='REVIEW_READY')break;
+ calls++;const run=await req('/api/question-bank-standard/generation-jobs/'+job.id+'/run',{});const current=(await req('/api/question-bank-standard/generation-jobs?academicYear='+spec.academicYear+'&outcomeId='+o.id+'&limit=50')).p.jobs?.find(j=>j.id===job.id);report.jobs[i]={...job,...current,...run.p.job,error:run.p.error?.code};if(run.r.ok&&run.p.job?.status==='REVIEW_READY')break;
  if(!['GENERATION_OUTPUT_INVALID','GENERATION_PROVIDER_FAILED','GENERATION_TIMEOUT','GENERATION_DUPLICATE'].includes(run.p.error?.code))throw Error('Generation blocked '+(run.p.error?.code||run.r.status));if(retry===2||calls===8)throw Error('Bounded provider retries exhausted');
  }
  if(report.jobs[i].status!=='REVIEW_READY')throw Error('Pilot batch incomplete');

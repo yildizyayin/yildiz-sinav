@@ -156,7 +156,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  let providerError:GenerationErrorCode|undefined;
  try{
   raw=await Promise.race([
-   env.AI!.run(model as any,{prompt:input,max_completion_tokens:6000,response_format:{type:'json_object'},stream:false} as any),
+   env.AI!.run(model as any,{...(model===DEFAULT_QUESTION_GENERATION_MODEL?{messages:[{role:'user',content:input}],chat_template_kwargs:{enable_thinking:false}}:{prompt:input}),max_completion_tokens:6000,response_format:{type:'json_object'},stream:false} as any),
    new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('GENERATION_TIMEOUT')),PROVIDER_TIMEOUT_MS);}),
   ]);
  }catch(e){providerError=e instanceof Error&&e.message==='GENERATION_TIMEOUT'?'GENERATION_TIMEOUT':'GENERATION_PROVIDER_FAILED';}
