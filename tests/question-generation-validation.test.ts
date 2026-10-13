@@ -32,7 +32,7 @@ it('blocks the real mixed-language and six-digit-only reading failures',()=>{
  const context={gradeLevel:5,outcomeCode:'MAT.5.1.1',outcomeTitle:'Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme'};
  const draft=q('A');draft.stemText='743.219 sayısının okunuşu hangisidir?';draft.options[0].text='Yedi yüz forty üç bin iki yüz on dokuz';
  expect(outcomeDraftIssues(draft,context)).toEqual(expect.arrayContaining(['NON_TURKISH_NUMBER_WORD','READING_OUTCOME_DIGIT_SCOPE']));
- draft.stemText='3.000.085 sayısının okunuşu hangisidir?';draft.options[0].text='Üç milyon seksen beş';
+ draft.stemText='3.000.085 sayısının okunuşu hangisidir?';draft.options=['Üç milyon seksen beş','Üç milyon sekiz yüz beş','Üç milyon sekiz bin beş','Üç milyon seksen altı'].map((text,i)=>({label:String.fromCharCode(65+i),text}));
  expect(outcomeDraftIssues(draft,context)).toEqual([]);
  expect(officialPilotGuidance(context)).toContain('7 to 12');
 });
