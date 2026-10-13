@@ -45,8 +45,8 @@ export function outcomeDraftIssues(q:CheckedDraft,context:any):string[]{
  const issues:string[]=[];
  if(/\b(?:forty|ninety|twenty|thirty|fifty|sixty|seventy|eighty|hundred|thousand|million)\b/i.test([q.stemText,q.solutionText,...q.options.map(o=>o.text)].join(' ')))issues.push('NON_TURKISH_NUMBER_WORD');
  if(context?.gradeLevel===5&&context.outcomeCode==='MAT.5.1.1'&&context.outcomeTitle===readingTitle){
-  const text=[q.stemText,...q.options.map(o=>o.text)].join(' ');
-  const literals=[...text.matchAll(/\d+(?:[. ]\d{3})*/g)].map(v=>Number(v[0].replace(/[. ]/g,'')));
+  const text=[q.stemText,...q.options.map(o=>o.text)].join('\n');
+  const literals=[...text.matchAll(/\d+(?:[. \u00a0\u202f]\d{3})*/g)].map(v=>Number(v[0].replace(/[. \u00a0\u202f]/g,'')));
   if(!literals.some(n=>n>=1000000&&n<1000000000000)||literals.some(n=>n>=1000000000000))issues.push('READING_OUTCOME_DIGIT_SCOPE');
  }
  if(context?.gradeLevel===5&&context.outcomeCode==='MAT.5.1.2'){
