@@ -60,7 +60,7 @@ export function readingAnswerIssues(q:CheckedDraft):string[]{
 export function mechanicalDraftIssues(q:CheckedDraft):string[]{
  const issues:string[]=[],values=q.options.map(o=>numericOption(o.text)),known=values.filter(v=>v!==null);
  if(new Set(known).size!==known.length)issues.push('EQUIVALENT_NUMERIC_OPTIONS');
- const equations=[...q.solutionText.matchAll(/(\d+(?:\.\d{3})*(?:,\d+)?)\s*([+*×÷\/−–-])\s*(\d+(?:\.\d{3})*(?:,\d+)?)\s*=\s*(\d+(?:\.\d{3})*(?:,\d+)?)/g)].filter(e=>{
+ const equations=[...q.solutionText.matchAll(/(\d+(?:[. \u00a0\u202f]\d{3})*(?:,\d+)?)\s*([+*×÷\/−–-])\s*(\d+(?:[. \u00a0\u202f]\d{3})*(?:,\d+)?)\s*=\s*(\d+(?:[. \u00a0\u202f]\d{3})*(?:,\d+)?)/g)].filter(e=>{
  const before=q.solutionText.slice(0,e.index).trimEnd(),after=q.solutionText.slice((e.index??0)+e[0].length).trimStart();
  return !/[+*×÷\/−–-]\s*$/.test(before)&&!/^([+*×÷\/−–-]|\d)/.test(after);
  });
@@ -100,7 +100,7 @@ export function outcomeDraftIssues(q:CheckedDraft,context:any):string[]{
   if(!literals.some(n=>n>=1000000&&n<1000000000000)||literals.some(n=>n>=1000000000000))issues.push('READING_OUTCOME_DIGIT_SCOPE');
  }
  if(context?.gradeLevel===5&&context.outcomeCode==='MAT.5.1.2'){
-  for(const e of q.solutionText.matchAll(/(\d+(?:\.\d{3})*)\s*([+*×÷\/−-])\s*(\d+(?:\.\d{3})*)/g)){
+  for(const e of q.solutionText.matchAll(/(\d+(?:[. \u00a0\u202f]\d{3})*)\s*([+*×÷\/−–-])\s*(\d+(?:[. \u00a0\u202f]\d{3})*)/g)){
    const a=number(e[1]),b=number(e[3]);
    if((e[2]==='+'||['-','−','–'].includes(e[2]))&&(a>99999||b>99999)||['*','×'].includes(e[2])&&(a>999||b>999)||['/','÷'].includes(e[2])&&(a>9999||b>99))issues.push('ARITHMETIC_OUTCOME_DIGIT_SCOPE');
   }

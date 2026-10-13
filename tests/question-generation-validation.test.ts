@@ -81,3 +81,8 @@ it('accepts exact Euclidean division and en-dash subtraction without inferring i
  expect(mechanicalDraftIssues(draft)).toEqual([]);
  expect(mechanicalDraftIssues({...draft,solutionText:'6.000 ÷ 28 = 214 tam bölüm, kalan 7.'})).toContain('INVALID_ARITHMETIC');
 });
+
+it('checks Unicode-grouped arithmetic and official bounds with en-dash subtraction',()=>{
+ expect(mechanicalDraftIssues(q('A','3\u202f250 − 1\u202f845 = 1\u202f404.'))).toContain('INVALID_ARITHMETIC');
+ expect(outcomeDraftIssues(q('A','100.000 – 1.000 = 99.000'),{gradeLevel:5,outcomeCode:'MAT.5.1.2'})).toContain('ARITHMETIC_OUTCOME_DIGIT_SCOPE');
+});
