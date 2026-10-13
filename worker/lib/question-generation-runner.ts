@@ -175,7 +175,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
   if(!verification.ok){
    const code:GenerationErrorCode=verification.unavailable?'GENERATION_VERIFICATION_UNAVAILABLE':'GENERATION_QUALITY_REJECTED';
    await fail(env,id,token,code);
-   await env.DB.prepare("INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'QUESTION_GENERATION_VERIFICATION_BLOCKED','question_generation_job',?,?)").bind(uuid('aud'),user.id,id,JSON.stringify({code,verification,providerUsage:providerUsage(raw)})).run();
+   await env.DB.prepare("INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'QUESTION_GENERATION_VERIFICATION_BLOCKED','question_generation_job',?,?)").bind(uuid('aud'),user.id,id,JSON.stringify({code,verification,drafts,providerUsage:providerUsage(raw)})).run();
    return err(422,code);
   }
  }

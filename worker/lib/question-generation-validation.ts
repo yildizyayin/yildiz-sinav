@@ -16,12 +16,15 @@ function numericOption(text:string):number|null {
 export function mechanicalDraftIssues(q:CheckedDraft):string[]{
  const issues:string[]=[],values=q.options.map(o=>numericOption(o.text)),known=values.filter(v=>v!==null);
  if(new Set(known).size!==known.length)issues.push('EQUIVALENT_NUMERIC_OPTIONS');
- const equations=[...q.solutionText.matchAll(/(\d+(?:\.\d{3})*(?:,\d+)?)\s*([+*×÷\/−-])\s*(\d+(?:\.\d{3})*(?:,\d+)?)\s*=\s*(\d+(?:\.\d{3})*(?:,\d+)?)/g)];
+ const equations=[...q.solutionText.matchAll(/(\d+(?:\.\d{3})*(?:,\d+)?)\s*([+*×÷\/−-])\s*(\d+(?:\.\d{3})*(?:,\d+)?)\s*=\s*(\d+(?:\.\d{3})*(?:,\d+)?)/g)].filter(e=>{
+ const before=q.solutionText.slice(0,e.index).trimEnd(),after=q.solutionText.slice((e.index??0)+e[0].length).trimStart();
+ return !/[+*×÷\/−-]\s*$/.test(before)&&!/^([+*×÷\/−-]|\d)/.test(after);
+ });
  for(const e of equations){const a=number(e[1]),b=number(e[3]),actual=number(e[4]),expected=e[2]==='+'?a+b:['-','−'].includes(e[2])?a-b:['*','×'].includes(e[2])?a*b:a/b;
  if(!Number.isFinite(expected)||Math.abs(expected-actual)>1e-8*Math.max(1,Math.abs(expected)))issues.push('INVALID_ARITHMETIC');}
  // Compare only a simple solution whose last equation yields a scalar answer.
  const chosen=values[q.options.findIndex(o=>o.label===q.correctAnswer)];
- if(equations.length&&chosen!==null&&chosen!==undefined&&values.every(v=>v!==null)&&chosen!==number(equations[equations.length-1][4]))issues.push('ANSWER_VALUE_MISMATCH');
+ if(equations.length===1&&chosen!==null&&chosen!==undefined&&values.every(v=>v!==null)&&chosen!==number(equations[equations.length-1][4]))issues.push('ANSWER_VALUE_MISMATCH');
  return [...new Set(issues)];
 }
 export function parseVerification(raw:any,count:number):{index:number;valid:boolean;issues:string[]}[]|null{
