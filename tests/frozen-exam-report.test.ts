@@ -20,6 +20,8 @@ it('reads only current published versions and enforces student, institution and 
  CREATE TABLE parent_student_links(id TEXT,parent_user_id TEXT,student_id TEXT,active INTEGER);INSERT INTO parent_student_links VALUES('link','parent','student',1);
  CREATE TABLE classes(id TEXT,name TEXT);INSERT INTO classes VALUES('class','7A');CREATE TABLE institutions(id TEXT,name TEXT);INSERT INTO institutions VALUES('school','Synthetic');
  CREATE TABLE exam_result_snapshots(exam_id TEXT,participant_id TEXT,student_id TEXT,institution_id TEXT,snapshot_version INTEGER,grade_level INTEGER,payload_json TEXT);
+ CREATE TABLE exam_outcome_analysis_revisions(exam_id TEXT,revision INTEGER,published_app_at TEXT,published_result_at TEXT);
+ CREATE TABLE exam_outcome_analysis_history(exam_id TEXT,revision INTEGER,participant_id TEXT,student_id TEXT,institution_id TEXT,grade_level INTEGER,academic_year TEXT,payload_json TEXT);
  CREATE TABLE exams(id TEXT,academic_year TEXT);INSERT INTO exams VALUES('e','2026-2027');
  CREATE TABLE exam_delivery_profiles(exam_id TEXT,snapshot_version INTEGER,result_freeze_status TEXT,published_at TEXT,result_publish_at TEXT);INSERT INTO exam_delivery_profiles VALUES('e',1,'PUBLISHED','2026-01-01',NULL);
  CREATE TABLE exam_participants(id TEXT,exam_id TEXT,student_id TEXT,institution_id TEXT,season_id TEXT);INSERT INTO exam_participants VALUES('p','e','student','school','season');`);

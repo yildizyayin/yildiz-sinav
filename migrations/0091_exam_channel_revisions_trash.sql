@@ -1,6 +1,7 @@
 CREATE TABLE exam_revision_state(exam_id TEXT PRIMARY KEY REFERENCES exams(id) ON DELETE CASCADE,revision INTEGER NOT NULL DEFAULT 1,app_trashed_at TEXT,prior_status TEXT,changed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE channel_definition_publications(exam_id TEXT NOT NULL REFERENCES exams(id) ON DELETE CASCADE,channel TEXT NOT NULL CHECK(channel IN ('LICENSED','RESULT_NETWORK')),source_revision INTEGER NOT NULL,definition_json TEXT NOT NULL,published_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,published_by TEXT REFERENCES users(id),status TEXT NOT NULL DEFAULT 'ACTIVE',PRIMARY KEY(exam_id,channel));
 INSERT INTO exam_revision_state(exam_id) SELECT id FROM exams;
+INSERT OR IGNORE INTO exam_channel_publications(id,exam_id,channel,status) SELECT 'licensed_legacy_'||id,id,'LICENSED','ACTIVE' FROM exams WHERE status IN ('ACTIVE','CLOSED');
 INSERT INTO channel_definition_publications(exam_id,channel,source_revision,definition_json,published_by,status)
 SELECT e.id,p.channel,1,json_object('title',e.title,'publisher_name',e.publisher_name,'exam_date',e.exam_date,'description',e.description),p.published_by,p.status FROM exam_channel_publications p JOIN exams e ON e.id=p.exam_id;
 CREATE TRIGGER exam_revision_new AFTER INSERT ON exams BEGIN INSERT OR IGNORE INTO exam_revision_state(exam_id) VALUES(NEW.id); END;

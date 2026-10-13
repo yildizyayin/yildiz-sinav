@@ -19,11 +19,13 @@ describe('exam center detail navigation', () => {
   });
 
   it('provides the required three-dot management actions on the detail page', () => {
-    for (const label of ['Düzenle','Kopyala','Raporlar','Arşivle','Sil']) expect(detail).toContain(label);
+    for (const label of ['Düzenle','Kopyala','Raporlar','Arşivle','Çöp kutusuna taşı']) expect(detail).toContain(label);
     expect(detail).toContain('<MoreVertical');
     expect(detail).toContain('/copy`');
     expect(detail).toContain("status:'ARCHIVED'");
-    expect(detail).toContain("method:'DELETE'");
+    expect(detail).toContain("/trash`");
+    expect(detail).toContain("scope:trashScope");
+    expect(detail).not.toContain("method:'DELETE'");
   });
 
   it('keeps upload/evaluation on the existing ExamCenter implementation', () => {

@@ -1,3 +1,4 @@
+import {examEvaluationAccess} from './lib/exam-evaluation-access';
 import reportingApp from './reporting-entry';
 import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
 import { getAuthUser } from './lib/auth';
@@ -42,7 +43,7 @@ async function assertInstitutionScope(env:Env,user:AuthUser,institutionId:string
 async function assertExamScope(env:Env,user:AuthUser,examId:string,institutionId:string){
  const exam=await one<any>(env.DB.prepare('SELECT id,title,status,owner_type,institution_id FROM exams WHERE id=?').bind(examId));
  if(!exam)return {response:notFound('Sınav bulunamadı.'),exam:null};
- if(exam.status!=='ACTIVE')return {response:badRequest('Sınav değerlendirmeye açık değil.','EXAM_NOT_ACTIVE'),exam:null};
+ const evaluationGate=await examEvaluationAccess(env,exam,institutionId);if(evaluationGate)return {response:evaluationGate,exam:null};
  if(user.role==='SUPER_ADMIN')return {response:null,exam};
  if(exam.owner_type==='INSTITUTION'&&exam.institution_id!==institutionId)return {response:forbidden(),exam:null};
  if(exam.owner_type==='CENTRAL'){

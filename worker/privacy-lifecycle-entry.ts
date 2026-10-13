@@ -289,6 +289,7 @@ async function executeDeletionJob(env: Env, admin: AuthUser, jobId: string): Pro
     statements.push(env.DB.prepare(`DELETE FROM student_intelligence_profile_history WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM student_intelligence_profiles WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM outcome_results WHERE student_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM exam_outcome_analysis_history WHERE student_id=? OR participant_id IN (SELECT id FROM exam_participants WHERE student_id=?)`).bind(studentId,studentId));
     statements.push(env.DB.prepare(`UPDATE admissions_candidates SET participant_id=NULL WHERE participant_id IN (SELECT id FROM exam_participants WHERE student_id=?)`).bind(studentId));
     statements.push(env.DB.prepare(`UPDATE scan_records SET canonical_json='{}',matched_student_id=NULL,match_status='INVALID',match_confidence=0,issues_json=NULL WHERE matched_student_id=?`).bind(studentId));
 

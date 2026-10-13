@@ -7,7 +7,7 @@ import {withExamOperationLock} from './lib/exam-operation-lock';
 import {refreshExamOutcomeAnalysis} from './lib/exam-outcome-history';
 
 async function managedExam(env:Env,user:AuthUser,id:string):Promise<any>{
- const exam=await one<any>(env.DB.prepare('SELECT * FROM exams WHERE id=?').bind(id));
+ const exam=await one<any>(env.DB.prepare('SELECT e.* FROM exams e WHERE e.id=? AND NOT EXISTS(SELECT 1 FROM exam_revision_state r WHERE r.exam_id=e.id AND r.app_trashed_at IS NOT NULL)').bind(id));
  return exam&&(user.role==='SUPER_ADMIN'||(user.role==='INSTITUTION_MANAGER'&&exam.owner_type==='INSTITUTION'&&exam.institution_id===user.institution_id))?exam:null;
 }
 export async function getOutcomeMappings(env:Env,exam:any):Promise<Response>{

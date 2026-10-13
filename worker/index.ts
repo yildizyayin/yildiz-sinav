@@ -381,7 +381,7 @@ async function setInstitutionStatus(request: Request, env: Env, user: AuthUser, 
 async function listExams(env: Env, user: AuthUser, url: URL): Promise<Response> {
   const institutionId = user.role === 'SUPER_ADMIN' ? url.searchParams.get('institutionId') : user.institution_id;
   const params: unknown[] = [];
-  let where = `e.status IN ('ACTIVE','CLOSED')`;
+  let where = `e.status IN ('ACTIVE','CLOSED') AND NOT EXISTS(SELECT 1 FROM exam_revision_state r WHERE r.exam_id=e.id AND r.app_trashed_at IS NOT NULL) AND NOT EXISTS(SELECT 1 FROM exam_channel_publications p WHERE p.exam_id=e.id AND p.channel='LICENSED' AND p.status<>'ACTIVE')`;
   if (institutionId) {
     where += ` AND (e.owner_type='CENTRAL' OR e.institution_id=? OR EXISTS(SELECT 1 FROM exam_institutions ei WHERE ei.exam_id=e.id AND ei.institution_id=? AND ei.enabled=1))`;
     params.push(institutionId, institutionId);

@@ -25,6 +25,20 @@ function fixture(failAudit=false){
  CREATE TABLE question_publisher_outcomes(exam_question_id TEXT,publisher_outcome_id TEXT);
  CREATE TABLE exam_optional_answer_keys(exam_id TEXT);INSERT INTO exam_optional_answer_keys VALUES('e');`);
  db.exec(readFileSync(new URL('../migrations/0059_exam_operation_write_guards.sql',import.meta.url),'utf8'));
+ db.exec(`ALTER TABLE exams ADD COLUMN academic_year TEXT DEFAULT '2026-2027';ALTER TABLE exams ADD COLUMN grade_level INTEGER DEFAULT 6;ALTER TABLE exams ADD COLUMN updated_at TEXT;
+ CREATE TABLE exam_revision_state(exam_id TEXT,revision INTEGER,app_trashed_at TEXT,prior_status TEXT);INSERT INTO exam_revision_state VALUES('e',1,NULL,NULL);
+ CREATE TABLE channel_definition_publications(exam_id TEXT,channel TEXT,source_revision INTEGER,definition_json TEXT,published_by TEXT,status TEXT,published_at TEXT);
+ CREATE TABLE exam_participants(id TEXT PRIMARY KEY,exam_id TEXT,participant_status TEXT,student_id TEXT,institution_id TEXT);
+ CREATE TABLE student_answers(participant_id TEXT,exam_question_id TEXT,status TEXT);
+ CREATE TABLE exam_results(participant_id TEXT);
+ CREATE TABLE curriculum_versions(id TEXT,academic_year TEXT,grade_level INTEGER,program_version TEXT,program_code TEXT,verified INTEGER,authority TEXT);
+ CREATE TABLE outcomes(id TEXT,curriculum_version_id TEXT,subject_id TEXT,grade_level INTEGER,official INTEGER,active INTEGER,code TEXT,title TEXT,topic TEXT,subtopic TEXT);
+ CREATE TABLE subjects(id TEXT,name TEXT,active INTEGER);INSERT INTO subjects VALUES('math','Synthetic Math',1);
+ CREATE TABLE publisher_outcome_labels(id TEXT,label_path_json TEXT);
+ CREATE TABLE outcome_results(id TEXT,student_id TEXT,exam_id TEXT,outcome_id TEXT,evidence_count INTEGER,correct_count INTEGER,success_rate REAL,mastery_status TEXT);
+ CREATE TABLE exam_outcome_analysis_revisions(exam_id TEXT,revision INTEGER,actor_id TEXT,published_app_at TEXT);
+ CREATE TABLE exam_outcome_analysis_history(exam_id TEXT,revision INTEGER,participant_id TEXT,student_id TEXT,institution_id TEXT,academic_year TEXT,grade_level INTEGER,payload_json TEXT);`);
+
  if(failAudit)db.exec("CREATE TRIGGER fail_audit BEFORE INSERT ON audit_logs BEGIN SELECT RAISE(ABORT,'AUDIT_FAILED');END");
  function prepare(sql:string,args:any[]=[]):any{return {bind:(...values:any[])=>prepare(sql,values),first:async()=>db.prepare(sql).get(...args),all:async()=>({results:db.prepare(sql).all(...args)}),run:async()=>({meta:{changes:Number(db.prepare(sql).run(...args).changes)}})}}
  const env={DB:{prepare,batch:async(statements:any[])=>{db.exec('BEGIN');try{const results=[];for(const s of statements)results.push(await s.run());db.exec('COMMIT');return results}catch(error){db.exec('ROLLBACK');throw error}}}} as any;
@@ -50,16 +64,15 @@ it('allows non-draft answer-key correction only after explicit withdrawal and bl
  f.db.exec("UPDATE exam_delivery_profiles SET result_freeze_status='PUBLISHED'");expect((await f.key()).status).toBe(400);expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(1);
  }finally{f.db.close()}});
 
-function prepareDeletion(db:DatabaseSync){db.exec(`CREATE TABLE exam_participants(exam_id TEXT);
- CREATE TABLE exam_channel_publications(exam_id TEXT);CREATE TABLE exam_institutions(exam_id TEXT);CREATE TABLE exam_optical_bindings(exam_id TEXT);CREATE TABLE exam_document_assets(exam_id TEXT);CREATE TABLE video_links(exam_id TEXT);`)}
-it('deletes an unused draft and its lock atomically with foreign keys enabled',async()=>{const f=fixture();try{prepareDeletion(f.db);expect((await f.remove()).status).toBe(200);expect(f.db.prepare('SELECT * FROM exams').all()).toHaveLength(0);expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(1)}finally{f.db.close()}});
+function prepareDeletion(db:DatabaseSync){db.exec(`CREATE TABLE exam_channel_publications(id TEXT,exam_id TEXT,channel TEXT,status TEXT,published_by TEXT,published_at TEXT,UNIQUE(exam_id,channel));CREATE TABLE exam_institutions(exam_id TEXT);CREATE TABLE exam_optical_bindings(exam_id TEXT);CREATE TABLE exam_document_assets(exam_id TEXT);CREATE TABLE video_links(exam_id TEXT);`)}
+it('trashes an unused draft while preserving its sources and releases the lock',async()=>{const f=fixture();try{prepareDeletion(f.db);expect((await f.remove()).status).toBe(200);expect(f.db.prepare('SELECT * FROM exams').all()).toHaveLength(1);expect((f.db.prepare('SELECT app_trashed_at FROM exam_revision_state').get() as any).app_trashed_at).toBeTruthy();expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(1)}finally{f.db.close()}});
 it('preserves a draft when deletion audit fails and releases the restored lock',async()=>{const f=fixture(true);try{prepareDeletion(f.db);await expect(f.remove()).rejects.toThrow('AUDIT_FAILED');expect(f.db.prepare('SELECT * FROM exams').all()).toHaveLength(1);expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);expect(f.db.prepare('SELECT * FROM exam_optional_answer_keys').all()).toHaveLength(1)}finally{f.db.close()}});
 
-function prepareEdits(db:DatabaseSync){db.exec(`ALTER TABLE exams ADD COLUMN title TEXT DEFAULT 'Original';ALTER TABLE exams ADD COLUMN grade_level INTEGER DEFAULT 6;ALTER TABLE exams ADD COLUMN exam_date TEXT;ALTER TABLE exams ADD COLUMN session_label TEXT;ALTER TABLE exams ADD COLUMN description TEXT;ALTER TABLE exams ADD COLUMN result_network_enabled INTEGER DEFAULT 1;ALTER TABLE exams ADD COLUMN scoring_override_json TEXT;ALTER TABLE exams ADD COLUMN scoring_settings_json TEXT;ALTER TABLE exams ADD COLUMN updated_at TEXT;
+function prepareEdits(db:DatabaseSync){db.exec(`ALTER TABLE exams ADD COLUMN title TEXT DEFAULT 'Original';ALTER TABLE exams ADD COLUMN exam_date TEXT;ALTER TABLE exams ADD COLUMN session_label TEXT;ALTER TABLE exams ADD COLUMN description TEXT;ALTER TABLE exams ADD COLUMN result_network_enabled INTEGER DEFAULT 1;ALTER TABLE exams ADD COLUMN scoring_override_json TEXT;ALTER TABLE exams ADD COLUMN scoring_settings_json TEXT;
  CREATE TABLE institutions(id TEXT PRIMARY KEY);INSERT INTO institutions VALUES('old-school'),('new-school');
  CREATE TABLE exam_institutions(id TEXT,exam_id TEXT,institution_id TEXT,enabled INTEGER);INSERT INTO exam_institutions VALUES('old-assignment','e','old-school',1);
- CREATE TABLE exam_channel_publications(id TEXT,exam_id TEXT,channel TEXT,status TEXT,published_by TEXT,published_at TEXT,UNIQUE(exam_id,channel));INSERT INTO exam_channel_publications VALUES('publication','e','RESULT_NETWORK','ACTIVE','admin','old');
- CREATE TABLE exam_participants(exam_id TEXT);CREATE TABLE subjects(id TEXT,active INTEGER);INSERT INTO subjects VALUES('math',1);
+ CREATE TABLE exam_channel_publications(id TEXT,exam_id TEXT,channel TEXT,status TEXT,published_by TEXT,published_at TEXT,UNIQUE(exam_id,channel));INSERT INTO exam_channel_publications VALUES('publication','e','RESULT_NETWORK','ACTIVE','admin','old'),('licensed','e','LICENSED','ACTIVE','admin','old');
+ 
  ALTER TABLE exam_subjects ADD COLUMN id TEXT;ALTER TABLE exam_subjects ADD COLUMN wrong_divisor REAL DEFAULT 4;
  ALTER TABLE exam_booklets ADD COLUMN id TEXT;`)}
 it.each(['general','structure','institutions','status'])('rolls back %s edits when audit fails',async(kind)=>{
@@ -70,4 +83,4 @@ it.each(['general','structure','institutions','status'])('rolls back %s edits wh
  expect(f.db.prepare('SELECT * FROM exams').get()).toEqual(before.exam);expect(f.db.prepare('SELECT * FROM answer_keys').all()).toEqual(before.keys);expect(f.db.prepare('SELECT * FROM exam_questions').all()).toEqual(before.questions);expect(f.db.prepare('SELECT * FROM exam_institutions').all()).toEqual(before.institutions);expect(f.db.prepare('SELECT * FROM exam_channel_publications').all()).toEqual(before.publication);expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toHaveLength(0);
  }finally{f.db.close()}
 });
-it('commits status and channel archive with one audit',async()=>{const f=fixture();try{prepareEdits(f.db);expect((await f.edit('status',{status:'ARCHIVED'})).status).toBe(200);expect((f.db.prepare('SELECT status FROM exams').get() as any).status).toBe('ARCHIVED');expect((f.db.prepare('SELECT status FROM exam_channel_publications').get() as any).status).toBe('ARCHIVED');expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(1)}finally{f.db.close()}});
+it('archives the app channel while preserving an independently published result portal',async()=>{const f=fixture();try{prepareEdits(f.db);expect((await f.edit('status',{status:'ARCHIVED'})).status).toBe(200);expect((f.db.prepare('SELECT status FROM exams').get() as any).status).toBe('DRAFT');expect((f.db.prepare("SELECT status FROM exam_channel_publications WHERE channel='RESULT_NETWORK'").get() as any).status).toBe('ACTIVE');expect((f.db.prepare("SELECT status FROM exam_channel_publications WHERE channel='LICENSED'").get() as any).status).toBe('ARCHIVED');expect(f.db.prepare('SELECT * FROM audit_logs').all()).toHaveLength(1)}finally{f.db.close()}});
