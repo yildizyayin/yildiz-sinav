@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {pilotBatchLimit,canExecuteScheduledPilot,validateScheduledActor,canDispatchToReviewQueue} from '../worker/lib/question-agent-dispatch-plan';
+import {pilotBatchLimit,canExecuteScheduledPilot,validateScheduledActor,canDispatchToReviewQueue,evaluatePilotReadiness} from '../worker/lib/question-agent-dispatch-plan';
 describe('agent pilot batch constraints',()=>{
  it('caps each job at ten',()=>expect(pilotBatchLimit(50,50,50)).toBe(10));
  it('honors remaining budget and review slots',()=>expect(pilotBatchLimit(10,8,3)).toBe(3));
@@ -49,4 +49,16 @@ describe('full batch review capacity',()=>{
  it('rejects capacity short of the selected batch',()=>expect(canDispatchToReviewQueue({reviewAvailable:true,reviewSlots:5,questionCount:10})).toBe(false));
  it('blocks a disabled queue',()=>expect(canDispatchToReviewQueue({reviewAvailable:false,reviewSlots:10,questionCount:10})).toBe(false));
  it('accepts a ready queue with enough slots',()=>expect(canDispatchToReviewQueue({reviewAvailable:true,reviewSlots:10,questionCount:10})).toBe(true));
+});
+
+describe('initial question-agent pilot readiness',()=>{
+ const ready={aiBindingPresent:true,generationEnabled:true,pilotMode:true,dispatchPreview:true,executionEnabled:true,serviceActorVerified:true,verifiedOutcomeCount:5,queuedQuestionCount:10,reviewAvailable:true,reviewSlots:10,remainingBudget:50};
+ it('passes only complete preparation',()=>expect(evaluatePilotReadiness(ready).ready).toBe(true));
+ it('blocks absent verified outcomes',()=>expect(evaluatePilotReadiness({...ready,verifiedOutcomeCount:0}).reasons).toContain('VERIFIED_OUTCOMES_MISSING'));
+ it('blocks absent provider binding and review capacity',()=>{
+  const result=evaluatePilotReadiness({...ready,aiBindingPresent:false,reviewSlots:5});
+  expect(result.reasons).toContain('AI_BINDING_MISSING');
+  expect(result.reasons).toContain('REVIEW_CAPACITY_REQUIRED');
+ });
+ it('rejects pilot with disabled flags',()=>expect(evaluatePilotReadiness({...ready,executionEnabled:false}).ready).toBe(false));
 });
