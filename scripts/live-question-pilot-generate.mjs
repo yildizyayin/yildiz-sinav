@@ -18,7 +18,7 @@ try{
  const detail=(await req('/api/curriculum-admin/versions/'+cv.id)).p;const outcomes=detail.outcomes.filter(o=>spec.outcomes.some(s=>s.code===o.code&&s.title===o.title)&&o.official===1&&o.active===1&&o.grade_level===5);if(outcomes.length!==2)throw Error('Official learning outcomes mismatch');
  for(let i=0;i<5;i++){
  const o=outcomes[i%outcomes.length];const created=await req('/api/question-bank-standard/generation-jobs',{requestKey:key(i),outcomeId:o.id,questionCount:2,expectedContext:{curriculumVersionId:cv.id,academicYear:spec.academicYear,gradeLevel:5,subjectId:o.subject_id,programVersion:spec.programVersion}});if(!created.r.ok)throw Error('Job creation failed '+(created.p.error?.code||created.r.status));let job=created.p.job;
- if(job.status==='FAILED'&&job.attemptCount>=3&&job.generatedCount===0){
+ if(['FAILED','CANCELLED'].includes(job.status)&&job.attemptCount>=3&&job.generatedCount===0){
  report.recoveredJobs=[...(report.recoveredJobs||[]),{priorJob:job,action:'CANCEL_AND_REPLACE',quotaRefunded:false}];const cancel=await req('/api/question-bank-standard/generation-jobs/'+job.id+'/cancel',{},'PATCH');if(!cancel.r.ok)throw Error('Failed job could not be retired');
  const replacement=await req('/api/question-bank-standard/generation-jobs',{requestKey:key(5000+i),outcomeId:o.id,questionCount:2,expectedContext:{curriculumVersionId:cv.id,academicYear:spec.academicYear,gradeLevel:5,subjectId:o.subject_id,programVersion:spec.programVersion}});if(!replacement.r.ok)throw Error('Recovery job creation failed');job=replacement.p.job;
  }
