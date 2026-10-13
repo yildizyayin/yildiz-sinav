@@ -1,4 +1,5 @@
 import type { AuthUser, Env } from '../types';
+import { checkQuestionAgentPilot } from './question-agent-pilot-policy';
 import { json, one, uuid } from './db';
 import { validMultipleChoiceQuestion } from './question-review';
 import { generationJobDto, generationJobFields, questionGenerationEnabled } from './question-generation-jobs';
@@ -105,6 +106,21 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  if(!prior)return err(404,'GENERATION_JOB_NOT_FOUND');
  if(prior.status==='REVIEW_READY')return json({ok:true,job:generationJobDto(prior as any),reused:true});
  if(prior.status==='CANCELLED')return err(409,'GENERATION_CANCELLED');
+ // Apply extra safety limits only to an explicitly enabled automated pilot.
+ // Existing manual Super Admin execution retains its current reviewed workflow.
+ if ((env as Env & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE === 'true') {
+ const pilotConfig=env as Env & {QUESTION_PILOT_BUDGET_REMAINING?:string;QUESTION_PILOT_REVIEW_AVAILABLE?:string};
+ const budgetRaw=pilotConfig.QUESTION_PILOT_BUDGET_REMAINING;
+ const budgetRemaining=budgetRaw && budgetRaw.trim()!=='' ? Number(budgetRaw) : NaN;
+ const pilot=checkQuestionAgentPilot({
+  gradeLevel:prior.grade_level,academicYear:prior.academic_year,
+  curriculumVerified:!!(await one<{verified:number}>(env.DB.prepare(`SELECT cv.verified FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE o.id=? AND o.active=1 AND cv.id=? AND cv.grade_level=? AND cv.academic_year=? AND o.subject_id=?`).bind(prior.outcome_id,prior.curriculum_version_id,prior.grade_level,prior.academic_year,prior.subject_id)))?.verified,
+  outcomeActive:true,questionCount:prior.question_count,
+  generationEnabled:questionGenerationEnabled(env),budgetRemaining,
+  reviewQueueAvailable:pilotConfig.QUESTION_PILOT_REVIEW_AVAILABLE==='true',
+ });
+ if(!pilot.ok)return json({ok:false,error:{code:'PILOT_GUARD_BLOCKED',reasons:pilot.reasons}},409);
+ }
  const now=new Date(),token=uuid('lease'),until=new Date(now.getTime()+LEASE_MS).toISOString();
  const claimed=await env.DB.prepare(`UPDATE question_generation_jobs AS j SET status='RUNNING',attempt_count=attempt_count+1,
   lease_token=?,lease_until=?,error_code=NULL WHERE id=? AND attempt_count<3
