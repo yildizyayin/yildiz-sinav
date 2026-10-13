@@ -63,9 +63,16 @@ export async function recordExamAssessments(env: Env, batchId: string): Promise<
   for (const participant of participants) {
     const result = await one<any>(env.DB.prepare(`SELECT success_percent FROM exam_results WHERE participant_id=?`).bind(participant.participant_id));
     if (!result) continue;
-    const answerRows = await all<any>(env.DB.prepare(`SELECT sa.exam_question_id question_id,sa.answer,sa.status,qo.outcome_id,q.subject_id
+    const answerRows = await all<any>(env.DB.prepare(`SELECT sa.exam_question_id question_id,sa.answer,sa.status,
+       coalesce(sbo.outcome_id,qo.outcome_id) outcome_id,q.subject_id
       FROM student_answers sa JOIN exam_questions q ON q.id=sa.exam_question_id
-      LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id WHERE sa.participant_id=?`).bind(participant.participant_id));
+      LEFT JOIN studio_exam_booklet_outcomes sbo ON sbo.exam_id=?
+       AND sbo.booklet_code=coalesce(?, 'A')
+       AND sbo.printed_question_no=coalesce(q.global_no,q.question_no)
+      LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id
+       AND NOT EXISTS(SELECT 1 FROM studio_exam_booklet_positions sp
+        WHERE sp.exam_id=? AND sp.booklet_code=coalesce(?, 'A'))
+      WHERE sa.participant_id=?`).bind(participant.exam_id,participant.booklet_code,participant.exam_id,participant.booklet_code,participant.participant_id));
     const subjectIds = [...new Set(answerRows.map(row => row.subject_id).filter(Boolean))];
     await recordAssessmentRun(env.DB, {
       id:`asr_exam_${participant.participant_id}`, institutionId:participant.institution_id, studentId:participant.student_id,

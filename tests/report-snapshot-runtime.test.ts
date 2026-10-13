@@ -27,6 +27,8 @@ it('captures independent report evidence once per version with real SQLite JSON'
       INSERT INTO question_outcomes VALUES('q1','o'),('q2','o'),('q3','o');
       INSERT INTO student_answers VALUES('p','q1','CORRECT'),('p','q2','CORRECT'),('p','q3','INVALID'),('other-institution','q1','WRONG');
       INSERT INTO tyt_optional_philosophy_results VALUES('p','fel','B',1,1,3,0,5,20);`);
+  // Mirrors the additive Studio booklet tables for legacy report fixture databases.
+  db.exec("CREATE TABLE exam_questions(id TEXT PRIMARY KEY,exam_id TEXT,question_no INTEGER,global_no INTEGER); INSERT INTO exam_questions VALUES('q1','e',1,1),('q2','e',2,2),('q3','e',3,3); CREATE TABLE studio_exam_booklet_positions(exam_id TEXT,booklet_code TEXT,printed_question_no INTEGER); CREATE TABLE studio_exam_booklet_outcomes(exam_id TEXT,booklet_code TEXT,printed_question_no INTEGER,outcome_id TEXT);");
     db.exec("ALTER TABLE exams ADD COLUMN academic_year TEXT DEFAULT '2026-2027';ALTER TABLE exam_participants ADD COLUMN name_snapshot TEXT;ALTER TABLE exam_participants ADD COLUMN student_number_snapshot TEXT;ALTER TABLE exam_participants ADD COLUMN class_snapshot TEXT");
     db.exec("ALTER TABLE outcomes ADD COLUMN curriculum_version_id TEXT;CREATE TABLE curriculum_versions(id TEXT,academic_year TEXT,grade_level INTEGER,program_version TEXT,verified INTEGER);INSERT INTO curriculum_versions VALUES('cv','2026-2027',7,'verified-program',1);UPDATE outcomes SET curriculum_version_id='cv'");
     db.prepare(REPORT_SNAPSHOT_SQL).run('e',1);

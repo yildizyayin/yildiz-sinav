@@ -31,6 +31,8 @@ function fixture(failAudit=false){
     CREATE TABLE exam_publication_stats(exam_id TEXT,snapshot_version INTEGER,institution_count INTEGER,participant_count INTEGER,city_count INTEGER,payload_json TEXT);
     CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
     INSERT INTO exam_result_snapshots(id,exam_id,participant_id,snapshot_version,institution_id,net,payload_json) VALUES('previous','e','p',0,'school',1,'previous-payload');`);
+  // Mirrors the additive Studio booklet tables for legacy report fixture databases.
+  db.exec("CREATE TABLE exam_questions(id TEXT PRIMARY KEY,exam_id TEXT,question_no INTEGER,global_no INTEGER); CREATE TABLE studio_exam_booklet_positions(exam_id TEXT,booklet_code TEXT,printed_question_no INTEGER); CREATE TABLE studio_exam_booklet_outcomes(exam_id TEXT,booklet_code TEXT,printed_question_no INTEGER,outcome_id TEXT);");
   db.exec("ALTER TABLE exams ADD COLUMN academic_year TEXT DEFAULT '2026-2027';ALTER TABLE exam_participants ADD COLUMN name_snapshot TEXT;ALTER TABLE exam_participants ADD COLUMN student_number_snapshot TEXT");
   function statement(sql:string,args:any[]=[]):any{return {
     bind:(...values:any[])=>statement(sql,values),
