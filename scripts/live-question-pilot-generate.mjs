@@ -42,6 +42,12 @@ async function quarantineKnownInvalidDrafts(){
 try{
  const health=await req('/api/health');if(health.p.environment!=='staging')throw Error('Staging boundary failed');
  const login=await req('/api/auth/login',{identifier:'super',password:process.env.SMOKE_DEMO_PASSWORD||'Demo123!',turnstileToken:'XXXX.DUMMY.TOKEN.XXXX',remember:false});if(!login.r.ok||!login.p.ok)throw Error('Staging admin session unavailable');cookie=(login.r.headers.get('set-cookie')||'').match(/(yildiz_session=[^;]+)/)?.[1];if(!cookie)throw Error('Staging session missing');
+ // Read-only quota check before any API mutation or model request.
+ const pilotBudget=await query("SELECT question_cap,reserved_count FROM question_agent_pilot_budget WHERE id='pilot_50'");
+ if(pilotBudget.length!==1)throw Error('Pilot budget ledger unavailable');
+ const remaining=Number(pilotBudget[0].question_cap)-Number(pilotBudget[0].reserved_count);
+ report.preflightBudget={cap:Number(pilotBudget[0].question_cap),reserved:Number(pilotBudget[0].reserved_count),remaining};
+ if(!Number.isSafeInteger(remaining)||remaining<2)throw Error('Pilot budget has fewer than two question reservations remaining; no mutations performed');
  await quarantineKnownInvalidDrafts();
  await retirePriorBoundedFailure();
  const readiness=(await req('/api/question-bank-standard/agent-pilot/readiness')).p;report.readiness=readiness;if(!readiness.manualPilot?.ready||readiness.manualPilot?.requestProfile!=='VALIDATED_QUESTION_DRAFT_V6')throw Error('Manual pilot gates are not ready');
