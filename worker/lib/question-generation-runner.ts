@@ -1,4 +1,4 @@
-import {verifyQuestionDrafts,readAiJson} from './question-generation-validation';
+import {verifyQuestionDrafts,readAiJson,officialPilotGuidance} from './question-generation-validation';
 import type { AuthUser, Env } from '../types';
 import { checkQuestionAgentPilot } from './question-agent-pilot-policy';
 import { json, one, uuid } from './db';
@@ -147,7 +147,11 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  }
  const job={...prior,lease_token:token,lease_until:until,status:'RUNNING'};
  const model=(env.QUESTION_GENERATION_MODEL?.trim()||DEFAULT_QUESTION_GENERATION_MODEL);
- const input=prompt(job);
+ const questionContext={gradeLevel:job.grade_level,outcomeCode:job.outcome_code,outcomeTitle:job.outcome_title,academicYear:job.academic_year};
+ const history=env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'?await one<{previous_json:string}>(env.DB.prepare("SELECT COALESCE(json_group_array(stem_text),'[]') previous_json FROM (SELECT substr(q.stem_text,1,300) stem_text FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id WHERE l.node_id=? AND q.academic_year=? AND q.grade_level=? AND q.subject_id=? AND q.owner_type='PLATFORM' AND q.origin_kind='AI_GENERATED' ORDER BY q.created_at DESC,q.id DESC LIMIT 12)").bind('ln_'+job.outcome_id,job.academic_year,job.grade_level,job.subject_id)):null;
+ const previousQuestions:string[]=JSON.parse(history?.previous_json??'[]');
+ const input=prompt(job)+' Source-derived constraints and variation data: '+JSON.stringify({officialScopeGuidance:officialPilotGuidance(questionContext),previousQuestions,variationSeed:id+token});
+
  if(new TextEncoder().encode(input).length>16*1024){await fail(env,id,token,'GENERATION_CONTEXT_CHANGED');return err(409,'GENERATION_CONTEXT_CHANGED');}
  let raw:unknown;
  let timer:ReturnType<typeof setTimeout>|undefined;
@@ -166,7 +170,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  if(!drafts){await fail(env,id,token,'GENERATION_OUTPUT_INVALID');return err(422,'GENERATION_OUTPUT_INVALID');}
  let verification:Awaited<ReturnType<typeof verifyQuestionDrafts>>|null=null;
  if(env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'){
-  verification=await verifyQuestionDrafts(env,{gradeLevel:job.grade_level,outcomeCode:job.outcome_code,outcomeTitle:job.outcome_title,academicYear:job.academic_year},drafts);
+  verification=await verifyQuestionDrafts(env,{...questionContext,previousQuestions},drafts);
   const afterVerification=await executionFence(env,id,token);if(afterVerification)return afterVerification;
   if(!verification.ok){
    const code:GenerationErrorCode=verification.unavailable?'GENERATION_VERIFICATION_UNAVAILABLE':'GENERATION_QUALITY_REJECTED';
