@@ -56,3 +56,11 @@ it('does not misread a longer expression or a multi-step final check as a simple
  const draft=q('A','1000 - 580 = 420. Kontrol: 420 + 580 = 1000.');
  expect(mechanicalDraftIssues(draft)).not.toContain('ANSWER_VALUE_MISMATCH');
 });
+
+it('keeps twelve-digit choices separate instead of joining them into one oversized number',()=>{
+ const context={gradeLevel:5,outcomeCode:'MAT.5.1.1',outcomeTitle:'Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme'};
+ const draft=q('A');draft.stemText='"dört yüz yetmiş üç milyar iki yüz kırk beş milyon sekiz yüz on üç bin beş yüz doksan iki" hangi sayıdır?';
+ draft.options=['473.245.813.592','473.245.831.592','473.254.813.592','473.245.813.529'].map((text,i)=>({label:String.fromCharCode(65+i),text}));
+ expect(outcomeDraftIssues(draft,context)).toEqual([]);
+ draft.options[0].text='473\u202f245\u202f813\u202f592';expect(outcomeDraftIssues(draft,context)).toEqual([]);
+});
