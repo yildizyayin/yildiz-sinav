@@ -9,6 +9,7 @@ it('pins results to the channel publication and fails closed for missing payload
  const db=new DatabaseSync(':memory:');try{
  db.exec(`CREATE TABLE result_access_identities(participant_id TEXT,result_institution_id TEXT,administration_id TEXT,normalized_name TEXT,grade_level INTEGER,student_number_lookup_token TEXT,tckn_lookup_token TEXT,expires_at TEXT);
  CREATE TABLE result_network_institutions(id TEXT,meb_code TEXT);
+ CREATE TABLE exam_channel_publications(exam_id TEXT,channel TEXT,status TEXT);
  CREATE TABLE exam_administrations(id TEXT,exam_id TEXT,channel TEXT,status TEXT,published_snapshot_version INTEGER,published_at TEXT);
  CREATE TABLE exam_result_snapshots(exam_id TEXT,participant_id TEXT,snapshot_version INTEGER,payload_json TEXT,national_rank INTEGER,national_count INTEGER);
  INSERT INTO result_network_institutions VALUES('school','code');
@@ -16,12 +17,14 @@ it('pins results to the channel publication and fails closed for missing payload
  INSERT INTO exam_administrations VALUES('admin','e','RESULT_NETWORK','PUBLISHED',1,'2026-10-01');`);
  for(const scope of ['class','grade','institution','district','city','network'])for(const suffix of ['rank','count'])db.exec(`ALTER TABLE exam_result_snapshots ADD COLUMN ${scope}_${suffix} INTEGER`);
  db.exec(readFileSync(new URL('../migrations/0062_result_artifact_retirement.sql',import.meta.url),'utf8'));
- const payload={schemaVersion:1,exam:{exam_id:'e',net:2,title:'Original'},subjects:[{subject_name:'Math',net:2}],outcomes:[{title:'Outcome',evidence_count:2,correct_count:1}],wrongQuestionIds:['q']};
+ const payload={schemaVersion:1,exam:{exam_id:'e',academic_year:'2026-2027',net:2,title:'Original'},subjects:[{subject_name:'Math',net:2}],outcomes:[{title:'Outcome',evidence_count:2,correct_count:1}],wrongQuestionIds:['q']};
  db.prepare('INSERT INTO exam_result_snapshots(exam_id,participant_id,snapshot_version,payload_json,national_rank,national_count) VALUES(?,?,?,?,?,?)').run('e','p',1,JSON.stringify(payload),1,5);
  db.prepare('INSERT INTO exam_result_snapshots(exam_id,participant_id,snapshot_version,payload_json,national_rank,national_count) VALUES(?,?,?,?,?,?)').run('e','p',2,JSON.stringify({...payload,exam:{net:99}}),99,100);
  const read=()=>db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('code','ada',6,'number','number','','') as any[];
  const summaries=()=>db.prepare(RESULT_NETWORK_SUMMARY_SQL).all('code','ada',6,'number','number','','') as any[];
  expect(snapshotSummary(summaries()[0])).toEqual(snapshotSummary(read()[0]));
+ db.exec("INSERT INTO exam_channel_publications VALUES('e','RESULT_NETWORK','ARCHIVED')");expect(read()).toHaveLength(0);expect(summaries()).toHaveLength(0);
+ db.exec("UPDATE exam_channel_publications SET status='ACTIVE'");expect(read()).toHaveLength(1);expect((db.prepare("SELECT status FROM exam_administrations").get() as any).status).toBe('PUBLISHED');
  expect(JSON.parse(summaries()[0].payload_json).subjects).toEqual([]);
  expect(summaries()[0].payload_json.length).toBeLessThan(read()[0].payload_json.length);
  db.prepare("UPDATE exam_result_snapshots SET payload_json='invalid-json' WHERE snapshot_version=1").run();
@@ -30,6 +33,10 @@ it('pins results to the channel publication and fails closed for missing payload
  db.exec("ALTER TABLE result_network_institutions ADD COLUMN licensed_institution_id TEXT;CREATE TABLE institutions(id TEXT,code TEXT);INSERT INTO institutions VALUES('institution','code');ALTER TABLE exam_result_snapshots ADD COLUMN net REAL DEFAULT 2");
  expect(db.prepare(NETWORK_INSTITUTION_SNAPSHOT_SQL).all('admin','institution','institution')).toHaveLength(1);
  expect(db.prepare(NETWORK_INSTITUTION_SNAPSHOT_SQL).all('admin','foreign','foreign')).toHaveLength(0);
+ db.exec(`ALTER TABLE exam_result_snapshots ADD COLUMN student_id TEXT;ALTER TABLE exam_result_snapshots ADD COLUMN institution_id TEXT;ALTER TABLE exam_result_snapshots ADD COLUMN grade_level INTEGER;
+ CREATE TABLE exam_outcome_analysis_revisions(exam_id TEXT,revision INTEGER,published_app_at TEXT,published_result_at TEXT);
+ CREATE TABLE exam_outcome_analysis_history(exam_id TEXT,revision INTEGER,participant_id TEXT,student_id TEXT,institution_id TEXT,grade_level INTEGER,academic_year TEXT,payload_json TEXT);
+ CREATE TABLE channel_definition_publications(exam_id TEXT,channel TEXT,status TEXT,definition_json TEXT);`);
  const identity={meb_code:'code',normalized_name:'ada',grade_level:6,student_number_lookup_token:'number',tckn_lookup_token:null,display_name_snapshot:'School'};
  const prepare=(sql:string,args:any[]=[]):any=>({bind:(...values:any[])=>prepare(sql,values),first:async()=>sql.includes('FROM result_portal_sessions')?identity:db.prepare(sql).get(...args),all:async()=>({results:db.prepare(sql).all(...args)})});
  const env={DB:{prepare}} as any;
@@ -40,7 +47,7 @@ it('pins results to the channel publication and fails closed for missing payload
  const detail=await handleResultNetworkRequest(request('/api/public/results/exams/e'),env);
  expect((await detail!.json() as any).subjects[0].net).toBe(2);
  expect((await handleResultNetworkRequest(request('/api/public/results/exams/other'),env))!.status).toBe(404);
- db.exec("ALTER TABLE exam_result_snapshots ADD COLUMN institution_id TEXT DEFAULT 'school';CREATE TABLE result_artifact_manifest(administration_id TEXT,participant_id TEXT,snapshot_version INTEGER,object_key TEXT,content_sha256 TEXT)");
+ db.exec("UPDATE exam_result_snapshots SET institution_id='school';CREATE TABLE result_artifact_manifest(administration_id TEXT,participant_id TEXT,snapshot_version INTEGER,object_key TEXT,content_sha256 TEXT)");
  const artifact=await encodeResultArtifact('admin',read()[0]);
  db.prepare('INSERT INTO result_artifact_manifest VALUES(?,?,?,?,?)').run('admin','p',1,artifact.key,artifact.digest);
  let objectReads=0;let artifactBytes=artifact.body;
@@ -55,6 +62,18 @@ it('pins results to the channel publication and fails closed for missing payload
  expect(snapshotDetail(readNetworkSnapshot(read()[0].payload_json)).outcomes[0].success_rate).toBe(50);
  expect(db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('code','ada',6,'other','other','','')).toHaveLength(0);
  expect(db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('other-school','ada',6,'number','number','','')).toHaveLength(0);
+ db.exec("UPDATE exam_result_snapshots SET grade_level=6,student_id='student';INSERT INTO exam_outcome_analysis_revisions VALUES('e',1,CURRENT_TIMESTAMP,NULL)");
+ const delta=JSON.stringify({outcomes:[{title:'Later mapped outcome',evidence_count:2,correct_count:2}],outcomeAnalysisRevision:1,outcomeAnalysisUpdatedAt:'2026-10-12'});
+ db.prepare('INSERT INTO exam_outcome_analysis_history VALUES(?,?,?,?,?,?,?,?)').run('e',1,'p','student','school',6,'2026-2027',delta);
+ const detailRequest=async()=>(await (await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.json()) as any;
+ expect((await detailRequest()).outcomes[0].outcome).toBe('Outcome');
+ db.exec("UPDATE exam_outcome_analysis_revisions SET published_result_at=CURRENT_TIMESTAMP");
+ expect((await detailRequest()).outcomes[0]).toMatchObject({outcome:'Later mapped outcome',success_rate:100});
+ expect((await detailRequest()).subjects[0].net).toBe(2);
+ env.RESULT_ARTIFACT_READS_ENABLED='false';expect((await detailRequest()).outcomes[0].outcome).toBe('Later mapped outcome');env.RESULT_ARTIFACT_READS_ENABLED='true';
+ db.prepare('INSERT INTO channel_definition_publications VALUES(?,?,?,?)').run('e','RESULT_NETWORK','ACTIVE',JSON.stringify({title:'Published title',exam_date:'2026-10-12',publisher_name:'Published Publisher'}));
+ expect((await detailRequest()).exam.title).toBe('Published title');
+ expect((await (await handleResultNetworkRequest(request('/api/public/results/student'),env))!.json() as any).exams[0].title).toBe('Published title');
  db.exec("INSERT INTO result_artifact_retirements(administration_id,exam_id,retired_through_version) VALUES('admin','e',1)");
  objectReads=0;expect(read()).toHaveLength(0);expect((await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.status).toBe(404);expect(objectReads).toBe(0);
  expect(db.prepare(NETWORK_INSTITUTION_SNAPSHOT_SQL).all('admin','institution','institution')).toHaveLength(0);

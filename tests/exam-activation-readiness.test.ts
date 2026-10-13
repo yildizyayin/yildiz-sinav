@@ -28,6 +28,7 @@ function fixture() {
     INSERT INTO scoring_rules VALUES('rule','Test','CUSTOM');
   `);
   db.exec(readFileSync(new URL('../migrations/0059_exam_operation_write_guards.sql', import.meta.url), 'utf8'));
+  db.exec(`ALTER TABLE exams ADD COLUMN publisher_name TEXT;ALTER TABLE exams ADD COLUMN exam_date TEXT;ALTER TABLE exams ADD COLUMN description TEXT;ALTER TABLE exams ADD COLUMN title TEXT;CREATE TABLE exam_revision_state(exam_id TEXT,revision INTEGER,app_trashed_at TEXT);INSERT INTO exam_revision_state VALUES('exam',1,NULL);CREATE TABLE channel_definition_publications(exam_id TEXT,channel TEXT,source_revision INTEGER,definition_json TEXT,published_by TEXT,status TEXT,published_at TEXT,UNIQUE(exam_id,channel));`);
   function prepare(sql: string, args: any[] = []): any {
     return {
       bind: (...values: any[]) => prepare(sql, values),
@@ -59,7 +60,7 @@ describe('exam activation with actual relational evidence', () => {
       expect((await examReadiness(f.env, 'exam')).ready_to_publish).toBe(true);
       expect((await f.activate()).status).toBe(200);
       expect((f.db.prepare('SELECT status FROM exams').get() as any).status).toBe('ACTIVE');
-      expect((f.db.prepare('SELECT status FROM exam_channel_publications').get() as any).status).toBe('ACTIVE');
+      expect((f.db.prepare('SELECT channel,status FROM exam_channel_publications').get() as any)).toMatchObject({channel:'LICENSED',status:'ACTIVE'});expect(f.db.prepare("SELECT * FROM exam_channel_publications WHERE channel='RESULT_NETWORK'").all()).toEqual([]);
       expect((f.db.prepare('SELECT action FROM audit_logs').get() as any).action).toBe('EXAM_STATUS_ACTIVE');
       expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toEqual([]);
     } finally {f.db.close();}

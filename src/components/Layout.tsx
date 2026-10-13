@@ -48,6 +48,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/teacher-assignments',label:'Öğretmen Yetkileri',icon:ShieldCheck},
     ]},
     { label:'PLATFORM', items:[
+      {to:'/exam-channels',label:'Sonuç Yayınları',icon:Globe2},
       {to:'/result-network',label:'Sonuç Ağı',icon:Globe2},
       {to:'/attendance',label:'Yoklama Gözetimi',icon:UserCheck},
       {to:'/nibiru',label:'Nibiru',icon:NibiruNavIcon},
@@ -114,6 +115,7 @@ const nav: Record<Role, NavItem[]> = {
   SUPER_ADMIN: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/standard-readiness', label: 'Standard Hazırlık', icon: ShieldCheck },
     { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck },
+    { to: '/exam-channels', label: 'Sonuç Yayınları', icon: Globe2 },
     { to: '/result-network', label: 'Sonuç Ağı', icon: Globe2 },
     { to: '/attendance', label: 'Yoklama Gözetimi', icon: UserCheck },
     { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle }, { to: '/guidance-admin', label: 'RBA & Rehberlik Testleri', icon: ClipboardCheck }, { to: '/agent-center', label: 'AI Ajan Merkezi', icon: Activity }, { to: '/licenses', label: 'Lisanslar', icon: KeyRound },
@@ -166,7 +168,7 @@ export function Layout() {
   useEffect(()=>{const refresh=()=>setThemeRevision(value=>value+1);window.addEventListener('anunex-theme-change',refresh);return()=>window.removeEventListener('anunex-theme-change',refresh)},[]);
   const visibleNav=useMemo(()=>user?nav[user.role].filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature)):[],[user,enabledFeatures]);
   const location=useLocation();
-  const moduleView=location.pathname.startsWith('/calendar')?'planning-center':location.pathname.startsWith('/exam-center')||location.pathname.startsWith('/exams')||location.pathname.startsWith('/exam-definitions')||location.pathname.startsWith('/exams/')?'exam-center':location.pathname.startsWith('/optical-prepare')||location.pathname.startsWith('/optical-design')||location.pathname.startsWith('/calibration')?'deimos-printing':location.pathname.startsWith('/opticals')?'phobos-optical':location.pathname.startsWith('/optical-')||location.pathname.startsWith('/camera-test')?'optical-operations':location.pathname.startsWith('/content-center')||location.pathname.startsWith('/worksheet')||location.pathname.startsWith('/outcomes')?'content-center':location.pathname.startsWith('/guidance')?'guidance-center':location.pathname.startsWith('/attendance')||location.pathname.startsWith('/assignments')||location.pathname.startsWith('/worksheet-calendar')?'planning-center':location.pathname.startsWith('/reports')||location.pathname.startsWith('/result-network')?'results-center':location.pathname.startsWith('/nibiru')||location.pathname.startsWith('/agent-center')?'ai-center':'general';
+  const moduleView=location.pathname.startsWith('/calendar')?'planning-center':location.pathname.startsWith('/exam-center')||location.pathname.startsWith('/exam-channels')||location.pathname.startsWith('/exams')||location.pathname.startsWith('/exam-definitions')||location.pathname.startsWith('/exams/')?'exam-center':location.pathname.startsWith('/optical-prepare')||location.pathname.startsWith('/optical-design')||location.pathname.startsWith('/calibration')?'deimos-printing':location.pathname.startsWith('/opticals')?'phobos-optical':location.pathname.startsWith('/optical-')||location.pathname.startsWith('/camera-test')?'optical-operations':location.pathname.startsWith('/content-center')||location.pathname.startsWith('/worksheet')||location.pathname.startsWith('/outcomes')?'content-center':location.pathname.startsWith('/guidance')?'guidance-center':location.pathname.startsWith('/attendance')||location.pathname.startsWith('/assignments')||location.pathname.startsWith('/worksheet-calendar')?'planning-center':location.pathname.startsWith('/reports')||location.pathname.startsWith('/result-network')?'results-center':location.pathname.startsWith('/nibiru')||location.pathname.startsWith('/agent-center')?'ai-center':'general';
   const groupedItems=useMemo(()=>{
     if(!user || (user.role!=='SUPER_ADMIN' && user.role!=='INSTITUTION_MANAGER')) return null;
     return groupedNav[user.role].map(group=>({...group,items:group.items.filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature))}));

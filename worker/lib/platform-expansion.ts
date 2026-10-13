@@ -1,3 +1,4 @@
+import {examOutcomePayloadSql} from './exam-outcome-history';
 import type { AuthUser, Env } from '../types';
 import { all, audit, badRequest, forbidden, json, notFound, one, uuid, sanitizeAuditDetails } from './db';
 import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
@@ -138,7 +139,7 @@ async function listExamCatalog(request: Request, env: Env, user: AuthUser): Prom
   // Sınav Ekle yeni kaydı önce DRAFT oluşturur. Sınav Yükle ekranı,
   // yapılandırması tamamlanmadan önce de bu sınava veri bağlayabilmelidir;
   // arşivlenen kayıtlar seçimden çıkarılır.
-  const params:any[]=[]; const where=[`e.status IN ('DRAFT','ACTIVE','CLOSED')`];
+  const params:any[]=[]; const where=[`e.status IN ('DRAFT','ACTIVE','CLOSED')`, `NOT EXISTS(SELECT 1 FROM exam_revision_state tr WHERE tr.exam_id=e.id AND tr.app_trashed_at IS NOT NULL)`, `(e.status='DRAFT' OR NOT EXISTS(SELECT 1 FROM exam_channel_publications cp WHERE cp.exam_id=e.id AND cp.channel='LICENSED' AND cp.status<>'ACTIVE'))`];
   if(scope){where.push('COALESCE(p.scope,\'INSTITUTION\')=?');params.push(scope);}
   if(q){where.push(`(e.title LIKE ? OR p.catalog_code LIKE ? OR pub.name LIKE ?)`); const s=`%${q}%`;params.push(s,s,s);}
   if(user.role!=='SUPER_ADMIN'){
@@ -305,7 +306,7 @@ async function studentExamResult(request:Request,env:Env,user:AuthUser,examId:st
   if(!studentId)return forbidden('Bu öğrenci sonucuna erişemezsiniz.');
   const p=await examProfile(env,examId); if(!p)return notFound();
   if(p.result_freeze_status!=='PUBLISHED'&&user.role!=='SUPER_ADMIN'&&user.role!=='INSTITUTION_MANAGER')return badRequest('Sonuçlar henüz yayınlanmadı.','RESULTS_NOT_PUBLISHED');
-  const snap=await one<any>(env.DB.prepare(`SELECT s.*,i.name institution_name,e.title exam_title,e.exam_type FROM exam_result_snapshots s JOIN institutions i ON i.id=s.institution_id JOIN exams e ON e.id=s.exam_id WHERE s.exam_id=? AND s.student_id=? AND s.snapshot_version=? LIMIT 1`).bind(examId,studentId,p.snapshot_version));
+  const snap=await one<any>(env.DB.prepare(`SELECT s.*,${examOutcomePayloadSql('s')} payload_json,i.name institution_name,e.title exam_title,e.exam_type FROM exam_result_snapshots s JOIN institutions i ON i.id=s.institution_id JOIN exams e ON e.id=s.exam_id WHERE s.exam_id=? AND s.student_id=? AND s.snapshot_version=? LIMIT 1`).bind(examId,studentId,p.snapshot_version));
   if(!snap)return notFound('Öğrencinin bu sınav için yayınlanmış sonucu yok.');
   const subjects=await all<any>(env.DB.prepare(`SELECT sub.name subject,sr.correct_count,sr.wrong_count,sr.blank_count,sr.net,sr.success_percent FROM subject_results sr JOIN subjects sub ON sub.id=sr.subject_id WHERE sr.participant_id=? ORDER BY sub.name`).bind(snap.participant_id));
   const questionInsights=await all<any>(env.DB.prepare(`SELECT sub.name subject,q.question_no,sa.status student_status,
@@ -317,7 +318,7 @@ async function studentExamResult(request:Request,env:Env,user:AuthUser,examId:st
   const scopedSnap=p.scope==='CENTRAL'?snap:p.scope==='NETWORK'
     ?{...snap,national_rank:null,national_count:null,city_rank:null,city_count:null,district_rank:null,district_count:null}
     :{...snap,national_rank:null,national_count:null,city_rank:null,city_count:null,district_rank:null,district_count:null,network_rank:null,network_count:null};
-  return json({ok:true,profile:p,result:{...scopedSnap,subjects,questionInsights,rankingLabel:p.scope==='CENTRAL'?'Türkiye geneli sınav katılımcıları arasında':p.scope==='NETWORK'?'Kurum ağı katılımcıları arasında':'Kurum katılımcıları arasında'}});
+  return json({ok:true,profile:p,result:{...scopedSnap,outcomes:parseJson<any>(snap.payload_json,{}).outcomes||[],outcomeAnalysisRevision:parseJson<any>(snap.payload_json,{}).outcomeAnalysisRevision||null,subjects,questionInsights,rankingLabel:p.scope==='CENTRAL'?'Türkiye geneli sınav katılımcıları arasında':p.scope==='NETWORK'?'Kurum ağı katılımcıları arasında':'Kurum katılımcıları arasında'}});
 }
 
 async function listNetworks(env:Env,user:AuthUser):Promise<Response>{

@@ -18,6 +18,11 @@ function fixture() {
     db.prepare('INSERT INTO exam_delivery_profiles(exam_id,result_freeze_status,published_at,result_publish_at) VALUES(?,?,?,?)').run(id,status,'2026-09-30',date);
   }
   for (const id of ['due','future','draft']) db.prepare('INSERT INTO exam_result_snapshots VALUES(?,?,?,?)').run(id,'student',1,JSON.stringify({schemaVersion:1,exam:{exam_id:id,title:id,exam_date:'2026-09-30',net:1},subjects:[{subject_id:'math',subject_name:'Matematik',net:1}],outcomes:[{outcome_id:'o1',evidence_count:1,correct_count:1}]}));
+  db.exec(`ALTER TABLE exam_result_snapshots ADD COLUMN participant_id TEXT;
+    ALTER TABLE exam_result_snapshots ADD COLUMN institution_id TEXT;
+    ALTER TABLE exam_result_snapshots ADD COLUMN grade_level INTEGER;
+    CREATE TABLE exam_outcome_analysis_revisions(exam_id TEXT,revision INTEGER,published_app_at TEXT,published_result_at TEXT);
+    CREATE TABLE exam_outcome_analysis_history(exam_id TEXT,revision INTEGER,participant_id TEXT,student_id TEXT,institution_id TEXT,grade_level INTEGER,academic_year TEXT,payload_json TEXT);`);
   const env = { DB: { prepare: (sql: string) => ({ bind: (...args: any[]) => ({
     first: async () => sql.includes('FROM student_entities') ? { id: 'student', status: 'ACTIVE', institution_id: 'school' } : sql.includes('parent_student_links') ? { id: 'link' } : null,
     all: async () => ({ results: (sql.includes('JOIN exam_results er')||sql.includes('FROM exam_result_snapshots snap')) ? db.prepare(sql.replaceAll('CURRENT_TIMESTAMP', "'2026-09-30 18:00:00'")).all(...args) : [] }),

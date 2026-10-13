@@ -28,6 +28,7 @@ async function scenario(name,run,{ready=true,failActivation=false,failEvaluation
   requests.push({path:url.pathname,method:request.method(),body:request.postData()});
   let status=200,payload=base[url.pathname];
   if(url.pathname==='/api/auth/me')payload={ok:true,user:{id:'synthetic-user',role,institution_id:role==='SUPER_ADMIN'?null:'synthetic-school',display_name:'Sentetik kullanıcı',must_change_password:false}};
+  if(url.pathname==='/api/admin/exams/synthetic-exam/channels')payload={ok:true,examId:exam.id,title:exam.title,savedRevision:1,trashedAt:null,resultPortalAvailable:false,channels:[]};
   if(url.pathname==='/api/institutions')payload={ok:true,institutions:[{id:'synthetic-school',name:'Sentetik kurum',status:'ACTIVE'},{id:'inactive-school',name:'Kapalı kurum',status:'PASSIVE'}]};
   if(url.pathname==='/api/exam-definitions/synthetic-exam')payload={ok:true,exam:{...exam,status:active?'ACTIVE':'DRAFT'},booklets:[{code:'A'},{code:'B'}],subjects:[{subject_id:'math',subject_name:'Matematik',question_count:2,question_start:1,question_end:2,option_count:4,wrong_divisor:3}],readiness:{ready_to_publish:ready,blockers:ready?[]:[{code:'ANSWER_KEY_INCOMPLETE',message:'A kitapçığının cevap anahtarı eksik.'}]}};
   if(url.pathname==='/api/platform/exam-center/synthetic-exam/schedule')payload={ok:true,schedule:{result_freeze_status:'OPEN'}};

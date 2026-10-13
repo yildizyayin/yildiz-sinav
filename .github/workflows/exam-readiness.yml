@@ -1,7 +1,7 @@
 name: Exam Center Readiness Acceptance
 on:
   push:
-    branches: [fix/exam-readiness-20261012]
+    branches: [fix/exam-readiness-20261012, fix/exam-policy-20261012]
   workflow_dispatch:
 permissions:
   contents: read
@@ -29,11 +29,14 @@ jobs:
       - run: node scripts/browser-nibiru-calendar.mjs
       - run: node scripts/browser-exam-readiness.mjs
         if: ${{ always() && steps.build.outcome == 'success' }}
+      - run: node scripts/browser-exam-workspace.mjs
+        if: ${{ always() && steps.build.outcome == 'success' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: exam-readiness-browser-${{ github.sha }}
           path: |
             tmp/exam-readiness-browser/
+            tmp/exam-workspace-browser/
             tmp/nibiru-calendar-browser/
           if-no-files-found: warn

@@ -1,3 +1,5 @@
+import {examOutcomePayloadSql} from './lib/exam-outcome-history';
+import {publishedDefinitions} from './lib/exam-channels';
 import {resultArtifactQueueDiagnostics} from './lib/result-artifact-queue';
 import {startResultArtifactVerification,readResultArtifactVerification} from './lib/result-artifact-verification';
 import {startResultArtifactPreparation,readResultArtifactPreparation} from './lib/result-artifact-preparation';
@@ -43,9 +45,10 @@ async function lookup(request:Request,env:Env){
  const institutionCode=String(body.institutionCode||'').trim(),grade=Number(body.gradeLevel),name=normalizeName(String(body.fullName||''));const kind=body.lookupType==='TCKN'?'TCKN':'STUDENT_NUMBER';const value=normalizeLookup(body.lookupValue);
  if(!/^\d{5,12}$/.test(institutionCode)||!Number.isInteger(grade)||grade<1||grade>12||name.length<3||!LOOKUP.test(value))return badRequest('Kurum, sınıf düzeyi, ad soyad ve arama bilgisi eksiksiz girilmelidir.');
  const token=await hmac(env,`${kind}|${institutionCode}|${value}`);const column=kind==='TCKN'?'rai.tckn_lookup_token':'rai.student_number_lookup_token';
- const identity=await one<any>(env.DB.prepare(`SELECT rai.id,rai.normalized_name,rni.display_name_snapshot,e.title,e.exam_date FROM result_access_identities rai JOIN result_network_institutions rni ON rni.id=rai.result_institution_id JOIN exam_administrations ea ON ea.id=rai.administration_id JOIN exams e ON e.id=ea.exam_id WHERE rni.meb_code=? AND rai.grade_level=? AND ${column}=? AND rai.normalized_name=? AND rai.expires_at>CURRENT_TIMESTAMP AND (rai.locked_until IS NULL OR rai.locked_until<CURRENT_TIMESTAMP) AND ea.status='PUBLISHED' ORDER BY ea.published_at DESC LIMIT 1`).bind(institutionCode,grade,token,name));
+ const identity=await one<any>(env.DB.prepare(`SELECT rai.id,rai.normalized_name,rni.display_name_snapshot,ea.exam_id,e.title,e.exam_date FROM result_access_identities rai JOIN result_network_institutions rni ON rni.id=rai.result_institution_id JOIN exam_administrations ea ON ea.id=rai.administration_id JOIN exams e ON e.id=ea.exam_id WHERE rni.meb_code=? AND rai.grade_level=? AND ${column}=? AND rai.normalized_name=? AND rai.expires_at>CURRENT_TIMESTAMP AND (rai.locked_until IS NULL OR rai.locked_until<CURRENT_TIMESTAMP) AND ea.status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM exam_channel_publications pub WHERE pub.exam_id=ea.exam_id AND pub.channel='RESULT_NETWORK' AND pub.status<>'ACTIVE') ORDER BY ea.published_at DESC LIMIT 1`).bind(institutionCode,grade,token,name));
  // Identical response shape prevents account enumeration.
  if(!identity)return json({ok:true,found:false,message:'Bilgiler eşleşirse kişisel doğrulama adımı açılır.'});
+ await publishedDefinitions(env,[identity]);
  const challengeId=uuid('rch'),ipHash=await sha256(ip);await env.DB.prepare(`INSERT INTO result_lookup_challenges(id,identity_id,ip_hash,expires_at) VALUES(?,?,?,datetime('now','+10 minutes'))`).bind(challengeId,identity.id,ipHash).run();
  return json({ok:true,found:true,challengeId,student:maskName(identity.normalized_name),institution:identity.display_name_snapshot,latestExam:identity.title});
 }
@@ -64,6 +67,7 @@ export async function resultIdentity(request:Request,env:Env){const raw=rawCooki
 async function studentResults(request:Request,env:Env){
  const identity=await resultIdentity(request,env);if(!identity)return safeError(401,'RESULT_SESSION_REQUIRED','Sonucunuzu yeniden doğrulayın.');
  const rows=await all<any>(env.DB.prepare(RESULT_NETWORK_SUMMARY_SQL+` ORDER BY ea.published_at DESC,ea.id LIMIT 50`).bind(identity.meb_code,identity.normalized_name,identity.grade_level,identity.student_number_lookup_token||'',identity.student_number_lookup_token||'',identity.tckn_lookup_token||'',identity.tckn_lookup_token||''));
+ await publishedDefinitions(env,rows);
  const exams=rows.map(snapshotSummary).filter((row):row is NonNullable<typeof row>=>row!==null);
  exams.sort((a,b)=>String(b.exam_date||'').localeCompare(String(a.exam_date||'')));
  const unavailableSnapshotExamIds=rows.filter(row=>!readNetworkSnapshot(row.payload_json)).map(row=>row.exam_id);
@@ -83,14 +87,21 @@ async function examDetail(request:Request,env:Env,examId:string){
  let payload:any;
  if(artifact){payload={wrongQuestionIds:artifact.wrongQuestionIds}}else{
   // A missing artifact falls back to a freshly authorized immutable snapshot.
-  peer=await one<any>(env.DB.prepare(RESULT_NETWORK_SNAPSHOT_SQL+` AND ea.exam_id=? LIMIT 1`).bind(...parameters));
+  peer=await one<any>(env.DB.prepare(RESULT_NETWORK_SNAPSHOT_SQL.replace('SELECT s.*,ea.exam_id',`SELECT s.*,${examOutcomePayloadSql('s','RESULT')} payload_json,ea.exam_id`)+` AND ea.exam_id=? LIMIT 1`).bind(...parameters));
   if(!peer)return safeError(404,'RESULT_NOT_FOUND','Sınav sonucu bulunamadı.');
   payload=readNetworkSnapshot(peer.payload_json);if(!payload)return safeError(409,'RESULT_SNAPSHOT_UNAVAILABLE','Bu yayının sabit sonuç kaydı bulunmuyor. Kurumunuzla iletişime geçin.');
  }
+ if(artifact){
+  // Read only the published outcome delta, keeping the private score artifact intact.
+  const analysis=await one<any>(env.DB.prepare(`SELECT h.payload_json FROM exam_outcome_analysis_history h JOIN exam_outcome_analysis_revisions r ON r.exam_id=h.exam_id AND r.revision=h.revision JOIN exam_result_snapshots s ON s.exam_id=h.exam_id AND s.participant_id=h.participant_id AND s.institution_id=h.institution_id AND s.student_id IS h.student_id AND s.grade_level IS h.grade_level AND json_extract(s.payload_json,'$.exam.academic_year')=h.academic_year WHERE h.exam_id=? AND h.participant_id=? AND h.institution_id=? AND s.snapshot_version=? AND r.published_result_at IS NOT NULL ORDER BY h.revision DESC LIMIT 1`).bind(examId,peer.participant_id,peer.institution_id,peer.snapshot_version));
+  if(analysis){const delta=JSON.parse(analysis.payload_json);payload={...payload,...delta};artifact.detail={...artifact.detail,outcomes:snapshotDetail({subjects:[],outcomes:delta.outcomes}).outcomes};}
+  payload.exam=artifact.summary;
+ }
+ const definitionRow={exam_id:examId,payload_json:JSON.stringify(payload)};await publishedDefinitions(env,[definitionRow]);payload=JSON.parse(definitionRow.payload_json);
  const detail=artifact?artifact.detail:snapshotDetail(payload);
  // Video approval can be withdrawn, but question selection is frozen evidence.
  const videos=Array.isArray(payload.wrongQuestionIds)?await all<any>(env.DB.prepare(`SELECT DISTINCT vl.title,vl.url,vl.link_type,q.question_no FROM exam_questions q JOIN video_links vl ON vl.exam_question_id=q.id AND vl.approved=1 WHERE q.exam_id=? AND q.id IN(SELECT value FROM json_each(?)) ORDER BY q.question_no LIMIT 50`).bind(examId,JSON.stringify(payload.wrongQuestionIds))):[];
- return json({ok:true,...detail,videos,snapshotVersion:peer.snapshot_version,resultSource:artifact?'PRIVATE_ARTIFACT':'PUBLISHED_SNAPSHOT',videoEvidenceUnavailable:!Array.isArray(payload.wrongQuestionIds)});
+ return json({ok:true,...detail,exam:payload.exam,outcomeAnalysisRevision:payload.outcomeAnalysisRevision||null,outcomeAnalysisUpdatedAt:payload.outcomeAnalysisUpdatedAt||null,videos,snapshotVersion:peer.snapshot_version,resultSource:artifact?'PRIVATE_ARTIFACT':'PUBLISHED_SNAPSHOT',videoEvidenceUnavailable:!Array.isArray(payload.wrongQuestionIds)});
 }
 
 async function requireSuper(request:Request,env:Env):Promise<AuthUser|Response>{const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(user.role!=='SUPER_ADMIN')return forbidden();return user}
@@ -339,6 +350,7 @@ async function resultOperatorCatalog(request:Request,env:Env){
   all<any>(env.DB.prepare(`SELECT DISTINCT e.id,e.title,e.exam_type,e.academic_year,e.grade_level,e.publisher_name,srv.verified scoring_verified FROM exams e JOIN exam_channel_publications ecp ON ecp.exam_id=e.id AND ecp.channel='RESULT_NETWORK' AND ecp.status='ACTIVE' JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id AND srv.verified=1 WHERE e.status IN ('ACTIVE','CLOSED') ORDER BY e.academic_year DESC,e.title LIMIT 500`)),
   all<any>(env.DB.prepare(`SELECT v.id,t.name,t.owner_type,t.owner_id,v.version FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.active=1 AND t.active=1 AND v.parser_definition IS NOT NULL${opticalScope} ORDER BY t.name,v.version DESC LIMIT 200`).bind(...institutionIds.filter((x:any)=>user.role!=='SUPER_ADMIN'))),
  ]);
+ await publishedDefinitions(env,exams);
  return json({ok:true,institutions,exams,opticals});
 }
 

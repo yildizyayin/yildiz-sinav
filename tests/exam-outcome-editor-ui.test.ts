@@ -1,0 +1,55 @@
+// @vitest-environment happy-dom
+import { act, createElement } from 'react';
+import { createRoot, type Root } from 'react-dom/client';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { ExamOutcomeEditor } from '../src/components/ExamOutcomeEditor';
+import { ExamSaveReview, reviewExamInputs } from '../src/components/ExamSaveReview';
+const state = vi.hoisted(() => ({ api: vi.fn() }));
+vi.mock('../src/api', () => ({ api: state.api }));
+let root: Root, container: HTMLDivElement;
+const catalog=[{id:'out-1',subject_id:'math',code:'M.7.1',title:'Rasyonel sayıları karşılaştırır.'},{id:'out-2',subject_id:'math',code:'M.7.2',title:'Rasyonel sayılarla işlem yapar.'}];
+beforeEach(()=>{(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;container=document.createElement('div');document.body.append(container);root=createRoot(container);state.api.mockReset();state.api.mockImplementation(async(path:string, options?:RequestInit)=>{
+ if(path.endsWith('/outcome-catalog')) return {outcomes:catalog};
+ if(path.endsWith('/outcome-match-preview')) return {matches:[{subjectId:'math',questionNo:1,reason:'AMBIGUOUS',suggestions:catalog}]};
+ if(options?.method==='PUT') return {ok:true};
+ return {revision:4,outcomeMode:'OPTIONAL',questions:[{id:'q1',subject_id:'math',subject_name:'Matematik',question_no:1,outcome_ids:[],references:[{publisherTitle:'Sayıları karşılaştırır.'}]}]};
+});});
+afterEach(async()=>{await act(async()=>root.unmount());container.remove();});
+const button=(text:string)=>[...container.querySelectorAll('button')].find(b=>b.textContent?.trim()===text)!;
+it('shows manual verified catalog and keeps strict policy off independently of imported references',async()=>{
+ await act(async()=>root.render(createElement(ExamOutcomeEditor,{examId:'active-exam'})));
+ expect(container.textContent).toContain('M.7.1');
+ expect((container.querySelector('input[type=checkbox]') as HTMLInputElement).checked).toBe(false);
+ expect(container.textContent).toContain('Matematik');
+ const select=container.querySelector('select[multiple]') as HTMLSelectElement;
+ await act(async()=>{select.options[0].selected=true;select.dispatchEvent(new Event('change',{bubbles:true}));});
+ await act(async()=>button('Kazanımları kaydet').click());
+ const write=state.api.mock.calls.find(([,options])=>options?.method==='PUT');
+ expect(write?.[0]).toBe('/api/exam-definitions/active-exam/outcome-mappings');
+ expect(JSON.parse(write![1].body)).toEqual({expectedRevision:4,mappings:[{questionId:'q1',outcomeIds:['out-1']}],outcomeMode:'OPTIONAL'});
+ expect(state.api.mock.calls.some(([path])=>path.includes('/answer-key')||path.includes('reopen-results'))).toBe(false);
+});
+it('presents ambiguous candidates without automatically selecting one',async()=>{
+ await act(async()=>root.render(createElement(ExamOutcomeEditor,{examId:'published-exam'})));
+ await act(async()=>button('Otomatik eşleştir').click());
+ expect(container.textContent).toContain('Birden fazla aday var');
+ expect((container.querySelector('select[multiple]') as HTMLSelectElement).selectedOptions.length).toBe(0);
+ await act(async()=>button('Öneri: M.7.2').click());
+ expect((container.querySelector('select[multiple]') as HTMLSelectElement).value).toBe('out-2');
+});
+it('keeps failed saves visible and never claims success',async()=>{
+ await act(async()=>root.render(createElement(ExamOutcomeEditor,{examId:'active-exam'})));
+ state.api.mockImplementationOnce(async()=>{throw new Error('Kazanımlar değişti. Güncel eşleştirmeleri yeniden açın.');});
+ await act(async()=>button('Kazanımları kaydet').click());
+ expect(container.querySelector('[role=alert]')?.textContent).toContain('Kazanımlar değişti');
+ expect(container.textContent).not.toContain('Kazanım eşleştirmeleri kaydedildi.');
+});
+it('reviews each booklet independently and allows creation with optional outcome warnings',async()=>{
+ const review=reviewExamInputs([{subjectId:'math',questionCount:2,optionCount:4}], 'A,B,C,D', [{subjectId:'math',bookletCode:'A',answers:'AB'},{subjectId:'math',bookletCode:'B',answers:'CE'},{subjectId:'math',bookletCode:'C',answers:'DC'},{subjectId:'math',bookletCode:'D',answers:'AA'}],[]);
+ expect(review.keyChecks.map(k=>k.complete)).toEqual([true,false,true,true]);
+ const confirm=vi.fn();await act(async()=>root.render(createElement(ExamSaveReview,{review,strict:false,busy:false,onCancel:vi.fn(),onConfirm:confirm})));
+ expect(container.querySelectorAll('.exam-review-check.ok')).toHaveLength(3);
+ expect(container.querySelectorAll('.exam-review-check.error')).toHaveLength(1);
+ expect(container.querySelectorAll('.exam-review-check.warn')).toHaveLength(1);
+ await act(async()=>button('Yine de oluştur').click());expect(confirm).toHaveBeenCalledOnce();
+});
