@@ -3,7 +3,7 @@ CREATE TABLE channel_definition_publications(exam_id TEXT NOT NULL REFERENCES ex
 INSERT INTO exam_revision_state(exam_id) SELECT id FROM exams;
 INSERT OR IGNORE INTO exam_channel_publications(id,exam_id,channel,status) SELECT 'licensed_legacy_'||id,id,'LICENSED','ACTIVE' FROM exams WHERE status IN ('ACTIVE','CLOSED');
 INSERT INTO channel_definition_publications(exam_id,channel,source_revision,definition_json,published_by,status)
-SELECT e.id,p.channel,1,json_object('title',e.title,'publisher_name',e.publisher_name,'exam_date',e.exam_date,'description',e.description),p.published_by,p.status FROM exam_channel_publications p JOIN exams e ON e.id=p.exam_id;
+SELECT e.id,p.channel,1,json_object('title',e.title,'publisher_name',e.publisher_name,'exam_date',e.exam_date,'description',e.description),p.published_by,p.status FROM exam_channel_publications p JOIN exams e ON e.id=p.exam_id WHERE p.channel IN ('LICENSED','RESULT_NETWORK');
 CREATE TRIGGER exam_revision_new AFTER INSERT ON exams BEGIN INSERT OR IGNORE INTO exam_revision_state(exam_id) VALUES(NEW.id); END;
 CREATE TRIGGER exam_revision_edit AFTER UPDATE ON exams BEGIN UPDATE exam_revision_state SET revision=revision+1,changed_at=CURRENT_TIMESTAMP WHERE exam_id=NEW.id; END;
 CREATE TRIGGER rev_exam_subjects_insert AFTER INSERT ON exam_subjects BEGIN UPDATE exam_revision_state SET revision=revision+1,changed_at=CURRENT_TIMESTAMP WHERE exam_id=NEW.exam_id; END;

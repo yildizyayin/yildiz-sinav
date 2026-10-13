@@ -48,7 +48,7 @@ export default {
  const url=new URL(request.url);const match=url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/(outcome-catalog|outcome-match-preview|outcome-mappings)$/);
  if(!match)return examAdmin.fetch(request,env);
  const user=await getAuthUser(env,request);if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED',message:'Oturum açın.'}},401);
- if(!['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user.role))return forbidden();
+ if(!['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user.role)||user.must_change_password)return forbidden();
  if(request.method!=='GET'&&request.headers.get('Origin')!==url.origin)return forbidden('İşlemi ANUNEX üzerinden başlatın.');
  const exam=await managedExam(env,user,match[1]);if(!exam)return notFound();
  if(match[2]==='outcome-mappings')return request.method==='GET'?getOutcomeMappings(env,exam):request.method==='PUT'?putOutcomeMappings(request,env,user,exam.id):json({ok:false},405);
