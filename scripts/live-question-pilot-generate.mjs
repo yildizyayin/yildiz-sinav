@@ -4,7 +4,7 @@ const base='https://demo.anunex.com',account=process.env.CLOUDFLARE_ACCOUNT_ID,t
 const report={environment:'staging',target:10,providerAttemptLimit:8,maxCompletionTokensPerAttempt:3000,maxVerifierTokensPerAttempt:1500,maximumModelRequests:16,generatedQuestions:0,publishedQuestions:0,jobs:[],questions:[]};let cookie,calls=0;
 async function req(path,body,method=body?'POST':'GET'){const r=await fetch(base+path,{method,headers:{Origin:base,...(cookie?{Cookie:cookie}:{}),...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(120000)});const p=await r.json().catch(()=>({}));return {r,p};}
 async function cf(path,body){const r=await fetch('https://api.cloudflare.com/client/v4/accounts/'+account+path,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});const p=await r.json();if(!r.ok||!p.success)throw Error('Cloudflare verification failed HTTP '+r.status);return p.result;}
-function key(i){let h=createHash('sha256').update('ANUNEX-MAT5-VALIDATED-PILOT-20261013-'+i).digest('hex').slice(0,32);h=h.slice(0,12)+'4'+h.slice(13,16)+'8'+h.slice(17);return [h.slice(0,8),h.slice(8,12),h.slice(12,16),h.slice(16,20),h.slice(20)].join('-');}
+function key(i){let h=createHash('sha256').update('ANUNEX-MAT5-GPT-VALIDATED-V2-20261013-'+i).digest('hex').slice(0,32);h=h.slice(0,12)+'4'+h.slice(13,16)+'8'+h.slice(17);return [h.slice(0,8),h.slice(8,12),h.slice(12,16),h.slice(16,20),h.slice(20)].join('-');}
 async function query(sql,params=[]){
  const vs=await cf('/workers/scripts/yildiz-sinav-v1/versions');const version=vs.items?.[0]?.id||vs[0]?.id;const detail=await cf('/workers/scripts/yildiz-sinav-v1/versions/'+version);const db=detail.resources.bindings.find(b=>b.name==='DB'&&b.type==='d1');return (await cf('/d1/database/'+(db.id||db.database_id)+'/query',{sql,params}))[0].results;
 }
@@ -14,12 +14,22 @@ async function exportEvidence(){
  report.verificationBlocks=await query("SELECT entity_id,details_json FROM audit_logs WHERE action='QUESTION_GENERATION_VERIFICATION_BLOCKED' ORDER BY created_at DESC LIMIT 8");
  report.budget=await query("SELECT question_cap,reserved_count FROM question_agent_pilot_budget WHERE id='pilot_50'");report.generatedQuestions=new Set(report.questions.map(q=>q.id)).size;report.publishedQuestions=report.questions.filter(q=>q.review_status==='APPROVED').length;
 }
+async function retirePriorBoundedFailure(){
+ const id='qgj_06debc93-d457-44c8-8d0e-99f9475572d4';
+ const rows=await query("SELECT status,generated_count FROM question_generation_jobs WHERE id=?",[id]);
+ if(!rows.length||rows[0].generated_count!==0)throw Error('Prior failed pilot scope changed');
+ if(rows[0].status==='CANCELLED')return;
+ if(rows[0].status!=='FAILED')throw Error('Prior pilot is active or changed');
+ const cancelled=await req('/api/question-bank-standard/generation-jobs/'+id+'/cancel',{},'PATCH');
+ if(!cancelled.r.ok)throw Error('Prior bounded failure could not be retired');
+ report.retiredPriorJob={id,quotaRefunded:false};
+}
 async function quarantineKnownInvalidDrafts(){
- const known=[["q_0ae8bce4-b07a-4f7d-a540-372c79cb9006","Cevap anahtarı C/840; hesaplanan doğru değer A/420 kg."],["q_3d3e8cff-173b-4e12-ab5e-acde0a8b7544","Cevap anahtarı C/40; 240 ÷ 8 = 30, doğru seçenek A."],["q_db6a9030-cac5-4ea6-8c68-fbaddbff6abf","Türkçe sayı okunuşları hatalı ve bağlam gerçekçi değil."],["q_ea8a9876-fb14-4388-bd5e-49194f524bfc","456.789 ve 456789 sayısal olarak eşdeğer seçenekler; sayı okunuşu hatalı."],["q_5924a444-576d-4a6f-ae3b-01892d4562e1","Aritmetik problem MAT.5.1.1 çok basamaklı sayıları okuma/yazma çıktısını değerlendirmiyor."],["q_6eb5a7d3-bcf3-4091-83a2-9ee4a1e61202","543210 + 12560 = 555770; anahtar ve çözüm yanlış, kazanım uyumsuz."],["q_689cf407-2997-433a-91ba-af0deedbe717","Kaç katı sorusunun karşılaştırma temeli belirsiz; toplam kitap sayısı seçeneklere yansımıyor."]];
+ const known=[["q_0ae8bce4-b07a-4f7d-a540-372c79cb9006","Cevap anahtarı C/840; hesaplanan doğru değer A/420 kg.","@cf/zai-org/glm-4.7-flash"],["q_3d3e8cff-173b-4e12-ab5e-acde0a8b7544","Cevap anahtarı C/40; 240 ÷ 8 = 30, doğru seçenek A.","@cf/zai-org/glm-4.7-flash"],["q_db6a9030-cac5-4ea6-8c68-fbaddbff6abf","Türkçe sayı okunuşları hatalı ve bağlam gerçekçi değil.","@cf/zai-org/glm-4.7-flash"],["q_ea8a9876-fb14-4388-bd5e-49194f524bfc","456.789 ve 456789 sayısal olarak eşdeğer seçenekler; sayı okunuşu hatalı.","@cf/zai-org/glm-4.7-flash"],["q_5924a444-576d-4a6f-ae3b-01892d4562e1","Aritmetik problem MAT.5.1.1 çok basamaklı sayıları okuma/yazma çıktısını değerlendirmiyor.","@cf/zai-org/glm-4.7-flash"],["q_6eb5a7d3-bcf3-4091-83a2-9ee4a1e61202","543210 + 12560 = 555770; anahtar ve çözüm yanlış, kazanım uyumsuz.","@cf/zai-org/glm-4.7-flash"],["q_689cf407-2997-433a-91ba-af0deedbe717","Kaç katı sorusunun karşılaştırma temeli belirsiz; toplam kitap sayısı seçeneklere yansımıyor.","@cf/zai-org/glm-4.7-flash"],["q_a141ae22-0679-4ecd-a98e-2f5f33a1ec20","200 × 5 = 1000; doğru seçenek C, kayıtlı anahtar B/400 yanlış.","@cf/zai-org/glm-4.7-flash"],["q_05589c2b-9f42-4978-8101-0236afa77f48","15.000 / 5 işlemi MAT.5.1.2 dört basamaklı bölünen sınırını aşıyor.","@cf/meta/llama-4-scout-17b-16e-instruct"],["q_d3640b70-7c82-494c-8b23-2c77ffd288c5","Dört basamaklı bölünen sınırı aşılıyor ve önceki sorunun yeniden yazımı.","@cf/meta/llama-4-scout-17b-16e-instruct"],["q_924cd203-aea6-40d8-94ef-9ba060483e4c","240 kitap/40 öğrenci problemi q_85b4c261 ile aynı; yalnız ifade ve seçenek sırası değişmiş.","@cf/meta/llama-4-scout-17b-16e-instruct"],["q_b0fd20f9-f7db-4d20-9515-5951c7e6ba34","Seçeneklerde İngilizce forty/ninety var; soru yalnız altı basamaklı sayı içeriyor.","@cf/meta/llama-4-scout-17b-16e-instruct"],["q_fd4d9662-95e3-4377-bf28-592aa095e726","Yalnız altı basamaklı okuma/yazma, MAT.5.1.1 altıdan çok basamaklı genellemeyi değerlendirmiyor.","@cf/meta/llama-4-scout-17b-16e-instruct"]];
  report.quarantined=[];
- for(const [id,note] of known){
-  const rows=await query("SELECT id,grade_level,source_model,review_status,review_revision FROM question_bank WHERE id=?",[id]);
-  const q=rows[0];if(!q||q.grade_level!==5||q.source_model!=='@cf/zai-org/glm-4.7-flash')throw Error('Quarantine scope mismatch');
+ for(const [id,note,model] of known){
+  const rows=await query("SELECT id,grade_level,source_model,owner_type,origin_kind,review_status,review_revision FROM question_bank WHERE id=?",[id]);
+  const q=rows[0];if(!q||q.grade_level!==5||q.source_model!==model||q.owner_type!=='PLATFORM'||q.origin_kind!=='AI_GENERATED')throw Error('Quarantine scope mismatch');
   if(q.review_status==='REJECTED'){report.quarantined.push({id,reused:true});continue;}
   if(q.review_status!=='REVIEW')throw Error('Draft status changed; manual inspection required');
   const result=await req('/api/question-bank-standard/'+id+'/review',{status:'REJECTED',expectedRevision:q.review_revision,note:'Pilot içerik denetimi: '+note},'PATCH');
@@ -31,7 +41,8 @@ try{
  const health=await req('/api/health');if(health.p.environment!=='staging')throw Error('Staging boundary failed');
  const login=await req('/api/auth/login',{identifier:'super',password:process.env.SMOKE_DEMO_PASSWORD||'Demo123!',turnstileToken:'XXXX.DUMMY.TOKEN.XXXX',remember:false});if(!login.r.ok||!login.p.ok)throw Error('Staging admin session unavailable');cookie=(login.r.headers.get('set-cookie')||'').match(/(yildiz_session=[^;]+)/)?.[1];if(!cookie)throw Error('Staging session missing');
  await quarantineKnownInvalidDrafts();
- const readiness=(await req('/api/question-bank-standard/agent-pilot/readiness')).p;report.readiness=readiness;if(!readiness.manualPilot?.ready||readiness.manualPilot?.requestProfile!=='VALIDATED_QUESTION_DRAFT_V1')throw Error('Manual pilot gates are not ready');
+ await retirePriorBoundedFailure();
+ const readiness=(await req('/api/question-bank-standard/agent-pilot/readiness')).p;report.readiness=readiness;if(!readiness.manualPilot?.ready||readiness.manualPilot?.requestProfile!=='VALIDATED_QUESTION_DRAFT_V2')throw Error('Manual pilot gates are not ready');
  const spec=JSON.parse(await readFile('data/question-pilot-math5-curriculum.json','utf8'));const versions=(await req('/api/curriculum-admin?academicYear='+spec.academicYear)).p;const cv=versions.versions?.find(v=>v.program_version===spec.programVersion&&v.verified===1&&v.authority==='MEB'&&v.source_url===spec.sourceUrl);if(!cv)throw Error('Verified official pilot curriculum missing');
  const detail=(await req('/api/curriculum-admin/versions/'+cv.id)).p;const outcomes=detail.outcomes.filter(o=>spec.outcomes.some(s=>s.code===o.code&&s.title===o.title)&&o.official===1&&o.active===1&&o.grade_level===5);if(outcomes.length!==2)throw Error('Official learning outcomes mismatch');
  for(let i=0;i<5;i++){
@@ -43,7 +54,7 @@ try{
  report.jobs.push(job);
  if(job.status==='REVIEW_READY')continue;
  for(let retry=0;retry<3&&calls<8;retry++){
- calls++;const run=await req('/api/question-bank-standard/generation-jobs/'+job.id+'/run',{});const current=(await req('/api/question-bank-standard/generation-jobs?academicYear='+spec.academicYear+'&outcomeId='+o.id+'&limit=50')).p.jobs?.find(j=>j.id===job.id);report.jobs[i]={...job,...current,...run.p.job,error:run.p.error?.code};if(run.r.ok&&run.p.job?.status==='REVIEW_READY')break;
+ calls++;console.log('PILOT_BATCH_PROGRESS '+JSON.stringify({batch:i+1,jobId:job.id,runRequests:calls}));const run=await req('/api/question-bank-standard/generation-jobs/'+job.id+'/run',{});const current=(await req('/api/question-bank-standard/generation-jobs?academicYear='+spec.academicYear+'&outcomeId='+o.id+'&limit=50')).p.jobs?.find(j=>j.id===job.id);report.jobs[i]={...job,...current,...run.p.job,error:run.p.error?.code};if(run.r.ok&&run.p.job?.status==='REVIEW_READY')break;
  if(!['GENERATION_OUTPUT_INVALID','GENERATION_PROVIDER_FAILED','GENERATION_TIMEOUT','GENERATION_DUPLICATE','GENERATION_QUALITY_REJECTED','GENERATION_VERIFICATION_UNAVAILABLE'].includes(run.p.error?.code))throw Error('Generation blocked '+(run.p.error?.code||run.r.status));if(retry===2||calls===8)throw Error('Bounded provider retries exhausted');
  }
  if(report.jobs[i].status!=='REVIEW_READY')throw Error('Pilot batch incomplete');
