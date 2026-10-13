@@ -1,6 +1,6 @@
 import {expect,it,vi} from 'vitest';
 import {mechanicalDraftIssues,parseVerification,readAiJson,verifyQuestionDrafts,DEFAULT_QUESTION_VERIFIER_MODEL,outcomeDraftIssues,nearRepeatedStem,officialPilotGuidance} from '../worker/lib/question-generation-validation';
-const q=(correctAnswer='C',solutionText='5 × 12 = 60. 60 × 7 = 420. Doğru cevap A: 420 kg.')=>({stemText:'Ağaçlardan kaç kilogram ürün alınır?',options:['420 kg','600 kg','840 kg','4200 kg'].map((text,i)=>({label:String.fromCharCode(65+i),text})),correctAnswer,solutionText,difficultyLevel:3});
+const q=(correctAnswer='C',solutionText='60 × 7 = 420. Doğru cevap A: 420 kg.')=>({stemText:'Ağaçlardan kaç kilogram ürün alınır?',options:['420 kg','600 kg','840 kg','4200 kg'].map((text,i)=>({label:String.fromCharCode(65+i),text})),correctAnswer,solutionText,difficultyLevel:3});
 it('blocks the actual pilot key mismatch and incorrect arithmetic',()=>{
  expect(mechanicalDraftIssues(q())).toContain('ANSWER_VALUE_MISMATCH');
  expect(mechanicalDraftIssues(q('A'))).toEqual([]);
@@ -49,4 +49,10 @@ it('detects paraphrased arithmetic tasks despite a swapped option order',()=>{
 it('reads documented response text without accepting reasoning as draft content',()=>{
  expect(readAiJson({output_text:'{"questions":[]}'})).toEqual({questions:[]});
  expect(readAiJson({output:[{type:'reasoning',content:[{type:'output_text',text:'not JSON'}]},{type:'message',content:[{type:'output_text',text:'{"questions":[]}'}]}]})).toEqual({questions:[]});
+});
+
+it('does not misread a longer expression or a multi-step final check as a simple answer equation',()=>{
+ expect(mechanicalDraftIssues(q('A','120 + 80 + 5 = 205.'))).not.toContain('INVALID_ARITHMETIC');
+ const draft=q('A','1000 - 580 = 420. Kontrol: 420 + 580 = 1000.');
+ expect(mechanicalDraftIssues(draft)).not.toContain('ANSWER_VALUE_MISMATCH');
 });
