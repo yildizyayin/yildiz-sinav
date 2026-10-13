@@ -274,3 +274,10 @@ it('a cancellation during independent validation cannot commit drafts',async()=>
  });
  expect((await run(id)).status).toBe(409);await assertEmpty();
 });
+
+it('gives grade-five reading pilot a concrete valid-integer output contract',async()=>{
+ await db.exec("UPDATE outcomes SET code='MAT.5.1.1',title='Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme',grade_level=5; UPDATE curriculum_versions SET grade_level=5; UPDATE learning_nodes SET grade_level=5;");
+ const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:{...context,gradeLevel:5},requestKey:crypto.randomUUID(),questionCount:1}),env,admin)!;const id=(await res.json() as any).job.id;
+ expect((await run(id)).status).toBe(200);
+ expect(provider.mock.calls[0][1].messages[0].content).toContain('EVERY option must be a different plain ASCII digit string');
+});
