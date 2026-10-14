@@ -17,3 +17,9 @@
 UI: soru önizlemede metin/çözüm düzenleme ve sürüm geçmişi; soru veya revision değişiminde eski form ve inceleme beyanları taşınmaz.
 
 Yerel:12 API/review testi +1 UI etkileşim testi geçti. Tüm migration'lar yerel D1'e başarıyla uygulandı. Tam test paketi ve GitHub/demo doğrulaması ayrıca takip edilir. Bu bir tamamlandı/7x24 aktif bildirimi değildir.
+
+## Üretim görevi ve tekrar düzeltmesi
+
+0104 migration: task_focus, instruction_note, priority işe yazılır ve sonradan değiştirilemez; aynı requestKey farklı yönlendirmeyle tekrar kullanılamaz. Üç odak uygulamanın alıştırma yönlendirmesidir, resmî MEB tanımı değildir; yalnız uygun5.sınıf resmî çıktı koduyla kabul edilir. Üretici odağı görür; bağımsız denetçi de uygulama talimatını kontrol eder.
+
+Son12 köke ek olarak son4 sorunun sınırlı çözüm metni karşılaştırılır. Gerçek kutulama sayısal-kopyası için iki tüketim sonrası tam-kutu ailesi dar kapsamlı mekanik kontrolle engellenir. Tüm havuzda kusursuz semantik tekillik iddiası yoktur. Yeni testler, çözüm adımları yeniden sıralanan kitap/kalem kopyasını ve yanlış sıfırlı-bölük odağını engeller.

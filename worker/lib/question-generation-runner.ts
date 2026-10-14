@@ -1,3 +1,4 @@
+import {TASK_FOCUS,validTaskFocus,type TaskFocus} from './question-task-focus';
 import {verifyQuestionDrafts,readAiJson,officialPilotGuidance} from './question-generation-validation';
 import type { AuthUser, Env } from '../types';
 import { checkQuestionAgentPilot } from './question-agent-pilot-policy';
@@ -10,6 +11,7 @@ const PROVIDER_TIMEOUT_MS = 45_000;
 const LEASE_MS = 120_000;
 type Draft = {stemText:string;options:{label:string;text:string}[];correctAnswer:string;solutionText:string;difficultyLevel:number};
 type Job = {
+ task_focus:TaskFocus;
  id:string;outcome_id:string;curriculum_version_id:string;academic_year:string;grade_level:number;subject_id:string;
  program_version:string;outcome_code:string|null;outcome_title:string;question_count:number;status:string;
  attempt_count:number;lease_token:string|null;lease_until:string|null;requested_by:string;
@@ -156,11 +158,14 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  }
  const job={...prior,lease_token:token,lease_until:until,status:'RUNNING'};
  const model=(env.QUESTION_GENERATION_MODEL?.trim()||DEFAULT_QUESTION_GENERATION_MODEL);
- const questionContext={gradeLevel:job.grade_level,outcomeCode:job.outcome_code,outcomeTitle:job.outcome_title,academicYear:job.academic_year};
+ if(!validTaskFocus(job.task_focus,job.grade_level,job.outcome_code)){await fail(env,id,token,'GENERATION_CONTEXT_CHANGED');return err(409,'GENERATION_CONTEXT_CHANGED');}
+ const questionContext={gradeLevel:job.grade_level,outcomeCode:job.outcome_code,outcomeTitle:job.outcome_title,academicYear:job.academic_year,taskFocus:job.task_focus};
  const history=env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'?await one<{previous_json:string}>(env.DB.prepare("SELECT COALESCE(json_group_array(stem_text),'[]') previous_json FROM (SELECT substr(q.stem_text,1,300) stem_text FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id WHERE l.node_id=? AND q.academic_year=? AND q.grade_level=? AND q.subject_id=? AND q.owner_type='PLATFORM' AND q.origin_kind='AI_GENERATED' ORDER BY q.created_at DESC,q.id DESC LIMIT 12)").bind('ln_'+job.outcome_id,job.academic_year,job.grade_level,job.subject_id)):null;
  const previousQuestions:string[]=JSON.parse(history?.previous_json??'[]');
+ const detailedHistory=env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'?await one<{previous_json:string}>(env.DB.prepare("SELECT COALESCE(json_group_array(json_object('stemText',stem_text,'solutionText',solution_text)),'[]') previous_json FROM (SELECT substr(q.stem_text,1,400) stem_text,substr(q.solution_text,1,500) solution_text FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id WHERE l.node_id=? AND q.academic_year=? AND q.grade_level=? AND q.subject_id=? AND q.owner_type='PLATFORM' AND q.origin_kind='AI_GENERATED' ORDER BY q.created_at DESC,q.id DESC LIMIT 4)").bind('ln_'+job.outcome_id,job.academic_year,job.grade_level,job.subject_id)):null;
+ const previousDrafts:{stemText:string;solutionText:string}[]=JSON.parse(detailedHistory?.previous_json??'[]');
  const readingPilotInstruction=job.grade_level===5&&job.outcome_code==='MAT.5.1.1'?' For this initial pilot generate ONLY word-to-number questions. The stem must contain exactly one quoted Turkish cardinal phrase using units up to milyar and 7 to 12 digits. EVERY option, including every wrong option, must contain between 7 and 12 digits; never use a 13-digit distractor. EVERY option must be a different plain ASCII digit string, with no dots, commas, spaces or units. Wrong options must be other valid integers based on meaningful place-value mistakes, never malformed group separators or grammatically invalid number phrases. Vary zero-filled groups and reasoning explanations. Do not generate number-to-word questions for this pilot.':'';
- const input=prompt(job)+' Keep each solution under 120 Turkish words. Return only the required JSON fields, no Markdown or commentary.'+readingPilotInstruction+' Source-derived constraints and variation data: '+JSON.stringify({officialScopeGuidance:officialPilotGuidance(questionContext),previousQuestions,variationSeed:id+token});
+ const input=prompt(job)+' Keep each solution under 120 Turkish words. Return only the required JSON fields, no Markdown or commentary.'+readingPilotInstruction+' Application task focus (not an official curriculum descriptor): '+TASK_FOCUS[job.task_focus].instruction+' Source-derived constraints and variation data: '+JSON.stringify({officialScopeGuidance:officialPilotGuidance(questionContext),previousQuestions,previousDrafts,variationSeed:id+token});
 
  if(new TextEncoder().encode(input).length>16*1024){await fail(env,id,token,'GENERATION_CONTEXT_CHANGED');return err(409,'GENERATION_CONTEXT_CHANGED');}
  let raw:unknown;
@@ -184,7 +189,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  }
  let verification:Awaited<ReturnType<typeof verifyQuestionDrafts>>|null=null;
  if(env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'){
-  verification=await verifyQuestionDrafts(env,{...questionContext,previousQuestions},drafts);
+  verification=await verifyQuestionDrafts(env,{...questionContext,previousQuestions,previousDrafts},drafts);
   const afterVerification=await executionFence(env,id,token);if(afterVerification)return afterVerification;
   if(!verification.ok){
    const code:GenerationErrorCode=verification.unavailable?'GENERATION_VERIFICATION_UNAVAILABLE':'GENERATION_QUALITY_REJECTED';
@@ -219,7 +224,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
   AND ${fence} AND (SELECT COUNT(*) FROM question_generation_lineage WHERE job_id=j.id)=j.question_count`).bind(drafts.length,id,token));
  stmts.push(env.DB.prepare('INSERT INTO question_generation_commit_assertions(job_id) VALUES(?)').bind(id));
  stmts.push(env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json)
-  VALUES(?,?,NULL,'QUESTION_GENERATION_REVIEW_READY','question_generation_job',?,?)`).bind(uuid('aud'),user.id,id,JSON.stringify({model,count:drafts.length,questionIds,providerUsage:providerUsage(raw),verification,humanReviewRequired:true})));
+  VALUES(?,?,NULL,'QUESTION_GENERATION_REVIEW_READY','question_generation_job',?,?)`).bind(uuid('aud'),user.id,id,JSON.stringify({model,taskFocus:job.task_focus,count:drafts.length,questionIds,providerUsage:providerUsage(raw),verification,humanReviewRequired:true})));
  try{await env.DB.batch(stmts);}catch{
   // D1 batch rolls all statements back on any constraint/trigger failure.
   const latest=await selectJob(env,id);
