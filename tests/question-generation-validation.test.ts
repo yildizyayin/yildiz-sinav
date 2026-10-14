@@ -93,3 +93,9 @@ it('accepts the live full-box quotient explanation and still rejects a wrong quo
  expect(mechanicalDraftIssues({...draft,solutionText:'3.565 ÷ 48 = 75 tam kutu.'})).toContain('INVALID_ARITHMETIC');
  expect(mechanicalDraftIssues({...draft,solutionText:'3.565 ÷ 48 = 74 tam kutu (kalan 12).'})).toContain('INVALID_ARITHMETIC');
 });
+
+it('accepts only a consistent parenthesized quotient-product-remainder identity',()=>{
+ const draft=q('A','625 ÷ 12 = 52 (52×12=624, 1 koltuk artar).');draft.options[0].text='52';
+ expect(mechanicalDraftIssues(draft)).toEqual([]);
+ for(const solutionText of ['625 ÷ 12 = 53 (53×12=636, 1 koltuk artar).','625 ÷ 12 = 52 (52×12=624, 2 koltuk artar).','625 ÷ 12 = 52 (52×12=623, 1 koltuk artar).','625 ÷ 12 = 52.'])expect(mechanicalDraftIssues({...draft,solutionText})).toContain('INVALID_ARITHMETIC');
+});
