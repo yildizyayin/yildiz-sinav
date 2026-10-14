@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { afterAll, beforeAll, beforeEach, expect, it, vi } from 'vitest';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
-import { runQuestionGenerationJob, DEFAULT_QUESTION_GENERATION_MODEL } from '../worker/lib/question-generation-runner';
+import { runQuestionGenerationJob, DEFAULT_QUESTION_GENERATION_MODEL,questionDraftSchema } from '../worker/lib/question-generation-runner';
 import { handleQuestionGenerationJobs } from '../worker/lib/question-generation-jobs';
 
 const admin={id:'admin',role:'SUPER_ADMIN'} as any;
@@ -297,4 +297,21 @@ it('keeps bounded output-error evidence without writing questions or invoking th
  expect(await db.prepare('SELECT COUNT(*) n FROM question_bank').first('n')).toBe(0);
  const row:any=await db.prepare("SELECT details_json FROM audit_logs WHERE action='QUESTION_GENERATION_OUTPUT_BLOCKED'").first();
  expect(JSON.parse(row.details_json)).toMatchObject({finishReason:'length',providerUsage:{completion_tokens:3000},sample:'{"questions":['});
+});
+
+it('restricts reading-pilot numeric choices to the verified seven-to-twelve-digit range',()=>{
+ const schema:any=questionDraftSchema(1,5,true);const pattern=schema.properties.questions.items.properties.options.items.properties.text.pattern;
+ const rule=new RegExp(pattern);expect(rule.test('483245607098')).toBe(true);expect(rule.test('4832456070980')).toBe(false);expect(rule.test('123456')).toBe(false);expect(rule.test('01234567')).toBe(false);
+ expect((questionDraftSchema(1,9) as any).properties.questions.items.properties.options.items.properties.text.pattern).toBeUndefined();
+});
+
+it('rejects a provider that ignores the live reading choice range before verifier or persistence',async()=>{
+ await db.exec("UPDATE outcomes SET code='MAT.5.1.1',title='Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme',grade_level=5; UPDATE curriculum_versions SET grade_level=5; UPDATE learning_nodes SET grade_level=5;");
+ env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED='true';env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';
+ const candidate=draft('“dört yüz seksen üç milyar iki yüz kırk beş milyon altı yüz yedi bin doksan sekiz” hangi sayıdır?');
+ candidate.options=['483245607098','728607098','4832456070980','483245607198'].map((text,i)=>({label:String.fromCharCode(65+i),text}));candidate.correctAnswer='A';
+ provider.mockResolvedValueOnce(output([candidate]));
+ const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:{...context,gradeLevel:5},requestKey:crypto.randomUUID(),questionCount:1}),env,admin)!;const id=(await res.json() as any).job.id;
+ expect((await run(id)).status).toBe(422);expect(provider).toHaveBeenCalledTimes(1);expect(await db.prepare('SELECT COUNT(*) n FROM question_bank').first('n')).toBe(0);
+ expect(await job(id)).toMatchObject({status:'FAILED',error_code:'GENERATION_OUTPUT_INVALID'});
 });
