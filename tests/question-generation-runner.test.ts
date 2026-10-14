@@ -30,7 +30,7 @@ function prepared(sql:string,args:any[]=[]):any{
   return result;
  },sql,args};
 }
-async function seed(){await db.exec(`INSERT INTO curriculum_versions VALUES('cv','2026-2027',7,'v1',1); INSERT INTO outcomes VALUES('o','cv','math',7,'M.7.1','Synthetic outcome',1);`);}
+async function seed(){await db.exec(`UPDATE learning_nodes SET grade_level=7; INSERT INTO curriculum_versions VALUES('cv','2026-2027',7,'v1',1); INSERT INTO outcomes VALUES('o','cv','math',7,'M.7.1','Synthetic outcome',1);`);}
 async function create(count=1){
  const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:count}),env,admin)!;
  expect(res.status).toBe(201);return (await res.json() as any).job.id as string;
@@ -280,4 +280,21 @@ it('gives grade-five reading pilot a concrete valid-integer output contract',asy
  const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:{...context,gradeLevel:5},requestKey:crypto.randomUUID(),questionCount:1}),env,admin)!;const id=(await res.json() as any).job.id;
  expect((await run(id)).status).toBe(200);
  expect(provider.mock.calls[0][1].messages[0].content).toContain('EVERY option must be a different plain ASCII digit string');
+});
+
+it('requests a bounded strict schema and persists a single independently checked draft',async()=>{
+ env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED='true';env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';env.QUESTION_GENERATION_MODEL='@cf/openai/gpt-oss-120b';
+ provider.mockResolvedValueOnce(output()).mockResolvedValueOnce({response:JSON.stringify({reviews:[{index:0,valid:true,issues:[]}]})});
+ const id=await create();expect((await run(id)).status).toBe(200);
+ const input=provider.mock.calls[0][1] as any;
+ expect(input.response_format).toMatchObject({type:'json_schema',json_schema:{additionalProperties:false,properties:{questions:{minItems:1,maxItems:1,items:{additionalProperties:false,properties:{options:{minItems:4,maxItems:4},correctAnswer:{enum:['A','B','C','D']}}}}}}});
+ expect(await db.prepare('SELECT review_status,copyright_status FROM question_bank').first()).toEqual({review_status:'REVIEW',copyright_status:'RESTRICTED'});
+});
+it('keeps bounded output-error evidence without writing questions or invoking the verifier',async()=>{
+ env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED='true';env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';
+ provider.mockResolvedValueOnce({choices:[{finish_reason:'length',message:{content:'{"questions":['}}],usage:{completion_tokens:3000}});
+ const id=await create();expect((await run(id)).status).toBe(422);expect(provider).toHaveBeenCalledTimes(1);
+ expect(await db.prepare('SELECT COUNT(*) n FROM question_bank').first('n')).toBe(0);
+ const row:any=await db.prepare("SELECT details_json FROM audit_logs WHERE action='QUESTION_GENERATION_OUTPUT_BLOCKED'").first();
+ expect(JSON.parse(row.details_json)).toMatchObject({finishReason:'length',providerUsage:{completion_tokens:3000},sample:'{"questions":['});
 });
