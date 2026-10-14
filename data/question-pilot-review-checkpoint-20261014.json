@@ -1,0 +1,452 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-10-14T07:15:26Z",
+  "environment": "staging",
+  "target": 10,
+  "status": "BLOCKED_BEFORE_FIRST_TEN",
+  "counts": {
+    "records": 9,
+    "review": 8,
+    "rejected": 1,
+    "approved": 0,
+    "published": 0
+  },
+  "budget": {
+    "cap": 50,
+    "reserved": 43,
+    "remainingReservations": 7,
+    "noRefund": true
+  },
+  "officialScope": {
+    "grade": 5,
+    "subjectId": "sub_mat",
+    "outcomeCodes": [
+      "MAT.5.1.1",
+      "MAT.5.1.2"
+    ],
+    "source": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+  },
+  "evidence": {
+    "run": "https://github.com/yildizyayin/yildiz-sinav/actions/runs/38527117768",
+    "artifact": "https://github.com/yildizyayin/yildiz-sinav/actions/runs/38527117768/artifacts/11876131883",
+    "runRequests": 0
+  },
+  "jobs": [
+    {
+      "id": "qgj_0ee4601e-8e21-4248-bddb-f4e97caf99ea",
+      "status": "REVIEW_READY",
+      "question_count": 2,
+      "generated_count": 2
+    },
+    {
+      "id": "qgj_b2f77e40-0380-40cd-bda0-8fa8d2d7fa2b",
+      "outcomeId": "out_cir_3e79287b-6fd2-4505-86d2-b94b8ce6fe64",
+      "status": "REVIEW_READY",
+      "questionCount": 1,
+      "createdAt": "2026-10-14 06:39:14",
+      "cancelledAt": null,
+      "attemptCount": 1,
+      "generatedCount": 1,
+      "leaseUntil": null,
+      "errorCode": null,
+      "completedAt": "2026-10-14 06:39:43",
+      "context": {
+        "curriculumVersionId": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academicYear": "2026-2027",
+        "gradeLevel": 5,
+        "subjectId": "sub_mat",
+        "programVersion": "TYMM-2024-MAT5-PILOT-20261013",
+        "outcomeCode": "MAT.5.1.1",
+        "outcomeTitle": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme"
+      }
+    },
+    {
+      "id": "qgj_ea44d9fc-ab68-49c3-9c3f-63f039a7b954",
+      "outcomeId": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+      "status": "REVIEW_READY",
+      "questionCount": 1,
+      "createdAt": "2026-10-14 06:39:44",
+      "cancelledAt": null,
+      "attemptCount": 1,
+      "generatedCount": 1,
+      "leaseUntil": null,
+      "errorCode": null,
+      "completedAt": "2026-10-14 06:40:18",
+      "context": {
+        "curriculumVersionId": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academicYear": "2026-2027",
+        "gradeLevel": 5,
+        "subjectId": "sub_mat",
+        "programVersion": "TYMM-2024-MAT5-PILOT-20261013",
+        "outcomeCode": "MAT.5.1.2",
+        "outcomeTitle": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme"
+      }
+    },
+    {
+      "id": "qgj_bda76a95-39ad-459b-884e-889df5333eaa",
+      "outcomeId": "out_cir_3e79287b-6fd2-4505-86d2-b94b8ce6fe64",
+      "status": "REVIEW_READY",
+      "questionCount": 1,
+      "createdAt": "2026-10-14 06:40:19",
+      "cancelledAt": null,
+      "attemptCount": 1,
+      "generatedCount": 1,
+      "leaseUntil": null,
+      "errorCode": null,
+      "completedAt": "2026-10-14 06:40:34",
+      "context": {
+        "curriculumVersionId": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academicYear": "2026-2027",
+        "gradeLevel": 5,
+        "subjectId": "sub_mat",
+        "programVersion": "TYMM-2024-MAT5-PILOT-20261013",
+        "outcomeCode": "MAT.5.1.1",
+        "outcomeTitle": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme"
+      }
+    },
+    {
+      "id": "qgj_df57b3d8-a624-4cb8-926a-ed0082220d30",
+      "outcomeId": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+      "status": "REVIEW_READY",
+      "questionCount": 1,
+      "createdAt": "2026-10-14 06:40:35",
+      "cancelledAt": null,
+      "attemptCount": 2,
+      "generatedCount": 1,
+      "leaseUntil": null,
+      "errorCode": null,
+      "completedAt": "2026-10-14 06:47:31",
+      "context": {
+        "curriculumVersionId": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academicYear": "2026-2027",
+        "gradeLevel": 5,
+        "subjectId": "sub_mat",
+        "programVersion": "TYMM-2024-MAT5-PILOT-20261013",
+        "outcomeCode": "MAT.5.1.2",
+        "outcomeTitle": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme"
+      }
+    },
+    {
+      "id": "qgj_0eb95f35-727e-4abd-a73b-3829cf499eb4",
+      "outcomeId": "out_cir_3e79287b-6fd2-4505-86d2-b94b8ce6fe64",
+      "status": "REVIEW_READY",
+      "questionCount": 1,
+      "createdAt": "2026-10-14 06:47:32",
+      "cancelledAt": null,
+      "attemptCount": 2,
+      "generatedCount": 1,
+      "leaseUntil": null,
+      "errorCode": null,
+      "completedAt": "2026-10-14 06:55:46",
+      "context": {
+        "curriculumVersionId": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academicYear": "2026-2027",
+        "gradeLevel": 5,
+        "subjectId": "sub_mat",
+        "programVersion": "TYMM-2024-MAT5-PILOT-20261013",
+        "outcomeCode": "MAT.5.1.1",
+        "outcomeTitle": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme"
+      }
+    },
+    {
+      "id": "qgj_1a0cbf77-b888-4e16-a0d2-1cc8fce0ba27",
+      "outcomeId": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+      "status": "REVIEW_READY",
+      "questionCount": 1,
+      "createdAt": "2026-10-14 07:07:42",
+      "cancelledAt": null,
+      "attemptCount": 1,
+      "generatedCount": 1,
+      "leaseUntil": null,
+      "errorCode": null,
+      "completedAt": "2026-10-14 07:08:01",
+      "context": {
+        "curriculumVersionId": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academicYear": "2026-2027",
+        "gradeLevel": 5,
+        "subjectId": "sub_mat",
+        "programVersion": "TYMM-2024-MAT5-PILOT-20261013",
+        "outcomeCode": "MAT.5.1.2",
+        "outcomeTitle": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme"
+      }
+    },
+    {
+      "id": "qgj_51ac7e47-5cb1-46dc-8d2a-8d31ef0269e3",
+      "outcomeId": "out_cir_3e79287b-6fd2-4505-86d2-b94b8ce6fe64",
+      "status": "FAILED",
+      "questionCount": 1,
+      "createdAt": "2026-10-14 07:08:02",
+      "cancelledAt": null,
+      "attemptCount": 3,
+      "generatedCount": 0,
+      "leaseUntil": null,
+      "errorCode": "GENERATION_QUALITY_REJECTED",
+      "completedAt": null,
+      "context": {
+        "curriculumVersionId": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academicYear": "2026-2027",
+        "gradeLevel": 5,
+        "subjectId": "sub_mat",
+        "programVersion": "TYMM-2024-MAT5-PILOT-20261013",
+        "outcomeCode": "MAT.5.1.1",
+        "outcomeTitle": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme"
+      }
+    },
+    {
+      "id": "qgj_43889427-fdba-4a11-9763-1abc902a6bd1",
+      "outcomeId": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+      "status": "REVIEW_READY",
+      "questionCount": 1,
+      "createdAt": "2026-10-14 07:12:51",
+      "cancelledAt": null,
+      "attemptCount": 1,
+      "generatedCount": 1,
+      "leaseUntil": null,
+      "errorCode": null,
+      "completedAt": "2026-10-14 07:13:18",
+      "context": {
+        "curriculumVersionId": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academicYear": "2026-2027",
+        "gradeLevel": 5,
+        "subjectId": "sub_mat",
+        "programVersion": "TYMM-2024-MAT5-PILOT-20261013",
+        "outcomeCode": "MAT.5.1.2",
+        "outcomeTitle": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme"
+      }
+    }
+  ],
+  "exhaustedJobs": [
+    {
+      "id": "qgj_51ac7e47-5cb1-46dc-8d2a-8d31ef0269e3",
+      "reason": "Repeated reading task; three attempts exhausted"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q_9e4d8bd2-53b6-4363-b5d4-059b2bc9ed0f",
+      "grade_level": 5,
+      "subject_id": "sub_mat",
+      "option_count": 4,
+      "stem_text": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “dört yüz kırk iki milyon beş yüz altmış yedi bin sekiz yüz doksan üç”.",
+      "options_json": "[{\"label\":\"A\",\"text\":\"442567893\"},{\"label\":\"B\",\"text\":\"442893567\"},{\"label\":\"C\",\"text\":\"442560893\"},{\"label\":\"D\",\"text\":\"442567000000\"}]",
+      "correct_answer": "A",
+      "solution_text": "Bu cümleyi üç gruba ayıralım: “dört yüz kırk iki milyon” = 442 000 000, “beş yüz altmış yedi bin” = 567 000, “sekiz yüz doksan üç” = 893. Bu üç değeri toplarsak 442 000 000 + 567 000 + 893 = 442 567 893 elde ederiz. Diğer seçeneklerde grup yerleri değiştirilmiş (442 893 567), binler kısmındaki sayı hatalı (442 560 893) ya da “beş yüz altmış yedi” milyon olarak yorumlanmıştır (442 567 000 000). Doğru sayı 442567893’tür.",
+      "difficulty_level": 3,
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_0eb95f35-727e-4abd-a73b-3829cf499eb4",
+      "outcome_code": "MAT.5.1.1",
+      "outcome_title": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme",
+      "verified": 1,
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    {
+      "id": "q_58ebc86b-8399-455c-99f4-85057a41942e",
+      "grade_level": 5,
+      "subject_id": "sub_mat",
+      "option_count": 4,
+      "stem_text": "Bir okul 3.250 adet kalem satın almıştır. 1.845 kalemi 1. sınıfın kullanımı için ayırdıktan sonra kalan kalemleri 5 sınıfa eşit olarak dağıtmak istiyor. Her sınıfa kaç kalem düşer?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"281\"},{\"label\":\"B\",\"text\":\"285\"},{\"label\":\"C\",\"text\":\"300\"},{\"label\":\"D\",\"text\":\"275\"}]",
+      "correct_answer": "A",
+      "solution_text": "1. Önce ayrılan kalem sayısını toplamdan çıkaralım:\n   3.250 – 1.845 = 1.405 kalem kalır.\n2. Kalan kalemleri 5 sınıfa eşit paylaştırmak için 1.405’i 5’e bölelim:\n   1.405 ÷ 5 = 281.\nDolayısıyla her sınıfa 281 kalem düşer.\nDoğru seçenek: A) 281",
+      "difficulty_level": 3,
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_0ee4601e-8e21-4248-bddb-f4e97caf99ea",
+      "outcome_code": "MAT.5.1.2",
+      "outcome_title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+      "verified": 1,
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    {
+      "id": "q_e46a6bcf-dd93-4b8c-b26b-4eee71216e09",
+      "grade_level": 5,
+      "subject_id": "sub_mat",
+      "option_count": 4,
+      "stem_text": "Bir çiftçi 48 sepet elma topladı. Her sepetin içinde 23 elma var. Çiftçi ayrıca pazardan 150 elma daha satın alıyor. Toplamda kaç elma olur?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"1 254\"},{\"label\":\"B\",\"text\":\"1 104\"},{\"label\":\"C\",\"text\":\"1 119\"},{\"label\":\"D\",\"text\":\"2 604\"}]",
+      "correct_answer": "A",
+      "solution_text": "1. Sepetlerdeki elma sayısını bulmak için çarpma yapalım:\n   48 × 23 = 1.104 elma.\n2. Pazardan alınan 150 elmayı ekleyelim:\n   1.104 + 150 = 1.254 elma.\nToplam elma sayısı 1.254’tür.\nDoğru seçenek: A) 1 254",
+      "difficulty_level": 4,
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_0ee4601e-8e21-4248-bddb-f4e97caf99ea",
+      "outcome_code": "MAT.5.1.2",
+      "outcome_title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+      "verified": 1,
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    {
+      "id": "q_c3ff23af-f411-4d0c-9d6b-415c39047f09",
+      "grade_level": 5,
+      "subject_id": "sub_mat",
+      "option_count": 4,
+      "stem_text": "Bir okul 3.560 adet kurşun kalem sipariş etti. İlk ay 1.245 kalem, ikinci ay ise 678 kalem kullanıldı. Kalan kalemler 24 kalemlik kutulara konulacak. Kaç tam kutu hazırlanabilir?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"68\"},{\"label\":\"B\",\"text\":\"69\"},{\"label\":\"C\",\"text\":\"70\"},{\"label\":\"D\",\"text\":\"71\"}]",
+      "correct_answer": "A",
+      "solution_text": "Kalan kalem sayısı bulunur: 3.560 − 1.245 = 2.315. Sonra 2.315 − 678 = 1.637 kalır. 1.637 ÷ 24 = 68 tam kutu (68 × 24 = 1.632) ve 5 kalem artar. Dolayısıyla tam kutu sayısı 68’dir.",
+      "difficulty_level": 3,
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_1a0cbf77-b888-4e16-a0d2-1cc8fce0ba27",
+      "outcome_code": "MAT.5.1.2",
+      "outcome_title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+      "verified": 1,
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    {
+      "id": "q_37062d41-71ce-41c9-b720-dd1074d1dc09",
+      "grade_level": 5,
+      "subject_id": "sub_mat",
+      "option_count": 4,
+      "stem_text": "Bir okul 12.750 adet kitap sipariş etti. İlk ay 4.235 kitap, ikinci ay ise 1.890 kitap dağıtıldı. Kalan kitaplar 30 kitaplık kutulara konulacak. Kaç tam kutu hazırlanabilir?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"220\"},{\"label\":\"B\",\"text\":\"221\"},{\"label\":\"C\",\"text\":\"215\"},{\"label\":\"D\",\"text\":\"225\"}]",
+      "correct_answer": "A",
+      "solution_text": "İlk ay ve ikinci ay dağıtılan kitap sayısını toplarız: 4.235 + 1.890 = 6.125. Toplam siparişten çıkarınca kalan kitap: 12.750 − 6.125 = 6.625. 6.625’i 30’a bölersek 6.625 ÷ 30 = 220 tam kutu (30 × 220 = 6.600, 25 kitap artar). Dolayısıyla hazırlanabilecek tam kutu sayısı 220’tir.",
+      "difficulty_level": 3,
+      "review_status": "REJECTED",
+      "copyright_status": "RESTRICTED",
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_43889427-fdba-4a11-9763-1abc902a6bd1",
+      "outcome_code": "MAT.5.1.2",
+      "outcome_title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+      "verified": 1,
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    {
+      "id": "q_313851db-2add-404f-9562-73e7cff31979",
+      "grade_level": 5,
+      "subject_id": "sub_mat",
+      "option_count": 4,
+      "stem_text": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “altı yüz kırk beş milyar iki yüz otuz sekiz milyon yedi yüz doksan bir bin iki yüz beş”",
+      "options_json": "[{\"label\":\"A\",\"text\":\"645238791205\"},{\"label\":\"B\",\"text\":\"645238791025\"},{\"label\":\"C\",\"text\":\"645238971205\"},{\"label\":\"D\",\"text\":\"645038791205\"}]",
+      "correct_answer": "A",
+      "solution_text": "İfadeyi üçlü gruplara ayıralım: “altı yüz kırk beş milyar” = 645 000 000 000, “iki yüz otuz sekiz milyon” = 238 000 000, “yedi yüz doksan bir bin” = 791 000, “iki yüz beş” = 205. Toplam = 645 238 791 205. Bu değer A seçeneğindeki 645238791205 sayısına eşittir. Diğer seçeneklerde rakam yerleri değişmiş ya da bir sıfır eksik/ekstra olduğu için farklı sonuç verir.",
+      "difficulty_level": 3,
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_b2f77e40-0380-40cd-bda0-8fa8d2d7fa2b",
+      "outcome_code": "MAT.5.1.1",
+      "outcome_title": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme",
+      "verified": 1,
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    {
+      "id": "q_bb920a81-da20-4643-9490-da4a40c7f98f",
+      "grade_level": 5,
+      "subject_id": "sub_mat",
+      "option_count": 4,
+      "stem_text": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “yedi yüz kırk iki milyon üç yüz elli altı bin sekiz yüz doksan bir”",
+      "options_json": "[{\"label\":\"A\",\"text\":\"742356891\"},{\"label\":\"B\",\"text\":\"74235691\"},{\"label\":\"C\",\"text\":\"7423568910\"},{\"label\":\"D\",\"text\":\"742356981\"}]",
+      "correct_answer": "A",
+      "solution_text": "İfadeyi üç grup hâlinde okuyalım: “yedi yüz kırk iki milyon” = 742 000 000, “üç yüz elli altı bin” = 356 000, “sekiz yüz doksan bir” = 891. Bu üç değeri birleştirince 742 000 000 + 356 000 + 891 = 742 356 891 elde edilir. B seçeneği bir basamak eksik, C seçeneği sonuna gereksiz sıfır eklenmiş, D seçeneğinde ise son iki rakam yer değiştirmiştir. Doğru seçenek A: 742356891.",
+      "difficulty_level": 3,
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_bda76a95-39ad-459b-884e-889df5333eaa",
+      "outcome_code": "MAT.5.1.1",
+      "outcome_title": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme",
+      "verified": 1,
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    {
+      "id": "q_4b5f15e1-7921-41f2-a16d-54e69995981b",
+      "grade_level": 5,
+      "subject_id": "sub_mat",
+      "option_count": 4,
+      "stem_text": "Bir pastanede 2.340 adet cupcake hazırlanıyor. Sabah 1.125, öğleden sonra 780 adet satılıyor. Kalan cupcake'ler her biri 15 adet olacak şekilde kutulara konulacak. Kaç tam kutu hazırlanabilir?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"27\"},{\"label\":\"B\",\"text\":\"28\"},{\"label\":\"C\",\"text\":\"29\"},{\"label\":\"D\",\"text\":\"30\"}]",
+      "correct_answer": "C",
+      "solution_text": "Baklagiller: 2.340 - 1.125 = 1.215; 1.215 - 780 = 435 kalan cupcake. 435 ÷ 15 = 29 tam kutu, kalan 0 cupcake. Dolayısıyla hazırlanabilecek tam kutu sayısı 29'dur. Doğru seçenek C şıkkıdır.",
+      "difficulty_level": 3,
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_df57b3d8-a624-4cb8-926a-ed0082220d30",
+      "outcome_code": "MAT.5.1.2",
+      "outcome_title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+      "verified": 1,
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    {
+      "id": "q_07273070-562b-428f-a952-68ea2349e059",
+      "grade_level": 5,
+      "subject_id": "sub_mat",
+      "option_count": 4,
+      "stem_text": "Bir okul 2.350 adet defter satın almıştır. Bu defterlerden 1.120 tanesini 4. sınıfa, 510 tanesini ise 5. sınıfa dağıttıktan sonra kalan defterleri 8 sınıfa eşit olarak paylaştırmak istiyor. Her sınıfa kaç defter düşer?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"85\"},{\"label\":\"B\",\"text\":\"90\"},{\"label\":\"C\",\"text\":\"95\"},{\"label\":\"D\",\"text\":\"100\"}]",
+      "correct_answer": "B",
+      "solution_text": "Önce toplam defter sayısından 4. sınıfa verilen 1.120 defteri çıkaralım: 2.350 – 1.120 = 1.230. Ardından 5. sınıfa verilen 510 defteri çıkaralım: 1.230 – 510 = 720. Kalan 720 defteri 8 sınıfa bölüyoruz: 720 ÷ 8 = 90. Dolayısıyla her sınıfa 90 defter düşer. Doğru seçenek B şıkkı, 90 defterdir.",
+      "difficulty_level": 3,
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_ea44d9fc-ab68-49c3-9c3f-63f039a7b954",
+      "outcome_code": "MAT.5.1.2",
+      "outcome_title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+      "verified": 1,
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    }
+  ],
+  "findings": [
+    {
+      "questionId": "q_4b5f15e1-7921-41f2-a16d-54e69995981b",
+      "severity": "EDITORIAL_HOLD",
+      "issues": [
+        "Çözüm bağlam dışı Baklagiller sözcüğüyle başlıyor.",
+        "cupcake ifadesinin yaşa uygun Türkçe karşılığı kullanılmalı."
+      ]
+    },
+    {
+      "questionId": "q_bb920a81-da20-4643-9490-da4a40c7f98f",
+      "severity": "EDITORIAL_HOLD",
+      "issues": [
+        "D:891→981 değişimi son iki rakamın yer değiştirmesi değildir; çeldirici açıklaması düzeltilmeli."
+      ]
+    },
+    {
+      "questionId": "q_9e4d8bd2-53b6-4363-b5d4-059b2bc9ed0f",
+      "severity": "EDITORIAL_HOLD",
+      "issues": [
+        "D seçeneği için verilen milyon açıklaması 442567000000 sayısının bölük yapısını doğru açıklamıyor."
+      ]
+    },
+    {
+      "questionId": "q_313851db-2add-404f-9562-73e7cff31979",
+      "severity": "REVIEW_REQUIRED",
+      "issues": [
+        "Her çeldiricinin gerçek basamak değişimi açıklanmalı; eksik/fazla sıfır ifadesi tüm seçeneklere doğru uygulanmıyor."
+      ]
+    },
+    {
+      "questionId": "q_37062d41-71ce-41c9-b720-dd1074d1dc09",
+      "severity": "REJECTED_SEMANTIC_DUPLICATE",
+      "duplicateOf": "q_c3ff23af-f411-4d0c-9d6b-415c39047f09",
+      "issues": [
+        "İki dönem tüketim/dağıtımı çıkarıp kalanı kutulara tam bölme; sayı ve nesne değişikliği yeni akıl yürütme değildir."
+      ]
+    },
+    {
+      "questionIds": [
+        "q_58ebc86b-8399-455c-99f4-85057a41942e",
+        "q_07273070-562b-428f-a952-68ea2349e059"
+      ],
+      "severity": "PEDAGOGICAL_REVIEW_REQUIRED",
+      "issues": [
+        "Dağıtım sonrası eşit paylaştırma uygulamalarının benzerliği insan tarafından değerlendirilmeli."
+      ]
+    }
+  ],
+  "limitations": [
+    "Otomatik doğrulama ve yakın tekrar denetimi kusursuz değildir; bilinen bir anlamsal tekrar içerik incelemesiyle reddedildi.",
+    "Hiçbir insan onayı veya telif uygunluğu verilmedi.",
+    "Metin/çözüm düzenleme API ve arayüzü mevcut metadata PATCH işleminde yok; önce bu teknik eksik kapatılmalı.",
+    "50 rezervasyon sınırı 50 geçerli soru garantisi değildir; kalan7 rezervasyon sıfırlanmaz veya kendiliğinden artırılmaz."
+  ]
+}
