@@ -1,0 +1,26 @@
+name: Question team live acceptance
+on:
+  push:
+    branches: [staging]
+    paths: [.github/question-team-acceptance.execute]
+permissions:
+  contents: read
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/live-question-team-acceptance.mjs
+        env:
+          QUESTION_TEAM_BROWSER: 'true' 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: question-team-acceptance-${{ github.run_id }}
+          path: tmp/question-team-acceptance/
