@@ -54,6 +54,7 @@ beforeAll(async()=>{
  await db.exec(migration('0108_question_originality_search.sql'));
  await db.exec(migration('0109_question_visual_student_payload.sql'));
  await db.exec(migration('0110_question_editorial_repair.sql'));
+ await db.exec(migration('0111_editorial_verification_transport_retry.sql'));
  await db.exec(migration('0106_question_team_execution_stage.sql'));
  await db.exec(migration('0102_question_agent_pilot_budget.sql'));
 },20_000);
@@ -336,6 +337,7 @@ it('does not consume a provider attempt when paused and fences a pause racing th
  expect(await db.prepare('SELECT count(*) n FROM question_bank').first('n')).toBe(0);
 });
 it('commits a complete editorial table packet only after independent dimension review',async()=>{
+ env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';
  const response=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE'}),env,admin)!;expect(response.status).toBe(201);const id=(await response.json() as any).job.id;
  env.QUESTION_GENERATION_VERIFIER_MODEL='independent-editorial-verifier';
  provider.mockImplementation(async(model:string)=>model==='independent-editorial-verifier'?{response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})}:output([editorialQuestion()]));
@@ -347,6 +349,7 @@ it('commits a complete editorial table packet only after independent dimension r
  const audit:any=await db.prepare("SELECT details_json FROM audit_logs WHERE action='QUESTION_GENERATION_REVIEW_READY'").first();expect(JSON.parse(audit.details_json).qualityProfile).toBe('EDITORIAL_V1');
 });
 it('does not downgrade an editorial task when the producer omits its packet',async()=>{
+ env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';
  const response=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE'}),env,admin)!;const id=(await response.json() as any).job.id;
  provider.mockResolvedValue(output());expect((await run(id)).status).toBe(422);expect(await db.prepare('SELECT count(*) n FROM question_bank').first('n')).toBe(0);expect((await job(id)).error_code).toBe('GENERATION_OUTPUT_INVALID');
 });
@@ -361,4 +364,13 @@ it('repairs a real rejected packet once without another producer call or resetti
  const repaired=await handleQuestionEditorialRepair(req(),env,admin,id);expect(repaired.status).toBe(200);expect(provider).toHaveBeenCalledTimes(2);expect(await job(id)).toMatchObject({attempt_count:1,editorial_repair_count:1,status:'REVIEW_READY',generated_count:1});
  expect((await handleQuestionEditorialRepair(req(),env,admin,id)).status).toBe(200);expect((await handleQuestionEditorialRepair(req({...body,reason:'A different repair cannot replace the saved packet.'}),env,admin,id)).status).toBe(409);expect(provider).toHaveBeenCalledTimes(2);
  const q:any=await db.prepare('SELECT * FROM question_bank').first();expect(q).toMatchObject({review_status:'REVIEW',copyright_status:'RESTRICTED'});expect(q.source_label).toContain('AI-assisted editorial repair');
+});
+it('retries only a protocol-unavailable review on the identical repaired packet without resetting either counter',async()=>{
+ env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';env.QUESTION_GENERATION_VERIFIER_MODEL='independent-editorial-verifier';
+ const created=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE'}),env,admin)!;const id=(await created.json() as any).job.id;
+ const bad:any=editorialQuestion();bad.editorial.visual.values=[84];provider.mockResolvedValue(output([bad]));expect((await run(id)).status).toBe(422);
+ const url=`https://test${base}/${id}/repair`,get=()=>handleQuestionEditorialRepair(new Request(url),env,admin,id);const source:any=await (await get()).json();const body={expectedSourceAuditId:source.sourceAuditId,expectedSourceHash:source.sourceHash,drafts:[editorialQuestion()],reason:'Source-bound correction; retry may not change this corrected content.'};const post=()=>handleQuestionEditorialRepair(new Request(url,{method:'POST',headers:{Origin:'https://test'},body:JSON.stringify(body)}),env,admin,id);
+ provider.mockImplementation(async()=>({response:JSON.stringify({reviews:[{index:0,valid:false,issues:['missing editorial scores']}]})}));expect((await post()).status).toBe(422);const retry:any=await (await get()).json();expect(retry.protocolRetryable).toBe(true);expect(retry.sourceHash).toBe(source.sourceHash);expect(retry.drafts[0].editorial.visual.values).toEqual([]);
+ provider.mockImplementation(async(model:string,args:any)=>{expect(model).toBe('independent-editorial-verifier');expect(args.response_format.json_schema.properties.reviews.items.required).toContain('editorial');expect(args.messages[0].content).toContain('YOU must assign');return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})}});
+ expect((await post()).status).toBe(200);expect(await job(id)).toMatchObject({attempt_count:1,editorial_repair_count:1,editorial_verify_retry_count:1,status:'REVIEW_READY'});expect(provider).toHaveBeenCalledTimes(3);expect((await post()).status).toBe(200);expect(provider).toHaveBeenCalledTimes(3);
 });

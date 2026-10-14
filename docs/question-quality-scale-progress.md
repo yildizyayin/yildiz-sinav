@@ -2,7 +2,7 @@
 
 14 Ekim 2026. Kullanıcı kalan üretim işlerini tamamlamamızı, basit metin yerine güçlü yayınevi düzeyinde soru tasarlayan bir ekip kurmamızı istedi. Ardından sınav merkezi güncellenecek. Başlangıç main623d0c60e / PR257 prod dağıtımı38596578880 ve prod doğrulaması38597468655 başarılıdır. Önceki prod bekleme bilgisi artık tarihsel.
 
-Bu çalışma: `/workspace/scratch/b484842228bb/question-quality-scale`, feat/question-quality-scale-20261014. 0107/0108 henüz dağıtılmadı; mevcut0103-0106 değiştirilmedi.
+Bu çalışma: `/workspace/scratch/b484842228bb/question-quality-scale`, feat/question-quality-scale-20261014. 0107–0110 staging üzerinde dağıtıldı ve değiştirilmeyecek; mevcut0103-0106 da değiştirilmedi. 0111 protokol tekrarı bu güncellemede eklendi.
 
 Uygulanan: EDITORIAL_V1 varsayılan yeni iş profili, değiştirilemez sunum/kalite yönlendirmesi; beceri hedefi,2–6 düşünme adımı, her yanlış şık için ayrı hata tanısı/gerekçe ve özgün tasarım gerekçesi; yapılandırılmış TABLE/BAR_CHART/NONE. Serbest HTML/SVG/URL üretimi yok. Ayrı model altı boyutta0–4 puan ve gerekçe verir; her boyutta en az3 gerekir. Bu otomatik puan insan/telif onayı değildir. Eski iş profilleri korunur.
 
@@ -31,3 +31,11 @@ Run38603136906 üçüncü ve son üretim0 kayıt: model yine TABLE içinde value
 Yeni0110 ve /generation-jobs/:id/repair: kayıtlı gerçek model paketinin kaynak audit/hash tanığıyla tek seferlik AI destekli editoryal düzeltmesi; üretici çağrılmaz, attempt_count korunur, 1 repair cap, payload hash ile idempotency, ayrı bilimsel/6-boyutlu denetçi ve aynı D1 atomik commit/source/paused guards. Sıfırdan yeni üretim veya insan onayı değildir. UI tam paket/şık/tanı/veri alanlarını düzenler. Düzeltilen model3 taslağı data/question-editorial-repair-20261014.json; enaz280 etkinlik kartı, üçtedarikçi, tamkutu/maliyet ve Mert'in iddiasını değerlendirme. Gerçek fiyat/yaş sınırları ve açıklamalar AI destekli düzeltilmiştir; kaynağı model üretimi olarak korunur fakat otonom başarı diye raporlanmaz.
 
 66 odaklı native/API testi geçti. Önceki tam pakette1062 test geçti; 0110/repair/UI son tam doğrulaması ve gerçek repair denetimi henüz yapılmadı. Yapılacak:0110 stage'e dağıt → .github/question-editorial-repair.execute ile tek onarım denetimi → hiçbir4. üretim veya yeni rezervasyon yok → başarılıysa demo UI kabulü, CI ve PR259 finalleştirme. Üretim7x24 hâlâ kapalı; kapasite/bütçe/resmî kapsam ve baskı renderer kalan konulardır. Sınav merkezi henüz ele alınmadı.
+
+## Denetçi protokol düzeltmesi — güncel durum
+
+38606378294 gerçek onarım denemesi kayıt yapmadı. Üretici çağrısı0, yeni rezervasyon0, attempt_count3, editorial_repair_count1. Bağımsız model eski örnek nedeniyle altı puanı üretmek yerine missing editorial scores verdi. İçerik için olumlu kalite sonucu yoktur. Yeni zorunlu EDITORIAL_REVIEW_V1 JSON schema ve denetçinin kendi puanlarını vermesi gerektiğini açıkça belirten talimat eklendi; legacy yanıt sözleşmesi korunur.
+
+0111 yalnız aynı kaynak hash'i ve aynı düzeltilmiş paket/reason hash'i için bir protokol tekrarı sağlar. Soru değiştirilemez, yeni üretici çağrısı yapılmaz, onarım/üretim sayacı sıfırlanmaz. Bilimsel hata/3 altı puan gibi esaslı retler bu yolla tekrarlanamaz. Kaynak audit ID önceki gerçek onarım kaydından geri doldurulur. Gerçek protokol tekrarının sonucu henüz yok.
+
+AUTO sunum sağlayıcı çağrısından önce doğrulanmış pilot kapsamına göre somut TABLE/TEXT şemasına çözülür. Editorial işler bağımsız denetçi kapalıysa üreticiyi çağırmadan durur. İnsan/telif onayı hâlâ bekler; 7x24 ve ücretli üretim açılmadı. Rezervasyon46/50. Son önceki tam test1066 geçti; son protokol katmanı için tam test yeniden çalışıyor. Typecheck ve build geçti.
