@@ -50,7 +50,14 @@ try{
   if(!existing.length){const b=(await query("SELECT question_cap,reserved_count FROM question_agent_pilot_budget WHERE id='pilot_50'"))[0];if(!b||b.question_cap-b.reserved_count<1)throw Error('Atomic pilot budget has no remaining reservation');}
   const created=await req('/api/question-bank-standard/generation-jobs',{requestKey,outcomeId:o.id,questionCount:1,expectedContext:{curriculumVersionId:cv.id,academicYear:spec.academicYear,gradeLevel:5,subjectId:o.subject_id,programVersion:spec.programVersion}});if(!created.r.ok)throw Error('Job creation failed '+(created.p.error?.code||created.r.status));
   const job=created.p.job;report.jobs.push(job);if(job.status==='REVIEW_READY')continue;
-  if(job.attemptCount>=3)throw Error('Single-question job exhausted; inspect evidence before replacement');
+  if(job.attemptCount>=3){
+   // This reviewed failure must not hide the last independent, already-planned job.
+   // Keep it FAILED and in the evidence; no replacement, reset or refund.
+   if(i===6&&job.id==='qgj_51ac7e47-5cb1-46dc-8d2a-8d31ef0269e3'&&job.status==='FAILED'){
+    report.exhaustedJobs=[{id:job.id,reason:'Repeated reading task; three attempts exhausted'}];continue;
+   }
+   throw Error('Single-question job exhausted; inspect evidence before replacement');
+  }
   calls++;console.log('PILOT_BATCH_PROGRESS '+JSON.stringify({batch:i+1,jobId:job.id,runRequests:calls}));
   const run=await req('/api/question-bank-standard/generation-jobs/'+job.id+'/run',{});if(!run.r.ok){const state=(await query('SELECT status,attempt_count,error_code FROM question_generation_jobs WHERE id=?',[job.id]))[0];report.jobs[report.jobs.length-1]={...job,status:state?.status??job.status,attemptCount:state?.attempt_count??job.attemptCount,errorCode:state?.error_code??run.p.error?.code};throw Error('Single-question generation blocked '+(run.p.error?.code||run.r.status));}
   report.jobs[report.jobs.length-1]=run.p.job;if(run.p.job?.status!=='REVIEW_READY')throw Error('Pilot job incomplete');
