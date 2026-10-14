@@ -62,7 +62,18 @@ try{
   const run=await req('/api/question-bank-standard/generation-jobs/'+job.id+'/run',{});if(!run.r.ok){const state=(await query('SELECT status,attempt_count,error_code FROM question_generation_jobs WHERE id=?',[job.id]))[0];report.jobs[report.jobs.length-1]={...job,status:state?.status??job.status,attemptCount:state?.attempt_count??job.attemptCount,errorCode:state?.error_code??run.p.error?.code};throw Error('Single-question generation blocked '+(run.p.error?.code||run.r.status));}
   report.jobs[report.jobs.length-1]=run.p.job;if(run.p.job?.status!=='REVIEW_READY')throw Error('Pilot job incomplete');
  }
+ // Exact, evidence-reviewed semantic duplicate; retain history, never approve it.
+ const duplicate=await query("SELECT id,review_status,review_revision FROM question_bank WHERE id=? AND source_job_id=? AND grade_level=5 AND source_model='@cf/openai/gpt-oss-120b' AND copyright_status='RESTRICTED'",['q_37062d41-71ce-41c9-b720-dd1074d1dc09','qgj_43889427-fdba-4a11-9763-1abc902a6bd1']);
+ const original=await query("SELECT id FROM question_bank WHERE id=? AND source_job_id=? AND review_status='REVIEW' AND grade_level=5",['q_c3ff23af-f411-4d0c-9d6b-415c39047f09','qgj_1a0cbf77-b888-4e16-a0d2-1cc8fce0ba27']);
+ if(duplicate.length!==1||original.length!==1||!['REVIEW','REJECTED'].includes(duplicate[0].review_status))throw Error('Known semantic duplicate changed; inspect before mutation');
+ if(duplicate[0].review_status==='REVIEW'){
+  const rejected=await req('/api/question-bank-standard/'+duplicate[0].id+'/review',{status:'REJECTED',expectedRevision:duplicate[0].review_revision,note:'AI destekli içerik incelemesi: q_c3ff23af ile aynı iki dönem tüketim/dağıtım çıkarma ve kalanları kutulara tam bölme görevi; yalnız sayılar ve nesne değişmiş. Anlamsal tekrar. İnsan onayı veya telif uygunluğu verilmedi.'},'PATCH');
+  if(!rejected.r.ok)throw Error('Could not quarantine known semantic duplicate');
+ }
+ report.semanticRejection={id:duplicate[0].id,duplicateOf:original[0].id};
  await exportEvidence();
+ report.reviewQuestionCount=report.questions.filter(q=>q.review_status==='REVIEW').length;
+ report.rejectedQuestionCount=report.questions.filter(q=>q.review_status==='REJECTED').length;
  if(report.generatedQuestions!==10||report.publishedQuestions!==0||report.questions.some(q=>q.option_count!==4||q.review_status!=='REVIEW'||q.copyright_status!=='RESTRICTED'||q.verified!==1))throw Error('Real draft evidence incomplete');
  if(report.usage.length!==9||report.usage.some(u=>JSON.parse(u.verification_json||'null')?.ok!==true))throw Error('Independent verification evidence missing');
  report.status='TEN_AUTOMATICALLY_SCREENED_DRAFTS_PENDING_HUMAN_REVIEW';
