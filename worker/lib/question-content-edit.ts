@@ -12,6 +12,7 @@ export async function handleQuestionContentEdit(request:Request,env:Env,user:Aut
   const rows=await all<any>(env.DB.prepare('SELECT review_revision,snapshot_json,edited_by,edit_note,edited_at FROM question_content_revisions WHERE question_id=? ORDER BY review_revision DESC LIMIT 20').bind(id));
   return json({ok:true,currentRevision:q.review_revision,revisions:rows.map(r=>{const snapshot=JSON.parse(r.snapshot_json);try{snapshot.options=JSON.parse(snapshot.optionsJson??'null')}catch{snapshot.options=null}return {...r,snapshot,snapshot_json:undefined}})});
  }
+ if(q.editorial_packet_json)return json({ok:false,error:{code:'EDITORIAL_ATOMIC_REVISION_REQUIRED',message:'Beceri, çeldirici ve görsel paketi birlikte sürümlenmelidir; kısmi metin değişikliği yapılamaz.'}},409);
  if(request.method!=='PATCH')return json({ok:false,error:{code:'METHOD_NOT_ALLOWED',message:'Geçersiz işlem.'}},405);
  if(request.headers.get('Origin')!==new URL(request.url).origin)return forbidden('İşlemi ANUNEX üzerinden başlatın.');
  const raw=await request.text();if(raw.length>32768)return badRequest('İçerik çok uzun.','CONTENT_TOO_LARGE');

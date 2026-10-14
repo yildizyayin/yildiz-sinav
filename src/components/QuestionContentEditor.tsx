@@ -9,7 +9,7 @@ export function QuestionContentEditor({question,onSaved}:{question:any;onSaved:(
  const [stemText,setStem]=useState(question.stem_text??''),[solutionText,setSolution]=useState(question.solution_text??'');
  const [correctAnswer,setAnswer]=useState(question.correct_answer??'A'),[editNote,setNote]=useState('');
  const [options,setOptions]=useState<Option[]>((question.options??[]).map((o:any,i:number)=>({label:String.fromCharCode(65+i),text:typeof o==='string'?o:String(o.text??'')})));
- const editable=question.question_type==='MULTIPLE_CHOICE'&&question.content_mode==='TEXT'&&!question.assets?.length&&!question.contentBlocks?.length&&!['APPROVED','ARCHIVED'].includes(question.review_status);
+ const editable=!question.editorial_packet_json&&question.question_type==='MULTIPLE_CHOICE'&&question.content_mode==='TEXT'&&!question.assets?.length&&!question.contentBlocks?.length&&!['APPROVED','ARCHIVED'].includes(question.review_status);
  async function save(){
   setBusy(true);setError('');
   try{await api(`/api/question-bank-standard/${encodeURIComponent(question.id)}/content`,{method:'PATCH',body:JSON.stringify({expectedRevision:question.review_revision,stemText,solutionText,correctAnswer,options,editNote})});setEditing(false);await onSaved();}
