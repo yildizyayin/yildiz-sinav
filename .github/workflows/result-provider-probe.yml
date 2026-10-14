@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   group: result-provider-probe-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   probe:
@@ -110,6 +110,10 @@ jobs:
             echo "- Retention Queue delivery: PASS"
             echo "- Scope: synthetic staging-only provider resources; no D1 or student data"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove isolated synthetic Worker and Queues
+        if: always()
+        run: node scripts/cleanup-result-probe-resources.mjs
 
       - name: Remove transient local config
         if: always()
