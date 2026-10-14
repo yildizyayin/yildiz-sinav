@@ -1,0 +1,91 @@
+{
+  "asOf": "2026-10-14T17:40:20.139Z",
+  "environment": "staging",
+  "automaticGeneration": false,
+  "autonomousGeneration": {
+    "attempts": 3,
+    "savedQuestions": 0,
+    "runs": [
+      38601238833,
+      38601989581,
+      38603136906
+    ]
+  },
+  "aiAssistedRevision": {
+    "run": 38608237186,
+    "producerCalls": 0,
+    "newReservations": 0,
+    "job": {
+      "status": "REVIEW_READY",
+      "attempt_count": 3,
+      "editorial_repair_count": 1,
+      "editorial_verify_retry_count": 1,
+      "generated_count": 1,
+      "repair_source_hash": "d2c774bb386d3f1f83f37d94ee738460db926fcbac5adbc21db3e95293ce8b95"
+    },
+    "questionId": "q_3991b3b1-aa34-4b69-9c08-dfe376bc5bef",
+    "reviewStatus": "REVIEW",
+    "rightsStatus": "RESTRICTED",
+    "verification": {
+      "protocolVersion": "EDITORIAL_REVIEW_V1",
+      "ok": true,
+      "unavailable": false,
+      "protocolRetryEligible": false,
+      "model": "@cf/nvidia/nemotron-3-120b-a12b",
+      "reviews": [
+        {
+          "index": 0,
+          "valid": true,
+          "issues": [],
+          "editorial": {
+            "outcomeAlignment": 4,
+            "reasoningDemand": 4,
+            "distractorQuality": 4,
+            "languageAndFairness": 4,
+            "visualConsistency": 4,
+            "originalityDesign": 4,
+            "rationale": "Soru MAT.5.1.2 kapsamında gerçek yaşam problemi, dört işlem ve sınırlı operand boyutlarıyla uyumlu, çözüm adımları mantıklı ve açıklayıcıdır."
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 3801,
+        "completion_tokens": 542,
+        "total_tokens": 4343,
+        "neurons": 244.757
+      }
+    }
+  },
+  "browserAcceptance": {
+    "run": 38608485388,
+    "environment": "staging",
+    "result": "PASS",
+    "readOnlyBusinessData": true,
+    "editorialContract": true,
+    "targetDeadlineVerified": true,
+    "presentationChoices": 4,
+    "sourceRepairTeacherDenied": true,
+    "structuredTableVisible": true,
+    "privateDesignNotesExcludedFromVisual": true,
+    "unapprovedRichQuestionPublishBlocked": true,
+    "rosterCount": 5,
+    "reserved": 46,
+    "remaining": 4,
+    "automaticGeneration": false,
+    "questionDeepLink": true,
+    "privateVideoHashVerified": true,
+    "videoHumanApprovalRequired": true,
+    "teacherDenied": true,
+    "video": {
+      "synthetic": true,
+      "bytes": 56568,
+      "sha256": "6a34136bd9e9e6d91e0e4f16ea23cf68e715a9e1e92f7204eca3ecf19f7e0ba8"
+    },
+    "asOf": "2026-10-14T17:40:20.139Z"
+  },
+  "limitations": [
+    "One assisted example is not evidence of autonomous production yield or publisher-level quality.",
+    "Human and rights approval remain pending.",
+    "Continuous production, provider budget, broad verified curriculum coverage and rich print layout remain pending."
+  ]
+}
