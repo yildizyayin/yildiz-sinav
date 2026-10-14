@@ -1,0 +1,12 @@
+import {useId} from 'react';
+/** Render structured data with React escaping; no generated HTML, SVG markup or URLs. */
+export function QuestionDataVisual({blocks=[]}:{blocks?:any[]}){
+ const id=useId();
+ return <>{blocks.filter(b=>b.placement==='STEM'&&b.payload?.schemaVersion===1).map((b,i)=>{const v=b.payload;
+ if(v.kind==='TABLE'&&Array.isArray(v.columns)&&Array.isArray(v.rows))return <figure key={b.id||i} style={{margin:'18px 0',overflowX:'auto'}}><figcaption style={{fontWeight:650,marginBottom:8}}>{v.title}{v.unit?' · '+v.unit:''}</figcaption><table style={{borderCollapse:'collapse',width:'100%',fontSize:14}}><thead><tr>{v.columns.map((c:string,j:number)=><th scope="col" style={{border:'1px solid #cbdcdd',padding:9,textAlign:'left',background:'#eef6f5'}} key={j}>{c}</th>)}</tr></thead><tbody>{v.rows.map((r:string[],j:number)=><tr key={j}>{r.map((c,k)=><td style={{border:'1px solid #cbdcdd',padding:9}} key={k}>{c}</td>)}</tr>)}</tbody></table></figure>;
+ if(v.kind==='BAR_CHART'&&Array.isArray(v.categories)&&Array.isArray(v.values)&&v.categories.length===v.values.length&&v.values.every((n:any)=>typeof n==='number'&&Number.isFinite(n)&&n>=0)){
+ const max=Math.max(...v.values,1),n=v.categories.length;if(n<2||n>8)return null;
+ return <figure key={b.id||i} style={{margin:'18px 0'}}><figcaption style={{fontWeight:650}}>{v.title}{v.unit?' · '+v.unit:''}</figcaption><svg viewBox="0 0 640 300" role="img" aria-labelledby={id+'-'+i} style={{width:'100%',maxHeight:360}}><title id={id+'-'+i}>{b.alt_text||v.categories.map((c:string,j:number)=>`${c}: ${v.values[j]}`).join('; ')}</title>{[0,.25,.5,.75,1].map(t=><g key={t}><line x1="58" y1={240-t*200} x2="625" y2={240-t*200} stroke="#dce6e6"/><text x="49" y={244-t*200} textAnchor="end" fontSize="11" fill="#45616a">{Number((max*t).toPrecision(4)).toLocaleString('tr-TR')}</text></g>)}{v.categories.map((c:string,j:number)=>{const step=550/n,h=v.values[j]/max*200,x=65+j*step;return <g key={j}><rect x={x} y={240-h} width={step*.65} height={h} fill="#16847e"/><text x={x+step*.325} y={230-h} textAnchor="middle" fontSize="12">{v.values[j].toLocaleString('tr-TR')}</text><text x={x+step*.325} y="263" textAnchor="middle" fontSize="11">{c.length>18?c.slice(0,16)+'…':c}</text></g>})}</svg><details><summary>Grafik verilerini metin olarak göster</summary><ul>{v.categories.map((c:string,j:number)=><li key={j}>{c}: {v.values[j].toLocaleString('tr-TR')} {v.unit}</li>)}</ul></details></figure>;
+ }
+ return null;})}</>;
+}

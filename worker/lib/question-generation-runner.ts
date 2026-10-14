@@ -1,3 +1,5 @@
+import {questionOriginalityCandidates} from './question-originality-search';
+import {EDITORIAL_INSTRUCTION,editorialSchema,editorialIssues,visualBlock,type EditorialPacket} from './question-editorial';
 import {questionTeamPaused} from './question-team-policy';
 import {TASK_FOCUS,validTaskFocus,type TaskFocus} from './question-task-focus';
 import {verifyQuestionDrafts,readAiJson,officialPilotGuidance} from './question-generation-validation';
@@ -10,9 +12,9 @@ import { generationJobDto, generationJobFields, questionGenerationEnabled } from
 export const DEFAULT_QUESTION_GENERATION_MODEL = '@cf/zai-org/glm-4.7-flash';
 const PROVIDER_TIMEOUT_MS = 45_000;
 const LEASE_MS = 120_000;
-type Draft = {stemText:string;options:{label:string;text:string}[];correctAnswer:string;solutionText:string;difficultyLevel:number};
+type Draft = {stemText:string;options:{label:string;text:string}[];correctAnswer:string;solutionText:string;difficultyLevel:number;editorial?:EditorialPacket};
 type Job = {
- task_focus:TaskFocus;
+ quality_profile:string;presentation:any;task_focus:TaskFocus;
  id:string;outcome_id:string;curriculum_version_id:string;academic_year:string;grade_level:number;subject_id:string;
  program_version:string;outcome_code:string|null;outcome_title:string;question_count:number;status:string;
  attempt_count:number;lease_token:string|null;lease_until:string|null;requested_by:string;
@@ -69,27 +71,29 @@ async function bankHasDuplicate(env:Env,job:Job,drafts:Draft[]){
 async function hash(key:string){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(key));return Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');}
 function validText(v:unknown,max:number):v is string{return typeof v==='string' && !!v.trim() && v.length<=max && !/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(v);}
 export function generationOptionCount(grade:number):4|5|null {return [5,6,7].includes(grade)?4:[9,10,11].includes(grade)?5:null;}
-export function questionDraftSchema(count:number,grade:number,readingPilot=false){
+export function questionDraftSchema(count:number,grade:number,readingPilot=false,editorial=false){
  const n=generationOptionCount(grade),labels=Array.from({length:n??5},(_,i)=>String.fromCharCode(65+i));
- return {type:'object',additionalProperties:false,required:['questions'],properties:{questions:{type:'array',minItems:count,maxItems:count,items:{type:'object',additionalProperties:false,required:['stemText','options','correctAnswer','solutionText','difficultyLevel'],properties:{stemText:{type:'string',minLength:1,maxLength:3000},solutionText:{type:'string',minLength:1,maxLength:5000},difficultyLevel:{type:'integer',minimum:1,maximum:6},correctAnswer:{type:'string',enum:labels},options:{type:'array',minItems:n??4,maxItems:n??5,items:{type:'object',additionalProperties:false,required:['label','text'],properties:{label:{type:'string',enum:labels},text:{type:'string',minLength:1,maxLength:1200,...(readingPilot?{pattern:'^[1-9][0-9]{6,11}$'}:{})}}}}}}}}};
+ const schema:any={type:'object',additionalProperties:false,required:['questions'],properties:{questions:{type:'array',minItems:count,maxItems:count,items:{type:'object',additionalProperties:false,required:['stemText','options','correctAnswer','solutionText','difficultyLevel'],properties:{stemText:{type:'string',minLength:1,maxLength:3000},solutionText:{type:'string',minLength:1,maxLength:5000},difficultyLevel:{type:'integer',minimum:1,maximum:6},correctAnswer:{type:'string',enum:labels},options:{type:'array',minItems:n??4,maxItems:n??5,items:{type:'object',additionalProperties:false,required:['label','text'],properties:{label:{type:'string',enum:labels},text:{type:'string',minLength:1,maxLength:1200,...(readingPilot?{pattern:'^[1-9][0-9]{6,11}$'}:{})}}}}}}}}};
+ if(editorial){schema.properties.questions.items.required.push('editorial');schema.properties.questions.items.properties.editorial=editorialSchema();}return schema;
 }
 function outputDiagnostic(raw:any){
  const value=raw?.choices?.[0]?.message?.content??raw?.response??raw?.output_text??raw;
  let sample:string;try{sample=typeof value==='string'?value:JSON.stringify(value);}catch{sample='[unserializable]';}
  return {finishReason:typeof raw?.choices?.[0]?.finish_reason==='string'?raw.choices[0].finish_reason.slice(0,40):null,providerUsage:providerUsage(raw),sample:sample?.slice(0,12000)??null};
 }
-function parseDrafts(raw:unknown,count:number,grade:number):Draft[]|null {
+function parseDrafts(raw:unknown,count:number,grade:number,editorial=false,presentation:any='AUTO'):Draft[]|null {
  const expected=generationOptionCount(grade);
  const parsed=readAiJson(raw);
  if(!parsed||typeof parsed!=='object'||Array.isArray(parsed)||Object.keys(parsed).sort().join(',')!=='questions'||!Array.isArray(parsed.questions)||parsed.questions.length!==count)return null;
  const drafts:Draft[]=[];
  for(const q of parsed.questions){
-  if(!q||typeof q!=='object'||Array.isArray(q)||Object.keys(q).sort().join(',')!=='correctAnswer,difficultyLevel,options,solutionText,stemText'
+  if(!q||typeof q!=='object'||Array.isArray(q)||Object.keys(q).sort().join(',')!==(editorial?'correctAnswer,difficultyLevel,editorial,options,solutionText,stemText':'correctAnswer,difficultyLevel,options,solutionText,stemText')
     ||!validText(q.stemText,3000)||!validText(q.solutionText,5000)||!Number.isInteger(q.difficultyLevel)||q.difficultyLevel<1||q.difficultyLevel>6
     ||!Array.isArray(q.options)||![4,5].includes(q.options.length)||(expected!==null&&q.options.length!==expected)
     ||q.options.some((o:any,i:number)=>!o||typeof o!=='object'||Array.isArray(o)||Object.keys(o).sort().join(',')!=='label,text'||o.label!==String.fromCharCode(65+i)||!validText(o.text,1200))
     ||!validMultipleChoiceQuestion({options_json:JSON.stringify(q.options),option_count:q.options.length,correct_answer:q.correctAnswer}))return null;
-  drafts.push({stemText:q.stemText.trim(),options:q.options.map((o:any)=>({label:o.label,text:o.text.trim()})),correctAnswer:q.correctAnswer,solutionText:q.solutionText.trim(),difficultyLevel:q.difficultyLevel});
+  if(editorial&&editorialIssues(q,presentation).length)return null;
+  drafts.push({...(editorial?{editorial:q.editorial}:{}),stemText:q.stemText.trim(),options:q.options.map((o:any)=>({label:o.label,text:o.text.trim()})),correctAnswer:q.correctAnswer,solutionText:q.solutionText.trim(),difficultyLevel:q.difficultyLevel});
  }
  return drafts;
 }
@@ -139,7 +143,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  });
  if(!pilot.ok)return json({ok:false,error:{code:'PILOT_GUARD_BLOCKED',reasons:pilot.reasons}},409);
  }
- const now=new Date(),token=uuid('lease'),until=new Date(now.getTime()+LEASE_MS).toISOString();
+ const now=new Date(),token=uuid('lease'),until=new Date(now.getTime()+(prior.quality_profile==='EDITORIAL_V1'?300000:LEASE_MS)).toISOString();
  const claimed=await env.DB.prepare(`UPDATE question_generation_jobs AS j SET status='RUNNING',attempt_count=attempt_count+1,
   lease_token=?,lease_until=?,error_code=NULL WHERE id=? AND attempt_count<3
   AND (status IN ('REQUESTED','FAILED') OR (status='RUNNING' AND lease_until<=?))
@@ -165,13 +169,14 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  const job={...prior,lease_token:token,lease_until:until,status:'RUNNING'};
  const model=(env.QUESTION_GENERATION_MODEL?.trim()||DEFAULT_QUESTION_GENERATION_MODEL);
  if(!validTaskFocus(job.task_focus,job.grade_level,job.outcome_code)){await fail(env,id,token,'GENERATION_CONTEXT_CHANGED');return err(409,'GENERATION_CONTEXT_CHANGED');}
- const questionContext={gradeLevel:job.grade_level,outcomeCode:job.outcome_code,outcomeTitle:job.outcome_title,academicYear:job.academic_year,taskFocus:job.task_focus};
+ const editorial=job.quality_profile==='EDITORIAL_V1';
+ const questionContext={qualityProfile:job.quality_profile,presentation:job.presentation,gradeLevel:job.grade_level,outcomeCode:job.outcome_code,outcomeTitle:job.outcome_title,academicYear:job.academic_year,taskFocus:job.task_focus};
  const history=env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'?await one<{previous_json:string}>(env.DB.prepare("SELECT COALESCE(json_group_array(stem_text),'[]') previous_json FROM (SELECT substr(q.stem_text,1,300) stem_text FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id WHERE l.node_id=? AND q.academic_year=? AND q.grade_level=? AND q.subject_id=? AND q.owner_type='PLATFORM' AND q.origin_kind='AI_GENERATED' ORDER BY q.created_at DESC,q.id DESC LIMIT 12)").bind('ln_'+job.outcome_id,job.academic_year,job.grade_level,job.subject_id)):null;
  const previousQuestions:string[]=JSON.parse(history?.previous_json??'[]');
  const detailedHistory=env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'?await one<{previous_json:string}>(env.DB.prepare("SELECT COALESCE(json_group_array(json_object('stemText',stem_text,'solutionText',solution_text)),'[]') previous_json FROM (SELECT substr(q.stem_text,1,400) stem_text,substr(q.solution_text,1,500) solution_text FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id WHERE l.node_id=? AND q.academic_year=? AND q.grade_level=? AND q.subject_id=? AND q.owner_type='PLATFORM' AND q.origin_kind='AI_GENERATED' ORDER BY q.created_at DESC,q.id DESC LIMIT 4)").bind('ln_'+job.outcome_id,job.academic_year,job.grade_level,job.subject_id)):null;
  const previousDrafts:{stemText:string;solutionText:string}[]=JSON.parse(detailedHistory?.previous_json??'[]');
  const readingPilotInstruction=job.grade_level===5&&job.outcome_code==='MAT.5.1.1'?' For this initial pilot generate ONLY word-to-number questions. The stem must contain exactly one quoted Turkish cardinal phrase using units up to milyar and 7 to 12 digits. EVERY option, including every wrong option, must contain between 7 and 12 digits; never use a 13-digit distractor. EVERY option must be a different plain ASCII digit string, with no dots, commas, spaces or units. Wrong options must be other valid integers based on meaningful place-value mistakes, never malformed group separators or grammatically invalid number phrases. Vary zero-filled groups and reasoning explanations. Do not generate number-to-word questions for this pilot.':'';
- const input=prompt(job)+' Keep each solution under 120 Turkish words. Return only the required JSON fields, no Markdown or commentary.'+readingPilotInstruction+' Application task focus (not an official curriculum descriptor): '+TASK_FOCUS[job.task_focus].instruction+' Source-derived constraints and variation data: '+JSON.stringify({officialScopeGuidance:officialPilotGuidance(questionContext),previousQuestions,previousDrafts,variationSeed:id+token});
+ const input=prompt(job)+(editorial?' '+EDITORIAL_INSTRUCTION+' Required extra field on every question: editorial='+JSON.stringify(editorialSchema())+' Presentation requirement: '+job.presentation+'; editorial metadata must describe the actual question, not generic boilerplate. ':'')+' Keep each solution under 120 Turkish words. Return only the required JSON fields, no Markdown or commentary.'+readingPilotInstruction+' Application task focus (not an official curriculum descriptor): '+TASK_FOCUS[job.task_focus].instruction+' Source-derived constraints and variation data: '+JSON.stringify({officialScopeGuidance:officialPilotGuidance(questionContext),previousQuestions,previousDrafts,variationSeed:id+token});
 
  if(new TextEncoder().encode(input).length>16*1024){await fail(env,id,token,'GENERATION_CONTEXT_CHANGED');return err(409,'GENERATION_CONTEXT_CHANGED');}
  await stage(env,id,token,'GENERATING');
@@ -180,24 +185,26 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  let providerError:GenerationErrorCode|undefined;
  try{
   raw=await Promise.race([
-   env.AI!.run(model as any,{messages:[{role:'user',content:input}],...(model===DEFAULT_QUESTION_GENERATION_MODEL?{chat_template_kwargs:{enable_thinking:false},max_completion_tokens:6000}:{max_tokens:3000}),response_format:env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED==='true'?{type:'json_schema',json_schema:questionDraftSchema(job.question_count,job.grade_level,job.grade_level===5&&job.outcome_code==='MAT.5.1.1')}:{type:'json_object'},stream:false} as any),
-   new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('GENERATION_TIMEOUT')),PROVIDER_TIMEOUT_MS);}),
+   env.AI!.run(model as any,{messages:[{role:'user',content:input}],...(model===DEFAULT_QUESTION_GENERATION_MODEL?{chat_template_kwargs:{enable_thinking:false},max_completion_tokens:6000}:{max_tokens:editorial?7000:3000}),response_format:env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED==='true'?{type:'json_schema',json_schema:questionDraftSchema(job.question_count,job.grade_level,job.grade_level===5&&job.outcome_code==='MAT.5.1.1',editorial)}:{type:'json_object'},stream:false} as any),
+   new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('GENERATION_TIMEOUT')),editorial?90000:PROVIDER_TIMEOUT_MS);}),
   ]);
  }catch(e){providerError=e instanceof Error&&e.message==='GENERATION_TIMEOUT'?'GENERATION_TIMEOUT':'GENERATION_PROVIDER_FAILED';}
  finally{if(timer!==undefined)clearTimeout(timer);}
  const afterProvider=await executionFence(env,id,token);
  if(afterProvider)return afterProvider;
  if(providerError){await fail(env,id,token,providerError);return err(502,providerError);}
- const drafts=parseDrafts(raw,job.question_count,job.grade_level);
+ const drafts=parseDrafts(raw,job.question_count,job.grade_level,editorial,job.presentation);
  if(!drafts||(env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED==='true'&&job.grade_level===5&&job.outcome_code==='MAT.5.1.1'&&drafts.some(q=>q.options.some(o=>!/^[1-9][0-9]{6,11}$/.test(o.text))))){
   await fail(env,id,token,'GENERATION_OUTPUT_INVALID');
   if(env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true')await env.DB.prepare("INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'QUESTION_GENERATION_OUTPUT_BLOCKED','question_generation_job',?,?)").bind(uuid('aud'),user.id,id,JSON.stringify(outputDiagnostic(raw))).run();
   return err(422,'GENERATION_OUTPUT_INVALID');
  }
  let verification:Awaited<ReturnType<typeof verifyQuestionDrafts>>|null=null;
- if(env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'){
+ let originalityCandidates:any[]=[];
+ if(editorial){try{originalityCandidates=await questionOriginalityCandidates(env,drafts);}catch{await fail(env,id,token,'GENERATION_VERIFICATION_UNAVAILABLE');return err(503,'GENERATION_VERIFICATION_UNAVAILABLE');}}
+ if(editorial||env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'){
   await stage(env,id,token,'VALIDATING');
-  verification=await verifyQuestionDrafts(env,{...questionContext,previousQuestions,previousDrafts},drafts);
+  verification=await verifyQuestionDrafts(env,{...questionContext,previousQuestions,previousDrafts,originalityCandidates},drafts);
   const afterVerification=await executionFence(env,id,token);if(afterVerification)return afterVerification;
   if(!verification.ok){
    const code:GenerationErrorCode=verification.unavailable?'GENERATION_VERIFICATION_UNAVAILABLE':'GENERATION_QUALITY_REJECTED';
@@ -222,10 +229,12 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
   const q=drafts[i],qid=uuid('q');questionIds.push(qid);
   stmts.push(env.DB.prepare(`INSERT INTO question_bank
    (id,owner_type,academic_year,grade_level,subject_id,question_type,difficulty,difficulty_level,content_mode,option_count,
-    stem_text,options_json,correct_answer,solution_text,source_label,copyright_status,review_status,created_by,origin_kind,source_model,source_job_id)
-   VALUES(?,'PLATFORM',?,?,?,'MULTIPLE_CHOICE',?,?, 'TEXT',?,?,?,?,?,?,'RESTRICTED','REVIEW',?,'AI_GENERATED',?,?)`).bind(
-    qid,job.academic_year,job.grade_level,job.subject_id,Math.min(q.difficultyLevel,5),q.difficultyLevel,q.options.length,
-    q.stemText,JSON.stringify(q.options),q.correctAnswer,q.solutionText,`AI-generated; model ${model}; job ${id}; rights pending human verification`,user.id,model,id));
+    stem_text,options_json,correct_answer,solution_text,source_label,copyright_status,review_status,created_by,origin_kind,source_model,source_job_id,editorial_packet_json)
+   VALUES(?,'PLATFORM',?,?,?,'MULTIPLE_CHOICE',?,?, ?,?,?,?,?,?,?,'RESTRICTED','REVIEW',?,'AI_GENERATED',?,?,?)`).bind(
+    qid,job.academic_year,job.grade_level,job.subject_id,Math.min(q.difficultyLevel,5),q.difficultyLevel,q.editorial&&q.editorial.visual.kind!=='NONE'?'MIXED':'TEXT',q.options.length,
+    q.stemText,JSON.stringify(q.options),q.correctAnswer,q.solutionText,`AI-generated; model ${model}; job ${id}; rights pending human verification`,user.id,model,id,q.editorial?JSON.stringify(q.editorial):null));
+  const block=q.editorial?visualBlock(q.editorial):null;
+  if(block)stmts.push(env.DB.prepare("INSERT INTO question_content_blocks(id,question_id,block_type,placement,sort_order,payload_json,alt_text) VALUES(?,?,?,'STEM',0,?,?)").bind(uuid('qcb'),qid,block.blockType,JSON.stringify(block.payload),block.altText));
   stmts.push(env.DB.prepare('INSERT INTO question_learning_links(question_id,node_id) VALUES(?,?)').bind(qid,`ln_${job.outcome_id}`));
   stmts.push(env.DB.prepare(`INSERT INTO question_generation_lineage(question_id,job_id,source_model,academic_year,grade_level,subject_id,content_hash)
    VALUES(?,?,?,?,?,?,?)`).bind(qid,id,model,job.academic_year,job.grade_level,job.subject_id,hashes[i]));
@@ -235,7 +244,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
   AND ${fence} AND (SELECT COUNT(*) FROM question_generation_lineage WHERE job_id=j.id)=j.question_count`).bind(drafts.length,id,token));
  stmts.push(env.DB.prepare('INSERT INTO question_generation_commit_assertions(job_id) VALUES(?)').bind(id));
  stmts.push(env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json)
-  VALUES(?,?,NULL,'QUESTION_GENERATION_REVIEW_READY','question_generation_job',?,?)`).bind(uuid('aud'),user.id,id,JSON.stringify({model,taskFocus:job.task_focus,count:drafts.length,questionIds,providerUsage:providerUsage(raw),verification,humanReviewRequired:true})));
+  VALUES(?,?,NULL,'QUESTION_GENERATION_REVIEW_READY','question_generation_job',?,?)`).bind(uuid('aud'),user.id,id,JSON.stringify({model,qualityProfile:job.quality_profile,presentation:job.presentation,taskFocus:job.task_focus,count:drafts.length,questionIds,providerUsage:providerUsage(raw),verification,originalityCandidateIds:originalityCandidates.map(q=>q.id),humanReviewRequired:true})));
  try{await env.DB.batch(stmts);}catch{
   // D1 batch rolls all statements back on any constraint/trigger failure.
   const latest=await selectJob(env,id);
