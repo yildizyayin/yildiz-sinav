@@ -63,9 +63,11 @@ try{
   report.jobs[report.jobs.length-1]=run.p.job;if(run.p.job?.status!=='REVIEW_READY')throw Error('Pilot job incomplete');
  }
  // Exact, evidence-reviewed semantic duplicate; retain history, never approve it.
- const duplicate=await query("SELECT id,review_status,review_revision FROM question_bank WHERE id=? AND source_job_id=? AND grade_level=5 AND source_model='@cf/openai/gpt-oss-120b' AND copyright_status='RESTRICTED'",['q_37062d41-71ce-41c9-b720-dd1074d1dc09','qgj_43889427-fdba-4a11-9763-1abc902a6bd1']);
- const original=await query("SELECT id FROM question_bank WHERE id=? AND source_job_id=? AND review_status='REVIEW' AND grade_level=5",['q_c3ff23af-f411-4d0c-9d6b-415c39047f09','qgj_1a0cbf77-b888-4e16-a0d2-1cc8fce0ba27']);
+ const duplicate=await query("SELECT id,review_status,review_revision,stem_text,options_json,correct_answer,solution_text FROM question_bank WHERE id=? AND source_job_id=? AND grade_level=5 AND source_model='@cf/openai/gpt-oss-120b' AND copyright_status='RESTRICTED'",['q_37062d41-71ce-41c9-b720-dd1074d1dc09','qgj_43889427-fdba-4a11-9763-1abc902a6bd1']);
+ const original=await query("SELECT id,stem_text,options_json,correct_answer,solution_text FROM question_bank WHERE id=? AND source_job_id=? AND review_status='REVIEW' AND grade_level=5",['q_c3ff23af-f411-4d0c-9d6b-415c39047f09','qgj_1a0cbf77-b888-4e16-a0d2-1cc8fce0ba27']);
  if(duplicate.length!==1||original.length!==1||!['REVIEW','REJECTED'].includes(duplicate[0].review_status))throw Error('Known semantic duplicate changed; inspect before mutation');
+ const snapshotHash=q=>createHash('sha256').update(JSON.stringify([q.stem_text,q.options_json,q.correct_answer,q.solution_text])).digest('hex');
+ if(snapshotHash(duplicate[0])!=='f46ee330979718c2305d8dfb515110e6cdba01f85ae1ba0024d08640c7fc2c9c'||snapshotHash(original[0])!=='603374a53ed960c02c3e6f16c1c330f6e0e2718100609458bc8f9c49ab8c10e7')throw Error('Reviewed duplicate content changed; do not reuse the old rejection');
  if(duplicate[0].review_status==='REVIEW'){
   const rejected=await req('/api/question-bank-standard/'+duplicate[0].id+'/review',{status:'REJECTED',expectedRevision:duplicate[0].review_revision,note:'AI destekli içerik incelemesi: q_c3ff23af ile aynı iki dönem tüketim/dağıtım çıkarma ve kalanları kutulara tam bölme görevi; yalnız sayılar ve nesne değişmiş. Anlamsal tekrar. İnsan onayı veya telif uygunluğu verilmedi.'},'PATCH');
   if(!rejected.r.ok)throw Error('Could not quarantine known semantic duplicate');
