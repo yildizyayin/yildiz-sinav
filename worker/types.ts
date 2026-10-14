@@ -25,6 +25,12 @@ export interface Env {
   // Dedicated private bucket; never reuse public content assets.
   RESULT_FILES?: R2Bucket;
   AI?: Ai;
+  QUESTION_AGENT_SERVICE_ACTOR_ID?: string;
+  QUESTION_AGENT_DISPATCH_PREVIEW?: string;
+  QUESTION_AGENT_EXECUTION_ENABLED?: string;
+  QUESTION_PILOT_REVIEW_SLOTS?: string;
+  QUESTION_TEAM_CONTROLS_ENABLED?: string;
+  QUESTION_VIDEO_RENDER_ENABLED?: string;
   QUESTION_GENERATION_ENABLED?: string;
   QUESTION_GENERATION_MODEL?: string;
   QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED?: string;
