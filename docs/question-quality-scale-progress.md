@@ -39,3 +39,9 @@ Yeni0110 ve /generation-jobs/:id/repair: kayıtlı gerçek model paketinin kayna
 0111 yalnız aynı kaynak hash'i ve aynı düzeltilmiş paket/reason hash'i için bir protokol tekrarı sağlar. Soru değiştirilemez, yeni üretici çağrısı yapılmaz, onarım/üretim sayacı sıfırlanmaz. Bilimsel hata/3 altı puan gibi esaslı retler bu yolla tekrarlanamaz. Kaynak audit ID önceki gerçek onarım kaydından geri doldurulur. Gerçek protokol tekrarının sonucu henüz yok.
 
 AUTO sunum sağlayıcı çağrısından önce doğrulanmış pilot kapsamına göre somut TABLE/TEXT şemasına çözülür. Editorial işler bağımsız denetçi kapalıysa üreticiyi çağırmadan durur. İnsan/telif onayı hâlâ bekler; 7x24 ve ücretli üretim açılmadı. Rezervasyon46/50. Son protokol katmanıyla tam test1068/1068 geçti (206 dosya). Typecheck ve build geçti. Migration politikası110 dosyada geçti.
+
+## Gerçek kaynak onarımı bağımsız kontrolü geçti
+
+Run38608237186 (staging5d608e sonrası) başarılı: değişmeyen düzeltme paketi bağımsız Nvidia Nemotron3-120b ile EDITORIAL_REVIEW_V1 sözleşmesinde altı boyutta4/4 aldı. Soru q_3991b3b1-aa34-4b69-9c08-dfe376bc5bef; REVIEW ve RESTRICTED; insan/telif onayı yok. Üretici yeniden çağrılmadı. İş attempt3/repair1/protocolRetry1/generated1; pilot rezervasyonu46/50. Kaynak audit/hash değişmedi. Denetçi3801 giriş542 çıkış244.757 nöron bildirdi. Bu AI destekli revizyon başarısıdır; üç otonom üretim denemesi başarısızdı. Bir örneğin puanı kalite kalibrasyonu veya yüksek hacimde başarı ölçümü değildir.
+
+Son tam test1068, typecheck/build/migration politikası başarılı. Sonraki: demo read-only tarayıcı kabulü (panel, tablo, notların ayrımı, insan onay kapısı, öğretmen403), son CI/PR259 ve production dağıtım kontrolü. Sınav merkezine sonra geçilecek. Kitlesel üretim bütçesi, çoklu işçi kapasitesi, tüm resmî MEB kapsamı ve örnekler üzerinde uzman kalibrasyonu hâlâ ayrıca tamamlanmalı.
