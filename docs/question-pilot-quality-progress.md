@@ -31,3 +31,11 @@ Doğrudan Türkçe kardinal çözümleyiciyle sayı sözcükleri hesaplanır, be
 ## V6 üretim sözleşmesi
 
 PR248 main2a811277; 1020 test/typecheck/build/demo başarılı. GerçekV5 koşu38434560210 başarısız: yalnız önceki iki geçerli taslak korundu, yeni okuma grubu kaydedilmedi. Sayı ayracı hataları, geçersiz sayı sözcük dizileri ve yakın tekrarlar artık gerçekten engellendi; bu kez kontrol hatası değil, üretim sözleşmesi sorunu. Toplam15 bilinen ret doğrulandı, bütçe32/50. İlkpilot MAT.5.1.1 yazarı yalnız tırnaklı Türkçe kardinalden 7–12 basamaklı tam sayıya dönüşüm üretir; tüm seçenekler saf ASCII rakamları, anlamlı farklı tam sayılar olur. Bozuk ayraç/sözcük dizisi çeldiricileri istenmez. Yanlış sayı anahtarı deterministik kontrolü ve bağımsız akıl yürütme korunur. Tükenen9001 replacement işi normalcancel ve tek19001 stable replacement ile yeniden ele alınır; sınırsız key/kota iadesi yok. İlk10 hâlâ tamamlandı denmiyor.
+
+## 2026-10-14 — tek soruluk, şemalı üretim
+
+Sabah doğrulaması: main 2a811277, staging32e98717; staging deploy38445381336 başarılı ancak gerçek pilot38445381314 OUTPUT_INVALID ile durdu. İki geçerli GPT taslağı korunuyor, 15 ret kayıtlı, bütçe34/50. PR249 testleri başarılı olduğu için main'e6534e3fe ile alındı. PR250/251 staging'deki son5yıl kaynak-kapsama çalışması korunur; bu işlem onu üretime taşımıyor.
+
+YeniV7: provider JSON-schema sözleşmesi (staging flag), tek soruluk8 iş + önceki iki doğrulanmış taslak. Her çağrı en çok1 üretici/1 bağımsız doğrulayıcı; en çok8 run/16 model çağrısı. Başarısız işte otomatik üç tekrar veya sürekli yeni recovery key yok. Hatalı model çıktısının finishReason, kullanım ve en çok12000 karakter son-yanıt örneği OUTPUT_BLOCKED auditine kaydedilir. Hiçbir invalid çıktı banka yazılmaz. Önceki iki açık FAILED iş, yalnız bilinen id/kazanım ve sıfır üretim/üç deneme koşullarıyla normal API'den iptal edilir; kota iadesi/silme yok. Sonraki8 yeni rezervasyon başarılı olursa toplam42/50 olur. İlk10 henüz tamamlandı denmiyor.
+
+Yerel çalışma bağlantısı geri geldi. İzole question-resume worktree; mevcut question-pilot değişiklikleri korunur. Yeni şema kabulü ve invalid-output audit regresyonları dahil57 odaklı test, typecheck ve diff-check geçti. Eski grade5 testinin learning_nodes grade değişikliği sonraki testlere taşınıyordu; seed artık grade7 bağlamını her testte yeniden kurar.
