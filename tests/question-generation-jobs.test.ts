@@ -193,3 +193,6 @@ it('binds manual practice focus and priority to idempotency without inventing of
   expect((await f.call(request({...p,requestKey:key(),taskFocus:'NAT_COMPARE_OFFERS'}))).status).toBe(400);
  }finally{f.sqlite.close()}
 });
+it('defaults new tasks to the editorial contract and bounds rich batches without mutating an existing direction',async()=>{
+ const f=fixture();try{const body:any=payload();delete body.qualityProfile;body.presentation='TABLE';const response=await handleQuestionGenerationJobs(request(body),f.env,admin)!;expect(response.status).toBe(201);expect((await response.json() as any).job).toMatchObject({qualityProfile:'EDITORIAL_V1',presentation:'TABLE'});expect((await handleQuestionGenerationJobs(request({...body,presentation:'TEXT'}),f.env,admin)!).status).toBe(409);expect((await handleQuestionGenerationJobs(request({...body,requestKey:key(),questionCount:4}),f.env,admin)!).status).toBe(400);}finally{f.sqlite.close()}
+});
