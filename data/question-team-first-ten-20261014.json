@@ -1,0 +1,291 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-10-14T07:56:11Z",
+  "status": "TEN_DRAFTS_PENDING_HUMAN_AND_RIGHTS_REVIEW",
+  "counts": {
+    "review": 10,
+    "published": 0,
+    "approved": 0
+  },
+  "budget": {
+    "question_cap": 50,
+    "reserved_count": 45
+  },
+  "edits": [
+    {
+      "id": "q_4b5f15e1-7921-41f2-a16d-54e69995981b",
+      "reviewRevision": 3,
+      "verification": {
+        "ok": true,
+        "unavailable": false,
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "reviews": [
+          {
+            "index": 0,
+            "valid": true,
+            "issues": []
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 727,
+          "completion_tokens": 146,
+          "total_tokens": 873,
+          "neurons": 52.571
+        }
+      },
+      "reused": false
+    },
+    {
+      "id": "q_bb920a81-da20-4643-9490-da4a40c7f98f",
+      "reviewRevision": 3,
+      "verification": {
+        "ok": true,
+        "unavailable": false,
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "reviews": [
+          {
+            "index": 0,
+            "valid": true,
+            "issues": []
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 800,
+          "completion_tokens": 202,
+          "total_tokens": 1002,
+          "neurons": 63.472
+        }
+      },
+      "reused": false
+    },
+    {
+      "id": "q_9e4d8bd2-53b6-4363-b5d4-059b2bc9ed0f",
+      "reviewRevision": 3,
+      "verification": {
+        "ok": true,
+        "unavailable": false,
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "reviews": [
+          {
+            "index": 0,
+            "valid": true,
+            "issues": []
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 775,
+          "completion_tokens": 164,
+          "total_tokens": 939,
+          "neurons": 57.179
+        }
+      },
+      "reused": false
+    },
+    {
+      "id": "q_313851db-2add-404f-9562-73e7cff31979",
+      "reviewRevision": 3,
+      "verification": {
+        "ok": true,
+        "unavailable": false,
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "reviews": [
+          {
+            "index": 0,
+            "valid": true,
+            "issues": []
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 772,
+          "completion_tokens": 296,
+          "total_tokens": 1068,
+          "neurons": 74.99600000000001
+        }
+      },
+      "reused": false
+    }
+  ],
+  "jobs": [
+    {
+      "taskFocus": "READ_ZERO_PERIODS",
+      "instructionNote": "Kullanıcı talimatı: önce özgün görev çeşitliliği; insan onayı ve telif incelemesi ayrıca.",
+      "priority": 2,
+      "id": "qgj_25feb760-92bc-46e1-9911-f4a57d1f9a88",
+      "outcomeId": "out_cir_3e79287b-6fd2-4505-86d2-b94b8ce6fe64",
+      "status": "REVIEW_READY",
+      "questionCount": 1,
+      "createdAt": "2026-10-14 07:55:41",
+      "cancelledAt": null,
+      "attemptCount": 1,
+      "generatedCount": 1,
+      "leaseUntil": null,
+      "errorCode": null,
+      "completedAt": "2026-10-14 07:55:52",
+      "context": {
+        "curriculumVersionId": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academicYear": "2026-2027",
+        "gradeLevel": 5,
+        "subjectId": "sub_mat",
+        "programVersion": "TYMM-2024-MAT5-PILOT-20261013",
+        "outcomeCode": "MAT.5.1.1",
+        "outcomeTitle": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme"
+      },
+      "questionIds": [
+        "q_473f4d11-7556-480b-803c-a29441e8aa2d"
+      ]
+    },
+    {
+      "taskFocus": "NAT_COMPARE_OFFERS",
+      "instructionNote": "Kullanıcı talimatı: önce özgün görev çeşitliliği; insan onayı ve telif incelemesi ayrıca.",
+      "priority": 2,
+      "id": "qgj_e9395070-9869-442c-8bcd-891c18fb2c51",
+      "outcomeId": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+      "status": "REVIEW_READY",
+      "questionCount": 1,
+      "createdAt": "2026-10-14 07:55:53",
+      "cancelledAt": null,
+      "attemptCount": 1,
+      "generatedCount": 1,
+      "leaseUntil": null,
+      "errorCode": null,
+      "completedAt": "2026-10-14 07:56:09",
+      "context": {
+        "curriculumVersionId": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academicYear": "2026-2027",
+        "gradeLevel": 5,
+        "subjectId": "sub_mat",
+        "programVersion": "TYMM-2024-MAT5-PILOT-20261013",
+        "outcomeCode": "MAT.5.1.2",
+        "outcomeTitle": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme"
+      },
+      "questionIds": [
+        "q_dc79400a-846d-4615-b897-4605d3cd221b"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "q_07273070-562b-428f-a952-68ea2349e059",
+      "stem_text": "Bir okul 2.350 adet defter satın almıştır. Bu defterlerden 1.120 tanesini 4. sınıfa, 510 tanesini ise 5. sınıfa dağıttıktan sonra kalan defterleri 8 sınıfa eşit olarak paylaştırmak istiyor. Her sınıfa kaç defter düşer?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"85\"},{\"label\":\"B\",\"text\":\"90\"},{\"label\":\"C\",\"text\":\"95\"},{\"label\":\"D\",\"text\":\"100\"}]",
+      "correct_answer": "B",
+      "solution_text": "Önce toplam defter sayısından 4. sınıfa verilen 1.120 defteri çıkaralım: 2.350 – 1.120 = 1.230. Ardından 5. sınıfa verilen 510 defteri çıkaralım: 1.230 – 510 = 720. Kalan 720 defteri 8 sınıfa bölüyoruz: 720 ÷ 8 = 90. Dolayısıyla her sınıfa 90 defter düşer. Doğru seçenek B şıkkı, 90 defterdir.",
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "review_revision": 2,
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_ea44d9fc-ab68-49c3-9c3f-63f039a7b954"
+    },
+    {
+      "id": "q_313851db-2add-404f-9562-73e7cff31979",
+      "stem_text": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “altı yüz kırk beş milyar iki yüz otuz sekiz milyon yedi yüz doksan bir bin iki yüz beş”",
+      "options_json": "[{\"label\":\"A\",\"text\":\"645238791205\"},{\"label\":\"B\",\"text\":\"645238791025\"},{\"label\":\"C\",\"text\":\"645238971205\"},{\"label\":\"D\",\"text\":\"645038791205\"}]",
+      "correct_answer": "A",
+      "solution_text": "Bölükler sırasıyla 645 milyar, 238 milyon, 791 bin ve 205'tir. Bu bölükleri birleştirince 645.238.791.205 bulunur. B seçeneğinde birler bölüğü 205 yerine 025, C seçeneğinde binler bölüğü 791 yerine 971, D seçeneğinde milyonlar bölüğü 238 yerine 038 yazılmıştır. Doğru seçenek A) 645238791205.",
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "review_revision": 3,
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_b2f77e40-0380-40cd-bda0-8fa8d2d7fa2b"
+    },
+    {
+      "id": "q_473f4d11-7556-480b-803c-a29441e8aa2d",
+      "stem_text": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “sekiz milyar iki yüz beş bin dört yüz doksan üç”.",
+      "options_json": "[{\"label\":\"A\",\"text\":\"8000205493\"},{\"label\":\"B\",\"text\":\"8205000493\"},{\"label\":\"C\",\"text\":\"8000493205\"},{\"label\":\"D\",\"text\":\"8205493\"}]",
+      "correct_answer": "A",
+      "solution_text": "İfadeyi bölümlere ayıralım: “sekiz milyar” = 8 000 000 000. “milyon” sözcüğü yoksa milyon grubu 000 olur. “iki yüz beş bin” = 205 000. “dört yüz doksan üç” = 493. Bu bölükleri birleştirince 8 000 205 493 elde edilir. Sayıyı noktasız yazınca 8000205493 olur. B seçeneği binleri milyonlara taşıdı, C seçeneği bin ve birler gruplarını yer değiştirdi, D seçeneği milyar ve milyon gruplarını atladı. Doğru seçenek A) 8000205493.",
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "review_revision": 2,
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_25feb760-92bc-46e1-9911-f4a57d1f9a88"
+    },
+    {
+      "id": "q_4b5f15e1-7921-41f2-a16d-54e69995981b",
+      "stem_text": "Bir pastanede 2.340 adet küçük kek hazırlanıyor. Sabah 1.125, öğleden sonra 780 adet satılıyor. Kalan kekler her biri 15 adet olacak şekilde kutulara konulacak. Kaç tam kutu hazırlanabilir?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"27\"},{\"label\":\"B\",\"text\":\"28\"},{\"label\":\"C\",\"text\":\"29\"},{\"label\":\"D\",\"text\":\"30\"}]",
+      "correct_answer": "C",
+      "solution_text": "Önce satılan kekleri çıkaralım: 2.340 − 1.125 = 1.215. Ardından 1.215 − 780 = 435 kek kalır. Her kutu 15 kek aldığından 435 ÷ 15 = 29 tam kutu hazırlanır. Kalan kek sayısı 0'dır. Doğru seçenek C) 29.",
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "review_revision": 3,
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_df57b3d8-a624-4cb8-926a-ed0082220d30"
+    },
+    {
+      "id": "q_58ebc86b-8399-455c-99f4-85057a41942e",
+      "stem_text": "Bir okul 3.250 adet kalem satın almıştır. 1.845 kalemi 1. sınıfın kullanımı için ayırdıktan sonra kalan kalemleri 5 sınıfa eşit olarak dağıtmak istiyor. Her sınıfa kaç kalem düşer?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"281\"},{\"label\":\"B\",\"text\":\"285\"},{\"label\":\"C\",\"text\":\"300\"},{\"label\":\"D\",\"text\":\"275\"}]",
+      "correct_answer": "A",
+      "solution_text": "1. Önce ayrılan kalem sayısını toplamdan çıkaralım:\n   3.250 – 1.845 = 1.405 kalem kalır.\n2. Kalan kalemleri 5 sınıfa eşit paylaştırmak için 1.405’i 5’e bölelim:\n   1.405 ÷ 5 = 281.\nDolayısıyla her sınıfa 281 kalem düşer.\nDoğru seçenek: A) 281",
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "review_revision": 2,
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_0ee4601e-8e21-4248-bddb-f4e97caf99ea"
+    },
+    {
+      "id": "q_9e4d8bd2-53b6-4363-b5d4-059b2bc9ed0f",
+      "stem_text": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “dört yüz kırk iki milyon beş yüz altmış yedi bin sekiz yüz doksan üç”.",
+      "options_json": "[{\"label\":\"A\",\"text\":\"442567893\"},{\"label\":\"B\",\"text\":\"442893567\"},{\"label\":\"C\",\"text\":\"442560893\"},{\"label\":\"D\",\"text\":\"442567000000\"}]",
+      "correct_answer": "A",
+      "solution_text": "Dört yüz kırk iki milyon = 442.000.000, beş yüz altmış yedi bin = 567.000, sekiz yüz doksan üç = 893. Birleştirildiğinde 442.567.893 elde edilir. B seçeneğinde binler ve birler bölükleri yer değiştirmiştir. C seçeneğinde binler bölüğü 567 yerine 560 yazılmıştır. D seçeneği 442 milyar 567 milyon sayısını gösterir; verilen okunuş bu değildir. Doğru seçenek A) 442567893.",
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "review_revision": 3,
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_0eb95f35-727e-4abd-a73b-3829cf499eb4"
+    },
+    {
+      "id": "q_bb920a81-da20-4643-9490-da4a40c7f98f",
+      "stem_text": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “yedi yüz kırk iki milyon üç yüz elli altı bin sekiz yüz doksan bir”",
+      "options_json": "[{\"label\":\"A\",\"text\":\"742356891\"},{\"label\":\"B\",\"text\":\"74235691\"},{\"label\":\"C\",\"text\":\"7423568910\"},{\"label\":\"D\",\"text\":\"742356981\"}]",
+      "correct_answer": "A",
+      "solution_text": "İfadeyi bölüklere ayıralım: yedi yüz kırk iki milyon = 742.000.000; üç yüz elli altı bin = 356.000; sekiz yüz doksan bir = 891. Toplam 742.356.891 olur. B seçeneği 74.235.691, C seçeneği 7.423.568.910, D seçeneği 742.356.981 sayısını gösterir. D seçeneğinin son bölüğü 981'dir; verilen okunuşa göre 891 olmalıdır. Doğru seçenek A) 742356891.",
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "review_revision": 3,
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_bda76a95-39ad-459b-884e-889df5333eaa"
+    },
+    {
+      "id": "q_c3ff23af-f411-4d0c-9d6b-415c39047f09",
+      "stem_text": "Bir okul 3.560 adet kurşun kalem sipariş etti. İlk ay 1.245 kalem, ikinci ay ise 678 kalem kullanıldı. Kalan kalemler 24 kalemlik kutulara konulacak. Kaç tam kutu hazırlanabilir?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"68\"},{\"label\":\"B\",\"text\":\"69\"},{\"label\":\"C\",\"text\":\"70\"},{\"label\":\"D\",\"text\":\"71\"}]",
+      "correct_answer": "A",
+      "solution_text": "Kalan kalem sayısı bulunur: 3.560 − 1.245 = 2.315. Sonra 2.315 − 678 = 1.637 kalır. 1.637 ÷ 24 = 68 tam kutu (68 × 24 = 1.632) ve 5 kalem artar. Dolayısıyla tam kutu sayısı 68’dir.",
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "review_revision": 2,
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_1a0cbf77-b888-4e16-a0d2-1cc8fce0ba27"
+    },
+    {
+      "id": "q_dc79400a-846d-4615-b897-4605d3cd221b",
+      "stem_text": "Okul 1.500 adet defter alacak. Teklif A: 10 paket, paket başına 150 defter, toplam fiyat 4.500 TL. Teklif B: 5 paket, paket başına 300 defter, toplam fiyat 4.200 TL. Okul en ucuz teklifi seçerse bütçesinden ne kadar tasarruf eder?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"300 TL\"},{\"label\":\"B\",\"text\":\"200 TL\"},{\"label\":\"C\",\"text\":\"500 TL\"},{\"label\":\"D\",\"text\":\"0 TL\"}]",
+      "correct_answer": "A",
+      "solution_text": "Her iki teklifte de toplam defter sayısı aynı: 10 × 150 = 1.500 ve 5 × 300 = 1.500. En ucuz teklif B’dir, fiyatı 4.200 TL. Teklif A’nın fiyatı 4.500 TL olduğundan fark 4.500 − 4.200 = 300 TL. Dolayısıyla tasarruf 300 TL olur. Doğru seçenek A) 300 TL.",
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "review_revision": 2,
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_e9395070-9869-442c-8bcd-891c18fb2c51"
+    },
+    {
+      "id": "q_e46a6bcf-dd93-4b8c-b26b-4eee71216e09",
+      "stem_text": "Bir çiftçi 48 sepet elma topladı. Her sepetin içinde 23 elma var. Çiftçi ayrıca pazardan 150 elma daha satın alıyor. Toplamda kaç elma olur?",
+      "options_json": "[{\"label\":\"A\",\"text\":\"1 254\"},{\"label\":\"B\",\"text\":\"1 104\"},{\"label\":\"C\",\"text\":\"1 119\"},{\"label\":\"D\",\"text\":\"2 604\"}]",
+      "correct_answer": "A",
+      "solution_text": "1. Sepetlerdeki elma sayısını bulmak için çarpma yapalım:\n   48 × 23 = 1.104 elma.\n2. Pazardan alınan 150 elmayı ekleyelim:\n   1.104 + 150 = 1.254 elma.\nToplam elma sayısı 1.254’tür.\nDoğru seçenek: A) 1 254",
+      "review_status": "REVIEW",
+      "copyright_status": "RESTRICTED",
+      "review_revision": 2,
+      "source_model": "@cf/openai/gpt-oss-120b",
+      "source_job_id": "qgj_0ee4601e-8e21-4248-bddb-f4e97caf99ea"
+    }
+  ],
+  "humanApprovalRequired": true,
+  "rightsReviewRequired": true,
+  "evidence": "https://github.com/yildizyayin/yildiz-sinav/actions/runs/38531527597/artifacts/11878576555"
+}

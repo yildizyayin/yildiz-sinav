@@ -1,0 +1,49 @@
+import type {AuthUser,Env} from '../types';
+import {all,one,json,forbidden,badRequest} from './db';
+import {QUESTION_TEAM_AGENTS} from './question-team-policy';
+import {generationJobDto} from './question-generation-jobs';
+import {canExecuteScheduledPilot} from './question-agent-dispatch-plan';
+const base='/api/question-bank-standard/team';
+export async function handleQuestionTeam(request:Request,env:Env,user:AuthUser|null){
+ if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED',message:'Oturum açın.'}},401);
+ if(user.role!=='SUPER_ADMIN')return forbidden('Soru havuzu ekibini yalnız Süper Admin yönetebilir.');
+ const url=new URL(request.url);
+ if(request.method==='PATCH'&&url.pathname===base+'/control'){
+  if(env.QUESTION_TEAM_CONTROLS_ENABLED!=='true')return json({ok:false,error:{code:'TEAM_CONTROLS_DISABLED',message:'Ekip kontrolleri bu ortamda etkin değil.'}},503);
+  if(request.headers.get('Origin')!==url.origin)return forbidden('İşlemi ANUNEX üzerinden başlatın.');
+  const b:any=await request.json().catch(()=>null),key=b?.agentKey??'TEAM';
+  if(!b||typeof b.paused!=='boolean'||!Number.isInteger(b.expectedRevision)||!['TEAM',...QUESTION_TEAM_AGENTS].includes(key))return badRequest('Ekip/ajan ve güncel kontrol sürümü gereklidir.','INVALID_TEAM_CONTROL');
+  const query=key==='TEAM'?env.DB.prepare('UPDATE question_team_control SET paused=?,revision=revision+1,updated_by=?,updated_at=CURRENT_TIMESTAMP WHERE id=1 AND revision=?').bind(b.paused?1:0,user.id,b.expectedRevision):env.DB.prepare('UPDATE question_team_agent_control SET paused=?,revision=revision+1,updated_by=?,updated_at=CURRENT_TIMESTAMP WHERE agent_key=? AND revision=?').bind(b.paused?1:0,user.id,key,b.expectedRevision);
+  const r=await query.run();if(Number(r.meta?.changes??0)<1)return json({ok:false,error:{code:'TEAM_CONTROL_CHANGED',message:'Kontrol başka bir oturumda değişti; yenileyin.'}},409);
+  return json({ok:true,agentKey:key,paused:b.paused,automaticSchedulingEnabled:env.QUESTION_AGENT_EXECUTION_ENABLED==='true',note:'Duraklatma mevcut onay kapılarını kaldırmaz; devam eden sağlayıcı çağrısı anında kesilmese de yeni kayıt engellenir.'});
+ }
+ if(request.method!=='GET'||url.pathname!==base)return json({ok:false,error:{code:'METHOD_NOT_ALLOWED',message:'Geçersiz ekip işlemi.'}},405);
+ const year=url.searchParams.get('academicYear')||'2026-2027',m=/^(\d{4})-(\d{4})$/.exec(year);if(!m||Number(m[2])!==Number(m[1])+1)return badRequest('Geçerli eğitim yılı seçin.','INVALID_ACADEMIC_YEAR');
+ const [control,agents,budget,jobCounts,questionCounts,jobs,questions,activity,events,usage,media]=await Promise.all([
+  one<any>(env.DB.prepare('SELECT paused,revision,updated_at FROM question_team_control WHERE id=1')),
+  all<any>(env.DB.prepare('SELECT agent_key,paused,revision,updated_at FROM question_team_agent_control ORDER BY agent_key')),
+  one<any>(env.DB.prepare("SELECT question_cap,reserved_count FROM question_agent_pilot_budget WHERE id='pilot_50'")),
+  all<any>(env.DB.prepare('SELECT status,count(*) n FROM question_generation_jobs WHERE academic_year=? GROUP BY status').bind(year)),
+  all<any>(env.DB.prepare("SELECT review_status,count(*) n FROM question_bank WHERE owner_type='PLATFORM' AND source_model IS NOT NULL AND academic_year=? GROUP BY review_status").bind(year)),
+  all<any>(env.DB.prepare('SELECT * FROM question_generation_jobs WHERE academic_year=? ORDER BY priority DESC,created_at DESC,id DESC LIMIT 50').bind(year)),
+  all<any>(env.DB.prepare("SELECT id,review_revision,stem_text,grade_level,subject_id,review_status,copyright_status,source_model FROM question_bank WHERE owner_type='PLATFORM' AND source_model IS NOT NULL AND academic_year=? ORDER BY updated_at DESC,id DESC LIMIT 30").bind(year)),
+  all<any>(env.DB.prepare("SELECT id,action,entity_type,entity_id,created_at,CASE WHEN json_valid(details_json) THEN json_extract(details_json,'$.code') END error_code FROM audit_logs WHERE action LIKE 'QUESTION_%' ORDER BY created_at DESC,id DESC LIMIT 30")),
+  all<any>(env.DB.prepare('SELECT agent_key,paused,revision,actor_id,created_at FROM question_team_control_events ORDER BY id DESC LIMIT 20')),
+  one<any>(env.DB.prepare("SELECT count(*) records,COALESCE(sum(CASE WHEN json_valid(details_json) THEN COALESCE(json_extract(details_json,'$.providerUsage.total_tokens'),0)+COALESCE(json_extract(details_json,'$.verification.usage.total_tokens'),0)+CASE WHEN action IN ('QUESTION_DRAFT_VERIFIED','QUESTION_DRAFT_VERIFICATION_STALE') THEN COALESCE(json_extract(details_json,'$.usage.total_tokens'),0) ELSE 0 END ELSE 0 END),0) reportedTokens FROM audit_logs WHERE action IN ('QUESTION_GENERATION_REVIEW_READY','QUESTION_GENERATION_VERIFICATION_BLOCKED','QUESTION_GENERATION_OUTPUT_BLOCKED','QUESTION_DRAFT_VERIFIED','QUESTION_DRAFT_VERIFICATION_STALE')")),
+  all<any>(env.DB.prepare('SELECT id,status,lease_until,synthetic,output_sha256 FROM question_media_jobs ORDER BY created_at DESC LIMIT 100')),
+ ]);
+ const remaining=Math.max(0,Number(budget?.question_cap??0)-Number(budget?.reserved_count??0)),now=Date.now();
+ const running=jobs.filter(j=>j.status==='RUNNING'&&Date.parse(j.lease_until)>now);
+ const actorId=env.QUESTION_AGENT_SERVICE_ACTOR_ID;const actor=actorId?await one<any>(env.DB.prepare("SELECT id FROM users WHERE id=? AND active=1 AND role='SUPER_ADMIN'").bind(actorId)):null;
+ const scheduling=canExecuteScheduledPilot({dispatchPreview:env.QUESTION_AGENT_DISPATCH_PREVIEW==='true',executionEnabled:env.QUESTION_AGENT_EXECUTION_ENABLED==='true',generationEnabled:env.QUESTION_GENERATION_ENABLED==='true',providerAvailable:!!env.AI,verifiedServiceActor:!!actor,reviewCapacity:Number(env.QUESTION_PILOT_REVIEW_SLOTS??0),budget:remaining});
+ const counts=Object.fromEntries(jobCounts.map(r=>[r.status,Number(r.n)]));const review=Object.fromEntries(questionCounts.map(r=>[r.review_status,Number(r.n)]));
+ const models:Record<string,string>={GENERATOR:env.QUESTION_GENERATION_MODEL??'Yapılandırılmadı',VERIFIER:env.QUESTION_GENERATION_VERIFIER_MODEL??'Yapılandırılmadı',ORIGINALITY:'Sınırlı benzerlik kuralları + insan incelemesi',MEDIA:'Kaynak metinden çözüm sahneleri',VIDEO:'FFmpeg · mevcut izinli ses sağlayıcısı'};
+ const names:Record<string,string>={GENERATOR:'Soru üretimi',VERIFIER:'Bilimsel kontrol',ORIGINALITY:'Özgünlük ve hak kontrolü',MEDIA:'Medya ve çözüm planı',VIDEO:'Video üretimi'};
+ const roster=QUESTION_TEAM_AGENTS.map(key=>{
+  const c=agents.find(a=>a.agent_key===key),paused=!!control?.paused||!!c?.paused;
+  const enabled=key==='GENERATOR'?env.QUESTION_GENERATION_ENABLED==='true'&&!!env.AI:key==='VERIFIER'?env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'&&!!env.AI:key==='VIDEO'?env.QUESTION_VIDEO_RENDER_ENABLED==='true':true;
+  const active=key==='GENERATOR'?running.filter(j=>j.active_stage==='GENERATING').length:key==='VERIFIER'?running.filter(j=>j.active_stage==='VALIDATING').length:key==='ORIGINALITY'?running.filter(j=>j.active_stage==='ORIGINALITY').length:media.filter(j=>j.status===(key==='MEDIA'?'PREPARING':'RENDERING')&&Date.parse(j.lease_until)>now).length;
+  return {key,name:names[key],model:models[key],paused:!!c?.paused,controlRevision:c?.revision??0,status:env.QUESTION_TEAM_CONTROLS_ENABLED==='true'&&!c?'CONFIG_ERROR':paused?'PAUSED':!enabled?'DISABLED':active?'RUNNING':running.some(j=>!j.active_stage)&&['GENERATOR','VERIFIER'].includes(key)?'PIPELINE_ACTIVE':key==='ORIGINALITY'?'REVIEW_ASSIST':'READY',activeJobs:active,limitation:key==='ORIGINALITY'?'Son12 soru kökü ve son4 çözüm adayı kontrol edilir. Tüm kaynaklarda semantik tekillik veya telif onayı verilmez.':key==='MEDIA'?'Metin soruları için kaynak içeriğe bağlı sahne planı. Genel görsel soru paketleri kapsam dışıdır.':key==='VIDEO'?'Sesli veya altyazılı MP4; tüm çıktılar insan incelemesini bekler. Teknik test videoları yayımlanamaz.':null};
+ });
+ return json({ok:true,environment:env.ENVIRONMENT??'unknown',academicYear:year,asOf:new Date().toISOString(),controlsEnabled:env.QUESTION_TEAM_CONTROLS_ENABLED==='true',control,roster,jobCounts:counts,questionCounts:review,budget:{cap:Number(budget?.question_cap??0),reserved:Number(budget?.reserved_count??0),remaining,noRefund:true},usage:{reportedTokens:Number(usage?.reportedTokens??0),records:Number(usage?.records??0),billingVerified:false},scheduler:{executionEnabled:env.QUESTION_AGENT_EXECUTION_ENABLED==='true',ready:scheduling.allowed&&!control?.paused,reasons:scheduling.reasons,serviceActorVerified:!!actor,cadenceMinutes:15},jobs:jobs.map(j=>({...generationJobDto(j),activeStage:j.status==='RUNNING'?j.active_stage:null,stageStartedAt:j.stage_started_at})),questions,activity,controlEvents:events,videoProof:{technicalVerified:media.some(j=>j.synthetic&&j.output_sha256),studentVideoCount:media.filter(j=>!j.synthetic&&j.output_sha256).length},note:'Bu ekip görünümü mevcut üretim ve medya kayıtlarını okur. Görev notu serbest komut yürütmez; seçilen iş türü ve odak uygulanır. İnsan onayı otomatik verilmez.'});
+}

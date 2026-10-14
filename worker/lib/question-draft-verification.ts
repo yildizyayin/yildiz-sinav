@@ -1,3 +1,4 @@
+import {questionTeamPaused} from './question-team-policy';
 import type {AuthUser,Env} from '../types';
 import {all,one,json,forbidden,badRequest,notFound,uuid} from './db';
 import {validMultipleChoiceQuestion,AI_REVIEW_CONTEXT_SQL} from './question-review';
@@ -18,9 +19,11 @@ export async function verifyStoredQuestionDraft(request:Request,env:Env,user:Aut
  const before=await context();if(before.length!==1)return badRequest('Otomatik taslak kontrolü için tek birincil öğrenme çıktısı gerekir. İnsan incelemesi ayrıca korunur.','SINGLE_OUTCOME_REQUIRED');
  const ref=before[0],raw=JSON.parse(q.options_json);
  const draft={stemText:q.stem_text,solutionText:q.solution_text,correctAnswer:q.correct_answer,difficultyLevel:q.difficulty_level??q.difficulty??3,options:raw.map((o:any,i:number)=>typeof o==='string'?{label:String.fromCharCode(65+i),text:o}:o)};
+ if(await questionTeamPaused(env,['VERIFIER']))return json({ok:false,error:{code:'QUESTION_TEAM_PAUSED',message:'Doğrulama ekibi duraklatıldı.'}},409);
  const result=await verifyQuestionDrafts(env,{gradeLevel:q.grade_level,outcomeCode:ref.code,outcomeTitle:ref.title,academicYear:q.academic_year},[draft]);
  const current=await one<any>(env.DB.prepare('SELECT review_revision FROM question_bank WHERE id=?').bind(id));
- const unchanged=current?.review_revision===q.review_revision&&JSON.stringify(before)===JSON.stringify(await context());
+ const paused=await questionTeamPaused(env,['VERIFIER']);
+ const unchanged=!paused&&current?.review_revision===q.review_revision&&JSON.stringify(before)===JSON.stringify(await context());
  await env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,?,'question_bank',?,?)`).bind(uuid('aud'),user.id,unchanged?'QUESTION_DRAFT_VERIFIED':'QUESTION_DRAFT_VERIFICATION_STALE',id,JSON.stringify({reviewRevision:q.review_revision,officialContext:before,scope:'AUTOMATED_ANSWER_AND_CURRICULUM_SCREENING',humanApproved:false,rightsApproved:false,noveltyCertified:false,...result})).run();
  if(!unchanged)return json({ok:false,error:{code:'QUESTION_REVIEW_CHANGED',message:'Kontrol sırasında soru veya kazanım değişti; sonuç güncel sürüme uygulanmadı.'}},409);
  return json({ok:true,questionId:id,reviewRevision:q.review_revision,verification:result,humanApprovalRequired:true,rightsReviewRequired:true,noveltyCertified:false});
