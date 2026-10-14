@@ -79,6 +79,7 @@ async function createJob(request: Request, env: Env, user: AuthUser): Promise<Re
   const expected = body.expectedContext as RequestContext;
   const prior = await existingKey(env, body.requestKey);
   const qualityProfile=body.qualityProfile??prior?.quality_profile??'EDITORIAL_V1',presentation=body.presentation??prior?.presentation??'AUTO';
+  if(qualityProfile==='EDITORIAL_V1'&&body.questionCount>3)return error(400,'EDITORIAL_BATCH_TOO_LARGE','Editoryal soru paketleri en fazla3 soruluk işlerle üretilir.');
   if(!['LEGACY','EDITORIAL_V1'].includes(qualityProfile)||!['AUTO','TEXT','TABLE','BAR_CHART'].includes(presentation)||(qualityProfile==='LEGACY'&&!['AUTO','TEXT'].includes(presentation)))return error(400,'INVALID_EDITORIAL_DIRECTION','Kalite profili veya sunum biçimi geçersiz.');
   if (prior) return samePayload(prior, body.outcomeId, expected, body.questionCount,taskFocus,instructionNote,priority,qualityProfile,presentation)
     ? json({ ok: true, job: generationJobDto(prior), reused: true })
