@@ -23,7 +23,7 @@ function fixture(){
  CREATE TABLE learning_nodes(id TEXT PRIMARY KEY,active INTEGER DEFAULT 1,node_type TEXT DEFAULT 'OUTCOME',academic_year TEXT DEFAULT '2026-2027',grade_level INTEGER DEFAULT 7,subject_id TEXT DEFAULT 'math');
  CREATE TABLE question_bank(id TEXT PRIMARY KEY,owner_type TEXT,academic_year TEXT,grade_level INTEGER,subject_id TEXT,question_type TEXT,difficulty INTEGER,difficulty_level INTEGER,content_mode TEXT,option_count INTEGER,stem_text TEXT,options_json TEXT,correct_answer TEXT,solution_text TEXT,source_label TEXT,copyright_status TEXT,review_status TEXT,created_by TEXT,origin_kind TEXT,review_revision INTEGER DEFAULT 0);
  CREATE TABLE question_learning_links(question_id TEXT REFERENCES question_bank(id),node_id TEXT REFERENCES learning_nodes(id),PRIMARY KEY(question_id,node_id));
- CREATE TABLE audit_logs(id TEXT PRIMARY KEY,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
+ CREATE TABLE audit_logs(id TEXT PRIMARY KEY,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
  INSERT INTO users VALUES('admin'),('teacher'); INSERT INTO subjects VALUES('math'),('other');
  INSERT INTO curriculum_versions VALUES('cv','2026-2027',7,'v1',1),('cv2','2026-2027',7,'v2',1);
  INSERT INTO outcomes VALUES('o','cv','math',7,'M.7.1','Synthetic outcome',1);
@@ -36,6 +36,7 @@ function fixture(){
  sqlite.exec("CREATE TABLE question_content_blocks(id TEXT,question_id TEXT,placement TEXT,block_type TEXT,payload_json TEXT);");
  sqlite.exec(readFileSync(new URL('../migrations/0107_question_editorial_contract.sql',import.meta.url),'utf8'));
  sqlite.exec(readFileSync(new URL('../migrations/0110_question_editorial_repair.sql',import.meta.url),'utf8'));
+ sqlite.exec(readFileSync(new URL('../migrations/0111_editorial_verification_transport_retry.sql',import.meta.url),'utf8'));
  let beforeInsert:(()=>void)|undefined;
  const prepare=(sql:string,args:any[]=[]):any=>({bind:(...bound:any[])=>prepare(sql,bound),
   first:async()=>sqlite.prepare(sql).get(...args),
@@ -156,7 +157,7 @@ it('commits exactly one request under native D1 and reuses its key after cancell
   await db.exec(`CREATE TABLE learning_nodes(id TEXT PRIMARY KEY,active INTEGER DEFAULT 1,node_type TEXT DEFAULT 'OUTCOME',academic_year TEXT DEFAULT '2026-2027',grade_level INTEGER DEFAULT 7,subject_id TEXT DEFAULT 'math');
    CREATE TABLE question_bank(id TEXT PRIMARY KEY,owner_type TEXT,academic_year TEXT,grade_level INTEGER,subject_id TEXT,question_type TEXT,difficulty INTEGER,difficulty_level INTEGER,content_mode TEXT,option_count INTEGER,stem_text TEXT,options_json TEXT,correct_answer TEXT,solution_text TEXT,source_label TEXT,copyright_status TEXT,review_status TEXT,created_by TEXT,origin_kind TEXT,review_revision INTEGER DEFAULT 0);
    CREATE TABLE question_learning_links(question_id TEXT REFERENCES question_bank(id),node_id TEXT REFERENCES learning_nodes(id),PRIMARY KEY(question_id,node_id));
-   CREATE TABLE audit_logs(id TEXT PRIMARY KEY,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
+   CREATE TABLE audit_logs(id TEXT PRIMARY KEY,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
    INSERT INTO learning_nodes(id) VALUES('ln_o');`);
   await db.exec(readFileSync(new URL('../migrations/0072_question_generation_jobs.sql',import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' '));
   await db.exec(readFileSync(new URL('../migrations/0073_question_generation_runner.sql',import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' '));
@@ -164,6 +165,7 @@ it('commits exactly one request under native D1 and reuses its key after cancell
   await db.exec("CREATE TABLE question_content_blocks(id TEXT,question_id TEXT,placement TEXT,block_type TEXT,payload_json TEXT);");
   await db.exec(readFileSync(new URL('../migrations/0107_question_editorial_contract.sql',import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' '));
   await db.exec(readFileSync(new URL('../migrations/0110_question_editorial_repair.sql',import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' '));
+  await db.exec(readFileSync(new URL('../migrations/0111_editorial_verification_transport_retry.sql',import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' '));
   const env={DB:db} as any,p=payload();
   const call=(req:Request)=>handleQuestionGenerationJobs(req,env,admin)!;
   const simultaneous=await Promise.all([call(request(p)),call(request(p))]);
