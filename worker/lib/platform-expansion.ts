@@ -366,7 +366,9 @@ async function listQuestions(request:Request,env:Env,user:AuthUser):Promise<Resp
   const gate=await requireFeature(env,user,'QUESTION_BANK'); if(gate)return gate;
   if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden('Öğrenci soru havuzunun yönetim görünümüne erişemez.');
   const u=new URL(request.url); const grade=u.searchParams.get('gradeLevel'); const subject=u.searchParams.get('subjectId'); const q=u.searchParams.get('q'); const difficulty=u.searchParams.get('difficultyLevel'); const reviewStatus=u.searchParams.get('reviewStatus');
+  const questionId=u.searchParams.get('questionId');if(questionId&&questionId.length>100)return badRequest('Geçersiz soru kimliği.','INVALID_QUESTION_ID');
   const wh=[reviewStatus==='ARCHIVED'?`q.review_status='ARCHIVED'`:`q.review_status<>'ARCHIVED'`],ps:any[]=[]; if(grade){wh.push('q.grade_level=?');ps.push(Number(grade));} if(subject){wh.push('q.subject_id=?');ps.push(subject);} if(q){wh.push('(q.stem_text LIKE ? OR q.topic LIKE ? OR q.subtopic LIKE ?)');const s=`%${q}%`;ps.push(s,s,s);}
+  if(questionId){wh.push('q.id=?');ps.push(questionId);}
   if(difficulty){const level=normalizeDifficultyLevel(difficulty);if(!level)return badRequest('Zorluk seviyesi 1 ile 6 arasında olmalıdır.','INVALID_DIFFICULTY');wh.push('COALESCE(q.difficulty_level,q.difficulty,3)=?');ps.push(level);}
   if(reviewStatus){if(!['DRAFT','REVIEW','APPROVED','REJECTED','ARCHIVED'].includes(reviewStatus))return badRequest('Geçersiz inceleme durumu.','INVALID_STATUS');wh.push('q.review_status=?');ps.push(reviewStatus);}
   if(user.role!=='SUPER_ADMIN') { wh.push(`(q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`); ps.push(user.institution_id); }

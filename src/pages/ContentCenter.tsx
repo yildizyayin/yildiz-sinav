@@ -1,5 +1,6 @@
 import {QuestionContentEditor} from '../components/QuestionContentEditor';
 import { useEffect, useState } from 'react';
+import {Link,useSearchParams} from 'react-router-dom';
 import { BookOpen, Check, CheckCircle2, ChevronRight, Eye, FileText, FileUp, PlaySquare, Plus, RefreshCw, Search, ShieldCheck, SlidersHorizontal, WandSparkles, XCircle } from 'lucide-react';
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
@@ -35,6 +36,7 @@ function recordedQuality(question:any){try{const value=JSON.parse(question?.revi
 
 export function ContentCenter() {
   const { user } = useAuth();
+  const [searchParams,setSearchParams]=useSearchParams();
   const [tab, setTab] = useState<'questions' | 'studio' | 'videos' | 'coverage'>('questions');
   const [questions, setQuestions] = useState<any[]>([]);
   const [selectedQuestion, setSelectedQuestion] = useState<any | null>(null);
@@ -56,7 +58,7 @@ export function ContentCenter() {
   const [stats, setStats] = useState<any>(null);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
-  const [filters, setFilters] = useState({ q: '', gradeLevel: '', subjectId: '', difficultyLevel: '', reviewStatus: '' });
+  const [filters, setFilters] = useState({ questionId: searchParams.get('questionId')||'', q: '', gradeLevel: '', subjectId: '', difficultyLevel: '', reviewStatus: '' });
   const [qform, setQform] = useState({ stemText: '', contentMode: 'TEXT', optionCount: '4', gradeLevel: '8', subjectId: 'sub_math', topic: '', subtopic: '', outcomeRefs: '', priorGradeRefs: '', lgsProbability: '', yksProbability: '', exam5yCount: '', difficultyLevel: '3', optionA: '', optionB: '', optionC: '', optionD: '', optionE: '', correctAnswer: 'A', solutionText: '', sourceLabel: 'Kendi İçeriğimiz', originKind: 'MANUAL', academicYear: '2026-2027', copyrightStatus: 'OWNED', imageAlt: '' });
   const [questionFile, setQuestionFile] = useState<File | null>(null);
   const [dform, setDform] = useState({ title: '', documentType: 'PRACTICE_EXAM', gradeLevel: '8', subjectId: 'sub_math', questionCount: '20', optionMode: 'MIXED', bookletCodes: 'A,B', deliveryMode: 'PDF_OPTICAL' });
@@ -145,6 +147,8 @@ export function ContentCenter() {
     {error && <div className="alert error">{error}</div>}
     {notice && <div className="alert success">{notice}</div>}
 
+    {filters.questionId&&<div className="alert info">Seçili soru: {filters.questionId} <button onClick={()=>{const next={...filters,questionId:''};setFilters(next);setSearchParams({});void load(next);}}>Tüm soruları göster</button></div>}
+    {user?.role==='SUPER_ADMIN'&&<Link to="/question-team">Soru havuzu ekibini yönet ↗</Link>}
     <div className="content-tabs" role="tablist" aria-label="İçerik modülleri">
       {user?.role === 'SUPER_ADMIN' && <button className={tab === 'coverage' ? 'active' : ''} onClick={() => setTab('coverage')}>Kazanım kapsamı</button>}
       <button className={tab === 'questions' ? 'active' : ''} onClick={() => setTab('questions')}><BookOpen size={16} /> Soru havuzu <span>{stats?.total ?? questions.length}</span></button>
