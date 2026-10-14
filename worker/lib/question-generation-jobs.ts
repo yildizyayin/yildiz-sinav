@@ -13,7 +13,7 @@ type Context = {
 };
 type RequestContext = Omit<Context, 'outcomeCode' | 'outcomeTitle'>;
 type JobRow = {
-  quality_profile:string;presentation:string;task_focus:TaskFocus;instruction_note:string;priority:number;
+  editorial_repair_count:number;quality_profile:string;presentation:string;task_focus:TaskFocus;instruction_note:string;priority:number;
   id: string; request_key: string; outcome_id: string; curriculum_version_id: string;
   academic_year: string; grade_level: number; subject_id: string; program_version: string;
   outcome_code: string | null; outcome_title: string; question_count: number;
@@ -29,7 +29,7 @@ export function questionGenerationEnabled(env: Env): boolean {
 }
 export function generationJobDto(row: JobRow) {
   return {
-    qualityProfile:row.quality_profile,presentation:row.presentation,taskFocus:row.task_focus,instructionNote:row.instruction_note,priority:row.priority,
+    editorialRepairCount:row.editorial_repair_count,qualityProfile:row.quality_profile,presentation:row.presentation,taskFocus:row.task_focus,instructionNote:row.instruction_note,priority:row.priority,
     id: row.id, outcomeId: row.outcome_id, status: row.status,
     questionCount: row.question_count, createdAt: row.created_at,
     cancelledAt: row.cancelled_at, attemptCount: row.attempt_count,
@@ -43,7 +43,7 @@ export function generationJobDto(row: JobRow) {
     },
   };
 }
-export const generationJobFields = `id,request_key,outcome_id,curriculum_version_id,academic_year,grade_level,subject_id,program_version,outcome_code,outcome_title,question_count,status,created_at,cancelled_at,attempt_count,generated_count,lease_until,error_code,completed_at,task_focus,instruction_note,priority,quality_profile,presentation`;
+export const generationJobFields = `id,request_key,outcome_id,curriculum_version_id,academic_year,grade_level,subject_id,program_version,outcome_code,outcome_title,question_count,status,created_at,cancelled_at,attempt_count,generated_count,lease_until,error_code,completed_at,task_focus,instruction_note,priority,quality_profile,presentation,editorial_repair_count,repair_source_hash,repair_payload_hash`;
 const fields = generationJobFields;
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function validYear(year: unknown): year is string {
