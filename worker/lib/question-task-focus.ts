@@ -1,0 +1,11 @@
+export const TASK_FOCUS={
+ GENERIC:{label:'Kazanıma uygun farklı görev',instruction:''},
+ READ_ZERO_PERIODS:{label:'Okuma · eksik ve sıfırlı bölükler',instruction:'For this item assess omitted number groups: use exactly one quoted Turkish cardinal containing milyar and bin, but NO milyon word. The target must contain an all-zero millions group and a nonzero thousands group and units. The solution must explicitly explain that an unspoken millions group occupies 000. Every choice is a different7–12 digit plain ASCII integer. This differs from merely replacing numbers in a fully spoken millions/thousands item.'},
+ NAT_COMPARE_OFFERS:{label:'Problem · alışveriş seçeneklerini karşılaştırma',instruction:'Generate a natural-number shopping decision comparing TWO clearly defined purchase offers for the SAME quantity, then ask the saving or remaining budget for the cheaper choice. Use exact whole TL amounts, no percentages, fractions or ambiguous discounts. Explain both totals and the comparison. Do NOT generate stock after two distributions followed by equal sharing or boxing. All operands must satisfy official scope.'},
+ NAT_INVERSE_STEPS:{label:'Problem · başlangıç miktarını bulma',instruction:'Generate a real-life natural-number problem that gives the final quantity after two clearly ordered operations and asks for the initial quantity. Solve by reversing operations and check by applying the original operations. Use an exact integer result and no fractions. Do NOT generate remaining-stock equal-sharing or boxing. All operands must satisfy official scope.'},
+} as const;
+export type TaskFocus=keyof typeof TASK_FOCUS;
+export function validTaskFocus(focus:unknown,grade:number,code:string|null):focus is TaskFocus{
+ if(typeof focus!=='string'||!Object.hasOwn(TASK_FOCUS,focus))return false;
+ return focus==='GENERIC'||grade===5&&(focus==='READ_ZERO_PERIODS'?code==='MAT.5.1.1':code==='MAT.5.1.2');
+}

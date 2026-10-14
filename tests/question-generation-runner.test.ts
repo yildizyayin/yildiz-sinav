@@ -46,6 +46,7 @@ beforeAll(async()=>{
  db=await mf.getD1Database('DB');await db.exec(ddl);
  await db.exec(migration('0072_question_generation_jobs.sql'));
  await db.exec(migration('0073_question_generation_runner.sql'));
+ await db.exec(migration('0104_question_generation_focus.sql'));
  await db.exec(migration('0102_question_agent_pilot_budget.sql'));
 },20_000);
 afterAll(async()=>{await mf?.dispose();});
@@ -217,6 +218,7 @@ it('preserves old REQUESTED and CANCELLED jobs while applying 0072 to 0073',asyn
     ('old-requested','key-r','o','cv','2026-2027',7,'math','v1','Synthetic outcome',3,'admin','REQUESTED',NULL,NULL);`.replace(/\n/g,' '));
   const before=(await old.prepare('SELECT * FROM question_generation_jobs ORDER BY id').all()).results;
   await old.exec(migration('0073_question_generation_runner.sql'));
+  await old.exec(migration('0104_question_generation_focus.sql'));
   const after=(await old.prepare('SELECT * FROM question_generation_jobs ORDER BY id').all()).results;
   expect(after).toHaveLength(2);after.forEach((row:any,i:number)=>{expect(row).toMatchObject(before[i]);expect(row).toMatchObject({attempt_count:0,generated_count:0,lease_token:null,completed_at:null});});
  }finally{await oldMf.dispose();}

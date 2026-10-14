@@ -1,0 +1,118 @@
+[
+  {
+    "questionId": "q_4b5f15e1-7921-41f2-a16d-54e69995981b",
+    "sourceJobId": "qgj_df57b3d8-a624-4cb8-926a-ed0082220d30",
+    "expectedOldHash": "e12af2801f3cd3715d12a5a9bfdd1c13a6ea2a5653a0fd94a48cd478927caf1a",
+    "patch": {
+      "stemText": "Bir pastanede 2.340 adet küçük kek hazırlanıyor. Sabah 1.125, öğleden sonra 780 adet satılıyor. Kalan kekler her biri 15 adet olacak şekilde kutulara konulacak. Kaç tam kutu hazırlanabilir?",
+      "options": [
+        {
+          "label": "A",
+          "text": "27"
+        },
+        {
+          "label": "B",
+          "text": "28"
+        },
+        {
+          "label": "C",
+          "text": "29"
+        },
+        {
+          "label": "D",
+          "text": "30"
+        }
+      ],
+      "correctAnswer": "C",
+      "solutionText": "Önce satılan kekleri çıkaralım: 2.340 − 1.125 = 1.215. Ardından 1.215 − 780 = 435 kek kalır. Her kutu 15 kek aldığından 435 ÷ 15 = 29 tam kutu hazırlanır. Kalan kek sayısı 0'dır. Doğru seçenek C) 29.",
+      "editNote": "AI destekli editoryal düzeltme: bağlam ve çeldirici açıklaması düzeltildi. İnsan ve telif onayı verilmedi."
+    }
+  },
+  {
+    "questionId": "q_bb920a81-da20-4643-9490-da4a40c7f98f",
+    "sourceJobId": "qgj_bda76a95-39ad-459b-884e-889df5333eaa",
+    "expectedOldHash": "59092f787e37ff340c018e10f5ff405915aca8e6e59bae4f63e0162d8ea0c08f",
+    "patch": {
+      "stemText": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “yedi yüz kırk iki milyon üç yüz elli altı bin sekiz yüz doksan bir”",
+      "options": [
+        {
+          "label": "A",
+          "text": "742356891"
+        },
+        {
+          "label": "B",
+          "text": "74235691"
+        },
+        {
+          "label": "C",
+          "text": "7423568910"
+        },
+        {
+          "label": "D",
+          "text": "742356981"
+        }
+      ],
+      "correctAnswer": "A",
+      "solutionText": "İfadeyi bölüklere ayıralım: yedi yüz kırk iki milyon = 742.000.000; üç yüz elli altı bin = 356.000; sekiz yüz doksan bir = 891. Toplam 742.356.891 olur. B seçeneği 74.235.691, C seçeneği 7.423.568.910, D seçeneği 742.356.981 sayısını gösterir. D seçeneğinin son bölüğü 981'dir; verilen okunuşa göre 891 olmalıdır. Doğru seçenek A) 742356891.",
+      "editNote": "AI destekli editoryal düzeltme: bağlam ve çeldirici açıklaması düzeltildi. İnsan ve telif onayı verilmedi."
+    }
+  },
+  {
+    "questionId": "q_9e4d8bd2-53b6-4363-b5d4-059b2bc9ed0f",
+    "sourceJobId": "qgj_0eb95f35-727e-4abd-a73b-3829cf499eb4",
+    "expectedOldHash": "f6bad55b34c7f7ae28701ec5b1b18365a1c24e77a0ead8fbe0823050bd2a4f87",
+    "patch": {
+      "stemText": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “dört yüz kırk iki milyon beş yüz altmış yedi bin sekiz yüz doksan üç”.",
+      "options": [
+        {
+          "label": "A",
+          "text": "442567893"
+        },
+        {
+          "label": "B",
+          "text": "442893567"
+        },
+        {
+          "label": "C",
+          "text": "442560893"
+        },
+        {
+          "label": "D",
+          "text": "442567000000"
+        }
+      ],
+      "correctAnswer": "A",
+      "solutionText": "Dört yüz kırk iki milyon = 442.000.000, beş yüz altmış yedi bin = 567.000, sekiz yüz doksan üç = 893. Birleştirildiğinde 442.567.893 elde edilir. B seçeneğinde binler ve birler bölükleri yer değiştirmiştir. C seçeneğinde binler bölüğü 567 yerine 560 yazılmıştır. D seçeneği 442 milyar 567 milyon sayısını gösterir; verilen okunuş bu değildir. Doğru seçenek A) 442567893.",
+      "editNote": "AI destekli editoryal düzeltme: bağlam ve çeldirici açıklaması düzeltildi. İnsan ve telif onayı verilmedi."
+    }
+  },
+  {
+    "questionId": "q_313851db-2add-404f-9562-73e7cff31979",
+    "sourceJobId": "qgj_b2f77e40-0380-40cd-bda0-8fa8d2d7fa2b",
+    "expectedOldHash": "c97d2d2ab88e660377b2d1b10ea2cdc3269a3d874f81c0f0becb3d2c73d36d2c",
+    "patch": {
+      "stemText": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “altı yüz kırk beş milyar iki yüz otuz sekiz milyon yedi yüz doksan bir bin iki yüz beş”",
+      "options": [
+        {
+          "label": "A",
+          "text": "645238791205"
+        },
+        {
+          "label": "B",
+          "text": "645238791025"
+        },
+        {
+          "label": "C",
+          "text": "645238971205"
+        },
+        {
+          "label": "D",
+          "text": "645038791205"
+        }
+      ],
+      "correctAnswer": "A",
+      "solutionText": "Bölükler sırasıyla 645 milyar, 238 milyon, 791 bin ve 205'tir. Bu bölükleri birleştirince 645.238.791.205 bulunur. B seçeneğinde birler bölüğü 205 yerine 025, C seçeneğinde binler bölüğü 791 yerine 971, D seçeneğinde milyonlar bölüğü 238 yerine 038 yazılmıştır. Doğru seçenek A) 645238791205.",
+      "editNote": "AI destekli editoryal düzeltme: bağlam ve çeldirici açıklaması düzeltildi. İnsan ve telif onayı verilmedi."
+    }
+  }
+]
