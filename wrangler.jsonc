@@ -48,6 +48,8 @@
     ]
   },
   "vars": {
+    "QUESTION_TEAM_CONTROLS_ENABLED": "true",
+    "QUESTION_VIDEO_RENDER_ENABLED": "true",
     "ENVIRONMENT": "staging",
     "QUESTION_GENERATION_ENABLED": "true",
     "QUESTION_GENERATION_MODEL": "@cf/openai/gpt-oss-120b",

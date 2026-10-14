@@ -1,0 +1,176 @@
+[
+  {
+    "questionId": "q_313851db-2add-404f-9562-73e7cff31979",
+    "sourceJobId": "qgj_b2f77e40-0380-40cd-bda0-8fa8d2d7fa2b",
+    "expectedOldHash": "8f07cfaec5efe5423ee0c7061a4de11b2451cf14fc6d5a9a88d0be564bd8d880",
+    "patch": {
+      "stemText": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “altı yüz kırk beş milyar iki yüz otuz sekiz milyon yedi yüz doksan bir bin iki yüz beş”",
+      "options": [
+        {
+          "label": "A",
+          "text": "645238791025"
+        },
+        {
+          "label": "B",
+          "text": "645238971205"
+        },
+        {
+          "label": "C",
+          "text": "645038791205"
+        },
+        {
+          "label": "D",
+          "text": "645238791205"
+        }
+      ],
+      "correctAnswer": "D",
+      "solutionText": "Bölükler sırasıyla 645 milyar, 238 milyon, 791 bin ve 205'tir. Bu bölükleri birleştirince 645.238.791.205 bulunur. A seçeneğinde birler bölüğü 205 yerine 025, B seçeneğinde binler bölüğü 791 yerine 971, C seçeneğinde milyonlar bölüğü 238 yerine 038 yazılmıştır. Doğru seçenek D) 645238791205.",
+      "editNote": "Pilot soruların cevap dağılımı dengelendi ve çeldirici açıklamaları seçeneklere göre kontrol edilerek düzeltildi."
+    }
+  },
+  {
+    "questionId": "q_473f4d11-7556-480b-803c-a29441e8aa2d",
+    "sourceJobId": "qgj_25feb760-92bc-46e1-9911-f4a57d1f9a88",
+    "expectedOldHash": "021d21c272913f56c02d564ae1fe35c399136f060686cad9769ecdf38a3e7764",
+    "patch": {
+      "stemText": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “sekiz milyar iki yüz beş bin dört yüz doksan üç”.",
+      "options": [
+        {
+          "label": "A",
+          "text": "8000205493"
+        },
+        {
+          "label": "B",
+          "text": "8205000493"
+        },
+        {
+          "label": "C",
+          "text": "8000493205"
+        },
+        {
+          "label": "D",
+          "text": "8205493"
+        }
+      ],
+      "correctAnswer": "A",
+      "solutionText": "İfadeyi bölümlere ayıralım: “sekiz milyar” = 8 000 000 000. “milyon” sözcüğü yoksa milyon grubu 000 olur. “iki yüz beş bin” = 205 000. “dört yüz doksan üç” = 493. Bu bölükleri birleştirince 8 000 205 493 elde edilir. Sayıyı noktasız yazınca 8000205493 olur. B seçeneği binleri milyonlara taşıdı, C seçeneği bin ve birler gruplarını yer değiştirdi, D seçeneği 8.205.493, yani sekiz milyon iki yüz beş bin dört yüz doksan üç sayısını gösterir; verilen okunuştaki milyar basamağını karşılamaz. Doğru seçenek A) 8000205493.",
+      "editNote": "Pilot soruların cevap dağılımı dengelendi ve çeldirici açıklamaları seçeneklere göre kontrol edilerek düzeltildi."
+    }
+  },
+  {
+    "questionId": "q_58ebc86b-8399-455c-99f4-85057a41942e",
+    "sourceJobId": "qgj_0ee4601e-8e21-4248-bddb-f4e97caf99ea",
+    "expectedOldHash": "60e9a4e77b84fcec2ba4b78c8c619abc2bbc49ba940ac33053a1b096b091e292",
+    "patch": {
+      "stemText": "Bir okul 3.250 adet kalem satın almıştır. 1.845 kalemi 1. sınıfın kullanımı için ayırdıktan sonra kalan kalemleri 5 sınıfa eşit olarak dağıtmak istiyor. Her sınıfa kaç kalem düşer?",
+      "options": [
+        {
+          "label": "A",
+          "text": "285"
+        },
+        {
+          "label": "B",
+          "text": "281"
+        },
+        {
+          "label": "C",
+          "text": "300"
+        },
+        {
+          "label": "D",
+          "text": "275"
+        }
+      ],
+      "correctAnswer": "B",
+      "solutionText": "1. Önce ayrılan kalem sayısını toplamdan çıkaralım:\n   3.250 – 1.845 = 1.405 kalem kalır.\n2. Kalan kalemleri 5 sınıfa eşit paylaştırmak için 1.405’i 5’e bölelim:\n   1.405 ÷ 5 = 281.\nDolayısıyla her sınıfa 281 kalem düşer.\nDoğru seçenek: B) 281",
+      "editNote": "Pilot soruların cevap dağılımı dengelendi ve çeldirici açıklamaları seçeneklere göre kontrol edilerek düzeltildi."
+    }
+  },
+  {
+    "questionId": "q_9e4d8bd2-53b6-4363-b5d4-059b2bc9ed0f",
+    "sourceJobId": "qgj_0eb95f35-727e-4abd-a73b-3829cf499eb4",
+    "expectedOldHash": "a56ad432f0d93a8b8d000bc56f32a40502e0fbcc374dd66d9ee6375912370df0",
+    "patch": {
+      "stemText": "Aşağıdaki ifadeyi doğru sayıya çeviriniz: “dört yüz kırk iki milyon beş yüz altmış yedi bin sekiz yüz doksan üç”.",
+      "options": [
+        {
+          "label": "A",
+          "text": "442893567"
+        },
+        {
+          "label": "B",
+          "text": "442560893"
+        },
+        {
+          "label": "C",
+          "text": "442567000000"
+        },
+        {
+          "label": "D",
+          "text": "442567893"
+        }
+      ],
+      "correctAnswer": "D",
+      "solutionText": "Dört yüz kırk iki milyon = 442.000.000, beş yüz altmış yedi bin = 567.000, sekiz yüz doksan üç = 893. Birleştirildiğinde 442.567.893 elde edilir. A seçeneğinde binler ve birler bölükleri yer değiştirmiştir. B seçeneğinde binler bölüğü 567 yerine 560 yazılmıştır. C seçeneği 442 milyar 567 milyon sayısını gösterir; verilen okunuş bu değildir. Doğru seçenek D) 442567893.",
+      "editNote": "Pilot soruların cevap dağılımı dengelendi ve çeldirici açıklamaları seçeneklere göre kontrol edilerek düzeltildi."
+    }
+  },
+  {
+    "questionId": "q_dc79400a-846d-4615-b897-4605d3cd221b",
+    "sourceJobId": "qgj_e9395070-9869-442c-8bcd-891c18fb2c51",
+    "expectedOldHash": "7873e5bb886483455881c5ae3f143ac3fd52977476a2cb83fa64e71ee9da36f7",
+    "patch": {
+      "stemText": "Okul 1.500 adet defter alacak. Teklif A: 10 paket, paket başına 150 defter, toplam fiyat 4.500 TL. Teklif B: 5 paket, paket başına 300 defter, toplam fiyat 4.200 TL. Okul en ucuz teklifi seçerse bütçesinden ne kadar tasarruf eder?",
+      "options": [
+        {
+          "label": "A",
+          "text": "200 TL"
+        },
+        {
+          "label": "B",
+          "text": "300 TL"
+        },
+        {
+          "label": "C",
+          "text": "500 TL"
+        },
+        {
+          "label": "D",
+          "text": "0 TL"
+        }
+      ],
+      "correctAnswer": "B",
+      "solutionText": "Her iki teklifte de toplam defter sayısı aynı: 10 × 150 = 1.500 ve 5 × 300 = 1.500. En ucuz teklif B’dir, fiyatı 4.200 TL. Teklif A’nın fiyatı 4.500 TL olduğundan fark 4.500 − 4.200 = 300 TL. Dolayısıyla tasarruf 300 TL olur. Doğru seçenek B) 300 TL.",
+      "editNote": "Pilot soruların cevap dağılımı dengelendi ve çeldirici açıklamaları seçeneklere göre kontrol edilerek düzeltildi."
+    }
+  },
+  {
+    "questionId": "q_e46a6bcf-dd93-4b8c-b26b-4eee71216e09",
+    "sourceJobId": "qgj_0ee4601e-8e21-4248-bddb-f4e97caf99ea",
+    "expectedOldHash": "54354d96d160a9e38d96d4f1b423a4e64c4fc96a59c6c6d2347e68e2cabd706d",
+    "patch": {
+      "stemText": "Bir çiftçi 48 sepet elma topladı. Her sepetin içinde 23 elma var. Çiftçi ayrıca pazardan 150 elma daha satın alıyor. Toplamda kaç elma olur?",
+      "options": [
+        {
+          "label": "A",
+          "text": "1 104"
+        },
+        {
+          "label": "B",
+          "text": "1 119"
+        },
+        {
+          "label": "C",
+          "text": "1 254"
+        },
+        {
+          "label": "D",
+          "text": "2 604"
+        }
+      ],
+      "correctAnswer": "C",
+      "solutionText": "1. Sepetlerdeki elma sayısını bulmak için çarpma yapalım:\n   48 × 23 = 1.104 elma.\n2. Pazardan alınan 150 elmayı ekleyelim:\n   1.104 + 150 = 1.254 elma.\nToplam elma sayısı 1.254’tür.\nDoğru seçenek: C) 1 254",
+      "editNote": "Pilot soruların cevap dağılımı dengelendi ve çeldirici açıklamaları seçeneklere göre kontrol edilerek düzeltildi."
+    }
+  }
+]

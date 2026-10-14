@@ -32,6 +32,7 @@ function fixture(){
  `);
  sqlite.exec(readFileSync(new URL('../migrations/0072_question_generation_jobs.sql',import.meta.url),'utf8'));
  sqlite.exec(readFileSync(new URL('../migrations/0073_question_generation_runner.sql',import.meta.url),'utf8'));
+ sqlite.exec(readFileSync(new URL('../migrations/0104_question_generation_focus.sql',import.meta.url),'utf8'));
  let beforeInsert:(()=>void)|undefined;
  const prepare=(sql:string,args:any[]=[]):any=>({bind:(...bound:any[])=>prepare(sql,bound),
   first:async()=>sqlite.prepare(sql).get(...args),
@@ -156,6 +157,7 @@ it('commits exactly one request under native D1 and reuses its key after cancell
    INSERT INTO learning_nodes(id) VALUES('ln_o');`);
   await db.exec(readFileSync(new URL('../migrations/0072_question_generation_jobs.sql',import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' '));
   await db.exec(readFileSync(new URL('../migrations/0073_question_generation_runner.sql',import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' '));
+  await db.exec(readFileSync(new URL('../migrations/0104_question_generation_focus.sql',import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' '));
   const env={DB:db} as any,p=payload();
   const call=(req:Request)=>handleQuestionGenerationJobs(req,env,admin)!;
   const simultaneous=await Promise.all([call(request(p)),call(request(p))]);
@@ -174,4 +176,16 @@ it('commits exactly one request under native D1 and reuses its key after cancell
   expect(differentKeys.map(response=>response.status).sort()).toEqual([201,409]);
   expect(await db.prepare("SELECT COUNT(*) n FROM question_generation_jobs WHERE status='REQUESTED'").first('n')).toBe(1);
  }finally{await mf.dispose();}
+});
+it('binds manual practice focus and priority to idempotency without inventing official outcome metadata',async()=>{
+ const f=fixture();try{
+  f.sqlite.exec("UPDATE curriculum_versions SET grade_level=5 WHERE id='cv';UPDATE outcomes SET grade_level=5,code='MAT.5.1.1' WHERE id='o'");
+  const p={...payload(key(),1),expectedContext:{...expectedContext,gradeLevel:5},taskFocus:'READ_ZERO_PERIODS',instructionNote:'Sıfır bölüğünü açıklayan bir soru.',priority:2};
+  const r=await f.call(request(p));expect(r.status).toBe(201);const b:any=await r.json();expect(b.job).toMatchObject({taskFocus:'READ_ZERO_PERIODS',instructionNote:p.instructionNote,priority:2});
+  expect((await f.call(request(p))).status).toBe(200);
+  expect((await f.call(request({...p,priority:0}))).status).toBe(409);
+  expect(()=>f.sqlite.exec("UPDATE question_generation_jobs SET task_focus='GENERIC'")).toThrow(/IMMUTABLE/);
+  await f.call(request(null,`${base}/${b.job.id}/cancel`,'PATCH'));
+  expect((await f.call(request({...p,requestKey:key(),taskFocus:'NAT_COMPARE_OFFERS'}))).status).toBe(400);
+ }finally{f.sqlite.close()}
 });

@@ -46,6 +46,8 @@ beforeAll(async()=>{
  db=await mf.getD1Database('DB');await db.exec(ddl);
  await db.exec(migration('0072_question_generation_jobs.sql'));
  await db.exec(migration('0073_question_generation_runner.sql'));
+ await db.exec(migration('0104_question_generation_focus.sql'));
+ await db.exec(migration('0106_question_team_execution_stage.sql'));
  await db.exec(migration('0102_question_agent_pilot_budget.sql'));
 },20_000);
 afterAll(async()=>{await mf?.dispose();});
@@ -217,6 +219,8 @@ it('preserves old REQUESTED and CANCELLED jobs while applying 0072 to 0073',asyn
     ('old-requested','key-r','o','cv','2026-2027',7,'math','v1','Synthetic outcome',3,'admin','REQUESTED',NULL,NULL);`.replace(/\n/g,' '));
   const before=(await old.prepare('SELECT * FROM question_generation_jobs ORDER BY id').all()).results;
   await old.exec(migration('0073_question_generation_runner.sql'));
+  await old.exec(migration('0104_question_generation_focus.sql'));
+  await old.exec(migration('0106_question_team_execution_stage.sql'));
   const after=(await old.prepare('SELECT * FROM question_generation_jobs ORDER BY id').all()).results;
   expect(after).toHaveLength(2);after.forEach((row:any,i:number)=>{expect(row).toMatchObject(before[i]);expect(row).toMatchObject({attempt_count:0,generated_count:0,lease_token:null,completed_at:null});});
  }finally{await oldMf.dispose();}
@@ -314,4 +318,13 @@ it('rejects a provider that ignores the live reading choice range before verifie
  const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:{...context,gradeLevel:5},requestKey:crypto.randomUUID(),questionCount:1}),env,admin)!;const id=(await res.json() as any).job.id;
  expect((await run(id)).status).toBe(422);expect(provider).toHaveBeenCalledTimes(1);expect(await db.prepare('SELECT COUNT(*) n FROM question_bank').first('n')).toBe(0);
  expect(await job(id)).toMatchObject({status:'FAILED',error_code:'GENERATION_OUTPUT_INVALID'});
+});
+it('does not consume a provider attempt when paused and fences a pause racing the commit',async()=>{
+ await db.exec(`CREATE TABLE IF NOT EXISTS question_team_control(id INTEGER PRIMARY KEY,paused INTEGER);CREATE TABLE IF NOT EXISTS question_team_agent_control(agent_key TEXT,paused INTEGER);INSERT OR REPLACE INTO question_team_control VALUES(1,1);DELETE FROM question_team_agent_control;INSERT INTO question_team_agent_control VALUES('GENERATOR',0),('VERIFIER',0),('ORIGINALITY',0);`);
+ env.QUESTION_TEAM_CONTROLS_ENABLED='true';const id=await create();
+ expect((await run(id)).status).toBe(409);expect(provider).not.toHaveBeenCalled();expect((await job(id)).attempt_count).toBe(0);
+ await db.exec('UPDATE question_team_control SET paused=0');beforeBatch=async()=>{await db.exec('UPDATE question_team_control SET paused=1')};
+ expect((await run(id)).status).toBe(409);expect(provider).toHaveBeenCalledTimes(1);
+ expect((await job(id)).error_code).toBe('GENERATION_TEAM_PAUSED');
+ expect(await db.prepare('SELECT count(*) n FROM question_bank').first('n')).toBe(0);
 });

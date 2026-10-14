@@ -1,6 +1,16 @@
 # Soru havuzu — güncel durum ve devam kaydı
 
-## Önce bu bölümü okuyun — 2026-10-14 07:15 UTC
+## Güncel devam noktası — 14 Ekim 2026
+
+İlk 10 **otomatik kontrolden geçmiş taslak** tamamlandı; 10 REVIEW/RESTRICTED, 0 insan onayı/yayın. Dört içerik düzeltmesi ve iki odaklı gerçek üretimden sonra altı soru düzenlenip yeniden doğrulandı. Cevap dağılımı A3/B3/C2/D2. Kanıt: `data/question-team-balanced-ten-20261014.json`, run38534600560. Bütçe **45/50**, kalan5; iptal/başarısız rezervasyonlar iade edilmedi. Önceki8/9 sayımları aşağıda tarihsel kayıttır.
+
+Taslak metin düzenleme/sürüm geçmişi, bağımsız yeniden kontrol, görev odağı/öncelik, gerçek duraklatma kapıları ve Süper Admin `/question-team` paneli uygulandı. Video hattı staging'de gerçek sentetik MP4 ile doğrulandı (run38534600520); öğrenci videosu veya doğal ses kanıtı değildir. Ayrıntı: `docs/question-team-implementation-progress.md`. Panel uzak kabul ve son dağıtım kontrolündedir; mevcut PR257 henüz tamamlandı diye raporlanmaz.
+
+Kalan kararlar: ilk10 için gerçek uzman/telif incelemesi ve Studio kullanımı;50 uygun soruluk pilot için geçmişi koruyan yeni bütçe planı; yalnız iki doğrulanmış5.sınıf Matematik çıktısı dışındaki resmi kapsamın doğrulanması. Otomatik soru üretimi kapalı kalır. Kullanılmış/onaylı ve zengin medya sorularının yerinde kısmi metin düzenlenmesi yasaktır. Ücretli ses açılmadı. Üretim video yürütücüsü yalnız staging'dedir; production panelinde bu açıkça kapalı gösterilir.
+
+## Tarihsel devam noktası — aşağıdaki sayılar güncel değildir
+
+### 2026-10-14 07:15 UTC
 
 **İlk10 hedefi tamamlanmadı.** Güncel cohort:9 gerçek kayıt,8 REVIEW,1 REJECTED,0 APPROVED/yayın. Tüm kayıtlar RESTRICTED. Son kontrol38527117768 normal review API ile bilinen anlamsal tekrarı reddetti;0 yeni model çağrısı yaptı. Önceki15 bilinen ret ayrı geçmiş kayıtlarında korunur.9 kaydı9 uygun/yayıma hazır soru diye raporlamayın.
 

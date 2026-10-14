@@ -1,3 +1,4 @@
+import {validTaskFocus,TASK_FOCUS,type TaskFocus} from './question-task-focus';
 import type { AuthUser, Env } from '../types';
 import { all, json, one, uuid } from './db';
 
@@ -12,6 +13,7 @@ type Context = {
 };
 type RequestContext = Omit<Context, 'outcomeCode' | 'outcomeTitle'>;
 type JobRow = {
+  task_focus:TaskFocus;instruction_note:string;priority:number;
   id: string; request_key: string; outcome_id: string; curriculum_version_id: string;
   academic_year: string; grade_level: number; subject_id: string; program_version: string;
   outcome_code: string | null; outcome_title: string; question_count: number;
@@ -27,6 +29,7 @@ export function questionGenerationEnabled(env: Env): boolean {
 }
 export function generationJobDto(row: JobRow) {
   return {
+    taskFocus:row.task_focus,instructionNote:row.instruction_note,priority:row.priority,
     id: row.id, outcomeId: row.outcome_id, status: row.status,
     questionCount: row.question_count, createdAt: row.created_at,
     cancelledAt: row.cancelled_at, attemptCount: row.attempt_count,
@@ -40,7 +43,7 @@ export function generationJobDto(row: JobRow) {
     },
   };
 }
-export const generationJobFields = `id,request_key,outcome_id,curriculum_version_id,academic_year,grade_level,subject_id,program_version,outcome_code,outcome_title,question_count,status,created_at,cancelled_at,attempt_count,generated_count,lease_until,error_code,completed_at`;
+export const generationJobFields = `id,request_key,outcome_id,curriculum_version_id,academic_year,grade_level,subject_id,program_version,outcome_code,outcome_title,question_count,status,created_at,cancelled_at,attempt_count,generated_count,lease_until,error_code,completed_at,task_focus,instruction_note,priority`;
 const fields = generationJobFields;
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function validYear(year: unknown): year is string {
@@ -55,8 +58,8 @@ function validContext(value: any): value is RequestContext {
     && typeof value.subjectId === 'string' && value.subjectId.length > 0 && value.subjectId.length <= 100
     && typeof value.programVersion === 'string' && value.programVersion.length > 0 && value.programVersion.length <= 200;
 }
-function samePayload(row: JobRow, outcomeId: string, expected: RequestContext, questionCount: number): boolean {
-  return row.outcome_id === outcomeId && row.question_count === questionCount
+function samePayload(row: JobRow, outcomeId: string, expected: RequestContext, questionCount: number,taskFocus:string,instructionNote:string,priority:number): boolean {
+  return row.task_focus===taskFocus&&row.instruction_note===instructionNote&&row.priority===priority&&row.outcome_id === outcomeId && row.question_count === questionCount
     && row.curriculum_version_id === expected.curriculumVersionId
     && row.academic_year === expected.academicYear && row.grade_level === expected.gradeLevel
     && row.subject_id === expected.subjectId && row.program_version === expected.programVersion;
@@ -71,9 +74,11 @@ async function createJob(request: Request, env: Env, user: AuthUser): Promise<Re
     || typeof body.requestKey !== 'string' || !uuidPattern.test(body.requestKey)
     || !Number.isInteger(body.questionCount) || body.questionCount < 1 || body.questionCount > 10)
     return error(400, 'INVALID_GENERATION_REQUEST', 'Kazanım, doğrulanmış bağlam, UUID anahtarı ve 1-10 soru sayısı gereklidir.');
+  const taskFocus=body.taskFocus??'GENERIC',instructionNote=body.instructionNote??'',priority=body.priority??1;
+  if(typeof taskFocus!=='string'||!Object.hasOwn(TASK_FOCUS,taskFocus)||typeof instructionNote!=='string'||instructionNote.length>1000||!Number.isInteger(priority)||priority<0||priority>2)return error(400,'INVALID_GENERATION_DIRECTION','Görev odağı, not veya öncelik geçersiz.');
   const expected = body.expectedContext as RequestContext;
   const prior = await existingKey(env, body.requestKey);
-  if (prior) return samePayload(prior, body.outcomeId, expected, body.questionCount)
+  if (prior) return samePayload(prior, body.outcomeId, expected, body.questionCount,taskFocus,instructionNote,priority)
     ? json({ ok: true, job: generationJobDto(prior), reused: true })
     : error(409, 'REQUEST_KEY_CONFLICT', 'İstek anahtarı farklı bir istek için kullanıldı.');
 
@@ -90,18 +95,19 @@ async function createJob(request: Request, env: Env, user: AuthUser): Promise<Re
       AND o.subject_id=? AND cv.program_version=?
   `).bind(body.outcomeId,expected.curriculumVersionId,expected.academicYear,expected.gradeLevel,expected.subjectId,expected.programVersion));
   if (!source) return error(409, 'GENERATION_CONTEXT_CHANGED', 'Kazanım veya doğrulanmış müfredat bağlamı değişti. Listeyi yenileyin.');
+  if(!validTaskFocus(taskFocus,source.gradeLevel,source.outcomeCode))return error(400,'INVALID_GENERATION_FOCUS','Görev odağı bu sınıf/kazanıma ait değil.');
   const id = uuid('qgj');
   const inserted = await env.DB.prepare(`
     INSERT OR IGNORE INTO question_generation_jobs
       (id,request_key,outcome_id,curriculum_version_id,academic_year,grade_level,
-       subject_id,program_version,outcome_code,outcome_title,question_count,requested_by)
+       subject_id,program_version,outcome_code,outcome_title,question_count,requested_by,task_focus,instruction_note,priority)
     SELECT ?,?,o.id,cv.id,cv.academic_year,o.grade_level,o.subject_id,
-      cv.program_version,o.code,o.title,?,?
+      cv.program_version,o.code,o.title,?,?,?,?,?
     FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
     WHERE o.id=? AND o.active=1 AND cv.verified=1 AND o.grade_level=cv.grade_level
       AND o.curriculum_version_id=? AND cv.academic_year=? AND o.grade_level=?
       AND o.subject_id=? AND cv.program_version=? AND o.code IS ? AND o.title=?
-  `).bind(id,body.requestKey,body.questionCount,user.id,body.outcomeId,
+  `).bind(id,body.requestKey,body.questionCount,user.id,taskFocus,instructionNote,priority,body.outcomeId,
     expected.curriculumVersionId,expected.academicYear,expected.gradeLevel,
     expected.subjectId,expected.programVersion,source.outcomeCode,source.outcomeTitle).run();
   if (Number(inserted.meta?.changes || 0) > 0) {
@@ -111,7 +117,7 @@ async function createJob(request: Request, env: Env, user: AuthUser): Promise<Re
   // UNIQUE constraints resolve races deterministically: the same key can be
   // retried; a different key cannot silently change an active job's quantity.
   const byKey = await existingKey(env, body.requestKey);
-  if (byKey) return samePayload(byKey,body.outcomeId,expected,body.questionCount)
+  if (byKey) return samePayload(byKey,body.outcomeId,expected,body.questionCount,taskFocus,instructionNote,priority)
     ? json({ ok: true, job: generationJobDto(byKey), reused: true })
     : error(409, 'REQUEST_KEY_CONFLICT', 'İstek anahtarı farklı bir istek için kullanıldı.');
   const active = await one<JobRow>(env.DB.prepare(`SELECT ${fields} FROM question_generation_jobs WHERE outcome_id=? AND curriculum_version_id=? AND status IN ('REQUESTED','RUNNING','FAILED')`).bind(body.outcomeId,expected.curriculumVersionId));

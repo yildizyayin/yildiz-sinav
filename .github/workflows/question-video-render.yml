@@ -1,0 +1,42 @@
+name: Question video render worker
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [staging]
+    paths: [.github/question-video-render.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-video-render-staging
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: staging
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: staging
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install Pillow==11.3.0
+      - name: Install native video renderer
+        run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - name: Render one explicitly prepared question job
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          QUESTION_VIDEO_FIXTURE: ${{ github.event_name == 'push' && 'true' || 'false' }}
+        run: node scripts/process-question-video-jobs.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-video-${{ github.run_id }}-${{ github.run_attempt }}
+          path: tmp/question-video-proof/
