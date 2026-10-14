@@ -36,7 +36,16 @@ try{
   const cancelled=await req('/api/question-bank-standard/generation-jobs/'+id+'/cancel',{},'PATCH');if(!cancelled.r.ok)throw Error('Cannot retire exhausted pilot job');
  }
  for(let i=0;i<8;i++){
-  const o=outcomes[i%2],requestKey=key(i);
+  const o=outcomes[i%2];let requestKey=key(i);
+  // One evidence-based replacement only; never reset attempts or refund reservations.
+  if(i===5){
+   const exhausted=await query('SELECT id,status,attempt_count,generated_count FROM question_generation_jobs WHERE request_key=? AND curriculum_version_id=? AND grade_level=5',[requestKey,cv.id]);
+   if(exhausted.length!==1||exhausted[0].id!=='qgj_c023359e-47ad-47a2-8d55-a0a83578d480'||exhausted[0].generated_count!==0||exhausted[0].attempt_count!==3||!['FAILED','CANCELLED'].includes(exhausted[0].status))throw Error('Frozen replacement scope mismatch');
+   if(exhausted[0].status!=='CANCELLED'){
+    const retired=await req('/api/question-bank-standard/generation-jobs/'+exhausted[0].id+'/cancel',{},'PATCH');if(!retired.r.ok)throw Error('Cannot retire exhausted single question');
+   }
+   report.retiredSingle=exhausted[0];requestKey=key(105);
+  }
   const existing=await query("SELECT id,status,attempt_count FROM question_generation_jobs WHERE request_key=?",[requestKey]);
   if(!existing.length){const b=(await query("SELECT question_cap,reserved_count FROM question_agent_pilot_budget WHERE id='pilot_50'"))[0];if(!b||b.question_cap-b.reserved_count<1)throw Error('Atomic pilot budget has no remaining reservation');}
   const created=await req('/api/question-bank-standard/generation-jobs',{requestKey,outcomeId:o.id,questionCount:1,expectedContext:{curriculumVersionId:cv.id,academicYear:spec.academicYear,gradeLevel:5,subjectId:o.subject_id,programVersion:spec.programVersion}});if(!created.r.ok)throw Error('Job creation failed '+(created.p.error?.code||created.r.status));

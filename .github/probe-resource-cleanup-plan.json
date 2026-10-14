@@ -1,0 +1,212 @@
+[
+  {
+    "pr": 252,
+    "merged_at": "2026-10-14T06:38:58Z",
+    "worker": "anunex-result-provider-probe-252",
+    "expectedNames": [
+      "anunex-result-probe-artifacts-252",
+      "anunex-result-probe-artifacts-dlq-252",
+      "anunex-result-probe-retention-252",
+      "anunex-result-probe-retention-dlq-252"
+    ],
+    "queues": [
+      {
+        "queue_id": "e7af69c6e6e044ee86564d15ca2700ea",
+        "queue_name": "anunex-result-probe-artifacts-252",
+        "settings": {
+          "delivery_delay": 0,
+          "message_retention_period": 86400
+        },
+        "created_on": "2026-10-14T06:36:15.128022Z",
+        "modified_on": "2026-10-14T06:36:15.128022Z",
+        "producers_total_count": 1,
+        "producers": [
+          {
+            "script": "anunex-result-provider-probe-252",
+            "type": "worker"
+          }
+        ],
+        "consumers_total_count": 1,
+        "consumers": [
+          {
+            "script": "anunex-result-provider-probe-252",
+            "dead_letter_queue": "anunex-result-probe-artifacts-dlq-252",
+            "settings": {
+              "batch_size": 5,
+              "max_retries": 5,
+              "max_wait_time_ms": 5000,
+              "retry_delay": 0
+            },
+            "consumer_id": "ad9ffc8b4f2446f99202851e4bef8729",
+            "type": "worker"
+          }
+        ]
+      },
+      {
+        "queue_id": "2fb0cc6257c24de692df6e3e3eb961b6",
+        "queue_name": "anunex-result-probe-artifacts-dlq-252",
+        "settings": {
+          "delivery_delay": 0,
+          "message_retention_period": 86400
+        },
+        "created_on": "2026-10-14T06:36:12.169909Z",
+        "modified_on": "2026-10-14T06:36:12.169909Z",
+        "producers_total_count": 0,
+        "producers": [],
+        "consumers_total_count": 0,
+        "consumers": []
+      },
+      {
+        "queue_id": "6cbf52c4d6fd44b185264d1c6fbf6983",
+        "queue_name": "anunex-result-probe-retention-252",
+        "settings": {
+          "delivery_delay": 0,
+          "message_retention_period": 86400
+        },
+        "created_on": "2026-10-14T06:36:16.231185Z",
+        "modified_on": "2026-10-14T06:36:16.231185Z",
+        "producers_total_count": 1,
+        "producers": [
+          {
+            "script": "anunex-result-provider-probe-252",
+            "type": "worker"
+          }
+        ],
+        "consumers_total_count": 1,
+        "consumers": [
+          {
+            "script": "anunex-result-provider-probe-252",
+            "dead_letter_queue": "anunex-result-probe-retention-dlq-252",
+            "settings": {
+              "batch_size": 5,
+              "max_retries": 5,
+              "max_wait_time_ms": 5000,
+              "retry_delay": 0
+            },
+            "consumer_id": "23cc3504aac2467d9b25427edf1aaf6b",
+            "type": "worker"
+          }
+        ]
+      },
+      {
+        "queue_id": "64cbac7dd4894cda85e36f0a89142c46",
+        "queue_name": "anunex-result-probe-retention-dlq-252",
+        "settings": {
+          "delivery_delay": 0,
+          "message_retention_period": 86400
+        },
+        "created_on": "2026-10-14T06:36:13.922392Z",
+        "modified_on": "2026-10-14T06:36:13.922392Z",
+        "producers_total_count": 0,
+        "producers": [],
+        "consumers_total_count": 0,
+        "consumers": []
+      }
+    ]
+  },
+  {
+    "pr": 253,
+    "merged_at": "2026-10-14T06:47:05Z",
+    "worker": "anunex-result-provider-probe-253",
+    "expectedNames": [
+      "anunex-result-probe-artifacts-253",
+      "anunex-result-probe-artifacts-dlq-253",
+      "anunex-result-probe-retention-253",
+      "anunex-result-probe-retention-dlq-253"
+    ],
+    "queues": [
+      {
+        "queue_id": "f66e30c5c8be4576958dbeb2382e0174",
+        "queue_name": "anunex-result-probe-artifacts-253",
+        "settings": {
+          "delivery_delay": 0,
+          "message_retention_period": 86400
+        },
+        "created_on": "2026-10-14T06:44:30.128422Z",
+        "modified_on": "2026-10-14T06:44:30.128422Z",
+        "producers_total_count": 1,
+        "producers": [
+          {
+            "script": "anunex-result-provider-probe-253",
+            "type": "worker"
+          }
+        ],
+        "consumers_total_count": 1,
+        "consumers": [
+          {
+            "script": "anunex-result-provider-probe-253",
+            "dead_letter_queue": "anunex-result-probe-artifacts-dlq-253",
+            "settings": {
+              "batch_size": 5,
+              "max_retries": 5,
+              "max_wait_time_ms": 5000,
+              "retry_delay": 0
+            },
+            "consumer_id": "f7e75402e6ce416ea8434decbaea6bb3",
+            "type": "worker"
+          }
+        ]
+      },
+      {
+        "queue_id": "799daa561f1641c7aac6d8f247a81717",
+        "queue_name": "anunex-result-probe-artifacts-dlq-253",
+        "settings": {
+          "delivery_delay": 0,
+          "message_retention_period": 86400
+        },
+        "created_on": "2026-10-14T06:44:27.825171Z",
+        "modified_on": "2026-10-14T06:44:27.825171Z",
+        "producers_total_count": 0,
+        "producers": [],
+        "consumers_total_count": 0,
+        "consumers": []
+      },
+      {
+        "queue_id": "923a7450555c4edaa23fd5560b454875",
+        "queue_name": "anunex-result-probe-retention-253",
+        "settings": {
+          "delivery_delay": 0,
+          "message_retention_period": 86400
+        },
+        "created_on": "2026-10-14T06:44:31.846681Z",
+        "modified_on": "2026-10-14T06:44:31.846681Z",
+        "producers_total_count": 1,
+        "producers": [
+          {
+            "script": "anunex-result-provider-probe-253",
+            "type": "worker"
+          }
+        ],
+        "consumers_total_count": 1,
+        "consumers": [
+          {
+            "script": "anunex-result-provider-probe-253",
+            "dead_letter_queue": "anunex-result-probe-retention-dlq-253",
+            "settings": {
+              "batch_size": 5,
+              "max_retries": 5,
+              "max_wait_time_ms": 5000,
+              "retry_delay": 0
+            },
+            "consumer_id": "b1d0c2a10063453186977fa08566260d",
+            "type": "worker"
+          }
+        ]
+      },
+      {
+        "queue_id": "af402a5606a24034940d7134132816f8",
+        "queue_name": "anunex-result-probe-retention-dlq-253",
+        "settings": {
+          "delivery_delay": 0,
+          "message_retention_period": 86400
+        },
+        "created_on": "2026-10-14T06:44:29.140241Z",
+        "modified_on": "2026-10-14T06:44:29.140241Z",
+        "producers_total_count": 0,
+        "producers": [],
+        "consumers_total_count": 0,
+        "consumers": []
+      }
+    ]
+  }
+]

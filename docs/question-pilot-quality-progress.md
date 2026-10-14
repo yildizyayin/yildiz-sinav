@@ -49,3 +49,17 @@ PR252 main569c163a, demo38523192142 başarılı. Gerçek koşu38523452277: ilk �
 ### Altı taslak ve seçenek uzunluğu sözleşmesi
 
 PR253 main5d8a9378; test/dağıtım38523970595 başarılı. Koşu38524261451 toplam6 gerçek taslağa ulaştı; sonraki işte4832456070980 biçiminde13 basamaklı çeldirici engellendi. Bu iş bir denemede FAILED; bütçe39/50. Yeni düzenleme okuma pilotu seçeneklerine provider şemasında7–12 ASCII rakam pattern'i uygular ve provider bunu ihlal etse de sunucuda aynı kuralı doğrular; başarısız yanıt bankaya/bağımsız doğrulayıcıya gönderilmez. Diğer ders/sınıf seçenek şemaları değişmez. Canlı örnekten sınır ve ihlal regresyonları dahil60 odaklı test/typecheck/diff-check geçti. Aynı sekiz iş anahtarı ve mevcut altı taslak korunacak; kota sıfırlanmaz.
+
+### Yedi taslak ve editoryal inceleme bulgusu
+
+38524261451 ikinci deneme:7 gerçek REVIEW/RESTRICTED taslak,0 yayın, bütçe40/50. Okuma seçeneği sınırı çalıştı; yeni442567893 anahtarı doğru. Sonraki tiyatro sorusu625÷12=52 (52×12=624,1 koltuk artar) biçiminde geçerli tam grup açıklaması verdi; mekanik kontrol bunu hatalı reddetti. Dar düzeltme ancak parantezde bölüm, bölen, çarpım ve kalan kimliği birbiriyle tutarlı ise kabul eder. Yanlış bölüm, çarpım ve kalan regresyonları dahil61 odaklı test + typecheck geçti. Aynı başarısız job qgj_c023359e-47ad-47a2-8d55-a0a83578d480 yeniden kullanılmalı; yeni key/kota iadesi yok.
+
+Önemli içerik bulgusu: q_4b5f15e1-7921-41f2-a16d-54e69995981b çözümünde bağlam dışı “Baklagiller” sözcüğü ve Türkçe olmayan cupcake ifadesi var. Hesap435÷15=29 doğru olsa da editoryal olarak onaya uygun değildir. Bu soru REVIEW/RESTRICTED kalır; revision korumalı yeniden inceleme gerekir. Kod taramasında mevcut PATCH yalnız metadata düzenliyor; metin/çözüm düzenleme arayüzü/API eksik ve bu kusur kapatılmadan onaya gidilmemeli. İnsan onayı veya telif uygunluğu verilmedi. Okuma sorularında aynı word-to-number şablonunun yinelenmesi de insan tarafından pedagojik çeşitlilik açısından incelenmeli;7 kayıt,7 yayıma hazır soru anlamına gelmez.
+
+Ayrı test altyapısı engeli: PR254 isolation probe100 kuyruk sınırına takıldı. Salt-okunur envanter38525527633 ile kapanmış PR252/253'e ait8 exact isim/ID ve yalnız kendi test Worker bağımlılıkları doğrulandı. Dondurulmuş planla38525737736 cleanup8 geçici kuyruğu ve2 test Worker'ını temizledi; canlı uygulama kuyrukları/D1/R2 verileri kapsam dışı. Yeni cleanup kodu isim/ID ve eksiksiz bağımlılık sayımlarını doğrular, beklenmeyen bağlantıda durur. Probe işlerine always cleanup ve aynıPR için seri çalışma eklenir; otomatik iptal yarışından kaçınılır.
+
+### Sınırlandırılmış son devam kaydı
+
+38524261451 üçüncü/dördüncü workflow denemeleri: hedef hâlâ7 taslak ve0 yayın, bütçe40/50. c023359e işi son denemede yalnız sayıları değiştirilmiş defter/paylaştırma problemi üretti; NEAR_REPEATED_TASK doğru şekilde engelledi. İş3 denemede tükendi. Tek dondurulmuş yedek key(105) yalnız exact c023359e / aynıCV / grade5 / generated0 / attempts3 koşullarıyla normal cancel sonrası kullanılacak. Sonsuz replacement zinciri yok; diğer iki planlı iş ile üst rezervasyon43/50, iade/sıfırlama yok.
+
+PR254 ffd4e6d8 ile main'e alındı; CI193 dosya + tip/build ve canlı provider probe başarılı. PR255 cleanup gerçek probe38525870751'de4 kendi geçici kuyruğunu temizledi; önceki frozen cleanup38525737736 ise8 eski kuyruğu temizledi. Demo dağıtımı38525737724 başarılı. Güncel üretim durumu ayrıca son artifact'ten doğrulanmalı; bu kayıttaki7 sayı ile ilk10 tamamlandı denmemeli.
