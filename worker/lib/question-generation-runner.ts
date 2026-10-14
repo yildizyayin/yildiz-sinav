@@ -1,6 +1,6 @@
 import {questionOriginalityCandidates} from './question-originality-search';
 import {EDITORIAL_INSTRUCTION,editorialSchema,editorialIssues,visualBlock,type EditorialPacket} from './question-editorial';
-import {questionTeamPaused} from './question-team-policy';
+import {questionTeamPaused,type QuestionTeamAgent} from './question-team-policy';
 import {TASK_FOCUS,validTaskFocus,type TaskFocus} from './question-task-focus';
 import {verifyQuestionDrafts,readAiJson,officialPilotGuidance} from './question-generation-validation';
 import type { AuthUser, Env } from '../types';
@@ -19,6 +19,7 @@ type Job = {
  program_version:string;outcome_code:string|null;outcome_title:string;question_count:number;status:string;
  attempt_count:number;lease_token:string|null;lease_until:string|null;requested_by:string;
 };
+const requiredAgents=(job:{quality_profile:string;presentation:string}):QuestionTeamAgent[]=>['GENERATOR','VERIFIER','ORIGINALITY',...(job.quality_profile==='EDITORIAL_V1'&&job.presentation!=='TEXT'?['MEDIA' as const]:[])];
 const codeMessage = {
  GENERATION_TEAM_PAUSED:'Soru havuzu ekibi veya gerekli denetçi duraklatıldı.', GENERATION_QUALITY_REJECTED:'Bilimsel doğrulama başarısız; taslaklar kaydedilmedi.', GENERATION_VERIFICATION_UNAVAILABLE:'Bağımsız doğrulama tamamlanamadı; taslaklar kaydedilmedi.',
  GENERATION_DISABLED:'Soru üretimi etkin değil.', GENERATION_JOB_NOT_FOUND:'İstek bulunamadı.',
@@ -107,7 +108,7 @@ async function executionFence(env:Env,id:string,token:string):Promise<Response|n
  if(!state)return err(404,'GENERATION_JOB_NOT_FOUND');
  if(state.status==='CANCELLED')return err(409,'GENERATION_CANCELLED');
  if(state.status!=='RUNNING'||state.lease_token!==token||!state.lease_until||state.lease_until<=new Date().toISOString())return err(409,'GENERATION_JOB_ACTIVE');
- if(await questionTeamPaused(env,['GENERATOR','VERIFIER','ORIGINALITY'])){await fail(env,id,token,'GENERATION_TEAM_PAUSED');return err(409,'GENERATION_TEAM_PAUSED');}
+ if(await questionTeamPaused(env,requiredAgents(state))){await fail(env,id,token,'GENERATION_TEAM_PAUSED');return err(409,'GENERATION_TEAM_PAUSED');}
  if(!state.context_valid){await fail(env,id,token,'GENERATION_CONTEXT_CHANGED');return err(409,'GENERATION_CONTEXT_CHANGED');}
  return null;
 }
@@ -127,7 +128,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  if(!prior)return err(404,'GENERATION_JOB_NOT_FOUND');
  if(prior.status==='REVIEW_READY')return json({ok:true,job:generationJobDto(prior as any),reused:true});
  if(prior.status==='CANCELLED')return err(409,'GENERATION_CANCELLED');
- if(await questionTeamPaused(env,['GENERATOR','VERIFIER','ORIGINALITY']))return err(409,'GENERATION_TEAM_PAUSED');
+ if(await questionTeamPaused(env,requiredAgents(prior)))return err(409,'GENERATION_TEAM_PAUSED');
  // Apply extra safety limits only to an explicitly enabled automated pilot.
  // Existing manual Super Admin execution retains its current reviewed workflow.
  if ((env as Env & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE === 'true') {
@@ -196,7 +197,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  const drafts=parseDrafts(raw,job.question_count,job.grade_level,editorial,job.presentation);
  if(!drafts||(env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED==='true'&&job.grade_level===5&&job.outcome_code==='MAT.5.1.1'&&drafts.some(q=>q.options.some(o=>!/^[1-9][0-9]{6,11}$/.test(o.text))))){
   await fail(env,id,token,'GENERATION_OUTPUT_INVALID');
-  if(env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true')await env.DB.prepare("INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'QUESTION_GENERATION_OUTPUT_BLOCKED','question_generation_job',?,?)").bind(uuid('aud'),user.id,id,JSON.stringify(outputDiagnostic(raw))).run();
+  if(env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true')await env.DB.prepare("INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'QUESTION_GENERATION_OUTPUT_BLOCKED','question_generation_job',?,?)").bind(uuid('aud'),user.id,id,JSON.stringify({model,qualityProfile:job.quality_profile,...outputDiagnostic(raw)})).run();
   return err(422,'GENERATION_OUTPUT_INVALID');
  }
  let verification:Awaited<ReturnType<typeof verifyQuestionDrafts>>|null=null;
@@ -209,7 +210,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
   if(!verification.ok){
    const code:GenerationErrorCode=verification.unavailable?'GENERATION_VERIFICATION_UNAVAILABLE':'GENERATION_QUALITY_REJECTED';
    await fail(env,id,token,code);
-   await env.DB.prepare("INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'QUESTION_GENERATION_VERIFICATION_BLOCKED','question_generation_job',?,?)").bind(uuid('aud'),user.id,id,JSON.stringify({code,verification,drafts,providerUsage:providerUsage(raw)})).run();
+   await env.DB.prepare("INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'QUESTION_GENERATION_VERIFICATION_BLOCKED','question_generation_job',?,?)").bind(uuid('aud'),user.id,id,JSON.stringify({model,qualityProfile:job.quality_profile,code,verification,drafts,providerUsage:providerUsage(raw)})).run();
    return err(422,code);
   }
  }
@@ -220,7 +221,8 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  const hashes=await Promise.all(keys.map(hash));
  await stage(env,id,token,'COMMITTING');
  const fence=currentContextSql('j');
- const teamFence=env.QUESTION_TEAM_CONTROLS_ENABLED==='true'?" AND EXISTS(SELECT 1 FROM question_team_control WHERE id=1 AND paused=0) AND 3=(SELECT count(*) FROM question_team_agent_control WHERE agent_key IN ('GENERATOR','VERIFIER','ORIGINALITY')) AND NOT EXISTS(SELECT 1 FROM question_team_agent_control WHERE paused=1 AND agent_key IN ('GENERATOR','VERIFIER','ORIGINALITY'))":'';
+ const agents=requiredAgents(job),agentSql=agents.map(a=>"'"+a+"'").join(',');
+ const teamFence=env.QUESTION_TEAM_CONTROLS_ENABLED==='true'?` AND EXISTS(SELECT 1 FROM question_team_control WHERE id=1 AND paused=0) AND ${agents.length}=(SELECT count(*) FROM question_team_agent_control WHERE agent_key IN (${agentSql})) AND NOT EXISTS(SELECT 1 FROM question_team_agent_control WHERE paused=1 AND agent_key IN (${agentSql}))`:'';
  const stmts:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO question_generation_commit_gates(job_id,lease_token)
   SELECT j.id,? FROM question_generation_jobs j WHERE j.id=? AND j.status='RUNNING' AND j.lease_token=? AND j.lease_until>strftime('%Y-%m-%dT%H:%M:%fZ','now')
   AND ${fence}${teamFence}`).bind(token,id,token)];

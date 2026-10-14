@@ -11,7 +11,7 @@ function fixture(){
  CREATE TABLE question_bank(id TEXT PRIMARY KEY,review_revision INTEGER,stem_text TEXT,grade_level INTEGER,subject_id TEXT,review_status TEXT,copyright_status TEXT,source_model TEXT,owner_type TEXT,academic_year TEXT,updated_at TEXT);
  CREATE TABLE question_assets(id TEXT PRIMARY KEY);
  CREATE TABLE question_agent_pilot_budget(id TEXT,question_cap INTEGER,reserved_count INTEGER);INSERT INTO question_agent_pilot_budget VALUES('pilot_50',50,45);
- CREATE TABLE question_generation_jobs(id TEXT,academic_year TEXT,status TEXT,priority INTEGER,created_at TEXT);
+ CREATE TABLE question_generation_jobs(id TEXT,question_count INTEGER DEFAULT 1,academic_year TEXT,status TEXT,priority INTEGER,created_at TEXT);
  CREATE TABLE audit_logs(id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,created_at TEXT,details_json TEXT);`);
  db.exec(readFileSync(new URL('../migrations/0105_question_team_media.sql',import.meta.url),'utf8'));
  db.exec("CREATE TABLE question_content_blocks(id TEXT,question_id TEXT,placement TEXT,block_type TEXT,payload_json TEXT);");
