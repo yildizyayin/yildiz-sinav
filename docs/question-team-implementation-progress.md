@@ -29,3 +29,10 @@ Son12 köke ek olarak son4 sorunun sınırlı çözüm metni karşılaştırıl�
 Staging kalite çalışması 38531527597 başarılı: dört taslak sürümlenerek düzeltildi ve bağımsız modelle yeniden kontrol edildi; iki odaklı iş ilk denemede tamamlandı. Kanıt: data/question-team-first-ten-20261014.json. Bunlar insan/telif onayı bekleyen gerçek taslaklardır. Doğru cevap dağılımı ve yeni okuma sorusunun D açıklaması için ek editoryal düzenleme planlıdır.
 
 0105/0106, gerçek kontrol duraklatma kapıları, kaynak sürümüne bağlı medya işi, özel R2 video, süreli tek-iş render yetkisi, insan video onayı ve ekip API'si uygulanmıştır. Henüz uzak ortama dağıtılmadı. Yerel FFmpeg sentetik teknik MP4 üretimi başarılı (10 saniye, 1280x720, altyazılı); öğrenci videosu veya doğal ses kanıtı değildir. Son odaklı 53 test başarılı. Süper admin ekranı ve uzak video kabulü devam ediyor. Ücretli ses etkinleştirilmedi; otomatik soru üretimi kapalı kalır.
+
+## Son teknik doğrulama ve panel
+
+- İlk on taslak cevap dağılımı A3/B3/C2/D2: altı sürümlü düzenleme bağımsız modelle tekrar doğrulandı; yeni üretim rezervasyonu yok. Staging run 38534600560 başarılı. Tam veri `data/question-team-balanced-ten-20261014.json`; eski ilk-on kaydı tarihsel kanıttır. İnsan/telif onayı ve öğrenci yayını 0; pilot rezervasyonu 45/50.
+- Staging FFmpeg → Worker süreli yetki → özel R2 hattı gerçek MP4 üretti: run38534600520, sentetik teknik fixture, 1280x720, 10.36s, 56568byte, SHA256 6a34136bd9e9e6d91e0e4f16ea23cf68e715a9e1e92f7204eca3ecf19f7e0ba8. REVIEW, yayımlanmadı; doğal ses / öğrenci videosu kanıtı değildir.
+- Süper Admin `/question-team`: gerçek iş ve model listeleri, kapasite, raporlanan token, görev odağı/not/öncelik, manuel çalıştır/iptal, revision kontrollü ekip/ajan duraklatma; soruya doğrudan inceleme bağlantısı; video talebi/hazırlama/özel izleme ve insan onayı. İş notu audit kaydıdır, keyfi talimat yürütmez.
+- Yerel ekip API3 ve UI2 testi başarılı. Son typecheck/build başarılı; tam test paketi ve panelin uzak kabul/dağıtımı sürüyor. Henüz canlı panel hazır bildirimi yok.
