@@ -35,6 +35,7 @@ function fixture(){
  sqlite.exec(readFileSync(new URL('../migrations/0104_question_generation_focus.sql',import.meta.url),'utf8'));
  sqlite.exec("CREATE TABLE question_content_blocks(id TEXT,question_id TEXT,placement TEXT,block_type TEXT,payload_json TEXT);");
  sqlite.exec(readFileSync(new URL('../migrations/0107_question_editorial_contract.sql',import.meta.url),'utf8'));
+ sqlite.exec(readFileSync(new URL('../migrations/0110_question_editorial_repair.sql',import.meta.url),'utf8'));
  let beforeInsert:(()=>void)|undefined;
  const prepare=(sql:string,args:any[]=[]):any=>({bind:(...bound:any[])=>prepare(sql,bound),
   first:async()=>sqlite.prepare(sql).get(...args),
@@ -162,6 +163,7 @@ it('commits exactly one request under native D1 and reuses its key after cancell
   await db.exec(readFileSync(new URL('../migrations/0104_question_generation_focus.sql',import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' '));
   await db.exec("CREATE TABLE question_content_blocks(id TEXT,question_id TEXT,placement TEXT,block_type TEXT,payload_json TEXT);");
   await db.exec(readFileSync(new URL('../migrations/0107_question_editorial_contract.sql',import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' '));
+  await db.exec(readFileSync(new URL('../migrations/0110_question_editorial_repair.sql',import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' '));
   const env={DB:db} as any,p=payload();
   const call=(req:Request)=>handleQuestionGenerationJobs(req,env,admin)!;
   const simultaneous=await Promise.all([call(request(p)),call(request(p))]);

@@ -1,3 +1,4 @@
+import {handleQuestionEditorialRepair} from '../worker/lib/question-editorial-repair';
 import {editorialQuestion,editorialScores} from './fixtures/editorial-question';
 import { readFileSync } from 'node:fs';
 import { afterAll, beforeAll, beforeEach, expect, it, vi } from 'vitest';
@@ -14,7 +15,7 @@ const ddl=`CREATE TABLE users(id TEXT PRIMARY KEY); CREATE TABLE subjects(id TEX
  CREATE TABLE learning_nodes(id TEXT PRIMARY KEY,active INTEGER DEFAULT 1,node_type TEXT DEFAULT 'OUTCOME',academic_year TEXT DEFAULT '2026-2027',grade_level INTEGER DEFAULT 7,subject_id TEXT DEFAULT 'math');
  CREATE TABLE question_bank(id TEXT PRIMARY KEY,owner_type TEXT,academic_year TEXT,grade_level INTEGER,subject_id TEXT,question_type TEXT,difficulty INTEGER,difficulty_level INTEGER,content_mode TEXT,option_count INTEGER,stem_text TEXT,options_json TEXT,correct_answer TEXT,solution_text TEXT,source_label TEXT,copyright_status TEXT,review_status TEXT,created_by TEXT,origin_kind TEXT,review_revision INTEGER DEFAULT 0,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
  CREATE TABLE question_learning_links(question_id TEXT REFERENCES question_bank(id),node_id TEXT REFERENCES learning_nodes(id),PRIMARY KEY(question_id,node_id));
- CREATE TABLE audit_logs(id TEXT PRIMARY KEY,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
+ CREATE TABLE audit_logs(id TEXT PRIMARY KEY,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
  INSERT INTO users VALUES('admin'); INSERT INTO subjects VALUES('math'); INSERT INTO learning_nodes(id) VALUES('ln_o');`;
 const migration=(n:string)=>readFileSync(new URL(`../migrations/${n}`,import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' ');
 const draft=(stemText='Synthetic arithmetic question')=>({stemText,options:['One','Two','Three','Four'].map((text,i)=>({label:String.fromCharCode(65+i),text})),correctAnswer:'B',solutionText:'Adding one and one yields two.',difficultyLevel:3});
@@ -52,6 +53,7 @@ beforeAll(async()=>{
  await db.exec(migration('0107_question_editorial_contract.sql'));
  await db.exec(migration('0108_question_originality_search.sql'));
  await db.exec(migration('0109_question_visual_student_payload.sql'));
+ await db.exec(migration('0110_question_editorial_repair.sql'));
  await db.exec(migration('0106_question_team_execution_stage.sql'));
  await db.exec(migration('0102_question_agent_pilot_budget.sql'));
 },20_000);
@@ -347,4 +349,16 @@ it('commits a complete editorial table packet only after independent dimension r
 it('does not downgrade an editorial task when the producer omits its packet',async()=>{
  const response=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE'}),env,admin)!;const id=(await response.json() as any).job.id;
  provider.mockResolvedValue(output());expect((await run(id)).status).toBe(422);expect(await db.prepare('SELECT count(*) n FROM question_bank').first('n')).toBe(0);expect((await job(id)).error_code).toBe('GENERATION_OUTPUT_INVALID');
+});
+it('repairs a real rejected packet once without another producer call or resetting generation attempts',async()=>{
+ const created=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE'}),env,admin)!;const id=(await created.json() as any).job.id;
+ env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';env.QUESTION_GENERATION_VERIFIER_MODEL='independent-editorial-verifier';const bad:any=editorialQuestion();bad.editorial.visual.values=[84];provider.mockResolvedValue(output([bad]));expect((await run(id)).status).toBe(422);
+ const url=`https://test${base}/${id}/repair`;expect((await handleQuestionEditorialRepair(new Request(url),env,{...admin,role:'TEACHER'},id)).status).toBe(403);
+ const source:any=await (await handleQuestionEditorialRepair(new Request(url),env,admin,id)).json();expect(source.repairable).toBe(true);
+ const body={expectedSourceAuditId:source.sourceAuditId,expectedSourceHash:source.sourceHash,drafts:[editorialQuestion()],reason:'AI-assisted editorial correction of the original model packet; no human approval.'};const req=(b:any=body,origin='https://test')=>new Request(url,{method:'POST',headers:{Origin:origin},body:JSON.stringify(b)});
+ expect((await handleQuestionEditorialRepair(req({...body,expectedSourceHash:'wrong'}),env,admin,id)).status).toBe(409);expect((await job(id)).editorial_repair_count).toBe(0);
+ provider.mockImplementation(async(model:string)=>{if(model!=='independent-editorial-verifier')throw Error('Producer must not be called by repair');return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})}});
+ const repaired=await handleQuestionEditorialRepair(req(),env,admin,id);expect(repaired.status).toBe(200);expect(provider).toHaveBeenCalledTimes(2);expect(await job(id)).toMatchObject({attempt_count:1,editorial_repair_count:1,status:'REVIEW_READY',generated_count:1});
+ expect((await handleQuestionEditorialRepair(req(),env,admin,id)).status).toBe(200);expect((await handleQuestionEditorialRepair(req({...body,reason:'A different repair cannot replace the saved packet.'}),env,admin,id)).status).toBe(409);expect(provider).toHaveBeenCalledTimes(2);
+ const q:any=await db.prepare('SELECT * FROM question_bank').first();expect(q).toMatchObject({review_status:'REVIEW',copyright_status:'RESTRICTED'});expect(q.source_label).toContain('AI-assisted editorial repair');
 });

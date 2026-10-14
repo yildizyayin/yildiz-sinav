@@ -16,6 +16,7 @@ function fixture(){
  db.exec(readFileSync(new URL('../migrations/0105_question_team_media.sql',import.meta.url),'utf8'));
  db.exec("CREATE TABLE question_content_blocks(id TEXT,question_id TEXT,placement TEXT,block_type TEXT,payload_json TEXT);");
  db.exec(readFileSync(new URL('../migrations/0107_question_editorial_contract.sql',import.meta.url),'utf8'));
+ db.exec(readFileSync(new URL('../migrations/0110_question_editorial_repair.sql',import.meta.url),'utf8'));
  const prepare=(sql:string,args:any[]=[]):any=>({bind:(...a:any[])=>prepare(sql,a),first:async()=>db.prepare(sql).get(...args),all:async()=>({results:db.prepare(sql).all(...args)}),run:async()=>({meta:{changes:Number(db.prepare(sql).run(...args).changes)}})});
  const env={DB:{prepare},ENVIRONMENT:'staging',QUESTION_TEAM_CONTROLS_ENABLED:'true',QUESTION_GENERATION_ENABLED:'true',QUESTION_GENERATION_VERIFICATION_ENABLED:'true',QUESTION_VIDEO_RENDER_ENABLED:'true',QUESTION_GENERATION_MODEL:'producer',QUESTION_GENERATION_VERIFIER_MODEL:'verifier',AI:{}} as any;
  const req=(body?:any,origin='https://test')=>new Request(base+(body?'/control':''),{method:body?'PATCH':'GET',headers:{Origin:origin},...(body?{body:JSON.stringify(body)}:{})});
