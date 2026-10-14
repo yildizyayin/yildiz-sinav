@@ -2,7 +2,7 @@ import type { Env } from '../types';
 import { all, one } from './db';
 import { parseContentJson } from './question-content';
 
-type PdfQuestion = { id:string; stem_text:string; options_json:string|null; content_mode:string; question_no:number; visual_label:string|null };
+type PdfQuestion = { id:string; stem_text:string; options_json:string|null; content_mode:string; question_no:number; visual_label:string|null;editorial_packet_json?:string|null };
 
 const PAGE_W = 595;
 const PAGE_H = 842;
@@ -34,9 +34,10 @@ function opticalPage(title:string,booklet:string,questionCount:number,optionCoun
 
 export async function renderStudioPdf(env:Env, documentId:string, booklet:string): Promise<{bytes:ArrayBuffer; metadata:Record<string,unknown>; questionCount:number}> {
   const doc=await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId));if(!doc)throw new Error('STUDIO_NOT_FOUND');
-  const rows=await all<PdfQuestion>(env.DB.prepare(`SELECT q.id,q.stem_text,q.options_json,q.content_mode,i.sort_order question_no,
+  const rows=await all<PdfQuestion>(env.DB.prepare(`SELECT q.id,q.stem_text,q.options_json,q.content_mode,q.editorial_packet_json,i.sort_order question_no,
       (SELECT alt_text FROM question_assets a WHERE a.question_id=q.id AND a.placement='STEM' ORDER BY a.sort_order,a.id LIMIT 1) visual_label
       FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code=? ORDER BY i.sort_order`).bind(documentId,booklet));
+  if(rows.some(q=>q.editorial_packet_json))throw new Error('EDITORIAL_PRINT_LAYOUT_PENDING');
   const optionCounts=rows.map(row=>Number(parseContentJson<any[]>(row.options_json,[]).length)).filter(Boolean);const optionCount=optionCounts.some(x=>x>=5)?5:4;
   const optical=opticalPage(doc.title,booklet,rows.length,optionCount);const pageContents=[pageForQuestions(doc.title,booklet,rows),optical.content];
   const objects:string[]=[];const add=(s:string)=>{objects.push(s);return objects.length};const font=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');const streams=pageContents.map(content=>add(`<< /Length ${enc.encode(content).length} >>\nstream\n${content}\nendstream`));const firstPageId=objects.length+1;const pageObjectIds=streams.map((_,index)=>firstPageId+index);const pagesId=firstPageId+pageObjectIds.length;

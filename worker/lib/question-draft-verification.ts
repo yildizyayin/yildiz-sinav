@@ -18,9 +18,9 @@ export async function verifyStoredQuestionDraft(request:Request,env:Env,user:Aut
  const context=()=>all<any>(env.DB.prepare(`SELECT o.id,o.code,o.title,o.active,o.grade_level,o.subject_id,o.curriculum_version_id,cv.program_version,cv.verified,cv.academic_year FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE l.question_id=? ORDER BY o.id LIMIT 16`).bind(id));
  const before=await context();if(before.length!==1)return badRequest('Otomatik taslak kontrolü için tek birincil öğrenme çıktısı gerekir. İnsan incelemesi ayrıca korunur.','SINGLE_OUTCOME_REQUIRED');
  const ref=before[0],raw=JSON.parse(q.options_json);
- const draft={stemText:q.stem_text,solutionText:q.solution_text,correctAnswer:q.correct_answer,difficultyLevel:q.difficulty_level??q.difficulty??3,options:raw.map((o:any,i:number)=>typeof o==='string'?{label:String.fromCharCode(65+i),text:o}:o)};
+ const draft={...(q.editorial_packet_json?{editorial:JSON.parse(q.editorial_packet_json)}:{}),stemText:q.stem_text,solutionText:q.solution_text,correctAnswer:q.correct_answer,difficultyLevel:q.difficulty_level??q.difficulty??3,options:raw.map((o:any,i:number)=>typeof o==='string'?{label:String.fromCharCode(65+i),text:o}:o)};
  if(await questionTeamPaused(env,['VERIFIER']))return json({ok:false,error:{code:'QUESTION_TEAM_PAUSED',message:'Doğrulama ekibi duraklatıldı.'}},409);
- const result=await verifyQuestionDrafts(env,{gradeLevel:q.grade_level,outcomeCode:ref.code,outcomeTitle:ref.title,academicYear:q.academic_year},[draft]);
+ const result=await verifyQuestionDrafts(env,{producerModel:q.source_model,qualityProfile:q.editorial_packet_json?'EDITORIAL_V1':'LEGACY',presentation:'AUTO',gradeLevel:q.grade_level,outcomeCode:ref.code,outcomeTitle:ref.title,academicYear:q.academic_year},[draft]);
  const current=await one<any>(env.DB.prepare('SELECT review_revision FROM question_bank WHERE id=?').bind(id));
  const paused=await questionTeamPaused(env,['VERIFIER']);
  const unchanged=!paused&&current?.review_revision===q.review_revision&&JSON.stringify(before)===JSON.stringify(await context());

@@ -1,3 +1,5 @@
+import {handleQuestionEditorialRepair} from '../worker/lib/question-editorial-repair';
+import {editorialQuestion,editorialScores} from './fixtures/editorial-question';
 import { readFileSync } from 'node:fs';
 import { afterAll, beforeAll, beforeEach, expect, it, vi } from 'vitest';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
@@ -13,7 +15,7 @@ const ddl=`CREATE TABLE users(id TEXT PRIMARY KEY); CREATE TABLE subjects(id TEX
  CREATE TABLE learning_nodes(id TEXT PRIMARY KEY,active INTEGER DEFAULT 1,node_type TEXT DEFAULT 'OUTCOME',academic_year TEXT DEFAULT '2026-2027',grade_level INTEGER DEFAULT 7,subject_id TEXT DEFAULT 'math');
  CREATE TABLE question_bank(id TEXT PRIMARY KEY,owner_type TEXT,academic_year TEXT,grade_level INTEGER,subject_id TEXT,question_type TEXT,difficulty INTEGER,difficulty_level INTEGER,content_mode TEXT,option_count INTEGER,stem_text TEXT,options_json TEXT,correct_answer TEXT,solution_text TEXT,source_label TEXT,copyright_status TEXT,review_status TEXT,created_by TEXT,origin_kind TEXT,review_revision INTEGER DEFAULT 0,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
  CREATE TABLE question_learning_links(question_id TEXT REFERENCES question_bank(id),node_id TEXT REFERENCES learning_nodes(id),PRIMARY KEY(question_id,node_id));
- CREATE TABLE audit_logs(id TEXT PRIMARY KEY,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
+ CREATE TABLE audit_logs(id TEXT PRIMARY KEY,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
  INSERT INTO users VALUES('admin'); INSERT INTO subjects VALUES('math'); INSERT INTO learning_nodes(id) VALUES('ln_o');`;
 const migration=(n:string)=>readFileSync(new URL(`../migrations/${n}`,import.meta.url),'utf8').replace(/^--.*$/gm,'').replace(/\n/g,' ');
 const draft=(stemText='Synthetic arithmetic question')=>({stemText,options:['One','Two','Three','Four'].map((text,i)=>({label:String.fromCharCode(65+i),text})),correctAnswer:'B',solutionText:'Adding one and one yields two.',difficultyLevel:3});
@@ -32,7 +34,7 @@ function prepared(sql:string,args:any[]=[]):any{
 }
 async function seed(){await db.exec(`UPDATE learning_nodes SET grade_level=7; INSERT INTO curriculum_versions VALUES('cv','2026-2027',7,'v1',1); INSERT INTO outcomes VALUES('o','cv','math',7,'M.7.1','Synthetic outcome',1);`);}
 async function create(count=1){
- const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:count}),env,admin)!;
+ const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:count,qualityProfile:'LEGACY'}),env,admin)!;
  expect(res.status).toBe(201);return (await res.json() as any).job.id as string;
 }
 const run=(id:string,user=admin)=>runQuestionGenerationJob(request(`${base}/${id}/run`),env,user,id);
@@ -47,6 +49,12 @@ beforeAll(async()=>{
  await db.exec(migration('0072_question_generation_jobs.sql'));
  await db.exec(migration('0073_question_generation_runner.sql'));
  await db.exec(migration('0104_question_generation_focus.sql'));
+ await db.exec("CREATE TABLE question_content_blocks(id TEXT PRIMARY KEY,question_id TEXT,block_type TEXT,placement TEXT,sort_order INTEGER,payload_json TEXT,alt_text TEXT);");
+ await db.exec(migration('0107_question_editorial_contract.sql'));
+ await db.exec(migration('0108_question_originality_search.sql'));
+ await db.exec(migration('0109_question_visual_student_payload.sql'));
+ await db.exec(migration('0110_question_editorial_repair.sql'));
+ await db.exec(migration('0111_editorial_verification_transport_retry.sql'));
  await db.exec(migration('0106_question_team_execution_stage.sql'));
  await db.exec(migration('0102_question_agent_pilot_budget.sql'));
 },20_000);
@@ -54,7 +62,7 @@ afterAll(async()=>{await mf?.dispose();});
 beforeEach(async()=>{
  await db.exec(`DROP TRIGGER IF EXISTS reject_generation_audit;
  DELETE FROM question_generation_commit_assertions; DELETE FROM question_generation_commit_gates;
- DELETE FROM question_generation_lineage; DELETE FROM question_learning_links; DELETE FROM question_bank;
+ DELETE FROM question_generation_lineage; DELETE FROM question_learning_links; DELETE FROM question_bank; DELETE FROM question_content_blocks;
  DELETE FROM question_agent_pilot_reservations;UPDATE question_agent_pilot_budget SET reserved_count=0;
  DELETE FROM question_generation_jobs; DELETE FROM outcomes; DELETE FROM curriculum_versions; DELETE FROM audit_logs;`);
  await seed();beforeBatch=undefined;afterClaim=undefined;sqlReads.length=0;
@@ -233,7 +241,7 @@ it('rejects five choices at grade 7 without storing an invalid draft',async()=>{
 it('requires five choices at grade 9 and preserves the human review gate',async()=>{
  await db.exec("UPDATE curriculum_versions SET grade_level=9;UPDATE outcomes SET grade_level=9;UPDATE learning_nodes SET grade_level=9;");
  try{
- const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:{...context,gradeLevel:9},requestKey:crypto.randomUUID(),questionCount:1}),env,admin)!;expect(res.status).toBe(201);const id=(await res.json() as any).job.id;
+ const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:{...context,gradeLevel:9},requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'LEGACY'}),env,admin)!;expect(res.status).toBe(201);const id=(await res.json() as any).job.id;
  expect((await run(id)).status).toBe(422);await assertEmpty();
  provider.mockResolvedValueOnce(output([{...draft(),options:[...draft().options,{label:'E',text:'Five'}]}]));expect((await run(id)).status).toBe(200);
  expect(await db.prepare('SELECT option_count,review_status,copyright_status FROM question_bank').first()).toMatchObject({option_count:5,review_status:'REVIEW',copyright_status:'RESTRICTED'});
@@ -281,7 +289,7 @@ it('a cancellation during independent validation cannot commit drafts',async()=>
 
 it('gives grade-five reading pilot a concrete valid-integer output contract',async()=>{
  await db.exec("UPDATE outcomes SET code='MAT.5.1.1',title='Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme',grade_level=5; UPDATE curriculum_versions SET grade_level=5; UPDATE learning_nodes SET grade_level=5;");
- const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:{...context,gradeLevel:5},requestKey:crypto.randomUUID(),questionCount:1}),env,admin)!;const id=(await res.json() as any).job.id;
+ const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:{...context,gradeLevel:5},requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'LEGACY'}),env,admin)!;const id=(await res.json() as any).job.id;
  expect((await run(id)).status).toBe(200);
  expect(provider.mock.calls[0][1].messages[0].content).toContain('EVERY option must be a different plain ASCII digit string');
 });
@@ -315,7 +323,7 @@ it('rejects a provider that ignores the live reading choice range before verifie
  const candidate=draft('“dört yüz seksen üç milyar iki yüz kırk beş milyon altı yüz yedi bin doksan sekiz” hangi sayıdır?');
  candidate.options=['483245607098','728607098','4832456070980','483245607198'].map((text,i)=>({label:String.fromCharCode(65+i),text}));candidate.correctAnswer='A';
  provider.mockResolvedValueOnce(output([candidate]));
- const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:{...context,gradeLevel:5},requestKey:crypto.randomUUID(),questionCount:1}),env,admin)!;const id=(await res.json() as any).job.id;
+ const res=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:{...context,gradeLevel:5},requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'LEGACY'}),env,admin)!;const id=(await res.json() as any).job.id;
  expect((await run(id)).status).toBe(422);expect(provider).toHaveBeenCalledTimes(1);expect(await db.prepare('SELECT COUNT(*) n FROM question_bank').first('n')).toBe(0);
  expect(await job(id)).toMatchObject({status:'FAILED',error_code:'GENERATION_OUTPUT_INVALID'});
 });
@@ -327,4 +335,42 @@ it('does not consume a provider attempt when paused and fences a pause racing th
  expect((await run(id)).status).toBe(409);expect(provider).toHaveBeenCalledTimes(1);
  expect((await job(id)).error_code).toBe('GENERATION_TEAM_PAUSED');
  expect(await db.prepare('SELECT count(*) n FROM question_bank').first('n')).toBe(0);
+});
+it('commits a complete editorial table packet only after independent dimension review',async()=>{
+ env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';
+ const response=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE'}),env,admin)!;expect(response.status).toBe(201);const id=(await response.json() as any).job.id;
+ env.QUESTION_GENERATION_VERIFIER_MODEL='independent-editorial-verifier';
+ provider.mockImplementation(async(model:string)=>model==='independent-editorial-verifier'?{response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})}:output([editorialQuestion()]));
+ const result=await run(id);expect(result.status).toBe(200);expect(provider).toHaveBeenCalledTimes(2);
+ const q:any=await db.prepare('SELECT * FROM question_bank').first();expect(q.content_mode).toBe('MIXED');expect(q.review_status).toBe('REVIEW');expect(q.copyright_status).toBe('RESTRICTED');expect(JSON.parse(q.editorial_packet_json).visual.kind).toBe('TABLE');
+ const block:any=await db.prepare('SELECT * FROM question_content_blocks').first();expect(JSON.parse(block.payload_json).rows[1]).toEqual(['İkinci','4','Araç başına','110']);
+ await expect(db.prepare("UPDATE question_content_blocks SET payload_json='{}'").run()).rejects.toThrow(/EDITORIAL_VISUAL_IMMUTABLE/);
+ await expect(db.prepare("UPDATE question_bank SET stem_text='Mutated without packet'").run()).rejects.toThrow(/EDITORIAL_ATOMIC_REVISION_REQUIRED/);
+ const audit:any=await db.prepare("SELECT details_json FROM audit_logs WHERE action='QUESTION_GENERATION_REVIEW_READY'").first();expect(JSON.parse(audit.details_json).qualityProfile).toBe('EDITORIAL_V1');
+});
+it('does not downgrade an editorial task when the producer omits its packet',async()=>{
+ env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';
+ const response=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE'}),env,admin)!;const id=(await response.json() as any).job.id;
+ provider.mockResolvedValue(output());expect((await run(id)).status).toBe(422);expect(await db.prepare('SELECT count(*) n FROM question_bank').first('n')).toBe(0);expect((await job(id)).error_code).toBe('GENERATION_OUTPUT_INVALID');
+});
+it('repairs a real rejected packet once without another producer call or resetting generation attempts',async()=>{
+ const created=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE'}),env,admin)!;const id=(await created.json() as any).job.id;
+ env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';env.QUESTION_GENERATION_VERIFIER_MODEL='independent-editorial-verifier';const bad:any=editorialQuestion();bad.editorial.visual.values=[84];provider.mockResolvedValue(output([bad]));expect((await run(id)).status).toBe(422);
+ const url=`https://test${base}/${id}/repair`;expect((await handleQuestionEditorialRepair(new Request(url),env,{...admin,role:'TEACHER'},id)).status).toBe(403);
+ const source:any=await (await handleQuestionEditorialRepair(new Request(url),env,admin,id)).json();expect(source.repairable).toBe(true);
+ const body={expectedSourceAuditId:source.sourceAuditId,expectedSourceHash:source.sourceHash,drafts:[editorialQuestion()],reason:'AI-assisted editorial correction of the original model packet; no human approval.'};const req=(b:any=body,origin='https://test')=>new Request(url,{method:'POST',headers:{Origin:origin},body:JSON.stringify(b)});
+ expect((await handleQuestionEditorialRepair(req({...body,expectedSourceHash:'wrong'}),env,admin,id)).status).toBe(409);expect((await job(id)).editorial_repair_count).toBe(0);
+ provider.mockImplementation(async(model:string)=>{if(model!=='independent-editorial-verifier')throw Error('Producer must not be called by repair');return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})}});
+ const repaired=await handleQuestionEditorialRepair(req(),env,admin,id);expect(repaired.status).toBe(200);expect(provider).toHaveBeenCalledTimes(2);expect(await job(id)).toMatchObject({attempt_count:1,editorial_repair_count:1,status:'REVIEW_READY',generated_count:1});
+ expect((await handleQuestionEditorialRepair(req(),env,admin,id)).status).toBe(200);expect((await handleQuestionEditorialRepair(req({...body,reason:'A different repair cannot replace the saved packet.'}),env,admin,id)).status).toBe(409);expect(provider).toHaveBeenCalledTimes(2);
+ const q:any=await db.prepare('SELECT * FROM question_bank').first();expect(q).toMatchObject({review_status:'REVIEW',copyright_status:'RESTRICTED'});expect(q.source_label).toContain('AI-assisted editorial repair');
+});
+it('retries only a protocol-unavailable review on the identical repaired packet without resetting either counter',async()=>{
+ env.QUESTION_GENERATION_VERIFICATION_ENABLED='true';env.QUESTION_GENERATION_VERIFIER_MODEL='independent-editorial-verifier';
+ const created=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE'}),env,admin)!;const id=(await created.json() as any).job.id;
+ const bad:any=editorialQuestion();bad.editorial.visual.values=[84];provider.mockResolvedValue(output([bad]));expect((await run(id)).status).toBe(422);
+ const url=`https://test${base}/${id}/repair`,get=()=>handleQuestionEditorialRepair(new Request(url),env,admin,id);const source:any=await (await get()).json();const body={expectedSourceAuditId:source.sourceAuditId,expectedSourceHash:source.sourceHash,drafts:[editorialQuestion()],reason:'Source-bound correction; retry may not change this corrected content.'};const post=()=>handleQuestionEditorialRepair(new Request(url,{method:'POST',headers:{Origin:'https://test'},body:JSON.stringify(body)}),env,admin,id);
+ provider.mockImplementation(async()=>({response:JSON.stringify({reviews:[{index:0,valid:false,issues:['missing editorial scores']}]})}));expect((await post()).status).toBe(422);const retry:any=await (await get()).json();expect(retry.protocolRetryable).toBe(true);expect(retry.sourceHash).toBe(source.sourceHash);expect(retry.drafts[0].editorial.visual.values).toEqual([]);
+ provider.mockImplementation(async(model:string,args:any)=>{expect(model).toBe('independent-editorial-verifier');expect(args.response_format.json_schema.properties.reviews.items.required).toContain('editorial');expect(args.messages[0].content).toContain('YOU must assign');return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})}});
+ expect((await post()).status).toBe(200);expect(await job(id)).toMatchObject({attempt_count:1,editorial_repair_count:1,editorial_verify_retry_count:1,status:'REVIEW_READY'});expect(provider).toHaveBeenCalledTimes(3);expect((await post()).status).toBe(200);expect(provider).toHaveBeenCalledTimes(3);
 });

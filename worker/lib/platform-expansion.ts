@@ -621,7 +621,7 @@ async function studioPdf(request:Request,env:Env,user:AuthUser,documentId:string
     if(booklet==='A')await env.DB.prepare('UPDATE studio_documents SET pdf_r2_key=?,status=CASE WHEN status=\'DRAFT\' THEN \'READY\' ELSE status END,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(key,documentId).run();
     await audit(env.DB,user.id,document.institution_id,'STUDIO_PDF_GENERATED','studio_document',documentId,{bookletCode:booklet,questionCount:rendered.questionCount,containsOpticalForm:true});
     return new Response(rendered.bytes,{headers:{'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="${safeFileName(document.title)}-${booklet}.pdf"`,'Cache-Control':'private, no-store','X-Anunex-Booklet':booklet,'X-Anunex-Optical-Form':'included','X-Content-Type-Options':'nosniff'}});
-  }catch(error){console.error('Studio PDF generation failed',error);return json({ok:false,error:{code:'PDF_GENERATION_FAILED',message:'Sınav PDF dosyası üretilemedi.'}},500)}
+  }catch(error){if(error instanceof Error&&error.message==='EDITORIAL_PRINT_LAYOUT_PENDING')return json({ok:false,error:{code:'EDITORIAL_PRINT_LAYOUT_PENDING',message:'Yeni editoryal soru paketi için tam Türkçe ve tablo/grafik baskı düzeni henüz doğrulanmadı. İçerik eksiltilerek PDF üretilmez.'}},409);console.error('Studio PDF generation failed',error);return json({ok:false,error:{code:'PDF_GENERATION_FAILED',message:'Sınav PDF dosyası üretilemedi.'}},500)}
 }
 
 async function studioOpticalTemplate(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{

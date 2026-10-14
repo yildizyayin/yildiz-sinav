@@ -1,0 +1,4 @@
+export function QuestionEditorialDesign({packet}:{packet:string|null|undefined}){
+ let p:any;try{p=JSON.parse(packet||'null')}catch{return null}if(p?.version!==1)return null;
+ return <details className="solution-preview"><summary><strong>Editoryal soru tasarımı</strong></summary><p><b>Ölçülen beceri:</b> {p.skillTarget}</p><p><b>Düşünme düzeyi:</b> {({APPLY:'Uygulama',ANALYZE:'Analiz',EVALUATE:'Değerlendirme'} as Record<string,string>)[p.cognitiveDemand]||p.cognitiveDemand}</p><ol>{p.reasoningSteps?.map((s:string,i:number)=><li key={i}>{s}</li>)}</ol><h4>Çeldirici tanıları</h4>{p.distractors?.map((d:any)=><p key={d.label}><b>{d.label}) {d.misconception}</b><br/>{d.whyIncorrect}</p>)}<p><b>Tasarımın ayrıştığı nokta:</b> {p.originalityDesign}</p>{p.visual?.kind!=='NONE'&&<p><b>Veri okuma amacı:</b> {p.visual?.readingPurpose}</p>}<small>Bunlar üreticinin tasarım açıklamalarıdır. Bağımsız denetim ve insan incelemesi ayrıca yapılır.</small></details>;
+}

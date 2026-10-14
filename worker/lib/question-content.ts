@@ -42,7 +42,9 @@ export async function hydrateQuestionMedia(env: Env, rows: any[]) {
   const blockMap = new Map<string, any[]>();
   for (const block of blocks) {
     const list = blockMap.get(block.question_id) || [];
-    list.push({ ...block, payload: parseContentJson(block.payload_json, {}), payload_json: undefined });
+    const payload:any=parseContentJson(block.payload_json, {});
+    if(payload&&typeof payload==='object'&&['TABLE','BAR_CHART'].includes(payload.kind))delete payload.readingPurpose;
+    list.push({ ...block, payload, payload_json: undefined });
     blockMap.set(block.question_id, list);
   }
   return rows.map(row => ({
