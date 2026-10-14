@@ -66,9 +66,9 @@ async function bankHasDuplicate(env:Env,job:Job,drafts:Draft[]){
 async function hash(key:string){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(key));return Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');}
 function validText(v:unknown,max:number):v is string{return typeof v==='string' && !!v.trim() && v.length<=max && !/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(v);}
 export function generationOptionCount(grade:number):4|5|null {return [5,6,7].includes(grade)?4:[9,10,11].includes(grade)?5:null;}
-export function questionDraftSchema(count:number,grade:number){
+export function questionDraftSchema(count:number,grade:number,readingPilot=false){
  const n=generationOptionCount(grade),labels=Array.from({length:n??5},(_,i)=>String.fromCharCode(65+i));
- return {type:'object',additionalProperties:false,required:['questions'],properties:{questions:{type:'array',minItems:count,maxItems:count,items:{type:'object',additionalProperties:false,required:['stemText','options','correctAnswer','solutionText','difficultyLevel'],properties:{stemText:{type:'string',minLength:1,maxLength:3000},solutionText:{type:'string',minLength:1,maxLength:5000},difficultyLevel:{type:'integer',minimum:1,maximum:6},correctAnswer:{type:'string',enum:labels},options:{type:'array',minItems:n??4,maxItems:n??5,items:{type:'object',additionalProperties:false,required:['label','text'],properties:{label:{type:'string',enum:labels},text:{type:'string',minLength:1,maxLength:1200}}}}}}}}};
+ return {type:'object',additionalProperties:false,required:['questions'],properties:{questions:{type:'array',minItems:count,maxItems:count,items:{type:'object',additionalProperties:false,required:['stemText','options','correctAnswer','solutionText','difficultyLevel'],properties:{stemText:{type:'string',minLength:1,maxLength:3000},solutionText:{type:'string',minLength:1,maxLength:5000},difficultyLevel:{type:'integer',minimum:1,maximum:6},correctAnswer:{type:'string',enum:labels},options:{type:'array',minItems:n??4,maxItems:n??5,items:{type:'object',additionalProperties:false,required:['label','text'],properties:{label:{type:'string',enum:labels},text:{type:'string',minLength:1,maxLength:1200,...(readingPilot?{pattern:'^[1-9][0-9]{6,11}$'}:{})}}}}}}}}};
 }
 function outputDiagnostic(raw:any){
  const value=raw?.choices?.[0]?.message?.content??raw?.response??raw?.output_text??raw;
@@ -159,7 +159,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  const questionContext={gradeLevel:job.grade_level,outcomeCode:job.outcome_code,outcomeTitle:job.outcome_title,academicYear:job.academic_year};
  const history=env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'?await one<{previous_json:string}>(env.DB.prepare("SELECT COALESCE(json_group_array(stem_text),'[]') previous_json FROM (SELECT substr(q.stem_text,1,300) stem_text FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id WHERE l.node_id=? AND q.academic_year=? AND q.grade_level=? AND q.subject_id=? AND q.owner_type='PLATFORM' AND q.origin_kind='AI_GENERATED' ORDER BY q.created_at DESC,q.id DESC LIMIT 12)").bind('ln_'+job.outcome_id,job.academic_year,job.grade_level,job.subject_id)):null;
  const previousQuestions:string[]=JSON.parse(history?.previous_json??'[]');
- const readingPilotInstruction=job.grade_level===5&&job.outcome_code==='MAT.5.1.1'?' For this initial pilot generate ONLY word-to-number questions. The stem must contain exactly one quoted Turkish cardinal phrase using units up to milyar and 7 to 12 digits. EVERY option must be a different plain ASCII digit string, with no dots, commas, spaces or units. Wrong options must be other valid integers based on meaningful place-value mistakes, never malformed group separators or grammatically invalid number phrases. Vary zero-filled groups and reasoning explanations. Do not generate number-to-word questions for this pilot.':'';
+ const readingPilotInstruction=job.grade_level===5&&job.outcome_code==='MAT.5.1.1'?' For this initial pilot generate ONLY word-to-number questions. The stem must contain exactly one quoted Turkish cardinal phrase using units up to milyar and 7 to 12 digits. EVERY option, including every wrong option, must contain between 7 and 12 digits; never use a 13-digit distractor. EVERY option must be a different plain ASCII digit string, with no dots, commas, spaces or units. Wrong options must be other valid integers based on meaningful place-value mistakes, never malformed group separators or grammatically invalid number phrases. Vary zero-filled groups and reasoning explanations. Do not generate number-to-word questions for this pilot.':'';
  const input=prompt(job)+' Keep each solution under 120 Turkish words. Return only the required JSON fields, no Markdown or commentary.'+readingPilotInstruction+' Source-derived constraints and variation data: '+JSON.stringify({officialScopeGuidance:officialPilotGuidance(questionContext),previousQuestions,variationSeed:id+token});
 
  if(new TextEncoder().encode(input).length>16*1024){await fail(env,id,token,'GENERATION_CONTEXT_CHANGED');return err(409,'GENERATION_CONTEXT_CHANGED');}
@@ -168,7 +168,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  let providerError:GenerationErrorCode|undefined;
  try{
   raw=await Promise.race([
-   env.AI!.run(model as any,{messages:[{role:'user',content:input}],...(model===DEFAULT_QUESTION_GENERATION_MODEL?{chat_template_kwargs:{enable_thinking:false},max_completion_tokens:6000}:{max_tokens:3000}),response_format:env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED==='true'?{type:'json_schema',json_schema:questionDraftSchema(job.question_count,job.grade_level)}:{type:'json_object'},stream:false} as any),
+   env.AI!.run(model as any,{messages:[{role:'user',content:input}],...(model===DEFAULT_QUESTION_GENERATION_MODEL?{chat_template_kwargs:{enable_thinking:false},max_completion_tokens:6000}:{max_tokens:3000}),response_format:env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED==='true'?{type:'json_schema',json_schema:questionDraftSchema(job.question_count,job.grade_level,job.grade_level===5&&job.outcome_code==='MAT.5.1.1')}:{type:'json_object'},stream:false} as any),
    new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('GENERATION_TIMEOUT')),PROVIDER_TIMEOUT_MS);}),
   ]);
  }catch(e){providerError=e instanceof Error&&e.message==='GENERATION_TIMEOUT'?'GENERATION_TIMEOUT':'GENERATION_PROVIDER_FAILED';}
@@ -177,7 +177,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  if(afterProvider)return afterProvider;
  if(providerError){await fail(env,id,token,providerError);return err(502,providerError);}
  const drafts=parseDrafts(raw,job.question_count,job.grade_level);
- if(!drafts){
+ if(!drafts||(env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED==='true'&&job.grade_level===5&&job.outcome_code==='MAT.5.1.1'&&drafts.some(q=>q.options.some(o=>!/^[1-9][0-9]{6,11}$/.test(o.text))))){
   await fail(env,id,token,'GENERATION_OUTPUT_INVALID');
   if(env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true')await env.DB.prepare("INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'QUESTION_GENERATION_OUTPUT_BLOCKED','question_generation_job',?,?)").bind(uuid('aud'),user.id,id,JSON.stringify(outputDiagnostic(raw))).run();
   return err(422,'GENERATION_OUTPUT_INVALID');
