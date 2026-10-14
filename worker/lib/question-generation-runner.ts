@@ -186,7 +186,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  let providerError:GenerationErrorCode|undefined;
  try{
   raw=await Promise.race([
-   env.AI!.run(model as any,{messages:[{role:'user',content:input}],...(model===DEFAULT_QUESTION_GENERATION_MODEL?{chat_template_kwargs:{enable_thinking:false},max_completion_tokens:6000}:{max_tokens:editorial?7000:3000}),response_format:env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED==='true'?{type:'json_schema',json_schema:questionDraftSchema(job.question_count,job.grade_level,job.grade_level===5&&job.outcome_code==='MAT.5.1.1',editorial)}:{type:'json_object'},stream:false} as any),
+   env.AI!.run(model as any,{messages:[{role:'user',content:input}],...(model===DEFAULT_QUESTION_GENERATION_MODEL?{chat_template_kwargs:{enable_thinking:false},max_completion_tokens:6000}:{max_tokens:editorial?12000:3000}),response_format:env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED==='true'?{type:'json_schema',json_schema:questionDraftSchema(job.question_count,job.grade_level,job.grade_level===5&&job.outcome_code==='MAT.5.1.1',editorial)}:{type:'json_object'},stream:false} as any),
    new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('GENERATION_TIMEOUT')),editorial?90000:PROVIDER_TIMEOUT_MS);}),
   ]);
  }catch(e){providerError=e instanceof Error&&e.message==='GENERATION_TIMEOUT'?'GENERATION_TIMEOUT':'GENERATION_PROVIDER_FAILED';}

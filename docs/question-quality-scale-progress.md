@@ -17,3 +17,9 @@ Panel hedef göstergesi:500000/50 gün, günlük10000 kabul, %80 uçtan uca kabu
 ## İlk gerçek editoryal deneme
 
 Run38601238833: tek sabit iş qgj_ced623dd-7354-43d5-8cad-fc854b837f08, kaliteEDITORIAL_V1, TABLE. Üretici tabloyla birlikte categories/values doldurdu; katı veri sözleşmesi doğru biçimde GENERATION_OUTPUT_INVALID döndürdü,0 soru kaydedildi. Taslak ayrıca kalem-stok-kutu temasına geri döndü ve çeldiriciler keyfi yanlış miktarlara dayanıyordu. Kalite eşiği gevşetilmez. Talimat TABLE/BAR alan ayrımı, gerçek karar/ters işlem/iddia incelemesi ve hesaplanabilir kavram yanılgılarını açıklaştıracak. Aynı işte en fazla bir ek deneme; yeni key zinciri yok. Rezervasyon artık46/50 olabilir, işbütçe D1'den doğrulanmalı. İlk başarısız çağrı2839 giriş,2339 çıkış,249.8085 raporlanan nöron; üretici GPT-OSS120b.
+
+50 günlük hedef14 Ekim2026'dan sayılır; hazırlık süresi dahil,3 Aralık2026 hedefidir. Otomatik yürütmenin henüz başlamaması süreyi ileriye taşımaz; panel kalan güne göre gerekli günlük kabulü yeniden hesaplar. Basılı editorial PDF için eski3-satır/ASCII/görsel-placeholder yoluna409 engeli eklendi; veri kaybeden sözde kaliteli PDF üretilmez. Baskı tasarımı sınav merkezi aşamasında tam Türkçe font ve görsel yerleşimle ele alınmalıdır.
+
+## İkinci örnek ve son düzeltme
+
+Run38601989581 ikinci deneme0 kayıt: GPT-OSS yanıtı finishReason:length ile7000 completion token sınırında JSON ortasında kesildi. Paket tedarik kombinasyonunu maksimize eden, yeterli optimalite kanıtı olmayan ve sınıf için gereksiz karmaşık bir probleme yöneldi. Üretici2972 giriş/7000 çıkış/571.8357 nöron bildirdi. Çözüm: en fazla3 açık alternatif ve2 kısıt; açık uçlu tam sayılı optimizasyon veya kanıtsız greedy optimalite yok; yanıt üst sınırı12000. Native işin kalan3. ve son denemesi aynı anahtarla kullanılacak; rezervasyon46/50 korunur. Önceki örnek scriptinin2 sınırı bu somut truncation bulgusuyla3 native sınırına çıkarıldı; daha fazla deneme veya yeni key zinciri yok.

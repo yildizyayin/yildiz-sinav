@@ -17,7 +17,7 @@ try{
  const key='79ae8693-2c5f-4984-b231-1e7f58f54c31';
  report.job=(await req('/api/question-bank-standard/generation-jobs',{requestKey:key,outcomeId:o.id,questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE',taskFocus:'GENERIC',priority:2,instructionNote:'Kullanıcı hedefi: güçlü yayınevi kalitesinde özgün beceri sorusu; tabloyla gerekçeli karar. Bu not audit kaydıdır. İnsan/telif onayı ayrıca gereklidir.',expectedContext:{curriculumVersionId:cv.id,academicYear:spec.academicYear,gradeLevel:5,subjectId:o.subject_id,programVersion:spec.programVersion}})).p.job;
  if(report.job.status!=='REVIEW_READY'){
-  if(report.job.attemptCount>=2)throw Error('Frozen editorial sample exhausted; no replacement');report.generationRunRequests++;await req('/api/question-bank-standard/generation-jobs/'+report.job.id+'/run',{});
+  if(report.job.attemptCount>=3)throw Error('Frozen editorial sample exhausted; no replacement');report.generationRunRequests++;await req('/api/question-bank-standard/generation-jobs/'+report.job.id+'/run',{});
  }
  report.questions=await query('SELECT id,stem_text,options_json,correct_answer,solution_text,review_status,copyright_status,review_revision,source_model,source_job_id,editorial_packet_json FROM question_bank WHERE source_job_id=?',[report.job.id]);
  if(report.questions.length!==1||report.questions[0].review_status!=='REVIEW'||report.questions[0].copyright_status!=='RESTRICTED')throw Error('Editorial sample not in human review');
