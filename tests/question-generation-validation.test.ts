@@ -86,3 +86,10 @@ it('checks Unicode-grouped arithmetic and official bounds with en-dash subtracti
  expect(mechanicalDraftIssues(q('A','3\u202f250 − 1\u202f845 = 1\u202f404.'))).toContain('INVALID_ARITHMETIC');
  expect(outcomeDraftIssues(q('A','100.000 – 1.000 = 99.000'),{gradeLevel:5,outcomeCode:'MAT.5.1.2'})).toContain('ARITHMETIC_OUTCOME_DIGIT_SCOPE');
 });
+
+it('accepts the live full-box quotient explanation and still rejects a wrong quotient or remainder',()=>{
+ const draft=q('A','7.845 – 4.280 = 3.565. 3.565 ÷ 48 = 74 tam kutu (48 × 74 = 3.552, kalan 13).');draft.options[0].text='74';
+ expect(mechanicalDraftIssues(draft)).toEqual([]);
+ expect(mechanicalDraftIssues({...draft,solutionText:'3.565 ÷ 48 = 75 tam kutu.'})).toContain('INVALID_ARITHMETIC');
+ expect(mechanicalDraftIssues({...draft,solutionText:'3.565 ÷ 48 = 74 tam kutu (kalan 12).'})).toContain('INVALID_ARITHMETIC');
+});

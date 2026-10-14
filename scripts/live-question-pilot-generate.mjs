@@ -43,7 +43,7 @@ try{
   const job=created.p.job;report.jobs.push(job);if(job.status==='REVIEW_READY')continue;
   if(job.attemptCount>=3)throw Error('Single-question job exhausted; inspect evidence before replacement');
   calls++;console.log('PILOT_BATCH_PROGRESS '+JSON.stringify({batch:i+1,jobId:job.id,runRequests:calls}));
-  const run=await req('/api/question-bank-standard/generation-jobs/'+job.id+'/run',{});if(!run.r.ok)throw Error('Single-question generation blocked '+(run.p.error?.code||run.r.status));
+  const run=await req('/api/question-bank-standard/generation-jobs/'+job.id+'/run',{});if(!run.r.ok){const state=(await query('SELECT status,attempt_count,error_code FROM question_generation_jobs WHERE id=?',[job.id]))[0];report.jobs[report.jobs.length-1]={...job,status:state?.status??job.status,attemptCount:state?.attempt_count??job.attemptCount,errorCode:state?.error_code??run.p.error?.code};throw Error('Single-question generation blocked '+(run.p.error?.code||run.r.status));}
   report.jobs[report.jobs.length-1]=run.p.job;if(run.p.job?.status!=='REVIEW_READY')throw Error('Pilot job incomplete');
  }
  await exportEvidence();
