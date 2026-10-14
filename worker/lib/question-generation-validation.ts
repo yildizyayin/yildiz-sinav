@@ -65,8 +65,13 @@ export function mechanicalDraftIssues(q:CheckedDraft):string[]{
  return !/[+*×÷\/−–-]\s*$/.test(before)&&!/^([+*×÷\/−–-]|\d)/.test(after);
  });
  for(const e of equations){const a=number(e[1]),b=number(e[3]),actual=number(e[4]),expected=e[2]==='+'?a+b:['-','−','–'].includes(e[2])?a-b:['*','×'].includes(e[2])?a*b:a/b;
- const after=q.solutionText.slice((e.index??0)+e[0].length).trimStart(),fullUnits=/^tam\s+\p{L}+/iu.test(after),remainder=after.match(/^(?:tam bölüm,?\s*)?kalan\s*(\d+)/iu)??(fullUnits?after.slice(0,120).match(/\bkalan\s*(\d+)/iu):null);
- if(['/','÷'].includes(e[2])&&(remainder||fullUnits)){const rest=remainder?Number(remainder[1]):a-actual*b;if(b===0||actual!==Math.floor(a/b)||rest<0||rest>=b||a!==actual*b+rest)issues.push('INVALID_ARITHMETIC');}
+ const after=q.solutionText.slice((e.index??0)+e[0].length).trimStart();
+ // An explicit Euclidean identity may explain the integer quotient in parentheses.
+ // Require every component to agree; a nearby mention of rounding alone is insufficient.
+ const identity=after.match(/^\(\s*(\d+)\s*[×*]\s*(\d+)\s*=\s*(\d+)\s*,\s*(\d+)\s+\p{L}+\s+artar\s*\)/iu);
+ const identityRemainder=identity&&Number.isSafeInteger(a)&&Number.isSafeInteger(b)&&Number.isSafeInteger(actual)&&((Number(identity[1])===actual&&Number(identity[2])===b)||(Number(identity[1])===b&&Number(identity[2])===actual))&&Number(identity[3])===actual*b?Number(identity[4]):null;
+ const fullUnits=/^tam\s+\p{L}+/iu.test(after),remainder=after.match(/^(?:tam bölüm,?\s*)?kalan\s*(\d+)/iu)??(fullUnits?after.slice(0,120).match(/\bkalan\s*(\d+)/iu):null);
+ if(['/','÷'].includes(e[2])&&(remainder||fullUnits||identityRemainder!==null)){const rest=remainder?Number(remainder[1]):identityRemainder??a-actual*b;if(b===0||actual!==Math.floor(a/b)||rest<0||rest>=b||a!==actual*b+rest)issues.push('INVALID_ARITHMETIC');}
  else if(!Number.isFinite(expected)||Math.abs(expected-actual)>1e-8*Math.max(1,Math.abs(expected)))issues.push('INVALID_ARITHMETIC');}
  // Compare only an explicit answer conclusion, never infer a result from a working equation.
  const chosen=numericOption(q.options.find(o=>o.label===q.correctAnswer)?.text??'');
