@@ -1,1 +1,1 @@
-Quarantine exact reviewed semantic duplicate q_37062d41 via revision guarded review API; zero new model calls expected.
+Verify frozen content hashes and final review states without model calls. 2026-10-14
