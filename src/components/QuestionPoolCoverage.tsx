@@ -37,7 +37,7 @@ export function QuestionPoolCoverage({onDraftsReady}:{onDraftsReady?:()=>void}){
  const visibleAction=action.scope===scope?action:{id:'',error:'',notice:''};
  const create=async(outcome:Outcome)=>{
   if(inFlight.current)return;inFlight.current=true;
-  const actionScope=scope,questionCount=Math.min(10,outcome.missingCount);
+  const actionScope=scope,questionCount=Math.min(3,outcome.missingCount);
   const context={curriculumVersionId:outcome.curriculumVersionId,academicYear:filters.academicYear,gradeLevel:outcome.gradeLevel,subjectId:outcome.subjectId,programVersion:outcome.programVersion};
   const key=JSON.stringify([outcome.id,context,questionCount]);
   if(!requestKeys.current.has(key))requestKeys.current.set(key,crypto.randomUUID());
@@ -46,7 +46,7 @@ export function QuestionPoolCoverage({onDraftsReady}:{onDraftsReady?:()=>void}){
    const result=await api<any>('/api/question-bank-standard/generation-jobs',{method:'POST',body:JSON.stringify({outcomeId:outcome.id,expectedContext:context,questionCount,requestKey:requestKeys.current.get(key)})});
    if(current.current!==actionScope)return;
    requestKeys.current.delete(key);
-   setAction({scope:actionScope,id:'',error:'',notice:result.reused?'Bu kazanım için mevcut talep gösteriliyor.':'Üretim talebi kaydedildi. Henüz soru üretilmedi.'});
+   setAction({scope:actionScope,id:'',error:'',notice:result.reused?'Bu kazanım için mevcut talep gösteriliyor.':'Üretim talebi kaydedildi. Henüz soru üretilmedi. Yeni görevler editoryal kalite sözleşmesini kullanır.'});
    await jobs.load();
   }catch(error:any){if(current.current===actionScope)setAction({scope:actionScope,id:'',error:error.message||'Talep kaydedilemedi.',notice:''});}
   finally{inFlight.current=false;setAction(previous=>previous.scope===actionScope?{...previous,id:''}:previous);}

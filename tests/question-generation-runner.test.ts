@@ -51,6 +51,7 @@ beforeAll(async()=>{
  await db.exec("CREATE TABLE question_content_blocks(id TEXT PRIMARY KEY,question_id TEXT,block_type TEXT,placement TEXT,sort_order INTEGER,payload_json TEXT,alt_text TEXT);");
  await db.exec(migration('0107_question_editorial_contract.sql'));
  await db.exec(migration('0108_question_originality_search.sql'));
+ await db.exec(migration('0109_question_visual_student_payload.sql'));
  await db.exec(migration('0106_question_team_execution_stage.sql'));
  await db.exec(migration('0102_question_agent_pilot_budget.sql'));
 },20_000);
