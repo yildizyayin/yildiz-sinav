@@ -1,4 +1,24 @@
-# Soru havuzu pilotu — 2026-10-13
+# Soru havuzu — güncel durum ve devam kaydı
+
+## Önce bu bölümü okuyun — 2026-10-14 07:15 UTC
+
+**İlk10 hedefi tamamlanmadı.** Güncel cohort:9 gerçek kayıt,8 REVIEW,1 REJECTED,0 APPROVED/yayın. Tüm kayıtlar RESTRICTED. Son kontrol38527117768 normal review API ile bilinen anlamsal tekrarı reddetti;0 yeni model çağrısı yaptı. Önceki15 bilinen ret ayrı geçmiş kayıtlarında korunur.9 kaydı9 uygun/yayıma hazır soru diye raporlamayın.
+
+- Gerçek D1 bütçesi:43/50 rezervasyon,7 kalan. Hatalı/iptal işlerin kotası iade edilmedi. Yeni recovery key zinciri, attempt sıfırlama veya otomatik bütçe artışı yok.
+- Kanıt ve tam soru içerikleri: `data/question-pilot-review-checkpoint-20261014.json`. [Son çalışma](https://github.com/yildizyayin/yildiz-sinav/actions/runs/38527117768), [artifact](https://github.com/yildizyayin/yildiz-sinav/actions/runs/38527117768/artifacts/11876131883). Çalışmanın failure sonucu beklenendir: ilk10 kabul koşulu sağlanmadı; uygulama CI arızası değildir.
+- Doğrulanmış MEB kapsamı yalnız5.sınıf Matematik MAT.5.1.1/2 ve resmi sayfa447'dir; tüm sınıfların programı tamamlandı denmez.
+- Main: PR254/255 düzeltmeleri ffd4e6d8 /3faabaca. Sayı/bölme kontrolleri, tamCI/typecheck/build ve gerçek provider probe geçti. Demo Worker dağıtımı38525737724 başarılı. Otomatik üretim cron'u kapalı ve insan/telif onayı zorunlu kalır.
+- Kuyruk engeli: envanter38525527633,8 geçici kuyruk+2 test Worker temizliği38525737736; yeni always cleanup gerçek38525870751 ve38526402419 testlerinde geçti. Canlı D1/R2/uygulama kuyrukları silinmedi.
+
+### Kalan teknik iş sırası
+
+1. İçerik/çözüm düzenleme API ve arayüzü ekleyin: mevcut PATCH yalnız metadata değiştiriyor. Beklenen review_revision zorunlu olsun; AI kökeni/kaynak geçmişi korunsun; değişiklik yeni incelemeye dönsün, onay/telif geçişi otomatik yapılmasın. Kullanılmış sorular için geçmiş değerlendirme içeriğini koruyan sürümleme gerekir.
+2. JSON bulgularındaki editoryal kusurları taslak revizyonları olarak düzeltin. Özellikle q_4b5f15e1 içindeki Baklagiller/cupcake, q_bb920a81 D çeldiricisinin yanlış rakam açıklaması ve q_9e4d8bd2 D bölük açıklaması. Hiçbiri insan onaylı sayılmasın.
+3. Yeni üretimden önce görev çeşitliliğini planlayın: mevcut word-to-number ve çıkarma/paylaştırma şablonları aynı düşünme yolunu tekrarlıyor. Otomatik nearRepeatedStem ve bağımsız model, q_37062d41 ile q_c3ff23af anlamsal tekrarını kaçırdı. Kontroller gevşetilmesin; kaynak kapsamındaki farklı düşünme görevleri ve daha güçlü anlamsal aday incelemesi tasarlansın.
+4. Ardından kalan7 rezervasyondan, yeni sınırlandırılmış ve açık cohort planıyla eksik özgün taslakları tamamlayın. qgj_51ac7e47-5cb1-46dc-8d2a-8d31ef0269e3 FAILED/attempt3 kalır; kör rerun yeni soru üretmez. Tek izinli önceki key105 yedeği kullanıldı; ikinci yedek zinciri yok.
+5. İlk10 içerik kontrolü, gerçek insan/telif incelemesi ve Studio uçtan uca akışı tamamlanmadan50 pilot/300bin ölçeğine geçmeyin. Mevcut kalan7 rezervasyonla50 uygun soru hedefi sağlanmış sayılamaz; bütçe sınırı açıkça yeniden planlanmalı, geçmiş korunmalı.
+
+## Önceki çalışmaların kronolojik kaydı
 
 Main baseline d8d23f97; staging f7554cb7. İlk üretim çalışması 38424640328 ile 10 gerçek GLM taslağı kaydedildi; bilimsel başarı sayılmıyor. İlk sekiz taslakta yedi içerik/anahtar/kazanım hatası tespit edildi. Hiçbiri otomatik onaylanmadı veya öğrenciye yayımlanmadı.
 
