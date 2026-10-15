@@ -9,3 +9,5 @@ export function validTaskFocus(focus:unknown,grade:number,code:string|null):focu
  if(typeof focus!=='string'||!Object.hasOwn(TASK_FOCUS,focus))return false;
  return focus==='GENERIC'||grade===5&&(focus==='READ_ZERO_PERIODS'?code==='MAT.5.1.1':code==='MAT.5.1.2');
 }
+
+export function questionTaskInstruction(focus:TaskFocus,editorial=false){const text=TASK_FOCUS[focus].instruction;return editorial&&focus==='READ_ZERO_PERIODS'?text.replace('Every choice is a different7–12 digit plain ASCII integer.','Choices may be Turkish evidence-based explanations or valid7–12 digit numbers. Require error diagnosis or comparison of records, not bare transcription.') : text;}

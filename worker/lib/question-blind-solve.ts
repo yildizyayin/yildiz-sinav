@@ -1,8 +1,9 @@
 import type {Env} from '../types';
-import {readAiJson,type CheckedDraft} from './question-generation-validation';
+import {readAiJson,turkishCardinal,type CheckedDraft} from './question-generation-validation';
 export function scientificSourceNumbers(q:CheckedDraft){
  const values:Record<string,number>={};
  for(const [i,m]of [...q.stemText.matchAll(/\b\d+(?:[.,]\d+)*\b/g)].entries()){const n=Number(m[0].replace(/\./g,'').replace(',','.'));if(Number.isFinite(n))values['stem'+i]=n;}
+ for(const [i,m]of [...q.stemText.matchAll(/[“\"]([^”\"]+)[”\"]/g)].entries()){const n=turkishCardinal(m[1]);if(n!==null)values['wordValue'+i]=n;}
  const visual=q.editorial?.visual;
  if(visual?.kind==='TABLE')visual.rows.forEach((row,r)=>row.forEach((value,c)=>{if(/^\d+(?:[.,]\d+)*$/.test(value)){const n=Number(value.replace(/\./g,'').replace(',','.'));if(Number.isFinite(n))values[`r${r}c${c}`]=n;}}));
  if(visual?.kind==='BAR_CHART')visual.values.forEach((v,i)=>values['bar'+i]=v);
