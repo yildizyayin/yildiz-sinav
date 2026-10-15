@@ -1,7 +1,6 @@
 {
   "environment": "staging",
-  "status": "BLOCKED",
-  "error": "Quality refusal contract failed: HTTP 404",
+  "status": "SCHEDULER_VERIFIED_QUALITY_BLOCKED",
   "privateEndpoint": {
     "enabled": false,
     "previews_enabled": false
@@ -15,18 +14,29 @@
     }
   ],
   "activationRefusal": {
-    "status": 404,
+    "status": 409,
     "payload": {
       "ok": false,
       "error": {
-        "code": "NOT_FOUND",
-        "message": "Soru bulunamadı."
+        "code": "AUTONOMOUS_QUALITY_REQUIRED"
+      },
+      "quality": {
+        "allowed": false,
+        "verifierCalibration": "PASS",
+        "passed": 0,
+        "automaticEditorRevisions": 0,
+        "completed": 3,
+        "total": 4,
+        "successfulOutcomes": 0,
+        "successfulPresentations": 0,
+        "scope": "SMALL_VERIFIED_PILOT",
+        "publisherQualityCertified": false
       }
     }
   },
   "ticks": [
-    "2026-10-15T12:14:13.788Z",
-    "2026-10-15T12:15:13.613Z"
+    "2026-10-15T12:19:13.926Z",
+    "2026-10-15T12:20:13.528Z"
   ],
   "storage": [
     {
@@ -78,7 +88,7 @@
     "review_queue_cap": 50,
     "max_workers": 4,
     "revision": 0,
-    "last_tick_at": "2026-10-15T12:15:13.613Z",
+    "last_tick_at": "2026-10-15T12:20:13.528Z",
     "last_result_json": "{\"code\":\"PAUSED\"}",
     "created_at": "2026-10-15 10:55:50"
   },
@@ -94,5 +104,5 @@
     "scope": "SMALL_VERIFIED_PILOT",
     "publisherQualityCertified": false
   },
-  "asOf": "2026-10-15T12:15:19.640Z"
+  "asOf": "2026-10-15T12:20:23.265Z"
 }
