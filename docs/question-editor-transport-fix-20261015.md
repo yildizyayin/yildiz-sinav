@@ -26,7 +26,9 @@ with zero new model calls. Original job/editor-attempt records remain unchanged.
 
 ## Release boundary
 Staging fix commit: be878dc5f6fdbcb79f8607d8888e423666e8885f.
-Live replay verification pending in its dedicated workflow. No production campaign
+Live replay workflow38737911640 PASSED: HTTP200, reused=true,
+providerCalled=false, packetRead=true, questionCount=1, qualitySuccess=false.
+The fixed private generator is deployed in staging. No production campaign
 was activated, no human/rights approval was granted and no quality acceptance
 counts were raised. PR260 remains draft until the separate quality work passes.
 Local-only0115 and related changes remain outside this task and this remote update.
