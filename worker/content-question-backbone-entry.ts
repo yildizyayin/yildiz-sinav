@@ -104,6 +104,8 @@ async function backboneStatus(request:Request,env:Env){
 export default {
  async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
   const url=new URL(request.url),p=url.pathname;
+  // Campaign control is not a question-id PATCH; preserve its own auth/origin/quality guards.
+  if(p==='/api/question-bank-standard/production')return app.fetch(request,env,ctx);
   const refresh=p.match(/^\/api\/official-question-intelligence\/sources\/([^/]+)\/refresh$/);if(refresh&&request.method==='POST')return guardOfficialRefresh(request,env,ctx,refresh[1]);
   if(p==='/api/official-question-intelligence/mappings/import'&&request.method==='POST')return guardOfficialMappingImport(request,env,ctx);
   if(p==='/api/platform/questions'&&request.method==='POST')return createQuestionWithProvenance(request,env,ctx);
