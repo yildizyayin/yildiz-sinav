@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "anunex-question-production-staging",
+  "main": "./worker/question-production-worker.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": {"enabled": true},
+  "triggers": {"crons": ["* * * * *"]},
+  "ai": {"binding":"AI"},
+  "d1_databases": [{"binding":"DB","database_name":"resolved-at-deploy","database_id":"00000000-0000-0000-0000-000000000000"}],
+  "vars": {
+    "ENVIRONMENT":"staging",
+    "QUESTION_TEAM_CONTROLS_ENABLED":"true",
+    "QUESTION_GENERATION_ENABLED":"true",
+    "QUESTION_GENERATION_MODEL":"@cf/openai/gpt-oss-120b",
+    "QUESTION_GENERATION_VERIFICATION_ENABLED":"true",
+    "QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED":"true",
+    "QUESTION_GENERATION_VERIFIER_MODEL":"@cf/nvidia/nemotron-3-120b-a12b",
+    "QUESTION_BLIND_SOLVE_ENABLED":"true",
+    "QUESTION_PRODUCTION_CAMPAIGNS_ENABLED":"true",
+    "QUESTION_AI_DAILY_NEURON_LIMIT":"10000",
+    "QUESTION_AUTOMATED_PILOT_MODE":"true",
+    "QUESTION_PILOT_BUDGET_REMAINING":"50",
+    "QUESTION_PILOT_REVIEW_AVAILABLE":"true"
+  }
+}

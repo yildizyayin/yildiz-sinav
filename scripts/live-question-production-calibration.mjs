@@ -5,7 +5,7 @@ try{
  await login();
  const budget=(await query("SELECT * FROM question_agent_pilot_budget WHERE id='pilot_50'"))[0];if(budget.reserved_count<46||budget.reserved_count>50)throw Error('Pilot witness changed');
  report.calibration=await req('/api/question-bank-standard/verifier-calibration',{});
- const gold=(await query('SELECT * FROM question_verifier_calibrations WHERE id=?',['editorial-verifier-20261015-v1']))[0];report.gold=gold;
+ const gold=(await query('SELECT * FROM question_verifier_calibrations WHERE id=?',['editorial-verifier-20261015-v2']))[0];report.gold=gold;
  if(gold?.status!=='PASS')throw Error('Independent verifier failed frozen positive/negative calibration');
  const spec=JSON.parse(await readFile('data/question-pilot-math5-curriculum.json','utf8'));
  const cv=(await req('/api/curriculum-admin?academicYear='+spec.academicYear)).p.versions?.find(v=>v.program_version===spec.programVersion&&v.verified===1&&v.source_url===spec.sourceUrl);if(!cv)throw Error('Verified curriculum missing');

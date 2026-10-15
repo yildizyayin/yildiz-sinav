@@ -2,7 +2,7 @@ import type {AuthUser,Env} from '../types';
 import {json,one} from './db';
 import {verifyQuestionDrafts,type CheckedDraft} from './question-generation-validation';
 import {calibrationBaseline} from './question-calibration-fixture';
-export const CALIBRATION_ID='editorial-verifier-20261015-v1';
+export const CALIBRATION_ID='editorial-verifier-20261015-v2';
 export function calibrationCases(){
  const baseline=structuredClone(calibrationBaseline) as CheckedDraft;
  const wrongKey=structuredClone(baseline);wrongKey.correctAnswer='A';wrongKey.editorial!.distractors.find(d=>d.label==='A')!.label='C';
