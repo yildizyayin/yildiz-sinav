@@ -5,8 +5,8 @@ const observation=()=>JSON.parse(readFileSync(new URL('./fixtures/qwen-editor-nu
 it('reads the actual complete null-content Qwen response as a packet',async()=>{
  const raw=observation(),packet=readEditorPacket(raw,QUESTION_EDITOR_MODEL);
  expect(packet.questions).toHaveLength(1);expect(packet.questions[0].correctAnswer).toBe('B');
- const run=vi.fn(async()=>raw),result=await editQuestionPacket({AI:{run},QUESTION_GENERATION_MODEL:'writer'} as any,packet.questions,{sourceModel:'writer',gradeLevel:5,outcomeCode:'MAT.5.1.1',presentation:'TEXT',taskFocus:'READ_ZERO_PERIODS'});
- expect(result.questions).toEqual(packet.questions);expect(result.humanApproved).toBe(false);expect(run).toHaveBeenCalledTimes(1);
+ const run=vi.fn(async()=>raw),result=editQuestionPacket({AI:{run},QUESTION_GENERATION_MODEL:'writer'} as any,packet.questions,{sourceModel:'writer',gradeLevel:5,outcomeCode:'MAT.5.1.1',presentation:'TEXT',taskFocus:'READ_ZERO_PERIODS'});
+ await expect(result).rejects.toThrow('EDITOR_OUTPUT_INVALID');expect(run).toHaveBeenCalledTimes(1);
 });
 it('never accepts truncated, conflicting, other-model or prose-only alternate outputs',()=>{
  const raw=observation();raw.choices[0].finish_reason='length';expect(readEditorPacket(raw,QUESTION_EDITOR_MODEL)).toBeNull();

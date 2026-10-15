@@ -30,7 +30,21 @@ export function blindSolveIssues(q:CheckedDraft,value:any){
  if(q.editorial?.visual.kind!=='NONE'&&Object.entries(source).some(([key,n])=>(key.startsWith('r')||key.startsWith('bar'))&&!used.has(n)))issues.push('BLIND_UNUSED_VISUAL_NUMBER');
  return [...new Set(issues)];
 }
-export async function independentlySolve(env:Env,q:CheckedDraft,model:string){
+/** Exact proof for a narrowly recognized read-the-number request. The computation
+ * takes public stem/options only; the stored answer key is compared afterwards. */
+export function deterministicReadingEvidence(input:{stemText:string;options:{label:string;text:string}[]},context:any){
+ if(context?.gradeLevel!==5||context.outcomeCode!=='MAT.5.1.1'||context.taskFocus!=='READ_ZERO_PERIODS')return null;
+ const match=input.stemText.match(/^Aşağıdaki okunuşu verilen sayıyı,? (?:nokta ile )?üçlü gruplar halinde (?:doğru biçimde )?yazan seçeneği işaretleyiniz\.\s*[“"]([^”"]+)[”"]\.?$/u);
+ const target=match?turkishCardinal(match[1]):null;
+ if(target===null||target<1000000||target>=1e12||input.options.some(o=>!/^(?:[1-9]\d{0,2}(?:\.\d{3})+|[1-9]\d*)$/.test(o.text)))return null;
+ const values=input.options.map(o=>Number(o.text.replace(/\./g,''))),correct=input.options.filter((_,i)=>values[i]===target);
+ const calculations:any[]=[];let total=0;
+ for(const power of [1e9,1e6,1e3,1]){const part=Math.floor(target/power)%1000*power;calculations.push({left:total,op:'ADD',right:part,result:total+part});total+=part;}
+ return {target,answer:correct.length===1?correct[0].label:correct.length?'MULTIPLE':'NONE',optionChecks:input.options.map((o,i)=>({label:o.label,correct:values[i]===target,reason:`Seçeneğin sayısal değeri ${values[i]}; okunuşun kesin değeri ${target} ile ${values[i]===target?'aynıdır':'farklıdır'}.`})),calculations};
+}
+export async function independentlySolve(env:Env,q:CheckedDraft,model:string,context?:any){
+ const reading=q.editorial?.visual.kind==='NONE'?deterministicReadingEvidence({stemText:q.stemText,options:q.options},context):null;
+ if(reading){const {target,...proof}=reading,evidence={...proof,sourceNumbers:scientificSourceNumbers(q)},issues=blindSolveIssues(q,evidence);return {ok:issues.length===0,model:null,method:'DETERMINISTIC_TURKISH_CARDINAL',issues,evidence,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'EXACT_TURKISH_CARDINAL_AND_DECIMAL_GROUPS'};}
  const sources=scientificSourceNumbers(q),properties:any={};for(const [key,value]of Object.entries(sources))properties[key]={type:'number',const:value};
  const labels=q.options.map(o=>o.label),schema={type:'object',additionalProperties:false,required:['sourceNumbers','answer','optionChecks','calculations'],properties:{sourceNumbers:{type:'object',additionalProperties:false,required:Object.keys(sources),properties},answer:{type:'string',enum:[...labels,'NONE','MULTIPLE']},optionChecks:{type:'array',minItems:labels.length,maxItems:labels.length,items:{type:'object',additionalProperties:false,required:['label','correct','reason'],properties:{label:{type:'string',enum:labels},correct:{type:'boolean'},reason:{type:'string',minLength:15,maxLength:400}}}},calculations:{type:'array',maxItems:24,items:{type:'object',additionalProperties:false,required:['left','op','right','result'],properties:{left:{type:'number'},op:{type:'string',enum:['ADD','SUB','MUL','DIV','CEIL_DIV']},right:{type:'number'},result:{type:'number'}}}}}};
  let timer:ReturnType<typeof setTimeout>|undefined;
