@@ -152,6 +152,14 @@ export function reasoningFamily(q:{stemText:string;solutionText:string}):string|
  return 'TWO_OUTFLOWS_BOXING_'+(a%b===0?'EXACT':'FLOOR_REMAINDER');
 }
 export function taskFocusIssues(q:CheckedDraft,context:any):string[]{
+ if(context?.qualityProfile==='EDITORIAL_V1'&&context.taskFocus==='NAT_INVERSE_STEPS'){
+  const issues:string[]=[];if(!/yöntem|strateji|yaklaşım|çözüm/iu.test(q.stemText)||!/hangi|doğru|geçerli/iu.test(q.stemText))issues.push('INVERSE_STRATEGY_DECISION_REQUIRED');
+  for(const d of q.editorial?.distractors??[]){const selected=q.options.find(o=>o.label===d.label),option=selected?numericOption(selected.text):null;if(option===null)continue;
+   const header=d.whyIncorrect.match(/^Yanılgı hesabı:\s*(.*?)(?:\.\s|$)/u),equations=header?[...header[1].matchAll(/=\s*(\d+(?:[. \u00a0\u202f]\d{3})*(?:,\d+)?)/g)]:[];
+   if(!header||!equations.length)issues.push('INVERSE_DISTRACTOR_CALCULATION_REQUIRED');else if(number(equations.at(-1)![1])!==option)issues.push('DISTRACTOR_CALCULATION_VALUE_MISMATCH');
+   if(header&&mechanicalDraftIssues({...q,solutionText:header[1]}).includes('INVALID_ARITHMETIC'))issues.push('INVALID_DISTRACTOR_ARITHMETIC');
+  }return [...new Set(issues)];
+ }
  if(context?.taskFocus==='READ_ZERO_PERIODS'){
   const phrases=[...q.stemText.matchAll(/[“"]([^”"]+)[”"]/g)];
   if(phrases.length!==1||!/milyar/u.test(phrases[0][1])||!/bin/u.test(phrases[0][1])||/milyon/u.test(phrases[0][1]))return ['TASK_FOCUS_MISMATCH'];
@@ -175,6 +183,6 @@ export async function verifyQuestionDrafts(env:Env,context:any,drafts:CheckedDra
  const raw:any=await Promise.race([env.AI.run(model as any,{messages:[{role:'user',content:prompt}],chat_template_kwargs:{enable_thinking:true,low_effort:true,force_nonempty_content:true},max_tokens:editorial?5000:2500,response_format:editorial?{type:'json_schema',json_schema:editorialVerificationSchema(drafts.length)}:{type:'json_object'},stream:false} as any),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('VERIFIER_TIMEOUT')),editorial?90000:45000);})]);
  const reviews=parseVerification(raw,drafts.length,editorial),usage=Object.fromEntries(['prompt_tokens','completion_tokens','total_tokens','neurons'].filter(k=>typeof raw?.usage?.[k]==='number'&&Number.isFinite(raw.usage[k])&&raw.usage[k]>=0).map(k=>[k,raw.usage[k]]));
  return {blindSolves,protocolVersion:editorial?'EDITORIAL_REVIEW_V1':'LEGACY_REVIEW_V1',ok:!!reviews&&reviews.every(r=>r.valid),unavailable:!reviews,protocolRetryEligible:!reviews&&verificationProtocolRetryAllowed({unavailable:true,invalidOutputSample:JSON.stringify(readAiJson(raw))}),model,reviews:reviews??[],usage,...(!reviews?{invalidOutputSample:JSON.stringify(readAiJson(raw)).slice(0,2000)}:{})};
- }catch{return {ok:false,unavailable:true,protocolRetryEligible:true,model,reviews:[],usage:{}};}
+ }catch(e){const message=e instanceof Error?e.message:'';return {ok:false,unavailable:true,protocolRetryEligible:true,model,reviews:[],usage:{},diagnosticCode:/Too many SQL queries|D1.*limit/i.test(message)?'D1_QUERY_LIMIT':/QUESTION_.*BUDGET/.test(message)?'DAILY_AI_BUDGET':message==='VERIFIER_TIMEOUT'?'VERIFIER_TIMEOUT':'VERIFIER_PROVIDER_FAILED'};}
  finally{if(timer!==undefined)clearTimeout(timer);}
 }
