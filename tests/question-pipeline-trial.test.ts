@@ -2,7 +2,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
 import {expect,it,vi} from 'vitest';
 import {runEditorialPipelineTrial,PIPELINE_TRIAL_ID} from '../worker/lib/question-pipeline-trial';
-import {preparePipelineCorrection,verifyPipelineCorrection,PIPELINE_CORRECTION_ID} from '../worker/lib/question-pipeline-correction';
+import {preparePipelineCorrection,verifyPipelineCorrection,PIPELINE_CORRECTION_ID,PIPELINE_EDITOR_COMPARISON_ID} from '../worker/lib/question-pipeline-correction';
 import {editorialQuestion,editorialScores} from './fixtures/editorial-question';
 import {scientificSourceNumbers} from '../worker/lib/question-blind-solve';
 import curriculum from '../data/question-pilot-math5-curriculum.json';
@@ -79,5 +79,18 @@ it('corrects the same source once and verifies in a separate invocation without 
   expect(f.provider.mock.calls.filter(c=>c[0]==='@cf/openai/gpt-oss-120b')).toHaveLength(1);expect(editorCalls).toBe(2);
   expect(f.db.prepare('SELECT reserved_count FROM question_agent_pilot_budget').get()?.reserved_count).toBe(50);expect(f.db.prepare('SELECT verification_json FROM question_verifier_calibrations WHERE id=?').get(PIPELINE_TRIAL_ID)?.verification_json).toBe(old);
   expect(f.db.prepare('SELECT status FROM question_verifier_calibrations WHERE id=?').get(PIPELINE_CORRECTION_ID)?.status).toBe('PASS');
+ }finally{f.db.close();}
+});
+it('allows one alternative editor only after the recorded editor failed; keeps the reviewer independent',async()=>{
+ const f=fixture();try{
+  expect((await preparePipelineCorrection(f.env,{id:'admin',role:'SUPER_ADMIN'} as any,true)).status).toBe(409);expect(f.provider).not.toHaveBeenCalled();
+  const original=f.provider.getMockImplementation()!;let fail=true;
+  f.provider.mockImplementation(async(model:string,input:any)=>{if(model==='@cf/nvidia/nemotron-3-120b-a12b'&&input.response_format.json_schema.properties.reviews&&fail){fail=false;throw Error('Unavailable');}return original(model,input);});
+  await runEditorialPipelineTrial(f.env,{id:'admin',role:'SUPER_ADMIN'} as any);
+  f.db.prepare("INSERT INTO question_verifier_calibrations(id,status,verification_json) VALUES(?,'BLOCKED',?)").run(PIPELINE_CORRECTION_ID,JSON.stringify({error:'EDITOR_OUTPUT_INVALID'}));
+  f.provider.mockImplementation(async(model:string,input:any)=>{if(model==='@cf/zai-org/glm-4.7-flash'){expect(input.max_completion_tokens).toBe(8000);expect(input.response_format.json_schema.schema.properties.questions).toBeTruthy();const r:any=await original('@cf/qwen/qwen3-30b-a3b-fp8',input),p=JSON.parse(r.response);p.questions[0].stemText+=' Yöntemleri karşılaştırınız.';return {response:JSON.stringify(p)};}return original(model,input);});
+  expect(await (await preparePipelineCorrection(f.env,{id:'admin',role:'SUPER_ADMIN'} as any,true)).json()).toMatchObject({prepared:true});
+  expect(await (await verifyPipelineCorrection(f.env,{id:'admin',role:'SUPER_ADMIN'} as any,true)).json()).toMatchObject({passed:true,editorModel:'@cf/zai-org/glm-4.7-flash',cumulativeEditorPasses:3,newProducerCalls:0});
+  await preparePipelineCorrection(f.env,{id:'admin',role:'SUPER_ADMIN'} as any,true);expect(f.provider.mock.calls.filter(c=>c[0]==='@cf/zai-org/glm-4.7-flash')).toHaveLength(1);expect(f.db.prepare('SELECT status FROM question_verifier_calibrations WHERE id=?').get(PIPELINE_EDITOR_COMPARISON_ID)?.status).toBe('PASS');
  }finally{f.db.close();}
 });
