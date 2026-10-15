@@ -3,24 +3,18 @@
   "name": "yildiz-sinav-v1",
   "main": "./worker/preview-policy-staging-entry.ts",
   "compatibility_date": "2026-08-26",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1
   },
   "triggers": {
-    "crons": [
-      "*/15 * * * *"
-    ]
+    "crons": ["*/15 * * * *"]
   },
   "assets": {
     "directory": "./dist/client",
     "not_found_handling": "single-page-application",
-    "run_worker_first": [
-      "/api/*"
-    ]
+    "run_worker_first": ["/api/*"]
   },
   "d1_databases": [
     {
@@ -54,6 +48,9 @@
     ]
   },
   "vars": {
+    "QUESTION_TEAM_CONTROLS_ENABLED": "true",
+    "QUESTION_AI_DAILY_NEURON_LIMIT": "10000",
+    "QUESTION_VIDEO_RENDER_ENABLED": "true",
     "ENVIRONMENT": "staging",
     "QUESTION_GENERATION_ENABLED": "true",
     "QUESTION_GENERATION_MODEL": "@cf/openai/gpt-oss-120b",
@@ -80,8 +77,6 @@
     "NIBIRU_OPENAI_TTS_VOICE": "coral",
     "WHATSAPP_GRAPH_API_VERSION": "v25.0",
     "TURNSTILE_SITE_KEY": "1x00000000000000000000BB",
-    "TURNSTILE_SECRET_KEY": "1x0000000000000000000000000000000AA",
-    "QUESTION_TEAM_CONTROLS_ENABLED": "true",
-    "QUESTION_VIDEO_RENDER_ENABLED": "true"
+    "TURNSTILE_SECRET_KEY": "1x0000000000000000000000000000000AA"
   }
 }

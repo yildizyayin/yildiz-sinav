@@ -24,6 +24,7 @@ const codeMessage = {
  GENERATION_TEAM_PAUSED:'Soru havuzu ekibi veya gerekli denetçi duraklatıldı.', GENERATION_QUALITY_REJECTED:'Bilimsel doğrulama başarısız; taslaklar kaydedilmedi.', GENERATION_VERIFICATION_UNAVAILABLE:'Bağımsız doğrulama tamamlanamadı; taslaklar kaydedilmedi.',
  GENERATION_DISABLED:'Soru üretimi etkin değil.', GENERATION_JOB_NOT_FOUND:'İstek bulunamadı.',
  GENERATION_JOB_ACTIVE:'Soru üretimi devam ediyor.', GENERATION_RETRY_EXHAUSTED:'Üç deneme sınırına ulaşıldı.',
+ GENERATION_DAILY_AI_BUDGET:'Günlük soru üretimi AI bütçesi doldu veya bütçe doğrulanamadı.',
  GENERATION_CONTEXT_CHANGED:'Doğrulanmış kazanım bağlamı değişti. Listeyi yenileyin.',
  GENERATION_OUTPUT_INVALID:'Model yanıtı beklenen soru biçiminde değil.',
  GENERATION_DUPLICATE:'Aynı içerikli soru zaten mevcut veya yanıtta yineleniyor.',
@@ -194,7 +195,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
    env.AI!.run(model as any,{messages:[{role:'user',content:input}],...(model===DEFAULT_QUESTION_GENERATION_MODEL?{chat_template_kwargs:{enable_thinking:false},max_completion_tokens:6000}:{max_tokens:editorial?12000:3000}),response_format:env.QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED==='true'?{type:'json_schema',json_schema:questionDraftSchema(job.question_count,job.grade_level,job.grade_level===5&&job.outcome_code==='MAT.5.1.1',editorial,resolvedPresentation)}:{type:'json_object'},stream:false} as any),
    new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('GENERATION_TIMEOUT')),editorial?90000:PROVIDER_TIMEOUT_MS);}),
   ]);
- }catch(e){providerError=e instanceof Error&&e.message==='GENERATION_TIMEOUT'?'GENERATION_TIMEOUT':'GENERATION_PROVIDER_FAILED';}
+ }catch(e){providerError=e instanceof Error&&/QUESTION_(DAILY_AI_BUDGET|AI_BUDGET|AI_USAGE_ENVELOPE)/.test(e.message)?'GENERATION_DAILY_AI_BUDGET':e instanceof Error&&e.message==='GENERATION_TIMEOUT'?'GENERATION_TIMEOUT':'GENERATION_PROVIDER_FAILED';}
  finally{if(timer!==undefined)clearTimeout(timer);}
  const afterProvider=await executionFence(env,id,token);
  if(afterProvider)return afterProvider;

@@ -1,0 +1,83 @@
+// ANUNEX-owned AI-assisted source, frozen for verifier calibration; never published by this test.
+export const calibrationBaseline={
+ "stemText": "Bir okul, en az 280 etkinlik kartını en düşük toplam bedelle almak istiyor. Kutular bölünmeden satın alınacak ve 900 TL bütçe aşılmayacaktır. Tabloda üç tedarikçinin teklifleri verilmiştir. Mert, kutu fiyatı en düşük olduğu için A tedarikçisinin seçilmesi gerektiğini söylüyor. Mert'in kararını değerlendiren aşağıdaki açıklamalardan hangisi doğrudur?",
+ "solutionText": "A için 280 ÷ 40 = 7 kutu gerekir; 7 × 120 = 840 TL ödenir. B'nin 5 kutusu 55 × 5 = 275 kart verir ve ihtiyacı karşılamaz. Bu yüzden 6 kutu gerekir; 55 × 6 = 330 kart ve 6 × 150 = 900 TL olur. C için 280 ÷ 70 = 4 kutu gerekir; 4 × 180 = 720 TL ödenir. C ihtiyacı karşılar, bütçeyi aşmaz ve toplam bedeli en düşüktür. Yalnız kutu fiyatına bakmak yeterli değildir. Doğru seçenek C) C'nin 4 kutusu ihtiyacı 720 TL'ye karşılar.",
+ "difficultyLevel": 4,
+ "correctAnswer": "C",
+ "options": [
+  {
+   "label": "A",
+   "text": "Mert haklıdır; kutu fiyatı en düşük olan A, toplamda da en ucuzdur."
+  },
+  {
+   "label": "B",
+   "text": "Mert haksızdır; B'nin 5 kutusu ihtiyacı 750 TL'ye karşılar."
+  },
+  {
+   "label": "C",
+   "text": "Mert haksızdır; C'nin 4 kutusu ihtiyacı 720 TL'ye karşılar."
+  },
+  {
+   "label": "D",
+   "text": "Mert haksızdır; B'nin 6 kutusu daha fazla kart verdiği için en ekonomik seçimdir."
+  }
+ ],
+ "editorial": {
+  "version": 1,
+  "cognitiveDemand": "EVALUATE",
+  "skillTarget": "Tablodaki kutu fiyatını, ihtiyacı karşılayan tam kutu sayısını ve toplam bedeli ilişkilendirerek ekonomik seçim iddiasını kanıtla değerlendirme.",
+  "reasoningSteps": [
+   "Her teklifte ihtiyacı karşılayacak tam kutu sayısını bulur; B için kalanlı bölmede beş kutunun yetersizliğini fark eder.",
+   "Kutu sayısıyla kutu fiyatını çarpar, toplam bedelleri bütçe sınırıyla karşılaştırır.",
+   "Birim kutu fiyatı iddiasını toplam maliyetle sınar; daha fazla kartın her zaman en düşük bedel anlamına gelmediğini gerekçelendirir."
+  ],
+  "distractors": [
+   {
+    "label": "A",
+    "misconception": "En düşük kutu fiyatını, gerekli kutu sayısını hesaba katmadan en düşük toplam bedel sanma.",
+    "whyIncorrect": "A'nın kutu fiyatı 120 TL ile en düşüktür; ancak yedi kutunun toplamı 840 TL'dir. C dört kutuyla aynı minimum ihtiyacı 720 TL'ye karşılar."
+   },
+   {
+    "label": "B",
+    "misconception": "Kalanlı bölmede bölümdeki beş kutuyu yeterli sayıp karşılanmayan kartları göz ardı etme.",
+    "whyIncorrect": "B için beş kutu 275 kart verir ve 280 kartlık minimum ihtiyacı karşılamaz. Altı kutu gerektiğinden toplam bedel 900 TL olur."
+   },
+   {
+    "label": "D",
+    "misconception": "En düşük toplam bedel amacı yerine fazladan kart sayısını tercih ölçütü yapma.",
+    "whyIncorrect": "B'nin altı kutusu 330 kart verir ama 900 TL tutar. Problem en düşük bedelle ihtiyacın karşılanmasını istediği için 720 TL'lik C daha uygundur."
+   }
+  ],
+  "originalityDesign": "Birim fiyat iddiasının toplam maliyetle sınanması, kalanlı bölmede minimum ihtiyacın korunması ve ekonomik seçim ölçütünün fazladan miktardan ayrılması aynı kanıt değerlendirme görevinde birleştirilir.",
+  "visual": {
+   "kind": "TABLE",
+   "title": "Etkinlik kartı teklifleri",
+   "unit": "",
+   "columns": [
+    "Tedarikçi",
+    "Kutudaki kart sayısı",
+    "Kutu fiyatı (TL)"
+   ],
+   "rows": [
+    [
+     "A",
+     "40",
+     "120"
+    ],
+    [
+     "B",
+     "55",
+     "150"
+    ],
+    [
+     "C",
+     "70",
+     "180"
+    ]
+   ],
+   "categories": [],
+   "values": [],
+   "readingPurpose": "Kutu başına miktar ve fiyatı birlikte okuyup minimum ihtiyaç, bütçe ve toplam maliyet bakımından karar verme."
+  }
+ }
+};
