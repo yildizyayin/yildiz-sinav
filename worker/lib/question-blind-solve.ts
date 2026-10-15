@@ -10,6 +10,7 @@ export function scientificSourceNumbers(q:CheckedDraft){
  const visual=q.editorial?.visual;
  if(visual?.kind==='TABLE')visual.rows.forEach((row,r)=>row.forEach((value,c)=>{if(/^\d+(?:[.,]\d+)*$/.test(value)){const n=Number(value.replace(/\./g,'').replace(',','.'));if(Number.isFinite(n))values[`r${r}c${c}`]=n;}}));
  if(visual?.kind==='BAR_CHART')visual.values.forEach((v,i)=>values['bar'+i]=v);
+ for(const [key,n] of Object.entries({...values}))if(Number.isSafeInteger(n)&&n>=1000000&&n<1000000000000)for(const power of [1000000000,1000000,1000,1])values['derived_'+key+'_'+power]=Math.floor(n/power)%1000*power;
  return values;
 }
 export function blindSolveIssues(q:CheckedDraft,value:any){
