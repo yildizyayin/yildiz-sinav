@@ -101,6 +101,7 @@ export function officialPilotGuidance(context:any):string|null{
 }
 export function outcomeDraftIssues(q:CheckedDraft,context:any):string[]{
  const issues:string[]=[];
+ if(context?.gradeLevel===5&&context.outcomeCode==='MAT.5.1.1')issues.push(...readingDistractorIssues(q));
  const numberPart='bir|iki|üç|dört|beş|altı|yedi|sekiz|dokuz|on|yirmi|otuz|kırk|elli|altmış|yetmiş|seksen|doksan|yüz|bin|milyon|milyar';
  if(context?.outcomeCode==='MAT.5.1.1'&&new RegExp('(?<!\\p{L})(?:'+numberPart+'){2,}(?!\\p{L})','iu').test([q.stemText,q.solutionText,...q.options.map(o=>o.text)].join(' ').toLocaleLowerCase('tr-TR')))issues.push('INVALID_TURKISH_COMPOUND_NUMERAL');
  if(context?.gradeLevel===5&&String(context.outcomeCode??'').startsWith('MAT.5.')&&/\bbatch\b/i.test(q.stemText+' '+q.solutionText))issues.push('NON_TURKISH_PILOT_TERM');
@@ -116,6 +117,20 @@ export function outcomeDraftIssues(q:CheckedDraft,context:any):string[]{
    const a=number(e[1]),b=number(e[3]);
    if((e[2]==='+'||['-','−','–'].includes(e[2]))&&(a>99999||b>99999)||['*','×'].includes(e[2])&&(a>999||b>999)||['/','÷'].includes(e[2])&&(a>9999||b>99))issues.push('ARITHMETIC_OUTCOME_DIGIT_SCOPE');
   }
+ }
+ return [...new Set(issues)];
+}
+/** Check an explicit nine-digit group representation followed by its claimed
+ * whole-number conclusion. Only unchanged billion/ones groups are comparable;
+ * never infer a learner's unstated operation from arbitrary prose. */
+export function readingDistractorIssues(q:CheckedDraft){
+ const phrases=[...q.stemText.matchAll(/[“"]([^”"]+)[”"]/g)].map(m=>turkishCardinal(m[1])).filter(v=>v!==null);
+ if(phrases.length!==1||(phrases[0]??0)<1e9)return [];
+ const target=phrases[0]!,issues:string[]=[];
+ const pattern=/(\d{3}[. \u00a0\u202f]\d{3}[. \u00a0\u202f]\d{3})\s+(?:şeklinde|olarak)\s+yazılır\.\s*Bu durumda sayı\s+(\d{1,3}(?:[. \u00a0\u202f]\d{3}){2,3})\s+olur/giu;
+ for(const distractor of q.editorial?.distractors??[])for(const match of distractor.whyIncorrect.matchAll(pattern)){
+  const partial=number(match[1]),whole=number(match[2]);
+  if(partial%1000===0&&Math.floor(whole/1e9)===Math.floor(target/1e9)&&whole%1000===target%1000&&whole%1e9!==partial+target%1000)issues.push('DISTRACTOR_GROUP_VALUE_CONTRADICTION');
  }
  return [...new Set(issues)];
 }

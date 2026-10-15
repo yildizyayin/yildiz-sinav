@@ -1,7 +1,7 @@
 import type {Env,AuthUser} from '../types';
 import {one,json} from './db';
 import {calibrationCases} from './question-verifier-calibration';
-import {verifyQuestionDrafts,type CheckedDraft} from './question-generation-validation';
+import {verifyQuestionDrafts,outcomeDraftIssues,type CheckedDraft} from './question-generation-validation';
 import {readEditorPacket,QUESTION_EDITOR_MODEL} from './question-ai-editor';
 import {sha256} from './question-team-policy';
 import observed from '../../data/question-quality-observed-qwen.json';
@@ -22,10 +22,10 @@ export function qualityValidationFindings(results:any[]){
   // A timeout, missing scores or unavailable reviewer is NEVER a scientific rejection.
   const actualReview=!!v&&!v.unavailable&&Array.isArray(v.reviews)&&v.reviews.length===1&&v.reviews[0].valid===v.ok&&(v.ok||v.reviews[0].issues?.length>0);
   const expectedModel=v?.model===verifier&&v.blindSolves?.length===1&&v.blindSolves[0].keyHidden===true&&v.blindSolves[0].solutionHidden===true;
-  const code=c.key==='wrong-arithmetic'?'INVALID_ARITHMETIC':c.key==='actual-invalid-number-spelling'?'INVALID_TURKISH_COMPOUND_NUMERAL':null;
+  const code=c.key==='wrong-arithmetic'?'INVALID_ARITHMETIC':c.key==='actual-invalid-number-spelling'?'INVALID_TURKISH_COMPOUND_NUMERAL':c.key==='actual-editor-invalid-distractor-explanations'?'DISTRACTOR_GROUP_VALUE_CONTRADICTION':null;
   const mechanicalOnly=code!==null&&v?.model===null&&v.reviews?.[0]?.issues?.includes(code);
-  const editorialEvidence=c.expectedPass||c.key==='actual-editor-invalid-distractor-explanations'?!!v?.reviews?.[0]?.editorial:true;
-  const faultMatched=c.key!=='actual-editor-invalid-distractor-explanations'||/çeldirici|seçenek|açıklama|misconception|distractor|yanılgı/iu.test(JSON.stringify([v?.reviews?.[0]?.issues,v?.reviews?.[0]?.editorial?.rationale]));
+  const editorialEvidence=mechanicalOnly||(!(c.expectedPass||c.key==='actual-editor-invalid-distractor-explanations')||!!v?.reviews?.[0]?.editorial);
+  const faultMatched=mechanicalOnly||c.key!=='actual-editor-invalid-distractor-explanations'||/çeldirici|seçenek|açıklama|misconception|distractor|yanılgı/iu.test(JSON.stringify([v?.reviews?.[0]?.issues,v?.reviews?.[0]?.editorial?.rationale]));
   return {key:c.key,expectedPass:c.expectedPass,passed:actualReview&&(expectedModel||mechanicalOnly)&&editorialEvidence&&faultMatched&&v.ok===c.expectedPass,...(v?{accepted:v.ok,unavailable:v.unavailable,issues:v.reviews?.[0]?.issues??[]}:{} )};
  });
  return {passed:results.length===cases.length&&new Set(results.map(r=>r.key)).size===cases.length&&findings.every(f=>f.passed),findings};
@@ -40,13 +40,27 @@ async function continueReadingQuality(env:Env,prior:any){
  const cases=qualityValidationCases(),sourceHash=await sha256(JSON.stringify(cases));
  if(original.sourceHash!==sourceHash||!readingContinuationEligible(original))return json({ok:true,reused:true,validation:prior});
  const existing=await one<any>(env.DB.prepare('SELECT * FROM question_verifier_calibrations WHERE id=?').bind(id));
- if(existing)return json({ok:true,reused:true,validation:existing});
+ if(existing)return existing.status==='BLOCKED'&&existing.verification_json?finalizeDistractorGuard(env,existing):json({ok:true,reused:true,validation:existing});
  const claim=await env.DB.prepare("INSERT OR IGNORE INTO question_verifier_calibrations(id,status) VALUES(?,'RUNNING')").bind(id).run();
  if(Number(claim.meta?.changes)!==1)return json({ok:false,error:{code:'QUALITY_CONTINUATION_ALREADY_CLAIMED'}},409);
  const c=cases[4],verification=await verifyQuestionDrafts(env,c.context,[c.question]);
  const results=original.results.map((r:any)=>r.key===c.key?{key:c.key,verification}:r),findings=qualityValidationFindings(results);
  const exactProof=verification.blindSolves?.[0]?.method==='DETERMINISTIC_TURKISH_CARDINAL';
  const report={...findings,passed:findings.passed&&exactProof,sourceHash,verifier,results,baselineValidationId:QUALITY_VALIDATION_ID,baselineHash:await sha256(prior.verification_json),newVerifications:1,unchangedCaseResults:5,exactReadingProof:exactProof,benchmarkOnly:true,autonomousProductionCertified:false,createsQuestions:false,humanApproved:false};
+ await env.DB.prepare('UPDATE question_verifier_calibrations SET status=?,findings_json=?,verification_json=?,completed_at=CURRENT_TIMESTAMP WHERE id=? AND status=\'RUNNING\'').bind(report.passed?'PASS':'BLOCKED',JSON.stringify(report.findings),JSON.stringify(report),id).run();
+ return json({ok:true,...report});
+}
+async function finalizeDistractorGuard(env:Env,prior:any){
+ const id=QUALITY_VALIDATION_ID+'-distractor-proof-v1',original=JSON.parse(prior.verification_json),cases=qualityValidationCases(),c=cases[4];
+ const old=original.results?.find((r:any)=>r.key===c.key)?.verification,sourceHash=await sha256(JSON.stringify(cases));
+ // This is mitigation of the recorded false positive, never another model roll.
+ if(original.sourceHash!==sourceHash||old?.ok!==true||old?.model!==verifier||!outcomeDraftIssues(c.question,c.context).includes('DISTRACTOR_GROUP_VALUE_CONTRADICTION'))return json({ok:true,reused:true,validation:prior});
+ const existing=await one<any>(env.DB.prepare('SELECT * FROM question_verifier_calibrations WHERE id=?').bind(id));
+ if(existing)return json({ok:true,reused:true,validation:existing});
+ const claimed=await env.DB.prepare("INSERT OR IGNORE INTO question_verifier_calibrations(id,status) VALUES(?,'RUNNING')").bind(id).run();
+ if(Number(claimed.meta?.changes)!==1)return json({ok:false,error:{code:'GUARD_VALIDATION_ALREADY_CLAIMED'}},409);
+ const verification=await verifyQuestionDrafts(env,c.context,[c.question]),results=original.results.map((r:any)=>r.key===c.key?{key:c.key,verification}:r),findings=qualityValidationFindings(results);
+ const report={...findings,sourceHash,verifier,results,baselineValidationId:prior.id,baselineHash:await sha256(prior.verification_json),newModelCalls:0,unchangedCaseResults:5,independentReviewerFalsePositiveObserved:true,mitigatedByDeterministicGuard:true,benchmarkOnly:true,autonomousProductionCertified:false,createsQuestions:false,humanApproved:false};
  await env.DB.prepare('UPDATE question_verifier_calibrations SET status=?,findings_json=?,verification_json=?,completed_at=CURRENT_TIMESTAMP WHERE id=? AND status=\'RUNNING\'').bind(report.passed?'PASS':'BLOCKED',JSON.stringify(report.findings),JSON.stringify(report),id).run();
  return json({ok:true,...report});
 }

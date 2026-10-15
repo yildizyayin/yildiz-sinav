@@ -17,6 +17,9 @@ it('requires every result, hidden-key evidence, positive acceptance and reasoned
 it('requires the specific mechanical fault rather than counting unrelated failure',()=>{
  const r:any[]=results();r[2].verification.model=null;r[2].verification.reviews[0].issues=['INVALID_ARITHMETIC'];expect(qualityValidationFindings(r).passed).toBe(true);
  r[2].verification.reviews[0].issues=['UNRELATED_ERROR'];expect(qualityValidationFindings(r).passed).toBe(false);
+ const guarded:any[]=results();guarded[4].verification.model=null;guarded[4].verification.reviews[0]={valid:false,issues:['DISTRACTOR_GROUP_VALUE_CONTRADICTION']};
+ expect(qualityValidationFindings(guarded).passed).toBe(true);
+ guarded[4].verification.reviews[0].issues=['UNRELATED_ERROR'];expect(qualityValidationFindings(guarded).passed).toBe(false);
 });
 it('does not count an unrelated rejection as detection of the actual distractor error',()=>{
  const r:any[]=results();r[4].verification.reviews[0].issues=['ROUTINE_TASK'];r[4].verification.reviews[0].editorial.rationale='Bu görev yeterli düşünme derinliği içermediğinden kalite puanı düşüktür.';
