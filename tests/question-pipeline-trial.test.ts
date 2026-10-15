@@ -104,3 +104,50 @@ it('allows one alternative editor only after the recorded editor failed; keeps t
   await preparePipelineCorrection(f.env,{id:'admin',role:'SUPER_ADMIN'} as any,true,true,true);expect(f.db.prepare('SELECT status FROM question_verifier_calibrations WHERE id=?').get(PIPELINE_EDITOR_TRANSPORT_RETRY_ID)?.status).toBe('PASS');
  }finally{f.db.close();}
 });
+
+import {verifyStrategyAssembly,STRATEGY_ASSEMBLY_ID} from '../worker/lib/question-pipeline-strategy-verification';
+import {assembleInverseStrategies} from '../worker/lib/question-strategy-assembly';
+function seedAssembly(f:ReturnType<typeof fixture>){
+ const q=JSON.parse(readFileSync(new URL('./fixtures/pipeline-reasoned-math-candidate.json',import.meta.url),'utf8'));
+ const source={grade_level:5,outcome_id:'o',outcome_code:'MAT.5.1.2',outcome_title:curriculum.outcomes[1].title,subject_id:'math',curriculum_version_id:'cv',academic_year:curriculum.academicYear,program_version:curriculum.programVersion,source_url:curriculum.sourceUrl};
+ const text=JSON.stringify({error:'EDITOR_OUTPUT_INVALID',source,editorObserved:{packet:{questions:[q]}}});
+ f.db.prepare("INSERT INTO question_verifier_calibrations(id,status,verification_json) VALUES(?,'BLOCKED',?)").run(PIPELINE_EDITOR_TRANSPORT_RETRY_ID,text);
+ f.db.exec('UPDATE question_agent_pilot_budget SET reserved_count=50');
+ return {q,text};
+}
+it('assembles a recorded source once, keeps its provenance and cap, and only calls independent roles',async()=>{
+ const f=fixture();try{
+  const {q,text}=seedAssembly(f),assembled=assembleInverseStrategies(q)!.question;
+  f.provider.mockImplementation(async(model:string,input:any)=>{
+   expect(model).toBe('@cf/nvidia/nemotron-3-120b-a12b');
+   if(input.response_format.json_schema.properties.sourceNumbers)return {response:JSON.stringify({sourceNumbers:scientificSourceNumbers(assembled),answer:'C',optionChecks:assembled.options.map(o=>({label:o.label,correct:o.label==='C',reason:'İşlem sonuçları ve yöntem açıklaması verilen başlangıç koşuluna göre kontrol edildi.'})),calculations:[{left:632,op:'ADD',right:275,result:907},{left:907,op:'SUB',right:148,result:759}]})};
+   return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})};
+  });
+  const result:any=await (await verifyStrategyAssembly(f.env,{id:'admin',role:'SUPER_ADMIN'} as any)).json();
+  expect(result).toMatchObject({passed:true,modelEditorCalls:0,newProducerCalls:0,pureLlmEditorial:false,sourceUnchanged:true,construction:'AI_SOURCE_WITH_DETERMINISTIC_STRATEGY_EDITOR'});
+  expect(f.provider).toHaveBeenCalledTimes(2);
+  expect(await (await verifyStrategyAssembly(f.env,{id:'admin',role:'SUPER_ADMIN'} as any)).json()).toMatchObject({reused:true});expect(f.provider).toHaveBeenCalledTimes(2);
+  expect(f.db.prepare('SELECT reserved_count FROM question_agent_pilot_budget').get()?.reserved_count).toBe(50);
+  expect(f.db.prepare('SELECT verification_json FROM question_verifier_calibrations WHERE id=?').get(PIPELINE_EDITOR_TRANSPORT_RETRY_ID)?.verification_json).toBe(text);
+  expect(f.db.prepare('SELECT count(*) n FROM question_bank').get()?.n).toBe(0);
+ }finally{f.db.close();}
+});
+it('refuses unauthorized or arithmetically invalid assembly sources without any model call',async()=>{
+ const f=fixture();try{
+  const {q}=seedAssembly(f),user:any={id:'admin',role:'SUPER_ADMIN'};
+  expect((await verifyStrategyAssembly({...f.env,ENVIRONMENT:'production'},user)).status).toBe(409);
+  expect((await verifyStrategyAssembly(f.env,{...user,role:'TEACHER'})).status).toBe(409);
+  q.solutionText=q.solutionText.replace('= 907','= 908');
+  f.db.prepare('UPDATE question_verifier_calibrations SET verification_json=json_set(verification_json,\'$.editorObserved.packet.questions[0]\',json(?)) WHERE id=?').run(JSON.stringify(q),PIPELINE_EDITOR_TRANSPORT_RETRY_ID);
+  expect((await verifyStrategyAssembly(f.env,user)).status).toBe(409);expect(f.provider).not.toHaveBeenCalled();
+  expect(f.db.prepare('SELECT count(*) n FROM question_verifier_calibrations WHERE id=?').get(STRATEGY_ASSEMBLY_ID)?.n).toBe(0);
+ }finally{f.db.close();}
+});
+it('preserves a real verifier failure and never retries a claimed assembly',async()=>{
+ const f=fixture();try{
+  seedAssembly(f);f.provider.mockRejectedValue(Error('Unavailable'));
+  expect(await (await verifyStrategyAssembly(f.env,{id:'admin',role:'SUPER_ADMIN'} as any)).json()).toMatchObject({passed:false,stage:'REJECTED_CANDIDATE'});
+  await verifyStrategyAssembly(f.env,{id:'admin',role:'SUPER_ADMIN'} as any);expect(f.provider).toHaveBeenCalledTimes(1);
+  expect(f.db.prepare('SELECT status FROM question_verifier_calibrations WHERE id=?').get(STRATEGY_ASSEMBLY_ID)?.status).toBe('BLOCKED');
+ }finally{f.db.close();}
+});

@@ -99,3 +99,42 @@ This attempt counts in total editor invocations; never report a first-pass succe
 After this bounded retry, do not launch more model experiments or reset counters.
 If it fails, the fresh-valid-candidate goal is still incomplete. Preserve the
 actual fault and prepare a concrete next technical/model-capacity decision.
+
+
+## Fixed-source strategy assembly (single current task)
+The 240s transport retry, run38755467022, returned correct arithmetic and
+consistent numeric distractors, but FAILED the required strategy-decision
+structure. It is not a passing editorial generation. Evidence is preserved in
+question-pipeline-transport-retry-evidence-20261015.json. No more model-editor
+attempts are made. Cumulative lineage remains one author and five model-editor
+invocations; pilot50/50, no refunded usage.
+
+A narrow programmatic strategy editor now derives two proposed methods and
+partial-method distractors from those exact AI-generated calculations. It
+changes the presentation and diagnoses, not the givens, numerical options or
+answer. Construction is explicitly AI_SOURCE_WITH_DETERMINISTIC_STRATEGY_EDITOR;
+pureLlmEditorial=false. It refuses inconsistent arithmetic or unsupported
+source structures. This is currently a diagnostic helper, not a promoted
+production default and not evidence of purely LLM editorial reliability.
+
+One immutable assembly record, editorial-pipeline-20261015-v1-glm-transport-retry-v1-strategy-assembly-v1,
+is independently blind-solved and reviewed by Nemotron. No new writer, model
+editor, pilot slot, question-bank write or student publication. Source hash,
+assembled plan, scores and independent arithmetic are retained, including
+rejection/unavailability. Repeat calls reuse evidence without new AI calls.
+Local validation:11 focused tests, typecheck and build passed. Staging run38758027673 completed with a BLOCKED candidate. Its independent
+blind-solver call returned BLIND_SOLVER_UNAVAILABLE; no valid scientific
+proof and no six-score editorial review were obtained. This is NOT a content
+rejection and NOT a passing candidate. The provider exception detail was not
+retained by the existing blind-solver catch, so its exact cause is unproven.
+The call is UNKNOWN with947 reserved Neurons retained, not refunded. Ledger
+now4243 charged+2759 held of10000. Pilot50/50 unchanged; source record unchanged;
+question-bank writes0. No repeat provider/model calls follow this failure.
+The current fresh-valid-candidate task remains BLOCKED, not completed.
+Evidence: question-pipeline-strategy-assembly-evidence-20261015.json.
+Latest staging deploy38758027437 passed source verification, deployment and
+Nibiru provider probe. A successful provider probe does not retroactively
+validate the failed blind-solver request.
+Previous staging deploy38755466944 completed deployment and source checks but
+failed its Nibiru provider probe (one provider returned3045 internal error).
+This unrelated probe is not evidence that the question candidate passed.
