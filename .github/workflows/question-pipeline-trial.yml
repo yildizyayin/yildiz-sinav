@@ -1,0 +1,36 @@
+name: One fresh editorial pipeline trial
+on:
+  push:
+    branches: [staging]
+    paths: [.github/question-pipeline-trial.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-pipeline-trial
+  cancel-in-progress: false
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Deploy private shared editorial pipeline
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/deploy-question-production-worker.mjs
+      - name: Generate and verify at most one fresh candidate with the final pilot slot
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-question-pipeline-trial.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-pipeline-trial-${{ github.run_id }}
+          path: tmp/question-pipeline-trial/
