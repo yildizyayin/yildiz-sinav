@@ -2,7 +2,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
 import {expect,it,vi} from 'vitest';
 import {runEditorialPipelineTrial,PIPELINE_TRIAL_ID} from '../worker/lib/question-pipeline-trial';
-import {preparePipelineCorrection,verifyPipelineCorrection,PIPELINE_CORRECTION_ID,PIPELINE_EDITOR_COMPARISON_ID} from '../worker/lib/question-pipeline-correction';
+import {preparePipelineCorrection,verifyPipelineCorrection,PIPELINE_CORRECTION_ID,PIPELINE_EDITOR_COMPARISON_ID,PIPELINE_REASONED_EDITOR_ID} from '../worker/lib/question-pipeline-correction';
 import {editorialQuestion,editorialScores} from './fixtures/editorial-question';
 import {scientificSourceNumbers} from '../worker/lib/question-blind-solve';
 import curriculum from '../data/question-pilot-math5-curriculum.json';
@@ -92,5 +92,9 @@ it('allows one alternative editor only after the recorded editor failed; keeps t
   expect(await (await preparePipelineCorrection(f.env,{id:'admin',role:'SUPER_ADMIN'} as any,true)).json()).toMatchObject({prepared:true});
   expect(await (await verifyPipelineCorrection(f.env,{id:'admin',role:'SUPER_ADMIN'} as any,true)).json()).toMatchObject({passed:true,editorModel:'@cf/zai-org/glm-4.7-flash',cumulativeEditorPasses:3,newProducerCalls:0});
   await preparePipelineCorrection(f.env,{id:'admin',role:'SUPER_ADMIN'} as any,true);expect(f.provider.mock.calls.filter(c=>c[0]==='@cf/zai-org/glm-4.7-flash')).toHaveLength(1);expect(f.db.prepare('SELECT status FROM question_verifier_calibrations WHERE id=?').get(PIPELINE_EDITOR_COMPARISON_ID)?.status).toBe('PASS');
+  f.db.prepare("UPDATE question_verifier_calibrations SET status='BLOCKED',verification_json=? WHERE id=?").run(JSON.stringify({error:'EDITOR_OUTPUT_INVALID'}),PIPELINE_EDITOR_COMPARISON_ID);
+  const alternative=f.provider.getMockImplementation()!;f.provider.mockImplementation(async(model:string,input:any)=>{if(model==='@cf/zai-org/glm-4.7-flash'){expect(input.chat_template_kwargs.enable_thinking).toBe(true);expect(input.messages[0].role).toBe('system');expect(input.messages[0].content).toContain('Required application task:');expect(JSON.parse(input.messages[1].content).questions).toHaveLength(1);}return alternative(model,input);});
+  expect(await (await preparePipelineCorrection(f.env,{id:'admin',role:'SUPER_ADMIN'} as any,true,true)).json()).toMatchObject({prepared:true});
+  expect(await (await verifyPipelineCorrection(f.env,{id:'admin',role:'SUPER_ADMIN'} as any,true,true)).json()).toMatchObject({passed:true,cumulativeEditorPasses:4,reasonedEditor:true});expect(f.db.prepare('SELECT status FROM question_verifier_calibrations WHERE id=?').get(PIPELINE_REASONED_EDITOR_ID)?.status).toBe('PASS');
  }finally{f.db.close();}
 });
