@@ -4,9 +4,9 @@
   "main": "./worker/question-production-worker.ts",
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat"],
-  "workers_dev": true,
+  "workers_dev": false,
   "observability": {"enabled": true},
-  "triggers": {"crons": ["* * * * *"]},
+  "triggers": {"crons": []},
   "ai": {"binding":"AI"},
   "d1_databases": [{"binding":"DB","database_name":"resolved-at-deploy","database_id":"00000000-0000-0000-0000-000000000000"}],
   "vars": {

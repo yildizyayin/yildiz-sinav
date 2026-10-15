@@ -9,8 +9,9 @@
     "head_sampling_rate": 1
   },
   "triggers": {
-    "crons": ["*/15 * * * *"]
+    "crons": ["* * * * *"]
   },
+  "services": [{"binding":"QUESTION_PRODUCTION","service":"anunex-question-production-staging"}],
   "assets": {
     "directory": "./dist/client",
     "not_found_handling": "single-page-application",
