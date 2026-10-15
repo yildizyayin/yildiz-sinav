@@ -1,3 +1,4 @@
+import {productionJobState,productionJobFence} from './question-production-policy';
 import {questionOriginalityCandidates} from './question-originality-search';
 import {EDITORIAL_INSTRUCTION,editorialSchema,editorialIssues,visualBlock,resolveEditorialPresentation,type EditorialPacket} from './question-editorial';
 import {questionTeamPaused,type QuestionTeamAgent} from './question-team-policy';
@@ -109,6 +110,7 @@ async function executionFence(env:Env,id:string,token:string):Promise<Response|n
  if(!state)return err(404,'GENERATION_JOB_NOT_FOUND');
  if(state.status==='CANCELLED')return err(409,'GENERATION_CANCELLED');
  if(state.status!=='RUNNING'||state.lease_token!==token||!state.lease_until||state.lease_until<=new Date().toISOString())return err(409,'GENERATION_JOB_ACTIVE');
+ const production=await productionJobState(env,id);if(production&&(production.status!=='ACTIVE'||production.slot_status!=='RUNNING'||production.lease_until<=new Date().toISOString())){await fail(env,id,token,'GENERATION_TEAM_PAUSED');return err(409,'GENERATION_TEAM_PAUSED');}
  if(await questionTeamPaused(env,requiredAgents(state))){await fail(env,id,token,'GENERATION_TEAM_PAUSED');return err(409,'GENERATION_TEAM_PAUSED');}
  if(!state.context_valid){await fail(env,id,token,'GENERATION_CONTEXT_CHANGED');return err(409,'GENERATION_CONTEXT_CHANGED');}
  return null;
@@ -132,10 +134,11 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  if(prior.status==='REVIEW_READY')return json({ok:true,job:generationJobDto(prior as any),reused:true});
  if(repair&&(prior.quality_profile!=='EDITORIAL_V1'||prior.status!=='FAILED'||prior.generated_count!==0||(repair.verificationRetry?(prior.editorial_repair_count!==1||prior.editorial_verify_retry_count!==0):prior.editorial_repair_count!==0)))return err(409,'GENERATION_RETRY_EXHAUSTED');
  if(prior.status==='CANCELLED')return err(409,'GENERATION_CANCELLED');
+ const production=await productionJobState(env,id);if(production&&(prior.quality_profile!=='EDITORIAL_V1'||repair||production.status!=='ACTIVE'||production.slot_status!=='RUNNING'||production.lease_until<=new Date().toISOString()||production.question_count!==prior.question_count||prior.attempt_count>0))return err(409,'GENERATION_TEAM_PAUSED');
  if(await questionTeamPaused(env,requiredAgents(prior)))return err(409,'GENERATION_TEAM_PAUSED');
  // Apply extra safety limits only to an explicitly enabled automated pilot.
  // Existing manual Super Admin execution retains its current reviewed workflow.
- if ((env as Env & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE === 'true') {
+ if (!production&&(env as Env & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE === 'true') {
  const pilotConfig=env as Env & {QUESTION_PILOT_BUDGET_REMAINING?:string;QUESTION_PILOT_REVIEW_AVAILABLE?:string};
  const budgetRaw=pilotConfig.QUESTION_PILOT_BUDGET_REMAINING;
  const budgetRemaining=budgetRaw && budgetRaw.trim()!=='' ? Number(budgetRaw) : NaN;
@@ -148,7 +151,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  });
  if(!pilot.ok)return json({ok:false,error:{code:'PILOT_GUARD_BLOCKED',reasons:pilot.reasons}},409);
  }
- const now=new Date(),token=uuid('lease'),until=new Date(now.getTime()+(prior.quality_profile==='EDITORIAL_V1'?300000:LEASE_MS)).toISOString();
+ const now=new Date(),token=uuid('lease'),until=new Date(now.getTime()+(prior.quality_profile==='EDITORIAL_V1'?600000:LEASE_MS)).toISOString();
  const claimed=repair?.verificationRetry?await env.DB.prepare(`UPDATE question_generation_jobs AS j SET status='RUNNING',lease_token=?,lease_until=?,error_code=NULL,editorial_verify_retry_count=1 WHERE id=? AND status='FAILED' AND generated_count=0 AND editorial_repair_count=1 AND editorial_verify_retry_count=0 AND repair_source_hash=? AND repair_payload_hash=? AND ${currentContextSql('j')} AND EXISTS(SELECT 1 FROM audit_logs a WHERE a.id=? AND a.entity_id=j.id AND a.details_json=?)`).bind(token,until,id,repair.sourceHash,repair.payloadHash,repair.sourceAuditId,repair.sourceDetails).run():repair?await env.DB.prepare(`UPDATE question_generation_jobs AS j SET status='RUNNING',lease_token=?,lease_until=?,error_code=NULL,editorial_repair_count=1,repair_source_hash=?,repair_payload_hash=?,repair_source_audit_id=? WHERE id=? AND status='FAILED' AND generated_count=0 AND editorial_repair_count=0 AND quality_profile='EDITORIAL_V1' AND ${currentContextSql('j')} AND EXISTS(SELECT 1 FROM audit_logs a WHERE a.id=? AND a.entity_id=j.id AND a.details_json=?)`).bind(token,until,repair.sourceHash,repair.payloadHash,repair.sourceAuditId,id,repair.sourceAuditId,repair.sourceDetails).run():await env.DB.prepare(`UPDATE question_generation_jobs AS j SET status='RUNNING',attempt_count=attempt_count+1,
   lease_token=?,lease_until=?,error_code=NULL WHERE id=? AND attempt_count<3
   AND (status IN ('REQUESTED','FAILED') OR (status='RUNNING' AND lease_until<=?))
@@ -164,7 +167,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  }
  const beforeProvider=await executionFence(env,id,token);
  if(beforeProvider)return beforeProvider;
- if((env as Env & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE==='true'){
+ if(!production&&(env as Env & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE==='true'){
  try{
  await env.DB.prepare('INSERT OR IGNORE INTO question_agent_pilot_reservations(job_id,question_count) VALUES(?,?)').bind(id,prior.question_count).run();
  const reservation=await one<{question_count:number}>(env.DB.prepare('SELECT question_count FROM question_agent_pilot_reservations WHERE job_id=?').bind(id));
@@ -226,7 +229,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  if(await bankHasDuplicate(env,job,drafts)){await fail(env,id,token,'GENERATION_DUPLICATE');return err(409,'GENERATION_DUPLICATE');}
  const hashes=await Promise.all(keys.map(hash));
  await stage(env,id,token,'COMMITTING');
- const fence=currentContextSql('j');
+ const fence=currentContextSql('j')+((env as any).QUESTION_PRODUCTION_CAMPAIGNS_ENABLED==='true'?' AND '+productionJobFence:'');
  const agents=requiredAgents(job),agentSql=agents.map(a=>"'"+a+"'").join(',');
  const teamFence=env.QUESTION_TEAM_CONTROLS_ENABLED==='true'?` AND EXISTS(SELECT 1 FROM question_team_control WHERE id=1 AND paused=0) AND ${agents.length}=(SELECT count(*) FROM question_team_agent_control WHERE agent_key IN (${agentSql})) AND NOT EXISTS(SELECT 1 FROM question_team_agent_control WHERE paused=1 AND agent_key IN (${agentSql}))`:'';
  const stmts:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO question_generation_commit_gates(job_id,lease_token)

@@ -9,3 +9,11 @@ Denetçi için sabit bir doğru kaynak ve yanlış cevap anahtarı, yanlış ç�
 İlk canlı ölçüm planı: kalan4 hak, iki doğrulanmış MAT5 çıktısı, dört farklı görev. Her iş tek üretici denemesi, hiçbir yeni-key tekrar zinciri veya insan düzeltmesi yok. Denetçi negatif kontrolleri geçmeden dört iş başlatılmaz. Bu küçük örnek tüm MEB kapsamını/500k üretim hızını kanıtlamaz.
 
 13 odaklı test, typecheck ve111 dosyalık migration politikası geçti. Canlı dağıtım/ölçüm henüz yok. Sonraki: stage'e ilk katmanı dağıt, sabit canlı denetimi yürüt; günlük maliyet ve gerçek otonom kalite sonucuna göre kampanya/iş dağıtımı ve çoklu işçi sınırlarını tamamla. Otomatik üretim ve ücretli kapasite henüz açılmadı.
+
+## İlk gerçek karşı örnek sonucu
+
+38722085021 BLOCKED: doğru örnek geçti; yanlış anahtar modelce, yanlış hesap mekanik denetimde reddedildi; C fiyatı180→380 yapılan çelişen tabloya model4/4 verdi. Bu bilimsel yanlış olumlu kayıt altındadır. Dört üretim işi başlatılmadı; pilot46/50, üç model denetim çağrısı407 yuvarlanmış nöron, held0. v1 kaydı değiştirilmez.
+
+Düzeltme: cevap/çözüm/tasarım notu görmeyen bilimsel çözücü. Kaynak sayıları exact veri şemasıyla sabit; bütün görsel sayıları aritmetikte kullanılmalı, operand kaynak/önceki sonuçtan gelmeli, işlem sonuçları server'da hesaplanır, tek doğru seçenek anahtarla uyuşmalı. Bağımsız hesap kanıtı editoryal denetçiye ayrıca verilir. v2 aynı sabit örneklerde tekrar ölçülür; başarı uydurulmaz.
+
+0113 ayrı kampanya/slot/günlük taslak kayıtları: eski50 kotası yerinde kalır, yeni kampanya varsayılanPAUSED. Toplam taslak üst sınırı500000, kabul hedefi500000; retler nedeniyle taslak tavanı kabul hedefine ulaşmayı garanti etmez. Dakikalık bağımsız worker ana uygulamanın diğer cron işlerini sıklaştırmaz. Başlatma root, aynıOrigin ve revizyon tanığı ister; v2 karşı örnekleri ve farklı görevlerde enaz3/4 otonom geçiş, iki kazanım ve iki sunum gerekir. Sadece küçük doğrulanmış pilot, bütün MEB/500k hız belgesi değildir. İnsan incelemesi50 dolunca durur; budget bitince yeni UTC gününü bekler;3 başarısızlıktaPAUSED, stale slotlar FAILED, otomatik retry yok. En fazla4 işçi; mevcut10000 nöron sınırında muhafazakâr kabul kapasitesi1 işçi.
