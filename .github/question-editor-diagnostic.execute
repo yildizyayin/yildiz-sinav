@@ -1,1 +1,1 @@
-2026-10-15 observe one budgeted Qwen protocol response; diagnostic-only, no pilot reset or question approval.
+2026-10-15 replay saved null-content Qwen packet through fixed parser; ZERO new model calls, no job changes.

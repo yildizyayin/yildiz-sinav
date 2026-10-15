@@ -1,6 +1,6 @@
 import type {Env,AuthUser} from '../types';
 import {one,json} from './db';
-import {editQuestionPacket} from './question-ai-editor';
+import {editQuestionPacket,readEditorPacket} from './question-ai-editor';
 import {handleQuestionEditorialRepair} from './question-editorial-repair';
 const id='editor-transport-20261015-v1';
 const sourceJob='qgj_d03f2a96-db7f-4c5f-9d80-84ee2b913121';
@@ -8,7 +8,7 @@ const sourceJob='qgj_d03f2a96-db7f-4c5f-9d80-84ee2b913121';
 export async function diagnoseEditorProtocol(env:Env,user:AuthUser){
  if(user.role!=='SUPER_ADMIN'||env.ENVIRONMENT!=='staging')return json({ok:false,error:{code:'STAGING_ADMIN_REQUIRED'}},403);
  const prior=await one<any>(env.DB.prepare('SELECT * FROM question_verifier_calibrations WHERE id=?').bind(id));
- if(prior)return json({ok:true,reused:true,diagnostic:prior});
+ if(prior){let replay:any=null;try{const observation=JSON.parse(prior.verification_json),packet=readEditorPacket(JSON.parse(observation.rawOutput),observation.model);replay={providerCalled:false,packetRead:!!packet,questionCount:packet?.questions?.length??0,qualitySuccess:false};}catch{}return json({ok:true,reused:true,diagnostic:prior,protocolReplay:replay});}
  const response=await handleQuestionEditorialRepair(new Request('https://internal.invalid/source'),env,user,sourceJob);
  const source:any=await response.json();
  if(!response.ok||!source.repairable)return json({ok:false,error:{code:'DIAGNOSTIC_SOURCE_UNAVAILABLE'}},409);
