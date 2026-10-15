@@ -4,6 +4,7 @@ const report={environment:'staging',startedAt:new Date().toISOString(),humanAppr
 try{
  await login();
  const budget=(await query("SELECT * FROM question_agent_pilot_budget WHERE id='pilot_50'"))[0];if(budget.reserved_count<46||budget.reserved_count>50)throw Error('Pilot witness changed');
+ let ready=false;for(let i=0;i<40;i++){const state=await req('/api/question-bank-standard/verifier-calibration');if(state.p.contractVersion==='BLIND_V2_EDITORIAL_READING_V1'){ready=true;break;}await new Promise(r=>setTimeout(r,10000));}if(!ready)throw Error('Expected deployed quality contract not ready');
  report.calibration=await req('/api/question-bank-standard/verifier-calibration',{});
  const gold=(await query('SELECT * FROM question_verifier_calibrations WHERE id=?',['editorial-verifier-20261015-v2']))[0];report.gold=gold;
  if(gold?.status!=='PASS')throw Error('Independent verifier failed frozen positive/negative calibration');

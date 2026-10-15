@@ -3,7 +3,7 @@ import {api} from '../api';
 const base='/api/question-bank-standard/production';
 export function QuestionProductionControl(){
  const [data,setData]=useState<any>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false);const mounted=useRef(true);
- async function load(){try{const d=await api<any>(base);if(mounted.current){setData(d);setError('');}}catch(e:any){if(mounted.current)setError(e.message);}}
+ async function load(){try{const d=await api<any>(base);if(!d.campaign||!d.quality||!d.limits)throw Error('Sürekli üretim verisi henüz bu sürümde hazır değil.');if(mounted.current){setData(d);setError('');}}catch(e:any){if(mounted.current)setError(e.message);}}
  useEffect(()=>{mounted.current=true;void load();const timer=setInterval(()=>void load(),30000);return()=>{mounted.current=false;clearInterval(timer);};},[]);
  async function toggle(){if(!data||busy)return;setBusy(true);try{const d=await api<any>(base,{method:'PATCH',body:JSON.stringify({status:data.campaign.status==='ACTIVE'?'PAUSED':'ACTIVE',expectedRevision:data.campaign.revision})});if(mounted.current){setData(d);setError('');}}catch(e:any){if(mounted.current)setError(e.message);}finally{if(mounted.current)setBusy(false);}}
  const remaining=data?Math.max(0,(data.day?.limit_neurons??data.limits.dailyAiNeuronLimit)-(data.day?.held_neurons??0)-(data.day?.charged_neurons??0)):0;

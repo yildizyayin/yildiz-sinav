@@ -19,7 +19,7 @@ export async function handleVerifierCalibration(request:Request,env:Env,user:Aut
  if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED'}},401);
  if(user.role!=='SUPER_ADMIN')return json({ok:false,error:{code:'SUPER_ADMIN_ONLY'}},403);
  const prior=await one<any>(env.DB.prepare('SELECT * FROM question_verifier_calibrations WHERE id=?').bind(CALIBRATION_ID));
- if(request.method==='GET')return json({ok:true,calibration:prior??null,createsQuestions:false,humanApproved:false});
+ if(request.method==='GET')return json({ok:true,contractVersion:'BLIND_V2_EDITORIAL_READING_V1',calibration:prior??null,createsQuestions:false,humanApproved:false});
  if(request.method!=='POST')return json({ok:false,error:{code:'METHOD_NOT_ALLOWED'}},405);
  if(request.headers.get('Origin')!==new URL(request.url).origin)return json({ok:false,error:{code:'INVALID_ORIGIN'}},403);
  if(env.ENVIRONMENT!=='staging'||!(env as any).QUESTION_AI_DAILY_NEURON_LIMIT)return json({ok:false,error:{code:'BOUNDED_STAGING_CALIBRATION_ONLY'}},409);
