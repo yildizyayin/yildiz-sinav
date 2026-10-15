@@ -33,3 +33,69 @@ First live run38749475194 completed: REJECTED_CANDIDATE, author1/editor1, verifi
 Even a passing single-candidate trial is not four-task autonomous campaign
 qualification, all-six-grade coverage or500,000-question throughput. Mass production
 must remain paused. Per user request stop after this ONE task.
+
+
+## Controlled revision evidence
+Qwen correction run38751699438 failed EDITOR_OUTPUT_INVALID. It placed the
+correct solution under B while keeping correctAnswer C and used distractor
+calculations that did not yield their option values. That result is immutable.
+Pilot remains50/50. Ledger before the alternative:4015 charged,1438 held/unknown
+usage; held usage was NOT refunded.
+
+The shared inverse-task contract now requires a real strategy decision and
+explicit mistaken arithmetic for numeric distractors; wrong equation/option
+values fail deterministic checks. Verifier failures retain a safe diagnostic
+classification. Correction preparation and verification use separate private
+invocations, with source hashes and single-claim verification fences.
+
+A single alternative-model comparison is now authorized within this same task:
+record editorial-pipeline-20261015-v1-glm-editor-v1, GLM-4.7-Flash editor on the
+same fixed source after the recorded Qwen failure. No new writer or pilot slot.
+This is a model replacement experiment, NOT evidence of first-pass autonomy or
+another unpublished raw question. The prior failed attempts remain in the report.
+Actual total lineage if completed:writer1; Qwen editor2 passes; GLM editor1 pass.
+The independent solver/reviewer remains Nemotron; all contributing author/editor
+models are excluded from reviewing their own candidate.
+
+GLM request uses the provider's Chat Completions schema wrapper and explicit
+max_completion_tokens8000. Its budget rates5500/36400 Neurons per million input/
+output tokens come from the official Cloudflare pricing page, checked15Oct2026:
+https://developers.cloudflare.com/workers-ai/platform/pricing/
+https://developers.cloudflare.com/workers-ai/models/glm-4.7-flash/
+The daily10000 ledger ceiling and unpaid-plan configuration remain unchanged.
+
+66 focused tests, typecheck passed. Alternative live result pending. Do not claim
+valid production or silently start another editor experiment if this fails.
+
+
+## Reasoned protocol validation
+Nonreasoning GLM run38753004637 also failed: it emitted incorrect forward
+arithmetic and ignored the required strategy decision. It is NOT a success.
+Ledger afterwards:4060 charged,1438 held,10000 daily ceiling; no refunds.
+
+A final fixed-source protocol comparison enables GLM thinking within the same
+8000 completion-token bound and separates trusted task/curriculum rules into a
+system message from the untrusted source question JSON. This is a real protocol
+change, not another score-only rerun. Record:
+editorial-pipeline-20261015-v1-glm-reasoned-v1.
+Its precondition is the preserved failed nonreasoning comparison. One editor
+call only; no new writer, no new pilot reservation. Total lineage if called:
+writer1, Qwen editor2, GLM editor2. All earlier failures remain immutable.
+No further model experiment is authorized by this task's stated bounds.
+Live result pending; do not mark the fresh-candidate goal complete prematurely.
+
+
+## One transport-only retry
+Reasoned-editor run38754308508 reached EDITOR_TIMEOUT at the application's90s
+limit before returning a candidate. That is not a scientific rejection or a pass.
+The next and final transport record is:
+editorial-pipeline-20261015-v1-glm-transport-retry-v1.
+It is available ONLY after the recorded reasoned attempt times out, not after a
+semantic rejection. Same model, same source and identical request body, checked
+in tests; only the local reasoned-editor wait rises to240s. Output cap stays8000,
+daily ledger stays10000, pilot stays50/50. Original1812 held usage is NOT refunded.
+This attempt counts in total editor invocations; never report a first-pass success.
+
+After this bounded retry, do not launch more model experiments or reset counters.
+If it fails, the fresh-valid-candidate goal is still incomplete. Preserve the
+actual fault and prepare a concrete next technical/model-capacity decision.
