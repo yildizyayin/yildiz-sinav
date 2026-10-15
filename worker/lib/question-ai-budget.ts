@@ -1,6 +1,7 @@
 import type {Env} from '../types';
 
 const rates:Record<string,readonly [number,number]>={
+ '@cf/qwen/qwen3-30b-a3b-fp8':[4625,30475],
  '@cf/openai/gpt-oss-120b':[31818,68182],
  '@cf/nvidia/nemotron-3-120b-a12b':[45455,136364],
 };
@@ -26,8 +27,7 @@ export function withQuestionAiBudget(env:Env):Env{
  const wrapped={...env,AI:{run:async(model:string,input:any)=>{
   if(!ai||!Number.isSafeInteger(limit)||limit<1||(limit>10000&&cfg.QUESTION_AI_PAID_BUDGET_APPROVED!=='true')||limit>1000000000)throw Error('QUESTION_AI_BUDGET_NOT_CONFIGURED');
   const day=new Date().toISOString().slice(0,10),id=crypto.randomUUID(),reserved=questionCallReservation(model,input);
-  await env.DB.prepare('INSERT OR IGNORE INTO question_ai_budget_days(day,limit_neurons) VALUES(?,?)').bind(day,limit).run();
-  await env.DB.prepare('INSERT INTO question_ai_budget_calls(id,day,model,reserved_neurons) VALUES(?,?,?,?)').bind(id,day,model,reserved).run();
+  await env.DB.batch([env.DB.prepare('INSERT OR IGNORE INTO question_ai_budget_days(day,limit_neurons) VALUES(?,?)').bind(day,limit),env.DB.prepare('INSERT INTO question_ai_budget_calls(id,day,model,reserved_neurons) VALUES(?,?,?,?)').bind(id,day,model,reserved)]);
   let raw:any;
   try{raw=await ai.run(model as any,input);}catch(e){await env.DB.prepare("UPDATE question_ai_budget_calls SET status='UNKNOWN' WHERE id=? AND status='HELD'").bind(id).run();throw e;}
   const charged=questionCallCharge(model,raw);

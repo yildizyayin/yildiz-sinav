@@ -14,7 +14,7 @@ export async function productionSnapshot(env:Env){
   all<any>(env.DB.prepare('SELECT id,sequence,outcome_id,question_count,job_id,status,error_code,created_at,completed_at FROM question_production_slots WHERE campaign_id=? ORDER BY sequence DESC LIMIT 20').bind(PRODUCTION_CAMPAIGN)),
   one<any>(env.DB.prepare("SELECT count(*) n FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE cv.verified=1 AND o.active=1 AND o.grade_level=cv.grade_level AND cv.academic_year='2026-2027' AND o.grade_level IN (5,6,7,9,10,11)")),
  ]);
- return {campaign,quality,day,slots,verifiedOutcomes:Number(scope?.n??0),automaticEnabled:campaign?.status==='ACTIVE'&&(env as any).QUESTION_PRODUCTION_CAMPAIGNS_ENABLED==='true',billingVerified:false,sharedFreeAllocationGuaranteed:false,paidBudgetApproved:(env as any).QUESTION_AI_PAID_BUDGET_APPROVED==='true',massProductionThroughputVerified:false,limits:{questionsPerJob:3,maxWorkers:4,cronMinutes:1,dailyAiNeuronLimit:Number((env as any).QUESTION_AI_DAILY_NEURON_LIMIT??0)},note:'Kabul hedefi insan onaylı sorudur. Taslak limiti ve otomatik puan bunu sağlamaz. Küçük pilot kapsamı, sağlayıcı kotası ve insan inceleme kuyruğu üretimi sınırlar.'};
+ return {teamContract:'AUTHOR_EDITOR_BLIND_REVIEW_V1',campaign,quality,day,slots,verifiedOutcomes:Number(scope?.n??0),automaticEnabled:campaign?.status==='ACTIVE'&&quality.allowed&&(env as any).QUESTION_PRODUCTION_CAMPAIGNS_ENABLED==='true',billingVerified:false,sharedFreeAllocationGuaranteed:false,paidBudgetApproved:(env as any).QUESTION_AI_PAID_BUDGET_APPROVED==='true',massProductionThroughputVerified:false,limits:{questionsPerJob:3,maxWorkers:4,cronMinutes:1,dailyAiNeuronLimit:Number((env as any).QUESTION_AI_DAILY_NEURON_LIMIT??0)},note:'Kabul hedefi insan onaylı sorudur. Taslak limiti ve otomatik puan bunu sağlamaz. Küçük pilot kapsamı, sağlayıcı kotası ve insan inceleme kuyruğu üretimi sınırlar.'};
 }
 export async function handleProductionCampaign(request:Request,env:Env,user:AuthUser|null){
  if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED'}},401);
@@ -52,21 +52,22 @@ export async function tickQuestionProduction(env:Env){
  const usage=await one<any>(env.DB.prepare('SELECT limit_neurons,held_neurons,charged_neurons FROM question_ai_budget_days WHERE day=?').bind(day));
  const remaining=usage?Math.max(0,Math.min(Number(cfg.QUESTION_AI_DAILY_NEURON_LIMIT??0),usage.limit_neurons)-usage.held_neurons-usage.charged_neurons):Number(cfg.QUESTION_AI_DAILY_NEURON_LIMIT??0);
  const active=await one<any>(env.DB.prepare("SELECT count(*) n FROM question_production_slots WHERE campaign_id=? AND status='RUNNING' AND lease_until>?").bind(PRODUCTION_CAMPAIGN,now));
- const workers=productionWorkerCapacity(remaining,Number(active?.n??0),campaign.max_workers);
+ const workers=productionWorkerCapacity(remaining,Number(active?.n??0),campaign.max_workers,cfg.QUESTION_AI_PAID_BUDGET_APPROVED==='true'?3:1);
  if(!workers)return finish({code:'WAIT_DAILY_AI_BUDGET_OR_WORKER',remainingNeurons:remaining});
  await env.DB.prepare('INSERT OR IGNORE INTO question_production_days(campaign_id,day,question_cap) VALUES(?,?,?)').bind(PRODUCTION_CAMPAIGN,day,campaign.daily_question_cap).run();
  const outcomes=await all<any>(env.DB.prepare(`SELECT o.id,o.code,o.subject_id,o.grade_level,cv.id curriculum_version_id,cv.program_version,cv.academic_year FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE cv.verified=1 AND o.active=1 AND o.grade_level=cv.grade_level AND cv.academic_year=? AND o.grade_level IN (5,6,7,9,10,11) AND EXISTS(SELECT 1 FROM learning_nodes n WHERE n.id='ln_'||o.id AND n.active=1 AND n.node_type='OUTCOME' AND n.academic_year=cv.academic_year AND n.grade_level=o.grade_level AND n.subject_id=o.subject_id) AND NOT EXISTS(SELECT 1 FROM question_generation_jobs j WHERE j.outcome_id=o.id AND j.status IN ('REQUESTED','RUNNING')) ORDER BY (SELECT count(*) FROM question_production_slots s WHERE s.outcome_id=o.id),o.id LIMIT ?`).bind(campaign.academic_year,workers));
+ if(!cfg.QUESTION_GENERATOR)return finish({code:'GENERATOR_SERVICE_MISSING'});
  const tasks=outcomes.map(async(o)=>{
   const id=crypto.randomUUID();let jobId:string|undefined;
   try{
-   const r=await env.DB.prepare("INSERT INTO question_production_slots(id,campaign_id,sequence,day,outcome_id,question_count,lease_until) SELECT ?,id,next_slot+1,?,?,min(3,draft_cap-reserved_questions),? FROM question_production_campaigns WHERE id=? AND status='ACTIVE' AND reserved_questions<draft_cap").bind(id,day,o.id,new Date(Date.now()+900000).toISOString(),PRODUCTION_CAMPAIGN).run();
+   const r=await env.DB.prepare(`INSERT INTO question_production_slots(id,campaign_id,sequence,day,outcome_id,question_count,lease_until) SELECT ?,id,next_slot+1,?,?,min(${cfg.QUESTION_AI_PAID_BUDGET_APPROVED==='true'?3:1},draft_cap-reserved_questions),? FROM question_production_campaigns WHERE id=? AND status='ACTIVE' AND reserved_questions<draft_cap`).bind(id,day,o.id,new Date(Date.now()+900000).toISOString(),PRODUCTION_CAMPAIGN).run();
    if(Number(r.meta?.changes)!==1)return {code:'DRAFT_CAP_REACHED'};
    const slot=await one<any>(env.DB.prepare('SELECT question_count FROM question_production_slots WHERE id=?').bind(id));
    const response=await handleQuestionGenerationJobs(new Request('https://internal.invalid/api/question-bank-standard/generation-jobs',{method:'POST',body:JSON.stringify({requestKey:id,outcomeId:o.id,questionCount:slot.question_count,qualityProfile:'EDITORIAL_V1',presentation:'AUTO',taskFocus:'GENERIC',priority:1,instructionNote:'Sürekli editoryal üretim; kayıtlı kampanya ve maliyet sınırı; insan onayı ayrıca gerekir.',expectedContext:{curriculumVersionId:o.curriculum_version_id,academicYear:o.academic_year,gradeLevel:o.grade_level,subjectId:o.subject_id,programVersion:o.program_version}})}),env,actor);
    const body:any=await response?.json();jobId=body?.job?.id;
    if(!response?.ok||!jobId)throw Error(body?.error?.code??'JOB_CREATE_FAILED');
    await env.DB.prepare('UPDATE question_production_slots SET job_id=? WHERE id=? AND job_id IS NULL').bind(jobId,id).run();
-   const result=await runQuestionGenerationJob(new Request('https://internal.invalid/scheduled-question-production',{method:'POST'}),withQuestionAiBudget(env),actor,jobId);
+   const result=await cfg.QUESTION_GENERATOR.fetch(new Request('https://question-generator/internal/run',{method:'POST',body:JSON.stringify({jobId,actorId:actor.id})}));
    const payload:any=await result.json();const code=payload?.error?.code??null;
    await env.DB.prepare('UPDATE question_production_slots SET status=?,error_code=?,completed_at=CURRENT_TIMESTAMP WHERE id=? AND status=\'RUNNING\'').bind(result.ok&&payload.job?.status==='REVIEW_READY'?'REVIEW_READY':'FAILED',code,id).run();
    return {id,jobId,status:result.status,code};

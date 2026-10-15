@@ -1,3 +1,4 @@
+import {automaticallyEditFailedJob,verifyAutomaticEdit} from '../worker/lib/question-ai-editor';
 import {handleQuestionEditorialRepair} from '../worker/lib/question-editorial-repair';
 import {editorialQuestion,editorialScores} from './fixtures/editorial-question';
 import { readFileSync } from 'node:fs';
@@ -55,13 +56,14 @@ beforeAll(async()=>{
  await db.exec(migration('0109_question_visual_student_payload.sql'));
  await db.exec(migration('0110_question_editorial_repair.sql'));
  await db.exec(migration('0111_editorial_verification_transport_retry.sql'));
+ await db.exec(migration('0114_question_ai_editor_attempts.sql'));
  await db.exec(migration('0106_question_team_execution_stage.sql'));
  await db.exec(migration('0102_question_agent_pilot_budget.sql'));
 },20_000);
 afterAll(async()=>{await mf?.dispose();});
 beforeEach(async()=>{
  await db.exec(`DROP TRIGGER IF EXISTS reject_generation_audit;
- DELETE FROM question_generation_commit_assertions; DELETE FROM question_generation_commit_gates;
+ DELETE FROM question_ai_editor_attempts; DELETE FROM question_generation_commit_assertions; DELETE FROM question_generation_commit_gates;
  DELETE FROM question_generation_lineage; DELETE FROM question_learning_links; DELETE FROM question_bank; DELETE FROM question_content_blocks;
  DELETE FROM question_agent_pilot_reservations;UPDATE question_agent_pilot_budget SET reserved_count=0;
  DELETE FROM question_generation_jobs; DELETE FROM outcomes; DELETE FROM curriculum_versions; DELETE FROM audit_logs;`);
@@ -373,4 +375,15 @@ it('retries only a protocol-unavailable review on the identical repaired packet 
  provider.mockImplementation(async()=>({response:JSON.stringify({reviews:[{index:0,valid:false,issues:['missing editorial scores']}]})}));expect((await post()).status).toBe(422);const retry:any=await (await get()).json();expect(retry.protocolRetryable).toBe(true);expect(retry.sourceHash).toBe(source.sourceHash);expect(retry.drafts[0].editorial.visual.values).toEqual([]);
  provider.mockImplementation(async(model:string,args:any)=>{expect(model).toBe('independent-editorial-verifier');expect(args.response_format.json_schema.properties.reviews.items.required).toContain('editorial');expect(args.messages[0].content).toContain('YOU must assign');return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})}});
  expect((await post()).status).toBe(200);expect(await job(id)).toMatchObject({attempt_count:1,editorial_repair_count:1,editorial_verify_retry_count:1,status:'REVIEW_READY'});expect(provider).toHaveBeenCalledTimes(3);expect((await post()).status).toBe(200);expect(provider).toHaveBeenCalledTimes(3);
+});
+
+it('runs author, distinct AI editor and independent verifier once, preserving actual model provenance',async()=>{
+ const created=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE'}),env,admin)!;const id=(await created.json() as any).job.id;
+ Object.assign(env,{QUESTION_GENERATION_MODEL:'source-writer',QUESTION_EDITOR_MODEL:'separate-editor',QUESTION_AUTO_EDITOR_ENABLED:'true',QUESTION_GENERATION_VERIFICATION_ENABLED:'true',QUESTION_GENERATION_VERIFIER_MODEL:'independent-editorial-verifier'});const bad:any=editorialQuestion();bad.editorial.visual.values=[123];
+ provider.mockImplementation(async(model:string)=>model==='source-writer'?output([bad]):model==='separate-editor'?output([editorialQuestion()]):{response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})});
+ expect((await run(id)).status).toBe(200);expect(provider).toHaveBeenCalledTimes(3);expect((await job(id)).attempt_count).toBe(1);const q:any=await db.prepare('SELECT source_model,review_status,copyright_status FROM question_bank').first();expect(q).toEqual({source_model:'separate-editor',review_status:'REVIEW',copyright_status:'RESTRICTED'});const a:any=await db.prepare("SELECT details_json FROM audit_logs WHERE action='QUESTION_GENERATION_REVIEW_READY'").first();expect(JSON.parse(a.details_json)).toMatchObject({model:'separate-editor',generatorModel:'source-writer',autoEditor:{model:'separate-editor',humanApproved:false}});expect((await run(id)).status).toBe(200);expect(provider).toHaveBeenCalledTimes(3);
+});
+it('automatically edits an actual failed source once without another author call or reservation reset',async()=>{
+ const created=await handleQuestionGenerationJobs(request(base,'POST',{outcomeId:'o',expectedContext:context,requestKey:crypto.randomUUID(),questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TABLE'}),env,admin)!;const id=(await created.json() as any).job.id;Object.assign(env,{QUESTION_GENERATION_MODEL:'source-writer',QUESTION_GENERATION_VERIFICATION_ENABLED:'true',QUESTION_GENERATION_VERIFIER_MODEL:'independent-editorial-verifier',QUESTION_EDITOR_MODEL:'separate-editor'});const bad:any=editorialQuestion();bad.editorial.visual.values=[123];provider.mockResolvedValue(output([bad]));expect((await run(id)).status).toBe(422);env.QUESTION_AUTO_EDITOR_ENABLED='true';provider.mockImplementation(async(model:string)=>{if(model==='source-writer')throw Error('Author must not be called twice');return model==='separate-editor'?output([editorialQuestion()]):{response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})};});
+ expect((await automaticallyEditFailedJob(env,admin,id)).status).toBe(200);expect((await verifyAutomaticEdit(env,admin,id)).status).toBe(200);expect(await job(id)).toMatchObject({attempt_count:1,editorial_repair_count:1,status:'REVIEW_READY'});expect(provider).toHaveBeenCalledTimes(3);expect((await automaticallyEditFailedJob(env,admin,id)).status).toBe(200);expect(provider).toHaveBeenCalledTimes(3);
 });

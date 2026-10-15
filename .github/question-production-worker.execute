@@ -1,1 +1,1 @@
-2026-10-15 private service-only worker; no additional Cloudflare cron; reuse existing trigger and preserve quarter-hour jobs
+2026-10-15 deploy private coordinator and generator; AI editor once, no extra cron, private previews disabled

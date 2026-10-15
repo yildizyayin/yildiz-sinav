@@ -1,0 +1,30 @@
+name: Question production scheduler acceptance
+on:
+  push:
+    branches: [staging]
+    paths: [.github/question-production-acceptance.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-production-acceptance
+  cancel-in-progress: false
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Verify private scheduler and activate only a completed passing bounded pilot
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-question-production-acceptance.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-production-acceptance-${{ github.run_id }}
+          path: tmp/question-production-acceptance/
