@@ -1,0 +1,36 @@
+name: Independent question quality validation
+on:
+  push:
+    branches: [staging]
+    paths: [.github/question-quality-validation.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-quality-validation
+  cancel-in-progress: false
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Deploy private independent quality checker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/deploy-question-production-worker.mjs
+      - name: Verify six frozen quality cases without producing questions
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-question-quality-validation.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-quality-validation-${{ github.run_id }}
+          path: tmp/question-quality-validation/
