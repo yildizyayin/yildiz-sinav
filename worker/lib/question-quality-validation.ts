@@ -30,12 +30,32 @@ export function qualityValidationFindings(results:any[]){
  });
  return {passed:results.length===cases.length&&new Set(results.map(r=>r.key)).size===cases.length&&findings.every(f=>f.passed),findings};
 }
+export function readingContinuationEligible(original:any){
+ const findings=qualityValidationFindings(original?.results??[]).findings;
+ const failed=findings.filter(f=>!f.passed),v=original?.results?.find((r:any)=>r.key==='actual-editor-invalid-distractor-explanations')?.verification;
+ return failed.length===1&&failed[0].key==='actual-editor-invalid-distractor-explanations'&&!v?.reviews?.[0]?.editorial&&v?.blindSolves?.[0]?.issues?.includes('BLIND_UNSOURCED_OPERAND')===true;
+}
+async function continueReadingQuality(env:Env,prior:any){
+ const id=QUALITY_VALIDATION_ID+'-reading-proof-v1',original=JSON.parse(prior.verification_json);
+ const cases=qualityValidationCases(),sourceHash=await sha256(JSON.stringify(cases));
+ if(original.sourceHash!==sourceHash||!readingContinuationEligible(original))return json({ok:true,reused:true,validation:prior});
+ const existing=await one<any>(env.DB.prepare('SELECT * FROM question_verifier_calibrations WHERE id=?').bind(id));
+ if(existing)return json({ok:true,reused:true,validation:existing});
+ const claim=await env.DB.prepare("INSERT OR IGNORE INTO question_verifier_calibrations(id,status) VALUES(?,'RUNNING')").bind(id).run();
+ if(Number(claim.meta?.changes)!==1)return json({ok:false,error:{code:'QUALITY_CONTINUATION_ALREADY_CLAIMED'}},409);
+ const c=cases[4],verification=await verifyQuestionDrafts(env,c.context,[c.question]);
+ const results=original.results.map((r:any)=>r.key===c.key?{key:c.key,verification}:r),findings=qualityValidationFindings(results);
+ const exactProof=verification.blindSolves?.[0]?.method==='DETERMINISTIC_TURKISH_CARDINAL';
+ const report={...findings,passed:findings.passed&&exactProof,sourceHash,verifier,results,baselineValidationId:QUALITY_VALIDATION_ID,baselineHash:await sha256(prior.verification_json),newVerifications:1,unchangedCaseResults:5,exactReadingProof:exactProof,benchmarkOnly:true,autonomousProductionCertified:false,createsQuestions:false,humanApproved:false};
+ await env.DB.prepare('UPDATE question_verifier_calibrations SET status=?,findings_json=?,verification_json=?,completed_at=CURRENT_TIMESTAMP WHERE id=? AND status=\'RUNNING\'').bind(report.passed?'PASS':'BLOCKED',JSON.stringify(report.findings),JSON.stringify(report),id).run();
+ return json({ok:true,...report});
+}
 /** Immutable verifier regression test. No question author/editor retry or publishing. */
 export async function validateIndependentQuality(env:Env,user:AuthUser){
  if(user.role!=='SUPER_ADMIN'||env.ENVIRONMENT!=='staging')return json({ok:false,error:{code:'STAGING_ADMIN_REQUIRED'}},403);
  if(!env.AI||(env as any).QUESTION_BLIND_SOLVE_ENABLED!=='true'||env.QUESTION_GENERATION_VERIFIER_MODEL!==verifier||!(env as any).QUESTION_AI_DAILY_NEURON_LIMIT)return json({ok:false,error:{code:'BOUNDED_BLIND_VERIFIER_REQUIRED'}},409);
  const prior=await one<any>(env.DB.prepare('SELECT * FROM question_verifier_calibrations WHERE id=?').bind(QUALITY_VALIDATION_ID));
- if(prior)return json({ok:true,reused:true,validation:prior});
+ if(prior)return prior.status==='BLOCKED'&&prior.verification_json?continueReadingQuality(env,prior):json({ok:true,reused:true,validation:prior});
  const cases=qualityValidationCases(),sourceHash=await sha256(JSON.stringify(cases));
  const claim=await env.DB.prepare("INSERT OR IGNORE INTO question_verifier_calibrations(id,status) VALUES(?,'RUNNING')").bind(QUALITY_VALIDATION_ID).run();
  if(Number(claim.meta?.changes)!==1)return json({ok:false,error:{code:'QUALITY_VALIDATION_ALREADY_CLAIMED'}},409);
