@@ -1,1 +1,1 @@
-2026-10-15 scheduler-only evidence after cron response normalization; quality remains blocked; no paid plan change.
+2026-10-15 collect actual HTTP refusal and scheduler/storage measurements; no producer/editor calls.
