@@ -101,6 +101,8 @@ export function officialPilotGuidance(context:any):string|null{
 }
 export function outcomeDraftIssues(q:CheckedDraft,context:any):string[]{
  const issues:string[]=[];
+ const numberPart='bir|iki|üç|dört|beş|altı|yedi|sekiz|dokuz|on|yirmi|otuz|kırk|elli|altmış|yetmiş|seksen|doksan|yüz|bin|milyon|milyar';
+ if(context?.outcomeCode==='MAT.5.1.1'&&new RegExp('(?<!\\p{L})(?:'+numberPart+'){2,}(?!\\p{L})','iu').test([q.stemText,q.solutionText,...q.options.map(o=>o.text)].join(' ').toLocaleLowerCase('tr-TR')))issues.push('INVALID_TURKISH_COMPOUND_NUMERAL');
  if(context?.gradeLevel===5&&String(context.outcomeCode??'').startsWith('MAT.5.')&&/\bbatch\b/i.test(q.stemText+' '+q.solutionText))issues.push('NON_TURKISH_PILOT_TERM');
  if(/\b(?:forty|ninety|twenty|thirty|fifty|sixty|seventy|eighty|hundred|thousand|million)\b/i.test([q.stemText,q.solutionText,...q.options.map(o=>o.text)].join(' ')))issues.push('NON_TURKISH_NUMBER_WORD');
  if(context?.gradeLevel===5&&context.outcomeCode==='MAT.5.1.1'&&context.outcomeTitle===readingTitle){
@@ -148,7 +150,7 @@ export async function verifyQuestionDrafts(env:Env,context:any,drafts:CheckedDra
  const mechanical=drafts.map((q,index)=>{const issues=[...mechanicalDraftIssues(q),...outcomeDraftIssues(q,context),...taskFocusIssues(q,context),...(editorial?editorialIssues(q,context.presentation):[])];const family=reasoningFamily(q);if(family&&(context.previousDrafts??[]).some((other:any)=>reasoningFamily(other)===family))issues.push('REPEATED_REASONING_FAMILY');if((context.previousQuestions??[]).some((s:string)=>nearRepeatedStem(q.stemText,s))||drafts.slice(0,index).some(other=>nearRepeatedStem(q.stemText,other.stemText)))issues.push('NEAR_REPEATED_TASK');return {index,valid:issues.length===0,issues};});
  if(mechanical.some(r=>!r.valid))return {ok:false,unavailable:false,model:null,reviews:mechanical,usage:{}};
  const model=env.QUESTION_GENERATION_VERIFIER_MODEL?.trim()||DEFAULT_QUESTION_VERIFIER_MODEL;
- if(!env.AI||model===(context?.producerModel??env.QUESTION_GENERATION_MODEL?.trim()??'@cf/zai-org/glm-4.7-flash'))return {ok:false,unavailable:true,model,reviews:[],usage:{},protocolRetryEligible:false};
+ if(!env.AI||(context?.authorModels??[]).includes(model)||model===(context?.producerModel??env.QUESTION_GENERATION_MODEL?.trim()??'@cf/zai-org/glm-4.7-flash'))return {ok:false,unavailable:true,model,reviews:[],usage:{},protocolRetryEligible:false};
  let blindSolves:any[]=[];
  if(editorial&&(env as any).QUESTION_BLIND_SOLVE_ENABLED==='true'){for(const q of drafts)blindSolves.push(await independentlySolve(env,q,model));if(blindSolves.some(s=>!s.ok))return {ok:false,unavailable:blindSolves.some(s=>s.issues.includes('BLIND_SOLVER_UNAVAILABLE')),protocolRetryEligible:false,model,reviews:blindSolves.map((s,index)=>({index,valid:s.ok,issues:s.issues})),usage:{},blindSolves};}
  const responseContract=editorial?'Return only the supplied reviews JSON schema; every output review MUST include your six editorial scores and rationale, as well as index, valid and issues. Use exactly one zero-based review per question.':'Return only {"reviews":[{"index":0,"valid":true,"issues":[]}]} with exactly one entry per question, zero-based indices.';

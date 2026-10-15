@@ -1,0 +1,61 @@
+{
+  "stemText": "Aşağıdaki sayının okunuşu verilmiştir: 3.020.007.400. Bu okunuşlardan hangisi sayıyı doğru tanımlar?",
+  "solutionText": "Sayının gruplarını ayıralım: 3 milyar, 020 milyon (= yirmi milyon), 007 bin (= yedi bin), 400 (= dörtyüz). Doğru okunuş: “üç milyar yirmi milyon yedi bin dörtyüz”. Seçenek C bu ifadeyi tam olarak verir. Diğer seçeneklerde milyon grubu eksik ya da bin ve yüz grupları yer değiştirmiş. Doğru seçenek C) üç milyar yirmi milyon yedi bin dörtyüz.",
+  "options": [
+    {
+      "label": "A",
+      "text": "üç milyar yirmi milyon yedi bin dört yüz"
+    },
+    {
+      "label": "B",
+      "text": "üç milyar iki milyon yedi bin dörtyüz"
+    },
+    {
+      "label": "C",
+      "text": "üç milyar yirmi milyon yedi bin dörtyüz"
+    },
+    {
+      "label": "D",
+      "text": "üç milyar yirmi milyon dört bin yedi yüz"
+    }
+  ],
+  "correctAnswer": "C",
+  "difficultyLevel": 3,
+  "editorial": {
+    "version": 1,
+    "cognitiveDemand": "ANALYZE",
+    "skillTarget": "Öğrencinin yedi ile on iki basamaklı bir sayıyı gruplara ayırarak okunuşunu doğru şekilde tanımlaması ve verilen okunuşların sayıyla tutarlılığını kontrol etmesi.",
+    "reasoningSteps": [
+      "Sayının dört üç basamaklı grubuna (milyar, milyon, bin, birler) ayırın ve her grubun değerini belirleyin.",
+      "Her grubun Türkçe okunuşunu oluşturup, seçeneklerdeki ifadelerle karşılaştırın."
+    ],
+    "distractors": [
+      {
+        "label": "A",
+        "misconception": "Yüzler basamağını ayrı bir kelime olarak “dört yüz” yazmak, birleştirilmiş “dörtyüz” yerine.",
+        "whyIncorrect": "Sayının birler kısmı 400’tür; doğru okunuş “dörtyüz” şeklinde tek kelime olmalıdır, “dört yüz” hatalıdır."
+      },
+      {
+        "label": "B",
+        "misconception": "Milyon grubunu 020 yerine 2 olarak okuyarak “iki milyon” demek.",
+        "whyIncorrect": "Milyon grubunda 020 bulunur, yani “yirmi milyon” demeliyiz; “iki milyon” sayıyı eksik tanımlar."
+      },
+      {
+        "label": "D",
+        "misconception": "Bin ve yüz gruplarını yer değiştirmek, “dört bin yedi yüz” demek.",
+        "whyIncorrect": "Bin grubu 007 yani “yedi bin”, yüz grubu 400 yani “dörtyüz”; bu seçenek grup sırasını hatalı verir."
+      }
+    ],
+    "originalityDesign": "Bu soru, öğrencinin büyük bir sayıyı doğru gruplara ayırıp her grubu doğru Türkçe ifadeyle birleştirip, seçeneklerdeki ifadelerle tutarlılığını kontrol etmesini gerektirir; böylece sayının okunuşunu genelleme becerisi ölçülür.",
+    "visual": {
+      "kind": "NONE",
+      "title": "",
+      "unit": "",
+      "columns": [],
+      "rows": [],
+      "categories": [],
+      "values": [],
+      "readingPurpose": ""
+    }
+  }
+}
