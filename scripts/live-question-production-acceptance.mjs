@@ -8,9 +8,9 @@ try{
  report.activeJobs=await query("SELECT id,request_key,outcome_code,status,attempt_count,lease_until,created_at FROM question_generation_jobs WHERE status IN ('REQUESTED','RUNNING') ORDER BY created_at LIMIT 12");
  report.privateEndpoint=await cf('/workers/scripts/anunex-question-production-staging/subdomain');
  if(report.privateEndpoint.enabled!==false)throw Error('Production worker is not private');
- report.workerSchedules=await cf('/workers/scripts/anunex-question-production-staging/schedules');
+ const rawWorkerSchedules=await cf('/workers/scripts/anunex-question-production-staging/schedules');report.workerSchedules=Array.isArray(rawWorkerSchedules)?rawWorkerSchedules:rawWorkerSchedules.schedules;
  if(report.workerSchedules.length!==0)throw Error('Unexpected extra cron');
- report.appSchedules=await cf('/workers/scripts/yildiz-sinav-v1/schedules');
+ const rawAppSchedules=await cf('/workers/scripts/yildiz-sinav-v1/schedules');report.appSchedules=Array.isArray(rawAppSchedules)?rawAppSchedules:rawAppSchedules.schedules;
  if(!report.appSchedules.some(s=>s.cron==='* * * * *'))throw Error('Existing app cron not reused');
  report.initial=(await req('/api/question-bank-standard/production')).p;
  if(!report.initial.campaign)throw Error('Missing campaign snapshot');

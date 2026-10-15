@@ -1,0 +1,22 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {login,req,query} from './question-production-live-client.mjs';
+const report={environment:'staging',humanApproved:false,maximumEditorPasses:2,maximumNewProducerCalls:1,newRequestKeyChains:false,repairs:[]};
+try{
+ await login();let ready=false;for(let i=0;i<40;i++){const d=(await req('/api/question-bank-standard/production')).p;if(d.teamContract==='AUTHOR_EDITOR_BLIND_REVIEW_V1'&&d.generatorContract==='EDITOR_TEAM_V2_PLACEVALUE_V1'){ready=true;break;}await new Promise(r=>setTimeout(r,10000));}if(!ready)throw Error('Team deployment missing');
+ report.before=(await query("SELECT * FROM question_agent_pilot_budget WHERE id='pilot_50'"))[0];if(report.before.reserved_count!==49&&report.before.reserved_count!==50)throw Error('Pilot witness changed');
+ for(const id of ['qgj_d03f2a96-db7f-4c5f-9d80-84ee2b913121','qgj_a8be95a0-d76d-44c7-91ef-e2b92f8599a2']){
+  const state=(await query('SELECT status,attempt_count,editorial_repair_count FROM question_generation_jobs WHERE id=?',[id]))[0];const attempt=(await query('SELECT status FROM question_ai_editor_attempts WHERE job_id=?',[id]))[0];
+  const item={id,before:state};report.repairs.push(item);
+  if(state.status==='FAILED'&&state.editorial_repair_count===0&&!attempt)item.call=await req('/api/question-bank-standard/generation-jobs/'+id+'/auto-edit',{});
+  item.state=(await query('SELECT status,attempt_count,editorial_repair_count,generated_count,error_code FROM question_generation_jobs WHERE id=?',[id]))[0];item.editor=(await query('SELECT model,status,mode,error_code,usage_json FROM question_ai_editor_attempts WHERE job_id=?',[id]))[0];
+  item.evidence=await query("SELECT action,details_json FROM audit_logs WHERE entity_id=? AND action IN ('QUESTION_GENERATION_REVIEW_READY','QUESTION_GENERATION_VERIFICATION_BLOCKED','QUESTION_AI_EDITOR_BLOCKED') ORDER BY created_at DESC,id DESC LIMIT 2",[id]);
+ }
+ const third=report.repairs[1];if(third.state.status==='REVIEW_READY'){
+  const spec=JSON.parse(await readFile('data/question-pilot-math5-curriculum.json','utf8')),cv=(await req('/api/curriculum-admin?academicYear='+spec.academicYear)).p.versions?.find(v=>v.program_version===spec.programVersion&&v.verified===1&&v.source_url===spec.sourceUrl);if(!cv)throw Error('Missing official source');const o=(await req('/api/curriculum-admin/versions/'+cv.id)).p.outcomes.find(o=>o.code==='MAT.5.1.2'&&o.active===1&&o.official===1);
+  const created=await req('/api/question-bank-standard/generation-jobs',{requestKey:'e1b7adf6-31c2-4dc1-9fa1-84725d84d004',outcomeId:o.id,questionCount:1,qualityProfile:'EDITORIAL_V1',presentation:'TEXT',taskFocus:'NAT_INVERSE_STEPS',priority:2,instructionNote:'15 Ekim bağımsız otonom kalite ölçümü; dört farklı yönlendirme, iş başına tek deneme; insan düzenlemesi veya onayı yok.',expectedContext:{curriculumVersionId:cv.id,academicYear:spec.academicYear,gradeLevel:5,subjectId:o.subject_id,programVersion:spec.programVersion}});if(![200,201].includes(created.status))throw Error('Fourth task blocked: '+JSON.stringify(created.p));report.fourth=created.p.job;
+  if(report.fourth.status==='REQUESTED'&&report.fourth.attemptCount===0)report.fourthCall=await req('/api/question-bank-standard/generation-jobs/'+report.fourth.id+'/run',{});
+  report.fourthState=(await query('SELECT status,attempt_count,generated_count,error_code FROM question_generation_jobs WHERE id=?',[report.fourth.id]))[0];report.fourthEvidence=await query("SELECT action,details_json FROM audit_logs WHERE entity_id=? ORDER BY created_at DESC,id DESC LIMIT 4",[report.fourth.id]);
+ }else report.fourthSkipped='Prior failed outcome remains closed; no replacement key or retry';
+ report.snapshot=(await req('/api/question-bank-standard/production')).p;report.status=report.snapshot.quality?.allowed?'AUTONOMOUS_EDITORIAL_TEAM_GATE_PASS':'TEAM_QUALITY_BLOCKED';if(!report.snapshot.quality?.allowed)process.exitCode=1;
+}catch(e){report.status='BLOCKED';report.error=e.message;process.exitCode=1;}
+report.after=await query("SELECT * FROM question_agent_pilot_budget WHERE id='pilot_50'").catch(()=>[]);report.aiDays=await query('SELECT * FROM question_ai_budget_days ORDER BY day DESC LIMIT 2').catch(()=>[]);report.asOf=new Date().toISOString();await mkdir('tmp/question-editorial-team',{recursive:true});await writeFile('tmp/question-editorial-team/evidence.json',JSON.stringify(report,null,2));console.log('QUESTION_EDITORIAL_TEAM '+JSON.stringify(report));

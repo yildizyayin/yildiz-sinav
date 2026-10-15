@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import {it,expect} from 'vitest';
 import {calibrationBaseline} from '../worker/lib/question-calibration-fixture';
 import {blindSolveIssues,scientificSourceNumbers} from '../worker/lib/question-blind-solve';
@@ -8,3 +9,5 @@ it('rejects contradictory source data even if every editorial score would be hig
 it('rejects unsupported arithmetic, answer-key mismatch and unexamined options',()=>{const p=proof();p.calculations[0].result=8;expect(blindSolveIssues(q,p)).toContain('BLIND_ARITHMETIC_INVALID');const p2=proof();p2.answer='A';expect(blindSolveIssues(q,p2)).toContain('BLIND_ANSWER_DISAGREEMENT');p2.optionChecks.pop();expect(blindSolveIssues(q,p2)).toContain('BLIND_SOLUTION_INVALID');});
 
 it('derives the whole package count from a checked positive division without admitting arbitrary inputs',()=>{const p=proof();p.calculations[1]={left:280,op:'DIV',right:55,result:280/55};p.calculations[2]={left:7,op:'MUL',right:120,result:840};expect(blindSolveIssues(q,p)).toEqual([]);p.calculations[3].left=8;expect(blindSolveIssues(q,p)).toContain('BLIND_UNSOURCED_OPERAND');});
+
+it('accepts actual public place-value components instead of treating them as invented operands',()=>{const fixture=JSON.parse(readFileSync(new URL('./fixtures/reading-place-value-proof.json',import.meta.url),'utf8'));const sources=scientificSourceNumbers(fixture.question);expect(Object.values(sources)).toContain(4000000000);expect(Object.values(sources)).toContain(500000);expect(Object.values(sources)).toContain(891);expect(blindSolveIssues(fixture.question,{...fixture.evidence,sourceNumbers:sources})).toEqual([]);});
