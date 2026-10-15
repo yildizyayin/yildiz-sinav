@@ -1,1 +1,1 @@
-2026-10-15 collect actual HTTP refusal and scheduler/storage measurements; no producer/editor calls.
+2026-10-15 verify campaign PATCH quality refusal after deployed provenance route fix; no AI production calls.
