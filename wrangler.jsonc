@@ -49,6 +49,7 @@
   },
   "vars": {
     "QUESTION_TEAM_CONTROLS_ENABLED": "true",
+    "QUESTION_AI_DAILY_NEURON_LIMIT": "10000",
     "QUESTION_VIDEO_RENDER_ENABLED": "true",
     "ENVIRONMENT": "staging",
     "QUESTION_GENERATION_ENABLED": "true",
