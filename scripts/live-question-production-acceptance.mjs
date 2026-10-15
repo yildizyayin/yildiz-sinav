@@ -18,12 +18,13 @@ try{
  if(report.initial.quality.allowed&&finished===4&&report.initial.campaign.status!=='ACTIVE'){
   report.activation=await req('/api/question-bank-standard/production',{status:'ACTIVE',expectedRevision:report.initial.campaign.revision},'PATCH');
   if(report.activation.status!==200)throw Error('Bounded activation refused');
- }else if(!report.initial.quality.allowed){const denied=await req('/api/question-bank-standard/production',{status:'ACTIVE',expectedRevision:report.initial.campaign.revision},'PATCH');if(denied.status!==409)throw Error('Quality gate bypassed');report.qualityRefusalVerified=true;}
+ }else if(!report.initial.quality.allowed){const denied=await req('/api/question-bank-standard/production',{status:'ACTIVE',expectedRevision:report.initial.campaign.revision},'PATCH');report.activationRefusal={status:denied.status,payload:denied.p};report.qualityRefusalVerified=denied.status===409;if(denied.status===200)throw Error('Quality gate bypassed');}
  const ticks=new Set();for(let i=0;i<24;i++){report.final=(await req('/api/question-bank-standard/production')).p;const t=report.final.campaign?.last_tick_at;if(t)ticks.add(t);if(ticks.size>=2)break;await new Promise(r=>setTimeout(r,10000));}
  if(ticks.size<2)throw Error('Two actual scheduled ticks not witnessed');report.ticks=[...ticks];
  report.storage=await query("SELECT count(*) n,avg(length(CAST(stem_text AS BLOB))+length(CAST(options_json AS BLOB))+length(CAST(solution_text AS BLOB))+length(CAST(editorial_packet_json AS BLOB))) averagePayloadBytes FROM question_bank WHERE editorial_packet_json IS NOT NULL");
  report.aiCalls=await query('SELECT day,model,status,count(*) calls,sum(charged_neurons) chargedNeurons,sum(CASE WHEN status IN (\'HELD\',\'UNKNOWN\') THEN reserved_neurons ELSE 0 END) heldNeurons FROM question_ai_budget_calls GROUP BY day,model,status');
  report.pilot=(await query("SELECT * FROM question_agent_pilot_budget WHERE id='pilot_50'"))[0];
+ if(!report.initial.quality.allowed&&!report.qualityRefusalVerified)throw Error('Quality refusal contract failed: HTTP '+report.activationRefusal.status);
  report.status=report.final.quality.allowed?'SCHEDULER_AND_BOUNDED_CONTROLS_VERIFIED':'SCHEDULER_VERIFIED_QUALITY_BLOCKED';
 }catch(e){report.status='BLOCKED';report.error=e.message;process.exitCode=1;}
 report.asOf=new Date().toISOString();await mkdir('tmp/question-production-acceptance',{recursive:true});await writeFile('tmp/question-production-acceptance/evidence.json',JSON.stringify(report,null,2));console.log('QUESTION_PRODUCTION_ACCEPTANCE '+JSON.stringify(report));
