@@ -1,3 +1,4 @@
+import {math6PilotGuidance} from './question-math6-guidance';
 import {questionIndependentRequest} from './question-ai-schema';
 import {questionAiFailure} from './question-ai-failure';
 import {independentlySolve} from './question-blind-solve';
@@ -96,6 +97,7 @@ export function parseVerification(raw:any,count:number,editorial=false):{index:n
 
 const readingTitle='Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme';
 export function officialPilotGuidance(context:any):string|null{
+ if(context?.gradeLevel===6)return math6PilotGuidance(context);
  if(context?.gradeLevel!==5)return null;
  if(context.outcomeCode==='MAT.5.1.1'&&context.outcomeTitle===readingTitle)return 'MEB MAT.5.1.1: reading/writing/generalizing numbers with 7 to 12 digits; compare number groups and zero-filled groups. A six-digit-only exercise does not assess this output. Every stem, option and explanation must be correct Turkish.';
  if(context.outcomeCode==='MAT.5.1.2'&&context.outcomeTitle==='Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme')return 'MEB MAT.5.1.2: natural-number real-life problems; addition/subtraction operands at most five digits, multiplication operands at most three digits, division dividend at most four digits and divisor at most two digits. Vary reasoning, multi-step strategies and contexts, not just names or numbers.';
