@@ -1,3 +1,4 @@
+import {factorRelationEvidence} from './question-factor-relation-proof';
 import {primeFactorEvidence} from './question-prime-proof';
 import {divisibilityEvidence} from './question-divisibility-proof';
 import {questionIndependentRequest} from './question-ai-schema';
@@ -51,6 +52,8 @@ export function deterministicReadingEvidence(input:{stemText:string;options:{lab
 }
 export async function independentlySolve(env:Env,q:CheckedDraft,model:string,context?:any){
  const visual=q.editorial?.visual;
+ const relations=env.QUESTION_MATH6_PROOF_ENABLED==='true'&&visual?.kind==='NONE'?factorRelationEvidence({stemText:q.stemText,options:q.options},context):null;
+ if(relations){const evidence={...relations.proof,sourceNumbers:scientificSourceNumbers(q)},issues=blindSolveIssues(q,evidence);return {ok:issues.length===0,model:null,method:'DETERMINISTIC_FACTOR_RELATIONS',issues,evidence,derivation:relations.derivation,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'PUBLIC_NUMBERS_AND_CHECKED_INTEGER_DIVISION_RELATIONS'};}
  const factorization=env.QUESTION_MATH6_PROOF_ENABLED==='true'&&visual?.kind==='NONE'?primeFactorEvidence({stemText:q.stemText,options:q.options},context):null;
  if(factorization){const evidence={...factorization.proof,sourceNumbers:scientificSourceNumbers(q)},issues=blindSolveIssues(q,evidence);return {ok:issues.length===0,model:null,method:'DETERMINISTIC_PRIME_FACTOR_REASONING',issues,evidence,derivation:factorization.derivation,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'PUBLIC_NUMBER_AND_CHECKED_PRIME_POWER_FACTORIZATION'};}
  const divisibility=env.QUESTION_MATH6_PROOF_ENABLED==='true'&&visual?.kind==='NONE'?divisibilityEvidence({stemText:q.stemText,options:q.options},context):null;
