@@ -1,3 +1,4 @@
+import {primeFactorEvidence} from './question-prime-proof';
 import {divisibilityEvidence} from './question-divisibility-proof';
 import {questionIndependentRequest} from './question-ai-schema';
 import {offerComparisonEvidence,tableOfferComparisonEvidence} from './question-offer-proof';
@@ -50,6 +51,8 @@ export function deterministicReadingEvidence(input:{stemText:string;options:{lab
 }
 export async function independentlySolve(env:Env,q:CheckedDraft,model:string,context?:any){
  const visual=q.editorial?.visual;
+ const factorization=env.QUESTION_MATH6_PROOF_ENABLED==='true'&&visual?.kind==='NONE'?primeFactorEvidence({stemText:q.stemText,options:q.options},context):null;
+ if(factorization){const evidence={...factorization.proof,sourceNumbers:scientificSourceNumbers(q)},issues=blindSolveIssues(q,evidence);return {ok:issues.length===0,model:null,method:'DETERMINISTIC_PRIME_FACTOR_REASONING',issues,evidence,derivation:factorization.derivation,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'PUBLIC_NUMBER_AND_CHECKED_PRIME_POWER_FACTORIZATION'};}
  const divisibility=env.QUESTION_MATH6_PROOF_ENABLED==='true'&&visual?.kind==='NONE'?divisibilityEvidence({stemText:q.stemText,options:q.options},context):null;
  if(divisibility){const evidence={...divisibility,sourceNumbers:scientificSourceNumbers(q)},issues=blindSolveIssues(q,evidence);return {ok:issues.length===0,model:null,method:'DETERMINISTIC_DIVISIBILITY_REASONING',issues,evidence,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'PUBLIC_DIGITS_AND_EXACT_INTEGER_REMAINDERS'};}
  const offer=env.QUESTION_OFFER_PROOF_ENABLED==='true'?(visual?.kind==='NONE'?offerComparisonEvidence({stemText:q.stemText,options:q.options},context):visual?.kind==='TABLE'?tableOfferComparisonEvidence({stemText:q.stemText,options:q.options,visual:{kind:visual.kind,title:visual.title,unit:visual.unit,columns:visual.columns,rows:visual.rows,categories:visual.categories,values:visual.values}},context):null):null;
