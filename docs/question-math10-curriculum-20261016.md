@@ -13,3 +13,11 @@ Staging importer requires a non-active campaign and snapshots pilot usage, campa
 Validation: 80 relevant tests across twelve files and TypeScript passed. Four new tests cover exact current code/title/scope, missing geometry-source evidence, script-only rejection, wrong grade/source, legacy-code mixing, comma-containing titles preserved in one cell, correct unit and exact guidance matching/cross-grade rejection. Prior proof/curriculum regressions pass.
 
 Next: record live import/deployment evidence. Remaining curriculum still spans other themes/subjects of grades 5,6,7,9,10,11; next bounded import is grade-eleven current first-theme data. Real production quality, autonomous queue/admin/media/video and 500000/50-day throughput remain unfinished.
+
+## Verified live import and deployment
+
+Created curriculum version cv_a862c43c-de38-4a2d-9054-f78c2f0dc0f1 with four active official current-page outcomes MAT.10.1.1–MAT.10.1.4 and four active grade/year-matching learning nodes. Import workflow 38937323697 / job 117095984692 succeeded with live official-source matching and source hash/time evidence.
+
+Before/after unchanged: campaign PAUSED, generation jobs 32, bank count 165 and historical pilot usage. No new question generated. The 50-question sample is optional per user steering and no longer a separate required delivery. Private generator/scheduler workflow 38937323511 / job 117095984144 succeeded. Main app workflow 38937323521 / job 117095983778 completed successfully including source checks, migrations, deploy, demo-domain verification and Nibiru probe. Exact full-suite test counts are preserved in the companion evidence JSON.
+
+This is first-theme curriculum plus guidance, not completed geometry rendering/proof or full-grade production qualification. Next single task: current official grade-eleven first-theme curriculum. Preserve the optional-sample decision across future conversations without falsely rewriting prior diagnostics or usage.
