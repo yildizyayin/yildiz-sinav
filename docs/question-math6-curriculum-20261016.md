@@ -9,3 +9,11 @@ The staging-only import verifies the campaign is paused and snapshots pilot budg
 Validation: 42 relevant tests in six files passed; TypeScript check passed. Includes exact source pairing/mismatch rejection, pinned source/grade, missing scope restriction, script-only source rejection, comma-containing official title preserved in one CSV cell, scope guidance and existing proof regression tests. No new question-generation/model-editor call.
 
 Previous staging app workflow 38930908079 succeeded on retry including Nibiru probe. Next: record live import outcome and linked node count before claiming records imported. Question quality qualification, other grades/subjects and mass-production readiness remain separate unfinished work.
+
+## Verified staging result
+
+Live import workflow 38932441956 / job 117079532499 succeeded. Created curriculum version cv_9972d139-a506-4dce-958d-64cca594323c with exactly four official active outcomes MAT.6.1.1–MAT.6.1.4 and four active learning graph nodes. Existing-version reuse was not needed. Runtime fetched and matched the official source and recorded its HTML SHA-256 and retrieval time.
+
+Before/after unchanged: pilot 50/50, campaign editorial-20261015 PAUSED, generation jobs 32, question bank count 165. No new question was generated or published. Private generator/scheduler deploy workflow 38932441775 / job 117079531866 succeeded, so grade-six scope guidance is deployed. Main app run 38932441799 / job 117079531557 passed source/typecheck/tests/build, migrations, Worker deploy and demo-domain verification; general Nibiru provider probe was still running at recording. Full app workflow completion is not claimed.
+
+Next single work item: qualify an independent scientific verification route for the newly imported grade-six scope before any new production campaign. Other five target grades and subject curricula remain incomplete; this import does not meet the 500,000-question campaign requirement.
