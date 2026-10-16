@@ -11,3 +11,7 @@ Official reference checked 2026-10-16: https://tymm.meb.gov.tr/ortaokul-matemati
 Validation: 62 tests passed across six relevant files, including 9 new offer-proof tests. Sixty unseen arithmetic cases use a separate BigInt oracle and rotated answer labels. Hidden key/solution getter tests, wrong-key handling, NONE/MULTIPLE, fee-sensitive choice reversal, zero remainder, boundaries, unsupported wording/scope, disabled routing and final-editor rejection are covered. These are local synthetic test cases, not newly generated or publisher-approved questions. TypeScript check passed.
 
 Previous staging run 38928348238 completed successfully, including Nibiru provider probe. Private deployment and preserved-proof run 38928348419 succeeded. No pilot counter change, new AI call, old failure rewrite or campaign restart was made in this increment. Current verified pilot is 50/50. Grades 6/7/9/10/11 and broader subjects remain unqualified.
+
+## Deployment checkpoint
+
+Staging commit f8cc82634815608a478298ee92050347af749332. Private generator/scheduler deployment run 38930186717 succeeded. App workflow 38930186737 passed source checks, Worker deployment and demo domain verification. Its generic Nibiru provider probe was still running at this checkpoint; full workflow success is not yet claimed. No new question-generation call or bank write was initiated. Production is unchanged.
