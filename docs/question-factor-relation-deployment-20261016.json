@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-16",
+  "stagingCommit": "e787f4ac4a7b7bbfbf218c6edab7835685ef0776",
+  "method": "DETERMINISTIC_FACTOR_RELATIONS",
+  "scope": {
+    "grade": 6,
+    "outcomes": [
+      "MAT.6.1.1",
+      "MAT.6.1.4"
+    ],
+    "focus": "GENERIC",
+    "visual": "NONE",
+    "applicationValueBound": "1–999999; positive multiples explicitly stated"
+  },
+  "validation": {
+    "focusedTests": 99,
+    "files": 11,
+    "typecheck": "pass",
+    "singleBigIntCases": 2400,
+    "commonBigIntCases": 1944,
+    "githubTestSummary": [
+      "2026-10-16T16:51:40.0303438Z  Test Files  228 passed (228)",
+      "2026-10-16T16:51:40.0308054Z       Tests  1196 passed (1196)"
+    ]
+  },
+  "privateWorker": {
+    "run": 38935041556,
+    "job": 117088296490,
+    "conclusion": "success"
+  },
+  "appWorker": {
+    "run": 38935041558,
+    "job": 117088295485,
+    "conclusion": "success",
+    "source": "success",
+    "migrations": "success",
+    "deploy": "success",
+    "demoDomain": "success",
+    "nibiruProbe": "success"
+  },
+  "freshQuestionsGenerated": 0,
+  "campaignRestarted": false,
+  "pilotCapChanged": false,
+  "productionChanged": false,
+  "limits": [
+    "Strict public statement grammars only",
+    "No complete grade/subject qualification",
+    "No fresh live generated-question quality trial",
+    "No 500k throughput qualification"
+  ]
+}
