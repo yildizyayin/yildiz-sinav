@@ -275,3 +275,21 @@ it('uses the independent backup directly after the recorded3046 without calling 
   expect(f.db.prepare('SELECT reserved_count FROM question_agent_pilot_budget').get()?.reserved_count).toBe(50);
  }finally{f.db.close();}
 });
+
+import {SOLVER_FORMAL_ID} from '../worker/lib/question-solver-diagnostic';
+it('uses a public-data formal proof after the recorded bad numeric trace and makes only an editorial model call',async()=>{
+ const f=fixture();try{
+  const {question}=await seedSolverDiagnostic(f),user:any={id:'admin',role:'SUPER_ADMIN'};
+  expect((await diagnoseIndependentSolver(f.env,user,false,false,false,true)).status).toBe(409);
+  f.provider.mockRejectedValue(Error('BLIND_SOLVER_TIMEOUT'));await diagnoseIndependentSolver(f.env,user);
+  f.provider.mockRejectedValue(Error('3046: Request timeout'));await diagnoseIndependentSolver(f.env,user,true);await diagnoseIndependentSolver(f.env,user,false,true);
+  f.provider.mockImplementation(async(_model:string,input:any)=>{const p=JSON.parse(independentReply(input,question).response);p.calculations[0].result=760;return {response:JSON.stringify(p)};});
+  expect(await (await diagnoseIndependentSolver(f.env,user,false,false,true)).json()).toMatchObject({passed:false,stage:'REJECTED_CANDIDATE'});
+  const old=f.db.prepare('SELECT verification_json FROM question_verifier_calibrations WHERE id=?').get(SOLVER_BACKUP_ID)?.verification_json;
+  f.provider.mockImplementation(async(model:string,input:any)=>{expect(model).toBe(backupModel);expect(requestedSchema(input).properties.reviews).toBeTruthy();return independentReply(input,question);});
+  const result:any=await (await diagnoseIndependentSolver(f.env,user,false,false,false,true)).json();expect(result).toMatchObject({passed:true,formal:true,diagnosticId:SOLVER_FORMAL_ID});
+  expect(result.verification.blindSolves[0]).toMatchObject({ok:true,model:null,method:'DETERMINISTIC_TRANSACTION_BALANCE',keyHidden:true,solutionHidden:true});
+  await diagnoseIndependentSolver(f.env,user,false,false,false,true);expect(f.provider).toHaveBeenCalledTimes(5);
+  expect(f.db.prepare('SELECT verification_json FROM question_verifier_calibrations WHERE id=?').get(SOLVER_BACKUP_ID)?.verification_json).toBe(old);
+ }finally{f.db.close();}
+});

@@ -1,4 +1,5 @@
 import {questionIndependentRequest} from './question-ai-schema';
+import {transactionBalanceEvidence} from './question-transaction-proof';
 import type {Env} from '../types';
 import {questionAiFailure} from './question-ai-failure';
 import {readAiJson,turkishCardinal,type CheckedDraft} from './question-generation-validation';
@@ -46,6 +47,8 @@ export function deterministicReadingEvidence(input:{stemText:string;options:{lab
  return {target,answer:correct.length===1?correct[0].label:correct.length?'MULTIPLE':'NONE',optionChecks:input.options.map((o,i)=>({label:o.label,correct:values[i]===target,reason:`Seçeneğin sayısal değeri ${values[i]}; okunuşun kesin değeri ${target} ile ${values[i]===target?'aynıdır':'farklıdır'}.`})),calculations};
 }
 export async function independentlySolve(env:Env,q:CheckedDraft,model:string,context?:any){
+ const balance=env.QUESTION_TRANSACTION_PROOF_ENABLED==='true'&&q.editorial?.visual.kind==='NONE'?transactionBalanceEvidence({stemText:q.stemText,options:q.options},context):null;
+ if(balance){const evidence={...balance,sourceNumbers:scientificSourceNumbers(q)},issues=blindSolveIssues(q,evidence);return {ok:issues.length===0,model:null,method:'DETERMINISTIC_TRANSACTION_BALANCE',issues,evidence,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'PUBLIC_TRANSACTIONS_AND_EXACT_INTEGER_ARITHMETIC'};}
  const reading=q.editorial?.visual.kind==='NONE'?deterministicReadingEvidence({stemText:q.stemText,options:q.options},context):null;
  if(reading){const {target,...proof}=reading,evidence={...proof,sourceNumbers:scientificSourceNumbers(q)},issues=blindSolveIssues(q,evidence);return {ok:issues.length===0,model:null,method:'DETERMINISTIC_TURKISH_CARDINAL',issues,evidence,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'EXACT_TURKISH_CARDINAL_AND_DECIMAL_GROUPS'};}
  const sources=scientificSourceNumbers(q),properties:any={};for(const [key,value]of Object.entries(sources))properties[key]={type:'number',const:value};
