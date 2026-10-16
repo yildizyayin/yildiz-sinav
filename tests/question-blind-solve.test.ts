@@ -31,3 +31,25 @@ it('keeps provider unavailability distinct from a wrong answer and does not retr
  expect(result).toMatchObject({ok:false,issues:['BLIND_SOLVER_UNAVAILABLE'],diagnosticCode:'PROVIDER_INTERNAL_ERROR',providerCode:3045,keyHidden:true,solutionHidden:true});
  expect(calls).toBe(1);expect(JSON.stringify(result)).not.toContain('do-not-persist');
 });
+
+import {questionResponseFormat} from '../worker/lib/question-ai-schema';
+it('uses the model-specific Chat Completions schema envelope without changing the scientific schema',()=>{
+ const schema={type:'object',additionalProperties:false,properties:{answer:{type:'string',enum:['A','B']}}};
+ expect(questionResponseFormat('@cf/nvidia/nemotron-3-120b-a12b',schema,'blind_solution')).toEqual({type:'json_schema',json_schema:{name:'blind_solution',schema,strict:true}});
+ expect(questionResponseFormat('@cf/qwen/qwen3-30b-a3b-fp8',schema,'unchanged')).toEqual({type:'json_schema',json_schema:schema});
+});
+it('classifies documented account, capacity and timeout errors from numeric codes without leaking text',()=>{
+ for(const [code,expected] of [[3036,'PROVIDER_DAILY_ALLOCATION'],[3040,'PROVIDER_CAPACITY'],[3007,'PROVIDER_TIMEOUT'],[3008,'PROVIDER_ABORTED'],[5035,'PROVIDER_PAID_PLAN_REQUIRED'],[5018,'PROVIDER_AUTH_ERROR'],[5007,'PROVIDER_REQUEST_REJECTED']] as const){
+  expect(questionAiFailure(Error(`${code}: hidden-provider-text`))).toMatchObject({providerCode:code,diagnosticCode:expected});
+ }
+});
+
+import {vi} from 'vitest';
+it('allows the reasoned Nemotron call to continue beyond90s but stops it at the bounded240s deadline',async()=>{
+ vi.useFakeTimers();try{
+  const env:any={AI:{run:async()=>new Promise(()=>{})}};let settled=false;
+  const task=independentlySolve(env,q,'@cf/nvidia/nemotron-3-120b-a12b');task.then(()=>settled=true);
+  await vi.advanceTimersByTimeAsync(90000);expect(settled).toBe(false);
+  await vi.advanceTimersByTimeAsync(150000);expect(await task).toMatchObject({ok:false,diagnosticCode:'AI_TIMEOUT',issues:['BLIND_SOLVER_UNAVAILABLE']});
+ }finally{vi.useRealTimers();}
+});

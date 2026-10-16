@@ -25,7 +25,7 @@ function fixture(){
  q.editorial.visual={kind:'NONE',title:'',unit:'',columns:[],rows:[],categories:[],values:[],readingPurpose:''};q.editorial.distractors=[{label:'A',misconception:'İşlemleri ters sırada geri almama yanılgısı.',whyIncorrect:'Yanılgı hesabı:132 ÷ 3 = 44;44 − 24 = 20. Son eklemeyi önce geri almak gerektiğinden bu yöntem yanlıştır.'},{label:'B',misconception:'Son eklenen miktarı çıkarmak yerine tekrar ekleme.',whyIncorrect:'Yanılgı hesabı:132 + 24 = 156;156 ÷ 3 = 52. Son eklemeyi geri almak için24 çıkarmak gerekir.'},{label:'D',misconception:'Son ekleme miktarını geri almadan bölme yapma.',whyIncorrect:'Yanılgı hesabı:132 ÷ 3 = 44. Bu hesap son eklenen24 kartı başlangıca aitmiş gibi ele alır.'}];
  const provider=vi.fn(async(model:string,input:any)=>{
   if(model===writer||model===editor)return {response:JSON.stringify({questions:[q]}),usage:{neurons:1}};
-  if(input.response_format.json_schema.properties.sourceNumbers)return {response:JSON.stringify({sourceNumbers:scientificSourceNumbers(q),answer:'C',optionChecks:q.options.map((o:any)=>({label:o.label,correct:o.label==='C',reason:'Seçenek verilen sayılar ve doğru maliyet hesabıyla karşılaştırıldı.'})),calculations:[{left:132,op:'SUB',right:24,result:108},{left:108,op:'DIV',right:3,result:36}]})};
+  if((input.response_format.json_schema.schema??input.response_format.json_schema).properties.sourceNumbers)return {response:JSON.stringify({sourceNumbers:scientificSourceNumbers(q),answer:'C',optionChecks:q.options.map((o:any)=>({label:o.label,correct:o.label==='C',reason:'Seçenek verilen sayılar ve doğru maliyet hesabıyla karşılaştırıldı.'})),calculations:[{left:132,op:'SUB',right:24,result:108},{left:108,op:'DIV',right:3,result:36}]})};
   return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})};
  });
  const prepare=(sql:string,args:any[]=[]):any=>({sql,args,bind:(...a:any[])=>prepare(sql,a),first:async()=>db.prepare(sql).get(...args),run:async()=>({meta:{changes:db.prepare(sql).run(...args).changes}})});
@@ -66,7 +66,7 @@ it('corrects the same source once and verifies in a separate invocation without 
  const f=fixture();try{
   const original=f.provider.getMockImplementation()!,reviewer='@cf/nvidia/nemotron-3-120b-a12b';let failReview=true,editorCalls=0;
   f.provider.mockImplementation(async(model:string,input:any)=>{
-   if(model===reviewer&&input.response_format.json_schema.properties.reviews&&failReview){failReview=false;throw Error('Temporary provider error');}
+   if(model===reviewer&&(input.response_format.json_schema.schema??input.response_format.json_schema).properties.reviews&&failReview){failReview=false;throw Error('Temporary provider error');}
    const raw:any=await original(model,input);
    if(model==='@cf/qwen/qwen3-30b-a3b-fp8'&&++editorCalls===2){const packet=JSON.parse(raw.response);packet.questions[0].stemText+=' Yöntemleri işlem sırasına göre karşılaştırınız.';raw.response=JSON.stringify(packet);}
    return raw;
@@ -85,7 +85,7 @@ it('allows one alternative editor only after the recorded editor failed; keeps t
  const f=fixture();try{
   expect((await preparePipelineCorrection(f.env,{id:'admin',role:'SUPER_ADMIN'} as any,true)).status).toBe(409);expect(f.provider).not.toHaveBeenCalled();
   const original=f.provider.getMockImplementation()!;let fail=true;
-  f.provider.mockImplementation(async(model:string,input:any)=>{if(model==='@cf/nvidia/nemotron-3-120b-a12b'&&input.response_format.json_schema.properties.reviews&&fail){fail=false;throw Error('Unavailable');}return original(model,input);});
+  f.provider.mockImplementation(async(model:string,input:any)=>{if(model==='@cf/nvidia/nemotron-3-120b-a12b'&&(input.response_format.json_schema.schema??input.response_format.json_schema).properties.reviews&&fail){fail=false;throw Error('Unavailable');}return original(model,input);});
   await runEditorialPipelineTrial(f.env,{id:'admin',role:'SUPER_ADMIN'} as any);
   f.db.prepare("INSERT INTO question_verifier_calibrations(id,status,verification_json) VALUES(?,'BLOCKED',?)").run(PIPELINE_CORRECTION_ID,JSON.stringify({error:'EDITOR_OUTPUT_INVALID'}));
   f.provider.mockImplementation(async(model:string,input:any)=>{if(model==='@cf/zai-org/glm-4.7-flash'){expect(input.max_completion_tokens).toBe(8000);expect(input.response_format.json_schema.schema.properties.questions).toBeTruthy();const r:any=await original('@cf/qwen/qwen3-30b-a3b-fp8',input),p=JSON.parse(r.response);p.questions[0].stemText+=' Yöntemleri karşılaştırınız.';return {response:JSON.stringify(p)};}return original(model,input);});
@@ -120,7 +120,7 @@ it('assembles a recorded source once, keeps its provenance and cap, and only cal
   const {q,text}=seedAssembly(f),assembled=assembleInverseStrategies(q)!.question;
   f.provider.mockImplementation(async(model:string,input:any)=>{
    expect(model).toBe('@cf/nvidia/nemotron-3-120b-a12b');
-   if(input.response_format.json_schema.properties.sourceNumbers)return {response:JSON.stringify({sourceNumbers:scientificSourceNumbers(assembled),answer:'C',optionChecks:assembled.options.map(o=>({label:o.label,correct:o.label==='C',reason:'İşlem sonuçları ve yöntem açıklaması verilen başlangıç koşuluna göre kontrol edildi.'})),calculations:[{left:632,op:'ADD',right:275,result:907},{left:907,op:'SUB',right:148,result:759}]})};
+   if((input.response_format.json_schema.schema??input.response_format.json_schema).properties.sourceNumbers)return {response:JSON.stringify({sourceNumbers:scientificSourceNumbers(assembled),answer:'C',optionChecks:assembled.options.map(o=>({label:o.label,correct:o.label==='C',reason:'İşlem sonuçları ve yöntem açıklaması verilen başlangıç koşuluna göre kontrol edildi.'})),calculations:[{left:632,op:'ADD',right:275,result:907},{left:907,op:'SUB',right:148,result:759}]})};
    return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})};
   });
   const result:any=await (await verifyStrategyAssembly(f.env,{id:'admin',role:'SUPER_ADMIN'} as any)).json();
@@ -191,9 +191,29 @@ it('requires both independent stages before passing a fixed candidate',async()=>
   const {question}=await seedSolverDiagnostic(f);
   f.provider.mockImplementation(async(model:string,input:any)=>{
    expect(model).toBe('@cf/nvidia/nemotron-3-120b-a12b');
-   if(input.response_format.json_schema.properties.sourceNumbers)return {response:JSON.stringify({sourceNumbers:scientificSourceNumbers(question),answer:'C',optionChecks:question.options.map(o=>({label:o.label,correct:o.label==='C',reason:'Yöntemdeki işlemler ve sonuç başlangıç koşuluna göre ayrı ayrı kontrol edildi.'})),calculations:[{left:632,op:'ADD',right:275,result:907},{left:907,op:'SUB',right:148,result:759}]})};
+   if((input.response_format.json_schema.schema??input.response_format.json_schema).properties.sourceNumbers)return {response:JSON.stringify({sourceNumbers:scientificSourceNumbers(question),answer:'C',optionChecks:question.options.map(o=>({label:o.label,correct:o.label==='C',reason:'Yöntemdeki işlemler ve sonuç başlangıç koşuluna göre ayrı ayrı kontrol edildi.'})),calculations:[{left:632,op:'ADD',right:275,result:907},{left:907,op:'SUB',right:148,result:759}]})};
    return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})};
   });
   expect(await (await diagnoseIndependentSolver(f.env,{id:'admin',role:'SUPER_ADMIN'} as any)).json()).toMatchObject({passed:true,stage:'VERIFIED_CANDIDATE',sourceUnchanged:true});expect(f.provider).toHaveBeenCalledTimes(2);
+ }finally{f.db.close();}
+});
+
+import {SOLVER_CONTRACT_FIX_ID} from '../worker/lib/question-solver-diagnostic';
+it('only validates the new chat contract after the recorded operational failure and preserves that failure',async()=>{
+ const f=fixture();try{
+  const {question}=await seedSolverDiagnostic(f),user:any={id:'admin',role:'SUPER_ADMIN'};
+  expect((await diagnoseIndependentSolver(f.env,user,true)).status).toBe(409);expect(f.provider).not.toHaveBeenCalled();
+  f.provider.mockRejectedValue(Error('BLIND_SOLVER_TIMEOUT'));await diagnoseIndependentSolver(f.env,user);
+  const previous=f.db.prepare('SELECT verification_json FROM question_verifier_calibrations WHERE id=?').get(SOLVER_DIAGNOSTIC_ID)?.verification_json;
+  f.provider.mockImplementation(async(model:string,input:any)=>{
+   expect(model).toBe('@cf/nvidia/nemotron-3-120b-a12b');expect(input.response_format.json_schema.strict).toBe(true);
+   const schema=input.response_format.json_schema.schema;expect(schema.type).toBe('object');
+   if(schema.properties.sourceNumbers){expect(input.response_format.json_schema.name).toBe('anunex_blind_solution');return {response:JSON.stringify({sourceNumbers:scientificSourceNumbers(question),answer:'C',optionChecks:question.options.map(o=>({label:o.label,correct:o.label==='C',reason:'Yöntem hesabının kaynak verilerle tutarlılığı ayrı ayrı kontrol edildi.'})),calculations:[{left:632,op:'ADD',right:275,result:907},{left:907,op:'SUB',right:148,result:759}]})};}
+   expect(input.response_format.json_schema.name).toBe('anunex_independent_review');return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})};
+  });
+  expect(await (await diagnoseIndependentSolver(f.env,user,true)).json()).toMatchObject({passed:true,protocolFix:true,diagnosticId:SOLVER_CONTRACT_FIX_ID,previousDiagnosticId:SOLVER_DIAGNOSTIC_ID});
+  await diagnoseIndependentSolver(f.env,user,true);expect(f.provider).toHaveBeenCalledTimes(3);
+  expect(f.db.prepare('SELECT verification_json FROM question_verifier_calibrations WHERE id=?').get(SOLVER_DIAGNOSTIC_ID)?.verification_json).toBe(previous);
+  expect(f.db.prepare('SELECT reserved_count FROM question_agent_pilot_budget').get()?.reserved_count).toBe(50);
  }finally{f.db.close();}
 });
