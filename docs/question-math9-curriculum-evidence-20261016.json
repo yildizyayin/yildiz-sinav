@@ -1,0 +1,112 @@
+{
+  "environment": "staging",
+  "scope": "İlk temanın dört resmî öğrenme çıktısı; tam sınıf müfredatı veya üretim yeterliği değildir.",
+  "newProducerCalls": 0,
+  "newEditorCalls": 0,
+  "source": {
+    "matchedCodes": [
+      "MAT.9.1.1",
+      "MAT.9.1.2",
+      "MAT.9.1.3",
+      "MAT.9.1.4"
+    ],
+    "completeGrade": false,
+    "productionQualified": false
+  },
+  "sourceHash": "b6162f5d32ba63b005eb141ab0799f72998928684b22655acc4d732173124e41",
+  "retrievedAt": "2026-10-16T17:01:15.910Z",
+  "before": {
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "status": "PAUSED"
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ]
+  },
+  "importJob": "cimp_e599073a-4c3e-458e-b9bd-cb797d9da784",
+  "reused": false,
+  "versionId": "cv_8bf1906f-2ded-4c88-82d3-4658e4d77d9c",
+  "codes": [
+    "MAT.9.1.1",
+    "MAT.9.1.2",
+    "MAT.9.1.3",
+    "MAT.9.1.4"
+  ],
+  "linkedNodes": 4,
+  "after": {
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "status": "PAUSED"
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ]
+  },
+  "passed": true,
+  "stagingCommit": "7818bf4fca87de1a7f3b005ece2dbdaf17bfc85a",
+  "import": {
+    "run": 38936433346,
+    "job": 117092985608,
+    "conclusion": "success"
+  },
+  "privateDeployment": {
+    "run": 38936433231,
+    "job": 117092985309,
+    "conclusion": "success"
+  },
+  "appDeployment": {
+    "run": 38936435143,
+    "job": 117092991291,
+    "conclusion": "success",
+    "source": "success",
+    "migrations": "success",
+    "deploy": "success",
+    "demoDomain": "success",
+    "nibiruProbe": "success"
+  },
+  "validation": {
+    "focusedTests": 76,
+    "files": 11,
+    "typecheck": "pass",
+    "githubSummary": [
+      "2026-10-16T17:02:37.1231171Z  Test Files  230 passed (230)",
+      "2026-10-16T17:02:37.1236846Z       Tests  1204 passed (1204)"
+    ]
+  },
+  "completeGrade": false,
+  "productionQualified": false,
+  "freshQuestionGeneration": false
+}
