@@ -151,3 +151,49 @@ it('preserves a real verifier failure and never retries a claimed assembly',asyn
   expect(f.db.prepare('SELECT status FROM question_verifier_calibrations WHERE id=?').get(STRATEGY_ASSEMBLY_ID)?.status).toBe('BLOCKED');
  }finally{f.db.close();}
 });
+
+import {diagnoseIndependentSolver,SOLVER_DIAGNOSTIC_ID} from '../worker/lib/question-solver-diagnostic';
+import {sha256} from '../worker/lib/question-team-policy';
+async function seedSolverDiagnostic(f:ReturnType<typeof fixture>){
+ const {q,text}=seedAssembly(f),question=assembleInverseStrategies(q)!.question;
+ const report={passed:false,verification:{unavailable:true},sourceUnchanged:true,pureLlmEditorial:false,construction:'AI_SOURCE_WITH_DETERMINISTIC_STRATEGY_EDITOR',candidateHash:await sha256(JSON.stringify(question)),question,source:JSON.parse(text).source};
+ const old=JSON.stringify(report);f.db.prepare("INSERT INTO question_verifier_calibrations(id,status,verification_json) VALUES(?,'BLOCKED',?)").run(STRATEGY_ASSEMBLY_ID,old);
+ return {question,old};
+}
+it('records a safe live-path error once without changing the previous failure or the exhausted pilot',async()=>{
+ const f=fixture();try{
+  const {old}=await seedSolverDiagnostic(f);f.provider.mockRejectedValue(Error('3045: Unknown internal error; private-do-not-copy'));
+  const user:any={id:'admin',role:'SUPER_ADMIN'};
+  const r:any=await (await diagnoseIndependentSolver(f.env,user)).json();
+  expect(r).toMatchObject({passed:false,stage:'BLOCKED_DEPENDENCY',sourceUnchanged:true,newProducerCalls:0,modelEditorCalls:0});
+  expect(r.verification.blindSolves[0]).toMatchObject({diagnosticCode:'PROVIDER_INTERNAL_ERROR',providerCode:3045});
+  await diagnoseIndependentSolver(f.env,user);expect(f.provider).toHaveBeenCalledTimes(1);
+  expect(JSON.stringify(r)).not.toContain('private-do-not-copy');
+  expect(f.db.prepare('SELECT verification_json FROM question_verifier_calibrations WHERE id=?').get(STRATEGY_ASSEMBLY_ID)?.verification_json).toBe(old);
+  expect(f.db.prepare('SELECT reserved_count FROM question_agent_pilot_budget').get()?.reserved_count).toBe(50);
+  expect(f.db.prepare('SELECT count(*) n FROM question_bank').get()?.n).toBe(0);
+ }finally{f.db.close();}
+});
+it('forbids solver diagnostics outside staging, after semantic rejection, or after candidate alteration',async()=>{
+ const f=fixture();try{
+  await seedSolverDiagnostic(f);const user:any={id:'admin',role:'SUPER_ADMIN'};
+  expect((await diagnoseIndependentSolver({...f.env,ENVIRONMENT:'production'},user)).status).toBe(409);
+  expect((await diagnoseIndependentSolver(f.env,{...user,role:'TEACHER'})).status).toBe(409);
+  f.db.prepare("UPDATE question_verifier_calibrations SET verification_json=json_set(verification_json,'$.verification.unavailable',json('false')) WHERE id=?").run(STRATEGY_ASSEMBLY_ID);
+  expect((await diagnoseIndependentSolver(f.env,user)).status).toBe(409);
+  f.db.prepare("UPDATE question_verifier_calibrations SET verification_json=json_set(verification_json,'$.verification.unavailable',json('true'),'$.question.correctAnswer','B') WHERE id=?").run(STRATEGY_ASSEMBLY_ID);
+  expect((await diagnoseIndependentSolver(f.env,user)).status).toBe(409);expect(f.provider).not.toHaveBeenCalled();
+  expect(f.db.prepare('SELECT count(*) n FROM question_verifier_calibrations WHERE id=?').get(SOLVER_DIAGNOSTIC_ID)?.n).toBe(0);
+ }finally{f.db.close();}
+});
+it('requires both independent stages before passing a fixed candidate',async()=>{
+ const f=fixture();try{
+  const {question}=await seedSolverDiagnostic(f);
+  f.provider.mockImplementation(async(model:string,input:any)=>{
+   expect(model).toBe('@cf/nvidia/nemotron-3-120b-a12b');
+   if(input.response_format.json_schema.properties.sourceNumbers)return {response:JSON.stringify({sourceNumbers:scientificSourceNumbers(question),answer:'C',optionChecks:question.options.map(o=>({label:o.label,correct:o.label==='C',reason:'Yöntemdeki işlemler ve sonuç başlangıç koşuluna göre ayrı ayrı kontrol edildi.'})),calculations:[{left:632,op:'ADD',right:275,result:907},{left:907,op:'SUB',right:148,result:759}]})};
+   return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})};
+  });
+  expect(await (await diagnoseIndependentSolver(f.env,{id:'admin',role:'SUPER_ADMIN'} as any)).json()).toMatchObject({passed:true,stage:'VERIFIED_CANDIDATE',sourceUnchanged:true});expect(f.provider).toHaveBeenCalledTimes(2);
+ }finally{f.db.close();}
+});

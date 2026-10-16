@@ -11,3 +11,23 @@ it('rejects unsupported arithmetic, answer-key mismatch and unexamined options',
 it('derives the whole package count from a checked positive division without admitting arbitrary inputs',()=>{const p=proof();p.calculations[1]={left:280,op:'DIV',right:55,result:280/55};p.calculations[2]={left:7,op:'MUL',right:120,result:840};expect(blindSolveIssues(q,p)).toEqual([]);p.calculations[3].left=8;expect(blindSolveIssues(q,p)).toContain('BLIND_UNSOURCED_OPERAND');});
 
 it('accepts actual public place-value components instead of treating them as invented operands',()=>{const fixture=JSON.parse(readFileSync(new URL('./fixtures/reading-place-value-proof.json',import.meta.url),'utf8'));const sources=scientificSourceNumbers(fixture.question);expect(Object.values(sources)).toContain(4000000000);expect(Object.values(sources)).toContain(500000);expect(Object.values(sources)).toContain(891);expect(blindSolveIssues(fixture.question,{...fixture.evidence,sourceNumbers:sources})).toEqual([]);});
+
+import {independentlySolve} from '../worker/lib/question-blind-solve';
+import {questionAiFailure} from '../worker/lib/question-ai-failure';
+it('retains safe failure categories while dropping arbitrary provider text and fields',()=>{
+ const error=Object.assign(Error('Gateway: 3045: Unknown internal error; secret=do-not-persist'),{status:503,authorization:'do-not-persist'});
+ expect(questionAiFailure(error)).toEqual({diagnosticCode:'PROVIDER_INTERNAL_ERROR',providerCode:3045,httpStatus:503});
+ expect(JSON.stringify(questionAiFailure(error))).not.toContain('do-not-persist');
+ expect(questionAiFailure(Error('BLIND_SOLVER_TIMEOUT')).diagnosticCode).toBe('AI_TIMEOUT');
+ expect(questionAiFailure(Error('QUESTION_DAILY_AI_BUDGET_EXHAUSTED')).diagnosticCode).toBe('DAILY_AI_BUDGET');
+ expect(questionAiFailure({status:429,message:'Too many requests'}).diagnosticCode).toBe('PROVIDER_RATE_LIMIT');
+ expect(questionAiFailure({status:401}).diagnosticCode).toBe('PROVIDER_AUTH_ERROR');
+ expect(questionAiFailure({status:400}).diagnosticCode).toBe('PROVIDER_REQUEST_REJECTED');
+ expect(questionAiFailure(null).diagnosticCode).toBe('PROVIDER_FAILED');
+});
+it('keeps provider unavailability distinct from a wrong answer and does not retry',async()=>{
+ let calls=0;const env:any={AI:{run:async()=>{calls++;throw Error('3045: Unknown internal error; do-not-persist');}}};
+ const result=await independentlySolve(env,q,'@cf/nvidia/nemotron-3-120b-a12b');
+ expect(result).toMatchObject({ok:false,issues:['BLIND_SOLVER_UNAVAILABLE'],diagnosticCode:'PROVIDER_INTERNAL_ERROR',providerCode:3045,keyHidden:true,solutionHidden:true});
+ expect(calls).toBe(1);expect(JSON.stringify(result)).not.toContain('do-not-persist');
+});
