@@ -1,58 +1,63 @@
-# Current task: independent solver failure diagnosis
+# Current single task: independent solver operational failure
 
-The previous strategy-assembly candidate was BLOCKED because the blind solver
-was unavailable. Its exact exception was lost by a catch-all. The old record is
-immutable and is not reclassified as a content failure or a passing candidate.
+The blind-solver catch previously discarded the underlying exception. Safe
+operational diagnostics now distinguish application timeout, provider timeout,
+capacity/allocation, authentication, request rejection and invalid JSON protocol
+without storing arbitrary exception messages or fields.
 
-## Changes
+## Actual bounded evidence
 
-- Blind-solver failures now keep a safe diagnostic category, numeric provider
-  code and allowlisted HTTP status. Provider messages and arbitrary exception
-  fields are not persisted. The final-review exception also keeps this safe
-  classification while preserving its existing diagnosticCode contract.
-- One fixed diagnostic record, independent-solver-diagnostic-20261016-v1, checks
-  the existing candidate only after the immutable operational failure. It
-  validates the candidate hash, official curriculum and packet shape, and
-  rechecks the source after verification. It cannot call an author/editor,
-  change the pilot cap, write questions to the bank or publish to students.
-- Staging-only, same-origin Super Admin service binding. Repeat calls reuse the
-  report without invoking providers. The daily10000-Neuron budget is unchanged;
-  no unknown usage is refunded and no paid plan is activated.
-- Construction remains explicitly AI_SOURCE_WITH_DETERMINISTIC_STRATEGY_EDITOR,
-  pureLlmEditorial=false. This is not a proof of pure-LLM editorial reliability.
+| Record/run | Result |
+| --- | --- |
+| Original assembly38758027673,15Oct | Unavailable; exact exception lost by old catch. Not a valid candidate. |
+| Diagnostic38918567722,16Oct | AI_TIMEOUT at the local90s deadline. No content verdict. |
+| Named schema/deadline38919348428 | Provider code3046, before the240s local deadline. Not resolved by increasing the local wait. |
+| JSON-object transport38920635671 | Pending. Do not claim a working solver or passing candidate yet. |
 
-## Validation
+The same immutable candidate and official source hashes are used throughout.
+No author/editor call, new pilot slot, question-bank write or student publication.
+Pilot stays50/50. After the first two16Oct calls the ledger is0 charged+1897
+held of10000; held/unknown usage is retained, never refunded.
 
-21 focused tests, typecheck and build passed locally. Tests cover safe error
-classification, no retry, immutable old failures, exhausted pilot preservation,
-permission/source guards and the requirement that both independent stages pass.
-Live diagnostic run38918567722 returned AI_TIMEOUT at the existing90s local
-deadline. This is a measured operational failure, not a wrong answer. Pilot
-50/50 and the previous assembly record are unchanged. Today's ledger after the
-call:0 charged,947 held of10000. No unknown reservation was refunded.
+## Current implementation
 
-The installed Cloudflare model type for Nemotron is ChatCompletionsInput, whose
-response_format JSON schema requires the name/schema/strict envelope. Our
-`as any` call had hidden a bare-schema contract mismatch. Both independent
-requests now use a model-specific helper checked with `satisfies` against the
-actual model input. Older native models retain their existing bare schema.
-No scientific schema fields, scores, prompt facts or token caps are removed.
+Nemotron's model type is ChatCompletionsInput. A model-specific helper requests
+JSON-object transport and provides the same application-owned scientific or
+editorial schema in a trusted system message, before the untrusted candidate.
+This avoids reliance on the provider's schema-constrained decoding path. Older
+native model formats remain unchanged. Both requests retain reasoning, the
+5000-token cap, model independence, a bounded240s deadline, and all actual facts.
 
-Nemotron's reasoned independent calls now have a bounded240s local deadline;
-other models retain their original limits. One separate contract-fix record is
-eligible only after the preserved operational diagnostic, with the same
-candidate and source hashes. It is not a semantic reroll. Its live result is
-pending, so no passing candidate is claimed yet.
+The application checks exact proof fields, source-number values, arithmetic,
+option completeness/uniqueness and the hidden answer-key comparison. Malformed
+proof JSON is operational unavailability, never acceptance. The final editorial
+parser still requires all six independent scores and rejects any passing claim
+with a score below3. A transport change does not certify scientific quality.
 
-Reference: Cloudflare's model page and installed official workers-types
-ChatCompletionsInput/ResponseFormatJSONSchema definitions. The generic Workers
-JSON-mode documentation and SDK utility describe older bare-schema inputs; the
-specific model type is used here rather than changing every provider globally.
+Each diagnostic is a unique, immutable record in question_verifier_calibrations.
+The JSON transport record is eligible ONLY after the same candidate's preserved
+provider3046 failure. Staging-only Super Admin/same-origin/service-binding
+permissions apply. Repeated requests reuse the saved result without AI calls.
+No new model experiment follows a semantic rejection.
+
+Construction remains AI_SOURCE_WITH_DETERMINISTIC_STRATEGY_EDITOR with
+pureLlmEditorial=false. This source was previously edited several times; it is
+not evidence of pure-LLM editorial reliability or first-pass autonomous quality.
+
+## Validation and scope
+
+104 focused tests, typecheck and build passed locally. Both earlier16Oct staging
+deploys38918567147 and38919348158 passed full source checks, deployment and Nibiru
+provider probes. Latest deployment/controlled-review result must be checked.
+
+Production remains paused; main/production, other grades, monitoring UI, paid
+plans, quota resets, mass production and migration0115 remain outside this task.
+A single passing candidate would not establish500000-question readiness.
+
+References: official Cloudflare model input definitions installed in
+@cloudflare/workers-types; model docs and errors. The provider's issue16165
+reports a similar schema/low-reasoning timeout on a DIFFERENT model; this is
+only background for a controlled transport comparison, not proof of our cause.
 https://developers.cloudflare.com/workers-ai/models/nemotron-3-120b-a12b/
 https://developers.cloudflare.com/workers-ai/platform/errors/
-
-## Scope
-
-Production remains paused. Only the existing grade5 MAT.5.1.2 candidate is
-involved. Main/production, curriculum expansion, the monitoring UI, mass
-production and migration0115 are outside this task.
+https://github.com/cloudflare/workers-sdk/issues/16165
