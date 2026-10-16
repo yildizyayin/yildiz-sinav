@@ -11,3 +11,11 @@ Staging importer requires a non-active campaign, snapshots pilot cap/usage, camp
 Validation: 72 relevant tests across ten files and TypeScript passed. New tests pin source/grade/four exact ordered code-title pairs, reject missing scope guidance/script-only evidence, preserve comma-containing title in one CSV cell, and bind guidance to exact grade/code/title while testing cross-grade rejection. Existing grade-six and earlier proof tests pass.
 
 Next record the live import result before claiming records exist. Remaining curriculum includes other themes and subjects at grades 5,6,7,9,10,11; next bounded import is grade-nine first-theme official data. Real generation quality, autonomous queues/admin/media/video and 500000/50-day throughput are still unqualified. Last verified campaign PAUSED, pilot 50/50.
+
+## Verified live import and staging deployment
+
+Created curriculum version cv_56a8eeac-0324-40dc-bde9-cb5323114223 with exactly four active official outcomes MAT.7.1.1–MAT.7.1.4 and four active, grade/year-matching learning nodes. Import workflow 38935751671 / job 117090690373 succeeded, fetched the pinned official source, matched its exact code/title pairs and recorded its source hash/time.
+
+Before/after unchanged: pilot 50/50; campaign editorial-20261015 PAUSED; generation-job count 32; question-bank count 165. No new question generation. Private generator/scheduler workflow 38935751691 / job 117090691285 succeeded. Main app run 38935751250 / job 117090689820 completed successfully, including source checks, migrations, deploy, demo-domain verification and Nibiru probe. Full test counts are stored in evidence.
+
+This is imported official first-theme data and deployed guidance, not a signed-rational proof engine or fresh production-quality qualification. Next single curriculum step remains the grade-nine first theme. Do not reset pilot cap or restart the campaign as an inference from this successful import.
