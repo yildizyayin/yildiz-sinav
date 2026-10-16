@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-16",
+  "environment": "staging",
+  "commit": "9485519b54e4df248ed0b58e21043296cc2d3959",
+  "privateDeploymentRun": 38928348419,
+  "privateDeploymentJob": 117065641193,
+  "privateDeploymentConclusion": "success",
+  "savedEvidenceCheck": {
+    "passed": true,
+    "reused": true,
+    "formalSolved": true,
+    "candidateUnchanged": true,
+    "originalUnchanged": true,
+    "pilotBefore": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "pilotAfter": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "newProducerCalls": 0,
+    "modelEditorCalls": 0
+  },
+  "localVerification": {
+    "testsPassed": 53,
+    "files": 5
+  },
+  "freshLiveGeneration": false,
+  "campaignResumed": false,
+  "appDeployment": {
+    "run": 38928348238,
+    "job": 117065640900,
+    "sourceChecks": "success",
+    "migrations": "success",
+    "workerDeploy": "success",
+    "demoDomain": "success",
+    "workflow": "in_progress",
+    "currentStep": "Live Nibiru free multi-AI provider probe"
+  }
+}
