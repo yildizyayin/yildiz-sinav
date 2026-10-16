@@ -92,9 +92,24 @@ Meta budget rates26668 input/204805 output Neurons per million tokens were
 checked against the official pricing page16Oct2026 and covered by tests.
 https://developers.cloudflare.com/workers-ai/platform/pricing/
 
-Next single technical decision: provide an independently computed mathematical
-proof engine rather than using an LLM's unverified numeric trace as the only
-scientific solver. Any such engine must use public question data only, keep the
-key/solution hidden, and be tested independently of the writer/editor plan.
+An opt-in formal transaction proof is now implemented for a narrowly recognized
+public story/option grammar under grade5 MAT.5.1.2/NAT_INVERSE_STEPS. It reverses
+chronological transactions, checks the forward balance, independently evaluates
+the two proposed methods and every option, and compares the hidden key only
+AFTER computing its answer. It accepts no editor plan, solution or key as input.
+Unsupported wording/extra facts return no proof instead of being ignored.
+
+125 focused tests plus3 additional transaction-direction cases passed, together
+with typecheck/build. Coverage includes20 unseen balances, permuted labels,
+commuting operations, missing/multiple true choices, bad claims, extra facts,
+wrong keys and throwing key/solution getters. The shared solver uses this engine
+only when explicitly enabled. Default automatic backup remains disabled.
+
+One formal-proof record is eligible only after the preserved bad Meta numeric
+trace. This replaces numeric-trace generation with an independently computed
+proof; it does NOT rerun Meta's failed numeric solution. Only the final editorial
+review calls Meta. Live run38923833641 is pending. Neither the formal scientific
+proof nor a valid candidate is claimed before the actual result. This is only a
+supported pilot question class, not a general math/language/science engine.
 Do not hide these model failures, relax gates, reset the50 pilot or call the
 current helper a500000-question production solution.
