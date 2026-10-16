@@ -1,4 +1,5 @@
 import {questionIndependentRequest} from './question-ai-schema';
+import {offerComparisonEvidence} from './question-offer-proof';
 import {transactionBalanceEvidence} from './question-transaction-proof';
 import type {Env} from '../types';
 import {questionAiFailure} from './question-ai-failure';
@@ -47,6 +48,8 @@ export function deterministicReadingEvidence(input:{stemText:string;options:{lab
  return {target,answer:correct.length===1?correct[0].label:correct.length?'MULTIPLE':'NONE',optionChecks:input.options.map((o,i)=>({label:o.label,correct:values[i]===target,reason:`Seçeneğin sayısal değeri ${values[i]}; okunuşun kesin değeri ${target} ile ${values[i]===target?'aynıdır':'farklıdır'}.`})),calculations};
 }
 export async function independentlySolve(env:Env,q:CheckedDraft,model:string,context?:any){
+ const offer=env.QUESTION_OFFER_PROOF_ENABLED==='true'&&q.editorial?.visual.kind==='NONE'?offerComparisonEvidence({stemText:q.stemText,options:q.options},context):null;
+ if(offer){const evidence={...offer,sourceNumbers:scientificSourceNumbers(q)},issues=blindSolveIssues(q,evidence);return {ok:issues.length===0,model:null,method:'DETERMINISTIC_OFFER_COMPARISON',issues,evidence,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'PUBLIC_UNIT_PRICES_DELIVERY_AND_EXACT_INTEGER_ARITHMETIC'};}
  const balance=env.QUESTION_TRANSACTION_PROOF_ENABLED==='true'&&q.editorial?.visual.kind==='NONE'?transactionBalanceEvidence({stemText:q.stemText,options:q.options},context):null;
  if(balance){const evidence={...balance,sourceNumbers:scientificSourceNumbers(q)},issues=blindSolveIssues(q,evidence);return {ok:issues.length===0,model:null,method:'DETERMINISTIC_TRANSACTION_BALANCE',issues,evidence,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'PUBLIC_TRANSACTIONS_AND_EXACT_INTEGER_ARITHMETIC'};}
  const reading=q.editorial?.visual.kind==='NONE'?deterministicReadingEvidence({stemText:q.stemText,options:q.options},context):null;
