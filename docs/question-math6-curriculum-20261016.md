@@ -1,0 +1,11 @@
+# Math grade six: bounded first-theme curriculum expansion
+
+Official source checked 2026-10-16: https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456 . Four exact code/title pairs, MAT.6.1.1–MAT.6.1.4, cover factors/multiples, divisibility, primes/prime factors and common factors/multiples. Teaching guidance explicitly excludes formal EBOB/EKOK concepts here. The programVersion string is an internal ANUNEX import label, not an official MEB version identifier. AcademicYear is the target ANUNEX data context, not a newly inferred official rollout assertion.
+
+Implemented: bounded source-checked manifest, exact official code/title validation, quoted semicolon UTF-8 CSV generation through existing admin preview/commit API, idempotent existing-version reuse only after metadata and exact active-outcome/learning-node verification, and exact code/title-bound grade-six guidance shared by author/editor/verifier via officialPilotGuidance. No grade-five proof is extended to grade six. Grade-six calculations still require the existing independent solver and reviewer; production qualification is not inferred from importing curriculum.
+
+The staging-only import verifies the campaign is paused and snapshots pilot budget, campaign state, generation-job count and question-bank count before/after. It checks every learning node is active in grade 6 and academic year 2026-2027. It does not generate, enable campaigns, reset pilot caps, rewrite prior failures or alter production. Four rows are the first theme only, not the full grade or all subjects. Source HTML SHA-256 and retrieval timestamp are stored in workflow evidence alongside importer provenance; the importer stores its CSV source hash separately.
+
+Validation: 42 relevant tests in six files passed; TypeScript check passed. Includes exact source pairing/mismatch rejection, pinned source/grade, missing scope restriction, script-only source rejection, comma-containing official title preserved in one CSV cell, scope guidance and existing proof regression tests. No new question-generation/model-editor call.
+
+Previous staging app workflow 38930908079 succeeded on retry including Nibiru probe. Next: record live import outcome and linked node count before claiming records imported. Question quality qualification, other grades/subjects and mass-production readiness remain separate unfinished work.
