@@ -1,6 +1,7 @@
 import type {Env} from '../types';
 
 const rates:Record<string,readonly [number,number]>={
+ '@cf/meta/llama-3.3-70b-instruct-fp8-fast':[26668,204805],
  '@cf/zai-org/glm-4.7-flash':[5500,36400],
  '@cf/qwen/qwen3-30b-a3b-fp8':[4625,30475],
  '@cf/openai/gpt-oss-120b':[31818,68182],
