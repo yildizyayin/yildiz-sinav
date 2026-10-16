@@ -1,3 +1,5 @@
+import {assembleInverseStrategies} from './question-strategy-assembly';
+import {transactionBalanceEvidence} from './question-transaction-proof';
 import {questionTaskInstruction,type TaskFocus} from './question-task-focus';
 import type {Env,AuthUser} from '../types';
 import {one,json} from './db';
@@ -19,8 +21,8 @@ export function readEditorPacket(raw:any,model:string){
  const packet=readAiJson({response:message.reasoning_content});
  return packet&&Object.keys(packet).join(',')==='questions'&&Array.isArray(packet.questions)?packet:null;
 }
-export async function editQuestionPacket(env:Env,source:any[],context:any):Promise<{questions:any[];model:string;usage:any;humanApproved:boolean}>{
- if(source.length>1){const parts=await Promise.all(source.map(q=>editQuestionPacket(env,[q],context)));const usage:any={};for(const key of ['prompt_tokens','completion_tokens','total_tokens','neurons'])if(parts.every(p=>typeof p.usage[key]==='number'))usage[key]=parts.reduce((n,p)=>n+p.usage[key],0);return {questions:parts.flatMap(p=>p.questions),model:parts[0].model,usage,humanApproved:false};}
+export async function editQuestionPacket(env:Env,source:any[],context:any):Promise<{questions:any[];model:string;usage:any;humanApproved:boolean;construction?:string}>{
+ if(source.length>1){const parts=await Promise.all(source.map(q=>editQuestionPacket(env,[q],context)));const usage:any={};for(const key of ['prompt_tokens','completion_tokens','total_tokens','neurons'])if(parts.every(p=>typeof p.usage[key]==='number'))usage[key]=parts.reduce((n,p)=>n+p.usage[key],0);return {questions:parts.flatMap(p=>p.questions),model:parts[0].model,usage,humanApproved:false,...(parts.some(p=>p.construction)?{construction:'AI_SOURCE_WITH_DETERMINISTIC_STRATEGY_EDITOR'}:{})};}
  const model=(env as any).QUESTION_EDITOR_MODEL??QUESTION_EDITOR_MODEL;
  if((model===(context.sourceModel??env.QUESTION_GENERATION_MODEL)&&!(context.revisionOfEditorModel===model&&context.originalAuthorModel&&context.originalAuthorModel!==model))||model===(env.QUESTION_GENERATION_VERIFIER_MODEL??'@cf/nvidia/nemotron-3-120b-a12b'))throw Error('EDITOR_MODEL_MUST_BE_DISTINCT');
  const schema:any=questionDraftSchema(1,context.gradeLevel,false,true,context.presentation),key=source[0]?.correctAnswer,labels=source[0]?.options?.map((o:any)=>o.label);if(!Array.isArray(labels)||!labels.includes(key))throw Error('EDITOR_SOURCE_INCOMPLETE');schema.properties.questions.items.properties.correctAnswer={type:'string',const:key};const distractors=schema.properties.questions.items.properties.editorial.properties.distractors;distractors.minItems=labels.length-1;distractors.maxItems=labels.length-1;distractors.items.properties.label.enum=labels.filter((l:string)=>l!==key);
@@ -31,8 +33,22 @@ export async function editQuestionPacket(env:Env,source:any[],context:any):Promi
  try{
   const raw:any=await Promise.race([env.AI!.run(model as any,{messages,...(model==='@cf/zai-org/glm-4.7-flash'?{max_completion_tokens:8000,temperature:0.2}:{max_tokens:8000}),chat_template_kwargs:{enable_thinking:context.reasonedEditor===true},response_format:{type:'json_schema',json_schema:model==='@cf/zai-org/glm-4.7-flash'?{name:'anunex_editorial_packet',schema,strict:true}:schema},stream:false} as any),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('EDITOR_TIMEOUT')),context.reasonedEditor===true?240000:90000);})]);
   const parsed=readEditorPacket(raw,model);if(!Array.isArray(parsed?.questions)||parsed.questions.length!==source.length)throw Error('EDITOR_OUTPUT_INCOMPLETE');
-  for(const q of parsed.questions)if(editorialIssues(q,context.presentation).length||mechanicalDraftIssues(q).length||outcomeDraftIssues(q,context).length||taskFocusIssues(q,context).length)throw Error('EDITOR_OUTPUT_INVALID');
-  return {questions:parsed.questions,model,usage:raw?.usage??{},humanApproved:false};
+  let construction:string|undefined;
+  for(let i=0;i<parsed.questions.length;i++){
+   let q=parsed.questions[i];
+   const issues=()=>[...editorialIssues(q,context.presentation),...mechanicalDraftIssues(q),...outcomeDraftIssues(q,context),...taskFocusIssues(q,context)];
+   const before=issues();
+   if(env.QUESTION_TRANSACTION_PROOF_ENABLED==='true'&&context.gradeLevel===5&&context.outcomeCode==='MAT.5.1.2'&&context.taskFocus==='NAT_INVERSE_STEPS'&&context.presentation==='TEXT'&&before.length===1&&before[0]==='INVERSE_STRATEGY_DECISION_REQUIRED'){
+    const assembled=assembleInverseStrategies(q);
+    // Recognize the public problem before accepting this narrowly scoped edit.
+    // Final key comparison and independent editorial review remain downstream.
+    if(assembled&&transactionBalanceEvidence({stemText:assembled.question.stemText,options:assembled.question.options},context)){
+     q=assembled.question;parsed.questions[i]=q;construction=assembled.construction;
+    }
+   }
+   if(issues().length)throw Error('EDITOR_OUTPUT_INVALID');
+  }
+  return {questions:parsed.questions,model,usage:raw?.usage??{},humanApproved:false,...(construction?{construction}: {})};
  }finally{if(timer!==undefined)clearTimeout(timer);}
 }
 /** At most one real AI editor call per failed source job; no new producer call or pilot reservation. */

@@ -3,29 +3,49 @@
   "name": "anunex-question-production-staging",
   "main": "./worker/question-production-worker.ts",
   "compatibility_date": "2026-09-01",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "workers_dev": false,
   "preview_urls": false,
-  "observability": {"enabled": true},
-  "triggers": {"crons": []},
-  "services": [{"binding":"QUESTION_GENERATOR","service":"anunex-question-generator-staging"}],
-  "ai": {"binding":"AI"},
-  "d1_databases": [{"binding":"DB","database_name":"resolved-at-deploy","database_id":"00000000-0000-0000-0000-000000000000"}],
+  "observability": {
+    "enabled": true
+  },
+  "triggers": {
+    "crons": []
+  },
+  "services": [
+    {
+      "binding": "QUESTION_GENERATOR",
+      "service": "anunex-question-generator-staging"
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "resolved-at-deploy",
+      "database_id": "00000000-0000-0000-0000-000000000000"
+    }
+  ],
   "vars": {
-    "ENVIRONMENT":"staging",
-    "QUESTION_TEAM_CONTROLS_ENABLED":"true",
-    "QUESTION_GENERATION_ENABLED":"true",
-    "QUESTION_GENERATION_MODEL":"@cf/openai/gpt-oss-120b",
-    "QUESTION_GENERATION_VERIFICATION_ENABLED":"true",
-    "QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED":"true",
-    "QUESTION_GENERATION_VERIFIER_MODEL":"@cf/nvidia/nemotron-3-120b-a12b",
-    "QUESTION_BLIND_SOLVE_ENABLED":"true",
-    "QUESTION_AUTO_EDITOR_ENABLED":"true",
-    "QUESTION_EDITOR_MODEL":"@cf/qwen/qwen3-30b-a3b-fp8",
-    "QUESTION_PRODUCTION_CAMPAIGNS_ENABLED":"true",
-    "QUESTION_AI_DAILY_NEURON_LIMIT":"10000",
-    "QUESTION_AUTOMATED_PILOT_MODE":"true",
-    "QUESTION_PILOT_BUDGET_REMAINING":"50",
-    "QUESTION_PILOT_REVIEW_AVAILABLE":"true"
+    "ENVIRONMENT": "staging",
+    "QUESTION_TEAM_CONTROLS_ENABLED": "true",
+    "QUESTION_GENERATION_ENABLED": "true",
+    "QUESTION_GENERATION_MODEL": "@cf/openai/gpt-oss-120b",
+    "QUESTION_GENERATION_VERIFICATION_ENABLED": "true",
+    "QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED": "true",
+    "QUESTION_GENERATION_VERIFIER_MODEL": "@cf/nvidia/nemotron-3-120b-a12b",
+    "QUESTION_BLIND_SOLVE_ENABLED": "true",
+    "QUESTION_AUTO_EDITOR_ENABLED": "true",
+    "QUESTION_EDITOR_MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "QUESTION_PRODUCTION_CAMPAIGNS_ENABLED": "true",
+    "QUESTION_AI_DAILY_NEURON_LIMIT": "10000",
+    "QUESTION_AUTOMATED_PILOT_MODE": "true",
+    "QUESTION_PILOT_BUDGET_REMAINING": "50",
+    "QUESTION_PILOT_REVIEW_AVAILABLE": "true",
+    "QUESTION_TRANSACTION_PROOF_ENABLED": "true"
   }
 }

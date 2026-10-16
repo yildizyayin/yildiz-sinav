@@ -223,7 +223,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
     await env.DB.prepare("INSERT INTO question_ai_editor_attempts(job_id,source_audit_id,source_hash,model,status) VALUES(?,?,?,?,'RUNNING')").bind(id,sourceAuditId,sourceHash,editorModel).run();
     const edited=await editQuestionPacket(env,source.questions,{...questionContext,sourceModel:model,presentation:resolvedPresentation});
     await env.DB.prepare("UPDATE question_ai_editor_attempts SET status='EDITED',edited_questions_json=?,usage_json=?,completed_at=CURRENT_TIMESTAMP WHERE job_id=? AND status='RUNNING'").bind(JSON.stringify(edited.questions),JSON.stringify(edited.usage),id).run();
-    parseRaw={questions:edited.questions};autoEditor={model:edited.model,sourceModel:model,sourceHash,usage:edited.usage,humanApproved:false};model=edited.model;questionContext.authorModels=[generatorModel,model];questionContext.producerModel=model;
+    parseRaw={questions:edited.questions};autoEditor={model:edited.model,sourceModel:model,sourceHash,usage:edited.usage,humanApproved:false,...(edited.construction?{construction:edited.construction,pureLlmEditorial:false}: {})};model=edited.model;questionContext.authorModels=[generatorModel,model];questionContext.producerModel=model;
    }catch(e){await env.DB.prepare("UPDATE question_ai_editor_attempts SET status='FAILED',error_code=?,completed_at=CURRENT_TIMESTAMP WHERE job_id=? AND status='RUNNING'").bind(e instanceof Error?e.message.slice(0,160):'EDITOR_FAILED',id).run();await fail(env,id,token,'GENERATION_OUTPUT_INVALID');return err(422,'GENERATION_OUTPUT_INVALID');}
   }
  }
