@@ -32,14 +32,14 @@ it('keeps provider unavailability distinct from a wrong answer and does not retr
  expect(calls).toBe(1);expect(JSON.stringify(result)).not.toContain('do-not-persist');
 });
 
-import {questionResponseFormat} from '../worker/lib/question-ai-schema';
-it('uses the model-specific Chat Completions schema envelope without changing the scientific schema',()=>{
+import {questionIndependentRequest} from '../worker/lib/question-ai-schema';
+it('uses JSON-object transport with the same trusted schema and keeps older native providers unchanged',()=>{
  const schema={type:'object',additionalProperties:false,properties:{answer:{type:'string',enum:['A','B']}}};
- expect(questionResponseFormat('@cf/nvidia/nemotron-3-120b-a12b',schema,'blind_solution')).toEqual({type:'json_schema',json_schema:{name:'blind_solution',schema,strict:true}});
- expect(questionResponseFormat('@cf/qwen/qwen3-30b-a3b-fp8',schema,'unchanged')).toEqual({type:'json_schema',json_schema:schema});
+ const messages=[{role:'user' as const,content:'candidate data'}],request=questionIndependentRequest('@cf/nvidia/nemotron-3-120b-a12b',schema,'blind_solution',messages);expect(request.response_format).toEqual({type:'json_object'});expect(request.messages[0].role).toBe('system');expect(request.messages[0].content).toContain(JSON.stringify(schema));expect(request.messages[1]).toEqual(messages[0]);expect(messages).toHaveLength(1);
+ expect(questionIndependentRequest('@cf/qwen/qwen3-30b-a3b-fp8',schema,'unchanged',messages)).toEqual({messages,response_format:{type:'json_schema',json_schema:schema}});
 });
 it('classifies documented account, capacity and timeout errors from numeric codes without leaking text',()=>{
- for(const [code,expected] of [[3036,'PROVIDER_DAILY_ALLOCATION'],[3040,'PROVIDER_CAPACITY'],[3007,'PROVIDER_TIMEOUT'],[3008,'PROVIDER_ABORTED'],[5035,'PROVIDER_PAID_PLAN_REQUIRED'],[5018,'PROVIDER_AUTH_ERROR'],[5007,'PROVIDER_REQUEST_REJECTED']] as const){
+ for(const [code,expected] of [[3036,'PROVIDER_DAILY_ALLOCATION'],[3040,'PROVIDER_CAPACITY'],[3007,'PROVIDER_TIMEOUT'],[3046,'PROVIDER_TIMEOUT'],[3008,'PROVIDER_ABORTED'],[5035,'PROVIDER_PAID_PLAN_REQUIRED'],[5018,'PROVIDER_AUTH_ERROR'],[5007,'PROVIDER_REQUEST_REJECTED']] as const){
   expect(questionAiFailure(Error(`${code}: hidden-provider-text`))).toMatchObject({providerCode:code,diagnosticCode:expected});
  }
 });
@@ -52,4 +52,15 @@ it('allows the reasoned Nemotron call to continue beyond90s but stops it at the 
   await vi.advanceTimersByTimeAsync(90000);expect(settled).toBe(false);
   await vi.advanceTimersByTimeAsync(150000);expect(await task).toMatchObject({ok:false,diagnosticCode:'AI_TIMEOUT',issues:['BLIND_SOLVER_UNAVAILABLE']});
  }finally{vi.useRealTimers();}
+});
+
+it('locally enforces the full proof shape and arithmetic even when the server only guarantees a JSON object',()=>{
+ expect(blindSolveIssues(q,{...proof(),unexpected:true})).toContain('BLIND_SOLUTION_INVALID');
+ const p=proof();p.calculations[0]=null as any;expect(blindSolveIssues(q,p)).toContain('BLIND_SOLUTION_INVALID');
+ const p2=proof();p2.optionChecks[0]=null as any;expect(blindSolveIssues(q,p2)).toContain('BLIND_OPTIONS_INVALID');
+ const wrong=proof();wrong.calculations[0].result=99;expect(blindSolveIssues(q,wrong)).toContain('BLIND_ARITHMETIC_INVALID');
+});
+it('treats malformed provider JSON as protocol unavailability without accepting it or retrying',async()=>{
+ let calls=0;const env:any={AI:{run:async()=>{calls++;return {response:'{}'};}}};
+ expect(await independentlySolve(env,q,'@cf/nvidia/nemotron-3-120b-a12b')).toMatchObject({ok:false,issues:['BLIND_SOLVER_UNAVAILABLE'],diagnosticCode:'INVALID_STRUCTURED_OUTPUT'});expect(calls).toBe(1);
 });
