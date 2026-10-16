@@ -236,3 +236,42 @@ it('only permits the JSON transport comparison after the same candidate has a re
   expect(f.db.prepare('SELECT verification_json FROM question_verifier_calibrations WHERE id=?').get(SOLVER_CONTRACT_FIX_ID)?.verification_json).toBe(old);
  }finally{f.db.close();}
 });
+
+import {verifyQuestionDrafts} from '../worker/lib/question-generation-validation';
+const backupModel='@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+function independentReply(input:any,question:any,semantic=false){
+ if(requestedSchema(input).properties.sourceNumbers)return {response:JSON.stringify({sourceNumbers:scientificSourceNumbers(question),answer:'C',optionChecks:question.options.map((o:any)=>({label:o.label,correct:o.label==='C',reason:'İşlemler ve her seçenek verilen kaynak sayılardan bağımsız hesaplandı.'})),calculations:[{left:632,op:'ADD',right:275,result:907},{left:907,op:'SUB',right:148,result:759}]})};
+ return {response:JSON.stringify({reviews:[{index:0,valid:!semantic,issues:semantic?['Akıl yürütme düzeyi yetersiz.']:[],editorial:{...editorialScores,...(semantic?{reasoningDemand:2}:{})}}]})};
+}
+it.each(['availability','scientific-rejection','editorial-rejection','quota','author-conflict','backup-unavailable'])('bounds operational backup and preserves independence: %s',async(scenario)=>{
+ const f=fixture();try{
+  const {question}=await seedSolverDiagnostic(f);f.env.QUESTION_GENERATION_FALLBACK_VERIFIER_MODEL=backupModel;
+  const context={producerModel:'author',authorModels:scenario==='author-conflict'?[backupModel]:['author'],gradeLevel:5,qualityProfile:'EDITORIAL_V1',presentation:'TEXT',taskFocus:'NAT_INVERSE_STEPS',outcomeCode:'MAT.5.1.2'};
+  f.provider.mockImplementation(async(model:string,input:any)=>{
+   if(model===backupModel){expect(input.chat_template_kwargs).toBeUndefined();if(scenario==='backup-unavailable')throw Error('3046: Request timeout');return independentReply(input,question);}
+   if(scenario==='scientific-rejection'){const raw=independentReply(input,question),p=JSON.parse(raw.response);p.answer='A';return {response:JSON.stringify(p)};}
+   if(scenario==='editorial-rejection')return independentReply(input,question,true);
+   throw Error(scenario==='quota'?'QUESTION_DAILY_AI_BUDGET_EXHAUSTED':'3046: Request timeout');
+  });
+  const result:any=await verifyQuestionDrafts(f.env,context,[question]);
+  expect(result.ok).toBe(scenario==='availability');
+  expect(f.provider.mock.calls.filter(c=>c[0]===backupModel)).toHaveLength(scenario==='availability'?2:scenario==='backup-unavailable'?1:0);
+  if(scenario==='availability')expect(result).toMatchObject({fallbackUsed:true,model:backupModel,primaryFailure:{unavailable:true}});
+  if(scenario==='author-conflict')expect(result.fallbackBlocked).toBe('MODEL_NOT_INDEPENDENT');
+  if(scenario==='scientific-rejection'||scenario==='editorial-rejection')expect(result.unavailable).toBe(false);
+  if(scenario==='backup-unavailable')expect(f.provider).toHaveBeenCalledTimes(2);
+ }finally{f.db.close();}
+});
+import {SOLVER_BACKUP_ID} from '../worker/lib/question-solver-diagnostic';
+it('uses the independent backup directly after the recorded3046 without calling the failed primary again',async()=>{
+ const f=fixture();try{
+  const {question}=await seedSolverDiagnostic(f),user:any={id:'admin',role:'SUPER_ADMIN'};
+  expect((await diagnoseIndependentSolver(f.env,user,false,false,true)).status).toBe(409);
+  f.provider.mockRejectedValue(Error('BLIND_SOLVER_TIMEOUT'));await diagnoseIndependentSolver(f.env,user);
+  f.provider.mockRejectedValue(Error('3046: Request timeout'));await diagnoseIndependentSolver(f.env,user,true);await diagnoseIndependentSolver(f.env,user,false,true);
+  f.provider.mockImplementation(async(model:string,input:any)=>{expect(model).toBe(backupModel);return independentReply(input,question);});
+  expect(await (await diagnoseIndependentSolver(f.env,user,false,false,true)).json()).toMatchObject({passed:true,backup:true,diagnosticId:SOLVER_BACKUP_ID,selectedVerifier:backupModel});
+  await diagnoseIndependentSolver(f.env,user,false,false,true);expect(f.provider).toHaveBeenCalledTimes(5);
+  expect(f.db.prepare('SELECT reserved_count FROM question_agent_pilot_budget').get()?.reserved_count).toBe(50);
+ }finally{f.db.close();}
+});
