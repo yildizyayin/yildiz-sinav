@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-16",
+  "stagingCommit": "39cd41db3c0d7188c0e6d515cbecf64318955e3f",
+  "method": "DETERMINISTIC_DIVISIBILITY_REASONING",
+  "scope": {
+    "grade": 6,
+    "outcome": "MAT.6.1.2",
+    "focus": "GENERIC",
+    "visual": "NONE",
+    "numberBounds": "10–999999 (application bound)",
+    "divisors": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      9,
+      10
+    ]
+  },
+  "validation": {
+    "focusedTests": 81,
+    "files": 9,
+    "numberDivisorCombinations": 196,
+    "typecheck": "success",
+    "githubSourceChecks": "success"
+  },
+  "privateWorker": {
+    "run": 38933238308,
+    "job": 117082203183,
+    "conclusion": "success"
+  },
+  "appWorker": {
+    "run": 38933238369,
+    "job": 117082202919,
+    "source": "success",
+    "migrations": "success",
+    "deployment": "success",
+    "demoDomain": "success",
+    "workflowStatus": "in_progress",
+    "currentStep": "Live Nibiru free multi-AI provider probe"
+  },
+  "freshQuestionsGenerated": 0,
+  "campaignRestarted": false,
+  "pilotCapChanged": false,
+  "productionChanged": false,
+  "qualification": "Synthetic tests and deployed route; not a fresh generated-question quality benchmark"
+}
