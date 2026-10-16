@@ -1,3 +1,4 @@
+import {math9PilotGuidance} from './question-math9-guidance';
 import {math7PilotGuidance} from './question-math7-guidance';
 import {math6PilotGuidance} from './question-math6-guidance';
 import {questionIndependentRequest} from './question-ai-schema';
@@ -98,6 +99,7 @@ export function parseVerification(raw:any,count:number,editorial=false):{index:n
 
 const readingTitle='Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme';
 export function officialPilotGuidance(context:any):string|null{
+ if(context?.gradeLevel===9)return math9PilotGuidance(context);
  if(context?.gradeLevel===7)return math7PilotGuidance(context);
  if(context?.gradeLevel===6)return math6PilotGuidance(context);
  if(context?.gradeLevel!==5)return null;
