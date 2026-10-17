@@ -1,0 +1,104 @@
+{
+  "environment": "staging",
+  "scope": "2027–2028 hedef yılı için güncel ilk temanın iki resmî öğrenme çıktısı; tam müfredat veya 2028 TYT–AYT şartnamesi doğrulaması değildir.",
+  "newProducerCalls": 0,
+  "newEditorCalls": 0,
+  "source": {
+    "matchedCodes": [
+      "MAT.12.1.1",
+      "MAT.12.1.2"
+    ],
+    "targetAcademicYear": "2027-2028",
+    "annualPlanVerified": false,
+    "exam2028ScopeVerified": false,
+    "completeGrade": false,
+    "productionQualified": false,
+    "contentVerification": "CURRENT_OFFICIAL_PROGRAM",
+    "targetYearMeaning": "ANUNEX_CONTENT_PLANNING"
+  },
+  "sourceHash": "25a0ac97b26e2d95b322254536f09c6b869ae4a07389fa878956481e5c37614e",
+  "retrievedAt": "2026-10-17T06:59:37.684Z",
+  "before": {
+    "previousYear": [],
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "status": "PAUSED"
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ]
+  },
+  "importJob": "cimp_a4defd90-eaf7-4690-ad16-86ff7f160ce6",
+  "reused": false,
+  "versionId": "cv_d97523e6-4d60-40bf-b1ee-3957b2665e51",
+  "codes": [
+    "MAT.12.1.1",
+    "MAT.12.1.2"
+  ],
+  "linkedNodes": 2,
+  "after": {
+    "previousYear": [],
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "status": "PAUSED"
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ]
+  },
+  "passed": true,
+  "stagingCommit": "16d98f3878809aa13fadedc0205e7264cd80dc21",
+  "workflows": {
+    "import": {
+      "id": 39011949405,
+      "job": 117336177743,
+      "conclusion": "success"
+    },
+    "app": {
+      "id": 39011949384,
+      "job": 117336177319,
+      "conclusion": "success"
+    }
+  },
+  "checks": {
+    "testFiles": 236,
+    "tests": 1222,
+    "typecheck": true,
+    "build": true,
+    "nibiruProbe": true
+  },
+  "guidanceAndProofGuardDeployed": false,
+  "productionUpdated": false
+}
