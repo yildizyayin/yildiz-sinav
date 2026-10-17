@@ -1,0 +1,22 @@
+{
+  "academicYear": "2027-2028",
+  "gradeLevel": 12,
+  "programCode": "SCHOOL",
+  "programVersion": "ANUNEX-TYMM-MAT12-THEME1-TARGET2028-20261017",
+  "authority": "MEB",
+  "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/305",
+  "sourceTitle": "Matematik Dersi 12. Sınıf — 1. Tema: Nicelikler ve Değişimler (1)",
+  "scope": "2027–2028 hedef yılı için güncel ilk temanın iki resmî öğrenme çıktısı; tam müfredat veya 2028 TYT–AYT şartnamesi doğrulaması değildir.",
+  "outcomes": [
+    {
+      "code": "MAT.12.1.1",
+      "title": "Aritmetik ve geometrik dizilerin özelliklerine ilişkin muhakeme yapabilme",
+      "topic": "Aritmetik ve Geometrik Diziler"
+    },
+    {
+      "code": "MAT.12.1.2",
+      "title": "Gerçek sayılarda tanımlı fonksiyonlar ile gerçek sayı dizilerini karşılaştırabilme",
+      "topic": "Diziler ve Fonksiyonlar"
+    }
+  ]
+}
