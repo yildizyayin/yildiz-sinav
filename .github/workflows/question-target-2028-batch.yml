@@ -1,0 +1,37 @@
+name: Import remaining 2027-2028 first themes and inspect readiness
+on:
+  push:
+    branches: [staging]
+    paths: [.github/question-target-2028-batch.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-target-2028-batch
+  cancel-in-progress: false
+jobs:
+  import-and-inspect:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Verify every source before importing separate target-year versions
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-question-target-2028-batch.mjs
+      - name: Inspect all eight first-theme versions without generating questions
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-question-target-2028-readiness.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-target-2028-${{ github.run_id }}
+          path: |
+            tmp/question-target-2028-batch/
+            tmp/question-target-2028-readiness/
