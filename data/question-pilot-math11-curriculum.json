@@ -1,0 +1,14 @@
+{
+  "academicYear":"2026-2027",
+  "gradeLevel":11,
+  "programCode":"SCHOOL",
+  "programVersion":"TYMM-MAT11-THEME1-20261016",
+  "authority":"MEB",
+  "sourceUrl":"https://tymm.meb.gov.tr/matematik-dersi/unite/298",
+  "sourceTitle":"Matematik Dersi 11. Sınıf — 1. Tema: İstatistiksel Araştırma Süreci",
+  "scope":"Güncel ilk temanın iki resmî öğrenme çıktısı; tam müfredat veya üretim yeterliği değildir.",
+  "outcomes":[
+    {"code":"MAT.11.1.1","title":"İki nicel değişkenli veri ile çalışabilme ve iki nicel değişken arasındaki ilişkililiğe dayalı karar verebilme","topic":"İki Nicel Değişkenli Veri ile Araştırma"},
+    {"code":"MAT.11.1.2","title":"Başkaları tarafından oluşturulan iki nicel değişkenli verilerin ilişkililiğine dayalı istatistiksel sonuç veya yorumları tartışabilme","topic":"İstatistiksel Sonuçları Eleştirel Değerlendirme"}
+  ]
+}
