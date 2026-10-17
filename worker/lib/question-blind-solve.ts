@@ -1,3 +1,4 @@
+import {rationalOrderEvidence} from './question-rational-order-proof';
 import {unsupportedPilotProofScope} from './question-proof-scope';
 import {factorRelationEvidence} from './question-factor-relation-proof';
 import {primeFactorEvidence} from './question-prime-proof';
@@ -52,6 +53,8 @@ export function deterministicReadingEvidence(input:{stemText:string;options:{lab
  return {target,answer:correct.length===1?correct[0].label:correct.length?'MULTIPLE':'NONE',optionChecks:input.options.map((o,i)=>({label:o.label,correct:values[i]===target,reason:`Seçeneğin sayısal değeri ${values[i]}; okunuşun kesin değeri ${target} ile ${values[i]===target?'aynıdır':'farklıdır'}.`})),calculations};
 }
 export async function independentlySolve(env:Env,q:CheckedDraft,model:string,context?:any){
+ const rational=q.editorial?.visual.kind==='NONE'?rationalOrderEvidence({stemText:q.stemText,options:q.options},context):null;
+ if(rational){const issues=rational.answer===q.correctAnswer?[]:['BLIND_ANSWER_DISAGREEMENT'];return {ok:issues.length===0,model:null,method:'DETERMINISTIC_RATIONAL_ORDER',issues,evidence:rational,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'PUBLIC_SIGNED_FRACTIONS_AND_EXACT_BIGINT_CROSS_PRODUCTS'};}
  // Fail before inference: generic arithmetic traces cannot certify rational,
  // real-number, geometric or statistical reasoning in these pilot grades.
  if(unsupportedPilotProofScope(context))return {ok:false,model:null,issues:['BLIND_PROOF_SCOPE_UNSUPPORTED'],keyHidden:true,solutionHidden:true,derivationPolicy:'SUBJECT_SPECIFIC_QUALIFICATION_REQUIRED'};
