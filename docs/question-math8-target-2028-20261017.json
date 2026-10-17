@@ -1,0 +1,108 @@
+{
+  "environment": "staging",
+  "scope": "2027–2028 hedef yılı için güncel ilk temanın dört resmî öğrenme çıktısı; tam müfredat veya 2028 LGS şartnamesi doğrulaması değildir.",
+  "newProducerCalls": 0,
+  "newEditorCalls": 0,
+  "source": {
+    "matchedCodes": [
+      "MAT.8.1.1",
+      "MAT.8.1.2",
+      "MAT.8.1.3",
+      "MAT.8.1.4"
+    ],
+    "targetAcademicYear": "2027-2028",
+    "annualPlanVerified": false,
+    "exam2028ScopeVerified": false,
+    "completeGrade": false,
+    "productionQualified": false,
+    "contentVerification": "CURRENT_OFFICIAL_PROGRAM",
+    "targetYearMeaning": "ANUNEX_CONTENT_PLANNING"
+  },
+  "sourceHash": "5e74fb8455241bf98ba2bfc7f0a2cb3496c1df2e1490afd574fd6e573cdb1dbd",
+  "retrievedAt": "2026-10-17T06:54:36.293Z",
+  "before": {
+    "previousYear": [],
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "status": "PAUSED"
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ]
+  },
+  "importJob": "cimp_5cceddad-1b15-4540-83bb-245a60b66ef9",
+  "reused": false,
+  "versionId": "cv_9dca378a-11c5-4ad6-bd28-b605e0cae921",
+  "codes": [
+    "MAT.8.1.1",
+    "MAT.8.1.2",
+    "MAT.8.1.3",
+    "MAT.8.1.4"
+  ],
+  "linkedNodes": 4,
+  "after": {
+    "previousYear": [],
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "status": "PAUSED"
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ]
+  },
+  "passed": true,
+  "stagingCommit": "1c6114d6df2d22649f4d18b8d4c4badf198ca721",
+  "workflows": {
+    "import": {
+      "id": 39011640990,
+      "job": 117335233274,
+      "conclusion": "success"
+    },
+    "app": {
+      "id": 39011640949,
+      "job": 117335233040,
+      "conclusion": "success"
+    }
+  },
+  "checks": {
+    "testFiles": 235,
+    "tests": 1219,
+    "typecheck": true,
+    "build": true,
+    "nibiruProbe": true
+  },
+  "guidanceAndProofGuardDeployed": false,
+  "productionUpdated": false
+}

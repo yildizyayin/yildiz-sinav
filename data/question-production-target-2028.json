@@ -1,0 +1,28 @@
+{
+  "status": "PLANNING_NOT_RUNTIME_ACTIVATION",
+  "academicYear": "2027-2028",
+  "examYear": 2028,
+  "curriculumModel": "TYMM",
+  "schoolGrades": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "examTracks": [
+    "LGS",
+    "TYT",
+    "AYT"
+  ],
+  "officialAnnouncement": "https://www.meb.gov.tr/yks-ve-lgsde-yeni-mufredata-uyumlu-soru-modeli-2028de-hayata-gececek/haber/39265/tr",
+  "officialExamSpecifications": "RECHECK_ON_PUBLICATION",
+  "curriculumImport": "PER_YEAR_SOURCE_VERIFICATION_REQUIRED",
+  "previousRecords": "PRESERVE_2026_2027_HISTORY",
+  "volumeTarget": 500000,
+  "additionalGradeAllocation": "NOT_YET_ALLOCATED",
+  "campaignActivation": false
+}

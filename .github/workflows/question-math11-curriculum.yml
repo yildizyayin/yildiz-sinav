@@ -1,0 +1,30 @@
+name: Import verified math-eleven first-theme outcomes
+on:
+  push:
+    branches: [staging]
+    paths: [.github/question-math11-curriculum.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-math11-curriculum
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Verify official source then import without generation or cap changes
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-question-math11-curriculum.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-math11-curriculum-${{ github.run_id }}
+          path: tmp/question-math11-curriculum/

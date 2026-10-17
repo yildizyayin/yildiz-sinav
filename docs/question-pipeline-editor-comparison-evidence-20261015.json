@@ -1,0 +1,340 @@
+{
+  "nonreasoning": {
+    "environment": "staging",
+    "newProducerCalls": 0,
+    "maximumAdditionalEditorPasses": 1,
+    "before": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "aiBefore": [
+      {
+        "day": "2026-10-15",
+        "limit_neurons": 10000,
+        "held_neurons": 1438,
+        "charged_neurons": 4015
+      }
+    ],
+    "httpStatus": 200,
+    "response": {
+      "ok": true,
+      "passed": false,
+      "correctionId": "editorial-pipeline-20261015-v1-glm-editor-v1",
+      "sourceTrialId": "editorial-pipeline-20261015-v1",
+      "sourceTrialHash": "95d7a0706e16fe719ddc6e436ce6e63209e0e17f6045e9787c100dc0fcbd43d5",
+      "sourceEditorHash": "765df22f807454e4abcfdf3f5760cef60f6dc1db9ef4938c7f0e32409c2c9cb4",
+      "source": {
+        "outcome_id": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+        "outcome_code": "MAT.5.1.2",
+        "outcome_title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+        "subject_id": "sub_mat",
+        "grade_level": 5,
+        "curriculum_version_id": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academic_year": "2026-2027",
+        "program_version": "TYMM-2024-MAT5-PILOT-20261013",
+        "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+      },
+      "stage": "FAILED",
+      "newProducerCalls": 0,
+      "additionalEditorPasses": 1,
+      "cumulativeProducerCalls": 1,
+      "cumulativeEditorPasses": 3,
+      "editorModel": "@cf/zai-org/glm-4.7-flash",
+      "modelComparison": true,
+      "previousCorrectionId": "editorial-pipeline-20261015-v1-correction-v1",
+      "questionBankWrites": 0,
+      "pilotQuotaChanged": false,
+      "autonomousFirstPass": false,
+      "humanApproved": false,
+      "rightsApproved": false,
+      "editorObserved": {
+        "packet": {
+          "questions": [
+            {
+              "stemText": "Bir okul bahçesindeki meyve ağaçlarının sayısı soruluyor. Bahçeye ilk olarak 345 elma ağacı dikildi, ardından 128 armut ağacı dikildi. Bu iki dikim işleminden sonra bahçede toplam 873 ağaç bulunuyor. Başlangıçta bahçede kaç ağaç vardı? (Dikimler sırasıyla yapılmıştır.)",
+              "solutionText": "Final 873. İlk işlem +345, ikinci +128. Başlangıcı bulmak için ikinci işlemi tersine çevirip çıkarmalı, ardından ilk işlemi tersine çevirip eklemeliyiz: 873 − 128 = 745, 745 + 345 = 1090. Kontrol: 1090 + 345 = 1435, 1435 + 128 = 873, doğru. Doğru seçenek C) 1090.",
+              "difficultyLevel": 3,
+              "correctAnswer": "C",
+              "options": [
+                {
+                  "label": "A",
+                  "text": "945"
+                },
+                {
+                  "label": "B",
+                  "text": "1153"
+                },
+                {
+                  "label": "C",
+                  "text": "1090"
+                },
+                {
+                  "label": "D",
+                  "text": "873"
+                }
+              ],
+              "editorial": {
+                "version": 1,
+                "cognitiveDemand": "APPLY",
+                "skillTarget": "İki ardışık doğal sayı işleminin tersini doğru sırayla uygulayarak başlangıç miktarını bulma ve sonucun doğru olduğunu kontrol etme yeteneği.",
+                "reasoningSteps": [
+                  "Verilen son sayıyı, ikinci yapılan ekleme işlemi miktarından çıkartarak ara sonucu elde ederiz.",
+                  "Bu ara sonuca ilk, çıkarma işlemi için kullanılan miktarı ekleyerek başlangıç sayısını bulur ve iki adımlı işlemi ileri yönde kontrol ederiz."
+                ],
+                "distractors": [
+                  {
+                    "label": "A",
+                    "misconception": "İlk işlemi ekleme gibi algılayıp ikinci işlemi çıkartma gibi düşünmeden her iki miktarı da son sayıya eklemek.",
+                    "whyIncorrect": "İlk işlem aslında ekleme olduğundan bu yaklaşım başlangıcı aşırı büyük verir; sonuç gerçek başlangıç değerinden çok uzak olur."
+                  },
+                  {
+                    "label": "B",
+                    "misconception": "İkinci işlemi ekleme gibi algılayıp ilk işlemi çıkartma gibi düşünmeden her iki miktarı da son sayıdan çıkarmak.",
+                    "whyIncorrect": "İkinci işlem aslında ekleme olduğundan bu yaklaşım başlangıcı aşırı küçük verir; sonuç gerçek başlangıç değerinden çok uzak olur."
+                  },
+                  {
+                    "label": "D",
+                    "misconception": "İkinci işlemi ekleme olarak algılayıp ilk işlemi çıkartma olarak algılamadan sadece ikinci miktarı çıkartarak başlangıç sayısını bulmak.",
+                    "whyIncorrect": "İlk işlem ekleme olduğundan bu yaklaşım başlangıcı eksik hesaplar; sonuç gerçek başlangıç değerinden çok küçük olur."
+                  }
+                ],
+                "originalityDesign": "Sözlü bir okul bahçesi senaryosu kullanılarak öğrencinin iki adımlı işlem sırasını tersine çevirmesi ve yanlış sıralama hatasını tanıması istenmiştir; seçenekler gerçek hatalı tersleme ve işaret hatalarına dayalıdır.",
+                "visual": {
+                  "kind": "NONE",
+                  "title": "",
+                  "unit": "",
+                  "columns": [],
+                  "rows": [],
+                  "categories": [],
+                  "values": [],
+                  "readingPurpose": ""
+                }
+              }
+            }
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 1959,
+          "completion_tokens": 924,
+          "total_tokens": 2883,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "neurons": 44.408100000000005
+        },
+        "protocolKeys": [
+          "id",
+          "object",
+          "created",
+          "model",
+          "choices",
+          "service_tier",
+          "system_fingerprint",
+          "usage",
+          "prompt_logprobs",
+          "prompt_token_ids",
+          "kv_transfer_params"
+        ],
+        "finishReason": "stop",
+        "alternateJson": {
+          "response": null
+        }
+      },
+      "error": "EDITOR_OUTPUT_INVALID"
+    },
+    "after": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "aiAfter": [
+      {
+        "day": "2026-10-15",
+        "limit_neurons": 10000,
+        "held_neurons": 1438,
+        "charged_neurons": 4060
+      }
+    ],
+    "originalUnchanged": true,
+    "aiCalls": [
+      {
+        "model": "@cf/zai-org/glm-4.7-flash",
+        "status": "SETTLED",
+        "reserved_neurons": 366,
+        "charged_neurons": 45
+      },
+      {
+        "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+        "status": "SETTLED",
+        "reserved_neurons": 307,
+        "charged_neurons": 40
+      },
+      {
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "status": "UNKNOWN",
+        "reserved_neurons": 1438,
+        "charged_neurons": null
+      },
+      {
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "status": "SETTLED",
+        "reserved_neurons": 895,
+        "charged_neurons": 60
+      },
+      {
+        "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+        "status": "SETTLED",
+        "reserved_neurons": 318,
+        "charged_neurons": 43
+      },
+      {
+        "model": "@cf/openai/gpt-oss-120b",
+        "status": "SETTLED",
+        "reserved_neurons": 1348,
+        "charged_neurons": 245
+      },
+      {
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "status": "SETTLED",
+        "reserved_neurons": 1235,
+        "charged_neurons": 166
+      },
+      {
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "status": "SETTLED",
+        "reserved_neurons": 932,
+        "charged_neurons": 160
+      }
+    ],
+    "passed": false
+  },
+  "reasonedTimeout": {
+    "environment": "staging",
+    "newProducerCalls": 0,
+    "maximumAdditionalEditorPasses": 1,
+    "before": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "aiBefore": [
+      {
+        "day": "2026-10-15",
+        "limit_neurons": 10000,
+        "held_neurons": 1438,
+        "charged_neurons": 4060
+      }
+    ],
+    "httpStatus": 200,
+    "response": {
+      "ok": true,
+      "passed": false,
+      "correctionId": "editorial-pipeline-20261015-v1-glm-reasoned-v1",
+      "sourceTrialId": "editorial-pipeline-20261015-v1",
+      "sourceTrialHash": "95d7a0706e16fe719ddc6e436ce6e63209e0e17f6045e9787c100dc0fcbd43d5",
+      "sourceEditorHash": "765df22f807454e4abcfdf3f5760cef60f6dc1db9ef4938c7f0e32409c2c9cb4",
+      "source": {
+        "outcome_id": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+        "outcome_code": "MAT.5.1.2",
+        "outcome_title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+        "subject_id": "sub_mat",
+        "grade_level": 5,
+        "curriculum_version_id": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+        "academic_year": "2026-2027",
+        "program_version": "TYMM-2024-MAT5-PILOT-20261013",
+        "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+      },
+      "stage": "FAILED",
+      "newProducerCalls": 0,
+      "additionalEditorPasses": 1,
+      "cumulativeProducerCalls": 1,
+      "cumulativeEditorPasses": 4,
+      "reasonedEditor": true,
+      "editorModel": "@cf/zai-org/glm-4.7-flash",
+      "modelComparison": true,
+      "previousCorrectionId": "editorial-pipeline-20261015-v1-glm-editor-v1",
+      "questionBankWrites": 0,
+      "benchmarkOnly": true,
+      "publisherQualityCertified": false,
+      "pilotQuotaChanged": false,
+      "autonomousFirstPass": false,
+      "humanApproved": false,
+      "rightsApproved": false,
+      "error": "EDITOR_TIMEOUT"
+    },
+    "after": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "aiAfter": [
+      {
+        "day": "2026-10-15",
+        "limit_neurons": 10000,
+        "held_neurons": 1812,
+        "charged_neurons": 4060
+      }
+    ],
+    "originalUnchanged": true,
+    "aiCalls": [
+      {
+        "model": "@cf/zai-org/glm-4.7-flash",
+        "status": "HELD",
+        "reserved_neurons": 374,
+        "charged_neurons": null
+      },
+      {
+        "model": "@cf/zai-org/glm-4.7-flash",
+        "status": "SETTLED",
+        "reserved_neurons": 366,
+        "charged_neurons": 45
+      },
+      {
+        "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+        "status": "SETTLED",
+        "reserved_neurons": 307,
+        "charged_neurons": 40
+      },
+      {
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "status": "UNKNOWN",
+        "reserved_neurons": 1438,
+        "charged_neurons": null
+      },
+      {
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "status": "SETTLED",
+        "reserved_neurons": 895,
+        "charged_neurons": 60
+      },
+      {
+        "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+        "status": "SETTLED",
+        "reserved_neurons": 318,
+        "charged_neurons": 43
+      },
+      {
+        "model": "@cf/openai/gpt-oss-120b",
+        "status": "SETTLED",
+        "reserved_neurons": 1348,
+        "charged_neurons": 245
+      },
+      {
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "status": "SETTLED",
+        "reserved_neurons": 1235,
+        "charged_neurons": 166
+      }
+    ],
+    "passed": false
+  }
+}

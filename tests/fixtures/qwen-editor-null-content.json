@@ -1,0 +1,22 @@
+{
+  "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "message": {
+        "content": null,
+        "reasoning_content": "{\n  \"questions\": [\n    {\n      \"stemText\": \"Aşağıdaki okunuşu verilen sayıyı, nokta ile üçlü gruplar halinde doğru biçimde yazan seçeneği işaretleyiniz. “iki milyar üç yüz bin dört yüz yedi”\",\n      \"solutionText\": \"Okunuşu gruplara ayıralım: “iki milyar” → 2 000 000 000, “milyon” sözcüğü yok → milyon grubu 000, “üç yüz bin” → 300 000, “dört yüz yedi” → 407. Bu grupları birleştirince 2 000 300 407 elde edilir. Nokta ile yazımı 2.000.300.407 olur.\",\n      \"difficultyLevel\": 3,\n      \"correctAnswer\": \"B\",\n      \"options\": [\n        {\n          \"label\": \"A\",\n          \"text\": \"2.003.000.407\"\n        },\n        {\n          \"label\": \"B\",\n          \"text\": \"2.000.300.407\"\n        },\n        {\n          \"label\": \"C\",\n          \"text\": \"2.000.003.407\"\n        },\n        {\n          \"label\": \"D\",\n          \"text\": \"2.030.000.407\"\n        }\n      ],\n      \"editorial\": {\n        \"version\": 1,\n        \"cognitiveDemand\": \"APPLY\",\n        \"skillTarget\": \"Öğrencinin, milyar ve bin ifadeleri içeren bir okunuştan eksik milyon grubunu 000 kabul edip, sayıyı 7-12 basamaklı doğru biçimde nokta ile ayırarak yazabilmesi.\",\n        \"reasoningSteps\": [\n          \"Okunuşu milyar, milyon, bin ve birler bölümlerine ayırarak her bir grup değerini belirlemek.\",\n          \"Milyon sözcüğü bulunmadığı için milyon grubunu 000 kabul edip, bin ve birler gruplarını doğru konumda birleştirerek tam sayıyı oluşturmak.\"\n        ],\n        \"distractors\": [\n          {\n            \"label\": \"A\",\n            \"misconception\": \"Öğrenci, “üç yüz bin” ifadesini milyon grubuna yanlış yerleştirmiştir.\",\n            \"whyIncorrect\": \"“Üç yüz bin” 300 000 eder; bu sayı milyon grubuna yerleştirilirse 003 000 000 şeklinde yazılır. Bu durumda sayı 2 003 000 407 olur. Bu nedenle A seçeneği yanlıştır.\"\n          },\n          {\n            \"label\": \"C\",\n            \"misconception\": \"Öğrenci, “üç yüz bin” ifadesini bin grubuna yanlış yerleştirmiştir.\",\n            \"whyIncorrect\": \"“Üç yüz bin” 300 000 eder; bu sayı bin grubuna yerleştirilirse 000 300 000 şeklinde yazılır. Bu durumda sayı 2 000 003 407 olur. Bu nedenle C seçeneği yanlıştır.\"\n          },\n          {\n            \"label\": \"D\",\n            \"misconception\": \"Öğrenci, “üç yüz bin” ifadesini milyar grubuna yanlış yerleştirmiştir.\",\n            \"whyIncorrect\": \"“Üç yüz bin” 300 000 eder; bu sayı milyar grubuna yerleştirilirse 000 300 000 şeklinde yazılır. Bu durumda sayı 2 030 000 407 olur. Bu nedenle D seçeneği yanlıştır.\"\n          }\n        ],\n        \"originalityDesign\": \"Sayı okunuşunda bir grup (milyon) bilinçli olarak eksik bırakılarak, öğrencinin eksik grup için 000 varsayması ve kalan grupları doğru konumda birleştirmesi beklenir. Bu, 7-12 basamaklı sayılarda sıfır gruplarının fark edilmesini ve doğru biçimde yazılmasını ölçer.\",\n        \"visual\": {\n          \"kind\": \"NONE\",\n          \"title\": \"\",\n          \"unit\": \"\",\n          \"columns\": [],\n          \"rows\": [],\n          \"categories\": [],\n          \"values\": [],\n          \"readingPurpose\": \"\"\n        }\n      }\n    }\n  ]\n}"
+      }
+    }
+  ],
+  "response": null,
+  "usage": {
+    "prompt_tokens": 1870,
+    "completion_tokens": 1094,
+    "total_tokens": 2964,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "neurons": 41.98736572265625
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-16",
+  "scope": {
+    "grade": 5,
+    "outcome": "MAT.5.1.2",
+    "taskFocus": "NAT_COMPARE_OFFERS",
+    "presentation": "TEXT",
+    "formalMethod": "DETERMINISTIC_OFFER_COMPARISON"
+  },
+  "stagingCommit": "f8cc82634815608a478298ee92050347af749332",
+  "privateWorker": {
+    "runId": 38930186717,
+    "jobId": 117071882780,
+    "conclusion": "success"
+  },
+  "appWorker": {
+    "runId": 38930186737,
+    "jobId": 117071882664,
+    "sourceChecks": "success",
+    "deployment": "success",
+    "demoDomain": "success",
+    "workflowStatus": "in_progress",
+    "currentStep": "Live Nibiru free multi-AI provider probe"
+  },
+  "verification": {
+    "localTestsPassed": 62,
+    "files": 6,
+    "typecheck": "pass",
+    "freshLiveQuestions": 0,
+    "syntheticArithmeticCases": "60-loop BigInt oracle, tied totals skipped"
+  },
+  "productionChanged": false,
+  "campaignStarted": false,
+  "pilotBudgetReset": false,
+  "officialSource": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447",
+  "limits": [
+    "Strict unit-price-plus-delivery text grammar only",
+    "No new grade/outcome coverage",
+    "No live newly-generated question trial",
+    "Arithmetic proof does not establish editorial quality or originality"
+  ]
+}

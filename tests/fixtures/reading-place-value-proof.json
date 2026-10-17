@@ -1,0 +1,124 @@
+{
+  "question": {
+    "editorial": {
+      "version": 1,
+      "cognitiveDemand": "APPLY",
+      "skillTarget": "Öğrencinin, milyar ve bin ifadeleri içeren bir okunuştan eksik milyon grubunu 000 kabul edip, sayıyı 7‑12 basamaklı doğru biçimde nokta ile ayırarak yazabilmesi.",
+      "reasoningSteps": [
+        "Okunuşu “milyar”, “milyon”, “bin” ve “birler” bölümlerine ayırarak her bir grup değerini belirlemek.",
+        "Milyon sözcüğü bulunmadığı için milyon grubunu 000 kabul edip, bin ve birler gruplarını doğru konumda birleştirerek tam sayıyı oluşturmak."
+      ],
+      "distractors": [
+        {
+          "label": "A",
+          "misconception": "Öğrenci, “beş yüz bin” ifadesini 508 000 olarak yorumlayarak binler grubunu 508 olarak yazmıştır.",
+          "whyIncorrect": "“beş yüz bin” 500 000 eder; 508 000 sayısı okunuşla eşleşmez, bu yüzden seçenek A yanlıştır."
+        },
+        {
+          "label": "C",
+          "misconception": "Öğrenci, “beş yüz bin” ifadesini milyon grubuna taşıyarak 5 000 000 olarak kabul etmiştir.",
+          "whyIncorrect": "Milyon grubu yoktur; 5 000 000 sayısı okunuşta yer almaz, bu yüzden seçenek C yanlıştır."
+        },
+        {
+          "label": "D",
+          "misconception": "Öğrenci, “beş yüz bin” ifadesini 50 000 (elli bin) olarak yanlış okumuştur.",
+          "whyIncorrect": "“beş yüz bin” 500 000 eder; 50 000 sayısı okunuşla tutmaz, bu yüzden seçenek D yanlıştır."
+        }
+      ],
+      "originalityDesign": "Sayı okunuşunda bir grup (milyon) bilinçli olarak eksik bırakılarak, öğrencinin eksik grup için 000 varsayması ve kalan grupları doğru konumda birleştirmesi beklenir. Bu, 7‑12 basamaklı sayılarda sıfır gruplarının fark edilmesini ve doğru biçimde yazılmasını ölçer.",
+      "visual": {
+        "kind": "NONE",
+        "title": "",
+        "unit": "",
+        "columns": [],
+        "rows": [],
+        "categories": [],
+        "values": [],
+        "readingPurpose": ""
+      }
+    },
+    "stemText": "Aşağıdaki okunuşu verilen sayıyı, noktasız ve üçlü gruplar halinde nokta (.) ile ayırarak doğru biçimde yazan seçeneği işaretleyiniz. “dört milyar beş yüz bin sekiz yüz doksan bir”.",
+    "options": [
+      {
+        "label": "A",
+        "text": "4.000.508.891"
+      },
+      {
+        "label": "B",
+        "text": "4.000.500.891"
+      },
+      {
+        "label": "C",
+        "text": "4.005.000.891"
+      },
+      {
+        "label": "D",
+        "text": "4.000.050.891"
+      }
+    ],
+    "correctAnswer": "B",
+    "solutionText": "Okunuşu gruplara ayıralım: “dört milyar” → 4 000 000 000, “milyon” sözcüğü yok → milyon grubu 000, “beş yüz bin” → 500 000, “sekiz yüz doksan bir” → 891. Bu grupları birleştirince 4 000 500 891 elde edilir. Nokta ile yazımı 4.000.500.891 olur. Doğru seçenek B) 4.000.500.891.",
+    "difficultyLevel": 3
+  },
+  "evidence": {
+    "sourceNumbers": {
+      "wordValue0": 4000500891,
+      "stemWord0": 4000500891
+    },
+    "answer": "B",
+    "optionChecks": [
+      {
+        "label": "A",
+        "correct": false,
+        "reason": "4.000.508.891 = 4,000,508,891 ≠ 4,000,500,891"
+      },
+      {
+        "label": "B",
+        "correct": true,
+        "reason": "4.000.500.891 = 4,000,500,891 matches the spoken number"
+      },
+      {
+        "label": "C",
+        "correct": false,
+        "reason": "4.005.000.891 = 4,005,000,891 ≠ 4,000,500,891"
+      },
+      {
+        "label": "D",
+        "correct": false,
+        "reason": "4.000.050.891 = 4,000,050,891 ≠ 4,000,500,891"
+      }
+    ],
+    "calculations": [
+      {
+        "left": 4000000000,
+        "op": "DIV",
+        "right": 1,
+        "result": 4000000000
+      },
+      {
+        "left": 500000,
+        "op": "DIV",
+        "right": 1,
+        "result": 500000
+      },
+      {
+        "left": 891,
+        "op": "DIV",
+        "right": 1,
+        "result": 891
+      },
+      {
+        "left": 4000000000,
+        "op": "ADD",
+        "right": 500000,
+        "result": 4000500000
+      },
+      {
+        "left": 4000500000,
+        "op": "ADD",
+        "right": 891,
+        "result": 4000500891
+      }
+    ]
+  }
+}

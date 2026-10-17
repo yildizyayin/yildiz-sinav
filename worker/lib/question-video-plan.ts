@@ -1,5 +1,6 @@
+import {CURRENT_CONTEXT_VIDEO_POLICY} from './question-current-context-policy';
 export type VideoScene={title:string;text:string;spokenText:string};
-export type QuestionVideoPlan={version:1;width:1280;height:720;language:'tr-TR';scenes:VideoScene[];narrationText:string;sourceQuestionId:string;sourceRevision:number;synthetic:boolean};
+export type QuestionVideoPlan={version:1;width:1280;height:720;language:'tr-TR';scenes:VideoScene[];narrationText:string;sourceQuestionId:string;sourceRevision:number;synthetic:boolean;productionPolicy:typeof CURRENT_CONTEXT_VIDEO_POLICY};
 /** Layout-only transformation of approved source text. No new solution is invented. */
 export function buildQuestionVideoPlan(q:{id:string;review_revision:number;stem_text:string;solution_text:string;correct_answer:string;options_json:string},synthetic=false):QuestionVideoPlan{
  let raw:any;try{raw=JSON.parse(q.options_json)}catch{throw Error('INVALID_VIDEO_QUESTION')}
@@ -13,5 +14,5 @@ export function buildQuestionVideoPlan(q:{id:string;review_revision:number;stem_
  add('Çözüm adımları',q.solution_text);
  const correct=options.find(o=>o.label===q.correct_answer)!;add('Doğru cevap',`${correct.label} seçeneği: ${correct.text}`);
  if(scenes.length>12)throw Error('VIDEO_PLAN_TOO_LONG');
- return {version:1,width:1280,height:720,language:'tr-TR',scenes,narrationText:scenes.map(s=>s.spokenText).join('\n'),sourceQuestionId:q.id,sourceRevision:q.review_revision,synthetic};
+ return {version:1,width:1280,height:720,language:'tr-TR',scenes,narrationText:scenes.map(s=>s.spokenText).join('\n'),sourceQuestionId:q.id,sourceRevision:q.review_revision,synthetic,productionPolicy:structuredClone(CURRENT_CONTEXT_VIDEO_POLICY)};
 }

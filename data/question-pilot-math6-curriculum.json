@@ -1,0 +1,16 @@
+{
+  "academicYear": "2026-2027",
+  "gradeLevel": 6,
+  "programCode": "SCHOOL",
+  "programVersion": "TYMM-2024-MAT6-THEME1-20261016",
+  "authority": "MEB",
+  "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456",
+  "sourceTitle": "Ortaokul Matematik Dersi 6. Sınıf — 1. Tema: Sayılar ve Nicelikler (1)",
+  "scope": "İlk temanın dört resmî öğrenme çıktısı; tam sınıf müfredatı veya üretim yeterliği değildir.",
+  "outcomes": [
+    {"code":"MAT.6.1.1","title":"Karşılaştığı problem durumlarında bir doğal sayının çarpan ve katlarına yönelik muhakeme yapabilme","topic":"Çarpanlar ve Katlar"},
+    {"code":"MAT.6.1.2","title":"Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile tam bölünebilme kriterlerine ilişkin çıkarım yapabilme","topic":"Bölünebilme Kriterleri"},
+    {"code":"MAT.6.1.3","title":"Bir doğal sayının asal olma durumunu ve asal çarpanlarını çözümleyebilme","topic":"Asal Sayılar ve Asal Çarpanlar"},
+    {"code":"MAT.6.1.4","title":"Günlük hayat problemleri ya da matematiksel durumlar üzerinden ortak kat ve ortak böleni yorumlayabilme","topic":"Ortak Kat ve Ortak Bölen"}
+  ]
+}

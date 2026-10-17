@@ -1,0 +1,868 @@
+{
+  "asOf": "2026-10-15T13:15:48.798Z",
+  "environment": "staging",
+  "initial": {
+    "run": 38738842623,
+    "findings": [
+      {
+        "key": "correct-table",
+        "expectedPass": true,
+        "passed": true,
+        "accepted": true,
+        "unavailable": false,
+        "issues": []
+      },
+      {
+        "key": "wrong-key",
+        "expectedPass": false,
+        "passed": true,
+        "accepted": false,
+        "unavailable": false,
+        "issues": [
+          "BLIND_ANSWER_DISAGREEMENT"
+        ]
+      },
+      {
+        "key": "wrong-arithmetic",
+        "expectedPass": false,
+        "passed": true,
+        "accepted": false,
+        "unavailable": false,
+        "issues": [
+          "INVALID_ARITHMETIC"
+        ]
+      },
+      {
+        "key": "wrong-table",
+        "expectedPass": false,
+        "passed": true,
+        "accepted": false,
+        "unavailable": false,
+        "issues": [
+          "BLIND_ANSWER_DISAGREEMENT"
+        ]
+      },
+      {
+        "key": "actual-editor-invalid-distractor-explanations",
+        "expectedPass": false,
+        "passed": false,
+        "accepted": false,
+        "unavailable": false,
+        "issues": [
+          "BLIND_UNSOURCED_OPERAND"
+        ]
+      },
+      {
+        "key": "actual-invalid-number-spelling",
+        "expectedPass": false,
+        "passed": true,
+        "accepted": false,
+        "unavailable": false,
+        "issues": [
+          "INVALID_TURKISH_COMPOUND_NUMERAL"
+        ]
+      }
+    ],
+    "readingBlindFailure": {
+      "key": "actual-editor-invalid-distractor-explanations",
+      "verification": {
+        "ok": false,
+        "unavailable": false,
+        "protocolRetryEligible": false,
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "reviews": [
+          {
+            "index": 0,
+            "valid": false,
+            "issues": [
+              "BLIND_UNSOURCED_OPERAND"
+            ]
+          }
+        ],
+        "usage": {},
+        "blindSolves": [
+          {
+            "ok": false,
+            "model": "@cf/nvidia/nemotron-3-120b-a12b",
+            "issues": [
+              "BLIND_UNSOURCED_OPERAND"
+            ],
+            "evidence": {
+              "sourceNumbers": {
+                "wordValue0": 2000300407,
+                "stemWord0": 2000300407,
+                "derived_wordValue0_1000000000": 2000000000,
+                "derived_wordValue0_1000000": 0,
+                "derived_wordValue0_1000": 300000,
+                "derived_wordValue0_1": 407,
+                "derived_stemWord0_1000000000": 2000000000,
+                "derived_stemWord0_1000000": 0,
+                "derived_stemWord0_1000": 300000,
+                "derived_stemWord0_1": 407
+              },
+              "answer": "B",
+              "optionChecks": [
+                {
+                  "label": "A",
+                  "correct": false,
+                  "reason": "2.003.000.407 = 2 milyar 300 bin 407, okunan 'iki milyar üç yüz bin dört yüz yedi' ile uyuşmuyor."
+                },
+                {
+                  "label": "B",
+                  "correct": true,
+                  "reason": "2.000.300.407 = 2 milyar + 300 bin + 407 = iki milyar üç yüz bin dört yüz yedi."
+                },
+                {
+                  "label": "C",
+                  "correct": false,
+                  "reason": "2.000.003.407 = 2 milyar + 3 bin + 407, okunan ifadeyle uyuşmuyor."
+                },
+                {
+                  "label": "D",
+                  "correct": false,
+                  "reason": "2.030.000.407 = 2 milyar + 30 milyon + 407, okunan ifadeyle uyuşmuyor."
+                }
+              ],
+              "calculations": [
+                {
+                  "left": 2000000000,
+                  "op": "DIV",
+                  "right": 1000000000,
+                  "result": 2000000000
+                },
+                {
+                  "left": 0,
+                  "op": "DIV",
+                  "right": 1000000,
+                  "result": 0
+                },
+                {
+                  "left": 300000,
+                  "op": "DIV",
+                  "right": 1000,
+                  "result": 300000
+                },
+                {
+                  "left": 407,
+                  "op": "DIV",
+                  "right": 1,
+                  "result": 407
+                },
+                {
+                  "left": 2000000000,
+                  "op": "ADD",
+                  "right": 0,
+                  "result": 2000000000
+                },
+                {
+                  "left": 2000000000,
+                  "op": "ADD",
+                  "right": 300000,
+                  "result": 2000300000
+                },
+                {
+                  "left": 2000300000,
+                  "op": "ADD",
+                  "right": 407,
+                  "result": 2000300407
+                }
+              ]
+            },
+            "usage": {
+              "prompt_tokens": 508,
+              "completion_tokens": 1007,
+              "total_tokens": 1515,
+              "prompt_tokens_details": {
+                "cached_tokens": 0
+              },
+              "neurons": 159.812
+            },
+            "keyHidden": true,
+            "solutionHidden": true,
+            "derivationPolicy": "EXACT_ARITHMETIC_AND_CEILING_OF_NONNEGATIVE_DIVISION"
+          }
+        ]
+      }
+    }
+  },
+  "readingProof": {
+    "run": 38740103032,
+    "findings": [
+      {
+        "key": "correct-table",
+        "expectedPass": true,
+        "passed": true,
+        "accepted": true,
+        "unavailable": false,
+        "issues": []
+      },
+      {
+        "key": "wrong-key",
+        "expectedPass": false,
+        "passed": true,
+        "accepted": false,
+        "unavailable": false,
+        "issues": [
+          "BLIND_ANSWER_DISAGREEMENT"
+        ]
+      },
+      {
+        "key": "wrong-arithmetic",
+        "expectedPass": false,
+        "passed": true,
+        "accepted": false,
+        "unavailable": false,
+        "issues": [
+          "INVALID_ARITHMETIC"
+        ]
+      },
+      {
+        "key": "wrong-table",
+        "expectedPass": false,
+        "passed": true,
+        "accepted": false,
+        "unavailable": false,
+        "issues": [
+          "BLIND_ANSWER_DISAGREEMENT"
+        ]
+      },
+      {
+        "key": "actual-editor-invalid-distractor-explanations",
+        "expectedPass": false,
+        "passed": false,
+        "accepted": true,
+        "unavailable": false,
+        "issues": []
+      },
+      {
+        "key": "actual-invalid-number-spelling",
+        "expectedPass": false,
+        "passed": true,
+        "accepted": false,
+        "unavailable": false,
+        "issues": [
+          "INVALID_TURKISH_COMPOUND_NUMERAL"
+        ]
+      }
+    ],
+    "reviewerFalsePositive": {
+      "key": "actual-editor-invalid-distractor-explanations",
+      "verification": {
+        "blindSolves": [
+          {
+            "ok": true,
+            "model": null,
+            "method": "DETERMINISTIC_TURKISH_CARDINAL",
+            "issues": [],
+            "evidence": {
+              "answer": "B",
+              "optionChecks": [
+                {
+                  "label": "A",
+                  "correct": false,
+                  "reason": "Seçeneğin sayısal değeri 2003000407; okunuşun kesin değeri 2000300407 ile farklıdır."
+                },
+                {
+                  "label": "B",
+                  "correct": true,
+                  "reason": "Seçeneğin sayısal değeri 2000300407; okunuşun kesin değeri 2000300407 ile aynıdır."
+                },
+                {
+                  "label": "C",
+                  "correct": false,
+                  "reason": "Seçeneğin sayısal değeri 2000003407; okunuşun kesin değeri 2000300407 ile farklıdır."
+                },
+                {
+                  "label": "D",
+                  "correct": false,
+                  "reason": "Seçeneğin sayısal değeri 2030000407; okunuşun kesin değeri 2000300407 ile farklıdır."
+                }
+              ],
+              "calculations": [
+                {
+                  "left": 0,
+                  "op": "ADD",
+                  "right": 2000000000,
+                  "result": 2000000000
+                },
+                {
+                  "left": 2000000000,
+                  "op": "ADD",
+                  "right": 0,
+                  "result": 2000000000
+                },
+                {
+                  "left": 2000000000,
+                  "op": "ADD",
+                  "right": 300000,
+                  "result": 2000300000
+                },
+                {
+                  "left": 2000300000,
+                  "op": "ADD",
+                  "right": 407,
+                  "result": 2000300407
+                }
+              ],
+              "sourceNumbers": {
+                "wordValue0": 2000300407,
+                "stemWord0": 2000300407,
+                "derived_wordValue0_1000000000": 2000000000,
+                "derived_wordValue0_1000000": 0,
+                "derived_wordValue0_1000": 300000,
+                "derived_wordValue0_1": 407,
+                "derived_stemWord0_1000000000": 2000000000,
+                "derived_stemWord0_1000000": 0,
+                "derived_stemWord0_1000": 300000,
+                "derived_stemWord0_1": 407
+              }
+            },
+            "usage": {},
+            "keyHidden": true,
+            "solutionHidden": true,
+            "derivationPolicy": "EXACT_TURKISH_CARDINAL_AND_DECIMAL_GROUPS"
+          }
+        ],
+        "protocolVersion": "EDITORIAL_REVIEW_V1",
+        "ok": true,
+        "unavailable": false,
+        "protocolRetryEligible": false,
+        "model": "@cf/nvidia/nemotron-3-120b-a12b",
+        "reviews": [
+          {
+            "index": 0,
+            "valid": true,
+            "issues": [],
+            "editorial": {
+              "outcomeAlignment": 4,
+              "reasoningDemand": 3,
+              "distractorQuality": 3,
+              "languageAndFairness": 4,
+              "visualConsistency": 4,
+              "originalityDesign": 3,
+              "rationale": "Soru, MAT.5.1.1 çıktısına uygun olarak eksik milyon grubunun 000 kabul edilmesini gerektirir; seçenekler doğru Türkçe kullanılarak hazırlanmış ve sadece biri doğru olup diğerleri yaygın yanılgıları hedeflemektedir."
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 2498,
+          "completion_tokens": 394,
+          "total_tokens": 2892,
+          "neurons": 165.994
+        }
+      }
+    }
+  },
+  "final": {
+    "run": 38740916702,
+    "report": {
+      "ok": true,
+      "passed": true,
+      "findings": [
+        {
+          "key": "correct-table",
+          "expectedPass": true,
+          "passed": true,
+          "accepted": true,
+          "unavailable": false,
+          "issues": []
+        },
+        {
+          "key": "wrong-key",
+          "expectedPass": false,
+          "passed": true,
+          "accepted": false,
+          "unavailable": false,
+          "issues": [
+            "BLIND_ANSWER_DISAGREEMENT"
+          ]
+        },
+        {
+          "key": "wrong-arithmetic",
+          "expectedPass": false,
+          "passed": true,
+          "accepted": false,
+          "unavailable": false,
+          "issues": [
+            "INVALID_ARITHMETIC"
+          ]
+        },
+        {
+          "key": "wrong-table",
+          "expectedPass": false,
+          "passed": true,
+          "accepted": false,
+          "unavailable": false,
+          "issues": [
+            "BLIND_ANSWER_DISAGREEMENT"
+          ]
+        },
+        {
+          "key": "actual-editor-invalid-distractor-explanations",
+          "expectedPass": false,
+          "passed": true,
+          "accepted": false,
+          "unavailable": false,
+          "issues": [
+            "DISTRACTOR_GROUP_VALUE_CONTRADICTION"
+          ]
+        },
+        {
+          "key": "actual-invalid-number-spelling",
+          "expectedPass": false,
+          "passed": true,
+          "accepted": false,
+          "unavailable": false,
+          "issues": [
+            "INVALID_TURKISH_COMPOUND_NUMERAL"
+          ]
+        }
+      ],
+      "sourceHash": "51373357878745c92f0d28216ed642d8d0990c3821e906a37d22202b79ca7151",
+      "verifier": "@cf/nvidia/nemotron-3-120b-a12b",
+      "results": [
+        {
+          "key": "correct-table",
+          "verification": {
+            "blindSolves": [
+              {
+                "ok": true,
+                "model": "@cf/nvidia/nemotron-3-120b-a12b",
+                "issues": [],
+                "evidence": {
+                  "sourceNumbers": {
+                    "stem0": 280,
+                    "stem1": 900,
+                    "stemWord0": 1,
+                    "stemWord1": 3,
+                    "r0c1": 40,
+                    "r0c2": 120,
+                    "r1c1": 55,
+                    "r1c2": 150,
+                    "r2c1": 70,
+                    "r2c2": 180
+                  },
+                  "answer": "C",
+                  "optionChecks": [
+                    {
+                      "label": "A",
+                      "correct": false,
+                      "reason": "A tedarikçisi 7 kutu (280 kart) 840 TL, en ucuz değil."
+                    },
+                    {
+                      "label": "B",
+                      "correct": false,
+                      "reason": "B tedarikçisi 5 kutu sadece 275 kart yeterli değil; 6 kutu gerekir ve 900 TL."
+                    },
+                    {
+                      "label": "C",
+                      "correct": true,
+                      "reason": "C tedarikçisi 4 kutu (280 kart) 720 TL, bütçe içinde ve en düşük maliyet."
+                    },
+                    {
+                      "label": "D",
+                      "correct": false,
+                      "reason": "B tedarikçisi 6 kutu 900 TL, en ekonomik değil."
+                    }
+                  ],
+                  "calculations": [
+                    {
+                      "left": 280,
+                      "op": "DIV",
+                      "right": 40,
+                      "result": 7
+                    },
+                    {
+                      "left": 280,
+                      "op": "DIV",
+                      "right": 55,
+                      "result": 5.090909090909091
+                    },
+                    {
+                      "left": 280,
+                      "op": "DIV",
+                      "right": 70,
+                      "result": 4
+                    },
+                    {
+                      "left": 7,
+                      "op": "MUL",
+                      "right": 120,
+                      "result": 840
+                    },
+                    {
+                      "left": 6,
+                      "op": "MUL",
+                      "right": 150,
+                      "result": 900
+                    },
+                    {
+                      "left": 4,
+                      "op": "MUL",
+                      "right": 180,
+                      "result": 720
+                    }
+                  ]
+                },
+                "usage": {
+                  "prompt_tokens": 585,
+                  "completion_tokens": 792,
+                  "total_tokens": 1377,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0
+                  },
+                  "neurons": 134.037
+                },
+                "keyHidden": true,
+                "solutionHidden": true,
+                "derivationPolicy": "EXACT_ARITHMETIC_AND_CEILING_OF_NONNEGATIVE_DIVISION"
+              }
+            ],
+            "protocolVersion": "EDITORIAL_REVIEW_V1",
+            "ok": true,
+            "unavailable": false,
+            "protocolRetryEligible": false,
+            "model": "@cf/nvidia/nemotron-3-120b-a12b",
+            "reviews": [
+              {
+                "index": 0,
+                "valid": true,
+                "issues": [],
+                "editorial": {
+                  "outcomeAlignment": 4,
+                  "reasoningDemand": 4,
+                  "distractorQuality": 4,
+                  "languageAndFairness": 4,
+                  "visualConsistency": 4,
+                  "originalityDesign": 4,
+                  "rationale": "Soru, MAT.5.1.2 kapsamında gerçek yaşam problemi çözme becerisini ölçer; tablodan veri okunur, bölme-çarpma işlemleri yapılır, bütçe ve maliyet karşılaştırılır, gerekli akıl yürütme adımları içerir ve Türkçe dil kurallarına uygun olarak ifade edilmiştir."
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 2446,
+              "completion_tokens": 264,
+              "total_tokens": 2710,
+              "neurons": 145.974
+            }
+          }
+        },
+        {
+          "key": "wrong-key",
+          "verification": {
+            "ok": false,
+            "unavailable": false,
+            "protocolRetryEligible": false,
+            "model": "@cf/nvidia/nemotron-3-120b-a12b",
+            "reviews": [
+              {
+                "index": 0,
+                "valid": false,
+                "issues": [
+                  "BLIND_ANSWER_DISAGREEMENT"
+                ]
+              }
+            ],
+            "usage": {},
+            "blindSolves": [
+              {
+                "ok": false,
+                "model": "@cf/nvidia/nemotron-3-120b-a12b",
+                "issues": [
+                  "BLIND_ANSWER_DISAGREEMENT"
+                ],
+                "evidence": {
+                  "sourceNumbers": {
+                    "stem0": 280,
+                    "stem1": 900,
+                    "stemWord0": 1,
+                    "stemWord1": 3,
+                    "r0c1": 40,
+                    "r0c2": 120,
+                    "r1c1": 55,
+                    "r1c2": 150,
+                    "r2c1": 70,
+                    "r2c2": 180
+                  },
+                  "answer": "C",
+                  "optionChecks": [
+                    {
+                      "label": "A",
+                      "correct": false,
+                      "reason": "Mert haklıdır; kutu fiyatı en düşük olan A, toplamda da en ucuzdur."
+                    },
+                    {
+                      "label": "B",
+                      "correct": false,
+                      "reason": "Mert haksızdır; B'nin 5 kutusu ihtiyacı 750 TL'ye karşılar."
+                    },
+                    {
+                      "label": "C",
+                      "correct": true,
+                      "reason": "Mert haksızdır; C'nin 4 kutusu ihtiyacı 720 TL'ye karşılar."
+                    },
+                    {
+                      "label": "D",
+                      "correct": false,
+                      "reason": "Mert haksızdır; B'nin 6 kutusu daha fazla kart verdiği için en ekonomik seçimdir."
+                    }
+                  ],
+                  "calculations": [
+                    {
+                      "left": 280,
+                      "op": "DIV",
+                      "right": 40,
+                      "result": 7
+                    },
+                    {
+                      "left": 280,
+                      "op": "DIV",
+                      "right": 55,
+                      "result": 5.090909090909091
+                    },
+                    {
+                      "left": 280,
+                      "op": "DIV",
+                      "right": 70,
+                      "result": 4
+                    },
+                    {
+                      "left": 7,
+                      "op": "MUL",
+                      "right": 120,
+                      "result": 840
+                    },
+                    {
+                      "left": 6,
+                      "op": "MUL",
+                      "right": 150,
+                      "result": 900
+                    },
+                    {
+                      "left": 4,
+                      "op": "MUL",
+                      "right": 180,
+                      "result": 720
+                    }
+                  ]
+                },
+                "usage": {
+                  "prompt_tokens": 585,
+                  "completion_tokens": 844,
+                  "total_tokens": 1429,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0
+                  },
+                  "neurons": 141.109
+                },
+                "keyHidden": true,
+                "solutionHidden": true,
+                "derivationPolicy": "EXACT_ARITHMETIC_AND_CEILING_OF_NONNEGATIVE_DIVISION"
+              }
+            ]
+          }
+        },
+        {
+          "key": "wrong-arithmetic",
+          "verification": {
+            "ok": false,
+            "unavailable": false,
+            "model": null,
+            "reviews": [
+              {
+                "index": 0,
+                "valid": false,
+                "issues": [
+                  "INVALID_ARITHMETIC"
+                ]
+              }
+            ],
+            "usage": {}
+          }
+        },
+        {
+          "key": "wrong-table",
+          "verification": {
+            "ok": false,
+            "unavailable": false,
+            "protocolRetryEligible": false,
+            "model": "@cf/nvidia/nemotron-3-120b-a12b",
+            "reviews": [
+              {
+                "index": 0,
+                "valid": false,
+                "issues": [
+                  "BLIND_ANSWER_DISAGREEMENT"
+                ]
+              }
+            ],
+            "usage": {},
+            "blindSolves": [
+              {
+                "ok": false,
+                "model": "@cf/nvidia/nemotron-3-120b-a12b",
+                "issues": [
+                  "BLIND_ANSWER_DISAGREEMENT"
+                ],
+                "evidence": {
+                  "sourceNumbers": {
+                    "stem0": 280,
+                    "stem1": 900,
+                    "stemWord0": 1,
+                    "stemWord1": 3,
+                    "r0c1": 40,
+                    "r0c2": 120,
+                    "r1c1": 55,
+                    "r1c2": 150,
+                    "r2c1": 70,
+                    "r2c2": 380
+                  },
+                  "answer": "A",
+                  "optionChecks": [
+                    {
+                      "label": "A",
+                      "correct": true,
+                      "reason": "A: 7 kutular gerekir, 7×40=280 kart, maliyet 7×120=840 TL ≤ 900 TL. B: 6 kutular gerekir, 6×55=330 kart, maliyet 6×150=900 TL. C: 4 kutular gerekir, 4×70=280 kart, maliyet 4×380=1520 TL > 900 TL. En düşük toplam maliyet A'dır (840 TL), bu yüzden Mert haklıdır."
+                    },
+                    {
+                      "label": "B",
+                      "correct": false,
+                      "reason": "B'nin 6 kutusu 900 TL'ye maliyet yapar, ancak A'nın toplam maliyeti 840 TL daha düşük olduğundan B en ucuz değil."
+                    },
+                    {
+                      "label": "C",
+                      "correct": false,
+                      "reason": "C'nin 4 kutusu 1520 TL'ye maliyet yapar, bütçe 900 TL'yi aşar, dolayısıyla seçilemez."
+                    },
+                    {
+                      "label": "D",
+                      "correct": false,
+                      "reason": "B'nin 6 kutusu 330 kart verir, ancak maliyeti 900 TL olup A'nın 840 TL'den daha pahalıdır; ekstra kart ekonomik değildir."
+                    }
+                  ],
+                  "calculations": [
+                    {
+                      "left": 280,
+                      "op": "DIV",
+                      "right": 40,
+                      "result": 7
+                    },
+                    {
+                      "left": 7,
+                      "op": "MUL",
+                      "right": 120,
+                      "result": 840
+                    },
+                    {
+                      "left": 280,
+                      "op": "DIV",
+                      "right": 55,
+                      "result": 5.090909090909091
+                    },
+                    {
+                      "left": 5.090909090909091,
+                      "op": "CEIL_DIV",
+                      "right": 1,
+                      "result": 6
+                    },
+                    {
+                      "left": 6,
+                      "op": "MUL",
+                      "right": 150,
+                      "result": 900
+                    },
+                    {
+                      "left": 280,
+                      "op": "DIV",
+                      "right": 70,
+                      "result": 4
+                    },
+                    {
+                      "left": 4,
+                      "op": "MUL",
+                      "right": 380,
+                      "result": 1520
+                    }
+                  ]
+                },
+                "usage": {
+                  "prompt_tokens": 585,
+                  "completion_tokens": 944,
+                  "total_tokens": 1529,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0
+                  },
+                  "neurons": 154.709
+                },
+                "keyHidden": true,
+                "solutionHidden": true,
+                "derivationPolicy": "EXACT_ARITHMETIC_AND_CEILING_OF_NONNEGATIVE_DIVISION"
+              }
+            ]
+          }
+        },
+        {
+          "key": "actual-editor-invalid-distractor-explanations",
+          "verification": {
+            "ok": false,
+            "unavailable": false,
+            "model": null,
+            "reviews": [
+              {
+                "index": 0,
+                "valid": false,
+                "issues": [
+                  "DISTRACTOR_GROUP_VALUE_CONTRADICTION"
+                ]
+              }
+            ],
+            "usage": {}
+          }
+        },
+        {
+          "key": "actual-invalid-number-spelling",
+          "verification": {
+            "ok": false,
+            "unavailable": false,
+            "model": null,
+            "reviews": [
+              {
+                "index": 0,
+                "valid": false,
+                "issues": [
+                  "INVALID_TURKISH_COMPOUND_NUMERAL"
+                ]
+              }
+            ],
+            "usage": {}
+          }
+        }
+      ],
+      "baselineValidationId": "independent-quality-20261015-v1-reading-proof-v1",
+      "baselineHash": "db84d0b11910c1ab8b2bbd13daadabb0abe7b0720a9389748f48c29a1b6f2e18",
+      "newModelCalls": 0,
+      "unchangedCaseResults": 5,
+      "independentReviewerFalsePositiveObserved": true,
+      "mitigatedByDeterministicGuard": true,
+      "benchmarkOnly": true,
+      "autonomousProductionCertified": false,
+      "createsQuestions": false,
+      "humanApproved": false
+    },
+    "pilotBefore": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 49
+      }
+    ],
+    "pilotAfter": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 49
+      }
+    ]
+  },
+  "sourceAndDeploymentRun": 38740916690
+}

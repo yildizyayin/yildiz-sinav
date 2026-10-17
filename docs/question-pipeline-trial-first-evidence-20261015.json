@@ -1,0 +1,255 @@
+{
+  "environment": "staging",
+  "maximumFreshQuestions": 1,
+  "studentPublication": false,
+  "before": [
+    {
+      "id": "pilot_50",
+      "question_cap": 50,
+      "reserved_count": 49
+    }
+  ],
+  "oldJobsBefore": [
+    {
+      "id": "qgj_26230b38-f14e-40bc-8011-961048b84b27",
+      "status": "REVIEW_READY",
+      "attempt_count": 1,
+      "editorial_repair_count": 0
+    },
+    {
+      "id": "qgj_a8be95a0-d76d-44c7-91ef-e2b92f8599a2",
+      "status": "FAILED",
+      "attempt_count": 1,
+      "editorial_repair_count": 0
+    },
+    {
+      "id": "qgj_d03f2a96-db7f-4c5f-9d80-84ee2b913121",
+      "status": "FAILED",
+      "attempt_count": 1,
+      "editorial_repair_count": 0
+    }
+  ],
+  "httpStatus": 200,
+  "response": {
+    "ok": true,
+    "trialId": "editorial-pipeline-20261015-v1",
+    "benchmarkOnly": true,
+    "questionCount": 1,
+    "stage": "REJECTED_CANDIDATE",
+    "source": {
+      "outcome_id": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+      "outcome_code": "MAT.5.1.2",
+      "outcome_title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+      "subject_id": "sub_mat",
+      "grade_level": 5,
+      "curriculum_version_id": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+      "academic_year": "2026-2027",
+      "program_version": "TYMM-2024-MAT5-PILOT-20261013",
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    "models": {
+      "writer": "@cf/openai/gpt-oss-120b",
+      "editor": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "reviewer": "@cf/nvidia/nemotron-3-120b-a12b"
+    },
+    "pilotBefore": 49,
+    "pilotAfter": 50,
+    "producerCalls": 1,
+    "editorCalls": 1,
+    "questionBankWrites": 0,
+    "humanApproved": false,
+    "rightsApproved": false,
+    "publisherQualityCertified": false,
+    "author": {
+      "questions": [
+        {
+          "stemText": "Bir bahçede başlangıçta kaç ağaç olduğu soruluyor. İlk olarak 125 ağaç dikildi, ardından 78 ağaç kesildi. Bu iki işlemden sonra bahçede 342 ağaç kaldı. Başlangıçta bahçede kaç ağaç vardı?",
+          "solutionText": "Final 342. İlk işlem +125, ikinci -78. Başlangıcı bulmak için ekleme miktarını çıkarmalı, ardından çıkartma miktarını eklemeliyiz: 342−125=217, 217+78=295. Kontrol: 295+125=420, 420−78=342, doğru. Doğru seçenek C) 295.",
+          "difficultyLevel": 3,
+          "correctAnswer": "C",
+          "options": [
+            {
+              "label": "A",
+              "text": "139"
+            },
+            {
+              "label": "B",
+              "text": "545"
+            },
+            {
+              "label": "C",
+              "text": "295"
+            },
+            {
+              "label": "D",
+              "text": "389"
+            }
+          ],
+          "editorial": {
+            "version": 1,
+            "cognitiveDemand": "APPLY",
+            "skillTarget": "İki ardışık doğal sayı işleminin tersini doğru sırayla uygulayarak başlangıç miktarını bulma ve sonucun doğru olduğunu kontrol etme yeteneği.",
+            "reasoningSteps": [
+              "Verilen son sayıyı, ilk yapılan ekleme miktarından çıkararak ara sonucu elde ederiz.",
+              "Bu ara sonuca ikinci, çıkarma işlemi için kullanılan miktarı ekleyerek başlangıç sayısını bulur ve iki adımlı işlemi ileri yönde kontrol ederiz."
+            ],
+            "distractors": [
+              {
+                "label": "A",
+                "misconception": "İki işlem de çıkartma olarak algılayıp her iki miktarı da son sayıdan çıkarmak.",
+                "whyIncorrect": "Sadece ekleme işlemine karşılık toplama yapılmalı; iki çıkartma yapınca başlangıç sayısı çok küçülür ve gerçek değerle uyumsuz olur."
+              },
+              {
+                "label": "B",
+                "misconception": "İki işlem de ekleme gibi düşünerek her iki miktarı da son sayıya eklemek.",
+                "whyIncorrect": "İkinci işlem aslında çıkartma olduğundan bu yaklaşım başlangıcı aşırı büyük verir; sonuç gerçek başlangıç değerinden çok uzak olur."
+              },
+              {
+                "label": "D",
+                "misconception": "İlk ekleme miktarını önce ekleyip ardından çıkarma miktarını çıkarmak, yani ters sırada aynı işaretleri kullanmak.",
+                "whyIncorrect": "Tersine çevirirken işaretlerin de tersine çevrilmesi gerekir; bu yöntem hatalı bir başlangıç değeri üretir."
+              }
+            ],
+            "originalityDesign": "Sözlü bir bahçe senaryosu kullanılarak öğrencinin iki adımlı işlem sırasını tersine çevirmesi ve yanlış sıralama hatasını tanıması istenmiştir; seçenekler gerçek hatalı tersleme ve işaret hatalarına dayalıdır.",
+            "visual": {
+              "kind": "NONE",
+              "title": "",
+              "unit": "",
+              "columns": [],
+              "rows": [],
+              "categories": [],
+              "values": [],
+              "readingPurpose": ""
+            }
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 2884,
+        "completion_tokens": 2235,
+        "total_tokens": 5119,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "neurons": 244.14942932128906
+      }
+    },
+    "authorHash": "257af7f5426e03af62fbb334253aee3e2209d9b88399318f9abcf34804ff4af8",
+    "editor": {
+      "questions": [
+        {
+          "stemText": "Bir kırtasiyede başlangıçta kaç kalemin olduğu soruluyor. İlk olarak 275 kalem satıldı, ardından 148 kalem alındı. Bu iki işlemden sonra kırtasiyede 632 kalem kaldı. Başlangıçta kırtasiyede kaç kalem vardı?",
+          "solutionText": "Final 632. İlk işlem -275, ikinci +148. Başlangıcı bulmak için çıkarma miktarını eklemeli, ardından ekleme miktarını çıkarmalıyız: 632 + 275 = 907, 907 − 148 = 759. Kontrol: 759 − 275 = 484, 484 + 148 = 632, doğru. Doğru seçenek C) 759.",
+          "difficultyLevel": 3,
+          "correctAnswer": "C",
+          "options": [
+            {
+              "label": "A",
+              "text": "584"
+            },
+            {
+              "label": "B",
+              "text": "813"
+            },
+            {
+              "label": "C",
+              "text": "759"
+            },
+            {
+              "label": "D",
+              "text": "907"
+            }
+          ],
+          "editorial": {
+            "version": 1,
+            "cognitiveDemand": "APPLY",
+            "skillTarget": "İki ardışık doğal sayı işleminin tersini doğru sırayla uygulayarak başlangıç miktarını bulma ve sonucun doğru olduğunu kontrol etme yeteneği.",
+            "reasoningSteps": [
+              "Verilen son sayıyı, ilk yapılan çıkarma miktarından ekleyerek ara sonucu elde ederiz.",
+              "Bu ara sonuca ikinci, ekleme işlemi için kullanılan miktarı çıkartarak başlangıç sayısını bulur ve iki adımlı işlemi ileri yönde kontrol ederiz."
+            ],
+            "distractors": [
+              {
+                "label": "A",
+                "misconception": "İlk işlemi ekleme gibi algılayıp ikinci işlemi çıkartma gibi düşünmeden her iki miktarı da son sayıya eklemek.",
+                "whyIncorrect": "İlk işlem aslında çıkartma olduğundan bu yaklaşım başlangıcı aşırı büyük verir; sonuç gerçek başlangıç değerinden çok uzak olur."
+              },
+              {
+                "label": "B",
+                "misconception": "İkinci işlemi ekleme gibi algılayıp ilk işlemi çıkartma gibi düşünmeden her iki miktarı da son sayıdan çıkarmak.",
+                "whyIncorrect": "İkinci işlem aslında ekleme olduğundan bu yaklaşım başlangıcı aşırı küçük verir; sonuç gerçek başlangıç değerinden çok uzak olur."
+              },
+              {
+                "label": "D",
+                "misconception": "İlk işlemi çıkartma olarak algılayıp ikinci işlemi ekleme olarak algılamadan sadece ilk miktarı ekleyerek başlangıç sayısını bulmak.",
+                "whyIncorrect": "İkinci işlem ekleme olduğundan bu yaklaşım başlangıcı eksik hesaplar; sonuç gerçek başlangıç değerinden çok küçük olur."
+              }
+            ],
+            "originalityDesign": "Sözlü bir kırtasiye senaryosu kullanılarak öğrencinin iki adımlı işlem sırasını tersine çevirmesi ve yanlış sıralama hatasını tanıması istenmiştir; seçenekler gerçek hatalı tersleme ve işaret hatalarına dayalıdır.",
+            "visual": {
+              "kind": "NONE",
+              "title": "",
+              "unit": "",
+              "columns": [],
+              "rows": [],
+              "categories": [],
+              "values": [],
+              "readingPurpose": ""
+            }
+          }
+        }
+      ],
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "usage": {
+        "prompt_tokens": 3193,
+        "completion_tokens": 926,
+        "total_tokens": 4119,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "neurons": 42.985923767089844
+      },
+      "humanApproved": false,
+      "sourceHash": "257af7f5426e03af62fbb334253aee3e2209d9b88399318f9abcf34804ff4af8"
+    },
+    "editorHash": "765df22f807454e4abcfdf3f5760cef60f6dc1db9ef4938c7f0e32409c2c9cb4",
+    "verification": {
+      "ok": false,
+      "unavailable": true,
+      "protocolRetryEligible": true,
+      "model": "@cf/nvidia/nemotron-3-120b-a12b",
+      "reviews": [],
+      "usage": {}
+    },
+    "duplicate": null,
+    "passed": false
+  },
+  "after": [
+    {
+      "id": "pilot_50",
+      "question_cap": 50,
+      "reserved_count": 50
+    }
+  ],
+  "oldJobsAfter": [
+    {
+      "id": "qgj_26230b38-f14e-40bc-8011-961048b84b27",
+      "status": "REVIEW_READY",
+      "attempt_count": 1,
+      "editorial_repair_count": 0
+    },
+    {
+      "id": "qgj_a8be95a0-d76d-44c7-91ef-e2b92f8599a2",
+      "status": "FAILED",
+      "attempt_count": 1,
+      "editorial_repair_count": 0
+    },
+    {
+      "id": "qgj_d03f2a96-db7f-4c5f-9d80-84ee2b913121",
+      "status": "FAILED",
+      "attempt_count": 1,
+      "editorial_repair_count": 0
+    }
+  ],
+  "passed": false
+}

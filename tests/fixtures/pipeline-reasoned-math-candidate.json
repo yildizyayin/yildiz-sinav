@@ -1,0 +1,61 @@
+{
+  "stemText": "Bir kırtasiyede başlangıçta kaç kalem olduğu soruluyor. İlk olarak 275 kalem satıldı, ardından 148 kalem alındı. Bu iki işlemden sonra kırtasiyede 632 kalem kaldı. Başlangıçta kırtasiyede kaç kalem vardı?",
+  "solutionText": "Doğru yöntem: Kalan miktarı (632) önce satılan miktarla (275) toplayıp, sonra alınan miktarla (148) çıkarmaktır. 632 + 275 = 907; 907 - 148 = 759. Kontrol: 759 - 275 = 484; 484 + 148 = 632. Doğru seçenek C) 759.",
+  "difficultyLevel": 3,
+  "correctAnswer": "C",
+  "options": [
+    {
+      "label": "A",
+      "text": "907"
+    },
+    {
+      "label": "B",
+      "text": "505"
+    },
+    {
+      "label": "C",
+      "text": "759"
+    },
+    {
+      "label": "D",
+      "text": "484"
+    }
+  ],
+  "editorial": {
+    "version": 1,
+    "cognitiveDemand": "ANALYZE",
+    "skillTarget": "İki ardışık doğal sayı işleminin tersini doğru sırayla uygulayarak başlangıç miktarını bulma ve sonucun doğru olduğunu kontrol etme yeteneği.",
+    "reasoningSteps": [
+      "Verilen son sayıyı, ilk yapılan çıkarma miktarından ekleyerek ara sonucu elde ederiz.",
+      "Bu ara sonuca ikinci, ekleme işlemi için kullanılan miktarı çıkartarak başlangıç sayısını bulur ve iki adımlı işlemi ileri yönde kontrol ederiz."
+    ],
+    "distractors": [
+      {
+        "label": "A",
+        "misconception": "Sadece ilk işlemi tersine çevirip (satılanı geri eklemek), ikinci işlemi (alınanları çıkarmak) göz ardı etmektedir.",
+        "whyIncorrect": "Yanılgı hesabı: 632 + 275 = 907. Bu işlemde sadece satılan miktar geri eklenmiş, alınan miktarın çıkartılmadığı görülmektedir."
+      },
+      {
+        "label": "B",
+        "misconception": "İşlemlerin sırasını tersine çevirmiş ancak işlemlerin karşılık gelen miktarlarını yanlış yerleştirmiştir (önce alınanları ekleyip sonra satılanları çıkarmıştır).",
+        "whyIncorrect": "Yanılgı hesabı: 632 + 148 - 275 = 505. İşlemlerin tersini alırken sıralamayı bozduğu için doğru sonucu vermemektedir."
+      },
+      {
+        "label": "D",
+        "misconception": "Sadece ikinci işlemi tersine çevirip (alınanları geri çıkarmak), ilk işlemi (satılanları eklemek) göz ardı etmektedir.",
+        "whyIncorrect": "Yanılgı hesabı: 632 - 148 = 484. Bu işlemde sadece alınan miktar geri çıkarılmış, satılan miktarın geri eklenmediği görülmektedir."
+      }
+    ],
+    "originalityDesign": "Kırtasiye senaryosu kullanılarak öğrencinin iki adımlı işlem sırasını tersine çevirmesi ve yanlış sıralama hatasını tanıması istenmiştir; seçenekler gerçek hatalı tersleme ve işaret hatalarına dayalıdır.",
+    "visual": {
+      "kind": "NONE",
+      "title": "",
+      "unit": "",
+      "columns": [],
+      "rows": [],
+      "categories": [],
+      "values": [],
+      "readingPurpose": ""
+    }
+  }
+}

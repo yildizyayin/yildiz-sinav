@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-16",
+  "stagingCommit": "cb724b6de967e3b15ce5a71186c6a8e40fd2069d",
+  "scope": "grade 5 / MAT.5.1.2 / NAT_COMPARE_OFFERS / strict public TABLE",
+  "local": {
+    "focusedTests": 69,
+    "files": 7,
+    "typecheck": "pass"
+  },
+  "githubSource": {
+    "testFiles": 224,
+    "tests": 1166,
+    "typecheck": "pass",
+    "build": "pass"
+  },
+  "privateWorker": {
+    "run": 38930908232,
+    "job": 117074341414,
+    "conclusion": "success"
+  },
+  "appWorker": {
+    "run": 38930908079,
+    "firstJob": 117074339873,
+    "firstFailure": {
+      "step": "Apply D1 migrations before deploy",
+      "providerCode": 7500,
+      "message": "Cloudflare internal error"
+    },
+    "retryJob": 117075034617,
+    "retryMigration": "success",
+    "retryDeploy": "success",
+    "retryDemoDomain": "success",
+    "workflow": "in_progress",
+    "currentStep": "Live Nibiru free multi-AI provider probe"
+  },
+  "questionGenerationCalls": 0,
+  "pilotReset": false,
+  "campaignRestarted": false,
+  "productionChanged": false,
+  "limits": [
+    "Only exact public table and stem grammar",
+    "No new grade/outcome qualification",
+    "No fresh live generation benchmark",
+    "Editorial/originality/human/rights review remain mandatory"
+  ]
+}

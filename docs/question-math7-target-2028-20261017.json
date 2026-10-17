@@ -1,0 +1,371 @@
+{
+  "environment": "staging",
+  "scope": "2027–2028 hedef yılı için güncel resmî ilk tema içeriği; yıllık plan veya 2028 sınav şartnamesi doğrulaması değildir.",
+  "newProducerCalls": 0,
+  "newEditorCalls": 0,
+  "source": {
+    "matchedCodes": [
+      "MAT.7.1.1",
+      "MAT.7.1.2",
+      "MAT.7.1.3",
+      "MAT.7.1.4"
+    ],
+    "completeGrade": false,
+    "productionQualified": false,
+    "targetAcademicYear": "2027-2028",
+    "annualPlanVerified": false,
+    "exam2028ScopeVerified": false,
+    "contentVerification": "CURRENT_OFFICIAL_PROGRAM",
+    "targetYearMeaning": "ANUNEX_CONTENT_PLANNING"
+  },
+  "sourceHash": "63d6cd16951135d0b2beaf04e770dde549698cd063bb6a3a39525776bc17d4a7",
+  "retrievedAt": "2026-10-17T06:49:43.665Z",
+  "before": {
+    "previousYear": [
+      {
+        "version_id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+        "academic_year": "2026-2027",
+        "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+        "verified": 1,
+        "outcome_id": "out_cir_5a4951e3-9096-4689-901d-c6282e25717e",
+        "code": "MAT.7.1.1",
+        "title": "Gerçek yaşam ya da matematiksel durumlarda doğal sayı, tam sayı ve rasyonel sayıları yorumlayabilme",
+        "active": 1,
+        "node_id": "ln_out_cir_5a4951e3-9096-4689-901d-c6282e25717e",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+        "academic_year": "2026-2027",
+        "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+        "verified": 1,
+        "outcome_id": "out_cir_a354445a-7644-4e8b-8eb0-d6c4de9253d2",
+        "code": "MAT.7.1.3",
+        "title": "Rasyonel sayıların karşılaştırma ve sıralama ilişkilerini yorumlayabilme",
+        "active": 1,
+        "node_id": "ln_out_cir_a354445a-7644-4e8b-8eb0-d6c4de9253d2",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+        "academic_year": "2026-2027",
+        "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+        "verified": 1,
+        "outcome_id": "out_cir_b7c0fc5f-1de0-47b3-938c-6f425977ac87",
+        "code": "MAT.7.1.2",
+        "title": "Gerçek yaşam durumlarında rasyonel sayıların ondalık gösterimlerini yansıtabilme",
+        "active": 1,
+        "node_id": "ln_out_cir_b7c0fc5f-1de0-47b3-938c-6f425977ac87",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+        "academic_year": "2026-2027",
+        "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+        "verified": 1,
+        "outcome_id": "out_cir_ecfc822e-84b3-4420-9f4e-6b09d8eb78a9",
+        "code": "MAT.7.1.4",
+        "title": "Rasyonel sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+        "active": 1,
+        "node_id": "ln_out_cir_ecfc822e-84b3-4420-9f4e-6b09d8eb78a9",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_fen_cell",
+        "code": "NBL.FEN.01",
+        "title": "Hücrenin temel yapılarını ve görevlerini açıklar",
+        "active": 1,
+        "node_id": "ln_out_nbl_fen_cell",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_fen_force",
+        "code": "NBL.FEN.02",
+        "title": "Kuvvetin hareket ve enerji üzerindeki etkisini açıklar",
+        "active": 1,
+        "node_id": "ln_out_nbl_fen_force",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_mat_integer",
+        "code": "NBL.MAT.02",
+        "title": "Tam sayılarla işlemleri doğru uygular",
+        "active": 1,
+        "node_id": "ln_out_nbl_mat_integer",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_mat_ratio",
+        "code": "NBL.MAT.01",
+        "title": "Oran problemlerinde birim oranı yorumlar",
+        "active": 1,
+        "node_id": "ln_out_nbl_mat_ratio",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_tur_paragraph",
+        "code": "NBL.TUR.01",
+        "title": "Parçanın ana düşüncesini ve yardımcı düşüncelerini ayırt eder",
+        "active": 1,
+        "node_id": "ln_out_nbl_tur_paragraph",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_tur_verb",
+        "code": "NBL.TUR.02",
+        "title": "Fiillerde zaman ve anlam ilişkisini kurar",
+        "active": 1,
+        "node_id": "ln_out_nbl_tur_verb",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      }
+    ],
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "status": "PAUSED"
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ]
+  },
+  "importJob": "cimp_2fcbd1be-70aa-4ea4-a47a-c17fca411694",
+  "reused": false,
+  "versionId": "cv_d064482d-70b7-43a7-8d12-2579c9f43f76",
+  "codes": [
+    "MAT.7.1.1",
+    "MAT.7.1.2",
+    "MAT.7.1.3",
+    "MAT.7.1.4"
+  ],
+  "linkedNodes": 4,
+  "after": {
+    "previousYear": [
+      {
+        "version_id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+        "academic_year": "2026-2027",
+        "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+        "verified": 1,
+        "outcome_id": "out_cir_5a4951e3-9096-4689-901d-c6282e25717e",
+        "code": "MAT.7.1.1",
+        "title": "Gerçek yaşam ya da matematiksel durumlarda doğal sayı, tam sayı ve rasyonel sayıları yorumlayabilme",
+        "active": 1,
+        "node_id": "ln_out_cir_5a4951e3-9096-4689-901d-c6282e25717e",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+        "academic_year": "2026-2027",
+        "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+        "verified": 1,
+        "outcome_id": "out_cir_a354445a-7644-4e8b-8eb0-d6c4de9253d2",
+        "code": "MAT.7.1.3",
+        "title": "Rasyonel sayıların karşılaştırma ve sıralama ilişkilerini yorumlayabilme",
+        "active": 1,
+        "node_id": "ln_out_cir_a354445a-7644-4e8b-8eb0-d6c4de9253d2",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+        "academic_year": "2026-2027",
+        "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+        "verified": 1,
+        "outcome_id": "out_cir_b7c0fc5f-1de0-47b3-938c-6f425977ac87",
+        "code": "MAT.7.1.2",
+        "title": "Gerçek yaşam durumlarında rasyonel sayıların ondalık gösterimlerini yansıtabilme",
+        "active": 1,
+        "node_id": "ln_out_cir_b7c0fc5f-1de0-47b3-938c-6f425977ac87",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+        "academic_year": "2026-2027",
+        "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+        "verified": 1,
+        "outcome_id": "out_cir_ecfc822e-84b3-4420-9f4e-6b09d8eb78a9",
+        "code": "MAT.7.1.4",
+        "title": "Rasyonel sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+        "active": 1,
+        "node_id": "ln_out_cir_ecfc822e-84b3-4420-9f4e-6b09d8eb78a9",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_fen_cell",
+        "code": "NBL.FEN.01",
+        "title": "Hücrenin temel yapılarını ve görevlerini açıklar",
+        "active": 1,
+        "node_id": "ln_out_nbl_fen_cell",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_fen_force",
+        "code": "NBL.FEN.02",
+        "title": "Kuvvetin hareket ve enerji üzerindeki etkisini açıklar",
+        "active": 1,
+        "node_id": "ln_out_nbl_fen_force",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_mat_integer",
+        "code": "NBL.MAT.02",
+        "title": "Tam sayılarla işlemleri doğru uygular",
+        "active": 1,
+        "node_id": "ln_out_nbl_mat_integer",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_mat_ratio",
+        "code": "NBL.MAT.01",
+        "title": "Oran problemlerinde birim oranı yorumlar",
+        "active": 1,
+        "node_id": "ln_out_nbl_mat_ratio",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_tur_paragraph",
+        "code": "NBL.TUR.01",
+        "title": "Parçanın ana düşüncesini ve yardımcı düşüncelerini ayırt eder",
+        "active": 1,
+        "node_id": "ln_out_nbl_tur_paragraph",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      },
+      {
+        "version_id": "cv_nibiru_lab_2627",
+        "academic_year": "2026-2027",
+        "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+        "verified": 0,
+        "outcome_id": "out_nbl_tur_verb",
+        "code": "NBL.TUR.02",
+        "title": "Fiillerde zaman ve anlam ilişkisini kurar",
+        "active": 1,
+        "node_id": "ln_out_nbl_tur_verb",
+        "node_active": 1,
+        "node_year": "2026-2027"
+      }
+    ],
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "status": "PAUSED"
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ]
+  },
+  "passed": true,
+  "stagingCommit": "3eed39cdce5486cbecf8fb5b649b58fac4b98044",
+  "workflows": {
+    "import": {
+      "id": 39011335314,
+      "job": 117334325966,
+      "conclusion": "success"
+    },
+    "app": {
+      "id": 39011335286,
+      "job": 117334325768,
+      "conclusion": "success"
+    }
+  },
+  "checks": {
+    "testFiles": 234,
+    "tests": 1216,
+    "typecheck": true,
+    "build": true,
+    "demoDomain": true,
+    "nibiruProbe": true
+  },
+  "productionUpdated": false,
+  "rationalProofChangesDeployed": false
+}

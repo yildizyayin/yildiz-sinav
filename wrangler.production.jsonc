@@ -32,6 +32,11 @@
   },
   "vars": {
     "QUESTION_TEAM_CONTROLS_ENABLED": "true",
+    "QUESTION_AI_DAILY_NEURON_LIMIT": "10000",
+    "QUESTION_BLIND_SOLVE_ENABLED": "true",
+    "QUESTION_AUTO_EDITOR_ENABLED": "true",
+    "QUESTION_EDITOR_MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "QUESTION_PRODUCTION_CAMPAIGNS_ENABLED": "true",
     "QUESTION_VIDEO_RENDER_ENABLED": "false",
     "ENVIRONMENT": "production",
     "PRODUCT_NAME": "Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu",

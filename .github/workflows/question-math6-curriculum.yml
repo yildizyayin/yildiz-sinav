@@ -1,0 +1,30 @@
+name: Import verified math-six first-theme outcomes
+on:
+  push:
+    branches: [staging]
+    paths: [.github/question-math6-curriculum.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-math6-curriculum
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Verify official source then import without generation or cap changes
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-question-math6-curriculum.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-math6-curriculum-${{ github.run_id }}
+          path: tmp/question-math6-curriculum/
