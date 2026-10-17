@@ -1,3 +1,5 @@
+import {math12PilotGuidance} from './question-math12-guidance';
+import {math8PilotGuidance} from './question-math8-guidance';
 import {math11PilotGuidance} from './question-math11-guidance';
 import {math10PilotGuidance} from './question-math10-guidance';
 import {math9PilotGuidance} from './question-math9-guidance';
@@ -101,6 +103,8 @@ export function parseVerification(raw:any,count:number,editorial=false):{index:n
 
 const readingTitle='Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme';
 export function officialPilotGuidance(context:any):string|null{
+ if(context?.gradeLevel===12)return math12PilotGuidance(context);
+ if(context?.gradeLevel===8)return math8PilotGuidance(context);
  if(context?.gradeLevel===11)return math11PilotGuidance(context);
  if(context?.gradeLevel===10)return math10PilotGuidance(context);
  if(context?.gradeLevel===9)return math9PilotGuidance(context);
