@@ -1,3 +1,4 @@
+import {rationalComparisonEvidence} from './question-rational-comparison-proof';
 import {rationalOrderEvidence} from './question-rational-order-proof';
 import {unsupportedPilotProofScope} from './question-proof-scope';
 import {factorRelationEvidence} from './question-factor-relation-proof';
@@ -53,6 +54,8 @@ export function deterministicReadingEvidence(input:{stemText:string;options:{lab
  return {target,answer:correct.length===1?correct[0].label:correct.length?'MULTIPLE':'NONE',optionChecks:input.options.map((o,i)=>({label:o.label,correct:values[i]===target,reason:`Seçeneğin sayısal değeri ${values[i]}; okunuşun kesin değeri ${target} ile ${values[i]===target?'aynıdır':'farklıdır'}.`})),calculations};
 }
 export async function independentlySolve(env:Env,q:CheckedDraft,model:string,context?:any){
+ const comparison=q.editorial?.visual.kind==='NONE'?rationalComparisonEvidence({stemText:q.stemText,options:q.options},context):null;
+ if(comparison){const issues=comparison.answer===q.correctAnswer?[]:['BLIND_ANSWER_DISAGREEMENT'];return {ok:issues.length===0,model:null,method:'DETERMINISTIC_RATIONAL_COMPARISON',issues,evidence:comparison,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'PUBLIC_SIGNED_FRACTIONS_CHECKED_PRODUCTS_AND_RELATION'};}
  const rational=q.editorial?.visual.kind==='NONE'?rationalOrderEvidence({stemText:q.stemText,options:q.options},context):null;
  if(rational){const issues=rational.answer===q.correctAnswer?[]:['BLIND_ANSWER_DISAGREEMENT'];return {ok:issues.length===0,model:null,method:'DETERMINISTIC_RATIONAL_ORDER',issues,evidence:rational,usage:{},keyHidden:true,solutionHidden:true,derivationPolicy:'PUBLIC_SIGNED_FRACTIONS_AND_EXACT_BIGINT_CROSS_PRODUCTS'};}
  // Fail before inference: generic arithmetic traces cannot certify rational,
