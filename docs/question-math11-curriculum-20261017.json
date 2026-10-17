@@ -1,0 +1,111 @@
+{
+  "environment": "staging",
+  "scope": "Güncel ilk temanın iki resmî öğrenme çıktısı; tam müfredat veya üretim yeterliği değildir.",
+  "newProducerCalls": 0,
+  "newEditorCalls": 0,
+  "source": {
+    "matchedCodes": [
+      "MAT.11.1.1",
+      "MAT.11.1.2"
+    ],
+    "completeGrade": false,
+    "productionQualified": false
+  },
+  "sourceHash": "dd39f10d9de976f331e0c75d3b4ed928309377ff8dbd6421c3af9f0d1ec7e77a",
+  "retrievedAt": "2026-10-17T06:33:42.991Z",
+  "before": {
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "status": "PAUSED"
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ]
+  },
+  "importJob": "cimp_df39c449-18b9-46ef-b194-36868d71aaec",
+  "reused": false,
+  "versionId": "cv_d28c7947-d870-420a-95f3-a7cf146f0974",
+  "codes": [
+    "MAT.11.1.1",
+    "MAT.11.1.2"
+  ],
+  "linkedNodes": 2,
+  "after": {
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "status": "PAUSED"
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ]
+  },
+  "passed": true,
+  "stagingCommit": "a4276550d5e243f95640ecee968912191030b084",
+  "checks": {
+    "testFiles": 233,
+    "tests": 1214,
+    "typecheck": true,
+    "build": true,
+    "demoDomain": true,
+    "nibiruFamilies": [
+      "FAST",
+      "META",
+      "NVIDIA"
+    ],
+    "nibiruInference": "NVIDIA"
+  },
+  "workflows": {
+    "app": {
+      "id": 39010356122,
+      "job": 117331408829,
+      "conclusion": "success"
+    },
+    "worker": {
+      "id": 39010356124,
+      "job": 117331408917,
+      "conclusion": "success"
+    },
+    "curriculum": {
+      "id": 39010356160,
+      "job": 117331409094,
+      "conclusion": "success"
+    }
+  },
+  "limitations": [
+    "First theme only",
+    "Prompt policy and video metadata are not an implemented source-verification or animation service",
+    "Production campaign remains PAUSED"
+  ]
+}
