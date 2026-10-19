@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api, ApiError, post } from '../api';
@@ -18,6 +18,8 @@ export function Login() {
   const [remember, setRemember] = useState(true);
   const [show, setShow] = useState(false);
   const [token, setToken] = useState('');
+  const [challengeRevision, setChallengeRevision] = useState(0);
+  const submitting = useRef(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const isDemoHost = typeof window !== 'undefined' && (
@@ -36,12 +38,19 @@ export function Login() {
   useEffect(()=>{ if(user) navigate('/'); },[user,navigate]);
   const onToken = useCallback((value:string)=>setToken(value),[]);
   const submit = async (e:React.FormEvent) => {
-    e.preventDefault(); setError(''); setLoading(true);
+    e.preventDefault();
+    if(submitting.current)return;
+    if(!token){setError('Güvenlik doğrulamasının tamamlanmasını bekleyin.');return;}
+    const challengeToken=token;
+    submitting.current=true;setToken('');setError('');setLoading(true);
     try {
-      await post('/api/auth/login',{identifier,password,remember,turnstileToken:token,mfaCode:mfaCode.trim()||undefined});
+      await post('/api/auth/login',{identifier,password,remember,turnstileToken:challengeToken,mfaCode:mfaCode.trim()||undefined});
       await refresh(); navigate('/');
-    } catch(e){ setError(e instanceof ApiError ? e.message : 'Giriş yapılamadı.'); }
-    finally{ setLoading(false); }
+    } catch(e){
+      setError(e instanceof ApiError ? e.message : 'Giriş yapılamadı.');
+      setToken('');setChallengeRevision(value=>value+1);
+    }
+    finally{ submitting.current=false;setLoading(false); }
   };
   const mfaValid = !mfaCode || /^\d{6}$/.test(mfaCode);
   return <div className="login-page">
@@ -54,9 +63,10 @@ export function Login() {
       <label>Şifre<div className="password-input"><input type={show?'text':'password'} value={password} onChange={e=>setPassword(e.target.value)} autoComplete="current-password" required/><button type="button" aria-label={show?'Şifreyi gizle':'Şifreyi göster'} onClick={()=>setShow(v=>!v)}>{show?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></label>
       {config?.superAdminMfaEnabled && <label>Süper Admin doğrulama kodu <span className="muted">(yalnız yönetici hesabı)</span><input value={mfaCode} onChange={e=>setMfaCode(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="one-time-code" placeholder="6 haneli kod" maxLength={6}/></label>}
       <div className="form-row"><label className="check"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/> Beni hatırla</label><span className="muted">Şifre yardımı için kurum yöneticinizle iletişime geçin.</span></div>
-      <Turnstile siteKey={config?.turnstileSiteKey || ''} onToken={onToken}/>
+      <Turnstile key={challengeRevision} siteKey={config?.turnstileSiteKey || ''} onToken={onToken}/>
+      {config?.turnstileSiteKey&&!token&&!loading&&<p className="muted" role="status">Güvenlik doğrulaması bekleniyor.</p>}
       {error && <div className="alert error">{error}</div>}
-      <button className="primary large" disabled={loading||!identifier.trim()||!password||!mfaValid}>{loading?'Giriş yapılıyor…':'Giriş Yap'}</button>
+      <button className="primary large" disabled={loading||!token||!identifier.trim()||!password||!mfaValid}>{loading?'Giriş yapılıyor…':'Giriş Yap'}</button>
     </form></div>
   </div>;
 }
