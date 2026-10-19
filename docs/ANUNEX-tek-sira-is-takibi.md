@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). Aktif iş A004 — production müfredat aktarımını kapat.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). Aktif iş A005 — ajan servis aktörünü doğrula.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -264,3 +264,14 @@ Canlı kanıt: 19 Ekim 18:29 production dağıtım günlüğü UNLIMITED, cap nu
 Eksik: Süper Admin `/question-team` canlı ekran kanıtı alınmadı → K002 kontrol listesine eklendi.
 Kod/ayar değişmedi; diğer alan adı etkilenmedi.
 Sıradaki ID: A004 — AKTİF.
+
+### A004 kapanışı — 19 Ekim 19:55
+
+Durum: BİTTİ — değişikliksiz, madde 4'e göre mevcut güncel kanıtla.
+Kaynak kaydı: `data/app-question-scope-2028.json` → 2027–2028, 77 program, 2.916 çıktı, 2 engelli kapsam: TUR 5. sınıf `CONFLICTING_THEME_CODE:T.O.5.20`; DİN 12. sınıf `EMPTY_OUTCOME_SECTION`. Engelliler `sourceIssues` olarak panelde ayrı gösterilir.
+Doğrulama kuralı: `worker/lib/question-branch-readiness.ts` her program için yıl/sınıf/program sürümü, MEB yetkisi, `verified=1` ve aynı kaynak URL'si; her çıktı için ders/sınıf, `active`, `official` ve aynı yıl/sınıftaki aktif öğrenme düğümü eşleşmesini arar; sayı birebir tutmazsa "aktarılmadı" der.
+Test: `question-branch-readiness`, `curriculum-import`, `curriculum-publication-acceptance` 3 dosya / 28 test PASS; kaynak parmak izi node testi PASS.
+Canlı kanıt: 19 Ekim 18:29 production dağıtım günlüğü 388 resmî kaynağın yeniden doğrulandığını ve 77 kapsam / 2.916 çıktının aktarıldığını gösterir (A001 kaydı).
+Eksik: Süper Admin branş kapsamı ekranının canlı görüntüsü alınmadı → K002 kontrol listesi.
+Kod/ayar değişmedi.
+Sıradaki ID: A005 — AKTİF.
