@@ -90,3 +90,16 @@ describe('first scheduled pilot batch readiness',()=>{
   expect(firstScheduledPilotBatch([{questionCount:11}])).toBe(0);
  });
 });
+
+import {effectivePilotBudget} from '../worker/lib/question-agent-dispatch-plan';
+it('uses the unchanged real ledger when no advisory ceiling exists; never replenishes or exceeds it',()=>{
+ const quota={question_cap:50,reserved_count:45};expect(effectivePilotBudget(quota)).toBe(5);expect(effectivePilotBudget(quota,'100')).toBe(5);expect(effectivePilotBudget(quota,'2')).toBe(2);expect(effectivePilotBudget(quota,'0')).toBe(0);expect(quota.reserved_count).toBe(45);
+});
+it('fails closed for missing or invalid ledger and invalid explicit ceilings',()=>{
+ expect(effectivePilotBudget(null)).toBe(0);expect(effectivePilotBudget({question_cap:50,reserved_count:50})).toBe(0);expect(effectivePilotBudget({question_cap:50,reserved_count:NaN})).toBe(0);for(const ceiling of ['','NaN','-1','2.5'])expect(effectivePilotBudget({question_cap:50,reserved_count:45},ceiling)).toBe(0);
+});
+
+import {effectivePilotJobBudget} from '../worker/lib/question-agent-dispatch-plan';
+it('permits only this jobs existing reservation at exhaustion, without minting new slots or ignoring a zero ceiling',()=>{
+ const quota={question_cap:50,reserved_count:50};expect(effectivePilotJobBudget(quota,1)).toBe(1);expect(effectivePilotJobBudget(quota,0)).toBe(0);expect(effectivePilotJobBudget(quota,1,'0')).toBe(0);expect(effectivePilotJobBudget({question_cap:50,reserved_count:1},2)).toBe(0);expect(quota.reserved_count).toBe(50);
+});
