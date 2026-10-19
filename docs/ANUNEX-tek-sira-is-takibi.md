@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). Aktif iş A006 — insan inceleme kapasitesini tanımla.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). Aktif iş A006 — insan inceleme kapasitesini tanımla: BEKLİYOR (kullanıcı kararı).** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -292,3 +292,12 @@ Bilinen ilgisiz: Result Provider Isolation Probe (staging ortamı kaydı) Queue 
 Geri dönüş: Kullanıcılar ekranından `svc-soru-ajani` pasifleştirilir (zamanlayıcı anında durur) veya ayar kaldırılıp yeniden dağıtılır; migration veri silmez.
 Eksik: Süper Admin `/question-team` ekranında "servis aktörü doğrulandı" görüntüsü alınmadı → K002 kontrol listesi.
 Sıradaki ID: A006 — AKTİF.
+
+### A006 — BEKLİYOR, 19 Ekim 20:56
+
+Kabul ölçütü: gerçek sorumlu ve sürdürülebilir kapasite belirlenir; sıfır/dolu kuyruk üretimi durdurur; kapasite uydurulmaz.
+Mevcut durum (kod): kapasite `QUESTION_PILOT_REVIEW_AVAILABLE` (true/false) ve `QUESTION_PILOT_REVIEW_SLOTS` (kuyrukta aynı anda bekleyebilecek soru) ile yönetilir; production'da ikisi de tanımsız → inceleme kapalı, kapasite 0, ajan üretmez (doğru davranış). Paket 10 soru olduğundan hazır olma için en az 10 slot gerekir; kuyruk dolunca `REVIEW_QUEUE_FULL` ile durur.
+Engel: inceleyici kişi/rol, haftalık gerçekçi inceleme sayısı ve başlangıç branş/sınıf kapsamı kullanıcıdan gelmedi. Kullanıcı "devam" dedi; değerler uydurulmadı.
+Önerilen varsayılan (kullanıcı onayı bekliyor): inceleyici yildizyayin (Süper Admin), 10 slot, başlangıç 8. sınıf matematik.
+Not: kapasite açılınca model maliyeti başlar; bütçe UNLIMITED olduğundan tek fren inceleme kapasitesidir.
+Sıradaki iş açılmadı.
