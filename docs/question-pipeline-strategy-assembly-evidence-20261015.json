@@ -1,0 +1,312 @@
+{
+  "environment": "staging",
+  "newProducerCalls": 0,
+  "modelEditorCalls": 0,
+  "before": [
+    {
+      "id": "pilot_50",
+      "question_cap": 50,
+      "reserved_count": 50
+    }
+  ],
+  "aiBefore": [
+    {
+      "day": "2026-10-15",
+      "limit_neurons": 10000,
+      "held_neurons": 1812,
+      "charged_neurons": 4243
+    }
+  ],
+  "httpStatus": 200,
+  "response": {
+    "ok": true,
+    "assemblyId": "editorial-pipeline-20261015-v1-glm-transport-retry-v1-strategy-assembly-v1",
+    "sourceId": "editorial-pipeline-20261015-v1-glm-transport-retry-v1",
+    "sourceHash": "05a7d688b0320f669b83cb4752ee80aaf790aaf4fb3b6732f7246338e79e9f37",
+    "source": {
+      "outcome_id": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+      "outcome_code": "MAT.5.1.2",
+      "outcome_title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+      "subject_id": "sub_mat",
+      "grade_level": 5,
+      "curriculum_version_id": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+      "academic_year": "2026-2027",
+      "program_version": "TYMM-2024-MAT5-PILOT-20261013",
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    "sourceQuestion": {
+      "stemText": "Bir kırtasiyede başlangıçta kaç kalem olduğu soruluyor. İlk olarak 275 kalem satıldı, ardından 148 kalem alındı. Bu iki işlemden sonra kırtasiyede 632 kalem kaldı. Başlangıçta kırtasiyede kaç kalem vardı?",
+      "solutionText": "Doğru yöntem: Kalan miktarı (632) önce satılan miktarla (275) toplayıp, sonra alınan miktarla (148) çıkarmaktır. 632 + 275 = 907; 907 - 148 = 759. Kontrol: 759 - 275 = 484; 484 + 148 = 632. Doğru seçenek C) 759.",
+      "difficultyLevel": 3,
+      "correctAnswer": "C",
+      "options": [
+        {
+          "label": "A",
+          "text": "907"
+        },
+        {
+          "label": "B",
+          "text": "505"
+        },
+        {
+          "label": "C",
+          "text": "759"
+        },
+        {
+          "label": "D",
+          "text": "484"
+        }
+      ],
+      "editorial": {
+        "version": 1,
+        "cognitiveDemand": "ANALYZE",
+        "skillTarget": "İki ardışık doğal sayı işleminin tersini doğru sırayla uygulayarak başlangıç miktarını bulma ve sonucun doğru olduğunu kontrol etme yeteneği.",
+        "reasoningSteps": [
+          "Verilen son sayıyı, ilk yapılan çıkarma miktarından ekleyerek ara sonucu elde ederiz.",
+          "Bu ara sonuca ikinci, ekleme işlemi için kullanılan miktarı çıkartarak başlangıç sayısını bulur ve iki adımlı işlemi ileri yönde kontrol ederiz."
+        ],
+        "distractors": [
+          {
+            "label": "A",
+            "misconception": "Sadece ilk işlemi tersine çevirip (satılanı geri eklemek), ikinci işlemi (alınanları çıkarmak) göz ardı etmektedir.",
+            "whyIncorrect": "Yanılgı hesabı: 632 + 275 = 907. Bu işlemde sadece satılan miktar geri eklenmiş, alınan miktarın çıkartılmadığı görülmektedir."
+          },
+          {
+            "label": "B",
+            "misconception": "İşlemlerin sırasını tersine çevirmiş ancak işlemlerin karşılık gelen miktarlarını yanlış yerleştirmiştir (önce alınanları ekleyip sonra satılanları çıkarmıştır).",
+            "whyIncorrect": "Yanılgı hesabı: 632 + 148 - 275 = 505. İşlemlerin tersini alırken sıralamayı bozduğu için doğru sonucu vermemektedir."
+          },
+          {
+            "label": "D",
+            "misconception": "Sadece ikinci işlemi tersine çevirip (alınanları geri çıkarmak), ilk işlemi (satılanları eklemek) göz ardı etmektedir.",
+            "whyIncorrect": "Yanılgı hesabı: 632 - 148 = 484. Bu işlemde sadece alınan miktar geri çıkarılmış, satılan miktarın geri eklenmediği görülmektedir."
+          }
+        ],
+        "originalityDesign": "Kırtasiye senaryosu kullanılarak öğrencinin iki adımlı işlem sırasını tersine çevirmesi ve yanlış sıralama hatasını tanıması istenmiştir; seçenekler gerçek hatalı tersleme ve işaret hatalarına dayalıdır.",
+        "visual": {
+          "kind": "NONE",
+          "title": "",
+          "unit": "",
+          "columns": [],
+          "rows": [],
+          "categories": [],
+          "values": [],
+          "readingPurpose": ""
+        }
+      }
+    },
+    "question": {
+      "stemText": "Bir kırtasiyede başlangıçta kaç kalem olduğu soruluyor. İlk olarak 275 kalem satıldı, ardından 148 kalem alındı. Bu iki işlemden sonra kırtasiyede 632 kalem kaldı.\nBaşlangıç miktarı için iki yöntem öneriliyor:\nI. yöntem: 632 + 275 = 907; 907 - 148 = 759.\nII. yöntem: 632 + 148 - 275 = 505.\nHangi açıklama bu işlemleri doğru geri alarak başlangıç miktarını bulur?",
+      "solutionText": "Doğru yöntem: Kalan miktarı (632) önce satılan miktarla (275) toplayıp, sonra alınan miktarla (148) çıkarmaktır. 632 + 275 = 907; 907 - 148 = 759. Kontrol: 759 - 275 = 484; 484 + 148 = 632. Doğru seçenek C) 759. I. yöntem 759 sonucunu verir. II. yöntemde 632 + 148 - 275 = 505 hesaplanır; verilen işlemler doğru geri alınmadığından başlangıç miktarı bulunamaz. Doğru seçenek C.",
+      "difficultyLevel": 3,
+      "correctAnswer": "C",
+      "options": [
+        {
+          "label": "A",
+          "text": "I. yöntemin yalnız ilk hesabı yeterlidir; başlangıç miktarı 907 olur."
+        },
+        {
+          "label": "B",
+          "text": "II. yöntem iki işlemi de doğru geri alır; başlangıç miktarı 505 olur."
+        },
+        {
+          "label": "C",
+          "text": "I. yöntem iki işlemi de doğru geri alır; başlangıç miktarı 759 olur."
+        },
+        {
+          "label": "D",
+          "text": "Yalnız 148 çıkarmak yeterlidir; başlangıç miktarı 484 olur."
+        }
+      ],
+      "editorial": {
+        "version": 1,
+        "cognitiveDemand": "EVALUATE",
+        "skillTarget": "Son miktar 632 ve işlem miktarları 275, 148 kullanılarak iki geri kurma yöntemini karşılaştırma; ara sonucu başlangıçtan ayırma.",
+        "reasoningSteps": [
+          "Verilen işlemleri geri alan I. yöntemin 632 + 275 = 907; 907 - 148 = 759 hesabını kontrol eder.",
+          "II. yöntemin 632 + 148 - 275 = 505 hesabını verilen işlemlerle karşılaştırır; eksik tek-adım önerilerini eler."
+        ],
+        "distractors": [
+          {
+            "label": "A",
+            "misconception": "I. yöntemin ara sonucunu başlangıç miktarı sanıp kalan ters işlemi yapmama.",
+            "whyIncorrect": "Yanılgı hesabı: 632 + 275 = 907. 148 ile yapılacak ikinci ters işlem henüz uygulanmamıştır; başlangıç 759 olmalıdır."
+          },
+          {
+            "label": "B",
+            "misconception": "Verilen miktarlarla ters işlemleri yanlış eşleştiren II. yöntemi geçerli sayma.",
+            "whyIncorrect": "Yanılgı hesabı: 632 + 148 - 275 = 505. I. yöntemdeki 632 + 275 = 907; 907 - 148 = 759 gerekli geri almayı yapar; II. yöntemde miktarlar ters işlemlerle yanlış eşleştirilmiştir."
+          },
+          {
+            "label": "D",
+            "misconception": "Yalnız diğer işlemi geri alıp gerekli ters işlemlerden birini atlama.",
+            "whyIncorrect": "Yanılgı hesabı: 632 - 148 = 484. 275 ile yapılacak ters işlem atlandığı için bu değer başlangıç miktarı değildir."
+          }
+        ],
+        "originalityDesign": "Aynı verilenlerle I: 632 + 275 = 907; 907 - 148 = 759 ve II: 632 + 148 - 275 = 505 karşılaştırılır. Ara sonuç 907 ile yalnız diğer işlemin geri alındığı 484 ayrı yanılgıları temsil eder.",
+        "visual": {
+          "kind": "NONE",
+          "title": "",
+          "unit": "",
+          "columns": [],
+          "rows": [],
+          "categories": [],
+          "values": [],
+          "readingPurpose": ""
+        }
+      }
+    },
+    "plan": {
+      "steps": [
+        {
+          "left": 632,
+          "op": "+",
+          "right": 275,
+          "result": 907
+        },
+        {
+          "left": 907,
+          "op": "-",
+          "right": 148,
+          "result": 759
+        }
+      ],
+      "wrong": {
+        "label": "B",
+        "expression": "632 + 148 - 275",
+        "result": 505
+      },
+      "firstPartial": "A",
+      "otherPartial": "D",
+      "answer": 759,
+      "originalOptionValues": [
+        {
+          "label": "A",
+          "text": "907"
+        },
+        {
+          "label": "B",
+          "text": "505"
+        },
+        {
+          "label": "C",
+          "text": "759"
+        },
+        {
+          "label": "D",
+          "text": "484"
+        }
+      ]
+    },
+    "construction": "AI_SOURCE_WITH_DETERMINISTIC_STRATEGY_EDITOR",
+    "pureLlmEditorial": false,
+    "candidateHash": "2875e0d4bd9a98c42423d7817d7dd32573719ee606834ab600ee911d4f39faff",
+    "stage": "REJECTED_CANDIDATE",
+    "newProducerCalls": 0,
+    "modelEditorCalls": 0,
+    "questionBankWrites": 0,
+    "pilotQuotaChanged": false,
+    "benchmarkOnly": true,
+    "publisherQualityCertified": false,
+    "humanApproved": false,
+    "rightsApproved": false,
+    "verification": {
+      "ok": false,
+      "unavailable": true,
+      "protocolRetryEligible": false,
+      "model": "@cf/nvidia/nemotron-3-120b-a12b",
+      "reviews": [
+        {
+          "index": 0,
+          "valid": false,
+          "issues": [
+            "BLIND_SOLVER_UNAVAILABLE"
+          ]
+        }
+      ],
+      "usage": {},
+      "blindSolves": [
+        {
+          "ok": false,
+          "model": "@cf/nvidia/nemotron-3-120b-a12b",
+          "issues": [
+            "BLIND_SOLVER_UNAVAILABLE"
+          ],
+          "keyHidden": true,
+          "solutionHidden": true,
+          "derivationPolicy": "EXACT_ARITHMETIC_AND_CEILING_OF_NONNEGATIVE_DIVISION"
+        }
+      ]
+    },
+    "duplicate": null,
+    "sourceUnchanged": true,
+    "passed": false
+  },
+  "after": [
+    {
+      "id": "pilot_50",
+      "question_cap": 50,
+      "reserved_count": 50
+    }
+  ],
+  "aiAfter": [
+    {
+      "day": "2026-10-15",
+      "limit_neurons": 10000,
+      "held_neurons": 2759,
+      "charged_neurons": 4243
+    }
+  ],
+  "originalUnchanged": true,
+  "aiCalls": [
+    {
+      "model": "@cf/nvidia/nemotron-3-120b-a12b",
+      "status": "UNKNOWN",
+      "reserved_neurons": 947,
+      "charged_neurons": null
+    },
+    {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "status": "SETTLED",
+      "reserved_neurons": 374,
+      "charged_neurons": 183
+    },
+    {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "status": "HELD",
+      "reserved_neurons": 374,
+      "charged_neurons": null
+    },
+    {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "status": "SETTLED",
+      "reserved_neurons": 366,
+      "charged_neurons": 45
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "status": "SETTLED",
+      "reserved_neurons": 307,
+      "charged_neurons": 40
+    },
+    {
+      "model": "@cf/nvidia/nemotron-3-120b-a12b",
+      "status": "UNKNOWN",
+      "reserved_neurons": 1438,
+      "charged_neurons": null
+    },
+    {
+      "model": "@cf/nvidia/nemotron-3-120b-a12b",
+      "status": "SETTLED",
+      "reserved_neurons": 895,
+      "charged_neurons": 60
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "status": "SETTLED",
+      "reserved_neurons": 318,
+      "charged_neurons": 43
+    }
+  ],
+  "passed": false
+}

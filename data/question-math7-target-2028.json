@@ -1,0 +1,32 @@
+{
+  "academicYear": "2027-2028",
+  "gradeLevel": 7,
+  "programCode": "SCHOOL",
+  "programVersion": "ANUNEX-TYMM-MAT7-THEME1-TARGET2028-20261017",
+  "authority": "MEB",
+  "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/463",
+  "sourceTitle": "Ortaokul Matematik Dersi 7. Sınıf — 1. Tema: Sayılar ve Nicelikler (1)",
+  "scope": "2027–2028 hedef yılı için güncel resmî ilk tema içeriği; yıllık plan veya 2028 sınav şartnamesi doğrulaması değildir.",
+  "outcomes": [
+    {
+      "code": "MAT.7.1.1",
+      "title": "Gerçek yaşam ya da matematiksel durumlarda doğal sayı, tam sayı ve rasyonel sayıları yorumlayabilme",
+      "topic": "Tam ve Rasyonel Sayıları Yorumlama"
+    },
+    {
+      "code": "MAT.7.1.2",
+      "title": "Gerçek yaşam durumlarında rasyonel sayıların ondalık gösterimlerini yansıtabilme",
+      "topic": "Rasyonel Sayıların Ondalık Gösterimleri"
+    },
+    {
+      "code": "MAT.7.1.3",
+      "title": "Rasyonel sayıların karşılaştırma ve sıralama ilişkilerini yorumlayabilme",
+      "topic": "Rasyonel Sayıları Karşılaştırma ve Sıralama"
+    },
+    {
+      "code": "MAT.7.1.4",
+      "title": "Rasyonel sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+      "topic": "Rasyonel Sayılarla Problem Çözme"
+    }
+  ]
+}

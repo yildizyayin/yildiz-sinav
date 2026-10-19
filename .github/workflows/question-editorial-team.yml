@@ -1,0 +1,30 @@
+name: Question autonomous editorial team acceptance
+on:
+  push:
+    branches: [staging]
+    paths: [.github/question-editorial-team.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-editorial-team
+  cancel-in-progress: false
+jobs:
+  team:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Edit two actual failed sources once and finish the fourth frozen task
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-question-editorial-team.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-editorial-team-${{ github.run_id }}
+          path: tmp/question-editorial-team/

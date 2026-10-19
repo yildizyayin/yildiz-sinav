@@ -1,0 +1,32 @@
+{
+  "academicYear": "2027-2028",
+  "gradeLevel": 8,
+  "programCode": "SCHOOL",
+  "programVersion": "ANUNEX-TYMM-MAT8-THEME1-TARGET2028-20261017",
+  "authority": "MEB",
+  "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/472",
+  "sourceTitle": "Ortaokul Matematik Dersi 8. Sınıf — 1. Tema: Sayılar ve Nicelikler",
+  "scope": "2027–2028 hedef yılı için güncel ilk temanın dört resmî öğrenme çıktısı; tam müfredat veya 2028 LGS şartnamesi doğrulaması değildir.",
+  "outcomes": [
+    {
+      "code": "MAT.8.1.1",
+      "title": "Farklı bağlamlardaki üslü ifadelere, özelliklerine ve üslü ifadelerle yapılan işlemlere ilişkin çıkarım yapabilme",
+      "topic": "Üslü İfadeler"
+    },
+    {
+      "code": "MAT.8.1.2",
+      "title": "Karşılaştığı problem durumlarında kareköklü ifadeler ile ilgili muhakeme yapabilme",
+      "topic": "Kareköklü İfadeler"
+    },
+    {
+      "code": "MAT.8.1.3",
+      "title": "Sayıların rasyonel ya da irrasyonelliğini değerlendirebilme",
+      "topic": "Rasyonel ve İrrasyonel Sayılar"
+    },
+    {
+      "code": "MAT.8.1.4",
+      "title": "Gerçek sayıları ve aralıklarını sayı doğrusunda yorumlayabilme",
+      "topic": "Gerçek Sayılar ve Aralıklar"
+    }
+  ]
+}

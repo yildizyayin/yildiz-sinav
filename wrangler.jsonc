@@ -3,18 +3,34 @@
   "name": "yildiz-sinav-v1",
   "main": "./worker/preview-policy-staging-entry.ts",
   "compatibility_date": "2026-08-26",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1
   },
   "triggers": {
-    "crons": ["*/15 * * * *"]
+    "crons": [
+      "* * * * *"
+    ]
   },
+  "services": [
+    {
+      "binding": "QUESTION_PRODUCTION",
+      "service": "anunex-question-production-staging"
+    },
+    {
+      "binding": "QUESTION_GENERATOR",
+      "service": "anunex-question-generator-staging"
+    }
+  ],
   "assets": {
     "directory": "./dist/client",
     "not_found_handling": "single-page-application",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": [
+      "/api/*"
+    ]
   },
   "d1_databases": [
     {
@@ -49,6 +65,11 @@
   },
   "vars": {
     "QUESTION_TEAM_CONTROLS_ENABLED": "true",
+    "QUESTION_AI_DAILY_NEURON_LIMIT": "10000",
+    "QUESTION_BLIND_SOLVE_ENABLED": "true",
+    "QUESTION_AUTO_EDITOR_ENABLED": "true",
+    "QUESTION_EDITOR_MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "QUESTION_PRODUCTION_CAMPAIGNS_ENABLED": "true",
     "QUESTION_VIDEO_RENDER_ENABLED": "true",
     "ENVIRONMENT": "staging",
     "QUESTION_GENERATION_ENABLED": "true",
@@ -76,6 +97,9 @@
     "NIBIRU_OPENAI_TTS_VOICE": "coral",
     "WHATSAPP_GRAPH_API_VERSION": "v25.0",
     "TURNSTILE_SITE_KEY": "1x00000000000000000000BB",
-    "TURNSTILE_SECRET_KEY": "1x0000000000000000000000000000000AA"
+    "TURNSTILE_SECRET_KEY": "1x0000000000000000000000000000000AA",
+    "QUESTION_TRANSACTION_PROOF_ENABLED": "true",
+    "QUESTION_OFFER_PROOF_ENABLED": "true",
+    "QUESTION_MATH6_PROOF_ENABLED": "true"
   }
 }

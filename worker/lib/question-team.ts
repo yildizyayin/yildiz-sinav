@@ -1,3 +1,4 @@
+import {questionPoolReadiness} from './question-pool-readiness';
 import {editorialInferenceEstimate} from './question-production-cost';
 import {questionProductionTarget} from './question-production-target';
 import type {AuthUser,Env} from '../types';
@@ -10,6 +11,7 @@ export async function handleQuestionTeam(request:Request,env:Env,user:AuthUser|n
  if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED',message:'Oturum açın.'}},401);
  if(user.role!=='SUPER_ADMIN')return forbidden('Soru havuzu ekibini yalnız Süper Admin yönetebilir.');
  const url=new URL(request.url);
+ if(request.method==='GET'&&url.pathname===base+'/readiness')return questionPoolReadiness(request,env);
  if(request.method==='PATCH'&&url.pathname===base+'/control'){
   if(env.QUESTION_TEAM_CONTROLS_ENABLED!=='true')return json({ok:false,error:{code:'TEAM_CONTROLS_DISABLED',message:'Ekip kontrolleri bu ortamda etkin değil.'}},503);
   if(request.headers.get('Origin')!==url.origin)return forbidden('İşlemi ANUNEX üzerinden başlatın.');
@@ -46,8 +48,8 @@ export async function handleQuestionTeam(request:Request,env:Env,user:AuthUser|n
  const actorId=env.QUESTION_AGENT_SERVICE_ACTOR_ID;const actor=actorId?await one<any>(env.DB.prepare("SELECT id FROM users WHERE id=? AND active=1 AND role='SUPER_ADMIN'").bind(actorId)):null;
  const scheduling=canExecuteScheduledPilot({dispatchPreview:env.QUESTION_AGENT_DISPATCH_PREVIEW==='true',executionEnabled:env.QUESTION_AGENT_EXECUTION_ENABLED==='true',generationEnabled:env.QUESTION_GENERATION_ENABLED==='true',providerAvailable:!!env.AI,verifiedServiceActor:!!actor,reviewCapacity:Number(env.QUESTION_PILOT_REVIEW_SLOTS??0),budget:remaining});
  const counts=Object.fromEntries(jobCounts.map(r=>[r.status,Number(r.n)]));const review=Object.fromEntries(questionCounts.map(r=>[r.review_status,Number(r.n)]));
- const models:Record<string,string>={GENERATOR:env.QUESTION_GENERATION_MODEL??'Yapılandırılmadı',VERIFIER:env.QUESTION_GENERATION_VERIFIER_MODEL??'Yapılandırılmadı',ORIGINALITY:'Sınırlı benzerlik kuralları + insan incelemesi',MEDIA:'Yapılandırılmış tablo/grafik · çözüm sahneleri',VIDEO:'FFmpeg · mevcut izinli ses sağlayıcısı'};
- const names:Record<string,string>={GENERATOR:'Soru üretimi',VERIFIER:'Bilimsel ve editoryal kontrol',ORIGINALITY:'Özgünlük ve hak kontrolü',MEDIA:'Veri görseli ve çözüm planı',VIDEO:'Video üretimi'};
+ const models:Record<string,string>={GENERATOR:(env.QUESTION_GENERATION_MODEL??'Yapılandırılmadı')+((env as any).QUESTION_AUTO_EDITOR_ENABLED==='true'?' → '+((env as any).QUESTION_EDITOR_MODEL??'@cf/qwen/qwen3-30b-a3b-fp8'):''),VERIFIER:env.QUESTION_GENERATION_VERIFIER_MODEL??'Yapılandırılmadı',ORIGINALITY:'Sınırlı benzerlik kuralları + insan incelemesi',MEDIA:'Yapılandırılmış tablo/grafik · çözüm sahneleri',VIDEO:'FFmpeg · mevcut izinli ses sağlayıcısı'};
+ const names:Record<string,string>={GENERATOR:'Yazar ve AI editör',VERIFIER:'Bilimsel ve editoryal kontrol',ORIGINALITY:'Özgünlük ve hak kontrolü',MEDIA:'Veri görseli ve çözüm planı',VIDEO:'Video üretimi'};
  const roster=QUESTION_TEAM_AGENTS.map(key=>{
   const c=agents.find(a=>a.agent_key===key),paused=!!control?.paused||!!c?.paused;
   const enabled=key==='GENERATOR'?env.QUESTION_GENERATION_ENABLED==='true'&&!!env.AI:key==='VERIFIER'?env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'&&!!env.AI:key==='VIDEO'?env.QUESTION_VIDEO_RENDER_ENABLED==='true':true;

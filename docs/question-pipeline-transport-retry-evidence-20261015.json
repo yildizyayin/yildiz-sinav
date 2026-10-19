@@ -1,0 +1,216 @@
+{
+  "environment": "staging",
+  "newProducerCalls": 0,
+  "maximumAdditionalEditorPasses": 1,
+  "before": [
+    {
+      "id": "pilot_50",
+      "question_cap": 50,
+      "reserved_count": 50
+    }
+  ],
+  "aiBefore": [
+    {
+      "day": "2026-10-15",
+      "limit_neurons": 10000,
+      "held_neurons": 1812,
+      "charged_neurons": 4060
+    }
+  ],
+  "httpStatus": 200,
+  "response": {
+    "ok": true,
+    "passed": false,
+    "correctionId": "editorial-pipeline-20261015-v1-glm-transport-retry-v1",
+    "sourceTrialId": "editorial-pipeline-20261015-v1",
+    "sourceTrialHash": "95d7a0706e16fe719ddc6e436ce6e63209e0e17f6045e9787c100dc0fcbd43d5",
+    "sourceEditorHash": "765df22f807454e4abcfdf3f5760cef60f6dc1db9ef4938c7f0e32409c2c9cb4",
+    "source": {
+      "outcome_id": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+      "outcome_code": "MAT.5.1.2",
+      "outcome_title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+      "subject_id": "sub_mat",
+      "grade_level": 5,
+      "curriculum_version_id": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+      "academic_year": "2026-2027",
+      "program_version": "TYMM-2024-MAT5-PILOT-20261013",
+      "source_url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+    },
+    "stage": "FAILED",
+    "newProducerCalls": 0,
+    "additionalEditorPasses": 1,
+    "cumulativeProducerCalls": 1,
+    "cumulativeEditorPasses": 5,
+    "reasonedEditor": true,
+    "transportRetry": true,
+    "editorModel": "@cf/zai-org/glm-4.7-flash",
+    "modelComparison": true,
+    "previousCorrectionId": "editorial-pipeline-20261015-v1-glm-reasoned-v1",
+    "questionBankWrites": 0,
+    "benchmarkOnly": true,
+    "publisherQualityCertified": false,
+    "pilotQuotaChanged": false,
+    "autonomousFirstPass": false,
+    "humanApproved": false,
+    "rightsApproved": false,
+    "editorObserved": {
+      "packet": {
+        "questions": [
+          {
+            "stemText": "Bir kırtasiyede başlangıçta kaç kalem olduğu soruluyor. İlk olarak 275 kalem satıldı, ardından 148 kalem alındı. Bu iki işlemden sonra kırtasiyede 632 kalem kaldı. Başlangıçta kırtasiyede kaç kalem vardı?",
+            "solutionText": "Doğru yöntem: Kalan miktarı (632) önce satılan miktarla (275) toplayıp, sonra alınan miktarla (148) çıkarmaktır. 632 + 275 = 907; 907 - 148 = 759. Kontrol: 759 - 275 = 484; 484 + 148 = 632. Doğru seçenek C) 759.",
+            "difficultyLevel": 3,
+            "correctAnswer": "C",
+            "options": [
+              {
+                "label": "A",
+                "text": "907"
+              },
+              {
+                "label": "B",
+                "text": "505"
+              },
+              {
+                "label": "C",
+                "text": "759"
+              },
+              {
+                "label": "D",
+                "text": "484"
+              }
+            ],
+            "editorial": {
+              "version": 1,
+              "cognitiveDemand": "ANALYZE",
+              "skillTarget": "İki ardışık doğal sayı işleminin tersini doğru sırayla uygulayarak başlangıç miktarını bulma ve sonucun doğru olduğunu kontrol etme yeteneği.",
+              "reasoningSteps": [
+                "Verilen son sayıyı, ilk yapılan çıkarma miktarından ekleyerek ara sonucu elde ederiz.",
+                "Bu ara sonuca ikinci, ekleme işlemi için kullanılan miktarı çıkartarak başlangıç sayısını bulur ve iki adımlı işlemi ileri yönde kontrol ederiz."
+              ],
+              "distractors": [
+                {
+                  "label": "A",
+                  "misconception": "Sadece ilk işlemi tersine çevirip (satılanı geri eklemek), ikinci işlemi (alınanları çıkarmak) göz ardı etmektedir.",
+                  "whyIncorrect": "Yanılgı hesabı: 632 + 275 = 907. Bu işlemde sadece satılan miktar geri eklenmiş, alınan miktarın çıkartılmadığı görülmektedir."
+                },
+                {
+                  "label": "B",
+                  "misconception": "İşlemlerin sırasını tersine çevirmiş ancak işlemlerin karşılık gelen miktarlarını yanlış yerleştirmiştir (önce alınanları ekleyip sonra satılanları çıkarmıştır).",
+                  "whyIncorrect": "Yanılgı hesabı: 632 + 148 - 275 = 505. İşlemlerin tersini alırken sıralamayı bozduğu için doğru sonucu vermemektedir."
+                },
+                {
+                  "label": "D",
+                  "misconception": "Sadece ikinci işlemi tersine çevirip (alınanları geri çıkarmak), ilk işlemi (satılanları eklemek) göz ardı etmektedir.",
+                  "whyIncorrect": "Yanılgı hesabı: 632 - 148 = 484. Bu işlemde sadece alınan miktar geri çıkarılmış, satılan miktarın geri eklenmediği görülmektedir."
+                }
+              ],
+              "originalityDesign": "Kırtasiye senaryosu kullanılarak öğrencinin iki adımlı işlem sırasını tersine çevirmesi ve yanlış sıralama hatasını tanıması istenmiştir; seçenekler gerçek hatalı tersleme ve işaret hatalarına dayalıdır.",
+              "visual": {
+                "kind": "NONE",
+                "title": "",
+                "unit": "",
+                "columns": [],
+                "rows": [],
+                "categories": [],
+                "values": [],
+                "readingPurpose": ""
+              }
+            }
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 2215,
+        "completion_tokens": 4674,
+        "total_tokens": 6889,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "neurons": 182.3161
+      },
+      "protocolKeys": [
+        "id",
+        "object",
+        "created",
+        "model",
+        "choices",
+        "service_tier",
+        "system_fingerprint",
+        "usage",
+        "prompt_logprobs",
+        "prompt_token_ids",
+        "kv_transfer_params"
+      ],
+      "finishReason": "stop",
+      "alternateJson": null
+    },
+    "error": "EDITOR_OUTPUT_INVALID"
+  },
+  "after": [
+    {
+      "id": "pilot_50",
+      "question_cap": 50,
+      "reserved_count": 50
+    }
+  ],
+  "aiAfter": [
+    {
+      "day": "2026-10-15",
+      "limit_neurons": 10000,
+      "held_neurons": 1812,
+      "charged_neurons": 4243
+    }
+  ],
+  "originalUnchanged": true,
+  "aiCalls": [
+    {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "status": "SETTLED",
+      "reserved_neurons": 374,
+      "charged_neurons": 183
+    },
+    {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "status": "HELD",
+      "reserved_neurons": 374,
+      "charged_neurons": null
+    },
+    {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "status": "SETTLED",
+      "reserved_neurons": 366,
+      "charged_neurons": 45
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "status": "SETTLED",
+      "reserved_neurons": 307,
+      "charged_neurons": 40
+    },
+    {
+      "model": "@cf/nvidia/nemotron-3-120b-a12b",
+      "status": "UNKNOWN",
+      "reserved_neurons": 1438,
+      "charged_neurons": null
+    },
+    {
+      "model": "@cf/nvidia/nemotron-3-120b-a12b",
+      "status": "SETTLED",
+      "reserved_neurons": 895,
+      "charged_neurons": 60
+    },
+    {
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "status": "SETTLED",
+      "reserved_neurons": 318,
+      "charged_neurons": 43
+    },
+    {
+      "model": "@cf/openai/gpt-oss-120b",
+      "status": "SETTLED",
+      "reserved_neurons": 1348,
+      "charged_neurons": 245
+    }
+  ],
+  "passed": false
+}

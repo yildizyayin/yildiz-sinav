@@ -1,0 +1,17 @@
+# Offer comparison arithmetic proof — 16 October 2026
+
+Extends the actual independentlySolve dispatcher with an opt-in public-data proof for grade 5 / MAT.5.1.2 / NAT_COMPARE_OFFERS / TEXT. Both staging configurations enable QUESTION_OFFER_PROOF_ENABLED; production configuration is untouched. AUTO still resolves these tasks to TABLE: this increment does not change presentation selection and is used only for explicitly selected TEXT tasks matching the strict grammar.
+
+Public grammar: a school buys a fixed quantity of one product; each of two sellers supplies a unit price and a delivery fee charged once. The student asks either saving under the cheaper total offer or the remaining stated budget. The whole stem must match, with no ignored added facts. Four A–D plain natural-number options are required. No arbitrary discount, percent, fractional, visual, or free-language interpretation is inferred.
+
+The engine computes both quantity × unit-price subtotals, both delivered totals and the difference/budget. It reads neither stored key nor solution. It rejects tied offers and insufficient budgets as unsupported problem conditions. NONE/MULTIPLE are emitted for ambiguous answer sets and rejected downstream. Unsupported content continues through the existing independent model route; it is never silently accepted. Arithmetic acceptance never skips final independent editorial/originality/human/rights gates. This work does not produce template questions for the bank.
+
+Official reference checked 2026-10-16: https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447 , MAT.5.1.2 and teaching applications. Multiplication operands are at most three digits, addition/subtraction operands at most five; intermediate operands used for addition/subtraction are checked as well. No new official outcome or grade coverage is claimed.
+
+Validation: 62 tests passed across six relevant files, including 9 new offer-proof tests. Sixty unseen arithmetic cases use a separate BigInt oracle and rotated answer labels. Hidden key/solution getter tests, wrong-key handling, NONE/MULTIPLE, fee-sensitive choice reversal, zero remainder, boundaries, unsupported wording/scope, disabled routing and final-editor rejection are covered. These are local synthetic test cases, not newly generated or publisher-approved questions. TypeScript check passed.
+
+Previous staging run 38928348238 completed successfully, including Nibiru provider probe. Private deployment and preserved-proof run 38928348419 succeeded. No pilot counter change, new AI call, old failure rewrite or campaign restart was made in this increment. Current verified pilot is 50/50. Grades 6/7/9/10/11 and broader subjects remain unqualified.
+
+## Deployment checkpoint
+
+Staging commit f8cc82634815608a478298ee92050347af749332. Private generator/scheduler deployment run 38930186717 succeeded. App workflow 38930186737 passed source checks, Worker deployment and demo domain verification. Its generic Nibiru provider probe was still running at this checkpoint; full workflow success is not yet claimed. No new question-generation call or bank write was initiated. Production is unchanged.

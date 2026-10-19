@@ -1,0 +1,21 @@
+name: Inspect app question production state read only
+on:
+  push:
+    branches: [feat/question-production-20261015]
+    paths: [.github/inspect-app-question-state.execute]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Inspect production counts and schema without changing data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/inspect-app-question-state.mjs

@@ -1,0 +1,26 @@
+name: Deploy bounded question production worker
+on:
+  push:
+    branches: [staging]
+    paths: [.github/question-production-worker.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-production-worker-staging
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Deploy isolated one-minute scheduler against the existing staging DB
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/deploy-question-production-worker.mjs

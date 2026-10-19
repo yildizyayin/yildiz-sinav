@@ -1,0 +1,30 @@
+name: Import current math-twelve content for target year 2027-2028
+on:
+  push:
+    branches: [staging]
+    paths: [.github/question-math12-target-2028.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-math12-target-2028
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Verify official source then import without generation or cap changes
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-question-math12-target-2028.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-math12-target-2028-${{ github.run_id }}
+          path: tmp/question-math12-target-2028/

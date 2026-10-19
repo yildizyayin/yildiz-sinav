@@ -1,0 +1,2349 @@
+{
+  "stagingCommit": "73be8ee13e9bd8303dfa57f43dfb8bd972310ae0",
+  "environment": "staging",
+  "productionUpdated": false,
+  "checks": {
+    "testFiles": 246,
+    "tests": 1260,
+    "typecheck": true,
+    "build": true,
+    "migration0116": true,
+    "nibiruProbe": true,
+    "anonymousReadinessStatus": 401,
+    "invalidYearStatus": 400
+  },
+  "workflows": {
+    "app": {
+      "id": 39214488744,
+      "job": 117935065053,
+      "conclusion": "success"
+    },
+    "importAndLiveInspection": {
+      "id": 39214488770,
+      "job": 117935065317,
+      "conclusion": "success"
+    }
+  },
+  "failedInitialAttempt": {
+    "run": 39213432948,
+    "reason": "IMPORTED_OUTCOME_LINK_MISMATCH_5",
+    "quarantinedVersion": "cv_12a47439-314a-402a-b67b-a0ac90603df1",
+    "deleted": false
+  },
+  "fullMathImport": {
+    "environment": "staging",
+    "academicYear": "2027-2028",
+    "newProducerCalls": 0,
+    "newEditorCalls": 0,
+    "imports": [
+      {
+        "grade": 5,
+        "reused": false,
+        "themes": 7,
+        "outcomes": 23,
+        "importJob": "cimp_748af7e7-8bf4-4698-8f0d-b4792406f405",
+        "versionId": "cv_279791fb-d83c-442c-8602-0cd8a93cd035",
+        "linkedNodes": 23
+      },
+      {
+        "grade": 6,
+        "reused": false,
+        "themes": 7,
+        "outcomes": 24,
+        "importJob": "cimp_044de7b7-1ff6-4774-ab04-0c104bf67baa",
+        "versionId": "cv_e3d81423-e70f-4208-8b5f-f17da82742d1",
+        "linkedNodes": 24
+      },
+      {
+        "grade": 7,
+        "reused": false,
+        "themes": 9,
+        "outcomes": 30,
+        "importJob": "cimp_cb31bd5b-5b0f-430e-a7ad-66bc9c7e6eef",
+        "versionId": "cv_2b1dcda0-bbbb-4825-8e3f-7e384b912509",
+        "linkedNodes": 30
+      },
+      {
+        "grade": 8,
+        "reused": false,
+        "themes": 7,
+        "outcomes": 23,
+        "importJob": "cimp_112334e7-de93-42af-9de7-b5a7fac5fee4",
+        "versionId": "cv_d299543a-bb4c-499b-b0d5-991af963e1a0",
+        "linkedNodes": 23
+      },
+      {
+        "grade": 9,
+        "reused": false,
+        "themes": 7,
+        "outcomes": 20,
+        "importJob": "cimp_7e7292d3-8848-4eaa-9316-83ac6d3461a0",
+        "versionId": "cv_609b403a-bee7-439b-8397-0d48bb78fcf1",
+        "linkedNodes": 20
+      },
+      {
+        "grade": 10,
+        "reused": false,
+        "themes": 7,
+        "outcomes": 21,
+        "importJob": "cimp_4975426c-a391-41da-9667-7d807f0fa579",
+        "versionId": "cv_ff491f5e-8ddc-4e6d-9697-15e41c9d1173",
+        "linkedNodes": 21
+      },
+      {
+        "grade": 11,
+        "reused": false,
+        "themes": 5,
+        "outcomes": 15,
+        "importJob": "cimp_a3afa183-cf7f-4c97-a67b-b24894698a8d",
+        "versionId": "cv_f27c64ff-6b04-4b31-adfa-681eca795509",
+        "linkedNodes": 15
+      },
+      {
+        "grade": 12,
+        "reused": false,
+        "themes": 8,
+        "outcomes": 21,
+        "importJob": "cimp_34a6dbc3-6e91-4e12-98e9-7b846e0596f7",
+        "versionId": "cv_80462507-0a66-4454-8626-493c8d4bfe85",
+        "linkedNodes": 21
+      }
+    ],
+    "scope": "All outcome headings in the listed current official mathematics theme pages; process components, other subjects and exam specifications are separate.",
+    "annualPlanVerified": false,
+    "exam2028ScopeVerified": false,
+    "processComponentsImported": false,
+    "sources": [
+      {
+        "grade": 5,
+        "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/6",
+        "indexHash": "3d1d5d2a1539d693f1ad8e34f144f4dc81e7192029ef083a218724255ea6ffb8",
+        "themes": [
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447",
+            "title": "1.Tema: Sayılar Ve Nicelikler (1)",
+            "hash": "bf91e73b017d634c703d06ea4a5555b510dec4621d3800d29c0e7760c1966982",
+            "codes": [
+              "MAT.5.1.1",
+              "MAT.5.1.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/449",
+            "title": "1.Tema: Sayılar Ve Nicelikler (2)",
+            "hash": "9aa82787c9a3d009988605e33956d2c6c5ef2de74e47acc78d7a58dfce63ef6b",
+            "codes": [
+              "MAT.5.1.3",
+              "MAT.5.1.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/450",
+            "title": "2.Tema: İşlemlerle Cebirsel Düşünme",
+            "hash": "0237bf2e38de700a2727d479b46bf042c49582898f923fa6657cf284367ce7a6",
+            "codes": [
+              "MAT.5.2.1",
+              "MAT.5.2.2",
+              "MAT.5.2.3",
+              "MAT.5.2.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+            "title": "3.Tema: Geometrik Şekiller",
+            "hash": "11ce56be528c9193fb50157018cd2003366685e0602cfd49c8bf3ce908d21ba5",
+            "codes": [
+              "MAT.5.3.1",
+              "MAT.5.3.2",
+              "MAT.5.3.3",
+              "MAT.5.3.4",
+              "MAT.5.3.5",
+              "MAT.5.3.6",
+              "MAT.5.3.7"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451",
+            "title": "4.Tema: Geometrik Nicelikler",
+            "hash": "6b6276b3f2da8d5f65407141cc060a7757ba41f52e217cd468b2481ea7976da0",
+            "codes": [
+              "MAT.5.4.1",
+              "MAT.5.4.2",
+              "MAT.5.4.3",
+              "MAT.5.4.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/452",
+            "title": "5.Tema: İstatistiksel Araştırma Süreci",
+            "hash": "0924f3f18c1abd5350754867f400b02705138f7180c6138f40627ffda98c30f0",
+            "codes": [
+              "MAT.5.5.1",
+              "MAT.5.5.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/455",
+            "title": "6.Tema: Veriden Olasılığa",
+            "hash": "48c2a4f2be78bee752ce20ec598c2bb12d0d5f0c7bada47e0f25c7facc5f4a4f",
+            "codes": [
+              "MAT.5.6.1",
+              "MAT.5.6.2"
+            ]
+          }
+        ]
+      },
+      {
+        "grade": 6,
+        "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/7",
+        "indexHash": "d44d3e5a686dfcb643325e170c8982f7588b46e085dee86f95451ba692827c67",
+        "themes": [
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456",
+            "title": "1.Tema: Sayılar Ve Nicelikler (1)",
+            "hash": "ef7e758d9ad70491af1d2454dd883e22e3e279936b75eaae369de4913ef94cad",
+            "codes": [
+              "MAT.6.1.1",
+              "MAT.6.1.2",
+              "MAT.6.1.3",
+              "MAT.6.1.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/457",
+            "title": "1.Tema:Sayılar Ve Nicelikler (2)",
+            "hash": "569097fe9e884cfb204de396fe0baf44e248c7037f0ba0a4393c728ef3b5825b",
+            "codes": [
+              "MAT.6.1.5",
+              "MAT.6.1.6",
+              "MAT.6.1.7",
+              "MAT.6.1.8"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/458",
+            "title": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+            "hash": "173eeea90030b5603504131e925b5ac6126c3489c9b6dd2ab597db573f1bfa13",
+            "codes": [
+              "MAT.6.2.1",
+              "MAT.6.2.2",
+              "MAT.6.2.3"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/459",
+            "title": "3.Tema: Geometrik Şekiller",
+            "hash": "6aebbbf6544e43e13d572bf9d4b6fdb5d3254ec584f07c0e76e4222f76fc0000",
+            "codes": [
+              "MAT.6.3.1",
+              "MAT.6.3.2",
+              "MAT.6.3.3",
+              "MAT.6.3.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460",
+            "title": "4.Tema: Geometrik Nicelikler",
+            "hash": "bbf2ecd17f323627f42d464239442b5c9dea9d90db4024826014da0b505d97eb",
+            "codes": [
+              "MAT.6.4.1",
+              "MAT.6.4.2",
+              "MAT.6.4.3",
+              "MAT.6.4.4",
+              "MAT.6.4.5",
+              "MAT.6.4.6"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/461",
+            "title": "5.Tema: İstatistiksel Araştırma Süreci",
+            "hash": "de062634d620b731efc3fbd6076bb298f1eb046d82f2a8ae85c22d772d459dfc",
+            "codes": [
+              "MAT.6.5.1",
+              "MAT.6.5.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/462",
+            "title": "6.Tema: Veriden Olasılığa",
+            "hash": "3f2ff565bd8aeb639e0a4d4b9903b74d4c02fbc012481c076387aa834a5a6280",
+            "codes": [
+              "MAT.6.6.1"
+            ]
+          }
+        ]
+      },
+      {
+        "grade": 7,
+        "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/8",
+        "indexHash": "f7f77fc1ceb33d40d75fae1ee4f010ed69d90b77f3b26a63f216c022ad03d62b",
+        "themes": [
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/463",
+            "title": "1.Tema: Sayılar Ve Nicelikler (1)",
+            "hash": "63d6cd16951135d0b2beaf04e770dde549698cd063bb6a3a39525776bc17d4a7",
+            "codes": [
+              "MAT.7.1.1",
+              "MAT.7.1.2",
+              "MAT.7.1.3",
+              "MAT.7.1.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/464",
+            "title": "1.Tema: Sayılar Ve Nicelikler (2)",
+            "hash": "ae17dd865fac34b71ca9dfe39044f50726900ce4cc947cfbd17d2cb9250b69a9",
+            "codes": [
+              "MAT.7.1.5",
+              "MAT.7.1.6",
+              "MAT.7.1.7"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/465",
+            "title": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+            "hash": "f71f01968b0e1dbe971c2f42e6074adbde624ec3ea700fb2631cf39c4d9677f3",
+            "codes": [
+              "MAT.7.2.1",
+              "MAT.7.2.2",
+              "MAT.7.2.3",
+              "MAT.7.2.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/466",
+            "title": "3. Tema: Dönüşüm",
+            "hash": "5b46ec475b40a31e3c08c91480e814fc4dc623f4f75a4f28ff7fb23b4b6f12e6",
+            "codes": [
+              "MAT.7.3.1",
+              "MAT.7.3.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467",
+            "title": "4. Tema: Geometrik Nicelikler (1)",
+            "hash": "dce9ce3108c23bcb490073d209e7e298102062d4f860b7f35dc09a10e9975799",
+            "codes": [
+              "MAT.7.4.1",
+              "MAT.7.4.2",
+              "MAT.7.4.3",
+              "MAT.7.4.4",
+              "MAT.7.4.5",
+              "MAT.7.4.6"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/468",
+            "title": "4.Tema: Geometrik Nicelikler (2)",
+            "hash": "f7e1e6304d8a1eb0f361471f77846bc708858b42485d6e4922301557fb1c3410",
+            "codes": [
+              "MAT.7.4.7",
+              "MAT.7.4.8",
+              "MAT.7.4.9",
+              "MAT.7.4.10"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/469",
+            "title": "5.Tema: Geometrik Şekiller",
+            "hash": "56a9a425cd34f74d1507943b14c4a77c17623fa1ee8d60c141bb2c56301cf419",
+            "codes": [
+              "MAT.7.5.1",
+              "MAT.7.5.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/470",
+            "title": "6.Tema: İstatistiksel Araştırma Süreci",
+            "hash": "72d2dced2b69b6b937e0f993dd9e2507aba72c02d67f1d12f3d6982a899854e9",
+            "codes": [
+              "MAT.7.6.1",
+              "MAT.7.6.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/471",
+            "title": "7.Tema: Veriden Olasılığa",
+            "hash": "52330be46aaaabc23669b366c718455bcb6e0d73f6c4c558ae126011b85b35b2",
+            "codes": [
+              "MAT.7.7.1",
+              "MAT.7.7.2",
+              "MAT.7.7.3"
+            ]
+          }
+        ]
+      },
+      {
+        "grade": 8,
+        "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/9",
+        "indexHash": "5ba00db599544254d44a3be930aec8531dcd66df70cae5f3c5ec9dc9237e423a",
+        "themes": [
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/472",
+            "title": "1.Tema: Sayılar Ve Nicelikler",
+            "hash": "5e74fb8455241bf98ba2bfc7f0a2cb3496c1df2e1490afd574fd6e573cdb1dbd",
+            "codes": [
+              "MAT.8.1.1",
+              "MAT.8.1.2",
+              "MAT.8.1.3",
+              "MAT.8.1.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/473",
+            "title": "2.Tema: Cebirsel Düşünme Ve Değişimler",
+            "hash": "aba1b4afb032aac9ebe5138d17a5af8737930073e777cfb1155aaac7397b750e",
+            "codes": [
+              "MAT.8.2.1",
+              "MAT.8.2.2",
+              "MAT.8.2.3",
+              "MAT.8.2.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474",
+            "title": "3.Tema: Geometrik Şekiller",
+            "hash": "7799a2297c225ad73b149aa355461aa90aa766b76aedfb8ac64f4b26637a03ca",
+            "codes": [
+              "MAT.8.3.1",
+              "MAT.8.3.2",
+              "MAT.8.3.3",
+              "MAT.8.3.4",
+              "MAT.8.3.5",
+              "MAT.8.3.6"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/475",
+            "title": "4.Tema: Geometrik Nicelikler",
+            "hash": "96216318ca057a39c9fb45cd7928af4e352a720f62671c54f15984ac5ccf0bd9",
+            "codes": [
+              "MAT.8.4.1",
+              "MAT.8.4.2",
+              "MAT.8.4.3"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/476",
+            "title": "5.Tema: Dönüşüm",
+            "hash": "7721fab91cee53ba7f5cb49f279eade1870af5a4d3784a049c177a1f898c9539",
+            "codes": [
+              "MAT.8.5.1",
+              "MAT.8.5.2",
+              "MAT.8.5.3"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/477",
+            "title": "6.Tema: İstatistiksel Araştırma Süreci",
+            "hash": "998f8324e7e65999ea611e562dd6d9f5f79f0b72f85eb83cf85157263123b98c",
+            "codes": [
+              "MAT.8.6.1",
+              "MAT.8.6.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/478",
+            "title": "7.Tema: Veriden Olasılığa",
+            "hash": "5f20d4ba9aac97e18549f89aabd06a56b43d406f89dbd31483655e8846aacf65",
+            "codes": [
+              "MAT.8.7.1"
+            ]
+          }
+        ]
+      },
+      {
+        "grade": 9,
+        "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/matematik-dersi/11",
+        "indexHash": "8faca619c49f91a5b187b3dbe63fdf580cd583983d5660da87fea13ffa151aea",
+        "themes": [
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/21",
+            "title": "1. Tema: Sayılar",
+            "hash": "b6162f5d32ba63b005eb141ab0799f72998928684b22655acc4d732173124e41",
+            "codes": [
+              "MAT.9.1.1",
+              "MAT.9.1.2",
+              "MAT.9.1.3",
+              "MAT.9.1.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/23",
+            "title": "2. Tema: Nicelikler Ve Değişimler",
+            "hash": "5e98915ac4d4cd0a58a56f3ae98bf3be7172c646efd230e68c09f61eeca189ee",
+            "codes": [
+              "MAT.9.2.1",
+              "MAT.9.2.2",
+              "MAT.9.2.3"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/25",
+            "title": "3. Tema: Geometrik Şekiller",
+            "hash": "1cb5b96ed6516c7980e44908bf8536c2fab4c879cae1e1bd2e164983cb63fa3e",
+            "codes": [
+              "MAT.9.3.1"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/83",
+            "title": "4. Tema: Eşlik Ve Benzerlik",
+            "hash": "17ecfd97efac75ed07e58494263b56d998fc0caae9d1d8dbc5da6d9867e1280f",
+            "codes": [
+              "MAT.9.4.1",
+              "MAT.9.4.2",
+              "MAT.9.4.3",
+              "MAT.9.4.4",
+              "MAT.9.4.5"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/24",
+            "title": "5. Tema: Algoritma Ve Bilişim",
+            "hash": "c065c78b5e5c9e817e91674bcd23d4c5a67628b1f615a867cc7cda52d9bf3467",
+            "codes": [
+              "MAT.9.5.1",
+              "MAT.9.5.2",
+              "MAT.9.5.3"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/91",
+            "title": "6. Tema: İstatistiksel Araştırma Süreci",
+            "hash": "1a9637c91425ad3bec5edc3d29e0c9c6bce7f296495864854944f323b92935c6",
+            "codes": [
+              "MAT.9.6.1",
+              "MAT.9.6.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/97",
+            "title": "7. Tema: Veriden Olasılığa",
+            "hash": "f6c27aa3765378fae9375c5553246be8aa77fcb8174bae0ec6675db23d70baea",
+            "codes": [
+              "MAT.9.7.1",
+              "MAT.9.7.2"
+            ]
+          }
+        ]
+      },
+      {
+        "grade": 10,
+        "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/matematik-dersi/12",
+        "indexHash": "eaa6faa1e7f279cf80b386e683b3128d791d1041dafd80f0ce53dba44783b560",
+        "themes": [
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/260",
+            "title": "1. Tema: Geometrik Şekiller",
+            "hash": "e36aa4a394e44f2ef93e9f561dd8a03c9203ed39206865bd56bbd19e5af1d748",
+            "codes": [
+              "MAT.10.1.1",
+              "MAT.10.1.2",
+              "MAT.10.1.3",
+              "MAT.10.1.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/271",
+            "title": "2. Tema: İstatistiksel Araştırma Süreci",
+            "hash": "bb5df8cf1f6b4f85b34e7111becd30babe45d3bd841e68845f512cb3dd32ece6",
+            "codes": [
+              "MAT.10.2.1",
+              "MAT.10.2.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/244",
+            "title": "3. Tema: Sayılar",
+            "hash": "3862f4a85a05208ebca1c8397d75f0c2909914ef24ba147755c3f96de7db430d",
+            "codes": [
+              "MAT.10.3.1",
+              "MAT.10.3.2",
+              "MAT.10.3.3"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/250",
+            "title": "4. Tema: Nicelikler Ve Değişimler",
+            "hash": "a511d9fcdeccb12a064da21f1f8e23c245b6335894139e49ddc8fb5860179cbd",
+            "codes": [
+              "MAT.10.4.1",
+              "MAT.10.4.2",
+              "MAT.10.4.3",
+              "MAT.10.4.4",
+              "MAT.10.4.5",
+              "MAT.10.4.6"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/251",
+            "title": "5. Tema: Sayma, Algoritma Ve Bilişim",
+            "hash": "4057e664399b241ef1b49d158eeabc85376c5025d65578826257c308dd20603a",
+            "codes": [
+              "MAT.10.5.1",
+              "MAT.10.5.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/263",
+            "title": "6. Tema: Analitik İnceleme",
+            "hash": "6d76ca9ed165cf9a1a2fa8ac32209f12b0dc634769bebe4b913395c5d56c1c68",
+            "codes": [
+              "MAT.10.6.1",
+              "MAT.10.6.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/274",
+            "title": "7. Tema: Veriden Olasılığa",
+            "hash": "f641447cad182d4a7edf66fc24db85442239b36fca91b8cd626f1083ef91bee1",
+            "codes": [
+              "MAT.10.7.1",
+              "MAT.10.7.2"
+            ]
+          }
+        ]
+      },
+      {
+        "grade": 11,
+        "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/matematik-dersi/13",
+        "indexHash": "9bdc561e293c079e8adac27d77e6de7252805ab9829cc5ad783de29e7670df0b",
+        "themes": [
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/298",
+            "title": "1. Tema: İstatistiksel Araştırma Süreci",
+            "hash": "dd39f10d9de976f331e0c75d3b4ed928309377ff8dbd6421c3af9f0d1ec7e77a",
+            "codes": [
+              "MAT.11.1.1",
+              "MAT.11.1.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/297",
+            "title": "2. Tema: Geometrik Şekiller",
+            "hash": "9e08c0f377f86b76eac1f878780d7e5f1f92f138a57083a11829dba53ef964a2",
+            "codes": [
+              "MAT.11.2.1",
+              "MAT.11.2.2",
+              "MAT.11.2.3",
+              "MAT.11.2.4",
+              "MAT.11.2.5"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/281",
+            "title": "3. Tema: Nicelikler Ve Değişimler (1)",
+            "hash": "fe5889c2cf29a116804c7ced3d3a87d270ef74ca734d49afd32d28448f06961b",
+            "codes": [
+              "MAT.11.3.1",
+              "MAT.11.3.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/295",
+            "title": "3. Tema: Nicelikler Ve Değişimler (2)",
+            "hash": "6bca948f5043c7b1e8d927c677587fdc7f06382ebc4f585411f7cb85947eb2c8",
+            "codes": [
+              "MAT.11.3.3",
+              "MAT.11.3.4",
+              "MAT.11.3.5",
+              "MAT.11.3.6"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/296",
+            "title": "3. Tema: Nicelikler Ve Değişimler (3)",
+            "hash": "998b8146ac68c55e9303435f109ce7a4dd1963f0cafe9ccece69b5e6db97cb23",
+            "codes": [
+              "MAT.11.3.7",
+              "MAT.11.3.8"
+            ]
+          }
+        ]
+      },
+      {
+        "grade": 12,
+        "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/matematik-dersi/14",
+        "indexHash": "4999c3d8167b997ffe6367b6edf6a5fa9554e405fab2d15b452578507a09d214",
+        "themes": [
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/305",
+            "title": "1. Tema: Nicelikler Ve Değişimler (1)",
+            "hash": "25a0ac97b26e2d95b322254536f09c6b869ae4a07389fa878956481e5c37614e",
+            "codes": [
+              "MAT.12.1.1",
+              "MAT.12.1.2"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/306",
+            "title": "1. Tema: Nicelikler Ve Değişimler (2)",
+            "hash": "274c8b5aa926c8650dd3dde022d677e8078229a82733a3d49742d4ab8bf8e438",
+            "codes": [
+              "MAT.12.1.3",
+              "MAT.12.1.4",
+              "MAT.12.1.5"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/325",
+            "title": "2. Tema: Geometrik Şekiller",
+            "hash": "1d2f6633974deb067b8c6f8567cbd24566b75f8ace17739b7e23a09f69972d91",
+            "codes": [
+              "MAT.12.2.1",
+              "MAT.12.2.2",
+              "MAT.12.2.3"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/329",
+            "title": "3. Tema: Geometrik Cisimler",
+            "hash": "380520006ce7de3e344d7de236f869d6418a3bf8295729619349fafa8c78b285",
+            "codes": [
+              "MAT.12.3.1",
+              "MAT.12.3.2",
+              "MAT.12.3.3"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/307",
+            "title": "4. Tema: Değişimin Matematiği (1)",
+            "hash": "900b5977a340ce46712a85986d0f1829aec8b089cb335f2567945653fbc36fbe",
+            "codes": [
+              "MAT.12.4.1",
+              "MAT.12.4.2",
+              "MAT.12.4.3",
+              "MAT.12.4.4"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/318",
+            "title": "4. Tema: Değişimin Matematiği (2)",
+            "hash": "03909357287755bae4f4dd3d9b0ee399c42c0cf0d66c1b73d85201234164c960",
+            "codes": [
+              "MAT.12.4.5",
+              "MAT.12.4.6",
+              "MAT.12.4.7"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/321",
+            "title": "4. Tema: Değişimin Matematiği (3)",
+            "hash": "12f0a11d94862734ec32b18b7c93a25c27314e42afd831969578b3f93f5086d8",
+            "codes": [
+              "MAT.12.4.8",
+              "MAT.12.4.9"
+            ]
+          },
+          {
+            "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/333",
+            "title": "5. Tema: Hazır Veriler Üzerinde Çalışma",
+            "hash": "44b3fd06970be6af3ea6fc0aeb715dd73c3d926a808b1f9f3deb3079a3483c16",
+            "codes": [
+              "MAT.12.5.1"
+            ]
+          }
+        ]
+      }
+    ],
+    "retrievedAt": "2026-10-19T07:12:38.991Z",
+    "quarantinedFailedVersion": "cv_12a47439-314a-402a-b67b-a0ac90603df1",
+    "before": {
+      "preserved": [
+        {
+          "id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_5a4951e3-9096-4689-901d-c6282e25717e",
+          "code": "MAT.7.1.1",
+          "title": "Gerçek yaşam ya da matematiksel durumlarda doğal sayı, tam sayı ve rasyonel sayıları yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_5a4951e3-9096-4689-901d-c6282e25717e",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_a354445a-7644-4e8b-8eb0-d6c4de9253d2",
+          "code": "MAT.7.1.3",
+          "title": "Rasyonel sayıların karşılaştırma ve sıralama ilişkilerini yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_a354445a-7644-4e8b-8eb0-d6c4de9253d2",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_b7c0fc5f-1de0-47b3-938c-6f425977ac87",
+          "code": "MAT.7.1.2",
+          "title": "Gerçek yaşam durumlarında rasyonel sayıların ondalık gösterimlerini yansıtabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_b7c0fc5f-1de0-47b3-938c-6f425977ac87",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_ecfc822e-84b3-4420-9f4e-6b09d8eb78a9",
+          "code": "MAT.7.1.4",
+          "title": "Rasyonel sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_ecfc822e-84b3-4420-9f4e-6b09d8eb78a9",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT5-PILOT-20261013",
+          "verified": 1,
+          "outcome_id": "out_cir_3e79287b-6fd2-4505-86d2-b94b8ce6fe64",
+          "code": "MAT.5.1.1",
+          "title": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_3e79287b-6fd2-4505-86d2-b94b8ce6fe64",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT5-PILOT-20261013",
+          "verified": 1,
+          "outcome_id": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+          "code": "MAT.5.1.2",
+          "title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_8b7ccc0a-811c-4088-b2f0-eeed160c8b4e",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT9-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_47445dd8-bb9b-477e-bebd-6e5e573d4720",
+          "code": "MAT.9.1.3",
+          "title": "Farklı sayı kümelerinin özellikleri hakkında muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_47445dd8-bb9b-477e-bebd-6e5e573d4720",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8b7ccc0a-811c-4088-b2f0-eeed160c8b4e",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT9-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_9a2c4d27-6c6f-493a-8402-f45e7f2a5a01",
+          "code": "MAT.9.1.2",
+          "title": "Gerçek sayı aralıklarının gösteriminde ve aralıklarla ilgili işlemlerde küme sembol ve işlemlerinden yararlanabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_9a2c4d27-6c6f-493a-8402-f45e7f2a5a01",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8b7ccc0a-811c-4088-b2f0-eeed160c8b4e",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT9-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_f9af7439-0951-4f29-8189-f250d896f356",
+          "code": "MAT.9.1.1",
+          "title": "Gerçek sayıların üslü ve köklü gösterimleriyle yapılan işlemlere dair muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_f9af7439-0951-4f29-8189-f250d896f356",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8b7ccc0a-811c-4088-b2f0-eeed160c8b4e",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT9-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_fd368db7-a7e2-4a50-a6bf-b32495c263c1",
+          "code": "MAT.9.1.4",
+          "title": "Gerçek sayıların işlem özelliklerini cebirsel olarak ifade etmede analojik akıl yürütebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_fd368db7-a7e2-4a50-a6bf-b32495c263c1",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8bf1906f-2ded-4c88-82d3-4658e4d77d9c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT9-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_0b8f538e-6c4e-4b7b-9950-5bdd9219600a",
+          "code": "MAT.9.1.4",
+          "title": "Gerçek sayıların işlem özelliklerini cebirsel olarak ifade etmede analojik akıl yürütebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_0b8f538e-6c4e-4b7b-9950-5bdd9219600a",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_8bf1906f-2ded-4c88-82d3-4658e4d77d9c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT9-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_29d2db15-c0e2-48c8-a8ff-663c05f7660f",
+          "code": "MAT.9.1.3",
+          "title": "Farklı sayı kümelerinin özellikleri hakkında muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_29d2db15-c0e2-48c8-a8ff-663c05f7660f",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_8bf1906f-2ded-4c88-82d3-4658e4d77d9c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT9-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_c82a591a-2c16-442e-8585-4ff53f0e33ed",
+          "code": "MAT.9.1.1",
+          "title": "Gerçek sayıların üslü ve köklü gösterimleriyle yapılan işlemlere dair muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_c82a591a-2c16-442e-8585-4ff53f0e33ed",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_8bf1906f-2ded-4c88-82d3-4658e4d77d9c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT9-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_f929d300-66c6-4f03-83f3-25fe14182592",
+          "code": "MAT.9.1.2",
+          "title": "Gerçek sayı aralıklarının gösteriminde ve aralıklarla ilgili işlemlerde küme sembol ve işlemlerinden yararlanabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_f929d300-66c6-4f03-83f3-25fe14182592",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_8c55b22f-b1bf-4fe6-aacd-c510a99e0aa6",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT6-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_0f4b691e-aabf-40df-b2e3-8975daeaef65",
+          "code": "MAT.6.1.4",
+          "title": "Günlük hayat problemleri ya da matematiksel durumlar üzerinden ortak kat ve ortak böleni yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_0f4b691e-aabf-40df-b2e3-8975daeaef65",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8c55b22f-b1bf-4fe6-aacd-c510a99e0aa6",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT6-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_57f313e3-c8bb-4f27-b830-0bd5e5595c73",
+          "code": "MAT.6.1.1",
+          "title": "Karşılaştığı problem durumlarında bir doğal sayının çarpan ve katlarına yönelik muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_57f313e3-c8bb-4f27-b830-0bd5e5595c73",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8c55b22f-b1bf-4fe6-aacd-c510a99e0aa6",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT6-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_899804ab-35f1-4b91-b0f8-467734a7846e",
+          "code": "MAT.6.1.2",
+          "title": "Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile tam bölünebilme kriterlerine ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_899804ab-35f1-4b91-b0f8-467734a7846e",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8c55b22f-b1bf-4fe6-aacd-c510a99e0aa6",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT6-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_a3b5630f-9f9a-49da-932e-e0720897b008",
+          "code": "MAT.6.1.3",
+          "title": "Bir doğal sayının asal olma durumunu ve asal çarpanlarını çözümleyebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_a3b5630f-9f9a-49da-932e-e0720897b008",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_919e8ade-db83-4352-ab5f-5370bf68fd45",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT10-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_1b5a6db0-92e4-4d88-b3b5-4d8b5ed108d3",
+          "code": "MAT.10.1.2",
+          "title": "Üçgenin yardımcı elemanlarının özellikleri ile ilgili çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_1b5a6db0-92e4-4d88-b3b5-4d8b5ed108d3",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_919e8ade-db83-4352-ab5f-5370bf68fd45",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT10-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_acdd1c4f-7be7-43e4-92f3-a42cc5fafbff",
+          "code": "MAT.10.1.4",
+          "title": "Sinüs ve kosinüs teoremlerini doğrulayabilme veya ispatlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_acdd1c4f-7be7-43e4-92f3-a42cc5fafbff",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_919e8ade-db83-4352-ab5f-5370bf68fd45",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT10-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_b49b6043-645d-4746-946d-5d0f3ad24bc9",
+          "code": "MAT.10.1.1",
+          "title": "Dik üçgende trigonometrik oranlara (sinüs, kosinüs, tanjant, kotanjant) ve trigonometrik özdeşliklere ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_b49b6043-645d-4746-946d-5d0f3ad24bc9",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_919e8ade-db83-4352-ab5f-5370bf68fd45",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT10-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_bac4b792-bcc7-4d46-a712-def5631f8307",
+          "code": "MAT.10.1.3",
+          "title": "Üçgenin bir kenarı ve o kenara ait yüksekliğinin değişimine bağlı olarak alanının değişimine ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_bac4b792-bcc7-4d46-a712-def5631f8307",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_95222267-ddfe-422e-bbe6-b23ec9f6dfca",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT11-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_0137ce43-3461-4d8d-88ae-17cf4d934653",
+          "code": "MAT.11.1.2",
+          "title": "Başkaları tarafından oluşturulan iki nicel değişkenli verilerin ilişkililiğine dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_0137ce43-3461-4d8d-88ae-17cf4d934653",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_95222267-ddfe-422e-bbe6-b23ec9f6dfca",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT11-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_5864d3be-e3c4-4a10-aeed-26a453f82950",
+          "code": "MAT.11.1.1",
+          "title": "İki nicel değişkenli veri ile çalışabilme ve iki nicel değişken arasındaki ilişkililiğe dayalı karar verebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_5864d3be-e3c4-4a10-aeed-26a453f82950",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_9972d139-a506-4dce-958d-64cca594323c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT6-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_56375b37-d724-4784-b297-5c5b165870c0",
+          "code": "MAT.6.1.3",
+          "title": "Bir doğal sayının asal olma durumunu ve asal çarpanlarını çözümleyebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_56375b37-d724-4784-b297-5c5b165870c0",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_9972d139-a506-4dce-958d-64cca594323c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT6-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_98c420a3-ac6f-466c-9be5-18bbd2c377f6",
+          "code": "MAT.6.1.1",
+          "title": "Karşılaştığı problem durumlarında bir doğal sayının çarpan ve katlarına yönelik muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_98c420a3-ac6f-466c-9be5-18bbd2c377f6",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_9972d139-a506-4dce-958d-64cca594323c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT6-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_ebdee4ec-07ef-4b07-9fe6-09049f483b60",
+          "code": "MAT.6.1.4",
+          "title": "Günlük hayat problemleri ya da matematiksel durumlar üzerinden ortak kat ve ortak böleni yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_ebdee4ec-07ef-4b07-9fe6-09049f483b60",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_9972d139-a506-4dce-958d-64cca594323c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT6-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_fcf061b3-27f1-489b-99ec-2796036b71c1",
+          "code": "MAT.6.1.2",
+          "title": "Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile tam bölünebilme kriterlerine ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_fcf061b3-27f1-489b-99ec-2796036b71c1",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_9dca378a-11c5-4ad6-bd28-b605e0cae921",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT8-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_6873b98b-3718-456c-a628-dc931c599af6",
+          "code": "MAT.8.1.1",
+          "title": "Farklı bağlamlardaki üslü ifadelere, özelliklerine ve üslü ifadelerle yapılan işlemlere ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_6873b98b-3718-456c-a628-dc931c599af6",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_9dca378a-11c5-4ad6-bd28-b605e0cae921",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT8-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_c0b17f70-8905-47a2-9d02-22d9444c3f23",
+          "code": "MAT.8.1.2",
+          "title": "Karşılaştığı problem durumlarında kareköklü ifadeler ile ilgili muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_c0b17f70-8905-47a2-9d02-22d9444c3f23",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_9dca378a-11c5-4ad6-bd28-b605e0cae921",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT8-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_d82888b8-b8ce-478b-9d28-2d5b505f1124",
+          "code": "MAT.8.1.4",
+          "title": "Gerçek sayıları ve aralıklarını sayı doğrusunda yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_d82888b8-b8ce-478b-9d28-2d5b505f1124",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_9dca378a-11c5-4ad6-bd28-b605e0cae921",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT8-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_e3fea929-cdb3-4ec2-b25d-7a50d350eaa9",
+          "code": "MAT.8.1.3",
+          "title": "Sayıların rasyonel ya da irrasyonelliğini değerlendirebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_e3fea929-cdb3-4ec2-b25d-7a50d350eaa9",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_a5b09f39-c8e4-4a73-a756-16c934a5aa5a",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT5-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_5392085e-031d-4fba-a763-ba36f747fe92",
+          "code": "MAT.5.1.1",
+          "title": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_5392085e-031d-4fba-a763-ba36f747fe92",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_a5b09f39-c8e4-4a73-a756-16c934a5aa5a",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT5-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_d32b5fff-b987-4dce-8a17-4a3242c52891",
+          "code": "MAT.5.1.2",
+          "title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_d32b5fff-b987-4dce-8a17-4a3242c52891",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_a862c43c-de38-4a2d-9054-f78c2f0dc0f1",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT10-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_054a3094-ca67-4ee5-be10-911ece2e2788",
+          "code": "MAT.10.1.1",
+          "title": "Dik üçgende trigonometrik oranlara (sinüs, kosinüs, tanjant, kotanjant) ve trigonometrik özdeşliklere ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_054a3094-ca67-4ee5-be10-911ece2e2788",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_a862c43c-de38-4a2d-9054-f78c2f0dc0f1",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT10-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_225d13ea-51c6-41f7-a8ec-b68970519f68",
+          "code": "MAT.10.1.4",
+          "title": "Sinüs ve kosinüs teoremlerini doğrulayabilme veya ispatlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_225d13ea-51c6-41f7-a8ec-b68970519f68",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_a862c43c-de38-4a2d-9054-f78c2f0dc0f1",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT10-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_359939c9-a776-420e-ae51-5aec524799fb",
+          "code": "MAT.10.1.3",
+          "title": "Üçgenin bir kenarı ve o kenara ait yüksekliğinin değişimine bağlı olarak alanının değişimine ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_359939c9-a776-420e-ae51-5aec524799fb",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_a862c43c-de38-4a2d-9054-f78c2f0dc0f1",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT10-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_7ca5fde3-1406-4e66-b25f-b9307ad80259",
+          "code": "MAT.10.1.2",
+          "title": "Üçgenin yardımcı elemanlarının özellikleri ile ilgili çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_7ca5fde3-1406-4e66-b25f-b9307ad80259",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_d064482d-70b7-43a7-8d12-2579c9f43f76",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT7-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_08dce06c-bbc9-466a-a596-eae3328af2dd",
+          "code": "MAT.7.1.2",
+          "title": "Gerçek yaşam durumlarında rasyonel sayıların ondalık gösterimlerini yansıtabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_08dce06c-bbc9-466a-a596-eae3328af2dd",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_d064482d-70b7-43a7-8d12-2579c9f43f76",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT7-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_a3c9e1ca-abd6-48c2-845a-c0127448a0d0",
+          "code": "MAT.7.1.4",
+          "title": "Rasyonel sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_a3c9e1ca-abd6-48c2-845a-c0127448a0d0",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_d064482d-70b7-43a7-8d12-2579c9f43f76",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT7-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_d00cb65e-a27d-4061-b499-9ef890d86424",
+          "code": "MAT.7.1.1",
+          "title": "Gerçek yaşam ya da matematiksel durumlarda doğal sayı, tam sayı ve rasyonel sayıları yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_d00cb65e-a27d-4061-b499-9ef890d86424",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_d064482d-70b7-43a7-8d12-2579c9f43f76",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT7-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_d99b8357-a594-4c85-8fba-dc12629115d7",
+          "code": "MAT.7.1.3",
+          "title": "Rasyonel sayıların karşılaştırma ve sıralama ilişkilerini yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_d99b8357-a594-4c85-8fba-dc12629115d7",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_d28c7947-d870-420a-95f3-a7cf146f0974",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT11-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_01c67a2f-39af-4280-b561-d74ef55aac7e",
+          "code": "MAT.11.1.2",
+          "title": "Başkaları tarafından oluşturulan iki nicel değişkenli verilerin ilişkililiğine dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_01c67a2f-39af-4280-b561-d74ef55aac7e",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_d28c7947-d870-420a-95f3-a7cf146f0974",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT11-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_b8c951e4-c13b-4b26-bcd7-b1d6ba8723d1",
+          "code": "MAT.11.1.1",
+          "title": "İki nicel değişkenli veri ile çalışabilme ve iki nicel değişken arasındaki ilişkililiğe dayalı karar verebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_b8c951e4-c13b-4b26-bcd7-b1d6ba8723d1",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_d97523e6-4d60-40bf-b1ee-3957b2665e51",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT12-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_f11ae7f9-b2d6-4844-936f-4e3ce66c29ee",
+          "code": "MAT.12.1.1",
+          "title": "Aritmetik ve geometrik dizilerin özelliklerine ilişkin muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_f11ae7f9-b2d6-4844-936f-4e3ce66c29ee",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_d97523e6-4d60-40bf-b1ee-3957b2665e51",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT12-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_f792f87e-86cb-45af-9145-72e7d9855be0",
+          "code": "MAT.12.1.2",
+          "title": "Gerçek sayılarda tanımlı fonksiyonlar ile gerçek sayı dizilerini karşılaştırabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_f792f87e-86cb-45af-9145-72e7d9855be0",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_fen_cell",
+          "code": "NBL.FEN.01",
+          "title": "Hücrenin temel yapılarını ve görevlerini açıklar",
+          "active": 1,
+          "node_id": "ln_out_nbl_fen_cell",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_fen_force",
+          "code": "NBL.FEN.02",
+          "title": "Kuvvetin hareket ve enerji üzerindeki etkisini açıklar",
+          "active": 1,
+          "node_id": "ln_out_nbl_fen_force",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_mat_integer",
+          "code": "NBL.MAT.02",
+          "title": "Tam sayılarla işlemleri doğru uygular",
+          "active": 1,
+          "node_id": "ln_out_nbl_mat_integer",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_mat_ratio",
+          "code": "NBL.MAT.01",
+          "title": "Oran problemlerinde birim oranı yorumlar",
+          "active": 1,
+          "node_id": "ln_out_nbl_mat_ratio",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_tur_paragraph",
+          "code": "NBL.TUR.01",
+          "title": "Parçanın ana düşüncesini ve yardımcı düşüncelerini ayırt eder",
+          "active": 1,
+          "node_id": "ln_out_nbl_tur_paragraph",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_tur_verb",
+          "code": "NBL.TUR.02",
+          "title": "Fiillerde zaman ve anlam ilişkisini kurar",
+          "active": 1,
+          "node_id": "ln_out_nbl_tur_verb",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        }
+      ],
+      "pilot": [
+        {
+          "id": "pilot_50",
+          "question_cap": 50,
+          "reserved_count": 50
+        }
+      ],
+      "campaigns": [
+        {
+          "id": "editorial-20261015",
+          "academic_year": "2026-2027",
+          "status": "PAUSED"
+        }
+      ],
+      "jobs": [
+        {
+          "n": 32
+        }
+      ],
+      "questions": [
+        {
+          "n": 165
+        }
+      ]
+    },
+    "after": {
+      "preserved": [
+        {
+          "id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_5a4951e3-9096-4689-901d-c6282e25717e",
+          "code": "MAT.7.1.1",
+          "title": "Gerçek yaşam ya da matematiksel durumlarda doğal sayı, tam sayı ve rasyonel sayıları yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_5a4951e3-9096-4689-901d-c6282e25717e",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_a354445a-7644-4e8b-8eb0-d6c4de9253d2",
+          "code": "MAT.7.1.3",
+          "title": "Rasyonel sayıların karşılaştırma ve sıralama ilişkilerini yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_a354445a-7644-4e8b-8eb0-d6c4de9253d2",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_b7c0fc5f-1de0-47b3-938c-6f425977ac87",
+          "code": "MAT.7.1.2",
+          "title": "Gerçek yaşam durumlarında rasyonel sayıların ondalık gösterimlerini yansıtabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_b7c0fc5f-1de0-47b3-938c-6f425977ac87",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_56a8eeac-0324-40dc-bde9-cb5323114223",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT7-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_ecfc822e-84b3-4420-9f4e-6b09d8eb78a9",
+          "code": "MAT.7.1.4",
+          "title": "Rasyonel sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_ecfc822e-84b3-4420-9f4e-6b09d8eb78a9",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT5-PILOT-20261013",
+          "verified": 1,
+          "outcome_id": "out_cir_3e79287b-6fd2-4505-86d2-b94b8ce6fe64",
+          "code": "MAT.5.1.1",
+          "title": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_3e79287b-6fd2-4505-86d2-b94b8ce6fe64",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_6e964398-d4bb-476b-b395-4024979f45ce",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT5-PILOT-20261013",
+          "verified": 1,
+          "outcome_id": "out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+          "code": "MAT.5.1.2",
+          "title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_b88c451d-a46f-4a57-8b32-cee45ffafbd8",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_8b7ccc0a-811c-4088-b2f0-eeed160c8b4e",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT9-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_47445dd8-bb9b-477e-bebd-6e5e573d4720",
+          "code": "MAT.9.1.3",
+          "title": "Farklı sayı kümelerinin özellikleri hakkında muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_47445dd8-bb9b-477e-bebd-6e5e573d4720",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8b7ccc0a-811c-4088-b2f0-eeed160c8b4e",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT9-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_9a2c4d27-6c6f-493a-8402-f45e7f2a5a01",
+          "code": "MAT.9.1.2",
+          "title": "Gerçek sayı aralıklarının gösteriminde ve aralıklarla ilgili işlemlerde küme sembol ve işlemlerinden yararlanabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_9a2c4d27-6c6f-493a-8402-f45e7f2a5a01",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8b7ccc0a-811c-4088-b2f0-eeed160c8b4e",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT9-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_f9af7439-0951-4f29-8189-f250d896f356",
+          "code": "MAT.9.1.1",
+          "title": "Gerçek sayıların üslü ve köklü gösterimleriyle yapılan işlemlere dair muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_f9af7439-0951-4f29-8189-f250d896f356",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8b7ccc0a-811c-4088-b2f0-eeed160c8b4e",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT9-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_fd368db7-a7e2-4a50-a6bf-b32495c263c1",
+          "code": "MAT.9.1.4",
+          "title": "Gerçek sayıların işlem özelliklerini cebirsel olarak ifade etmede analojik akıl yürütebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_fd368db7-a7e2-4a50-a6bf-b32495c263c1",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8bf1906f-2ded-4c88-82d3-4658e4d77d9c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT9-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_0b8f538e-6c4e-4b7b-9950-5bdd9219600a",
+          "code": "MAT.9.1.4",
+          "title": "Gerçek sayıların işlem özelliklerini cebirsel olarak ifade etmede analojik akıl yürütebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_0b8f538e-6c4e-4b7b-9950-5bdd9219600a",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_8bf1906f-2ded-4c88-82d3-4658e4d77d9c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT9-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_29d2db15-c0e2-48c8-a8ff-663c05f7660f",
+          "code": "MAT.9.1.3",
+          "title": "Farklı sayı kümelerinin özellikleri hakkında muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_29d2db15-c0e2-48c8-a8ff-663c05f7660f",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_8bf1906f-2ded-4c88-82d3-4658e4d77d9c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT9-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_c82a591a-2c16-442e-8585-4ff53f0e33ed",
+          "code": "MAT.9.1.1",
+          "title": "Gerçek sayıların üslü ve köklü gösterimleriyle yapılan işlemlere dair muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_c82a591a-2c16-442e-8585-4ff53f0e33ed",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_8bf1906f-2ded-4c88-82d3-4658e4d77d9c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT9-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_f929d300-66c6-4f03-83f3-25fe14182592",
+          "code": "MAT.9.1.2",
+          "title": "Gerçek sayı aralıklarının gösteriminde ve aralıklarla ilgili işlemlerde küme sembol ve işlemlerinden yararlanabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_f929d300-66c6-4f03-83f3-25fe14182592",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_8c55b22f-b1bf-4fe6-aacd-c510a99e0aa6",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT6-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_0f4b691e-aabf-40df-b2e3-8975daeaef65",
+          "code": "MAT.6.1.4",
+          "title": "Günlük hayat problemleri ya da matematiksel durumlar üzerinden ortak kat ve ortak böleni yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_0f4b691e-aabf-40df-b2e3-8975daeaef65",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8c55b22f-b1bf-4fe6-aacd-c510a99e0aa6",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT6-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_57f313e3-c8bb-4f27-b830-0bd5e5595c73",
+          "code": "MAT.6.1.1",
+          "title": "Karşılaştığı problem durumlarında bir doğal sayının çarpan ve katlarına yönelik muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_57f313e3-c8bb-4f27-b830-0bd5e5595c73",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8c55b22f-b1bf-4fe6-aacd-c510a99e0aa6",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT6-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_899804ab-35f1-4b91-b0f8-467734a7846e",
+          "code": "MAT.6.1.2",
+          "title": "Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile tam bölünebilme kriterlerine ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_899804ab-35f1-4b91-b0f8-467734a7846e",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_8c55b22f-b1bf-4fe6-aacd-c510a99e0aa6",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT6-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_a3b5630f-9f9a-49da-932e-e0720897b008",
+          "code": "MAT.6.1.3",
+          "title": "Bir doğal sayının asal olma durumunu ve asal çarpanlarını çözümleyebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_a3b5630f-9f9a-49da-932e-e0720897b008",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_919e8ade-db83-4352-ab5f-5370bf68fd45",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT10-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_1b5a6db0-92e4-4d88-b3b5-4d8b5ed108d3",
+          "code": "MAT.10.1.2",
+          "title": "Üçgenin yardımcı elemanlarının özellikleri ile ilgili çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_1b5a6db0-92e4-4d88-b3b5-4d8b5ed108d3",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_919e8ade-db83-4352-ab5f-5370bf68fd45",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT10-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_acdd1c4f-7be7-43e4-92f3-a42cc5fafbff",
+          "code": "MAT.10.1.4",
+          "title": "Sinüs ve kosinüs teoremlerini doğrulayabilme veya ispatlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_acdd1c4f-7be7-43e4-92f3-a42cc5fafbff",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_919e8ade-db83-4352-ab5f-5370bf68fd45",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT10-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_b49b6043-645d-4746-946d-5d0f3ad24bc9",
+          "code": "MAT.10.1.1",
+          "title": "Dik üçgende trigonometrik oranlara (sinüs, kosinüs, tanjant, kotanjant) ve trigonometrik özdeşliklere ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_b49b6043-645d-4746-946d-5d0f3ad24bc9",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_919e8ade-db83-4352-ab5f-5370bf68fd45",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT10-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_bac4b792-bcc7-4d46-a712-def5631f8307",
+          "code": "MAT.10.1.3",
+          "title": "Üçgenin bir kenarı ve o kenara ait yüksekliğinin değişimine bağlı olarak alanının değişimine ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_bac4b792-bcc7-4d46-a712-def5631f8307",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_95222267-ddfe-422e-bbe6-b23ec9f6dfca",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT11-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_0137ce43-3461-4d8d-88ae-17cf4d934653",
+          "code": "MAT.11.1.2",
+          "title": "Başkaları tarafından oluşturulan iki nicel değişkenli verilerin ilişkililiğine dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_0137ce43-3461-4d8d-88ae-17cf4d934653",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_95222267-ddfe-422e-bbe6-b23ec9f6dfca",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT11-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_5864d3be-e3c4-4a10-aeed-26a453f82950",
+          "code": "MAT.11.1.1",
+          "title": "İki nicel değişkenli veri ile çalışabilme ve iki nicel değişken arasındaki ilişkililiğe dayalı karar verebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_5864d3be-e3c4-4a10-aeed-26a453f82950",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_9972d139-a506-4dce-958d-64cca594323c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT6-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_56375b37-d724-4784-b297-5c5b165870c0",
+          "code": "MAT.6.1.3",
+          "title": "Bir doğal sayının asal olma durumunu ve asal çarpanlarını çözümleyebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_56375b37-d724-4784-b297-5c5b165870c0",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_9972d139-a506-4dce-958d-64cca594323c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT6-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_98c420a3-ac6f-466c-9be5-18bbd2c377f6",
+          "code": "MAT.6.1.1",
+          "title": "Karşılaştığı problem durumlarında bir doğal sayının çarpan ve katlarına yönelik muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_98c420a3-ac6f-466c-9be5-18bbd2c377f6",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_9972d139-a506-4dce-958d-64cca594323c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT6-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_ebdee4ec-07ef-4b07-9fe6-09049f483b60",
+          "code": "MAT.6.1.4",
+          "title": "Günlük hayat problemleri ya da matematiksel durumlar üzerinden ortak kat ve ortak böleni yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_ebdee4ec-07ef-4b07-9fe6-09049f483b60",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_9972d139-a506-4dce-958d-64cca594323c",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-2024-MAT6-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_fcf061b3-27f1-489b-99ec-2796036b71c1",
+          "code": "MAT.6.1.2",
+          "title": "Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile tam bölünebilme kriterlerine ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_fcf061b3-27f1-489b-99ec-2796036b71c1",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_9dca378a-11c5-4ad6-bd28-b605e0cae921",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT8-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_6873b98b-3718-456c-a628-dc931c599af6",
+          "code": "MAT.8.1.1",
+          "title": "Farklı bağlamlardaki üslü ifadelere, özelliklerine ve üslü ifadelerle yapılan işlemlere ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_6873b98b-3718-456c-a628-dc931c599af6",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_9dca378a-11c5-4ad6-bd28-b605e0cae921",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT8-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_c0b17f70-8905-47a2-9d02-22d9444c3f23",
+          "code": "MAT.8.1.2",
+          "title": "Karşılaştığı problem durumlarında kareköklü ifadeler ile ilgili muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_c0b17f70-8905-47a2-9d02-22d9444c3f23",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_9dca378a-11c5-4ad6-bd28-b605e0cae921",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT8-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_d82888b8-b8ce-478b-9d28-2d5b505f1124",
+          "code": "MAT.8.1.4",
+          "title": "Gerçek sayıları ve aralıklarını sayı doğrusunda yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_d82888b8-b8ce-478b-9d28-2d5b505f1124",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_9dca378a-11c5-4ad6-bd28-b605e0cae921",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT8-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_e3fea929-cdb3-4ec2-b25d-7a50d350eaa9",
+          "code": "MAT.8.1.3",
+          "title": "Sayıların rasyonel ya da irrasyonelliğini değerlendirebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_e3fea929-cdb3-4ec2-b25d-7a50d350eaa9",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_a5b09f39-c8e4-4a73-a756-16c934a5aa5a",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT5-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_5392085e-031d-4fba-a763-ba36f747fe92",
+          "code": "MAT.5.1.1",
+          "title": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_5392085e-031d-4fba-a763-ba36f747fe92",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_a5b09f39-c8e4-4a73-a756-16c934a5aa5a",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT5-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_d32b5fff-b987-4dce-8a17-4a3242c52891",
+          "code": "MAT.5.1.2",
+          "title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_d32b5fff-b987-4dce-8a17-4a3242c52891",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_a862c43c-de38-4a2d-9054-f78c2f0dc0f1",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT10-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_054a3094-ca67-4ee5-be10-911ece2e2788",
+          "code": "MAT.10.1.1",
+          "title": "Dik üçgende trigonometrik oranlara (sinüs, kosinüs, tanjant, kotanjant) ve trigonometrik özdeşliklere ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_054a3094-ca67-4ee5-be10-911ece2e2788",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_a862c43c-de38-4a2d-9054-f78c2f0dc0f1",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT10-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_225d13ea-51c6-41f7-a8ec-b68970519f68",
+          "code": "MAT.10.1.4",
+          "title": "Sinüs ve kosinüs teoremlerini doğrulayabilme veya ispatlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_225d13ea-51c6-41f7-a8ec-b68970519f68",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_a862c43c-de38-4a2d-9054-f78c2f0dc0f1",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT10-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_359939c9-a776-420e-ae51-5aec524799fb",
+          "code": "MAT.10.1.3",
+          "title": "Üçgenin bir kenarı ve o kenara ait yüksekliğinin değişimine bağlı olarak alanının değişimine ilişkin çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_359939c9-a776-420e-ae51-5aec524799fb",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_a862c43c-de38-4a2d-9054-f78c2f0dc0f1",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT10-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_7ca5fde3-1406-4e66-b25f-b9307ad80259",
+          "code": "MAT.10.1.2",
+          "title": "Üçgenin yardımcı elemanlarının özellikleri ile ilgili çıkarım yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_7ca5fde3-1406-4e66-b25f-b9307ad80259",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_d064482d-70b7-43a7-8d12-2579c9f43f76",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT7-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_08dce06c-bbc9-466a-a596-eae3328af2dd",
+          "code": "MAT.7.1.2",
+          "title": "Gerçek yaşam durumlarında rasyonel sayıların ondalık gösterimlerini yansıtabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_08dce06c-bbc9-466a-a596-eae3328af2dd",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_d064482d-70b7-43a7-8d12-2579c9f43f76",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT7-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_a3c9e1ca-abd6-48c2-845a-c0127448a0d0",
+          "code": "MAT.7.1.4",
+          "title": "Rasyonel sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_a3c9e1ca-abd6-48c2-845a-c0127448a0d0",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_d064482d-70b7-43a7-8d12-2579c9f43f76",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT7-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_d00cb65e-a27d-4061-b499-9ef890d86424",
+          "code": "MAT.7.1.1",
+          "title": "Gerçek yaşam ya da matematiksel durumlarda doğal sayı, tam sayı ve rasyonel sayıları yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_d00cb65e-a27d-4061-b499-9ef890d86424",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_d064482d-70b7-43a7-8d12-2579c9f43f76",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT7-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_d99b8357-a594-4c85-8fba-dc12629115d7",
+          "code": "MAT.7.1.3",
+          "title": "Rasyonel sayıların karşılaştırma ve sıralama ilişkilerini yorumlayabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_d99b8357-a594-4c85-8fba-dc12629115d7",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_d28c7947-d870-420a-95f3-a7cf146f0974",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT11-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_01c67a2f-39af-4280-b561-d74ef55aac7e",
+          "code": "MAT.11.1.2",
+          "title": "Başkaları tarafından oluşturulan iki nicel değişkenli verilerin ilişkililiğine dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_01c67a2f-39af-4280-b561-d74ef55aac7e",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_d28c7947-d870-420a-95f3-a7cf146f0974",
+          "academic_year": "2026-2027",
+          "program_version": "TYMM-MAT11-THEME1-20261016",
+          "verified": 1,
+          "outcome_id": "out_cir_b8c951e4-c13b-4b26-bcd7-b1d6ba8723d1",
+          "code": "MAT.11.1.1",
+          "title": "İki nicel değişkenli veri ile çalışabilme ve iki nicel değişken arasındaki ilişkililiğe dayalı karar verebilme",
+          "active": 1,
+          "node_id": "ln_out_cir_b8c951e4-c13b-4b26-bcd7-b1d6ba8723d1",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_d97523e6-4d60-40bf-b1ee-3957b2665e51",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT12-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_f11ae7f9-b2d6-4844-936f-4e3ce66c29ee",
+          "code": "MAT.12.1.1",
+          "title": "Aritmetik ve geometrik dizilerin özelliklerine ilişkin muhakeme yapabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_f11ae7f9-b2d6-4844-936f-4e3ce66c29ee",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_d97523e6-4d60-40bf-b1ee-3957b2665e51",
+          "academic_year": "2027-2028",
+          "program_version": "ANUNEX-TYMM-MAT12-THEME1-TARGET2028-20261017",
+          "verified": 1,
+          "outcome_id": "out_cir_f792f87e-86cb-45af-9145-72e7d9855be0",
+          "code": "MAT.12.1.2",
+          "title": "Gerçek sayılarda tanımlı fonksiyonlar ile gerçek sayı dizilerini karşılaştırabilme",
+          "active": 1,
+          "node_id": "ln_out_cir_f792f87e-86cb-45af-9145-72e7d9855be0",
+          "node_active": 1,
+          "node_year": "2027-2028"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_fen_cell",
+          "code": "NBL.FEN.01",
+          "title": "Hücrenin temel yapılarını ve görevlerini açıklar",
+          "active": 1,
+          "node_id": "ln_out_nbl_fen_cell",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_fen_force",
+          "code": "NBL.FEN.02",
+          "title": "Kuvvetin hareket ve enerji üzerindeki etkisini açıklar",
+          "active": 1,
+          "node_id": "ln_out_nbl_fen_force",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_mat_integer",
+          "code": "NBL.MAT.02",
+          "title": "Tam sayılarla işlemleri doğru uygular",
+          "active": 1,
+          "node_id": "ln_out_nbl_mat_integer",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_mat_ratio",
+          "code": "NBL.MAT.01",
+          "title": "Oran problemlerinde birim oranı yorumlar",
+          "active": 1,
+          "node_id": "ln_out_nbl_mat_ratio",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_tur_paragraph",
+          "code": "NBL.TUR.01",
+          "title": "Parçanın ana düşüncesini ve yardımcı düşüncelerini ayırt eder",
+          "active": 1,
+          "node_id": "ln_out_nbl_tur_paragraph",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        },
+        {
+          "id": "cv_nibiru_lab_2627",
+          "academic_year": "2026-2027",
+          "program_version": "ANUNEX-NIBIRU-SYNTHETIC",
+          "verified": 0,
+          "outcome_id": "out_nbl_tur_verb",
+          "code": "NBL.TUR.02",
+          "title": "Fiillerde zaman ve anlam ilişkisini kurar",
+          "active": 1,
+          "node_id": "ln_out_nbl_tur_verb",
+          "node_active": 1,
+          "node_year": "2026-2027"
+        }
+      ],
+      "pilot": [
+        {
+          "id": "pilot_50",
+          "question_cap": 50,
+          "reserved_count": 50
+        }
+      ],
+      "campaigns": [
+        {
+          "id": "editorial-20261015",
+          "academic_year": "2026-2027",
+          "status": "PAUSED"
+        }
+      ],
+      "jobs": [
+        {
+          "n": 32
+        }
+      ],
+      "questions": [
+        {
+          "n": 165
+        }
+      ]
+    },
+    "passed": true
+  },
+  "closure": {
+    "environment": "staging",
+    "academicYear": "2027-2028",
+    "newProducerCalls": 0,
+    "newEditorCalls": 0,
+    "before": {
+      "jobs": [
+        {
+          "n": 32
+        }
+      ],
+      "questions": [
+        {
+          "n": 165
+        }
+      ],
+      "campaigns": [
+        {
+          "id": "editorial-20261015",
+          "academic_year": "2026-2027",
+          "status": "PAUSED"
+        }
+      ]
+    },
+    "readiness": {
+      "ok": true,
+      "catalogRevision": 2,
+      "academicYear": "2027-2028",
+      "asOf": "2026-10-19T07:14:21.253Z",
+      "subject": "MAT",
+      "scope": "CURRENT_OFFICIAL_OUTCOME_HEADINGS",
+      "grades": [
+        {
+          "grade": 5,
+          "versionId": "cv_279791fb-d83c-442c-8602-0cd8a93cd035",
+          "expectedThemes": 7,
+          "expectedOutcomes": 23,
+          "observedOutcomes": 23,
+          "fullProgramImported": true,
+          "approvedLinkedQuestions": 0,
+          "proofScope": "BOUNDED_SUBCASES",
+          "blockers": [
+            "APPROVED_QUESTIONS_REQUIRED",
+            "END_TO_END_QUALITY_QUALIFICATION_REQUIRED"
+          ]
+        },
+        {
+          "grade": 6,
+          "versionId": "cv_e3d81423-e70f-4208-8b5f-f17da82742d1",
+          "expectedThemes": 7,
+          "expectedOutcomes": 24,
+          "observedOutcomes": 24,
+          "fullProgramImported": true,
+          "approvedLinkedQuestions": 0,
+          "proofScope": "BOUNDED_SUBCASES",
+          "blockers": [
+            "APPROVED_QUESTIONS_REQUIRED",
+            "END_TO_END_QUALITY_QUALIFICATION_REQUIRED"
+          ]
+        },
+        {
+          "grade": 7,
+          "versionId": "cv_2b1dcda0-bbbb-4825-8e3f-7e384b912509",
+          "expectedThemes": 9,
+          "expectedOutcomes": 30,
+          "observedOutcomes": 30,
+          "fullProgramImported": true,
+          "approvedLinkedQuestions": 0,
+          "proofScope": "BOUNDED_RATIONAL_COMPARISON",
+          "blockers": [
+            "APPROVED_QUESTIONS_REQUIRED",
+            "END_TO_END_QUALITY_QUALIFICATION_REQUIRED"
+          ]
+        },
+        {
+          "grade": 8,
+          "versionId": "cv_d299543a-bb4c-499b-b0d5-991af963e1a0",
+          "expectedThemes": 7,
+          "expectedOutcomes": 23,
+          "observedOutcomes": 23,
+          "fullProgramImported": true,
+          "approvedLinkedQuestions": 0,
+          "proofScope": "SUBJECT_SPECIFIC_PROOF_REQUIRED",
+          "blockers": [
+            "APPROVED_QUESTIONS_REQUIRED",
+            "END_TO_END_QUALITY_QUALIFICATION_REQUIRED"
+          ]
+        },
+        {
+          "grade": 9,
+          "versionId": "cv_609b403a-bee7-439b-8397-0d48bb78fcf1",
+          "expectedThemes": 7,
+          "expectedOutcomes": 20,
+          "observedOutcomes": 20,
+          "fullProgramImported": true,
+          "approvedLinkedQuestions": 0,
+          "proofScope": "SUBJECT_SPECIFIC_PROOF_REQUIRED",
+          "blockers": [
+            "APPROVED_QUESTIONS_REQUIRED",
+            "END_TO_END_QUALITY_QUALIFICATION_REQUIRED"
+          ]
+        },
+        {
+          "grade": 10,
+          "versionId": "cv_ff491f5e-8ddc-4e6d-9697-15e41c9d1173",
+          "expectedThemes": 7,
+          "expectedOutcomes": 21,
+          "observedOutcomes": 21,
+          "fullProgramImported": true,
+          "approvedLinkedQuestions": 0,
+          "proofScope": "SUBJECT_SPECIFIC_PROOF_REQUIRED",
+          "blockers": [
+            "APPROVED_QUESTIONS_REQUIRED",
+            "END_TO_END_QUALITY_QUALIFICATION_REQUIRED"
+          ]
+        },
+        {
+          "grade": 11,
+          "versionId": "cv_f27c64ff-6b04-4b31-adfa-681eca795509",
+          "expectedThemes": 5,
+          "expectedOutcomes": 15,
+          "observedOutcomes": 15,
+          "fullProgramImported": true,
+          "approvedLinkedQuestions": 0,
+          "proofScope": "SUBJECT_SPECIFIC_PROOF_REQUIRED",
+          "blockers": [
+            "APPROVED_QUESTIONS_REQUIRED",
+            "END_TO_END_QUALITY_QUALIFICATION_REQUIRED"
+          ]
+        },
+        {
+          "grade": 12,
+          "versionId": "cv_80462507-0a66-4454-8626-493c8d4bfe85",
+          "expectedThemes": 8,
+          "expectedOutcomes": 21,
+          "observedOutcomes": 21,
+          "fullProgramImported": true,
+          "approvedLinkedQuestions": 0,
+          "proofScope": "SUBJECT_SPECIFIC_PROOF_REQUIRED",
+          "blockers": [
+            "APPROVED_QUESTIONS_REQUIRED",
+            "END_TO_END_QUALITY_QUALIFICATION_REQUIRED"
+          ]
+        }
+      ],
+      "campaigns": [],
+      "summary": {
+        "importedGrades": 8,
+        "totalGrades": 8,
+        "expectedOutcomes": 177,
+        "observedOutcomes": 177,
+        "approvedLinkedQuestions": 0
+      },
+      "capabilities": {
+        "fullMathProgramImported": true,
+        "allSubjectsVerified": false,
+        "processComponentsImported": false,
+        "exam2028ScopeVerified": false,
+        "massProductionReady": false,
+        "richVisualProductionQualified": false
+      },
+      "note": "Bu ekran seçilen yılın matematik programı kayıtlarını ve bunlara bağlı onaylı soruları sayar. Müfredat aktarımı üretim kalitesi değildir; diğer branşlar, süreç bileşenleri, sınav kapsamı ve kapasite ayrıca doğrulanır."
+    },
+    "anonymousStatus": 401,
+    "invalidYearStatus": 400,
+    "oldYearIsolated": true,
+    "after": {
+      "jobs": [
+        {
+          "n": 32
+        }
+      ],
+      "questions": [
+        {
+          "n": 165
+        }
+      ],
+      "campaigns": [
+        {
+          "id": "editorial-20261015",
+          "academic_year": "2026-2027",
+          "status": "PAUSED"
+        }
+      ]
+    },
+    "passed": true
+  }
+}
