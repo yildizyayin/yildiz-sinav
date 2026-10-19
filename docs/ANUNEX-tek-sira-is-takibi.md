@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). Aktif iş A003 — production sınırsız kotayı doğrula.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). Aktif iş A004 — production müfredat aktarımını kapat.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -251,3 +251,16 @@ Sıradaki adım: kullanıcının güvenli girişiyle altı rol için giriş → 
 Durum: BİTTİ — **kullanıcı kabulüyle**. Kullanıcı "A002 bitmiş olmalı, A003'e geç" kararını verdi. Kod, test, merge ve production dağıtımı kanıtlı; iki alan adının health'i ready. Altı rolün tek tek giriş/panel/yetkisiz URL/çıkış kanıtı bu kayıtta **yoktur**; K002 son regresyonunda zorunlu olarak yeniden doğrulanacak.
 Not: Production D1 okuması bu oturumda güvenlik sınıflandırıcısınca engellendi; engelden önce geçen tek salt-okuma toplam sorgusu `yildiz-sinav-v1-db` içinde altı rolün her birinde aktif hesap olduğunu gösterdi (kişisel alan okunmadı). Canlı Worker'ın bağlı olduğu D1'in hangisi olduğu doğrulanmadı.
 Sıradaki ID: A003 — AKTİF.
+
+### A003 kapanışı — 19 Ekim 19:51
+
+Durum: BİTTİ — değişikliksiz, madde 4'e göre mevcut güncel kanıtla; kullanıcı canlı panel kontrolünü beklemeden ilerleme talimatı verdi.
+Kanıt: main `84e93b8` üzerinde ilgili 4 test dosyası / 47 test PASS (`question-agent-dispatch-plan`, `question-agent-pilot-budget`, `question-runtime-readiness`, `question-team`).
+- UNLIMITED görünür: `worker/lib/question-team.ts` `budget.mode=UNLIMITED, cap=null`; `QuestionTeam.tsx` "Sınırsız" gösterir.
+- Eski tüketim korunur: migration testi tüketimi değiştirmeden taşır; sınırsız mod ömür boyu tüketimi sıfırlamaz.
+- İptal iade etmez: `noRefund:true`; başarısız işler iade edilmez testi.
+- Görev/inceleme sınırları: iş başına 10, sınırsız modda dağıtım başına 50; inceleme kapasitesi yoksa dağıtım reddedilir.
+Canlı kanıt: 19 Ekim 18:29 production dağıtım günlüğü UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50 (A001 kaydı).
+Eksik: Süper Admin `/question-team` canlı ekran kanıtı alınmadı → K002 kontrol listesine eklendi.
+Kod/ayar değişmedi; diğer alan adı etkilenmedi.
+Sıradaki ID: A004 — AKTİF.
