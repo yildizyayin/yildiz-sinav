@@ -2,6 +2,9 @@ name: Deploy App Production Only
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/deploy-app-production.trigger]
 
 permissions:
   contents: read
@@ -157,6 +160,9 @@ jobs:
 
       - name: Read-only production smoke acceptance
         run: node scripts/live-production-smoke.mjs
+
+      - name: Verify super admin question scope deployment
+        run: node scripts/check-question-team-production.mjs
 
       - name: App-only production safety note
         run: |

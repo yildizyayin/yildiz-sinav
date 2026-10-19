@@ -1,0 +1,1906 @@
+{
+  "catalogRevision": 2,
+  "academicYear": "2027-2028",
+  "collectedAt": "2026-10-19T07:11:18.561Z",
+  "scope": "All outcome headings in the listed current official mathematics theme pages; process components, other subjects and exam specifications are separate.",
+  "annualPlanVerified": false,
+  "exam2028ScopeVerified": false,
+  "productionQualified": false,
+  "grades": [
+    {
+      "grade": 5,
+      "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/6",
+      "course": "ortaokul-matematik-dersi",
+      "indexHash": "3d1d5d2a1539d693f1ad8e34f144f4dc81e7192029ef083a218724255ea6ffb8",
+      "themes": [
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447",
+          "title": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "hash": "bf91e73b017d634c703d06ea4a5555b510dec4621d3800d29c0e7760c1966982",
+          "codes": [
+            "MAT.5.1.1",
+            "MAT.5.1.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/449",
+          "title": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "hash": "9aa82787c9a3d009988605e33956d2c6c5ef2de74e47acc78d7a58dfce63ef6b",
+          "codes": [
+            "MAT.5.1.3",
+            "MAT.5.1.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/450",
+          "title": "2.Tema: İşlemlerle Cebirsel Düşünme",
+          "hash": "0237bf2e38de700a2727d479b46bf042c49582898f923fa6657cf284367ce7a6",
+          "codes": [
+            "MAT.5.2.1",
+            "MAT.5.2.2",
+            "MAT.5.2.3",
+            "MAT.5.2.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+          "title": "3.Tema: Geometrik Şekiller",
+          "hash": "11ce56be528c9193fb50157018cd2003366685e0602cfd49c8bf3ce908d21ba5",
+          "codes": [
+            "MAT.5.3.1",
+            "MAT.5.3.2",
+            "MAT.5.3.3",
+            "MAT.5.3.4",
+            "MAT.5.3.5",
+            "MAT.5.3.6",
+            "MAT.5.3.7"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451",
+          "title": "4.Tema: Geometrik Nicelikler",
+          "hash": "6b6276b3f2da8d5f65407141cc060a7757ba41f52e217cd468b2481ea7976da0",
+          "codes": [
+            "MAT.5.4.1",
+            "MAT.5.4.2",
+            "MAT.5.4.3",
+            "MAT.5.4.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/452",
+          "title": "5.Tema: İstatistiksel Araştırma Süreci",
+          "hash": "0924f3f18c1abd5350754867f400b02705138f7180c6138f40627ffda98c30f0",
+          "codes": [
+            "MAT.5.5.1",
+            "MAT.5.5.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/455",
+          "title": "6.Tema: Veriden Olasılığa",
+          "hash": "48c2a4f2be78bee752ce20ec598c2bb12d0d5f0c7bada47e0f25c7facc5f4a4f",
+          "codes": [
+            "MAT.5.6.1",
+            "MAT.5.6.2"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "code": "MAT.5.1.1",
+          "title": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+        },
+        {
+          "code": "MAT.5.1.2",
+          "title": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/447"
+        },
+        {
+          "code": "MAT.5.1.3",
+          "title": "Gerçek yaşam durumlarına karşılık gelen kesirleri farklı biçimlerde temsil edebilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/449"
+        },
+        {
+          "code": "MAT.5.1.4",
+          "title": "Farklı gösterimlerle ifade edilen kesirlerin karşılaştırılmasına yönelik çıkarım yapabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/449"
+        },
+        {
+          "code": "MAT.5.2.1",
+          "title": "Eşitliğin korunumuna ve işlem özelliklerine yönelik çıkarım yapabilme",
+          "topic": "2.Tema: İşlemlerle Cebirsel Düşünme",
+          "unit": "2.Tema: İşlemlerle Cebirsel Düşünme",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/450"
+        },
+        {
+          "code": "MAT.5.2.2",
+          "title": "Karşılaştığı günlük hayat ya da matematiksel durumlarda işlem önceliğini yorumlayabilme",
+          "topic": "2.Tema: İşlemlerle Cebirsel Düşünme",
+          "unit": "2.Tema: İşlemlerle Cebirsel Düşünme",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/450"
+        },
+        {
+          "code": "MAT.5.2.3",
+          "title": "Sayı ve şekil örüntülerinin kuralına ilişkin muhakeme yapabilme",
+          "topic": "2.Tema: İşlemlerle Cebirsel Düşünme",
+          "unit": "2.Tema: İşlemlerle Cebirsel Düşünme",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/450"
+        },
+        {
+          "code": "MAT.5.2.4",
+          "title": "Temel aritmetik işlem içeren durumlardaki algoritmaları yorumlayabilme",
+          "topic": "2.Tema: İşlemlerle Cebirsel Düşünme",
+          "unit": "2.Tema: İşlemlerle Cebirsel Düşünme",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/450"
+        },
+        {
+          "code": "MAT.5.3.1",
+          "title": "Temel geometrik çizimler için matematiksel araç ve teknolojiden yararlanabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448"
+        },
+        {
+          "code": "MAT.5.3.2",
+          "title": "Temel geometrik çizimlere dayalı deneyimlerini yansıtabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448"
+        },
+        {
+          "code": "MAT.5.3.3",
+          "title": "Açıları ölçmek için matematiksel araç ve teknolojiden yararlanabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448"
+        },
+        {
+          "code": "MAT.5.3.4",
+          "title": "Düzlemde iki veya üç doğrunun birbirine göre durumuna bağlı olarak oluşabilecek açılara dair çıkarım yapabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448"
+        },
+        {
+          "code": "MAT.5.3.5",
+          "title": "Çokgenleri düzlemde ardışık olarak kesişen doğruların oluşturduğu kapalı şekiller olarak yorumlayabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448"
+        },
+        {
+          "code": "MAT.5.3.6",
+          "title": "Çokgenlerin özellikleri ile ilgili edindiği deneyimleri yansıtabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448"
+        },
+        {
+          "code": "MAT.5.3.7",
+          "title": "Matematiksel araç ve teknoloji yardımıyla düzlemde iki noktada kesişen çember çiftinin merkezleri ve kesişim noktalarından biri ile inşa edilen üçgenlerin kenar özelliklerine yönelik çıkarım yapabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448"
+        },
+        {
+          "code": "MAT.5.4.1",
+          "title": "Kenar uzunlukları doğal sayı olan bir dikdörtgenin çevre uzunluğu verildiğinde kenar uzunluklarını yorumlayabilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451"
+        },
+        {
+          "code": "MAT.5.4.2",
+          "title": "Birim karelerden yola çıkarak dikdörtgenin alanını değerlendirebilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451"
+        },
+        {
+          "code": "MAT.5.4.3",
+          "title": "Kenar uzunlukları doğal sayı olan bir dikdörtgenin alanının ölçüsü verildiğinde çevre uzunluğunu, çevre uzunluğu verildiğinde alanını yorumlayabilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451"
+        },
+        {
+          "code": "MAT.5.4.4",
+          "title": "Dikdörtgenin çevre uzunluğu ve alanı ile ilgili problemleri çözebilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451"
+        },
+        {
+          "code": "MAT.5.5.1",
+          "title": "Kategorik veri ile çalışabilme ve veriye dayalı karar verebilme",
+          "topic": "5.Tema: İstatistiksel Araştırma Süreci",
+          "unit": "5.Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/452"
+        },
+        {
+          "code": "MAT.5.5.2",
+          "title": "Başkaları tarafından oluşturulan kategorik veriye dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "topic": "5.Tema: İstatistiksel Araştırma Süreci",
+          "unit": "5.Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/452"
+        },
+        {
+          "code": "MAT.5.6.1",
+          "title": "Herhangi bir olayın olasılığının 0 (imkânsız) ile 1 (kesin) arasında (0 ve 1 dâhil) olduğunu (olasılık spektrumu) yorumlayabilme",
+          "topic": "6.Tema: Veriden Olasılığa",
+          "unit": "6.Tema: Veriden Olasılığa",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/455"
+        },
+        {
+          "code": "MAT.5.6.2",
+          "title": "Olayları az ya da çok olasılıklı şeklinde yapılandırabilme",
+          "topic": "6.Tema: Veriden Olasılığa",
+          "unit": "6.Tema: Veriden Olasılığa",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/455"
+        }
+      ]
+    },
+    {
+      "grade": 6,
+      "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/7",
+      "course": "ortaokul-matematik-dersi",
+      "indexHash": "d44d3e5a686dfcb643325e170c8982f7588b46e085dee86f95451ba692827c67",
+      "themes": [
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456",
+          "title": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "hash": "ef7e758d9ad70491af1d2454dd883e22e3e279936b75eaae369de4913ef94cad",
+          "codes": [
+            "MAT.6.1.1",
+            "MAT.6.1.2",
+            "MAT.6.1.3",
+            "MAT.6.1.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/457",
+          "title": "1.Tema:Sayılar Ve Nicelikler (2)",
+          "hash": "569097fe9e884cfb204de396fe0baf44e248c7037f0ba0a4393c728ef3b5825b",
+          "codes": [
+            "MAT.6.1.5",
+            "MAT.6.1.6",
+            "MAT.6.1.7",
+            "MAT.6.1.8"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/458",
+          "title": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "hash": "173eeea90030b5603504131e925b5ac6126c3489c9b6dd2ab597db573f1bfa13",
+          "codes": [
+            "MAT.6.2.1",
+            "MAT.6.2.2",
+            "MAT.6.2.3"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/459",
+          "title": "3.Tema: Geometrik Şekiller",
+          "hash": "6aebbbf6544e43e13d572bf9d4b6fdb5d3254ec584f07c0e76e4222f76fc0000",
+          "codes": [
+            "MAT.6.3.1",
+            "MAT.6.3.2",
+            "MAT.6.3.3",
+            "MAT.6.3.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460",
+          "title": "4.Tema: Geometrik Nicelikler",
+          "hash": "bbf2ecd17f323627f42d464239442b5c9dea9d90db4024826014da0b505d97eb",
+          "codes": [
+            "MAT.6.4.1",
+            "MAT.6.4.2",
+            "MAT.6.4.3",
+            "MAT.6.4.4",
+            "MAT.6.4.5",
+            "MAT.6.4.6"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/461",
+          "title": "5.Tema: İstatistiksel Araştırma Süreci",
+          "hash": "de062634d620b731efc3fbd6076bb298f1eb046d82f2a8ae85c22d772d459dfc",
+          "codes": [
+            "MAT.6.5.1",
+            "MAT.6.5.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/462",
+          "title": "6.Tema: Veriden Olasılığa",
+          "hash": "3f2ff565bd8aeb639e0a4d4b9903b74d4c02fbc012481c076387aa834a5a6280",
+          "codes": [
+            "MAT.6.6.1"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "code": "MAT.6.1.1",
+          "title": "Karşılaştığı problem durumlarında bir doğal sayının çarpan ve katlarına yönelik muhakeme yapabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456"
+        },
+        {
+          "code": "MAT.6.1.2",
+          "title": "Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile tam bölünebilme kriterlerine ilişkin çıkarım yapabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456"
+        },
+        {
+          "code": "MAT.6.1.3",
+          "title": "Bir doğal sayının asal olma durumunu ve asal çarpanlarını çözümleyebilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456"
+        },
+        {
+          "code": "MAT.6.1.4",
+          "title": "Günlük hayat problemleri ya da matematiksel durumlar üzerinden ortak kat ve ortak böleni yorumlayabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/456"
+        },
+        {
+          "code": "MAT.6.1.5",
+          "title": "Gerçek yaşam durumlarında ondalık gösterimlerin basamak değerlerini kesirlerden yararlanarak yorumlayabilme",
+          "topic": "1.Tema:Sayılar Ve Nicelikler (2)",
+          "unit": "1.Tema:Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/457"
+        },
+        {
+          "code": "MAT.6.1.6",
+          "title": "Kesir ve bölme işlemi arasındaki ilişkiye yönelik tümevarımsal akıl yürütebilme",
+          "topic": "1.Tema:Sayılar Ve Nicelikler (2)",
+          "unit": "1.Tema:Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/457"
+        },
+        {
+          "code": "MAT.6.1.7",
+          "title": "Gerçek yaşam durumlarında karşılaşılan kesir, ondalık ve yüzde gösterimleri ile ilgili dört işlem gerektiren problemleri çözebilme",
+          "topic": "1.Tema:Sayılar Ve Nicelikler (2)",
+          "unit": "1.Tema:Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/457"
+        },
+        {
+          "code": "MAT.6.1.8",
+          "title": "Karşılaştığı günlük hayat ya da matematiksel durumlarda standart uzunluk ölçme birimlerini değerlendirebilme",
+          "topic": "1.Tema:Sayılar Ve Nicelikler (2)",
+          "unit": "1.Tema:Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/457"
+        },
+        {
+          "code": "MAT.6.2.1",
+          "title": "Gerçek yaşam durumlarında bilinen niceliklerden bilinmeyen niceliklere ilişkin muhakeme yapabilme",
+          "topic": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "unit": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/458"
+        },
+        {
+          "code": "MAT.6.2.2",
+          "title": "Sayı ve şekil örüntülerini yorumlayabilme",
+          "topic": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "unit": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/458"
+        },
+        {
+          "code": "MAT.6.2.3",
+          "title": "Cebirsel ifadeler içeren durumlardaki algoritmaları yorumlayabilme",
+          "topic": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "unit": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/458"
+        },
+        {
+          "code": "MAT.6.3.1",
+          "title": "Düzlemde iki paralel doğru ve bir kesen ile oluşan açıları sınıflandırabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/459"
+        },
+        {
+          "code": "MAT.6.3.2",
+          "title": "Matematiksel araç ve teknolojiden yararlanarak iki paralel doğrunun iki kesenle oluşturduğu şekillerin özelliklerine dair çıkarım yapabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/459"
+        },
+        {
+          "code": "MAT.6.3.3",
+          "title": "Matematiksel araç ve teknolojiden yararlanarak birbirlerini ortalayan doğru parçalarını köşegen kabul eden dörtgenlere yönelik çıkarım yapabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/459"
+        },
+        {
+          "code": "MAT.6.3.4",
+          "title": "Üçgen, yamuk, paralelkenar, eşkenar dörtgen, dikdörtgen ve karenin açıları ile ilgili problemleri çözebilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/459"
+        },
+        {
+          "code": "MAT.6.4.1",
+          "title": "Uzunluk ve alan ölçme birimleri arasındaki ilişkilerle ilgili analojik akıl yürütebilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460"
+        },
+        {
+          "code": "MAT.6.4.2",
+          "title": "Dikdörtgenin alan bağıntısına yönelik deneyimlerini paralelkenar ve üçgenin alan bağıntılarına yansıtabilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460"
+        },
+        {
+          "code": "MAT.6.4.3",
+          "title": "Geometrik şekillerin alanları ile modellenen gerçek yaşam durumlarına yönelik problem çözebilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460"
+        },
+        {
+          "code": "MAT.6.4.4",
+          "title": "Çemberin uzunluğu ile çap uzunluğu arasındaki ilişkiye yönelik çıkarım yapabilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460"
+        },
+        {
+          "code": "MAT.6.4.5",
+          "title": "Çap veya yarıçap uzunluğu verilen bir çemberin uzunluğu ile ilgili problemleri çözebilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460"
+        },
+        {
+          "code": "MAT.6.4.6",
+          "title": "Çemberde merkez açının ölçüsü ile gördüğü yayın uzunluğu arasındaki ilişkiye dair tümevarımsal akıl yürütebilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/460"
+        },
+        {
+          "code": "MAT.6.5.1",
+          "title": "Kategorik veya nicel (kesikli) veri ile çalışabilme ve veriye dayalı karar verebilme",
+          "topic": "5.Tema: İstatistiksel Araştırma Süreci",
+          "unit": "5.Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/461"
+        },
+        {
+          "code": "MAT.6.5.2",
+          "title": "Başkaları tarafından oluşturulan kategorik veya nicel (kesikli) veriye dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "topic": "5.Tema: İstatistiksel Araştırma Süreci",
+          "unit": "5.Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/461"
+        },
+        {
+          "code": "MAT.6.6.1",
+          "title": "Bir olayın olasılığını gözleme dayalı tahmin edebilme",
+          "topic": "6.Tema: Veriden Olasılığa",
+          "unit": "6.Tema: Veriden Olasılığa",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/462"
+        }
+      ]
+    },
+    {
+      "grade": 7,
+      "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/8",
+      "course": "ortaokul-matematik-dersi",
+      "indexHash": "f7f77fc1ceb33d40d75fae1ee4f010ed69d90b77f3b26a63f216c022ad03d62b",
+      "themes": [
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/463",
+          "title": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "hash": "63d6cd16951135d0b2beaf04e770dde549698cd063bb6a3a39525776bc17d4a7",
+          "codes": [
+            "MAT.7.1.1",
+            "MAT.7.1.2",
+            "MAT.7.1.3",
+            "MAT.7.1.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/464",
+          "title": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "hash": "ae17dd865fac34b71ca9dfe39044f50726900ce4cc947cfbd17d2cb9250b69a9",
+          "codes": [
+            "MAT.7.1.5",
+            "MAT.7.1.6",
+            "MAT.7.1.7"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/465",
+          "title": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "hash": "f71f01968b0e1dbe971c2f42e6074adbde624ec3ea700fb2631cf39c4d9677f3",
+          "codes": [
+            "MAT.7.2.1",
+            "MAT.7.2.2",
+            "MAT.7.2.3",
+            "MAT.7.2.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/466",
+          "title": "3. Tema: Dönüşüm",
+          "hash": "5b46ec475b40a31e3c08c91480e814fc4dc623f4f75a4f28ff7fb23b4b6f12e6",
+          "codes": [
+            "MAT.7.3.1",
+            "MAT.7.3.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467",
+          "title": "4. Tema: Geometrik Nicelikler (1)",
+          "hash": "dce9ce3108c23bcb490073d209e7e298102062d4f860b7f35dc09a10e9975799",
+          "codes": [
+            "MAT.7.4.1",
+            "MAT.7.4.2",
+            "MAT.7.4.3",
+            "MAT.7.4.4",
+            "MAT.7.4.5",
+            "MAT.7.4.6"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/468",
+          "title": "4.Tema: Geometrik Nicelikler (2)",
+          "hash": "f7e1e6304d8a1eb0f361471f77846bc708858b42485d6e4922301557fb1c3410",
+          "codes": [
+            "MAT.7.4.7",
+            "MAT.7.4.8",
+            "MAT.7.4.9",
+            "MAT.7.4.10"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/469",
+          "title": "5.Tema: Geometrik Şekiller",
+          "hash": "56a9a425cd34f74d1507943b14c4a77c17623fa1ee8d60c141bb2c56301cf419",
+          "codes": [
+            "MAT.7.5.1",
+            "MAT.7.5.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/470",
+          "title": "6.Tema: İstatistiksel Araştırma Süreci",
+          "hash": "72d2dced2b69b6b937e0f993dd9e2507aba72c02d67f1d12f3d6982a899854e9",
+          "codes": [
+            "MAT.7.6.1",
+            "MAT.7.6.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/471",
+          "title": "7.Tema: Veriden Olasılığa",
+          "hash": "52330be46aaaabc23669b366c718455bcb6e0d73f6c4c558ae126011b85b35b2",
+          "codes": [
+            "MAT.7.7.1",
+            "MAT.7.7.2",
+            "MAT.7.7.3"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "code": "MAT.7.1.1",
+          "title": "Gerçek yaşam ya da matematiksel durumlarda doğal sayı, tam sayı ve rasyonel sayıları yorumlayabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/463"
+        },
+        {
+          "code": "MAT.7.1.2",
+          "title": "Gerçek yaşam durumlarında rasyonel sayıların ondalık gösterimlerini yansıtabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/463"
+        },
+        {
+          "code": "MAT.7.1.3",
+          "title": "Rasyonel sayıların karşılaştırma ve sıralama ilişkilerini yorumlayabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/463"
+        },
+        {
+          "code": "MAT.7.1.4",
+          "title": "Rasyonel sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/463"
+        },
+        {
+          "code": "MAT.7.1.5",
+          "title": "Gerçek yaşam durumları üzerinden oran ilişkileri hakkında muhakeme yapabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/464"
+        },
+        {
+          "code": "MAT.7.1.6",
+          "title": "Gerçek yaşam durumları üzerinden orantılı durumları yorumlayabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/464"
+        },
+        {
+          "code": "MAT.7.1.7",
+          "title": "Gerçek yaşam durumları üzerinden doğru orantılı durumlara ilişkin problemleri çözebilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "1.Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/464"
+        },
+        {
+          "code": "MAT.7.2.1",
+          "title": "Gerçek yaşam durumları ya da matematiksel durumlar üzerinden cebirsel ifadelerle toplama, çıkarma ve bir rasyonel sayıyla çarpma işlemlerini yorumlayabilme",
+          "topic": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "unit": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/465"
+        },
+        {
+          "code": "MAT.7.2.2",
+          "title": "Birinci dereceden bir bilinmeyenli denklem ve birinci dereceden bir bilinmeyenli eşitsizlik içeren gerçek yaşam problemlerini çözebilme",
+          "topic": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "unit": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/465"
+        },
+        {
+          "code": "MAT.7.2.3",
+          "title": "Sayılar ve özelliklerini içeren ispatlara ilişkin matematiksel muhakeme yapabilme",
+          "topic": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "unit": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/465"
+        },
+        {
+          "code": "MAT.7.2.4",
+          "title": "Temel aritmetik ve cebirsel ifadelerle işlem içeren durumlardaki süreci algoritma ifade yöntemlerini kullanarak yapılandırabilme",
+          "topic": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "unit": "2.Tema: İşlemlerle Cebirsel Düşünme Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/465"
+        },
+        {
+          "code": "MAT.7.3.1",
+          "title": "Şekillerin yansıma dönüşümü altındaki görüntülerinin oluşturulmasına dair çıkarım yapabilme",
+          "topic": "3. Tema: Dönüşüm",
+          "unit": "3. Tema: Dönüşüm",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/466"
+        },
+        {
+          "code": "MAT.7.3.2",
+          "title": "Yansıma dönüşümündeki deneyimlerini orta dikme ve açıortay inşasına yansıtabilme",
+          "topic": "3. Tema: Dönüşüm",
+          "unit": "3. Tema: Dönüşüm",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/466"
+        },
+        {
+          "code": "MAT.7.4.1",
+          "title": "Eş küplerle oluşturulan yapılar ile görünümleri arasındaki ilişkiyi çözümleyebilme",
+          "topic": "4. Tema: Geometrik Nicelikler (1)",
+          "unit": "4. Tema: Geometrik Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467"
+        },
+        {
+          "code": "MAT.7.4.2",
+          "title": "Dikdörtgenler prizmasının yüzey alanını yorumlayabilme",
+          "topic": "4. Tema: Geometrik Nicelikler (1)",
+          "unit": "4. Tema: Geometrik Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467"
+        },
+        {
+          "code": "MAT.7.4.3",
+          "title": "Dikdörtgenler prizmasının hacmini eş nesneler aracılığıyla yorumlayabilme",
+          "topic": "4. Tema: Geometrik Nicelikler (1)",
+          "unit": "4. Tema: Geometrik Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467"
+        },
+        {
+          "code": "MAT.7.4.4",
+          "title": "Dikdörtgenler prizmasının hacim bağıntısını değerlendirebilme",
+          "topic": "4. Tema: Geometrik Nicelikler (1)",
+          "unit": "4. Tema: Geometrik Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467"
+        },
+        {
+          "code": "MAT.7.4.5",
+          "title": "Hacim ölçme birimleri arasındaki ilişkileri değerlendirebilme",
+          "topic": "4. Tema: Geometrik Nicelikler (1)",
+          "unit": "4. Tema: Geometrik Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467"
+        },
+        {
+          "code": "MAT.7.4.6",
+          "title": "Günlük hayat durumlarında dikdörtgenler prizmaları ile modellenen cisimlerin yüzey alanı ve hacmine yönelik problem çözebilme",
+          "topic": "4. Tema: Geometrik Nicelikler (1)",
+          "unit": "4. Tema: Geometrik Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/467"
+        },
+        {
+          "code": "MAT.7.4.7",
+          "title": "Dikdörtgenin, paralelkenarın alanına ve çemberin uzunluğuna ilişkin deneyimlerini dairenin alan bağıntısına yansıtabilme",
+          "topic": "4.Tema: Geometrik Nicelikler (2)",
+          "unit": "4.Tema: Geometrik Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/468"
+        },
+        {
+          "code": "MAT.7.4.8",
+          "title": "Çemberde merkez açı ve gördüğü yay uzunluğu arasındaki ilişkiden yola çıkarak daire ve daire diliminin alanları arasındaki ilişkiye yönelik analojik akıl yürütebilme",
+          "topic": "4.Tema: Geometrik Nicelikler (2)",
+          "unit": "4.Tema: Geometrik Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/468"
+        },
+        {
+          "code": "MAT.7.4.9",
+          "title": "Eşkenar dörtgen ve yamuğun alan bağıntılarına dair çıkarım yapabilme",
+          "topic": "4.Tema: Geometrik Nicelikler (2)",
+          "unit": "4.Tema: Geometrik Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/468"
+        },
+        {
+          "code": "MAT.7.4.10",
+          "title": "Günlük hayat durumlarında daire, daire dilimi, eşkenar dörtgen ve yamuğun alanına ilişkin problem çözebilme",
+          "topic": "4.Tema: Geometrik Nicelikler (2)",
+          "unit": "4.Tema: Geometrik Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/468"
+        },
+        {
+          "code": "MAT.7.5.1",
+          "title": "Matematiksel araç ve teknolojiden yararlanarak üçgende kenarortayı, açıortayı ve yüksekliği çözümleyebilme",
+          "topic": "5.Tema: Geometrik Şekiller",
+          "unit": "5.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/469"
+        },
+        {
+          "code": "MAT.7.5.2",
+          "title": "Orta dikme inşasına yönelik deneyimlerini üçgende kenarortay inşasına yansıtabilme",
+          "topic": "5.Tema: Geometrik Şekiller",
+          "unit": "5.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/469"
+        },
+        {
+          "code": "MAT.7.6.1",
+          "title": "Kategorik veya nicel (sürekli) veri ile çalışabilme ve veriye dayalı karar verebilme",
+          "topic": "6.Tema: İstatistiksel Araştırma Süreci",
+          "unit": "6.Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/470"
+        },
+        {
+          "code": "MAT.7.6.2",
+          "title": "Başkaları tarafından oluşturulan kategorik veya nicel (sürekli) veriye dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "topic": "6.Tema: İstatistiksel Araştırma Süreci",
+          "unit": "6.Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/470"
+        },
+        {
+          "code": "MAT.7.7.1",
+          "title": "Bir olayın ve tümleyeninin olasılığına ilişkin tümevarımsal akıl yürütebilme",
+          "topic": "7.Tema: Veriden Olasılığa",
+          "unit": "7.Tema: Veriden Olasılığa",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/471"
+        },
+        {
+          "code": "MAT.7.7.2",
+          "title": "Aynı deneye ait olayların eşit olasılıklı olma durumlarını değerlendirebilme",
+          "topic": "7.Tema: Veriden Olasılığa",
+          "unit": "7.Tema: Veriden Olasılığa",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/471"
+        },
+        {
+          "code": "MAT.7.7.3",
+          "title": "Olayları ayrık olma ve ayrık olmama durumlarına göre sınıflandırabilme",
+          "topic": "7.Tema: Veriden Olasılığa",
+          "unit": "7.Tema: Veriden Olasılığa",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/471"
+        }
+      ]
+    },
+    {
+      "grade": 8,
+      "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ortaokul-matematik-dersi/9",
+      "course": "ortaokul-matematik-dersi",
+      "indexHash": "5ba00db599544254d44a3be930aec8531dcd66df70cae5f3c5ec9dc9237e423a",
+      "themes": [
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/472",
+          "title": "1.Tema: Sayılar Ve Nicelikler",
+          "hash": "5e74fb8455241bf98ba2bfc7f0a2cb3496c1df2e1490afd574fd6e573cdb1dbd",
+          "codes": [
+            "MAT.8.1.1",
+            "MAT.8.1.2",
+            "MAT.8.1.3",
+            "MAT.8.1.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/473",
+          "title": "2.Tema: Cebirsel Düşünme Ve Değişimler",
+          "hash": "aba1b4afb032aac9ebe5138d17a5af8737930073e777cfb1155aaac7397b750e",
+          "codes": [
+            "MAT.8.2.1",
+            "MAT.8.2.2",
+            "MAT.8.2.3",
+            "MAT.8.2.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474",
+          "title": "3.Tema: Geometrik Şekiller",
+          "hash": "7799a2297c225ad73b149aa355461aa90aa766b76aedfb8ac64f4b26637a03ca",
+          "codes": [
+            "MAT.8.3.1",
+            "MAT.8.3.2",
+            "MAT.8.3.3",
+            "MAT.8.3.4",
+            "MAT.8.3.5",
+            "MAT.8.3.6"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/475",
+          "title": "4.Tema: Geometrik Nicelikler",
+          "hash": "96216318ca057a39c9fb45cd7928af4e352a720f62671c54f15984ac5ccf0bd9",
+          "codes": [
+            "MAT.8.4.1",
+            "MAT.8.4.2",
+            "MAT.8.4.3"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/476",
+          "title": "5.Tema: Dönüşüm",
+          "hash": "7721fab91cee53ba7f5cb49f279eade1870af5a4d3784a049c177a1f898c9539",
+          "codes": [
+            "MAT.8.5.1",
+            "MAT.8.5.2",
+            "MAT.8.5.3"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/477",
+          "title": "6.Tema: İstatistiksel Araştırma Süreci",
+          "hash": "998f8324e7e65999ea611e562dd6d9f5f79f0b72f85eb83cf85157263123b98c",
+          "codes": [
+            "MAT.8.6.1",
+            "MAT.8.6.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/478",
+          "title": "7.Tema: Veriden Olasılığa",
+          "hash": "5f20d4ba9aac97e18549f89aabd06a56b43d406f89dbd31483655e8846aacf65",
+          "codes": [
+            "MAT.8.7.1"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "code": "MAT.8.1.1",
+          "title": "Farklı bağlamlardaki üslü ifadelere, özelliklerine ve üslü ifadelerle yapılan işlemlere ilişkin çıkarım yapabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler",
+          "unit": "1.Tema: Sayılar Ve Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/472"
+        },
+        {
+          "code": "MAT.8.1.2",
+          "title": "Karşılaştığı problem durumlarında kareköklü ifadeler ile ilgili muhakeme yapabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler",
+          "unit": "1.Tema: Sayılar Ve Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/472"
+        },
+        {
+          "code": "MAT.8.1.3",
+          "title": "Sayıların rasyonel ya da irrasyonelliğini değerlendirebilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler",
+          "unit": "1.Tema: Sayılar Ve Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/472"
+        },
+        {
+          "code": "MAT.8.1.4",
+          "title": "Gerçek sayıları ve aralıklarını sayı doğrusunda yorumlayabilme",
+          "topic": "1.Tema: Sayılar Ve Nicelikler",
+          "unit": "1.Tema: Sayılar Ve Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/472"
+        },
+        {
+          "code": "MAT.8.2.1",
+          "title": "Gerçek yaşam durumları üzerinden dik koordinat sistemini çözümleyebilme",
+          "topic": "2.Tema: Cebirsel Düşünme Ve Değişimler",
+          "unit": "2.Tema: Cebirsel Düşünme Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/473"
+        },
+        {
+          "code": "MAT.8.2.2",
+          "title": "Gerçek yaşam durumlarındaki doğrusal ilişkileri doğrusal fonksiyonlarla temsil edebilme",
+          "topic": "2.Tema: Cebirsel Düşünme Ve Değişimler",
+          "unit": "2.Tema: Cebirsel Düşünme Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/473"
+        },
+        {
+          "code": "MAT.8.2.3",
+          "title": "Dik koordinat sisteminde iki doğrusal fonksiyonun birbirine göre durumuna ilişkin çıkarım yapabilme",
+          "topic": "2.Tema: Cebirsel Düşünme Ve Değişimler",
+          "unit": "2.Tema: Cebirsel Düşünme Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/473"
+        },
+        {
+          "code": "MAT.8.2.4",
+          "title": "Doğrusal fonksiyonlara ilişkin problemlerin çözümlerini algoritma ifade yöntemlerini kullanarak yapılandırabilme",
+          "topic": "2.Tema: Cebirsel Düşünme Ve Değişimler",
+          "unit": "2.Tema: Cebirsel Düşünme Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/473"
+        },
+        {
+          "code": "MAT.8.3.1",
+          "title": "Matematiksel araç ve teknoloji yardımıyla üçgenin kenarları ve açıları arasındaki ilişkiyi yorumlayabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474"
+        },
+        {
+          "code": "MAT.8.3.2",
+          "title": "Matematiksel araç ve teknoloji yardımıyla üçgenin kenar uzunlukları arasındaki ilişkiye yönelik çıkarım yapabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474"
+        },
+        {
+          "code": "MAT.8.3.3",
+          "title": "Bir üçgene eş üçgen oluşturmak için üçgenle ilgili bilinmesi yeterli olan elemanlara dair çıkarım yapabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474"
+        },
+        {
+          "code": "MAT.8.3.4",
+          "title": "Bir üçgene benzer üçgen oluşturmak için üçgenle ilgili bilinmesi yeterli olan elemanlara dair çıkarım yapabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474"
+        },
+        {
+          "code": "MAT.8.3.5",
+          "title": "Kenar uzunlukları a²+ b²= c² eşitliğini sağlayan üçgenleri oluşturarak dik üçgen olduklarını; dik üçgenlerde dik kenar uzunluklarının kareleri toplamının hipotenüs uzunluğunun karesine eşit olduğunu yorumlayabilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474"
+        },
+        {
+          "code": "MAT.8.3.6",
+          "title": "Üçgende açı-kenar ilişkisi, üçgen eşitsizliği ve Pisagor bağıntısını içeren problemleri çözebilme",
+          "topic": "3.Tema: Geometrik Şekiller",
+          "unit": "3.Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/474"
+        },
+        {
+          "code": "MAT.8.4.1",
+          "title": "Dik prizmalar, dikdörtgen dik piramit, dik dairesel silindir ve dik dairesel koninin yüzey açınımlarını çözümleyebilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/475"
+        },
+        {
+          "code": "MAT.8.4.2",
+          "title": "Dik dairesel silindirin yüzey açınımına ilişkin deneyimlerini dik dairesel silindirin yüzey alanına yansıtabilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/475"
+        },
+        {
+          "code": "MAT.8.4.3",
+          "title": "Dairenin alan bağıntısının oluşturulma sürecinden hareketle dik dairesel silindirin hacim bağıntısına yönelik analojik akıl yürütebilme",
+          "topic": "4.Tema: Geometrik Nicelikler",
+          "unit": "4.Tema: Geometrik Nicelikler",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/475"
+        },
+        {
+          "code": "MAT.8.5.1",
+          "title": "Matematiksel araç ve teknoloji yardımıyla öteleme dönüşümünü çözümleyebilme",
+          "topic": "5.Tema: Dönüşüm",
+          "unit": "5.Tema: Dönüşüm",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/476"
+        },
+        {
+          "code": "MAT.8.5.2",
+          "title": "Dik koordinat sisteminde geometrik şekillere ait noktaların apsis ve ordinatlarının öteleme dönüşümündeki değişimlerine ve eksenlere göre yansıma dönüşümündeki değişimlerine ilişkin çıkarım yapabilme",
+          "topic": "5.Tema: Dönüşüm",
+          "unit": "5.Tema: Dönüşüm",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/476"
+        },
+        {
+          "code": "MAT.8.5.3",
+          "title": "Öteleme ve yansıma dönüşümlerini içeren problemleri çözebilme",
+          "topic": "5.Tema: Dönüşüm",
+          "unit": "5.Tema: Dönüşüm",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/476"
+        },
+        {
+          "code": "MAT.8.6.1",
+          "title": "Kategorik veya nicel (kesikli-sürekli) veri ile çalışabilme ve veriye dayalı karar verebilme",
+          "topic": "6.Tema: İstatistiksel Araştırma Süreci",
+          "unit": "6.Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/477"
+        },
+        {
+          "code": "MAT.8.6.2",
+          "title": "Başkaları tarafından oluşturulan kategorik veya nicel (kesikli-sürekli) veriye dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "topic": "6.Tema: İstatistiksel Araştırma Süreci",
+          "unit": "6.Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/477"
+        },
+        {
+          "code": "MAT.8.7.1",
+          "title": "Gerçek yaşamda karşılaşabileceği bir olayın olasılığına ilişkin farklı olasılık yaklaşımlarından (öznel, deneysel, teorik) uygun olanı belirleyerek karar verebilme",
+          "topic": "7.Tema: Veriden Olasılığa",
+          "unit": "7.Tema: Veriden Olasılığa",
+          "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/478"
+        }
+      ]
+    },
+    {
+      "grade": 9,
+      "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/matematik-dersi/11",
+      "course": "matematik-dersi",
+      "indexHash": "8faca619c49f91a5b187b3dbe63fdf580cd583983d5660da87fea13ffa151aea",
+      "themes": [
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/21",
+          "title": "1. Tema: Sayılar",
+          "hash": "b6162f5d32ba63b005eb141ab0799f72998928684b22655acc4d732173124e41",
+          "codes": [
+            "MAT.9.1.1",
+            "MAT.9.1.2",
+            "MAT.9.1.3",
+            "MAT.9.1.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/23",
+          "title": "2. Tema: Nicelikler Ve Değişimler",
+          "hash": "5e98915ac4d4cd0a58a56f3ae98bf3be7172c646efd230e68c09f61eeca189ee",
+          "codes": [
+            "MAT.9.2.1",
+            "MAT.9.2.2",
+            "MAT.9.2.3"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/25",
+          "title": "3. Tema: Geometrik Şekiller",
+          "hash": "1cb5b96ed6516c7980e44908bf8536c2fab4c879cae1e1bd2e164983cb63fa3e",
+          "codes": [
+            "MAT.9.3.1"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/83",
+          "title": "4. Tema: Eşlik Ve Benzerlik",
+          "hash": "17ecfd97efac75ed07e58494263b56d998fc0caae9d1d8dbc5da6d9867e1280f",
+          "codes": [
+            "MAT.9.4.1",
+            "MAT.9.4.2",
+            "MAT.9.4.3",
+            "MAT.9.4.4",
+            "MAT.9.4.5"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/24",
+          "title": "5. Tema: Algoritma Ve Bilişim",
+          "hash": "c065c78b5e5c9e817e91674bcd23d4c5a67628b1f615a867cc7cda52d9bf3467",
+          "codes": [
+            "MAT.9.5.1",
+            "MAT.9.5.2",
+            "MAT.9.5.3"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/91",
+          "title": "6. Tema: İstatistiksel Araştırma Süreci",
+          "hash": "1a9637c91425ad3bec5edc3d29e0c9c6bce7f296495864854944f323b92935c6",
+          "codes": [
+            "MAT.9.6.1",
+            "MAT.9.6.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/97",
+          "title": "7. Tema: Veriden Olasılığa",
+          "hash": "f6c27aa3765378fae9375c5553246be8aa77fcb8174bae0ec6675db23d70baea",
+          "codes": [
+            "MAT.9.7.1",
+            "MAT.9.7.2"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "code": "MAT.9.1.1",
+          "title": "Gerçek sayıların üslü ve köklü gösterimleriyle yapılan işlemlere dair muhakeme yapabilme",
+          "topic": "1. Tema: Sayılar",
+          "unit": "1. Tema: Sayılar",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/21"
+        },
+        {
+          "code": "MAT.9.1.2",
+          "title": "Gerçek sayı aralıklarının gösteriminde ve aralıklarla ilgili işlemlerde küme sembol ve işlemlerinden yararlanabilme",
+          "topic": "1. Tema: Sayılar",
+          "unit": "1. Tema: Sayılar",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/21"
+        },
+        {
+          "code": "MAT.9.1.3",
+          "title": "Farklı sayı kümelerinin özellikleri hakkında muhakeme yapabilme",
+          "topic": "1. Tema: Sayılar",
+          "unit": "1. Tema: Sayılar",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/21"
+        },
+        {
+          "code": "MAT.9.1.4",
+          "title": "Gerçek sayıların işlem özelliklerini cebirsel olarak ifade etmede analojik akıl yürütebilme",
+          "topic": "1. Tema: Sayılar",
+          "unit": "1. Tema: Sayılar",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/21"
+        },
+        {
+          "code": "MAT.9.2.1",
+          "title": "Gerçek sayılarda f(x) = x şeklinde tanımlı doğrusal referans fonksiyonun nitel özellikleri ile bu fonksiyondan türetilen g(x) = a ∙ f(x ± r) ± k, (a, r, k ∈ ℝ, a ≠ 0) doğrusal fonksiyonların nitel özelliklerine ilişkin matematiksel muhakeme yapabilme",
+          "topic": "2. Tema: Nicelikler Ve Değişimler",
+          "unit": "2. Tema: Nicelikler Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/23"
+        },
+        {
+          "code": "MAT.9.2.2",
+          "title": "Gerçek sayılarda m(x) = ± |ax ± b| ± c (a, b, c ∈ℝ, a ≠ 0) şeklinde tanımlı mutlak değer fonksiyonlarının nitel özelliklerini incelemek için doğrusal fonksiyonlara bağlı analojik akıl yürütebilme",
+          "topic": "2. Tema: Nicelikler Ve Değişimler",
+          "unit": "2. Tema: Nicelikler Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/23"
+        },
+        {
+          "code": "MAT.9.2.3",
+          "title": "Doğrusal fonksiyonlarla ifade edilebilen denklem ve eşitsizlikler içeren problem çözebilme",
+          "topic": "2. Tema: Nicelikler Ve Değişimler",
+          "unit": "2. Tema: Nicelikler Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/23"
+        },
+        {
+          "code": "MAT.9.3.1",
+          "title": "Üçgende açı ve kenarla ilgili özellikleri, üçgenin açıları ve kenarları arasındaki ilişkileri doğrulayabilme veya ispatlayabilme",
+          "topic": "3. Tema: Geometrik Şekiller",
+          "unit": "3. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/25"
+        },
+        {
+          "code": "MAT.9.4.1",
+          "title": "Geometrik dönüşümlerle ilgili çıkarım yapabilme",
+          "topic": "4. Tema: Eşlik Ve Benzerlik",
+          "unit": "4. Tema: Eşlik Ve Benzerlik",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/83"
+        },
+        {
+          "code": "MAT.9.4.2",
+          "title": "İki üçgenin eş veya benzer olması için gerekli olan asgari koşullarla ilgili çıkarım yapabilme",
+          "topic": "4. Tema: Eşlik Ve Benzerlik",
+          "unit": "4. Tema: Eşlik Ve Benzerlik",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/83"
+        },
+        {
+          "code": "MAT.9.4.3",
+          "title": "Bir üçgenden hareketle ona benzer üçgenler oluşturma ile ilgili yansıtma yapabilme",
+          "topic": "4. Tema: Eşlik Ve Benzerlik",
+          "unit": "4. Tema: Eşlik Ve Benzerlik",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/83"
+        },
+        {
+          "code": "MAT.9.4.4",
+          "title": "Tales, Öklid ve Pisagor teoremlerini ispatlayabilme",
+          "topic": "4. Tema: Eşlik Ve Benzerlik",
+          "unit": "4. Tema: Eşlik Ve Benzerlik",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/83"
+        },
+        {
+          "code": "MAT.9.4.5",
+          "title": "Eşlik ve benzerlikle ilgili çıkarım ve teoremleri içeren problemleri çözebilme",
+          "topic": "4. Tema: Eşlik Ve Benzerlik",
+          "unit": "4. Tema: Eşlik Ve Benzerlik",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/83"
+        },
+        {
+          "code": "MAT.9.5.1",
+          "title": "Algoritma temelli yaklaşımlarla problem çözebilme",
+          "topic": "5. Tema: Algoritma Ve Bilişim",
+          "unit": "5. Tema: Algoritma Ve Bilişim",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/24"
+        },
+        {
+          "code": "MAT.9.5.2",
+          "title": "Algoritmik yapılar içerisindeki mantık bağlaçlarını ve niceleyicileri çözümleyebilme",
+          "topic": "5. Tema: Algoritma Ve Bilişim",
+          "unit": "5. Tema: Algoritma Ve Bilişim",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/24"
+        },
+        {
+          "code": "MAT.9.5.3",
+          "title": "Mantık bağlaçları ve niceleyicilerin algoritmalarda kullanımına yönelik edindiği deneyimi farklı matematiksel görev ve problemlere yansıtabilme",
+          "topic": "5. Tema: Algoritma Ve Bilişim",
+          "unit": "5. Tema: Algoritma Ve Bilişim",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/24"
+        },
+        {
+          "code": "MAT.9.6.1",
+          "title": "Tek nicel değişkenli veri dağılımları ile çalışabilme ve tek nicel değişken içeren veriye dayalı karar verebilme",
+          "topic": "6. Tema: İstatistiksel Araştırma Süreci",
+          "unit": "6. Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/91"
+        },
+        {
+          "code": "MAT.9.6.2",
+          "title": "Başkaları tarafından oluşturulan tek nicel değişkenli veri dağılımlarına ilişkin istatistiksel sonuç veya yorumları tartışabilme",
+          "topic": "6. Tema: İstatistiksel Araştırma Süreci",
+          "unit": "6. Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/91"
+        },
+        {
+          "code": "MAT.9.7.1",
+          "title": "Olayların olasılığını gözleme dayalı tahmin edebilme",
+          "topic": "7. Tema: Veriden Olasılığa",
+          "unit": "7. Tema: Veriden Olasılığa",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/97"
+        },
+        {
+          "code": "MAT.9.7.2",
+          "title": "Olayların olasılığına ilişkin tümevarımsal akıl yürütebilme",
+          "topic": "7. Tema: Veriden Olasılığa",
+          "unit": "7. Tema: Veriden Olasılığa",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/97"
+        }
+      ]
+    },
+    {
+      "grade": 10,
+      "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/matematik-dersi/12",
+      "course": "matematik-dersi",
+      "indexHash": "eaa6faa1e7f279cf80b386e683b3128d791d1041dafd80f0ce53dba44783b560",
+      "themes": [
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/260",
+          "title": "1. Tema: Geometrik Şekiller",
+          "hash": "e36aa4a394e44f2ef93e9f561dd8a03c9203ed39206865bd56bbd19e5af1d748",
+          "codes": [
+            "MAT.10.1.1",
+            "MAT.10.1.2",
+            "MAT.10.1.3",
+            "MAT.10.1.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/271",
+          "title": "2. Tema: İstatistiksel Araştırma Süreci",
+          "hash": "bb5df8cf1f6b4f85b34e7111becd30babe45d3bd841e68845f512cb3dd32ece6",
+          "codes": [
+            "MAT.10.2.1",
+            "MAT.10.2.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/244",
+          "title": "3. Tema: Sayılar",
+          "hash": "3862f4a85a05208ebca1c8397d75f0c2909914ef24ba147755c3f96de7db430d",
+          "codes": [
+            "MAT.10.3.1",
+            "MAT.10.3.2",
+            "MAT.10.3.3"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/250",
+          "title": "4. Tema: Nicelikler Ve Değişimler",
+          "hash": "a511d9fcdeccb12a064da21f1f8e23c245b6335894139e49ddc8fb5860179cbd",
+          "codes": [
+            "MAT.10.4.1",
+            "MAT.10.4.2",
+            "MAT.10.4.3",
+            "MAT.10.4.4",
+            "MAT.10.4.5",
+            "MAT.10.4.6"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/251",
+          "title": "5. Tema: Sayma, Algoritma Ve Bilişim",
+          "hash": "4057e664399b241ef1b49d158eeabc85376c5025d65578826257c308dd20603a",
+          "codes": [
+            "MAT.10.5.1",
+            "MAT.10.5.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/263",
+          "title": "6. Tema: Analitik İnceleme",
+          "hash": "6d76ca9ed165cf9a1a2fa8ac32209f12b0dc634769bebe4b913395c5d56c1c68",
+          "codes": [
+            "MAT.10.6.1",
+            "MAT.10.6.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/274",
+          "title": "7. Tema: Veriden Olasılığa",
+          "hash": "f641447cad182d4a7edf66fc24db85442239b36fca91b8cd626f1083ef91bee1",
+          "codes": [
+            "MAT.10.7.1",
+            "MAT.10.7.2"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "code": "MAT.10.1.1",
+          "title": "Dik üçgende trigonometrik oranlara (sinüs, kosinüs, tanjant, kotanjant) ve trigonometrik özdeşliklere ilişkin çıkarım yapabilme",
+          "topic": "1. Tema: Geometrik Şekiller",
+          "unit": "1. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/260"
+        },
+        {
+          "code": "MAT.10.1.2",
+          "title": "Üçgenin yardımcı elemanlarının özellikleri ile ilgili çıkarım yapabilme",
+          "topic": "1. Tema: Geometrik Şekiller",
+          "unit": "1. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/260"
+        },
+        {
+          "code": "MAT.10.1.3",
+          "title": "Üçgenin bir kenarı ve o kenara ait yüksekliğinin değişimine bağlı olarak alanının değişimine ilişkin çıkarım yapabilme",
+          "topic": "1. Tema: Geometrik Şekiller",
+          "unit": "1. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/260"
+        },
+        {
+          "code": "MAT.10.1.4",
+          "title": "Sinüs ve kosinüs teoremlerini doğrulayabilme veya ispatlayabilme",
+          "topic": "1. Tema: Geometrik Şekiller",
+          "unit": "1. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/260"
+        },
+        {
+          "code": "MAT.10.2.1",
+          "title": "İki kategorik değişkenli veri ile çalışabilme ve iki kategorik değişken arasındaki ilişkililiğe dayalı karar verebilme",
+          "topic": "2. Tema: İstatistiksel Araştırma Süreci",
+          "unit": "2. Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/271"
+        },
+        {
+          "code": "MAT.10.2.2",
+          "title": "Başkaları tarafından oluşturulan iki kategorik değişkenli verilerin ilişkililiğine dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "topic": "2. Tema: İstatistiksel Araştırma Süreci",
+          "unit": "2. Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/271"
+        },
+        {
+          "code": "MAT.10.3.1",
+          "title": "Bir doğal sayı ile asal çarpanları ve bölenleri arasındaki ilişkilere dair çıkarım yapabilme",
+          "topic": "3. Tema: Sayılar",
+          "unit": "3. Tema: Sayılar",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/244"
+        },
+        {
+          "code": "MAT.10.3.2",
+          "title": "Birden çok doğal sayının ortak bölenleriyle bunların en büyüğü ve ortak katlarıyla bunların en küçüğü arasındaki ilişkilere dair muhakeme yapabilme",
+          "topic": "3. Tema: Sayılar",
+          "unit": "3. Tema: Sayılar",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/244"
+        },
+        {
+          "code": "MAT.10.3.3",
+          "title": "Bir doğal sayının belirli doğal sayılara bölümünden kalanlarına dair muhakeme yapabilme",
+          "topic": "3. Tema: Sayılar",
+          "unit": "3. Tema: Sayılar",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/244"
+        },
+        {
+          "code": "MAT.10.4.1",
+          "title": "Gerçek sayılarda fonksiyon olma şartları ile gerçek sayılarda tanımlı fonksiyonların nitel özelliklerini matematiksel temsillerle değerlendirebilme",
+          "topic": "4. Tema: Nicelikler Ve Değişimler",
+          "unit": "4. Tema: Nicelikler Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/250"
+        },
+        {
+          "code": "MAT.10.4.2",
+          "title": "Gerçek sayılarda f(x) = x² şeklinde tanımlı karesel referans fonksiyonun nitel özellikleri ile bu fonksiyondan türetilen (g(x) = a ∙ f(x ± r) ± k (a, r, k ∈ ℝ, a ≠ 0)) karesel fonksiyonların nitel özelliklerine ilişkin matematiksel muhakeme yapabilme",
+          "topic": "4. Tema: Nicelikler Ve Değişimler",
+          "unit": "4. Tema: Nicelikler Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/250"
+        },
+        {
+          "code": "MAT.10.4.3",
+          "title": "Gerçek sayılarda şeklinde tanımlı karekök referans fonksiyonun nitel özellikleri ile bu fonksiyondan türetilen (g(x) = a ∙ f(x ± r) ± k (a, r, k ∈ ℝ, a ≠ 0)) karekök fonksiyonlarının nitel özelliklerine ilişkin matematiksel muhakeme yapabilme",
+          "topic": "4. Tema: Nicelikler Ve Değişimler",
+          "unit": "4. Tema: Nicelikler Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/250"
+        },
+        {
+          "code": "MAT.10.4.4",
+          "title": "Gerçek sayılarda f(x) = 1/x (x ≠ 0) şeklinde tanımlı rasyonel referans fonksiyonun nitel özellikleri ile bu fonksiyondan türetilen (g(x) = a ∙ f(x ± r) ± k (a, r, k ∈ ℝ, a ≠ 0)) rasyonel fonksiyonların nitel özelliklerine ilişkin matematiksel muhakeme yapabilme",
+          "topic": "4. Tema: Nicelikler Ve Değişimler",
+          "unit": "4. Tema: Nicelikler Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/250"
+        },
+        {
+          "code": "MAT.10.4.5",
+          "title": "Doğrusal, karesel, karekök ve rasyonel referans fonksiyonlar ile bu fonksiyonlardan türetilebilen fonksiyonların ters fonksiyonlarına dair çıkarım yapabilme",
+          "topic": "4. Tema: Nicelikler Ve Değişimler",
+          "unit": "4. Tema: Nicelikler Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/250"
+        },
+        {
+          "code": "MAT.10.4.6",
+          "title": "Doğrusal, karesel, karekök, rasyonel referans fonksiyonlar ve bunlardan türetilen fonksiyonlarla ifade edilebilen denklem ve eşitsizlikler içeren problemleri çözebilme",
+          "topic": "4. Tema: Nicelikler Ve Değişimler",
+          "unit": "4. Tema: Nicelikler Ve Değişimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/250"
+        },
+        {
+          "code": "MAT.10.5.1",
+          "title": "Sayma stratejileri kullanarak problem çözebilme",
+          "topic": "5. Tema: Sayma, Algoritma Ve Bilişim",
+          "unit": "5. Tema: Sayma, Algoritma Ve Bilişim",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/251"
+        },
+        {
+          "code": "MAT.10.5.2",
+          "title": "Cebirsel ve fonksiyonel işlemleri algoritmik bir dille yapılandırabilme",
+          "topic": "5. Tema: Sayma, Algoritma Ve Bilişim",
+          "unit": "5. Tema: Sayma, Algoritma Ve Bilişim",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/251"
+        },
+        {
+          "code": "MAT.10.6.1",
+          "title": "Dik koordinat sisteminde iki nokta arasındaki uzaklık ve bir doğru parçasını belli oranda bölen noktanın koordinatlarıyla ilgili çıkarım yapabilme",
+          "topic": "6. Tema: Analitik İnceleme",
+          "unit": "6. Tema: Analitik İnceleme",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/263"
+        },
+        {
+          "code": "MAT.10.6.2",
+          "title": "Dik koordinat sistemini doğrunun özelliklerini incelemek ve doğru ile ilgili problemleri çözebilmek için uygun bir temsil aracı olarak kullanabilme",
+          "topic": "6. Tema: Analitik İnceleme",
+          "unit": "6. Tema: Analitik İnceleme",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/263"
+        },
+        {
+          "code": "MAT.10.7.1",
+          "title": "Koşullu olasılık ile çıkarım yapabilme",
+          "topic": "7. Tema: Veriden Olasılığa",
+          "unit": "7. Tema: Veriden Olasılığa",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/274"
+        },
+        {
+          "code": "MAT.10.7.2",
+          "title": "Bir olayın gerçekleşmesinin diğer bir olayın meydana gelmesine bağlı olduğu durumların olasılığını mevcut bilgiye/veriye dayalı tahmin edebilme",
+          "topic": "7. Tema: Veriden Olasılığa",
+          "unit": "7. Tema: Veriden Olasılığa",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/274"
+        }
+      ]
+    },
+    {
+      "grade": 11,
+      "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/matematik-dersi/13",
+      "course": "matematik-dersi",
+      "indexHash": "9bdc561e293c079e8adac27d77e6de7252805ab9829cc5ad783de29e7670df0b",
+      "themes": [
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/298",
+          "title": "1. Tema: İstatistiksel Araştırma Süreci",
+          "hash": "dd39f10d9de976f331e0c75d3b4ed928309377ff8dbd6421c3af9f0d1ec7e77a",
+          "codes": [
+            "MAT.11.1.1",
+            "MAT.11.1.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/297",
+          "title": "2. Tema: Geometrik Şekiller",
+          "hash": "9e08c0f377f86b76eac1f878780d7e5f1f92f138a57083a11829dba53ef964a2",
+          "codes": [
+            "MAT.11.2.1",
+            "MAT.11.2.2",
+            "MAT.11.2.3",
+            "MAT.11.2.4",
+            "MAT.11.2.5"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/281",
+          "title": "3. Tema: Nicelikler Ve Değişimler (1)",
+          "hash": "fe5889c2cf29a116804c7ced3d3a87d270ef74ca734d49afd32d28448f06961b",
+          "codes": [
+            "MAT.11.3.1",
+            "MAT.11.3.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/295",
+          "title": "3. Tema: Nicelikler Ve Değişimler (2)",
+          "hash": "6bca948f5043c7b1e8d927c677587fdc7f06382ebc4f585411f7cb85947eb2c8",
+          "codes": [
+            "MAT.11.3.3",
+            "MAT.11.3.4",
+            "MAT.11.3.5",
+            "MAT.11.3.6"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/296",
+          "title": "3. Tema: Nicelikler Ve Değişimler (3)",
+          "hash": "998b8146ac68c55e9303435f109ce7a4dd1963f0cafe9ccece69b5e6db97cb23",
+          "codes": [
+            "MAT.11.3.7",
+            "MAT.11.3.8"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "code": "MAT.11.1.1",
+          "title": "İki nicel değişkenli veri ile çalışabilme ve iki nicel değişken arasındaki ilişkililiğe dayalı karar verebilme",
+          "topic": "1. Tema: İstatistiksel Araştırma Süreci",
+          "unit": "1. Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/298"
+        },
+        {
+          "code": "MAT.11.1.2",
+          "title": "Başkaları tarafından oluşturulan iki nicel değişkenli verilerin ilişkililiğine dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "topic": "1. Tema: İstatistiksel Araştırma Süreci",
+          "unit": "1. Tema: İstatistiksel Araştırma Süreci",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/298"
+        },
+        {
+          "code": "MAT.11.2.1",
+          "title": "Üçgenlerde açı, benzerlik ve alan özelliklerinden yola çıkarak dörtgenlerin açı, kenar, köşegen, simetri ve alan özelliklerine ilişkin muhakeme yapabilme",
+          "topic": "2. Tema: Geometrik Şekiller",
+          "unit": "2. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/297"
+        },
+        {
+          "code": "MAT.11.2.2",
+          "title": "Özel dörtgenlerin kenar, açı, köşegen ve simetri özelliklerinden hareketle aralarındaki ilişkileri yapılandırabilme",
+          "topic": "2. Tema: Geometrik Şekiller",
+          "unit": "2. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/297"
+        },
+        {
+          "code": "MAT.11.2.3",
+          "title": "Çokgenleri içbükey veya dışbükey olarak sınıflandırabilme",
+          "topic": "2. Tema: Geometrik Şekiller",
+          "unit": "2. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/297"
+        },
+        {
+          "code": "MAT.11.2.4",
+          "title": "Dışbükey çokgenlerin kenar, açı, köşegen, simetri ve alan özelliklerine dair çıkarım yapabilme",
+          "topic": "2. Tema: Geometrik Şekiller",
+          "unit": "2. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/297"
+        },
+        {
+          "code": "MAT.11.2.5",
+          "title": "Çokgenlerin kenar, açı, köşegen, simetri ve alan özelliklerini içeren problemler çözebilme",
+          "topic": "2. Tema: Geometrik Şekiller",
+          "unit": "2. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/297"
+        },
+        {
+          "code": "MAT.11.3.1",
+          "title": "f(x)=sinx (x∈ℝ), f(x)=cosx (x∈ℝ), f(x)=tanx (x∈ℝ, x≠π/2+kπ, k∈ℤ ) ve f(x)=cotx (x∈ℝ, x≠kπ, k∈ℤ) şeklinde tanımlı trigonometrik referans fonksiyonların nitel özellikleri ile bu fonksiyonlardan türetilen [g(x) = k∙f(mx±r)±s (k, m, r, s ∈ ℝ, k≠0, m≠0)] trigonometrik fonksiyonların nitel özelliklerine ilişkin matematiksel muhakeme yapabilme",
+          "topic": "3. Tema: Nicelikler Ve Değişimler (1)",
+          "unit": "3. Tema: Nicelikler Ve Değişimler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/281"
+        },
+        {
+          "code": "MAT.11.3.2",
+          "title": "Trigonometrik fonksiyonlarla ifade edilebilen denklemleri içeren problemleri çözebilme",
+          "topic": "3. Tema: Nicelikler Ve Değişimler (1)",
+          "unit": "3. Tema: Nicelikler Ve Değişimler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/281"
+        },
+        {
+          "code": "MAT.11.3.3",
+          "title": "Gerçek sayılarda f(x) = aˣ (a&gt;0, a≠1) şeklinde tanımlı üstel referans fonksiyonun nitel özellikleri ile bu fonksiyondan türetilen [g(x)=k∙f(mx ± r)±s (k, m, r, s ∈ ℝ, k≠0, m≠0)] üstel fonksiyonların nitel özelliklerine ilişkin matematiksel muhakeme yapabilme",
+          "topic": "3. Tema: Nicelikler Ve Değişimler (2)",
+          "unit": "3. Tema: Nicelikler Ve Değişimler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/295"
+        },
+        {
+          "code": "MAT.11.3.4",
+          "title": "Üstel fonksiyonların ters fonksiyonlarını inceleyerek logaritmik fonksiyona dair çıkarım yapabilme",
+          "topic": "3. Tema: Nicelikler Ve Değişimler (2)",
+          "unit": "3. Tema: Nicelikler Ve Değişimler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/295"
+        },
+        {
+          "code": "MAT.11.3.5",
+          "title": "f(x)=logₐx (a&gt;0, a≠1, x&gt;0 ) şeklinde tanımlı logaritmik referans fonksiyonun nitel özellikleri ile bu fonksiyondan türetilen [g(x)=k∙f(mx±r)±s (k, m, r, s ∈ ℝ, k≠0, m≠0)] logaritmik fonksiyonların nitel özelliklerine ilişkin matematiksel muhakeme yapabilme",
+          "topic": "3. Tema: Nicelikler Ve Değişimler (2)",
+          "unit": "3. Tema: Nicelikler Ve Değişimler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/295"
+        },
+        {
+          "code": "MAT.11.3.6",
+          "title": "Gerçek yaşam durumlarında üstel ve logaritmik fonksiyonlarla ifade edilen denklem ve eşitsizlikleri içeren problemler çözebilme",
+          "topic": "3. Tema: Nicelikler Ve Değişimler (2)",
+          "unit": "3. Tema: Nicelikler Ve Değişimler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/295"
+        },
+        {
+          "code": "MAT.11.3.7",
+          "title": "Fonksiyonların bileşkelerine ilişkin muhakeme yapabilme",
+          "topic": "3. Tema: Nicelikler Ve Değişimler (3)",
+          "unit": "3. Tema: Nicelikler Ve Değişimler (3)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/296"
+        },
+        {
+          "code": "MAT.11.3.8",
+          "title": "Fonksiyonlarda dört işlem özelliklerini yorumlayabilme",
+          "topic": "3. Tema: Nicelikler Ve Değişimler (3)",
+          "unit": "3. Tema: Nicelikler Ve Değişimler (3)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/296"
+        }
+      ]
+    },
+    {
+      "grade": 12,
+      "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/matematik-dersi/14",
+      "course": "matematik-dersi",
+      "indexHash": "4999c3d8167b997ffe6367b6edf6a5fa9554e405fab2d15b452578507a09d214",
+      "themes": [
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/305",
+          "title": "1. Tema: Nicelikler Ve Değişimler (1)",
+          "hash": "25a0ac97b26e2d95b322254536f09c6b869ae4a07389fa878956481e5c37614e",
+          "codes": [
+            "MAT.12.1.1",
+            "MAT.12.1.2"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/306",
+          "title": "1. Tema: Nicelikler Ve Değişimler (2)",
+          "hash": "274c8b5aa926c8650dd3dde022d677e8078229a82733a3d49742d4ab8bf8e438",
+          "codes": [
+            "MAT.12.1.3",
+            "MAT.12.1.4",
+            "MAT.12.1.5"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/325",
+          "title": "2. Tema: Geometrik Şekiller",
+          "hash": "1d2f6633974deb067b8c6f8567cbd24566b75f8ace17739b7e23a09f69972d91",
+          "codes": [
+            "MAT.12.2.1",
+            "MAT.12.2.2",
+            "MAT.12.2.3"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/329",
+          "title": "3. Tema: Geometrik Cisimler",
+          "hash": "380520006ce7de3e344d7de236f869d6418a3bf8295729619349fafa8c78b285",
+          "codes": [
+            "MAT.12.3.1",
+            "MAT.12.3.2",
+            "MAT.12.3.3"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/307",
+          "title": "4. Tema: Değişimin Matematiği (1)",
+          "hash": "900b5977a340ce46712a85986d0f1829aec8b089cb335f2567945653fbc36fbe",
+          "codes": [
+            "MAT.12.4.1",
+            "MAT.12.4.2",
+            "MAT.12.4.3",
+            "MAT.12.4.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/318",
+          "title": "4. Tema: Değişimin Matematiği (2)",
+          "hash": "03909357287755bae4f4dd3d9b0ee399c42c0cf0d66c1b73d85201234164c960",
+          "codes": [
+            "MAT.12.4.5",
+            "MAT.12.4.6",
+            "MAT.12.4.7"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/321",
+          "title": "4. Tema: Değişimin Matematiği (3)",
+          "hash": "12f0a11d94862734ec32b18b7c93a25c27314e42afd831969578b3f93f5086d8",
+          "codes": [
+            "MAT.12.4.8",
+            "MAT.12.4.9"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/matematik-dersi/unite/333",
+          "title": "5. Tema: Hazır Veriler Üzerinde Çalışma",
+          "hash": "44b3fd06970be6af3ea6fc0aeb715dd73c3d926a808b1f9f3deb3079a3483c16",
+          "codes": [
+            "MAT.12.5.1"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "code": "MAT.12.1.1",
+          "title": "Aritmetik ve geometrik dizilerin özelliklerine ilişkin muhakeme yapabilme",
+          "topic": "1. Tema: Nicelikler Ve Değişimler (1)",
+          "unit": "1. Tema: Nicelikler Ve Değişimler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/305"
+        },
+        {
+          "code": "MAT.12.1.2",
+          "title": "Gerçek sayılarda tanımlı fonksiyonlar ile gerçek sayı dizilerini karşılaştırabilme",
+          "topic": "1. Tema: Nicelikler Ve Değişimler (1)",
+          "unit": "1. Tema: Nicelikler Ve Değişimler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/305"
+        },
+        {
+          "code": "MAT.12.1.3",
+          "title": "Gerçek sayılarda tanımlı doğrusal ve karesel fonksiyonlar ile polinom fonksiyonlar arasındaki ilişkiyi ifade etmede analojik akıl yürütebilme",
+          "topic": "1. Tema: Nicelikler Ve Değişimler (2)",
+          "unit": "1. Tema: Nicelikler Ve Değişimler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/306"
+        },
+        {
+          "code": "MAT.12.1.4",
+          "title": "Gerçek katsayılı tek değişkenli polinom fonksiyonların nitel özelliklerine dair çıkarım yapabilme",
+          "topic": "1. Tema: Nicelikler Ve Değişimler (2)",
+          "unit": "1. Tema: Nicelikler Ve Değişimler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/306"
+        },
+        {
+          "code": "MAT.12.1.5",
+          "title": "Polinom ve rasyonel fonksiyonlarla ifade edilebilen denklem ve eşitsizlikleri içeren problemleri çözebilme",
+          "topic": "1. Tema: Nicelikler Ve Değişimler (2)",
+          "unit": "1. Tema: Nicelikler Ve Değişimler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/306"
+        },
+        {
+          "code": "MAT.12.2.1",
+          "title": "Çemberle ilişkili elemanları (kesen, kiriş, teğet, çap, yay) çözümleyebilme",
+          "topic": "2. Tema: Geometrik Şekiller",
+          "unit": "2. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/325"
+        },
+        {
+          "code": "MAT.12.2.2",
+          "title": "Çemberin açı, kiriş ve teğet özellikleri ile ilgili çıkarım yapabilme",
+          "topic": "2. Tema: Geometrik Şekiller",
+          "unit": "2. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/325"
+        },
+        {
+          "code": "MAT.12.2.3",
+          "title": "Çemberin açı, kiriş, teğet özelliklerini ve dairenin alanını kullanarak problem çözme",
+          "topic": "2. Tema: Geometrik Şekiller",
+          "unit": "2. Tema: Geometrik Şekiller",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/325"
+        },
+        {
+          "code": "MAT.12.3.1",
+          "title": "Dik prizma ve dik dairesel silindirin elemanlarını çözümleyebilme",
+          "topic": "3. Tema: Geometrik Cisimler",
+          "unit": "3. Tema: Geometrik Cisimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/329"
+        },
+        {
+          "code": "MAT.12.3.2",
+          "title": "Dik prizma ile dik dairesel silindirden yararlanarak dik piramit, dik dairesel koni ve kürenin elemanları, yüzey alanları ve hacimleri arasındaki ilişkilere dair analojik akıl yürütebilme",
+          "topic": "3. Tema: Geometrik Cisimler",
+          "unit": "3. Tema: Geometrik Cisimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/329"
+        },
+        {
+          "code": "MAT.12.3.3",
+          "title": "Geometrik cisimlerin elemanları, yüzey alanı ve hacim bağıntılarını içeren problemleri çözebilme",
+          "topic": "3. Tema: Geometrik Cisimler",
+          "unit": "3. Tema: Geometrik Cisimler",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/329"
+        },
+        {
+          "code": "MAT.12.4.1",
+          "title": "Fonksiyonların belirli bir nokta civarındaki veya sonsuzdaki davranışını limit kavramını kullanarak grafikler üzerinden yorumlayabilme",
+          "topic": "4. Tema: Değişimin Matematiği (1)",
+          "unit": "4. Tema: Değişimin Matematiği (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/307"
+        },
+        {
+          "code": "MAT.12.4.2",
+          "title": "Cebirsel temsili verilen bir fonksiyonun belirli bir noktadaki veya sonsuzdaki limiti hakkında muhakeme yapabilme",
+          "topic": "4. Tema: Değişimin Matematiği (1)",
+          "unit": "4. Tema: Değişimin Matematiği (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/307"
+        },
+        {
+          "code": "MAT.12.4.3",
+          "title": "Bir fonksiyonun bir noktadaki limitinin belirsizlik durumunu yorumlayabilme",
+          "topic": "4. Tema: Değişimin Matematiği (1)",
+          "unit": "4. Tema: Değişimin Matematiği (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/307"
+        },
+        {
+          "code": "MAT.12.4.4",
+          "title": "Bir fonksiyonun tanımlı olduğu noktalardaki sürekliliğini yorumlayabilme",
+          "topic": "4. Tema: Değişimin Matematiği (1)",
+          "unit": "4. Tema: Değişimin Matematiği (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/307"
+        },
+        {
+          "code": "MAT.12.4.5",
+          "title": "Bir fonksiyonun belirli bir nokta civarındaki değişim oranına ilişkin muhakeme yapabilme",
+          "topic": "4. Tema: Değişimin Matematiği (2)",
+          "unit": "4. Tema: Değişimin Matematiği (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/318"
+        },
+        {
+          "code": "MAT.12.4.6",
+          "title": "Fonksiyonların türevinin olmadığı noktalar hakkında çıkarım yapabilme",
+          "topic": "4. Tema: Değişimin Matematiği (2)",
+          "unit": "4. Tema: Değişimin Matematiği (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/318"
+        },
+        {
+          "code": "MAT.12.4.7",
+          "title": "Türevin limit gösteriminden faydalanarak iki fonksiyonun toplamı, farkı, çarpımı, bölümü ve bileşkesinin türevine ilişkin muhakeme yapabilme",
+          "topic": "4. Tema: Değişimin Matematiği (2)",
+          "unit": "4. Tema: Değişimin Matematiği (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/318"
+        },
+        {
+          "code": "MAT.12.4.8",
+          "title": "Bir fonksiyonun ve onun türev fonksiyonunun matematiksel temsillerine ve bunlar arasındaki ilişkilere dair çıkarımlar yapabilme",
+          "topic": "4. Tema: Değişimin Matematiği (3)",
+          "unit": "4. Tema: Değişimin Matematiği (3)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/321"
+        },
+        {
+          "code": "MAT.12.4.9",
+          "title": "Gerçek yaşam durumlarında türevi kullanarak problemler çözebilme",
+          "topic": "4. Tema: Değişimin Matematiği (3)",
+          "unit": "4. Tema: Değişimin Matematiği (3)",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/321"
+        },
+        {
+          "code": "MAT.12.5.1",
+          "title": "Toplumsal ve bilimsel durumlara ilişkin hazır veri ile çalışabilme ve hazır veriye dayalı karar verebilme",
+          "topic": "5. Tema: Hazır Veriler Üzerinde Çalışma",
+          "unit": "5. Tema: Hazır Veriler Üzerinde Çalışma",
+          "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/333"
+        }
+      ]
+    }
+  ]
+}
