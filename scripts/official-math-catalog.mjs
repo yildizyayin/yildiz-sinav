@@ -20,10 +20,15 @@ export function mathThemeOutcomes(html,grade,theme){
  if(title.toLocaleLowerCase('tr-TR')!==theme.title.toLocaleLowerCase('tr-TR'))throw Error('THEME_TITLE_MISMATCH');
  const start=clean.indexOf('Öğrenme Çıktıları ve Süreç Bileşenleri'),end=clean.indexOf('İçerik Çerçevesi',start);
  if(start<0||end<=start)throw Error('OFFICIAL_OUTCOME_SECTION_MISSING');
- const rows=[];for(const m of clean.slice(start,end).matchAll(/<(?:strong|b)\b[^>]*>([\s\S]*?)<\/(?:strong|b)>/gi)){
-  const text=visibleText(m[1]);if(!text.startsWith('MAT.'))continue;
-  const match=text.match(/^MAT\.(\d+)\.(\d+)\.(\d+)\.\s+(.+)$/u);if(!match||Number(match[1])!==grade||match[4].length<10||match[4].length>1500)throw Error('INVALID_OFFICIAL_OUTCOME');
-  const code=`MAT.${match[1]}.${match[2]}.${match[3]}`;if(rows.some(r=>r.code===code))throw Error('DUPLICATE_THEME_OUTCOME');rows.push({code,title:match[4],topic:theme.title,unit:theme.title,sourceUrl:theme.url});
+ // A single official heading may span several adjacent strong tags. Keep its
+ // full visible text until the first labelled process component, not first </strong>.
+ const section=clean.slice(start,end).replace(/<br\b[^>]*>|<\/(?:p|div|li)>/gi,'\n').replace(/<[^>]*>/g,' ').replace(/&nbsp;|&#160;|&#xA0;/gi,' ');
+ const blocks=[...section.matchAll(/MAT\.(\d+)\.(\d+)\.(\d+)\.\s+/gu)];const rows=[];
+ for(let i=0;i<blocks.length;i++){
+  const m=blocks[i],fragment=section.slice(m.index+m[0].length,blocks[i+1]?.index??section.length),process=fragment.search(/(?:^|\n)\s*[a-zçğıöşü]\)\s*/u);
+  const title=visibleText(process<0?fragment:fragment.slice(0,process));
+  if(Number(m[1])!==grade||title.length<10||title.length>1500||!/(?:bilme|çözme)[.!]?$/u.test(title))throw Error('INVALID_OFFICIAL_OUTCOME:'+m[0]+':'+title.slice(0,300));
+  const code=`MAT.${m[1]}.${m[2]}.${m[3]}`;if(rows.some(r=>r.code===code))throw Error('DUPLICATE_THEME_OUTCOME');rows.push({code,title,topic:theme.title,unit:theme.title,sourceUrl:theme.url});
  }
  if(!rows.length||rows.length>30)throw Error('OUTCOME_SECTION_EMPTY_OR_OVERSIZED');return rows;
 }

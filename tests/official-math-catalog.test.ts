@@ -21,3 +21,9 @@ it('requires review after a source title, code or theme list changes, but permit
  const same=structuredClone(catalog.grades);same[0].indexHash='format-only';expect(()=>assertSameMathCatalog(catalog.grades,same)).not.toThrow();
  for(const mutate of [(s:any)=>s[0].outcomes[0].title+=' changed',(s:any)=>s[0].themes.pop(),(s:any)=>s[0].outcomes[0].code='MAT.5.99.1']){const changed=structuredClone(catalog.grades);mutate(changed);expect(()=>assertSameMathCatalog(catalog.grades,changed)).toThrow('OFFICIAL_CATALOG_CHANGED_REVIEW_REQUIRED');}
 });
+it('reads a heading split across adjacent bold tags without swallowing its process components',()=>{
+ const theme={title:'4.Tema: Geometrik Nicelikler',url:'https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451'};
+ const html='<h1>4.Tema: Geometrik Nicelikler</h1>Öğrenme Çıktıları ve Süreç Bileşenleri<strong>MAT.5.4.1. Çevre uzunluğu verildiğinde </strong><strong>kenar uzunluklarını yorumlayabilme</strong><br><strong>a) </strong>Olası kenar uzunluklarını inceler.<br>İçerik Çerçevesi';
+ expect(mathThemeOutcomes(html,5,theme)[0].title).toBe('Çevre uzunluğu verildiğinde kenar uzunluklarını yorumlayabilme');
+ expect(()=>mathThemeOutcomes(html.replace('<strong>kenar uzunluklarını yorumlayabilme</strong>',''),5,theme)).toThrow('INVALID_OFFICIAL_OUTCOME');
+});

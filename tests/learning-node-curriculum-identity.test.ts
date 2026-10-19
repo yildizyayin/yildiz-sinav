@@ -1,0 +1,13 @@
+import {DatabaseSync} from 'node:sqlite';
+import {readFileSync} from 'node:fs';
+import {expect,it} from 'vitest';
+it('preserves existing evidence while repairing same-year curriculum version collisions',()=>{
+ const db=new DatabaseSync(':memory:');try{
+ db.exec(`PRAGMA foreign_keys=ON;CREATE TABLE subjects(id TEXT PRIMARY KEY);INSERT INTO subjects VALUES('mat');CREATE TABLE curriculum_versions(id TEXT PRIMARY KEY,academic_year TEXT,source_url TEXT);INSERT INTO curriculum_versions VALUES('first','2027-2028','https://tymm.meb.gov.tr/first'),('full','2027-2028','https://tymm.meb.gov.tr/full');CREATE TABLE outcomes(id TEXT PRIMARY KEY,curriculum_version_id TEXT,subject_id TEXT,grade_level INTEGER,code TEXT,title TEXT,official INTEGER,active INTEGER);CREATE TABLE learning_nodes(id TEXT PRIMARY KEY,academic_year TEXT,node_type TEXT,subject_id TEXT,grade_level INTEGER,code TEXT,title TEXT,parent_id TEXT REFERENCES learning_nodes(id),official INTEGER,source_url TEXT,active INTEGER,UNIQUE(academic_year,node_type,code));CREATE TABLE student_evidence(id TEXT,node_id TEXT REFERENCES learning_nodes(id));INSERT INTO outcomes VALUES('old','first','mat',5,'MAT.5.1.1','Old title',1,1),('duplicate','full','mat',5,'MAT.5.1.1','Full title',1,1);INSERT INTO learning_nodes VALUES('ln_old','2027-2028','OUTCOME','mat',5,'MAT.5.1.1','Old title',NULL,1,'https://tymm.meb.gov.tr/first',1);INSERT INTO student_evidence VALUES('e','ln_old');`);
+ db.exec(readFileSync(new URL('../migrations/0116_learning_node_curriculum_identity.sql',import.meta.url),'utf8'));
+ expect(db.prepare('SELECT * FROM student_evidence').get()).toMatchObject({node_id:'ln_old'});expect(db.prepare("SELECT code,title,curriculum_version_id,official_code FROM learning_nodes WHERE id='ln_old'").get()).toEqual({code:'MAT.5.1.1',title:'Old title',curriculum_version_id:'first',official_code:'MAT.5.1.1'});
+ expect(db.prepare("SELECT code,curriculum_version_id,official_code FROM learning_nodes WHERE id='ln_duplicate'").get()).toEqual({code:'OUTCOME:duplicate',curriculum_version_id:'full',official_code:'MAT.5.1.1'});
+ db.exec("INSERT INTO outcomes VALUES('new','full','mat',5,'MAT.5.1.1','Another revision',1,1)");expect(db.prepare("SELECT official_code FROM learning_nodes WHERE id='ln_new'").get()?.official_code).toBe('MAT.5.1.1');
+ db.exec("UPDATE outcomes SET title='Revised full title',active=0 WHERE id='duplicate'");expect(db.prepare("SELECT title,active FROM learning_nodes WHERE id='ln_duplicate'").get()).toEqual({title:'Revised full title',active:0});expect(db.prepare("SELECT title,active FROM learning_nodes WHERE id='ln_old'").get()).toEqual({title:'Old title',active:1});expect(db.prepare('PRAGMA foreign_key_check').all()).toEqual([]);
+ }finally{db.close();}
+});
