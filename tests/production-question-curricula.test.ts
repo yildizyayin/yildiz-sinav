@@ -1,4 +1,4 @@
-import {it,expect} from 'vitest';
+import {it,expect,vi} from 'vitest';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync,readdirSync} from 'node:fs';
 import {productionCurriculumPlan,reverifyCurricula,importProductionCurricula,expandBranchCatalog} from '../scripts/production-question-curricula.mjs';
@@ -42,4 +42,18 @@ it('keeps a partially imported version unverified when node/content checks fail 
   expect((db.prepare('SELECT verified FROM curriculum_versions WHERE program_version=?').get(item.programVersion) as any).verified).toBe(0);
   expect((db.prepare('SELECT count(*) n FROM official_knowledge_events').get() as any).n).toBe(0);
  }finally{db.close();}
+});
+
+it('publishes the entire 77-scope registry into the production schema with all 2916 exact node identities',async()=>{
+ const db=database(),log=vi.spyOn(console,'log').mockImplementation(()=>{});try{
+  const query=async(sql:string,params:any[]=[])=>db.prepare(sql).all(...params);
+  const imports=productionCurriculumPlan(read('data/question-branch-catalog-2028.json'),read('data/question-full-math-target-2028.json'),read('data/app-question-scope-2028.json'));
+  const result=await importProductionCurricula({query,imports,evidence:{verifiedAt:'2026-10-19T00:00:00Z'},runId:'schema-fixture'});
+  expect(result).toHaveLength(77);expect(result.reduce((n:number,p:any)=>n+p.outcomes,0)).toBe(2916);
+  expect((db.prepare("SELECT count(*) n FROM curriculum_versions WHERE id LIKE 'cv_prod_%' AND verified=1").get() as any).n).toBe(77);
+  expect((db.prepare("SELECT count(*) n FROM learning_nodes WHERE curriculum_version_id LIKE 'cv_prod_%' AND official_code IS NOT NULL").get() as any).n).toBe(2916);
+  const repeated=await importProductionCurricula({query,imports,evidence:{verifiedAt:'2026-10-19T00:00:00Z'},runId:'retry-fixture'});
+  expect(repeated.every((p:any)=>p.reused)).toBe(true);
+  expect((db.prepare("SELECT count(*) n FROM outcomes WHERE id LIKE 'out_prod_%'").get() as any).n).toBe(2916);
+ }finally{log.mockRestore();db.close();}
 });
