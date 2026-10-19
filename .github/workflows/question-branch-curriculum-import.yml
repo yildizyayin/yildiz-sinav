@@ -1,0 +1,32 @@
+name: Reverify and import branch curricula into staging
+on:
+  push:
+    branches: [feat/question-production-20261015]
+    paths: [.github/question-branch-curriculum-import.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-branch-curriculum-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Verify annual selection deployment without changing plans
+        run: node scripts/live-annual-curriculum-selection.mjs
+      - name: Recheck official sources and import isolated versions without AI calls
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-branch-curriculum-import.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: branch-curriculum-import-${{ github.run_id }}
+          path: tmp/branch-curriculum-import/
