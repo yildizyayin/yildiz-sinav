@@ -164,6 +164,9 @@ jobs:
       - name: Verify super admin question scope deployment
         run: node scripts/check-question-team-production.mjs
 
+      - name: Inspect question runtime without provider calls or data changes
+        run: node scripts/inspect-question-runtime.mjs
+
       - name: App-only production safety note
         run: |
           echo "App-only production deploy completed without marketing site or demo seed deployment."

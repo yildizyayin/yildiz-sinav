@@ -374,3 +374,7 @@ it('retries only a protocol-unavailable review on the identical repaired packet 
  provider.mockImplementation(async(model:string,args:any)=>{expect(model).toBe('independent-editorial-verifier');expect(args.response_format.json_schema.properties.reviews.items.required).toContain('editorial');expect(args.messages[0].content).toContain('YOU must assign');return {response:JSON.stringify({reviews:[{index:0,valid:true,issues:[],editorial:editorialScores}]})}});
  expect((await post()).status).toBe(200);expect(await job(id)).toMatchObject({attempt_count:1,editorial_repair_count:1,editorial_verify_retry_count:1,status:'REVIEW_READY'});expect(provider).toHaveBeenCalledTimes(3);expect((await post()).status).toBe(200);expect(provider).toHaveBeenCalledTimes(3);
 });
+
+it('runs the last already reserved pilot job with no redundant budget variable and never refunds it',async()=>{
+ env.QUESTION_AUTOMATED_PILOT_MODE='true';delete env.QUESTION_PILOT_BUDGET_REMAINING;env.QUESTION_PILOT_REVIEW_AVAILABLE='true';const id=await create();await db.exec('UPDATE question_agent_pilot_budget SET reserved_count=49;');await db.prepare('INSERT INTO question_agent_pilot_reservations(job_id,question_count) VALUES(?,1)').bind(id).run();provider.mockResolvedValueOnce(output());expect((await run(id)).status).toBe(200);expect(await db.prepare('SELECT reserved_count FROM question_agent_pilot_budget').first('reserved_count')).toBe(50);expect(provider).toHaveBeenCalledTimes(1);
+});

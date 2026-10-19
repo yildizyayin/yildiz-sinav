@@ -86,3 +86,21 @@ export function firstScheduledPilotBatch(rows:readonly {questionCount:number}[])
  const count=rows[0]?.questionCount;
  return Number.isSafeInteger(count)&&count>=1&&count<=10?count:0;
 }
+
+/** The database ledger is authoritative; an optional rollout ceiling can only lower it. */
+export function effectivePilotBudget(quota:{question_cap:number;reserved_count:number}|null,ceiling?:string):number{
+ if(!quota||![quota.question_cap,quota.reserved_count].every(v=>Number.isSafeInteger(v)&&v>=0))return 0;
+ const remaining=Math.max(0,quota.question_cap-quota.reserved_count);
+ if(ceiling===undefined)return remaining;
+ if(!/^\d+$/.test(ceiling)||!Number.isSafeInteger(Number(ceiling)))return 0;
+ return Math.min(remaining,Number(ceiling));
+}
+
+/** Include only this job's already-paid reservation; never refund or alter the ledger. */
+export function effectivePilotJobBudget(quota:{question_cap:number;reserved_count:number}|null,ownReservation:number,ceiling?:string):number{
+ if(!quota||!Number.isSafeInteger(ownReservation)||ownReservation<0||![quota.question_cap,quota.reserved_count].every(v=>Number.isSafeInteger(v)&&v>=0)||quota.reserved_count>quota.question_cap||ownReservation>quota.reserved_count)return 0;
+ const authorized=effectivePilotBudget(quota)+ownReservation;
+ if(ceiling===undefined)return authorized;
+ if(!/^\d+$/.test(ceiling)||!Number.isSafeInteger(Number(ceiling)))return 0;
+ return Math.min(authorized,Number(ceiling));
+}

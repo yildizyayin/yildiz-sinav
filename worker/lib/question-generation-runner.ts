@@ -1,3 +1,4 @@
+import {effectivePilotJobBudget} from './question-agent-dispatch-plan';
 import {questionOriginalityCandidates} from './question-originality-search';
 import {EDITORIAL_INSTRUCTION,editorialSchema,editorialIssues,visualBlock,resolveEditorialPresentation,type EditorialPacket} from './question-editorial';
 import {questionTeamPaused,type QuestionTeamAgent} from './question-team-policy';
@@ -137,7 +138,11 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  if ((env as Env & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE === 'true') {
  const pilotConfig=env as Env & {QUESTION_PILOT_BUDGET_REMAINING?:string;QUESTION_PILOT_REVIEW_AVAILABLE?:string};
  const budgetRaw=pilotConfig.QUESTION_PILOT_BUDGET_REMAINING;
- const budgetRemaining=budgetRaw && budgetRaw.trim()!=='' ? Number(budgetRaw) : NaN;
+ const quota=await one<{question_cap:number;reserved_count:number}>(env.DB.prepare("SELECT question_cap,reserved_count FROM question_agent_pilot_budget WHERE id='pilot_50'"));
+ const reserved=await one<{question_count:number}>(env.DB.prepare('SELECT question_count FROM question_agent_pilot_reservations WHERE job_id=?').bind(id));
+ const own=reserved?.question_count===prior.question_count?prior.question_count:0;
+ const budgetRemaining=effectivePilotJobBudget(quota,own,budgetRaw);
+ if(budgetRemaining<=0)return err(409,'GENERATION_PILOT_LIMIT');
  const pilot=checkQuestionAgentPilot({
   gradeLevel:prior.grade_level,academicYear:prior.academic_year,
   curriculumVerified:!!(await one<{verified:number}>(env.DB.prepare(`SELECT cv.verified FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE o.id=? AND o.active=1 AND cv.id=? AND cv.grade_level=? AND cv.academic_year=? AND o.subject_id=?`).bind(prior.outcome_id,prior.curriculum_version_id,prior.grade_level,prior.academic_year,prior.subject_id)))?.verified,
