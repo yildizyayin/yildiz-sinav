@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). Aktif iş A005 — ajan servis aktörünü doğrula.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). Aktif iş A006 — insan inceleme kapasitesini tanımla.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -275,3 +275,20 @@ Canlı kanıt: 19 Ekim 18:29 production dağıtım günlüğü 388 resmî kayna�
 Eksik: Süper Admin branş kapsamı ekranının canlı görüntüsü alınmadı → K002 kontrol listesi.
 Kod/ayar değişmedi.
 Sıradaki ID: A005 — AKTİF.
+
+### A005 kapanışı — 19 Ekim 20:55
+
+Durum: BİTTİ. Kullanıcı 19:58'de önerilen A seçeneğini ("devam edelim") onayladı.
+Önceki durum: production'da `QUESTION_AGENT_SERVICE_ACTOR_ID` tanımlı değildi; panel "servis aktörü doğrulanmadı" gösteriyordu.
+Değişiklik — PR #268, merge `ffbc8f95b5bb01e0ad57eb444c290faacd59a255` (kullanıcı tarafından squash merge; otomatik merge sınıflandırıcıca engellendi):
+- `migrations/0115_question_agent_service_actor.sql`: `svc-soru-ajani` SUPER_ADMIN servis hesabı; rastgele, bilinmeyen şifre malzemesi; `INSERT OR IGNORE` (sonradan pasifleştirme korunur).
+- `worker/lib/auth.ts`, `worker/index.ts`: `svc-` önekli hesaplar login, `createSession` ve `getAuthUser` katmanlarında reddedilir (genel INVALID_CREDENTIALS). app ve sonuc aynı yolu kullanır.
+- `wrangler.production.jsonc`: `QUESTION_AGENT_SERVICE_ACTOR_ID=svc-soru-ajani`.
+Etkilenmemesi gerekenler: insan girişleri (sentetik insan admin testi geçer), sonuc akışları, kota/inceleme sınırları. İnceleme kapasitesi 0 olduğundan üretim başlamaz.
+Test: 4 yeni test, mutasyon kontrollü (koruma kaldırılınca 2 test kırıldı). Tüm paket 215 dosya / 1.107 test PASS; typecheck ve build PASS. PR CI run 39290996606 SUCCESS.
+Dağıtım: Deploy App Production Only run 39291874533 SUCCESS — "Apply production D1 migrations", "Read-only production smoke acceptance", "Verify super admin question scope deployment" SUCCESS. Genel production akışı 39291874590 `[app-only]` nedeniyle SKIPPED. Main CI 39291874514 SUCCESS.
+Canlı: 20:55 sonrası app ve sonuc `/api/health` → ready/production.
+Bilinen ilgisiz: Result Provider Isolation Probe (staging ortamı kaydı) Queue sınırı nedeniyle FAILURE — S015.
+Geri dönüş: Kullanıcılar ekranından `svc-soru-ajani` pasifleştirilir (zamanlayıcı anında durur) veya ayar kaldırılıp yeniden dağıtılır; migration veri silmez.
+Eksik: Süper Admin `/question-team` ekranında "servis aktörü doğrulandı" görüntüsü alınmadı → K002 kontrol listesi.
+Sıradaki ID: A006 — AKTİF.
