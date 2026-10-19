@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). Aktif iş A006 — insan inceleme kapasitesini tanımla: BEKLİYOR (kullanıcı kararı).** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). Aktif iş A006 — insan inceleme kapasitesini tanımla: kararlar alındı, PR #269 dağıtım bekliyor.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -33,7 +33,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 Kullanıcı 19 Ekim 18:45'te Süper Admin kapsamını onayladı. Teknik işler kapanmadan tasarım uygulanmayacak. Sonrasında veli, kurum/zincir, öğrenci, öğretmen, rehber ve sonuc tasarımları ayrı ayrı tamamlanacak.
 
-**Tek sıra:** A001–A079 → S001–S018 → K001 → K002 → A080 → D001–D007 → K003.
+**Tek sıra:** A001–A009 → A081 → A010–A079 → S001–S018 → K001 → K002 → A080 → D001–D007 → K003. (A081 kullanıcı kararıyla 19 Ekim 21:06'da A009'un arkasına alındı.)
 
 A080 kimliği korunmuştur fakat tasarım aşamasına ertelenmiştir. Bu açık sıra değişikliği, önceki dosyanın A080'den sonra sonuc'a geçiş kuralını değiştirir. Hiçbir teknik iş tasarım aşamasına ertelenmez. İş kapanırken test ve geri dönüş hazırlığı her zaman zorunludur; K001/K002 yalnız son kapsamlı tekrar kabulüdür.
 
@@ -52,7 +52,7 @@ Her satır ayrı iştir. Güncel istisnalar: A001 BİTTİ, A002 AKTİF. Diğerle
 | A005 | Ajan servis aktörünü doğrula | Zamanlayıcı gerçek ve yetkili servis kimliği kullanır; insan oturumunun taklidi yapılmaz. |
 | A006 | İnsan inceleme kapasitesini tanımla | Gerçek sorumlu ve sürdürülebilir kapasite belirlenir; sıfır/dolu kuyruk üretimi durdurur. Kapasite uydurulmaz. |
 | A007 | Tek gerçek soru üretimini kanıtla | Süper admin doğrulanmış çıktı seçer; model ve bağımsız kontrol sonrası soru kalıcı inceleme listesinde görünür; hata varsa gerekçesi görünür. |
-| A008 | Soru inceleme kararını kapat | İnsan ONAY/RET/DÜZELTME verir; çözüm ve hak denetimi kaydedilir; RESTRICTED soru öğrenciye açılmaz. |
+| A008 | Soru inceleme kararını kapat | İnsan ONAY/RET/DÜZELTME verir; çözüm ve hak denetimi kaydedilir; RESTRICTED soru öğrenciye açılmaz. **Ek (kullanıcı isteği, 19 Ekim 20:58):** tek tek ve hızlı toplu onay; toplu onayda her soruya ayrı onaylayan/zaman kaydı düşer, bağımsız kontrol bulguları ve şüpheli sorular üstte gösterilir, RESTRICTED sorular toplu onaya giremez. |
 | A009 | Otonom zamanlayıcıyı kanıtla | Gerçek zamanlayıcı çağrısı yeni işi işler; tekrar çağrı kopya üretmez; kapasite/duraklatma kuralları uygulanır. |
 | A010 | Ajan yönetim panelini kapat | Gerçek işler/sayılar/hatalar görünür; durdur-sürdür ve izinli manuel görev, kayıt geçmişiyle çalışır. |
 | A011 | Soru kartı akademik bağlarını tamamla | Güncel kazanım, sınıf, sürüm ve doğrulanabilen ön öğrenmeler görünür; olmayan veri açıkça bilinmiyor gösterilir. |
@@ -124,6 +124,7 @@ Her satır ayrı iştir. Güncel istisnalar: A001 BİTTİ, A002 AKTİF. Diğerle
 | A077 | Yönetim ve izleyici ekranlarını kapat | Süper admin gerçek sağlık/iş/hata özetini görür; ajan serbest ve denetimsiz komut çalıştıramaz. |
 | A078 | Mobil/PWA/tahta erişimini kapat | Ana iş akışları hedef cihazlarda okunur/tıklanır; fiziksel kitap bağlantıları doğru içeriğe gider. |
 | A079 | app güvenlik ve veri yaşam döngüsünü kapat | Rol/tenant izolasyonu, oturum iptali, dosya erişimi ve süreli veri temizliği kanıtlanır; gerekli kalıcı kimlikler silinmez. |
+| A081 | Ölçekli soru üretimini kapat (değişiklik kaydı, 19 Ekim 21:04) | Hedef: günde 5.000–10.000 soru, 31 Aralık 2026'ya kadar 300.000–500.000 soru, 2027–2028 Maarif 5–12. sınıf. Paralel üretim, Queue sınırı (S015 ile ortak) çözümü, kazanım başına sınırın kontrollü yükseltilmesi ve benzer-soru filtresi; A007'de ölçülen soru başına maliyetle onaylı bütçe. Ölçüm yoksa hazır denmez; insan onayı otomatik verilmez. |
 | A080 | Ortak tasarım planını onaylat | Teknik sıra bittikten sonra açık/ferah içerik, sol menü, modül renkleri, uzay ilişkisi, ANUNEX/Nibiru ve mobil davranış örneklerle planlanır; kullanıcı tasarım yönünü onaylar. |
 
 ## sonuc.anunex.com — A079 sonrasında teknik sıra
@@ -301,3 +302,10 @@ Engel: inceleyici kişi/rol, haftalık gerçekçi inceleme sayısı ve başlang�
 Önerilen varsayılan (kullanıcı onayı bekliyor): inceleyici yildizyayin (Süper Admin), 10 slot, başlangıç 8. sınıf matematik.
 Not: kapasite açılınca model maliyeti başlar; bütçe UNLIMITED olduğundan tek fren inceleme kapasitesidir.
 Sıradaki iş açılmadı.
+
+### A006 — kararlar, 19 Ekim 20:58–21:06
+
+Kullanıcı kararları: inceleyici yildizyayin; toplu + tek tek onay (A008'e eklendi); kuyruk sınırı 10.000; kapsam 2027–2028 yeni Maarif, 5–12. sınıfların tamamı (LGS 8, YKS 12 dahil; 1–4. sınıf kayıtta yok); hedef günde 5–10 bin / aralık sonuna 300–500 bin soru → A081 olarak A009'un arkasına alındı.
+Kontrol: `data/app-question-scope-2028.json` 8. sınıf 6 ders / 391 çıktı, 12. sınıf 11 ders / 333 çıktı içerir (A004'te aktarıldı). 8 ve 12'yi dışlayan tek neden koddaki sabit sınıf listesiydi.
+Uyarı kaydı: kullanıcıya günde binlerce sorunun bir saatte incelenmesinin soru başına ~1 saniye ettiği ve kalite riski açıkça bildirildi; kullanıcı onay sorumluluğunu üstlendi. Soru başına onay kaydı ve RESTRICTED kapısı korunur.
+PR #269: `QUESTION_PILOT_REVIEW_AVAILABLE=true`, `QUESTION_PILOT_REVIEW_SLOTS=10000`; pilot sınıflar `PILOT_GRADES` 5–12 tek sabitte. 1.110 test, typecheck, build PASS. Dağıtım sonrası zamanlayıcı 15 dakikada 1 soru üretir; otomatik onay yok.
