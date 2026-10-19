@@ -1,0 +1,41 @@
+name: Question video render production
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: question-video-render-production
+  cancel-in-progress: false
+jobs:
+  render:
+    if: github.event_name == 'workflow_dispatch' || vars.QUESTION_PRODUCTION_VIDEO_AUTOMATION == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: production
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install Pillow==11.3.0
+      - name: Install native video renderer
+        run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - name: Render one prepared production question job
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          QUESTION_VIDEO_TARGET: production
+          QUESTION_VIDEO_FIXTURE: 'false'
+        run: node scripts/process-question-video-jobs.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: production-question-video-${{ github.run_id }}
+          path: tmp/question-video-proof/evidence.json

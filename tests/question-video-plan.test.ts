@@ -6,3 +6,7 @@ it('uses the frozen source verbatim and produces bounded Turkish scenes without 
  expect(()=>buildQuestionVideoPlan({...q,solution_text:'çok uzun '.repeat(1000)})).toThrow(/TOO_LONG/);
  expect(()=>buildQuestionVideoPlan({...q,options_json:'[]'})).toThrow(/INVALID/);
 });
+
+it('includes frozen visual data before the solution without exposing editorial reasoning notes',()=>{
+ const visual={kind:'TABLE' as const,title:'Veri tablosu',unit:'adet',columns:['Ürün','Sayı'],rows:[['A','12'],['B','15']],categories:[],values:[]};const q={id:'q',review_revision:1,stem_text:'Tabloyu inceleyin.',solution_text:'12 + 15 = 27',correct_answer:'B',options_json:'["25","27","30","40"]'};const p=buildQuestionVideoPlan(q,false,visual);expect(p.scenes[1].visual).toEqual(visual);expect(p.scenes[2].text).toBe(q.solution_text);expect(p.narrationText).toContain('A · 12');
+});

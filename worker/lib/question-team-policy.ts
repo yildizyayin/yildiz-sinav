@@ -13,6 +13,7 @@ export async function questionTeamPaused(env:Env,agents:readonly QuestionTeamAge
 export function mediaSourceFence(alias='j',syntheticAllowed=false){
  const real=`${alias}.synthetic=0 AND EXISTS(SELECT 1 FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id JOIN outcomes o ON l.node_id='ln_'||o.id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
  WHERE q.id=${alias}.question_id AND q.review_revision=${alias}.source_revision AND q.review_status='APPROVED'
+ AND (json_extract(${alias}.source_snapshot_json,'$.question.editorialPacketJson') IS NULL OR q.editorial_packet_json=json_extract(${alias}.source_snapshot_json,'$.question.editorialPacketJson'))
  AND q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN','USER_PROVIDED') AND cv.verified=1 AND o.active=1
  AND (SELECT count(*) FROM question_learning_links WHERE question_id=q.id)=1
  AND o.id=json_extract(${alias}.source_snapshot_json,'$.outcome.id') AND o.code IS json_extract(${alias}.source_snapshot_json,'$.outcome.code')
