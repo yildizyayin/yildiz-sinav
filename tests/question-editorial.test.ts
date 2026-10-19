@@ -16,3 +16,22 @@ it('constrains the provider schema itself for TABLE instead of relying only on p
 
 it('resolves AUTO before enforcing the schema without inventing new official scope',async()=>{const {resolveEditorialPresentation}=await import('../worker/lib/question-editorial');expect(resolveEditorialPresentation('AUTO','MAT.5.1.2','GENERIC')).toBe('TABLE');expect(resolveEditorialPresentation('AUTO','MAT.5.1.1','READ_ZERO_PERIODS')).toBe('TEXT');expect(resolveEditorialPresentation('AUTO','UNVERIFIED_OTHER')).toBe('TEXT');expect(resolveEditorialPresentation('BAR_CHART','MAT.5.1.2')).toBe('BAR_CHART');});
 it('permits protocol-only retries while preserving any substantive negative review',async()=>{const {verificationProtocolRetryAllowed:allow}=await import('../worker/lib/question-verification-protocol');expect(allow({unavailable:true,invalidOutputSample:JSON.stringify({reviews:[{index:0,valid:false,issues:['missing editorial scores']}]})})).toBe(true);expect(allow({unavailable:true,invalidOutputSample:JSON.stringify({reviews:[{valid:false,issues:['wrong answer']}]})})).toBe(false);expect(allow({unavailable:true,invalidOutputSample:JSON.stringify({reviews:[{valid:true,issues:[],editorial:{reasoningDemand:2}}]})})).toBe(false);expect(allow({unavailable:false,protocolRetryEligible:true})).toBe(false);});
+
+it('enforces empty unused arrays for every visual presentation in schema and runtime validation',async()=>{
+ const {editorialSchema}=await import('../worker/lib/question-editorial');
+ for(const [presentation,kind,unused] of [['TABLE','TABLE',['categories','values']],['BAR_CHART','BAR_CHART',['columns','rows']],['TEXT','NONE',['columns','rows','categories','values']]] as const){
+  const visual=editorialSchema(presentation).properties.visual.properties;expect(visual.kind.enum).toEqual([kind]);
+  for(const field of unused)expect(visual[field].maxItems).toBe(0);
+ }
+ const q:any=editorialQuestion();q.editorial.visual.values=[1,2];expect(editorialIssues(q,'TABLE')).toContain('TABLE_DATA_INVALID');
+ q.editorial.visual={kind:'BAR_CHART',title:'Deneme grafiği',unit:'adet',columns:['Sızan sütun'],rows:[],categories:['A','B'],values:[1,2],readingPurpose:'Verileri karşılaştırarak verilen kararı değerlendirmek.'};expect(editorialIssues(q,'BAR_CHART')).toContain('CHART_DATA_INVALID');
+ q.editorial.visual={kind:'NONE',title:'',unit:'',columns:[],rows:[],categories:[],values:[1],readingPurpose:''};expect(editorialIssues(q,'TEXT')).toContain('EMPTY_VISUAL_MUST_BE_EMPTY');
+});
+it('rejects truncated provider envelopes even when their JSON prefix is syntactically valid',async()=>{
+ const {readAiJson}=await import('../worker/lib/question-generation-validation');const content=JSON.stringify({questions:[editorialQuestion()]});
+ expect(readAiJson({choices:[{finish_reason:'stop',message:{content}}]})).toEqual(JSON.parse(content));
+ expect(readAiJson({choices:[{finish_reason:'length',message:{content}}]})).toBeNull();
+ expect(readAiJson({finishReason:'length',response:content})).toBeNull();
+ expect(readAiJson({status:'incomplete',output_text:content})).toBeNull();
+ expect(readAiJson({choices:[{finish_reason:'length',message:{content:'{"questions":['}}]})).toBeNull();
+});

@@ -5,6 +5,9 @@ import type {Env} from '../types';
 export const DEFAULT_QUESTION_VERIFIER_MODEL='@cf/nvidia/nemotron-3-120b-a12b';
 export type CheckedDraft={stemText:string;options:{label:string;text:string}[];correctAnswer:string;solutionText:string;difficultyLevel:number;editorial?:EditorialPacket};
 export function readAiJson(raw:any):any {
+ // A syntactically complete prefix is not a completed provider response.
+ const truncated=(reason:unknown)=>typeof reason==='string'&&['length','max_tokens','max_output_tokens'].includes(reason);
+ if((Array.isArray(raw?.choices)&&raw.choices.some((choice:any)=>truncated(choice?.finish_reason)))||truncated(raw?.finish_reason)||truncated(raw?.finishReason)||raw?.status==='incomplete')return null;
  const output=Array.isArray(raw?.output)?raw.output.filter((item:any)=>item.type==='message').flatMap((item:any)=>item.content??[]).filter((part:any)=>part.type==='output_text'&&typeof part.text==='string').map((part:any)=>part.text).join(''):null;
  const content=raw?.choices?.[0]?.message?.content??raw?.response??raw?.output_text??(output||raw);
  let text:string;try{text=typeof content==='string'?content:JSON.stringify(content);}catch{return null;}
