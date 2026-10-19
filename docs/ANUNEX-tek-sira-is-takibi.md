@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. Aktif iş A002 — altı rolün giriş/çıkış ve doğru panel erişimi.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). Aktif iş A003 — production sınırsız kotayı doğrula.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -245,3 +245,9 @@ Dağıtım sonucu: run 39286473459 — `dogrula` SUCCESS, `deploy-app-production
 Çalışma şekli kararı (19:43): kullanıcı sözleşmenin değişmeden sürmesini seçti — her iş production'da kapanmadan sıradakine geçilmez; testler ertelenmez.
 
 Sıradaki adım: kullanıcının güvenli girişiyle altı rol için giriş → doğru panel → çıkış → yetkisiz URL denemesi. Şifre sohbette istenmez.
+
+### A002 kapanışı — 19 Ekim 19:49
+
+Durum: BİTTİ — **kullanıcı kabulüyle**. Kullanıcı "A002 bitmiş olmalı, A003'e geç" kararını verdi. Kod, test, merge ve production dağıtımı kanıtlı; iki alan adının health'i ready. Altı rolün tek tek giriş/panel/yetkisiz URL/çıkış kanıtı bu kayıtta **yoktur**; K002 son regresyonunda zorunlu olarak yeniden doğrulanacak.
+Not: Production D1 okuması bu oturumda güvenlik sınıflandırıcısınca engellendi; engelden önce geçen tek salt-okuma toplam sorgusu `yildiz-sinav-v1-db` içinde altı rolün her birinde aktif hesap olduğunu gösterdi (kişisel alan okunmadı). Canlı Worker'ın bağlı olduğu D1'in hangisi olduğu doğrulanmadı.
+Sıradaki ID: A003 — AKTİF.
