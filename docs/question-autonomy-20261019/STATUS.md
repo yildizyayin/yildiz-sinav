@@ -37,4 +37,4 @@ Bu iş sınav aktifleştirme PR #261'i kapsamaz. Önceki kalite düzeltmesi PR #
 
 ## Yerel doğrulama sonucu
 
-211 test dosyası / 1084 test geçti; TypeScript, Vite derlemesi, JS/Python sözdizimi ve diff boşluk kontrolü başarılı. Sentetik tablo ve grafik sahneleriyle yerelde 1280×720, 10 saniyelik MP4 üretildi ve metadata doğrulandı; bu sesli gerçek öğrenci videosu değildir. Sonsuz grafik değeri reddedildi. Gerçek sağlayıcı çağrısı yapılmadı; pilot rezervasyonu tüketilmedi. Yeni kodun etkin production koşulları henüz gözlenmedi.
+211 test dosyası / 1085 test geçti; TypeScript, Vite derlemesi, JS/Python sözdizimi ve diff boşluk kontrolü başarılı. Sentetik tablo ve grafik sahneleriyle yerelde 1280×720, 10 saniyelik MP4 üretildi ve metadata doğrulandı; bu sesli gerçek öğrenci videosu değildir. Sonsuz grafik değeri reddedildi. Gerçek sağlayıcı çağrısı yapılmadı; pilot rezervasyonu tüketilmedi. Yeni kodun etkin production koşulları henüz gözlenmedi.

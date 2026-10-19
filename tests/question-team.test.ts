@@ -13,6 +13,7 @@ function fixture(){
  CREATE TABLE question_agent_pilot_budget(id TEXT,question_cap INTEGER,reserved_count INTEGER);INSERT INTO question_agent_pilot_budget VALUES('pilot_50',50,45);
  CREATE TABLE question_generation_jobs(id TEXT,question_count INTEGER DEFAULT 1,academic_year TEXT,status TEXT,priority INTEGER,created_at TEXT);
  CREATE TABLE audit_logs(id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,created_at TEXT,details_json TEXT);`);
+ db.exec('ALTER TABLE question_bank ADD COLUMN origin_kind TEXT;');
  db.exec(readFileSync(new URL('../migrations/0105_question_team_media.sql',import.meta.url),'utf8'));
  db.exec("CREATE TABLE question_content_blocks(id TEXT,question_id TEXT,placement TEXT,block_type TEXT,payload_json TEXT);");
  db.exec(readFileSync(new URL('../migrations/0107_question_editorial_contract.sql',import.meta.url),'utf8'));
@@ -31,4 +32,8 @@ it('gates by role and same origin, rejects stale controls and keeps an immutable
 });
 it('fails closed if controls are incomplete without enabling scheduling on resume',async()=>{
  const f=fixture();try{f.db.exec("DELETE FROM question_team_agent_control WHERE agent_key='VIDEO'");expect(await questionTeamPaused(f.env,['MEDIA','VIDEO'])).toBe(true);f.db.exec('DELETE FROM question_team_control');expect(await questionTeamPaused(f.env,['GENERATOR'])).toBe(true);expect((await handleQuestionTeam(f.req({agentKey:'TEAM',paused:false,expectedRevision:0}),f.env,admin)).status).toBe(409);}finally{f.db.close();}
+});
+
+it('reports real review queue backpressure and the configured autonomous year without pretending readiness',async()=>{
+ const f=fixture();try{Object.assign(f.env,{QUESTION_AGENT_EXECUTION_ENABLED:'true',QUESTION_AGENT_DISPATCH_PREVIEW:'true',QUESTION_AUTOMATED_PILOT_MODE:'true',QUESTION_AUTOMATED_ACADEMIC_YEAR:'2027-2028',QUESTION_AGENT_SERVICE_ACTOR_ID:'admin',QUESTION_PILOT_REVIEW_SLOTS:'1',QUESTION_PILOT_REVIEW_AVAILABLE:'true'});f.db.exec("INSERT INTO question_bank(id,owner_type,origin_kind,review_status,academic_year) VALUES('q','PLATFORM','AI_GENERATED','REVIEW','2026-2027')");const p:any=await(await handleQuestionTeam(f.req(),f.env,admin)).json();expect(p.scheduler).toMatchObject({ready:false,academicYear:'2027-2028',availableReviewSlots:0,queuedReviewCount:1});expect(p.scheduler.reasons).toContain('REVIEW_QUEUE_FULL');}finally{f.db.close()}
 });
