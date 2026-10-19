@@ -1,1 +1,1 @@
-2026-10-19 question runtime configuration and read-only readiness diagnostics
+2026-10-19 production unlimited count quota, official curriculum transfer and common written decisions

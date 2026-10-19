@@ -138,7 +138,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  if ((env as Env & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE === 'true') {
  const pilotConfig=env as Env & {QUESTION_PILOT_BUDGET_REMAINING?:string;QUESTION_PILOT_REVIEW_AVAILABLE?:string};
  const budgetRaw=pilotConfig.QUESTION_PILOT_BUDGET_REMAINING;
- const quota=await one<{question_cap:number;reserved_count:number}>(env.DB.prepare("SELECT question_cap,reserved_count FROM question_agent_pilot_budget WHERE id='pilot_50'"));
+ const quota=await one<{question_cap:number|null;reserved_count:number;budget_mode:string}>(env.DB.prepare("SELECT question_cap,reserved_count,budget_mode FROM question_agent_pilot_budget WHERE id='pilot_50'"));
  const reserved=await one<{question_count:number}>(env.DB.prepare('SELECT question_count FROM question_agent_pilot_reservations WHERE job_id=?').bind(id));
  const own=reserved?.question_count===prior.question_count?prior.question_count:0;
  const budgetRemaining=effectivePilotJobBudget(quota,own,budgetRaw);

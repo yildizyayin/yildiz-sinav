@@ -10,7 +10,7 @@ function fixture(){
  CREATE TABLE users(id TEXT PRIMARY KEY,active INTEGER,role TEXT);INSERT INTO users VALUES('admin',1,'SUPER_ADMIN');
  CREATE TABLE question_bank(id TEXT PRIMARY KEY,review_revision INTEGER,stem_text TEXT,grade_level INTEGER,subject_id TEXT,review_status TEXT,copyright_status TEXT,source_model TEXT,owner_type TEXT,academic_year TEXT,updated_at TEXT);
  CREATE TABLE question_assets(id TEXT PRIMARY KEY);
- CREATE TABLE question_agent_pilot_budget(id TEXT,question_cap INTEGER,reserved_count INTEGER);INSERT INTO question_agent_pilot_budget VALUES('pilot_50',50,45);
+ CREATE TABLE question_agent_pilot_budget(id TEXT,question_cap INTEGER,reserved_count INTEGER,budget_mode TEXT DEFAULT 'LIMITED');INSERT INTO question_agent_pilot_budget(id,question_cap,reserved_count) VALUES('pilot_50',50,45);
  CREATE TABLE question_generation_jobs(id TEXT,question_count INTEGER DEFAULT 1,academic_year TEXT,status TEXT,priority INTEGER,created_at TEXT);
  CREATE TABLE audit_logs(id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,created_at TEXT,details_json TEXT);`);
  db.exec('ALTER TABLE question_bank ADD COLUMN origin_kind TEXT;');
@@ -36,4 +36,7 @@ it('fails closed if controls are incomplete without enabling scheduling on resum
 
 it('reports real review queue backpressure and the configured autonomous year without pretending readiness',async()=>{
  const f=fixture();try{Object.assign(f.env,{QUESTION_AGENT_EXECUTION_ENABLED:'true',QUESTION_AGENT_DISPATCH_PREVIEW:'true',QUESTION_AUTOMATED_PILOT_MODE:'true',QUESTION_AUTOMATED_ACADEMIC_YEAR:'2027-2028',QUESTION_AGENT_SERVICE_ACTOR_ID:'admin',QUESTION_PILOT_REVIEW_SLOTS:'1',QUESTION_PILOT_REVIEW_AVAILABLE:'true'});f.db.exec("INSERT INTO question_bank(id,owner_type,origin_kind,review_status,academic_year) VALUES('q','PLATFORM','AI_GENERATED','REVIEW','2026-2027')");const p:any=await(await handleQuestionTeam(f.req(),f.env,admin)).json();expect(p.scheduler).toMatchObject({ready:false,academicYear:'2027-2028',availableReviewSlots:0,queuedReviewCount:1});expect(p.scheduler.reasons).toContain('REVIEW_QUEUE_FULL');}finally{f.db.close()}
+});
+it('shows unlimited honestly while preserving usage and finite dispatch capacity',async()=>{
+ const f=fixture();try{f.db.exec("UPDATE question_agent_pilot_budget SET budget_mode='UNLIMITED',question_cap=NULL,reserved_count=500001");const p:any=await(await handleQuestionTeam(f.req(),f.env,admin)).json();expect(p.budget).toEqual({mode:'UNLIMITED',cap:null,reserved:500001,remaining:null,effectiveRemaining:null,dispatchCapacity:50,noRefund:true});expect(p.commonWrittenPolicy).toMatchObject({decisionStatus:'FINALIZED',targetScenarioVerified:false,officialPlatformIntegration:false});expect(p.commonWrittenPolicy.decisions.aiMayFinalizeScores).toBe(false);}finally{f.db.close();}
 });
