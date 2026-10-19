@@ -1,3 +1,4 @@
+import {questionPoolReadiness} from './question-pool-readiness';
 import {editorialInferenceEstimate} from './question-production-cost';
 import {questionProductionTarget} from './question-production-target';
 import type {AuthUser,Env} from '../types';
@@ -10,6 +11,7 @@ export async function handleQuestionTeam(request:Request,env:Env,user:AuthUser|n
  if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED',message:'Oturum açın.'}},401);
  if(user.role!=='SUPER_ADMIN')return forbidden('Soru havuzu ekibini yalnız Süper Admin yönetebilir.');
  const url=new URL(request.url);
+ if(request.method==='GET'&&url.pathname===base+'/readiness')return questionPoolReadiness(request,env);
  if(request.method==='PATCH'&&url.pathname===base+'/control'){
   if(env.QUESTION_TEAM_CONTROLS_ENABLED!=='true')return json({ok:false,error:{code:'TEAM_CONTROLS_DISABLED',message:'Ekip kontrolleri bu ortamda etkin değil.'}},503);
   if(request.headers.get('Origin')!==url.origin)return forbidden('İşlemi ANUNEX üzerinden başlatın.');

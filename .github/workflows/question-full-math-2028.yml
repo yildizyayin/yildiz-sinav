@@ -1,0 +1,37 @@
+name: Verify and import all math themes then inspect the agent panel
+on:
+  push:
+    branches: [staging]
+    paths: [.github/question-full-math-2028.execute]
+permissions:
+  contents: read
+concurrency:
+  group: question-full-math-2028
+  cancel-in-progress: false
+jobs:
+  import-and-inspect:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Reverify every official theme before importing independent year versions
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-question-full-math-2028.mjs
+      - name: Verify deployed admin readiness API and year isolation without generation
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/live-question-pool-closure-check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-pool-closure-${{ github.run_id }}
+          path: |
+            tmp/question-full-math-2028/
+            tmp/question-pool-closure/
