@@ -239,3 +239,9 @@ Kod incelemesi: site anahtarı boşsa Login düğmesi kilitli kalır; production
 PR #266 `[app-only]` başlığıyla squash merge edildi: `84e93b88e0a2def1f9318cc3605d8dad1d56c0b4`. Main CI run 39286473789 SUCCESS. Deploy App Production Only run 39286473459, production ortam onayı kullanıcı (yildizyayin) tarafından 19:40 civarı verildi. Deploy Production Cloudflare Worker run 39286473576 `[app-only]` nedeniyle iş atlamalıdır.
 
 A002 KAPANMADI. Sıradaki adım: dağıtım sonucu → çalışan sürüm → iki alan adının health kontrolü → gerçek giriş/çıkış ve altı rol kanıtı. A003 açılmadı.
+
+Dağıtım sonucu: run 39286473459 — `dogrula` SUCCESS, `deploy-app-production` SUCCESS (başlangıç 16:39:30 UTC). Worker `yildiz-sinav-prod`. Sürüm kimliği deployment günlüğünde; bu oturumdan günlük indirme 403 verdiği için kayda alınamadı. 19:45 sonrası `app.anunex.com/api/health` ve `sonuc.anunex.com/api/health` → `{"ok":true,"status":"ready","environment":"production"}`.
+
+Çalışma şekli kararı (19:43): kullanıcı sözleşmenin değişmeden sürmesini seçti — her iş production'da kapanmadan sıradakine geçilmez; testler ertelenmez.
+
+Sıradaki adım: kullanıcının güvenli girişiyle altı rol için giriş → doğru panel → çıkış → yetkisiz URL denemesi. Şifre sohbette istenmez.
