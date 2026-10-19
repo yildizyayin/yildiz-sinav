@@ -14,7 +14,7 @@ describe('pilot multi-job dispatch',()=>{
   expect(plan.ids).toHaveLength(5);expect(plan.questionCount).toBe(50);
  });
  it('blocks disallowed grades and missing review capacity',()=>{
-  const plan=planQuestionPilotDispatch([{...candidate('bad'),gradeLevel:8},candidate('ok')],{enabled:true,budget:20,reviewSlots:10,maxJobs:5,maxQuestions:50});
+  const plan=planQuestionPilotDispatch([{...candidate('bad'),gradeLevel:4},candidate('ok')],{enabled:true,budget:20,reviewSlots:10,maxJobs:5,maxQuestions:50});
   expect(plan.ids).toEqual(['ok']);
  });
  it('does not select jobs while disabled',()=>{

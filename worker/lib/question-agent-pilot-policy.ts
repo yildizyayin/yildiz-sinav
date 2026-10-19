@@ -9,7 +9,10 @@ export type QuestionAgentPilotContext = {
  budgetRemaining: number;
  reviewQueueAvailable: boolean;
 };
-const ALLOWED_GRADES = new Set([5,6,7,9,10,11]);
+/** 2027–2028 Maarif scope: every middle and high school grade, including LGS (8) and YKS (12) years. */
+export const PILOT_GRADES = [5,6,7,8,9,10,11,12] as const;
+export const PILOT_GRADES_SQL = PILOT_GRADES.join(',');
+const ALLOWED_GRADES = new Set<number>(PILOT_GRADES);
 export function checkQuestionAgentPilot(c:QuestionAgentPilotContext):{ok:boolean;reasons:string[]} {
  const reasons:string[]=[];
  if(!ALLOWED_GRADES.has(c.gradeLevel))reasons.push('GRADE_OUTSIDE_APPROVED_SCOPE');
