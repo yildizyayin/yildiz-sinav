@@ -1,1 +1,1 @@
-2026-10-19 production unlimited count quota, official curriculum transfer and common written decisions
+2026-10-19 A002 login challenge lifecycle: require verification and renew after failed submission
