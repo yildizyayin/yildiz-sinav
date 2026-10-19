@@ -49,6 +49,12 @@ function getCookie(request: Request, name: string): string | null {
   return null;
 }
 
+/** Service accounts (e.g. the question agent's scheduler identity) never hold a human session. */
+export const SERVICE_ACCOUNT_ID_PREFIX = 'svc-';
+export function isServiceAccountId(userId: string | null | undefined): boolean {
+  return typeof userId === 'string' && userId.startsWith(SERVICE_ACCOUNT_ID_PREFIX);
+}
+
 export async function getAuthUser(env: Env, request: Request): Promise<AuthUser | null> {
   const rawToken = getCookie(request, SESSION_COOKIE);
   if (!rawToken) return null;
@@ -62,6 +68,7 @@ export async function getAuthUser(env: Env, request: Request): Promise<AuthUser 
       WHERE s.token_hash = ? LIMIT 1`).bind(tokenHash),
   );
   if (!row || row.revoked_at || !row.active || new Date(row.expires_at).getTime() <= Date.now()) return null;
+  if (isServiceAccountId(row.id)) return null;
   return {
     id: row.id,
     institution_id: row.institution_id,
@@ -75,6 +82,7 @@ export async function getAuthUser(env: Env, request: Request): Promise<AuthUser 
 }
 
 export async function createSession(env: Env, userId: string, request: Request, remember: boolean, mustChangePassword = false): Promise<Response> {
+  if (isServiceAccountId(userId)) return json({ ok: false, error: { code: 'INVALID_CREDENTIALS', message: 'Kullanıcı adı veya şifre hatalı.' } }, 401);
   const raw = bytesToBase64(crypto.getRandomValues(new Uint8Array(32))).replace(/[+/=]/g, 'x');
   const hash = await sha256Hex(raw);
   const days = remember ? 30 : 1;
