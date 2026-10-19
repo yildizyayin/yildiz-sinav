@@ -1,0 +1,702 @@
+{
+  "environment": "staging",
+  "academicYear": "2027-2028",
+  "imports": [
+    {
+      "subject": "TUR",
+      "grade": 6,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 96,
+      "versionId": "cv_620bd3ba-3d8a-42ad-a7a2-62319494e8e3",
+      "linkedNodes": 96
+    },
+    {
+      "subject": "TUR",
+      "grade": 7,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 24,
+      "versionId": "cv_792f4ed8-3c6e-4b3e-90bb-7139e6d9cf27",
+      "linkedNodes": 24
+    },
+    {
+      "subject": "TUR",
+      "grade": 7,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 30,
+      "versionId": "cv_71b38a6e-256a-4351-8b09-6a542ea09cb2",
+      "linkedNodes": 30
+    },
+    {
+      "subject": "TUR",
+      "grade": 7,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 25,
+      "versionId": "cv_4f6d1bad-31f8-4448-bfc8-e51f811fd2df",
+      "linkedNodes": 25
+    },
+    {
+      "subject": "TUR",
+      "grade": 7,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 27,
+      "versionId": "cv_212d9fd5-72b6-413a-bb3a-d0fe3c58794c",
+      "linkedNodes": 27
+    },
+    {
+      "subject": "TUR",
+      "grade": 7,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 26,
+      "versionId": "cv_957a0afe-80be-4910-a81e-0f9b9f857e59",
+      "linkedNodes": 26
+    },
+    {
+      "subject": "TUR",
+      "grade": 7,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 19,
+      "versionId": "cv_ee64ce79-0f00-4a20-83fb-be01dba3a23b",
+      "linkedNodes": 19
+    },
+    {
+      "subject": "TUR",
+      "grade": 8,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 103,
+      "versionId": "cv_6f1833c9-00e9-4e45-8f08-c4382b824910",
+      "linkedNodes": 103
+    },
+    {
+      "subject": "FEN",
+      "grade": 5,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 26,
+      "versionId": "cv_007409b5-9b34-40ac-9104-7d5f0811f4b6",
+      "linkedNodes": 26
+    },
+    {
+      "subject": "FEN",
+      "grade": 6,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 36,
+      "versionId": "cv_e4f51ce8-6c3e-420f-99c8-6f3c06960fca",
+      "linkedNodes": 36
+    },
+    {
+      "subject": "FEN",
+      "grade": 7,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 33,
+      "versionId": "cv_cc405279-bb84-4327-bc1a-8a019b5cb493",
+      "linkedNodes": 33
+    },
+    {
+      "subject": "FEN",
+      "grade": 8,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 41,
+      "versionId": "cv_893d83d3-4c1d-41f8-a4a1-1c0b59512163",
+      "linkedNodes": 41
+    },
+    {
+      "subject": "SOS",
+      "grade": 5,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 18,
+      "versionId": "cv_5fb12952-883c-4401-bccd-9bfad0cccaf4",
+      "linkedNodes": 18
+    },
+    {
+      "subject": "SOS",
+      "grade": 6,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_1e967520-ed6b-417e-a3d9-134d1f4ad611",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "SOS",
+      "grade": 7,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_e5c55aa4-206d-4282-b67e-40d740982371",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 9,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 12,
+      "versionId": "cv_9e5c483f-08b1-486d-b4bd-302e4e90d8da",
+      "linkedNodes": 12
+    },
+    {
+      "subject": "EDB",
+      "grade": 9,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 12,
+      "versionId": "cv_05ec91cd-884e-4c87-be00-9571aa519f17",
+      "linkedNodes": 12
+    },
+    {
+      "subject": "EDB",
+      "grade": 9,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 14,
+      "versionId": "cv_1551c5b7-7c32-4168-92ff-b609aa678f41",
+      "linkedNodes": 14
+    },
+    {
+      "subject": "EDB",
+      "grade": 9,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_08c17568-9046-4763-ae18-6179bf295414",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 10,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_52d3df92-0e56-4cb4-8dbd-ce97178c53a3",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 10,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_9cdb5a57-bf74-4bfc-81cd-0807db1e1b80",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 10,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_5d21febd-28d5-42bc-baff-5137978f7f12",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 10,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 15,
+      "versionId": "cv_d3c31210-e33d-4739-8b89-f8e4c81a3cb8",
+      "linkedNodes": 15
+    },
+    {
+      "subject": "EDB",
+      "grade": 11,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_e7fe5635-38dc-4600-a397-3a3825becd20",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 11,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_79bbff88-ae13-4422-970e-ee63cad10765",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 11,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_03f472d2-b122-47ee-809d-bbdd24da8a66",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 11,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_770e5e5e-61af-472d-8233-c96b0b2957e7",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 12,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_2ccaa827-d0af-4cae-b130-43fc98e076eb",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 12,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_c687903c-59c3-49b5-bc97-a68752d7cbcf",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 12,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_f7e4b349-42f6-4b17-b750-a2364288ae33",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "EDB",
+      "grade": 12,
+      "scope": "THEME",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_adaf2490-8c1a-419d-a153-ec2790341c74",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "FIZ",
+      "grade": 9,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 24,
+      "versionId": "cv_844d5812-c740-435a-a12f-f0b2de68e236",
+      "linkedNodes": 24
+    },
+    {
+      "subject": "FIZ",
+      "grade": 10,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 22,
+      "versionId": "cv_14e572f9-cc0d-4798-afff-b8c6257e7f5b",
+      "linkedNodes": 22
+    },
+    {
+      "subject": "FIZ",
+      "grade": 11,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 32,
+      "versionId": "cv_4d4af1eb-62d3-4e7d-8bd6-e2a0ac2a6343",
+      "linkedNodes": 32
+    },
+    {
+      "subject": "FIZ",
+      "grade": 12,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 27,
+      "versionId": "cv_938f31eb-9afe-44b2-90d1-975c560e2368",
+      "linkedNodes": 27
+    },
+    {
+      "subject": "KIM",
+      "grade": 9,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 23,
+      "versionId": "cv_66b91137-a2c5-41ea-b550-1828de23f0b0",
+      "linkedNodes": 23
+    },
+    {
+      "subject": "KIM",
+      "grade": 10,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 21,
+      "versionId": "cv_aacd62a6-e9c6-4654-9f8d-4bbbee6b8a10",
+      "linkedNodes": 21
+    },
+    {
+      "subject": "KIM",
+      "grade": 11,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 25,
+      "versionId": "cv_ee69da0a-9163-4a55-8b46-aea99d4f225c",
+      "linkedNodes": 25
+    },
+    {
+      "subject": "KIM",
+      "grade": 12,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 24,
+      "versionId": "cv_053758f7-9d22-40c7-9dcc-67a71cc23bbb",
+      "linkedNodes": 24
+    },
+    {
+      "subject": "BIY",
+      "grade": 9,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 14,
+      "versionId": "cv_cac70c7f-b310-434e-a611-ccbeb012d74a",
+      "linkedNodes": 14
+    },
+    {
+      "subject": "BIY",
+      "grade": 10,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 19,
+      "versionId": "cv_787c07c6-10df-40f7-9b67-cd7ca028a867",
+      "linkedNodes": 19
+    },
+    {
+      "subject": "BIY",
+      "grade": 11,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 22,
+      "versionId": "cv_717fc971-5761-4d28-9db4-4b1aa2d5a8f5",
+      "linkedNodes": 22
+    },
+    {
+      "subject": "BIY",
+      "grade": 12,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 20,
+      "versionId": "cv_edd60f98-0f0d-49e8-99f1-48eb6c4a8ad6",
+      "linkedNodes": 20
+    },
+    {
+      "subject": "TAR",
+      "grade": 9,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 13,
+      "versionId": "cv_ad5249e2-6825-4a3c-9cd9-ed2183689fe9",
+      "linkedNodes": 13
+    },
+    {
+      "subject": "TAR",
+      "grade": 10,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 14,
+      "versionId": "cv_c15e08cc-cef9-475f-b2d4-822238a791dd",
+      "linkedNodes": 14
+    },
+    {
+      "subject": "TAR",
+      "grade": 11,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 11,
+      "versionId": "cv_da570610-d4af-4e23-996a-7479c88550a1",
+      "linkedNodes": 11
+    },
+    {
+      "subject": "COG",
+      "grade": 9,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 19,
+      "versionId": "cv_afd317a1-ac12-4aae-be8e-750e8c531c47",
+      "linkedNodes": 19
+    },
+    {
+      "subject": "COG",
+      "grade": 10,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 18,
+      "versionId": "cv_562d034a-441c-49df-9ddd-f00132aba575",
+      "linkedNodes": 18
+    },
+    {
+      "subject": "COG",
+      "grade": 11,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 19,
+      "versionId": "cv_0a396079-c53f-41ca-9564-99a8de3596e2",
+      "linkedNodes": 19
+    },
+    {
+      "subject": "COG",
+      "grade": 12,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 20,
+      "versionId": "cv_a5b1f069-22b7-4e64-aefd-afe2fe61606f",
+      "linkedNodes": 20
+    },
+    {
+      "subject": "FEL",
+      "grade": 10,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 10,
+      "versionId": "cv_ca6ed940-66bd-407e-9889-7fc6726e3b27",
+      "linkedNodes": 10
+    },
+    {
+      "subject": "FEL",
+      "grade": 11,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 12,
+      "versionId": "cv_45646aa7-2515-4b6a-8252-a574bae2b289",
+      "linkedNodes": 12
+    },
+    {
+      "subject": "DIN",
+      "grade": 5,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 18,
+      "versionId": "cv_0aa8a648-ce76-4cad-b90f-902b9f074f3d",
+      "linkedNodes": 18
+    },
+    {
+      "subject": "DIN",
+      "grade": 6,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 18,
+      "versionId": "cv_20d7d150-a50c-4e6d-85dc-23be05d6583f",
+      "linkedNodes": 18
+    },
+    {
+      "subject": "DIN",
+      "grade": 7,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 17,
+      "versionId": "cv_1df55866-1462-4f02-ba27-ad24ad7985c6",
+      "linkedNodes": 17
+    },
+    {
+      "subject": "DIN",
+      "grade": 8,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 19,
+      "versionId": "cv_ec267b40-2744-449f-8030-0f48baa751fb",
+      "linkedNodes": 19
+    },
+    {
+      "subject": "DIN",
+      "grade": 9,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 20,
+      "versionId": "cv_ca9a1e15-fe27-451c-b4c2-61137b2b47da",
+      "linkedNodes": 20
+    },
+    {
+      "subject": "DIN",
+      "grade": 10,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 17,
+      "versionId": "cv_8139df6f-e2a7-48f7-b694-2755135f04eb",
+      "linkedNodes": 17
+    },
+    {
+      "subject": "DIN",
+      "grade": 11,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_80ef0c42-94fb-4db4-9393-572508424ea3",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "ING",
+      "grade": 9,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 181,
+      "versionId": "cv_2e232338-40ed-44fb-96eb-395cd1cf3b8c",
+      "linkedNodes": 181
+    },
+    {
+      "subject": "ING",
+      "grade": 10,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 161,
+      "versionId": "cv_5aceedec-1b04-4386-8eb2-9d711af48eb6",
+      "linkedNodes": 161
+    },
+    {
+      "subject": "ING",
+      "grade": 11,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 167,
+      "versionId": "cv_3b27e178-dbf6-4e61-9293-23590b65e52c",
+      "linkedNodes": 167
+    },
+    {
+      "subject": "ING",
+      "grade": 12,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 141,
+      "versionId": "cv_dba9d852-4e35-4a21-bedc-40a427562f06",
+      "linkedNodes": 141
+    },
+    {
+      "subject": "INK",
+      "grade": 8,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 14,
+      "versionId": "cv_41608195-5d86-4ee7-8727-74f15802ced2",
+      "linkedNodes": 14
+    },
+    {
+      "subject": "INK",
+      "grade": 12,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 16,
+      "versionId": "cv_9bd15886-1048-4bbb-bdf9-cf35b7320ef8",
+      "linkedNodes": 16
+    },
+    {
+      "subject": "ING",
+      "grade": 5,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 178,
+      "versionId": "cv_82309fa3-5d69-4183-befa-a781fcc9e860",
+      "linkedNodes": 178
+    },
+    {
+      "subject": "ING",
+      "grade": 6,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 184,
+      "versionId": "cv_33b9e7ce-1a95-4f11-8342-92ec3ee70ad4",
+      "linkedNodes": 184
+    },
+    {
+      "subject": "ING",
+      "grade": 7,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 191,
+      "versionId": "cv_d62f645c-e660-4287-be61-d2b01ac15e30",
+      "linkedNodes": 191
+    },
+    {
+      "subject": "ING",
+      "grade": 8,
+      "scope": "SUBJECT_PROGRAM",
+      "reused": false,
+      "outcomes": 191,
+      "versionId": "cv_f72bff16-461d-4170-8f7c-cb94fea81e60",
+      "linkedNodes": 191
+    }
+  ],
+  "blocked": [
+    {
+      "course": "ortaokul-turkce-dersi",
+      "grade": 5,
+      "error": "CONFLICTING_THEME_CODE:T.O.5.20"
+    },
+    {
+      "course": "din-kulturu-ve-ahlak-bilgisi-dersi-ortaogretim",
+      "grade": 12,
+      "error": "EMPTY_OUTCOME_SECTION"
+    }
+  ],
+  "newProducerCalls": 0,
+  "newEditorCalls": 0,
+  "examSpecification": false,
+  "sourcesReverified": true,
+  "before": {
+    "preservedHash": "36149720788232fb4d083bc3bfc830c166f81db43cdde72113325c8651034899",
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "academic_year": "2026-2027",
+        "status": "PAUSED"
+      }
+    ],
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ],
+    "plans": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "slots": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  "after": {
+    "preservedHash": "36149720788232fb4d083bc3bfc830c166f81db43cdde72113325c8651034899",
+    "campaigns": [
+      {
+        "id": "editorial-20261015",
+        "academic_year": "2026-2027",
+        "status": "PAUSED"
+      }
+    ],
+    "pilot": [
+      {
+        "id": "pilot_50",
+        "question_cap": 50,
+        "reserved_count": 50
+      }
+    ],
+    "jobs": [
+      {
+        "n": 32
+      }
+    ],
+    "questions": [
+      {
+        "n": 165
+      }
+    ],
+    "plans": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "slots": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  "passed": true
+}
