@@ -1,1 +1,1 @@
-2026-10-19 A002 login challenge lifecycle: require verification and renew after failed submission
+2026-10-19 A005 question agent dedicated service actor (svc-soru-ajani), login/session refusal for service accounts

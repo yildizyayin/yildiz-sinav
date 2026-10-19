@@ -1,7 +1,7 @@
 import { sanitizeAuditDetails } from './lib/db';
 import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
 import { audit, badRequest, forbidden, json, methodNotAllowed, normalizeName, notFound, one, all, splitName, uuid } from './lib/db';
-import { createSession, getAuthUser, hashPassword, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
+import { createSession, getAuthUser, hashPassword, isServiceAccountId, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
 import { canAccessSubjectForClass, canEvaluateExam, loadPermissionScope, roleCanManageInstitution } from './lib/permissions';
 import { examPublicationGuard } from './lib/exam-publication-guard';
 import { examEvaluationAccess } from './lib/exam-evaluation-access';
@@ -130,7 +130,7 @@ async function login(request: Request, env: Env): Promise<Response> {
 
   const row = await one<any>(env.DB.prepare(`SELECT u.*, i.status AS institution_status FROM users u LEFT JOIN institutions i ON i.id=u.institution_id
     WHERE lower(coalesce(u.email,''))=lower(?) OR lower(coalesce(u.username,''))=lower(?) OR coalesce(u.phone,'')=? LIMIT 1`).bind(identifier, identifier, identifier));
-  if (!row || !row.active || !(await verifyPassword(body.password, row.password_salt, row.password_hash, row.password_iterations))) {
+  if (!row || !row.active || isServiceAccountId(row.id) || !(await verifyPassword(body.password, row.password_salt, row.password_hash, row.password_iterations))) {
     await recordLoginAttempt(env, identifier, false, request);
     return json({ ok: false, error: { code: 'INVALID_CREDENTIALS', message: 'Kullanıcı adı veya şifre hatalı.' } }, 401);
   }
