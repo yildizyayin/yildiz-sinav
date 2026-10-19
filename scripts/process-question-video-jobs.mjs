@@ -1,12 +1,15 @@
 import {mkdir,writeFile,readFile,copyFile} from 'node:fs/promises';
 import {createHash,randomBytes} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
-// Staging-only renderer. No question approval, publication, or generation is performed.
-const base='https://demo.anunex.com',account=process.env.CLOUDFLARE_ACCOUNT_ID,token=process.env.CLOUDFLARE_API_TOKEN;
+// Explicit target allowlist; never infer a production database from a user-provided URL.
+const target=process.env.QUESTION_VIDEO_TARGET||'staging';
+if(!['staging','production'].includes(target))throw Error('Invalid video target');
+if(target==='production'&&process.env.QUESTION_VIDEO_FIXTURE==='true')throw Error('Synthetic production video forbidden');
+const base=target==='production'?'https://app.anunex.com':'https://demo.anunex.com',workerName=target==='production'?'yildiz-sinav-prod':'yildiz-sinav-v1',account=process.env.CLOUDFLARE_ACCOUNT_ID,token=process.env.CLOUDFLARE_API_TOKEN;
 const digest=b=>createHash('sha256').update(b).digest('hex');let dbid;
 async function cf(path,body){const r=await fetch(`https://api.cloudflare.com/client/v4/accounts/${account}${path}`,{method:body?'POST':'GET',headers:{Authorization:`Bearer ${token}`,'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});const p=await r.json();if(!r.ok||!p.success)throw Error(`CF request failed ${r.status}`);return p.result;}
-async function query(sql,params=[]){if(!dbid){const v=await cf('/workers/scripts/yildiz-sinav-v1/versions'),id=v.items?.[0]?.id||v[0]?.id,d=await cf('/workers/scripts/yildiz-sinav-v1/versions/'+id);const b=d.resources.bindings.find(x=>x.name==='DB'&&x.type==='d1');if(!b)throw Error('Staging DB not found');dbid=b.id||b.database_id;}return (await cf(`/d1/database/${dbid}/query`,{sql,params}))[0];}
-const health=await fetch(base+'/api/health').then(r=>r.json());if(health.environment!=='staging')throw Error('Staging boundary failed');
+async function query(sql,params=[]){if(!dbid){const v=await cf(`/workers/scripts/${workerName}/versions`),id=v.items?.[0]?.id||v[0]?.id,d=await cf(`/workers/scripts/${workerName}/versions/`+id);const b=d.resources.bindings.find(x=>x.name==='DB'&&x.type==='d1');if(!b)throw Error('Target DB binding not found');dbid=b.id||b.database_id;}return (await cf(`/d1/database/${dbid}/query`,{sql,params}))[0];}
+const health=await fetch(base+'/api/health').then(r=>r.json());if(health.environment!==target)throw Error('Video environment boundary failed');
 await mkdir('tmp/question-video-render',{recursive:true});await mkdir('tmp/question-video-proof',{recursive:true});
 if(process.env.QUESTION_VIDEO_FIXTURE==='true'){
  const id='qvj_synthetic_technical_20261014',requestKey='2fbdab79-bb3e-4a73-8272-2c08ec37f430';
@@ -19,7 +22,7 @@ const paused=(await query("SELECT count(*) total,COALESCE(sum(paused),0) n FROM 
 if(!control||control.paused||paused.total!==2||paused.n){console.log('VIDEO_RENDER_PAUSED');process.exit(0);}
 const now=new Date().toISOString();
 // A crashed lease may be reclaimed, but never an active lease or approved output.
-const jobs=(await query("SELECT id FROM question_media_jobs WHERE attempt_count<3 AND (status='READY_TO_RENDER' OR (status='RENDERING' AND lease_until<?)) ORDER BY created_at,id LIMIT 1",[now])).results;
+const jobs=(await query("SELECT id FROM question_media_jobs WHERE (?='staging' OR synthetic=0) AND attempt_count<3 AND (status='READY_TO_RENDER' OR (status='RENDERING' AND lease_until<?)) ORDER BY created_at,id LIMIT 1",[target,now])).results;
 if(!jobs.length){console.log('VIDEO_RENDER_IDLE');process.exit(0);}
 const id=jobs[0].id,lease=randomBytes(32).toString('hex'),hash=digest(lease),until=new Date(Date.now()+600000).toISOString();console.log('::add-mask::'+lease);
 const claim=await query(`UPDATE question_media_jobs SET status='RENDERING',lease_hash=?,lease_until=?,attempt_count=attempt_count+1,error_code=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=? AND attempt_count<3 AND (status='READY_TO_RENDER' OR (status='RENDERING' AND lease_until<?)) AND EXISTS(SELECT 1 FROM question_team_control WHERE id=1 AND paused=0) AND NOT EXISTS(SELECT 1 FROM question_team_agent_control WHERE agent_key IN ('MEDIA','VIDEO') AND paused=1)`,[hash,until,id,now]);

@@ -1,6 +1,8 @@
+import {replenishAutonomousQueue,autonomousYear} from './lib/question-autonomous-queue';
+import {questionCardIntelligence} from './lib/question-card-intelligence';
 import {handleQuestionEditorialRepair} from './lib/question-editorial-repair';
 import {handleQuestionTeam} from './lib/question-team';
-import {handleQuestionMediaJobs} from './lib/question-media-jobs';
+import {handleQuestionMediaJobs,prepareAutonomousQuestionVideo} from './lib/question-media-jobs';
 import {verifyStoredQuestionDraft} from './lib/question-draft-verification';
 import {handleQuestionContentEdit} from './lib/question-content-edit';
 import app from './student-books-entry';
@@ -52,13 +54,15 @@ async function patchQuestion(request:Request,env:Env,id:string){
  return json({ok:true,id});
 }
 
-export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{const url=new URL(request.url),p=url.pathname;if(p==='/api/question-bank-standard/team'||p.startsWith('/api/question-bank-standard/team/'))return handleQuestionTeam(request,env,await getAuthUser(env,request));if(p==='/api/question-bank-standard/media-jobs'||p.startsWith('/api/question-bank-standard/media-jobs/')){const renderer=/\/render\/(input|audio|output)$/.test(p);const user=renderer?null:await getAuthUser(env,request);return handleQuestionMediaJobs(request,env,user);}const verifyDraft=p.match(/^\/api\/question-bank-standard\/([^/]+)\/content\/verify$/);if(verifyDraft){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');return verifyStoredQuestionDraft(request,env,user,verifyDraft[1]);}const contentEdit=p.match(/^\/api\/question-bank-standard\/([^/]+)\/content$/);if(contentEdit){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');return handleQuestionContentEdit(request,env,user,contentEdit[1]);}if(p==='/api/question-bank-standard/coverage'||p.startsWith('/api/question-bank-standard/generation-jobs')){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(p==='/api/question-bank-standard/coverage'&&request.method==='GET')return getQuestionPoolCoverage(request,env,user);const repair=p.match(/^\/api\/question-bank-standard\/generation-jobs\/([^/]+)\/repair$/);if(repair)return handleQuestionEditorialRepair(request,env,user,repair[1]);const run=p.match(/^\/api\/question-bank-standard\/generation-jobs\/([^/]+)\/run$/);if(run&&request.method==='POST')return runQuestionGenerationJob(request,env,user,run[1]);const response=await handleQuestionGenerationJobs(request,env,user);if(response)return response;return fail(404,'NOT_FOUND','İşlem bulunamadı.');}if(p==='/api/question-bank-standard/agent-pilot/readiness'&&request.method==='GET'){const user=await getAuthUser(env,request);const access=pilotReadinessAccess(user?.role??null);if(access===401)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(access===403)return fail(403,'SUPER_ADMIN_ONLY','Yalnız Süper Admin.');return pilotReadiness(env);}if(p==='/api/question-bank-standard/stats'&&request.method==='GET'){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return fail(403,'FORBIDDEN','Yetkisiz erişim.');return stats(env)}const review=p.match(/^\/api\/(?:question-bank-standard|platform\/questions)\/([^/]+)\/review$/);if(review&&request.method==='PATCH')return reviewQuestion(request,env,review[1]);const patch=p.match(/^\/api\/question-bank-standard\/([^/]+)$/);if(patch&&request.method==='PATCH')return patchQuestion(request,env,patch[1]);return app.fetch(request,env,ctx);},async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){
+export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{const url=new URL(request.url),p=url.pathname;if(p==='/api/question-bank-standard/team'||p.startsWith('/api/question-bank-standard/team/'))return handleQuestionTeam(request,env,await getAuthUser(env,request));if(p==='/api/question-bank-standard/media-jobs'||p.startsWith('/api/question-bank-standard/media-jobs/')){const renderer=/\/render\/(input|audio|output)$/.test(p);const user=renderer?null:await getAuthUser(env,request);return handleQuestionMediaJobs(request,env,user);}const verifyDraft=p.match(/^\/api\/question-bank-standard\/([^/]+)\/content\/verify$/);if(verifyDraft){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');return verifyStoredQuestionDraft(request,env,user,verifyDraft[1]);}const intelligence=p.match(/^\/api\/question-bank-standard\/([^/]+)\/intelligence$/);if(intelligence&&request.method==='GET'){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açın.');return questionCardIntelligence(env,user,intelligence[1]);}const contentEdit=p.match(/^\/api\/question-bank-standard\/([^/]+)\/content$/);if(contentEdit){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');return handleQuestionContentEdit(request,env,user,contentEdit[1]);}if(p==='/api/question-bank-standard/coverage'||p.startsWith('/api/question-bank-standard/generation-jobs')){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(p==='/api/question-bank-standard/coverage'&&request.method==='GET')return getQuestionPoolCoverage(request,env,user);const repair=p.match(/^\/api\/question-bank-standard\/generation-jobs\/([^/]+)\/repair$/);if(repair)return handleQuestionEditorialRepair(request,env,user,repair[1]);const run=p.match(/^\/api\/question-bank-standard\/generation-jobs\/([^/]+)\/run$/);if(run&&request.method==='POST')return runQuestionGenerationJob(request,env,user,run[1]);const response=await handleQuestionGenerationJobs(request,env,user);if(response)return response;return fail(404,'NOT_FOUND','İşlem bulunamadı.');}if(p==='/api/question-bank-standard/agent-pilot/readiness'&&request.method==='GET'){const user=await getAuthUser(env,request);const access=pilotReadinessAccess(user?.role??null);if(access===401)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(access===403)return fail(403,'SUPER_ADMIN_ONLY','Yalnız Süper Admin.');return pilotReadiness(env);}if(p==='/api/question-bank-standard/stats'&&request.method==='GET'){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return fail(403,'FORBIDDEN','Yetkisiz erişim.');return stats(env)}const review=p.match(/^\/api\/(?:question-bank-standard|platform\/questions)\/([^/]+)\/review$/);if(review&&request.method==='PATCH')return reviewQuestion(request,env,review[1]);const patch=p.match(/^\/api\/question-bank-standard\/([^/]+)$/);if(patch&&request.method==='PATCH')return patchQuestion(request,env,patch[1]);return app.fetch(request,env,ctx);},async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){
+  ctx.waitUntil(prepareAutonomousQuestionVideo(env).then(result=>{console.log('question-agent-media',JSON.stringify(result));}));
   // Read-only scheduling preview. No provider requests, job claims or database writes.
   const cfg=env as Env & {QUESTION_AGENT_DISPATCH_PREVIEW?:string;QUESTION_PILOT_BUDGET_REMAINING?:string;QUESTION_PILOT_REVIEW_SLOTS?:string};
   if(cfg.QUESTION_AGENT_DISPATCH_PREVIEW==='true'){
     const budget=Number(cfg.QUESTION_PILOT_BUDGET_REMAINING??'0');
     const reviewSlots=Number(cfg.QUESTION_PILOT_REVIEW_SLOTS??'0');
     ctx.waitUntil((async()=>{
+      const targetYear=env.QUESTION_AUTOMATED_ACADEMIC_YEAR;
       const rows=await all<any>(env.DB.prepare(`SELECT j.id,j.grade_level gradeLevel,j.academic_year academicYear,
        j.question_count questionCount,j.status,j.attempt_count attemptCount,
        cv.verified curriculumVerified,o.active outcomeActive
@@ -69,11 +73,11 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
        JOIN curriculum_versions cv ON cv.id=j.curriculum_version_id
          AND cv.academic_year=j.academic_year AND cv.grade_level=j.grade_level
          AND cv.program_version=j.program_version
-       WHERE j.status='REQUESTED'
+       WHERE j.status='REQUESTED' AND j.academic_year=?
          AND EXISTS(SELECT 1 FROM learning_nodes n WHERE n.id='ln_'||o.id AND n.active=1
            AND n.node_type='OUTCOME' AND n.academic_year=j.academic_year
            AND n.grade_level=j.grade_level AND n.subject_id=j.subject_id)
-       ORDER BY j.priority DESC,j.created_at,j.id LIMIT 20`));
+       ORDER BY j.priority DESC,j.created_at,j.id LIMIT 20`).bind(targetYear??''));
       // Read from the same atomic reservation ledger used by dispatch.
       // Historic/manual generation jobs do not consume this pilot's quota.
       const quota=await one<{question_cap:number;reserved_count:number}>(env.DB.prepare(
@@ -90,6 +94,7 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
        "SELECT id,role,active FROM users WHERE id=? AND role='SUPER_ADMIN' AND active=1"
       ).bind(actorId)):null;
       const actor=validateScheduledActor(actorRow?{id:actorRow.id,role:actorRow.role,active:actorRow.active===1}:null,actorId);
+      if(env.QUESTION_GENERATION_VERIFICATION_ENABLED!=='true'){console.log('question-agent-execution-blocked',JSON.stringify({reasons:['GENERATION_VERIFICATION_UNAVAILABLE']}));return;}
       const execution=canExecuteScheduledPilot({
        dispatchPreview:true,
        executionEnabled:(cfg as typeof cfg & {QUESTION_AGENT_EXECUTION_ENABLED?:string;QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AGENT_EXECUTION_ENABLED==='true' && (cfg as typeof cfg & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE==='true',
@@ -105,8 +110,14 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
       // D1-bound active SUPER_ADMIN, explicitly configured for this internal
       // scheduled task; this is not an HTTP session or a public API credential.
       if(!actorRow||!actor.ok)return;
+      const academicYear=(env as Env & {QUESTION_AUTOMATED_ACADEMIC_YEAR?:string}).QUESTION_AUTOMATED_ACADEMIC_YEAR;
+      if(!autonomousYear(academicYear)){console.log('question-agent-execution-blocked',JSON.stringify({reasons:['AUTOMATED_ACADEMIC_YEAR_REQUIRED']}));return;}
+      const replenishment=await replenishAutonomousQueue(env,{id:actorRow.id,role:'SUPER_ADMIN',institution_id:null,student_id:null,display_name:'Scheduled Question Agent',email:null,username:null},academicYear);
+      console.log('question-agent-queue',JSON.stringify(replenishment));
       // One job per cron tick until there is an atomic cross-job budget ledger.
-      const jobId=plan.ids[0];if(!jobId)return;
+      const jobId=plan.ids.find(id=>rows.find(r=>r.id===id)?.academicYear===academicYear);if(!jobId)return;
+      const queuedReview=await one<{n:number}>(env.DB.prepare("SELECT count(*) n FROM question_bank WHERE owner_type='PLATFORM' AND origin_kind IN ('AI','AI_GENERATED','AI_DRAFT','NIBIRU','NIBIRU_AI') AND review_status='REVIEW'"));
+      if(Number(queuedReview?.n??0)+Number(rows.find(r=>r.id===jobId)?.questionCount??0)>reviewSlots){console.log('question-agent-execution-blocked',JSON.stringify({reasons:['REVIEW_QUEUE_FULL']}));return;}
       // The job runner requires a separate review-capacity flag. Keep scheduler
       // planning and execution aligned, never dispatch when reviewers are unavailable.
       if(!canDispatchToReviewQueue({reviewAvailable:(cfg as typeof cfg & {QUESTION_PILOT_REVIEW_AVAILABLE?:string}).QUESTION_PILOT_REVIEW_AVAILABLE==='true',reviewSlots,questionCount:Number(rows.find(r=>r.id===jobId)?.questionCount??0)})){
@@ -117,7 +128,9 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
       try {
        const reservation=await env.DB.prepare(`INSERT OR IGNORE INTO question_agent_pilot_reservations(job_id,question_count)
         SELECT id,question_count FROM question_generation_jobs
-        WHERE id=? AND status='REQUESTED' AND attempt_count=0 AND question_count BETWEEN 1 AND 10`).bind(jobId).run();
+        WHERE id=? AND status='REQUESTED' AND attempt_count=0 AND question_count BETWEEN 1 AND 10
+        AND question_count+(SELECT count(*) FROM question_bank WHERE owner_type='PLATFORM' AND origin_kind IN ('AI','AI_GENERATED','AI_DRAFT','NIBIRU','NIBIRU_AI') AND review_status='REVIEW')
+        +COALESCE((SELECT sum(r.question_count) FROM question_agent_pilot_reservations r JOIN question_generation_jobs j ON j.id=r.job_id WHERE j.status IN ('REQUESTED','RUNNING')),0)<=?`).bind(jobId,reviewSlots).run();
        if(Number(reservation.meta?.changes||0)!==1){
         console.log('question-agent-reservation-skipped',JSON.stringify({jobId}));return;
        }

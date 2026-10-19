@@ -1,3 +1,5 @@
+import {editorialQuestion} from './fixtures/editorial-question';
+import {visualBlock} from '../worker/lib/question-editorial';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
 import {it,expect} from 'vitest';
@@ -16,6 +18,7 @@ function fixture(){
  CREATE TABLE question_content_blocks(question_id TEXT);CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
  CREATE TRIGGER rev AFTER UPDATE ON question_bank WHEN NEW.review_revision=OLD.review_revision BEGIN UPDATE question_bank SET review_revision=OLD.review_revision+1 WHERE id=NEW.id;END;
  CREATE TRIGGER asset_rev AFTER INSERT ON question_assets BEGIN UPDATE question_bank SET review_revision=review_revision+1 WHERE id=NEW.question_id;END;`);
+ db.exec('ALTER TABLE question_bank ADD COLUMN editorial_packet_json TEXT;ALTER TABLE question_content_blocks ADD COLUMN placement TEXT;ALTER TABLE question_content_blocks ADD COLUMN block_type TEXT;ALTER TABLE question_content_blocks ADD COLUMN payload_json TEXT;');
  db.exec(readFileSync(new URL('../migrations/0105_question_team_media.sql',import.meta.url),'utf8'));
  let beforeBatch:(()=>void)|undefined,afterPut:(()=>void)|undefined;
  const prepare=(sql:string,args:any[]=[]):any=>({bind:(...a:any[])=>prepare(sql,a),first:async()=>db.prepare(sql).get(...args),all:async()=>({results:db.prepare(sql).all(...args)}),run:async()=>({meta:{changes:Number(db.prepare(sql).run(...args).changes)}}),sql,args});
@@ -69,5 +72,12 @@ it('cannot approve across a curriculum race and does not consume attempts while 
   f.beforeBatch(()=>f.db.exec('UPDATE curriculum_versions SET verified=0'));
   expect((await f.call(req('/'+j.id+'/approve',{expectedSourceRevision:1,expectedOutputHash:r.job.outputSha256,rightsStatus:'OWNED',checks:{watchedEntireVideo:true,answerAndNarration:true,visualReadability:true,rights:true}}))).status).toBe(409);
   expect(f.db.prepare('SELECT count(*) n FROM question_assets').get()?.n).toBe(0);
+ }finally{f.db.close()}
+});
+
+it('freezes a validated table into the video plan and rejects unknown or mismatched visual packets',async()=>{
+ const f=fixture();try{const q=editorialQuestion(),block=visualBlock(q.editorial as any)!;f.db.prepare("UPDATE question_bank SET content_mode='MIXED',editorial_packet_json=?,options_json=?,correct_answer=?,review_revision=2 WHERE id='q'").run(JSON.stringify(q.editorial),JSON.stringify(q.options),q.correctAnswer);
+ f.db.prepare("INSERT INTO question_content_blocks(question_id,placement,block_type,payload_json) VALUES('q','STEM',?,?)").run(block.blockType,JSON.stringify(block.payload));const j=await f.create();expect(j.status).toBe('QUEUED');const stored:any=f.db.prepare('SELECT plan_json,source_snapshot_json FROM question_media_jobs WHERE id=?').get(j.id);expect(JSON.parse(stored.plan_json).scenes[1].visual.rows).toEqual((q.editorial as any).visual.rows);expect(stored.plan_json).not.toContain('readingPurpose');
+ f.db.prepare("UPDATE question_content_blocks SET payload_json='{}'").run();const invalid=await f.create();expect(invalid.status).toBe('BLOCKED');expect(invalid.errorCode).toBe('RICH_VIDEO_PACKET_NOT_SUPPORTED');
  }finally{f.db.close()}
 });
