@@ -164,6 +164,9 @@ jobs:
       - name: Verify super admin question scope deployment
         run: node scripts/check-question-team-production.mjs
 
+      - name: Import source-verified production curricula and enable unlimited question quota
+        run: node scripts/production-question-curricula.mjs
+
       - name: Inspect question runtime without provider calls or data changes
         run: node scripts/inspect-question-runtime.mjs
 

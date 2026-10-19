@@ -57,6 +57,7 @@ beforeAll(async()=>{
  await db.exec(migration('0111_editorial_verification_transport_retry.sql'));
  await db.exec(migration('0106_question_team_execution_stage.sql'));
  await db.exec(migration('0102_question_agent_pilot_budget.sql'));
+ await db.exec(migration('0112_question_production_budget_mode.sql'));
 },20_000);
 afterAll(async()=>{await mf?.dispose();});
 beforeEach(async()=>{

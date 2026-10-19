@@ -87,19 +87,23 @@ export function firstScheduledPilotBatch(rows:readonly {questionCount:number}[])
  return Number.isSafeInteger(count)&&count>=1&&count<=10?count:0;
 }
 
-/** The database ledger is authoritative; an optional rollout ceiling can only lower it. */
-export function effectivePilotBudget(quota:{question_cap:number;reserved_count:number}|null,ceiling?:string):number{
- if(!quota||![quota.question_cap,quota.reserved_count].every(v=>Number.isSafeInteger(v)&&v>=0))return 0;
- const remaining=Math.max(0,quota.question_cap-quota.reserved_count);
+/** Unlimited removes the lifetime quota, not the per-dispatch or review queue limits. */
+export type QuestionBudget={question_cap:number|null;reserved_count:number;budget_mode?:string};
+export function validQuestionBudget(q:QuestionBudget|null):q is QuestionBudget{
+ return !!q&&Number.isSafeInteger(q.reserved_count)&&q.reserved_count>=0&&(q.budget_mode==='UNLIMITED'?q.question_cap===null:(q.budget_mode===undefined||q.budget_mode==='LIMITED')&&Number.isSafeInteger(q.question_cap)&&Number(q.question_cap)>0&&q.reserved_count<=Number(q.question_cap));
+}
+/** Returns bounded dispatch capacity, never a fabricated unlimited lifetime balance. */
+export function effectivePilotBudget(quota:QuestionBudget|null,ceiling?:string):number{
+ if(!validQuestionBudget(quota))return 0;
+ const remaining=quota.budget_mode==='UNLIMITED'?50:Math.max(0,Number(quota.question_cap)-quota.reserved_count);
  if(ceiling===undefined)return remaining;
  if(!/^\d+$/.test(ceiling)||!Number.isSafeInteger(Number(ceiling)))return 0;
  return Math.min(remaining,Number(ceiling));
 }
-
 /** Include only this job's already-paid reservation; never refund or alter the ledger. */
-export function effectivePilotJobBudget(quota:{question_cap:number;reserved_count:number}|null,ownReservation:number,ceiling?:string):number{
- if(!quota||!Number.isSafeInteger(ownReservation)||ownReservation<0||![quota.question_cap,quota.reserved_count].every(v=>Number.isSafeInteger(v)&&v>=0)||quota.reserved_count>quota.question_cap||ownReservation>quota.reserved_count)return 0;
- const authorized=effectivePilotBudget(quota)+ownReservation;
+export function effectivePilotJobBudget(quota:QuestionBudget|null,ownReservation:number,ceiling?:string):number{
+ if(!validQuestionBudget(quota)||!Number.isSafeInteger(ownReservation)||ownReservation<0||ownReservation>quota.reserved_count)return 0;
+ const authorized=quota.budget_mode==='UNLIMITED'?50:effectivePilotBudget(quota)+ownReservation;
  if(ceiling===undefined)return authorized;
  if(!/^\d+$/.test(ceiling)||!Number.isSafeInteger(Number(ceiling)))return 0;
  return Math.min(authorized,Number(ceiling));

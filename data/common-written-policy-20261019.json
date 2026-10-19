@@ -1,0 +1,50 @@
+{
+  "policyVersion": "ANUNEX-COMMON-WRITTEN-20261019-V1",
+  "decisionStatus": "FINALIZED",
+  "implementationStatus": "POLICY_ONLY_NOT_END_TO_END_QUALIFIED",
+  "source": {
+    "authority": "MEB/ÖDSGM",
+    "url": "https://odsgm.meb.gov.tr/www/quotortak-yazili-sinav-sistemiquot-tanitim-programi-duzenlendi/icerik/1746/tr",
+    "publishedAt": "2026-10-16",
+    "verifiedAt": "2026-10-19",
+    "academicYear": "2026-2027"
+  },
+  "targetAcademicYear": "2027-2028",
+  "targetScenarioVerified": false,
+  "targetAnnualPlanVerified": false,
+  "officialPlatformIntegration": false,
+  "officialQuestionBankAccess": false,
+  "sourceScope": {
+    "middleGrades": [5,6,7],
+    "middleSubjects": ["TUR","MAT","FEN","SOS","DIN","ING"],
+    "highGrades": [9,10,11],
+    "highSubjects": ["EDB","MAT","FIZ","KIM","BIY","TAR","COG","FEL","DIN","ING"]
+  },
+  "decisions": {
+    "mode": "COMMON_WRITTEN",
+    "separateFromMultipleChoicePractice": true,
+    "questionFormats": ["OPEN_ENDED","SHORT_ANSWER"],
+    "requiresScenarioSourceAndExactDistribution": true,
+    "scenarioContextFields": ["academicYear","term","examNumber","grade","subjectCode","scope","province","scenarioId","sourceUrl","sourceDocumentHash","curriculumVersionId","outcomeQuestionCounts"],
+    "zumreRuleNote": "Two jointly authored questions are confirmed for the published 2026-2027 OYSS scope. Reverify the applicable year and scope; do not impose this on every practice test.",
+    "jointlyAuthoredQuestionsInConfirmedOYSSScope": 2,
+    "remainingQuestionSource": "ANUNEX_APPROVED_RIGHTS_ELIGIBLE_OWN_BANK",
+    "difficultySetByTeacher": true,
+    "pointsSetByTeacher": true,
+    "maximumScore": 100,
+    "maximumScoreStatus": "ANUNEX_DESIGN_DECISION_NOT_SOURCED_FROM_THIS_ANNOUNCEMENT",
+    "perQuestionAnalyticRubric": true,
+    "partialCredit": true,
+    "teacherOrDepartmentApproval": true,
+    "immutablePublishedRevision": true,
+    "aiMaySuggestScores": true,
+    "aiMayFinalizeScores": false,
+    "humanAndRightsReviewRequired": true,
+    "restrictedContentPublishable": false,
+    "exportsPlanned": ["EXAM_PAPER","ANSWER_KEY","ANALYTIC_RUBRIC","QUESTION_SCORE_SHEET"],
+    "reportsPlanned": ["STUDENT","CLASS","SECTION","OUTCOME","PARENT_FEEDBACK"],
+    "multipleChoiceNetCalculation": false,
+    "automaticEokulSubmission": false
+  },
+  "notImplementedClaimsProhibited": ["LIVE_OFFICIAL_OYSS_INTEGRATION","2027_2028_SCENARIO_VERIFIED","OPEN_ENDED_AUTONOMOUS_PRODUCTION_QUALIFIED","FULL_WRITTEN_GRADING_FLOW_PROVEN"]
+}

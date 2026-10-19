@@ -1,3 +1,4 @@
+import {effectivePilotBudget} from './question-agent-dispatch-plan';
 import type {AuthUser,Env} from '../types';
 import {one} from './db';
 import {handleQuestionGenerationJobs} from './question-generation-jobs';
@@ -10,8 +11,8 @@ export function autonomousYear(value:unknown):value is string{
 export async function replenishAutonomousQueue(env:Env,actor:AuthUser,academicYear:string){
  if(actor.role!=='SUPER_ADMIN'||!autonomousYear(academicYear)||env.QUESTION_AUTOMATED_PILOT_MODE!=='true'||env.QUESTION_AGENT_EXECUTION_ENABLED!=='true'||env.QUESTION_GENERATION_ENABLED!=='true'||env.QUESTION_GENERATION_VERIFICATION_ENABLED!=='true'||!env.AI||env.QUESTION_PILOT_REVIEW_AVAILABLE!=='true')return {created:false,reason:'AUTONOMY_NOT_READY'};
  if(await questionTeamPaused(env,['GENERATOR','VERIFIER','ORIGINALITY']))return {created:false,reason:'TEAM_PAUSED'};
- const budget=await one<any>(env.DB.prepare("SELECT question_cap,reserved_count FROM question_agent_pilot_budget WHERE id='pilot_50'"));
- if(!budget||!Number.isSafeInteger(Number(budget.question_cap))||!Number.isSafeInteger(Number(budget.reserved_count))||Number(budget.reserved_count)<0||Number(budget.question_cap)<=Number(budget.reserved_count))return {created:false,reason:'BUDGET_EXHAUSTED'};
+ const budget=await one<any>(env.DB.prepare("SELECT question_cap,reserved_count,budget_mode FROM question_agent_pilot_budget WHERE id='pilot_50'"));
+ if(effectivePilotBudget(budget,env.QUESTION_PILOT_BUDGET_REMAINING)<1)return {created:false,reason:'BUDGET_EXHAUSTED'};
  const review=await one<any>(env.DB.prepare("SELECT count(*) n FROM question_bank WHERE owner_type='PLATFORM' AND origin_kind IN ('AI','AI_GENERATED','AI_DRAFT','NIBIRU','NIBIRU_AI') AND review_status='REVIEW'"));
  const slots=Number(env.QUESTION_PILOT_REVIEW_SLOTS??0);
  if(!Number.isSafeInteger(slots)||slots<=Number(review?.n??0))return {created:false,reason:'REVIEW_QUEUE_FULL'};

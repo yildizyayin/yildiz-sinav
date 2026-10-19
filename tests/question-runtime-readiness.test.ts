@@ -24,3 +24,7 @@ it('uses only metadata reads and SELECT SQL, suppresses identities/secrets, and 
 it('refuses a demo domain response before reading any Cloudflare state',async()=>{
  let n=0;await expect(inspectQuestionRuntime({fetcher:(async()=>{n++;return Response.json({environment:'staging'})}) as any})).rejects.toThrow('PRODUCTION_DOMAIN_REQUIRED');expect(n).toBe(1);
 });
+it('does not mistake an unlimited lifetime quota for permission to ignore a dispatch ceiling',()=>{
+ expect(runtimeReadiness({...ready,budgetMode:'UNLIMITED',remainingBudget:null,dispatchCapacity:50}).ready).toBe(true);
+ expect(runtimeReadiness({...ready,budgetMode:'UNLIMITED',remainingBudget:null,dispatchCapacity:0}).reasons).toContain('BUDGET_EXHAUSTED_OR_UNKNOWN');
+});

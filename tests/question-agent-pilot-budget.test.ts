@@ -60,3 +60,22 @@ describe('scheduled pilot budget source',()=>{
   }finally{db.close();}
  });
 });
+
+it('migrates consumed quota unchanged, defaults limited, and explicitly enables unbounded monotonic reservations',()=>{
+ const db=new DatabaseSync(':memory:');try{
+  db.exec('PRAGMA foreign_keys=ON; CREATE TABLE question_generation_jobs(id TEXT PRIMARY KEY,status TEXT);');
+  db.exec(readFileSync('migrations/0102_question_agent_pilot_budget.sql','utf8'));
+  for(let i=0;i<7;i++)db.prepare('INSERT INTO question_generation_jobs VALUES(?,?)').run('p'+i,'REQUESTED');
+  const reserve=db.prepare('INSERT OR IGNORE INTO question_agent_pilot_reservations(job_id,question_count) VALUES(?,10)');
+  for(let i=0;i<5;i++)reserve.run('p'+i);
+  db.exec(readFileSync('migrations/0112_question_production_budget_mode.sql','utf8'));
+  expect(db.prepare('SELECT budget_mode,question_cap,reserved_count,legacy_question_cap FROM question_agent_pilot_budget').get()).toEqual({budget_mode:'LIMITED',question_cap:50,reserved_count:50,legacy_question_cap:50});
+  expect(()=>reserve.run('p5')).toThrow(/PILOT_BUDGET_EXHAUSTED/);
+  db.exec("UPDATE question_agent_pilot_budget SET budget_mode='UNLIMITED',question_cap=NULL WHERE id='pilot_50'");
+  expect(reserve.run('p5').changes).toBe(1);expect(reserve.run('p5').changes).toBe(0);
+  db.exec("UPDATE question_generation_jobs SET status='FAILED' WHERE id='p5'");reserve.run('p6');
+  expect(db.prepare('SELECT reserved_count,legacy_question_cap FROM question_agent_pilot_budget').get()).toEqual({reserved_count:70,legacy_question_cap:50});
+  expect(()=>db.prepare("INSERT INTO question_agent_pilot_reservations VALUES('missing',10,CURRENT_TIMESTAMP)").run()).toThrow();
+  expect((db.prepare('SELECT reserved_count n FROM question_agent_pilot_budget').get() as any).n).toBe(70);
+ }finally{db.close();}
+});

@@ -103,3 +103,10 @@ import {effectivePilotJobBudget} from '../worker/lib/question-agent-dispatch-pla
 it('permits only this jobs existing reservation at exhaustion, without minting new slots or ignoring a zero ceiling',()=>{
  const quota={question_cap:50,reserved_count:50};expect(effectivePilotJobBudget(quota,1)).toBe(1);expect(effectivePilotJobBudget(quota,0)).toBe(0);expect(effectivePilotJobBudget(quota,1,'0')).toBe(0);expect(effectivePilotJobBudget({question_cap:50,reserved_count:1},2)).toBe(0);expect(quota.reserved_count).toBe(50);
 });
+
+it('unlimited quota keeps finite dispatch and review safety without resetting lifetime consumption',()=>{
+ const q={question_cap:null,reserved_count:500001,budget_mode:'UNLIMITED'};
+ expect(effectivePilotBudget(q)).toBe(50);expect(effectivePilotBudget(q,'2')).toBe(2);expect(effectivePilotJobBudget(q,1,'0')).toBe(0);
+ expect(effectivePilotBudget({...q,budget_mode:'UNKNOWN'})).toBe(0);expect(effectivePilotBudget({...q,question_cap:50})).toBe(0);expect(q.reserved_count).toBe(500001);
+ expect(canExecuteScheduledPilot({dispatchPreview:true,executionEnabled:true,generationEnabled:true,providerAvailable:true,verifiedServiceActor:true,reviewCapacity:0,budget:effectivePilotBudget(q)}).allowed).toBe(false);
+});
