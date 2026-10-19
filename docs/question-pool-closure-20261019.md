@@ -9,3 +9,9 @@
 Beş test dosyasında 14 test, TypeScript kontrolü ve betik söz dizimi kontrolleri başarılı.
 ## Devam eden doğrulama
 Staging dağıtımı, sekiz sınıfın aktarımı ve canlı hazırlık API/yıl/yetki kontrollerinin sonucu ayrı kanıt dosyasında kaydedilecek. Production, kampanya aktivasyonu veya soru üretimi bu pakete dahil değil.
+
+## Toplu aktarımdaki iki hata ve düzeltme
+İlk deneme 5. sınıfta çıktı/düğüm eşleştirme kontrolünde durdu. Aynı yıldaki iki program sürümü öğrenme düğümünün (yıl/tür/kod) tekillik kuralına çarpıyordu. 0116 göçü mevcut düğüm kimliklerini ve öğrenci bağlantılarını korur, resmî kod ve program sürümünü ayrı alanlarda tutar, yeni çakışmalarda düğümün dahili anahtarını ayrılaştırır ve önceden atlanmış düğümleri onarır.
+Kaynak sayfasında bir başlığın birden fazla strong etiketiyle yazıldığı iki örnekte eksik başlık okunuyordu. Okuyucu artık başlığın bütün görünen metnini ilk süreç bileşenine kadar okur; süreç bileşeni başlık gibi alınmaz. Resmî 12. sınıf MAT.12.2.3 başlığının problem çözme ifadesi de olduğu gibi korunur.
+Düzeltilmiş kaynak kataloğu V2 olarak yeniden oluşturuldu: 57 tema ve 177 tam başlık. İlk hatalı denemenin yalnız bu görevin oluşturduğu, soru bağlantısı bulunmayan sürümü silinmeden devre dışı bırakılacak ve denetim kaydı tutulacak; önceki kullanıcı sürümlerine dokunulmayacak. Yeni sürüm etiketleri -V2 ile biter.
+Altı ilgili test dosyasında 16 test ve TypeScript kontrolü başarılı. Yıl/sürüm çakışması için yeni kayıt ekleme, eski öğrenci kanıtını koruma, güncellemeyi doğru düğüme uygulama ve foreign_key_check doğrulandı.
