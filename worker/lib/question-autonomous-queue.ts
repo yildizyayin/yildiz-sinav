@@ -1,4 +1,5 @@
 import {PILOT_GRADES_SQL} from './question-agent-pilot-policy';
+import {PENDING_JOB_SQL} from './question-scheduler-tick';
 import {effectivePilotBudget} from './question-agent-dispatch-plan';
 import type {AuthUser,Env} from '../types';
 import {one} from './db';
@@ -17,7 +18,7 @@ export async function replenishAutonomousQueue(env:Env,actor:AuthUser,academicYe
  const review=await one<any>(env.DB.prepare("SELECT count(*) n FROM question_bank WHERE owner_type='PLATFORM' AND origin_kind IN ('AI','AI_GENERATED','AI_DRAFT','NIBIRU','NIBIRU_AI') AND review_status='REVIEW'"));
  const slots=Number(env.QUESTION_PILOT_REVIEW_SLOTS??0);
  if(!Number.isSafeInteger(slots)||slots<=Number(review?.n??0))return {created:false,reason:'REVIEW_QUEUE_FULL'};
- const pending=await one<any>(env.DB.prepare("SELECT id FROM question_generation_jobs WHERE academic_year=? AND status IN ('REQUESTED','RUNNING') LIMIT 1").bind(academicYear));
+ const pending=await one<any>(env.DB.prepare(`SELECT id FROM question_generation_jobs WHERE academic_year=? AND ${PENDING_JOB_SQL} LIMIT 1`).bind(academicYear,new Date().toISOString()));
  if(pending)return {created:false,reason:'QUEUE_HAS_WORK'};
  const o=await one<any>(env.DB.prepare(`SELECT o.id outcomeId,o.curriculum_version_id curriculumVersionId,cv.academic_year academicYear,o.grade_level gradeLevel,o.subject_id subjectId,cv.program_version programVersion
  FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
