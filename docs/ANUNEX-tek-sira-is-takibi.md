@@ -1,6 +1,6 @@
 # ANUNEX — tek sıra iş takip kaydı
 
-Sürüm: 5 · Açılış: 19 Ekim 2026, Türkiye saati.
+Sürüm: 6 · Açılış: 19 Ekim 2026, Türkiye saati.
 Kayıt yeri: yildizyayin/yildiz-sinav, `docs/ANUNEX-tek-sira-is-takibi.md`. Yeni sohbet önce bu dosyanın main'deki son sürümünü okur.
 Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişiklik kapsamında değil.
 
@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). A008: BİTTİ (10:59; canlı toplu onay K002'de). A009: BİTTİ (16:36). A081: BEKLİYOR (ÖLÇÜM — model karşılaştırması, 21 Ekim sabahı). A010: BİTTİ (18:05; canlı duraklat denemesi K002'de). A011: BİTTİ (18:10). A012: BİTTİ (18:10). A013: BEKLİYOR (VERİ — gerçek görselli soru örneği). A014: BEKLİYOR (VERİ+KARAR). A015: BİTTİ (18:15; canlı öğrenci denemesi K002'de). Aktif iş A016 — Studio soru seçimi.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). A008: BİTTİ (10:59; canlı toplu onay K002'de). A009: BİTTİ (16:36). A081: BEKLİYOR (ÖLÇÜM — model karşılaştırması, 21 Ekim sabahı). A010: BİTTİ (18:05; canlı duraklat denemesi K002'de). A011: BİTTİ (18:10). A012: BİTTİ (18:10). A013: BEKLİYOR (VERİ — gerçek görselli soru örneği). A014: BEKLİYOR (VERİ+KARAR). A015: BİTTİ (18:15; canlı öğrenci denemesi K002'de). A016: BİTTİ (18:45; canlı belge oluşturma K002'de). Aktif iş A017 — Studio A/B PDF çıktısı.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -447,3 +447,13 @@ Sıradaki ID: A016 — AKTİF.
 PR #274 (CI run 39446697639 SUCCESS): seçim her zaman platform + yalnız ilgili kurumun soruları; isteğe bağlı eğitim yılı ve ≤30 doğrulanmış kazanım kodu (bilinmeyen kodlar hata mesajında); Studio formuna alanlar. 3 yeni test (kurum filtresi mutasyon kontrollü), 222 dosya / 1.137 test, typecheck, build PASS.
 Not (ayrı alt kayıt adayı): `questionIds` ile 200'e kadar kimlik tek sorguda bağlanabiliyor; D1 100 parametre sınırını aşabilir — önceden var olan risk, A016 kapsamında değiştirilmedi.
 Kapanış için kalan: merge → dağıtım → canlı Studio belgesi oluşturma kanıtı.
+
+### Kayıt ve dağıtım notları — 20 Ekim 18:34–18:45
+
+PR #267 (takip kaydı v5) main'e squash merge `ee611e624707c24968b71c3a25911ad92fc5cce8`; bu sürüm (v6) main üzerinden yeni dalda tutulur. PR #273 (inceleme sinyalleri/yeniden deneme) Deploy App Production Only run 39443428526 SUCCESS.
+
+### A016 kapanışı — 20 Ekim 18:45
+
+Durum: BİTTİ. PR #274 merge `63d6c00bd3dfaed738057759ea76490dd4fd5475` (kullanıcı). Deploy App Production Only run 39449611468 SUCCESS 15:37 UTC (Deploy, D1 migrations, read-only smoke). 18:45 app ve sonuc health ready/production. Kurum izolasyonu, yıl ve kazanım kapsamı 3 testle (kurum filtresi mutasyon kontrollü); onay/telif ve eksik stok davranışı korunur.
+Eksik: canlı Studio belgesi oluşturma ekranı → K002.
+Sıradaki ID: A017 — AKTİF.
