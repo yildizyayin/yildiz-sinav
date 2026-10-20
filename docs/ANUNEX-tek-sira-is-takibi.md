@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). Aktif iş A007 — tek gerçek soru üretimini kanıtla.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). Aktif iş A008 — soru inceleme kararı (+ toplu onay).** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -323,3 +323,15 @@ Durum: BİTTİ. Kullanıcı Süper Admin `/question-team` ekranı (10:12): "Otom
 Kod bulgusu: zamanlayıcı bir turda iş açar, sonraki turda çalıştırır → 30 dakikada 1 soru, günde ~48. A081 için temel ölçüm.
 Mevcut manuel ekleme bulgusu (A082 gerekçesi): Studio'da tekil ekleme var; toplu aktarım yok; kazanım bağlantısı zorunlu değil; OWNED telifli manuel soru incelemesiz APPROVED oluyor.
 Sıradaki ID: A007 — AKTİF (ilk soru üretimde).
+
+### A007 kapanışı — 20 Ekim 10:20
+
+Durum: BİTTİ. Kanıt kullanıcı ekranlarından (10:16, 10:19):
+- Otonom zamanlayıcı (servis aktörü `svc-soru-ajani`) 2027–2028 doğrulanmış çıktı seçti: iş `qgj_d06865a7-d4b4-4beb-96f0-594a8964f188`, DKAB.5.1.3 "Allah'ın (cc) güzel isimleri hakkında bilgi toplayabilme", Editoryal V1, 1/1 taslak, 1/3 deneme → "Taslaklar hazır".
+- Soru `q_0c622500-5d9e-4466-8eee-eb658a8f5563` kalıcı inceleme listesinde (content-center), 4 seçenekli, cevap işaretli, kazanım ve sürüm geçmişi paneliyle.
+- Sonraki iş `qgj_4d984341-…` DKAB.5.5.3 kuyrukta (zamanlayıcı bir turda açar, sonraki turda çalıştırır).
+Not: madde 7 gereği kabul ölçütündeki "Süper Admin seçer" adımı otonom akışta servis aktörüyle karşılandı; manuel görev ekranı (Görevi kaydet) mevcut, ayrıca kullanılmadı.
+
+**Kalite bulgusu (A008 ve A081 girdisi):** soru kökü "ağaçtan düşen yaprağın her zaman belirli bir açıyla ve belirli bir noktada yere indiği" gözlemine dayanıyor — bilimsel olarak yanlış (yaprak düşüşü düzensizdir) ve Fen ile çelişir. Kazanım "bilgi toplayabilme" iken soru yorumlatıyor (kısmi uyum). Hata bağımsız kontrol modelinden (`nemotron-3-120b-a12b`) geçti → otomatik kontrol bilimsel doğruluk hatasını kaçırabiliyor. Öneri: RET veya DÜZELTME (ör. mevsimlerin düzenli döngüsü). İnsan kararı A008'de verilecek. A081'de ölçekleme öncesi bu tür hatalar için ek kontrol (alanlar arası olgusal doğruluk) değerlendirilecek.
+Ekran ölçeği nedeniyle seçenek metinleri ve kontrol notları okunamadı.
+Sıradaki ID: A008 — AKTİF.
