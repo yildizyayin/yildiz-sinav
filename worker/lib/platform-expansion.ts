@@ -665,11 +665,25 @@ async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const optionMode=String(b.optionMode||'MIXED').toUpperCase();if(!['FOUR','FIVE','MIXED'].includes(optionMode))return badRequest('Şık düzeni FOUR, FIVE veya MIXED olmalıdır.','INVALID_OPTION_MODE');
   const bookletCodes:string[]=Array.from(new Set<string>((Array.isArray(b.bookletCodes)?b.bookletCodes:String(b.bookletCodes||'A').split(',')).map((x:any)=>String(x).trim().toUpperCase()).filter((x:string)=>['A','B'].includes(x))));if(!bookletCodes.length)return badRequest('En az bir kitapçık seçilmelidir.','BOOKLET_REQUIRED');
   const id=uuid('std');const count=Math.max(1,Math.min(200,Number(b.questionCount||20)));const wh=[`q.review_status='APPROVED'`,`q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')`,`(? IS NULL OR q.grade_level=?)`,`(? IS NULL OR q.subject_id=?)`],ps:any[]=[b.gradeLevel||null,b.gradeLevel||null,b.subjectId||null,b.subjectId||null];if(optionMode==='FOUR')wh.push('COALESCE(q.option_count,4)=4');if(optionMode==='FIVE')wh.push('COALESCE(q.option_count,4)=5');if(user.role==='TEACHER'){wh.push(`q.subject_id IN (SELECT ta.subject_id FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND ta.assignment_type='SUBJECT')`);ps.push(user.id,inst);}
+  // A016: a booklet for institution X may only use platform questions or X's own questions — never another institution's private items.
+  wh.push(`(COALESCE(q.owner_type,'PLATFORM')='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`);ps.push(inst);
+  const academicYear=typeof b.academicYear==='string'&&b.academicYear.trim()?b.academicYear.trim():null;
+  if(academicYear){const y=/^(\d{4})-(\d{4})$/.exec(academicYear);if(!y||Number(y[2])!==Number(y[1])+1)return badRequest('Eğitim yılı 2027-2028 biçiminde olmalıdır.','INVALID_ACADEMIC_YEAR');wh.push('q.academic_year=?');ps.push(academicYear);}
+  const outcomeCodes:string[]=[...new Set<string>((Array.isArray(b.outcomeCodes)?b.outcomeCodes:String(b.outcomeCodes||'').split(',')).map((x:any)=>String(x).trim()).filter(Boolean))];
+  if(outcomeCodes.length>30)return badRequest('En fazla 30 kazanım kodu seçilebilir.','TOO_MANY_OUTCOMES');
+  if(outcomeCodes.length){
+    const outcomeWhere=`o.code IN (${outcomeCodes.map(()=>'?').join(',')}) AND o.active=1 AND cv.verified=1 AND (? IS NULL OR o.grade_level=?) AND (? IS NULL OR o.subject_id=?) AND (? IS NULL OR cv.academic_year=?)`;
+    const outcomeParams=[...outcomeCodes,b.gradeLevel||null,b.gradeLevel||null,b.subjectId||null,b.subjectId||null,academicYear,academicYear];
+    const known=await all<any>(env.DB.prepare(`SELECT DISTINCT o.code FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE ${outcomeWhere}`).bind(...outcomeParams));
+    const missing=outcomeCodes.filter(code=>!known.some((r:any)=>r.code===code));
+    if(missing.length)return badRequest(`Bu kazanım kodları seçilen sınıf/ders/yıl için doğrulanmış olarak bulunamadı: ${missing.join(', ')}`,'UNKNOWN_OUTCOME_CODES');
+    wh.push(`EXISTS(SELECT 1 FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE l.question_id=q.id AND ${outcomeWhere})`);ps.push(...outcomeParams);
+  }
   const requestedIds=Array.isArray(b.questionIds)?[...new Set((b.questionIds as unknown[]).filter((value):value is string=>typeof value==='string'&&Boolean(value.trim())))].slice(0,count):[];
   const requestedClause=requestedIds.length?` AND q.id IN (${requestedIds.map(()=>'?').join(',')})`:'';
   const qs=await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')}${requestedClause} ORDER BY RANDOM() LIMIT ?`).bind(...ps,...requestedIds,count));
   if(qs.length<count)return badRequest(`İstenen ${count} soruya uygun soru havuzu bulunamadı; yalnız ${qs.length} soru seçilebildi.`,'INSUFFICIENT_QUESTION_POOL');
-  const config={...b,bookletCodes,optionMode,deliveryMode:String(b.deliveryMode||'PDF_OPTICAL').toUpperCase(),sourceTypes:Array.isArray(b.sourceTypes)?b.sourceTypes:['QUESTION_BANK']};
+  const config={...b,bookletCodes,optionMode,academicYear,outcomeCodes,deliveryMode:String(b.deliveryMode||'PDF_OPTICAL').toUpperCase(),sourceTypes:Array.isArray(b.sourceTypes)?b.sourceTypes:['QUESTION_BANK']};
   const statements:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO studio_documents(id,institution_id,created_by,document_type,title,grade_level,subject_id,status,config_json) VALUES(?,?,?,?,?,?,?,'DRAFT',?)`).bind(id,inst,user.id,b.documentType,b.title,b.gradeLevel||null,b.subjectId||null,JSON.stringify(config))];
   bookletCodes.forEach((code:string)=>{const ordered=code==='B'?[...qs].reverse():qs;ordered.forEach((q,index)=>statements.push(env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,?,?)`).bind(id,q.id,code,index+1)));});
   await env.DB.batch(statements);await audit(env.DB,user.id,inst,'STUDIO_DOCUMENT_CREATED','studio_document',id,{selectedQuestions:qs.length,bookletCodes,optionMode,deliveryMode:config.deliveryMode});return json({ok:true,id,selectedQuestions:qs.length,requestedQuestions:count,bookletCodes,optionMode},201);
