@@ -13,13 +13,13 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 5. Ortak dosya/API/veritabanı değişikliğinde iki alan adının etkilenen akışları denetlenir. app, sonuc veya diğer roller bozulursa mevcut iş açık kalır; düzeltme veya kontrollü geri dönüş tamamlanmadan ilerlenmez. Sıfır hata garantisi verilmez; korunma ve geri dönüş kanıtlanır.
 6. Veri silme, migration geri alma veya eski yayını değiştirme otomatik geri dönüş yöntemi değildir. Sürüm, veri koruma ve ileri düzeltme gereksinimi önce belirlenir. Gerçek öğrenciler üzerinde sentetik işlem yapılmaz.
 7. İnsan onayı, telif/hak, RESTRICTED, doğrulanmış müfredat ve yetki kapıları gevşetilmez. Kota kaldırılması bu kuralları kaldırmaz.
-8. Engel varsa iş **BEKLİYOR** olur; sebep, gereken kişi/ayar/veri ve son kontrol kaydedilir. Engeli atlayıp başka iş başlatılmaz.
+8. Engel varsa iş **BEKLİYOR** olur; sebep, gereken kişi/ayar/veri ve son kontrol kaydedilir. Engeli atlayıp başka iş başlatılmaz. **Ek (kullanıcı kararı, 20 Ekim 17:58):** engel yalnız zaman bekleyen bir canlı ölçümse iş BEKLİYOR (ÖLÇÜM) işaretlenir ve sıradaki işe geçilir; ölçüm sonucu gelince o işe öncelikle dönülür. Hata, onay, karar veya veri bekleyen engellerde kural aynen geçerlidir.
 9. Yeni hata önce aktif işe bağlı alt kayıt olarak açılır. Yeni ürün isteği ayrı değişiklik kaydıyla kuyruğun sonuna eklenir; mevcut numaralar veya kabul ölçütleri sessizce değiştirilmez.
 10. Her kapanışta bu **aynı dosyanın yeni sürümü** kaydedilir. Yeni sohbetin ilk adımı bu kaydı okumaktır; yalnız sohbet hafızasına güvenilmez.
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). A008: BİTTİ (10:59; canlı toplu onay K002'de). A009: BİTTİ (16:36). Aktif iş A081 — ölçekli soru üretimi.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). A008: BİTTİ (10:59; canlı toplu onay K002'de). A009: BİTTİ (16:36). A081: BEKLİYOR (ÖLÇÜM — model karşılaştırması, 21 Ekim sabahı). Aktif iş A010 — ajan yönetim paneli.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -33,7 +33,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 Kullanıcı 19 Ekim 18:45'te Süper Admin kapsamını onayladı. Teknik işler kapanmadan tasarım uygulanmayacak. Sonrasında veli, kurum/zincir, öğrenci, öğretmen, rehber ve sonuc tasarımları ayrı ayrı tamamlanacak.
 
-**Tek sıra:** A001–A009 → A081 → A082 → A010–A079 → S001–S018 → K001 → K002 → A080 → D001–D007 → K003. (A081 kullanıcı kararıyla 19 Ekim 21:06'da, A082 20 Ekim 10:41'de B kararıyla A081'in arkasına alındı.)
+**Tek sıra:** A001–A009 → A081 (ölçüm bekliyor) → A010–A079 → A082 → S001–S018 → K001 → K002 → A080 → D001–D007 → K003. (A081 kullanıcı kararıyla 19 Ekim 21:06'da, A082 20 Ekim 10:41'de B kararıyla A081'in arkasına alındı; 20 Ekim 17:58 A kararıyla genel işlerden sonraya, ihtiyaç olunca öne alınmak üzere taşındı.)
 
 A080 kimliği korunmuştur fakat tasarım aşamasına ertelenmiştir. Bu açık sıra değişikliği, önceki dosyanın A080'den sonra sonuc'a geçiş kuralını değiştirir. Hiçbir teknik iş tasarım aşamasına ertelenmez. İş kapanırken test ve geri dönüş hazırlığı her zaman zorunludur; K001/K002 yalnız son kapsamlı tekrar kabulüdür.
 
@@ -397,3 +397,7 @@ PR #272 merge `1086e4e1466f8b33403605aa0c7130be177cd732` (kullanıcı, 17:01). D
 
 PR #273 (CI run 39442757663 SUCCESS): denetim kaydında zaten saklanan bağımsız kontrol puanları (6 boyut × 0–4) Süper Admin soru listesine taşındı; incelemedeki sorular en zayıftan güçlüye sıralanır (kapatılabilir), 3+ puan eksikte "şüpheli" etiketi; başarısız kazanım 3 başarısızlığa kadar yeni işle yeniden denenir, denenmemiş kazanımlar önce gelir. 9 yeni test; 221 dosya / 1.134 test, typecheck, build PASS. Şema değişikliği yok.
 A081'de kalan: model seçimi (ölçüm sonucu, kullanıcı kararı) → 2. aşama paralel üretim ve kuyruk altyapısı (S015 Queue sınırı) → hedef hız ölçümü.
+
+### Kullanıcı kararı — 20 Ekim 17:58 (A)
+
+Madde 8'e zaman bekleyen ölçüm istisnası eklendi. A081 BEKLİYOR (ÖLÇÜM): PR #272 karşılaştırması 17:19'da başladı, PR #273 (inceleme sinyalleri/yeniden deneme) merge edildi, dağıtım onayı bekliyor. Ölçüm sonucu gelince A081'e öncelikle dönülür (model seçimi → paralel üretim). A082 genel işlerden sonraya alındı (ihtiyaç olunca öne alınabilir). Aktif iş: A010.
