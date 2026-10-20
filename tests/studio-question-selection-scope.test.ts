@@ -11,7 +11,7 @@ function setup(){
  db.exec(`CREATE TABLE platform_features(feature_key TEXT PRIMARY KEY,enabled_default INTEGER);INSERT INTO platform_features VALUES('STUDIO',1);
  CREATE TABLE institution_feature_overrides(institution_id TEXT,feature_key TEXT,enabled INTEGER);
  CREATE TABLE teacher_assignments(user_id TEXT,institution_id TEXT,subject_id TEXT,active INTEGER,assignment_type TEXT);
- CREATE TABLE question_bank(id TEXT PRIMARY KEY,owner_type TEXT DEFAULT 'PLATFORM',owner_id TEXT,academic_year TEXT,grade_level INTEGER,subject_id TEXT,review_status TEXT,copyright_status TEXT,option_count INTEGER DEFAULT 4);
+ CREATE TABLE question_bank(id TEXT PRIMARY KEY,question_type TEXT,owner_type TEXT DEFAULT 'PLATFORM',owner_id TEXT,academic_year TEXT,grade_level INTEGER,subject_id TEXT,review_status TEXT,copyright_status TEXT,option_count INTEGER DEFAULT 4);
  CREATE TABLE curriculum_versions(id TEXT,academic_year TEXT,verified INTEGER);
  CREATE TABLE outcomes(id TEXT,code TEXT,active INTEGER,grade_level INTEGER,subject_id TEXT,curriculum_version_id TEXT);
  CREATE TABLE question_learning_links(question_id TEXT,node_id TEXT);

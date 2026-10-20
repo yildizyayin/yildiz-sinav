@@ -1,1 +1,1 @@
-2026-10-20 A018 Studio optical chain: readable fiducials, booklet bubble, position mapping, scan screen
+2026-10-20 A083.1 Studio scope picker: program/grade/subject/outcome tree with approved stock
