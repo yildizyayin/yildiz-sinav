@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). A008: BİTTİ (10:59; canlı toplu onay K002'de). Aktif iş A009 — otonom zamanlayıcıyı kanıtla.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). A008: BİTTİ (10:59; canlı toplu onay K002'de). A009: BİTTİ (16:36). Aktif iş A081 — ölçekli soru üretimi.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -375,3 +375,9 @@ Düzeltme öncesi kullanıcı ekranı (11:24): DKAB.5.5.3 sonunda çalıştı �
 A081 girdisi: başarısız iş (FAILED) kazanımı otomatik yeniden denenmez (kuyruk tamamlayıcı FAILED kazanımları dışlar); ölçekte başarısızlık oranı ve yeniden deneme politikası ele alınmalı.
 PR #271 merge `618caf3e0ac8418e152787e5d9fa3f9b02bedc0f` (08:24 UTC). Deploy App Production Only run 39393190947: kullanıcı onayı 16:16 civarı; SUCCESS 13:18 UTC (Deploy, D1 migrations — 0116 dahil, read-only smoke). 16:20 app ve sonuc health ready/production.
 Kapanış için kalan: panelde "Son tur" satırı ve birkaç tur boyunca işlerin kopyasız ilerlediği.
+
+### A009 kapanışı — 20 Ekim 16:36
+
+Durum: BİTTİ. Kanıt (kullanıcı ekranları): 16:20'de (düzeltme 16:18'de canlı) DKAB.5.5.2 `qgj_dc5db16f-…` ~5 saattir Kuyrukta, 0/3 deneme → kilitlenme production'da yaşandı. Düzeltme sonrası ilk tur (16:30) işi çalıştırdı: 16:36'da 1/3 deneme, **Hata GENERATION_QUALITY_REJECTED** (bağımsız kalite kontrolü reddetti). Her işte tek deneme; kopya iş/soru yok. Kapasite/duraklatma kuralları testlerle (A005/A006/A009) kanıtlı.
+**A081 girdisi — verim:** ilk 3 otonom iş: 1 taslak (insan incelemesinde bilimsel hata nedeniyle RET), 1 GENERATION_OUTPUT_INVALID, 1 GENERATION_QUALITY_REJECTED → kabul edilen soru 0/3. Üretici `@cf/zai-org/glm-4.7-flash`, kontrol `@cf/nvidia/nemotron-3-120b-a12b`. Ölçeklemeden önce üretici kalitesi/verimi iyileştirilmeli; başarısız kazanımlar otomatik yeniden denenmiyor.
+Sıradaki ID: A081 — AKTİF.
