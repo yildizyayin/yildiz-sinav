@@ -387,3 +387,8 @@ Sıradaki ID: A081 — AKTİF.
 Kullanıcı kararı (16:38 "devam"): güçlü modelle karşılaştırma ve model başına ~20 iş onaylandı.
 PR #272 (CI run 39434454267 SUCCESS): işler `glm-4.7-flash` ve `gpt-oss-120b` arasında belirlenimli bölünür (izin listesi; kontrol modeli kendini değerlendiremez); kullanılan model işe yazılır (migration 0117; dağıtım Worker'ı migration'dan önce yayınladığı için kayıt hatası üretimi durdurmaz); üretici ve kontrol modeline alanlar arası olgusal doğruluk kuralı (yaprak örneği); zamanlayıcı yeni işi aynı turda çalıştırır (15 dakikada 1); panelde model karşılaştırma tablosu. 219 dosya / 1.129 test, typecheck, build PASS.
 Ölçüt (kullanıcıya sunulacak): model başına ~20 biten iş sonrası kontrol geçme oranı, insan onay oranı ve gerçekleşen maliyet; seçilen model ile 2. aşamaya (paralel üretim, kuyruk altyapısı, S015) geçilir. Şüpheli sıralama ve başarısız kazanımları yeniden deneme bu aşamada henüz yok.
+
+### A081 — 1. aşama canlıda, 20 Ekim 17:19
+
+PR #272 merge `1086e4e1466f8b33403605aa0c7130be177cd732` (kullanıcı, 17:01). Deploy App Production Only run 39435511265 SUCCESS 14:19 UTC (Deploy, D1 migrations — 0117 dahil, read-only smoke). 17:42 app ve sonuc health ready/production.
+Ölçüm dönemi başladı: 15 dakikada 1 iş, modeller sırayla. Karar noktası: model başına ~20 biten iş (yaklaşık 21 Ekim sabahı) → kullanıcı panel tablosu ve gerçekleşen maliyetle model seçimi → 2. aşama.
