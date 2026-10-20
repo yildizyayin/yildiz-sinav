@@ -92,7 +92,9 @@ export async function reviewQuestionWithGate(request:Request,env:Env,user:AuthUs
    }
   }
  }
- const checks=ai&&status==='APPROVED'?JSON.stringify({answerAndSolution:true,curriculum:true,ageAppropriate:true,originalityAndRights:true,qualityReview:{schemaVersion:1,...explanation}}):null;
+ const batchId=typeof body.batchId==='string'&&/^qrb_[0-9a-f-]{36}$/.test(body.batchId)?body.batchId:null;
+ const reviewMode=batchId?{review:{mode:'BATCH',batchId}}:{};
+ const checks=ai&&status==='APPROVED'?JSON.stringify({answerAndSolution:true,curriculum:true,ageAppropriate:true,originalityAndRights:true,qualityReview:{schemaVersion:1,...explanation},...reviewMode}):batchId?JSON.stringify(reviewMode):null;
  const result=await env.DB.prepare(`UPDATE question_bank SET review_status=?,reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,rejection_note=?,review_checks_json=?,updated_at=CURRENT_TIMESTAMP
  WHERE id=? AND review_revision=?${ai&&status==='APPROVED'?` AND ${AI_REVIEW_CONTEXT_SQL}${contextFence}`:''}`).bind(status,user.id,status==='REJECTED'?String(body.note||'').trim().slice(0,2000)||null:null,checks,id,q.review_revision,...contextParams).run();
  // D1 counts the revision trigger too; this primary-key conditional write

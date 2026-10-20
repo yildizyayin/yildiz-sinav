@@ -1,1 +1,1 @@
-2026-10-19 A006 human review capacity 10000 (reviewer: yildizyayin) and 2027-2028 Maarif grades 5-12
+2026-10-20 A008 batch and single human review (approve / reject / send to correction)
