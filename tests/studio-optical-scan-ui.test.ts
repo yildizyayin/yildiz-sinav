@@ -2,7 +2,7 @@
 import {act,createElement} from 'react';
 import {createRoot} from 'react-dom/client';
 import {beforeEach,expect,it,vi} from 'vitest';
-const mocks=vi.hoisted(()=>({api:vi.fn(),read:null as any}));
+const mocks=vi.hoisted(()=>({api:vi.fn(),read:null as any,version:'ANUNEX-OPTICAL-2'}));
 vi.mock('../src/api',async()=>{const real=await vi.importActual<any>('../src/api');return {...real,api:mocks.api};});
 vi.mock('../src/lib/omrEngine',()=>({parseRuntimeTemplate:(t:any)=>t,imageFileToImageData:async()=>({width:1,height:1,data:[]}),readOmrImage:()=>mocks.read}));
 import {ApiError} from '../src/api';
@@ -11,8 +11,8 @@ import {StudioOpticalScan} from '../src/components/StudioOpticalScan';
 
 const doc={id:'doc',title:'Deneme',institution_id:'instX',config_json:'{"bookletCodes":["A","B"]}'};
 let submitResponses:any[]=[];const posted:any[]=[];
-beforeEach(()=>{posted.length=0;submitResponses=[];mocks.api.mockReset();mocks.api.mockImplementation(async(url:string,init?:any)=>{
- if(url.includes('/optical-template'))return {template:{optical:{pageWidthMm:210}}};
+beforeEach(()=>{mocks.version='ANUNEX-OPTICAL-2';posted.length=0;submitResponses=[];mocks.api.mockReset();mocks.api.mockImplementation(async(url:string,init?:any)=>{
+ if(url.includes('/optical-template'))return {template:{optical:{pageWidthMm:210,version:mocks.version}}};
  if(url.startsWith('/api/students'))return {students:[{id:'s1',first_name:'Ada',last_name:'Yılmaz',student_number:'101'}]};
  if(url.includes('/optical-submit')){posted.push(JSON.parse(init.body));const next=submitResponses.shift();if(next instanceof Error)throw next;return next;}
  return {};
@@ -65,4 +65,13 @@ it('offers an explicit, reasoned replacement when the student was already scanne
   expect(posted[1]).toMatchObject({replace:true,replaceReason:'yanlış öğrenci seçildi'});
   expect(f.node.textContent).toContain('Önceki sonuç değiştirildi');
  }finally{await f.close();}
+});
+
+it('asks to reprint when the stored sheet is the old small-marker form, and explains how to take the photo',async()=>{
+ const f=await open();try{
+  expect(f.node.textContent).toContain('dört köşedeki siyah kare kadrajda');
+  expect(f.node.textContent).not.toContain('eski sürümle');
+ }finally{await f.close();}
+ mocks.version='ANUNEX-OPTICAL-1';
+ const g=await open();try{expect(g.node.textContent).toContain('eski sürümle üretilmiş');}finally{await g.close();}
 });

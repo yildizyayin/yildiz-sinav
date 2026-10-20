@@ -36,3 +36,6 @@
 .studio-stock.short{background:#fffaf0;color:#8a5a00}.studio-stock small{flex-basis:100%;font-size:12px}
 .studio-stock:empty{display:none}
 @media (max-width:760px){.studio-scope-row{grid-template-columns:1fr}}
+
+.studio-optical-scan .alert.warning{display:block;background:#fffaf0;color:#8a5a00;border:1px solid #f6d69a;font-size:13px;font-weight:600}
+.studio-optical-tip{margin:10px 0;font-size:12px;line-height:1.5;color:var(--muted)}
