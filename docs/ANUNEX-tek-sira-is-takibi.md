@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). Aktif iş A006 — insan inceleme kapasitesini tanımla: production'da, canlı panel kanıtı bekleniyor.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). Aktif iş A007 — tek gerçek soru üretimini kanıtla.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -124,7 +124,8 @@ Her satır ayrı iştir. Güncel istisnalar: A001 BİTTİ, A002 AKTİF. Diğerle
 | A077 | Yönetim ve izleyici ekranlarını kapat | Süper admin gerçek sağlık/iş/hata özetini görür; ajan serbest ve denetimsiz komut çalıştıramaz. |
 | A078 | Mobil/PWA/tahta erişimini kapat | Ana iş akışları hedef cihazlarda okunur/tıklanır; fiziksel kitap bağlantıları doğru içeriğe gider. |
 | A079 | app güvenlik ve veri yaşam döngüsünü kapat | Rol/tenant izolasyonu, oturum iptali, dosya erişimi ve süreli veri temizliği kanıtlanır; gerekli kalıcı kimlikler silinmez. |
-| A081 | Ölçekli soru üretimini kapat (değişiklik kaydı, 19 Ekim 21:04) | Hedef: günde 5.000–10.000 soru, 31 Aralık 2026'ya kadar 300.000–500.000 soru, 2027–2028 Maarif 5–12. sınıf. Paralel üretim, Queue sınırı (S015 ile ortak) çözümü, kazanım başına sınırın kontrollü yükseltilmesi ve benzer-soru filtresi; A007'de ölçülen soru başına maliyetle onaylı bütçe. Ölçüm yoksa hazır denmez; insan onayı otomatik verilmez. |
+| A081 | Ölçekli soru üretimini kapat (değişiklik kaydı, 19 Ekim 21:04; 20 Ekim 10:09 güncelleme: hedef sabit sayı değil, kalite kapısı gevşetilmeden sürdürülebilen azami hız; bağımsız kontrol geçiş oranı ve insan onay oranı düşerse hız düşer; yalnız 2027–2028 resmî MEB kazanımı) | İlk hedef: günde 5.000–10.000 soru, 31 Aralık 2026'ya kadar 300.000–500.000 soru, 2027–2028 Maarif 5–12. sınıf. Paralel üretim, Queue sınırı (S015 ile ortak) çözümü, kazanım başına sınırın kontrollü yükseltilmesi ve benzer-soru filtresi; A007'de ölçülen soru başına maliyetle onaylı bütçe. Ölçüm yoksa hazır denmez; insan onayı otomatik verilmez. |
+| A082 | Dışarıdan toplu soru aktarımını kapat (değişiklik kaydı, 20 Ekim 10:09) | Süper Admin Excel/CSV/JSON ile toplu yükler; önizleme ve satır bazlı hata listesi; her soru 2027–2028 resmî kazanım koduna bağlanmak zorunda (bulunamayan/yanlış sınıf reddedilir); kaynak etiketi zorunlu (ör. Claude, yayınevi, öğretmen); dışarıdan gelen her soru REVIEW kuyruğuna düşer ve A008 toplu onay ekranında görünür; tekrar yükleme kopya üretmez; benzer soru uyarısı. Sıra: kullanıcı kararı bekleniyor (A: A009→A082→A081, B: A009→A081→A082); karar gelene kadar madde 9 gereği kuyruk sonunda. |
 | A080 | Ortak tasarım planını onaylat | Teknik sıra bittikten sonra açık/ferah içerik, sol menü, modül renkleri, uzay ilişkisi, ANUNEX/Nibiru ve mobil davranış örneklerle planlanır; kullanıcı tasarım yönünü onaylar. |
 
 ## sonuc.anunex.com — A079 sonrasında teknik sıra
@@ -314,3 +315,11 @@ PR #269: `QUESTION_PILOT_REVIEW_AVAILABLE=true`, `QUESTION_PILOT_REVIEW_SLOTS=10
 
 PR #269 merge `f7bfcafa8fbcd710465ea302466c798884f3eaed` (kullanıcı, 19 Ekim 21:24). Deploy App Production Only run 39302449287: kullanıcı onayı 20 Ekim sabahı; SUCCESS 06:54 UTC. Adımlar: migrations, read-only smoke, Süper Admin kapsam doğrulaması, müfredat/kota adımı, "Inspect question runtime without provider calls or data changes" SUCCESS. Genel akış 39302449185 SKIPPED (`[app-only]`). 09:57 sonrası app ve sonuc health ready/production.
 Kapanış için eksik: Süper Admin `/question-team` ekranında inceleme açık, kapasite 10.000, servis aktörü doğrulandı ve zamanlayıcı hazır görüntüsü; ilk 15 dakikalık zamanlayıcı turunda kuyruğa giren soru. Bu oturumdan dağıtım günlüğü indirme ve production D1 okuması engelli olduğundan kanıt kullanıcı ekranından alınacak.
+
+### A006 kapanışı — 20 Ekim 10:12
+
+Durum: BİTTİ. Kullanıcı Süper Admin `/question-team` ekranı (10:12): "Otomatik soru yürütme · 2027-2028: Açık. Zamanlayıcı koşulları uygun. İncelemede 0 soru; kalan kuyruk kapasitesi 10000." Engel nedeni yok (servis aktörü doğrulandı → A005 eksik panel kanıtı da tamamlandı). Görev tablosu: Soru üretimi `@cf/zai-org/glm-4.7-flash` Çalışıyor, 1 aktif iş; Bilimsel/editoryal kontrol `@cf/nvidia/nemotron-3-120b-a12b` Hazır; özgünlük/hak kontrolü insan incelemesine destek.
+10:00 ekranı: Üretim kotası Sınırsız, 0 rezerve → A003 eksik panel kanıtı tamamlandı.
+Kod bulgusu: zamanlayıcı bir turda iş açar, sonraki turda çalıştırır → 30 dakikada 1 soru, günde ~48. A081 için temel ölçüm.
+Mevcut manuel ekleme bulgusu (A082 gerekçesi): Studio'da tekil ekleme var; toplu aktarım yok; kazanım bağlantısı zorunlu değil; OWNED telifli manuel soru incelemesiz APPROVED oluyor.
+Sıradaki ID: A007 — AKTİF (ilk soru üretimde).
