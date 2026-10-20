@@ -335,3 +335,11 @@ Not: madde 7 gereği kabul ölçütündeki "Süper Admin seçer" adımı otonom 
 **Kalite bulgusu (A008 ve A081 girdisi):** soru kökü "ağaçtan düşen yaprağın her zaman belirli bir açıyla ve belirli bir noktada yere indiği" gözlemine dayanıyor — bilimsel olarak yanlış (yaprak düşüşü düzensizdir) ve Fen ile çelişir. Kazanım "bilgi toplayabilme" iken soru yorumlatıyor (kısmi uyum). Hata bağımsız kontrol modelinden (`nemotron-3-120b-a12b`) geçti → otomatik kontrol bilimsel doğruluk hatasını kaçırabiliyor. Öneri: RET veya DÜZELTME (ör. mevsimlerin düzenli döngüsü). İnsan kararı A008'de verilecek. A081'de ölçekleme öncesi bu tür hatalar için ek kontrol (alanlar arası olgusal doğruluk) değerlendirilecek.
 Ekran ölçeği nedeniyle seçenek metinleri ve kontrol notları okunamadı.
 Sıradaki ID: A008 — AKTİF.
+
+### A008 — PR hazır, 20 Ekim
+
+Önceki durum: tekil onay var ve sağlam (sürüm/kazanım bağlamı fence, RESTRICTED engeli, şık/cevap ve medya bütünlüğü); her AI onayı için 3 gerekçe (20–1000 karakter) soru başına zorunlu → yavaş. Toplu seçim yok.
+PR #270 (CI run 39387246365 SUCCESS): `POST /api/question-bank-standard/review-batch` (Süper Admin, istek başına ≤50; APPROVED/REJECTED(not zorunlu)/DRAFT). Her öğe değişmemiş tekil kapıdan geçer; her soruya `reviewed_by/reviewed_at` ve `review_checks_json.review={mode:BATCH,batchId}` yazılır. Soru listesinde seçim kutusu, tümünü seç, toplu işlem başına bir kez kontrol listesi/gerekçe, 50'lik parçalı gönderim, işlenmeyenler nedenleriyle. Tekil ekran değişmedi.
+Test: 5 API + 4 UI (mutasyon kontrollü); 217 dosya / 1.119 test, typecheck, build PASS.
+Açık karar: "şüpheli sorular üstte" — bağımsız kontrol geçen sorular için bulgu saklamıyor; kullanıcıya A008 alt kaydı mı, A081'e taşıma mı soruldu.
+Kapanış için kalan: merge → production dağıtımı → kullanıcının gerçek ekranda toplu ve tekil karar kanıtı (ör. A007 sorusu `q_0c622500-…` RET/DÜZELTME).
