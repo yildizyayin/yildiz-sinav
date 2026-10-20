@@ -6,7 +6,7 @@ import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
 import { hydrateQuestionMedia } from './question-content';
 import { normalizeQuestionOrigin,isAiQuestionOrigin,validMultipleChoiceQuestion } from './question-review';
 import { recordAssessmentRun } from './assessment-ledger';
-import { renderStudioPdf } from './studio-pdf';
+import { renderStudioAnswerKey, renderStudioPdf, StudioPrintError } from './studio-pdf';
 import { REPORT_SNAPSHOT_SQL } from './report-snapshot';
 import { withExamOperationLock, listExamOperationLocks, recoverExamOperationLock } from './exam-operation-lock';
 
@@ -623,7 +623,22 @@ async function studioPdf(request:Request,env:Env,user:AuthUser,documentId:string
     if(booklet==='A')await env.DB.prepare('UPDATE studio_documents SET pdf_r2_key=?,status=CASE WHEN status=\'DRAFT\' THEN \'READY\' ELSE status END,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(key,documentId).run();
     await audit(env.DB,user.id,document.institution_id,'STUDIO_PDF_GENERATED','studio_document',documentId,{bookletCode:booklet,questionCount:rendered.questionCount,containsOpticalForm:true});
     return new Response(rendered.bytes,{headers:{'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="${safeFileName(document.title)}-${booklet}.pdf"`,'Cache-Control':'private, no-store','X-Anunex-Booklet':booklet,'X-Anunex-Optical-Form':'included','X-Content-Type-Options':'nosniff'}});
-  }catch(error){if(error instanceof Error&&error.message==='EDITORIAL_PRINT_LAYOUT_PENDING')return json({ok:false,error:{code:'EDITORIAL_PRINT_LAYOUT_PENDING',message:'Yeni editoryal soru paketi için tam Türkçe ve tablo/grafik baskı düzeni henüz doğrulanmadı. İçerik eksiltilerek PDF üretilmez.'}},409);console.error('Studio PDF generation failed',error);return json({ok:false,error:{code:'PDF_GENERATION_FAILED',message:'Sınav PDF dosyası üretilemedi.'}},500)}
+  }catch(error){if(error instanceof StudioPrintError)return json({ok:false,error:{code:error.code,message:error.message}},409);console.error('Studio PDF generation failed',error);return json({ok:false,error:{code:'PDF_GENERATION_FAILED',message:'Sınav PDF dosyası üretilemedi.'}},500)}
+}
+
+/** A017: teacher-facing answer key, never inside the student booklet; staff only. */
+async function studioAnswerKey(env:Env,user:AuthUser,documentId:string):Promise<Response>{
+  const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;
+  if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER'].includes(user.role))return forbidden('Cevap anahtarı yalnız yetkili personel içindir.');
+  const document=await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId));
+  if(!document)return notFound('Sınav taslağı bulunamadı.');
+  if(user.role!=='SUPER_ADMIN'&&document.institution_id!==user.institution_id)return forbidden();
+  if(user.role==='TEACHER'&&document.created_by!==user.id)return forbidden('Öğretmen yalnızca kendi ürettiği sınavın anahtarını indirebilir.');
+  try{
+    const rendered=await renderStudioAnswerKey(env,documentId);
+    await audit(env.DB,user.id,document.institution_id,'STUDIO_ANSWER_KEY_DOWNLOADED','studio_document',documentId,{booklets:Object.keys(rendered.booklets)});
+    return new Response(rendered.bytes,{headers:{'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="${safeFileName(document.title)}-cevap-anahtari.pdf"`,'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
+  }catch(error){if(error instanceof StudioPrintError)return json({ok:false,error:{code:error.code,message:error.message}},409);console.error('Studio answer key failed',error);return json({ok:false,error:{code:'PDF_GENERATION_FAILED',message:'Cevap anahtarı üretilemedi.'}},500)}
 }
 
 async function studioOpticalTemplate(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
@@ -779,6 +794,7 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/live'&&(request.method==='GET'||request.method==='POST'))return liveSessions(request,env,user);
   if(p==='/api/platform/studio'&&(request.method==='GET'||request.method==='POST'))return studio(request,env,user);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/pdf$/);if(m&&request.method==='GET')return studioPdf(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/studio\/([^/]+)\/answer-key$/);if(m&&request.method==='GET')return studioAnswerKey(env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/optical-template$/);if(m&&request.method==='GET')return studioOpticalTemplate(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/optical-submit$/);if(m&&request.method==='POST')return submitStudioOptical(request,env,user,m[1]);
   if(p==='/api/platform/physical'&&(request.method==='GET'||request.method==='POST'))return physicalBridge(request,env,user);

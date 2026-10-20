@@ -24,10 +24,12 @@
     "seed:remote": "npm run seed:generate && wrangler d1 execute yildiz-sinav-db --remote --file=tmp/demo-seed.idempotent.sql && wrangler d1 execute yildiz-sinav-db --remote --file=tmp/demo-college-showcase.idempotent.sql && wrangler d1 execute yildiz-sinav-db --remote --file=tmp/standard-role-seed.idempotent.sql && wrangler d1 execute yildiz-sinav-db --remote --file=tmp/demo-exam-catalog.idempotent.sql && wrangler d1 execute yildiz-sinav-db --remote --file=tmp/demo-camera-fixture.idempotent.sql && wrangler d1 execute yildiz-sinav-db --remote --file=tmp/demo-standard-fixture.idempotent.sql"
   },
   "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
     "@simplewebauthn/browser": "13.3.0",
     "@simplewebauthn/server": "13.3.0",
     "@vitejs/plugin-react": "latest",
     "lucide-react": "latest",
+    "pdf-lib": "^1.17.1",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "latest",
