@@ -1,1 +1,1 @@
-2026-10-20 A009 scheduler recovery: reserved-but-unclaimed jobs proceed, expired leases stop blocking, last tick shown in panel
+2026-10-20 A081 phase 1: compare glm-4.7-flash vs gpt-oss-120b producers, cross-subject factual checks, same-tick scheduling
