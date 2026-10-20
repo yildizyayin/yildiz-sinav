@@ -1,1 +1,1 @@
-2026-10-20 A008 batch and single human review (approve / reject / send to correction)
+2026-10-20 A009 scheduler recovery: reserved-but-unclaimed jobs proceed, expired leases stop blocking, last tick shown in panel

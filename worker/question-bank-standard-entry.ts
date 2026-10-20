@@ -1,4 +1,5 @@
 import {replenishAutonomousQueue,autonomousYear} from './lib/question-autonomous-queue';
+import {recordSchedulerTick,reserveScheduledJob} from './lib/question-scheduler-tick';
 import {questionCardIntelligence} from './lib/question-card-intelligence';
 import {handleQuestionEditorialRepair} from './lib/question-editorial-repair';
 import {handleQuestionTeam} from './lib/question-team';
@@ -96,7 +97,7 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
        "SELECT id,role,active FROM users WHERE id=? AND role='SUPER_ADMIN' AND active=1"
       ).bind(actorId)):null;
       const actor=validateScheduledActor(actorRow?{id:actorRow.id,role:actorRow.role,active:actorRow.active===1}:null,actorId);
-      if(env.QUESTION_GENERATION_VERIFICATION_ENABLED!=='true'){console.log('question-agent-execution-blocked',JSON.stringify({reasons:['GENERATION_VERIFICATION_UNAVAILABLE']}));return;}
+      if(env.QUESTION_GENERATION_VERIFICATION_ENABLED!=='true'){console.log('question-agent-execution-blocked',JSON.stringify({reasons:['GENERATION_VERIFICATION_UNAVAILABLE']}));await recordSchedulerTick(env,'BLOCKED',null,{reasons:['GENERATION_VERIFICATION_UNAVAILABLE']});return;}
       const execution=canExecuteScheduledPilot({
        dispatchPreview:true,
        executionEnabled:(cfg as typeof cfg & {QUESTION_AGENT_EXECUTION_ENABLED?:string;QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AGENT_EXECUTION_ENABLED==='true' && (cfg as typeof cfg & {QUESTION_AUTOMATED_PILOT_MODE?:string}).QUESTION_AUTOMATED_PILOT_MODE==='true',
@@ -107,42 +108,45 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
       });
       if(!execution.allowed){
        console.log('question-agent-execution-blocked',JSON.stringify({reasons:execution.reasons}));
+       await recordSchedulerTick(env,'BLOCKED',null,{reasons:execution.reasons});
        return;
       }
       // D1-bound active SUPER_ADMIN, explicitly configured for this internal
       // scheduled task; this is not an HTTP session or a public API credential.
       if(!actorRow||!actor.ok)return;
       const academicYear=(env as Env & {QUESTION_AUTOMATED_ACADEMIC_YEAR?:string}).QUESTION_AUTOMATED_ACADEMIC_YEAR;
-      if(!autonomousYear(academicYear)){console.log('question-agent-execution-blocked',JSON.stringify({reasons:['AUTOMATED_ACADEMIC_YEAR_REQUIRED']}));return;}
+      if(!autonomousYear(academicYear)){console.log('question-agent-execution-blocked',JSON.stringify({reasons:['AUTOMATED_ACADEMIC_YEAR_REQUIRED']}));await recordSchedulerTick(env,'BLOCKED',null,{reasons:['AUTOMATED_ACADEMIC_YEAR_REQUIRED']});return;}
       const replenishment=await replenishAutonomousQueue(env,{id:actorRow.id,role:'SUPER_ADMIN',institution_id:null,student_id:null,display_name:'Scheduled Question Agent',email:null,username:null},academicYear);
       console.log('question-agent-queue',JSON.stringify(replenishment));
       // One job per cron tick until there is an atomic cross-job budget ledger.
-      const jobId=plan.ids.find(id=>rows.find(r=>r.id===id)?.academicYear===academicYear);if(!jobId)return;
+      const jobId=plan.ids.find(id=>rows.find(r=>r.id===id)?.academicYear===academicYear);if(!jobId){await recordSchedulerTick(env,replenishment.created?'JOB_QUEUED':'IDLE_'+replenishment.reason,null,{rejected:plan.rejected.slice(0,5)});return;}
       const queuedReview=await one<{n:number}>(env.DB.prepare("SELECT count(*) n FROM question_bank WHERE owner_type='PLATFORM' AND origin_kind IN ('AI','AI_GENERATED','AI_DRAFT','NIBIRU','NIBIRU_AI') AND review_status='REVIEW'"));
-      if(Number(queuedReview?.n??0)+Number(rows.find(r=>r.id===jobId)?.questionCount??0)>reviewSlots){console.log('question-agent-execution-blocked',JSON.stringify({reasons:['REVIEW_QUEUE_FULL']}));return;}
+      if(Number(queuedReview?.n??0)+Number(rows.find(r=>r.id===jobId)?.questionCount??0)>reviewSlots){console.log('question-agent-execution-blocked',JSON.stringify({reasons:['REVIEW_QUEUE_FULL']}));await recordSchedulerTick(env,'REVIEW_QUEUE_FULL',jobId);return;}
       // The job runner requires a separate review-capacity flag. Keep scheduler
       // planning and execution aligned, never dispatch when reviewers are unavailable.
       if(!canDispatchToReviewQueue({reviewAvailable:(cfg as typeof cfg & {QUESTION_PILOT_REVIEW_AVAILABLE?:string}).QUESTION_PILOT_REVIEW_AVAILABLE==='true',reviewSlots,questionCount:Number(rows.find(r=>r.id===jobId)?.questionCount??0)})){
-       console.log('question-agent-execution-blocked',JSON.stringify({reasons:['REVIEW_QUEUE_NOT_AVAILABLE']}));return;
+       console.log('question-agent-execution-blocked',JSON.stringify({reasons:['REVIEW_QUEUE_NOT_AVAILABLE']}));await recordSchedulerTick(env,'REVIEW_QUEUE_NOT_AVAILABLE',jobId);return;
       }
       // A database trigger atomically reserves capacity across concurrent cron
-      // invocations. Never call the model if the reservation is rejected.
-      try {
-       const reservation=await env.DB.prepare(`INSERT OR IGNORE INTO question_agent_pilot_reservations(job_id,question_count)
-        SELECT id,question_count FROM question_generation_jobs
-        WHERE id=? AND status='REQUESTED' AND attempt_count=0 AND question_count BETWEEN 1 AND 10
-        AND question_count+(SELECT count(*) FROM question_bank WHERE owner_type='PLATFORM' AND origin_kind IN ('AI','AI_GENERATED','AI_DRAFT','NIBIRU','NIBIRU_AI') AND review_status='REVIEW')
-        +COALESCE((SELECT sum(r.question_count) FROM question_agent_pilot_reservations r JOIN question_generation_jobs j ON j.id=r.job_id WHERE j.status IN ('REQUESTED','RUNNING')),0)<=?`).bind(jobId,reviewSlots).run();
-       if(Number(reservation.meta?.changes||0)!==1){
-        console.log('question-agent-reservation-skipped',JSON.stringify({jobId}));return;
-       }
-      } catch {
-       console.log('question-agent-reservation-denied',JSON.stringify({jobId}));return;
+      // invocations. Never call the model if the reservation is rejected. A job
+      // reserved earlier but never claimed proceeds on that same reservation.
+      const reserved=await reserveScheduledJob(env,jobId,reviewSlots);
+      if(reserved==='SKIPPED'||reserved==='DENIED'){
+       console.log(reserved==='DENIED'?'question-agent-reservation-denied':'question-agent-reservation-skipped',JSON.stringify({jobId}));
+       await recordSchedulerTick(env,'RESERVATION_'+reserved,jobId);return;
       }
-      const result=await runQuestionGenerationJob(new Request('https://internal.invalid/scheduled-question-generation',{method:'POST'}),
+      let result:Response;
+      try{
+       result=await runQuestionGenerationJob(new Request('https://internal.invalid/scheduled-question-generation',{method:'POST'}),
        env,{id:actorRow.id,role:'SUPER_ADMIN',institution_id:null,student_id:null,
        display_name:'Scheduled Question Agent',email:null,username:null},jobId);
+      }catch(error){
+       console.log('question-agent-execution-error',JSON.stringify({jobId}));
+       await recordSchedulerTick(env,'RUN_ERROR',jobId,{reservation:reserved,message:String((error as Error)?.message||error).slice(0,300)});return;
+      }
       console.log('question-agent-execution-result',JSON.stringify({status:result.status,jobId}));
+      const outcome:any=result.ok?null:await result.clone().json().catch(()=>null);
+      await recordSchedulerTick(env,result.ok?'JOB_RUN':'RUN_REJECTED',jobId,{status:result.status,reservation:reserved,code:outcome?.error?.code??null,reasons:outcome?.error?.reasons??undefined});
 
     })());
   }
