@@ -381,3 +381,9 @@ Kapanış için kalan: panelde "Son tur" satırı ve birkaç tur boyunca işleri
 Durum: BİTTİ. Kanıt (kullanıcı ekranları): 16:20'de (düzeltme 16:18'de canlı) DKAB.5.5.2 `qgj_dc5db16f-…` ~5 saattir Kuyrukta, 0/3 deneme → kilitlenme production'da yaşandı. Düzeltme sonrası ilk tur (16:30) işi çalıştırdı: 16:36'da 1/3 deneme, **Hata GENERATION_QUALITY_REJECTED** (bağımsız kalite kontrolü reddetti). Her işte tek deneme; kopya iş/soru yok. Kapasite/duraklatma kuralları testlerle (A005/A006/A009) kanıtlı.
 **A081 girdisi — verim:** ilk 3 otonom iş: 1 taslak (insan incelemesinde bilimsel hata nedeniyle RET), 1 GENERATION_OUTPUT_INVALID, 1 GENERATION_QUALITY_REJECTED → kabul edilen soru 0/3. Üretici `@cf/zai-org/glm-4.7-flash`, kontrol `@cf/nvidia/nemotron-3-120b-a12b`. Ölçeklemeden önce üretici kalitesi/verimi iyileştirilmeli; başarısız kazanımlar otomatik yeniden denenmiyor.
 Sıradaki ID: A081 — AKTİF.
+
+### A081 — 1. aşama PR'ı, 20 Ekim 16:38–17:20
+
+Kullanıcı kararı (16:38 "devam"): güçlü modelle karşılaştırma ve model başına ~20 iş onaylandı.
+PR #272 (CI run 39434454267 SUCCESS): işler `glm-4.7-flash` ve `gpt-oss-120b` arasında belirlenimli bölünür (izin listesi; kontrol modeli kendini değerlendiremez); kullanılan model işe yazılır (migration 0117; dağıtım Worker'ı migration'dan önce yayınladığı için kayıt hatası üretimi durdurmaz); üretici ve kontrol modeline alanlar arası olgusal doğruluk kuralı (yaprak örneği); zamanlayıcı yeni işi aynı turda çalıştırır (15 dakikada 1); panelde model karşılaştırma tablosu. 219 dosya / 1.129 test, typecheck, build PASS.
+Ölçüt (kullanıcıya sunulacak): model başına ~20 biten iş sonrası kontrol geçme oranı, insan onay oranı ve gerçekleşen maliyet; seçilen model ile 2. aşamaya (paralel üretim, kuyruk altyapısı, S015) geçilir. Şüpheli sıralama ve başarısız kazanımları yeniden deneme bu aşamada henüz yok.
