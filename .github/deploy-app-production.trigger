@@ -1,1 +1,1 @@
-2026-10-20 A018 Studio optical chain: readable fiducials, booklet bubble, position mapping, scan screen
+2026-10-20 A018.2 camera reader: perspective markers anywhere in the photo, large v2 optical page
