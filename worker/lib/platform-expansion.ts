@@ -1,4 +1,5 @@
 import {examOutcomePayloadSql} from './exam-outcome-history';
+import {loadScreening} from './question-screening';
 import type { AuthUser, Env } from '../types';
 import { all, audit, badRequest, forbidden, json, notFound, one, uuid, sanitizeAuditDetails } from './db';
 import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
@@ -393,7 +394,8 @@ async function listQuestions(request:Request,env:Env,user:AuthUser):Promise<Resp
   const contexts=(await Promise.all(contextChunks.map(ids=>all<any>(env.DB.prepare(`SELECT l.question_id,o.id,o.code,o.title,o.subject_id,o.grade_level,cv.id curriculumVersionId,cv.academic_year academicYear,cv.program_version programVersion,cv.verified,
     CASE WHEN o.active=1 AND cv.verified=1 AND o.grade_level=q.grade_level AND cv.grade_level=q.grade_level AND cv.academic_year=q.academic_year AND o.subject_id=q.subject_id THEN 1 ELSE 0 END matchesQuestion
     FROM question_learning_links l JOIN question_bank q ON q.id=l.question_id LEFT JOIN outcomes o ON l.node_id='ln_'||o.id LEFT JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE l.question_id IN (${ids.map(()=>'?').join(',')}) ORDER BY o.code,o.id`).bind(...ids))))).flat();
-  return json({ok:true,questions:hydrated.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined,...(isAiQuestionOrigin(r.origin_kind)?{reviewContext:contexts.filter(c=>c.question_id===r.id).map(({question_id,...c})=>c)}:{})}))});
+  const screening=user.role==='SUPER_ADMIN'?await loadScreening(env,rows.filter(r=>isAiQuestionOrigin(r.origin_kind))):new Map();
+  return json({ok:true,questions:hydrated.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined,...(isAiQuestionOrigin(r.origin_kind)?{reviewContext:contexts.filter(c=>c.question_id===r.id).map(({question_id,...c})=>c),screening:screening.get(r.id)??null}:{})}))});
 }
 
 async function createQuestion(request:Request,env:Env,user:AuthUser):Promise<Response>{
