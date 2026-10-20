@@ -480,3 +480,19 @@ Kapanış için kalan: #276 merge+dağıtım → kullanıcının Studio'dan belg
 ### A017 — BEKLİYOR, 20 Ekim 19:53
 
 PR #276 merge `ef9918611069a618100e2c8f6bbbb3d2079645b6` (kullanıcı); Deploy App Production Only run 39460942171 production onayı bekliyor — kullanıcının "yine aynı" gözlemi bu nedenle. Kullanıcı talimatı ("sıradaki işleme geçelim") ile madde 8 için açık onay: A017 bekletildi, A018 başladı. Kapanış: dağıtım onayı + Studio'dan belge oluşturma ve Kitapçık A / Cevap anahtarı PDF ekranı.
+
+### A018 — bulgular ve PR, 20 Ekim 19:55–20:40
+
+Studio optik zinciri hiç kullanılmamıştı (arayüzde okutma ekranı yoktu). Okutma ekranı yapılırken ölçümle bulunan kusurlar:
+1. Kamera köşe kareleri sayfa dolgusu rengindeydi (render: RGB 240,245,255) → okuyucu bulamıyordu; Studio optiği hiç okunamazdı. Düz siyah yapıldı.
+2. Şablon alt köşe hedefleri 274,3 mm, çizim 280,1 mm → alt satırlarda kayma. Hedefler çizimden hesaplanıyor.
+3. Kalın başlık sol üst karenin arama kutusuna giriyordu → aşağı alındı.
+4. A/B kitapçık balonları şablonda yoktu → okunabilir bölge eklendi.
+5. Optik sayfa 44 soru; Studio 200'e izin veriyordu → optikli belgede >44 reddedilir; optiksiz PDF'te optik sayfa yok.
+6. Kitapçık istemciden alınıyor, cevaplar soru kimliğiyle bekleniyordu → sıra numarasıyla, sunucuda eşleme; okunan kitapçık uyuşmazsa 409; boş/çift işarette öğretmen onayı.
+7. İkinci okutma sessizce üzerine yazıyordu (kitapçık kodu güncellenmeden) → ALREADY_SCANNED; gerekçeli değiştirme ve denetim kaydı.
+8. Süper Admin okutmasında öğrencinin belge kurumuna aidiyeti kontrol edilmiyordu → tüm rollerde aktif kayıt zorunlu.
+Doğrulama: gerçek PDF optik sayfası 150 dpi'da işaretlenip uygulamanın okuma motoruyla okutuldu: 14/14 + boş + kitapçık B birebir; eğik/bulanık/küçük-karanlık/kenar boşluklu görüntülerde de birebir.
+PR #277 (CI run 39463280222 SUCCESS): 12 yeni test (gerçek motorla sentetik 44 soruluk okuma, eski hedeflerle kırıldığı doğrulandı); 228 dosya / 1.158 test, typecheck, build PASS.
+Not: önceden üretilmiş PDF şablonları eski geometride; dağıtım sonrası PDF yeniden indirilince güncellenir.
+Kapanış için kalan: merge+dağıtım → gerçek basılı optiğin telefonla okutulması (A036 fiziksel kanıtıyla ortak; sentetik test fiziksel kanıt sayılmaz).
