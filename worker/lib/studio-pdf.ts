@@ -4,6 +4,8 @@ import type { Env } from '../types';
 import { all, one } from './db';
 import { parseContentJson } from './question-content';
 import { DEJAVU_SANS_BASE64, DEJAVU_SANS_BOLD_BASE64 } from './fonts/dejavu-subset.generated';
+import { ANUNEX_MARK_PNG_BASE64, NIBIRU_MARK_PNG_BASE64 } from './fonts/brand-marks.generated';
+import { isAiQuestionOrigin } from './question-review';
 
 /**
  * A017: printable Studio booklets.
@@ -18,7 +20,10 @@ export class StudioPrintError extends Error {
   constructor(public code: string, message: string) { super(message); }
 }
 
-type Row = { id:string; stem_text:string|null; options_json:string|null; correct_answer:string|null; content_mode:string|null; question_no:number };
+type Row = { id:string; stem_text:string|null; options_json:string|null; correct_answer:string|null; content_mode:string|null; origin_kind:string|null; question_no:number };
+/** Booklet branding: institution logo and name top-left, ANUNEX top-right unless the institution removes it, Nibiru mark next to AI-produced questions. */
+export type StudioBranding = { showAnunex: boolean; showNibiru: boolean; institutionName: string | null; institutionLogo: Uint8Array | null };
+export const DEFAULT_BRANDING: StudioBranding = { showAnunex: true, showNibiru: true, institutionName: null, institutionLogo: null };
 type Asset = { question_id:string; asset_type:string; r2_key:string|null; external_url:string|null; placement:string|null; option_label:string|null; sort_order:number|null; alt_text:string|null };
 type Block = { question_id:string; block_type:string; placement:string|null; text_content:string|null; payload_json:string|null; alt_text:string|null; sort_order:number|null };
 
@@ -86,7 +91,7 @@ type Visual =
   | { kind: 'IMAGE'; bytes: Uint8Array; format: 'png' | 'jpg' }
   | { kind: 'TABLE'; title: string; unit: string; columns: string[]; rows: string[][] }
   | { kind: 'BAR_CHART'; title: string; unit: string; categories: string[]; values: number[] };
-type Printable = { no: number; stem: string[]; extra: string[]; visuals: Visual[]; options: string[]; correct: string | null };
+type Printable = { no: number; stem: string[]; extra: string[]; visuals: Visual[]; options: string[]; correct: string | null; ai: boolean };
 
 function sniff(bytes: Uint8Array): 'png' | 'jpg' | null {
   if (bytes.length > 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) return 'png';
@@ -95,7 +100,7 @@ function sniff(bytes: Uint8Array): 'png' | 'jpg' | null {
 }
 
 async function loadPrintables(env: Env, documentId: string, booklet: string): Promise<{ rows: Row[]; items: Printable[] }> {
-  const rows = await all<Row>(env.DB.prepare(`SELECT q.id,q.stem_text,q.options_json,q.correct_answer,q.content_mode,i.sort_order question_no
+  const rows = await all<Row>(env.DB.prepare(`SELECT q.id,q.stem_text,q.options_json,q.correct_answer,q.content_mode,q.origin_kind,i.sort_order question_no
     FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code=? ORDER BY i.sort_order`).bind(documentId, booklet));
   if (!rows.length) throw new StudioPrintError('BOOKLET_EMPTY', 'Bu kitapçıkta soru yok.');
   const ids = rows.map(r => r.id);
@@ -135,25 +140,41 @@ async function loadPrintables(env: Env, documentId: string, booklet: string): Pr
       throw new StudioPrintError('PRINT_BLOCK_UNSUPPORTED', `${where}: ${block.block_type} içeriği baskıda henüz desteklenmiyor.`);
     }
     if (row.content_mode && row.content_mode !== 'TEXT' && !visuals.some(v => v.kind === 'IMAGE')) throw new StudioPrintError('PRINT_IMAGE_MISSING', `${where}: görsel soru, ama basılabilir görseli yok.`);
-    items.push({ no, stem: [normalizePrintText(row.stem_text)], extra, visuals, options, correct: row.correct_answer });
+    items.push({ no, stem: [normalizePrintText(row.stem_text)], extra, visuals, options, correct: row.correct_answer, ai: isAiQuestionOrigin(row.origin_kind) });
   }
   return { rows, items };
 }
 
 // --- layout --------------------------------------------------------------------------------
 type Cursor = { page: PDFPage; col: 0 | 1; y: number; top: number };
-type Ctx = { pdf: PDFDocument; fonts: Fonts; images: Map<Uint8Array, any>; title: string; booklet: string; pages: PDFPage[] };
+type Ctx = { pdf: PDFDocument; fonts: Fonts; images: Map<Uint8Array, any>; title: string; booklet: string; pages: PDFPage[]; branding: StudioBranding; marks: { anunex?: any; nibiru?: any; logo?: any } };
 
 function newPage(ctx: Ctx, first: boolean): Cursor {
   const page = ctx.pdf.addPage([PAGE_W, PAGE_H]);
   ctx.pages.push(page);
   let top = TOP;
   if (first) {
-    page.drawText(ctx.title, { x: MARGIN, y: top - 14, size: 14, font: ctx.fonts.bold, color: INK, maxWidth: PAGE_W - 2 * MARGIN - 90 });
-    page.drawText(`Kitapçık ${ctx.booklet}`, { x: PAGE_W - MARGIN - ctx.fonts.bold.widthOfTextAtSize(`Kitapçık ${ctx.booklet}`, 12), y: top - 13, size: 12, font: ctx.fonts.bold, color: INK });
-    page.drawText('Ad Soyad: ______________________________   Sınıf: ________   Numara: ____________', { x: MARGIN, y: top - 34, size: 9, font: ctx.fonts.regular, color: INK });
-    page.drawLine({ start: { x: MARGIN, y: top - 44 }, end: { x: PAGE_W - MARGIN, y: top - 44 }, thickness: 0.8, color: RULE });
-    top -= 56;
+    const { fonts, branding, marks } = ctx;
+    let left = MARGIN;
+    if (marks.logo) {
+      const s = Math.min(40 / marks.logo.width, 40 / marks.logo.height);
+      page.drawImage(marks.logo, { x: left, y: top - 40 + (40 - marks.logo.height * s) / 2, width: marks.logo.width * s, height: marks.logo.height * s });
+      left += marks.logo.width * s + 10;
+    }
+    const rightBlock = branding.showAnunex ? 110 : 70;
+    const textWidth = PAGE_W - MARGIN - rightBlock - left;
+    if (branding.institutionName) page.drawText(branding.institutionName, { x: left, y: top - 11, size: 9.5, font: fonts.bold, color: MUTED, maxWidth: textWidth });
+    page.drawText(ctx.title, { x: left, y: top - (branding.institutionName ? 28 : 20), size: 13, font: fonts.bold, color: INK, maxWidth: textWidth });
+    if (branding.showAnunex && marks.anunex) {
+      const size = 22, label = 'ANUNEX', lw = fonts.bold.widthOfTextAtSize(label, 10);
+      page.drawImage(marks.anunex, { x: PAGE_W - MARGIN - size, y: top - size, width: size, height: size });
+      page.drawText(label, { x: PAGE_W - MARGIN - size - 5 - lw, y: top - 15, size: 10, font: fonts.bold, color: rgb(0.07, 0.2, 0.5) });
+    }
+    const bk = `Kitapçık ${ctx.booklet}`;
+    page.drawText(bk, { x: PAGE_W - MARGIN - fonts.bold.widthOfTextAtSize(bk, 12), y: top - 40, size: 12, font: fonts.bold, color: INK });
+    page.drawText('Ad Soyad: ______________________________   Sınıf: ________   Numara: ____________', { x: MARGIN, y: top - 56, size: 9, font: fonts.regular, color: INK });
+    page.drawLine({ start: { x: MARGIN, y: top - 66 }, end: { x: PAGE_W - MARGIN, y: top - 66 }, thickness: 0.8, color: RULE });
+    top -= 78;
   } else {
     page.drawText(`${ctx.title} · Kitapçık ${ctx.booklet}`, { x: MARGIN, y: top - 9, size: 8, font: ctx.fonts.regular, color: MUTED, maxWidth: PAGE_W - 2 * MARGIN });
     top -= 20;
@@ -240,7 +261,11 @@ function questionOps(ctx: Ctx, q: Printable): Op[] {
   const stemText = [...q.stem, ...q.extra].join('\n');
   assertPrintable(ctx.fonts, stemText, where);
   const stemLines = wrapText(regular, stemText, BODY, inner);
-  ops.push({ h: 0, draw: (page, x, y) => page.drawText(`${q.no}.`, { x, y: y - BODY, size: BODY + 0.5, font: bold, color: INK }) });
+  const nibiru = q.ai && ctx.branding.showNibiru ? ctx.marks.nibiru : null;
+  ops.push({ h: 0, draw: (page, x, y) => {
+    page.drawText(`${q.no}.`, { x, y: y - BODY, size: BODY + 0.5, font: bold, color: INK });
+    if (nibiru) page.drawImage(nibiru, { x: x + 1, y: y - BODY - 15, width: 11, height: 11 });
+  } });
   ops.push(...textOps(ctx, stemLines, numW));
   for (const v of q.visuals) { ops.push({ h: 4, draw: () => {} }); for (const op of visualOps(ctx, v, inner, where)) ops.push({ h: op.h, draw: (page, x, y) => op.draw(page, x + numW, y) }); }
   ops.push({ h: 3, draw: () => {} });
@@ -299,7 +324,7 @@ async function appendRawOpticalPage(pdf: PDFDocument, content: string) {
 }
 
 // --- public API ----------------------------------------------------------------------------
-export async function renderStudioPdf(env: Env, documentId: string, booklet: string): Promise<{ bytes: ArrayBuffer; metadata: Record<string, unknown>; questionCount: number }> {
+export async function renderStudioPdf(env: Env, documentId: string, booklet: string, branding: StudioBranding = DEFAULT_BRANDING): Promise<{ bytes: ArrayBuffer; metadata: Record<string, unknown>; questionCount: number }> {
   const doc = await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId)); if (!doc) throw new Error('STUDIO_NOT_FOUND');
   const { items } = await loadPrintables(env, documentId, booklet);
   const pdf = await PDFDocument.create();
@@ -307,7 +332,17 @@ export async function renderStudioPdf(env: Env, documentId: string, booklet: str
   const fonts = await loadFonts(pdf);
   const title = normalizePrintText(doc.title);
   assertPrintable(fonts, title, 'Belge başlığı');
-  const ctx: Ctx = { pdf, fonts, images: new Map(), title, booklet, pages: [] };
+  if (branding.institutionName) assertPrintable(fonts, branding.institutionName, 'Kurum adı');
+  const marks: Ctx['marks'] = {};
+  if (branding.showAnunex) marks.anunex = await pdf.embedPng(b64(ANUNEX_MARK_PNG_BASE64));
+  if (branding.showNibiru && items.some(q => q.ai)) marks.nibiru = await pdf.embedPng(b64(NIBIRU_MARK_PNG_BASE64));
+  if (branding.institutionLogo) {
+    const format = sniff(branding.institutionLogo);
+    if (!format) throw new StudioPrintError('PRINT_LOGO_FORMAT_UNSUPPORTED', 'Kurum logosu PNG veya JPEG olmalıdır.');
+    try { marks.logo = format === 'png' ? await pdf.embedPng(branding.institutionLogo) : await pdf.embedJpg(branding.institutionLogo); }
+    catch { throw new StudioPrintError('PRINT_LOGO_UNREADABLE', 'Kurum logosu okunamadı.'); }
+  }
+  const ctx: Ctx = { pdf, fonts, images: new Map(), title, booklet, pages: [], branding, marks };
   await prepareImages(ctx, items);
   let cur = newPage(ctx, true);
   for (const q of items) {
@@ -328,7 +363,7 @@ export async function renderStudioPdf(env: Env, documentId: string, booklet: str
   const optical = opticalPage(doc.title, booklet, items.length, optionCount);
   await appendRawOpticalPage(pdf, optical.content);
   const bytes = await pdf.save();
-  return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, metadata: { bookletCode: booklet, questionCount: items.length, optionCount, questionPages: ctx.pages.length, optical: optical.geometry }, questionCount: items.length };
+  return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, metadata: { bookletCode: booklet, questionCount: items.length, optionCount, questionPages: ctx.pages.length, branding: { showAnunex: branding.showAnunex, showNibiru: branding.showNibiru, institutionName: branding.institutionName, institutionLogo: !!branding.institutionLogo }, optical: optical.geometry }, questionCount: items.length };
 }
 
 /** Teacher-facing answer key: one table per booklet, derived from the same stored order as the booklets. */

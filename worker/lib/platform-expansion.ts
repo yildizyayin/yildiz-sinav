@@ -6,7 +6,7 @@ import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
 import { hydrateQuestionMedia } from './question-content';
 import { normalizeQuestionOrigin,isAiQuestionOrigin,validMultipleChoiceQuestion } from './question-review';
 import { recordAssessmentRun } from './assessment-ledger';
-import { renderStudioAnswerKey, renderStudioPdf, StudioPrintError } from './studio-pdf';
+import { renderStudioAnswerKey, renderStudioPdf, StudioPrintError, type StudioBranding } from './studio-pdf';
 import { REPORT_SNAPSHOT_SQL } from './report-snapshot';
 import { withExamOperationLock, listExamOperationLocks, recoverExamOperationLock } from './exam-operation-lock';
 
@@ -614,7 +614,7 @@ async function studioPdf(request:Request,env:Env,user:AuthUser,documentId:string
   const allowed=await one<any>(env.DB.prepare('SELECT 1 ok FROM studio_document_items WHERE document_id=? AND booklet_code=? LIMIT 1').bind(documentId,booklet));
   if(!allowed)return notFound('Bu belge için seçilen kitapçık bulunamadı.');
   try{
-    const rendered=await renderStudioPdf(env,documentId,booklet);
+    const rendered=await renderStudioPdf(env,documentId,booklet,await studioBranding(env,document));
     const key=`studio-documents/${document.institution_id||'central'}/${documentId}/${booklet}.pdf`;
     await env.FILES.put(key,rendered.bytes,{httpMetadata:{contentType:'application/pdf',cacheControl:'private, no-store'},customMetadata:{documentId,bookletCode:booklet,questionCount:String(rendered.questionCount),generatedBy:'ANUNEX_STUDIO'}});
     await env.DB.prepare(`INSERT INTO studio_document_assets(id,document_id,institution_id,booklet_code,asset_type,r2_key,file_name,mime_type,byte_size,metadata_json)
@@ -624,6 +624,53 @@ async function studioPdf(request:Request,env:Env,user:AuthUser,documentId:string
     await audit(env.DB,user.id,document.institution_id,'STUDIO_PDF_GENERATED','studio_document',documentId,{bookletCode:booklet,questionCount:rendered.questionCount,containsOpticalForm:true});
     return new Response(rendered.bytes,{headers:{'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="${safeFileName(document.title)}-${booklet}.pdf"`,'Cache-Control':'private, no-store','X-Anunex-Booklet':booklet,'X-Anunex-Optical-Form':'included','X-Content-Type-Options':'nosniff'}});
   }catch(error){if(error instanceof StudioPrintError)return json({ok:false,error:{code:error.code,message:error.message}},409);console.error('Studio PDF generation failed',error);return json({ok:false,error:{code:'PDF_GENERATION_FAILED',message:'Sınav PDF dosyası üretilemedi.'}},500)}
+}
+
+/** A017: booklet branding from the document's saved choices plus the institution's own name and logo. */
+export function studioBrandingPrefs(value:unknown):{showAnunex:boolean;showNibiru:boolean;useInstitution:boolean}{
+  const v:any=value&&typeof value==='object'?value:{};
+  return {showAnunex:v.showAnunex!==false,showNibiru:v.showNibiru!==false,useInstitution:v.useInstitution!==false};
+}
+async function studioBranding(env:Env,document:any):Promise<StudioBranding>{
+  let config:any={};try{config=JSON.parse(document.config_json||'{}')}catch{}
+  const prefs=studioBrandingPrefs(config.branding);
+  let institutionName:string|null=null,institutionLogo:Uint8Array|null=null;
+  if(prefs.useInstitution&&document.institution_id){
+    const inst=await one<any>(env.DB.prepare('SELECT name FROM institutions WHERE id=?').bind(document.institution_id)).catch(()=>null);
+    institutionName=typeof inst?.name==='string'&&inst.name.trim()?inst.name.trim():null;
+    const brand=await one<any>(env.DB.prepare('SELECT logo_r2_key FROM campus_branding WHERE institution_id=?').bind(document.institution_id)).catch(()=>null);
+    if(brand?.logo_r2_key){const object=await env.FILES.get(brand.logo_r2_key);if(object)institutionLogo=new Uint8Array(await object.arrayBuffer());}
+  }
+  return {showAnunex:prefs.showAnunex,showNibiru:prefs.showNibiru,institutionName,institutionLogo};
+}
+
+/** A017: institution print logo (PNG/JPEG, ≤1 MB) used in Studio booklet headers. */
+async function studioLogo(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;
+  if(!['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user.role))return forbidden('Kurum logosunu yalnız yönetici değiştirebilir.');
+  const u=new URL(request.url);const inst=userInstitution(user,u.searchParams.get('institutionId'));if(!inst)return badRequest('Kurum kapsamı gereklidir.');
+  if(request.method==='GET'){
+    const inst_row=await one<any>(env.DB.prepare('SELECT name FROM institutions WHERE id=?').bind(inst));
+    const brand=await one<any>(env.DB.prepare('SELECT logo_r2_key FROM campus_branding WHERE institution_id=?').bind(inst));
+    return json({ok:true,institutionId:inst,institutionName:inst_row?.name??null,hasLogo:!!brand?.logo_r2_key});
+  }
+  if(request.method==='DELETE'){
+    await env.DB.prepare('UPDATE campus_branding SET logo_r2_key=NULL,updated_at=CURRENT_TIMESTAMP WHERE institution_id=?').bind(inst).run();
+    await audit(env.DB,user.id,inst,'STUDIO_LOGO_REMOVED','institution',inst,{});
+    return json({ok:true,hasLogo:false});
+  }
+  if(request.method!=='POST')return json({ok:false,error:{code:'METHOD_NOT_ALLOWED',message:'Desteklenmeyen işlem.'}},405);
+  const form=await request.formData().catch(()=>null);const file=form?.get('file');
+  if(!(file instanceof File))return badRequest('Logo dosyası gereklidir.','LOGO_REQUIRED');
+  if(file.size>1024*1024)return badRequest('Logo 1 MB sınırını aşamaz.','LOGO_TOO_LARGE');
+  const bytes=new Uint8Array(await file.arrayBuffer());
+  const isPng=bytes[0]===0x89&&bytes[1]===0x50&&bytes[2]===0x4e&&bytes[3]===0x47,isJpg=bytes[0]===0xff&&bytes[1]===0xd8&&bytes[2]===0xff;
+  if(!isPng&&!isJpg)return badRequest('Logo PNG veya JPEG olmalıdır.','LOGO_FORMAT');
+  const key=`branding/${inst}/print-logo-${Date.now()}.${isPng?'png':'jpg'}`;
+  await env.FILES.put(key,bytes,{httpMetadata:{contentType:isPng?'image/png':'image/jpeg',cacheControl:'private, no-store'}});
+  await env.DB.prepare(`INSERT INTO campus_branding(institution_id,logo_r2_key,enabled,updated_at) VALUES(?,?,0,CURRENT_TIMESTAMP) ON CONFLICT(institution_id) DO UPDATE SET logo_r2_key=excluded.logo_r2_key,updated_at=CURRENT_TIMESTAMP`).bind(inst,key).run();
+  await audit(env.DB,user.id,inst,'STUDIO_LOGO_UPLOADED','institution',inst,{bytes:bytes.byteLength,format:isPng?'PNG':'JPEG'});
+  return json({ok:true,hasLogo:true});
 }
 
 /** A017: teacher-facing answer key, never inside the student booklet; staff only. */
@@ -698,7 +745,7 @@ async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const requestedClause=requestedIds.length?` AND q.id IN (${requestedIds.map(()=>'?').join(',')})`:'';
   const qs=await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')}${requestedClause} ORDER BY RANDOM() LIMIT ?`).bind(...ps,...requestedIds,count));
   if(qs.length<count)return badRequest(`İstenen ${count} soruya uygun soru havuzu bulunamadı; yalnız ${qs.length} soru seçilebildi.`,'INSUFFICIENT_QUESTION_POOL');
-  const config={...b,bookletCodes,optionMode,academicYear,outcomeCodes,deliveryMode:String(b.deliveryMode||'PDF_OPTICAL').toUpperCase(),sourceTypes:Array.isArray(b.sourceTypes)?b.sourceTypes:['QUESTION_BANK']};
+  const config={...b,branding:studioBrandingPrefs(b.branding),bookletCodes,optionMode,academicYear,outcomeCodes,deliveryMode:String(b.deliveryMode||'PDF_OPTICAL').toUpperCase(),sourceTypes:Array.isArray(b.sourceTypes)?b.sourceTypes:['QUESTION_BANK']};
   const statements:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO studio_documents(id,institution_id,created_by,document_type,title,grade_level,subject_id,status,config_json) VALUES(?,?,?,?,?,?,?,'DRAFT',?)`).bind(id,inst,user.id,b.documentType,b.title,b.gradeLevel||null,b.subjectId||null,JSON.stringify(config))];
   bookletCodes.forEach((code:string)=>{const ordered=code==='B'?[...qs].reverse():qs;ordered.forEach((q,index)=>statements.push(env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,?,?)`).bind(id,q.id,code,index+1)));});
   await env.DB.batch(statements);await audit(env.DB,user.id,inst,'STUDIO_DOCUMENT_CREATED','studio_document',id,{selectedQuestions:qs.length,bookletCodes,optionMode,deliveryMode:config.deliveryMode});return json({ok:true,id,selectedQuestions:qs.length,requestedQuestions:count,bookletCodes,optionMode},201);
@@ -794,6 +841,7 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/live'&&(request.method==='GET'||request.method==='POST'))return liveSessions(request,env,user);
   if(p==='/api/platform/studio'&&(request.method==='GET'||request.method==='POST'))return studio(request,env,user);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/pdf$/);if(m&&request.method==='GET')return studioPdf(request,env,user,m[1]);
+  if(p==='/api/platform/studio/branding/logo')return studioLogo(request,env,user);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/answer-key$/);if(m&&request.method==='GET')return studioAnswerKey(env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/optical-template$/);if(m&&request.method==='GET')return studioOpticalTemplate(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/optical-submit$/);if(m&&request.method==='POST')return submitStudioOptical(request,env,user,m[1]);
