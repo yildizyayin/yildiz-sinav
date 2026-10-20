@@ -307,11 +307,21 @@ function pdfEscape(value: unknown): string { return ascii(value).replace(/\\/g,'
 function text(cmds:string[],x:number,y:number,value:unknown,size=10){cmds.push(`0 0 0 rg BT /F1 ${size} Tf ${x} ${y} Td (${pdfEscape(value)}) Tj ET`)}
 function rect(cmds:string[],x:number,y:number,w:number,h:number,fill=false){cmds.push(`${fill?'0.94 0.96 1 rg':'0.15 0.20 0.30 RG'} ${fill?'':'0.8 w'} ${x} ${y} ${w} ${h} re ${fill?'f':'S'}`)}
 function circle(cmds:string[],x:number,y:number,r:number){const k=.5522848*r;cmds.push(`0.18 0.23 0.32 RG 0.7 w ${x+r} ${y} m ${x+r} ${y+k} ${x+k} ${y+r} ${x} ${y+r} c ${x-k} ${y+r} ${x-r} ${y+k} ${x-r} ${y} c ${x-r} ${y-k} ${x-k} ${y-r} ${x} ${y-r} c ${x+k} ${y-r} ${x+r} ${y-k} ${x+r} ${y} c S`)}
+/** A018: two answer columns of 28pt rows from y=666 stay clear of the bottom fiducials for at most 22 rows. */
+export const STUDIO_OPTICAL_CAPACITY = 44;
+const PT_TO_MM = 2.83465;
+/** The A/B booklet bubbles drawn at (412,711) and (440,711); before A018 they were printed but never readable. */
+export const STUDIO_BOOKLET_REGION = { id: 'booklet', purpose: 'booklet', markThreshold: .48, doubleMarkDelta: .08,
+  cells: [['A', 412], ['B', 440]].map(([value, x]) => ({ xMm: Number(x) / PT_TO_MM, yMm: (PAGE_H - 711) / PT_TO_MM, radiusMm: 2.5, value, position: 1 })) };
+/** A018: centres of the 12pt squares drawn at (42,788),(541,788),(42,42),(541,42). Before A018 the bottom targets said 274.3mm instead of 280.1mm, so every lower row drifted. */
+export const STUDIO_FIDUCIAL_TARGETS = [[48, 794], [547, 794], [48, 48], [547, 48]].map(([x, y]) => ({ xMm: Math.round(x / PT_TO_MM * 100) / 100, yMm: Math.round((PAGE_H - y) / PT_TO_MM * 100) / 100 }));
 export function opticalPage(title:string,booklet:string,questionCount:number,optionCount:number): {content:string;geometry:Record<string,unknown>} {
-  const c:string[]=[];rect(c,32,32,531,778,true);text(c,70,770,title,16);text(c,70,750,`Telefon kamerasiyla okutulabilir optik · Kitapcik ${booklet}`,8);
-  for(const [x,y] of [[42,788],[541,788],[42,42],[541,42]])rect(c,x,y,12,12,true);
+  // A018: title kept >100px (150dpi) from the top fiducials so the reader's dark-centroid search finds only the square.
+  const c:string[]=[];rect(c,32,32,531,778,true);text(c,70,738,title,14);text(c,70,726,`Telefon kamerasiyla okutulabilir optik · Kitapcik ${booklet}`,8);
+  // A018: camera fiducials must be solid black; before A018 they used the page's pale fill and were invisible to the reader.
+  for(const [x,y] of [[42,788],[541,788],[42,42],[541,42]])c.push(`0 0 0 rg ${x} ${y} 12 12 re f`);
   text(c,48,710,'Ogrenci No',9);for(let i=0;i<8;i++){rect(c,112+i*28,704,20,18,false)}text(c,360,710,'Kitapcik',9);['A','B'].forEach((v,i)=>{circle(c,412+i*28,711,7);text(c,408+i*28,708,v,7)});
-  const options=optionCount===5?['A','B','C','D','E']:['A','B','C','D'];const cells:any[]=[];const columns=2;const rows=Math.ceil(questionCount/columns);for(let i=0;i<questionCount;i++){const col=Math.floor(i/rows),row=i%rows;const baseX=70+col*245,baseY=666-row*28;text(c,baseX,baseY,`${i+1}.`,8);options.forEach((op,j)=>{const x=baseX+28+j*29;circle(c,x,baseY+3,7);text(c,x-3,baseY,op,6);cells.push({xMm:x/2.83465,yMm:(PAGE_H-(baseY+3))/2.83465,questionNo:i+1,option:op,radiusMm:2.5})})}return {content:c.join('\n'),geometry:{version:'ANUNEX-OPTICAL-1',pageWidthMm:210,pageHeightMm:297,fiducials:{targets:[{xMm:16.9,yMm:16.9},{xMm:193.1,yMm:16.9},{xMm:16.9,yMm:274.3},{xMm:193.1,yMm:274.3}],searchRadiusRatio:.06},cameraGeometry:{regions:[{id:'answers',purpose:'answers',subjectCode:'GENEL',questionCount,options,cells,markThreshold:.48,doubleMarkDelta:.08}]}}};
+  const options=optionCount===5?['A','B','C','D','E']:['A','B','C','D'];const cells:any[]=[];const columns=2;const rows=Math.ceil(questionCount/columns);for(let i=0;i<questionCount;i++){const col=Math.floor(i/rows),row=i%rows;const baseX=70+col*245,baseY=666-row*28;text(c,baseX,baseY,`${i+1}.`,8);options.forEach((op,j)=>{const x=baseX+28+j*29;circle(c,x,baseY+3,7);text(c,x-3,baseY,op,6);cells.push({xMm:x/2.83465,yMm:(PAGE_H-(baseY+3))/2.83465,questionNo:i+1,option:op,radiusMm:2.5})})}return {content:c.join('\n'),geometry:{version:'ANUNEX-OPTICAL-1',pageWidthMm:210,pageHeightMm:297,fiducials:{targets:STUDIO_FIDUCIAL_TARGETS,searchRadiusRatio:.06},cameraGeometry:{regions:[{id:'answers',purpose:'answers',subjectCode:'GENEL',questionCount,options,cells,markThreshold:.48,doubleMarkDelta:.08},STUDIO_BOOKLET_REGION]}}};
 }
 
 async function appendRawOpticalPage(pdf: PDFDocument, content: string) {
@@ -359,11 +369,14 @@ export async function renderStudioPdf(env: Env, documentId: string, booklet: str
     cur.y = y;
   }
   footer(ctx);
+  let deliveryMode = 'PDF_OPTICAL'; try { deliveryMode = String(JSON.parse(doc.config_json || '{}').deliveryMode || 'PDF_OPTICAL').toUpperCase(); } catch {}
+  const withOptical = deliveryMode === 'PDF_OPTICAL';
+  if (withOptical && items.length > STUDIO_OPTICAL_CAPACITY) throw new StudioPrintError('PRINT_OPTICAL_CAPACITY', `Bu optik form en fazla ${STUDIO_OPTICAL_CAPACITY} soruyu okutabilir; kitapçıkta ${items.length} soru var. Soru sayısını azaltın veya optiksiz PDF teslimi seçin.`);
   const optionCount = items.some(q => q.options.length >= 5) ? 5 : 4;
-  const optical = opticalPage(doc.title, booklet, items.length, optionCount);
-  await appendRawOpticalPage(pdf, optical.content);
+  const optical = withOptical ? opticalPage(doc.title, booklet, items.length, optionCount) : null;
+  if (optical) await appendRawOpticalPage(pdf, optical.content);
   const bytes = await pdf.save();
-  return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, metadata: { bookletCode: booklet, questionCount: items.length, optionCount, questionPages: ctx.pages.length, branding: { showAnunex: branding.showAnunex, showNibiru: branding.showNibiru, institutionName: branding.institutionName, institutionLogo: !!branding.institutionLogo }, optical: optical.geometry }, questionCount: items.length };
+  return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, metadata: { bookletCode: booklet, questionCount: items.length, optionCount, questionPages: ctx.pages.length, branding: { showAnunex: branding.showAnunex, showNibiru: branding.showNibiru, institutionName: branding.institutionName, institutionLogo: !!branding.institutionLogo }, optical: optical?.geometry ?? null }, questionCount: items.length };
 }
 
 /** Teacher-facing answer key: one table per booklet, derived from the same stored order as the booklets. */
