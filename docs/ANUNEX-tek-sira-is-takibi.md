@@ -33,7 +33,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 Kullanıcı 19 Ekim 18:45'te Süper Admin kapsamını onayladı. Teknik işler kapanmadan tasarım uygulanmayacak. Sonrasında veli, kurum/zincir, öğrenci, öğretmen, rehber ve sonuc tasarımları ayrı ayrı tamamlanacak.
 
-**Tek sıra:** A001–A009 → A081 (ölçüm bekliyor) → A010–A079 → A082 → S001–S018 → K001 → K002 → A080 → D001–D007 → K003. (A081 kullanıcı kararıyla 19 Ekim 21:06'da, A082 20 Ekim 10:41'de B kararıyla A081'in arkasına alındı; 20 Ekim 17:58 A kararıyla genel işlerden sonraya, ihtiyaç olunca öne alınmak üzere taşındı.)
+**Tek sıra:** A001–A009 → A081 (ölçüm bekliyor) → A010–A018 → A083 → A019–A079 → A082 → S001–S018 → K001 → K002 → A080 → D001–D007 → K003. (A081 kullanıcı kararıyla 19 Ekim 21:06'da, A082 20 Ekim 10:41'de B kararıyla A081'in arkasına alındı; 20 Ekim 17:58 A kararıyla genel işlerden sonraya, ihtiyaç olunca öne alınmak üzere taşındı.)
 
 A080 kimliği korunmuştur fakat tasarım aşamasına ertelenmiştir. Bu açık sıra değişikliği, önceki dosyanın A080'den sonra sonuc'a geçiş kuralını değiştirir. Hiçbir teknik iş tasarım aşamasına ertelenmez. İş kapanırken test ve geri dönüş hazırlığı her zaman zorunludur; K001/K002 yalnız son kapsamlı tekrar kabulüdür.
 
@@ -468,4 +468,4 @@ Bilinen sınır: optik sayfa başlığındaki Türkçe karakterler A035'te.
 
 ### Değişiklik kayıtları — 20 Ekim 19:20 (kullanıcı onayı)
 
-A083 eklendi (Studio test oluşturma deneyimi; A082'den sonra, genel A-sırası içinde A079'dan önce ele alınacak). A014'e karekod, A067'ye karekod/kazanım sayfası, A078'e etkileşimli tahta modu ekleri yazıldı. Kaynak: kullanıcının paylaştığı örnek soru havuzu ekranlarıyla karşılaştırma.
+A083 eklendi (Studio test oluşturma deneyimi); Studio işleriyle birlikte A018'in hemen arkasında ele alınır. A014'e karekod, A067'ye karekod/kazanım sayfası, A078'e etkileşimli tahta modu ekleri yazıldı. Kaynak: kullanıcının paylaştığı örnek soru havuzu ekranlarıyla karşılaştırma.
