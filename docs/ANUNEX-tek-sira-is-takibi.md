@@ -368,3 +368,10 @@ Gözlem (kullanıcı ekranı 11:01): DKAB.5.5.3 işi `qgj_4d984341-…` 45+ daki
 Kök neden (koddan; production günlüğü/D1 okunamadı): (1) zamanlayıcı rezervasyonu yazıp iş üstlenilmeden dönerse sonraki turlarda `INSERT OR IGNORE` 0 satır → "skipped" → kalıcı duruş, kuyrukta iş olduğu için yeni iş de açılmaz; (2) süresi dolmuş RUNNING iş kuyruk tamamlayıcısını kalıcı engeller; (3) tur sonucu görünmediği için duruş sessizdi.
 PR #271 (CI run 39391258185 SUCCESS): `reserveScheduledJob` (rezerve edilmiş ama üstlenilmemiş iş mevcut rezervasyonla devam eder; tetikleyici çift saymaz; claim çift çalıştırmayı önler); `PENDING_JOB_SQL` (yalnız kuyruktaki/canlı kiralı iş bekleyen sayılır); runner istisnası yakalanır; migration 0116 `question_scheduler_status` ve panelde "Son tur" satırı. 5 yeni test (mutasyon kontrollü), 218 dosya / 1.124 test, typecheck, build PASS.
 Kapanış için kalan: merge → dağıtım → panelde "Son tur … bir soru üretim işi çalıştırıldı" ve DKAB.5.5.3'ün "Taslaklar hazır" olması; ardından birkaç turda yeni işlerin kopyasız ilerlediğinin görülmesi.
+
+### A009 — ara gözlem ve dağıtım, 20 Ekim 11:24–16:19
+
+Düzeltme öncesi kullanıcı ekranı (11:24): DKAB.5.5.3 sonunda çalıştı → 1/3 deneme, **Hata GENERATION_OUTPUT_INVALID** (model çıktısı doğrulamadan geçmedi; kalite kapısı çalışıyor). Yeni iş DKAB.5.5.2 `qgj_dc5db16f-…` kuyrukta. Yani o gecikme kalıcı kilitlenme değildi; gecikmenin kesin nedeni kanıtlanamadı. Koddaki iki kilitlenme açığı yine de gerçektir ve düzeltildi; "Son tur" satırı bundan sonra nedeni gösterecek.
+A081 girdisi: başarısız iş (FAILED) kazanımı otomatik yeniden denenmez (kuyruk tamamlayıcı FAILED kazanımları dışlar); ölçekte başarısızlık oranı ve yeniden deneme politikası ele alınmalı.
+PR #271 merge `618caf3e0ac8418e152787e5d9fa3f9b02bedc0f` (08:24 UTC). Deploy App Production Only run 39393190947: kullanıcı onayı 16:16 civarı; SUCCESS 13:18 UTC (Deploy, D1 migrations — 0116 dahil, read-only smoke). 16:20 app ve sonuc health ready/production.
+Kapanış için kalan: panelde "Son tur" satırı ve birkaç tur boyunca işlerin kopyasız ilerlediği.
