@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). A008: BİTTİ (10:59; canlı toplu onay K002'de). A009: BİTTİ (16:36). A081: BEKLİYOR (ÖLÇÜM — model karşılaştırması, 21 Ekim sabahı). A010: BİTTİ (18:05; canlı duraklat denemesi K002'de). A011: BİTTİ (18:10). A012: BİTTİ (18:10). A013: BEKLİYOR (VERİ — gerçek görselli soru örneği). Aktif iş A014 — gerçek soru video çözümü.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). A008: BİTTİ (10:59; canlı toplu onay K002'de). A009: BİTTİ (16:36). A081: BEKLİYOR (ÖLÇÜM — model karşılaştırması, 21 Ekim sabahı). A010: BİTTİ (18:05; canlı duraklat denemesi K002'de). A011: BİTTİ (18:10). A012: BİTTİ (18:10). A013: BEKLİYOR (VERİ — gerçek görselli soru örneği). A014: BEKLİYOR (VERİ+KARAR). Aktif iş A015 — mini test tekrar politikası.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -424,3 +424,9 @@ Sıradaki ID: A013 — AKTİF.
 
 Kabul ölçütü "branşa uygun gerçek örnekler" gerektirir. Kod/test: tablo/sütun grafik vektör, sıfır tabanlı, tam etiketli (`question-data-visual` 3 test); kontrol modeli görsel tutarlılığı puanlar. Gerçek görselli soru örneği henüz yok (bugünkü AI soruları metin; 12 eski onaylı sorunun görsel durumu bilinmiyor, kullanıcıdan ekran istendi). Genel fotoğraf/kişi/olay görseli üretimi yok; bu tür görseller yalnız manuel yüklemeyle gelir ve telif alanına bağlıdır — hak doğrulama örneği de bekleniyor.
 Kullanıcı talimatı (18:03 "sıradaki işi yap") ile madde 8 için açık onay: A013 bekletildi, A014'e geçildi. Gerçek görselli örnek gelince A013'e dönülür.
+
+### A014 — BEKLİYOR (VERİ+KARAR), 20 Ekim 18:06
+
+Bulgu: otonom video `prepareAutonomousQuestionVideo` üç nedenle çalışmıyor: (1) seslendirme ücretli sağlayıcıya bağlı, `NIBIRU_PAID_VOICE_ENABLED` production'da açık değil → NARRATION_PROVIDER_NOT_ENABLED; (2) 2027–2028 onaylı AI kaynağı yok → NO_APPROVED_SOURCE; (3) "Question video render production" iş akışı `vars.QUESTION_PRODUCTION_VIDEO_AUTOMATION` kapalı olduğu için zamanlanmış çalışmalarda SKIPPED (workflow_dispatch ile elle çalışabilir). Ücretsiz CAPTIONS (altyazılı) mod manuel istekte mevcut.
+Kullanıcı kararı (18:06 "B"): A014 bekletildi; kanıt için onaylı 2027–2028 sorusu ve ses/ücret kararı beklenir (ücretli ses kararı A066 ile ortak). Önerilen ücretsiz kanıt yolu: onaylı bir soru için altyazılı video + render iş akışını elle çalıştırma.
+Sıradaki ID: A015 — AKTİF.
