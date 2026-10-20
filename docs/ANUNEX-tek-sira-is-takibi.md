@@ -496,3 +496,9 @@ Doğrulama: gerçek PDF optik sayfası 150 dpi'da işaretlenip uygulamanın okum
 PR #277 (CI run 39463280222 SUCCESS): 12 yeni test (gerçek motorla sentetik 44 soruluk okuma, eski hedeflerle kırıldığı doğrulandı); 228 dosya / 1.158 test, typecheck, build PASS.
 Not: önceden üretilmiş PDF şablonları eski geometride; dağıtım sonrası PDF yeniden indirilince güncellenir.
 Kapanış için kalan: merge+dağıtım → gerçek basılı optiğin telefonla okutulması (A036 fiziksel kanıtıyla ortak; sentetik test fiziksel kanıt sayılmaz).
+
+### A017.1 canlı kanıt ve A083 girdisi — 20 Ekim 20:20
+
+Kullanıcı ekranı (20:20): Studio formunda Süper Admin için "Kurum (zorunlu)" seçimi ve "Baskı görünümü" bölümü canlıda; "Taslak oluştur" sonrası düğme altında "İstenen 2 soruya uygun soru havuzu bulunamadı; yalnız 0 soru seçilebildi." → A017.1 düzeltmesi canlıda doğrulandı.
+Neden 0: "Ders kodu" serbest metin alanına `00001` girilmiş (iç kimlik bekleniyor, ör. `sub_math`); sınıf 5. Havuzda 19 soru, 12 onaylı; AI soruları REVIEW'da. **A083 girdisi:** ders serbest metin olmamalı (listeden seçim); seçim sırasında onaylı stok sayısı gösterilmeli; 0 sonuçta hangi filtrenin daralttığı söylenmeli.
+A017 hâlâ: Studio'dan gerçek belge + PDF indirme kanıtı (kullanıcıya sınıf/ders boş bırakarak deneme önerildi).
