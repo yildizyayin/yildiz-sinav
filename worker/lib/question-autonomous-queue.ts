@@ -6,6 +6,11 @@ import {one} from './db';
 import {handleQuestionGenerationJobs} from './question-generation-jobs';
 import {questionTeamPaused} from './question-team-policy';
 
+/** A081: a failed outcome is retried in a fresh job, never more than this many failures; untried outcomes still come first. */
+export const MAX_FAILED_JOBS_PER_OUTCOME = 3;
+/** Uses aliases o (outcome) and cv (curriculum version). */
+export const OUTCOME_RETRY_FILTER_SQL=`NOT EXISTS(SELECT 1 FROM question_generation_jobs j WHERE j.outcome_id=o.id AND j.curriculum_version_id=cv.id AND j.status IN ('REQUESTED','RUNNING'))
+ AND (SELECT count(*) FROM question_generation_jobs j WHERE j.outcome_id=o.id AND j.curriculum_version_id=cv.id AND j.status='FAILED')<${MAX_FAILED_JOBS_PER_OUTCOME}`;
 export function autonomousYear(value:unknown):value is string{
  if(typeof value!=='string')return false;const m=/^(\d{4})-(\d{4})$/.exec(value);return !!m&&Number(m[2])===Number(m[1])+1;
 }
@@ -24,7 +29,7 @@ export async function replenishAutonomousQueue(env:Env,actor:AuthUser,academicYe
  FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
  WHERE cv.academic_year=? AND cv.verified=1 AND o.active=1 AND o.grade_level=cv.grade_level AND o.grade_level IN (${PILOT_GRADES_SQL})
  AND EXISTS(SELECT 1 FROM learning_nodes n WHERE n.id='ln_'||o.id AND n.active=1 AND n.node_type='OUTCOME' AND n.academic_year=cv.academic_year AND n.grade_level=o.grade_level AND n.subject_id=o.subject_id)
- AND NOT EXISTS(SELECT 1 FROM question_generation_jobs j WHERE j.outcome_id=o.id AND j.curriculum_version_id=cv.id AND j.status IN ('REQUESTED','RUNNING','FAILED'))
+ AND ${OUTCOME_RETRY_FILTER_SQL}
  AND (SELECT count(*) FROM question_learning_links l JOIN question_bank q ON q.id=l.question_id WHERE l.node_id='ln_'||o.id AND q.owner_type='PLATFORM' AND q.academic_year=cv.academic_year AND q.grade_level=o.grade_level AND q.subject_id=o.subject_id AND q.review_status IN ('APPROVED','REVIEW','DRAFT'))<10
  ORDER BY (SELECT count(*) FROM question_generation_jobs j WHERE j.outcome_id=o.id),o.grade_level,o.subject_id,o.id LIMIT 1`).bind(academicYear));
  if(!o)return {created:false,reason:'NO_VERIFIED_GAP'};

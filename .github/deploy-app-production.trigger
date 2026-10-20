@@ -1,1 +1,1 @@
-2026-10-20 A081 phase 1: compare glm-4.7-flash vs gpt-oss-120b producers, cross-subject factual checks, same-tick scheduling
+2026-10-20 A081: verifier screening shown and suspicious questions first; bounded retry of failed outcomes
