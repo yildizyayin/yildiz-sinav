@@ -361,3 +361,10 @@ Seçenekler okundu: A "rastgele oluştuğunu…", B "yaprağın düşüşünü s
 Toplu işlemler API+UI testleriyle kanıtlı; canlı toplu ONAY incelemede soru olmadığından yapılamadı → K002 kontrol listesi.
 **A009 girdisi:** 10:15–10:58 arasında yeni AI sorusu görünmüyor (toplam 13 = 12 eski onaylı + 1 reddedilen). Kuyruktaki DKAB.5.5.3 işi 10:45'e kadar üretilmiş olmalıydı.
 Sıradaki ID: A009 — AKTİF.
+
+### A009 — hata kaydı ve düzeltme PR'ı, 20 Ekim 11:01–11:20
+
+Gözlem (kullanıcı ekranı 11:01): DKAB.5.5.3 işi `qgj_4d984341-…` 45+ dakikadır "Kuyrukta", 0/3 deneme; 10:15'ten beri yeni AI sorusu yok.
+Kök neden (koddan; production günlüğü/D1 okunamadı): (1) zamanlayıcı rezervasyonu yazıp iş üstlenilmeden dönerse sonraki turlarda `INSERT OR IGNORE` 0 satır → "skipped" → kalıcı duruş, kuyrukta iş olduğu için yeni iş de açılmaz; (2) süresi dolmuş RUNNING iş kuyruk tamamlayıcısını kalıcı engeller; (3) tur sonucu görünmediği için duruş sessizdi.
+PR #271 (CI run 39391258185 SUCCESS): `reserveScheduledJob` (rezerve edilmiş ama üstlenilmemiş iş mevcut rezervasyonla devam eder; tetikleyici çift saymaz; claim çift çalıştırmayı önler); `PENDING_JOB_SQL` (yalnız kuyruktaki/canlı kiralı iş bekleyen sayılır); runner istisnası yakalanır; migration 0116 `question_scheduler_status` ve panelde "Son tur" satırı. 5 yeni test (mutasyon kontrollü), 218 dosya / 1.124 test, typecheck, build PASS.
+Kapanış için kalan: merge → dağıtım → panelde "Son tur … bir soru üretim işi çalıştırıldı" ve DKAB.5.5.3'ün "Taslaklar hazır" olması; ardından birkaç turda yeni işlerin kopyasız ilerlediğinin görülmesi.
