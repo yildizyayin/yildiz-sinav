@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). A008: BİTTİ (10:59; canlı toplu onay K002'de). A009: BİTTİ (16:36). A081: BEKLİYOR (ÖLÇÜM — model karşılaştırması, 21 Ekim sabahı). A010: BİTTİ (18:05; canlı duraklat denemesi K002'de). Aktif iş A011 — soru kartı akademik bağları.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). A008: BİTTİ (10:59; canlı toplu onay K002'de). A009: BİTTİ (16:36). A081: BEKLİYOR (ÖLÇÜM — model karşılaştırması, 21 Ekim sabahı). A010: BİTTİ (18:05; canlı duraklat denemesi K002'de). A011: BİTTİ (18:10). A012: BİTTİ (18:10). Aktif iş A013 — soru görsel kalitesi.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -409,3 +409,13 @@ Canlı kanıt (kullanıcı ekranları 20 Ekim 10:12–16:36): `/question-team` g
 Test kanıtı (main `735eabe`): `question-team` (sürüme bağlı duraklatma, eski kontrol reddi, değiştirilemez olay kaydı, eksik kontrolde kapalı başarısızlık, sürdürmenin otomatik yürütmeyi açmaması, gerçek kapasite/kuyruk), `question-team-ui` (rol kapısı, sürüme bağlı duraklat), `question-generation-jobs` (değiştirilemez manuel istek, idempotent tekrar, odak/öncelik bağlama, rol reddi), `question-task-focus` → 5 dosya / 17 test PASS. A009 ile "Son tur" satırı, A081 ile model karşılaştırması eklendi.
 Eksik: canlı duraklat→sürdür denemesi (model ölçümünü bölmemek için) → K002.
 Sıradaki ID: A011 — AKTİF.
+
+### A011 kapanışı — 20 Ekim 18:10
+
+Durum: BİTTİ — değişikliksiz, madde 4. `QuestionCardIntelligence` + `worker/lib/question-card-intelligence.ts`: doğrulanmış kazanım kodu/başlığı, sınıf, program sürümü ve resmî kaynak bağlantısı; ön öğrenme yoksa "henüz eklenmemiş" + not; zorluk "editoryal tahmin, ölçülmüş zorluk yok"; "Boş alanlar tahminle doldurulmaz". Canlı: kullanıcı ekranı 20 Ekim 10:19 (`content-center?questionId=q_0c622500-…`) bölümler görünür. Test: `question-card-intelligence` (doğrulanmış bağlamı tam okur, yokluk/sıfır ayrımı), `question-card-intelligence-ui` (eski yanıt gösterilmez, hata açık) → 3 test PASS.
+Sıradaki ID: A012.
+
+### A012 kapanışı — 20 Ekim 18:10
+
+Durum: BİTTİ — değişikliksiz, madde 4. Aynı kart: son beş yıl yalnız doğrulanmış ve pencere içi kayıtlardan; açık doğrulanmış yıllar arası eşdeğerlik dışında eşleştirme yok; kayıt yoksa "Veri yok"/"doğrulanmış kayıt yok" (sıfır değil); olasılık için yüzde üretilmez, eski manuel olasılık iddiaları tahmin sayılmaz. Canlı: 10:19 ekranında LGS/YKS "Veri yok". Test: "counts only in-window verified facts and explicit verified cross-year equivalences; enforces role" PASS.
+Sıradaki ID: A013 — AKTİF.
