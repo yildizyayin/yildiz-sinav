@@ -1,1 +1,1 @@
-2026-10-20 A081: verifier screening shown and suspicious questions first; bounded retry of failed outcomes
+2026-10-20 A016 Studio selection: tenant isolation, academic year and verified outcome scope
