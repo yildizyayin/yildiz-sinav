@@ -469,3 +469,10 @@ Bilinen sınır: optik sayfa başlığındaki Türkçe karakterler A035'te.
 ### Değişiklik kayıtları — 20 Ekim 19:20 (kullanıcı onayı)
 
 A083 eklendi (Studio test oluşturma deneyimi); Studio işleriyle birlikte A018'in hemen arkasında ele alınır. A014'e karekod, A067'ye karekod/kazanım sayfası, A078'e etkileşimli tahta modu ekleri yazıldı. Kaynak: kullanıcının paylaştığı örnek soru havuzu ekranlarıyla karşılaştırma.
+
+### A017 — dağıtım ve alt kayıt, 20 Ekim 19:20–19:50
+
+PR #275 merge `348c1c8cb239b7a5ec227e4c78939c25e12dfd48`; Deploy App Production Only run 39457513276 SUCCESS 16:35 UTC.
+**Alt kayıt A017.1 (canlı hata, kullanıcı ekranı 19:38):** Süper Admin Studio'da "Taslak oluştur"a bastığında yalnız sayfa üstünde "Kurum kapsamı gereklidir." çıktı; formda kurum seçimi ve düğme yanında geri bildirim yoktu. PR #276 (CI run 39460247056 SUCCESS): Süper Admin için zorunlu kurum seçimi; düğme pasifken nedeni; oluşturuluyor/başarı/sunucu hatası düğmenin altında; logo yükleme seçilen kuruma göre ve yerinde onaylı. 3 yeni UI testi; 225 dosya / 1.146 test, typecheck, build PASS.
+A018 ön incelemesi (kod değiştirilmedi): Studio optik şablon/gönderim uçları var ama arayüzde okutma ekranı yok; kitapçık balonu sunucuda doğrulanmıyor; cevaplar soru kimliğiyle bekleniyor (sıra eşlemesi istemciye bırakılmış); aynı öğrencinin ikinci okutması `INSERT OR IGNORE` ile sessizce yok sayılırken yanıt yeni puanı döndürüyor; optik sayfa ~42 soruyu taşıyor, Studio 200'e kadar izin veriyor.
+Kapanış için kalan: #276 merge+dağıtım → kullanıcının Studio'dan belge oluşturup Kitapçık A ve Cevap anahtarı PDF'ini indirdiği ekran.
