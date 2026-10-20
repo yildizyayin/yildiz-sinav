@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). Aktif iş A008 — soru inceleme kararı (+ toplu onay).** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). A006: BİTTİ (20 Ekim 10:12). A007: BİTTİ (10:20). A008: BİTTİ (10:59; canlı toplu onay K002'de). Aktif iş A009 — otonom zamanlayıcıyı kanıtla.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -353,3 +353,11 @@ Kapanış için kalan: merge → production dağıtımı → kullanıcının ger
 PR #270 merge `92e570e4c5bcf030b2363a20b87a19563ad5992c` (kullanıcı). Deploy App Production Only run 39389265147 SUCCESS 07:55 UTC (Verify release, Deploy, D1 migrations, read-only smoke, Süper Admin kapsam doğrulaması). 10:56 sonrası app ve sonuc health ready/production.
 Kapanış için kalan: kullanıcının gerçek ekranda tekil/toplu RET veya DÜZELTME (A007 sorusu) ve toplu ONAY kanıtı.
 Açık öneri (kullanıcı kararı bekliyor): A009 → A081 sonrası genel işlere (A010…) geçmek; A082 ihtiyaç olunca öne alınır.
+
+### A008 kapanışı — 20 Ekim 10:59
+
+Durum: BİTTİ. Kullanıcı ekranı (10:58, content-center): "Hızlı inceleme" paneli canlıda; A007 sorusu `q_0c622500-…` insan kararıyla **Reddedildi** (RESTRICTED değil; öğrenciye açılmaz). Sayaçlar: toplam 13, onaylı 12, kitapta kullanılabilir 12.
+Seçenekler okundu: A "rastgele oluştuğunu…", B "yaprağın düşüşünü sadece rüzgârın etkisiyle açıklamak", C (doğru) "en doğru, en faydalı ve en güzel şekilde yaratıldığını…", D "tamamen tesadüfe atıf". **Ek bulgu (A081):** B bilimsel olarak doğru bir açıklama olduğu hâlde çeldirici yapılmış; din-fen alanları arası çelişki. Olgusal doğruluk kontrolüne örnek vaka.
+Toplu işlemler API+UI testleriyle kanıtlı; canlı toplu ONAY incelemede soru olmadığından yapılamadı → K002 kontrol listesi.
+**A009 girdisi:** 10:15–10:58 arasında yeni AI sorusu görünmüyor (toplam 13 = 12 eski onaylı + 1 reddedilen). Kuyruktaki DKAB.5.5.3 işi 10:45'e kadar üretilmiş olmalıydı.
+Sıradaki ID: A009 — AKTİF.
