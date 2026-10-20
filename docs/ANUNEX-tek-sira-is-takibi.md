@@ -347,3 +347,9 @@ Kapanış için kalan: merge → production dağıtımı → kullanıcının ger
 ### Kullanıcı kararları — 20 Ekim 10:41
 
 "B DEVAM ET": (1) "şüpheli sorular üstte" A008'den A081'e taşındı; A008 kabul ölçütü buna göre güncellendi. (2) Sıra A009 → A081 → A082.
+
+### A008 — dağıtım, 20 Ekim 10:55
+
+PR #270 merge `92e570e4c5bcf030b2363a20b87a19563ad5992c` (kullanıcı). Deploy App Production Only run 39389265147 SUCCESS 07:55 UTC (Verify release, Deploy, D1 migrations, read-only smoke, Süper Admin kapsam doğrulaması). 10:56 sonrası app ve sonuc health ready/production.
+Kapanış için kalan: kullanıcının gerçek ekranda tekil/toplu RET veya DÜZELTME (A007 sorusu) ve toplu ONAY kanıtı.
+Açık öneri (kullanıcı kararı bekliyor): A009 → A081 sonrası genel işlere (A010…) geçmek; A082 ihtiyaç olunca öne alınır.
