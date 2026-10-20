@@ -11,6 +11,17 @@ import { validMultipleChoiceQuestion } from './question-review';
 import { generationJobDto, generationJobFields, questionGenerationEnabled } from './question-generation-jobs';
 
 export const DEFAULT_QUESTION_GENERATION_MODEL = '@cf/zai-org/glm-4.7-flash';
+/** Producers that may be compared; the verifier model is never allowed to grade its own output. */
+export const GENERATOR_MODEL_ALLOWLIST = ['@cf/zai-org/glm-4.7-flash','@cf/openai/gpt-oss-120b'] as const;
+const VERIFIER_DEFAULT = '@cf/nvidia/nemotron-3-120b-a12b';
+/** A081: deterministic per-job producer choice so candidate models are compared over the same period. */
+export function selectGeneratorModel(env:{QUESTION_GENERATION_MODEL?:string;QUESTION_GENERATION_MODEL_CANDIDATES?:string;QUESTION_GENERATION_VERIFIER_MODEL?:string},jobId:string):string{
+ const verifier=(env.QUESTION_GENERATION_VERIFIER_MODEL?.trim()||VERIFIER_DEFAULT);
+ const candidates=[...new Set((env.QUESTION_GENERATION_MODEL_CANDIDATES||'').split(',').map(v=>v.trim()).filter(v=>(GENERATOR_MODEL_ALLOWLIST as readonly string[]).includes(v)&&v!==verifier))];
+ if(candidates.length<2)return env.QUESTION_GENERATION_MODEL?.trim()||DEFAULT_QUESTION_GENERATION_MODEL;
+ let h=0;for(const ch of jobId)h=(h*31+ch.charCodeAt(0))>>>0;
+ return candidates[h%candidates.length];
+}
 const PROVIDER_TIMEOUT_MS = 45_000;
 const LEASE_MS = 120_000;
 type Draft = {stemText:string;options:{label:string;text:string}[];correctAnswer:string;solutionText:string;difficultyLevel:number;editorial?:EditorialPacket};
@@ -176,7 +187,9 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  }catch{await fail(env,id,token,'GENERATION_PILOT_LIMIT');return err(409,'GENERATION_PILOT_LIMIT');}
  }
  const job={...prior,lease_token:token,lease_until:until,status:'RUNNING'};
- const model=repair?.sourceModel||(env.QUESTION_GENERATION_MODEL?.trim()||DEFAULT_QUESTION_GENERATION_MODEL);
+ const model=repair?.sourceModel||selectGeneratorModel(env,id);
+ // Observability only: the column arrives with migration 0117, which the deploy applies after the Worker; never fail a run over it.
+ await env.DB.prepare('UPDATE question_generation_jobs SET generator_model=? WHERE id=? AND lease_token=?').bind(model,id,token).run().catch(()=>{});
  if(!validTaskFocus(job.task_focus,job.grade_level,job.outcome_code)){await fail(env,id,token,'GENERATION_CONTEXT_CHANGED');return err(409,'GENERATION_CONTEXT_CHANGED');}
  const editorial=job.quality_profile==='EDITORIAL_V1';
  const resolvedPresentation=repair&&job.presentation==='AUTO'?(repair.drafts[0]?.editorial?.visual?.kind==='NONE'?'TEXT':repair.drafts[0]?.editorial?.visual?.kind):resolveEditorialPresentation(job.presentation,job.outcome_code,job.task_focus);
@@ -186,7 +199,7 @@ export async function runQuestionGenerationJob(_request:Request,env:Env,user:Aut
  const detailedHistory=env.QUESTION_GENERATION_VERIFICATION_ENABLED==='true'?await one<{previous_json:string}>(env.DB.prepare("SELECT COALESCE(json_group_array(json_object('stemText',stem_text,'solutionText',solution_text)),'[]') previous_json FROM (SELECT substr(q.stem_text,1,400) stem_text,substr(q.solution_text,1,500) solution_text FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id WHERE l.node_id=? AND q.academic_year=? AND q.grade_level=? AND q.subject_id=? AND q.owner_type='PLATFORM' AND q.origin_kind='AI_GENERATED' ORDER BY q.created_at DESC,q.id DESC LIMIT 4)").bind('ln_'+job.outcome_id,job.academic_year,job.grade_level,job.subject_id)):null;
  const previousDrafts:{stemText:string;solutionText:string}[]=JSON.parse(detailedHistory?.previous_json??'[]');
  const readingPilotInstruction=job.grade_level===5&&job.outcome_code==='MAT.5.1.1'?' For this initial pilot generate ONLY word-to-number questions. The stem must contain exactly one quoted Turkish cardinal phrase using units up to milyar and 7 to 12 digits. EVERY option, including every wrong option, must contain between 7 and 12 digits; never use a 13-digit distractor. EVERY option must be a different plain ASCII digit string, with no dots, commas, spaces or units. Wrong options must be other valid integers based on meaningful place-value mistakes, never malformed group separators or grammatically invalid number phrases. Vary zero-filled groups and reasoning explanations. Do not generate number-to-word questions for this pilot.':'';
- const input=prompt(job)+(editorial?' '+EDITORIAL_INSTRUCTION+' Required extra field on every question: editorial='+JSON.stringify(editorialSchema(resolvedPresentation))+' Presentation requirement: '+resolvedPresentation+'; editorial metadata must describe the actual question, not generic boilerplate. ':'')+' Keep each solution under 120 Turkish words. Return only the required JSON fields, no Markdown or commentary.'+readingPilotInstruction+' Application task focus (not an official curriculum descriptor): '+TASK_FOCUS[job.task_focus].instruction+' Source-derived constraints and variation data: '+JSON.stringify({officialScopeGuidance:officialPilotGuidance(questionContext),previousQuestions,previousDrafts,variationSeed:id+token});
+ const input=prompt(job)+(editorial?' '+EDITORIAL_INSTRUCTION+' Required extra field on every question: editorial='+JSON.stringify(editorialSchema(resolvedPresentation))+' Presentation requirement: '+resolvedPresentation+'; editorial metadata must describe the actual question, not generic boilerplate. ':'')+' Every real-world statement in the stem, context, options and solution must be factually correct across all subjects; never build a question on a false natural or scientific premise and never use a scientifically correct explanation as a wrong option. Keep each solution under 120 Turkish words. Return only the required JSON fields, no Markdown or commentary.'+readingPilotInstruction+' Application task focus (not an official curriculum descriptor): '+TASK_FOCUS[job.task_focus].instruction+' Source-derived constraints and variation data: '+JSON.stringify({officialScopeGuidance:officialPilotGuidance(questionContext),previousQuestions,previousDrafts,variationSeed:id+token});
 
  if(new TextEncoder().encode(input).length>16*1024){await fail(env,id,token,'GENERATION_CONTEXT_CHANGED');return err(409,'GENERATION_CONTEXT_CHANGED');}
  if(repair)await env.DB.prepare("INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,?,'question_generation_job',?,?)").bind(uuid('aud'),user.id,repair.verificationRetry?'QUESTION_EDITORIAL_VERIFICATION_RETRY_REQUESTED':'QUESTION_EDITORIAL_REPAIR_REQUESTED',id,JSON.stringify({sourceAuditId:repair.sourceAuditId,sourceHash:repair.sourceHash,reason:repair.reason,editedDrafts:repair.drafts,producerCalled:false,humanApproved:false,attemptCount:prior.attempt_count})).run();

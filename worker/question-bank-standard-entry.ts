@@ -66,7 +66,7 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
     const reviewSlots=Number(cfg.QUESTION_PILOT_REVIEW_SLOTS??'0');
     ctx.waitUntil((async()=>{
       const targetYear=env.QUESTION_AUTOMATED_ACADEMIC_YEAR;
-      const rows=await all<any>(env.DB.prepare(`SELECT j.id,j.grade_level gradeLevel,j.academic_year academicYear,
+      const loadRows=()=>all<any>(env.DB.prepare(`SELECT j.id,j.grade_level gradeLevel,j.academic_year academicYear,
        j.question_count questionCount,j.status,j.attempt_count attemptCount,
        cv.verified curriculumVerified,o.active outcomeActive
        FROM question_generation_jobs j
@@ -81,16 +81,18 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
            AND n.node_type='OUTCOME' AND n.academic_year=j.academic_year
            AND n.grade_level=j.grade_level AND n.subject_id=j.subject_id)
        ORDER BY j.priority DESC,j.created_at,j.id LIMIT 20`).bind(targetYear??''));
+      let rows=await loadRows();
       // Read from the same atomic reservation ledger used by dispatch.
       // Historic/manual generation jobs do not consume this pilot's quota.
       const quota=await one<{question_cap:number|null;reserved_count:number;budget_mode:string}>(env.DB.prepare(
        "SELECT question_cap,reserved_count,budget_mode FROM question_agent_pilot_budget WHERE id='pilot_50'"
       ));
       const remainingBudget=effectivePilotBudget(quota,cfg.QUESTION_PILOT_BUDGET_REMAINING);
-      const plan=planQuestionPilotDispatch(rows.map(r=>({...r,gradeLevel:Number(r.gradeLevel),
+      const planFor=(candidateRows:any[])=>planQuestionPilotDispatch(candidateRows.map(r=>({...r,gradeLevel:Number(r.gradeLevel),
        questionCount:Number(r.questionCount),attemptCount:Number(r.attemptCount),
        curriculumVerified:Number(r.curriculumVerified)===1,outcomeActive:Number(r.outcomeActive)===1})),
        {enabled:env.QUESTION_GENERATION_ENABLED==='true'&&!!env.AI,budget:remainingBudget,reviewSlots,maxJobs:5,maxQuestions:Math.min(50,remainingBudget)});
+      let plan=planFor(rows);
       console.log('question-agent-dispatch-preview',JSON.stringify({selected:plan.ids.length,questionCount:plan.questionCount,rejected:plan.rejected.length}));
       const actorId=(cfg as typeof cfg & {QUESTION_AGENT_SERVICE_ACTOR_ID?:string}).QUESTION_AGENT_SERVICE_ACTOR_ID;
       const actorRow=actorId?await one<{id:string;role:string;active:number}>(env.DB.prepare(
@@ -118,6 +120,8 @@ export default {async fetch(request:Request,env:Env,ctx:ExecutionContext):Promis
       if(!autonomousYear(academicYear)){console.log('question-agent-execution-blocked',JSON.stringify({reasons:['AUTOMATED_ACADEMIC_YEAR_REQUIRED']}));await recordSchedulerTick(env,'BLOCKED',null,{reasons:['AUTOMATED_ACADEMIC_YEAR_REQUIRED']});return;}
       const replenishment=await replenishAutonomousQueue(env,{id:actorRow.id,role:'SUPER_ADMIN',institution_id:null,student_id:null,display_name:'Scheduled Question Agent',email:null,username:null},academicYear);
       console.log('question-agent-queue',JSON.stringify(replenishment));
+      // A job created by this tick runs in this same tick instead of waiting 15 minutes.
+      if(replenishment.created){rows=await loadRows();plan=planFor(rows);}
       // One job per cron tick until there is an atomic cross-job budget ledger.
       const jobId=plan.ids.find(id=>rows.find(r=>r.id===id)?.academicYear===academicYear);if(!jobId){await recordSchedulerTick(env,replenishment.created?'JOB_QUEUED':'IDLE_'+replenishment.reason,null,{rejected:plan.rejected.slice(0,5)});return;}
       const queuedReview=await one<{n:number}>(env.DB.prepare("SELECT count(*) n FROM question_bank WHERE owner_type='PLATFORM' AND origin_kind IN ('AI','AI_GENERATED','AI_DRAFT','NIBIRU','NIBIRU_AI') AND review_status='REVIEW'"));
