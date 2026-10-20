@@ -20,6 +20,7 @@ export function StudioOpticalScan({ document, onClose }: { document: any; onClos
   const [booklet, setBooklet] = useState(booklets[0] || 'A');
   const [template, setTemplate] = useState<any>(null);
   const [templateError, setTemplateError] = useState('');
+  const [legacySheet, setLegacySheet] = useState(false);
   const [students, setStudents] = useState<any[]>([]);
   const [studentId, setStudentId] = useState('');
   const [read, setRead] = useState<OmrReadResult | null>(null);
@@ -31,9 +32,9 @@ export function StudioOpticalScan({ document, onClose }: { document: any; onClos
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    setTemplate(null); setTemplateError(''); setRead(null); setProblem(null); setResult(null);
+    setTemplate(null); setTemplateError(''); setLegacySheet(false); setRead(null); setProblem(null); setResult(null);
     api<any>(`/api/platform/studio/${encodeURIComponent(document.id)}/optical-template?booklet=${booklet}`)
-      .then(r => setTemplate(parseRuntimeTemplate({ ...r.template.optical, id: `studio-${document.id}-${booklet}`, name: `${document.title} · ${booklet}` })))
+      .then(r => { setLegacySheet(r.template.optical?.version !== 'ANUNEX-OPTICAL-2'); setTemplate(parseRuntimeTemplate({ ...r.template.optical, id: `studio-${document.id}-${booklet}`, name: `${document.title} · ${booklet}` })); })
       .catch(e => setTemplateError(e?.status === 404 ? `Önce Kitapçık ${booklet} PDF'ini indirin; optik şablon PDF ile birlikte oluşur.` : e.message || 'Optik şablon alınamadı.'));
   }, [document.id, booklet]);
   useEffect(() => {
@@ -76,6 +77,8 @@ export function StudioOpticalScan({ document, onClose }: { document: any; onClos
       <label>Optik fotoğrafı<input type="file" accept="image/*" capture="environment" disabled={!template || reading} onChange={e => void scan(e.target.files?.[0])} /></label>
     </div>
     {templateError && <div className="alert error" role="alert">{templateError}</div>}
+    {legacySheet && <div className="alert warning" role="alert">Bu kitapçığın optik formu eski sürümle üretilmiş. Kitapçık {booklet} PDF'ini yeniden indirip yazdırın; büyük köşe kareli yeni form telefonla güvenilir okunur.</div>}
+    {template && !read && !reading && <p className="studio-optical-tip">Kâğıdı düz bir zemine koyun, dört köşedeki siyah kare kadrajda olsun; masa görünebilir, açı ve gölge sorun değildir. Flaş parlaması baloncukların üstüne gelmesin.</p>}
     {reading && <div className="alert info" role="status"><Camera size={14} /> Okunuyor…</div>}
     {read && <div className="studio-optical-read">
       <div>Okunan kitapçık: <b>{readBooklet || 'okunamadı'}</b> · Güven: %{Math.round(read.confidence * 100)} · Boş/kararsız: {blanks}</div>
