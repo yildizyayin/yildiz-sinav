@@ -33,7 +33,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 Kullanıcı 19 Ekim 18:45'te Süper Admin kapsamını onayladı. Teknik işler kapanmadan tasarım uygulanmayacak. Sonrasında veli, kurum/zincir, öğrenci, öğretmen, rehber ve sonuc tasarımları ayrı ayrı tamamlanacak.
 
-**Tek sıra:** A001–A009 → A081 → A010–A079 → S001–S018 → K001 → K002 → A080 → D001–D007 → K003. (A081 kullanıcı kararıyla 19 Ekim 21:06'da A009'un arkasına alındı.)
+**Tek sıra:** A001–A009 → A081 → A082 → A010–A079 → S001–S018 → K001 → K002 → A080 → D001–D007 → K003. (A081 kullanıcı kararıyla 19 Ekim 21:06'da, A082 20 Ekim 10:41'de B kararıyla A081'in arkasına alındı.)
 
 A080 kimliği korunmuştur fakat tasarım aşamasına ertelenmiştir. Bu açık sıra değişikliği, önceki dosyanın A080'den sonra sonuc'a geçiş kuralını değiştirir. Hiçbir teknik iş tasarım aşamasına ertelenmez. İş kapanırken test ve geri dönüş hazırlığı her zaman zorunludur; K001/K002 yalnız son kapsamlı tekrar kabulüdür.
 
@@ -52,7 +52,7 @@ Her satır ayrı iştir. Güncel istisnalar: A001 BİTTİ, A002 AKTİF. Diğerle
 | A005 | Ajan servis aktörünü doğrula | Zamanlayıcı gerçek ve yetkili servis kimliği kullanır; insan oturumunun taklidi yapılmaz. |
 | A006 | İnsan inceleme kapasitesini tanımla | Gerçek sorumlu ve sürdürülebilir kapasite belirlenir; sıfır/dolu kuyruk üretimi durdurur. Kapasite uydurulmaz. |
 | A007 | Tek gerçek soru üretimini kanıtla | Süper admin doğrulanmış çıktı seçer; model ve bağımsız kontrol sonrası soru kalıcı inceleme listesinde görünür; hata varsa gerekçesi görünür. |
-| A008 | Soru inceleme kararını kapat | İnsan ONAY/RET/DÜZELTME verir; çözüm ve hak denetimi kaydedilir; RESTRICTED soru öğrenciye açılmaz. **Ek (kullanıcı isteği, 19 Ekim 20:58):** tek tek ve hızlı toplu onay; toplu onayda her soruya ayrı onaylayan/zaman kaydı düşer, bağımsız kontrol bulguları ve şüpheli sorular üstte gösterilir, RESTRICTED sorular toplu onaya giremez. |
+| A008 | Soru inceleme kararını kapat | İnsan ONAY/RET/DÜZELTME verir; çözüm ve hak denetimi kaydedilir; RESTRICTED soru öğrenciye açılmaz. **Ek (kullanıcı isteği, 19 Ekim 20:58):** tek tek ve hızlı toplu onay; toplu onayda her soruya ayrı onaylayan/zaman kaydı düşer, RESTRICTED sorular toplu onaya giremez. ("Şüpheli sorular üstte" 20 Ekim 10:41 kullanıcı kararıyla A081'e taşındı.) |
 | A009 | Otonom zamanlayıcıyı kanıtla | Gerçek zamanlayıcı çağrısı yeni işi işler; tekrar çağrı kopya üretmez; kapasite/duraklatma kuralları uygulanır. |
 | A010 | Ajan yönetim panelini kapat | Gerçek işler/sayılar/hatalar görünür; durdur-sürdür ve izinli manuel görev, kayıt geçmişiyle çalışır. |
 | A011 | Soru kartı akademik bağlarını tamamla | Güncel kazanım, sınıf, sürüm ve doğrulanabilen ön öğrenmeler görünür; olmayan veri açıkça bilinmiyor gösterilir. |
@@ -124,8 +124,8 @@ Her satır ayrı iştir. Güncel istisnalar: A001 BİTTİ, A002 AKTİF. Diğerle
 | A077 | Yönetim ve izleyici ekranlarını kapat | Süper admin gerçek sağlık/iş/hata özetini görür; ajan serbest ve denetimsiz komut çalıştıramaz. |
 | A078 | Mobil/PWA/tahta erişimini kapat | Ana iş akışları hedef cihazlarda okunur/tıklanır; fiziksel kitap bağlantıları doğru içeriğe gider. |
 | A079 | app güvenlik ve veri yaşam döngüsünü kapat | Rol/tenant izolasyonu, oturum iptali, dosya erişimi ve süreli veri temizliği kanıtlanır; gerekli kalıcı kimlikler silinmez. |
-| A081 | Ölçekli soru üretimini kapat (değişiklik kaydı, 19 Ekim 21:04; 20 Ekim 10:09 güncelleme: hedef sabit sayı değil, kalite kapısı gevşetilmeden sürdürülebilen azami hız; bağımsız kontrol geçiş oranı ve insan onay oranı düşerse hız düşer; yalnız 2027–2028 resmî MEB kazanımı) | İlk hedef: günde 5.000–10.000 soru, 31 Aralık 2026'ya kadar 300.000–500.000 soru, 2027–2028 Maarif 5–12. sınıf. Paralel üretim, Queue sınırı (S015 ile ortak) çözümü, kazanım başına sınırın kontrollü yükseltilmesi ve benzer-soru filtresi; A007'de ölçülen soru başına maliyetle onaylı bütçe. Ölçüm yoksa hazır denmez; insan onayı otomatik verilmez. |
-| A082 | Dışarıdan toplu soru aktarımını kapat (değişiklik kaydı, 20 Ekim 10:09) | Süper Admin Excel/CSV/JSON ile toplu yükler; önizleme ve satır bazlı hata listesi; her soru 2027–2028 resmî kazanım koduna bağlanmak zorunda (bulunamayan/yanlış sınıf reddedilir); kaynak etiketi zorunlu (ör. Claude, yayınevi, öğretmen); dışarıdan gelen her soru REVIEW kuyruğuna düşer ve A008 toplu onay ekranında görünür; tekrar yükleme kopya üretmez; benzer soru uyarısı. Sıra: kullanıcı kararı bekleniyor (A: A009→A082→A081, B: A009→A081→A082); karar gelene kadar madde 9 gereği kuyruk sonunda. |
+| A081 | Ölçekli soru üretimini kapat (değişiklik kaydı, 19 Ekim 21:04; 20 Ekim 10:09 güncelleme: hedef sabit sayı değil, kalite kapısı gevşetilmeden sürdürülebilen azami hız; bağımsız kontrol geçiş oranı ve insan onay oranı düşerse hız düşer; yalnız 2027–2028 resmî MEB kazanımı) | İlk hedef: günde 5.000–10.000 soru, 31 Aralık 2026'ya kadar 300.000–500.000 soru, 2027–2028 Maarif 5–12. sınıf. Paralel üretim, Queue sınırı (S015 ile ortak) çözümü, kazanım başına sınırın kontrollü yükseltilmesi ve benzer-soru filtresi; A007'de ölçülen soru başına maliyetle onaylı bütçe. Ölçüm yoksa hazır denmez; insan onayı otomatik verilmez. **Ek (20 Ekim 10:41, A008'den taşındı):** bağımsız kontrol bulguları saklanır ve toplu onay ekranında şüpheli sorular üstte gösterilir; A007'deki kaçırılmış bilimsel hata sınıfı için olgusal doğruluk kontrolü. |
+| A082 | Dışarıdan toplu soru aktarımını kapat (değişiklik kaydı, 20 Ekim 10:09) | Süper Admin Excel/CSV/JSON ile toplu yükler; önizleme ve satır bazlı hata listesi; her soru 2027–2028 resmî kazanım koduna bağlanmak zorunda (bulunamayan/yanlış sınıf reddedilir); kaynak etiketi zorunlu (ör. Claude, yayınevi, öğretmen); dışarıdan gelen her soru REVIEW kuyruğuna düşer ve A008 toplu onay ekranında görünür; tekrar yükleme kopya üretmez; benzer soru uyarısı. Sıra: kullanıcı kararı B (20 Ekim 10:41) → A009 → A081 → A082. |
 | A080 | Ortak tasarım planını onaylat | Teknik sıra bittikten sonra açık/ferah içerik, sol menü, modül renkleri, uzay ilişkisi, ANUNEX/Nibiru ve mobil davranış örneklerle planlanır; kullanıcı tasarım yönünü onaylar. |
 
 ## sonuc.anunex.com — A079 sonrasında teknik sıra
@@ -343,3 +343,7 @@ PR #270 (CI run 39387246365 SUCCESS): `POST /api/question-bank-standard/review-b
 Test: 5 API + 4 UI (mutasyon kontrollü); 217 dosya / 1.119 test, typecheck, build PASS.
 Açık karar: "şüpheli sorular üstte" — bağımsız kontrol geçen sorular için bulgu saklamıyor; kullanıcıya A008 alt kaydı mı, A081'e taşıma mı soruldu.
 Kapanış için kalan: merge → production dağıtımı → kullanıcının gerçek ekranda toplu ve tekil karar kanıtı (ör. A007 sorusu `q_0c622500-…` RET/DÜZELTME).
+
+### Kullanıcı kararları — 20 Ekim 10:41
+
+"B DEVAM ET": (1) "şüpheli sorular üstte" A008'den A081'e taşındı; A008 kabul ölçütü buna göre güncellendi. (2) Sıra A009 → A081 → A082.
