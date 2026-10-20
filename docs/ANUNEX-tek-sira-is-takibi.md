@@ -58,7 +58,7 @@ Her satır ayrı iştir. Güncel istisnalar: A001 BİTTİ, A002 AKTİF. Diğerle
 | A011 | Soru kartı akademik bağlarını tamamla | Güncel kazanım, sınıf, sürüm ve doğrulanabilen ön öğrenmeler görünür; olmayan veri açıkça bilinmiyor gösterilir. |
 | A012 | Çıkmış soru istatistiğini doğrula | Son beş yıl sayısı yalnız doğrulanmış veriyle hesaplanır; veri yoksa sıfır/olasılık uydurulmaz; tahmin resmî olasılık diye sunulmaz. |
 | A013 | Soru görsel kalitesini kapat | Branşa uygun gerçek örneklerde yazı/veri/ölçek okunur ve çözümle tutarlıdır; güncel olay ve kişi görsellerinin hakları doğrulanır. |
-| A014 | Gerçek soru video çözümünü kapat | Kaynak sürümüne bağlı video üretilir, açılır, insan/hak incelemesi kaydedilir; teknik test öğrenci videosu sayılmaz. |
+| A014 | Gerçek soru video çözümünü kapat | Kaynak sürümüne bağlı video üretilir, açılır, insan/hak incelemesi kaydedilir; teknik test öğrenci videosu sayılmaz. **Ek (kullanıcı onayı, 20 Ekim 19:20):** basılı kitapçıkta soru başına karekod; karekod herkese açık video adresine değil, yetki ve izlenme kaydı tutan güvenli soru sayfasına gider. |
 | A015 | Mini test tekrar politikasını kapat | Daha önce çözülen soru yeni testte engellenir; öğrenci açıkça tekrar seçerse bilgilendirilir; kazanım yetersizliği görünür. |
 | A016 | Studio soru seçimini kapat | Yalnız uygun hak ve onaya sahip sorular seçilir; sınıf/branş/kazanım kapsamı ve eksik stok korunur. |
 | A017 | Studio A/B PDF çıktısını kapat | PDF gerçekten indirilir; A/B sırası ve anahtarı tutarlıdır; kayıt tekrar açılır. |
@@ -111,7 +111,7 @@ Her satır ayrı iştir. Güncel istisnalar: A001 BİTTİ, A002 AKTİF. Diğerle
 | A064 | Rehberlik RBA akışını kapat | Yetkili rehber test/yanıt/değerlendirme sürecini tamamlar; hassas kayıt ve veli görünürlüğü sınırlandırılır. |
 | A065 | Nibiru rol tabanlı yardımını kapat | Öğrenci/veli/öğretmen/kurum kendi kapsamındaki veriyle yanıt alır; veri olmayan yerde uydurma cevap verilmez. |
 | A066 | Nibiru ses akışını kapat | Mikrofon/yazı/sesli yanıt gerçek örnekte çalışır; sağlayıcı hatası görünür; ücretli ses izinsiz açılmaz. |
-| A067 | YouTube kaynak bağını kapat | Kazanım/soruya uygun yetkili video bağlantısı açılır; bağlantı ve içerik kaynağı kontrol edilir. |
+| A067 | YouTube kaynak bağını kapat | Kazanım/soruya uygun yetkili video bağlantısı açılır; bağlantı ve içerik kaynağı kontrol edilir. **Ek (20 Ekim 19:20):** kazanım videosu soru/kazanım sayfasından ve karekod sayfasından açılabilir. |
 | A068 | WhatsApp uygulanabilir bağlantısını kapat | Kullanılan Business numarası/telefon birlikte kullanım yolu ve ücret koşulları doğrulanır; izinsiz mesaj gönderilmez; kimlik doğrulama sınırı uygulanır. |
 | A069 | Bildirim teslimini kapat | Yayın/ödev/takvim olayı doğru alıcıya bir kez iletilir; tekrar/iptal/başarısızlık görünür. |
 | A070 | Ders programı karar ve kapsamını kapat | Mevcut uygulama ile istenen yapı karşılaştırılır; varsa eksik iş ayrı ve ölçülebilir kabul ölçütüyle kaydedilir. |
@@ -122,10 +122,11 @@ Her satır ayrı iştir. Güncel istisnalar: A001 BİTTİ, A002 AKTİF. Diğerle
 | A075 | Yayınevi/bursluluk/kabul kapsamını doğrula | Envanterdeki etkin akışlar doğru rol ve kurumla tamamlanır; planlı Campus parçaları çalışan diye gösterilmez. |
 | A076 | Profil ve görünüm ayarlarını kapat | İzinli ayarlar korunur; tema, menü ve logo bütünlüğü diğer paneli etkilemez. |
 | A077 | Yönetim ve izleyici ekranlarını kapat | Süper admin gerçek sağlık/iş/hata özetini görür; ajan serbest ve denetimsiz komut çalıştıramaz. |
-| A078 | Mobil/PWA/tahta erişimini kapat | Ana iş akışları hedef cihazlarda okunur/tıklanır; fiziksel kitap bağlantıları doğru içeriğe gider. |
+| A078 | Mobil/PWA/tahta erişimini kapat | Ana iş akışları hedef cihazlarda okunur/tıklanır; fiziksel kitap bağlantıları doğru içeriğe gider. **Ek (20 Ekim 19:20):** etkileşimli akıllı tahta / z-kitap modu — soru soru tam ekran, kalem, şıkları ve cevabı göster/gizle, çözüm videosunu tahtada oynatma; yazdırılan kitapçıkla aynı soru verisi. |
 | A079 | app güvenlik ve veri yaşam döngüsünü kapat | Rol/tenant izolasyonu, oturum iptali, dosya erişimi ve süreli veri temizliği kanıtlanır; gerekli kalıcı kimlikler silinmez. |
 | A081 | Ölçekli soru üretimini kapat (değişiklik kaydı, 19 Ekim 21:04; 20 Ekim 10:09 güncelleme: hedef sabit sayı değil, kalite kapısı gevşetilmeden sürdürülebilen azami hız; bağımsız kontrol geçiş oranı ve insan onay oranı düşerse hız düşer; yalnız 2027–2028 resmî MEB kazanımı) | İlk hedef: günde 5.000–10.000 soru, 31 Aralık 2026'ya kadar 300.000–500.000 soru, 2027–2028 Maarif 5–12. sınıf. Paralel üretim, Queue sınırı (S015 ile ortak) çözümü, kazanım başına sınırın kontrollü yükseltilmesi ve benzer-soru filtresi; A007'de ölçülen soru başına maliyetle onaylı bütçe. Ölçüm yoksa hazır denmez; insan onayı otomatik verilmez. **Ek (20 Ekim 10:41, A008'den taşındı):** bağımsız kontrol bulguları saklanır ve toplu onay ekranında şüpheli sorular üstte gösterilir; A007'deki kaçırılmış bilimsel hata sınıfı için olgusal doğruluk kontrolü. |
 | A082 | Dışarıdan toplu soru aktarımını kapat (değişiklik kaydı, 20 Ekim 10:09) | Süper Admin Excel/CSV/JSON ile toplu yükler; önizleme ve satır bazlı hata listesi; her soru 2027–2028 resmî kazanım koduna bağlanmak zorunda (bulunamayan/yanlış sınıf reddedilir); kaynak etiketi zorunlu (ör. Claude, yayınevi, öğretmen); dışarıdan gelen her soru REVIEW kuyruğuna düşer ve A008 toplu onay ekranında görünür; tekrar yükleme kopya üretmez; benzer soru uyarısı. Sıra: kullanıcı kararı B (20 Ekim 10:41) → A009 → A081 → A082. |
+| A083 | Studio test oluşturma deneyimini kapat (değişiklik kaydı, kullanıcı onayı 20 Ekim 19:20) | MEB/Maarif seçimi; sınıf → ders → ünite → konu → kazanım aşamalı seçim (kod yazmadan); her kazanımda onaylı soru stoku görünür ve yetersizlik oluşturmadan önce uyarılır; zorluk karışımı yüzde olarak (ölçülmüş zorluk varsa onunla, yoksa editoryal tahmin olduğu açıkça yazılır); şablonlar (konu tarama, deneme, ödev, telafi) kaydedilebilir; önizlemede soru değiştirme aynı kazanımdan yapılır; test kütüphanesi kart görünümü, Testlerim/Favoriler ve ders filtreleri; optik okuma soru sınırı açıkça gösterilir. Görsel tasarım D001'de. |
 | A080 | Ortak tasarım planını onaylat | Teknik sıra bittikten sonra açık/ferah içerik, sol menü, modül renkleri, uzay ilişkisi, ANUNEX/Nibiru ve mobil davranış örneklerle planlanır; kullanıcı tasarım yönünü onaylar. |
 
 ## sonuc.anunex.com — A079 sonrasında teknik sıra
@@ -457,3 +458,14 @@ PR #267 (takip kaydı v5) main'e squash merge `ee611e624707c24968b71c3a25911ad92
 Durum: BİTTİ. PR #274 merge `63d6c00bd3dfaed738057759ea76490dd4fd5475` (kullanıcı). Deploy App Production Only run 39449611468 SUCCESS 15:37 UTC (Deploy, D1 migrations, read-only smoke). 18:45 app ve sonuc health ready/production. Kurum izolasyonu, yıl ve kazanım kapsamı 3 testle (kurum filtresi mutasyon kontrollü); onay/telif ve eksik stok davranışı korunur.
 Eksik: canlı Studio belgesi oluşturma ekranı → K002.
 Sıradaki ID: A017 — AKTİF.
+
+### A017 — PDF motoru ve markalama, 20 Ekim 18:44–19:20
+
+Bulgu: eski Studio PDF Türkçe harfleri bozuyor, kökü 3 satırda ve şıkları ~25 karakterde sessizce kesiyor, sayfa geçmiyor (8. sorudan sonra üst üste), görsel basmıyor, AI sorularını reddediyor, cevap anahtarı ve arayüzde indirme düğmesi yok. Kullanıcı yeniden yapımı onayladı (A, 18:44).
+Kullanıcı kararları (19:01): kurum logosu+adı sol üst, ANUNEX sağ üst (kurum kaldırabilir), AI sorularının yanında Nibiru işareti (kapatılabilir). Örnek PDF'ler gönderildi; kullanıcı onayladı (19:20).
+PR #275: pdf-lib + gömülü DejaVu alt kümesi; iki sütun gerçek sayfalama; tam kök/şık; PNG/JPEG görsel, TABLE ve BAR_CHART; basılamayan durumda soru numarası+nedenle 409; optik sayfa komut ve geometri birebir; ayrı personel cevap anahtarı; kurum baskı logosu yükleme; indirme düğmeleri. 224 dosya / 1.143 test, typecheck, build PASS; Worker 1,28 MiB gzip.
+Bilinen sınır: optik sayfa başlığındaki Türkçe karakterler A035'te.
+
+### Değişiklik kayıtları — 20 Ekim 19:20 (kullanıcı onayı)
+
+A083 eklendi (Studio test oluşturma deneyimi; A082'den sonra, genel A-sırası içinde A079'dan önce ele alınacak). A014'e karekod, A067'ye karekod/kazanım sayfası, A078'e etkileşimli tahta modu ekleri yazıldı. Kaynak: kullanıcının paylaştığı örnek soru havuzu ekranlarıyla karşılaştırma.
