@@ -19,7 +19,7 @@ Kapsam: app.anunex.com ve sonuc.anunex.com. Demo ve tanıtım sitesi değişikli
 
 ## Güncel durum — 19 Ekim 2026
 
-- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). Aktif iş A006 — insan inceleme kapasitesini tanımla: kararlar alındı, PR #269 dağıtım bekliyor.** Diğer bütün işler sırada.
+- **A001: BİTTİ. A002: BİTTİ (kullanıcı kabulü, 19:49; rol kanıtı K002'de). A003: BİTTİ (19:51; panel ekranı K002'de). A004: BİTTİ (19:55; panel ekranı K002'de). A005: BİTTİ (20:55; panel ekranı K002'de). Aktif iş A006 — insan inceleme kapasitesini tanımla: production'da, canlı panel kanıtı bekleniyor.** Diğer bütün işler sırada.
 - Repo yildizyayin/yildiz-sinav, PR #265, merge `fae0a48f346499363a07e2e9b56dbd9a5a48ff5a`.
 - Production run https://github.com/yildizyayin/yildiz-sinav/actions/runs/39277304492 ; deploy job `118145237158`: SUCCESS. Worker sürümü `02b56366-49c0-4174-8b7c-5b3622b8dc91`.
 - Deployment günlükleri 19 Ekim 18:29 Türkiye saatinde 388 resmî kaynağın yeniden doğrulandığını, 77 kapsam / 2.916 çıktının production'a aktarıldığını gösteriyor. UNLIMITED, cap null, rezervasyon 0, tarihsel cap 50. Model çağrısı yapılmadı.
@@ -309,3 +309,8 @@ Kullanıcı kararları: inceleyici yildizyayin; toplu + tek tek onay (A008'e ekl
 Kontrol: `data/app-question-scope-2028.json` 8. sınıf 6 ders / 391 çıktı, 12. sınıf 11 ders / 333 çıktı içerir (A004'te aktarıldı). 8 ve 12'yi dışlayan tek neden koddaki sabit sınıf listesiydi.
 Uyarı kaydı: kullanıcıya günde binlerce sorunun bir saatte incelenmesinin soru başına ~1 saniye ettiği ve kalite riski açıkça bildirildi; kullanıcı onay sorumluluğunu üstlendi. Soru başına onay kaydı ve RESTRICTED kapısı korunur.
 PR #269: `QUESTION_PILOT_REVIEW_AVAILABLE=true`, `QUESTION_PILOT_REVIEW_SLOTS=10000`; pilot sınıflar `PILOT_GRADES` 5–12 tek sabitte. 1.110 test, typecheck, build PASS. Dağıtım sonrası zamanlayıcı 15 dakikada 1 soru üretir; otomatik onay yok.
+
+### A006 — dağıtım, 20 Ekim 09:54
+
+PR #269 merge `f7bfcafa8fbcd710465ea302466c798884f3eaed` (kullanıcı, 19 Ekim 21:24). Deploy App Production Only run 39302449287: kullanıcı onayı 20 Ekim sabahı; SUCCESS 06:54 UTC. Adımlar: migrations, read-only smoke, Süper Admin kapsam doğrulaması, müfredat/kota adımı, "Inspect question runtime without provider calls or data changes" SUCCESS. Genel akış 39302449185 SKIPPED (`[app-only]`). 09:57 sonrası app ve sonuc health ready/production.
+Kapanış için eksik: Süper Admin `/question-team` ekranında inceleme açık, kapasite 10.000, servis aktörü doğrulandı ve zamanlayıcı hazır görüntüsü; ilk 15 dakikalık zamanlayıcı turunda kuyruğa giren soru. Bu oturumdan dağıtım günlüğü indirme ve production D1 okuması engelli olduğundan kanıt kullanıcı ekranından alınacak.
