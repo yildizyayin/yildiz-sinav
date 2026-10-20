@@ -440,3 +440,10 @@ Durum: BİTTİ — değişikliksiz, madde 4.
 Test: coach-mini-test-selection, mini-test-catalog, mini-test-list, mini-test-novelty-migration, coach-mini-frozen-evidence, coach-mini-atomic-submission → 6 dosya / 14 test PASS.
 Eksik: canlı öğrenci hesabıyla deneme (test öğrencisi yok) → K002.
 Sıradaki ID: A016 — AKTİF.
+
+### A016 — güvenlik açığı ve düzeltme PR'ı, 20 Ekim 18:40
+
+Önceki durum: onay+telif filtresi, sınıf/ders filtresi, eksik stokta belge oluşturmama vardı. Bulgu: **Studio seçimi sorunun sahibine bakmıyordu** — kurum X kitapçığı kurum Y'nin özel sorularını içerebiliyor, soru kimliğiyle doğrudan istenebiliyordu (soru listesinde filtre var, Studio'da yok). Kazanım kapsamı ve yıl filtresi yoktu; Studio seçimi için test yoktu.
+PR #274 (CI run 39446697639 SUCCESS): seçim her zaman platform + yalnız ilgili kurumun soruları; isteğe bağlı eğitim yılı ve ≤30 doğrulanmış kazanım kodu (bilinmeyen kodlar hata mesajında); Studio formuna alanlar. 3 yeni test (kurum filtresi mutasyon kontrollü), 222 dosya / 1.137 test, typecheck, build PASS.
+Not (ayrı alt kayıt adayı): `questionIds` ile 200'e kadar kimlik tek sorguda bağlanabiliyor; D1 100 parametre sınırını aşabilir — önceden var olan risk, A016 kapsamında değiştirilmedi.
+Kapanış için kalan: merge → dağıtım → canlı Studio belgesi oluşturma kanıtı.
