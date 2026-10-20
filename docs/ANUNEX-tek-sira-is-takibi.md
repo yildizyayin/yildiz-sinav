@@ -392,3 +392,8 @@ PR #272 (CI run 39434454267 SUCCESS): işler `glm-4.7-flash` ve `gpt-oss-120b` a
 
 PR #272 merge `1086e4e1466f8b33403605aa0c7130be177cd732` (kullanıcı, 17:01). Deploy App Production Only run 39435511265 SUCCESS 14:19 UTC (Deploy, D1 migrations — 0117 dahil, read-only smoke). 17:42 app ve sonuc health ready/production.
 Ölçüm dönemi başladı: 15 dakikada 1 iş, modeller sırayla. Karar noktası: model başına ~20 biten iş (yaklaşık 21 Ekim sabahı) → kullanıcı panel tablosu ve gerçekleşen maliyetle model seçimi → 2. aşama.
+
+### A081 — inceleme sinyalleri ve yeniden deneme PR'ı, 20 Ekim 18:10
+
+PR #273 (CI run 39442757663 SUCCESS): denetim kaydında zaten saklanan bağımsız kontrol puanları (6 boyut × 0–4) Süper Admin soru listesine taşındı; incelemedeki sorular en zayıftan güçlüye sıralanır (kapatılabilir), 3+ puan eksikte "şüpheli" etiketi; başarısız kazanım 3 başarısızlığa kadar yeni işle yeniden denenir, denenmemiş kazanımlar önce gelir. 9 yeni test; 221 dosya / 1.134 test, typecheck, build PASS. Şema değişikliği yok.
+A081'de kalan: model seçimi (ölçüm sonucu, kullanıcı kararı) → 2. aşama paralel üretim ve kuyruk altyapısı (S015 Queue sınırı) → hedef hız ölçümü.
