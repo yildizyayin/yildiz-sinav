@@ -9,7 +9,7 @@ import { ExamOutcomeEditor } from '../components/ExamOutcomeEditor';
 import { ExamChannelNotice } from '../components/ExamChannelNotice';
 import { ExamSaveReview, reviewExamInputs } from '../components/ExamSaveReview';
 import '../exam-workspace.css';
-import { EXAM_CHOICES, EXAM_TEMPLATES, cleanAnswers, matchOfficialOutcome, parseAnswerKeyText, parseAnswerKeyWorkbookRows, type ExamTemplate, type OutcomeCatalogEntry, type ParsedAnswerEntry, type SubjectOption } from '../lib/guidedDefinitions';
+import { EXAM_CHOICES, EXAM_TEMPLATES, buildAnswerKeyTemplateRows, parseAnswerKeyFileText, cleanAnswers, matchOfficialOutcome, parseAnswerKeyText, parseAnswerKeyWorkbookRows, type ExamTemplate, type OutcomeCatalogEntry, type ParsedAnswerEntry, type SubjectOption } from '../lib/guidedDefinitions';
 
 type SubjectConfig = { subjectId: string; questionCount: number; questionStart: number; questionEnd: number; optionCount: 4 | 5; questionStatus: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'; wrongDivisor: number; sortOrder: number };
 type OutcomeMap = { subjectId: string; questionNo: number; outcomeId: string };
@@ -316,7 +316,7 @@ export function ExamDefinitions() {
     setNotice(`Cevap anahtarı analiz edildi: ${cfg.length} ders, ${cfg.reduce((n, x) => n + x.questionCount, 0)} soru, ${result.detectedBooklets.length} kitapçık.${outcomeNotice}${warningNotice}`);
   };
 
-  const analyseKey = (text = answerKeyText) => applyAnalysis(parseAnswerKeyText(text, options.subjects as SubjectOption[]));
+  const analyseKey = (text = answerKeyText) => applyAnalysis(parseAnswerKeyFileText(text, options.subjects as SubjectOption[]));
 
   const readAnswerFile = async (file?: File) => {
     if (!file) return;
@@ -336,32 +336,8 @@ export function ExamDefinitions() {
   };
 
   const downloadOutcomeTemplate = () => {
-    const columnCount = 36;
-    const bookletCodes = [...new Set(booklets.split(',').map((value) => value.trim().toUpperCase()).filter(Boolean))];
-    const templateBooklets = bookletCodes.length ? bookletCodes : ['A'];
-    const rows: any[][] = Array.from({ length: 36 + selectedTemplate.sections.reduce((sum, item) => sum + item.questionCount, 0) }, () => Array(columnCount).fill(''));
-    const put = (row: number, column: number, value: string | number) => { rows[row][column] = value; };
-    put(0, 0, 'ANUNEX · SINAV YÜKLEME ŞABLONU');
-    put(1, 0, 'SINAV ADI'); put(1, 5, createForm.title || 'TYT 1. DENEME');
-    put(2, 0, 'SINAV DETAY BİLGİLERİ');
-    put(3, 0, 'Sınıf'); put(3, 5, createForm.gradeLevel || selectedChoice.gradeLevel || ''); put(3, 8, 'Yayınevi'); put(3, 13, createForm.publisherName || '');
-    put(4, 0, 'Sınav türü'); put(4, 5, selectedChoice.examType); put(4, 8, 'Oturum / bölüm'); put(4, 13, createForm.sessionLabel || '');
-    put(5, 0, 'Seçenek sayısı'); put(5, 5, selectedTemplate.sections[0]?.optionCount || 5); put(5, 8, 'Kitapçıklar'); put(5, 13, templateBooklets.join(','));
-    put(7, 0, 'TEST İSİMLERİ VE SORU ARALIKLARI');
-    put(8, 0, 'Test No'); put(8, 2, 'Test Adı'); put(8, 4, 'Ders Kodu'); put(8, 6, 'İlk Soru No'); put(8, 8, 'Son Soru No'); put(8, 10, 'Kitapçıklar');
-    selectedTemplate.sections.forEach((item, index) => { const row = 9 + index; const subjectLabel = options.subjects?.find((subject: any) => subject.code === item.subjectCode)?.name || item.label; put(row, 0, index + 1); put(row, 2, subjectLabel); put(row, 4, item.subjectCode); put(row, 6, item.questionStart); put(row, 8, item.questionEnd); put(row, 10, templateBooklets.join(',')); });
-    put(25, 0, 'DERSLER VE TESTLERE GÖRE SORU DAĞILIMI');
-    put(26, 0, 'Ders Kodu'); put(26, 2, 'Test No'); put(26, 4, 'İlk Soru No'); put(26, 6, 'Son Soru No'); put(26, 8, 'Alternatif Sıra'); put(26, 10, 'Kazanım Ders Kodu');
-    selectedTemplate.sections.forEach((item, index) => { const row = 27 + index; put(row, 0, item.subjectCode); put(row, 2, index + 1); put(row, 4, item.questionStart); put(row, 6, item.questionEnd); put(row, 10, item.subjectCode); });
-    const answerHeaderRow = 34;
-    put(answerHeaderRow - 1, 0, 'CEVAP ANAHTARI');
-    put(answerHeaderRow, 0, 'Test No'); put(answerHeaderRow, 2, 'Açıklama / Test Adı'); put(answerHeaderRow, 4, 'A Soru No'); put(answerHeaderRow, 6, 'B Soru No'); put(answerHeaderRow, 8, 'Doğru Cevap'); put(answerHeaderRow, 10, 'Yayınevi Kazanımı'); put(answerHeaderRow, 24, 'MEB Kazanım Kodu'); put(answerHeaderRow, 26, 'MEB Kazanım Adı'); put(answerHeaderRow, 28, 'Durum'); put(answerHeaderRow, 30, 'Şık Sayısı');
-    let answerRow = answerHeaderRow + 1;
-    selectedTemplate.sections.forEach((item, testIndex) => {
-      for (let offset = 0; offset < item.questionCount; offset++) {
-        const subjectLabel = options.subjects?.find((subject: any) => subject.code === item.subjectCode)?.name || item.label; put(answerRow, 0, testIndex + 1); put(answerRow, 2, subjectLabel); put(answerRow, 4, item.questionStart + offset); if (templateBooklets.includes('B')) put(answerRow, 6, item.questionStart + offset); put(answerRow, 8, ''); put(answerRow, 10, ''); put(answerRow, 24, ''); put(answerRow, 26, ''); put(answerRow, 28, 'ACTIVE'); put(answerRow, 30, item.optionCount); answerRow++;
-      }
-    });
+    const built = buildAnswerKeyTemplateRows({ title: createForm.title, gradeLevel: createForm.gradeLevel || selectedChoice.gradeLevel || '', examType: selectedChoice.examType, publisherName: createForm.publisherName, sessionLabel: createForm.sessionLabel, booklets: booklets.split(','), sections: selectedTemplate.sections as any, subjectName: (code, fallback) => options.subjects?.find((subject: any) => subject.code === code)?.name || fallback });
+    const { rows, columnCount } = built;
     const worksheet = XLSX.utils.aoa_to_sheet(rows);
     worksheet['!merges'] = [
       { s: { r: 0, c: 0 }, e: { r: 0, c: 35 } }, { s: { r: 2, c: 0 }, e: { r: 2, c: 35 } },
@@ -373,8 +349,8 @@ export function ExamDefinitions() {
     for (let row = range.s.r; row <= range.e.r; row++) for (let column = range.s.c; column <= range.e.c; column++) {
       const cell = worksheet[XLSX.utils.encode_cell({ r: row, c: column })];
       if (!cell) continue;
-      const sectionRow = [0, 2, 7, 25, 33].includes(row);
-      const headerRow = [8, 26, 34].includes(row);
+      const sectionRow = built.sectionRows.includes(row);
+      const headerRow = built.headerRows.includes(row);
       cell.s = { fill: { fgColor: { rgb: sectionRow || headerRow ? blue : pink } }, font: { bold: sectionRow || headerRow, color: { rgb: sectionRow || headerRow ? white : '111827' } }, alignment: { vertical: 'center', wrapText: true }, border: { top: { style: 'thin', color: { rgb: 'FFFFFF' } }, bottom: { style: 'thin', color: { rgb: 'FFFFFF' } }, left: { style: 'thin', color: { rgb: 'FFFFFF' } }, right: { style: 'thin', color: { rgb: 'FFFFFF' } } } };
     }
     const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, worksheet, 'Sınav Yükleme');
