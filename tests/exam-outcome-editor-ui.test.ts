@@ -74,3 +74,25 @@ it('shows chosen outcomes as removable chips, counts unsaved changes, and a reop
  await act(async()=>root.render(createElement(ExamOutcomeEditor,{examId:'e'})));
  expect([...container.querySelectorAll('.exam-outcome-chip')].map(c=>c.firstChild!.textContent)).toEqual(['M.7.2']);
 });
+it('A029: an exam with results says before saving that results are re-analysed, and after saving how many', async () => {
+ state.api.mockImplementation(async (path: string, options?: RequestInit) => {
+  if (path.endsWith('/outcome-catalog')) return { outcomes: catalog };
+  if (options?.method === 'PUT') return { ok: true, revision: 3, participantCount: 42, scoresChanged: false };
+  return { revision: 2, resultCount: 42, appPublished: true, networkPublished: true, outcomeMode: 'OPTIONAL', questions: [{ id: 'q1', subject_id: 'math', subject_name: 'Matematik', question_no: 1, outcome_ids: [], references: [] }] };
+ });
+ await act(async () => root.render(createElement(ExamOutcomeEditor, { examId: 'evaluated' })));
+ const note = container.querySelector('[role=note]')!.textContent!;
+ expect(note).toContain('42 sonucu var');
+ expect(note).toContain('puan, net ve sıralama değişmez');
+ expect(note).toContain('Sonuç ağı, siz yayını güncelleyene kadar önceki analizi gösterir');
+ await act(async () => button('Kazanımları kaydet').click());
+ const status = container.querySelector('.alert.success')!.textContent!;
+ expect(status).toContain('42 katılımcının kazanım analizi yeniden yapıldı (analiz sürümü 3)');
+ expect(status).toContain('Sonuç ağında eski analiz kalır');
+});
+it('A029: an exam without results shows no re-analysis note', async () => {
+ await act(async () => root.render(createElement(ExamOutcomeEditor, { examId: 'fresh' })));
+ expect(container.querySelector('[role=note]')).toBeNull();
+ await act(async () => button('Kazanımları kaydet').click());
+ expect(container.querySelector('.alert.success')!.textContent).toBe('Kazanım eşleştirmeleri kaydedildi.');
+});

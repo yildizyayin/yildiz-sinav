@@ -9,8 +9,8 @@ function fixture(failAudit=false){
   const db=new DatabaseSync(':memory:');db.exec('PRAGMA foreign_keys=OFF');
   const migration=readFileSync(new URL('../migrations/0012_platform_expansion.sql',import.meta.url),'utf8');
   db.exec(migration.match(/CREATE TABLE IF NOT EXISTS exam_result_snapshots \([\s\S]*?\n\);/)![0]);
-  db.exec(`CREATE TABLE exams(id TEXT,title TEXT,exam_date TEXT,exam_type TEXT,grade_level INTEGER);
-    INSERT INTO exams VALUES('e','Sınav','2026-09-30','LGS',6);
+  db.exec(`CREATE TABLE exams(id TEXT,title TEXT,exam_date TEXT,exam_type TEXT,grade_level INTEGER,owner_type TEXT DEFAULT 'INSTITUTION');
+    INSERT INTO exams(id,title,exam_date,exam_type,grade_level) VALUES('e','Sınav','2026-09-30','LGS',6);
     CREATE TABLE institutions(id TEXT,city TEXT,district TEXT); INSERT INTO institutions VALUES('school','İstanbul','Kartal');
     CREATE TABLE exam_participants(id TEXT,exam_id TEXT,student_id TEXT,institution_id TEXT,season_id TEXT,class_snapshot TEXT,booklet_code TEXT);
     INSERT INTO exam_participants VALUES('p','e','student','school','old','6-A','A');
@@ -24,8 +24,8 @@ function fixture(failAudit=false){
     CREATE TABLE student_answers(participant_id TEXT,exam_question_id TEXT,status TEXT);
     CREATE TABLE question_outcomes(exam_question_id TEXT,outcome_id TEXT);
     CREATE TABLE tyt_optional_philosophy_results(participant_id TEXT,subject_id TEXT,booklet_code TEXT,correct_count INTEGER,wrong_count INTEGER,blank_count INTEGER,invalid_count INTEGER,evidence_count INTEGER,success_percent REAL);
-    CREATE TABLE exam_delivery_profiles(exam_id TEXT,snapshot_version INTEGER,result_freeze_status TEXT,freeze_at TEXT,updated_at TEXT);
-    INSERT INTO exam_delivery_profiles VALUES('e',0,'OPEN',NULL,NULL);
+    CREATE TABLE exam_delivery_profiles(exam_id TEXT PRIMARY KEY,snapshot_version INTEGER,result_freeze_status TEXT,freeze_at TEXT,updated_at TEXT,scope TEXT NOT NULL DEFAULT 'INSTITUTION');
+    INSERT INTO exam_delivery_profiles(exam_id,snapshot_version,result_freeze_status,freeze_at,updated_at) VALUES('e',0,'OPEN',NULL,NULL);
     CREATE TABLE exam_operation_locks(exam_id TEXT PRIMARY KEY,owner_token TEXT,operation TEXT);
     CREATE TABLE scan_batches(id TEXT,exam_id TEXT,status TEXT); CREATE TABLE scan_evaluation_progress(batch_id TEXT);
     CREATE TABLE exam_publication_stats(exam_id TEXT,snapshot_version INTEGER,institution_count INTEGER,participant_count INTEGER,city_count INTEGER,payload_json TEXT);

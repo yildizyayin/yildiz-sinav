@@ -195,6 +195,9 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
   const participantCountRow=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).bind(examId));
   if(!Number(participantCountRow?.count||0))return badRequest('Sonuçlandırılmış katılımcı bulunmuyor.','NO_RESULTS');
   await env.DB.batch([
+    // A029.1: exams made in the exam-definition flow have no delivery profile yet. Without this row the
+    // freeze wrote snapshots but never became FROZEN, so the result could not be published.
+    env.DB.prepare(`INSERT INTO exam_delivery_profiles(exam_id,scope) SELECT id,CASE WHEN owner_type='CENTRAL' THEN 'CENTRAL' ELSE 'INSTITUTION' END FROM exams WHERE id=? ON CONFLICT(exam_id) DO NOTHING`).bind(examId),
     env.DB.prepare(`DELETE FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version),
     env.DB.prepare(`INSERT INTO exam_result_snapshots(
     id,exam_id,participant_id,snapshot_version,student_id,institution_id,network_id,city,district,grade_level,class_snapshot,score,net,

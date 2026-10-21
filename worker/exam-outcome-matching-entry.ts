@@ -16,7 +16,10 @@ export async function getOutcomeMappings(env:Env,exam:any):Promise<Response>{
  const mappings=await all<any>(env.DB.prepare('SELECT qo.* FROM question_outcomes qo JOIN exam_questions q ON q.id=qo.exam_question_id WHERE q.exam_id=?').bind(exam.id));
  const refs=await all<any>(env.DB.prepare('SELECT qpo.exam_question_id,pol.label_path_json FROM question_publisher_outcomes qpo JOIN publisher_outcome_labels pol ON pol.id=qpo.publisher_outcome_id JOIN exam_questions q ON q.id=qpo.exam_question_id WHERE q.exam_id=?').bind(exam.id));
  const outcomes=await scopedOutcomeCatalog(env,examOutcomeScope(exam));
- return json({ok:true,revision,outcomeMode:exam.outcome_mode||'OPTIONAL',questions:questions.map(q=>({...q,outcome_ids:mappings.filter(m=>m.exam_question_id===q.id).map(m=>m.outcome_id),references:refs.filter(r=>r.exam_question_id===q.id).map(r=>{try{return JSON.parse(r.label_path_json)}catch{return {}}})})),outcomes,catalogStatus:outcomes.length?'AVAILABLE':'EMPTY'});
+ // A029: the editor says up front that saving re-analyses results that already exist.
+ const resultCount=Number((await one<any>(env.DB.prepare('SELECT count(*) c FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id WHERE ep.exam_id=?').bind(exam.id)))?.c||0);
+ const published=await one<any>(env.DB.prepare("SELECT (SELECT 1 FROM exam_delivery_profiles WHERE exam_id=? AND result_freeze_status='PUBLISHED') app,(SELECT 1 FROM exam_channel_publications WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='ACTIVE') network").bind(exam.id,exam.id));
+ return json({ok:true,revision,resultCount,appPublished:!!published?.app,networkPublished:!!published?.network,outcomeMode:exam.outcome_mode||'OPTIONAL',questions:questions.map(q=>({...q,outcome_ids:mappings.filter(m=>m.exam_question_id===q.id).map(m=>m.outcome_id),references:refs.filter(r=>r.exam_question_id===q.id).map(r=>{try{return JSON.parse(r.label_path_json)}catch{return {}}})})),outcomes,catalogStatus:outcomes.length?'AVAILABLE':'EMPTY'});
 }
 export async function putOutcomeMappings(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
  return withExamOperationLock(env,examId,'EXAM_OUTCOME_EDIT',async locked=>{
