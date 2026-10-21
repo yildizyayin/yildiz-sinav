@@ -34,7 +34,7 @@ it('presents ambiguous candidates without automatically selecting one',async()=>
  await act(async()=>button('Otomatik eşleştir').click());
  expect(container.textContent).toContain('Birden fazla aday var');
  expect((container.querySelector('select[multiple]') as HTMLSelectElement).selectedOptions.length).toBe(0);
- await act(async()=>button('Öneri: M.7.2').click());
+ await act(async()=>[...container.querySelectorAll('button')].find(b=>b.textContent?.startsWith('Öneri: M.7.2 · '))!.click());
  expect((container.querySelector('select[multiple]') as HTMLSelectElement).value).toBe('out-2');
 });
 it('keeps failed saves visible and never claims success',async()=>{
@@ -52,4 +52,25 @@ it('reviews each booklet independently and allows creation with optional outcome
  expect(container.querySelectorAll('.exam-review-check.error')).toHaveLength(1);
  expect(container.querySelectorAll('.exam-review-check.warn')).toHaveLength(1);
  await act(async()=>button('Yine de oluştur').click());expect(confirm).toHaveBeenCalledOnce();
+});
+it('shows chosen outcomes as removable chips, counts unsaved changes, and a reopened editor shows what was saved',async()=>{
+ let stored:string[]=[];
+ state.api.mockImplementation(async(path:string,options?:RequestInit)=>{
+  if(path.endsWith('/outcome-catalog'))return {outcomes:catalog.map((o,i)=>({...o,unit:i?'2. Ünite':'1. Ünite'}))};
+  if(options?.method==='PUT'){stored=JSON.parse(String(options.body)).mappings[0].outcomeIds;return {ok:true};}
+  return {revision:1,outcomeMode:'OPTIONAL',questions:[{id:'q1',subject_id:'math',subject_name:'Matematik',question_no:1,outcome_ids:[...stored],references:[]}]};
+ });
+ await act(async()=>root.render(createElement(ExamOutcomeEditor,{examId:'e'})));
+ expect([...container.querySelectorAll('optgroup')].map(g=>g.label)).toEqual(['1. Ünite','2. Ünite']);
+ const select=container.querySelector('select[multiple]') as HTMLSelectElement;
+ await act(async()=>{select.options[0].selected=true;select.options[1].selected=true;select.dispatchEvent(new Event('change',{bubbles:true}));});
+ expect([...container.querySelectorAll('.exam-outcome-chip')].map(c=>c.firstChild!.textContent)).toEqual(['M.7.1','M.7.2']);
+ expect(container.textContent).toContain('1 soruda kaydedilmemiş değişiklik');
+ await act(async()=>(container.querySelector('button[aria-label="M.7.1 kazanımını kaldır"]') as HTMLButtonElement).click());
+ await act(async()=>button('Kazanımları kaydet').click());
+ expect(stored).toEqual(['out-2']);
+ expect(container.textContent).not.toContain('kaydedilmemiş');
+ await act(async()=>root.unmount());root=createRoot(container);
+ await act(async()=>root.render(createElement(ExamOutcomeEditor,{examId:'e'})));
+ expect([...container.querySelectorAll('.exam-outcome-chip')].map(c=>c.firstChild!.textContent)).toEqual(['M.7.2']);
 });
