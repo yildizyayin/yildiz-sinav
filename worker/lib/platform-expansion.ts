@@ -1,3 +1,4 @@
+import { isLearnerRole, publishedForLearnersSql } from './exam-schedule';
 import {BANDS,BAND_SQL,bandShortage,bandTargets,parseDifficultyMix,MAX_OUTCOMES,joinSteps,narrowingMessage,outcomeWhere,parseAcademicYear,parseOutcomeCodes,selectionSteps,type SelectionInput} from './studio-selection';
 import {examOutcomePayloadSql} from './exam-outcome-history';
 import {loadScreening} from './question-screening';
@@ -138,6 +139,8 @@ async function canManageExam(env: Env,user:AuthUser,profile:any):Promise<boolean
 }
 
 async function listExamCatalog(request: Request, env: Env, user: AuthUser): Promise<Response> {
+  // A030: the exam catalog (drafts, participant counts, freeze state) is a staff screen.
+  if(isLearnerRole(user.role))return forbidden();
   const url=new URL(request.url); const q=(url.searchParams.get('q')||'').trim(); const scope=url.searchParams.get('scope');
   // Sınav Ekle yeni kaydı önce DRAFT oluşturur. Sınav Yükle ekranı,
   // yapılandırması tamamlanmadan önce de bu sınava veri bağlayabilmelidir;
@@ -272,6 +275,8 @@ async function reopenExamResults(request:Request,env:Env,user:AuthUser,examId:st
 }
 
 async function examStats(env:Env,user:AuthUser,examId:string):Promise<Response>{
+  // A030: exam-wide statistics are staff analytics; students and parents see their own published result only.
+  if(isLearnerRole(user.role))return forbidden();
   const p=await examProfile(env,examId); if(!p)return notFound();
   const institutionScope=user.role==='SUPER_ADMIN'?null:user.institution_id;
   const can=await canManageExam(env,user,p);
@@ -525,8 +530,8 @@ async function assessmentFeed(request:Request,env:Env,user:AuthUser):Promise<Res
   const gate=await requireFeature(env,user,'LEARNING_GRAPH');if(gate)return gate;const u=new URL(request.url);const sid=await scopedStudentId(env,user,u.searchParams.get('studentId'));if(!sid)return forbidden();
   const [evidence,runs,exams,assignments]=await Promise.all([
     all<any>(env.DB.prepare(`SELECT le.id,le.source_type,le.source_id,le.result,le.weight,le.observed_at,n.title node_title,s.name subject_name FROM learning_evidence le JOIN learning_nodes n ON n.id=le.node_id LEFT JOIN subjects s ON s.id=n.subject_id WHERE le.student_id=? ORDER BY le.observed_at DESC LIMIT 100`).bind(sid)),
-    all<any>(env.DB.prepare(`SELECT ar.id,ar.source_type,ar.source_id,ar.delivery_mode,ar.status,ar.score,ar.metadata_json,ar.started_at,ar.completed_at FROM assessment_runs ar WHERE ar.student_id=? ORDER BY ar.started_at DESC LIMIT 100`).bind(sid)),
-    all<any>(env.DB.prepare(`SELECT e.id source_id,'EXAM' source_type,e.title label,e.exam_type,er.success_percent result,COALESCE(e.exam_date,er.created_at) observed_at FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? AND NOT EXISTS(SELECT 1 FROM assessment_runs ar WHERE ar.student_id=ep.student_id AND ar.source_type='EXAM' AND ar.source_id=ep.id) ORDER BY observed_at DESC LIMIT 100`).bind(sid)),
+    all<any>(env.DB.prepare(`SELECT ar.id,ar.source_type,ar.source_id,ar.delivery_mode,ar.status,ar.score,ar.metadata_json,ar.started_at,ar.completed_at FROM assessment_runs ar WHERE ar.student_id=? ${isLearnerRole(user.role)?`AND (ar.exam_id IS NULL OR ${publishedForLearnersSql('ar.exam_id')})`:''} ORDER BY ar.started_at DESC LIMIT 100`).bind(sid)),
+    all<any>(env.DB.prepare(`SELECT e.id source_id,'EXAM' source_type,e.title label,e.exam_type,er.success_percent result,COALESCE(e.exam_date,er.created_at) observed_at FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? ${isLearnerRole(user.role)?`AND ${publishedForLearnersSql('e.id')}`:''} AND NOT EXISTS(SELECT 1 FROM assessment_runs ar WHERE ar.student_id=ep.student_id AND ar.source_type='EXAM' AND ar.source_id=ep.id) ORDER BY observed_at DESC LIMIT 100`).bind(sid)),
     all<any>(env.DB.prepare(`SELECT a.id source_id,'ASSIGNMENT' source_type,a.title label,ar.progress,ar.status,ar.completed_at observed_at FROM assignment_recipients ar JOIN assignments a ON a.id=ar.assignment_id WHERE ar.student_id=? ORDER BY a.created_at DESC LIMIT 100`).bind(sid)),
   ]);
   const subjectIds=user.role==='TEACHER'?new Set((await all<any>(env.DB.prepare(`SELECT DISTINCT subject_id FROM teacher_assignments WHERE user_id=? AND institution_id=? AND active=1 AND assignment_type='SUBJECT'`).bind(user.id,user.institution_id))).map(x=>x.subject_id)):null;

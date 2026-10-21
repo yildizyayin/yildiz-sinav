@@ -1,3 +1,4 @@
+import { publishedForLearnersSql } from './lib/exam-schedule';
 import app from './camera-chunk-root';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
@@ -22,7 +23,7 @@ async function studentDashboard(env:Env,user:any):Promise<Response>{
       FROM exam_results er
       JOIN exam_participants ep ON ep.id=er.participant_id
       JOIN exams e ON e.id=ep.exam_id
-      WHERE ep.student_id=?
+      WHERE ep.student_id=? AND ${publishedForLearnersSql('e.id')}
       ORDER BY coalesce(e.exam_date,er.created_at) DESC
       LIMIT 1
     `).bind(user.student_id)),
@@ -32,7 +33,7 @@ async function studentDashboard(env:Env,user:any):Promise<Response>{
       FROM outcome_results r
       JOIN outcomes o ON o.id=r.outcome_id
       JOIN subjects s ON s.id=o.subject_id
-      WHERE r.student_id=?
+      WHERE r.student_id=? AND ${publishedForLearnersSql('r.exam_id')}
       GROUP BY o.id,o.title,o.topic,o.subtopic,o.subject_id,s.name
       HAVING sum(r.evidence_count)>=3
     `).bind(user.student_id)),

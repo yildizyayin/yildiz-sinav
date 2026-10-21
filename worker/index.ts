@@ -11,6 +11,7 @@ import { persistTytOptionalPhilosophyEvidence } from './tyt-optional-philosophy-
 import { matchParticipant } from './lib/matching';
 import { bookletIssue, compareBooklets, isBookletIssue } from './lib/booklet-review';
 import { decodeUploadedBytes, parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib/parse';
+import { isLearnerRole, publishedForLearnersSql } from './lib/exam-schedule';
 import { alignRecordsToExam, blankSubjectsCoveredElsewhere, mergeSessionRecords, primaryBooklet, recordBookletIssue, subjectBooklet } from './lib/two-session';
 import { duplicateMessage, duplicateStudentConflicts } from './lib/scan-duplicates';
 import { assertScoringRuleVerified, calculateExamScore, calculateOverall, calculateSubjectScore, effectiveWrongDivisor, scoreMethodFor } from './lib/scoring';
@@ -249,10 +250,10 @@ async function dashboard(env: Env, user: AuthUser): Promise<Response> {
     if (!user.student_id) return badRequest('Öğrenci hesabı bağlı değil.');
     const latest = await one<any>(env.DB.prepare(`SELECT e.title, e.exam_date, er.net, er.score, er.success_percent
       FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id JOIN exams e ON e.id=ep.exam_id
-      WHERE ep.student_id=? ORDER BY coalesce(e.exam_date, er.created_at) DESC LIMIT 1`).bind(user.student_id));
+      WHERE ep.student_id=? AND ${publishedForLearnersSql('e.id')} ORDER BY coalesce(e.exam_date, er.created_at) DESC LIMIT 1`).bind(user.student_id));
     const [developing,strong] = await Promise.all([
-      aggregateStudentOutcomes(env.DB, user.student_id, 0.6, 3, 'DEVELOPING', 5),
-      aggregateStudentOutcomes(env.DB, user.student_id, 0.6, 3, 'STRONG', 5),
+      aggregateStudentOutcomes(env.DB, user.student_id, 0.6, 3, 'DEVELOPING', 5, null, true),
+      aggregateStudentOutcomes(env.DB, user.student_id, 0.6, 3, 'STRONG', 5, null, true),
     ]);
     return json({ ok: true, latest, developing, strong });
   }
@@ -416,13 +417,20 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
   const text = decodeUploadedBytes(await file.arrayBuffer());
   const globalTemplates = await all<ParserTemplate>(env.DB.prepare(`SELECT v.id, t.name, v.parser_definition FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.active=1 AND t.active=1`));
   const boundTemplates = await all<ParserTemplate>(env.DB.prepare(`SELECT DISTINCT v.id, t.name, v.parser_definition FROM exam_optical_bindings b JOIN optical_template_versions v ON v.id=b.optical_template_version_id JOIN optical_templates t ON t.id=v.template_id WHERE b.exam_id=? AND b.active=1 AND v.active=1 AND t.active=1 AND v.parser_definition IS NOT NULL`).bind(examId));
-  const templates = boundTemplates.length ? boundTemplates : globalTemplates;
+  // In production the preview policy passes the optics this institution may use (A028b.3).
+  const policyIds = form.get('policyCandidateIds')?.toString().split(',').filter(Boolean);
+  const templates = boundTemplates.length ? boundTemplates : policyIds ? globalTemplates.filter((t) => policyIds.includes(t.id)) : globalTemplates;
   const manualTemplateId = form.get('templateVersionId')?.toString();
   let parsed;
   if (manualTemplateId) {
     const template = templates.find((x) => x.id === manualTemplateId);
     if (!template) return badRequest('Seçilen optik şablon bulunamadı.');
     parsed = parseWithTemplate(text, file.name, template);
+    // A028b.3: a TXT holding sayısal and sözel forms is read with the chosen optic and the other allowed one.
+    if (!parsed.records.length) {
+      const mixed = parseUploadedText(text, file.name, templates);
+      if (mixed.forms?.some((f) => f.id === manualTemplateId)) parsed = mixed;
+    }
   } else parsed = parseUploadedText(text, file.name, templates);
   if (parsed.records.length === 0) return badRequest(parsed.issues[0] || 'Dosya okunamadı.', parsed.ambiguous ? 'OPTICAL_TEMPLATE_AMBIGUOUS' : 'OPTICAL_TEMPLATE_REQUIRED', { templates: parsed.ambiguous ? (parsed.candidates || templates.map((t) => ({ id: t.id, name: t.name }))) : undefined, issues: parsed.issues });
 
@@ -820,7 +828,7 @@ async function studentResults(env: Env, user: AuthUser, studentId: string): Prom
   if (!access.allowed) return forbidden();
   const rows = await all<any>(env.DB.prepare(`SELECT e.id exam_id,e.title,e.exam_date,er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.success_percent,er.institution_rank,
     ep.booklet_code FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id
-    WHERE ep.student_id=? ORDER BY coalesce(e.exam_date,er.created_at) DESC`).bind(studentId));
+    WHERE ep.student_id=? ${isLearnerRole(user.role) ? `AND ${publishedForLearnersSql('e.id')}` : ''} ORDER BY coalesce(e.exam_date,er.created_at) DESC`).bind(studentId));
   if (user.role === 'TEACHER' && access.classId) {
     const scope = await loadPermissionScope(env.DB, user, access.seasonId);
     if (scope.guidanceClassIds.includes(access.classId)) return json({ ok: true, exams: rows });
@@ -843,7 +851,7 @@ async function studentOutcomes(env: Env, user: AuthUser, studentId: string, url:
       ? null
       : scope.subjectClassAssignments.filter((assignment) => assignment.classId === access.classId).map((assignment) => assignment.subjectId);
   }
-  const rows = await aggregateStudentOutcomes(env.DB, studentId, threshold, minEvidence, undefined, 200, subjectFilter);
+  const rows = await aggregateStudentOutcomes(env.DB, studentId, threshold, minEvidence, undefined, 200, subjectFilter, isLearnerRole(user.role));
   return json({ ok: true, outcomes: rows, threshold, minEvidence });
 }
 
@@ -1229,7 +1237,7 @@ async function canAccessStudent(db: D1Database, user: AuthUser, studentId: strin
   return { allowed: false };
 }
 
-async function aggregateStudentOutcomes(db: D1Database, studentId: string, threshold: number, minEvidence: number, only?: 'DEVELOPING' | 'STRONG', limit = 200, subjectIds: string[] | null = null): Promise<any[]> {
+async function aggregateStudentOutcomes(db: D1Database, studentId: string, threshold: number, minEvidence: number, only?: 'DEVELOPING' | 'STRONG', limit = 200, subjectIds: string[] | null = null, publishedOnly = false): Promise<any[]> {
   const params: unknown[] = [studentId];
   let subjectFilter = '';
   if (subjectIds?.length) { subjectFilter = ` AND o.subject_id IN (${subjectIds.map(()=>'?').join(',')})`; params.push(...subjectIds); }
@@ -1237,7 +1245,7 @@ async function aggregateStudentOutcomes(db: D1Database, studentId: string, thres
     sum(r.evidence_count) evidence_count,sum(r.correct_count) correct_count,
     case when sum(r.evidence_count)>0 then 1.0*sum(r.correct_count)/sum(r.evidence_count) else 0 end success_rate
     FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id
-    WHERE r.student_id=? ${subjectFilter} GROUP BY o.id ORDER BY success_rate ASC,evidence_count DESC`).bind(...params));
+    WHERE r.student_id=? ${subjectFilter} ${publishedOnly ? `AND ${publishedForLearnersSql('r.exam_id')}` : ''} GROUP BY o.id ORDER BY success_rate ASC,evidence_count DESC`).bind(...params));
   const mapped = rows.map((r) => ({ ...r, mastery_status: Number(r.evidence_count) < minEvidence ? 'INSUFFICIENT_EVIDENCE' : Number(r.success_rate) >= threshold ? 'STRONG' : 'DEVELOPING' }));
   return mapped.filter((r) => !only || r.mastery_status === only).slice(0, limit);
 }
