@@ -19,7 +19,9 @@ export function compareBooklets(record: CanonicalRecord, codes: string[], subjec
     let incomplete = false;
     for (const subject of subjects) {
       if (!Object.prototype.hasOwnProperty.call(record.answers_by_subject || {}, subject.code)) continue;
-      const subjectKeys = keys.filter((key) => key.subject_id === subject.subject_id && key.booklet_code === code);
+      // A028b: a test read from the other session's sheet keeps that sheet's booklet.
+      const subjectCode = String(record.booklet_by_subject?.[subject.code] || code).toUpperCase();
+      const subjectKeys = keys.filter((key) => key.subject_id === subject.subject_id && key.booklet_code === subjectCode);
       const answers = record.answers_by_subject[subject.code] || '';
       // A027: the n-th answer on the sheet belongs to the n-th printed question of the test, exactly as the
       // evaluation reads it. Looking keys up by number 1..n wrongly called a test starting at question 41

@@ -15,6 +15,7 @@ export interface ParseResult {
   records: CanonicalRecord[];
   issues: string[];
   candidates?: Array<{ id: string; name: string }>;
+  forms?: Array<{ id: string; name: string; rows: number }>;
 }
 
 export interface NormalizedAnswerSequence {
@@ -89,7 +90,44 @@ export function parseUploadedText(text: string, fileName: string, templates: Par
     return { confidence: 0.5, ambiguous: true, records: [], issues: ['Birden fazla optik şablonu dosyayla eşleşiyor. Manuel seçim gerekli.'], candidates: matches.map((m) => ({ id: m.template.id, name: m.template.name })) };
   }
 
+  const mixed = parseMixedForms(lines, fileName, viable);
+  if (mixed) return mixed;
   return { confidence: 0.2, ambiguous: false, records: [], issues: ['Optik/FMT otomatik belirlenemedi. Şablon tanımı veya manuel seçim gerekli.'] };
+}
+
+/**
+ * A028b: one TXT may hold the sheets of two forms (e.g. sayısal on 7108 and sözel on 840). Their lines have
+ * different lengths. Each length group must be claimed by exactly one template; otherwise nothing is guessed.
+ */
+function parseMixedForms(lines: string[], fileName: string, viable: Array<{ template: ParserTemplate; def: unknown }>): ParseResult | null {
+  const byLength = new Map<number, number[]>();
+  lines.forEach((line, i) => { const list = byLength.get(line.length) || []; list.push(i); byLength.set(line.length, list); });
+  if (byLength.size < 2) return null;
+  const groups: Array<{ template: ParserTemplate; def: any; indexes: number[] }> = [];
+  for (const [length, indexes] of byLength) {
+    const text = indexes.map((i) => lines[i]).join('\n');
+    const owners = viable.filter((x) => {
+      const def = fixedWidthFromDefinition(x.def as any) as any;
+      return def.recordLength === length && (!def.signature || text.includes(def.signature));
+    });
+    if (owners.length !== 1) return null;
+    groups.push({ template: owners[0].template, def: fixedWidthFromDefinition(owners[0].def as any), indexes });
+  }
+  const records: CanonicalRecord[] = [];
+  for (const g of groups) {
+    const part = parseFixedWidth(g.indexes.map((i) => lines[i]), fileName, g.template.id, g.template.name, g.def);
+    part.records.forEach((r, k) => records.push({ ...r, row_no: g.indexes[k] + 1 }));
+  }
+  records.sort((a, b) => a.row_no - b.row_no);
+  return {
+    templateId: groups[0].template.id,
+    templateName: groups.map((g) => g.template.name).join(' + '),
+    confidence: records.some((r) => r.issues.length) ? 0.9 : 0.95,
+    ambiguous: false,
+    records,
+    issues: [`Dosyada ${groups.length} farklı optik form var: ${groups.map((g) => `${g.template.name} (${g.indexes.length} satır)`).join(', ')}.`],
+    forms: groups.map((g) => ({ id: g.template.id, name: g.template.name, rows: g.indexes.length })),
+  };
 }
 
 export function parseWithTemplate(text: string, fileName: string, template: ParserTemplate): ParseResult {

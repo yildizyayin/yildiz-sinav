@@ -136,80 +136,92 @@ function rowsToObject(text: string): any {
   return raw;
 }
 
-const KNOWN_LABELS = ['OGRENCI NO', 'TURKCE', 'SOSYAL BILIMLER', 'MATEMATIK', 'FEN BILIMLERI', 'SOSYAL', 'DIN', 'INGILIZCE', 'FEN'];
 /**
- * A025: real Sekonic files reach us with Turkish letters already lost: the optical software or a text
- * editor turned Windows-1254 letters into U+FFFD ("��RENC� NO"). Each lost letter is still exactly one
- * character, so a label matches a known one when every other character agrees.
+ * Sekonic proprietary FMT ("xStart=xEnd=yStart=yEnd=K=D|Y=options=X2=LABEL="): each row is a bubble grid on
+ * the sheet, and the reader writes the rows into the TXT in the same order. A "Y" (yatay) grid gives one
+ * character per column (answer blocks: 40 columns = 40 questions); a "D" (dikey) grid gives one character per
+ * row (ÖĞRENCİ NO 0–9 over 5 rows = 5 digits). Proven on the real OPT_K-129 file: the derived offsets give
+ * exactly its 222-character records (student no 11–16, name 16–36, booklet 55, answers from 56).
+ * Before A028b only the 129 and 7108 layouts were hard-coded; any other form (e.g. a school's 840) was refused.
  */
+const ASCII = (value: string) => value.trim().toLocaleUpperCase('tr-TR').replace(/İ/g, 'I').replace(/Ö/g, 'O').replace(/Ü/g, 'U').replace(/Ş/g, 'S').replace(/Ğ/g, 'G').replace(/Ç/g, 'C').replace(/\s+/g, ' ');
+const FIELD_LABELS: Array<[RegExp, string]> = [
+  [/^(OGRENCI NO|OGRENCI NUMARASI|NUMARA|OKUL NO)$/, 'student_number'],
+  [/^(ADI SOYADI|AD SOYAD|ADI VE SOYADI|AD-SOYAD)$/, 'name'],
+  [/^ADI$/, 'first_name'], [/^SOYADI$/, 'last_name'],
+  [/^(TC|TC\/TEL|TC NO|TC KIMLIK|TC KIMLIK NO|T\.C\. KIMLIK NO)$/, 'tckn'],
+  [/^(KITAPCIK|KITAPCIK TURU)$/, 'booklet'],
+  [/^(OKUL KODU|KURUM KODU)$/, 'institution_code'],
+  [/^(OTURUM|OTURUM NO)$/, 'session'],
+];
+const CLASS_LABEL = /^(SINIF(-\d)?|SUBE|SINIF SUBE)$/;
+const ANSWER_LABELS: Array<[RegExp, string]> = [
+  [/^TURKCE$/, 'TUR'], [/^(TEMEL )?MATEMATIK$/, 'MAT'], [/^FEN( BILIMLERI| VE TEKNOLOJI)?$/, 'FEN'],
+  [/^(T\.?C\.? )?INKILAP( TARIHI)?( VE ATATURKCULUK)?$/, 'INK'], [/^SOSYAL BILGILER$/, 'SOS'], [/^SOSYAL( BILIMLER)?$/, 'SOS'],
+  [/^DIN( KULTURU)?( VE AHLAK BILGISI)?$/, 'DIN'], [/^(INGILIZCE|YABANCI DIL|ALMANCA|FRANSIZCA|ARAPCA)$/, 'YAB'],
+];
+const KNOWN_LABELS = ['OGRENCI NO', 'ADI SOYADI', 'TC/TEL', 'KITAPCIK', 'OKUL KODU', 'OTURUM NO', 'SINIF-1', 'SINIF-2', 'SUBE', 'TURKCE', 'SOSYAL BILIMLER', 'SOSYAL BILGILER', 'MATEMATIK', 'FEN BILIMLERI', 'SOSYAL', 'DIN', 'DIN KULTURU', 'INGILIZCE', 'FEN', 'INKILAP', 'T.C. INKILAP TARIHI', 'YABANCI DIL'];
+/** A025: Turkish letters lost as U+FFFD still count as one character each, so a known label still matches. */
 function proprietaryLabel(value: string): string {
-  const plain = value.trim().toLocaleUpperCase('tr-TR').replace(/İ/g, 'I').replace(/Ö/g, 'O').replace(/Ü/g, 'U').replace(/Ş/g, 'S').replace(/Ğ/g, 'G').replace(/Ç/g, 'C');
-  if (!plain.includes('\uFFFD')) return plain;
-  const hit = KNOWN_LABELS.find((label) => label.length === plain.length && [...plain].every((ch, i) => ch === '\uFFFD' || ch === label[i]));
+  const plain = ASCII(value);
+  if (!plain.includes('�')) return plain;
+  const hit = KNOWN_LABELS.find((label) => label.length === plain.length && [...plain].every((ch, i) => ch === '�' || ch === label[i]));
   return hit || plain;
 }
+const labelTo = (table: Array<[RegExp, string]>, label: string) => table.find(([re]) => re.test(label))?.[1];
 
 function parseSekonicRows(text: string, fileName: string): FmtDefinition | null {
-  const rows = text.replace(/^\uFEFF/, '').split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-  const mapped = rows.map((line) => line.split('=')).filter((parts) => parts.length >= 9 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[1]) && /^\d+$/.test(parts[2]) && /^\d+$/.test(parts[3]))
-    .map((parts) => ({ xStart: Number(parts[0]), xEnd: Number(parts[1]), yStart: Number(parts[2]), yEnd: Number(parts[3]), label: parts[8]?.trim() || '' }));
-  if (!mapped.length || !mapped.some((row) => proprietaryLabel(row.label) === 'OGRENCI NO')) return null;
-
-  const answerLabels: Record<string, string> = {
-    TURKCE: 'TUR',
-    'SOSYAL BILIMLER': 'SOS',
-    MATEMATIK: 'MAT',
-    'FEN BILIMLERI': 'FEN',
-    SOSYAL: 'SOS',
-    DIN: 'DIN',
-    INGILIZCE: 'ING',
-    FEN: 'FEN',
-  };
-  const answerRows = mapped.filter((row) => answerLabels[proprietaryLabel(row.label)]).sort((a, b) => a.yStart - b.yStart);
-  if (!answerRows.length) return null;
-  const totalQuestions = answerRows.reduce((total, row) => total + Math.max(1, row.xEnd - row.xStart + 1), 0);
-  const isOptic129 = answerRows.length === 4 && totalQuestions === 166;
-  const isOptic7108 = answerRows.length === 6 && totalQuestions === 120;
-  if (!isOptic129 && !isOptic7108) return null;
-  const fields: Record<string, FmtSlice> = isOptic129 ? {
-    institution_code: { start: 0, end: 10, length: 10, label: 'OKUL KODU' },
-    student_number: { start: 11, end: 16, length: 5, label: 'ÖĞRENCİ NO' },
-    name: { start: 16, end: 36, length: 20, label: 'ADI SOYADI' },
-    tckn: { start: 36, end: 48, length: 12, label: 'TC/TEL' },
-    class: { start: 48, end: 51, length: 3, label: 'SINIF' },
-    booklet: { start: 55, end: 56, length: 1, label: 'KİTAPÇIK' },
-  } : {
-    institution_code: { start: 0, end: 10, length: 10, label: 'OKUL KODU' },
-    student_number: { start: 10, end: 15, length: 5, label: 'ÖĞRENCİ NO' },
-    name: { start: 15, end: 35, length: 20, label: 'ADI / SOYADI' },
-    class: { start: 35, end: 37, length: 2, label: 'SINIF' },
-    tckn: { start: 37, end: 50, length: 13, label: 'TC/TEL' },
-    booklet: { start: 50, end: 51, length: 1, label: 'KİTAPÇIK TÜRÜ' },
-  };
-  const answerStart = isOptic129 ? 56 : 51;
-  let answerOffset = answerStart;
+  const rows = text.replace(/^﻿/, '').split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  const grids = rows.map((line) => line.split('=')).filter((parts) => parts.length >= 9 && [0, 1, 2, 3].every((i) => /^\d+$/.test(parts[i])))
+    .map((parts) => ({ xStart: Number(parts[0]), xEnd: Number(parts[1]), yStart: Number(parts[2]), yEnd: Number(parts[3]), orientation: String(parts[5] || '').trim().toUpperCase(), options: String(parts[6] || ''), label: proprietaryLabel(parts[8] || '') }));
+  if (!grids.length || !grids.some((g) => labelTo(FIELD_LABELS, g.label) === 'student_number' || labelTo(FIELD_LABELS, g.label) === 'name')) return null;
+  const fields: Record<string, FmtSlice> = {};
   const answers: Record<string, FmtSlice & { questionCount?: number }> = {};
-  for (const row of answerRows) {
-    const questionCount = Math.max(1, row.xEnd - row.xStart + 1);
-    const code = answerLabels[proprietaryLabel(row.label)];
-    const normalizedCode = isOptic129 ? ({ TUR: 'TYT_TUR', SOS: 'TYT_SOS', MAT: 'TYT_MAT', FEN: 'TYT_FEN' }[code] || code) : code;
-    answers[normalizedCode] = { start: answerOffset, end: answerOffset + questionCount, length: questionCount, questionCount, label: row.label, options: isOptic129 ? 5 : 4 };
-    answerOffset += questionCount;
+  const classParts: Array<{ start: number; end: number }> = [];
+  const unknown: string[] = [];
+  const kod: Array<{ start: number; width: number; mark: string }> = [];
+  let offset = 0;
+  for (const g of grids) {
+    const width = g.orientation === 'Y' ? g.xEnd - g.xStart + 1 : g.yEnd - g.yStart + 1;
+    if (!(width > 0)) return null;
+    const start = offset, end = offset + width; offset = end;
+    const field = labelTo(FIELD_LABELS, g.label);
+    const letters = g.options.replace(/\s/g, '');
+    const isAnswerBlock = g.orientation === 'Y' && /^[A-E]{4,5}$/.test(letters) && field !== 'booklet';
+    if (field) { fields[field] ??= { start, end, length: width, label: g.label }; continue; }
+    if (CLASS_LABEL.test(g.label)) { classParts.push({ start, end }); continue; }
+    if (isAnswerBlock) {
+      const code = labelTo(ANSWER_LABELS, g.label) || g.label.replace(/[^A-Z0-9]+/g, '_');
+      let key = code, n = 2; while (answers[key]) key = `${code}_${n++}`;
+      answers[key] = { start, end, length: width, questionCount: width, label: g.label, options: letters.length };
+      continue;
+    }
+    if (/^KOD-\d+$/.test(g.label)) { kod.push({ start, width, mark: g.options.trim() }); continue; }
+    unknown.push(g.label);
   }
-  // A025: on the TYT 129 sheet, Sosyal Bilimler positions 21–25 are the optional philosophy questions
-  // (for candidates exempt from Din Kültürü). Expose them as TYT_FEL so the optional key can score them.
-  if (isOptic129 && answers.TYT_SOS && (answers.TYT_SOS.length || 0) >= 25) {
-    const s0 = answers.TYT_SOS.start + 20;
-    answers.TYT_FEL = { start: s0, end: s0 + 5, length: 5, questionCount: 5, label: 'FELSEFE (SEÇMELİ)', options: 5 };
+  if (!Object.keys(answers).length) return null;
+  if (classParts.length) { const s0 = Math.min(...classParts.map((c) => c.start)), e0 = Math.max(...classParts.map((c) => c.end)); fields.class = { start: s0, end: e0, length: e0 - s0, label: 'SINIF/ŞUBE' }; }
+  // TYT forms (four tests 40/46/40/40 on Sekonic 129) keep the TYT subject codes and expose the optional philosophy.
+  const counts = Object.entries(answers).map(([k, v]) => `${k}:${v.length}`).join(',');
+  const isTyt = counts === 'TUR:40,SOS:46,MAT:40,FEN:40';
+  if (isTyt) {
+    const renamed: typeof answers = {};
+    for (const [k, v] of Object.entries(answers)) renamed[`TYT_${k}`] = v;
+    const s0 = renamed.TYT_SOS.start + 20;
+    renamed.TYT_FEL = { start: s0, end: s0 + 5, length: 5, questionCount: 5, label: 'FELSEFE (SEÇMELİ)', options: 5 };
+    Object.keys(answers).forEach((k) => delete answers[k]); Object.assign(answers, renamed);
   }
-  const recordLength = answerOffset;
-  const signature = fileName.toLocaleUpperCase('tr-TR').includes('129') ? '129' : fileName.toLocaleUpperCase('tr-TR').includes('7108') ? '7108' : undefined;
-  const formName = isOptic129 ? 'Sekonic Optik 129' : 'Sekonic Optik 7108';
+  const recordLength = offset;
+  const upper = fileName.toLocaleUpperCase('tr-TR');
+  const formCode = (upper.match(/(?:OPT[_ -]?K?[-_ ]?|OPTIK[_ -]?)(\d{3,4})/) || [])[1];
+  // A028b: the KOD timing columns print the form number into every line (e.g. "129"). When they are adjacent
+  // single marks they become the format signature, so two forms of equal line length are still told apart.
+  const signature = kod.length > 1 && kod.every((k, i) => k.width === 1 && /^\w$/.test(k.mark) && (i === 0 || k.start === kod[i - 1].start + 1)) ? kod.map((k) => k.mark).join('') : undefined;
   const fixedWidth = { type: 'fixed-width' as const, recordLength, fields, answers, ...(signature ? { signature } : {}) };
   return {
-    type: 'fmt', version: '1', source: 'FMT', formName, formType: isOptic129 ? 'TYT' : 'LGS', recordLength, indexBase: 0,
+    type: 'fmt', version: '1', source: 'FMT', formName: formCode ? `Sekonic Optik ${formCode}` : 'Sekonic optik formu', formType: isTyt ? 'TYT' : 'SCHOOL', recordLength, indexBase: 0,
     fields, answers, fixedWidth,
-    metadata: { format: 'SEKONIC_PROPRIETARY', answerStart: String(answerStart), sourceFile: fileName },
+    metadata: { format: 'SEKONIC_PROPRIETARY', sourceFile: fileName, ...(unknown.length ? { unmappedLabels: unknown.join(', ') } : {}) },
   };
 }
 
