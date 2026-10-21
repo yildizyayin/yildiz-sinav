@@ -472,7 +472,9 @@ export async function getScanBatch(env: Env, user: AuthUser, batchId: string): P
       all<{ subject_id: string; booklet_code: string; question_no: number; correct_answer: string; printed_question_no?: number; accepted_answers?: string | null; question_status?: string }>(env.DB.prepare('SELECT q.subject_id,ak.booklet_code,q.question_no,ak.correct_answer,ak.accepted_answers,coalesce(ak.question_status,q.question_status,\'ACTIVE\') question_status,coalesce(bqo.printed_question_no,q.question_no) printed_question_no FROM exam_questions q JOIN answer_keys ak ON ak.exam_question_id=q.id LEFT JOIN exam_question_booklet_orders bqo ON bqo.exam_question_id=q.id AND bqo.booklet_code=ak.booklet_code WHERE q.exam_id=?').bind(batch.exam_id)),
     ]);
     const codes = booklets.map((b) => b.code);
-    for (const row of pendingBooklet) row.bookletOptions = compareBooklets(row.canonical, codes, subjects, keys);
+    const exam = await one<any>(env.DB.prepare('SELECT e.scoring_override_json,srv.config_json FROM exams e LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id WHERE e.id=?').bind(batch.exam_id));
+    const divisor = bookletDivisor(exam);
+    for (const row of pendingBooklet) row.bookletOptions = compareBooklets(row.canonical, codes, subjects, keys, divisor);
   }
   const counts = {
     active: mapped.filter((r) => r.match_status === 'ACTIVE_MATCH').length,
@@ -484,6 +486,14 @@ export async function getScanBatch(env: Env, user: AuthUser, batchId: string): P
     pending: mapped.filter((r) => r.resolution_status !== 'CANCELLED' && (['NEW_GUEST', 'AMBIGUOUS', 'INVALID'].includes(r.match_status) || r.issues.length > 0)).length,
   };
   return json({ ok: true, batch, records: mapped, counts });
+}
+
+function bookletDivisor(exam: any): (subject: { wrong_divisor: number }) => number {
+  let config: any = {}, override: any = null;
+  try { config = JSON.parse(exam?.config_json || '{}'); } catch { /* none */ }
+  try { override = JSON.parse(exam?.scoring_override_json || 'null'); } catch { /* none */ }
+  const method = scoreMethodFor(config);
+  return (subject) => effectiveWrongDivisor(subject.wrong_divisor, method, override);
 }
 
 export async function resolveScanRecord(request: Request, env: Env, user: AuthUser, batchId: string, recordId: string): Promise<Response> {
@@ -508,6 +518,7 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
   let studentId = before.matched_student_id as string | null;
   let matchStatus = before.match_status as string;
   let confidence = Number(before.match_confidence);
+  let bookletDecision: Record<string, unknown> | undefined;
   if (action === 'MATCH' && body.studentId) {
     const candidate = await one<any>(env.DB.prepare(`SELECT s.id,s.status FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id WHERE s.id=? AND e.institution_id=? AND e.season_id=? AND e.status='ACTIVE'`).bind(body.studentId, batch.institution_id, batch.season_id));
     if (!candidate) return badRequest('Seçilen öğrenci bu kurum/sezonda bulunamadı.');
@@ -529,7 +540,12 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
       all<{ subject_id: string; code: string; question_count: number; wrong_divisor: number }>(env.DB.prepare('SELECT es.subject_id,s.code,es.question_count,es.wrong_divisor FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=?').bind(batch.exam_id)),
       all<{ subject_id: string; booklet_code: string; question_no: number; correct_answer: string; printed_question_no?: number; accepted_answers?: string | null; question_status?: string }>(env.DB.prepare('SELECT q.subject_id,ak.booklet_code,q.question_no,ak.correct_answer,ak.accepted_answers,coalesce(ak.question_status,q.question_status,\'ACTIVE\') question_status,coalesce(bqo.printed_question_no,q.question_no) printed_question_no FROM exam_questions q JOIN answer_keys ak ON ak.exam_question_id=q.id LEFT JOIN exam_question_booklet_orders bqo ON bqo.exam_question_id=q.id AND bqo.booklet_code=ak.booklet_code WHERE q.exam_id=?').bind(batch.exam_id)),
     ]);
-    if (!compareBooklets(canonical, [code], subjects, keys)[0].available) return badRequest('Kitapçık için ders yanıtı veya cevap anahtarı eksik.');
+    const exam = await one<any>(env.DB.prepare('SELECT e.scoring_override_json,srv.config_json FROM exams e LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id WHERE e.id=?').bind(batch.exam_id));
+    const options = compareBooklets(canonical, allowed.map((b) => b.code.toUpperCase()).sort(), subjects, keys, bookletDivisor(exam));
+    const chosen = options.find((o) => o.code === code);
+    if (!chosen?.available) return badRequest('Kitapçık için ders yanıtı veya cevap anahtarı eksik.');
+    // A027: keep what the person saw when deciding — the previous code and every option's net — in the audit trail.
+    bookletDecision = { from: canonical.booklet || null, to: code, options: options.map((o: any) => ({ code: o.code, available: o.available, net: o.net ?? null, correct: o.correct ?? null, wrong: o.wrong ?? null })) };
     canonical.booklet = code;
     canonical.issues = canonical.issues.filter((issue) => !isBookletIssue(issue));
     issues = existingIssues.filter((issue) => !isBookletIssue(issue));
@@ -541,7 +557,7 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
   } else return badRequest('Eşleştirme veya kitapçık kararı eksik.');
   const unresolved = ['NEW_GUEST','AMBIGUOUS','INVALID'].includes(matchStatus) || issues.length > 0;
   const resolutionStatus = action === 'CANCEL' ? 'CANCELLED' : unresolved ? 'PENDING' : 'RESOLVED';
-  const details={batchId,decision:action,bookletCode:action==='BOOKLET'?canonical.booklet:undefined,
+  const details={batchId,decision:action,bookletCode:action==='BOOKLET'?canonical.booklet:undefined,booklet:bookletDecision,
     before:{matchedStudentId:before.matched_student_id,matchStatus:before.match_status,resolutionStatus:before.resolution_status,issueCount:existingIssues.length},
     after:{matchedStudentId:studentId,matchStatus,resolutionStatus,issueCount:issues.length}};
   await env.DB.batch([
