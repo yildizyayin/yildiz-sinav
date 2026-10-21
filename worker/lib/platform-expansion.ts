@@ -745,7 +745,7 @@ async function importExternalAssessment(request:Request,env:Env,user:AuthUser):P
 
 async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER'].includes(user.role))return forbidden('Sınav üretimi Süper Admin, kurum yöneticisi veya branş öğretmeni içindir.');const u=new URL(request.url);
-  if(request.method==='GET'){const inst=userInstitution(user,u.searchParams.get('institutionId'));const rows=await all<any>(env.DB.prepare(`SELECT d.*,(SELECT COUNT(DISTINCT i.question_id) FROM studio_document_items i WHERE i.document_id=d.id) question_count,(SELECT GROUP_CONCAT(DISTINCT i.booklet_code) FROM studio_document_items i WHERE i.document_id=d.id) booklet_codes FROM studio_documents d WHERE (? IS NULL OR d.institution_id=?) ORDER BY d.created_at DESC LIMIT 200`).bind(inst,inst));return json({ok:true,documents:rows});}
+  if(request.method==='GET'){const inst=userInstitution(user,u.searchParams.get('institutionId'));const rows=await all<any>(env.DB.prepare(`SELECT d.*,s.name subject_name,(SELECT COUNT(DISTINCT i.question_id) FROM studio_document_items i WHERE i.document_id=d.id) question_count,(SELECT GROUP_CONCAT(DISTINCT i.booklet_code) FROM studio_document_items i WHERE i.document_id=d.id) booklet_codes,CASE WHEN d.created_by=? THEN 1 ELSE 0 END is_mine,EXISTS(SELECT 1 FROM studio_document_favorites f WHERE f.user_id=? AND f.document_id=d.id) is_favorite FROM studio_documents d LEFT JOIN subjects s ON s.id=d.subject_id WHERE (? IS NULL OR d.institution_id=?) AND (?<>'TEACHER' OR d.created_by=?) ORDER BY d.created_at DESC LIMIT 200`).bind(user.id,user.id,inst,inst,user.role,user.id));return json({ok:true,documents:rows});}
   const b=await requestBody(request);if(!b.title||!b.documentType)return badRequest('Belge türü ve başlık gereklidir.');const inst=userInstitution(user,b.institutionId);if(!inst)return badRequest('Kurum kapsamı gereklidir.');if(user.role==='TEACHER'&&!await teacherHasSubject(env,user,b.subjectId||null))return forbidden('Bu ders için branş yetkiniz bulunmuyor.');
   const optionMode=String(b.optionMode||'MIXED').toUpperCase();if(!['FOUR','FIVE','MIXED'].includes(optionMode))return badRequest('Şık düzeni FOUR, FIVE veya MIXED olmalıdır.','INVALID_OPTION_MODE');
   if(String(b.deliveryMode||'PDF_OPTICAL').toUpperCase()==='PDF_OPTICAL'&&Number(b.questionCount||20)>STUDIO_OPTICAL_CAPACITY)return badRequest(`Telefon optiği en fazla ${STUDIO_OPTICAL_CAPACITY} soruyu okutabilir. Soru sayısını azaltın veya optiksiz PDF teslimi seçin.`,'OPTICAL_CAPACITY_EXCEEDED');
@@ -853,6 +853,38 @@ async function studioSwap(request:Request,env:Env,user:AuthUser,documentId:strin
   return json({ok:true,from:current,to:replacement.id,sameOutcome:linked,sameDifficulty:sameBand,invalidatedPdfs:state.printed});
 }
 
+const TEMPLATE_KINDS=['TOPIC_SCAN','PRACTICE_EXAM','HOMEWORK','REMEDIAL','OTHER'];
+const TEMPLATE_FIELDS=['documentType','gradeLevel','subjectId','academicYear','outcomeCodes','questionCount','optionMode','bookletCodes','deliveryMode','difficultyMix'];
+/** A083.4: a template stores form choices only — never questions — so creating from it re-runs every gate. */
+async function studioTemplates(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER'].includes(user.role))return forbidden();
+  const u=new URL(request.url);
+  if(request.method==='GET'){const inst=userInstitution(user,u.searchParams.get('institutionId'));if(!inst)return json({ok:true,templates:[]});
+    const rows=await all<any>(env.DB.prepare(`SELECT id,name,kind,shared,config_json,owner_user_id,created_at FROM studio_templates WHERE institution_id=? AND (owner_user_id=? OR shared=1) ORDER BY created_at DESC LIMIT 100`).bind(inst,user.id));
+    return json({ok:true,templates:rows.map((r:any)=>({id:r.id,name:r.name,kind:r.kind,shared:!!r.shared,mine:r.owner_user_id===user.id,config:parseJson(r.config_json,{}),createdAt:r.created_at}))});}
+  if(request.method!=='POST')return json({ok:false,error:{code:'METHOD_NOT_ALLOWED',message:'Bu yöntem desteklenmiyor.'}},405);
+  const b=await requestBody(request);const inst=userInstitution(user,b.institutionId);if(!inst)return badRequest('Kurum kapsamı gereklidir.');
+  const name=String(b.name||'').trim().slice(0,80);if(!name)return badRequest('Şablon adı gereklidir.','TEMPLATE_NAME_REQUIRED');
+  const kind=String(b.kind||'OTHER').toUpperCase();if(!TEMPLATE_KINDS.includes(kind))return badRequest('Şablon türü geçersiz.','INVALID_TEMPLATE_KIND');
+  const shared=b.shared===true&&user.role!=='TEACHER';
+  const src=b.config&&typeof b.config==='object'?b.config:{};const config:any={};for(const k of TEMPLATE_FIELDS)if(src[k]!==undefined)config[k]=src[k];
+  const count=(await one<any>(env.DB.prepare('SELECT COUNT(*) n FROM studio_templates WHERE institution_id=? AND owner_user_id=?').bind(inst,user.id)))?.n||0;if(Number(count)>=50)return badRequest('En fazla 50 şablon kaydedebilirsiniz; eskilerden birini silin.','TEMPLATE_LIMIT');
+  const id=uuid('stt');await env.DB.prepare('INSERT INTO studio_templates(id,institution_id,owner_user_id,name,kind,shared,config_json) VALUES(?,?,?,?,?,?,?)').bind(id,inst,user.id,name,kind,shared?1:0,JSON.stringify(config)).run();
+  return json({ok:true,id},201);
+}
+async function studioTemplateDelete(env:Env,user:AuthUser,id:string):Promise<Response>{
+  const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;
+  const row=await one<any>(env.DB.prepare('SELECT institution_id,owner_user_id FROM studio_templates WHERE id=?').bind(id));if(!row)return notFound('Şablon bulunamadı.');
+  const may=row.owner_user_id===user.id||user.role==='SUPER_ADMIN'||(user.role==='INSTITUTION_MANAGER'&&row.institution_id===user.institution_id);if(!may)return forbidden('Bu şablonu yalnız sahibi veya kurum yöneticisi silebilir.');
+  await env.DB.prepare('DELETE FROM studio_templates WHERE id=?').bind(id).run();return json({ok:true});
+}
+async function studioFavorite(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
+  const document=await studioDocForStaff(env,user,documentId);if(document instanceof Response)return document;
+  if(request.method==='POST')await env.DB.prepare('INSERT OR IGNORE INTO studio_document_favorites(user_id,document_id) VALUES(?,?)').bind(user.id,documentId).run();
+  else await env.DB.prepare('DELETE FROM studio_document_favorites WHERE user_id=? AND document_id=?').bind(user.id,documentId).run();
+  return json({ok:true,favorite:request.method==='POST'});
+}
+
 async function physicalBridge(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'PHYSICAL_BRIDGE');if(gate)return gate;const u=new URL(request.url);const key=u.searchParams.get('key');if(request.method==='GET'){if(!key)return badRequest('QR/kitap anahtarı gereklidir.');const row=await one<any>(env.DB.prepare(`SELECT l.*,c.title content_title,c.grade_level,p.name publisher_name FROM physical_content_links l JOIN physical_content_items c ON c.id=l.content_item_id LEFT JOIN publishers p ON p.id=c.publisher_id WHERE l.external_key=? AND c.active=1`).bind(key));return row?json({ok:true,link:{...row,payload:parseJson(row.payload_json,{})}}):notFound('İçerik bağlantısı bulunamadı.');}if(user.role!=='SUPER_ADMIN')return forbidden();const b=await requestBody(request);if(!b.contentItemId||!b.externalKey)return badRequest('İçerik ve dış anahtar gereklidir.');const id=uuid('phy');await env.DB.prepare(`INSERT INTO physical_content_links(id,content_item_id,page_from,page_to,external_key,reference_type,reference_id,payload_json) VALUES(?,?,?,?,?,?,?,?)`).bind(id,b.contentItemId,b.pageFrom||null,b.pageTo||null,b.externalKey,b.referenceType||'TEST',b.referenceId||null,JSON.stringify(b.payload||{})).run();return json({ok:true,id},201);
 }
@@ -943,6 +975,9 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/live'&&(request.method==='GET'||request.method==='POST'))return liveSessions(request,env,user);
   if(p==='/api/platform/studio'&&(request.method==='GET'||request.method==='POST'))return studio(request,env,user);
   if(p==='/api/platform/studio/catalog'&&request.method==='GET')return studioCatalog(request,env,user);
+  if(p==='/api/platform/studio/templates')return studioTemplates(request,env,user);
+  m=p.match(/^\/api\/platform\/studio\/templates\/([^/]+)$/);if(m&&request.method==='DELETE')return studioTemplateDelete(env,user,m[1]);
+  m=p.match(/^\/api\/platform\/studio\/([^/]+)\/favorite$/);if(m&&(request.method==='POST'||request.method==='DELETE'))return studioFavorite(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/items$/);if(m&&request.method==='GET')return studioItems(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/swap$/);if(m&&request.method==='POST')return studioSwap(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/pdf$/);if(m&&request.method==='GET')return studioPdf(request,env,user,m[1]);
