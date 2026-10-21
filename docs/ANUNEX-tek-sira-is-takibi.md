@@ -549,3 +549,9 @@ PR #282 (okuma indeksleri) ve #279 (A083.1) merge edildi; tek dağıtım 03:00 s
 **Dürüstlük notu:** Ölçülmüş madde zorluğu (öğrenci doğru oranı) için saklanan istatistik yok; formda "editoryal tahmin" yazıyor. Ölçülmüş zorluk, cevap verisi biriktiğinde sonuç analitiği işlerinde ele alınacak (okuma bütçesi nedeniyle canlı hesaplanmayacak, saklanan istatistik olarak).
 Testler: hedef toplamı, geçersiz karışım, sunucu karışımı ve eksik zorluk (mutasyon kontrollü), form. 231 dosya / 1.171 test, build PASS.
 Sıradaki: A083.3 önizleme ve aynı kazanımdan soru değiştirme.
+
+### A083.3 — önizleme ve aynı kazanımdan soru değiştirme, 21 Ekim 12:30–13:00
+
+PR #283 (A083.2) merge edildi. **A083.3 — PR #284:** belge başına "Önizle": kitapçık sırasıyla kök, şıklar, doğru şık, kazanım kodu, zorluk; PDF üretilmiş mi, sonuç var mı. "Değiştir": aynı kapılı havuzdan (kurum/telif/çoktan seçmeli/sınıf-ders-yıl-şık düzeni), aynı kazanımdan (kazanım bağı yoksa aynı ders/sınıf) ve varsayılan olarak aynı zorluktan rastgele onaylı soru; tüm kitapçıklarda aynı sırada. Değişiklik eski PDF ve optik şablonlarını siler, belge DRAFT'a döner — eski basılı kâğıt yeni anahtarla okunamaz. Öğrenci sonucu olan belgede değişiklik reddedilir (STUDIO_LOCKED). Denetim kaydı STUDIO_QUESTION_SWAPPED.
+Testler: önizleme, iki kitapçıkta değiştirme, havuz tükenmesi, kilit (mutasyon kontrollü), yetki; UI. 233 dosya / 1.176 test, build PASS.
+Sıradaki: A083.4 şablonlar, test kütüphanesi kart görünümü, Testlerim/Favoriler, ders filtreleri.
