@@ -561,3 +561,13 @@ Sıradaki: A083.4 şablonlar, test kütüphanesi kart görünümü, Testlerim/Fa
 PR #284 (A083.3) merge edildi. **A083.4 — PR #285:** göç 0119 (`studio_templates`, `studio_document_favorites`). Şablon yalnız form seçimlerini saklar (soru saklamaz; oluşturma her kapıyı yeniden işletir); öğretmen şablonu özel, yönetici kurumla paylaşabilir; kişi başı 50. Hazır şablonlar: konu tarama, deneme, ödev, telafi. Kütüphane kart görünümü: tür, sınıf, ders adı, soru sayısı, kitapçık, durum, yıl, tarih; Tümü/Testlerim/Favoriler (sayılı), ders filtresi, arama, yıldız. Değişiklik: öğretmen listede yalnız kendi belgelerini görür (başkasınınkini zaten açamıyordu).
 Görsel kontrol: bileşenler 1200 px ve 390 px'de render edilip incelendi; indirme düğmeleri kart içine sığacak şekilde düzeltildi. 235 dosya / 1.180 test, build PASS.
 **A083 durumu:** dört aşama tamam; kapanış için dağıtım (03:00 sonrası) + canlı Studio ekranı (kazanım ağacı, zorluk, önizleme/değiştirme, kütüphane) → BEKLİYOR. Madde 8 kapsamında sıradaki A019 başlar.
+
+### A019 — sınav kartının kalıcı kaydı, 21 Ekim 13:00–13:40
+
+PR #285 (A083.4) merge edildi. A019 incelemesi: sunucu tarafında oluşturma/okuma alanları birebir (POST/PATCH/GET aynı alanlar). Kusurlar:
+1. **Canlı hata:** 19 Ekim 19:34'ten beri (PR #266) yeni sınav kartında "Devam" ile cevap anahtarı adımına geçince `detail.correctionOpen` boş kayıtta okunuyor → sayfa çöküyordu; oluşturucu ile yeni sınav açılamıyordu. UI testiyle yeniden üretildi, düzeltildi.
+2. Açık sınav adreste tutulmuyordu → yenileyince kart kayboluyordu. Artık `?examId=`; kapatınca silinir, açılış başına tek yükleme.
+3. Kaydedilmemiş kart yenilemede kayboluyordu → kullanıcı başına tarayıcıda taslak (alanlar, tür, dersler, anahtar metni/girdileri, puanlama ve sonuç ayarları, adım); geri yükleme bildirimi; dosyaların saklanamadığı açıkça yazılır; "Taslağı temizle"; oluşturunca silinir.
+4. Zorunlu alan uyarısı yalnız iki alanı söylüyordu → eksikler adıyla (eğitim yılı biçimi, Süper Admin için kurum dahil) ve alanlar işaretli.
+PR #286: 4 UI testi (çökme düzeltmesiz kırılıyor). 236 dosya / 1.184 test, build PASS.
+Kapanış için: dağıtım + canlıda yeni sınav kartı → cevap anahtarı adımı → sayfa yenileme ekranı.
