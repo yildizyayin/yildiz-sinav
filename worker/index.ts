@@ -11,7 +11,7 @@ import { persistTytOptionalPhilosophyEvidence } from './tyt-optional-philosophy-
 import { matchParticipant } from './lib/matching';
 import { bookletIssue, compareBooklets, isBookletIssue } from './lib/booklet-review';
 import { decodeUploadedBytes, parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib/parse';
-import { assertScoringRuleVerified, calculateOverall, calculateSubjectScore } from './lib/scoring';
+import { assertScoringRuleVerified, calculateExamScore, calculateOverall, calculateSubjectScore, effectiveWrongDivisor, scoreMethodFor } from './lib/scoring';
 import { masteryStatus } from './lib/outcome';
 import { calibrationWithinTolerance, nextCalibrationStatus, type CalibrationMetrics } from './lib/calibration';
 import { recordExamAssessments, recordExamEvidenceAudit } from './lib/assessment-ledger';
@@ -595,6 +595,8 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   if (examScope) return examScope;
   if (!exam.scoring_version_id) return badRequest('Sınavın puanlama kuralı tanımlı değil.', 'SCORING_RULE_REQUIRED');
   assertScoringRuleVerified({ verified: exam.verified, authority: exam.authority });
+  const scoreMethod = scoreMethodFor((() => { try { return JSON.parse(exam.config_json || '{}'); } catch { return {}; } })());
+  const scoringOverride = (() => { try { return JSON.parse(exam.scoring_override_json || 'null'); } catch { return null; } })();
   const subjects = await all<any>(env.DB.prepare(`SELECT es.subject_id, s.code, s.name, es.question_count, es.wrong_divisor FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order`).bind(exam.id));
   const booklets = await all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1').bind(exam.id));
   const keyRows = await all<any>(env.DB.prepare(`SELECT q.id question_id,q.subject_id,q.question_no,s.code subject_code,ak.booklet_code,ak.correct_answer,ak.accepted_answers,coalesce(ak.question_status,q.question_status,'ACTIVE') question_status,coalesce(bqo.printed_question_no,q.question_no) printed_question_no,
@@ -657,7 +659,8 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
     const subjectScores = preservedSubjectScores.map((score) => ({
       correct: Number(score.correct_count), wrong: Number(score.wrong_count), blank: Number(score.blank_count),
       net: Number(score.net), successPercent: Number(score.success_percent),
-      wrongDivisor: Number(subjects.find((subject) => subject.subject_id === score.subject_id)?.wrong_divisor || 4),
+      wrongDivisor: effectiveWrongDivisor(subjects.find((subject) => subject.subject_id === score.subject_id)?.wrong_divisor, scoreMethod, scoringOverride),
+      subjectId: score.subject_id, code: subjects.find((subject) => subject.subject_id === score.subject_id)?.code,
       questionCount: Number(subjects.find((subject) => subject.subject_id === score.subject_id)?.question_count || 0),
     }));
     for (const subject of incomingSubjects) {
@@ -678,14 +681,14 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
             .bind(uuid('ans'), participantId, key.question_id, answer && answer !== '_' ? answer : null, status, record.confidence).run();
         }
       }
-      const score = calculateSubjectScore({ correct, wrong, blank, wrongDivisor: subject.wrong_divisor, questionCount: activeQuestionCount });
-      subjectScores.push(score);
+      const score = calculateSubjectScore({ correct, wrong, blank, wrongDivisor: effectiveWrongDivisor(subject.wrong_divisor, scoreMethod, scoringOverride), questionCount: activeQuestionCount });
+      subjectScores.push({ ...score, subjectId: subject.subject_id, code: subject.code });
       await env.DB.prepare(`INSERT INTO subject_results (id,participant_id,subject_id,correct_count,wrong_count,blank_count,net,success_percent) VALUES(?,?,?,?,?,?,?,?)`)
         .bind(uuid('sr'), participantId, subject.subject_id, correct, wrong, blank, score.net, score.successPercent).run();
     }
     const overall = calculateOverall(subjectScores);
     await env.DB.prepare(`INSERT INTO exam_results (id,participant_id,scoring_rule_version_id,correct_count,wrong_count,blank_count,net,score,success_percent) VALUES(?,?,?,?,?,?,?,?,?)`)
-      .bind(uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, null, overall.successPercent).run();
+      .bind(uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, calculateExamScore(scoreMethod, subjectScores, scoringOverride), overall.successPercent).run();
     await env.DB.prepare('DELETE FROM outcome_results WHERE student_id=? AND exam_id=?').bind(studentId, exam.id).run();
     const mergedOutcomes = await all<any>(env.DB.prepare(`SELECT qo.outcome_id,COUNT(*) evidence,
       SUM(CASE WHEN sa.status='CORRECT' THEN 1 ELSE 0 END) correct
@@ -700,7 +703,7 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
     processed++;
   }
   await env.DB.prepare(`UPDATE exam_results SET institution_rank=(SELECT rn FROM (
-    SELECT er2.id, row_number() OVER (ORDER BY er2.net DESC, er2.correct_count DESC) rn FROM exam_results er2
+    SELECT er2.id, row_number() OVER (ORDER BY COALESCE(er2.score,-1e9) DESC, er2.net DESC, er2.correct_count DESC) rn FROM exam_results er2
     JOIN exam_participants ep2 ON ep2.id=er2.participant_id WHERE ep2.exam_id=? AND ep2.institution_id=?
     ) ranked WHERE ranked.id=exam_results.id)
     WHERE participant_id IN (SELECT id FROM exam_participants WHERE exam_id=? AND institution_id=?)`).bind(exam.id, batch.institution_id, exam.id, batch.institution_id).run();

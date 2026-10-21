@@ -292,7 +292,7 @@ async function examStats(env:Env,user:AuthUser,examId:string):Promise<Response>{
   const students=institutionScope?await all<any>(env.DB.prepare(`WITH live AS (SELECT ep.id participant_id,ep.student_number_snapshot,ep.name_snapshot,ep.class_snapshot,
       er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.institution_rank,
       COUNT(*) OVER() live_institution_count,
-      RANK() OVER(PARTITION BY COALESCE(ep.class_snapshot,'') ORDER BY er.net DESC,er.correct_count DESC) live_class_rank,
+      RANK() OVER(PARTITION BY COALESCE(ep.class_snapshot,'') ORDER BY COALESCE(er.score,-1e9) DESC,er.net DESC,er.correct_count DESC) live_class_rank,
       COUNT(*) OVER(PARTITION BY COALESCE(ep.class_snapshot,'')) live_class_count
       FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id WHERE ep.exam_id=? AND ep.institution_id=?)
     SELECT live.*,COALESCE(s.institution_rank,live.institution_rank) institution_rank,COALESCE(s.institution_count,live.live_institution_count) institution_count,s.grade_rank,s.grade_count,

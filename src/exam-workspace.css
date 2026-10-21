@@ -26,3 +26,5 @@
 /* A019 required fields */
 .exam-card-grid input[aria-invalid="true"],.exam-card-grid select[aria-invalid="true"]{border-color:#e5484d;box-shadow:0 0 0 3px #e5484d1a}
 .exam-draft-restored{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+
+.score-model-note{margin:8px 0 0;font-size:12px;line-height:1.5;color:#40506a;background:#f4f7fc;border-radius:10px;padding:8px 12px}

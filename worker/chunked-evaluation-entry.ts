@@ -7,7 +7,7 @@ import { all, audit, badRequest, forbidden, json, normalizeName, notFound, one, 
 import { canEvaluateExam } from './lib/permissions';
 import { examEvaluationAccess } from './lib/exam-evaluation-access';
 import { recordExamAssessments, recordExamEvidenceAudit } from './lib/assessment-ledger';
-import { assertScoringRuleVerified, calculateOverall, calculateSubjectScore } from './lib/scoring';
+import { assertScoringRuleVerified, calculateExamScore, calculateOverall, calculateSubjectScore, effectiveWrongDivisor, scoreMethodFor } from './lib/scoring';
 import { masteryStatus } from './lib/outcome';
 
 const CHUNK_SIZE = 5;
@@ -60,7 +60,7 @@ async function finaliseBatch(env: Env, userId: string, batch: AnyRow, total: num
   const evidenceCount = await recordExamAssessments(env, batch.id);
   await recordExamEvidenceAudit(env, userId, batch.institution_id, batch.id, evidenceCount);
   await env.DB.prepare(`UPDATE exam_results SET institution_rank=(SELECT rn FROM (
-    SELECT er2.id,row_number() OVER (ORDER BY er2.net DESC,er2.correct_count DESC) rn
+    SELECT er2.id,row_number() OVER (ORDER BY COALESCE(er2.score,-1e9) DESC,er2.net DESC,er2.correct_count DESC) rn
     FROM exam_results er2 JOIN exam_participants ep2 ON ep2.id=er2.participant_id
     WHERE ep2.exam_id=? AND ep2.institution_id=?
   ) ranked WHERE ranked.id=exam_results.id)
@@ -103,6 +103,8 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
   if (examScope) return examScope;
   if (!exam.scoring_version_id) return badRequest('Sınavın puanlama kuralı tanımlı değil.', 'SCORING_RULE_REQUIRED');
   assertScoringRuleVerified({ verified: exam.verified, authority: exam.authority });
+  const scoreMethod = scoreMethodFor((() => { try { return JSON.parse(exam.config_json || '{}'); } catch { return {}; } })());
+  const scoringOverride = (() => { try { return JSON.parse(exam.scoring_override_json || 'null'); } catch { return null; } })();
 
   const [subjects, booklets, keyRows, classes, records] = await Promise.all([
     all<AnyRow>(env.DB.prepare(`SELECT es.subject_id,s.code,s.name,es.question_count,es.wrong_divisor
@@ -203,7 +205,8 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
     const subjectScores = existingSubjectResults.filter((score) => score.participant_id === participantId && !incomingSubjectIds.has(score.subject_id)).map((score) => ({
       correct: Number(score.correct_count), wrong: Number(score.wrong_count), blank: Number(score.blank_count),
       net: Number(score.net), successPercent: Number(score.success_percent),
-      wrongDivisor: Number(subjects.find((subject) => subject.subject_id === score.subject_id)?.wrong_divisor || 4),
+      wrongDivisor: effectiveWrongDivisor(subjects.find((subject) => subject.subject_id === score.subject_id)?.wrong_divisor, scoreMethod, scoringOverride),
+      subjectId: score.subject_id, code: subjects.find((subject) => subject.subject_id === score.subject_id)?.code,
       questionCount: Number(subjects.find((subject) => subject.subject_id === score.subject_id)?.question_count || 0),
     }));
     const outcomeAccumulator = new Map<string, { evidence: number; correct: number }>();
@@ -246,13 +249,13 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
           }
         }
       }
-      const score = calculateSubjectScore({ correct, wrong, blank, wrongDivisor: Number(subject.wrong_divisor), questionCount: activeQuestionCount });
-      subjectScores.push(score);
+      const score = calculateSubjectScore({ correct, wrong, blank, wrongDivisor: effectiveWrongDivisor(subject.wrong_divisor, scoreMethod, scoringOverride), questionCount: activeQuestionCount });
+      subjectScores.push({ ...score, subjectId: subject.subject_id, code: subject.code });
       subjectResultRows.push([uuid('sr'), participantId, subject.subject_id, correct, wrong, blank, score.net, score.successPercent]);
     }
 
     const overall = calculateOverall(subjectScores);
-    examResultRows.push([uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, null, overall.successPercent]);
+    examResultRows.push([uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, calculateExamScore(scoreMethod, subjectScores, scoringOverride), overall.successPercent]);
     for (const [outcomeId, acc] of outcomeAccumulator) {
       const rate = acc.evidence ? acc.correct / acc.evidence : 0;
       outcomeRows.push([uuid('or'), studentId, exam.id, outcomeId, acc.evidence, acc.correct, rate, masteryStatus(acc.correct, acc.evidence)]);
