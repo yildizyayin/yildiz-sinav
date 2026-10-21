@@ -30,3 +30,40 @@ describe('guest/active matching',()=>{
   expect(statuses.filter((status)=>status==='NEW_GUEST')).toHaveLength(15);
  });
 });
+
+import { isValidTckn } from '../worker/lib/matching';
+// Builds a checksum-valid T.C. number from 9 leading digits (test data only).
+const tc = (nine: string) => { const d = [...nine].map(Number); const d10 = (((d[0]+d[2]+d[4]+d[6]+d[8])*7 - (d[1]+d[3]+d[5]+d[7])) % 10 + 10) % 10; const d11 = (d.reduce((a,b)=>a+b,0) + d10) % 10; return nine + d10 + d11; };
+describe('A026: never attach a sheet to the wrong child',()=>{
+ const A = tc('123456789'), B = tc('987654321');
+ const regs: MatchCandidate[] = [
+  {student_id:'ali',status:'ACTIVE',normalized_name:'ali gultekin',tckn:A,student_number:'101',grade_level:12,section:'A'},
+  {student_id:'ayse',status:'ACTIVE',normalized_name:'ayse sahin',tckn:B,student_number:'102',grade_level:12,section:'A'},
+ ];
+ const row = (x: Partial<CanonicalRecord>): CanonicalRecord => ({...base,grade_level:12,section:'A',...x});
+ it('recognises real T.C. numbers and not phone numbers in the TC/TEL field',()=>{
+  expect(isValidTckn(A)).toBe(true);expect(isValidTckn(B)).toBe(true);
+  expect(isValidTckn('532123456789')).toBe(false);expect(isValidTckn(A.slice(0,10)+String((Number(A[10])+1)%10))).toBe(false);expect(isValidTckn('01234567890')).toBe(false);
+ });
+ it('order: T.C. first, then school number, then name',()=>{
+  expect(matchParticipant(row({tckn:B,student_number:'101',name:'Ali Gültekin'}),regs)).toMatchObject({student_id:'ayse'});
+  expect(matchParticipant(row({tckn:undefined,student_number:'102',name:'Ayşe Şahin'}),regs)).toMatchObject({student_id:'ayse',issues:[]});
+  expect(matchParticipant(row({tckn:undefined,student_number:undefined,name:'Ayşe Şahin'}),regs)).toMatchObject({student_id:'ayse'});
+ });
+ it('a school number whose owner has a different valid T.C. number is not linked silently',()=>{
+  const r = matchParticipant(row({tckn:tc('555555555'),student_number:'101',name:'Ali Gültekin'}),regs);
+  expect(r.status).toBe('AMBIGUOUS');expect(r.student_id).toBeUndefined();expect(r.issues[0]).toContain('T.C. kimlik numarası o öğrenciye ait değil');
+  // a phone number in the TC/TEL field does not block the school-number match
+  expect(matchParticipant(row({tckn:'5321234567',student_number:'101',name:'Ali Gültekin'}),regs)).toMatchObject({status:'ACTIVE_MATCH',student_id:'ali'});
+ });
+ it('names whose Turkish letters were lost (U+FFFD) still find the one registered student, for review; two fits stay ambiguous',()=>{
+  const lost = 'AL� G�LTEK�N';
+  const r = matchParticipant(row({tckn:undefined,student_number:undefined,name:lost}),regs);
+  expect(r).toMatchObject({status:'ACTIVE_MATCH',student_id:'ali'});expect(r.issues[0]).toContain('harfler kaybolmuş');
+  expect(matchParticipant(row({tckn:undefined,student_number:'101',name:lost}),regs)).toMatchObject({student_id:'ali',issues:[]});
+  const twins = [...regs,{student_id:'alp',status:'ACTIVE' as const,normalized_name:'alp gultekin',tckn:null,student_number:null,grade_level:12,section:'A'}];
+  expect(matchParticipant(row({tckn:undefined,student_number:undefined,name:'AL� G�LTEK�N'}),twins).status).toBe('AMBIGUOUS');
+  // a lost letter stands for one letter, never for a space or a missing word
+  expect(matchParticipant(row({tckn:undefined,student_number:undefined,name:'AL�GULTEKIN'}),regs).status).toBe('NEW_GUEST');
+ });
+});

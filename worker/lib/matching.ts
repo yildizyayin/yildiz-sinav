@@ -1,14 +1,39 @@
 import type { CanonicalRecord, MatchCandidate, MatchResult } from '../types';
 import { normalizeName } from './db';
 
+/** A026: a real T.C. identity number (11 digits, valid checksum). Optical "TC/TEL" fields often hold phone numbers. */
+export function isValidTckn(value: string): boolean {
+  if (!/^[1-9]\d{10}$/.test(value)) return false;
+  const d = [...value].map(Number);
+  const odd = d[0] + d[2] + d[4] + d[6] + d[8], even = d[1] + d[3] + d[5] + d[7];
+  return ((odd * 7 - even) % 10 + 10) % 10 === d[9] && d.slice(0, 10).reduce((a, b) => a + b, 0) % 10 === d[10];
+}
+
+/**
+ * A026: optical files often arrive with Turkish letters lost as U+FFFD ("AL� G�LTEK�N"). normalizeName would
+ * turn each lost letter into a space, so it is kept as the marker '9' (names never hold digits) and matches any
+ * one letter of a registered name.
+ */
+const LOST = '9';
+export function lostLetterName(raw: string): string | null {
+  return raw.includes('\uFFFD') ? normalizeName(raw.replace(/\uFFFD/g, LOST)) : null;
+}
+export function sameNameAllowingLostLetters(markedName: string, candidateName: string): boolean {
+  if (markedName === candidateName) return true;
+  if (!markedName.includes(LOST) || markedName.length !== candidateName.length) return false;
+  return [...markedName].every((ch, i) => ch === LOST ? /[a-z]/.test(candidateName[i]) : ch === candidateName[i]);
+}
+
 export function matchParticipant(record: CanonicalRecord, candidates: MatchCandidate[]): MatchResult {
   const name = normalizeName(record.name || '');
   const tckn = (record.tckn || '').replace(/\D/g, '');
+  const recordHasRealTckn = isValidTckn(tckn);
+  const marked = lostLetterName(record.name || '');
   if (tckn) {
     const byTckn = candidates.filter((c) => (c.tckn || '').replace(/\D/g, '') === tckn);
     if (byTckn.length === 1) {
       const c = byTckn[0];
-      const nameScore = name ? (c.normalized_name === name ? 1 : similarity(c.normalized_name, name)) : 0.99;
+      const nameScore = name ? (c.normalized_name === name || (marked && sameNameAllowingLostLetters(marked, c.normalized_name)) ? 1 : similarity(c.normalized_name, name)) : 0.99;
       return {
         status: c.status === 'ACTIVE' ? 'ACTIVE_MATCH' : 'GUEST_MATCH',
         student_id: c.student_id,
@@ -24,7 +49,13 @@ export function matchParticipant(record: CanonicalRecord, candidates: MatchCandi
     const byNo = candidates.filter((c) => (c.student_number || '').trim() === studentNo);
     if (byNo.length === 1) {
       const c = byNo[0];
-      const nameScore = name ? (c.normalized_name === name ? 1 : similarity(c.normalized_name, name)) : 0.97;
+      const candidateTckn = (c.tckn || '').replace(/\D/g, '');
+      // A026: the sheet carries a different, valid T.C. number than the student who owns this school number:
+      // linking would put one child's result on another child. Ask instead.
+      if (recordHasRealTckn && isValidTckn(candidateTckn) && candidateTckn !== tckn) {
+        return { status: 'AMBIGUOUS', confidence: 0.3, issues: ['Öğrenci numarası kayıtlı bir öğrenciyle eşleşti ancak optikteki T.C. kimlik numarası o öğrenciye ait değil. Doğru öğrenciyi seçin.'], candidates: [c.student_id] };
+      }
+      const nameScore = name ? (c.normalized_name === name || (marked && sameNameAllowingLostLetters(marked, c.normalized_name)) ? 1 : similarity(c.normalized_name, name)) : 0.97;
       return {
         status: c.status === 'ACTIVE' ? 'ACTIVE_MATCH' : 'GUEST_MATCH',
         student_id: c.student_id,
@@ -58,6 +89,14 @@ export function matchParticipant(record: CanonicalRecord, candidates: MatchCandi
       confidence: studentNo ? 0.86 : 0.82,
       issues: studentNo ? ['Öğrenci numarası bulunamadı; ad soyad ve sınıf ile eşleşti.'] : ['Öğrenci numarası yok; ad soyad ve sınıf ile eşleşti.'],
     };
+  }
+  if (!exactName.length && marked) {
+    const loose = candidates.filter((c) => sameNameAllowingLostLetters(marked, c.normalized_name)).filter((c) => (record.grade_level == null || c.grade_level == null || c.grade_level === record.grade_level) && (!record.section || !c.section || c.section.toLocaleUpperCase('tr-TR') === record.section.toLocaleUpperCase('tr-TR')));
+    if (loose.length === 1) {
+      const c = loose[0];
+      return { status: c.status === 'ACTIVE' ? 'ACTIVE_MATCH' : 'GUEST_MATCH', student_id: c.student_id, confidence: 0.7, issues: ['Optikteki ad soyadda Türkçe harfler kaybolmuş; harf kaybına göre tek öğrenciyle eşleşti. Kontrol edip onaylayın.'] };
+    }
+    if (loose.length > 1) return { status: 'AMBIGUOUS', confidence: 0.4, issues: ['Ad soyaddaki kayıp harfler nedeniyle birden fazla öğrenci uyuyor.'], candidates: loose.map((c) => c.student_id) };
   }
   if (narrowed.length > 1 || exactName.length > 1) {
     const list = narrowed.length ? narrowed : exactName;
