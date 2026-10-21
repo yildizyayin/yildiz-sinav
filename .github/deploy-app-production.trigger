@@ -1,1 +1,1 @@
-2026-10-21 A025 real Sekonic TYT files
+2026-10-21 A024 OSYM weighted estimate

@@ -595,7 +595,8 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   if (examScope) return examScope;
   if (!exam.scoring_version_id) return badRequest('Sınavın puanlama kuralı tanımlı değil.', 'SCORING_RULE_REQUIRED');
   assertScoringRuleVerified({ verified: exam.verified, authority: exam.authority });
-  const scoreMethod = scoreMethodFor((() => { try { return JSON.parse(exam.config_json || '{}'); } catch { return {}; } })());
+  const scoringConfig = (() => { try { return JSON.parse(exam.config_json || '{}'); } catch { return {}; } })();
+  const scoreMethod = scoreMethodFor(scoringConfig);
   const scoringOverride = (() => { try { return JSON.parse(exam.scoring_override_json || 'null'); } catch { return null; } })();
   const subjects = await all<any>(env.DB.prepare(`SELECT es.subject_id, s.code, s.name, es.question_count, es.wrong_divisor FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order`).bind(exam.id));
   const booklets = await all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1').bind(exam.id));
@@ -688,7 +689,7 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
     }
     const overall = calculateOverall(subjectScores);
     await env.DB.prepare(`INSERT INTO exam_results (id,participant_id,scoring_rule_version_id,correct_count,wrong_count,blank_count,net,score,success_percent) VALUES(?,?,?,?,?,?,?,?,?)`)
-      .bind(uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, calculateExamScore(scoreMethod, subjectScores, scoringOverride), overall.successPercent).run();
+      .bind(uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, calculateExamScore(scoreMethod, subjectScores, scoringOverride, scoringConfig), overall.successPercent).run();
     await env.DB.prepare('DELETE FROM outcome_results WHERE student_id=? AND exam_id=?').bind(studentId, exam.id).run();
     const mergedOutcomes = await all<any>(env.DB.prepare(`SELECT qo.outcome_id,COUNT(*) evidence,
       SUM(CASE WHEN sa.status='CORRECT' THEN 1 ELSE 0 END) correct
