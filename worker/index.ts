@@ -11,6 +11,7 @@ import { persistTytOptionalPhilosophyEvidence } from './tyt-optional-philosophy-
 import { matchParticipant } from './lib/matching';
 import { bookletIssue, compareBooklets, isBookletIssue } from './lib/booklet-review';
 import { decodeUploadedBytes, parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib/parse';
+import { alignRecordsToExam, blankSubjectsCoveredElsewhere, mergeSessionRecords, primaryBooklet, recordBookletIssue, subjectBooklet } from './lib/two-session';
 import { duplicateMessage, duplicateStudentConflicts } from './lib/scan-duplicates';
 import { assertScoringRuleVerified, calculateExamScore, calculateOverall, calculateSubjectScore, effectiveWrongDivisor, scoreMethodFor } from './lib/scoring';
 import { masteryStatus } from './lib/outcome';
@@ -427,6 +428,14 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
 
   const candidates = await loadStudentCandidates(env.DB, institutionId, season.id);
   const allowedBooklets = (await all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1').bind(examId))).map((b) => b.code.toUpperCase());
+  // A028b: align the form's test codes to the exam, drop tests nobody answered in this file (the other
+  // session's file carries them) and join the two session sheets of one student into one record.
+  const examCodes = (await all<{ code: string }>(env.DB.prepare('SELECT s.code FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order').bind(examId))).map((s) => s.code.toUpperCase());
+  const aligned = alignRecordsToExam(parsed.records, examCodes);
+  const sessions = mergeSessionRecords(aligned.records);
+  parsed.records = sessions.records;
+  if (!parsed.records.some((r) => Object.keys(r.answers_by_subject).some((code) => examCodes.includes(code)))) return badRequest('Dosyada bu sınavın derslerine ait cevap bulunamadı.', 'NO_EXAM_SUBJECTS_IN_FILE', { warnings: aligned.warnings });
+  const fileNotes = [...(parsed.forms ? parsed.issues : []), ...aligned.warnings, ...(sessions.merged.length ? [`${sessions.merged.length} öğrencinin iki oturum optiği tek kayıtta birleştirildi.`] : [])];
   const batchId = uuid('batch');
   const batchStatus = parsed.records.some((r) => r.issues.length) ? 'NEEDS_REVIEW' : 'PREVIEW';
   await env.DB.prepare(`INSERT INTO scan_batches (id,exam_id,institution_id,season_id,source_type,optical_template_version_id,detection_confidence,status,created_by) VALUES(?,?,?,?,?,?,?,?,?)`)
@@ -437,7 +446,7 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
   for (const record of parsed.records) {
     if (!record.booklet && allowedBooklets.length === 1) record.booklet = allowedBooklets[0];
     const match = matchParticipant(record, candidates);
-    const issue = bookletIssue(record.booklet, allowedBooklets);
+    const issue = recordBookletIssue(record, allowedBooklets, bookletIssue);
     if (issue) record.issues.push(issue);
     if (match.status === 'ACTIVE_MATCH') counts.active++;
     if (match.status === 'GUEST_MATCH') counts.guest++;
@@ -454,8 +463,8 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
   for (let i = 0; i < recordStatements.length; i += 80) await env.DB.batch(recordStatements.slice(i, i + 80));
   const finalStatus = counts.pending ? 'NEEDS_REVIEW' : 'READY';
   await env.DB.prepare('UPDATE scan_batches SET status=? WHERE id=?').bind(finalStatus, batchId).run();
-  await audit(env.DB, user.id, institutionId, 'EXAM_FILE_PREVIEWED', 'scan_batch', batchId, { examId, rows: parsed.records.length, counts, template: parsed.templateName });
-  return json({ ok: true, batchId, detection: { templateId: parsed.templateId, templateName: parsed.templateName, confidence: parsed.confidence }, counts, total: parsed.records.length, status: finalStatus });
+  await audit(env.DB, user.id, institutionId, 'EXAM_FILE_PREVIEWED', 'scan_batch', batchId, { examId, rows: parsed.records.length, counts, template: parsed.templateName, forms: parsed.forms?.length || 1, renamed: aligned.renamed, missing: aligned.missing, merged: sessions.merged.length });
+  return json({ ok: true, batchId, detection: { templateId: parsed.templateId, templateName: parsed.templateName, confidence: parsed.confidence, forms: parsed.forms }, counts, total: parsed.records.length, status: finalStatus, notes: fileNotes, missingSubjects: aligned.missing });
 }
 
 export async function getScanBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {
@@ -465,7 +474,7 @@ export async function getScanBatch(env: Env, user: AuthUser, batchId: string): P
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
   const records = await all<any>(env.DB.prepare(`SELECT r.*, s.first_name || ' ' || s.last_name matched_name FROM scan_records r LEFT JOIN student_entities s ON s.id=r.matched_student_id WHERE batch_id=? ORDER BY row_no`).bind(batchId));
   const mapped = records.map((r) => ({ ...r, canonical: JSON.parse(r.canonical_json) as CanonicalRecord, issues: (r.issues_json ? JSON.parse(r.issues_json) : []) as string[] }));
-  const pendingBooklet = mapped.filter((r) => r.resolution_status !== 'CANCELLED' && (r.issues.some(isBookletIssue) || !r.canonical.booklet));
+  const pendingBooklet = mapped.filter((r) => r.resolution_status !== 'CANCELLED' && (r.issues.some(isBookletIssue) || !primaryBooklet(r.canonical)));
   if (pendingBooklet.length) {
     const [booklets, subjects, keys] = await Promise.all([
       all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code').bind(batch.exam_id)),
@@ -549,12 +558,15 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
       all<{ subject_id: string; booklet_code: string; question_no: number; correct_answer: string; printed_question_no?: number; accepted_answers?: string | null; question_status?: string }>(env.DB.prepare('SELECT q.subject_id,ak.booklet_code,q.question_no,ak.correct_answer,ak.accepted_answers,coalesce(ak.question_status,q.question_status,\'ACTIVE\') question_status,coalesce(bqo.printed_question_no,q.question_no) printed_question_no FROM exam_questions q JOIN answer_keys ak ON ak.exam_question_id=q.id LEFT JOIN exam_question_booklet_orders bqo ON bqo.exam_question_id=q.id AND bqo.booklet_code=ak.booklet_code WHERE q.exam_id=?').bind(batch.exam_id)),
     ]);
     const exam = await one<any>(env.DB.prepare('SELECT e.scoring_override_json,srv.config_json FROM exams e LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id WHERE e.id=?').bind(batch.exam_id));
-    const options = compareBooklets(canonical, allowed.map((b) => b.code.toUpperCase()).sort(), subjects, keys, bookletDivisor(exam));
+    const validOwn = { ...canonical, booklet_by_subject: canonical.booklet_by_subject ? Object.fromEntries(Object.entries(canonical.booklet_by_subject).filter(([, b]) => allowed.some((x) => x.code.toUpperCase() === b))) : undefined };
+    const options = compareBooklets(validOwn, allowed.map((b) => b.code.toUpperCase()).sort(), subjects, keys, bookletDivisor(exam));
     const chosen = options.find((o) => o.code === code);
     if (!chosen?.available) return badRequest('Kitapçık için ders yanıtı veya cevap anahtarı eksik.');
     // A027: keep what the person saw when deciding — the previous code and every option's net — in the audit trail.
     bookletDecision = { from: canonical.booklet || null, to: code, options: options.map((o: any) => ({ code: o.code, available: o.available, net: o.net ?? null, correct: o.correct ?? null, wrong: o.wrong ?? null })) };
     canonical.booklet = code;
+    // A028b: a session sheet whose own booklet was unreadable or invalid takes the chosen booklet.
+    if (canonical.booklet_by_subject) for (const [subjectCode, b] of Object.entries(canonical.booklet_by_subject)) if (!allowed.some((x) => x.code.toUpperCase() === b)) delete canonical.booklet_by_subject[subjectCode];
     canonical.issues = canonical.issues.filter((issue) => !isBookletIssue(issue));
     issues = existingIssues.filter((issue) => !isBookletIssue(issue));
   } else if (action === 'CANCEL') {
@@ -637,12 +649,14 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   for (const row of records) {
     if (row.resolution_status === 'CANCELLED') continue;
     const record = JSON.parse(row.canonical_json) as CanonicalRecord;
-    const booklet = (record.booklet || '').trim().toUpperCase() || (booklets.length === 1 ? booklets[0].code : '');
+    const booklet = primaryBooklet(record) || (booklets.length === 1 ? booklets[0].code : '');
     if (!booklets.some((b) => b.code === booklet)) return badRequest(`Satır ${row.row_no} için kitapçık seçin.`, 'BOOKLET_REQUIRED');
+    if (Object.keys(record.answers_by_subject || {}).some((code) => subjects.some((x: any) => x.code === code) && !booklets.some((b) => b.code === subjectBooklet(record, code, booklet)))) return badRequest(`Satır ${row.row_no} için kitapçık seçin.`, 'BOOKLET_REQUIRED');
     const preview = compareBooklets(record, [booklet], subjects, keyRows)[0];
     if (!preview.available) return badRequest(`Satır ${row.row_no}: ders yanıtı veya cevap anahtarı eksik.`, 'ANSWER_KEY_INCOMPLETE');
   }
   let processed = 0;
+  const coveredElsewhere = blankSubjectsCoveredElsewhere(records);
   for (const row of records) {
     if (row.resolution_status === 'CANCELLED') continue;
     const record = JSON.parse(row.canonical_json) as CanonicalRecord;
@@ -661,9 +675,10 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
       await env.DB.prepare('UPDATE guest_profiles SET last_seen_at=CURRENT_TIMESTAMP WHERE student_id=?').bind(studentId).run();
     }
     if (!studentId) throw new Error('UNRESOLVED_PARTICIPANT');
-    const booklet = (record.booklet || '').toUpperCase() || (booklets.length === 1 ? booklets[0].code : '');
+    const booklet = primaryBooklet(record) || (booklets.length === 1 ? booklets[0].code : '');
     if (!booklet || !booklets.some((b) => b.code === booklet)) throw new Error(`BOOKLET_REQUIRED_ROW_${row.row_no}`);
-    const incomingSubjects = subjects.filter((subject) => Object.prototype.hasOwnProperty.call(record.answers_by_subject || {}, subject.code));
+    const skipHere = coveredElsewhere.get(row.id);
+    const incomingSubjects = subjects.filter((subject) => Object.prototype.hasOwnProperty.call(record.answers_by_subject || {}, subject.code) && !skipHere?.has(subject.code));
     if (!incomingSubjects.length) throw new Error(`ANSWER_SUBJECT_REQUIRED_ROW_${row.row_no}`);
     const incomingSubjectIds = new Set(incomingSubjects.map((subject) => subject.subject_id));
     const existing = await one<{ id: string }>(env.DB.prepare('SELECT id FROM exam_participants WHERE exam_id=? AND institution_id=? AND student_id=?').bind(exam.id, batch.institution_id, studentId));
@@ -692,7 +707,8 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
     }));
     for (const subject of incomingSubjects) {
       const answerString = record.answers_by_subject[subject.code] || '';
-      const subjectKeys = keyRows.filter((k) => k.subject_id === subject.subject_id && k.booklet_code === booklet).sort((a,b)=>Number(a.printed_question_no)-Number(b.printed_question_no));
+      const sessionBooklet = subjectBooklet(record, subject.code, booklet);
+      const subjectKeys = keyRows.filter((k) => k.subject_id === subject.subject_id && k.booklet_code === sessionBooklet).sort((a,b)=>Number(a.printed_question_no)-Number(b.printed_question_no));
       let correct = 0, wrong = 0, blank = 0, activeQuestionCount = 0;
       for (let i = 0; i < subject.question_count; i++) {
         const key = subjectKeys[i];
@@ -713,9 +729,11 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
       await env.DB.prepare(`INSERT INTO subject_results (id,participant_id,subject_id,correct_count,wrong_count,blank_count,net,success_percent) VALUES(?,?,?,?,?,?,?,?)`)
         .bind(uuid('sr'), participantId, subject.subject_id, correct, wrong, blank, score.net, score.successPercent).run();
     }
+    // A028b: a student with a session not yet read (or absent) gets nets but no score, like the ÖSYM estimate:
+    // a share over only the tests taken would overstate it.
     const overall = calculateOverall(subjectScores);
     await env.DB.prepare(`INSERT INTO exam_results (id,participant_id,scoring_rule_version_id,correct_count,wrong_count,blank_count,net,score,success_percent) VALUES(?,?,?,?,?,?,?,?,?)`)
-      .bind(uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, calculateExamScore(scoreMethod, subjectScores, scoringOverride, scoringConfig), overall.successPercent).run();
+      .bind(uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, (subjectScores.length >= subjects.length ? calculateExamScore(scoreMethod, subjectScores, scoringOverride, scoringConfig) : null), overall.successPercent).run();
     await env.DB.prepare('DELETE FROM outcome_results WHERE student_id=? AND exam_id=?').bind(studentId, exam.id).run();
     const mergedOutcomes = await all<any>(env.DB.prepare(`SELECT qo.outcome_id,COUNT(*) evidence,
       SUM(CASE WHEN sa.status='CORRECT' THEN 1 ELSE 0 END) correct

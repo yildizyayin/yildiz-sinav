@@ -142,6 +142,10 @@ export interface CanonicalRecord {
   grade_level?: number;
   section?: string;
   booklet?: string;
+  /** A028b: per-test booklet when the two sessions of one student were read from sheets with different booklets. */
+  booklet_by_subject?: Record<string, string>;
+  /** A028b: row numbers of further sheets of the same student merged into this record. */
+  merged_rows?: number[];
   answers_by_subject: Record<string, string>;
   source_type: 'TXT' | 'DAT' | 'CSV' | 'CAMERA' | 'TRANSFER';
   source_template?: string;

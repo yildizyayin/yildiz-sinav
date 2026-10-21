@@ -7,6 +7,7 @@ import { all, audit, badRequest, forbidden, json, normalizeName, notFound, one, 
 import { canEvaluateExam } from './lib/permissions';
 import { examEvaluationAccess } from './lib/exam-evaluation-access';
 import { recordExamAssessments, recordExamEvidenceAudit } from './lib/assessment-ledger';
+import { blankSubjectsCoveredElsewhere, primaryBooklet, subjectBooklet } from './lib/two-session';
 import { duplicateMessage, duplicateStudentConflicts } from './lib/scan-duplicates';
 import { assertScoringRuleVerified, calculateExamScore, calculateOverall, calculateSubjectScore, effectiveWrongDivisor, scoreMethodFor } from './lib/scoring';
 import { masteryStatus } from './lib/outcome';
@@ -94,7 +95,8 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
 
   if (batch.status === 'COMMITTED') return json({ ok: true, done: true, processed: alreadyProcessed || total, processedThisRun: 0, total, remaining: 0, batchId, examId: batch.exam_id });
   if (batch.status !== 'READY') return badRequest('Önce sorunlu kayıtları düzeltin.', 'BATCH_NEEDS_REVIEW');
-  const dupes = duplicateStudentConflicts(await all<AnyRow>(env.DB.prepare('SELECT row_no,matched_student_id,resolution_status,canonical_json FROM scan_records WHERE batch_id=?').bind(batch.id)) as any);
+  const batchRows = await all<AnyRow>(env.DB.prepare('SELECT id,row_no,matched_student_id,resolution_status,canonical_json FROM scan_records WHERE batch_id=?').bind(batch.id));
+  const dupes = duplicateStudentConflicts(batchRows as any);
   if (dupes.length) return badRequest(duplicateMessage(dupes), 'DUPLICATE_STUDENT_IN_BATCH');
   if (!total) return badRequest('Değerlendirilecek optik kaydı bulunamadı.', 'EMPTY_BATCH');
 
@@ -154,6 +156,13 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
     }
   }
 
+  // A028b: two sheets of one student (one per session) must not be written in the same chunk: the second
+  // would create a second participant instead of merging into the first. Later sheets wait for the next chunk.
+  const seenStudents = new Set<string>();
+  for (let i = 0; i < resolved.length; i++) {
+    if (seenStudents.has(resolved[i].studentId)) resolved.splice(i--, 1); else seenStudents.add(resolved[i].studentId);
+  }
+  const coveredElsewhere = blankSubjectsCoveredElsewhere(batchRows as any);
   const studentIds = resolved.map((x) => x.studentId);
   const existingParticipants = studentIds.length
     ? await all<{ id: string; student_id: string }>(env.DB.prepare(`SELECT id,student_id FROM exam_participants WHERE exam_id=? AND institution_id=? AND student_id IN (${placeholders(studentIds.length)})`).bind(exam.id, batch.institution_id, ...studentIds))
@@ -170,6 +179,7 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
     : [];
 
   const statements: D1PreparedStatement[] = [];
+  const guestLinks: D1PreparedStatement[] = [];
   const participantRows: unknown[][] = [];
   const answerRows: unknown[][] = [];
   const subjectResultRows: unknown[][] = [];
@@ -183,12 +193,13 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
 
   for (const item of resolved) {
     const { row, record, studentId, studentStatus, isNewGuest } = item;
-    const booklet = (record.booklet || '').toUpperCase() || (booklets.length === 1 ? booklets[0].code : '');
+    const booklet = primaryBooklet(record) || (booklets.length === 1 ? booklets[0].code : '');
     if (!booklet || !booklets.some((b) => b.code === booklet)) return badRequest(`Satır ${row.row_no} için geçerli kitapçık türü bulunamadı.`, 'BOOKLET_REQUIRED');
 
     const participantId = participantByStudent.get(studentId) || uuid('part');
     outcomeStudentIds.push(studentId);
-    const incomingSubjects = subjects.filter((subject) => Object.prototype.hasOwnProperty.call(record.answers_by_subject || {}, subject.code));
+    const skipHere = coveredElsewhere.get(row.id);
+    const incomingSubjects = subjects.filter((subject) => Object.prototype.hasOwnProperty.call(record.answers_by_subject || {}, subject.code) && !skipHere?.has(subject.code));
     if (!incomingSubjects.length) return badRequest(`Satır ${row.row_no} için sınava ait ders cevap alanı bulunamadı.`, 'ANSWER_SUBJECT_REQUIRED');
     const incomingSubjectIds = new Set(incomingSubjects.map((subject) => subject.subject_id));
 
@@ -198,7 +209,8 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
       newStudentRows.push([studentId, names.firstName, names.lastName, normalizeName(record.name), 'GUEST']);
       newEnrollmentRows.push([uuid('enr'), studentId, batch.institution_id, batch.season_id || null, classRow?.id || null, record.student_number || null, record.grade_level || null, record.section || null]);
       newGuestProfileRows.push([studentId, exam.id]);
-      statements.push(env.DB.prepare(`UPDATE scan_records SET matched_student_id=?,match_status='GUEST_MATCH',match_confidence=1 WHERE id=? AND batch_id=?`).bind(studentId, row.id, batchId));
+      // A028b.1: linked only after the guest student row exists (below); D1 enforces the foreign key.
+      guestLinks.push(env.DB.prepare(`UPDATE scan_records SET matched_student_id=?,match_status='GUEST_MATCH',match_confidence=1 WHERE id=? AND batch_id=?`).bind(studentId, row.id, batchId));
     }
 
     participantRows.push([
@@ -224,10 +236,10 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
     for (const subject of incomingSubjects) {
       const answerString = record.answers_by_subject?.[subject.code] || '';
       const subjectKeys = keyRows
-        .filter((k) => k.subject_id === subject.subject_id && k.booklet_code === booklet)
+        .filter((k) => k.subject_id === subject.subject_id && k.booklet_code === subjectBooklet(record, subject.code, booklet))
         .sort((a, b) => Number(a.printed_question_no) - Number(b.printed_question_no));
       if (subjectKeys.length !== Number(subject.question_count)) {
-        return badRequest(`${subject.name} için ${booklet} kitapçığı cevap anahtarı eksik.`, 'ANSWER_KEY_INCOMPLETE');
+        return badRequest(`${subject.name} için ${subjectBooklet(record, subject.code, booklet)} kitapçığı cevap anahtarı eksik.`, 'ANSWER_KEY_INCOMPLETE');
       }
 
       let correct = 0, wrong = 0, blank = 0, activeQuestionCount = 0;
@@ -258,8 +270,10 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
       subjectResultRows.push([uuid('sr'), participantId, subject.subject_id, correct, wrong, blank, score.net, score.successPercent]);
     }
 
+    // A028b: a student with a session not yet read (or absent) gets nets but no score, like the ÖSYM estimate:
+    // a share over only the tests taken would overstate it.
     const overall = calculateOverall(subjectScores);
-    examResultRows.push([uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, calculateExamScore(scoreMethod, subjectScores, scoringOverride, scoringConfig), overall.successPercent]);
+    examResultRows.push([uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, (subjectScores.length >= subjects.length ? calculateExamScore(scoreMethod, subjectScores, scoringOverride, scoringConfig) : null), overall.successPercent]);
     for (const [outcomeId, acc] of outcomeAccumulator) {
       const rate = acc.evidence ? acc.correct / acc.evidence : 0;
       outcomeRows.push([uuid('or'), studentId, exam.id, outcomeId, acc.evidence, acc.correct, rate, masteryStatus(acc.correct, acc.evidence)]);
@@ -281,6 +295,7 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
     statements.push(...bulkInsert(env.DB, 'student_entities', ['id','first_name','last_name','normalized_name','status'], newStudentRows));
     statements.push(...bulkInsert(env.DB, 'student_enrollments', ['id','student_id','institution_id','season_id','class_id','student_number','grade_level','section'], newEnrollmentRows));
     statements.push(...bulkInsert(env.DB, 'guest_profiles', ['student_id','first_seen_exam_id'], newGuestProfileRows, 'INSERT OR REPLACE INTO'));
+    statements.push(...guestLinks);
   }
 
   if (outcomeStudentIds.length) {
@@ -313,7 +328,7 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
   const processed = Number(processedRow?.c || 0);
   const remaining = Math.max(0, total - processed);
   if (remaining === 0) return finaliseBatch(env, user.id, batch, total);
-  return json({ ok: true, done: false, processed, processedThisRun: records.length, total, remaining, batchId, examId: exam.id });
+  return json({ ok: true, done: false, processed, processedThisRun: resolved.length, total, remaining, batchId, examId: exam.id });
 }
 
 async function evaluateChunk(request:Request,env:Env,batchId:string):Promise<Response>{
