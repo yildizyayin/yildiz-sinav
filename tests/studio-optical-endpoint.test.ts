@@ -13,7 +13,7 @@ function setup(deliveryMode='PDF_OPTICAL'){
  CREATE TABLE studio_documents(id TEXT PRIMARY KEY,institution_id TEXT,created_by TEXT,title TEXT,config_json TEXT);
  CREATE TABLE studio_document_items(document_id TEXT,question_id TEXT,booklet_code TEXT,sort_order INTEGER);
  CREATE TABLE studio_document_assets(document_id TEXT,booklet_code TEXT,asset_type TEXT,metadata_json TEXT,file_name TEXT);
- CREATE TABLE question_bank(id TEXT PRIMARY KEY,correct_answer TEXT,owner_type TEXT DEFAULT 'PLATFORM',owner_id TEXT,review_status TEXT DEFAULT 'APPROVED',copyright_status TEXT DEFAULT 'OWNED',grade_level INTEGER DEFAULT 8,subject_id TEXT DEFAULT 'math',option_count INTEGER DEFAULT 4,academic_year TEXT DEFAULT '2027-2028');
+ CREATE TABLE question_bank(id TEXT PRIMARY KEY,question_type TEXT,correct_answer TEXT,owner_type TEXT DEFAULT 'PLATFORM',owner_id TEXT,review_status TEXT DEFAULT 'APPROVED',copyright_status TEXT DEFAULT 'OWNED',grade_level INTEGER DEFAULT 8,subject_id TEXT DEFAULT 'math',option_count INTEGER DEFAULT 4,academic_year TEXT DEFAULT '2027-2028');
  CREATE TABLE assessment_runs(id TEXT PRIMARY KEY,institution_id TEXT,student_id TEXT,source_type TEXT,source_id TEXT,assignment_id TEXT,exam_id TEXT,booklet_code TEXT,delivery_mode TEXT,status TEXT,score REAL,metadata_json TEXT,completed_at TEXT);
  CREATE TABLE assessment_responses(id TEXT,run_id TEXT,student_id TEXT,question_id TEXT,exam_question_id TEXT,node_id TEXT,selected_answer TEXT,is_correct INTEGER,source_channel TEXT);
  INSERT INTO question_bank(id,correct_answer) VALUES('q1','A'),('q2','B'),('q3','C');

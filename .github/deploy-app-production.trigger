@@ -1,1 +1,1 @@
-2026-10-20 A018.2 camera reader: perspective markers anywhere in the photo, large v2 optical page
+2026-10-20 A083.1 Studio scope picker: program/grade/subject/outcome tree with approved stock

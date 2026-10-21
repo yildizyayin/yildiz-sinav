@@ -1,3 +1,4 @@
+import {MAX_OUTCOMES,joinSteps,narrowingMessage,outcomeWhere,parseAcademicYear,parseOutcomeCodes,selectionSteps,type SelectionInput} from './studio-selection';
 import {examOutcomePayloadSql} from './exam-outcome-history';
 import {loadScreening} from './question-screening';
 import type { AuthUser, Env } from '../types';
@@ -749,21 +750,18 @@ async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const optionMode=String(b.optionMode||'MIXED').toUpperCase();if(!['FOUR','FIVE','MIXED'].includes(optionMode))return badRequest('Şık düzeni FOUR, FIVE veya MIXED olmalıdır.','INVALID_OPTION_MODE');
   if(String(b.deliveryMode||'PDF_OPTICAL').toUpperCase()==='PDF_OPTICAL'&&Number(b.questionCount||20)>STUDIO_OPTICAL_CAPACITY)return badRequest(`Telefon optiği en fazla ${STUDIO_OPTICAL_CAPACITY} soruyu okutabilir. Soru sayısını azaltın veya optiksiz PDF teslimi seçin.`,'OPTICAL_CAPACITY_EXCEEDED');
   const bookletCodes:string[]=Array.from(new Set<string>((Array.isArray(b.bookletCodes)?b.bookletCodes:String(b.bookletCodes||'A').split(',')).map((x:any)=>String(x).trim().toUpperCase()).filter((x:string)=>['A','B'].includes(x))));if(!bookletCodes.length)return badRequest('En az bir kitapçık seçilmelidir.','BOOKLET_REQUIRED');
-  const id=uuid('std');const count=Math.max(1,Math.min(200,Number(b.questionCount||20)));const wh=[`q.review_status='APPROVED'`,`q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')`,`(? IS NULL OR q.grade_level=?)`,`(? IS NULL OR q.subject_id=?)`],ps:any[]=[b.gradeLevel||null,b.gradeLevel||null,b.subjectId||null,b.subjectId||null];if(optionMode==='FOUR')wh.push('COALESCE(q.option_count,4)=4');if(optionMode==='FIVE')wh.push('COALESCE(q.option_count,4)=5');if(user.role==='TEACHER'){wh.push(`q.subject_id IN (SELECT ta.subject_id FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND ta.assignment_type='SUBJECT')`);ps.push(user.id,inst);}
-  // A016: a booklet for institution X may only use platform questions or X's own questions — never another institution's private items.
-  wh.push(`(COALESCE(q.owner_type,'PLATFORM')='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`);ps.push(inst);
-  const academicYear=typeof b.academicYear==='string'&&b.academicYear.trim()?b.academicYear.trim():null;
-  if(academicYear){const y=/^(\d{4})-(\d{4})$/.exec(academicYear);if(!y||Number(y[2])!==Number(y[1])+1)return badRequest('Eğitim yılı 2027-2028 biçiminde olmalıdır.','INVALID_ACADEMIC_YEAR');wh.push('q.academic_year=?');ps.push(academicYear);}
-  const outcomeCodes:string[]=[...new Set<string>((Array.isArray(b.outcomeCodes)?b.outcomeCodes:String(b.outcomeCodes||'').split(',')).map((x:any)=>String(x).trim()).filter(Boolean))];
-  if(outcomeCodes.length>30)return badRequest('En fazla 30 kazanım kodu seçilebilir.','TOO_MANY_OUTCOMES');
+  const id=uuid('std');const count=Math.max(1,Math.min(200,Number(b.questionCount||20)));
+  const year=parseAcademicYear(b.academicYear);if(!year.ok)return badRequest('Eğitim yılı 2027-2028 biçiminde olmalıdır.','INVALID_ACADEMIC_YEAR');const academicYear=year.value;
+  const outcomeCodes=parseOutcomeCodes(b.outcomeCodes);
+  if(outcomeCodes.length>MAX_OUTCOMES)return badRequest(`En fazla ${MAX_OUTCOMES} kazanım kodu seçilebilir.`,'TOO_MANY_OUTCOMES');
+  const input:SelectionInput={institutionId:inst,gradeLevel:b.gradeLevel?Number(b.gradeLevel):null,subjectId:b.subjectId||null,academicYear,optionMode:optionMode as any,outcomeCodes,teacherUserId:user.role==='TEACHER'?user.id:null};
   if(outcomeCodes.length){
-    const outcomeWhere=`o.code IN (${outcomeCodes.map(()=>'?').join(',')}) AND o.active=1 AND cv.verified=1 AND (? IS NULL OR o.grade_level=?) AND (? IS NULL OR o.subject_id=?) AND (? IS NULL OR cv.academic_year=?)`;
-    const outcomeParams=[...outcomeCodes,b.gradeLevel||null,b.gradeLevel||null,b.subjectId||null,b.subjectId||null,academicYear,academicYear];
-    const known=await all<any>(env.DB.prepare(`SELECT DISTINCT o.code FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE ${outcomeWhere}`).bind(...outcomeParams));
+    const ow=outcomeWhere(input,outcomeCodes.length);
+    const known=await all<any>(env.DB.prepare(`SELECT DISTINCT o.code FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE ${ow.clause}`).bind(...ow.params));
     const missing=outcomeCodes.filter(code=>!known.some((r:any)=>r.code===code));
     if(missing.length)return badRequest(`Bu kazanım kodları seçilen sınıf/ders/yıl için doğrulanmış olarak bulunamadı: ${missing.join(', ')}`,'UNKNOWN_OUTCOME_CODES');
-    wh.push(`EXISTS(SELECT 1 FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE l.question_id=q.id AND ${outcomeWhere})`);ps.push(...outcomeParams);
   }
+  const {where,params:ps}=joinSteps(selectionSteps(input));const wh=[where];
   const requestedIds=Array.isArray(b.questionIds)?[...new Set((b.questionIds as unknown[]).filter((value):value is string=>typeof value==='string'&&Boolean(value.trim())))].slice(0,count):[];
   const requestedClause=requestedIds.length?` AND q.id IN (${requestedIds.map(()=>'?').join(',')})`:'';
   const qs=await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')}${requestedClause} ORDER BY RANDOM() LIMIT ?`).bind(...ps,...requestedIds,count));
@@ -772,6 +770,29 @@ async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const statements:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO studio_documents(id,institution_id,created_by,document_type,title,grade_level,subject_id,status,config_json) VALUES(?,?,?,?,?,?,?,'DRAFT',?)`).bind(id,inst,user.id,b.documentType,b.title,b.gradeLevel||null,b.subjectId||null,JSON.stringify(config))];
   bookletCodes.forEach((code:string)=>{const ordered=code==='B'?[...qs].reverse():qs;ordered.forEach((q,index)=>statements.push(env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,?,?)`).bind(id,q.id,code,index+1)));});
   await env.DB.batch(statements);await audit(env.DB,user.id,inst,'STUDIO_DOCUMENT_CREATED','studio_document',id,{selectedQuestions:qs.length,bookletCodes,optionMode,deliveryMode:config.deliveryMode});return json({ok:true,id,selectedQuestions:qs.length,requestedQuestions:count,bookletCodes,optionMode},201);
+}
+
+/** A083: what the Studio form may choose from, with approved stock counted by the same filters creation uses. */
+async function studioCatalog(request:Request,env:Env,user:AuthUser):Promise<Response>{
+  const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER'].includes(user.role))return forbidden('Sınav üretimi Süper Admin, kurum yöneticisi veya branş öğretmeni içindir.');
+  const u=new URL(request.url),q=u.searchParams;const inst=userInstitution(user,q.get('institutionId'));if(!inst)return badRequest('Kurum kapsamı gereklidir.');
+  const year=parseAcademicYear(q.get('academicYear'));if(!year.ok)return badRequest('Eğitim yılı 2027-2028 biçiminde olmalıdır.','INVALID_ACADEMIC_YEAR');
+  const optionMode=String(q.get('optionMode')||'MIXED').toUpperCase();const outcomeCodes=parseOutcomeCodes(q.get('outcomeCodes')).slice(0,MAX_OUTCOMES);
+  const gradeLevel=Number(q.get('gradeLevel'))||null,subjectId=q.get('subjectId')||null,requested=Math.max(1,Math.min(200,Number(q.get('questionCount'))||20));
+  const input:SelectionInput={institutionId:inst,gradeLevel,subjectId,academicYear:year.value,optionMode:optionMode as any,outcomeCodes,teacherUserId:user.role==='TEACHER'?user.id:null};
+  const steps=selectionSteps(input);const count=async(list:typeof steps)=>{const j=joinSteps(list);return Number((await one<any>(env.DB.prepare(`SELECT COUNT(*) c FROM question_bank q WHERE ${j.where}`).bind(...j.params)))?.c||0);};
+  const funnel:Array<{key:string;label:string;count:number}>=[];for(let i=0;i<steps.length;i++)funnel.push({key:steps[i].key,label:steps[i].label,count:await count(steps.slice(0,i+1))});
+  let subjects:any[]=[],outcomes:any[]=[];
+  if(gradeLevel){
+    const j=joinSteps(steps.filter(s=>s.key!=='subject'&&s.key!=='outcomes'));
+    subjects=await all<any>(env.DB.prepare(`SELECT s.id,s.name,s.code,(SELECT COUNT(*) FROM question_bank q WHERE q.subject_id=s.id AND ${j.where}) approved FROM subjects s WHERE s.active=1 AND (EXISTS(SELECT 1 FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE o.subject_id=s.id AND o.grade_level=? AND o.active=1 AND cv.verified=1 AND (? IS NULL OR cv.academic_year=?)) OR EXISTS(SELECT 1 FROM question_bank q WHERE q.subject_id=s.id AND ${j.where})) ${user.role==='TEACHER'?"AND s.id IN (SELECT ta.subject_id FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND ta.assignment_type='SUBJECT')":''} ORDER BY s.name`).bind(...j.params,gradeLevel,year.value,year.value,...j.params,...(user.role==='TEACHER'?[user.id,inst]:[])));
+  }
+  if(gradeLevel&&subjectId){
+    const j=joinSteps(steps.filter(s=>s.key!=='outcomes'));
+    outcomes=await all<any>(env.DB.prepare(`SELECT o.code,o.title,COALESCE(o.unit,'Ünite belirtilmemiş') unit,COALESCE(o.topic,'Konu belirtilmemiş') topic,cv.academic_year academicYear,(SELECT COUNT(DISTINCT q.id) FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id WHERE l.node_id='ln_'||o.id AND ${j.where}) approved FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE o.active=1 AND cv.verified=1 AND COALESCE(o.node_type,'OUTCOME') IN ('OUTCOME','SUB_OUTCOME') AND o.grade_level=? AND o.subject_id=? AND (? IS NULL OR cv.academic_year=?) ORDER BY cv.academic_year DESC,o.unit,o.topic,o.code LIMIT 600`).bind(...j.params,gradeLevel,subjectId,year.value,year.value));
+  }
+  const available=funnel.length?funnel[funnel.length-1].count:0;
+  return json({ok:true,institutionId:inst,subjects,outcomes,funnel,available,requested,opticalCapacity:STUDIO_OPTICAL_CAPACITY,message:narrowingMessage(funnel,requested)});
 }
 
 async function physicalBridge(request:Request,env:Env,user:AuthUser):Promise<Response>{
@@ -863,6 +884,7 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/membership/grant'&&request.method==='POST')return grantMembership(request,env,user);
   if(p==='/api/platform/live'&&(request.method==='GET'||request.method==='POST'))return liveSessions(request,env,user);
   if(p==='/api/platform/studio'&&(request.method==='GET'||request.method==='POST'))return studio(request,env,user);
+  if(p==='/api/platform/studio/catalog'&&request.method==='GET')return studioCatalog(request,env,user);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/pdf$/);if(m&&request.method==='GET')return studioPdf(request,env,user,m[1]);
   if(p==='/api/platform/studio/branding/logo')return studioLogo(request,env,user);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/answer-key$/);if(m&&request.method==='GET')return studioAnswerKey(env,user,m[1]);

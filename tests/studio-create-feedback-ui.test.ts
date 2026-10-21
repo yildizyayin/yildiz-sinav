@@ -2,7 +2,7 @@
 import {act,createElement} from 'react';
 import {createRoot} from 'react-dom/client';
 import {beforeEach,expect,it,vi} from 'vitest';
-const mocks=vi.hoisted(()=>({api:vi.fn(),role:'SUPER_ADMIN'}));
+const mocks=vi.hoisted(()=>({api:vi.fn(),role:'SUPER_ADMIN',catalog:{} as any}));
 vi.mock('../src/api',async()=>{const real=await vi.importActual<any>('../src/api');return {...real,api:mocks.api};});
 vi.mock('../src/auth',()=>({useAuth:()=>({user:{id:'u',role:mocks.role,institution_id:mocks.role==='SUPER_ADMIN'?null:'instX'}})}));
 vi.mock('react-router-dom',()=>({Link:(p:any)=>createElement('a',p),useSearchParams:()=>[new URLSearchParams(),()=>{}]}));
@@ -15,10 +15,11 @@ import {ContentCenter} from '../src/pages/ContentCenter';
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
 
 const posts:any[]=[];
-beforeEach(()=>{posts.length=0;mocks.role='SUPER_ADMIN';mocks.api.mockReset();mocks.api.mockImplementation(async(url:string,init?:any)=>{
+beforeEach(()=>{posts.length=0;mocks.role='SUPER_ADMIN';mocks.catalog={};mocks.api.mockReset();mocks.api.mockImplementation(async(url:string,init?:any)=>{
  if(url==='/api/institutions')return {institutions:[{id:'instX',name:'Yıldız Koleji'},{id:'instY',name:'Başka Kurum'}]};
  if(url.startsWith('/api/platform/studio/branding/logo'))return {institutionName:url.includes('instX')?'Yıldız Koleji':null,hasLogo:false};
  if(url==='/api/platform/studio'&&init?.method==='POST'){const body=JSON.parse(init.body);posts.push(body);if(body.questionCount>5)throw new Error('İstenen 20 soruya uygun soru havuzu bulunamadı; yalnız 3 soru seçilebildi.');return {selectedQuestions:5,requestedQuestions:5,bookletCodes:['A','B']};}
+ if(url.startsWith('/api/platform/studio/catalog'))return mocks.catalog;
  if(url.startsWith('/api/platform/studio'))return {documents:[]};
  if(url.startsWith('/api/platform/questions'))return {questions:[]};
  return {};
@@ -68,5 +69,22 @@ it('does not ask institution managers to pick an institution',async()=>{
   await act(async()=>f.btn('Taslak oluştur').click());
   expect(posts[0].institutionId).toBeUndefined();
   expect(mocks.api.mock.calls.some(([u]:any)=>u==='/api/institutions')).toBe(false);
+ }finally{await f.close();}
+});
+
+it('keeps creation disabled and says why when the chosen scope has too few approved questions or exceeds the optical sheet',async()=>{
+ mocks.role='INSTITUTION_MANAGER';mocks.catalog={subjects:[],outcomes:[],available:3,opticalCapacity:44,message:'20 soru gerekli, uygun 3 soru var. Havuzu en çok daraltan: "2027-2028 eğitim yılı" (12 → 3).'};
+ const f=await open();try{
+  await f.setValue(f.labelled('Başlık'),'Deneme 4');
+  await act(async()=>{await new Promise(r=>setTimeout(r,320));});
+  expect(f.btn('Taslak oluştur').disabled).toBe(true);
+  expect(f.node.querySelector('.studio-create-action')!.textContent).toContain('2027-2028 eğitim yılı');
+  mocks.catalog={...mocks.catalog,available:60,message:null};
+  await f.setValue(f.labelled('Soru sayısı'),'50');
+  await act(async()=>{await new Promise(r=>setTimeout(r,320));});
+  expect(f.node.querySelector('.studio-create-action')!.textContent).toContain('en fazla 44');
+  await f.setValue(f.labelled('Soru sayısı'),'40');
+  await act(async()=>{await new Promise(r=>setTimeout(r,320));});
+  expect(f.btn('Taslak oluştur').disabled).toBe(false);
  }finally{await f.close();}
 });
