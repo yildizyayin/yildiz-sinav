@@ -318,6 +318,17 @@ export function parseAnswerKeyWorkbookRows(rows: unknown[][], subjects: SubjectO
       questionCountsByBooklet[subjectId][booklet] = questionNumbers.length;
     }
   }
+  // A020: say plainly when a booklet column is partly empty or numbers repeat; the server refuses repeats.
+  for (const [subjectId, rawRows] of grouped.entries()) {
+    const name = subjects.find((x) => x.id === subjectId)?.name || subjectId;
+    for (const booklet of detectedBooklets) {
+      const missing = rawRows.filter((row) => !row.questionNumbers[booklet]).length;
+      if (missing && missing < rawRows.length) warnings.push(`${name} / Kitapçık ${booklet}: ${missing} sorunun numarası boş; bu sorular için ilk kitapçığın sırası kullanıldı.`);
+      const numbers = rawRows.map((row) => row.questionNumbers[booklet] || Object.values(row.questionNumbers)[0]);
+      const dup = [...new Set(numbers.filter((n, i) => numbers.indexOf(n) !== i))];
+      if (dup.length) warnings.push(`${name} / Kitapçık ${booklet}: soru numarası tekrar ediyor (${dup.slice(0, 5).join(', ')}). Kaydetmeden önce düzeltin.`);
+    }
+  }
   if (!entries.length) warnings.push('CEVAP ANAHTARI bölümünde işlenebilir soru satırı bulunamadı.');
   return {
     entries, questionCounts, questionStarts, questionCountsByBooklet, unknownLines, detectedBooklets,
@@ -585,4 +596,52 @@ export function analyzeFixedWidthSample(text: string): FixedWidthSuggestion | nu
   const name = letterRanges.sort((a, b) => (b.end - b.start) - (a.end - a.start))[0];
 
   return { recordLength, lineCount: same.length, studentNumber, name, answerBlocks };
+}
+
+/** A020: a CSV/semicolon/tab export of the ANUNEX template (header far below row 15) is read as the table, not as free text. */
+export function parseAnswerKeyFileText(text: string, subjects: SubjectOption[], defaultBooklet = 'A'): ParsedAnswerKey {
+  const lines = text.replace(/^\uFEFF/, '').replace(/\r/g, '').split('\n');
+  const rows = lines.map(splitDelimitedLine);
+  const isTemplate = rows.some((row) => row.some((cell) => norm(cell) === 'CEVAPANAHTARI')) && rows.some((row) => row.some((cell) => norm(cell).includes('DOGRUCEVAP')));
+  return isTemplate ? parseAnswerKeyWorkbookRows(rows, subjects, defaultBooklet) : parseAnswerKeyText(text, subjects, defaultBooklet);
+}
+
+export type TemplateSection = { subjectCode: string; label: string; questionStart: number; questionEnd: number; questionCount: number; optionCount?: number };
+/** A020: the downloadable answer-key template. One value per cell; a question-number column for every booklet (A–D). */
+export function buildAnswerKeyTemplateRows(input: { title: string; gradeLevel: string | number; examType: string; publisherName: string; sessionLabel: string; booklets: string[]; sections: TemplateSection[]; subjectName: (code: string, fallback: string) => string }) {
+  const columnCount = 36;
+  const booklets = [...new Set(input.booklets.map((b) => b.trim().toUpperCase()).filter((b) => ['A', 'B', 'C', 'D'].includes(b)))];
+  const templateBooklets = booklets.length ? booklets : ['A'];
+  const totalQuestions = input.sections.reduce((sum, item) => sum + item.questionCount, 0);
+  const rows: Array<Array<string | number>> = Array.from({ length: 36 + totalQuestions }, () => Array(columnCount).fill(''));
+  const put = (row: number, column: number, value: string | number) => { rows[row][column] = value; };
+  put(0, 0, 'ANUNEX · SINAV YÜKLEME ŞABLONU');
+  put(1, 0, 'SINAV ADI'); put(1, 5, input.title || 'TYT 1. DENEME');
+  put(2, 0, 'SINAV DETAY BİLGİLERİ');
+  put(3, 0, 'Sınıf'); put(3, 5, input.gradeLevel || ''); put(3, 8, 'Yayınevi'); put(3, 13, input.publisherName || '');
+  put(4, 0, 'Sınav türü'); put(4, 5, input.examType); put(4, 8, 'Oturum / bölüm'); put(4, 13, input.sessionLabel || '');
+  put(5, 0, 'Seçenek sayısı'); put(5, 5, input.sections[0]?.optionCount || 5); put(5, 8, 'Kitapçıklar'); put(5, 13, templateBooklets.join(','));
+  put(7, 0, 'TEST İSİMLERİ VE SORU ARALIKLARI');
+  put(8, 0, 'Test No'); put(8, 2, 'Test Adı'); put(8, 4, 'Ders Kodu'); put(8, 6, 'İlk Soru No'); put(8, 8, 'Son Soru No'); put(8, 10, 'Kitapçıklar');
+  input.sections.forEach((item, index) => { const row = 9 + index; put(row, 0, index + 1); put(row, 2, input.subjectName(item.subjectCode, item.label)); put(row, 4, item.subjectCode); put(row, 6, item.questionStart); put(row, 8, item.questionEnd); put(row, 10, templateBooklets.join(',')); });
+  put(25, 0, 'DERSLER VE TESTLERE GÖRE SORU DAĞILIMI');
+  put(26, 0, 'Ders Kodu'); put(26, 2, 'Test No'); put(26, 4, 'İlk Soru No'); put(26, 6, 'Son Soru No'); put(26, 8, 'Alternatif Sıra'); put(26, 10, 'Kazanım Ders Kodu');
+  input.sections.forEach((item, index) => { const row = 27 + index; put(row, 0, item.subjectCode); put(row, 2, index + 1); put(row, 4, item.questionStart); put(row, 6, item.questionEnd); put(row, 10, item.subjectCode); });
+  const answerHeaderRow = 34;
+  // Columns: 0 test no, 2 test name, 4.. one question-number column per booklet, 8 answer, 10 publisher outcome, 24 MEB code, 26 MEB title, 28 status.
+  const bookletColumn: Record<string, number> = { A: 4, B: 5, C: 6, D: 7 };
+  put(answerHeaderRow - 1, 0, 'CEVAP ANAHTARI');
+  put(answerHeaderRow, 0, 'Test No'); put(answerHeaderRow, 2, 'Açıklama / Test Adı');
+  for (const b of templateBooklets) put(answerHeaderRow, bookletColumn[b], `${b} Soru No`);
+  put(answerHeaderRow, 8, 'Doğru Cevap'); put(answerHeaderRow, 10, 'Yayınevi Kazanımı'); put(answerHeaderRow, 24, 'MEB Kazanım Kodu'); put(answerHeaderRow, 26, 'MEB Kazanım Adı'); put(answerHeaderRow, 28, 'Durum'); put(answerHeaderRow, 30, 'Şık Sayısı');
+  let answerRow = answerHeaderRow + 1;
+  input.sections.forEach((item, testIndex) => {
+    for (let offset = 0; offset < item.questionCount; offset++) {
+      put(answerRow, 0, testIndex + 1); put(answerRow, 2, input.subjectName(item.subjectCode, item.label));
+      for (const b of templateBooklets) put(answerRow, bookletColumn[b], item.questionStart + offset);
+      put(answerRow, 28, 'ACTIVE'); put(answerRow, 30, item.optionCount || 5);
+      answerRow++;
+    }
+  });
+  return { rows, columnCount, sectionRows: [0, 2, 7, 25, 33], headerRows: [8, 26, answerHeaderRow], answerHeaderRow, booklets: templateBooklets };
 }
