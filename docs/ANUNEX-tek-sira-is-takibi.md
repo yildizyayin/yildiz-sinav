@@ -611,3 +611,16 @@ Doğrulama: örnek hesaplar (LGS tam net 500, hiç 100, ağırlıklı 172/270 �
 ### 21 Ekim 18:35 — #291 çakışması giderildi; A024 BEKLİYOR (KARAR), A025 VERİ bekliyor
 
 #290 (A022) merge sonrası #291 `exam-workspace.css` ve tetik dosyasında çakışıyordu; main dala birleştirildi (zorla itme yok), 238 dosya / 1.197 test PASS, PR temiz. A024: ÖSYM tahmini puan yöntemi kullanıcı onayı bekliyor → BEKLİYOR (KARAR). A025 (TXT/DAT/FMT) kabul ölçütü gerçek izinli örnek dosya istiyor; ön inceleme: Windows-1254/UTF-8 kod çözme, FMT ayrıştırıcı ve uçtan uca testler mevcut. Kullanıcıdan istenen: bir FMT tanımı + aynı optikten TXT/DAT çıktısı + cevap anahtarı + eski sistemin sonuç raporu (karşılaştırma için; kişisel veri maskelenebilir).
+
+### A025 — gerçek dosyalarla TXT/DAT/FMT değerlendirmesi, 21 Ekim 19:01–20:10
+
+PR #291 (A024) merge edildi. Kullanıcı gerçek izinli dosyaları gönderdi (ÇAP TYT Deneme 0): `OPT_K-129_SEKONIC.fmt`, okuyucu çıktısı `cap_tyt0.txt` (6 öğrenci), yayınevi kazanımlı cevap tablosu (.xls/xlsx) ve cevap anahtarı PDF'i.
+Bulgular (gerçek veriyle, sentetik testler bunları yakalamamıştı):
+1. FMT reddediliyordu: dosyadaki Türkçe harfler U+FFFD olarak gelmiş ("��RENC� NO"); hiçbir etiket eşleşmiyordu.
+2. Yayınevi cevap tablosu (Kitapçık;Test;Ders;A Soru;B Soru;Cevap;Kazanım Kodu) hiç okunmuyordu: 125/125 satır tanınmadı.
+3. Sekonic 129 yerleşiminde seçmeli felsefe (Sosyal 21–25) ve TC/telefon alanı hiç alınmıyordu → seçmeli felsefe hiç puanlanamazdı.
+4. Belirsiz yüklemede bütün şablonlar listeleniyordu.
+PR #292: etiketlerde kayıp harf toleransı; yayınevi satır tablosu ayrıştırıcısı (Test → ders eşlemesi, kitapçık basılı sırası, "Felsefe (Seçmeli)" → TYT_FEL seçmeli anahtar, kendi kitapçık sırasıyla; `;` CSV de); 129 tanımına TYT_FEL ve TC alanı (yüklenen FMT + yerleşik tanım, göç 0121); belirsizlikte yalnız uyan şablonlar.
+Doğrulama: kişisel veriler değiştirilmiş TXT (cevaplar/kitapçık/yerleşim aynen) tam HTTP akışında (sınav, yapı, anahtar, aktifleştirme, yükleme, değerlendirme; doğrudan ve parçalı; yüklenen FMT ve yerleşik tanım) 6 öğrenci × 4 test D/Y/B/net ve toplamlar, yayınevi anahtarından **bağımsız Python hesabıyla birebir**; seçmeli felsefe sonuçları (hepsi 5 boş) kaydedildi. Mutasyon kontrollü. 239 dosya / 1.202 test, build PASS.
+Not: eski sistemin sonuç raporu gelmedi; beklenen sonuçlar yayınevi anahtarından bağımsız hesaplandı. Ad alanındaki kayıp Türkçe harfler isim eşleştirmesini etkiler → A026'da ele alınacak.
+Kapanış için: dağıtım + aynı dosyaların canlıda yüklenip sonuç ekranı.
