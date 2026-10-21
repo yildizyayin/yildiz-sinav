@@ -581,3 +581,11 @@ PR #286 (A019) merge edildi. A020 incelemesi ve düzeltmeler — PR #287:
 4. Sunucu: sınavda olmayan kitapçığın anahtarı sessizce atılıyordu → 400 INVALID_BOOKLET; testin aralığı dışındaki basılı soru numarası kabul ediliyordu → 400 BOOKLET_QUESTION_OUT_OF_RANGE.
 Doğrulama: şablon doldurulup .xlsx ve `;` CSV olarak geri okunduğunda A/B/C/D anahtarları ve basılı sıraları birebir; gerçek göç şeması üzerinde sunucu her kitapçığı basılı sırasıyla saklıyor; retler mutasyon kontrollü. 237 dosya / 1.188 test, build PASS.
 Kapanış için: dağıtım + gerçek izinli bir cevap anahtarı dosyasıyla canlı yükleme ekranı (A025 ile ortak örnek kullanılabilir).
+
+### A021 — otomatik kazanım eşleştirmesi, 21 Ekim 17:00–17:30
+
+PR #287 (A020) merge edildi. İnceleme: sıra doğruydu (önce resmî kod, sonra birebir metin, sonra kelime benzerliği adayları); doğrulanmamış/başka yıl/başka program satırları dışarıda, kopya kodlar zaten belirsiz. Belirsizken kesin kaydedilen iki durum bulundu ve düzeltildi — PR #288:
+1. Kod bir kazanımı, yayınevi başlığı birebir başka doğrulanmış kazanımı gösterdiğinde kod sessizce kazanıyordu → artık AMBIGUOUS (ikisi aday), soru REVIEW_REQUIRED kalır; sunucu ve form aynı kuralı uygular.
+2. Cevap anahtarı kaydında otomatik eşleştirme, kişinin elle seçtiği (veya korunan) kazanımın yanına ikinci kazanım ekliyordu → eşlenmiş soruya dokunulmaz, yalnız boş sorular doldurulur.
+Testler: sunucu ve form için ortak örnekler; gerçek göç şemasında kayıt yalnız kesin eşleşmeyi ve kişinin seçimini saklar, çelişki incelemede kalır (mutasyon kontrollü). 238 dosya / 1.190 test, build PASS.
+Kapanış için: dağıtım + kazanımlı gerçek bir anahtarla canlı eşleştirme özeti ekranı.
