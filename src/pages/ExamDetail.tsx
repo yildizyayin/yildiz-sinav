@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Archive, ArrowLeft, BarChart3, CalendarClock, CheckCircle2, Copy, FileUp, MoreVertical, Pencil, RefreshCw, Send, Snowflake, Trash2 } from 'lucide-react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { api } from '../api';
+import { api, ApiError } from '../api';
 import { useAuth } from '../auth';
 import { ExamReadiness } from '../components/ExamReadiness';
 import '../exam-mars.css';
@@ -34,6 +34,7 @@ export function ExamDetail(){
   const [error,setError]=useState('');
   const [notice,setNotice]=useState('');
   const [busy,setBusy]=useState(false);
+  const activationInFlight = useRef(false);
   const [menu,setMenu]=useState(false);
   const [tab,setTab]=useState('overview');
   const [trashOpen,setTrashOpen]=useState(searchParams.get('action')==='trash');
@@ -61,10 +62,18 @@ export function ExamDetail(){
   const exam=detail?.exam;
   const canManage=user?.role==='SUPER_ADMIN'||(user?.role==='INSTITUTION_MANAGER'&&exam?.owner_type==='INSTITUTION');
   const activateExam=async()=>{
-    if(!detail?.readiness?.ready_to_publish){setError('Önce aşağıdaki eksikleri tamamlayın.');return}
+    if(busy || activationInFlight.current)return;
+    if(!detail?.readiness?.ready_to_publish){setError(detail?.readiness?'Önce aşağıdaki eksikleri tamamlayın.':'Aktifleştirme kontrolü yüklenemedi. Sınavı yenileyin.');return}
     if(!confirm('Sınav değerlendirmeye açılsın mı? Soru yapısı kilitlenecek; öğrenci sonuçları ayrıca yayınlanacaktır.'))return;
-    setBusy(true);setError('');setNotice('');
-    try{await api(`/api/exam-definitions/${encodeURIComponent(examId)}/status`,{method:'PATCH',body:JSON.stringify({status:'ACTIVE'})});setNotice('Sınav aktif. Optik veri yükleyip değerlendirebilirsiniz.');await load()}catch(e:any){setError(e.message)}finally{setBusy(false)}
+    activationInFlight.current = true; setBusy(true);setError('');setNotice('');
+    try {
+      await api(`/api/exam-definitions/${encodeURIComponent(examId)}/status`,{method:'PATCH',body:JSON.stringify({status:'ACTIVE'})});
+      setNotice('Sınav aktif. Öğrenci sonuçları henüz yayınlanmadı.');
+      try { await load(); } catch { setError('Aktifleştirme kaydedildi; ekran yenilenemedi. Güncel durumu kontrol edin.'); }
+    } catch(e:any) {
+      setError(e.message || 'Sınav aktifleştirilemedi.');
+      if(e instanceof ApiError && e.status===409 && Array.isArray((e.details as any)?.blockers)) setDetail((current:any)=>({...current,readiness:e.details}));
+    } finally {activationInFlight.current = false; setBusy(false)}
   };
   const copyExam=async()=>{setBusy(true);setError('');setMenu(false);try{const r=await api<any>(`/api/exam-definitions/${encodeURIComponent(examId)}/copy`,{method:'POST'});setNotice('Sınav kopyası taslak olarak oluşturuldu.');navigate(`/exam-center/${encodeURIComponent(r.id)}`)}catch(e:any){setError(e.message)}finally{setBusy(false)}};
   const archiveExam=async()=>{if(!confirm('Bu sınav arşivlensin mi? Arşivlenen sınav aktif listelerden kaldırılır, verileri korunur.'))return;setBusy(true);setError('');setMenu(false);try{await api(`/api/exam-definitions/${encodeURIComponent(examId)}/status`,{method:'PATCH',body:JSON.stringify({status:'ARCHIVED'})});setNotice('Sınav arşivlendi.');await load()}catch(e:any){setError(e.message)}finally{setBusy(false)}};
@@ -98,7 +107,7 @@ export function ExamDetail(){
       <div hidden={tab!=='overview'}>
       <section className="panel" style={{marginBottom:18}}><div className="panel-head"><div><h2>Genel bilgiler</h2><p>Sınavın tanımı, kitapçıkları ve yayın durumu.</p></div><span className={`status ${exam.status==='ACTIVE'?'ok':exam.status==='DRAFT'?'warn':'neutral'}`}>{exam.status==='DRAFT'?'Taslak':exam.status==='ACTIVE'?'Değerlendirmeye açık':exam.status==='ARCHIVED'?'Arşivlendi':'Kapalı'}</span></div><div className="kpi-grid"><div className="kpi-card"><span>Tür</span><strong>{exam.exam_type||'—'}</strong></div><div className="kpi-card"><span>Sınıf</span><strong>{exam.grade_level?`${exam.grade_level}. sınıf`:'—'}</strong></div><div className="kpi-card"><span>Kitapçık</span><strong>{(detail.booklets||[]).map((b:any)=>b.code).join(', ')||'—'}</strong></div><div className="kpi-card"><span>Sonuç</span><strong>{schedule?.result_freeze_status==='PUBLISHED'?'Yayınlandı':schedule?.result_freeze_status==='FROZEN'?'Hazır / donmuş':'Hazırlanıyor'}</strong></div></div></section>
 
-      {exam.status==='DRAFT'&&<section className="panel" style={{marginBottom:18}}><h2>Sınavı değerlendirmeye aç</h2><ExamReadiness readiness={detail.readiness}/><div style={{display:'flex',gap:10,flexWrap:'wrap',marginTop:12}}><Link className="secondary" to={`/exam-definitions?examId=${encodeURIComponent(examId)}`}><Pencil size={16}/> Eksikleri tamamla</Link>{canManage&&<button className="primary" disabled={busy||!detail.readiness?.ready_to_publish} onClick={()=>void activateExam()}><CheckCircle2 size={16}/> Sınavı aktifleştir</button>}</div></section>}
+      {exam.status==='DRAFT'&&<section className="panel" style={{marginBottom:18}}><h2>Sınavı değerlendirmeye aç</h2><ExamReadiness readiness={detail.readiness} examId={canManage ? examId : undefined}/><div style={{display:'flex',gap:10,flexWrap:'wrap',marginTop:12}}><Link className="secondary" to={`/exam-definitions?examId=${encodeURIComponent(examId)}`}><Pencil size={16}/> Eksikleri tamamla</Link>{canManage&&<button className="primary" disabled={busy} onClick={()=>void activateExam()}><CheckCircle2 size={16}/> Sınavı aktifleştir</button>}</div></section>}
 
       </div><div hidden={tab!=='publication'}>
       <section className="panel" style={{marginBottom:18}}><div className="panel-head"><div><h2><CalendarClock size={18}/> Uygulama ve sonuç yayını</h2><p>Saatler tarayıcıda Türkiye yerel saatiyle seçilir; sunucuda UTC olarak saklanır.</p></div>{schedule?.result_freeze_status==='PUBLISHED'&&<span className="status ok"><CheckCircle2 size={14}/> Yayında</span>}</div><div className="form-grid"><label>Uygulama başlangıcı<input type="datetime-local" value={applicationStart} onChange={e=>setApplicationStart(e.target.value)}/></label><label>Uygulama bitişi<input type="datetime-local" value={applicationEnd} onChange={e=>setApplicationEnd(e.target.value)}/></label><label>Sonuç yayın tarihi / saati<input type="datetime-local" value={resultPublish} onChange={e=>setResultPublish(e.target.value)}/></label></div><div style={{display:'flex',gap:10,flexWrap:'wrap',marginTop:14}}><button className="secondary" onClick={()=>void saveSchedule()} disabled={busy}><CalendarClock size={16}/> Sonra yayınla / planı kaydet</button><button className="secondary" onClick={()=>void freezeResults()} disabled={busy||exam.status==='DRAFT'||schedule?.result_freeze_status==='PUBLISHED'}><Snowflake size={16}/> Sıralamayı dondur</button><button className="primary" onClick={()=>void publishNow()} disabled={busy||schedule?.result_freeze_status!=='FROZEN'}><Send size={16}/> Şimdi yayınla</button>{['FROZEN','PUBLISHED'].includes(schedule?.result_freeze_status)&&<button className="secondary" onClick={()=>void reopenResults()} disabled={busy}><RefreshCw size={16}/> Düzeltmeye aç</button>}</div>{resultPublish&&schedule?.result_freeze_status!=='PUBLISHED'&&<p style={{marginTop:10}}>Planlanan yayın: <strong>{new Date(toIso(resultPublish)!).toLocaleString('tr-TR')}</strong>. Cron yalnız dondurulmuş sonucu zamanı geldiğinde yayınlar.</p>}</section>
