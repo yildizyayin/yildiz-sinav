@@ -20,6 +20,8 @@ export function ExamOutcomeEditor({ examId, required = false, onSaved }: { examI
   const [query, setQuery] = useState('');
   // A022: what was last saved, so unsaved choices are visible and not lost by leaving the page.
   const [saved, setSaved] = useState<Record<string, string>>({});
+  // A029: results that already exist are re-analysed on save; say so before and after.
+  const [results, setResults] = useState<{ count: number; app: boolean; network: boolean }>({ count: 0, app: false, network: false });
   const signature = (ids: string[]) => [...ids].sort().join('|');
   const dirty = useMemo(() => questions.filter(q => signature(q.outcome_ids) !== (saved[q.id] ?? '')).length, [questions, saved]);
   useEffect(() => { if (!dirty) return; const warn = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ''; }; window.addEventListener('beforeunload', warn); return () => window.removeEventListener('beforeunload', warn); }, [dirty]);
@@ -35,7 +37,7 @@ export function ExamOutcomeEditor({ examId, required = false, onSaved }: { examI
       ]);
       const rows = (data.questions || []).map((q: Question) => ({ ...q, outcome_ids: q.outcome_ids || [], references: q.references || [] }));
       setQuestions(rows); setSaved(Object.fromEntries(rows.map((q: Question) => [q.id, signature(q.outcome_ids)])));
-      setRevision(data.revision); setOutcomes(catalog.outcomes || []); setStrict(data.outcomeMode ? data.outcomeMode === 'OFFICIAL_REQUIRED' : required); setMatches([]); setLoaded(true);
+      setRevision(data.revision); setResults({ count: Number(data.resultCount) || 0, app: !!data.appPublished, network: !!data.networkPublished }); setOutcomes(catalog.outcomes || []); setStrict(data.outcomeMode ? data.outcomeMode === 'OFFICIAL_REQUIRED' : required); setMatches([]); setLoaded(true);
     } catch (e: any) { setError(e.message || 'Kazanımlar yüklenemedi.'); } finally { setBusy(false); }
   };
   useEffect(() => { void load(); }, [examId]);
@@ -56,13 +58,17 @@ export function ExamOutcomeEditor({ examId, required = false, onSaved }: { examI
   const save = async () => {
     setBusy(true); setError(''); setNotice('');
     try {
-      await api(`/api/exam-definitions/${encodeURIComponent(examId)}/outcome-mappings`, { method: 'PUT', body: JSON.stringify({ expectedRevision: revision, mappings: questions.map(q => ({ questionId: q.id, outcomeIds: q.outcome_ids })), outcomeMode: strict ? 'OFFICIAL_REQUIRED' : 'OPTIONAL' }) });
-      await load(); setNotice('Kazanım eşleştirmeleri kaydedildi.'); onSaved?.();
+      const r = await api<any>(`/api/exam-definitions/${encodeURIComponent(examId)}/outcome-mappings`, { method: 'PUT', body: JSON.stringify({ expectedRevision: revision, mappings: questions.map(q => ({ questionId: q.id, outcomeIds: q.outcome_ids })), outcomeMode: strict ? 'OFFICIAL_REQUIRED' : 'OPTIONAL' }) });
+      const reanalysed = Number(r?.participantCount) || 0;
+      await load();
+      setNotice(reanalysed ? `Kazanım eşleştirmeleri kaydedildi. ${reanalysed} katılımcının kazanım analizi yeniden yapıldı (analiz sürümü ${r.revision}); puan ve sıralama değişmedi.${results.app ? ' Uygulamada yayınlanmış sonuçlarda yeni kazanımlar görünür.' : ''}${results.network ? ' Sonuç ağında eski analiz kalır; güncellemek için sonuç ağı yayınını ayrıca güncelleyin.' : ''}` : 'Kazanım eşleştirmeleri kaydedildi.');
+      onSaved?.();
     } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
   const subjectIds = [...new Set(questions.map(q => q.subject_id))];
   return <section className="panel exam-outcome-editor"><div className="panel-head"><div><h2>Kazanım eşleştirmeleri</h2><p>Soru ve cevap anahtarını değiştirmeden kazanımları düzenleyin. Otomatik seçim yalnız resmî kapsam içindeki kod veya tam ifade eşleşmesiyle yapılır.</p></div><button className="ghost" disabled={busy} onClick={() => void load()}><RefreshCw size={15}/> Yenile</button></div>
     {error && <div className="alert error" role="alert">{error}</div>}{notice && <div className="alert success" role="status">{notice}</div>}
+    {results.count > 0 && <div className="alert warning" role="note">Bu sınavın {results.count} sonucu var. Kaydettiğinizde bu sonuçların kazanım analizi yeniden yapılır; puan, net ve sıralama değişmez, önceki analiz sürümü saklanır.{results.app ? ' Öğrenci ve veliler, uygulamada yayınlanmış sonuçta yeni kazanımları görür.' : ''}{results.network ? ' Sonuç ağı, siz yayını güncelleyene kadar önceki analizi gösterir.' : ''}</div>}
     <label className="exam-strict-toggle"><input type="checkbox" checked={strict} disabled={busy || !loaded} onChange={e => setStrict(e.target.checked)}/> Bütün aktif sorularda doğrulanmış kazanım zorunlu olsun</label>
     <div className="exam-filter-row"><label>Ders<select value={subject} onChange={e => setSubject(e.target.value)}><option value="">Tüm dersler</option>{subjectIds.map(id => <option key={id} value={id}>{questions.find(q => q.subject_id === id)?.subject_name || id}</option>)}</select></label><label>Katalogda ara<input value={query} onChange={e => setQuery(e.target.value)} placeholder="Kazanım kodu veya açıklaması"/></label><button className="secondary" disabled={busy || !loaded} onClick={() => void match()}>Otomatik eşleştir</button></div>
     {loaded && !outcomes.length && <div className="alert warning">Bu sınavın yıl, sınıf ve program kapsamı için doğrulanmış resmî katalog bulunamadı. Kaynak ifadeler korunur; kazanımları daha sonra tamamlayabilirsiniz.</div>}
