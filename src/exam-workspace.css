@@ -22,3 +22,7 @@
 .app-shell[data-panel-module="exam-center"] .exam-workspace .kpi-card strong,.app-shell[data-panel-module="exam-center"] .exam-definition-page.detail-mode .kpi-card strong{font-size:18px;color:#39332e}
 .app-shell[data-panel-module="exam-center"] .exam-workspace .scope-badge{background:#f3eee7;color:#806044}.app-shell[data-panel-module="exam-center"] .exam-workspace .scope-tabs button.active{border-color:#d7bba8;background:#f5eee7;color:#845035}
 .app-shell[data-panel-module="exam-center"] .exam-workspace .exam-tabs button[aria-selected=true],.app-shell[data-panel-module="exam-center"] .exam-definition-page.detail-mode .exam-tabs button[aria-selected=true]{color:#8b4e31;background:transparent;border-bottom:2px solid #a76540}
+
+/* A019 required fields */
+.exam-card-grid input[aria-invalid="true"],.exam-card-grid select[aria-invalid="true"]{border-color:#e5484d;box-shadow:0 0 0 3px #e5484d1a}
+.exam-draft-restored{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
