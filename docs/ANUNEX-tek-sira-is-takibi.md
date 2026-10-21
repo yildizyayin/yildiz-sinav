@@ -638,3 +638,11 @@ PR #293 (A024 ÖSYM tahmini) merge edildi. İnceleme: T.C. → okul no → ad so
 2. Gerçek dosyalarda Türkçe harfler U+FFFD olarak kayboluyor; ad normalleştirmesi bunları boşluğa çevirdiği için ad hiç eşleşmiyor, öğrenci yeni misafir oluyordu; numara eşleşmelerinde yanlış "ad soyad farklı" uyarısı çıkıyordu → kayıp harf tam bir harfe karşılık gelir; tek uyan öğrenci kontrol için önerilir, iki uyan belirsiz kalır.
 Testler: T.C. sağlaması, sıra, çakışma reddi (mutasyon kontrollü), telefon numarası, kayıp harf eşleşmesi ve sınırları; test verisinde gerçek kimlik/telefon numarası yok. 239 dosya / 1.209 test PASS.
 Kapanış için: dağıtım + gerçek dosya yüklemesinde eşleşme ekranı (A025 dosyaları + kayıtlı öğrenciler).
+
+### Kullanıcı notu — 21 Ekim 19:39
+
+Sistem henüz aktif değil (örnek veriler var, gerçek değerlendirme yok); öğrenci sonucu gönderilemediği için canlı test şu an yapılamıyor. Talimat: çalışmalar en doğru şekilde hazırlansın, **canlı kabul testleri sistem canlıya alındıktan sonra manuel yapılacak.** Bu nedenle A018–A027 kapanışlarındaki "canlı kanıt" maddeleri K002 kapsamına toplanır; işler kod/test tarafı tamamlandıkça sıradakine geçilir.
+
+### A027 — eksik/hatalı kitapçık çözümü, 21 Ekim 19:40–20:05
+
+PR #294 (A026) merge edildi. Mevcut: kitapçığı boş/geçersiz optikte kitapçık başına karşılaştırma, sınavın kitapçıklarıyla sınırlı seçim, karar kaydı. Eksikler — PR #295: (1) karşılaştırma anahtarı 1..n numarasıyla arıyordu → 1'den başlamayan testlerde (ör. 41–44) bütün kitapçıklar "cevap anahtarı eksik" görünüyor, seçilemiyordu; artık değerlendirme gibi her kitapçığın n'inci basılı sorusunu okur. (2) Özel sınavın yanlış kuralı (A024) karşılaştırmada yoktu. (3) Denetim kaydı yalnız seçilen kodu tutuyordu → önceki kod ve karar anında görülen tüm seçeneklerin D/Y/net'i. Testler: birim + göç şemasında HTTP akışı (mutasyon kontrollü). 240 dosya / 1.211 test PASS.
