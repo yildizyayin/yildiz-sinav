@@ -1,1 +1,1 @@
-2026-10-21 A021 outcome auto-match conflicts
+2026-10-21 A022 manual outcome selection
