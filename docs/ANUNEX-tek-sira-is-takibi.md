@@ -708,3 +708,31 @@ Testler:
 - 244 dosya / 1.244 test, build PASS.
 
 Kapanış için: dağıtım + canlıda elle kabul (K002).
+
+### A030 — uygulamada sonuç yayını, 21 Ekim 20:50–
+
+PR #298 (A029) merge edildi.
+
+Mevcut durum: dondurma, şimdi/sonra yayın (zamanlı otomatik yayın), düzeltmeye açma ve ana sonuç ekranlarının yayın kontrolü doğruydu.
+
+Bulgu: uygulamanın çağırdığı tüm API yolları (≈490) öğrenci ve veli hesabıyla, üretim zinciri üzerinden ve bütün özellikler açıkken tarandı. Yayından önce sonucu gösteren 10 ekran çıktı:
+- ana sayfa;
+- `my-results`, `my-outcomes`;
+- yanlışlarım;
+- sınav inceleme;
+- bildirimler;
+- veli haftalık özeti;
+- ölçme akışı;
+- katalog ve istatistik.
+
+Alt kayıt **A028b.3**: üretim yükleme politikası tek optik seçtirdiği için karışık sayısal + sözel TXT okunamıyordu. A028b testleri politikayı atlıyordu.
+
+PR #299 ile yapılanlar:
+- Öğrenci ve veli okumaları yalnız yayımlanmış sınavları gösteriyor; katalog ve istatistik personele kapalı.
+- Politika, kurumun izinli optiklerini isteğe ekliyor; seçilen optik ile izinli diğeri karışık dosyayı birlikte okuyor.
+- Kalıcı tarama testi eklendi: yol listesi kaynak koddan okunuyor, yeni ekranlar da otomatik taranıyor.
+- 246 dosya test ve build PASS.
+
+Not: öğrenme durumu ve telafi gibi türetilmiş sinyaller yayınlanmamış cevaplardan beslenebilir; ilgili işlerde ele alınacak.
+
+Kapanış için: dağıtım + canlıda elle kabul (K002).
