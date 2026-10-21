@@ -7,6 +7,7 @@ import { all, audit, badRequest, forbidden, json, normalizeName, notFound, one, 
 import { canEvaluateExam } from './lib/permissions';
 import { examEvaluationAccess } from './lib/exam-evaluation-access';
 import { recordExamAssessments, recordExamEvidenceAudit } from './lib/assessment-ledger';
+import { duplicateMessage, duplicateStudentConflicts } from './lib/scan-duplicates';
 import { assertScoringRuleVerified, calculateExamScore, calculateOverall, calculateSubjectScore, effectiveWrongDivisor, scoreMethodFor } from './lib/scoring';
 import { masteryStatus } from './lib/outcome';
 
@@ -93,6 +94,8 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
 
   if (batch.status === 'COMMITTED') return json({ ok: true, done: true, processed: alreadyProcessed || total, processedThisRun: 0, total, remaining: 0, batchId, examId: batch.exam_id });
   if (batch.status !== 'READY') return badRequest('Önce sorunlu kayıtları düzeltin.', 'BATCH_NEEDS_REVIEW');
+  const dupes = duplicateStudentConflicts(await all<AnyRow>(env.DB.prepare('SELECT row_no,matched_student_id,resolution_status,canonical_json FROM scan_records WHERE batch_id=?').bind(batch.id)) as any);
+  if (dupes.length) return badRequest(duplicateMessage(dupes), 'DUPLICATE_STUDENT_IN_BATCH');
   if (!total) return badRequest('Değerlendirilecek optik kaydı bulunamadı.', 'EMPTY_BATCH');
 
   const exam = await one<AnyRow>(env.DB.prepare(`SELECT e.*,srv.verified,srv.id scoring_version_id,srv.config_json,sr.authority
