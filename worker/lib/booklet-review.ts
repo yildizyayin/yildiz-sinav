@@ -13,7 +13,7 @@ export function bookletIssue(code: string | undefined, allowedCodes: string[]): 
 
 type Subject = { subject_id: string; code: string; question_count: number; wrong_divisor: number };
 type Key = { subject_id: string; booklet_code: string; question_no: number; correct_answer: string; printed_question_no?: number; accepted_answers?: string | null; question_status?: string };
-export function compareBooklets(record: CanonicalRecord, codes: string[], subjects: Subject[], keys: Key[]) {
+export function compareBooklets(record: CanonicalRecord, codes: string[], subjects: Subject[], keys: Key[], wrongDivisorFor: (subject: Subject) => number = (subject) => Number(subject.wrong_divisor)) {
   return codes.map((code) => {
     const subjectScores = [];
     let incomplete = false;
@@ -21,11 +21,14 @@ export function compareBooklets(record: CanonicalRecord, codes: string[], subjec
       if (!Object.prototype.hasOwnProperty.call(record.answers_by_subject || {}, subject.code)) continue;
       const subjectKeys = keys.filter((key) => key.subject_id === subject.subject_id && key.booklet_code === code);
       const answers = record.answers_by_subject[subject.code] || '';
-      const byNumber = new Map(subjectKeys.map((key) => [Number(key.printed_question_no ?? key.question_no), key]));
-      if (Array.from({ length: Number(subject.question_count) }, (_, i) => i + 1).some((n) => !byNumber.get(n)?.correct_answer)) incomplete = true;
+      // A027: the n-th answer on the sheet belongs to the n-th printed question of the test, exactly as the
+      // evaluation reads it. Looking keys up by number 1..n wrongly called a test starting at question 41
+      // "cevap anahtarı eksik".
+      const ordered = [...subjectKeys].sort((a, b) => Number(a.printed_question_no ?? a.question_no) - Number(b.printed_question_no ?? b.question_no));
+      if (ordered.length !== Number(subject.question_count) || ordered.some((key) => !key.correct_answer)) incomplete = true;
       let correct = 0, wrong = 0, blank = 0, activeQuestionCount = 0;
       for (let i = 0; i < Number(subject.question_count); i++) {
-        const key = byNumber.get(i + 1);
+        const key = ordered[i];
         if (!key) continue;
         const assessed = evaluateAnswer(answers[i], key);
         if (!assessed.contributesToScore) continue;
@@ -34,7 +37,7 @@ export function compareBooklets(record: CanonicalRecord, codes: string[], subjec
         else if (assessed.status === 'CORRECT') correct++;
         else wrong++;
       }
-      subjectScores.push(calculateSubjectScore({ correct, wrong, blank, wrongDivisor: Number(subject.wrong_divisor), questionCount: activeQuestionCount }));
+      subjectScores.push(calculateSubjectScore({ correct, wrong, blank, wrongDivisor: wrongDivisorFor(subject), questionCount: activeQuestionCount }));
     }
     const available = subjectScores.length > 0 && !incomplete;
     return { code, available, reason: available ? null : incomplete ? 'Cevap anahtarı eksik.' : 'Ders yanıtı bulunamadı.', ...(available ? calculateOverall(subjectScores) : { correct: null, wrong: null, blank: null, net: null }) };
