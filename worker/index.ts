@@ -11,6 +11,7 @@ import { persistTytOptionalPhilosophyEvidence } from './tyt-optional-philosophy-
 import { matchParticipant } from './lib/matching';
 import { bookletIssue, compareBooklets, isBookletIssue } from './lib/booklet-review';
 import { decodeUploadedBytes, parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib/parse';
+import { duplicateMessage, duplicateStudentConflicts } from './lib/scan-duplicates';
 import { assertScoringRuleVerified, calculateExamScore, calculateOverall, calculateSubjectScore, effectiveWrongDivisor, scoreMethodFor } from './lib/scoring';
 import { masteryStatus } from './lib/outcome';
 import { calibrationWithinTolerance, nextCalibrationStatus, type CalibrationMetrics } from './lib/calibration';
@@ -476,7 +477,11 @@ export async function getScanBatch(env: Env, user: AuthUser, batchId: string): P
     const divisor = bookletDivisor(exam);
     for (const row of pendingBooklet) row.bookletOptions = compareBooklets(row.canonical, codes, subjects, keys, divisor);
   }
+  const duplicates = duplicateStudentConflicts(records);
+  const duplicateRows = new Set(duplicates.flatMap((d) => d.rows));
+  for (const r of mapped) if (duplicateRows.has(r.row_no)) (r as any).duplicateOf = duplicates.find((d) => d.rows.includes(r.row_no))!.rows.filter((n) => n !== r.row_no);
   const counts = {
+    duplicates: duplicateRows.size,
     active: mapped.filter((r) => r.match_status === 'ACTIVE_MATCH').length,
     guest: mapped.filter((r) => r.match_status === 'GUEST_MATCH').length,
     newGuest: mapped.filter((r) => r.match_status === 'NEW_GUEST').length,
@@ -485,7 +490,7 @@ export async function getScanBatch(env: Env, user: AuthUser, batchId: string): P
     cancelled: mapped.filter((r) => r.resolution_status === 'CANCELLED').length,
     pending: mapped.filter((r) => r.resolution_status !== 'CANCELLED' && (['NEW_GUEST', 'AMBIGUOUS', 'INVALID'].includes(r.match_status) || r.issues.length > 0)).length,
   };
-  return json({ ok: true, batch, records: mapped, counts });
+  return json({ ok: true, batch, records: mapped, counts, duplicates });
 }
 
 function bookletDivisor(exam: any): (subject: { wrong_divisor: number }) => number {
@@ -522,6 +527,9 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
   if (action === 'MATCH' && body.studentId) {
     const candidate = await one<any>(env.DB.prepare(`SELECT s.id,s.status FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id WHERE s.id=? AND e.institution_id=? AND e.season_id=? AND e.status='ACTIVE'`).bind(body.studentId, batch.institution_id, batch.season_id));
     if (!candidate) return badRequest('Seçilen öğrenci bu kurum/sezonda bulunamadı.');
+    const siblings = await all<any>(env.DB.prepare(`SELECT id,row_no,matched_student_id,resolution_status,canonical_json FROM scan_records WHERE batch_id=? AND id<>? AND matched_student_id=?`).bind(batchId, recordId, candidate.id));
+    const clash = duplicateStudentConflicts([...siblings, { row_no: Number((await one<any>(env.DB.prepare('SELECT row_no FROM scan_records WHERE id=?').bind(recordId)))?.row_no || 0), matched_student_id: candidate.id, canonical_json: before.canonical_json }]);
+    if (clash.length) return json({ ok: false, error: { code: 'STUDENT_ALREADY_IN_BATCH', message: duplicateMessage(clash) } }, 409);
     studentId = candidate.id;
     matchStatus = candidate.status === 'ACTIVE' ? 'ACTIVE_MATCH' : 'GUEST_MATCH';
     confidence = 1;
@@ -605,6 +613,8 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
   if (!['READY','COMMITTED'].includes(batch.status)) return badRequest('Önce sorunlu kayıtları düzeltin.', 'BATCH_NEEDS_REVIEW');
   const unresolvedRows = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND resolution_status!='CANCELLED' AND (match_status IN ('NEW_GUEST','AMBIGUOUS','INVALID') OR issues_json!='[]')`).bind(batchId));
   if ((unresolvedRows?.c || 0) > 0) return badRequest('Önce sorunlu kayıtları düzeltin.', 'BATCH_NEEDS_REVIEW');
+  const dupes = duplicateStudentConflicts(await all<any>(env.DB.prepare('SELECT row_no,matched_student_id,resolution_status,canonical_json FROM scan_records WHERE batch_id=?').bind(batchId)));
+  if (dupes.length) return badRequest(duplicateMessage(dupes), 'DUPLICATE_STUDENT_IN_BATCH');
   const exam = await one<any>(env.DB.prepare(`SELECT e.*, srv.verified, srv.id scoring_version_id, srv.config_json, sr.authority FROM exams e LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id LEFT JOIN scoring_rules sr ON sr.id=srv.rule_id WHERE e.id=?`).bind(batch.exam_id));
   if (!exam) return notFound('Sınav bulunamadı.');
   const examScope = await examEvaluationAccess(env, exam, batch.institution_id, true);
