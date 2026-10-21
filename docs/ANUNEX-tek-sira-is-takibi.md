@@ -630,3 +630,11 @@ Kapanış için: dağıtım + aynı dosyaların canlıda yüklenip sonuç ekran�
 PR #292 (A025) merge edildi. Onaylanan yöntem uygulandı — PR #293: 100 + 400 × Σ ağırlık × (net / soru sayısı), OBP eklenmez, "tahmini, resmî puan değildir" etiketli. Ağırlıklar (ÖSYM test ağırlıkları; iki ayrı kaynakla karşılaştırıldı): TYT Türkçe 33 / Sosyal 17 / Temel Mat 33 / Fen 17; SAY = TYT 40 + AYT Mat 30, Fiz 10, Kim 10, Biy 10; EA = TYT 40 + Mat 30, Edebiyat 18, Tarih-1 7, Coğrafya-1 5; SÖZ = TYT 40 + Edebiyat 18, Tarih-1 7, Coğrafya-1 5, Tarih-2 8, Coğrafya-2 8, Felsefe 9, Din 5; DİL = TYT 40 + YDT 60. Puan türünün bütün testleri yoksa (yalnız AYT/YDT) puan verilmez ve nedeni yazılır. Göç 0122.
 Doğrulama: örnek hesaplar (tam 500, hiç 100, 333; 1 Türkçe neti ≈ 3,3, 1 Sosyal neti ≈ 3,4); gerçek ÇAP TYT 0 verisinde her öğrencinin saklanan puanı bağımsız hesaplanan tahminle aynı (en yüksek 410,78, sıra 1). 239 dosya / 1.205 test, build PASS.
 A024 kapanışı: dağıtım + canlı sonuç ekranında puan ve açıklama.
+
+### A026 — öğrenci otomatik eşleşmesi, 21 Ekim 19:30–20:00
+
+PR #293 (A024 ÖSYM tahmini) merge edildi. İnceleme: T.C. → okul no → ad soyad+sınıf sırası, kopyalarda belirsizlik ve bilinmeyende yeni misafir doğruydu. Eksikler — PR #294:
+1. Okul numarası eşleşirken optikteki geçerli T.C. numarası başka öğrenciye ait olsa bile bağlanıyordu (bir çocuğun sonucu diğerine gidebilirdi) → AMBIGUOUS, kişi seçer. Gerçek optiklerde TC/TEL alanında telefon numarası olduğu için yalnız sağlama hanesi geçerli T.C. numaraları dikkate alınır.
+2. Gerçek dosyalarda Türkçe harfler U+FFFD olarak kayboluyor; ad normalleştirmesi bunları boşluğa çevirdiği için ad hiç eşleşmiyor, öğrenci yeni misafir oluyordu; numara eşleşmelerinde yanlış "ad soyad farklı" uyarısı çıkıyordu → kayıp harf tam bir harfe karşılık gelir; tek uyan öğrenci kontrol için önerilir, iki uyan belirsiz kalır.
+Testler: T.C. sağlaması, sıra, çakışma reddi (mutasyon kontrollü), telefon numarası, kayıp harf eşleşmesi ve sınırları; test verisinde gerçek kimlik/telefon numarası yok. 239 dosya / 1.209 test PASS.
+Kapanış için: dağıtım + gerçek dosya yüklemesinde eşleşme ekranı (A025 dosyaları + kayıtlı öğrenciler).
