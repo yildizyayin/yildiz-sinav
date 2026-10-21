@@ -17,8 +17,13 @@ export function matchScopedOutcome(reference:any,subjectId:string,catalog:any[])
  if(!rows.length)return {reason:'UNVERIFIED',suggestions:[]};
  if(!reference)return {reason:'MISSING',suggestions:[]};
  const code=String(reference.officialCode||reference.code||'').trim();
- if(code){const matches=rows.filter(o=>normalizeName(o.code||'')===normalizeName(code));if(matches.length===1)return {reason:'CODE',outcomeId:matches[0].id,suggestions:[]};if(matches.length>1)return {reason:'AMBIGUOUS',suggestions:matches};}
  const text=normalizeName(reference.publisherTitle||reference.title||'');
+ if(code){const matches=rows.filter(o=>normalizeName(o.code||'')===normalizeName(code));if(matches.length===1){
+  // A021: the code wins only when the wording does not name a different verified outcome; a conflict goes to review.
+  const other=text?rows.filter(o=>o.id!==matches[0].id&&normalizeName(o.title)===text):[];
+  if(other.length)return {reason:'AMBIGUOUS',conflict:'CODE_TITLE',suggestions:[matches[0],...other]};
+  return {reason:'CODE',outcomeId:matches[0].id,suggestions:[]};}
+  if(matches.length>1)return {reason:'AMBIGUOUS',suggestions:matches};}
  if(!text)return {reason:'MISSING',suggestions:[]};
  const exact=rows.filter(o=>normalizeName(o.title)===text&&(!reference.topic||normalizeName(o.topic||'')===normalizeName(reference.topic)));
  if(exact.length===1)return {reason:'TITLE',outcomeId:exact[0].id,suggestions:[]};
