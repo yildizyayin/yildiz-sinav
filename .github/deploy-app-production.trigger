@@ -1,1 +1,1 @@
-2026-10-21 A019 exam card persistence and step-2 crash fix
+2026-10-21 A020 answer key scope A-D

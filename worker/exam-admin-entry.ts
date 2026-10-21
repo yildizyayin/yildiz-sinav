@@ -656,6 +656,10 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
     entryMap.set(`${subjectId}::${bookletCode}`, { answers, optionCount, acceptedAnswers: entry.acceptedAnswers, questionStatuses: entry.questionStatuses, bookletQuestionNumbers: entry.bookletQuestionNumbers, outcomeRefs: entry.outcomeRefs, outcomeRefsByQuestion: entry.outcomeRefsByQuestion });
   }
   const structureSubjectIds = new Set(subjects.map((subject) => String(subject.subject_id)));
+  // A020: a key for a booklet the exam does not have was silently dropped; refuse it so the scope is explicit.
+  const examBooklets = new Set(booklets.map((b) => String(b.code).toUpperCase()));
+  const foreign = [...new Set([...entryMap.keys()].filter((key) => structureSubjectIds.has(key.split('::')[0])).map((key) => key.split('::')[1]).filter((code) => !examBooklets.has(code)))];
+  if (foreign.length) return err(400, 'INVALID_BOOKLET', `Cevap anahtarında sınavda olmayan kitapçık var: ${foreign.join(', ')}. Sınavın kitapçıkları: ${[...examBooklets].join(', ')}. Önce kitapçık yapısını güncelleyin.`);
   const optionalEntries = [...entryMap.entries()].filter(([key]) => !structureSubjectIds.has(key.split('::')[0]));
   for (const [key, entry] of optionalEntries) {
     const [subjectId, bookletCode] = key.split('::');
@@ -677,6 +681,7 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
       if (entry?.questionStatuses && entry.questionStatuses.length !== Number(subject.question_count)) return err(400, 'QUESTION_STATUS_INCOMPLETE', `${subject.subject_id} soru durumları soru sayısıyla uyuşmuyor.`);
       if (entry?.acceptedAnswers && entry.acceptedAnswers.length !== Number(subject.question_count)) return err(400, 'ACCEPTED_ANSWERS_INCOMPLETE', `${subject.subject_id} kabul edilen cevaplar soru sayısıyla uyuşmuyor.`);
       if (entry?.bookletQuestionNumbers && (entry.bookletQuestionNumbers.length !== Number(subject.question_count) || entry.bookletQuestionNumbers.some((value) => !Number.isInteger(Number(value)) || Number(value) < 1))) return err(400, 'BOOKLET_QUESTION_MAP_INCOMPLETE', `${subject.subject_id} / ${booklet.code} kitapçık soru numaraları geçersiz.`);
+      if (entry?.bookletQuestionNumbers) { const lo = Number(subject.question_start || 1), hi = Number(subject.question_end || lo + Number(subject.question_count) - 1); const out = entry.bookletQuestionNumbers.map(Number).filter((n) => n < lo || n > hi); if (out.length) return err(400, 'BOOKLET_QUESTION_OUT_OF_RANGE', `${subject.subject_id} / ${booklet.code}: kitapçık soru numarası testin aralığı dışında (${lo}–${hi}): ${out.slice(0, 5).join(', ')}.`); }
       if (entry?.bookletQuestionNumbers && new Set(entry.bookletQuestionNumbers.map(Number)).size !== entry.bookletQuestionNumbers.length) return err(400, 'BOOKLET_QUESTION_MAP_DUPLICATE', `${subject.subject_id} / ${booklet.code} kitapçık soru numaraları tekrar ediyor.`);
     }
   }
