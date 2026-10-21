@@ -805,6 +805,54 @@ async function studioCatalog(request:Request,env:Env,user:AuthUser):Promise<Resp
   return json({ok:true,institutionId:inst,subjects,outcomes,funnel,available,requested,bands,difficultySource:'EDITORIAL_ESTIMATE',opticalCapacity:STUDIO_OPTICAL_CAPACITY,message:narrowingMessage(funnel,requested)});
 }
 
+/** A083.3: staff may open a Studio document they can print; teachers only their own. */
+async function studioDocForStaff(env:Env,user:AuthUser,documentId:string):Promise<any|Response>{
+  const gate=await requireFeature(env,user,'STUDIO');if(gate)return gate;
+  if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER'].includes(user.role))return forbidden('Sınav önizlemesi yalnız yetkili personel içindir.');
+  const document=await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId));
+  if(!document)return notFound('Sınav taslağı bulunamadı.');
+  if(user.role!=='SUPER_ADMIN'&&document.institution_id!==user.institution_id)return forbidden();
+  if(user.role==='TEACHER'&&document.created_by!==user.id)return forbidden('Öğretmen yalnızca kendi ürettiği sınavı düzenleyebilir.');
+  return document;
+}
+async function studioDocState(env:Env,documentId:string){
+  const runs=Number((await one<any>(env.DB.prepare(`SELECT COUNT(*) n FROM assessment_runs WHERE source_type='QUESTION_BANK' AND source_id=?`).bind(documentId)))?.n||0);
+  const printed=Number((await one<any>(env.DB.prepare(`SELECT COUNT(*) n FROM studio_document_assets WHERE document_id=? AND asset_type='QUESTION_PDF'`).bind(documentId)))?.n||0);
+  return {locked:runs>0,results:runs,printed:printed>0};
+}
+async function studioItems(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
+  const document=await studioDocForStaff(env,user,documentId);if(document instanceof Response)return document;
+  const booklet=(new URL(request.url).searchParams.get('booklet')||'A').toUpperCase();if(!['A','B'].includes(booklet))return badRequest('Kitapçık A veya B olmalıdır.','INVALID_BOOKLET');
+  const rows=await all<any>(env.DB.prepare(`SELECT i.sort_order position,q.id,q.stem_text stem,q.options_json,q.correct_answer correctAnswer,COALESCE(q.difficulty_band,'MEDIUM') band,(SELECT group_concat(o.code,', ') FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id WHERE l.question_id=q.id) outcomes FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code=? ORDER BY i.sort_order`).bind(documentId,booklet));
+  const items=rows.map((r:any)=>{const opts=parseJson<any[]>(r.options_json,[]);return {position:r.position,id:r.id,stem:String(r.stem||''),options:(Array.isArray(opts)?opts:[]).map((o:any,i:number)=>typeof o==='string'?{label:'ABCDE'[i],text:o}:{label:String(o.label||'ABCDE'[i]),text:String(o.text??'')}),correctAnswer:r.correctAnswer,band:r.band,outcomes:r.outcomes||null};});
+  return json({ok:true,booklet,items,...await studioDocState(env,documentId)});
+}
+async function studioSwap(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
+  const document=await studioDocForStaff(env,user,documentId);if(document instanceof Response)return document;
+  const b=await requestBody(request);const current=String(b.questionId||'');if(!current)return badRequest('Değiştirilecek soru gereklidir.','QUESTION_REQUIRED');
+  const state=await studioDocState(env,documentId);
+  if(state.locked)return json({ok:false,error:{code:'STUDIO_LOCKED',message:`Bu sınavın ${state.results} öğrenci sonucu var; sorular artık değiştirilemez. Yeni bir taslak oluşturun.`}},409);
+  const inDoc=await one<any>(env.DB.prepare('SELECT 1 ok FROM studio_document_items WHERE document_id=? AND question_id=? LIMIT 1').bind(documentId,current));if(!inDoc)return notFound('Soru bu belgede değil.');
+  let config:any={};try{config=JSON.parse(document.config_json||'{}');}catch{}
+  const optionMode=['FOUR','FIVE','MIXED'].includes(String(config.optionMode))?config.optionMode:'MIXED';
+  const input:SelectionInput={institutionId:document.institution_id,gradeLevel:document.grade_level?Number(document.grade_level):null,subjectId:document.subject_id||null,academicYear:typeof config.academicYear==='string'&&config.academicYear?config.academicYear:null,optionMode,teacherUserId:user.role==='TEACHER'?user.id:null};
+  const j=joinSteps(selectionSteps(input));
+  const linked=Number((await one<any>(env.DB.prepare('SELECT COUNT(*) n FROM question_learning_links WHERE question_id=?').bind(current)))?.n||0)>0;
+  const sameBand=b.sameDifficulty!==false;
+  const extra=[`q.id NOT IN (SELECT question_id FROM studio_document_items WHERE document_id=?)`],ep:any[]=[documentId];
+  if(linked){extra.push(`EXISTS(SELECT 1 FROM question_learning_links l2 WHERE l2.question_id=q.id AND l2.node_id IN (SELECT node_id FROM question_learning_links WHERE question_id=?))`);ep.push(current);}
+  if(sameBand){extra.push(`${BAND_SQL}=(SELECT COALESCE(difficulty_band,'MEDIUM') FROM question_bank WHERE id=?)`);ep.push(current);}
+  const replacement=await one<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${j.where} AND ${extra.join(' AND ')} ORDER BY RANDOM() LIMIT 1`).bind(...j.params,...ep));
+  if(!replacement)return json({ok:false,error:{code:'NO_REPLACEMENT',message:`${linked?'Aynı kazanımda':'Aynı ders ve sınıfta'}${sameBand?' ve aynı zorlukta':''} kullanılabilir başka onaylı soru yok.`}},409);
+  await env.DB.batch([
+    env.DB.prepare('UPDATE studio_document_items SET question_id=? WHERE document_id=? AND question_id=?').bind(replacement.id,documentId,current),
+    env.DB.prepare(`DELETE FROM studio_document_assets WHERE document_id=? AND asset_type='QUESTION_PDF'`).bind(documentId),
+    env.DB.prepare(`UPDATE studio_documents SET pdf_r2_key=NULL,status='DRAFT',updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(documentId),
+  ]);
+  await audit(env.DB,user.id,document.institution_id,'STUDIO_QUESTION_SWAPPED','studio_document',documentId,{from:current,to:replacement.id,sameOutcome:linked,sameDifficulty:sameBand,invalidatedPdfs:state.printed});
+  return json({ok:true,from:current,to:replacement.id,sameOutcome:linked,sameDifficulty:sameBand,invalidatedPdfs:state.printed});
+}
+
 async function physicalBridge(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'PHYSICAL_BRIDGE');if(gate)return gate;const u=new URL(request.url);const key=u.searchParams.get('key');if(request.method==='GET'){if(!key)return badRequest('QR/kitap anahtarı gereklidir.');const row=await one<any>(env.DB.prepare(`SELECT l.*,c.title content_title,c.grade_level,p.name publisher_name FROM physical_content_links l JOIN physical_content_items c ON c.id=l.content_item_id LEFT JOIN publishers p ON p.id=c.publisher_id WHERE l.external_key=? AND c.active=1`).bind(key));return row?json({ok:true,link:{...row,payload:parseJson(row.payload_json,{})}}):notFound('İçerik bağlantısı bulunamadı.');}if(user.role!=='SUPER_ADMIN')return forbidden();const b=await requestBody(request);if(!b.contentItemId||!b.externalKey)return badRequest('İçerik ve dış anahtar gereklidir.');const id=uuid('phy');await env.DB.prepare(`INSERT INTO physical_content_links(id,content_item_id,page_from,page_to,external_key,reference_type,reference_id,payload_json) VALUES(?,?,?,?,?,?,?,?)`).bind(id,b.contentItemId,b.pageFrom||null,b.pageTo||null,b.externalKey,b.referenceType||'TEST',b.referenceId||null,JSON.stringify(b.payload||{})).run();return json({ok:true,id},201);
 }
@@ -895,6 +943,8 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/live'&&(request.method==='GET'||request.method==='POST'))return liveSessions(request,env,user);
   if(p==='/api/platform/studio'&&(request.method==='GET'||request.method==='POST'))return studio(request,env,user);
   if(p==='/api/platform/studio/catalog'&&request.method==='GET')return studioCatalog(request,env,user);
+  m=p.match(/^\/api\/platform\/studio\/([^/]+)\/items$/);if(m&&request.method==='GET')return studioItems(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/studio\/([^/]+)\/swap$/);if(m&&request.method==='POST')return studioSwap(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/pdf$/);if(m&&request.method==='GET')return studioPdf(request,env,user,m[1]);
   if(p==='/api/platform/studio/branding/logo')return studioLogo(request,env,user);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/answer-key$/);if(m&&request.method==='GET')return studioAnswerKey(env,user,m[1]);
