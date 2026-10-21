@@ -763,9 +763,11 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
 
   const catalog=await scopedOutcomeCatalog(env,examOutcomeScope(exam));
   const automaticMappings:any[]=[];
+  const humanMapped=new Set<string>();
+  for(const m of body.outcomeMappings||[])if(m?.subjectId&&Number.isInteger(Number(m.questionNo)))humanMapped.add(`${m.subjectId}::${Number(m.questionNo)}`);
   if(body.outcomeMappings===undefined){
     const existingMappings=await all<any>(env.DB.prepare('SELECT q.subject_id,q.question_no,qo.outcome_id FROM question_outcomes qo JOIN exam_questions q ON q.id=qo.exam_question_id WHERE q.exam_id=?').bind(examId));
-    for(const m of existingMappings)if(catalog.some(o=>o.id===m.outcome_id&&o.subject_id===m.subject_id))automaticMappings.push({subjectId:m.subject_id,questionNo:m.question_no,outcomeId:m.outcome_id});
+    for(const m of existingMappings)if(catalog.some(o=>o.id===m.outcome_id&&o.subject_id===m.subject_id)){automaticMappings.push({subjectId:m.subject_id,questionNo:m.question_no,outcomeId:m.outcome_id});humanMapped.add(`${m.subject_id}::${Number(m.question_no)}`);}
   }
   for(const [entryKey,entry] of entryMap){
     const subjectId=entryKey.split('::')[0];
@@ -773,7 +775,9 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
     if(!subject)continue;
     for(let offset=0;offset<Number(subject.question_count);offset++){
       const refs=entry.outcomeRefsByQuestion?.[offset] || (entry.outcomeRefs?.[offset]?[entry.outcomeRefs[offset]]:[]);
-      for(const ref of refs){const matched=matchScopedOutcome(ref,subjectId,catalog);if(matched.outcomeId)automaticMappings.push({subjectId,questionNo:Number(subject.question_start||1)+offset,outcomeId:matched.outcomeId});}
+      // A021: a question a person already mapped keeps that decision; automatic matching only fills unmapped questions.
+      const qNo=Number(subject.question_start||1)+offset;if(humanMapped.has(`${subjectId}::${qNo}`))continue;
+      for(const ref of refs){const matched=matchScopedOutcome(ref,subjectId,catalog);if(matched.outcomeId)automaticMappings.push({subjectId,questionNo:qNo,outcomeId:matched.outcomeId});}
     }
   }
   const seenMappings = new Set<string>();

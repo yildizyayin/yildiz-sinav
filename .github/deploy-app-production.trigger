@@ -1,1 +1,1 @@
-2026-10-21 A020 answer key scope A-D
+2026-10-21 A021 outcome auto-match conflicts

@@ -186,7 +186,12 @@ export function matchOfficialOutcome(reference: OutcomeReference | null | undefi
   if (referenceCode) {
     const allByCode = candidates.filter((outcome) => normalizeCatalogText(outcome.code) === normalizeCatalogText(referenceCode));
     const byCode = verified.filter((outcome) => normalizeCatalogText(outcome.code) === normalizeCatalogText(referenceCode));
-    if (byCode.length === 1) return { outcomeId: byCode[0].id, reason: 'CODE' };
+    if (byCode.length === 1) {
+      // A021: same rule as the server — a code contradicted by wording that names another verified outcome is not taken.
+      const text = normalizeCatalogText(reference.publisherTitle || reference.title);
+      if (text && verified.some((outcome) => outcome.id !== byCode[0].id && normalizeCatalogText(outcome.title) === text)) return { reason: 'AMBIGUOUS' };
+      return { outcomeId: byCode[0].id, reason: 'CODE' };
+    }
     if (byCode.length > 1) return { reason: 'AMBIGUOUS' };
     if (allByCode.length) return { reason: 'UNVERIFIED' };
   }
