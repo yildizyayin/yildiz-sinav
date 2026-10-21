@@ -541,3 +541,11 @@ PR #278 (A018.2) kullanıcı talimatıyla merge `a1567b5`; dağıtım onayı 11:
 Neden (ölçümle): tüm göçlerle kurulan şema üzerinde 15 dakikalık zamanlayıcı sorgusunun planı — kazanım seçimi her aday kazanım için `question_generation_jobs`'ı 3 kez baştan sona tarıyor, sınıf/dersteki her soruyu dolaşıyordu (`outcome_id` ve `node_id` indeksleri yok). A009 düzeltmesiyle zamanlayıcı her turda çalışınca tüketim katlandı.
 Kullanıcı kararı (11:41): Aralık'a kadar ek maliyet yok (ücretli plan yok).
 Düzeltme PR #282: göç 0118 (iki indeks), sorgu sabit ve planı yalnız indeks okuması; şema tüm göçlerden kurulup tam tarama olursa test kırılır. 231 dosya / 1.168 test PASS. Dağıtım 03:00 sonrası onaylanmalı (göç adımı okuma gerektirir).
+
+### A083.2 — zorluk karışımı, 21 Ekim 12:15–12:40
+
+PR #282 (okuma indeksleri) ve #279 (A083.1) merge edildi; tek dağıtım 03:00 sonrası onaylanacak.
+**A083.2 — PR #283:** Studio'da zorluk karışımı (Dengeli %30/50/20, Kolay ağırlıklı %50/40/10, Zor ağırlıklı %15/45/40, Özel). Hedef sayılar en büyük kalan yöntemiyle (toplam her zaman soru sayısı); her zorluk aynı kapılı havuzdan ayrı çekilip karıştırılır; karşılanamayan zorluk adıyla reddedilir. Katalog zorluk başına stok döndürür; belge ayarında karışım ve `difficultySource: EDITORIAL_ESTIMATE`.
+**Dürüstlük notu:** Ölçülmüş madde zorluğu (öğrenci doğru oranı) için saklanan istatistik yok; formda "editoryal tahmin" yazıyor. Ölçülmüş zorluk, cevap verisi biriktiğinde sonuç analitiği işlerinde ele alınacak (okuma bütçesi nedeniyle canlı hesaplanmayacak, saklanan istatistik olarak).
+Testler: hedef toplamı, geçersiz karışım, sunucu karışımı ve eksik zorluk (mutasyon kontrollü), form. 231 dosya / 1.171 test, build PASS.
+Sıradaki: A083.3 önizleme ve aynı kazanımdan soru değiştirme.
