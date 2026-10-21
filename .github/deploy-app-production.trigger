@@ -1,1 +1,1 @@
-2026-10-21 A024 scoring score models
+2026-10-21 A025 real Sekonic TYT files

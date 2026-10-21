@@ -14,6 +14,7 @@ export interface ParseResult {
   ambiguous: boolean;
   records: CanonicalRecord[];
   issues: string[];
+  candidates?: Array<{ id: string; name: string }>;
 }
 
 export interface NormalizedAnswerSequence {
@@ -85,7 +86,7 @@ export function parseUploadedText(text: string, fileName: string, templates: Par
     return parseFixedWidth(lines, fileName, matches[0].template.id, matches[0].template.name, fixedWidthFromDefinition(matches[0].def as any) as any);
   }
   if (matches.length > 1) {
-    return { confidence: 0.5, ambiguous: true, records: [], issues: ['Birden fazla optik şablonu dosyayla eşleşiyor. Manuel seçim gerekli.'] };
+    return { confidence: 0.5, ambiguous: true, records: [], issues: ['Birden fazla optik şablonu dosyayla eşleşiyor. Manuel seçim gerekli.'], candidates: matches.map((m) => ({ id: m.template.id, name: m.template.name })) };
   }
 
   return { confidence: 0.2, ambiguous: false, records: [], issues: ['Optik/FMT otomatik belirlenemedi. Şablon tanımı veya manuel seçim gerekli.'] };

@@ -233,6 +233,8 @@ function workbookHeaderIndex(headers: string[], matcher: RegExp): number {
  */
 export function parseAnswerKeyWorkbookRows(rows: unknown[][], subjects: SubjectOption[], defaultBooklet = 'A'): ParsedAnswerKey {
   const values = rows.map((row) => row.map(cellText));
+  const publisherHeader = values.findIndex((row) => { const n = row.map(norm); return n.includes('CEVAP') && n.includes('TEST') && n.some((c) => /^[A-D]SORU(NO)?$/.test(c)); });
+  if (publisherHeader >= 0) return parsePublisherRowTable(values, publisherHeader, subjects);
   const answerSection = values.findIndex((row) => row.some((cell) => norm(cell) === 'CEVAPANAHTARI'));
   const headerIndex = answerSection >= 0
     ? values.findIndex((row, index) => index > answerSection && row.some((cell) => norm(cell).includes('DOGRUCEVAP')))
@@ -608,7 +610,8 @@ export function parseAnswerKeyFileText(text: string, subjects: SubjectOption[], 
   const lines = text.replace(/^\uFEFF/, '').replace(/\r/g, '').split('\n');
   const rows = lines.map(splitDelimitedLine);
   const isTemplate = rows.some((row) => row.some((cell) => norm(cell) === 'CEVAPANAHTARI')) && rows.some((row) => row.some((cell) => norm(cell).includes('DOGRUCEVAP')));
-  return isTemplate ? parseAnswerKeyWorkbookRows(rows, subjects, defaultBooklet) : parseAnswerKeyText(text, subjects, defaultBooklet);
+  const isPublisherTable = rows.some((row) => { const n = row.map(norm); return n.includes('CEVAP') && n.includes('TEST') && n.some((c) => /^[A-D]SORU(NO)?$/.test(c)); });
+  return isTemplate || isPublisherTable ? parseAnswerKeyWorkbookRows(rows, subjects, defaultBooklet) : parseAnswerKeyText(text, subjects, defaultBooklet);
 }
 
 export type TemplateSection = { subjectCode: string; label: string; questionStart: number; questionEnd: number; questionCount: number; optionCount?: number };
@@ -649,4 +652,69 @@ export function buildAnswerKeyTemplateRows(input: { title: string; gradeLevel: s
     }
   });
   return { rows, columnCount, sectionRows: [0, 2, 7, 25, 33], headerRows: [8, 26, answerHeaderRow], answerHeaderRow, booklets: templateBooklets };
+}
+
+const SUBJECT_FILLER = /(TEMEL|BILIMLERI|BILIMLER|BILGISI|VE)/g;
+function looseSubjectFor(token: string, subjects: SubjectOption[]): SubjectOption | undefined {
+  const direct = subjectForToken(token, subjects);
+  if (direct) return direct;
+  const wanted = norm(token).replace(SUBJECT_FILLER, '');
+  if (!wanted) return undefined;
+  return subjects.find((s) => norm(s.name).replace(SUBJECT_FILLER, '') === wanted) || subjects.find((s) => norm(s.code).replace(/_/g, '') === wanted);
+}
+
+/**
+ * A025: the row-per-question export publishers send with their exams:
+ *   Kitapçık | Test | Ders | A Soru | B Soru | Cevap | Kazanım Kodu | Kazanım-1 …
+ * "Test" names the scored test (TYT Türkçe, TYT Sosyal …), "Ders" the branch inside it. Rows whose branch
+ * is the optional philosophy ("Felsefe (Seçmeli)") become the TYT_FEL optional key, in each booklet's own order.
+ */
+function parsePublisherRowTable(values: string[][], headerIndex: number, subjects: SubjectOption[]): ParsedAnswerKey {
+  const headers = values[headerIndex].map(norm);
+  const col = (re: RegExp) => headers.findIndex((h) => re.test(h));
+  const testCol = col(/^TEST(ADI)?$/), branchCol = col(/^DERS(ADI)?$/), answerCol = col(/^(DOGRU)?CEVAP$/), codeCol = col(/^KAZANIMKODU$/), titleCol = col(/^KAZANIM1?$/);
+  const bookletCols: Record<string, number> = {};
+  for (const b of ['A', 'B', 'C', 'D']) { const i = col(new RegExp(`^${b}SORU(NO)?$`)); if (i >= 0) bookletCols[b] = i; }
+  const detectedBooklets = Object.keys(bookletCols);
+  const optional = subjects.find((s) => norm(s.code) === 'TYTFEL');
+  const warnings: string[] = []; const unknownLines: string[] = [];
+  const grouped = new Map<string, Array<{ numbers: Record<string, number>; answer: string; reference: OutcomeReference | null }>>();
+  const meta = values.slice(0, headerIndex).flat().filter(Boolean);
+  for (const row of values.slice(headerIndex + 1)) {
+    if (!row.some(Boolean)) continue;
+    const branch = branchCol >= 0 ? row[branchCol] : '';
+    const isOptional = /SECMELI/.test(norm(branch)) && /FELSEFE/.test(norm(branch));
+    const subject = isOptional ? optional : looseSubjectFor(testCol >= 0 ? row[testCol] : '', subjects) || looseSubjectFor(branch, subjects);
+    const answer = cleanAnswers(row[answerCol] || '').slice(0, 1);
+    const numbers: Record<string, number> = {};
+    for (const [b, c] of Object.entries(bookletCols)) { const n = Number(row[c]); if (Number.isInteger(n) && n > 0) numbers[b] = n; }
+    if (!subject || !answer || !Object.keys(numbers).length) { unknownLines.push(row.filter(Boolean).join(' | ')); continue; }
+    const code = codeCol >= 0 ? row[codeCol] : '';
+    const title = titleCol >= 0 ? row[titleCol] : '';
+    const reference = code || title ? { code: code || undefined, publisherCode: code || undefined, publisherTitle: title || undefined, title: title || undefined } as OutcomeReference : null;
+    const list = grouped.get(subject.id) || []; list.push({ numbers, answer, reference }); grouped.set(subject.id, list);
+  }
+  const entries: ParsedAnswerEntry[] = [];
+  const questionCounts: Record<string, number> = {}, questionStarts: Record<string, number> = {}, questionCountsByBooklet: Record<string, Record<string, number>> = {};
+  for (const [subjectId, rows] of grouped) {
+    const first = detectedBooklets[0];
+    const sorted = [...rows].sort((a, b) => (a.numbers[first] || 0) - (b.numbers[first] || 0));
+    const isOpt = optional && subjectId === optional.id;
+    const base = Math.min(...sorted.map((r) => r.numbers[first] || Infinity));
+    if (!isOpt) { questionCounts[subjectId] = sorted.length; questionStarts[subjectId] = base; }
+    questionCountsByBooklet[subjectId] = {};
+    for (const b of detectedBooklets) {
+      const ordered = isOpt ? [...sorted].sort((x, y) => (x.numbers[b] || 0) - (y.numbers[b] || 0)) : sorted;
+      const numbers = ordered.map((r) => r.numbers[b] || r.numbers[first]);
+      const dup = [...new Set(numbers.filter((n, i) => numbers.indexOf(n) !== i))];
+      if (dup.length) warnings.push(`${subjects.find((x) => x.id === subjectId)?.name || subjectId} / Kitapçık ${b}: soru numarası tekrar ediyor (${dup.slice(0, 5).join(', ')}).`);
+      const refs = ordered.map((r) => r.reference);
+      entries.push({ subjectId, bookletCode: b, answers: ordered.map((r) => r.answer).join(''), optionCount: 5, acceptedAnswers: ordered.map((r) => [r.answer]), questionStatuses: ordered.map(() => 'ACTIVE'), outcomeRefs: refs, outcomeRefsByQuestion: refs.map((r) => r ? [r] : []), bookletQuestionNumbers: isOpt ? ordered.map((_, i) => i + 1) : numbers });
+      questionCountsByBooklet[subjectId][b] = numbers.length;
+    }
+  }
+  if (unknownLines.length) warnings.push(`${unknownLines.length} satırın testi/dersi tanınamadı; kontrol edin.`);
+  if (!entries.length) warnings.push('Cevap tablosunda işlenebilir soru satırı bulunamadı.');
+  const gradeLevel = Number((meta.find((v) => /(\d{1,2})\s*\.?\s*S[ıi]n[ıi]f/i.test(v)) || '').match(/(\d{1,2})/)?.[1] || 0) || undefined;
+  return { entries, questionCounts, questionStarts, questionCountsByBooklet, unknownLines, detectedBooklets, metadata: { title: meta.find((v) => /TYT|AYT|LGS|DENEME|SINAV/i.test(v)), publisherName: meta[0], gradeLevel }, warnings, detectedFormat: 'PUBLISHER_ROW_TABLE' as any };
 }

@@ -422,7 +422,7 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
     if (!template) return badRequest('Seçilen optik şablon bulunamadı.');
     parsed = parseWithTemplate(text, file.name, template);
   } else parsed = parseUploadedText(text, file.name, templates);
-  if (parsed.records.length === 0) return badRequest(parsed.issues[0] || 'Dosya okunamadı.', parsed.ambiguous ? 'OPTICAL_TEMPLATE_AMBIGUOUS' : 'OPTICAL_TEMPLATE_REQUIRED', { templates: parsed.ambiguous ? templates.map((t) => ({ id: t.id, name: t.name })) : undefined, issues: parsed.issues });
+  if (parsed.records.length === 0) return badRequest(parsed.issues[0] || 'Dosya okunamadı.', parsed.ambiguous ? 'OPTICAL_TEMPLATE_AMBIGUOUS' : 'OPTICAL_TEMPLATE_REQUIRED', { templates: parsed.ambiguous ? (parsed.candidates || templates.map((t) => ({ id: t.id, name: t.name }))) : undefined, issues: parsed.issues });
 
   const candidates = await loadStudentCandidates(env.DB, institutionId, season.id);
   const allowedBooklets = (await all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1').bind(examId))).map((b) => b.code.toUpperCase());
