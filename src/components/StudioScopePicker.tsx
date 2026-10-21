@@ -3,7 +3,7 @@ import { api } from '../api';
 
 /** A083: program → grade → subject → unit → topic → outcome, chosen from lists with approved stock beside each item. */
 export type StudioScope = { academicYear: string; gradeLevel: string; subjectId: string; outcomeCodes: string[] };
-export type StudioAvailability = { available: number | null; message: string | null; opticalCapacity: number; loading: boolean };
+export type StudioAvailability = { available: number | null; message: string | null; opticalCapacity: number; loading: boolean; bands?: { EASY?: number; MEDIUM?: number; HARD?: number } | null };
 type Outcome = { code: string; title: string; unit: string; topic: string; approved: number };
 type Subject = { id: string; name: string; approved: number };
 
@@ -33,7 +33,7 @@ export function StudioScopePicker({ value, onChange, institutionId, needsInstitu
       api<any>(`/api/platform/studio/catalog?${params}`).then(r => {
         if (!live) return;
         setSubjects(Array.isArray(r.subjects) ? r.subjects : []); setOutcomes(Array.isArray(r.outcomes) ? r.outcomes : []); setError('');
-        const a = { available: typeof r.available === 'number' ? r.available : null, message: r.message ?? null, opticalCapacity: Number(r.opticalCapacity) || 44, loading: false };
+        const a = { available: typeof r.available === 'number' ? r.available : null, message: r.message ?? null, opticalCapacity: Number(r.opticalCapacity) || 44, loading: false, bands: r.bands && typeof r.bands === 'object' ? r.bands : null };
         setInfo(a); onAvailability(a);
       }).catch(e => { if (!live) return; setError(e?.message || 'Müfredat ve soru stoku alınamadı.'); const a = { available: null, message: null, opticalCapacity: 44, loading: false }; setInfo(a); onAvailability(a); });
     }, 250);

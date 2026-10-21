@@ -1,4 +1,4 @@
-import {MAX_OUTCOMES,joinSteps,narrowingMessage,outcomeWhere,parseAcademicYear,parseOutcomeCodes,selectionSteps,type SelectionInput} from './studio-selection';
+import {BANDS,BAND_SQL,bandShortage,bandTargets,parseDifficultyMix,MAX_OUTCOMES,joinSteps,narrowingMessage,outcomeWhere,parseAcademicYear,parseOutcomeCodes,selectionSteps,type SelectionInput} from './studio-selection';
 import {examOutcomePayloadSql} from './exam-outcome-history';
 import {loadScreening} from './question-screening';
 import type { AuthUser, Env } from '../types';
@@ -764,9 +764,17 @@ async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const {where,params:ps}=joinSteps(selectionSteps(input));const wh=[where];
   const requestedIds=Array.isArray(b.questionIds)?[...new Set((b.questionIds as unknown[]).filter((value):value is string=>typeof value==='string'&&Boolean(value.trim())))].slice(0,count):[];
   const requestedClause=requestedIds.length?` AND q.id IN (${requestedIds.map(()=>'?').join(',')})`:'';
-  const qs=await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')}${requestedClause} ORDER BY RANDOM() LIMIT ?`).bind(...ps,...requestedIds,count));
+  const mixParsed=parseDifficultyMix(b.difficultyMix);if(!mixParsed.ok)return badRequest(mixParsed.message,'INVALID_DIFFICULTY_MIX');const difficultyMix=requestedIds.length?null:mixParsed.value;
+  let qs:any[];
+  if(difficultyMix){
+    const targets=bandTargets(count,difficultyMix);
+    const stock=Object.fromEntries((await all<any>(env.DB.prepare(`SELECT ${BAND_SQL} band,COUNT(*) n FROM question_bank q WHERE ${wh.join(' AND ')} GROUP BY 1`).bind(...ps))).map((r:any)=>[r.band,Number(r.n)]));
+    const shortage=bandShortage(targets,stock);if(shortage)return badRequest(shortage,'INSUFFICIENT_DIFFICULTY_POOL');
+    qs=[];for(const band of BANDS){if(!targets[band])continue;qs.push(...await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')} AND ${BAND_SQL}=? ORDER BY RANDOM() LIMIT ?`).bind(...ps,band,targets[band])));}
+    for(let i=qs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[qs[i],qs[j]]=[qs[j],qs[i]];}
+  }else qs=await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')}${requestedClause} ORDER BY RANDOM() LIMIT ?`).bind(...ps,...requestedIds,count));
   if(qs.length<count)return badRequest(`İstenen ${count} soruya uygun soru havuzu bulunamadı; yalnız ${qs.length} soru seçilebildi.`,'INSUFFICIENT_QUESTION_POOL');
-  const config={...b,branding:studioBrandingPrefs(b.branding),bookletCodes,optionMode,academicYear,outcomeCodes,deliveryMode:String(b.deliveryMode||'PDF_OPTICAL').toUpperCase(),sourceTypes:Array.isArray(b.sourceTypes)?b.sourceTypes:['QUESTION_BANK']};
+  const config={...b,difficultyMix,difficultySource:difficultyMix?'EDITORIAL_ESTIMATE':null,branding:studioBrandingPrefs(b.branding),bookletCodes,optionMode,academicYear,outcomeCodes,deliveryMode:String(b.deliveryMode||'PDF_OPTICAL').toUpperCase(),sourceTypes:Array.isArray(b.sourceTypes)?b.sourceTypes:['QUESTION_BANK']};
   const statements:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO studio_documents(id,institution_id,created_by,document_type,title,grade_level,subject_id,status,config_json) VALUES(?,?,?,?,?,?,?,'DRAFT',?)`).bind(id,inst,user.id,b.documentType,b.title,b.gradeLevel||null,b.subjectId||null,JSON.stringify(config))];
   bookletCodes.forEach((code:string)=>{const ordered=code==='B'?[...qs].reverse():qs;ordered.forEach((q,index)=>statements.push(env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,?,?)`).bind(id,q.id,code,index+1)));});
   await env.DB.batch(statements);await audit(env.DB,user.id,inst,'STUDIO_DOCUMENT_CREATED','studio_document',id,{selectedQuestions:qs.length,bookletCodes,optionMode,deliveryMode:config.deliveryMode});return json({ok:true,id,selectedQuestions:qs.length,requestedQuestions:count,bookletCodes,optionMode},201);
@@ -792,7 +800,9 @@ async function studioCatalog(request:Request,env:Env,user:AuthUser):Promise<Resp
     outcomes=await all<any>(env.DB.prepare(`SELECT o.code,o.title,COALESCE(o.unit,'Ünite belirtilmemiş') unit,COALESCE(o.topic,'Konu belirtilmemiş') topic,cv.academic_year academicYear,(SELECT COUNT(DISTINCT q.id) FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id WHERE l.node_id='ln_'||o.id AND ${j.where}) approved FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE o.active=1 AND cv.verified=1 AND COALESCE(o.node_type,'OUTCOME') IN ('OUTCOME','SUB_OUTCOME') AND o.grade_level=? AND o.subject_id=? AND (? IS NULL OR cv.academic_year=?) ORDER BY cv.academic_year DESC,o.unit,o.topic,o.code LIMIT 600`).bind(...j.params,gradeLevel,subjectId,year.value,year.value));
   }
   const available=funnel.length?funnel[funnel.length-1].count:0;
-  return json({ok:true,institutionId:inst,subjects,outcomes,funnel,available,requested,opticalCapacity:STUDIO_OPTICAL_CAPACITY,message:narrowingMessage(funnel,requested)});
+  const all3=joinSteps(steps);const bandRows=await all<any>(env.DB.prepare(`SELECT ${BAND_SQL} band,COUNT(*) n FROM question_bank q WHERE ${all3.where} GROUP BY 1`).bind(...all3.params));
+  const bands=Object.fromEntries(BANDS.map(band=>[band,Number(bandRows.find((r:any)=>r.band===band)?.n||0)]));
+  return json({ok:true,institutionId:inst,subjects,outcomes,funnel,available,requested,bands,difficultySource:'EDITORIAL_ESTIMATE',opticalCapacity:STUDIO_OPTICAL_CAPACITY,message:narrowingMessage(funnel,requested)});
 }
 
 async function physicalBridge(request:Request,env:Env,user:AuthUser):Promise<Response>{
