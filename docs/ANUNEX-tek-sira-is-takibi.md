@@ -736,3 +736,22 @@ PR #299 ile yapılanlar:
 Not: öğrenme durumu ve telafi gibi türetilmiş sinyaller yayınlanmamış cevaplardan beslenebilir; ilgili işlerde ele alınacak.
 
 Kapanış için: dağıtım + canlıda elle kabul (K002).
+
+### A031 — sınav silme / arşiv / kopyalama, 21 Ekim 21:25–
+
+PR #299 (A030) merge edildi.
+
+Bulgular:
+1. Uygulamadan kaldırılan (çöp kutusu) sınavın sonucunu öğrenci ve veli 7 ekranda görmeye devam ediyordu.
+2. Çöp kutusundaki sınav planlı zamanında otomatik yayınlanabiliyordu; dondurma ve yayınlama da çalışıyordu.
+3. Kaldırma penceresi etkiyi (sonuç sayısı, yayın durumu, kanallar) göstermiyordu.
+
+PR #300 ile yapılanlar:
+- Kaldırma, öğrenci ve veli yayınını kapatıyor ve planlı yayını iptal ediyor; sonuçlar ve donmuş sürüm saklanıyor, denetim kaydına yazılıyor.
+- Çöp kutusundaki sınav dondurulamıyor ve yayınlanamıyor.
+- Geri alma yayını kendiliğinden açmıyor ve bunu söylüyor.
+- Kaldırma penceresi etkiyi gösteriyor.
+- Arşiv (sonuç korunur) ve kopya (bağımsız taslak) davranışları testle güvenceye alındı.
+- 247 dosya / 1.254 test, build PASS.
+
+Kapanış için: dağıtım + canlıda elle kabul (K002).
