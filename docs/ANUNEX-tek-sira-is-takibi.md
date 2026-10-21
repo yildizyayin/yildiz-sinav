@@ -650,3 +650,35 @@ PR #294 (A026) merge edildi. Mevcut: kitapçığı boş/geçersiz optikte kitap�
 ### A028 — eşleşmeyen öğrenci kuyruğu, 21 Ekim 19:50–20:25
 
 PR #295 (A027) merge edildi. Mevcut: eşleştir/misafir/iptal kararları, bekleyen satırın değerlendirmeyi durdurması, kararların denetim kaydı, satırların silinmemesi doğru. Bulgu: aynı öğrenciye aynı testler için iki optik bağlanınca (iki kez okutma veya yanlış elle eşleştirme) doğrudan değerlendirme **iki katılımcı/iki sonuç** üretiyor, parçalı değerlendirme sonrakini **sessizce üstüne yazıyordu**. PR #296: ortak kural (aynı öğrenci + ortak test = çakışma; ortak testi olmayan sözel/sayısal oturumlar birleşir; iptal satırlar sayılmaz); toplu görünümde çakışan satırlar ve kuyrukta uyarı; elle eşleştirmede 409 STUDENT_ALREADY_IN_BATCH; iki değerlendirme yolunda DUPLICATE_STUDENT_IN_BATCH. Testler: kural + HTTP akışı (doğrudan ve parçalı; mutasyon kontrollü). 241 dosya / 1.214 test, build PASS.
+
+### A028b — çift oturum (sayısal + sözel) optik, 21–22 Ekim (kullanıcı talebi, A029'dan önce)
+
+Soru: ortaokulda sayısal ve sözel ayrı optiğe (ör. 7108 + 840) kodlanıp tek TXT ya da iki TXT olarak yüklenince sonuç doğru mu? **Hayır, değildi.** Bulgular:
+1. İkinci dosya ilk oturumun derslerini boş cevaplarla eziyordu, çünkü 7108'de sözel blokları boş da olsa vardı. Sonuç yükleme sırasına bağlıydı.
+2. Hazır 7108 SOS/ING okuyor, LGS sınavı INK/YAB bekliyor. İnkılap ve İngilizce sessizce puanlanmıyordu.
+3. İki formlu tek TXT okunamıyordu (satır uzunlukları farklı).
+4. Yüklenen Sekonic FMT yalnız 129 düzenini biliyordu.
+5. Öğrencinin iki oturumda farklı kitapçık alması desteklenmiyordu.
+6. Alt kayıt **A028b.1**: parçalı değerlendirme yeni misafirde FOREIGN KEY hatasıyla düşüyordu (tarama satırı, öğrenci satırından önce bağlanıyordu).
+7. Alt kayıt **A028b.2**: hazır 129 tanımında TC alanı 36–48 idi; 47. sütun ALAN olduğu için 36–47 olmalı (0123).
+
+PR #297 ile yapılanlar:
+- FMT yerleşimi formun kendi satırlarından çıkarılıyor; KOD sütunları form imzası oluyor.
+- Karışık TXT'de her satır kendi uzunluğundaki formla okunuyor; belirsizlikte tahmin yapılmıyor.
+- Ders kodu sınava hizalanıyor.
+- Bir formun tüm kağıtlarında boş olan test yüklemeye dahil sayılmıyor.
+- Aynı öğrencinin iki oturum kağıdı tek kayıtta birleşiyor; her oturum kendi kitapçığıyla puanlanıyor.
+- Birleşemeyen kağıtlar ayrı parçalarda yazılıyor ve boş test dolu testi ezmiyor.
+- Oturumu eksik öğrenci net alıyor ama puan almıyor (ÖSYM tahminiyle aynı kural).
+- Önizlemede dosya notları gösteriliyor.
+
+Testler:
+- LGS uçtan uca, doğrudan ve parçalı değerlendirmede: iki dosya her iki sırada, karışık TXT, birleşemeyen kağıt, iki oturumun aynı 7108 formunda olması, farklı oturum kitapçığı, misafir öğrenci.
+- Birim testleri ve migration kontrolü; mutasyon kontrollü.
+- 243 dosya / 1.239 test, build PASS.
+
+Bilinen sınır: iki oturum aynı formdaysa ve öğrencinin ikinci kağıdı yoksa, boş sözel blokları "boş bıraktı" sayılır.
+
+Karar notu (kullanıcı değiştirebilir): eksik oturumda puan boş bırakılıyor; net ve sıralama gösteriliyor.
+
+Kapanış için: dağıtım ve canlıya geçince gerçek 7108 + 840 dosyalarıyla elle kabul (K002).
