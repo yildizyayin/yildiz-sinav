@@ -103,7 +103,8 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
   if (examScope) return examScope;
   if (!exam.scoring_version_id) return badRequest('Sınavın puanlama kuralı tanımlı değil.', 'SCORING_RULE_REQUIRED');
   assertScoringRuleVerified({ verified: exam.verified, authority: exam.authority });
-  const scoreMethod = scoreMethodFor((() => { try { return JSON.parse(exam.config_json || '{}'); } catch { return {}; } })());
+  const scoringConfig = (() => { try { return JSON.parse(exam.config_json || '{}'); } catch { return {}; } })();
+  const scoreMethod = scoreMethodFor(scoringConfig);
   const scoringOverride = (() => { try { return JSON.parse(exam.scoring_override_json || 'null'); } catch { return null; } })();
 
   const [subjects, booklets, keyRows, classes, records] = await Promise.all([
@@ -255,7 +256,7 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
     }
 
     const overall = calculateOverall(subjectScores);
-    examResultRows.push([uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, calculateExamScore(scoreMethod, subjectScores, scoringOverride), overall.successPercent]);
+    examResultRows.push([uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, calculateExamScore(scoreMethod, subjectScores, scoringOverride, scoringConfig), overall.successPercent]);
     for (const [outcomeId, acc] of outcomeAccumulator) {
       const rate = acc.evidence ? acc.correct / acc.evidence : 0;
       outcomeRows.push([uuid('or'), studentId, exam.id, outcomeId, acc.evidence, acc.correct, rate, masteryStatus(acc.correct, acc.evidence)]);

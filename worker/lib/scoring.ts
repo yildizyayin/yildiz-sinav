@@ -45,13 +45,13 @@ function round4(n: number): number { return Math.round(n * 10000) / 10000; }
  *    labelled as such, not MEB's standard-score result
  * ÖSYM profiles return null until estimate coefficients are approved; ranking then uses nets.
  */
-export type ScoreMethod = 'PERCENT' | 'CUSTOM' | 'LGS_ESTIMATE' | 'NONE';
+export type ScoreMethod = 'PERCENT' | 'CUSTOM' | 'LGS_ESTIMATE' | 'WEIGHTED_ESTIMATE' | 'NONE';
 export interface ScoredSubject { subjectId?: string; code?: string; net: number; questionCount: number }
 const LGS_WEIGHTS: Record<string, number> = { TUR: 4, MAT: 4, FEN: 4, INK: 1, DIN: 1, YAB: 1 };
 
 export function scoreMethodFor(config: any): ScoreMethod {
   const model = String(config?.scoreModel || '').toUpperCase();
-  if (['PERCENT', 'CUSTOM', 'LGS_ESTIMATE', 'NONE'].includes(model)) return model as ScoreMethod;
+  if (['PERCENT', 'CUSTOM', 'LGS_ESTIMATE', 'WEIGHTED_ESTIMATE', 'NONE'].includes(model)) return model as ScoreMethod;
   const mode = String(config?.mode || config?.profile || '').toUpperCase();
   if (mode === 'WEIGHTED_PERCENT' || mode === 'SCHOOL_100') return 'PERCENT';
   if (mode === 'CUSTOM' || mode === 'CUSTOM_EXAM') return 'CUSTOM';
@@ -74,7 +74,27 @@ function lgsWeight(code: string | undefined): number {
   return 1;
 }
 
-export function calculateExamScore(method: ScoreMethod, subjects: ScoredSubject[], override?: any): number | null {
+/**
+ * A024 (user approval 21 Oct 19:17): ÖSYM estimate from the published test weights of each score type
+ * (e.g. TYT: Türkçe 33 %, Sosyal 17 %, Temel Matematik 33 %, Fen 17 %). Each test contributes
+ * weight × (net / question count); 100 + 400 × sum, so a perfect sheet is 500. Every weighted test must be
+ * present (an AYT-only exam cannot give a SAY score); OBP is not included.
+ */
+export function calculateWeightedEstimate(weights: Record<string, number>, subjects: ScoredSubject[]): number | null {
+  const entries = Object.entries(weights || {}).filter(([, w]) => Number(w) > 0);
+  if (!entries.length) return null;
+  const total = entries.reduce((s, [, w]) => s + Number(w), 0);
+  let sum = 0;
+  for (const [code, w] of entries) {
+    const subject = subjects.find((s) => String(s.code || '').toUpperCase() === code.toUpperCase());
+    if (!subject || !(subject.questionCount > 0)) return null;
+    sum += (Number(w) / total) * Math.max(0, subject.net) / subject.questionCount;
+  }
+  return round2(100 + 400 * sum);
+}
+
+export function calculateExamScore(method: ScoreMethod, subjects: ScoredSubject[], override?: any, config?: any): number | null {
+  if (method === 'WEIGHTED_ESTIMATE') return calculateWeightedEstimate(config?.estimateWeights || {}, subjects);
   const valid = subjects.filter((s) => s.questionCount > 0);
   if (!valid.length || method === 'NONE') return null;
   const share = (weight: (s: ScoredSubject) => number) => {

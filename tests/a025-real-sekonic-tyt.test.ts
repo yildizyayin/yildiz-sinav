@@ -98,7 +98,15 @@ describe('A025: real Sekonic 129 FMT + TXT + publisher key', () => {
       for (const r of rows) { const k = String(r.n).trim(); got[k] ??= { booklet: r.b }; got[k][r.c] = [r.d, r.y, r.e, r.net]; }
       expect(got).toEqual(EXPECTED);
       const totals = db.prepare(`SELECT ep.name_snapshot n,er.net FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).all(created.data.id) as any[];
-      for (const t of totals) { const e = EXPECTED[String(t.n).trim()]; expect(t.net).toBeCloseTo(e.TYT_TUR[3] + e.TYT_SOS[3] + e.TYT_MAT[3] + e.TYT_FEN[3], 4); }
+      const scores = db.prepare(`SELECT ep.name_snapshot n,er.net,er.score,er.institution_rank r FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).all(created.data.id) as any[];
+      for (const t of scores) {
+        const e = EXPECTED[String(t.n).trim()];
+        expect(t.net).toBeCloseTo(e.TYT_TUR[3] + e.TYT_SOS[3] + e.TYT_MAT[3] + e.TYT_FEN[3], 4);
+        // A024 approved estimate: 100 + 400 × (.33·TUR/40 + .17·SOS/20 + .33·MAT/40 + .17·FEN/20), computed here independently
+        const est = Math.round((100 + 400 * (.33 * Math.max(0, e.TYT_TUR[3]) / 40 + .17 * Math.max(0, e.TYT_SOS[3]) / 20 + .33 * Math.max(0, e.TYT_MAT[3]) / 40 + .17 * Math.max(0, e.TYT_FEN[3]) / 20)) * 100) / 100;
+        expect(t.score, String(t.n)).toBe(est);
+      }
+      expect(scores.find(x => String(x.n).trim() === 'STUDENT6 TEST')).toMatchObject({ score: 410.78, r: 1 });
       // Nobody in this sample answered the optional philosophy questions: each gets a 5-blank optional result, Sosyal stays on 20.
       expect(db.prepare(`SELECT correct_count c,wrong_count w,blank_count b FROM tyt_optional_philosophy_results WHERE exam_id=?`).all(created.data.id).map((r: any) => [r.c, r.w, r.b])).toEqual(Array(6).fill([0, 0, 5]));
     } finally { db.close(); }
