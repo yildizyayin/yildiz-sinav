@@ -136,8 +136,17 @@ function rowsToObject(text: string): any {
   return raw;
 }
 
+const KNOWN_LABELS = ['OGRENCI NO', 'TURKCE', 'SOSYAL BILIMLER', 'MATEMATIK', 'FEN BILIMLERI', 'SOSYAL', 'DIN', 'INGILIZCE', 'FEN'];
+/**
+ * A025: real Sekonic files reach us with Turkish letters already lost: the optical software or a text
+ * editor turned Windows-1254 letters into U+FFFD ("��RENC� NO"). Each lost letter is still exactly one
+ * character, so a label matches a known one when every other character agrees.
+ */
 function proprietaryLabel(value: string): string {
-  return value.trim().toLocaleUpperCase('tr-TR').replace(/İ/g, 'I').replace(/Ö/g, 'O').replace(/Ü/g, 'U').replace(/Ş/g, 'S').replace(/Ğ/g, 'G').replace(/Ç/g, 'C');
+  const plain = value.trim().toLocaleUpperCase('tr-TR').replace(/İ/g, 'I').replace(/Ö/g, 'O').replace(/Ü/g, 'U').replace(/Ş/g, 'S').replace(/Ğ/g, 'G').replace(/Ç/g, 'C');
+  if (!plain.includes('\uFFFD')) return plain;
+  const hit = KNOWN_LABELS.find((label) => label.length === plain.length && [...plain].every((ch, i) => ch === '\uFFFD' || ch === label[i]));
+  return hit || plain;
 }
 
 function parseSekonicRows(text: string, fileName: string): FmtDefinition | null {
@@ -186,6 +195,12 @@ function parseSekonicRows(text: string, fileName: string): FmtDefinition | null 
     const normalizedCode = isOptic129 ? ({ TUR: 'TYT_TUR', SOS: 'TYT_SOS', MAT: 'TYT_MAT', FEN: 'TYT_FEN' }[code] || code) : code;
     answers[normalizedCode] = { start: answerOffset, end: answerOffset + questionCount, length: questionCount, questionCount, label: row.label, options: isOptic129 ? 5 : 4 };
     answerOffset += questionCount;
+  }
+  // A025: on the TYT 129 sheet, Sosyal Bilimler positions 21–25 are the optional philosophy questions
+  // (for candidates exempt from Din Kültürü). Expose them as TYT_FEL so the optional key can score them.
+  if (isOptic129 && answers.TYT_SOS && (answers.TYT_SOS.length || 0) >= 25) {
+    const s0 = answers.TYT_SOS.start + 20;
+    answers.TYT_FEL = { start: s0, end: s0 + 5, length: 5, questionCount: 5, label: 'FELSEFE (SEÇMELİ)', options: 5 };
   }
   const recordLength = answerOffset;
   const signature = fileName.toLocaleUpperCase('tr-TR').includes('129') ? '129' : fileName.toLocaleUpperCase('tr-TR').includes('7108') ? '7108' : undefined;
