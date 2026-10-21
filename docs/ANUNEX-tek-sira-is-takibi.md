@@ -624,3 +624,9 @@ PR #292: etiketlerde kayıp harf toleransı; yayınevi satır tablosu ayrıştı
 Doğrulama: kişisel veriler değiştirilmiş TXT (cevaplar/kitapçık/yerleşim aynen) tam HTTP akışında (sınav, yapı, anahtar, aktifleştirme, yükleme, değerlendirme; doğrudan ve parçalı; yüklenen FMT ve yerleşik tanım) 6 öğrenci × 4 test D/Y/B/net ve toplamlar, yayınevi anahtarından **bağımsız Python hesabıyla birebir**; seçmeli felsefe sonuçları (hepsi 5 boş) kaydedildi. Mutasyon kontrollü. 239 dosya / 1.202 test, build PASS.
 Not: eski sistemin sonuç raporu gelmedi; beklenen sonuçlar yayınevi anahtarından bağımsız hesaplandı. Ad alanındaki kayıp Türkçe harfler isim eşleştirmesini etkiler → A026'da ele alınacak.
 Kapanış için: dağıtım + aynı dosyaların canlıda yüklenip sonuç ekranı.
+
+### A024 — ÖSYM tahmini puan, kullanıcı onayı 21 Ekim 19:17
+
+PR #292 (A025) merge edildi. Onaylanan yöntem uygulandı — PR #293: 100 + 400 × Σ ağırlık × (net / soru sayısı), OBP eklenmez, "tahmini, resmî puan değildir" etiketli. Ağırlıklar (ÖSYM test ağırlıkları; iki ayrı kaynakla karşılaştırıldı): TYT Türkçe 33 / Sosyal 17 / Temel Mat 33 / Fen 17; SAY = TYT 40 + AYT Mat 30, Fiz 10, Kim 10, Biy 10; EA = TYT 40 + Mat 30, Edebiyat 18, Tarih-1 7, Coğrafya-1 5; SÖZ = TYT 40 + Edebiyat 18, Tarih-1 7, Coğrafya-1 5, Tarih-2 8, Coğrafya-2 8, Felsefe 9, Din 5; DİL = TYT 40 + YDT 60. Puan türünün bütün testleri yoksa (yalnız AYT/YDT) puan verilmez ve nedeni yazılır. Göç 0122.
+Doğrulama: örnek hesaplar (tam 500, hiç 100, 333; 1 Türkçe neti ≈ 3,3, 1 Sosyal neti ≈ 3,4); gerçek ÇAP TYT 0 verisinde her öğrencinin saklanan puanı bağımsız hesaplanan tahminle aynı (en yüksek 410,78, sıra 1). 239 dosya / 1.205 test, build PASS.
+A024 kapanışı: dağıtım + canlı sonuç ekranında puan ve açıklama.
