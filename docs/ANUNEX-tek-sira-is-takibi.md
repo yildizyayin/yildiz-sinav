@@ -594,3 +594,9 @@ Kapanış için: dağıtım + kazanımlı gerçek bir anahtarla canlı eşleşti
 
 PR #288 (A021) merge edildi. İnceleme: resmî katalog sunucuda sınavın yıl/sınıf/program/ders kapsamıyla sınırlı, kapsam dışı kayıt reddediliyor, kayıt sürüm kontrollü ve yeniden açınca kaydedilen görünüyor — doğru. Düzenleyicideki eksikler — PR #290: katalog tek uzun çoklu liste → üniteye göre gruplu; seçilen kazanım yalnız Ctrl-tıkla kaldırılabiliyordu → kaldırılabilir etiket; öneriler yalnız kod → kod + başlık; kaydedilmemiş seçim sessizce kayboluyordu → değişen soru sayısı ve sayfadan çıkışta tarayıcı uyarısı. UI testi kaydet → yeniden aç döngüsünü doğrular. 238 dosya / 1.191 test, build PASS.
 Kapanış için: dağıtım + canlı eşleştirme ekranı.
+
+### A023 — Codex'te; kullanıcı kararı 21 Ekim 17:40
+
+GitHub'da başka bir ajanın (Codex) taslak PR'ı #289 (`codex/activation-feedback-20261021`) A023'ü kapsıyor: taslakta "Sınavı aktifleştir" eksikleri sekmeden bağımsız gösterir, her eksiğe "Düzelt" ilgili bölümü açar, eski readiness'e sunucunun 409'u gelirse güncel eksikler görünür, çift tıklama tek istek gönderir. Kullanıcı kararı: **A023 Codex'te kalır**; bu oturum A023'e kod yazmaz, A024'e geçer.
+İnceleme (kod değiştirilmedi): dal main ile çakışmasız birleşiyor; typecheck PASS; `exam-activation-ui`, `exam-card-persistence-ui`, `exam-outcome-editor-ui` 17/17 test PASS; sunucu 409'u eksik listesini `details` olarak zaten döndürüyor. Kapanış: #289 merge + dağıtım + canlı aktifleştirme ekranı.
+Sıradaki ID: A024 — AKTİF.
