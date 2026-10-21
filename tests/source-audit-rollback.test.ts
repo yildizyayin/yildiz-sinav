@@ -6,7 +6,7 @@ import {replaceAnswerKey,deleteDefinition,updateGeneral,replaceStructure,replace
 function fixture(failAudit=false){
  const db=new DatabaseSync(':memory:');
  db.exec(`PRAGMA foreign_keys=ON;CREATE TABLE exam_operation_locks(exam_id TEXT PRIMARY KEY REFERENCES exams(id),owner_token TEXT,operation TEXT);
- CREATE TABLE exam_delivery_profiles(exam_id TEXT,result_freeze_status TEXT,snapshot_version INTEGER);INSERT INTO exam_delivery_profiles VALUES('e','OPEN',0);
+ CREATE TABLE exam_delivery_profiles(exam_id TEXT,result_freeze_status TEXT,snapshot_version INTEGER,published_at TEXT,result_publish_at TEXT,updated_at TEXT);INSERT INTO exam_delivery_profiles(exam_id,result_freeze_status,snapshot_version) VALUES('e','OPEN',0);
  CREATE TABLE exam_administrations(id TEXT,exam_id TEXT,channel TEXT,ranking_frozen_at TEXT,status TEXT,published_snapshot_version INTEGER);
  CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
  CREATE TABLE scan_batches(id TEXT,exam_id TEXT,institution_id TEXT,season_id TEXT,status TEXT);INSERT INTO scan_batches VALUES('b','e','school','season','NEEDS_REVIEW');

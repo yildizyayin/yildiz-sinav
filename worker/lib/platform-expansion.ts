@@ -186,9 +186,14 @@ async function updateExamProfile(request:Request,env:Env,user:AuthUser,examId:st
   return json({ok:true,profile:await examProfile(env,examId)});
 }
 
+async function examTrashed(env:Env,examId:string):Promise<boolean>{
+  return !!await one<any>(env.DB.prepare('SELECT 1 ok FROM exam_revision_state WHERE exam_id=? AND app_trashed_at IS NOT NULL').bind(examId));
+}
+
 async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
   let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
   if(p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden('Merkezi sınav sıralamasını yalnız Süper Admin dondurabilir.');
+  if(await examTrashed(env,examId))return badRequest('Çöp kutusundaki sınavın sonucu dondurulamaz. Önce sınavı geri alın.','EXAM_TRASHED');
   return withExamOperationLock(env,examId,'FREEZE',async(env)=>{
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)`).bind(examId));
@@ -235,6 +240,7 @@ async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response
   let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
   return withExamOperationLock(env,examId,'PUBLISH',async(env)=>{
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
+  if(await examTrashed(env,examId))return badRequest('Çöp kutusundaki sınavın sonucu yayınlanamaz. Önce sınavı geri alın.','EXAM_TRASHED');
   if(p.result_freeze_status!=='FROZEN')return badRequest('Önce sıralama snapshotını dondurun.','NOT_FROZEN');
   const writes=await env.DB.batch([
     env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json)

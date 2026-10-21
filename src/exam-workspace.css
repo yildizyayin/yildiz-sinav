@@ -33,3 +33,7 @@
 .exam-outcome-chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;background:#e9fbf4;color:#087a57;border-radius:999px;padding:2px 4px 2px 9px}
 .exam-outcome-chip button{border:0;background:none;color:inherit;font-size:13px;line-height:1;width:18px;height:18px;border-radius:50%;cursor:pointer}.exam-outcome-chip button:hover{background:#c9f1e1}
 .exam-outcome-dirty{font-size:12px;font-weight:700;color:#946200;background:#fff8e8;border-radius:999px;padding:4px 10px}
+
+/* A031: what removing an exam affects */
+.trash-impact { margin: 8px 0 12px; padding-left: 18px; font-size: 14px; }
+.trash-impact li + li { margin-top: 4px; }
