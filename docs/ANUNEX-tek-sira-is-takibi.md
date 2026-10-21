@@ -589,3 +589,8 @@ PR #287 (A020) merge edildi. İnceleme: sıra doğruydu (önce resmî kod, sonra
 2. Cevap anahtarı kaydında otomatik eşleştirme, kişinin elle seçtiği (veya korunan) kazanımın yanına ikinci kazanım ekliyordu → eşlenmiş soruya dokunulmaz, yalnız boş sorular doldurulur.
 Testler: sunucu ve form için ortak örnekler; gerçek göç şemasında kayıt yalnız kesin eşleşmeyi ve kişinin seçimini saklar, çelişki incelemede kalır (mutasyon kontrollü). 238 dosya / 1.190 test, build PASS.
 Kapanış için: dağıtım + kazanımlı gerçek bir anahtarla canlı eşleştirme özeti ekranı.
+
+### A022 — manuel kazanım seçimi, 21 Ekim 17:10–17:35
+
+PR #288 (A021) merge edildi. İnceleme: resmî katalog sunucuda sınavın yıl/sınıf/program/ders kapsamıyla sınırlı, kapsam dışı kayıt reddediliyor, kayıt sürüm kontrollü ve yeniden açınca kaydedilen görünüyor — doğru. Düzenleyicideki eksikler — PR #290: katalog tek uzun çoklu liste → üniteye göre gruplu; seçilen kazanım yalnız Ctrl-tıkla kaldırılabiliyordu → kaldırılabilir etiket; öneriler yalnız kod → kod + başlık; kaydedilmemiş seçim sessizce kayboluyordu → değişen soru sayısı ve sayfadan çıkışta tarayıcı uyarısı. UI testi kaydet → yeniden aç döngüsünü doğrular. 238 dosya / 1.191 test, build PASS.
+Kapanış için: dağıtım + canlı eşleştirme ekranı.
