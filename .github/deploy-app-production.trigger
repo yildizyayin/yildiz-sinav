@@ -1,1 +1,1 @@
-2026-10-21 A022 manual outcome selection
+2026-10-21 A024 scoring score models

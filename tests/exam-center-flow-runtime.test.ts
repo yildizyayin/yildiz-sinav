@@ -102,4 +102,28 @@ describe('authenticated exam center HTTP flow on the complete migration schema',
       expect((await f.request(`${base}/answer-key`, 'PUT', {entries:[]})).response.status).toBe(409);
     } finally {f.db.close();}
   }, 15000);
+  for (const mode of ['direct','chunked'] as const) it(`${mode}: a custom "yanlış götürmez" exam stores nets without deduction, a score on its own scale and ranks by it (A024)`, async () => {
+    const f = await fixture(mode);
+    try {
+      const created = await f.request('/api/exam-definitions', 'POST', {ownerType: 'CENTRAL', academicYear: '2026-2027', title: 'Custom scoring', examType: 'CUSTOM', gradeLevel: 8, publisherName: 'P', sessionLabel: 'S', scoringRuleVersionId: 'srv_custom_exam_2627', scoringOverride: {wrongMode: 'NONE', wrongDivisor: 0, scoreScale: 500, weights: {}}, outcomeMode: 'OPTIONAL'});
+      expect(created.response.status, JSON.stringify(created.data)).toBe(201);
+      const base = `/api/exam-definitions/${created.data.id}`;
+      expect((await f.request(`${base}/structure`, 'PUT', {booklets: ['A'], subjects: [{subjectId: 'sub_tyt_mat', questionCount: 4, optionCount: 4, wrongDivisor: 0}]})).response.status).toBe(200);
+      expect((await f.request(`${base}/answer-key`, 'PUT', {entries: [{subjectId: 'sub_tyt_mat', bookletCode: 'A', answers: 'ABCA', optionCount: 4}]})).response.status).toBe(200);
+      expect((await f.request(`${base}/institutions`, 'PUT', {institutionIds: ['school']})).response.status).toBe(200);
+      expect((await f.request(`${base}/status`, 'PATCH', {status: 'ACTIVE'})).response.status).toBe(200);
+      const text = 'student_number,name,class,booklet,answers_TYT_MAT\n101,Student1 Test,8/A,A,ABCA\n102,Student2 Test,8/A,A,ABDD';
+      const form = new FormData(); form.set('institutionId', 'school'); form.set('file', new File([text], 'c.txt', {type: 'text/plain'}));
+      const uploaded = await f.request(`/api/exams/${created.data.id}/preview-file`, 'POST', form);
+      expect(uploaded.response.status, JSON.stringify(uploaded.data)).toBe(200);
+      const batchPath = `/api/scan-batches/${uploaded.data.batchId}`;
+      for (const r of (await f.request(batchPath)).data.records) if (!r.matched_student_id) await f.request(`${batchPath}/records/${r.id}/resolve`, 'POST', {action:'MATCH', studentId: r.canonical.student_number === '101' ? 's1' : 's2'});
+      let evaluated = await f.request(`${batchPath}/evaluate`, 'POST');
+      while (mode === 'chunked' && evaluated.data.done === false) evaluated = await f.request(`${batchPath}/evaluate`, 'POST');
+      expect(evaluated.response.status, JSON.stringify(evaluated.data)).toBe(200);
+      const rows = f.db.prepare('SELECT ep.name_snapshot n,er.net,er.score,er.institution_rank r FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=? ORDER BY ep.name_snapshot').all(created.data.id) as any[];
+      expect(rows.map(x => [x.n, x.net, x.score])).toEqual([['Student1 Test', 4, 500], ['Student2 Test', 2, 250]]);
+      expect(rows.map(x => x.r)).toEqual([1, 2]);
+    } finally {f.db.close();}
+  }, 15000);
 });

@@ -387,7 +387,8 @@ async function createDefinition(request: Request, env: Env, user: AuthUser): Pro
   const publisherName = body.publisherName?.trim() || '';
   const sessionLabel = body.sessionLabel?.trim() || '';
   const description = body.description?.trim() || '';
-  if (!publisherName || !sessionLabel || !description) return err(400, 'VALIDATION_ERROR', 'Yayınevi adı, oturum/bölüm ve açıklama/not gereklidir.');
+  // A019.1: the card form marks the note optional; the server used to require it and refused the exam at the last step.
+  if (!publisherName || !sessionLabel) return err(400, 'VALIDATION_ERROR', 'Yayınevi adı ve oturum/bölüm gereklidir.');
   if (publisherName && publisherName.length > 160) return err(400, 'VALIDATION_ERROR', 'Yayınevi adı 160 karakteri geçemez.');
   if (sessionLabel && sessionLabel.length > 120) return err(400, 'VALIDATION_ERROR', 'Oturum / bölüm 120 karakteri geçemez.');
   if (description && description.length > 2000) return err(400, 'VALIDATION_ERROR', 'Açıklama 2000 karakteri geçemez.');
@@ -595,7 +596,7 @@ async function replaceStructureUnlocked(request: Request, env: Env, user: AuthUs
     if (s.questionEnd > 1000) return err(400, 'INVALID_QUESTION_RANGE', 'Soru numarası 1000 değerini geçemez.');
     if (s.optionCount !== 4 && s.optionCount !== 5) return err(400, 'INVALID_OPTION_COUNT', 'Şık sayısı 4 veya 5 olmalıdır.');
     if (!['ACTIVE', 'CANCELLED', 'EXCLUDED'].includes(s.questionStatus)) return err(400, 'INVALID_QUESTION_STATUS', 'Geçersiz soru durumu.');
-    if (!Number.isFinite(s.wrongDivisor) || s.wrongDivisor <= 0 || s.wrongDivisor > 20) return err(400, 'INVALID_WRONG_DIVISOR', 'Yanlış götürme böleni geçersiz.');
+    if (!Number.isFinite(s.wrongDivisor) || s.wrongDivisor < 0 || s.wrongDivisor > 20) return err(400, 'INVALID_WRONG_DIVISOR', 'Yanlış götürme böleni 0 (götürmez) ile 20 arasında olmalıdır.');
     const subject = await one(env.DB.prepare('SELECT id FROM subjects WHERE id=? AND active=1').bind(s.subjectId));
     if (!subject) return err(404, 'SUBJECT_NOT_FOUND', 'Seçilen derslerden biri bulunamadı.');
   }
