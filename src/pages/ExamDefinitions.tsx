@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Archive, ArrowLeft, ArrowRight, BookOpenCheck, Check, CheckCircle2, CircleAlert, Clock3, Copy, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, MoreVertical, PlayCircle, Printer, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, Trash2, UploadCloud, Workflow } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -67,7 +67,7 @@ function safeDownloadName(value: string) {
 export function ExamDefinitions() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const requestedExamId = searchParams.get('examId') || '';
   const [options, setOptions] = useState<any>({ subjects: [], scoringVersions: [], institutions: [], outcomes: [] });
   const [rows, setRows] = useState<any[]>([]);
@@ -113,6 +113,12 @@ export function ExamDefinitions() {
   const [pendingDocuments, setPendingDocuments] = useState<PendingDocument[]>([]);
   const [pendingVideos, setPendingVideos] = useState<PendingVideo[]>([]);
   const [documentDraft, setDocumentDraft] = useState<{ kind: ExamDocumentKind; title: string; file: File | null; bookletCode: string; url: string; publishMode: 'DRAFT' | 'NOW' | 'SCHEDULED'; publishAt: string }>({ kind: 'ANSWER_KEY_PDF', title: '', file: null, bookletCode: 'A', url: '', publishMode: 'DRAFT', publishAt: '' });
+  // A019: an unsaved exam card survives a refresh or a closed tab (per user, this browser only; files cannot be kept).
+  const draftKey = user?.id ? `anunex.examDraft.${user.id}` : '';
+  const openedRef = useRef('');
+  const [draftRestoredAt, setDraftRestoredAt] = useState('');
+  const [draftReady, setDraftReady] = useState(false);
+  const [triedSteps, setTriedSteps] = useState<Record<number, boolean>>({});
 
   const loadContent = async (id: string) => {
     const data = await api<any>(`/api/exam-content/${id}`);
@@ -181,8 +187,44 @@ export function ExamDefinitions() {
   };
 
   useEffect(() => { void Promise.all([loadRows(), loadOptions(selectedChoice.gradeLevel)]).catch((e) => setError(e.message)); }, []);
-  useEffect(() => { if (requestedExamId) openExamDefinition(requestedExamId); }, [requestedExamId]);
+  useEffect(() => { if (requestedExamId && requestedExamId !== openedRef.current) openExamDefinition(requestedExamId); }, [requestedExamId]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (user) setCreateForm((f) => ({ ...f, ownerType: user.role === 'SUPER_ADMIN' ? f.ownerType : 'INSTITUTION' })); }, [user?.role]);
+  useEffect(() => {
+    if (!draftKey || draftReady) return;
+    setDraftReady(true);
+    if (requestedExamId) return;
+    try {
+      const raw = localStorage.getItem(draftKey); if (!raw) return;
+      const d = JSON.parse(raw); if (!d || typeof d !== 'object' || !d.createForm) return;
+      setCreateForm((f) => ({ ...f, ...d.createForm, ownerType: user?.role === 'SUPER_ADMIN' ? (d.createForm.ownerType || f.ownerType) : 'INSTITUTION' }));
+      if (d.choiceKey) setChoiceKey(d.choiceKey); if (d.templateKey) setTemplateKey(d.templateKey);
+      if (d.definitionMode) setDefinitionMode(d.definitionMode); if (d.createMethod) setCreateMethod(d.createMethod);
+      if (typeof d.booklets === 'string') setBooklets(d.booklets); if (Array.isArray(d.subjects)) setSubjects(d.subjects);
+      if (typeof d.answerKeyText === 'string') setAnswerKeyText(d.answerKeyText); if (Array.isArray(d.keyEntries)) setKeyEntries(d.keyEntries);
+      if (d.resultSettings) setResultSettings((c) => ({ ...c, ...d.resultSettings })); if (d.customScoring) setCustomScoring((c) => ({ ...c, ...d.customScoring }));
+      if (typeof d.outcomeRequired === 'boolean') setOutcomeRequired(d.outcomeRequired);
+      if ([1, 2, 3, 4].includes(d.builderStep)) setBuilderStep(d.builderStep);
+      setDraftRestoredAt(String(d.savedAt || ''));
+    } catch { /* storage unavailable or corrupt: start empty */ }
+  }, [draftKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const draftHasContent = Boolean(createForm.title.trim() || createForm.publisherName.trim() || createForm.sessionLabel.trim() || createForm.description.trim() || subjects.length || keyEntries.length || answerKeyText.trim());
+  useEffect(() => {
+    if (!draftKey || !draftReady || selectedId) return;
+    const timer = window.setTimeout(() => {
+      try {
+        if (!draftHasContent) { localStorage.removeItem(draftKey); return; }
+        localStorage.setItem(draftKey, JSON.stringify({ v: 1, savedAt: new Date().toISOString(), createForm, choiceKey, templateKey, definitionMode, createMethod, booklets, subjects, answerKeyText, keyEntries, resultSettings, customScoring, outcomeRequired, builderStep }));
+      } catch { /* quota or private mode: the form still works, only the draft is not kept */ }
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [draftKey, draftReady, selectedId, draftHasContent, createForm, choiceKey, templateKey, definitionMode, createMethod, booklets, subjects, answerKeyText, keyEntries, resultSettings, customScoring, outcomeRequired, builderStep]);
+  const clearDraft = () => { try { if (draftKey) localStorage.removeItem(draftKey); } catch { /* ignore */ } setDraftRestoredAt(''); };
+  const resetCreateForm = () => {
+    setCreateForm((f) => ({ ...f, title: '', publisherName: '', sessionLabel: '', description: '', examDate: '', resultNetworkEnabled: false }));
+    setSubjects([]); setKeyEntries([]); setAnswerKeyText(''); setAnalysis(null); setAnswerKeyFile(null); setBooklets('A'); setOutcomeMappings([]);
+    setPendingDocuments([]); setPendingVideos([]); setBuilderStep(1); setTriedSteps({}); setError('');
+  };
+
   useEffect(() => { if(!selectedId) void loadOptions(selectedChoice.key === 'CUSTOM' ? Number(createForm.gradeLevel) : selectedChoice.gradeLevel).catch((e) => setError(e.message)); }, [choiceKey, createForm.academicYear, createForm.gradeLevel]);
   useEffect(() => {
     const nextTemplate = selectedChoice.key === 'STD_5' || selectedChoice.key === 'STD_6' || selectedChoice.key === 'STD_7' ? `SCHOOL_${selectedChoice.gradeLevel}` : selectedChoice.key;
@@ -378,6 +420,7 @@ export function ExamDefinitions() {
       openExamDefinition(created.id);
       setCreatedExamId(created.id);
       setCreateForm((f) => ({ ...f, title: '' }));
+      clearDraft();
       setNotice(documentFailures.length ? `Sınav oluşturuldu; bazı belgeler daha sonra tekrar yüklenmeli: ${documentFailures.join(' · ')}` : definitionMode === 'OUTCOME' ? 'Sınav oluşturuldu. Şimdi soru-kazanım eşleştirmelerini tamamlayın.' : 'Sınav taslak olarak kaydedildi. Eksikleri kontrol edip Sınavı aktifleştir düğmesini kullanın.');
       await loadRows();
     } catch (e: any) {
@@ -447,6 +490,8 @@ export function ExamDefinitions() {
   };
 
   const closeDetail = () => {
+    openedRef.current = '';
+    setExamParam('');
     setSelectedId('');
     setDetail(null);
     setOutcomeRequired(false);
@@ -454,7 +499,11 @@ export function ExamDefinitions() {
     setError('');
   };
 
+  // A019: the open exam lives in the address (?examId=), so a refresh or a shared link reopens the same card.
+  const setExamParam = (id: string) => { try { setSearchParams((current: URLSearchParams) => { const next = new URLSearchParams(current); if (id) next.set('examId', id); else next.delete('examId'); return next; }, { replace: true }); } catch { /* router without params */ } };
   const openExamDefinition = (id: string) => {
+    openedRef.current = id;
+    setExamParam(id);
     setOpenExamMenu(null);
     setError('');
     setDetail(null);
@@ -583,22 +632,32 @@ export function ExamDefinitions() {
   const canEditDetail = user?.role === 'SUPER_ADMIN' || detail?.exam?.owner_type === 'INSTITUTION';
   const rowActions = (r: any, canManageRow: boolean) => <div style={{ position: 'relative', display: 'flex', gap: 6, justifyContent: 'flex-end' }}><button type="button" className="secondary subtle" onClick={() => openExamDefinition(r.id)}><Eye size={14} /> Görüntüle</button>{canManageRow ? <><button type="button" className="icon-button" aria-label={`${r.title} işlemleri`} aria-expanded={openExamMenu === r.id} onClick={() => setOpenExamMenu((current) => current === r.id ? null : r.id)}><MoreVertical size={17} /></button>{openExamMenu === r.id && <div className="exam-row-menu" role="menu"><button type="button" role="menuitem" onClick={() => openExamDefinition(r.id)}><Eye size={14} /> Görüntüle / Düzenle</button><button type="button" role="menuitem" onClick={() => void copyExamById(r.id)}><Copy size={14} /> Kopyala</button>{r.status !== 'ARCHIVED' && <button type="button" role="menuitem" onClick={() => void archiveExamById(r.id)}><Archive size={14} /> Arşivle</button>}{user?.role === 'SUPER_ADMIN' && <button type="button" role="menuitem" onClick={() => void deleteExamById(r.id)}><Trash2 size={14} /> Çöp kutusu</button>}</div>}</> : <span className="status neutral">Görüntüleme</span>}</div>;
 
+  const academicYearValid = /^(\d{4})-(\d{4})$/.test(createForm.academicYear.trim()) && Number(createForm.academicYear.trim().slice(5)) === Number(createForm.academicYear.trim().slice(0, 4)) + 1;
+  const cardMissing = [
+    !createForm.publisherName.trim() && 'Yayınevi adı',
+    !createForm.title.trim() && 'Sınav adı',
+    !academicYearValid && 'Eğitim yılı (ör. 2026-2027)',
+    !createForm.sessionLabel.trim() && 'Oturum / bölüm',
+    user?.role === 'SUPER_ADMIN' && createForm.ownerType === 'INSTITUTION' && !createForm.institutionId && 'Kurum',
+  ].filter(Boolean) as string[];
+  const invalid = (field: string) => (triedSteps[1] && cardMissing.some((m) => m.startsWith(field))) || undefined;
   const stepReady = (step: BuilderStep) => {
-    if (step === 1) return Boolean(createForm.title.trim() && createForm.publisherName.trim() && createForm.sessionLabel.trim());
+    if (step === 1) return cardMissing.length === 0;
     if (step === 2) return createMethod === 'ANSWER_KEY' ? Boolean(keyEntries.length && subjects.length) : Boolean(subjects.length);
     if (step === 3) return true;
     return Boolean(createForm.scoringRuleVersionId);
   };
   const goToBuilderStep = (step: BuilderStep) => {
     if (step <= builderStep || step === 1) { setBuilderStep(step); return; }
-    if (step === 2 && !stepReady(1)) { setError('Önce sınav kartındaki zorunlu alanları tamamlayın.'); return; }
+    if (step === 2 && !stepReady(1)) { setTriedSteps((t) => ({ ...t, 1: true })); setError(`Sınav kartında eksik: ${cardMissing.join(', ')}.`); return; }
     if (step === 3 && !stepReady(2)) { setError('Önce cevap anahtarını veya ders yapısını tamamlayın.'); return; }
     if (step === 4 && !stepReady(2)) { setError('Kontrole geçmeden önce cevap anahtarını veya ders yapısını tamamlayın.'); return; }
     setError(''); setBuilderStep(step);
   };
   const nextBuilderStep = () => {
     if (!stepReady(builderStep)) {
-      setError(builderStep === 1 ? 'Sınav adı ve yayınevi adı gereklidir.' : builderStep === 2 ? 'Cevap anahtarını analiz edin veya dersleri manuel oluşturun.' : 'Puanlama profili seçilmelidir.');
+      if (builderStep === 1) setTriedSteps((t) => ({ ...t, 1: true }));
+      setError(builderStep === 1 ? `Sınav kartında eksik: ${cardMissing.join(', ')}.` : builderStep === 2 ? 'Cevap anahtarını analiz edin veya dersleri manuel oluşturun.' : 'Puanlama profili seçilmelidir.');
       return;
     }
     setError(''); setBuilderStep((current) => current === 4 ? 4 : (current + 1) as BuilderStep);
@@ -615,14 +674,15 @@ export function ExamDefinitions() {
       <div className="exam-quick-bar"><span className="quick-status">app.anunex.com ana kayıt</span><span>Optik / FMT sınav kaydından sonra bağlanır.</span>{createForm.resultNetworkEnabled && <span className="quick-status network">Sonuç portalı seçildi · yayın bekliyor</span>}</div><div className="exam-flow-bar" aria-label="Sınav oluşturma adımları">{([[1,'Sınav kartı','Temel bilgileri gir'],[2,'Cevap anahtarı','Şablon veya manuel giriş'],[3,'Belgeler','Arşiv ve video'],[4,'Kontrol ve kayıt','Puanlama ve yayın']] as const).map(([step,label,help], index) => <Fragment key={`builder-step-${step}`}><button type="button" className={`${builderStep === step ? 'active' : ''} ${builderStep > step ? 'complete' : ''}`} onClick={() => goToBuilderStep(step as BuilderStep)}><b>{builderStep > step ? '✓' : `0${step}`}</b><span><strong>{label}</strong><small>{help}</small></span></button>{index < 3 && <i aria-hidden="true" />}</Fragment>)}</div>
 
       {builderStep === 1 && <section id="exam-card" className="exam-simple-card builder-current-step">
-        <div className="exam-simple-card-head"><span className="simple-number">01</span><div><h2>Sınav bilgileri</h2><p>Yeni sınav için temel kart bilgilerini girin.</p></div></div>
+        <div className="exam-simple-card-head"><span className="simple-number">01</span><div><h2>Sınav bilgileri</h2><p>Yeni sınav için temel kart bilgilerini girin. <span className="muted">* işaretli alanlar zorunludur.</span></p></div></div>
+        {draftRestoredAt && <div className="alert info exam-draft-restored" role="status">Kaydedilmemiş sınav taslağınız geri yüklendi{(() => { const d = new Date(draftRestoredAt); return Number.isNaN(d.getTime()) ? '' : ` (${d.toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })})`; })()}. Seçtiğiniz dosyalar tarayıcıda saklanamadığı için yeniden eklenmeli. <button type="button" className="link-button" onClick={() => { clearDraft(); resetCreateForm(); }}>Taslağı temizle</button></div>}
         <div className="form-grid builder-form-grid exam-card-grid">
-          <label>Yayınevi adı *<input value={createForm.publisherName} onChange={(e) => setCreateForm((f) => ({ ...f, publisherName: e.target.value }))} placeholder="Örn. ANUNEX Yayınları" /></label>
-          <label>Sınav adı *<input value={createForm.title} onChange={(e) => setCreateForm((f) => ({ ...f, title: e.target.value }))} placeholder="Örn. TYT Türkiye Geneli Deneme 1" /></label>
+          <label>Yayınevi adı *<input aria-invalid={invalid('Yayınevi')} value={createForm.publisherName} onChange={(e) => setCreateForm((f) => ({ ...f, publisherName: e.target.value }))} placeholder="Örn. ANUNEX Yayınları" /></label>
+          <label>Sınav adı *<input aria-invalid={invalid('Sınav adı')} value={createForm.title} onChange={(e) => setCreateForm((f) => ({ ...f, title: e.target.value }))} placeholder="Örn. TYT Türkiye Geneli Deneme 1" /></label>
           <label>Sınav türü *<select value={choiceKey} onChange={(e) => setChoiceKey(e.target.value)}>{EXAM_CHOICES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}</select></label>
-          <label>Eğitim yılı *<input value={createForm.academicYear} onChange={(e) => setCreateForm((f) => ({ ...f, academicYear: e.target.value }))} /></label>
+          <label>Eğitim yılı *<input aria-invalid={invalid('Eğitim yılı')} placeholder="2026-2027" value={createForm.academicYear} onChange={(e) => setCreateForm((f) => ({ ...f, academicYear: e.target.value }))} /></label>
           <label>Sınıf düzeyi *<select value={createForm.gradeLevel} onChange={(e) => setCreateForm((f) => ({ ...f, gradeLevel: e.target.value }))}>{Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}. sınıf</option>)}</select></label>
-          <label>Oturum / bölüm *<input value={createForm.sessionLabel} onChange={(e) => setCreateForm((f) => ({ ...f, sessionLabel: e.target.value }))} placeholder="Örn. 1. Oturum" /></label>
+          <label>Oturum / bölüm *<input aria-invalid={invalid('Oturum')} value={createForm.sessionLabel} onChange={(e) => setCreateForm((f) => ({ ...f, sessionLabel: e.target.value }))} placeholder="Örn. 1. Oturum" /></label>
         </div>
         <label className="builder-textarea-label"><span>Açıklama / not</span><textarea rows={2} value={createForm.description} onChange={(e) => setCreateForm((f) => ({ ...f, description: e.target.value }))} placeholder="İsteğe bağlı açıklama" /></label>
         <label className="simple-publication"><input type="checkbox" checked={createForm.resultNetworkEnabled} onChange={(e) => setCreateForm((f) => ({ ...f, resultNetworkEnabled: e.target.checked }))} /><span><strong>Bu sınav sonuc.anunex.com'da yayınlansın</strong><small>app.anunex.com ana kaydı korunur; sonuç ağı seçilirse aynı sınav kaydı kullanılır.</small></span></label>
@@ -630,7 +690,7 @@ export function ExamDefinitions() {
       </section>}
 
       {builderStep === 2 && <section id="exam-answer-key" className="exam-simple-card builder-current-step">
-        <div className="exam-simple-card-head"><span className="simple-number">02</span><div><h2>Cevap anahtarı</h2>{detail.correctionOpen&&<p>Düzeltme açık. Kaydettikten sonra yeniden değerlendirin ve sonuçları yayınlayın.</p>}<p>Hazır şablon ve CSV/XLSX dosyasıyla hızlıca eşleştirin.</p></div></div>
+        <div className="exam-simple-card-head"><span className="simple-number">02</span><div><h2>Cevap anahtarı</h2>{detail?.correctionOpen&&<p>Düzeltme açık. Kaydettikten sonra yeniden değerlendirin ve sonuçları yayınlayın.</p>}<p>Hazır şablon ve CSV/XLSX dosyasıyla hızlıca eşleştirin.</p></div></div>
         <div className="simple-method-row"><button type="button" className={createMethod === 'ANSWER_KEY' ? 'active' : ''} onClick={() => setCreateMethod('ANSWER_KEY')}><FileUp size={16}/> Hazır şablon / dosya</button><button type="button" className={createMethod === 'MANUAL' ? 'active' : ''} onClick={() => setCreateMethod('MANUAL')}><BookOpenCheck size={16}/> Kendin oluştur</button></div>
         {createMethod === 'ANSWER_KEY' ? <>
           <div className="simple-file-row"><label><span>Hazır sınav şablonu</span><select value={templateKey} onChange={(e) => { const key = e.target.value; const chosen = EXAM_TEMPLATES.find((template) => template.key === key); setTemplateKey(key); setDefinitionMode(chosen?.requiresOutcomes ? 'OUTCOME' : 'STANDARD'); const baseKey = key.endsWith('_OUTCOME') ? key.slice(0, -8) : key; const nextChoice = baseKey === 'SCHOOL_5' || baseKey === 'SCHOOL_6' || baseKey === 'SCHOOL_7' ? `STD_${baseKey.slice(-1)}` : baseKey; if (EXAM_CHOICES.some((choice) => choice.key === nextChoice)) setChoiceKey(nextChoice); }}>{EXAM_TEMPLATES.map((template) => <option key={template.key} value={template.key}>{template.label}</option>)}</select></label><div className="simple-template-note"><strong>{selectedTemplate.label}</strong><span>{selectedTemplate.description}</span><div><button type="button" className="ghost" onClick={downloadOutcomeTemplate}>Kazanımlı şablonu indir</button><button type="button" className="secondary" onClick={() => applyTemplate()}>Şablonu uygula</button></div></div></div>

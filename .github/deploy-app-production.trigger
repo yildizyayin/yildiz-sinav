@@ -1,1 +1,1 @@
-2026-10-21 A083.4 Studio templates, card library, favourites
+2026-10-21 A019 exam card persistence and step-2 crash fix
