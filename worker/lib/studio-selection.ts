@@ -70,3 +70,37 @@ export function narrowingMessage(funnel: Array<{ key: string; label: string; cou
     ? `${requested} soru gerekli, uygun ${last.count} soru var. Havuzu en çok daraltan: "${culprit.label}" (${before.count} → ${culprit.count}).`
     : `${requested} soru gerekli; kurumun kullanabileceği onaylı soru yalnız ${culprit.count}.`;
 }
+
+/** A083.2: difficulty mix. Bands are the editorial estimate (question_bank.difficulty_band); no measured item statistics exist yet. */
+export const BANDS = ['EASY', 'MEDIUM', 'HARD'] as const;
+export type Band = typeof BANDS[number];
+export type DifficultyMix = Record<Band, number>;
+export const BAND_LABEL: Record<Band, string> = { EASY: 'Kolay', MEDIUM: 'Orta', HARD: 'Zor' };
+
+export function parseDifficultyMix(raw: unknown): { ok: true; value: DifficultyMix | null } | { ok: false; message: string } {
+  if (raw === undefined || raw === null || raw === '') return { ok: true, value: null };
+  const src = typeof raw === 'string' ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : raw;
+  if (!src || typeof src !== 'object') return { ok: false, message: 'Zorluk karışımı EASY/MEDIUM/HARD yüzdeleri olmalıdır.' };
+  const mix = {} as DifficultyMix;
+  for (const b of BANDS) { const v = Number((src as any)[b] ?? 0); if (!Number.isInteger(v) || v < 0 || v > 100) return { ok: false, message: `${BAND_LABEL[b]} yüzdesi 0–100 arası tam sayı olmalıdır.` }; mix[b] = v; }
+  const sum = BANDS.reduce((s, b) => s + mix[b], 0);
+  if (sum !== 100) return { ok: false, message: `Zorluk yüzdelerinin toplamı 100 olmalıdır (şu an ${sum}).` };
+  return { ok: true, value: mix };
+}
+
+/** Question counts per band; largest remainder so they always add up to the total. */
+export function bandTargets(total: number, mix: DifficultyMix): DifficultyMix {
+  const raw = BANDS.map(b => ({ b, exact: total * mix[b] / 100 }));
+  const out = {} as DifficultyMix; let used = 0;
+  for (const r of raw) { out[r.b] = Math.floor(r.exact); used += out[r.b]; }
+  raw.sort((x, y) => (y.exact - Math.floor(y.exact)) - (x.exact - Math.floor(x.exact)) || BANDS.indexOf(x.b) - BANDS.indexOf(y.b));
+  for (let i = 0; used < total; i++, used++) out[raw[i % raw.length].b]++;
+  return out;
+}
+
+export function bandShortage(targets: DifficultyMix, stock: Partial<Record<Band, number>>): string | null {
+  const short = BANDS.filter(b => targets[b] > Number(stock[b] || 0));
+  return short.length ? `Zorluk karışımı karşılanamıyor: ${short.map(b => `${BAND_LABEL[b]} ${targets[b]} gerekli, ${Number(stock[b] || 0)} var`).join('; ')}.` : null;
+}
+
+export const BAND_SQL = `COALESCE(q.difficulty_band,'MEDIUM')`;

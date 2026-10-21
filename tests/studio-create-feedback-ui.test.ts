@@ -88,3 +88,20 @@ it('keeps creation disabled and says why when the chosen scope has too few appro
   expect(f.btn('Taslak oluştur').disabled).toBe(false);
  }finally{await f.close();}
 });
+
+it('sends the chosen difficulty mix, shows targets against band stock and blocks a band that cannot be filled',async()=>{
+ mocks.role='INSTITUTION_MANAGER';mocks.catalog={subjects:[],outcomes:[],available:30,opticalCapacity:44,message:null,bands:{EASY:10,MEDIUM:15,HARD:2},difficultySource:'EDITORIAL_ESTIMATE'};
+ const f=await open();try{
+  await f.setValue(f.labelled('Başlık'),'Deneme 5');await f.setValue(f.labelled('Soru sayısı'),'20');
+  await act(async()=>{await new Promise(r=>setTimeout(r,320));});
+  await f.setValue(f.labelled('Zorluk karışımı'),'BALANCED');
+  expect(f.node.querySelector('.studio-mix-bands')!.textContent).toContain('Zor 4 soru · stok 2');
+  expect(f.btn('Taslak oluştur').disabled).toBe(true);
+  expect(f.node.querySelector('.studio-create-action')!.textContent).toContain('Zor 4 gerekli, 2 var');
+  expect(f.node.textContent).toContain('editoryal tahmin');
+  await f.setValue(f.labelled('Zorluk karışımı'),'EASY');
+  expect(f.btn('Taslak oluştur').disabled).toBe(false);
+  await act(async()=>f.btn('Taslak oluştur').click());
+  expect(posts[0].difficultyMix).toEqual({EASY:50,MEDIUM:40,HARD:10});
+ }finally{await f.close();}
+});

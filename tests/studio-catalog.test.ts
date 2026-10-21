@@ -15,7 +15,7 @@ function setup(){
  INSERT INTO teacher_assignments VALUES('tx','instX','tur',1,'SUBJECT');
  CREATE TABLE subjects(id TEXT PRIMARY KEY,code TEXT,name TEXT,active INTEGER DEFAULT 1);
  INSERT INTO subjects VALUES('tur','TUR','Türkçe',1),('mat','MAT','Matematik',1),('fen','FEN','Fen Bilimleri',1);
- CREATE TABLE question_bank(id TEXT PRIMARY KEY,question_type TEXT,owner_type TEXT DEFAULT 'PLATFORM',owner_id TEXT,academic_year TEXT,grade_level INTEGER,subject_id TEXT,review_status TEXT,copyright_status TEXT,option_count INTEGER DEFAULT 4);
+ CREATE TABLE question_bank(id TEXT PRIMARY KEY,question_type TEXT,difficulty_band TEXT DEFAULT 'MEDIUM',owner_type TEXT DEFAULT 'PLATFORM',owner_id TEXT,academic_year TEXT,grade_level INTEGER,subject_id TEXT,review_status TEXT,copyright_status TEXT,option_count INTEGER DEFAULT 4);
  CREATE TABLE curriculum_versions(id TEXT,academic_year TEXT,verified INTEGER);
  CREATE TABLE outcomes(id TEXT,code TEXT,title TEXT,unit TEXT,topic TEXT,node_type TEXT DEFAULT 'OUTCOME',active INTEGER,grade_level INTEGER,subject_id TEXT,curriculum_version_id TEXT);
  CREATE TABLE question_learning_links(question_id TEXT,node_id TEXT);
@@ -80,5 +80,33 @@ it('never puts open-ended items into a printable booklet',async()=>{
   f.db.exec(`DELETE FROM question_bank WHERE id<>'open'`);
   const r=await f.create(managerX,{gradeLevel:5,subjectId:'tur',questionCount:1});
   expect(r.body.error.code).toBe('INSUFFICIENT_QUESTION_POOL');
+ }finally{f.db.close();}
+});
+
+import {bandTargets,parseDifficultyMix} from '../worker/lib/studio-selection';
+it('difficulty mix: targets always add up, invalid mixes are refused',()=>{
+ expect(bandTargets(20,{EASY:30,MEDIUM:50,HARD:20})).toEqual({EASY:6,MEDIUM:10,HARD:4});
+ expect(bandTargets(7,{EASY:30,MEDIUM:50,HARD:20})).toEqual({EASY:2,MEDIUM:4,HARD:1});
+ for(const n of [1,3,11,44]){const t=bandTargets(n,{EASY:33,MEDIUM:34,HARD:33});expect(t.EASY+t.MEDIUM+t.HARD).toBe(n);}
+ expect(parseDifficultyMix({EASY:30,MEDIUM:50,HARD:10})).toMatchObject({ok:false});
+ expect(parseDifficultyMix({EASY:-10,MEDIUM:90,HARD:20})).toMatchObject({ok:false});
+ expect(parseDifficultyMix(undefined)).toEqual({ok:true,value:null});
+});
+
+it('creates the requested difficulty mix, names a short band, and the catalog shows stock per band',async()=>{
+ const f=setup();try{
+  // Türkçe 5 / 2027-2028 pool: a,b,c,d,own → make 2 easy, 2 medium, 1 hard
+  f.db.exec(`UPDATE question_bank SET difficulty_band='EASY' WHERE id IN ('a','b');UPDATE question_bank SET difficulty_band='HARD' WHERE id='own';`);
+  const cat=await f.catalog(managerX,{gradeLevel:'5',subjectId:'tur',academicYear:'2027-2028'});
+  expect(cat.body.bands).toEqual({EASY:2,MEDIUM:2,HARD:1});expect(cat.body.difficultySource).toBe('EDITORIAL_ESTIMATE');
+  const ok=await f.create(managerX,{gradeLevel:5,subjectId:'tur',academicYear:'2027-2028',questionCount:4,difficultyMix:{EASY:50,MEDIUM:25,HARD:25}});
+  expect(ok.status).toBe(201);
+  const bands=f.db.prepare(`SELECT q.difficulty_band b FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? ORDER BY b`).all(ok.body.id).map((r:any)=>r.b);
+  expect(bands).toEqual(['EASY','EASY','HARD','MEDIUM']);
+  const cfg=JSON.parse((f.db.prepare('SELECT config_json c FROM studio_documents WHERE id=?').get(ok.body.id) as any).c);
+  expect(cfg).toMatchObject({difficultyMix:{EASY:50,MEDIUM:25,HARD:25},difficultySource:'EDITORIAL_ESTIMATE'});
+  const short=await f.create(managerX,{gradeLevel:5,subjectId:'tur',academicYear:'2027-2028',questionCount:4,difficultyMix:{EASY:0,MEDIUM:0,HARD:100}});
+  expect(short.body.error.code).toBe('INSUFFICIENT_DIFFICULTY_POOL');expect(short.body.error.message).toContain('Zor 4 gerekli, 1 var');
+  expect((await f.create(managerX,{gradeLevel:5,subjectId:'tur',questionCount:2,difficultyMix:{EASY:50,MEDIUM:40,HARD:0}})).body.error.code).toBe('INVALID_DIFFICULTY_MIX');
  }finally{f.db.close();}
 });

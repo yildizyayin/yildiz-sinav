@@ -39,3 +39,10 @@
 
 .studio-optical-scan .alert.warning{display:block;background:#fffaf0;color:#8a5a00;border:1px solid #f6d69a;font-size:13px;font-weight:600}
 .studio-optical-tip{margin:10px 0;font-size:12px;line-height:1.5;color:var(--muted)}
+.studio-mix{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:8px 14px;align-items:end}
+.studio-mix>small{grid-column:1/-1;font-size:11px}
+.studio-mix-custom{display:flex;gap:10px}.studio-mix-custom label{flex:1}
+.studio-mix-bands{display:flex;flex-wrap:wrap;gap:8px;align-self:center}
+.studio-mix-bands span{font-size:12px;padding:6px 10px;border-radius:999px;background:#f1f5f9;color:#40506a}.studio-mix-bands span b{margin-right:2px}
+.studio-mix-bands span.short{background:#fff8e8;color:#946200}
+@media (max-width:760px){.studio-mix{grid-template-columns:1fr}}
