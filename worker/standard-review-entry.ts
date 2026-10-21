@@ -1,3 +1,4 @@
+import { publishedForLearnersSql } from './lib/exam-schedule';
 import app from './standard-entry';
 import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
@@ -28,7 +29,7 @@ async function examReview(request:Request,env:Env){
     LEFT JOIN answer_keys ak ON ak.exam_question_id=q.id AND ak.booklet_code=coalesce(ep.booklet_code,'A')
     LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id
     LEFT JOIN outcomes o ON o.id=qo.outcome_id
-    WHERE ep.student_id=? AND e.id=?
+    WHERE ep.student_id=? AND e.id=? AND ${publishedForLearnersSql('e.id')}
     ORDER BY coalesce(q.global_no,9999),s.name,q.question_no`).bind(user.student_id,examId));
   if(!rows.length)return fail(404,'REVIEW_NOT_FOUND','Bu sınav için incelenebilir öğrenci cevabı bulunamadı.');
   let videos:any[]=[];

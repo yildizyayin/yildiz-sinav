@@ -88,6 +88,9 @@ async function enforcePreviewOpticalPolicy(request: Request, env: Env, ctx: Exec
   if (!institutionId) return badRequest('Kurum seçilmelidir.', 'INSTITUTION_REQUIRED');
   if (user.role !== 'SUPER_ADMIN' && user.institution_id !== institutionId) return forbidden();
 
+  // A028b.3: the list of optics this institution may use travels with the request, so a TXT holding two
+  // forms can be read with the chosen optic plus the other allowed one. A client-sent list is never trusted.
+  form.delete('policyCandidateIds');
   const requestedTemplateId = form.get('templateVersionId')?.toString() || '';
   const bound = await loadBoundCandidates(env, examId);
   if (bound.length) {
@@ -101,7 +104,8 @@ async function enforcePreviewOpticalPolicy(request: Request, env: Env, ctx: Exec
     if (requestedTemplateId && !bound.some((candidate) => candidate.id === requestedTemplateId)) {
       return badRequest('Seçilen optik bu sınava bağlı değil.', 'OPTICAL_TEMPLATE_NOT_BOUND');
     }
-    return app.fetch(request, env, ctx);
+    const headers = new Headers(request.headers); headers.delete('content-type'); headers.delete('content-length');
+    return app.fetch(new Request(request.url, { method: request.method, headers, body: form, redirect: request.redirect }), env, ctx);
   }
 
   const fallback = await loadFallbackCandidates(env, institutionId);
@@ -109,7 +113,8 @@ async function enforcePreviewOpticalPolicy(request: Request, env: Env, ctx: Exec
     if (!fallback.some((candidate) => candidate.id === requestedTemplateId)) {
       return badRequest('Seçilen optik yayına hazır değil veya kurum erişim kapsamınızda değil.', 'OPTICAL_TEMPLATE_NOT_ALLOWED');
     }
-    return app.fetch(request, env, ctx);
+    form.set('policyCandidateIds', fallback.map((candidate) => candidate.id).join(','));
+    return app.fetch(rebuildRequestWithTemplate(request, form, requestedTemplateId), env, ctx);
   }
 
   if (!fallback.length) {
@@ -119,6 +124,7 @@ async function enforcePreviewOpticalPolicy(request: Request, env: Env, ctx: Exec
     return badRequest('Sınava optik bağlayın veya yükleme ekranından kullanılacak optiği seçin.', 'OPTICAL_TEMPLATE_REQUIRED', {templates: fallback.map(candidate => ({id:candidate.id,name:candidate.name || candidate.id}))});
   }
 
+  form.set('policyCandidateIds', fallback[0].id);
   return app.fetch(rebuildRequestWithTemplate(request, form, fallback[0].id), env, ctx);
 }
 

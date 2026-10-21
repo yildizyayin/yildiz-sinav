@@ -95,6 +95,15 @@ export async function publishScheduledExamResults(env:Env):Promise<number>{
   return count;
 }
 
+/**
+ * A030: students and parents see an exam's results only once they are published (now, or at the scheduled
+ * time). Every student/parent query that reads results, answers or outcomes adds this condition.
+ */
+export function publishedForLearnersSql(examIdExpr:string):string{
+  return `EXISTS (SELECT 1 FROM exam_delivery_profiles learner_pub WHERE learner_pub.exam_id=${examIdExpr} AND learner_pub.result_freeze_status='PUBLISHED' AND learner_pub.published_at IS NOT NULL AND (learner_pub.result_publish_at IS NULL OR datetime(learner_pub.result_publish_at)<=CURRENT_TIMESTAMP))`;
+}
+export const isLearnerRole=(role:string|undefined|null):boolean=>role==='STUDENT'||role==='PARENT';
+
 export async function resultsAvailableNow(env:Env,examId:string):Promise<boolean>{
   const row=await one<{available:number}>(env.DB.prepare(`SELECT CASE WHEN result_freeze_status='PUBLISHED' AND published_at IS NOT NULL
     AND (result_publish_at IS NULL OR datetime(result_publish_at)<=CURRENT_TIMESTAMP) THEN 1 ELSE 0 END available
