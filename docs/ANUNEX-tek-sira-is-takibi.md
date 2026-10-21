@@ -682,3 +682,29 @@ Bilinen sınır: iki oturum aynı formdaysa ve öğrencinin ikinci kağıdı yok
 Karar notu (kullanıcı değiştirebilir): eksik oturumda puan boş bırakılıyor; net ve sıralama gösteriliyor.
 
 Kapanış için: dağıtım ve canlıya geçince gerçek 7108 + 840 dosyalarıyla elle kabul (K002).
+
+### A029 — sonradan kazanım bağlantısı, 21 Ekim 20:35–
+
+PR #297 (A028b) merge edildi; dağıtım onay bekliyor.
+
+Mevcut durum doğruydu:
+- Yetkili (Süper Admin ya da kendi kurum sınavının yöneticisi) kazanımları sürüm kontrolüyle bağlayabiliyor; kazanım eski yıla aitse reddediliyor.
+- Yeniden analiz yeni bir analiz sürümü oluşturuyor; puan, sıralama ve dondurulmuş sonuç değişmiyor.
+- Sonuç ağı, açık yayına kadar eski analizi gösteriyor.
+
+Bulgular:
+1. Yeniden analiz misafir katılımcıların kazanım verisini siliyor, yeniden kurmuyordu.
+2. Alt kayıt **A029.1**: sınav tanımlama ekranında oluşturulan sınavlarda yayın profili yoktu. "Dondur" snapshot yazıyor ama sınav dondurulmuş duruma geçmiyordu, bu yüzden sonuç hiç yayınlanamıyordu (A030 akışını da engelliyordu).
+3. Sonuçlu sınavda kaydetmek kullanıcıya yalnız "kaydedildi" diyordu; yeniden analiz edildiği söylenmiyordu.
+
+PR #298 ile yapılanlar:
+- Yeniden analiz misafirleri de kapsıyor.
+- Dondurma işlemi eksik profili oluşturuyor.
+- Kazanım ekranı kaydetmeden önce uyarıyor, kaydettikten sonra kaç katılımcının yeniden analiz edildiğini ve yeni sürümü gösteriyor.
+
+Testler:
+- Gerçek şemada uçtan uca, doğrudan ve parçalı: değerlendir → dondur → yayınla → sonradan bağla → personel ve öğrenci görünümü; puan ve snapshot değişmiyor; yetki, yıl kapsamı ve sürüm çakışması kontrolleri.
+- Arayüz testleri; mutasyon kontrollü.
+- 244 dosya / 1.244 test, build PASS.
+
+Kapanış için: dağıtım + canlıda elle kabul (K002).
