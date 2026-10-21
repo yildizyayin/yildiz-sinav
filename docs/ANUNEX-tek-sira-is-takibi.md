@@ -571,3 +571,13 @@ PR #285 (A083.4) merge edildi. A019 incelemesi: sunucu tarafında oluşturma/oku
 4. Zorunlu alan uyarısı yalnız iki alanı söylüyordu → eksikler adıyla (eğitim yılı biçimi, Süper Admin için kurum dahil) ve alanlar işaretli.
 PR #286: 4 UI testi (çökme düzeltmesiz kırılıyor). 236 dosya / 1.184 test, build PASS.
 Kapanış için: dağıtım + canlıda yeni sınav kartı → cevap anahtarı adımı → sayfa yenileme ekranı.
+
+### A020 — cevap anahtarı girişi, 21 Ekim 16:45–17:20
+
+PR #286 (A019) merge edildi. A020 incelemesi ve düzeltmeler — PR #287:
+1. İndirilen şablonda yalnız A ve B soru no sütunu vardı → C/D kitapçıklı sınavın anahtarı şablona girilemiyordu. Şablon `src/lib`'e taşındı; seçilen her kitapçık için ayrı sütun, her hücrede tek değer.
+2. Şablon Türkçe Excel'de CSV olarak kaydedilince (`;`, başlık 35. satırda) serbest metin ayrıştırıcısına düşüp okunamıyordu → tablo olarak okunur.
+3. Kitapçık sütunu kısmen boşsa veya numara tekrar ediyorsa uyarı yoktu → test/kitapçık adıyla uyarı.
+4. Sunucu: sınavda olmayan kitapçığın anahtarı sessizce atılıyordu → 400 INVALID_BOOKLET; testin aralığı dışındaki basılı soru numarası kabul ediliyordu → 400 BOOKLET_QUESTION_OUT_OF_RANGE.
+Doğrulama: şablon doldurulup .xlsx ve `;` CSV olarak geri okunduğunda A/B/C/D anahtarları ve basılı sıraları birebir; gerçek göç şeması üzerinde sunucu her kitapçığı basılı sırasıyla saklıyor; retler mutasyon kontrollü. 237 dosya / 1.188 test, build PASS.
+Kapanış için: dağıtım + gerçek izinli bir cevap anahtarı dosyasıyla canlı yükleme ekranı (A025 ile ortak örnek kullanılabilir).
