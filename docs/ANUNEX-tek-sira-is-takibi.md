@@ -1325,3 +1325,25 @@ Kanıt:
 - Tam paket 271 dosya / 1.315 test geçti.
 
 Sonraki iş: A050.
+
+### A050 — öğrenci bireysel karnesi, 22 Ekim
+
+Durum: KOD TAMAM, merge edildi (PR #323). PDF'in gerçek cihazda açılması K002'de kontrol edilecek.
+
+İnceleme sonucu: öğrencinin "Bireysel gelişim karnem" görünümü zaten vardı. Mevcut olanlar:
+- yalnız yayımlanmış sonuçlar (A030 filtresi);
+- güçlü ve gelişecek kazanımlar;
+- "Yazdır / PDF" düğmesi.
+
+Eksik olan ve eklenen: dönem (eğitim yılı) seçimi.
+- Dönem listesi öğrencinin kendi sınavlarından oluşur.
+- Seçilen dönemin dışındaki sınav kimlikleri yok sayılır.
+- Bilinmeyen bir dönem verilirse tüm dönemler gösterilir.
+- Rapor ekranına dönem seçici eklendi.
+
+Kanıt:
+- `tests/a050-student-report-card.test.ts`. Doğrulananlar: iki dönem ayrı görünür; seçilen dönemde yalnız o dönemin sınavı gelir; güçlü ve gelişecek kazanımlar oluşur; yayımlanmamış sınav görünmez; başka öğrencinin karnesi 403 döner.
+- Mutasyon kontrolü: dönemi yok saymak ve bilinmeyen dönemi kabul etmek testlerce yakalandı.
+- Tam paket 272 dosya / 1.316 test geçti.
+
+Sonraki iş: A051.
