@@ -15,7 +15,7 @@ const fail = (status: number, code: string, message: string, details?: unknown) 
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
 /** The criteria of a paper item exactly as pinned at finalisation. */
-async function itemCriteria(env: Env, item: any): Promise<Crit[]> {
+export async function itemCriteria(env: Env, item: any): Promise<Crit[]> {
   if (item.source === 'ZUMRE') {
     const r = JSON.parse(item.zumre_rubric_json);
     return r.criteria.map((c: any) => ({ criterion: c.criterion, points: c.points, levels: c.levels.map((l: any) => l.points), descriptors: c.levels.map((l: any) => l.descriptor) }));
@@ -35,7 +35,7 @@ export function validateCriterionPoints(criteria: Crit[], raw: unknown): { point
   return { points: raw as number[], total: (raw as number[]).reduce((t, v) => t + v, 0) };
 }
 
-async function context(env: Env, user: AuthUser, paperId: string) {
+export async function context(env: Env, user: AuthUser, paperId: string) {
   const p = await one<any>(env.DB.prepare(`SELECT p.*,t.grade_level,t.subject_id,t.academic_year FROM written_papers p JOIN written_exam_tables t ON t.id=p.table_id WHERE p.id=?`).bind(paperId));
   if (!p) return null;
   if (user.role !== 'SUPER_ADMIN') {
@@ -46,7 +46,7 @@ async function context(env: Env, user: AuthUser, paperId: string) {
 }
 const students = (env: Env, p: any) => all<any>(env.DB.prepare(`SELECT DISTINCT s.id,s.first_name,s.last_name,e.student_number,e.section FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id
   WHERE e.institution_id=? AND e.status='ACTIVE' AND e.grade_level=? ORDER BY e.section,e.student_number`).bind(p.institution_id, p.grade_level));
-const isStudent = async (env: Env, p: any, studentId: string) => !!(await one(env.DB.prepare(`SELECT 1 FROM student_enrollments WHERE student_id=? AND institution_id=? AND status='ACTIVE' AND grade_level=?`).bind(studentId, p.institution_id, p.grade_level)));
+export const isStudent = async (env: Env, p: any, studentId: string) => !!(await one(env.DB.prepare(`SELECT 1 FROM student_enrollments WHERE student_id=? AND institution_id=? AND status='ACTIVE' AND grade_level=?`).bind(studentId, p.institution_id, p.grade_level)));
 const latestSql = `SELECT v.* FROM written_score_versions v WHERE v.paper_id=? AND v.student_id=? AND v.version=(SELECT max(x.version) FROM written_score_versions x WHERE x.paper_id=v.paper_id AND x.student_id=v.student_id AND x.item_id=v.item_id)`;
 
 async function overview(env: Env, p: any) {
@@ -58,7 +58,21 @@ async function overview(env: Env, p: any) {
     const sum = latest.reduce((t, v) => t + v.item_points, 0);
     out.push({ ...s, scored: latest.length, items: items.length, runningTotal: sum, final: fin || null, changedSinceFinal: !!fin && fin.total_points !== sum });
   }
-  return { items, students: out };
+  return { items, students: out, aiAgreement: await agreement(env, p.id) };
+}
+
+/** A085: how often the teacher's latest score equals the latest AI/digit-grid suggestion for the same answer. */
+export async function agreement(env: Env, paperId: string) {
+  const scores = await all<any>(env.DB.prepare(`SELECT v.student_id,v.item_id,v.item_points FROM written_score_versions v WHERE v.paper_id=? AND v.version=(SELECT max(x.version) FROM written_score_versions x WHERE x.paper_id=v.paper_id AND x.student_id=v.student_id AND x.item_id=v.item_id)`).bind(paperId));
+  const sugg = await all<any>(env.DB.prepare(`SELECT s.student_id,s.item_id,s.item_points,coalesce(s.source,'TEXT_AI') source FROM written_score_suggestions s WHERE s.paper_id=? AND s.rowid=(SELECT max(y.rowid) FROM written_score_suggestions y WHERE y.paper_id=s.paper_id AND y.student_id=s.student_id AND y.item_id=s.item_id)`).bind(paperId)).catch(() => [] as any[]);
+  const bucket = () => ({ pairs: 0, exact: 0, absDiff: 0 });
+  const all_ = bucket(); const bySource: Record<string, ReturnType<typeof bucket>> = {};
+  for (const s of sugg) {
+    const v = scores.find((x) => x.student_id === s.student_id && x.item_id === s.item_id); if (!v) continue;
+    for (const b of [all_, (bySource[s.source] ??= bucket())]) { b.pairs++; if (v.item_points === s.item_points) b.exact++; b.absDiff += Math.abs(v.item_points - s.item_points); }
+  }
+  const view = (b: ReturnType<typeof bucket>) => ({ pairs: b.pairs, exact: b.exact, exactRate: b.pairs ? Math.round(b.exact / b.pairs * 1000) / 1000 : null, meanAbsDiff: b.pairs ? Math.round(b.absDiff / b.pairs * 100) / 100 : null });
+  return { ...view(all_), bySource: Object.fromEntries(Object.entries(bySource).map(([k, b]) => [k, view(b)])) };
 }
 
 async function detail(env: Env, p: any, studentId: string) {
@@ -66,8 +80,9 @@ async function detail(env: Env, p: any, studentId: string) {
   const versions = await all<any>(env.DB.prepare(`SELECT v.*,u.display_name entered_name FROM written_score_versions v LEFT JOIN users u ON u.id=v.entered_by WHERE v.paper_id=? AND v.student_id=? ORDER BY v.item_id,v.version`).bind(p.id, studentId));
   const suggestions = await all<any>(env.DB.prepare('SELECT * FROM written_score_suggestions WHERE paper_id=? AND student_id=? ORDER BY created_at').bind(p.id, studentId));
   const finals = await all<any>(env.DB.prepare('SELECT * FROM written_grade_finalizations WHERE paper_id=? AND student_id=? ORDER BY version').bind(p.id, studentId));
+  const scans = await all<any>(env.DB.prepare('SELECT id,item_id,page_no,digits_read,read_confidence,read_issues_json,created_at FROM written_answer_scans WHERE paper_id=? AND student_id=? ORDER BY created_at DESC,rowid DESC').bind(p.id, studentId)).catch(() => []);
   const out = [];
-  for (const i of items) out.push({ id: i.id, no: i.sort_order, points: i.points, source: i.source, stem: i.source === 'ZUMRE' ? i.zumre_stem : i.stem_text, modelAnswer: i.source === 'ZUMRE' ? i.zumre_model_answer : i.solution_text, criteria: await itemCriteria(env, i), versions: versions.filter((v) => v.item_id === i.id).map((v) => ({ ...v, criterion_points: JSON.parse(v.criterion_points_json) })), suggestions: suggestions.filter((s) => s.item_id === i.id).map((s) => ({ ...s, criterion_points: JSON.parse(s.criterion_points_json) })) });
+  for (const i of items) out.push({ id: i.id, no: i.sort_order, points: i.points, source: i.source, stem: i.source === 'ZUMRE' ? i.zumre_stem : i.stem_text, modelAnswer: i.source === 'ZUMRE' ? i.zumre_model_answer : i.solution_text, criteria: await itemCriteria(env, i), versions: versions.filter((v) => v.item_id === i.id).map((v) => ({ ...v, criterion_points: JSON.parse(v.criterion_points_json) })), suggestions: suggestions.filter((s) => s.item_id === i.id).map((s) => ({ ...s, criterion_points: JSON.parse(s.criterion_points_json), flags: s.flags_json ? JSON.parse(s.flags_json) : [] })), scans: scans.filter((x) => x.item_id === i.id) });
   return { items: out, finalizations: finals };
 }
 

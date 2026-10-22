@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
+import { WrittenCameraScan } from './WrittenCameraScan';
 
 /** A041: teacher grading of a final written paper. AI only suggests; the teacher enters and finalises. */
 export function WrittenGradingPanel({ paperId }: { paperId: string }) {
@@ -22,13 +23,17 @@ export function WrittenGradingPanel({ paperId }: { paperId: string }) {
     <h3>Öğretmen puanlaması</h3>
     <p>Her ölçüt için rubrikteki puan düzeylerinden birini seçin. Her kayıt yeni bir sürümdür; değişiklikler gerekçe ister. AI yalnız öneri verir; not sizin girdiğiniz puanlardan ve sizin kesinleştirmenizle oluşur.</p>
     {error && <div className="alert error">{error}</div>}{notice && <div className="alert success">{notice}</div>}
+    {ov?.aiAgreement?.pairs > 0 && <p><strong>Öğretmen–AI uyumu:</strong> {ov.aiAgreement.exact}/{ov.aiAgreement.pairs} aynı puan ({Math.round(ov.aiAgreement.exactRate * 100)}%), ortalama fark {ov.aiAgreement.meanAbsDiff} puan{Object.entries(ov.aiAgreement.bySource || {}).map(([k, v]: any) => ` · ${k === 'DIGIT_GRID' ? 'rakam ızgarası' : k === 'VISION_AI' ? 'el yazısı AI' : 'metin AI'}: ${v.exact}/${v.pairs}`).join('')}</p>}
+    {ov && <WrittenCameraScan paperId={paperId} students={ov.students.map((s: any) => ({ id: s.id, label: `${s.student_number} · ${s.first_name} ${s.last_name}` }))} />}
     <table><thead><tr><th>No</th><th>Öğrenci</th><th>Puanlanan</th><th>Ara toplam</th><th>Kesin not</th><th></th></tr></thead><tbody>
       {(ov?.students || []).map((s: any) => <tr key={s.id}><td>{s.student_number}</td><td>{s.first_name} {s.last_name}</td><td>{s.scored}/{s.items}</td><td>{s.runningTotal}</td><td>{s.final ? `${s.final.total_points} (v${s.final.version})${s.changedSinceFinal ? ' · değişti, yeniden kesinleştirin' : ''}` : '—'}</td><td><button className="ghost" onClick={() => void open(s.id)}>Puanla</button></td></tr>)}
     </tbody></table>
     {d && current && <div style={{ marginTop: 12 }}>
       <h4>{current.first_name} {current.last_name} · {current.student_number}</h4>
       {d.items.map((i: any) => { const last = i.versions[i.versions.length - 1]; const sel = pick[i.id] || []; return <div key={i.id} className="panel" style={{ marginTop: 8 }}>
-        <strong>{i.no}. soru ({i.points} puan){i.source === 'ZUMRE' ? ' · zümre' : ''}</strong><p style={{ whiteSpace: 'pre-wrap' }}>{i.stem}</p><small>Model cevap: {i.modelAnswer}</small>
+        <strong>{i.no}. soru ({i.points} puan){i.source === 'ZUMRE' ? ' · zümre' : ''}</strong>
+        {i.scans?.[0] && <div><img alt={`${i.no}. sorunun cevabı`} src={`/api/written-papers/${paperId}/camera/scans/${i.scans[0].id}/image`} style={{ maxWidth: '100%', border: '1px solid #ccc' }} />{i.scans[0].digits_read ? <small> Okunan rakamlar: {i.scans[0].digits_read}</small> : null}</div>}
+        {i.suggestions?.length > 0 && (() => { const s = i.suggestions[i.suggestions.length - 1]; return <p className={s.flags?.length ? 'status warn' : 'status ok'}>{s.source === 'DIGIT_GRID' ? 'Rakam ızgarası' : 'AI'} önerisi: {s.item_points} puan{s.confidence != null ? ` · güven ${Math.round(s.confidence * 100)}%` : ''}{s.flags?.length ? ` · ${s.flags.join(', ')}` : ''}{s.answer_text ? ` · okunan: “${s.answer_text}”` : ''} <button className="ghost" onClick={() => { setPick({ ...pick, [i.id]: s.criterion_points }); setSuggestion({ ...suggestion, [i.id]: { id: s.id, itemPoints: s.item_points, rationale: s.rationale } }); }}>Öneriyi forma al</button></p>; })()}<p style={{ whiteSpace: 'pre-wrap' }}>{i.stem}</p><small>Model cevap: {i.modelAnswer}</small>
         {i.criteria.map((c: any, k: number) => <label key={k} style={{ display: 'block' }}>{c.criterion}: <select value={sel[k] ?? 0} onChange={(e) => setPick({ ...pick, [i.id]: sel.map((x: number, j: number) => (j === k ? Number(e.target.value) : x)) })}>{c.levels.map((pts: number, j: number) => <option key={pts} value={pts}>{pts} — {c.descriptors[j]}</option>)}</select></label>)}
         {last && <input placeholder="Düzeltme gerekçesi (zorunlu)" value={reason[i.id] || ''} onChange={(e) => setReason({ ...reason, [i.id]: e.target.value })} />}
         <button className="primary" disabled={busy} onClick={() => void act(() => api(`${base}/${student}/items/${i.id}`, { method: 'POST', body: JSON.stringify({ criterionPoints: sel, reason: reason[i.id] || undefined, aiSuggestionId: suggestion[i.id]?.id }) }), 'Puan kaydedildi.')}>Puanı kaydet ({sel.reduce((t: number, v: number) => t + v, 0)})</button>

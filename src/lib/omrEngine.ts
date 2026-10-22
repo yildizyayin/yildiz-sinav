@@ -21,7 +21,7 @@ export interface OmrReadResult{
  fiducialsFound:number;
 }
 
-type Transform=(xMm:number,yMm:number)=>Point;
+export type Transform=(xMm:number,yMm:number)=>Point;
 type Bubble={xMm:number;yMm:number;radiusMm:number;value:string;questionNo?:number;position?:number};
 
 export function parseRuntimeTemplate(raw:any):OmrTemplateRuntime{
@@ -77,7 +77,7 @@ export async function imageFileToImageData(file:File,maxWidth=1800):Promise<Imag
  ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();return ctx.getImageData(0,0,canvas.width,canvas.height);
 }
 
-function estimateAlignment(image:ImageDataLike,template:OmrTemplateRuntime):{transform:Transform|null;confidence:number;found:number;issues:string[]}{
+export function estimateAlignment(image:ImageDataLike,template:OmrTemplateRuntime):{transform:Transform|null;confidence:number;found:number;issues:string[]}{
  const targets=Array.isArray(template.fiducials?.targets)?template.fiducials.targets:[];
  const expected=targets.map((t:any)=>({xMm:Number(Array.isArray(t)?t[0]:t.xMm??t.x),yMm:Number(Array.isArray(t)?t[1]:t.yMm??t.y)})).filter((p:any)=>Number.isFinite(p.xMm)&&Number.isFinite(p.yMm));
  if(expected.length<3)return {transform:null,confidence:0,found:0,issues:['Şablonda en az 3 kamera referans noktası bulunmalıdır.']};
@@ -219,7 +219,7 @@ function buildIdentityCells(region:any,valueField:'digit'|'value'):Bubble[]{
 
 /** Share of ink inside the bubble relative to the paper right around it, so grey/shadowed paper reads like white paper.
  * The printed outline and letter are excluded by sampling only the inner 65%. */
-function bubbleDarkness(image:ImageDataLike,transform:Transform,b:Bubble){
+export function bubbleDarkness(image:ImageDataLike,transform:Transform,b:Bubble){
  const c=transform(b.xMm,b.yMm),rx=transform(b.xMm+b.radiusMm,b.yMm),ry=transform(b.xMm,b.yMm+b.radiusMm);const radius=Math.max(2,Math.min(Math.hypot(rx.x-c.x,rx.y-c.y),Math.hypot(ry.x-c.x,ry.y-c.y)));
  const inner=radius*.65,outer=radius*1.8;let sum=0,total=0;const ring:number[]=[];
  const minX=Math.max(0,Math.floor(c.x-outer)),maxX=Math.min(image.width-1,Math.ceil(c.x+outer)),minY=Math.max(0,Math.floor(c.y-outer)),maxY=Math.min(image.height-1,Math.ceil(c.y+outer));
@@ -236,7 +236,7 @@ function darkCentroid(image:ImageDataLike,cx:number,cy:number,radius:number){let
  if(n<12||w<=0)return null;const area=Math.max(1,((x1-x0)/2)*((y1-y0)/2));return{x:sx/w,y:sy/w,quality:Math.min(1,n/(area*.025))};
 }
 
-function luminance(image:ImageDataLike,x:number,y:number){const i=(Math.round(y)*image.width+Math.round(x))*4;const d=image.data as any;return .2126*Number(d[i]??255)+.7152*Number(d[i+1]??255)+.0722*Number(d[i+2]??255)}
+export function luminance(image:ImageDataLike,x:number,y:number){const i=(Math.round(y)*image.width+Math.round(x))*4;const d=image.data as any;return .2126*Number(d[i]??255)+.7152*Number(d[i+1]??255)+.0722*Number(d[i+2]??255)}
 
 function affineLeastSquares(points:Array<{xMm:number;yMm:number;px:number;py:number}>):Transform|null{
  const a=points.map(p=>[p.xMm,p.yMm,1]);const ata=[[0,0,0],[0,0,0],[0,0,0]];for(const r of a)for(let i=0;i<3;i++)for(let j=0;j<3;j++)ata[i][j]+=r[i]*r[j];

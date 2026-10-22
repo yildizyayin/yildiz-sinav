@@ -41,7 +41,7 @@ export function normalizeRubric(raw: any, requiredTotal?: number | null): { valu
   if (criteria.length && totalPoints >= 1 && sum !== totalPoints) errors.push(`Ölçüt puanlarının toplamı ${sum}, toplam puan ${totalPoints}; ikisi eşit olmalıdır.`);
   const altList = Array.isArray(raw?.alternatives) ? raw.alternatives : [];
   if (altList.length > 10) errors.push('En çok 10 alternatif çözüm yazılabilir.');
-  const alternatives = altList.slice(0, 10).map((a: any, i: number) => { const answerText = text(a?.answerText, 2000); if (answerText.length < 3) errors.push(`${i + 1}. alternatif çözüm boş.`); return { answerText, ...(text(a?.note, 300) ? { note: text(a?.note, 300) } : {}) }; });
+  const alternatives = altList.slice(0, 10).map((a: any, i: number) => { const answerText = text(a?.answerText, 2000); if (answerText.length < 1) errors.push(`${i + 1}. alternatif çözüm boş.`); return { answerText, ...(text(a?.note, 300) ? { note: text(a?.note, 300) } : {}) }; });
   if (errors.length) return { errors };
   return { value: { totalPoints, criteria, alternatives, ...(text(raw?.changeNote, 300) ? { changeNote: text(raw?.changeNote, 300) } : {}) }, errors };
 }
