@@ -1386,3 +1386,28 @@ Kanıt:
 - Tam paket 274 dosya / 1.320 test geçti.
 
 Sonraki iş: A053.
+
+### A053 — rehberlik karnesi, 23 Ekim 00:02
+
+Durum: KOD TAMAM, merge edildi (PR #326).
+
+Doğrulananlar:
+- Rehber öğretmen yalnız atandığı sınıfların öğrencilerini görür. Görünenler: incelenmiş rehberlik sinyalleri, yayımlanmış deneme netleri, destek planı durumu ve özel kayıtların yalnız sayısı. Diğer sınıfın ve diğer okulun rehber öğretmeni bu öğrencileri görmez.
+- Özel rehberlik kayıtları ayrı bir tabloda tutulur (migration 0132). Kayıtlar yalnız eklenebilir; değiştirme ve silme tetikleyiciyle engellenir.
+- Özel kayıtları yalnız sınıfın rehber öğretmeni ve Süper Admin okur. Her okuma denetim kaydına yazılır. Süper Admin kayıt yazamaz.
+- Branş öğretmeni, müdür, öğrenci ve veli özel kayıtları göremez (403). Karne yanıtında kaydın metni geçmez.
+- Destek planını rehber öğretmen yazar; her kayıtta sürüm artar.
+- Öğrenci ve veli planı yalnız paylaşıldığında görür. Paylaşım geri alınınca erişim de kapanır.
+- Dondurulmuş ama yayımlanmamış deneme sonucu karnede görünmez.
+- Öğrenciye giden mevcut not alanının adı "Öğrenciye görünen geri bildirim" oldu, böylece özel notla karışmaz.
+
+Kanıt:
+- `tests/a053-guidance-report.test.ts` (3 test).
+- 9 mutasyon denendi, hepsi testlerce yakalandı.
+- Tam paket 275 dosya / 1.323 test geçti; build temiz.
+
+Dürüst not: mutasyonların ilk turu, test kurulumu hatalıyken koştu (sonuç anlık görüntüsü yoktu). Kurulum düzeltildi, hepsi yeniden koşturuldu. Yayımlanma kapısı mutasyonu ilk denemede kaldı, çünkü tek koşul kaldırılmıştı ve ikinci koşul aynı işi görüyordu. İki koşul birlikte kaldırılınca ve "dondurulmuş da sayılsın" mutasyonu denenince ikisi de yakalandı.
+
+Sınır: planın veli tarafı API'de hazır, ama veli ana sayfasında ayrı bir kart yok. Canlı el testi K002'de yapılacak.
+
+Sonraki iş: A054.
