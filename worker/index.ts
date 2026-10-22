@@ -137,9 +137,20 @@ async function login(request: Request, env: Env): Promise<Response> {
   const turnstile = await verifyTurnstile(env, body.turnstileToken, request.headers.get('CF-Connecting-IP'));
   if (!turnstile.ok) return badRequest('Robot doğrulaması başarısız.', turnstile.error || 'TURNSTILE_FAILED');
 
-  const row = await one<any>(env.DB.prepare(`SELECT u.*, i.status AS institution_status FROM users u LEFT JOIN institutions i ON i.id=u.institution_id
-    WHERE lower(coalesce(u.email,''))=lower(?) OR lower(coalesce(u.username,''))=lower(?) OR coalesce(u.phone,'')=? LIMIT 1`).bind(identifier, identifier, identifier));
-  if (!row || !row.active || isServiceAccountId(row.id) || !(await verifyPassword(body.password, row.password_salt, row.password_hash, row.password_iterations))) {
+  // A047: e-mail/username identify one account; a phone number may be on several (a teacher who is also a parent).
+  // The phone never grants access by itself: the password must match, and it must match exactly one account.
+  const byName = await one<any>(env.DB.prepare(`SELECT u.*, i.status AS institution_status FROM users u LEFT JOIN institutions i ON i.id=u.institution_id
+    WHERE lower(coalesce(u.email,''))=lower(?) OR lower(coalesce(u.username,''))=lower(?) LIMIT 1`).bind(identifier, identifier));
+  let row: any = null;
+  if (byName) row = byName.active && !isServiceAccountId(byName.id) && await verifyPassword(body.password, byName.password_salt, byName.password_hash, byName.password_iterations) ? byName : null;
+  else {
+    const byPhone = await all<any>(env.DB.prepare(`SELECT u.*, i.status AS institution_status FROM users u LEFT JOIN institutions i ON i.id=u.institution_id WHERE u.phone=? AND u.active=1 LIMIT 5`).bind(identifier));
+    const fits: any[] = [];
+    for (const c of byPhone) if (!isServiceAccountId(c.id) && await verifyPassword(body.password, c.password_salt, c.password_hash, c.password_iterations)) fits.push(c);
+    if (fits.length > 1) { await recordLoginAttempt(env, identifier, false, request); return json({ ok: false, error: { code: 'PHONE_AMBIGUOUS', message: 'Bu telefon numarası birden fazla hesapta kayıtlı. Kullanıcı adınız veya e-postanızla giriş yapın.' } }, 401); }
+    row = fits[0] || null;
+  }
+  if (!row) {
     await recordLoginAttempt(env, identifier, false, request);
     return json({ ok: false, error: { code: 'INVALID_CREDENTIALS', message: 'Kullanıcı adı veya şifre hatalı.' } }, 401);
   }
