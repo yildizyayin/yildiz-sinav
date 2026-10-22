@@ -899,3 +899,17 @@ PR #308 ile yapılanlar:
 - 254 dosya / 1.269 test, build PASS.
 
 Kapanış için: gerçek basılı optiğin telefonla okunması elle (K002). Sentetik test kanıt sayılmaz.
+
+### A084 — deneme optiği kamera → TXT, 22 Ekim 18:35–
+
+Kullanıcı kararı (18:32): merge işlemlerini artık Claude yapacak; her işe geçişte bilgi verilecek ve kalan işler sıralanacak. #305 ve #309 Claude tarafından merge edildi. CI'daki "Result Provider Isolation Probe" bütün PR'larda başarısız: canlı sağlayıcıyı yokluyor ve D1 limiti nedeniyle şu an canlı yanıt vermiyor. Bu, kod kaynaklı değil.
+
+PR #309 ile yapılanlar:
+- Kamera toplu kaydı bağlı optiğin sabit sütunlu TXT'si olarak indiriliyor. Form numarası yerinde; belirsiz işaret onaylanmadan indirilemiyor.
+- Gidiş-dönüş kanıtı:
+  - kamera değerlendirmesi ile aynı TXT'nin normal yükleme ve değerlendirmesi birebir aynı sonucu veriyor;
+  - gerçek 129 kayıtları yazılıp yeniden okununca aynı çıkıyor.
+- Sayfa sabitlenince otomatik çekim: dört köşe, üç sabit kare; her sayfa bir kez okunuyor.
+- 257 dosya / 1.278 test, build PASS.
+
+Kapanış için: gerçek basılı deneme optiğinin telefonla okunması elle (K002). Optiğin Phobos'ta kamera geometrisi tanımlı olmalı.
