@@ -1007,3 +1007,44 @@ Kanıt:
 - Tam paket 260 dosya / 1.291 test geçti, build geçti.
 
 Sonraki iş: A040.
+
+### A040 — yazılı sınav kâğıdı, 22 Ekim 20:45–21:40
+
+Durum: KOD TAMAM, merge edildi (PR #313). Canlı doğrulama ve gerçek kâğıt baskısı dağıtımdan sonra (K002).
+
+Yapılanlar:
+- Migration 0129: yazılı kâğıdı ve kâğıt maddeleri. Kesinleşen kâğıt kilitlenir. Kesinleştirmede veritabanı tetikleyicisi şunları yeniden denetler:
+  - satır başına soru sayıları;
+  - toplamın 100 olması;
+  - sabitlenen rubriklerin onaylı olması;
+  - zümre kuralı.
+- Dağılım: okulun zümre kararıyla seçtiği senaryodan (A037) yapılır.
+  - Satırda kazanım kodu varsa yalnız o kazanımın soruları alınır.
+  - Yalnız okul için onaylı rubriği (A039) olan onaylı yazılı sorular kullanılabilir.
+  - Zümre soruları kâğıdın içinde yazılır; çoktan seçmeli biçimde ya da tutarsız rubrikle yazılamaz.
+  - "Otomatik doldur" boş yerleri uygun sorularla doldurur.
+- Zümre kuralı yalnız politika dosyasındaki doğrulanmış kapsamda uygulanır: 2026-2027, ÖDSGM, 5–7 ve 9–11. sınıfların listelenen dersleri için tam 2 zümre sorusu. Doğrulanmamış yıl ve kapsamda (ör. 2027-2028) kural zorunlu değildir, yalnız uyarı gösterilir.
+- Okul senaryo seçimini değiştirirse bitmemiş kâğıt kesinleştirilemez; yeniden kurulması gerekir.
+- Kesinleştirmeyi öğretmen ya da okul yöneticisi, açık onay kutusuyla yapar. O anda geçerli rubrik sürümleri kâğıda sabitlenir; sonradan onaylanan yeni rubrik sürümü kâğıdı değiştirmez.
+- Kâğıt ve cevap anahtarı yalnız kesinleşince yazdırılabilir HTML olarak açılır.
+  - Kâğıtta model cevap yer almaz.
+  - Anahtarda model cevap, kısmi puan düzeyleri, alternatif çözümler ve sabitlenen rubrik sürümü yer alır.
+  - Öğrenci ve veli bu bölüme erişemez. Kâğıdın ve anahtarın her açılışı denetim kaydına yazılır.
+- Kullanıcıya bildirilen karar: soru puanı öğretmenin kararıdır (politikada pointsSetByTeacher). Bu yüzden A039'daki "rubrik toplamı üretimdeki soru puanına eşit olmalı" kısıtı kaldırıldı; kâğıt toplamı 100 olmalıdır.
+- Sayfa: `/written-papers`.
+
+Kanıt:
+- `tests/a040-written-paper.test.ts` (3 test).
+- Mutasyon kontrolü: aşağıdaki 7 değişikliğin her biri testlerce yakalandı:
+  - kazanım filtresini kaldırmak;
+  - zümre kuralını kaldırmak;
+  - 100 toplam kontrolünü kaldırmak;
+  - senaryo değişikliğini yok saymak;
+  - kesinleşmeden basmaya izin vermek;
+  - doğrulanmamış yıla kuralı dayatmak;
+  - rubrik onayını gerektirmemek.
+- Tam paket 261 dosya / 1.294 test geçti, build geçti.
+
+Sınır: Word/PDF dosyası yerine tarayıcıdan yazdırılan sayfa üretildi; PDF/Word aktarımı onaysız eklenmedi.
+
+Sonraki iş: A041.
