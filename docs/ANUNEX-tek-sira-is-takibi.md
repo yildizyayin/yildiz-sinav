@@ -801,3 +801,24 @@ PR #303 ile yapılanlar:
 - 250 dosya / 1.262 test, build PASS.
 
 Bekleyen: kalıcı imha (ayrı onaylı iş). Kapanış için: dağıtım + canlıda elle kabul (K002).
+
+### A033 — sınav belge arşivi, 22 Ekim 16:50–
+
+PR #302 (A032) ve #303 (A032b) merge edildi.
+
+Bulgular (arşiv fiilen çalışmıyordu):
+1. Liste herkes için 500 veriyordu: kod okuduğu `description` sütununu hiçbir migration oluşturmuyordu.
+2. Video ekleme her zaman başarısızdı: INSERT'te bir fazla yer tutucu vardı.
+3. Sınav geneli (EXAM) videolar tablo CHECK kısıtına takılıyordu.
+4. Öğretmen kitapçık PDF'ini göremiyordu.
+5. Öğrenci ve veli, yayından önce dosya ve videolara erişebiliyordu.
+6. Çöp kutusundaki sınav kuruma açıktı.
+
+PR #304 ile yapılanlar:
+- 0124 ile `video_links` yeniden kuruldu.
+- Görünürlük kuralları ve erişim kapıları düzeltildi.
+- 251 dosya / 1.263 test, build PASS.
+
+**Üretim uyarısı (22 Ekim):** D1 günlük okuma limiti bugün yine doldu. Sebep: 20 Ekim'deki A018 dağıtımından bu yana üretime hiçbir dağıtım ulaşmadı. Bekleyen her dağıtım, bir sonraki merge onu iptal ettiği için onaysız kaldı. Bu yüzden #282 (zamanlayıcı okuma indeksleri) dahil 22 commit henüz üretimde değil. Yapılması gereken: 03:00'ten (UTC gece yarısı) sonra en son "Deploy Production Cloudflare Worker" çalışmasını onaylamak.
+
+Kapanış için: dağıtım + canlıda elle kabul (K002).
