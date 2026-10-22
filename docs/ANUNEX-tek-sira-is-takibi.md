@@ -1296,3 +1296,32 @@ Gerekenler:
 2. Kabul edilen sözleşme metninin ya da kararın kaydedilmesi.
 
 Uygulama (kod) bu satırın kapsamında değil. Sıradaki iş A049.
+
+### A049 — eğitim yılı geçişi, 22 Ekim
+
+Durum: KOD TAMAM, merge edildi (PR #322). Canlı doğrulama dağıtımdan sonra (K002).
+
+Doğrulamada bulunan ve düzeltilen hatalar:
+- Geçişten sonra eski kayıt ACTIVE kalıyordu; öğrenci aynı anda iki sınıfta görünüyordu (ör. yazılı puanlamada hem 7. hem 8. sınıf listesinde).
+- Ortaokulun 8. sınıf öğrencileri aynı kurumda "9. sınıfa" taşınıyordu; son sınıf kavramı yoktu.
+- Yeni eğitim yılı serbest metindi; doğrulanmıyordu.
+- Kaynak sezonun kuruma ait olup olmadığı açıkça denetlenmiyordu.
+
+Yeni davranış:
+- Kaynak sezon kurumun aktif sezonu olmalı ve yeni yıl tam olarak bir sonraki yıl olmalı.
+- Kurumun son sınıfı açıkça seçilir; o sınıftaki öğrenciler mezun (GRADUATED) olur.
+- Terfi eden öğrenci aynı kimlikle yeni sezonda bir üst sınıfa kaydolur, şubesi korunur; eski kaydı arşivlenir (ARCHIVED).
+- Sınıfı belirsiz öğrenci tahmin edilmez: eski sezon o öğrenci yerleştirilene kadar açık kalır. Belirsiz öğrenci yoksa eski sezon kapanır (CLOSED). İkinci kez çalıştırılırsa reddedilir.
+- Eski sonuçlar eski sezon ve sınıfında kalır; öğrenci eski sonucunu görmeye devam eder.
+- Yeni sezona lisans kaydı açılmaz; bu ayrı kabul edilmiş kapsam gerektirir. Ekranda bu not gösterilir.
+
+Kanıt:
+- `tests/a049-season-rollover.test.ts` (3 test).
+- Mutasyon kontrolü: aşağıdaki 4 değişikliğin her biri testlerce yakalandı:
+  - mezuniyeti kaldırmak;
+  - eski kaydı aktif bırakmak;
+  - herhangi bir sonraki yılı kabul etmek;
+  - belirsiz öğrenci varken eski sezonu kapatmak.
+- Tam paket 271 dosya / 1.315 test geçti.
+
+Sonraki iş: A050.
