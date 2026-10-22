@@ -914,7 +914,7 @@ PR #309 ile yapılanlar:
 
 Kapanış için: gerçek basılı deneme optiğinin telefonla okunması elle (K002). Optiğin Phobos'ta kamera geometrisi tanımlı olmalı.
 
-### A037 — ortak yazılı resmî senaryo girişi, 22 Ekim 18:45–19:20
+### A037 — ortak yazılı resmî senaryo girişi, 22 Ekim (19:15'ten önce bitti)
 
 Durum: KOD TAMAM, merge edildi (PR #310, `4b18489`). Canlıda doğrulama dağıtımdan sonra (K002).
 
@@ -949,7 +949,7 @@ Sınır: tablo satırları resmî belgeden elle girilir. Otomatik PDF aktarımı
 
 Sonraki iş: A038.
 
-### A038 — açık uçlu soru üretimi, 22 Ekim 19:20–20:05
+### A038 — açık uçlu soru üretimi, 22 Ekim (19:15 sonrası)
 
 Durum: KOD TAMAM, merge edildi (PR #311, `eb0e839`). Canlıda üretim, ajanlar yeniden açılınca ve dağıtımdan sonra denenecek (şu an D1 bütçesi nedeniyle kapalı; K002).
 
@@ -982,7 +982,7 @@ Kanıt:
 
 Sonraki iş: A039.
 
-### A039 — analitik rubrik kaydı, 22 Ekim 20:05–20:45
+### A039 — analitik rubrik kaydı, 22 Ekim (A038'den sonra)
 
 Durum: KOD TAMAM, merge edildi (PR #312). Canlı doğrulama dağıtımdan sonra (K002).
 
@@ -1008,7 +1008,7 @@ Kanıt:
 
 Sonraki iş: A040.
 
-### A040 — yazılı sınav kâğıdı, 22 Ekim 20:45–21:40
+### A040 — yazılı sınav kâğıdı, 22 Ekim (20:19'da merge edildi)
 
 Durum: KOD TAMAM, merge edildi (PR #313). Canlı doğrulama ve gerçek kâğıt baskısı dağıtımdan sonra (K002).
 
@@ -1048,3 +1048,5 @@ Kanıt:
 Sınır: Word/PDF dosyası yerine tarayıcıdan yazdırılan sayfa üretildi; PDF/Word aktarımı onaysız eklenmedi.
 
 Sonraki iş: A041.
+
+> Düzeltme (22 Ekim 20:20): A037–A040 başlıklarındaki saat aralıkları saate bakılmadan yazılmıştı ve yanlıştı (ör. "21:40"). Gerçek saat bilinmediği için kesin aralıklar kaldırıldı.
