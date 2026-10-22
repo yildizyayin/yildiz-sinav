@@ -1,7 +1,7 @@
 import type { AuthUser,Env } from '../types';
 import { all,audit,badRequest,forbidden,json,notFound,one,uuid } from './db';
 import { decodeUploadedBytes,parseUploadedText,parseWithTemplate,type ParserTemplate } from './parse';
-import { counselorDecision,counselorQueue,guidanceInstrumentForMessage,listGuidanceInstruments,scoreGuidanceResponses,myGuidanceSessions,proposeGuidanceAssessment,reviewGuidanceAssessment,reviewedGuidanceDevelopmentContext,submitGuidanceAssessment } from './guidance-assessments';
+import { counselorAssignGuidanceAssessment,counselorDecision,counselorQueue,guidanceInstrumentForMessage,listGuidanceInstruments,scoreGuidanceResponses,myGuidanceSessions,proposeGuidanceAssessment,reviewGuidanceAssessment,reviewedGuidanceDevelopmentContext,submitGuidanceAssessment } from './guidance-assessments';
 
 
 function guidanceAdminAllowed(user:AuthUser){return user.role==='SUPER_ADMIN'||user.role==='INSTITUTION_MANAGER';}
@@ -82,6 +82,7 @@ export async function handleGuidanceAssessmentApi(request:Request,env:Env,user:A
   if(user.role!=='STUDENT'||!user.student_id)return forbidden('Rehberlik testi önerisi öğrenci hesabına açıktır.');const body:any=await request.json().catch(()=>({}));const code=String(body.instrumentCode||'').trim();if(!code)return badRequest('instrumentCode zorunludur.');const result=await proposeGuidanceAssessment(env,user,code,body.reason||'Öğrenci Nibiru üzerinden rehberlik değerlendirmesi istedi.',body.evidence);return result.ok?json({ok:true,reused:result.reused,session:result.session,message:'Öneri gerçek rehber öğretmenin onay kuyruğuna gönderildi.'},result.reused?200:201):result.response;
  }
  if(path==='/api/nibiru/guidance/assessments/counselor-queue'&&request.method==='GET')return counselorQueue(env,user);
+ if(path==='/api/nibiru/guidance/assessments/counselor-assign'&&request.method==='POST')return counselorAssignGuidanceAssessment(request,env,user);
  if(path==='/api/nibiru/guidance/development-profile'&&request.method==='GET'){
   if(user.role!=='STUDENT'||!user.student_id)return forbidden('Gelişim profili öğrenci hesabına açıktır.');return json({ok:true,development:await reviewedGuidanceDevelopmentContext(env,user.student_id),policy:'Yalnız gerçek rehber öğretmen tarafından incelenmiş sonuçlar kullanılır.'});
  }

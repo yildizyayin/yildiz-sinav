@@ -8,6 +8,7 @@ import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
 import { hydrateQuestionMedia } from './question-content';
 import { normalizeQuestionOrigin,isAiQuestionOrigin,validMultipleChoiceQuestion } from './question-review';
 import { recordAssessmentRun } from './assessment-ledger';
+import { counselorCanAccess } from './guidance-assessments';
 import { submitHomeworkAnswers } from './homework';
 import { decideBooklet, decideReplace, evaluateSheet } from './studio-optical-submit';
 import { renderStudioAnswerKey, renderStudioPdf, STUDIO_OPTICAL_CAPACITY, StudioPrintError, type StudioBranding } from './studio-pdf';
@@ -650,18 +651,16 @@ async function listRecovery(request:Request,env:Env,user:AuthUser):Promise<Respo
   const gate=await requireFeature(env,user,'RECOVERY');if(gate)return gate; const u=new URL(request.url);const sid=await scopedStudentId(env,user,u.searchParams.get('studentId'));if(!sid)return forbidden(); const rows=await all<any>(env.DB.prepare(`SELECT p.*,(SELECT COUNT(*) FROM recovery_steps s WHERE s.plan_id=p.id) step_count,(SELECT COUNT(*) FROM recovery_steps s WHERE s.plan_id=p.id AND s.status='DONE') done_count FROM recovery_plans p WHERE p.student_id=? ORDER BY p.created_at DESC LIMIT 100`).bind(sid));return json({ok:true,plans:rows});
 }
 
-function rbaScore(responses:any){const values=Object.values(responses||{}).map(Number).filter(Number.isFinite).map(v=>Math.max(1,Math.min(5,v)));const avg=values.length?values.reduce((a,b)=>a+b,0)/values.length:0;const normalized=avg?Math.round((avg/5)*100):null;return {normalized,items:values.length};}
 
 async function rba(request:Request,env:Env,user:AuthUser):Promise<Response>{
-  const gate=await requireFeature(env,user,'RBA');if(gate)return gate; const u=new URL(request.url); const sid=await scopedStudentId(env,user,u.searchParams.get('studentId'));if(!sid)return forbidden();
+  const gate=await requireFeature(env,user,'RBA');if(gate)return gate; const u=new URL(request.url);
+  // A064: RBA results are sensitive. Only counsellor-reviewed assessments write the profile (no self-report or
+  // proxy writes), and only the student, the student's guidance teacher and the Super Admin read it.
+  if(request.method!=='GET')return json({ok:false,error:{code:'RBA_SELF_REPORT_RETIRED',message:'RBA rehber öğretmenin onayladığı test akışıyla yapılır (Rehberlik Değerlendirmeleri).'}},410);
+  const sid=user.role==='STUDENT'?user.student_id:u.searchParams.get('studentId');if(!sid)return forbidden();
+  if(!(user.role==='STUDENT'||user.role==='SUPER_ADMIN'||(user.role==='GUIDANCE_TEACHER'&&await counselorCanAccess(env,user,sid))))return forbidden('RBA profili yalnız öğrenciye ve rehber öğretmenine açıktır.');
   if(request.method==='GET'){const p=await one<any>(env.DB.prepare(`SELECT * FROM rba_profiles WHERE student_id=?`).bind(sid));return json({ok:true,profile:p?{...p,evidence:parseJson(p.evidence_json,{})}:null,disclaimer:'RBA eğitsel öğrenme davranışı profilidir; psikolojik veya tıbbi tanı değildir.'});}
-  const b=await requestBody(request);const dimensions=b.dimensions||{};const calc=(x:any)=>rbaScore(x).normalized;const result={analytical:calc(dimensions.analytical),verbal:calc(dimensions.verbal),numeric:calc(dimensions.numeric),consistency:calc(dimensions.consistency),errorRepetition:calc(dimensions.errorRepetition),pace:calc(dimensions.pace),planAdherence:calc(dimensions.planAdherence),persistence:calc(dimensions.persistence),stability:calc(dimensions.stability)};
-  await env.DB.batch([
-    env.DB.prepare(`INSERT INTO rba_assessments(id,student_id,instrument_version,response_json,result_json) VALUES(?,?,?,?,?)`).bind(uuid('rba'),sid,b.version||'RBA-1',JSON.stringify(b),JSON.stringify(result)),
-    env.DB.prepare(`INSERT INTO rba_profiles(student_id,analytical_score,verbal_processing_score,numeric_processing_score,consistency_score,error_repetition_score,pace_score,plan_adherence_score,persistence_score,performance_stability_score,confidence,evidence_json,updated_at)
-      VALUES(?,?,?,?,?,?,?,?,?,?,?, ?,CURRENT_TIMESTAMP) ON CONFLICT(student_id) DO UPDATE SET version=version+1,analytical_score=excluded.analytical_score,verbal_processing_score=excluded.verbal_processing_score,numeric_processing_score=excluded.numeric_processing_score,consistency_score=excluded.consistency_score,error_repetition_score=excluded.error_repetition_score,pace_score=excluded.pace_score,plan_adherence_score=excluded.plan_adherence_score,persistence_score=excluded.persistence_score,performance_stability_score=excluded.performance_stability_score,confidence=excluded.confidence,evidence_json=excluded.evidence_json,updated_at=CURRENT_TIMESTAMP`)
-      .bind(sid,result.analytical,result.verbal,result.numeric,result.consistency,result.errorRepetition,result.pace,result.planAdherence,result.persistence,result.stability,.6,JSON.stringify({source:'SELF_REPORT',items:Object.keys(dimensions).length})),
-  ]);return json({ok:true,result,disclaimer:'Bu sonuç eğitsel farkındalık içindir; tanı değildir.'});
+  return forbidden();
 }
 
 async function membership(request:Request,env:Env,user:AuthUser):Promise<Response>{

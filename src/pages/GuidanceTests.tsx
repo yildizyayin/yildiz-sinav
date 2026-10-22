@@ -26,11 +26,22 @@ function StudentGuidance(){
  </>;
 }
 
+/** A064: the guidance teacher opens a test for a student of their class. */
+function CounselorAssign({onDone}:{onDone:()=>void}){
+ const[students,setStudents]=useState<any[]>([]);const[instruments,setInstruments]=useState<any[]>([]);const[sid,setSid]=useState('');const[code,setCode]=useState('');const[msg,setMsg]=useState('');const[err,setErr]=useState('');
+ useEffect(()=>{Promise.all([api<any>('/api/guidance-report'),api<any>('/api/nibiru/guidance/instruments')]).then(([r,i])=>{setStudents(r.students||[]);setInstruments(i.instruments||[])}).catch(e=>setErr(e.message))},[]);
+ const assign=async()=>{try{setErr('');const r=await api<any>('/api/nibiru/guidance/assessments/counselor-assign',{method:'POST',body:JSON.stringify({studentId:sid,instrumentCode:code})});setMsg(r.reused?'Bu öğrencinin bu testte açık bir oturumu zaten var.':'Test öğrenciye açıldı.');onDone()}catch(e:any){setErr(e.message)}};
+ return <div className="panel" style={{marginBottom:16}}><h2>Öğrenciye test aç</h2>{err&&<div className="alert error">{err}</div>}{msg&&<div className="alert success">{msg}</div>}
+  <select value={sid} onChange={e=>setSid(e.target.value)}><option value="">Öğrenci seçin</option>{students.map(s=><option key={s.id} value={s.id}>{s.class_name||''} · {s.first_name} {s.last_name}</option>)}</select>
+  <select value={code} onChange={e=>setCode(e.target.value)}><option value="">Test seçin</option>{instruments.map(i=><option key={i.code} value={i.code}>{i.title}</option>)}</select>
+  <button className="primary" disabled={!sid||!code} onClick={()=>void assign()}>Testi aç</button></div>;
+}
+
 function CounselorGuidance(){
  const [rows,setRows]=useState<any[]>([]);const [notes,setNotes]=useState<Record<string,string>>({});const [busy,setBusy]=useState('');const [error,setError]=useState('');const [notice,setNotice]=useState('');
  const load=async()=>{setError('');const r=await api<any>('/api/nibiru/guidance/assessments/counselor-queue');setRows(r.sessions||[])};useEffect(()=>{void load().catch(e=>setError(e.message))},[]);
  const act=async(row:any,op:'approve'|'reject'|'review')=>{try{setBusy(row.id+op);setError('');const r=await api<any>(`/api/nibiru/guidance/assessments/${encodeURIComponent(row.id)}/${op}`,{method:'PATCH',body:JSON.stringify({note:notes[row.id]||''})});setNotice(op==='approve'?'Test öğrenciye açıldı.':op==='reject'?'Öneri reddedildi.':r.summary||'Sonuç gelişim profiline kabul edildi.');await load()}catch(e:any){setError(e.message)}finally{setBusy('')}};
- return <>{notice&&<div className="alert success">{notice}</div>}{error&&<div className="alert error">{error}</div>}<div className="alert warning"><ShieldCheck size={18}/><div><strong>İnsan onayı kapısı</strong><div>Nibiru yalnız önerir. Öğrenciye testi açma ve gönderilen sonucu gelişim profiline kabul etme kararı atandığı gerçek rehber öğretmendedir.</div></div></div>
+ return <><CounselorAssign onDone={()=>void load()}/>{notice&&<div className="alert success">{notice}</div>}{error&&<div className="alert error">{error}</div>}<div className="alert warning"><ShieldCheck size={18}/><div><strong>İnsan onayı kapısı</strong><div>Nibiru yalnız önerir. Öğrenciye testi açma ve gönderilen sonucu gelişim profiline kabul etme kararı atandığı gerçek rehber öğretmendedir.</div></div></div>
   {rows.length===0&&<div className="panel"><h2>Onay kuyruğu boş</h2><p>Bekleyen rehberlik değerlendirmesi bulunmuyor.</p></div>}
   {rows.map(r=><div className="panel" key={r.id} style={{marginBottom:16}}><div className="page-head" style={{marginBottom:10}}><div><span className="eyebrow">{r.class_name||'Sınıf'} · {r.category}</span><h2>{r.first_name} {r.last_name}</h2><p>{r.title} · {STATUS[r.status]||r.status}</p></div><ClipboardCheck size={28}/></div><p>{r.proposal_reason}</p>
    {r.status==='SUBMITTED'&&r.scored_result?.dimensions&&<div className="stat-grid" style={{margin:'12px 0'}}>{Object.entries(r.scored_result.dimensions).map(([key,value])=><div className="stat-card" key={key}><span>{key.replaceAll('_',' ')}</span><strong>{Math.round(Number(value))}/100</strong></div>)}</div>}
