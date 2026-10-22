@@ -28,7 +28,7 @@ function instrumentSummary(title:string,result:ScoreResult){
 
 async function enrollment(env:Env,studentId:string){return one<any>(env.DB.prepare(`SELECT e.*,c.name class_name FROM student_enrollments e LEFT JOIN classes c ON c.id=e.class_id WHERE e.student_id=? AND e.status IN ('ACTIVE','GRADUATED') ORDER BY CASE e.status WHEN 'ACTIVE' THEN 0 ELSE 1 END,e.created_at DESC LIMIT 1`).bind(studentId))}
 
-async function counselorCanAccess(env:Env,user:AuthUser,studentId:string){
+export async function counselorCanAccess(env:Env,user:AuthUser,studentId:string){
  if(user.role!=='GUIDANCE_TEACHER'||!user.institution_id)return false;const enr=await enrollment(env,studentId);if(!enr||enr.institution_id!==user.institution_id)return false;
  return Boolean(await one(env.DB.prepare(`SELECT 1 FROM teacher_assignments WHERE user_id=? AND institution_id=? AND assignment_type='GUIDANCE' AND active=1 AND (class_id=? OR class_id IS NULL) LIMIT 1`).bind(user.id,user.institution_id,enr.class_id)));
 }
@@ -49,6 +49,21 @@ export async function proposeGuidanceAssessment(env:Env,user:AuthUser,code:strin
  const id=uuid('gas');await env.DB.prepare(`INSERT INTO guidance_assessment_sessions(id,institution_id,student_id,instrument_id,proposed_by,proposed_by_user_id,proposal_reason,proposal_evidence_json,status) VALUES(?,?,?,?,'NIBIRU',?,?,?,'PROPOSED')`).bind(id,enr.institution_id,user.student_id,instrument.id,user.id,String(reason||'Nibiru rehberlik önerisi').slice(0,1000),evidence?JSON.stringify(evidence):null).run();
  await audit(env.DB,user.id,enr.institution_id,'GUIDANCE_ASSESSMENT_PROPOSED','guidance_assessment',id,{instrument:instrument.code,source:'NIBIRU'});
  return {ok:true as const,reused:false,session:await sessionById(env,id)};
+}
+
+/** A064: the guidance teacher opens a test for a student of their class directly (no student proposal needed). */
+export async function counselorAssignGuidanceAssessment(request:Request,env:Env,user:AuthUser){
+ const body:any=await request.json().catch(()=>({}));const studentId=String(body.studentId||'').trim(),code=String(body.instrumentCode||'').trim();
+ if(!studentId||!code)return badRequest('Öğrenci ve test seçilmelidir.');
+ if(!await counselorCanAccess(env,user,studentId))return forbidden('Bu öğrenciye rehberlik testi açma yetkiniz yok.');
+ const instrument=await instrumentByCode(env,code);if(!instrument)return notFound('Seçilen rehberlik aracı bulunamadı.');
+ const enr=await enrollment(env,studentId);
+ const open=await one<any>(env.DB.prepare(`SELECT id FROM guidance_assessment_sessions WHERE student_id=? AND instrument_id=? AND status IN ('PROPOSED','APPROVED','IN_PROGRESS','SUBMITTED') LIMIT 1`).bind(studentId,instrument.id));
+ if(open)return json({ok:true,reused:true,session:await sessionById(env,open.id)});
+ const id=uuid('gas');const note=String(body.note||'').slice(0,1000)||null;
+ await env.DB.prepare(`INSERT INTO guidance_assessment_sessions(id,institution_id,student_id,instrument_id,proposed_by,proposed_by_user_id,proposal_reason,status,approved_by,approved_at,approval_note) VALUES(?,?,?,?,'GUIDANCE_TEACHER',?,?,'APPROVED',?,CURRENT_TIMESTAMP,?)`).bind(id,enr.institution_id,studentId,instrument.id,user.id,note||'Rehber öğretmen tarafından açıldı.',user.id,note).run();
+ await audit(env.DB,user.id,enr.institution_id,'GUIDANCE_ASSESSMENT_ASSIGNED','guidance_assessment',id,{instrument:instrument.code});
+ return json({ok:true,reused:false,session:await sessionById(env,id)},201);
 }
 
 export async function myGuidanceSessions(env:Env,user:AuthUser){
