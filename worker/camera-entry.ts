@@ -137,12 +137,43 @@ async function acceptCameraIssues(env:Env,user:AuthUser,batchId:string,recordId:
  if(!canEvaluateExam(user.role))return forbidden();const batch=await one<any>(env.DB.prepare(`SELECT * FROM scan_batches WHERE id=? AND source_type='CAMERA'`).bind(batchId));if(!batch)return notFound();const scope=await assertInstitutionScope(env,user,batch.institution_id);if(scope.response)return scope.response;const row=await one<any>(env.DB.prepare('SELECT match_status,issues_json,canonical_json FROM scan_records WHERE id=? AND batch_id=?').bind(recordId,batchId));if(!row)return notFound();if(['AMBIGUOUS','INVALID'].includes(row.match_status))return badRequest('Önce öğrenci kimliğini düzeltin.');const issues=JSON.parse(row.issues_json||'[]') as string[];if(issues.some(x=>String(x).startsWith('KRİTİK:')))return badRequest('Kritik kamera hatası kabul edilerek geçilemez. Şablon veya kayıt düzeltilmelidir.','CAMERA_CRITICAL_ISSUE',issues);const canonical=JSON.parse(row.canonical_json);canonical.issues=[];await env.DB.prepare(`UPDATE scan_records SET canonical_json=?,issues_json='[]' WHERE id=? AND batch_id=?`).bind(JSON.stringify({...canonical,tckn:undefined}),recordId,batchId).run();await refreshBatchStatus(env,batchId);return json({ok:true});
 }
 
+/**
+ * A036: an ambiguous or faint bubble read by the phone is a "N. soruda …" issue on that subject. The person
+ * looking at the sheet sets the answer (or blank) for exactly that question; the reading is otherwise kept,
+ * the issue for that question disappears and the decision is audited with the value before and after.
+ */
+export const answerIssue=(issue:string)=>{const m=/^([A-Z0-9_]+): (\d+)\. soruda /.exec(String(issue));return m?{code:m[1],question:Number(m[2])}:null};
+async function correctCameraAnswer(request:Request,env:Env,user:AuthUser,batchId:string,recordId:string):Promise<Response>{
+ if(!canEvaluateExam(user.role))return forbidden();
+ const batch=await one<any>(env.DB.prepare(`SELECT * FROM scan_batches WHERE id=? AND source_type='CAMERA'`).bind(batchId));if(!batch)return notFound('Kamera batch bulunamadı.');
+ const scope=await assertInstitutionScope(env,user,batch.institution_id);if(scope.response)return scope.response;
+ if(batch.status==='COMMITTED')return badRequest('Değerlendirilmiş kayıt değiştirilemez.','BATCH_COMMITTED');
+ const row=await one<any>(env.DB.prepare('SELECT * FROM scan_records WHERE id=? AND batch_id=?').bind(recordId,batchId));if(!row)return notFound('Kamera kaydı bulunamadı.');
+ const body=await request.json<{subjectCode?:string;questionNo?:number;answer?:string}>().catch(()=>({} as any));
+ const code=String(body.subjectCode||'').toUpperCase(),q=Number(body.questionNo),answer=String(body.answer??'').toUpperCase();
+ if(!/^[A-E]?$/.test(answer))return badRequest('Cevap A–E ya da boş olmalıdır.');
+ const canonical=JSON.parse(row.canonical_json) as CanonicalRecord;const seq=canonical.answers_by_subject?.[code];
+ if(typeof seq!=='string'||!Number.isInteger(q)||q<1||q>seq.length)return badRequest('Ders veya soru numarası bu optikte yok.');
+ const subject=await one<any>(env.DB.prepare(`SELECT es.option_count FROM exam_subjects es JOIN subjects su ON su.id=es.subject_id WHERE es.exam_id=? AND upper(su.code)=?`).bind(batch.exam_id,code));
+ if(answer&&subject&&'ABCDE'.indexOf(answer)>=Number(subject.option_count||5))return badRequest(`Bu derste ${subject.option_count} şık var.`,'OPTION_OUT_OF_RANGE');
+ const before=seq[q-1];const next=seq.slice(0,q-1)+(answer||'_')+seq.slice(q);
+ const sameQuestion=(x:string)=>{const a=answerIssue(x);return !!a&&a.code===code&&a.question===q};
+ canonical.answers_by_subject={...canonical.answers_by_subject,[code]:next};canonical.issues=(canonical.issues||[]).filter(x=>!sameQuestion(x));
+ const issues=(JSON.parse(row.issues_json||'[]') as string[]).filter(x=>!sameQuestion(x));
+ const resolved=!issues.length&&['ACTIVE_MATCH','GUEST_MATCH'].includes(row.match_status);
+ await env.DB.prepare(`UPDATE scan_records SET canonical_json=?,issues_json=?,resolution_status=? WHERE id=? AND batch_id=?`).bind(JSON.stringify({...canonical,tckn:undefined}),JSON.stringify(issues),resolved?'RESOLVED':(row.resolution_status||'PENDING'),recordId,batchId).run();
+ await refreshBatchStatus(env,batchId);
+ await audit(env.DB,user.id,batch.institution_id,'CAMERA_ANSWER_CORRECTED','scan_record',recordId,{batchId,subjectCode:code,questionNo:q,before:before==='_'?null:before,after:answer||null});
+ return json({ok:true,subjectCode:code,questionNo:q,answer:answer||null,remainingIssues:issues});
+}
+
 async function refreshBatchStatus(env:Env,batchId:string){const p=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND (match_status IN ('AMBIGUOUS','INVALID') OR issues_json!='[]')`).bind(batchId));await env.DB.prepare('UPDATE scan_batches SET status=? WHERE id=?').bind((p?.c||0)>0?'NEEDS_REVIEW':'READY',batchId).run()}
 
 export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);try{
  if(url.pathname==='/api/camera/templates'&&request.method==='GET'){const u=await auth(env,request);if(u instanceof Response)return u;return listCameraTemplates(env,u,url)}
  const preview=url.pathname.match(/^\/api\/exams\/([^/]+)\/camera-preview$/);if(preview&&request.method==='POST'){const u=await auth(env,request);if(u instanceof Response)return u;return cameraPreview(request,env,u,preview[1])}
  const identity=url.pathname.match(/^\/api\/camera\/scan-batches\/([^/]+)\/records\/([^/]+)\/identity$/);if(identity&&request.method==='POST'){const u=await auth(env,request);if(u instanceof Response)return u;return patchCameraIdentity(request,env,u,identity[1],identity[2])}
+ const answerFix=url.pathname.match(/^\/api\/camera\/scan-batches\/([^/]+)\/records\/([^/]+)\/answer$/);if(answerFix&&request.method==='POST'){const u=await auth(env,request);if(u instanceof Response)return u;return correctCameraAnswer(request,env,u,answerFix[1],answerFix[2])}
  const accept=url.pathname.match(/^\/api\/camera\/scan-batches\/([^/]+)\/records\/([^/]+)\/accept$/);if(accept&&request.method==='POST'){const u=await auth(env,request);if(u instanceof Response)return u;return acceptCameraIssues(env,u,accept[1],accept[2])}
  return reportingApp.fetch(request,env);
  }catch(e){console.error('Camera runtime error',e);return err(500,'CAMERA_SERVER_ERROR','Kamera kaydı işlenirken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;

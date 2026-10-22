@@ -19,3 +19,8 @@ button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}button:fo
 /* A028b: what the file contained (forms, sessions joined, tests not in this file) */
 .file-notes { margin: 6px 0 0; padding-left: 18px; font-size: 13px; color: var(--muted, #5b6472); }
 .file-notes li + li { margin-top: 2px; }
+
+/* A036: per-question correction of ambiguous camera marks */
+.camera-answer-fixes { display: grid; gap: 6px; margin: 8px 0; }
+.camera-answer-fix { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.camera-answer-fix [role="group"] { display: flex; gap: 4px; }
