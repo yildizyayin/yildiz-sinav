@@ -8,6 +8,7 @@ import { legacyDifficulty, normalizeDifficultyLevel } from './question-bank';
 import { hydrateQuestionMedia } from './question-content';
 import { normalizeQuestionOrigin,isAiQuestionOrigin,validMultipleChoiceQuestion } from './question-review';
 import { recordAssessmentRun } from './assessment-ledger';
+import { submitHomeworkAnswers } from './homework';
 import { decideBooklet, decideReplace, evaluateSheet } from './studio-optical-submit';
 import { renderStudioAnswerKey, renderStudioPdf, STUDIO_OPTICAL_CAPACITY, StudioPrintError, type StudioBranding } from './studio-pdf';
 import { REPORT_SNAPSHOT_SQL } from './report-snapshot';
@@ -617,7 +618,7 @@ async function addLearningEvidence(request:Request,env:Env,user:AuthUser):Promis
 async function listAssignments(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const u=new URL(request.url); const sid=await scopedStudentId(env,user,u.searchParams.get('studentId'));
   if(user.role==='STUDENT'||user.role==='PARENT'){
-    if(!sid)return forbidden(); const rows=await all<any>(env.DB.prepare(`SELECT a.*,ar.status recipient_status,ar.progress,ar.completed_at FROM assignment_recipients ar JOIN assignments a ON a.id=ar.assignment_id WHERE ar.student_id=? ORDER BY a.created_at DESC LIMIT 200`).bind(sid));return json({ok:true,assignments:rows});
+    if(!sid)return forbidden(); const rows=await all<any>(env.DB.prepare(`SELECT a.*,ar.status recipient_status,ar.progress,ar.completed_at FROM assignment_recipients ar JOIN assignments a ON a.id=ar.assignment_id WHERE ar.student_id=? AND a.status IN ('ASSIGNED','CLOSED') ORDER BY a.created_at DESC LIMIT 200`).bind(sid));return json({ok:true,assignments:rows});
   }
   if(!user.institution_id&&user.role!=='SUPER_ADMIN')return forbidden(); const inst=userInstitution(user,u.searchParams.get('institutionId')); const rows=await all<any>(env.DB.prepare(`SELECT a.*,(SELECT COUNT(*) FROM assignment_recipients r WHERE r.assignment_id=a.id) recipient_count FROM assignments a WHERE (? IS NULL OR a.institution_id=?) ORDER BY a.created_at DESC LIMIT 200`).bind(inst,inst)); return json({ok:true,assignments:rows});
 }
@@ -630,7 +631,7 @@ async function createAssignment(request:Request,env:Env,user:AuthUser):Promise<R
     for(const studentId of recipients){const allowed=await one<any>(env.DB.prepare(`SELECT 1 ok FROM student_enrollments e WHERE e.student_id=? AND e.institution_id=? AND e.status='ACTIVE' AND EXISTS(SELECT 1 FROM teacher_assignments ta WHERE ta.user_id=? AND ta.institution_id=? AND ta.active=1 AND (ta.class_id IS NULL OR ta.class_id=e.class_id)) LIMIT 1`).bind(studentId,inst,user.id,inst));if(!allowed)return forbidden('Ödev alıcısı branş/sınıf yetkinizin dışında.');}
     for(const item of items.filter(x=>x.itemType==='QUESTION'&&x.referenceId)){const question=await one<any>(env.DB.prepare(`SELECT subject_id FROM question_bank WHERE id=? AND review_status='APPROVED'`).bind(item.referenceId));if(!question||!await teacherHasSubject(env,user,question.subject_id))return forbidden('Atanan soru branş yetkinizin dışında.');}
   }
-  const stmts=[env.DB.prepare(`INSERT INTO assignments(id,institution_id,season_id,created_by,assignment_type,title,description,due_at,status) VALUES(?,?,?,?,?,?,?,?,?)`).bind(id,inst,b.seasonId||null,user.id,assignmentType,String(b.title).trim(),b.description||null,b.dueAt||null,b.publish?'ASSIGNED':'DRAFT')];
+  const stmts=[env.DB.prepare(`INSERT INTO assignments(id,institution_id,season_id,created_by,assignment_type,title,description,due_at,status,answer_reveal) VALUES(?,?,?,?,?,?,?,?,?,?)`).bind(id,inst,b.seasonId||null,user.id,assignmentType,String(b.title).trim(),b.description||null,b.dueAt||null,b.publish?'ASSIGNED':'DRAFT',b.answerReveal==='AFTER_SUBMIT'?'AFTER_SUBMIT':'AFTER_DUE')];
   items.forEach((it,i)=>stmts.push(env.DB.prepare(`INSERT INTO assignment_items(id,assignment_id,item_type,reference_id,payload_json,sort_order) VALUES(?,?,?,?,?,?)`).bind(uuid('asi'),id,it.itemType||'TASK',it.referenceId||null,JSON.stringify(it.payload||{}),i+1)));
   recipients.forEach(sid=>stmts.push(env.DB.prepare(`INSERT OR IGNORE INTO assignment_recipients(assignment_id,student_id,status) VALUES(?,?,'ASSIGNED')`).bind(id,sid)));
   await env.DB.batch(stmts); return json({ok:true,id},201);
@@ -795,16 +796,8 @@ async function submitFoyAttempt(request:Request,env:Env,user:AuthUser):Promise<R
   const gate=await requireFeature(env,user,'LEARNING_GRAPH');if(gate)return gate;
   if(user.role!=='STUDENT'||!user.student_id)return forbidden('Föy çözümü yalnızca öğrenci hesabından gönderilebilir.');
   const b=await requestBody(request);const assignmentId=String(b.assignmentId||'').trim();if(!assignmentId)return badRequest('Föy ataması gereklidir.','ASSIGNMENT_REQUIRED');
-  const recipient=await one<any>(env.DB.prepare(`SELECT a.id,a.institution_id,a.title,ar.status FROM assignments a JOIN assignment_recipients ar ON ar.assignment_id=a.id WHERE a.id=? AND ar.student_id=? AND a.status='ASSIGNED'`).bind(assignmentId,user.student_id));
-  if(!recipient)return forbidden('Bu föy ataması size ait değil.');
-  // A054: the first submission is the foy's evidence; a resubmission would silently replace frozen evidence
-  if(await one(env.DB.prepare(`SELECT 1 FROM assessment_runs WHERE id=? AND status='SCORED'`).bind(`asr_foy_${assignmentId}_${user.student_id}`)))return json({ok:false,error:{code:'FOY_ALREADY_SUBMITTED',message:'Bu föyü zaten gönderdiniz; ilk gönderim değerlendirmede kullanılır.'}},409);
-  const items=await all<any>(env.DB.prepare(`SELECT ai.id,ai.item_type,ai.reference_id,q.correct_answer,q.options_json FROM assignment_items ai LEFT JOIN question_bank q ON q.id=ai.reference_id WHERE ai.assignment_id=? ORDER BY ai.sort_order`).bind(assignmentId));
-  const answers=(b.answers&&typeof b.answers==='object')?b.answers:{};const questionItems=items.filter(item=>item.item_type==='QUESTION'&&item.reference_id&&item.correct_answer);if(!questionItems.length)return badRequest('Bu föyde ölçülebilir soru bulunmuyor.','FOY_QUESTIONS_REQUIRED');
-  let correct=0;const responses:any[]=[];for(const item of questionItems){const answer=String(answers[item.reference_id]||'').trim().toUpperCase()||null;const ok=!!answer&&answer===String(item.correct_answer).toUpperCase();if(ok)correct++;responses.push({questionId:item.reference_id,selectedAnswer:answer,isCorrect:ok,sourceChannel:'DIGITAL'});await env.DB.prepare(`INSERT INTO assignment_attempts(id,assignment_id,student_id,item_id,answer_json,score) VALUES(?,?,?,?,?,?)`).bind(uuid('aat'),assignmentId,user.student_id,item.id,JSON.stringify({answer}),ok?1:0).run();}
-  const score=correct/questionItems.length;const runId=`asr_foy_${assignmentId}_${user.student_id}`;await recordAssessmentRun(env.DB,{id:runId,institutionId:recipient.institution_id,studentId:user.student_id,sourceType:'FOY',sourceId:assignmentId,assignmentId,deliveryMode:'DIGITAL',score,metadata:{title:recipient.title,questionCount:questionItems.length},responses});
-  await env.DB.prepare(`UPDATE assignment_recipients SET status='COMPLETED',progress=1,completed_at=CURRENT_TIMESTAMP WHERE assignment_id=? AND student_id=?`).bind(assignmentId,user.student_id).run();
-  await audit(env.DB,user.id,recipient.institution_id,'FOY_ASSESSMENT_SUBMITTED','assignment',assignmentId,{questionCount:questionItems.length,score});return json({ok:true,runId,score,correct,total:questionItems.length});
+  // A060: one implementation for online homework and this endpoint (first submission is the evidence, A054)
+  return submitHomeworkAnswers(env,user,assignmentId,(b.answers&&typeof b.answers==='object')?b.answers:{});
 }
 
 async function importExternalAssessment(request:Request,env:Env,user:AuthUser):Promise<Response>{
