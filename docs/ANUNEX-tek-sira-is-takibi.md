@@ -1641,3 +1641,43 @@ Kanıt:
 - Tam paket: 281 dosya / 1.336 test geçti.
 
 Sonraki iş: A062.
+
+### A062 — mini oyun öğrenme kaydı, 23 Ekim 02:11
+
+Durum: KOD TAMAM, merge edildi (PR #335).
+
+Zaten doğru olanlar:
+- Oyunlar çalışıyor: 5 hazır oyun, 5. ve 6. sınıf için.
+- Oyun puanı doğruluk hesabına zaten katılmıyordu.
+
+Kapatılan açıklar:
+- Veli, öğretmen ve yönetici bir öğrencinin adına oyun oturumu ve XP kaydedebiliyordu. Artık oturumu yalnız öğrencinin kendisi kaydedebiliyor.
+- İstemcinin gönderdiği `nodeId`, oyun kanıtını "kazanıma bağlı" gösterebiliyordu. Oysa oyun içeriği sunucuda bir kazanıma bağlı değil. Artık bu alan yok sayılıyor; oyun oturumu kazanım kanıtı sayılmıyor.
+- Oyunun gönderdiği ek veri 2 KB ile sınırlandı.
+
+Not: gerçek kazanım kanıtı için oyun içeriğinin sunucuda doğrulanan, kazanıma bağlı sorulara taşınması gerekiyor. Bu ayrı bir içerik işi.
+
+Kanıt:
+- `tests/a062-mini-games.test.ts`
+- 3 mutasyon denendi, hepsi yakalandı.
+- Tam paket 282 dosya / 1.337 test geçti.
+
+### A063 — panel takvimi, 23 Ekim 02:23
+
+Durum: KOD TAMAM, merge edildi (PR #336).
+
+Zaten doğru olanlar:
+- Takvim her rolün kendi kayıtlarını gösteriyor; bu `calendar-access-runtime` testleriyle doğrulanmış.
+- Sınav, ödev, föy, randevu ve görevler aynı görünümde.
+- Saat dilimi açıkça Europe/Istanbul.
+
+Düzeltilen eksikler:
+- Ödev teslim saati yanlış görünüyordu: yalnız tarih girilen bir ödev TR saatiyle 03:00'e düşüyordu. Artık yalnız tarih girilmişse o günün 23:59'u (TR) kullanılıyor. Saat dilimi verilmemiş değerler de TR saati sayılıyor.
+- Çakışmalar artık işaretleniyor ve ekranda uyarı çıkıyor. Teslim anları, saati belli olmayan kayıtlar ve uç uca gelen kayıtlar çakışma sayılmıyor.
+
+Kanıt:
+- `tests/a063-calendar.test.ts`
+- 4 mutasyon denendi, hepsi yakalandı.
+- Tam paket 283 dosya / 1.339 test geçti.
+
+Sonraki iş: A064.
