@@ -25,3 +25,20 @@ it('uses a compact searchable table with no planet hero',async()=>{await render(
 it('opens published outcome editing without reopening results and shows pending publication review',async()=>{await render('/exam-center/exam-1');expect(container.textContent).toContain('Sonuç yayını güncel değil');await act(async()=>button('Kazanımlar').click());expect(container.textContent).toContain('Kazanım eşleştirmeleri');expect(state.api.mock.calls.some(([path])=>path.endsWith('/outcome-catalog'))).toBe(true);expect(state.api.mock.calls.some(([,o])=>o?.method)).toBe(false);});
 it('moves an active exam to the explicit trash scope with a reversible endpoint',async()=>{await render('/exam-center/exam-1?action=trash');expect(container.querySelector('[role=dialog]')).not.toBeNull();const select=container.querySelector('[role=dialog] select') as HTMLSelectElement;await act(async()=>{select.value='BOTH';select.dispatchEvent(new Event('change',{bubbles:true}));});await act(async()=>button('Çöp kutusuna taşı').click());expect(state.api).toHaveBeenCalledWith('/api/admin/exams/exam-1/trash',{method:'POST',body:JSON.stringify({scope:'BOTH'})});expect(state.api.mock.calls.some(([,o])=>o?.method==='DELETE')).toBe(false);});
 it('does not offer channel or trash management to institution managers',async()=>{state.role='INSTITUTION_MANAGER';await render('/exam-center/exam-1?action=trash');expect(container.querySelector('[role=dialog]')).toBeNull();expect(container.querySelector('a[href^="/exam-channels"]')).toBeNull();expect(state.api.mock.calls.some(([path])=>path.includes('/api/admin/'))).toBe(false);});
+it('A032: status labels, closed and archive filters, and a hint when the app channel is down',async()=>{
+ state.api.mockImplementation(async(path:string)=>{
+  if(path.includes('/catalog?archived=1'))return {exams:[{...exam,id:'old',title:'Eski Deneme',status:'ARCHIVED',participant_count:3}]};
+  if(path.endsWith('/catalog'))return {exams:[{...exam,booklet_codes:'A',participant_count:45},{...exam,id:'c',title:'Kapanan Deneme',status:'CLOSED',participant_count:9,app_channel_status:'ARCHIVED'}]};
+  return {};
+ });
+ await render('/exam-center');
+ expect(container.textContent).toContain('Kapandı');expect(container.textContent).not.toContain('CLOSED');
+ expect(container.textContent).toContain('Kurumlara yayında değil');
+ const select=container.querySelector('select')!;
+ await act(async()=>{select.value='CLOSED';select.dispatchEvent(new Event('change',{bubbles:true}));});
+ expect(container.textContent).toContain('Kapanan Deneme');expect(container.textContent).not.toContain('TYT Deneme 1');
+ await act(async()=>{select.value='ARCHIVED';select.dispatchEvent(new Event('change',{bubbles:true}));});
+ expect(state.api.mock.calls.some(([path])=>path.endsWith('/catalog?archived=1'))).toBe(true);
+ expect(container.textContent).toContain('Eski Deneme');expect(container.textContent).toContain('Arşivde');
+ expect([...container.querySelectorAll('a')].some(a=>a.getAttribute('href')==='/exam-center/old')).toBe(true);
+});
