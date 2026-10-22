@@ -1411,3 +1411,37 @@ Dürüst not: mutasyonların ilk turu, test kurulumu hatalıyken koştu (sonuç 
 Sınır: planın veli tarafı API'de hazır, ama veli ana sayfasında ayrı bir kart yok. Canlı el testi K002'de yapılacak.
 
 Sonraki iş: A054.
+
+### A054 — seçilebilir birleşik karne, 23 Ekim 00:16
+
+Durum: KOD TAMAM, merge edildi (PR #327).
+
+İncelemede zaten çalışan kurallar:
+- Birleşik karne yalnız dondurulmuş veya yayımlanmış kanıtı birleştiriyor.
+- Eski ve bağlamsız kayıtlar kapsam dışında tutuluyor.
+- Mini oyun puanı doğruluğa katılmıyor.
+- Farklı program sürümleri ayrı gösteriliyor.
+
+Bulunan eksik 1: tekrar kuralı raporda açık değildi.
+- Düzeltme: her birleşik raporda `repeatPolicies` alanı eklendi. Bu alan her kaynak için ölçüyü, kuralı ve bir açıklamayı verir.
+- Kaynaklara göre kurallar:
+  - Sınav: yayımlanmış sonuç, sınav başına bir kez sayılır.
+  - Soru pratiği: seçilen ilk ya da son çözüm sayılır.
+  - Mini test: yalnız yeni soru mini testleri sayılır.
+  - Föy: ilk gönderim sayılır.
+  - Mini oyun: doğruluğa katılmaz; her oturum ayrı gösterilir.
+- Kurallar iki rapor ekranında da gösteriliyor.
+
+Bulunan eksik 2: föy kanıtı güvenilir değildi.
+- Sorun: `/api/platform/foy/attempts` aynı föyün yeniden gönderilmesine izin veriyordu. Yeni gönderim, dondurulmuş cevap kanıtını sessizce silip yeniden yazıyordu.
+- Düzeltme: föyün ilk gönderimi kanıt olarak kalır. Yeniden gönderim 409 `FOY_ALREADY_SUBMITTED` döner. Deneme kayıtları (assignment_attempts) ayrıca tutulmaya devam eder.
+- Not: bu uç şu an arayüzden çağrılmıyor. Föyün öğrenciye ulaşması A057'nin işi.
+
+Kanıt:
+- `tests/a054-combined-report.test.ts` (2 test). Föy testi gerçek şema ve production girişiyle çalışıyor.
+- 5 mutasyon denendi, hepsi yakalandı.
+- Tam paket 276 dosya / 1.325 test geçti.
+
+Karar notu: föy için "ilk gönderim sayılır" kuralını ben seçtim. Optik yüklemedeki "gerekçeyle değiştir" akışı gibi bir yeniden gönderim isterseniz, bu kural değiştirilebilir.
+
+Sonraki iş: A055.
