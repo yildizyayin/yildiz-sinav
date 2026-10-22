@@ -1,3 +1,4 @@
+import { publishedForLearnersSql } from './lib/exam-schedule';
 import { trashExam } from './lib/exam-channels';
 import { refreshExamOutcomeAnalysis } from './lib/exam-outcome-history';
 import { examOutcomeScope, scopedOutcomeCatalog, matchScopedOutcome } from './lib/exam-outcome-matching';
@@ -74,6 +75,10 @@ async function contentExam(env: Env, user: AuthUser, examId: string): Promise<an
   const exam = await one<any>(env.DB.prepare('SELECT * FROM exams WHERE id=?').bind(examId));
   if (!exam) return null;
   if (user.role === 'SUPER_ADMIN') return exam;
+  // A033: an exam removed from the app is closed to its institution; students and parents get its files
+  // (exam PDF, videos) only once its results are published to them, like every other result screen (A030).
+  if (await one(env.DB.prepare('SELECT 1 FROM exam_revision_state WHERE exam_id=? AND app_trashed_at IS NOT NULL').bind(examId))) return null;
+  if ((user.role === 'STUDENT' || user.role === 'PARENT') && !(await one(env.DB.prepare(`SELECT 1 WHERE ${publishedForLearnersSql('?')}`).bind(examId)))) return null;
   if (user.role === 'STUDENT') {
     return user.student_id && await one(env.DB.prepare('SELECT 1 FROM exam_participants WHERE exam_id=? AND student_id=?').bind(examId, user.student_id)) ? exam : null;
   }
@@ -113,9 +118,10 @@ function makeAnswerKeyPdf(title: string, publisher: string, booklet: string, row
 
 async function contentList(env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await contentExam(env, user, examId); if (!exam) return notFound('Bu sınav içeriğine erişilemiyor.');
+  // A033: staff also see what students see (the exam booklet); students and parents see only student files.
   const assetVisibility = user.role === 'SUPER_ADMIN' ? null : user.role === 'STUDENT' || user.role === 'PARENT' ? 'STUDENT' : 'INSTITUTION_TEACHER';
   const [assets, videos, opticalBindings, opticals] = await Promise.all([
-    all<any>(env.DB.prepare(`SELECT id,asset_type,booklet_code,file_name,mime_type,byte_size,version,status,visibility,metadata_json,created_at FROM exam_document_assets WHERE exam_id=? AND status='READY' AND (? IS NULL OR visibility IN (?, 'PUBLIC')) ORDER BY created_at DESC`).bind(examId, assetVisibility, assetVisibility)),
+    all<any>(env.DB.prepare(`SELECT id,asset_type,booklet_code,file_name,mime_type,byte_size,version,status,visibility,metadata_json,created_at FROM exam_document_assets WHERE exam_id=? AND status='READY' AND (? IS NULL OR visibility IN (?, 'STUDENT', 'PUBLIC')) ORDER BY created_at DESC`).bind(examId, assetVisibility, assetVisibility)),
     all<any>(env.DB.prepare(`SELECT id,exam_question_id,outcome_id,link_type,provider,url,title,description,status,publish_at,published_at,visibility,link_status,last_checked_at FROM video_links WHERE exam_id=? AND ((status='PUBLISHED' AND (publish_at IS NULL OR publish_at<=CURRENT_TIMESTAMP) AND visibility IN ('PUBLIC','STUDENT_TEACHER')) OR ? IN ('SUPER_ADMIN','INSTITUTION_MANAGER')) ORDER BY coalesce(published_at,publish_at,updated_at) DESC`).bind(examId, user.role)),
     all<any>(env.DB.prepare(`SELECT b.id,b.booklet_code,b.optical_template_version_id,b.input_modes_json,b.active,t.name template_name,t.vendor,v.version template_version,v.page_width_mm,v.page_height_mm FROM exam_optical_bindings b JOIN optical_template_versions v ON v.id=b.optical_template_version_id JOIN optical_templates t ON t.id=v.template_id WHERE b.exam_id=? AND b.active=1 ORDER BY b.booklet_code`).bind(examId)),
     ['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)
@@ -229,7 +235,9 @@ async function createExamVideo(request: Request, env: Env, user: AuthUser, examI
   if (body.examQuestionId && !(await one(env.DB.prepare('SELECT 1 FROM exam_questions WHERE id=? AND exam_id=?').bind(body.examQuestionId, examId)))) return badRequest('Video sorusu bu sınava ait değil.');
   if (body.outcomeId && !(await one(env.DB.prepare('SELECT 1 FROM outcomes o JOIN question_outcomes qo ON qo.outcome_id=o.id JOIN exam_questions q ON q.id=qo.exam_question_id WHERE o.id=? AND q.exam_id=?').bind(body.outcomeId, examId)))) return badRequest('Video kazanımı bu sınava ait değil.');
   let status: 'DRAFT' | 'SCHEDULED' | 'PUBLISHED' = 'DRAFT'; let publishAt: string | null = null; const mode = body.publishMode || 'DRAFT'; if (mode === 'NOW') status = 'PUBLISHED'; else if (mode === 'SCHEDULED') { const date = body.publishAt ? new Date(body.publishAt) : null; if (!date || Number.isNaN(date.getTime()) || date.getTime() <= Date.now()) return badRequest('Planlı yayın tarihi gelecekte olmalıdır.'); status = 'SCHEDULED'; publishAt = date.toISOString(); }
-  const id = uuid('vid'); await env.DB.prepare(`INSERT INTO video_links(id,exam_id,exam_question_id,outcome_id,link_type,provider,url,title,description,approved,status,publish_at,published_at,visibility,link_status,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,'UNKNOWN',CURRENT_TIMESTAMP)`).bind(id, examId, body.examQuestionId || null, body.outcomeId || null, linkType, 'EXTERNAL', url, title, body.description?.trim() || null, status === 'PUBLISHED' ? 1 : 0, status, publishAt, status === 'PUBLISHED' ? new Date().toISOString() : null, body.visibility || 'STUDENT_TEACHER').run();
+  // A033: the statement had one placeholder more than its columns, so adding any video failed (0124 also
+  // allows whole-exam EXAM videos and creates the description column).
+  const id = uuid('vid'); await env.DB.prepare(`INSERT INTO video_links(id,exam_id,exam_question_id,outcome_id,link_type,provider,url,title,description,approved,status,publish_at,published_at,visibility,link_status,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,'UNKNOWN',CURRENT_TIMESTAMP)`).bind(id, examId, body.examQuestionId || null, body.outcomeId || null, linkType, 'EXTERNAL', url, title, body.description?.trim() || null, status === 'PUBLISHED' ? 1 : 0, status, publishAt, status === 'PUBLISHED' ? new Date().toISOString() : null, body.visibility || 'STUDENT_TEACHER').run();
   await audit(env.DB, user.id, exam.institution_id, 'EXAM_VIDEO_CREATED', 'exam', examId, { videoId: id, linkType, status, publishAt }); return json({ ok: true, id, status }, 201);
 }
 
@@ -248,7 +256,7 @@ async function checkExamVideo(env: Env, user: AuthUser, examId: string, videoId:
 }
 
 async function downloadExamAsset(request: Request, env: Env, user: AuthUser, examId: string, assetId: string): Promise<Response> {
-  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Bu sınav arşivine erişilemiyor.'); const visibility = user.role === 'SUPER_ADMIN' ? null : user.role === 'STUDENT' || user.role === 'PARENT' ? 'STUDENT' : 'INSTITUTION_TEACHER'; const asset = await one<any>(env.DB.prepare(`SELECT * FROM exam_document_assets WHERE id=? AND exam_id=? AND status=? AND (? IS NULL OR visibility IN (?, 'PUBLIC'))`).bind(assetId, examId, 'READY', visibility, visibility)); if (!asset) return notFound('Arşiv belgesi bulunamadı.'); const object = await env.FILES.get(asset.r2_key); if (!object) return notFound('Arşiv dosyası depolamada bulunamadı.'); await audit(env.DB, user.id, exam.institution_id, 'EXAM_ARCHIVE_ASSET_DOWNLOADED', 'exam_document_asset', assetId, { assetType: asset.asset_type }); const headers = new Headers({ 'Content-Type': asset.mime_type, 'Content-Disposition': `attachment; filename="${safeAssetName(asset.file_name)}"`, 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' }); object.writeHttpMetadata(headers); return new Response(object.body, { headers });
+  const exam = await contentExam(env, user, examId); if (!exam) return notFound('Bu sınav arşivine erişilemiyor.'); const visibility = user.role === 'SUPER_ADMIN' ? null : user.role === 'STUDENT' || user.role === 'PARENT' ? 'STUDENT' : 'INSTITUTION_TEACHER'; const asset = await one<any>(env.DB.prepare(`SELECT * FROM exam_document_assets WHERE id=? AND exam_id=? AND status=? AND (? IS NULL OR visibility IN (?, 'STUDENT', 'PUBLIC'))`).bind(assetId, examId, 'READY', visibility, visibility)); if (!asset) return notFound('Arşiv belgesi bulunamadı.'); const object = await env.FILES.get(asset.r2_key); if (!object) return notFound('Arşiv dosyası depolamada bulunamadı.'); await audit(env.DB, user.id, exam.institution_id, 'EXAM_ARCHIVE_ASSET_DOWNLOADED', 'exam_document_asset', assetId, { assetType: asset.asset_type }); const headers = new Headers({ 'Content-Type': asset.mime_type, 'Content-Disposition': `attachment; filename="${safeAssetName(asset.file_name)}"`, 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' }); object.writeHttpMetadata(headers); return new Response(object.body, { headers });
 }
 
 export async function publishScheduledExamVideos(env: Env): Promise<void> {
