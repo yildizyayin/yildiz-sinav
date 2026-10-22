@@ -1,3 +1,4 @@
+import { handleInstitutionCard } from './lib/institution-card';
 import { sanitizeAuditDetails } from './lib/db';
 import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
 import { audit, badRequest, forbidden, json, methodNotAllowed, normalizeName, notFound, one, all, splitName, uuid } from './lib/db';
@@ -60,6 +61,8 @@ export default {
         if (request.method === 'POST') return createInstitution(request, env, user);
         return methodNotAllowed();
       }
+      const institutionCardMatch = url.pathname.match(/^\/api\/institutions\/([^/]+)$/);
+      if (institutionCardMatch) return handleInstitutionCard(request, env, user, institutionCardMatch[1]);
       const institutionStatusMatch = url.pathname.match(/^\/api\/institutions\/([^/]+)\/status$/);
       if (institutionStatusMatch) return request.method === 'POST' ? setInstitutionStatus(request, env, user, institutionStatusMatch[1]) : methodNotAllowed();
 
