@@ -1506,3 +1506,28 @@ Kanıt:
 Not: bu iki raporda arka plan PDF çıktısı yok. Sonuç PDF'leri ayrı bir akış (result artifacts); onların kendi saklama ve temizlik testleri var.
 
 Sonraki iş: A057.
+
+### A057 — 32 haftalık föy yayını, 23 Ekim 01:00
+
+Durum: **BEKLİYOR**. Bu iş içerik ve ürün kararı gerektiriyor.
+
+İncelemede bulunanlar:
+- Yazılım tarafında temel parçalar var:
+  - föy tablosu: yıl, program, sınıf, sayısal/sözel, sıra no, PDF ve cevap anahtarı dosyası;
+  - kazanım ve soru bağlantıları;
+  - Süper Admin föy yönetimi ve slot üretimi;
+  - sınıf bazlı hafta takvimi;
+  - yıllık içerik planı (hafta × ders × kazanım).
+- Öğrencinin bugün ne gördüğü:
+  - Sınıf düzeyindeki **bütün yayımlanmış** föyleri görüyor. Takvimde haftası gelmemiş föyler de buna dahil.
+  - Cevap anahtarı dosyası da aynı ekranda listeleniyor.
+- Föy cevaplarını çevrimiçi gönderme ucu (`/api/platform/foy/attempts`) arayüzden çağrılmıyor. Çevrimiçi çözme ekranı A060'ın işi.
+- Canlı veritabanında kaç föy olduğunu sayamadım. D1 ücretsiz günlük okuma kotası doldu; sayaç 03:00'te (TR) sıfırlanıyor.
+
+Kullanıcıya sorulanlar:
+1. Öncelikli sınıf hangisi?
+2. Föy PDF'leri hazır mı? Sisteme yükleme için onay var mı? (PDF içe aktarma onaysız yapılmaz.)
+3. Öğrenci föyü ne zaman görsün: takvimde haftası gelince mi, yoksa yayımlanan bütün seriyi mi?
+4. Cevap anahtarı öğrenciye ne zaman açılsın?
+
+Sonraki iş: A058 (A057 cevap bekliyor).
