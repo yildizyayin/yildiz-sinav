@@ -1366,3 +1366,23 @@ Kanıt:
 - Tam paket 273 dosya / 1.318 test geçti.
 
 Sonraki iş: A052.
+
+### A052 — kurum/zincir karnesi, 22 Ekim
+
+Durum: KOD TAMAM, merge edildi (PR #325).
+
+Doğrulananlar:
+- Kurum karnesinde sınıf gruplarının katılımcı toplamı, kurumun yayımlanmış anlık görüntüsüne eşit.
+- Ağırlıklı ortalama net, kurumun ortalamasına eşit.
+- Aynı sınavın zincir karşılaştırmasındaki okul satırı da aynı katılımcı sayısını ve aynı ortalamayı veriyor.
+- Kurum karnesini yalnız okul yöneticisi ve Süper Admin okur.
+- Geçersiz dönem 400 döner; yayımlanmamış sürüm özetlenmez.
+
+Düzeltme: zincir karşılaştırması (A044) yalnız dondurulmuş sonucu da kabul ediyordu. Bu durumda zincir merkezi bir okulun sonucunu, okul yöneticisi kendi karnesinde göremeden görebiliyordu. Artık iki taraf da yalnız yayımlanmış veriyi kullanıyor; A044 testi buna göre güncellendi.
+
+Kanıt:
+- `tests/a052-institution-network-report.test.ts` (2 test).
+- Mutasyon kontrolü: dondurulmuş sonuca yeniden izin vermek testlerce yakalandı.
+- Tam paket 274 dosya / 1.320 test geçti.
+
+Sonraki iş: A053.
