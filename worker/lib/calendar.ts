@@ -1,6 +1,7 @@
 import type { AuthUser, Env } from '../types';
 import { all, audit, badRequest, forbidden, json, methodNotAllowed, notFound, one, uuid } from './db';
 import { loadPermissionScope } from './permissions';
+import { dueMillis } from './homework';
 
 export const CALENDAR_KINDS=['LESSON','EXAM','HOMEWORK','WORKSHEET','MEETING','GUIDANCE','RBA','STUDY','REMINDER'] as const;
 export type CalendarEvent={id:string;institution_id:string|null;owner_user_id:string;scope:string;class_id:string|null;student_id:string|null;subject_id:string|null;kind:string;title:string;description:string|null;starts_at:string;ends_at:string;recurrence:string;repeat_until:string|null;reminder_minutes:number;status:string;revision:number};
@@ -54,6 +55,17 @@ export async function calendarOptions(env:Env,user:AuthUser){
  const students=['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role)?await all(env.DB.prepare(`SELECT DISTINCT s.id,s.first_name||' '||s.last_name name,se.institution_id FROM student_entities s JOIN student_enrollments se ON se.student_id=s.id WHERE s.status='ACTIVE' AND se.status='ACTIVE' AND (${scope.sql}) ORDER BY name LIMIT 300`).bind(...scope.params)):children;
  return {classes,subjects,children,students,institutions,kinds:CALENDAR_KINDS,scopes:['PERSONAL',...(['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user.role)?['INSTITUTION','CLASS','STUDENT']:['TEACHER','GUIDANCE_TEACHER'].includes(user.role)?['CLASS','STUDENT']:[])],timezone:'Europe/Istanbul',reminderChannel:'IN_APP'};
 }
+/**
+ * A063: overlapping timed events in the same view are marked (each lists the occurrences it overlaps). Due
+ * moments (zero length) and day items without a time (exams, worksheets) never count as a clash.
+ */
+export function markConflicts(events:any[]){
+ const timed=events.filter(e=>!e.timeUnspecified&&Date.parse(e.ends_at)>Date.parse(e.starts_at));
+ for(const e of events)e.conflictsWith=[];
+ for(let i=0;i<timed.length;i++)for(let j=i+1;j<timed.length;j++){const a=timed[i],b=timed[j];
+  if(Date.parse(a.starts_at)<Date.parse(b.ends_at)&&Date.parse(b.starts_at)<Date.parse(a.ends_at)){a.conflictsWith.push(b.occurrenceId);b.conflictsWith.push(a.occurrenceId);}}
+ return events;
+}
 export async function listCalendar(env:Env,user:AuthUser,from:string,to:string){
  const scope=await eventScope(env,user);
  const raw=await all<CalendarEvent&{acknowledged_at?:string}>(env.DB.prepare(`SELECT e.* FROM calendar_events e WHERE (${scope.sql}) AND e.status!='CANCELLED' AND julianday(e.starts_at)<julianday(?) AND (julianday(e.ends_at)>julianday(?) OR (e.recurrence='WEEKLY' AND julianday(e.repeat_until)>=julianday(?))) ORDER BY e.starts_at LIMIT 301`).bind(...scope.params,`${to}T00:00:00+03:00`,`${from}T00:00:00+03:00`,`${from}T00:00:00+03:00`));
@@ -62,13 +74,16 @@ export async function listCalendar(env:Env,user:AuthUser,from:string,to:string){
  const events=raw.slice(0,300).flatMap(e=>expandCalendarEvent(e,from,to)).map(e=>({...e,acknowledged_at:seen.get(`${e.id}:${e.starts_at}`)||null,editable:e.owner_user_id===user.id||(e.scope!=='PERSONAL'&&['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user.role))}));
  const sourceScope=studentScopeSql(user);
  // Existing modules remain the source of truth: no duplicate exam/assignment rows.
- const assignments=await all<any>(env.DB.prepare(`SELECT DISTINCT a.id,a.title,a.due_at,ar.status FROM assignments a JOIN assignment_recipients ar ON ar.assignment_id=a.id JOIN student_enrollments se ON se.student_id=ar.student_id AND se.status='ACTIVE' WHERE a.status IN ('ASSIGNED','CLOSED') AND julianday(a.due_at)>=julianday(?) AND julianday(a.due_at)<julianday(?) AND (${sourceScope.sql}) ${user.role==='TEACHER'?'AND a.created_by=?':''} ORDER BY a.due_at LIMIT 301`).bind(`${from}T00:00:00+03:00`,`${to}T00:00:00+03:00`,...sourceScope.params,...(user.role==='TEACHER'?[user.id]:[])));
- for(const a of assignments.slice(0,300))events.push({id:`assignment:${a.id}`,occurrenceId:`assignment:${a.id}:${a.status}`,kind:'HOMEWORK',title:a.title,starts_at:a.due_at,ends_at:a.due_at,status:a.status==='COMPLETED'?'COMPLETED':'PLANNED',source:'ASSIGNMENT',url:user.role==='PARENT'?'/children':'/assignments',editable:false});
+ const assignments=await all<any>(env.DB.prepare(`SELECT DISTINCT a.id,a.title,a.due_at,ar.status FROM assignments a JOIN assignment_recipients ar ON ar.assignment_id=a.id JOIN student_enrollments se ON se.student_id=ar.student_id AND se.status='ACTIVE' WHERE a.status IN ('ASSIGNED','CLOSED') AND julianday(a.due_at)>=julianday(?,'-1 day') AND julianday(a.due_at)<julianday(?,'+1 day') AND (${sourceScope.sql}) ${user.role==='TEACHER'?'AND a.created_by=?':''} ORDER BY a.due_at LIMIT 301`).bind(`${from}T00:00:00+03:00`,`${to}T00:00:00+03:00`,...sourceScope.params,...(user.role==='TEACHER'?[user.id]:[])));
+ // A063: the due moment is read the same way as the homework itself (date only = 23:59 Türkiye time; no zone = Türkiye)
+ const lo=Date.parse(`${from}T00:00:00+03:00`),hi=Date.parse(`${to}T00:00:00+03:00`);
+ for(const a of assignments.slice(0,300)){const due=dueMillis(a.due_at);if(due===null||due<lo||due>=hi)continue;const at=new Date(due).toISOString();events.push({id:`assignment:${a.id}`,occurrenceId:`assignment:${a.id}:${a.status}`,kind:'HOMEWORK',title:a.title,starts_at:at,ends_at:at,status:a.status==='COMPLETED'?'COMPLETED':'PLANNED',source:'ASSIGNMENT',url:user.role==='PARENT'?'/children':'/assignments',editable:false});}
  const worksheets=await all<any>(env.DB.prepare(`SELECT DISTINCT w.id,wsheet.title,w.planned_date,w.status FROM worksheet_calendar_entries w JOIN worksheets wsheet ON wsheet.id=w.worksheet_id WHERE wsheet.status='PUBLISHED' AND w.status NOT IN ('CANCELLED','SKIPPED') AND w.planned_date>=? AND w.planned_date<? AND ${user.role==='SUPER_ADMIN'?'1=1':`(w.institution_id=? AND ${user.role==='INSTITUTION_MANAGER'?'1=1':`EXISTS(SELECT 1 FROM student_enrollments se WHERE se.status='ACTIVE' AND (w.class_id IS NULL OR se.class_id=w.class_id) AND (${sourceScope.sql}))`})`} ${user.role==='TEACHER'?`AND EXISTS(SELECT 1 FROM worksheet_subjects ws JOIN teacher_assignments ta ON ta.subject_id=ws.subject_id WHERE ws.worksheet_id=w.worksheet_id AND ta.user_id=? AND ta.active=1 AND ta.assignment_type='SUBJECT' AND (w.class_id IS NULL OR ta.class_id=w.class_id))`:''} ORDER BY w.planned_date LIMIT 301`).bind(from,to,...(user.role==='SUPER_ADMIN'?[]:[user.institution_id,...(user.role==='INSTITUTION_MANAGER'?[]:sourceScope.params)]),...(user.role==='TEACHER'?[user.id]:[])));
  for(const w of worksheets.slice(0,300))events.push({id:`worksheet:${w.id}`,occurrenceId:`worksheet:${w.id}`,kind:'WORKSHEET',title:w.title,starts_at:`${w.planned_date}T09:00:00+03:00`,ends_at:`${w.planned_date}T10:00:00+03:00`,timeUnspecified:true,status:w.status==='APPLIED'?'COMPLETED':'PLANNED',source:'WORKSHEET',url:['STUDENT','PARENT'].includes(user.role)?'/nibiru':'/worksheet-calendar',editable:false});
  const exams=await all<any>(env.DB.prepare(`SELECT DISTINCT e.id,e.title,e.exam_date FROM exams e WHERE e.status IN ('ACTIVE','CLOSED') AND date(e.exam_date)>=? AND date(e.exam_date)<? AND ${user.role==='SUPER_ADMIN'?'1=1':`(e.institution_id=? OR EXISTS(SELECT 1 FROM exam_institutions ei WHERE ei.exam_id=e.id AND ei.institution_id=? AND ei.enabled=1)) AND ${user.role==='INSTITUTION_MANAGER'?'1=1':`EXISTS(SELECT 1 FROM student_enrollments se WHERE se.status='ACTIVE' AND (e.grade_level IS NULL OR se.grade_level=e.grade_level) AND (${sourceScope.sql}))`} ${user.role==='TEACHER'?`AND EXISTS(SELECT 1 FROM exam_subjects es JOIN teacher_assignments ta ON ta.subject_id=es.subject_id WHERE es.exam_id=e.id AND ta.user_id=? AND ta.active=1 AND ta.assignment_type='SUBJECT')`:''}`} ORDER BY e.exam_date LIMIT 301`).bind(from,to,...(user.role==='SUPER_ADMIN'?[]:[user.institution_id,user.institution_id,...(user.role==='INSTITUTION_MANAGER'?[]:sourceScope.params),...(user.role==='TEACHER'?[user.id]:[])])));
  for(const e of exams.slice(0,300))events.push({id:`exam:${e.id}`,occurrenceId:`exam:${e.id}`,kind:'EXAM',title:e.title,starts_at:`${String(e.exam_date).slice(0,10)}T09:00:00+03:00`,ends_at:`${String(e.exam_date).slice(0,10)}T10:00:00+03:00`,timeUnspecified:true,status:'PLANNED',source:'EXAM',url:user.role==='STUDENT'?'/my-results':user.role==='PARENT'?'/children':'/exams',editable:false});
  events.sort((a,b)=>Date.parse(a.starts_at)-Date.parse(b.starts_at));
+ markConflicts(events);
  return {events,truncated:[raw,assignments,worksheets,exams].some(x=>x.length>300),timezone:'Europe/Istanbul',reminderChannel:'IN_APP'};
 }
 async function saveEvent(request:Request,env:Env,user:AuthUser,id?:string){
