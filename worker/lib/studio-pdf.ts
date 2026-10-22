@@ -103,6 +103,11 @@ async function loadPrintables(env: Env, documentId: string, booklet: string): Pr
   const rows = await all<Row>(env.DB.prepare(`SELECT q.id,q.stem_text,q.options_json,q.correct_answer,q.content_mode,q.origin_kind,i.sort_order question_no
     FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code=? ORDER BY i.sort_order`).bind(documentId, booklet));
   if (!rows.length) throw new StudioPrintError('BOOKLET_EMPTY', 'Bu kitapçıkta soru yok.');
+  return { rows, items: await printablesFromRows(env, rows) };
+}
+
+/** Shared by Studio booklets and personal books (A058): validated, printable questions in the given order. */
+async function printablesFromRows(env: Env, rows: Row[]): Promise<Printable[]> {
   const ids = rows.map(r => r.id);
   const marks = ids.map(() => '?').join(',');
   const assets = await all<Asset>(env.DB.prepare(`SELECT question_id,asset_type,r2_key,external_url,placement,option_label,sort_order,alt_text FROM question_assets WHERE question_id IN (${marks}) ORDER BY question_id,sort_order,id`).bind(...ids)).catch(() => [] as Asset[]);
@@ -142,7 +147,7 @@ async function loadPrintables(env: Env, documentId: string, booklet: string): Pr
     if (row.content_mode && row.content_mode !== 'TEXT' && !visuals.some(v => v.kind === 'IMAGE')) throw new StudioPrintError('PRINT_IMAGE_MISSING', `${where}: görsel soru, ama basılabilir görseli yok.`);
     items.push({ no, stem: [normalizePrintText(row.stem_text)], extra, visuals, options, correct: row.correct_answer, ai: isAiQuestionOrigin(row.origin_kind) });
   }
-  return { rows, items };
+  return items;
 }
 
 // --- layout --------------------------------------------------------------------------------
@@ -456,4 +461,58 @@ export async function renderStudioAnswerKey(env: Env, documentId: string): Promi
   }
   const bytes = await pdf.save();
   return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, booklets };
+}
+
+/**
+ * A058: a student's personal book — the given approved questions in two columns, section titles before each
+ * outcome's first question, and an answer key on its own last page (for self-checking after solving).
+ */
+export async function renderQuestionBookPdf(env: Env, title: string, sections: { heading: string; questionIds: string[] }[]): Promise<{ bytes: ArrayBuffer; questionCount: number }> {
+  const ordered = sections.flatMap(sec => sec.questionIds);
+  if (!ordered.length) throw new StudioPrintError('BOOKLET_EMPTY', 'Kitapta soru yok.');
+  const marks = ordered.map(() => '?').join(',');
+  const found = await all<Row>(env.DB.prepare(`SELECT q.id,q.stem_text,q.options_json,q.correct_answer,q.content_mode,q.origin_kind,0 question_no FROM question_bank q WHERE q.id IN (${marks})`).bind(...ordered));
+  const rows = ordered.map(id => found.find(r => r.id === id)).filter(Boolean) as Row[];
+  if (rows.length !== ordered.length) throw new StudioPrintError('PRINT_QUESTION_MISSING', 'Kitaptaki bir soru artık havuzda yok; kitabı yeniden oluşturun.');
+  const items = await printablesFromRows(env, rows);
+  const pdf = await PDFDocument.create();
+  pdf.setTitle(title); pdf.setCreator('ANUNEX'); pdf.setProducer('ANUNEX');
+  const fonts = await loadFonts(pdf);
+  const cleanTitle = normalizePrintText(title); assertPrintable(fonts, cleanTitle, 'Kitap başlığı');
+  const marksCtx: Ctx['marks'] = { anunex: await pdf.embedPng(b64(ANUNEX_MARK_PNG_BASE64)) };
+  if (items.some(q => q.ai)) marksCtx.nibiru = await pdf.embedPng(b64(NIBIRU_MARK_PNG_BASE64));
+  const ctx: Ctx = { pdf, fonts, images: new Map(), title: cleanTitle, booklet: '', pages: [], branding: DEFAULT_BRANDING, marks: marksCtx };
+  await prepareImages(ctx, items);
+  let cur = newPage(ctx, true), k = 0;
+  for (const sec of sections) {
+    const heading = normalizePrintText(sec.heading); assertPrintable(fonts, heading, 'Bölüm başlığı');
+    const headLines = wrapText(fonts.bold, heading, 10.5, COL_W);
+    for (let j = 0; j < sec.questionIds.length; j++, k++) {
+      const ops = questionOps(ctx, items[k]);
+      const head = j === 0 ? headLines.length * 14 + 6 : 0;
+      const height = head + ops.reduce((t, o) => t + o.h, 0);
+      if (height > TOP - 20 - BOTTOM) throw new StudioPrintError('PRINT_QUESTION_TOO_LONG', `Soru ${items[k].no}: tek sütuna sığmayacak kadar uzun. İçerik eksiltilerek PDF üretilmez.`);
+      if (cur.y - height < BOTTOM) { cur = cur.col === 0 ? { ...cur, col: 1, y: cur.top } : newPage(ctx, false); if (cur.y - height < BOTTOM) cur = newPage(ctx, false); }
+      let y = cur.y;
+      if (head) { for (const line of headLines) { cur.page.drawText(line, { x: colX(cur), y: y - 11, size: 10.5, font: fonts.bold, color: BAR }); y -= 14; } y -= 6; }
+      for (const op of ops) { op.draw(cur.page, colX(cur), y); y -= op.h; }
+      cur.y = y;
+    }
+  }
+  footer(ctx);
+  const page = pdf.addPage([PAGE_W, PAGE_H]);
+  page.drawText('Cevap Anahtarı', { x: MARGIN, y: TOP - 14, size: 14, font: fonts.bold, color: INK });
+  page.drawText('Soruları çözdükten sonra kontrol edin.', { x: MARGIN, y: TOP - 32, size: 9, font: fonts.regular, color: MUTED });
+  const perRow = 10, cellW = (PAGE_W - 2 * MARGIN) / perRow, cellH = 26, top = TOP - 50;
+  for (let i = 0; i < items.length; i++) {
+    const answer = String(items[i].correct || '').trim().toUpperCase();
+    if (!LABELS.includes(answer)) throw new StudioPrintError('PRINT_ANSWER_KEY_INVALID', `Soru ${i + 1}: cevap anahtarı geçersiz.`);
+    const r = Math.floor(i / perRow), c = i % perRow, x = MARGIN + c * cellW, cy = top - r * cellH;
+    if (cy - cellH < BOTTOM) throw new StudioPrintError('PRINT_ANSWER_KEY_TOO_LONG', 'Cevap anahtarı tek sayfaya sığmıyor.');
+    page.drawRectangle({ x, y: cy - cellH, width: cellW, height: cellH, borderColor: RULE, borderWidth: 0.6 });
+    page.drawText(`${i + 1}`, { x: x + 4, y: cy - 10, size: 7, font: fonts.regular, color: MUTED });
+    page.drawText(answer, { x: x + cellW / 2 - 4, y: cy - 21, size: 12, font: fonts.bold, color: INK });
+  }
+  const bytes = await pdf.save();
+  return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, questionCount: items.length };
 }
