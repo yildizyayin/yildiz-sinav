@@ -1612,3 +1612,32 @@ Sınır:
 - Video çözüm içeriği A014'e, kazanım videosu A067'ye bağlı.
 
 Sonraki iş: A061.
+
+### A061 — yoklama, 23 Ekim 01:58
+
+Durum: KOD TAMAM, merge edildi (PR #334).
+
+Bulunan sorunlar:
+- Bir yoklama kaydı düzeltilince eski değer siliniyordu; geçmiş tutulmuyordu.
+- Öğrenci ve veli kendi yoklamasını göremiyordu.
+- "Gelmedi" kaydı düzeltildikten sonra veliye gidecek devamsızlık bildirimi kuyrukta kalıyordu.
+
+Yapılan düzeltmeler:
+- Yeni geçmiş tablosu (migration 0134). Kayda yalnız ekleme yapılabiliyor. Bir değişiklikte tetikleyici şunları yazıyor: önceki değer, değiştiren kişi, zaman ve gerekçe.
+- Kaydedilmiş bir yoklamayı değiştirmek için gerekçe zorunlu.
+- Aynı yoklama değişmeden yeniden kaydedilirse hiçbir şey değişmiyor.
+- Düzeltme yapılınca bekleyen devamsızlık bildirimi atlanıyor.
+- Öğrenci ve veli için yeni görünüm eklendi:
+  - Uç nokta: `/api/school/attendance/my`
+  - Öğretmen notu bu görünümde gösterilmiyor.
+  - Düzeltilmiş kayıtlar işaretli.
+  - Menüye "Yoklama" eklendi.
+- Öğretmen ekranına gerekçe alanı ve düzeltme geçmişi eklendi.
+
+Kanıt:
+- `tests/a061-attendance.test.ts`
+- 6 mutasyon denendi, hepsi yakalandı. Biri ilk turda yakalanmadı; test güçlendirildi.
+- typecheck temiz.
+- Tam paket: 281 dosya / 1.336 test geçti.
+
+Sonraki iş: A062.
