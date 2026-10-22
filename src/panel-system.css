@@ -24,3 +24,4 @@ button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}button:fo
 .camera-answer-fixes { display: grid; gap: 6px; margin: 8px 0; }
 .camera-answer-fix { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
 .camera-answer-fix [role="group"] { display: flex; gap: 4px; }
+.camera-auto-toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; }

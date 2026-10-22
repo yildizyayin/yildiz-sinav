@@ -217,7 +217,8 @@ function parseSekonicRows(text: string, fileName: string): FmtDefinition | null 
   // A028b: the KOD timing columns print the form number into every line (e.g. "129"). When they are adjacent
   // single marks they become the format signature, so two forms of equal line length are still told apart.
   const signature = kod.length > 1 && kod.every((k, i) => k.width === 1 && /^\w$/.test(k.mark) && (i === 0 || k.start === kod[i - 1].start + 1)) ? kod.map((k) => k.mark).join('') : undefined;
-  const fixedWidth = { type: 'fixed-width' as const, recordLength, fields, answers, ...(signature ? { signature } : {}) };
+  // A084: where the form number sits, so a TXT written back from a camera reading carries it in place.
+  const fixedWidth = { type: 'fixed-width' as const, recordLength, fields, answers, ...(signature ? { signature, signatureStart: kod[0].start } : {}) };
   return {
     type: 'fmt', version: '1', source: 'FMT', formName: formCode ? `Sekonic Optik ${formCode}` : 'Sekonic optik formu', formType: isTyt ? 'TYT' : 'SCHOOL', recordLength, indexBase: 0,
     fields, answers, fixedWidth,
