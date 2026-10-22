@@ -1124,3 +1124,27 @@ Kanıt:
 - Tam paket 264 dosya / 1.302 test geçti, build geçti.
 
 Sonraki iş: A042.
+
+### A042 — yazılı kazanım raporu, 22 Ekim (21:07'den sonra merge edildi)
+
+Durum: KOD TAMAM, merge edildi (PR #316). Canlı doğrulama dağıtımdan sonra (K002).
+
+Yapılanlar:
+- Rapor ucu: `/api/written-papers/:id/report`. Öğrenci, şube ve sınıf düzeyinde kazanım bazlı puan/olası puan ve yüzde verir.
+- Rapor yalnız kesinleşmiş notların kendi soru puanlarından hesaplanır; kesinleşmemiş sonraki düzeltme yansımaz. Notu kesinleşmemiş öğrenciler "bekleyen" olarak ayrı listelenir.
+- Kazanım eşleşmesi:
+  - banka sorusunda doğrulanmış soru-kazanım bağından yapılır;
+  - zümre sorusunda senaryo satırının kazanım kodu kullanılır;
+  - kodsuz satır "ünite · konu" başlığıyla gösterilir.
+  - Birden çok kazanıma bağlı bir soru, her kazanımda tam puanla sayılır.
+- Rapor puan ve yüzde verir; net hesaplanmaz. Deneme sonuç ve cevap tablolarına hiçbir şey yazılmaz (test sayımla doğrular).
+- Güçlü (%70 ve üzeri) ve gelişecek (%50 altı) eşikleri ANUNEX önerisidir; resmî MEB düzeyi değildir ve ekranda böyle etiketlenir.
+- Okul yöneticisi ve branş öğretmeni görür. Öğrenci ve veli göremez; yayımlama kararı verilmedi.
+- Kâğıt ekranında rapor paneli eklendi.
+
+Kanıt:
+- `tests/a042-written-report.test.ts` ve ortak hazır kâğıt yardımcısı `finalWrittenPaper`.
+- Mutasyon kontrolü: bekleyen öğrencileri yok saymak, herhangi bir öğretmene erişim vermek ve olası puanı yanlış hesaplamak testlerce yakalandı. "Kesinleşmemiş puanı kullanmak" ilk turda yakalanmamıştı; test sıkılaştırıldı, sonra yakalandı.
+- Tam paket 265 dosya / 1.303 test geçti, build geçti.
+
+Sonraki iş: A043.
