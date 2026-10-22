@@ -9,7 +9,7 @@ it('discovers only authorized frozen new mini tests with branch eligibility befo
  INSERT INTO student_enrollments VALUES('en','s','school','season','class','1',7,'A','ACTIVE','2026'),('old-en','s','school','old-season','class','1',7,'A','ARCHIVED','2025');
  CREATE TABLE classes(id TEXT,name TEXT);INSERT INTO classes VALUES('class','7A');CREATE TABLE institutions(id TEXT,name TEXT);INSERT INTO institutions VALUES('school','Synthetic');
  CREATE TABLE parent_student_links(id TEXT,parent_user_id TEXT,student_id TEXT,active INTEGER);INSERT INTO parent_student_links VALUES('link','parent','s',1);
- CREATE TABLE teacher_assignments(user_id TEXT,class_id TEXT,subject_id TEXT,assignment_type TEXT,active INTEGER,season_id TEXT);INSERT INTO teacher_assignments VALUES('teacher','class','math','SUBJECT',1,'season');
+ CREATE TABLE teacher_assignments(user_id TEXT,class_id TEXT,subject_id TEXT,assignment_type TEXT,active INTEGER,season_id TEXT);INSERT INTO teacher_assignments VALUES('teacher','class','math','SUBJECT',1,'season');ALTER TABLE teacher_assignments ADD COLUMN institution_id TEXT DEFAULT 'school';
  CREATE TABLE assignments(id TEXT,institution_id TEXT);INSERT INTO assignments VALUES('assignment','school'),('foreign-assignment','other');
  CREATE TABLE coach_mini_tests(id TEXT,student_id TEXT,assignment_id TEXT,selection_mode TEXT,status TEXT,submitted_at TEXT);
  CREATE TABLE assessment_runs(id TEXT,student_id TEXT,institution_id TEXT,source_type TEXT,status TEXT,delivery_mode TEXT,completed_at TEXT,metadata_json TEXT,source_id TEXT,assignment_id TEXT);`);
