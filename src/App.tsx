@@ -109,7 +109,7 @@ function AppContent(){
   <Route path="standard-readiness" element={<RoleGate allowed={['SUPER_ADMIN']}><StandardReadiness/></RoleGate>}/>
   <Route path="theme-management" element={<RoleGate allowed={['SUPER_ADMIN']}><ThemeManagement/></RoleGate>}/>
   <Route path="settings" element={<RoleGate allowed={ALL_ROLES}><AppearanceSettings/></RoleGate>}/>
-  <Route path="attendance" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><AttendanceCenter/></RoleGate>}/>
+  <Route path="attendance" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT']}><AttendanceCenter/></RoleGate>}/>
   <Route path="assignments" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><AssignmentsCenter/></RoleGate>}/>
   <Route path="completion-center" element={<RoleGate allowed={['SUPER_ADMIN']}><CompletionCenter/></RoleGate>}/><Route path="membership-orders" element={<RoleGate allowed={['SUPER_ADMIN']}><MembershipOrders/></RoleGate>}/>
   <Route path="calendar" element={<RoleGate allowed={ALL_ROLES}><CalendarCenter/></RoleGate>}/><Route path="nibiru" element={<RoleGate allowed={ALL_ROLES}><Nibiru/></RoleGate>}/><Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/><Route path="agent-center" element={<RoleGate allowed={['SUPER_ADMIN']}><AgentCenter/></RoleGate>}/>
