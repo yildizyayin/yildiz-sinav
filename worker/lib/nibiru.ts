@@ -1,6 +1,7 @@
 import type { AuthUser, Env } from '../types';
 import {checkNibiruAnswer,NIBIRU_SAFE_ANSWER} from './nibiru-answer-policy';
 import { all, one, uuid } from './db';
+import { publishedForLearnersSql } from './exam-schedule';
 import { createOrReuseDailyCoachPlan, coachPlanSummary, type CoachPlanResult } from './education-coach';
 import { externalPersonalDataGate } from './privacy-external-gate';
 import { minimizeNibiruAiMessages } from './privacy-minimization';
@@ -100,12 +101,14 @@ async function selectStudent(env: Env, user: AuthUser, message: string, previous
   return { student: null, choices: students };
 }
 
-async function studentAcademicContext(env: Env, studentId: string, institutionId: string | null) {
+/** A065: a student or parent only ever gets results the school has published to them; staff keep their school view. */
+async function studentAcademicContext(env: Env, studentId: string, institutionId: string | null, learner = false) {
+  const pub = (expr: string) => learner ? `AND ${publishedForLearnersSql(expr)}` : '';
   const student = await one<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name,e.student_number,e.grade_level,e.section,c.name class_name FROM student_entities s LEFT JOIN student_enrollments e ON e.student_id=s.id AND e.status='ACTIVE' LEFT JOIN classes c ON c.id=e.class_id WHERE s.id=? ${institutionId ? 'AND (e.institution_id=? OR e.institution_id IS NULL)' : ''} LIMIT 1`).bind(...(institutionId ? [studentId,institutionId] : [studentId])));
-  const exams = await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.success_percent FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? ${institutionId ? 'AND ep.institution_id=?' : ''} ORDER BY coalesce(e.exam_date,e.created_at) DESC LIMIT 4`).bind(...(institutionId ? [studentId,institutionId] : [studentId])));
+  const exams = await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.success_percent FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? ${institutionId ? 'AND ep.institution_id=?' : ''} ${pub('e.id')} ORDER BY coalesce(e.exam_date,e.created_at) DESC LIMIT 4`).bind(...(institutionId ? [studentId,institutionId] : [studentId])));
   const latest = exams[0] || null;
   const subjects = latest ? await all<any>(env.DB.prepare(`SELECT s.code,s.name,sr.correct_count,sr.wrong_count,sr.blank_count,sr.net,sr.success_percent FROM exam_participants ep JOIN subject_results sr ON sr.participant_id=ep.id JOIN subjects s ON s.id=sr.subject_id WHERE ep.student_id=? AND ep.exam_id=? ORDER BY coalesce(sr.success_percent,0) DESC`).bind(studentId,latest.id)) : [];
-  const weakOutcomes = await all<any>(env.DB.prepare(`SELECT o.id,o.code,o.title,o.topic,s.name subject_name,round(avg(r.success_rate),1) avg_success,count(*) evidence FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id WHERE r.student_id=? GROUP BY o.id,o.code,o.title,o.topic,s.name HAVING count(*)>0 ORDER BY avg_success ASC,evidence DESC LIMIT 6`).bind(studentId));
+  const weakOutcomes = await all<any>(env.DB.prepare(`SELECT o.id,o.code,o.title,o.topic,s.name subject_name,round(avg(r.success_rate),1) avg_success,count(*) evidence FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id WHERE r.student_id=? ${pub('r.exam_id')} GROUP BY o.id,o.code,o.title,o.topic,s.name HAVING count(*)>0 ORDER BY avg_success ASC,evidence DESC LIMIT 6`).bind(studentId));
   const assignments = student?.class_name ? await all<any>(env.DB.prepare(`SELECT w.id,w.title,w.track,wa.due_date FROM worksheet_assignments wa JOIN worksheets w ON w.id=wa.worksheet_id JOIN student_enrollments se ON se.class_id=wa.class_id AND se.student_id=? WHERE wa.status='ACTIVE' AND se.status='ACTIVE' AND w.status='PUBLISHED' ORDER BY coalesce(wa.due_date,wa.created_at) LIMIT 5`).bind(studentId)) : [];
   return { student, exams, latestExam: latest, subjects, weakOutcomes, assignments };
 }
@@ -175,6 +178,9 @@ function transparency() {
 function deterministic(intent: NibiruIntent, context: any): string | null {
   if (intent === 'PSYCHOLOGICAL_MEDICAL') return `${transparency()}\nAkademik verileri yorumlayabilirim ancak psikolojik, tıbbi veya özel öğrenme güçlüğüne ilişkin tanı koyamam. Sistem verilerindeki öğrenme göstergelerini açıklayabilir; gerektiğinde okul rehberlik servisi veya ilgili uzmanla görüşmenizi önerebilirim.`;
   if (context?.disambiguation?.length) return `${transparency()}\nHangi öğrenci için bakmamı istersiniz: ${context.disambiguation.map((x:any)=>x.first_name).join(' mı, ')} mı?`;
+  // A065: a question about results with no verified data is answered plainly, never by the model (no invented numbers)
+  if (context?.student && ((intent === 'LATEST_EXAM' && !context.latestExam) || (intent === 'WEAK_OUTCOMES' && !context.weakOutcomes?.length))) return fallbackAnswer(intent, context);
+  if (context?.classes && intent === 'CLASS_SUMMARY' && !context.recent?.length && !context.weakOutcomes?.length) return fallbackAnswer(intent, context);
   if (context?.noStudent) return `${transparency()}\nBu hesapla ilişkilendirilmiş bir öğrenci göremiyorum. Kurum yöneticinizden veli-öğrenci bağlantısını kontrol etmesini isteyebilirsiniz.`;
   return null;
 }
@@ -328,7 +334,7 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
     } else {
       const selectedStudentId = String(selected.student.id);
       studentId = selectedStudentId;
-      context = await studentAcademicContext(env,selectedStudentId,user.institution_id);
+      context = await studentAcademicContext(env,selectedStudentId,user.institution_id,true);
       examId = context.latestExam?.id || null;
     }
   } else if (user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER') {
