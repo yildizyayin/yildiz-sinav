@@ -5,7 +5,7 @@ import { publishScheduledExamResults } from '../worker/lib/exam-schedule';
 
 function fixture(failAudit=false,changeVersion=false){
   const db=new DatabaseSync(':memory:');
-  db.exec(`CREATE TABLE exams(id TEXT,institution_id TEXT); INSERT INTO exams VALUES('e','school');
+  db.exec(`CREATE TABLE IF NOT EXISTS exam_revision_state(exam_id TEXT PRIMARY KEY,revision INTEGER DEFAULT 1,app_trashed_at TEXT,prior_status TEXT);CREATE TABLE exams(id TEXT,institution_id TEXT); INSERT INTO exams VALUES('e','school');
     CREATE TABLE exam_delivery_profiles(exam_id TEXT,snapshot_version INTEGER,result_freeze_status TEXT,result_publish_at TEXT,published_at TEXT,updated_at TEXT);
     INSERT INTO exam_delivery_profiles VALUES('e',1,'FROZEN','2000-01-01T00:00:00Z',NULL,NULL);
     CREATE TABLE exam_operation_locks(exam_id TEXT PRIMARY KEY,owner_token TEXT,operation TEXT);

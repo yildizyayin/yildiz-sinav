@@ -5,9 +5,9 @@ import {examReadiness} from './exam-readiness';
 export type Channel='LICENSED'|'RESULT_NETWORK';
 export async function channelStates(env:Env,ids:string[]){
  if(!ids.length)return [];const marks=ids.map(()=>'?').join(',');
- const exams=await all<any>(env.DB.prepare(`SELECT e.*,r.revision,r.app_trashed_at,(SELECT count(*) FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id WHERE ep.exam_id=e.id) result_count FROM exams e JOIN exam_revision_state r ON r.exam_id=e.id WHERE e.id IN (${marks})`).bind(...ids));
+ const exams=await all<any>(env.DB.prepare(`SELECT e.*,r.revision,r.app_trashed_at,(SELECT count(*) FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id WHERE ep.exam_id=e.id) result_count,p.result_freeze_status,p.published_at app_published_at,p.result_publish_at FROM exams e JOIN exam_revision_state r ON r.exam_id=e.id LEFT JOIN exam_delivery_profiles p ON p.exam_id=e.id WHERE e.id IN (${marks})`).bind(...ids));
  const rows=await all<any>(env.DB.prepare(`SELECT * FROM channel_definition_publications WHERE exam_id IN (${marks})`).bind(...ids));
- return ids.flatMap(id=>{const exam=exams.find(e=>e.id===id);if(!exam)return [];return [{ok:true,examId:id,title:exam.title,examStatus:exam.status,savedRevision:exam.revision,definition:{title:exam.title,publisher_name:exam.publisher_name,exam_date:exam.exam_date,description:exam.description},trashedAt:exam.app_trashed_at,hasResults:Number(exam.result_count)>0,resultPortalAvailable:env.ENVIRONMENT==='production',channels:(['LICENSED','RESULT_NETWORK'] as Channel[]).map(channel=>{const row=rows.find(r=>r.exam_id===id&&r.channel===channel);return {channel,status:!row?'NOT_PUBLISHED':row.status!=='ACTIVE'?'UNPUBLISHED':row.source_revision===exam.revision?'CURRENT':'PENDING_UPDATE',publishedRevision:row?.source_revision||null,publishedAt:row?.published_at||null,definition:row?JSON.parse(row.definition_json):null}})}]});
+ return ids.flatMap(id=>{const exam=exams.find(e=>e.id===id);if(!exam)return [];return [{ok:true,examId:id,title:exam.title,examStatus:exam.status,savedRevision:exam.revision,definition:{title:exam.title,publisher_name:exam.publisher_name,exam_date:exam.exam_date,description:exam.description},trashedAt:exam.app_trashed_at,hasResults:Number(exam.result_count)>0,resultCount:Number(exam.result_count||0),appResults:{state:exam.result_freeze_status||'OPEN',publishedAt:exam.app_published_at||null,scheduledAt:exam.result_publish_at||null},resultPortalAvailable:env.ENVIRONMENT==='production',channels:(['LICENSED','RESULT_NETWORK'] as Channel[]).map(channel=>{const row=rows.find(r=>r.exam_id===id&&r.channel===channel);return {channel,status:!row?'NOT_PUBLISHED':row.status!=='ACTIVE'?'UNPUBLISHED':row.source_revision===exam.revision?'CURRENT':'PENDING_UPDATE',publishedRevision:row?.source_revision||null,publishedAt:row?.published_at||null,definition:row?JSON.parse(row.definition_json):null}})}]});
 }
 export async function channelState(env:Env,id:string){return (await channelStates(env,[id]))[0]||null;}
 export async function changeChannel(env:Env,user:AuthUser,id:string,channel:Channel,action:string,expectedRevision:number){
@@ -38,21 +38,27 @@ export async function trashExam(env:Env,user:AuthUser,id:string,scope='APP'){
  if(scope!=='APP'&&env.ENVIRONMENT!=='production')return badRequest('Sonuc yayını app.anunex.com üzerinden yönetilir.','RESULT_PORTAL_ENVIRONMENT_MISMATCH');
  return withExamOperationLock(env,id,'EXAM_TRASH',async(env)=>{
  const result=await one<any>(env.DB.prepare("SELECT 1 ok FROM exam_channel_publications WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='ACTIVE'").bind(id));
+ const learner=await one<any>(env.DB.prepare("SELECT result_freeze_status,published_at,result_publish_at FROM exam_delivery_profiles WHERE exam_id=?").bind(id));
+ const appResultsWithdrawn=scope!=='RESULT_PORTAL'&&(learner?.result_freeze_status==='PUBLISHED'||!!learner?.result_publish_at);
  const st:D1PreparedStatement[]=[];
  if(scope!=='RESULT_PORTAL'){
+ // A031: a removed (wrong) exam must disappear from students and parents too. Its published result is
+ // withdrawn (the frozen snapshot is kept) and a pending scheduled publication is cancelled, so the
+ // scheduler cannot publish it again. Restoring does not republish; that stays an explicit decision.
+ st.push(env.DB.prepare("UPDATE exam_delivery_profiles SET result_freeze_status=CASE WHEN result_freeze_status='PUBLISHED' THEN 'FROZEN' ELSE result_freeze_status END,published_at=NULL,result_publish_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?").bind(id));
  st.push(env.DB.prepare('UPDATE exam_revision_state SET app_trashed_at=CURRENT_TIMESTAMP,prior_status=COALESCE(prior_status,?) WHERE exam_id=?').bind(exam.status,id));
  if(!result||scope==='BOTH')st.push(env.DB.prepare("UPDATE exams SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(id));
  st.push(env.DB.prepare("INSERT INTO exam_channel_publications(id,exam_id,channel,status) VALUES(?,?,'LICENSED','ARCHIVED') ON CONFLICT(exam_id,channel) DO UPDATE SET status='ARCHIVED'").bind(uuid('pub'),id),env.DB.prepare("UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='LICENSED'").bind(id));
  }
  if(scope!=='APP')st.push(env.DB.prepare("UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'").bind(id),env.DB.prepare("UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'").bind(id));
- st.push(channelAudit(env,user,exam.institution_id,'EXAM_TRASHED',id,{scope,resultsPreserved:true}));await env.DB.batch(st);return json({ok:true,scope,resultsPreserved:true});
+ st.push(channelAudit(env,user,exam.institution_id,'EXAM_TRASHED',id,{scope,resultsPreserved:true,appResultsWithdrawn,previousAppResults:learner?{state:learner.result_freeze_status,publishedAt:learner.published_at,scheduledAt:learner.result_publish_at}:null}));await env.DB.batch(st);return json({ok:true,scope,resultsPreserved:true,appResultsWithdrawn});
  });
 }
 export async function restoreExam(env:Env,user:AuthUser,id:string){
  const owner=await one<any>(env.DB.prepare('SELECT owner_type,institution_id FROM exams WHERE id=?').bind(id));
  if(user.role!=='SUPER_ADMIN'&&!(user.role==='INSTITUTION_MANAGER'&&owner?.owner_type==='INSTITUTION'&&owner.institution_id===user.institution_id))return forbidden();return withExamOperationLock(env,id,'EXAM_RESTORE',async(env)=>{
  const r=await one<any>(env.DB.prepare('SELECT prior_status FROM exam_revision_state WHERE exam_id=? AND app_trashed_at IS NOT NULL').bind(id));if(!r)return notFound();
- await env.DB.batch([env.DB.prepare("UPDATE exams SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(r.prior_status||'DRAFT',id),env.DB.prepare('UPDATE exam_revision_state SET app_trashed_at=NULL,prior_status=NULL WHERE exam_id=?').bind(id),channelAudit(env,user,null,'EXAM_RESTORED',id,{publicationsRestored:false})]);return json({ok:true});});
+ await env.DB.batch([env.DB.prepare("UPDATE exams SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(r.prior_status||'DRAFT',id),env.DB.prepare('UPDATE exam_revision_state SET app_trashed_at=NULL,prior_status=NULL WHERE exam_id=?').bind(id),channelAudit(env,user,null,'EXAM_RESTORED',id,{publicationsRestored:false})]);return json({ok:true,publicationsRestored:false,message:'Sınav geri alındı. Öğrenci/veli yayını ve kanal yayınları otomatik açılmaz; gerekiyorsa yeniden yayınlayın.'});});
 }
 export async function publishedDefinitions(env:Env,rows:any[]){
  const ids=[...new Set(rows.map(row=>row.exam_id||row.id).filter(Boolean))] as string[];const cache=new Map<string,any>();

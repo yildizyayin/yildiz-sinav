@@ -75,6 +75,7 @@ export async function publishScheduledExamResults(env:Env):Promise<number>{
   const due=await all<any>(env.DB.prepare(`SELECT p.exam_id,e.institution_id,p.snapshot_version,p.result_publish_at
     FROM exam_delivery_profiles p JOIN exams e ON e.id=p.exam_id
     WHERE p.result_freeze_status='FROZEN' AND p.result_publish_at IS NOT NULL AND datetime(p.result_publish_at)<=CURRENT_TIMESTAMP
+      AND NOT EXISTS(SELECT 1 FROM exam_revision_state tr WHERE tr.exam_id=p.exam_id AND tr.app_trashed_at IS NOT NULL)
     ORDER BY p.result_publish_at ASC LIMIT 100`));
   let count=0;
   for(const row of due){
