@@ -886,3 +886,16 @@ PR #307 ile yapılanlar:
 A017'deki Türkçe başlık sınırı A018'den beri çözülmüş (kodla doğrulandı).
 
 Kapanış için: fiziksel yazıcı kalibrasyonu ve basılı formun okunması elle (K002).
+
+### A036 — telefon optik okuması, 22 Ekim 18:00–
+
+PR #307 (A035) merge edildi. #305 (D1 bütçesi) hâlâ merge bekliyor.
+
+Bulgu: çift ya da soluk işaret boş sayılıyordu. Kâğıtta görülen cevabı girmenin yolu yoktu; yalnız "bu şekilde kabul et" seçeneği vardı.
+
+PR #308 ile yapılanlar:
+- Soru bazında cevap düzeltme eklendi (şık sınırı, denetim kaydı, değerlendirilmiş kayıtta kilit).
+- Kontrol ekranında A–E / Boş düğmeleri var.
+- 254 dosya / 1.269 test, build PASS.
+
+Kapanış için: gerçek basılı optiğin telefonla okunması elle (K002). Sentetik test kanıt sayılmaz.
