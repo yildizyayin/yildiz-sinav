@@ -46,7 +46,8 @@ describe('A039: analytic rubrics', () => {
 
       // the teacher cannot change the platform draft; they make their school's version
       expect((await t.as('teacher', `/api/question-rubrics/${qid}/versions/1`, 'PUT', rubric())).response.status).toBe(403);
-      expect((await t.as('teacher', `/api/question-rubrics/${qid}/versions`, 'POST', rubric({ totalPoints: 12, criteria: [...rubric().criteria, { criterion: 'Yazım', points: 2 }] }))).data.error.message).toContain('puanı 10');
+      // points are the teacher's decision (A040): a school version may weight the item differently, but its totals must add up
+      expect((await t.as('teacher', `/api/question-rubrics/${qid}/versions`, 'POST', rubric({ totalPoints: 12 }))).data.error.message).toContain('toplamı 10, toplam puan 12');
       const v2 = await t.as('teacher', `/api/question-rubrics/${qid}/versions`, 'POST', rubric());
       expect(v2.response.status, v2.text).toBe(201);
       expect(v2.data.version).toBe(2);
