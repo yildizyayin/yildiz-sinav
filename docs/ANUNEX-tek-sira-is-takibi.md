@@ -1681,3 +1681,27 @@ Kanıt:
 - Tam paket 283 dosya / 1.339 test geçti.
 
 Sonraki iş: A064.
+
+### A064 — rehberlik RBA akışı, 23 Ekim 02:38
+
+Durum: KOD TAMAM, merge edildi (PR #337).
+
+Zaten var olan: rehberin onayladığı akış. Öğrenci veya Nibiru testi önerir, rehber onaylar, öğrenci cevaplar, rehber inceler. İnceleme sonunda gelişim sinyalleri ve RBA profili oluşur.
+
+Bulunan açıklar ve düzeltmeler:
+- Eski `POST /api/platform/rba` ucu açıktı:
+  - Öğrenci, veli, öğretmen ve müdür bu uçla "öz bildirim" RBA profili yazabiliyordu.
+  - Bu yazım, rehberin incelediği profilin üzerine yazıyordu.
+  - Düzeltme: uç artık 410 dönüyor. Öğrenci ekranı rehber akışına yönlendiriyor.
+- `GET` ile veli, branş öğretmeni ve müdür RBA puanlarını okuyabiliyordu.
+  - Düzeltme: artık yalnız öğrencinin kendisi, öğrencinin rehber öğretmeni ve Süper Admin okuyabiliyor.
+  - Öğrenci başka bir öğrencinin kimliğini gönderse bile yalnız kendi profilini alıyor.
+- Rehber testi kendisi başlatamıyordu.
+  - Düzeltme: yeni `counselor-assign` ucu eklendi. Rehber, yalnız kendi sınıfındaki bir öğrenciye testi doğrudan açabiliyor. Ekranda "Öğrenciye test aç" düğmesi var.
+
+Kanıt:
+- `tests/a064-guidance-rba.test.ts` (uçtan uca akış).
+- 7 mutasyon denendi, hepsi yakalandı.
+- Tam paket 284 dosya / 1.341 test geçti.
+
+Sonraki iş: A065.
