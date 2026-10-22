@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { CheckCircle2, FileText, Plus, RefreshCw, Trash2, Wand2 } from 'lucide-react';
 import { api } from '../api';
 import { useAuth } from '../auth';
+import { WrittenGradingPanel } from '../components/WrittenGradingPanel';
 
 /** A040: written exam paper from the school's chosen scenario; answer key; finalisation pins rubrics. */
 type Item = { scenarioRowId: string; source: 'BANK' | 'ZUMRE'; questionId?: string; stemText?: string; modelAnswer?: string; rubric?: any; label?: string; points?: number };
@@ -63,6 +64,7 @@ export function WrittenPapers() {
         </div>;
       })}
       {draft && <button className="primary" style={{ marginTop: 12 }} disabled={busy} onClick={() => void save()}>Kâğıdı kaydet</button>}
+      {open.paper.status === 'FINAL' && ['TEACHER', 'SUPER_ADMIN'].includes(user?.role || '') && <WrittenGradingPanel key={open.paper.id} paperId={open.paper.id} />}
     </div>}
   </>;
 }
