@@ -13,7 +13,7 @@ export type RubricInput = { totalPoints: number; criteria: RubricCriterion[]; al
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const int = (v: unknown) => (typeof v === 'number' && Number.isInteger(v) ? v : Number.NaN);
 
-/** Validates a rubric version. `requiredTotal` is the question's fixed points (written-production items). */
+/** Validates a rubric version. `requiredTotal` optionally pins the total (points are otherwise set by the teacher). */
 export function normalizeRubric(raw: any, requiredTotal?: number | null): { value?: RubricInput; errors: string[] } {
   const errors: string[] = [];
   const totalPoints = int(raw?.totalPoints);
@@ -121,7 +121,7 @@ async function listQuestions(env: Env, user: AuthUser, url: URL) {
 
 async function createVersion(request: Request, env: Env, user: AuthUser, q: any) {
   const body = await request.json().catch(() => null);
-  const n = normalizeRubric(body, q.max_points); if (!n.value) return fail(400, 'VALIDATION_ERROR', n.errors[0], n.errors);
+  const n = normalizeRubric(body); if (!n.value) return fail(400, 'VALIDATION_ERROR', n.errors[0], n.errors);
   const institutionId = user.role === 'SUPER_ADMIN' ? null : user.institution_id;
   const draft = await one(env.DB.prepare(`SELECT version FROM question_rubrics WHERE question_id=? AND status='DRAFT' AND institution_id IS ?`).bind(q.id, institutionId));
   if (draft) return fail(409, 'RUBRIC_DRAFT_EXISTS', 'Bu soruda zaten bir taslak rubrik var; önce onu düzenleyin veya onaylayın.');
@@ -146,7 +146,7 @@ async function updateVersion(request: Request, env: Env, user: AuthUser, q: any,
   if (r.status !== 'DRAFT') return fail(409, 'RUBRIC_LOCKED', 'Onaylanmış rubrik değiştirilemez; düzeltme için yeni sürüm oluşturun.');
   if (!canEditDraft(user, r)) return fail(403, 'FORBIDDEN', 'Bu taslağı yalnız Süper Admin değiştirebilir; okulunuz için yeni sürüm oluşturun.');
   const body = await request.json().catch(() => null);
-  const n = normalizeRubric(body, q.max_points); if (!n.value) return fail(400, 'VALIDATION_ERROR', n.errors[0], n.errors);
+  const n = normalizeRubric(body); if (!n.value) return fail(400, 'VALIDATION_ERROR', n.errors[0], n.errors);
   await env.DB.batch([
     env.DB.prepare(`UPDATE question_rubrics SET total_points=?,change_note=? WHERE id=? AND status='DRAFT'`).bind(n.value.totalPoints, n.value.changeNote || r.change_note, r.id),
     ...contentStatements(env, r.id, n.value),
@@ -165,7 +165,7 @@ async function approveVersion(request: Request, env: Env, user: AuthUser, q: any
   if (body?.confirm !== true) return fail(400, 'CONFIRMATION_REQUIRED', 'Ölçütleri, kısmi puanları, alternatif çözümleri ve toplamı kontrol ettiğinizi onaylayın.');
   // re-check the stored version itself, not the request
   const stored = (await loadVersions(env, user, q.id)).find((v) => v.id === r.id)!;
-  const check = normalizeRubric({ totalPoints: stored.total_points, criteria: stored.criteria.map((c: any) => ({ criterion: c.criterion, descriptor: c.descriptor, points: c.points, levels: c.levels.map((l: any) => ({ points: l.points, descriptor: l.descriptor })) })), alternatives: stored.alternatives.map((a: any) => ({ answerText: a.answer_text, note: a.note })) }, q.max_points);
+  const check = normalizeRubric({ totalPoints: stored.total_points, criteria: stored.criteria.map((c: any) => ({ criterion: c.criterion, descriptor: c.descriptor, points: c.points, levels: c.levels.map((l: any) => ({ points: l.points, descriptor: l.descriptor })) })), alternatives: stored.alternatives.map((a: any) => ({ answerText: a.answer_text, note: a.note })) });
   if (!check.value) return fail(409, 'RUBRIC_INCONSISTENT', check.errors[0], check.errors);
   if (await one(env.DB.prepare('SELECT 1 FROM question_rubric_approvals WHERE rubric_id=? AND institution_id IS ?').bind(r.id, scope))) return fail(409, 'ALREADY_APPROVED', 'Bu sürüm bu kapsam için zaten onaylı.');
   try {
