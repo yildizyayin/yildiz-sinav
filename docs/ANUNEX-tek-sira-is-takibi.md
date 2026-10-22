@@ -1347,3 +1347,22 @@ Kanıt:
 - Tam paket 272 dosya / 1.316 test geçti.
 
 Sonraki iş: A051.
+
+### A051 — branş öğretmeni karnesi, 22 Ekim
+
+Durum: KOD TAMAM (doğrulama), merge edildi (PR #324). Kod değişikliği gerekmedi.
+
+Uçtan uca testle doğrulananlar:
+- Türkçe öğretmeni yalnız Türkçeyi, matematik öğretmeni yalnız matematiği görür.
+- Branş öğretmeni toplam net, puan ve sıralamayı göremez; başka dersin kazanım kodları yanıtta hiç geçmez.
+- Rehber öğretmen sınıfının tüm derslerini görür.
+- Başka şubenin öğretmeni ve ataması olmayan öğretmen 403 alır; öğrenci listesinde de sınıf dışı öğrenci yer almaz.
+- Atama kaldırılınca rapor bir sonraki istekte 403 döner.
+- Donmuş sınav raporu da branşla kısıtlıdır.
+
+Kanıt:
+- `tests/a051-teacher-report.test.ts` (2 test).
+- Mutasyon kontrolü: branş filtresini düşürmek ve her öğretmene tam erişim vermek testlerce yakalandı.
+- Tam paket 273 dosya / 1.318 test geçti.
+
+Sonraki iş: A052.
