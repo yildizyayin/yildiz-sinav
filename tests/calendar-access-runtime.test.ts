@@ -14,7 +14,7 @@ beforeEach(()=>{
  CREATE TABLE student_enrollments(student_id TEXT,institution_id TEXT,class_id TEXT,status TEXT,grade_level INTEGER);INSERT INTO student_enrollments VALUES('s1','a','c1','ACTIVE',7),('s2','a','c2','ACTIVE',7),('s3','b','c3','ACTIVE',7);
  CREATE TABLE classes(id TEXT PRIMARY KEY,name TEXT,institution_id TEXT,active INTEGER);INSERT INTO classes VALUES('c1','7A','a',1),('c2','7B','a',1),('c3','7C','b',1);
  CREATE TABLE subjects(id TEXT PRIMARY KEY,name TEXT);INSERT INTO subjects VALUES('math','Math'),('turkish','Turkish');
- CREATE TABLE teacher_assignments(user_id TEXT,class_id TEXT,subject_id TEXT,active INTEGER,assignment_type TEXT);INSERT INTO teacher_assignments VALUES('t','c1','math',1,'SUBJECT'),('g','c1',NULL,1,'GUIDANCE');
+ CREATE TABLE teacher_assignments(user_id TEXT,class_id TEXT,subject_id TEXT,active INTEGER,assignment_type TEXT);INSERT INTO teacher_assignments VALUES('t','c1','math',1,'SUBJECT'),('g','c1',NULL,1,'GUIDANCE');ALTER TABLE teacher_assignments ADD COLUMN institution_id TEXT DEFAULT 'a';
  CREATE TABLE parent_student_links(student_id TEXT,parent_user_id TEXT,active INTEGER);INSERT INTO parent_student_links VALUES('s1','pa',1),('s2','pa',0);
  CREATE TABLE assignments(id TEXT,institution_id TEXT,title TEXT,due_at TEXT,status TEXT,created_by TEXT);INSERT INTO assignments VALUES('a1','a','Own Homework','2026-10-12T10:00:00Z','ASSIGNED','t'),('a2','b','Other Homework','2026-10-12T10:00:00Z','ASSIGNED','other');
  CREATE TABLE assignment_recipients(assignment_id TEXT,student_id TEXT,status TEXT);INSERT INTO assignment_recipients VALUES('a1','s1','ASSIGNED'),('a2','s3','ASSIGNED');
