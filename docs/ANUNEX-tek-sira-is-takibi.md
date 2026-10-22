@@ -1148,3 +1148,26 @@ Kanıt:
 - Tam paket 265 dosya / 1.303 test geçti, build geçti.
 
 Sonraki iş: A043.
+
+### A043 — kurum kartı yönetimi, 22 Ekim
+
+Durum: KOD TAMAM, merge edildi (PR #317). Canlı doğrulama dağıtımdan sonra (K002).
+
+Yapılanlar:
+- **Ekle:** mevcut kurum açma akışı kullanılıyor; aynı MEB koduyla ikinci kayıt 409 döner (testli).
+- **Görüntüle:** yeni uç `GET /api/institutions/:id` kartı döner: durum, öğrenci (aktif/misafir) ve hesap sayıları, sezonlar, yaşam döngüsü geçmişi. Okul yöneticisi yalnız kendi kartını görür; Süper Admin hepsini görür.
+- **Düzelt:** `PATCH /api/institutions/:id`, yalnız Süper Admin.
+  - Kurum kodu değiştirilemez.
+  - MEB kodu yalnız rakamdan oluşur (5–12 hane, mevcut kuralla aynı), MEB kaynağında zorunludur ve başka kurumda kayıtlı olamaz.
+  - Değişiklikler önce/sonra değerleriyle denetim kaydına yazılır.
+- **Pasifleştir:** A032b yaşam döngüsüyle yapılır. Testte öğrenci, kayıt ve katılım sayıları düzeltme ve pasifleştirmeden önce ve sonra aynı.
+- **Arayüz:** Kurumlar ekranında her satırda "Kart" düğmesi ve kart penceresi.
+
+Not: MEB kurum kodunun kaç haneli olduğuna dair resmî kaynak aramada bulunamadı. Bu yüzden hane kuralı sıkılaştırılmadı.
+
+Kanıt:
+- `tests/a043-institution-card.test.ts` (2 test).
+- Mutasyon kontrolü: tekillik kontrolünü kaldırmak, görüntüleme kapsamını gevşetmek ve kurum kodunu değiştirilebilir yapmak testlerce yakalandı.
+- Tam paket 266 dosya / 1.305 test geçti.
+
+Sonraki iş: A044.
