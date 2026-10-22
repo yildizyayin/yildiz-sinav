@@ -755,3 +755,24 @@ PR #300 ile yapılanlar:
 - 247 dosya / 1.254 test, build PASS.
 
 Kapanış için: dağıtım + canlıda elle kabul (K002).
+
+### A032 — sınav kataloğu işlevleri, 22 Ekim 16:05–
+
+PR #300 (A031) merge edildi.
+
+Doğru çalışanlar: liste, arama, filtre, detaya giriş, işlem düğmeleri ve rol kapsamı.
+
+Bulgular:
+1. Çöp kutusundan geri alınan aktif sınav katalogdan herkes için kayboluyordu (uygulama kanalı kapalı kalıyordu). Kurum kendi sınavına bir daha ulaşamıyordu.
+2. Kurum yöneticisi katılım sayısını tüm kurumlar için görüyordu.
+3. Tanımlama ekranında oluşturulan merkezi sınavlar "kurum" diye etiketleniyordu.
+4. Arşivlenen sınava ulaşılamıyordu; "CLOSED" etiketi Türkçe değildi ve filtrede yoktu.
+
+PR #302 ile yapılanlar:
+- Geri alınan sınav Süper Admin'e ve sahibi kuruma görünüyor; sunulduğu diğer kurumlar kanal yeniden yayınlanana kadar görmüyor ve satır bunu belirtiyor.
+- Kurum yöneticisi yalnız kendi kurumunun katılım sayısını görüyor.
+- Kapsam etiketi sınavın sahibine göre doğru.
+- Arşiv ve Kapandı filtreleri eklendi.
+- 248 dosya / 1.258 test, build PASS. Görsel tasarım D001'de.
+
+Kapanış için: dağıtım + canlıda elle kabul (K002).
