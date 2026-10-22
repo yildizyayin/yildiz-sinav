@@ -145,20 +145,28 @@ async function listExamCatalog(request: Request, env: Env, user: AuthUser): Prom
   // Sınav Ekle yeni kaydı önce DRAFT oluşturur. Sınav Yükle ekranı,
   // yapılandırması tamamlanmadan önce de bu sınava veri bağlayabilmelidir;
   // arşivlenen kayıtlar seçimden çıkarılır.
-  const params:any[]=[]; const where=[`e.status IN ('DRAFT','ACTIVE','CLOSED')`, `NOT EXISTS(SELECT 1 FROM exam_revision_state tr WHERE tr.exam_id=e.id AND tr.app_trashed_at IS NOT NULL)`, `(e.status='DRAFT' OR NOT EXISTS(SELECT 1 FROM exam_channel_publications cp WHERE cp.exam_id=e.id AND cp.channel='LICENSED' AND cp.status<>'ACTIVE'))`];
-  if(scope){where.push('COALESCE(p.scope,\'INSTITUTION\')=?');params.push(scope);}
+  // A032: archived exams are kept; they are listed only when asked for (Arşiv filtresi).
+  const archived=url.searchParams.get('archived')==='1';
+  const params:any[]=[]; const where=[archived?`e.status='ARCHIVED'`:`e.status IN ('DRAFT','ACTIVE','CLOSED')`, `NOT EXISTS(SELECT 1 FROM exam_revision_state tr WHERE tr.exam_id=e.id AND tr.app_trashed_at IS NOT NULL)`];
+  // A032: an exam whose app channel was taken down is hidden from the institutions it was offered to, but
+  // not from the Super Admin or the institution that owns it: otherwise a restored exam vanished for good.
+  if(user.role!=='SUPER_ADMIN'&&!archived){where.push(`(e.status='DRAFT' OR (e.owner_type='INSTITUTION' AND e.institution_id=?) OR NOT EXISTS(SELECT 1 FROM exam_channel_publications cp WHERE cp.exam_id=e.id AND cp.channel='LICENSED' AND cp.status<>'ACTIVE'))`);params.push(user.institution_id);}
+  if(scope){where.push(`COALESCE(p.scope,CASE WHEN e.owner_type='CENTRAL' THEN 'CENTRAL' ELSE 'INSTITUTION' END)=?`);params.push(scope);}
   if(q){where.push(`(e.title LIKE ? OR p.catalog_code LIKE ? OR pub.name LIKE ?)`); const s=`%${q}%`;params.push(s,s,s);}
   if(user.role!=='SUPER_ADMIN'){
     where.push(`(p.scope='CENTRAL' OR e.institution_id=? OR e.id IN (SELECT exam_id FROM exam_institutions WHERE institution_id=? AND enabled=1) OR p.network_id IN (SELECT network_id FROM institution_network_members WHERE institution_id=? AND active=1))`);
     params.push(user.institution_id,user.institution_id,user.institution_id);
   }
-  const rows=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.grade_level,e.academic_year,e.exam_date,e.status,
-    COALESCE(p.scope,'INSTITUTION') scope,p.catalog_code,p.verified_catalog,p.result_freeze_status,p.snapshot_version,p.published_at,
+  // A032: a manager sees their own institution's participants, not every institution's.
+  const countScope=user.role==='SUPER_ADMIN'?null:user.institution_id;
+  const rows=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.grade_level,e.academic_year,e.exam_date,e.status,e.owner_type,
+    COALESCE(p.scope,CASE WHEN e.owner_type='CENTRAL' THEN 'CENTRAL' ELSE 'INSTITUTION' END) scope,p.catalog_code,p.verified_catalog,p.result_freeze_status,p.snapshot_version,p.published_at,
     COALESCE(pub.name,e.publisher_name) publisher_name,n.name network_name,
-    (SELECT COUNT(*) FROM exam_participants ep WHERE ep.exam_id=e.id) participant_count,
-    (SELECT GROUP_CONCAT(code) FROM exam_booklets b WHERE b.exam_id=e.id AND b.active=1) booklet_codes
+    (SELECT COUNT(*) FROM exam_participants ep WHERE ep.exam_id=e.id AND (? IS NULL OR ep.institution_id=?)) participant_count,
+    (SELECT GROUP_CONCAT(code) FROM exam_booklets b WHERE b.exam_id=e.id AND b.active=1) booklet_codes,
+    (SELECT cp.status FROM exam_channel_publications cp WHERE cp.exam_id=e.id AND cp.channel='LICENSED') app_channel_status
     FROM exams e LEFT JOIN exam_delivery_profiles p ON p.exam_id=e.id LEFT JOIN publishers pub ON pub.id=p.publisher_id LEFT JOIN institution_networks n ON n.id=p.network_id
-    WHERE ${where.join(' AND ')} ORDER BY e.exam_date DESC,e.created_at DESC LIMIT 250`).bind(...params));
+    WHERE ${where.join(' AND ')} ORDER BY e.exam_date DESC,e.created_at DESC LIMIT 250`).bind(countScope,countScope,...params));
   return json({ok:true,exams:rows});
 }
 
