@@ -822,3 +822,22 @@ PR #304 ile yapılanlar:
 **Üretim uyarısı (22 Ekim):** D1 günlük okuma limiti bugün yine doldu. Sebep: 20 Ekim'deki A018 dağıtımından bu yana üretime hiçbir dağıtım ulaşmadı. Bekleyen her dağıtım, bir sonraki merge onu iptal ettiği için onaysız kaldı. Bu yüzden #282 (zamanlayıcı okuma indeksleri) dahil 22 commit henüz üretimde değil. Yapılması gereken: 03:00'ten (UTC gece yarısı) sonra en son "Deploy Production Cloudflare Worker" çalışmasını onaylamak.
 
 Kapanış için: dağıtım + canlıda elle kabul (K002).
+
+### D1 bütçesi — ajanlar durduruldu, 22 Ekim 17:15 (kullanıcı talebi)
+
+Talep: D1 limitini dolduran ajanlar geçici olarak çalışmasın; alternatif yöntemler değerlendirilsin; sorun şimdi çözülsün.
+
+Hemen yapılanlar:
+- 20 zamanlanmış GitHub ajanı devre dışı bırakıldı (geri alınabilir). Aralarında 15 dakikada bir video işleme ve izleyici, 30 dakikada bir API sağlık kontrolü ve haftalık yük testi var.
+
+PR #305 ile yapılanlar:
+- `SCHEDULED_JOBS_PAUSED="true"`: üç worker'ın 15 dakikalık zamanlanmış işleri veritabanına dokunmadan dönüyor.
+- Üretimde soru ajanı, soru üretimi ve video işleme kapalı.
+- Dağıtım 03:00'ten sonra onaylanmalı.
+
+Kullanıcının hemen yapabileceği (dağıtım beklemeden): Cloudflare panelinde üç worker'ın Cron Trigger'larını silmek.
+
+Canlıya geçince yeniden açma planı:
+- Yalnız gerekli işler (planlı sonuç/video yayını) açılacak, saatlik çalışacak.
+- Ağır taramalar "iş var mı" kontrolüyle tetiklenecek.
+- Ajanlar tek tek ve ölçülerek açılacak.
