@@ -1112,7 +1112,7 @@ Kanıt:
 - `tests/a085-written-camera-reader.test.ts`: yamuk sentetik "telefon fotoğrafından" sayfa, numara, rakam ve kırpım okunuyor; çift işaret ve kesik köşe tahmin edilmiyor.
 - `tests/a085-written-camera-e2e.test.ts`: düzen → fotoğraf → okuma → yükleme → rakam ve AI önerileri → öğretmen puanı → uyum, uçtan uca.
 - Testlerde bulunan ve düzeltilen hatalar: "?" içeren rakam NaN dönüyordu; kısa alternatif cevap reddediliyordu; "AI kapalı" testi yanlışlıkla açık AI ile çalışıyordu.
-- Mutasyon kontrolü: aşağıdaki 8 değişikliğin her biri testlerce yakalandı:
+- Mutasyon kontrolü: aşağıdaki 7 değişikliğin her biri testlerce yakalandı:
   - düşük güven işaretini kaldırmak;
   - öğrenciyi tahmin etmek;
   - rakamı her zaman doğru saymak;
@@ -1120,7 +1120,7 @@ Kanıt:
   - uyum oranını şişirmek;
   - çift işareti tahmin etmek;
   - görüntü boyutunu denetlememek.
-  Bu listedeki 7 değişikliğe ek olarak 1 tane daha denendi.
+  ("AI çıktısında rubrik düzeyini denetlememek" ilk turda yakalanmamıştı; bunun için test eklendi, sonra yakalandı. PR #315 açıklamasında "8 mutasyon" yazıyor; doğrusu 7.)
 - Tam paket 264 dosya / 1.302 test geçti, build geçti.
 
 Sonraki iş: A042.
