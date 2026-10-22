@@ -15,13 +15,13 @@ function fixture(){
  CREATE TABLE student_entities(id TEXT PRIMARY KEY,status TEXT);
  CREATE TABLE student_enrollments(id TEXT PRIMARY KEY,student_id TEXT,institution_id TEXT,season_id TEXT,class_id TEXT,grade_level INTEGER,status TEXT,created_at TEXT);
  CREATE TABLE parent_student_links(id TEXT PRIMARY KEY,parent_user_id TEXT,student_id TEXT,active INTEGER);
- CREATE TABLE teacher_assignments(id TEXT PRIMARY KEY,user_id TEXT,season_id TEXT,class_id TEXT,subject_id TEXT,assignment_type TEXT,active INTEGER);
+ CREATE TABLE teacher_assignments(id TEXT PRIMARY KEY,user_id TEXT,season_id TEXT,class_id TEXT,subject_id TEXT,assignment_type TEXT,active INTEGER,institution_id TEXT DEFAULT 'inst');
  CREATE TABLE frozen_foy_response_evidence(response_id TEXT PRIMARY KEY,run_id TEXT,student_id TEXT,institution_id TEXT,assignment_id TEXT,enrollment_id TEXT,season_id TEXT,academic_year TEXT,grade_level INTEGER,subject_id TEXT,curriculum_version_id TEXT,program_version TEXT,outcome_refs_json TEXT,result_status TEXT,context_valid INTEGER,observed_at TEXT);
  CREATE TABLE frozen_game_session_evidence(session_id TEXT PRIMARY KEY,student_id TEXT,institution_id TEXT,enrollment_id TEXT,season_id TEXT,academic_year TEXT,grade_level INTEGER,game_code TEXT,node_id TEXT,subject_id TEXT,outcome_id TEXT,curriculum_version_id TEXT,program_version TEXT,context_valid INTEGER,score REAL,xp_earned INTEGER,duration_seconds INTEGER,observed_at TEXT);
  INSERT INTO student_entities VALUES('stu','ACTIVE'),('other','ACTIVE');
  INSERT INTO student_enrollments VALUES('enr','stu','inst','season','class-7a',7,'ACTIVE','2026-09-01'),('enr-other','other','other-inst','season-other','class-x',7,'ACTIVE','2026-09-01');
  INSERT INTO parent_student_links VALUES('parent-link','u-parent','stu',1);
- INSERT INTO teacher_assignments VALUES('ta','u-teacher','season','class-7a','math','SUBJECT',1),('ga','u-guidance','season','class-7a',NULL,'GUIDANCE',1);
+ INSERT INTO teacher_assignments VALUES('ta','u-teacher','season','class-7a','math','SUBJECT',1,'inst'),('ga','u-guidance','season','class-7a',NULL,'GUIDANCE',1,'inst');
  INSERT INTO frozen_foy_response_evidence VALUES
  ('r-math','foy-1','stu','inst',NULL,'enr','season','2026-2027',7,'math','cv-math','v1','[]','CORRECT',1,'2026-10-01T10:00:00Z'),
  ('r-science','foy-1','stu','inst',NULL,'enr','season','2026-2027',7,'science','cv-science','v1','[]','WRONG',1,'2026-10-01T10:01:00Z');

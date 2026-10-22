@@ -24,8 +24,9 @@ export async function loadPermissionScope(db: D1Database, user: AuthUser, season
     subjectClassAssignments: [],
   };
   if ((user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER') && user.institution_id) {
-    const params: unknown[] = [user.id];
-    let sql = `SELECT class_id, subject_id, assignment_type FROM teacher_assignments WHERE user_id = ? AND active = 1`;
+    // A046: only assignments of the teacher's current institution count (a teacher who moved keeps no old classes)
+    const params: unknown[] = [user.id, user.institution_id];
+    let sql = `SELECT class_id, subject_id, assignment_type FROM teacher_assignments WHERE user_id = ? AND institution_id = ? AND active = 1`;
     if (seasonId) {
       sql += ' AND season_id = ?';
       params.push(seasonId);
