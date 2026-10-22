@@ -1571,3 +1571,44 @@ Kanıt:
 - Tam paket: 279 dosya / 1.331 test geçti.
 
 Sonraki iş: A060.
+
+### A060 — ödev takip akışı, 23 Ekim 01:50
+
+Durum: KOD TAMAM. Merge edildi: PR #332 ve düzeltme PR #333.
+
+Yapılanlar (20 Ekim'de onaylanan genişletilmiş kapsam):
+- Öğrenci ödevi çevrimiçi çözüyor:
+  - cevaplar ara kayıtla saklanıyor ("Başladı" durumu);
+  - ödev bir kez gönderilebiliyor;
+  - geç teslim mümkün ve "geç" olarak işaretleniyor.
+- Teslimden önce yanıtta doğru cevap, çözüm, video ya da sonuç alanı hiç bulunmuyor.
+- Cevapların açılma zamanı:
+  - varsayılan olarak son teslim tarihinden sonra açılıyor; yalnız gün verilmişse o günün TR saatiyle 23:59'u sayılıyor;
+  - öğretmen ödev bazında "gönderir göndermez" seçeneğini seçebiliyor ve bunu sonradan değiştirebiliyor;
+  - teslim tarihi yoksa cevaplar gönderimden hemen sonra açılıyor.
+- Cevaplar açıldıktan sonra öğrenci her soru için şunları görüyor: kendi cevabı, doğru cevap, sonuç, çözüm, onaylı video çözüm ve kazanım.
+- "Yanlışlarım" ekranı, yalnız cevapları açılmış ödevlerdeki yanlış ve boş soruları gösteriyor.
+- Öğretmen sonuçları görüyor: gönderen ve bekleyen öğrenciler, soru bazında D/Y/B, kazanım bazında başarı. Bu görünüm yalnız ödevi oluşturan öğretmene, okul yöneticisine ve Süper Admin'e açık.
+- Studio kütüphanesinde "Ödev olarak ata" var: sınıf, son tarih ve açılma zamanı seçiliyor.
+- Taslak ödevler öğrenci listesinde görünüyordu; artık görünmüyor.
+- Foy uç noktası artık aynı gönderim kodunu kullanıyor.
+- Migration 0133 eklendi.
+
+Kanıt:
+- `tests/a060-homework.test.ts` dosyasında 4 test var.
+- 12 mutasyonun hepsi yakalandı.
+- Tam paket 280 dosya / 1.335 test geçti.
+
+**Olay (dürüst kayıt):**
+- PR #332, CI typecheck başarısızken merge edildi.
+- Neden: merge adımım verify'ın yalnız bitmesini bekliyordu, sonucunu kontrol etmiyordu. Yerelde de `npm run typecheck` yerine `vite build` koşmuştum; vite build tip denetimi yapmıyor.
+- Hata: ödev kartındaki "Çöz/Sonuçlar" düğmesi tanımsız `setOpen` kullanıyordu ve tıklanınca hata veriyordu.
+- Hata, PR #333 ile 10 dakika içinde kapatıldı.
+- Production deploy yapılmadığı için canlı ortam etkilenmedi.
+- Süreç düzeltildi: merge yalnız iki verify da `success` ise yapılıyor ve yerelde `npm run typecheck` da koşuluyor.
+
+Sınır:
+- Kâğıt + optik ödevde aynı inceleme henüz yok. Studio optik okuma ödev kaydına bağlı değil; ayrı iş olarak not edildi.
+- Video çözüm içeriği A014'e, kazanım videosu A067'ye bağlı.
+
+Sonraki iş: A061.
