@@ -110,6 +110,8 @@ export default {
       if (url.pathname === '/api/imports/preview' && request.method === 'POST') return importPreview(request, env, user);
       const importGetMatch = url.pathname.match(/^\/api\/imports\/([^/]+)$/);
       if (importGetMatch) return request.method === 'GET' ? getImport(env, user, importGetMatch[1]) : methodNotAllowed();
+      const importResolveMatch = url.pathname.match(/^\/api\/imports\/([^/]+)\/rows\/([^/]+)\/resolve$/);
+      if (importResolveMatch) return request.method === 'POST' ? importResolve(request, env, user, importResolveMatch[1], importResolveMatch[2]) : methodNotAllowed();
       const importCommitMatch = url.pathname.match(/^\/api\/imports\/([^/]+)\/commit$/);
       if (importCommitMatch) return request.method === 'POST' ? importCommit(env, user, importCommitMatch[1]) : methodNotAllowed();
 
@@ -1087,7 +1089,10 @@ async function importPreview(request: Request, env: Env, user: AuthUser): Promis
   const institutionId = resolveInstitutionId(user, form.get('institutionId')?.toString() || null);
   if (!(file instanceof File) || !institutionId) return badRequest('Dosya ve kurum gerekli.');
   if (!(await userCanAccessInstitution(env.DB, user, institutionId))) return forbidden();
-  const seasonId = form.get('seasonId')?.toString() || (await currentSeason(env.DB, institutionId))?.id;
+  const requestedSeason = form.get('seasonId')?.toString() || null;
+  // A045: a season of another institution must never receive this institution's students
+  if (requestedSeason && !(await one<any>(env.DB.prepare('SELECT 1 FROM institution_seasons WHERE id=? AND institution_id=?').bind(requestedSeason, institutionId)))) return badRequest('Eğitim yılı bu kuruma ait değil.', 'SEASON_NOT_IN_INSTITUTION');
+  const seasonId = requestedSeason || (await currentSeason(env.DB, institutionId))?.id;
   if (!seasonId) return badRequest('Aktif eğitim yılı bulunamadı.');
   const key = `imports/${institutionId}/${Date.now()}-${safeFileName(file.name)}`;
   const bytes=await file.arrayBuffer();
@@ -1113,10 +1118,15 @@ async function importPreview(request: Request, env: Env, user: AuthUser): Promis
   for (let i = 0; i < rows.length; i++) {
     const r = rows[i];
     const canonical: CanonicalRecord = { row_no: i + 2, student_number: r.student_number, name: r.name, class_name: r.class_name, grade_level: r.grade_level, section: r.section, answers_by_subject: {}, source_type: 'TRANSFER', confidence: 1, issues: [] };
-    const m = matchParticipant(canonical, candidates);
+    let m: any = matchParticipant(canonical, candidates);
+    // A045: duplicates inside the same file, and impossible grades, are never created silently
+    const no = (r.student_number || '').trim(), nm = normalizeName(r.name || '');
+    const firstSame = rows.findIndex((o, k) => k < i && ((no && (o.student_number || '').trim() === no) || (!no && !(o.student_number || '').trim() && normalizeName(o.name || '') === nm && o.class_name === r.class_name)));
+    if (firstSame >= 0) m = { status: 'REVIEW_DUPLICATE', issues: [no ? `Dosyada ${no} numarası ${firstSame + 2}. satırda da var.` : `Aynı ad ve sınıf ${firstSame + 2}. satırda da var.`] };
+    else if (r.grade_level !== undefined && (!Number.isInteger(r.grade_level) || r.grade_level < 1 || r.grade_level > 12)) m = { status: 'REVIEW_GRADE', issues: [`Sınıf düzeyi ${r.grade_level} geçersiz (1–12).`] };
     if (m.status === 'ACTIVE_MATCH' || m.status === 'GUEST_MATCH') matched++; else if (m.status === 'NEW_GUEST') newCount++; else review++;
     await env.DB.prepare(`INSERT INTO import_staging_rows (id,import_job_id,row_no,entity_type,source_json,mapped_json,match_status,issues_json) VALUES(?,?,?,?,?,?,?,?)`)
-      .bind(uuid('isr'), id, i + 2, 'STUDENT', JSON.stringify(r), JSON.stringify({ matchedStudentId: m.student_id || null }), m.status, JSON.stringify(m.issues)).run();
+      .bind(uuid('isr'), id, i + 2, 'STUDENT', JSON.stringify(r), JSON.stringify({ matchedStudentId: m.student_id || null, candidates: m.candidates || [] }), m.status, JSON.stringify(m.issues)).run();
   }
   const summary = { total: rows.length, matched, new: newCount, review };
   await env.DB.prepare('UPDATE import_jobs SET summary_json=?,status=? WHERE id=?').bind(JSON.stringify(summary), review ? 'NEEDS_REVIEW' : 'READY', id).run();
@@ -1130,6 +1140,33 @@ async function getImport(env: Env, user: AuthUser, id: string): Promise<Response
   return json({ ok: true, job: { ...job, summary: job.summary_json ? JSON.parse(job.summary_json) : null }, rows: rows.map((r) => ({ ...r, source: JSON.parse(r.source_json), mapped: r.mapped_json ? JSON.parse(r.mapped_json) : null, issues: r.issues_json ? JSON.parse(r.issues_json) : [] })) });
 }
 
+const IMPORT_REVIEW_STATUSES = ['AMBIGUOUS', 'INVALID', 'REVIEW_DUPLICATE', 'REVIEW_GRADE'];
+/** A045: a person decides each row that needs review: link to an existing student of this institution, create new, or skip. */
+async function importResolve(request: Request, env: Env, user: AuthUser, id: string, rowId: string): Promise<Response> {
+  if (!roleCanManageInstitution(user.role)) return forbidden();
+  const job = await one<any>(env.DB.prepare('SELECT * FROM import_jobs WHERE id=?').bind(id));
+  if (!job || !(await userCanAccessInstitution(env.DB, user, job.institution_id))) return notFound();
+  if (job.status === 'COMMITTED') return badRequest('Aktarım tamamlanmış; satır değiştirilemez.');
+  const row = await one<any>(env.DB.prepare('SELECT * FROM import_staging_rows WHERE id=? AND import_job_id=?').bind(rowId, id));
+  if (!row) return notFound();
+  const body = await request.json<any>().catch(() => ({}));
+  const action = String(body.action || '').toUpperCase();
+  const mapped = row.mapped_json ? JSON.parse(row.mapped_json) : {};
+  let status: string; let matchedStudentId: string | null = null;
+  if (action === 'SKIP') status = 'RESOLVED_SKIP';
+  else if (action === 'NEW') { if (row.match_status === 'REVIEW_GRADE') return badRequest('Sınıf düzeyi geçersiz satır yeni öğrenci olarak eklenemez; dosyayı düzeltin veya atlayın.'); status = 'RESOLVED_NEW'; }
+  else if (action === 'MATCH') {
+    const target = await one<any>(env.DB.prepare(`SELECT s.id,s.status FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id WHERE s.id=? AND e.institution_id=? AND e.season_id=? LIMIT 1`).bind(String(body.studentId || ''), job.institution_id, job.season_id));
+    if (!target) return badRequest('Öğrenci bu kurumun bu eğitim yılında kayıtlı değil.');
+    status = target.status === 'GUEST' ? 'GUEST_MATCH' : 'ACTIVE_MATCH'; matchedStudentId = target.id;
+  } else return badRequest('İşlem MATCH, NEW veya SKIP olmalıdır.');
+  await env.DB.prepare('UPDATE import_staging_rows SET match_status=?,mapped_json=? WHERE id=?').bind(status, JSON.stringify({ ...mapped, matchedStudentId, resolvedBy: user.id, resolution: action }), rowId).run();
+  const left = await one<any>(env.DB.prepare(`SELECT count(*) c FROM import_staging_rows WHERE import_job_id=? AND match_status IN (${IMPORT_REVIEW_STATUSES.map(() => '?').join(',')})`).bind(id, ...IMPORT_REVIEW_STATUSES));
+  await env.DB.prepare('UPDATE import_jobs SET status=? WHERE id=?').bind(Number(left?.c || 0) ? 'NEEDS_REVIEW' : 'READY', id).run();
+  await audit(env.DB, user.id, job.institution_id, 'IMPORT_ROW_RESOLVED', 'import_job', id, { rowNo: row.row_no, action, matchedStudentId });
+  return json({ ok: true, status, remaining: Number(left?.c || 0) });
+}
+
 async function importCommit(env: Env, user: AuthUser, id: string): Promise<Response> {
   if (!roleCanManageInstitution(user.role)) return forbidden();
   const job = await one<any>(env.DB.prepare('SELECT * FROM import_jobs WHERE id=?').bind(id));
@@ -1137,14 +1174,18 @@ async function importCommit(env: Env, user: AuthUser, id: string): Promise<Respo
   if (job.status === 'NEEDS_REVIEW') return badRequest('Kontrol gereken satırlar çözülmeden aktarım yapılamaz.');
   if (job.status === 'COMMITTED') return json({ ok: true, alreadyCommitted: true });
   const rows = await all<any>(env.DB.prepare('SELECT * FROM import_staging_rows WHERE import_job_id=? ORDER BY row_no').bind(id));
-  let created = 0, reused = 0;
+  if (rows.some((r) => IMPORT_REVIEW_STATUSES.includes(r.match_status))) return badRequest('Kontrol gereken satırlar çözülmeden aktarım yapılamaz.');
+  let created = 0, reused = 0, skipped = 0; const conflicts: number[] = [];
   for (const row of rows) {
     const source = JSON.parse(row.source_json);
     const mapped = row.mapped_json ? JSON.parse(row.mapped_json) : {};
+    if (row.match_status === 'RESOLVED_SKIP') { skipped++; continue; }
     if (mapped.matchedStudentId) { reused++; continue; }
+    // A045: the number may have been taken since the preview; never create a second student with it
+    if (source.student_number && await one<any>(env.DB.prepare('SELECT 1 FROM student_enrollments WHERE institution_id=? AND season_id=? AND student_number=?').bind(job.institution_id, job.season_id, String(source.student_number).trim()))) { conflicts.push(row.row_no); continue; }
     const names = splitName(source.name);
     const studentId = uuid('stu');
-    await env.DB.prepare(`INSERT INTO student_entities (id,first_name,last_name,normalized_name,status,activated_at) VALUES(?,?,?,?, 'ACTIVE',CURRENT_TIMESTAMP)`).bind(studentId, names.firstName, names.lastName, normalizeName(source.name)).run();
+    const rowStatements: D1PreparedStatement[] = [env.DB.prepare(`INSERT INTO student_entities (id,first_name,last_name,normalized_name,status,activated_at) VALUES(?,?,?,?, 'ACTIVE',CURRENT_TIMESTAMP)`).bind(studentId, names.firstName, names.lastName, normalizeName(source.name))];
     let classId: string | null = null;
     if (source.grade_level && source.section) {
       let cls = await one<any>(env.DB.prepare('SELECT id FROM classes WHERE season_id=? AND grade_level=? AND upper(section)=upper(?)').bind(job.season_id, source.grade_level, source.section));
@@ -1153,13 +1194,14 @@ async function importCommit(env: Env, user: AuthUser, id: string): Promise<Respo
         await env.DB.prepare('INSERT INTO classes (id,institution_id,season_id,grade_level,section,name) VALUES(?,?,?,?,?,?)').bind(classId, job.institution_id, job.season_id, source.grade_level, source.section, `${source.grade_level}/${source.section}`).run();
       } else classId = cls.id;
     }
-    await env.DB.prepare(`INSERT INTO student_enrollments (id,student_id,institution_id,season_id,class_id,student_number,grade_level,section) VALUES(?,?,?,?,?,?,?,?)`).bind(uuid('enr'), studentId, job.institution_id, job.season_id, classId, source.student_number || null, source.grade_level || null, source.section || null).run();
-    if (source.external_id) await env.DB.prepare(`INSERT OR IGNORE INTO external_identities (id,institution_id,source_system,entity_type,external_id,internal_id) VALUES(?,?,?,?,?,?)`).bind(uuid('ext'), job.institution_id, job.source_system, 'STUDENT', source.external_id, studentId).run();
+    rowStatements.push(env.DB.prepare(`INSERT INTO student_enrollments (id,student_id,institution_id,season_id,class_id,student_number,grade_level,section) VALUES(?,?,?,?,?,?,?,?)`).bind(uuid('enr'), studentId, job.institution_id, job.season_id, classId, source.student_number || null, source.grade_level || null, source.section || null));
+    if (source.external_id) rowStatements.push(env.DB.prepare(`INSERT OR IGNORE INTO external_identities (id,institution_id,source_system,entity_type,external_id,internal_id) VALUES(?,?,?,?,?,?)`).bind(uuid('ext'), job.institution_id, job.source_system, 'STUDENT', source.external_id, studentId));
+    await env.DB.batch(rowStatements);
     created++;
   }
   await env.DB.prepare(`UPDATE import_jobs SET status='COMMITTED',committed_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run();
-  await audit(env.DB, user.id, job.institution_id, 'IMPORT_COMMITTED', 'import_job', id, { created, reused });
-  return json({ ok: true, created, reused });
+  await audit(env.DB, user.id, job.institution_id, 'IMPORT_COMMITTED', 'import_job', id, { created, reused, skipped, conflicts });
+  return json({ ok: true, created, reused, skipped, conflicts });
 }
 
 async function listWorksheets(env: Env, user: AuthUser, url: URL): Promise<Response> {
