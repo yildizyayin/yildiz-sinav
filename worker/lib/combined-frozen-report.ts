@@ -1,4 +1,13 @@
 import {mergeFrozenOutcomes,outcomeFeedback} from './frozen-outcome-summary';
+/** A054: how repeated work of each source enters the combined report (stated in every combined report). */
+export function repeatPolicyFor(sourceType:string,report:any){
+ if(sourceType==='EXAM')return {sourceType,measure:'ACCURACY',repeatPolicy:'PUBLISHED_SNAPSHOT_ONCE',description:'Her sınavın yalnız yayımlanmış sonucu, sınav başına bir kez sayılır.'};
+ if(sourceType==='QUESTION_BANK'){const first=report?.repeatPolicy==='FIRST';return {sourceType,measure:'ACCURACY',repeatPolicy:first?'FIRST_ATTEMPT':'LATEST_ATTEMPT',description:first?'Aynı soru birden çok çözüldüyse yalnız ilk çözüm sayılır.':'Aynı soru birden çok çözüldüyse yalnız son çözüm sayılır.'};}
+ if(sourceType==='MINI_TEST')return {sourceType,measure:'ACCURACY',repeatPolicy:'NEW_QUESTIONS_ONLY',description:'Yalnız yeni soru mini testleri sayılır; tekrar ve alıştırma mini testleri katılmaz.'};
+ if(sourceType==='FOY')return {sourceType,measure:'ACCURACY',repeatPolicy:'FIRST_SUBMISSION',description:'Föyün ilk gönderimi sayılır; föy yeniden gönderilemez.'};
+ if(sourceType==='MINI_GAME')return {sourceType,measure:'GAME_ACTIVITY',repeatPolicy:'EVERY_SESSION_SEPARATE',description:'Mini oyun puanı doğruluğa katılmaz; her oturum ayrı etkinlik olarak gösterilir.'};
+ return {sourceType,measure:'UNKNOWN',repeatPolicy:'UNKNOWN',description:''};
+}
 // Inputs are the authorized source reducers' summaries, never client metrics.
 export function combineFrozenReports(sources:{sourceType:'EXAM'|'QUESTION_BANK'|'MINI_TEST';report:any}[]){
  const groups=new Map<string,any>();
@@ -11,5 +20,5 @@ export function combineFrozenReports(sources:{sourceType:'EXAM'|'QUESTION_BANK'|
   group.sourceBreakdown.push({sourceType,correct:g.correct,wrong:g.wrong,blank:g.blank,evidenceCount:g.evidenceCount});
  }
  const outcomes=mergeFrozenOutcomes(sources);
- return {outcomes,outcomeFeedback:outcomeFeedback(outcomes),sourceTypes:sources.map(s=>s.sourceType),calculationPolicy:'SELECTED_FROZEN_SOURCE_EVENT_WEIGHTED_ACCURACY_V1',groups:[...groups.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([,g])=>{const evidenceCount=g.correct+g.wrong+g.blank;return {...g,evidenceCount,accuracyPercent:evidenceCount?Math.round(g.correct/evidenceCount*10000)/100:null};}),officialScore:null,nationalRank:null};
+ return {outcomes,outcomeFeedback:outcomeFeedback(outcomes),sourceTypes:sources.map(s=>s.sourceType),repeatPolicies:sources.map(x=>repeatPolicyFor(x.sourceType,x.report)),calculationPolicy:'SELECTED_FROZEN_SOURCE_EVENT_WEIGHTED_ACCURACY_V1',groups:[...groups.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([,g])=>{const evidenceCount=g.correct+g.wrong+g.blank;return {...g,evidenceCount,accuracyPercent:evidenceCount?Math.round(g.correct/evidenceCount*10000)/100:null};}),officialScore:null,nationalRank:null};
 }
