@@ -36,9 +36,20 @@ export async function handlePrivateRubricExport(request:Request,env:Env,user:Aut
   try{await env.REPORT_EXPORT_QUEUE!.send({schemaVersion:1,jobId:id})}catch{/* Scheduled dispatch recovers persisted QUEUED jobs. */}
   return json({ok:true,jobId:id,status:'QUEUED'},202);
  }
+ const cancelMatch=url.pathname.match(/^\/api\/private-rubric-exports\/([^/]+)\/cancel$/);
+ if(cancelMatch){
+  // A056: the owner stops a job; its files and rows go through the normal expiry cleanup, a running worker cannot commit (lease cleared)
+  if(request.method!=='POST')return fail(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+  if(request.headers.get('Origin')!==url.origin)return forbidden('İsteği ANUNEX üzerinden başlatın.');
+  if(cancelMatch[1].length>100)return badRequest('Rapor seçimi geçersiz.');
+  const r=await env.DB.prepare("UPDATE private_rubric_export_jobs SET status='REVOKED',error_code='CANCELLED_BY_USER',lease_token=NULL,lease_until=NULL,expires_at=datetime('now','-1 second') WHERE id=? AND actor_user_id=? AND status IN ('QUEUED','RUNNING','READY') AND datetime(expires_at)>CURRENT_TIMESTAMP").bind(cancelMatch[1],user.id).run();
+  if(!r.meta.changes){const own=await one<any>(env.DB.prepare('SELECT status,error_code FROM private_rubric_export_jobs WHERE id=? AND actor_user_id=?').bind(cancelMatch[1],user.id));if(!own)return forbidden();if(own.error_code==='CANCELLED_BY_USER')return json({ok:true,jobId:cancelMatch[1],status:'CANCELLED',replayed:true});return fail(409,'EXPORT_NOT_CANCELLABLE','Bu rapor artık iptal edilemez.');}
+  return json({ok:true,jobId:cancelMatch[1],status:'CANCELLED'});
+ }
  const match=url.pathname.match(/^\/api\/private-rubric-exports\/([^/]+)(?:\/parts(?:\/(\d+)\/download)?)?$/);if(!match)return fail(404,'NOT_FOUND','Rapor yolu bulunamadı.');if(request.method!=='GET')return fail(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
  if(match[1].length>100||match[2]?.length>9)return badRequest('Rapor veya bölüm seçimi geçersiz.');
  const job=await one<any>(env.DB.prepare('SELECT * FROM private_rubric_export_jobs WHERE id=? AND actor_user_id=?').bind(match[1],user.id));if(!job)return forbidden();
+ if(job.error_code==='CANCELLED_BY_USER')return fail(410,'EXPORT_CANCELLED','Rapor iptal edildi.');
  if(Date.parse(job.expires_at.replace(' ','T')+'Z')<=Date.now())return fail(410,'EXPORT_EXPIRED','Raporun indirme süresi doldu.');
  if(actorScope(user)!==job.actor_scope_json)return forbidden('Rapor yetki bağlamı değişti.');
  const selection=JSON.parse(job.selection_json),proof=await page(env,user,selection);if(!proof?.ok)return forbidden('Rapor kapsamına erişim artık yok.');
