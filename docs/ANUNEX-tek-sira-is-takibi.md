@@ -1445,3 +1445,32 @@ Kanıt:
 Karar notu: föy için "ilk gönderim sayılır" kuralını ben seçtim. Optik yüklemedeki "gerekçeyle değiştir" akışı gibi bir yeniden gönderim isterseniz, bu kural değiştirilebilir.
 
 Sonraki iş: A055.
+
+### A055 — Maarif süreç gözlemi, 23 Ekim 00:29
+
+Durum: KOD TAMAM, merge edildi (PR #328).
+
+İncelemede zaten tamam olanlar (75 mevcut test kapsıyor):
+- Süreç bileşeni, doğrulanmış resmî öğrenme çıktısına bağlı.
+- Rubrikler sürümlü ve değiştirilemez.
+- Gözlem kaydedildiği anda rubrik dondurulur ve kayıt bir daha değiştirilemez.
+- Gözlemi yalnız ilgili branş öğretmeni yazar.
+- Geri çekme ayrı bir kayıt olarak tutulur; asıl gözlem silinmez.
+- Toplu rapor "resmî beceri puanı değildir" diyor.
+
+Eksik olan: tek öğrenci görünümünde ve iki CSV dışa aktarımında gözlenen düzey, kesin bir hüküm gibi duruyordu.
+
+Düzeltmeler:
+- API'ye `interpretation` alanı eklendi: "öğretmen gözlemi; kesin yeterlik hükmü değil".
+- Her gözleme `verifiedOfficialRubric` alanı eklendi.
+- Ekranda açıklama kutusu var. Öğretmen tasarımı rubrik "resmî kaynakla doğrulanmamış" diye yazılıyor.
+- İki CSV'ye "Niteliği" sütunu eklendi.
+
+Kanıt:
+- `tests/a055-process-observation.test.ts`; özel dışa aktarım testine de yeni bir kontrol eklendi.
+- 5 mutasyon denendi, hepsi yakalandı.
+- Tam paket: 277 dosya, 1.326 test geçti.
+
+Sınır: canlı el testi K002'de yapılacak.
+
+Sonraki iş: A056.
