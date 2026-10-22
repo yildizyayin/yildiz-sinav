@@ -70,11 +70,12 @@ export function Reports(){
    }catch(e:any){if(currentListScope.current===requestScope&&listGeneration.current===attempt)setError(e.message)}
  };
 
- const loadReport=async(ids?:string[])=>{
+ const [academicYear,setAcademicYear]=useState('');
+ const loadReport=async(ids?:string[],year=academicYear)=>{
    if(!studentId)return;const requestScope=scopeKey,attempt=++requestGeneration.current;setBusy(true);setError('');
    try{
      const examIds=(ids??selectedExams).join(',');
-     const r=await api<any>(`/api/reporting/students/${studentId}/combined${qs({examIds:examIds||null})}`);
+     const r=await api<any>(`/api/reporting/students/${studentId}/combined${qs({examIds:examIds||null,academicYear:year||null})}`);
      if(currentScope.current!==requestScope||requestGeneration.current!==attempt)return;
      setReport({...r,_scope:requestScope});
      if(!(ids??selectedExams).length)setSelectedExams(r.selectedExamIds||[]);
@@ -121,7 +122,7 @@ export function Reports(){
     {selectionPending&&<div className="alert info" role="status">Sınav seçimi değişti. Önce Raporu Güncelle'ye basın; gösterilen sınav özeti son hazırlanan seçime aittir. CSV ve PDF güncellemeden sonra kullanılabilir.</div>}
     <div className="section-head"><div><h2>{report.student.first_name} {report.student.last_name}</h2><p>{report.student.institution_name||selectedStudent?.institution_name||''}{report.student.class_name?` · ${report.student.class_name}`:''}{report.restrictedToSubjects?' · Branş yetkisiyle filtrelendi':''}</p></div></div>
 
-    <div className="panel" style={{marginBottom:20}}><div className="panel-head"><div><h2>Raporlanacak sınavlar</h2><p>En fazla 20 sınav seçebilirsiniz. Seçimi değiştirince sınav özetini güncelleyin; diğer çalışma kaynakları kendi bölümlerinden seçilir.</p></div><button className="secondary" onClick={()=>void loadReport()} disabled={!selectedExams.length||busy}><BarChart3 size={16}/> {busy?'Hazırlanıyor…':'Raporu Güncelle'}</button></div><div className="cards-list">{(report.availableExams||[]).map((e:any)=><label className="list-card" key={e.exam_id} style={{alignItems:'center',cursor:'pointer'}}><input type="checkbox" checked={selectedExams.includes(e.exam_id)} disabled={!selectedExams.includes(e.exam_id)&&selectedExams.length>=20} onChange={()=>toggleExam(e.exam_id)}/><div><strong>{e.title}</strong><span>{e.exam_date||'Tarih yok'} · {e.exam_type}</span></div></label>)}</div></div>
+    <div className="panel" style={{marginBottom:20}}>{(report.availableYears||[]).length>1&&<label>Dönem<select value={report.selectedAcademicYear||''} onChange={e=>{setAcademicYear(e.target.value);setSelectedExams([]);void loadReport([],e.target.value)}}><option value="">Tüm dönemler</option>{report.availableYears.map((y:string)=><option key={y} value={y}>{y}</option>)}</select></label>}<div className="panel-head"><div><h2>Raporlanacak sınavlar</h2><p>En fazla 20 sınav seçebilirsiniz. Seçimi değiştirince sınav özetini güncelleyin; diğer çalışma kaynakları kendi bölümlerinden seçilir.</p></div><button className="secondary" onClick={()=>void loadReport()} disabled={!selectedExams.length||busy}><BarChart3 size={16}/> {busy?'Hazırlanıyor…':'Raporu Güncelle'}</button></div><div className="cards-list">{(report.availableExams||[]).map((e:any)=><label className="list-card" key={e.exam_id} style={{alignItems:'center',cursor:'pointer'}}><input type="checkbox" checked={selectedExams.includes(e.exam_id)} disabled={!selectedExams.includes(e.exam_id)&&selectedExams.length>=20} onChange={()=>toggleExam(e.exam_id)}/><div><strong>{e.title}</strong><span>{e.exam_date||'Tarih yok'} · {e.exam_type}</span></div></label>)}</div></div>
 
     <RubricObservationReport key={`${scopeKey}-rubric`} studentId={studentId} userId={user?.id||''} allowHistory={['SUPER_ADMIN','INSTITUTION_MANAGER','STUDENT','PARENT'].includes(user?.role||'')}/>
     <FrozenExamReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
