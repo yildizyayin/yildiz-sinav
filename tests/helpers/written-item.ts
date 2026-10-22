@@ -48,3 +48,28 @@ export async function writtenSetup(items = [writtenItem()]) {
   };
   return { ...t, run, questionIds, approve, as };
 }
+
+/** A final written paper (A040) of the school: bank item 40 pts on T.8.1.1 (two 20-pt criteria, 0/10/20) and a committee item 60 pts (0/30/60) on an un-coded row. */
+export async function finalWrittenPaper() {
+  const t = await writtenSetup();
+  const [qid] = t.questionIds; await t.approve(qid);
+  expect((await t.as('teacher', `/api/question-rubrics/${qid}/versions`, 'POST', { totalPoints: 40, alternatives: [], criteria: [
+    { criterion: 'Okuma adımlarını sıralama', points: 20, levels: [{ points: 0, descriptor: 'Yok' }, { points: 10, descriptor: 'Kısmen' }, { points: 20, descriptor: 'Tam' }] },
+    { criterion: 'Ana fikri ifade etme', points: 20, levels: [{ points: 0, descriptor: 'Yok' }, { points: 10, descriptor: 'Kısmen' }, { points: 20, descriptor: 'Tam' }] }] })).response.status).toBe(201);
+  expect((await t.as('teacher', `/api/question-rubrics/${qid}/versions/2/approve`, 'POST', { confirm: true })).response.status).toBe(200);
+  const tb = await t.as('admin', '/api/written-scenarios', 'POST', { academicYear: '2026-2027', term: 1, examNo: 1, gradeLevel: 8, subjectId: 'sub_tur', authority: 'ODSGM', sourceTitle: 'Dağılım tablosu', sourceUrl: 'https://www.meb.gov.tr/ortak-yazili-dagilim/haber/00000/tr', sourceAcademicYear: '2026-2027',
+    scenarios: [{ label: 'A', rows: [{ unit: 'Okuma', outcomeCode: 'T.8.1.1', questionCount: 1 }, { unit: 'Yazma', topic: 'Metin', questionCount: 1 }] }] });
+  await t.as('admin', `/api/written-scenarios/${tb.data.id}/verify`, 'POST', {});
+  const sc = (await t.as('mgr', `/api/written-scenarios/${tb.data.id}`)).data.table.scenarios[0];
+  await t.as('mgr', `/api/written-scenarios/${tb.data.id}/choice`, 'POST', { scenarioId: sc.id });
+  const id = (await t.as('teacher', '/api/written-papers', 'POST', { tableId: tb.data.id, title: '8-A Türkçe 1. yazılı' })).data.id;
+  expect((await t.as('teacher', `/api/written-papers/${id}/items`, 'PUT', { items: [
+    { scenarioRowId: sc.rows[0].id, questionId: qid },
+    { scenarioRowId: sc.rows[1].id, source: 'ZUMRE', stemText: 'Zümre sorusu: okuduğunuz metnin konusunu ve ana fikrini yazınız.', modelAnswer: 'Konu ve ana fikir doğru yazılır.',
+      rubric: { totalPoints: 60, alternatives: [], criteria: [{ criterion: 'Konu ve ana fikir', points: 60, levels: [{ points: 0, descriptor: 'Yok' }, { points: 30, descriptor: 'Kısmen' }, { points: 60, descriptor: 'Tam' }] }] } }] })).response.status).toBe(200);
+  expect((await t.as('teacher', `/api/written-papers/${id}/finalize`, 'POST', { confirm: true })).response.status).toBe(200);
+  const items = t.db.prepare('SELECT id,sort_order FROM written_paper_items WHERE paper_id=? ORDER BY sort_order').all(id) as any[];
+  const score = (student: string, itemId: string, criterionPoints: number[], reason?: string) => t.as('teacher', `/api/written-papers/${id}/grading/${student}/items/${itemId}`, 'POST', { criterionPoints, reason });
+  const finalize = (student: string, reason?: string) => t.as('teacher', `/api/written-papers/${id}/grading/${student}/finalize`, 'POST', { confirm: true, reason });
+  return { ...t, id, items, score, finalize };
+}
