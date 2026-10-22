@@ -39,6 +39,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/worksheet-calendar',label:'Föy Takvimi',icon:CalendarDays},
       {to:'/outcomes',label:'Kazanım Haritası',icon:Target},
       {to:'/written-scenarios',label:'Ortak Yazılı Senaryoları',icon:FileText},
+      {to:'/written-rubrics',label:'Yazılı Rubrikleri',icon:ListChecks},
       {to:'/transfers',label:'Veri Dosyaları',icon:FileUp},
     ]},
     { label:'KURUMLAR VE ERİŞİM', items:[
@@ -124,7 +125,7 @@ const nav: Record<Role, NavItem[]> = {
     { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle }, { to: '/guidance-admin', label: 'RBA & Rehberlik Testleri', icon: ClipboardCheck }, { to: '/agent-center', label: 'AI Ajan Merkezi', icon: Activity }, { to: '/licenses', label: 'Lisanslar', icon: KeyRound },
     { to: '/theme-management', label: 'Tema & Özel Günler', icon: Palette },
     { to: '/question-team', label: 'Soru Havuzu Ekibi', icon: Activity,feature:'QUESTION_BANK' }, { to: '/feature-lab', label: 'Feature Lab', icon: FlaskConical }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3, feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Enterprise', icon: Building2, feature:'ENTERPRISE' },
-    { to: '/academic-target-admin', label: 'Resmî Hedef Verileri', icon: Target }, { to: '/official-question-intelligence', label: 'Çıkmış Soru & Kazanım', icon: BarChart3 }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/curriculum', label: 'Müfredat & Kazanımlar', icon: BookMarked }, { to: '/written-scenarios', label: 'Ortak Yazılı Senaryoları', icon: FileText },
+    { to: '/academic-target-admin', label: 'Resmî Hedef Verileri', icon: Target }, { to: '/official-question-intelligence', label: 'Çıkmış Soru & Kazanım', icon: BarChart3 }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/curriculum', label: 'Müfredat & Kazanımlar', icon: BookMarked }, { to: '/written-scenarios', label: 'Ortak Yazılı Senaryoları', icon: FileText }, { to: '/written-rubrics', label: 'Yazılı Rubrikleri', icon: ListChecks },
     { to: '/exam-definitions', label: 'Sınav Ekle', icon: ClipboardCheck }, { to: '/exams', label: 'Sınav Listesi', icon: ClipboardCheck },
     { to: '/students', label: 'Öğrenciler', icon: Users }, { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange },
     { to: '/opticals', label: 'Optik Form Ağacı', icon: ScanLine }, { to: '/optical-design', label: 'Baskı Şablonu Tasarla', icon: Printer }, { to: '/optical-prepare', label: 'Optik Basma', icon: Printer }, { to: '/camera-test', label: 'Optik Test Merkezi', icon: Camera }, { to: '/calibration', label: 'Yazıcı Kalibrasyonu', icon: Printer },
@@ -142,7 +143,7 @@ const nav: Record<Role, NavItem[]> = {
   ],
   TEACHER: [
     { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
-    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/written-scenarios', label: 'Ortak Yazılı', icon: FileText }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Branş Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
+    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/written-scenarios', label: 'Ortak Yazılı', icon: FileText }, { to: '/written-rubrics', label: 'Yazılı Rubrikleri', icon: ListChecks }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Branş Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
     { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck },
   ],
   GUIDANCE_TEACHER: [
