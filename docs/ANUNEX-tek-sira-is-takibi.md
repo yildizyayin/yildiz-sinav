@@ -776,3 +776,28 @@ PR #302 ile yapılanlar:
 - 248 dosya / 1.258 test, build PASS. Görsel tasarım D001'de.
 
 Kapanış için: dağıtım + canlıda elle kabul (K002).
+
+### Kullanıcı notu — 22 Ekim 16:19
+
+Süper Admin sistemin tek sahibidir. Kendi hesabı bir kuruma bağlı olsun ya da olmasın, tüm kurumların tüm katılımlarını görür; her şeyi düzeltir, yükler, siler ve kısıtlar. Bir kurumla anlaşmazlıkta kurumu ve bağlı tüm hesapları dondurabilir, askıya alabilir, yeniden aktif edebilir ve silebilir.
+
+Kararlar (soruldu, 22 Ekim):
+- İş A033'ten önce yapılacak.
+- Silme geri alınabilir olacak; kalıcı imha ayrı ve onaylı bir adım.
+
+### A032b — Süper Admin kurum yaşam döngüsü, 22 Ekim 16:20–
+
+Bulgular:
+1. Uygulamada yalnız aktif/pasif vardı; sonuç ağı yaşam döngüsü ayrıydı ve ikisi tutarsızdı.
+2. Hesabı askıya alınan kuruma bağlı Süper Admin kilitleniyordu: oturumu kapatılıyordu; Nibiru, akademik gelişim, passkey ve lisans kontrolleri engelliyordu.
+3. Askıdaki kurumda Süper Admin değerlendirme yapamıyordu.
+
+PR #303 ile yapılanlar:
+- Tek yaşam döngüsü: Aktif / Askıda / Dondurulmuş / Silinmiş (geri alınabilir).
+- Aktif olmayan her durumda kuruma bağlı tüm hesaplar kapanıyor.
+- Silme gerekçe istiyor ve veriyi saklıyor; silinen kurum "Silinenler"den geri alınabiliyor.
+- Süper Admin hiçbir durumda kilitlenmiyor.
+- Kurumlar ekranı etkiyi gösteriyor.
+- 250 dosya / 1.262 test, build PASS.
+
+Bekleyen: kalıcı imha (ayrı onaylı iş). Kapanış için: dağıtım + canlıda elle kabul (K002).
