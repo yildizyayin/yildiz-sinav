@@ -1171,3 +1171,31 @@ Kanıt:
 - Tam paket 266 dosya / 1.305 test geçti.
 
 Sonraki iş: A044.
+
+### A044 — zincir kurum kapsamı, 22 Ekim
+
+Durum: KOD TAMAM, merge edildi (PR #318). Canlı doğrulama dağıtımdan sonra (K002).
+
+Bulunan ve kapatılan güvenlik açıkları:
+- Zincir dashboard'u, üye kurumun her kullanıcısına zincirdeki bütün kurumların tam satırlarını iletişim bilgileriyle döndürüyordu. Buna öğretmen, öğrenci ve veli de dahildi.
+- Zincir yöneticisi istediği kurumu zincire ekleyerek görüş alanını genişletebiliyordu.
+
+Yapılanlar:
+- **Erişim:** Zincir görünümü yalnız Süper Admin'e ve aktif zincir rolü olan, merkezin ya da üye kurumun kurum yöneticisine açık.
+  - Kurum zincirden çıkarılınca o kurumun yöneticisinin zincir erişimi de düşer.
+  - Kurum listesinde iletişim bilgisi dönmez.
+- **Üye ekleme ve çıkarma:** yalnız Süper Admin yapar; çıkarma ucu yeni eklendi.
+- **Zincir rolü (yönetici / izleyici):** yalnız Süper Admin verir ve kaldırır; yalnız merkezin ya da üye kurumun kurum yöneticisine verilebilir. Öğretmene ya da dış kuruma rol verilemez.
+- **Karşılaştırma:** okul okul katılımcı, ortalama puan ve ortalama net; dondurulmuş sonuçtan alınır. Yalnız üye kurumlar sayılır, zincir toplamı üyelerin toplamına eşittir, dış kurum karışmaz. Dondurulmamış sınavda karşılaştırma yapılmaz.
+- Her değişiklik denetim kaydına yazılır. Enterprise ekranına zincir paneli eklendi.
+
+Kanıt:
+- `tests/a044-network-scope.test.ts`.
+- Mutasyon kontrolü: aşağıdaki 4 değişikliğin her biri testlerce yakalandı:
+  - zincir yöneticisinin görüş alanını genişletmesine izin vermek;
+  - çıkarılan kurumun rolünü korumak;
+  - iletişim bilgisini sızdırmak;
+  - dış kurumu toplama katmak.
+- Tam paket 267 dosya / 1.306 test geçti.
+
+Sonraki iş: A045.
