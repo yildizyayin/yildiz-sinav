@@ -913,3 +913,38 @@ PR #309 ile yapılanlar:
 - 257 dosya / 1.278 test, build PASS.
 
 Kapanış için: gerçek basılı deneme optiğinin telefonla okunması elle (K002). Optiğin Phobos'ta kamera geometrisi tanımlı olmalı.
+
+### A037 — ortak yazılı resmî senaryo girişi, 22 Ekim 18:45–19:20
+
+Durum: KOD TAMAM, merge edildi (PR #310, `4b18489`). Canlıda doğrulama dağıtımdan sonra (K002).
+
+Dayanak: MEB duyurusu "Birinci dönem ortak yazılı sınavlarının konu-soru dağılım tabloları yayımlandı" (2026-2027). Listelenen dersler için tabloyu ÖDSGM hazırlar, diğerleri için il zümreleri. Her tabloda birden çok senaryo vardır ve okul zümresi birini seçer.
+
+Yapılanlar:
+- Migration 0126 ile dört yeni tablo: dağılım tablosu, senaryo, satır, okulun seçimi.
+- Giriş sırasında doğrulananlar:
+  - eğitim yılı, dönem (1–2), sınav (1–3), sınıf ve ders;
+  - kapsam: ÖDSGM ülke geneli, il zümresi için il zorunlu, okul zümresi bir okula bağlı;
+  - kaynak bağlantısı https olmalı;
+  - satır başına 1–20 soru, senaryo toplamı en çok 50.
+- Resmî doğrulamayı yalnız Süper Admin yapar. Şartlar:
+  - kaynak meb.gov.tr üzerinde olmalı (il zümresi için *.meb.gov.tr);
+  - kaynağın eğitim yılı tablonun yılıyla aynı olmalı;
+  - tüm kazanım kodları o yılın doğrulanmış programında bulunmalı.
+  Doğrulanan tablo kilitlenir; değişiklik için yeni tablo girilir, eskisi arşivlenir.
+- **2027–2028:** bu yılın belgesi yayımlanmadığı için 2027–2028 tablosu taslak kalır, okullara görünmez ve seçilemez (testle kanıtlı).
+- Okul yöneticisi kendi zümre tablosunu girebilir; bu tablo resmî sayılmaz. Senaryoyu okul yöneticisi seçer.
+- İl tablosunu yalnız o ilin okulları görür. Öğretmen yalnız okur. Öğrenci ve veli erişemez.
+- Her işlem denetim kaydına yazılır.
+- Sayfa: `/written-scenarios`, menüde "Ortak Yazılı Senaryoları".
+
+Testin bulduğu hata: tablo düzenlenince okulun seçimi silinmiş senaryoya bağlı kalıyordu (FK hatası). Düzeltildi.
+
+Kanıt:
+- `tests/a037-written-scenarios.test.ts`: 5 test, gerçek şema, production giriş zinciri.
+- Mutasyon kontrolü: aynı yıl kuralı kaldırılınca 2 test düştü.
+- Tam paket 258 dosya / 1.283 test geçti, build geçti.
+
+Sınır: tablo satırları resmî belgeden elle girilir. Otomatik PDF aktarımı onaysız eklenmedi.
+
+Sonraki iş: A038.
