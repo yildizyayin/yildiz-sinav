@@ -851,3 +851,21 @@ Sıradaki işlere devam edilecek; diğer çalışmalar sistem tamamen bittikten 
 - Workers Paid: aylık 25 milyar satır okuma ve 50 milyon satır yazma dahil.
 - Aşımda okuma 1 milyon satır başına 0,001 $, yazma 1 milyon satır başına 1 $.
 - Ücretli planda günlük kesinti yok; aşım faturalanıyor.
+
+### A034 — Phobos optik tanımlama, 22 Ekim 17:30–
+
+PR #304 (A033) merge edildi. PR #305 (D1 bütçesi) merge bekliyor.
+
+Uçtan uca doğrulama (gerçek 129 FMT ve anonim TXT ile) temel işlerin doğru çalıştığını gösterdi:
+- ekleme, FMT içe aktarma, örnek testi, yayın;
+- yayındaki sürümün kilitlenmesi ve kopya sürüm;
+- benzersiz kod;
+- sürüm silme (dosyalarıyla) ve arşiv;
+- kurum kapsamı ve merkezi optiklerin salt okunur olması.
+
+PR #306 ile yapılanlar:
+- Süper Admin kurum adına optik tanımlayabiliyor.
+- Denetim kayıtları sahibi olan kurumla yazılıyor.
+- Testler ve build PASS.
+
+Kapanış için: dağıtım + canlıda elle kabul (K002).
