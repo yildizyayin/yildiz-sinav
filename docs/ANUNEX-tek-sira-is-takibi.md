@@ -869,3 +869,20 @@ PR #306 ile yapılanlar:
 - Testler ve build PASS.
 
 Kapanış için: dağıtım + canlıda elle kabul (K002).
+
+### A035 — Deimos optik basma, 22 Ekim 17:45–
+
+PR #306 (A034) merge edildi. #305 (D1 bütçesi) hâlâ merge bekliyor.
+
+Bulgular:
+1. Öğrencinin basılı kitapçığı her baskıda sınıf sırasından yeniden hesaplanıyordu. Ada göre sıralama ya da yeni öğrenci eklemek kitapçıkları değiştiriyordu.
+2. Merkezi sınav kuruma atanmamış olsa da basılabiliyordu; çöp kutusundaki ve arşivlenmiş sınavlar da basılabiliyordu.
+
+PR #307 ile yapılanlar:
+- 0125 ile ilk basılan kitapçık saklanıyor; optikten okunan kitapçık önce geliyor; yeni öğrenciye sınıfta en az kullanılan kitapçık veriliyor.
+- Yalnız kuruma ait ya da kuruma atanmış aktif sınavlar basılabiliyor.
+- 253 dosya / 1.268 test, build PASS.
+
+A017'deki Türkçe başlık sınırı A018'den beri çözülmüş (kodla doğrulandı).
+
+Kapanış için: fiziksel yazıcı kalibrasyonu ve basılı formun okunması elle (K002).
