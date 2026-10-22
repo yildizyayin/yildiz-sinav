@@ -10,6 +10,7 @@ export function Seasons() {
   const [fromSeasonId, setFromSeasonId] = useState('');
   const [nextAcademicYear, setNextAcademicYear] = useState('2027-2028');
   const [keepSections, setKeepSections] = useState(true);
+  const [lastGrade, setLastGrade] = useState('');
   const [preview, setPreview] = useState<any | null>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -41,7 +42,7 @@ export function Seasons() {
   const showPreview = async () => {
     setError(''); setSuccess(''); setPreview(null);
     try {
-      const r = await post<any>('/api/seasons/rollover-preview', { institutionId, fromSeasonId, nextAcademicYear });
+      const r = await post<any>('/api/seasons/rollover-preview', { institutionId, fromSeasonId, nextAcademicYear, lastGrade: Number(lastGrade) });
       setPreview(r);
     } catch (e: any) { setError(e.message || 'Sezon önizlemesi oluşturulamadı.'); }
   };
@@ -49,8 +50,8 @@ export function Seasons() {
   const commit = async () => {
     setError(''); setSuccess('');
     try {
-      const r = await post<any>('/api/seasons/rollover-commit', { institutionId, fromSeasonId, nextAcademicYear, keepSections });
-      setSuccess(`${nextAcademicYear} sezonu oluşturuldu. ${r.created || 0} öğrenci yeni sezona aktarıldı.`);
+      const r = await post<any>('/api/seasons/rollover-commit', { institutionId, fromSeasonId, nextAcademicYear, keepSections, lastGrade: Number(lastGrade) });
+      setSuccess(`${nextAcademicYear} sezonu oluşturuldu: ${r.promoted || 0} öğrenci üst sınıfa geçti, ${r.graduated || 0} öğrenci mezun oldu.${r.unplaced ? ` ${r.unplaced} öğrencinin sınıfı belirsiz; eski sezon bu yüzden açık bırakıldı.` : ' Eski sezon kapatıldı.'} Yeni sezonun lisansı ayrıca tanımlanmalıdır.`);
       setPreview(null);
       await load();
     } catch (e: any) { setError(e.message || 'Yeni sezon oluşturulamadı.'); }
@@ -73,16 +74,17 @@ export function Seasons() {
         <div className="section-head"><div><span className="eyebrow">Yeni sezon</span><h2>Sınıf yükseltme</h2></div></div>
         <label>Kaynak sezon<select value={fromSeasonId} onChange={(e) => { setFromSeasonId(e.target.value); setPreview(null); }}>{seasons.map((s) => <option key={s.id} value={s.id}>{s.academic_year}</option>)}</select></label>
         <label>Yeni akademik yıl<input value={nextAcademicYear} onChange={(e) => { setNextAcademicYear(e.target.value); setPreview(null); }} placeholder="2027-2028" /></label>
+        <label>Kurumun son sınıfı<select value={lastGrade} onChange={(e) => { setLastGrade(e.target.value); setPreview(null); }}><option value="">Seçin</option>{[4, 8, 12, 11, 10, 9, 7, 6, 5].map((g) => <option key={g} value={g}>{g}. sınıf (bu sınıftakiler mezun olur)</option>)}</select></label>
         <label className="check"><input type="checkbox" checked={keepSections} onChange={(e) => setKeepSections(e.target.checked)} /> Geçen yılki şubeleri koru</label>
-        <button className="primary" onClick={() => void showPreview()} disabled={!institutionId || !fromSeasonId || !nextAcademicYear}>Önizleme Oluştur</button>
+        <button className="primary" onClick={() => void showPreview()} disabled={!institutionId || !fromSeasonId || !nextAcademicYear || !lastGrade}>Önizleme Oluştur</button>
         {currentSeason && <p className="muted">Kaynak: {currentSeason.academic_year}. Eski kayıtlar değiştirilmeyecek.</p>}
       </div>
     </div>
 
     {preview && <div className="card">
       <div className="section-head"><div><span className="eyebrow">Onay öncesi kontrol</span><h2>{preview.nextAcademicYear} geçiş özeti</h2></div></div>
-      <div className="kpi-grid">{(preview.groups || []).map((g: any) => <div className="kpi" key={`${g.from}-${g.to}`}><span>{g.from}. Sınıf → {g.to ? `${g.to}. Sınıf` : 'Mezun/Terminal'}</span><strong>{g.count}</strong><small>öğrenci</small></div>)}</div>
-      <div className="alert">Bu işlem mevcut sezonu değiştirmez; yeni akademik yıl için yeni enrollment kayıtları oluşturur.</div>
+      <div className="kpi-grid">{(preview.groups || []).map((g: any) => <div className="kpi" key={`${g.from}-${g.to}`}><span>{g.from ? `${g.from}. Sınıf` : 'Sınıfı belirsiz'} → {g.action === 'PROMOTE' ? `${g.to}. Sınıf` : g.action === 'GRADUATE' ? 'Mezun' : 'Elle yerleştirilmeli'}</span><strong>{g.count}</strong><small>öğrenci</small></div>)}</div>
+      <div className="alert">Öğrenci kimlikleri ve eski sonuçlar değişmez; eski yılın kayıtları arşivlenir, mezunlar işaretlenir, eski sezon kapatılır. Yeni sezonun lisansı bu işlemle oluşmaz.</div>
       <button className="primary large" onClick={() => void commit()}>Yeni Sezonu Oluştur</button>
     </div>}
   </>;

@@ -1045,51 +1045,74 @@ async function opticalPrepare(env: Env, user: AuthUser, url: URL): Promise<Respo
   return json({ ok: true, template: { id: template.id, name: template.name, pageWidthMm: template.page_width_mm, pageHeightMm: template.page_height_mm, printFields: JSON.parse(template.print_fields) }, class: c, students: rows });
 }
 
+/** A049: the new academic year must be exactly the next one of an active season of this institution. */
+async function rolloverContext(env: Env, user: AuthUser, body: { institutionId?: string; fromSeasonId?: string; nextAcademicYear?: string; lastGrade?: number }) {
+  const institutionId = resolveInstitutionId(user, body.institutionId || null);
+  if (!institutionId || !body.fromSeasonId || !body.nextAcademicYear) return { error: badRequest('Kurum, mevcut sezon ve yeni akademik yıl gerekli.') };
+  if (!(await userCanAccessInstitution(env.DB, user, institutionId))) return { error: forbidden() };
+  const from = await one<any>(env.DB.prepare('SELECT * FROM institution_seasons WHERE id=? AND institution_id=?').bind(body.fromSeasonId, institutionId));
+  if (!from) return { error: badRequest('Mevcut sezon bu kuruma ait değil.', 'SEASON_NOT_IN_INSTITUTION') };
+  if (from.status !== 'ACTIVE') return { error: badRequest('Yalnız aktif sezondan geçiş yapılır.', 'SEASON_NOT_ACTIVE') };
+  const m = /^(\d{4})-(\d{4})$/.exec(String(from.academic_year)); const expected = m ? `${Number(m[1]) + 1}-${Number(m[2]) + 1}` : null;
+  if (!expected || body.nextAcademicYear !== expected) return { error: badRequest(`Yeni eğitim yılı ${expected ?? 'bir sonraki yıl'} olmalıdır.`, 'INVALID_NEXT_YEAR') };
+  const lastGrade = Number(body.lastGrade);
+  if (!Number.isInteger(lastGrade) || lastGrade < 1 || lastGrade > 12) return { error: badRequest('Kurumun son sınıfını seçin (ör. ortaokul 8, lise 12); bu sınıftakiler mezun sayılır.', 'LAST_GRADE_REQUIRED') };
+  return { institutionId, from, lastGrade };
+}
+const rolloverTarget = (grade: number | null, lastGrade: number) => (!grade ? 'UNPLACED' : grade >= lastGrade ? 'GRADUATE' : 'PROMOTE');
+
 async function rolloverPreview(request: Request, env: Env, user: AuthUser): Promise<Response> {
   if (!roleCanManageInstitution(user.role)) return forbidden();
-  const body = await request.json<{ institutionId?: string; fromSeasonId?: string; nextAcademicYear?: string }>();
-  const institutionId = resolveInstitutionId(user, body.institutionId || null);
-  if (!institutionId || !body.fromSeasonId || !body.nextAcademicYear) return badRequest('Kurum, mevcut sezon ve yeni akademik yıl gerekli.');
-  if (!(await userCanAccessInstitution(env.DB, user, institutionId))) return forbidden();
-  const rows = await all<any>(env.DB.prepare(`SELECT e.grade_level,count(*) count FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.institution_id=? AND e.season_id=? AND s.status='ACTIVE' AND e.status='ACTIVE' GROUP BY e.grade_level ORDER BY e.grade_level`).bind(institutionId, body.fromSeasonId));
-  return json({ ok: true, nextAcademicYear: body.nextAcademicYear, groups: rows.map((r) => ({ from: r.grade_level, to: nextGrade(r.grade_level), count: r.count })) });
+  const body = await request.json<{ institutionId?: string; fromSeasonId?: string; nextAcademicYear?: string; lastGrade?: number }>();
+  const c = await rolloverContext(env, user, body); if (c.error) return c.error;
+  const rows = await all<any>(env.DB.prepare(`SELECT e.grade_level,count(*) count FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.institution_id=? AND e.season_id=? AND s.status='ACTIVE' AND e.status='ACTIVE' GROUP BY e.grade_level ORDER BY e.grade_level`).bind(c.institutionId, c.from.id));
+  return json({ ok: true, nextAcademicYear: body.nextAcademicYear, lastGrade: c.lastGrade, groups: rows.map((r) => { const t = rolloverTarget(r.grade_level, c.lastGrade!); return { from: r.grade_level, to: t === 'PROMOTE' ? nextGrade(r.grade_level) : null, action: t, count: r.count }; }) });
 }
 
+/**
+ * A049: year transition. The student keeps the same identity; a promoted student gets a new enrolment in the
+ * new season one grade up and the old enrolment is archived; the last grade graduates. Results stay where
+ * they were (exam participations keep their old season and class). The old season is closed. Licences of
+ * the new season are not created here: that needs its own accepted scope.
+ */
 async function rolloverCommit(request: Request, env: Env, user: AuthUser): Promise<Response> {
   if (!roleCanManageInstitution(user.role)) return forbidden();
-  const body = await request.json<{ institutionId?: string; fromSeasonId?: string; nextAcademicYear?: string; keepSections?: boolean }>();
-  const institutionId = resolveInstitutionId(user, body.institutionId || null);
-  if (!institutionId || !body.fromSeasonId || !body.nextAcademicYear) return badRequest('Eksik sezon bilgisi.');
-  if (!(await userCanAccessInstitution(env.DB, user, institutionId))) return forbidden();
+  const body = await request.json<{ institutionId?: string; fromSeasonId?: string; nextAcademicYear?: string; keepSections?: boolean; lastGrade?: number }>();
+  const c = await rolloverContext(env, user, body); if (c.error) return c.error;
+  const institutionId = c.institutionId!;
   let season = await one<any>(env.DB.prepare('SELECT * FROM institution_seasons WHERE institution_id=? AND academic_year=?').bind(institutionId, body.nextAcademicYear));
   if (!season) {
     const id = uuid('season');
     await env.DB.prepare(`INSERT INTO institution_seasons (id,institution_id,academic_year,status,started_at) VALUES(?,?,?,'ACTIVE',date('now'))`).bind(id, institutionId, body.nextAcademicYear).run();
     season = await one<any>(env.DB.prepare('SELECT * FROM institution_seasons WHERE id=?').bind(id));
   }
-  const old = await all<any>(env.DB.prepare(`SELECT e.*,s.status student_status FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.institution_id=? AND e.season_id=? AND s.status='ACTIVE' AND e.status='ACTIVE'`).bind(institutionId, body.fromSeasonId));
-  let created = 0;
+  const old = await all<any>(env.DB.prepare(`SELECT e.*,s.status student_status FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.institution_id=? AND e.season_id=? AND s.status='ACTIVE' AND e.status='ACTIVE'`).bind(institutionId, c.from.id));
+  let promoted = 0, graduated = 0; const unplaced: string[] = [];
   for (const e of old) {
-    const grade = nextGrade(e.grade_level);
-    if (!grade) continue;
+    const target = rolloverTarget(e.grade_level, c.lastGrade!);
+    if (target === 'UNPLACED') { unplaced.push(e.student_id); continue; }
+    if (target === 'GRADUATE') { await env.DB.prepare(`UPDATE student_enrollments SET status='GRADUATED' WHERE id=? AND status='ACTIVE'`).bind(e.id).run(); graduated++; continue; }
+    const grade = nextGrade(e.grade_level)!;
     const section = body.keepSections === false ? null : e.section;
     let classId: string | null = null;
     if (section) {
-      let cls = await one<any>(env.DB.prepare('SELECT id FROM classes WHERE season_id=? AND grade_level=? AND upper(section)=upper(?)').bind(season.id, grade, section));
+      const cls = await one<any>(env.DB.prepare('SELECT id FROM classes WHERE season_id=? AND grade_level=? AND upper(section)=upper(?)').bind(season.id, grade, section));
       if (!cls) {
         classId = uuid('class');
         await env.DB.prepare('INSERT INTO classes (id,institution_id,season_id,grade_level,section,name) VALUES(?,?,?,?,?,?)').bind(classId, institutionId, season.id, grade, section, `${grade}/${section}`).run();
       } else classId = cls.id;
     }
+    const statements: D1PreparedStatement[] = [env.DB.prepare(`UPDATE student_enrollments SET status='ARCHIVED' WHERE id=? AND status='ACTIVE'`).bind(e.id)];
     const exists = await one<any>(env.DB.prepare('SELECT id FROM student_enrollments WHERE student_id=? AND season_id=?').bind(e.student_id, season.id));
-    if (!exists) {
-      await env.DB.prepare(`INSERT INTO student_enrollments (id,student_id,institution_id,season_id,class_id,student_number,grade_level,section,status) VALUES(?,?,?,?,?,?,?,?, 'ACTIVE')`)
-        .bind(uuid('enr'), e.student_id, institutionId, season.id, classId, e.student_number, grade, section).run();
-      created++;
-    }
+    if (!exists) statements.push(env.DB.prepare(`INSERT INTO student_enrollments (id,student_id,institution_id,season_id,class_id,student_number,grade_level,section,status) VALUES(?,?,?,?,?,?,?,?, 'ACTIVE')`)
+      .bind(uuid('enr'), e.student_id, institutionId, season.id, classId, e.student_number, grade, section));
+    await env.DB.batch(statements);
+    promoted++;
   }
-  await audit(env.DB, user.id, institutionId, 'SEASON_ROLLOVER', 'season', season.id, { fromSeasonId: body.fromSeasonId, nextAcademicYear: body.nextAcademicYear, created });
-  return json({ ok: true, seasonId: season.id, created });
+  // students without a grade stay in the old season until someone places them; otherwise the old season closes
+  if (!unplaced.length) await env.DB.prepare(`UPDATE institution_seasons SET status='CLOSED' WHERE id=? AND status='ACTIVE'`).bind(c.from.id).run();
+  await audit(env.DB, user.id, institutionId, 'SEASON_ROLLOVER', 'season', season.id, { fromSeasonId: c.from.id, nextAcademicYear: body.nextAcademicYear, lastGrade: c.lastGrade, promoted, graduated, unplaced: unplaced.length, oldSeasonClosed: !unplaced.length });
+  return json({ ok: true, seasonId: season.id, created: promoted, promoted, graduated, unplaced: unplaced.length, oldSeasonClosed: !unplaced.length });
 }
 
 async function importPreview(request: Request, env: Env, user: AuthUser): Promise<Response> {
