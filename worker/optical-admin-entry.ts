@@ -93,7 +93,7 @@ async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
 }
 
 async function createTemplate(request: Request, env: Env, actor: AuthUser): Promise<Response> {
-  const body = await request.json<{ name?: string; vendor?: string; opticalCode?: string; version?: string; formType?: string; sortOrder?: number; pageWidthMm?: number; pageHeightMm?: number }>();
+  const body = await request.json<{ name?: string; vendor?: string; opticalCode?: string; version?: string; formType?: string; sortOrder?: number; pageWidthMm?: number; pageHeightMm?: number; institutionId?: string }>();
   const opticalCode = body.opticalCode?.trim() || '';
   const name = body.name?.trim() || opticalCode;
   const vendor = body.vendor?.trim() || null;
@@ -107,8 +107,11 @@ async function createTemplate(request: Request, env: Env, actor: AuthUser): Prom
   if (!['FMT','TXT','PHOTO','MANUAL'].includes(formType)) return badRequest('Form türü geçersiz.');
   if (!Number.isInteger(sortOrder) || sortOrder < 1) return badRequest('Form sırası pozitif tam sayı olmalıdır.');
   if (!Number.isFinite(pageWidthMm) || pageWidthMm <= 0 || !Number.isFinite(pageHeightMm) || pageHeightMm <= 0) return badRequest('Sayfa ölçüleri geçersiz.');
-  const ownerType = actor.role === 'SUPER_ADMIN' ? 'CENTRAL' : 'INSTITUTION';
-  const ownerId = actor.role === 'SUPER_ADMIN' ? null : actor.institution_id;
+  // A034: the Super Admin may also define an optic on behalf of an institution (its own form/FMT).
+  const forInstitution = actor.role === 'SUPER_ADMIN' && typeof (body as any).institutionId === 'string' && (body as any).institutionId ? String((body as any).institutionId) : null;
+  if (forInstitution && !(await one(env.DB.prepare('SELECT 1 FROM institutions WHERE id=?').bind(forInstitution)))) return badRequest('Kurum bulunamadı.');
+  const ownerType = actor.role === 'SUPER_ADMIN' && !forInstitution ? 'CENTRAL' : 'INSTITUTION';
+  const ownerId = actor.role === 'SUPER_ADMIN' ? forInstitution : actor.institution_id;
   const duplicate = await one(env.DB.prepare(`SELECT id FROM optical_templates WHERE owner_type=? AND coalesce(owner_id,'')=coalesce(?, '') AND (lower(optical_code)=lower(?) OR (lower(name)=lower(?) AND coalesce(lower(vendor),'')=coalesce(lower(?),'')))`).bind(ownerType, ownerId, opticalCode, name, vendor));
   if (duplicate) return error(409, 'TEMPLATE_EXISTS', 'Bu optik kodu veya yayınevi/optik adı aynı kapsamda zaten kullanılıyor.');
   const templateId = uuid('opt');
@@ -118,7 +121,7 @@ async function createTemplate(request: Request, env: Env, actor: AuthUser): Prom
     env.DB.prepare(`INSERT INTO optical_template_versions (id,template_id,version,page_width_mm,page_height_mm,active) VALUES (?,?,?,?,?,0)`).bind(versionId, templateId, version, pageWidthMm, pageHeightMm),
     env.DB.prepare(`INSERT INTO optical_definition_validations (optical_template_version_id) VALUES (?)`).bind(versionId),
   ]);
-  await audit(env.DB, actor.id, actor.institution_id || null, 'OPTICAL_TEMPLATE_CREATED', 'optical_template', templateId, { name, vendor, opticalCode, version, formType, sortOrder, pageWidthMm, pageHeightMm, ownerType });
+  await audit(env.DB, actor.id, ownerId || actor.institution_id || null, 'OPTICAL_TEMPLATE_CREATED', 'optical_template', templateId, { name, vendor, opticalCode, version, formType, sortOrder, pageWidthMm, pageHeightMm, ownerType });
   return json({ ok: true, templateId, versionId, ownerType, ownerId }, 201);
 }
 
@@ -141,7 +144,7 @@ async function updateTemplate(request: Request, env: Env, actor: AuthUser, templ
   const reason = body.reason?.trim() || 'Optik yönetim ekranı güncellemesi.';
   if (reason.length > 500) return badRequest('Değişiklik gerekçesi 500 karakteri geçemez.');
   await env.DB.prepare('UPDATE optical_templates SET name=?,vendor=?,optical_code=?,form_type=?,sort_order=? WHERE id=?').bind(name, vendor, opticalCode, formType, sortOrder, templateId).run();
-  await audit(env.DB, actor.id, null, 'OPTICAL_TEMPLATE_UPDATED', 'optical_template', templateId, { before: { name: template.name, vendor: template.vendor, opticalCode: template.optical_code, formType: template.form_type, sortOrder: template.sort_order }, after: { name, vendor, opticalCode, formType, sortOrder }, reason });
+  await audit(env.DB, actor.id, template.owner_id || null, 'OPTICAL_TEMPLATE_UPDATED', 'optical_template', templateId, { before: { name: template.name, vendor: template.vendor, opticalCode: template.optical_code, formType: template.form_type, sortOrder: template.sort_order }, after: { name, vendor, opticalCode, formType, sortOrder }, reason });
   return json({ ok: true, template: { ...template, name, vendor, optical_code: opticalCode, form_type: formType, sort_order: sortOrder } });
 }
 
@@ -185,7 +188,7 @@ async function createVersion(request: Request, env: Env, actor: AuthUser, templa
     env.DB.prepare(`INSERT INTO optical_definition_validations (optical_template_version_id,parser_test_passed,parser_test_record_count,last_error)
       VALUES (?,?,?,?)`).bind(versionId, 0, 0, source ? 'Kopyalanan parser yeni sürümde yeniden test edilmelidir.' : null),
   ]);
-  await audit(env.DB, actor.id, null, 'OPTICAL_VERSION_CREATED', 'optical_template_version', versionId, { templateId, version, cloneFromVersionId: body.cloneFromVersionId || null });
+  await audit(env.DB, actor.id, template.owner_id || null, 'OPTICAL_VERSION_CREATED', 'optical_template_version', versionId, { templateId, version, cloneFromVersionId: body.cloneFromVersionId || null });
   return json({ ok: true, versionId }, 201);
 }
 
@@ -225,7 +228,7 @@ async function updateSection(request: Request, env: Env, actor: AuthUser, versio
       VALUES (?,0,0,NULL,'Parser değişti; örnek dosya yeniden test edilmelidir.',CURRENT_TIMESTAMP)
       ON CONFLICT(optical_template_version_id) DO UPDATE SET parser_test_passed=0,parser_test_record_count=0,parser_tested_at=NULL,last_error=excluded.last_error,updated_at=CURRENT_TIMESTAMP`).bind(versionId).run();
   }
-  await audit(env.DB, actor.id, null, 'OPTICAL_DEFINITION_UPDATED', 'optical_template_version', versionId, { section, before, after: parsed.value, reason });
+  await audit(env.DB, actor.id, row.owner_id || null, 'OPTICAL_DEFINITION_UPDATED', 'optical_template_version', versionId, { section, before, after: parsed.value, reason });
   const fresh = await getVersion(env, versionId);
   return json({ ok: true, validation, readiness: readinessFor(fresh) });
 }
@@ -247,7 +250,7 @@ async function testParser(request: Request, env: Env, actor: AuthUser, versionId
     VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)
     ON CONFLICT(optical_template_version_id) DO UPDATE SET parser_test_passed=excluded.parser_test_passed,parser_test_record_count=excluded.parser_test_record_count,parser_tested_at=excluded.parser_tested_at,last_error=excluded.last_error,updated_at=CURRENT_TIMESTAMP`)
     .bind(versionId, passed ? 1 : 0, result.records.length, new Date().toISOString(), lastError).run();
-  await audit(env.DB, actor.id, null, passed ? 'OPTICAL_PARSER_TEST_PASSED' : 'OPTICAL_PARSER_TEST_FAILED', 'optical_template_version', versionId, { fileName, recordCount: result.records.length, confidence: result.confidence, issues: result.issues });
+  await audit(env.DB, actor.id, row.owner_id || null, passed ? 'OPTICAL_PARSER_TEST_PASSED' : 'OPTICAL_PARSER_TEST_FAILED', 'optical_template_version', versionId, { fileName, recordCount: result.records.length, confidence: result.confidence, issues: result.issues });
   const fresh = await getVersion(env, versionId);
   return json({ ok: true, passed, confidence: result.confidence, recordCount: result.records.length, issues: result.issues, sample: result.records.slice(0, 5), readiness: readinessFor(fresh) });
 }
@@ -267,7 +270,7 @@ async function uploadAsset(request: Request, env: Env, actor: AuthUser, versionI
   const id = uuid('opta');
   await env.DB.prepare(`INSERT INTO optical_template_assets (id,optical_template_version_id,asset_type,object_key,file_name,content_type,uploaded_by) VALUES (?,?,?,?,?,?,?)`)
     .bind(id, versionId, assetType, key, file.name, file.type || null, actor.id).run();
-  await audit(env.DB, actor.id, null, 'OPTICAL_ASSET_UPLOADED', 'optical_template_version', versionId, { assetType, fileName: file.name, objectKey: key });
+  await audit(env.DB, actor.id, row.owner_id || null, 'OPTICAL_ASSET_UPLOADED', 'optical_template_version', versionId, { assetType, fileName: file.name, objectKey: key });
   return json({ ok: true, id, assetType, fileName: file.name }, 201);
 }
 
@@ -295,7 +298,7 @@ async function importFmt(request: Request, env: Env, actor: AuthUser, versionId:
   const assetId = uuid('opta');
   await env.DB.prepare(`INSERT INTO optical_template_assets (id,optical_template_version_id,asset_type,object_key,file_name,content_type,uploaded_by) VALUES (?,?,?,?,?,?,?)`)
     .bind(assetId, versionId, 'FMT_SAMPLE', key, file.name, file.type || 'text/plain', actor.id).run();
-  await audit(env.DB, actor.id, null, 'OPTICAL_FMT_IMPORTED', 'optical_template_version', versionId, { fileName: file.name, warnings: parsed.warnings, before, after: parsed.definition, reason: 'FMT dosyasından parser tanımı güncellendi.' });
+  await audit(env.DB, actor.id, row.owner_id || null, 'OPTICAL_FMT_IMPORTED', 'optical_template_version', versionId, { fileName: file.name, warnings: parsed.warnings, before, after: parsed.definition, reason: 'FMT dosyasından parser tanımı güncellendi.' });
   const fresh = await getVersion(env, versionId);
   return json({ ok: true, source: 'FMT', assetId, fileName: file.name, definition: parsed.definition, warnings: parsed.warnings, validation, readiness: readinessFor(fresh) }, 201);
 }
@@ -312,7 +315,7 @@ async function publishVersion(env: Env, actor: AuthUser, versionId: string): Pro
     env.DB.prepare('UPDATE optical_template_versions SET active=1 WHERE id=?').bind(versionId),
     env.DB.prepare(`UPDATE optical_templates SET status='READY',active=1 WHERE id=?`).bind(row.template_id),
   ]);
-  await audit(env.DB, actor.id, null, 'OPTICAL_VERSION_PUBLISHED', 'optical_template_version', versionId, { templateId: row.template_id, version: row.version });
+  await audit(env.DB, actor.id, row.owner_id || null, 'OPTICAL_VERSION_PUBLISHED', 'optical_template_version', versionId, { templateId: row.template_id, version: row.version });
   return json({ ok: true, status: 'READY', versionId, templateId: row.template_id });
 }
 
@@ -326,7 +329,7 @@ async function archiveTemplate(env: Env, actor: AuthUser, templateId: string): P
     env.DB.prepare(`UPDATE optical_templates SET status='ARCHIVED',active=0 WHERE id=?`).bind(templateId),
     env.DB.prepare('UPDATE optical_template_versions SET active=0 WHERE template_id=?').bind(templateId),
   ]);
-  await audit(env.DB, actor.id, null, 'OPTICAL_TEMPLATE_DELETED', 'optical_template', templateId, { name: template.name, mode: 'ARCHIVE' });
+  await audit(env.DB, actor.id, template.owner_id || null, 'OPTICAL_TEMPLATE_DELETED', 'optical_template', templateId, { name: template.name, mode: 'ARCHIVE' });
   return json({ ok: true, status: 'ARCHIVED', deleted: true, mode: 'ARCHIVE' });
 }
 
@@ -342,7 +345,7 @@ async function deleteVersion(env: Env, actor: AuthUser, versionId: string): Prom
   const assets = await all<{ object_key: string }>(env.DB.prepare('SELECT object_key FROM optical_template_assets WHERE optical_template_version_id=?').bind(versionId));
   await env.DB.prepare('DELETE FROM optical_template_versions WHERE id=?').bind(versionId).run();
   await Promise.all(assets.map((asset) => env.FILES.delete(asset.object_key).catch(() => undefined)));
-  await audit(env.DB, actor.id, null, 'OPTICAL_VERSION_DELETED', 'optical_template_version', versionId, { templateId: row.template_id, version: row.version });
+  await audit(env.DB, actor.id, row.owner_id || null, 'OPTICAL_VERSION_DELETED', 'optical_template_version', versionId, { templateId: row.template_id, version: row.version });
   return json({ ok: true, deleted: true, versionId });
 }
 
