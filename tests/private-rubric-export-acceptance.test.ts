@@ -41,7 +41,7 @@ it('exports frozen labels as complete quoted UTF-8 CSV with formula-safe evidenc
   const id=await f.create();expect(f.sent).toContainEqual({schemaVersion:1,jobId:id});expect(await f.consume(id)).toEqual({ack:1,retry:0});
   const status:any=await (await f.request(`/api/private-rubric-exports/${id}`))!.json();expect(status).toMatchObject({status:'READY',partCount:1,observationCount:1,parts:[{part_no:0,observation_count:1}]});
   const download=await f.request(`/api/private-rubric-exports/${id}/parts/0/download`);expect(download!.status).toBe(200);expect(download!.headers.get('content-type')).toContain('text/csv');
-  const objectKey=String(f.db.prepare('SELECT object_key FROM private_rubric_export_parts WHERE job_id=?').get(id)!.object_key),csv=f.objects.get(objectKey)!;expect(csv.startsWith('\ufeff"Eğitim yılı"'),'CSV BOM/header').toBe(true);
+  const objectKey=String(f.db.prepare('SELECT object_key FROM private_rubric_export_parts WHERE job_id=?').get(id)!.object_key),csv=f.objects.get(objectKey)!;expect(csv).toContain('"Niteliği"');expect(csv).toContain('Kesin yeterlik hükmü değildir.');expect(csv.startsWith('\ufeff"Eğitim yılı"'),'CSV BOM/header').toBe(true);
   expect(csv).toContain('"Rubrik; ""Türkçe""\niki satır"');expect(csv).toContain('"Öğretmen tasarımı"');
   expect(csv).toContain('"\'=HYPERLINK(""https://example.invalid"")"');expect(csv).toContain('"Continue demonstrating the observed action."');
   expect(csv).toContain('"Independent"');expect(csv.endsWith('\r\n')).toBe(true);

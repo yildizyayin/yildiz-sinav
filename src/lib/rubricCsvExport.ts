@@ -2,12 +2,14 @@ export function rubricCsvCell(value:unknown){
  let text=String(value??'');if(/^[\s\u0000-\u001f]*[=+\-@]|^[\t\r\n]/.test(text))text="'"+text;
  return '"'+text.replace(/"/g,'""')+'"';
 }
+/** A055: every row says the level is a teacher observation, never a final competency verdict. */
+export const observationNature=(kind:unknown)=>kind==='OFFICIAL'?'Öğretmen gözlemi; resmî doküman rubriği. Kesin yeterlik hükmü değildir.':'Öğretmen gözlemi; resmî kaynakla doğrulanmamış rubrik. Kesin yeterlik hükmü değildir.';
 export function renderRubricCsv(rows:any[]){
- const output:any[][]=[['Eğitim yılı','Gözlem tarihi','Rubrik','Sürüm','Kaynak türü','Öğrenme çıktısı','Süreç','Ölçüt','Gözlenen düzey','Düzey açıklaması','Gözlem kanıtı','Geri bildirim','Sonraki adım']];
+ const output:any[][]=[['Eğitim yılı','Gözlem tarihi','Rubrik','Sürüm','Kaynak türü','Öğrenme çıktısı','Süreç','Ölçüt','Gözlenen düzey','Düzey açıklaması','Gözlem kanıtı','Geri bildirim','Sonraki adım','Niteliği']];
  for(const obs of rows){
   if(!Array.isArray(obs.selections)||!Array.isArray(obs.snapshot?.criteria))throw new Error('Rubrik gözleminin ölçütleri geçersiz.');
   for(const selected of obs.selections){const criterion=obs.snapshot.criteria.find((c:any)=>c.id===selected.criterionId),level=criterion?.levels?.find((l:any)=>l.id===selected.levelId);if(!criterion||!level)throw new Error('Rubrik gözleminin düzey seçimi geçersiz.');
-   output.push([obs.snapshot.academicYear,obs.observed_at,obs.snapshot.title,obs.snapshot.versionLabel,obs.snapshot.sourceKind==='OFFICIAL'?'Resmî doküman':'Öğretmen tasarımı',obs.snapshot.outcomeCode,obs.snapshot.componentCode,criterion.title,level.label,level.description,obs.evidence_note,obs.feedback,obs.next_step]);
+   output.push([obs.snapshot.academicYear,obs.observed_at,obs.snapshot.title,obs.snapshot.versionLabel,obs.snapshot.sourceKind==='OFFICIAL'?'Resmî doküman':'Öğretmen tasarımı',obs.snapshot.outcomeCode,obs.snapshot.componentCode,criterion.title,level.label,level.description,obs.evidence_note,obs.feedback,obs.next_step,observationNature(obs.snapshot.sourceKind)]);
   }
  }
  return '\ufeff'+output.map(row=>row.map(rubricCsvCell).join(';')).join('\r\n');
