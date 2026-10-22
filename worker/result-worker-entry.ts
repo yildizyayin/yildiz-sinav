@@ -1,3 +1,4 @@
+import { scheduledJobsPaused } from './lib/scheduled-pause';
 import {dispatchResultArtifactQueue,consumeResultArtifactQueue} from './lib/result-artifact-queue';
 import {advanceResultArtifactVerification} from './lib/result-artifact-verification';
 import {advanceResultArtifactPreparation} from './lib/result-artifact-preparation';
@@ -55,6 +56,8 @@ export default {
     else for(const message of batch.messages)message.retry({delaySeconds:300});
   },
   async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext) {
+    // D1 budget: paused before any database read while SCHEDULED_JOBS_PAUSED is "true".
+    if (scheduledJobsPaused(env)) { console.log(JSON.stringify({ event: 'scheduled_jobs_paused', worker: 'result' })); return; }
     ctx.waitUntil((async()=>{if(env.RESULT_ARTIFACT_QUEUE_ENABLED==='true')await dispatchResultArtifactQueue(env);else{await advanceResultArtifactPreparation(env);await advanceResultArtifactVerification(env)}})());
     ctx.waitUntil(env.RESULT_RETENTION_QUEUE_ENABLED==='true'?(async()=>{await emitResultRetentionNotices(env);await dispatchResultRetentionQueue(env)})():(async()=>{await sweepRetiredResultArtifacts(env);await purgeExpiredResultNetwork(env)})());
   },
