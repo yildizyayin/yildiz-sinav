@@ -162,6 +162,7 @@ Sonuç portalına app'in öğretmen, rehber ve veli panelleri eklenmez. Amaç li
 |---|---|---|
 | K001 | Yedek ve geri dönüş kanıtı | Uygulama sürümü, veri yedeği ve veri kaybetmeden geri dönüş/ileri düzeltme izolasyonda doğrulanır. |
 | K002 | Alanlar arası son regresyon | Altı app rolünün kendi temel işlemleri ile sonuc öğrenci/kurum/bayi akışları doğrulanır. Sınav oluştur → değerlendir → kanala göre yayın → düzelt → kaldır zinciri tutarlıdır. |
+| K004 | Sistem check-up: kapasite ve yük (kullanıcı talebi 22 Ekim, tüm işler bittikten sonra) | Gerçek kullanım senaryosuyla (veli, öğrenci, öğretmen, kurum istekleri + toplu değerlendirme + zamanlanmış işler) günlük/aylık D1 okuma-yazma, Worker istek/CPU, kuyruk ve R2 tüketimi ölçülür. Workers Paid (aylık 5 $) planında tıkanma olup olmadığı hesaplanır. Hiçbir istek bir sonraki güne kalmaz; limit, kuyruk birikmesi ve gecikme için eşik, alarm ve plan çıkar. Zamanlanmış işler ve ajanlar ölçülerek yeniden açılır. |
 | K003 | Son kullanıcı kabulü ve devir | Rol bazlı kullanım adımları teslim edilir, kullanıcı kabulü kaydedilir; açık engeller sıfırlanmadan genel hazır beyanı verilmez. |
 
 ## Teknik kabulden sonra tasarım — A080 onayından sonra
@@ -841,3 +842,12 @@ Canlıya geçince yeniden açma planı:
 - Yalnız gerekli işler (planlı sonuç/video yayını) açılacak, saatlik çalışacak.
 - Ağır taramalar "iş var mı" kontrolüyle tetiklenecek.
 - Ajanlar tek tek ve ölçülerek açılacak.
+
+### Kullanıcı notu — 22 Ekim 17:28
+
+Sıradaki işlere devam edilecek; diğer çalışmalar sistem tamamen bittikten sonra yapılacak. Kapasite sorusu (5 $'lık planda tıkanma olur mu; veli/öğrenci/öğretmen/kurum isteklerinin ertesi güne kalmaması) **K004 sistem check-up** olarak son test modülüne eklendi.
+
+Ön bilgi (Cloudflare D1 fiyat sayfası, 22 Ekim):
+- Workers Paid: aylık 25 milyar satır okuma ve 50 milyon satır yazma dahil.
+- Aşımda okuma 1 milyon satır başına 0,001 $, yazma 1 milyon satır başına 1 $.
+- Ücretli planda günlük kesinti yok; aşım faturalanıyor.
