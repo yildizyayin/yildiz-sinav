@@ -1,3 +1,4 @@
+import { fixedWidthDefinition, recordsToFixedWidthText } from './lib/fixed-width-export';
 import {examEvaluationAccess} from './lib/exam-evaluation-access';
 import reportingApp from './reporting-entry';
 import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
@@ -167,6 +168,21 @@ async function correctCameraAnswer(request:Request,env:Env,user:AuthUser,batchId
  return json({ok:true,subjectCode:code,questionNo:q,answer:answer||null,remainingIssues:issues});
 }
 
+/** A084: the camera batch as the fixed-width TXT of its optical definition (download). */
+async function exportCameraTxt(env:Env,user:AuthUser,batchId:string):Promise<Response>{
+ if(!canEvaluateExam(user.role))return forbidden();
+ const batch=await one<any>(env.DB.prepare(`SELECT b.*,v.parser_definition,t.name template_name FROM scan_batches b JOIN optical_template_versions v ON v.id=b.optical_template_version_id JOIN optical_templates t ON t.id=v.template_id WHERE b.id=? AND b.source_type='CAMERA'`).bind(batchId));
+ if(!batch)return notFound('Kamera batch bulunamadı.');const scope=await assertInstitutionScope(env,user,batch.institution_id);if(scope.response)return scope.response;
+ const def=fixedWidthDefinition(batch.parser_definition);if(!def)return badRequest('Bu optiğin sabit sütunlu TXT tanımı yok.','TXT_LAYOUT_REQUIRED');
+ const rows=await all<any>(env.DB.prepare(`SELECT row_no,canonical_json,issues_json,resolution_status FROM scan_records WHERE batch_id=? AND coalesce(resolution_status,'')<>'CANCELLED' ORDER BY row_no`).bind(batchId));
+ const open=rows.filter(r=>(JSON.parse(r.issues_json||'[]') as string[]).some(x=>answerIssue(x)));
+ if(open.length)return json({ok:false,error:{code:'CAMERA_MARKS_UNCONFIRMED',message:`Önce belirsiz işaretleri onaylayın: ${open.map(r=>`optik ${r.row_no}`).join(', ')}.`}},409);
+ const text=recordsToFixedWidthText(rows.map(r=>JSON.parse(r.canonical_json) as CanonicalRecord),def);
+ await audit(env.DB,user.id,batch.institution_id,'CAMERA_TXT_EXPORTED','scan_batch',batchId,{records:rows.length,templateVersionId:batch.optical_template_version_id});
+ const name=`kamera-${String(batch.template_name||'optik').replace(/[^A-Za-z0-9]+/g,'-')}-${batchId.slice(-6)}.txt`;
+ return new Response(text,{headers:{'Content-Type':'text/plain; charset=utf-8','Content-Disposition':`attachment; filename="${name}"`,'Cache-Control':'private, no-store'}});
+}
+
 async function refreshBatchStatus(env:Env,batchId:string){const p=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND (match_status IN ('AMBIGUOUS','INVALID') OR issues_json!='[]')`).bind(batchId));await env.DB.prepare('UPDATE scan_batches SET status=? WHERE id=?').bind((p?.c||0)>0?'NEEDS_REVIEW':'READY',batchId).run()}
 
 export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);try{
@@ -174,6 +190,7 @@ export default {async fetch(request:Request,env:Env):Promise<Response>{const url
  const preview=url.pathname.match(/^\/api\/exams\/([^/]+)\/camera-preview$/);if(preview&&request.method==='POST'){const u=await auth(env,request);if(u instanceof Response)return u;return cameraPreview(request,env,u,preview[1])}
  const identity=url.pathname.match(/^\/api\/camera\/scan-batches\/([^/]+)\/records\/([^/]+)\/identity$/);if(identity&&request.method==='POST'){const u=await auth(env,request);if(u instanceof Response)return u;return patchCameraIdentity(request,env,u,identity[1],identity[2])}
  const answerFix=url.pathname.match(/^\/api\/camera\/scan-batches\/([^/]+)\/records\/([^/]+)\/answer$/);if(answerFix&&request.method==='POST'){const u=await auth(env,request);if(u instanceof Response)return u;return correctCameraAnswer(request,env,u,answerFix[1],answerFix[2])}
+ const txt=url.pathname.match(/^\/api\/camera\/scan-batches\/([^/]+)\/txt$/);if(txt&&request.method==='GET'){const u=await auth(env,request);if(u instanceof Response)return u;return exportCameraTxt(env,u,txt[1])}
  const accept=url.pathname.match(/^\/api\/camera\/scan-batches\/([^/]+)\/records\/([^/]+)\/accept$/);if(accept&&request.method==='POST'){const u=await auth(env,request);if(u instanceof Response)return u;return acceptCameraIssues(env,u,accept[1],accept[2])}
  return reportingApp.fetch(request,env);
  }catch(e){console.error('Camera runtime error',e);return err(500,'CAMERA_SERVER_ERROR','Kamera kaydı işlenirken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
