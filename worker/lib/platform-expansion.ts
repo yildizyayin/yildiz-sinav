@@ -412,7 +412,8 @@ async function networkComparison(request:Request,env:Env,user:AuthUser,networkId
   const examId=new URL(request.url).searchParams.get('examId')||'';
   const profile=await one<any>(env.DB.prepare(`SELECT p.exam_id,p.snapshot_version,p.result_freeze_status,e.title FROM exam_delivery_profiles p JOIN exams e ON e.id=p.exam_id WHERE p.exam_id=? AND p.network_id=?`).bind(examId,networkId));
   if(!profile)return notFound('Bu sınav zincirin sınavı değil.');
-  if(!['FROZEN','PUBLISHED'].includes(profile.result_freeze_status))return json({ok:false,error:{code:'RESULTS_NOT_FROZEN',message:'Karşılaştırma sonuçlar dondurulduktan sonra yapılır.'}},409);
+  // A052: the same published snapshot as the institution report; the chain office does not see a school's results before the school does
+  if(profile.result_freeze_status!=='PUBLISHED')return json({ok:false,error:{code:'RESULTS_NOT_PUBLISHED',message:'Karşılaştırma, sonuçlar yayımlandıktan sonra yapılır (kurum karnesiyle aynı veri).'}},409);
   const rows=await all<any>(env.DB.prepare(`SELECT i.id,i.name,i.city,i.district,m.region_label,count(s.id) participants,round(avg(s.score),2) average_score,round(avg(s.net),2) average_net
     FROM institution_network_members m JOIN institutions i ON i.id=m.institution_id LEFT JOIN exam_result_snapshots s ON s.institution_id=i.id AND s.exam_id=? AND s.snapshot_version=?
     WHERE m.network_id=? AND m.active=1 GROUP BY i.id ORDER BY i.city,i.district,i.name`).bind(examId,profile.snapshot_version,networkId));
