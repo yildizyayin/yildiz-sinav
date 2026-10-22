@@ -101,9 +101,15 @@ async function canManageInstitution(env: Env, user: AuthUser, institutionId: str
 }
 
 async function canManageNetwork(env: Env, user: AuthUser, networkId: string): Promise<boolean> {
-  if (user.role === 'SUPER_ADMIN') return true;
-  const row = await one<any>(env.DB.prepare(`SELECT 1 ok FROM network_user_roles WHERE network_id=? AND user_id=? AND role='NETWORK_ADMIN' AND active=1`).bind(networkId,user.id));
-  return !!row;
+  return (await networkAccess(env, user, networkId)) === 'ADMIN';
+}
+/** A044: upper management of a chain = an institution manager of a member institution holding an active network role. */
+async function networkAccess(env: Env, user: AuthUser, networkId: string): Promise<'ADMIN'|'VIEWER'|null> {
+  if (user.role === 'SUPER_ADMIN') return 'ADMIN';
+  if (user.role !== 'INSTITUTION_MANAGER' || !user.institution_id) return null;
+  const row = await one<any>(env.DB.prepare(`SELECT r.role FROM network_user_roles r JOIN institution_networks n ON n.id=r.network_id AND n.active=1
+    WHERE r.network_id=? AND r.user_id=? AND r.active=1 AND (n.headquarters_institution_id=? OR EXISTS(SELECT 1 FROM institution_network_members m WHERE m.network_id=r.network_id AND m.institution_id=? AND m.active=1))`).bind(networkId,user.id,user.institution_id,user.institution_id));
+  return row?.role==='NETWORK_ADMIN'?'ADMIN':row?.role==='NETWORK_VIEWER'?'VIEWER':null;
 }
 
 async function scopedStudentId(env: Env, user: AuthUser, requested?: string | null): Promise<string | null> {
@@ -360,18 +366,58 @@ async function createNetwork(request:Request,env:Env,user:AuthUser):Promise<Resp
 }
 
 async function addNetworkMember(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
-  if(!await canManageNetwork(env,user,networkId))return forbidden(); const b=await requestBody(request); if(!b.institutionId)return badRequest('Kurum seçin.');
+  // A044: which institutions belong to a chain is the Super Admin's decision; a chain admin cannot widen their own view
+  if(user.role!=='SUPER_ADMIN')return forbidden('Zincire kurum ekleme ve çıkarma yalnız Süper Admin yetkisindedir.'); const b=await requestBody(request); if(!b.institutionId)return badRequest('Kurum seçin.');
+  if(!await one<any>(env.DB.prepare(`SELECT 1 FROM institution_networks WHERE id=?`).bind(networkId)))return notFound();
+  if(!await one<any>(env.DB.prepare(`SELECT 1 FROM institutions WHERE id=?`).bind(b.institutionId)))return badRequest('Kurum bulunamadı.');
+  await audit(env.DB,user.id,b.institutionId,'NETWORK_MEMBER_ADDED','institution_network',networkId,{institutionId:b.institutionId,regionLabel:b.regionLabel||null});
   await env.DB.prepare(`INSERT INTO institution_network_members(network_id,institution_id,region_label,active) VALUES(?,?,?,1) ON CONFLICT(network_id,institution_id) DO UPDATE SET region_label=excluded.region_label,active=1`).bind(networkId,b.institutionId,b.regionLabel||null).run();
   return json({ok:true});
 }
 
 async function networkDashboard(env:Env,user:AuthUser,networkId:string):Promise<Response>{
-  const allowed=user.role==='SUPER_ADMIN'||await canManageNetwork(env,user,networkId)||!!await one<any>(env.DB.prepare(`SELECT 1 ok FROM institution_network_members WHERE network_id=? AND institution_id=? AND active=1`).bind(networkId,user.institution_id));
-  if(!allowed)return forbidden();
+  // A044: only the chain's upper management (and the Super Admin); a member school's staff, students and parents do not see the other schools
+  if(!await networkAccess(env,user,networkId))return forbidden('Zincir görünümü yalnız zincir üst yönetimine açıktır.');
   const network=await one<any>(env.DB.prepare(`SELECT * FROM institution_networks WHERE id=?`).bind(networkId)); if(!network)return notFound();
-  const institutions=await all<any>(env.DB.prepare(`SELECT i.*,m.region_label FROM institution_network_members m JOIN institutions i ON i.id=m.institution_id WHERE m.network_id=? AND m.active=1 ORDER BY i.city,i.district,i.name`).bind(networkId));
+  const institutions=await all<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,i.city,i.district,i.status,m.region_label FROM institution_network_members m JOIN institutions i ON i.id=m.institution_id WHERE m.network_id=? AND m.active=1 ORDER BY i.city,i.district,i.name`).bind(networkId));
   const exams=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,p.result_freeze_status,p.snapshot_version,p.published_at,(SELECT COUNT(*) FROM exam_result_snapshots s WHERE s.exam_id=e.id AND s.snapshot_version=p.snapshot_version) participant_count FROM exam_delivery_profiles p JOIN exams e ON e.id=p.exam_id WHERE p.network_id=? ORDER BY e.exam_date DESC,e.created_at DESC LIMIT 100`).bind(networkId));
   return json({ok:true,network,institutions,exams});
+}
+
+async function removeNetworkMember(env:Env,user:AuthUser,networkId:string,institutionId:string):Promise<Response>{
+  if(user.role!=='SUPER_ADMIN')return forbidden('Zincire kurum ekleme ve çıkarma yalnız Süper Admin yetkisindedir.');
+  const r=await env.DB.prepare(`UPDATE institution_network_members SET active=0 WHERE network_id=? AND institution_id=? AND active=1`).bind(networkId,institutionId).run();
+  if(Number(r.meta?.changes||0)<1)return notFound();
+  await audit(env.DB,user.id,institutionId,'NETWORK_MEMBER_REMOVED','institution_network',networkId,{institutionId});
+  return json({ok:true});
+}
+
+/** A044: grant/revoke chain management; only to an institution manager of the headquarters or a member school. */
+async function setNetworkRole(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
+  if(user.role!=='SUPER_ADMIN')return forbidden('Zincir yönetim yetkisini yalnız Süper Admin verir.');
+  const b=await requestBody(request); const role=String(b.role||'NETWORK_VIEWER').toUpperCase(); const active=b.active===false?0:1;
+  if(!['NETWORK_ADMIN','NETWORK_VIEWER'].includes(role))return badRequest('Rol NETWORK_ADMIN veya NETWORK_VIEWER olmalıdır.');
+  const target=await one<any>(env.DB.prepare(`SELECT u.id,u.role,u.institution_id FROM users u WHERE u.id=?`).bind(String(b.userId||'')));
+  const network=await one<any>(env.DB.prepare(`SELECT * FROM institution_networks WHERE id=?`).bind(networkId)); if(!network)return notFound();
+  const inChain=target&&target.role==='INSTITUTION_MANAGER'&&(target.institution_id===network.headquarters_institution_id||!!await one<any>(env.DB.prepare(`SELECT 1 FROM institution_network_members WHERE network_id=? AND institution_id=? AND active=1`).bind(networkId,target.institution_id)));
+  if(active&&!inChain)return badRequest('Zincir yetkisi yalnız merkezin veya üye kurumun kurum yöneticisine verilir.');
+  await env.DB.prepare(`INSERT INTO network_user_roles(network_id,user_id,role,active) VALUES(?,?,?,?) ON CONFLICT(network_id,user_id) DO UPDATE SET role=excluded.role,active=excluded.active`).bind(networkId,String(b.userId),role,active).run();
+  await audit(env.DB,user.id,target?.institution_id||null,active?'NETWORK_ROLE_GRANTED':'NETWORK_ROLE_REVOKED','institution_network',networkId,{userId:b.userId,role});
+  return json({ok:true});
+}
+
+/** A044: institution-by-institution comparison of a chain exam from the frozen snapshot; only member schools, totals add up. */
+async function networkComparison(request:Request,env:Env,user:AuthUser,networkId:string):Promise<Response>{
+  if(!await networkAccess(env,user,networkId))return forbidden('Zincir karşılaştırması yalnız zincir üst yönetimine açıktır.');
+  const examId=new URL(request.url).searchParams.get('examId')||'';
+  const profile=await one<any>(env.DB.prepare(`SELECT p.exam_id,p.snapshot_version,p.result_freeze_status,e.title FROM exam_delivery_profiles p JOIN exams e ON e.id=p.exam_id WHERE p.exam_id=? AND p.network_id=?`).bind(examId,networkId));
+  if(!profile)return notFound('Bu sınav zincirin sınavı değil.');
+  if(!['FROZEN','PUBLISHED'].includes(profile.result_freeze_status))return json({ok:false,error:{code:'RESULTS_NOT_FROZEN',message:'Karşılaştırma sonuçlar dondurulduktan sonra yapılır.'}},409);
+  const rows=await all<any>(env.DB.prepare(`SELECT i.id,i.name,i.city,i.district,m.region_label,count(s.id) participants,round(avg(s.score),2) average_score,round(avg(s.net),2) average_net
+    FROM institution_network_members m JOIN institutions i ON i.id=m.institution_id LEFT JOIN exam_result_snapshots s ON s.institution_id=i.id AND s.exam_id=? AND s.snapshot_version=?
+    WHERE m.network_id=? AND m.active=1 GROUP BY i.id ORDER BY i.city,i.district,i.name`).bind(examId,profile.snapshot_version,networkId));
+  const total=await one<any>(env.DB.prepare(`SELECT count(*) n,round(avg(score),2) average_score,round(avg(net),2) average_net FROM exam_result_snapshots s WHERE s.exam_id=? AND s.snapshot_version=? AND s.institution_id IN (SELECT institution_id FROM institution_network_members WHERE network_id=? AND active=1)`).bind(examId,profile.snapshot_version,networkId));
+  return json({ok:true,exam:{id:examId,title:profile.title,snapshotVersion:profile.snapshot_version},institutions:rows,network:{participants:Number(total?.n||0),averageScore:total?.average_score??null,averageNet:total?.average_net??null}});
 }
 
 async function listFeatures(env:Env,user:AuthUser):Promise<Response>{
@@ -979,6 +1025,9 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   if(p==='/api/platform/networks'&&request.method==='POST')return createNetwork(request,env,user);
   m=p.match(/^\/api\/platform\/networks\/([^/]+)\/members$/);if(m&&request.method==='POST')return addNetworkMember(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/networks\/([^/]+)\/dashboard$/);if(m&&request.method==='GET')return networkDashboard(env,user,m[1]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/members\/([^/]+)\/remove$/);if(m&&request.method==='POST')return removeNetworkMember(env,user,m[1],m[2]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/roles$/);if(m&&request.method==='POST')return setNetworkRole(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/networks\/([^/]+)\/comparison$/);if(m&&request.method==='GET')return networkComparison(request,env,user,m[1]);
 
   if(p==='/api/platform/questions'&&request.method==='GET')return listQuestions(request,env,user);
   if(p==='/api/platform/questions'&&request.method==='POST')return createQuestion(request,env,user);
