@@ -1281,3 +1281,18 @@ Kanıt:
 - Tam paket 270 dosya / 1.312 test geçti.
 
 Sonraki iş: A048.
+
+### A048 — yıllık koltuk lisansı kararı, 22 Ekim
+
+Durum: **BEKLİYOR (kullanıcı kararı).** Bu satır kod işi değil, bir iş kararıdır. Kabul ölçütü "kabul edilmiş sözleşme kaydedilir" diyor. Sözleşmeyi Claude kabul edemez ve fiyat yazamaz; bu yüzden karar kullanıcıya soruldu.
+
+Sistemde bugün olan:
+- `institution_license_state`: eğitim yılına göre lisanslı öğrenci sınırı.
+- `institution_licenses.plan_code`: TRIAL_7_DAY / ANNUAL / PILOT / CUSTOM.
+- Kurum açılışında öğrenci lisans sınırı ve 7 günlük deneme.
+
+Gerekenler:
+1. Mevcut model ile yıllık koltuk modelinin karşılaştırmasının kullanıcıyla kararlaştırılması (fiyat sistemde gösterilmeyecek).
+2. Kabul edilen sözleşme metninin ya da kararın kaydedilmesi.
+
+Uygulama (kod) bu satırın kapsamında değil. Sıradaki iş A049.
