@@ -9,6 +9,9 @@ export async function publishStudioHomework(request:Request,env:Env,user:AuthUse
  const studentIds:string[]=input.studentIds;
  if(!Array.isArray(studentIds)||studentIds.length<1||studentIds.length>200||studentIds.some(x=>typeof x!=='string'||!x.trim())||new Set(studentIds).size!==studentIds.length)
   return badRequest('1-200 benzersiz öğrenci gerekli.','INVALID_RECIPIENTS');
+ // A060: optional due date (YYYY-MM-DD or date-time) and answer reveal moment
+ const dueAt=typeof input.dueAt==='string'&&/^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2})?)?$/.test(input.dueAt.trim())?input.dueAt.trim():null;
+ if(input.dueAt!=null&&input.dueAt!==''&&!dueAt)return badRequest('Son teslim tarihi geçersiz.','INVALID_DUE_AT');
  const doc=await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId));
  if(!doc)return notFound('Belge bulunamadı.');
  if(!doc.institution_id||(user.role!=='SUPER_ADMIN'&&user.institution_id!==doc.institution_id))return forbidden();
@@ -42,7 +45,7 @@ export async function publishStudioHomework(request:Request,env:Env,user:AuthUse
  }
  const assignmentId=uuid('asg');
  const ops:D1PreparedStatement[]=[
-  env.DB.prepare("INSERT INTO assignments(id,institution_id,created_by,assignment_type,title,status) VALUES(?,?,?,'TEACHER',?,'ASSIGNED')").bind(assignmentId,doc.institution_id,user.id,doc.title),
+  env.DB.prepare("INSERT INTO assignments(id,institution_id,created_by,assignment_type,title,status,due_at,answer_reveal) VALUES(?,?,?,'TEACHER',?,'ASSIGNED',?,?)").bind(assignmentId,doc.institution_id,user.id,doc.title,dueAt,input.answerReveal==='AFTER_SUBMIT'?'AFTER_SUBMIT':'AFTER_DUE'),
   ...ids.map((id,i)=>env.DB.prepare("INSERT INTO assignment_items(id,assignment_id,item_type,reference_id,payload_json,sort_order) VALUES(?,?,'QUESTION',?,'{}',?)").bind(uuid('asi'),assignmentId,id,i+1)),
   ...studentIds.map(id=>env.DB.prepare("INSERT INTO assignment_recipients(assignment_id,student_id,status) VALUES(?,?,'ASSIGNED')").bind(assignmentId,id)),
   env.DB.prepare("INSERT INTO studio_delivery_links(id,document_id,institution_id,publication_revision,delivery_kind,destination,external_id,idempotency_key) VALUES(?,?,?,1,'HOMEWORK','ASSIGNMENTS',?,?)").bind(uuid('sdl'),documentId,doc.institution_id,assignmentId,plan.plan.idempotencyKey),
