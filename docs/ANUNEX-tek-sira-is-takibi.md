@@ -1474,3 +1474,35 @@ Kanıt:
 Sınır: canlı el testi K002'de yapılacak.
 
 Sonraki iş: A056.
+
+### A056 — özel rapor indirmesi, 23 Ekim 00:50
+
+Durum: KOD TAMAM, merge edildi (PR #329).
+
+İncelemede zaten testli olanlar (rubrik CSV çıktısı ve sınıf/kurum arka plan raporu):
+- Rapor yalnız sahibine açılıyor.
+- İndirme anında güncel yetki ve kaynak sürümü yeniden kontrol ediliyor.
+- Rapor 24 saat sonra kapanıyor (410).
+- Dosyalar küçük partiler halinde temizleniyor.
+- Kira mekanizması ve yeniden deneme çift kayıt üretmiyor.
+
+Eksik olan: iptal yoktu.
+
+Eklenenler:
+- `POST …/:id/cancel` ucu iki rapor türü için de eklendi. Yalnız raporun sahibi iptal edebilir ve istek yalnız ANUNEX'in kendi sayfasından gelebilir.
+- İptal edilen iş REVOKED + CANCELLED_BY_USER olarak işaretleniyor; süresi hemen doluyor. Şema değişmedi.
+- İptalden sonra:
+  - İndirme 410 dönüyor ve depoya hiç dokunulmuyor.
+  - Kuyruktaki iş işlenmiyor.
+  - O sırada çalışan işçi, yazdığı parçayı kaydedemiyor ve siliyor.
+  - Kalan dosyalar mevcut süre sonu temizliğiyle siliniyor.
+- Arayüzdeki iki panele, onay soran bir "İptal et" düğmesi eklendi.
+
+Kanıt:
+- Rapor testlerine 3 yeni test eklendi.
+- 9 mutasyonun 8'i yakalandı. Yakalanmayan, "kirayı temizleme" mutasyonu. Kayıt koşulundaki süre kontrolü aynı işi gördüğü için bu değişiklik etkisiz kalıyor; kira temizliği yedek bir savunma.
+- Tam paket 277 dosya / 1.329 test geçti.
+
+Not: bu iki raporda arka plan PDF çıktısı yok. Sonuç PDF'leri ayrı bir akış (result artifacts); onların kendi saklama ve temizlik testleri var.
+
+Sonraki iş: A057.
