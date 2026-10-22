@@ -2,6 +2,7 @@ import { useEffect,useMemo,useState } from 'react';
 import { CheckCircle2,ClipboardCheck,Clock3,RefreshCw,ShieldCheck,XCircle } from 'lucide-react';
 import { api } from '../api';
 import { useAuth } from '../auth';
+import { GuidanceReportPanel, SharedSupportPlan } from '../components/GuidanceReportPanel';
 
 const STATUS:Record<string,string>={PROPOSED:'Rehber öğretmen onayı bekliyor',APPROVED:'Uygulamaya hazır',IN_PROGRESS:'Devam ediyor',SUBMITTED:'Rehber öğretmen incelemesi bekliyor',REVIEWED:'İncelendi ve gelişim profiline eklendi',REJECTED:'Onaylanmadı',CANCELLED:'İptal edildi'};
 
@@ -33,7 +34,7 @@ function CounselorGuidance(){
   {rows.length===0&&<div className="panel"><h2>Onay kuyruğu boş</h2><p>Bekleyen rehberlik değerlendirmesi bulunmuyor.</p></div>}
   {rows.map(r=><div className="panel" key={r.id} style={{marginBottom:16}}><div className="page-head" style={{marginBottom:10}}><div><span className="eyebrow">{r.class_name||'Sınıf'} · {r.category}</span><h2>{r.first_name} {r.last_name}</h2><p>{r.title} · {STATUS[r.status]||r.status}</p></div><ClipboardCheck size={28}/></div><p>{r.proposal_reason}</p>
    {r.status==='SUBMITTED'&&r.scored_result?.dimensions&&<div className="stat-grid" style={{margin:'12px 0'}}>{Object.entries(r.scored_result.dimensions).map(([key,value])=><div className="stat-card" key={key}><span>{key.replaceAll('_',' ')}</span><strong>{Math.round(Number(value))}/100</strong></div>)}</div>}
-   <label>Rehber öğretmen notu<textarea value={notes[r.id]||''} onChange={e=>setNotes({...notes,[r.id]:e.target.value})} placeholder="İsteğe bağlı kısa değerlendirme notu"/></label>
+   <label>Öğrenciye görünen geri bildirim<textarea value={notes[r.id]||''} onChange={e=>setNotes({...notes,[r.id]:e.target.value})} placeholder="Öğrenci bu notu görür. Özel görüşme notlarını rehberlik karnesindeki özel kayıtlara yazın."/></label>
    <div style={{display:'flex',gap:10,flexWrap:'wrap',marginTop:12}}>{r.status==='PROPOSED'&&<><button className="primary" disabled={busy!==''} onClick={()=>void act(r,'approve')}><CheckCircle2 size={16}/> Onayla ve Öğrenciye Aç</button><button className="ghost" disabled={busy!==''} onClick={()=>void act(r,'reject')}><XCircle size={16}/> Reddet</button></>}{r.status==='SUBMITTED'&&<button className="primary" disabled={busy!==''} onClick={()=>void act(r,'review')}><ShieldCheck size={16}/> İncele ve Gelişim Profiline Kabul Et</button>}</div>
   </div>)}</>;
 }
@@ -41,6 +42,6 @@ function CounselorGuidance(){
 export function GuidanceTests(){
  const {user}=useAuth();
  return <><div className="page-head"><div><span className="eyebrow">Eğitsel Rehberlik</span><h1>RBA & Rehberlik Değerlendirmeleri</h1><p>Öğrenci gelişiminde yalnız kurumun gerçek rehber öğretmeni tarafından onaylanmış ve incelenmiş eğitimsel veriler kullanılır.</p></div><button className="ghost" onClick={()=>location.reload()}><RefreshCw size={16}/> Yenile</button></div>
-  {user?.role==='STUDENT'?<StudentGuidance/>:user?.role==='GUIDANCE_TEACHER'?<CounselorGuidance/>:<div className="panel"><h2>Rehber öğretmen kontrollü alan</h2><p>Bu işlem öğrenci ve kurumda atanmış gerçek rehber öğretmen rolleri arasında yürütülür. Yönetici ve diğer öğretmen rolleri test yanıtlarını uygulayamaz veya inceleme onayı veremez.</p></div>}
+  {user?.role==='STUDENT'?<>{user.student_id&&<SharedSupportPlan studentId={user.student_id}/>}<StudentGuidance/></>:user?.role==='GUIDANCE_TEACHER'?<><CounselorGuidance/><GuidanceReportPanel/></>:<div className="panel"><h2>Rehber öğretmen kontrollü alan</h2><p>Bu işlem öğrenci ve kurumda atanmış gerçek rehber öğretmen rolleri arasında yürütülür. Yönetici ve diğer öğretmen rolleri test yanıtlarını uygulayamaz veya inceleme onayı veremez.</p></div>}
  </>;
 }
