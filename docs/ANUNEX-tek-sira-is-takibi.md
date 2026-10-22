@@ -1705,3 +1705,26 @@ Kanıt:
 - Tam paket 284 dosya / 1.341 test geçti.
 
 Sonraki iş: A065.
+
+### A065 — Nibiru rol tabanlı yardım, 23 Ekim 02:51
+
+Durum: KOD TAMAM, merge edildi (PR #338).
+
+Zaten doğru olanlar:
+- Rol kapsamı doğruydu. Öğrenci yalnız kendi verisini, veli yalnız bağlı çocuğunun verisini görüyor; veli bağlantısı her istekte yeniden kontrol ediliyor. Öğretmen kendi sınıf ve derslerini, kurum yöneticisi kendi kurumunu görüyor.
+- Cevap süzgeci vardı: tanı koyma, öğrenciyi etiketleme ve kimlik numarası paylaşma engelleniyordu.
+
+Bulunan açık:
+- Öğrenci ve veli bağlamı, yayımlanmamış sınav sonucunu, netleri ve zayıf kazanımları da okuyordu.
+- A030'da diğer uçları kapatmıştık, ancak Nibiru sohbeti o çalışmanın kapsamı dışında kalmıştı.
+- Düzeltme: öğrenci ve veli artık yalnız yayımlanmış sonuçlarla yanıt alıyor.
+
+Ek düzeltme:
+- "Son sınavım", "eksik kazanımlarım" ve "sınıf özeti" sorularında doğrulanmış veri yoksa model artık çağrılmıyor. Kullanıcıya düz bir "veri yok" cevabı veriliyor; böylece uydurma bir sayı üretilemiyor.
+
+Kanıt:
+- `tests/a065-nibiru-scope.test.ts`
+- 5 mutasyon denendi, hepsi yakalandı.
+- Tam paket: 285 dosya / 1.343 test geçti.
+
+Sonraki iş: A066.
