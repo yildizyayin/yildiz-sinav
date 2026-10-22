@@ -1199,3 +1199,35 @@ Kanıt:
 - Tam paket 267 dosya / 1.306 test geçti.
 
 Sonraki iş: A045.
+
+### A045 — öğrenci aktarımı, 22 Ekim
+
+Durum: KOD TAMAM, merge edildi (PR #319). Canlı doğrulama dağıtımdan sonra (K002).
+
+Bulunan ve kapatılan açık: önizlemede gönderilen eğitim yılı (`seasonId`) kuruma ait mi diye doğrulanmıyordu. Bu yüzden öğrenciler başka bir kurumun eğitim yılına kaydedilebiliyordu.
+
+Yapılanlar:
+- **Kurum dışı eğitim yılı:** başka kurumun eğitim yılı reddedilir.
+- **Mükerrer kontrolü:**
+  - dosya içinde aynı numara, ya da numarasız satırlarda aynı ad ve sınıf, kontrol gerektirir;
+  - okulda zaten kayıtlı numara mevcut öğrenciyle eşleşir;
+  - önizlemeden sonra başka öğrenciye verilmiş numara aktarımda ikinci kez kullanılmaz ve çakışma olarak raporlanır.
+- **Sınıf düzeyi:** 1–12 dışındaysa satır kontrole düşer ve yeni öğrenci olarak eklenemez.
+- **Satır çözümü:** kontrol gereken satırları bir kişi tek tek karara bağlar (yeni uç). Seçenekler:
+  - eşle (yalnız aynı kurum ve eğitim yılındaki öğrenciyle);
+  - yeni öğrenci;
+  - atla.
+  Her karar denetim kaydına yazılır.
+- **Aktarım:** kontrol bekleyen satır varken başlamaz; her satır tek toplu yazımla yazılır; ikinci kez çalıştırılırsa hiçbir şey değişmez.
+- **Arayüz:** Veri Transfer ekranına kontrol satırları paneli eklendi.
+
+Kanıt:
+- `tests/a045-student-import.test.ts` (2 test).
+- Mutasyon kontrolü: aşağıdaki 4 değişikliğin her biri testlerce yakalandı:
+  - başka kurumun eğitim yılını kabul etmek;
+  - dosya içi mükerreri görmezden gelmek;
+  - aktarımda numarayı yeniden denetlememek;
+  - başka kurumun öğrencisiyle eşlemeye izin vermek.
+- Tam paket 268 dosya / 1.308 test geçti.
+
+Sonraki iş: A046.
