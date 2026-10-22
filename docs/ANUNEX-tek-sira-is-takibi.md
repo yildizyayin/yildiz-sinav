@@ -1231,3 +1231,25 @@ Kanıt:
 - Tam paket 268 dosya / 1.308 test geçti.
 
 Sonraki iş: A046.
+
+### A046 — personel ve branş ataması, 22 Ekim
+
+Durum: KOD TAMAM, merge edildi (PR #320). Canlı doğrulama dağıtımdan sonra (K002).
+
+İnceleme sonucu: mevcut atama API'si büyük ölçüde sağlamdı. Şunlar zaten çalışıyordu:
+- başka kurumun sınıfı ya da öğretmeni atanamıyor;
+- branş atamasında ders zorunlu;
+- mükerrer atama engelleniyor;
+- atama kaldırma bir sonraki istekte uygulanıyor;
+- hesap pasifleşince açık oturum kapanıyor.
+
+Düzeltme: yetki kapsamı (`loadPermissionScope`) öğretmenin şu anki kurumuyla sınırlandı. Başka okula geçen öğretmenin eski okul atamaları artık sayılmıyor. Uç noktalar ayrıca kurum filtresi kullandığı için doğrudan bir sızıntı gözlenmedi; bu savunma amaçlı bir düzeltme.
+
+Kanıt:
+- `tests/a046-staff-assignments.test.ts` (2 test): atanan sınıf ve branş görünür; rehberlik sınıfı görünür; kaldırma anında etkilidir; pasif hesabın oturumu kapanır; kurumlar arası atama yapılamaz; taşınan öğretmen eski sınıfları göremez.
+- Mutasyon kontrolü: kurum filtresini kaldırmak ve pasif atamayı saymak testlerce yakalandı.
+- Eski 4 test dosyasındaki elle yazılmış şemalara `institution_id` sütunu eklendi.
+- Not: PR ilk açıldığında bunlardan biri atlanmıştı ve tam paket kırmızıydı; merge'den önce düzeltildi.
+- Tam paket 269 dosya / 1.310 test geçti.
+
+Sonraki iş: A047.
