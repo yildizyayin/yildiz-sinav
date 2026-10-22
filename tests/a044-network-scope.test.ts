@@ -53,8 +53,10 @@ describe('A044: chain scope', () => {
         INSERT INTO institution_seasons(id,institution_id,academic_year,status) VALUES('sx','x','2026-2027','ACTIVE');`);
       t.db.prepare(`UPDATE exam_delivery_profiles SET network_id=? WHERE exam_id=?`).run(nid, t.examId);
       t.db.prepare(`INSERT OR IGNORE INTO exam_delivery_profiles(exam_id,network_id) VALUES(?,?)`).run(t.examId, nid);
-      expect((await t.as('hqmgr', `/api/platform/networks/${nid}/comparison?examId=${t.examId}`)).data.error.code).toBe('RESULTS_NOT_FROZEN');
+      expect((await t.as('hqmgr', `/api/platform/networks/${nid}/comparison?examId=${t.examId}`)).data.error.code).toBe('RESULTS_NOT_PUBLISHED');
       expect((await t.as('admin', `/api/platform/exam-center/${t.examId}/freeze`, 'POST', {})).status).toBe(200);
+      expect((await t.as('hqmgr', `/api/platform/networks/${nid}/comparison?examId=${t.examId}`)).data.error.code).toBe('RESULTS_NOT_PUBLISHED');
+      expect((await t.as('admin', `/api/platform/exam-center/${t.examId}/publish`, 'POST', {})).status).toBe(200);
       // a snapshot row of the outside school (as if it had taken part)
       const any = t.db.prepare(`SELECT * FROM exam_result_snapshots WHERE exam_id=? LIMIT 1`).get(t.examId) as any;
       t.db.exec(`INSERT INTO student_entities(id,first_name,last_name,normalized_name,status) VALUES('sx1','D','O','d o','ACTIVE');
