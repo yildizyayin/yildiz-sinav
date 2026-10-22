@@ -1050,3 +1050,37 @@ Sınır: Word/PDF dosyası yerine tarayıcıdan yazdırılan sayfa üretildi; PD
 Sonraki iş: A041.
 
 > Düzeltme (22 Ekim 20:20): A037–A040 başlıklarındaki saat aralıkları saate bakılmadan yazılmıştı ve yanlıştı (ör. "21:40"). Gerçek saat bilinmediği için kesin aralıklar kaldırıldı.
+
+### A041 — yazılı öğretmen puanlaması, 22 Ekim (A040'tan sonra)
+
+Durum: KOD TAMAM, merge edildi (PR #314). Canlı doğrulama dağıtımdan sonra (K002).
+
+Yapılanlar:
+- Migration 0130 üç kayıt ekledi:
+  - puan sürümleri: yalnız eklenir, değiştirilemez ve silinemez;
+  - AI önerileri: puanlardan ayrı tutulur;
+  - not kesinleştirmeleri: sürümlüdür.
+- Öğretmen her ölçüt için, kâğıda sabitlenen rubrikteki (A040) kısmi puan düzeylerinden birini seçer; soru puanı bunların toplamıdır. Puan soru puanını aşamaz.
+- İlk sürümden sonra her düzeltme gerekçe ister. Bu kural hem API'de hem veritabanında uygulanır.
+- AI tek başına kesin not vermez:
+  - öneri yalnız yazıya dökülmüş cevaptan alınır ve ayrı saklanır; puan sayılmaz;
+  - rubrik düzeylerine uymayan öneri atılır;
+  - öğretmen öneriye bakıp kendi puanını girer ve kayıt öneriye bağlanır;
+  - veritabanı puanlayanı yalnız TEACHER ya da SUPER_ADMIN olarak kabul eder;
+  - AI kapalıyken öneri istenemez.
+- Not öğretmenin açık kesinleştirmesiyle oluşur ve sürümlüdür. Notun toplamı son insan puanlarının toplamına eşit olmalı ve her soru puanlanmış olmalıdır (veritabanı tetikleyicisi). Kesinleşmiş notun değişmesi gerekçe ister. Arada yapılan düzeltme ekranda "değişti, yeniden kesinleştirin" olarak görünür.
+- Puanlamayı yalnız branş öğretmeni ve Süper Admin yapar; yalnız o okulun o sınıf düzeyindeki etkin öğrencileri puanlanabilir.
+- Arayüz: yazılı kâğıdı ekranında puanlama paneli (geçmiş, AI önerisi, kesinleştirme).
+
+Kanıt:
+- `tests/a041-written-grading.test.ts` (3 test).
+- Yakalanan mutasyonlar: gerekçe kontrolü, düzey kontrolü, kesinleşmiş notun gerekçesi ve AI önerisinin puan sayılması.
+- Hayatta kalan iki mutasyon gerekçeli:
+  - API'deki tamlık kontrolü kaldırılınca veritabanı aynı hatayı verdiği için test geçiyor;
+  - erişim satırı gereksiz, çünkü branş sorgusu zaten kâğıdın okuluna bağlı.
+- Testlerde bulunan ve düzeltilen boşluk: "AI kapalı" durumu, yardımcı AI'yı açtığı için hiç sınanmıyordu.
+- Tam paket 262 dosya / 1.297 test geçti, build geçti.
+
+Sınır: Notlar öğrenciye ve veliye yayımlanmıyor, e-Okul'a otomatik gönderim yok (politika: automaticEokulSubmission false). El yazısının kamerayla okunması A085'te.
+
+Sonraki iş: A085.
