@@ -37,3 +37,6 @@
 /* A031: what removing an exam affects */
 .trash-impact { margin: 8px 0 12px; padding-left: 18px; font-size: 14px; }
 .trash-impact li + li { margin-top: 4px; }
+
+/* A032b: institution lifecycle actions */
+.institution-lifecycle-actions { display: flex; flex-wrap: wrap; gap: 6px; }

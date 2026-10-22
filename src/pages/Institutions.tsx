@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Building2, KeyRound, PauseCircle, PlayCircle, Plus, RefreshCw, X } from 'lucide-react';
 import { api, post } from '../api';
+import '../exam-workspace.css';
 
 const FEATURE_OPTIONS = [
   ['EXAM_CENTER', 'Sınav Merkezi'],
@@ -19,6 +20,13 @@ const initialForm = {
 
 type InstitutionForm = typeof initialForm;
 
+const LIFECYCLE: Record<string, { label: string; tone: string; action: string; done: string; explain: string }> = {
+  ACTIVE: { label: 'Aktif', tone: 'ok', action: 'Aktif et', done: 'kurum yeniden aktif.', explain: 'Kurum ve bağlı tüm hesaplar yeniden giriş yapabilir. Kapatılan oturumlar geri gelmez; kullanıcılar yeniden giriş yapar.' },
+  PASSIVE: { label: 'Askıda', tone: 'off', action: 'Askıya al', done: 'kurum askıya alındı.', explain: 'Kurum yöneticisi, öğretmen, öğrenci ve veli hesaplarının hepsi kapanır; açık oturumlar hemen sonlanır. Veriler korunur.' },
+  FROZEN: { label: 'Dondurulmuş', tone: 'off', action: 'Dondur', done: 'kurum donduruldu.', explain: 'Askıya almayla aynı şekilde bağlı tüm hesaplar kapanır; anlaşmazlık çözülene kadar kurum dondurulmuş olarak işaretlenir. Veriler korunur.' },
+  ARCHIVED: { label: 'Silinmiş', tone: 'off', action: 'Sil', done: 'kurum silindi (geri alınabilir).', explain: 'Kurum ve bağlı tüm hesaplar kapanır, kurum listelerden kalkar. Veriler saklanır; Silinenler listesinden geri alabilirsiniz.' },
+};
+
 export function Institutions() {
   const [rows, setRows] = useState<any[]>([]);
   const [form, setForm] = useState<InstitutionForm>(initialForm);
@@ -27,15 +35,20 @@ export function Institutions() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState<any | null>(null);
+  // A032b: Super Admin lifecycle — suspend, freeze, reactivate, delete (reversible) — with a reason and the impact shown first.
+  const [showDeleted, setShowDeleted] = useState(false);
+  const [pending, setPending] = useState<{ row: any; status: string } | null>(null);
+  const [reason, setReason] = useState('');
+  const [notice, setNotice] = useState('');
 
   const load = async () => {
     setLoading(true);
-    try { const response = await api<any>('/api/institutions'); setRows(response.institutions || []); }
+    try { const response = await api<any>(`/api/institutions${showDeleted ? '?archived=1' : ''}`); setRows(response.institutions || []); }
     catch (e: any) { setError(e.message || 'Kurumlar yüklenemedi.'); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { void load(); }, []);
+  useEffect(() => { void load(); }, [showDeleted]);
 
   const update = <K extends keyof InstitutionForm>(key: K, value: InstitutionForm[K]) => setForm((current) => ({ ...current, [key]: value }));
   const toggleFeature = (feature: string) => update('features', form.features.includes(feature) ? form.features.filter((item) => item !== feature) : [...form.features, feature]);
@@ -65,10 +78,16 @@ export function Institutions() {
     finally { setBusy(''); }
   };
 
-  const toggle = async (row: any) => {
-    setBusy(row.id); setError('');
-    try { await post(`/api/institutions/${row.id}/status`, { status: row.status === 'ACTIVE' ? 'PASSIVE' : 'ACTIVE' }); await load(); }
-    catch (e: any) { setError(e.message || 'Kurum durumu değiştirilemedi.'); }
+  const lifecycleOf = (row: any): string => row.lifecycle_status || (row.status === 'ACTIVE' ? 'ACTIVE' : 'PASSIVE');
+  const applyLifecycle = async () => {
+    if (!pending) return;
+    const { row, status } = pending;
+    setBusy(row.id); setError(''); setNotice('');
+    try {
+      const r = await post<any>(`/api/institutions/${row.id}/status`, { status, reason: reason.trim() || undefined });
+      setNotice(`${row.name}: ${LIFECYCLE[status].done}${status !== 'ACTIVE' ? ` ${r.accounts || 0} hesap kapatıldı${r.sessionsClosed ? `, ${r.sessionsClosed} açık oturum sonlandırıldı` : ''}.` : ' Hesaplar yeniden giriş yapabilir.'}`);
+      setPending(null); setReason(''); await load();
+    } catch (e: any) { setError(e.message || 'Kurum durumu değiştirilemedi.'); }
     finally { setBusy(''); }
   };
 
@@ -123,9 +142,11 @@ export function Institutions() {
       </form>
     </div>}
 
-    <div className="table-card"><div className="section-head"><div><span className="eyebrow">Kurum kayıtları</span><h2>Aktif kurumlar ve yaşam durumu</h2></div></div><table><thead><tr><th>Kurum</th><th>Kod / kaynak</th><th>Sezon</th><th>Öğrenci</th><th>Yönetici</th><th>Lisans</th><th>Durum</th><th></th></tr></thead><tbody>
-      {rows.map((row) => <tr key={row.id}><td><strong>{row.name}</strong><small>{row.city || '—'} / {row.district || '—'}</small></td><td><strong>{row.code}</strong><small>{row.source_type === 'MEB' ? `MEB · ${row.meb_code || row.code}` : 'Manuel kurum'}</small></td><td>{row.academic_year || '—'}</td><td>{row.active_students || 0} <small>aktif · {row.guest_students || 0} misafir</small></td><td>{row.manager_count || 0}</td><td><span className="status ok">{row.license_plan === 'TRIAL_7_DAY' ? '7 gün demo' : row.license_plan || 'Legacy'}</span></td><td><span className={`status ${row.status === 'ACTIVE' ? 'ok' : 'off'}`}>{row.status === 'ACTIVE' ? 'Aktif' : 'Pasif'}</span></td><td><button className={row.status === 'ACTIVE' ? 'danger subtle' : 'primary subtle'} disabled={busy === row.id} onClick={() => void toggle(row)}>{row.status === 'ACTIVE' ? <><PauseCircle size={16} /> Pasife Al</> : <><PlayCircle size={16} /> Aktif Et</>}</button></td></tr>)}
-    </tbody></table>{!rows.length && <div className="empty">{loading ? 'Kurumlar yükleniyor…' : 'Henüz kurum kaydı yok.'}</div>}</div>
+    {notice && <div className="alert success" role="status">{notice}</div>}
+    {pending && <div className="exam-review-overlay"><section className="exam-review-dialog" role="dialog" aria-modal="true" aria-labelledby="lifecycle-title"><h2 id="lifecycle-title">{pending.row.name} · {LIFECYCLE[pending.status].action}</h2><p>{LIFECYCLE[pending.status].explain}</p><p><strong>{pending.row.account_count || 0}</strong> bağlı hesap etkilenir.</p><label>Gerekçe{pending.status === 'ARCHIVED' ? ' (zorunlu, en az 10 karakter)' : ''}<textarea value={reason} maxLength={500} onChange={(e) => setReason(e.target.value)} /></label>{error && <div role="alert" className="alert error">{error}</div>}<footer><button className="secondary" disabled={busy === pending.row.id} onClick={() => { setPending(null); setReason(''); }}>Vazgeç</button><button className={pending.status === 'ACTIVE' ? 'primary' : 'danger'} disabled={busy === pending.row.id || (pending.status === 'ARCHIVED' && reason.trim().length < 10)} onClick={() => void applyLifecycle()}>{LIFECYCLE[pending.status].action}</button></footer></section></div>}
+    <div className="table-card"><div className="section-head"><div><span className="eyebrow">Kurum kayıtları</span><h2>{showDeleted ? 'Silinen kurumlar' : 'Kurumlar ve yaşam durumu'}</h2></div><button className="ghost" onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? 'Kurumlara dön' : 'Silinenler'}</button></div><table><thead><tr><th>Kurum</th><th>Kod / kaynak</th><th>Sezon</th><th>Öğrenci</th><th>Yönetici</th><th>Lisans</th><th>Durum</th><th></th></tr></thead><tbody>
+      {rows.map((row) => <tr key={row.id}><td><strong>{row.name}</strong><small>{row.city || '—'} / {row.district || '—'}</small></td><td><strong>{row.code}</strong><small>{row.source_type === 'MEB' ? `MEB · ${row.meb_code || row.code}` : 'Manuel kurum'}</small></td><td>{row.academic_year || '—'}</td><td>{row.active_students || 0} <small>aktif · {row.guest_students || 0} misafir</small></td><td>{row.manager_count || 0}</td><td><span className="status ok">{row.license_plan === 'TRIAL_7_DAY' ? '7 gün demo' : row.license_plan || 'Legacy'}</span></td><td><span className={`status ${LIFECYCLE[lifecycleOf(row)]?.tone || 'off'}`}>{LIFECYCLE[lifecycleOf(row)]?.label || row.status}</span>{row.lifecycle_reason && lifecycleOf(row) !== 'ACTIVE' && <small title={row.lifecycle_reason}>{row.lifecycle_reason}</small>}</td><td className="institution-lifecycle-actions">{(['ACTIVE', 'PASSIVE', 'FROZEN', 'ARCHIVED'] as const).filter((st) => st !== lifecycleOf(row)).map((st) => <button key={st} className={st === 'ACTIVE' ? 'primary subtle' : 'danger subtle'} disabled={busy === row.id} onClick={() => { setError(''); setReason(''); setPending({ row, status: st }); }}>{st === 'ACTIVE' ? <PlayCircle size={16} /> : <PauseCircle size={16} />} {st === 'ACTIVE' && lifecycleOf(row) === 'ARCHIVED' ? 'Geri al' : LIFECYCLE[st].action}</button>)}</td></tr>)}
+    </tbody></table>{!rows.length && <div className="empty">{loading ? 'Kurumlar yükleniyor…' : showDeleted ? 'Silinmiş kurum yok.' : 'Henüz kurum kaydı yok.'}</div>}</div>
   </>;
 }
 

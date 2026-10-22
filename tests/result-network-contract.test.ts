@@ -42,7 +42,9 @@ describe('ANUNEX result network contract',()=>{
   expect(source).toContain("scope_type='DISTRICT' AND city=? AND district=?");
   expect(source).toContain("'RESULT_DEALER_STATUS_CHANGED'");
   expect(source).toContain("'RESULT_DEALER_SCOPE_REVOKED'");
-  expect(source).toContain("UPDATE sessions SET revoked_at=CURRENT_TIMESTAMP WHERE user_id IN (SELECT id FROM users WHERE institution_id=?)");
+  // A032b: one lifecycle (app + result network) in the shared library; it closes every bound account except the Super Admin's.
+  expect(source).toContain("return changeInstitutionLifecycle(env,user,id,body.status,body.reason,permission.dealerId)");
+  expect(readFileSync(new URL('../worker/lib/institution-lifecycle.ts',import.meta.url),'utf8')).toContain("UPDATE sessions SET revoked_at=CURRENT_TIMESTAMP WHERE user_id IN (SELECT id FROM users WHERE institution_id=? AND role<>'SUPER_ADMIN')");
   expect(source).toContain("'INSTITUTION_ALREADY_EXISTS'");
  });
  it('keeps result network institution creation and lifecycle changes Super Admin only',()=>{

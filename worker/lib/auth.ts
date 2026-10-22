@@ -69,6 +69,9 @@ export async function getAuthUser(env: Env, request: Request): Promise<AuthUser 
   );
   if (!row || row.revoked_at || !row.active || new Date(row.expires_at).getTime() <= Date.now()) return null;
   if (isServiceAccountId(row.id)) return null;
+  // A032b: a suspended, frozen or deleted institution closes every account bound to it, even a session that
+  // somehow survived the revocation. The Super Admin is never locked out.
+  if (row.role !== 'SUPER_ADMIN' && row.institution_id && row.institution_status === 'PASSIVE') return null;
   return {
     id: row.id,
     institution_id: row.institution_id,

@@ -61,7 +61,8 @@ async function resolveStudentId(env: Env, user: AuthUser, requested?: string | n
 }
 
 async function accessBlocked(env: Env, user: AuthUser) {
-  if (!user.institution_id) return null;
+  // A032b: the Super Admin is never blocked by an institution's state or licence.
+  if (user.role === 'SUPER_ADMIN' || !user.institution_id) return null;
   const institution=await one<{status:string}>(env.DB.prepare(`SELECT status FROM institutions WHERE id=?`).bind(user.institution_id));
   if (!institution || institution.status==='PASSIVE') return 'Kurum hesabı aktif değildir.';
   const license=await getEffectiveLicense(env,user.institution_id);

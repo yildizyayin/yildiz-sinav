@@ -1,0 +1,37 @@
+// @vitest-environment happy-dom
+import { act, createElement } from 'react';
+import { createRoot, type Root } from 'react-dom/client';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { Institutions } from '../src/pages/Institutions';
+const state = vi.hoisted(() => ({ api: vi.fn(), post: vi.fn() }));
+vi.mock('../src/api', () => ({ api: state.api, post: state.post }));
+let root: Root, container: HTMLDivElement;
+const row = { id: 'school', name: 'Sentetik Okul', code: 'SYN', status: 'ACTIVE', lifecycle_status: 'ACTIVE', account_count: 42, active_students: 30 };
+beforeEach(() => { (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true; state.api.mockReset(); state.post.mockReset();
+  state.api.mockImplementation(async (path: string) => path.includes('archived=1') ? { institutions: [{ ...row, status: 'PASSIVE', lifecycle_status: 'ARCHIVED', lifecycle_reason: 'Sözleşme feshedildi.' }] } : { institutions: [row] });
+  state.post.mockResolvedValue({ ok: true, accounts: 42, sessionsClosed: 7 });
+  container = document.createElement('div'); document.body.append(container); root = createRoot(container); });
+afterEach(async () => { await act(async () => root.unmount()); container.remove(); });
+const button = (text: string) => [...container.querySelectorAll('button')].find((b) => b.textContent?.trim() === text)!;
+it('A032b: suspend, freeze, delete with the impact shown first; delete needs a reason; deleted institutions can be restored', async () => {
+  await act(async () => root.render(createElement(Institutions)));
+  expect(container.textContent).toContain('Aktif');
+  for (const label of ['Askıya al', 'Dondur', 'Sil']) expect(button(label)).toBeTruthy();
+  await act(async () => button('Sil').click());
+  const dialog = container.querySelector('[role=dialog]')!;
+  expect(dialog.textContent).toContain('42 bağlı hesap etkilenir');
+  expect(dialog.textContent).toContain('geri alabilirsiniz');
+  const confirm = [...dialog.querySelectorAll('button')].find((b) => b.textContent === 'Sil') as HTMLButtonElement;
+  expect(confirm.disabled).toBe(true);
+  const textarea = dialog.querySelector('textarea')!;
+  await act(async () => { Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')!.set!.call(textarea, 'Sözleşme feshedildi.'); textarea.dispatchEvent(new Event('input', { bubbles: true })); });
+  expect(confirm.disabled).toBe(false);
+  await act(async () => confirm.click());
+  expect(state.post).toHaveBeenCalledWith('/api/institutions/school/status', { status: 'ARCHIVED', reason: 'Sözleşme feshedildi.' });
+  expect(container.textContent).toContain('42 hesap kapatıldı, 7 açık oturum sonlandırıldı');
+  await act(async () => button('Silinenler').click());
+  expect(state.api).toHaveBeenCalledWith('/api/institutions?archived=1');
+  expect(container.textContent).toContain('Silinmiş');
+  await act(async () => button('Geri al').click());
+  expect(container.querySelector('[role=dialog]')!.textContent).toContain('yeniden giriş yapabilir');
+});
