@@ -419,7 +419,10 @@ async function listQuestions(request:Request,env:Env,user:AuthUser):Promise<Resp
     CASE WHEN o.active=1 AND cv.verified=1 AND o.grade_level=q.grade_level AND cv.grade_level=q.grade_level AND cv.academic_year=q.academic_year AND o.subject_id=q.subject_id THEN 1 ELSE 0 END matchesQuestion
     FROM question_learning_links l JOIN question_bank q ON q.id=l.question_id LEFT JOIN outcomes o ON l.node_id='ln_'||o.id LEFT JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE l.question_id IN (${ids.map(()=>'?').join(',')}) ORDER BY o.code,o.id`).bind(...ids))))).flat();
   const screening=user.role==='SUPER_ADMIN'?await loadScreening(env,rows.filter(r=>isAiQuestionOrigin(r.origin_kind))):new Map();
-  return json({ok:true,questions:hydrated.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined,...(isAiQuestionOrigin(r.origin_kind)?{reviewContext:contexts.filter(c=>c.question_id===r.id).map(({question_id,...c})=>c),screening:screening.get(r.id)??null}:{})}))});
+  // A038: written items carry their analytic rubric for review.
+  const openIds=rows.filter(r=>r.question_type==='OPEN_ENDED').map(r=>r.id);
+  const rubrics=openIds.length?(await Promise.all(Array.from({length:Math.ceil(openIds.length/80)},(_,i)=>openIds.slice(i*80,i*80+80)).map(ids=>all<any>(env.DB.prepare(`SELECT question_id,sort_order,criterion,descriptor,points FROM question_rubric_items WHERE question_id IN (${ids.map(()=>'?').join(',')}) ORDER BY question_id,sort_order`).bind(...ids)).catch(()=>[])))).flat():[];
+  return json({ok:true,questions:hydrated.map(r=>({...r,options:parseJson(r.options_json,[]),options_json:undefined,...(r.question_type==='OPEN_ENDED'?{rubric:rubrics.filter((x:any)=>x.question_id===r.id).map(({question_id,...x}:any)=>x)}:{}),...(isAiQuestionOrigin(r.origin_kind)?{reviewContext:contexts.filter(c=>c.question_id===r.id).map(({question_id,...c})=>c),screening:screening.get(r.id)??null}:{})}))});
 }
 
 async function createQuestion(request:Request,env:Env,user:AuthUser):Promise<Response>{

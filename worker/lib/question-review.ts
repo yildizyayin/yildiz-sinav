@@ -75,9 +75,15 @@ export async function reviewQuestionWithGate(request:Request,env:Env,user:AuthUs
   if(ai){
    const year=typeof q.academic_year==='string'?q.academic_year.match(/^(\d{4})-(\d{4})$/):null;
    if(!Number.isInteger(q.grade_level)||q.grade_level<1||q.grade_level>12||!year||Number(year[2])!==Number(year[1])+1||typeof q.subject_id!=='string'||!q.subject_id.trim())return badRequest('AI taslağının eğitim yılı, sınıf ve ders kapsamı geçersiz.','VERIFIED_CURRICULUM_REQUIRED');
-   if(q.question_type!=='MULTIPLE_CHOICE'||![q.stem_text,q.solution_text,q.source_label].every(v=>typeof v==='string'&&v.trim()))return badRequest('AI taslağının soru, çözüm ve kaynak bilgisi tamamlanmalıdır.','AI_CONTENT_INCOMPLETE');
+   const openEnded=q.question_type==='OPEN_ENDED';
+   if(!['MULTIPLE_CHOICE','OPEN_ENDED'].includes(q.question_type)||![q.stem_text,q.solution_text,q.source_label].every(v=>typeof v==='string'&&v.trim()))return badRequest('AI taslağının soru, çözüm ve kaynak bilgisi tamamlanmalıdır.','AI_CONTENT_INCOMPLETE');
+   // A038: a written item has no options or answer letter; it is approved only with its analytic rubric.
+   if(openEnded){
+    const rubric=await one<{n:number;total:number}>(env.DB.prepare('SELECT count(*) n,coalesce(sum(points),0) total FROM question_rubric_items WHERE question_id=?').bind(id));
+    if(q.options_json!==null||q.correct_answer!==null||!rubric||Number(rubric.n)<1||Number(rubric.total)<1)return badRequest('Açık uçlu taslağın puanlama anahtarı (rubrik) eksik veya soru seçenek içeriyor.','RUBRIC_REQUIRED');
+   }
    const checks=body.checks;
-   if(!checks||!['answerAndSolution','curriculum','ageAppropriate','originalityAndRights'].every(k=>checks[k]===true))return badRequest('AI taslağı için cevap/çözüm, program, yaş düzeyi ve özgünlük/telif incelemesini onaylayın.','HUMAN_REVIEW_REQUIRED');
+   if(!checks||!['answerAndSolution','curriculum','ageAppropriate','originalityAndRights',...(openEnded?['rubric']:[])].every(k=>checks[k]===true))return badRequest(openEnded?'Açık uçlu taslak için model cevap, program, yaş düzeyi, özgünlük/telif ve puanlama anahtarı incelemesini onaylayın.':'AI taslağı için cevap/çözüm, program, yaş düzeyi ve özgünlük/telif incelemesini onaylayın.','HUMAN_REVIEW_REQUIRED');
    const context=await one<any>(env.DB.prepare(`SELECT id FROM question_bank WHERE id=? AND ${AI_REVIEW_CONTEXT_SQL}`).bind(id));
    if(!context)return badRequest('AI taslağı aynı yıl, sınıf ve dersteki doğrulanmış aktif öğrenme çıktısına bağlanmalıdır.','VERIFIED_CURRICULUM_REQUIRED');
    const refs=await all<any>(env.DB.prepare(`SELECT o.id outcome_id,o.curriculum_version_id,o.subject_id,o.grade_level,cv.academic_year,cv.program_version
@@ -94,7 +100,7 @@ export async function reviewQuestionWithGate(request:Request,env:Env,user:AuthUs
  }
  const batchId=typeof body.batchId==='string'&&/^qrb_[0-9a-f-]{36}$/.test(body.batchId)?body.batchId:null;
  const reviewMode=batchId?{review:{mode:'BATCH',batchId}}:{};
- const checks=ai&&status==='APPROVED'?JSON.stringify({answerAndSolution:true,curriculum:true,ageAppropriate:true,originalityAndRights:true,qualityReview:{schemaVersion:1,...explanation},...reviewMode}):batchId?JSON.stringify(reviewMode):null;
+ const checks=ai&&status==='APPROVED'?JSON.stringify({answerAndSolution:true,curriculum:true,ageAppropriate:true,originalityAndRights:true,...(q.question_type==='OPEN_ENDED'?{rubric:true}:{}),qualityReview:{schemaVersion:1,...explanation},...reviewMode}):batchId?JSON.stringify(reviewMode):null;
  const result=await env.DB.prepare(`UPDATE question_bank SET review_status=?,reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP,rejection_note=?,review_checks_json=?,updated_at=CURRENT_TIMESTAMP
  WHERE id=? AND review_revision=?${ai&&status==='APPROVED'?` AND ${AI_REVIEW_CONTEXT_SQL}${contextFence}`:''}`).bind(status,user.id,status==='REJECTED'?String(body.note||'').trim().slice(0,2000)||null:null,checks,id,q.review_revision,...contextParams).run();
  // D1 counts the revision trigger too; this primary-key conditional write
