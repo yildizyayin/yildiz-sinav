@@ -57,8 +57,19 @@ export async function handlePrivateCohortReport(request:Request,env:Env,user:Aut
   try{await env.COHORT_REPORT_QUEUE!.send({schemaVersion:1,jobId:id})}catch{/* Cron dispatch recovers persisted jobs. */}
   return json({ok:true,jobId:id,status:'QUEUED',processedEnrollments:0},202);
  }
+ const cancelMatch=url.pathname.match(/^\/api\/private-cohort-reports\/([^/]+)\/cancel$/);
+ if(cancelMatch){
+  // A056: the owner stops a job; its files and rows go through the normal expiry cleanup, a running worker cannot commit (lease cleared)
+  if(request.method!=='POST')return fail(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+  if(request.headers.get('Origin')!==url.origin)return forbidden('İsteği ANUNEX üzerinden başlatın.');
+  if(cancelMatch[1].length>100)return badRequest('Rapor seçimi geçersiz.');
+  const r=await env.DB.prepare("UPDATE private_cohort_report_jobs SET status='REVOKED',error_code='CANCELLED_BY_USER',lease_token=NULL,lease_until=NULL,expires_at=datetime('now','-1 second') WHERE id=? AND actor_user_id=? AND status IN ('QUEUED','RUNNING','READY') AND datetime(expires_at)>CURRENT_TIMESTAMP").bind(cancelMatch[1],user.id).run();
+  if(!r.meta.changes){const own=await one<any>(env.DB.prepare('SELECT status,error_code FROM private_cohort_report_jobs WHERE id=? AND actor_user_id=?').bind(cancelMatch[1],user.id));if(!own)return forbidden();if(own.error_code==='CANCELLED_BY_USER')return json({ok:true,jobId:cancelMatch[1],status:'CANCELLED',replayed:true});return fail(409,'REPORT_NOT_CANCELLABLE','Bu rapor artık iptal edilemez.');}
+  return json({ok:true,jobId:cancelMatch[1],status:'CANCELLED'});
+ }
  const match=url.pathname.match(/^\/api\/private-cohort-reports\/([^/]+)(?:\/(result|download))?$/);if(!match||match[1].length>100)return fail(404,'NOT_FOUND','Rapor bulunamadı.');if(request.method!=='GET')return fail(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
  const job=await one<any>(env.DB.prepare('SELECT * FROM private_cohort_report_jobs WHERE id=? AND actor_user_id=?').bind(match[1],user.id));if(!job)return forbidden();
+ if(job.error_code==='CANCELLED_BY_USER')return fail(410,'REPORT_CANCELLED','Rapor iptal edildi.');
  if(Date.parse(asIso(job.expires_at))<=Date.now())return fail(410,'REPORT_EXPIRED','Raporun süresi doldu.');
  if(actorScope(user)!==job.actor_scope_json)return forbidden();
  const selection=JSON.parse(job.selection_json),access=await proof(env,user,selection,asIso(job.created_at));if(!access.ok)return access;

@@ -317,3 +317,21 @@ it('preserves two class totals through queued institution export without zero-fi
   const download=await f.read(id,actor);expect(download!.status).toBe(200);const report:any=await download!.json();expect(report.groups).toHaveLength(2);expect(report.outcomes).toHaveLength(2);expect(report.groups.find((r:any)=>r.classId==='class')).toMatchObject({correct:1,wrong:0,evidenceCount:1,participatingEnrollmentCount:1,accuracyPercent:100});expect(report.groups.find((r:any)=>r.classId==='other')).toMatchObject({correct:0,wrong:1,evidenceCount:1,participatingEnrollmentCount:1,accuracyPercent:0});expect(report.sourceCoverage[0].rowCount).toBe(2);expect(report.officialScore).toBeNull();expect(report.nationalRank).toBeNull();
  }finally{f.db.close()}
 });
+
+// A056: the owner can cancel; cancellation is final, closes downloads and goes through the normal cleanup.
+it('lets only the owner cancel a report, refuses reads afterwards, skips queued work and cleans files',async()=>{
+ const f=fixture();try{
+  const cancel=(id:string,actor=f.user,origin='https://test')=>handlePrivateCohortReport(new Request(`https://test/api/private-cohort-reports/${id}/cancel`,{method:'POST',headers:origin?{Origin:origin}:{}}),f.env,actor);
+  const id=await f.create();const key=`report-exports/${id}/ready.json`;f.objects.set(key,'{"ok":true}');f.db.prepare("UPDATE private_cohort_report_jobs SET status='READY',object_key=? WHERE id=?").run(key,id);
+  expect((await cancel(id,{...f.user,id:'someone-else'}))!.status).toBe(403);
+  expect((await cancel(id,f.user,''))!.status).toBe(403);
+  expect((await f.read(id))!.status).toBe(200);const gets=f.gets();
+  const ok=await cancel(id);expect(ok!.status).toBe(200);expect(await ok!.json()).toMatchObject({status:'CANCELLED'});
+  const after=await f.read(id);expect(after!.status).toBe(410);expect((await after!.json() as any).error.code).toBe('REPORT_CANCELLED');expect(f.gets()).toBe(gets);
+  await dispatchPrivateCohortReports(f.env);expect(f.objects.size).toBe(0);
+  expect(f.db.prepare('SELECT cleanup_done,error_code FROM private_cohort_report_jobs WHERE id=?').get(id)).toMatchObject({cleanup_done:1,error_code:'CANCELLED_BY_USER'});
+  const queued=await f.create('request-0002');expect((await cancel(queued))!.status).toBe(200);
+  let ack=0;await consumePrivateCohortReports({messages:[{body:{schemaVersion:1,jobId:queued},ack:()=>ack++,retry:()=>{}}]} as any,f.env);
+  expect(ack).toBe(1);expect(f.db.prepare('SELECT status,lease_token FROM private_cohort_report_jobs WHERE id=?').get(queued)).toMatchObject({status:'REVOKED',lease_token:null});
+ }finally{f.db.close()}
+});

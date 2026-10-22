@@ -93,3 +93,32 @@ it('expires downloads immediately and cleans storage in bounded batches',async()
   await dispatchPrivateRubricExports(f.env);job=f.db.prepare('SELECT status,cleanup_done,selection_json,actor_scope_json FROM private_rubric_export_jobs WHERE id=?').get(id)!;expect(job).toMatchObject({status:'EXPIRED',cleanup_done:1,selection_json:'{}',actor_scope_json:'[]'});expect(f.objects.size).toBe(0);expect(f.db.prepare('SELECT count(*) n FROM private_rubric_export_parts WHERE job_id=?').get(id)!.n).toBe(0);
  }finally{f.db.close()}
 });
+
+// A056: the owner can cancel; cancellation is final, closes downloads and goes through the normal cleanup.
+const cancel=(f:any,id:string,actor=f.teacher,origin='https://test')=>handlePrivateRubricExport(new Request(`https://test/api/private-rubric-exports/${id}/cancel`,{method:'POST',headers:origin?{Origin:origin}:{}}),f.env,actor);
+it('lets only the owner cancel a ready export, refuses downloads after cancel and cleans its files',async()=>{
+ const f=fixture();try{
+  await f.write();const id=await f.create();expect(await f.consume(id)).toEqual({ack:1,retry:0});expect(f.objects.size).toBe(1);
+  expect((await cancel(f,id,{id:'other-teacher',role:'TEACHER',institution_id:'school'}))!.status).toBe(403);
+  expect((await cancel(f,id,f.teacher,''))!.status).toBe(403);
+  const ok=await cancel(f,id);expect(ok!.status).toBe(200);expect(await ok!.json()).toMatchObject({status:'CANCELLED'});
+  expect(await (await cancel(f,id))!.json()).toMatchObject({status:'CANCELLED',replayed:true});
+  const before=f.gets();const dl=await f.request(`/api/private-rubric-exports/${id}/parts/0/download`);expect(dl!.status).toBe(410);expect((await dl!.json() as any).error.code).toBe('EXPORT_CANCELLED');expect(f.gets()).toBe(before);
+  const list=await f.request('/api/private-rubric-exports?studentId=student&view=current');expect((await list!.json() as any).jobs).toEqual([]);
+  await dispatchPrivateRubricExports(f.env);
+  expect(f.objects.size).toBe(0);expect(f.db.prepare('SELECT count(*) n FROM private_rubric_export_parts WHERE job_id=?').get(id)!.n).toBe(0);
+  expect(f.db.prepare('SELECT cleanup_done,error_code FROM private_rubric_export_jobs WHERE id=?').get(id)).toMatchObject({cleanup_done:1,error_code:'CANCELLED_BY_USER'});
+ }finally{f.db.close()}
+});
+it('does not process a cancelled queued export and discards a part a running worker was writing',async()=>{
+ const f=fixture();try{
+  await f.write();
+  const queued=await f.create('synthetic-export-queued');expect((await cancel(f,queued))!.status).toBe(200);
+  expect(await f.consume(queued)).toEqual({ack:1,retry:0});expect(f.objects.size).toBe(0);
+  const running=await f.create('synthetic-export-running');const put=f.bucket.put;
+  f.bucket.put=async(key:string,value:string)=>{await put(key,value);expect((await cancel(f,running))!.status).toBe(200);};
+  expect(await f.consume(running)).toEqual({ack:1,retry:0});f.bucket.put=put;
+  expect(f.objects.size).toBe(0);expect(f.db.prepare('SELECT count(*) n FROM private_rubric_export_parts WHERE job_id=?').get(running)!.n).toBe(0);
+  expect((await cancel(f,running))!.status).toBe(200);
+ }finally{f.db.close()}
+});
