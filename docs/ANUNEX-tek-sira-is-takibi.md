@@ -1531,3 +1531,43 @@ Kullanıcıya sorulanlar:
 4. Cevap anahtarı öğrenciye ne zaman açılsın?
 
 Sonraki iş: A058 (A057 cevap bekliyor).
+
+### A058 — kişiye özel kitap, 23 Ekim 01:07
+
+Durum: KOD TAMAM, merge edildi (PR #330).
+
+Bulunan sorunlar ve düzeltmeler:
+- Eksik kazanımlar yayımlanmamış sınav sonuçlarından da geliyordu. Artık yalnız öğrenciye açılmış sonuçlar kullanılıyor.
+- Sorular konu adının metniyle seçiliyordu ve konu boşsa her soru eşleşiyordu. Artık soru kazanım bağlantısıyla seçiliyor ve aynı soru iki kez girmiyor.
+- PDF yoktu. Artık Studio baskı motoruyla PDF alınabiliyor:
+  - kazanım başlıkları ve iki sütun düzeni var,
+  - cevap anahtarı son sayfada,
+  - basım anında onay ve telif yeniden kontrol ediliyor,
+  - PDF'i yalnız kitabın sahibi indirebiliyor.
+
+Kanıt:
+- `tests/a058-personal-book.test.ts`
+- 7 mutasyonun hepsi yakalandı. Biri ilk turda kaçtı; bunun için "başka öğrenci indiremez" testi eklendi.
+- Tam paket: 278 dosya / 1.330 test geçti.
+
+### A059 — sıfır hata kitapçığı, 23 Ekim 01:23
+
+Durum: KOD TAMAM, merge edildi (PR #331).
+
+Bulunan sorunlar ve düzeltmeler:
+- Yayımlanmamış bir sınavdan kitapçık oluşturulabiliyordu; bu, sonuç açılmadan yanlışların görülmesi demekti. Artık sonuç yayımlanmadan istek 409 ile reddediliyor.
+- Birden çok kazanıma bağlı bir soru kitapçığa birden çok kez giriyordu. Artık her kaynak soru bir kez giriyor.
+- Benzer sorular konu metniyle seçiliyordu. Artık kazanım bağlantısıyla seçiliyor ve aynı soru tekrar gelmiyor.
+- Kitapçığı çözecek bir ekran yoktu. Eklendi:
+  - her deneme kaydediliyor,
+  - madde durumu güncelleniyor,
+  - geçersiz cevap 400 dönüyor.
+
+Sürüm sabitliği zaten veritabanı tetikleyicisiyle sağlanıyormuş. Kullanılan bir sorunun içeriği, onayı geri alınsa bile değiştirilemiyor; bunu testle doğruladım. Ben önce kayıt anı kopyası eklemiştim; gereksiz olduğu için geri aldım.
+
+Kanıt:
+- `tests/a059-zero-error.test.ts`
+- 5 mutasyonun hepsi yakalandı. İkisi ilk turda kaçtı; test güçlendirildi.
+- Tam paket: 279 dosya / 1.331 test geçti.
+
+Sonraki iş: A060.
