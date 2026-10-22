@@ -1253,3 +1253,31 @@ Kanıt:
 - Tam paket 269 dosya / 1.310 test geçti.
 
 Sonraki iş: A047.
+
+### A047 — veli-öğrenci bağlantısı, 22 Ekim
+
+Durum: KOD TAMAM, merge edildi (PR #321). Canlı doğrulama dağıtımdan sonra (K002).
+
+Bulunan ve düzeltilen hata: telefonla girişte sorgu `LIMIT 1` ile ilk satırı alıyordu. Aynı telefon iki hesapta kayıtlıysa (ör. hem öğretmen hem veli olan biri), hangi hesaba girileceği sorgu sırasına kalıyordu. Artık:
+- e-posta ya da kullanıcı adı tek bir hesabı tanımlar;
+- telefonla girişte şifre karar verir;
+- şifre birden fazla hesaba uyuyorsa giriş reddedilir ve kullanıcı adı istenir (PHONE_AMBIGUOUS).
+
+İncelendi ve doğru bulundu:
+- veli bağlantı sorguları `active=1` denetliyor;
+- WhatsApp (Nibiru) eşleşmesi, oturum açmış kullanıcının ürettiği tek kullanımlık kodu istiyor; telefon tek başına yetki vermiyor;
+- aktivasyon talepleri yalnız öğrenci için ve yönetici onaylı; telefonla bir yol açmıyor.
+
+Kanıt:
+- `tests/a047-parent-links.test.ts` (2 test). Doğrulananlar:
+  - veli yalnız bağlı çocuğunu görür;
+  - yeni bağlantı kurulunca çocuk görünür;
+  - bağlantı kaldırılınca bir sonraki istekte liste, sonuç ve rapor erişimi kesilir;
+  - telefon ve yanlış şifreyle giriş yapılamaz.
+- Mutasyon kontrolü: aşağıdaki 3 değişikliğin her biri testlerce yakalandı:
+  - belirsiz telefona izin vermek;
+  - telefonda yalnız ilk satırı almak;
+  - pasif bağlantıyı listelemek.
+- Tam paket 270 dosya / 1.312 test geçti.
+
+Sonraki iş: A048.
