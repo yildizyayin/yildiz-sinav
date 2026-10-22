@@ -1084,3 +1084,43 @@ Kanıt:
 Sınır: Notlar öğrenciye ve veliye yayımlanmıyor, e-Okul'a otomatik gönderim yok (politika: automaticEokulSubmission false). El yazısının kamerayla okunması A085'te.
 
 Sonraki iş: A085.
+
+### A085 — açık uçlu cevapların kamerayla okunup değerlendirilmesi, 22 Ekim (A041'den sonra)
+
+Durum: KOD TAMAM, merge edildi (PR #315). **Fiziksel kabul BEKLİYOR (K002):** gerçek basılı kâğıdın telefonla okunması ve gerçek el yazısında AI kalitesi ölçülmedi. Testlerdeki AI modeli sahtedir. Görüntü modelinin Türkçe el yazısındaki başarısı bilinmiyor; canlıda öğretmen–AI uyumu ölçülerek görülecek.
+
+Yapılanlar:
+- **Kamera cevap kâğıdı.** ANUNEX kamera standardına uyar: 4 düz köşe karesi sayfa içinde, yön noktası, en az 4 mm baloncuk.
+  - Her sayfada öğrenci numarası ızgarası ve basılı sayfa kodu var.
+  - Her soruda çerçeveli cevap alanı ve öğretmen puan kutusu var.
+  - Tam sayı cevaplı sorularda rakam baloncuk ızgarası var; ızgara en az 4 hanelidir, böylece cevabın uzunluğunu ele vermez.
+  - Kâğıt düzeni ilk kullanımda sabitlenir ve değiştirilemez (migration 0131).
+- **Telefonda okuma.** Tarayıcıda, mevcut OMR motoruyla yapılır:
+  - perspektif düzeltilir;
+  - sayfa, öğrenci numarası ve rakamlar okunur;
+  - cevap kutuları düz görüntü olarak kırpılır.
+  Çift işaret ya da araya giren boşluk sayıya çevrilmez. Köşe görünmüyorsa hiçbir şey okunmaz. Okunan numara eşleşmezse öğretmen öğrenciyi elle seçer.
+- **Sunucu.**
+  - Kırpılan görüntüler R2'de öğrenciye bağlı saklanır; görüntü boyutu ve türü denetlenir.
+  - Rakam ızgarası AI kullanmadan kesin öneri üretir: okunan sayı model cevaba ya da kabul edilen alternatife eşitse tam puan önerilir.
+  - Serbest yazıda görüntü modeli (`WRITTEN_VISION_MODEL`, varsayılan `@cf/meta/llama-4-scout-17b-16e-instruct`) yazıyı metne çevirir, rubrik düzeyine göre puan önerir, gerekçe ve güven değeri verir. Okunamayan yazı ILLEGIBLE, düşük güven (0,6'nın altı) LOW_CONFIDENCE olarak işaretlenir. Rubriğe uymayan AI çıktısı atılır.
+  - Öneri puan sayılmaz (A041); öğretmen fotoğrafa bakarak puanı girer.
+- **Öğretmen–AI uyumu.** Aynı puan oranı, ortalama fark ve kaynağa göre (rakam ızgarası / el yazısı AI) dağılım puanlama ekranında gösterilir.
+- **A039 düzeltmesi.** Kısa sayısal alternatif cevaplar (ör. "40") artık kabul ediliyor; eskiden en az 3 karakter isteniyordu.
+
+Kanıt:
+- `tests/a085-written-camera-reader.test.ts`: yamuk sentetik "telefon fotoğrafından" sayfa, numara, rakam ve kırpım okunuyor; çift işaret ve kesik köşe tahmin edilmiyor.
+- `tests/a085-written-camera-e2e.test.ts`: düzen → fotoğraf → okuma → yükleme → rakam ve AI önerileri → öğretmen puanı → uyum, uçtan uca.
+- Testlerde bulunan ve düzeltilen hatalar: "?" içeren rakam NaN dönüyordu; kısa alternatif cevap reddediliyordu; "AI kapalı" testi yanlışlıkla açık AI ile çalışıyordu.
+- Mutasyon kontrolü: aşağıdaki 8 değişikliğin her biri testlerce yakalandı:
+  - düşük güven işaretini kaldırmak;
+  - öğrenciyi tahmin etmek;
+  - rakamı her zaman doğru saymak;
+  - AI çıktısında rubrik düzeyini denetlememek;
+  - uyum oranını şişirmek;
+  - çift işareti tahmin etmek;
+  - görüntü boyutunu denetlememek.
+  Bu listedeki 7 değişikliğe ek olarak 1 tane daha denendi.
+- Tam paket 264 dosya / 1.302 test geçti, build geçti.
+
+Sonraki iş: A042.
