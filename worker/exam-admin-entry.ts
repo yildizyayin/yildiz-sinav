@@ -317,7 +317,7 @@ async function options(env: Env, user: AuthUser, url: URL): Promise<Response> {
       ORDER BY srv.verified DESC,srv.academic_year DESC,sr.name,srv.version
     `)),
     user.role === 'SUPER_ADMIN'
-      ? all<any>(env.DB.prepare(`SELECT id,name,code,city,district,status FROM institutions ORDER BY status,name`))
+      ? all<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,i.city,i.district,i.status FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id WHERE COALESCE(iac.lifecycle_status,'ACTIVE')<>'ARCHIVED' ORDER BY i.status,i.name`))
       : Promise.resolve([]),
   ]);
   const scope = examOutcomeScope({academicYear:url.searchParams.get('academicYear'),gradeLevel,examType:url.searchParams.get('examType')});

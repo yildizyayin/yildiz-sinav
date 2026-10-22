@@ -12,6 +12,7 @@ import { matchParticipant } from './lib/matching';
 import { bookletIssue, compareBooklets, isBookletIssue } from './lib/booklet-review';
 import { decodeUploadedBytes, parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib/parse';
 import { isLearnerRole, publishedForLearnersSql } from './lib/exam-schedule';
+import { changeInstitutionLifecycle } from './lib/institution-lifecycle';
 import { alignRecordsToExam, blankSubjectsCoveredElsewhere, mergeSessionRecords, primaryBooklet, recordBookletIssue, subjectBooklet } from './lib/two-session';
 import { duplicateMessage, duplicateStudentConflicts } from './lib/scan-duplicates';
 import { assertScoringRuleVerified, calculateExamScore, calculateOverall, calculateSubjectScore, effectiveWrongDivisor, scoreMethodFor } from './lib/scoring';
@@ -55,7 +56,7 @@ export default {
 
       if (url.pathname === '/api/dashboard' && request.method === 'GET') return dashboard(env, user);
       if (url.pathname === '/api/institutions') {
-        if (request.method === 'GET') return listInstitutions(env, user);
+        if (request.method === 'GET') return listInstitutions(env, user, url);
         if (request.method === 'POST') return createInstitution(request, env, user);
         return methodNotAllowed();
       }
@@ -274,15 +275,19 @@ async function dashboard(env: Env, user: AuthUser): Promise<Response> {
   ] });
 }
 
-async function listInstitutions(env: Env, user: AuthUser): Promise<Response> {
+async function listInstitutions(env: Env, user: AuthUser, url?: URL): Promise<Response> {
   if (user.role !== 'SUPER_ADMIN') return forbidden();
-  const rows = await all<any>(env.DB.prepare(`SELECT i.*,
+  // A032b: deleted (ARCHIVED) institutions leave the list; ?archived=1 shows them for restoring.
+  const archived = url?.searchParams.get('archived') === '1';
+  const rows = await all<any>(env.DB.prepare(`SELECT i.*,COALESCE(iac.lifecycle_status,CASE WHEN i.status='ACTIVE' THEN 'ACTIVE' ELSE 'PASSIVE' END) lifecycle_status,iac.reason lifecycle_reason,iac.updated_at lifecycle_updated_at,
+    (SELECT count(*) FROM users u WHERE u.institution_id=i.id AND u.role<>'SUPER_ADMIN') account_count,
     l.plan_code license_plan,l.status license_status,l.trial_expires_at,l.license_expires_at,
     (SELECT s.academic_year FROM institution_seasons s WHERE s.institution_id=i.id ORDER BY CASE s.status WHEN 'ACTIVE' THEN 0 ELSE 1 END,s.created_at DESC LIMIT 1) academic_year,
     (SELECT count(*) FROM users u WHERE u.institution_id=i.id AND u.role='INSTITUTION_MANAGER' AND u.active=1) manager_count,
     (SELECT count(DISTINCT e.student_id) FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.institution_id=i.id AND s.status='ACTIVE') active_students,
     (SELECT count(DISTINCT e.student_id) FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.institution_id=i.id AND s.status='GUEST') guest_students
-    FROM institutions i LEFT JOIN institution_licenses l ON l.institution_id=i.id ORDER BY i.name`));
+    FROM institutions i LEFT JOIN institution_licenses l ON l.institution_id=i.id LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id
+    WHERE (COALESCE(iac.lifecycle_status,'ACTIVE')='ARCHIVED')=? ORDER BY i.name`).bind(archived ? 1 : 0));
   return json({ ok: true, institutions: rows });
 }
 
@@ -371,14 +376,8 @@ async function createInstitution(request: Request, env: Env, user: AuthUser): Pr
 
 async function setInstitutionStatus(request: Request, env: Env, user: AuthUser, institutionId: string): Promise<Response> {
   if (user.role !== 'SUPER_ADMIN') return forbidden();
-  const body = await request.json<{ status?: 'ACTIVE' | 'PASSIVE'; reason?: string }>();
-  if (!body.status || !['ACTIVE', 'PASSIVE'].includes(body.status)) return badRequest('Geçersiz kurum durumu.');
-  const inst = await one<any>(env.DB.prepare('SELECT id,status FROM institutions WHERE id=?').bind(institutionId));
-  if (!inst) return notFound('Kurum bulunamadı.');
-  await env.DB.prepare('UPDATE institutions SET status=?, updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(body.status, institutionId).run();
-  if (body.status === 'PASSIVE') await env.DB.prepare(`UPDATE sessions SET revoked_at=CURRENT_TIMESTAMP WHERE user_id IN (SELECT id FROM users WHERE institution_id=?) AND revoked_at IS NULL`).bind(institutionId).run();
-  await audit(env.DB, user.id, institutionId, body.status === 'PASSIVE' ? 'INSTITUTION_PAUSED' : 'INSTITUTION_REACTIVATED', 'institution', institutionId, { reason: body.reason || null });
-  return json({ ok: true, status: body.status });
+  const body = await request.json<{ status?: string; reason?: string }>().catch(() => ({} as { status?: string; reason?: string }));
+  return changeInstitutionLifecycle(env, user, institutionId, body.status, body.reason);
 }
 
 async function listExams(env: Env, user: AuthUser, url: URL): Promise<Response> {
@@ -412,7 +411,8 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
   if (examScope) return examScope;
   const inst = await one<{ status: string }>(env.DB.prepare('SELECT status FROM institutions WHERE id=?').bind(institutionId));
   if (!inst) return notFound('Kurum bulunamadı.');
-  if (inst.status === 'PASSIVE') return badRequest('Pasif kurumda sınav değerlendirilemez.', 'INSTITUTION_PASSIVE');
+  // A032b: the Super Admin may still load and correct results of a suspended institution.
+  if (inst.status === 'PASSIVE' && user.role !== 'SUPER_ADMIN') return badRequest('Pasif kurumda sınav değerlendirilemez.', 'INSTITUTION_PASSIVE');
   const season = await ensureSeason(env.DB, institutionId, exam.academic_year);
   const text = decodeUploadedBytes(await file.arrayBuffer());
   const globalTemplates = await all<ParserTemplate>(env.DB.prepare(`SELECT v.id, t.name, v.parser_definition FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.active=1 AND t.active=1`));

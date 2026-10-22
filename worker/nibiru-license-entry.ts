@@ -178,7 +178,8 @@ function isResponse(v:AuthUser|Response):v is Response{return v instanceof Respo
 async function settings(env:Env){return one<any>(env.DB.prepare(`SELECT * FROM nibiru_settings WHERE id='platform'`))}
 
 async function institutionBlock(env:Env,user:AuthUser){
-  if(!user.institution_id)return null;
+  // A032b: the Super Admin is never blocked by the state or licence of an institution their account is bound to.
+  if(user.role==='SUPER_ADMIN'||!user.institution_id)return null;
   const institution=await one<{status:string}>(env.DB.prepare(`SELECT status FROM institutions WHERE id=?`).bind(user.institution_id));
   if(!institution||institution.status==='PASSIVE')return {code:'INSTITUTION_PASSIVE',message:'Kurum hesabınız şu anda aktif değildir.'};
   const license=await getEffectiveLicense(env,user.institution_id);

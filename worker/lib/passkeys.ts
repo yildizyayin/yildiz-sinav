@@ -23,7 +23,8 @@ export function passkeyOrigin(request: Request, env: Env) {
 }
 export async function activeAccess(env:Env,user:AuthUser,license=false) {
  if(user.must_change_password) return json({ok:false,error:{code:'PASSWORD_CHANGE_REQUIRED',message:'Önce geçici şifrenizi değiştirin.'}},403);
- if(user.institution_id){
+ // A032b: the Super Admin is never blocked by an institution's state or licence.
+ if(user.institution_id&&user.role!=='SUPER_ADMIN'){
   const institution=await one<{status:string}>(env.DB.prepare('SELECT status FROM institutions WHERE id=?').bind(user.institution_id));
   if(!institution||institution.status!=='ACTIVE')return forbidden('Kurumunuz aktif değil.');
   if(license){if((await getEffectiveLicense(env,user.institution_id)).locked)return json({ok:false,error:{code:'LICENSE_REQUIRED',message:'Kurum lisansınızı kontrol edin.'}},402);}
