@@ -948,3 +948,36 @@ Kanıt:
 Sınır: tablo satırları resmî belgeden elle girilir. Otomatik PDF aktarımı onaysız eklenmedi.
 
 Sonraki iş: A038.
+
+### A038 — açık uçlu soru üretimi, 22 Ekim 19:20–20:05
+
+Durum: KOD TAMAM, merge edildi (PR #311, `eb0e839`). Canlıda üretim, ajanlar yeniden açılınca ve dağıtımdan sonra denenecek (şu an D1 bütçesi nedeniyle kapalı; K002).
+
+Yapılanlar:
+- Migration 0127 ile açık uçlu ve kısa cevaplı üretim işleri, soru başına analitik rubrik ve `question_bank.written_format` eklendi.
+- Paket: soru, model cevap ve puanları soru puanına tam eşit rubrik (1–6 ölçüt; kısa cevaplıda 1–3). Seçenek, harf cevap ya da çoktan seçmeli görünümlü soru gelirse çıktı reddedilir.
+- Bağımsız kontrol:
+  - üreticiden farklı bir model her taslağı kendisi çözer;
+  - aynı model denetçi olarak kullanılamaz;
+  - kontrol reddederse ya da yanıt vermezse hiçbir şey kaydedilmez ve gerekçe denetim kaydına yazılır.
+- Kayıt tek toplu yazımla yapılır; paket eksik kalırsa tetikleyici bütün yazımı geri alır. İptal edilen iş hiçbir şey yazmaz. En çok 3 deneme yapılır.
+- Kazanım o yılın doğrulanmış programında değilse istek açılmaz. 2027–2028 programı doğrulanmadığı için o yıl için üretim yapılamaz.
+- Yalnız Süper Admin elle başlatır; otonom açık uçlu üretim açılmadı (politika gereği).
+- Taslaklar AI_GENERATED / REVIEW / RESTRICTED olarak kalır. AI açık uçlu onayı, rubrik kontrol kutusu işaretlenmeden reddedilir.
+- Çoktan seçmeli otomatik notlandırmaya karışmama:
+  - pratik, koç ve deneme stüdyosu zaten yalnız çoktan seçmeli soru alıyordu;
+  - kişisel kitap (öğretmen ve öğrenci) ve sıfır hata kitapçığı seçimlerinde bu filtre yoktu, eklendi.
+- Arayüz: inceleme ekranı rubriği ve rubrik onay kutusunu gösteriyor; Soru Havuzu Ekibi sayfasına üretim paneli eklendi.
+
+Kanıt:
+- `tests/a038-open-ended-generation.test.ts`: 5 test, gerçek şema, production giriş zinciri, sahte modeller.
+- İlk yazımda pratik kontrolü boşa geçiyordu (imzalama anahtarı yoktu, uç 503 dönüyordu). Düzeltildi: çoktan seçmeli kontrol sorusu servis ediliyor, açık uçlu soru edilmiyor.
+- Mutasyon kontrolü: aşağıdaki 5 değişikliğin her biri testlerce yakalandı:
+  - rubrik kontrolünü kaldırmak;
+  - aynı model engelini kaldırmak;
+  - denetçi kararını yok saymak;
+  - öğrenci kitap filtresini kaldırmak;
+  - çoktan seçmeli biçim kontrolünü kaldırmak.
+- Tam paket 259 dosya / 1.288 test geçti, build geçti.
+
+Sonraki iş: A039.
