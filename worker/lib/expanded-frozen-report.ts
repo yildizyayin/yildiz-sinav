@@ -1,4 +1,5 @@
 import {mergeFrozenOutcomes,outcomeFeedback} from './frozen-outcome-summary';
+import {repeatPolicyFor} from './combined-frozen-report';
 type AccuracySource='EXAM'|'QUESTION_BANK'|'MINI_TEST'|'FOY';
 type SourceInput={sourceType:AccuracySource|'COMBINED_BASE';report:any};
 
@@ -8,13 +9,15 @@ type SourceInput={sourceType:AccuracySource|'COMBINED_BASE';report:any};
  */
 export function combineExpandedFrozenReports(sources:SourceInput[],gameActivity:any|null){
  const groups=new Map<string,any>();
- const coverage:any[]=[];const sourceTypes:string[]=[];
+ const coverage:any[]=[];const sourceTypes:string[]=[];const repeatPolicies:any[]=[];
  for(const {sourceType,report} of sources){
   if(sourceType==='COMBINED_BASE'){
    for(const value of report?.sourceTypes||[])if(['EXAM','QUESTION_BANK','MINI_TEST'].includes(value)&&!sourceTypes.includes(value))sourceTypes.push(value);
    if(Array.isArray(report?.sourceCoverage))coverage.push(...report.sourceCoverage);
+   if(Array.isArray(report?.repeatPolicies))for(const r of report.repeatPolicies)if(['EXAM','QUESTION_BANK','MINI_TEST'].includes(r?.sourceType))repeatPolicies.push(r);
   }else{
    if(!sourceTypes.includes(sourceType))sourceTypes.push(sourceType);
+   repeatPolicies.push(repeatPolicyFor(sourceType,report));
    coverage.push({sourceType,coverage:report?.coverage??null,unavailableCount:(report?.unavailableExamIds||report?.unavailableRunIds||report?.unavailableTestIds||[]).length});
   }
   for(const raw of report?.groups||[]){
@@ -36,6 +39,7 @@ export function combineExpandedFrozenReports(sources:SourceInput[],gameActivity:
   outcomes,
   outcomeFeedback:outcomeFeedback(outcomes),
   sourceTypes:[...sourceTypes,...(gameActivity?['MINI_GAME']:[])],
+  repeatPolicies:[...repeatPolicies,...(gameActivity?[repeatPolicyFor('MINI_GAME',gameActivity)]:[])],
   calculationPolicy:'SELECTED_FROZEN_SOURCE_EVENT_WEIGHTED_ACCURACY_V2',
   groups:accuracyGroups,
   sourceCoverage:coverage,

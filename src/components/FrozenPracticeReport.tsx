@@ -110,6 +110,7 @@ export function FrozenPracticeReport({ studentId, exams = [], selectedExamIds = 
   {reportActivityKey === key && reportError && <div className="alert error" role="alert">{reportError}</div>}
   {result && <>
    {result.sourceTypes?.length > 1 && <div className="alert info">Birleşik karnede seçili kaynakların kanıtları soru sayısıyla ağırlıklandırılır. Farklı müfredat sürümleri ayrı gösterilir.</div>}
+   {result.repeatPolicies?.length > 0 && <ul>{result.repeatPolicies.map((r: any) => <li key={r.sourceType}><strong>{sourceName(r.sourceType)}</strong>: {r.description}</li>)}</ul>}
    <FrozenOutcomeFeedback feedback={result.outcomeFeedback} groups={result.groups||[]}/>
    {result.sourceCoverage?.map((source: any) => <div key={source.sourceType}>
     <p>{sourceName(source.sourceType)}: {source.unavailableCount || 0} seçili kayıt kullanılamadı{source.coverage ? ' · ' + (source.coverage.excludedEvidence || 0) + ' kanıt kapsam dışında' : ''}</p>
