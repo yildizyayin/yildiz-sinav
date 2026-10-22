@@ -981,3 +981,29 @@ Kanıt:
 - Tam paket 259 dosya / 1.288 test geçti, build geçti.
 
 Sonraki iş: A039.
+
+### A039 — analitik rubrik kaydı, 22 Ekim 20:05–20:45
+
+Durum: KOD TAMAM, merge edildi (PR #312). Canlı doğrulama dağıtımdan sonra (K002).
+
+Yapılanlar:
+- Migration 0128: sürümlü rubrik. Her sürümde ölçütler, kısmi puan düzeyleri (0 ve tam puan zorunlu) ve kabul edilen alternatif çözümler var. Sürüm platforma ya da bir okula ait olabilir.
+- Toplamlar tutar:
+  - ölçüt puanlarının toplamı rubriğin toplam puanına eşit olmalı;
+  - üretimden gelen soruda toplam, soru puanına da eşit olmalı;
+  - kısmi puanlar 0 ile ölçüt puanı arasında tam sayı olmalı.
+- A038'in AI rubriği soru için v1 taslak olur. Taslak notlandırmada kullanılmaz.
+- Öğretmen onayı zorunlu:
+  - branş öğretmeni kendi okulu için, Süper Admin platform geneli için onaylar;
+  - onay kutusu açıkça işaretlenmeli ve soru içerik/telif onayından geçmiş olmalı;
+  - onay sırasında kayıtlı sürüm yeniden denetlenir, ayrıca veritabanı tetikleyicisi tutarsız sürümü reddeder.
+- Onaylı sürüm veritabanı tetikleyicileriyle kilitlidir; düzeltme yeni sürümle yapılır.
+- Bir okulun sürümünü başka okul görmez. Notlandırma için geçerli sürüm seçilirken önce okul onayına, sonra platform onayına bakılır.
+- Sayfa: `/written-rubrics` (Süper Admin ve branş öğretmeni).
+
+Kanıt:
+- `tests/a039-analytic-rubrics.test.ts` (3 test) ve ortak yardımcı `tests/helpers/written-item.ts` (A040/A041'de de kullanılacak).
+- Mutasyon kontrolü: branş kontrolü, toplam kontrolü, onaysız sorunun görünmesi ve okul sürümünün sızması testlerce yakalandı. Tutarlılık iki katmanlı olduğu için tek katmanı kaldırmak testi düşürmüyor; ikisi birlikte kaldırılınca düşüyor.
+- Tam paket 260 dosya / 1.291 test geçti, build geçti.
+
+Sonraki iş: A040.
