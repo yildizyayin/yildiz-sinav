@@ -10,6 +10,7 @@ import './expansion.css';
 import './panel-system.css';
 import './student-enhancements.css';
 import './operations-ui.css';
+import './teacher-panel-design.css';
 import './exam-builder.css';
 import './exam-builder-reference.css';
 import './campaign-ui.css';
