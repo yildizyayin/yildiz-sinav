@@ -15,6 +15,7 @@ import './exam-builder-reference.css';
 import './campaign-ui.css';
 import './brand-lock.css';
 import './profession-targets.css';
+import './results-panel-design.css';
 import './pages/admin-command-center.css';
 import './pages/admin-operational-home.css';
 import './pages/optical-design.css';

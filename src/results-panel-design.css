@@ -1,0 +1,85 @@
+/* D007 — independent result portal. No app shell, role or API behavior is changed. */
+@media screen {
+  main.result-portal { --rp-ink: #26343b; --rp-blue: #285e78; --rp-cyan: #286759; --rp-line: #dde4e5; --ink: #26343b; --muted: #59666c; --border: #dde4e5; color: #26343b; background: #f7f9fa; font: 14px/1.5 Inter, "Segoe UI", Arial, sans-serif; }
+  main.result-portal :is(h1,h2,h3,p,label,strong,small) { overflow-wrap: anywhere; }
+  main.result-portal :is(.result-workspace,.result-dashboard,.result-operator-dashboard,.result-two,.operator-flow,.result-form,.result-operator-workspace,.form-grid > *) { min-width: 0; }
+  main.result-portal .result-nav { max-width: 1280px; height: auto; min-height: 76px; padding: 16px 24px; gap: 20px; }
+  main.result-portal .result-nav nav { flex-wrap: wrap; gap: 8px; }
+  main.result-portal .result-nav nav a { color: #315f73; font-size: 13px; min-height: 44px; }
+  main.result-portal .result-hero { max-width: none; min-height: 0; padding: 36px max(24px,calc((100vw - 1232px)/2)); grid-template-columns: minmax(0,1fr) 170px; gap: 28px; background: #edf3f5; color: #26343b; border-block: 1px solid #dde4e5; }
+  main.result-portal .result-hero::before { display: none; }
+  main.result-portal .result-hero h1 { font-size: clamp(28px,3.4vw,44px); line-height: 1.18; color: #26343b; letter-spacing: -.035em; }
+  main.result-portal .result-hero-copy p { max-width: 700px; color: #59666c; font-size: 15px; line-height: 1.65; }
+  main.result-portal .result-hero-copy > span { color: #285e78; background: #fff; border-color: #c8d7de; }
+  main.result-portal .result-proof { flex-wrap: wrap; gap: 12px; color: #315f73; }
+  main.result-portal .result-proof span { color: #315f73; background: #fff; border-color: #c8d7de; }
+  main.result-portal .result-planet-hero { min-height: 140px; width: 170px; }
+  main.result-portal .result-planet-hero .nibiru-mark { --nibiru-size: 96px !important; }
+  main.result-portal .orbit-caption { bottom: 0; color: #315f73; }
+  main.result-portal .result-role-grid { max-width: 1232px; margin: 24px auto; gap: 14px; padding: 0 24px; }
+  main.result-portal .result-role-grid > button { min-height: 112px; padding: 20px; border-radius: 12px; border: 1px solid #c4d0d6; box-shadow: none; background: #fff; color: #26343b; }
+  main.result-portal .result-role-grid > button:hover { transform: none; border-color: #285e78; box-shadow: inset 0 0 0 1px #285e78; }
+  main.result-portal .result-role-grid > button > span { width: 42px; height: 42px; border-radius: 10px; background: #edf5f7; color: #285e78; }
+  main.result-portal .result-role-grid h2 { font-size: 18px; color: #26343b; }
+  main.result-portal .result-role-grid p { color: #59666c; font-size: 13px; line-height: 1.5; }
+  main.result-portal .result-workspace { max-width: 1184px; margin: 24px auto 40px; padding: 24px; border: 1px solid #dde4e5; border-radius: 14px; background: #fff; box-shadow: none; }
+  main.result-portal :is(.result-workspace h2,.operator-welcome h2,.result-operator-login h2) { font-size: clamp(24px,2.5vw,32px); line-height: 1.3; color: #26343b; }
+  main.result-portal :is(.result-workspace p,.operator-welcome p,.result-operator-login p) { color: #59666c; font-size: 14px; line-height: 1.6; }
+  main.result-portal .result-form { max-width: 640px; margin: 0 auto; gap: 16px; }
+  main.result-portal :is(button,.result-primary,.primary,.secondary,.ghost,a.result-login-link) { min-height: 44px; border-radius: 8px; }
+  main.result-portal :is(.result-primary,.primary) { color: #fff; background: #285e78 !important; border: 1px solid #285e78; box-shadow: none; }
+  main.result-portal :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea) { min-height: 44px; max-width: 100%; border: 1px solid #85959e; border-radius: 8px; color: #26343b; background: #fff; font: inherit; padding: 10px 12px; }
+  main.result-portal :is(input,textarea)::placeholder { color: #616f77; opacity: 1; }
+  main.result-portal :is(button:disabled,button[data-busy="true"]) { opacity: 1; color: #52616a !important; background: #e9eef0 !important; border-color: #a8b5bc; box-shadow: none; }
+  main.result-portal :is(button,a):not(:disabled):active { box-shadow: inset 0 2px 4px #17203330; }
+  main.result-portal :focus-visible { outline: 3px solid #1c657c; outline-offset: 3px; }
+  main.result-portal .result-kicker { color: #285e78; font-size: 11px; letter-spacing: .08em; }
+  main.result-portal :is(.panel,.result-detail,.result-tip,.result-report-preview) { padding: 20px; border-radius: 12px; border: 1px solid #dde4e5; background: #fff; box-shadow: none; }
+  main.result-portal .result-tip { background: #faf4e7; border-color: #d9c698; color: #76582d; }
+  main.result-portal .result-exams > button { gap: 14px; padding: 18px; border-radius: 10px; box-shadow: none; text-align: left; }
+  main.result-portal .result-exams > button > div { min-width: 0; }
+  main.result-portal .result-exams strong { font-size: 16px; color: #26343b; }
+  main.result-portal .result-exams :is(span,small) { color: #59666c; font-size: 13px; }
+  main.result-portal .table-card { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+  main.result-portal .table-card :is(th,td) { padding: 12px; font-size: 13px; color: #26343b; }
+  main.result-portal :is(.result-empty,.empty) { padding: 20px; background: #f3f6f7; color: #59666c; border-radius: 10px; }
+  main.result-portal :is(.result-alert,.alert.error) { background: #fff2f1; color: #8e302d; border-color: #c66c64; }
+  main.result-portal .alert.success { background: #edf7f1; color: #235d3d; border-color: #6d9e80; }
+  main.result-portal :is(.alert.warning,.alert.warn) { background: #fff7e7; color: #765019; border-color: #b68b38; }
+  main.result-portal .alert.info { background: #eef5fa; color: #315b78; border-color: #6e96b3; }
+  main.result-portal .operator-flow { gap: 12px; }
+  main.result-portal .operator-flow button { min-height: 76px; padding: 16px; border-radius: 12px; box-shadow: none; }
+  main.result-portal .result-license-story { max-width: 1184px; margin: 28px auto; padding: 24px; border-radius: 14px; border: 1px solid #dde4e5; background: #fff; box-shadow: none; color: #26343b; }
+  main.result-portal .result-license-story h2 { color: #26343b; font-size: 24px; }
+  main.result-portal .result-license-story p { color: #59666c; }
+  main.result-portal .result-license-grid > div { background: #f3f6f7; border-color: #dde4e5; }
+  @media(max-width:760px) {
+    main.result-portal .result-nav { padding: 12px 14px; flex-wrap: wrap; gap: 10px; }
+    main.result-portal .result-nav nav { margin-left: auto; }
+    main.result-portal .result-hero { grid-template-columns: minmax(0,1fr); padding: 24px 18px; gap: 12px; }
+    main.result-portal .result-planet-hero { display: none; }
+    main.result-portal .result-role-grid { grid-template-columns: minmax(0,1fr); padding: 0 14px; margin: 18px 0; }
+    main.result-portal .result-role-grid > button { min-height: 88px; padding: 16px; }
+    main.result-portal .result-workspace { width: auto; max-width: calc(100% - 28px); margin: 18px 14px 28px; padding: 18px; }
+    main.result-portal :is(.result-two,.operator-flow,.subject-grid,.video-grid,.form-grid) { grid-template-columns: minmax(0,1fr); }
+    main.result-portal :is(.result-student-head,.detail-head,.panel-head,.result-review-actions,.result-decision-buttons) { flex-wrap: wrap; gap: 12px; }
+    main.result-portal .result-exams > button { flex-wrap: wrap; align-items: flex-start; }
+    main.result-portal .result-exams > button > div { flex: 1 1 160px; }
+    main.result-portal :is(input,select,textarea) { font-size: 16px; min-width: 0; }
+    main.result-portal .result-license-story { margin: 20px 14px; padding: 18px; }
+    main.result-portal .result-license-grid { grid-template-columns: minmax(0,1fr); }
+  }
+  @media(prefers-reduced-motion:reduce) { main.result-portal *, main.result-portal *::before, main.result-portal *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+}
+@media screen {
+  main.result-portal .result-nav .result-login-link { background: #285e78; color: #fff; }
+  main.result-portal .result-hero h1 :is(span,em,b,strong) { color: #285e78; }
+  main.result-portal :is(.orbit-caption span, .result-license-grid span, footer p, footer span, footer small) { color: #59666c; }
+  main.result-portal .result-license-grid article { background: #f3f6f7; border: 1px solid #dde4e5; border-radius: 12px; min-height: 124px; padding: 18px; }
+  main.result-portal :is(.result-proof svg,.result-license-grid svg) { color: #285e78; }
+  main.result-portal .result-tip svg { color: #76582d; }
+  main.result-portal .result-nav .anunex-brand-canonical { flex-direction: row; gap: 10px; }
+  main.result-portal .result-nav .anunex-symbol-canonical { width: 42px; height: 42px; }
+  main.result-portal .result-nav .anunex-wordmark-canonical strong { font-size: 22px; }
+  main.result-portal .result-nav .anunex-wordmark-canonical small { font-size: 6px; }
+}
