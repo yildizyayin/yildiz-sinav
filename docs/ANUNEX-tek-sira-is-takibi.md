@@ -2259,3 +2259,32 @@ Kanıt: `tests/s013-result-documents.test.ts`.
 Not: bu sırada tam test paketi bir kez bellek yetersizliğinden durdu (exit 137). `--maxWorkers=4` ile yeniden koşuldu ve geçti.
 
 Sonraki iş: S014.
+
+### S014 — dönem sonu lisanssız temizliği, 23 Ekim
+
+Durum: BEKLİYOR (kullanıcı kararı). Kod değiştirilmedi; geri alınamaz silme kuralı tahminle değiştirilmez.
+
+Şu an nasıl çalışıyor:
+- Süre: yayın tarihine 90 gün eklenir; bu tarih ile bir sonraki yılın 30 Eylül'ünden hangisi daha geçse o kullanılır.
+- Süre dolunca sonuç ağı yönetimi 80'erli sayfalarla temizleniyor:
+  - katılımcı satırları siliniyor;
+  - sonuç dosyaları önce emekliye ayrılıyor;
+  - sınav tanımı, cevap anahtarı, kazanımlar ve videolar korunuyor.
+- Korunanlar:
+  - başka bir yönetimde erişimi olan katılımcı;
+  - sınavı app'te yayımlanmış (snapshot_version > 0) olan ya da LICENSED yönetimi olan sınavın katılımcıları.
+- Kapsamlı testler var: `result-artifact-retention`, `result-retention-queue`.
+- Cron şu an kapalı (`SCHEDULED_JOBS_PAUSED`). Yani bugün hiçbir silme çalışmıyor.
+
+Açık nokta: "lisanslı öğrenci" bugün **sınav düzeyinde** korunuyor, **kurum lisansına** bakılmıyor.
+- Lisanslı bir kurumun öğrencisi, sınav app'te hiç yayımlanmadıysa temizlenebilir.
+- app'in lisans kuralında `institution_licenses` satırı olmayan kurum LEGACY_ACTIVE (lisanslı) sayılıyor. "Lisanslı kurum korunur" kuralı doğrudan eklenirse neredeyse hiçbir şey temizlenmez.
+
+Soru: temizlikte "lisanssız" kimdir?
+- (a) Bugünkü kural (sınav düzeyinde koruma).
+- (b) Aktif ücretli lisansı (ANNUAL/PILOT/CUSTOM) olan kurumun öğrencileri hiç silinmez.
+- (c) Yalnız app'e hiç erişimi olmayan, sonuç ağıyla eklenmiş kurumlar temizlenir.
+
+Ayrıca süre kuralı (90 gün / 30 Eylül) onaylanmalı.
+
+Sonraki iş: S015.
