@@ -2346,3 +2346,14 @@ Uygulama sürümü geri dönüşü Cloudflare Worker sürümleriyle yapılabiliy
 - #365 merge commit ile main'e alındı (`59eeec18`). 25 PR "merged" durumunda.
 - Production dağıtımı run 39916896234 kuyrukta. "production-deploy" grubunu 21 Ekim'den beri onay bekleyen eski bir "Deploy App Production Only" çalışması (39570510411, `ab658f79`) tutuyor.
 - Eski çalışmaları reddetme denemem oturum güvenlik kuralınca engellendi. Onay ve red kullanıcıda.
+
+### Canlıya alma — 23 Ekim 11:50
+
+- Kullanıcı Workers Paid planını (aylık 5 $) aldı. D1 günlük kota engeli kalktı.
+- App: "Deploy Production Cloudflare Worker" run 39916896234, ikinci denemede başarılı.
+  - 19 bekleyen veritabanı geçişi (0118–0136) uygulandı.
+  - `app.anunex.com/api/health` → ready, release `59eeec1818b0`.
+- Sonuç: "Deploy ANUNEX Result Network" run 39927045437 başarılı (attach kapalı).
+  - `sonuc.anunex.com/api/health` → ready, release `59eeec1818b0`.
+- İki alan da aynı sürümde. S001'deki "sonuç portalı 8 Ekim'den beri dağıtılmadı" farkı kapandı.
+- Küçük bulgu: sonuc.anunex.com'un `/api/health` yanıtı kenarda önbelleğe alınıyor. İlk okumada eski yanıt geldi, sorgu parametresiyle güncel yanıt alındı. S006 sürüm karşılaştırması bu yüzden bayat sonuç verebilir; health yanıtına `no-store` eklenmeli.
