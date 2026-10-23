@@ -13,6 +13,8 @@ const fail = (status: number, code: string, message: string) => json({ ok: false
 const PIN_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 export const PIN_FAILURE_LIMIT = 5;
 export function newPin(): string { const b = new Uint8Array(8); crypto.getRandomValues(b); return [...b].map((x) => PIN_ALPHABET[x % PIN_ALPHABET.length]).join(''); }
+/** a MEB code, or the ANX- code of a school opened by hand */
+const CODE = /^(\d{5,12}|ANX-[A-Z0-9-]{4,30})$/;
 const normalPin = (v: unknown) => String(v ?? '').toUpperCase().replace(/[\s-]/g, '');
 const text = (v: unknown, max: number) => String(v ?? '').trim().slice(0, max);
 
@@ -42,13 +44,13 @@ async function canManage(env: Env, user: AuthUser, inst: any): Promise<boolean> 
 async function issuePin(request: Request, env: Env, user: AuthUser): Promise<Response> {
   if (user.role !== 'SUPER_ADMIN' && user.role !== 'INSTITUTION_MANAGER') return fail(403, 'FORBIDDEN', 'Kurum PIN\'ini Süper Admin veya yetkili bayi verir.');
   const body: any = await request.json().catch(() => ({}));
-  const mebCode = text(body.mebCode, 12);
-  if (!/^\d{5,12}$/.test(mebCode)) return fail(400, 'MEB_CODE_REQUIRED', 'Geçerli bir MEB kurum kodu girin.');
+  const mebCode = text(body.mebCode, 40).toUpperCase();
+  if (!CODE.test(mebCode)) return fail(400, 'MEB_CODE_REQUIRED', 'Geçerli bir MEB kurum kodu (veya ANX- ile başlayan manuel kurum kodu) girin.');
   if (user.role !== 'SUPER_ADMIN') {
     const { dealerCanAct } = await import('../result-network-entry');
     if (!(await dealerCanAct(env, user, mebCode)).ok) return fail(403, 'FORBIDDEN', 'Bu kurum bayi kapsamınızda değil.');
   }
-  const inst = await ensureInstitutionFromDirectory(env, mebCode, user.id);
+  const inst = /^ANX-/.test(mebCode) ? await one<any>(env.DB.prepare('SELECT * FROM institutions WHERE code=?').bind(mebCode)) : await ensureInstitutionFromDirectory(env, mebCode, user.id);
   if (!inst) return fail(404, 'DIRECTORY_INSTITUTION_NOT_FOUND', 'Bu MEB kodu kurum rehberinde yok. Kurumu elle açın veya rehberi güncelleyin.');
   const pin = newPin(); const { hashPassword } = await import('./auth'); const h = await hashPassword(pin);
   await env.DB.prepare(`INSERT INTO institution_claim_pins(institution_id,pin_hash,pin_salt,pin_iterations,issued_by) VALUES(?,?,?,?,?)
@@ -64,8 +66,8 @@ async function claim(request: Request, env: Env): Promise<Response> {
   const ip = request.headers.get('CF-Connecting-IP');
   const t = await verifyTurnstile(env, body.turnstileToken, ip);
   if (!t.ok) return fail(400, t.error || 'TURNSTILE_FAILED', 'Robot doğrulaması tamamlanamadı.');
-  const mebCode = text(body.mebCode, 12), pin = normalPin(body.pin), displayName = text(body.displayName, 120), email = text(body.email, 160).toLowerCase(), phone = text(body.phone, 32), address = text(body.address, 300), password = String(body.password ?? '');
-  if (!/^\d{5,12}$/.test(mebCode) || !/^[A-Z0-9]{8}$/.test(pin)) return fail(400, 'CLAIM_INPUT_INVALID', 'Kurum kodu ve 8 karakterlik PIN gerekli.');
+  const mebCode = text(body.mebCode, 40).toUpperCase(), pin = normalPin(body.pin), displayName = text(body.displayName, 120), email = text(body.email, 160).toLowerCase(), phone = text(body.phone, 32), address = text(body.address, 300), password = String(body.password ?? '');
+  if (!CODE.test(mebCode) || !/^[A-Z0-9]{8}$/.test(pin)) return fail(400, 'CLAIM_INPUT_INVALID', 'Kurum kodu ve 8 karakterlik PIN gerekli.');
   if (displayName.length < 3 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || !/^\+?[0-9 ()-]{10,20}$/.test(phone)) return fail(400, 'CLAIM_INPUT_INVALID', 'Yetkili adı, geçerli e-posta ve telefon gerekli.');
   if (password.length < 10) return fail(400, 'PASSWORD_TOO_SHORT', 'Şifre en az 10 karakter olmalı.');
   const row = await one<any>(env.DB.prepare(`SELECT p.*,i.id inst_id,i.name FROM institution_claim_pins p JOIN institutions i ON i.id=p.institution_id WHERE (i.code=? OR i.meb_code=?) LIMIT 1`).bind(mebCode, mebCode));

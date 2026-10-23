@@ -93,3 +93,22 @@ describe('S020 institution claim', () => {
     expect((await claim(pin, { email: 'baska@deneme.example' })).status).toBe(201);
   });
 });
+
+describe('S021 opening a school by hand', () => {
+  it('keeps contact fields, validates them, and lets a hand-opened school (ANX- code) claim with a PIN', async () => {
+    const { t, cookies, call, claim } = await setup();
+    const bad = await call('/api/admin/result-network/institutions', { method: 'POST', body: { name: 'Elle Açılan Kurs', city: 'Ankara', district: 'Çankaya', contactPhone: 'abc' }, cookie: cookies.admin });
+    expect(bad.status).toBe(400);
+    const made = await call('/api/admin/result-network/institutions', { method: 'POST', body: { name: 'Elle Açılan Kurs', city: 'Ankara', district: 'Çankaya', contactName: 'Kurs Müdürü', contactPhone: '0312 111 22 33', address: 'Kızılay' }, cookie: cookies.admin });
+    expect(made.status, made.text).toBe(201);
+    const code = made.data.institution.code;
+    expect(code).toMatch(/^ANX-/);
+    expect(t.db.prepare('SELECT source_type,meb_code,contact_name,contact_phone,address FROM institutions WHERE code=?').get(code)).toEqual({ source_type: 'MANUAL', meb_code: null, contact_name: 'Kurs Müdürü', contact_phone: '0312 111 22 33', address: 'Kızılay' });
+    const pin = await call('/api/admin/result-network/institution-pins', { method: 'POST', body: { mebCode: code.toLowerCase() }, cookie: cookies.admin });
+    expect(pin.status, pin.text).toBe(201);
+    expect((await claim(pin.data.pin, { mebCode: code, email: 'kurs@deneme.example' })).status).toBe(201);
+    const edited = await call(`/api/admin/result-network/institutions/${made.data.institution.id}`, { method: 'PATCH', body: { name: 'Elle Açılan Kurs', city: 'Ankara', district: 'Çankaya', contactPhone: '0312 999 88 77' }, cookie: cookies.admin });
+    expect(edited.status, edited.text).toBe(200);
+    expect((t.db.prepare('SELECT contact_phone,address FROM institutions WHERE code=?').get(code) as any)).toEqual({ contact_phone: '0312 999 88 77', address: 'Çankaya / Ankara' }); // the claim filled in the school's own address
+  });
+});
