@@ -93,7 +93,7 @@ async function productionHealth(env: Env): Promise<Response> {
     const placeholders = HEALTH_TABLES.map(() => '?').join(',');
     const row = await one<{ count: number }>(env.DB.prepare(`SELECT COUNT(*) count FROM sqlite_master WHERE type='table' AND name IN (${placeholders})`).bind(...HEALTH_TABLES));
     const schemaReady = healthSchemaReady(Number(row?.count || 0));
-    return json({ ok: schemaReady, status: schemaReady ? 'ready' : 'schema_pending', environment: env.ENVIRONMENT || 'unknown', release: releaseOf(env) }, schemaReady ? 200 : 503);
+    return json({ ok: schemaReady, status: schemaReady ? 'ready' : 'schema_pending', environment: env.ENVIRONMENT || 'unknown', release: releaseOf(env) }, schemaReady ? 200 : 503, { 'Cache-Control': 'no-store' });
   } catch {
     return json({ ok: false, status: 'database_unavailable', environment: env.ENVIRONMENT || 'unknown' }, 503);
   }
