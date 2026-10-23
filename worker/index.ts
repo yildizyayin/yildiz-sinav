@@ -2,7 +2,7 @@ import { handleInstitutionCard } from './lib/institution-card';
 import { sanitizeAuditDetails } from './lib/db';
 import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
 import { audit, badRequest, forbidden, json, methodNotAllowed, normalizeName, notFound, one, all, splitName, uuid } from './lib/db';
-import { createSession, getAuthUser, hashPassword, isServiceAccountId, isTemporarilyLocked, recordLoginAttempt, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
+import { createSession, getAuthUser, hashPassword, isServiceAccountId, isTemporarilyLocked, recordLoginAttempt, revokeOtherSessions, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
 import { canAccessSubjectForClass, canEvaluateExam, loadPermissionScope, roleCanManageInstitution } from './lib/permissions';
 import { examPublicationGuard } from './lib/exam-publication-guard';
 import { examEvaluationAccess } from './lib/exam-evaluation-access';
@@ -177,6 +177,7 @@ async function changePassword(request: Request, env: Env, user: AuthUser): Promi
   const passwordData = await hashPassword(newPassword);
   await env.DB.prepare(`UPDATE users SET password_hash=?,password_salt=?,password_iterations=?,password_algo='PBKDF2-SHA256-v1',must_change_password=0,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
     .bind(passwordData.hash, passwordData.salt, passwordData.iterations, user.id).run();
+  await revokeOtherSessions(env, request, user.id);
   await audit(env.DB, user.id, user.institution_id, 'PASSWORD_CHANGED', 'user', user.id, { forced: Boolean(user.must_change_password) });
   return json({ ok: true, mustChangePassword: false });
 }
