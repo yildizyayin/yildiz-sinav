@@ -1908,3 +1908,40 @@ Kanıt:
 - A064 testi yanlış anahtarla özellik açıyordu; düzeltildi.
 
 Sonraki iş: A074.
+
+### A074 — veri transferi / toplu işlemler, 23 Ekim
+
+Durum: KANIT EKLENDİ. Kod değişmedi. PR #346 açık; dağıtımdan sonra merge edilecek.
+
+- Önizleme, hata listesi, kişi kararı, kurum kapsamı ve iki kez aktarım A045'te kapatılmıştı.
+- Bu işte yalnız eksik kanıt eklendi:
+  - Aynı dosya yeniden yüklenince mevcut kayıtlarla eşleşiyor; yeni kopya oluşmuyor, kayıt kaybolmuyor.
+  - İki onay aynı anda gelirse öğrenci çoğalmıyor.
+  - Başka bir okul işi göremiyor ve onaylayamıyor.
+- Not: aynı anda onayı iki koruma yedekliyor. İkisi birlikte kaldırılınca test kırılıyor; biri kaldırılınca diğeri koruyor.
+
+### A075 — yayınevi / bursluluk / Campus, 23 Ekim
+
+Durum: KOD HAZIR. PR #347 açık; dağıtımdan sonra merge edilecek.
+
+Zaten doğru olanlar:
+- Yayınevi analitiğini yalnız yetkili kullanıcılar görüyor.
+- Bursluluk kampanyasını yalnız yönetici açabiliyor.
+
+Düzeltilen:
+- Campus ekranı yönlendirmesi olmayan alt alan adı ve özel alan adını "hazır" gösteriyordu ve etkinleştirme anahtarı sunuyordu. Ekran artık "Planlı — henüz çalışmıyor" diyor. API bu alanı hiç etkin olarak kaydetmiyor.
+- Bursluluk ekranı artık aday akışının planlı olduğunu söylüyor.
+
+Kanıt: `tests/a075-planned-flows.test.ts`.
+
+### A076 — profil ve görünüm ayarları, 23 Ekim
+
+Durum: KOD HAZIR. PR #348 açık; dağıtımdan sonra merge edilecek.
+
+- Sorun: tema seçimi cihaz genelinde saklanıyordu. Paylaşılan bir cihazda bir hesabın teması başka bir hesabın paneline geçiyordu.
+- Düzeltme: tema artık hesap başına saklanıyor. Eski ortak anahtar siliniyor. İzin dışı kalan tema standarda dönüyor. Depolama kapalıysa panel bozulmuyor.
+- Ek düzeltme: Layout'ta erken dönüşten sonra çağrılan bir hook kaldırıldı.
+
+Kanıt: `tests/a076-theme-per-user.test.ts`. 3 mutasyon yakalandı.
+
+Sonraki iş: A077.
