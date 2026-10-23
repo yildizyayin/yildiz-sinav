@@ -42,3 +42,212 @@
 .app-shell[data-panel-theme="ANUNEX_STANDARD"] .mobile-nav-close{color:#26343b}
 @media(max-width:1000px){.app-shell[data-panel-theme="ANUNEX_STANDARD"]{grid-template-columns:1fr}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:100;transform:translateX(-105%);transition:transform .2s}.app-shell[data-panel-theme="ANUNEX_STANDARD"].nav-open .sidebar{transform:translateX(0)}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .mobile-menu-button,.app-shell[data-panel-theme="ANUNEX_STANDARD"] .mobile-nav-close{display:flex}.app-shell[data-panel-theme="ANUNEX_STANDARD"].nav-open .nav-scrim{display:block;position:fixed;inset:0;background:#26343b55;z-index:90}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .page-wrap{padding:24px 20px}}
 @media(max-width:600px){.app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar{padding:0 14px;height:66px}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .page-wrap{padding:20px 14px}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar-actions>.status{display:none}.app-shell[data-panel-theme="ANUNEX_STANDARD"] .nibiru-topbar span{display:none}}
+
+/* D001 — approved Astra structure, shared screen primitives and admin density.
+   Keep this layer scoped: the other themes, result portal and print sheets own
+   their existing presentation. No route, permission or busy-state logic lives here. */
+@media screen {
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] {
+    --ink: #26343b;
+    --navy: #26343b;
+    --muted: #59666c;
+    --border: #dde4e5;
+    --line: #dde4e5;
+    --canvas: #f7f9fa;
+    --panel: #fff;
+    --surface-2: #f3f6f7;
+    --workspace-accent: #286759;
+    --workspace-soft: #edf5f1;
+    --brand: var(--workspace-accent);
+    --brand-2: var(--workspace-accent);
+    --blue: var(--workspace-accent);
+    --blue2: var(--workspace-accent);
+    --radius: 12px;
+    --shadow-soft: 0 2px 12px #26343b05;
+    --ax-space-1: 4px;
+    --ax-space-2: 8px;
+    --ax-space-3: 12px;
+    --ax-space-4: 16px;
+    --ax-space-5: 24px;
+    --ax-focus: #1c657c;
+    color-scheme: light;
+    background: var(--canvas);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* White text on these accents exceeds 4.5:1; pale surfaces carry no data. */
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="exam-center"] { --workspace-accent: #945139; --workspace-soft: #faf0ea; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"]:is([data-panel-module="phobos-optical"], [data-panel-module="deimos-printing"], [data-panel-module="optical-operations"]) { --workspace-accent: #755c35; --workspace-soft: #f7f2e9; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="content-center"] { --workspace-accent: #3e684b; --workspace-soft: #eef5ee; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="guidance-center"] { --workspace-accent: #84602f; --workspace-soft: #f8f3e9; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="planning-center"] { --workspace-accent: #226879; --workspace-soft: #edf5f7; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="results-center"] { --workspace-accent: #3d627f; --workspace-soft: #eef3f8; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"][data-panel-module="ai-center"] { --workspace-accent: #826020; --workspace-soft: #faf4e7; }
+
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar {
+    background: #fff;
+    padding: 20px 12px 12px;
+    gap: 12px;
+    overflow: hidden;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .brand { padding: 0 6px 16px; flex-shrink: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .brand .anunex-brand-canonical { min-width: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .nibiru-sidebar-card { margin: 0; padding: 10px; flex-shrink: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar nav { min-height: 0; overflow: auto; flex: 1; gap: 4px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-group { margin: 0 0 8px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-group-toggle {
+    min-height: 40px;
+    padding: 8px 10px;
+    color: #59666c;
+    font-size: 11px;
+    letter-spacing: .06em;
+    line-height: 1.4;
+    border-radius: 8px;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-item {
+    min-height: 40px;
+    padding: 9px 10px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #46545c;
+    border-left: 2px solid transparent;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-item svg { color: currentColor; flex-shrink: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-item.active { color: var(--workspace-accent); background: var(--workspace-soft); border-left-color: var(--workspace-accent); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.nav-item:hover, .nav-group-toggle:hover) { background: #f1f5f6; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar-footer { flex-shrink: 0; margin-top: 0; padding: 8px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .user-card { padding: 4px; min-width: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .user-card > div:last-child { min-width: 0; overflow-wrap: anywhere; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .user-card small { font-size: 11px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .avatar { flex-shrink: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar-logout { margin-top: 4px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar { gap: 12px; padding: 0 28px; backdrop-filter: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar-context { min-width: 0; overflow-wrap: anywhere; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar-actions { flex-shrink: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.icon-button, .topbar-icon, .mobile-nav-close) { min-width: 40px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .nibiru-topbar .nibiru-brand-lockup { display: inline-flex; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .nibiru-topbar .nibiru-mark { display: inline-grid; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .nibiru-topbar .nibiru-mark span { display: block; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .page-wrap { padding: 28px 30px 40px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.page-wrap, .page-wrap > *, .panel, .table-card, .form-grid > *, .source-grid > *) { min-width: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(h1, h2, h3, p, label, .alert) { overflow-wrap: anywhere; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] h1 { font-size: clamp(25px, 2.3vw, 32px); line-height: 1.25; font-weight: 650; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] h2 { font-size: 18px; line-height: 1.4; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] h3 { font-size: 16px; line-height: 1.4; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .eyebrow { font-size: 11px; letter-spacing: .08em; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.page-head, .panel-head, .section-head) { gap: 16px; flex-wrap: wrap; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .panel { padding: 20px; margin-bottom: 16px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.panel, .table-card, .quick-card, .source-card, .kpi-card) { border-radius: var(--radius); border-color: var(--border); box-shadow: var(--shadow-soft); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .table-card { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .table-card table { font-variant-numeric: tabular-nums; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .table-card th { background: #f3f6f7; color: #46545c; font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: 0; padding: 12px 14px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .table-card td { color: var(--ink); border-color: var(--border); font-size: 13px; padding: 12px 14px; line-height: 1.5; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .table-card td small { color: var(--muted); font-size: 12px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .table-card tbody tr:hover { background: #f7fafb; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .table-card :is(tr.selected-row, tr.active) { background: var(--workspace-soft); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(input, select, textarea) { max-width: 100%; color: var(--ink); accent-color: var(--workspace-accent); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) { min-height: 40px; border: 1px solid #85959e; background: #fff; border-radius: 8px; padding: 9px 11px; font: inherit; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(input, textarea)::placeholder { color: #616f77; opacity: 1; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(button, .primary, .secondary, .ghost, .danger, .icon-button, .topbar-icon, .nibiru-topbar) { min-height: 40px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(button, .primary, .secondary, .ghost, .danger) { font-weight: 600; border-radius: 8px; transition: background-color .15s, border-color .15s, box-shadow .15s; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .primary { color: #fff; background: var(--workspace-accent) !important; border: 1px solid var(--workspace-accent); box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.secondary, .icon-button) { background: #fff; color: #344f67; border: 1px solid #85959e; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .ghost { color: #46545c; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .danger { background: #fff1f0; color: #a13335; border: 1px solid #d69b97; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(button, a.primary, a.secondary):not(:disabled):not([aria-disabled="true"]):not([data-busy="true"]):hover { box-shadow: inset 0 0 0 1px currentColor; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] button:not(:disabled):not([aria-disabled="true"]):not([data-busy="true"]):active { box-shadow: inset 0 2px 4px #17203330; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(button:disabled, button[data-busy="true"], [aria-disabled="true"]) { opacity: 1; background: #e9eef0 !important; color: #52616a !important; border-color: #a8b5bc; box-shadow: none; cursor: not-allowed; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] button[data-busy="true"] { cursor: progress; pointer-events: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(button, a, input, select, textarea, summary, [tabindex]):focus-visible { outline: 3px solid var(--ax-focus); outline-offset: 3px; box-shadow: 0 0 0 2px #fff; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .tabs { flex-wrap: wrap; gap: 6px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .tabs button { color: var(--muted); background: #fff; border: 1px solid #85959e; font-weight: 600; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .tabs button.active { color: var(--workspace-accent); background: var(--workspace-soft); border-color: var(--workspace-accent); box-shadow: inset 0 -2px var(--workspace-accent); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .alert { border: 1px solid; border-left-width: 3px; padding: 12px 14px; border-radius: 8px; font-size: 14px; line-height: 1.6; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .alert.error { background: #fff2f1; border-color: #c66c64; color: #8e302d; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .alert.success { background: #edf7f1; border-color: #6d9e80; color: #235d3d; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.alert.warning, .alert.warn) { background: #fff7e7; border-color: #b68b38; color: #765019; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .alert.info { background: #eef5fa; border-color: #6e96b3; color: #315b78; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.empty, .result-empty, .empty-state, .admin-home-empty, .admin-home-loading) { color: var(--muted); background: #f7f9fa; border-radius: 8px; padding: 20px; font-size: 14px; line-height: 1.6; }
+
+  /* Super Admin: existing content, routes and data; compact task-first hierarchy. */
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-operational-home { gap: 20px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-header { padding-bottom: 20px; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-header h1 { font-size: clamp(26px, 2.5vw, 34px); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-kpi-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-kpi { min-height: 100px; padding: 16px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-kpi:before { background: var(--workspace-accent); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-kpi span { min-height: 0; font-size: 13px; color: var(--muted); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-kpi strong { font-size: 28px; font-variant-numeric: tabular-nums; line-height: 1.3; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.admin-home-kpi small, .admin-home-panel-head p, .admin-home-pending-copy small, .admin-home-action small, .admin-home-health-row small, .admin-home-activity-row small) { color: var(--muted); font-size: 12px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.admin-home-primary-grid, .admin-home-secondary-grid) { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 16px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-panel { padding: 20px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-primary-grid > .admin-home-panel:nth-child(3) { grid-column: 1 / -1; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-primary-grid > .admin-home-panel:nth-child(3) .admin-home-health-list { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 24px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-summary.muted strong { color: var(--muted); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.admin-home-summary.good strong, .admin-home-health-row em) { color: #246549; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-count { color: #59666c; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-count.has-items { color: #945139; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .summary-tip { background: #edf5f7; color: #315b68; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .content-center-page { --content-ink: #26343b; --content-muted: #59666c; --content-line: #dde4e5; --content-blue: #3e684b; --content-teal: #276c62; --content-amber: #846020; --content-red: #a13335; --content-violet: #3d627f; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .question-team { --qt-ink: #26343b; --qt-teal: #3e684b; min-width: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.qt-card, .builder-card, .summary-card, .exam-simple-card) { border-color: var(--border); border-radius: var(--radius); box-shadow: var(--shadow-soft); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.qt-table, .generator-comparison) { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .qt-table :is(th, td) { font-size: 13px; padding: 12px 14px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .question-team :is(p, small, .qt-summary span, .qt-summary small) { color: var(--muted); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-pending-row { padding: 10px; min-height: 64px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-action-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-action { min-height: 76px; padding: 14px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-action-icon { background: var(--workspace-soft); color: var(--workspace-accent); width: 36px; height: 36px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-panel-mark { color: var(--workspace-accent); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.exam-center-simple-head, .exam-center-simple-actions) { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .exam-center-simple-head { justify-content: space-between; margin-bottom: 20px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.exam-workspace, .exam-definition-page) { min-width: 0; color: var(--ink); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .exam-workspace .panel { padding: 20px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .exam-workspace :is(.huge, .full) { width: auto; max-width: 100%; min-height: 40px; margin-top: 12px; font-size: 14px; }
+
+  @media (max-width: 1050px) {
+    /* Undo the legacy icon-only rail; Astra retains its full 240px navigation. */
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-item { flex-direction: row; justify-content: flex-start; min-width: 0; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .nav-item span,
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .user-card > div:last-child { display: block; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar-logout { display: inline-flex; }
+  }
+  @media (max-width: 1000px) {
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar { width: min(240px, calc(100vw - 40px)); height: 100dvh; right: auto; padding: 16px 12px; display: flex; flex-direction: column; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .brand { display: flex; justify-content: space-between; gap: 4px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar nav { display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar-footer { display: block; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .main-area { padding-bottom: 0; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar { height: auto; min-height: 66px; padding: 10px 16px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.mobile-menu-button, .mobile-nav-close, .topbar-icon) { min-width: 40px; min-height: 40px; flex-shrink: 0; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .page-wrap { padding: 24px 20px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.admin-home-primary-grid, .admin-home-secondary-grid) { grid-template-columns: minmax(0, 1fr); }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-primary-grid > .admin-home-panel:nth-child(3) .admin-home-health-list { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar { padding: 10px 12px; gap: 8px; flex-wrap: wrap; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar-context { flex: 1 1 140px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar-context strong { font-size: 13px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar-context .eyebrow { font-size: 11px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .topbar-actions { margin-left: auto; gap: 6px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .exam-simple-actions-footer { bottom: 12px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .page-wrap { padding: 20px 14px 28px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .panel { padding: 16px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(.form-grid, .source-grid, .metrics) { grid-template-columns: minmax(0, 1fr); }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .form-grid > .span-2 { grid-column: auto; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) { min-width: 0; font-size: 16px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .page-head > div { max-width: 100%; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-action-grid { grid-template-columns: minmax(0, 1fr); }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-panel { padding: 16px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .admin-home-pending-row { gap: 8px; padding: 10px 6px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .exam-center-simple-head { align-items: flex-start; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"],
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] *,
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] *::before,
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+}
