@@ -228,7 +228,7 @@ async function resolveAnnouncementRecipients(env: Env, user: AuthUser, audienceT
 export async function listAnnouncements(env: Env, user: AuthUser) {
   if(!user.institution_id)return json({ok:true,announcements:[]});
   if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden();
-  const rows=await all<any>(env.DB.prepare(`SELECT a.*,(SELECT count(*) FROM announcement_deliveries d WHERE d.announcement_id=a.id) delivery_count,(SELECT count(*) FROM announcement_deliveries d WHERE d.announcement_id=a.id AND d.status IN ('SENT','DELIVERED')) sent_count FROM announcements a WHERE a.institution_id=? ${user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER'?'AND a.created_by=?':''} ORDER BY a.created_at DESC LIMIT 100`).bind(...(user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER'?[user.institution_id,user.id]:[user.institution_id])));
+  const rows=await all<any>(env.DB.prepare(`SELECT a.*,(SELECT count(*) FROM announcement_deliveries d WHERE d.announcement_id=a.id) delivery_count,(SELECT count(*) FROM announcement_deliveries d WHERE d.announcement_id=a.id AND d.status IN ('SENT','DELIVERED')) sent_count,(SELECT count(*) FROM announcement_deliveries d WHERE d.announcement_id=a.id AND d.status='FAILED') failed_count,(SELECT count(*) FROM announcement_deliveries d WHERE d.announcement_id=a.id AND d.status='SKIPPED') skipped_count FROM announcements a WHERE a.institution_id=? ${user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER'?'AND a.created_by=?':''} ORDER BY a.created_at DESC LIMIT 100`).bind(...(user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER'?[user.institution_id,user.id]:[user.institution_id])));
   return json({ok:true,announcements:rows.map(x=>({...x,audience:parseJson(x.audience_json,{}),channels:parseJson(x.channels_json,['PANEL'])}))});
 }
 
@@ -256,7 +256,9 @@ async function dispatchAnnouncement(env: Env, announcement: any) {
     if(channels.includes('WHATSAPP')){
       const identity=await one<any>(env.DB.prepare(`SELECT phone_e164 FROM nibiru_whatsapp_identities WHERE user_id=? AND status='VERIFIED'`).bind(recipient.id));
       const id=uuid('andel');await env.DB.prepare(`INSERT OR IGNORE INTO announcement_deliveries(id,announcement_id,recipient_user_id,channel,status) VALUES(?,?,?,'WHATSAPP','PENDING')`).bind(id,announcement.id,recipient.id).run();
-      if(!identity){await env.DB.prepare(`UPDATE announcement_deliveries SET status='SKIPPED',failure_code='WHATSAPP_NOT_LINKED',attempted_at=CURRENT_TIMESTAMP WHERE announcement_id=? AND recipient_user_id=? AND channel='WHATSAPP'`).bind(announcement.id,recipient.id).run();}
+      const prior=await one<any>(env.DB.prepare(`SELECT status FROM announcement_deliveries WHERE announcement_id=? AND recipient_user_id=? AND channel='WHATSAPP'`).bind(announcement.id,recipient.id));
+      if(prior&&prior.status!=='PENDING'){whatsappSent=prior.status==='SENT'||prior.status==='DELIVERED';}
+      else if(!identity){await env.DB.prepare(`UPDATE announcement_deliveries SET status='SKIPPED',failure_code='WHATSAPP_NOT_LINKED',attempted_at=CURRENT_TIMESTAMP WHERE announcement_id=? AND recipient_user_id=? AND channel='WHATSAPP'`).bind(announcement.id,recipient.id).run();}
       else if(!announcement.whatsapp_template_name||!whatsappReady(env)){await env.DB.prepare(`UPDATE announcement_deliveries SET status='SKIPPED',failure_code=?,attempted_at=CURRENT_TIMESTAMP WHERE announcement_id=? AND recipient_user_id=? AND channel='WHATSAPP'`).bind(!announcement.whatsapp_template_name?'TEMPLATE_NOT_CONFIGURED':'PROVIDER_NOT_CONFIGURED',announcement.id,recipient.id).run();}
       else {const result=await sendWhatsAppTemplate(env,identity.phone_e164,announcement.whatsapp_template_name,[announcement.title,announcement.body]);whatsappSent=result.ok;if(result.ok)await env.DB.prepare(`UPDATE announcement_deliveries SET status='SENT',provider_message_id=?,attempted_at=CURRENT_TIMESTAMP WHERE announcement_id=? AND recipient_user_id=? AND channel='WHATSAPP'`).bind(result.messageId||null,announcement.id,recipient.id).run();else {failed++;await env.DB.prepare(`UPDATE announcement_deliveries SET status='FAILED',failure_code=?,attempted_at=CURRENT_TIMESTAMP WHERE announcement_id=? AND recipient_user_id=? AND channel='WHATSAPP'`).bind(result.reason,announcement.id,recipient.id).run();}}
     }
@@ -265,14 +267,39 @@ async function dispatchAnnouncement(env: Env, announcement: any) {
   await env.DB.prepare(`UPDATE announcements SET status='SENT',sent_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(announcement.id).run();return {sent,failed,recipients:recipients.length};
 }
 
+async function announcementForManager(env:Env,user:AuthUser,id:string){
+  const row=await one<any>(env.DB.prepare(`SELECT * FROM announcements WHERE id=?`).bind(id));if(!row)return null;
+  if(user.role!=='SUPER_ADMIN'&&row.institution_id!==user.institution_id)return null;
+  if((user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER')&&row.created_by!==user.id)return null;
+  if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return null;
+  return row;
+}
+/** A069: a draft or scheduled announcement can be cancelled; a sent one cannot be called back. */
+export async function cancelAnnouncement(env:Env,user:AuthUser,id:string){
+  const row=await announcementForManager(env,user,id);if(!row)return forbidden();
+  const r=await env.DB.prepare(`UPDATE announcements SET status='CANCELLED',updated_at=CURRENT_TIMESTAMP WHERE id=? AND status IN ('DRAFT','SCHEDULED')`).bind(id).run();
+  if(!Number(r.meta?.changes||0))return json({ok:false,error:{code:'ANNOUNCEMENT_NOT_CANCELLABLE',message:'Gönderilmiş veya gönderilmekte olan duyuru iptal edilemez.'}},409);
+  await audit(env.DB,user.id,row.institution_id,'ANNOUNCEMENT_CANCELLED','announcement',id,{previous:row.status});
+  return json({ok:true,status:'CANCELLED'});
+}
+/** A069: per channel and status, with failure reasons, so a failed or skipped delivery is visible. */
+export async function announcementDeliveries(env:Env,user:AuthUser,id:string){
+  const row=await announcementForManager(env,user,id);if(!row)return forbidden();
+  const rows=await all<any>(env.DB.prepare(`SELECT channel,status,failure_code,count(*) n FROM announcement_deliveries WHERE announcement_id=? GROUP BY channel,status,failure_code ORDER BY channel,status`).bind(id));
+  return json({ok:true,status:row.status,deliveries:rows});
+}
+
 export async function sendAnnouncement(env: Env, user: AuthUser, id: string) {
   const row=await one<any>(env.DB.prepare(`SELECT * FROM announcements WHERE id=?`).bind(id));if(!row)return badRequest('Duyuru bulunamadı.');if(user.role!=='SUPER_ADMIN'&&row.institution_id!==user.institution_id)return forbidden();if((user.role==='TEACHER'||user.role==='GUIDANCE_TEACHER')&&row.created_by!==user.id)return forbidden();
-  await env.DB.prepare(`UPDATE announcements SET status='SENDING' WHERE id=?`).bind(id).run();const result=await dispatchAnnouncement(env,row);await audit(env.DB,user.id,row.institution_id,'ANNOUNCEMENT_SENT','announcement',id,result);return json({ok:true,...result});
+  // A069: sent exactly once — only a draft or scheduled announcement can be claimed for sending
+  const claimed=await env.DB.prepare(`UPDATE announcements SET status='SENDING',updated_at=CURRENT_TIMESTAMP WHERE id=? AND status IN ('DRAFT','SCHEDULED')`).bind(id).run();
+  if(!Number(claimed.meta?.changes||0))return json({ok:false,error:{code:'ANNOUNCEMENT_NOT_SENDABLE',message:row.status==='CANCELLED'?'İptal edilmiş duyuru gönderilemez.':'Bu duyuru zaten gönderildi veya gönderiliyor.'}},409);
+  const result=await dispatchAnnouncement(env,row);await audit(env.DB,user.id,row.institution_id,'ANNOUNCEMENT_SENT','announcement',id,result);return json({ok:true,...result});
 }
 
 export async function processScheduledAnnouncements(env: Env) {
   const rows=await all<any>(env.DB.prepare(`SELECT * FROM announcements WHERE status='SCHEDULED' AND scheduled_at<=CURRENT_TIMESTAMP ORDER BY scheduled_at LIMIT 25`));
-  for(const row of rows){await env.DB.prepare(`UPDATE announcements SET status='SENDING' WHERE id=? AND status='SCHEDULED'`).bind(row.id).run();await dispatchAnnouncement(env,row)}
+  for(const row of rows){const claimed=await env.DB.prepare(`UPDATE announcements SET status='SENDING' WHERE id=? AND status='SCHEDULED'`).bind(row.id).run();if(Number(claimed.meta?.changes||0)===1)await dispatchAnnouncement(env,row)}
   return rows.length;
 }
 
@@ -313,6 +340,8 @@ export async function handleAcademicGrowthApi(request: Request, env: Env, user: 
   if(path==='/api/announcements'&&request.method==='GET')return listAnnouncements(env,user);
   if(path==='/api/announcements'&&request.method==='POST')return createAnnouncement(request,env,user);
   const send=path.match(/^\/api\/announcements\/([^/]+)\/send$/);if(send&&request.method==='POST')return sendAnnouncement(env,user,send[1]);
+  const cancel=path.match(/^\/api\/announcements\/([^/]+)\/cancel$/);if(cancel&&request.method==='POST')return cancelAnnouncement(env,user,cancel[1]);
+  const deliveries=path.match(/^\/api\/announcements\/([^/]+)\/deliveries$/);if(deliveries&&request.method==='GET')return announcementDeliveries(env,user,deliveries[1]);
   if(path==='/api/worksheet-calendar'&&request.method==='GET')return worksheetCalendar(env,user,url);
   if(path==='/api/worksheet-calendar'&&request.method==='POST')return saveWorksheetCalendar(request,env,user);
   const apply=path.match(/^\/api\/worksheet-calendar\/([^/]+)\/apply$/);if(apply&&request.method==='POST')return applyWorksheetCalendar(env,user,apply[1]);
