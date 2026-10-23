@@ -10,9 +10,10 @@ function setup(){
  db.exec(`CREATE TABLE platform_features(feature_key TEXT PRIMARY KEY,enabled_default INTEGER);INSERT INTO platform_features VALUES('STUDIO',1);
  CREATE TABLE institution_feature_overrides(institution_id TEXT,feature_key TEXT,enabled INTEGER);
  CREATE TABLE teacher_assignments(user_id TEXT,institution_id TEXT,subject_id TEXT,active INTEGER,assignment_type TEXT);
- CREATE TABLE question_bank(id TEXT PRIMARY KEY,question_type TEXT,difficulty_band TEXT DEFAULT 'MEDIUM',owner_type TEXT DEFAULT 'PLATFORM',owner_id TEXT,academic_year TEXT DEFAULT '2027-2028',grade_level INTEGER DEFAULT 5,subject_id TEXT DEFAULT 'tur',review_status TEXT DEFAULT 'APPROVED',copyright_status TEXT DEFAULT 'OWNED',option_count INTEGER DEFAULT 4,stem_text TEXT DEFAULT 'Kök',options_json TEXT DEFAULT '["a","b","c","d"]',correct_answer TEXT DEFAULT 'A');
+ CREATE TABLE question_bank(id TEXT PRIMARY KEY,question_type TEXT,solution_text TEXT,difficulty_band TEXT DEFAULT 'MEDIUM',owner_type TEXT DEFAULT 'PLATFORM',owner_id TEXT,academic_year TEXT DEFAULT '2027-2028',grade_level INTEGER DEFAULT 5,subject_id TEXT DEFAULT 'tur',review_status TEXT DEFAULT 'APPROVED',copyright_status TEXT DEFAULT 'OWNED',option_count INTEGER DEFAULT 4,stem_text TEXT DEFAULT 'Kök',options_json TEXT DEFAULT '["a","b","c","d"]',correct_answer TEXT DEFAULT 'A');
  CREATE TABLE outcomes(id TEXT,code TEXT);INSERT INTO outcomes VALUES('o1','T.5.1.1'),('o2','T.5.1.2');
  CREATE TABLE question_learning_links(question_id TEXT,node_id TEXT);
+ CREATE TABLE question_assets(question_id TEXT,asset_type TEXT,external_url TEXT,approved INTEGER,created_at TEXT);
  CREATE TABLE studio_documents(id TEXT PRIMARY KEY,institution_id TEXT,created_by TEXT,document_type TEXT,title TEXT,grade_level INTEGER,subject_id TEXT,status TEXT,pdf_r2_key TEXT,config_json TEXT,updated_at TEXT);
  CREATE TABLE studio_document_items(document_id TEXT,question_id TEXT,booklet_code TEXT,sort_order INTEGER);
  CREATE TABLE studio_document_assets(document_id TEXT,booklet_code TEXT,asset_type TEXT,metadata_json TEXT);
