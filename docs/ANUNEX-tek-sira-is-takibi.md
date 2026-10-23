@@ -1811,3 +1811,58 @@ Kanıt:
 - Tam paket 287 dosya / 1.348 test geçti.
 
 Sonraki iş: A070.
+
+### A070 — ders programı karar ve kapsamı, 23 Ekim
+
+Durum: KARŞILAŞTIRMA TAMAM. Eksik iş, ölçütleriyle birlikte aşağıda A070.1 olarak kaydedildi. Uygulanması kullanıcının kararını bekliyor (BEKLİYOR).
+
+Bugün olan (Ders Programı menüsü onaylı kapsamda):
+- Takvimde ders tipi kayıt var: "LESSON". Sınıfa ve derse bağlanabiliyor, haftalık tekrarlanabiliyor ve bir yıl içinde bitiyor.
+- Yetki kuralları geçerli: öğretmen yalnız kendi sınıf ve dersine kayıt açabiliyor. Öğrenci ve veli kendi sınıfının derslerini görüyor.
+- Aynı görünümde çakışan saatler işaretleniyor (A063).
+
+Bugün olmayan:
+- Okulun ders saatleri (zil saatleri) tanımlanamıyor.
+- Sınıf × gün × ders saati ızgarası yok.
+- Aynı öğretmenin aynı saatte iki sınıfa yazılması kayıt sırasında engellenmiyor.
+- Derslerin haftalık saat yükü MEB çizelgesiyle karşılaştırılmıyor.
+- Nöbet ve ders değişikliği (yerine ders) yok.
+- Programın dosyadan (e-Okul/Excel) aktarılması yok.
+
+Önerilen iş A070.1 "Ders programı ızgarası" ve ölçülebilir kabul ölçütleri:
+1. Okul ders saatlerini tanımlar: başlangıç–bitiş saati ve gün sayısı.
+2. Okul yöneticisi sınıf × gün × saat hücresine ders ve öğretmen atar.
+3. Aynı öğretmen aynı saate ikinci kez atanırsa kayıt reddedilir (409).
+4. Aynı sınıfın aynı saatine ikinci ders atanırsa kayıt reddedilir.
+5. Öğrenci, veli ve öğretmen kendi haftalık programını görür. Program takvimde ders kaydı olarak çıkar.
+6. Değişiklikler sürümlü tutulur. Eski hafta sonradan değişmez.
+7. (İsteğe bağlı) MEB haftalık ders saati çizelgesiyle karşılaştırmalı uyarı verilir. Çizelge resmî kaynaktan gelmelidir.
+
+Kullanıcıya sorulanlar:
+- Izgara yapılsın mı?
+- Kapsamda e-Okul/Excel aktarımı ve nöbet/ders değişikliği olsun mu?
+- MEB saat çizelgesi kontrolü istenir mi?
+
+### A071 — canlı ders kapsamı, 23 Ekim
+
+Durum: kod kısmı hazır (PR #343 açık; dağıtımdan sonra merge edilecek). Sağlayıcı seçimi BEKLİYOR.
+
+Bugünkü kapsam: yalnız rezervasyon ve kredi var. Görüşme sağlayıcısı bağlı değil ve uygulama bunu açıkça söylüyor; olmayan bir entegrasyon varmış gibi davranılmıyor.
+
+Bulunan açıklar ve düzeltmeler:
+- Kredi bedelini istemci belirliyordu. Artık sunucu belirliyor: 20 dakika = 1 kredi.
+- Bakiye kontrolü atomik değildi, bu yüzden bakiye eksiye düşebiliyordu. Artık kontrol ve düşüm tek adımda yapılıyor.
+- Personel öğrencinin kredisini harcayabiliyordu. Artık yalnız öğrenci veya velisi harcayabiliyor.
+- Geçmiş bir zamana rezervasyon yapılabiliyordu. Bu artık engelleniyor.
+
+Kanıt:
+- `tests/a071-live-reservation.test.ts`
+- 4 mutasyon denendi, hepsi yakalandı.
+- Tam paket: 288 dosya / 1.349 test geçti.
+
+Kullanıcıya sorulanlar:
+- Görüşme sağlayıcısı hangisi olacak: Zoom, Google Meet, Jitsi ya da başkası?
+- Görüşme kaydı yapılacak mı? Yapılacaksa KVKK açık rızası nasıl alınacak?
+- Oturumu kim açacak, kim katılacak?
+
+Sonraki iş: A072.
