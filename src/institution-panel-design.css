@@ -1,0 +1,54 @@
+/* D003 — recorded Astra direction. Screen only; role and theme boundaries are deliberate. */
+@media screen {
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager { --workspace-accent: #286759; --workspace-soft: #edf5f1; --ink: #26343b; --navy: #26343b; --muted: #59666c; --border: #dde4e5; --line: #dde4e5; --brand: var(--workspace-accent); --blue: var(--workspace-accent); --blue2: var(--workspace-accent); background: #f7f9fa; color: var(--ink); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(.page-wrap, .page-wrap > *, .role-dashboard, .panel, .table-card, .form-grid > *, .list-card > div) { min-width: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(h1, h2, h3, p, label, .list-card strong, .list-card span) { overflow-wrap: anywhere; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .role-dashboard { display: grid; gap: 20px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .role-welcome { padding: 22px 24px; border-radius: 12px; background: #fff; box-shadow: none; border: 1px solid var(--border); border-left: 3px solid var(--workspace-accent); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .role-welcome::after { display: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .role-welcome h1 { font-size: clamp(25px, 2.4vw, 32px); line-height: 1.25; margin: 6px 0 8px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .role-welcome p { font-size: 14px; line-height: 1.6; color: var(--muted); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(.role-welcome-icon, .quick-icon) { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px; color: var(--workspace-accent); background: var(--workspace-soft); box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .eyebrow { color: var(--workspace-accent); font-size: 11px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .kpi-card { min-height: 100px; padding: 16px; border-radius: 12px; box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .kpi-card::before { width: 2px; background: var(--workspace-accent); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .kpi-card span { font-size: 13px; color: var(--muted); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .kpi-card strong { font-size: 28px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(.action-grid, .exam-grid) { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: 12px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(.quick-card, .module-card, .exam-card) { min-height: 0; padding: 18px; border-radius: 12px; background: #fff; border-color: var(--border); box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(.quick-card, .module-card, .exam-card):hover { transform: none; border-color: var(--workspace-accent); box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(.quick-card, .module-card, .exam-card) h3 { font-size: 16px; line-height: 1.4; margin: 0 0 7px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(.quick-card, .module-card, .exam-card) p { font-size: 14px; line-height: 1.6; margin: 0; color: var(--muted); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .panel { padding: 20px; border-radius: 12px; box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .list-card { gap: 14px; padding: 16px; min-height: 76px; border-radius: 10px; box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .list-card strong { font-size: 15px; line-height: 1.45; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .list-card span { font-size: 13px; line-height: 1.5; color: var(--muted); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(button, .primary, .secondary, .ghost, .link-button) { min-height: 44px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .link-button { display: inline-flex; align-items: center; color: var(--workspace-accent); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .primary { background: var(--workspace-accent) !important; color: #fff; box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) { min-height: 44px; max-width: 100%; border: 1px solid #85959e; color: var(--ink); background: #fff; font: inherit; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .table-card { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; border-radius: 12px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .empty { padding: 20px; color: var(--muted); background: #f3f6f7; border-radius: 10px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :focus-visible { outline: 3px solid #1c657c; outline-offset: 3px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(button:disabled, button[data-busy="true"]) { opacity: 1; background: #e9eef0 !important; color: #52616a !important; box-shadow: none; }
+  @media (max-width: 760px) {
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(.role-welcome, .panel) { padding: 16px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(.role-welcome, .page-head, .panel-head, .role-section-title) { flex-wrap: wrap; gap: 12px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(.action-grid, .exam-grid, .form-grid) { grid-template-columns: minmax(0, 1fr); }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .list-card { flex-wrap: wrap; align-items: center; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .list-card > div:not(.avatar):not(.quick-icon) { flex: 1 1 160px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(input, select, textarea) { font-size: 16px; min-width: 0; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (prefers-reduced-motion: reduce) { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager *, .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager *::before, .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+}
+
+@media screen {
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .institution-dashboard > .action-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .institution-dashboard .quick-card { display: flex; align-items: flex-start; gap: 14px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .institution-dashboard .quick-card > div:last-child { min-width: 0; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager :is(.enterprise-grid, .permission-grid, .network-grid) { gap: 14px; }
+@media(max-width:1100px) { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .institution-dashboard > .action-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media(max-width:600px) { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-institution_manager .institution-dashboard > .action-grid { grid-template-columns: minmax(0,1fr); } }
+}
