@@ -70,8 +70,13 @@ async function questionAsset(request: Request, env: Env, user: AuthUser, questio
     FROM question_assets a JOIN question_bank q ON q.id=a.question_id
     WHERE a.id=? AND a.question_id=?`).bind(assetId,questionId));
   if(!row || !row.r2_key) return notFound('Soru medyası bulunamadı.');
-  const allowed = user.role==='SUPER_ADMIN'||(row.review_status==='APPROVED'&&row.copyright_status!=='RESTRICTED')||
-    (user.institution_id&&row.owner_type==='INSTITUTION'&&row.owner_id===user.institution_id);
+  // A079: a school's own question media stays inside that school; learners see only approved media of approved
+  // questions (never a draft); a personal question stays with its owner; platform media needs unrestricted rights.
+  const learner=user.role==='STUDENT'||user.role==='PARENT';
+  const sameSchool=Boolean(user.institution_id)&&row.owner_type==='INSTITUTION'&&row.owner_id===user.institution_id;
+  const published=row.review_status==='APPROVED'&&Number(row.approved)===1;
+  const allowed = user.role==='SUPER_ADMIN'||(sameSchool&&!learner)||
+    (published&&(row.owner_type==='INSTITUTION'?sameSchool:row.owner_type==='USER'?row.owner_id===user.id:row.copyright_status!=='RESTRICTED'));
   if(!allowed)return forbidden();
   const object=await env.FILES.get(row.r2_key);if(!object)return notFound('Soru medyası depolamada bulunamadı.');
   const headers=new Headers({'content-type':object.httpMetadata?.contentType||row.mime_type||'application/octet-stream','cache-control':row.review_status==='APPROVED'?'private, max-age=3600':'private, no-store','x-content-type-options':'nosniff'});
