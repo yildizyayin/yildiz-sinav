@@ -1,6 +1,7 @@
 import type { AuthUser, Env } from '../types';
 import { all, one } from './db';
 import { compareTargetProfile } from './academic-growth';
+import { publishedForLearnersSql } from './exam-schedule';
 
 function parseJson<T>(value: unknown, fallback: T): T {
   if (typeof value !== 'string' || !value) return fallback;
@@ -62,11 +63,12 @@ async function activeTargets(env:Env,studentId:string){
   return rows.map(row=>({...row,school_nets:parseJson<Record<string,number>>(row.school_nets,{}),university_nets:parseJson<Record<string,number>>(row.university_nets,{})}));
 }
 
+// A072: only for the student themself (see academic-growth-entry), so only published results count
 async function performance(env:Env,studentId:string,targetType:'LGS_SCHOOL'|'YKS_PROGRAM'){
   const examWhere=targetType==='LGS_SCHOOL'?`e.exam_type='LGS'`:`e.exam_type IN ('TYT','AYT')`;
   const exams=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,er.net,er.score,er.success_percent
     FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id
-    WHERE ep.student_id=? AND ${examWhere}
+    WHERE ep.student_id=? AND ${examWhere} AND ${publishedForLearnersSql('e.id')}
     ORDER BY coalesce(e.exam_date,e.created_at) DESC LIMIT 16`).bind(studentId));
 
   const subjectRows=exams.length?await all<any>(env.DB.prepare(`SELECT e.exam_type,s.code,s.name,sr.net,sr.success_percent,ep.exam_id
@@ -92,7 +94,7 @@ async function performance(env:Env,studentId:string,targetType:'LGS_SCHOOL'|'YKS
 
   const weak=await all<any>(env.DB.prepare(`SELECT s.name subject_name,o.title,o.topic,round(avg(r.success_rate),1) avg_success,count(*) evidence
     FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id
-    WHERE r.student_id=? GROUP BY o.id,o.title,o.topic,s.name HAVING count(*)>0 ORDER BY avg_success ASC,evidence DESC LIMIT 6`).bind(studentId));
+    WHERE r.student_id=? AND ${publishedForLearnersSql('r.exam_id')} GROUP BY o.id,o.title,o.topic,s.name HAVING count(*)>0 ORDER BY avg_success ASC,evidence DESC LIMIT 6`).bind(studentId));
 
   const allNets=exams.map(x=>Number(x.net)).filter(Number.isFinite);
   return {exams,subjectAverages,byType,averageNet:average(allNets),averageScore:average(exams.map(x=>Number(x.score)).filter(Number.isFinite)),weakOutcomes:weak};
