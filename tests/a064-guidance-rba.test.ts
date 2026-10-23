@@ -5,7 +5,7 @@ import { createSession } from '../worker/lib/auth';
 /** A064: guidance RBA flow — the guidance teacher opens, the student answers, the guidance teacher reviews; RBA stays sensitive. Synthetic data only. */
 async function setup() {
   const t = await evaluatedExam('direct');
-  t.db.exec(`UPDATE platform_features SET enabled_default=1 WHERE feature_key IN ('RBA','GUIDANCE_ASSESSMENTS','NIBIRU');
+  t.db.exec(`UPDATE platform_features SET enabled_default=1 WHERE feature_key IN ('RBA','GUIDANCE_TESTS');
     INSERT INTO classes(id,institution_id,season_id,grade_level,section,name) VALUES('c8a','school','season',8,'A','8-A'),('c8b','school','season',8,'B','8-B');
     UPDATE student_enrollments SET class_id='c8a' WHERE id='enr1';
     INSERT INTO users(id,role,display_name,password_hash,password_salt,active,institution_id) VALUES('gt','GUIDANCE_TEACHER','Rehber','unused','unused',1,'school'),('gtb','GUIDANCE_TEACHER','Rehber B','unused','unused',1,'school'),('mgr','INSTITUTION_MANAGER','Müdür','unused','unused',1,'school');

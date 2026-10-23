@@ -3,6 +3,7 @@ import { Activity, ArrowRight, BarChart3, Building2, CheckCircle2, ClipboardChec
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { api } from '../api';
+import { OperationsSummaryPanel } from '../components/OperationsSummaryPanel';
 
 type DashboardCard = { label: string; value: number | string };
 type PendingItem = { label: string; value: number | null; detail: string; to: string; icon: ReactNode; tone: string };
@@ -62,6 +63,7 @@ export function AdminCommandCenter() {
         <div className="admin-home-panel-head"><div><span className="eyebrow">CANLI DURUM</span><h2>Sistem sağlığı</h2></div><Activity size={20} className="admin-home-panel-mark" /></div>
         <div className="admin-home-health-list">{(dashboard?.systemHealth || []).map((item: any) => <div className="admin-home-health-row" key={item.key}><span className={`admin-home-health-dot ${String(item.status).toLowerCase()}`} /><span><strong>{item.label}</strong><small>{item.detail}</small></span><em>{healthLabel(item.status)}</em></div>)}{!dashboard?.systemHealth && <div className="admin-home-loading">{loading ? 'Durum bilgisi yükleniyor…' : error ? 'Durum bilgisi alınamadı.' : 'Durum verisi bulunmuyor.'}</div>}</div>
       </div>
+      <OperationsSummaryPanel />
     </section>
 
     <section><div className="admin-home-section-head"><div><span className="eyebrow">HIZLI İŞLEMLER</span><h2>Bugün yapılacak işlem</h2></div></div><div className="admin-home-action-grid">

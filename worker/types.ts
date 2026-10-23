@@ -41,10 +41,14 @@ export interface Env {
   QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED?: string;
   QUESTION_GENERATION_VERIFIER_MODEL?: string;
   WRITTEN_VISION_MODEL?: string;
+  AGENT_LOAD_TEST_ENABLED?: string;
   QUESTION_GENERATION_VERIFICATION_ENABLED?: string;
   ENVIRONMENT?: string;
   PRODUCT_NAME?: string;
   TURNSTILE_SITE_KEY?: string;
+  /** S006: git commit of the deployed release, set by the deploy workflow (--var RELEASE_SHA). */
+  RELEASE_SHA?: string;
+  RESULT_PORTAL_ORIGIN?: string;
   TURNSTILE_SECRET_KEY?: string;
   SESSION_SECRET?: string;
   // Keyed result lookup tokens prevent raw TCKN/student numbers from entering the result index.

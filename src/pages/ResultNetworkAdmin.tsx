@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import { AnunexBrand } from '../components/AnunexBrand';
 import { NibiruMark } from '../components/NibiruMark';
 import {ResultArtifactMonitor} from '../components/ResultArtifactMonitor';
+import {ReleaseDriftNotice} from '../components/ReleaseDriftNotice';
 import {ResultRetentionMonitor} from '../components/ResultRetentionMonitor';
 import { api } from '../api';
 
@@ -163,6 +164,7 @@ export function ResultNetworkAdmin({onLogout}:{onLogout?:()=>void}){
   </aside>
   <main className="admin-main">
    <header className="admin-topbar"><div><span className="eyebrow">SÜPER ADMİN</span><h1>{activeSection==='artifacts'?'Sonuç Dosyaları':activeSection==='retention'?'Veri Temizliği':activeSection==='dashboard'?'Kontrol Merkezi':activeSection==='institutions'?'Kurum Kartları':activeSection==='governance'?'Bayi ve Yetkiler':activeSection==='permissions'?'Kullanıcı Yetkileri':activeSection==='archive'?'Belge Arşivi':activeSection==='reports'?'Rapor Merkezi':activeSection==='portal'?'Portal Ayarları':activeSection==='exam-create'?'Sınav Tanımla':activeSection==='exam-upload'?activeLevel+' Sınav İşlemleri':'ANUNEX Sonuç Ağı'}</h1></div><div className="admin-top-actions"><span className="admin-live-dot">● Canlı sistem</span><button className="ghost" onClick={()=>void load()}><RefreshCw size={15}/> Yenile</button>{onLogout&&<button className="admin-logout" onClick={()=>void onLogout()}>Çıkış</button>}</div></header>
+   <ReleaseDriftNotice/>
    {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
    {activeSection==='artifacts'&&<ResultArtifactMonitor administrations={data.administrations||[]}/>}
    {activeSection==='retention'&&<ResultRetentionMonitor administrations={data.administrations||[]}/>}

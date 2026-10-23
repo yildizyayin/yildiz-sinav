@@ -130,7 +130,7 @@ jobs:
           npx wrangler d1 migrations apply DB --remote --config wrangler.production.resolved.json
 
       - name: Deploy isolated production Worker and resources
-        run: npx wrangler deploy --config wrangler.production.resolved.json --var ENVIRONMENT:production --var PRODUCT_NAME:"Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY
+        run: npx wrangler deploy --config wrangler.production.resolved.json --var ENVIRONMENT:production --var PRODUCT_NAME:"Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY --var RELEASE_SHA:${{ github.sha }}
 
       - name: Set production secrets
         run: |

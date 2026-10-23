@@ -100,6 +100,13 @@ export async function createSession(env: Env, userId: string, request: Request, 
   return json({ ok: true, mustChangePassword }, 200, { 'Set-Cookie': cookie });
 }
 
+/** A079: after a password change every other session of the account ends; the session that made the change stays. */
+export async function revokeOtherSessions(env: Env, request: Request, userId: string): Promise<void> {
+  const raw = getCookie(request, SESSION_COOKIE);
+  const keep = raw ? await sha256Hex(raw) : '';
+  await env.DB.prepare('UPDATE sessions SET revoked_at = CURRENT_TIMESTAMP WHERE user_id = ? AND token_hash <> ? AND revoked_at IS NULL').bind(userId, keep).run();
+}
+
 export async function revokeSession(env: Env, request: Request): Promise<Response> {
   const raw = getCookie(request, SESSION_COOKIE);
   if (raw) {

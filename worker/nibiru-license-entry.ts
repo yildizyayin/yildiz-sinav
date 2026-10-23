@@ -8,6 +8,8 @@ import { runNibiru } from './lib/nibiru';
 import { nibiruRoutingMatrix, probeNibiruModels } from './lib/nibiru-model-router';
 import { extractWhatsAppMessages, sendWhatsAppText, verifyWhatsAppSignature, whatsappReady } from './lib/whatsapp';
 
+export const PAIRING_FAILURE_LIMIT=5;
+export const LOAD_TEST_MAX_VUS=200;
 const WHATSAPP_ROLES = new Set(['PARENT','TEACHER','GUIDANCE_TEACHER','INSTITUTION_MANAGER']);
 
 const AI_AGENT_WORKFLOWS = [
@@ -152,7 +154,13 @@ async function dispatchAiAgent(request:Request,env:Env,user:AuthUser){
   if(Object.keys(rawInputs).some(key=>!allowedInputs.has(key)))return badRequest('Workflow input alanı geçersiz.');
   const inputs:Record<string,string>={};
   for(const [key,value] of Object.entries(rawInputs))inputs[key]=String(value);
-  if(workflow.file==='agent-yuk-testi.yml'&&inputs.sanal_kullanici_sayisi&&!/^[1-9][0-9]{0,5}$/.test(inputs.sanal_kullanici_sayisi))return badRequest('Sanal kullanıcı sayısı 1–999999 arasında olmalıdır.');
+  // A077: the load test reads the account-wide D1 quota (shared with production on the free plan); it runs only
+  // when explicitly enabled and with a bounded number of virtual users.
+  if(workflow.file==='agent-yuk-testi.yml'){
+    if(env.AGENT_LOAD_TEST_ENABLED!=='true')return apiError(409,'LOAD_TEST_DISABLED','Yük testi kapalı: ücretsiz D1 kotası üretimle ortaktır. AGENT_LOAD_TEST_ENABLED=true ile açıkça etkinleştirilmelidir.');
+    const vus=inputs.sanal_kullanici_sayisi||'50';if(!/^[1-9][0-9]{0,2}$/.test(vus)||Number(vus)>LOAD_TEST_MAX_VUS)return badRequest(`Sanal kullanıcı sayısı 1–${LOAD_TEST_MAX_VUS} arasında olmalıdır.`);
+    inputs.sanal_kullanici_sayisi=vus;
+  }
   let ref:string;
   try{ref=agentDispatchRef(workflow.file,env.GITHUB_AGENT_CHECK_REF)}catch{return apiError(503,'AGENT_REF_INVALID','Ajan denetim dalı yapılandırması geçersiz.')}
   try{
@@ -206,7 +214,7 @@ async function pairByCode(env:Env,phone:string,code:string){
 
 function identityHelp(){return `Nibiru: Ben Anunex’in yapay zekâ akademik asistanıyım. Bu WhatsApp numarası henüz bir kullanıcı hesabına bağlanmamış. Kurumunuzdan Nibiru eşleştirme kodu alın ve “BAĞLA 123456” şeklinde gönderin.`}
 
-async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type:string;text:string|null}){
+export async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type:string;text:string|null}){
   const seen=await one(env.DB.prepare(`SELECT provider_message_id FROM nibiru_whatsapp_receipts WHERE provider_message_id=?`).bind(message.id));
   if(seen)return;
   await env.DB.prepare(`INSERT INTO nibiru_whatsapp_receipts(provider_message_id,phone_e164) VALUES(?,?)`).bind(message.id,message.from).run();
@@ -216,7 +224,11 @@ async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type
     if(message.type!=='text'||!message.text){await sendWhatsAppText(env,message.from,'Nibiru: Şu anda WhatsApp üzerinden metin mesajlarını yanıtlayabiliyorum. Öğrenci gelişimi, sınavlar ve kazanımlar hakkında yazarak sorabilirsiniz.');return}
     const pair=message.text.match(/^\s*(?:BAĞLA|BAGLA)\s+(\d{6})\s*$/i);
     if(pair){
+      // A068: at most PAIRING_FAILURE_LIMIT wrong codes per phone per hour; further tries are not checked
+      const failures=Number((await one<any>(env.DB.prepare(`SELECT count(*) c FROM nibiru_pairing_attempts WHERE phone_e164=? AND succeeded=0 AND attempted_at>datetime('now','-1 hour')`).bind(message.from)))?.c||0);
+      if(failures>=PAIRING_FAILURE_LIMIT){await sendWhatsAppText(env,message.from,'Nibiru: Çok sayıda hatalı eşleştirme denemesi yapıldı. Lütfen bir saat sonra kurumunuzdan aldığınız güncel kodla yeniden deneyin.');return}
       const linked=await pairByCode(env,message.from,pair[1]);
+      await env.DB.prepare('INSERT INTO nibiru_pairing_attempts(id,phone_e164,succeeded) VALUES(?,?,?)').bind(uuid('npa'),message.from,linked?1:0).run();
       if(!linked){await sendWhatsAppText(env,message.from,'Nibiru: Eşleştirme kodu geçersiz veya süresi dolmuş. Kurumunuzdan yeni bir kod isteyebilirsiniz.');return}
       const blocked=await institutionBlock(env,linked);
       if(blocked){await sendWhatsAppText(env,message.from,`Nibiru: ${blocked.message}`);return}

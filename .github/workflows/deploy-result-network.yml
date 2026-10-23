@@ -164,7 +164,8 @@ jobs:
           npx wrangler deploy --config wrangler.result.production.resolved.json \
             --var ENVIRONMENT:production \
             --var PRODUCT_NAME:"ANUNEX Sonuç Ağı" \
-            --var TURNSTILE_SITE_KEY:"$PROD_TURNSTILE_SITE_KEY" | tee result-deploy.log
+            --var TURNSTILE_SITE_KEY:"$PROD_TURNSTILE_SITE_KEY" \
+            --var RELEASE_SHA:"${{ github.sha }}" | tee result-deploy.log
           preview_url="$(grep -Eo 'https://[^[:space:]]+workers\.dev' result-deploy.log | tail -1)"
           test -n "$preview_url" || (echo "Result Network workers.dev preview URL could not be resolved." >&2 && exit 1)
           echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"

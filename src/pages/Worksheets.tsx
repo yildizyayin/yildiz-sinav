@@ -1,6 +1,6 @@
 import { useEffect,useState } from 'react';
 import { BookOpenCheck,BrainCircuit,Download,FileCheck2,PlayCircle,X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../auth';
 import { WorksheetAdmin } from './WorksheetAdmin';
@@ -15,6 +15,8 @@ function PublishedWorksheets(){
  const[rows,setRows]=useState<any[]>([]);const[detail,setDetail]=useState<any>(null);const[loading,setLoading]=useState(false);const[error,setError]=useState('');
  useEffect(()=>{void api<any>('/api/worksheets').then(r=>setRows(r.worksheets||[])).catch((e:any)=>setError(e.message))},[]);
  const openDetail=async(id:string)=>{setLoading(true);setError('');try{setDetail(await api<any>(`/api/worksheets/${encodeURIComponent(id)}`))}catch(e:any){setError(e.message)}finally{setLoading(false)}};
+ // A078: a printed book's QR code opens the worksheet directly
+ const[params]=useSearchParams();useEffect(()=>{const id=params.get('open');if(id)void openDetail(id)},[params]);
  return <>
   <div className="page-head"><div><span className="eyebrow">Anunex · Föy Merkezi</span><h1>Föyler</h1><p>Sınıfına ve yetkine uygun yayınlanmış çalışma föyleri, cevap anahtarları, soru bazlı video destekleri ve Nibiru iyileştirme akışı.</p></div><BookOpenCheck/></div>
   <div className="section-head"><div><span className="eyebrow">Nibiru Recovery</span><h2>Ölç → eksiği bul → çalış → yeniden ölç</h2><p>Nibiru; sınav, kazanım ve gelişim verilerini kullanarak hangi föye ve hangi konu desteğine öncelik verilmesi gerektiğini açıklar. Doğrulanmış veri yoksa tahmin üretmez.</p></div><Link className="link-button" to="/nibiru"><BrainCircuit size={16}/> Nibiru’ya Sor</Link></div>
