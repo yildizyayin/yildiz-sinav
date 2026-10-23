@@ -2158,3 +2158,34 @@ Karar bekleyen:
   - (b) zamanlanmış yayın eklensin; cron bütçesi buna göre açılır.
 
 Sonraki iş: S008.
+
+### S008 — sonuç özeti, 23 Ekim
+
+Durum: KOD HAZIR (yalnız kanıt). PR #359 açık.
+
+Kodda değişiklik gerekmedi. Uçtan uca test gerçek migration'larla, sonuç Worker'ı üzerinden çalıştırıldı ve şunları gösteriyor:
+- Yayından sonra doğru/yanlış/boş/net, yayımlanan sabit sürümden geliyor.
+- Canlı yeniden değerlendirme portalı değiştirmiyor.
+- Düzeltme için yönetim yeniden açılınca portal sonucu geri çekiyor.
+- Yeniden yayında yeni sürüm (v+1) ve yeni değerler görünüyor.
+
+Kanıt: `tests/s008-result-summary.test.ts`; 3 mutasyon yakalandı.
+
+### S009 — sonuç sıralaması, 23 Ekim
+
+Durum: BEKLİYOR (kullanıcı kararı). Kod değiştirilmedi.
+
+Bulgular:
+- Sıralamalar yayında bir kez hesaplanıp sabitleniyor: sınıf, sınıf düzeyi, kurum, ilçe, il, zincir ve "Türkiye".
+- Sıralama evreni yalnız **sonuç erişim kodu verilmiş** katılımcılar (`result_access_identities`). Değerlendirilmiş ama kodu olmayan katılımcı, örneğin öğrenci numarası boş olan, sıralamaya girmiyor.
+- Portal "Türkiye 3 / 120" biçiminde paydayı gösteriyor. Ancak payda yalnız bu yönetime katılan kurumlar. "Türkiye" etiketi, az kurum katıldığında yanıltıcı olabilir.
+
+Sorular:
+1. Sıralama evreni ne olmalı?
+   - (a) Yalnız kodu verilen öğrenciler (bugünkü durum).
+   - (b) Sınavın bu yönetimdeki tüm değerlendirilmiş katılımcıları; kodu olmayanlar da sayılır ama kendileri göremez.
+2. İl, ilçe ve "Türkiye" sıralaması ne zaman gösterilmeli?
+   - (a) Her zaman, etiket "Katılımcılar arasında" olarak değişsin.
+   - (b) Kapsamdaki kurum sayısı belli bir eşiğin altındaysa gizlensin. Eşik ne olmalı?
+
+Sonraki iş: S010.
