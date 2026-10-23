@@ -2113,3 +2113,21 @@ Kanıt: `tests/s005-result-access-reissue.test.ts`; 3 mutasyon yakalandı.
 Dürüst not: ilk commit'i tam test paketi sonucunu beklemeden attım ve PR açıldı. `result-access-publication-lock` testinin kısa şeması yeni tablolar yüzünden kırıldı. Hemen ikinci commit'le düzelttim; tam paket geçiyor. Bundan sonra commit yalnız tam paket geçtikten sonra atılacak.
 
 Sonraki iş: S006.
+
+### S006 — app–sonuç yayın farkı uyarısı, 23 Ekim
+
+Durum: KOD HAZIR. PR #357 açık.
+
+- Üç production dağıtım workflow'u Worker'a dağıtılan commit'i `RELEASE_SHA` olarak veriyor. Yalnız `--var` eklendi; tetikleyiciler ve onay ortamı değişmedi.
+- `/api/health` iki Worker'da da 12 karakterlik sürümü döndürüyor. Bu bilgi herkese açık yanıtta görünüyor; risk düşük.
+- `/api/admin/release-drift` yalnız Süper Admin'e ve yalnız app tarafında açık. sonuc.anunex.com'un health yanıtıyla karşılaştırıp şu sonuçlardan birini veriyor:
+  - SAME (aynı);
+  - DIFFERENT (farklı);
+  - UNKNOWN (sürüm eksik, geçersiz ya da sonuç alanına erişilemedi).
+- Endpoint yalnız okuyor; hiçbir dağıtım başlatmıyor.
+- Sonuç Ağı yönetim ekranının üstünde uyarı kutusu var.
+- İlk iki dağıtım sürüm bilgisi taşımadığı için ilk karşılaştırma UNKNOWN çıkacak. Gerçek karşılaştırma iki Worker da bu sürümle dağıtıldıktan sonra başlayacak.
+
+Kanıt: `tests/s006-release-drift.test.ts`; 6 mutasyon yakalandı.
+
+Sonraki iş: S007.
