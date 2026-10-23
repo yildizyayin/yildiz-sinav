@@ -6,6 +6,7 @@ import { sweepRetiredResultArtifacts } from './lib/result-artifact-retention';
 import {consumeResultRetentionQueue,dispatchResultRetentionQueue} from './lib/result-retention-queue';
 import app from './privacy-export-entry';
 import type { Env } from './types';
+import { withErrorBoundary } from './lib/error-boundary';
 import { json } from './lib/db';
 import { handleResultGovernanceMutation, handleResultOperations, purgeExpiredResultNetwork, purgeResultNetworkAdministrationPage, emitResultRetentionNotices } from './result-network-entry';
 
@@ -40,6 +41,7 @@ function unavailable(): Response {
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    return withErrorBoundary(request, async () => {
     const url = new URL(request.url);
     if (url.pathname.startsWith('/api/') && !resultApiPathAllowed(url.pathname)) return unavailable();
     const operation = await handleResultOperations(request, env);
@@ -47,6 +49,7 @@ export default {
     const governanceMutation = await handleResultGovernanceMutation(request, env);
     if (governanceMutation) return governanceMutation;
     return app.fetch(request, env, ctx);
+    });
   },
   async queue(batch:MessageBatch,env:Env){
     const artifactName=env.RESULT_ARTIFACT_QUEUE_NAME||'anunex-result-artifacts',retentionName=env.RESULT_RETENTION_QUEUE_NAME||'anunex-result-retention';

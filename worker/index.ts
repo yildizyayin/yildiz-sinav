@@ -1,3 +1,4 @@
+import { serverErrorResponse } from './lib/error-boundary';
 import { handleInstitutionCard } from './lib/institution-card';
 import { sanitizeAuditDetails } from './lib/db';
 import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
@@ -121,10 +122,7 @@ export default {
 
       return notFound('API yolu bulunamadı.');
     } catch (error) {
-      console.error('Worker error', error);
-      const message = error instanceof Error ? error.message : 'UNKNOWN_ERROR';
-      if (message === 'OFFICIAL_SCORING_RULE_REQUIRED') return badRequest('Bu sınav için doğrulanmış resmî puanlama kuralı tanımlanmalıdır.', message);
-      return json({ ok: false, error: { code: 'SERVER_ERROR', message: 'Sunucu hatası oluştu.' } }, 500);
+      return serverErrorResponse(error);
     }
   },
 } satisfies ExportedHandler<Env>;

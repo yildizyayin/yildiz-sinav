@@ -10,3 +10,9 @@
 @media(max-width:760px){.login-art{display:none!important}.demo-role-picker>div:last-child{grid-template-columns:repeat(2,1fr)}}
 @media print{body{background:#fff}.sidebar,.topbar,.page-head,.panel-head button,.panel:not(:has(.print-stack)),.alert{display:none!important}.main-area,.page-wrap{padding:0!important;margin:0!important}.print-stack{gap:0}.optical-sheet{page-break-after:always;border:none;width:210mm;height:297mm;margin:0}.calibration-work>*:not(.calibration-sheet){display:none!important}.calibration-sheet{display:block!important;transform:none!important;margin:0!important;border:none!important;page-break-after:always}@page{size:A4;margin:0}}
 
+
+/* Press feedback while a request started by this button is running (see markBusy in api.ts). */
+button[data-busy="true"]{cursor:progress;pointer-events:none;opacity:.72;position:relative}
+button[data-busy="true"]::after{content:"";display:inline-block;width:.85em;height:.85em;margin-left:.45em;vertical-align:-.1em;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:busy-spin .7s linear infinite}
+@keyframes busy-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){button[data-busy="true"]::after{animation:none}}
