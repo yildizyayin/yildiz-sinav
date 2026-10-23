@@ -1866,3 +1866,45 @@ Kullanıcıya sorulanlar:
 - Oturumu kim açacak, kim katılacak?
 
 Sonraki iş: A072.
+
+### A072 — tercih robotu resmî veri kapsamı, 23 Ekim
+
+Durum: KOD HAZIR. PR #344 açık; dağıtımdan sonra merge edilecek.
+
+Zaten doğru olanlar (testle doğrulandı):
+- Hedef verisi yalnız resmî kaynağın kendi alan adından, https üzerinden ve doğrulama tarihiyle içe aktarılabiliyor.
+- Yıl, il ve ilçe filtreleri çalışıyor.
+- Analiz, verinin kaynağını ve yılını gösteriyor.
+- Ekranda ve Nibiru'da "yerleşme garantisi vermez" uyarısı var.
+
+Bulunan açık:
+- Hedef analizi, okulun henüz yayımlamadığı sınav sonuçlarını da kullanıyordu. Bu hem öğrenci analizinde (v2) hem velinin gördüğü analizde oluyordu.
+- Düzeltme: analiz artık yalnız yayımlanmış sonuçları kullanıyor.
+
+Kanıt:
+- Test dosyası: `tests/a072-target-data.test.ts`.
+- 4 mutasyon denendi; hepsi yakalandı.
+
+### A073 — üyelik/aktivasyon ve modül hakları, 23 Ekim
+
+Durum: KOD HAZIR. PR #345 açık; dağıtımdan sonra merge edilecek.
+
+Bulunan sorun:
+- Bazı ekranlarda menünün bağlı olduğu anahtar ile API'nin bağlı olduğu anahtar aynı değildi.
+- Rehberlik testleri ve "Soru Çöz" ekranlarında menü kapalıyken API yine de çalışıyordu.
+- Ödev listesinde ters durum vardı: menü görünüyordu ama API 403 dönüyordu.
+- Kitap, sıfır hata ve öğrenci oyun listesi API'lerinde hiç anahtar yoktu.
+
+Yapılan düzeltme:
+- Bu yollar için tek bir kapı eklendi. Mevcut özellik anahtarları kullanılıyor.
+- Kurum bazlı ayar, varsayılanın önüne geçiyor. Süper Admin kapıdan muaf.
+- Ödev menüsü artık ASSIGNMENTS anahtarına bağlı.
+
+Kullanıcı kararı: ASSIGNMENTS varsayılanı kapalı. Ödev her kurumda varsayılan olarak açık olsun mu?
+
+Kanıt:
+- Test dosyası: `tests/a073-feature-gates.test.ts`.
+- 5 mutasyon denendi; hepsi yakalandı.
+- A064 testi yanlış anahtarla özellik açıyordu; düzeltildi.
+
+Sonraki iş: A074.
