@@ -674,7 +674,18 @@ async function grantMembership(request:Request,env:Env,user:AuthUser):Promise<Re
 async function liveSessions(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'LIVE');if(gate)return gate;const u=new URL(request.url);const sid=await scopedStudentId(env,user,u.searchParams.get('studentId'));
   if(request.method==='GET'){const providers=await all<any>(env.DB.prepare(`SELECT * FROM live_providers WHERE active=1 ORDER BY provider_type,display_name`));const sessions=sid?await all<any>(env.DB.prepare(`SELECT s.*,p.display_name provider_name FROM live_sessions s LEFT JOIN live_providers p ON p.id=s.provider_id WHERE s.student_id=? ORDER BY s.scheduled_at DESC LIMIT 100`).bind(sid)):[];const wallet=sid?await one<any>(env.DB.prepare(`SELECT * FROM live_credit_wallets WHERE student_id=?`).bind(sid)):null;return json({ok:true,providers,sessions,wallet:wallet||{balance:0},meetingProviderConfigured:false});}
-  if(!sid)return forbidden();const b=await requestBody(request);if(!b.scheduledAt||!b.sessionType)return badRequest('Görüşme türü ve zaman gereklidir.');const cost=Math.max(1,Number(b.creditCost||1));const wallet=await one<any>(env.DB.prepare(`SELECT balance FROM live_credit_wallets WHERE student_id=?`).bind(sid));if(Number(wallet?.balance||0)<cost)return badRequest('Yeterli Live Credit yok.','INSUFFICIENT_CREDIT');const id=uuid('live');await env.DB.batch([env.DB.prepare(`INSERT INTO live_sessions(id,student_id,provider_id,session_type,scheduled_at,duration_minutes,credit_cost,status) VALUES(?,?,?,?,?,?,?,'RESERVED')`).bind(id,sid,b.providerId||null,b.sessionType,b.scheduledAt,Number(b.durationMinutes||20),cost),env.DB.prepare(`UPDATE live_credit_wallets SET balance=balance-?,updated_at=CURRENT_TIMESTAMP WHERE student_id=?`).bind(cost,sid),env.DB.prepare(`INSERT INTO live_credit_ledger(id,student_id,amount,reason,reference_id) VALUES(?,?,?,?,?)`).bind(uuid('lcd'),sid,-cost,'LIVE_RESERVATION',id)]);return json({ok:true,id,meetingProviderConfigured:false},201);
+  if(!sid)return forbidden();
+  // A071: only the student or a linked parent spends the student's credits; the cost is set by the server
+  // (one credit per 20 minutes), the balance is taken atomically, and no meeting provider is pretended.
+  if(user.role!=='STUDENT'&&user.role!=='PARENT')return forbidden('Canlı görüşme rezervasyonunu öğrenci veya velisi yapar.');
+  const b=await requestBody(request);const type=String(b.sessionType||'');const at=Date.parse(String(b.scheduledAt||''));const duration=Number(b.durationMinutes||20);
+  if(!['GUIDANCE','COACH','LESSON'].includes(type)||!Number.isFinite(at)||at<=Date.now())return badRequest('Görüşme türü ve ileri bir zaman seçin.');
+  if(![20,40].includes(duration))return badRequest('Görüşme süresi 20 veya 40 dakika olmalıdır.');
+  if(b.providerId&&!await one(env.DB.prepare(`SELECT 1 FROM live_providers WHERE id=? AND active=1 AND provider_type=?`).bind(b.providerId,type)))return badRequest('Seçilen görüşmeci bu tür için uygun değil.');
+  const cost=duration/20;const id=uuid('live');
+  const taken=await env.DB.prepare(`UPDATE live_credit_wallets SET balance=balance-?,updated_at=CURRENT_TIMESTAMP WHERE student_id=? AND balance>=?`).bind(cost,sid,cost).run();
+  if(!Number(taken.meta?.changes||0))return badRequest('Yeterli Live Credit yok.','INSUFFICIENT_CREDIT');
+  await env.DB.batch([env.DB.prepare(`INSERT INTO live_sessions(id,student_id,provider_id,session_type,scheduled_at,duration_minutes,credit_cost,status) VALUES(?,?,?,?,?,?,?,'RESERVED')`).bind(id,sid,b.providerId||null,type,new Date(at).toISOString(),duration,cost),env.DB.prepare(`INSERT INTO live_credit_ledger(id,student_id,amount,reason,reference_id) VALUES(?,?,?,?,?)`).bind(uuid('lcd'),sid,-cost,'LIVE_RESERVATION',id)]);return json({ok:true,id,meetingProviderConfigured:false},201);
 }
 
 async function studioPdf(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
