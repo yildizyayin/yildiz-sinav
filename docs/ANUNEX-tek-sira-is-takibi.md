@@ -2002,3 +2002,24 @@ Karar bekleyen (kapı gevşetilmedi):
 - Bu süreler hukuk onayıyla politika listesine eklenmeli.
 
 Sonraki iş: A082.
+
+### A082 — dışarıdan toplu soru aktarımı, 23 Ekim
+
+Durum: KOD HAZIR. PR #352 açık; dağıtımdan sonra merge edilecek.
+
+- İçerik merkezinde yalnız Süper Admin için "Toplu soru aktar" bölümü var. Excel, CSV ve JSON kabul ediliyor; sütun adları Türkçe veya İngilizce olabilir.
+- Önizleme satır satır hata listesi veriyor ve hiçbir şey yazmıyor.
+- Her satırda şunlar zorunlu:
+  - kaynak etiketi;
+  - telif durumu;
+  - aynı sınıfa ait, doğrulanmış, resmî ve aktif bir 2027–2028 kazanım kodu.
+- Bulunamayan, eski yıla ait, taslak müfredattaki veya yanlış sınıfa ait kazanım reddediliyor.
+- Geçerli satırlar REVIEW durumunda ve kazanıma bağlı olarak ekleniyor; otomatik onay yok. A008 toplu onay listesinde görünüyorlar. Normal onay kapısından geçebildikleri testte gösterildi.
+- Aynı dosya tekrar yüklenince kopya oluşmuyor; kontrol kayıt anında da yapılıyor. Çok benzer soru kökü uyarı olarak gösteriliyor.
+- PDF ve Word aktarımı yok, çünkü onay gerekiyor.
+
+Kanıt: `tests/a082-question-import.test.ts`; 19 mutasyon yakalandı.
+
+Not: kayıt anındaki kopya kontrolü, aynı anda gelen iki yükleme taklit edilerek test edildi. Test ortamı istekleri sırayla işliyor; bu yüzden gerçek eşzamanlılık bu oturumda gösterilemedi.
+
+Sonraki iş: S001.
