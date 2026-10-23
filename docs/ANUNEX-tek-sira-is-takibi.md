@@ -2066,3 +2066,31 @@ Düzeltilenler:
 Kanıt: `tests/s002-result-verify.test.ts`. Eski kodla 3 test kırılıyor; 8 mutasyon yakalandı.
 
 Sonraki iş: S003.
+
+### S003 — sonuç portalı kurum girişi, 23 Ekim
+
+Durum: KOD HAZIR (yalnız kanıt). PR #354 açık.
+
+Kodda değişiklik gerekmedi. Testler sonuç Worker'ı üzerinden çalıştırıldı ve şunları gösteriyor:
+- Kurum yöneticisi yalnız kendi kurumunu ve kendi katılımcılarını görüyor.
+- Başka kurumun değerlendirme grubu, raporu ve satır araması 403 dönüyor.
+- Öğretmen ve öğrenci 403 alıyor.
+- Dondurulan kurum 409, pasif kurumun oturumu 401 dönüyor. Diğer kurum etkilenmiyor.
+
+Kanıt: `tests/s003-result-institution.test.ts`; 5 mutasyon yakalandı.
+
+Not: kurum yöneticisi kendi değerlendirmesini yayından önce "LIVE_PREVIEW" olarak görüyor. Değerlendirmeyi kendisi yaptığı için bu tasarım gereği. Yayından sonra sabit yayın sürümünü görüyor.
+
+### S004 — sonuç portalı bayi girişi, 23 Ekim
+
+Durum: KOD HAZIR (yalnız kanıt). PR #355 açık.
+
+Kodda değişiklik gerekmedi. Testler şunları gösteriyor:
+- Bayi yalnız kapsamındaki kurumlara erişiyor (kurum kodu veya il/ilçe kapsamı). Başka bayinin kurumu 403 dönüyor.
+- Askıya alınan bayi ve kaldırılan kapsam hemen kapanıyor; diğer bayi etkilenmiyor.
+- Ağ yönetimi, bayi kapsamı ve kurum yaşam döngüsü yalnız Süper Admin'de.
+- Bayi hesabı app'te kurumsuz yönetici olarak duruyor ve hiçbir sınav tanımı görmüyor.
+
+Kanıt: `tests/s004-result-dealer.test.ts`; 7 mutasyon yakalandı.
+
+Sonraki iş: S005.
