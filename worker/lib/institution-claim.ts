@@ -104,7 +104,8 @@ async function claim(request: Request, env: Env): Promise<Response> {
 }
 
 async function card(request: Request, env: Env, user: AuthUser, id: string): Promise<Response> {
-  const inst = await one<any>(env.DB.prepare('SELECT * FROM institutions WHERE id=?').bind(id));
+  const inst = await one<any>(env.DB.prepare('SELECT * FROM institutions WHERE id=? OR code=? LIMIT 1').bind(id, id.toUpperCase()));
+  if (inst) id = inst.id;
   if (!inst || !(await canManage(env, user, inst))) return fail(404, 'INSTITUTION_NOT_FOUND', 'Kurum bulunamadı veya yetkiniz dışında.');
   if (request.method === 'PATCH') {
     if (request.headers.get('Origin') !== new URL(request.url).origin) return fail(403, 'FORBIDDEN', 'İsteği ANUNEX üzerinden başlatın.');

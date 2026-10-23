@@ -71,10 +71,13 @@ it('processes at most five jobs and lets other jobs advance when one deletion fa
  }finally{f.db.close()}
 });
 it('preserves participants and snapshots referenced by another administration or licensed publication',async()=>{
- for(const mode of ['other-administration','licensed-profile','licensed-administration']){const f=fixture();try{
+ for(const mode of ['other-administration','licensed-profile','licensed-administration','app-conversion-planned','app-conversion-done']){const f=fixture();try{
  if(mode==='other-administration')f.db.exec("UPDATE exam_administrations SET exam_id='e',published_snapshot_version=3 WHERE id='b';INSERT INTO result_network_institutions VALUES('rni-b','b','school','code');INSERT INTO result_access_identities VALUES('b','p000','rni-b');INSERT INTO exam_result_snapshots SELECT exam_id,participant_id,3,institution_id,payload_json FROM exam_result_snapshots");
  if(mode==='licensed-profile')f.db.exec("INSERT INTO exam_delivery_profiles VALUES('e',2)");
  if(mode==='licensed-administration')f.db.exec("INSERT INTO exam_administrations VALUES('licensed','e','LICENSED','PUBLISHED',2,'2099-01-01')");
+ // S022: a school moving to (or already in) the app keeps its students and results
+ if(mode==='app-conversion-planned')f.db.exec("INSERT INTO institution_app_conversions VALUES('school','PLANNED')");
+ if(mode==='app-conversion-done')f.db.exec("INSERT INTO institution_app_conversions VALUES('school','CONVERTED')");
  f.db.exec("INSERT INTO result_artifact_manifest(administration_id,participant_id,snapshot_version,object_key,content_sha256) VALUES('a','p000',2,'key','digest')");
  await purgeExpiredResultNetwork(f.env);
  expect(f.db.prepare('SELECT * FROM exam_participants').all()).toHaveLength(1);

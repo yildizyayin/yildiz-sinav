@@ -67,3 +67,26 @@ export function InstitutionPinIssuer() {
     {result && <div className="alert success" role="status"><strong>{result.institution.name}</strong> ({result.institution.city} / {result.institution.district}) için PIN: <code style={{ fontSize: '1.3em', letterSpacing: '.15em' }}>{result.pin}</code><br /><small>Kurum sonuc.anunex.com → Kurum → "Kurum hesabı oluştur" ile bu PIN'i kullanır.</small></div>}
   </section>;
 }
+
+/** S020/S022: Super Admin looks a school up by MEB/ANX code, sees its card and moves it into the app. */
+export function InstitutionAdminLookup() {
+  const [code, setCode] = useState(''); const [id, setId] = useState(''); const [conv, setConv] = useState<any>(null); const [error, setError] = useState(''); const [notice, setNotice] = useState('');
+  const find = async (e: React.FormEvent) => { e.preventDefault(); setError(''); setNotice(''); setId(''); setConv(null);
+    try { const r = await api<any>(`/api/admin/result-network/institutions/${encodeURIComponent(code.trim())}/card`); setId(r.institution.id); setConv(await api<any>(`/api/admin/result-network/institutions/${encodeURIComponent(r.institution.id)}/app-conversion`)); } catch (err: any) { setError(err.message); } };
+  const act = async (action: 'PLAN' | 'CANCEL' | 'CONVERT') => { setError(''); setNotice('');
+    if (action === 'CONVERT' && !window.confirm('Lisans ödemesi/onayı tamamlandı mı? Misafir öğrenciler app öğrencisine dönüşecek; bu işlem geri alınmaz.')) return;
+    try { const r = await api<any>(`/api/admin/result-network/institutions/${encodeURIComponent(id)}/app-conversion`, { method: 'POST', body: JSON.stringify({ action, paymentConfirmed: action === 'CONVERT' }) }); setConv(r); setNotice(action === 'CONVERT' ? `${r.activated} öğrenci app'e geçti${r.skippedForLimit ? `; ${r.skippedForLimit} öğrenci lisans limiti nedeniyle bekliyor` : ''}.` : 'Kaydedildi.'); } catch (err: any) { setError(err.message); } };
+  const label: Record<string, string> = { NONE: 'Yalnız sonuç ağı', PLANNED: 'App\'e geçiş planlandı (veri temizlikten korunuyor)', CONVERTED: 'App\'e geçti' };
+  return <section className="panel institution-lookup-panel">
+    <h3>Kurum kartı ve app'e geçiş</h3>
+    <form onSubmit={find}><label>MEB veya ANX kurum kodu<input required value={code} onChange={(e) => setCode(e.target.value)} /></label><button className="secondary" type="submit">Kurumu aç</button></form>
+    {error && <div className="alert error">{error}</div>}{notice && <div className="alert success">{notice}</div>}
+    {id && <InstitutionCardPanel key={id} institutionId={id} />}
+    {conv && <div className="conversion-box"><p><strong>Durum:</strong> {label[conv.status] || conv.status} · Misafir öğrenci: {conv.guestStudents} · App öğrencisi: {conv.activeStudents} · Sınav katılımı: {conv.examParticipations}</p>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        {conv.status === 'NONE' && <button className="secondary" onClick={() => void act('PLAN')}>App'e geçiş için işaretle</button>}
+        {conv.status === 'PLANNED' && <button className="ghost" onClick={() => void act('CANCEL')}>İşareti kaldır</button>}
+        {conv.status !== 'NONE' && conv.guestStudents > 0 && <button className="primary" onClick={() => void act('CONVERT')}>Öğrencileri app'e geçir</button>}
+      </div></div>}
+  </section>;
+}

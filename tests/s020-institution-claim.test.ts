@@ -44,6 +44,7 @@ describe('S020 institution claim', () => {
     expect((await issue('700001', 'dealerA')).status).toBe(201);
     expect((await issue('700002', 'dealerA')).status).toBe(403);
     // card is visible to the Super Admin
+    expect((await call('/api/admin/result-network/institutions/700001/card', { cookie: cookies.admin })).data.institution.id).toBe(a.data.institution.id);
     expect((await call(`/api/admin/result-network/institutions/${a.data.institution.id}/card`, { cookie: cookies.admin })).data.pin).toMatchObject({ usedAt: null });
   });
 
