@@ -2335,3 +2335,14 @@ Uygulama sürümü geri dönüşü Cloudflare Worker sürümleriyle yapılabiliy
 
 - K002, A080, D001–D007, K004 ve K003, kullanıcı onayına ya da canlı/fiziksel teste bağlı.
 - Açık PR'lar: #340–#364. App dağıtımı (run 39876760146) onaylanıp bittikten sonra sırayla merge edilecek.
+
+### Sürüm 23 Ekim — #365, 23 Ekim 10:30
+
+- Kullanıcı "yapılanları canlıya al" dedi.
+- #340–#364 PR'ları tek sürüm dalında sırayla birleştirildi.
+  - Çakışmalar giriş zincirindeydi; her iki handler korunarak çözüldü.
+  - Yerelde typecheck, build ve tam test paketi (311 dosya, 1396 test) geçti.
+  - CI verify geçti. Probe beklendiği gibi kırıldı (S015).
+- #365 merge commit ile main'e alındı (`59eeec18`). 25 PR "merged" durumunda.
+- Production dağıtımı run 39916896234 kuyrukta. "production-deploy" grubunu 21 Ekim'den beri onay bekleyen eski bir "Deploy App Production Only" çalışması (39570510411, `ab658f79`) tutuyor.
+- Eski çalışmaları reddetme denemem oturum güvenlik kuralınca engellendi. Onay ve red kullanıcıda.
