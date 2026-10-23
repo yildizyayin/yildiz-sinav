@@ -2207,3 +2207,21 @@ Sonradan yayımlanan kazanım analizinin sonuç kanalına yansıması (`publishe
 Kanıt: `tests/s010-result-outcomes.test.ts` (gerçek migration, uçtan uca); 3 mutasyon yakalandı. `result-network-snapshot` fikstürü outcome_id ve doğrulanmış müfredatla güncellendi.
 
 Sonraki iş: S011.
+
+### S011 — sonuç video erişimi, 23 Ekim
+
+Durum: KOD HAZIR. PR #361 açık.
+
+Sorun: portal, öğrencinin yanlış yaptığı soruların videolarını yalnız "onaylı" koşuluyla gösteriyordu. Bu yüzden şunlar da görünüyordu:
+- taslak ve ileri tarihli videolar;
+- kırık bağlantılar;
+- yalnız öğretmene ya da Süper Admin'e açık videolar;
+- http bağlantılar.
+
+Düzeltme: artık A067'deki kuralın aynısı uygulanıyor (onaylı, yayımlanmış, zamanı gelmiş, kırık değil). Buna ek olarak görünürlük STUDENT_TEACHER ya da PUBLIC olmalı, bağlantı https olmalı ve video aynı sınava ait olmalı. Onay sonradan geri çekilirse video kayboluyor; hangi soruların gösterileceği (yayındaki yanlışlar) sabit kalıyor.
+
+Kanıt: `tests/s011-result-videos.test.ts` (uçtan uca); 8 mutasyon yakalandı.
+
+Not: A067 (#340) merge edilince bu kural ortak `SERVABLE_VIDEO_SQL`'e bağlanacak. #360 ve #361 aynı test fikstürünün farklı satırlarına dokunuyor; merge sırasında birleştirilecek.
+
+Sonraki iş: S012.
