@@ -2131,3 +2131,30 @@ Durum: KOD HAZIR. PR #357 açık.
 Kanıt: `tests/s006-release-drift.test.ts`; 6 mutasyon yakalandı.
 
 Sonraki iş: S007.
+
+### S007 — sonuç kanalında yayın kararı, 23 Ekim
+
+Durum: KOD HAZIR. PR #358 açık. "Sonra yayın" kısmı kullanıcı kararını bekliyor.
+
+Zaten doğru olanlar:
+- Sonuç kanalında yayın, güncelleme ve kaldırma yalnız Süper Admin'de ve yalnız production'da.
+- İşlem revizyon kontrolüyle ve operasyon kilidi altında yapılıyor.
+- Portal yalnız yayımlanmış yönetimin sabit sürümünü gösteriyor.
+
+Düzeltilen:
+- Portal, kanal satırı hiç olmayan sınavı "kaldırılmamış" sayıyor. app'teki "kaldır" ve çöp kutusundaki "sonuç portalından kaldır" yalnız var olan satırı güncelliyordu. Bu yüzden kanal satırı olmadan yayımlanmış (eski) bir sınav kaldırıldığında portalda görünmeye devam ediyordu.
+- Artık iki yol da ARCHIVED satırı ekliyor ya da güncelliyor.
+
+Kanıt (`tests/s007-result-channel.test.ts`; 2 mutasyon yakalandı):
+- Kaldırılan sınav aramada bulunmuyor; açık oturumda liste boş, detay 404 dönüyor.
+- Kurum yöneticisi yeniden yayınlayamıyor; sınav ancak açık bir yeniden yayınla geri geliyor.
+- Yayımlanmamış yönetim (DRAFT, UPLOADING, READY, ARCHIVED) kanal aktif olsa da görünmüyor.
+
+Karar bekleyen:
+- Sonuç kanalında zamanlanmış ("sonra") yayın yok. Bugün "sonra" ancak Süper Admin'in daha sonra elle yayınlamasıyla oluyor.
+- Zamanlanmış yayın için sonuç Worker'ının cron'unun çalışması gerekiyor. Cron şu an D1 bütçesi için kapalı (`SCHEDULED_JOBS_PAUSED`).
+- Seçenekler:
+  - (a) elle yayın yeterli;
+  - (b) zamanlanmış yayın eklensin; cron bütçesi buna göre açılır.
+
+Sonraki iş: S008.
