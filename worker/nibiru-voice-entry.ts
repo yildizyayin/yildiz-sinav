@@ -3,6 +3,8 @@ import type { Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { json } from './lib/db';
 import { buildVoiceProviderPlan,recordVoiceProviderProbe,speakNibiru,transcribeNibiruAudio,voiceProviderStatusWithHealth } from './lib/nibiru-voice';
+import { reserveVoiceUse,VOICE_DAILY_LIMIT } from './lib/nibiru-voice-quota';
+export { VOICE_DAILY_LIMIT };
 import { classifyVoiceActivationFailure,sanitizedVoiceProviderError } from './lib/nibiru-voice-diagnostics';
 
 
@@ -28,12 +30,20 @@ async function publicVoiceDemo(request:Request,env:Env){
  const key=new URL(request.url).searchParams.get('scenario')||'';
  const text=PUBLIC_VOICE_SCENARIOS[key];
  if(!text)return fail(404,'VOICE_SCENARIO_NOT_FOUND','Tanımlı ses senaryosu bulunamadı.');
+ // A066: anonymous demo must not trigger a paid call per visit; the audio is kept in the edge cache
+ const cache=(globalThis as any).caches?.default as Cache|undefined;const cacheKey=new Request(`https://voice-demo.cache/${encodeURIComponent(key)}`);
+ const hit=cache?await cache.match(cacheKey):undefined;
+ if(hit){const headers=addPublicVoiceCors(request,new Headers(hit.headers));return new Response(hit.body,{status:200,headers});}
+ if(!cache)return fail(503,'VOICE_DEMO_CACHE_UNAVAILABLE','Ses örneği şu an hazırlanamıyor.');
  try{
   const result=await speakNibiru(env,text,'PREMIUM');
   const headers=addPublicVoiceCors(request,new Headers({'content-type':result.audio.contentType,'cache-control':'public, max-age=86400, s-maxage=604800, immutable','x-nibiru-voice-provider':result.audio.provider,'x-content-type-options':'nosniff'}));
+  await cache.put(cacheKey,new Response(strictArrayBuffer(result.audio.bytes),{headers:{'content-type':result.audio.contentType,'cache-control':'public, max-age=604800'}}));
   return new Response(strictArrayBuffer(result.audio.bytes),{status:200,headers});
  }catch(error){return voiceError(error)}
 }
+
+const quotaFail=(kind:'SPEAK'|'TRANSCRIBE')=>fail(429,'VOICE_DAILY_LIMIT',`Günlük ${kind==='SPEAK'?'sesli yanıt':'ses tanıma'} sınırına (${VOICE_DAILY_LIMIT[kind]}) ulaşıldı; yarın yeniden deneyebilirsiniz.`);
 
 function fail(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 function strictArrayBuffer(bytes:Uint8Array):ArrayBuffer{const copy=new Uint8Array(bytes.byteLength);copy.set(bytes);return copy.buffer}
@@ -56,6 +66,7 @@ async function status(request:Request,env:Env){
 async function transcribe(request:Request,env:Env){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
  const length=Number(request.headers.get('content-length')||0);if(length>8*1024*1024)return fail(413,'VOICE_AUDIO_TOO_LARGE','Ses kaydı en fazla 8 MB olabilir.');
+ if(!await reserveVoiceUse(env,user,'TRANSCRIBE'))return quotaFail('TRANSCRIBE');
  try{const bytes=new Uint8Array(await request.arrayBuffer());const result=await transcribeNibiruAudio(env,bytes);await recordVoiceProviderProbe(env,'STANDARD','CLOUDFLARE_WORKERS_AI_STT',result.model);return json({ok:true,text:result.text,model:result.model,language:'tr'});}catch(error){return voiceError(error)}
 }
 
@@ -63,7 +74,9 @@ async function speak(request:Request,env:Env){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
  let body:{text?:string;mode?:'STANDARD'|'PREMIUM'};try{body=await request.json()}catch{return fail(400,'INVALID_JSON','Geçerli konuşma metni gönderilmelidir.')}
  const text=String(body.text||'').trim();if(!text)return fail(400,'VOICE_TEXT_EMPTY','Konuşma metni boş olamaz.');if(text.length>3600)return fail(413,'VOICE_TEXT_TOO_LONG','Seslendirme metni en fazla 3600 karakter olabilir.');
- const mode=body.mode==='PREMIUM'?'PREMIUM':'STANDARD';
+ // premium voice is a paid upgrade: only the Super Admin chooses it here; everyone else gets the standard voice
+ const mode=body.mode==='PREMIUM'&&user.role==='SUPER_ADMIN'?'PREMIUM':'STANDARD';
+ if(env.NIBIRU_PAID_VOICE_ENABLED==='ON'&&!await reserveVoiceUse(env,user,'SPEAK'))return quotaFail('SPEAK');
  try{const result=await speakNibiru(env,text,mode);return new Response(strictArrayBuffer(result.audio.bytes),{status:200,headers:{'content-type':result.audio.contentType,'cache-control':'private, no-store','x-nibiru-voice-provider':result.audio.provider,'x-nibiru-voice-model':result.audio.model,'x-content-type-options':'nosniff'}});}catch(error){return voiceError(error)}
 }
 
