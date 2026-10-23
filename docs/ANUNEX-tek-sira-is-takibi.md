@@ -2381,3 +2381,47 @@ Düzeltilenler (PR #366, merge edildi):
 Tasarım değiştirilmedi. Tasarım işi en sona bırakıldı; kullanıcı başka bir araçla yaptıracak.
 
 Dağıtım: run 184 production onayı bekliyor. Sonuç Worker'ı için ayrıca "Deploy ANUNEX Result Network" çalıştırılmalı.
+
+### S019–S022 — MEB kurum rehberi, kurum PIN'i, kurum kartı, app'e geçiş — 23 Ekim 17:30–19:00
+
+Kullanıcı talebi ve kararları. Kullanıcı "en doğru kararları sen ver" dedi; verilen kararlar:
+- PIN tek kullanımlıktır ve kurumun kendi yönetici hesabını açmasına yarar.
+- Rehber, MEB'in herkese açık okul listesidir: ilkokuldan liseye, yalnız sınava giren okullar.
+- Telefon ve adresi kurum kendisi girer.
+- App'e geçen ya da geçmesi planlanan kurum dönem sonu temizliğinden muaftır.
+
+**S019 (PR #373, merge edildi)**
+- `scripts/meb-directory-csv.mjs`, MEB okul listesini Süper Admin'in "Kurum rehberi içe aktar" şablonuna çeviriyor.
+- 31 Ağustos 2026 listesinden 46.802 okul çıktı: 22.747 ilkokul, 15.545 ortaokul, 8.510 lise.
+- Canlı rehber şu an boş (0 kayıt). Hazır CSV kullanıcıya verildi.
+- Özel okullar ve kurslar bu listede yok (12 kayıt hariç). OOKGM listesi gerekiyor. Bu sayfalar otomatik okumaya kapalı; kullanıcının indirmesi gerekiyor.
+- Aylık güncelleme: aynı betikle yeni liste üretilip tekrar yüklenir. Yükleme mevcut kayıtları günceller (upsert), kopya oluşmaz.
+
+**S020 ve S021 (PR #375, merge edildi)**
+- Göç 0137: `institution_claim_pins`.
+- PIN'i Süper Admin ya da kapsamındaki bayi veriyor. Kurum kaydı gerektiğinde rehberden otomatik açılıyor.
+- Kurum, MEB ya da ANX kodu + PIN + yetkili e-posta/telefon/şifre ile hesabını bir kez açıyor.
+- PIN denemeleri atomik sayılıyor. 5 hatada PIN kilitleniyor ve yeni PIN gerekiyor.
+- Kurum kartı alanları: yetkili, telefon, e-posta, adres.
+- Elle kurum açma ve düzenleme bu iletişim alanlarıyla çalışıyor.
+
+**S022 (PR #375, merge edildi)**
+- Göç 0138: `institution_app_conversions`.
+- Temizlik, işaretli kurumu atlıyor.
+- Süper Admin geçişi işaretleyebiliyor, iptal edebiliyor (yalnız planlı durumdayken) ve tamamlayabiliyor.
+- Tamamlama, ödeme onayıyla misafir öğrencileri lisans limiti içinde app öğrencisine çeviriyor. Sınav geçmişi aynen kalıyor; veri kopyalanmıyor.
+
+Kanıt: `s019`, `s020` (5 test), `s022` testleri; retention testine iki koruma modu eklendi. Tam test paketi 314 dosya / 1405 test.
+
+Not: 4 işçide çalışırken `question-generation-jobs` testi yük nedeniyle 5 sn zaman aşımına düşebiliyor. 2 işçide geçiyor; bu değişikliklerle ilgili değil.
+
+**Tasarım PR'ları (#367–#372, ChatGPT) incelendi**
+- Değişiklikler yalnız CSS, belge ve ekran görüntülerinden oluşuyor.
+- #372'de `GuidanceReportPanel.tsx` içinde yalnız sarmalayıcı `className` eklenmiş; iş mantığı değişmemiş.
+- CI verify geçiyor.
+- Mor renk yok. #367'deki `--content-violet` değişkeninin değeri mavi-gri (#3d627f).
+- Merge oturum kuralınca bana kapalı; kullanıcı merge edecek.
+
+**Dağıtım**
+- Run 185 (S019) kuyruğu tutuyor. Reddedilmeli; yerine run 186 (S020–S022) onaylanmalı.
+- Sonuç Worker'ı ayrıca dağıtılmalı.
