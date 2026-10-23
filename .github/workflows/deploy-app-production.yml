@@ -72,7 +72,7 @@ jobs:
         run: npm run typecheck && npm test && npm run build
 
       - name: Deploy isolated production Worker and resources
-        run: npx wrangler deploy --config wrangler.production.jsonc --var ENVIRONMENT:production --var PRODUCT_NAME:"Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY
+        run: npx wrangler deploy --config wrangler.production.jsonc --var ENVIRONMENT:production --var PRODUCT_NAME:"Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu" --var TURNSTILE_SITE_KEY:$PROD_TURNSTILE_SITE_KEY --var RELEASE_SHA:${{ github.sha }}
 
       - name: Resolve production Worker version
         id: production-worker-version

@@ -46,6 +46,9 @@ export interface Env {
   ENVIRONMENT?: string;
   PRODUCT_NAME?: string;
   TURNSTILE_SITE_KEY?: string;
+  /** S006: git commit of the deployed release, set by the deploy workflow (--var RELEASE_SHA). */
+  RELEASE_SHA?: string;
+  RESULT_PORTAL_ORIGIN?: string;
   TURNSTILE_SECRET_KEY?: string;
   SESSION_SECRET?: string;
   // Keyed result lookup tokens prevent raw TCKN/student numbers from entering the result index.
