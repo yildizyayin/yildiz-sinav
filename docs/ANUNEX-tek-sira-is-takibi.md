@@ -2044,3 +2044,25 @@ Kullanıcıdan gereken:
 2. `https://sonuc.anunex.com/api/health` yanıtı ve sürüm. Bu oturum sonuç alanını açamıyor; web erişimi izin bekledi ve zaman aşımına uğradı.
 
 Sonraki iş: S002 (kod tarafı).
+
+### S002 — öğrenci sonuç girişi, 23 Ekim
+
+Durum: KOD HAZIR. PR #353 açık. Sonuç Worker'ı dağıtılınca canlıya çıkacak (bkz. S001).
+
+Zaten doğru olanlar:
+- Arama için Turnstile, MEB kurum kodu, sınıf, ad soyad ve öğrenci no/TCKN birlikte gerekiyor.
+- Eşleşme olsa da olmasa da yanıt aynı biçimde; hesap tahmin edilemiyor.
+- Sonuç yalnız yayımlanmış ve kanalı aktif sınavlarda açılıyor.
+- Kişisel kod HMAC ile saklanıyor; arama, aramayı yapan IP adresine bağlı.
+- Oturum 6 saat sürüyor, IP adresine bağlı ve her istekte yeniden kontrol ediliyor.
+- Sınav detayı yalnız bu kimliğin kendi katılımından geliyor.
+
+Düzeltilenler:
+- Kod denemesi önce okunup sonra sayılıyordu. Aynı anda gönderilen denemeler arama başına 5 sınırını aşabiliyor ve 8 hata kilidinden kaçabiliyordu (hata sayacı tek artıyordu). Artık her deneme kod kontrolünden önce SQL'de atomik sayılıyor.
+- Kilitlenen kimlik, kilitten önce açılmış bir aramada denemeye devam edebiliyordu. Artık reddediliyor.
+- Doğru kod aynı anda iki kez gelirse tek oturum açılıyor.
+- Süre ve kilit karşılaştırması SQL'e taşındı. Eski kod SQLite saatini JavaScript ile yerel saat sanarak okuyordu. Bu yalnız UTC dışı ortamda hata veriyor; Workers UTC olduğu için canlıda etkisi yoktu.
+
+Kanıt: `tests/s002-result-verify.test.ts`. Eski kodla 3 test kırılıyor; 8 mutasyon yakalandı.
+
+Sonraki iş: S003.
