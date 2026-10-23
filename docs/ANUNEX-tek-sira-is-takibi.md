@@ -1972,3 +1972,33 @@ Açık kalanlar:
 - A067'nin karekod sayfası kısmı bu bağlantıyla karşılandı; basılı karekod üretimi A014 kararına bağlı.
 
 Sonraki iş: A079.
+
+### A079 — app güvenlik ve veri yaşam döngüsü, 23 Ekim
+
+Durum: KOD HAZIR. PR #351 açık; dağıtımdan sonra merge edilecek.
+
+Zaten doğru olanlar (kodda doğrulandı):
+- Pasifleştirilen hesabın ve pasif kurumun oturumları kapanıyor (A032b).
+- Rapor ve rubrik dışa aktarma dosyaları süre dolunca siliniyor.
+- Ödev taslağı teslimde siliniyor.
+- Hesap silme kişiyi anonimleştiriyor; kalıcı kimlik satırı kalıyor.
+- Optik baskı tabanı kurum kontrolünden geçiyor.
+
+Düzeltilenler:
+- Şifre değişince hesabın diğer oturumları açık kalıyordu. Artık kapanıyor; değiştiren oturum açık kalıyor.
+- Soru medyası:
+  - Bir kurumun onaylı sorusunun medyası başka kurumdan açılabiliyordu.
+  - Öğrenci ve veli, kendi kurumunun taslak soru medyasını açabiliyordu.
+  - Onayı kaldırılmış medya hâlâ veriliyordu.
+  - Artık öğrenci ve veli yalnız onaylı sorunun onaylı medyasını görüyor. Kurum medyası kurum içinde kalıyor. Kişisel soru yalnız sahibinde.
+
+Kanıt: `tests/a079-security-lifecycle.test.ts`; 9 mutasyon yakalandı.
+
+Karar bekleyen (kapı gevşetilmedi):
+- Süreli temizlik, KVKK hukuk onayı verilmiş politikalarla çalışıyor.
+- Yeni tablolar için saklama süresi tanımlı değil:
+  - `nibiru_voice_daily_usage`
+  - `nibiru_pairing_attempts` (A068)
+- Bu süreler hukuk onayıyla politika listesine eklenmeli.
+
+Sonraki iş: A082.
