@@ -101,7 +101,8 @@ async function examDetail(request:Request,env:Env,examId:string){
  const definitionRow={exam_id:examId,payload_json:JSON.stringify(payload)};await publishedDefinitions(env,[definitionRow]);payload=JSON.parse(definitionRow.payload_json);
  const detail=artifact?artifact.detail:snapshotDetail(payload);
  // Video approval can be withdrawn, but question selection is frozen evidence.
- const videos=Array.isArray(payload.wrongQuestionIds)?await all<any>(env.DB.prepare(`SELECT DISTINCT vl.title,vl.url,vl.link_type,q.question_no FROM exam_questions q JOIN video_links vl ON vl.exam_question_id=q.id AND vl.approved=1 WHERE q.exam_id=? AND q.id IN(SELECT value FROM json_each(?)) ORDER BY q.question_no LIMIT 50`).bind(examId,JSON.stringify(payload.wrongQuestionIds))):[];
+ // S011: same servable rule as the app (A067: approved, published, not broken) plus learner visibility and https only.
+ const videos=Array.isArray(payload.wrongQuestionIds)?await all<any>(env.DB.prepare(`SELECT DISTINCT vl.title,vl.url,vl.link_type,q.question_no FROM exam_questions q JOIN video_links vl ON vl.exam_question_id=q.id AND vl.approved=1 AND (vl.status='PUBLISHED' OR vl.status IS NULL) AND (vl.publish_at IS NULL OR datetime(vl.publish_at)<=CURRENT_TIMESTAMP) AND COALESCE(vl.link_status,'UNKNOWN')<>'BROKEN' AND vl.visibility IN ('STUDENT_TEACHER','PUBLIC') AND vl.url LIKE 'https://%' AND (vl.exam_id IS NULL OR vl.exam_id=q.exam_id) WHERE q.exam_id=? AND q.id IN(SELECT value FROM json_each(?)) ORDER BY q.question_no LIMIT 50`).bind(examId,JSON.stringify(payload.wrongQuestionIds))):[];
  return json({ok:true,...detail,exam:payload.exam,outcomeAnalysisRevision:payload.outcomeAnalysisRevision||null,outcomeAnalysisUpdatedAt:payload.outcomeAnalysisUpdatedAt||null,videos,snapshotVersion:peer.snapshot_version,resultSource:artifact?'PRIVATE_ARTIFACT':'PUBLISHED_SNAPSHOT',videoEvidenceUnavailable:!Array.isArray(payload.wrongQuestionIds)});
 }
 

@@ -43,7 +43,7 @@ it('pins results to the channel publication and fails closed for missing payload
  const request=(path:string)=>new Request('https://test'+path,{headers:{cookie:'anunex_result_session=synthetic'}});
  const response=await handleResultNetworkRequest(request('/api/public/results/student'),env);
  expect((await response!.json() as any).exams[0].net).toBe(2);
- db.exec('CREATE TABLE exam_questions(id TEXT,exam_id TEXT,question_no INTEGER);CREATE TABLE video_links(exam_question_id TEXT,title TEXT,url TEXT,link_type TEXT,approved INTEGER)');
+ db.exec('CREATE TABLE exam_questions(id TEXT,exam_id TEXT,question_no INTEGER);CREATE TABLE video_links(exam_question_id TEXT,title TEXT,url TEXT,link_type TEXT,approved INTEGER,status TEXT,publish_at TEXT,link_status TEXT,visibility TEXT DEFAULT \'STUDENT_TEACHER\',exam_id TEXT)');
  const detail=await handleResultNetworkRequest(request('/api/public/results/exams/e'),env);
  expect((await detail!.json() as any).subjects[0].net).toBe(2);
  expect((await handleResultNetworkRequest(request('/api/public/results/exams/other'),env))!.status).toBe(404);
