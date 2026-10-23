@@ -19,6 +19,7 @@ import './pages/admin-command-center.css';
 import './pages/admin-operational-home.css';
 import './pages/optical-design.css';
 import './theme-experience.css';
+import './guidance-panel-design.css';
 import './astra-panel.css';
 
 createRoot(document.getElementById('root')!).render(<StrictMode><BrowserRouter><AuthProvider><App/></AuthProvider></BrowserRouter></StrictMode>);

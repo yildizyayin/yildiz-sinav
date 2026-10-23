@@ -18,15 +18,15 @@ export function GuidanceReportPanel() {
     <h2>Rehberlik karnesi</h2>
     <p>Rehber öğretmeni olduğunuz sınıfların öğrencileri: incelediğiniz rehberlik sinyalleri, yayımlanmış deneme sonuçları ve destek planı. Özel görüşme kayıtları ayrı tutulur; bu tabloda yalnız sayısı görünür.</p>
     {error && <div className="alert error">{error}</div>}{notice && <div className="alert success">{notice}</div>}
-    <table><thead><tr><th>Sınıf</th><th>No</th><th>Öğrenci</th><th>Rehberlik sinyalleri</th><th>Son denemeler (net)</th><th>Destek planı</th><th>Özel kayıt</th><th></th></tr></thead><tbody>
+    <div className="table-card guidance-report-table"><table><thead><tr><th>Sınıf</th><th>No</th><th>Öğrenci</th><th>Rehberlik sinyalleri</th><th>Son denemeler (net)</th><th>Destek planı</th><th>Özel kayıt</th><th></th></tr></thead><tbody>
       {rows.map((s) => <tr key={s.id}><td>{s.class_name || '—'}</td><td>{s.student_number}</td><td>{s.first_name} {s.last_name}</td>
         <td>{s.signals.length ? s.signals.slice(0, 4).map((g: any) => `${g.signal_key.replaceAll('_', ' ')} ${Math.round(g.score)}`).join(' · ') : '—'}</td>
         <td>{s.recentExams.length ? s.recentExams.map((e: any) => e.net).join(' · ') : '—'}</td>
         <td>{s.plan ? `${s.plan.status === 'CLOSED' ? 'Kapandı' : 'Etkin'}${s.plan.review_date ? ` · ${s.plan.review_date}` : ''}` : 'Yok'}</td>
         <td>{s.privateRecordCount}</td><td><button className="ghost" onClick={() => void select(s.id)}>Aç</button></td></tr>)}
       {!rows.length && <tr><td colSpan={8}>Rehber öğretmeni olarak atandığınız sınıf yok.</td></tr>}
-    </tbody></table>
-    {current && plan && <div style={{ marginTop: 16 }}>
+    </tbody></table></div>
+    {current && plan && <div className="guidance-support-plan" style={{ marginTop: 16 }}>
       <h3>{current.first_name} {current.last_name} · destek planı</h3>
       <label>Hedefler<textarea value={plan.goals} onChange={(e) => setPlan({ ...plan, goals: e.target.value })} /></label>
       <label>Yapılacaklar<textarea value={plan.actions} onChange={(e) => setPlan({ ...plan, actions: e.target.value })} /></label>
@@ -35,7 +35,7 @@ export function GuidanceReportPanel() {
       <label><input type="checkbox" checked={!!plan.sharedWithStudent} onChange={(e) => setPlan({ ...plan, sharedWithStudent: e.target.checked })} /> Öğrenciyle paylaş</label>
       <label><input type="checkbox" checked={!!plan.sharedWithParent} onChange={(e) => setPlan({ ...plan, sharedWithParent: e.target.checked })} /> Veliyle paylaş</label>
       <button className="primary" disabled={busy} onClick={() => void act(() => api(`${base(open)}/support-plan`, { method: 'PUT', body: JSON.stringify(plan) }), 'Destek planı kaydedildi.')}>Planı kaydet</button>
-      <div className="panel" style={{ marginTop: 16 }}>
+      <div className="panel guidance-private-records" style={{ marginTop: 16 }}>
         <h3><Lock size={16} /> Özel rehberlik kayıtları</h3>
         <p>Yalnız sizin görebildiğiniz görüşme notları. Öğrenci, veli, branş öğretmeni ve okul yönetimi görmez. Kayıtlar silinmez ve değiştirilmez; her okuma kayda geçer.</p>
         {records === null ? <button className="ghost" onClick={() => void api<any>(`${base(open)}/private-records`).then((r) => setRecords(r.records)).catch((e) => setError(e.message))}>Kayıtları göster</button>
