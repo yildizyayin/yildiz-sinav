@@ -1,3 +1,4 @@
+import { publishedForLearnersSql } from './exam-schedule';
 import type { AuthUser, Env } from '../types';
 import { all, audit, badRequest, forbidden, json, one, uuid } from './db';
 import { getEffectiveLicense, licenseAccessMessage } from './license';
@@ -125,10 +126,12 @@ export async function setMyTarget(request: Request, env: Env, user: AuthUser) {
   return json({ok:true,target:await activeTarget(env,studentId)},201);
 }
 
-async function recentPerformance(env: Env, studentId: string, targetType: 'LGS_SCHOOL'|'YKS_PROGRAM') {
+async function recentPerformance(env: Env, studentId: string, targetType: 'LGS_SCHOOL'|'YKS_PROGRAM', learner = false) {
+  // A072: a student or parent compares the target only with results the school has published to them
+  const pub=(expr:string)=>learner?` AND ${publishedForLearnersSql(expr)}`:'';
   const pattern=targetType==='LGS_SCHOOL'?'%LGS%':'%YK%';
-  let exams=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,er.net,er.score,er.success_percent,er.general_rank FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? AND upper(e.exam_type) LIKE ? ORDER BY coalesce(e.exam_date,e.created_at) DESC LIMIT 8`).bind(studentId,pattern));
-  if(!exams.length) exams=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,er.net,er.score,er.success_percent,er.general_rank FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? ORDER BY coalesce(e.exam_date,e.created_at) DESC LIMIT 8`).bind(studentId));
+  let exams=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,er.net,er.score,er.success_percent,er.general_rank FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? AND upper(e.exam_type) LIKE ?${pub('e.id')} ORDER BY coalesce(e.exam_date,e.created_at) DESC LIMIT 8`).bind(studentId,pattern));
+  if(!exams.length) exams=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,er.net,er.score,er.success_percent,er.general_rank FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=?${pub('e.id')} ORDER BY coalesce(e.exam_date,e.created_at) DESC LIMIT 8`).bind(studentId));
   const subjectRows=exams.length?await all<any>(env.DB.prepare(`SELECT s.code,s.name,sr.net,sr.success_percent,ep.exam_id FROM exam_participants ep JOIN subject_results sr ON sr.participant_id=ep.id JOIN subjects s ON s.id=sr.subject_id WHERE ep.student_id=? AND ep.exam_id IN (${exams.map(()=>'?').join(',')})`).bind(studentId,...exams.map(x=>x.id))):[];
   const sums=new Map<string,{sum:number,count:number,label:string}>();
   for(const row of subjectRows){const label=String(row.name||row.code);const key=normalizeMetricKey(label);const entry=sums.get(key)||{sum:0,count:0,label};entry.sum+=Number(row.net||0);entry.count++;sums.set(key,entry)}
@@ -137,7 +140,7 @@ async function recentPerformance(env: Env, studentId: string, targetType: 'LGS_S
   const avg=(arr:number[])=>arr.length?Number((arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(2)):null;
   let trend:'RISING'|'STABLE'|'FALLING'|'INSUFFICIENT'='INSUFFICIENT';
   if(validNets.length>=3){const latest=validNets.slice(0,Math.ceil(validNets.length/2));const older=validNets.slice(Math.ceil(validNets.length/2));const delta=(avg(latest)||0)-(avg(older)||0);trend=delta>1?'RISING':delta<-1?'FALLING':'STABLE'}
-  const weak=await all<any>(env.DB.prepare(`SELECT s.name subject_name,o.title,o.topic,round(avg(r.success_rate),1) avg_success,count(*) evidence FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id WHERE r.student_id=? GROUP BY o.id,o.title,o.topic,s.name HAVING count(*)>0 ORDER BY avg_success ASC,evidence DESC LIMIT 6`).bind(studentId));
+  const weak=await all<any>(env.DB.prepare(`SELECT s.name subject_name,o.title,o.topic,round(avg(r.success_rate),1) avg_success,count(*) evidence FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id WHERE r.student_id=?${pub('r.exam_id')} GROUP BY o.id,o.title,o.topic,s.name HAVING count(*)>0 ORDER BY avg_success ASC,evidence DESC LIMIT 6`).bind(studentId));
   return {exams,subjectAverages,averageNet:avg(validNets),averageScore:avg(validScores),averageRank:avg(validRanks),latestRank:validRanks[0]||null,trend,weakOutcomes:weak};
 }
 
@@ -145,7 +148,7 @@ export async function buildTargetAnalysis(env: Env, user: AuthUser, studentId: s
   if(!await canAccessStudent(env,user,studentId)) throw new Error('FORBIDDEN');
   const enr=await enrollment(env,studentId);const target=await activeTarget(env,studentId);
   if(!target)return {studentId,gradeLevel:enr?.grade_level??null,target:null,analysis:null};
-  const targetType=target.target_type as 'LGS_SCHOOL'|'YKS_PROGRAM';const perf=await recentPerformance(env,studentId,targetType);
+  const targetType=target.target_type as 'LGS_SCHOOL'|'YKS_PROGRAM';const perf=await recentPerformance(env,studentId,targetType,user.role==='STUDENT'||user.role==='PARENT');
   const profile=targetType==='LGS_SCHOOL'?target.school_nets:target.university_nets;
   const gaps=compareTargetProfile(perf.subjectAverages,profile||{});
   const source=targetType==='LGS_SCHOOL'?{kind:SCHOOL_SOURCE,year:target.school_year,url:target.school_source_url,verifiedAt:target.school_verified_at}:{kind:UNIVERSITY_SOURCE,year:target.university_year,url:target.university_source_url,verifiedAt:target.university_verified_at};
