@@ -17,7 +17,7 @@ it('pins results to the channel publication and fails closed for missing payload
  INSERT INTO exam_administrations VALUES('admin','e','RESULT_NETWORK','PUBLISHED',1,'2026-10-01');`);
  for(const scope of ['class','grade','institution','district','city','network'])for(const suffix of ['rank','count'])db.exec(`ALTER TABLE exam_result_snapshots ADD COLUMN ${scope}_${suffix} INTEGER`);
  db.exec(readFileSync(new URL('../migrations/0062_result_artifact_retirement.sql',import.meta.url),'utf8'));
- const payload={schemaVersion:1,exam:{exam_id:'e',academic_year:'2026-2027',net:2,title:'Original'},subjects:[{subject_name:'Math',net:2}],outcomes:[{title:'Outcome',evidence_count:2,correct_count:1}],wrongQuestionIds:['q']};
+ const payload={schemaVersion:1,exam:{exam_id:'e',academic_year:'2026-2027',net:2,title:'Original'},subjects:[{subject_name:'Math',net:2}],outcomes:[{outcome_id:'o1',title:'Outcome',evidence_count:2,correct_count:1}],wrongQuestionIds:['q']};
  db.prepare('INSERT INTO exam_result_snapshots(exam_id,participant_id,snapshot_version,payload_json,national_rank,national_count) VALUES(?,?,?,?,?,?)').run('e','p',1,JSON.stringify(payload),1,5);
  db.prepare('INSERT INTO exam_result_snapshots(exam_id,participant_id,snapshot_version,payload_json,national_rank,national_count) VALUES(?,?,?,?,?,?)').run('e','p',2,JSON.stringify({...payload,exam:{net:99}}),99,100);
  const read=()=>db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('code','ada',6,'number','number','','') as any[];
@@ -35,6 +35,8 @@ it('pins results to the channel publication and fails closed for missing payload
  expect(db.prepare(NETWORK_INSTITUTION_SNAPSHOT_SQL).all('admin','foreign','foreign')).toHaveLength(0);
  db.exec(`ALTER TABLE exam_result_snapshots ADD COLUMN student_id TEXT;ALTER TABLE exam_result_snapshots ADD COLUMN institution_id TEXT;ALTER TABLE exam_result_snapshots ADD COLUMN grade_level INTEGER;
  CREATE TABLE exam_outcome_analysis_revisions(exam_id TEXT,revision INTEGER,published_app_at TEXT,published_result_at TEXT);
+ CREATE TABLE curriculum_versions(id TEXT,verified INTEGER);INSERT INTO curriculum_versions VALUES('cv',1);
+ CREATE TABLE outcomes(id TEXT,curriculum_version_id TEXT);INSERT INTO outcomes VALUES('o1','cv'),('o2','cv');
  CREATE TABLE exam_outcome_analysis_history(exam_id TEXT,revision INTEGER,participant_id TEXT,student_id TEXT,institution_id TEXT,grade_level INTEGER,academic_year TEXT,payload_json TEXT);
  CREATE TABLE channel_definition_publications(exam_id TEXT,channel TEXT,status TEXT,definition_json TEXT);`);
  const identity={meb_code:'code',normalized_name:'ada',grade_level:6,student_number_lookup_token:'number',tckn_lookup_token:null,display_name_snapshot:'School'};
@@ -63,7 +65,7 @@ it('pins results to the channel publication and fails closed for missing payload
  expect(db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('code','ada',6,'other','other','','')).toHaveLength(0);
  expect(db.prepare(RESULT_NETWORK_SNAPSHOT_SQL).all('other-school','ada',6,'number','number','','')).toHaveLength(0);
  db.exec("UPDATE exam_result_snapshots SET grade_level=6,student_id='student';INSERT INTO exam_outcome_analysis_revisions VALUES('e',1,CURRENT_TIMESTAMP,NULL)");
- const delta=JSON.stringify({outcomes:[{title:'Later mapped outcome',evidence_count:2,correct_count:2}],outcomeAnalysisRevision:1,outcomeAnalysisUpdatedAt:'2026-10-12'});
+ const delta=JSON.stringify({outcomes:[{outcome_id:'o2',title:'Later mapped outcome',evidence_count:2,correct_count:2}],outcomeAnalysisRevision:1,outcomeAnalysisUpdatedAt:'2026-10-12'});
  db.prepare('INSERT INTO exam_outcome_analysis_history VALUES(?,?,?,?,?,?,?,?)').run('e',1,'p','student','school',6,'2026-2027',delta);
  const detailRequest=async()=>(await (await handleResultNetworkRequest(request('/api/public/results/exams/e'),env))!.json()) as any;
  expect((await detailRequest()).outcomes[0].outcome).toBe('Outcome');
