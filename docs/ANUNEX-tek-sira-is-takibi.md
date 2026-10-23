@@ -2225,3 +2225,37 @@ Kanıt: `tests/s011-result-videos.test.ts` (uçtan uca); 8 mutasyon yakalandı.
 Not: A067 (#340) merge edilince bu kural ortak `SERVABLE_VIDEO_SQL`'e bağlanacak. #360 ve #361 aynı test fikstürünün farklı satırlarına dokunuyor; merge sırasında birleştirilecek.
 
 Sonraki iş: S012.
+
+### S012 — sonuç düzeltme/kaldırma eşzamanlılığı, 23 Ekim
+
+Durum: KOD HAZIR (yalnız kanıt). PR #362 açık.
+
+Kodda değişiklik gerekmedi. Sınav başına tek işlem kilidi ve yazma çiti zaten var. Test şunları gösteriyor:
+- Başka bir işlem sürerken düzeltmeye açma ve kod yeniden verme 409 dönüyor.
+- Bu sırada hiçbir veri değişmiyor; portal aynı yayın sürümünü göstermeye devam ediyor.
+- Kilit bitince düzeltme tek adımda geçiyor.
+- Aynı sürüm için gelen ikinci (bayat) düzeltme 409 dönüyor.
+
+Kaldırılan sınavda açık oturumlar sonuç göremiyor (S007).
+
+Kanıt: `tests/s012-result-concurrency.test.ts`.
+
+### S013 — sonuç belge çıktısı, 23 Ekim
+
+Durum: KOD HAZIR. PR #363 açık.
+
+Sorun: kurum sonuç listesinin CSV'si ve yazdırma görünümü, verinin yayımlanmış sabit sürüm mü yoksa yayımlanmamış canlı ön izleme mi olduğunu yazmıyordu. Bu yüzden ön izleme kesin sonuç gibi dağıtılabilirdi.
+
+Düzeltme:
+- CSV'nin ilk satırı ve dosya adı kaynağı belirtiyor:
+  - "Yayımlanmış sonuç · sürüm N";
+  - "ÖN İZLEME — yayımlanmamış".
+- Rapor ekranında da aynı not var; yazdırmada da görünüyor.
+
+Öğrenci karnesi zaten yayın sürümünden geliyor. Sunucu tarafı dışa aktarma süreleri A056'da kapatılmıştı.
+
+Kanıt: `tests/s013-result-documents.test.ts`.
+
+Not: bu sırada tam test paketi bir kez bellek yetersizliğinden durdu (exit 137). `--maxWorkers=4` ile yeniden koşuldu ve geçti.
+
+Sonraki iş: S014.
