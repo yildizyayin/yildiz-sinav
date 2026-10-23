@@ -8,6 +8,7 @@ import { runNibiru } from './lib/nibiru';
 import { nibiruRoutingMatrix, probeNibiruModels } from './lib/nibiru-model-router';
 import { extractWhatsAppMessages, sendWhatsAppText, verifyWhatsAppSignature, whatsappReady } from './lib/whatsapp';
 
+export const PAIRING_FAILURE_LIMIT=5;
 const WHATSAPP_ROLES = new Set(['PARENT','TEACHER','GUIDANCE_TEACHER','INSTITUTION_MANAGER']);
 
 const AI_AGENT_WORKFLOWS = [
@@ -206,7 +207,7 @@ async function pairByCode(env:Env,phone:string,code:string){
 
 function identityHelp(){return `Nibiru: Ben Anunex’in yapay zekâ akademik asistanıyım. Bu WhatsApp numarası henüz bir kullanıcı hesabına bağlanmamış. Kurumunuzdan Nibiru eşleştirme kodu alın ve “BAĞLA 123456” şeklinde gönderin.`}
 
-async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type:string;text:string|null}){
+export async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type:string;text:string|null}){
   const seen=await one(env.DB.prepare(`SELECT provider_message_id FROM nibiru_whatsapp_receipts WHERE provider_message_id=?`).bind(message.id));
   if(seen)return;
   await env.DB.prepare(`INSERT INTO nibiru_whatsapp_receipts(provider_message_id,phone_e164) VALUES(?,?)`).bind(message.id,message.from).run();
@@ -216,7 +217,11 @@ async function handleWhatsAppMessage(env:Env,message:{from:string;id:string;type
     if(message.type!=='text'||!message.text){await sendWhatsAppText(env,message.from,'Nibiru: Şu anda WhatsApp üzerinden metin mesajlarını yanıtlayabiliyorum. Öğrenci gelişimi, sınavlar ve kazanımlar hakkında yazarak sorabilirsiniz.');return}
     const pair=message.text.match(/^\s*(?:BAĞLA|BAGLA)\s+(\d{6})\s*$/i);
     if(pair){
+      // A068: at most PAIRING_FAILURE_LIMIT wrong codes per phone per hour; further tries are not checked
+      const failures=Number((await one<any>(env.DB.prepare(`SELECT count(*) c FROM nibiru_pairing_attempts WHERE phone_e164=? AND succeeded=0 AND attempted_at>datetime('now','-1 hour')`).bind(message.from)))?.c||0);
+      if(failures>=PAIRING_FAILURE_LIMIT){await sendWhatsAppText(env,message.from,'Nibiru: Çok sayıda hatalı eşleştirme denemesi yapıldı. Lütfen bir saat sonra kurumunuzdan aldığınız güncel kodla yeniden deneyin.');return}
       const linked=await pairByCode(env,message.from,pair[1]);
+      await env.DB.prepare('INSERT INTO nibiru_pairing_attempts(id,phone_e164,succeeded) VALUES(?,?,?)').bind(uuid('npa'),message.from,linked?1:0).run();
       if(!linked){await sendWhatsAppText(env,message.from,'Nibiru: Eşleştirme kodu geçersiz veya süresi dolmuş. Kurumunuzdan yeni bir kod isteyebilirsiniz.');return}
       const blocked=await institutionBlock(env,linked);
       if(blocked){await sendWhatsAppText(env,message.from,`Nibiru: ${blocked.message}`);return}
