@@ -1728,3 +1728,26 @@ Kanıt:
 - Tam paket: 285 dosya / 1.343 test geçti.
 
 Sonraki iş: A066.
+
+### A066 — Nibiru ses akışı, 23 Ekim 03:12
+
+Durum: KOD TAMAM, merge edildi (PR #339). Gerçek cihazda mikrofon testi BEKLİYOR (K002).
+
+Zaten doğru olanlar:
+- Ücretli ses yalnız açık bir ayarla etkinleşiyor.
+- Sağlayıcı hataları adlandırılmış kodla dönüyor.
+- Ham ses saklanmıyor.
+
+Kapatılan maliyet riskleri:
+- Sesli yanıt herkese sınırsız açıktı. Artık kullanıcı başına günlük sınır var: seslendirme 40, ses tanıma 60. Süper Admin bu sınırın dışında. Sınır aşılırsa sağlayıcı çağrılmıyor ve 429 dönüyor.
+- Premium sesi herkes seçebiliyordu. Artık yalnız Süper Admin seçebiliyor.
+- Herkese açık tanıtım sesi her ziyarette ücretli bir çağrı yapıyordu. Artık her senaryo bir kez üretilip önbellekte tutuluyor. Önbellek yoksa ücretli çağrı hiç yapılmıyor.
+
+Kanıt:
+- `tests/a066-voice-limits.test.ts`
+- 6 mutasyon denendi, hepsi yakalandı.
+- Tam paket 286 dosya / 1.346 test geçti.
+
+**Dağıtım notu (03:12):** "Deploy Production Cloudflare Worker" çalışması 39876760146 (main `ad30cef`, PR #326–#339 dahil) kullanıcı onayı bekliyor. Yeni bir merge bu çalışmayı iptal ettiği için çalışma onaylanıp tamamlanana kadar merge yapılmıyor. Sonraki işler dalda hazırlanıp onaydan sonra merge edilecek.
+
+Sonraki iş: A067.
