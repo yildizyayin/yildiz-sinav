@@ -1,6 +1,8 @@
 import { useEffect,useMemo,useState } from 'react';
 import { Check,Palette,RotateCcw,Sparkles } from 'lucide-react';
 import { api } from '../api';
+import { useAuth } from '../auth';
+import { readPanelTheme, writePanelTheme } from '../lib/panelTheme';
 
 const themeClass:Record<string,string>={
   ANUNEX_STANDARD:'theme-card-standard',
@@ -12,6 +14,7 @@ const themeClass:Record<string,string>={
 export function AppearanceSettings(){
   const [themes,setThemes]=useState<any[]>([]);
   const [selected,setSelected]=useState('ANUNEX_STANDARD');
+  const { user } = useAuth();
   const [busy,setBusy]=useState(false);
   const [message,setMessage]=useState('');
   const [error,setError]=useState('');
@@ -20,23 +23,23 @@ export function AppearanceSettings(){
     void api<any>('/api/panel-experience').then((data)=>{
       const allowed=data.allowedThemes||[];
       setThemes(allowed);
-      const saved=window.localStorage.getItem('anunex-panel-theme');
+      const saved=readPanelTheme(user?.id);
       const fallback=data.defaultTheme||'ANUNEX_STANDARD';
       setSelected(allowed.some((theme:any)=>theme.theme_key===saved)?saved||fallback:fallback);
     }).catch((e:any)=>setError(e.message));
-  },[]);
+  },[user?.id]);
 
   const current=useMemo(()=>themes.find(theme=>theme.theme_key===selected),[themes,selected]);
   const save=()=>{
     setBusy(true);setMessage('');setError('');
-    window.localStorage.setItem('anunex-panel-theme',selected);
+    if(user)writePanelTheme(user.id,selected);
     window.dispatchEvent(new Event('anunex-theme-change'));
     setMessage('Tema seçimin bu cihaz için kaydedildi.');
     window.setTimeout(()=>setBusy(false),250);
   };
   const reset=()=>{
     setSelected('ANUNEX_STANDARD');
-    window.localStorage.removeItem('anunex-panel-theme');
+    if(user)writePanelTheme(user.id,null);
     window.dispatchEvent(new Event('anunex-theme-change'));
     setMessage('ANUNEX Standard görünümüne dönüldü.');
   };
