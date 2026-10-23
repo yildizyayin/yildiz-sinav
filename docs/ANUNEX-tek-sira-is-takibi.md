@@ -2357,3 +2357,27 @@ Uygulama sürümü geri dönüşü Cloudflare Worker sürümleriyle yapılabiliy
   - `sonuc.anunex.com/api/health` → ready, release `59eeec1818b0`.
 - İki alan da aynı sürümde. S001'deki "sonuç portalı 8 Ekim'den beri dağıtılmadı" farkı kapandı.
 - Küçük bulgu: sonuc.anunex.com'un `/api/health` yanıtı kenarda önbelleğe alınıyor. İlk okumada eski yanıt geldi, sorgu parametresiyle güncel yanıt alındı. S006 sürüm karşılaştırması bu yüzden bayat sonuç verebilir; health yanıtına `no-store` eklenmeli.
+
+### Sınav modeli ve geri bildirim incelemesi — 23 Ekim 12:10–12:50 (kullanıcı talebi)
+
+İncelenen akış: sınav ekleme, dosya yükleme ve değerlendirme.
+
+Kodda ve testte ek hata bulunmadı. Akışın özellikleri:
+- Değerlendirme küçük parçalarla ve döngüyle yapılıyor.
+- Kitapçık kararları, eşleştirme, mükerrer öğrenci ve dondurma/yayın kapıları korunuyor.
+- Uçtan uca API testi (`evaluatedExam`) geçiyor.
+
+Bir yan bulgu: ExamCenter'daki eski yükleme paneli tek istekle değerlendiriyordu, ama ölü kod. Satırlar ExamEvaluate'e yönleniyor. Bu yüzden dokunulmadı.
+
+Düzeltilenler (PR #366, merge edildi):
+- Sunucu tarafı:
+  - Her API hatası JSON dönüyor; çıplak Cloudflare hata sayfası yok.
+  - D1 günlük sınırı ve yoğunluk 503 ve açık Türkçe mesajla dönüyor.
+  - Bilinmeyen hata kısa bir hata koduyla dönüyor ve loglanıyor.
+- İstemci tarafı: bağlantı kopması, HTML ya da boş yanıt, düz metin hata ve HTTP durum kodları Türkçe mesaja çevriliyor.
+- Butonlar: değişiklik başlatan buton istek sürerken meşgul görünüyor ve tekrar tıklamayı yok sayıyor. Çift gönderim önleniyor; Safari dahil.
+- `/api/health` artık `no-store` gönderiyor.
+
+Tasarım değiştirilmedi. Tasarım işi en sona bırakıldı; kullanıcı başka bir araçla yaptıracak.
+
+Dağıtım: run 184 production onayı bekliyor. Sonuç Worker'ı için ayrıca "Deploy ANUNEX Result Network" çalıştırılmalı.
