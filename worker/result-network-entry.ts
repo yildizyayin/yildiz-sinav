@@ -99,7 +99,13 @@ async function examDetail(request:Request,env:Env,examId:string){
   payload.exam=artifact.summary;
  }
  const definitionRow={exam_id:examId,payload_json:JSON.stringify(payload)};await publishedDefinitions(env,[definitionRow]);payload=JSON.parse(definitionRow.payload_json);
- const detail=artifact?artifact.detail:snapshotDetail(payload);
+ const rawDetail=artifact?artifact.detail:snapshotDetail(payload);
+ // S010: only outcomes of a verified curriculum are shown; when none remain the reason is stated, never an empty list.
+ const ids=[...new Set((rawDetail.outcomes||[]).map((o:any)=>o.outcome_id).filter((x:any)=>typeof x==='string'))] as string[];
+ const verified=ids.length?new Set((await all<any>(env.DB.prepare(`SELECT o.id FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE cv.verified=1 AND o.id IN (${ids.map(()=>'?').join(',')})`).bind(...ids))).map(r=>r.id)):new Set<string>();
+ const outcomes=(rawDetail.outcomes||[]).filter((o:any)=>verified.has(o.outcome_id));
+ const outcomesStatus=outcomes.length?'AVAILABLE':(rawDetail.outcomes||[]).length?'NOT_VERIFIED':'NO_OUTCOME_DATA';
+ const detail={...rawDetail,outcomes,outcomesStatus};
  // Video approval can be withdrawn, but question selection is frozen evidence.
  const videos=Array.isArray(payload.wrongQuestionIds)?await all<any>(env.DB.prepare(`SELECT DISTINCT vl.title,vl.url,vl.link_type,q.question_no FROM exam_questions q JOIN video_links vl ON vl.exam_question_id=q.id AND vl.approved=1 WHERE q.exam_id=? AND q.id IN(SELECT value FROM json_each(?)) ORDER BY q.question_no LIMIT 50`).bind(examId,JSON.stringify(payload.wrongQuestionIds))):[];
  return json({ok:true,...detail,exam:payload.exam,outcomeAnalysisRevision:payload.outcomeAnalysisRevision||null,outcomeAnalysisUpdatedAt:payload.outcomeAnalysisUpdatedAt||null,videos,snapshotVersion:peer.snapshot_version,resultSource:artifact?'PRIVATE_ARTIFACT':'PUBLISHED_SNAPSHOT',videoEvidenceUnavailable:!Array.isArray(payload.wrongQuestionIds)});
