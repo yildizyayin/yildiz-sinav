@@ -1945,3 +1945,30 @@ Durum: KOD HAZIR. PR #348 açık; dağıtımdan sonra merge edilecek.
 Kanıt: `tests/a076-theme-per-user.test.ts`. 3 mutasyon yakalandı.
 
 Sonraki iş: A077.
+
+### A077 — yönetim ve izleyici ekranları, 23 Ekim
+
+Durum: KOD HAZIR. PR #349 açık; dağıtımdan sonra merge edilecek.
+
+- Yeni: `/api/admin/operations-summary` ve Süper Admin paneli. Gerçek sağlık, iş kuyruğu ve son hata özetini veritabanından okur; uydurma sayı göstermez.
+- Ajan yük testi artık yalnız `AGENT_LOAD_TEST_ENABLED='true'` ise başlatılabiliyor. Kullanıcı sayısı en çok 200, varsayılan 50. Workflow varsayılanı da 50'ye indi.
+- Ajan serbest komut çalıştıramıyor; yalnız tanımlı işler var (mevcut durum doğrulandı, testle sabitlendi).
+
+Kanıt: `tests/a077-operations.test.ts`.
+
+### A078 — mobil/PWA/tahta ve kitap bağlantıları, 23 Ekim
+
+Durum: KOD HAZIR. PR #350 açık; dağıtımdan sonra merge edilecek.
+
+- Tahta modu (`/board/:belge`): yazdırılan kitapçıkla aynı soru verisi; tam ekran, soru soru, kalem, şıkları ve cevabı göster/gizle, çözüm metni ve çözüm videosu. Video yalnız onaylı ve https ise gösteriliyor.
+- Kitap karekodu (`/k/:anahtar`): yalnız bilinen türler (çalışma kâğıdı, ödev, test, video) ilgili sayfaya gidiyor. Bilinmeyen tür veya eksik kayıt tahmin edilmiyor. Video bağlantısı https değilse açılmıyor.
+- Çalışma kâğıdı ve ödev sayfaları `?open=` ile doğrudan açılıyor. Studio kütüphanesine "Tahtada aç" eklendi.
+
+Kanıt: `tests/a078-board-qr.test.ts`; 9 mutasyon yakalandı. `studio-preview-swap` testinin kısa şeması yeni alanlarla güncellendi.
+
+Açık kalanlar:
+- Gerçek telefon, tablet ve akıllı tahtada kabul K002'de yapılacak.
+- Tahta modunda soru görselleri henüz çizilmiyor; yalnız metin ve şıklar var.
+- A067'nin karekod sayfası kısmı bu bağlantıyla karşılandı; basılı karekod üretimi A014 kararına bağlı.
+
+Sonraki iş: A079.
