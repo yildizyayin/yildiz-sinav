@@ -1950,9 +1950,9 @@ Sonraki iş: A077.
 
 Durum: KOD HAZIR. PR #349 açık; dağıtımdan sonra merge edilecek.
 
-- Yeni: `/api/admin/operations-summary` ve Süper Admin paneli. Gerçek sağlık, iş kuyruğu ve son hata özetini veritabanından okur; uydurma sayı göstermez.
+- Yeni: `/api/admin/operations-summary` ve Süper Admin paneli. Gönderilemeyen bildirimler ve takılı duyurular gibi gerçek hata sayılarını veritabanından okur; sorun varsa durumu "ATTENTION" yapar. Öğretmen, öğrenci ve veli göremez.
 - Ajan yük testi artık yalnız `AGENT_LOAD_TEST_ENABLED='true'` ise başlatılabiliyor. Kullanıcı sayısı en çok 200, varsayılan 50. Workflow varsayılanı da 50'ye indi.
-- Ajan serbest komut çalıştıramıyor; yalnız tanımlı işler var (mevcut durum doğrulandı, testle sabitlendi).
+- Ajan dispatch yalnız Süper Admin içindir; öğretmen 403 alır (testte). Serbest komut yolu olmadığı kod okumasıyla görüldü; bunun için ayrı test yazılmadı.
 
 Kanıt: `tests/a077-operations.test.ts`.
 
