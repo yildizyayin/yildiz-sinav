@@ -11,6 +11,7 @@ export function resultRetentionFixture(count=1){
  CREATE TABLE exam_result_snapshots(exam_id TEXT,participant_id TEXT REFERENCES exam_participants(id) ON DELETE CASCADE,snapshot_version INTEGER,institution_id TEXT,payload_json TEXT);
  CREATE TABLE result_access_identities(administration_id TEXT,participant_id TEXT REFERENCES exam_participants(id) ON DELETE CASCADE,result_institution_id TEXT REFERENCES result_network_institutions(id) ON DELETE CASCADE);
  CREATE TABLE exam_delivery_profiles(exam_id TEXT,snapshot_version INTEGER);
+ CREATE TABLE institution_app_conversions(institution_id TEXT PRIMARY KEY,status TEXT);
  CREATE TABLE result_retention_events(id TEXT PRIMARY KEY,administration_id TEXT,event_type TEXT,summary_json TEXT);
  CREATE TABLE exam_operation_locks(exam_id TEXT PRIMARY KEY,owner_token TEXT,operation TEXT);
  CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);`);

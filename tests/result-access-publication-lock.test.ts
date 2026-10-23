@@ -22,6 +22,10 @@ it('rolls back institution edits on audit failure and commits both on success', 
       ALTER TABLE institutions ADD COLUMN city TEXT DEFAULT 'City';
       ALTER TABLE institutions ADD COLUMN district TEXT DEFAULT 'District';
       ALTER TABLE institutions ADD COLUMN updated_at TEXT;
+      ALTER TABLE institutions ADD COLUMN contact_name TEXT;
+      ALTER TABLE institutions ADD COLUMN contact_phone TEXT;
+      ALTER TABLE institutions ADD COLUMN contact_email TEXT;
+      ALTER TABLE institutions ADD COLUMN address TEXT;
       UPDATE institutions SET code='ANX-TEST';
       CREATE TRIGGER fail_institution_audit BEFORE INSERT ON audit_logs BEGIN SELECT RAISE(ABORT,'SYNTHETIC_AUDIT_FAILED'); END;`);
     const update = () => updateNetworkInstitution(new Request('https://test', { method: 'PATCH', body: JSON.stringify({ name: 'Changed' }) }), f.env, user, 'school');
