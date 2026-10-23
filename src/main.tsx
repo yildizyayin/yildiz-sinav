@@ -7,6 +7,7 @@ import './styles.css';
 import './report-print.css';
 import './camera-test.css';
 import './expansion.css';
+import './institution-panel-design.css';
 import './panel-system.css';
 import './student-enhancements.css';
 import './operations-ui.css';
