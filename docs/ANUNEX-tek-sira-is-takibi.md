@@ -2094,3 +2094,22 @@ Kodda değişiklik gerekmedi. Testler şunları gösteriyor:
 Kanıt: `tests/s004-result-dealer.test.ts`; 7 mutasyon yakalandı.
 
 Sonraki iş: S005.
+
+### S005 — sonuç ağı kurum ve erişim yönetimi, 23 Ekim
+
+Durum: KOD HAZIR. PR #356 açık.
+
+Zaten doğru olanlar:
+- Erişim kodunu, ağ kurumunu, bayiyi ve yaşam döngüsünü yalnız Süper Admin yönetiyor.
+- Kod 8 haneli ve güvenli rastgele üretiliyor. Yalnız bir kez gösteriliyor (`oneTimeDisplay`). Veritabanında ve audit kaydında açık metin olarak yok.
+- Yayınlanmış sınava yeni öğrenci erişimi eklenemiyor.
+
+Düzeltilen:
+- Kod yeniden verildiğinde (kayıp veya sızıntı) eski kodla açılmış 6 saatlik portal oturumları açık kalıyordu.
+- Artık yeniden verme aynı işlemde açık oturumları iptal ediyor ve bitmemiş aramaları siliyor.
+
+Kanıt: `tests/s005-result-access-reissue.test.ts`; 3 mutasyon yakalandı.
+
+Dürüst not: ilk commit'i tam test paketi sonucunu beklemeden attım ve PR açıldı. `result-access-publication-lock` testinin kısa şeması yeni tablolar yüzünden kırıldı. Hemen ikinci commit'le düzelttim; tam paket geçiyor. Bundan sonra commit yalnız tam paket geçtikten sonra atılacak.
+
+Sonraki iş: S006.
