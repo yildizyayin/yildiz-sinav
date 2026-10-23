@@ -1751,3 +1751,63 @@ Kanıt:
 **Dağıtım notu (03:12):** "Deploy Production Cloudflare Worker" çalışması 39876760146 (main `ad30cef`, PR #326–#339 dahil) kullanıcı onayı bekliyor. Yeni bir merge bu çalışmayı iptal ettiği için çalışma onaylanıp tamamlanana kadar merge yapılmıyor. Sonraki işler dalda hazırlanıp onaydan sonra merge edilecek.
 
 Sonraki iş: A067.
+
+### A067 — YouTube kaynak bağı, 23 Ekim
+
+Durum: KOD HAZIR. PR #340 açık; production dağıtımı tamamlanınca merge edilecek. Karekod sayfası kısmı BEKLİYOR (A078).
+
+Bulunan ve düzeltilen açıklar:
+- Otomatik seçilen YouTube videosu, hiç kimse incelemeden öğrenciye gösteriliyordu. Bu, insan onayı kapısını aşıyordu. Artık otomatik bulunan video yalnız aday olarak kayda geçiyor.
+- `question-support` yayımlanmamış sınav sorusu için de cevap veriyordu. Bu cevap doğru/yanlış/boş durumunu da açığa çıkarıyordu.
+- Kırık ya da ileri tarihe planlanmış videolar da sunulabiliyordu. Artık hangi videonun sunulacağına tek bir kural karar veriyor: video onaylı, yayında, yayın saati gelmiş ve kırık değilse sunuluyor.
+
+Sınırlar:
+- Ürün içinde karekod sayfası henüz yok. Bu kısım A078'deki fiziksel kitap bağlantılarıyla birlikte yapılacak.
+- Otomatik adayları onaylayacak bir Süper Admin ekranı yok.
+
+Kanıt:
+- `tests/a067-video-links.test.ts`
+- 6 mutasyon, hepsi yakalandı.
+- Tam paket 287 dosya / 1.347 test geçti.
+
+### A068 — WhatsApp uygulanabilir bağlantı, 23 Ekim
+
+Durum: kod kısmı hazır (PR #341 açık, dağıtım sonrası merge). Kalan kısım BEKLİYOR: kullanıcının kararı ve Meta doğrulaması.
+
+Zaten doğru çalışanlar:
+- Gelen mesajların imzası doğrulanıyor.
+- Kendiliğinden giden mesajlar yalnız sahibinin eşleştirdiği numaraya gidiyor.
+- Eşleşmemiş, şablonu olmayan ya da sağlayıcısı olmayan gönderimler "atlandı" olarak kaydediliyor.
+- Yoklama bildirimi kuyruğu henüz gönderilmiyor.
+
+Bulunan açık:
+- 6 haneli eşleştirme kodu için deneme sınırı yoktu.
+- Artık bir numara saatte 5 hatalı denemeden sonra kod kontrol edemiyor (migration 0136).
+
+Kullanıcıya sorulacaklar:
+- Hangi Business numarası kullanılacak?
+- Numara telefon uygulamasıyla birlikte kullanılacak mı (coexistence)?
+- Meta ücret koşulları neler?
+- Sınırsız WhatsApp duyurusunu kimin gönderebileceği (yalnız yönetici mi?) bir maliyet kararı.
+
+Kanıt:
+- `tests/a068-whatsapp-pairing.test.ts`
+- 3 mutasyon, hepsi yakalandı.
+
+### A069 — bildirim teslimi, 23 Ekim
+
+Durum: KOD HAZIR. PR #342 açık; dağıtım sonrası merge edilecek.
+
+Bulunan ve düzeltilen açıklar:
+- Duyurular yeniden gönderilebiliyordu; gönderilmiş ya da iptal edilmiş duyurular bile. Bu, WhatsApp şablonlarının tekrar gitmesi demekti. Artık taslak veya planlı bir duyuru tek seferde alınıp gönderiliyor; diğer durumlarda 409 dönüyor.
+- Zamanlayıcı, kendi almadığı duyuruyu da dağıtıyordu. Artık yalnız kendi aldığını dağıtıyor.
+- Yarıda kalmış bir gönderim tekrar edildiğinde WhatsApp mesajı ikinci kez gidiyordu. Artık gitmiyor.
+- Duyuruyu iptal etmenin yolu yoktu. İptal eklendi; gönderilmiş duyuru geri çağrılamıyor.
+- Başarısız ve atlanan gönderimler görünmüyordu. Artık listede sayıları, ayrıntı ucunda da kanal, durum ve neden görünüyor.
+
+Kanıt:
+- `tests/a069-notification-delivery.test.ts`
+- 5 mutasyonun 4'ü yakalandı. Kalan, zamanlayıcının sahiplenme kontrolü. Diğer tekillik korumaları aynı işi gördüğü için bu kontrol yedek savunma niteliğinde.
+- Tam paket 287 dosya / 1.348 test geçti.
+
+Sonraki iş: A070.
