@@ -4,6 +4,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileText, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, Network, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 import { api } from '../api';
+import { activePanelTheme, readPanelTheme } from '../lib/panelTheme';
 import { LicenseBoundary } from './LicenseBoundary';
 import { NibiruMark,NibiruNavIcon } from './NibiruMark';
 import { AnunexBrand } from './AnunexBrand';
@@ -197,8 +198,8 @@ export function Layout() {
   };
   if (!user) return null;
   const allowedThemeKeys=(panelExperience?.allowedThemes||[]).map((theme:any)=>String(theme.theme_key));
-  const storedTheme=useMemo(()=>typeof window==='undefined'?null:window.localStorage.getItem('anunex-panel-theme'),[themeRevision]);
-  const activeTheme=panelExperience?.specialDay?.theme_key||(storedTheme&&allowedThemeKeys.includes(storedTheme)?storedTheme:panelExperience?.defaultTheme||'ANUNEX_STANDARD');
+  void themeRevision; // re-read after the appearance page saves
+  const activeTheme=activePanelTheme(readPanelTheme(user.id),allowedThemeKeys,panelExperience?.specialDay?.theme_key,panelExperience?.defaultTheme||'ANUNEX_STANDARD');
   return <div className={`app-shell role-${user.role.toLowerCase()} ${mobileNavOpen?'nav-open':''}`} data-panel-theme={activeTheme} data-panel-module={moduleView}>
     <button className="nav-scrim" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}/>
     <aside className="sidebar" aria-label="Ana menü">
