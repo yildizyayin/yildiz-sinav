@@ -2189,3 +2189,21 @@ Sorular:
    - (b) Kapsamdaki kurum sayısı belli bir eşiğin altındaysa gizlensin. Eşik ne olmalı?
 
 Sonraki iş: S010.
+
+### S010 — sonuç kazanım görünümü, 23 Ekim
+
+Durum: KOD HAZIR. PR #360 açık.
+
+Düzeltilenler:
+- Sonuç detayındaki kazanım listesi, doğrulanmamış müfredata bağlı kazanımları da gösteriyordu. Artık yalnız doğrulanmış müfredat kazanımları dönüyor.
+- Veri yokken "Kazanım rotası" başlığı boş kalıyordu. Artık `outcomesStatus` alanı durumu açıkça veriyor:
+  - AVAILABLE: kazanım var;
+  - NOT_VERIFIED: kazanım var ama müfredat doğrulanmamış;
+  - NO_OUTCOME_DATA: kazanım verisi yok.
+- Portal boş durumda nedenini yazıyor.
+
+Sonradan yayımlanan kazanım analizinin sonuç kanalına yansıması (`published_result_at`) değişmedi ve mevcut testlerle korunuyor.
+
+Kanıt: `tests/s010-result-outcomes.test.ts` (gerçek migration, uçtan uca); 3 mutasyon yakalandı. `result-network-snapshot` fikstürü outcome_id ve doğrulanmış müfredatla güncellendi.
+
+Sonraki iş: S011.
