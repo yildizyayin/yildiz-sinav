@@ -2023,3 +2023,24 @@ Kanıt: `tests/a082-question-import.test.ts`; 19 mutasyon yakalandı.
 Not: kayıt anındaki kopya kontrolü, aynı anda gelen iki yükleme taklit edilerek test edildi. Test ortamı istekleri sırayla işliyor; bu yüzden gerçek eşzamanlılık bu oturumda gösterilemedi.
 
 Sonraki iş: S001.
+
+### S001 — sonuç portalının canlı temeli, 23 Ekim
+
+Durum: BEKLİYOR (canlı doğrulama ve dağıtım onayı kullanıcıda).
+
+Kodda doğrulananlar:
+- `anunex-result-prod` ayrı bir Worker. API yalnız izin listesindeki yollara açık (`resultApiPathAllowed`); geri kalan yollar 404 RESULT_NETWORK_ROUTE_NOT_AVAILABLE döner. Kanıt: `tests/result-worker-boundary.test.ts`.
+- Yeni app yolları (toplu soru aktarımı, operasyon özeti, ödev vb.) sonuç alanından erişilemez.
+- Production Turnstile anahtarı dağıtım workflow'unda gerçek anahtarla değiştiriliyor. Config'teki `1x…BB` yalnız yer tutucu.
+
+Bulgular:
+- Sonuç Worker'ının son başarılı dağıtımı **8 Ekim** (`c5d45c30`).
+- 13 Ekim'deki push dağıtımı (run 38415127532) hâlâ onay bekliyor ve eski bir commit'e ait.
+- Sonuç Worker'ı app kodunu paylaşıyor, ama yalnız `.github/deploy-result-network.trigger` değişince ya da elle başlatılınca dağıtılıyor. Bu yüzden 8 Ekim'den sonraki app düzeltmeleri (yayın kapıları, A079 oturum ve medya düzeltmesi dahil) sonuç alanında **yok**. Bu fark S006 kapsamında ele alınacak.
+- Her PR'da çalışan "Result Provider Isolation Probe" "Provision isolated R2 and Queue resources" adımında kırılıyor. Log bu oturumdan indirilemedi; muhtemel neden hesaptaki 100 Queue sınırı (S015).
+
+Kullanıcıdan gereken:
+1. Eski bekleyen 38415127532 run'ını reddetmek. App dağıtımı bittikten sonra güncel main'den "Deploy ANUNEX Result Network" çalıştırılıp onaylanacak.
+2. `https://sonuc.anunex.com/api/health` yanıtı ve sürüm. Bu oturum sonuç alanını açamıyor; web erişimi izin bekledi ve zaman aşımına uğradı.
+
+Sonraki iş: S002 (kod tarafı).
