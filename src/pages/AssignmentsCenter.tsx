@@ -2,11 +2,12 @@ import { useEffect,useMemo,useState } from 'react';
 import { BookOpenCheck,CalendarDays,CheckSquare,Send,Users } from 'lucide-react';
 import { api } from '../api';
 import { useAuth } from '../auth';
+import { useSearchParams } from 'react-router-dom';
 import { HomeworkMistakes, HomeworkResults, HomeworkSolve } from '../components/HomeworkPanels';
 const RSTATUS:Record<string,string>={ASSIGNED:'Atandı',STARTED:'Başladı',COMPLETED:'Gönderildi',EXCUSED:'Muaf'};
 
 export function AssignmentsCenter(){
- const{user}=useAuth();const isStudent=user?.role==='STUDENT';const[assignments,setAssignments]=useState<any[]>([]),[students,setStudents]=useState<any[]>([]),[classes,setClasses]=useState<any[]>([]),[classId,setClassId]=useState(''),[selected,setSelected]=useState<Set<string>>(new Set()),[form,setForm]=useState({title:'',description:'',dueAt:'',publish:true}),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('');const[open,setOpen]=useState('');
+ const{user}=useAuth();const isStudent=user?.role==='STUDENT';const[assignments,setAssignments]=useState<any[]>([]),[students,setStudents]=useState<any[]>([]),[classes,setClasses]=useState<any[]>([]),[classId,setClassId]=useState(''),[selected,setSelected]=useState<Set<string>>(new Set()),[form,setForm]=useState({title:'',description:'',dueAt:'',publish:true}),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('');const[params]=useSearchParams();const[open,setOpen]=useState(params.get('open')||'');
  const load=async()=>{try{const a=await api<any>('/api/platform/assignments');setAssignments(a.assignments||[]);if(!isStudent){const[s,c]=await Promise.all([api<any>('/api/students?status=ACTIVE'),api<any>('/api/classes')]);setStudents(s.students||[]);setClasses(c.classes||[]);if(!classId&&c.classes?.[0])setClassId(c.classes[0].id)}}catch(e:any){setError(e.message)}};
  useEffect(()=>{void load()},[]);
  const visibleStudents=useMemo(()=>students.filter(s=>!classId||s.class_id===classId),[students,classId]);
