@@ -1,3 +1,4 @@
+import { handleInstitutionClaim } from './lib/institution-claim';
 import { releaseOf } from './lib/release-drift';
 import app from './privacy-minimization-entry';
 import type { CapacityJobMessage, Env } from './types';
@@ -101,6 +102,8 @@ async function productionHealth(env: Env): Promise<Response> {
 
 async function handleFetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const url = new URL(request.url);
+  const claim = await handleInstitutionClaim(request,env);
+  if (claim) return claim;
   const resultNetwork = await handleResultNetworkRequest(request,env);
   if (resultNetwork) return resultNetwork;
   if (url.pathname === '/api/health' && request.method === 'GET') return productionHealth(env);
