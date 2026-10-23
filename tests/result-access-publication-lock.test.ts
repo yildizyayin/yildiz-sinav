@@ -7,7 +7,9 @@ function fixture() {
   f.db.exec(`CREATE TABLE exams(id TEXT PRIMARY KEY,academic_year TEXT);
     INSERT INTO exams VALUES('e','2026-2027');
     CREATE TABLE national_institution_directory(meb_code TEXT,name TEXT,city TEXT,district TEXT,status TEXT);
-    INSERT INTO national_institution_directory VALUES('code','Sentetik kurum','İstanbul','Kartal','ACTIVE');`);
+    INSERT INTO national_institution_directory VALUES('code','Sentetik kurum','İstanbul','Kartal','ACTIVE');
+    CREATE TABLE IF NOT EXISTS result_portal_sessions(identity_id TEXT,revoked_at TEXT);
+    CREATE TABLE IF NOT EXISTS result_lookup_challenges(identity_id TEXT,verified_at TEXT);`);
   return f;
 }
 const request = (participantId = 'p000') => new Request('https://test', { method: 'POST', body: JSON.stringify({ administrationId: 'a', participantId, mebCode: 'code', fullName: 'Sentetik Öğrenci', studentNumber: '123', gradeLevel: 7 }) });
