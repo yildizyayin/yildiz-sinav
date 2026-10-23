@@ -3,6 +3,16 @@ name: Result Provider Isolation Probe
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    # S015: each run creates a synthetic R2 bucket and four Queues on the shared account (Queue limit 100).
+    # Run it only when the provider-facing result code or the probe itself changes.
+    paths:
+      - 'worker/result-provider-probe.ts'
+      - 'worker/lib/result-artifact*.ts'
+      - 'worker/lib/result-retention-queue.ts'
+      - 'scripts/*result-probe*'
+      - 'scripts/run-result-provider-probe.mjs'
+      - 'wrangler.result.production.jsonc'
+      - '.github/workflows/result-provider-probe.yml'
   workflow_dispatch:
 
 permissions:
