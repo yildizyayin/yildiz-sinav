@@ -2288,3 +2288,50 @@ Soru: temizlikte "lisanssız" kimdir?
 Ayrıca süre kuralı (90 gün / 30 Eylül) onaylanmalı.
 
 Sonraki iş: S015.
+
+### S015 — sonuç kaynak kotası engeli, 23 Ekim
+
+Durum: KOD HAZIR (#364). Kaynak temizliği kullanıcı onayı bekliyor; hiçbir kaynak silinmedi.
+
+Bulgular:
+- "Result Provider Isolation Probe" her PR'da gerçek hesapta önce sentetik bir R2 bucket (`anunex-result-probe-<PR>`) açıyor, sonra 4 Queue açmaya çalışıyor.
+- Hesap 100 Queue sınırında olduğu için Queue adımı her PR'da kırılıyor. Bucket'lar hiç silinmiyor; şu an **128** adet var (227–363). Bu oturumdaki PR'lar da yaklaşık 24 tane ekledi.
+- Probe, gerekli bir kontrol değil (merge'leri engellemedi). Ama her PR'da kaynak harcıyor ve hiçbir şey test etmiyor.
+- Production sonuç akışının Queue'ları (artifact/retention) bu oturumdan listelenemedi; Cloudflare aracında Queue listeleme yok. Bu yüzden 100 sınırının production akışına etkisi henüz ölçülmedi.
+
+Değişiklik (#364): probe artık yalnız sağlayıcıya dönük sonuç kodu ya da probe dosyaları değişince çalışıyor; elle çalıştırma korunuyor.
+
+Kullanıcıdan gereken:
+1. Kapanmış PR'ların sentetik bucket'larının ve kalan probe Queue'larının denetimli temizliği için onay. Mevcut audit/cleanup script'i yalnız PR252/253 için kilitli; genişletilmesi gerekecek.
+2. Hesaptaki Queue listesi; Cloudflare panelinden ya da audit workflow'undan alınabilir.
+
+### S016 / S017 — 10.000 ve 1.000.000 istek ölçümü, 23 Ekim
+
+Durum: BEKLİYOR. Ölçüm başlatılmadı.
+
+Sözleşme gereği yetkili, izole ortam ve bütçe olmadan pahalı yük başlatılmaz. Ücretli plan Aralık'tan önce yok. Ölçüm yokken "hazır" denmez. Eşikler (hata oranı, p95 gecikme) ve ortam kullanıcıyla belirlenecek; K004 ile birlikte ele alınabilir.
+
+### S018 — sonuç mobil işlev kabulü
+
+Durum: BEKLİYOR. Gerçek telefon ve masaüstü kabulü K002'de yapılacak.
+
+### K001 — yedek ve geri dönüş kanıtı, 23 Ekim
+
+Durum: BEKLİYOR (production onayı).
+
+Araç hazır: "Verify Production D1 Recovery" workflow'u haftalık çalışıyor. Şunları yapıyor:
+- Time Travel bookmark'ını doğruluyor;
+- veritabanını izole runner'a dışa aktarıyor;
+- sqlite'a geri yüklüyor, bütünlük ve tablo kontrolü yapıyor;
+- dosyaları siliyor.
+
+11 ve 18 Ekim çalıştırmaları production ortam onayı bekliyor ve hiç çalışmadı.
+
+Not: tam D1 dışa aktarma bütün satırları okur. Ücretsiz plandaki günlük 5M okuma kotasından pay yer; düşük trafikli bir saatte onaylanmalı.
+
+Uygulama sürümü geri dönüşü Cloudflare Worker sürümleriyle yapılabiliyor. S006 ile her dağıtım commit'ini taşıyacak.
+
+### Bu turun sonu — kalan işler
+
+- K002, A080, D001–D007, K004 ve K003, kullanıcı onayına ya da canlı/fiziksel teste bağlı.
+- Açık PR'lar: #340–#364. App dağıtımı (run 39876760146) onaylanıp bittikten sonra sırayla merge edilecek.
