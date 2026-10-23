@@ -8,6 +8,7 @@ import { runNibiru } from './lib/nibiru';
 import { nibiruRoutingMatrix, probeNibiruModels } from './lib/nibiru-model-router';
 import { extractWhatsAppMessages, sendWhatsAppText, verifyWhatsAppSignature, whatsappReady } from './lib/whatsapp';
 
+export const LOAD_TEST_MAX_VUS=200;
 const WHATSAPP_ROLES = new Set(['PARENT','TEACHER','GUIDANCE_TEACHER','INSTITUTION_MANAGER']);
 
 const AI_AGENT_WORKFLOWS = [
@@ -152,7 +153,13 @@ async function dispatchAiAgent(request:Request,env:Env,user:AuthUser){
   if(Object.keys(rawInputs).some(key=>!allowedInputs.has(key)))return badRequest('Workflow input alanı geçersiz.');
   const inputs:Record<string,string>={};
   for(const [key,value] of Object.entries(rawInputs))inputs[key]=String(value);
-  if(workflow.file==='agent-yuk-testi.yml'&&inputs.sanal_kullanici_sayisi&&!/^[1-9][0-9]{0,5}$/.test(inputs.sanal_kullanici_sayisi))return badRequest('Sanal kullanıcı sayısı 1–999999 arasında olmalıdır.');
+  // A077: the load test reads the account-wide D1 quota (shared with production on the free plan); it runs only
+  // when explicitly enabled and with a bounded number of virtual users.
+  if(workflow.file==='agent-yuk-testi.yml'){
+    if(env.AGENT_LOAD_TEST_ENABLED!=='true')return apiError(409,'LOAD_TEST_DISABLED','Yük testi kapalı: ücretsiz D1 kotası üretimle ortaktır. AGENT_LOAD_TEST_ENABLED=true ile açıkça etkinleştirilmelidir.');
+    const vus=inputs.sanal_kullanici_sayisi||'50';if(!/^[1-9][0-9]{0,2}$/.test(vus)||Number(vus)>LOAD_TEST_MAX_VUS)return badRequest(`Sanal kullanıcı sayısı 1–${LOAD_TEST_MAX_VUS} arasında olmalıdır.`);
+    inputs.sanal_kullanici_sayisi=vus;
+  }
   let ref:string;
   try{ref=agentDispatchRef(workflow.file,env.GITHUB_AGENT_CHECK_REF)}catch{return apiError(503,'AGENT_REF_INVALID','Ajan denetim dalı yapılandırması geçersiz.')}
   try{

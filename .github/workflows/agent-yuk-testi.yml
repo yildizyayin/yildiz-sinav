@@ -10,7 +10,7 @@ on:
     inputs:
       sanal_kullanici_sayisi:
         description: "Eşzamanlı sanal kullanıcı sayısı"
-        default: "1000"
+        default: "50"
         required: false
         type: number
 
@@ -29,7 +29,7 @@ jobs:
     env:
       TARGET_URL: ${{ secrets.STAGING_URL || vars.STAGING_URL || 'https://demo.anunex.com' }}
       LOAD_TEST_ALLOWED_ORIGINS: ${{ vars.LOAD_TEST_ALLOWED_ORIGINS || 'https://demo.anunex.com' }}
-      VUS: ${{ inputs.sanal_kullanici_sayisi || '1000' }}
+      VUS: ${{ inputs.sanal_kullanici_sayisi || '50' }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -53,8 +53,8 @@ jobs:
 
           export const options = {
             stages: [
-              { duration: '2m', target: Number(__ENV.VUS || 1000) },
-              { duration: '5m', target: Number(__ENV.VUS || 1000) },
+              { duration: '2m', target: Number(__ENV.VUS || 50) },
+              { duration: '5m', target: Number(__ENV.VUS || 50) },
               { duration: '2m', target: 0 },
             ],
             thresholds: {
