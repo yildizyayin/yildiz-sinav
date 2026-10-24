@@ -2,9 +2,9 @@ import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Archive, ArrowLeft, ArrowRight, BookOpenCheck, Check, CheckCircle2, CircleAlert, Clock3, Copy, Eye, FileText, FileUp, Globe2, Info, Layers3, Link2, LockKeyhole, MoreVertical, PlayCircle, Printer, RefreshCw, Save, Send, Share2, ShieldCheck, Sparkles, Trash2, UploadCloud, Workflow } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import { api, qs } from '../api';
+import { api, qs, ApiError } from '../api';
 import { useAuth } from '../auth';
-import { ExamReadiness } from '../components/ExamReadiness';
+import { ExamReadiness, readinessTarget } from '../components/ExamReadiness';
 import { ExamOutcomeEditor } from '../components/ExamOutcomeEditor';
 import { ExamChannelNotice } from '../components/ExamChannelNotice';
 import { ExamSaveReview, reviewExamInputs } from '../components/ExamSaveReview';
@@ -77,8 +77,25 @@ export function ExamDefinitions() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const activationInFlight = useRef(false);
   const [saveReviewOpen, setSaveReviewOpen] = useState(false);
   const [detailTab, setDetailTab] = useState('general');
+  const [activationAttempted, setActivationAttempted] = useState(false);
+  const fixReadiness = (code: string) => {
+    const target = readinessTarget(code);
+    setDetailTab(target.tab);
+    setTimeout(() => {
+      const section = document.getElementById(target.id);
+      section?.scrollIntoView?.({ block: 'center' });
+      (section?.querySelector<HTMLElement>('input,select,button') || section?.closest('.panel')?.querySelector<HTMLElement>('input,select,button'))?.focus();
+    }, 0);
+  };
+  const requestedFix = searchParams.get('fix');
+  useEffect(() => {
+    setActivationAttempted(false);
+    if (detail?.exam?.id && requestedFix) fixReadiness(requestedFix);
+  }, [detail?.exam?.id, requestedFix]);
+
   const [openExamMenu, setOpenExamMenu] = useState<string | null>(null);
 
   const [createMethod, setCreateMethod] = useState<CreateMethod>('ANSWER_KEY');
@@ -458,11 +475,26 @@ export function ExamDefinitions() {
   };
 
   const publish = async () => {
-    if (!selectedId) return;
-    if (outcomeRequired && Number(detail?.readiness?.outcome_mapped_questions || 0) < Number(detail?.readiness?.active_expected_questions ?? detail?.readiness?.expected_questions ?? 0)) { setError('Kazanımlı sınavda her aktif soru bir kazanıma bağlanmadan yayınlama yapmayın.'); return; }
+    if (busy || activationInFlight.current || !selectedId) return;
+    setActivationAttempted(true);
+    setError('');
+    if (!detail?.readiness?.ready_to_publish) {
+      if (!detail?.readiness) setError('Aktifleştirme kontrolü yüklenemedi. Sınavı yenileyin.');
+      return;
+    }
     if (!confirm('Sınav değerlendirmeye açılsın mı? Soru yapısı kilitlenecek; öğrenci sonuçları ayrıca yayınlanacaktır.')) return;
-    setBusy(true); setError('');
-    try { await api(`/api/exam-definitions/${selectedId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'ACTIVE' }) }); setNotice('Sınav aktif: optik veri yükleyip değerlendirebilirsiniz. Öğrenci sonuçları henüz yayınlanmadı.'); await loadDetail(selectedId); await loadRows(); } catch (e: any) { setError(e.message); } finally { setBusy(false); }
+    activationInFlight.current = true; setBusy(true); setNotice('');
+    try {
+      await api(`/api/exam-definitions/${selectedId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'ACTIVE' }) });
+      setNotice('Sınav aktif: optik veri yükleyip değerlendirebilirsiniz. Öğrenci sonuçları henüz yayınlanmadı.');
+      try { await loadDetail(selectedId); await loadRows(); }
+      catch { setError('Aktifleştirme kaydedildi; ekran yenilenemedi. Güncel durumu kontrol etmek için sınavı yeniden açın.'); }
+    } catch (e: any) {
+      setError(e.message || 'Sınav aktifleştirilemedi.');
+      if (e instanceof ApiError && e.status === 409 && Array.isArray((e.details as any)?.blockers)) {
+        setDetail((current: any) => ({ ...current, readiness: e.details }));
+      }
+    } finally { activationInFlight.current = false; setBusy(false); }
   };
 
   const closeDetail = () => {
@@ -666,7 +698,7 @@ export function ExamDefinitions() {
       </section>}
 
       {builderStep === 2 && <section id="exam-answer-key" className="exam-simple-card builder-current-step">
-        <div className="exam-simple-card-head"><span className="simple-number">02</span><div><h2>Cevap anahtarı</h2>{detail?.correctionOpen&&<p>Düzeltme açık. Kaydettikten sonra yeniden değerlendirin ve sonuçları yayınlayın.</p>}<p>Hazır şablon ve CSV/XLSX dosyasıyla hızlıca eşleştirin.</p></div></div>
+        <div className="exam-simple-card-head"><span className="simple-number">02</span><div><h2 id="exam-answers">Cevap anahtarı</h2>{detail?.correctionOpen&&<p>Düzeltme açık. Kaydettikten sonra yeniden değerlendirin ve sonuçları yayınlayın.</p>}<p>Hazır şablon ve CSV/XLSX dosyasıyla hızlıca eşleştirin.</p></div></div>
         <div className="simple-method-row"><button type="button" className={createMethod === 'ANSWER_KEY' ? 'active' : ''} onClick={() => setCreateMethod('ANSWER_KEY')}><FileUp size={16}/> Hazır şablon / dosya</button><button type="button" className={createMethod === 'MANUAL' ? 'active' : ''} onClick={() => setCreateMethod('MANUAL')}><BookOpenCheck size={16}/> Kendin oluştur</button></div>
         {createMethod === 'ANSWER_KEY' ? <>
           <div className="simple-file-row"><label><span>Hazır sınav şablonu</span><select value={templateKey} onChange={(e) => { const key = e.target.value; const chosen = EXAM_TEMPLATES.find((template) => template.key === key); setTemplateKey(key); setDefinitionMode(chosen?.requiresOutcomes ? 'OUTCOME' : 'STANDARD'); const baseKey = key.endsWith('_OUTCOME') ? key.slice(0, -8) : key; const nextChoice = baseKey === 'SCHOOL_5' || baseKey === 'SCHOOL_6' || baseKey === 'SCHOOL_7' ? `STD_${baseKey.slice(-1)}` : baseKey; if (EXAM_CHOICES.some((choice) => choice.key === nextChoice)) setChoiceKey(nextChoice); }}>{EXAM_TEMPLATES.map((template) => <option key={template.key} value={template.key}>{template.label}</option>)}</select></label><div className="simple-template-note"><strong>{selectedTemplate.label}</strong><span>{selectedTemplate.description}</span><div><button type="button" className="ghost" onClick={downloadOutcomeTemplate}>Kazanımlı şablonu indir</button><button type="button" className="secondary" onClick={() => applyTemplate()}>Şablonu uygula</button></div></div></div>
@@ -716,27 +748,28 @@ export function ExamDefinitions() {
       <ExamChannelNotice examId={selectedId} refreshKey={detail}/>
       {error && <div className="alert error" role="alert">{error}</div>}{notice && <div className="alert success" role="status">{notice}</div>}
       <nav className="exam-tabs" aria-label="Sınav düzenleme bölümleri" role="tablist">{[['general','Sınav bilgileri'],['key','Cevap anahtarı'],['outcomes','Kazanımlar'],['content','Belgeler ve optik']].map(([id,label])=><button key={id} role="tab" aria-selected={detailTab===id} onClick={()=>setDetailTab(id)}>{label}</button>)}</nav>
-      {detailTab==='outcomes'&&canEditDetail&&<ExamOutcomeEditor examId={selectedId} required={outcomeRequired} onSaved={()=>void loadDetail(selectedId)}/>}
+      {detailTab==='outcomes'&&canEditDetail&&<div id="exam-outcomes"><ExamOutcomeEditor examId={selectedId} required={outcomeRequired} onSaved={()=>void loadDetail(selectedId)}/></div>}
       <div className="exam-detail-toolbar"><button className="ghost" onClick={closeDetail}><ArrowLeft size={16} /> Sınav listesine dön</button><div className="exam-detail-actions">{canEditDetail ? <><button className="secondary" disabled={busy} onClick={() => void copyExamById(selectedId)}><Copy size={16} /> Kopyala</button>{detail.exam.status !== 'ARCHIVED' && <button className="danger" disabled={busy} onClick={() => void archiveExam()}><Trash2 size={16} /> Arşivle</button>}{user?.role === 'SUPER_ADMIN' && <button className="danger" disabled={busy} onClick={() => void deleteExamById(selectedId)}><Trash2 size={16} /> Çöp kutusu</button>}<div style={{ position: 'relative' }}><button type="button" className="icon-button" aria-label="Sınav işlemleri" aria-expanded={openExamMenu === `detail-${selectedId}`} onClick={() => setOpenExamMenu((current) => current === `detail-${selectedId}` ? null : `detail-${selectedId}`)}><MoreVertical size={18} /></button>{openExamMenu === `detail-${selectedId}` && <div className="exam-row-menu exam-detail-menu" role="menu"><button role="menuitem" onClick={() => setOpenExamMenu(null)}><Eye size={14} /> Görüntüle / Düzenle</button><button role="menuitem" onClick={() => void copyExamById(selectedId)}><Copy size={14} /> Kopyala</button>{detail.exam.status !== 'ARCHIVED' && <button role="menuitem" onClick={() => void archiveExam()}><Archive size={14} /> Arşivle</button>}{user?.role === 'SUPER_ADMIN' && <button role="menuitem" onClick={() => void deleteExamById(selectedId)}><Trash2 size={14} /> Çöp kutusu</button>}</div>}</div></> : <span className="status neutral">Merkezi sınav · yalnızca görüntüleme</span>}</div></div>
-      <div className="section-head"><div><h2>{detail.exam.title}</h2><p>{detail.exam.exam_type} · {detail.exam.grade_level}. sınıf · {detail.exam.status === 'DRAFT' ? 'Düzenlenebilir taslak' : detail.exam.status === 'ARCHIVED' ? 'Arşivlendi' : 'Değerlendirmeye açık'}{detail.exam.outcome_mode === 'OFFICIAL_REQUIRED' ? ' · doğrulanmış kazanım zorunlu' : ''}{detail.exam.result_network_enabled ? ' · sonuc.anunex.com seçili' : ''}</p></div>{detail.exam.status === 'DRAFT' && canEditDetail && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="secondary" disabled={busy} onClick={saveGeneral}><Save size={16} /> Kartı güncelle</button><button className="primary" disabled={busy || !detail.readiness?.ready_to_publish} onClick={publish}><Send size={17} /> Sınavı aktifleştir</button></div>}</div>
+      <div className="section-head"><div><h2>{detail.exam.title}</h2><p>{detail.exam.exam_type} · {detail.exam.grade_level}. sınıf · {detail.exam.status === 'DRAFT' ? 'Düzenlenebilir taslak' : detail.exam.status === 'ARCHIVED' ? 'Arşivlendi' : 'Değerlendirmeye açık'}{detail.exam.outcome_mode === 'OFFICIAL_REQUIRED' ? ' · doğrulanmış kazanım zorunlu' : ''}{detail.exam.result_network_enabled ? ' · sonuc.anunex.com seçili' : ''}</p></div>{detail.exam.status === 'DRAFT' && canEditDetail && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="secondary" disabled={busy} onClick={saveGeneral}><Save size={16} /> Kartı güncelle</button><button className="primary" disabled={busy} onClick={publish}><Send size={17} /> Sınavı aktifleştir</button></div>}</div>
       {error && <div className="alert error">{error}</div>}{notice && <div className="alert success">{notice}</div>}
+      {detail.exam.status === 'DRAFT' && activationAttempted && <ExamReadiness readiness={detail.readiness} onFix={fixReadiness}/>}
       <div hidden={detailTab!=='general'}>
-      {detail.exam.status === 'DRAFT' && <ExamReadiness readiness={detail.readiness}/>}
+      {detail.exam.status === 'DRAFT' && !activationAttempted && <ExamReadiness readiness={detail.readiness} onFix={fixReadiness}/>}
       {detail.exam.status === 'DRAFT' && canEditDetail && <section className="panel" style={{marginBottom:20}}><h2>Sınav kartı ve puanlama</h2><div className="form-grid">
         <label>Sınav adı<input value={createForm.title} onChange={e=>setCreateForm(f=>({...f,title:e.target.value}))}/></label>
         <label>Yayınevi<input value={createForm.publisherName} onChange={e=>setCreateForm(f=>({...f,publisherName:e.target.value}))}/></label>
         <label>Oturum / bölüm<input value={createForm.sessionLabel} onChange={e=>setCreateForm(f=>({...f,sessionLabel:e.target.value}))}/></label>
         <label>Sınav tarihi<input type="date" value={createForm.examDate} onChange={e=>setCreateForm(f=>({...f,examDate:e.target.value}))}/></label>
-        <label>Puanlama profili<select value={createForm.scoringRuleVersionId} onChange={e=>setCreateForm(f=>({...f,scoringRuleVersionId:e.target.value}))}><option value="">Profil seçin</option>{(options.scoringVersions||[]).map((profile:any)=><option key={profile.id} value={profile.id}>{profile.rule_name||profile.rule_code} · {profile.academic_year||''}</option>)}</select></label>
+        <label id="exam-scoring">Puanlama profili<select value={createForm.scoringRuleVersionId} onChange={e=>setCreateForm(f=>({...f,scoringRuleVersionId:e.target.value}))}><option value="">Profil seçin</option>{(options.scoringVersions||[]).map((profile:any)=><option key={profile.id} value={profile.id}>{profile.rule_name||profile.rule_code} · {profile.academic_year||''}</option>)}</select></label>
       </div><p>Değişiklikleri üstteki Kartı güncelle düğmesiyle kaydedin.</p></section>}
       <div className="kpi-grid" style={{ marginBottom: 20 }}><div className="kpi-card"><span>Soru</span><strong>{detail.readiness?.actual_questions || 0}/{detail.readiness?.expected_questions || 0}</strong></div><div className="kpi-card"><span>Cevap</span><strong>{detail.readiness?.actual_answers || 0}/{detail.readiness?.expected_answers || 0}</strong></div><div className="kpi-card"><span>Kazanımlı Soru</span><strong>{detail.readiness?.outcome_mapped_questions || 0}</strong></div><div className="kpi-card"><span>Hazır mı?</span><strong>{detail.readiness?.ready_to_publish ? 'Evet' : 'Eksik var'}</strong></div></div>
       </div><div hidden={detailTab!=='key'}>
       {(detail.exam.status === 'DRAFT'||detail.answerKeyEditable) && canEditDetail && <>
-        {detail.exam.status==='DRAFT'&&<div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Dersler ve soru aralıkları</h2><p>Başlangıç/bitiş numarası ve 4 veya 5 şık yapısı soru tanımının parçasıdır.</p></div></div><label>Kitapçıklar<input value={booklets} onChange={(e) => setBooklets(e.target.value)} /></label><div className="cards-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div style={{ flex: 1 }}><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label><label className="compact-field">Yanlış götürme<input type="number" step="0.5" value={cfg.wrongDivisor} onChange={(e) => patchSubject(s.id, { wrongDivisor: Number(e.target.value) })} /></label></>}</div>; })}</div><button className="secondary" onClick={saveStructure}><Save size={16} /> Yapıyı Kaydet</button></div>}
+        {detail.exam.status==='DRAFT'&&<div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2 id="exam-structure">Dersler ve soru aralıkları</h2><p>Başlangıç/bitiş numarası ve 4 veya 5 şık yapısı soru tanımının parçasıdır.</p></div></div><label>Kitapçıklar<input value={booklets} onChange={(e) => setBooklets(e.target.value)} /></label><div className="cards-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><input type="checkbox" checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /><div style={{ flex: 1 }}><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label><label className="compact-field">Yanlış götürme<input type="number" step="0.5" value={cfg.wrongDivisor} onChange={(e) => patchSubject(s.id, { wrongDivisor: Number(e.target.value) })} /></label></>}</div>; })}</div><button className="secondary" onClick={saveStructure}><Save size={16} /> Yapıyı Kaydet</button></div>}
 
         {!!detail.subjects?.length && !!detail.booklets?.length && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Cevap anahtarı</h2>{detail.correctionOpen&&<p>Düzeltme açık. Kaydettikten sonra yeniden değerlendirin ve sonuçları yayınlayın.</p>}<p>Doğru cevap, alternatif kabul, soru durumu ve kazanım bağlantısı aynı tanımda tutulur.</p></div><CheckCircle2 /></div>{detail.subjects.map((s: any) => <div key={s.subject_id} style={{ padding: 14, marginBottom: 12, border: '1px solid var(--border,#e5e7eb)', borderRadius: 12 }}><strong>{s.name} · {s.question_count} soru · {s.option_count || 5} şık</strong>{detail.booklets.map((b: any) => { const entry = keyEntries.find((x) => x.subjectId === s.subject_id && x.bookletCode === b.code); return <div key={b.code}><label>{b.code} Kitapçığı<input value={entry?.answers || ''} onChange={(e) => setKey(s.subject_id, b.code, e.target.value)} placeholder={`${s.question_count} cevap`} /><small>{entry?.answers.length || 0}/{s.question_count}</small></label><div className="question-meta-grid">{Array.from({ length: Number(s.question_count) }, (_, index) => { const questionNo = Number(s.question_start || 1) + index; const status = entry?.questionStatuses?.[index] || 'ACTIVE'; const accepted = entry?.acceptedAnswers?.[index]; const acceptedText = Array.isArray(accepted) ? accepted.join('|') : accepted || entry?.answers?.[index] || ''; return <div key={questionNo}><strong>{questionNo}</strong><select aria-label={`${b.code} ${questionNo} durumu`} value={status} onChange={(e) => setQuestionMetadata(s.subject_id, b.code, index, { status: e.target.value as any })}><option value="ACTIVE">Aktif</option><option value="CANCELLED">İptal</option><option value="EXCLUDED">Değerlendirme dışı</option></select><input aria-label={`${b.code} ${questionNo} kabul`} value={acceptedText} onChange={(e) => setQuestionMetadata(s.subject_id, b.code, index, { accepted: e.target.value })} placeholder="A veya A|B" /></div>; })}</div></div>; })}</div>)}          <button className="primary" onClick={saveAnswerKey}><Save size={16} /> Cevap Anahtarını Kaydet</button></div>}
 
-        {detail.exam.status==='DRAFT'&&detail.exam.owner_type === 'CENTRAL' && user?.role === 'SUPER_ADMIN' && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Hangi kurumlar kullanacak?</h2><p>Merkezi sınav yalnız seçtiğiniz kurumlarda görünür.</p></div></div><div className="cards-list">{options.institutions?.map((i: any) => <label className="list-card" key={i.id}><input type="checkbox" checked={assignedInstitutions.includes(i.id)} onChange={(e) => setAssignedInstitutions((x) => e.target.checked ? [...new Set([...x, i.id])] : x.filter((id) => id !== i.id))} /><div><strong>{i.name}</strong><span>{i.status}</span></div></label>)}</div><button className="secondary" onClick={saveInstitutions}><Save size={16} /> Kurumları Kaydet</button></div>}
+        {detail.exam.status==='DRAFT'&&detail.exam.owner_type === 'CENTRAL' && user?.role === 'SUPER_ADMIN' && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2 id="exam-institutions">Hangi kurumlar kullanacak?</h2><p>Merkezi sınav yalnız seçtiğiniz kurumlarda görünür.</p></div></div><div className="cards-list">{options.institutions?.map((i: any) => <label className="list-card" key={i.id}><input type="checkbox" checked={assignedInstitutions.includes(i.id)} onChange={(e) => setAssignedInstitutions((x) => e.target.checked ? [...new Set([...x, i.id])] : x.filter((id) => id !== i.id))} /><div><strong>{i.name}</strong><span>{i.status}</span></div></label>)}</div><button className="secondary" onClick={saveInstitutions}><Save size={16} /> Kurumları Kaydet</button></div>}
       </>}
       {detail.exam.status!=='DRAFT'&&!detail.answerKeyEditable&&<section className="panel"><h2>Cevap anahtarı</h2><p>Cevap anahtarı kilitli. Kazanım eşleştirmelerini ayrı Kazanımlar bölümünde düzenleyebilirsiniz.</p><div className="table-card"><table><thead><tr><th>Ders</th><th>Kitapçık</th><th>Cevaplar</th></tr></thead><tbody>{keyEntries.map(entry=><tr key={`${entry.subjectId}:${entry.bookletCode}`}><td>{subjectName(options,entry.subjectId)}</td><td>{entry.bookletCode}</td><td style={{wordBreak:'break-all'}}>{entry.answers||'—'}</td></tr>)}</tbody></table></div></section>}
       </div><div hidden={detailTab!=='content'}>
