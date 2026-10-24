@@ -204,19 +204,19 @@ export function Layout() {
     <button className="nav-scrim" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}/>
     <aside className="sidebar" aria-label="Ana menü">
       <div className="brand"><AnunexBrand compact inverse tagline/><button className="mobile-nav-close" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}><X size={20}/></button></div>
-      <div className="nibiru-sidebar-card"><NibiruMark size={36} state="active"/><div><strong>Nibiru AI</strong><span>Canlı akademik zekâ</span></div><ChevronRight size={16}/></div>
+      <div className="user-card sidebar-workspace"><div className="avatar">{user.display_name.charAt(0)}</div><div><strong>{user.display_name}</strong><small>{roleName(user.role)}{institution?.name ? ` · ${institution.name}` : ''}</small></div></div>
       <nav className={groupedItems ? 'grouped-sidebar-nav' : undefined}>
         {groupedItems ? groupedItems.map((group) => {
           const activeGroup=group.items.some(item=>isRouteActive(item.to)||hasActiveChild(item));
           const open=openGroups[group.label] ?? activeGroup;
-          return <section className={`nav-group ${open?'open':''}`} key={group.label}>
+          return <section className={`nav-group ${open?'open':''}`} style={navTone(group.items[0]?.to || '/')} key={group.label}>
             <button type="button" className="nav-group-toggle" aria-expanded={open} onClick={()=>setOpenGroups(current=>({...current,[group.label]:!open}))}><span>{group.label}</span><ChevronRight size={14}/></button>
             {open && <div className="nav-group-items">{group.items.map((item,index)=>renderGroupedItem(item,index,group.label))}</div>}
           </section>;
         }) : visibleNav.map((item) => { const Icon=item.icon; return <NavLink key={item.to} style={navTone(item.to)} to={item.to} end={item.to==='/' } onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}
       </nav>
       <div className="sidebar-footer">
-        <div className="user-card"><div className="avatar">{user.display_name.charAt(0)}</div><div><strong>{user.display_name}</strong><small>{roleName(user.role)}{institution?.name ? ` · ${institution.name}` : ''}</small></div></div>
+        <div className="nibiru-sidebar-card"><NibiruMark size={36} state="active"/><div><strong>Nibiru AI</strong><span>Canlı akademik zekâ</span></div><ChevronRight size={16}/></div>
         <button className="ghost sidebar-logout" onClick={async()=>{try{await logout();navigate('/login')}catch(e:any){setLogoutError(e.message)}}}><LogOut size={18}/>Çıkış</button>
       </div>
     </aside>

@@ -251,3 +251,204 @@
     .app-shell[data-panel-theme="ANUNEX_STANDARD"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   }
 }
+
+/* D001 correction: Astra navigation hierarchy, without changing routes or group state. */
+@media screen {
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar {
+    padding: 24px 14px 14px;
+    gap: 16px;
+    background: #f5f7f3;
+    height: 100dvh;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .brand {
+    justify-content: space-between;
+    padding: 0 8px 18px;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .sidebar-workspace {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 10px;
+    padding: 11px;
+    background: #fff;
+    border: 1px solid #dde4dc;
+    border-radius: 9px;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .user-card > div:last-child {
+    display: block;
+    min-width: 0;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .user-card strong {
+    color: #26343b;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .user-card small {
+    color: #59665e;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .avatar {
+    width: 32px;
+    height: 32px;
+    color: #315d4b;
+    background: #eaf0e8;
+    font-weight: 600;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar nav {
+    padding: 0 2px 8px;
+    gap: 0;
+    scrollbar-gutter: stable;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-group {
+    margin: 0 0 6px;
+    flex: 0 0 auto;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-group-toggle {
+    min-height: 44px;
+    padding: 9px 8px;
+    gap: 10px;
+    justify-content: flex-start;
+    color: #3e5048;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .025em;
+    line-height: 1.5;
+    border: 1px solid transparent;
+    border-radius: 8px;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-group-toggle::before {
+    content: "";
+    display: block;
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 25%, #ffffff80, transparent 55%), var(--nav-accent, #56776c);
+    box-shadow: inset -2px -2px 3px #26343b18;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-group-toggle span {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-group-toggle > svg {
+    margin-left: auto;
+    color: #5b6b61;
+    flex: 0 0 14px;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-group.open > .nav-group-toggle {
+    background: #eaf0e7;
+    border-color: #dce5d8;
+    color: #2c4738;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-group-items {
+    gap: 2px;
+    padding: 4px 0 4px 8px;
+    margin: 0 0 2px 15px;
+    border-left: 1px solid #d6dfd2;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 9px;
+    min-height: 42px;
+    padding: 9px 8px;
+    color: #48594f;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    border: 0;
+    border-left: 2px solid transparent;
+    border-radius: 7px;
+    box-shadow: none;
+    transform: none;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-item span {
+    display: block;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-item svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 17px;
+    color: var(--nav-accent, #56776c);
+    stroke-width: 1.7;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar :is(.nav-item:hover, .nav-group-toggle:hover) {
+    color: #263f31;
+    background: #e8eee4;
+    transform: none;
+    box-shadow: none;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-item.active {
+    color: #233c34;
+    background: #e4ece0;
+    border-left-color: var(--nav-accent, #56776c);
+    font-weight: 600;
+    box-shadow: none;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-subitems {
+    margin: 2px 0 2px 10px;
+    padding-left: 6px;
+    border-left-color: #d6dfd2;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .sidebar-footer {
+    margin: 0;
+    padding: 12px 0 0;
+    border: 0;
+    border-top: 1px solid #dde4dc;
+    border-radius: 0;
+    background: transparent;
+    flex: 0 0 auto;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nibiru-sidebar-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    margin: 0 0 6px;
+    padding: 11px;
+    gap: 9px;
+    border: 1px solid #e4ddca;
+    border-radius: 9px;
+    background: #fbfaf2;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nibiru-sidebar-card > div {
+    display: block;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nibiru-sidebar-card > svg:last-child {
+    display: block;
+    color: #706342;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nibiru-sidebar-card strong {
+    color: #51492f;
+    font-size: 13px;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nibiru-sidebar-card span {
+    color: #655e48;
+    font-size: 11px;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .sidebar-logout {
+    display: flex;
+    min-height: 40px;
+    margin: 0;
+    padding: 8px 11px;
+    color: #4e5f53;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  @media (min-width: 1001px) {
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] { grid-template-columns: 240px minmax(0, 1fr); }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar { width: 240px; }
+  }
+  @media (max-width: 1000px) {
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar { gap: 12px; padding: 18px 12px 12px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .brand { padding-bottom: 12px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-item { min-height: 44px; }
+  }
+}

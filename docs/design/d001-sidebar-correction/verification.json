@@ -1,0 +1,112 @@
+[
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": [
+      "/api/platform/exam-center/catalog"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 1180,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": [
+      "/api/platform/exam-center/catalog"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": [
+      "/api/platform/exam-center/catalog"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": [
+      "/api/platform/exam-center/catalog"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": [
+      "/api/platform/exam-center/catalog"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 360,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": [
+      "/api/platform/exam-center/catalog"
+    ]
+  },
+  {
+    "theme": "ANUNEX_FOCUS",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "theme": "ANUNEX_FOCUS",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "theme": "ANUNEX_STUDIO",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "theme": "ANUNEX_STUDIO",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "theme": "ANUNEX_COSMIC",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "theme": "ANUNEX_COSMIC",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "theme": "ANUNEX_NEON",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "theme": "ANUNEX_NEON",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "syntheticUnavailable": []
+  }
+]
