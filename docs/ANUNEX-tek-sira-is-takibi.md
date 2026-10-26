@@ -2494,3 +2494,8 @@ Canlı veriden teşhis:
 - Kişinin seçimi yayınevi etiketini APPROVED yapar; aynı etiket sonraki sınavda otomatik eşleşir.
 - Kazanım isteğe bağlı (varsayılan). 4K TYT taslağında "kazanım zorunlu" işaretli; kullanıcı kaldırmalı ya da eşleştirmeli.
 - Test: `tests/s028-outcome-matching.test.ts`; `outcome-auto-match` testinde "Fiiller" artık öneri alıyor. Tüm paket 1419/1419.
+
+### S026b — Kurum arama listesi görünmüyordu — 26 Ekim
+
+- Sorun: değerlendirme ekranında kurum adı yazılınca liste çıkmıyor gibiydi. Sunucu sonuç döndürüyordu (canlıda "pend" → 16 okul); liste öğrenci formunun mutlak konumlu stilini kullandığı için operatör yerleşiminde sayfanın en üstüne (y=-408) çiziliyordu.
+- PR #387 (merge edildi): liste girişin altında akar. Chromium'da statik build ile önce/sonra ölçüldü. Test: `tests/s026-picker-layout.test.ts`.
