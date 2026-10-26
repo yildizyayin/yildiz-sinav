@@ -49,6 +49,17 @@ describe('S030 simple sonuc evaluation', () => {
     expect(codes.status, codes.text).toBe(200);
     const report = await call('dealerI', `${batch}/report`);
     expect(report.data).toMatchObject({ exam: { title: expect.any(String) }, institution: { name: 'Pendik Deneme Lisesi' } });
+    // S032: the publisher-style pack — list, averages, ranks at every level, answer grid and topics
+    const pack = await call('dealerI', `${batch}/report-pack`);
+    expect(pack.status, pack.text).toBe(200);
+    expect(pack.data.participation).toMatchObject({ school: SHEETS.length, overall: SHEETS.length + 2 });
+    expect(pack.data.subjects.map((s: any) => s.id)).toEqual(['sub_tur', 'sub_mat']);
+    const first = pack.data.students[0];
+    expect(first.ranks).toMatchObject({ school: 1, class: 1 });
+    expect(first.grid.sub_tur).toHaveLength(4);
+    expect(first.grid.sub_tur[0]).toMatchObject({ no: 1, key: 'A' });
+    expect(Object.keys(first.topics)).toEqual(expect.arrayContaining(['sub_tur', 'sub_mat']));
+    expect(pack.data.averages.general.count).toBe(SHEETS.length + 2);
     expect(report.data.rows.map((r: any) => r.institution_rank)).toEqual([...report.data.rows.map((r: any) => r.institution_rank)].sort((a: number, b: number) => a - b));
     void t;
   });
