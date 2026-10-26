@@ -2425,3 +2425,18 @@ Not: 4 işçide çalışırken `question-generation-jobs` testi yük nedeniyle 5
 **Dağıtım**
 - Run 185 (S019) kuyruğu tutuyor. Reddedilmeli; yerine run 186 (S020–S022) onaylanmalı.
 - Sonuç Worker'ı ayrıca dağıtılmalı.
+
+### S023 — Kurum rehberi CSV aktarımı: ilerleme, hata ve onay mesajları — 26 Ekim
+
+**Sorun (canlı veriden):** 13 aktarım çalışmasının ilk 9'u 500'er satırla tamamlandı. 10. çalışma 159 satırdan sonra 3. D1 yazımında (≈4.659. satır) düştü ve `RUNNING` olarak asılı kaldı. Rehberde 46.802 okuldan 4.684'ü var. Hata yalnız sayfanın en üstünde gösterildiği için kullanıcı hiçbir şey görmedi.
+
+**Düzeltme (PR #377, merge edildi):**
+- 250 satırlık paketler; geçici hatada 3 yeniden deneme (1/2/4 sn). 4xx hatalar (429 hariç) denenmez.
+- Yükleme alanının hemen altında ilerleme çubuğu; bitince "N kurum kaydedildi, M satır geçersiz" onayı.
+- Hata olursa neden ve hangi satırda durduğu yazılır; "Kaldığı yerden devam et" butonu.
+- Rehberdeki güncel kurum sayısı gösterilir.
+- Sunucu: paket yazılamazsa çalışma `FAILED` olur ve `DIRECTORY_IMPORT_FAILED` (503) döner. Doğrulama hataları ayrı kodlarla: `DIRECTORY_SOURCE_INVALID`, `DIRECTORY_SOURCE_URL_REQUIRED`, `DIRECTORY_ROWS_INVALID`.
+- Aynı paket yeniden gönderilince kayıt çoğalmaz (upsert).
+- Test: `tests/directory-import-feedback.test.ts` (5). Tüm paket 1412/1412, typecheck ve build temiz.
+
+**Bekleyen:** app deploy'u (main push ile başladı) ve sonuc deploy'u (`Deploy ANUNEX Result Network`, attach_domain=false) kullanıcı onayında. Deploy sonrası `anunex-kurum-rehberi-meb.csv` yeniden yüklenecek.
