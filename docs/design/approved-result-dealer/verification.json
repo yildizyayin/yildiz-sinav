@@ -1,0 +1,111 @@
+[
+  {
+    "role": "DEALER",
+    "state": "login",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "login",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "login",
+    "width": 360,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "workspace",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "workspace",
+    "width": 768,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "workspace",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "workspace",
+    "width": 360,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "report",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "report",
+    "width": 768,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "report",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "empty",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "denied",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/auth/login",
+      "/api/auth/logout"
+    ]
+  },
+  {
+    "role": "DEALER",
+    "state": "loginbusy",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/auth/login"
+    ]
+  }
+]
