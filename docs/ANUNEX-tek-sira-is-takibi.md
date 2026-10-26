@@ -2523,3 +2523,13 @@ Canlı veriden teşhis:
 - `worker/lib/result-optical-quick.ts`: Süper Admin için oluştur → FMT → değerlendirilecek TXT ile test → yayınla.
 - `GET scan-batches/:id/karnes`; Raporlar paneli (admin rapor bölümü, kurum ve bayi ekranları).
 - Test: `tests/s030-sonuc-simple-flow.test.ts` (gerçek Sekonic 129 FMT/TXT ile). Tüm paket 1427/1427. Chromium'da sahte veriyle ekran kontrolü.
+
+### S031 — sonuc deploy'u app ile; temiz kurum PDF'i; tarama düzeltmeleri — 26 Ekim
+
+- Tarama: güncel kod tarayıcıda baştan sona çalıştı (sayfa hatası yok). Kullanıcının gördüğü sorunların sebebi sonuc'un 17:24'ten beri deploy edilmemesiydi.
+- PR #397 (merge edildi):
+  - `deploy-result-network.yml`: app production deploy'u başarılı olunca aynı commit ile çalışır (workflow_run); production onayı sürer; alan adı bu yolda yeniden bağlanmaz. s006 testi kullanıcı kararıyla güncellendi.
+  - Yazdırma: `src/lib/printSection.ts` bölümü üst düzey #print-root'a kopyalar; kurum raporu (başlık, özet, bütün öğrenciler) ve karneler (sayfa başına bir öğrenci) ayrı basılır. Chromium'da PDF üretilerek doğrulandı.
+  - Canlı raporda kurum sırası kurum içinde hesaplanır (sınav geneli sıra görünüyordu).
+  - Sonuç yönetimi (exam_administrations) ilk yüklemede/erişim kartında kendiliğinden açılır.
+  - Ana sayfa gerçek değerlendirmeleri sayar; Sınav Tanımla merkezi sınavları ışıklarıyla listeler; eski yayın raporları katlanır bölümde; sonuc'ta release-drift çağrısı kalktı.
