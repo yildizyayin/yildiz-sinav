@@ -2453,3 +2453,11 @@ Not: 4 işçide çalışırken `question-generation-jobs` testi yük nedeniyle 5
 - Test: `tests/s024-directory-browser.test.ts`; tüm paket 1413/1413.
 
 **Bekleyen:** app deploy onayı; sonuc deploy'u (`Deploy ANUNEX Result Network`) kullanıcıda.
+
+### S025 — Rehber satırı işlemleri ve app'te tablo görünümü — 26 Ekim
+
+- Takılı aktarım kaydı (24 Ekim, RUNNING) kullanıcı onayıyla FAILED olarak kapatıldı.
+- PR #380 (merge edildi): okul adına tıklayınca kart satır altında açılır; satırda Düzenle / Pasife al / Etkinleştir / Dondur. Kart ilk kullanımda oluşur, mevcut durum akışı (gerekçe istenir) çalışır.
+- MEB okulları için "Sil" konmadı: rehber kaydı MEB'den geldiği için silinse bile sonraki aktarımda geri gelir; doğru karşılığı "Pasife al". Kartı açılmış kurumlarda mevcut "Sil / arşivle" Kurum listesinde duruyor.
+- App'te Kurum listesi bozuk görünüyordu: stiller yalnız sonuc'ta yükleniyordu. Yapısal kurallar `src/pages/result-network-admin.css`'e alındı.
+- sonuc.anunex.com'da görünmemesinin nedeni: sonuc 24 Ekim sürümünde; `Deploy ANUNEX Result Network` kullanıcı tarafından çalıştırılmalı.
