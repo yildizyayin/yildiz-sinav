@@ -4,7 +4,7 @@ import { api } from '../api';
 import '../exam-workspace.css';
 
 type Outcome = { id: string; subject_id: string; code?: string; title: string; unit?: string | null; topic?: string | null };
-type Question = { id: string; subject_id: string; question_no: number; subject_name?: string; outcome_ids: string[]; references: any[] };
+type Question = { id: string; subject_id: string; question_no: number; subject_name?: string; outcome_ids: string[]; references: any[]; catalog_subject_ids?: string[] };
 type Match = { subjectId: string; questionNo: number; outcomeId?: string; reason: string; suggestions?: Outcome[] };
 export function ExamOutcomeEditor({ examId, required = false, onSaved }: { examId: string; required?: boolean; onSaved?: () => void }) {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -17,6 +17,7 @@ export function ExamOutcomeEditor({ examId, required = false, onSaved }: { examI
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [subject, setSubject] = useState('');
+  const [catalogYear, setCatalogYear] = useState<string | null>(null);
   const [query, setQuery] = useState('');
   // A022: what was last saved, so unsaved choices are visible and not lost by leaving the page.
   const [saved, setSaved] = useState<Record<string, string>>({});
@@ -37,7 +38,7 @@ export function ExamOutcomeEditor({ examId, required = false, onSaved }: { examI
       ]);
       const rows = (data.questions || []).map((q: Question) => ({ ...q, outcome_ids: q.outcome_ids || [], references: q.references || [] }));
       setQuestions(rows); setSaved(Object.fromEntries(rows.map((q: Question) => [q.id, signature(q.outcome_ids)])));
-      setRevision(data.revision); setResults({ count: Number(data.resultCount) || 0, app: !!data.appPublished, network: !!data.networkPublished }); setOutcomes(catalog.outcomes || []); setStrict(data.outcomeMode ? data.outcomeMode === 'OFFICIAL_REQUIRED' : required); setMatches([]); setLoaded(true);
+      setRevision(data.revision); setResults({ count: Number(data.resultCount) || 0, app: !!data.appPublished, network: !!data.networkPublished }); setOutcomes(catalog.outcomes || []); setCatalogYear(data.catalogYear || null); setStrict(data.outcomeMode ? data.outcomeMode === 'OFFICIAL_REQUIRED' : required); setMatches([]); setLoaded(true);
     } catch (e: any) { setError(e.message || 'Kazanımlar yüklenemedi.'); } finally { setBusy(false); }
   };
   useEffect(() => { void load(); }, [examId]);
@@ -49,11 +50,17 @@ export function ExamOutcomeEditor({ examId, required = false, onSaved }: { examI
       const result = await api<any>(`/api/exam-definitions/${encodeURIComponent(examId)}/outcome-match-preview`, { method: 'POST', body: JSON.stringify({ entries }) });
       const found: Match[] = result.matches || []; setMatches(found);
       setQuestions(current => current.map(q => {
-        const ids = found.filter(m => m.subjectId === q.subject_id && m.questionNo === q.question_no && m.outcomeId && ['CODE', 'TITLE'].includes(m.reason)).map(m => m.outcomeId!);
+        const ids = found.filter(m => m.subjectId === q.subject_id && m.questionNo === q.question_no && m.outcomeId && ['CODE', 'TITLE', 'APPROVED'].includes(m.reason)).map(m => m.outcomeId!);
         return ids.length ? { ...q, outcome_ids: [...new Set([...q.outcome_ids, ...ids])] } : q;
       }));
-      setNotice('Kod ve tam ifade eşleşmeleri seçildi. Belirsiz önerileri kontrol edip değişiklikleri kaydedin.');
+      const suggested = found.filter(m => !m.outcomeId && m.suggestions?.length).length;
+      setNotice(`${found.filter(m => m.outcomeId).length} soru otomatik eşleşti (MEB kodu, aynı ifade ya da daha önce onayladığınız eşleşme). ${suggested ? `${suggested} soru için öneri var: kontrol edip "Önerileri kabul et" ile onaylayın, sonra kaydedin. Onayladıklarınız bu yayınevinin sonraki sınavlarında kendiliğinden eşleşir.` : ''}`);
     } catch (e: any) { setError(e.message); } finally { setBusy(false); }
+  };
+  const pending = matches.filter(m => !m.outcomeId && m.suggestions?.length && !questions.find(q => q.subject_id === m.subjectId && q.question_no === m.questionNo)?.outcome_ids.length);
+  const acceptSuggestions = () => {
+    setQuestions(current => current.map(q => { const m = pending.find(x => x.subjectId === q.subject_id && x.questionNo === q.question_no); return m ? { ...q, outcome_ids: [m.suggestions![0].id] } : q; }));
+    setNotice(`${pending.length} öneri seçildi. "Kazanımları kaydet" ile onaylayın.`);
   };
   const save = async () => {
     setBusy(true); setError(''); setNotice('');
@@ -70,11 +77,11 @@ export function ExamOutcomeEditor({ examId, required = false, onSaved }: { examI
     {error && <div className="alert error" role="alert">{error}</div>}{notice && <div className="alert success" role="status">{notice}</div>}
     {results.count > 0 && <div className="alert warning" role="note">Bu sınavın {results.count} sonucu var. Kaydettiğinizde bu sonuçların kazanım analizi yeniden yapılır; puan, net ve sıralama değişmez, önceki analiz sürümü saklanır.{results.app ? ' Öğrenci ve veliler, uygulamada yayınlanmış sonuçta yeni kazanımları görür.' : ''}{results.network ? ' Sonuç ağı, siz yayını güncelleyene kadar önceki analizi gösterir.' : ''}</div>}
     <label className="exam-strict-toggle"><input type="checkbox" checked={strict} disabled={busy || !loaded} onChange={e => setStrict(e.target.checked)}/> Bütün aktif sorularda doğrulanmış kazanım zorunlu olsun</label>
-    <div className="exam-filter-row"><label>Ders<select value={subject} onChange={e => setSubject(e.target.value)}><option value="">Tüm dersler</option>{subjectIds.map(id => <option key={id} value={id}>{questions.find(q => q.subject_id === id)?.subject_name || id}</option>)}</select></label><label>Katalogda ara<input value={query} onChange={e => setQuery(e.target.value)} placeholder="Kazanım kodu veya açıklaması"/></label><button className="secondary" disabled={busy || !loaded} onClick={() => void match()}>Otomatik eşleştir</button></div>
+    <div className="exam-filter-row"><label>Ders<select value={subject} onChange={e => setSubject(e.target.value)}><option value="">Tüm dersler</option>{subjectIds.map(id => <option key={id} value={id}>{questions.find(q => q.subject_id === id)?.subject_name || id}</option>)}</select></label><label>Katalogda ara<input value={query} onChange={e => setQuery(e.target.value)} placeholder="Kazanım kodu veya açıklaması"/></label><button className="secondary" disabled={busy || !loaded} onClick={() => void match()}>Otomatik eşleştir</button>{pending.length > 0 && <button className="primary" disabled={busy} onClick={acceptSuggestions}>Önerileri kabul et ({pending.length})</button>}</div>{catalogYear && <div className="alert info" role="note">MEB kataloğu: {catalogYear} doğrulanmış program.</div>}
     {loaded && !outcomes.length && <div className="alert warning">Bu sınavın yıl, sınıf ve program kapsamı için doğrulanmış resmî katalog bulunamadı. Kaynak ifadeler korunur; kazanımları daha sonra tamamlayabilirsiniz.</div>}
     <div className="table-card"><table><thead><tr><th>Ders / soru</th><th>Kaynak ifade</th><th>Resmî kazanım seçimi</th><th>Durum</th></tr></thead><tbody>{questions.filter(q => !subject || q.subject_id === subject).map(q => {
       const found = matches.find(m => m.subjectId === q.subject_id && m.questionNo === q.question_no);
-      const available = outcomes.filter(o => o.subject_id === q.subject_id && (!query || q.outcome_ids.includes(o.id) || `${o.code || ''} ${o.title}`.toLocaleLowerCase('tr-TR').includes(query.toLocaleLowerCase('tr-TR'))));
+      const available = outcomes.filter(o => (q.catalog_subject_ids || [q.subject_id]).includes(o.subject_id) && (!query || q.outcome_ids.includes(o.id) || `${o.code || ''} ${o.title}`.toLocaleLowerCase('tr-TR').includes(query.toLocaleLowerCase('tr-TR'))));
       return <tr key={q.id}><td>{q.subject_name || q.subject_id}<br/><strong>Soru {q.question_no}</strong></td><td>{q.references.map((r: any) => r.publisherTitle || r.title || r.officialCode || r.code).filter(Boolean).join(' · ') || 'Kaynak ifade yok'}</td><td><select multiple size={Math.min(4, Math.max(2, available.length))} aria-label={`${q.subject_name || q.subject_id} soru ${q.question_no} kazanım seçimi`} value={q.outcome_ids} disabled={busy} onChange={e => { const ids = Array.from(e.target.selectedOptions, o => o.value); setQuestions(current => current.map(row => row.id === q.id ? { ...row, outcome_ids: ids } : row)); }}>{(() => { const groups = new Map<string, Outcome[]>(); for (const o of available) { const k = o.unit || o.topic || 'Kazanımlar'; if (!groups.has(k)) groups.set(k, []); groups.get(k)!.push(o); } return groups.size > 1 ? [...groups.entries()].map(([k, list]) => <optgroup key={k} label={k}>{list.map(o => <option key={o.id} value={o.id}>{label(o)}</option>)}</optgroup>) : available.map(o => <option key={o.id} value={o.id}>{label(o)}</option>); })()}</select>
       {q.outcome_ids.length > 0 && <div className="exam-outcome-chips">{q.outcome_ids.map(id => { const o = byId.get(id); return <span key={id} className="exam-outcome-chip" title={o ? label(o) : id}>{o?.code || o?.title || id}<button type="button" aria-label={`${o?.code || id} kazanımını kaldır`} disabled={busy} onClick={() => setIds(q.id, q.outcome_ids.filter(x => x !== id))}>×</button></span>; })}</div>}{found?.reason === 'AMBIGUOUS' && <small>Birden fazla aday var; seçim yapın.</small>}{!!found?.suggestions?.length && <div className="exam-outcome-suggestions">{found.suggestions.map(o => <button key={o.id} className="ghost" disabled={busy} title={label(o)} onClick={() => setIds(q.id, [...q.outcome_ids, o.id])}>Öneri: {o.code ? `${o.code} · ${o.title}` : o.title}</button>)}</div>}</td><td><span className={`status ${q.outcome_ids.length ? 'ok' : strict ? 'error' : 'warn'}`}>{q.outcome_ids.length ? `${q.outcome_ids.length} seçili` : 'Eşleşme bekliyor'}</span></td></tr>;
     })}{loaded && !questions.length && <tr><td colSpan={4}>Önce sınavın ders ve soru yapısını kaydedin.</td></tr>}</tbody></table></div>

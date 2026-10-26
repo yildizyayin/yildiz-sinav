@@ -12,7 +12,7 @@ export type OutcomeReference = {
   subtopic?: string;
   parentCode?: string;
 };
-export type OutcomeCatalogEntry = { id: string; subject_id: string; code?: string | null; title?: string | null; topic?: string | null; subtopic?: string | null; official?: number | boolean; verified?: number | boolean };
+export type OutcomeCatalogEntry = { id: string; subject_id: string; exam_subject_ids?: string[]; code?: string | null; title?: string | null; topic?: string | null; subtopic?: string | null; official?: number | boolean; verified?: number | boolean };
 export type ParsedAnswerEntry = {
   subjectId: string;
   bookletCode: string;
@@ -179,7 +179,8 @@ export function normalizeCatalogText(value: string | null | undefined): string {
 
 export function matchOfficialOutcome(reference: OutcomeReference | null | undefined, subjectId: string, catalog: OutcomeCatalogEntry[]): { outcomeId?: string; reason: 'CODE' | 'TITLE' | 'AMBIGUOUS' | 'MISSING' | 'UNVERIFIED' } {
   if (!reference) return { reason: 'MISSING' };
-  const candidates = catalog.filter((outcome) => outcome.subject_id === subjectId);
+  // S028: TYT/AYT questions match the high-school subjects the server lists in exam_subject_ids.
+  const candidates = catalog.filter((outcome) => outcome.subject_id === subjectId || (outcome.exam_subject_ids || []).includes(subjectId));
   const verified = candidates.filter((outcome) => Number(outcome.official) === 1 && Number(outcome.verified) === 1);
   if (!verified.length) return { reason: 'UNVERIFIED' };
   const referenceCode = reference.officialCode || reference.code;

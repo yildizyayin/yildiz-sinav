@@ -18,7 +18,6 @@ it('official code first; a code contradicted by wording that names another outco
   [{officialCode:'T.7.1.1',publisherTitle:'Fiilde zaman kaymasını fark eder.'},undefined,'AMBIGUOUS'],
   [{publisherTitle:'fiilde zaman kaymasini fark eder'},'o2','TITLE'],
   [{officialCode:'T.9.9.9',publisherTitle:'Metnin ana fikrini belirler.'},'o3','TITLE'],
-  [{publisherTitle:'Fiiller'},undefined,'MISSING'],
  ];
  for(const [ref,id,reason] of cases){
   const server=matchScopedOutcome(ref,'tur',catalog);const client=matchOfficialOutcome(ref,'tur',catalog as any);
@@ -26,6 +25,10 @@ it('official code first; a code contradicted by wording that names another outco
   expect([client.outcomeId,client.reason],JSON.stringify(ref)).toEqual([id,reason==='MISSING'?'MISSING':reason]);
  }
  expect(matchScopedOutcome({officialCode:'T.7.1.1',publisherTitle:'Fiilde zaman kaymasını fark eder.'},'tur',catalog).suggestions.map((o:any)=>o.id)).toEqual(['o1','o2']);
+ // S028: a topic-only label gets word-stem suggestions on the server; nothing is taken without a person, the form leaves it unmatched.
+ expect(matchScopedOutcome({publisherTitle:'Fiiller'},'tur',catalog)).toMatchObject({reason:'AMBIGUOUS',suggestions:[expect.objectContaining({id:'o1'})]});
+ expect(matchScopedOutcome({publisherTitle:'Fiiller'},'tur',catalog).outcomeId).toBeUndefined();
+ expect(matchOfficialOutcome({publisherTitle:'Fiiller'},'tur',catalog as any)).toEqual({reason:'MISSING'});
  expect(matchScopedOutcome({publisherTitle:'Fiilleri anlam özelliklerine göre'},'tur',catalog)).toMatchObject({reason:'AMBIGUOUS',suggestions:[expect.objectContaining({id:'o1'})]});
 });
 
