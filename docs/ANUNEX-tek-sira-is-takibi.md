@@ -2440,3 +2440,16 @@ Not: 4 işçide çalışırken `question-generation-jobs` testi yük nedeniyle 5
 - Test: `tests/directory-import-feedback.test.ts` (5). Tüm paket 1412/1412, typecheck ve build temiz.
 
 **Bekleyen:** app deploy'u (main push ile başladı) ve sonuc deploy'u (`Deploy ANUNEX Result Network`, attach_domain=false) kullanıcı onayında. Deploy sonrası `anunex-kurum-rehberi-meb.csv` yeniden yüklenecek.
+
+### S024 — Rehberdeki kurumların listelenmesi — 26 Ekim
+
+**Sorun:** 46.803 MEB okulu rehbere yüklendi, ama "Kurum listesi" yalnız kartı açılmış kurumları (`institutions`) gösteriyordu. Kullanıcı kurumları göremedi. Ayrıca rehberdeki bir okulun kartı, PIN verilmeden açılamıyordu (404).
+
+**Düzeltme (PR #379, merge edildi):**
+- `GET /api/admin/result-network/institution-directory` (yalnız Süper Admin): ad/kod arama, il/ilçe filtresi, 50'lik sayfa, durum (Rehberde kayıtlı / Kurum kartı açık / Hesabını açtı).
+- Rehberdeki okulun kartı ilk açılışta oluşur: Süper Admin her okul için, bayi yalnız kendi kapsamında. Okul yöneticisi başka okulun kartını açamaz.
+- Yeni "Rehberdeki kurumlar" paneli. "Kurum listesi" açıklaması: kartı açılmış ve elle açılan kurumlar.
+- Kararlar: 46 bin okul `institutions` tablosuna toplu kopyalanmadı (app'teki kurum listeleri, lisans ve sayımları şişirmemek için); kart ihtiyaç anında oluşur.
+- Test: `tests/s024-directory-browser.test.ts`; tüm paket 1413/1413.
+
+**Bekleyen:** app deploy onayı; sonuc deploy'u (`Deploy ANUNEX Result Network`) kullanıcıda.
