@@ -496,7 +496,8 @@ export function parseAnswerKeyText(text: string, subjects: SubjectOption[], defa
         title: rawOutcomeTitle || (!codeIsLikelyCode ? rawOutcomeCode || undefined : undefined),
         publisherCode: rawOutcomeCode || undefined,
         publisherTitle: rawOutcomeTitle || (!codeIsLikelyCode ? rawOutcomeCode || undefined : undefined),
-        unit: String(unitColumn >= 0 ? cells[unitColumn] || '' : '').trim() || undefined,
+        // S032: with both TEST and DERS columns the DERS cell names the section of the test (e.g. Tarih-1 in TYT Sosyal); report cards group by it.
+        unit: String(unitColumn >= 0 ? cells[unitColumn] || '' : (testColumn >= 0 && subjectColumn >= 0 ? cells[subjectColumn] || '' : '')).trim() || undefined,
         topic: String(topicColumn >= 0 ? cells[topicColumn] || '' : '').trim() || undefined,
         subtopic: String(subtopicColumn >= 0 ? cells[subtopicColumn] || '' : '').trim() || undefined,
         parentCode: String(parentCodeColumn >= 0 ? cells[parentCodeColumn] || '' : '').trim() || undefined,

@@ -491,6 +491,11 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
  if(path==='/api/admin/result-network/operations/opticals'&&request.method==='POST'){const {quickOptical}=await import('./lib/result-optical-quick');return quickOptical(request,env)}
  const karnes=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/karnes$/);
  if(karnes&&request.method==='GET')return batchKarnes(request,env,karnes[1]);
+ const pack=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/report-pack$/);
+ if(pack&&request.method==='GET'){const context=await batchOperatorContext(request,env,pack[1]);if(context instanceof Response)return context;
+  if(context.batch.status!=='COMMITTED')return badRequest('Önce değerlendirmeyi tamamlayın.','BATCH_NOT_COMMITTED');
+  const {reportPack}=await import('./lib/result-report-pack');const data=await reportPack(env,context.batch.exam_id,context.batch.institution_id);
+  return data?json({ok:true,...data}):safeError(404,'REPORT_NOT_FOUND','Rapor bulunamadı.')}
  const preview=path.match(/^\/api\/admin\/result-network\/operations\/exams\/([^/]+)\/preview-file$/);
  if(preview&&request.method==='POST'){
   const form=await request.clone().formData();let institutionId=String(form.get('institutionId')||'');
