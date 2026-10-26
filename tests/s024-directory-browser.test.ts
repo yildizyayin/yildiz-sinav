@@ -39,6 +39,10 @@ describe('S024 directory browser', () => {
     expect((await get('/api/admin/result-network/institutions/720001/card')).data.institution.id).toBe(card.data.institution.id);
     expect((t.db.prepare(`SELECT count(*) n FROM institutions WHERE meb_code='720001'`).get() as any).n).toBe(1);
     expect((await get(`${base}?q=720001`)).data.rows[0]).toMatchObject({ status: 'CARD', institution_id: card.data.institution.id });
+    // status actions from the directory row work on the card that was just created
+    const post = await result.fetch(new Request(`https://sonuc.anunex.com/api/admin/result-network/institutions/${card.data.institution.id}/status`, { method: 'POST', headers: { Cookie: cookies.admin, Origin: 'https://sonuc.anunex.com', 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'PASSIVE', reason: 'Kapandı' }) }), t.env, { waitUntil() {} });
+    expect(post.status, await post.clone().text()).toBeLessThan(300);
+    expect((await get(`${base}?q=720001`)).data.rows[0]).toMatchObject({ lifecycle: 'PASSIVE' });
     // a dealer in scope opens an Ankara card the same way
     expect((await get('/api/admin/result-network/institutions/710001/card', 'dealerA')).status).toBe(200);
   });
