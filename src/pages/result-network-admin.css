@@ -40,3 +40,30 @@
 .result-institution-picker .institution-options button:hover,.result-institution-picker .institution-options button:focus-visible{background:#eef4ff}
 .result-institution-picker .institution-options span{font-size:12px;color:#64748b;margin-top:2px}
 .result-institution-picker .field-help{font-size:12px;color:#475569}
+
+/* S030: evaluation simplicity, optic add, report cards */
+.result-add-optical{display:inline-block;margin-top:6px;font-size:13px;cursor:pointer}
+.result-optical-add{margin:12px 0;padding:16px;border:1px dashed #9db4d6;border-radius:12px;background:#f8fbff}
+.result-optical-add h3{margin:0 0 4px}
+.result-setaside-list{margin:8px 0 0;padding-left:18px;font-size:13px}
+.result-setaside-list li{margin:3px 0}
+.result-karnes{margin-top:16px}
+.result-karne{border:1px solid #dbe4f0;border-radius:12px;padding:16px;margin:12px 0;background:#fff;break-inside:avoid}
+.result-karne header{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid #e8eef6;padding-bottom:8px;margin-bottom:10px}
+.result-karne header strong{display:block;font-size:16px}
+.result-karne header span{display:block;font-size:12px;color:#64748b}
+.result-karne-totals{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.result-karne-totals div{background:#f4f7fc;border-radius:8px;padding:8px;text-align:center}
+.result-karne-totals span{display:block;font-size:11px;color:#64748b}
+.result-karne-totals b{font-size:18px}
+.result-karne table{width:100%;border-collapse:collapse;font-size:13px}
+.result-karne th,.result-karne td{padding:6px 8px;border-bottom:1px solid #eef2f7;text-align:left}
+.result-karne footer{margin-top:8px;font-size:12px;color:#475569}
+@media (max-width:600px){.result-karne-totals{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media print{
+  body:has(.result-karnes) *{visibility:hidden}
+  body:has(.result-karnes) .result-karnes,body:has(.result-karnes) .result-karnes *{visibility:visible}
+  body:has(.result-karnes) .result-karnes{position:absolute;left:0;top:0;width:100%}
+  .result-karnes .no-print{display:none}
+  .result-karne{page-break-after:always;border:0}
+}
