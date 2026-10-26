@@ -15,6 +15,12 @@ on:
       - main
     paths:
       - '.github/deploy-result-network.trigger'
+  # S031 (owner decision 26 Oct): sonuc follows every successful app production deploy, on the same commit.
+  # The production environment approval still applies; the domain is not re-attached on this path.
+  workflow_run:
+    workflows: ["Deploy Production Cloudflare Worker"]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
@@ -26,12 +32,13 @@ concurrency:
 
 jobs:
   dogrula:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     uses: ./.github/workflows/agent-deploy-dogrulayici.yml
     secrets: inherit
 
   deploy-result-network:
     needs: [dogrula]
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
     environment: production
     env:
@@ -43,6 +50,8 @@ jobs:
       PROD_SESSION_SECRET: ${{ secrets.PROD_SESSION_SECRET }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-node@v5
         with:
           node-version: 22
@@ -165,7 +174,7 @@ jobs:
             --var ENVIRONMENT:production \
             --var PRODUCT_NAME:"ANUNEX Sonuç Ağı" \
             --var TURNSTILE_SITE_KEY:"$PROD_TURNSTILE_SITE_KEY" \
-            --var RELEASE_SHA:"${{ github.sha }}" | tee result-deploy.log
+            --var RELEASE_SHA:"${{ github.event.workflow_run.head_sha || github.sha }}" | tee result-deploy.log
           preview_url="$(grep -Eo 'https://[^[:space:]]+workers\.dev' result-deploy.log | tail -1)"
           test -n "$preview_url" || (echo "Result Network workers.dev preview URL could not be resolved." >&2 && exit 1)
           echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"

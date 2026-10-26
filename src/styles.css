@@ -28,3 +28,19 @@ button[data-busy="true"]::after{content:"";display:inline-block;width:.85em;heig
 .exam-light-red i{background:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.2)}
 @media (prefers-reduced-motion:no-preference){.exam-light-green i{animation:exam-light-pulse 2.4s ease-in-out infinite}}
 @keyframes exam-light-pulse{50%{box-shadow:0 0 0 5px rgba(22,163,74,.12),0 0 14px rgba(22,163,74,.6)}}
+
+/* S031: print one section only (reports, report cards) */
+.print-only{display:none}
+#print-root{display:none}
+@media print{
+  body.print-one>*:not(#print-root){display:none!important}
+  body.print-one #print-root{display:block!important;background:#fff;color:#111}
+  #print-root .no-print{display:none!important}
+  #print-root .print-only{display:block!important}
+  #print-root .table-card{overflow:visible!important;max-height:none!important;border:0!important;box-shadow:none!important}
+  #print-root table{width:100%;border-collapse:collapse;font-size:10pt}
+  #print-root th,#print-root td{border-bottom:1px solid #ccc;padding:3px 5px;text-align:left}
+  #print-root thead{display:table-header-group}
+  #print-root tr{break-inside:avoid}
+  #print-root section{margin:0;border:0;box-shadow:none}
+}

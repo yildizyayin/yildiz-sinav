@@ -43,10 +43,15 @@ describe('S006 app / result release drift', () => {
     expect(blocked.status).toBe(404);
   });
 
-  it('stamps every production deploy with its commit and keeps the result deploy manual or marker-triggered', () => {
-    for (const f of ['deploy-production.yml', 'deploy-app-production.yml', 'deploy-result-network.yml']) expect(readFileSync(`.github/workflows/${f}`, 'utf8')).toMatch(/RELEASE_SHA:"?\$\{\{ github\.sha \}\}/);
+  it('stamps every production deploy with its commit; the result deploy follows a successful app deploy (S031) without re-attaching the domain', () => {
+    for (const f of ['deploy-production.yml', 'deploy-app-production.yml']) expect(readFileSync(`.github/workflows/${f}`, 'utf8')).toMatch(/RELEASE_SHA:"?\$\{\{ github\.sha \}\}/);
     const result = readFileSync('.github/workflows/deploy-result-network.yml', 'utf8');
+    expect(result).toMatch(/RELEASE_SHA:"\$\{\{ github\.event\.workflow_run\.head_sha \|\| github\.sha \}\}"/);
     expect(result).toMatch(/paths:\s*\n\s*- '\.github\/deploy-result-network\.trigger'/);
+    expect(result).toMatch(/workflow_run:\s*\n\s*workflows: \["Deploy Production Cloudflare Worker"\]\s*\n\s*types: \[completed\]\s*\n\s*branches: \[main\]/);
+    expect(result).toMatch(/github\.event\.workflow_run\.conclusion == 'success'/);
     expect(result).toMatch(/environment: production/);
+    // the domain is attached only on the marker push or an explicit manual request, never on the automatic path
+    for (const line of result.split('\n').filter((l) => l.includes('inputs.attach_domain == true') && l.includes('if:'))) expect(line).not.toContain('workflow_run');
   });
 });
