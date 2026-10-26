@@ -2533,3 +2533,13 @@ Canlı veriden teşhis:
   - Canlı raporda kurum sırası kurum içinde hesaplanır (sınav geneli sıra görünüyordu).
   - Sonuç yönetimi (exam_administrations) ilk yüklemede/erişim kartında kendiliğinden açılır.
   - Ana sayfa gerçek değerlendirmeleri sayar; Sınav Tanımla merkezi sınavları ışıklarıyla listeler; eski yayın raporları katlanır bölümde; sonuc'ta release-drift çağrısı kalktı.
+
+### S032 — Kurum sonuç listesi ve karneler yayınevi düzeninde — 26 Ekim
+
+- Kullanıcının gönderdiği örnek (bir yayınevinin okul TYT raporu, 86 sayfa: 2 sayfa liste + öğrenci başına 2 sayfa) esas alındı. Örnek dosya kişisel veri içerdiği için depoya konmadı.
+- PR #398 (merge edildi): `worker/lib/result-report-pack.ts` (`GET scan-batches/:id/report-pack`) ve `src/components/ResultReportPack.tsx`.
+  - Liste: test D/Y/N, toplam, puan, Sınıf/Okul/İlçe/İl/Genel sıraları, genel ve okul ortalaması, katılımlar; kıyas sayfası (SVG grafikler).
+  - Karne: kutular, puan/sıra/katılım, test (ve bölüm) tablosu ile Başarı% ve ortalamalar (altında kalan kırmızı), kitapçık anahtarına göre cevap tablosu, konu sayfası.
+  - Sıralar sınava girenlerin tamamı üzerinden canlı; yayın dondurulana kadar "geçici".
+  - Anahtarda TEST + DERS sütunu varsa DERS bölüm olarak saklanır (mevcut sınavlarda bölüm görmek için anahtar yeniden yüklenmeli).
+- Otomatik sonuc deploy'u ilk kez çalıştı (workflow_run, a317774, başarılı).
