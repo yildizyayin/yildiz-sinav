@@ -1,0 +1,142 @@
+[
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 1440,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 1180,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 1024,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 768,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 390,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 360,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_FOCUS",
+    "width": 1440,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_FOCUS",
+    "width": 390,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STUDIO",
+    "width": 1440,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_STUDIO",
+    "width": 390,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_COSMIC",
+    "width": 1440,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_COSMIC",
+    "width": 390,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_NEON",
+    "width": 1440,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  },
+  {
+    "theme": "ANUNEX_NEON",
+    "width": 390,
+    "scope": "evaluate",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/exams/synthetic/preview-file"
+    ]
+  }
+]
