@@ -1,0 +1,38 @@
+[
+  {
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "width": 1180,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "width": 1024,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "width": 768,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticUnavailable": []
+  },
+  {
+    "width": 360,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticUnavailable": []
+  }
+]

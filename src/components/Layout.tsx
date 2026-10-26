@@ -1,3 +1,4 @@
+import { ApprovedAdminNavigation } from './ApprovedAdminNavigation';
 import { PageLoader } from './PageLoader';
 import { useEffect,useMemo,useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -204,6 +205,7 @@ export function Layout() {
     <button className="nav-scrim" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}/>
     <aside className="sidebar" aria-label="Ana menü">
       <div className="brand"><AnunexBrand compact inverse tagline/><button className="mobile-nav-close" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}><X size={20}/></button></div>
+      {user.role==='SUPER_ADMIN' && activeTheme==='ANUNEX_STANDARD' ? <ApprovedAdminNavigation items={[...visibleNav,...(groupedItems?.flatMap(group=>group.items)||[])]} displayName={user.display_name} onNavigate={()=>setMobileNavOpen(false)} onLogout={async()=>{try{await logout();navigate('/login')}catch(e:any){setLogoutError(e.message)}}}/> : <>
       <div className="user-card sidebar-workspace"><div className="avatar">{user.display_name.charAt(0)}</div><div><strong>{user.display_name}</strong><small>{roleName(user.role)}{institution?.name ? ` · ${institution.name}` : ''}</small></div></div>
       <nav className={groupedItems ? 'grouped-sidebar-nav' : undefined}>
         {groupedItems ? groupedItems.map((group) => {
@@ -219,6 +221,8 @@ export function Layout() {
         <div className="nibiru-sidebar-card"><NibiruMark size={36} state="active"/><div><strong>Nibiru AI</strong><span>Canlı akademik zekâ</span></div><ChevronRight size={16}/></div>
         <button className="ghost sidebar-logout" onClick={async()=>{try{await logout();navigate('/login')}catch(e:any){setLogoutError(e.message)}}}><LogOut size={18}/>Çıkış</button>
       </div>
+      </>}
+
     </aside>
     <main className="main-area">
       <header className="topbar"><button className="mobile-menu-button" aria-label="Menüyü aç" aria-expanded={mobileNavOpen} onClick={()=>setMobileNavOpen(true)}><Menu size={22}/></button><div className="topbar-context"><span className="eyebrow">2026–2027 Eğitim Dönemi</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Anunex Platform Yönetimi':'')}</strong></div><div className="topbar-actions"><div className="status neutral"><Sparkles size={15}/> Çalışma alanı</div><NavLink to="/notifications" className="topbar-icon" aria-label="Bildirimler"><Bell size={19}/><i/></NavLink><NavLink to="/nibiru" className="nibiru-topbar"><NibiruMark size={23} state="active" title="Nibiru AI Akademik Zekâ"/><span>Nibiru AI</span></NavLink></div></header>
