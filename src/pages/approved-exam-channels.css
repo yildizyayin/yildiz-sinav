@@ -1,0 +1,60 @@
+/* Approved reference adaptation: appearance only, STANDARD super admin, screen only. */
+@media screen {
+
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels { --work-ink:#192638; --work-muted:#536176; --work-line:#dde4ec; --work-accent:#9e4837; min-width:0; color:var(--work-ink); }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels :is(.panel,.table-card,.source-card) { min-width:0; border:1px solid var(--work-line); border-radius:7px; box-shadow:none; background:#fff; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels h1 { font-size:clamp(27px,2.4vw,34px); line-height:1.2; font-weight:650; letter-spacing:-.03em; overflow-wrap:anywhere; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels :is(h2,h3) { font-size:17px; line-height:1.4; color:var(--work-ink); font-weight:650; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels :is(p,small,.muted) { color:var(--work-muted); line-height:1.6; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels p { font-size:13px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels :is(button,.primary,.secondary,.ghost) { min-height:42px; border-radius:6px; font-size:13px; font-weight:600; box-shadow:none; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .primary { background:var(--work-accent); border:1px solid var(--work-accent); color:#fff; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .primary:hover { background:#863b2d; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels :is(.secondary,.ghost) { color:#28394f; background:#fff; border:1px solid #d4dde7; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels :is(.secondary,.ghost):hover { background:#f4f7fa; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels button:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels :is(a,button):active:not(:disabled) { transform:translateY(1px); }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels :is(input,select,textarea) { max-width:100%; min-height:42px; border:1px solid #d4dde7; border-radius:6px; color:#192638; background:#fff; font-size:14px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels input::placeholder { color:#5e6d82; opacity:1; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels :is(input[type=checkbox],input[type=radio]) { width:20px; min-height:20px; height:20px; accent-color:var(--work-accent); }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels label { color:#394b60; font-size:12px; font-weight:500; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .table-card { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels table { width:100%; border-collapse:collapse; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels th { padding:12px 14px; background:#f2f5f8; color:#28384d; font-size:12px; font-weight:600; letter-spacing:0; text-transform:none; text-align:left; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels td { padding:12px 14px; border-top:1px solid var(--work-line); font-size:13px; line-height:1.5; color:#35465d; vertical-align:top; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .panel-head { gap:14px; padding-bottom:12px; margin-bottom:14px; border-bottom:1px solid #e5ebf1; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .alert { border-radius:6px; padding:12px 14px; font-size:13px; font-weight:400; line-height:1.6; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .status { border-radius:5px; font-size:12px; font-weight:500; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .status.ok { color:#235d3e; background:#eaf5ed; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .status.warn { color:#855117; background:#fff3db; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .status.error { color:#96392d; background:#fff0eb; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels :is(a,button,input,select,textarea):focus-visible { outline:3px solid #1c657c; outline-offset:3px; box-shadow:none; }
+@media(max-width:700px) { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels :is(.page-head,.panel-head,.exam-editor-footer) { flex-wrap:wrap; } .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .form-grid { grid-template-columns:1fr; } }
+@media(prefers-reduced-motion:reduce) { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels * { transition:none !important; animation:none !important; } }
+
+}
+
+@media screen {
+
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels>input { margin:0 0 16px; max-width:500px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .page-head { align-items:center; margin-bottom:22px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .page-head>a { display:inline-flex; align-items:center; min-height:40px; color:#82402c; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels table { min-width:860px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels td { padding:16px; vertical-align:middle; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels td:first-child { min-width:190px; font-weight:600; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels td:nth-child(2) { min-width:170px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels td:nth-child(3) { min-width:170px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels td:last-child { min-width:310px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels td button { margin:4px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels td small { display:block; margin-top:6px; font-size:12px; font-weight:400; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .approved-channel-state { display:inline-flex; padding:4px 8px; border-radius:5px; color:#4d5a6f; background:#eef1f5; font-size:12px; font-weight:500; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .approved-channel-state[data-state=CURRENT] { color:#235d3e; background:#eaf5ed; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .approved-channel-state[data-state=PENDING_UPDATE] { color:#855117; background:#fff3db; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels [role=dialog] { margin-top:18px; padding:20px; border-left:3px solid #9e4837; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels [role=dialog] .table-card { margin:14px 0; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels [role=dialog] table { min-width:580px; }
+@media(max-width:700px) { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels .page-head { flex-direction:column; align-items:flex-start; gap:10px; } .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels [role=dialog] { padding:16px; } }
+
+}
+
+@media screen { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-channels td:first-child a { display:inline-flex; align-items:center; min-height:40px; } }
