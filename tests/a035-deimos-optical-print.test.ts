@@ -63,10 +63,12 @@ describe('A035: student optical sheets', () => {
     try {
       expect((await t.prepare('teacher', { examId: t.examId })).status).toBe(403);
       expect((await t.prepare('othermgr', { examId: t.examId })).status).toBe(403);
-      // a central exam not assigned to this institution
-      t.db.prepare(`UPDATE exam_institutions SET enabled=0 WHERE exam_id=?`).run(t.examId);
+      // a central exam narrowed to another institution (S027: no list at all means open to every institution)
+      t.db.prepare(`UPDATE exam_institutions SET institution_id='other' WHERE exam_id=?`).run(t.examId);
       expect((await t.prepare('mgr', { examId: t.examId })).data.error.code).toBe('EXAM_NOT_FOUND');
-      t.db.prepare(`UPDATE exam_institutions SET enabled=1 WHERE exam_id=?`).run(t.examId);
+      t.db.prepare(`UPDATE exam_institutions SET enabled=0 WHERE exam_id=?`).run(t.examId);
+      expect((await t.prepare('mgr', { examId: t.examId })).status).toBe(200);
+      t.db.prepare(`UPDATE exam_institutions SET institution_id='school',enabled=1 WHERE exam_id=?`).run(t.examId);
       expect((await t.prepare('mgr', { examId: t.examId })).status).toBe(200);
       // removed from the app
       t.db.prepare(`UPDATE exam_revision_state SET app_trashed_at=CURRENT_TIMESTAMP WHERE exam_id=?`).run(t.examId);

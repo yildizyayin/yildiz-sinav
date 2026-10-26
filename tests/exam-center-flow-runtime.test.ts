@@ -56,9 +56,8 @@ describe('authenticated exam center HTTP flow on the complete migration schema',
       expect(structure.response.status, JSON.stringify(structure.data)).toBe(200);
       const answers = await f.request(`${base}/answer-key`, 'PUT', {entries: [{subjectId: 'sub_tyt_mat', bookletCode: 'A', answers: 'ABCA', optionCount: 4}, {subjectId: 'sub_tyt_mat', bookletCode: 'B', answers: 'BACB', optionCount: 4}]});
       expect(answers.response.status, JSON.stringify(answers.data)).toBe(200);
-      const blocked = await f.request(`${base}/status`, 'PATCH', {status: 'ACTIVE'});
-      expect(blocked.response.status).toBe(409);
-      expect(blocked.data.error.code).toBe('INSTITUTION_ASSIGNMENT_REQUIRED');
+      // S027: a central exam needs no institution list; an optional list narrows it to those institutions
+      expect((await f.request(base)).data.readiness.ready_to_publish).toBe(true);
       expect((await f.request(`${base}/institutions`, 'PUT', {institutionIds: ['school']})).response.status).toBe(200);
       expect((await f.request(base)).data.readiness.ready_to_publish).toBe(true);
       expect((await f.request(`${base}/status`, 'PATCH', {status: 'ACTIVE'})).response.status).toBe(200);

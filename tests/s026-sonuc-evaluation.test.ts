@@ -31,10 +31,10 @@ describe('S026 sonuc evaluation', () => {
     const { t, call, upload } = await setup();
     const found = await call('admin', '/api/admin/result-network/operations/institutions?q=kuzey');
     expect(found.data.institutions).toEqual([{ id: null, code: '730001', name: 'Kuzey Ortaokulu', city: 'Ankara', district: 'Çankaya' }]);
-    // the school is opened from the directory; until S027 (exam scope) the central exam must still be opened to it
+    // the school is opened from the directory; this exam is narrowed to the helper's school, so it must be added first
     const blocked = await upload('admin', { mebCode: '730001' });
     expect(blocked.status).toBe(403);
-    expect(blocked.data.error.message).toContain('kuruma açılmamış');
+    expect(blocked.data.error.message).toContain('yalnız seçili kurumlara açık');
     const inst = t.db.prepare(`SELECT id FROM institutions WHERE meb_code='730001'`).get() as any;
     expect(inst?.id).toBeTruthy();
     t.db.prepare(`INSERT INTO exam_institutions(id,exam_id,institution_id,enabled) VALUES('ei1',?,?,1)`).run(t.examId, inst.id);
@@ -82,5 +82,30 @@ describe('S026 sonuc evaluation', () => {
     expect(r.headers.get('Set-Cookie')).toContain('Max-Age=0');
     expect((t.db.prepare(`SELECT revoked_at IS NOT NULL r FROM result_portal_sessions WHERE id='rps'`).get() as any).r).toBe(1);
     void call;
+  });
+});
+
+describe('S027 central exams are open to every institution unless narrowed', () => {
+  it('evaluates a central exam for any school without an institution list, narrows on request, and keeps schools with results', async () => {
+    const { t, call, upload } = await setup();
+    t.db.exec(`DELETE FROM exam_institutions WHERE exam_id='${t.examId}'`);
+    const up = await upload('admin', { mebCode: '730001' });
+    expect(up.status, up.text).toBe(200);
+    // an institution manager of another school sees the central exam too
+    t.db.exec(`INSERT INTO institutions(id,name,code,status) VALUES('third','Third School','THIRD','ACTIVE');
+      INSERT INTO users(id,role,display_name,password_hash,password_salt,active,institution_id) VALUES('mgr3','INSTITUTION_MANAGER','M3','u','u',1,'third');`);
+    const list = async () => (await t.request('/api/exam-definitions', 'GET', undefined, 'admin')).data;
+    expect((await list()).exams.some((e: any) => e.id === t.examId)).toBe(true);
+    // narrowing must keep every school that already has results
+    const narrow = await t.request(`/api/exam-definitions/${t.examId}/institutions`, 'PUT', { institutionIds: ['third'] });
+    expect(narrow.response.status).toBe(409);
+    expect(narrow.data.error.code).toBe('INSTITUTION_HAS_RESULTS');
+    expect((await t.request(`/api/exam-definitions/${t.examId}/institutions`, 'PUT', { institutionIds: ['school'] })).response.status).toBe(200);
+    const kuzey = (t.db.prepare(`SELECT id FROM institutions WHERE meb_code='730001'`).get() as any).id;
+    expect((await upload('admin', { mebCode: '730001' })).status).toBe(403);
+    const reopened = await t.request(`/api/exam-definitions/${t.examId}/institutions`, 'PUT', { institutionIds: [] });
+    expect(reopened.data).toMatchObject({ openToAll: true });
+    expect((await upload('admin', { mebCode: '730001' })).status).toBe(200);
+    void kuzey;
   });
 });

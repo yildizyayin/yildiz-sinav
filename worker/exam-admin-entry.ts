@@ -1,4 +1,5 @@
 import { publishedForLearnersSql } from './lib/exam-schedule';
+import { centralExamOpenTo, centralOpenToAllSql, examOpenToInstitutionSql } from './lib/exam-audience';
 import { trashExam } from './lib/exam-channels';
 import { refreshExamOutcomeAnalysis } from './lib/exam-outcome-history';
 import { examOutcomeScope, scopedOutcomeCatalog, matchScopedOutcome } from './lib/exam-outcome-matching';
@@ -87,7 +88,7 @@ async function contentExam(env: Env, user: AuthUser, examId: string): Promise<an
   }
   if (!user.institution_id) return null;
   return exam.owner_type === 'CENTRAL'
-    ? await one(env.DB.prepare('SELECT 1 FROM exam_institutions WHERE exam_id=? AND institution_id=? AND enabled=1').bind(examId, user.institution_id)) ? exam : null
+    ? await centralExamOpenTo(env, examId, user.institution_id) ? exam : null
     : exam.institution_id === user.institution_id ? exam : null;
 }
 
@@ -307,7 +308,7 @@ async function visibleExam(env: Env, user: AuthUser, examId: string): Promise<an
   if (!user.institution_id) return null;
   if (exam.owner_type === 'INSTITUTION') return exam.institution_id === user.institution_id ? exam : null;
   if (exam.owner_type === 'CENTRAL') {
-    const assigned = await one(env.DB.prepare('SELECT 1 FROM exam_institutions WHERE exam_id=? AND institution_id=? AND enabled=1').bind(examId, user.institution_id));
+    const assigned = await centralExamOpenTo(env, examId, user.institution_id);
     return assigned ? exam : null;
   }
   return null;
@@ -341,10 +342,10 @@ async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
     else {
       where += ` AND (
         (e.owner_type='INSTITUTION' AND e.institution_id=?)
-        OR (e.owner_type='CENTRAL' AND EXISTS(
+        OR (e.owner_type='CENTRAL' AND (${centralOpenToAllSql('e')} OR EXISTS(
           SELECT 1 FROM exam_institutions ei
           WHERE ei.exam_id=e.id AND ei.institution_id=? AND ei.enabled=1
-        ))
+        )))
       )`;
       params.push(user.institution_id, user.institution_id);
     }
@@ -830,6 +831,15 @@ async function replaceInstitutionsUnlocked(request: Request, env: Env, user: Aut
   for (const id of ids) {
     if (!(await one(env.DB.prepare('SELECT id FROM institutions WHERE id=?').bind(id)))) return err(404, 'INSTITUTION_NOT_FOUND', 'Seçilen kurumlardan biri bulunamadı.');
   }
+  // S027: an empty list opens the exam to every institution. A list may not leave out an institution that already has results in this exam.
+  if (ids.length) {
+    const used = await all<{ institution_id: string }>(env.DB.prepare(`SELECT DISTINCT institution_id FROM exam_participants WHERE exam_id=?`).bind(examId));
+    const dropped = used.map((x) => x.institution_id).filter((id) => !ids.includes(id));
+    if (dropped.length) {
+      const names = (await all<{ name: string }>(env.DB.prepare(`SELECT name FROM institutions WHERE id IN (${dropped.slice(0, 5).map(() => '?').join(',')})`).bind(...dropped.slice(0, 5)))).map((x) => x.name);
+      return err(409, 'INSTITUTION_HAS_RESULTS', `Bu kurumlarda sınav sonucu var, listeden çıkarılamaz: ${names.join(', ')}${dropped.length > 5 ? ` ve ${dropped.length - 5} kurum daha` : ''}.`);
+    }
+  }
   const previous = await all<{ institution_id: string }>(env.DB.prepare('SELECT institution_id FROM exam_institutions WHERE exam_id=? AND enabled=1 ORDER BY institution_id').bind(examId));
   const reason = body.reason?.trim() || 'Sınav kurum dağıtımı güncellemesi.';
   if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Değişiklik gerekçesi 500 karakteri geçemez.');
@@ -837,7 +847,7 @@ async function replaceInstitutionsUnlocked(request: Request, env: Env, user: Aut
   for (const institutionId of ids) statements.push(env.DB.prepare(`INSERT INTO exam_institutions (id,exam_id,institution_id,enabled) VALUES(?,?,?,1)`).bind(uuid('ei'), examId, institutionId));
   statements.push(examAuditStatement(env,user,null,'EXAM_INSTITUTIONS_REPLACED',examId,{before:{institutionIds:previous.map(row=>row.institution_id)},after:{institutionIds:ids},reason}));
   await env.DB.batch(statements);
-  return Response.json({ ok: true, institutionCount: ids.length });
+  return Response.json({ ok: true, institutionCount: ids.length, openToAll: ids.length === 0 });
 }
 
 export async function setStatus(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
@@ -894,7 +904,7 @@ async function filterCatalogByInstitution(request: Request, env: Env): Promise<R
     WHERE e.status IN ('ACTIVE','CLOSED')
       AND NOT EXISTS(SELECT 1 FROM exam_revision_state r WHERE r.exam_id=e.id AND r.app_trashed_at IS NOT NULL)
       AND NOT EXISTS(SELECT 1 FROM exam_channel_publications p WHERE p.exam_id=e.id AND p.channel='LICENSED' AND p.status<>'ACTIVE')
-      AND (e.institution_id=? OR EXISTS(SELECT 1 FROM exam_institutions ei WHERE ei.exam_id=e.id AND ei.institution_id=? AND ei.enabled=1))
+      AND ${examOpenToInstitutionSql('e')}
   `).bind(institutionId, institutionId));
   const allowed = new Set(visible.map((x) => x.id));
   return Response.json({ ...payload, exams: (payload.exams || []).filter((e: any) => allowed.has(e.id)) }, { status: response.status });
