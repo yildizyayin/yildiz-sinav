@@ -452,3 +452,51 @@
     .app-shell[data-panel-theme="ANUNEX_STANDARD"] .sidebar .nav-item { min-height: 44px; }
   }
 }
+
+/* Approved image: ANUNEX Süper Admin gösterge paneli(1).png, 26 October. */
+@media screen {
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar{background:#fff;padding:18px 14px 12px;gap:14px;font-family:Inter,"Segoe UI",Arial,sans-serif}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .brand{padding:0 4px 4px;border:0;flex:0 0 auto}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-search{display:flex;align-items:center;gap:9px;min-height:44px;padding:0 11px;border:1px solid #d8e1ec;border-radius:6px;background:#fafbfd;color:#566781;flex:0 0 auto}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-search input{width:100%;min-width:0;min-height:42px;padding:8px 0;border:0;background:transparent;box-shadow:none;font-size:16px;color:#20344c}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-search button{display:grid;place-items:center;min-width:40px;min-height:40px;margin-right:-8px;padding:0;border:0;background:transparent;color:#405673}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu{padding:0;display:flex;flex-direction:column;gap:4px;overflow-y:auto;scrollbar-gutter:auto;scrollbar-width:thin;scrollbar-color:#c7d3e1 transparent}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu .nav-group{margin:0;flex:0 0 auto}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu :is(.nav-group-toggle,.nav-item,.approved-shortcuts-title){display:flex;align-items:center;gap:12px;width:100%;min-height:48px;padding:11px 10px;color:#253754;background:transparent;border:0;border-radius:5px;font-size:16px;font-weight:400;letter-spacing:0;line-height:1.5;text-align:left;box-shadow:none;transform:none}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu .nav-group-toggle::before{display:none}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu :is(.nav-group-toggle,.nav-item) span{display:block;flex:1;white-space:normal;overflow-wrap:anywhere}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu :is(.nav-group-toggle,.nav-item,.approved-shortcuts-title) svg{color:#283c59;stroke-width:1.65;flex:0 0 20px;width:20px;height:20px}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu .nav-group-toggle .approved-menu-chevron{width:16px;height:16px;flex:0 0 16px;margin-left:auto;transform:rotate(-90deg)}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu .nav-group.open .approved-menu-chevron{transform:rotate(0)}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu :is(.nav-item.active,.approved-menu-home.active){background:#edf4fa;color:#125573;border-left:4px solid #125c78;padding-left:6px;font-weight:600}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu .has-current-page>.nav-group-toggle{color:#125573;background:#f4f8fc}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu :is(.nav-item:hover,.nav-group-toggle:hover){background:#eef4f9;color:#125573}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu .nav-group-items{margin:0 0 4px 19px;padding:0 0 0 9px;border-left:1px solid #dce5ef;gap:2px}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu .nav-group-items .nav-item{font-size:13px;min-height:42px;padding:9px 8px}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu .nav-group-items .nav-item.active{border-left:3px solid #125c78;padding-left:5px}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-shortcuts{margin-top:16px;padding-top:12px;border-top:1px solid #e2e9f1}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu-empty{font-size:13px;padding:14px;line-height:1.5}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu-footer{flex:0 0 auto;border-top:1px solid #e2e9f1;padding:8px 0 0;margin:0;background:#fff;border-radius:0}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-footer summary{display:flex;align-items:center;gap:12px;min-height:44px;padding:8px 10px;list-style:none;cursor:pointer;font-size:16px;color:#253754;border-radius:5px}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-footer summary::-webkit-details-marker{display:none}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-footer summary:hover{background:#eef4f9}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-help p{font-size:12px;line-height:1.6;color:#405673;padding:8px 10px;margin:0;background:#f5f8fc;border-radius:5px}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-account .avatar{width:36px;height:36px;background:#b64d3d;color:#fff;font-size:12px;font-weight:500}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-account summary>svg:last-child{margin-left:auto}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-account-actions{padding:4px;border:1px solid #e2e9f1;border-radius:6px}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-footer .sidebar-logout{display:flex;color:#253754;font-size:13px;min-height:44px}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu :is(a,button):focus-visible,.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-footer summary:focus-visible{outline:3px solid #176b96;outline-offset:-3px}
+ @media(max-width:1000px){.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu .nav-group-items .nav-item{min-height:44px}.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-menu-search input{font-size:16px}}
+}
+@media screen {
+ /* The supplied approved image has a 300px rail; keep its labels on one line. */
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu-search input{border:0;border-radius:0;background:transparent;box-shadow:none;font-weight:400;min-height:42px;padding:8px 0}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu-search input::placeholder{color:#62738b}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu .nav-group-toggle .approved-menu-chevron{transform:none}
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar .approved-menu .nav-group.open .approved-menu-chevron{transform:rotate(180deg)}
+ @media(min-width:1001px){
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin{grid-template-columns:300px minmax(0,1fr)}
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar{width:300px}
+ }
+ @media(max-width:1000px){.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .sidebar{width:min(300px,calc(100vw - 40px))}}
+}
