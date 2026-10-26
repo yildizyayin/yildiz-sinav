@@ -7,7 +7,7 @@
  * - The school (and the Super Admin / dealer) keeps the card's contact fields up to date.
  */
 import type { AuthUser, Env } from '../types';
-import { all, audit, json, one, uuid } from './db';
+import { all, audit, json, normalizeName, one, uuid } from './db';
 
 const fail = (status: number, code: string, message: string) => json({ ok: false, error: { code, message } }, status);
 const PIN_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -39,6 +39,13 @@ async function canManage(env: Env, user: AuthUser, inst: any): Promise<boolean> 
   if (user.role === 'INSTITUTION_MANAGER' && user.institution_id === inst.id) return true;
   const { dealerCanAct } = await import('../result-network-entry');
   return (await dealerCanAct(env, user, inst.meb_code || inst.code)).ok;
+}
+
+async function canOpenFromDirectory(env: Env, user: AuthUser, mebCode: string): Promise<boolean> {
+  if (user.role === 'SUPER_ADMIN') return true;
+  if (user.role !== 'INSTITUTION_MANAGER' || user.institution_id) return false; // a school manager never opens another school's card
+  const { dealerCanAct } = await import('../result-network-entry');
+  return (await dealerCanAct(env, user, mebCode)).ok;
 }
 
 async function issuePin(request: Request, env: Env, user: AuthUser): Promise<Response> {
@@ -104,7 +111,9 @@ async function claim(request: Request, env: Env): Promise<Response> {
 }
 
 async function card(request: Request, env: Env, user: AuthUser, id: string): Promise<Response> {
-  const inst = await one<any>(env.DB.prepare('SELECT * FROM institutions WHERE id=? OR code=? LIMIT 1').bind(id, id.toUpperCase()));
+  let inst = await one<any>(env.DB.prepare('SELECT * FROM institutions WHERE id=? OR code=? OR meb_code=? LIMIT 1').bind(id, id.toUpperCase(), id));
+  // A school in the MEB directory counts as registered: its card opens on first use, no manual opening needed.
+  if (!inst && /^\d{5,12}$/.test(id) && await canOpenFromDirectory(env, user, id)) inst = await ensureInstitutionFromDirectory(env, id, user.id);
   if (inst) id = inst.id;
   if (!inst || !(await canManage(env, user, inst))) return fail(404, 'INSTITUTION_NOT_FOUND', 'Kurum bulunamadı veya yetkiniz dışında.');
   if (request.method === 'PATCH') {
@@ -123,11 +132,39 @@ async function card(request: Request, env: Env, user: AuthUser, id: string): Pro
   return json({ ok: true, institution: fresh, pin: pin ? { issuedAt: pin.issued_at, usedAt: pin.used_at, locked: !!pin.locked_until && Date.parse(String(pin.locked_until).replace(' ', 'T') + 'Z') > Date.now() } : null, managers: user.role === 'SUPER_ADMIN' ? managers : managers.map((m) => ({ display_name: m.display_name, active: m.active })) });
 }
 
+const PAGE = 50;
+/** Super Admin view of the whole MEB directory: search, filter by city/district, and see which schools already have a card or an account. */
+async function browseDirectory(env: Env, url: URL): Promise<Response> {
+  const q = normalizeName(text(url.searchParams.get('q'), 80));
+  const city = text(url.searchParams.get('city'), 60), district = text(url.searchParams.get('district'), 80);
+  const page = Math.max(1, Math.min(2000, Number(url.searchParams.get('page')) || 1));
+  const where = ["d.status='ACTIVE'"], args: unknown[] = [];
+  if (q) { where.push('(d.normalized_name LIKE ? OR d.meb_code LIKE ?)'); args.push(`%${q}%`, `${q}%`); }
+  if (city) { where.push('d.city=?'); args.push(city); }
+  if (district) { where.push('d.district=?'); args.push(district); }
+  const w = where.join(' AND ');
+  const [rows, total, cities, districts] = await Promise.all([
+    all<any>(env.DB.prepare(`SELECT d.meb_code code,d.name,d.city,d.district,d.institution_type type,d.ownership,d.education_level level,i.id institution_id,COALESCE(iac.lifecycle_status,i.status) lifecycle,(SELECT count(*) FROM users u WHERE u.institution_id=i.id AND u.role='INSTITUTION_MANAGER' AND u.active=1) managers FROM national_institution_directory d LEFT JOIN institutions i ON i.meb_code=d.meb_code LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id WHERE ${w} ORDER BY d.city,d.district,d.name LIMIT ${PAGE} OFFSET ${(page - 1) * PAGE}`).bind(...args)),
+    one<{ n: number }>(env.DB.prepare(`SELECT count(*) n FROM national_institution_directory d WHERE ${w}`).bind(...args)),
+    all<any>(env.DB.prepare(`SELECT city,count(*) n FROM national_institution_directory WHERE status='ACTIVE' GROUP BY city ORDER BY city`)),
+    city ? all<any>(env.DB.prepare(`SELECT district,count(*) n FROM national_institution_directory WHERE status='ACTIVE' AND city=? GROUP BY district ORDER BY district`).bind(city)) : Promise.resolve([]),
+  ]);
+  return json({ ok: true, rows: rows.map((r) => ({ ...r, status: !r.institution_id ? 'DIRECTORY' : r.managers > 0 ? 'CLAIMED' : 'CARD' })), total: Number(total?.n || 0), page, pageSize: PAGE, cities, districts });
+}
+
 export async function handleInstitutionClaim(request: Request, env: Env): Promise<Response | null> {
   const url = new URL(request.url);
   if (url.pathname === '/api/public/results/institution-claim') {
     if (request.method !== 'POST') return fail(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     return claim(request, env);
+  }
+  if (url.pathname === '/api/admin/result-network/institution-directory') {
+    if (request.method !== 'GET') return fail(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    const { getAuthUser } = await import('./auth');
+    const user = await getAuthUser(env, request);
+    if (!user) return fail(401, 'UNAUTHENTICATED', 'Oturum açmanız gerekiyor.');
+    if (user.role !== 'SUPER_ADMIN') return fail(403, 'FORBIDDEN', 'Kurum rehberini yalnız Süper Admin listeler.');
+    return browseDirectory(env, url);
   }
   const pinPath = url.pathname === '/api/admin/result-network/institution-pins';
   const cardMatch = url.pathname.match(/^\/api\/admin\/result-network\/institutions\/([^/]+)\/card$/);
