@@ -13,13 +13,11 @@ Yalnız görünüm. Mevcut Türkçe metinler, erişim doğrulaması, state/effec
 - Mevcut rapor ön izlemesi kesin yayımlanmış sonuç gibi gösterilmez; eksik sıralama/puan sıfır yapılmaz.
 - Büyük tanıtım alanı küçültülür; seçilen rolün form/iş alanı öne alınır. Orijinal marka ve Nibiru varlıkları korunur.
 
-## Kapsam dışı teknik uyumsuzluk
+## Teknik eşgüdüm ve yayın
 
-Son karar: sonuç portalında genel öğrenci sicili eşleştirmesi istenmiyor; yalnız çift optikte eşleşmeyen kayıtlar istisna olabilir. Mevcut operasyon bileşeni genel MATCH/GUEST/CANCEL incelemesi içeriyor. Bu tasarım işi bunları kaldırmaz veya gizlemez; ayrı teknik düzeltme gerekir. Mevcut ağ yöneticisi yerleşimi de işleyiş değişikliği yapılmadan korunur. Öğrencinin sonuç erişim kodu doğrulaması bu eşleştirmeden farklıdır ve korunur.
+Bu tasarımlar güncel teknik ana dal 32bb3e622f3a5a2f48eef08607abdce1e9baee01 üzerine birlikte alınarak yeniden doğrulanır. S030/S031 teknik çalışmaları genel misafir adımını kaldırdı, kurum raporu/karneleri ve ayrı yazdırma akışını ekledi. Bu PR bu iş kurallarını değiştirmez. Eski rapor ekran görüntüleri güncel görüntülerle yenilenir; sentetik kontrol canlı veri veya fiziksel çıktı kanıtı değildir.
 
-## Yayın
-
-Normal app üretim dağıtımı, sonuç portalının dağıtıldığı anlamına gelmez. Mevcut `Deploy ANUNEX Result Network` iş akışı main dalından ayrıca çalıştırılmalı; önceden bağlı alan adı için `attach_domain=false`. Korunan `.github/` tetikleyicisi değiştirilmez.
+S031 ile sonuç portalı, başarılı `Deploy Production Cloudflare Worker` dağıtımını aynı commit üzerinden izler. Üretim ortamı onayı korunur. Sonuç portalının kendi `Deploy ANUNEX Result Network` çalışması başarıyla bitmeden portal canlı kabul edilmez. Tasarım işi `.github/` dosyalarına dokunmaz.
 
 ## Bu adım
 
@@ -30,3 +28,13 @@ Kurum: parola gösterme/gizleme, beni hatırla, güvenlik alanı, mevcut ilk gir
 Onaylı görsel: https://chatgpt.com/library?file_id=libfile_5e849cad44708191b270b0a7c4913f30&account_id=personal
 
 Güncel ana dal 6c5579f22e6e850fb88bd783757099b357995a95 üzerinde typecheck/build ve 321 dosya / 1423 test geçti. Üç rol + uygulama kabuğu için toplam 42 sentetik tarayıcı senaryosu doğrulandı.
+
+## Astra son görsel incelemesi
+
+Onaylı üç referans ve mevcut görüntüler Astra tarafından incelendi. Orijinal marka yatay hizaya alındı; telefonda üç bağlantı kompakt ve 40 px hedeflerle korundu. Bayi ana işlemi onaylı sıcak vurgu rengine getirildi. Kurum/bayi özetleri yeni üçlü teknik yapıya uyarlandı. İşleyiş, metinler ve yetkiler değiştirilmedi.
+
+## Güncel ana dal kontrol notu
+
+32bb3e62 üzerinde typecheck/build geçti. Tam yerel koşu: 317 dosya başarılı, 5 dosyada 6 süre aşımı (toplam322 dosya/1427 test). Test dosyaları ve süre sınırları değiştirilmedi; ayrı tekrar yapıldı. Son merge için güncel PR GitHub verify kontrollerinin tamamının başarı koşulu korunur.
+
+S031 kurum raporunda önceki `reportSource` yayın/önizleme etiketi artık görünmüyor. Bu görünüm PR’si bunu değiştirmiyor; teknik inceleme gerektirir. Raporda yayın/önizleme ayrımının eksiksiz korunduğu iddia edilmez.

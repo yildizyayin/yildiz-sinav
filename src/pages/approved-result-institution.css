@@ -44,7 +44,7 @@
  .result-portal.approved-result-portal[data-result-role=INSTITUTION]:not(.admin-portal-mode) th { padding:12px 14px; background:#f2f5f8; color:#28384d; font-size:12px; font-weight:600; letter-spacing:0; text-transform:none; white-space:nowrap; }
  .result-portal.approved-result-portal[data-result-role=INSTITUTION]:not(.admin-portal-mode) td { padding:14px; border-top:1px solid #e2e7ed; color:#35465d; font-size:13px; line-height:1.5; vertical-align:middle; }
  .result-portal.approved-result-portal[data-result-role=INSTITUTION]:not(.admin-portal-mode) td small { color:#536176; font-size:12px; }
- .result-portal.approved-result-portal[data-result-role=INSTITUTION]:not(.admin-portal-mode) .summary-strip { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:0; border:1px solid #dde4e8; border-radius:6px; overflow:hidden; background:#fff; }
+ .result-portal.approved-result-portal[data-result-role=INSTITUTION]:not(.admin-portal-mode) .summary-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; border:1px solid #dde4e8; border-radius:6px; overflow:hidden; background:#fff; }
  .result-portal.approved-result-portal[data-result-role=INSTITUTION]:not(.admin-portal-mode) .summary { min-width:0; padding:14px; border:0; border-right:1px solid #e2e7ed; border-radius:0; box-shadow:none; }
  .result-portal.approved-result-portal[data-result-role=INSTITUTION]:not(.admin-portal-mode) .summary span { color:#536176; font-size:12px; }
  .result-portal.approved-result-portal[data-result-role=INSTITUTION]:not(.admin-portal-mode) .summary strong { color:#24364b; font-size:23px; font-weight:600; }
