@@ -1,0 +1,74 @@
+/* T01: compact white catalogue. Only the STANDARD super-admin screen changes.
+   The catalogue contract and all existing filters/actions remain untouched. */
+ .approved-exam-scroll-hint { display: none; }
+@media screen {
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin:has(.approved-exam-list) { background: #f5f7fa; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list {
+    --exam-list-ink: #192638;
+    --exam-list-muted: #536176;
+    --exam-list-line: #dde4ec;
+    --exam-list-accent: #9e4837;
+    min-width: 0;
+    color: var(--exam-list-ink);
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .exam-center-simple-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    align-items: center;
+    margin: 0 0 26px;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list h1 {
+    margin: 5px 0 8px;
+    font-size: clamp(27px, 2.4vw, 34px);
+    font-weight: 650;
+    letter-spacing: -.03em;
+    line-height: 1.2;
+    color: var(--exam-list-ink);
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .eyebrow { color: #784230; font-size: 11px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .exam-center-simple-head p { margin: 0; max-width: 520px; color: var(--exam-list-muted); font-size: 14px; line-height: 1.6; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .exam-center-simple-actions { gap: 8px; flex-shrink: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list :is(button, .primary, .secondary) { min-height: 42px; border-radius: 6px; font-size: 13px; font-weight: 600; box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .primary { background: var(--exam-list-accent); border: 1px solid var(--exam-list-accent); color: #fff; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .primary:hover { background: #863b2d; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list :is(.secondary,.ghost) { background: #fff; border: 1px solid #d4dde7; color: #28394f; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list :is(.secondary,.ghost):hover { background: #f4f7fa; border-color: #9eacbe; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .exam-center-simple-list { padding: 0; margin: 0; min-width: 0; border: 1px solid var(--exam-list-line); border-radius: 7px; box-shadow: none; overflow: hidden; background: #fff; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .exam-filter-row { display: grid; grid-template-columns: minmax(220px,1fr) minmax(150px,210px) auto; align-items: end; gap: 14px; margin: 0; padding: 18px 20px; border-bottom: 1px solid var(--exam-list-line); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .exam-filter-row label { min-width: 0; color: #394b60; font-size: 12px; font-weight: 500; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list :is(input,select) { min-height: 42px; margin-top: 6px; border: 1px solid #d4dde7; border-radius: 6px; background: #fff; color: var(--exam-list-ink); font-size: 14px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list input::placeholder { color: #5e6d82; opacity: 1; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .table-card { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; border: 0; border-radius: 0; box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list table { min-width: 790px; width: 100%; border-collapse: collapse; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list th { padding: 13px 18px; background: #f2f5f8; color: #28384d; font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; text-align: left; white-space: nowrap; border: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list td { height: 80px; padding: 12px 18px; border-top: 1px solid var(--exam-list-line); color: #35465d; font-size: 13px; line-height: 1.5; vertical-align: middle; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list :is(th,td):first-child { width: 33%; min-width: 230px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list tbody tr:hover { background: #faf7f5; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .approved-exam-title { display: inline-flex; align-items: center; min-height: 40px; max-width: 100%; color: var(--exam-list-ink); font-size: 15px; font-weight: 650 !important; text-decoration: none; overflow-wrap: anywhere; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .approved-exam-title:hover { color: #8c3e2e; text-decoration: underline; text-underline-offset: 3px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list td small { margin-top: 1px; color: var(--exam-list-muted); font-size: 12px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .approved-exam-view { min-height: 40px; padding: 6px 12px; white-space: nowrap; font-size: 12px; font-weight: 500; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .status { padding: 4px 9px; border-radius: 5px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .status.ok { color: #235d3e; background: #eaf5ed; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .status.warn { color: #855117; background: #fff3db; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .status.neutral { color: #4d5a6f; background: #eef1f5; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 240px; padding: 32px 20px; text-align: center; color: var(--exam-list-muted); font-size: 13px; line-height: 1.6; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .empty-state > svg { width: 28px; height: 28px; color: #8c4b38; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .empty-state strong { color: #28384d; font-size: 15px; font-weight: 600; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list :is(a,button,input,select):focus-visible { outline: 3px solid #1c657c; outline-offset: 3px; box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list :is(a,button):active:not(:disabled) { transform: translateY(1px); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list button:disabled { cursor: not-allowed; opacity: .5; transform: none; }
+  @media (max-width: 1280px) {
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .exam-center-simple-head { align-items: flex-start; flex-direction: column; gap: 16px; }
+  }
+  @media (max-width: 700px) {
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .approved-exam-scroll-hint { display: block; margin: 0; padding: 10px 16px; border-bottom: 1px solid var(--exam-list-line); color: var(--exam-list-muted); font-size: 12px; line-height: 1.5; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .exam-filter-row { grid-template-columns: 1fr; gap: 12px; padding: 16px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .exam-center-simple-actions { width: 100%; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list .exam-center-simple-actions .ghost { grid-column: 1 / -1; justify-self: start; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-exam-list * { transition: none !important; animation: none !important; }
+  }
+}
