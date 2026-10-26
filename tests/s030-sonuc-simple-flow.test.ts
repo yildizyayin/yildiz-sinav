@@ -15,7 +15,7 @@ async function setup() {
   const cookies: Record<string, string> = {};
   for (const id of ['admin', 'dealerI']) cookies[id] = (await createSession(t.env, id, new Request('https://sonuc.anunex.com'), false)).headers.get('Set-Cookie')!.split(';')[0];
   const result = (await import('../worker/result-worker-entry')).default as any;
-  Object.assign(t.env, { FILES: { put: async () => undefined, delete: async () => undefined, get: async () => null } });
+  Object.assign(t.env, { FILES: { put: async () => undefined, delete: async () => undefined, get: async () => null }, RESULT_LOOKUP_SECRET: 'synthetic-lookup-secret' });
   const call = async (who: string, path: string, init: { method?: string; body?: any } = {}) => {
     const form = init.body instanceof FormData;
     const r = await result.fetch(new Request(`https://sonuc.anunex.com${path}`, { method: init.method || 'GET', headers: { Cookie: cookies[who], Origin: 'https://sonuc.anunex.com', ...(init.body && !form ? { 'Content-Type': 'application/json' } : {}) }, ...(init.body ? { body: form ? init.body : JSON.stringify(init.body) } : {}) }), t.env, { waitUntil() {} });
@@ -43,6 +43,13 @@ describe('S030 simple sonuc evaluation', () => {
     expect(k.data.karnes).toHaveLength(SHEETS.length);
     expect(k.data.karnes[0].subjects.map((s: any) => s.subject).length).toBeGreaterThan(0);
     expect(k.data).toMatchObject({ institution: { name: 'Pendik Deneme Lisesi' }, summary: { participants: SHEETS.length } });
+    // S031: the result administration opened by itself, so access cards work without "Taslak sonuç ağı oluştur"
+    expect(t.db.prepare(`SELECT status FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK'`).all(t.examId)).toEqual([{ status: 'UPLOADING' }]);
+    const codes = await call('dealerI', `${batch}/access-codes`, { method: 'POST' });
+    expect(codes.status, codes.text).toBe(200);
+    const report = await call('dealerI', `${batch}/report`);
+    expect(report.data).toMatchObject({ exam: { title: expect.any(String) }, institution: { name: 'Pendik Deneme Lisesi' } });
+    expect(report.data.rows.map((r: any) => r.institution_rank)).toEqual([...report.data.rows.map((r: any) => r.institution_rank)].sort((a: number, b: number) => a - b));
     void t;
   });
 

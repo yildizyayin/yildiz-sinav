@@ -84,7 +84,7 @@ describe('ANUNEX result network contract',()=>{
   expect(source).toContain('RESULT_HMAC_V1:');
   expect(operator).toContain('Öğrenci erişim kartlarını üret');
   expect(operator).toContain('Excel / CSV');
-  expect(operator).toContain('PDF yazdır');
+  expect(operator).toContain('Yazdır / PDF'); // S031: the institution report prints on its own
   expect(portal).toContain('Türkiye {rankText(x.national_rank,x.national_count)}');
  });
  it('schedules retention notices and purges cohort data while retaining catalogue assets',()=>{

@@ -421,11 +421,24 @@ async function batchOperatorContext(request:Request,env:Env,batchId:string){
  const context=await resultOperatorContext(request,env,batch.institution_id);if(context instanceof Response)return context;return{...context,batch};
 }
 
+/** S031: a central exam listed in the result network opens its result administration on first use; no separate "Taslak sonuç ağı oluştur" step. */
+async function ensureOpenAdministration(env:Env,examId:string,actorId:string){
+ const open=await one<any>(env.DB.prepare(`SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND status IN ('UPLOADING','EVALUATING','READY','PUBLISHED') LIMIT 1`).bind(examId));
+ if(open)return;
+ const draft=await one<any>(env.DB.prepare(`SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='DRAFT' ORDER BY created_at DESC LIMIT 1`).bind(examId));
+ const exam=await one<any>(env.DB.prepare(`SELECT academic_year FROM exams WHERE id=?`).bind(examId));if(!exam)return;
+ const id=draft?.id||uuid('eadm');
+ await env.DB.batch([
+  draft?env.DB.prepare(`UPDATE exam_administrations SET status='UPLOADING' WHERE id=? AND status='DRAFT'`).bind(id):env.DB.prepare(`INSERT INTO exam_administrations(id,exam_id,academic_year,channel,status,created_by) VALUES(?,?,?,'RESULT_NETWORK','UPLOADING',?)`).bind(id,examId,exam.academic_year,actorId),
+  env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'RESULT_ADMINISTRATION_OPENED','exam_administration',?,?)`).bind(uuid('aud'),actorId,id,JSON.stringify({reason:'İlk değerlendirmede otomatik açıldı.'})),
+ ]);
+}
 export async function generateBatchAccessCodes(request:Request,env:Env,batchId:string){
  let context=await batchOperatorContext(request,env,batchId);if(context instanceof Response)return context;
  return withExamOperationLock(env,context.batch.exam_id,'RESULT_ACCESS_BATCH',async(env)=>{
  context=await batchOperatorContext(request,env,batchId);if(context instanceof Response)return context;
  if(context.batch.status!=='COMMITTED')return badRequest('Önce değerlendirmeyi tamamlayın.','BATCH_NOT_COMMITTED');
+ await ensureOpenAdministration(env,context.batch.exam_id,context.user.id);
  const administration=await one<any>(env.DB.prepare(`SELECT ea.*,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.exam_id=? AND ea.channel='RESULT_NETWORK' AND ea.status IN ('UPLOADING','READY','PUBLISHED') ORDER BY ea.created_at DESC LIMIT 1`).bind(context.batch.exam_id));
  if(!administration)return safeError(409,'RESULT_ADMINISTRATION_NOT_OPEN','Sınav önce Süper Admin tarafından Sonuç Ağı değerlendirmesine açılmalıdır.');
  if(administration.status==='PUBLISHED')return safeError(409,'RESULT_COHORT_FROZEN','Yayınlanmış sınava yeni erişim eklenemez. Önce sonuçları düzeltmeye açın.');
@@ -466,7 +479,7 @@ async function batchResultReport(request:Request,env:Env,batchId:string){
   const rows=snapshots.map(s=>({...snapshotSummary(s),...readNetworkSnapshot(s.payload_json).participant,participant_id:s.participant_id,grade_level:s.grade_level}));
   return json({ok:true,publication:{status:administration.status,snapshotVersion:administration.published_snapshot_version,rankingFrozenAt:administration.ranking_frozen_at,participantCount:Number(administration.participant_count),institutionCount:Number(administration.institution_count)},rows,source:'PUBLISHED_SNAPSHOT'});
  }
- const rows=await all<any>(env.DB.prepare(`WITH live AS MATERIALIZED (SELECT ep.id participant_id,ep.student_number_snapshot,ep.name_snapshot,ep.class_snapshot,COALESCE(se.grade_level,e.grade_level) grade_level,er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.success_percent,er.institution_rank,COUNT(*) OVER(PARTITION BY ep.institution_id) live_institution_count,RANK() OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,'') ORDER BY COALESCE(er.score,er.net) DESC,er.correct_count DESC) live_class_rank,COUNT(*) OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,'')) live_class_count FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id JOIN exams e ON e.id=ep.exam_id LEFT JOIN student_enrollments se ON se.id=(SELECT h.id FROM student_enrollments h WHERE h.student_id=ep.student_id AND h.institution_id=ep.institution_id AND h.season_id=ep.season_id ORDER BY h.created_at DESC,h.id LIMIT 1) WHERE ep.exam_id=?) SELECT live.*,live.live_institution_count institution_count,live.live_class_rank class_rank,live.live_class_count class_count FROM live JOIN exam_participants ep ON ep.id=live.participant_id WHERE ep.institution_id=? ORDER BY live.net DESC,live.correct_count DESC,live.name_snapshot LIMIT 20000`).bind(context.batch.exam_id,context.batch.institution_id));
+ const rows=await all<any>(env.DB.prepare(`WITH live AS MATERIALIZED (SELECT ep.id participant_id,ep.student_number_snapshot,ep.name_snapshot,ep.class_snapshot,COALESCE(se.grade_level,e.grade_level) grade_level,er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.success_percent,RANK() OVER(PARTITION BY ep.institution_id ORDER BY COALESCE(er.score,er.net) DESC,er.correct_count DESC) live_institution_rank,COUNT(*) OVER(PARTITION BY ep.institution_id) live_institution_count,RANK() OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,'') ORDER BY COALESCE(er.score,er.net) DESC,er.correct_count DESC) live_class_rank,COUNT(*) OVER(PARTITION BY ep.institution_id,COALESCE(ep.class_snapshot,'')) live_class_count FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id JOIN exams e ON e.id=ep.exam_id LEFT JOIN student_enrollments se ON se.id=(SELECT h.id FROM student_enrollments h WHERE h.student_id=ep.student_id AND h.institution_id=ep.institution_id AND h.season_id=ep.season_id ORDER BY h.created_at DESC,h.id LIMIT 1) WHERE ep.exam_id=?) SELECT live.*,live.live_institution_rank institution_rank,live.live_institution_count institution_count,live.live_class_rank class_rank,live.live_class_count class_count FROM live JOIN exam_participants ep ON ep.id=live.participant_id WHERE ep.institution_id=? ORDER BY live.net DESC,live.correct_count DESC,live.name_snapshot LIMIT 20000`).bind(context.batch.exam_id,context.batch.institution_id));
  return json({ok:true,publication:{status:administration?.status||'NOT_OPEN',rankingFrozenAt:administration?.ranking_frozen_at||null,participantCount:Number(administration?.participant_count||0),institutionCount:Number(administration?.institution_count||0)},rows,source:'LIVE_PREVIEW'});
 }
 
@@ -501,6 +514,7 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   // S030: every readable sheet is a participant on the result network; no guest step.
   const body:any=await previewed.json();
   const accepted=body?.batchId?await acceptReadableSheets(env,body.batchId,context.user.id,institutionId):0;
+  await ensureOpenAdministration(env,preview[1],context.user.id);
   return json({...body,acceptedParticipants:accepted},previewed.status);
  }
  const resolve=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/records\/([^/]+)\/resolve$/);
@@ -519,7 +533,9 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
  const access=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/access-codes$/);
  if(access&&request.method==='POST')return generateBatchAccessCodes(request,env,access[1]);
  const report=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/report$/);
- if(report&&request.method==='GET')return batchResultReport(request,env,report[1]);
+ if(report&&request.method==='GET'){const r=await batchResultReport(request,env,report[1]);if(!r.ok)return r;const body:any=await r.json();const b=await one<any>(env.DB.prepare(`SELECT exam_id,institution_id FROM scan_batches WHERE id=?`).bind(report[1]));
+  const [exam,institution]=await Promise.all([one<any>(env.DB.prepare(`SELECT title,academic_year,exam_type,publisher_name FROM exams WHERE id=?`).bind(b?.exam_id)),one<any>(env.DB.prepare(`SELECT name,code,city,district FROM institutions WHERE id=?`).bind(b?.institution_id))]);
+  return json({...body,exam,institution},r.status)}
  const batch=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)$/);
  if(batch&&request.method==='GET'){const context=await batchOperatorContext(request,env,batch[1]);if(context instanceof Response)return context;return getScanBatch(env,context.effective,batch[1])}
  return null;
