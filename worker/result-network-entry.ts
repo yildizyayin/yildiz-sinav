@@ -510,6 +510,8 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
  const evaluate=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/evaluate$/);
  if(evaluate&&request.method==='POST'){const context=await batchOperatorContext(request,env,evaluate[1]);if(context instanceof Response)return context;
   // S030: sheets that cannot be scored are set aside with their reason; the rest is evaluated.
+  // A batch uploaded before S030 (or reopened from the history) may still hold readable unmatched sheets: accept them first.
+  if(context.batch.status!=='COMMITTED')await acceptReadableSheets(env,evaluate[1],context.user.id,context.batch.institution_id);
   const setAside=context.batch.status==='COMMITTED'?[]:await setAsideUnscorable(env,evaluate[1],context.user.id,context.batch.institution_id);
   const evaluated=await evaluateBatch(env,context.effective,evaluate[1]);
   if(!evaluated.ok)return evaluated;
