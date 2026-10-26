@@ -5,7 +5,7 @@ import { createSession } from '../worker/lib/auth';
 /** S026: on sonuc.anunex.com an operator picks any MEB school it may act for, evaluates a TXT, and finds the evaluation again later. Synthetic data only. */
 async function setup() {
   const t = await evaluatedExam('direct');
-  t.db.exec(`INSERT INTO exam_channel_publications(id,exam_id,channel,status) VALUES('pub','${t.examId}','RESULT_NETWORK','ACTIVE');
+  t.db.exec(`INSERT OR IGNORE INTO exam_channel_publications(id,exam_id,channel,status) VALUES('pub','${t.examId}','RESULT_NETWORK','ACTIVE');
     INSERT INTO national_institution_directory(meb_code,name,normalized_name,city,district,source_url) VALUES
       ('730001','Kuzey Ortaokulu','KUZEY ORTAOKULU','Ankara','Çankaya','https://www.meb.gov.tr/x'),
       ('730002','Güney Ortaokulu','GUNEY ORTAOKULU','İzmir','Konak','https://www.meb.gov.tr/x');

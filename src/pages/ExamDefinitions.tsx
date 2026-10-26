@@ -152,7 +152,11 @@ export function ExamDefinitions() {
     if (!id) { setDetail(null); return; }
     const data = await api<any>(`/api/exam-definitions/${id}`);
     if (!data?.exam?.id) throw new Error('Sınav kaydı okunamadı. Listeyi yenileyip tekrar deneyin.');
-    setDetail(data);
+    setDetail((previous: any) => {
+      // S029: the server activates a complete draft by itself; say so where the user is looking.
+      if (previous?.exam?.id === data.exam.id && previous.exam.status === 'DRAFT' && data.exam.status === 'ACTIVE') { setNotice('Zorunlu bilgiler tamamlandı: sınav aktif edildi ve kataloğa düştü.'); void loadRows(); }
+      return data;
+    });
     const examType = String(data.exam.exam_type || 'STANDARD');
     setChoiceKey(examType === 'STANDARD' ? `STD_${data.exam.grade_level}` : examType === 'CUSTOM' ? 'CUSTOM' : examType === 'MIDDLE_COMPOSITE' ? `MID_${data.exam.grade_level}` : examType);
     setCreateForm((f) => ({ ...f, title: data.exam.title || '', academicYear: data.exam.academic_year || f.academicYear, examDate: data.exam.exam_date || '', ownerType: data.exam.owner_type || f.ownerType, institutionId: data.exam.institution_id || '', publisherName: data.exam.publisher_name || '', sessionLabel: data.exam.session_label || '', description: data.exam.description || '', resultNetworkEnabled: Boolean(data.exam.result_network_enabled), gradeLevel: String(data.exam.grade_level || f.gradeLevel), scoringRuleVersionId: data.exam.scoring_rule_version_id || '' }));
@@ -713,7 +717,7 @@ export function ExamDefinitions() {
 
     <div className="exam-definition-list-shell">
       <div className="exam-list-heading"><div><h2>Kayıtlı sınavlar</h2><p>Bir sınavı açtığınızda ayrı çalışma alanında düzenleme araçları görünür.</p></div></div>
-      <div className="table-card" style={{ marginBottom: 20 }}><table><thead><tr><th>Sınav</th><th>Tür / Sınıf</th><th>Durum</th><th>Platform</th><th>Ders / Soru</th><th>Cevap</th><th>Kazanım</th><th>İşlem</th></tr></thead><tbody>{rows.map((r) => { const canManageRow = user?.role === 'SUPER_ADMIN' || r.owner_type === 'INSTITUTION'; return <tr key={r.id}><td><button type="button" className="link-button" onClick={() => openExamDefinition(r.id)}><strong>{r.title}</strong></button><small>{r.academic_year}{r.publisher_name ? ` · ${r.publisher_name}` : ''}{r.institution_name ? ` · ${r.institution_name}` : ''}</small></td><td>{r.exam_type} · {r.grade_level ? `${r.grade_level}. sınıf` : '-'}</td><td><span className={`status ${r.status === 'ACTIVE' ? 'ok' : 'neutral'}`}>{r.status}</span>{r.owner_type === 'CENTRAL' && <small className="status-note">Merkezi sınav</small>}</td><td>{r.result_network_enabled ? <span className="status ok">Sonuç ağı</span> : <span className="status neutral">app</span>}</td><td>{r.subject_count} / {r.question_count}</td><td>{r.answer_count}</td><td>{r.outcome_mapped_count}</td><td>{rowActions(r, canManageRow)}</td></tr>; })}</tbody></table></div>
+      <div className="table-card" style={{ marginBottom: 20 }}><table><thead><tr><th>Sınav</th><th>Tür / Sınıf</th><th>Durum</th><th>Platform</th><th>Ders / Soru</th><th>Cevap</th><th>Kazanım</th><th>İşlem</th></tr></thead><tbody>{rows.map((r) => { const canManageRow = user?.role === 'SUPER_ADMIN' || r.owner_type === 'INSTITUTION'; return <tr key={r.id}><td><button type="button" className="link-button" onClick={() => openExamDefinition(r.id)}><strong>{r.title}</strong></button><small>{r.academic_year}{r.publisher_name ? ` · ${r.publisher_name}` : ''}{r.institution_name ? ` · ${r.institution_name}` : ''}</small></td><td>{r.exam_type} · {r.grade_level ? `${r.grade_level}. sınıf` : '-'}</td><td><ExamLightBadge row={r}/>{r.owner_type === 'CENTRAL' && <small className="status-note">Merkezi sınav</small>}</td><td>{r.result_network_enabled ? <span className="status ok">Sonuç ağı</span> : <span className="status neutral">app</span>}</td><td>{r.subject_count} / {r.question_count}</td><td>{r.answer_count}</td><td>{r.outcome_mapped_count}</td><td>{rowActions(r, canManageRow)}</td></tr>; })}</tbody></table></div>
     </div>
 
     <div id="exam-definition-detail" className="exam-definition-detail-shell">
@@ -723,9 +727,11 @@ export function ExamDefinitions() {
       <nav className="exam-tabs" aria-label="Sınav düzenleme bölümleri" role="tablist">{[['general','Sınav bilgileri'],['key','Cevap anahtarı'],['outcomes','Kazanımlar'],['content','Belgeler ve optik']].map(([id,label])=><button key={id} role="tab" aria-selected={detailTab===id} onClick={()=>setDetailTab(id)}>{label}</button>)}</nav>
       {detailTab==='outcomes'&&canEditDetail&&<ExamOutcomeEditor examId={selectedId} required={outcomeRequired} onSaved={()=>void loadDetail(selectedId)}/>}
       <div className="exam-detail-toolbar"><button className="ghost" onClick={closeDetail}><ArrowLeft size={16} /> Sınav listesine dön</button><div className="exam-detail-actions">{canEditDetail ? <><button className="secondary" disabled={busy} onClick={() => void copyExamById(selectedId)}><Copy size={16} /> Kopyala</button>{detail.exam.status !== 'ARCHIVED' && <button className="danger" disabled={busy} onClick={() => void archiveExam()}><Trash2 size={16} /> Arşivle</button>}{user?.role === 'SUPER_ADMIN' && <button className="danger" disabled={busy} onClick={() => void deleteExamById(selectedId)}><Trash2 size={16} /> Çöp kutusu</button>}<div style={{ position: 'relative' }}><button type="button" className="icon-button" aria-label="Sınav işlemleri" aria-expanded={openExamMenu === `detail-${selectedId}`} onClick={() => setOpenExamMenu((current) => current === `detail-${selectedId}` ? null : `detail-${selectedId}`)}><MoreVertical size={18} /></button>{openExamMenu === `detail-${selectedId}` && <div className="exam-row-menu exam-detail-menu" role="menu"><button role="menuitem" onClick={() => setOpenExamMenu(null)}><Eye size={14} /> Görüntüle / Düzenle</button><button role="menuitem" onClick={() => void copyExamById(selectedId)}><Copy size={14} /> Kopyala</button>{detail.exam.status !== 'ARCHIVED' && <button role="menuitem" onClick={() => void archiveExam()}><Archive size={14} /> Arşivle</button>}{user?.role === 'SUPER_ADMIN' && <button role="menuitem" onClick={() => void deleteExamById(selectedId)}><Trash2 size={14} /> Çöp kutusu</button>}</div>}</div></> : <span className="status neutral">Merkezi sınav · yalnızca görüntüleme</span>}</div></div>
-      <div className="section-head"><div><h2>{detail.exam.title}</h2><p>{detail.exam.exam_type} · {detail.exam.grade_level}. sınıf · {detail.exam.status === 'DRAFT' ? 'Düzenlenebilir taslak' : detail.exam.status === 'ARCHIVED' ? 'Arşivlendi' : 'Değerlendirmeye açık'}{detail.exam.outcome_mode === 'OFFICIAL_REQUIRED' ? ' · doğrulanmış kazanım zorunlu' : ''}{detail.exam.result_network_enabled ? ' · sonuc.anunex.com seçili' : ''}</p></div>{detail.exam.status === 'DRAFT' && canEditDetail && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="secondary" disabled={busy} onClick={saveGeneral}><Save size={16} /> Kartı güncelle</button><button className="primary" disabled={busy || !detail.readiness?.ready_to_publish} onClick={publish}><Send size={17} /> Sınavı aktifleştir</button></div>}</div>
+      <div className="section-head"><div><h2>{detail.exam.title}</h2><ExamLightBadge row={rows.find((r: any) => r.id === selectedId) || detail.exam}/><p>{detail.exam.exam_type} · {detail.exam.grade_level}. sınıf · {detail.exam.status === 'DRAFT' ? 'Düzenlenebilir taslak' : detail.exam.status === 'ARCHIVED' ? 'Arşivlendi' : 'Değerlendirmeye açık'}{detail.exam.outcome_mode === 'OFFICIAL_REQUIRED' ? ' · doğrulanmış kazanım zorunlu' : ''}{detail.exam.result_network_enabled ? ' · sonuc.anunex.com seçili' : ''}</p></div>{detail.exam.status === 'DRAFT' && canEditDetail && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="secondary" disabled={busy} onClick={saveGeneral}><Save size={16} /> Kartı güncelle</button><button className="primary" disabled={busy || !detail.readiness?.ready_to_publish} onClick={publish}><Send size={17} /> Sınavı aktifleştir</button></div>}</div>
       {error && <div className="alert error">{error}</div>}{notice && <div className="alert success">{notice}</div>}
       <div hidden={detailTab!=='general'}>
+      {detail.exam.status === 'DRAFT' && <div className="alert info">Zorunlu bilgiler (sınav kartı, puanlama ve bütün kitapçıkların cevap anahtarı) tamamlanınca sınav <strong>kendiliğinden aktif olur</strong>; merkezi sınav app ve sonuç ağı kataloğuna düşer. Başlangıç tarihi girerseniz o tarihte aktif olur. Kazanım, PDF ve video isteğe bağlıdır.</div>}
+      {detail.exam.status === 'DRAFT' && canEditDetail && <ExamStartDate examId={selectedId} onSaved={() => { void loadDetail(selectedId); void loadRows(); }}/>}
       {detail.exam.status === 'DRAFT' && <ExamReadiness readiness={detail.readiness}/>}
       {detail.exam.status === 'DRAFT' && canEditDetail && <section className="panel" style={{marginBottom:20}}><h2>Sınav kartı ve puanlama</h2><div className="form-grid">
         <label>Sınav adı<input value={createForm.title} onChange={e=>setCreateForm(f=>({...f,title:e.target.value}))}/></label>
@@ -761,4 +767,25 @@ export function ExamDefinitions() {
     </div></>}
     </div>
   </div>;
+}
+
+/** S029: one light per exam — green active, yellow active with optional parts missing, blue waiting for its start date, orange draft, red passive. */
+export function ExamLightBadge({ row }: { row: any }) {
+  const light = String(row.light || (row.status === 'ACTIVE' ? 'GREEN' : row.status === 'DRAFT' ? 'ORANGE' : 'RED')).toLowerCase();
+  const missing: string[] = row.missing || [];
+  const title = missing.length ? `${row.label || ''}: ${missing.join(', ')}` : (row.label || row.status);
+  return <span className={`exam-light exam-light-${light}`} title={title}><i aria-hidden="true" />{row.label || row.status}{missing.length > 0 && <small>{light === 'orange' ? 'Eksik: ' : ''}{missing.join(', ')}</small>}</span>;
+}
+
+/** S029: optional start date; a complete draft becomes active on that date, otherwise at once. */
+function ExamStartDate({ examId, onSaved }: { examId: string; onSaved: () => void }) {
+  const [value, setValue] = useState(''); const [msg, setMsg] = useState(''); const [err, setErr] = useState(''); const [busy, setBusy] = useState(false);
+  const local = (iso?: string | null) => { if (!iso) return ''; const d = new Date(iso); const p = (n: number) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; };
+  useEffect(() => { void api<any>(`/api/platform/exam-center/${encodeURIComponent(examId)}/schedule`).then(r => setValue(local(r.schedule?.application_start_at))).catch(() => undefined); }, [examId]);
+  const save = async (next: string) => {
+    setBusy(true); setErr(''); setMsg('');
+    try { await api(`/api/platform/exam-center/${encodeURIComponent(examId)}/schedule`, { method: 'PUT', body: JSON.stringify({ applicationStartAt: next ? new Date(next).toISOString() : null }) }); setValue(next); setMsg(next ? `Sınav ${new Date(next).toLocaleString('tr-TR')} tarihinde aktif olacak (zorunlu bilgiler tamamsa).` : 'Başlangıç tarihi kaldırıldı; zorunlu bilgiler tamamsa sınav hemen aktif olur.'); onSaved(); }
+    catch (e: any) { setErr(e.message); } finally { setBusy(false); }
+  };
+  return <section className="panel" style={{ marginBottom: 20 }}><div className="form-grid"><label>Uygulama başlangıcı (isteğe bağlı)<input type="datetime-local" value={value} onChange={e => setValue(e.target.value)} /></label><div style={{ alignSelf: 'end', display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="secondary" type="button" disabled={busy} onClick={() => void save(value)}>Tarihi kaydet</button>{value && <button className="ghost" type="button" disabled={busy} onClick={() => void save('')}>Tarihi kaldır</button>}</div></div>{msg && <div className="alert success">{msg}</div>}{err && <div className="alert error">{err}</div>}</section>;
 }

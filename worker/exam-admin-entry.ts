@@ -6,6 +6,7 @@ import { approvedLabelOutcome, examOutcomeScope, examSubjectsForOutcome, outcome
 import { withExamOperationLock } from './lib/exam-operation-lock';
 import { examPublicationGuard, examCorrectionOpen } from './lib/exam-publication-guard';
 import { examReadiness as readiness } from './lib/exam-readiness';
+import { activationStatements, examLight } from './lib/exam-lifecycle';
 import accessApp from './access-entry';
 import type { AuthUser, Env, Role } from './types';
 import { getAuthUser } from './lib/auth';
@@ -358,7 +359,12 @@ async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
       (SELECT count(*) FROM answer_keys ak JOIN exam_questions q ON q.id=ak.exam_question_id WHERE q.exam_id=e.id) answer_count,
       (SELECT count(DISTINCT qo.exam_question_id) FROM question_outcomes qo JOIN exam_questions q ON q.id=qo.exam_question_id WHERE q.exam_id=e.id) outcome_mapped_count,
       (SELECT count(*) FROM exam_institutions ei WHERE ei.exam_id=e.id AND ei.enabled=1) institution_count,
-      (SELECT count(*) FROM exam_participants ep WHERE ep.exam_id=e.id) participant_count
+      (SELECT count(*) FROM exam_participants ep WHERE ep.exam_id=e.id) participant_count,
+      (SELECT count(*) FROM exam_document_assets d WHERE d.exam_id=e.id AND d.status='READY' AND d.asset_type IN ('QUALIFIED_ANSWER_KEY','PLAIN_ANSWER_KEY_PDF','SOURCE_ANSWER_KEY')) answer_pdf_count,
+      (SELECT count(*) FROM exam_document_assets d WHERE d.exam_id=e.id AND d.status='READY' AND d.asset_type='EXAM_PDF') exam_pdf_count,
+      (SELECT count(*) FROM video_links v WHERE v.exam_id=e.id) video_count,
+      (SELECT r.app_trashed_at FROM exam_revision_state r WHERE r.exam_id=e.id) app_trashed_at,
+      (SELECT 1 FROM exam_channel_publications cp WHERE cp.exam_id=e.id AND cp.channel='LICENSED' AND cp.status='ARCHIVED') app_archived
     FROM exams e
     LEFT JOIN institutions i ON i.id=e.institution_id
     LEFT JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id
@@ -366,7 +372,7 @@ async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
     WHERE ${where}
     ORDER BY CASE e.status WHEN 'DRAFT' THEN 0 WHEN 'ACTIVE' THEN 1 ELSE 2 END,coalesce(e.exam_date,'9999-12-31') DESC,e.title
   `).bind(...params));
-  return Response.json({ ok: true, exams });
+  return Response.json({ ok: true, exams: exams.map((x: any) => ({ ...x, ...examLight(x) })) });
 }
 
 async function createDefinition(request: Request, env: Env, user: AuthUser): Promise<Response> {
@@ -866,6 +872,8 @@ async function setStatusUnlocked(request: Request, env: Env, user: AuthUser, exa
   const next = body.status;
   if (!next || !['DRAFT','ACTIVE','CLOSED','ARCHIVED'].includes(next)) return err(400, 'INVALID_STATUS', 'Geçersiz sınav durumu.');
   const allowed: Record<string, string[]> = { DRAFT: ['ACTIVE','ARCHIVED'], ACTIVE: ['CLOSED','ARCHIVED'], CLOSED: ['ARCHIVED'], ARCHIVED: [] };
+  // S029: a complete draft may already have been activated by itself; activating again is a harmless no-op.
+  if (next === 'ACTIVE' && exam.status === 'ACTIVE') return Response.json({ ok: true, status: 'ACTIVE', sourceStatus: 'ACTIVE', alreadyActive: true });
   if (!allowed[exam.status]?.includes(next)) return err(409, 'INVALID_STATUS_TRANSITION', `${exam.status} durumundan ${next} durumuna geçilemez.`);
   if (next === 'ACTIVE') {
     const ready = await readiness(env, examId);
@@ -876,18 +884,24 @@ async function setStatusUnlocked(request: Request, env: Env, user: AuthUser, exa
   }
   const reason = body.reason?.trim() || `Sınav durumu ${next} olarak güncellendi.`;
   if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Durum değişikliği gerekçesi 500 karakteri geçemez.');
-  const resultPublished=next==='ARCHIVED'&&await one(env.DB.prepare("SELECT 1 FROM exam_channel_publications WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='ACTIVE'").bind(examId));
+  // S029: activation lists a central exam in the result network by itself. That automatic listing, while unused
+  // (no result network administration with uploads or results), is withdrawn with the archive; an explicit or used one is kept.
+  const autoListedUnused=next==='ARCHIVED'&&await one(env.DB.prepare("SELECT 1 FROM channel_definition_publications cdp WHERE cdp.exam_id=? AND cdp.channel='RESULT_NETWORK' AND json_extract(cdp.definition_json,'$.listed_by')='ACTIVATION' AND NOT EXISTS(SELECT 1 FROM exam_administrations ea WHERE ea.exam_id=cdp.exam_id AND ea.channel='RESULT_NETWORK' AND ea.status IN ('UPLOADING','EVALUATING','READY','PUBLISHED'))").bind(examId));
+  const resultPublished=next==='ARCHIVED'&&!autoListedUnused&&await one(env.DB.prepare("SELECT 1 FROM exam_channel_publications WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='ACTIVE'").bind(examId));
   const storedStatus=resultPublished ? exam.status : next;
-  const statements=[env.DB.prepare('UPDATE exams SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(storedStatus,examId)];
   if(next==='ACTIVE'){
-    statements.push(env.DB.prepare(`INSERT INTO exam_channel_publications(id,exam_id,channel,status,published_by,published_at) VALUES(?,?,'LICENSED','ACTIVE',?,CURRENT_TIMESTAMP) ON CONFLICT(exam_id,channel) DO UPDATE SET status='ACTIVE',published_by=excluded.published_by,published_at=CURRENT_TIMESTAMP`).bind(uuid('pub'),examId,user.id));
-    statements.push(env.DB.prepare(`INSERT INTO channel_definition_publications(exam_id,channel,source_revision,definition_json,published_by,status)
-      SELECT e.id,'LICENSED',r.revision,json_object('title',e.title,'publisher_name',e.publisher_name,'exam_date',e.exam_date,'description',e.description),?,'ACTIVE'
-      FROM exams e JOIN exam_revision_state r ON r.exam_id=e.id WHERE e.id=?
-      ON CONFLICT(exam_id,channel) DO UPDATE SET source_revision=excluded.source_revision,definition_json=excluded.definition_json,published_by=excluded.published_by,published_at=CURRENT_TIMESTAMP,status='ACTIVE'`).bind(user.id,examId));
-  }else if(next==='ARCHIVED'){
+    // S029: the button and the automatic path publish the same way (app, and the result network for a central exam).
+    await env.DB.batch(activationStatements(env,exam,user.id,reason));
+    return Response.json({ ok: true, status: next, sourceStatus: next });
+  }
+  const statements=[env.DB.prepare('UPDATE exams SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(storedStatus,examId)];
+  if(next==='ARCHIVED'){
     statements.push(env.DB.prepare(`UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='LICENSED'`).bind(examId));
     statements.push(env.DB.prepare(`UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='LICENSED'`).bind(examId));
+    if(autoListedUnused){
+      statements.push(env.DB.prepare(`UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'`).bind(examId));
+      statements.push(env.DB.prepare(`UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'`).bind(examId));
+    }
   }
   statements.push(examAuditStatement(env,user,exam.institution_id,`EXAM_STATUS_${next}`,examId,{before: { status: exam.status }, after: { status: next }, reason}));
   await env.DB.batch(statements);

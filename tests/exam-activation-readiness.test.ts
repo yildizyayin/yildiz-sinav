@@ -54,7 +54,8 @@ describe('exam activation with actual relational evidence', () => {
       expect(ready.ready_to_publish).toBe(true);
       expect((await f.activate()).status).toBe(200);
       expect((f.db.prepare('SELECT status FROM exams').get() as any).status).toBe('ACTIVE');
-      expect((f.db.prepare('SELECT channel,status FROM exam_channel_publications').get() as any)).toMatchObject({channel:'LICENSED',status:'ACTIVE'});expect(f.db.prepare("SELECT * FROM exam_channel_publications WHERE channel='RESULT_NETWORK'").all()).toEqual([]);
+      expect((f.db.prepare('SELECT channel,status FROM exam_channel_publications').get() as any)).toMatchObject({channel:'LICENSED',status:'ACTIVE'});// S029 (owner decision): a central exam is listed in the app and the result network catalogue on activation.
+      expect(f.db.prepare("SELECT channel,status FROM exam_channel_publications ORDER BY channel").all()).toEqual([{channel:'LICENSED',status:'ACTIVE'},{channel:'RESULT_NETWORK',status:'ACTIVE'}]);
       expect((f.db.prepare('SELECT action FROM audit_logs').get() as any).action).toBe('EXAM_STATUS_ACTIVE');
       expect(f.db.prepare('SELECT * FROM exam_operation_locks').all()).toEqual([]);
     } finally {f.db.close();}

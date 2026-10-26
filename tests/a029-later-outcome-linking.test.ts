@@ -92,7 +92,7 @@ describe('A029: outcomes linked after the results', () => {
       const mappings = await t.request(`${t.base}/outcome-mappings`);
       expect(mappings.response.status).toBe(200);
       expect(mappings.data.outcomes.map((o: any) => o.id).sort()).toEqual(['o_mat1', 'o_tur1']);
-      expect(mappings.data).toMatchObject({ resultCount: 2, appPublished: true, networkPublished: false });
+      expect(mappings.data).toMatchObject({ resultCount: 2, appPublished: true, networkPublished: true }); // S029: a central exam is listed in the result network on activation
       const q = mappings.data.questions as Array<{ id: string; subject_id: string; question_no: number }>;
       const body = { expectedRevision: mappings.data.revision, reason: 'Kazanım tablosu sonradan geldi.', mappings: q.map((x) => ({ questionId: x.id, outcomeIds: [x.subject_id === 'sub_tur' ? 'o_tur1' : 'o_mat1'] })) };
       expect((await t.request(`${t.base}/outcome-mappings`, 'PUT', body, 'teacher')).response.status).toBe(403);
