@@ -2477,10 +2477,20 @@ Not: 4 işçide çalışırken `question-generation-jobs` testi yük nedeniyle 5
 - Eski zorunlu atamayı doğrulayan 3 test yeni kurala göre güncellendi.
 - Bekleyen (kullanıcı onayı): il/ilçe/okul türü kapsamı, hariç tutma, CSV okul listesi, tarih aralığı vb.
 
-### S028 — Kazanımlı cevap anahtarı MEB eşleşmesi — 26 Ekim (BEKLİYOR: kullanıcı kararı)
+### S028 — Kazanımlı cevap anahtarı MEB eşleşmesi — 26 Ekim
 
 Canlı veriden teşhis:
 - Doğrulanmış MEB kataloğunun tamamı 2027-2028 / SCHOOL (TYMM). Sınavlar 2026-2027 → katalog boş geliyor, hiçbir soru eşleşmiyor.
 - TYT/AYT için katalog yok; TYT dersleri (`sub_tyt_mat` vb.) katalog derslerine (`sub_mat`, `sub_fiz`…) bağlı değil.
 - Yayınevi anahtarındaki kodlar (21.4.5, 10.3.2) MEB kodu değil; başlıklar konu adı ("Aralık Kavramı ve Basit Eşitsizlikler"), MEB kazanım cümlesi değil → birebir eşleşme zaten tutmaz.
 - 4K TYT taslağında "kazanım zorunlu" işaretli (OFFICIAL_REQUIRED), 0 eşleşme → aktifleştirme kilitli. Kazanım varsayılanda isteğe bağlı.
+
+**Kullanıcı kararları:** öneri + onay, sonra otomatik; TYT→9-10, AYT→11-12; 2026-27 sınavları 2027-28 TYMM kataloğunu kullanır.
+
+**Düzeltme (PR #385, merge edildi):**
+- TYT/AYT dersleri lise katalog derslerine bağlandı (`worker/lib/exam-outcome-matching.ts`).
+- Sınav yılında doğrulanmış katalog yoksa en yakın doğrulanmış yıl kullanılır; editörde katalog yılı gösterilir.
+- Konu adı biçimindeki etiketlere kelime kökü önerileri; onaysız atanmaz. Editörde "Önerileri kabul et".
+- Kişinin seçimi yayınevi etiketini APPROVED yapar; aynı etiket sonraki sınavda otomatik eşleşir.
+- Kazanım isteğe bağlı (varsayılan). 4K TYT taslağında "kazanım zorunlu" işaretli; kullanıcı kaldırmalı ya da eşleştirmeli.
+- Test: `tests/s028-outcome-matching.test.ts`; `outcome-auto-match` testinde "Fiiller" artık öneri alıyor. Tüm paket 1419/1419.
