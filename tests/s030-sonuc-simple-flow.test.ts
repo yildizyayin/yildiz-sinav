@@ -46,6 +46,17 @@ describe('S030 simple sonuc evaluation', () => {
     void t;
   });
 
+  it('evaluates a batch uploaded before S030 whose readable sheets are still waiting as guests', async () => {
+    const { t, call, upload } = await setup();
+    const up = await upload('admin', SHEETS);
+    t.db.prepare(`UPDATE scan_records SET match_status='NEW_GUEST',resolution_status='PENDING',issues_json='["Kayıtlı öğrenciyle eşleşmedi; misafir katılımcı olarak oluşturulabilir."]' WHERE batch_id=?`).run(up.data.batchId);
+    t.db.prepare(`UPDATE scan_batches SET status='NEEDS_REVIEW' WHERE id=?`).run(up.data.batchId);
+    const ev = await call('admin', `/api/admin/result-network/operations/scan-batches/${up.data.batchId}/evaluate`, { method: 'POST' });
+    expect(ev.status, ev.text).toBe(200);
+    expect(ev.data.setAside).toEqual([]);
+    expect(ev.data.processed).toBe(SHEETS.length);
+  });
+
   it('sets aside a sheet without a name with its reason and evaluates the rest', async () => {
     const { call, upload } = await setup();
     const up = await upload('admin', [...SHEETS, { no: '777', name: '', TUR: 'ABCD', MAT: 'DCBA' }]);
