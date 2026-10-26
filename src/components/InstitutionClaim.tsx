@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '../api';
 import { Turnstile } from './Turnstile';
 
@@ -69,10 +69,11 @@ export function InstitutionPinIssuer() {
 }
 
 /** S020/S022: Super Admin looks a school up by MEB/ANX code, sees its card and moves it into the app. */
-export function InstitutionAdminLookup() {
-  const [code, setCode] = useState(''); const [id, setId] = useState(''); const [conv, setConv] = useState<any>(null); const [error, setError] = useState(''); const [notice, setNotice] = useState('');
-  const find = async (e: React.FormEvent) => { e.preventDefault(); setError(''); setNotice(''); setId(''); setConv(null);
-    try { const r = await api<any>(`/api/admin/result-network/institutions/${encodeURIComponent(code.trim())}/card`); setId(r.institution.id); setConv(await api<any>(`/api/admin/result-network/institutions/${encodeURIComponent(r.institution.id)}/app-conversion`)); } catch (err: any) { setError(err.message); } };
+export function InstitutionAdminLookup({ initialCode = '' }: { initialCode?: string } = {}) {
+  const [code, setCode] = useState(initialCode); const [id, setId] = useState(''); const [conv, setConv] = useState<any>(null); const [error, setError] = useState(''); const [notice, setNotice] = useState('');
+  useEffect(() => { if (initialCode) void find(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  async function find(e?: React.FormEvent) { e?.preventDefault(); setError(''); setNotice(''); setId(''); setConv(null);
+    try { const r = await api<any>(`/api/admin/result-network/institutions/${encodeURIComponent(code.trim())}/card`); setId(r.institution.id); setConv(await api<any>(`/api/admin/result-network/institutions/${encodeURIComponent(r.institution.id)}/app-conversion`)); } catch (err: any) { setError(err.message); } }
   const act = async (action: 'PLAN' | 'CANCEL' | 'CONVERT') => { setError(''); setNotice('');
     if (action === 'CONVERT' && !window.confirm('Lisans ödemesi/onayı tamamlandı mı? Misafir öğrenciler app öğrencisine dönüşecek; bu işlem geri alınmaz.')) return;
     try { const r = await api<any>(`/api/admin/result-network/institutions/${encodeURIComponent(id)}/app-conversion`, { method: 'POST', body: JSON.stringify({ action, paymentConfirmed: action === 'CONVERT' }) }); setConv(r); setNotice(action === 'CONVERT' ? `${r.activated} öğrenci app'e geçti${r.skippedForLimit ? `; ${r.skippedForLimit} öğrenci lisans limiti nedeniyle bekliyor` : ''}.` : 'Kaydedildi.'); } catch (err: any) { setError(err.message); } };
@@ -88,5 +89,36 @@ export function InstitutionAdminLookup() {
         {conv.status === 'PLANNED' && <button className="ghost" onClick={() => void act('CANCEL')}>İşareti kaldır</button>}
         {conv.status !== 'NONE' && conv.guestStudents > 0 && <button className="primary" onClick={() => void act('CONVERT')}>Öğrencileri app'e geçir</button>}
       </div></div>}
+  </section>;
+}
+
+const STATUS_LABEL: Record<string, string> = { DIRECTORY: 'Rehberde kayıtlı', CARD: 'Kurum kartı açık', CLAIMED: 'Hesabını açtı' };
+
+/** S024: the Super Admin browses every MEB school in the directory, filters by city/district, and opens any school's card. */
+export function InstitutionDirectoryBrowser({ reloadKey = 0 }: { reloadKey?: number }) {
+  const [q, setQ] = useState(''); const [city, setCity] = useState(''); const [district, setDistrict] = useState(''); const [page, setPage] = useState(1);
+  const [data, setData] = useState<any>(null); const [error, setError] = useState(''); const [loading, setLoading] = useState(false); const [open, setOpen] = useState('');
+  const load = async (p = page) => {
+    setLoading(true); setError('');
+    try { const qs = new URLSearchParams({ q: q.trim(), city, district, page: String(p) }); setData(await api<any>(`/api/admin/result-network/institution-directory?${qs}`)); setPage(p); }
+    catch (err: any) { setError(err.message); } finally { setLoading(false); }
+  };
+  useEffect(() => { void load(1); }, [city, district, reloadKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const pages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1;
+  return <section className="panel institution-directory-browser">
+    <div className="panel-head"><div><span className="eyebrow">MEB KURUM REHBERİ</span><h2>Rehberdeki kurumlar</h2><p>MEB'e kayıtlı okullar sistemde hazır; ayrıca kurum açmaya gerek yok. Kurum kartını açınca kart oluşur, PIN verilebilir.</p></div></div>
+    <form className="form-grid" onSubmit={(e) => { e.preventDefault(); void load(1); }}>
+      <label>Kurum adı veya MEB kodu<input value={q} onChange={(e) => setQ(e.target.value)} placeholder="ör. Zonguldak Fen Lisesi veya 326653" /></label>
+      <label>İl<select value={city} onChange={(e) => { setCity(e.target.value); setDistrict(''); }}><option value="">Tüm iller</option>{(data?.cities || []).map((c: any) => <option key={c.city} value={c.city}>{c.city} ({c.n})</option>)}</select></label>
+      {city && <label>İlçe<select value={district} onChange={(e) => setDistrict(e.target.value)}><option value="">Tüm ilçeler</option>{(data?.districts || []).map((d: any) => <option key={d.district} value={d.district}>{d.district} ({d.n})</option>)}</select></label>}
+      <div style={{ alignSelf: 'end' }}><button className="secondary" type="submit" disabled={loading}>Ara</button></div>
+    </form>
+    {error && <div className="alert error">{error}</div>}
+    {data && <p className="bulk-directory-count" role="status">{data.total.toLocaleString('tr-TR')} kurum bulundu{data.total > data.pageSize ? ` · sayfa ${page} / ${pages}` : ''}.</p>}
+    <div className="table-wrap"><table className="data-table"><thead><tr><th>MEB kodu</th><th>Kurum adı</th><th>İl / İlçe</th><th>Seviye</th><th>Durum</th><th></th></tr></thead>
+      <tbody>{(data?.rows || []).map((r: any) => <tr key={r.code}><td>{r.code}</td><td>{r.name}{r.ownership === 'PRIVATE' ? ' (özel)' : ''}</td><td>{r.city} / {r.district}</td><td>{r.level || '—'}</td><td>{STATUS_LABEL[r.status] || r.status}{r.lifecycle && r.lifecycle !== 'ACTIVE' ? ` · ${r.lifecycle}` : ''}</td><td><button className="ghost" type="button" onClick={() => setOpen(open === r.code ? '' : r.code)}>{open === r.code ? 'Kartı kapat' : 'Kurum kartı'}</button></td></tr>)}
+        {data && !data.rows.length && <tr><td colSpan={6} className="empty">Aramaya uyan kurum yok. Rehber boşsa önce MEB kurum dizinini yükleyin.</td></tr>}</tbody></table></div>
+    {data && pages > 1 && <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8 }}><button className="ghost" type="button" disabled={loading || page <= 1} onClick={() => void load(page - 1)}>Önceki</button><span>{page} / {pages}</span><button className="ghost" type="button" disabled={loading || page >= pages} onClick={() => void load(page + 1)}>Sonraki</button></div>}
+    {open && <InstitutionAdminLookup key={open} initialCode={open} />}
   </section>;
 }
