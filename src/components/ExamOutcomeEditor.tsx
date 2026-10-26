@@ -1,3 +1,4 @@
+import '../pages/approved-answer-outcomes.css';
 import { useEffect, useMemo, useState } from 'react';
 import { RefreshCw, Save } from 'lucide-react';
 import { api } from '../api';
@@ -73,7 +74,7 @@ export function ExamOutcomeEditor({ examId, required = false, onSaved }: { examI
     } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
   const subjectIds = [...new Set(questions.map(q => q.subject_id))];
-  return <section className="panel exam-outcome-editor"><div className="panel-head"><div><h2>Kazanım eşleştirmeleri</h2><p>Soru ve cevap anahtarını değiştirmeden kazanımları düzenleyin. Otomatik seçim yalnız resmî kapsam içindeki kod veya tam ifade eşleşmesiyle yapılır.</p></div><button className="ghost" disabled={busy} onClick={() => void load()}><RefreshCw size={15}/> Yenile</button></div>
+  return <section className="panel exam-outcome-editor approved-outcome-editor"><div className="panel-head"><div><h2>Kazanım eşleştirmeleri</h2><p>Soru ve cevap anahtarını değiştirmeden kazanımları düzenleyin. Otomatik seçim yalnız resmî kapsam içindeki kod veya tam ifade eşleşmesiyle yapılır.</p></div><button className="ghost" disabled={busy} onClick={() => void load()}><RefreshCw size={15}/> Yenile</button></div>
     {error && <div className="alert error" role="alert">{error}</div>}{notice && <div className="alert success" role="status">{notice}</div>}
     {results.count > 0 && <div className="alert warning" role="note">Bu sınavın {results.count} sonucu var. Kaydettiğinizde bu sonuçların kazanım analizi yeniden yapılır; puan, net ve sıralama değişmez, önceki analiz sürümü saklanır.{results.app ? ' Öğrenci ve veliler, uygulamada yayınlanmış sonuçta yeni kazanımları görür.' : ''}{results.network ? ' Sonuç ağı, siz yayını güncelleyene kadar önceki analizi gösterir.' : ''}</div>}
     <label className="exam-strict-toggle"><input type="checkbox" checked={strict} disabled={busy || !loaded} onChange={e => setStrict(e.target.checked)}/> Bütün aktif sorularda doğrulanmış kazanım zorunlu olsun</label>
