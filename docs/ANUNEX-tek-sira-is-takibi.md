@@ -2461,3 +2461,26 @@ Not: 4 işçide çalışırken `question-generation-jobs` testi yük nedeniyle 5
 - MEB okulları için "Sil" konmadı: rehber kaydı MEB'den geldiği için silinse bile sonraki aktarımda geri gelir; doğru karşılığı "Pasife al". Kartı açılmış kurumlarda mevcut "Sil / arşivle" Kurum listesinde duruyor.
 - App'te Kurum listesi bozuk görünüyordu: stiller yalnız sonuc'ta yükleniyordu. Yapısal kurallar `src/pages/result-network-admin.css`'e alındı.
 - sonuc.anunex.com'da görünmemesinin nedeni: sonuc 24 Ekim sürümünde; `Deploy ANUNEX Result Network` kullanıcı tarafından çalıştırılmalı.
+
+### S026 — sonuc.anunex.com: oturum, değerlendirme, kurum seçimi, geçmiş — 26 Ekim
+
+- PR #382 (merge edildi). Yenilemede operatör ve öğrenci ekranı mevcut oturumdan geri yüklenir; öğrenciye "Güvenli çıkış" (`POST /api/public/results/logout`, oturumu iptal eder).
+- Sınav İşlemleri: işlevsiz kutular kaldırıldı; değerlendirme ekranı bölümün içinde. App'te sonuc bağlantısı (operasyon API'si yalnız sonuc worker'ında).
+- Kurum seçimi: `GET /api/admin/result-network/operations/institutions` — yetki kapsamındaki MEB rehberinde arama; kartı olmayan okul yüklemede açılır (`mebCode`), bayi kapsamı dışı 403.
+- Değerlendirme geçmişi: `GET /api/admin/result-network/operations/history`; önceki değerlendirme açılır.
+- Test: `tests/s026-sonuc-evaluation.test.ts`.
+
+### S027 — Merkezi sınav tüm kurumlara açık — 26 Ekim
+
+- Kullanıcı kararı: Süper Admin'in tanımladığı merkezi sınav kurum seçmeden tüm kurumlarda kullanılır; kurumun kendi sınavını yalnız o kurum görür; kurum seçimi zorunlu değil.
+- PR #383 (merge edildi): `exam_institutions` boşsa sınav herkese açık, liste yalnız daraltır (`worker/lib/exam-audience.ts`). Aktifleştirmede kurum zorunluluğu kalktı. Kurum paneli aktif sınavda da düzenlenir; "Tüm kurumlara aç". Sonucu olan kurum listeden çıkarılamaz (409).
+- Eski zorunlu atamayı doğrulayan 3 test yeni kurala göre güncellendi.
+- Bekleyen (kullanıcı onayı): il/ilçe/okul türü kapsamı, hariç tutma, CSV okul listesi, tarih aralığı vb.
+
+### S028 — Kazanımlı cevap anahtarı MEB eşleşmesi — 26 Ekim (BEKLİYOR: kullanıcı kararı)
+
+Canlı veriden teşhis:
+- Doğrulanmış MEB kataloğunun tamamı 2027-2028 / SCHOOL (TYMM). Sınavlar 2026-2027 → katalog boş geliyor, hiçbir soru eşleşmiyor.
+- TYT/AYT için katalog yok; TYT dersleri (`sub_tyt_mat` vb.) katalog derslerine (`sub_mat`, `sub_fiz`…) bağlı değil.
+- Yayınevi anahtarındaki kodlar (21.4.5, 10.3.2) MEB kodu değil; başlıklar konu adı ("Aralık Kavramı ve Basit Eşitsizlikler"), MEB kazanım cümlesi değil → birebir eşleşme zaten tutmaz.
+- 4K TYT taslağında "kazanım zorunlu" işaretli (OFFICIAL_REQUIRED), 0 eşleşme → aktifleştirme kilitli. Kazanım varsayılanda isteğe bağlı.
