@@ -1,0 +1,114 @@
+[
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 1440,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 1180,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 1024,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 768,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 390,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "width": 360,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_FOCUS",
+    "width": 1440,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_FOCUS",
+    "width": 390,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STUDIO",
+    "width": 1440,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STUDIO",
+    "width": 390,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_COSMIC",
+    "width": 1440,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_COSMIC",
+    "width": 390,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_NEON",
+    "width": 1440,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_NEON",
+    "width": 390,
+    "scope": "outcomes",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  }
+]

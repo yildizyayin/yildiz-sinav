@@ -1,0 +1,72 @@
+/* Approved reference adaptation: appearance only, STANDARD super admin, screen only. */
+@media screen {
+
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) { --work-ink:#192638; --work-muted:#536176; --work-line:#dde4ec; --work-accent:#9e4837; min-width:0; color:var(--work-ink); }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) :is(.panel,.table-card,.source-card) { min-width:0; border:1px solid var(--work-line); border-radius:7px; box-shadow:none; background:#fff; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) h1 { font-size:clamp(27px,2.4vw,34px); line-height:1.2; font-weight:650; letter-spacing:-.03em; overflow-wrap:anywhere; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) :is(h2,h3) { font-size:17px; line-height:1.4; color:var(--work-ink); font-weight:650; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) :is(p,small,.muted) { color:var(--work-muted); line-height:1.6; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) p { font-size:13px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) :is(button,.primary,.secondary,.ghost) { min-height:42px; border-radius:6px; font-size:13px; font-weight:600; box-shadow:none; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .primary { background:var(--work-accent); border:1px solid var(--work-accent); color:#fff; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .primary:hover { background:#863b2d; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) :is(.secondary,.ghost) { color:#28394f; background:#fff; border:1px solid #d4dde7; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) :is(.secondary,.ghost):hover { background:#f4f7fa; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) button:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) :is(a,button):active:not(:disabled) { transform:translateY(1px); }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) :is(input,select,textarea) { max-width:100%; min-height:42px; border:1px solid #d4dde7; border-radius:6px; color:#192638; background:#fff; font-size:14px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) input::placeholder { color:#5e6d82; opacity:1; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) :is(input[type=checkbox],input[type=radio]) { width:20px; min-height:20px; height:20px; accent-color:var(--work-accent); }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) label { color:#394b60; font-size:12px; font-weight:500; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .table-card { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) table { width:100%; border-collapse:collapse; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) th { padding:12px 14px; background:#f2f5f8; color:#28384d; font-size:12px; font-weight:600; letter-spacing:0; text-transform:none; text-align:left; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) td { padding:12px 14px; border-top:1px solid var(--work-line); font-size:13px; line-height:1.5; color:#35465d; vertical-align:top; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .panel-head { gap:14px; padding-bottom:12px; margin-bottom:14px; border-bottom:1px solid #e5ebf1; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .alert { border-radius:6px; padding:12px 14px; font-size:13px; font-weight:400; line-height:1.6; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .status { border-radius:5px; font-size:12px; font-weight:500; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .status.ok { color:#235d3e; background:#eaf5ed; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .status.warn { color:#855117; background:#fff3db; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .status.error { color:#96392d; background:#fff0eb; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) :is(a,button,input,select,textarea):focus-visible { outline:3px solid #1c657c; outline-offset:3px; box-shadow:none; }
+@media(max-width:700px) { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) :is(.page-head,.panel-head,.exam-editor-footer) { flex-wrap:wrap; } .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .form-grid { grid-template-columns:1fr; } }
+@media(prefers-reduced-motion:reduce) { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) * { transition:none !important; animation:none !important; } }
+
+}
+
+@media screen {
+
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) { padding:18px; border:1px solid #dde4ec; border-radius:7px; background:#fff; box-shadow:none; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .question-meta-grid { display:grid; grid-template-columns:1fr; gap:0; margin:12px 0; border:1px solid #dde4ec; border-radius:5px; overflow:hidden; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .question-meta-grid>div { display:grid; grid-template-columns:36px minmax(130px,1fr) minmax(100px,1fr); gap:8px; align-items:center; padding:8px; border:0; border-bottom:1px solid #e5ebf1; border-radius:0; background:#fff; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .question-meta-grid>div:last-child { border-bottom:0; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .question-meta-grid :is(input,select) { margin:0; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .question-meta-grid strong { color:#24364b; font-size:13px; font-weight:600; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) table { min-width:850px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) td:nth-child(1) { min-width:120px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) td:nth-child(2) { width:23%; min-width:160px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) td:nth-child(3) { width:49%; min-width:360px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) select[multiple] { width:100%; max-width:100%; min-height:100px; font-size:13px; line-height:1.6; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) option { padding:7px; white-space:normal; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .exam-filter-row { display:flex; gap:12px; align-items:end; padding:14px 0; margin:0; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .exam-filter-row label { min-width:160px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .exam-outcome-chip { display:inline-flex; align-items:center; color:#235d3e; background:#eaf5ed; font-size:12px; font-weight:500; padding:2px 2px 2px 8px; border-radius:5px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .exam-outcome-chip button { min-width:40px; min-height:40px; padding:0; border:0; color:inherit; background:transparent; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .exam-outcome-dirty { color:#855117; background:#fff3db; font-weight:500; border-radius:5px; }
+.app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .exam-editor-footer { gap:12px; align-items:center; }
+@media(max-width:700px) { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) { padding:14px; } .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .exam-filter-row { display:grid; grid-template-columns:1fr; } .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .exam-filter-row label { min-width:0; } .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin :is(.approved-key-editor,.approved-outcome-editor,.approved-key-structure) .exam-editor-footer { flex-direction:column; align-items:stretch; } }
+
+}
+
+@media screen {
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-key-editor .question-meta-grid input { grid-column:3; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-key-structure .list-card { display:flex; flex-wrap:wrap; gap:12px; padding:12px; border-radius:5px; box-shadow:none; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-key-structure .list-card>div { flex:2; min-width:120px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-key-structure .compact-field { width:auto; flex:1; min-width:100px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-key-structure .approved-key-subject-toggle { display:inline-flex; align-items:center; justify-content:center; flex:0 0 40px; min-height:40px; margin:0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-key-structure .approved-key-subject-toggle input { width:20px; min-height:20px; height:20px; margin:0; }
+}
+
+@media screen { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-outcome-editor .exam-strict-toggle { min-height:40px; } }
+
+@media screen { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-key-editor .question-meta-grid { max-height:420px; overflow-y:auto; overscroll-behavior:contain; } .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-outcome-editor .table-card { max-height:640px; overflow-y:auto; } }
