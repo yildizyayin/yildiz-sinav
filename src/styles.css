@@ -16,3 +16,15 @@ button[data-busy="true"]{cursor:progress;pointer-events:none;opacity:.72;positio
 button[data-busy="true"]::after{content:"";display:inline-block;width:.85em;height:.85em;margin-left:.45em;vertical-align:-.1em;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:busy-spin .7s linear infinite}
 @keyframes busy-spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){button[data-busy="true"]::after{animation:none}}
+
+/* S029 exam status lights */
+.exam-light{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;font-weight:800;font-size:12px;color:#1f2937}
+.exam-light i{width:11px;height:11px;border-radius:50%;flex:none;box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+.exam-light small{flex-basis:100%;font-weight:600;color:#64748b;font-size:11px}
+.exam-light-green i{background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.22),0 0 10px rgba(22,163,74,.55)}
+.exam-light-yellow i{background:#eab308;box-shadow:0 0 0 3px rgba(234,179,8,.25)}
+.exam-light-blue i{background:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.2)}
+.exam-light-orange i{background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.22)}
+.exam-light-red i{background:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.2)}
+@media (prefers-reduced-motion:no-preference){.exam-light-green i{animation:exam-light-pulse 2.4s ease-in-out infinite}}
+@keyframes exam-light-pulse{50%{box-shadow:0 0 0 5px rgba(22,163,74,.12),0 0 14px rgba(22,163,74,.6)}}
