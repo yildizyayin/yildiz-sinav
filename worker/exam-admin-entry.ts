@@ -2,7 +2,7 @@ import { publishedForLearnersSql } from './lib/exam-schedule';
 import { centralExamOpenTo, centralOpenToAllSql, examOpenToInstitutionSql } from './lib/exam-audience';
 import { trashExam } from './lib/exam-channels';
 import { refreshExamOutcomeAnalysis } from './lib/exam-outcome-history';
-import { examOutcomeScope, scopedOutcomeCatalog, matchScopedOutcome } from './lib/exam-outcome-matching';
+import { approvedLabelOutcome, examOutcomeScope, examSubjectsForOutcome, outcomeFitsQuestion, publisherLabelPath, scopedOutcomeCatalog, matchScopedOutcome } from './lib/exam-outcome-matching';
 import { withExamOperationLock } from './lib/exam-operation-lock';
 import { examPublicationGuard, examCorrectionOpen } from './lib/exam-publication-guard';
 import { examReadiness as readiness } from './lib/exam-readiness';
@@ -330,8 +330,8 @@ async function options(env: Env, user: AuthUser, url: URL): Promise<Response> {
       : Promise.resolve([]),
   ]);
   const scope = examOutcomeScope({academicYear:url.searchParams.get('academicYear'),gradeLevel,examType:url.searchParams.get('examType')});
-  const outcomes = await scopedOutcomeCatalog(env,scope,subjectId||undefined);
-  return Response.json({ ok: true, subjects, scoringVersions, institutions, outcomes, scope, catalogStatus:outcomes.length ? 'AVAILABLE' : 'EMPTY' });
+  const outcomes = (await scopedOutcomeCatalog(env,scope,subjectId||undefined)).map((o:any)=>({...o,exam_subject_ids:examSubjectsForOutcome(scope,o.subject_id)}));
+  return Response.json({ ok: true, subjects, scoringVersions, institutions, outcomes, scope, catalogStatus:outcomes.length ? 'AVAILABLE' : 'EMPTY', catalogYear: outcomes[0]?.academic_year || null });
 }
 
 async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
@@ -723,7 +723,7 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
     if (!reference || !(reference.publisherTitle || reference.publisherCode || reference.officialCode || reference.code || reference.title)) return;
     const publisherTitle = String(reference.publisherTitle || reference.title || '').trim() || null;
     const publisherCode = String(reference.publisherCode || (!publisherTitle ? reference.code || reference.officialCode : '') || '').trim() || null;
-    const labelPath = JSON.stringify({ publisherCode, publisherTitle, officialCode: reference.officialCode || reference.code || null, unit: reference.unit || null, topic: reference.topic || null, subtopic: reference.subtopic || null, parentCode: reference.parentCode || null });
+    const labelPath = publisherLabelPath(reference);
     const cacheKey = `${subjectId}::${publisherCode || ''}::${labelPath}`;
     let labelId = publisherLabelIds.get(cacheKey);
     if (!labelId) {
@@ -771,13 +771,14 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
     }
   }
 
-  const catalog=await scopedOutcomeCatalog(env,examOutcomeScope(exam));
+  const outcomeScope=examOutcomeScope(exam);
+  const catalog=await scopedOutcomeCatalog(env,outcomeScope);
   const automaticMappings:any[]=[];
   const humanMapped=new Set<string>();
   for(const m of body.outcomeMappings||[])if(m?.subjectId&&Number.isInteger(Number(m.questionNo)))humanMapped.add(`${m.subjectId}::${Number(m.questionNo)}`);
   if(body.outcomeMappings===undefined){
     const existingMappings=await all<any>(env.DB.prepare('SELECT q.subject_id,q.question_no,qo.outcome_id FROM question_outcomes qo JOIN exam_questions q ON q.id=qo.exam_question_id WHERE q.exam_id=?').bind(examId));
-    for(const m of existingMappings)if(catalog.some(o=>o.id===m.outcome_id&&o.subject_id===m.subject_id)){automaticMappings.push({subjectId:m.subject_id,questionNo:m.question_no,outcomeId:m.outcome_id});humanMapped.add(`${m.subject_id}::${Number(m.question_no)}`);}
+    for(const m of existingMappings)if(catalog.some(o=>o.id===m.outcome_id&&outcomeFitsQuestion(outcomeScope,m.subject_id,o))){automaticMappings.push({subjectId:m.subject_id,questionNo:m.question_no,outcomeId:m.outcome_id});humanMapped.add(`${m.subject_id}::${Number(m.question_no)}`);}
   }
   for(const [entryKey,entry] of entryMap){
     const subjectId=entryKey.split('::')[0];
@@ -787,7 +788,11 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
       const refs=entry.outcomeRefsByQuestion?.[offset] || (entry.outcomeRefs?.[offset]?[entry.outcomeRefs[offset]]:[]);
       // A021: a question a person already mapped keeps that decision; automatic matching only fills unmapped questions.
       const qNo=Number(subject.question_start||1)+offset;if(humanMapped.has(`${subjectId}::${qNo}`))continue;
-      for(const ref of refs){const matched=matchScopedOutcome(ref,subjectId,catalog);if(matched.outcomeId)automaticMappings.push({subjectId,questionNo:qNo,outcomeId:matched.outcomeId});}
+      for(const ref of refs){
+        const approved=await approvedLabelOutcome(env,publisher?.id||null,programCode,subjectId,ref);
+        if(approved&&catalog.some(o=>o.id===approved&&outcomeFitsQuestion(outcomeScope,subjectId,o))){automaticMappings.push({subjectId,questionNo:qNo,outcomeId:approved});continue;}
+        const matched=matchScopedOutcome(ref,subjectId,catalog,outcomeScope);if(matched.outcomeId)automaticMappings.push({subjectId,questionNo:qNo,outcomeId:matched.outcomeId});
+      }
     }
   }
   const seenMappings = new Set<string>();
@@ -798,7 +803,7 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
     if (!subjectId || !Number.isInteger(questionNo) || !outcomeId) continue;
     const question = questionMap.get(`${subjectId}::${questionNo}`);
     if (!question) return err(400, 'QUESTION_NOT_FOUND', 'Kazanım eşleştirmesinde geçersiz soru bulundu.');
-    const outcome = catalog.find(o=>o.id===outcomeId&&o.subject_id===subjectId);
+    const outcome = catalog.find(o=>o.id===outcomeId&&outcomeFitsQuestion(outcomeScope,subjectId,o));
     if(!outcome)return err(400,'OUTCOME_SCOPE_MISMATCH','Kazanım doğrulanmış ders, sınıf, yıl ve program kataloğunda bulunmuyor.');
     const key = `${question.id}::${outcomeId}`;
     if (seenMappings.has(key)) continue;
