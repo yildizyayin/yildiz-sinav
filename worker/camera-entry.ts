@@ -1,4 +1,5 @@
 import { fixedWidthDefinition, recordsToFixedWidthText } from './lib/fixed-width-export';
+import { centralExamOpenTo } from './lib/exam-audience';
 import {examEvaluationAccess} from './lib/exam-evaluation-access';
 import reportingApp from './reporting-entry';
 import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
@@ -48,7 +49,7 @@ async function assertExamScope(env:Env,user:AuthUser,examId:string,institutionId
  if(user.role==='SUPER_ADMIN')return {response:null,exam};
  if(exam.owner_type==='INSTITUTION'&&exam.institution_id!==institutionId)return {response:forbidden(),exam:null};
  if(exam.owner_type==='CENTRAL'){
-   const allowed=await one(env.DB.prepare('SELECT id FROM exam_institutions WHERE exam_id=? AND institution_id=? AND enabled=1').bind(examId,institutionId));
+   const allowed=await centralExamOpenTo(env,examId,institutionId);
    if(!allowed)return {response:forbidden('Bu merkezi sınav kurumunuza açılmamış.'),exam:null};
  }
  return {response:null,exam};

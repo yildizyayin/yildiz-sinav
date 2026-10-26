@@ -1,4 +1,5 @@
 import { serverErrorResponse } from './lib/error-boundary';
+import { examOpenToInstitutionSql } from './lib/exam-audience';
 import { handleInstitutionCard } from './lib/institution-card';
 import { sanitizeAuditDetails } from './lib/db';
 import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
@@ -400,7 +401,7 @@ async function listExams(env: Env, user: AuthUser, url: URL): Promise<Response> 
   const params: unknown[] = [];
   let where = `e.status IN ('ACTIVE','CLOSED') AND NOT EXISTS(SELECT 1 FROM exam_revision_state r WHERE r.exam_id=e.id AND r.app_trashed_at IS NOT NULL) AND NOT EXISTS(SELECT 1 FROM exam_channel_publications p WHERE p.exam_id=e.id AND p.channel='LICENSED' AND p.status<>'ACTIVE')`;
   if (institutionId) {
-    where += ` AND (e.owner_type='CENTRAL' OR e.institution_id=? OR EXISTS(SELECT 1 FROM exam_institutions ei WHERE ei.exam_id=e.id AND ei.institution_id=? AND ei.enabled=1))`;
+    where += ` AND ${examOpenToInstitutionSql('e')}`;
     params.push(institutionId, institutionId);
   }
   const rows = await all<any>(env.DB.prepare(`SELECT e.*, srv.verified scoring_verified, sr.authority,

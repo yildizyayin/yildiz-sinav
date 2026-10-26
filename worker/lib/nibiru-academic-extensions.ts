@@ -1,4 +1,5 @@
 import type { AuthUser, Env } from '../types';
+import { centralOpenToAllSql } from './exam-audience';
 import { all, one } from './db';
 
 function todayIso(){return new Date().toISOString().slice(0,10)}
@@ -26,7 +27,7 @@ export async function worksheetAdvice(env:Env,user:AuthUser){
 export async function institutionTodaySummary(env:Env,user:AuthUser){
   if(!user.institution_id||user.role!=='INSTITUTION_MANAGER')return null;
   const [exams,scans,announcements,worksheets]=await Promise.all([
-    one<{c:number}>(env.DB.prepare(`SELECT count(DISTINCT e.id) c FROM exams e LEFT JOIN exam_institutions ei ON ei.exam_id=e.id AND ei.institution_id=? WHERE date(e.exam_date)=date('now') AND (e.institution_id=? OR ei.enabled=1)`).bind(user.institution_id,user.institution_id)),
+    one<{c:number}>(env.DB.prepare(`SELECT count(DISTINCT e.id) c FROM exams e LEFT JOIN exam_institutions ei ON ei.exam_id=e.id AND ei.institution_id=? WHERE date(e.exam_date)=date('now') AND (e.institution_id=? OR ei.enabled=1 OR (e.institution_id IS NULL AND ${centralOpenToAllSql('e')}))`).bind(user.institution_id,user.institution_id)),
     one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches WHERE institution_id=? AND date(created_at)=date('now')`).bind(user.institution_id)),
     one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM announcements WHERE institution_id=? AND date(coalesce(sent_at,created_at))=date('now')`).bind(user.institution_id)),
     one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM worksheet_calendar_entries WHERE institution_id=? AND planned_date=date('now')`).bind(user.institution_id)),

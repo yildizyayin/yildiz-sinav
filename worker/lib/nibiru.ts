@@ -1,4 +1,5 @@
 import type { AuthUser, Env } from '../types';
+import { centralOpenToAllSql } from './exam-audience';
 import {checkNibiruAnswer,NIBIRU_SAFE_ANSWER} from './nibiru-answer-policy';
 import { all, one, uuid } from './db';
 import { publishedForLearnersSql } from './exam-schedule';
@@ -134,7 +135,7 @@ async function institutionContext(env: Env, institutionId: string) {
     one<{c:number}>(env.DB.prepare(`SELECT count(DISTINCT e.student_id) c FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.institution_id=? AND e.status='ACTIVE' AND s.status='ACTIVE'`).bind(institutionId)),
     one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM classes WHERE institution_id=? AND active=1`).bind(institutionId)),
     one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches WHERE institution_id=? AND status IN ('PREVIEW','NEEDS_REVIEW','READY')`).bind(institutionId)),
-    one<{c:number}>(env.DB.prepare(`SELECT count(DISTINCT e.id) c FROM exams e LEFT JOIN exam_institutions ei ON ei.exam_id=e.id AND ei.institution_id=? WHERE date(e.exam_date)=date('now') AND (e.institution_id=? OR ei.enabled=1)`).bind(institutionId,institutionId)),
+    one<{c:number}>(env.DB.prepare(`SELECT count(DISTINCT e.id) c FROM exams e LEFT JOIN exam_institutions ei ON ei.exam_id=e.id AND ei.institution_id=? WHERE date(e.exam_date)=date('now') AND (e.institution_id=? OR ei.enabled=1 OR (e.institution_id IS NULL AND ${centralOpenToAllSql('e')}))`).bind(institutionId,institutionId)),
     all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_date,round(avg(er.success_percent),1) avg_success,round(avg(er.net),2) avg_net,count(er.id) result_count FROM exams e JOIN exam_participants ep ON ep.exam_id=e.id AND ep.institution_id=? JOIN exam_results er ON er.participant_id=ep.id GROUP BY e.id,e.title,e.exam_date ORDER BY coalesce(e.exam_date,e.created_at) DESC LIMIT 6`).bind(institutionId)),
   ]);
   return { institution, activeStudents: students?.c || 0, activeClasses: classes?.c || 0, pendingScans: pendingScans?.c || 0, todayExams: todayExams?.c || 0, recentExams };

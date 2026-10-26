@@ -47,17 +47,11 @@ function fixture() {
 }
 
 describe('exam activation with actual relational evidence', () => {
-  it('reports institution distribution as a blocker before offering activation, then publishes after assignment', async () => {
+  it('activates a central exam without an institution list (S027: open to every institution)', async () => {
     const f = fixture(); try {
       const ready = await examReadiness(f.env, 'exam');
-      expect(ready.ready_to_publish).toBe(false);
-      expect(ready.blockers.map((b: any) => b.code)).toEqual(['INSTITUTION_ASSIGNMENT_REQUIRED']);
-      const rejected = await f.activate();
-      expect(rejected.status).toBe(409);
-      expect((await rejected.json() as any).error.details.blockers).toEqual(ready.blockers);
-      expect((f.db.prepare('SELECT status FROM exams').get() as any).status).toBe('DRAFT');
-      f.db.exec("INSERT INTO exam_institutions VALUES('exam','institution',1)");
-      expect((await examReadiness(f.env, 'exam')).ready_to_publish).toBe(true);
+      expect(ready.blockers).toEqual([]);
+      expect(ready.ready_to_publish).toBe(true);
       expect((await f.activate()).status).toBe(200);
       expect((f.db.prepare('SELECT status FROM exams').get() as any).status).toBe('ACTIVE');
       expect((f.db.prepare('SELECT channel,status FROM exam_channel_publications').get() as any)).toMatchObject({channel:'LICENSED',status:'ACTIVE'});expect(f.db.prepare("SELECT * FROM exam_channel_publications WHERE channel='RESULT_NETWORK'").all()).toEqual([]);

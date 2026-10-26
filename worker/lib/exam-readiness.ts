@@ -30,7 +30,7 @@ export async function examReadiness(env: Env, examId: string): Promise<any> {
   if (count('missing_answer_count') || count('actual_answers') !== expectedAnswers) add('ANSWER_KEYS_INCOMPLETE', `Bütün kitapçıkların cevap anahtarını tamamlayın (${count('actual_answers')}/${expectedAnswers} cevap kayıtlı).`);
   if (count('scoring_verified') !== 1) add('SCORING_VERIFICATION_REQUIRED', 'Doğrulanmış bir puanlama profili seçip sınav kartını kaydedin.');
   if (row?.outcome_mode === 'OFFICIAL_REQUIRED' && count('outcome_mapped_questions') < count('expected_questions')) add('OUTCOMES_REQUIRED', 'Kazanım zorunlu seçili; her soruyu kazanıma bağlayın.');
-  if (row?.owner_type === 'CENTRAL' && !count('institution_count')) add('INSTITUTION_ASSIGNMENT_REQUIRED', 'Kurum Dağıtımı bölümünden en az bir kurum seçip dağıtımı kaydedin.');
+  // S027: a central exam with no institution list is open to every institution; the list only narrows it.
   const warnings = count('outcome_mapped_questions') < count('expected_questions')
     ? [{code:'OUTCOMES_INCOMPLETE',message:`${count('expected_questions')-count('outcome_mapped_questions')} sorunun kazanımı eşleşmedi. Bu sorular kazanım analizine katılmayacak; doğru, yanlış, net ve puan hesaplanabilir.`}] : [];
   const bookletChecks=await env.DB.prepare(`SELECT eb.code, (SELECT count(*) FROM answer_keys ak JOIN exam_questions q ON q.id=ak.exam_question_id WHERE q.exam_id=eb.exam_id AND ak.booklet_code=eb.code) answer_count FROM exam_booklets eb WHERE eb.exam_id=? AND eb.active=1 ORDER BY eb.code`).bind(examId).all<any>();
