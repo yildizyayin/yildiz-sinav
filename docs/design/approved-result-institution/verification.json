@@ -1,0 +1,111 @@
+[
+  {
+    "role": "INSTITUTION",
+    "state": "login",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "login",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "login",
+    "width": 360,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "workspace",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "workspace",
+    "width": 768,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "workspace",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "workspace",
+    "width": 360,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "report",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "report",
+    "width": 768,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "report",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "empty",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "denied",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/auth/login",
+      "/api/auth/logout"
+    ]
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "loginbusy",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/auth/login"
+    ]
+  }
+]
