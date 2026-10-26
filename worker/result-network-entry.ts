@@ -1,4 +1,5 @@
 import { changeInstitutionLifecycle } from './lib/institution-lifecycle';
+import { acceptReadableSheets, setAsideUnscorable } from './lib/result-simple-flow';
 import {examOutcomePayloadSql} from './lib/exam-outcome-history';
 import {publishedDefinitions} from './lib/exam-channels';
 import {resultArtifactQueueDiagnostics} from './lib/result-artifact-queue';
@@ -441,6 +442,19 @@ export async function generateBatchAccessCodes(request:Request,env:Env,batchId:s
  });
 }
 
+/** S030: every student's report card of the institution in this exam: totals, ranks and each subject's D/Y/B/net. */
+async function batchKarnes(request:Request,env:Env,batchId:string){
+ const report=await batchResultReport(request,env,batchId);if(!report.ok)return report;
+ const data:any=await report.json();const rows:any[]=data.rows||[];
+ const context=await batchOperatorContext(request,env,batchId);if(context instanceof Response)return context;
+ const exam=await one<any>(env.DB.prepare(`SELECT title,academic_year,exam_type,publisher_name,exam_date FROM exams WHERE id=?`).bind(context.batch.exam_id));
+ const institution=await one<any>(env.DB.prepare(`SELECT name,code,city,district FROM institutions WHERE id=?`).bind(context.batch.institution_id));
+ const subjects:any[]=[];
+ for(let i=0;i<rows.length;i+=90){const ids=rows.slice(i,i+90).map(r=>r.participant_id);subjects.push(...await all<any>(env.DB.prepare(`SELECT sr.participant_id,s.name subject,sr.correct_count,sr.wrong_count,sr.blank_count,sr.net FROM subject_results sr JOIN subjects s ON s.id=sr.subject_id LEFT JOIN exam_subjects es ON es.exam_id=? AND es.subject_id=sr.subject_id WHERE sr.participant_id IN (${ids.map(()=>'?').join(',')}) ORDER BY es.sort_order,s.name`).bind(context.batch.exam_id,...ids)))}
+ const bySubject=new Map<string,any[]>();for(const s of subjects){const list=bySubject.get(s.participant_id)||[];list.push(s);bySubject.set(s.participant_id,list)}
+ const avg=(k:string)=>rows.length?Math.round(rows.reduce((n,r)=>n+Number(r[k]||0),0)/rows.length*100)/100:0;
+ return json({ok:true,exam,institution,publication:data.publication,source:data.source,summary:{participants:rows.length,averageNet:avg('net'),averageScore:avg('score')},karnes:rows.map(r=>({...r,subjects:bySubject.get(r.participant_id)||[]}))});
+}
 async function batchResultReport(request:Request,env:Env,batchId:string){
  const context=await batchOperatorContext(request,env,batchId);if(context instanceof Response)return context;
  if(context.batch.status!=='COMMITTED')return badRequest('Önce değerlendirmeyi tamamlayın.','BATCH_NOT_COMMITTED');
@@ -461,6 +475,9 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
  if(path==='/api/admin/result-network/operations/catalog'&&request.method==='GET')return resultOperatorCatalog(request,env);
  if(path==='/api/admin/result-network/operations/institutions'&&request.method==='GET')return searchOperatorInstitutions(request,env);
  if(path==='/api/admin/result-network/operations/history'&&request.method==='GET')return operatorHistory(request,env);
+ if(path==='/api/admin/result-network/operations/opticals'&&request.method==='POST'){const {quickOptical}=await import('./lib/result-optical-quick');return quickOptical(request,env)}
+ const karnes=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/karnes$/);
+ if(karnes&&request.method==='GET')return batchKarnes(request,env,karnes[1]);
  const preview=path.match(/^\/api\/admin\/result-network\/operations\/exams\/([^/]+)\/preview-file$/);
  if(preview&&request.method==='POST'){
   const form=await request.clone().formData();let institutionId=String(form.get('institutionId')||'');
@@ -479,14 +496,24 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   const published=await one<any>(env.DB.prepare(`SELECT 1 ok FROM exam_channel_publications WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='ACTIVE'`).bind(preview[1]));
   if(!published)return safeError(404,'RESULT_EXAM_NOT_PUBLISHED','Sınav Sonuç Ağı kataloğunda yayınlanmamış.');
   const context=await resultOperatorContext(request,env,institutionId);if(context instanceof Response)return context;
-  return previewExamFile(request,env,context.effective,preview[1]);
+  const previewed=await previewExamFile(request,env,context.effective,preview[1]);
+  if(!previewed.ok)return previewed;
+  // S030: every readable sheet is a participant on the result network; no guest step.
+  const body:any=await previewed.json();
+  const accepted=body?.batchId?await acceptReadableSheets(env,body.batchId,context.user.id,institutionId):0;
+  return json({...body,acceptedParticipants:accepted},previewed.status);
  }
  const resolve=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/records\/([^/]+)\/resolve$/);
  if(resolve&&request.method==='POST'){const context=await batchOperatorContext(request,env,resolve[1]);if(context instanceof Response)return context;return resolveScanRecord(request,env,context.effective,resolve[1],resolve[2])}
  const candidates=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/records\/([^/]+)\/candidates$/);
  if(candidates&&request.method==='GET'){const context=await batchOperatorContext(request,env,candidates[1]);if(context instanceof Response)return context;return searchScanCandidates(env,context.effective,candidates[1],candidates[2],new URL(request.url))}
  const evaluate=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/evaluate$/);
- if(evaluate&&request.method==='POST'){const context=await batchOperatorContext(request,env,evaluate[1]);if(context instanceof Response)return context;return evaluateBatch(env,context.effective,evaluate[1])}
+ if(evaluate&&request.method==='POST'){const context=await batchOperatorContext(request,env,evaluate[1]);if(context instanceof Response)return context;
+  // S030: sheets that cannot be scored are set aside with their reason; the rest is evaluated.
+  const setAside=context.batch.status==='COMMITTED'?[]:await setAsideUnscorable(env,evaluate[1],context.user.id,context.batch.institution_id);
+  const evaluated=await evaluateBatch(env,context.effective,evaluate[1]);
+  if(!evaluated.ok)return evaluated;
+  const body:any=await evaluated.json();return json({...body,setAside},evaluated.status)}
  const access=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/access-codes$/);
  if(access&&request.method==='POST')return generateBatchAccessCodes(request,env,access[1]);
  const report=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/report$/);
