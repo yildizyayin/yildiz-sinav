@@ -2499,3 +2499,15 @@ Canlı veriden teşhis:
 
 - Sorun: değerlendirme ekranında kurum adı yazılınca liste çıkmıyor gibiydi. Sunucu sonuç döndürüyordu (canlıda "pend" → 16 okul); liste öğrenci formunun mutlak konumlu stilini kullandığı için operatör yerleşiminde sayfanın en üstüne (y=-408) çiziliyordu.
 - PR #387 (merge edildi): liste girişin altında akar. Chromium'da statik build ile önce/sonra ölçüldü. Test: `tests/s026-picker-layout.test.ts`.
+
+### S029 — Sınavın kendiliğinden aktif olması ve durum ışıkları — 26 Ekim
+
+**Kullanıcı kararları:** zorunlu bilgiler tamamlanınca tarihe göre kendiliğinden aktif; merkezi sınav App + Sonuç Ağı kataloğuna; 5 renk (yeşil aktif, sarı aktif-eksik, mavi tarih bekliyor, turuncu taslak, kırmızı pasif).
+
+**PR #391 (merge edildi):**
+- `worker/lib/exam-lifecycle.ts`: zorunlu = sınav kartı + doğrulanmış puanlama + bütün kitapçıkların cevap anahtarı (kazanım yalnız "zorunlu" işaretliyse). Tanımda her başarılı değişiklikten sonra eksiksiz taslak hemen, başlangıç tarihi varsa o tarihte (cron) aktif olur.
+- Aktivasyon (buton ya da otomatik) LICENSED ve merkezi sınavda RESULT_NETWORK yayını yapar; otomatik liste `listed_by: ACTIVATION` ile işaretlenir. Arşivlemede kullanılmamış otomatik liste geri çekilir; açık ya da kullanılmış yayın korunur.
+- Liste ve detayda ışık; sınav kartında isteğe bağlı başlangıç tarihi.
+- 2 test eski kurala ("aktivasyon sonuç ağına yayınlamaz") göre yazılmıştı; yeni karara göre güncellendi. Tüm paket 1423/1423.
+
+**Canlı veri (kullanıcı izniyle):** "4K TYT 1. Deneme" aktifti ama yalnız App'te listeliydi; RESULT_NETWORK yayını ve denetim kaydı eklendi. sonuc değerlendirme listesinde görünür.
