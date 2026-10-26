@@ -2511,3 +2511,15 @@ Canlı veriden teşhis:
 - 2 test eski kurala ("aktivasyon sonuç ağına yayınlamaz") göre yazılmıştı; yeni karara göre güncellendi. Tüm paket 1423/1423.
 
 **Canlı veri (kullanıcı izniyle):** "4K TYT 1. Deneme" aktifti ama yalnız App'te listeliydi; RESULT_NETWORK yayını ve denetim kaydı eklendi. sonuc değerlendirme listesinde görünür.
+
+### S030 — sonuc: misafir adımı yok, net nedenler, Optik ekle, kurum raporu ve karneler — 26 Ekim
+
+**Teşhis (canlı veri):** Pendik Anadolu Lisesi yüklemesi doğru okunmuştu (Optik 129, %97), ama 6 satırın hepsi NEW_GUEST olduğu için değerlendirme tek tek "Misafir" onayı bekliyordu.
+
+**Kullanıcı kararları:** okunabilen her optik katılımcı; sorunlu satır nedeniyle yazılır, değerlendirmeyi durdurmaz; eksik optik FMT ile eklenir; Raporlar'da kurum raporu + karneler.
+
+**PR #395 ve #396 (merge edildi):**
+- `worker/lib/result-simple-flow.ts`: yüklemede ve değerlendirmeden önce okunabilen satırlar katılımcı; puanlanamayanlar nedeniyle ayrılır.
+- `worker/lib/result-optical-quick.ts`: Süper Admin için oluştur → FMT → değerlendirilecek TXT ile test → yayınla.
+- `GET scan-batches/:id/karnes`; Raporlar paneli (admin rapor bölümü, kurum ve bayi ekranları).
+- Test: `tests/s030-sonuc-simple-flow.test.ts` (gerçek Sekonic 129 FMT/TXT ile). Tüm paket 1427/1427. Chromium'da sahte veriyle ekran kontrolü.
