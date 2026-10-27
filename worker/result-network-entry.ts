@@ -522,6 +522,21 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   const {reportPack}=await import('./lib/result-report-pack');const data=await reportPack(env,examId,institutionId);
   if(!data||!data.students.length)return safeError(404,'REPORT_EMPTY','Bu kurumun bu sınavda değerlendirilmiş öğrencisi yok.');
   return json({ok:true,...data})}
+ // S036 Veri Merkezi / Belge Merkezi: downloads in the operator's scope, each one audited.
+ if(path==='/api/admin/result-network/operations/data/batches'&&request.method==='GET'){const scope=await topluScope(request,env);if(scope instanceof Response)return scope;const url=new URL(request.url);
+  const {listDataBatches}=await import('./lib/result-data-center');return json({ok:true,batches:await listDataBatches(env,scope,{examId:url.searchParams.get('examId')||undefined,year:url.searchParams.get('year')||undefined,q:String(url.searchParams.get('q')||'').trim().slice(0,80)||undefined})})}
+ const dataBatch=path.match(/^\/api\/admin\/result-network\/operations\/data\/batches\/([^/]+)\/(read|original|results-downloaded)$/);
+ if(dataBatch&&((dataBatch[2]==='results-downloaded'&&request.method==='POST')||(dataBatch[2]!=='results-downloaded'&&request.method==='GET'))){const context=await batchOperatorContext(request,env,dataBatch[1]);if(context instanceof Response)return context;
+  const dc=await import('./lib/result-data-center');
+  if(dataBatch[2]==='read'){const data=await dc.readData(env,dataBatch[1]);await dc.logDownload(env,context.user,context.batch.institution_id,'READ_DATA','scan_batch',dataBatch[1],{rows:data.rows.length});return json({ok:true,...data})}
+  if(dataBatch[2]==='original'){const file=await dc.originalObject(env,dataBatch[1]);if(!file)return safeError(404,'ORIGINAL_NOT_KEPT','Bu yüklemenin orijinal dosyası saklanmamış (özellikten önceki yükleme ya da saklama süresi doldu).');await dc.logDownload(env,context.user,context.batch.institution_id,'ORIGINAL','scan_batch',dataBatch[1],{fileName:file.fileName});return dc.fileResponse(file.object,file.fileName,file.contentType)}
+  await dc.logDownload(env,context.user,context.batch.institution_id,'RESULTS','scan_batch',dataBatch[1]);return json({ok:true})}
+ if(path==='/api/admin/result-network/operations/documents'&&request.method==='GET'){const scope=await topluScope(request,env);if(scope instanceof Response)return scope;const user=await getAuthUser(env,request);
+  const {listDocuments}=await import('./lib/result-data-center');return json({ok:true,exams:await listDocuments(env,scope,user?.role==='SUPER_ADMIN')})}
+ const docMatch=path.match(/^\/api\/admin\/result-network\/operations\/documents\/(EXAM|OPTIC)\/([^/]+)$/);
+ if(docMatch&&request.method==='GET'){const scope=await topluScope(request,env);if(scope instanceof Response)return scope;const user=(await getAuthUser(env,request))!;
+  const dc=await import('./lib/result-data-center');const file=await dc.documentObject(env,scope,user.role==='SUPER_ADMIN',docMatch[1],docMatch[2]);if(!file)return safeError(404,'DOCUMENT_NOT_FOUND','Belge bulunamadı ya da bu belgeye erişiminiz yok.');
+  await dc.logDownload(env,user,user.institution_id||null,'DOCUMENT',docMatch[1]==='OPTIC'?'optical_template_asset':'exam_document_asset',docMatch[2],{fileName:file.fileName});return dc.fileResponse(file.object,file.fileName,file.contentType)}
  if(path==='/api/admin/result-network/operations/toplu/bundle'&&request.method==='GET'){const url=new URL(request.url),examId=String(url.searchParams.get('examId')||''),ids=String(url.searchParams.get('institutionIds')||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,200);
   if(!examId||!ids.length)return badRequest('Sınav ve kurum seçin.');
   for(const id of ids){const context=await resultOperatorContext(request,env,id);if(context instanceof Response)return context}

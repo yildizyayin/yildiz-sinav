@@ -15,6 +15,8 @@ export async function setup(opts: { sheets?: typeof SHEETS } = {}) {
   const result = (await import('../../worker/result-worker-entry')).default as any;
   Object.assign(t.env, { FILES: { put: async () => undefined, delete: async () => undefined, get: async () => null }, RESULT_LOOKUP_SECRET: 'synthetic-lookup-secret' });
   const call = async (who: string, path: string, init: { method?: string; body?: any } = {}) => {
+    // users added by a test get a session on first use
+    if (!cookies[who]) cookies[who] = (await createSession(t.env, who, new Request('https://sonuc.anunex.com'), false)).headers.get('Set-Cookie')!.split(';')[0];
     const form = init.body instanceof FormData;
     const r = await result.fetch(new Request(`https://sonuc.anunex.com${path}`, { method: init.method || 'GET', headers: { Cookie: cookies[who], Origin: 'https://sonuc.anunex.com', ...(init.body && !form ? { 'Content-Type': 'application/json' } : {}) }, ...(init.body ? { body: form ? init.body : JSON.stringify(init.body) } : {}) }), t.env, { waitUntil() {} });
     const text = await r.text(); let data: any = null; try { data = JSON.parse(text); } catch { /* */ }

@@ -13,7 +13,7 @@
  .result-portal.approved-result-portal[data-result-role=DEALER]:not(.admin-portal-mode) .result-operator-login small { padding-top:12px; border-top:1px solid #e2e7ed; color:#536176; text-align:left; font-size:12px; line-height:1.6; }
  .result-portal.approved-result-portal[data-result-role=DEALER]:not(.admin-portal-mode) .turnstile-heading { font-size:12px; font-weight:500; color:#394b60; }
  .result-portal.approved-result-portal[data-result-role=DEALER]:not(.admin-portal-mode) .password-toggle { min-height:40px; width:40px; padding:0; border:0; border-radius:5px; color:#394b60; background:transparent; }
- .result-portal.approved-result-portal[data-result-role=DEALER]:not(.admin-portal-mode) :is(button,.primary,.secondary,.ghost,.result-primary):not(.rm *) { min-height:42px; border-radius:6px; padding:9px 14px; font-size:13px; font-weight:600; box-shadow:none; }
+ .result-portal.approved-result-portal[data-result-role=DEALER]:not(.admin-portal-mode) :is(button,.primary,.secondary,.ghost,.result-primary):not(.rm *):not(.osh-side *):not(.osh-quick *) { min-height:42px; border-radius:6px; padding:9px 14px; font-size:13px; font-weight:600; box-shadow:none; }
  .result-portal.approved-result-portal[data-result-role=DEALER]:not(.admin-portal-mode) :is(.primary,.result-primary) { background:#9e4837 !important; border:1px solid #9e4837; color:#fff; }
  .result-portal.approved-result-portal[data-result-role=DEALER]:not(.admin-portal-mode) :is(.secondary,.ghost) { background:#fff; border:1px solid #d4dde7; color:#28394f; }
  .result-portal.approved-result-portal[data-result-role=DEALER]:not(.admin-portal-mode) :is(.secondary,.ghost):hover { background:#f4f7fa; }

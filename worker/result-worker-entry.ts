@@ -19,6 +19,8 @@ import { handleResultGovernanceMutation, handleResultOperations, purgeExpiredRes
 export function resultApiPathAllowed(pathname: string): boolean {
   if (pathname === '/api/health') return true;
   if (pathname === '/api/auth/login' || pathname === '/api/auth/me' || pathname === '/api/auth/logout') return true;
+  // S036: operators change their own password from Profil (authenticated, own account only).
+  if (pathname === '/api/auth/change-password') return true;
   if (pathname === '/api/exam-definitions') return true;
   if (pathname === '/api/admin/institution-directory/import') return true;
   if (pathname.startsWith('/api/public/results/')) return true;
@@ -62,6 +64,7 @@ export default {
     // D1 budget: paused before any database read while SCHEDULED_JOBS_PAUSED is "true".
     if (scheduledJobsPaused(env)) { console.log(JSON.stringify({ event: 'scheduled_jobs_paused', worker: 'result' })); return; }
     ctx.waitUntil((async()=>{if(env.RESULT_ARTIFACT_QUEUE_ENABLED==='true')await dispatchResultArtifactQueue(env);else{await advanceResultArtifactPreparation(env);await advanceResultArtifactVerification(env)}})());
+    ctx.waitUntil((async()=>{const{purgeExpiredOriginals}=await import('./lib/result-data-center');await purgeExpiredOriginals(env)})().catch((error)=>console.error('Original upload purge failed',error)));
     ctx.waitUntil(env.RESULT_RETENTION_QUEUE_ENABLED==='true'?(async()=>{await emitResultRetentionNotices(env);await dispatchResultRetentionQueue(env)})():(async()=>{await sweepRetiredResultArtifacts(env);await purgeExpiredResultNetwork(env)})());
   },
 } satisfies ExportedHandler<Env>;
