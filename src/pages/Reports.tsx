@@ -11,6 +11,7 @@ import { useSearchParams } from 'react-router-dom';
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
 import { resolveReportStudentId } from '../lib/reportSelection';
+import './approved-report-preview.css';
 
 type StudentRow = { id:string; first_name:string; last_name:string; student_number?:string; grade_level?:number; section?:string; class_name?:string; institution_name?:string };
 
@@ -100,10 +101,13 @@ export function Reports(){
    const a=document.createElement('a');a.href=url;a.download=`birlesik-rapor-${slug(name)}.csv`;a.click();URL.revokeObjectURL(url);
  };
 
- return <>
+ return <div className="approved-report-workspace" data-report-role={user?.role||''}>
    <div className="page-head"><div><span className="eyebrow">Birleşik Rapor Merkezi</span><h1>{view.title}</h1><p>{view.description}</p></div><div style={{display:'flex',gap:8}}><button className="ghost" onClick={()=>void loadStudents()}><RefreshCw size={16}/> Yenile</button>{report&&<><button className="secondary" disabled={busy||selectionPending} onClick={exportCsv}><Download size={16}/> CSV</button><button className="primary" disabled={busy||selectionPending} onClick={()=>{if(!busy&&!selectionPending)window.print()}}><Printer size={16}/> Yazdır / PDF</button></>}</div></div>
    {error&&<div className="alert error">{error}</div>}
 
+   {canChooseInstitution&&<p className="alert info approved-report-context" role="note">Personel önizlemesi. Bu ekranda rapor hazırlamak öğrenciye sonuç yayını yapmaz.</p>}
+   <div className="approved-report-layout">
+   <aside className="approved-report-selection">
    <div className="panel report-controls">
     <div className="form-grid">
      {canChooseInstitution&&<label>Kurum<select value={institutionId} onChange={e=>{setReport(null);setSelectedExams([]);setStudentId('');setInstitutionId(e.target.value)}}><option value="">Kurum seçin</option>{institutions.map(i=><option key={i.id} value={i.id}>{i.name}</option>)}</select></label>}
@@ -113,21 +117,16 @@ export function Reports(){
     {user?.role==='PARENT'&&students.length>1&&!studentId&&<div className="alert info">Birden fazla bağlı öğrenci var. Gelişimini görmek istediğiniz çocuğu seçin.</div>}
    </div>
 
-   {user&&['SUPER_ADMIN','INSTITUTION_MANAGER','STUDENT','PARENT'].includes(user.role)&&<RubricArchiveDirectory key={listScope} institutionId={canChooseInstitution?institutionId:(user.institution_id||'')} userId={user.id} superAdmin={user.role==='SUPER_ADMIN'}/>}
-   {user?.role==='GUIDANCE_TEACHER'&&<GuidanceFrozenReport key={listScope} institutionId={user.institution_id||''}/>}
-   {['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user?.role||'')&&<InstitutionFrozenReport key={listScope} institutionId={canChooseInstitution?institutionId:(user?.institution_id||'')}/>}
+    {report&&<>
+    <div className="panel approved-report-exams" style={{marginBottom:20}}>{(report.availableYears||[]).length>1&&<label>Dönem<select value={report.selectedAcademicYear||''} onChange={e=>{setAcademicYear(e.target.value);setSelectedExams([]);void loadReport([],e.target.value)}}><option value="">Tüm dönemler</option>{report.availableYears.map((y:string)=><option key={y} value={y}>{y}</option>)}</select></label>}<div className="panel-head"><div><h2>Raporlanacak sınavlar</h2><p>En fazla 20 sınav seçebilirsiniz. Seçimi değiştirince sınav özetini güncelleyin; diğer çalışma kaynakları kendi bölümlerinden seçilir.</p></div><button className="secondary" onClick={()=>void loadReport()} disabled={!selectedExams.length||busy}><BarChart3 size={16}/> {busy?'Hazırlanıyor…':'Raporu Güncelle'}</button></div><div className="cards-list">{(report.availableExams||[]).map((e:any)=><label className="list-card" key={e.exam_id} style={{alignItems:'center',cursor:'pointer'}}><input type="checkbox" checked={selectedExams.includes(e.exam_id)} disabled={!selectedExams.includes(e.exam_id)&&selectedExams.length>=20} onChange={()=>toggleExam(e.exam_id)}/><div><strong>{e.title}</strong><span>{e.exam_date||'Tarih yok'} · {e.exam_type}</span></div></label>)}</div></div>
 
+    </>}
+   </aside>
+   <div className="approved-report-content">
    {report&&<>
     <div className="alert info"><strong>{view.title}</strong><p>{view.focus}</p><p>Sınav, soru pratiği, mini test ve föy kanıtları ilgili bölümlerde seçilebilir. Mini oyun puanı öğrenme etkinliği olarak ayrı gösterilir.</p></div>
     {selectionPending&&<div className="alert info" role="status">Sınav seçimi değişti. Önce Raporu Güncelle'ye basın; gösterilen sınav özeti son hazırlanan seçime aittir. CSV ve PDF güncellemeden sonra kullanılabilir.</div>}
     <div className="section-head"><div><h2>{report.student.first_name} {report.student.last_name}</h2><p>{report.student.institution_name||selectedStudent?.institution_name||''}{report.student.class_name?` · ${report.student.class_name}`:''}{report.restrictedToSubjects?' · Branş yetkisiyle filtrelendi':''}</p></div></div>
-
-    <div className="panel" style={{marginBottom:20}}>{(report.availableYears||[]).length>1&&<label>Dönem<select value={report.selectedAcademicYear||''} onChange={e=>{setAcademicYear(e.target.value);setSelectedExams([]);void loadReport([],e.target.value)}}><option value="">Tüm dönemler</option>{report.availableYears.map((y:string)=><option key={y} value={y}>{y}</option>)}</select></label>}<div className="panel-head"><div><h2>Raporlanacak sınavlar</h2><p>En fazla 20 sınav seçebilirsiniz. Seçimi değiştirince sınav özetini güncelleyin; diğer çalışma kaynakları kendi bölümlerinden seçilir.</p></div><button className="secondary" onClick={()=>void loadReport()} disabled={!selectedExams.length||busy}><BarChart3 size={16}/> {busy?'Hazırlanıyor…':'Raporu Güncelle'}</button></div><div className="cards-list">{(report.availableExams||[]).map((e:any)=><label className="list-card" key={e.exam_id} style={{alignItems:'center',cursor:'pointer'}}><input type="checkbox" checked={selectedExams.includes(e.exam_id)} disabled={!selectedExams.includes(e.exam_id)&&selectedExams.length>=20} onChange={()=>toggleExam(e.exam_id)}/><div><strong>{e.title}</strong><span>{e.exam_date||'Tarih yok'} · {e.exam_type}</span></div></label>)}</div></div>
-
-    <RubricObservationReport key={`${scopeKey}-rubric`} studentId={studentId} userId={user?.id||''} allowHistory={['SUPER_ADMIN','INSTITUTION_MANAGER','STUDENT','PARENT'].includes(user?.role||'')}/>
-    <FrozenExamReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
-    <FrozenPracticeReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
-    <FrozenFoyGameReport key={`${scopeKey}-foy-game`} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/>
 
     {report.summary?<div className="kpi-grid" style={{marginBottom:20}}><Kpi label="Sınav" value={report.summary.exam_count}/><Kpi label="İlk Net" value={fmt(report.summary.first_net)}/><Kpi label="Son Net" value={fmt(report.summary.last_net)}/><Kpi label="Net Değişimi" value={`${report.summary.delta_net>0?'+':''}${fmt(report.summary.delta_net)}`}/><Kpi label="Ortalama Net" value={fmt(report.summary.average_net)}/></div>:<div className="alert info">Bu görünüm branş öğretmeni yetkisiyle sınırlandırılmıştır; toplam sınav neti yerine yalnız yetkili branş verileri gösterilir.</div>}
 
@@ -139,8 +138,17 @@ export function Reports(){
     <div className="table-card" style={{marginTop:20}}><div style={{padding:'18px 20px'}}><h2>Sınav geçmişi</h2></div><table><thead><tr><th>Sınav</th><th>Tarih</th>{!report.restrictedToSubjects&&<><th>D/Y/B</th><th>Net</th><th>Başarı</th><th>Kurum Sırası</th></>}</tr></thead><tbody>{(report.exams||[]).map((r:any)=><tr key={r.exam_id}><td><strong>{r.title}</strong><br/><small>{r.exam_type}</small></td><td>{r.exam_date||'—'}</td>{!report.restrictedToSubjects&&<><td>{r.correct_count??'—'} / {r.wrong_count??'—'} / {r.blank_count??'—'}</td><td><strong>{fmt(r.net)}</strong></td><td>{r.success_percent!=null?`%${Number(r.success_percent).toFixed(1)}`:'—'}</td><td>{r.institution_rank||'—'}</td></>}</tr>)}</tbody></table></div>
 
     <div className="panel" style={{marginTop:20}}><div className="panel-head"><div><h2>Güçlü kazanımlar</h2><p>Yeterli kanıt sayısına ulaşan güçlü alanlar.</p></div><UserRound size={20}/></div><div className="cards-list">{(report.strong||[]).slice(0,20).map((o:any)=><OutcomeRow key={o.outcome_id} row={o}/>)}</div>{!report.strong?.length&&<div className="empty">Henüz yeterli kanıt oluşmamış.</div>}</div>
+    <div className="approved-report-auxiliary"><RubricObservationReport key={`${scopeKey}-rubric`} studentId={studentId} userId={user?.id||''} allowHistory={['SUPER_ADMIN','INSTITUTION_MANAGER','STUDENT','PARENT'].includes(user?.role||'')}/></div>
+    <div className="approved-report-auxiliary"><FrozenExamReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/></div>
+    <div className="approved-report-auxiliary"><FrozenPracticeReport key={scopeKey} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/></div>
+    <div className="approved-report-auxiliary"><FrozenFoyGameReport key={`${scopeKey}-foy-game`} studentId={studentId} exams={report.availableExams||[]} selectedExamIds={selectedExams}/></div>
    </>}
- </>;
+    <div className="approved-report-auxiliary">{user&&['SUPER_ADMIN','INSTITUTION_MANAGER','STUDENT','PARENT'].includes(user.role)&&<RubricArchiveDirectory key={listScope} institutionId={canChooseInstitution?institutionId:(user.institution_id||'')} userId={user.id} superAdmin={user.role==='SUPER_ADMIN'}/>}</div>
+    <div className="approved-report-auxiliary">{user?.role==='GUIDANCE_TEACHER'&&<GuidanceFrozenReport key={listScope} institutionId={user.institution_id||''}/>}</div>
+    <div className="approved-report-auxiliary">{['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user?.role||'')&&<InstitutionFrozenReport key={listScope} institutionId={canChooseInstitution?institutionId:(user?.institution_id||'')}/>}</div>
+   </div>
+   </div>
+ </div>;
 }
 
 function Kpi({label,value}:{label:string;value:string|number}){return <div className="kpi-card"><span>{label}</span><strong>{value}</strong></div>}

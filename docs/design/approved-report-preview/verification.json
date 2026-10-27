@@ -1,0 +1,209 @@
+[
+  {
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "width": 1440,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "width": 1180,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "width": 1024,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "width": 768,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "width": 390,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "width": 360,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_FOCUS",
+    "state": "data",
+    "width": 1440,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_FOCUS",
+    "state": "data",
+    "width": 390,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STUDIO",
+    "state": "data",
+    "width": 1440,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STUDIO",
+    "state": "data",
+    "width": 390,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_COSMIC",
+    "state": "data",
+    "width": 1440,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_COSMIC",
+    "state": "data",
+    "width": 390,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_NEON",
+    "state": "data",
+    "width": 1440,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_NEON",
+    "state": "data",
+    "width": 390,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "state": "empty",
+    "width": 390,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "state": "error",
+    "width": 390,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "state": "busy",
+    "width": 390,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STANDARD",
+    "state": "pending",
+    "width": 390,
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION_MANAGER",
+    "theme": "ANUNEX_STANDARD",
+    "state": "role",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "TEACHER",
+    "theme": "ANUNEX_STANDARD",
+    "state": "role",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "GUIDANCE_TEACHER",
+    "theme": "ANUNEX_STANDARD",
+    "state": "role",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "PARENT",
+    "theme": "ANUNEX_STANDARD",
+    "state": "role",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "STUDENT",
+    "theme": "ANUNEX_STANDARD",
+    "state": "role",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  }
+]
