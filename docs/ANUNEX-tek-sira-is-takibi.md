@@ -2543,3 +2543,17 @@ Canlı veriden teşhis:
   - Sıralar sınava girenlerin tamamı üzerinden canlı; yayın dondurulana kadar "geçici".
   - Anahtarda TEST + DERS sütunu varsa DERS bölüm olarak saklanır (mevcut sınavlarda bölüm görmek için anahtar yeniden yüklenmeli).
 - Otomatik sonuc deploy'u ilk kez çalıştı (workflow_run, a317774, başarılı).
+
+### S033 — Toplu Liste: raporlar kayıtlı sonuçtan, yükleme ekranından ayrı — 27 Ekim
+- **Talep:** Değerlendirilmiş sınav her açılışta yeniden değerlendiriliyor gibi görünüyordu; YKS raporları Okulizyon "Toplu Liste" mantığıyla, daha iyi kurgulanmalı. Kararlar: "Önce yükleme/rapor ayır + Toplu Liste", "Tek PDF, kurumlar sırayla".
+- **Teşhis:** Yeniden değerlendirme yoktu (prod'da tek batch, COMMITTED). Geçmişteki "Rapor ve kartlar" butonu değerlendirme ekranını açtığı için öyle görünüyordu.
+- **Yapılan (PR #400, c220df6):**
+  - Toplu Liste üç sütunlu: Sınavlar (yayıncı→yıl→sınav), Kurumlar (il→ilçe→kurum, öğrenci sayısı), Listeler.
+  - Hazır listeler: Okul test bazlı net listesi, Sınıf test bazlı net listesi (şube başına sayfa), Okul kıyas grafikleri, Öğrenci karnesi.
+  - Çıktı tek PDF, kurumlar sırayla; Excel (CSV) de alınabiliyor.
+  - Geçmişteki değerlendirilmiş satır ve değerlendirme sonrası buton artık Toplu Liste'yi açıyor.
+  - Kapsam: Süper Admin hepsi, kurum kendi okulu, bayi kendi bölgesi.
+- **Uydurulmayanlar (örnek bekleniyor, listede gri):** AYT Sayısal/Sözel/EA okul ve sınıf listeleri, okul karnesi, şube karnesi, test bazlı olmayan net listesi, kurum şube ortalamaları.
+- **Test:** s033-toplu-liste; tüm paket 323 dosya / 1429 test geçti.
+- **Tarayıcı:** 1 kurum ve 4 liste türüyle 7 sayfalık tek PDF üretildi.
+- **Dağıtım:** App deploy c220df6 kullanıcı onayı bekliyor; sonuc deploy'u onun ardından otomatik gelir. Önceki sonuc deploy'u (50863a5) da onay bekliyordu.
