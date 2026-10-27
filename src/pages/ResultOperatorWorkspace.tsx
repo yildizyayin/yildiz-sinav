@@ -1,9 +1,7 @@
-import { reportSource } from '../lib/resultReportSource';
 import { collectAccessCodePages } from '../lib/access-code-pages';
-import { useEffect,useRef,useState } from 'react';
-import { printSection } from '../lib/printSection';
-import { ResultReportPack } from '../components/ResultReportPack';
-import { Ban,CheckCircle2,Download,FileKey2,FileUp,Printer,RefreshCw,ScanLine,Search,ShieldCheck,TriangleAlert,UserCheck,UserX } from 'lucide-react';
+import { useEffect,useState } from 'react';
+import { openTopluListe, ResultTopluListe } from '../components/ResultTopluListe';
+import { CheckCircle2,FileKey2,FileUp,Printer,RefreshCw,ScanLine,ShieldCheck,TriangleAlert } from 'lucide-react';
 import { api,ApiError } from '../api';
 import './result-network-admin.css';
 
@@ -14,8 +12,6 @@ export function ResultOperatorWorkspace({mode,access}:Props){
  const[institutionId,setInstitutionId]=useState('');
  const searchable=!!access?.canManageNetwork||mode==='DEALER';
  const[setAside,setSetAside]=useState<any[]>([]);
- const[karnes,setKarnes]=useState<any>(null);
- const[pack,setPack]=useState<{data:any;mode:'LIST'|'KARNES'}|null>(null);
  const[addOptical,setAddOptical]=useState(false);
  const[opticalName,setOpticalName]=useState('');
  const[fmtFile,setFmtFile]=useState<File|null>(null);
@@ -30,7 +26,6 @@ export function ResultOperatorWorkspace({mode,access}:Props){
  const[file,setFile]=useState<File|null>(null);
  const[preview,setPreview]=useState<any>(null);
  const[batch,setBatch]=useState<any>(null);
- const[report,setReport]=useState<any>(null);
  const[candidateQueries,setCandidateQueries]=useState<Record<string,string>>({});
  const[candidates,setCandidates]=useState<Record<string,any[]>>({});
  const[resolving,setResolving]=useState('');
@@ -100,9 +95,6 @@ export function ResultOperatorWorkspace({mode,access}:Props){
    if(result.error)setError(result.error.message);
   }catch(e:any){setError(e.message)}finally{setBusy(false)}
  };
- const loadReport=async()=>{if(!preview?.batchId)return;setBusy(true);setError('');try{setReport(await api(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/report`))}catch(e:any){setError(e.message)}finally{setBusy(false)}};
- const exportReport=()=>exportFrom(report);
- const exportFrom=(report:any)=>{const rows=report?.rows||[];const src=reportSource(report);downloadCsv(`anunex-kurum-sonuc-listesi${src.fileSuffix}.csv`,['Öğrenci No','Ad Soyad','Sınıf/Şube','Doğru','Yanlış','Boş','Net','Puan','Şube Sırası','Sınıf Düzeyi Sırası','Kurum Sırası','Kurum Ağı Sırası','İlçe Sırası','İl Sırası','Türkiye Sırası'],rows.map((x:any)=>[x.student_number_snapshot,x.name_snapshot,x.class_snapshot,x.correct_count,x.wrong_count,x.blank_count,x.net,x.score,rank(x.class_rank,x.class_count),rank(x.grade_rank,x.grade_count),rank(x.institution_rank,x.institution_count),rank(x.network_rank,x.network_count),rank(x.district_rank,x.district_count),rank(x.city_rank,x.city_count),rank(x.national_rank,x.national_count)]),[['Kaynak',src.label]])};
  const saveOptical=async()=>{
   if(!opticalName.trim()||!fmtFile||!file){setError('Optik adı, FMT dosyası ve değerlendireceğiniz TXT/DAT dosyası gerekli.');return}
   setBusy(true);setError('');setNotice('');
@@ -112,11 +104,8 @@ export function ResultOperatorWorkspace({mode,access}:Props){
    setNotice(`"${r.optical.name}" optiği eklendi ve seçildi: dosyanızdaki ${r.recordCount} satır bu optikle okundu.`);
   }catch(e:any){setError(e.message)}finally{setBusy(false)}
  };
- const loadPack=async(mode:'LIST'|'KARNES')=>{if(!preview?.batchId)return;setBusy(true);setError('');setReport(null);setKarnes(null);try{setPack({data:await api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/report-pack`),mode})}catch(e:any){setError(e.message)}finally{setBusy(false)}};
- const downloadList=async()=>{if(!preview?.batchId)return;setBusy(true);setError('');try{const r=await api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/report`);setReport(r);setTimeout(()=>exportFrom(r),0)}catch(e:any){setError(e.message)}finally{setBusy(false)}};
- const loadKarnes=async()=>{if(!preview?.batchId)return;setBusy(true);setError('');try{setKarnes(await api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/karnes`))}catch(e:any){setError(e.message)}finally{setBusy(false)}};
- const openBatch=async(row:any)=>{setBusy(true);setError('');setNotice('');setReport(null);setKarnes(null);setPack(null);setSetAside([]);setCandidates({});try{const b=await api<any>(`/api/admin/result-network/operations/scan-batches/${row.id}`);setBatch(b);setPreview({batchId:row.id,total:Number(row.total||b.records?.length||0),counts:b.counts,detection:{templateName:`${row.institution_name} · ${row.title}`,confidence:b.batch?.detection_confidence||0}});document.getElementById('result-evaluation')?.scrollIntoView({behavior:'smooth',block:'start'})}catch(e:any){setError(e.message)}finally{setBusy(false)}};
- const reset=()=>{setSetAside([]);setKarnes(null);setPack(null);setFile(null);setPreview(null);setBatch(null);setReport(null);setCandidates({});setCandidateQueries({});setError('');setNotice('')};
+ const openBatch=async(row:any)=>{setBusy(true);setError('');setNotice('');setSetAside([]);setCandidates({});try{const b=await api<any>(`/api/admin/result-network/operations/scan-batches/${row.id}`);setBatch(b);setPreview({batchId:row.id,total:Number(row.total||b.records?.length||0),counts:b.counts,detection:{templateName:`${row.institution_name} · ${row.title}`,confidence:b.batch?.detection_confidence||0}});document.getElementById('result-evaluation')?.scrollIntoView({behavior:'smooth',block:'start'})}catch(e:any){setError(e.message)}finally{setBusy(false)}};
+ const reset=()=>{setSetAside([]);setFile(null);setPreview(null);setBatch(null);setCandidates({});setCandidateQueries({});setError('');setNotice('')};
  const pendingRows=(batch?.records||[]).filter((row:any)=>row.resolution_status!=='CANCELLED'&&row.resolution_status!=='RESOLVED'&&(['NEW_GUEST','AMBIGUOUS','INVALID'].includes(row.match_status)||(row.issues||[]).length>0));
  const reviewRows=reviewTab==='UNMATCHED'?pendingRows.filter((row:any)=>['NEW_GUEST','AMBIGUOUS','INVALID'].includes(row.match_status)):pendingRows;
  const ready=batch?.batch?.status==='READY'||batch?.batch?.status==='COMMITTED';
@@ -143,10 +132,10 @@ export function ResultOperatorWorkspace({mode,access}:Props){
    {batch?.batch?.status!=='COMMITTED'&&(pendingRows.length?<div className="alert warning"><TriangleAlert/><div><strong>{pendingRows.length} satır değerlendirmeye alınmayacak.</strong> Diğer {Math.max(0,Number(preview.total||0)-pendingRows.length)} öğrenci değerlendirilir. Bu satırları düzeltmek için TXT dosyasını düzeltip ayrıca yükleyin.<ul className="result-setaside-list">{pendingRows.map((row:any)=><li key={row.id}><strong>Satır {row.row_no}{row.canonical?.name?` · ${row.canonical.name}`:''}</strong>: {(row.issues||[]).join(' · ')||(row.match_status==='AMBIGUOUS'?'Aynı ada sahip birden fazla kayıtlı öğrenci var.':'Ad soyad okunamadı.')}</li>)}</ul></div></div>:<div className="alert success"><CheckCircle2/> Bütün satırlar okundu; değerlendirmeye hazır.</div>)}
    {batch?.batch?.status!=='COMMITTED'&&<button className="primary huge" disabled={busy||Number(preview.total||0)-pendingRows.length<=0} onClick={()=>void evaluate()}><ScanLine/> {busy?'Değerlendiriliyor…':'6 · Değerlendir'}</button>}
    {setAside.length>0&&<div className="alert warning"><TriangleAlert/><div><strong>Değerlendirmeye alınmayan {setAside.length} satır:</strong><ul className="result-setaside-list">{setAside.map((x:any)=><li key={x.row}><strong>Satır {x.row}{x.name?` · ${x.name}`:''}</strong>: {x.reason}</li>)}</ul></div></div>}
-   {batch?.batch?.status==='COMMITTED'&&<><div className="success-box"><CheckCircle2/><div><strong>Değerlendirme tamamlandı</strong><span>{preview.evaluated||preview.total} katılımcının sonucu işlendi. Erişim kartını bir kez indirip kurum yetkilisine güvenli kanaldan teslim edin.</span></div></div><div className="result-completion-actions"><button className="secondary" disabled={busy} onClick={()=>void generateAccessCodes()}><FileKey2/> Öğrenci erişim kartlarını üret</button><button className="secondary" disabled={busy} onClick={()=>void loadPack('LIST')}><Printer/> Kurum sonuç listesi</button><button className="secondary" disabled={busy} onClick={()=>void loadPack('KARNES')}><Printer/> Öğrenci karneleri</button><button className="ghost" disabled={busy} onClick={()=>void downloadList()}><Download/> Excel / CSV</button></div>{pack&&<ResultReportPack data={pack.data} mode={pack.mode} onClose={()=>setPack(null)}/>}</>}
+   {batch?.batch?.status==='COMMITTED'&&<><div className="success-box"><CheckCircle2/><div><strong>Değerlendirme tamamlandı</strong><span>{preview.evaluated||preview.total} katılımcının sonucu işlendi. Erişim kartını bir kez indirip kurum yetkilisine güvenli kanaldan teslim edin.</span></div></div><div className="result-completion-actions"><button className="secondary" disabled={busy} onClick={()=>void generateAccessCodes()}><FileKey2/> Öğrenci erişim kartlarını üret</button><button className="primary" onClick={()=>openTopluListe(examId||batch?.batch?.exam_id,batch?.batch?.institution_id)}><Printer/> Raporlara git (Toplu Liste)</button></div></>}
   </>}
   <div id="result-evaluation-history" className="result-history"><div className="panel-head"><div><h3>Değerlendirme geçmişi</h3><p>Önceki değerlendirmeyi açarak eşleştirmeye, değerlendirmeye, rapora ve erişim kartlarına dönebilirsiniz.</p></div><button className="ghost" type="button" onClick={()=>void loadHistory()}><RefreshCw/> Yenile</button></div>
-   {!history.length?<p className="empty">Henüz değerlendirme yok.</p>:<div className="table-card"><table><thead><tr><th>Tarih</th><th>Sınav</th><th>Kurum</th><th>Kayıt</th><th>Durum</th><th></th></tr></thead><tbody>{history.map((x:any)=><tr key={x.id}><td>{new Date(String(x.created_at).replace(' ','T')+'Z').toLocaleString('tr-TR')}</td><td>{x.academic_year} · {x.title}</td><td>{x.institution_name}<small> {x.institution_code} · {x.city}/{x.district}</small></td><td>{Number(x.total||0).toLocaleString('tr-TR')}</td><td>{BATCH_STATUS[x.status]||x.status}</td><td><button className="secondary" type="button" disabled={busy} onClick={()=>void openBatch(x)}>{x.status==='COMMITTED'?'Rapor ve kartlar':'Devam et'}</button></td></tr>)}</tbody></table></div>}
+   {!history.length?<p className="empty">Henüz değerlendirme yok.</p>:<div className="table-card"><table><thead><tr><th>Tarih</th><th>Sınav</th><th>Kurum</th><th>Kayıt</th><th>Durum</th><th></th></tr></thead><tbody>{history.map((x:any)=><tr key={x.id}><td>{new Date(String(x.created_at).replace(' ','T')+'Z').toLocaleString('tr-TR')}</td><td>{x.academic_year} · {x.title}</td><td>{x.institution_name}<small> {x.institution_code} · {x.city}/{x.district}</small></td><td>{Number(x.total||0).toLocaleString('tr-TR')}</td><td>{BATCH_STATUS[x.status]||x.status}</td><td><button className="secondary" type="button" disabled={busy} onClick={()=>x.status==='COMMITTED'?openTopluListe(x.exam_id,x.institution_id):void openBatch(x)}>{x.status==='COMMITTED'?'Raporlar':'Devam et'}</button>{x.status==='COMMITTED'&&<button className="ghost" type="button" disabled={busy} onClick={()=>void openBatch(x)}>Erişim kartları</button>}</td></tr>)}</tbody></table></div>}
   </div>
  </section>;
 }
@@ -154,46 +143,6 @@ const BATCH_STATUS:Record<string,string>={PREVIEW:'Önizleme',NEEDS_REVIEW:'Kont
 function pickedLabel(x:any){return `${x.name} · ${x.code} · ${x.city}/${x.district}`}
 
 function Summary({label,value,warn}:{label:string;value:number;warn?:boolean}){return <div className={warn&&value?'summary warn':'summary'}><span>{label}</span><strong>{value||0}</strong></div>}
-function rank(value:any,total:any){return value&&total?`${Number(value).toLocaleString('tr-TR')} / ${Number(total).toLocaleString('tr-TR')}`:'—'}
 
-/** S030: one printable report card per student of the institution. */
-function KarneSheets({data,onClose}:{data:any;onClose:()=>void}){
- const subjects=(k:any)=>k.subjects||[];const ref=useRef<HTMLElement>(null);
- return <section className="result-karnes" ref={ref}><div className="panel-head no-print"><div><h3>Öğrenci karneleri · {data.institution?.name}</h3><p>{data.exam?.academic_year} · {data.exam?.title} · {data.summary?.participants} öğrenci · ortalama net {Number(data.summary?.averageNet||0).toLocaleString('tr-TR')}</p></div><div className="result-completion-actions"><button className="secondary" onClick={()=>printSection(ref.current)}><Printer/> Hepsini yazdır / PDF</button><button className="ghost" onClick={onClose}>Kapat</button></div></div>
-  {(data.karnes||[]).map((k:any)=><article className="result-karne" key={k.participant_id}><header><div><strong>{k.name_snapshot}</strong><span>{k.student_number_snapshot?`No: ${k.student_number_snapshot} · `:''}{k.class_snapshot||''}</span></div><div><span>{data.exam?.title}</span><span>{data.institution?.name}</span></div></header>
-   <div className="result-karne-totals"><div><span>Doğru</span><b>{k.correct_count}</b></div><div><span>Yanlış</span><b>{k.wrong_count}</b></div><div><span>Boş</span><b>{k.blank_count}</b></div><div><span>Net</span><b>{Number(k.net).toLocaleString('tr-TR')}</b></div><div><span>Puan</span><b>{k.score==null?'—':Number(k.score).toLocaleString('tr-TR')}</b></div></div>
-   <table><thead><tr><th>Ders</th><th>D</th><th>Y</th><th>B</th><th>Net</th></tr></thead><tbody>{subjects(k).map((s:any)=><tr key={s.subject}><td>{s.subject}</td><td>{s.correct_count}</td><td>{s.wrong_count}</td><td>{s.blank_count}</td><td>{Number(s.net).toLocaleString('tr-TR')}</td></tr>)}</tbody></table>
-   <footer>Şube {rank(k.class_rank,k.class_count)} · Kurum {rank(k.institution_rank,k.institution_count)} · İlçe {rank(k.district_rank,k.district_count)} · İl {rank(k.city_rank,k.city_count)} · Türkiye {rank(k.national_rank,k.national_count)}</footer></article>)}
- </section>;
-}
-
-/** S030: Raporlar — every evaluated exam of an institution: the institution list and every student's report card. */
-export function ResultReportsPanel({mode}:{mode:'INSTITUTION'|'DEALER'}){
- const[rows,setRows]=useState<any[]>([]),[error,setError]=useState(''),[busy,setBusy]=useState(false),[karnes,setKarnes]=useState<any>(null),[report,setReport]=useState<any>(null),[open,setOpen]=useState<any>(null),[pack,setPack]=useState<any>(null);
- useEffect(()=>{void api<any>(`/api/admin/result-network/operations/history?mode=${mode}`).then(r=>setRows((r.batches||[]).filter((b:any)=>b.status==='COMMITTED'))).catch((e:any)=>setError(e.message))},[mode]);
- const load=async(row:any,kind:'REPORT'|'KARNES')=>{setBusy(true);setError('');setOpen(row);setKarnes(null);setReport(null);setPack(null);try{setPack({data:await api<any>(`/api/admin/result-network/operations/scan-batches/${row.id}/report-pack`),mode:kind==='REPORT'?'LIST':'KARNES'})}catch(e:any){setError(e.message)}finally{setBusy(false)}};
- return <section className="panel result-reports-panel"><div className="panel-head"><div><span className="eyebrow">RAPORLAR</span><h2>Kurum raporları ve öğrenci karneleri</h2><p>Değerlendirilmiş sınavlar. Kurum listesini ya da öğrenci karnelerini açın; yazdırarak PDF alabilirsiniz.</p></div></div>
-  {error&&<div className="alert error">{error}</div>}
-  {!rows.length?<p className="empty">Henüz değerlendirilmiş sınav yok.</p>:<div className="table-card"><table><thead><tr><th>Sınav</th><th>Kurum</th><th>Öğrenci</th><th></th></tr></thead><tbody>{rows.map((r:any)=><tr key={r.id}><td>{r.academic_year} · {r.title}<small> {new Date(String(r.created_at).replace(' ','T')+'Z').toLocaleDateString('tr-TR')}</small></td><td>{r.institution_name}<small> {r.city}/{r.district}</small></td><td>{Number(r.total||0).toLocaleString('tr-TR')}</td><td><div className="row-actions"><button className="secondary" disabled={busy} onClick={()=>void load(r,'REPORT')}>Kurum raporu</button><button className="secondary" disabled={busy} onClick={()=>void load(r,'KARNES')}>Karneler</button></div></td></tr>)}</tbody></table></div>}
-  {report&&open&&<InstitutionReport data={report} onClose={()=>setReport(null)}/>}
-  {karnes&&<KarneSheets data={karnes} onClose={()=>setKarnes(null)}/>}{pack&&<ResultReportPack data={pack.data} mode={pack.mode} onClose={()=>setPack(null)}/>}
- </section>;
-}
-
-/** S031: the institution report: who took part, averages per subject, the ranked list; prints on its own with every student. */
-function InstitutionReport({data,onExport,onClose}:{data:any;onExport?:()=>void;onClose:()=>void}){
- const ref=useRef<HTMLElement>(null);const[all,setAll]=useState(false);
- const rows:any[]=data.rows||[];const shown=all?rows:rows.slice(0,200);
- const avg=(k:string)=>rows.length?(rows.reduce((n,x)=>n+Number(x[k]||0),0)/rows.length):0;
- const fmt=(n:number)=>n.toLocaleString('tr-TR',{maximumFractionDigits:2});
- const print=()=>{setAll(true);requestAnimationFrame(()=>requestAnimationFrame(()=>{printSection(ref.current);setAll(false)}))};
- const title=`${data.institution?.name||'Kurum'} · ${data.exam?.title||'Sınav'}`;
- return <section className="result-report-preview result-institution-report" ref={ref}>
-  <div className="print-only result-print-head"><strong>ANUNEX Sonuç Ağı · Kurum Sonuç Raporu</strong><span>{title}</span><span>{data.exam?.academic_year||''}{data.institution?.city?` · ${data.institution.city}/${data.institution.district}`:''} · {new Date().toLocaleDateString('tr-TR')}</span></div>
-  <div className="panel-head no-print"><div><h3>Kurum raporu · {title}</h3><p>{rows.length.toLocaleString('tr-TR')} öğrenci · ortalama net {fmt(avg('net'))}{rows.some(x=>x.score!=null)?` · ortalama puan ${fmt(avg('score'))}`:''}</p></div><div className="result-completion-actions">{onExport&&<button className="ghost" onClick={onExport}><Download/> Excel / CSV</button>}<button className="secondary" onClick={print}><Printer/> Yazdır / PDF</button><button className="ghost" onClick={onClose}>Kapat</button></div></div>
-  <div className="result-report-summary"><div><span>Öğrenci</span><b>{rows.length.toLocaleString('tr-TR')}</b></div><div><span>Ortalama net</span><b>{fmt(avg('net'))}</b></div><div><span>Ortalama doğru</span><b>{fmt(avg('correct_count'))}</b></div><div><span>Ortalama puan</span><b>{rows.some(x=>x.score!=null)?fmt(avg('score')):'—'}</b></div></div>
-  <p className="report-source no-print" role="note">{data.publication?.rankingFrozenAt?`Sıralama ${new Date(data.publication.rankingFrozenAt).toLocaleString('tr-TR')} tarihinde donduruldu.`:'Kurum ve şube sıraları hazır. İlçe, il ve Türkiye sıraları sonuçlar yayınlanınca kesinleşir.'}</p>
-  <div className="table-card"><table><thead><tr><th>Sıra</th><th>Öğrenci</th><th>No</th><th>Sınıf</th><th>D</th><th>Y</th><th>B</th><th>Net</th><th>Puan</th><th>Şube</th><th>İlçe</th><th>İl</th><th>Türkiye</th></tr></thead><tbody>{shown.map((x:any,i:number)=><tr key={x.participant_id}><td>{i+1}</td><td><strong>{x.name_snapshot}</strong></td><td>{x.student_number_snapshot||'—'}</td><td>{x.class_snapshot||'—'}</td><td>{x.correct_count}</td><td>{x.wrong_count}</td><td>{x.blank_count}</td><td><strong>{Number(x.net).toLocaleString('tr-TR')}</strong></td><td>{x.score==null?'—':Number(x.score).toLocaleString('tr-TR')}</td><td>{rank(x.class_rank,x.class_count)}</td><td>{rank(x.district_rank,x.district_count)}</td><td>{rank(x.city_rank,x.city_count)}</td><td>{rank(x.national_rank,x.national_count)}</td></tr>)}</tbody></table></div>
-  {!all&&rows.length>200&&<p className="muted no-print">Ekranda ilk 200 öğrenci gösterilir; yazdırırken ve indirilen dosyada {rows.length.toLocaleString('tr-TR')} öğrencinin tamamı bulunur.</p>}
- </section>;
-}
+/** S033: Raporlar = Toplu Liste (reports only from saved results; nothing is evaluated again). */
+export function ResultReportsPanel({mode}:{mode:'INSTITUTION'|'DEALER'}){return <ResultTopluListe mode={mode}/>}

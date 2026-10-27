@@ -53,3 +53,4 @@
   #print-root .rp-zebra td,#print-root .rp-wrong,#print-root .rp-blank,#print-root .rp-band-top,#print-root th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   #print-root *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+.rp-pageno{text-align:right;font-size:7pt;margin-top:2mm}

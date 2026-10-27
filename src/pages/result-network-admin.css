@@ -75,3 +75,19 @@
 
 .result-legacy-reports{margin-top:18px}
 .result-legacy-reports>summary{cursor:pointer;font-weight:800;padding:12px 14px;border:1px solid #dbe4f0;border-radius:12px;background:#fff}
+
+/* S033 Toplu Liste: three columns (exams · institutions · lists) like the familiar publisher screen */
+.result-toplu .toplu-actions{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 14px}
+.result-toplu .toplu-actions button{display:inline-flex;align-items:center;gap:8px}
+.toplu-columns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.toplu-col{border:1px solid #dbe4f0;border-radius:12px;background:#fff;display:flex;flex-direction:column;min-height:320px}
+.toplu-col h3{margin:0;padding:10px 12px;font-size:13px;background:#f4f7fc;border-bottom:1px solid #dbe4f0;border-radius:12px 12px 0 0}
+.toplu-tree{padding:8px 10px;overflow:auto;max-height:460px;font-size:13px}
+.toplu-node{display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:700;background:none;border:0;cursor:pointer;text-align:left;color:#1e293b;min-height:0}
+.toplu-indent{margin-left:16px}
+.toplu-leaf{display:flex;align-items:flex-start;gap:6px;padding:3px 0;font-weight:500;cursor:pointer}
+.toplu-leaf input{margin-top:2px;min-height:0}
+.toplu-leaf small{color:#64748b;margin-left:4px}
+.toplu-pending{color:#94a3b8;cursor:not-allowed}
+.result-toplu .rp-pages{margin-top:16px}
+@media(max-width:900px){.toplu-columns{grid-template-columns:1fr}.toplu-col{min-height:0}}

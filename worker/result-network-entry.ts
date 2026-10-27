@@ -386,6 +386,32 @@ async function searchOperatorInstitutions(request:Request,env:Env){
  const manual=user.role==='SUPER_ADMIN'?await all<any>(env.DB.prepare(`SELECT i.id,i.code,i.name,i.city,i.district,COALESCE(iac.lifecycle_status,i.status) lifecycle FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id WHERE i.meb_code IS NULL AND (upper(i.name) LIKE ? OR upper(i.code) LIKE ?) ORDER BY i.name LIMIT 10`).bind(`%${String(url.searchParams.get('q')||'').trim().toLocaleUpperCase('tr-TR')}%`,`${String(url.searchParams.get('q')||'').trim().toUpperCase()}%`)):[];
  return json({ok:true,institutions:[...manual,...directory].filter((x:any)=>x.lifecycle==='ACTIVE').map((x:any)=>({id:x.id||null,code:x.code,name:x.name,city:x.city,district:x.district}))});
 }
+/** S033 Toplu Liste: scope filter for the operator (Super Admin all, institution manager own school, dealer its region). */
+async function topluScope(request:Request,env:Env):Promise<{sql:string;args:unknown[]}|Response>{
+ const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
+ const mode=new URL(request.url).searchParams.get('mode')==='DEALER'?'DEALER':'INSTITUTION';
+ if(user.role==='SUPER_ADMIN')return{sql:'',args:[]};
+ if(mode!=='DEALER'&&user.role==='INSTITUTION_MANAGER'&&user.institution_id)return{sql:' AND ep.institution_id=?',args:[user.institution_id]};
+ return{sql:` AND EXISTS(SELECT 1 FROM national_institution_directory d WHERE d.meb_code=COALESCE(i.meb_code,i.code) AND ${DEALER_SCOPE_SQL})`,args:[user.id]};
+}
+/** Exams with evaluated results in the operator's scope, for the exam tree (publisher → year → exam). */
+async function topluExams(request:Request,env:Env){
+ const scope=await topluScope(request,env);if(scope instanceof Response)return scope;
+ const rows=await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.academic_year,e.exam_type,e.grade_level,COALESCE(NULLIF(e.publisher_name,''),'Diğer') publisher_name,e.application_start_at,e.application_end_at,count(DISTINCT ep.institution_id) institutions,count(*) participants
+  FROM exams e JOIN exam_participants ep ON ep.exam_id=e.id JOIN exam_results er ON er.participant_id=ep.id JOIN institutions i ON i.id=ep.institution_id
+  WHERE EXISTS(SELECT 1 FROM exam_channel_publications ecp WHERE ecp.exam_id=e.id AND ecp.channel='RESULT_NETWORK')${scope.sql}
+  GROUP BY e.id ORDER BY publisher_name,e.academic_year DESC,COALESCE(e.application_start_at,e.exam_date,e.created_at) DESC,e.title LIMIT 500`).bind(...scope.args));
+ return json({ok:true,exams:rows});
+}
+/** Institutions with results in one exam, for the institution tree (city → district → institution). */
+async function topluInstitutions(request:Request,env:Env){
+ const scope=await topluScope(request,env);if(scope instanceof Response)return scope;
+ const examId=String(new URL(request.url).searchParams.get('examId')||'');if(!examId)return badRequest('Sınav seçin.');
+ const rows=await all<any>(env.DB.prepare(`SELECT i.id,i.name,COALESCE(i.meb_code,i.code) code,COALESCE(NULLIF(i.city,''),'İl belirtilmemiş') city,COALESCE(NULLIF(i.district,''),'İlçe belirtilmemiş') district,count(*) participants
+  FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id JOIN institutions i ON i.id=ep.institution_id WHERE ep.exam_id=?${scope.sql}
+  GROUP BY i.id ORDER BY city,district,i.name LIMIT 5000`).bind(examId,...scope.args));
+ return json({ok:true,institutions:rows});
+}
 /** Earlier evaluations the operator may reopen: report, access cards and review stay reachable after a refresh. */
 async function operatorHistory(request:Request,env:Env){
  const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
@@ -396,7 +422,7 @@ async function operatorHistory(request:Request,env:Env){
   if(mode!=='DEALER'&&user.role==='INSTITUTION_MANAGER'&&user.institution_id){where.push('b.institution_id=?');args.push(user.institution_id)}
   else{where.push(`EXISTS(SELECT 1 FROM national_institution_directory d WHERE d.meb_code=COALESCE(i.meb_code,i.code) AND ${DEALER_SCOPE_SQL})`);args.push(user.id)}
  }
- const rows=await all<any>(env.DB.prepare(`SELECT b.id,b.status,b.source_type,b.created_at,b.exam_id,e.title,e.academic_year,i.name institution_name,i.code institution_code,i.city,i.district,u.display_name created_by_name,(SELECT count(*) FROM scan_records r WHERE r.batch_id=b.id) total FROM scan_batches b JOIN exams e ON e.id=b.exam_id JOIN institutions i ON i.id=b.institution_id LEFT JOIN users u ON u.id=b.created_by WHERE ${where.join(' AND ')} ORDER BY b.created_at DESC,b.rowid DESC LIMIT 100`).bind(...args));
+ const rows=await all<any>(env.DB.prepare(`SELECT b.id,b.status,b.source_type,b.created_at,b.exam_id,b.institution_id,e.title,e.academic_year,i.name institution_name,i.code institution_code,i.city,i.district,u.display_name created_by_name,(SELECT count(*) FROM scan_records r WHERE r.batch_id=b.id) total FROM scan_batches b JOIN exams e ON e.id=b.exam_id JOIN institutions i ON i.id=b.institution_id LEFT JOIN users u ON u.id=b.created_by WHERE ${where.join(' AND ')} ORDER BY b.created_at DESC,b.rowid DESC LIMIT 100`).bind(...args));
  return json({ok:true,batches:rows});
 }
 async function resultOperatorCatalog(request:Request,env:Env){
@@ -488,6 +514,14 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
  if(path==='/api/admin/result-network/operations/catalog'&&request.method==='GET')return resultOperatorCatalog(request,env);
  if(path==='/api/admin/result-network/operations/institutions'&&request.method==='GET')return searchOperatorInstitutions(request,env);
  if(path==='/api/admin/result-network/operations/history'&&request.method==='GET')return operatorHistory(request,env);
+ if(path==='/api/admin/result-network/operations/toplu/exams'&&request.method==='GET')return topluExams(request,env);
+ if(path==='/api/admin/result-network/operations/toplu/institutions'&&request.method==='GET')return topluInstitutions(request,env);
+ if(path==='/api/admin/result-network/operations/toplu/pack'&&request.method==='GET'){const url=new URL(request.url),examId=String(url.searchParams.get('examId')||''),institutionId=String(url.searchParams.get('institutionId')||'');
+  if(!examId||!institutionId)return badRequest('Sınav ve kurum seçin.');
+  const context=await resultOperatorContext(request,env,institutionId);if(context instanceof Response)return context;
+  const {reportPack}=await import('./lib/result-report-pack');const data=await reportPack(env,examId,institutionId);
+  if(!data||!data.students.length)return safeError(404,'REPORT_EMPTY','Bu kurumun bu sınavda değerlendirilmiş öğrencisi yok.');
+  return json({ok:true,...data})}
  if(path==='/api/admin/result-network/operations/opticals'&&request.method==='POST'){const {quickOptical}=await import('./lib/result-optical-quick');return quickOptical(request,env)}
  const karnes=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/karnes$/);
  if(karnes&&request.method==='GET')return batchKarnes(request,env,karnes[1]);
