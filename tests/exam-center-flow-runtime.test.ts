@@ -81,7 +81,7 @@ describe('authenticated exam center HTTP flow on the complete migration schema',
       expect((await f.request(`${batchPath}/records/${preview.records[6].id}/resolve`, 'POST', {action:'CANCEL'})).response.status).toBe(200);
       expect((await f.request(batchPath)).data.batch.status).toBe('READY');
       let evaluated = await f.request(`${batchPath}/evaluate`, 'POST');
-      if (mode === 'chunked') {expect(evaluated.data).toMatchObject({done:false,processed:5,total:6});evaluated = await f.request(`${batchPath}/evaluate`, 'POST');expect(evaluated.data.done).toBe(true);}
+      if (mode === 'chunked') expect(evaluated.data).toMatchObject({done:true,processed:6,total:6}); // S035: one request evaluates the whole class
       expect(evaluated.response.status, JSON.stringify(evaluated.data)).toBe(200);
       expect(evaluated.data.processed).toBe(6);
       const persisted = f.db.prepare('SELECT ep.student_id,er.correct_count,er.wrong_count,er.blank_count,er.net FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=? ORDER BY ep.student_id').all(examId);

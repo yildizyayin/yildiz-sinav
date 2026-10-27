@@ -9,19 +9,15 @@ import { canAccessSubjectForClass, canEvaluateExam, loadPermissionScope, roleCan
 import { examPublicationGuard } from './lib/exam-publication-guard';
 import { examEvaluationAccess } from './lib/exam-evaluation-access';
 import { withExamOperationLock } from './lib/exam-operation-lock';
-import { evaluateAnswer } from './lib/answer-evaluation';
-import { persistTytOptionalPhilosophyEvidence } from './tyt-optional-philosophy-evaluation';
 import { matchParticipant } from './lib/matching';
 import { bookletIssue, compareBooklets, isBookletIssue } from './lib/booklet-review';
 import { decodeUploadedBytes, parseUploadedText, parseWithTemplate, type ParserTemplate } from './lib/parse';
 import { isLearnerRole, publishedForLearnersSql } from './lib/exam-schedule';
 import { changeInstitutionLifecycle } from './lib/institution-lifecycle';
-import { alignRecordsToExam, blankSubjectsCoveredElsewhere, mergeSessionRecords, primaryBooklet, recordBookletIssue, subjectBooklet } from './lib/two-session';
+import { alignRecordsToExam, mergeSessionRecords, primaryBooklet, recordBookletIssue, subjectBooklet } from './lib/two-session';
 import { duplicateMessage, duplicateStudentConflicts } from './lib/scan-duplicates';
-import { assertScoringRuleVerified, calculateExamScore, calculateOverall, calculateSubjectScore, effectiveWrongDivisor, scoreMethodFor } from './lib/scoring';
-import { masteryStatus } from './lib/outcome';
+import { assertScoringRuleVerified, effectiveWrongDivisor, scoreMethodFor } from './lib/scoring';
 import { calibrationWithinTolerance, nextCalibrationStatus, type CalibrationMetrics } from './lib/calibration';
-import { recordExamAssessments, recordExamEvidenceAudit } from './lib/assessment-ledger';
 import { startTrial } from './lib/license';
 import { generatedInstitutionCode, normalizeInstitutionCreateBody, type InstitutionCreateBody } from './lib/institution-onboarding';
 import { createAccountNotificationBatch } from './lib/account-notifications';
@@ -634,12 +630,14 @@ export async function searchScanCandidates(env: Env, user: AuthUser, batchId: st
   return json({ ok: true, candidates: rows });
 }
 
-export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {
+/** S035: checks every row before anything is written (booklet, key, duplicates, scoring rule). Returns null when ready. */
+async function validateBatchForEvaluation(env: Env, user: AuthUser, batchId: string): Promise<Response | null> {
   if (!canEvaluateExam(user.role)) return forbidden();
   const batch = await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
   if (!(await userCanAccessInstitution(env.DB, user, batch.institution_id))) return forbidden();
-  return withExamOperationLock(env,batch.exam_id,'EVALUATE',async(env)=>{
+  // S035: checks first (nothing written if a row is not ready), then the set-based engine shared with the app.
+  const checked = await withExamOperationLock(env,batch.exam_id,'EVALUATE',async(env)=>{
   const networkPublication=await one<any>(env.DB.prepare("SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND ranking_frozen_at IS NOT NULL LIMIT 1").bind(batch.exam_id));
   if(networkPublication)return badRequest('Sonuç Ağı yayını düzeltmeye açılmadan değerlendirme yapılamaz.','RESULTS_FROZEN');
   const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
@@ -679,119 +677,35 @@ export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): 
     const preview = compareBooklets(record, [booklet], subjects, keyRows)[0];
     if (!preview.available) return badRequest(`Satır ${row.row_no}: ders yanıtı veya cevap anahtarı eksik.`, 'ANSWER_KEY_INCOMPLETE');
   }
-  let processed = 0;
-  const coveredElsewhere = blankSubjectsCoveredElsewhere(records);
-  for (const row of records) {
-    if (row.resolution_status === 'CANCELLED') continue;
-    const record = JSON.parse(row.canonical_json) as CanonicalRecord;
-    let studentId = row.matched_student_id as string | null;
-    let studentStatus = row.match_status === 'ACTIVE_MATCH' ? 'ACTIVE' : 'GUEST';
-    if (row.match_status === 'NEW_GUEST' || (row.match_status === 'GUEST_MATCH' && !studentId)) {
-      const names = splitName(record.name);
-      studentId = uuid('stu');
-      await env.DB.prepare(`INSERT INTO student_entities (id,first_name,last_name,normalized_name,status) VALUES(?,?,?,?, 'GUEST')`).bind(studentId, names.firstName, names.lastName, normalizeName(record.name)).run();
-      const classRow = record.grade_level ? await one<any>(env.DB.prepare(`SELECT id FROM classes WHERE season_id=? AND grade_level=? AND (? IS NULL OR upper(section)=upper(?)) LIMIT 1`).bind(batch.season_id, record.grade_level, record.section || null, record.section || null)) : null;
-      await env.DB.prepare(`INSERT INTO student_enrollments (id,student_id,institution_id,season_id,class_id,student_number,grade_level,section) VALUES(?,?,?,?,?,?,?,?)`)
-        .bind(uuid('enr'), studentId, batch.institution_id, batch.season_id, classRow?.id || null, record.student_number || null, record.grade_level || null, record.section || null).run();
-      await env.DB.prepare(`INSERT INTO guest_profiles (student_id,first_seen_exam_id,last_seen_at) VALUES(?,?,CURRENT_TIMESTAMP)`).bind(studentId, exam.id).run();
-      await env.DB.prepare(`UPDATE scan_records SET matched_student_id=?, match_status='GUEST_MATCH' WHERE id=?`).bind(studentId, row.id).run();
-    } else if (studentId && studentStatus === 'GUEST') {
-      await env.DB.prepare('UPDATE guest_profiles SET last_seen_at=CURRENT_TIMESTAMP WHERE student_id=?').bind(studentId).run();
-    }
-    if (!studentId) throw new Error('UNRESOLVED_PARTICIPANT');
-    const booklet = primaryBooklet(record) || (booklets.length === 1 ? booklets[0].code : '');
-    if (!booklet || !booklets.some((b) => b.code === booklet)) throw new Error(`BOOKLET_REQUIRED_ROW_${row.row_no}`);
-    const skipHere = coveredElsewhere.get(row.id);
-    const incomingSubjects = subjects.filter((subject) => Object.prototype.hasOwnProperty.call(record.answers_by_subject || {}, subject.code) && !skipHere?.has(subject.code));
-    if (!incomingSubjects.length) throw new Error(`ANSWER_SUBJECT_REQUIRED_ROW_${row.row_no}`);
-    const incomingSubjectIds = new Set(incomingSubjects.map((subject) => subject.subject_id));
-    const existing = await one<{ id: string }>(env.DB.prepare('SELECT id FROM exam_participants WHERE exam_id=? AND institution_id=? AND student_id=?').bind(exam.id, batch.institution_id, studentId));
-    let participantId = existing?.id || uuid('part');
-    const preservedSubjectScores = existing ? (await all<any>(env.DB.prepare(`SELECT subject_id,correct_count,wrong_count,blank_count,net,success_percent FROM subject_results WHERE participant_id=?`).bind(participantId)))
-      .filter((score) => !incomingSubjectIds.has(score.subject_id)) : [];
-    if (existing) {
-      const marks = incomingSubjects.map(() => '?').join(',');
-      await env.DB.prepare(`DELETE FROM student_answers WHERE participant_id=? AND exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=? AND subject_id IN (${marks}))`)
-        .bind(participantId, exam.id, ...incomingSubjects.map((subject) => subject.subject_id)).run();
-      await env.DB.prepare(`DELETE FROM subject_results WHERE participant_id=? AND subject_id IN (${marks})`)
-        .bind(participantId, ...incomingSubjects.map((subject) => subject.subject_id)).run();
-      await env.DB.prepare('DELETE FROM exam_results WHERE participant_id=?').bind(participantId).run();
-      await env.DB.prepare(`UPDATE exam_participants SET scan_record_id=?,student_number_snapshot=?,name_snapshot=?,class_snapshot=?,booklet_code=?,participant_status=? WHERE id=?`)
-        .bind(row.id, record.student_number || null, record.name, record.class_name || null, booklet, studentStatus, participantId).run();
-    } else {
-      await env.DB.prepare(`INSERT INTO exam_participants (id,exam_id,institution_id,season_id,student_id,scan_record_id,student_number_snapshot,name_snapshot,class_snapshot,booklet_code,participant_status)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?)`).bind(participantId, exam.id, batch.institution_id, batch.season_id, studentId, row.id, record.student_number || null, record.name, record.class_name || null, booklet, studentStatus).run();
-    }
-    const subjectScores = preservedSubjectScores.map((score) => ({
-      correct: Number(score.correct_count), wrong: Number(score.wrong_count), blank: Number(score.blank_count),
-      net: Number(score.net), successPercent: Number(score.success_percent),
-      wrongDivisor: effectiveWrongDivisor(subjects.find((subject) => subject.subject_id === score.subject_id)?.wrong_divisor, scoreMethod, scoringOverride),
-      subjectId: score.subject_id, code: subjects.find((subject) => subject.subject_id === score.subject_id)?.code,
-      questionCount: Number(subjects.find((subject) => subject.subject_id === score.subject_id)?.question_count || 0),
-    }));
-    for (const subject of incomingSubjects) {
-      const answerString = record.answers_by_subject[subject.code] || '';
-      const sessionBooklet = subjectBooklet(record, subject.code, booklet);
-      const subjectKeys = keyRows.filter((k) => k.subject_id === subject.subject_id && k.booklet_code === sessionBooklet).sort((a,b)=>Number(a.printed_question_no)-Number(b.printed_question_no));
-      let correct = 0, wrong = 0, blank = 0, activeQuestionCount = 0;
-      for (let i = 0; i < subject.question_count; i++) {
-        const key = subjectKeys[i];
-        const answer = String(answerString[i] || '').trim().toUpperCase();
-        const assessed = evaluateAnswer(answer, key);
-        const status = assessed.status;
-        if (assessed.contributesToScore) {
-          activeQuestionCount++;
-          if (status === 'CORRECT') correct++; else if (status === 'WRONG') wrong++; else blank++;
-        }
-        if (key) {
-          await env.DB.prepare(`INSERT INTO student_answers (id,participant_id,exam_question_id,answer,status,confidence) VALUES(?,?,?,?,?,?)`)
-            .bind(uuid('ans'), participantId, key.question_id, answer && answer !== '_' ? answer : null, status, record.confidence).run();
-        }
-      }
-      const score = calculateSubjectScore({ correct, wrong, blank, wrongDivisor: effectiveWrongDivisor(subject.wrong_divisor, scoreMethod, scoringOverride), questionCount: activeQuestionCount });
-      subjectScores.push({ ...score, subjectId: subject.subject_id, code: subject.code });
-      await env.DB.prepare(`INSERT INTO subject_results (id,participant_id,subject_id,correct_count,wrong_count,blank_count,net,success_percent) VALUES(?,?,?,?,?,?,?,?)`)
-        .bind(uuid('sr'), participantId, subject.subject_id, correct, wrong, blank, score.net, score.successPercent).run();
-    }
-    // A028b: a student with a session not yet read (or absent) gets nets but no score, like the ÖSYM estimate:
-    // a share over only the tests taken would overstate it.
-    const overall = calculateOverall(subjectScores);
-    await env.DB.prepare(`INSERT INTO exam_results (id,participant_id,scoring_rule_version_id,correct_count,wrong_count,blank_count,net,score,success_percent) VALUES(?,?,?,?,?,?,?,?,?)`)
-      .bind(uuid('er'), participantId, exam.scoring_version_id, overall.correct, overall.wrong, overall.blank, overall.net, (subjectScores.length >= subjects.length ? calculateExamScore(scoreMethod, subjectScores, scoringOverride, scoringConfig) : null), overall.successPercent).run();
-    await env.DB.prepare('DELETE FROM outcome_results WHERE student_id=? AND exam_id=?').bind(studentId, exam.id).run();
-    const mergedOutcomes = await all<any>(env.DB.prepare(`SELECT qo.outcome_id,COUNT(*) evidence,
-      SUM(CASE WHEN sa.status='CORRECT' THEN 1 ELSE 0 END) correct
-      FROM student_answers sa JOIN exam_questions q ON q.id=sa.exam_question_id
-      JOIN question_outcomes qo ON qo.exam_question_id=q.id
-      WHERE sa.participant_id=? AND sa.status<>'INVALID' GROUP BY qo.outcome_id`).bind(participantId));
-    for (const acc of mergedOutcomes) {
-      const rate = Number(acc.evidence) ? Number(acc.correct) / Number(acc.evidence) : 0;
-      await env.DB.prepare(`INSERT INTO outcome_results (id,student_id,exam_id,outcome_id,evidence_count,correct_count,success_rate,mastery_status) VALUES(?,?,?,?,?,?,?,?)`)
-        .bind(uuid('or'), studentId, exam.id, acc.outcome_id, Number(acc.evidence), Number(acc.correct), rate, masteryStatus(Number(acc.correct), Number(acc.evidence))).run();
-    }
-    processed++;
-  }
-  await env.DB.prepare(`UPDATE exam_results SET institution_rank=(SELECT rn FROM (
-    SELECT er2.id, row_number() OVER (ORDER BY COALESCE(er2.score,-1e9) DESC, er2.net DESC, er2.correct_count DESC) rn FROM exam_results er2
-    JOIN exam_participants ep2 ON ep2.id=er2.participant_id WHERE ep2.exam_id=? AND ep2.institution_id=?
-    ) ranked WHERE ranked.id=exam_results.id)
-    WHERE participant_id IN (SELECT id FROM exam_participants WHERE exam_id=? AND institution_id=?)`).bind(exam.id, batch.institution_id, exam.id, batch.institution_id).run();
-  const ledgerCount=await recordExamAssessments(env,batchId);
-  await recordExamEvidenceAudit(env,user.id,batch.institution_id,batchId,ledgerCount);
-  try {
-    await persistTytOptionalPhilosophyEvidence(env, batchId);
-  } catch (error) {
-    if(error instanceof Error&&error.message.includes('EXAM_OPERATION_OWNERSHIP_LOST'))throw error;
-    console.error('TYT optional philosophy evidence persistence failed', error);
-    return json({ ok: false, error: {
-      code: 'TYT_OPTIONAL_EVIDENCE_FAILED',
-      message: 'TYT seçmeli Felsefe kanıt sonucu kaydedilemedi. Ana 120 soruluk değerlendirme değiştirilmedi; işlem güvenli şekilde tekrar denenebilir.',
-    } }, 500);
-  }
-  await env.DB.prepare(`UPDATE scan_batches SET status='COMMITTED' WHERE id=?`).bind(batchId).run();
-  await audit(env.DB, user.id, batch.institution_id, 'EXAM_EVALUATED', 'scan_batch', batchId, { examId: exam.id, processed });
-  return json({ ok: true, processed, batchId, examId: exam.id });
+  return json({ ok: true, validated: true });
   });
+  if (!checked.ok) return checked;
+  const verdict: any = await checked.clone().json().catch(() => null);
+  return verdict?.validated ? null : checked;
+}
+
+export async function evaluateBatch(env: Env, user: AuthUser, batchId: string): Promise<Response> {
+  const invalid = await validateBatchForEvaluation(env, user, batchId);
+  if (invalid) return invalid;
+  const batch = await one<any>(env.DB.prepare('SELECT exam_id FROM scan_batches WHERE id=?').bind(batchId));
+  const { evaluateBatchChunk } = await import('./chunked-evaluation-entry');
+  for (let step = 0; step < 200; step++) {
+    const response = await evaluateBatchChunk(env, user, batchId);
+    if (!response.ok) return response;
+    const payload: any = await response.clone().json();
+    if (payload?.done) return json({ ok: true, processed: payload.processed, batchId, examId: batch.exam_id });
+  }
+  return json({ ok: false, error: { code: 'EVALUATION_INCOMPLETE', message: 'Değerlendirme tamamlanamadı; işlem güvenle tekrar denenebilir.' } }, 500);
+}
+
+/** S035: one step for clients that show progress (sonuc): rows are checked before the first write, then chunks run
+ * for up to ~20 s; the answer says how many students are done. Call again while `done` is false. */
+export async function evaluateBatchStep(env: Env, user: AuthUser, batchId: string): Promise<Response> {
+  const started = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM scan_evaluation_progress WHERE batch_id=?').bind(batchId));
+  const status = await one<{ status: string }>(env.DB.prepare('SELECT status FROM scan_batches WHERE id=?').bind(batchId));
+  if (!Number(started?.c || 0) && status?.status !== 'COMMITTED') { const invalid = await validateBatchForEvaluation(env, user, batchId); if (invalid) return invalid; }
+  const { evaluateBatchChunk } = await import('./chunked-evaluation-entry');
+  return evaluateBatchChunk(env, user, batchId);
 }
 
 async function listStudents(env: Env, user: AuthUser, url: URL): Promise<Response> {

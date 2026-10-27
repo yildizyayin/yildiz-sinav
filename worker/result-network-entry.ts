@@ -8,7 +8,7 @@ import {startResultArtifactPreparation,readResultArtifactPreparation} from './li
 import type { AuthUser,Env } from './types';
 import { getAuthUser,hashPassword,verifyPassword,verifyTurnstile } from './lib/auth';
 import { all,audit,badRequest,forbidden,json,normalizeName,one,uuid } from './lib/db';
-import { evaluateBatch,getScanBatch,previewExamFile,resolveScanRecord,searchScanCandidates } from './index';
+import { evaluateBatchStep,getScanBatch,previewExamFile,resolveScanRecord,searchScanCandidates } from './index';
 import { withExamOperationLock } from './lib/exam-operation-lock';
 import { RESULT_NETWORK_SUMMARY_SQL, RESULT_NETWORK_SNAPSHOT_SQL, RESULT_NETWORK_ARTIFACT_ACCESS_SQL, NETWORK_INSTITUTION_SNAPSHOT_SQL, readNetworkSnapshot, snapshotSummary, snapshotDetail } from './lib/result-network-snapshot';
 import { prepareResultArtifacts, readResultArtifact, inspectResultArtifactReadiness } from './lib/result-artifacts';
@@ -576,7 +576,8 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   // A batch uploaded before S030 (or reopened from the history) may still hold readable unmatched sheets: accept them first.
   if(context.batch.status!=='COMMITTED')await acceptReadableSheets(env,evaluate[1],context.user.id,context.batch.institution_id);
   const setAside=context.batch.status==='COMMITTED'?[]:await setAsideUnscorable(env,evaluate[1],context.user.id,context.batch.institution_id);
-  const evaluated=await evaluateBatch(env,context.effective,evaluate[1]);
+  // S035: one time-limited step; the page calls again while done is false and shows "x / n öğrenci".
+  const evaluated=await evaluateBatchStep(env,context.effective,evaluate[1]);
   if(!evaluated.ok)return evaluated;
   const body:any=await evaluated.json();return json({...body,setAside},evaluated.status)}
  const access=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/access-codes$/);
