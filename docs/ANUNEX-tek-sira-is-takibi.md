@@ -2601,3 +2601,36 @@ Canlı veriden teşhis:
   - Gerçek D1 süresi deploy sonrası ölçülecek.
   - Yarıda kalan batch, deploy sonrası "Değerlendir"e yeniden basılarak tamamlanacak.
 - **Dağıtım:** App 254cc58 onay bekliyor; sonuc onun ardından gelir. c3bc5c7 app canlıda; sonuc c3bc5c7 onayı yeni sürümle geçersizleşir.
+
+### D-S036 — Rapor Merkezi, sol menü, Veri/Belge Merkezi tasarım kararları — 27 Ekim (yalnız karar, kod yok)
+- **Tasarım tuvali:** "ANUNEX Rapor Merkezi Tasarım Önerileri" (Design artifact, sahibin hesabında).
+- **Rapor Merkezi ekranı:** A+B karışımı.
+  - Solda adımlar var: tamamlanan Sınav ve Kurum tek satıra iner, yanında "Değiştir" durur.
+  - Rapor satırları küçük sayfa çizimi ve sayfa sayısıyla gösterilir.
+  - Sağda gerçek sayfa önizlemesi, "Tümünü PDF indir · n sayfa" ve Excel.
+- **Basılı rapor dili onaylandı:**
+  - Lacivert başlık çizgisi, büyük puan kutusu, sıra kutuları.
+  - Başarı çubuğu, okul ve genel işaretleriyle.
+  - Sade tablo ve Nibiru kutusu.
+  - Listeler A4 yatay, öğrenci karnesi A4 dikey.
+- **Sol menü (rol bazında) onaylandı:**
+  - **Süper Admin:**
+    - Ana sayfa.
+    - SINAVLAR: Sınav tanımla, Sınav yükleme, Optik ve FMT.
+    - ÇIKTILAR: Rapor Merkezi, Veri Merkezi, Belge Merkezi.
+    - KURULUŞLAR: Kurumlar, Bayiler ve yetkiler, Kullanıcılar.
+    - SİSTEM: Sonuç yayınları, Veri saklama, Portal ayarları.
+    - YKS/LGS/İlkokul/KDS/Föy menüden çıkar; sayfa üstünde seviye seçici olur.
+  - **Bayi:** Ana sayfa, Sınav yükleme, Rapor Merkezi, Veri Merkezi, Belge Merkezi, Kurum listesi, Giriş PIN'leri, Profil.
+  - **Kurum:** Ana sayfa, Sınav yükleme, Rapor Merkezi, Veri Merkezi, Belge Merkezi, Erişim kartları, Kurum bilgileri, Profil.
+- **Veri Merkezi:** Her yükleme için üç indirme var.
+  - **Orijinal TXT/DAT:** 1 eğitim yılı saklanır, yıl sonunda Veri Saklama kuralıyla silinir. Yalnız bu özellikten sonraki yüklemelerde vardır; şu an dosya saklanmıyor.
+  - **Okunan veri (Excel):** Geçmiş yüklemeler dahil.
+  - **Sonuçlar (Excel).**
+  - Her indirme denetim kaydına geçer.
+- **Belge Merkezi:** Kurum ve bayi şunları indirebilir:
+  - Cevap anahtarı PDF.
+  - Kazanım listesi.
+  - Optik form/FMT.
+  - Sınav kitapçığı PDF. Yalnız yayınevi izin verdiyse; telif/RESTRICTED kapısı korunur.
+- **Durum:** Uygulama için sahibin "uygula" demesi bekleniyor.
