@@ -2557,3 +2557,25 @@ Canlı veriden teşhis:
 - **Test:** s033-toplu-liste; tüm paket 323 dosya / 1429 test geçti.
 - **Tarayıcı:** 1 kurum ve 4 liste türüyle 7 sayfalık tek PDF üretildi.
 - **Dağıtım:** App deploy c220df6 kullanıcı onayı bekliyor; sonuc deploy'u onun ardından otomatik gelir. Önceki sonuc deploy'u (50863a5) da onay bekliyordu.
+
+### S034 — YKS/LGS rapor ailesi: yeni tasarım, AYT puan seçenekleri, ek analizler — 27 Ekim
+- **Talep:** Sahip 5 örnek PDF verdi: bayi kurum ortalamaları, okul/şube net listesi, okul/şube karnesi, sınıf raporu, AYT sonuç belgesi. Tasarım bunlara benzemesin, daha iyi olsun; Excel de alınabilsin; LGS için de olsun.
+- **Kararlar:**
+  - AYT: TYT ayrı, AYT ayrı (yalnız AYT, puansız) ve TYT–AYT birleşik. Birleşikte öğrencinin TYT'si kullanılır, yoksa okul TYT ortalaması.
+  - Ek raporlar: madde analizi, branş + konu eksik, gelişim.
+  - Nibiru önerileri karnelerde.
+  - Hepsi yapılsın, sonunda bakılsın.
+- **Yapılan (PR #401, c3bc5c7):**
+  - Veri katmanı (report-bundle): anahtardaki DERS sütunundan alt testler; genel/il/ilçe/okul/şube ortalamaları; öğrenci, okul ve şube sıraları; kazanım ve madde istatistikleri.
+  - SAY/SÖZ/EA tahmini A024 ağırlıklarıyla hesaplanıyor (OBP yok).
+  - Listeler: okul/şube net listesi (alt testli), test bazlı listeler (sıralı), ilçedeki kurum ortalamaları.
+  - Karneler: kurum (özet, dereceler, katılım, kıyas grafikleri, kazanım), şube ve öğrenci karnesi (cevap dizisi, kazanım), Nibiru notlarıyla.
+  - Ek raporlar: madde analizi, branş, konu eksik, gelişim.
+  - Excel'de her sınav ayrı sayfa setinde.
+  - Yazdırma: listeler A4 yatay, öğrenci karnesi dikey.
+- **Sınırlar:**
+  - Alt testler cevap anahtarında DERS sütunu varsa çıkar; 4K TYT anahtarı yeniden yüklenmeli.
+  - AYT'de "Fen Bilimleri" gibi birleşik bir test alt testlere ayrılmamışsa SAY/EA puanı hesaplanmaz.
+  - Her istek bir sınavın öğrenci başı satırlarını okur; 150 bin katılımcı için değerlendirme anında önhesaplama gerekli.
+- **Test:** s034 (6), s033 güncellendi; tüm paket 324 dosya / 1435 test geçti. Sentetik TYT/AYT/LGS PDF'leri ve uygulama içi yazdırma tarayıcıda kontrol edildi.
+- **Dağıtım:** Kullanıcının app deploy onayı gerekiyor; sonuc ardından otomatik gelir.
