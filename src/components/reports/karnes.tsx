@@ -126,23 +126,30 @@ export function OgrenciKarne({ b, inst, s }: { b: Bundle; inst: Inst; s: any }) 
   const head = { land: false, kicker: 'Öğrenci karnesi', title: s.name, sub: <>{s.number ? <>No <b>{s.number}</b> · </> : null}Şube <b>{s.className || '—'}</b> · {inst.name} · {inst.city}/{inst.district}<br />{examLabel(b.exam)}</>, provisional: b.provisional };
   return <>
     <Page {...head}>
-      <div className="rx-kpis">
-        {b.scoreTypes.map((t: any) => <div className="rx-kpi rx-hi" key={t.key}><span>{t.label}</span><b>{fScore(t, s.scores[t.key])}</b><small>okul {fScore(t, inst.avg.scores[t.key])}</small></div>)}
-        <div className="rx-kpi"><span>Doğru</span><b>{s.total.d}</b></div><div className="rx-kpi"><span>Yanlış</span><b>{s.total.y}</b></div><div className="rx-kpi"><span>Boş</span><b>{s.total.b}</b></div><div className="rx-kpi"><span>Net</span><b>{f2(s.total.n)}</b></div>
-      </div>
-      <table className="rx-t"><thead><tr><th className="rx-l">Sıralama</th><th>Puan</th><th>Şube</th><th>Okul</th><th>İlçe</th><th>İl</th><th>Genel</th></tr></thead><tbody>
-        {b.scoreTypes.map((t: any) => { const r = s.ranks[t.key] || {}, k = s.counts[t.key] || {}; return <tr key={t.key}><td className="rx-l"><b>{t.label}</b></td><td className="rx-score">{fScore(t, s.scores[t.key])}</td><td>{rank(r.class, k.class)}</td><td>{rank(r.school, k.school)}</td><td>{rank(r.district, k.district)}</td><td>{rank(r.city, k.city)}</td><td>{rank(r.general, k.general)}</td></tr>; })}
-      </tbody></table>
-      <table className="rx-t"><thead><tr><th className="rx-l">Test</th><th>Soru</th><th>D</th><th>Y</th><th>B</th><th className="rx-n">Net</th><th>Başarı</th><th className="rx-sep">Şube ort.</th><th>Okul ort.</th><th>Genel ort.</th></tr></thead><tbody>
-        {cols.map((c, i) => { const v = s.cols[c.key]; const first = i === 0 || cols[i - 1].group !== c.group;
-          return <Fragment key={c.key}>{first && (c.group !== c.name || cols.filter((x) => x.group === c.group).length > 1) && <tr className="rx-ref"><td className="rx-l" colSpan={10}>{short(c.group)}</td></tr>}
-            <tr><td className="rx-l">{short(c.name)}</td><td>{c.q}</td><td>{v?.d ?? '—'}</td><td>{v?.y ?? '—'}</td><td>{v?.b ?? '—'}</td><td className="rx-n">{f2(v?.n)}<Arrow v={v?.n} ref={inst.avg.cols[c.key]?.n} /></td><td>%{pctOf(v?.n || 0, c.q)}</td>
-              <td className="rx-sep">{f2(cls?.avg.cols[c.key]?.n)}</td><td>{f2(inst.avg.cols[c.key]?.n)}</td><td>{f2(b.general.avg.cols[c.key]?.n)}</td></tr></Fragment>; })}
-        <tr className="rx-me"><td className="rx-l">Toplam</td><td>{cols.reduce((a, c) => a + c.q, 0)}</td><td>{s.total.d}</td><td>{s.total.y}</td><td>{s.total.b}</td><td className="rx-n">{f2(s.total.n)}</td><td /><td className="rx-sep">{f2(cls?.avg.total.n)}</td><td>{f2(inst.avg.total.n)}</td><td>{f2(b.general.avg.total.n)}</td></tr>
-      </tbody></table>
-      <div className="rx-card"><h4>Test başarısı (% net)</h4><GroupedBars groups={cols.map((c) => short(c.name))} series={[{ label: 'Öğrenci', color: C.me, values: cols.map((c) => pctOf(s.cols[c.key]?.n, c.q)) }, { label: 'Şube', color: C.district, values: cols.map((c) => pctOf(cls?.avg.cols[c.key]?.n, c.q)) }, { label: 'Okul', color: C.school, values: cols.map((c) => pctOf(inst.avg.cols[c.key]?.n, c.q)) }, { label: 'Genel', color: C.general, values: cols.map((c) => pctOf(b.general.avg.cols[c.key]?.n, c.q)) }]} height={34} /></div>
+      {/* S036 approved print language: score hero + rank boxes, tests with success bars, answers, focus topics + Nibiru */}
+      {b.scoreTypes.length > 1 && <div className="rx-hero-multi">{b.scoreTypes.map((t: any) => { const r = s.ranks[t.key] || {}, k = s.counts[t.key] || {};
+        return <div className="rx-hero-score" key={t.key}><span>{t.isScore ? `${t.label.toLocaleUpperCase('tr-TR')} PUANI` : t.label.toLocaleUpperCase('tr-TR')}</span><b>{fScore(t, s.scores[t.key])}</b>
+          <small>Şube {rank(r.class, k.class)} · Okul {rank(r.school, k.school)}</small><small>İlçe {rank(r.district, k.district)} · İl {rank(r.city, k.city)} · Genel {rank(r.general, k.general)}</small></div>; })}</div>}
+      {b.scoreTypes.length === 1 && b.scoreTypes.map((t: any) => { const r = s.ranks[t.key] || {}, k = s.counts[t.key] || {};
+        return <div className="rx-hero" key={t.key}>
+          <div className="rx-hero-score"><span>{t.isScore ? `${t.label.toLocaleUpperCase('tr-TR')} PUANI` : t.label.toLocaleUpperCase('tr-TR')}</span><b>{fScore(t, s.scores[t.key])}</b><small>Okul ortalaması {fScore(t, inst.avg.scores[t.key])} · Net {f2(s.total.n)}</small></div>
+          <div className="rx-ranks">{([['ŞUBE', 'class'], ['OKUL', 'school'], ['İLÇE', 'district'], ['İL', 'city'], ['GENEL', 'general']] as const).map(([l, key]) => <div key={key}><span>{l}</span><b>{r[key] ? Number(r[key]).toLocaleString('tr-TR') : '—'}</b><small>/ {k[key] ? Number(k[key]).toLocaleString('tr-TR') : '—'}</small></div>)}</div>
+        </div>; })}
+      <div><div className="rx-h">Testler <small>Başarı: çubuk sen · koyu çizgi okul · açık çizgi genel</small></div>
+        <table className="rx-t rx-tests"><thead><tr><th className="rx-l">Test</th><th className="rx-r">Soru</th><th className="rx-r">D</th><th className="rx-r">Y</th><th className="rx-r">B</th><th className="rx-r rx-n">Net</th><th className="rx-l" style={{ width: '44%' }}>Başarı</th></tr></thead><tbody>
+          {cols.map((c, i) => { const v = s.cols[c.key]; const first = i === 0 || cols[i - 1].group !== c.group; const grouped = c.group !== c.name || cols.filter((x) => x.group === c.group).length > 1;
+            const me = pctOf(v?.n || 0, c.q), sc = pctOf(inst.avg.cols[c.key]?.n || 0, c.q), gen = pctOf(b.general.avg.cols[c.key]?.n || 0, c.q);
+            return <Fragment key={c.key}>{first && grouped && <tr className="rx-group"><td className="rx-l" colSpan={7}>{short(c.group)}</td></tr>}
+              <tr><td className={`rx-l ${grouped ? 'rx-sub' : ''}`}>{short(c.name)}</td><td className="rx-r">{c.q}</td><td className="rx-r">{v?.d ?? '—'}</td><td className="rx-r">{v?.y ?? '—'}</td><td className="rx-r">{v?.b ?? '—'}</td><td className="rx-r rx-n">{f2(v?.n)}</td>
+                <td><div className="rx-sbar" title={`Sen %${me} · okul %${sc} · genel %${gen}`}><i style={{ width: `${Math.max(1, me)}%`, background: me < sc ? '#E08A4F' : '#2563EB' }} /><em style={{ left: `${Math.min(99, sc)}%` }} /><u style={{ left: `${Math.min(99, gen)}%` }} /><b>%{me}</b></div></td></tr></Fragment>; })}
+          <tr className="rx-total"><td className="rx-l">Toplam</td><td className="rx-r">{cols.reduce((a, c) => a + c.q, 0)}</td><td className="rx-r">{s.total.d}</td><td className="rx-r">{s.total.y}</td><td className="rx-r">{s.total.b}</td><td className="rx-r rx-n">{f2(s.total.n)}</td><td className="rx-small">şube {f2(cls?.avg.total.n)} · okul {f2(inst.avg.total.n)} · genel {f2(b.general.avg.total.n)}</td></tr>
+        </tbody></table></div>
       <AnswerGrid b={b} s={s} />
-      <div style={{ marginTop: 'auto' }}><Nibiru title="bu sınavdaki cevaplarından" lines={studentAdvice(b, inst, s)} /></div>
+      <div className="rx-grid2" style={{ marginTop: 'auto' }}>
+        <div className="rx-card"><h4>Öncelikli kazanımlar</h4>{(() => { const weak = (s.topics || []).filter((t: any) => t.p < 50).sort((a: any, z: any) => a.p - z.p || z.s - a.s).slice(0, 5);
+          return weak.length ? <ul className="rx-focus">{weak.map((t: any, i: number) => <li key={i}><span>{t.section || short(b.tests.find((x: any) => x.id === t.subjectId)?.name || '')} · {t.topic}</span><b className={t.p < 35 ? 'rx-bad' : 'rx-warn'}>%{t.p}</b></li>)}</ul> : <p className="rx-note">Başarısı %50'nin altında kazanım yok.</p>; })()}</div>
+        <Nibiru title="bu sınavdaki cevaplarından" lines={studentAdvice(b, inst, s)} />
+      </div>
     </Page>
     {topicPages(b, s.topics || [], 150).map((list, i, all) => <Page key={i} {...head} kicker={`Öğrenci karnesi · kazanım analizi${all.length > 1 ? ` ${i + 1}/${all.length}` : ''}`}>
       <p className="rx-note">Her kazanımda soru sayısı, doğru (D), yanlış (Y) ve başarı yüzdesi. Çubuktaki koyu çizgi okulunun başarısıdır.</p>

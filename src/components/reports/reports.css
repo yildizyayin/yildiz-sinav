@@ -68,6 +68,32 @@
 .rx-h{font-size:8pt;font-weight:800;margin:0 0 1mm;display:flex;justify-content:space-between;align-items:baseline}
 .rx-h small{font-weight:500;color:var(--muted);font-size:6.2pt}
 
+/* S036 student card hero and test bars */
+.rx-hero{display:grid;grid-template-columns:1.05fr 2fr;gap:3mm}
+.rx-hero-score{background:var(--ink);color:#fff;border-radius:3mm;padding:3mm 4mm;display:flex;flex-direction:column;justify-content:space-between;gap:1mm}
+.rx-hero-score span{font-size:6.6pt;letter-spacing:.14em;color:#B9C8EE;font-weight:700}
+.rx-hero-score b{font-size:24pt;line-height:1;font-weight:800;font-variant-numeric:tabular-nums}
+.rx-hero-score small{font-size:7pt;color:#B9C8EE}
+.rx-hero-multi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3mm}
+.rx-hero-multi .rx-hero-score b{font-size:18pt}
+.rx-ranks{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2mm}
+.rx-ranks div{border:1px solid var(--line);border-radius:2.5mm;padding:2.4mm 1mm;text-align:center;display:flex;flex-direction:column;justify-content:center}
+.rx-ranks span{font-size:6.4pt;color:var(--muted);font-weight:700;letter-spacing:.06em}
+.rx-ranks b{font-size:13pt;font-weight:800;font-variant-numeric:tabular-nums;margin-top:.6mm}
+.rx-ranks small{font-size:6.4pt;color:var(--muted)}
+.rx-t.rx-tests td,.rx-t.rx-tests th{padding:.9mm .8mm;font-size:7.6pt}
+.rx-t.rx-tests tr.rx-group td{font-weight:800;padding-top:1.6mm;border-bottom:0}
+.rx-t.rx-tests td.rx-sub{padding-left:3.5mm;color:var(--muted)}
+.rx-t.rx-tests tr.rx-total td{border-top:1.5px solid var(--ink);font-weight:800;border-bottom:0}
+.rx-sbar{position:relative;height:2.8mm;background:#EEF1F6;border-radius:1.4mm;margin-right:9mm}
+.rx-sbar i{position:absolute;left:0;top:0;bottom:0;border-radius:1.4mm}
+.rx-sbar em{position:absolute;top:-.8mm;bottom:-.8mm;width:.55mm;background:var(--ink)}
+.rx-sbar u{position:absolute;top:-.8mm;bottom:-.8mm;width:.55mm;background:#8FA3C7;text-decoration:none}
+.rx-sbar b{position:absolute;right:-9mm;top:-.6mm;font-size:6.8pt;font-weight:700;width:8mm;text-align:right}
+.rx-focus{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:1.4mm;font-size:7.2pt}
+.rx-focus li{display:grid;grid-template-columns:1fr 10mm;gap:2mm}
+.rx-focus b{text-align:right}
+
 /* Nibiru */
 .rx-nibiru{border:1px solid #D9D2FF;background:linear-gradient(135deg,#F6F4FF,#EEF3FF);border-radius:2.5mm;padding:2.2mm 2.8mm;display:grid;grid-template-columns:8mm 1fr;gap:2.4mm;align-items:start}
 .rx-orb{width:8mm;height:8mm;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 12%,#B7A9FF 30%,#8268FF 58%,#3154C5 100%);box-shadow:0 0 0 1.2px #fff,0 0 0 2px #CFC6FF}
