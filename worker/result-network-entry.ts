@@ -522,6 +522,16 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   const {reportPack}=await import('./lib/result-report-pack');const data=await reportPack(env,examId,institutionId);
   if(!data||!data.students.length)return safeError(404,'REPORT_EMPTY','Bu kurumun bu sınavda değerlendirilmiş öğrencisi yok.');
   return json({ok:true,...data})}
+ if(path==='/api/admin/result-network/operations/toplu/bundle'&&request.method==='GET'){const url=new URL(request.url),examId=String(url.searchParams.get('examId')||''),ids=String(url.searchParams.get('institutionIds')||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,200);
+  if(!examId||!ids.length)return badRequest('Sınav ve kurum seçin.');
+  for(const id of ids){const context=await resultOperatorContext(request,env,id);if(context instanceof Response)return context}
+  const {reportBundle}=await import('./lib/report-bundle');const data=await reportBundle(env,{examId,institutionIds:ids,aytMode:url.searchParams.get('ayt')==='AYT_ONLY'?'AYT_ONLY':'COMBINED',pairExamId:String(url.searchParams.get('pairExamId')||'')||undefined});
+  if(!data||!data.institutions.length)return safeError(404,'REPORT_EMPTY','Seçilen kurumların bu sınavda değerlendirilmiş öğrencisi yok.');
+  return json({ok:true,...data})}
+ if(path==='/api/admin/result-network/operations/toplu/growth'&&request.method==='GET'){const url=new URL(request.url),institutionId=String(url.searchParams.get('institutionId')||''),examIds=String(url.searchParams.get('examIds')||'').split(',').filter(Boolean);
+  if(!institutionId||examIds.length<2)return badRequest('Gelişim raporu için bir kurum ve en az iki sınav seçin.');
+  const context=await resultOperatorContext(request,env,institutionId);if(context instanceof Response)return context;
+  const {growthReport}=await import('./lib/report-bundle');return json({ok:true,...await growthReport(env,examIds,institutionId)})}
  if(path==='/api/admin/result-network/operations/opticals'&&request.method==='POST'){const {quickOptical}=await import('./lib/result-optical-quick');return quickOptical(request,env)}
  const karnes=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/karnes$/);
  if(karnes&&request.method==='GET')return batchKarnes(request,env,karnes[1]);

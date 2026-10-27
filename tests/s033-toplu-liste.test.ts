@@ -43,9 +43,21 @@ describe('S033 Toplu Liste', () => {
     expect(exam).toMatchObject({ participants: SHEETS.length, institutions: 1 });
     const inst = await call('dealerI', `/api/admin/result-network/operations/toplu/institutions?mode=DEALER&examId=${t.examId}`);
     expect(inst.data.institutions).toEqual([expect.objectContaining({ name: 'Pendik Deneme Lisesi', city: 'İstanbul', district: 'Pendik', participants: SHEETS.length })]);
-    const pack = await call('dealerI', `/api/admin/result-network/operations/toplu/pack?mode=DEALER&examId=${t.examId}&institutionId=${inst.data.institutions[0].id}`);
+    const pack = await call('dealerI', `/api/admin/result-network/operations/toplu/bundle?mode=DEALER&examId=${t.examId}&institutionIds=${inst.data.institutions[0].id}`);
     expect(pack.status, pack.text).toBe(200);
-    expect(pack.data.students).toHaveLength(SHEETS.length);
+    // S034: the report family bundle — LGS exam, its score, standings, topics and items
+    expect(pack.data).toMatchObject({ family: 'LGS', primary: 'LGS', general: { counts: { students: SHEETS.length + 2 } } });
+    const school = pack.data.institutions[0];
+    expect(school.students).toHaveLength(SHEETS.length);
+    expect(school.students[0].ranks.LGS).toMatchObject({ school: 1, class: 1 });
+    expect(school.students[0].grid.sub_tur).toHaveLength(4);
+    expect(school.classes.map((c: any) => c.name)).toEqual(['8A']);
+    expect(school.items).toHaveLength(8);
+    expect(school.rank.general[1]).toBe(2);
+    expect((await call('dealerI', `/api/admin/result-network/operations/toplu/growth?institutionId=${inst.data.institutions[0].id}&examIds=${t.examId}`)).status).toBe(400);
+    const growth = await call('admin', `/api/admin/result-network/operations/toplu/growth?institutionId=${inst.data.institutions[0].id}&examIds=${t.examId},${t.examId}`);
+    expect(growth.status, growth.text).toBe(200);
+    expect(growth.data.students.length).toBe(SHEETS.length);
     // reading reports changes nothing: no new batch, no new evaluation
     expect((t.db.prepare(`SELECT count(*) c FROM scan_batches WHERE exam_id=?`).get(t.examId) as any).c).toBe(batches);
     expect((t.db.prepare(`SELECT count(*) c FROM audit_logs`).get() as any).c).toBe(before.c);
@@ -53,7 +65,7 @@ describe('S033 Toplu Liste', () => {
     expect((await call('admin', '/api/admin/result-network/operations/toplu/exams')).data.exams.some((e: any) => e.id === t.examId)).toBe(true);
     expect((await call('dealerA', '/api/admin/result-network/operations/toplu/exams?mode=DEALER')).data.exams.some((e: any) => e.id === t.examId)).toBe(false);
     expect((await call('dealerA', `/api/admin/result-network/operations/toplu/institutions?mode=DEALER&examId=${t.examId}`)).data.institutions).toEqual([]);
-    expect((await call('dealerA', `/api/admin/result-network/operations/toplu/pack?mode=DEALER&examId=${t.examId}&institutionId=${inst.data.institutions[0].id}`)).status).toBeGreaterThanOrEqual(403);
+    expect((await call('dealerA', `/api/admin/result-network/operations/toplu/bundle?mode=DEALER&examId=${t.examId}&institutionIds=${inst.data.institutions[0].id}`)).status).toBeGreaterThanOrEqual(403);
   });
 
   it('opens Toplu Liste from history and after evaluation instead of the evaluation screen', () => {
@@ -62,6 +74,6 @@ describe('S033 Toplu Liste', () => {
     expect(ws).toContain('Raporlara git (Toplu Liste)');
     expect(ws).not.toContain('Rapor ve kartlar');
     const ui = readFileSync('src/components/ResultTopluListe.tsx', 'utf8');
-    expect(ui).toContain('örnek bekleniyor');
+    for (const k of ['KURUM_KARNE', 'SUBE_KARNE', 'MADDE', 'BRANS', 'KONU_EKSIK', 'GELISIM', 'KURUM_ORT', 'Yalnız AYT']) expect(ui).toContain(k);
   });
 });

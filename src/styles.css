@@ -38,9 +38,10 @@ button[data-busy="true"]::after{content:"";display:inline-block;width:.85em;heig
   #print-root .no-print{display:none!important}
   #print-root .print-only{display:block!important}
   #print-root .table-card{overflow:visible!important;max-height:none!important;border:0!important;box-shadow:none!important}
-  #print-root table{width:100%;border-collapse:collapse;font-size:10pt}
-  #print-root th,#print-root td{border-bottom:1px solid #ccc;padding:3px 5px;text-align:left}
+  /* S034: the report family (.rx-*) styles its own tables */
+  #print-root table:not(.rx-t):not(.rx-ans){width:100%;border-collapse:collapse;font-size:10pt}
+  #print-root table:not(.rx-t):not(.rx-ans) th,#print-root table:not(.rx-t):not(.rx-ans) td{border-bottom:1px solid #ccc;padding:3px 5px;text-align:left}
   #print-root thead{display:table-header-group}
   #print-root tr{break-inside:avoid}
-  #print-root section{margin:0;border:0;box-shadow:none}
+  #print-root section:not(.rx-page){margin:0;border:0;box-shadow:none}
 }

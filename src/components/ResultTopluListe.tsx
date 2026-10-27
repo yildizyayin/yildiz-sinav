@@ -2,8 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Download, FileText, Printer, RefreshCw } from 'lucide-react';
 import { api } from '../api';
 import { printSection } from '../lib/printSection';
-import { ReportPages, type ReportKind } from './ResultReportPack';
-import './result-report-pack.css';
+import { BundlePages, exportWorkbook, GrowthPages, KIND_ORDER, PrintSetup, type ReportKind } from './reports/ReportFamily';
 import '../pages/result-network-admin.css';
 
 /**
@@ -14,27 +13,35 @@ import '../pages/result-network-admin.css';
 type Exam = { id: string; title: string; academic_year: string; exam_type: string; grade_level: number | null; publisher_name: string; application_start_at: string | null; application_end_at: string | null; institutions: number; participants: number };
 type Inst = { id: string; name: string; code: string; city: string; district: string; participants: number };
 
-const LISTS: Array<{ group: string; items: Array<{ kind?: ReportKind; label: string; pending?: boolean }> }> = [
-  { group: 'Okul ve sınıf listeleri', items: [
-    { kind: 'OKUL_LIST', label: 'Okul Test Bazlı Net Listesi (TYT / sınav puanına göre sıralı)' },
-    { kind: 'SINIF_LIST', label: 'Sınıf Test Bazlı Net Listesi (her şube ayrı sayfa)' },
-    { kind: 'OKUL_COMPARE', label: 'Okul Kıyas Grafikleri (okul / ilçe / il / genel, şube karşılaştırma)' },
-    { label: 'Okul ve sınıf listesi — Sayısal / Sözel / Eşit Ağırlık (AYT)', pending: true },
-    { label: 'Net Listesi (test bazlı olmayan)', pending: true },
-    { label: 'Kurum Şube Ortalamaları', pending: true },
+const LISTS: Array<{ group: string; items: Array<{ kind: ReportKind; label: string; hint?: string }> }> = [
+  { group: 'Okul ve şube listeleri', items: [
+    { kind: 'OKUL_NET', label: 'Okul Net Listesi (alt testlerle)', hint: 'Tarih-1, Coğrafya-1 gibi alt testler cevap anahtarında DERS sütunu varsa ayrı gösterilir.' },
+    { kind: 'OKUL_TEST', label: 'Okul Test Bazlı Net Listesi (sıralarla)' },
+    { kind: 'SINIF_NET', label: 'Şube Net Listesi (her şube ayrı sayfa)' },
+    { kind: 'SINIF_TEST', label: 'Şube Test Bazlı Net Listesi (sınıf raporu)' },
+    { kind: 'KURUM_ORT', label: 'İlçedeki Kurum Ortalamaları (bayi raporu)', hint: 'Seçilen kurumlar ilçe ilçe, ilçe/il/genel ortalamasıyla.' },
   ] },
   { group: 'Karneler', items: [
-    { kind: 'KARNE', label: 'Öğrenci Karnesi (2 sayfa: sonuç + konu analizi)' },
-    { label: 'Okul Karnesi', pending: true },
-    { label: 'Sınıf (Şube) Karnesi', pending: true },
+    { kind: 'KURUM_KARNE', label: 'Kurum Karnesi (özet, kıyaslar, kazanım analizi)' },
+    { kind: 'SUBE_KARNE', label: 'Şube Karnesi (her şube)' },
+    { kind: 'OGRENCI_KARNE', label: 'Öğrenci Karnesi (sonuç + kazanım analizi)' },
+  ] },
+  { group: 'Analizler', items: [
+    { kind: 'MADDE', label: 'Madde Analizi (soru başına başarı ve şık dağılımı)' },
+    { kind: 'BRANS', label: 'Branş Raporu (kazanım × şube başarı tablosu)' },
+    { kind: 'KONU_EKSIK', label: 'Konu Eksik Listesi (öğrenci başına en zayıf 5 kazanım)' },
+    { kind: 'GELISIM', label: 'Gelişim Raporu (seçilen denemeler boyunca)', hint: 'En az iki sınav seçin; öğrenciler okul no, yoksa ad soyadla eşleşir.' },
   ] },
 ];
+const AYT_TYPES = [['SAY', 'Sayısal'], ['SOZ', 'Sözel'], ['EA', 'Eşit Ağırlık']] as const;
+const isAyt = (e?: Exam) => /^AYT/i.test(e?.exam_type || '');
+const isTyt = (e?: Exam) => /^TYT/i.test(e?.exam_type || '');
 const LEVEL_MATCH: Record<string, (e: Exam) => boolean> = {
   YKS: (e) => /^(TYT|AYT|YKS|YDT)/i.test(e.exam_type || ''),
   LGS: (e) => /^LGS/i.test(e.exam_type || '') || Number(e.grade_level) === 8,
   'İlkokul': (e) => Number(e.grade_level) > 0 && Number(e.grade_level) <= 4,
 };
-const MEMORY = 'anunex_toplu_liste_v1';
+const MEMORY = 'anunex_toplu_liste_v2';
 const PENDING = 'anunex_toplu_open';
 /** Opens Toplu Liste with an exam (and institution) already ticked: used by the evaluation screen and its history. */
 export function openTopluListe(examId?: string, institutionId?: string) {
@@ -50,7 +57,11 @@ export function ResultTopluListe({ mode, level }: { mode: 'INSTITUTION' | 'DEALE
   const [examIds, setExamIds] = useState<string[]>([]);
   const [instByExam, setInstByExam] = useState<Record<string, Inst[]>>({});
   const [instIds, setInstIds] = useState<string[]>([]);
-  const [kinds, setKinds] = useState<ReportKind[]>(['OKUL_LIST']);
+  const [kinds, setKinds] = useState<ReportKind[]>(['OKUL_NET']);
+  const [aytMode, setAytMode] = useState<'COMBINED' | 'AYT_ONLY'>('COMBINED');
+  const [pairExamId, setPairExamId] = useState('');
+  const [aytTypes, setAytTypes] = useState<string[]>(['SAY', 'SOZ', 'EA']);
+  const [growth, setGrowth] = useState<any[]>([]);
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const [packs, setPacks] = useState<any[]>([]);
   const [progress, setProgress] = useState('');
@@ -61,13 +72,13 @@ export function ResultTopluListe({ mode, level }: { mode: 'INSTITUTION' | 'DEALE
   const loadExams = async () => { setError(''); try { setExams((await api<any>(`/api/admin/result-network/operations/toplu/exams?mode=${mode}`)).exams || []); } catch (e: any) { setError(e.message); } };
   useEffect(() => {
     void loadExams();
-    try { const m = JSON.parse(localStorage.getItem(MEMORY) || '{}'); if (Array.isArray(m.kinds) && m.kinds.length) setKinds(m.kinds); } catch { /* storage may be blocked */ }
+    try { const m = JSON.parse(localStorage.getItem(MEMORY) || '{}'); if (Array.isArray(m.kinds) && m.kinds.length) setKinds(m.kinds.filter((k: any) => KIND_ORDER.includes(k))); if (m.aytMode) setAytMode(m.aytMode); if (Array.isArray(m.aytTypes) && m.aytTypes.length) setAytTypes(m.aytTypes); } catch { /* storage may be blocked */ }
     const apply = (d: any) => { try { sessionStorage.removeItem(PENDING); } catch { /* */ } if (d?.examId) { setExamIds([d.examId]); setInstIds(d.institutionId ? [d.institutionId] : []); setPacks([]); } };
     try { apply(JSON.parse(sessionStorage.getItem(PENDING) || 'null')); } catch { /* */ }
     const onOpen = (ev: Event) => apply((ev as CustomEvent).detail);
     window.addEventListener('anunex:toplu-open', onOpen); return () => window.removeEventListener('anunex:toplu-open', onOpen);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { try { localStorage.setItem(MEMORY, JSON.stringify({ kinds })); } catch { /* */ } }, [kinds]);
+  useEffect(() => { try { localStorage.setItem(MEMORY, JSON.stringify({ kinds, aytMode, aytTypes })); } catch { /* */ } }, [kinds, aytMode, aytTypes]);
   useEffect(() => { for (const id of examIds) if (!instByExam[id]) void api<any>(`/api/admin/result-network/operations/toplu/institutions?mode=${mode}&examId=${encodeURIComponent(id)}`).then((r) => setInstByExam((m) => ({ ...m, [id]: r.institutions || [] }))).catch((e: any) => setError(e.message)); }, [examIds]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const visibleExams = exams.filter((e) => !level || !LEVEL_MATCH[level] || LEVEL_MATCH[level](e));
@@ -78,33 +89,41 @@ export function ResultTopluListe({ mode, level }: { mode: 'INSTITUTION' | 'DEALE
   const setMany = (ids: string[], on: boolean) => setInstIds((cur) => on ? [...new Set([...cur, ...ids])] : cur.filter((x) => !ids.includes(x)));
   const flip = (key: string) => setOpen((o) => ({ ...o, [key]: !o[key] }));
 
+  const selectedExams = exams.filter((e) => examIds.includes(e.id));
+  const anyAyt = selectedExams.some(isAyt);
+  const tytChoices = exams.filter(isTyt);
   const build = async () => {
-    setBusy(true); setError(''); setPacks([]);
-    const jobs = examIds.flatMap((e) => (instByExam[e] || []).filter((i) => instIds.includes(i.id)).map((i) => ({ examId: e, inst: i })));
-    if (!jobs.length) { setError('Seçilen sınavlarda sonucu olan bir kurum seçin.'); setBusy(false); return; }
-    const out: any[] = [];
+    setBusy(true); setError(''); setPacks([]); setGrowth([]);
+    const out: any[] = [], grown: any[] = [];
     try {
-      for (const [n, job] of jobs.entries()) { setProgress(`${n + 1} / ${jobs.length} · ${job.inst.name}`); out.push(await api<any>(`/api/admin/result-network/operations/toplu/pack?examId=${encodeURIComponent(job.examId)}&institutionId=${encodeURIComponent(job.inst.id)}`)); }
-      setPacks(out);
-    } catch (e: any) { setError(e.message); setPacks(out); } finally { setBusy(false); setProgress(''); }
+      const reportKinds = kinds.filter((k) => k !== 'GELISIM');
+      if (reportKinds.length) for (const [n, e] of selectedExams.entries()) {
+        const ids = (instByExam[e.id] || []).filter((i) => instIds.includes(i.id)).map((i) => i.id);
+        for (let k = 0; k < ids.length; k += 25) {
+          setProgress(`${n + 1}/${selectedExams.length} sınav · ${Math.min(k + 25, ids.length)}/${ids.length} kurum`);
+          const q = new URLSearchParams({ examId: e.id, institutionIds: ids.slice(k, k + 25).join(','), ayt: aytMode, ...(pairExamId ? { pairExamId } : {}) });
+          out.push(await api<any>(`/api/admin/result-network/operations/toplu/bundle?${q}`));
+        }
+      }
+      if (kinds.includes('GELISIM')) {
+        if (examIds.length < 2) setError('Gelişim raporu için en az iki sınav seçin.');
+        else for (const id of instIds) {
+          const taken = examIds.filter((e) => (instByExam[e] || []).some((i) => i.id === id));
+          if (taken.length < 2) continue;
+          setProgress(`Gelişim · ${institutions.find((i) => i.id === id)?.name || ''}`);
+          grown.push(await api<any>(`/api/admin/result-network/operations/toplu/growth?institutionId=${encodeURIComponent(id)}&examIds=${taken.map(encodeURIComponent).join(',')}`));
+        }
+      }
+      if (!out.length && !grown.length) setError((e) => e || 'Seçilen sınavlarda sonucu olan bir kurum seçin.');
+    } catch (e: any) { setError(e.message); } finally { setPacks(out); setGrowth(grown); setBusy(false); setProgress(''); }
   };
-  const excel = () => {
-    const cell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-    const lines: string[] = [];
-    for (const p of packs) {
-      lines.push([cell(p.institution.name), cell(`${p.exam.academic_year} ${p.exam.title}`)].join(';'));
-      lines.push(['Sıra', 'Ö.No', 'İsim', 'Sınıf', ...p.subjects.flatMap((s: any) => [`${s.name} D`, `${s.name} Y`, `${s.name} N`]), 'Toplam D', 'Toplam Y', 'Toplam N', 'Puan', 'Sınıf', 'Okul', 'İlçe', 'İl', 'Genel'].map(cell).join(';'));
-      p.students.forEach((s: any, i: number) => lines.push([i + 1, s.number, s.name, s.className, ...p.subjects.flatMap((sub: any) => { const v = s.subjects[sub.id] || {}; return [v.d, v.y, v.n]; }), s.total.d, s.total.y, s.total.n, s.score, s.ranks.class, s.ranks.school, s.ranks.district, s.ranks.city, s.ranks.overall].map(cell).join(';')));
-      lines.push('');
-    }
-    const href = URL.createObjectURL(new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8' }));
-    const a = document.createElement('a'); a.href = href; a.download = 'anunex-toplu-liste.csv'; a.click(); URL.revokeObjectURL(href);
-  };
+  const excel = async () => { try { if (!(await exportWorkbook(packs, growth))) setError('Excel için veri yok.'); } catch (e: any) { setError(e.message || 'Excel oluşturulamadı.'); } };
+  const ordered = KIND_ORDER.filter((k) => kinds.includes(k));
 
   return <section className="panel result-toplu" id="result-toplu">
     <div className="panel-head"><div><span className="eyebrow">TOPLU LİSTE</span><h2>Raporlar ve karneler</h2><p>Yalnız kayıtlı sonuçlardan üretilir; sınav yeniden değerlendirilmez. Sınav, kurum ve listeleri seçip "Listeyi oluştur"a basın.</p></div><button className="ghost" onClick={() => void loadExams()}><RefreshCw size={16} /> Yenile</button></div>
     {error && <div className="alert error">{error}</div>}
-    <div className="toplu-actions"><button className="primary" disabled={busy || !examIds.length || !instIds.length || !kinds.length} onClick={() => void build()}><FileText size={16} /> {busy ? `Hazırlanıyor… ${progress}` : 'Listeyi oluştur'}</button>{packs.length > 0 && <><button className="secondary" onClick={() => printSection(ref.current)}><Printer size={16} /> Yazdır / PDF</button><button className="ghost" onClick={excel}><Download size={16} /> Excel</button></>}</div>
+    <div className="toplu-actions"><button className="primary" disabled={busy || !examIds.length || !instIds.length || !kinds.length} onClick={() => void build()}><FileText size={16} /> {busy ? `Hazırlanıyor… ${progress}` : 'Listeyi oluştur'}</button>{(packs.length > 0 || growth.length > 0) && <><button className="secondary" onClick={() => printSection(ref.current)}><Printer size={16} /> Yazdır / PDF</button><button className="ghost" onClick={() => void excel()}><Download size={16} /> Excel</button></>}</div>
     <div className="toplu-columns">
       <div className="toplu-col"><h3>Sınavlar {examIds.length ? `(${examIds.length})` : ''}</h3><div className="toplu-tree">
         {!visibleExams.length && <p className="empty">Sonucu yüklenmiş sınav yok.</p>}
@@ -119,9 +138,15 @@ export function ResultTopluListe({ mode, level }: { mode: 'INSTITUTION' | 'DEALE
             {open[`d:${city}:${d}`] !== false && list.map((i) => <label key={i.id} className="toplu-indent toplu-leaf"><input type="checkbox" checked={instIds.includes(i.id)} onChange={() => setInstIds((c) => toggle(c, i.id))} /> {i.name} <small>{i.participants} öğrenci</small></label>)}</div>)}</div>; })}
       </div></div>
       <div className="toplu-col"><h3>Listeler</h3><div className="toplu-tree">
-        {LISTS.map((g) => <div key={g.group}><div className="toplu-node">📁 {g.group}</div>{g.items.map((it) => <label key={it.label} className={`toplu-indent toplu-leaf${it.pending ? ' toplu-pending' : ''}`} title={it.pending ? 'Bu raporun örneği bekleniyor; tasarım uydurulmadı.' : ''}><input type="checkbox" disabled={it.pending} checked={!!it.kind && kinds.includes(it.kind)} onChange={() => it.kind && setKinds((c) => c.includes(it.kind!) ? c.filter((x) => x !== it.kind) : [...c, it.kind!])} /> {it.label}{it.pending && <small> · örnek bekleniyor</small>}</label>)}</div>)}
+        {LISTS.map((g) => <div key={g.group}><div className="toplu-node">📁 {g.group}</div>{g.items.map((it) => <label key={it.kind} className="toplu-indent toplu-leaf" title={it.hint || ''}><input type="checkbox" checked={kinds.includes(it.kind)} onChange={() => setKinds((c) => c.includes(it.kind) ? c.filter((x) => x !== it.kind) : [...c, it.kind])} /> {it.label}</label>)}</div>)}
+        {anyAyt && <div className="toplu-ayt"><div className="toplu-node">AYT puanı</div>
+          <label className="toplu-indent toplu-leaf"><input type="radio" name="ayt" checked={aytMode === 'COMBINED'} onChange={() => setAytMode('COMBINED')} /> TYT ile birleşik (SAY / SÖZ / EA puanı)</label>
+          {aytMode === 'COMBINED' && <label className="toplu-indent toplu-leaf toplu-select">TYT sınavı <select value={pairExamId} onChange={(e) => setPairExamId(e.target.value)}><option value="">Otomatik (aynı yıl, aynı yayın)</option>{tytChoices.map((e) => <option key={e.id} value={e.id}>{e.academic_year} · {e.publisher_name} · {e.title}</option>)}</select></label>}
+          <label className="toplu-indent toplu-leaf"><input type="radio" name="ayt" checked={aytMode === 'AYT_ONLY'} onChange={() => setAytMode('AYT_ONLY')} /> Yalnız AYT (puansız, alan netine göre)</label>
+          <div className="toplu-indent toplu-leaf">{AYT_TYPES.map(([k, l]) => <label key={k} style={{ marginRight: 10 }}><input type="checkbox" checked={aytTypes.includes(k)} onChange={() => setAytTypes((c) => c.includes(k) ? c.filter((x) => x !== k) : [...c, k])} /> {l}</label>)}</div>
+          <small className="toplu-indent">Birleşikte öğrencinin kendi TYT'si kullanılır; bulunamazsa okulun TYT ortalaması alınır ve karnede yazılır.</small></div>}
       </div></div>
     </div>
-    {packs.length > 0 && <div className="rp-pages" ref={ref}>{packs.map((p, i) => <ReportPages key={i} data={p} kinds={(['OKUL_LIST', 'OKUL_COMPARE', 'SINIF_LIST', 'KARNE'] as ReportKind[]).filter((k) => kinds.includes(k))} />)}</div>}
+    {(packs.length > 0 || growth.length > 0) && <div className="rx-pages" ref={ref}><PrintSetup />{packs.map((p, i) => <BundlePages key={i} b={p} kinds={ordered} types={p.family === 'AYT' ? aytTypes : undefined} />)}{growth.map((g, i) => <GrowthPages key={`g${i}`} g={g} />)}</div>}
   </section>;
 }
