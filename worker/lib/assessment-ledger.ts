@@ -55,35 +55,43 @@ function deliveryFromScan(sourceType: string): AssessmentDelivery {
   return sourceType === 'CAMERA' ? 'OPTICAL' : sourceType === 'TXT' || sourceType === 'DAT' || sourceType === 'CSV' ? 'PDF' : 'DIGITAL';
 }
 
+/**
+ * The exam's evidence in the shared assessment ledger: one scored run per participant with every answer.
+ * S035: written set-based (a few statements per 250 participants) instead of one query per answer, which broke
+ * D1's per-request query limit on real classes. Same rows as before: run id asr_exam_<participant>, score =
+ * success % / 100, responses one per answered exam question (INSERT OR IGNORE keeps one per question).
+ */
 export async function recordExamAssessments(env: Env, batchId: string): Promise<number> {
   const participants = await all<any>(env.DB.prepare(`SELECT ep.id participant_id,ep.exam_id,ep.institution_id,ep.student_id,ep.booklet_code,
-      sb.source_type,e.title FROM exam_participants ep JOIN scan_batches sb ON sb.exam_id=ep.exam_id AND sb.id=?
-      JOIN exams e ON e.id=ep.exam_id WHERE ep.scan_record_id IN (SELECT id FROM scan_records WHERE batch_id=?)`).bind(batchId,batchId));
-  let count = 0;
-  for (const participant of participants) {
-    const result = await one<any>(env.DB.prepare(`SELECT success_percent FROM exam_results WHERE participant_id=?`).bind(participant.participant_id));
-    if (!result) continue;
-    const answerRows = await all<any>(env.DB.prepare(`SELECT sa.exam_question_id question_id,sa.answer,sa.status,
-       coalesce(sbo.outcome_id,qo.outcome_id) outcome_id,q.subject_id
-      FROM student_answers sa JOIN exam_questions q ON q.id=sa.exam_question_id
-      LEFT JOIN studio_exam_booklet_outcomes sbo ON sbo.exam_id=?
-       AND sbo.booklet_code=coalesce(?, 'A')
-       AND sbo.printed_question_no=coalesce(q.global_no,q.question_no)
-      LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id
-       AND NOT EXISTS(SELECT 1 FROM studio_exam_booklet_positions sp
-        WHERE sp.exam_id=? AND sp.booklet_code=coalesce(?, 'A'))
-      WHERE sa.participant_id=?`).bind(participant.exam_id,participant.booklet_code,participant.exam_id,participant.booklet_code,participant.participant_id));
-    const subjectIds = [...new Set(answerRows.map(row => row.subject_id).filter(Boolean))];
-    await recordAssessmentRun(env.DB, {
-      id:`asr_exam_${participant.participant_id}`, institutionId:participant.institution_id, studentId:participant.student_id,
-      sourceType:'EXAM', sourceId:participant.participant_id, examId:participant.exam_id, bookletCode:participant.booklet_code,
-      deliveryMode:deliveryFromScan(participant.source_type), score:Number(result.success_percent||0)/100,
-      metadata:{title:participant.title,subjectIds,batchId},
-      responses:answerRows.map(row => ({examQuestionId:row.question_id,selectedAnswer:row.answer,isCorrect:row.status==='CORRECT',sourceChannel:deliveryFromScan(participant.source_type)==='OPTICAL'?'OPTICAL':'PDF'})),
+      sb.source_type,e.title,er.success_percent,
+      (SELECT json_group_array(subject_id) FROM (SELECT q.subject_id FROM student_answers sa JOIN exam_questions q ON q.id=sa.exam_question_id WHERE sa.participant_id=ep.id GROUP BY q.subject_id ORDER BY min(sa.rowid))) subject_ids
+    FROM exam_participants ep JOIN scan_batches sb ON sb.exam_id=ep.exam_id AND sb.id=? JOIN exams e ON e.id=ep.exam_id
+    JOIN exam_results er ON er.participant_id=ep.id
+    WHERE ep.scan_record_id IN (SELECT id FROM scan_records WHERE batch_id=?)`).bind(batchId, batchId));
+  for (let i = 0; i < participants.length; i += 250) {
+    const group = participants.slice(i, i + 250);
+    const runs = group.map((p) => {
+      const delivery = deliveryFromScan(p.source_type);
+      let subjectIds: string[] = []; try { subjectIds = JSON.parse(p.subject_ids || '[]'); } catch { /* */ }
+      return [`asr_exam_${p.participant_id}`, p.institution_id, p.student_id, p.participant_id, p.exam_id, p.booklet_code || null, delivery, Number(p.success_percent || 0) / 100,
+        JSON.stringify({ title: p.title, subjectIds, batchId }), p.participant_id, delivery === 'OPTICAL' ? 'OPTICAL' : 'PDF'];
     });
-    count++;
+    const json = JSON.stringify(runs);
+    const col = (k: number) => `json_extract(value,'$[${k}]')`;
+    await env.DB.batch([
+      env.DB.prepare(`INSERT OR IGNORE INTO assessment_runs (id,institution_id,student_id,source_type,source_id,assignment_id,exam_id,booklet_code,delivery_mode,status,score,metadata_json,completed_at)
+        SELECT ${col(0)},${col(1)},${col(2)},'EXAM',${col(3)},NULL,${col(4)},${col(5)},${col(6)},'SCORED',${col(7)},${col(8)},CURRENT_TIMESTAMP FROM json_each(?)`).bind(json),
+      env.DB.prepare(`UPDATE assessment_runs SET status='SCORED',score=(SELECT ${col(7)} FROM json_each(?1) WHERE ${col(0)}=assessment_runs.id),
+        metadata_json=COALESCE((SELECT ${col(8)} FROM json_each(?1) WHERE ${col(0)}=assessment_runs.id),metadata_json),completed_at=COALESCE(completed_at,CURRENT_TIMESTAMP)
+        WHERE id IN (SELECT ${col(0)} FROM json_each(?1))`).bind(json),
+      env.DB.prepare(`DELETE FROM assessment_responses WHERE run_id IN (SELECT ${col(0)} FROM json_each(?))`).bind(json),
+      env.DB.prepare(`INSERT OR IGNORE INTO assessment_responses (id,run_id,student_id,exam_question_id,selected_answer,is_correct,source_channel)
+        SELECT 'ars_'||lower(hex(randomblob(16))),${col(0).replace('value', 'r.value')},ep.student_id,sa.exam_question_id,NULLIF(sa.answer,''),CASE WHEN sa.status='CORRECT' THEN 1 ELSE 0 END,${col(10).replace('value', 'r.value')}
+        FROM json_each(?) r JOIN student_answers sa ON sa.participant_id=${col(9).replace('value', 'r.value')} JOIN exam_participants ep ON ep.id=sa.participant_id
+        ORDER BY sa.participant_id,sa.rowid`).bind(json),
+    ]);
   }
-  return count;
+  return participants.length;
 }
 
 export async function recordExamEvidenceAudit(env: Env, actorId: string, institutionId: string | null, batchId: string, count: number) {

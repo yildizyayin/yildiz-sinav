@@ -64,6 +64,8 @@ export async function persistTytOptionalPhilosophyEvidence(env: Env, batchId: st
     return { participant, sequence, booklet, bookletKeys };
   });
 
+  // S035: all participants' statements go out in a few D1 batches (one query each) instead of one batch per student.
+  const pending: D1PreparedStatement[] = [];
   for (const { participant, sequence, booklet, bookletKeys } of prepared) {
     const statements: D1PreparedStatement[] = [
       env.DB.prepare('DELETE FROM tyt_optional_philosophy_answers WHERE participant_id=?').bind(participant.participant_id),
@@ -71,7 +73,7 @@ export async function persistTytOptionalPhilosophyEvidence(env: Env, batchId: st
     ];
 
     if (sequence == null || sequence === '') {
-      await env.DB.batch(statements);
+      pending.push(...statements);
       continue;
     }
 
@@ -100,6 +102,7 @@ export async function persistTytOptionalPhilosophyEvidence(env: Env, batchId: st
       uuid('tytpr'), participant.participant_id, batch.exam_id, subjectId, booklet,
       correct, wrong, blank, invalid, evidence, successPercent,
     ));
-    await env.DB.batch(statements);
+    pending.push(...statements);
   }
+  for (let i = 0; i < pending.length; i += 1000) await env.DB.batch(pending.slice(i, i + 1000));
 }

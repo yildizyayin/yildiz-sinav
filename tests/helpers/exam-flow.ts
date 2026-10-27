@@ -20,7 +20,8 @@ export const SHEETS = [
 // Workers edge cache is not in node: an empty cache keeps every read going to the database.
 (globalThis as any).caches ??= { default: { match: async () => undefined, put: async () => undefined, delete: async () => false }, open: async () => ({ match: async () => undefined, put: async () => undefined, delete: async () => false }) };
 
-export async function evaluatedExam(mode: 'direct' | 'chunked' = 'direct', opts: { outcomes?: boolean } = {}) {
+export async function evaluatedExam(mode: 'direct' | 'chunked' = 'direct', opts: { outcomes?: boolean; sheets?: Array<{ no: string; name: string; TUR: string; MAT: string }> } = {}) {
+  const sheets = opts.sheets || SHEETS;
   const db = new DatabaseSync(':memory:');
   for (const file of readdirSync(new URL('../../migrations/', import.meta.url)).filter((f) => f.endsWith('.sql')).sort()) db.exec(readFileSync(new URL(`../../migrations/${file}`, import.meta.url), 'utf8'));
   const make = (sql: string, args: any[] = []): any => ({
@@ -74,7 +75,7 @@ export async function evaluatedExam(mode: 'direct' | 'chunked' = 'direct', opts:
   expect((await request(`${base}/status`, 'PATCH', { status: 'ACTIVE' })).response.status).toBe(200);
   // Built-in Sekonic 7108 lines (171 chars): no 10–15, name 15–35, class 35–37, booklet 50, TUR 51–71 … MAT 131–151.
   const line = (s: typeof SHEETS[number]) => '7108'.padEnd(10) + s.no.padStart(5) + s.name.padEnd(20) + '8A' + ' '.repeat(13) + 'A' + s.TUR.replace(/_/g, ' ').padEnd(20) + ' '.repeat(60) + s.MAT.replace(/_/g, ' ').padEnd(20) + ' '.repeat(20);
-  const txt = SHEETS.map(line).join('\r\n');
+  const txt = sheets.map(line).join('\r\n');
   const form = new FormData(); form.set('institutionId', 'school'); form.set('templateVersionId', 'optik-7108-sekonic-v1'); form.set('file', new File([txt], 'deneme.txt', { type: 'text/plain' }));
   const up = await request(`/api/exams/${examId}/preview-file`, 'POST', form);
   expect(up.response.status, up.text).toBe(200);

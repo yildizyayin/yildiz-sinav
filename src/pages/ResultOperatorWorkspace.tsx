@@ -75,15 +75,23 @@ export function ResultOperatorWorkspace({mode,access}:Props){
   try{const result=await api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/records/${recordId}/candidates?q=${encodeURIComponent(query)}`);setCandidates(current=>({...current,[recordId]:result.candidates||[]}))}
   catch(e:any){setError(e.message)}finally{setBusy(false)}
  };
+ const[progress,setProgress]=useState<{done:number;total:number}|null>(null);
  const evaluate=async()=>{
   if(!preview?.batchId)return;
-  setBusy(true);setError('');
+  setBusy(true);setError('');setNotice('');
   try{
-   const result=await api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/evaluate`,{method:'POST'});
-   setPreview((current:any)=>({...current,evaluated:result.processed}));
-   setSetAside(result.setAside||[]);
-   await loadBatch(preview.batchId);void loadHistory();setNotice(`${result.processed||preview.total||0} öğrencinin sonucu değerlendirildi.${result.setAside?.length?` ${result.setAside.length} satır değerlendirmeye alınmadı; nedenleri aşağıda.`:''}`);
-  }catch(e:any){setError(e.message)}finally{setBusy(false)}
+   // S035: the server works in time-limited steps; keep calling until it says done and show how far it is.
+   let result:any=null,aside:any[]=[];
+   for(let step=0;step<500;step++){
+    result=await api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/evaluate`,{method:'POST'});
+    if(step===0)aside=result.setAside||[];
+    setProgress({done:Number(result.processed||0),total:Number(result.total||preview.total||0)});
+    if(result.done!==false)break;
+   }
+   setPreview((current:any)=>({...current,evaluated:result?.processed}));
+   setSetAside(aside);
+   await loadBatch(preview.batchId);void loadHistory();setNotice(`${result?.processed||preview.total||0} öğrencinin sonucu değerlendirildi.${aside.length?` ${aside.length} satır değerlendirmeye alınmadı; nedenleri aşağıda.`:''}`);
+  }catch(e:any){setError(`${e.message} Kaydedilen öğrenciler korunur; "Değerlendir"e yeniden basarak kalan öğrencilerle devam edebilirsiniz.`)}finally{setBusy(false);setProgress(null)}
  };
  const downloadCsv=(name:string,headers:string[],rows:any[][],preface:any[][]=[])=>{const cell=(value:any)=>`"${String(value??'').replace(/"/g,'""')}"`;const blob=new Blob(['\uFEFF'+[...preface,headers,...rows].map(row=>row.map(cell).join(';')).join('\n')],{type:'text/csv;charset=utf-8'});const href=URL.createObjectURL(blob);const a=document.createElement('a');a.href=href;a.download=name;a.click();URL.revokeObjectURL(href)};
  const generateAccessCodes=async()=>{
@@ -130,7 +138,7 @@ export function ResultOperatorWorkspace({mode,access}:Props){
    {(()=>{const out=pendingRows.length+(batch?.records||[]).filter((r:any)=>r.resolution_status==='CANCELLED').length;const committed=batch?.batch?.status==='COMMITTED';return <div className="summary-strip"><Summary label="Okunan satır" value={preview.total}/><Summary label={committed?'Değerlendirilen':'Değerlendirilecek'} value={Math.max(0,Number(preview.total||0)-out)}/><Summary label="Değerlendirme dışı" value={out} warn/></div>})()}
    <div className="panel-head"><div><h3>5 · Kontrol</h3><p>{preview.detection?.templateName} · optik tanıma %{Math.round(Number(preview.detection?.confidence||0)*100)}</p></div><button className="ghost" onClick={reset}><RefreshCw/> Yeni dosya</button></div>
    {batch?.batch?.status!=='COMMITTED'&&(pendingRows.length?<div className="alert warning"><TriangleAlert/><div><strong>{pendingRows.length} satır değerlendirmeye alınmayacak.</strong> Diğer {Math.max(0,Number(preview.total||0)-pendingRows.length)} öğrenci değerlendirilir. Bu satırları düzeltmek için TXT dosyasını düzeltip ayrıca yükleyin.<ul className="result-setaside-list">{pendingRows.map((row:any)=><li key={row.id}><strong>Satır {row.row_no}{row.canonical?.name?` · ${row.canonical.name}`:''}</strong>: {(row.issues||[]).join(' · ')||(row.match_status==='AMBIGUOUS'?'Aynı ada sahip birden fazla kayıtlı öğrenci var.':'Ad soyad okunamadı.')}</li>)}</ul></div></div>:<div className="alert success"><CheckCircle2/> Bütün satırlar okundu; değerlendirmeye hazır.</div>)}
-   {batch?.batch?.status!=='COMMITTED'&&<button className="primary huge" disabled={busy||Number(preview.total||0)-pendingRows.length<=0} onClick={()=>void evaluate()}><ScanLine/> {busy?'Değerlendiriliyor…':'6 · Değerlendir'}</button>}
+   {batch?.batch?.status!=='COMMITTED'&&<button className="primary huge" disabled={busy||Number(preview.total||0)-pendingRows.length<=0} onClick={()=>void evaluate()}><ScanLine/> {busy?(progress&&progress.total?`Değerlendiriliyor… ${progress.done} / ${progress.total} öğrenci`:'Değerlendiriliyor…'):'6 · Değerlendir'}</button>}
    {setAside.length>0&&<div className="alert warning"><TriangleAlert/><div><strong>Değerlendirmeye alınmayan {setAside.length} satır:</strong><ul className="result-setaside-list">{setAside.map((x:any)=><li key={x.row}><strong>Satır {x.row}{x.name?` · ${x.name}`:''}</strong>: {x.reason}</li>)}</ul></div></div>}
    {batch?.batch?.status==='COMMITTED'&&<><div className="success-box"><CheckCircle2/><div><strong>Değerlendirme tamamlandı</strong><span>{preview.evaluated||preview.total} katılımcının sonucu işlendi. Erişim kartını bir kez indirip kurum yetkilisine güvenli kanaldan teslim edin.</span></div></div><div className="result-completion-actions"><button className="secondary" disabled={busy} onClick={()=>void generateAccessCodes()}><FileKey2/> Öğrenci erişim kartlarını üret</button><button className="primary" onClick={()=>openTopluListe(examId||batch?.batch?.exam_id,batch?.batch?.institution_id)}><Printer/> Raporlara git (Toplu Liste)</button></div></>}
   </>}

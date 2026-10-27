@@ -23,12 +23,13 @@ describe('approved V1 security boundaries', () => {
     expect(workerSource).toMatch(/async function previewExamFile[\s\S]*?if \(!canEvaluateExam\(user\.role\)\) return forbidden\(\);/);
     expect(workerSource).toMatch(/async function getScanBatch[\s\S]*?if \(!canEvaluateExam\(user\.role\)\) return forbidden\(\);/);
     expect(workerSource).toMatch(/async function resolveScanRecord[\s\S]*?if \(!canEvaluateExam\(user\.role\)\) return forbidden\(\);/);
-    expect(workerSource).toMatch(/async function evaluateBatch[\s\S]*?if \(!canEvaluateExam\(user\.role\)\) return forbidden\(\);/);
+    expect(workerSource).toMatch(/async function validateBatchForEvaluation[\s\S]*?if \(!canEvaluateExam\(user\.role\)\) return forbidden\(\);/);
+    expect(workerSource).toMatch(/export async function evaluateBatch\([\s\S]*?await validateBatchForEvaluation\(env, user, batchId\)/);
   });
 
   it('does not evaluate cancelled rows and creates a guest for an explicit guest decision', () => {
     expect(workerSource).toContain("if (row.resolution_status === 'CANCELLED') continue;");
-    expect(workerSource).toContain("row.match_status === 'NEW_GUEST' || (row.match_status === 'GUEST_MATCH' && !studentId)");
+    expect(readFileSync(new URL('../worker/chunked-evaluation-entry.ts', import.meta.url), 'utf8')).toContain("row.match_status === 'NEW_GUEST' || (row.match_status === 'GUEST_MATCH' && !row.matched_student_id)");
   });
 
   it('records old/new scan decision state in the immutable audit stream', () => {

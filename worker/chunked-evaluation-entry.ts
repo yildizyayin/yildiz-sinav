@@ -12,18 +12,23 @@ import { duplicateMessage, duplicateStudentConflicts } from './lib/scan-duplicat
 import { assertScoringRuleVerified, calculateExamScore, calculateOverall, calculateSubjectScore, effectiveWrongDivisor, scoreMethodFor } from './lib/scoring';
 import { masteryStatus } from './lib/outcome';
 
-const CHUNK_SIZE = 5;
-const MAX_BINDINGS_PER_STATEMENT = 90;
+/**
+ * S035 (owner report 27 Oct: 100 students never finished on sonuc). Students are evaluated in memory and written
+ * set-based: every table gets its rows as one JSON parameter (json_each), so a chunk of hundreds of students is a
+ * handful of statements in one D1 batch (one query against the per-invocation limit). Chunk size follows the
+ * answer-row budget; several chunks run per request until the time budget is used.
+ */
+const ANSWER_ROWS_PER_CHUNK = 40000;
+const MIN_CHUNK = 20, MAX_CHUNK = 400;
+const MAX_JSON_BYTES = 900_000;
+export const chunkSizeFor = (questionCount: number) => Math.max(MIN_CHUNK, Math.min(MAX_CHUNK, Math.floor(ANSWER_ROWS_PER_CHUNK / Math.max(1, questionCount))));
 
 type AnyRow = Record<string, any>;
 import { evaluateAnswer } from './lib/answer-evaluation';
 export { evaluateAnswer, parseAcceptedAnswers } from './lib/answer-evaluation';
 type AnswerStatus = 'CORRECT' | 'WRONG' | 'BLANK' | 'INVALID';
 
-function placeholders(count: number): string {
-  return Array.from({ length: count }, () => '?').join(',');
-}
-
+/** INSERT … SELECT FROM json_each(?): rows travel as one JSON array per statement (split under D1's size limits). */
 function bulkInsert(
   db: D1Database,
   table: string,
@@ -33,16 +38,19 @@ function bulkInsert(
   suffix = '',
 ): D1PreparedStatement[] {
   if (!rows.length) return [];
-  const maxRows = Math.max(1, Math.floor(MAX_BINDINGS_PER_STATEMENT / columns.length));
+  const select = columns.map((_, i) => `json_extract(value,'$[${i}]')`).join(',');
+  const sql = `${prefix} ${table} (${columns.join(',')}) SELECT ${select} FROM json_each(?)${suffix ? ` WHERE true ${suffix}` : ''}`;
   const statements: D1PreparedStatement[] = [];
-  for (let offset = 0; offset < rows.length; offset += maxRows) {
-    const chunk = rows.slice(offset, offset + maxRows);
-    const valuesSql = chunk.map(() => `(${placeholders(columns.length)})`).join(',');
-    const sql = `${prefix} ${table} (${columns.join(',')}) VALUES ${valuesSql}${suffix ? ` ${suffix}` : ''}`;
-    statements.push(db.prepare(sql).bind(...chunk.flat()));
+  let current: unknown[][] = [], size = 2;
+  for (const row of rows) {
+    const bytes = JSON.stringify(row).length + 1;
+    if (current.length && size + bytes > MAX_JSON_BYTES) { statements.push(db.prepare(sql).bind(JSON.stringify(current))); current = []; size = 2; }
+    current.push(row); size += bytes;
   }
+  if (current.length) statements.push(db.prepare(sql).bind(JSON.stringify(current)));
   return statements;
 }
+const jsonList = (values: unknown[]) => JSON.stringify(values);
 
 async function ensureAccess(env: Env, request: Request, batch: AnyRow) {
   const user = await getAuthUser(env, request);
@@ -74,13 +82,9 @@ async function finaliseBatch(env: Env, userId: string, batch: AnyRow, total: num
   return json({ ok: true, done: true, processed: total, processedThisRun: 0, total, remaining: 0, batchId: batch.id, examId: batch.exam_id });
 }
 
-async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string): Promise<Response> {
+async function evaluateChunkUnlocked(env: Env, user: { id: string }, batchId: string): Promise<Response> {
   const batch = await one<AnyRow>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
-
-  const access = await ensureAccess(env, request, batch);
-  if (access.response || !access.user) return access.response!;
-  const user = access.user;
   const networkPublication=await one<any>(env.DB.prepare("SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND ranking_frozen_at IS NOT NULL LIMIT 1").bind(batch.exam_id));
   if(networkPublication)return badRequest('Sonuç Ağı yayını düzeltmeye açılmadan değerlendirme yapılamaz.','RESULTS_FROZEN');
   const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
@@ -112,7 +116,7 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
   const scoreMethod = scoreMethodFor(scoringConfig);
   const scoringOverride = (() => { try { return JSON.parse(exam.scoring_override_json || 'null'); } catch { return null; } })();
 
-  const [subjects, booklets, keyRows, classes, records] = await Promise.all([
+  const [subjects, booklets, keyRows, classes] = await Promise.all([
     all<AnyRow>(env.DB.prepare(`SELECT es.subject_id,s.code,s.name,es.question_count,es.wrong_divisor
       FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order`).bind(exam.id)),
     all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1').bind(exam.id)),
@@ -135,11 +139,11 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
       GROUP BY q.id,ak.booklet_code
       ORDER BY q.subject_id,ak.booklet_code,coalesce(bqo.printed_question_no,q.question_no)`).bind(exam.id)),
     batch.season_id ? all<AnyRow>(env.DB.prepare('SELECT id,grade_level,section FROM classes WHERE season_id=?').bind(batch.season_id)) : Promise.resolve([] as AnyRow[]),
-    all<AnyRow>(env.DB.prepare(`SELECT sr.* FROM scan_records sr
+  ]);
+  const records = await all<AnyRow>(env.DB.prepare(`SELECT sr.* FROM scan_records sr
       LEFT JOIN scan_evaluation_progress p ON p.batch_id=sr.batch_id AND p.scan_record_id=sr.id
       WHERE sr.batch_id=? AND sr.resolution_status!='CANCELLED' AND p.scan_record_id IS NULL
-      ORDER BY sr.row_no LIMIT ?`).bind(batchId, CHUNK_SIZE)),
-  ]);
+      ORDER BY sr.row_no LIMIT ?`).bind(batchId, chunkSizeFor(subjects.reduce((n, x) => n + Number(x.question_count || 0), 0))));
 
   if (!records.length) return finaliseBatch(env, user.id, batch, total);
 
@@ -165,21 +169,22 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
   const coveredElsewhere = blankSubjectsCoveredElsewhere(batchRows as any);
   const studentIds = resolved.map((x) => x.studentId);
   const existingParticipants = studentIds.length
-    ? await all<{ id: string; student_id: string }>(env.DB.prepare(`SELECT id,student_id FROM exam_participants WHERE exam_id=? AND institution_id=? AND student_id IN (${placeholders(studentIds.length)})`).bind(exam.id, batch.institution_id, ...studentIds))
+    ? await all<{ id: string; student_id: string }>(env.DB.prepare(`SELECT id,student_id FROM exam_participants WHERE exam_id=? AND institution_id=? AND student_id IN (SELECT value FROM json_each(?))`).bind(exam.id, batch.institution_id, jsonList(studentIds)))
     : [];
   const participantByStudent = new Map(existingParticipants.map((x) => [x.student_id, x.id]));
   const existingParticipantIds = existingParticipants.map((x) => x.id);
   const existingSubjectResults = existingParticipantIds.length
-    ? await all<AnyRow>(env.DB.prepare(`SELECT participant_id,subject_id,correct_count,wrong_count,blank_count,net,success_percent FROM subject_results WHERE participant_id IN (${placeholders(existingParticipantIds.length)})`).bind(...existingParticipantIds))
+    ? await all<AnyRow>(env.DB.prepare(`SELECT participant_id,subject_id,correct_count,wrong_count,blank_count,net,success_percent FROM subject_results WHERE participant_id IN (SELECT value FROM json_each(?))`).bind(jsonList(existingParticipantIds)))
     : [];
   const existingOutcomeEvidence = existingParticipantIds.length
     ? await all<AnyRow>(env.DB.prepare(`SELECT sa.participant_id,q.subject_id,qo.outcome_id,sa.status
       FROM student_answers sa JOIN exam_questions q ON q.id=sa.exam_question_id JOIN question_outcomes qo ON qo.exam_question_id=q.id
-      WHERE sa.participant_id IN (${placeholders(existingParticipantIds.length)}) AND sa.status<>'INVALID'`).bind(...existingParticipantIds))
+      WHERE sa.participant_id IN (SELECT value FROM json_each(?)) AND sa.status<>'INVALID'`).bind(jsonList(existingParticipantIds)))
     : [];
 
   const statements: D1PreparedStatement[] = [];
-  const guestLinks: D1PreparedStatement[] = [];
+  const guestLinkRows: string[][] = [];
+  const replaced = new Map<string, string[]>(); // subject set → participants whose earlier answers in those subjects are replaced
   const participantRows: unknown[][] = [];
   const answerRows: unknown[][] = [];
   const subjectResultRows: unknown[][] = [];
@@ -210,7 +215,7 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
       newEnrollmentRows.push([uuid('enr'), studentId, batch.institution_id, batch.season_id || null, classRow?.id || null, record.student_number || null, record.grade_level || null, record.section || null]);
       newGuestProfileRows.push([studentId, exam.id]);
       // A028b.1: linked only after the guest student row exists (below); D1 enforces the foreign key.
-      guestLinks.push(env.DB.prepare(`UPDATE scan_records SET matched_student_id=?,match_status='GUEST_MATCH',match_confidence=1 WHERE id=? AND batch_id=?`).bind(studentId, row.id, batchId));
+      guestLinkRows.push([row.id, studentId]);
     }
 
     participantRows.push([
@@ -279,27 +284,30 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
       outcomeRows.push([uuid('or'), studentId, exam.id, outcomeId, acc.evidence, acc.correct, rate, masteryStatus(acc.correct, acc.evidence)]);
     }
     if (participantByStudent.has(studentId)) {
-      const marks = incomingSubjects.map(() => '?').join(',');
-      statements.push(
-        env.DB.prepare(`DELETE FROM student_answers WHERE participant_id=? AND exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=? AND subject_id IN (${marks}))`)
-          .bind(participantId, exam.id, ...incomingSubjects.map((subject) => subject.subject_id)),
-        env.DB.prepare(`DELETE FROM subject_results WHERE participant_id=? AND subject_id IN (${marks})`)
-          .bind(participantId, ...incomingSubjects.map((subject) => subject.subject_id)),
-        env.DB.prepare('DELETE FROM exam_results WHERE participant_id=?').bind(participantId),
-      );
+      const key = incomingSubjects.map((subject) => subject.subject_id).sort().join(',');
+      replaced.set(key, [...(replaced.get(key) || []), participantId]);
     }
     progressRows.push([batchId, row.id, studentId, participantId]);
+  }
+
+  for (const [key, ids] of replaced) {
+    const subjectList = jsonList(key.split(',')), idList = jsonList(ids);
+    statements.push(
+      env.DB.prepare(`DELETE FROM student_answers WHERE participant_id IN (SELECT value FROM json_each(?)) AND exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=? AND subject_id IN (SELECT value FROM json_each(?)))`).bind(idList, exam.id, subjectList),
+      env.DB.prepare(`DELETE FROM subject_results WHERE participant_id IN (SELECT value FROM json_each(?)) AND subject_id IN (SELECT value FROM json_each(?))`).bind(idList, subjectList),
+      env.DB.prepare(`DELETE FROM exam_results WHERE participant_id IN (SELECT value FROM json_each(?))`).bind(idList),
+    );
   }
 
   if (newStudentRows.length) {
     statements.push(...bulkInsert(env.DB, 'student_entities', ['id','first_name','last_name','normalized_name','status'], newStudentRows));
     statements.push(...bulkInsert(env.DB, 'student_enrollments', ['id','student_id','institution_id','season_id','class_id','student_number','grade_level','section'], newEnrollmentRows));
     statements.push(...bulkInsert(env.DB, 'guest_profiles', ['student_id','first_seen_exam_id'], newGuestProfileRows, 'INSERT OR REPLACE INTO'));
-    statements.push(...guestLinks);
+    statements.push(env.DB.prepare(`UPDATE scan_records SET matched_student_id=(SELECT json_extract(value,'$[1]') FROM json_each(?1) WHERE json_extract(value,'$[0]')=scan_records.id),match_status='GUEST_MATCH',match_confidence=1 WHERE batch_id=?2 AND id IN (SELECT json_extract(value,'$[0]') FROM json_each(?1))`).bind(JSON.stringify(guestLinkRows), batchId));
   }
 
   if (outcomeStudentIds.length) {
-    statements.push(env.DB.prepare(`DELETE FROM outcome_results WHERE exam_id=? AND student_id IN (${placeholders(outcomeStudentIds.length)})`).bind(exam.id, ...outcomeStudentIds));
+    statements.push(env.DB.prepare(`DELETE FROM outcome_results WHERE exam_id=? AND student_id IN (SELECT value FROM json_each(?))`).bind(exam.id, jsonList(outcomeStudentIds)));
   }
 
   statements.push(...bulkInsert(
@@ -331,20 +339,39 @@ async function evaluateChunkUnlocked(request: Request, env: Env, batchId: string
   return json({ ok: true, done: false, processed, processedThisRun: resolved.length, total, remaining, batchId, examId: exam.id });
 }
 
+/**
+ * One evaluation step for an already authorised user: chunks run back to back until the batch is done or the time
+ * budget is used (each chunk is one D1 batch, so a request stays far below the per-invocation query limit).
+ * The client calls again while `done` is false; progress is kept in scan_evaluation_progress, so retrying is safe.
+ */
+export async function evaluateBatchChunk(env: Env, user: { id: string }, batchId: string, budgetMs = 20000): Promise<Response> {
+  const batch = await one<AnyRow>(env.DB.prepare('SELECT exam_id FROM scan_batches WHERE id=?').bind(batchId)); if (!batch) return notFound();
+  const started = Date.now();
+  return withExamOperationLock(env, batch.exam_id, 'EVALUATE', async (env) => {
+    let response: Response;
+    do {
+      response = await evaluateChunkUnlocked(env, user, batchId);
+      if (!response.ok) return response;
+      const payload = await response.clone().json() as any;
+      if (payload?.done) break;
+    } while (Date.now() - started < budgetMs);
+    const payload = await response.clone().json() as any;
+    if (payload?.ok && payload?.done) {
+      try { await persistTytOptionalPhilosophyEvidence(env, batchId); } catch (error) {
+        if (error instanceof Error && error.message.includes('EXAM_OPERATION_OWNERSHIP_LOST')) throw error;
+        console.error('TYT optional philosophy evidence persistence failed', error);
+        await env.DB.prepare("UPDATE scan_batches SET status='READY' WHERE id=?").bind(batchId).run();
+        return json({ ok: false, error: { code: 'TYT_OPTIONAL_EVIDENCE_FAILED', message: 'TYT seçmeli Felsefe kanıt sonucu kaydedilemedi. Ana 120 soruluk değerlendirme değiştirilmedi; işlem güvenli şekilde tekrar denenebilir.' } }, 500);
+      }
+    }
+    return response;
+  });
+}
+
 async function evaluateChunk(request:Request,env:Env,batchId:string):Promise<Response>{
   const batch=await one<AnyRow>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));if(!batch)return notFound();
   const access=await ensureAccess(env,request,batch);if(access.response||!access.user)return access.response!;
-  return withExamOperationLock(env,batch.exam_id,'EVALUATE',async(env)=>{
-    const response=await evaluateChunkUnlocked(request,env,batchId);if(!response.ok)return response;
-    const payload=await response.clone().json() as any;
-    if(payload?.ok){try{await persistTytOptionalPhilosophyEvidence(env,batchId)}catch(error){
-      if(error instanceof Error&&error.message.includes('EXAM_OPERATION_OWNERSHIP_LOST'))throw error;
-    console.error('TYT optional philosophy evidence persistence failed',error);
-      await env.DB.prepare("UPDATE scan_batches SET status='READY' WHERE id=?").bind(batchId).run();
-      return json({ok:false,error:{code:'TYT_OPTIONAL_EVIDENCE_FAILED',message:'TYT seçmeli Felsefe kanıt sonucu kaydedilemedi. Ana 120 soruluk değerlendirme değiştirilmedi; işlem güvenli şekilde tekrar denenebilir.'}},500);
-    }}
-    return response;
-  });
+  return evaluateBatchChunk(env,access.user,batchId);
 }
 
 export default {
