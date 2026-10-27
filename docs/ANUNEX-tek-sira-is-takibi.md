@@ -2634,3 +2634,16 @@ Canlı veriden teşhis:
   - Optik form/FMT.
   - Sınav kitapçığı PDF. Yalnız yayınevi izin verdiyse; telif/RESTRICTED kapısı korunur.
 - **Durum:** Uygulama için sahibin "uygula" demesi bekleniyor.
+
+### S036 — Rapor Merkezi, rol menüleri, Veri/Belge Merkezi uygulandı — 27 Ekim
+- **Onay:** Sahip D-S036 için "hepsini uygula" dedi.
+- **Adım 1 (PR #403, 904b087):** Rapor Merkezi A+B karma ekranı. Seviye seçici, katlanan adımlar, gerçek sayfa önizlemesi, öğrenci karnesi yeni basılı dille.
+- **Adım 2+3 (PR #404, cdd3133):**
+  - Bayi ve kurum için lacivert sol menülü operatör kabuğu; menüler D-S036'daki gibi.
+  - Süper Admin menüsü SINAVLAR / ÇIKTILAR / KURULUŞLAR / SİSTEM gruplarına geçti; Optik ve FMT, Veri Merkezi eklendi; Arşiv yerine Belge Merkezi.
+  - Orijinal TXT/DAT artık R2'de saklanıyor (migration 0139_scan_batch_files), bir eğitim yılı sonra zamanlanmış görevle siliniyor. Önceki yüklemelerde orijinal yok; ekranda "Orijinal yok" yazar.
+  - Okunan veri ve sonuçlar Excel. Belgeler yalnız yayınevinin kurumlara açtığı görünürlükte; Süper Admin hepsini görür.
+  - Her indirme `RESULT_DATA_DOWNLOADED` denetim kaydıyla yazılır; kapsam her indirmede yeniden kontrol edilir.
+- **Kanıt:** 327 dosya / 1445 test geçti; tarayıcıda bayi, kurum ve Süper Admin ekranları 1366 ve 390 genişlikte kontrol edildi.
+- **Dağıtım:** App 904b087 ve cdd3133 onay bekliyor; sonuc arkasından gelir. 0139 migration'ı app deploy'uyla uygulanır.
+- **Kalan:** ÇAP TYT 1 batch kilidi sonuc deploy'undan sonra kaldırılıp yeniden değerlendirilecek; gerçek D1 süresi ölçülecek.
