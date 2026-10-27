@@ -20,7 +20,7 @@ export function ResultReportPack({ data, mode, onClose }: { data: Pack; mode: 'L
   return <section className="rp-wrap">
     <div className="rp-toolbar no-print"><strong>{title} · {data.institution?.name}</strong>{data.provisional && <span className="rp-provisional">Sıralamalar sonuçlar yayınlanana kadar geçicidir.</span>}<div><button className="secondary" onClick={() => printSection(ref.current)}><Printer size={16} /> Yazdır / PDF</button><button className="ghost" onClick={onClose}>Kapat</button></div></div>
     <div className="rp-pages" ref={ref}>
-      {mode === 'LIST' ? <><SchoolList data={data} /><Comparison data={data} /></> : data.students.map((s: any) => <StudentPages key={s.id} data={data} s={s} />)}
+      <ReportPages data={data} kinds={mode === 'LIST' ? ['OKUL_LIST', 'OKUL_COMPARE'] : ['KARNE']} />
     </div>
   </section>;
 }
@@ -31,24 +31,41 @@ function HeadTable({ data }: { data: Pack }) {
     <tbody><tr><td>{data.institution.city || ''}</td><td>{data.institution.district || ''}</td><td className="rp-left">{data.institution.name}</td><td className="rp-left">{data.exam.academic_year} {data.exam.publisher_name ? `${data.exam.publisher_name} ` : ''}{data.exam.title}</td><td>{p.school}</td><td>{p.district}</td><td>{p.city}</td><td>{p.overall}</td></tr></tbody></table>;
 }
 
-function SchoolList({ data }: { data: Pack }) {
+const ROWS_PER_PAGE = 42;
+/** S033: school or class list; long lists continue on the next A4 page with the same header (42 students per page). */
+function SchoolList({ data, className }: { data: Pack; className?: string }) {
   const subjects = data.subjects as any[];
-  const g = data.averages.general, sc = data.averages.school;
+  const g = data.averages.general, sc = data.averages.school, cl = className !== undefined ? data.averages.byClass[className] : null;
+  const students = (data.students as any[]).filter((s) => className === undefined || (s.className || '') === className);
   const avgRow = (label: string, a: any) => <tr className="rp-avg"><td colSpan={4} className="rp-right">{label}</td>{subjects.map((s) => { const v = a.subjects[s.id] || {}; return [<td key={s.id + 'd'}>{f1(v.d)}</td>, <td key={s.id + 'y'}>{f1(v.y)}</td>, <td key={s.id + 'n'}>{f2(v.n)}</td>]; })}<td>{f1(a.total.d)}</td><td>{f1(a.total.y)}</td><td>{f2(a.total.n)}</td><td>{f3(a.score)}</td><td colSpan={5} /></tr>;
   const sortLabel = data.exam.exam_type ? `${data.exam.exam_type} sıralı` : 'puan sıralı';
-  return <article className="rp-page">
-    <h1 className="rp-title">OKUL TEST BAZLI NET LİSTESİ ({sortLabel})</h1>
+  const pages: any[][] = []; for (let i = 0; i < Math.max(1, students.length); i += ROWS_PER_PAGE) pages.push(students.slice(i, i + ROWS_PER_PAGE));
+  return <>{pages.map((rows, pi) => <article className="rp-page" key={pi}>
+    <h1 className="rp-title">{className !== undefined ? `SINIF TEST BAZLI NET LİSTESİ · ${className || 'Şubesiz'}` : 'OKUL TEST BAZLI NET LİSTESİ'} ({sortLabel})</h1>
     <HeadTable data={data} />
     <table className="rp-list"><thead>
       <tr><th rowSpan={2}>Sıra</th><th rowSpan={2}>Ö.No</th><th rowSpan={2}>İsim</th><th rowSpan={2}>Sınıf</th>{subjects.map((s) => <th key={s.id} colSpan={3}>{s.name}</th>)}<th colSpan={3}>Toplam</th><th colSpan={6}>{data.exam.exam_type || 'Puan'}</th></tr>
       <tr>{subjects.map((s) => [<th key={s.id + 'd'}>D</th>, <th key={s.id + 'y'}>Y</th>, <th key={s.id + 'n'}>N</th>])}<th>D</th><th>Y</th><th>N</th><th>Puan</th><th>Sn</th><th>Okul</th><th>İlçe</th><th>İl</th><th>Genel</th></tr>
     </thead><tbody>
-      {avgRow('Genel Ortalama', g)}{avgRow('Okul Ortalaması', sc)}
-      {data.students.map((s: any, i: number) => <tr key={s.id} className={i % 2 === 0 ? 'rp-zebra' : ''}><td>{i + 1}</td><td>{s.number || 0}</td><td className="rp-left">{s.name}</td><td>{s.className || ''}</td>
+      {pi === 0 && <>{avgRow('Genel Ortalama', g)}{avgRow('Okul Ortalaması', sc)}{cl && avgRow('Sınıf Ortalaması', cl)}</>}
+      {rows.map((s: any, i: number) => { const n = pi * ROWS_PER_PAGE + i; return <tr key={s.id} className={n % 2 === 0 ? 'rp-zebra' : ''}><td>{n + 1}</td><td>{s.number || 0}</td><td className="rp-left">{s.name}</td><td>{s.className || ''}</td>
         {subjects.map((sub) => { const v = s.subjects[sub.id]; return v ? [<td key={sub.id + 'd'}>{v.d}</td>, <td key={sub.id + 'y'}>{v.y}</td>, <td key={sub.id + 'n'}>{f2(v.n)}</td>] : [<td key={sub.id + 'd'} />, <td key={sub.id + 'y'} />, <td key={sub.id + 'n'} />]; })}
-        <td>{s.total.d}</td><td>{s.total.y}</td><td><b>{f2(s.total.n)}</b></td><td>{f3(s.score)}</td><td>{s.ranks.class}</td><td>{s.ranks.school}</td><td>{s.ranks.district}</td><td>{s.ranks.city}</td><td>{s.ranks.overall}</td></tr>)}
+        <td>{s.total.d}</td><td>{s.total.y}</td><td><b>{f2(s.total.n)}</b></td><td>{f3(s.score)}</td><td>{s.ranks.class}</td><td>{s.ranks.school}</td><td>{s.ranks.district}</td><td>{s.ranks.city}</td><td>{s.ranks.overall}</td></tr>; })}
     </tbody></table>
-  </article>;
+    {pages.length > 1 && <div className="rp-pageno">{pi + 1} / {pages.length}</div>}
+  </article>)}</>;
+}
+
+export type ReportKind = 'OKUL_LIST' | 'OKUL_COMPARE' | 'SINIF_LIST' | 'KARNE';
+/** S033: the pages of one exam × institution for the chosen list kinds, in a fixed order. */
+export function ReportPages({ data, kinds }: { data: Pack; kinds: ReportKind[] }) {
+  const classes = Object.keys(data.averages.byClass || {}).sort((a, b) => a.localeCompare(b, 'tr'));
+  return <>
+    {kinds.includes('OKUL_LIST') && <SchoolList data={data} />}
+    {kinds.includes('OKUL_COMPARE') && <Comparison data={data} />}
+    {kinds.includes('SINIF_LIST') && classes.map((c) => <SchoolList key={c} data={data} className={c} />)}
+    {kinds.includes('KARNE') && data.students.map((s: any) => <StudentPages key={s.id} data={data} s={s} />)}
+  </>;
 }
 
 const COLORS = ['#ff7f0e', '#7f7fff', '#ffef00', '#0000ff', '#ff6ff2', '#00e000', '#ff0000', '#00bcd4', '#795548'];

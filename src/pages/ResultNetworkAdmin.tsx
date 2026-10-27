@@ -117,6 +117,7 @@ export function ResultNetworkAdmin({onLogout,evaluationWorkspace,reportsPanel}:{
   if(!selectedDealerId&&g.dealers?.[0])setSelectedDealerId(g.dealers[0].id);
  };
  useEffect(()=>{void load().catch(e=>setError(e.message))},[]);
+ useEffect(()=>{const go=()=>setActiveSection('reports');window.addEventListener('anunex:toplu-open',go);return()=>window.removeEventListener('anunex:toplu-open',go)},[]);
 
  const action=async(work:()=>Promise<unknown>,success:string)=>{
   setBusy(true);setError('');setNotice('');

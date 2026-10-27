@@ -83,8 +83,10 @@ describe('ANUNEX result network contract',()=>{
   expect(source).toContain('report$/');
   expect(source).toContain('RESULT_HMAC_V1:');
   expect(operator).toContain('Öğrenci erişim kartlarını üret');
-  expect(operator).toContain('Excel / CSV');
-  expect(operator).toContain('Yazdır / PDF'); // S031: the institution report prints on its own
+  // S033 (owner decision 27 Oct): reports moved to Toplu Liste, built from saved results; Excel and PDF live there
+  const toplu=readFileSync(new URL('../src/components/ResultTopluListe.tsx',import.meta.url),'utf8');
+  expect(toplu).toContain('Excel');
+  expect(toplu).toContain('Yazdır / PDF');
   expect(portal).toContain('Türkiye {rankText(x.national_rank,x.national_count)}');
  });
  it('schedules retention notices and purges cohort data while retaining catalogue assets',()=>{
