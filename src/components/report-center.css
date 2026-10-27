@@ -105,3 +105,28 @@
 .rm .rm-secondary{flex:1 1 160px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;min-height:48px;font:600 14px Inter,sans-serif;cursor:pointer;padding:0 18px}
 @media (max-width:640px){.rm .rm-thead,.rm .rm-trow{grid-template-columns:18px minmax(0,1fr) 60px}.rm .rm-thead span:nth-child(3),.rm .rm-trow span:nth-child(3){display:none}.rm .rm-out{position:static}.rm .rm-title{font-size:26px}}
 @media print{#print-root .rm-preview .rx-page{display:flex!important;transform:none!important;box-shadow:none!important}}
+
+/* S036 Veri Merkezi / Belge Merkezi */
+.rm.dc .dc-table-wrap{overflow-x:auto}
+.rm.dc .dc-table{width:100%;min-width:880px;border-collapse:collapse;font-size:14px}
+.rm.dc .dc-table th{text-align:left;color:var(--muted);font-size:12px;font-weight:600;letter-spacing:.04em;padding:8px 10px;border-bottom:1px solid var(--line);background:none}
+.rm.dc .dc-table td{padding:12px 10px;border-top:1px solid var(--line);vertical-align:middle;color:var(--ink)}
+.rm.dc .dc-table td small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.rm.dc .dc-table td b{font-weight:600}
+.rm.dc .dc-muted{color:var(--muted)}
+.rm.dc .dc-warn{color:#8A4B00!important}
+.rm.dc .dc-pill{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.rm.dc .dc-pill.ok{color:var(--good);background:#E3F4EC}.rm.dc .dc-pill.wait{color:#8A4B00;background:#FFF1D6}.rm.dc .dc-pill.bad{color:#8A2412;background:#FDECE8}
+.rm.dc .dc-actions{display:inline-flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.rm.dc .dc-btn{display:inline-flex;align-items:center;border:1px solid var(--line);background:#fff;border-radius:9px;padding:0 10px;min-height:36px;font:600 13px Inter,sans-serif;color:var(--ink);text-decoration:none;cursor:pointer;white-space:nowrap}
+.rm.dc .dc-btn:hover{border-color:var(--blue)}
+.rm.dc .dc-btn.dc-main{border:0;background:#EEF3FF;color:var(--blue)}
+.rm.dc .dc-btn:disabled{opacity:.5;cursor:default}
+.rm.dc .dc-off{border-style:dashed;background:var(--ground);color:#8FA3C7;cursor:help}
+.rm.dc .dc-explain{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.rm.dc .dc-explain b{font-size:14px}
+.rm.dc .dc-docs{display:flex;flex-direction:column;gap:14px}
+.rm.dc .dc-doclist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.rm.dc .dc-doclist li{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.rm.dc .dc-doc-ic{width:44px;height:44px;border-radius:10px;background:#EEF3FF;color:var(--blue);font-size:11px;font-weight:800;display:grid;place-items:center}
+@media (max-width:760px){.rm.dc .dc-explain{grid-template-columns:1fr}}

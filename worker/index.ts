@@ -460,6 +460,8 @@ export async function previewExamFile(request: Request, env: Env, user: AuthUser
   const batchStatus = parsed.records.some((r) => r.issues.length) ? 'NEEDS_REVIEW' : 'PREVIEW';
   await env.DB.prepare(`INSERT INTO scan_batches (id,exam_id,institution_id,season_id,source_type,optical_template_version_id,detection_confidence,status,created_by) VALUES(?,?,?,?,?,?,?,?,?)`)
     .bind(batchId, examId, institutionId, season.id, parsed.records[0]?.source_type || 'TXT', parsed.templateId || null, parsed.confidence, batchStatus, user.id).run();
+  // S036: the uploaded file is kept as it was for one academic year (Veri Merkezi).
+  { const { storeOriginalUpload } = await import('./lib/result-data-center'); await storeOriginalUpload(env, { batchId, institutionId, academicYear: exam.academic_year, file }); }
 
   const counts = { active: 0, guest: 0, newGuest: 0, ambiguous: 0, invalid: 0, pending: 0, cancelled: 0 };
   const recordStatements: D1PreparedStatement[] = [];
