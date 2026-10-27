@@ -86,7 +86,7 @@ describe('ANUNEX result network contract',()=>{
   // S033 (owner decision 27 Oct): reports moved to Toplu Liste, built from saved results; Excel and PDF live there
   const toplu=readFileSync(new URL('../src/components/ResultTopluListe.tsx',import.meta.url),'utf8');
   expect(toplu).toContain('Excel');
-  expect(toplu).toContain('Yazdır / PDF');
+  expect(toplu).toContain('Tümünü PDF indir'); // S036 Rapor Merkezi
   expect(portal).toContain('Türkiye {rankText(x.national_rank,x.national_count)}');
  });
  it('schedules retention notices and purges cohort data while retaining catalogue assets',()=>{
