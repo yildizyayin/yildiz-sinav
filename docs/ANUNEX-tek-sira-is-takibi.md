@@ -2579,3 +2579,25 @@ Canlı veriden teşhis:
   - Her istek bir sınavın öğrenci başı satırlarını okur; 150 bin katılımcı için değerlendirme anında önhesaplama gerekli.
 - **Test:** s034 (6), s033 güncellendi; tüm paket 324 dosya / 1435 test geçti. Sentetik TYT/AYT/LGS PDF'leri ve uygulama içi yazdırma tarayıcıda kontrol edildi.
 - **Dağıtım:** Kullanıcının app deploy onayı gerekiyor; sonuc ardından otomatik gelir.
+
+### S035 — Hızlı değerlendirme: toplu yazma, app ve sonuc aynı motor — 27 Ekim
+- **Bildirim:** sonuc'ta 100 öğrencilik değerlendirme dakikalarca döndü, sonuç vermedi. Okulizyon 1000 öğrenciyi ~5 sn'de değerlendiriyor.
+- **Teşhis (prod, yalnız okuma):**
+  - Batch `batch_0a65fdf7…` (ÇAP TYT 1, 106 satır, 6'sı dışarıda) yarıda kaldı: 15 öğrenci yazıldı, durum READY.
+  - Sonuc eski yolu kullanıyordu: her cevap ayrı sorgu. Bu, D1'in istek başına 1000 sorgu sınırını aştı.
+  - Kanıt defteri de her cevabı ayrı yazıyordu.
+- **Onay:** Sahip "Evet, öneriyi uygula" dedi.
+- **Yapılan (PR #402, 254cc58):**
+  - Hesap aynı; yazma json_each ile toplu.
+  - Parça büyüklüğü cevap satırına göre (TYT ~320 öğrenci); istek başına ~20 sn.
+  - Kanıt defteri ve seçmeli Felsefe kayıtları toplu yazılıyor.
+  - Sonuc adım adım ilerliyor ve "x / n öğrenci" gösteriyor; ilk adımda yazmadan önce kontrol var.
+  - App ve legacy aynı motoru kullanıyor.
+- **Kanıt:**
+  - Golden snapshot değişmemiş main'den (c3bc5c7) alındı; yeni motor app ve sonuc için, 2 ve 240 öğrencide birebir aynı satırları yazıyor.
+  - 240 öğrenci tek istekte, 84 DB çağrısı.
+  - Tüm paket 325 dosya / 1439 test geçti.
+- **Kalan:**
+  - Gerçek D1 süresi deploy sonrası ölçülecek.
+  - Yarıda kalan batch, deploy sonrası "Değerlendir"e yeniden basılarak tamamlanacak.
+- **Dağıtım:** App 254cc58 onay bekliyor; sonuc onun ardından gelir. c3bc5c7 app canlıda; sonuc c3bc5c7 onayı yeni sürümle geçersizleşir.
