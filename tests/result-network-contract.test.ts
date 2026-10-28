@@ -11,7 +11,8 @@ const operator=readFileSync(new URL('../src/pages/ResultOperatorWorkspace.tsx',i
 describe('ANUNEX result network contract',()=>{
  it('never uses a raw TCKN as the result access decision',()=>{
   expect(source).toContain("hmac(env,`TCKN|");
-  expect(source).toContain('secondFactorRequired:true');
+  // D-S038: sonuc student sign-in has no access code (owner decision); the robot check and attempt limits stay
+  expect(source).toContain('secondFactorRequired:false');
   expect(source).toContain('verifyPassword(code');
   expect(migration).not.toContain('tckn TEXT');
   expect(migration).toContain('tckn_lookup_token TEXT');
@@ -86,7 +87,8 @@ describe('ANUNEX result network contract',()=>{
   expect(source).toContain('access-codes$/');
   expect(source).toContain('report$/');
   expect(source).toContain('RESULT_HMAC_V1:');
-  expect(operator).toContain('Öğrenci erişim kartlarını üret');
+  // D-S038: no access cards on sonuc; students sign in with school, grade, number and the first three letters
+  expect(operator).not.toContain('Öğrenci erişim kartlarını üret');
   // S033 (owner decision 27 Oct): reports moved to Toplu Liste, built from saved results; Excel and PDF live there
   const toplu=readFileSync(new URL('../src/components/ResultTopluListe.tsx',import.meta.url),'utf8');
   expect(toplu).toContain('Excel');

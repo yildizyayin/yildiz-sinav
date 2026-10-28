@@ -4,7 +4,7 @@ vi.mock('../worker/lib/auth', async (original) => ({ ...await original<any>(), g
 import { evaluateBatch } from '../worker/index';
 vi.mock('../worker/lib/assessment-ledger', () => ({ recordExamAssessments: vi.fn(async () => 0), recordExamEvidenceAudit: vi.fn(async () => {}) }));
 const user = { id: 'manager', role: 'INSTITUTION_MANAGER', institution_id: 'school' } as any;
-function fixture(incomplete = false, optional = false, optionalKeyCount = 5, freezeStatus = 'OPEN', busy=false, networkPublished=false) {
+function fixture(incomplete = false, optional = false, optionalKeyCount = 5, freezeStatus = 'OPEN', busy=false, networkPublished=false, batchStatus='READY') {
   let locked=false, progressed=false;
   const writes: { sql: string; args: any[] }[] = [];
   const keys = [
@@ -15,7 +15,7 @@ function fixture(incomplete = false, optional = false, optionalKeyCount = 5, fre
   const scanRow = { id: 'scan', row_no: 1, matched_student_id: 'student', match_status: 'ACTIVE_MATCH', resolution_status: 'RESOLVED', canonical_json: JSON.stringify({ name: 'Ada Test', booklet: 'B', answers_by_subject: { MAT: 'C_D' }, confidence: 1 }) };
   const optionalKeys = Array.from({ length: optionalKeyCount }, (_, i) => ({ id: `opt${i}`, subject_id: 'fel', question_no: i + 1, booklet_code: 'B', correct_answer: 'A' }));
   const env = { DB: { batch: async (statements: any[]) => { const results=[];for (const statement of statements) results.push(await statement.run());return results; }, prepare: (sql: string) => ({ bind: (...args: any[]) => ({
-    first: async () => sql.includes('FROM scan_batches') ? { id: 'batch', exam_id: 'exam', institution_id: 'school', season_id: 'season', status: 'READY' }
+    first: async () => sql.includes('FROM scan_batches') ? { id: 'batch', exam_id: 'exam', institution_id: 'school', season_id: 'season', status: batchStatus }
       : sql.includes('SELECT id FROM exam_administrations') ? (networkPublished ? {id:'publication'} : null)
       : sql.includes('SELECT result_freeze_status') ? { result_freeze_status: freezeStatus }
       : sql.includes('count(*)') && sql.includes('scan_evaluation_progress') ? { c: progressed ? 1 : 0 }
@@ -70,7 +70,9 @@ describe('Result Network evaluation native semantics', () => {
     // S035: the batch may be marked committed before the optional evidence runs; on failure it is put back to READY
     expect(f.writes.filter(w => /UPDATE scan_batches SET status=/.test(w.sql)).pop()?.sql).toContain("status='READY'");
   });
-  it('blocks evaluating a frozen Result Network publication even with an open platform profile',async()=>{const f=fixture(false,false,5,'OPEN',false,true);expect((await f.evaluate()).status).toBe(400);expect(f.writes).toEqual([]);});
+  // D-S037 (owner, 28 Oct): a published Result Network exam keeps taking new uploads (live ranks); an upload already in it is not re-evaluated.
+  it('blocks re-evaluating an upload of a published Result Network exam even with an open platform profile',async()=>{const f=fixture(false,false,5,'OPEN',false,true,'COMMITTED');const r=await f.evaluate();expect(r.status).toBe(400);expect((await r.json() as any).error.code).toBe('RESULTS_FROZEN');expect(f.writes).toEqual([]);});
+  it('lets a new upload of a published Result Network exam be evaluated',async()=>{const f=fixture(false,false,5,'OPEN',false,true);const r=await f.evaluate();expect((await r.clone().json() as any).error?.code).not.toBe('RESULTS_FROZEN');});
   it('rejects an incomplete answer key before any write', async () => {
     const f = fixture(true); const response = await f.evaluate(); expect(response.status).toBe(400);
     expect((await response.json() as any).error.code).toBe('ANSWER_KEY_INCOMPLETE'); expect(f.writes).toEqual([]);

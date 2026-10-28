@@ -32,6 +32,40 @@ export function familyOf(examType: unknown, gradeLevel: unknown, codes: string[]
   return 'OTHER';
 }
 
+/**
+ * Owner request (28 Oct): the karne and the net list show each test's sub-tests (Sosyal: Tarih, Coğrafya, Felsefe, Din
+ * Kültürü; Fen: Fizik, Kimya, Biyoloji). When the answer key named no sub-tests (no DERS column), the ÖSYM booklet
+ * order is used. It is applied only when the test has exactly the ÖSYM question count, so a publisher's own layout is
+ * never guessed; a key that names sub-tests always wins.
+ */
+const LAYOUTS: Array<{ family: Family; match: RegExp; count: number; parts: Array<[string, number]> }> = [
+  { family: 'TYT', match: /SOSYAL/, count: 25, parts: [['Tarih', 5], ['Coğrafya', 5], ['Felsefe', 5], ['Din Kültürü', 5], ['Felsefe (Din yerine)', 5]] },
+  { family: 'TYT', match: /SOSYAL/, count: 20, parts: [['Tarih', 5], ['Coğrafya', 5], ['Felsefe', 5], ['Din Kültürü', 5]] },
+  { family: 'TYT', match: /FEN/, count: 20, parts: [['Fizik', 7], ['Kimya', 7], ['Biyoloji', 6]] },
+  { family: 'AYT', match: /EDEBIYAT|SOSYAL.*1|SOS.?1/, count: 40, parts: [['Türk Dili ve Edebiyatı', 24], ['Tarih-1', 10], ['Coğrafya-1', 6]] },
+  { family: 'AYT', match: /SOSYAL.*2|SOS.?2/, count: 40, parts: [['Tarih-2', 11], ['Coğrafya-2', 11], ['Felsefe Grubu', 12], ['Din Kültürü', 6]] },
+  { family: 'AYT', match: /FEN/, count: 40, parts: [['Fizik', 14], ['Kimya', 13], ['Biyoloji', 13]] },
+];
+const ascii = (v: unknown) => up(v).replace(/İ/g, 'I').replace(/Ş/g, 'S').replace(/Ğ/g, 'G').replace(/Ü/g, 'U').replace(/Ö/g, 'O').replace(/Ç/g, 'C');
+export function standardSectionOf(family: Family, subject: { name: string; code: string }, questionCount: number, no: number): string | null {
+  const text = `${ascii(subject.code)} ${ascii(subject.name)}`;
+  const layout = LAYOUTS.find((l) => l.family === family && l.count === questionCount && l.match.test(text));
+  if (!layout) return null;
+  let end = 0; for (const [name, n] of layout.parts) { end += n; if (no <= end) return name; }
+  return null;
+}
+/** Fills sub-tests from the ÖSYM order for tests whose key named none; marks them `auto`. */
+export function applyStandardSections<Q extends { subjectId: string; no: number; section: string | null; auto?: boolean }>(family: Family, subjects: Array<{ id: string; name: string; code: string; questionCount: number }>, questions: Q[]): Q[] {
+  const named = new Set(questions.filter((q) => q.section).map((q) => q.subjectId));
+  const count = new Map<string, number>(); for (const q of questions) count.set(q.subjectId, (count.get(q.subjectId) || 0) + 1);
+  return questions.map((q) => {
+    if (q.section || named.has(q.subjectId)) return q;
+    const subj = subjects.find((s) => s.id === q.subjectId); if (!subj) return q;
+    const sec = standardSectionOf(family, subj, count.get(q.subjectId) || subj.questionCount, q.no);
+    return sec ? { ...q, section: sec, auto: true } : q;
+  });
+}
+
 /** ÖSYM test a subject or sub-test belongs to (weights are published per test). */
 export function componentFor(family: Family, text: string): string | null {
   const t = up(text);
@@ -89,7 +123,7 @@ function rankWithin<T>(rows: T[], group: (r: T) => string, value: (r: T) => numb
 
 export interface RawBundle {
   exam: any; subjects: Array<{ id: string; name: string; code: string; questionCount: number; wrongDivisor: number }>;
-  questions: Array<{ id: string; subjectId: string; no: number; status: string; section: string | null; topic: string }>;
+  questions: Array<{ id: string; subjectId: string; no: number; status: string; section: string | null; topic: string; auto?: boolean }>;
   keys: Array<{ questionId: string; booklet: string; answer: string; printed: number }>;
   participants: Array<{ id: string; inst: string; iname: string; city: string; district: string; name: string; no: string | null; cls: string; booklet: string | null; d: number; y: number; b: number; n: number; score: number | null }>;
   subjectRows: Array<{ p: string; s: string; d: number; y: number; b: number; n: number }>;
@@ -118,6 +152,12 @@ export function buildBundle(raw: RawBundle) {
     // TYT/LGS sub-tests stay in their test's score component; AYT composite tests (Edebiyat-Sosyal-1 …) split by sub-test
     if (secs?.length) for (const sec of secs) columns.push({ key: `${s.id}|${sec}`, subjectId: s.id, section: sec, name: sec, group: s.name, q: activeCount((q) => q.subjectId === s.id && q.section === sec), component: family === 'AYT' ? (componentFor(family, sec) || own) : own });
     else columns.push({ key: s.id, subjectId: s.id, section: null, name: s.name, group: s.name, q: s.questionCount, component: own });
+  }
+  // An ÖSYM-order sub-test nobody answered (e.g. "Felsefe (Din yerine)" when every student took Din Kültürü) is not shown.
+  const autoKeys = new Set(raw.questions.filter((q) => q.auto && q.section).map((q) => `${q.subjectId}|${q.section}`));
+  if (autoKeys.size && raw.participants.length) {
+    const used = new Set(raw.sectionRows.filter((r) => Number(r.d) + Number(r.y) > 0).map((r) => r.k));
+    for (let i = columns.length - 1; i >= 0; i--) if (autoKeys.has(columns[i].key) && !used.has(columns[i].key)) columns.splice(i, 1);
   }
   const tests = raw.subjects.map((s) => ({ id: s.id, name: s.name, code: s.code, questionCount: s.questionCount, wrongDivisor: s.wrongDivisor }));
   const netOf = (d: number, y: number, div: number) => r2(d - (div > 0 ? y / div : 0));
@@ -344,6 +384,8 @@ export async function reportBundle(env: Env, opts: { examId: string; institution
   const participants = (await all<any>(env.DB.prepare(`SELECT ep.id,ep.institution_id inst,i.name iname,COALESCE(NULLIF(i.city,''),'İl belirtilmemiş') city,COALESCE(NULLIF(i.district,''),'İlçe belirtilmemiş') district,ep.name_snapshot name,ep.student_number_snapshot no,COALESCE(ep.class_snapshot,'') cls,ep.booklet_code booklet,
       er.correct_count d,er.wrong_count y,er.blank_count b,er.net n,er.score score FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id JOIN institutions i ON i.id=ep.institution_id WHERE ep.exam_id=?`).bind(opts.examId)));
   const subjectRows = await all<any>(env.DB.prepare(`SELECT sr.participant_id p,sr.subject_id s,sr.correct_count d,sr.wrong_count y,sr.blank_count b,sr.net n FROM subject_results sr JOIN exam_participants ep ON ep.id=sr.participant_id WHERE ep.exam_id=?`).bind(opts.examId));
+  const sectioned = applyStandardSections(familyOf(exam.exam_type, exam.grade_level, subjects.map((x: any) => x.code)), subjects.map((x: any) => ({ id: x.id, name: x.name, code: x.code, questionCount: Number(x.question_count) })), questions);
+  questions.splice(0, questions.length, ...sectioned);
   const sectionMap: Record<string, string> = {};
   for (const q of questions) if (q.section && q.status === 'ACTIVE') sectionMap[q.id] = `${q.subjectId}|${q.section}`;
   const sectionRows = Object.keys(sectionMap).length ? await all<any>(env.DB.prepare(`SELECT sa.participant_id p,m.value k,sum(sa.status='CORRECT') d,sum(sa.status='WRONG') y FROM student_answers sa JOIN json_each(?) m ON m.key=sa.exam_question_id JOIN exam_participants ep ON ep.id=sa.participant_id WHERE ep.exam_id=? GROUP BY sa.participant_id,m.value`).bind(JSON.stringify(sectionMap), opts.examId)) : [];

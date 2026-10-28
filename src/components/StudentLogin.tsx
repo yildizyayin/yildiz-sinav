@@ -3,9 +3,9 @@ import { api, ApiError } from '../api';
 import { Turnstile } from './Turnstile';
 
 /**
- * S037 one-step student sign-in (owner decision 28 Oct): İl › İlçe › Kurum, sınıf düzeyi, öğrenci no (or T.C.),
- * the first three letters of the name and the 8-digit access code on the institution's card. The last il / ilçe /
- * kurum are remembered on this device only, so a returning student fills in three fields.
+ * Student sign-in on sonuc (D-S038, owner 28 Oct): İl › İlçe › Kurum, sınıf düzeyi, öğrenci no (or T.C.) and the
+ * first three letters of the name. No access code and no card. The last il / ilçe / kurum are remembered on this
+ * device only, so a returning student fills in three fields.
  */
 type Inst = { code: string; name: string; city: string; district: string };
 const KEY = 'anunex_student_place';
@@ -17,7 +17,7 @@ export function StudentLogin({ siteKey, onSignedIn }: { siteKey: string; onSigne
   const [cities, setCities] = useState<string[]>([]); const [districts, setDistricts] = useState<string[]>([]); const [schools, setSchools] = useState<Inst[]>([]);
   const [city, setCity] = useState(saved.city || ''); const [district, setDistrict] = useState(saved.district || ''); const [inst, setInst] = useState<Inst | null>(saved.inst || null);
   const [byName, setByName] = useState(false); const [query, setQuery] = useState(''); const [found, setFound] = useState<Inst[]>([]);
-  const [form, setForm] = useState({ gradeLevel: '', lookupType: 'STUDENT_NUMBER', lookupValue: '', namePrefix: '', accessCode: '' });
+  const [form, setForm] = useState({ gradeLevel: '', lookupType: 'STUDENT_NUMBER', lookupValue: '', namePrefix: '' });
   const [token, setToken] = useState(''); const [cycle, setCycle] = useState(0);
   const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [info, setInfo] = useState('');
   const onToken = useCallback((v: string) => setToken(v), []);
@@ -37,10 +37,10 @@ export function StudentLogin({ siteKey, onSignedIn }: { siteKey: string; onSigne
       await onSignedIn();
     } catch (err) { setError(err instanceof ApiError ? err.message : 'Giriş yapılamadı.'); setToken(''); setCycle((c) => c + 1); } finally { setBusy(false); }
   };
-  const ready = !!inst && !!form.gradeLevel && !!form.lookupValue && form.namePrefix.replace(/\s/g, '').length >= 3 && form.accessCode.length >= 6 && !!token;
+  const ready = !!inst && !!form.gradeLevel && !!form.lookupValue && form.namePrefix.replace(/\s/g, '').length >= 3 && !!token;
 
   return <form className="result-form student-login" onSubmit={submit} noValidate={false}>
-    <div><span className="result-kicker">ÖĞRENCİ GİRİŞİ</span><h2>Sonucunu gör</h2><p>Kurumunu seç, numaranı, adının ilk 3 harfini ve kurumunun verdiği karttaki erişim kodunu yaz. T.C. kimlik numarası açık olarak saklanmaz.</p></div>
+    <div><span className="result-kicker">ÖĞRENCİ GİRİŞİ</span><h2>Sonucunu gör</h2><p>Kurumunu seç, sınıfını, numaranı ve adının ilk 3 harfini yaz. T.C. kimlik numarası açık olarak saklanmaz.</p></div>
     {error && <div className="result-alert" role="alert">{error}</div>}
     {info && <div className="result-info" role="status">{info}</div>}
     <fieldset className="sl-group"><legend>Kurum</legend>
@@ -64,8 +64,6 @@ export function StudentLogin({ siteKey, onSignedIn }: { siteKey: string; onSigne
         <label>{form.lookupType === 'TCKN' ? 'T.C. kimlik numarası' : 'Öğrenci numarası'}<input value={form.lookupValue} onChange={(e) => set('lookupValue', e.target.value.replace(/\s/g, ''))} inputMode="numeric" autoComplete="off" required /></label>
         <label>Adının ilk 3 harfi<input value={form.namePrefix} onChange={(e) => set('namePrefix', e.target.value.slice(0, 3))} maxLength={3} autoComplete="off" autoCapitalize="characters" placeholder="Örn. MEL" required /></label>
       </div>
-      <label>Erişim kodu<input value={form.accessCode} onChange={(e) => set('accessCode', e.target.value.replace(/\s/g, '').slice(0, 12))} inputMode="numeric" autoComplete="one-time-code" maxLength={12} placeholder="8 haneli kod" required />
-        <small className="sl-hint">Kurumunun dağıttığı sonuç kartında yazar. Kartın yoksa kurumundan iste.</small></label>
     </fieldset>
     <Turnstile key={cycle} siteKey={siteKey} onToken={onToken} />
     <button className="result-primary" disabled={busy || !ready}>{busy ? 'Kontrol ediliyor…' : 'Sonucumu göster'}</button>

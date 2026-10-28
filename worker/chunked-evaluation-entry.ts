@@ -86,7 +86,9 @@ async function evaluateChunkUnlocked(env: Env, user: { id: string }, batchId: st
   const batch = await one<AnyRow>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if (!batch) return notFound();
   const networkPublication=await one<any>(env.DB.prepare("SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND ranking_frozen_at IS NOT NULL LIMIT 1").bind(batch.exam_id));
-  if(networkPublication)return badRequest('Sonuç Ağı yayını düzeltmeye açılmadan değerlendirme yapılamaz.','RESULTS_FROZEN');
+  // D-S037 (owner, 28 Oct): a published result-network exam keeps taking new uploads; their students join the live
+  // ranks. Only re-evaluating an upload that is already in the publication is refused.
+  if(networkPublication&&batch.status==='COMMITTED')return badRequest('Sonuç Ağı yayını düzeltmeye açılmadan değerlendirme yapılamaz.','RESULTS_FROZEN');
   const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
   if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status)) {
     return badRequest('Dondurulmuş veya yayımlanmış sonuçlar yeniden değerlendirilemez. Düzeltme için yeni sonuç sürümü hazırlanmalıdır.', 'RESULTS_FROZEN');

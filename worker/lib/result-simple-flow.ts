@@ -2,29 +2,58 @@ import type { Env } from '../types';
 import { all, uuid } from './db';
 
 /**
- * S030 (owner decision 26 Oct): sonuc.anunex.com is an open evaluation platform. Every readable sheet is a participant;
- * there is no "guest" step. A sheet that cannot be scored (no name, unreadable booklet, ambiguous person) is left out of the
- * evaluation with its exact reason, and the rest is evaluated.
+ * S030/D-S038: sonuc.anunex.com is an open evaluation platform. Every uploaded sheet is a participant; there is no
+ * "guest" step. Only a sheet whose score would be wrong (booklet unknown in a multi-booklet exam, two people on one
+ * record) is left out of the evaluation with its exact reason, and the rest is evaluated.
  */
 const UNRESOLVED = `resolution_status!='CANCELLED' AND (match_status IN ('NEW_GUEST','AMBIGUOUS','INVALID') OR issues_json!='[]')`;
 
 const batchStatusSql = (env: Env, batchId: string) => env.DB.prepare(`UPDATE scan_batches SET status=CASE WHEN EXISTS(SELECT 1 FROM scan_records WHERE batch_id=? AND ${UNRESOLVED}) THEN 'NEEDS_REVIEW' ELSE 'READY' END WHERE id=? AND status IN ('PREVIEW','NEEDS_REVIEW','READY')`).bind(batchId, batchId);
 
-/** Unmatched but readable sheets become participants at once. */
+/**
+ * D-S038 (owner, 28 Oct): on sonuc every uploaded student is evaluated; there are no registered students and no
+ * guests. Warnings that do not stop scoring are kept as notes, not blockers: an invalid mark is already counted as
+ * blank, an unreadable name becomes "Ad okunamadı · No …", and "not matched to a registered student" is meaningless
+ * here. Only what makes a score wrong still blocks: a missing booklet when the exam has more than one booklet.
+ */
+const NAME_ONLY = /Öğrenci numarası bulunamadı; ad soyad ve sınıf ile eşleşti/i;
+const NON_BLOCKING = [NAME_ONLY, /geçersiz karakter/i, /Kayıtlı öğrenciyle eşleşmedi/i, /^Ad soyad okunamadı\.?$/i, /ad soyad farklı görünüyor/i];
+export const isNonBlocking = (issue: string) => NON_BLOCKING.some((r) => r.test(issue));
+export const unreadableName = (c: any, rowNo: number) => `Ad okunamadı · ${String(c?.student_number || '').trim() ? `No ${String(c.student_number).trim()}` : `Satır ${rowNo}`}`;
+
+/** Every sheet that can be scored becomes a participant at once (the result network has no guest step). */
 export async function acceptReadableSheets(env: Env, batchId: string, actorId: string, institutionId: string): Promise<number> {
-  const rows = await all<{ id: string }>(env.DB.prepare(`SELECT id FROM scan_records WHERE batch_id=? AND resolution_status!='CANCELLED' AND match_status='NEW_GUEST'
-    AND trim(coalesce(json_extract(canonical_json,'$.name'),''))<>'' AND coalesce(json_array_length(json_extract(canonical_json,'$.issues')),0)=0`).bind(batchId));
-  if (!rows.length) { await batchStatusSql(env, batchId).run(); return 0; }
+  const rows = await all<{ id: string; row_no: number; canonical_json: string; issues_json: string }>(env.DB.prepare(`SELECT id,row_no,canonical_json,issues_json FROM scan_records WHERE batch_id=? AND ((resolution_status!='CANCELLED'
+    AND (match_status IN ('NEW_GUEST','INVALID') OR (match_status IN ('ACTIVE_MATCH','GUEST_MATCH') AND issues_json!='[]')))
+    OR (resolution_status='CANCELLED' AND issues_json LIKE '["Değerlendirme dışı:%'))`).bind(batchId));
+  const accepted: Array<{ id: string; c: string; u: number }> = [];
+  for (const r of rows) {
+    let c: any = {}; try { c = JSON.parse(r.canonical_json || '{}'); } catch { continue; }
+    let stored: string[] = []; try { stored = JSON.parse(r.issues_json || '[]'); } catch { /* */ }
+    // A row set aside automatically before D-S038 carries its reasons as one "Değerlendirme dışı: a · b" line.
+    stored = stored.flatMap((x) => String(x).startsWith('Değerlendirme dışı:') ? String(x).slice('Değerlendirme dışı:'.length).split(' · ').map((y) => y.trim()).filter(Boolean) : [String(x)]);
+    const all = [...new Set([...(Array.isArray(c.issues) ? c.issues : []), ...stored].map(String))];
+    if (all.some((x) => !isNonBlocking(x))) continue;
+    const notes = all.filter((x) => !/Kayıtlı öğrenciyle eşleşmedi/i.test(x));
+    if (!String(c.name || '').trim()) { c.name = unreadableName(c, Number(r.row_no)); notes.push('Ad soyad okunamadı; numarayla değerlendirildi.'); }
+    c.issues = []; if (notes.length) c.notes = [...new Set([...(Array.isArray(c.notes) ? c.notes : []), ...notes])];
+    // A match by name alone is not trusted on sonuc (two students can share a name): the sheet is its own participant.
+    accepted.push({ id: r.id, c: JSON.stringify(c), u: all.some((x) => NAME_ONLY.test(x)) ? 1 : 0 });
+  }
+  if (!accepted.length) { await batchStatusSql(env, batchId).run(); return 0; }
   const statements: D1PreparedStatement[] = [];
-  for (let i = 0; i < rows.length; i += 90) {
-    const chunk = rows.slice(i, i + 90).map((r) => r.id);
-    statements.push(env.DB.prepare(`UPDATE scan_records SET match_status='GUEST_MATCH',match_confidence=1,resolution_status='RESOLVED',issues_json='[]' WHERE batch_id=? AND id IN (${chunk.map(() => '?').join(',')})`).bind(batchId, ...chunk));
+  for (let i = 0; i < accepted.length; i += 400) {
+    const chunk = JSON.stringify(accepted.slice(i, i + 400));
+    statements.push(env.DB.prepare(`UPDATE scan_records SET match_status=CASE WHEN match_status IN ('NEW_GUEST','INVALID') THEN 'GUEST_MATCH' ELSE match_status END,match_confidence=1,
+      matched_student_id=CASE WHEN (SELECT json_extract(value,'$.u') FROM json_each(?1) WHERE json_extract(value,'$.id')=scan_records.id)=1 THEN NULL ELSE matched_student_id END,resolution_status='RESOLVED',issues_json='[]',
+      canonical_json=(SELECT json_extract(value,'$.c') FROM json_each(?1) WHERE json_extract(value,'$.id')=scan_records.id)
+      WHERE batch_id=?2 AND id IN (SELECT json_extract(value,'$.id') FROM json_each(?1))`).bind(chunk, batchId));
   }
   statements.push(batchStatusSql(env, batchId));
   statements.push(env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)')
-    .bind(uuid('aud'), actorId, institutionId, 'SCAN_BATCH_PARTICIPANTS_ACCEPTED', 'scan_batch', batchId, JSON.stringify({ accepted: rows.length, reason: 'Sonuç ağı: okunabilen her optik katılımcıdır.' })));
+    .bind(uuid('aud'), actorId, institutionId, 'SCAN_BATCH_PARTICIPANTS_ACCEPTED', 'scan_batch', batchId, JSON.stringify({ accepted: accepted.length, reason: 'Sonuç ağı: yüklenen her öğrenci değerlendirilir (D-S038).' })));
   await env.DB.batch(statements);
-  return rows.length;
+  return accepted.length;
 }
 
 const reasonOf = (row: any) => {
