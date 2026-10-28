@@ -27,7 +27,7 @@ function fixture(failAudit=false){
     CREATE TABLE exam_delivery_profiles(exam_id TEXT PRIMARY KEY,snapshot_version INTEGER,result_freeze_status TEXT,freeze_at TEXT,updated_at TEXT,scope TEXT NOT NULL DEFAULT 'INSTITUTION');
     INSERT INTO exam_delivery_profiles(exam_id,snapshot_version,result_freeze_status,freeze_at,updated_at) VALUES('e',0,'OPEN',NULL,NULL);
     CREATE TABLE exam_operation_locks(exam_id TEXT PRIMARY KEY,owner_token TEXT,operation TEXT);
-    CREATE TABLE scan_batches(id TEXT,exam_id TEXT,status TEXT); CREATE TABLE scan_evaluation_progress(batch_id TEXT);
+    CREATE TABLE scan_batches(id TEXT,exam_id TEXT,status TEXT); CREATE TABLE scan_batch_deletions(batch_id TEXT PRIMARY KEY); CREATE TABLE scan_evaluation_progress(batch_id TEXT);
     CREATE TABLE exam_publication_stats(exam_id TEXT,snapshot_version INTEGER,institution_count INTEGER,participant_count INTEGER,city_count INTEGER,payload_json TEXT);
     CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
     INSERT INTO exam_result_snapshots(id,exam_id,participant_id,snapshot_version,institution_id,net,payload_json) VALUES('previous','e','p',0,'school',1,'previous-payload');`);

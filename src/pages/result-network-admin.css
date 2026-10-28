@@ -113,3 +113,35 @@
   .admin-sidebar .admin-nav-toggle{display:block;margin-top:10px;min-height:42px;padding:0 16px;border:1px solid #2B3D7A;border-radius:10px;background:transparent;color:#fff;font:600 14px Inter,system-ui,sans-serif}
   .admin-sidebar:not(.nav-open) .admin-nav{display:none}
 }
+/* D-S039 upload actions in the history */
+.result-history-actions{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:220px}
+.ba,.ba-deleted{display:flex;flex-direction:column;gap:8px;width:100%}
+.ba-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.ba-panel{display:flex;flex-direction:column;gap:10px;padding:12px 14px;border:1px solid #DCE6F8;border-radius:12px;background:#F7F9FF;max-width:420px}
+.ba-panel p{margin:0;font-size:13px;line-height:1.5;color:#07143F}
+.ba-panel label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:#07143F}
+.ba-panel input{min-height:40px;border:1px solid #CBD8EA;border-radius:10px;padding:0 10px;font:14px Inter,sans-serif}
+.ba-panel .danger,.ba .danger{background:#B42318;border:1px solid #B42318;color:#fff;border-radius:10px;min-height:40px;padding:0 14px;font-weight:700}
+.ba-panel .danger:disabled{opacity:.5}
+.ba-tag{font-size:12px;font-weight:700;color:#8A4B00;background:#FFF4E0;border-radius:999px;padding:4px 10px;align-self:flex-start}
+.ba-error{font-size:12px;color:#B42318}
+/* D-S039 check before evaluating */
+.upload-check{display:flex;flex-direction:column;gap:12px;padding:16px 18px;border:2px solid #2563EB;border-radius:16px;background:#F7F9FF;margin:12px 0}
+.upload-check h4{margin:0;font-size:16px;color:#07143F}
+.upload-check .uc-school{display:flex;flex-direction:column;gap:2px}
+.upload-check .uc-school span{font-size:12px;color:#4A5A80;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.upload-check .uc-school b{font-size:20px;color:#07143F}
+.upload-check .uc-school small{font-size:13px;color:#4A5A80}
+.upload-check .uc-classes{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:#07143F}
+.upload-check .uc-chip{background:#fff;border:1px solid #DCE6F8;border-radius:999px;padding:3px 10px;font-size:12px}
+.upload-check .uc-confirm{display:flex;gap:10px;align-items:center;font-size:15px;color:#07143F;padding:10px 12px;background:#fff;border:1px solid #DCE6F8;border-radius:12px;cursor:pointer}
+.upload-check .uc-confirm input{width:22px;height:22px;accent-color:#2563EB}
+.booklet-pick{display:flex;flex-direction:column;gap:10px;padding:16px 18px;border:2px solid #E0A200;border-radius:16px;background:#FFF9E8;margin:12px 0}
+.booklet-pick h4{margin:0;font-size:16px;color:#5A3E00}
+.booklet-pick p{margin:0;font-size:13px;color:#5A3E00}
+.booklet-pick ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.booklet-pick li{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center;background:#fff;border:1px solid #F1DEA6;border-radius:12px;padding:10px 12px}
+.booklet-pick .bp-who{display:flex;flex-direction:column}.booklet-pick .bp-who small{color:#6B5A2A;font-size:12px}
+.booklet-pick .bp-opts{display:flex;flex-wrap:wrap;gap:6px}
+.booklet-pick .bp-opts button{display:flex;flex-direction:column;align-items:center;min-height:48px;line-height:1.2}
+.booklet-pick .bp-opts small{font-size:11px;font-weight:500}

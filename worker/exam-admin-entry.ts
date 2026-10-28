@@ -1007,6 +1007,8 @@ export default {
   },
   async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext) {
     await publishScheduledExamVideos(env);
+    // D-S039: exams 30 days in the trash are deleted for good (one that cannot be is left and logged)
+    ctx.waitUntil((async()=>{const{purgeTrashedExams}=await import('./lib/exam-purge');await purgeTrashedExams(env)})().catch((e)=>console.error('Trashed exam purge failed',e)));
     if ('scheduled' in accessApp && typeof accessApp.scheduled === 'function') return accessApp.scheduled(event, env, ctx);
   },
 } satisfies ExportedHandler<Env>;

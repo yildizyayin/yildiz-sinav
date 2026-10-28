@@ -8,7 +8,7 @@ import './report-center.css';
  * academic year), the data as read and the results, each as a download. Belge: the documents of the exams the
  * school took that the publisher made visible to schools, and the optic forms / FMT. Every download is audited.
  */
-type Batch = { id: string; status: string; created_at: string; exam_id: string; institution_id: string; title: string; academic_year: string; exam_type: string; publisher_name: string; institution_name: string; institution_code: string; city: string; district: string; total: number; set_aside: number; has_original: boolean; original_name: string | null; retain_until: string | null };
+type Batch = { id: string; status: string; deleted_at?: string | null; created_at: string; exam_id: string; institution_id: string; title: string; academic_year: string; exam_type: string; publisher_name: string; institution_name: string; institution_code: string; city: string; district: string; total: number; set_aside: number; has_original: boolean; original_name: string | null; retain_until: string | null };
 const STATUS: Record<string, [string, string]> = { COMMITTED: ['Değerlendirildi', 'ok'], READY: ['Değerlendirmeye hazır', 'wait'], NEEDS_REVIEW: ['Kontrol bekliyor', 'wait'], PREVIEW: ['Önizleme', 'wait'], FAILED: ['Hatalı', 'bad'] };
 const when = (s: string) => new Date(String(s).replace(' ', 'T') + (String(s).includes('Z') ? '' : 'Z')).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 const fileBase = (b: Batch) => `${b.institution_name}-${b.title}`.replace(/[^\p{L}\p{N}]+/gu, '-').slice(0, 80);
@@ -68,7 +68,7 @@ function DataTab({ mode }: { mode: 'INSTITUTION' | 'DEALER' }) {
         <table className="dc-table">
           <thead><tr><th>Tarih</th><th>Sınav</th><th>Kurum</th><th className="r">Satır</th><th>Durum</th><th className="r">İndir</th></tr></thead>
           <tbody>
-            {shown.map((b) => { const [label, tone] = STATUS[b.status] || [b.status, 'wait'];
+            {shown.map((b) => { const [label, tone] = b.deleted_at ? ['Silindi', 'bad'] : (STATUS[b.status] || [b.status, 'wait']);
               return <tr key={b.id}>
                 <td className="dc-muted num">{when(b.created_at)}</td>
                 <td><b>{b.title}</b><small>{[b.publisher_name, b.academic_year, b.exam_type].filter(Boolean).join(' · ')}</small></td>
@@ -79,7 +79,7 @@ function DataTab({ mode }: { mode: 'INSTITUTION' | 'DEALER' }) {
                   {b.has_original ? <a className="dc-btn" href={`/api/admin/result-network/operations/data/batches/${b.id}/original`} download title={`Saklama sonu: ${b.retain_until ? new Date(b.retain_until).toLocaleDateString('tr-TR') : '—'}`}>Orijinal dosya</a>
                     : <span className="dc-btn dc-off" title="Bu yükleme özellikten önce yapıldı ya da saklama süresi doldu; orijinal dosya yok.">Orijinal yok</span>}
                   <button type="button" className="dc-btn" disabled={busy === `${b.id}:read`} onClick={() => void readExcel(b)}>{busy === `${b.id}:read` ? 'Hazırlanıyor…' : 'Okunan veri · Excel'}</button>
-                  <button type="button" className="dc-btn dc-main" disabled={b.status !== 'COMMITTED' || busy === `${b.id}:results`} title={b.status !== 'COMMITTED' ? 'Önce değerlendirin.' : ''} onClick={() => void resultsExcel(b)}>{busy === `${b.id}:results` ? 'Hazırlanıyor…' : 'Sonuçlar · Excel'}</button>
+                  <button type="button" className="dc-btn dc-main" disabled={b.status !== 'COMMITTED' || !!b.deleted_at || busy === `${b.id}:results`} title={b.status !== 'COMMITTED' ? 'Önce değerlendirin.' : ''} onClick={() => void resultsExcel(b)}>{busy === `${b.id}:results` ? 'Hazırlanıyor…' : 'Sonuçlar · Excel'}</button>
                 </div></td>
               </tr>; })}
           </tbody>

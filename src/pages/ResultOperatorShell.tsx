@@ -51,7 +51,7 @@ export function ResultOperatorShell({ role, access, operator, onLogout }: { role
 
 function OperatorHome({ role, operator, access, go }: { role: Role; operator: any; access: any; go: (s: Section) => void }) {
   const [rows, setRows] = useState<any[]>([]);
-  useEffect(() => { void api<any>(`/api/admin/result-network/operations/data/batches?mode=${role}`).then((r) => setRows(r.batches || [])).catch(() => undefined); }, [role]);
+  useEffect(() => { void api<any>(`/api/admin/result-network/operations/data/batches?mode=${role}`).then((r) => setRows((r.batches || []).filter((b: any) => !b.deleted_at))).catch(() => undefined); }, [role]);
   const committed = rows.filter((r) => r.status === 'COMMITTED');
   const students = committed.reduce((n, r) => n + Number(r.total || 0) - Number(r.set_aside || 0), 0);
   return <div className="rm">
@@ -75,7 +75,7 @@ function OperatorHome({ role, operator, access, go }: { role: Role; operator: an
 
 function SchoolList() {
   const [rows, setRows] = useState<any[]>([]); const [q, setQ] = useState('');
-  useEffect(() => { void api<any>('/api/admin/result-network/operations/data/batches?mode=DEALER').then((r) => setRows(r.batches || [])).catch(() => undefined); }, []);
+  useEffect(() => { void api<any>('/api/admin/result-network/operations/data/batches?mode=DEALER').then((r) => setRows((r.batches || []).filter((b: any) => !b.deleted_at))).catch(() => undefined); }, []);
   const schools = [...rows.reduce((m: Map<string, any>, r: any) => { const s = m.get(r.institution_id) || { id: r.institution_id, name: r.institution_name, code: r.institution_code, city: r.city, district: r.district, uploads: 0, last: r.created_at }; s.uploads++; if (r.created_at > s.last) s.last = r.created_at; m.set(r.institution_id, s); return m; }, new Map()).values()]
     .filter((s: any) => !q.trim() || `${s.name} ${s.code} ${s.city} ${s.district}`.toLocaleLowerCase('tr-TR').includes(q.trim().toLocaleLowerCase('tr-TR')));
   return <div className="rm dc">
@@ -94,7 +94,7 @@ function SchoolList() {
  */
 function StudentAccess() {
   const [rows, setRows] = useState<any[]>([]); const [error, setError] = useState(''); const [copied, setCopied] = useState(false);
-  useEffect(() => { void api<any>('/api/admin/result-network/operations/data/batches?mode=INSTITUTION').then((r) => setRows((r.batches || []).filter((b: any) => b.status === 'COMMITTED'))).catch((e: any) => setError(e.message)); }, []);
+  useEffect(() => { void api<any>('/api/admin/result-network/operations/data/batches?mode=INSTITUTION').then((r) => setRows((r.batches || []).filter((b: any) => b.status === 'COMMITTED' && !b.deleted_at))).catch((e: any) => setError(e.message)); }, []);
   const how = 'Sonucunu görmek için: sonuc.anunex.com › Öğrenci Sonuç › ilini, ilçeni ve okulunu seç › sınıfını, okul numaranı ve adının ilk 3 harfini yaz.';
   const copy = async () => { try { await navigator.clipboard.writeText(how); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* clipboard may be blocked */ } };
   const step = (done: boolean, label: string, sub: string) => <li className={done ? 'done' : ''}><span className="acc-dot" aria-hidden="true">{done ? '✓' : ''}</span><span><b>{label}</b><small>{sub}</small></span></li>;
