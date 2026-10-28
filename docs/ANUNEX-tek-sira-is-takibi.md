@@ -2725,3 +2725,17 @@ Canlı veriden teşhis:
 - **Kanıt:** 334 dosya / 1467 test; silme testleri yabancı anahtarlar açıkken (D1 gibi). Tarayıcıda okul onay kartı, sil ve geri al.
 - **Canlı veri (sahip talimatı):** ÇAP TYT 1 ve 4K TYT 1'deki 122 öğrencinin bütün sonuçları silindi; 122 misafir öğrenci arşivlendi; değerlendirilmiş yükleme "değerlendirmeye hazır"a döndü (audit: RESULT_EVALUATIONS_CLEARED). 4 yüklemenin kendisi ve orijinal dosyaları deploy sonrası 0140 ile silme akışına alınacak.
 - **Bilinen sınır:** Aynı okulda aynı öğrenci numarası iki farklı öğrencide varsa öğrenci girişi ikisini ayırt edemez; okul numaraları okul içinde tekil olmalı. Bayi/kurumun kendi sınavını tanımlaması ayrı iş olarak bekliyor.
+
+### S040 — app ve sonuc taraması (yalnız tespit, değişiklik yok) — 28 Ekim 16:50
+- **Yöntem:** Güncel main (5e049c8) yerelde canlı Worker zinciriyle çalıştırıldı. App: 5 rol (Süper Admin, kurum müdürü, öğretmen, öğrenci, veli) × 77 sayfa / menü; 1366 ve 390 genişlik. Sonuc: Süper Admin, bayi, kurum ve herkese açık ekranlar; 1366 ve 390. Canlı D1 yalnız okundu.
+- **Kritik:**
+  1. Canlıda bütün zamanlanmış işler kapalı (`SCHEDULED_JOBS_PAUSED=true`, app ve sonuc). Silinen yüklemelerin temizlenmesi, canlı sıra yedek yenilemesi, 30 günlük çöp kutusu silmesi, 1 yıllık orijinal dosya silmesi, saklama/temizlik ve planlı yayınlar çalışmıyor. Bugün işaretlenen 4 yükleme ve TXT dosyaları bu yüzden hâlâ duruyor.
+  2. Cloudflare ücretsiz plan: D1 günde 5M satır okuma. 22 Ekim'de dolmuştu; çok kurumlu test ve raporlar yine doldurabilir. Workers Paid gerekli.
+- **Yüksek:**
+  3. Arşivli iki sınav kanallarda açık: "ÇAP-TYT 0" (LICENSED, DEMO, MARKETING) ve "ÇAP TYT 0" (DEMO, MARKETING); yinelenen başlık var.
+  4. Raporlar sayfasında rubrik gözlem bölümü veli ve kurum müdüründe "Bu işlem için yetkiniz yok" (yerel tarama).
+  5. Menüde görünüp çalışmayanlar (yerel yapılandırma; canlı bayraklarla doğrulanmalı): Ödevler (öğrenci/öğretmen/kurum) "özellik etkin değil"; Soru havuzu (öğretmen/kurum) 403; Premium Live 403; öğrenci Soru pratiği 503 "Soru doğrulama yapılandırması hazır değil".
+  6. Süper Admin: Yoklama kurum seçimi olmadan hata veriyor; Enterprise sayfasında Campus 400.
+  7. 31 sayfa hiçbir rol menüsünde bağlantı olarak yok (adresle açılıyor). Önemlileri: exam-channels (yeni Çöp kutusu burada), result-network, seasons, settings, theme-management, transfers, guidance-admin, nibiru-admin, question-team, scale. Bir kısmı hub sayfalarından açılıyor olabilir; doğrulanmalı.
+- **Orta / bilinen eksikler:** bayi/kurum kendi sınav ve optiği (D-S039); optik formdaki kurum kodu okunmuyor; aynı okulda aynı numaralı iki öğrenci girişte ayrılamıyor; eski yayın sürümleri birikiyor; temalar/gece modu ve Sınavlarım tasarımı uygulanmadı; ulusal ölçek Faz 1 yok; NIBIRU-LAB kurumu MEB rehberinde yok; sonuc sayfa başlığı app ile aynı.
+- **Temiz çıkanlar:** sonuc'un bütün rol ekranları (1366 ve 390) hatasız; app'te 138 sayfa ziyaretinde yukarıdakiler dışında hata yok; telefonda taşma yok.
