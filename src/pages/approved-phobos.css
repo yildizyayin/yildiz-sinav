@@ -1,0 +1,140 @@
+/* T07 Phobos: existing form tree, cards, metadata and authoring controls only. */
+/* Photo canvas and suggestion geometry are intentionally excluded from control sizing. */
+@media screen {
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] { --phobos-ink:#192638; --phobos-muted:#536176; --phobos-line:#dde4ec; --phobos-accent:#925600; min-width:0; color:var(--phobos-ink); font-size:14px; line-height:1.5; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(.optical-definition-list-shell,.optical-definition-detail-shell,.optical-tree-layout,.optical-form-cards,.panel,.exam-card,.list-card,.form-grid) { min-width:0; max-width:100%; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .page-head { align-items:flex-start; gap:16px; margin-bottom:18px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] h1 { margin:4px 0 6px; color:var(--phobos-ink); font-size:clamp(27px,2.4vw,34px); font-weight:650; line-height:1.2; letter-spacing:-.03em; overflow-wrap:anywhere; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(h2,h3) { color:var(--phobos-ink); font-size:17px; font-weight:650; line-height:1.4; overflow-wrap:anywhere; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] h2 { margin:0 0 6px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] h3 { margin:16px 0 10px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(p,small,.muted) { color:var(--phobos-muted); line-height:1.6; overflow-wrap:anywhere; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] p { font-size:13px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] small { font-size:12px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .eyebrow { color:#80501b; font-size:11px; font-weight:600; letter-spacing:.07em; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(.panel,.exam-card,.list-card,.kpi-card) { border:1px solid var(--phobos-line); border-radius:7px; background:#fff; box-shadow:none; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .panel { padding:20px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .panel-head { align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid #e5ebf1; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .panel-head>div { min-width:0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .panel-head p { margin:4px 0 0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .panel-head>svg { width:22px; height:22px; color:#80501b; flex-shrink:0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] button:not(.approved-phobos-photo-suggestion):not([title="Öneriyi seçili alan türüyle ekle"]) { min-width:40px; max-width:100%; min-height:40px; height:auto; padding:8px 12px; border:1px solid #c4ced9; border-radius:6px; color:#28394f; background:#fff; box-shadow:none; font-size:13px; font-weight:600; line-height:1.5; white-space:normal; overflow-wrap:anywhere; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] button:not(.approved-phobos-photo-suggestion):not([title="Öneriyi seçili alan türüyle ekle"]) svg { flex-shrink:0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .primary { color:#fff; background:var(--phobos-accent) !important; border-color:var(--phobos-accent) !important; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .primary:hover:not(:disabled) { background:#784600 !important; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] button:not(.approved-phobos-photo-suggestion):not([title="Öneriyi seçili alan türüyle ekle"]):not(.primary):hover:not(:disabled) { background:#f7f9fb; border-color:#a5b2c2; transform:none; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] button:not(.approved-phobos-photo-suggestion):not([title="Öneriyi seçili alan türüyle ekle"]):disabled { cursor:not-allowed; opacity:.5; transform:none; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] button:not(.approved-phobos-photo-suggestion):not([title="Öneriyi seçili alan türüyle ekle"]):active:not(:disabled) { transform:translateY(1px); }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(a,button,input,select,textarea,summary):focus-visible { outline:3px solid #1c657c; outline-offset:3px; box-shadow:none; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] label { min-width:0; color:#394b60; font-size:13px; font-weight:500; line-height:1.5; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(input:not([type=checkbox]):not([type=radio]),select,textarea) { min-width:0; width:100%; max-width:100%; min-height:46px; height:auto; margin-top:6px; padding:10px 12px; border:1px solid #8795a6; border-radius:6px; color:var(--phobos-ink); background:#fff; font-size:14px; line-height:1.5; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] input::placeholder, .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] textarea::placeholder { color:#5e6d82; opacity:1; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(input,select,textarea):disabled { color:#687587; background:#f3f5f7; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] textarea { min-height:104px; resize:vertical; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(input[type=checkbox],input[type=radio]) { width:20px; height:20px; min-height:20px; flex:0 0 20px; margin:0; padding:0; accent-color:var(--phobos-accent); }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] label:has(>input[type=checkbox]), .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] label:has(>input[type=radio]) { min-height:40px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .form-grid { grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:16px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .form-grid>label { min-width:0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-tree-actions { margin:0 0 16px; gap:8px; flex-wrap:wrap; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-layout { grid-template-columns:280px minmax(0,1fr); gap:18px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-tree { min-height:0; padding:16px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-root { padding:10px 12px; border:1px solid #e5cfab; border-radius:6px; color:#744716; background:#fff6e6; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-root span { font-size:12px; color:#755b37; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-vendor { min-width:0; color:#394b60; font-size:13px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-vendor>strong { overflow-wrap:anywhere; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-template { min-width:0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-template button { padding:8px; border-color:transparent; background:transparent; font-size:13px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-template button span { white-space:normal; overflow:visible; font-weight:600; overflow-wrap:anywhere; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-template button small { font-size:12px; color:var(--phobos-muted); }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-template button.selected { border-color:#d6b77f; background:#fff6e6; color:#744716; box-shadow:inset 3px 0 0 var(--phobos-accent); }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr)); gap:16px; align-items:start; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .exam-card { padding:18px; transition:none; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .exam-card:hover { transform:none; box-shadow:none; border-color:#b4c1cf; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .exam-top { gap:12px; align-items:center; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .quick-icon { width:40px; height:40px; border-radius:6px; color:#80501b; background:#fff3dc; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .quick-icon svg { width:22px; height:22px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-status { margin:12px 0 8px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-status :is(.verified,.warning) { font-size:12px; font-weight:500; line-height:1.5; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-status .verified { color:#235d3e; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-status .warning { color:#80501b; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-title { padding:4px 0; border:0; border-radius:3px; background:transparent; text-align:left; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-title h3 { margin:0; font-size:17px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-title:hover:not(:disabled) { background:transparent; color:#744716; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .icon-button { width:40px; height:40px; min-width:40px; padding:0; display:inline-flex; align-items:center; justify-content:center; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-menu { top:46px; min-width:160px; max-width:calc(100vw - 48px); padding:5px; border:1px solid #c4ced9; border-radius:6px; background:#fff; box-shadow:0 8px 24px #19263818; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-menu button { width:100%; padding:9px 10px; border:0; border-radius:4px; text-align:left; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-detail-toolbar { margin:0 0 16px; padding-bottom:12px; gap:12px; flex-wrap:wrap; border-bottom:1px solid var(--phobos-line); }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-detail-toolbar .ghost { color:#80501b; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .list-card { padding:14px; gap:12px; flex-wrap:wrap; color:var(--phobos-ink); }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .list-card>div { min-width:0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .list-card>div:last-child { flex-wrap:wrap; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .list-card strong { color:var(--phobos-ink); font-size:13px; font-weight:600; overflow-wrap:anywhere; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .list-card span { color:var(--phobos-muted); font-size:12px; line-height:1.5; overflow-wrap:anywhere; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .summary-strip { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr)); gap:8px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .kpi-card { min-height:74px; padding:12px 14px; border:0; border-radius:6px; background:#f5f7fa; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .kpi-card::before { display:none; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .kpi-card span { font-size:12px; font-weight:500; color:var(--phobos-muted); }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .kpi-card strong { margin-top:4px; color:var(--phobos-ink); font-size:21px; line-height:1.4; font-weight:650; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .alert { padding:12px 14px; border:1px solid var(--phobos-line); border-radius:6px; font-size:13px; font-weight:400; line-height:1.6; overflow-wrap:anywhere; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .alert svg { flex-shrink:0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .alert.info { color:#34536a; background:#f2f7fa; border-color:#d4e2ec; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .alert.warning { color:#80501b; background:#fff6e6; border-color:#e5cfab; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .alert.error { color:#903b2c; background:#fff1ed; border-color:#e3b4ac; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .alert.success { color:#235d3e; background:#eaf5ed; border-color:#c2ddcb; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .status { padding:4px 8px; border-radius:5px; font-size:12px; font-weight:500; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .status.neutral { color:#536176; background:#f0f3f7; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .empty-state { padding:16px; color:var(--phobos-muted); font-size:13px; line-height:1.6; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .approved-phobos-fmt-grid { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-manual-table { max-width:100%; min-width:0; gap:0; overflow-x:auto; overscroll-behavior-x:contain; border:1px solid var(--phobos-line); border-radius:6px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-manual-row { grid-template-columns:minmax(160px,1.3fr) 56px repeat(3,minmax(100px,1fr)); min-width:580px; gap:10px; padding:10px 12px; border:0; border-bottom:1px solid #e5ebf1; border-radius:0; background:#fff; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-manual-row:last-child { border-bottom:0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-manual-head { background:#f3f6fa; color:#394b60; font-size:12px; font-weight:600; text-transform:none; letter-spacing:0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-manual-row :is(input,select) { margin:0; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-manual-row input[type=checkbox] { width:40px; height:40px; min-height:40px; justify-self:center; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-manual-answer-meta { grid-template-columns:1fr 1fr; gap:6px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-dialog-backdrop { padding:20px; background:#19263870; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-dialog { width:min(100%,1100px); min-width:0; max-height:calc(100dvh - 40px); border:1px solid #c4ced9; border-radius:8px; background:#fff; box-shadow:0 18px 60px #19263830; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-dialog-head { gap:16px; padding:16px 20px; border-bottom:1px solid var(--phobos-line); }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-dialog-head h2 { margin:0; color:var(--phobos-ink); font-size:18px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-dialog-head h2 svg { color:#80501b; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-dialog-body { min-width:0; min-height:0; padding:20px; overflow:auto; overscroll-behavior:contain; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-top-fields { grid-template-columns:minmax(0,1.35fr) 110px minmax(0,1fr); gap:14px 16px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-top-fields label { color:#394b60; font-size:13px; font-weight:500; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-top-fields :is(input,select) { margin:0; font-weight:400; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-user-picker { min-width:0; gap:8px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-user-picker input { border-radius:6px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-user-picker button { border-radius:6px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-section-head { grid-template-columns:minmax(0,1fr) 64px 64px; gap:8px; margin-top:20px; padding:10px 0; color:#394b60; border-bottom:1px solid var(--phobos-line); font-size:12px; font-weight:600; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-section-head span { color:var(--phobos-muted); }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-columns { grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-row { grid-template-columns:minmax(0,1fr) 64px 64px; min-height:54px; gap:8px; padding:4px 0; border-bottom:1px solid #edf0f4; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-name { min-height:40px; gap:8px; color:#394b60; font-size:12px; font-weight:500; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-name span { white-space:normal; overflow:visible; text-overflow:clip; overflow-wrap:anywhere; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-name input { width:20px; height:20px; min-width:20px; min-height:20px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-row>input { margin:0; min-height:46px; padding:8px; font-size:14px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-dialog-footer { gap:8px; flex-wrap:wrap; padding:14px 20px; border-top:1px solid var(--phobos-line); background:#fff; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-dialog-footer button { min-width:110px; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .different-save { color:#744716; border-color:#d6b77f; background:#fff6e6; }
+ @media(max-width:1100px) {
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-layout { grid-template-columns:240px minmax(0,1fr); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-columns { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ }
+ @media(max-width:850px) {
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-tree-layout { grid-template-columns:minmax(0,1fr); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-top-fields { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-top-fields :is(.dialog-field-name,.dialog-field-publisher,.dialog-field-code,.dialog-field-owner) { grid-column:1 / -1; }
+ }
+ @media(max-width:700px) {
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(.page-head,.panel-head,.optical-detail-toolbar) { align-items:flex-start; flex-wrap:wrap; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(.form-grid,.optical-form-cards,.optical-schoolizyon-columns) { grid-template-columns:minmax(0,1fr); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .panel { padding:16px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .summary-strip { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-dialog-backdrop { padding:8px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-dialog { max-height:calc(100dvh - 16px); }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(.optical-form-dialog-head,.optical-form-dialog-body,.optical-form-dialog-footer) { padding:14px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-dialog-footer button { min-width:0; flex:1 1 90px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] :is(input:not([type=checkbox]):not([type=radio]),select,textarea) { font-size:16px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-schoolizyon-row>input { font-size:16px; }
+ }
+ @media(prefers-reduced-motion:reduce) { .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] * { animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+}
