@@ -64,7 +64,11 @@ describe('ANUNEX result network contract',()=>{
  it('refreshes single-use Turnstile tokens after a failed result lookup or operator login',()=>{
   expect(portal).toContain('const refreshTurnstile=()=>');
   expect(portal).toContain('key={turnstileCycle}');
-  expect(portal).toContain('disabled={busy||!institution||!token}');
+  // S037: the student form is its own component and renews its token after every failed sign-in
+  const student=readFileSync('src/components/StudentLogin.tsx','utf8');
+  expect(student).toContain('key={cycle}');
+  expect(student).toContain("setToken(''); setCycle((c) => c + 1);");
+  expect(student).toContain('!!token');
  });
  it('connects the independent operator screen to a scoped evaluation workflow',()=>{
   expect(source).toContain('handleResultOperations');

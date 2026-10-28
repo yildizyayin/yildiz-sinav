@@ -36,3 +36,38 @@
   .osh .osh-side:not(.open) .osh-nav,.osh .osh-side:not(.open) .osh-foot{display:none}
   .osh .osh-kpis,.osh .osh-quick{grid-template-columns:1fr}
 }
+/* S037 erişim kartları: three steps and the printable cards */
+.osh .acc-steps{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 16px}
+.osh .acc-steps li{display:flex;align-items:flex-start;gap:8px;min-width:150px}
+.osh .acc-steps li b{display:block;font-size:13px;color:var(--ink)}
+.osh .acc-steps li small{display:block;font-size:12px;color:var(--muted)}
+.osh .acc-dot{flex:0 0 20px;height:20px;border-radius:50%;border:2px solid #C9D5F5;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;margin-top:1px}
+.osh .acc-steps li.done .acc-dot{background:#0E7A4F;border-color:#0E7A4F}
+.osh .acc-actions{display:flex;gap:8px;flex-wrap:wrap}
+.acc-sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;max-height:520px;overflow:auto;padding:4px}
+.acc-card{border:1.5px dashed #9FB3DA;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;background:#fff;color:#07143F;font-family:Inter,system-ui,sans-serif;break-inside:avoid}
+.acc-card header{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.06em;color:#2563EB;text-transform:uppercase}
+.acc-card p{margin:0}
+.acc-card .acc-school{font-weight:700;font-size:14px}
+.acc-card .acc-exam{font-size:12px;color:#4A5A80}
+.acc-card dl{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin:2px 0}
+.acc-card dt{font-size:10px;color:#4A5A80;text-transform:uppercase;letter-spacing:.05em}
+.acc-card dd{margin:0;font-size:13px;font-weight:600}
+.acc-card .acc-code{display:flex;align-items:baseline;justify-content:space-between;background:#F7F9FF;border:1px solid #DCE6F8;border-radius:8px;padding:6px 10px}
+.acc-card .acc-code small{font-size:11px;color:#4A5A80}
+.acc-card .acc-code b{font:800 22px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.08em}
+.acc-card .acc-how{font-size:11px;line-height:1.45;color:#07143F}
+.acc-card .acc-valid{font-size:10px;color:#4A5A80}
+@media print{
+  @page{size:A4 portrait;margin:10mm}
+  #print-root .acc-sheet{display:grid!important;grid-template-columns:1fr 1fr;gap:4mm;max-height:none;overflow:visible;padding:0}
+  #print-root .acc-card{height:52mm;box-sizing:border-box;padding:2.5mm 4mm;gap:.9mm;border-radius:3mm;overflow:hidden}
+  #print-root .acc-card header{font-size:7pt}
+  #print-root .acc-card .acc-school{font-size:9.5pt}
+  #print-root .acc-card .acc-exam,#print-root .acc-card dd{font-size:8pt}
+  #print-root .acc-card dt,#print-root .acc-card .acc-valid{font-size:6.5pt}
+  #print-root .acc-card dl{margin:0;gap:2mm}
+  #print-root .acc-card .acc-code{padding:1mm 3mm}
+  #print-root .acc-card .acc-code b{font-size:15pt}
+  #print-root .acc-card .acc-how{font-size:7pt;line-height:1.35}
+}

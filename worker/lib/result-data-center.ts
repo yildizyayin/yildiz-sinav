@@ -47,7 +47,9 @@ export async function listDataBatches(env: Env, scope: Scope, filters: { examId?
       i.name institution_name,COALESCE(i.meb_code,i.code) institution_code,i.city,i.district,
       (SELECT count(*) FROM scan_records r WHERE r.batch_id=b.id) total,
       (SELECT count(*) FROM scan_records r WHERE r.batch_id=b.id AND r.resolution_status='CANCELLED') set_aside,
-      f.file_name original_name,f.size_bytes original_size,f.retain_until
+      f.file_name original_name,f.size_bytes original_size,f.retain_until,
+      (SELECT count(*) FROM result_access_identities rai JOIN exam_administrations ea ON ea.id=rai.administration_id JOIN exam_participants ep ON ep.id=rai.participant_id WHERE ea.exam_id=b.exam_id AND ep.institution_id=b.institution_id) cards,
+      (SELECT ea.status FROM exam_administrations ea WHERE ea.exam_id=b.exam_id AND ea.channel='RESULT_NETWORK' ORDER BY ea.created_at DESC LIMIT 1) publication_status
     FROM scan_batches b JOIN exams e ON e.id=b.exam_id JOIN institutions i ON i.id=b.institution_id LEFT JOIN scan_batch_files f ON f.batch_id=b.id
     WHERE 1=1${scope.sql.replace(/ep\.institution_id/g, 'b.institution_id')}${where.length ? ' AND ' + where.join(' AND ') : ''}
     ORDER BY b.created_at DESC,b.rowid DESC LIMIT 300`).bind(...scope.args, ...args));
