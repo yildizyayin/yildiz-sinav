@@ -4,6 +4,7 @@ import { AnunexBrand } from '../components/AnunexBrand';
 import { DataCenter } from '../components/DataCenter';
 import { InstitutionCardPanel, InstitutionPinIssuer } from '../components/InstitutionClaim';
 import { collectAccessCodePages } from '../lib/access-code-pages';
+import { printSection } from '../lib/printSection';
 import { ResultOperatorWorkspace, ResultReportsPanel } from './ResultOperatorWorkspace';
 import '../components/report-center.css';
 import './result-operator-shell.css';
@@ -88,26 +89,51 @@ function SchoolList() {
   </div>;
 }
 
+/**
+ * S037: the three steps that open a result to students, per evaluated upload: evaluated, cards made, published.
+ * Codes are shown only once, so after making them the cards can be printed (10 per A4) and the list saved as CSV
+ * while the page is open; nothing is kept in the browser.
+ */
 function AccessCards() {
   const [rows, setRows] = useState<any[]>([]); const [busy, setBusy] = useState(''); const [msg, setMsg] = useState(''); const [error, setError] = useState('');
-  useEffect(() => { void api<any>('/api/admin/result-network/operations/data/batches?mode=INSTITUTION').then((r) => setRows((r.batches || []).filter((b: any) => b.status === 'COMMITTED'))).catch((e: any) => setError(e.message)); }, []);
-  const make = async (b: any) => {
-    setBusy(b.id); setMsg(''); setError('');
-    const result = await collectAccessCodePages((cursor) => api<any>(`/api/admin/result-network/operations/scan-batches/${b.id}/access-codes${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ''}`, { method: 'POST' }));
-    if (result.codes.length) {
-      const cell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-      const csv = '﻿' + [['Öğrenci No', 'Ad Soyad', 'Sınıf', 'Erişim Kodu', 'Geçerlilik'], ...result.codes.map((x: any) => [x.studentNumber, x.fullName, x.gradeLevel, x.accessCode, x.expiresAt])].map((r) => r.map(cell).join(';')).join('\n');
-      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = 'anunex-ogrenci-erisim-kartlari.csv'; a.click(); URL.revokeObjectURL(a.href);
-      setMsg(`${result.codes.length} öğrenci erişim kartı üretildi ve indirildi. Kodlar güvenlik gereği yalnız bu indirmede gösterilir.`);
-    } else if (!result.error) setMsg('Bu yüklemenin erişim kartları daha önce üretilmiş; mevcut kodlar güvenlik gereği tekrar gösterilmez.');
-    if (result.error) setError(result.error.message);
-    setBusy('');
+  const [made, setMade] = useState<{ batch: any; codes: any[] } | null>(null);
+  const load = () => api<any>('/api/admin/result-network/operations/data/batches?mode=INSTITUTION').then((r) => setRows((r.batches || []).filter((b: any) => b.status === 'COMMITTED'))).catch((e: any) => setError(e.message));
+  useEffect(() => { void load(); }, []);
+  const csv = (b: any, codes: any[]) => {
+    const cell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const text = '\ufeff' + [['Öğrenci No', 'Ad Soyad', 'Sınıf', 'Erişim Kodu', 'Geçerlilik'], ...codes.map((x: any) => [x.studentNumber, x.fullName, x.gradeLevel, x.accessCode, x.expiresAt])].map((r) => r.map(cell).join(';')).join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' })); a.download = `${String(b.title).replace(/[^\p{L}\p{N}]+/gu, '-')}-erisim-kartlari.csv`; a.click(); URL.revokeObjectURL(a.href);
   };
+  const make = async (b: any) => {
+    setBusy(b.id); setMsg(''); setError(''); setMade(null);
+    const result = await collectAccessCodePages((cursor) => api<any>(`/api/admin/result-network/operations/scan-batches/${b.id}/access-codes${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ''}`, { method: 'POST' }));
+    if (result.codes.length) { const codes = [...result.codes].sort((x: any, y: any) => String(x.gradeLevel).localeCompare(String(y.gradeLevel), 'tr-TR', { numeric: true }) || String(x.studentNumber).localeCompare(String(y.studentNumber), 'tr-TR', { numeric: true })); setMade({ batch: b, codes }); setMsg(`${result.codes.length} öğrenci için kart hazır. Kodlar güvenlik gereği yalnız şimdi görünür: sayfadan ayrılmadan yazdırın ya da CSV olarak kaydedin.`); }
+    else if (!result.error) setMsg('Bu yüklemenin kartları daha önce üretilmiş; kodlar güvenlik gereği tekrar gösterilmez. Kaybolan kart için Süper Admin yeni kod verebilir.');
+    if (result.error) setError(result.error.message);
+    setBusy(''); void load();
+  };
+  const step = (done: boolean, label: string, sub: string) => <li className={done ? 'done' : ''}><span className="acc-dot" aria-hidden="true">{done ? '✓' : ''}</span><span><b>{label}</b><small>{sub}</small></span></li>;
   return <div className="rm dc">
-    <header className="rm-head"><div><div className="rm-kicker">ÖĞRENCİLER</div><h1 className="rm-title">Erişim kartları</h1><p className="rm-sub">Öğrencilerin sonucu sonuc.anunex.com'da görmesi için kişisel kodlar. Her yükleme için bir kez üretilir.</p></div></header>
+    <header className="rm-head"><div><div className="rm-kicker">ÖĞRENCİLER</div><h1 className="rm-title">Erişim kartları</h1><p className="rm-sub">Öğrencinin sonucunu sonuc.anunex.com'da görmesi için üç adım tamamlanmalı: değerlendirme, kartlar ve yayın.</p></div></header>
     {msg && <div className="rm-card" role="status">{msg}</div>}{error && <div className="rm-alert" role="alert">{error}</div>}
-    <section className="rm-card"><div className="dc-table-wrap"><table className="dc-table"><thead><tr><th>Tarih</th><th>Sınav</th><th className="r">Öğrenci</th><th className="r">İşlem</th></tr></thead>
-      <tbody>{rows.map((b) => <tr key={b.id}><td className="dc-muted">{when(b.created_at)}</td><td><b>{b.title}</b><small>{b.academic_year}</small></td><td className="r num">{Number(b.total) - Number(b.set_aside)}</td><td className="r"><button type="button" className="dc-btn dc-main" disabled={busy === b.id} onClick={() => void make(b)}>{busy === b.id ? 'Üretiliyor…' : 'Kartları üret ve indir'}</button></td></tr>)}</tbody></table>
+    {made && <section className="rm-card acc-made" aria-label="Hazırlanan kartlar">
+      <div className="rm-card-head"><h2>{made.batch.title} <span className="rm-muted">· {made.codes.length} kart</span></h2>
+        <div className="acc-actions"><button type="button" className="dc-btn dc-main" onClick={() => printSection(document.getElementById('acc-sheet'))}>Kartları yazdır</button><button type="button" className="dc-btn" onClick={() => csv(made.batch, made.codes)}>CSV indir</button></div></div>
+      <div id="acc-sheet" className="acc-sheet">{made.codes.map((c: any, i: number) => <article className="acc-card" key={i}>
+        <header><img src="/app-icon.svg" alt="" width={22} height={22} /><span>ANUNEX · Sonuç erişim kartı</span></header>
+        <p className="acc-school">{made.batch.institution_name}</p>
+        <p className="acc-exam">{made.batch.title}</p>
+        <dl><div><dt>Ad soyad</dt><dd>{c.fullName}</dd></div><div><dt>Sınıf</dt><dd>{c.gradeLevel}</dd></div><div><dt>No</dt><dd>{c.studentNumber}</dd></div></dl>
+        <div className="acc-code"><small>Erişim kodu</small><b>{String(c.accessCode).replace(/(\d{4})(?=\d)/, '$1 ')}</b></div>
+        <p className="acc-how">sonuc.anunex.com › Öğrenci Sonuç › il, ilçe ve kurumunu seç › numaranı, adının ilk 3 harfini ve bu kodu yaz.</p>
+        {c.expiresAt && <p className="acc-valid">Geçerlilik: {new Date(c.expiresAt).toLocaleDateString('tr-TR')}</p>}
+      </article>)}</div>
+    </section>}
+    <section className="rm-card"><div className="dc-table-wrap"><table className="dc-table"><thead><tr><th>Sınav</th><th className="r">Öğrenci</th><th>Öğrencilere açılma</th><th className="r">İşlem</th></tr></thead>
+      <tbody>{rows.map((b) => { const students = Number(b.total) - Number(b.set_aside), cards = Number(b.cards || 0), live = b.publication_status === 'PUBLISHED';
+        return <tr key={b.id}><td><b>{b.title}</b><small>{b.academic_year} · {when(b.created_at)}</small></td><td className="r num">{students}</td>
+          <td><ol className="acc-steps">{step(true, 'Değerlendirildi', `${students} öğrenci`)}{step(cards > 0, 'Kartlar', cards ? `${cards} kart üretildi` : 'Henüz üretilmedi')}{step(live, 'Yayın', live ? 'Öğrenciler görebilir' : 'Süper Admin yayını bekleniyor')}</ol></td>
+          <td className="r"><button type="button" className="dc-btn dc-main" disabled={busy === b.id || (cards >= students && cards > 0)} title={cards >= students && cards > 0 ? 'Bu yüklemenin bütün kartları üretildi.' : ''} onClick={() => void make(b)}>{busy === b.id ? 'Üretiliyor…' : cards >= students && cards > 0 ? 'Kartlar tamam' : cards ? 'Eksik kartları üret' : 'Kartları üret'}</button></td></tr>; })}</tbody></table>
       {!rows.length && <p className="rm-empty">Değerlendirilmiş sınav yok.</p>}</div></section>
   </div>;
 }
