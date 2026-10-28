@@ -2685,3 +2685,15 @@ Canlı veriden teşhis:
 - **Değerlendirme dışı satırlar:** ÇAP TYT 1'de 6 satır (kitapçık işaretsiz 4, ad okunamadı 1, geçersiz karakter 3; bazıları birlikte) dışarıda kaldı. Yeni kural: geçersiz karakter boş sayılır ve satır değerlendirilir; ad okunamazsa "Ad okunamadı · No ..." ile değerlendirilir. Kitapçık işaretsiz satırlar için karar bekleniyor.
 - **Nibiru animasyonu:** sonuc'ta hareketli Nibiru yalnız giriş sayfasının üst bölümünde var; öğrenci sonuç ekranında yok (yalnız "Nibiru'dan kısa rota" kutusu). App'teki öğrenci sonuç ekranında imleci izleyen animasyonlu Nibiru var. Öğrenci sonuç ekranına eklenecek.
 - **Temalar (D-S037 tuvali):** tema ve gece/gündüz tasarımı tuvalde; kod yok. Raporlar ve basılı çıktılar standart renkte kalır.
+
+### S038 — D-S038/D-S037 uygulandı: kodsuz öğrenci girişi, herkes değerlendirilir, canlı sıralama, alt testler — 28 Ekim
+- **Onay:** Sahip "aldığımız kararları yap" dedi; araya "karnede ve net listesinde ders gruplarının altları görünmüyor" isteği girdi.
+- **Yapılan (PR #409):**
+  - Sonuc öğrenci girişi: il › ilçe › kurum, sınıf, numara (veya T.C.), adın ilk 3 harfi. Kod ve kart yok. Robot doğrulaması; IP başına 20, öğrenci no başına 8 hata / 15 dk; tek tip yanıt. App girişi değişmedi.
+  - Değerlendirme bitince her öğrenciye otomatik sonuç erişimi (`RESULT_ACCESS_AUTO_ISSUED`; kod özeti hiçbir kodla eşleşmeyen rastgele değer). Kurum menüsünde "Erişim kartları" yerine "Öğrenci sonuçları" (Değerlendirildi → Yayın, duyuru metni).
+  - Herkes değerlendirilir: geçersiz işaret boş; adı okunamayan "Ad okunamadı · No …"; yalnız adla eşleşen satır yeni katılımcı. Daha önce otomatik dışarıda bırakılan satırlar yeniden ele alınır. Çok kitapçıklı sınavda kitapçığı işaretsiz satır hâlâ dışarıda (karar bekliyor).
+  - Canlı sıra: yayınlanmış sınava yeni yükleme değerlendirilebilir; değerlendirme bitince yayın yeni sürümle yazılır (ilk yayın tarihi korunur, `RESULT_RANKINGS_REFRESHED`). Kilit doluysa 15 dakikalık zamanlayıcı yakalar. Değerlendirilmiş yüklemenin yeniden değerlendirilmesi hâlâ kapalı.
+  - Alt testler: anahtarda DERS sütunu yoksa ÖSYM kitapçık sırası — TYT Sosyal 25 (Tarih 5, Coğrafya 5, Felsefe 5, Din Kültürü 5, Felsefe (Din yerine) 5), TYT Fen 20 (Fizik 7, Kimya 7, Biyoloji 6), AYT Edebiyat-Sosyal-1, Sosyal-2, Fen. Soru sayısı tutmazsa tahmin yapılmaz. Kimsenin cevaplamadığı otomatik alt test gizlenir.
+  - Öğrenci sonuç ekranında hareketli Nibiru; "ikinci doğrulama" ifadeleri "robot korumalı" oldu.
+- **Kanıt:** 331 dosya / 1457 test; tarayıcıda kurum ekranı, kodsuz giriş ve sonuç ekranı uçtan uca.
+- **Not:** Eski yayın sürümleri silinmiyor (geçmiş için); ulusal ölçekte Faz 1'de ele alınacak.
