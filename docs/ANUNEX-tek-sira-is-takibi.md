@@ -2701,3 +2701,16 @@ Canlı veriden teşhis:
 ### 28 Ekim 15:34 — Sahip kararı ve açılan istişare
 - **Kitapçık:** (a) seçildi. Çok kitapçıklı sınavda kitapçığı işaretsiz satır için kurum kontrol ekranında kitapçığı tek tıkla seçer; seçilmeden o satır değerlendirilmez. (Kod: sonraki güncellemede.)
 - **İstişare açıldı (karar bekliyor):** app'te merkez/kurum/bayi sınav ve optik sahipliği; app'te sınav silme modeli; sonuc'ta yükleme silme; yanlış kuruma yükleme (A okulunun öğrencileri B okulunda). Mevcut durum: app'te "sil" yalnız arşivler (geri alınabilir, sonuçlar korunur); bazı arşivli sınavlar DEMO/MARKETING kanallarında açık kalmış; sonuc'ta yükleme silme yok.
+
+### D-S039 — Sahiplik, silme ve yanlış kuruma yükleme kararları — 28 Ekim 15:45 (karar; kod sonra, tek güncellemede)
+- **Sahiplik:** Süper Admin'in app'te eklediği sınav/optik merkezdir. Kurumun eklediği yalnız kurum + Süper Admin; bayinin eklediği yalnız bayi + Süper Admin görür. Bayi kendi sınavını yalnız kendisine kayıtlı kurumlarda değerlendirebilir. Kendi denemelerinde Türkiye sırası yok.
+- **App sınav silme:** "Kaldır" sınavı tüm kanallardan (app, sonuc, demo, tanıtım) aynı anda kaldırır, 30 gün geri alınabilir. Sonra (ya da Süper Admin adını yazarak onaylarsa) kalıcı silinir; denetim satırı kalır. Taslak hemen kalıcı silinebilir. Sonuçlu sınavda gerekçe zorunlu.
+- **Sonuc yükleme silme:** Kurum kendi yüklemesini (yayından sonra da) silip yeniden yükleyebilir; bayi bölgesindekini, Süper Admin hepsini. Değerlendirme sonrası silmede gerekçe; öğrenciler, sonuçlar ve girişler kalkar, canlı sıralar yeniden hesaplanır. 7 gün geri al, sonra kalıcı.
+- **Yanlış kurum:** değerlendirme öncesi okul onay kartı; sınıf düzeyi uymayan satırlar ayrılır; aynı dosya ikinci kez durdurulur; formda kurum kodu varsa uyuşmazlıkta durur; bayi ve Süper Admin "başka okula taşı". "Aynı öğrenci başka okulda" yalnız uyarıdır (öğrenci okulda ve kursta olabilir) ve yalnız bayi ile Süper Admin görür.
+- **Kitapçık:** (a) kurum kontrol ekranında seçer.
+
+### 28 Ekim 15:45 — Analiz: öğrenci "kurumunuza ait sınav yok" mesajı (yalnız okuma)
+- TEB Ataşehir (972857) için ÇAP TYT 1'de iki yükleme hiç değerlendirilmemiş (READY 100, NEEDS_REVIEW 106).
+- Değerlendirilmiş tek yükleme `teb_cap1-2026.txt` dosyası; 28 Ekim 14:11'de Süper Admin hesabıyla **Kartal Anadolu Lisesi (161589)** adına yüklenmiş. 106 satırın 102'si TEB yüklemesiyle numara ve adıyla aynı; ekrandaki öğrenci numarası bu yüklemede. Yani TEB öğrencileri yanlışlıkla Kartal Anadolu Lisesi'nde değerlendirilmiş.
+- Bu yükleme sonuc deploy'undan (15:33) önce değerlendirildiği için otomatik öğrenci erişimi oluşmadı; sınav da yayınlanmamış (UPLOADING). Sistem doğru davrandı: TEB'de yayınlanmış sonuç yok.
+- Önizlemeden değerlendirmeye ~20 sn (100 öğrenci).
