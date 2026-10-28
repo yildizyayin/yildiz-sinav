@@ -2676,3 +2676,12 @@ Canlı veriden teşhis:
 - **D-S037 kararları:** 17:00'den sonra yüklenenlere Türkiye sırası güncel olarak verilir; yayınlanan sıralar sonraki yüklemelerle değişir (canlı sıra). Bugünkü "dondur ve yayınla" modeli bunu karşılamıyor; Faz 1 tasarımına girer.
 - **Yeni istek (öneri aşamasında):** Bayi/kurum kendi denemesini ve optiğini ekleyebilsin, yalnız kendisi görsün. Yıl sonu arşiv/silme. Sınavlar klasör yapısında: Eğitim yılı › Seviye › Yayınevi › Sınav › Yüklemeler; "Kendi denemelerim" ayrı klasör.
 - **Deploy:** App 761964a canlı. Sonuc 761964a onay bekliyor (run 40674608229).
+
+### D-S038 — sonuc.anunex.com öğrenci modeli ve tasarım kararları — 28 Ekim 14:22 (yalnız karar, kod yok)
+- **Kayıt yok, misafir yok:** sonuc'ta öğrenci kaydı tutulmaz; "misafir öğrenci" kavramı sonuc ekranlarında ve mesajlarında kullanılmaz. Yüklenen her öğrenci değerlendirilir. Kayıtlı öğrenci yalnız app.anunex.com'dadır.
+- **Erişim kodu yok (yalnız sonuc):** sonuc öğrenci girişinde erişim kodu ve erişim kartı adımı kaldırılacak. Giriş: il › ilçe › kurum, sınıf, öğrenci no (veya T.C.), adın ilk 3 harfi. App'te bugünkü giriş aynen kalır.
+  - Bu, S037'deki "ilk 3 harf + erişim kodu" kararının yerini alır. Kurum ekranındaki "Erişim kartları" adımı sonuc'ta kalkar; öğrenciye açılma adımları "Değerlendirildi → Yayın" olur.
+  - Risk (sahibe bildirildi): numara ve adın ilk 3 harfini bilen biri (ör. sınıf arkadaşı) o öğrencinin sonucunu görebilir. Hafifletme: robot doğrulaması, IP başına deneme sınırı, ad soyad maskeli, T.C. açık saklanmaz.
+- **Değerlendirme dışı satırlar:** ÇAP TYT 1'de 6 satır (kitapçık işaretsiz 4, ad okunamadı 1, geçersiz karakter 3; bazıları birlikte) dışarıda kaldı. Yeni kural: geçersiz karakter boş sayılır ve satır değerlendirilir; ad okunamazsa "Ad okunamadı · No ..." ile değerlendirilir. Kitapçık işaretsiz satırlar için karar bekleniyor.
+- **Nibiru animasyonu:** sonuc'ta hareketli Nibiru yalnız giriş sayfasının üst bölümünde var; öğrenci sonuç ekranında yok (yalnız "Nibiru'dan kısa rota" kutusu). App'teki öğrenci sonuç ekranında imleci izleyen animasyonlu Nibiru var. Öğrenci sonuç ekranına eklenecek.
+- **Temalar (D-S037 tuvali):** tema ve gece/gündüz tasarımı tuvalde; kod yok. Raporlar ve basılı çıktılar standart renkte kalır.
