@@ -2697,3 +2697,7 @@ Canlı veriden teşhis:
   - Öğrenci sonuç ekranında hareketli Nibiru; "ikinci doğrulama" ifadeleri "robot korumalı" oldu.
 - **Kanıt:** 331 dosya / 1457 test; tarayıcıda kurum ekranı, kodsuz giriş ve sonuç ekranı uçtan uca.
 - **Not:** Eski yayın sürümleri silinmiyor (geçmiş için); ulusal ölçekte Faz 1'de ele alınacak.
+
+### 28 Ekim 15:34 — Sahip kararı ve açılan istişare
+- **Kitapçık:** (a) seçildi. Çok kitapçıklı sınavda kitapçığı işaretsiz satır için kurum kontrol ekranında kitapçığı tek tıkla seçer; seçilmeden o satır değerlendirilmez. (Kod: sonraki güncellemede.)
+- **İstişare açıldı (karar bekliyor):** app'te merkez/kurum/bayi sınav ve optik sahipliği; app'te sınav silme modeli; sonuc'ta yükleme silme; yanlış kuruma yükleme (A okulunun öğrencileri B okulunda). Mevcut durum: app'te "sil" yalnız arşivler (geri alınabilir, sonuçlar korunur); bazı arşivli sınavlar DEMO/MARKETING kanallarında açık kalmış; sonuc'ta yükleme silme yok.
