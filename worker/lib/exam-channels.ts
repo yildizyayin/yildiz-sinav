@@ -33,11 +33,18 @@ export async function changeChannel(env:Env,user:AuthUser,id:string,channel:Chan
  statements.push(channelAudit(env,user,exam.institution_id,'EXAM_CHANNEL_'+action.toUpperCase(),id,{channel,sourceRevision:exam.revision}));await env.DB.batch(statements);return json(await channelState(env,id));
  });
 }
-export async function trashExam(env:Env,user:AuthUser,id:string,scope='APP'){
+/**
+ * D-S039 (owner, 28 Oct): "Kaldır" takes an exam out of every channel at once (app, sonuc, demo, tanıtım) and puts it
+ * in the trash for 30 days (scope ALL). A reason is required when students have results. The older per-channel scopes
+ * stay for the channel screen.
+ */
+export async function trashExam(env:Env,user:AuthUser,id:string,scope='APP',reason=''){
  const exam=await one<any>(env.DB.prepare('SELECT * FROM exams WHERE id=?').bind(id));if(!exam)return notFound();
- if(user.role!=='SUPER_ADMIN'&&!(user.role==='INSTITUTION_MANAGER'&&exam.owner_type==='INSTITUTION'&&exam.institution_id===user.institution_id&&scope==='APP'))return forbidden();
- if(!['APP','RESULT_PORTAL','BOTH'].includes(scope))return badRequest('Kaldırılacak platformu seçin.');
- if(scope!=='APP'&&env.ENVIRONMENT!=='production')return badRequest('Sonuc yayını app.anunex.com üzerinden yönetilir.','RESULT_PORTAL_ENVIRONMENT_MISMATCH');
+ if(user.role!=='SUPER_ADMIN'&&!(user.role==='INSTITUTION_MANAGER'&&exam.owner_type==='INSTITUTION'&&exam.institution_id===user.institution_id&&(scope==='APP'||scope==='ALL')))return forbidden();
+ if(!['APP','RESULT_PORTAL','BOTH','ALL'].includes(scope))return badRequest('Kaldırılacak platformu seçin.');
+ if(scope!=='APP'&&scope!=='ALL'&&env.ENVIRONMENT!=='production')return badRequest('Sonuc yayını app.anunex.com üzerinden yönetilir.','RESULT_PORTAL_ENVIRONMENT_MISMATCH');
+ const results=await one<any>(env.DB.prepare('SELECT count(*) c FROM exam_participants WHERE exam_id=?').bind(id));
+ if(scope==='ALL'&&Number(results?.c||0)&&String(reason||'').trim().length<5)return badRequest(`Bu sınavda ${results.c} öğrencinin sonucu var. Kaldırmak için kısa bir neden yazın.`,'TRASH_REASON_REQUIRED');
  return withExamOperationLock(env,id,'EXAM_TRASH',async(env)=>{
  const result=await one<any>(env.DB.prepare("SELECT 1 ok FROM exam_channel_publications WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='ACTIVE'").bind(id));
  const learner=await one<any>(env.DB.prepare("SELECT result_freeze_status,published_at,result_publish_at FROM exam_delivery_profiles WHERE exam_id=?").bind(id));
@@ -49,11 +56,12 @@ export async function trashExam(env:Env,user:AuthUser,id:string,scope='APP'){
  // scheduler cannot publish it again. Restoring does not republish; that stays an explicit decision.
  st.push(env.DB.prepare("UPDATE exam_delivery_profiles SET result_freeze_status=CASE WHEN result_freeze_status='PUBLISHED' THEN 'FROZEN' ELSE result_freeze_status END,published_at=NULL,result_publish_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?").bind(id));
  st.push(env.DB.prepare('UPDATE exam_revision_state SET app_trashed_at=CURRENT_TIMESTAMP,prior_status=COALESCE(prior_status,?) WHERE exam_id=?').bind(exam.status,id));
- if(!result||scope==='BOTH')st.push(env.DB.prepare("UPDATE exams SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(id));
+ if(!result||scope==='BOTH'||scope==='ALL')st.push(env.DB.prepare("UPDATE exams SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(id));
  st.push(env.DB.prepare("INSERT INTO exam_channel_publications(id,exam_id,channel,status) VALUES(?,?,'LICENSED','ARCHIVED') ON CONFLICT(exam_id,channel) DO UPDATE SET status='ARCHIVED'").bind(uuid('pub'),id),env.DB.prepare("UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='LICENSED'").bind(id));
  }
+ if(scope==='ALL')st.push(env.DB.prepare("UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel NOT IN ('LICENSED','RESULT_NETWORK')").bind(id));
  if(scope!=='APP')st.push(env.DB.prepare("INSERT INTO exam_channel_publications(id,exam_id,channel,status) VALUES(?,?,'RESULT_NETWORK','ARCHIVED') ON CONFLICT(exam_id,channel) DO UPDATE SET status='ARCHIVED'").bind(uuid('pub'),id),env.DB.prepare("UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'").bind(id));
- st.push(channelAudit(env,user,exam.institution_id,'EXAM_TRASHED',id,{scope,resultsPreserved:true,appResultsWithdrawn,previousAppResults:learner?{state:learner.result_freeze_status,publishedAt:learner.published_at,scheduledAt:learner.result_publish_at}:null}));await env.DB.batch(st);return json({ok:true,scope,resultsPreserved:true,appResultsWithdrawn});
+ st.push(channelAudit(env,user,exam.institution_id,'EXAM_TRASHED',id,{scope,reason:reason||null,resultsPreserved:true,appResultsWithdrawn,previousAppResults:learner?{state:learner.result_freeze_status,publishedAt:learner.published_at,scheduledAt:learner.result_publish_at}:null}));await env.DB.batch(st);return json({ok:true,scope,resultsPreserved:true,appResultsWithdrawn});
  });
 }
 export async function restoreExam(env:Env,user:AuthUser,id:string){

@@ -8,7 +8,7 @@ import {startResultArtifactPreparation,readResultArtifactPreparation} from './li
 import type { AuthUser,Env } from './types';
 import { getAuthUser,hashPassword,verifyPassword,verifyTurnstile } from './lib/auth';
 import { all,audit,badRequest,forbidden,json,normalizeName,one,uuid } from './lib/db';
-import { evaluateBatchStep,getScanBatch,previewExamFile,resolveScanRecord,searchScanCandidates } from './index';
+import { ensureSeason,evaluateBatchStep,getScanBatch,previewExamFile,resolveScanRecord,searchScanCandidates } from './index';
 import { withExamOperationLock } from './lib/exam-operation-lock';
 import { RESULT_NETWORK_SUMMARY_SQL, RESULT_NETWORK_SNAPSHOT_SQL, RESULT_NETWORK_ARTIFACT_ACCESS_SQL, NETWORK_INSTITUTION_SNAPSHOT_SQL, readNetworkSnapshot, snapshotSummary, snapshotDetail } from './lib/result-network-snapshot';
 import { prepareResultArtifacts, readResultArtifact, inspectResultArtifactReadiness } from './lib/result-artifacts';
@@ -238,7 +238,7 @@ export async function freezeAndPublishAdministration(request:Request,env:Env,use
 async function publishInLock(env:Env,id:string,actorId:string|null,live:boolean):Promise<Response>{
  let row=await one<any>(env.DB.prepare(`SELECT ea.*,e.id exam_id,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(id));
  if(!row||(live?row.status!=='PUBLISHED':!['UPLOADING','READY'].includes(row.status)))return badRequest('Sonuç yayını için yönetim hazır olmalıdır. Mevcut yayın yeniden dondurulamaz.','RESULT_PUBLICATION_STATE_CHANGED');
- const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND (EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)${live?'':" OR EXISTS(SELECT 1 FROM scan_records sr WHERE sr.batch_id=sb.id AND sr.resolution_status<>'CANCELLED')"})`).bind(row.exam_id));
+ const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND NOT EXISTS(SELECT 1 FROM scan_batch_deletions del WHERE del.batch_id=sb.id) AND (EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)${live?'':" OR EXISTS(SELECT 1 FROM scan_records sr WHERE sr.batch_id=sb.id AND sr.resolution_status<>'CANCELLED')"})`).bind(row.exam_id));
  // live: an upload not yet evaluated joins at its own evaluation; only one half-written stops the refresh
  if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
  // Every issued identity must have an evaluated participant in this exam and
@@ -479,7 +479,7 @@ async function operatorHistory(request:Request,env:Env){
   if(mode!=='DEALER'&&user.role==='INSTITUTION_MANAGER'&&user.institution_id){where.push('b.institution_id=?');args.push(user.institution_id)}
   else{where.push(`EXISTS(SELECT 1 FROM national_institution_directory d WHERE d.meb_code=COALESCE(i.meb_code,i.code) AND ${DEALER_SCOPE_SQL})`);args.push(user.id)}
  }
- const rows=await all<any>(env.DB.prepare(`SELECT b.id,b.status,b.source_type,b.created_at,b.exam_id,b.institution_id,e.title,e.academic_year,i.name institution_name,i.code institution_code,i.city,i.district,u.display_name created_by_name,(SELECT count(*) FROM scan_records r WHERE r.batch_id=b.id) total FROM scan_batches b JOIN exams e ON e.id=b.exam_id JOIN institutions i ON i.id=b.institution_id LEFT JOIN users u ON u.id=b.created_by WHERE ${where.join(' AND ')} ORDER BY b.created_at DESC,b.rowid DESC LIMIT 100`).bind(...args));
+ const rows=await all<any>(env.DB.prepare(`SELECT b.id,b.status,b.source_type,b.created_at,b.exam_id,b.institution_id,e.title,e.academic_year,i.name institution_name,i.code institution_code,i.city,i.district,u.display_name created_by_name,(SELECT count(*) FROM scan_records r WHERE r.batch_id=b.id) total,del.deleted_at,del.purge_after,del.reason deleted_reason FROM scan_batches b JOIN exams e ON e.id=b.exam_id JOIN institutions i ON i.id=b.institution_id LEFT JOIN users u ON u.id=b.created_by LEFT JOIN scan_batch_deletions del ON del.batch_id=b.id WHERE ${where.join(' AND ')} ORDER BY b.created_at DESC,b.rowid DESC LIMIT 100`).bind(...args));
  return json({ok:true,batches:rows});
 }
 async function resultOperatorCatalog(request:Request,env:Env){
@@ -548,6 +548,36 @@ export async function issueBatchIdentities(env:Env,batchId:string,actorId:string
 
 /** A published administration is stale when a student with result access is not in its current snapshot. */
 const STALE_PUBLICATION_SQL=`SELECT ea.id,ea.exam_id FROM exam_administrations ea WHERE ea.channel='RESULT_NETWORK' AND ea.status='PUBLISHED' AND EXISTS(SELECT 1 FROM result_access_identities rai WHERE rai.administration_id=ea.id AND NOT EXISTS(SELECT 1 FROM exam_result_snapshots s WHERE s.exam_id=ea.exam_id AND s.snapshot_version=ea.published_snapshot_version AND s.participant_id=rai.participant_id))`;
+
+/**
+ * D-S039: after an upload is deleted or moved, a published exam's ranks are written again without its students. If no
+ * student is left the publication returns to "uploading", so nothing stale stays visible to students.
+ */
+export async function republishAfterRemoval(env:Env,examId:string,actorId:string|null){
+ const adm=await one<any>(env.DB.prepare(`SELECT id FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='PUBLISHED' LIMIT 1`).bind(examId));
+ if(!adm)return 'NOT_PUBLISHED';
+ const left=await one<any>(env.DB.prepare(`SELECT count(*) c FROM result_access_identities WHERE administration_id=?`).bind(adm.id));
+ if(!Number(left?.c||0)){await env.DB.batch([env.DB.prepare(`UPDATE exam_administrations SET status='UPLOADING',published_snapshot_version=NULL,ranking_frozen_at=NULL,participant_count=0,institution_count=0 WHERE id=?`).bind(adm.id),env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'RESULT_PUBLICATION_EMPTIED','exam_administration',?,?)`).bind(uuid('aud'),actorId,adm.id,JSON.stringify({reason:'Son yükleme silindi; yayında öğrenci kalmadı.'}))]);return 'EMPTIED'}
+ const r=await withExamOperationLock(env,examId,'RESULT_NETWORK_REFRESH',async(env)=>publishInLock(env,adm.id,actorId,true));
+ return r.ok?'REFRESHED':'DEFERRED';
+}
+
+/**
+ * D-S039: what the person should know before evaluating an upload. Student numbers already evaluated in this exam at
+ * this school (a second session's optic, or the same class twice) are told to everyone; the same file or the same
+ * numbers at other schools are told only to a bayi or the Super Admin, since a student may also be at a course centre.
+ */
+async function uploadChecks(env:Env,batchId:string,examId:string,institutionId:string,fileHash:string,wide:boolean){
+ const numbers=`(SELECT DISTINCT trim(json_extract(canonical_json,'$.student_number')) FROM scan_records WHERE batch_id=? AND resolution_status<>'CANCELLED' AND trim(coalesce(json_extract(canonical_json,'$.student_number'),''))<>'')`;
+ const here=await one<any>(env.DB.prepare(`SELECT count(DISTINCT ep.student_number_snapshot) c FROM exam_participants ep WHERE ep.exam_id=? AND ep.institution_id=? AND trim(ep.student_number_snapshot) IN ${numbers}`).bind(examId,institutionId,batchId));
+ const school=await one<any>(env.DB.prepare(`SELECT name,COALESCE(meb_code,code) code,city,district FROM institutions WHERE id=?`).bind(institutionId));
+ const out:any={school,sameSchoolNumbers:Number(here?.c||0)};
+ if(wide){
+  out.otherSchools=await all<any>(env.DB.prepare(`SELECT i.name,COALESCE(i.meb_code,i.code) code,count(DISTINCT ep.student_number_snapshot) numbers FROM exam_participants ep JOIN institutions i ON i.id=ep.institution_id WHERE ep.exam_id=? AND ep.institution_id<>? AND trim(ep.student_number_snapshot) IN ${numbers} GROUP BY i.id ORDER BY numbers DESC LIMIT 5`).bind(examId,institutionId,batchId));
+  out.sameFileElsewhere=fileHash?await all<any>(env.DB.prepare(`SELECT DISTINCT i.name,COALESCE(i.meb_code,i.code) code FROM scan_batch_files f JOIN scan_batches b ON b.id=f.batch_id JOIN institutions i ON i.id=b.institution_id WHERE f.sha256=? AND b.exam_id=? AND b.institution_id<>? AND b.id<>? AND NOT EXISTS(SELECT 1 FROM scan_batch_deletions d WHERE d.batch_id=b.id) LIMIT 5`).bind(fileHash,examId,institutionId,batchId)):[];
+ }
+ return out;
+}
 
 /** D-S037: rewrite the live ranks of an exam (or of every stale exam, from the schedule). A busy exam is left for the next run. */
 export async function refreshLivePublications(env:Env,examId?:string,actorId:string|null=null){
@@ -671,10 +701,16 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   const published=await one<any>(env.DB.prepare(`SELECT 1 ok FROM exam_channel_publications WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='ACTIVE'`).bind(preview[1]));
   if(!published)return safeError(404,'RESULT_EXAM_NOT_PUBLISHED','Sınav Sonuç Ağı kataloğunda yayınlanmamış.');
   const context=await resultOperatorContext(request,env,institutionId);if(context instanceof Response)return context;
+  // D-S039: the same file twice into the same school and exam is stopped (a second session's optic is another file).
+  const upFile=form.get('file');let fileHash='';
+  if(upFile&&typeof upFile!=='string'){const d=await crypto.subtle.digest('SHA-256',await (upFile as File).arrayBuffer());fileHash=[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('')}
+  if(fileHash){const dup=await one<any>(env.DB.prepare(`SELECT b.id,b.status,b.created_at FROM scan_batch_files f JOIN scan_batches b ON b.id=f.batch_id WHERE f.sha256=? AND b.exam_id=? AND b.institution_id=? AND NOT EXISTS(SELECT 1 FROM scan_batch_deletions d WHERE d.batch_id=b.id) ORDER BY b.created_at DESC LIMIT 1`).bind(fileHash,preview[1],institutionId));
+   if(dup)return json({ok:false,error:{code:'DUPLICATE_UPLOAD',message:`Bu dosya bu okula ve bu sınava ${new Date(String(dup.created_at).replace(' ','T')+'Z').toLocaleString('tr-TR',{timeZone:'Europe/Istanbul'})} tarihinde zaten yüklenmiş (${dup.status==='COMMITTED'?'değerlendirildi':'değerlendirilmeyi bekliyor'}). Aynı öğrencileri iki kez saymamak için yeniden yüklenmedi. O yüklemeyi aşağıdaki "Değerlendirme geçmişi"nden açabilir ya da silip yeniden yükleyebilirsiniz.`,batchId:dup.id}},409)}
   const previewed=await previewExamFile(request,env,context.effective,preview[1]);
   if(!previewed.ok)return previewed;
   // S030: every readable sheet is a participant on the result network; no guest step.
   const body:any=await previewed.json();
+  if(body?.batchId)body.checks=await uploadChecks(env,body.batchId,preview[1],institutionId,fileHash,context.user.role==='SUPER_ADMIN'||!!context.dealerId);
   const accepted=body?.batchId?await acceptReadableSheets(env,body.batchId,context.user.id,institutionId):0;
   await ensureOpenAdministration(env,preview[1],context.user.id);
   return json({...body,acceptedParticipants:accepted},previewed.status);
@@ -683,10 +719,51 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
  if(resolve&&request.method==='POST'){const context=await batchOperatorContext(request,env,resolve[1]);if(context instanceof Response)return context;return resolveScanRecord(request,env,context.effective,resolve[1],resolve[2])}
  const candidates=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/records\/([^/]+)\/candidates$/);
  if(candidates&&request.method==='GET'){const context=await batchOperatorContext(request,env,candidates[1]);if(context instanceof Response)return context;return searchScanCandidates(env,context.effective,candidates[1],candidates[2],new URL(request.url))}
+ // D-S039: delete (restorable for 7 days), restore, and move an upload to the right school.
+ const batchOnly=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)$/);
+ if(batchOnly&&request.method==='DELETE'){const context=await batchOperatorContext(request,env,batchOnly[1]);if(context instanceof Response)return context;
+  const body:any=await request.json().catch(()=>({}));const reason=String(body.reason||'').trim();
+  if(context.batch.status==='COMMITTED'&&reason.length<5)return badRequest('Değerlendirilmiş yüklemeyi silmek için kısa bir neden yazın (en az 5 harf).','DELETE_REASON_REQUIRED');
+  const {deleteBatch}=await import('./lib/batch-lifecycle');
+  const done=await withExamOperationLock(env,context.batch.exam_id,'RESULT_BATCH_DELETE',async(env)=>{const r=await deleteBatch(env,batchOnly[1],context.user.id,reason);return r.ok?json(r):safeError(r.code==='NOT_FOUND'?404:409,r.code,r.code==='ALREADY_DELETED'?'Bu yükleme zaten silinmiş.':'Yükleme bulunamadı.')});
+  if(!done.ok)return done;const body2:any=await done.json();
+  const ranks=body2.wasEvaluated?await republishAfterRemoval(env,context.batch.exam_id,context.user.id):'NOT_NEEDED';
+  return json({...body2,ranks,restorableUntilDays:7})}
+ const restore=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/restore$/);
+ if(restore&&request.method==='POST'){const context=await batchOperatorContext(request,env,restore[1]);if(context instanceof Response)return context;
+  const {restoreBatch}=await import('./lib/batch-lifecycle');const r=await restoreBatch(env,restore[1],context.user.id);
+  return r.ok?json({ok:true,next:'Yükleme geri geldi. Sonuçlar için yeniden "Değerlendir"e basın.'}):safeError(409,'RESTORE_NOT_AVAILABLE','Bu yükleme geri alınamaz; 7 günlük süre dolmuş olabilir.')}
+ const move=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/move$/);
+ if(move&&request.method==='POST'){const context=await batchOperatorContext(request,env,move[1]);if(context instanceof Response)return context;
+  if(context.user.role!=='SUPER_ADMIN'&&!context.dealerId)return forbidden('Yüklemeyi başka okula yalnız bayi veya Süper Admin taşıyabilir. Kurum yüklemesini silip doğru okula yeniden yükleyebilir.');
+  const body:any=await request.json().catch(()=>({}));const mebCode=String(body.mebCode||'').trim(),reason=String(body.reason||'').trim();
+  if(!/^\d{5,12}$/.test(mebCode))return badRequest('Taşınacak okulun MEB kodunu seçin.','MOVE_TARGET_REQUIRED');
+  if(reason.length<5)return badRequest('Taşıma nedenini kısaca yazın (en az 5 harf).','MOVE_REASON_REQUIRED');
+  if(!(await dealerCanAct(env,context.user,mebCode)).ok)return forbidden('Bu okul yetki kapsamınızda değil.');
+  const {ensureInstitutionFromDirectory}=await import('./lib/institution-claim');const target=await ensureInstitutionFromDirectory(env,mebCode,context.user.id);
+  if(!target)return safeError(404,'DIRECTORY_INSTITUTION_NOT_FOUND','Bu MEB kodu kurum rehberinde yok.');
+  if(target.id===context.batch.institution_id)return badRequest('Yükleme zaten bu okulda.','MOVE_SAME_SCHOOL');
+  const exam=await one<any>(env.DB.prepare('SELECT academic_year FROM exams WHERE id=?').bind(context.batch.exam_id));
+  const season=await ensureSeason(env.DB,target.id,exam.academic_year);
+  const {clearBatchResults}=await import('./lib/batch-lifecycle');
+  const moved=await withExamOperationLock(env,context.batch.exam_id,'RESULT_BATCH_MOVE',async(env)=>{
+   const cleared=await clearBatchResults(env,move[1]);
+   await env.DB.batch([
+    env.DB.prepare(`UPDATE scan_batches SET institution_id=?,season_id=?,status=CASE WHEN status='COMMITTED' THEN 'READY' ELSE status END WHERE id=?`).bind(target.id,season.id,move[1]),
+    // the sheets are matched afresh in the new school: nobody from the old school is carried over
+    env.DB.prepare(`UPDATE scan_records SET matched_student_id=NULL,match_status=CASE WHEN match_status IN ('ACTIVE_MATCH','GUEST_MATCH','AMBIGUOUS') THEN 'NEW_GUEST' ELSE match_status END,resolution_status=CASE WHEN resolution_status='RESOLVED' THEN 'PENDING' ELSE resolution_status END WHERE batch_id=? AND resolution_status<>'CANCELLED'`).bind(move[1]),
+    env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)').bind(uuid('aud'),context.user.id,target.id,'SCAN_BATCH_MOVED','scan_batch',move[1],JSON.stringify({from:context.batch.institution_id,to:target.id,mebCode,reason,participantsRemoved:cleared.removed})),
+   ]);
+   return json({ok:true,removed:cleared.removed,institution:{id:target.id,name:target.name}});
+  });
+  if(!moved.ok)return moved;const out:any=await moved.json();
+  const ranks=context.batch.status==='COMMITTED'?await republishAfterRemoval(env,context.batch.exam_id,context.user.id):'NOT_NEEDED';
+  return json({...out,ranks,next:'Yükleme yeni okula taşındı. Sonuçlar için "Değerlendir"e basın.'})}
  const evaluate=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/evaluate$/);
  if(evaluate&&request.method==='POST'){const context=await batchOperatorContext(request,env,evaluate[1]);if(context instanceof Response)return context;
   // S030: sheets that cannot be scored are set aside with their reason; the rest is evaluated.
   // A batch uploaded before S030 (or reopened from the history) may still hold readable unmatched sheets: accept them first.
+  if(await one(env.DB.prepare('SELECT 1 x FROM scan_batch_deletions WHERE batch_id=?').bind(evaluate[1])))return safeError(409,'BATCH_DELETED','Bu yükleme silinmiş. Önce "Geri al" ile geri getirin.');
   if(context.batch.status!=='COMMITTED')await acceptReadableSheets(env,evaluate[1],context.user.id,context.batch.institution_id);
   const setAside=context.batch.status==='COMMITTED'?[]:await setAsideUnscorable(env,evaluate[1],context.user.id,context.batch.institution_id);
   // S035: one time-limited step; the page calls again while done is false and shows "x / n öğrenci".

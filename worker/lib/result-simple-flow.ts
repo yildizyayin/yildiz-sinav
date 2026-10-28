@@ -1,5 +1,5 @@
 import type { Env } from '../types';
-import { all, uuid } from './db';
+import { all, one, uuid } from './db';
 
 /**
  * S030/D-S038: sonuc.anunex.com is an open evaluation platform. Every uploaded sheet is a participant; there is no
@@ -26,6 +26,11 @@ export async function acceptReadableSheets(env: Env, batchId: string, actorId: s
   const rows = await all<{ id: string; row_no: number; canonical_json: string; issues_json: string }>(env.DB.prepare(`SELECT id,row_no,canonical_json,issues_json FROM scan_records WHERE batch_id=? AND ((resolution_status!='CANCELLED'
     AND (match_status IN ('NEW_GUEST','INVALID') OR (match_status IN ('ACTIVE_MATCH','GUEST_MATCH') AND issues_json!='[]')))
     OR (resolution_status='CANCELLED' AND issues_json LIKE '["Değerlendirme dışı:%'))`).bind(batchId));
+  // D-S039: a sheet whose grade belongs to another school level (a 7th grader in a 12th-grade exam) is not this
+  // exam's student; it stays out with that reason so it can be uploaded under the right exam.
+  const exam = await one<{ g: number | null }>(env.DB.prepare('SELECT e.grade_level g FROM scan_batches b JOIN exams e ON e.id=b.exam_id WHERE b.id=?').bind(batchId));
+  const level = (g: number) => (g <= 4 ? 1 : g <= 8 ? 2 : 3);
+  const misfit: Array<{ id: string; issue: string }> = [];
   const accepted: Array<{ id: string; c: string; u: number }> = [];
   for (const r of rows) {
     let c: any = {}; try { c = JSON.parse(r.canonical_json || '{}'); } catch { continue; }
@@ -34,12 +39,15 @@ export async function acceptReadableSheets(env: Env, batchId: string, actorId: s
     stored = stored.flatMap((x) => String(x).startsWith('Değerlendirme dışı:') ? String(x).slice('Değerlendirme dışı:'.length).split(' · ').map((y) => y.trim()).filter(Boolean) : [String(x)]);
     const all = [...new Set([...(Array.isArray(c.issues) ? c.issues : []), ...stored].map(String))];
     if (all.some((x) => !isNonBlocking(x))) continue;
+    const g = Number(c.grade_level || 0), eg = Number(exam?.g || 0);
+    if (g >= 1 && g <= 12 && eg >= 1 && eg <= 12 && level(g) !== level(eg)) { misfit.push({ id: r.id, issue: `Sınıf düzeyi bu sınava uymuyor: ${g}. sınıf öğrencisi, sınav ${eg}. sınıf için. Bu öğrenciyi kendi sınavına yükleyin.` }); continue; }
     const notes = all.filter((x) => !/Kayıtlı öğrenciyle eşleşmedi/i.test(x));
     if (!String(c.name || '').trim()) { c.name = unreadableName(c, Number(r.row_no)); notes.push('Ad soyad okunamadı; numarayla değerlendirildi.'); }
     c.issues = []; if (notes.length) c.notes = [...new Set([...(Array.isArray(c.notes) ? c.notes : []), ...notes])];
     // A match by name alone is not trusted on sonuc (two students can share a name): the sheet is its own participant.
     accepted.push({ id: r.id, c: JSON.stringify(c), u: all.some((x) => NAME_ONLY.test(x)) ? 1 : 0 });
   }
+  if (misfit.length) await env.DB.batch(misfit.map((m) => env.DB.prepare(`UPDATE scan_records SET match_status='INVALID',resolution_status='PENDING',issues_json=? WHERE id=? AND batch_id=?`).bind(JSON.stringify([m.issue]), m.id, batchId)));
   if (!accepted.length) { await batchStatusSql(env, batchId).run(); return 0; }
   const statements: D1PreparedStatement[] = [];
   for (let i = 0; i < accepted.length; i += 400) {

@@ -1188,7 +1188,7 @@ async function uploadWorksheetAsset(request: Request, env: Env, user: AuthUser, 
   return json({ ok: true, id, key });
 }
 
-async function ensureSeason(db: D1Database, institutionId: string, academicYear: string): Promise<any> {
+export async function ensureSeason(db: D1Database, institutionId: string, academicYear: string): Promise<any> {
   let season = await one<any>(db.prepare('SELECT * FROM institution_seasons WHERE institution_id=? AND academic_year=?').bind(institutionId, academicYear));
   if (!season) {
     const id = uuid('season');
