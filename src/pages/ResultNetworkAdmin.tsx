@@ -67,7 +67,7 @@ export function ResultNetworkAdmin({onLogout,evaluationWorkspace,reportsPanel}:{
  const[busy,setBusy]=useState(false);
  const[error,setError]=useState('');
  const[notice,setNotice]=useState('');
- const[activeSection,setActiveSection]=useState('dashboard');
+ const[activeSection,setActiveSectionRaw]=useState('dashboard');const[navOpen,setNavOpen]=useState(false);const setActiveSection=(v:string)=>{setActiveSectionRaw(v);setNavOpen(false)};
  const[activeLevel,setActiveLevel]=useState('YKS');
  const[archivePublisher,setArchivePublisher]=useState('');
  const[archiveYear,setArchiveYear]=useState('');
@@ -162,9 +162,10 @@ export function ResultNetworkAdmin({onLogout,evaluationWorkspace,reportsPanel}:{
 
  return <>
  <div className="admin-shell">
-  <aside className="admin-sidebar">
+  <aside className={`admin-sidebar${navOpen?' nav-open':''}`}>
    <div className="admin-sidebar-brand"><AnunexBrand compact inverse tagline/><div className="admin-nibiru-lockup"><NibiruMark size={26} state="thinking" showWordmark/></div></div>
-   <nav className="admin-nav" aria-label="Süper Admin menüsü">
+   <button type="button" className="admin-nav-toggle" aria-expanded={navOpen} aria-controls="admin-nav" onClick={()=>setNavOpen(v=>!v)}>{navOpen?'Menüyü kapat':'Menü'}</button>
+   <nav className="admin-nav" id="admin-nav" aria-label="Süper Admin menüsü">
     {/* S036 approved menu (owner decision 27 Oct): levels moved to the page's own switcher */}
     <button className={activeSection==='dashboard'?'active':''} onClick={()=>setActiveSection('dashboard')}><i>⌂</i><span>Ana sayfa</span></button>
     <div className="admin-nav-group"><span className="admin-nav-title">Sınavlar</span><button className={activeSection==='exam-create'?'active':''} onClick={()=>setActiveSection('exam-create')}><i>＋</i><span>Sınav tanımla</span></button><button className={activeSection==='exam-upload'?'active':''} onClick={()=>setActiveSection('exam-upload')}><i>⇧</i><span>Sınav yükleme</span></button><button className={activeSection==='opticals'?'active':''} onClick={()=>setActiveSection('opticals')}><i>▦</i><span>Optik ve FMT</span></button></div>
