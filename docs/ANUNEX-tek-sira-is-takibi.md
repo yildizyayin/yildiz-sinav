@@ -2647,3 +2647,26 @@ Canlı veriden teşhis:
 - **Kanıt:** 327 dosya / 1445 test geçti; tarayıcıda bayi, kurum ve Süper Admin ekranları 1366 ve 390 genişlikte kontrol edildi.
 - **Dağıtım:** App 904b087 ve cdd3133 onay bekliyor; sonuc arkasından gelir. 0139 migration'ı app deploy'uyla uygulanır.
 - **Kalan:** ÇAP TYT 1 batch kilidi sonuc deploy'undan sonra kaldırılıp yeniden değerlendirilecek; gerçek D1 süresi ölçülecek.
+
+### S037 — Öğrenci girişi, erişim kartları, sayaç, tasarım kontrolü — 28 Ekim
+- **Bildirim:** Öğrenci sonucunu göremiyor (TEB Ataşehir, ÇAP TYT 1).
+- **Teşhis (prod, yalnız okuma):** Form hatası değil. Yükleme yarıda/kontrol bekliyor; erişim kaydı 0; sınav yayınlanmamış (UPLOADING). Öğrencinin görmesi için değerlendirme → kart → yayın adımları gerekir.
+- **Onay:** Sahip "Ad ilk 3 harf + erişim kodu" seçti; sonra "tüm işleri sırayla yap".
+- **Yapılan:**
+  - PR #405: tek adımlı öğrenci girişi (il › ilçe › kurum, sınıf, no/T.C., adın ilk 3 harfi, kart kodu). Yanlış bilgi tek tip yanıt; 8 yanlışta 15 dk kilit; yalnız kurum düzeyinde "henüz yayınlanmadı". Kurum ekranında erişim kartları: 3 adımlı durum, A4'e 10 yazdırılabilir kart, CSV.
+  - PR #406: değerlendirme sayacı (sonuc ve app): canlı saniye, x / n, bitişte süre.
+  - PR #407: tasarım kontrolü (bayi, kurum, Süper Admin; 1366 ve 390): kabukta marka mavisi düğmeler, profil formu, Portal ayarları formu, izleme tabloları, çift başlık, telefonda katlanan admin menüsü.
+- **Kanıt:** 329 dosya / 1452 test; tarayıcıda uçtan uca giriş, kart üretimi ve yazdırma PDF'i denendi.
+- **Dağıtım:** App deploy onayları bekliyor; sonuc arkasından gelir.
+
+### D-S037 — Ulusal sınav altyapısı planı ve Faz 0 ölçümü — 28 Ekim (öneri, karar bekliyor)
+- **Senaryo (sahip):** 500.000–1.000.000 öğrenci, 5.000–10.000+ kurum. Yükleme Cumartesi → Cuma 15:00; 15:00–17:00 kapalı; 17:00 yayın; sonra yükleme sürer.
+- **Plan:** öğrenci başına sıkıştırılmış tek satır; özetler (dağılım, madde, kazanım, kurum) yüklemede artırılır; sınav takvimi ve kapılar; sıra dağılımdan; hazır sonuç/rapor dosyaları R2'de; sınav başına ayrı D1.
+- **Faz 0 ölçümü (ayrı geçici D1, WNAM; canlıya dokunulmadı; test sonrası silindi):**
+  - Sıkıştırılmış satır yazma: 10.000 → 0,13 sn; 100.000 → 0,93 sn; 1.000.000 toplam ≈ 10,6 sn (300 bin'lik parçalar 2,5–3,6 sn). DB boyu ≈ 241 MB.
+  - Cevap başına satır (bugünkü yapı): 1.000 öğrenci × 120 = 120.000 satır → 0,25 sn. 1 milyon öğrenci için ≈ 250 sn ve 120 milyon satır.
+  - 1 milyonda tek sorguda 4 sıra (Türkiye/il/ilçe/kurum, RANK): 21,9 sn — D1'in ~30 sn sınırına yakın, riskli.
+  - Dağılım tablosundan bir öğrencinin Türkiye ve il sırası: 4,5 ms.
+  - 1 milyondan kurum ortalamaları (GROUP BY): 3,7 sn.
+- **Sınırlar:** Yalnız sunucu tarafı SQL süresi. Worker, ağ ve JSON işleme dahil değil; her ölçüm bir kez yapıldı.
+- **Karar bekleyen:** 17:00 sonrası yüklemelerin sırası; yayın sıralarının sabitliği; öğrencinin sonuca erişim yolu (S037 ile kart kodu); Faz 1'e geçiş onayı.
