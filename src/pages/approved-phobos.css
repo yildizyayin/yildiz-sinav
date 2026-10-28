@@ -20,7 +20,7 @@
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .panel-head>svg { width:22px; height:22px; color:#80501b; flex-shrink:0; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] button:not(.approved-phobos-photo-suggestion):not([title="Öneriyi seçili alan türüyle ekle"]) { min-width:40px; max-width:100%; min-height:40px; height:auto; padding:8px 12px; border:1px solid #c4ced9; border-radius:6px; color:#28394f; background:#fff; box-shadow:none; font-size:13px; font-weight:600; line-height:1.5; white-space:normal; overflow-wrap:anywhere; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] button:not(.approved-phobos-photo-suggestion):not([title="Öneriyi seçili alan türüyle ekle"]) svg { flex-shrink:0; }
- .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .primary { color:#fff; background:var(--phobos-accent) !important; border-color:var(--phobos-accent) !important; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .primary { color:#fff !important; background:var(--phobos-accent) !important; border-color:var(--phobos-accent) !important; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .primary:hover:not(:disabled) { background:#784600 !important; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] button:not(.approved-phobos-photo-suggestion):not([title="Öneriyi seçili alan türüyle ekle"]):not(.primary):hover:not(:disabled) { background:#f7f9fb; border-color:#a5b2c2; transform:none; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] button:not(.approved-phobos-photo-suggestion):not([title="Öneriyi seçili alan türüyle ekle"]):disabled { cursor:not-allowed; opacity:.5; transform:none; }
@@ -57,7 +57,7 @@
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-status :is(.verified,.warning) { font-size:12px; font-weight:500; line-height:1.5; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-status .verified { color:#235d3e; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-status .warning { color:#80501b; }
- .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-title { padding:4px 0; border:0; border-radius:3px; background:transparent; text-align:left; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-form-cards button.optical-card-title { padding:4px 0; border:0; border-radius:3px; background:transparent; text-align:left; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-title h3 { margin:0; font-size:17px; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-card-title:hover:not(:disabled) { background:transparent; color:#744716; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .icon-button { width:40px; height:40px; min-width:40px; padding:0; display:inline-flex; align-items:center; justify-content:center; }
@@ -85,6 +85,7 @@
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .status.neutral { color:#536176; background:#f0f3f7; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .empty-state { padding:16px; color:var(--phobos-muted); font-size:13px; line-height:1.6; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .approved-phobos-fmt-grid { max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+ .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .approved-phobos-fmt-grid>strong:first-child { min-width:140px; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-manual-table { max-width:100%; min-width:0; gap:0; overflow-x:auto; overscroll-behavior-x:contain; border:1px solid var(--phobos-line); border-radius:6px; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-manual-row { grid-template-columns:minmax(160px,1.3fr) 56px repeat(3,minmax(100px,1fr)); min-width:580px; gap:10px; padding:10px 12px; border:0; border-bottom:1px solid #e5ebf1; border-radius:0; background:#fff; }
  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] .optical-manual-row:last-child { border-bottom:0; }
@@ -138,3 +139,9 @@
  }
  @media(prefers-reduced-motion:reduce) { .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] * { animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
 }
+/* Keep existing FMT numeric grids contained in every panel theme and role. */
+@media screen {
+ .approved-phobos .approved-phobos-fmt-grid { min-width:0; max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; }
+}
+
+@media screen { .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-phobos[data-design-role="SUPER_ADMIN"] summary { min-height:40px; padding:9px 12px; line-height:20px; cursor:pointer; } }

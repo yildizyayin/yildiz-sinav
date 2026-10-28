@@ -2038,7 +2038,7 @@ export function Opticals() {
                   </div>
                 )}
                 {method === "MANUAL" && (
-                  <div className="panel approved-phobos-advanced" style={{ marginBottom: 20 }}>
+                  <div className="panel approved-phobos-manual" style={{ marginBottom: 20 }}>
                     <div className="panel-head">
                       <div>
                         <h2>Manuel optik tanımı</h2>
@@ -2302,7 +2302,7 @@ export function Opticals() {
                   </div>
                 )}
                 {method === "MANUAL" && (
-                  <div className="panel" style={{ marginBottom: 20 }}>
+                  <div className="panel approved-phobos-advanced" style={{ marginBottom: 20 }}>
                     <h2>Manuel / Gelişmiş JSON</h2>
                     {(
                       ["parser", "camera", "fiducials"] as Section[]
