@@ -2670,3 +2670,9 @@ Canlı veriden teşhis:
   - 1 milyondan kurum ortalamaları (GROUP BY): 3,7 sn.
 - **Sınırlar:** Yalnız sunucu tarafı SQL süresi. Worker, ağ ve JSON işleme dahil değil; her ölçüm bir kez yapıldı.
 - **Karar bekleyen:** 17:00 sonrası yüklemelerin sırası; yayın sıralarının sabitliği; öğrencinin sonuca erişim yolu (S037 ile kart kodu); Faz 1'e geçiş onayı.
+
+### 28 Ekim 13:47 — Sahip kararları ve işlem
+- **Kilit:** Sahip "sen kaldır" dedi. ÇAP TYT 1 EVALUATE kilidi (27 Ekim 16:32'den beri sahipsiz) audit kaydıyla (EXAM_OPERATION_REVOKED, usr_prod_super adına, gerekçe yazılı) kaldırıldı. Batch'ler: biri READY (106 satır, 6 dışarıda), biri NEEDS_REVIEW. Yeniden değerlendirme sonuc deploy'undan sonra.
+- **D-S037 kararları:** 17:00'den sonra yüklenenlere Türkiye sırası güncel olarak verilir; yayınlanan sıralar sonraki yüklemelerle değişir (canlı sıra). Bugünkü "dondur ve yayınla" modeli bunu karşılamıyor; Faz 1 tasarımına girer.
+- **Yeni istek (öneri aşamasında):** Bayi/kurum kendi denemesini ve optiğini ekleyebilsin, yalnız kendisi görsün. Yıl sonu arşiv/silme. Sınavlar klasör yapısında: Eğitim yılı › Seviye › Yayınevi › Sınav › Yüklemeler; "Kendi denemelerim" ayrı klasör.
+- **Deploy:** App 761964a canlı. Sonuc 761964a onay bekliyor (run 40674608229).
