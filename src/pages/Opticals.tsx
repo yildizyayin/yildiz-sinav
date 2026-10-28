@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import "./approved-phobos.css";
 import {
   ArrowLeft,
   Camera,
@@ -1095,7 +1096,8 @@ export function Opticals() {
 
   return (
     <div
-      className={`optical-definition-page ${templateDetail && selectedTemplateId ? "detail-mode" : ""}`}
+      data-design-role={user?.role || ""}
+      className={`optical-definition-page approved-phobos ${templateDetail && selectedTemplateId ? "detail-mode" : ""}`}
     >
       <div className="page-head">
         <div>
@@ -1459,7 +1461,7 @@ export function Opticals() {
                   </div>
                 </div>
                 {method === "FMT" && (
-                  <div className="panel" style={{ marginBottom: 20 }}>
+                  <div className="panel approved-phobos-fmt" style={{ marginBottom: 20 }}>
                     <div className="panel-head">
                       <div>
                         <h2>FMT optik tanımlama</h2>
@@ -1507,7 +1509,7 @@ export function Opticals() {
                         </div>
                         <h3>Kimlik ve form alanları</h3>
                         <div
-                          className="list-card"
+                          className="list-card approved-phobos-fmt-grid"
                           style={{
                             display: "grid",
                             gridTemplateColumns:
@@ -1566,7 +1568,7 @@ export function Opticals() {
                         </div>
                         <h3>Test / ders cevap blokları</h3>
                         <div
-                          className="list-card"
+                          className="list-card approved-phobos-fmt-grid"
                           style={{
                             display: "grid",
                             gridTemplateColumns:
@@ -1652,7 +1654,7 @@ export function Opticals() {
                   </div>
                 )}
                 {method === "PHOTO" && (
-                  <div className="panel" style={{ marginBottom: 20 }}>
+                  <div className="panel approved-phobos-photo" style={{ marginBottom: 20 }}>
                     <div className="panel-head">
                       <div>
                         <h2>Fotoğraftan Optik Tanımla</h2>
@@ -1744,6 +1746,7 @@ export function Opticals() {
                     </div>
                     {photoUrl && (
                       <div
+                        className="approved-phobos-photo-stage"
                         onPointerDown={onDown}
                         onPointerMove={onMove}
                         onPointerUp={onUp}
@@ -1768,6 +1771,7 @@ export function Opticals() {
                         />
                         {suggestions.map((s, i) => (
                           <button
+                            className="approved-phobos-photo-suggestion"
                             key={i}
                             title="Öneriyi seçili alan türüyle ekle"
                             onClick={(e) => {
@@ -1875,7 +1879,7 @@ export function Opticals() {
                   </div>
                 )}
                 {method === "TXT" && (
-                  <div className="panel" style={{ marginBottom: 20 }}>
+                  <div className="panel approved-phobos-txt" style={{ marginBottom: 20 }}>
                     <div className="panel-head">
                       <div>
                         <h2>TXT / DAT / FMT parametreleri</h2>
@@ -2034,7 +2038,7 @@ export function Opticals() {
                   </div>
                 )}
                 {method === "MANUAL" && (
-                  <div className="panel" style={{ marginBottom: 20 }}>
+                  <div className="panel approved-phobos-manual" style={{ marginBottom: 20 }}>
                     <div className="panel-head">
                       <div>
                         <h2>Manuel optik tanımı</h2>
@@ -2298,7 +2302,7 @@ export function Opticals() {
                   </div>
                 )}
                 {method === "MANUAL" && (
-                  <div className="panel" style={{ marginBottom: 20 }}>
+                  <div className="panel approved-phobos-advanced" style={{ marginBottom: 20 }}>
                     <h2>Manuel / Gelişmiş JSON</h2>
                     {(
                       ["parser", "camera", "fiducials"] as Section[]

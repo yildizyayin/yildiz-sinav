@@ -1,0 +1,287 @@
+[
+  {
+    "width": 1440,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "width": 1180,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "width": 1024,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "width": 768,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "width": 360,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_FOCUS",
+    "width": 1440,
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_FOCUS",
+    "width": 390,
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STUDIO",
+    "width": 1440,
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_STUDIO",
+    "width": 390,
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_COSMIC",
+    "width": 1440,
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_COSMIC",
+    "width": 390,
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_NEON",
+    "width": 1440,
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "theme": "ANUNEX_NEON",
+    "width": 390,
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "catalog",
+    "width": 1440,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "catalog",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "dialog",
+    "width": 1440,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "dialog",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "txt",
+    "width": 1440,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "txt",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "advanced",
+    "width": 1440,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "advanced",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "empty",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "error",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "active",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "photo",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "busy",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/optical-definition-versions/synthetic-v1/fmt"
+    ]
+  },
+  {
+    "state": "failed-import",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/optical-definition-versions/synthetic-v1/fmt"
+    ]
+  },
+  {
+    "state": "success",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/optical-definition-versions/synthetic-v1/fmt"
+    ]
+  },
+  {
+    "state": "blocked",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "state": "catalog",
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "role": "INSTITUTION_MANAGER",
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  }
+]
