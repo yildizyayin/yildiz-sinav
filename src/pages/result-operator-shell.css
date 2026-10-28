@@ -71,3 +71,11 @@
   #print-root .acc-card .acc-code b{font-size:15pt}
   #print-root .acc-card .acc-how{font-size:7pt;line-height:1.35}
 }
+/* S037 design pass: forms and primary actions inside the shell follow the brand (D-S036), not the old portal brown */
+.osh .osh-form{display:flex;flex-direction:column;gap:16px;padding:22px}
+.osh .osh-form .rm-primary{flex:none;align-self:flex-start;min-height:44px;height:auto;padding:0 22px;width:auto}
+.result-portal.approved-result-portal[data-result-role] .osh .osh-main :is(.primary,.result-primary):not(.rm *){background:#2563EB!important;border:1px solid #2563EB;color:#fff;border-radius:10px}
+.result-portal.approved-result-portal[data-result-role] .osh .osh-main :is(.primary,.result-primary):not(.rm *):hover:not(:disabled){background:#1D4ED8!important;border-color:#1D4ED8}
+.result-portal.approved-result-portal[data-result-role] .osh .osh-main :is(.primary,.result-primary):not(.rm *):disabled{background:#A9C1F5!important;border-color:#A9C1F5;opacity:1}
+.result-portal.approved-result-portal[data-result-role] .osh .osh-main :is(.secondary,.ghost):not(.rm *){border-radius:10px;border-color:#DCE6F8;color:#07143F}
+.result-portal.approved-result-portal[data-result-role] .osh .osh-main .eyebrow{color:#2563EB;letter-spacing:.12em}

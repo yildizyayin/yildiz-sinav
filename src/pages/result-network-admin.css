@@ -95,3 +95,21 @@
 .toplu-ayt small{display:block;color:#64748b;font-size:11px;margin-top:4px}
 .toplu-select{flex-direction:column;align-items:stretch!important}
 .toplu-select select{min-height:34px;font-size:12px}
+/* S037 design pass: portal settings form and monitor tables inside the Super Admin console */
+.admin-main .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}
+.admin-main .grid-2>label{display:flex;flex-direction:column;gap:6px;min-width:0}
+.admin-main .grid-2>label.portal-copy-wide{grid-column:1/-1}
+.admin-main .grid-2 textarea{width:100%;box-sizing:border-box;min-height:88px;resize:vertical;font:inherit;padding:10px 12px;border:1px solid #cbd8ea;border-radius:10px}
+.admin-main .monitor-table{width:100%;border-collapse:collapse}
+.admin-main .monitor-table th{text-align:left;font-size:12px;color:#4A5A80;font-weight:600;padding:10px 12px;border-bottom:1px solid #DCE6F8;white-space:nowrap}
+.admin-main .monitor-table td{padding:10px 12px;border-bottom:1px solid #EEF2FA;font-size:13px}
+@media (max-width:760px){.admin-main .grid-2{grid-template-columns:1fr}}
+/* the console already titles the page; keep the heading for screen readers only */
+.admin-main #result-toplu>.rm-head .rm-kicker{display:none}
+.admin-main #result-toplu>.rm-head .rm-title{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* S037: on phones the console menu folds behind a "Menü" button so the page starts with its content */
+.admin-nav-toggle{display:none}
+@media(max-width:700px){
+  .admin-sidebar .admin-nav-toggle{display:block;margin-top:10px;min-height:42px;padding:0 16px;border:1px solid #2B3D7A;border-radius:10px;background:transparent;color:#fff;font:600 14px Inter,system-ui,sans-serif}
+  .admin-sidebar:not(.nav-open) .admin-nav{display:none}
+}
