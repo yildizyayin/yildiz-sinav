@@ -2714,3 +2714,14 @@ Canlı veriden teşhis:
 - Değerlendirilmiş tek yükleme `teb_cap1-2026.txt` dosyası; 28 Ekim 14:11'de Süper Admin hesabıyla **Kartal Anadolu Lisesi (161589)** adına yüklenmiş. 106 satırın 102'si TEB yüklemesiyle numara ve adıyla aynı; ekrandaki öğrenci numarası bu yüklemede. Yani TEB öğrencileri yanlışlıkla Kartal Anadolu Lisesi'nde değerlendirilmiş.
 - Bu yükleme sonuc deploy'undan (15:33) önce değerlendirildiği için otomatik öğrenci erişimi oluşmadı; sınav da yayınlanmamış (UPLOADING). Sistem doğru davrandı: TEB'de yayınlanmış sonuç yok.
 - Önizlemeden değerlendirmeye ~20 sn (100 öğrenci).
+
+### S039 — D-S039 uygulandı: yükleme silme/taşıma, yükleme güvenliği, kitapçık seçimi, sınav çöp kutusu — 28 Ekim
+- **Onay:** Sahip "kontrolleri sağla, en bilmeyenin bile kullanacağını varsayarak güncelle, eksikleri gider; tüm değerlendirmeleri sil (kapsam: sonuc yüklemeleri)" dedi.
+- **Yapılan (PR #410):**
+  - Sonuc yükleme: Sil (değerlendirilmişse neden; sonuçlar hemen kalkar; 7 gün geri al; sonra zamanlanmış görevle kalıcı, R2 dosyası dahil), Geri al, Başka okula taşı (bayi/SA). Canlı sıralar yeniden yazılır; yayında öğrenci kalmazsa yayın "yükleniyor"a döner. Arşivlenen misafir öğrenciler yeniden eşleşmez. Migration 0140.
+  - Değerlendirme öncesi okul onay kartı + onay kutusu. Aynı dosya aynı okul/sınava ikinci kez durur; başka okula serbest (bayi/SA'ya bilgi). Bu okulda zaten değerlendirilmiş numara uyarısı (ikinci oturum/tekrar). Başka okullarda aynı numara yalnız bayi/SA'ya. Okul düzeyi uymayan satır dışarıda (nedenle).
+  - Kitapçık (a): işaretsiz kitapçıkta seçenek başına net gösterilerek seçim; seçilmeden değerlendirme başlamaz ("seçmeden devam" ile atlanabilir).
+  - App: "Kaldır" tüm kanallardan aynı anda (sonuçluysa neden); Kanal yönetiminde Çöp kutusu: geri al, adını yazarak kalıcı sil; 30 gün sonra zamanlanmış kalıcı silme. Yükleme dışı (çevrimiçi) sonuç ya da kampanya/Nibiru bağı varsa kalıcı silinmez, nedeni söylenir.
+- **Kanıt:** 334 dosya / 1467 test; silme testleri yabancı anahtarlar açıkken (D1 gibi). Tarayıcıda okul onay kartı, sil ve geri al.
+- **Canlı veri (sahip talimatı):** ÇAP TYT 1 ve 4K TYT 1'deki 122 öğrencinin bütün sonuçları silindi; 122 misafir öğrenci arşivlendi; değerlendirilmiş yükleme "değerlendirmeye hazır"a döndü (audit: RESULT_EVALUATIONS_CLEARED). 4 yüklemenin kendisi ve orijinal dosyaları deploy sonrası 0140 ile silme akışına alınacak.
+- **Bilinen sınır:** Aynı okulda aynı öğrenci numarası iki farklı öğrencide varsa öğrenci girişi ikisini ayırt edemez; okul numaraları okul içinde tekil olmalı. Bayi/kurumun kendi sınavını tanımlaması ayrı iş olarak bekliyor.
