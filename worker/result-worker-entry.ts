@@ -65,6 +65,8 @@ export default {
     if (scheduledJobsPaused(env)) { console.log(JSON.stringify({ event: 'scheduled_jobs_paused', worker: 'result' })); return; }
     ctx.waitUntil((async()=>{if(env.RESULT_ARTIFACT_QUEUE_ENABLED==='true')await dispatchResultArtifactQueue(env);else{await advanceResultArtifactPreparation(env);await advanceResultArtifactVerification(env)}})());
     ctx.waitUntil((async()=>{const{purgeExpiredOriginals}=await import('./lib/result-data-center');await purgeExpiredOriginals(env)})().catch((error)=>console.error('Original upload purge failed',error)));
+    // D-S037: live ranks — a published exam that gained students since its last snapshot is written again.
+    ctx.waitUntil((async()=>{const{refreshLivePublications}=await import('./result-network-entry');await refreshLivePublications(env)})().catch((error)=>console.error('Live rank refresh failed',error)));
     ctx.waitUntil(env.RESULT_RETENTION_QUEUE_ENABLED==='true'?(async()=>{await emitResultRetentionNotices(env);await dispatchResultRetentionQueue(env)})():(async()=>{await sweepRetiredResultArtifacts(env);await purgeExpiredResultNetwork(env)})());
   },
 } satisfies ExportedHandler<Env>;

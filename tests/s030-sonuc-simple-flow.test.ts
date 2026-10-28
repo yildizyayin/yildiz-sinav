@@ -75,18 +75,21 @@ describe('S030 simple sonuc evaluation', () => {
     expect(ev.data.processed).toBe(SHEETS.length);
   });
 
-  it('sets aside a sheet without a name with its reason and evaluates the rest', async () => {
-    const { call, upload } = await setup();
+  it('evaluates a sheet without a name too, by its number (D-S038: every uploaded student is evaluated)', async () => {
+    const { t, call, upload } = await setup();
     const up = await upload('admin', [...SHEETS, { no: '777', name: '', TUR: 'ABCD', MAT: 'DCBA' }]);
     expect(up.status, up.text).toBe(200);
-    expect(up.data.acceptedParticipants).toBe(SHEETS.length);
+    expect(up.data.acceptedParticipants).toBe(SHEETS.length + 1);
     const batch = `/api/admin/result-network/operations/scan-batches/${up.data.batchId}`;
     const ev = await call('admin', `${batch}/evaluate`, { method: 'POST' });
     expect(ev.status, ev.text).toBe(200);
-    expect(ev.data.setAside).toHaveLength(1);
-    expect(ev.data.setAside[0]).toMatchObject({ row: 3 });
-    expect(ev.data.setAside[0].reason.length).toBeGreaterThan(3);
-    expect((await call('admin', `${batch}/report`)).data.rows).toHaveLength(SHEETS.length);
+    expect(ev.data.setAside).toEqual([]);
+    const rows = (await call('admin', `${batch}/report`)).data.rows;
+    expect(rows).toHaveLength(SHEETS.length + 1);
+    expect(JSON.stringify(rows)).toContain('Ad okunamadı · No 777');
+    // and every evaluated student got result access, without a code
+    expect((t.db.prepare(`SELECT count(*) n FROM result_access_identities WHERE access_code_salt='NO_ACCESS_CODE'`).get() as any).n).toBe(SHEETS.length + 1);
+    expect(ev.data.studentAccess).toMatchObject({ issued: SHEETS.length + 1 });
   });
 
   it('adds a missing optic from its FMT, tested on the TXT to evaluate, and only the Super Admin may', async () => {

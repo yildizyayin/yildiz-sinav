@@ -5,7 +5,7 @@ import { namePrefix } from '../worker/result-network-entry';
 
 process.env.TZ = 'UTC';
 
-/** S037: one-step student sign-in with il/ilçe/kurum, number, first three letters of the name and the card code. Synthetic data only. */
+/** S037/D-S038: one-step student sign-in with il/ilçe/kurum, grade, number and the first three letters of the name; no code. Synthetic data only. */
 async function setup() {
   const t = await evaluatedExam('direct');
   Object.assign(t.env, { RESULT_LOOKUP_SECRET: 'synthetic-lookup-secret' });
@@ -43,40 +43,37 @@ describe('S037 student sign-in', () => {
     expect(namePrefix('Ş')).toBe('s');
   });
 
-  it('signs in in one step and answers the same for a wrong name, number or code', async () => {
+  it('signs in in one step without a code and answers the same for a wrong name or number (D-S038)', async () => {
     const { t, call, issue, setStatus, login } = await setup();
-    const code = (await issue()).data.accessCode;
-    // nothing is published for the school yet: only that is told
-    const early = await login({ accessCode: code });
+    await issue();
+    const early = await login({});
     expect(early.data).toMatchObject({ found: false, reason: 'NOT_PUBLISHED' });
     setStatus('PUBLISHED');
-    const wrongName = await login({ namePrefix: 'VEL', accessCode: code });
-    const wrongNo = await login({ lookupValue: '999', accessCode: code });
-    const wrongCode = await login({ accessCode: '00000000' });
-    for (const r of [wrongName, wrongNo, wrongCode]) { expect(r.status).toBe(401); expect(r.data.error.code).toBe('LOGIN_NOT_MATCHED'); }
-    expect(wrongName.text).toBe(wrongCode.text);
-    const ok = await login({ namePrefix: 'Alİ', accessCode: code });
+    const wrongName = await login({ namePrefix: 'VEL' });
+    const wrongNo = await login({ lookupValue: '999' });
+    for (const r of [wrongName, wrongNo]) { expect(r.status).toBe(401); expect(r.data.error.code).toBe('LOGIN_NOT_MATCHED'); }
+    expect(wrongName.text).toBe(wrongNo.text);
+    const ok = await login({ namePrefix: 'Alİ' });
     expect(ok.status, ok.text).toBe(200);
     const cookie = ok.setCookie!.split(';')[0];
     expect((await call('/api/public/results/student', { cookie })).status).toBe(200);
-    expect((t.db.prepare(`SELECT failed_attempts FROM result_access_identities`).get() as any).failed_attempts).toBe(0);
+    expect((t.db.prepare(`SELECT count(*) n FROM login_attempts WHERE success=1`).get() as any).n).toBe(1);
   });
 
-  it('locks the identity after 8 wrong codes, even for the right code, without telling', async () => {
-    const { t, issue, setStatus, login } = await setup();
-    const code = (await issue()).data.accessCode;
-    setStatus('PUBLISHED');
-    for (let i = 0; i < 8; i++) expect((await login({ accessCode: String(10000000 + i) })).status).toBe(401);
-    expect((t.db.prepare(`SELECT locked_until FROM result_access_identities`).get() as any).locked_until).toBeTruthy();
-    const locked = await login({ accessCode: code });
+  it('stops guessing: 8 misses lock a student number, 20 misses lock an IP, without telling which', async () => {
+    const { issue, setStatus, login } = await setup();
+    await issue(); setStatus('PUBLISHED');
+    for (let i = 0; i < 8; i++) expect((await login({ namePrefix: `x${String.fromCharCode(97 + i)}z` })).status).toBe(401);
+    const locked = await login({});
     expect(locked.status).toBe(401);
     expect(locked.data.error.code).toBe('LOGIN_NOT_MATCHED');
+    for (let i = 0; i < 12; i++) await login({ lookupValue: String(500 + i) });
+    expect((await login({ lookupValue: '600' })).status).toBe(429);
   });
 
-  it('rejects a short name or a malformed code before looking anything up', async () => {
+  it('rejects a short name before looking anything up', async () => {
     const { login } = await setup();
-    expect((await login({ namePrefix: 'al', accessCode: '12345678' })).status).toBe(400);
-    expect((await login({ accessCode: '12' })).status).toBe(400);
+    expect((await login({ namePrefix: 'al' })).status).toBe(400);
   });
 
   it('lists il, ilçe and the schools of an ilçe from the MEB directory', async () => {

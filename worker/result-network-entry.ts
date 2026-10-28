@@ -34,7 +34,7 @@ function safeError(status:number,code:string,message:string){return json({ok:fal
 
 const DEFAULT_PORTAL_COPY={badge:'ANUNEX DOĞRULANMIŞ SONUÇ AĞI',title_line:'Sonuç yalnızca bir sayı değil.',title_emphasis:'Bir sonraki akademik rota.',subtitle:'Kurumunuz ANUNEX lisansı kullanmasa da yayınlanmış sınav sonuçlarınıza güvenle ulaşın.',license_title:'Sonucu görmek başlangıç. Gelişimi yönetmek ANUNEX.',license_text:'Optik okumadan kazanım analizine, yoklamadan kişisel öğrenme rotasına kadar kurumunuzun akademik operasyonunu tek sistemde birleştirin.',cta_label:'Kurum demosunu inceleyin',cta_url:'https://demo.anunex.com',support_phone:'05433066172'};
 async function portalCopy(env:Env){try{const object=await env.FILES.get('settings/result-portal.json');if(!object)return DEFAULT_PORTAL_COPY;const stored:any=JSON.parse(await object.text());return{...DEFAULT_PORTAL_COPY,...stored}}catch{return DEFAULT_PORTAL_COPY}}
-async function publicConfig(env:Env){return json({ok:true,portal:'ANUNEX_RESULT_NETWORK',turnstileSiteKey:env.TURNSTILE_SITE_KEY||'',copy:await portalCopy(env),roles:[{key:'STUDENT',label:'Öğrenci Sonuç'},{key:'INSTITUTION',label:'Kurum Sonuç'},{key:'DEALER',label:'Bayi Sonuç'}],security:{secondFactorRequired:true,tcknStored:false,aiMode:'STRUCTURED_TIPS_ONLY'}})}
+async function publicConfig(env:Env){return json({ok:true,portal:'ANUNEX_RESULT_NETWORK',turnstileSiteKey:env.TURNSTILE_SITE_KEY||'',copy:await portalCopy(env),roles:[{key:'STUDENT',label:'Öğrenci Sonuç'},{key:'INSTITUTION',label:'Kurum Sonuç'},{key:'DEALER',label:'Bayi Sonuç'}],security:{secondFactorRequired:false,tcknStored:false,aiMode:'STRUCTURED_TIPS_ONLY'}})}
 
 async function searchInstitutions(env:Env,url:URL){
  const city=String(url.searchParams.get('city')||'').trim(),district=String(url.searchParams.get('district')||'').trim();
@@ -84,28 +84,31 @@ async function openStudentSession(env:Env,identityId:string,ipHash:string){
 export function namePrefix(value:string){return normalizeName(value).replace(/[^a-z]/g,'').slice(0,3)}
 
 /**
- * S037 one-step student sign-in (owner decision 28 Oct): il › ilçe › kurum, sınıf düzeyi, öğrenci no (or TCKN), the
- * first three letters of the name and the 8-digit access code from the institution's card. Every outcome that could
- * tell whether a student exists answers the same way; only an institution-level "nothing published yet" is told.
+ * Student sign-in on sonuc (D-S038, owner 28 Oct): il › ilçe › kurum, sınıf düzeyi, öğrenci no (or TCKN) and the first
+ * three letters of the name. No access code: the app's own student login is separate and unchanged.
+ * Guessing is held back by the robot check, 20 misses per IP and 8 misses per student number in 15 minutes, and every
+ * miss answers the same way, so whether a student exists is never told; only "nothing published yet" is, per school.
  */
+const RESULT_LOGIN_WINDOW=`datetime('now','-15 minutes')`;
+async function loginMisses(env:Env,key:string){const r=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM login_attempts WHERE identifier_hash=? AND success=0 AND created_at>=${RESULT_LOGIN_WINDOW}`).bind(await sha256(key)));return Number(r?.c||0)}
+async function recordLogin(env:Env,keys:string[],ok:boolean,ipHash:string){await env.DB.batch(await Promise.all(keys.map(async k=>env.DB.prepare('INSERT INTO login_attempts (id,identifier_hash,success,ip_hash) VALUES (?,?,?,?)').bind(uuid('log'),await sha256(k),ok?1:0,ipHash))))}
 async function studentLogin(request:Request,env:Env){
  const body:any=await request.json().catch(()=>({}));const ip=clientIp(request);
  const turnstile=await verifyTurnstile(env,body.turnstileToken,ip);if(!turnstile.ok)return badRequest('Robot doğrulaması tamamlanamadı.',turnstile.error||'TURNSTILE_FAILED');
- const institutionCode=String(body.institutionCode||'').trim(),grade=Number(body.gradeLevel),prefix=namePrefix(String(body.namePrefix||'')),kind=body.lookupType==='TCKN'?'TCKN':'STUDENT_NUMBER',value=normalizeLookup(body.lookupValue),code=String(body.accessCode||'').replace(/\s/g,'');
+ const institutionCode=String(body.institutionCode||'').trim(),grade=Number(body.gradeLevel),prefix=namePrefix(String(body.namePrefix||'')),kind=body.lookupType==='TCKN'?'TCKN':'STUDENT_NUMBER',value=normalizeLookup(body.lookupValue);
  if(!/^\d{5,12}$/.test(institutionCode)||!Number.isInteger(grade)||grade<1||grade>12||prefix.length<3||!LOOKUP.test(value))return badRequest('Kurum, sınıf düzeyi, numara ve adınızın ilk 3 harfi eksiksiz girilmelidir.');
- if(!/^[A-Za-z0-9]{6,12}$/.test(code))return badRequest('Erişim kodu kurumunuzun verdiği karttaki 8 haneli koddur.','ACCESS_CODE_FORMAT');
+ const ipHash=await sha256(ip),ipKey=`RESULT_LOGIN_IP|${ipHash}`,studentKey=`RESULT_LOGIN_STUDENT|${institutionCode}|${kind}|${value}`;
+ if(await loginMisses(env,ipKey)>=20)return safeError(429,'LOGIN_RATE_LIMITED','Çok fazla deneme yapıldı. 15 dakika sonra tekrar deneyin.');
  const published=await one<any>(env.DB.prepare(`SELECT 1 x FROM result_network_institutions rni JOIN exam_administrations ea ON ea.id=rni.administration_id WHERE rni.meb_code=? AND ea.status='PUBLISHED' LIMIT 1`).bind(institutionCode));
- if(!published)return json({ok:true,found:false,reason:'NOT_PUBLISHED',message:'Kurumunuz için henüz yayınlanmış sonuç yok. Sonuçlar kurumunuz yayınladığında burada açılır.'});
+ if(!published)return json({ok:true,found:false,reason:'NOT_PUBLISHED',message:'Kurumunuz için henüz yayınlanmış sonuç yok. Sonuçlar yayınlandığında burada açılır.'});
+ const fail=async()=>{await recordLogin(env,[ipKey,studentKey],false,ipHash);return safeError(401,'LOGIN_NOT_MATCHED','Bilgiler eşleşmedi. Kurum, sınıf, numara ve adınızın ilk 3 harfini kontrol edin.')};
+ if(await loginMisses(env,studentKey)>=8)return fail();
  const token=await hmac(env,`${kind}|${institutionCode}|${value}`);const column=kind==='TCKN'?'rai.tckn_lookup_token':'rai.student_number_lookup_token';
- const candidates=await all<any>(env.DB.prepare(`SELECT rai.id,rai.normalized_name,rai.access_code_hash,rai.access_code_salt,rai.locked_until FROM result_access_identities rai JOIN result_network_institutions rni ON rni.id=rai.result_institution_id JOIN exam_administrations ea ON ea.id=rai.administration_id WHERE rni.meb_code=? AND rai.grade_level=? AND ${column}=? AND rai.expires_at>CURRENT_TIMESTAMP AND ea.status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM exam_channel_publications pub WHERE pub.exam_id=ea.exam_id AND pub.channel='RESULT_NETWORK' AND pub.status<>'ACTIVE') ORDER BY ea.published_at DESC LIMIT 10`).bind(institutionCode,grade,token));
- const fail=()=>safeError(401,'LOGIN_NOT_MATCHED','Bilgiler veya erişim kodu eşleşmedi. Kartınızdaki bilgileri kontrol edin.');
- const named=candidates.filter(c=>namePrefix(c.normalized_name)===prefix);
- if(!named.length)return fail();
- const open=named.filter(c=>!c.locked_until||new Date(String(c.locked_until).replace(' ','T')+'Z').getTime()<=Date.now());
- for(const c of open)if(await verifyResultCode(env,code,c.access_code_salt,c.access_code_hash))return openStudentSession(env,c.id,await sha256(ip));
- // Count the miss against every identity it was tried on; 8 misses lock it for 15 minutes, as the two-step flow does.
- if(open.length)await env.DB.batch(open.map(c=>env.DB.prepare(`UPDATE result_access_identities SET failed_attempts=COALESCE(failed_attempts,0)+1,locked_until=CASE WHEN COALESCE(failed_attempts,0)+1>=8 THEN datetime('now','+15 minutes') ELSE locked_until END WHERE id=?`).bind(c.id)));
- return fail();
+ const candidates=await all<any>(env.DB.prepare(`SELECT rai.id,rai.normalized_name FROM result_access_identities rai JOIN result_network_institutions rni ON rni.id=rai.result_institution_id JOIN exam_administrations ea ON ea.id=rai.administration_id WHERE rni.meb_code=? AND rai.grade_level=? AND ${column}=? AND rai.expires_at>CURRENT_TIMESTAMP AND ea.status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM exam_channel_publications pub WHERE pub.exam_id=ea.exam_id AND pub.channel='RESULT_NETWORK' AND pub.status<>'ACTIVE') ORDER BY ea.published_at DESC LIMIT 10`).bind(institutionCode,grade,token));
+ const match=candidates.find(c=>namePrefix(c.normalized_name)===prefix);
+ if(!match)return fail();
+ await recordLogin(env,[studentKey],true,ipHash);
+ return openStudentSession(env,match.id,ipHash);
 }
 
 /** Il and ilçe lists for the student form, from the MEB directory (cached; it changes rarely). */
@@ -221,12 +224,22 @@ export async function issueAccess(request:Request,env:Env,user:AuthUser){
 }
 
 export async function freezeAndPublishAdministration(request:Request,env:Env,user:AuthUser,id:string){
- let row=await one<any>(env.DB.prepare(`SELECT ea.*,e.id exam_id,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(id));
+ const row=await one<any>(env.DB.prepare(`SELECT ea.*,e.id exam_id,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(id));
  if(!row)return safeError(404,'ADMINISTRATION_NOT_FOUND','Sınav yönetimi bulunamadı.');
- return withExamOperationLock(env,row.exam_id,'RESULT_NETWORK_FREEZE',async(env)=>{
- row=await one<any>(env.DB.prepare(`SELECT ea.*,e.id exam_id,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(id));
- if(!row||!['UPLOADING','READY'].includes(row.status))return badRequest('Sonuç yayını için yönetim hazır olmalıdır. Mevcut yayın yeniden dondurulamaz.','RESULT_PUBLICATION_STATE_CHANGED');
- const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND (EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id) OR EXISTS(SELECT 1 FROM scan_records sr WHERE sr.batch_id=sb.id AND sr.resolution_status<>'CANCELLED'))`).bind(row.exam_id));
+ return withExamOperationLock(env,row.exam_id,'RESULT_NETWORK_FREEZE',async(env)=>publishInLock(env,id,user.id,false));
+}
+
+/**
+ * Writes a publication: ranks over every student with result access, the report snapshot and the counts.
+ * D-S037 (owner, 28 Oct): published ranks are live. A later upload adds its students and the publication is written
+ * again as a new snapshot version (`live`), so everyone's Türkiye / il / ilçe rank is current. The first publication
+ * keeps its date; later ones only move the version.
+ */
+async function publishInLock(env:Env,id:string,actorId:string|null,live:boolean):Promise<Response>{
+ let row=await one<any>(env.DB.prepare(`SELECT ea.*,e.id exam_id,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(id));
+ if(!row||(live?row.status!=='PUBLISHED':!['UPLOADING','READY'].includes(row.status)))return badRequest('Sonuç yayını için yönetim hazır olmalıdır. Mevcut yayın yeniden dondurulamaz.','RESULT_PUBLICATION_STATE_CHANGED');
+ const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND (EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)${live?'':" OR EXISTS(SELECT 1 FROM scan_records sr WHERE sr.batch_id=sb.id AND sr.resolution_status<>'CANCELLED')"})`).bind(row.exam_id));
+ // live: an upload not yet evaluated joins at its own evaluation; only one half-written stops the refresh
  if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
  // Every issued identity must have an evaluated participant in this exam and
  // an institution included by the snapshot query. Do not silently publish a
@@ -262,14 +275,13 @@ export async function freezeAndPublishAdministration(request:Request,env:Env,use
   FROM base`).bind(id,row.exam_id,version),
   env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(row.exam_id,version),
 
-  env.DB.prepare(`UPDATE exam_administrations SET status='PUBLISHED',published_at=CURRENT_TIMESTAMP,retention_due_at=?,ranking_frozen_at=CURRENT_TIMESTAMP,published_snapshot_version=?,participant_count=?,institution_count=? WHERE id=?`).bind(due,version,totals.participant_count,totals.institution_count,id),
+  env.DB.prepare(`UPDATE exam_administrations SET status='PUBLISHED',published_at=${live?'COALESCE(published_at,CURRENT_TIMESTAMP)':'CURRENT_TIMESTAMP'},retention_due_at=?,ranking_frozen_at=CURRENT_TIMESTAMP,published_snapshot_version=?,participant_count=?,institution_count=? WHERE id=?`).bind(due,version,totals.participant_count,totals.institution_count,id),
   env.DB.prepare(`UPDATE result_access_identities SET expires_at=? WHERE administration_id=?`).bind(due,id),
   env.DB.prepare(`INSERT INTO exam_publication_stats(exam_id,snapshot_version,institution_count,participant_count,city_count,payload_json) SELECT ?,?,?,?,COUNT(DISTINCT city),? FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(row.exam_id,version,totals.institution_count,totals.participant_count,JSON.stringify({channel:'RESULT_NETWORK',administrationId:id}),row.exam_id,version),
-  env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'RESULT_RANKINGS_FROZEN_AND_PUBLISHED','exam_administration',?,?)`).bind(uuid('aud'),user.id,id,JSON.stringify({examId:row.exam_id,version,participants:totals.participant_count,institutions:totals.institution_count,retentionDueAt:due})),
+  env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,?,'exam_administration',?,?)`).bind(uuid('aud'),actorId,live?'RESULT_RANKINGS_REFRESHED':'RESULT_RANKINGS_FROZEN_AND_PUBLISHED',id,JSON.stringify({examId:row.exam_id,version,participants:totals.participant_count,institutions:totals.institution_count,retentionDueAt:due})),
  ]);
 
- return json({ok:true,id,status:'PUBLISHED',snapshotVersion:version,participantCount:Number(totals.participant_count),institutionCount:Number(totals.institution_count),retentionDueAt:due});
- });
+ return json({ok:true,id,status:'PUBLISHED',snapshotVersion:version,participantCount:Number(totals.participant_count),institutionCount:Number(totals.institution_count),retentionDueAt:due,live});
 }
 
 async function governanceSnapshot(env:Env){
@@ -504,6 +516,47 @@ async function ensureOpenAdministration(env:Env,examId:string,actorId:string){
   env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'RESULT_ADMINISTRATION_OPENED','exam_administration',?,?)`).bind(uuid('aud'),actorId,id,JSON.stringify({reason:'İlk değerlendirmede otomatik açıldı.'})),
  ]);
 }
+/**
+ * D-S038 (owner, 28 Oct): on sonuc every evaluated student can see the result once it is published; there is no access
+ * code and no card step. When a batch is committed, each of its students gets a result access record keyed by school,
+ * grade and student number (the HMAC token, never the number in clear). The stored code hash is a random value no
+ * code can match, so the old two-step code check can never open these records.
+ */
+export async function issueBatchIdentities(env:Env,batchId:string,actorId:string|null){
+ const batch=await one<any>(env.DB.prepare(`SELECT id,exam_id,institution_id,status FROM scan_batches WHERE id=?`).bind(batchId));
+ if(!batch||batch.status!=='COMMITTED')return {issued:0,reason:'BATCH_NOT_COMMITTED'};
+ if(actorId)await ensureOpenAdministration(env,batch.exam_id,actorId);
+ const administration=await one<any>(env.DB.prepare(`SELECT ea.*,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.exam_id=? AND ea.channel='RESULT_NETWORK' AND ea.status IN ('UPLOADING','READY','PUBLISHED') ORDER BY ea.created_at DESC LIMIT 1`).bind(batch.exam_id));
+ if(!administration)return {issued:0,reason:'RESULT_ADMINISTRATION_NOT_OPEN'};
+ const institution=await one<any>(env.DB.prepare(`SELECT i.id,i.code,i.name,i.city,i.district,ndi.meb_code FROM institutions i LEFT JOIN national_institution_directory ndi ON ndi.meb_code=i.code AND ndi.status='ACTIVE' WHERE i.id=?`).bind(batch.institution_id));
+ if(!institution?.meb_code)return {issued:0,reason:'OFFICIAL_INSTITUTION_CODE_REQUIRED'};
+ const dealer=await one<any>(env.DB.prepare(`SELECT dealer_id FROM result_network_institutions WHERE administration_id=? AND meb_code=?`).bind(administration.id,institution.meb_code));
+ await env.DB.prepare(`INSERT INTO result_network_institutions(id,administration_id,meb_code,licensed_institution_id,dealer_id,display_name_snapshot,city_snapshot,district_snapshot) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(administration_id,meb_code) DO UPDATE SET licensed_institution_id=excluded.licensed_institution_id,display_name_snapshot=excluded.display_name_snapshot,city_snapshot=excluded.city_snapshot,district_snapshot=excluded.district_snapshot`).bind(uuid('rni'),administration.id,institution.meb_code,institution.id,dealer?.dealer_id||null,institution.name,institution.city,institution.district).run();
+ const resultInstitution=await one<any>(env.DB.prepare(`SELECT id FROM result_network_institutions WHERE administration_id=? AND meb_code=?`).bind(administration.id,institution.meb_code));
+ const candidates=await all<any>(env.DB.prepare(`SELECT ep.id participant_id,ep.student_number_snapshot,ep.name_snapshot,COALESCE(se.grade_level,e.grade_level) grade_level FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id JOIN exams e ON e.id=ep.exam_id LEFT JOIN student_enrollments se ON se.id=(SELECT historical.id FROM student_enrollments historical WHERE historical.student_id=ep.student_id AND historical.institution_id=ep.institution_id AND historical.season_id=ep.season_id ORDER BY historical.created_at DESC,historical.id LIMIT 1) LEFT JOIN result_access_identities rai ON rai.administration_id=? AND rai.participant_id=ep.id WHERE ep.exam_id=? AND ep.institution_id=? AND rai.id IS NULL ORDER BY ep.id`).bind(administration.id,batch.exam_id,batch.institution_id));
+ if(!candidates.length)return {issued:0,administrationId:administration.id};
+ const academicEnd=Number(String(administration.academic_year).slice(0,4))+1,defaultDue=new Date(`${academicEnd}-09-30T23:59:59.000Z`),published=administration.published_at?new Date(new Date(String(administration.published_at).replace(' ','T')+'Z').getTime()+90*86400000):defaultDue,expires=(published>defaultDue?published:defaultDue).toISOString();
+ const rows:any[]=[];
+ for(const c of candidates){const number=normalizeLookup(c.student_number_snapshot);rows.push({id:uuid('rai'),p:c.participant_id,g:c.grade_level,n:normalizeName(String(c.name_snapshot||'')),t:number&&LOOKUP.test(number)?await hmac(env,`STUDENT_NUMBER|${institution.meb_code}|${number}`):null,h:await sha256(crypto.randomUUID()+crypto.randomUUID())})}
+ const statements:D1PreparedStatement[]=[];
+ for(let i=0;i<rows.length;i+=400)statements.push(env.DB.prepare(`INSERT INTO result_access_identities(id,administration_id,result_institution_id,participant_id,grade_level,normalized_name,student_number_lookup_token,access_code_hash,access_code_salt,expires_at)
+  SELECT json_extract(value,'$.id'),?1,?2,json_extract(value,'$.p'),json_extract(value,'$.g'),json_extract(value,'$.n'),json_extract(value,'$.t'),json_extract(value,'$.h'),'NO_ACCESS_CODE',?3 FROM json_each(?4) WHERE true ON CONFLICT DO NOTHING`).bind(administration.id,resultInstitution.id,expires,JSON.stringify(rows.slice(i,i+400))));
+ statements.push(env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,'RESULT_ACCESS_AUTO_ISSUED','scan_batch',?,?)`).bind(uuid('aud'),actorId,batch.institution_id,batchId,JSON.stringify({administrationId:administration.id,count:rows.length,reason:'D-S038: erişim kodu yok; değerlendirilen her öğrenci yayında görür.'})));
+ await env.DB.batch(statements);
+ return {issued:rows.length,administrationId:administration.id};
+}
+
+/** A published administration is stale when a student with result access is not in its current snapshot. */
+const STALE_PUBLICATION_SQL=`SELECT ea.id,ea.exam_id FROM exam_administrations ea WHERE ea.channel='RESULT_NETWORK' AND ea.status='PUBLISHED' AND EXISTS(SELECT 1 FROM result_access_identities rai WHERE rai.administration_id=ea.id AND NOT EXISTS(SELECT 1 FROM exam_result_snapshots s WHERE s.exam_id=ea.exam_id AND s.snapshot_version=ea.published_snapshot_version AND s.participant_id=rai.participant_id))`;
+
+/** D-S037: rewrite the live ranks of an exam (or of every stale exam, from the schedule). A busy exam is left for the next run. */
+export async function refreshLivePublications(env:Env,examId?:string,actorId:string|null=null){
+ const stale=await all<any>(env.DB.prepare(STALE_PUBLICATION_SQL+(examId?' AND ea.exam_id=?':'')+' LIMIT 20').bind(...(examId?[examId]:[])));
+ let refreshed=0;
+ for(const s of stale){const r=await withExamOperationLock(env,s.exam_id,'RESULT_NETWORK_REFRESH',async(env)=>publishInLock(env,s.id,actorId,true));if(r.ok)refreshed++;else console.warn('RESULT_LIVE_REFRESH_SKIPPED',s.exam_id,await r.clone().text())}
+ return refreshed;
+}
+
 export async function generateBatchAccessCodes(request:Request,env:Env,batchId:string){
  let context=await batchOperatorContext(request,env,batchId);if(context instanceof Response)return context;
  return withExamOperationLock(env,context.batch.exam_id,'RESULT_ACCESS_BATCH',async(env)=>{
@@ -639,7 +692,11 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   // S035: one time-limited step; the page calls again while done is false and shows "x / n öğrenci".
   const evaluated=await evaluateBatchStep(env,context.effective,evaluate[1]);
   if(!evaluated.ok)return evaluated;
-  const body:any=await evaluated.json();return json({...body,setAside},evaluated.status)}
+  const body:any=await evaluated.json();
+  // D-S038/D-S037: once the batch is done its students get result access and a published exam's live ranks are rewritten.
+  let access:any=null;
+  if(body.done!==false){try{access=await issueBatchIdentities(env,evaluate[1],context.user.id);if(access.issued)await refreshLivePublications(env,context.batch.exam_id,context.user.id)}catch(e){console.error('RESULT_ACCESS_AFTER_EVALUATION',e instanceof Error?e.message:e)}}
+  return json({...body,setAside,studentAccess:access},evaluated.status)}
  const access=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/access-codes$/);
  if(access&&request.method==='POST')return generateBatchAccessCodes(request,env,access[1]);
  const report=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/report$/);

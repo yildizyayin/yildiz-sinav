@@ -1,7 +1,6 @@
-import { collectAccessCodePages } from '../lib/access-code-pages';
 import { useEffect,useState } from 'react';
 import { openTopluListe, ResultTopluListe } from '../components/ResultTopluListe';
-import { CheckCircle2,FileKey2,FileUp,Printer,RefreshCw,ScanLine,ShieldCheck,TriangleAlert } from 'lucide-react';
+import { CheckCircle2,FileUp,Printer,RefreshCw,ScanLine,ShieldCheck,TriangleAlert } from 'lucide-react';
 import { api,ApiError } from '../api';
 import { EvalTimer,seconds,useStopwatch } from '../components/EvalTimer';
 import './result-network-admin.css';
@@ -65,7 +64,7 @@ export function ResultOperatorWorkspace({mode,access}:Props){
   try{
    await api(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/records/${recordId}/resolve`,{method:'POST',body:JSON.stringify({action,studentId})});
    await loadBatch(preview.batchId);setCandidates(current=>({...current,[recordId]:[]}));
-   setNotice(action==='MATCH'?'Öğrenci eşleştirildi.':action==='GUEST'?'Kayıt misafir öğrenci olarak işaretlendi.':'Kayıt iptal edildi; değerlendirmeye alınmayacak.');
+   setNotice(action==='MATCH'?'Öğrenci eşleştirildi.':action==='GUEST'?'Öğrenci değerlendirmeye alındı.':'Kayıt iptal edildi; değerlendirmeye alınmayacak.');
   }catch(e:any){setError(e.message)}finally{setBusy(false);setResolving('')}
  };
  const searchCandidates=async(recordId:string)=>{
@@ -96,15 +95,6 @@ export function ResultOperatorWorkspace({mode,access}:Props){
   }catch(e:any){watch.reset();setError(`${e.message} Kaydedilen öğrenciler korunur; "Değerlendir"e yeniden basarak kalan öğrencilerle devam edebilirsiniz.`)}finally{setBusy(false);setProgress(null)}
  };
  const downloadCsv=(name:string,headers:string[],rows:any[][],preface:any[][]=[])=>{const cell=(value:any)=>`"${String(value??'').replace(/"/g,'""')}"`;const blob=new Blob(['\uFEFF'+[...preface,headers,...rows].map(row=>row.map(cell).join(';')).join('\n')],{type:'text/csv;charset=utf-8'});const href=URL.createObjectURL(blob);const a=document.createElement('a');a.href=href;a.download=name;a.click();URL.revokeObjectURL(href)};
- const generateAccessCodes=async()=>{
-  if(!preview?.batchId)return;setBusy(true);setError('');setNotice('');
-  try{
-   const result=await collectAccessCodePages(cursor=>api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/access-codes${cursor?`?cursor=${encodeURIComponent(cursor)}`:''}`,{method:'POST'}));
-   if(result.codes.length){downloadCsv('anunex-ogrenci-erisim-kartlari.csv',['Öğrenci No','Ad Soyad','Sınıf','Erişim Kodu','Geçerlilik'],result.codes.map(x=>[x.studentNumber,x.fullName,x.gradeLevel,x.accessCode,x.expiresAt]));setNotice(result.error?`${result.codes.length} erişim kartı kaydedildi ve indirildi. Kalan öğrenciler için işlemi tekrar başlatın; bu dosyayı saklayın.`:`${result.codes.length} öğrenci erişim kartı üretildi. Kodlar güvenlik gereği yalnız bu indirmede gösterilir.`)}
-   else if(!result.error)setNotice('Bu değerlendirmedeki erişim kartları daha önce oluşturulmuş. Mevcut kodlar güvenlik gereği tekrar gösterilmez.');
-   if(result.error)setError(result.error.message);
-  }catch(e:any){setError(e.message)}finally{setBusy(false)}
- };
  const saveOptical=async()=>{
   if(!opticalName.trim()||!fmtFile||!file){setError('Optik adı, FMT dosyası ve değerlendireceğiniz TXT/DAT dosyası gerekli.');return}
   setBusy(true);setError('');setNotice('');
@@ -143,10 +133,10 @@ export function ResultOperatorWorkspace({mode,access}:Props){
    <EvalTimer watch={watch} done={progress?.done??lastCount?.done} total={progress?.total||lastCount?.total||undefined}/>
    {batch?.batch?.status!=='COMMITTED'&&<button className="primary huge" disabled={busy||Number(preview.total||0)-pendingRows.length<=0} onClick={()=>void evaluate()}><ScanLine/> {busy?(progress&&progress.total?`Değerlendiriliyor… ${progress.done} / ${progress.total} öğrenci`:'Değerlendiriliyor…'):'6 · Değerlendir'}</button>}
    {setAside.length>0&&<div className="alert warning"><TriangleAlert/><div><strong>Değerlendirmeye alınmayan {setAside.length} satır:</strong><ul className="result-setaside-list">{setAside.map((x:any)=><li key={x.row}><strong>Satır {x.row}{x.name?` · ${x.name}`:''}</strong>: {x.reason}</li>)}</ul></div></div>}
-   {batch?.batch?.status==='COMMITTED'&&<><div className="success-box"><CheckCircle2/><div><strong>Değerlendirme tamamlandı</strong><span>{preview.evaluated||preview.total} katılımcının sonucu işlendi. Erişim kartını bir kez indirip kurum yetkilisine güvenli kanaldan teslim edin.</span></div></div><div className="result-completion-actions"><button className="secondary" disabled={busy} onClick={()=>void generateAccessCodes()}><FileKey2/> Öğrenci erişim kartlarını üret</button><button className="primary" onClick={()=>openTopluListe(examId||batch?.batch?.exam_id,batch?.batch?.institution_id)}><Printer/> Raporlara git (Toplu Liste)</button></div></>}
+   {batch?.batch?.status==='COMMITTED'&&<><div className="success-box"><CheckCircle2/><div><strong>Değerlendirme tamamlandı</strong><span>{preview.evaluated||preview.total} öğrencinin sonucu işlendi. Sonuçlar yayınlandığında öğrenciler sonuc.anunex.com'da il, ilçe, kurum, sınıf, numara ve adlarının ilk 3 harfiyle görür; kart ya da kod gerekmez.</span></div></div><div className="result-completion-actions"><button className="primary" onClick={()=>openTopluListe(examId||batch?.batch?.exam_id,batch?.batch?.institution_id)}><Printer/> Raporlara git (Toplu Liste)</button></div></>}
   </>}
-  <div id="result-evaluation-history" className="result-history"><div className="panel-head"><div><h3>Değerlendirme geçmişi</h3><p>Önceki değerlendirmeyi açarak eşleştirmeye, değerlendirmeye, rapora ve erişim kartlarına dönebilirsiniz.</p></div><button className="ghost" type="button" onClick={()=>void loadHistory()}><RefreshCw/> Yenile</button></div>
-   {!history.length?<p className="empty">Henüz değerlendirme yok.</p>:<div className="table-card"><table><thead><tr><th>Tarih</th><th>Sınav</th><th>Kurum</th><th>Kayıt</th><th>Durum</th><th></th></tr></thead><tbody>{history.map((x:any)=><tr key={x.id}><td>{new Date(String(x.created_at).replace(' ','T')+'Z').toLocaleString('tr-TR')}</td><td>{x.academic_year} · {x.title}</td><td>{x.institution_name}<small> {x.institution_code} · {x.city}/{x.district}</small></td><td>{Number(x.total||0).toLocaleString('tr-TR')}</td><td>{BATCH_STATUS[x.status]||x.status}</td><td><button className="secondary" type="button" disabled={busy} onClick={()=>x.status==='COMMITTED'?openTopluListe(x.exam_id,x.institution_id):void openBatch(x)}>{x.status==='COMMITTED'?'Raporlar':'Devam et'}</button>{x.status==='COMMITTED'&&<button className="ghost" type="button" disabled={busy} onClick={()=>void openBatch(x)}>Erişim kartları</button>}</td></tr>)}</tbody></table></div>}
+  <div id="result-evaluation-history" className="result-history"><div className="panel-head"><div><h3>Değerlendirme geçmişi</h3><p>Önceki değerlendirmeyi açarak kontrole, değerlendirmeye ve raporlara dönebilirsiniz.</p></div><button className="ghost" type="button" onClick={()=>void loadHistory()}><RefreshCw/> Yenile</button></div>
+   {!history.length?<p className="empty">Henüz değerlendirme yok.</p>:<div className="table-card"><table><thead><tr><th>Tarih</th><th>Sınav</th><th>Kurum</th><th>Kayıt</th><th>Durum</th><th></th></tr></thead><tbody>{history.map((x:any)=><tr key={x.id}><td>{new Date(String(x.created_at).replace(' ','T')+'Z').toLocaleString('tr-TR')}</td><td>{x.academic_year} · {x.title}</td><td>{x.institution_name}<small> {x.institution_code} · {x.city}/{x.district}</small></td><td>{Number(x.total||0).toLocaleString('tr-TR')}</td><td>{BATCH_STATUS[x.status]||x.status}</td><td><button className="secondary" type="button" disabled={busy} onClick={()=>x.status==='COMMITTED'?openTopluListe(x.exam_id,x.institution_id):void openBatch(x)}>{x.status==='COMMITTED'?'Raporlar':'Devam et'}</button></td></tr>)}</tbody></table></div>}
   </div>
  </section>;
 }
