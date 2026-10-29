@@ -1,0 +1,61 @@
+/* T08 — screen only: native millimetre geometry and print calibration are unchanged. */
+@media screen {
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] {
+    --deimos-accent: #006b73;
+    --deimos-line: #d7e5e8;
+    color: #142b3b;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    min-width: 0;
+  }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] :is(.panel,.page-head) { margin: 0; min-width: 0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .panel { background: #fff; border: 1px solid var(--deimos-line); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px #142b3b05; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .eyebrow { color: var(--deimos-accent); letter-spacing: .06em; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] h1 { font-size: clamp(24px,3vw,32px); line-height: 1.2; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] h2 { font-size: 17px; line-height: 1.4; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] :is(p,.muted) { color: #526574; line-height: 1.6; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] :is(button,a.secondary,a.ghost,.link-button) { min-height: 40px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .link-button { display: inline-flex; align-items: center; color: #005c64; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .primary { background: var(--deimos-accent) !important; border-color: var(--deimos-accent) !important; color: #fff !important; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] :is(.secondary,.ghost) { color: #005c64; border-color: #b7d5d9; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] :is(button,input,select,a):focus-visible { outline: 3px solid #006b73; outline-offset: 3px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] button:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .form-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .form-grid label { min-width: 0; font-size: 13px; font-weight: 600; color: #344d5c; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] :is(input:not([type="checkbox"]),select) { min-height: 42px; width: 100%; min-width: 0; border: 1px solid #b9cbd1; border-radius: 7px; background: #fff; color: #142b3b; font-size: 14px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] :is(.panel-head,.optical-design-actions) { flex-wrap: wrap; gap: 12px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .table-card { max-width: 100%; overflow-x: auto; border: 1px solid var(--deimos-line); border-radius: 8px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] table { min-width: 480px; width: 100%; border-collapse: collapse; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] th { background: #eff7f8; color: #234653; font-size: 12px; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] :is(td,th) { padding: 10px 12px; border-bottom: 1px solid #e4edf0; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] input[type="checkbox"] { width: 40px; height: 40px; accent-color: #006b73; vertical-align: middle; }
+  .approved-deimos .optical-print-root { min-width: 0; max-width: 100%; max-height: 720px; overflow: auto; background: #e9eff2; border: 1px solid #d7e5e8; border-radius: 12px; }
+  .approved-deimos .print-optical-page { flex-shrink: 0; }
+  .approved-deimos .approved-deimos-preview-head { position: sticky; top: 0; left: 0; z-index: 1; padding: 14px; background: #fff; color: #142b3b; border-bottom: 1px solid #d7e5e8; }
+  .approved-deimos .approved-deimos-preview-head h2 { margin: 0 0 4px; color: #142b3b; }
+  .approved-deimos .approved-deimos-preview-head p { margin: 0; font-size: 12px; color: #526574; }
+  @media (min-width: 1200px) {
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] { grid-template-columns: minmax(0,1fr) minmax(0,1fr); grid-template-areas: "head head" "alert alert" "templates templates" "settings preview" "students preview"; align-items: start; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] > .page-head { grid-area: head; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] > .alert { grid-area: alert; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] > .approved-deimos-templates { grid-area: templates; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] > .approved-deimos-settings { grid-area: settings; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] > .approved-deimos-students { grid-area: students; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] > .optical-print-root { grid-area: preview; max-height: 900px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .form-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 800px) {
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .form-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 540px) {
+    .approved-deimos .optical-print-root { max-height: 480px; }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .form-grid { grid-template-columns: minmax(0,1fr); }
+    .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .panel { padding: 14px; }
+    .approved-deimos .optical-controls { min-width: 0; overflow-wrap: anywhere; }
+    .approved-deimos .optical-controls > div[style] { flex-wrap: wrap; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .approved-deimos *, .approved-deimos *::before, .approved-deimos *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  }
+}
