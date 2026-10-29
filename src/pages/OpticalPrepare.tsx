@@ -9,6 +9,8 @@ import {
   isPrintCalibrationReady,
 } from "../lib/printCalibration";
 
+import "./approved-deimos.css";
+
 type PrintField = {
   key: string;
   xMm?: number;
@@ -197,7 +199,7 @@ export function OpticalPrepare() {
     window.print();
   };
   return (
-    <>
+    <div className="approved-deimos" data-design-role={user?.role || ""}>
       <style>{`@media print{body *{visibility:hidden!important}.optical-print-root,.optical-print-root *{visibility:visible!important}.optical-print-root{position:absolute!important;left:0;top:0;width:100%;}.optical-controls{display:none!important}.print-optical-page{margin:0!important;border:0!important;box-shadow:none!important;page-break-after:always;break-after:page}.print-optical-page:last-child{page-break-after:auto;break-after:auto}@page{margin:0}}`}</style>
       <div className="page-head optical-controls">
         <div>
@@ -209,7 +211,7 @@ export function OpticalPrepare() {
         </button>
       </div>
       {error && <div className="alert error optical-controls">{error}</div>}
-      <div className="panel optical-controls">
+      <div className="panel optical-controls approved-deimos-templates">
         <div className="panel-head">
           <div>
             <h2>Baskı seçimi</h2>
@@ -236,7 +238,7 @@ export function OpticalPrepare() {
           )}
         </div>
       </div>
-      <div className="panel optical-controls">
+      <div className="panel optical-controls approved-deimos-settings">
         <div className="form-grid">
           {user?.role === "SUPER_ADMIN" && (
             <label>
@@ -366,7 +368,7 @@ export function OpticalPrepare() {
         </button>
       </div>
       {data && (
-        <div className="panel optical-controls">
+        <div className="panel optical-controls approved-deimos-students">
           <div className="panel-head">
             <div>
               <h2>
@@ -492,7 +494,7 @@ export function OpticalPrepare() {
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }
 
