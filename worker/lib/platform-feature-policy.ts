@@ -34,6 +34,8 @@ const outerPrefixes:Array<[string,string]>=[
   ['/api/student-books/zero-error','ZERO_ERROR_BOOKLET'],
   ['/api/nibiru/guidance/','GUIDANCE_TESTS'],
   ['/api/student-standard/games','GAMES'],
+  // S044: Hızlı Test is part of the Studio switch (the student exam page /api/public/quick-tests stays open).
+  ['/api/quick-tests','STUDIO'],
 ];
 export function requiredOuterFeatureForPath(path:string){return outerPrefixes.find(([prefix])=>path.startsWith(prefix))?.[1]||null}
 export async function outerFeatureGate(request:Request,env:Env):Promise<Response|null>{

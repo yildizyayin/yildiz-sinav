@@ -30,6 +30,7 @@
     "@vitejs/plugin-react": "latest",
     "lucide-react": "latest",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "4.10.38",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "latest",
