@@ -2797,3 +2797,19 @@ Testler: 337 dosya / 1473 test; form masaüstü + mobil tarayıcıda denendi.
 - Prod: 0141 uygulandı (tablolar mevcut). 4 silinmiş yükleme sonuc deploy'undan sonraki ilk zamanlanmış çalışmada temizlenecek.
 
 Açık: Turnstile gerçek anahtar (kullanıcı, Cloudflare paneli). Tasarım panosundaki Sınavlarım A/B/C ve tema seçimleri kullanıcı kararı bekliyor.
+
+## S044 — Studio Hızlı Test (29 Ekim) — PR #415
+
+Kullanıcı: "onlinetestmaker.net'te olup bizde olmayanları referans alarak Studio'yu güncelle; daha iyi, kolay, hızlı."
+Referansın 4 yeteneği: PDF test, kamerayla cevap okuma, süreli online sınav, kırpma aracı. Hepsi eklendi:
+- /quick-tests (menü: Hızlı Test, STUDIO anahtarı). Düzenleyici 4 adım: Sorular · Kâğıt · Online sınav · Sonuçlar.
+- Kırpma (QuickCropper, pdfjs-dist 4.10.38): kutu çiz + harfe bas → soru cevabıyla eklenir; tek satır anahtar; sıralama.
+- Kâğıt (quick-test-pdf.ts, Studio PDF altyapısı): otomatik/tek/iki sütun, logo, optik form (Studio geometrisi), anahtar.
+- Okut: optik fotoğrafı mevcut OMR motoruyla; elle giriş.
+- Online: /sinav/KOD (hesapsız; ad soyad + numara; Turnstile), sunucu saati, otomatik kayıt (cihazda yedek + keepalive), aynı cihazdan devam, otomatik teslim (istekte + zamanlayıcıda), karıştırma, sonuç modu.
+- Sonuçlar: canlı tablo, soru başarı yüzdeleri, CSV, kayıt sıfırlama.
+- Studio'dan: "Hızlı Test" kartı; belge kartında "Online sınav yap" (onaylı, görselsiz metin sorular).
+- Yönetişim: kırpılan sorular kuruma özel, havuza girmez; kullanım hakkı beyanı zorunlu.
+- Migration 0142.
+
+Açık: Studio kurumlarda kapalı (aç/kapa kararı kullanıcıda). Sonraki fikirler: kırpılanı onay kuyruğuyla havuza önerme, otomatik soru algılama, sınav sonucu karneye bağlama, deneme verisi saklama süresi.
