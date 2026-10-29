@@ -2739,3 +2739,27 @@ Canlı veriden teşhis:
   7. 31 sayfa hiçbir rol menüsünde bağlantı olarak yok (adresle açılıyor). Önemlileri: exam-channels (yeni Çöp kutusu burada), result-network, seasons, settings, theme-management, transfers, guidance-admin, nibiru-admin, question-team, scale. Bir kısmı hub sayfalarından açılıyor olabilir; doğrulanmalı.
 - **Orta / bilinen eksikler:** bayi/kurum kendi sınav ve optiği (D-S039); optik formdaki kurum kodu okunmuyor; aynı okulda aynı numaralı iki öğrenci girişte ayrılamıyor; eski yayın sürümleri birikiyor; temalar/gece modu ve Sınavlarım tasarımı uygulanmadı; ulusal ölçek Faz 1 yok; NIBIRU-LAB kurumu MEB rehberinde yok; sonuc sayfa başlığı app ile aynı.
 - **Temiz çıkanlar:** sonuc'un bütün rol ekranları (1366 ve 390) hatasız; app'te 138 sayfa ziyaretinde yukarıdakiler dışında hata yok; telefonda taşma yok.
+
+## S041 — Tarama bulgularının düzeltilmesi (29 Ekim)
+
+Kullanıcı talebi: "tüm problemleri gider; Cloudflare aylık ücretli plana geçti." PR #411 (claude/s041-duzeltmeler).
+
+Yapılanlar:
+- Zamanlanmış işler prod'da açıldı (`SCHEDULED_JOBS_PAUSED=false`, app + sonuc). Silinen yüklemelerin 7 gün, çöpteki sınavların 30 gün sonra temizliği ve canlı sıra yenilemesi artık çalışır. Plan sınırı ücretli planla kalktı.
+- Arşivlenen sınav tüm kanallarını kapatır (prod verisi de SQL ile düzeltildi).
+- Rubrik gözlemleri: aktif sınıf kaydı olmayan öğrencide veli/müdür 403 yerine "aktif kayıt veya gözlem yok" görür (güvenlik kuralı korunur).
+- Kapalı özellikler: Soru Havuzu içindeki Studio/Video ve Premium içindeki Live sekmeleri, özellik kapalıysa gizlenir (`src/lib/useFeatures.ts`). Menüler zaten özellik bayrağına bağlıydı.
+- Öğrenci "Soru çöz" 503: yalnızca test ortamında; prod'da `SESSION_SECRET` deploy sırasında yazılıyor.
+- Süper Admin: Yoklama ve Enterprise/Campus sayfalarına kurum seçici eklendi.
+- Süper Admin menüsü: alt menü öğeleri (Optik Form Ağacı, Optik Test Merkezi vb.) görünmüyordu; düzleştirildi. Eklendi: Sınav Oluştur, Dönemler, Üyelik Siparişleri, Tamamlama Merkezi; "Sonuç Yayınları ve Çöp Kutusu" adı.
+- Sonuc girişi: aynı okul/sınıf/numara/ilk 3 harfte iki farklı öğrenci varsa ad soyad tam istenir (ilk kayıt tahminle açılmaz).
+- Eski sonuç anlık görüntü sürümleri: 3 günden eski, güncel/yayında/dosya-iş kaydında olmayan sürümler sonuc zamanlayıcısında silinir (`worker/lib/snapshot-prune.ts`).
+- Sonuc sayfa başlığı/açıklaması ayrıldı ("ANUNEX Sonuç").
+- Optik formdaki KURUM KODU okunur; seçilen okulun koduyla uyuşmazsa yükleme ekranında uyarı.
+- NIBIRU-LAB: iç test kurumu, MEB listesinde olmaması doğru; değişiklik yok.
+
+Açık:
+- D-S039 bayi/kurumun kendi sınavı ve optiği (#51): sahiplik modeli ve giriş biçimi için kullanıcı kararı bekleniyor.
+- Turnstile: prod site anahtarı Cloudflare test anahtarı (1x00000000000000000000BB); gerçek widget kullanıcı tarafından oluşturulup `PROD_TURNSTILE_SECRET_KEY` + `TURNSTILE_SITE_KEY` güncellenmeli.
+
+Testler: 336 dosya / 1470 test geçti; typecheck ve build temiz.
