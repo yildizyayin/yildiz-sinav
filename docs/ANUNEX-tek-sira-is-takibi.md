@@ -2769,3 +2769,22 @@ Testler: 336 dosya / 1470 test geçti; typecheck ve build temiz.
 - Ders yapısı: hazır yapı (LGS / TYT / AYT / ara sınıf); kitapçık A, B, C, D olabilir; her kitapçık için cevap anahtarı girilir.
 - Optik form: onaylı şablon listesinden seçilir; yoksa sahibi kendi .FMT dosyasını yükler, yalnız kendisi kullanır.
 - (D-S039'dan) Kendi sınavlarında Türkiye sıralaması yok; merkez sınavlar SA'nın.
+
+## S042 — Kurum ve bayinin kendi sınavı ve optiği (29 Ekim) — PR #413
+
+Kararlar: D-S039, D-S041 (ek karar: sonuçları sahibi öğrencilere açar; merkez sınav kuralı değişmedi).
+
+Yapılanlar:
+- sonuc yükleme ekranında "Sınav listede yok mu? Kendi sınavını ekle" formu: ad, tür (LGS/TYT/AYT/5–7), tarih, A–D kitapçık; her kitapçık için ders ders anahtar (sayaçlı), bütün anahtarı yapıştırıp "Derslere böl", iptal soru X. Kaydedilince sınav seçili gelir.
+- Sunucu: `worker/lib/own-exams.ts`. Uygulamanın createDefinition → structure → answer-key → status(ACTIVE) adımlarını aynı kontrollerle çalıştırır; hata olursa yarım taslak silinir. Kurum sınavı owner_type=INSTITUTION; bayi sınavı CENTRAL + `result_network_own_exams` (bayi kimliği gibi tüm bayi işlemlerinde olduğu üzere platform adına).
+- Görünürlük: katalogda kurum sınavını yalnız kurum, bayi sınavını bayi + kapsamındaki kurumlar görür. `centralOpenToAllSql`/`centralExamOpenTo` bayi sınavını "herkese açık" saymaz; bayi sınavının app kanalı açılmaz. Değerlendirme kapısı bayi sınavında okulu bayi kapsamına göre denetler.
+- Türkiye sırası: kendi sınavlarında national_rank boş; sonuc öğrenci ekranında "Türkiye" gösterilmez.
+- Yayın: seçili sınav kendi sınavıysa "Sonuçları öğrencilere aç" çubuğu (sahibi; onaylı). Sonraki yüklemeler canlı sıralara eklenir.
+- Optik: "Optik ekle" kurum yöneticisine (kurum optiği) ve bayiye (yalnız bayi + kapsamındaki kurumlar; `result_network_own_opticals`) açıldı. Not: bayi optiğini kapsamındaki kurumlar da kullanabilir; aksi halde kurum bayi sınavına dosya yükleyemezdi.
+- Migration 0141.
+
+Açık / sonraki:
+- Kendi sınavını sonuc'tan silme/düzenleme yok (kurum app'te "Kaldır" ile yapabilir; bayi için SA).
+- Turnstile gerçek anahtar (kullanıcı).
+
+Testler: 337 dosya / 1473 test; form masaüstü + mobil tarayıcıda denendi.
