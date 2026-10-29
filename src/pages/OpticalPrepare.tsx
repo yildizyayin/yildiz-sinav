@@ -458,6 +458,10 @@ export function OpticalPrepare() {
           className="optical-print-root"
           style={{ display: students.length ? "block" : "none" }}
         >
+          <div className="optical-controls approved-deimos-preview-head">
+            <h2>Baskı önizlemesi</h2>
+            <p>Formu incelemek için bu alanın içinde kaydırın. Baskıda gerçek sayfa ölçüleri korunur.</p>
+          </div>
           {students.map((s: any) => (
             <div
               className="print-optical-page"

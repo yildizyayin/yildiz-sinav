@@ -1,0 +1,104 @@
+[
+  {
+    "width": 1440,
+    "state": "ready",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 1024,
+    "state": "ready",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 768,
+    "state": "ready",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "state": "ready",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 360,
+    "state": "ready",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 1440,
+    "state": "empty",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "state": "empty",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 1440,
+    "state": "error",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "state": "error",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 1440,
+    "state": "busy",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "state": "busy",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 1440,
+    "state": "uncalibrated",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "state": "uncalibrated",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "state": "ready",
+    "theme": "ANUNEX_FOCUS",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "state": "ready",
+    "theme": "ANUNEX_STUDIO",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "state": "ready",
+    "theme": "ANUNEX_COSMIC",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "state": "ready",
+    "theme": "ANUNEX_NEON",
+    "passed": true
+  }
+]

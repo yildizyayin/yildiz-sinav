@@ -26,12 +26,15 @@
   .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] :is(input:not([type="checkbox"]),select) { min-height: 42px; width: 100%; min-width: 0; border: 1px solid #b9cbd1; border-radius: 7px; background: #fff; color: #142b3b; font-size: 14px; }
   .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] :is(.panel-head,.optical-design-actions) { flex-wrap: wrap; gap: 12px; }
   .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] .table-card { max-width: 100%; overflow-x: auto; border: 1px solid var(--deimos-line); border-radius: 8px; }
-  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] table { min-width: 560px; width: 100%; border-collapse: collapse; }
+  .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] table { min-width: 480px; width: 100%; border-collapse: collapse; }
   .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] th { background: #eff7f8; color: #234653; font-size: 12px; }
   .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] :is(td,th) { padding: 10px 12px; border-bottom: 1px solid #e4edf0; }
   .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] input[type="checkbox"] { width: 40px; height: 40px; accent-color: #006b73; vertical-align: middle; }
   .approved-deimos .optical-print-root { min-width: 0; max-width: 100%; max-height: 720px; overflow: auto; background: #e9eff2; border: 1px solid #d7e5e8; border-radius: 12px; }
   .approved-deimos .print-optical-page { flex-shrink: 0; }
+  .approved-deimos .approved-deimos-preview-head { position: sticky; top: 0; left: 0; z-index: 1; padding: 14px; background: #fff; color: #142b3b; border-bottom: 1px solid #d7e5e8; }
+  .approved-deimos .approved-deimos-preview-head h2 { margin: 0 0 4px; color: #142b3b; }
+  .approved-deimos .approved-deimos-preview-head p { margin: 0; font-size: 12px; color: #526574; }
   @media (min-width: 1200px) {
     .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] { grid-template-columns: minmax(0,1fr) minmax(0,1fr); grid-template-areas: "head head" "alert alert" "templates templates" "settings preview" "students preview"; align-items: start; }
     .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-deimos[data-design-role="SUPER_ADMIN"] > .page-head { grid-area: head; }
