@@ -9,9 +9,9 @@ const groups=[
   {label:'İçerik ve Öğrenme',icon:BookOpen,paths:['/content-center','/question-team','/worksheet-admin','/outcomes','/curriculum','/written-scenarios','/written-rubrics','/written-papers','/official-question-intelligence']},
   {label:'Eğitim Operasyonu',icon:CalendarDays,paths:['/calendar','/worksheet-calendar','/attendance','/transfers','/bulk-operations','/seasons']},
   {label:'Rehberlik ve Analiz',icon:ChartNoAxesCombined,paths:['/guidance-admin','/reports','/academic-target-admin']},
-  {label:'Kullanıcılar ve Kurumlar',icon:Users,paths:['/institutions','/students','/users','/activation-requests','/access-accounts','/teacher-assignments','/enterprise','/licenses']},
+  {label:'Kullanıcılar ve Kurumlar',icon:Users,paths:['/institutions','/students','/users','/activation-requests','/access-accounts','/teacher-assignments','/enterprise','/licenses','/membership-orders']},
   {label:'Nibiru ve Ajanlar',icon:Orbit,paths:['/nibiru','/nibiru-admin','/agent-center']},
-  {label:'Sistem Yönetimi',icon:Settings,paths:['/admin-center','/standard-readiness','/theme-management','/settings','/feature-lab','/demo-mode','/scale','/notifications','/profile']},
+  {label:'Sistem Yönetimi',icon:Settings,paths:['/admin-center','/standard-readiness','/theme-management','/settings','/feature-lab','/demo-mode','/scale','/completion-center','/notifications','/profile']},
 ];
 const normalize=(value:string)=>value.toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i');
 
@@ -23,7 +23,11 @@ export function ApprovedAdminNavigation({items,displayName,onNavigate,onLogout}:
  const term=normalize(query.trim());
  const active=(to:string)=>to==='/'?pathname==='/':pathname===to||pathname.startsWith(to+'/');
  const homeVisible=!term||normalize('Genel Bakış').includes(term);
- const sections=groups.map(group=>({...group,items:group.paths.map(path=>items.find(item=>item.to===path)).filter((item):item is Item=>Boolean(item)).filter(item=>!term||normalize(group.label).includes(term)||normalize(item.label).includes(term))})).filter(group=>group.items.length);
+ // Every page the Super Admin may open is reachable: sub-items are flattened, and pages no group lists go under "Diğer".
+ const flat:Item[]=[];const seen=new Set<string>();const walk=(list:any[])=>{for(const item of list){const to=String(item.to).split('?')[0];if(to!=='/'&&!seen.has(to)){seen.add(to);flat.push({...item,to})}if(item.children)walk(item.children)}};walk(items);
+ const listed=new Set(groups.flatMap(group=>group.paths));
+ const allGroups=[...groups,{label:'Diğer',icon:FileText,paths:flat.map(item=>item.to).filter(path=>!listed.has(path))}];
+ const sections=allGroups.map(group=>({...group,items:group.paths.map(path=>flat.find(item=>item.to===path)).filter((item):item is Item=>Boolean(item)).filter(item=>!term||normalize(group.label).includes(term)||normalize(item.label).includes(term))})).filter(group=>group.items.length);
  const navigate=()=>{setQuery('');onNavigate()};
  return <>
   <label className="approved-menu-search"><Search size={18}/><input aria-label="Menüde ara" placeholder="Menüde ara" value={query} onChange={event=>setQuery(event.target.value)}/>{query&&<button type="button" aria-label="Menü aramasını temizle" onClick={()=>setQuery('')}><X size={16}/></button>}</label>
@@ -32,8 +36,8 @@ export function ApprovedAdminNavigation({items,displayName,onNavigate,onLogout}:
    {sections.map(group=>{
     const Icon=group.icon;const selected=group.items.some(item=>active(item.to));const open=Boolean(term)||(expanded[group.label]??selected);
     return <section className={`nav-group approved-menu-group ${open?'open':''} ${selected?'has-current-page':''}`} key={group.label}>
-     <button className="nav-group-toggle" type="button" aria-expanded={open} aria-controls={`approved-group-${groups.findIndex(value=>value.label===group.label)}`} onClick={()=>setExpanded(current=>({...current,[group.label]:!open}))}><Icon size={20}/><span>{group.label}</span><ChevronDown className="approved-menu-chevron" size={16}/></button>
-     {open&&<div className="nav-group-items" id={`approved-group-${groups.findIndex(value=>value.label===group.label)}`}>{group.items.map(item=>{const ItemIcon=item.icon;return <NavLink key={item.to} to={item.to} end={item.to==='/'||item.to==='/exam-center'} onClick={navigate} className={({isActive})=>`nav-item ${isActive?'active':''}`}><ItemIcon size={17}/><span>{item.label}</span></NavLink>})}</div>}
+     <button className="nav-group-toggle" type="button" aria-expanded={open} aria-controls={`approved-group-${allGroups.findIndex(value=>value.label===group.label)}`} onClick={()=>setExpanded(current=>({...current,[group.label]:!open}))}><Icon size={20}/><span>{group.label}</span><ChevronDown className="approved-menu-chevron" size={16}/></button>
+     {open&&<div className="nav-group-items" id={`approved-group-${allGroups.findIndex(value=>value.label===group.label)}`}>{group.items.map(item=>{const ItemIcon=item.icon;return <NavLink key={item.to} to={item.to} end={item.to==='/'||item.to==='/exam-center'} onClick={navigate} className={({isActive})=>`nav-item ${isActive?'active':''}`}><ItemIcon size={17}/><span>{item.label}</span></NavLink>})}</div>}
     </section>;
    })}
    {!homeVisible&&!sections.length&&<div className="empty approved-menu-empty" role="status">Eşleşen menü bulunamadı.</div>}

@@ -83,4 +83,24 @@ describe('S037 student sign-in', () => {
     const schools = (await call('/api/public/results/institutions?city=ANKARA&district=%C3%87ANKAYA')).data.institutions;
     expect(schools).toEqual([expect.objectContaining({ code: '11111111', name: 'Synthetic School' })]);
   });
+
+  it('asks for the full name when two different students share school, grade, number and first letters (S041)', async () => {
+    const { t, call, setStatus, login } = await setup();
+    const parts = (t.db.prepare(`SELECT id FROM exam_participants WHERE institution_id='school' LIMIT 2`).all() as any[]).map((r) => r.id);
+    expect(parts.length).toBe(2);
+    const cookie = (await (await import('../worker/lib/auth')).createSession(t.env, 'admin', new Request('https://sonuc.anunex.com'), false)).headers.get('Set-Cookie')!.split(';')[0];
+    for (const [participantId, fullName] of [[parts[0], 'ALI YILMAZ'], [parts[1], 'ALİ KAYA']]) {
+      const r = await call('/api/admin/result-network/access', { method: 'POST', cookie, body: { administrationId: 'adm', participantId, mebCode: '11111111', studentNumber: '101', gradeLevel: 8, fullName } });
+      expect(r.status, r.text).toBeLessThan(300);
+    }
+    setStatus('PUBLISHED');
+    const ask = await login({});
+    expect(ask.status).toBe(409);
+    expect(ask.data.error.code).toBe('FULL_NAME_REQUIRED');
+    expect((await login({ fullName: 'Ali Demir' })).status).toBe(401);
+    const ok = await login({ fullName: 'Ali Kaya' });
+    expect(ok.status, ok.text).toBe(200);
+    const me = await call('/api/public/results/student', { cookie: ok.setCookie!.split(';')[0] });
+    expect(me.data.student.name).toMatch(/^a\S* k/);
+  });
 });

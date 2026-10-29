@@ -67,6 +67,7 @@ export default {
     ctx.waitUntil((async()=>{const{purgeExpiredOriginals}=await import('./lib/result-data-center');await purgeExpiredOriginals(env)})().catch((error)=>console.error('Original upload purge failed',error)));
     // D-S039: a deleted upload is restorable for 7 days, then purged.
     ctx.waitUntil((async()=>{const{purgeDeletedBatches}=await import('./lib/batch-lifecycle');await purgeDeletedBatches(env)})().catch((error)=>console.error('Deleted upload purge failed',error)));
+    ctx.waitUntil((async()=>{const{pruneOldSnapshotVersions}=await import('./lib/snapshot-prune');await pruneOldSnapshotVersions(env)})().catch((error)=>console.error('Snapshot prune failed',error)));
     // D-S037: live ranks — a published exam that gained students since its last snapshot is written again.
     ctx.waitUntil((async()=>{const{refreshLivePublications}=await import('./result-network-entry');await refreshLivePublications(env)})().catch((error)=>console.error('Live rank refresh failed',error)));
     ctx.waitUntil(env.RESULT_RETENTION_QUEUE_ENABLED==='true'?(async()=>{await emitResultRetentionNotices(env);await dispatchResultRetentionQueue(env)})():(async()=>{await sweepRetiredResultArtifacts(env);await purgeExpiredResultNetwork(env)})());

@@ -154,6 +154,7 @@ function parseDelimited(text: string, fileName: string, templateId?: string, tem
   const nameIdx = find('name', 'ad_soyad', 'adsoyad', 'ogrenci', 'öğrenci');
   const classIdx = find('class', 'sinif', 'sınıf', 'class_name');
   const bookletIdx = find('booklet', 'kitapcik', 'kitapçık');
+  const instIdx = find('institution_code', 'kurum_kodu', 'okul_kodu', 'meb_kodu');
   const subjectIndexes = headers
     .map((h, i) => ({ h, i }))
     .filter(({ h }) => h.startsWith('answers_') || /^answers:[a-z0-9_]+$/.test(h) || /^cevap_[a-z0-9_]+$/.test(h));
@@ -184,6 +185,7 @@ function parseDelimited(text: string, fileName: string, templateId?: string, tem
       grade_level: parsedClass.grade,
       section: parsedClass.section,
       booklet: bookletIdx >= 0 ? (cols[bookletIdx] || '').trim().toUpperCase() : undefined,
+      institution_code: instIdx >= 0 ? (cols[instIdx] || '').replace(/\s/g, '') || undefined : undefined,
       answers_by_subject: answers,
       source_type: fileName.toLowerCase().endsWith('.dat') ? 'DAT' : fileName.toLowerCase().endsWith('.txt') ? 'TXT' : 'CSV',
       source_template: templateName || 'GENERIC_DELIMITED_V1',
@@ -234,6 +236,7 @@ function parseFixedWidth(lines: string[], fileName: string, templateId: string, 
       grade_level: parsedClass.grade,
       section: parsedClass.section,
       booklet: pick(fields.booklet).toUpperCase() || undefined,
+      institution_code: pick(fields.institution_code).replace(/\s/g, '') || undefined,
       answers_by_subject: answers,
       source_type: fileName.toLowerCase().endsWith('.dat') ? 'DAT' : 'TXT',
       source_template: templateName,

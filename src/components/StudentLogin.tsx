@@ -17,7 +17,8 @@ export function StudentLogin({ siteKey, onSignedIn }: { siteKey: string; onSigne
   const [cities, setCities] = useState<string[]>([]); const [districts, setDistricts] = useState<string[]>([]); const [schools, setSchools] = useState<Inst[]>([]);
   const [city, setCity] = useState(saved.city || ''); const [district, setDistrict] = useState(saved.district || ''); const [inst, setInst] = useState<Inst | null>(saved.inst || null);
   const [byName, setByName] = useState(false); const [query, setQuery] = useState(''); const [found, setFound] = useState<Inst[]>([]);
-  const [form, setForm] = useState({ gradeLevel: '', lookupType: 'STUDENT_NUMBER', lookupValue: '', namePrefix: '' });
+  const [form, setForm] = useState({ gradeLevel: '', lookupType: 'STUDENT_NUMBER', lookupValue: '', namePrefix: '', fullName: '' });
+  const [needFull, setNeedFull] = useState(false);
   const [token, setToken] = useState(''); const [cycle, setCycle] = useState(0);
   const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [info, setInfo] = useState('');
   const onToken = useCallback((v: string) => setToken(v), []);
@@ -35,9 +36,9 @@ export function StudentLogin({ siteKey, onSignedIn }: { siteKey: string; onSigne
       const r = await api<any>('/api/public/results/login', { method: 'POST', body: JSON.stringify({ ...form, institutionCode: inst.code, turnstileToken: token }) });
       if (r.found === false) { setInfo(r.message || 'Kurumunuz için yayınlanmış sonuç yok.'); setToken(''); setCycle((c) => c + 1); return; }
       await onSignedIn();
-    } catch (err) { setError(err instanceof ApiError ? err.message : 'Giriş yapılamadı.'); setToken(''); setCycle((c) => c + 1); } finally { setBusy(false); }
+    } catch (err) { if (err instanceof ApiError && err.code === 'FULL_NAME_REQUIRED') setNeedFull(true); setError(err instanceof ApiError ? err.message : 'Giriş yapılamadı.'); setToken(''); setCycle((c) => c + 1); } finally { setBusy(false); }
   };
-  const ready = !!inst && !!form.gradeLevel && !!form.lookupValue && form.namePrefix.replace(/\s/g, '').length >= 3 && !!token;
+  const ready = !!inst && !!form.gradeLevel && !!form.lookupValue && form.namePrefix.replace(/\s/g, '').length >= 3 && (!needFull || form.fullName.trim().length >= 5) && !!token;
 
   return <form className="result-form student-login" onSubmit={submit} noValidate={false}>
     <div><span className="result-kicker">ÖĞRENCİ GİRİŞİ</span><h2>Sonucunu gör</h2><p>Kurumunu seç, sınıfını, numaranı ve adının ilk 3 harfini yaz. T.C. kimlik numarası açık olarak saklanmaz.</p></div>
@@ -64,6 +65,7 @@ export function StudentLogin({ siteKey, onSignedIn }: { siteKey: string; onSigne
         <label>{form.lookupType === 'TCKN' ? 'T.C. kimlik numarası' : 'Öğrenci numarası'}<input value={form.lookupValue} onChange={(e) => set('lookupValue', e.target.value.replace(/\s/g, ''))} inputMode="numeric" autoComplete="off" required /></label>
         <label>Adının ilk 3 harfi<input value={form.namePrefix} onChange={(e) => set('namePrefix', e.target.value.slice(0, 3))} maxLength={3} autoComplete="off" autoCapitalize="characters" placeholder="Örn. MEL" required /></label>
       </div>
+      {needFull && <label>Adınız ve soyadınız (tam)<input value={form.fullName} onChange={(e) => set('fullName', e.target.value)} autoComplete="off" placeholder="Örn. Melis Yılmaz" required autoFocus /></label>}
     </fieldset>
     <Turnstile key={cycle} siteKey={siteKey} onToken={onToken} />
     <button className="result-primary" disabled={busy || !ready}>{busy ? 'Kontrol ediliyor…' : 'Sonucumu göster'}</button>

@@ -31,7 +31,7 @@
     }
   ],
   "vars": {
-    "SCHEDULED_JOBS_PAUSED": "true",
+    "SCHEDULED_JOBS_PAUSED": "false",
     "ENVIRONMENT": "production",
     "PRODUCT_NAME": "ANUNEX Sonuç Ağı",
     "TURNSTILE_SITE_KEY": "1x00000000000000000000BB"

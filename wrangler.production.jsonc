@@ -37,7 +37,7 @@
     "binding": "AI"
   },
   "vars": {
-    "SCHEDULED_JOBS_PAUSED": "true",
+    "SCHEDULED_JOBS_PAUSED": "false",
     "QUESTION_AUTOMATED_ACADEMIC_YEAR": "2027-2028",
     "QUESTION_AUTOMATED_PILOT_MODE": "true",
     "QUESTION_AGENT_DISPATCH_PREVIEW": "true",
