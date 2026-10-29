@@ -2788,3 +2788,12 @@ Açık / sonraki:
 - Turnstile gerçek anahtar (kullanıcı).
 
 Testler: 337 dosya / 1473 test; form masaüstü + mobil tarayıcıda denendi.
+
+## S043 — Kendi sınavında anahtar düzeltme ve kaldırma (29 Ekim) — PR #414
+
+- Kendi sınavı seçilince çubuk: durum, "Sonuçları öğrencilere aç", "Cevap anahtarını düzelt", "Sınavı kaldır".
+- Düzeltme (sahibi, gerekçe zorunlu eğer sonuç varsa): sonuçlar geri alınır → anahtar app adımıyla yazılır → yüklemeler yeni anahtarla sayfada yeniden değerlendirilir → önceden açıksa yeniden açılır. `examCorrectionOpen`, kendi sınavını yalnız COMMITTED yükleme yokken açık sayar (app'te yeniden değerlendirmesiz değişiklik olmaz).
+- Kaldırma: app "Kaldır" (ALL, 30 gün çöp); öğrenci ekranı, katalog ve değerlendirme geçmişinden düşer.
+- Prod: 0141 uygulandı (tablolar mevcut). 4 silinmiş yükleme sonuc deploy'undan sonraki ilk zamanlanmış çalışmada temizlenecek.
+
+Açık: Turnstile gerçek anahtar (kullanıcı, Cloudflare paneli). Tasarım panosundaki Sınavlarım A/B/C ve tema seçimleri kullanıcı kararı bekliyor.
