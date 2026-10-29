@@ -9,7 +9,7 @@ function fixture(failAudit=false){
   const db=new DatabaseSync(':memory:');db.exec('PRAGMA foreign_keys=OFF');
   const migration=readFileSync(new URL('../migrations/0012_platform_expansion.sql',import.meta.url),'utf8');
   db.exec(migration.match(/CREATE TABLE IF NOT EXISTS exam_result_snapshots \([\s\S]*?\n\);/)![0]);
-  db.exec(`CREATE TABLE IF NOT EXISTS exam_revision_state(exam_id TEXT PRIMARY KEY,revision INTEGER DEFAULT 1,app_trashed_at TEXT,prior_status TEXT);CREATE TABLE exams(id TEXT,title TEXT,exam_date TEXT,exam_type TEXT,grade_level INTEGER,owner_type TEXT DEFAULT 'INSTITUTION');
+  db.exec(`CREATE TABLE IF NOT EXISTS result_network_own_exams(exam_id TEXT PRIMARY KEY,owner_kind TEXT,institution_id TEXT,dealer_id TEXT,created_by TEXT);CREATE TABLE IF NOT EXISTS exam_revision_state(exam_id TEXT PRIMARY KEY,revision INTEGER DEFAULT 1,app_trashed_at TEXT,prior_status TEXT);CREATE TABLE exams(id TEXT,title TEXT,exam_date TEXT,exam_type TEXT,grade_level INTEGER,owner_type TEXT DEFAULT 'INSTITUTION');
     INSERT INTO exams(id,title,exam_date,exam_type,grade_level) VALUES('e','Sınav','2026-09-30','LGS',6);
     CREATE TABLE institutions(id TEXT,city TEXT,district TEXT); INSERT INTO institutions VALUES('school','İstanbul','Kartal');
     CREATE TABLE exam_participants(id TEXT,exam_id TEXT,student_id TEXT,institution_id TEXT,season_id TEXT,class_snapshot TEXT,booklet_code TEXT);

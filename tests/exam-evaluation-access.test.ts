@@ -14,7 +14,7 @@ describe('exam evaluation distribution scope', () => {
   it('requires an enabled central assignment for the selected institution', async () => {
     const db=new DatabaseSync(':memory:');
     try {
-      db.exec("CREATE TABLE exams(id TEXT);INSERT INTO exams VALUES('exam');CREATE TABLE exam_revision_state(exam_id TEXT,app_trashed_at TEXT);CREATE TABLE exam_channel_publications(exam_id TEXT,channel TEXT,status TEXT);CREATE TABLE exam_institutions(id TEXT,exam_id TEXT,institution_id TEXT,enabled INTEGER);INSERT INTO exam_institutions VALUES('assignment','exam','allowed',1),('off','exam','disabled',0)");
+      db.exec("CREATE TABLE IF NOT EXISTS result_network_own_exams(exam_id TEXT PRIMARY KEY,owner_kind TEXT,institution_id TEXT,dealer_id TEXT,created_by TEXT);CREATE TABLE exams(id TEXT);INSERT INTO exams VALUES('exam');CREATE TABLE exam_revision_state(exam_id TEXT,app_trashed_at TEXT);CREATE TABLE exam_channel_publications(exam_id TEXT,channel TEXT,status TEXT);CREATE TABLE exam_institutions(id TEXT,exam_id TEXT,institution_id TEXT,enabled INTEGER);INSERT INTO exam_institutions VALUES('assignment','exam','allowed',1),('off','exam','disabled',0)");
       const env={DB:{prepare:(sql:string)=>({bind:(...args:any[])=>({first:async()=>db.prepare(sql).get(...args)})})}} as any;
       const exam={id:'exam',status:'ACTIVE',owner_type:'CENTRAL',institution_id:null};
       expect(await examEvaluationAccess(env,exam,'allowed')).toBeNull();

@@ -354,10 +354,20 @@ export default {
     const url = new URL(request.url);
     const isOpticalAdmin = url.pathname.startsWith('/api/optical-definitions') || url.pathname.startsWith('/api/optical-definition-versions');
     if (!isOpticalAdmin) return examApp.fetch(request, env);
-    try {
-      const actor = await requireOpticalManager(env, request);
-      if (actor instanceof Response) return actor;
+    const actor = await requireOpticalManager(env, request).catch((e) => { console.error('Optical admin error', e); return error(500, 'SERVER_ERROR', 'Optik şablon işlemi sırasında sunucu hatası oluştu.'); });
+    if (actor instanceof Response) return actor;
+    return routeOpticalAdmin(request, env, actor);
+  },
+} satisfies ExportedHandler<Env>;
 
+/**
+ * The optical administration routes for an already decided actor. The app reaches it with the signed-in user; S042
+ * own-optic upload on sonuc reaches it with the acting identity the result network decided (the bayi acts as the
+ * platform for an optic only it will see).
+ */
+export async function routeOpticalAdmin(request: Request, env: Env, actor: AuthUser): Promise<Response> {
+    const url = new URL(request.url);
+    try {
       if (url.pathname === '/api/optical-definitions') {
         if (request.method === 'GET') return listDefinitions(env, actor);
         if (request.method === 'POST') return createTemplate(request, env, actor);
@@ -405,5 +415,4 @@ export default {
       console.error('Optical admin error', e);
       return error(500, 'SERVER_ERROR', 'Optik şablon işlemi sırasında sunucu hatası oluştu.');
     }
-  },
-} satisfies ExportedHandler<Env>;
+}

@@ -375,7 +375,7 @@ async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
   return Response.json({ ok: true, exams: exams.map((x: any) => ({ ...x, ...examLight(x) })) });
 }
 
-async function createDefinition(request: Request, env: Env, user: AuthUser): Promise<Response> {
+export async function createDefinition(request: Request, env: Env, user: AuthUser): Promise<Response> {
   const body = await request.json<{
     ownerType?: ExamOwnerType;
     institutionId?: string | null;

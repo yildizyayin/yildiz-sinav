@@ -7,12 +7,13 @@ import { one } from './db';
  * Rows in exam_institutions narrow it to those institutions only.
  * An institution's own exam (owner_type='INSTITUTION') is seen only by that institution.
  */
-export const centralOpenToAllSql = (examAlias = 'e') => `NOT EXISTS(SELECT 1 FROM exam_institutions eaud WHERE eaud.exam_id=${examAlias}.id AND eaud.enabled=1)`;
+// S042: a dealer's own exam (result_network_own_exams) is never open to every institution.
+export const centralOpenToAllSql = (examAlias = 'e') => `(NOT EXISTS(SELECT 1 FROM exam_institutions eaud WHERE eaud.exam_id=${examAlias}.id AND eaud.enabled=1) AND NOT EXISTS(SELECT 1 FROM result_network_own_exams eown WHERE eown.exam_id=${examAlias}.id))`;
 
 /** SQL that is true when the exam may be used by an institution. It has two `?` placeholders: bind the institution id twice. */
 export const examOpenToInstitutionSql = (examAlias = 'e') => `((${examAlias}.owner_type='INSTITUTION' AND ${examAlias}.institution_id=?) OR (${examAlias}.owner_type='CENTRAL' AND (${centralOpenToAllSql(examAlias)} OR EXISTS(SELECT 1 FROM exam_institutions eaun WHERE eaun.exam_id=${examAlias}.id AND eaun.institution_id=? AND eaun.enabled=1))))`;
 
 export async function centralExamOpenTo(env: Env, examId: string, institutionId: string): Promise<boolean> {
-  const row = await one<{ ok: number }>(env.DB.prepare(`SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM exam_institutions WHERE exam_id=? AND enabled=1) OR EXISTS(SELECT 1 FROM exam_institutions WHERE exam_id=? AND institution_id=? AND enabled=1) THEN 1 ELSE 0 END ok`).bind(examId, examId, institutionId));
+  const row = await one<{ ok: number }>(env.DB.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM result_network_own_exams WHERE exam_id=?) THEN 0 WHEN NOT EXISTS(SELECT 1 FROM exam_institutions WHERE exam_id=? AND enabled=1) OR EXISTS(SELECT 1 FROM exam_institutions WHERE exam_id=? AND institution_id=? AND enabled=1) THEN 1 ELSE 0 END ok`).bind(examId, examId, examId, institutionId));
   return Number(row?.ok) === 1;
 }

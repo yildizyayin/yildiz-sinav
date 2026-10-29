@@ -286,6 +286,8 @@ async function publishInLock(env:Env,id:string,actorId:string|null,live:boolean)
   FROM base`).bind(id,row.exam_id,version),
   env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(row.exam_id,version),
 
+  // S042 (D-S039): a school's or a dealer's own exam has no Türkiye rank.
+  env.DB.prepare(`UPDATE exam_result_snapshots SET national_rank=NULL,national_count=NULL WHERE exam_id=? AND snapshot_version=? AND EXISTS(SELECT 1 FROM result_network_own_exams o WHERE o.exam_id=exam_result_snapshots.exam_id)`).bind(row.exam_id,version),
   env.DB.prepare(`UPDATE exam_administrations SET status='PUBLISHED',published_at=${live?'COALESCE(published_at,CURRENT_TIMESTAMP)':'CURRENT_TIMESTAMP'},retention_due_at=?,ranking_frozen_at=CURRENT_TIMESTAMP,published_snapshot_version=?,participant_count=?,institution_count=? WHERE id=?`).bind(due,version,totals.participant_count,totals.institution_count,id),
   env.DB.prepare(`UPDATE result_access_identities SET expires_at=? WHERE administration_id=?`).bind(due,id),
   env.DB.prepare(`INSERT INTO exam_publication_stats(exam_id,snapshot_version,institution_count,participant_count,city_count,payload_json) SELECT ?,?,?,?,COUNT(DISTINCT city),? FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(row.exam_id,version,totals.institution_count,totals.participant_count,JSON.stringify({channel:'RESULT_NETWORK',administrationId:id}),row.exam_id,version),
@@ -428,7 +430,7 @@ async function scopedOperatorInstitutions(env:Env,user:AuthUser,mode:string){
  return all<any>(env.DB.prepare(`SELECT DISTINCT i.id,i.name,i.code,i.city,i.district FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id LEFT JOIN national_institution_directory ndi ON ndi.meb_code=i.code JOIN result_network_dealers d ON d.user_id=? AND d.status='APPROVED' JOIN result_network_dealer_scopes s ON s.dealer_id=d.id AND s.active=1 WHERE COALESCE(iac.lifecycle_status,i.status)='ACTIVE' AND (s.scope_type='NATIONAL' OR (s.scope_type='INSTITUTION' AND s.meb_code=i.code) OR (s.scope_type='CITY' AND s.city=ndi.city) OR (s.scope_type='DISTRICT' AND s.city=ndi.city AND s.district=ndi.district)) ORDER BY i.name LIMIT 2000`).bind(user.id));
 }
 
-async function resultOperatorContext(request:Request,env:Env,institutionId:string):Promise<{user:AuthUser;effective:AuthUser;institution:any;dealerId:string|null}|Response>{
+async function resultOperatorContext(request:Request,env:Env,institutionId:string,examId?:string):Promise<{user:AuthUser;effective:AuthUser;institution:any;dealerId:string|null}|Response>{
  const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
  const institution=await one<any>(env.DB.prepare(`SELECT i.id,i.name,i.code,COALESCE(iac.lifecycle_status,i.status) lifecycle_status FROM institutions i LEFT JOIN institution_access_controls iac ON iac.institution_id=i.id WHERE i.id=?`).bind(institutionId));
  if(!institution)return safeError(404,'INSTITUTION_NOT_FOUND','Kurum bulunamadı.');
@@ -436,7 +438,14 @@ async function resultOperatorContext(request:Request,env:Env,institutionId:strin
  const ownInstitution=user.role==='INSTITUTION_MANAGER'&&user.institution_id===institutionId;
  const dealerPermission=await dealerCanAct(env,user,institution.code);
  if(user.role!=='SUPER_ADMIN'&&!ownInstitution&&!dealerPermission.ok)return forbidden('Bu kurum için sonuç değerlendirme yetkiniz bulunmuyor.');
- const effective:AuthUser=user.role==='SUPER_ADMIN'||ownInstitution?user:{...user,role:'SUPER_ADMIN',institution_id:null};
+ let effective:AuthUser=user.role==='SUPER_ADMIN'||ownInstitution?user:{...user,role:'SUPER_ADMIN',institution_id:null};
+ // S042: a school's or a dealer's own exam is used only by its owner (and a dealer's by the schools in its scope).
+ if(examId){
+  const {ownExamAllows}=await import('./lib/own-exams');const own=await ownExamAllows(env,user,examId,institutionId);
+  if(!own.ok)return forbidden(own.message);
+  // A school in a dealer's scope uploads to a dealer's exam: the dealer's exam is not "open to all", so the platform acts.
+  if(effective.role!=='SUPER_ADMIN'&&await one(env.DB.prepare(`SELECT 1 x FROM result_network_own_exams WHERE exam_id=? AND owner_kind='DEALER'`).bind(examId)))effective={...user,role:'SUPER_ADMIN',institution_id:null};
+ }
  return{user,effective,institution,dealerId:dealerPermission.dealerId||null};
 }
 
@@ -501,9 +510,11 @@ async function resultOperatorCatalog(request:Request,env:Env){
  const opticalScope=institutionIds.length&&user.role!=='SUPER_ADMIN'
   ? ` AND (t.owner_type='CENTRAL' OR t.owner_id IN (${institutionIds.map(()=>'?').join(',')}))`
   : '';
+ const {ownExamCatalogSql,ownOpticalCatalogSql}=await import('./lib/own-exams');
+ const ownExam=await ownExamCatalogSql(env,user),ownOptic=await ownOpticalCatalogSql(env,user);
  const [exams,opticals]=await Promise.all([
-  all<any>(env.DB.prepare(`SELECT DISTINCT e.id,e.title,e.exam_type,e.academic_year,e.grade_level,e.publisher_name,srv.verified scoring_verified FROM exams e JOIN exam_channel_publications ecp ON ecp.exam_id=e.id AND ecp.channel='RESULT_NETWORK' AND ecp.status='ACTIVE' JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id AND srv.verified=1 WHERE e.status IN ('ACTIVE','CLOSED') ORDER BY e.academic_year DESC,e.title LIMIT 500`)),
-  all<any>(env.DB.prepare(`SELECT v.id,t.name,t.owner_type,t.owner_id,v.version FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id WHERE v.active=1 AND t.active=1 AND v.parser_definition IS NOT NULL${opticalScope} ORDER BY t.name,v.version DESC LIMIT 200`).bind(...institutionIds.filter((x:any)=>user.role!=='SUPER_ADMIN'))),
+  all<any>(env.DB.prepare(`SELECT DISTINCT e.id,e.title,e.exam_type,e.academic_year,e.grade_level,e.publisher_name,srv.verified scoring_verified,o.owner_kind own_kind FROM exams e JOIN exam_channel_publications ecp ON ecp.exam_id=e.id AND ecp.channel='RESULT_NETWORK' AND ecp.status='ACTIVE' JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id AND srv.verified=1 LEFT JOIN result_network_own_exams o ON o.exam_id=e.id WHERE e.status IN ('ACTIVE','CLOSED') AND NOT EXISTS(SELECT 1 FROM exam_revision_state r WHERE r.exam_id=e.id AND r.app_trashed_at IS NOT NULL)${ownExam.sql} ORDER BY e.academic_year DESC,e.title LIMIT 500`).bind(...ownExam.args)),
+  all<any>(env.DB.prepare(`SELECT v.id,t.name,t.owner_type,t.owner_id,v.version,CASE WHEN oo.template_id IS NOT NULL OR t.owner_type='INSTITUTION' THEN 1 ELSE 0 END own FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id LEFT JOIN result_network_own_opticals oo ON oo.template_id=t.id WHERE v.active=1 AND t.active=1 AND v.parser_definition IS NOT NULL${opticalScope}${ownOptic.sql} ORDER BY t.name,v.version DESC LIMIT 200`).bind(...institutionIds.filter((x:any)=>user.role!=='SUPER_ADMIN'),...ownOptic.args)),
  ]);
  await publishedDefinitions(env,exams);
  return json({ok:true,institutions,exams,opticals});
@@ -512,7 +523,7 @@ async function resultOperatorCatalog(request:Request,env:Env){
 async function batchOperatorContext(request:Request,env:Env,batchId:string){
  const batch=await one<any>(env.DB.prepare(`SELECT id,exam_id,institution_id,status FROM scan_batches WHERE id=?`).bind(batchId));
  if(!batch)return safeError(404,'BATCH_NOT_FOUND','Değerlendirme grubu bulunamadı.');
- const context=await resultOperatorContext(request,env,batch.institution_id);if(context instanceof Response)return context;return{...context,batch};
+ const context=await resultOperatorContext(request,env,batch.institution_id,batch.exam_id);if(context instanceof Response)return context;return{...context,batch};
 }
 
 /** S031: a central exam listed in the result network opens its result administration on first use; no separate "Taslak sonuç ağı oluştur" step. */
@@ -662,7 +673,7 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
  if(path==='/api/admin/result-network/operations/toplu/institutions'&&request.method==='GET')return topluInstitutions(request,env);
  if(path==='/api/admin/result-network/operations/toplu/pack'&&request.method==='GET'){const url=new URL(request.url),examId=String(url.searchParams.get('examId')||''),institutionId=String(url.searchParams.get('institutionId')||'');
   if(!examId||!institutionId)return badRequest('Sınav ve kurum seçin.');
-  const context=await resultOperatorContext(request,env,institutionId);if(context instanceof Response)return context;
+  const context=await resultOperatorContext(request,env,institutionId,examId);if(context instanceof Response)return context;
   const {reportPack}=await import('./lib/result-report-pack');const data=await reportPack(env,examId,institutionId);
   if(!data||!data.students.length)return safeError(404,'REPORT_EMPTY','Bu kurumun bu sınavda değerlendirilmiş öğrencisi yok.');
   return json({ok:true,...data})}
@@ -683,7 +694,7 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   await dc.logDownload(env,user,user.institution_id||null,'DOCUMENT',docMatch[1]==='OPTIC'?'optical_template_asset':'exam_document_asset',docMatch[2],{fileName:file.fileName});return dc.fileResponse(file.object,file.fileName,file.contentType)}
  if(path==='/api/admin/result-network/operations/toplu/bundle'&&request.method==='GET'){const url=new URL(request.url),examId=String(url.searchParams.get('examId')||''),ids=String(url.searchParams.get('institutionIds')||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,200);
   if(!examId||!ids.length)return badRequest('Sınav ve kurum seçin.');
-  for(const id of ids){const context=await resultOperatorContext(request,env,id);if(context instanceof Response)return context}
+  for(const id of ids){const context=await resultOperatorContext(request,env,id,examId);if(context instanceof Response)return context}
   const {reportBundle}=await import('./lib/report-bundle');const data=await reportBundle(env,{examId,institutionIds:ids,aytMode:url.searchParams.get('ayt')==='AYT_ONLY'?'AYT_ONLY':'COMBINED',pairExamId:String(url.searchParams.get('pairExamId')||'')||undefined});
   if(!data||!data.institutions.length)return safeError(404,'REPORT_EMPTY','Seçilen kurumların bu sınavda değerlendirilmiş öğrencisi yok.');
   return json({ok:true,...data})}
@@ -691,6 +702,9 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   if(!institutionId||examIds.length<2)return badRequest('Gelişim raporu için bir kurum ve en az iki sınav seçin.');
   const context=await resultOperatorContext(request,env,institutionId);if(context instanceof Response)return context;
   const {growthReport}=await import('./lib/report-bundle');return json({ok:true,...await growthReport(env,examIds,institutionId)})}
+ {const ownMatch=path.match(/^\/api\/admin\/result-network\/operations\/own-exams\/([^/]+)(\/publish)?$/);
+  if(ownMatch&&((ownMatch[2]&&request.method==='POST')||(!ownMatch[2]&&request.method==='GET'))){const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const own=await import('./lib/own-exams');return ownMatch[2]?own.publishOwnExam(env,user,ownMatch[1]):own.ownExamStatus(env,user,ownMatch[1])}}
+ if(path==='/api/admin/result-network/operations/own-exams'&&request.method==='POST'){const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const {createOwnExam}=await import('./lib/own-exams');return createOwnExam(request,env,user)}
  if(path==='/api/admin/result-network/operations/opticals'&&request.method==='POST'){const {quickOptical}=await import('./lib/result-optical-quick');return quickOptical(request,env)}
  const karnes=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/karnes$/);
  if(karnes&&request.method==='GET')return batchKarnes(request,env,karnes[1]);
@@ -716,7 +730,8 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   if(!institutionId)return badRequest('Kurum seçilmelidir.');
   const published=await one<any>(env.DB.prepare(`SELECT 1 ok FROM exam_channel_publications WHERE exam_id=? AND channel='RESULT_NETWORK' AND status='ACTIVE'`).bind(preview[1]));
   if(!published)return safeError(404,'RESULT_EXAM_NOT_PUBLISHED','Sınav Sonuç Ağı kataloğunda yayınlanmamış.');
-  const context=await resultOperatorContext(request,env,institutionId);if(context instanceof Response)return context;
+  const context=await resultOperatorContext(request,env,institutionId,preview[1]);if(context instanceof Response)return context;
+  {const opticalVersionId=String(form.get('templateVersionId')||'');if(opticalVersionId){const {ownOpticalAllows}=await import('./lib/own-exams');if(!(await ownOpticalAllows(env,context.user,opticalVersionId)))return forbidden('Bu optik başka bir bayinin kendi optiği.')}}
   // D-S039: the same file twice into the same school and exam is stopped (a second session's optic is another file).
   const upFile=form.get('file');let fileHash='';
   if(upFile&&typeof upFile!=='string'){const d=await crypto.subtle.digest('SHA-256',await (upFile as File).arrayBuffer());fileHash=[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('')}
