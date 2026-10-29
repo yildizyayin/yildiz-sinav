@@ -145,3 +145,39 @@
 .booklet-pick .bp-opts{display:flex;flex-wrap:wrap;gap:6px}
 .booklet-pick .bp-opts button{display:flex;flex-direction:column;align-items:center;min-height:48px;line-height:1.2}
 .booklet-pick .bp-opts small{font-size:11px;font-weight:500}
+
+/* S042: Kendi sınavını ekle */
+.own-exam-form{margin:12px 0;padding:18px;border:1px solid #c9d8ee;border-radius:14px;background:#f8fbff}
+.own-exam-form h3{margin:0 0 4px}
+.own-exam-form p{margin:0;color:#475569}
+.own-exam-choice{border:0;padding:0;margin:14px 0 0}
+.own-exam-choice legend{font-weight:700;margin-bottom:8px;color:#0f172a}
+.own-exam-chips{display:flex;flex-wrap:wrap;gap:8px}
+.own-exam-chips .chip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border:1px solid #c9d8ee;border-radius:999px;background:#fff;color:#0f172a;font-weight:600;cursor:pointer}
+.own-exam-chips .chip.active{border-color:#2563eb;background:#2563eb;color:#fff}
+.own-exam-chips .chip input{accent-color:#fff;margin:0}
+.own-exam-keys{margin-top:16px;padding:14px;border:1px solid #dbe5f3;border-radius:12px;background:#fff;display:grid;gap:10px}
+.own-exam-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.own-exam-tabs button{min-height:38px;padding:0 14px;border:1px solid #c9d8ee;border-radius:10px;background:#f1f5fb;color:#0f172a;font-weight:600}
+.own-exam-tabs button.active{background:#0f2a5c;border-color:#0f2a5c;color:#fff}
+.own-exam-paste{font-size:13px;color:#475569}
+.own-exam-paste-row{display:flex;gap:8px;margin-top:6px}
+.own-exam-paste-row input{flex:1;min-width:0}
+.own-exam-key{display:grid;grid-template-columns:minmax(140px,200px) minmax(0,1fr);gap:10px;align-items:center}
+.own-exam-key>span{display:flex;justify-content:space-between;gap:8px;font-weight:600;color:#0f172a}
+.own-exam-key small{font-variant-numeric:tabular-nums;color:#64748b;font-weight:600}
+.own-exam-key input{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase}
+.own-exam-key.ok input{border-color:#16a34a;background:#f0fdf4}
+.own-exam-key.ok small{color:#15803d}
+.own-exam-key.short small{color:#b45309}
+.own-exam-form .ba-buttons{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+@media (max-width:640px){.own-exam-key{grid-template-columns:1fr}.own-exam-paste-row{flex-direction:column}}
+.own-exam-key input::placeholder{text-transform:none;letter-spacing:normal;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#94a3b8}
+.own-exam-chips .chip{position:relative}
+.own-exam-chips .chip input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.own-exam-chips .chip:focus-within{outline:2px solid #93c5fd;outline-offset:2px}
+.own-exam-publish{margin:12px 0;padding:14px 16px;border:1px solid #fcd9a6;border-radius:12px;background:#fffaf0;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.own-exam-publish.is-open{border-color:#a7e3bf;background:#f0fdf4}
+.own-exam-publish>div:first-child{display:grid;gap:2px}
+.own-exam-publish span{color:#475569;font-size:14px}
+.own-exam-publish-confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center}

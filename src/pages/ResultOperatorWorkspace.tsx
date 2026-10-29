@@ -4,6 +4,7 @@ import { CheckCircle2,FileUp,Printer,RefreshCw,ScanLine,ShieldCheck,TriangleAler
 import { api,ApiError } from '../api';
 import { EvalTimer,seconds,useStopwatch } from '../components/EvalTimer';
 import { BatchActions } from '../components/BatchActions';
+import { OwnExamForm, OwnExamPublishBar } from '../components/OwnExamForm';
 import './result-network-admin.css';
 
 type Props={mode:'INSTITUTION'|'DEALER';access:any};
@@ -14,6 +15,7 @@ export function ResultOperatorWorkspace({mode,access}:Props){
  const searchable=!!access?.canManageNetwork||mode==='DEALER';
  const[setAside,setSetAside]=useState<any[]>([]);
  const[addOptical,setAddOptical]=useState(false);
+ const[addExam,setAddExam]=useState(false);
  const[opticalName,setOpticalName]=useState('');
  const[fmtFile,setFmtFile]=useState<File|null>(null);
  const[picked,setPicked]=useState<any>(null);
@@ -100,7 +102,7 @@ export function ResultOperatorWorkspace({mode,access}:Props){
   if(!opticalName.trim()||!fmtFile||!file){setError('Optik adı, FMT dosyası ve değerlendireceğiniz TXT/DAT dosyası gerekli.');return}
   setBusy(true);setError('');setNotice('');
   try{const form=new FormData();form.append('name',opticalName.trim());form.append('fmt',fmtFile);form.append('sample',file);
-   const r=await api<any>('/api/admin/result-network/operations/opticals',{method:'POST',body:form});
+   const r=await api<any>(`/api/admin/result-network/operations/opticals?mode=${mode}`,{method:'POST',body:form});
    await loadCatalog();setTemplateVersionId(r.optical.id);setAddOptical(false);setFmtFile(null);setOpticalName('');
    setNotice(`"${r.optical.name}" optiği eklendi ve seçildi: dosyanızdaki ${r.recordCount} satır bu optikle okundu.`);
   }catch(e:any){setError(e.message)}finally{setBusy(false)}
@@ -120,14 +122,16 @@ export function ResultOperatorWorkspace({mode,access}:Props){
   {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
   {!preview?<div>
    <div className="form-grid">
-    <label>1 · Sınav<select value={examId} onChange={e=>setExamId(e.target.value)}><option value="">Sınav seçin</option>{catalog.exams.map((exam:any)=><option key={exam.id} value={exam.id}>{exam.academic_year} · {exam.publisher_name?`${exam.publisher_name} · `:''}{exam.title}</option>)}</select></label>
+    <label>1 · Sınav<select value={examId} onChange={e=>setExamId(e.target.value)}><option value="">Sınav seçin</option>{catalog.exams.map((exam:any)=><option key={exam.id} value={exam.id}>{exam.academic_year} · {exam.publisher_name?`${exam.publisher_name} · `:''}{exam.title}{exam.own_kind?' · kendi sınavı':''}</option>)}</select>{!access?.canManageNetwork&&<button type="button" className="link-button result-add-optical" onClick={()=>setAddExam(v=>!v)}>{addExam?'Vazgeç':'Sınav listede yok mu? Kendi sınavını ekle'}</button>}</label>
     <label>2 · Optik / FMT<select value={templateVersionId} onChange={e=>setTemplateVersionId(e.target.value)}><option value="">Optik seçin</option>{catalog.opticals.map((optical:any)=><option key={optical.id} value={optical.id}>{optical.name} · {optical.version}</option>)}</select><button type="button" className="link-button result-add-optical" onClick={()=>setAddOptical(v=>!v)}>{addOptical?'Vazgeç':'Optik listede yok mu? Optik ekle'}</button></label>
     {searchable?<label className="result-institution-picker">3 · Kurum<input value={instQuery} placeholder="Kurum adı veya MEB kodu yazın" onChange={e=>{setInstQuery(e.target.value);setPicked(null)}}/>{picked&&<small className="field-help">Seçildi: {pickedLabel(picked)}</small>}{!picked&&instOptions.length>0&&<div className="institution-options">{instOptions.map((x:any)=><button type="button" key={x.code} onClick={()=>{setPicked(x);setInstQuery(pickedLabel(x));setInstOptions([])}}><strong>{x.name}</strong><span>{x.city} · {x.district} · {x.code}</span></button>)}</div>}{!picked&&instQuery.trim().length>=2&&!instOptions.length&&<small className="field-help">Yetkiniz içinde eşleşen kurum yok.</small>}</label>
     :<label>3 · Kurum<select value={institutionId} onChange={e=>setInstitutionId(e.target.value)}><option value="">Kurum seçin</option>{catalog.institutions.map((institution:any)=><option key={institution.id} value={institution.id}>{institution.name} · {institution.code} · {institution.city}/{institution.district}</option>)}</select></label>}
     <label>4 · Veri dosyası<input type="file" accept=".dat,.txt,.csv,text/plain,text/csv" onChange={e=>setFile(e.target.files?.[0]||null)}/></label>
    </div>
-   {addOptical&&<div className="panel result-optical-add"><h3>Optik ekle</h3><p>Optiğin adını ve FMT dosyasını verin. Sistem FMT'yi, 4. adımda seçtiğiniz TXT/DAT dosyasıyla dener; okuyabiliyorsa optiği kaydedip seçer.{access?.canManageNetwork?'':' Bu işlemi Süper Admin yapar; FMT dosyasını ANUNEX yönetimine iletin.'}</p><div className="form-grid"><label>Optik adı<input value={opticalName} onChange={e=>setOpticalName(e.target.value)} placeholder="ör. 4K Yayınları TYT optiği"/></label><label>FMT dosyası<input type="file" accept=".fmt,.FMT,.txt" onChange={e=>setFmtFile(e.target.files?.[0]||null)}/></label></div>{!file&&<small className="field-help">Önce 4. adımda değerlendireceğiniz TXT/DAT dosyasını seçin.</small>}<button className="primary" type="button" disabled={busy||!opticalName.trim()||!fmtFile||!file||!access?.canManageNetwork} onClick={()=>void saveOptical()}>{busy?'Deneniyor…':'Optiği dene ve kaydet'}</button></div>}
-   {!catalog.exams.length&&<div className="alert warning"><TriangleAlert/> Değerlendirmeye açık sınav yok. Sınav kartı ve cevap anahtarı tamamlanan merkezi sınav burada kendiliğinden görünür.</div>}
+   {(()=>{const sel=catalog.exams.find((e:any)=>e.id===examId);return sel?.own_kind?<OwnExamPublishBar examId={examId} refreshKey={history.length}/>:null})()}
+   {addExam&&<OwnExamForm mode={mode} onCancel={()=>setAddExam(false)} onCreated={async(exam)=>{setAddExam(false);await loadCatalog();setExamId(exam.id);setNotice(`"${exam.title}" sınavı eklendi ve seçildi. Şimdi optiği, kurumu ve veri dosyasını seçin.`)}}/>}
+   {addOptical&&<div className="panel result-optical-add"><h3>Optik ekle</h3><p>Optiğin adını ve FMT dosyasını verin. Sistem FMT'yi, 4. adımda seçtiğiniz TXT/DAT dosyasıyla dener; okuyabiliyorsa optiği kaydedip seçer.{access?.canManageNetwork?'':mode==='DEALER'?' Optik yalnız sizin ve size kayıtlı kurumların listesinde görünür.':' Optik yalnız kurumunuzun listesinde görünür.'}</p><div className="form-grid"><label>Optik adı<input value={opticalName} onChange={e=>setOpticalName(e.target.value)} placeholder="ör. 4K Yayınları TYT optiği"/></label><label>FMT dosyası<input type="file" accept=".fmt,.FMT,.txt" onChange={e=>setFmtFile(e.target.files?.[0]||null)}/></label></div>{!file&&<small className="field-help">Önce 4. adımda değerlendireceğiniz TXT/DAT dosyasını seçin.</small>}<button className="primary" type="button" disabled={busy||!opticalName.trim()||!fmtFile||!file||!access?.canManageNetwork} onClick={()=>void saveOptical()}>{busy?'Deneniyor…':'Optiği dene ve kaydet'}</button></div>}
+   {!catalog.exams.length&&<div className="alert warning"><TriangleAlert/> Değerlendirmeye açık sınav yok. Merkezi sınavlar hazır olunca burada kendiliğinden görünür; kendi sınavınızı "Kendi sınavını ekle" ile ekleyebilirsiniz.</div>}
    {!catalog.opticals.length&&<div className="alert warning"><TriangleAlert/> Kayıtlı optik yok. "Optik ekle" ile FMT dosyasını yükleyin.</div>}
    <button className="primary huge" disabled={busy||!file||!(searchable?picked:institutionId)||!examId||!templateVersionId} onClick={()=>void upload()}><FileUp/> {busy?'Dosya okunuyor…':'Dosyayı yükle ve kontrol et'}</button>
   </div>:<>

@@ -22,7 +22,7 @@ beforeEach(()=>{
  CREATE TABLE worksheet_calendar_entries(id TEXT,worksheet_id TEXT,institution_id TEXT,class_id TEXT,planned_date TEXT,status TEXT);INSERT INTO worksheet_calendar_entries VALUES('wc1','w1','a','c1','2026-10-12','PLANNED'),('wc2','w1','b','c3','2026-10-12','PLANNED');
  CREATE TABLE worksheet_subjects(worksheet_id TEXT,subject_id TEXT);INSERT INTO worksheet_subjects VALUES('w1','math');
  CREATE TABLE exams(id TEXT,institution_id TEXT,title TEXT,exam_date TEXT,status TEXT,grade_level INTEGER);INSERT INTO exams VALUES('ex1','a','Our Exam','2026-10-12','ACTIVE',7),('ex2','b','Other Exam','2026-10-12','ACTIVE',7),('ex3','a','Draft','2026-10-12','DRAFT',7);
- CREATE TABLE exam_institutions(exam_id TEXT,institution_id TEXT,enabled INTEGER);CREATE TABLE exam_subjects(exam_id TEXT,subject_id TEXT);INSERT INTO exam_subjects VALUES('ex1','math');
+ CREATE TABLE IF NOT EXISTS result_network_own_exams(exam_id TEXT PRIMARY KEY,owner_kind TEXT,institution_id TEXT,dealer_id TEXT,created_by TEXT);CREATE TABLE exam_institutions(exam_id TEXT,institution_id TEXT,enabled INTEGER);CREATE TABLE exam_subjects(exam_id TEXT,subject_id TEXT);INSERT INTO exam_subjects VALUES('ex1','math');
  CREATE TABLE audit_logs(id TEXT,actor_user_id TEXT,institution_id TEXT,action TEXT,entity_type TEXT,entity_id TEXT,details_json TEXT);
  `);
  db.exec(readFileSync(new URL('../migrations/0087_nibiru_direct_access_calendar.sql',import.meta.url),'utf8'));

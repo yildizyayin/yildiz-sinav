@@ -6,7 +6,7 @@ import { generateBatchAccessCodes } from '../worker/result-network-entry';
 
 function fixture() {
   const db = new DatabaseSync(':memory:');
-  db.exec(`CREATE TABLE exams(id TEXT,academic_year TEXT,grade_level INTEGER);INSERT INTO exams VALUES('e','2026-2027',6);
+  db.exec(`CREATE TABLE IF NOT EXISTS result_network_own_exams(exam_id TEXT PRIMARY KEY,owner_kind TEXT,institution_id TEXT,dealer_id TEXT,created_by TEXT);CREATE TABLE exams(id TEXT,academic_year TEXT,grade_level INTEGER);INSERT INTO exams VALUES('e','2026-2027',6);
     CREATE TABLE institutions(id TEXT,code TEXT,name TEXT,city TEXT,district TEXT,status TEXT);INSERT INTO institutions VALUES('school','code','Synthetic','City','District','ACTIVE');
     CREATE TABLE institution_access_controls(institution_id TEXT,lifecycle_status TEXT);
     CREATE TABLE national_institution_directory(meb_code TEXT,status TEXT);INSERT INTO national_institution_directory VALUES('code','ACTIVE');
