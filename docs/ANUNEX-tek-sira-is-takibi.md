@@ -2763,3 +2763,9 @@ Açık:
 - Turnstile: prod site anahtarı Cloudflare test anahtarı (1x00000000000000000000BB); gerçek widget kullanıcı tarafından oluşturulup `PROD_TURNSTILE_SECRET_KEY` + `TURNSTILE_SITE_KEY` güncellenmeli.
 
 Testler: 336 dosya / 1470 test geçti; typecheck ve build temiz.
+
+### D-S041 kararları (29 Ekim, kullanıcı) — bayi/kurumun kendi sınavı (#51)
+- Bayinin eklediği sınav: bayi + bayiye kayıtlı kurumlar kullanır (yükleme listesinde yalnız onlara çıkar).
+- Ders yapısı: hazır yapı (LGS / TYT / AYT / ara sınıf); kitapçık A, B, C, D olabilir; her kitapçık için cevap anahtarı girilir.
+- Optik form: onaylı şablon listesinden seçilir; yoksa sahibi kendi .FMT dosyasını yükler, yalnız kendisi kullanır.
+- (D-S039'dan) Kendi sınavlarında Türkiye sıralaması yok; merkez sınavlar SA'nın.
