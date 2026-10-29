@@ -5,7 +5,7 @@ import {beforeEach,expect,it,vi} from 'vitest';
 const mocks=vi.hoisted(()=>({api:vi.fn(),role:'SUPER_ADMIN',catalog:{} as any}));
 vi.mock('../src/api',async()=>{const real=await vi.importActual<any>('../src/api');return {...real,api:mocks.api};});
 vi.mock('../src/auth',()=>({useAuth:()=>({user:{id:'u',role:mocks.role,institution_id:mocks.role==='SUPER_ADMIN'?null:'instX'}})}));
-vi.mock('react-router-dom',()=>({Link:(p:any)=>createElement('a',p),useSearchParams:()=>[new URLSearchParams(),()=>{}]}));
+vi.mock('react-router-dom',()=>({Link:(p:any)=>createElement('a',p),useSearchParams:()=>[new URLSearchParams(),()=>{}],useNavigate:()=>()=>{}}));
 vi.mock('../src/components/QuestionCardIntelligence',()=>({QuestionCardIntelligence:()=>null}));
 vi.mock('../src/components/QuestionEditorialDesign',()=>({QuestionEditorialDesign:()=>null}));
 vi.mock('../src/components/QuestionDataVisual',()=>({QuestionDataVisual:()=>null}));

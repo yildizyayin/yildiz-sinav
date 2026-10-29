@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Eye, ScanLine, Search, Star } from 'lucide-react';
+import { Eye, ScanLine, Search, Star, Timer } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { StudioDownloads } from './StudioDownloads';
 import { StudioHomeworkAssign } from './StudioHomeworkAssign';
@@ -15,6 +16,9 @@ export function StudioLibrary({ docs, onPreview, onScan, onError, onChanged }: {
   const [query, setQuery] = useState('');
   const [fav, setFav] = useState<Record<string, boolean>>({});
   const [assigning, setAssigning] = useState(''); const [notice, setNotice] = useState('');
+  const navigate = useNavigate(); const [converting, setConverting] = useState('');
+  // S044: a pool test becomes a timed online exam (Hızlı Test) in one click; only approved text questions qualify.
+  const toOnline = async (d: any) => { setConverting(d.id); try { const r = await api<any>(`/api/quick-tests/from-studio/${encodeURIComponent(d.id)}`, { method: 'POST' }); navigate(`/quick-tests/${r.id}`); } catch (e: any) { onError(e?.message || 'Online sınava dönüştürülemedi.'); } finally { setConverting(''); } };
   const isFav = (d: any) => fav[d.id] ?? !!d.is_favorite;
   const subjects = useMemo(() => [...new Map(docs.filter(d => d.subject_id).map(d => [d.subject_id, d.subject_name || d.subject_id])).entries()].sort((a, b) => String(a[1]).localeCompare(String(b[1]), 'tr')), [docs]);
   const shown = docs.filter(d => (view === 'ALL' || (view === 'MINE' ? !!d.is_mine : isFav(d))) && (!subject || d.subject_id === subject) && (!query.trim() || String(d.title || '').toLocaleLowerCase('tr').includes(query.trim().toLocaleLowerCase('tr'))));
@@ -38,7 +42,7 @@ export function StudioLibrary({ docs, onPreview, onScan, onError, onChanged }: {
         <h3>{d.title}</h3>
         <p className="studio-card-meta">{[d.grade_level ? `${d.grade_level}. sınıf` : null, d.subject_name || null, `${d.question_count || 0} soru`, (Array.isArray(c.bookletCodes) ? c.bookletCodes : ['A']).join(' / ') + ' kitapçık'].filter(Boolean).join(' · ')}</p>
         <p className="studio-card-meta"><span className={`status ${d.status === 'READY' ? 'ok' : 'neutral'}`}>{STATUS[d.status] || d.status}</span>{c.academicYear ? <span>{c.academicYear}</span> : null}{d.created_at ? <span>{String(d.created_at).slice(0, 10)}</span> : null}{d.is_mine ? <span>Benim</span> : null}</p>
-        <footer><button type="button" className="secondary subtle" onClick={() => onPreview(d)}><Eye size={13} /> Önizle</button>{optical && <button type="button" className="secondary subtle" onClick={() => onScan(d)}><ScanLine size={13} /> Optik okut</button>}<StudioDownloads document={d} onError={onError} /><a className="secondary subtle" href={`/board/${encodeURIComponent(d.id)}`}>Tahtada aç</a>{d.document_type === 'WORKSHEET' && d.status === 'READY' && <button type="button" className="secondary subtle" onClick={() => setAssigning(assigning === d.id ? '' : d.id)}>Ödev olarak ata</button>}</footer>
+        <footer><button type="button" className="secondary subtle" onClick={() => onPreview(d)}><Eye size={13} /> Önizle</button><button type="button" className="secondary subtle" disabled={converting === d.id} onClick={() => void toOnline(d)}><Timer size={13} /> {converting === d.id ? 'Hazırlanıyor…' : 'Online sınav yap'}</button>{optical && <button type="button" className="secondary subtle" onClick={() => onScan(d)}><ScanLine size={13} /> Optik okut</button>}<StudioDownloads document={d} onError={onError} /><a className="secondary subtle" href={`/board/${encodeURIComponent(d.id)}`}>Tahtada aç</a>{d.document_type === 'WORKSHEET' && d.status === 'READY' && <button type="button" className="secondary subtle" onClick={() => setAssigning(assigning === d.id ? '' : d.id)}>Ödev olarak ata</button>}</footer>
         {assigning === d.id && <StudioHomeworkAssign documentId={d.id} onError={onError} onDone={(m) => { setNotice(m); setAssigning(''); onChanged(); }} />}
       </article>; })}</div>
   </div>;

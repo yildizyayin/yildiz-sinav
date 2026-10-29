@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 import { PageLoader } from './components/PageLoader';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth, type Role } from './auth';
@@ -81,6 +81,9 @@ const BoardMode=lazy(()=>import('./pages/BoardMode').then(module=>({default:modu
 const PhysicalLink=lazy(()=>import('./pages/PhysicalLink').then(module=>({default:module.PhysicalLink})));
 const AttendanceCenter=lazy(()=>import('./pages/AttendanceCenter').then(module=>({default:module.AttendanceCenter})));
 const AssignmentsCenter=lazy(()=>import('./pages/AssignmentsCenter').then(module=>({default:module.AssignmentsCenter})));
+const QuickTests=lazy(()=>import('./pages/QuickTests').then(module=>({default:module.QuickTests})));
+const QuickTestEditor=lazy(()=>import('./pages/QuickTestEditor').then(module=>({default:module.QuickTestEditor})));
+const QuickExamTake=lazy(()=>import('./pages/QuickExamTake').then(module=>({default:module.QuickExamTake})));
 const MarketingHome=lazy(()=>import('./pages/MarketingHome').then(module=>({default:module.MarketingHome})));
 const ResultPortal=lazy(()=>import('./pages/ResultPortal').then(module=>({default:module.ResultPortal})));
 const ResultNetworkAdmin=lazy(()=>import('./pages/ResultNetworkAdmin').then(module=>({default:module.ResultNetworkAdmin})));
@@ -100,6 +103,8 @@ function AppContent(){
  const isMarketingHost=hostname==='anunex.com'||hostname==='www.anunex.com'||isMarketingPreview||new URLSearchParams(location.search).get('site')==='marketing';
  if(isResultHost)return <ResultPortal/>;
  if(isMarketingHost)return <MarketingHome/>;
+ // S044: the online exam page needs no account (students join with the code their teacher gives).
+ if(location.pathname==='/sinav'||location.pathname.startsWith('/sinav/'))return <Suspense fallback={<div className="boot">Sınav yükleniyor…</div>}><Routes><Route path="/sinav" element={<QuickExamTake/>}/><Route path="/sinav/:code" element={<QuickExamTake/>}/></Routes></Suspense>;
  if(loading)return <div className="boot">Anunex yükleniyor…</div>;
  if((location.pathname==='/nibiru-direct'||(!user&&location.pathname==='/nibiru'))&&!user?.must_change_password)return <NibiruDirect/>;
  if(!user&&location.pathname!=='/login')return <Navigate to="/login" replace/>;
@@ -127,6 +132,7 @@ function AppContent(){
   <Route path="classes" element={<RoleGate allowed={['TEACHER','GUIDANCE_TEACHER']}><Classes/></RoleGate>}/><Route path="outcomes" element={<RoleGate allowed={['TEACHER','GUIDANCE_TEACHER','STUDENT']}><Outcomes/></RoleGate>}/><Route path="worksheets" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><Worksheets/></RoleGate>}/><Route path="worksheet-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><WorksheetAdmin/></RoleGate>}/><Route path="reports" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','PARENT']}><Reports/></RoleGate>}/>
   <Route path="my-results" element={<RoleGate allowed={['STUDENT']}><StudentExamResults/></RoleGate>}/><Route path="student-report" element={<RoleGate allowed={['STUDENT']}><Reports/></RoleGate>}/><Route path="wrong-answers" element={<RoleGate allowed={['STUDENT']}><WrongAnswers/></RoleGate>}/><Route path="children" element={<RoleGate allowed={['PARENT']}><Children/></RoleGate>}/><Route path="weekly-summary" element={<RoleGate allowed={['PARENT']}><WeeklySummary/></RoleGate>}/>
   <Route path="transfers" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Transfers/></RoleGate>}/><Route path="optical-design" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><OpticalDesign/></RoleGate>}/><Route path="optical-prepare" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><OpticalPrepare/></RoleGate>}/><Route path="calibration" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Calibration/></RoleGate>}/><Route path="opticals" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><Opticals/></RoleGate>}/><Route path="bulk-operations" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><BulkOperations/></RoleGate>}/><Route path="demo-mode" element={<RoleGate allowed={['SUPER_ADMIN']}><DemoMode/></RoleGate>}/><Route path="scale" element={<RoleGate allowed={['SUPER_ADMIN']}><ScaleInfrastructure/></RoleGate>}/><Route path="feature-lab" element={<RoleGate allowed={['SUPER_ADMIN']}><FeatureLab/></RoleGate>}/>
+  <Route path="quick-tests" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><QuickTests/></RoleGate>}/><Route path="quick-tests/:id" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><QuickTestEditor/></RoleGate>}/>
   <Route path="question-team" element={<RoleGate allowed={['SUPER_ADMIN']}><QuestionTeam/></RoleGate>}/><Route path="content-center" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><ContentCenter/></RoleGate>}/><Route path="student-growth" element={<RoleGate allowed={['STUDENT']}><StudentGrowthCenter/></RoleGate>}/><Route path="premium" element={<RoleGate allowed={['STUDENT']}><PremiumCenter/></RoleGate>}/><Route path="enterprise" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><EnterpriseCenter/></RoleGate>}/><Route path="guidance-tests" element={<RoleGate allowed={['STUDENT','GUIDANCE_TEACHER']}><GuidanceTests/></RoleGate>}/><Route path="guidance-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><GuidanceAdmin/></RoleGate>}/>
   <Route path="*" element={<Navigate to="/" replace/>}/></Route></Routes>
 }

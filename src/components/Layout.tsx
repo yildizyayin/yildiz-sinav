@@ -2,7 +2,7 @@ import { ApprovedAdminNavigation } from './ApprovedAdminNavigation';
 import { PageLoader } from './PageLoader';
 import { useEffect,useMemo,useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileText, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, Network, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
+import { Scissors, Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileText, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, Network, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 import { api } from '../api';
 import { activePanelTheme, readPanelTheme } from '../lib/panelTheme';
@@ -37,6 +37,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
     ]},
     { label:'İÇERİK VE BELGELER', items:[
       {to:'/content-center',label:'Soru Havuzu & Studio',icon:Layers3,feature:'QUESTION_BANK'},
+      {to:'/quick-tests',label:'Hızlı Test',icon:Scissors,feature:'STUDIO'},
       {to:'/question-team',label:'Soru Havuzu Ekibi',icon:Activity,feature:'QUESTION_BANK'},
       {to:'/worksheet-admin',label:'Föy Merkezi',icon:BookOpenCheck},
       {to:'/worksheet-calendar',label:'Föy Takvimi',icon:CalendarDays},
@@ -97,6 +98,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
     ]},
     { label:'İÇERİK VE BELGELER', items:[
       {to:'/content-center',label:'Soru Havuzu & Studio',icon:Layers3,feature:'QUESTION_BANK'},
+      {to:'/quick-tests',label:'Hızlı Test',icon:Scissors,feature:'STUDIO'},
       {to:'/worksheet-calendar',label:'Föy Takvimi',icon:CalendarDays},
       {to:'/worksheets',label:'Föy Merkezi',icon:BookOpenCheck},
       {to:'/written-scenarios',label:'Ortak Yazılı Senaryoları',icon:FileText},
@@ -142,7 +144,7 @@ const nav: Record<Role, NavItem[]> = {
   ],
   INSTITUTION_MANAGER: [
     { to: '/', label: 'Kurum Paneli V2', icon: Home }, { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle },
-    { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Enterprise / Campus', icon: Building2,feature:'ENTERPRISE' },
+    { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/quick-tests', label: 'Hızlı Test', icon: Scissors, feature:'STUDIO' }, { to: '/enterprise', label: 'Enterprise / Campus', icon: Building2,feature:'ENTERPRISE' },
     { to: '/announcements', label: 'Duyuru Merkezi', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/exam-definitions', label: 'Sınav Ekle', icon: ClipboardCheck }, { to: '/students', label: 'Öğrenciler', icon: Users },
     { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck, feature:'ASSIGNMENTS' },
     { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange }, { to: '/opticals', label: 'Optik Form Ağacı', icon: ScanLine }, { to: '/optical-design', label: 'Baskı Şablonu Tasarla', icon: Printer }, { to: '/optical-prepare', label: 'Optik Basma', icon: Printer },
@@ -150,12 +152,12 @@ const nav: Record<Role, NavItem[]> = {
     { to: '/worksheets', label: 'Föy Merkezi', icon: BookOpenCheck }, { to: '/written-scenarios', label: 'Ortak Yazılı Senaryoları', icon: FileText }, { to: '/written-papers', label: 'Yazılı Kâğıtları', icon: FileText }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   TEACHER: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/quick-tests', label: 'Hızlı Test', icon: Scissors, feature:'STUDIO' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
     { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/written-scenarios', label: 'Ortak Yazılı', icon: FileText }, { to: '/written-rubrics', label: 'Yazılı Rubrikleri', icon: ListChecks }, { to: '/written-papers', label: 'Yazılı Kâğıtları', icon: FileText }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Branş Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
     { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck, feature:'ASSIGNMENTS' },
   ],
   GUIDANCE_TEACHER: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/guidance-tests', label: 'RBA & Rehberlik Onayları', icon: ListChecks,feature:'GUIDANCE_TESTS' }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/guidance-tests', label: 'RBA & Rehberlik Onayları', icon: ListChecks,feature:'GUIDANCE_TESTS' }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/quick-tests', label: 'Hızlı Test', icon: Scissors, feature:'STUDIO' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
     { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/written-scenarios', label: 'Ortak Yazılı', icon: FileText }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Öğrenci Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
     { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck, feature:'ASSIGNMENTS' },
   ],

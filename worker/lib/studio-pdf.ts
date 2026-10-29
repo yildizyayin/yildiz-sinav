@@ -48,15 +48,15 @@ export function normalizePrintText(value: unknown): string {
   return String(value ?? '').normalize('NFC').replace(/\r\n?/g, '\n').replace(/[­​-‍﻿]/g, '').replace(/\t/g, ' ');
 }
 
-type Fonts = { regular: PDFFont; bold: PDFFont; charset: Set<number> };
-async function loadFonts(pdf: PDFDocument): Promise<Fonts> {
+export type Fonts = { regular: PDFFont; bold: PDFFont; charset: Set<number> };
+export async function loadFonts(pdf: PDFDocument): Promise<Fonts> {
   pdf.registerFontkit(fontkit);
   const regular = await pdf.embedFont(b64(DEJAVU_SANS_BASE64), { subset: true });
   const bold = await pdf.embedFont(b64(DEJAVU_SANS_BOLD_BASE64), { subset: true });
   return { regular, bold, charset: new Set(regular.getCharacterSet()) };
 }
 
-function assertPrintable(fonts: Fonts, text: string, where: string) {
+export function assertPrintable(fonts: Fonts, text: string, where: string) {
   for (const ch of text) {
     const cp = ch.codePointAt(0)!;
     if (cp === 10 || cp === 32) continue;
@@ -93,7 +93,7 @@ type Visual =
   | { kind: 'BAR_CHART'; title: string; unit: string; categories: string[]; values: number[] };
 type Printable = { no: number; stem: string[]; extra: string[]; visuals: Visual[]; options: string[]; correct: string | null; ai: boolean };
 
-function sniff(bytes: Uint8Array): 'png' | 'jpg' | null {
+export function sniff(bytes: Uint8Array): 'png' | 'jpg' | null {
   if (bytes.length > 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) return 'png';
   if (bytes.length > 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'jpg';
   return null;
@@ -358,7 +358,7 @@ export function opticalPage(title: string, booklet: string, questionCount: numbe
 }
 
 const BLACK = rgb(0, 0, 0), LETTER = rgb(0.55, 0.58, 0.63);
-function drawOpticalPage(pdf: PDFDocument, fonts: Fonts, layout: OpticalLayout) {
+export function drawOpticalPage(pdf: PDFDocument, fonts: Fonts, layout: OpticalLayout) {
   const page = pdf.addPage([PAGE_W, PAGE_H]);
   for (const [x, y] of STUDIO_MARKERS) page.drawRectangle({ x, y, width: MARKER, height: MARKER, color: BLACK });
   page.drawCircle({ x: PROBE.x, y: PROBE.y, size: PROBE.r, color: BLACK });

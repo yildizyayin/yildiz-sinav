@@ -4,6 +4,7 @@ import {createRoot} from 'react-dom/client';
 import {beforeEach,expect,it,vi} from 'vitest';
 const mocks=vi.hoisted(()=>({api:vi.fn()}));
 vi.mock('../src/api',async()=>{const real=await vi.importActual<any>('../src/api');return {...real,api:mocks.api};});
+vi.mock('react-router-dom',async()=>{const real=await vi.importActual<any>('react-router-dom');return {...real,useNavigate:()=>()=>{}};});
 import {StudioLibrary} from '../src/components/StudioLibrary';
 import {StudioTemplates} from '../src/components/StudioTemplates';
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
