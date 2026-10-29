@@ -21,8 +21,11 @@ describe('scheduled jobs pause (D1 budget)', () => {
       expect(await run(worker, 'false')).toBeGreaterThan(0);
     });
   }
-  it('every deployed worker config pauses scheduled jobs and the question agents until launch', () => {
-    for (const f of ['wrangler.production.jsonc', 'wrangler.jsonc', 'wrangler.result.production.jsonc']) expect(readFileSync(new URL(`../${f}`, import.meta.url), 'utf8'), f).toContain('"SCHEDULED_JOBS_PAUSED": "true"');
+  // S041 (owner, 29 Oct): Cloudflare is on the paid plan; production runs its scheduled jobs again. Staging stays paused,
+  // and the question agents stay off in production until their own launch decision.
+  it('production runs scheduled jobs, staging stays paused, question agents stay off', () => {
+    for (const f of ['wrangler.production.jsonc', 'wrangler.result.production.jsonc']) expect(readFileSync(new URL(`../${f}`, import.meta.url), 'utf8'), f).toContain('"SCHEDULED_JOBS_PAUSED": "false"');
+    expect(readFileSync(new URL('../wrangler.jsonc', import.meta.url), 'utf8')).toContain('"SCHEDULED_JOBS_PAUSED": "true"');
     const p = readFileSync(new URL('../wrangler.production.jsonc', import.meta.url), 'utf8');
     for (const k of ['QUESTION_AGENT_EXECUTION_ENABLED', 'QUESTION_GENERATION_ENABLED', 'QUESTION_VIDEO_RENDER_ENABLED']) expect(p).toContain(`"${k}": "false"`);
   });

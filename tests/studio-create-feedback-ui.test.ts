@@ -16,6 +16,7 @@ import {ContentCenter} from '../src/pages/ContentCenter';
 
 const posts:any[]=[];
 beforeEach(()=>{posts.length=0;mocks.role='SUPER_ADMIN';mocks.catalog={};mocks.api.mockReset();mocks.api.mockImplementation(async(url:string,init?:any)=>{
+ if(url==='/api/platform/features')return {features:[{feature_key:'STUDIO',effective_enabled:1},{feature_key:'VIDEO_LIBRARY',effective_enabled:1}]};
  if(url==='/api/institutions')return {institutions:[{id:'instX',name:'Yıldız Koleji'},{id:'instY',name:'Başka Kurum'}]};
  if(url.startsWith('/api/platform/studio/branding/logo'))return {institutionName:url.includes('instX')?'Yıldız Koleji':null,hasLogo:false};
  if(url==='/api/platform/studio'&&init?.method==='POST'){const body=JSON.parse(init.body);posts.push(body);if(body.questionCount>5)throw new Error('İstenen 20 soruya uygun soru havuzu bulunamadı; yalnız 3 soru seçilebildi.');return {selectedQuestions:5,requestedQuestions:5,bookletCodes:['A','B']};}

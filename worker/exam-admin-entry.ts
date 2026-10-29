@@ -898,6 +898,8 @@ async function setStatusUnlocked(request: Request, env: Env, user: AuthUser, exa
   if(next==='ARCHIVED'){
     statements.push(env.DB.prepare(`UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='LICENSED'`).bind(examId));
     statements.push(env.DB.prepare(`UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='LICENSED'`).bind(examId));
+    // S041: an archived exam also leaves the demo and marketing showcases (they kept showing archived exams).
+    statements.push(env.DB.prepare(`UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel NOT IN ('LICENSED','RESULT_NETWORK')`).bind(examId));
     if(autoListedUnused){
       statements.push(env.DB.prepare(`UPDATE exam_channel_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'`).bind(examId));
       statements.push(env.DB.prepare(`UPDATE channel_definition_publications SET status='ARCHIVED' WHERE exam_id=? AND channel='RESULT_NETWORK'`).bind(examId));

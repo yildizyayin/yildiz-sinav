@@ -147,6 +147,8 @@ export interface CanonicalRecord {
   grade_level?: number;
   section?: string;
   booklet?: string;
+  /** S041: the institution code bubbled on the sheet (KURUM KODU), when the form has one. */
+  institution_code?: string;
   /** A028b: per-test booklet when the two sessions of one student were read from sheets with different booklets. */
   booklet_by_subject?: Record<string, string>;
   /** A028b: row numbers of further sheets of the same student merged into this record. */

@@ -105,8 +105,19 @@ async function studentLogin(request:Request,env:Env){
  if(await loginMisses(env,studentKey)>=8)return fail();
  const token=await hmac(env,`${kind}|${institutionCode}|${value}`);const column=kind==='TCKN'?'rai.tckn_lookup_token':'rai.student_number_lookup_token';
  const candidates=await all<any>(env.DB.prepare(`SELECT rai.id,rai.normalized_name FROM result_access_identities rai JOIN result_network_institutions rni ON rni.id=rai.result_institution_id JOIN exam_administrations ea ON ea.id=rai.administration_id WHERE rni.meb_code=? AND rai.grade_level=? AND ${column}=? AND rai.expires_at>CURRENT_TIMESTAMP AND ea.status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM exam_channel_publications pub WHERE pub.exam_id=ea.exam_id AND pub.channel='RESULT_NETWORK' AND pub.status<>'ACTIVE') ORDER BY ea.published_at DESC LIMIT 10`).bind(institutionCode,grade,token));
- const match=candidates.find(c=>namePrefix(c.normalized_name)===prefix);
- if(!match)return fail();
+ const matches=candidates.filter(c=>namePrefix(c.normalized_name)===prefix);
+ if(!matches.length)return fail();
+ // Two different students can share a school, grade, number and the first 3 letters (e.g. two "Mehmet"s from different
+ // files). Then the full name decides; the first row is never opened on a guess.
+ const compact=(v:string)=>normalizeName(v).replace(/[^a-z]/g,'');
+ let match=matches[0];
+ if(new Set(matches.map(c=>compact(c.normalized_name))).size>1){
+  const full=compact(String(body.fullName||''));
+  if(!full)return json({ok:false,error:{code:'FULL_NAME_REQUIRED',message:'Bu numarada aynı harflerle başlayan birden fazla öğrenci var. Adınızı ve soyadınızı tam yazın.'}},409);
+  const exact=matches.find(c=>compact(c.normalized_name)===full);
+  if(!exact)return fail();
+  match=exact;
+ }
  await recordLogin(env,[studentKey],true,ipHash);
  return openStudentSession(env,match.id,ipHash);
 }
@@ -572,6 +583,11 @@ async function uploadChecks(env:Env,batchId:string,examId:string,institutionId:s
  const here=await one<any>(env.DB.prepare(`SELECT count(DISTINCT ep.student_number_snapshot) c FROM exam_participants ep WHERE ep.exam_id=? AND ep.institution_id=? AND trim(ep.student_number_snapshot) IN ${numbers}`).bind(examId,institutionId,batchId));
  const school=await one<any>(env.DB.prepare(`SELECT name,COALESCE(meb_code,code) code,city,district FROM institutions WHERE id=?`).bind(institutionId));
  const out:any={school,sameSchoolNumbers:Number(here?.c||0)};
+ // S041: when the form has a KURUM KODU grid, the code most sheets carry is compared with the chosen school.
+ const codes=await all<any>(env.DB.prepare(`SELECT trim(json_extract(canonical_json,'$.institution_code')) code,count(*) n FROM scan_records WHERE batch_id=? AND resolution_status<>'CANCELLED' AND trim(coalesce(json_extract(canonical_json,'$.institution_code'),''))<>'' GROUP BY 1 ORDER BY n DESC LIMIT 3`).bind(batchId));
+ const own=String(school?.code||'').replace(/^0+/,'');
+ const readCodes=codes.filter(c=>/^\d+$/.test(String(c.code))&&!/^0+$/.test(String(c.code)));
+ if(readCodes.length&&own){const top=readCodes[0];out.sheetInstitutionCode={code:String(top.code),sheets:Number(top.n),matches:String(top.code).replace(/^0+/,'')===own}}
  if(wide){
   out.otherSchools=await all<any>(env.DB.prepare(`SELECT i.name,COALESCE(i.meb_code,i.code) code,count(DISTINCT ep.student_number_snapshot) numbers FROM exam_participants ep JOIN institutions i ON i.id=ep.institution_id WHERE ep.exam_id=? AND ep.institution_id<>? AND trim(ep.student_number_snapshot) IN ${numbers} GROUP BY i.id ORDER BY numbers DESC LIMIT 5`).bind(examId,institutionId,batchId));
   out.sameFileElsewhere=fileHash?await all<any>(env.DB.prepare(`SELECT DISTINCT i.name,COALESCE(i.meb_code,i.code) code FROM scan_batch_files f JOIN scan_batches b ON b.id=f.batch_id JOIN institutions i ON i.id=b.institution_id WHERE f.sha256=? AND b.exam_id=? AND b.institution_id<>? AND b.id<>? AND NOT EXISTS(SELECT 1 FROM scan_batch_deletions d WHERE d.batch_id=b.id) LIMIT 5`).bind(fileHash,examId,institutionId,batchId)):[];

@@ -23,6 +23,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
     ]},
     { label:'SINAV MERKEZİ', items:[
       {to:'/exam-center',label:'Sınav Merkezi',icon:ClipboardCheck,children:[
+        {to:'/exam-definitions',label:'Sınav Oluştur',icon:ClipboardCheck},
         {to:'/opticals',label:'Optik Form Ağacı',icon:ScanLine},
         {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
       ]},
@@ -47,6 +48,8 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
     ]},
     { label:'KURUMLAR VE ERİŞİM', items:[
       {to:'/institutions',label:'Kurumlar',icon:Building2},
+      {to:'/seasons',label:'Dönemler',icon:CalendarDays},
+      {to:'/membership-orders',label:'Üyelik Siparişleri',icon:KeyRound},
       {to:'/students',label:'Öğrenciler',icon:Users},
       {to:'/activation-requests',label:'Aktivasyon Talepleri',icon:UserCheck},
       {to:'/users',label:'Kullanıcılar',icon:UserCog},
@@ -54,7 +57,8 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/teacher-assignments',label:'Öğretmen Yetkileri',icon:ShieldCheck},
     ]},
     { label:'PLATFORM', items:[
-      {to:'/exam-channels',label:'Sonuç Yayınları',icon:Globe2},
+      {to:'/exam-channels',label:'Sonuç Yayınları ve Çöp Kutusu',icon:Globe2},
+      {to:'/completion-center',label:'Tamamlama Merkezi',icon:ListChecks},
       {to:'/result-network',label:'Sonuç Ağı',icon:Globe2},
       {to:'/attendance',label:'Yoklama Gözetimi',icon:UserCheck},
       {to:'/nibiru',label:'Nibiru',icon:NibiruNavIcon},
