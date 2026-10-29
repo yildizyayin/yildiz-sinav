@@ -79,6 +79,23 @@ export async function ownOpticalCatalogSql(env: Env, user: AuthUser, alias = 't'
   return { sql: ` AND (NOT EXISTS(SELECT 1 FROM result_network_own_opticals oo WHERE oo.template_id=${alias}.id) OR EXISTS(SELECT 1 FROM result_network_own_opticals oo WHERE oo.template_id=${alias}.id AND (oo.dealer_id=? OR EXISTS(SELECT 1 FROM institutions ui JOIN national_institution_directory d ON d.meb_code=COALESCE(ui.meb_code,ui.code) WHERE ui.id=? AND ${inDealerScope('oo.dealer_id')}))))`, args: [dealerId || '', user.institution_id || ''] };
 }
 
+type KeySection = { subjectCode: string; subjectId: string; label: string; questionCount: number; optionCount: number };
+/** Checks every booklet × test answer string; an X is a cancelled question (stored cancelled with a placeholder letter, as the app does). */
+export function keyEntries(booklets: string[], sections: KeySection[], rawKeys: unknown) {
+  const keys: any = rawKeys && typeof rawKeys === 'object' ? rawKeys : {};
+  const problems: string[] = [];
+  const entries: Array<{ subjectId: string; bookletCode: string; answers: string; optionCount: number; questionStatuses: string[] }> = [];
+  for (const b of booklets) for (const s of sections) {
+    const raw = String(keys?.[b]?.[s.subjectCode] ?? '').toLocaleUpperCase('tr-TR').replace(/\s+/g, '');
+    const letters = s.optionCount === 4 ? 'ABCD' : 'ABCDE';
+    const bad = [...raw].findIndex((c) => !letters.includes(c) && c !== 'X');
+    if (bad >= 0) problems.push(`${b} kitapçığı ${s.label}: ${bad + 1}. soruda geçersiz harf "${raw[bad]}" (${letters.split('').join(', ')} kullanın; iptal soru için X).`);
+    else if (raw.length !== s.questionCount) problems.push(`${b} kitapçığı ${s.label}: ${s.questionCount} cevap olmalı, ${raw.length} yazıldı.`);
+    else entries.push({ subjectId: s.subjectId, bookletCode: b, answers: raw.replace(/X/g, 'A'), optionCount: s.optionCount, questionStatuses: [...raw].map((c) => (c === 'X' ? 'CANCELLED' : 'ACTIVE')) });
+  }
+  return { problems, entries };
+}
+
 const fail = (status: number, code: string, message: string, extra: object = {}) => json({ ok: false, error: { code, message, ...(Object.keys(extra).length ? { details: extra } : {}) }, ...extra }, status);
 
 async function step(res: Response, label: string): Promise<any> {
@@ -121,18 +138,7 @@ export async function createOwnExam(request: Request, env: Env, user: AuthUser):
   if (subjectId.size !== preset.sections.length) return fail(500, 'SUBJECTS_MISSING', 'Bu sınav türünün dersleri sistemde eksik. ANUNEX yönetimine bildirin.');
 
   // Every booklet's key is checked here first, so the person is told exactly which test is short or has a wrong letter.
-  const keys = body.keys && typeof body.keys === 'object' ? body.keys : {};
-  const problems: string[] = [];
-  const entries: Array<{ subjectId: string; bookletCode: string; answers: string; optionCount: number; questionStatuses: string[] }> = [];
-  for (const b of booklets) for (const s of preset.sections) {
-    const raw = String(keys?.[b]?.[s.subjectCode] ?? '').toLocaleUpperCase('tr-TR').replace(/\s+/g, '');
-    const letters = s.optionCount === 4 ? 'ABCD' : 'ABCDE';
-    const bad = [...raw].findIndex((c) => !letters.includes(c) && c !== 'X');
-    if (bad >= 0) problems.push(`${b} kitapçığı ${s.label}: ${bad + 1}. soruda geçersiz harf "${raw[bad]}" (${letters.split('').join(', ')} kullanın; iptal soru için X).`);
-    else if (raw.length !== s.questionCount) problems.push(`${b} kitapçığı ${s.label}: ${s.questionCount} cevap olmalı, ${raw.length} yazıldı.`);
-    // An X is a cancelled question: stored as cancelled with a placeholder letter, as the app does.
-    else entries.push({ subjectId: subjectId.get(s.subjectCode)!, bookletCode: b, answers: raw.replace(/X/g, 'A'), optionCount: s.optionCount, questionStatuses: [...raw].map((c) => (c === 'X' ? 'CANCELLED' : 'ACTIVE')) });
-  }
+  const { problems, entries } = keyEntries(booklets, preset.sections.map((x) => ({ ...x, subjectId: subjectId.get(x.subjectCode)! })), body.keys);
   if (problems.length) return fail(400, 'ANSWER_KEY_INVALID', 'Cevap anahtarında düzeltilmesi gerekenler var.', { problems });
 
   const scoring = await one<any>(env.DB.prepare(`SELECT srv.id FROM scoring_rule_versions srv JOIN scoring_rules sr ON sr.id=srv.rule_id WHERE sr.code=? AND srv.verified=1 ORDER BY srv.academic_year DESC,srv.version DESC LIMIT 1`).bind(preset.scoringCode));
@@ -202,11 +208,74 @@ async function isOwner(env: Env, user: AuthUser, examId: string): Promise<boolea
   return (await approvedDealerId(env, user.id)) === own.dealer_id;
 }
 
-/** GET …/own-exams/:id — where the own exam stands for its owner: students evaluated and whether results are open. */
+/** The exam's tests and booklets, and its current key (X for a cancelled question), for the owner's correction form. */
+async function ownExamStructure(env: Env, examId: string) {
+  const sections = await all<any>(env.DB.prepare(`SELECT es.subject_id subjectId,s.code subjectCode,s.name label,es.question_count questionCount,es.option_count optionCount FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=? ORDER BY es.sort_order`).bind(examId));
+  const booklets = (await all<any>(env.DB.prepare(`SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code`).bind(examId))).map((b) => String(b.code));
+  const rows = await all<any>(env.DB.prepare(`SELECT s.code,ak.booklet_code b,CASE WHEN COALESCE(ak.question_status,q.question_status)='CANCELLED' OR q.question_status='CANCELLED' THEN 'X' ELSE ak.correct_answer END a FROM answer_keys ak JOIN exam_questions q ON q.id=ak.exam_question_id JOIN subjects s ON s.id=q.subject_id WHERE q.exam_id=? ORDER BY q.global_no`).bind(examId));
+  const keys: Record<string, Record<string, string>> = {};
+  for (const r of rows) { (keys[r.b] ||= {}); keys[r.b][r.code] = (keys[r.b][r.code] || '') + String(r.a || ''); }
+  return { sections, booklets, keys };
+}
+
+/** GET …/own-exams/:id — where the own exam stands for its owner: students evaluated, whether results are open, its key. */
 export async function ownExamStatus(env: Env, user: AuthUser, examId: string): Promise<Response> {
   if (!(await isOwner(env, user, examId))) return fail(403, 'FORBIDDEN', 'Bu sınavın sahibi değilsiniz.');
-  const row = await one<any>(env.DB.prepare(`SELECT ea.id,ea.status,ea.published_at,(SELECT count(*) FROM exam_participants ep WHERE ep.exam_id=?) participants FROM exam_administrations ea WHERE ea.exam_id=? AND ea.channel='RESULT_NETWORK' ORDER BY ea.created_at DESC LIMIT 1`).bind(examId, examId));
-  return json({ ok: true, administration: row ? { id: row.id, status: row.status, publishedAt: row.published_at } : null, participants: Number(row?.participants || 0) });
+  const row = await one<any>(env.DB.prepare(`SELECT ea.id,ea.status,ea.published_at FROM exam_administrations ea WHERE ea.exam_id=? AND ea.channel='RESULT_NETWORK' ORDER BY ea.created_at DESC LIMIT 1`).bind(examId));
+  const participants = Number((await one<any>(env.DB.prepare('SELECT count(*) c FROM exam_participants WHERE exam_id=?').bind(examId)))?.c || 0);
+  const exam = await one<any>(env.DB.prepare('SELECT title,status FROM exams WHERE id=?').bind(examId));
+  return json({ ok: true, exam, administration: row ? { id: row.id, status: row.status, publishedAt: row.published_at } : null, participants, ...(await ownExamStructure(env, examId)) });
+}
+
+const actorFor = async (env: Env, user: AuthUser, examId: string): Promise<AuthUser> => {
+  const own = await one<any>(env.DB.prepare('SELECT owner_kind FROM result_network_own_exams WHERE exam_id=?').bind(examId));
+  return own?.owner_kind === 'DEALER' && user.role !== 'SUPER_ADMIN' ? { ...user, role: 'SUPER_ADMIN', institution_id: null } : user;
+};
+
+/**
+ * POST …/own-exams/:id/answer-key { keys, reason } — the owner corrects its own exam's key. If results were open they are
+ * taken back; every evaluated upload is set to be evaluated again with the new key (the page runs those evaluations and
+ * then the owner opens the results again). Central exams are not touched by this.
+ */
+export async function correctOwnExamKey(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+  if (!(await isOwner(env, user, examId))) return fail(403, 'FORBIDDEN', 'Bu sınavın sahibi değilsiniz.');
+  const body: any = await request.json().catch(() => ({}));
+  const reason = String(body.reason || '').trim();
+  const participants = Number((await one<any>(env.DB.prepare('SELECT count(*) c FROM exam_participants WHERE exam_id=?').bind(examId)))?.c || 0);
+  if (participants && reason.length < 5) return fail(400, 'CORRECTION_REASON_REQUIRED', 'Sonuçlar değişeceği için kısa bir düzeltme nedeni yazın.');
+  const { sections, booklets } = await ownExamStructure(env, examId);
+  const { problems, entries } = keyEntries(booklets, sections, body.keys);
+  if (problems.length) return fail(400, 'ANSWER_KEY_INVALID', 'Cevap anahtarında düzeltilmesi gerekenler var.', { problems });
+  const adm = await one<any>(env.DB.prepare(`SELECT id,status FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' ORDER BY created_at DESC LIMIT 1`).bind(examId));
+  const wasPublished = adm?.status === 'PUBLISHED';
+  const { withExamOperationLock } = await import('./exam-operation-lock');
+  // 1) Results are taken back and every evaluated upload waits to be evaluated again (same steps as the platform's reopen).
+  const reopened = await withExamOperationLock(env, examId, 'OWN_EXAM_KEY_CORRECTION', async (env) => {
+    await env.DB.batch([
+      env.DB.prepare(`DELETE FROM scan_evaluation_progress WHERE batch_id IN (SELECT id FROM scan_batches WHERE exam_id=?)`).bind(examId),
+      env.DB.prepare(`UPDATE scan_batches SET status='READY' WHERE exam_id=? AND status='COMMITTED'`).bind(examId),
+      env.DB.prepare(`UPDATE exam_administrations SET status=CASE WHEN status='PUBLISHED' THEN 'READY' ELSE status END,published_at=CASE WHEN status='PUBLISHED' THEN NULL ELSE published_at END,ranking_frozen_at=NULL WHERE exam_id=? AND channel='RESULT_NETWORK'`).bind(examId),
+      env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='OPEN' WHERE exam_id=?`).bind(examId),
+    ]);
+    return json({ ok: true });
+  });
+  if (!reopened.ok) return reopened;
+  // 2) The key is written through the app's own step. An active own exam counts as open for correction (examCorrectionOpen).
+  const admin = await import('../exam-admin-entry');
+  const saved = await admin.replaceAnswerKey(new Request('https://internal.invalid/', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ entries, outcomeMode: 'OPTIONAL' }) }), env, await actorFor(env, user, examId), examId);
+  if (!saved.ok) return saved;
+  const batches = (await all<any>(env.DB.prepare(`SELECT b.id FROM scan_batches b WHERE b.exam_id=? AND b.status='READY' AND NOT EXISTS(SELECT 1 FROM scan_batch_deletions d WHERE d.batch_id=b.id) AND EXISTS(SELECT 1 FROM scan_records r WHERE r.batch_id=b.id)`).bind(examId))).map((b) => b.id);
+  await env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)').bind(uuid('aud'), user.id, user.institution_id || null, 'RESULT_OWN_EXAM_KEY_CORRECTED', 'exam', examId, JSON.stringify({ reason: reason || null, wasPublished, reevaluate: batches.length })).run();
+  return json({ ok: true, reevaluateBatchIds: wasPublished || participants ? batches : [], wasPublished });
+}
+
+/** POST …/own-exams/:id/remove { reason } — the owner removes its own exam everywhere (30-day trash, as "Kaldır" in the app). */
+export async function removeOwnExam(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+  if (!(await isOwner(env, user, examId))) return fail(403, 'FORBIDDEN', 'Bu sınavın sahibi değilsiniz.');
+  const body: any = await request.json().catch(() => ({}));
+  const { trashExam } = await import('./exam-channels');
+  const res = await trashExam(env, await actorFor(env, user, examId), examId, 'ALL', String(body.reason || '').trim());
+  return res;
 }
 
 /**

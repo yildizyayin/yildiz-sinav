@@ -493,7 +493,7 @@ async function topluInstitutions(request:Request,env:Env){
 async function operatorHistory(request:Request,env:Env){
  const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
  const url=new URL(request.url),mode=url.searchParams.get('mode')==='DEALER'?'DEALER':'INSTITUTION',examId=String(url.searchParams.get('examId')||'');
- const where=["EXISTS(SELECT 1 FROM exam_channel_publications ecp WHERE ecp.exam_id=b.exam_id AND ecp.channel='RESULT_NETWORK')"],args:unknown[]=[];
+ const where=["EXISTS(SELECT 1 FROM exam_channel_publications ecp WHERE ecp.exam_id=b.exam_id AND ecp.channel='RESULT_NETWORK')","NOT EXISTS(SELECT 1 FROM exam_revision_state tr WHERE tr.exam_id=b.exam_id AND tr.app_trashed_at IS NOT NULL)"],args:unknown[]=[];
  if(examId){where.push('b.exam_id=?');args.push(examId)}
  if(user.role!=='SUPER_ADMIN'){
   if(mode!=='DEALER'&&user.role==='INSTITUTION_MANAGER'&&user.institution_id){where.push('b.institution_id=?');args.push(user.institution_id)}
@@ -702,8 +702,9 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   if(!institutionId||examIds.length<2)return badRequest('Gelişim raporu için bir kurum ve en az iki sınav seçin.');
   const context=await resultOperatorContext(request,env,institutionId);if(context instanceof Response)return context;
   const {growthReport}=await import('./lib/report-bundle');return json({ok:true,...await growthReport(env,examIds,institutionId)})}
- {const ownMatch=path.match(/^\/api\/admin\/result-network\/operations\/own-exams\/([^/]+)(\/publish)?$/);
-  if(ownMatch&&((ownMatch[2]&&request.method==='POST')||(!ownMatch[2]&&request.method==='GET'))){const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const own=await import('./lib/own-exams');return ownMatch[2]?own.publishOwnExam(env,user,ownMatch[1]):own.ownExamStatus(env,user,ownMatch[1])}}
+ {const ownMatch=path.match(/^\/api\/admin\/result-network\/operations\/own-exams\/([^/]+)(?:\/(publish|answer-key|remove))?$/);
+  if(ownMatch&&((ownMatch[2]&&request.method==='POST')||(!ownMatch[2]&&request.method==='GET'))){const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const own=await import('./lib/own-exams');
+   if(ownMatch[2]==='publish')return own.publishOwnExam(env,user,ownMatch[1]);if(ownMatch[2]==='answer-key')return own.correctOwnExamKey(request,env,user,ownMatch[1]);if(ownMatch[2]==='remove')return own.removeOwnExam(request,env,user,ownMatch[1]);return own.ownExamStatus(env,user,ownMatch[1])}}
  if(path==='/api/admin/result-network/operations/own-exams'&&request.method==='POST'){const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const {createOwnExam}=await import('./lib/own-exams');return createOwnExam(request,env,user)}
  if(path==='/api/admin/result-network/operations/opticals'&&request.method==='POST'){const {quickOptical}=await import('./lib/result-optical-quick');return quickOptical(request,env)}
  const karnes=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/karnes$/);

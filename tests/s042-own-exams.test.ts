@@ -107,6 +107,40 @@ describe('S042 own exams on sonuc', () => {
     expect(ranks.every((r) => r.national_rank === null && r.institution_rank !== null)).toBe(true);
   });
 
+  it('the owner corrects the key (results taken back, uploads evaluated again, opened again) and removes the exam', async () => {
+    const { t, create, catalogIds, upload, call } = await world();
+    const id = (await create('mgrP', { booklets: ['A'], keys: { A: KEY_A } })).data.exam.id;
+    const up = await upload('mgrP', id, 'kP');
+    expect((await call('mgrP', `/api/admin/result-network/operations/scan-batches/${up.data.batchId}/evaluate`, { method: 'POST' })).status).toBe(200);
+    expect((await call('mgrP', `/api/admin/result-network/operations/own-exams/${id}/publish`, { method: 'POST' })).status).toBe(200);
+    const nets = () => (t.db.prepare(`SELECT sum(er.net) n FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).get(id) as any).n;
+    const before = nets();
+    const st = (await call('mgrP', `/api/admin/result-network/operations/own-exams/${id}`)).data;
+    expect(st.keys.A.TUR).toBe(KEY_A.TUR);
+    expect(st.sections.map((x: any) => x.subjectCode)).toEqual(['TUR', 'INK', 'DIN', 'YAB', 'MAT', 'FEN']);
+    const fixed = { ...KEY_A, TUR: 'DCBADCBADCBADCBADCBA', MAT: 'ABCDABCDABCDABCDABCD' };
+    const path = `/api/admin/result-network/operations/own-exams/${id}/answer-key`;
+    expect((await call('mgrK', path, { method: 'POST', body: { keys: { A: fixed }, reason: 'Anahtar yanlıştı' } })).status).toBe(403);
+    expect((await call('mgrP', path, { method: 'POST', body: { keys: { A: fixed } } })).status).toBe(400);
+    const fix = await call('mgrP', path, { method: 'POST', body: { keys: { A: fixed }, reason: 'Matematik anahtarı yanlış girilmişti' } });
+    expect(fix.status, fix.text).toBe(200);
+    expect(fix.data.wasPublished).toBe(true);
+    expect(fix.data.reevaluateBatchIds).toEqual([up.data.batchId]);
+    expect((await call('mgrP', `/api/admin/result-network/operations/own-exams/${id}`)).data.administration.status).not.toBe('PUBLISHED');
+    let done = false; for (let i = 0; i < 10 && !done; i++) { const ev = await call('mgrP', `/api/admin/result-network/operations/scan-batches/${up.data.batchId}/evaluate`, { method: 'POST' }); expect(ev.status, ev.text).toBe(200); done = ev.data.done !== false; }
+    expect(nets()).not.toBe(before);
+    expect((await call('mgrP', `/api/admin/result-network/operations/own-exams/${id}`)).data.keys.A.MAT).toBe(fixed.MAT);
+    expect((await call('mgrP', `/api/admin/result-network/operations/own-exams/${id}/publish`, { method: 'POST' })).status).toBe(200);
+    // remove: reason required when students have results; then gone from the catalog and from students
+    const rm = `/api/admin/result-network/operations/own-exams/${id}/remove`;
+    expect((await call('mgrK', rm, { method: 'POST', body: { reason: 'Yanlış sınav' } })).status).toBe(403);
+    expect((await call('mgrP', rm, { method: 'POST', body: {} })).status).toBe(400);
+    const gone = await call('mgrP', rm, { method: 'POST', body: { reason: 'Yanlış sınav eklendi' } });
+    expect(gone.status, gone.text).toBe(200);
+    expect(await catalogIds('mgrP')).not.toContain(id);
+    expect((t.db.prepare(`SELECT status FROM exam_channel_publications WHERE exam_id=? AND channel='RESULT_NETWORK'`).get(id) as any).status).toBe('ARCHIVED');
+  });
+
   it('only a school manager or an approved dealer adds an own exam', async () => {
     const { create } = await world();
     expect((await create('admin', {})).status).toBe(400);

@@ -3,7 +3,7 @@ import {expect,it} from 'vitest';
 import {examPublicationGuard,examCorrectionOpen} from '../worker/lib/exam-publication-guard';
 it('blocks either channel and allows answer correction only after explicit versioned withdrawal',async()=>{
  const db=new DatabaseSync(':memory:');try{
- db.exec(`CREATE TABLE exam_delivery_profiles(exam_id TEXT,result_freeze_status TEXT,snapshot_version INTEGER);
+ db.exec(`CREATE TABLE result_network_own_exams(exam_id TEXT);CREATE TABLE exams(id TEXT,status TEXT);CREATE TABLE scan_batches(id TEXT,exam_id TEXT,status TEXT);CREATE TABLE exam_delivery_profiles(exam_id TEXT,result_freeze_status TEXT,snapshot_version INTEGER);
  CREATE TABLE exam_administrations(id TEXT,exam_id TEXT,channel TEXT,status TEXT,ranking_frozen_at TEXT,published_snapshot_version INTEGER);
  INSERT INTO exam_delivery_profiles VALUES('e','OPEN',0);
  INSERT INTO exam_administrations VALUES('a','e','RESULT_NETWORK','PUBLISHED','old',1);`);
