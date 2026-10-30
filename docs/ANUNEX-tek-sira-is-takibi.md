@@ -2834,3 +2834,19 @@ Açık: Studio kurumlarda kapalı (aç/kapa kararı kullanıcıda). Sonraki fiki
 - YZ ücretsiz hak: her hizmette ayda 1 seans, yalnız yazılı. Ücretli seans süresi 30 dakika ("+30 dakika" ifadesi 30 dakikalık ücretli seans olarak yorumlandı; ücretsiz seans süresi 25/30 açık).
 - Canlı ders kurumun işi ve yalnız app.anunex.com lisanslı kurumlara açık (sonuc-only kurumlar görmez). Kurum kendi Zoom/Teams/Meet hesabını kullanır.
 - Kodda karşılığı (henüz yapılmadı): PremiumCenter "live" sekmesi (öğrenci/velinin kredi ile Canlı Rehberlik/Koç/Ders rezervasyonu, /api/platform/live, LIVE özelliği) bu kararla çelişiyor; kaldırılacak ya da kurum canlı dersine dönüştürülecek.
+
+### Hotfix — "Sıralamayı dondur" zaman aşımı (30 Ekim) — PR #416, 1eda1500
+- Belirti: ÇAP YAYINLARI TYT 1.DENEME (106 öğrenci, 13.250 cevap) yayınlanamıyor; "Sunucu hatası oluştu".
+- Neden: rapor anlık görüntüsü (REPORT_SNAPSHOT_SQL) her cevap için 2.922 kazanımın tamamını OR/EXISTS ile tarıyordu (~0,5–1 sn/öğrenci) → D1 süre sınırı. Veri bozulmadı; profil OPEN, anlık görüntü yok.
+- Düzeltme: kazanım kümesi `o.id IN (kitapçık eşlemesi UNION soru eşlemesi)`. Canlı veride salt-okuma ölçüm: 106 öğrencinin tüm yükü 91 ms. Ölçek testi: tests/hotfix-freeze-report-snapshot-scale.test.ts (eski sorgu 120 sn'de bitmiyor).
+- Not: bu merkez sınavın delivery profili scope=INSTITUTION görünüyor (owner CENTRAL); ayrıca incelenmeli, dokunulmadı.
+
+### S045 — Süper Admin iki adımlı doğrulama (30 Ekim) — PR #417, 56174472
+- /security: QR + elle anahtar; uygulamadaki kodla onaylanana kadar zorunlu değil. Kapatma güncel kod ister.
+- Tohum D1 super_admin_mfa_secrets (0143), AES-GCM (SESSION_SECRET + amaç). Platform anahtarı SUPER_ADMIN_MFA_TOTP_SECRET önceliklidir.
+- Fail-closed: tohum okunamazsa giriş 503 MFA_STORAGE_UNAVAILABLE. Kurtarma: D1'de satırı silmek veya platform anahtarını tanımlamak. SESSION_SECRET değiştirilirse MFA yeniden kurulmalı.
+
+### S046–S048 — PR #418
+- S046 SMS (Netgsm REST v2 /otp ve /send): SMS kodu ile giriş, Şifremi unuttum, şifresiz aktivasyon SMS'i. Netgsm bilgileri yoksa kapalı. Bekleyen (kullanıcı): Netgsm hesabı + onaylı gönderici adı; GitHub production ortamına PROD_NETGSM_USERCODE, PROD_NETGSM_HEADER (vars) ve PROD_NETGSM_PASSWORD (secret). Gerçek telefonda deneme yapılmadı (numara biçimi 5XXXXXXXXX varsayıldı).
+- S047 KVKK: /privacy-notices (Taslak → Hukuk → Yayında), girişte onay kapısı, veli rıza istemi (yalnız onaylı açık rıza amaçları). Prod'da yayımlanmış metin yok; avukat metni gelince Süper Admin yayımlar.
+- S048 Kurum canlı dersi: /live-lessons, uzaktan eğitim modu, yalnız LIVE açık + lisansı kilitli olmayan kurum. Eski kredili rezervasyon 410. Prod'da LIVE hiçbir kurumda açık değil; app lisanslı kurumlar için Süper Admin açar.
