@@ -1,0 +1,233 @@
+[
+  {
+    "role": "STUDENT",
+    "state": "home",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "STUDENT",
+    "state": "home",
+    "width": 768,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "STUDENT",
+    "state": "home",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "STUDENT",
+    "state": "home",
+    "width": 360,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "STUDENT",
+    "state": "flow",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/public/results/login"
+    ]
+  },
+  {
+    "role": "STUDENT",
+    "state": "flow",
+    "width": 768,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/public/results/login"
+    ]
+  },
+  {
+    "role": "STUDENT",
+    "state": "flow",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/public/results/login"
+    ]
+  },
+  {
+    "role": "STUDENT",
+    "state": "flow",
+    "width": 360,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/public/results/login"
+    ]
+  },
+  {
+    "role": "STUDENT",
+    "state": "restore",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "STUDENT",
+    "state": "restore",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "STUDENT",
+    "state": "empty",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "STUDENT",
+    "state": "empty",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "STUDENT",
+    "state": "error",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/public/results/login"
+    ]
+  },
+  {
+    "role": "STUDENT",
+    "state": "error",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/public/results/login"
+    ]
+  },
+  {
+    "role": "STUDENT",
+    "state": "busy",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/public/results/login"
+    ]
+  },
+  {
+    "role": "STUDENT",
+    "state": "restoring",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "STUDENT",
+    "state": "byname",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/public/results/login"
+    ]
+  },
+  {
+    "role": "STUDENT",
+    "state": "tckn",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/public/results/login"
+    ]
+  },
+  {
+    "role": "STUDENT",
+    "state": "full-name",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/public/results/login",
+      "/api/public/results/login"
+    ]
+  },
+  {
+    "role": "STUDENT",
+    "state": "info",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": [
+      "/api/public/results/login"
+    ]
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "login",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "INSTITUTION",
+    "state": "login",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "login",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "DEALER",
+    "state": "login",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "APP",
+    "state": "app",
+    "width": 1440,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  },
+  {
+    "role": "APP",
+    "state": "app",
+    "width": 390,
+    "passed": true,
+    "renderErrors": [],
+    "syntheticWrites": []
+  }
+]
