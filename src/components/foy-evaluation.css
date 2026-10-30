@@ -1,0 +1,16 @@
+/* Föy değerlendirme (sonuc). Builds on report-center.css (.rm/.dc tokens). */
+.rm.foy-ev{display:flex;flex-direction:column;gap:18px}
+.rm.foy-ev .foy-form{display:flex;flex-direction:column;gap:14px;max-width:720px}
+.rm.foy-ev .foy-form .rm-select input[type=file]{min-height:44px;border:1px dashed var(--line);border-radius:10px;padding:10px;font:14px Inter,sans-serif;background:var(--ground);max-width:100%}
+.rm.foy-ev .foy-form .rm-primary{flex:none;align-self:flex-start;min-height:44px;padding:0 22px}
+.rm.foy-ev .foy-info{font-size:14px;line-height:1.5;color:var(--ink);background:#FFF8E6;border-color:#F5DFA8}
+.rm.foy-ev .foy-counts{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;color:var(--muted);margin:4px 0 12px}
+.rm.foy-ev .foy-counts b{color:var(--ink);font-size:18px;margin-right:4px;font-variant-numeric:tabular-nums}
+.rm.foy-ev .foy-actions{margin-top:14px}
+.rm.foy-ev .foy-actions .rm-primary{flex:none;min-height:44px;padding:0 22px}
+.rm.foy-ev .dc-table td small.dc-warn{display:block;margin-top:4px;max-width:340px}
+.rm.foy-ev.foy-embedded .rm-head{display:none}
+@media (max-width:640px){
+  .rm.foy-ev .rm-title{font-size:26px}
+  .rm.foy-ev .foy-form .rm-primary,.rm.foy-ev .foy-actions .rm-primary{align-self:stretch;width:100%}
+}

@@ -666,6 +666,8 @@ async function batchResultReport(request:Request,env:Env,batchId:string){
 
 export async function handleResultOperations(request:Request,env:Env):Promise<Response|null>{
  const path=new URL(request.url).pathname;
+ // Föy değerlendirme (30 Oct): paper föy optics, scored against the föy's own key into FOY evidence.
+ if(path.startsWith('/api/admin/result-network/operations/foy/')){const {handleFoyOperations}=await import('./lib/foy-evaluation');return handleFoyOperations(request,env,{context:(r,e,id)=>resultOperatorContext(r,e,id),institutions:scopedOperatorInstitutions,user:(r)=>getAuthUser(env,r)})}
  if(path==='/api/admin/result-network/operations/catalog'&&request.method==='GET')return resultOperatorCatalog(request,env);
  if(path==='/api/admin/result-network/operations/institutions'&&request.method==='GET')return searchOperatorInstitutions(request,env);
  if(path==='/api/admin/result-network/operations/history'&&request.method==='GET')return operatorHistory(request,env);
