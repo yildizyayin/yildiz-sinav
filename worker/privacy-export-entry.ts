@@ -5,7 +5,7 @@ import app from './privacy-minimization-entry';
 import type { CapacityJobMessage, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, audit, forbidden, json, methodNotAllowed, one } from './lib/db';
-import { handleResultNetworkRequest,purgeExpiredResultNetwork } from './result-network-entry';
+import { handleResultGovernanceMutation,handleResultNetworkRequest,purgeExpiredResultNetwork } from './result-network-entry';
 
 const DSR_EXPORT_PATH = '/api/admin/privacy/exports/requests.csv';
 const HEALTH_TABLES = ['institutions', 'users', 'sessions', 'exams', 'student_entities', 'audit_logs'] as const;
@@ -109,6 +109,10 @@ async function handleFetch(request: Request, env: Env, ctx: ExecutionContext): P
   if (conversion) return conversion;
   const resultNetwork = await handleResultNetworkRequest(request,env);
   if (resultNetwork) return resultNetwork;
+  // Hotfix 30 Oct: the Sonuç Ağı page on app shows "Sonuçları yayınla" (finalize), reopen and artifact actions, but
+  // only the sonuc worker routed them, so on app they ended in "API yolu bulunamadı". Same Super Admin-only handler.
+  const governance = await handleResultGovernanceMutation(request,env);
+  if (governance) return governance;
   if (url.pathname === '/api/health' && request.method === 'GET') return productionHealth(env);
   if (url.pathname !== DSR_EXPORT_PATH) return app.fetch(request, env, ctx);
   if (request.method !== 'GET') return methodNotAllowed();
