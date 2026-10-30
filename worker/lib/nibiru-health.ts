@@ -3,6 +3,7 @@ import { all, json, one, uuid } from './db';
 import { probeNibiruModels } from './nibiru-model-router';
 import { recordVoiceProviderProbe, speakNibiru, transcribeNibiruAudio, voiceProviderStatus } from './nibiru-voice';
 import { classifyVoiceActivationFailure } from './nibiru-voice-diagnostics';
+import { externalPersonalDataGate } from './privacy-external-gate';
 
 /**
  * Nibiru canlı kontrol (owner decision 30 Oct): one button for the Super Admin that answers "do the AI services we
@@ -35,6 +36,23 @@ export async function runNibiruHealthCheck(env: Env, actor: AuthUser): Promise<R
   const last = await one<{ age: number }>(env.DB.prepare(`SELECT (julianday('now')-julianday(checked_at))*86400 age FROM nibiru_health_checks ORDER BY checked_at DESC LIMIT 1`));
   if (last && Number(last.age) < HEALTH_CHECK_MIN_INTERVAL_SECONDS) return json({ ok: false, error: { code: 'HEALTH_CHECK_TOO_SOON', message: `Son kontrol ${Math.round(Number(last.age))} saniye önce yapıldı; ${HEALTH_CHECK_MIN_INTERVAL_SECONDS} saniye sonra yeniden deneyin.` } }, 429);
   const items: HealthItem[] = [];
+
+  // 0) the gates every real Nibiru answer passes before a model is called: Nibiru switched on, and the KVKK
+  //    processor record of NIBIRU_AI approved. When either is closed the chat answers from fixed templates even
+  //    though the models below may answer this check.
+  const settings = await one<{ enabled: number }>(env.DB.prepare(`SELECT enabled FROM nibiru_settings WHERE id='platform'`)).catch(() => null);
+  if (!settings?.enabled) items.push({ key: 'NIBIRU_ENABLED', label: 'Nibiru yapay zekâ yanıtları', state: 'OFF', detail: 'Nibiru ayarlarda kapalı; sohbet hazır şablonlarla yanıt verir.' });
+  const gate = await externalPersonalDataGate(env, 'NIBIRU_AI');
+  const GATE_TEXT: Record<string, string> = {
+    PROCESSOR_REGISTRY_MISSING: 'NIBIRU_AI için KVKK veri işleyen kaydı yok.',
+    PROCESSOR_INACTIVE: 'NIBIRU_AI veri işleyen kaydı pasif.',
+    PROCESSOR_NOT_APPROVED: 'NIBIRU_AI veri işleyen kaydı onaylı değil (hukuki inceleme, DPA veya model eğitimi bilgisi eksik).',
+    TRANSFER_REGISTRY_MISSING: 'NIBIRU_AI için yurt dışı aktarım kaydı yok.',
+    TRANSFER_NOT_APPROVED: 'NIBIRU_AI yurt dışı aktarım kaydı onaylı değil.',
+  };
+  items.push(gate.ok
+    ? { key: 'KVKK_GATE', label: 'KVKK kapısı (öğrenci verisiyle yapay zekâ)', state: 'OK', detail: gate.enforcement === 'NON_PRODUCTION' ? 'Test ortamı: kapı uygulanmıyor.' : 'Veri işleyen ve aktarım kayıtları onaylı.' }
+    : { key: 'KVKK_GATE', label: 'KVKK kapısı (öğrenci verisiyle yapay zekâ)', state: 'FAIL', detail: `${GATE_TEXT[gate.code] || gate.code} Kapı kapalıyken sohbet modele gitmez, hazır şablonla yanıt verir. (${gate.code})` });
 
   // 1) text models: the three models the router uses as primaries
   if (!env.AI) items.push({ key: 'AI_BINDING', label: 'Yapay zekâ bağlantısı', state: 'FAIL', detail: 'Workers AI bağlantısı (AI binding) bu ortamda tanımlı değil.' });
