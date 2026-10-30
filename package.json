@@ -28,6 +28,7 @@
     "@simplewebauthn/browser": "13.3.0",
     "@simplewebauthn/server": "13.3.0",
     "@vitejs/plugin-react": "latest",
+    "html-to-image": "1.11.13",
     "lucide-react": "latest",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "4.10.38",

@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { api } from '../api';
-import { printSection } from '../lib/printSection';
+import { downloadPagesAsPdf, pdfFileName, preloadPdfTools } from '../lib/downloadPdf';
 import { BundlePages, exportWorkbook, GrowthPages, KIND_ORDER, PrintSetup, type ReportKind } from './reports/ReportFamily';
 import './report-center.css';
 
@@ -141,7 +141,17 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
       if (!out.length && !grown.length) setError((e) => e || 'Seçilen sınavlarda sonucu olan bir kurum seçin.');
     } catch (e: any) { setError(e.message); } finally { setPacks(out); setGrowth(grown); setBusy(false); setProgress(''); }
   };
-  const excel = async () => { try { if (!(await exportWorkbook(packs, growth))) setError('Excel için veri yok.'); } catch (e: any) { setError(e.message || 'Excel oluşturulamadı.'); } };
+  // 30 Oct: a real PDF file, drawn in the browser page by page (no print dialog).
+  const [pdfBusy, setPdfBusy] = useState('');
+  const pdf = async () => {
+    if (pdfBusy) return; setError(''); setPdfBusy('PDF hazırlanıyor…');
+    try { const n = await downloadPagesAsPdf(ref.current, pdfFileName(`anunex ${selectedExams.map((e) => e.title).join(' ')}`), (d, t) => setPdfBusy(`PDF hazırlanıyor · ${d}/${t} sayfa`)); if (!n) setError('PDF için sayfa yok.'); }
+    catch (e: any) { setError(`PDF oluşturulamadı: ${e?.message || 'bilinmeyen hata'}`); } finally { setPdfBusy(''); }
+  };
+  const [xlsBusy, setXlsBusy] = useState(false);
+  const excel = async () => { if (xlsBusy) return; setXlsBusy(true); try { if (!(await exportWorkbook(packs, growth))) setError('Excel için veri yok.'); } catch (e: any) { setError(e.message || 'Excel oluşturulamadı.'); } finally { setXlsBusy(false); } };
+  // As soon as the reports are ready, load the PDF and Excel tools in the background so a click downloads at once.
+  useEffect(() => { if (packs.length || growth.length) { preloadPdfTools(); void import('xlsx'); } }, [packs, growth]);
 
   // Preview: one real page at a time, scaled to the stage; printing clones every page.
   useLayoutEffect(() => {
@@ -239,9 +249,9 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
         </div>
         <div className="rm-actions">
           {!ready ? <button type="button" className="rm-primary" disabled={busy || !examIds.length || !instIds.length || !kinds.length} onClick={() => void build()}>{busy ? 'Hazırlanıyor…' : 'Raporları hazırla'}</button>
-            : <><button type="button" className="rm-primary" onClick={() => printSection(ref.current)}>Tümünü PDF indir · {pageCount} sayfa</button><button type="button" className="rm-secondary" onClick={() => void excel()}>Excel indir</button></>}
+            : <><button type="button" className="rm-primary" disabled={!!pdfBusy} aria-live="polite" onClick={() => void pdf()}>{pdfBusy || `Tümünü PDF indir · ${pageCount} sayfa`}</button><button type="button" className="rm-secondary" disabled={!!pdfBusy || xlsBusy} onClick={() => void excel()}>{xlsBusy ? 'Excel hazırlanıyor…' : 'Excel indir'}</button></>}
         </div>
-        <p className="rm-note">Tek PDF, kurumlar sırayla. Listeler A4 yatay, öğrenci karnesi A4 dikey basılır. PDF için yazdırma penceresinde "PDF olarak kaydet"i seçin.</p>
+        <p className="rm-note">Tek PDF dosyası iner, kurumlar sırayla. Listeler A4 yatay, öğrenci karnesi A4 dikey.</p>
       </section>
     </div>
   </section>;
