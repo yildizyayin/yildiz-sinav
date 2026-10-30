@@ -399,3 +399,10 @@ textarea:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .nibiru-mark *, .nibiru-living-star *, .anunex-cosmos * { animation: none !important; transition: none !important; }
 }
+
+/* S046: SMS code login / reset inside the login card */
+.sms-login { display: grid; gap: 14px; }
+.sms-login strong { font-size: 17px; color: var(--anunex-ink); }
+.sms-login .muted { margin: 4px 0 0; }
+.login-card .link-button { background: none; border: 0; padding: 0; color: #315efb; font-weight: 700; cursor: pointer; }
+.login-card .secondary.large { min-height: 46px; border-radius: 13px; }

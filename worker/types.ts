@@ -91,6 +91,10 @@ export interface Env {
   WHATSAPP_GRAPH_API_VERSION?: string;
   // Account access notifications. Secrets stay in Cloudflare Secrets; the sender address/from number may be vars.
   ACCOUNT_NOTIFICATION_SECRET?: string;
+  NETGSM_USERCODE?: string;
+  NETGSM_PASSWORD?: string;
+  NETGSM_HEADER?: string;
+  SMS_LOGIN_ENABLED?: string;
   RESEND_API_KEY?: string;
   MAIL_FROM_ADDRESS?: string;
   TWILIO_ACCOUNT_SID?: string;
