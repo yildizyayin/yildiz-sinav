@@ -22,6 +22,7 @@ import { BookOpen, Check, CheckCircle2, ChevronRight, Eye, FileText, FileUp, Pla
 import { api, qs } from '../api';
 import { useAuth } from '../auth';
 import './content-center.css';
+import './approved-question-pool.css';
 import {QuestionPoolCoverage} from '../components/QuestionPoolCoverage';
 
 const difficultyLabels: Record<number, string> = {
@@ -187,7 +188,7 @@ export function ContentCenter() {
   const approvedCount = Number(stats?.approved || 0);
   const printableCount = Number(stats?.printable || 0);
 
-  return <div className="content-center-page">
+  return <div className="content-center-page approved-question-pool" data-design-role={user?.role || ""} data-design-tab={tab}>
     <div className="content-center-head">
       <div><span className="eyebrow">Standard · İçerik motoru</span><h1>Soru havuzu</h1><p>Tek kaynakta soru üret, incele ve yazılı, deneme, ödev, föy ile kişisel çalışma akışlarına bağla.</p></div>
       <button className="secondary content-refresh" onClick={() => void load()}><RefreshCw size={16} /> Yenile</button>
