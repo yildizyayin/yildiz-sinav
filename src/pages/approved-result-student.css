@@ -124,3 +124,116 @@
 .approved-result-portal .result-tip.result-tip-nibiru { align-items:center; gap:16px; }
 .approved-result-portal .result-tip-nibiru .result-tip-mark { flex:0 0 auto; display:grid; place-items:center; }
 @media (max-width:600px){ .approved-result-portal .result-tip-nibiru .result-tip-mark{ display:none } }
+
+/* Student refresh — D-S038 single-step sign-in; screen and STUDENT role only. */
+@media screen {
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] { --rp-ink:#20262c;--rp-blue:#a34d38;--rp-line:#dfe3e5;background:#fdfdfc;color:#20262c; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-workspace { margin-top:24px;margin-bottom:40px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-workspace:has(> .student-login) { max-width:760px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-back { margin-bottom:14px;color:#52606a; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login.result-form { width:100%;max-width:712px;gap:22px;padding:30px 34px 32px;border-color:#e0e3e3;border-radius:12px;background:#fff;box-shadow:0 4px 20px #20262c04; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login > div:first-child { padding-bottom:2px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .result-kicker { font-size:10px;letter-spacing:.11em;color:#8c4632; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login h2 { font-size:32px;line-height:1.2;letter-spacing:-.03em;font-weight:700;margin:8px 0 12px;color:#20262c; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login p { font-size:13px;line-height:1.7;color:#58636d; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .sl-group { min-width:0;padding:18px 0 0;gap:16px;border:0;border-top:1px solid #e0e3e3;border-radius:0; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .sl-group legend { padding:0 10px 0 0;font-size:12px;line-height:1.5;letter-spacing:.04em;font-weight:650;color:#86432f; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login label { min-width:0;gap:7px;font-size:13px;font-weight:600;color:#303b43;line-height:1.5; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .result-two { grid-template-columns:repeat(2,minmax(0,1fr));gap:16px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login :is(input,select) { width:100%;min-width:0;max-width:100%;min-height:46px;border-color:#bec8cc;border-radius:7px;padding:10px 12px;font-size:15px;line-height:1.5;color:#20262c;background:#fff;box-shadow:none; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login input::placeholder { color:#67747c;opacity:1; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login :is(input,select):focus { border-color:#96503c;box-shadow:0 0 0 2px #a34d3814; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login select:disabled { color:#627078;background:#f4f5f4;border-color:#dce1e2;opacity:1;cursor:not-allowed; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .sl-link { min-height:40px;padding:7px 0;text-align:left;color:#80503f;font-size:12px;line-height:1.5;font-weight:600;text-decoration-color:#bba295;text-underline-offset:4px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .sl-link:hover { color:#703c29;text-decoration-color:currentColor; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .sl-picked { padding:10px 12px;border-left:2px solid #b97963;border-radius:0 5px 5px 0;background:#faf6f2;font-size:12px;color:#555c62;overflow-wrap:anywhere; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .sl-picked b { color:#333d44;font-weight:600; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .result-primary { min-height:48px;border:1px solid #a34d38;border-radius:8px;background:#a34d38;color:#fff;font-size:15px;font-weight:650;box-shadow:none; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .result-primary:hover:not(:disabled) { background:#8b3d2b;border-color:#8b3d2b; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .result-primary:disabled { background:#e8ded8;border-color:#e0d4cd;color:#716158;opacity:1; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .institution-options { border-color:#cbd4d6;border-radius:8px;box-shadow:0 8px 24px #20262c14; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .institution-options button { min-height:54px;padding:10px 12px;gap:3px;overflow-wrap:anywhere; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .institution-options button:hover { background:#faf6f2; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .institution-options strong { font-size:13px;font-weight:600; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login :is(.result-alert,.result-info) { width:100%;margin:0;padding:12px 14px;border-radius:7px;font-size:13px;line-height:1.6; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .turnstile-box { width:100%;max-width:100%;min-width:0; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .dev-note { padding:12px 14px;border:1px solid #dfe3e5;border-radius:7px;background:#f6f7f7;color:#52606a;font-size:12px;line-height:1.6; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] :is(a,button,input,select,summary):focus-visible { outline:3px solid #286879;outline-offset:3px;box-shadow:none; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] :is(button,a,summary) { min-height:40px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] :is(a,button):active:not(:disabled) { transform:none; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-dashboard { padding:28px;border-color:#dfe3e5;border-radius:12px;background:#fff; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-student-head { padding-bottom:20px;border-bottom:1px solid #e5e8e8;gap:18px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-student-head > div:first-child { min-width:0; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-student-head h2 { font-size:28px;line-height:1.3;letter-spacing:-.025em;color:#20262c;overflow-wrap:anywhere; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-student-head p { margin:6px 0 0;color:#58636d;line-height:1.6;overflow-wrap:anywhere; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-student-actions button { border-color:#cbd4d6;border-radius:7px;font-size:12px;white-space:normal; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-student-actions button:hover { background:#f5f7f7;border-color:#9bafb7; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-tip.result-tip-nibiru { margin:20px 0 26px;padding:18px 20px;gap:18px;border-color:#d5e2e6;border-left:3px solid #286879;border-radius:8px;background:#f4f8f9;align-items:center; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-tip-nibiru > div { min-width:0; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-tip-nibiru strong { color:#244651;font-size:14px;line-height:1.5;font-weight:650; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-tip-nibiru p { margin-top:7px;color:#475e68;font-size:13px;line-height:1.7;overflow-wrap:anywhere; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-exams h3 { margin:0 0 8px;font-size:18px;line-height:1.5;color:#20262c; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-exams h3 span { min-width:28px;height:28px;padding:0 7px;border-radius:6px;background:#f6ede7;color:#8c4632;font-size:12px;font-weight:650; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-exams > button { padding:18px 12px;gap:18px;border-top:1px solid #e0e5e7;background:#fff; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-exams > button:hover { background:#f7f9f9; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-exams > button > div:first-child { gap:6px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-exams strong { font-size:15px;line-height:1.5;font-weight:650;color:#26323a; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-exams :is(span,small) { font-size:12px;line-height:1.6;color:#586770; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-exams .result-rank-line { font-size:11px;color:#586770;line-height:1.7;overflow-wrap:anywhere; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .exam-metrics { min-width:116px;gap:3px;font-variant-numeric:tabular-nums; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .exam-metrics b { font-size:25px;line-height:1.25;letter-spacing:-.02em;color:#244651; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-detail { padding:22px;margin-top:24px;border-color:#dfe3e5;border-radius:10px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .detail-head { align-items:center;gap:14px;margin-bottom:16px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .detail-head h3 { margin:0;font-size:18px;color:#26323a; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .detail-head button { min-width:70px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .subject-grid { grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .subject-grid article { padding:15px;border-color:#e0e6e8;background:#f7f9f9;border-radius:8px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .subject-grid strong { font-size:13px;line-height:1.5;color:#344952;overflow-wrap:anywhere; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .subject-grid b { font-size:24px;line-height:1.25;color:#244651;font-variant-numeric:tabular-nums; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .subject-grid span { font-size:11px;line-height:1.6;color:#586770; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-detail > h3 { margin:24px 0 10px;font-size:17px;line-height:1.4;color:#26323a; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .outcome-row { gap:18px;padding:14px 0;align-items:flex-start; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .outcome-row > div { min-width:0;gap:5px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .outcome-row strong { font-size:13px;line-height:1.6;font-weight:600;overflow-wrap:anywhere; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .outcome-row span { font-size:12px;line-height:1.6;color:#586770;overflow-wrap:anywhere; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .outcome-row > b { flex-shrink:0;font-size:15px;color:#286879;font-variant-numeric:tabular-nums; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .video-grid a { min-width:0;border-color:#dfe3e5;border-radius:8px; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .video-grid a > span { min-width:0;overflow-wrap:anywhere; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .video-grid a > svg { flex-shrink:0;color:#a34d38; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .video-grid small { color:#586770; }
+ .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-empty { line-height:1.7; }
+ @media (max-width:620px) {
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-workspace { margin-top:16px;margin-bottom:28px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-back { margin-bottom:10px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login.result-form { padding:20px;gap:20px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login h2 { font-size:29px;margin:7px 0 10px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .result-two { grid-template-columns:minmax(0,1fr);gap:14px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login :is(input,select) { font-size:16px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .sl-group { gap:14px;padding-top:14px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-dashboard { padding:18px;border-radius:9px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-student-head { gap:14px;padding-bottom:16px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-student-head h2 { font-size:25px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-student-actions { width:100%; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-student-actions button { flex:1 1 130px;justify-content:center; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-tip.result-tip-nibiru { padding:15px;margin:18px 0 22px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-exams > button { padding:16px 0;gap:10px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .exam-metrics { min-width:0;border-left:2px solid #d5e2e6;padding-left:10px;margin-top:3px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .exam-metrics b { font-size:23px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-detail { padding:15px;margin-top:18px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .subject-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:8px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .subject-grid article { padding:12px 10px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .subject-grid b { font-size:21px; }
+ }
+ @media (max-width:420px) {
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login.result-form { padding:6px 0 0;border:0;border-radius:0;background:transparent;box-shadow:none; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login h2 { font-size:28px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-login .sl-picked { padding:9px 10px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-dashboard { padding:14px; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-detail { padding:12px; }
+ }
+ @media (prefers-reduced-motion:reduce) {
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] * { animation:none!important;transition:none!important;scroll-behavior:auto!important; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] *::before { animation:none!important;transition:none!important;scroll-behavior:auto!important; }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] *::after { animation:none!important;transition:none!important;scroll-behavior:auto!important; }
+ }
+}
