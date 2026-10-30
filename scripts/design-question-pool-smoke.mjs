@@ -44,11 +44,20 @@ try{for(const c of selected){console.log('START',c);const role=c.role||'SUPER_AD
   await form.getByRole('button',{name:'Soruyu kaydet',exact:true}).click();await page.getByText(c.state==='error'?'Seçeneklerin tamamını doldurun.':'Soru havuza kaydedildi · qa-created · 0 medya',{exact:true}).waitFor();
  }
  if(['import-busy','import-error'].includes(c.state)){const details=root.locator('details').filter({hasText:'Toplu soru aktar (Excel / CSV / JSON)'});await details.locator('summary').click();await details.locator('input[type=file]').setInputFiles({name:'qa.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify([{Soru:'Sentetik soru'}]))});if(c.state==='import-busy')await page.waitForFunction(()=>document.querySelector('.question-list-column details input[type=file]')?.disabled);else await page.getByText('Sentetik aktarım hatası.',{exact:true}).waitFor();}
- if(c.state==='studio'){await root.getByRole('button',{name:/^Studio/}).click();assert.equal(await root.getAttribute('data-design-tab'),'studio');await page.getByRole('link',{name:/Hızlı Test/}).waitFor();}
+ if(c.state==='studio'){await root.getByRole('button',{name:/^Studio/}).click();assert.equal(await root.getAttribute('data-design-tab'),'studio');await root.getByRole('link',{name:/Hızlı Test/}).waitFor();}
  if(role==='TEACHER'){assert.equal(await page.locator('.question-create-card').count(),0);assert.equal(await page.locator('.batch-review').count(),0);}
  if(c.state==='data'&&c.theme==='ANUNEX_STANDARD'&&c.width===1440){await page.getByPlaceholder('Soru, konu veya alt konu ara').fill('bulunmayan-sentetik');await page.getByRole('button',{name:'Filtrele',exact:true}).click();await page.getByText('Filtrelere uyan soru bulunamadı.',{exact:true}).waitFor();await page.getByPlaceholder('Soru, konu veya alt konu ara').fill('');await page.getByRole('button',{name:'Filtrele',exact:true}).click();await page.locator('.question-row').filter({hasText:'Bir kitaplıkta'}).waitFor();}
  await root.evaluate(async r=>await Promise.all(r.getAnimations({subtree:true}).filter(a=>Number.isFinite(a.effect?.getComputedTiming().endTime)).map(a=>a.finished.catch(()=>{}))));
- assert.deepEqual(errors,[]);assert(!(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)),'Page overflow '+JSON.stringify(c));
+ assert.deepEqual(errors,[]);
+ const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+ if(c.state==='studio'){
+  const styledWidth=await page.evaluate(()=>document.documentElement.scrollWidth);
+  await root.evaluate(e=>e.classList.remove('approved-question-pool'));
+  const nativeWidth=await page.evaluate(()=>document.documentElement.scrollWidth);
+  assert.equal(styledWidth,nativeWidth,'Studio width changed by T09');
+  await page.locator('.content-center-page').evaluate(e=>e.classList.add('approved-question-pool'));
+  console.log('Studio native overflow (outside T09)',overflow,styledWidth);
+ }else assert(!overflow,'Page overflow '+JSON.stringify(c));
  if(c.theme==='ANUNEX_STANDARD'&&role==='SUPER_ADMIN'&&c.state!=='studio'){
   for(const ctl of await root.locator('button,input:not([type=checkbox]),select,summary').all())if(await ctl.isVisible())assert((await ctl.boundingBox()).height>=40,'Target under40 '+await ctl.textContent());
   await page.keyboard.press('Tab');await root.getByRole('button',{name:'Yenile',exact:true}).focus();assert.equal(await root.getByRole('button',{name:'Yenile',exact:true}).evaluate(e=>getComputedStyle(e).outlineStyle),'solid');
@@ -57,5 +66,5 @@ try{for(const c of selected){console.log('START',c);const role=c.role||'SUPER_AD
  }
  if(c.theme==='ANUNEX_STANDARD'&&role==='SUPER_ADMIN'&&[1440,390].includes(c.width)){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`${out}/${c.state}-${c.width}.png`,fullPage:true,animations:'disabled'});}
  if(c.width===390&&c.state==='data'&&c.theme==='ANUNEX_STANDARD'&&role==='SUPER_ADMIN'){await page.getByRole('button',{name:'Menüyü aç',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.sidebar').getBoundingClientRect().x>=-1);await page.locator('.mobile-nav-close').click();}
- await page.emulateMedia({media:'print'});assert.equal(await page.locator('.sidebar').evaluate(e=>getComputedStyle(e).display),'none');for(const route of held)await route.abort().catch(()=>{});assert.equal(writes.length,['success','import-busy','import-error'].includes(c.state)?1:0);results.push({...c,role,passed:true,writes});await context.close();console.log('PASS',c);
+ await page.emulateMedia({media:'print'});assert.equal(await page.locator('.sidebar').evaluate(e=>getComputedStyle(e).display),'none');for(const route of held)await route.abort().catch(()=>{});assert.equal(writes.length,['success','import-busy','import-error'].includes(c.state)?1:0);results.push({...c,role,passed:true,nativeOverflowOutsideScope:c.state==='studio'?overflow:undefined,writes});await context.close();console.log('PASS',c);
 }await writeFile(out+(process.env.ANUNEX_POOL_CASE?'/verification-subset.json':'/verification.json'),JSON.stringify(results,null,2));}finally{await browser.close();await server.close();}

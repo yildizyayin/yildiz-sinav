@@ -110,6 +110,10 @@ async function loadPrintables(env: Env, documentId: string, booklet: string): Pr
 async function printablesFromRows(env: Env, rows: Row[]): Promise<Printable[]> {
   const ids = rows.map(r => r.id);
   const marks = ids.map(() => '?').join(',');
+  // P01: a shared stem (passage/figure) is not rendered yet; printing its questions without it would be wrong.
+  const { stemGroupsInstalled } = await import('./studio-booklets');
+  const sharedRoot = !(await stemGroupsInstalled(env)) ? null : await one<{ id: string }>(env.DB.prepare(`SELECT q.id FROM question_bank q JOIN question_stem_groups g ON g.id=q.stem_group_id WHERE q.id IN (${marks}) AND length(trim(coalesce(g.shared_stem_text,'')))>0 LIMIT 1`).bind(...ids));
+  if (sharedRoot) throw new StudioPrintError('PRINT_STEM_GROUP_SHARED_TEXT', `Soru ${ids.indexOf(sharedRoot.id) + 1}: ortak kök metni olan sorular henüz basılamıyor.`);
   const assets = await all<Asset>(env.DB.prepare(`SELECT question_id,asset_type,r2_key,external_url,placement,option_label,sort_order,alt_text FROM question_assets WHERE question_id IN (${marks}) ORDER BY question_id,sort_order,id`).bind(...ids)).catch(() => [] as Asset[]);
   const blocks = await all<Block>(env.DB.prepare(`SELECT question_id,block_type,placement,text_content,payload_json,alt_text,sort_order FROM question_content_blocks WHERE question_id IN (${marks}) ORDER BY question_id,sort_order,id`).bind(...ids)).catch(() => [] as Block[]);
   const items: Printable[] = [];
