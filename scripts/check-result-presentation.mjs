@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {resultGroups,resultValue,outcomeNumber} from '../src/components/result-student-model.ts';
+const data=[{subject:'Matematik',net:19},{subject:'TYT Temel Matematik',subject_code:'TYT_MAT',net:23},{subject:'Geometri',net:4},{subject:'Fen',subject_code:'TYT_FEN',net:13},{subject:'Fizik',net:5},{subject:'Özel Ders',net:2}];
+const original=JSON.stringify(data),groups=resultGroups(data,'TYT');
+const math=groups.find(g=>g.title==='Temel Matematik'),science=groups.find(g=>g.title==='Fen Bilimleri');
+assert.equal(math.parent,data[1],'Explicit published parent must win over an identically named leaf');
+assert.equal(math.children.find(c=>c.title==='Matematik').row,data[0]);
+assert.equal(math.parent.net,23,'Published total is preserved, not added again');
+assert.equal(science.parent.net,13);assert.equal(science.children.find(c=>c.title==='Kimya').row,null,'Missing leaf is not inferred from parent');
+assert.equal(groups.filter(g=>g.title==='Özel Ders').length,1,'Unknown subjects stay visible');
+assert.equal(resultGroups([{subject:'Fen Bilimleri',net:12}],'LGS')[0].children.length,0,'TYT structure must not leak into LGS');
+assert.equal(resultGroups([{subject:'TYT Din Kültürü ve Ahlak Bilgisi',net:3}],'TYT')[0].children.find(x=>x.title==='Din Kültürü').row.net,3);
+assert.equal(JSON.stringify(data),original,'Source snapshots remain unchanged');
+assert.equal(resultValue(null),'—');assert.equal(resultValue(undefined),'—');assert.equal(resultValue(0),'0');assert.equal(resultValue(NaN),'—');
+assert.equal(outcomeNumber({correct_count:7,evidence_count:9},'wrong_count'),null,'Remaining evidence is not a wrong answer count');
+assert.equal(outcomeNumber({blank_count:0},'blank_count'),0);assert.equal(outcomeNumber({success_rate:null},'success_rate'),null);
+console.log('PASS: published totals, missing branches, exam family, immutable source, unknown outcome evidence');

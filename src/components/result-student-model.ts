@@ -16,7 +16,7 @@ export function resultGroups(rows:ResultRow[],examType:unknown):ResultGroup[]{
  for(const group of groups){
   const parent=rows.find(r=>!used.has(r)&&group.codes.some(c=>c===r.subject_code))||rows.find(r=>!used.has(r)&&group.names.some(n=>key(n)===key(rowTitle(r))))||null;
   if(parent)used.add(parent);
-  const children=group.children.map(([title,codes])=>{const row=rows.find(r=>!used.has(r)&&(codes.some(c=>c===r.subject_code)||key(rowTitle(r))===key(title)))||null;if(row)used.add(row);return {title,row};});
+  const children=group.children.map(([title,codes])=>{const row=rows.find(r=>!used.has(r)&&(codes.some(c=>c===r.subject_code)||(key(rowTitle(r)).replace(/^tyt/,'')===key(title)||(title==='Din Kültürü'&&key(rowTitle(r)).replace(/^tyt/,'')==='dinkulturuveahlakbilgisi'))))||null;if(row)used.add(row);return {title,row};});
   if(parent||children.some(x=>x.row))result.push({title:group.title,parent,children});
  }
  return [...result,...rows.filter(r=>!used.has(r)).map(r=>({title:rowTitle(r),parent:r,children:[],plain:true}))];
