@@ -2,7 +2,7 @@
 
 Onaylı iki ekranlı tasarımın gerçek bileşen uyarlaması. Ana sayfada yayımlanmış sınavlar, puan/net ve Sonucu incele eylemi; sınav açılınca aynı oturumda ayrı ayrıntı görünümü. Kapat ile listeye dönülür. URL/rota ve browser history değiştirilmez; yeni API/state/useEffect/yetki/hesaplama motoru yok.
 
-`ResultPortal` mevcut result/detail/busy ve handler'larını salt sunum bileşeni `StudentResultsWorkspace`'e aktarır. Giriş ve kurum/bayi kodu değişmez. Eksik puan/sıra/sonuç — gösterilir. Doğru/yanlış/boş toplamı ancak bütün derslerin geçerli sayısal verisi varsa gösterilir; net/puan yeniden hesaplanmaz. Kazanım yüzdesi null ise sıfır gösterilmez. Orijinal ANUNEX ve Nibiru varlıkları kullanılır.
+`ResultPortal` mevcut result/detail/busy ve handler'larını salt sunum bileşeni `StudentResultsWorkspace`'e aktarır. Giriş ve kurum/bayi kodu değişmez. Eksik puan/sıra/sonuç — gösterilir. Doğru/yanlış/boş, net ve puan doğrudan yayımlanmış sınav özetinden gösterilir; derslerden yeniden sonuç hesaplanmaz. Kazanım yüzdesi null ise sıfır gösterilmez. Orijinal ANUNEX ve Nibiru varlıkları kullanılır.
 
 Yeni stiller STUDENT ve student-results-v2 kapsamlı ekran kurallarıdır; giriş/HOME/kurum/bayi/app/print CSS'i değişmez. Giriş sonrası pazarlama hero alanı ekranda gizlenir. Sonuç karnesi mevcut printSection işlevini kullanır; yeni sunucu PDF servisi değildir.
 
