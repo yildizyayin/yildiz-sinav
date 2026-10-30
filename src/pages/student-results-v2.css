@@ -23,7 +23,7 @@
 .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-exam-card { display:grid;grid-template-columns:minmax(0,1fr) 230px auto;gap:24px;align-items:center;padding:22px;margin:0 0 14px;border:1px solid #dbe3e4;border-radius:11px;background:#fff;box-shadow:0 2px 6px #14303d03;text-align:left;width:100%;color:#223640;transition:border-color .15s,box-shadow .15s; }
 .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-exam-card:hover { border-color:#9fbac2;box-shadow:0 4px 14px #14303d08;background:#fff; }
 .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-exam-card:active { transform:translateY(1px); }
-.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-exam-identity { display:flex;align-items:center;gap:15px;min-width:0; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-exam-card>.sr-exam-identity { flex-direction:row;justify-content:flex-start;text-align:left;display:flex;align-items:center;gap:15px;min-width:0; }
 .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-exam-identity>svg { display:block;flex:0 0 42px;width:42px;height:42px;padding:10px;border-radius:10px;background:#eef4f5;color:#2b6475; }
 .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-exam-identity>div { display:flex;flex-direction:column;gap:7px;min-width:0; }
 .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-exam-identity strong { font-size:15px;line-height:1.5;color:#203540;font-weight:650;overflow-wrap:anywhere; }
