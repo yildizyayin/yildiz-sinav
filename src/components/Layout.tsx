@@ -60,6 +60,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
     { label:'PLATFORM', items:[
       {to:'/exam-channels',label:'Sonuç Yayınları ve Çöp Kutusu',icon:Globe2},
       {to:'/completion-center',label:'Tamamlama Merkezi',icon:ListChecks},
+      {to:'/security',label:'Güvenlik',icon:ShieldCheck},
       {to:'/result-network',label:'Sonuç Ağı',icon:Globe2},
       {to:'/attendance',label:'Yoklama Gözetimi',icon:UserCheck},
       {to:'/nibiru',label:'Nibiru',icon:NibiruNavIcon},

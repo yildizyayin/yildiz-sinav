@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { generateTotpCode, verifyTotpCode } from '../worker/lib/mfa';
 
 const entrySource = readFileSync(new URL('../worker/privacy-minimization-entry.ts', import.meta.url), 'utf8');
+// S045: the seed lookup (platform secret first, then the account's confirmed seed) lives in its own module.
+const seedSource = readFileSync(new URL('../worker/lib/super-admin-mfa.ts', import.meta.url), 'utf8');
 const productionConfig = readFileSync(new URL('../wrangler.production.jsonc', import.meta.url), 'utf8');
 const migration = readFileSync(new URL('../migrations/0029_super_admin_mfa_guard.sql', import.meta.url), 'utf8');
 
@@ -18,7 +20,8 @@ describe('Super Admin MFA production gate', () => {
   it('enforces Super Admin MFA only after an authenticator seed is provisioned', () => {
     expect(entrySource).toContain("env.ENVIRONMENT !== 'production'");
     expect(entrySource).toContain("user.role !== 'SUPER_ADMIN'");
-    expect(entrySource).toContain('SUPER_ADMIN_MFA_TOTP_SECRET');
+    expect(seedSource).toContain('SUPER_ADMIN_MFA_TOTP_SECRET');
+    expect(entrySource).toContain('superAdminMfaSecret(env, user.id)');
     expect(entrySource).toContain('if (!secret)');
     expect(entrySource).toContain('return response;');
     expect(entrySource).toContain('MFA_REQUIRED');

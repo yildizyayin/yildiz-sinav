@@ -15,6 +15,7 @@ export function Login() {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [mfaCode, setMfaCode] = useState('');
+  const [mfaAsked, setMfaAsked] = useState(false);
   const [remember, setRemember] = useState(true);
   const [show, setShow] = useState(false);
   const [token, setToken] = useState('');
@@ -47,6 +48,8 @@ export function Login() {
       await post('/api/auth/login',{identifier,password,remember,turnstileToken:challengeToken,mfaCode:mfaCode.trim()||undefined});
       await refresh(); navigate('/');
     } catch(e){
+      if(e instanceof ApiError&&(e.code==='MFA_REQUIRED'||e.code==='MFA_INVALID'))setMfaAsked(true);
+      if(e instanceof ApiError&&(e.code==='MFA_REQUIRED'||e.code==='MFA_INVALID'))setMfaAsked(true);
       setError(e instanceof ApiError ? e.message : 'Giriş yapılamadı.');
       setToken('');setChallengeRevision(value=>value+1);
     }
@@ -61,7 +64,7 @@ export function Login() {
       {isDemoHost && <div className="demo-role-picker"><div><strong>Demo Koleji</strong><span>İncelemek istediğiniz paneli seçin; demo hesabı güvenli biçimde doldurulur.</span></div><div>{demoAccounts.map(([label,user,pass])=><button type="button" key={user} onClick={()=>{setIdentifier(user);setPassword(pass);setError('')}}>{label}</button>)}</div></div>}
       <label>Kullanıcı adı / e-posta / telefon<input value={identifier} onChange={e=>setIdentifier(e.target.value)} autoComplete="username" required/></label>
       <label>Şifre<div className="password-input"><input type={show?'text':'password'} value={password} onChange={e=>setPassword(e.target.value)} autoComplete="current-password" required/><button type="button" aria-label={show?'Şifreyi gizle':'Şifreyi göster'} onClick={()=>setShow(v=>!v)}>{show?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></label>
-      {config?.superAdminMfaEnabled && <label>Süper Admin doğrulama kodu <span className="muted">(yalnız yönetici hesabı)</span><input value={mfaCode} onChange={e=>setMfaCode(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="one-time-code" placeholder="6 haneli kod" maxLength={6}/></label>}
+      {(config?.superAdminMfaEnabled||mfaAsked) && <label>Süper Admin doğrulama kodu <span className="muted">(yalnız yönetici hesabı)</span><input value={mfaCode} onChange={e=>setMfaCode(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="one-time-code" placeholder="6 haneli kod" maxLength={6}/></label>}
       <div className="form-row"><label className="check"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/> Beni hatırla</label><span className="muted">Şifre yardımı için kurum yöneticinizle iletişime geçin.</span></div>
       <Turnstile key={challengeRevision} siteKey={config?.turnstileSiteKey || ''} onToken={onToken}/>
       {config?.turnstileSiteKey&&!token&&!loading&&<p className="muted" role="status">Güvenlik doğrulaması bekleniyor.</p>}
