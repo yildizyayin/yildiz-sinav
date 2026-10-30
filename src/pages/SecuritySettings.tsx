@@ -18,6 +18,8 @@ export function SecuritySettings() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [sms, setSms] = useState<any>(null);
+  useEffect(() => { void api<any>('/api/security/mfa/sms').then((r) => setSms(r.data)).catch(() => setSms(null)); }, []);
   const load = () => api<{ data: MfaStatus }>('/api/security/mfa').then((r) => setStatus(r.data)).catch((e) => setError(e instanceof ApiError ? e.message : 'Durum okunamadı.'));
   useEffect(() => { void load(); }, []);
 
@@ -58,6 +60,16 @@ export function SecuritySettings() {
         <p><strong>Kapalı.</strong> Hesabınız şu an yalnız şifreyle korunuyor.</p>
         {status.pending && <p className="muted">Yarım kalmış bir kurulum var; yeniden başlatarak yeni QR kod alın.</p>}
         {status.canEnroll ? <button className="primary" disabled={busy} onClick={start}><KeyRound size={16} /> Kurulumu başlat</button> : <p className="alert error">Sunucu anahtarı tanımlı olmadığı için kurulum yapılamıyor.</p>}
+      </>}
+    </section>
+    <section className="panel">
+      <h2>SMS doğrulama (Netgsm)</h2>
+      {!sms ? <p className="muted">Yükleniyor…</p> : sms.otpEnabled ? <>
+        <p><strong>Açık.</strong> Giriş ekranında "SMS kodu ile giriş" ve "Şifremi unuttum" görünür. Kodlar Netgsm üzerinden gönderilir.</p>
+        <p className="muted">Son 24 saat: {(sms.last24h || []).length ? sms.last24h.map((r: any) => `${r.purpose} ${r.status} ${r.n}`).join(' · ') : 'gönderim yok'}</p>
+      </> : <>
+        <p><strong>Kapalı.</strong> Netgsm hesap bilgileri tanımlı değil; giriş ekranında SMS seçenekleri görünmez.</p>
+        <p className="muted">Açmak için GitHub ortam ayarlarına <code>PROD_NETGSM_USERCODE</code>, <code>PROD_NETGSM_HEADER</code> (değişken) ve <code>PROD_NETGSM_PASSWORD</code> (gizli) eklenip dağıtım yapılır.</p>
       </>}
     </section>
   </div>;

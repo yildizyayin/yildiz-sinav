@@ -35,6 +35,9 @@ jobs:
       PROD_TWILIO_ACCOUNT_SID: ${{ vars.PROD_TWILIO_ACCOUNT_SID }}
       PROD_TWILIO_AUTH_TOKEN: ${{ secrets.PROD_TWILIO_AUTH_TOKEN }}
       PROD_TWILIO_FROM_NUMBER: ${{ vars.PROD_TWILIO_FROM_NUMBER }}
+      PROD_NETGSM_USERCODE: ${{ vars.PROD_NETGSM_USERCODE }}
+      PROD_NETGSM_PASSWORD: ${{ secrets.PROD_NETGSM_PASSWORD }}
+      PROD_NETGSM_HEADER: ${{ vars.PROD_NETGSM_HEADER }}
       PROD_YOUTUBE_API_KEY: ${{ secrets.PROD_YOUTUBE_API_KEY }}
       PROD_WHATSAPP_VERIFY_TOKEN: ${{ secrets.PROD_WHATSAPP_VERIFY_TOKEN }}
       PROD_WHATSAPP_APP_SECRET: ${{ secrets.PROD_WHATSAPP_APP_SECRET }}
@@ -155,6 +158,9 @@ jobs:
           put_prod_secret PROD_TWILIO_ACCOUNT_SID TWILIO_ACCOUNT_SID
           put_prod_secret PROD_TWILIO_AUTH_TOKEN TWILIO_AUTH_TOKEN
           put_prod_secret PROD_TWILIO_FROM_NUMBER TWILIO_FROM_NUMBER
+          put_prod_secret PROD_NETGSM_USERCODE NETGSM_USERCODE
+          put_prod_secret PROD_NETGSM_PASSWORD NETGSM_PASSWORD
+          put_prod_secret PROD_NETGSM_HEADER NETGSM_HEADER
 
       - name: Sync WhatsApp secrets to production Worker
         shell: bash

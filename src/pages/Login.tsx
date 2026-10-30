@@ -3,6 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api, ApiError, post } from '../api';
 import { Turnstile } from '../components/Turnstile';
+import { SmsLogin } from '../components/SmsLogin';
 import { useAuth } from '../auth';
 import { AnunexCosmos } from '../components/AnunexCosmos';
 import { AnunexBrand } from '../components/AnunexBrand';
@@ -11,11 +12,12 @@ import { NibiruMark } from '../components/NibiruMark';
 export function Login() {
   const navigate = useNavigate();
   const { user, refresh } = useAuth();
-  const [config, setConfig] = useState<{ productName:string; turnstileSiteKey:string; superAdminMfaEnabled?:boolean } | null>(null);
+  const [config, setConfig] = useState<{ productName:string; turnstileSiteKey:string; superAdminMfaEnabled?:boolean; smsLoginEnabled?:boolean } | null>(null);
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [mfaCode, setMfaCode] = useState('');
   const [mfaAsked, setMfaAsked] = useState(false);
+  const [mode, setMode] = useState<'password'|'LOGIN'|'RESET'>('password');
   const [remember, setRemember] = useState(true);
   const [show, setShow] = useState(false);
   const [token, setToken] = useState('');
@@ -49,13 +51,19 @@ export function Login() {
       await refresh(); navigate('/');
     } catch(e){
       if(e instanceof ApiError&&(e.code==='MFA_REQUIRED'||e.code==='MFA_INVALID'))setMfaAsked(true);
-      if(e instanceof ApiError&&(e.code==='MFA_REQUIRED'||e.code==='MFA_INVALID'))setMfaAsked(true);
       setError(e instanceof ApiError ? e.message : 'Giriş yapılamadı.');
       setToken('');setChallengeRevision(value=>value+1);
     }
     finally{ submitting.current=false;setLoading(false); }
   };
   const mfaValid = !mfaCode || /^\d{6}$/.test(mfaCode);
+  const brand = <div className="login-brand-header"><AnunexBrand tagline/><span className="login-brand-rule"/><div className="login-nibiru-note"><NibiruMark size={24} state="active"/><span><strong>Nibiru AI</strong><small>Öğrenmenin yaşayan zekâsı</small></span></div></div>;
+  if (mode !== 'password' && config?.smsLoginEnabled) return <div className="login-page">
+    <div className="login-art"><AnunexCosmos/></div>
+    <div className="login-panel"><div className="login-card">{brand}
+      <SmsLogin purpose={mode} siteKey={config?.turnstileSiteKey || ''} onCancel={()=>setMode('password')} onDone={async(must)=>{await refresh();navigate(must?'/change-password':'/')}}/>
+    </div></div>
+  </div>;
   return <div className="login-page">
     <div className="login-art"><AnunexCosmos/></div>
     <div className="login-panel"><form className="login-card" onSubmit={submit}>
@@ -65,11 +73,12 @@ export function Login() {
       <label>Kullanıcı adı / e-posta / telefon<input value={identifier} onChange={e=>setIdentifier(e.target.value)} autoComplete="username" required/></label>
       <label>Şifre<div className="password-input"><input type={show?'text':'password'} value={password} onChange={e=>setPassword(e.target.value)} autoComplete="current-password" required/><button type="button" aria-label={show?'Şifreyi gizle':'Şifreyi göster'} onClick={()=>setShow(v=>!v)}>{show?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></label>
       {(config?.superAdminMfaEnabled||mfaAsked) && <label>Süper Admin doğrulama kodu <span className="muted">(yalnız yönetici hesabı)</span><input value={mfaCode} onChange={e=>setMfaCode(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="one-time-code" placeholder="6 haneli kod" maxLength={6}/></label>}
-      <div className="form-row"><label className="check"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/> Beni hatırla</label><span className="muted">Şifre yardımı için kurum yöneticinizle iletişime geçin.</span></div>
+      <div className="form-row"><label className="check"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/> Beni hatırla</label>{config?.smsLoginEnabled?<button type="button" className="link-button" onClick={()=>{setError('');setMode('RESET')}}>Şifremi unuttum</button>:<span className="muted">Şifre yardımı için kurum yöneticinizle iletişime geçin.</span>}</div>
       <Turnstile key={challengeRevision} siteKey={config?.turnstileSiteKey || ''} onToken={onToken}/>
       {config?.turnstileSiteKey&&!token&&!loading&&<p className="muted" role="status">Güvenlik doğrulaması bekleniyor.</p>}
       {error && <div className="alert error">{error}</div>}
       <button className="primary large" disabled={loading||!token||!identifier.trim()||!password||!mfaValid}>{loading?'Giriş yapılıyor…':'Giriş Yap'}</button>
+      {config?.smsLoginEnabled&&<button type="button" className="secondary large" onClick={()=>{setError('');setMode('LOGIN')}}>Kayıtlı telefona SMS kodu ile giriş</button>}
     </form></div>
   </div>;
 }

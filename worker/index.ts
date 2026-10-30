@@ -1,5 +1,6 @@
 import { serverErrorResponse } from './lib/error-boundary';
 import { anySuperAdminMfaActive } from './lib/super-admin-mfa';
+import { smsOtpEnabled } from './lib/sms';
 import { examOpenToInstitutionSql } from './lib/exam-audience';
 import { handleInstitutionCard } from './lib/institution-card';
 import { sanitizeAuditDetails } from './lib/db';
@@ -37,6 +38,7 @@ export default {
           turnstileSiteKey: env.TURNSTILE_SITE_KEY || '',
           environment: env.ENVIRONMENT || 'development',
           superAdminMfaEnabled: await anySuperAdminMfaActive(env),
+          smsLoginEnabled: smsOtpEnabled(env),
         });
       }
       if (url.pathname === '/api/auth/login') return request.method === 'POST' ? login(request, env) : methodNotAllowed();

@@ -1,0 +1,20 @@
+/* S046–S048: SMS login, KVKK notice gate, live lesson cards. */
+/* S046: SMS code login / reset inside the login card */
+.sms-login { display: flex; flex-direction: column; gap: 14px; }
+.sms-login > .primary { width: 100%; }
+.sms-login > .link-button { align-self: center; }
+.sms-login strong { font-size: 17px; color: var(--anunex-ink); }
+.sms-login .muted { margin: 4px 0 0; }
+.login-card .link-button { background: none; border: 0; padding: 0; color: #315efb; font-weight: 700; cursor: pointer; }
+.login-card .secondary.large { min-height: 46px; border-radius: 13px; }
+
+/* S047: KVKK notice gate (shown over every panel until acknowledged) */
+.privacy-gate-overlay { position: fixed; inset: 0; z-index: 1200; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(9, 20, 46, .55); }
+.privacy-gate-dialog { width: min(720px, 100%); max-height: calc(100vh - 32px); overflow: auto; display: grid; gap: 12px; padding: 22px; border-radius: 18px; background: #fff; box-shadow: 0 24px 60px rgba(9, 20, 46, .3); }
+.privacy-gate-dialog h2 { display: flex; gap: 8px; align-items: center; margin: 0; font-size: 19px; }
+.privacy-gate-text { max-height: 50vh; overflow: auto; white-space: pre-wrap; border: 1px solid var(--border, #dfe6f1); border-radius: 12px; padding: 14px; line-height: 1.55; }
+.privacy-gate-dialog footer { display: flex; justify-content: flex-end; }
+/* S048: student/parent live lesson cards */
+.live-cards { display: grid; gap: 10px; }
+.live-card { display: grid; gap: 6px; padding: 14px; border: 1px solid var(--border, #dfe6f1); border-radius: 14px; background: #fff; }
+.live-card .primary, .live-card .secondary { justify-self: start; }

@@ -679,6 +679,8 @@ async function grantMembership(request:Request,env:Env,user:AuthUser):Promise<Re
 async function liveSessions(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const gate=await requireFeature(env,user,'LIVE');if(gate)return gate;const u=new URL(request.url);const sid=await scopedStudentId(env,user,u.searchParams.get('studentId'));
   if(request.method==='GET'){const providers=await all<any>(env.DB.prepare(`SELECT * FROM live_providers WHERE active=1 ORDER BY provider_type,display_name`));const sessions=sid?await all<any>(env.DB.prepare(`SELECT s.*,p.display_name provider_name FROM live_sessions s LEFT JOIN live_providers p ON p.id=s.provider_id WHERE s.student_id=? ORDER BY s.scheduled_at DESC LIMIT 100`).bind(sid)):[];const wallet=sid?await one<any>(env.DB.prepare(`SELECT * FROM live_credit_wallets WHERE student_id=?`).bind(sid)):null;return json({ok:true,providers,sessions,wallet:wallet||{balance:0},meetingProviderConfigured:false});}
+  // D-S046/S048: paid, credit-based live booking is retired; live lessons are the institution's own (/api/live-lessons).
+  if(request.method==='POST')return json({ok:false,error:{code:'LIVE_BOOKING_RETIRED',message:'Ücretli canlı görüşme rezervasyonu kaldırıldı. Canlı dersler kurumunuzun Canlı Ders sayfasından duyurulur.'}},410);
   if(!sid)return forbidden();
   // A071: only the student or a linked parent spends the student's credits; the cost is set by the server
   // (one credit per 20 minutes), the balance is taken atomically, and no meeting provider is pretended.

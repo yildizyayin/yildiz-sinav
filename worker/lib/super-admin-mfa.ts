@@ -125,6 +125,13 @@ async function disable(request: Request, env: Env, user: AuthUser) {
   return json({ ok: true, data: { active: false } });
 }
 
+/** S046: SMS provider readiness and the last 24 hours of delivery outcomes (no numbers, no content). */
+async function smsStatus(env: Env) {
+  const { netgsmConfigured, smsOtpEnabled, smsProvider } = await import('./sms');
+  const rows = await env.DB.prepare(`SELECT purpose,status,count(*) n FROM sms_delivery_log WHERE created_at>=datetime('now','-1 day') GROUP BY purpose,status`).all<any>().catch(() => ({ results: [] as any[] }));
+  return json({ ok: true, data: { provider: smsProvider(env), netgsmConfigured: netgsmConfigured(env), otpEnabled: smsOtpEnabled(env), last24h: rows.results || [] } });
+}
+
 export async function handleSuperAdminMfa(request: Request, env: Env): Promise<Response | null> {
   const url = new URL(request.url);
   if (!url.pathname.startsWith('/api/security/mfa')) return null;
@@ -135,6 +142,7 @@ export async function handleSuperAdminMfa(request: Request, env: Env): Promise<R
   if (request.method !== 'GET' && request.headers.get('Origin') !== url.origin) return fail(403, 'FORBIDDEN', 'İsteği ANUNEX üzerinden başlatın.');
   const p = url.pathname, m = request.method;
   if (p === '/api/security/mfa' && m === 'GET') return status(env, user);
+  if (p === '/api/security/mfa/sms' && m === 'GET') return smsStatus(env);
   if (p === '/api/security/mfa/enroll' && m === 'POST') return enroll(env, user);
   if (p === '/api/security/mfa/confirm' && m === 'POST') return confirm(request, env, user);
   if (p === '/api/security/mfa/disable' && m === 'POST') return disable(request, env, user);

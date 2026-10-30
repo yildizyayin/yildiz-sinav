@@ -120,15 +120,21 @@ async function sendEmail(env: Env, destination: string, institutionName: string,
   return response.ok ? { ok: true, messageId: payload.id || null } : { ok: false, reason: `EMAIL_PROVIDER_${response.status}` };
 }
 
-async function sendSms(env: Env, destination: string, institutionName: string, recipient: AccountNotificationRecipient, password: string) {
-  if (!env.TWILIO_ACCOUNT_SID || !env.TWILIO_AUTH_TOKEN || !env.TWILIO_FROM_NUMBER) return { ok: false, reason: 'SMS_PROVIDER_NOT_CONFIGURED' };
-  const body = new URLSearchParams({ To: destination, From: env.TWILIO_FROM_NUMBER, Body: messageText(institutionName, recipient, password) });
-  const authorization = btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`);
-  const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${encodeURIComponent(env.TWILIO_ACCOUNT_SID)}/Messages.json`, {
-    method: 'POST', headers: { Authorization: `Basic ${authorization}`, 'Content-Type': 'application/x-www-form-urlencoded' }, body,
-  });
-  const payload = await response.json<any>().catch(() => ({}));
-  return response.ok ? { ok: true, messageId: payload.sid || null } : { ok: false, reason: `SMS_PROVIDER_${response.status}` };
+/**
+ * S046: an SMS never carries a password. It tells the person that the account exists and how to set their own
+ * password with a one-time SMS code ("Şifremi unuttum"). Without the Netgsm code flow nothing is sent.
+ */
+async function sendSms(env: Env, destination: string, institutionName: string, recipient: AccountNotificationRecipient, _password: string) {
+  const { normalizeTrMobile, sendTextSms, smsOtpEnabled } = await import('./sms');
+  if (!smsOtpEnabled(env)) return { ok: false, reason: 'SMS_PROVIDER_NOT_CONFIGURED' };
+  const mobile = normalizeTrMobile(destination);
+  if (!mobile) return { ok: false, reason: 'DESTINATION_INVALID' };
+  const text = [
+    `ANUNEX hesabiniz olusturuldu. Kurum: ${institutionName}. Kullanici: ${identifier(recipient)}.`,
+    `Sifrenizi belirlemek icin ${APP_URL} adresinde "Sifremi unuttum"a basip bu numarayi girin; SMS kodu ile kendi sifrenizi olusturun.`,
+  ].join(' ');
+  const r = await sendTextSms(env, mobile, text, 'ACCOUNT_ACTIVATION', recipient.userId);
+  return r.ok ? { ok: true, messageId: r.ref } : { ok: false, reason: r.error || 'SMS_FAILED' };
 }
 
 async function updateBatchStatus(env: Env, batchId: string) {

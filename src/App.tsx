@@ -88,6 +88,8 @@ const MarketingHome=lazy(()=>import('./pages/MarketingHome').then(module=>({defa
 const ResultPortal=lazy(()=>import('./pages/ResultPortal').then(module=>({default:module.ResultPortal})));
 const ResultNetworkAdmin=lazy(()=>import('./pages/ResultNetworkAdmin').then(module=>({default:module.ResultNetworkAdmin})));
 const AdminCommandCenter=lazy(()=>import('./pages/AdminCommandCenter').then(module=>({default:module.AdminCommandCenter})));
+const LiveLessons=lazy(()=>import('./pages/LiveLessons').then(module=>({default:module.LiveLessons})));
+const PrivacyNotices=lazy(()=>import('./pages/PrivacyNotices').then(module=>({default:module.PrivacyNotices})));
 const SecuritySettings=lazy(()=>import('./pages/SecuritySettings').then(module=>({default:module.SecuritySettings})));
 const ChangePassword=lazy(()=>import('./pages/ChangePassword').then(module=>({default:module.ChangePassword})));
 
@@ -121,7 +123,7 @@ function AppContent(){
   <Route path="k/:key" element={<RoleGate allowed={ALL_ROLES}><PhysicalLink/></RoleGate>}/>
   <Route path="attendance" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT']}><AttendanceCenter/></RoleGate>}/>
   <Route path="assignments" element={<RoleGate allowed={['INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT']}><AssignmentsCenter/></RoleGate>}/>
-  <Route path="completion-center" element={<RoleGate allowed={['SUPER_ADMIN']}><CompletionCenter/></RoleGate>}/><Route path="membership-orders" element={<RoleGate allowed={['SUPER_ADMIN']}><MembershipOrders/></RoleGate>}/><Route path="security" element={<RoleGate allowed={['SUPER_ADMIN']}><SecuritySettings/></RoleGate>}/>
+  <Route path="completion-center" element={<RoleGate allowed={['SUPER_ADMIN']}><CompletionCenter/></RoleGate>}/><Route path="membership-orders" element={<RoleGate allowed={['SUPER_ADMIN']}><MembershipOrders/></RoleGate>}/><Route path="security" element={<RoleGate allowed={['SUPER_ADMIN']}><SecuritySettings/></RoleGate>}/><Route path="privacy-notices" element={<RoleGate allowed={['SUPER_ADMIN']}><PrivacyNotices/></RoleGate>}/><Route path="live-lessons" element={<LiveLessons/>}/>
   <Route path="calendar" element={<RoleGate allowed={ALL_ROLES}><CalendarCenter/></RoleGate>}/><Route path="nibiru" element={<RoleGate allowed={ALL_ROLES}><Nibiru/></RoleGate>}/><Route path="nibiru-admin" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER']}><NibiruAdmin/></RoleGate>}/><Route path="agent-center" element={<RoleGate allowed={['SUPER_ADMIN']}><AgentCenter/></RoleGate>}/>
   <Route path="academic-target" element={<RoleGate allowed={['STUDENT']}><StudentTargetsV2/></RoleGate>}/><Route path="student-settings" element={<RoleGate allowed={['STUDENT']}><StudentExperienceSettings/></RoleGate>}/><Route path="student-games" element={<RoleGate allowed={['STUDENT']}><StudentGames/></RoleGate>}/><Route path="question-practice" element={<RoleGate allowed={['STUDENT']}><StudentQuestionPractice/></RoleGate>}/><Route path="question-review" element={<RoleGate allowed={['STUDENT']}><StudentQuestionReview/></RoleGate>}/><Route path="my-books" element={<RoleGate allowed={['STUDENT']}><StudentBooks/></RoleGate>}/>
   <Route path="academic-target-admin" element={<RoleGate allowed={['SUPER_ADMIN']}><AcademicTargetAdmin/></RoleGate>}/><Route path="official-question-intelligence" element={<RoleGate allowed={['SUPER_ADMIN']}><OfficialQuestionIntelligenceAdmin/></RoleGate>}/>

@@ -76,6 +76,8 @@ describe('approved V1 security boundaries', () => {
 
   it('does not show known no-op Settings or Forgot Password controls', () => {
     expect(layoutSource).not.toContain('title="Ayarlar"');
-    expect(loginSource).not.toContain('>Şifremi unuttum<');
+    // S046: "Şifremi unuttum" exists only as the working SMS reset, shown only when the SMS provider is configured.
+    expect(loginSource).toMatch(/config\?\.smsLoginEnabled\?<button type="button" className="link-button" onClick=\{\(\)=>\{setError\(''\);setMode\('RESET'\)\}\}>Şifremi unuttum<\/button>/);
+    expect(loginSource.match(/>Şifremi unuttum</g)).toHaveLength(1);
   });
 });
