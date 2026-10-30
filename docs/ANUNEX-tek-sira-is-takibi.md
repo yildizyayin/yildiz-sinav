@@ -2829,3 +2829,8 @@ Açık: Studio kurumlarda kapalı (aç/kapa kararı kullanıcıda). Sonraki fiki
 - Kurum canlı dersi kurumun kendi işi: kurum kendi Zoom/Teams/Meet hesabıyla yapar; ANUNEX video satmaz, yalnız ders programına bağlantı + "Derse katıl" + yoklama taşır (A), istenirse API ile otomatik toplantı (B).
 - Bulgu (30 Ekim, prod D1): nibiru_settings.enabled=1 ama processor_registry NIBIRU_AI ve CLOUDFLARE legal_review=PENDING, dpa=MISSING, international_transfer_registry boş → externalPersonalDataGate üretimde YZ yanıtlarını engelliyor, Nibiru şablon yanıta düşüyor. Kapı gevşetilmeyecek; kayıtlar gerçek onay/imzalı sözleşmeyle doldurulacak (yol haritası 1. aşama).
 - Yol haritası (Claude Docs): https://claude.ai/artifact/5iAi2azEiz4uyo8V75SGdF — kod tarafı kullanıcı "başla" diyene kadar yok.
+
+### D-S047 kararları (30 Ekim 12:38–12:42, kullanıcı) — YZ seans süresi, canlı ders kapsamı
+- YZ ücretsiz hak: her hizmette ayda 1 seans, yalnız yazılı. Ücretli seans süresi 30 dakika ("+30 dakika" ifadesi 30 dakikalık ücretli seans olarak yorumlandı; ücretsiz seans süresi 25/30 açık).
+- Canlı ders kurumun işi ve yalnız app.anunex.com lisanslı kurumlara açık (sonuc-only kurumlar görmez). Kurum kendi Zoom/Teams/Meet hesabını kullanır.
+- Kodda karşılığı (henüz yapılmadı): PremiumCenter "live" sekmesi (öğrenci/velinin kredi ile Canlı Rehberlik/Koç/Ders rezervasyonu, /api/platform/live, LIVE özelliği) bu kararla çelişiyor; kaldırılacak ya da kurum canlı dersine dönüştürülecek.
