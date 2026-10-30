@@ -66,6 +66,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/attendance',label:'Yoklama Gözetimi',icon:UserCheck},
       {to:'/live-lessons',label:'Canlı Ders',icon:Video,feature:'LIVE'},
       {to:'/privacy-notices',label:'KVKK Metinleri',icon:ShieldCheck},
+      {to:'/privacy-processors',label:'KVKK Veri İşleyenler',icon:ShieldCheck},
       {to:'/nibiru',label:'Nibiru',icon:NibiruNavIcon},
       {to:'/nibiru-admin',label:'Nibiru Yönetimi',icon:MessageCircle},
       {to:'/guidance-admin',label:'RBA & Rehberlik Testleri',icon:ClipboardCheck},
