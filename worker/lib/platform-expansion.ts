@@ -11,6 +11,7 @@ import { recordAssessmentRun } from './assessment-ledger';
 import { counselorCanAccess } from './guidance-assessments';
 import { submitHomeworkAnswers } from './homework';
 import { decideBooklet, decideReplace, evaluateSheet } from './studio-optical-submit';
+import { bookletOrder, bookletUsable, checkGroupIntegrity, stemGroupsInstalled, USABLE_BOOKLETS, type OrderedQuestion } from './studio-booklets';
 import { renderStudioAnswerKey, renderStudioPdf, STUDIO_OPTICAL_CAPACITY, StudioPrintError, type StudioBranding } from './studio-pdf';
 import { REPORT_SNAPSHOT_SQL } from './report-snapshot';
 import { withExamOperationLock, listExamOperationLocks, recoverExamOperationLock } from './exam-operation-lock';
@@ -702,7 +703,7 @@ async function studioPdf(request:Request,env:Env,user:AuthUser,documentId:string
   if(user.role!=='SUPER_ADMIN'&&document.institution_id!==user.institution_id)return forbidden();
   if(user.role==='TEACHER'&&document.created_by!==user.id)return forbidden('Öğretmen yalnızca kendi ürettiği sınavı indirebilir.');
   const booklet=(new URL(request.url).searchParams.get('booklet')||'A').toUpperCase();
-  if(!['A','B'].includes(booklet))return badRequest('Kitapçık A veya B olmalıdır.','INVALID_BOOKLET');
+  if(!bookletUsable(booklet))return badRequest(`Kitapçık ${USABLE_BOOKLETS.join(' veya ')} olmalıdır.`,'INVALID_BOOKLET');
   const allowed=await one<any>(env.DB.prepare('SELECT 1 ok FROM studio_document_items WHERE document_id=? AND booklet_code=? LIMIT 1').bind(documentId,booklet));
   if(!allowed)return notFound('Bu belge için seçilen kitapçık bulunamadı.');
   try{
@@ -833,7 +834,10 @@ async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const b=await requestBody(request);if(!b.title||!b.documentType)return badRequest('Belge türü ve başlık gereklidir.');const inst=userInstitution(user,b.institutionId);if(!inst)return badRequest('Kurum kapsamı gereklidir.');if(user.role==='TEACHER'&&!await teacherHasSubject(env,user,b.subjectId||null))return forbidden('Bu ders için branş yetkiniz bulunmuyor.');
   const optionMode=String(b.optionMode||'MIXED').toUpperCase();if(!['FOUR','FIVE','MIXED'].includes(optionMode))return badRequest('Şık düzeni FOUR, FIVE veya MIXED olmalıdır.','INVALID_OPTION_MODE');
   if(String(b.deliveryMode||'PDF_OPTICAL').toUpperCase()==='PDF_OPTICAL'&&Number(b.questionCount||20)>STUDIO_OPTICAL_CAPACITY)return badRequest(`Telefon optiği en fazla ${STUDIO_OPTICAL_CAPACITY} soruyu okutabilir. Soru sayısını azaltın veya optiksiz PDF teslimi seçin.`,'OPTICAL_CAPACITY_EXCEEDED');
-  const bookletCodes:string[]=Array.from(new Set<string>((Array.isArray(b.bookletCodes)?b.bookletCodes:String(b.bookletCodes||'A').split(',')).map((x:any)=>String(x).trim().toUpperCase()).filter((x:string)=>['A','B'].includes(x))));if(!bookletCodes.length)return badRequest('En az bir kitapçık seçilmelidir.','BOOKLET_REQUIRED');
+  const askedBooklets:string[]=Array.from(new Set<string>((Array.isArray(b.bookletCodes)?b.bookletCodes:String(b.bookletCodes||'A').split(',')).map((x:any)=>String(x).trim().toUpperCase()).filter(Boolean)));
+  // P01: a booklet opens only when creation, key, preview, PDF and evaluation all support it (studio-booklets.ts).
+  const unsupported=askedBooklets.filter(code=>!bookletUsable(code));if(unsupported.length)return badRequest(`${unsupported.join(', ')} kitapçığı henüz desteklenmiyor (oluşturma, cevap anahtarı, önizleme, PDF ve değerlendirme birlikte hazır değil). Kullanılabilir: ${USABLE_BOOKLETS.join(', ')}.`,'BOOKLET_UNSUPPORTED');
+  const bookletCodes:string[]=askedBooklets.filter((x:string)=>['A','B'].includes(x));if(!bookletCodes.length)return badRequest('En az bir kitapçık seçilmelidir.','BOOKLET_REQUIRED');
   const id=uuid('std');const count=Math.max(1,Math.min(200,Number(b.questionCount||20)));
   const year=parseAcademicYear(b.academicYear);if(!year.ok)return badRequest('Eğitim yılı 2027-2028 biçiminde olmalıdır.','INVALID_ACADEMIC_YEAR');const academicYear=year.value;
   const outcomeCodes=parseOutcomeCodes(b.outcomeCodes);
@@ -849,19 +853,71 @@ async function studio(request:Request,env:Env,user:AuthUser):Promise<Response>{
   const requestedIds=Array.isArray(b.questionIds)?[...new Set((b.questionIds as unknown[]).filter((value):value is string=>typeof value==='string'&&Boolean(value.trim())))].slice(0,count):[];
   const requestedClause=requestedIds.length?` AND q.id IN (${requestedIds.map(()=>'?').join(',')})`:'';
   const mixParsed=parseDifficultyMix(b.difficultyMix);if(!mixParsed.ok)return badRequest(mixParsed.message,'INVALID_DIFFICULTY_MIX');const difficultyMix=requestedIds.length?null:mixParsed.value;
-  let qs:any[];
+  let qs:any[];const groups=await stemGroupsInstalled(env);const ungrouped=groups?' AND q.stem_group_id IS NULL':'';
   if(difficultyMix){
     const targets=bandTargets(count,difficultyMix);
     const stock=Object.fromEntries((await all<any>(env.DB.prepare(`SELECT ${BAND_SQL} band,COUNT(*) n FROM question_bank q WHERE ${wh.join(' AND ')} GROUP BY 1`).bind(...ps))).map((r:any)=>[r.band,Number(r.n)]));
     const shortage=bandShortage(targets,stock);if(shortage)return badRequest(shortage,'INSUFFICIENT_DIFFICULTY_POOL');
-    qs=[];for(const band of BANDS){if(!targets[band])continue;qs.push(...await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')} AND ${BAND_SQL}=? ORDER BY RANDOM() LIMIT ?`).bind(...ps,band,targets[band])));}
+    // P01: a random draw never takes part of a stem group; grouped questions come in only by explicit choice.
+    qs=[];for(const band of BANDS){if(!targets[band])continue;qs.push(...await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')}${ungrouped} AND ${BAND_SQL}=? ORDER BY RANDOM() LIMIT ?`).bind(...ps,band,targets[band])));}
     for(let i=qs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[qs[i],qs[j]]=[qs[j],qs[i]];}
-  }else qs=await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')}${requestedClause} ORDER BY RANDOM() LIMIT ?`).bind(...ps,...requestedIds,count));
+  }else if(requestedIds.length){
+    // P01: an explicit list keeps the user's order exactly; nothing is shuffled.
+    const found=new Set((await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')}${requestedClause}`).bind(...ps,...requestedIds))).map((r:any)=>r.id));
+    qs=requestedIds.filter(id=>found.has(id)).map(id=>({id}));
+  }else qs=await all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${wh.join(' AND ')}${ungrouped} ORDER BY RANDOM() LIMIT ?`).bind(...ps,count));
   if(qs.length<count)return badRequest(`İstenen ${count} soruya uygun soru havuzu bulunamadı; yalnız ${qs.length} soru seçilebildi.`,'INSUFFICIENT_QUESTION_POOL');
+  const grouping=await stemGrouping(env,qs.map((q:any)=>q.id));if(grouping instanceof Response)return grouping;const hasGroups=grouping.ordered.some(q=>q.groupId);
   const config={...b,difficultyMix,difficultySource:difficultyMix?'EDITORIAL_ESTIMATE':null,branding:studioBrandingPrefs(b.branding),bookletCodes,optionMode,academicYear,outcomeCodes,deliveryMode:String(b.deliveryMode||'PDF_OPTICAL').toUpperCase(),sourceTypes:Array.isArray(b.sourceTypes)?b.sourceTypes:['QUESTION_BANK']};
   const statements:D1PreparedStatement[]=[env.DB.prepare(`INSERT INTO studio_documents(id,institution_id,created_by,document_type,title,grade_level,subject_id,status,config_json) VALUES(?,?,?,?,?,?,?,'DRAFT',?)`).bind(id,inst,user.id,b.documentType,b.title,b.gradeLevel||null,b.subjectId||null,JSON.stringify(config))];
-  bookletCodes.forEach((code:string)=>{const ordered=code==='B'?[...qs].reverse():qs;ordered.forEach((q,index)=>statements.push(env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,?,?)`).bind(id,q.id,code,index+1)));});
+  for(const code of bookletCodes){const ordered:string[]=hasGroups?await bookletOrder(id,code,grouping.ordered):(code==='B'?[...qs].reverse():qs).map((q:any)=>q.id);ordered.forEach((qid,index)=>statements.push(env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,?,?)`).bind(id,qid,code,index+1)));}
   await env.DB.batch(statements);await audit(env.DB,user.id,inst,'STUDIO_DOCUMENT_CREATED','studio_document',id,{selectedQuestions:qs.length,bookletCodes,optionMode,deliveryMode:config.deliveryMode});return json({ok:true,id,selectedQuestions:qs.length,requestedQuestions:count,bookletCodes,optionMode},201);
+}
+
+/**
+ * P01: stem-group facts for an ordered list of question ids — each grouped question's group and position, and an
+ * error response when a group is split, partial, reordered, or carries shared text the booklet cannot print yet.
+ * A failed lookup is an error, never "no groups".
+ */
+async function stemGrouping(env:Env,ids:string[]):Promise<{ordered:OrderedQuestion[]}|Response>{
+  if(!ids.length)return {ordered:[]};
+  if(!await stemGroupsInstalled(env))return {ordered:ids.map(id=>({id}))};
+  const marks=ids.map(()=>'?').join(',');
+  const rows=await all<any>(env.DB.prepare(`SELECT id,stem_group_id,stem_group_order FROM question_bank WHERE id IN (${marks})`).bind(...ids));
+  const info=new Map(rows.map((r:any)=>[r.id,r]));
+  const ordered:OrderedQuestion[]=ids.map(id=>({id,groupId:info.get(id)?.stem_group_id||null,groupOrder:info.get(id)?.stem_group_order??null}));
+  const groups=[...new Set(ordered.map(q=>q.groupId).filter(Boolean))] as string[];
+  if(!groups.length)return {ordered};
+  const gm=groups.map(()=>'?').join(',');
+  const shared=await all<any>(env.DB.prepare(`SELECT id FROM question_stem_groups WHERE id IN (${gm}) AND length(trim(coalesce(shared_stem_text,'')))>0`).bind(...groups));
+  if(shared.length)return json({ok:false,error:{code:'STEM_GROUP_SHARED_TEXT_UNSUPPORTED',message:'Ortak kök metni olan soru grupları kitapçıkta ve online sınavda henüz basılamıyor; bu grubu seçmeyin.'}},409);
+  const members=await all<any>(env.DB.prepare(`SELECT id,stem_group_id FROM question_bank WHERE stem_group_id IN (${gm}) AND review_status<>'ARCHIVED' ORDER BY stem_group_id,stem_group_order,id`).bind(...groups));
+  const expected=new Map<string,string[]>();for(const m of members)(expected.get(m.stem_group_id)||expected.set(m.stem_group_id,[]).get(m.stem_group_id)!).push(m.id);
+  const problem=checkGroupIntegrity(ordered,expected);
+  if(problem)return json({ok:false,error:{code:'STEM_GROUP_INTEGRITY',message:problem}},409);
+  return {ordered};
+}
+
+/** P01: the user reorders booklet A; every other booklet is rebuilt from the persistent ids. Locked once results exist. */
+async function studioOrder(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
+  const document=await studioDocForStaff(env,user,documentId);if(document instanceof Response)return document;
+  const state=await studioDocState(env,documentId);
+  if(state.locked)return json({ok:false,error:{code:'STUDIO_LOCKED',message:`Bu sınavın ${state.results} öğrenci sonucu var; soru sırası artık değiştirilemez. Yeni bir taslak oluşturun.`}},409);
+  const b=await requestBody(request);
+  const ids:string[]=Array.isArray(b.questionIds)?b.questionIds.map(String):[];
+  const current=await all<any>(env.DB.prepare(`SELECT question_id,booklet_code FROM studio_document_items WHERE document_id=? ORDER BY booklet_code,sort_order`).bind(documentId));
+  const inA=current.filter((r:any)=>r.booklet_code==='A').map((r:any)=>r.question_id);
+  if(!inA.length)return badRequest('Bu belgede A kitapçığı yok.','BOOKLET_A_MISSING');
+  if(ids.length!==inA.length||new Set(ids).size!==ids.length||ids.some(id=>!inA.includes(id)))return badRequest('Sıralama listesi belgedeki sorularla uyuşmuyor; sayfayı yenileyin.','ORDER_MISMATCH');
+  const grouping=await stemGrouping(env,ids);if(grouping instanceof Response)return grouping;
+  const booklets=[...new Set(current.map((r:any)=>String(r.booklet_code)))];
+  const statements:D1PreparedStatement[]=[env.DB.prepare('DELETE FROM studio_document_items WHERE document_id=?').bind(documentId)];
+  for(const code of booklets){const ordered=await bookletOrder(documentId,code,grouping.ordered);ordered.forEach((qid,index)=>statements.push(env.DB.prepare(`INSERT INTO studio_document_items(document_id,question_id,booklet_code,sort_order) VALUES(?,?,?,?)`).bind(documentId,qid,code,index+1)));}
+  statements.push(env.DB.prepare(`DELETE FROM studio_document_assets WHERE document_id=? AND asset_type='QUESTION_PDF'`).bind(documentId));
+  statements.push(env.DB.prepare(`UPDATE studio_documents SET pdf_r2_key=NULL,status='DRAFT',updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(documentId));
+  await env.DB.batch(statements);
+  await audit(env.DB,user.id,document.institution_id,'STUDIO_ORDER_CHANGED','studio_document',documentId,{questionCount:ids.length,booklets,invalidatedPdfs:state.printed});
+  return json({ok:true,questionIds:ids,booklets,invalidatedPdfs:state.printed});
 }
 
 /** A083: what the Studio form may choose from, with approved stock counted by the same filters creation uses. */
@@ -906,7 +962,7 @@ async function studioDocState(env:Env,documentId:string){
 }
 async function studioItems(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
   const document=await studioDocForStaff(env,user,documentId);if(document instanceof Response)return document;
-  const booklet=(new URL(request.url).searchParams.get('booklet')||'A').toUpperCase();if(!['A','B'].includes(booklet))return badRequest('Kitapçık A veya B olmalıdır.','INVALID_BOOKLET');
+  const booklet=(new URL(request.url).searchParams.get('booklet')||'A').toUpperCase();if(!bookletUsable(booklet))return badRequest(`Kitapçık ${USABLE_BOOKLETS.join(' veya ')} olmalıdır.`,'INVALID_BOOKLET');
   const rows=await all<any>(env.DB.prepare(`SELECT i.sort_order position,q.id,q.stem_text stem,q.options_json,q.correct_answer correctAnswer,q.solution_text solution,(SELECT a.external_url FROM question_assets a WHERE a.question_id=q.id AND a.asset_type='SOLUTION_VIDEO' AND a.approved=1 AND a.external_url LIKE 'https://%' ORDER BY a.created_at DESC LIMIT 1) solutionVideo,COALESCE(q.difficulty_band,'MEDIUM') band,(SELECT group_concat(o.code,', ') FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id WHERE l.question_id=q.id) outcomes FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code=? ORDER BY i.sort_order`).bind(documentId,booklet));
   const items=rows.map((r:any)=>{const opts=parseJson<any[]>(r.options_json,[]);return {position:r.position,id:r.id,stem:String(r.stem||''),options:(Array.isArray(opts)?opts:[]).map((o:any,i:number)=>typeof o==='string'?{label:'ABCDE'[i],text:o}:{label:String(o.label||'ABCDE'[i]),text:String(o.text??'')}),correctAnswer:r.correctAnswer,solution:r.solution||null,solutionVideo:r.solutionVideo||null,band:r.band,outcomes:r.outcomes||null};});
   return json({ok:true,booklet,items,...await studioDocState(env,documentId)});
@@ -917,13 +973,17 @@ async function studioSwap(request:Request,env:Env,user:AuthUser,documentId:strin
   const state=await studioDocState(env,documentId);
   if(state.locked)return json({ok:false,error:{code:'STUDIO_LOCKED',message:`Bu sınavın ${state.results} öğrenci sonucu var; sorular artık değiştirilemez. Yeni bir taslak oluşturun.`}},409);
   const inDoc=await one<any>(env.DB.prepare('SELECT 1 ok FROM studio_document_items WHERE document_id=? AND question_id=? LIMIT 1').bind(documentId,current));if(!inDoc)return notFound('Soru bu belgede değil.');
+  // P01: a question that shares a stem with others is never swapped alone.
+  const groupsOn=await stemGroupsInstalled(env);
+  const grouped=groupsOn?await one<any>(env.DB.prepare('SELECT stem_group_id FROM question_bank WHERE id=?').bind(current)):null;
+  if(grouped?.stem_group_id)return json({ok:false,error:{code:'STEM_GROUP_SWAP',message:'Ortak köklü bir soru tek başına değiştirilemez.'}},409);
   let config:any={};try{config=JSON.parse(document.config_json||'{}');}catch{}
   const optionMode=['FOUR','FIVE','MIXED'].includes(String(config.optionMode))?config.optionMode:'MIXED';
   const input:SelectionInput={institutionId:document.institution_id,gradeLevel:document.grade_level?Number(document.grade_level):null,subjectId:document.subject_id||null,academicYear:typeof config.academicYear==='string'&&config.academicYear?config.academicYear:null,optionMode,teacherUserId:user.role==='TEACHER'?user.id:null};
   const j=joinSteps(selectionSteps(input));
   const linked=Number((await one<any>(env.DB.prepare('SELECT COUNT(*) n FROM question_learning_links WHERE question_id=?').bind(current)))?.n||0)>0;
   const sameBand=b.sameDifficulty!==false;
-  const extra=[`q.id NOT IN (SELECT question_id FROM studio_document_items WHERE document_id=?)`],ep:any[]=[documentId];
+  const extra=[`q.id NOT IN (SELECT question_id FROM studio_document_items WHERE document_id=?)`,...(groupsOn?[`q.stem_group_id IS NULL`]:[])],ep:any[]=[documentId];
   if(linked){extra.push(`EXISTS(SELECT 1 FROM question_learning_links l2 WHERE l2.question_id=q.id AND l2.node_id IN (SELECT node_id FROM question_learning_links WHERE question_id=?))`);ep.push(current);}
   if(sameBand){extra.push(`${BAND_SQL}=(SELECT COALESCE(difficulty_band,'MEDIUM') FROM question_bank WHERE id=?)`);ep.push(current);}
   const replacement=await one<any>(env.DB.prepare(`SELECT q.id FROM question_bank q WHERE ${j.where} AND ${extra.join(' AND ')} ORDER BY RANDOM() LIMIT 1`).bind(...j.params,...ep));
@@ -1070,6 +1130,7 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/favorite$/);if(m&&(request.method==='POST'||request.method==='DELETE'))return studioFavorite(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/items$/);if(m&&request.method==='GET')return studioItems(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/swap$/);if(m&&request.method==='POST')return studioSwap(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/studio\/([^/]+)\/order$/);if(m&&request.method==='PUT')return studioOrder(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/pdf$/);if(m&&request.method==='GET')return studioPdf(request,env,user,m[1]);
   if(p==='/api/platform/studio/branding/logo')return studioLogo(request,env,user);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/answer-key$/);if(m&&request.method==='GET')return studioAnswerKey(env,user,m[1]);

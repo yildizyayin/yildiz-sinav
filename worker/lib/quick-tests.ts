@@ -99,13 +99,50 @@ async function updateTest(request: Request, env: Env, user: AuthUser, t: any) {
   if (title.length < 3) return fail(400, 'VALIDATION_ERROR', 'Testin adını yazın (en az 3 harf).');
   const optionCount = b.optionCount === undefined ? t.option_count : Number(b.optionCount) === 5 ? 5 : 4;
   if (optionCount === 4 && (await one(env.DB.prepare(`SELECT 1 x FROM quick_test_questions WHERE test_id=? AND correct_answer='E'`).bind(t.id)))) return fail(409, 'E_ANSWER_USED', 'Bir sorunun cevabı E; şık sayısını 4 yapmadan önce o cevabı değiştirin.');
+  if ((optionCount !== t.option_count || (b.wrongDivisor !== undefined && Number(b.wrongDivisor) !== s.wrongDivisor))) { const locked = await editLock(env, t); if (locked) return locked; }
   const next = { columns: b.columns === undefined ? s.columns : Number(b.columns) === 1 ? 1 : Number(b.columns) === 2 ? 2 : 0, wrongDivisor: b.wrongDivisor === undefined ? s.wrongDivisor : [0, 3, 4].includes(Number(b.wrongDivisor)) ? Number(b.wrongDivisor) : 0 };
   await env.DB.prepare(`UPDATE quick_tests SET title=?,option_count=?,layout_json=?,subject_label=COALESCE(?,subject_label),updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(title, optionCount, JSON.stringify(next), b.subjectLabel === undefined ? null : clean(b.subjectLabel, 60), t.id).run();
   return json({ ok: true });
 }
 
+/**
+ * P01: once a student has an attempt (online or paper) or an online session is open, the questions, answers,
+ * order and scoring are frozen so every result stays tied to the content and key it was taken with. A change
+ * then means a new version (POST /copy); the old results keep the old key.
+ */
+async function editLock(env: Env, t: any): Promise<Response | null> {
+  const attempt = await one<any>(env.DB.prepare(`SELECT 1 x FROM quick_test_attempts WHERE test_id=? LIMIT 1`).bind(t.id));
+  if (attempt) return fail(409, 'TEST_LOCKED', 'Bu testte öğrenci cevabı var; sorular, cevaplar ve sıra artık değiştirilemez. Değişiklik için testi yeni sürüm olarak kopyalayın.');
+  const open = await one<any>(env.DB.prepare(`SELECT 1 x FROM quick_test_sessions WHERE test_id=? AND status='OPEN' AND closes_at>? LIMIT 1`).bind(t.id, sqlTime(new Date())));
+  if (open) return fail(409, 'TEST_LOCKED', 'Bu testin online sınavı açık; önce oturumu kapatın ya da testi yeni sürüm olarak kopyalayın.');
+  return null;
+}
+
+async function copyTest(env: Env, user: AuthUser, t: any) {
+  const questions = await all<any>(env.DB.prepare(`SELECT * FROM quick_test_questions WHERE test_id=? ORDER BY sort_order,created_at`).bind(t.id));
+  const id = uuid('qt');
+  const statements = [env.DB.prepare(`INSERT INTO quick_tests(id,institution_id,created_by,title,grade_level,subject_label,option_count,source_kind,studio_document_id,rights_declared_by,rights_declared_at,layout_json,version_of)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(id, t.institution_id, user.id, clean(`${t.title} (yeni sürüm)`, 140), t.grade_level, t.subject_label, t.option_count, t.source_kind, t.studio_document_id, t.rights_declared_by, t.rights_declared_at, t.layout_json, t.id)];
+  for (const q of questions) {
+    const qid = uuid('qtq');
+    let key: string | null = null;
+    if (q.kind === 'IMAGE') {
+      // Each version owns its own image: deleting a question in one version never removes another's picture.
+      const obj = await env.FILES.get(q.image_key);
+      if (!obj) return fail(409, 'IMAGE_MISSING', `${q.sort_order}. sorunun görseli bulunamadı; kopya oluşturulmadı.`);
+      key = `quick-tests/${t.institution_id}/${id}/${qid}.${String(q.image_key).endsWith('.png') ? 'png' : 'jpg'}`;
+      await env.FILES.put(key, new Uint8Array(await obj.arrayBuffer()), { httpMetadata: { contentType: String(q.image_key).endsWith('.png') ? 'image/png' : 'image/jpeg' } });
+    }
+    statements.push(env.DB.prepare(`INSERT INTO quick_test_questions(id,test_id,sort_order,kind,image_key,image_width,image_height,question_bank_id,correct_answer) VALUES(?,?,?,?,?,?,?,?,?)`)
+      .bind(qid, id, q.sort_order, q.kind, key, q.image_width, q.image_height, q.question_bank_id, q.correct_answer));
+  }
+  await env.DB.batch(statements);
+  return json({ ok: true, id, versionOf: t.id }, 201);
+}
+
 async function addImageQuestion(request: Request, env: Env, user: AuthUser, t: any) {
   if (t.source_kind !== 'CROP') return fail(409, 'POOL_TEST', 'Havuzdan gelen teste görsel soru eklenmez; yeni bir hızlı test açın.');
+  const locked = await editLock(env, t); if (locked) return locked;
   const count = Number((await one<any>(env.DB.prepare('SELECT count(*) c FROM quick_test_questions WHERE test_id=?').bind(t.id)))?.c || 0);
   if (count >= MAX_QUESTIONS) return fail(409, 'TOO_MANY_QUESTIONS', `Bir testte en fazla ${MAX_QUESTIONS} soru olabilir.`);
   const form = await request.formData().catch(() => null);
@@ -130,6 +167,7 @@ async function addImageQuestion(request: Request, env: Env, user: AuthUser, t: a
 }
 
 async function setAnswer(request: Request, env: Env, t: any, qid: string) {
+  const locked = await editLock(env, t); if (locked) return locked;
   const b: any = await request.json().catch(() => ({}));
   const answer = b.correctAnswer == null || b.correctAnswer === '' ? null : String(b.correctAnswer).toUpperCase();
   if (answer !== null && ![...LETTERS.slice(0, t.option_count), 'X'].includes(answer)) return fail(400, 'VALIDATION_ERROR', `Cevap ${LETTERS.slice(0, t.option_count).join(', ')} ya da iptal (X) olmalı.`);
@@ -143,12 +181,14 @@ async function deleteQuestion(env: Env, t: any, qid: string) {
   const q = await one<any>(env.DB.prepare('SELECT image_key FROM quick_test_questions WHERE id=? AND test_id=?').bind(qid, t.id));
   if (!q) return fail(404, 'NOT_FOUND', 'Soru bulunamadı.');
   if (await one(env.DB.prepare(`SELECT 1 x FROM quick_test_attempts WHERE test_id=? AND submitted_at IS NOT NULL`).bind(t.id))) return fail(409, 'HAS_RESULTS', 'Bu testte teslim edilmiş sonuç var; soru silinemez. Testi kopyalayıp yenisinde düzenleyin.');
+  const locked = await editLock(env, t); if (locked) return locked;
   await env.DB.prepare('DELETE FROM quick_test_questions WHERE id=?').bind(qid).run();
   if (q.image_key) { try { await env.FILES.delete(q.image_key); } catch { /* file cleanup is best effort */ } }
   return json({ ok: true });
 }
 
 async function reorder(request: Request, env: Env, t: any) {
+  const locked = await editLock(env, t); if (locked) return locked;
   const b: any = await request.json().catch(() => ({}));
   const ids: string[] = Array.isArray(b.ids) ? b.ids.map(String) : [];
   const existing = (await all<any>(env.DB.prepare('SELECT id FROM quick_test_questions WHERE test_id=?').bind(t.id))).map((r) => r.id);
@@ -165,19 +205,51 @@ async function questionImage(env: Env, testId: string, qid: string) {
   return new Response(obj.body, { headers: { 'Content-Type': q.image_key.endsWith('.png') ? 'image/png' : 'image/jpeg', 'Cache-Control': 'private, max-age=3600', 'X-Content-Type-Options': 'nosniff' } });
 }
 
-/** A Studio document's APPROVED pool questions (booklet A) as a quick test, for online delivery. Text questions only. */
+/**
+ * A Studio document's APPROVED pool questions (booklet A, in its stored order) as a quick test, for online delivery.
+ * P01: every gate is checked again at the moment of the switch — the document's owner (a teacher only their own),
+ * the teacher's subject assignment for every question, editorial approval, usage rights (no RESTRICTED or
+ * user-provided material), pool ownership (platform or this institution), and media. Any lookup that fails stops
+ * the switch; nothing is assumed to be "without media".
+ */
 async function fromStudio(env: Env, user: AuthUser, docId: string) {
   const doc = await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(docId));
   if (!doc) return fail(404, 'NOT_FOUND', 'Studio belgesi bulunamadı.');
   if (user.role !== 'SUPER_ADMIN' && doc.institution_id !== user.institution_id) return fail(403, 'FORBIDDEN', 'Bu belgeye erişiminiz yok.');
   if (!doc.institution_id) return fail(400, 'INSTITUTION_REQUIRED', 'Belgenin kurumu yok.');
-  const items = await all<any>(env.DB.prepare(`SELECT q.id,q.correct_answer,q.review_status,q.option_count,
-      (SELECT count(*) FROM question_assets a WHERE a.question_id=q.id) assets
-    FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code='A' ORDER BY i.sort_order`).bind(docId)).catch(async () => all<any>(env.DB.prepare(`SELECT q.id,q.correct_answer,q.review_status,q.option_count,0 assets FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code='A' ORDER BY i.sort_order`).bind(docId)));
+  if ((user.role === 'TEACHER' || user.role === 'GUIDANCE_TEACHER') && doc.created_by !== user.id) return fail(403, 'FORBIDDEN', 'Öğretmen yalnız kendi hazırladığı Studio belgesini online sınava çevirebilir.');
+  let items: any[];
+  try {
+    items = await all<any>(env.DB.prepare(`SELECT q.id,q.correct_answer,q.review_status,q.option_count,q.copyright_status,q.owner_type,q.owner_id,q.subject_id,q.stem_group_id,
+        COALESCE(q.question_type,'MULTIPLE_CHOICE') question_type,
+        (SELECT count(*) FROM question_assets a WHERE a.question_id=q.id) assets,
+        (SELECT count(*) FROM question_content_blocks b WHERE b.question_id=q.id) blocks
+      FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code='A' ORDER BY i.sort_order`).bind(docId));
+  } catch {
+    return fail(503, 'MEDIA_CHECK_FAILED', 'Soruların medya bilgisi doğrulanamadı; online sınav oluşturulmadı. Biraz sonra tekrar deneyin.');
+  }
   if (!items.length) return fail(409, 'EMPTY', 'Belgede soru yok.');
-  if (items.some((q) => q.review_status !== 'APPROVED')) return fail(409, 'NOT_APPROVED', 'Belgede onaylanmamış soru var; online sınava yalnız onaylı sorular çıkar.');
-  const visual = items.findIndex((q) => Number(q.assets) > 0);
-  if (visual >= 0) return fail(409, 'VISUAL_QUESTION', `${visual + 1}. soru görsel içeriyor; bu tür sorular şimdilik yalnız kâğıt (PDF) olarak verilir.`);
+  const at = (i: number) => `${i + 1}. soru`;
+  let k = items.findIndex((q) => q.review_status !== 'APPROVED');
+  if (k >= 0) return fail(409, 'NOT_APPROVED', `${at(k)} onaylı değil; online sınava yalnız onaylı sorular çıkar.`);
+  k = items.findIndex((q) => !['OWNED', 'LICENSED', 'PUBLIC_DOMAIN'].includes(String(q.copyright_status)));
+  if (k >= 0) return fail(409, 'RIGHTS_NOT_CLEARED', `${at(k)} kullanım hakkı açısından online sınava uygun değil (telif durumu: ${rightsLabel(items[k].copyright_status)}).`);
+  k = items.findIndex((q) => !((q.owner_type || 'PLATFORM') === 'PLATFORM' || (q.owner_type === 'INSTITUTION' && q.owner_id === doc.institution_id)));
+  if (k >= 0) return fail(409, 'OWNERSHIP_MISMATCH', `${at(k)} bu kurumun kullanabileceği havuzda değil.`);
+  k = items.findIndex((q) => q.question_type !== 'MULTIPLE_CHOICE');
+  if (k >= 0) return fail(409, 'NOT_MULTIPLE_CHOICE', `${at(k)} çoktan seçmeli değil.`);
+  k = items.findIndex((q) => Boolean(q.stem_group_id));
+  if (k >= 0) return fail(409, 'STEM_GROUP_UNSUPPORTED', `${at(k)} ortak köklü bir grubun parçası; ortak kökler online sınavda henüz gösterilemiyor.`);
+  k = items.findIndex((q) => Number(q.assets) > 0 || Number(q.blocks) > 0);
+  if (k >= 0) return fail(409, 'VISUAL_QUESTION', `${at(k)} görsel, tablo veya grafik içeriyor; bu tür sorular şimdilik yalnız kâğıt (PDF) olarak verilir.`);
+  if (user.role === 'TEACHER') {
+    const subjects = [...new Set(items.map((q) => q.subject_id).filter(Boolean))] as string[];
+    if (subjects.length !== new Set(items.map((q) => q.subject_id || '')).size) return fail(403, 'SUBJECT_REQUIRED', 'Dersi belirtilmemiş soru var; branş yetkisi doğrulanamadı.');
+    for (const subject of subjects) {
+      const ok = await one(env.DB.prepare(`SELECT 1 ok FROM teacher_assignments WHERE user_id=? AND institution_id=? AND active=1 AND assignment_type='SUBJECT' AND subject_id=? LIMIT 1`).bind(user.id, doc.institution_id, subject));
+      if (!ok) return fail(403, 'SUBJECT_FORBIDDEN', 'Belgede branş yetkiniz olmayan bir dersin sorusu var.');
+    }
+  }
   const optionCount = items.some((q) => Number(q.option_count) === 5) ? 5 : 4;
   const id = uuid('qt');
   await env.DB.batch([
@@ -186,6 +258,7 @@ async function fromStudio(env: Env, user: AuthUser, docId: string) {
   ]);
   return json({ ok: true, id }, 201);
 }
+const rightsLabel = (v: unknown) => String(v ?? "bilinmiyor");
 
 function answerKeyOf(questions: any[]): string[] { return questions.map((q) => String(q.correct_answer || '')); }
 function readiness(t: any, questions: any[]) {
@@ -317,6 +390,7 @@ export async function handleQuickTests(request: Request, env: Env): Promise<Resp
   if (!rest && m === 'DELETE') { await env.DB.batch([env.DB.prepare(`UPDATE quick_tests SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(t.id), env.DB.prepare(`UPDATE quick_test_sessions SET status='CLOSED' WHERE test_id=?`).bind(t.id)]); return json({ ok: true }); }
   if (rest === 'questions' && m === 'POST') return addImageQuestion(request, env, user, t);
   if (rest === 'order' && m === 'PUT') return reorder(request, env, t);
+  if (rest === 'copy' && m === 'POST') return copyTest(env, user, t);
   let y = rest.match(/^questions\/([^/]+)$/);
   if (y && m === 'PATCH') return setAnswer(request, env, t, y[1]);
   if (y && m === 'DELETE') return deleteQuestion(env, t, y[1]);
