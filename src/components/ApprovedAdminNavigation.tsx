@@ -11,7 +11,7 @@ const groups=[
   {label:'Rehberlik ve Analiz',icon:ChartNoAxesCombined,paths:['/guidance-admin','/reports','/academic-target-admin']},
   {label:'Kullanıcılar ve Kurumlar',icon:Users,paths:['/institutions','/students','/users','/activation-requests','/access-accounts','/teacher-assignments','/enterprise','/licenses','/membership-orders']},
   {label:'Nibiru ve Ajanlar',icon:Orbit,paths:['/nibiru','/nibiru-admin','/agent-center']},
-  {label:'Sistem Yönetimi',icon:Settings,paths:['/admin-center','/standard-readiness','/theme-management','/settings','/feature-lab','/demo-mode','/scale','/completion-center','/security','/privacy-notices','/notifications','/profile']},
+  {label:'Sistem Yönetimi',icon:Settings,paths:['/admin-center','/standard-readiness','/theme-management','/settings','/feature-lab','/demo-mode','/scale','/completion-center','/security','/privacy-notices','/privacy-processors','/notifications','/profile']},
 ];
 const normalize=(value:string)=>value.toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i');
 

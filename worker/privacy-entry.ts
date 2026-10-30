@@ -578,6 +578,12 @@ export default {
       if (verifyRequestMatch) return request.method === 'POST' ? verifyDataSubjectRequest(env, admin, verifyRequestMatch[1]) : methodNotAllowed();
       const approvalMatch = path.match(/^\/api\/admin\/privacy\/release-approvals\/([^/]+)$/);
       if (approvalMatch) return request.method === 'POST' ? updateReleaseApproval(request, env, admin, approvalMatch[1]) : methodNotAllowed();
+      // KVKK veri işleyen / aktarım kayıtları: evidence-backed edits and the owner's explicit approval (30 Oct).
+      if (path === '/api/admin/privacy/processor-registry') { if (request.method !== 'GET') return methodNotAllowed(); const { listProcessors } = await import('./lib/privacy-processor-admin'); return listProcessors(env); }
+      const processorEdit = path.match(/^\/api\/admin\/privacy\/processors\/([^/]+)$/);
+      if (processorEdit) { if (request.method !== 'POST') return methodNotAllowed(); const { updateProcessor } = await import('./lib/privacy-processor-admin'); return updateProcessor(request, env, admin, processorEdit[1]); }
+      const transferEdit = path.match(/^\/api\/admin\/privacy\/transfers(?:\/([^/]+))?$/);
+      if (transferEdit && request.method === 'POST') { const { saveTransfer } = await import('./lib/privacy-processor-admin'); return saveTransfer(request, env, admin, transferEdit[1] || null); }
       const match = path.match(/^\/api\/admin\/privacy\/(processing-activities|notices|consents|processors|transfers|retention|requests|release-approvals|smoke-runs)$/);
       if (match) return request.method === 'GET' ? listPrivacyAdminCollection(env, admin, match[1]) : methodNotAllowed();
       return notFound('KVKK yönetim API yolu bulunamadı.');

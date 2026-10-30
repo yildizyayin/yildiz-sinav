@@ -29,3 +29,22 @@
 .nibiru-health-list .nh-main{display:flex;flex-direction:column;gap:2px;min-width:0;overflow-wrap:anywhere}
 .nibiru-health-list .nh-main small{color:#4A5A7A;font-size:12.5px;line-height:1.45}
 @media (max-width:480px){.nibiru-health-list li{grid-template-columns:1fr}.nibiru-health-list .nh-state{justify-self:start}}
+
+/* KVKK veri işleyenler */
+.kvkk-proc-list{display:flex;flex-direction:column;gap:16px;margin-top:16px}
+.kvkk-proc-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:flex-start}
+.kvkk-proc-head h2{font-size:17px;margin:0}
+.kvkk-proc-head p{margin:2px 0 0;overflow-wrap:anywhere}
+.kvkk-badge{font-size:12px;font-weight:700;border-radius:999px;padding:5px 12px;white-space:nowrap}
+.kvkk-badge.ok{background:#E3F4EC;color:#0F6B43}.kvkk-badge.bad{background:#FDECE8;color:#8A2412}.kvkk-badge.off{background:#EEF1F6;color:#4A5A7A}
+.kvkk-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}
+.kvkk-facts div{border:1px solid #DCE6F8;border-radius:10px;padding:8px 10px}
+.kvkk-facts dt{font-size:12px;color:#4A5A7A}.kvkk-facts dd{margin:2px 0 0;font-weight:600;font-size:14px;overflow-wrap:anywhere}
+.kvkk-blockers{margin:0 0 12px;padding-left:18px;color:#8A2412;font-size:13.5px;line-height:1.5}
+.kvkk-form{border-top:1px solid #DCE6F8;margin-top:14px;padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.kvkk-form h3{font-size:15px;margin:0}
+.kvkk-form .kvkk-wide{grid-column:1/-1}
+.kvkk-form textarea{width:100%;font:inherit}
+.kvkk-confirm{grid-column:1/-1;display:flex!important;flex-direction:row!important;gap:10px;align-items:flex-start;background:#FFF8E6;border:1px solid #F5DFA8;border-radius:10px;padding:10px;font-size:13.5px}
+.kvkk-confirm input{width:20px;height:20px;flex:none}
+.kvkk-form .primary{align-self:flex-start;min-height:44px}
