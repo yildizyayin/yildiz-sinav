@@ -2822,3 +2822,10 @@ Açık: Studio kurumlarda kapalı (aç/kapa kararı kullanıcıda). Sonraki fiki
 - Canlı derste ücretsiz seans YOK. Öneri modeli: öğrenci 1.750 TL / seans; öğretmene 1.000 TL, ANUNEX'e 750 TL (KDV/komisyon/vergi kesintileri netleşecek).
 - Açık: Gold (100 TL) ve Premium (300 TL) bireysel üyeliklerin kaldırılması/dönüştürülmesi; ödeme altyapısı (iyzico/PayTR vb.); mesafeli satış/cayma/e-arşiv; öğretmen seçimi ve sözleşme yapısı; kredi tabanlı fiyat (Süper Admin günceller).
 - Maliyet tahmini (30 Ekim): iletişim+YZ öğrenci+veli başına sezonluk ~16–42 TL (orta kullanım); 25 dk YZ seansı yazılı ~1 TL, sesli ~8–10 TL.
+
+### D-S046 kararları (30 Ekim, kullanıcı) — ücretli canlı ders çıkarıldı, önce yapay zekâ
+- Ücretli bireysel canlı ders şimdilik sistemden çıkarıldı (D-S045'teki 1.750 TL modeli ertelendi; araştırma özeti yol haritası belgesinin "Ertelenen" bölümünde).
+- Bireysel satış yalnız YZ seansları: YZ öğretmen, YZ koç, YZ rehber; 25 dk, her hizmette ayda 1 ücretsiz, sonrası kredi ile ücretli.
+- Kurum canlı dersi kurumun kendi işi: kurum kendi Zoom/Teams/Meet hesabıyla yapar; ANUNEX video satmaz, yalnız ders programına bağlantı + "Derse katıl" + yoklama taşır (A), istenirse API ile otomatik toplantı (B).
+- Bulgu (30 Ekim, prod D1): nibiru_settings.enabled=1 ama processor_registry NIBIRU_AI ve CLOUDFLARE legal_review=PENDING, dpa=MISSING, international_transfer_registry boş → externalPersonalDataGate üretimde YZ yanıtlarını engelliyor, Nibiru şablon yanıta düşüyor. Kapı gevşetilmeyecek; kayıtlar gerçek onay/imzalı sözleşmeyle doldurulacak (yol haritası 1. aşama).
+- Yol haritası (Claude Docs): https://claude.ai/artifact/5iAi2azEiz4uyo8V75SGdF — kod tarafı kullanıcı "başla" diyene kadar yok.
