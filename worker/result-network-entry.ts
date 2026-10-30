@@ -142,7 +142,7 @@ async function studentResults(request:Request,env:Env){
  exams.sort((a,b)=>String(b.exam_date||'').localeCompare(String(a.exam_date||'')));
  const unavailableSnapshotExamIds=rows.filter(row=>!readNetworkSnapshot(row.payload_json)).map(row=>row.exam_id);
  const latest=exams[0]||null;
- return json({ok:true,student:{name:maskName(identity.normalized_name),gradeLevel:identity.grade_level,institution:identity.display_name_snapshot},exams,unavailableSnapshotExamIds,tips:latest?[`${latest.exam_type} sonuçlarında ${Number(latest.net).toLocaleString('tr-TR')} net yaptın.`,`Yanlışlarını kazanım ve soru bazında inceleyerek bir sonraki çalışma adımını seç.`]:[]});
+ return json({ok:true,student:{name:maskName(identity.normalized_name),gradeLevel:identity.grade_level,institution:identity.display_name_snapshot},countdown:await (await import('./lib/national-exam-dates')).countdownForGrade(env,identity.grade_level),exams,unavailableSnapshotExamIds,tips:latest?[`${latest.exam_type} sonuçlarında ${Number(latest.net).toLocaleString('tr-TR')} net yaptın.`,`Yanlışlarını kazanım ve soru bazında inceleyerek bir sonraki çalışma adımını seç.`]:[]});
 }
 
 async function examDetail(request:Request,env:Env,examId:string){
@@ -666,6 +666,8 @@ async function batchResultReport(request:Request,env:Env,batchId:string){
 
 export async function handleResultOperations(request:Request,env:Env):Promise<Response|null>{
  const path=new URL(request.url).pathname;
+ // LGS/YKS sayacı (30 Oct): the dates the student countdown uses; only the Super Admin edits them.
+ if(path==='/api/admin/result-network/exam-dates'){const user=await getAuthUser(env,request);if(!user)return safeError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const d=await import('./lib/national-exam-dates');if(request.method==='GET')return d.listExamDates(env,user);if(request.method==='PUT')return d.saveExamDate(request,env,user);return safeError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.')}
  // Föy değerlendirme (30 Oct): paper föy optics, scored against the föy's own key into FOY evidence.
  if(path.startsWith('/api/admin/result-network/operations/foy/')){const {handleFoyOperations}=await import('./lib/foy-evaluation');return handleFoyOperations(request,env,{context:(r,e,id)=>resultOperatorContext(r,e,id),institutions:scopedOperatorInstitutions,user:(r)=>getAuthUser(env,r)})}
  if(path==='/api/admin/result-network/operations/catalog'&&request.method==='GET')return resultOperatorCatalog(request,env);
