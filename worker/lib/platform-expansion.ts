@@ -12,7 +12,9 @@ import { counselorCanAccess } from './guidance-assessments';
 import { submitHomeworkAnswers } from './homework';
 import { decideBooklet, decideReplace, evaluateSheet } from './studio-optical-submit';
 import { bookletOrder, bookletUsable, checkGroupIntegrity, stemGroupsInstalled, USABLE_BOOKLETS, type OrderedQuestion } from './studio-booklets';
-import { renderStudioAnswerKey, renderStudioPdf, STUDIO_OPTICAL_CAPACITY, StudioPrintError, type StudioBranding } from './studio-pdf';
+import { layoutStudioBooklet, renderStudioAnswerKey, renderStudioPdf, STUDIO_OPTICAL_CAPACITY, StudioPrintError, type StudioBranding } from './studio-pdf';
+import { documentLayoutSettings, studioPrintCheck, studioRevision } from './studio-print-check';
+import { normalizeLayoutSettings } from './print-layout';
 import { reportSnapshotStatements } from './report-snapshot';
 import { withExamOperationLock, listExamOperationLocks, recoverExamOperationLock } from './exam-operation-lock';
 
@@ -733,7 +735,12 @@ async function studioPdf(request:Request,env:Env,user:AuthUser,documentId:string
   const allowed=await one<any>(env.DB.prepare('SELECT 1 ok FROM studio_document_items WHERE document_id=? AND booklet_code=? LIMIT 1').bind(documentId,booklet));
   if(!allowed)return notFound('Bu belge için seçilen kitapçık bulunamadı.');
   try{
-    const rendered=await renderStudioPdf(env,documentId,booklet,await studioBranding(env,document));
+    // P02: the server re-runs the full print check before every PDF; a blocker stops it with the named reason.
+    const branding=await studioBranding(env,document);
+    const {plans:_plans,...check}=await studioPrintCheck(env,document,branding);
+    if(check.blockers.length){const first=check.blockers[0];return json({ok:false,error:{code:first.code,message:first.message},check},409);}
+    const rendered=await renderStudioPdf(env,documentId,booklet,branding,check.settings!);
+    rendered.metadata.revision=check.revision;
     const key=`studio-documents/${document.institution_id||'central'}/${documentId}/${booklet}.pdf`;
     await env.FILES.put(key,rendered.bytes,{httpMetadata:{contentType:'application/pdf',cacheControl:'private, no-store'},customMetadata:{documentId,bookletCode:booklet,questionCount:String(rendered.questionCount),generatedBy:'ANUNEX_STUDIO'}});
     await env.DB.prepare(`INSERT INTO studio_document_assets(id,document_id,institution_id,booklet_code,asset_type,r2_key,file_name,mime_type,byte_size,metadata_json)
@@ -922,6 +929,35 @@ async function stemGrouping(env:Env,ids:string[]):Promise<{ordered:OrderedQuesti
   const problem=checkGroupIntegrity(ordered,expected);
   if(problem)return json({ok:false,error:{code:'STEM_GROUP_INTEGRITY',message:problem}},409);
   return {ordered};
+}
+
+/** P02: the print check for a document (every blocker and warning, named per question and what to fix). */
+async function studioCheck(env:Env,user:AuthUser,documentId:string):Promise<Response>{
+  const document=await studioDocForStaff(env,user,documentId);if(document instanceof Response)return document;
+  const {plans:_plans,...check}=await studioPrintCheck(env,document,await studioBranding(env,document));
+  return json({ok:true,check});
+}
+/** P02: the page plan the PDF will use, for the preview; same layout function as the PDF. */
+async function studioLayoutPlan(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
+  const document=await studioDocForStaff(env,user,documentId);if(document instanceof Response)return document;
+  const booklet=(new URL(request.url).searchParams.get('booklet')||'A').toUpperCase();if(!bookletUsable(booklet))return badRequest(`Kitapçık ${USABLE_BOOKLETS.join(' veya ')} olmalıdır.`,'INVALID_BOOKLET');
+  const settings=documentLayoutSettings(document);if(!settings.ok)return json({ok:false,error:{code:'LAYOUT_INVALID',message:'Kayıtlı sayfa düzeni geçersiz.',details:settings.errors}},409);
+  try{const out=await layoutStudioBooklet(env,documentId,booklet,await studioBranding(env,document),settings.value);return json({ok:true,booklet,revision:await studioRevision(env,document),settings:settings.value,plan:out.plan});}
+  catch(error){if(error instanceof StudioPrintError)return json({ok:false,error:{code:error.code,message:error.message}},409);throw error;}
+}
+/** P02: save validated, versioned page settings; printed PDFs become stale and are dropped. */
+async function studioSaveLayout(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
+  const document=await studioDocForStaff(env,user,documentId);if(document instanceof Response)return document;
+  const b=await requestBody(request);const parsed=normalizeLayoutSettings(b.settings);
+  if(!parsed.ok)return json({ok:false,error:{code:parsed.errors[0].code,message:parsed.errors[0].message,details:parsed.errors}},400);
+  let config:any={};try{config=JSON.parse(document.config_json||'{}');}catch{}
+  const printed=Number((await one<any>(env.DB.prepare(`SELECT COUNT(*) n FROM studio_document_assets WHERE document_id=? AND asset_type='QUESTION_PDF'`).bind(documentId)))?.n||0);
+  await env.DB.batch([
+    env.DB.prepare(`UPDATE studio_documents SET config_json=?,pdf_r2_key=NULL,status=CASE WHEN status='READY' THEN 'DRAFT' ELSE status END,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(JSON.stringify({...config,layout:parsed.value}),documentId),
+    env.DB.prepare(`DELETE FROM studio_document_assets WHERE document_id=? AND asset_type='QUESTION_PDF'`).bind(documentId),
+  ]);
+  await audit(env.DB,user.id,document.institution_id,'STUDIO_LAYOUT_CHANGED','studio_document',documentId,{settings:parsed.value,invalidatedPdfs:printed});
+  return json({ok:true,settings:parsed.value,invalidatedPdfs:printed});
 }
 
 /** P01: the user reorders booklet A; every other booklet is rebuilt from the persistent ids. Locked once results exist. */
@@ -1157,6 +1193,8 @@ export async function handlePlatformApi(request:Request,env:Env,user:AuthUser):P
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/items$/);if(m&&request.method==='GET')return studioItems(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/swap$/);if(m&&request.method==='POST')return studioSwap(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/order$/);if(m&&request.method==='PUT')return studioOrder(request,env,user,m[1]);
+  m=p.match(/^\/api\/platform\/studio\/([^/]+)\/check$/);if(m&&request.method==='GET')return studioCheck(env,user,m[1]);
+  m=p.match(/^\/api\/platform\/studio\/([^/]+)\/layout$/);if(m&&request.method==='GET')return studioLayoutPlan(request,env,user,m[1]);if(m&&request.method==='PUT')return studioSaveLayout(request,env,user,m[1]);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/pdf$/);if(m&&request.method==='GET')return studioPdf(request,env,user,m[1]);
   if(p==='/api/platform/studio/branding/logo')return studioLogo(request,env,user);
   m=p.match(/^\/api\/platform\/studio\/([^/]+)\/answer-key$/);if(m&&request.method==='GET')return studioAnswerKey(env,user,m[1]);

@@ -2,6 +2,7 @@ import fontkit from '@pdf-lib/fontkit';
 import { PDFDocument, PDFFont, PDFPage, rgb } from 'pdf-lib';
 import type { Env } from '../types';
 import { all, one } from './db';
+import { DEFAULT_LAYOUT_SETTINGS, layoutModel, type LayoutModel, type LayoutPlan, type Placement, type PrintLayoutSettings } from './print-layout';
 import { parseContentJson } from './question-content';
 import { DEJAVU_SANS_BASE64, DEJAVU_SANS_BOLD_BASE64 } from './fonts/dejavu-subset.generated';
 import { ANUNEX_MARK_PNG_BASE64, NIBIRU_MARK_PNG_BASE64 } from './fonts/brand-marks.generated';
@@ -156,48 +157,50 @@ async function printablesFromRows(env: Env, rows: Row[]): Promise<Printable[]> {
 
 // --- layout --------------------------------------------------------------------------------
 type Cursor = { page: PDFPage; col: 0 | 1; y: number; top: number };
-type Ctx = { pdf: PDFDocument; fonts: Fonts; images: Map<Uint8Array, any>; title: string; booklet: string; pages: PDFPage[]; branding: StudioBranding; marks: { anunex?: any; nibiru?: any; logo?: any } };
+type Ctx = { pdf: PDFDocument; fonts: Fonts; images: Map<Uint8Array, any>; title: string; booklet: string; pages: PDFPage[]; branding: StudioBranding; marks: { anunex?: any; nibiru?: any; logo?: any }; L: LayoutModel };
+const DEFAULT_MODEL = layoutModel(DEFAULT_LAYOUT_SETTINGS);
 
 function newPage(ctx: Ctx, first: boolean): Cursor {
-  const page = ctx.pdf.addPage([PAGE_W, PAGE_H]);
+  const L = ctx.L;
+  const page = ctx.pdf.addPage([L.pageW, L.pageH]);
   ctx.pages.push(page);
-  let top = TOP;
+  let top = L.top;
   if (first) {
     const { fonts, branding, marks } = ctx;
-    let left = MARGIN;
+    let left = L.margin;
     if (marks.logo) {
       const s = Math.min(40 / marks.logo.width, 40 / marks.logo.height);
       page.drawImage(marks.logo, { x: left, y: top - 40 + (40 - marks.logo.height * s) / 2, width: marks.logo.width * s, height: marks.logo.height * s });
       left += marks.logo.width * s + 10;
     }
     const rightBlock = branding.showAnunex ? 110 : 70;
-    const textWidth = PAGE_W - MARGIN - rightBlock - left;
+    const textWidth = L.pageW - L.margin - rightBlock - left;
     if (branding.institutionName) page.drawText(branding.institutionName, { x: left, y: top - 11, size: 9.5, font: fonts.bold, color: MUTED, maxWidth: textWidth });
     page.drawText(ctx.title, { x: left, y: top - (branding.institutionName ? 28 : 20), size: 13, font: fonts.bold, color: INK, maxWidth: textWidth });
     if (branding.showAnunex && marks.anunex) {
       const size = 22, label = 'ANUNEX', lw = fonts.bold.widthOfTextAtSize(label, 10);
-      page.drawImage(marks.anunex, { x: PAGE_W - MARGIN - size, y: top - size, width: size, height: size });
-      page.drawText(label, { x: PAGE_W - MARGIN - size - 5 - lw, y: top - 15, size: 10, font: fonts.bold, color: rgb(0.07, 0.2, 0.5) });
+      page.drawImage(marks.anunex, { x: L.pageW - L.margin - size, y: top - size, width: size, height: size });
+      page.drawText(label, { x: L.pageW - L.margin - size - 5 - lw, y: top - 15, size: 10, font: fonts.bold, color: rgb(0.07, 0.2, 0.5) });
     }
     const bk = `Kitapçık ${ctx.booklet}`;
-    page.drawText(bk, { x: PAGE_W - MARGIN - fonts.bold.widthOfTextAtSize(bk, 12), y: top - 40, size: 12, font: fonts.bold, color: INK });
-    page.drawText('Ad Soyad: ______________________________   Sınıf: ________   Numara: ____________', { x: MARGIN, y: top - 56, size: 9, font: fonts.regular, color: INK });
-    page.drawLine({ start: { x: MARGIN, y: top - 66 }, end: { x: PAGE_W - MARGIN, y: top - 66 }, thickness: 0.8, color: RULE });
+    page.drawText(bk, { x: L.pageW - L.margin - fonts.bold.widthOfTextAtSize(bk, 12), y: top - 40, size: 12, font: fonts.bold, color: INK });
+    page.drawText('Ad Soyad: ______________________________   Sınıf: ________   Numara: ____________', { x: L.margin, y: top - 56, size: 9, font: fonts.regular, color: INK });
+    page.drawLine({ start: { x: L.margin, y: top - 66 }, end: { x: L.pageW - L.margin, y: top - 66 }, thickness: 0.8, color: RULE });
     top -= 78;
   } else {
-    page.drawText(`${ctx.title} · Kitapçık ${ctx.booklet}`, { x: MARGIN, y: top - 9, size: 8, font: ctx.fonts.regular, color: MUTED, maxWidth: PAGE_W - 2 * MARGIN });
+    page.drawText(`${ctx.title} · Kitapçık ${ctx.booklet}`, { x: L.margin, y: top - 9, size: 8, font: ctx.fonts.regular, color: MUTED, maxWidth: L.pageW - 2 * L.margin });
     top -= 20;
   }
-  page.drawLine({ start: { x: PAGE_W / 2, y: top + 4 }, end: { x: PAGE_W / 2, y: BOTTOM - 4 }, thickness: 0.5, color: RULE });
+  if (L.columns === 2) page.drawLine({ start: { x: L.pageW / 2, y: top + 4 }, end: { x: L.pageW / 2, y: L.bottom - 4 }, thickness: 0.5, color: RULE });
   return { page, col: 0, y: top, top };
 }
 
-function colX(c: Cursor) { return MARGIN + c.col * (COL_W + GUTTER); }
+function colX(ctx: Ctx, c: Cursor) { return ctx.L.margin + c.col * (ctx.L.colW + ctx.L.gutter); }
 
 type Op = { h: number; draw: (page: PDFPage, x: number, y: number) => void };
 
-function textOps(ctx: Ctx, lines: string[], x0: number, size = BODY, bold = false, indent = 0): Op[] {
-  return lines.map(line => ({ h: LINE, draw: (page, x, y) => { if (line) page.drawText(line, { x: x + x0 + indent, y: y - size, size, font: bold ? ctx.fonts.bold : ctx.fonts.regular, color: INK }); } }));
+function textOps(ctx: Ctx, lines: string[], x0: number, size = ctx.L.body, bold = false, indent = 0): Op[] {
+  return lines.map(line => ({ h: ctx.L.line, draw: (page, x, y) => { if (line) page.drawText(line, { x: x + x0 + indent, y: y - size, size, font: bold ? ctx.fonts.bold : ctx.fonts.regular, color: INK }); } }));
 }
 
 export function chartAxisMax(value: number) { const raw = Math.max(value, 1) / 4, unit = 10 ** Math.floor(Math.log10(raw)); return ([1, 2, 2.5, 5, 10].find(n => n * unit >= raw) ?? 10) * unit * 4; }
@@ -264,8 +267,9 @@ function visualOps(ctx: Ctx, v: Visual, width: number, where: string): Op[] {
 function questionOps(ctx: Ctx, q: Printable): Op[] {
   const where = `Soru ${q.no}`;
   const { regular, bold } = ctx.fonts;
+  const BODY = ctx.L.body, LINE = ctx.L.line;
   // Room for three-digit numbers so '100.' never touches the stem.
-  const numW = bold.widthOfTextAtSize('100.', BODY + 0.5) + 5, inner = COL_W - numW;
+  const numW = bold.widthOfTextAtSize('100.', BODY + 0.5) + 5, inner = ctx.L.colW - numW;
   const ops: Op[] = [];
   const stemText = [...q.stem, ...q.extra].join('\n');
   assertPrintable(ctx.fonts, stemText, where);
@@ -287,7 +291,7 @@ function questionOps(ctx: Ctx, q: Printable): Op[] {
       if (line) page.drawText(line, { x: x + numW + labelW, y: y - BODY, size: BODY, font: regular, color: INK });
     } }));
   });
-  ops.push({ h: 12, draw: () => {} });
+  ops.push({ h: ctx.L.questionGap, draw: () => {} });
   return ops;
 }
 
@@ -302,7 +306,7 @@ function footer(ctx: Ctx) {
   const total = ctx.pages.length;
   ctx.pages.forEach((page, i) => {
     const label = `Sayfa ${i + 1} / ${total}`;
-    page.drawText(label, { x: PAGE_W / 2 - ctx.fonts.regular.widthOfTextAtSize(label, 7.5) / 2, y: MARGIN - 4, size: 7.5, font: ctx.fonts.regular, color: MUTED });
+    page.drawText(label, { x: ctx.L.pageW / 2 - ctx.fonts.regular.widthOfTextAtSize(label, 7.5) / 2, y: ctx.L.margin - 4, size: 7.5, font: ctx.fonts.regular, color: MUTED });
   });
 }
 
@@ -385,9 +389,13 @@ function bubbleAt(page: PDFPage, fonts: Fonts, x: number, y: number, r: number, 
 }
 
 // --- public API ----------------------------------------------------------------------------
-export async function renderStudioPdf(env: Env, documentId: string, booklet: string, branding: StudioBranding = DEFAULT_BRANDING): Promise<{ bytes: ArrayBuffer; metadata: Record<string, unknown>; questionCount: number }> {
+/**
+ * P02: the booklet laid out once, with the document's validated settings; the PDF and the preview plan both come
+ * from this, so the preview cannot disagree with the print.
+ */
+export async function layoutStudioBooklet(env: Env, documentId: string, booklet: string, branding: StudioBranding = DEFAULT_BRANDING, settings: PrintLayoutSettings = DEFAULT_LAYOUT_SETTINGS, overflow?: Array<{ questionId: string; no: number; height: number; room: number }>) {
   const doc = await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId)); if (!doc) throw new Error('STUDIO_NOT_FOUND');
-  const { items } = await loadPrintables(env, documentId, booklet);
+  const { rows, items } = await loadPrintables(env, documentId, booklet);
   const pdf = await PDFDocument.create();
   pdf.setTitle(`${doc.title} - Kitapçık ${booklet}`); pdf.setCreator('ANUNEX Studio'); pdf.setProducer('ANUNEX Studio');
   const fonts = await loadFonts(pdf);
@@ -403,31 +411,47 @@ export async function renderStudioPdf(env: Env, documentId: string, booklet: str
     try { marks.logo = format === 'png' ? await pdf.embedPng(branding.institutionLogo) : await pdf.embedJpg(branding.institutionLogo); }
     catch { throw new StudioPrintError('PRINT_LOGO_UNREADABLE', 'Kurum logosu okunamadı.'); }
   }
-  const ctx: Ctx = { pdf, fonts, images: new Map(), title, booklet, pages: [], branding, marks };
+  const L = layoutModel(settings);
+  const ctx: Ctx = { pdf, fonts, images: new Map(), title, booklet, pages: [], branding, marks, L };
   await prepareImages(ctx, items);
+  const placements: Placement[] = [];
   let cur = newPage(ctx, true);
-  for (const q of items) {
+  items.forEach((q, i) => {
     const ops = questionOps(ctx, q);
     const height = ops.reduce((s, o) => s + o.h, 0);
-    if (height > TOP - 20 - BOTTOM) throw new StudioPrintError('PRINT_QUESTION_TOO_LONG', `Soru ${q.no}: tek sütuna sığmayacak kadar uzun. İçerik eksiltilerek PDF üretilmez.`);
-    if (cur.y - height < BOTTOM) {
-      if (cur.col === 0) cur = { ...cur, col: 1, y: cur.top };
+    const room = L.top - 20 - L.bottom;
+    if (height > room) {
+      // The check collects every overflow (and keeps laying out); printing stops at the first one.
+      if (!overflow) throw new StudioPrintError('PRINT_QUESTION_TOO_LONG', `Soru ${q.no}: tek sütuna sığmayacak kadar uzun. İçerik eksiltilerek PDF üretilmez.`);
+      overflow.push({ questionId: rows[i].id, no: q.no, height: Math.round(height), room: Math.round(room) });
+    }
+    if (cur.y - height < L.bottom) {
+      if (cur.col === 0 && L.columns === 2) cur = { ...cur, col: 1, y: cur.top };
       else cur = newPage(ctx, false);
-      if (cur.y - height < BOTTOM) { cur = newPage(ctx, false); }
+      if (cur.y - height < L.bottom) { cur = newPage(ctx, false); }
     }
     let y = cur.y;
-    for (const op of ops) { op.draw(cur.page, colX(cur), y); y -= op.h; }
+    const x = colX(ctx, cur);
+    const dpis = q.visuals.filter(v => v.kind === 'IMAGE').map(v => { const img = ctx.images.get((v as any).bytes); if (!img) return null; const inner = L.colW - (ctx.fonts.bold.widthOfTextAtSize('100.', L.body + 0.5) + 5); const sc = Math.min(inner / img.width, 230 / img.height, 1); return Math.round(72 / sc); }).filter((d): d is number => d !== null);
+    placements.push({ ...(dpis.length ? { minImageDpi: Math.min(...dpis) } : {}), questionId: rows[i].id, no: q.no, page: ctx.pages.length, column: cur.col, x: Math.round(x * 10) / 10, y: Math.round((L.pageH - cur.y) * 10) / 10, width: Math.round(L.colW * 10) / 10, height: Math.round(height * 10) / 10 });
+    for (const op of ops) { op.draw(cur.page, x, y); y -= op.h; }
     cur.y = y;
-  }
+  });
   footer(ctx);
   let deliveryMode = 'PDF_OPTICAL'; try { deliveryMode = String(JSON.parse(doc.config_json || '{}').deliveryMode || 'PDF_OPTICAL').toUpperCase(); } catch {}
+  const plan: LayoutPlan = { settings, model: L, pages: ctx.pages.length, placements };
+  return { doc, pdf, fonts, title, items, plan, deliveryMode, branding };
+}
+
+export async function renderStudioPdf(env: Env, documentId: string, booklet: string, branding: StudioBranding = DEFAULT_BRANDING, settings: PrintLayoutSettings = DEFAULT_LAYOUT_SETTINGS): Promise<{ bytes: ArrayBuffer; metadata: Record<string, unknown>; questionCount: number; plan: LayoutPlan }> {
+  const { pdf, fonts, title, items, plan, deliveryMode } = await layoutStudioBooklet(env, documentId, booklet, branding, settings);
   const withOptical = deliveryMode === 'PDF_OPTICAL';
-  if (withOptical && items.length > STUDIO_OPTICAL_CAPACITY) throw new StudioPrintError('PRINT_OPTICAL_CAPACITY', `Bu optik form en fazla ${STUDIO_OPTICAL_CAPACITY} soruyu okutabilir; kitapçıkta ${items.length} soru var. Soru sayısını azaltın veya optiksiz PDF teslimi seçin.`);
+  if (withOptical && items.length > STUDIO_OPTICAL_CAPACITY) throw new StudioPrintError('PRINT_OPTICAL_CAPACITY', `Bu optik form en fazla ${STUDIO_OPTICAL_CAPACITY} soruyu okutabilir; kitapçıkta ${items.length} soru var. Soru sayısını azaltın veya optiksiz PDF teslimini seçin.`);
   const optionCount = items.some(q => q.options.length >= 5) ? 5 : 4;
   const optical = withOptical ? opticalPage(title, booklet, items.length, optionCount) : null;
   if (optical) drawOpticalPage(pdf, fonts, optical.layout);
   const bytes = await pdf.save();
-  return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, metadata: { bookletCode: booklet, questionCount: items.length, optionCount, questionPages: ctx.pages.length, branding: { showAnunex: branding.showAnunex, showNibiru: branding.showNibiru, institutionName: branding.institutionName, institutionLogo: !!branding.institutionLogo }, optical: optical?.geometry ?? null }, questionCount: items.length };
+  return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, metadata: { bookletCode: booklet, questionCount: items.length, optionCount, questionPages: plan.pages, layout: settings, branding: { showAnunex: branding.showAnunex, showNibiru: branding.showNibiru, institutionName: branding.institutionName, institutionLogo: !!branding.institutionLogo }, optical: optical?.geometry ?? null }, questionCount: items.length, plan };
 }
 
 /** Teacher-facing answer key: one table per booklet, derived from the same stored order as the booklets. */
@@ -485,7 +509,7 @@ export async function renderQuestionBookPdf(env: Env, title: string, sections: {
   const cleanTitle = normalizePrintText(title); assertPrintable(fonts, cleanTitle, 'Kitap başlığı');
   const marksCtx: Ctx['marks'] = { anunex: await pdf.embedPng(b64(ANUNEX_MARK_PNG_BASE64)) };
   if (items.some(q => q.ai)) marksCtx.nibiru = await pdf.embedPng(b64(NIBIRU_MARK_PNG_BASE64));
-  const ctx: Ctx = { pdf, fonts, images: new Map(), title: cleanTitle, booklet: '', pages: [], branding: DEFAULT_BRANDING, marks: marksCtx };
+  const ctx: Ctx = { pdf, fonts, images: new Map(), title: cleanTitle, booklet: '', pages: [], branding: DEFAULT_BRANDING, marks: marksCtx, L: DEFAULT_MODEL };
   await prepareImages(ctx, items);
   let cur = newPage(ctx, true), k = 0;
   for (const sec of sections) {
@@ -498,8 +522,8 @@ export async function renderQuestionBookPdf(env: Env, title: string, sections: {
       if (height > TOP - 20 - BOTTOM) throw new StudioPrintError('PRINT_QUESTION_TOO_LONG', `Soru ${items[k].no}: tek sütuna sığmayacak kadar uzun. İçerik eksiltilerek PDF üretilmez.`);
       if (cur.y - height < BOTTOM) { cur = cur.col === 0 ? { ...cur, col: 1, y: cur.top } : newPage(ctx, false); if (cur.y - height < BOTTOM) cur = newPage(ctx, false); }
       let y = cur.y;
-      if (head) { for (const line of headLines) { cur.page.drawText(line, { x: colX(cur), y: y - 11, size: 10.5, font: fonts.bold, color: BAR }); y -= 14; } y -= 6; }
-      for (const op of ops) { op.draw(cur.page, colX(cur), y); y -= op.h; }
+      if (head) { for (const line of headLines) { cur.page.drawText(line, { x: colX(ctx, cur), y: y - 11, size: 10.5, font: fonts.bold, color: BAR }); y -= 14; } y -= 6; }
+      for (const op of ops) { op.draw(cur.page, colX(ctx, cur), y); y -= op.h; }
       cur.y = y;
     }
   }
@@ -519,4 +543,13 @@ export async function renderQuestionBookPdf(env: Env, title: string, sections: {
   }
   const bytes = await pdf.save();
   return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, questionCount: items.length };
+}
+
+/** P02 check: whether one question can be printed at all, as a named reason (never thrown). */
+export async function printableIssue(env: Env, row: { id: string; stem_text: string; options_json: string | null; correct_answer: string | null; content_mode: string | null; origin_kind: string | null }, no: number): Promise<{ code: string; message: string } | null> {
+  try { await printablesFromRows(env, [{ ...row, question_no: no } as any]); return null; }
+  catch (error) {
+    if (error instanceof StudioPrintError) return { code: error.code, message: error.message.replace(/^Soru 1:/, `Soru ${no}:`) };
+    throw error;
+  }
 }

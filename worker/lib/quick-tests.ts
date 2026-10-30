@@ -260,6 +260,81 @@ async function fromStudio(env: Env, user: AuthUser, docId: string) {
 }
 const rightsLabel = (v: unknown) => String(v ?? "bilinmiyor");
 
+// ---------------------------------------------------------------------------------------------------------------
+// P02: page settings, print check and page plan
+// ---------------------------------------------------------------------------------------------------------------
+async function printSettingsOf(t: any) {
+  const { normalizeLayoutSettings, DEFAULT_LAYOUT_SETTINGS } = await import('./print-layout');
+  let raw: any; try { raw = JSON.parse(t.layout_json || '{}').print; } catch { raw = undefined; }
+  if (raw === undefined) { const c = settingsOf(t).columns; return { ok: true as const, value: { ...DEFAULT_LAYOUT_SETTINGS, columns: c === 1 ? 1 : c === 2 ? 2 : 'AUTO' } as any }; }
+  return normalizeLayoutSettings(raw, { allowAuto: true });
+}
+
+type QIssue = { code: string; message: string; questionId: string | null; target: string };
+const RIGHTS_OK = ['OWNED', 'LICENSED', 'PUBLIC_DOMAIN'];
+
+async function quickRevision(env: Env, t: any, questions: any[], settings: unknown) {
+  const { contentRevision } = await import('./print-layout');
+  const bank = questions.filter((q) => q.question_bank_id).map((q) => q.question_bank_id);
+  const rows = bank.length ? await all<any>(env.DB.prepare(`SELECT id,updated_at,stem_text,options_json,review_status,copyright_status FROM question_bank WHERE id IN (${bank.map(() => '?').join(',')}) ORDER BY id`).bind(...bank)) : [];
+  return contentRevision(['quick-v1', t.title, t.option_count, settings ?? null, questions.map((q) => [q.id, q.sort_order, q.kind, q.image_key, q.image_width, q.image_height, q.correct_answer, q.question_bank_id]), rows]);
+}
+
+export async function quickPrintCheck(env: Env, t: any) {
+  const pdf = await import('./quick-test-pdf');
+  const LOW_DPI_WARNING = 150;
+  const questions = await questionsOf(env, t.id);
+  const blockers: QIssue[] = [], warnings: QIssue[] = [];
+  const settings = await printSettingsOf(t);
+  if (!settings.ok) for (const e of settings.errors) blockers.push({ code: e.code, message: e.message, questionId: null, target: 'SETTINGS' });
+  if (!questions.length) blockers.push({ code: 'EMPTY', message: 'Teste henüz soru eklenmedi.', questionId: null, target: 'CONTENT' });
+  const letters = LETTERS.slice(0, t.option_count);
+  questions.forEach((q, i) => { if (!q.correct_answer || ![...letters, 'X'].includes(q.correct_answer)) blockers.push({ code: 'MISSING_ANSWER_KEY', message: `${i + 1}. sorunun doğru cevabını işaretleyin.`, questionId: q.id, target: 'ANSWER_KEY' }); });
+  if (questions.length && questions.every((q) => q.correct_answer === 'X')) blockers.push({ code: 'ALL_CANCELLED', message: 'Bütün sorular iptal; en az bir geçerli soru gerekir.', questionId: null, target: 'ANSWER_KEY' });
+  if (t.source_kind === 'CROP') {
+    if (!t.rights_declared_by) blockers.push({ code: 'RIGHTS_NOT_DECLARED', message: 'Kırpılan materyali kullanma hakkınız olduğunu beyan edin.', questionId: null, target: 'RIGHTS' });
+    // A rights declaration is not an editorial review: say so, never present cropped questions as approved.
+    warnings.push({ code: 'NOT_EDITORIALLY_REVIEWED', message: 'Kırpılan sorular kuruma özeldir ve editoryal onaydan geçmemiştir; kullanım hakkı beyanı onay yerine geçmez.', questionId: null, target: 'APPROVAL' });
+  } else {
+    const bank = questions.filter((q) => q.question_bank_id).map((q) => q.question_bank_id);
+    const rows = bank.length ? await all<any>(env.DB.prepare(`SELECT id,review_status,copyright_status FROM question_bank WHERE id IN (${bank.map(() => '?').join(',')})`).bind(...bank)) : [];
+    questions.forEach((q, i) => { const r = rows.find((x) => x.id === q.question_bank_id); if (!r) blockers.push({ code: 'QUESTION_MISSING', message: `${i + 1}. soru artık havuzda yok.`, questionId: q.id, target: 'CONTENT' }); else { if (r.review_status !== 'APPROVED') blockers.push({ code: 'NOT_APPROVED', message: `${i + 1}. soru onaylı değil.`, questionId: q.id, target: 'APPROVAL' }); if (!RIGHTS_OK.includes(String(r.copyright_status))) blockers.push({ code: 'RIGHTS_NOT_CLEARED', message: `${i + 1}. sorunun kullanım hakkı baskıya uygun değil.`, questionId: q.id, target: 'RIGHTS' }); } });
+  }
+  for (const [i, q] of questions.entries()) if (q.kind === 'IMAGE') {
+    const obj = await env.FILES.get(q.image_key);
+    if (!obj) { blockers.push({ code: 'PRINT_IMAGE_MISSING', message: `${i + 1}. sorunun görseli depoda yok.`, questionId: q.id, target: 'MEDIA' }); continue; }
+    const head = new Uint8Array((await obj.arrayBuffer()).slice(0, 8));
+    if (!sniff(head)) blockers.push({ code: 'PRINT_IMAGE_FORMAT_UNSUPPORTED', message: `${i + 1}. sorunun görseli PNG veya JPEG değil.`, questionId: q.id, target: 'MEDIA' });
+  }
+  const { STUDIO_OPTICAL_CAPACITY } = await import('./studio-pdf');
+  const opticalIncluded = questions.length <= STUDIO_OPTICAL_CAPACITY;
+  if (!opticalIncluded) warnings.push({ code: 'OPTICAL_NOT_INCLUDED', message: `Telefon optiği en fazla ${STUDIO_OPTICAL_CAPACITY} soruyu okutabilir; ${questions.length} soruluk bu kâğıt optik formsuz basılır. Online sınav veya elle giriş kullanın.`, questionId: null, target: 'OPTICAL' });
+  let plan: any = null;
+  if (!blockers.length && settings.ok) {
+    try {
+      const out = await pdf.layoutQuickTest(env, t, questions, await pdf.brandingFor(env, t.institution_id), settings.value);
+      plan = out.plan;
+      for (const o of out.overflow) { const q = questions.find((x) => x.id === o.questionId); if (q?.kind === 'IMAGE') warnings.push({ code: 'QUESTION_SHRUNK', message: `${o.no}. soru sütuna sığmadığı için küçültülerek basılacak.`, questionId: o.questionId, target: 'LAYOUT' }); else blockers.push({ code: 'PRINT_QUESTION_TOO_LONG', message: `${o.no}. soru sütuna sığmıyor.`, questionId: o.questionId, target: 'LAYOUT' }); }
+      for (const p of out.plan.placements) if (p.minImageDpi !== undefined && p.minImageDpi < LOW_DPI_WARNING) warnings.push({ code: 'LOW_IMAGE_RESOLUTION', message: `${p.no}. sorunun görseli yaklaşık ${p.minImageDpi} dpi basılacak; bulanık görünebilir.`, questionId: p.questionId, target: 'MEDIA' });
+    } catch (error: any) {
+      blockers.push({ code: String(error?.code || 'PRINT_FAILED'), message: String(error?.message || 'Kâğıt yerleşimi yapılamadı.'), questionId: null, target: 'LAYOUT' });
+    }
+  }
+  const revision = await quickRevision(env, t, questions, settings.ok ? settings.value : null);
+  return { revision, status: blockers.length ? 'BLOCKED' : warnings.length ? 'WARNINGS' : 'READY', blockers, warnings, settings: settings.ok ? settings.value : null, opticalCapacity: STUDIO_OPTICAL_CAPACITY, opticalIncluded, questionCount: questions.length, pages: plan?.pages ?? null, plan, questions };
+}
+
+async function saveQuickLayout(request: Request, env: Env, t: any) {
+  const { normalizeLayoutSettings } = await import('./print-layout');
+  const b: any = await request.json().catch(() => ({}));
+  const parsed = normalizeLayoutSettings(b.settings, { allowAuto: true });
+  if (!parsed.ok) return fail(400, parsed.errors[0].code, parsed.errors[0].message, parsed.errors);
+  let current: any = {}; try { current = JSON.parse(t.layout_json || '{}'); } catch { current = {}; }
+  const columns = parsed.value.columns === 'AUTO' ? 0 : parsed.value.columns;
+  await env.DB.prepare('UPDATE quick_tests SET layout_json=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(JSON.stringify({ ...current, columns, print: parsed.value }), t.id).run();
+  return json({ ok: true, settings: parsed.value });
+}
+
 function answerKeyOf(questions: any[]): string[] { return questions.map((q) => String(q.correct_answer || '')); }
 function readiness(t: any, questions: any[]) {
   if (!questions.length) return 'Teste henüz soru eklenmedi.';
@@ -400,13 +475,22 @@ export async function handleQuickTests(request: Request, env: Env): Promise<Resp
   if (rest === 'results' && m === 'GET') return results(env, t, url);
   y = rest.match(/^attempts\/([^/]+)$/); if (y && m === 'DELETE') return deleteAttempt(env, t, y[1]);
   if (rest === 'paper' && m === 'POST') return paperResult(request, env, user, t);
+  if (rest === 'check' && m === 'GET') { const { plan: _p, questions: _q, ...check } = await quickPrintCheck(env, t); return json({ ok: true, check }); }
+  if (rest === 'layout' && m === 'GET') { const c = await quickPrintCheck(env, t); if (!c.plan) return json({ ok: false, error: { code: 'LAYOUT_BLOCKED', message: c.blockers[0]?.message || 'Yerleşim yapılamadı.' }, check: { ...c, plan: undefined, questions: undefined } }, 409); return json({ ok: true, revision: c.revision, settings: c.settings, plan: c.plan }); }
+  if (rest === 'layout' && m === 'PUT') return saveQuickLayout(request, env, t);
+  if (rest === 'pdf' && m === 'GET') {
+    // P02: the server re-runs the full check before printing; a blocker stops it with its named reason.
+    const c = await quickPrintCheck(env, t);
+    if (c.blockers.length) { const first = c.blockers[0]; return json({ ok: false, error: { code: first.code === 'MISSING_ANSWER_KEY' || first.code === 'ALL_CANCELLED' || first.code === 'EMPTY' ? 'TEST_NOT_READY' : first.code, message: first.message }, check: { ...c, plan: undefined, questions: undefined } }, 409); }
+  }
   if ((rest === 'pdf' || rest === 'answer-key' || rest === 'optical-template') && m === 'GET') {
     const questions = await questionsOf(env, t.id);
     const notReady = readiness(t, questions); if (notReady) return fail(409, 'TEST_NOT_READY', notReady);
     const pdf = await import('./quick-test-pdf');
     if (rest === 'optical-template') return json({ ok: true, template: pdf.quickTestOpticalTemplate(t, questions.length) });
     const branding = await pdf.brandingFor(env, t.institution_id);
-    const out = rest === 'pdf' ? await pdf.renderQuickTestPdf(env, t, questions, branding, (url.searchParams.has('columns') ? (Number(url.searchParams.get('columns')) === 1 ? 1 : Number(url.searchParams.get('columns')) === 2 ? 2 : 0) : settingsOf(t).columns) as 0 | 1 | 2) : await pdf.renderQuickTestAnswerKey(t, answerKeyOf(questions));
+    const ps = await printSettingsOf(t);
+    const out = rest === 'pdf' ? await pdf.renderQuickTestPdf(env, t, questions, branding, (url.searchParams.has('columns') ? (Number(url.searchParams.get('columns')) === 1 ? 1 : Number(url.searchParams.get('columns')) === 2 ? 2 : 0) : settingsOf(t).columns) as 0 | 1 | 2, ps.ok ? ps.value : undefined) : await pdf.renderQuickTestAnswerKey(t, answerKeyOf(questions));
     const name = `${t.title}${rest === 'pdf' ? '' : ' - Cevap Anahtari'}.pdf`.replace(/[^\p{L}\p{N} ._-]/gu, '_');
     return new Response(out, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(name)}`, 'Cache-Control': 'no-store' } });
   }
