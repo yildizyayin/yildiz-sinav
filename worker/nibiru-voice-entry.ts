@@ -98,6 +98,7 @@ export default {
   if(p==='/api/nibiru/voice/transcribe'&&request.method==='POST')return transcribe(request,env);
   if(p==='/api/nibiru/voice/speak'&&request.method==='POST')return speak(request,env);
   if(p==='/api/nibiru/voice/probe'&&request.method==='POST')return probe(request,env);
+  if(p==='/api/nibiru/health-check'){const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const h=await import('./lib/nibiru-health');if(request.method==='POST')return h.runNibiruHealthCheck(env,user);if(request.method==='GET')return h.listNibiruHealthChecks(env,user);return fail(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.')}
   return app.fetch(request,env,ctx);
  },
  async scheduled(event:ScheduledController,env:Env,ctx:ExecutionContext){if('scheduled' in app&&typeof app.scheduled==='function')return app.scheduled(event,env,ctx);},

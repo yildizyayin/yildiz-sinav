@@ -18,3 +18,14 @@
 .live-cards { display: grid; gap: 10px; }
 .live-card { display: grid; gap: 6px; padding: 14px; border: 1px solid var(--border, #dfe6f1); border-radius: 14px; background: #fff; }
 .live-card .primary, .live-card .secondary { justify-self: start; }
+
+/* Nibiru canlı kontrol */
+.nibiru-health-list{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.nibiru-health-list li{display:grid;grid-template-columns:104px minmax(0,1fr);gap:12px;align-items:start;border:1px solid #DCE6F8;border-radius:12px;padding:10px 12px;background:#fff}
+.nibiru-health-list .nh-state{font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;text-align:center}
+.nibiru-health-list .nh-ok .nh-state{background:#E3F4EC;color:#0F6B43}
+.nibiru-health-list .nh-fail .nh-state{background:#FDECE8;color:#8A2412}
+.nibiru-health-list .nh-off .nh-state{background:#FFF1D6;color:#8A4B00}
+.nibiru-health-list .nh-main{display:flex;flex-direction:column;gap:2px;min-width:0;overflow-wrap:anywhere}
+.nibiru-health-list .nh-main small{color:#4A5A7A;font-size:12.5px;line-height:1.45}
+@media (max-width:480px){.nibiru-health-list li{grid-template-columns:1fr}.nibiru-health-list .nh-state{justify-self:start}}
