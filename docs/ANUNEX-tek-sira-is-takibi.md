@@ -2813,3 +2813,12 @@ Referansın 4 yeteneği: PDF test, kamerayla cevap okuma, süreli online sınav,
 - Migration 0142.
 
 Açık: Studio kurumlarda kapalı (aç/kapa kararı kullanıcıda). Sonraki fikirler: kırpılanı onay kuyruğuyla havuza önerme, otomatik soru algılama, sınav sonucu karneye bağlama, deneme verisi saklama süresi.
+
+### D-S045 kararları (30 Ekim, kullanıcı) — fiyatlandırma ve gelecek hizmetler
+- app.anunex.com: tek paket, öğrenci başı yıllık 500 TL (kurum lisansı; paket ayrımı yok, her şey dahil). Kod tarafına henüz işlenmedi.
+- sonuc.anunex.com: ücretsiz; app'e özendiren küçük ipuçları olacak.
+- Gelecek hizmetler, app'e kayıtlı öğrenciye sistem içinden bireysel satış: canlı ders, yapay zekâ rehber, yapay zekâ koç, yapay zekâ öğretmen. Seans 25 dakika.
+- YZ hizmetlerinde ayda 1 ücretsiz seans; sonrası ücretli (örnek 200 TL; enflasyon nedeniyle kesin fiyat sonra).
+- Canlı derste ücretsiz seans YOK. Öneri modeli: öğrenci 1.750 TL / seans; öğretmene 1.000 TL, ANUNEX'e 750 TL (KDV/komisyon/vergi kesintileri netleşecek).
+- Açık: Gold (100 TL) ve Premium (300 TL) bireysel üyeliklerin kaldırılması/dönüştürülmesi; ödeme altyapısı (iyzico/PayTR vb.); mesafeli satış/cayma/e-arşiv; öğretmen seçimi ve sözleşme yapısı; kredi tabanlı fiyat (Süper Admin günceller).
+- Maliyet tahmini (30 Ekim): iletişim+YZ öğrenci+veli başına sezonluk ~16–42 TL (orta kullanım); 25 dk YZ seansı yazılı ~1 TL, sesli ~8–10 TL.
