@@ -1,4 +1,5 @@
 import { serverErrorResponse } from './lib/error-boundary';
+import { anySuperAdminMfaActive } from './lib/super-admin-mfa';
 import { examOpenToInstitutionSql } from './lib/exam-audience';
 import { handleInstitutionCard } from './lib/institution-card';
 import { sanitizeAuditDetails } from './lib/db';
@@ -35,7 +36,7 @@ export default {
           productName: env.PRODUCT_NAME || 'Anunex',
           turnstileSiteKey: env.TURNSTILE_SITE_KEY || '',
           environment: env.ENVIRONMENT || 'development',
-          superAdminMfaEnabled: Boolean(String(env.SUPER_ADMIN_MFA_TOTP_SECRET || '').trim()),
+          superAdminMfaEnabled: await anySuperAdminMfaActive(env),
         });
       }
       if (url.pathname === '/api/auth/login') return request.method === 'POST' ? login(request, env) : methodNotAllowed();

@@ -2,6 +2,7 @@ import app from './privacy-lifecycle-entry';
 import type { CapacityJobMessage, Env } from './types';
 import { json, one, uuid } from './lib/db';
 import { verifyTotpCode } from './lib/mfa';
+import { MFA_SECRET_UNREADABLE, superAdminMfaSecret } from './lib/super-admin-mfa';
 import { containsRawCameraMedia, privacyMinimizationPolicy } from './lib/privacy-minimization';
 
 const SESSION_COOKIE = 'yildiz_session';
@@ -102,9 +103,15 @@ async function enforceProductionSuperAdminMfa(
     return json({ ok: false, error: { code: 'MFA_TEMP_LOCKED', message: 'Çok fazla hatalı doğrulama kodu girildi. 15 dakika sonra tekrar deneyin.' } }, 429);
   }
 
-  const secret = String(env.SUPER_ADMIN_MFA_TOTP_SECRET || '').trim();
+  const secret = await superAdminMfaSecret(env, user.id);
   if (!secret) {
     return response;
+  }
+  if (secret === MFA_SECRET_UNREADABLE) {
+    // S045: an enrolled second factor that cannot be read never turns into "no second factor".
+    await revokeIssuedLoginSession(env, response);
+    console.error(JSON.stringify({ event: 'super_admin_mfa_unreadable' }));
+    return json({ ok: false, error: { code: 'MFA_STORAGE_UNAVAILABLE', message: 'İki adımlı doğrulama bilgisi okunamadı. Giriş güvenlik nedeniyle durduruldu; platform yöneticisi sunucu anahtarını kontrol etmeli.' } }, 503);
   }
 
   const code = String(loginBody.mfaCode || '').trim();
