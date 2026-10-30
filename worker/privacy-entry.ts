@@ -81,7 +81,73 @@ async function currentPrivacyNotice(env: Env, user: AuthUser): Promise<Response>
     ORDER BY effective_at DESC,created_at DESC
     LIMIT 1
   `).bind(audience));
-  return json({ ok: true, audience, notice });
+  if (!notice) return json({ ok: true, audience, notice: null, acknowledged: false });
+  // S047: the text itself and whether this person has already acknowledged this version.
+  const body = await one<{ body: string }>(env.DB.prepare(`SELECT body FROM privacy_notice_contents WHERE notice_version_id=?`).bind(notice.id)).catch(() => null);
+  const receipt = await one<{ id: string }>(env.DB.prepare(`SELECT id FROM privacy_notice_receipts WHERE notice_version_id=? AND user_id=? AND acknowledged_at IS NOT NULL LIMIT 1`).bind(notice.id, user.id));
+  return json({ ok: true, audience, notice: { ...notice, body: body?.body ?? null }, acknowledged: Boolean(receipt) });
+}
+
+const NOTICE_AUDIENCES = ['STUDENT', 'PARENT', 'TEACHER', 'GUIDANCE_TEACHER', 'INSTITUTION_MANAGER', 'PLATFORM_STAFF', 'OTHER'];
+
+async function sha256Hex(value: string): Promise<string> {
+  const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/** S047: the Super Admin writes a notice version as a draft; publishing is a separate, explicit step. */
+async function createNoticeVersion(request: Request, env: Env, admin: AuthUser): Promise<Response> {
+  const b = await request.json<any>().catch(() => ({}));
+  const audience = String(b?.audience || '');
+  const version = String(b?.version || '').trim().slice(0, 30);
+  const title = String(b?.title || '').trim().slice(0, 200);
+  const body = String(b?.body || '').trim();
+  if (!NOTICE_AUDIENCES.includes(audience) || !version || !title || body.length < 50 || body.length > 60000) return badRequest('Rol, sürüm, başlık ve en az 50 karakterlik metin gereklidir.');
+  const exists = await one(env.DB.prepare(`SELECT 1 ok FROM privacy_notice_versions WHERE audience=? AND version=?`).bind(audience, version));
+  if (exists) return conflict('Bu rol için aynı sürüm numarası zaten var.', 'NOTICE_VERSION_EXISTS');
+  const id = uuid('pnv');
+  await env.DB.batch([
+    env.DB.prepare(`INSERT INTO privacy_notice_versions(id,audience,version,title,content_hash,effective_at,status,created_by) VALUES(?,?,?,?,?,CURRENT_TIMESTAMP,'DRAFT',?)`).bind(id, audience, version, title, await sha256Hex(body), admin.id),
+    env.DB.prepare(`INSERT INTO privacy_notice_contents(notice_version_id,body) VALUES(?,?)`).bind(id, body),
+  ]);
+  await audit(env.DB, admin.id, null, 'PRIVACY_NOTICE_DRAFTED', 'privacy_notice_version', id, { audience, version });
+  return json({ ok: true, id, status: 'DRAFT' }, 201);
+}
+
+async function setNoticeStatus(request: Request, env: Env, admin: AuthUser, id: string): Promise<Response> {
+  const b = await request.json<any>().catch(() => ({}));
+  const next = String(b?.status || '');
+  const row = await one<any>(env.DB.prepare(`SELECT id,audience,status FROM privacy_notice_versions WHERE id=?`).bind(id));
+  if (!row) return notFound('Metin bulunamadı.');
+  const allowed: Record<string, string[]> = { DRAFT: ['LEGAL_REVIEW'], LEGAL_REVIEW: ['ACTIVE', 'DRAFT'], ACTIVE: ['RETIRED'], RETIRED: [] };
+  if (!(allowed[row.status] || []).includes(next)) return conflict('Bu durum geçişine izin verilmiyor. Sıra: Taslak → Hukuk incelemesi → Yayında → Kaldırıldı.', 'NOTICE_TRANSITION_INVALID');
+  if (next === 'ACTIVE') {
+    const body = await one(env.DB.prepare(`SELECT 1 ok FROM privacy_notice_contents WHERE notice_version_id=?`).bind(id));
+    if (!body) return conflict('Metni olmayan sürüm yayımlanamaz.', 'NOTICE_BODY_MISSING');
+    await env.DB.batch([
+      env.DB.prepare(`UPDATE privacy_notice_versions SET status='RETIRED',retired_at=CURRENT_TIMESTAMP WHERE audience=? AND status='ACTIVE' AND id<>?`).bind(row.audience, id),
+      env.DB.prepare(`UPDATE privacy_notice_versions SET status='ACTIVE',effective_at=CURRENT_TIMESTAMP,retired_at=NULL WHERE id=?`).bind(id),
+    ]);
+  } else {
+    await env.DB.prepare(`UPDATE privacy_notice_versions SET status=?,retired_at=CASE WHEN ?='RETIRED' THEN CURRENT_TIMESTAMP ELSE retired_at END WHERE id=?`).bind(next, next, id).run();
+  }
+  await audit(env.DB, admin.id, null, 'PRIVACY_NOTICE_STATUS', 'privacy_notice_version', id, { from: row.status, to: next });
+  return json({ ok: true, id, status: next });
+}
+
+/** S047: consent-based purposes the Super Admin approved, not yet decided for this parent's children. */
+async function pendingConsents(env: Env, user: AuthUser): Promise<Response> {
+  if (user.role !== 'PARENT') return json({ ok: true, pending: [] });
+  const purposes = await all<any>(env.DB.prepare(`SELECT upper(code) code,title,purpose FROM processing_activity_registry
+    WHERE status='APPROVED' AND upper(coalesce(lawful_basis_code,'')) IN ('CONSENT','EXPLICIT_CONSENT','ACIK_RIZA') ORDER BY code LIMIT 20`));
+  if (!purposes.length) return json({ ok: true, pending: [] });
+  const children = await all<any>(env.DB.prepare(`SELECT se.id,se.first_name||' '||se.last_name full_name FROM parent_student_links p JOIN student_entities se ON se.id=p.student_id WHERE p.parent_user_id=? AND p.active=1`).bind(user.id));
+  const pending: any[] = [];
+  for (const c of children) for (const p of purposes) {
+    const decided = await one(env.DB.prepare(`SELECT 1 ok FROM consent_records WHERE purpose_code=? AND subject_student_id=? AND state IN ('GRANTED','WITHDRAWN') LIMIT 1`).bind(p.code, c.id));
+    if (!decided) pending.push({ purposeCode: p.code, title: p.title, purpose: p.purpose, studentId: c.id, studentName: c.full_name });
+  }
+  return json({ ok: true, pending });
 }
 
 async function acknowledgePrivacyNotice(request: Request, env: Env, user: AuthUser): Promise<Response> {
@@ -449,7 +515,7 @@ async function listPrivacyAdminCollection(env: Env, user: AuthUser, collection: 
       rows = await all<any>(env.DB.prepare(`SELECT * FROM processing_activity_registry ORDER BY status,code LIMIT 500`));
       break;
     case 'notices':
-      rows = await all<any>(env.DB.prepare(`SELECT * FROM privacy_notice_versions ORDER BY audience,effective_at DESC LIMIT 500`));
+      rows = await all<any>(env.DB.prepare(`SELECT v.*,(SELECT count(*) FROM privacy_notice_receipts r WHERE r.notice_version_id=v.id AND r.acknowledged_at IS NOT NULL) receipt_count FROM privacy_notice_versions v ORDER BY v.audience,v.created_at DESC LIMIT 500`));
       break;
     case 'consents':
       rows = await all<any>(env.DB.prepare(`SELECT id,purpose_code,subject_user_id,subject_student_id,institution_id,state,channel,granted_at,withdrawn_at,notice_version_id,created_at,updated_at FROM consent_records ORDER BY created_at DESC LIMIT 500`));
@@ -505,6 +571,9 @@ export default {
         if (request.method === 'POST') return createDeletionJob(request, env, admin);
         return methodNotAllowed();
       }
+      if (path === '/api/admin/privacy/notices' && request.method === 'POST') return createNoticeVersion(request, env, admin);
+      const noticeStatusMatch = path.match(/^\/api\/admin\/privacy\/notices\/([^/]+)\/status$/);
+      if (noticeStatusMatch) return request.method === 'POST' ? setNoticeStatus(request, env, admin, noticeStatusMatch[1]) : methodNotAllowed();
       const verifyRequestMatch = path.match(/^\/api\/admin\/privacy\/requests\/([^/]+)\/verify$/);
       if (verifyRequestMatch) return request.method === 'POST' ? verifyDataSubjectRequest(env, admin, verifyRequestMatch[1]) : methodNotAllowed();
       const approvalMatch = path.match(/^\/api\/admin\/privacy\/release-approvals\/([^/]+)$/);
@@ -523,6 +592,7 @@ export default {
       if (request.method === 'POST') return createPrivacyRequest(request, env, user);
       return methodNotAllowed();
     }
+    if (path === '/api/privacy/consents/pending') return request.method === 'GET' ? pendingConsents(env, user) : methodNotAllowed();
     if (path === '/api/privacy/consents') {
       if (request.method === 'GET') return listMyConsents(env, user);
       if (request.method === 'POST') return grantConsent(request, env, user);

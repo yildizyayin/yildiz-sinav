@@ -7,11 +7,11 @@ type Props={items:Item[];displayName:string;onNavigate:()=>void;onLogout:()=>Pro
 const groups=[
   {label:'Ölçme ve Sınav',icon:ClipboardCheck,paths:['/exam-center','/exam-definitions','/exams','/opticals','/camera-test','/optical-prepare','/optical-design','/calibration','/exam-channels','/result-network']},
   {label:'İçerik ve Öğrenme',icon:BookOpen,paths:['/content-center','/quick-tests','/question-team','/worksheet-admin','/outcomes','/curriculum','/written-scenarios','/written-rubrics','/written-papers','/official-question-intelligence']},
-  {label:'Eğitim Operasyonu',icon:CalendarDays,paths:['/calendar','/worksheet-calendar','/attendance','/transfers','/bulk-operations','/seasons']},
+  {label:'Eğitim Operasyonu',icon:CalendarDays,paths:['/calendar','/worksheet-calendar','/attendance','/live-lessons','/transfers','/bulk-operations','/seasons']},
   {label:'Rehberlik ve Analiz',icon:ChartNoAxesCombined,paths:['/guidance-admin','/reports','/academic-target-admin']},
   {label:'Kullanıcılar ve Kurumlar',icon:Users,paths:['/institutions','/students','/users','/activation-requests','/access-accounts','/teacher-assignments','/enterprise','/licenses','/membership-orders']},
   {label:'Nibiru ve Ajanlar',icon:Orbit,paths:['/nibiru','/nibiru-admin','/agent-center']},
-  {label:'Sistem Yönetimi',icon:Settings,paths:['/admin-center','/standard-readiness','/theme-management','/settings','/feature-lab','/demo-mode','/scale','/completion-center','/security','/notifications','/profile']},
+  {label:'Sistem Yönetimi',icon:Settings,paths:['/admin-center','/standard-readiness','/theme-management','/settings','/feature-lab','/demo-mode','/scale','/completion-center','/security','/privacy-notices','/notifications','/profile']},
 ];
 const normalize=(value:string)=>value.toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i');
 
