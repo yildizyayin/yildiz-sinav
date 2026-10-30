@@ -1,0 +1,104 @@
+/* Result student review: scoped presentation, local read-only interactions only. */
+@media screen {
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-header { margin-bottom:20px;padding-bottom:18px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-combined-unavailable { display:flex;flex-direction:column;align-items:center;gap:4px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-combined-unavailable small { font-size:10px;color:#6e513a;line-height:1.5; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-header-actions { align-items:flex-start; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-header-actions .sr-combined-unavailable button { color:#765341;background:#f8f2ed;border-color:#d9c4b5;opacity:.7; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-exam-card[aria-busy="true"] { opacity:.65;cursor:progress; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-section-caption { margin:0 0 16px;color:#526872;font-size:12px;line-height:1.6; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-data-note { color:#526872;font-size:12px;line-height:1.6;margin:12px 0 0; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch-head { display:grid;grid-template-columns:46% repeat(4,minmax(0,1fr));padding:9px;background:#f1f5f6;font-size:11px;font-weight:600;color:#425f6b; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch-head span:not(:first-child) { text-align:right; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch { margin-bottom:10px;border:1px solid #e0e7e9;border-radius:7px;overflow:hidden; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch summary { display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:10px 12px;cursor:pointer;background:#eaf3f5;color:#244d5d;font-weight:650;font-size:13px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch summary>span:first-child:before { content:'▾';margin-right:8px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch details:not([open]) summary>span:first-child:before { content:'▸'; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch-net { font-size:13px;white-space:nowrap; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch .sr-subject-table { min-width:0;table-layout:fixed; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch .sr-subject-table :is(th,td) { padding:10px 8px;font-size:12px;overflow-wrap:anywhere; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch .sr-subject-table th { width:46%; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-child-row th { padding-left:20px!important;font-weight:500; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-child-row th:before { content:'↳';color:#526872;margin-right:6px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-child-row th small { display:block;font-size:10px;font-weight:400;color:#526872;line-height:1.5;margin-top:3px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-parent-row { background:#f7fafb;font-weight:650; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-missing { background:#fcfcfb; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch .sr-data-note { margin:0;padding:10px 12px;border-top:1px solid #e3eaec;background:#fafbfb;font-size:11px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-optional summary { min-height:40px;font-size:13px;font-weight:600;cursor:pointer; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-optional>p { font-size:12px;color:#526872;line-height:1.6; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-controls { display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:10px;margin-bottom:12px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-controls label { min-width:0;font-size:12px;color:#3d5662;font-weight:600; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-controls :is(input,select) { display:block;width:100%;min-width:0;min-height:42px;margin-top:5px;border:1px solid #b9cbd2;border-radius:7px;background:white;padding:9px 10px;font-size:13px;color:#203540; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-filters { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-filters button { min-height:40px;border:1px solid #b8cdd4;background:#fff;color:#2b586a;border-radius:7px;padding:8px 14px;font-size:12px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-filters button[aria-pressed=true] { background:#246b7c;color:#fff;border-color:#246b7c; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-filters button:disabled { opacity:.55;cursor:not-allowed; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-card { padding:14px 0;gap:12px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-card>div { min-width:0; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-card>div>small { color:#526872;font-size:10px;line-height:1.5; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-card>div>strong { display:block;margin-top:5px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-card dl { display:flex;flex-wrap:wrap;gap:14px;margin:12px 0 0; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-card dl>div { min-width:44px;display:flex;flex-direction:column;gap:4px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-card dt { font-size:10px;color:#526872; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-card dd { margin:0;font-size:13px;font-weight:650;color:#28596b; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-visually-hidden { position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-launcher { padding:0;overflow:visible; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-trigger { width:100%;display:flex;align-items:center;gap:14px;text-align:left;padding:16px;border:0;background:transparent;color:#244c5c;border-radius:8px;min-height:88px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-trigger>span:nth-child(2) { flex:1;min-width:0; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-trigger>span:nth-child(2)>span { display:block;color:#4c6570;font-size:12px;line-height:1.6;margin-top:4px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-trigger>.result-tip-mark { transition:transform .14s; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-trigger:active>.result-tip-mark { transform:scale(.92); }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-trigger>svg { width:20px;height:20px;flex:none; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-trigger:hover { background:#e6f1f4; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-dialog { position:fixed;inset:0 0 0 auto;margin:0;width:min(470px,100%);max-width:100%;height:100dvh;max-height:100dvh;padding:0;border:0;border-left:1px solid #d3e1e5;background:#f8fbfc;color:#243e49;box-shadow:-10px 0 40px #153a4920; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-dialog[open] { animation:rn-slide .28s ease-out; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-dialog::backdrop { background:#122d3b55; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-full { inset:20px 20px 20px auto;width:min(980px,calc(100% - 40px));height:calc(100dvh - 40px);border-radius:12px;border:1px solid #d3e1e5; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-surface { height:100%;display:flex;flex-direction:column; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-header { display:flex;align-items:center;gap:12px;padding:18px;border-bottom:1px solid #dbe6e9;background:#fff; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-header>div { flex:1;min-width:0; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-header h2 { font-size:22px;color:#233f4d;margin:0 0 4px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-header p { font-size:11px;color:#4c6570;line-height:1.5;margin:0;overflow-wrap:anywhere; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-header button { flex:none;display:grid;place-items:center;width:40px;height:40px;border:1px solid #bdced5;border-radius:7px;background:#fff;color:#2b5364;padding:8px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-header button svg { width:18px;height:18px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-body { flex:1;min-height:0;overflow:auto;padding:20px;overscroll-behavior:contain; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-context-note { margin:0 0 18px;padding:13px;background:#eaf3f6;border-radius:8px;font-size:13px;line-height:1.7;color:#345765; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-actions { display:grid;gap:8px;margin-bottom:20px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-actions button { padding:13px 14px;text-align:left;border:1px solid #bfced6;border-radius:8px;background:#fff;color:#294e60;font-size:13px;font-weight:600; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-actions button[aria-pressed=true] { border-color:#2e7a8e;background:#eff7f9;box-shadow:inset 3px 0 #2e7a8e; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-body h3 { font-size:16px;margin:0 0 14px;color:#274655; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-summary dl { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 16px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-summary dl>div { padding:12px;border:1px solid #dbe5e8;border-radius:7px;background:#fff; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-summary dt { font-size:11px;color:#526872; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-summary dd { font-size:22px;color:#245b6e;margin:5px 0 0;font-weight:650; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-summary p { font-size:13px;line-height:1.7;color:#526872; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-wrong-row { display:flex;flex-direction:column;gap:5px;border-bottom:1px solid #dce6e9;padding:12px 0;font-size:13px;color:#3d5c69; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-inline-action { margin-top:16px;padding:9px 12px;border:1px solid #b5ccd6;border-radius:7px;background:white;color:#295d70; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-surface>footer { display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;padding:14px 18px;margin:0;border-top:1px solid #dbe5e8;background:#fff;width:100%;font-size:11px;line-height:1.6;color:#526872; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-surface>footer button { display:flex;align-items:center;gap:7px;min-height:40px;border:1px solid #bacfd8;border-radius:7px;padding:8px 10px;background:#fff;color:#315a6c;font-size:12px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-surface>footer button svg { width:16px;height:16px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcomes-compact { padding:0;border:0;background:transparent; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 :is(input,select,summary):focus-visible { outline:3px solid #246b7c;outline-offset:3px; }
+@keyframes rn-slide { from { transform:translateX(24px);opacity:0; } to { transform:translateX(0);opacity:1; } }
+@media(max-width:620px) {
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-header-actions .sr-combined-unavailable { flex-basis:100%;align-items:flex-start; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-header-actions .sr-combined-unavailable button { flex:none; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-outcome-controls { grid-template-columns:minmax(0,1fr); }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch-head { grid-template-columns:46% repeat(4,minmax(0,1fr));font-size:10px;padding:8px 5px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch .sr-subject-table :is(th,td) { padding:9px 5px;font-size:11px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-branch .sr-subject-table th { width:46%; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-child-row th { padding-left:10px!important; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-dialog { inset:auto 0 0;width:100%;height:88dvh;max-height:88dvh;border-left:0;border-top:1px solid #cbdde4;border-radius:18px 18px 0 0; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-full { inset:0;height:100dvh;max-height:100dvh;border-radius:0; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-dialog[open] { animation-name:rn-rise; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-header { padding:14px 12px;gap:8px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-header .nibiru-mark { --nibiru-size:44px!important; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-header h2 { font-size:20px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-body { padding:16px 12px; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .rn-surface>footer { padding:12px; }
+}
+@keyframes rn-rise { from { transform:translateY(28px);opacity:0; } to { transform:translateY(0);opacity:1; } }
+@media(prefers-reduced-motion:reduce) {
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 :is(.rn-dialog,.rn-trigger>.result-tip-mark) { animation:none!important;transition:none!important; }
+}
+}
