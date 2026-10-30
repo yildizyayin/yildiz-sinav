@@ -4,16 +4,17 @@ import { AnunexBrand } from '../components/AnunexBrand';
 import { DataCenter } from '../components/DataCenter';
 import { InstitutionCardPanel, InstitutionPinIssuer } from '../components/InstitutionClaim';
 import { ResultOperatorWorkspace, ResultReportsPanel } from './ResultOperatorWorkspace';
+import { FoyEvaluation } from '../components/FoyEvaluation';
 import '../components/report-center.css';
 import './result-operator-shell.css';
 
 /**
  * S036 operator menu (owner decision 27 Oct, design "Sol menü · rol bazında"):
- * Bayi — Ana sayfa · Sınav yükleme · Rapor/Veri/Belge Merkezi · Kurum listesi · Giriş PIN'leri · Profil.
+ * Bayi — Ana sayfa · Sınav yükleme · Föy değerlendirme (30 Oct) · Rapor/Veri/Belge Merkezi · Kurum listesi · Giriş PIN'leri · Profil.
  * Kurum — Ana sayfa · Sınav yükleme · Rapor/Veri/Belge Merkezi · Öğrenci sonuçları · Kurum bilgileri · Profil.
  */
 type Role = 'INSTITUTION' | 'DEALER';
-type Section = 'home' | 'upload' | 'reports' | 'data' | 'docs' | 'schools' | 'pins' | 'cards' | 'school' | 'profile';
+type Section = 'home' | 'upload' | 'foy' | 'reports' | 'data' | 'docs' | 'schools' | 'pins' | 'cards' | 'school' | 'profile';
 const when = (s: string) => new Date(String(s).replace(' ', 'T') + 'Z').toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
 export function ResultOperatorShell({ role, access, operator, onLogout }: { role: Role; access: any; operator: any; onLogout: () => void }) {
@@ -21,8 +22,8 @@ export function ResultOperatorShell({ role, access, operator, onLogout }: { role
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => { const go = () => setSection('reports'); window.addEventListener('anunex:toplu-open', go); return () => window.removeEventListener('anunex:toplu-open', go); }, []);
   const groups: Array<[string | null, Array<[Section, string, string?]>]> = role === 'DEALER'
-    ? [[null, [['home', 'Ana sayfa', 'bölge özeti']]], ['SINAVLAR', [['upload', 'Sınav yükleme', 'TXT/DAT']]], ['ÇIKTILAR', [['reports', 'Rapor Merkezi'], ['data', 'Veri Merkezi'], ['docs', 'Belge Merkezi']]], ['KURUMLARIM', [['schools', 'Kurum listesi'], ['pins', "Giriş PIN'leri"]]], ['HESAP', [['profile', 'Profil ve parola']]]]
-    : [[null, [['home', 'Ana sayfa', 'son sınav']]], ['SINAVLAR', [['upload', 'Sınav yükleme', 'TXT/DAT']]], ['ÇIKTILAR', [['reports', 'Rapor Merkezi'], ['data', 'Veri Merkezi'], ['docs', 'Belge Merkezi']]], ['ÖĞRENCİLER', [['cards', 'Öğrenci sonuçları']]], ['HESAP', [['school', 'Kurum bilgileri'], ['profile', 'Profil ve parola']]]];
+    ? [[null, [['home', 'Ana sayfa', 'bölge özeti']]], ['SINAVLAR', [['upload', 'Sınav yükleme', 'TXT/DAT'], ['foy', 'Föy değerlendirme', 'optik']]], ['ÇIKTILAR', [['reports', 'Rapor Merkezi'], ['data', 'Veri Merkezi'], ['docs', 'Belge Merkezi']]], ['KURUMLARIM', [['schools', 'Kurum listesi'], ['pins', "Giriş PIN'leri"]]], ['HESAP', [['profile', 'Profil ve parola']]]]
+    : [[null, [['home', 'Ana sayfa', 'son sınav']]], ['SINAVLAR', [['upload', 'Sınav yükleme', 'TXT/DAT'], ['foy', 'Föy değerlendirme', 'optik']]], ['ÇIKTILAR', [['reports', 'Rapor Merkezi'], ['data', 'Veri Merkezi'], ['docs', 'Belge Merkezi']]], ['ÖĞRENCİLER', [['cards', 'Öğrenci sonuçları']]], ['HESAP', [['school', 'Kurum bilgileri'], ['profile', 'Profil ve parola']]]];
   const go = (s: Section) => { setSection(s); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   return <div className="osh">
     <aside className={`osh-side ${menuOpen ? 'open' : ''}`} aria-label={role === 'DEALER' ? 'Bayi menüsü' : 'Kurum menüsü'}>
@@ -37,6 +38,7 @@ export function ResultOperatorShell({ role, access, operator, onLogout }: { role
     <main className="osh-main">
       {section === 'home' && <OperatorHome role={role} operator={operator} access={access} go={go} />}
       {section === 'upload' && <ResultOperatorWorkspace mode={role} access={access} />}
+      {section === 'foy' && <FoyEvaluation mode={role} />}
       {section === 'reports' && <ResultReportsPanel mode={role} />}
       {section === 'data' && <DataCenter mode={role} tab="DATA" />}
       {section === 'docs' && <DataCenter mode={role} tab="DOCS" />}
