@@ -27,6 +27,8 @@ describe('Nibiru live health check', () => {
       expect(items.STT.state).toBe('OK');
       expect(items.TTS.state).toBe('OFF');
       expect(items.TTS.detail).toMatch(/cihazın kendi Türkçe sesini/);
+      expect(items.KVKK_GATE.state).toBe('FAIL');
+      expect(items.KVKK_GATE.detail).toMatch(/hazır şablonla/);
       expect(r.data.check.ok).toBe(false);
       expect(fetched).toBe(0); // no paid voice provider was reached
       expect(calls.some((m) => m.includes('whisper'))).toBe(true);
@@ -34,7 +36,7 @@ describe('Nibiru live health check', () => {
       expect((await t.request('/api/nibiru/health-check', 'POST')).response.status).toBe(429);
       const list = await t.request('/api/nibiru/health-check');
       expect(list.data.checks).toHaveLength(1);
-      expect(list.data.checks[0].items.length).toBe(5);
+      expect(list.data.checks[0].items.length).toBe(6);
       expect(JSON.stringify(list.data.checks[0])).not.toMatch(/ALI|YILMAZ/);
     } finally { globalThis.fetch = realFetch; }
   });
