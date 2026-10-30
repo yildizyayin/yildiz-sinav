@@ -40,3 +40,4 @@
 
 /* A032b: institution lifecycle actions */
 .institution-lifecycle-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.score-model-note.score-model-warning{background:#FFF4E0;color:#7A4300;border:1px solid #F3D29A}
