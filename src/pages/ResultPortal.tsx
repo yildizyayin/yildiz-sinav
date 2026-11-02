@@ -1,7 +1,6 @@
 import { useCallback,useEffect,useState } from 'react';
 import { ArrowLeft,ArrowRight,BarChart3,BookOpenCheck,Building2,CheckCircle2,ChevronRight,Download,Eye,EyeOff,LockKeyhole,GraduationCap,Landmark,LineChart,MessageCircle,PlayCircle,ScanLine,ShieldCheck,UserRound } from 'lucide-react';
 import { api,ApiError } from '../api';
-import { printSection } from '../lib/printSection';
 import { AnunexBrand } from '../components/AnunexBrand';
 import { NibiruMark } from '../components/NibiruMark';
 import { Turnstile } from '../components/Turnstile';
@@ -21,6 +20,7 @@ const roleCards=[{key:'STUDENT' as const,title:'Öğrenci Sonuç',text:'Tüm sı
 const rankText=(value:any,total:any)=>value&&total?`${Number(value).toLocaleString('tr-TR')} / ${Number(total).toLocaleString('tr-TR')}`:'—';
 
 export function ResultPortal(){
+ const [entrance,setEntrance]=useState(false);
  const[operator,setOperator]=useState<any>(null),[operatorForm,setOperatorForm]=useState({identifier:'',password:''}),[operatorShowPassword,setOperatorShowPassword]=useState(false),[operatorRemember,setOperatorRemember]=useState(false),[config,setConfig]=useState<any>(null),[role,setRole]=useState<Role|null>(null),[step,setStep]=useState<'LOOKUP'|'VERIFY'|'RESULTS'>('LOOKUP'),[token,setToken]=useState(''),[result,setResult]=useState<any>(null),[detail,setDetail]=useState<any>(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const[operatorAccess,setOperatorAccess]=useState<any>(null),[turnstileCycle,setTurnstileCycle]=useState(0);
  useEffect(()=>{if(typeof window!=='undefined'&&window.location.hash==='#result-access')setRole('INSTITUTION')},[]);
@@ -41,7 +41,7 @@ export function ResultPortal(){
  const refreshTurnstile=()=>{setToken('');setTurnstileCycle(value=>value+1)};
  const operatorLogin=async(e:React.FormEvent)=>{e.preventDefault();setBusy(true);setError('');try{await api('/api/auth/login',{method:'POST',body:JSON.stringify({...operatorForm,remember:operatorRemember,turnstileToken:token})});const profile=await api<any>('/api/admin/result-network/access-profile');const allowed=role==='INSTITUTION'?profile.access?.canManageInstitution:profile.access?.canOperateDealer;if(!allowed){await api('/api/auth/logout',{method:'POST'}).catch(()=>undefined);throw new Error(role==='INSTITUTION'?'Bu hesap kurum sonuç yetkisine sahip değil.':'Bu hesap onaylı bayi ağı yetkisine veya aktif kurum kapsamına sahip değil.')}setOperator(profile.user);setOperatorAccess(profile.access);remember(role)}catch(e){setError(e instanceof ApiError?e.message:e instanceof Error?e.message:'Yetkili giriş yapılamadı.');refreshTurnstile()}finally{setBusy(false)}};
  const openExam=async(id:string)=>{setBusy(true);setError('');try{setDetail(await api(`/api/public/results/exams/${encodeURIComponent(id)}`))}catch(e){setError(e instanceof ApiError?e.message:'Sınav ayrıntısı açılamadı.')}finally{setBusy(false)}};
- const reset=()=>{remember(null);setRole(null);setStep('LOOKUP');setResult(null);setDetail(null);setOperator(null);setOperatorAccess(null);setOperatorForm({identifier:'',password:''});setError('');if(typeof window!=='undefined')window.history.replaceState(null,'',window.location.pathname);refreshTurnstile()};
+ const reset=()=>{setEntrance(false);remember(null);setRole(null);setStep('LOOKUP');setResult(null);setDetail(null);setOperator(null);setOperatorAccess(null);setOperatorForm({identifier:'',password:''});setError('');if(typeof window!=='undefined')window.history.replaceState(null,'',window.location.pathname);refreshTurnstile()};
  const studentLogout=async()=>{await api('/api/public/results/logout',{method:'POST'}).catch(()=>undefined);reset()};
  const operatorLogout=async()=>{await api('/api/auth/logout',{method:'POST'}).catch(()=>undefined);reset()};
  useEffect(()=>{const onPop=()=>{if(operator||role)reset()};window.addEventListener('popstate',onPop);return()=>window.removeEventListener('popstate',onPop)},[operator,role]);
@@ -57,8 +57,8 @@ export function ResultPortal(){
   </section>}
   {!restoring&&role==='STUDENT'&&<section className="result-workspace"><button className="result-back" onClick={reset}><ArrowLeft/> Sonuç türleri</button>
    {error&&<div className="result-alert">{error}</div>}
-   {step!=='RESULTS'&&<StudentLogin siteKey={config?.turnstileSiteKey||''} onSignedIn={async()=>{const r=await api('/api/public/results/student');setResult(r);setStep('RESULTS');remember('STUDENT')}}/>}
-   {step==='RESULTS'&&result&&<StudentResultsWorkspace result={result} detail={detail} busy={busy} renderNationalRank={x=><div className="sr-rank-national"><dt className="sr-only">Ulusal sıralama</dt><dd className="result-rank-line">Türkiye {rankText(x.national_rank,x.national_count)}</dd></div>} onOpenExam={id=>void openExam(id)} onCloseDetail={()=>setDetail(null)} onPrint={()=>printSection(document.querySelector('.result-dashboard'))} onLogout={()=>void studentLogout()}/>}
+   {step!=='RESULTS'&&<StudentLogin siteKey={config?.turnstileSiteKey||''} onSignedIn={async()=>{const r=await api('/api/public/results/student');setResult(r);setEntrance(true);setStep('RESULTS');remember('STUDENT')}}/>}
+   {step==='RESULTS'&&result&&<StudentResultsWorkspace entrance={entrance} result={result} detail={detail} busy={busy} renderNationalRank={x=><div className="sr-rank-national"><dt className="sr-only">Ulusal sıralama</dt><dd className="result-rank-line">Türkiye {rankText(x.national_rank,x.national_count)}</dd></div>} onOpenExam={id=>void openExam(id)} onCloseDetail={()=>setDetail(null)} onLogout={()=>void studentLogout()}/>}
   </section>}
   {!role&&<section className="result-license-story"><div><span className="result-kicker">SONUÇTAN GELİŞİM SİSTEMİNE</span><h2>{copy.license_title||'Sonucu görmek başlangıç. Gelişimi yönetmek ANUNEX.'}</h2><p>{copy.license_text||'Optik okumadan kazanım analizine, yoklamadan kişisel öğrenme rotasına kadar kurumunuzun akademik operasyonunu tek sistemde birleştirin.'}</p><a href={copy.cta_url||'https://demo.anunex.com'}>{copy.cta_label||'Kurum demosunu inceleyin'} <ArrowRight/></a></div><div className="result-license-grid"><article><ScanLine/><strong>Optik + kamera</strong><span>Okut, değerlendir, aynı anda raporla.</span></article><article><LineChart/><strong>Kazanım zekâsı</strong><span>Sınıftan Türkiye geneline gerçek kıyas.</span></article><article><BookOpenCheck/><strong>Kişisel öğrenme</strong><span>Yanlıştan ödeve, videoya ve kitaba.</span></article><article><MessageCircle/><strong>WhatsApp + Nibiru</strong><span>Doğru kişiye, doğru anda güvenli destek.</span></article></div></section>}
   <footer><AnunexBrand compact tagline/><span>Robot korumalı sonuç erişimi · Kişisel veri minimizasyonu · Süreli saklama</span><span>© 2026 ANUNEX</span></footer>
