@@ -122,11 +122,12 @@ async function studentLogin(request:Request,env:Env){
  return openStudentSession(env,match.id,ipHash);
 }
 
-/** Il and ilçe lists for the student form, from the MEB directory (cached; it changes rarely). */
+/** Il and ilçe lists for the student form. Read from the small location table (0153: ~1.000 rows, kept in step with
+ * the directory by triggers) instead of scanning the 46.803-row MEB directory on every visit. */
 async function locations(env:Env,url:URL){
  const city=String(url.searchParams.get('city')||'').trim();
- const rows=city?await all<any>(env.DB.prepare(`SELECT DISTINCT district v FROM national_institution_directory WHERE status='ACTIVE' AND city=? AND district<>'' ORDER BY district`).bind(city))
-  :await all<any>(env.DB.prepare(`SELECT DISTINCT city v FROM national_institution_directory WHERE status='ACTIVE' AND city<>'' ORDER BY city`));
+ const rows=city?await all<any>(env.DB.prepare(`SELECT district v FROM national_institution_locations WHERE city=? AND institution_count>0 ORDER BY district`).bind(city))
+  :await all<any>(env.DB.prepare(`SELECT DISTINCT city v FROM national_institution_locations WHERE institution_count>0 ORDER BY city`));
  const list=rows.map(r=>String(r.v)).sort((a,b)=>a.localeCompare(b,'tr-TR'));
  return json({ok:true,[city?'districts':'cities']:list},200,{'Cache-Control':'public, max-age=3600'});
 }
