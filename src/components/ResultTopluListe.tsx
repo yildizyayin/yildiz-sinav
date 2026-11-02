@@ -141,7 +141,7 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
       if (!out.length && !grown.length) setError((e) => e || 'Seçilen sınavlarda sonucu olan bir kurum seçin.');
     } catch (e: any) { setError(e.message); } finally { setPacks(out); setGrowth(grown); setBusy(false); setProgress(''); }
   };
-  // 30 Oct: a real PDF file, drawn in the browser page by page (no print dialog).
+  // A real PDF file, written as vector text and shapes in the browser (2 Nov: seconds for hundreds of pages).
   const [pdfBusy, setPdfBusy] = useState('');
   const pdf = async () => {
     if (pdfBusy) return; setError(''); setPdfBusy('PDF hazırlanıyor…');
