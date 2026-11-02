@@ -998,6 +998,15 @@ export default {
     if (copy) return request.method === 'POST' ? copyDefinition(env, auth, copy[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     const structure = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/structure$/);
     if (structure) return request.method === 'PUT' ? replaceStructure(request, env, auth, structure[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    // 2 Nov: scoring profile correction while the publication is open for correction (exam-scoring-correction.ts).
+    const scoringFix = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/scoring-profile$/);
+    if (scoringFix) {
+      const exam = await managedExam(env, auth, scoringFix[1]); if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
+      const sc = await import('./lib/exam-scoring-correction');
+      if (request.method === 'GET') return sc.getScoringCorrection(env, exam);
+      if (request.method === 'PUT') return withExamOperationLock(env, exam.id, 'EXAM_SOURCE_EDIT', (locked) => sc.putScoringCorrection(request, locked, auth, exam));
+      return err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
     const answerKey = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/answer-key$/);
     if (answerKey) return request.method === 'PUT' ? replaceAnswerKey(request, env, auth, answerKey[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     const institutions = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/institutions$/);

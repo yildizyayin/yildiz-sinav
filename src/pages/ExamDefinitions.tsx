@@ -6,6 +6,7 @@ import { api, qs } from '../api';
 import { useAuth } from '../auth';
 import { ExamReadiness } from '../components/ExamReadiness';
 import { ExamBranchEditor } from '../components/ExamBranchEditor';
+import { ExamScoringCorrection } from '../components/ExamScoringCorrection';
 import { ExamOutcomeEditor } from '../components/ExamOutcomeEditor';
 import { ExamChannelNotice } from '../components/ExamChannelNotice';
 import { ExamSaveReview, reviewExamInputs } from '../components/ExamSaveReview';
@@ -736,6 +737,7 @@ export function ExamDefinitions() {
       {detail.exam.status === 'DRAFT' && <div className="alert info">Zorunlu bilgiler (sınav kartı, puanlama ve bütün kitapçıkların cevap anahtarı) tamamlanınca sınav <strong>kendiliğinden aktif olur</strong>; merkezi sınav app ve sonuç ağı kataloğuna düşer. Başlangıç tarihi girerseniz o tarihte aktif olur. Kazanım, PDF ve video isteğe bağlıdır.</div>}
       {detail.exam.status === 'DRAFT' && canEditDetail && <ExamStartDate examId={selectedId} onSaved={() => { void loadDetail(selectedId); void loadRows(); }}/>}
       {detail.exam.status === 'DRAFT' && <ExamReadiness readiness={detail.readiness}/>}
+      {detail.exam.status !== 'DRAFT' && canEditDetail && <ExamScoringCorrection examId={selectedId} onSaved={() => void loadDetail(selectedId)}/>}
       {detail.exam.status === 'DRAFT' && canEditDetail && <section className="panel" style={{marginBottom:20}}><h2>Sınav kartı ve puanlama</h2><div className="form-grid">
         <label>Sınav adı<input value={createForm.title} onChange={e=>setCreateForm(f=>({...f,title:e.target.value}))}/></label>
         <label>Yayınevi<input value={createForm.publisherName} onChange={e=>setCreateForm(f=>({...f,publisherName:e.target.value}))}/></label>
