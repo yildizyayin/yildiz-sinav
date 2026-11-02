@@ -13,7 +13,7 @@ import { submitHomeworkAnswers } from './homework';
 import { decideBooklet, decideReplace, evaluateSheet } from './studio-optical-submit';
 import { bookletOrder, bookletUsable, checkGroupIntegrity, stemGroupsInstalled, USABLE_BOOKLETS, type OrderedQuestion } from './studio-booklets';
 import { renderStudioAnswerKey, renderStudioPdf, STUDIO_OPTICAL_CAPACITY, StudioPrintError, type StudioBranding } from './studio-pdf';
-import { REPORT_SNAPSHOT_SQL } from './report-snapshot';
+import { reportSnapshotStatements } from './report-snapshot';
 import { withExamOperationLock, listExamOperationLocks, recoverExamOperationLock } from './exam-operation-lock';
 
 const NEXT_FEATURES = new Set([
@@ -224,6 +224,7 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
   const version=Math.max(Number(p.snapshot_version||0),Number(lastSnapshot?.version||0))+1; const networkId=p.scope==='NETWORK'?p.network_id:null;
   const participantCountRow=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).bind(examId));
   if(!Number(participantCountRow?.count||0))return badRequest('Sonuçlandırılmış katılımcı bulunmuyor.','NO_RESULTS');
+  const snapshotStatements=await reportSnapshotStatements(env,examId,version);
   await env.DB.batch([
     // A029.1: exams made in the exam-definition flow have no delivery profile yet. Without this row the
     // freeze wrote snapshots but never became FROZEN, so the result could not be published.
@@ -245,7 +246,7 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
     FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id JOIN exams e ON e.id=ep.exam_id JOIN institutions i ON i.id=ep.institution_id
     LEFT JOIN student_enrollments se ON se.id=(SELECT historical.id FROM student_enrollments historical WHERE historical.student_id=ep.student_id AND historical.institution_id=ep.institution_id AND historical.season_id=ep.season_id ORDER BY historical.created_at DESC,historical.id LIMIT 1)
     WHERE ep.exam_id=?`).bind(version,networkId,networkId,networkId,examId),
-    env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(examId,version),
+    ...snapshotStatements,
     env.DB.prepare(`INSERT INTO exam_publication_stats(exam_id,snapshot_version,institution_count,participant_count,city_count,payload_json)
       SELECT ?,?,COUNT(DISTINCT institution_id),COUNT(*),COUNT(DISTINCT city),? FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`)
       .bind(examId,version,JSON.stringify({scope:p.scope,networkId}),examId,version),

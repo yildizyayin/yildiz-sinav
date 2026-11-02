@@ -62,5 +62,36 @@ export const REPORT_SNAPSHOT_SQL = `UPDATE exam_result_snapshots AS snap SET pay
 ) WHERE snap.exam_id=? AND snap.snapshot_version=? AND snap.payload_json IS NULL`;
 
 export async function captureReportSnapshot(env: Env, examId: string, version: number): Promise<void> {
-  await env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(examId, version).run();
+  for (const statement of await reportSnapshotStatements(env, examId, version)) await statement.run();
+}
+
+/**
+ * Alt ders (2 Nov): sub-subject counts for the ranges saved on the exam card (position within the test), using the
+ * parent's wrong divisor for net. A separate statement run in the same batch right after REPORT_SNAPSHOT_SQL, only
+ * where the table exists (older schemas have no ranges); the parent totals written above are untouched.
+ */
+export const REPORT_BRANCHES_SQL = `UPDATE exam_result_snapshots AS snap SET payload_json=json_set(snap.payload_json,'$.branches',json(coalesce((SELECT json_group_array(json_object('parent_subject_id',x.subject_id,'subject_code',x.branch_code,'subject_name',x.branch_name,
+    'correct_count',x.c,'wrong_count',x.w,'blank_count',x.bl,'net',round(x.c-(CASE WHEN coalesce(x.divisor,0)>0 THEN x.w*1.0/x.divisor ELSE 0 END),2)))
+    FROM (SELECT b.subject_id,b.branch_code,b.branch_name,b.sort_order,es.wrong_divisor divisor,
+        SUM(sa.status='CORRECT') c,SUM(sa.status='WRONG') w,SUM(sa.status='BLANK') bl
+      FROM exam_subject_branches b
+      JOIN exam_subjects es ON es.exam_id=b.exam_id AND es.subject_id=b.subject_id
+      JOIN (SELECT q.id,q.subject_id,row_number() OVER (PARTITION BY q.subject_id ORDER BY q.question_no) pos FROM exam_questions q WHERE q.exam_id=snap.exam_id) qp
+        ON qp.subject_id=b.subject_id AND qp.pos BETWEEN b.question_start AND b.question_end
+      JOIN student_answers sa ON sa.exam_question_id=qp.id AND sa.participant_id=snap.participant_id AND sa.status<>'INVALID'
+      WHERE b.exam_id=snap.exam_id GROUP BY b.id ORDER BY b.subject_id,b.sort_order) x),'[]')))
+ WHERE snap.exam_id=? AND snap.snapshot_version=? AND json_valid(snap.payload_json) AND json_type(snap.payload_json,'$.branches') IS NULL
+ AND EXISTS(SELECT 1 FROM exam_subject_branches b WHERE b.exam_id=snap.exam_id)`;
+
+const branchTable = new WeakMap<object, Promise<boolean>>();
+export function examBranchesInstalled(env: Env): Promise<boolean> {
+  let p = branchTable.get(env.DB);
+  if (!p) { p = env.DB.prepare(`SELECT 1 ok FROM sqlite_master WHERE type='table' AND name='exam_subject_branches'`).first<{ ok: number }>().then((r) => Boolean(r?.ok)); branchTable.set(env.DB, p); }
+  return p;
+}
+/** The snapshot payload statement plus, when ranges can exist, the sub-subject statement, for one batch. */
+export async function reportSnapshotStatements(env: Env, examId: string, version: number): Promise<D1PreparedStatement[]> {
+  const out = [env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(examId, version)];
+  if (await examBranchesInstalled(env)) out.push(env.DB.prepare(REPORT_BRANCHES_SQL).bind(examId, version));
+  return out;
 }

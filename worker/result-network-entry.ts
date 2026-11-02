@@ -15,7 +15,7 @@ import { prepareResultArtifacts, readResultArtifact, inspectResultArtifactReadin
 import { reopenNetworkResults } from './lib/result-network-correction';
 import { retireResultArtifactVersions } from './lib/result-artifact-retention';
 import {resultRetentionQueueDiagnostics} from './lib/result-retention-queue';
-import { REPORT_SNAPSHOT_SQL } from './lib/report-snapshot';
+import { reportSnapshotStatements } from './lib/report-snapshot';
 
 const COOKIE='anunex_result_session';
 const SIX_HOURS=6*60*60*1000;
@@ -267,6 +267,7 @@ async function publishInLock(env:Env,id:string,actorId:string|null,live:boolean)
  if(!Number(totals?.participant_count||0))return badRequest('Yayımlanacak değerlendirilmiş öğrenci sonucu bulunmuyor.','NO_RESULTS');
  const version=Number((await one<any>(env.DB.prepare(`SELECT MAX(version) version FROM (SELECT snapshot_version version FROM exam_result_snapshots WHERE exam_id=? UNION ALL SELECT retired_through_version FROM result_artifact_retirements WHERE exam_id=?)`).bind(row.exam_id,row.exam_id)))?.version||0)+1;
  const academicEnd=Number(String(row.academic_year).slice(0,4))+1,sept30=new Date(`${academicEnd}-09-30T23:59:59.000Z`),ninetyDays=new Date(Date.now()+90*86400000),due=(ninetyDays>sept30?ninetyDays:sept30).toISOString();
+ const snapshotStatements=await reportSnapshotStatements(env,row.exam_id,version);
  await env.DB.batch([
   env.DB.prepare(`DELETE FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(row.exam_id,version),
   env.DB.prepare(`INSERT INTO exam_result_snapshots(
@@ -286,7 +287,7 @@ async function publishInLock(env:Env,id:string,actorId:string|null,live:boolean)
    RANK() OVER(PARTITION BY institution_id,grade_level ORDER BY COALESCE(score,net) DESC,correct_count DESC),COUNT(*) OVER(PARTITION BY institution_id,grade_level),
    RANK() OVER(PARTITION BY institution_id,COALESCE(class_snapshot,'') ORDER BY COALESCE(score,net) DESC,correct_count DESC),COUNT(*) OVER(PARTITION BY institution_id,COALESCE(class_snapshot,''))
   FROM base`).bind(id,row.exam_id,version),
-  env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(row.exam_id,version),
+  ...snapshotStatements,
 
   // S042 (D-S039): a school's or a dealer's own exam has no Türkiye rank.
   env.DB.prepare(`UPDATE exam_result_snapshots SET national_rank=NULL,national_count=NULL WHERE exam_id=? AND snapshot_version=? AND EXISTS(SELECT 1 FROM result_network_own_exams o WHERE o.exam_id=exam_result_snapshots.exam_id)`).bind(row.exam_id,version),
