@@ -1,0 +1,59 @@
+@media screen {
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority { padding:0;border:0;background:transparent;box-shadow:none; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority :is(.sr-header,.sr-panel,.sr-exam-list,.rsp-latest,.rsp-combined-teaser) { background:#fff;border:1px solid #dce5e8;border-radius:12px;box-shadow:0 2px 7px #172d3c04; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-header { padding:20px 24px;margin-bottom:18px;align-items:center; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-header h2 { font-size:25px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority :is(button,input,select) { min-height:42px;border-radius:8px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority button:not(:disabled) { transition:background-color .14s ease,transform .1s ease; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority button:active:not(:disabled) { transform:translateY(1px); }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority button:disabled { opacity:.5;cursor:not-allowed; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority :is(button,input,select):focus-visible { outline:3px solid #0d6871!important;outline-offset:3px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-countdown { background-color:#192638;border-radius:12px;border-color:#c8dce0;box-shadow:none; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-list-intro { margin:26px 0 18px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-list-intro h2 { font-size:30px;line-height:1.2;letter-spacing:-.025em; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-overview { display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;margin-bottom:18px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority :is(.rsp-latest,.rsp-combined-teaser) { padding:22px;min-width:0; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-latest h3 { font-size:20px;line-height:1.4;margin:7px 0 18px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-main-values { display:flex;gap:34px;align-items:baseline;margin-bottom:16px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-main-values strong { display:block;font-size:34px;line-height:1.2;color:#0d6871;font-variant-numeric:tabular-nums; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-main-values>div+div strong { font-size:25px;color:#172d3c; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-main-values span { font-size:12px;color:#526872; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-primary { background:#0d6871!important;border-color:#0d6871!important;color:#fff!important; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-combined-teaser h3 { font-size:21px;margin:0 0 10px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-combined-teaser p { color:#526872;font-size:13px;line-height:1.6;margin-bottom:16px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-exam-list { padding:18px 22px;margin-top:22px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-exam-card { border:1px solid #dce5e8;border-radius:9px;margin:8px 0;padding:16px;gap:20px;grid-template-columns:minmax(0,1fr) auto auto; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-exam-values { display:flex;flex-direction:row;gap:28px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-exam-values>.sr-value:first-child strong { color:#0d6871;font-size:25px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-score-pending { color:#78540c;font-size:11px;display:block; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-summary { background:#eef6f7;border:1px solid #c8dce0;border-radius:12px;padding:22px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-summary>.sr-value:first-child strong { color:#0d6871;font-size:38px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-outcomes { border-top:3px solid #0d6871;margin-top:18px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-outcome-card { background:#f7fafb;border-radius:8px;padding:14px;margin-top:10px; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-pdf-error { flex-basis:100%;max-width:100%;font-size:12px; }
+ .rsp-entrance { position:fixed;inset:0;z-index:2000;width:100%;height:100%;max-width:none;max-height:none;margin:0;border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:#f0f8fc;color:#17374a;animation:rsp-reveal 1.3s ease both; }
+ .rsp-entrance-senior { background:radial-gradient(ellipse at center,#143e53,#091b29);color:#f4fbff; }
+ .rsp-entrance .anunex-brand-canonical { max-width:250px; }
+ .rsp-entrance .rsp-skip { position:absolute;right:24px;top:24px;min-width:64px;min-height:42px;background:#fff;color:#17374a;border:1px solid #b8d0da;border-radius:8px; }
+ .rsp-entrance .rsp-skip:focus-visible { outline:3px solid #329bd0;outline-offset:3px; }
+ .rsp-orbit { border:1px solid #9bcddd;border-radius:50%;padding:26px;animation:rsp-orbit-in 1s ease both; }
+ .rsp-entrance p { color:inherit;font-size:16px; }
+ @keyframes rsp-reveal { 0% {opacity:1} 75% {opacity:1} 100% {opacity:0;visibility:hidden} }
+ @keyframes rsp-orbit-in { from {transform:scale(.8);opacity:0} to {transform:scale(1);opacity:1} }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority :is(.rsp-latest,.rsp-combined-teaser)>button { display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #b9cdd3;background:#fff;color:#234c5c;padding:10px 14px;font:600 13px/1.4 Inter,system-ui,sans-serif;cursor:pointer; }
+ .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-exam-arrow { background:#0d6871;color:#fff; }
+ @media(max-width:760px) {
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-overview { grid-template-columns:minmax(0,1fr); }
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority :is(.sr-header,.rsp-latest,.rsp-combined-teaser,.sr-exam-list) { padding:16px; }
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-exam-card { grid-template-columns:minmax(0,1fr);gap:12px; }
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-exam-values { width:100%;justify-content:space-between;gap:16px; }
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-main-values { gap:24px; }
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-summary { padding:16px; }
+ }
+ @media(prefers-reduced-motion:reduce) {
+  .rsp-entrance { display:none; }
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority *,
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority *::before,
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority *::after { transition:none!important;animation:none!important;scroll-behavior:auto!important; }
+ }
+}
