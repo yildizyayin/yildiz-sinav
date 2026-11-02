@@ -447,3 +447,51 @@ Sıradaki ID: A016 — AKTİF.
 PR #274 (CI run 39446697639 SUCCESS): seçim her zaman platform + yalnız ilgili kurumun soruları; isteğe bağlı eğitim yılı ve ≤30 doğrulanmış kazanım kodu (bilinmeyen kodlar hata mesajında); Studio formuna alanlar. 3 yeni test (kurum filtresi mutasyon kontrollü), 222 dosya / 1.137 test, typecheck, build PASS.
 Not (ayrı alt kayıt adayı): `questionIds` ile 200'e kadar kimlik tek sorguda bağlanabiliyor; D1 100 parametre sınırını aşabilir — önceden var olan risk, A016 kapsamında değiştirilmedi.
 Kapanış için kalan: merge → dağıtım → canlı Studio belgesi oluşturma kanıtı.
+
+## 30 Ekim – 2 Kasım: sonuc ve app güncellemeleri
+
+### Kullanıcı kararları
+
+- **D-S049 (30 Ekim):** Nibiru sesi için ödeme yok; cihazın ücretsiz sesleri kullanılır, kullanıcı en iyi Türkçe sesi seçer. Ücretli ses (Google vb.) satış başlayana kadar kapalı.
+- **Ödeme yok (30 Ekim):** Sistem kurulana kadar hiçbir ücretli plan/hizmet açılmaz; kullanıcı adına ödeme yapılmaz.
+- **PDF (30 Ekim, 2 Kasım):** "PDF indir" yazıcı penceresi değil, gerçek dosya indirir; yüzlerce sayfa saniyeler içinde olmalı (vektör PDF, yazı tipi hızlandırması).
+- **Puanlama profili (2 Kasım):** Aktif sınavın profili yalnız düzeltme modunda, aynı türde doğrulanmış profillerle ve gerekçeyle değiştirilir.
+- **Karne biçimleri (2 Kasım):** Öğrenci karnesi indirirken Tek sayfa / Analizli 2 sayfa / İkisi birden (öğrenci öğrenci) seçilir. Maarif sınıfları (2026–2027'de 5–7 ve 9–11; yıla göre hesaplanır): öğrenme çıktısı dili, Güçlü yönlerim / Gelişim alanlarım, yargılamayan Nibiru dili, Kişisel gelişimim, sıralar küçük, analizli karnede kağıt öz değerlendirme. Netten yeterlik düzeyi çıkarılmaz.
+- **Sınav açık kalır (2 Kasım):** Yayından sonra yeni yüklemeler hemen değerlendirilir ve yayına eklenir; onay olmadan otomatik donma yok. Yayımlanmış sonucu değiştiren işler (anahtar, profil, değerlendirilmiş yüklemeyi yeniden değerlendirme) "Düzeltmeye aç" ister.
+- **Yük (2 Kasım):** 50.000 öğrenci için önce ölçüm, sonra plan.
+
+### Birleşen PR'lar
+
+| PR | İş |
+|---|---|
+| #422 | Sonuç Ağı bayi açma hatası |
+| #424 | Föy değerlendirme: cevap anahtarı + sonuc kâğıt optiği |
+| #425, #428 | Nibiru canlı kontrol (modeller, ses, KVKK kapısı satırı) |
+| #426 | Nibiru ücretsiz cihaz sesi seçimi (D-S049) |
+| #429 | KVKK veri işleyenler ekranı |
+| #430 | Rapor Merkezi gerçek PDF indirme |
+| #431 | Puan üretmeyen profil uyarısı |
+| #432 | LGS/YKS geri sayımı (8 ve 12. sınıf) |
+| #434 | Kazanım kanıtında yanlış/boş ve tam liste |
+| #435 | Alt ders aralıkları (TYT) |
+| #437 | Birleşik karne |
+| #438 | Aktif sınavda puanlama profili düzeltmesi |
+| #439 | Vektör PDF |
+| #441 | Öğrenci karnesi tek sayfa / analizli 2 sayfa / Maarif |
+| #442 | PDF yazı tiplerinden kerning tabloları kaldırıldı (~4x) |
+| #443 | Yayımlanmış sınav açık kalır |
+| #444 | Sonuç sayfası okuma yükü: il/ilçe özet tablosu + öğrenci arama indeksleri |
+
+Tasarım ekibinin aynı dönemdeki PR'ları: #423, #427, #433, #436, #440.
+
+### Yük ölçümü (2 Kasım, canlı D1 salt okuma)
+
+- Öğrenci girişi + sonuç: ~8–9 Worker isteği.
+- Önce: il listesi 46.803 satır/istek, ilçe ~3.000 satır, öğrenci arama tüm kimlikleri tarıyordu → #444 ile birkaç satır.
+- PDF (sentetik, tek sayfa karne): 536 → 133 ms/sayfa (#442). 5.000 sayfa için kalan darboğazlar: pdf-lib çizimi (~32 ms/sayfa), tüm sayfaların ekranda kurulması, 5.000 öğrencide ~86 MB rapor paketi. Kullanıcı şimdilik yalnız yazı tipi adımını onayladı.
+- Açık risk: ücretsiz planda günde 100.000 istek; 50.000 öğrenci × 8–9 istek sınırı aşar. Plan: sonuçları hazırlanmış dosyalar (R2) olarak sunmak; ücretli plan ödeme kuralı nedeniyle önerilmez.
+
+### Bekleyenler
+
+- Kullanıcı: ÇAP TYT için app'te "Sonuçları düzeltmeye aç" + Sonuç Ağı'nda düzeltme, sonra profil "TYT — ÖSYM"; KVKK NIBIRU_AI kaydı; föy cevap anahtarı; Netgsm; KVKK metinleri.
+- Karar bekleyen: yanlış soru → video/test/oyun/rehber uyarısı zinciri (rehber uyarı kuralı ve video onayı); PDF B/C/D adımları; app–sonuc panel listesi işaretlemesi.
