@@ -218,6 +218,12 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
   if(await examTrashed(env,examId))return badRequest('Çöp kutusundaki sınavın sonucu dondurulamaz. Önce sınavı geri alın.','EXAM_TRASHED');
   return withExamOperationLock(env,examId,'FREEZE',async(env)=>{
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
+    return writeAppSnapshot(env,p,examId,user.id,false);
+  });
+}
+
+/** The app's result snapshot: ranks over every evaluated participant, report snapshot and counts (run inside the lock). */
+async function writeAppSnapshot(env:Env,p:any,examId:string,actorId:string|null,live:boolean):Promise<Response>{
   const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)`).bind(examId));
   if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
   const lastSnapshot=await one<{version:number}>(env.DB.prepare('SELECT MAX(version) version FROM (SELECT snapshot_version version FROM exam_result_snapshots WHERE exam_id=? UNION ALL SELECT retired_through_version FROM result_artifact_retirements WHERE exam_id=?)').bind(examId,examId));
@@ -250,13 +256,32 @@ async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>
     env.DB.prepare(`INSERT INTO exam_publication_stats(exam_id,snapshot_version,institution_count,participant_count,city_count,payload_json)
       SELECT ?,?,COUNT(DISTINCT institution_id),COUNT(*),COUNT(DISTINCT city),? FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`)
       .bind(examId,version,JSON.stringify({scope:p.scope,networkId}),examId,version),
-    env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='FROZEN',freeze_at=CURRENT_TIMESTAMP,snapshot_version=?,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?`).bind(version,examId),
-    env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,'EXAM_RESULTS_FROZEN','exam',?,?)`)
-      .bind(uuid('aud'),user.id,p.institution_id,examId,JSON.stringify({version,participants:Number(participantCountRow?.count||0)})),
+    live
+      // Live refresh (owner, 2 Nov): a new upload joins the already frozen/published results; the state stays as it is.
+      ? env.DB.prepare(`UPDATE exam_delivery_profiles SET snapshot_version=?,updated_at=CURRENT_TIMESTAMP WHERE exam_id=? AND result_freeze_status IN ('FROZEN','PUBLISHED')`).bind(version,examId)
+      : env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='FROZEN',freeze_at=CURRENT_TIMESTAMP,snapshot_version=?,updated_at=CURRENT_TIMESTAMP WHERE exam_id=?`).bind(version,examId),
+    env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,'exam',?,?)`)
+      .bind(uuid('aud'),actorId,p.institution_id,live?'EXAM_RESULTS_LIVE_REFRESHED':'EXAM_RESULTS_FROZEN',examId,JSON.stringify({version,participants:Number(participantCountRow?.count||0)})),
   ]);
   const stats=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT institution_id) institution_count,COUNT(DISTINCT city) city_count FROM exam_result_snapshots WHERE exam_id=? AND snapshot_version=?`).bind(examId,version));
   return json({ok:true,examId,version,stats});
+}
+
+/**
+ * Owner decision (2 Nov): an exam stays open after its results are published — a new upload is evaluated at once and
+ * its students join the published results (new snapshot version, ranks recomputed); nothing freezes on its own.
+ * Changing results already published (answer key, scoring profile, re-evaluating an evaluated upload) still needs
+ * "Düzeltmeye aç". Best effort: when the exam is busy the next upload or a manual freeze writes the snapshot.
+ */
+export async function refreshAppLivePublication(env:Env,examId:string,actorId:string|null):Promise<boolean>{
+  const state=await one<any>(env.DB.prepare(`SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?`).bind(examId));
+  if(!state||!['FROZEN','PUBLISHED'].includes(state.result_freeze_status))return false;
+  const r=await withExamOperationLock(env,examId,'APP_RESULTS_REFRESH',async(env)=>{
+    const p=await examProfile(env,examId);if(!p||!['FROZEN','PUBLISHED'].includes(p.result_freeze_status))return json({ok:true,skipped:true});
+    return writeAppSnapshot(env,p,examId,actorId,true);
   });
+  if(!r.ok)console.warn('APP_RESULTS_LIVE_REFRESH_SKIPPED',examId,r.status);
+  return r.ok;
 }
 
 async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response>{

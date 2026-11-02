@@ -21,7 +21,8 @@ function fixture({ status = 'NEW_GUEST', issues = ['Kitapçık: işaretlenmemiş
   return { decide, row, writes };
 }
 describe('scan identity and booklet decisions', () => {
-  it('blocks source changes while the publication is frozen',async()=>{const f=fixture({frozen:true});expect((await f.decide({action:'BOOKLET',bookletCode:'A'})).status).toBe(400);expect(f.writes).toEqual([])});
+  // Owner decision (2 Nov): a new upload's rows can be matched after publication; evaluated uploads stay locked (separate check).
+  it('lets a new upload be resolved after the results are published',async()=>{const f=fixture({frozen:true});expect((await f.decide({action:'BOOKLET',bookletCode:'A'})).status).toBe(200)});
   it('keeps booklet review pending after a manual student match', async () => {
     const f = fixture(); expect((await f.decide({ action: 'MATCH', studentId: 'student' })).status).toBe(200);
     expect(f.row.match_status).toBe('ACTIVE_MATCH'); expect(f.row.resolution_status).toBe('PENDING'); expect(JSON.parse(f.row.issues_json)).toHaveLength(1);
