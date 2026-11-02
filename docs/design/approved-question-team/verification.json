@@ -1,0 +1,221 @@
+[
+  {
+    "width": 1440,
+    "state": "data",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1180,
+    "state": "data",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1024,
+    "state": "data",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 768,
+    "state": "data",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "data",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 360,
+    "state": "data",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1440,
+    "state": "data",
+    "theme": "ANUNEX_FOCUS",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "data",
+    "theme": "ANUNEX_FOCUS",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1440,
+    "state": "data",
+    "theme": "ANUNEX_STUDIO",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "data",
+    "theme": "ANUNEX_STUDIO",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1440,
+    "state": "data",
+    "theme": "ANUNEX_COSMIC",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "data",
+    "theme": "ANUNEX_COSMIC",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1440,
+    "state": "data",
+    "theme": "ANUNEX_NEON",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "data",
+    "theme": "ANUNEX_NEON",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "empty",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "error",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "loading",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "busy",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": [
+      {
+        "path": "/api/question-bank-standard/team/control",
+        "method": "PATCH",
+        "body": {
+          "agentKey": "TEAM",
+          "paused": true,
+          "expectedRevision": 7
+        }
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "state": "success",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": [
+      {
+        "path": "/api/question-bank-standard/team/control",
+        "method": "PATCH",
+        "body": {
+          "agentKey": "TEAM",
+          "paused": true,
+          "expectedRevision": 7
+        }
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "state": "control-error",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": [
+      {
+        "path": "/api/question-bank-standard/team/control",
+        "method": "PATCH",
+        "body": {
+          "agentKey": "TEAM",
+          "paused": true,
+          "expectedRevision": 7
+        }
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "state": "paused",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "questions",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "media",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "history",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "year",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "long",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "state": "reduced-motion",
+    "theme": "ANUNEX_STANDARD",
+    "passed": true,
+    "writes": []
+  }
+]
