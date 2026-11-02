@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { api } from '../api';
 import { downloadPagesAsPdf, pdfFileName, preloadPdfTools } from '../lib/downloadPdf';
 import { BundlePages, exportWorkbook, GrowthPages, KIND_ORDER, PrintSetup, type ReportKind } from './reports/ReportFamily';
+import { KARNE_FORMATS, karnePagesPerStudent, type KarneFormat } from './reports/karne-formats';
 import './report-center.css';
 
 /**
@@ -66,6 +67,7 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
   const [instByExam, setInstByExam] = useState<Record<string, Inst[]>>({});
   const [instIds, setInstIds] = useState<string[]>([]);
   const [kinds, setKinds] = useState<ReportKind[]>(['OKUL_NET']);
+  const [karneFormat, setKarneFormat] = useState<KarneFormat>('TWO');
   const [aytMode, setAytMode] = useState<'COMBINED' | 'AYT_ONLY'>('COMBINED');
   const [pairExamId, setPairExamId] = useState('');
   const [aytTypes, setAytTypes] = useState<string[]>(['SAY', 'SOZ', 'EA']);
@@ -89,13 +91,13 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
   const loadExams = async () => { setError(''); try { setExams((await api<any>(`/api/admin/result-network/operations/toplu/exams?mode=${mode}`)).exams || []); } catch (e: any) { setError(e.message); } };
   useEffect(() => {
     void loadExams();
-    try { const m = JSON.parse(localStorage.getItem(MEMORY) || '{}'); if (Array.isArray(m.kinds) && m.kinds.length) setKinds(m.kinds.filter((k: any) => KIND_ORDER.includes(k))); if (m.aytMode) setAytMode(m.aytMode); if (Array.isArray(m.aytTypes) && m.aytTypes.length) setAytTypes(m.aytTypes); } catch { /* storage may be blocked */ }
+    try { const m = JSON.parse(localStorage.getItem(MEMORY) || '{}'); if (Array.isArray(m.kinds) && m.kinds.length) setKinds(m.kinds.filter((k: any) => KIND_ORDER.includes(k))); if (m.aytMode) setAytMode(m.aytMode); if (KARNE_FORMATS.some(([k]) => k === m.karneFormat)) setKarneFormat(m.karneFormat); if (Array.isArray(m.aytTypes) && m.aytTypes.length) setAytTypes(m.aytTypes); } catch { /* storage may be blocked */ }
     const apply = (d: any) => { try { sessionStorage.removeItem(PENDING); } catch { /* */ } if (d?.examId) { setExamIds([d.examId]); setInstIds(d.institutionId ? [d.institutionId] : []); setEditExam(false); setEditInst(!d.institutionId); setPacks([]); } };
     try { apply(JSON.parse(sessionStorage.getItem(PENDING) || 'null')); } catch { /* */ }
     const onOpen = (ev: Event) => apply((ev as CustomEvent).detail);
     window.addEventListener('anunex:toplu-open', onOpen); return () => window.removeEventListener('anunex:toplu-open', onOpen);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { try { localStorage.setItem(MEMORY, JSON.stringify({ kinds, aytMode, aytTypes })); } catch { /* */ } }, [kinds, aytMode, aytTypes]);
+  useEffect(() => { try { localStorage.setItem(MEMORY, JSON.stringify({ kinds, aytMode, aytTypes, karneFormat })); } catch { /* */ } }, [kinds, aytMode, aytTypes, karneFormat]);
   useEffect(() => { for (const id of examIds) if (!instByExam[id]) void api<any>(`/api/admin/result-network/operations/toplu/institutions?mode=${mode}&examId=${encodeURIComponent(id)}`).then((r) => setInstByExam((m) => ({ ...m, [id]: r.institutions || [] }))).catch((e: any) => setError(e.message)); }, [examIds]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { setPacks([]); setGrowth([]); }, [examIds, instIds, kinds, aytMode, pairExamId, aytTypes]);
 
@@ -112,7 +114,8 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
   const anyAyt = selectedExams.some(isAyt);
   const tytChoices = exams.filter(isTyt);
   const typeMul = anyAyt ? Math.max(1, aytTypes.length) : 1;
-  const estimate = ALL.filter((x) => kinds.includes(x.kind)).reduce((n, x) => n + x.pages(students, selectedInst.length, examIds.length, districts) * (['OKUL_NET', 'OKUL_TEST', 'SINIF_NET', 'SINIF_TEST', 'KURUM_ORT'].includes(x.kind) ? typeMul : 1), 0);
+  const pagesOf = (x: Item) => x.kind === 'OGRENCI_KARNE' ? karnePagesPerStudent(karneFormat) * students : x.pages(students, selectedInst.length, examIds.length, districts);
+  const estimate = ALL.filter((x) => kinds.includes(x.kind)).reduce((n, x) => n + pagesOf(x) * (['OKUL_NET', 'OKUL_TEST', 'SINIF_NET', 'SINIF_TEST', 'KURUM_ORT'].includes(x.kind) ? typeMul : 1), 0);
   const ready = packs.length > 0 || growth.length > 0;
   const ordered = KIND_ORDER.filter((k) => kinds.includes(k));
 
@@ -219,7 +222,7 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
         <section className={`rm-card ${instIds.length ? 'rm-active rm-focus' : 'rm-locked'}`} aria-labelledby="rm-s3">
           <div className="rm-card-head"><h2 id="rm-s3">3 · Raporlar <span className="rm-muted">· {kinds.length} seçili{instIds.length ? ` · ~${estimate} sayfa` : ''}</span></h2></div>
           <div className="rm-reports">
-            {[...MAIN, ...(showMore ? MORE : MORE.filter((x) => kinds.includes(x.kind)))].map((it) => { const on = kinds.includes(it.kind); const n = it.pages(students, selectedInst.length, examIds.length, districts);
+            {[...MAIN, ...(showMore ? MORE : MORE.filter((x) => kinds.includes(x.kind)))].map((it) => { const on = kinds.includes(it.kind); const n = pagesOf(it);
               return <label key={it.kind} className={`rm-rep ${on ? 'sel' : ''}`}>
                 <input type="checkbox" checked={on} onChange={() => setKinds((c) => c.includes(it.kind) ? c.filter((x) => x !== it.kind) : [...c, it.kind])} />
                 <GlyphIcon g={it.glyph} />
@@ -228,6 +231,10 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
               </label>; })}
             <button type="button" className="rm-link rm-more" aria-expanded={showMore} onClick={() => setShowMore((v) => !v)}>{showMore ? 'Daha az göster' : `+ Diğer raporlar: şube listeleri, branş, konu eksik, gelişim, kurum ortalamaları`}</button>
           </div>
+          {kinds.includes('OGRENCI_KARNE') && <fieldset className="rm-ayt rm-karne"><legend>Öğrenci karnesi biçimi</legend>
+            {KARNE_FORMATS.map(([k, label, desc]) => <label key={k} className="rm-opt"><input type="radio" name="rm-karne" checked={karneFormat === k} onChange={() => setKarneFormat(k)} /> <b>{label}</b><span className="rm-muted"> · {desc}</span></label>)}
+            <p className="rm-note">5–7 ve 9–11. sınıfların karnesi Maarif diliyle hazırlanır: öğrenme çıktıları, güçlü yönler ve gelişim alanları; analizli karnede öz değerlendirme alanı.</p>
+          </fieldset>}
           {anyAyt && <fieldset className="rm-ayt"><legend>AYT puanı</legend>
             <label className="rm-opt"><input type="radio" name="rm-ayt" checked={aytMode === 'COMBINED'} onChange={() => setAytMode('COMBINED')} /> TYT ile birleşik (SAY / SÖZ / EA puanı)</label>
             {aytMode === 'COMBINED' && <label className="rm-select rm-indent">TYT sınavı<select value={pairExamId} onChange={(e) => setPairExamId(e.target.value)}><option value="">Otomatik (aynı yıl, aynı yayın)</option>{tytChoices.map((e) => <option key={e.id} value={e.id}>{e.academic_year} · {e.publisher_name} · {e.title}</option>)}</select></label>}
@@ -244,7 +251,7 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
         <div className="rm-stage-wrap">
           {!ready && <div className="rm-placeholder">{busy ? <><span className="rm-spin" aria-hidden="true" /><b>Hazırlanıyor…</b><span>{progress}</span></> : <><b>{instIds.length && kinds.length ? `Seçiminiz hazır · ~${estimate} sayfa` : 'Sınav, kurum ve rapor seçin'}</b><span>Raporları hazırlayınca sayfalar burada tek tek görünür.</span></>}</div>}
           <div ref={stage} className="rm-stage" hidden={!ready}>
-            <div className="rx-pages rm-preview" ref={ref}><PrintSetup />{packs.map((p, i) => <BundlePages key={i} b={p} kinds={ordered} types={p.family === 'AYT' ? aytTypes : undefined} />)}{growth.map((g, i) => <GrowthPages key={`g${i}`} g={g} />)}</div>
+            <div className="rx-pages rm-preview" ref={ref}><PrintSetup />{packs.map((p, i) => <BundlePages key={i} b={p} kinds={ordered} types={p.family === 'AYT' ? aytTypes : undefined} karne={karneFormat} />)}{growth.map((g, i) => <GrowthPages key={`g${i}`} g={g} />)}</div>
           </div>
         </div>
         <div className="rm-actions">

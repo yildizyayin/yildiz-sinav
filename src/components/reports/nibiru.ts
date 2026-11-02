@@ -58,3 +58,21 @@ export function studentAdvice(b: Bundle, inst: Inst, s: any): string[] {
   if (s.tytSource === 'SCHOOL') out.push('Kendi TYT sonucun eşleşmediği için alan puanların okulunun TYT ortalamasıyla hesaplandı.');
   return out;
 }
+
+/**
+ * Maarif grades (5–7, 9–11 in 2026–2027): the same saved-result facts in development language — no "below/failed",
+ * no competence verdict; each line points to something the student can do next (owner-approved, 2 Nov).
+ */
+export function maarifStudentAdvice(b: Bundle, inst: Inst, s: any): string[] {
+  const out: string[] = [];
+  const d = diffs(b, { cols: s.cols }, inst.avg);
+  const strong = d.filter((x) => x.diff >= 10).sort((a, b) => b.diff - a.diff).slice(0, 2);
+  const grow = d.filter((x) => x.diff <= -10).sort((a, b) => a.diff - b.diff).slice(0, 3);
+  if (strong.length) out.push(`Güçlü olduğun testler: ${strong.map((x) => x.name).join(', ')}. Bu alanlarda farklı soru türleriyle kendini zorlayabilirsin.`);
+  if (grow.length) out.push(`Geliştirebileceğin testler: ${grow.map((x) => x.name).join(', ')}. Haftalık planında bu testlere biraz daha yer açabilirsin.`);
+  const focus = focusTopics(s.topics || [], 3);
+  if (focus.length) out.push(`Önce çalışabileceğin öğrenme çıktıları: ${focus.map((t) => t.topic).join('; ')}.`);
+  if (s.total.b >= 10 && s.total.b > 2 * s.total.y) out.push(`Boş bıraktığın ${s.total.b} soru var; bildiğin adımları yazarak soruyu sonuna kadar götürmeyi deneyebilirsin.`);
+  else if (s.total.y > 0 && s.total.y >= s.total.d / 2) out.push('Çözdüğün soruları kontrol etmeye kısa bir süre ayırmak netini artırabilir.');
+  return out;
+}

@@ -123,7 +123,7 @@ function rankWithin<T>(rows: T[], group: (r: T) => string, value: (r: T) => numb
 
 export interface RawBundle {
   exam: any; subjects: Array<{ id: string; name: string; code: string; questionCount: number; wrongDivisor: number }>;
-  questions: Array<{ id: string; subjectId: string; no: number; status: string; section: string | null; topic: string; auto?: boolean }>;
+  questions: Array<{ id: string; subjectId: string; no: number; status: string; section: string | null; topic: string; code?: string | null; auto?: boolean }>;
   keys: Array<{ questionId: string; booklet: string; answer: string; printed: number }>;
   participants: Array<{ id: string; inst: string; iname: string; city: string; district: string; name: string; no: string | null; cls: string; booklet: string | null; d: number; y: number; b: number; n: number; score: number | null }>;
   subjectRows: Array<{ p: string; s: string; d: number; y: number; b: number; n: number }>;
@@ -299,11 +299,11 @@ export function buildBundle(raw: RawBundle) {
   for (const a of raw.answers) { const m = answersBy.get(a.p) || new Map(); m.set(a.q, { answer: a.answer, status: a.status }); answersBy.set(a.p, m); }
   const gridOf = (p: string, booklet: string | null) => {
     const key = keyBy.get(booklet || '') || keyBy.get(firstBooklet || '') || new Map(), own = answersBy.get(p) || new Map();
-    const out: Record<string, Array<{ no: number; answer: string; key: string; status: string }>> = {};
-    for (const q of raw.questions) {
+    const out: Record<string, Array<{ no: number; answer: string; key: string; status: string; t: number }>> = {};
+    raw.questions.forEach((q, t) => {
       const k = key.get(q.id), a = own.get(q.id);
-      (out[q.subjectId] ||= []).push({ no: k?.printed ?? q.no, answer: a?.answer || '', key: q.status !== 'ACTIVE' ? '-' : (k?.answer || ''), status: q.status !== 'ACTIVE' ? 'CANCELLED' : (a?.status || 'BLANK') });
-    }
+      (out[q.subjectId] ||= []).push({ no: k?.printed ?? q.no, answer: a?.answer || '', key: q.status !== 'ACTIVE' ? '-' : (k?.answer || ''), status: q.status !== 'ACTIVE' ? 'CANCELLED' : (a?.status || 'BLANK'), t });
+    });
     for (const rows of Object.values(out)) rows.sort((x, y) => x.no - y.no);
     return out;
   };
@@ -338,6 +338,8 @@ export function buildBundle(raw: RawBundle) {
     tests, columns, scoreTypes, primary,
     general: { avg: general, topics: topicOf(itemGen, ''), counts: countsOf(students) },
     institutions, districtSchools,
+    // Karne tek sayfa (2 Nov): what each question asks, indexed by the grid rows' `t` (no per-student copies).
+    questions: raw.questions.map((q) => ({ subjectId: q.subjectId, section: q.section, topic: q.topic, code: q.code || null })),
   };
 }
 
@@ -376,9 +378,10 @@ export async function reportBundle(env: Env, opts: { examId: string; institution
   const { exam, subjects } = meta;
   const qs = await all<any>(env.DB.prepare(`SELECT q.id,q.subject_id,q.question_no,q.question_status,
       (SELECT pol.label_path_json FROM question_publisher_outcomes qpo JOIN publisher_outcome_labels pol ON pol.id=qpo.publisher_outcome_id WHERE qpo.exam_question_id=q.id ORDER BY pol.created_at LIMIT 1) label,
-      (SELECT o.title FROM question_outcomes qo JOIN outcomes o ON o.id=qo.outcome_id WHERE qo.exam_question_id=q.id LIMIT 1) outcome
+      (SELECT o.title FROM question_outcomes qo JOIN outcomes o ON o.id=qo.outcome_id WHERE qo.exam_question_id=q.id LIMIT 1) outcome,
+      (SELECT o.code FROM question_outcomes qo JOIN outcomes o ON o.id=qo.outcome_id WHERE qo.exam_question_id=q.id LIMIT 1) ocode
     FROM exam_questions q WHERE q.exam_id=? ORDER BY q.subject_id,q.question_no`).bind(opts.examId));
-  const questions = qs.map((q) => { let l: any = {}; try { l = JSON.parse(q.label || '{}'); } catch { /* */ } return { id: q.id, subjectId: q.subject_id, no: Number(q.question_no), status: q.question_status, section: (String(l.unit || '').trim() || null), topic: String(l.publisherTitle || q.outcome || l.topic || '').trim() || 'Konu belirtilmemiş' }; });
+  const questions = qs.map((q) => { let l: any = {}; try { l = JSON.parse(q.label || '{}'); } catch { /* */ } return { id: q.id, subjectId: q.subject_id, no: Number(q.question_no), status: q.question_status, section: (String(l.unit || '').trim() || null), topic: String(l.publisherTitle || q.outcome || l.topic || '').trim() || 'Konu belirtilmemiş', code: String(q.ocode || l.code || '').trim() || null }; });
   const keys = (await all<any>(env.DB.prepare(`SELECT ak.exam_question_id q,ak.booklet_code b,ak.correct_answer a,COALESCE(o.printed_question_no,eq.question_no) printed FROM answer_keys ak JOIN exam_questions eq ON eq.id=ak.exam_question_id LEFT JOIN exam_question_booklet_orders o ON o.exam_question_id=ak.exam_question_id AND o.booklet_code=ak.booklet_code WHERE eq.exam_id=? ORDER BY ak.booklet_code`).bind(opts.examId)))
     .map((k) => ({ questionId: k.q, booklet: k.b, answer: k.a, printed: Number(k.printed) }));
   const participants = (await all<any>(env.DB.prepare(`SELECT ep.id,ep.institution_id inst,i.name iname,COALESCE(NULLIF(i.city,''),'İl belirtilmemiş') city,COALESCE(NULLIF(i.district,''),'İlçe belirtilmemiş') district,ep.name_snapshot name,ep.student_number_snapshot no,COALESCE(ep.class_snapshot,'') cls,ep.booklet_code booklet,
@@ -404,7 +407,45 @@ export async function reportBundle(env: Env, opts: { examId: string; institution
   const aytMode: AytMode = opts.aytMode === 'AYT_ONLY' ? 'AYT_ONLY' : 'COMBINED';
   const pair = family === 'AYT' && aytMode === 'COMBINED' ? await pairData(env, exam, opts.pairExamId, selected) : null;
   const provisional = !(await one<any>(env.DB.prepare(`SELECT 1 FROM exam_administrations WHERE exam_id=? AND channel='RESULT_NETWORK' AND ranking_frozen_at IS NOT NULL LIMIT 1`).bind(opts.examId)));
-  return buildBundle({ exam, subjects, questions, keys, participants: participants.map((p) => ({ ...p, d: Number(p.d), y: Number(p.y), b: Number(p.b), n: Number(p.n), score: p.score == null ? null : Number(p.score) })), subjectRows, sectionRows, selected, answers, items, weights, aytMode, pair, provisional });
+  const bundle = buildBundle({ exam, subjects, questions, keys, participants: participants.map((p) => ({ ...p, d: Number(p.d), y: Number(p.y), b: Number(p.b), n: Number(p.n), score: p.score == null ? null : Number(p.score) })), subjectRows, sectionRows, selected, answers, items, weights, aytMode, pair, provisional });
+  const history = await studentHistory(env, exam, bundle.institutions);
+  return { ...bundle, historyExams: history.exams };
+}
+
+/**
+ * Karne "önceki sınavlar" (2 Nov): the same student's earlier published exams of the same type, grade and academic
+ * year in the same school (matched by student number, else by name), newest first, at most four. Only exams whose
+ * results were published on the result network count; nothing unpublished reaches a karne.
+ */
+export async function studentHistory(env: Env, exam: any, institutions: Array<{ id: string; students: any[] }>) {
+  const empty = { exams: [] as Array<{ id: string; title: string; date: string | null }> };
+  if (!institutions.length || !exam?.exam_type) return empty;
+  const at = String(exam.application_start_at || exam.exam_date || '');
+  const instIds = institutions.map((i) => i.id), marks = instIds.map(() => '?').join(',');
+  const exams = await all<any>(env.DB.prepare(`SELECT e.id,e.title,COALESCE(e.application_start_at,e.exam_date) at FROM exams e
+      WHERE e.id<>? AND e.exam_type=? AND COALESCE(e.grade_level,-1)=COALESCE(?,-1) AND COALESCE(e.academic_year,'')=COALESCE(?,'')
+        AND (?='' OR COALESCE(e.application_start_at,e.exam_date,'')<?)
+        AND EXISTS(SELECT 1 FROM exam_administrations ea WHERE ea.exam_id=e.id AND ea.channel='RESULT_NETWORK' AND ea.published_snapshot_version>0)
+        AND EXISTS(SELECT 1 FROM exam_participants ep WHERE ep.exam_id=e.id AND ep.institution_id IN (${marks}))
+      ORDER BY COALESCE(e.application_start_at,e.exam_date,e.created_at) DESC LIMIT 4`).bind(exam.id, exam.exam_type, exam.grade_level ?? null, exam.academic_year ?? null, at, at, ...instIds)).catch(() => [] as any[]);
+  if (!exams.length) return empty;
+  type Point = { examId: string; net: number; score: number | null; tests: Record<string, number> };
+  const byKey = new Map<string, Point[]>();
+  for (const e of exams) {
+    const rows = await all<any>(env.DB.prepare(`SELECT ep.id,ep.institution_id inst,ep.name_snapshot name,ep.student_number_snapshot no,er.net,er.score FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id WHERE ep.exam_id=? AND ep.institution_id IN (${marks})`).bind(e.id, ...instIds));
+    const sr = rows.length ? await all<any>(env.DB.prepare(`SELECT sr.participant_id p,sr.subject_id s,sr.net n FROM subject_results sr JOIN exam_participants ep ON ep.id=sr.participant_id WHERE ep.exam_id=? AND ep.institution_id IN (${marks})`).bind(e.id, ...instIds)) : [];
+    const tests = new Map<string, Record<string, number>>();
+    for (const r of sr) { const m = tests.get(r.p) || {}; m[r.s] = r2(Number(r.n)); tests.set(r.p, m); }
+    for (const r of rows) {
+      const point = { examId: e.id, net: r2(Number(r.net)), score: r.score == null ? null : r2(Number(r.score)), tests: tests.get(r.id) || {} };
+      for (const key of [r.no ? `${r.inst}|no:${String(r.no).trim()}` : null, `${r.inst}|ad:${normName(r.name)}`]) if (key) { const list = byKey.get(key) || []; if (!list.some((x) => x.examId === e.id)) list.push(point); byKey.set(key, list); }
+    }
+  }
+  for (const inst of institutions) for (const s of inst.students) {
+    const list = (s.number ? byKey.get(`${inst.id}|no:${String(s.number).trim()}`) : null) || byKey.get(`${inst.id}|ad:${normName(s.name)}`) || [];
+    s.history = list;
+  }
+  return { exams: exams.map((e) => ({ id: e.id, title: e.title, date: e.at ? String(e.at).slice(0, 10) : null })) };
 }
 
 /** S034 gelişim: the same students across several exams of one school (matched by student number, else name). */
