@@ -52,12 +52,14 @@ export async function putOutcomeMappings(request:Request,env:Env,user:AuthUser,e
 }
 export default {
  async fetch(request:Request,env:Env):Promise<Response>{
- const url=new URL(request.url);const match=url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/(outcome-catalog|outcome-match-preview|outcome-mappings)$/);
+ const url=new URL(request.url);const match=url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/(outcome-catalog|outcome-match-preview|outcome-mappings|branches)$/);
  if(!match)return examAdmin.fetch(request,env);
  const user=await getAuthUser(env,request);if(!user)return json({ok:false,error:{code:'UNAUTHENTICATED',message:'Oturum açın.'}},401);
  if(!['SUPER_ADMIN','INSTITUTION_MANAGER'].includes(user.role)||user.must_change_password)return forbidden();
  if(request.method!=='GET'&&request.headers.get('Origin')!==url.origin)return forbidden('İşlemi ANUNEX üzerinden başlatın.');
  const exam=await managedExam(env,user,match[1]);if(!exam)return notFound();
+ // Alt ders aralıkları (2 Nov): same access as outcome mappings.
+ if(match[2]==='branches'){const b=await import('./lib/exam-subject-branches');return request.method==='GET'?b.getExamBranches(env,exam):request.method==='PUT'?b.putExamBranches(request,env,user,exam):json({ok:false},405)}
  if(match[2]==='outcome-mappings')return request.method==='GET'?getOutcomeMappings(env,exam):request.method==='PUT'?putOutcomeMappings(request,env,user,exam.id):json({ok:false},405);
  const subjectId=url.searchParams.get('subjectId')||undefined;
  const catalog=await scopedOutcomeCatalog(env,examOutcomeScope(exam),subjectId);

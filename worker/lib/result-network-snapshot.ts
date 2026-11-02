@@ -30,7 +30,7 @@ export function snapshotSummary(row:any):any|null {
 /** 2 Nov: a student's own outcomes are returned in full up to this guard, with the total, so a cut is never silent. */
 export const OUTCOME_LIMIT=1000;
 export function snapshotDetail(payload:any){
- return {outcomesTotal:payload.outcomes.length,subjects:payload.subjects.map((s:any)=>({...s,subject:s.subject_name})),outcomes:payload.outcomes.slice(0,OUTCOME_LIMIT).map((o:any)=>({...o,outcome:o.title,success_rate:o.evidence_count>0?100*o.correct_count/o.evidence_count:null,mastery_status:null})),optionalPhilosophy:payload.optionalPhilosophy||[]};
+ return {outcomesTotal:payload.outcomes.length,subjects:[...payload.subjects,...(Array.isArray(payload.branches)?payload.branches.map((b:any)=>({...b,branch:true})):[])].map((s:any)=>({...s,subject:s.subject_name})),outcomes:payload.outcomes.slice(0,OUTCOME_LIMIT).map((o:any)=>({...o,outcome:o.title,success_rate:o.evidence_count>0?100*o.correct_count/o.evidence_count:null,mastery_status:null})),optionalPhilosophy:payload.optionalPhilosophy||[]};
 }
 
 // Institution scope is checked before reading the publication payload.

@@ -41,3 +41,14 @@
 /* A032b: institution lifecycle actions */
 .institution-lifecycle-actions { display: flex; flex-wrap: wrap; gap: 6px; }
 .score-model-note.score-model-warning{background:#FFF4E0;color:#7A4300;border:1px solid #F3D29A}
+/* Alt ders aralıkları (2 Nov) */
+.exam-branches{display:flex;flex-direction:column;gap:14px}
+.exam-branches .secondary,.exam-branches .primary{align-self:flex-start;min-height:44px}
+.exam-branch-subject{border:1px solid #dce4ef;border-radius:12px;padding:12px 14px;margin:0}
+.exam-branch-subject legend{font-weight:700;padding:0 6px}
+.exam-branch-rows{display:flex;flex-direction:column;gap:8px}
+.exam-branch-row{display:grid;grid-template-columns:minmax(110px,1fr) repeat(2,minmax(90px,140px));gap:10px;align-items:end}
+.exam-branch-row>span{font-weight:600;padding-bottom:10px}
+.exam-branch-row label{display:flex;flex-direction:column;gap:4px;font-size:12px}
+.exam-branch-row input{min-height:40px;width:100%}
+@media (max-width:480px){.exam-branch-row{grid-template-columns:1fr 1fr}.exam-branch-row>span{grid-column:1/-1;padding-bottom:0}}

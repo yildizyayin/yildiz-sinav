@@ -55,6 +55,18 @@ export const REPORT_SNAPSHOT_SQL = `UPDATE exam_result_snapshots AS snap SET pay
       JOIN (SELECT id outcome_id FROM outcomes) qo ON qo.outcome_id=out.id
       WHERE sa.participant_id=snap.participant_id AND sa.status<>'INVALID' GROUP BY qo.outcome_id) r
     JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id)),
+  /* Alt ders (2 Nov): counts of the questions in each saved range (position within the test), the parent's wrong
+     divisor for net. Only branches the participant answered appear; the parent totals above are untouched. */
+  'branches',json(coalesce((SELECT json_group_array(json_object('parent_subject_id',x.subject_id,'subject_code',x.branch_code,'subject_name',x.branch_name,
+    'correct_count',x.c,'wrong_count',x.w,'blank_count',x.bl,'net',round(x.c-(CASE WHEN coalesce(x.divisor,0)>0 THEN x.w*1.0/x.divisor ELSE 0 END),2)))
+    FROM (SELECT b.subject_id,b.branch_code,b.branch_name,b.sort_order,es.wrong_divisor divisor,
+        SUM(sa.status='CORRECT') c,SUM(sa.status='WRONG') w,SUM(sa.status='BLANK') bl
+      FROM exam_subject_branches b
+      JOIN exam_subjects es ON es.exam_id=b.exam_id AND es.subject_id=b.subject_id
+      JOIN (SELECT q.id,q.subject_id,row_number() OVER (PARTITION BY q.subject_id ORDER BY q.question_no) pos FROM exam_questions q WHERE q.exam_id=snap.exam_id) qp
+        ON qp.subject_id=b.subject_id AND qp.pos BETWEEN b.question_start AND b.question_end
+      JOIN student_answers sa ON sa.exam_question_id=qp.id AND sa.participant_id=snap.participant_id AND sa.status<>'INVALID'
+      WHERE b.exam_id=snap.exam_id GROUP BY b.id ORDER BY b.subject_id,b.sort_order) x),'[]')),
   'optionalPhilosophy',json((SELECT json_group_array(json_object('subject_id',r.subject_id,'booklet_code',r.booklet_code,
     'correct_count',r.correct_count,'wrong_count',r.wrong_count,'blank_count',r.blank_count,'invalid_count',r.invalid_count,
     'evidence_count',r.evidence_count,'success_percent',r.success_percent))
