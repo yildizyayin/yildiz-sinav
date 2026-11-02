@@ -56,8 +56,19 @@ export function ResultStudentPdf({result,detail,disabled=false}:{result:any;deta
    await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
    if(!active.current||!ref.current)return;
    await document.fonts.ready;
-   const pages=await downloadPagesAsPdf(ref.current,pdfFileName(`anunex-${data.exam?.title||selected.title}-ogrenci-karnesi`));
-   if(!pages)throw Error('Karne sayfaları hazırlanamadı.');
+   // The vector exporter supports report charts, while the canonical brand uses SVG paths/gradients.
+   // Convert only brand SVGs in an isolated copy to images; keep every report text/table selectable.
+   const exportRoot=ref.current.cloneNode(true) as HTMLElement;document.body.appendChild(exportRoot);
+   try{
+    for(const svg of exportRoot.querySelectorAll<SVGSVGElement>('svg')){
+     const box=svg.getBoundingClientRect(),copy=svg.cloneNode(true) as SVGSVGElement;
+     copy.setAttribute('xmlns','http://www.w3.org/2000/svg');copy.setAttribute('width',String(box.width));copy.setAttribute('height',String(box.height));
+     const img=new Image();img.className=svg.getAttribute('class')||'';img.width=box.width;img.height=box.height;img.alt=svg.getAttribute('aria-label')||'';
+     img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(copy));await img.decode();svg.replaceWith(img);
+    }
+    const pages=await downloadPagesAsPdf(exportRoot,pdfFileName(`anunex-${data.exam?.title||selected.title}-ogrenci-karnesi`));
+    if(!pages)throw Error('Karne sayfaları hazırlanamadı.');
+   }finally{exportRoot.remove();}
   }catch(e){if(active.current)setError(e instanceof Error?e.message:'Karne indirilemedi. Lütfen tekrar deneyin.');}
   finally{locked.current=false;if(active.current)setBusy(false);}
  };
