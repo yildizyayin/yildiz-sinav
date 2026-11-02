@@ -90,8 +90,10 @@ async function evaluateChunkUnlocked(env: Env, user: { id: string }, batchId: st
   // ranks. Only re-evaluating an upload that is already in the publication is refused.
   if(networkPublication&&batch.status==='COMMITTED')return badRequest('Sonuç Ağı yayını düzeltmeye açılmadan değerlendirme yapılamaz.','RESULTS_FROZEN');
   const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
-  if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status)) {
-    return badRequest('Dondurulmuş veya yayımlanmış sonuçlar yeniden değerlendirilemez. Düzeltme için yeni sonuç sürümü hazırlanmalıdır.', 'RESULTS_FROZEN');
+  // Owner (2 Nov): published exams stay open — a new upload is evaluated at once; only an upload already in the
+  // published results needs "Düzeltmeye aç" before it is evaluated again.
+  if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status) && batch.status === 'COMMITTED') {
+    return badRequest('Yayımlanmış sonuçlardaki bir yükleme düzeltmeye açılmadan yeniden değerlendirilemez. Yeni yüklemeler doğrudan değerlendirilir.', 'RESULTS_FROZEN');
   }
 
   const totalRow = await one<{ c: number }>(env.DB.prepare("SELECT count(*) c FROM scan_records WHERE batch_id=? AND resolution_status!='CANCELLED'").bind(batchId));
@@ -349,7 +351,7 @@ async function evaluateChunkUnlocked(env: Env, user: { id: string }, batchId: st
 export async function evaluateBatchChunk(env: Env, user: { id: string }, batchId: string, budgetMs = 20000): Promise<Response> {
   const batch = await one<AnyRow>(env.DB.prepare('SELECT exam_id FROM scan_batches WHERE id=?').bind(batchId)); if (!batch) return notFound();
   const started = Date.now();
-  return withExamOperationLock(env, batch.exam_id, 'EVALUATE', async (env) => {
+  const result = await withExamOperationLock(env, batch.exam_id, 'EVALUATE', async (env) => {
     let response: Response;
     do {
       response = await evaluateChunkUnlocked(env, user, batchId);
@@ -368,6 +370,15 @@ export async function evaluateBatchChunk(env: Env, user: { id: string }, batchId
     }
     return response;
   });
+  // Owner (2 Nov): the exam stays open after publication — a finished upload joins the app's published results now.
+  if (result.ok) {
+    const done = await result.clone().json().catch(() => null) as any;
+    if (done?.ok && done?.done) {
+      try { const { refreshAppLivePublication } = await import('./lib/platform-expansion'); await refreshAppLivePublication(env, batch.exam_id, user.id); }
+      catch (error) { console.error('APP_RESULTS_LIVE_REFRESH_FAILED', error); }
+    }
+  }
+  return result;
 }
 
 async function evaluateChunk(request:Request,env:Env,batchId:string):Promise<Response>{

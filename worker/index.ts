@@ -8,7 +8,6 @@ import type { AuthUser, CanonicalRecord, Env, MatchCandidate } from './types';
 import { audit, badRequest, forbidden, json, methodNotAllowed, normalizeName, notFound, one, all, splitName, uuid } from './lib/db';
 import { createSession, getAuthUser, hashPassword, isServiceAccountId, isTemporarilyLocked, recordLoginAttempt, revokeOtherSessions, revokeSession, verifyPassword, verifyTurnstile } from './lib/auth';
 import { canAccessSubjectForClass, canEvaluateExam, loadPermissionScope, roleCanManageInstitution } from './lib/permissions';
-import { examPublicationGuard } from './lib/exam-publication-guard';
 import { examEvaluationAccess } from './lib/exam-evaluation-access';
 import { withExamOperationLock } from './lib/exam-operation-lock';
 import { matchParticipant } from './lib/matching';
@@ -543,8 +542,8 @@ export async function resolveScanRecord(request: Request, env: Env, user: AuthUs
   return withExamOperationLock(env,batch.exam_id,'SCAN_RESOLVE',async(env)=>{
   const currentBatch=await one<any>(env.DB.prepare('SELECT * FROM scan_batches WHERE id=?').bind(batchId));
   if(!currentBatch)return notFound();
+  // Owner (2 Nov): an upload not yet evaluated is new data, so its rows can be matched after publication too.
   if(currentBatch.status==='COMMITTED')return badRequest('Değerlendirilmiş kayıt değiştirilemez.');
-  const publicationGate=await examPublicationGuard(env,batch.exam_id);if(publicationGate)return publicationGate;
   const before = await one<any>(env.DB.prepare('SELECT matched_student_id,match_status,match_confidence,resolution_status,issues_json,canonical_json FROM scan_records WHERE id=? AND batch_id=?').bind(recordId, batchId));
   if (!before) return notFound('Optik satırı bulunamadı.');
   if (before.resolution_status === 'CANCELLED') return badRequest('İptal edilmiş satır değiştirilemez.');
@@ -648,8 +647,10 @@ async function validateBatchForEvaluation(env: Env, user: AuthUser, batchId: str
   // ranks. Only re-evaluating an upload that is already in the publication is refused.
   if(networkPublication&&batch.status==='COMMITTED')return badRequest('Sonuç Ağı yayını düzeltmeye açılmadan değerlendirme yapılamaz.','RESULTS_FROZEN');
   const publication = await one<{ result_freeze_status: string }>(env.DB.prepare('SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?').bind(batch.exam_id));
-  if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status)) {
-    return badRequest('Dondurulmuş veya yayımlanmış sonuçlar yeniden değerlendirilemez. Düzeltme için yeni sonuç sürümü hazırlanmalıdır.', 'RESULTS_FROZEN');
+  // Owner (2 Nov): published exams stay open — a new upload is evaluated at once; only an upload already in the
+  // published results needs "Düzeltmeye aç" before it is evaluated again.
+  if (publication && ['FROZEN', 'PUBLISHED'].includes(publication.result_freeze_status) && batch.status === 'COMMITTED') {
+    return badRequest('Yayımlanmış sonuçlardaki bir yükleme düzeltmeye açılmadan yeniden değerlendirilemez. Yeni yüklemeler doğrudan değerlendirilir.', 'RESULTS_FROZEN');
   }
   if (!['READY','COMMITTED'].includes(batch.status)) return badRequest('Önce sorunlu kayıtları düzeltin.', 'BATCH_NEEDS_REVIEW');
   const unresolvedRows = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM scan_records WHERE batch_id=? AND resolution_status!='CANCELLED' AND (match_status IN ('NEW_GUEST','AMBIGUOUS','INVALID') OR issues_json!='[]')`).bind(batchId));

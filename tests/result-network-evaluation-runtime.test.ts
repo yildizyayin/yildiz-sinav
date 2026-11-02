@@ -38,13 +38,22 @@ describe('Result Network evaluation native semantics', () => {
   it('rejects a held exam lock in both evaluation paths before writes',async()=>{
     for(const mode of ['direct','chunked']){const f=fixture(false,false,5,'OPEN',true);const response=mode==='direct'?await f.evaluate():await chunkedApp.fetch(new Request('https://test/api/scan-batches/batch/evaluate',{method:'POST'}),f.env);expect(response.status).toBe(409);expect(f.writes).toEqual([])}
   });
-  it.each(['FROZEN', 'PUBLISHED'])('blocks %s results in both evaluation paths before writes', async (status) => {
+  // Owner decision (2 Nov): published exams stay open for new uploads; an upload already in the results is still blocked.
+  it.each(['FROZEN', 'PUBLISHED'])('blocks re-evaluating an upload already in %s results in both paths before writes', async (status) => {
     for (const mode of ['direct', 'chunked']) {
-      const f = fixture(false, false, 5, status);
+      const f = fixture(false, false, 5, status, false, false, 'COMMITTED');
       const response = mode === 'direct' ? await f.evaluate() : await chunkedApp.fetch(new Request('https://test/api/scan-batches/batch/evaluate', { method: 'POST' }), f.env);
       expect(response.status).toBe(400);
       expect((await response.json() as any).error.code).toBe('RESULTS_FROZEN');
       expect(f.writes).toEqual([]);
+    }
+  });
+  it.each(['FROZEN', 'PUBLISHED'])('evaluates a new upload after the results are %s (exam stays open)', async (status) => {
+    for (const mode of ['direct', 'chunked']) {
+      const f = fixture(false, false, 5, status);
+      const response = mode === 'direct' ? await f.evaluate() : await chunkedApp.fetch(new Request('https://test/api/scan-batches/batch/evaluate', { method: 'POST' }), f.env);
+      const body = await response.json().catch(() => ({})) as any;
+      expect(body?.error?.code).not.toBe('RESULTS_FROZEN');
     }
   });
   it('uses printed order, accepted answers and exclusion when writing results', async () => {
