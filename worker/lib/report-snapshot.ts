@@ -41,8 +41,8 @@ export const REPORT_SNAPSHOT_SQL = `UPDATE exam_result_snapshots AS snap SET pay
     'correct_count',sr.correct_count,'wrong_count',sr.wrong_count,'blank_count',sr.blank_count,'net',sr.net,'success_percent',sr.success_percent))
     FROM subject_results sr JOIN subjects s ON s.id=sr.subject_id WHERE sr.participant_id=snap.participant_id)),
   'outcomes',json((SELECT json_group_array(json_object('outcome_id',o.id,'code',o.code,'topic',o.topic,'subtopic',o.subtopic,'title',o.title,
-    'subject_id',s.id,'subject_name',s.name,'evidence_count',r.evidence_count,'correct_count',r.correct_count))
-    FROM (SELECT qo.outcome_id,COUNT(*) evidence_count,SUM(CASE WHEN sa.status='CORRECT' THEN 1 ELSE 0 END) correct_count
+    'subject_id',s.id,'subject_name',s.name,'evidence_count',r.evidence_count,'correct_count',r.correct_count,'wrong_count',r.wrong_count,'blank_count',r.blank_count))
+    FROM (SELECT qo.outcome_id,COUNT(*) evidence_count,SUM(CASE WHEN sa.status='CORRECT' THEN 1 ELSE 0 END) correct_count,SUM(CASE WHEN sa.status='WRONG' THEN 1 ELSE 0 END) wrong_count,SUM(CASE WHEN sa.status='BLANK' THEN 1 ELSE 0 END) blank_count
       FROM student_answers sa JOIN exam_participants ep ON ep.id=sa.participant_id
       JOIN exam_questions eq ON eq.id=sa.exam_question_id
       JOIN outcomes out ON out.id IN (

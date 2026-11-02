@@ -27,8 +27,10 @@ export function snapshotSummary(row:any):any|null {
  const ranks=Object.fromEntries(['class','grade','institution','district','city','network','national'].flatMap(scope=>[[`${scope}_rank`,row[`${scope}_rank`]], [`${scope}_count`,row[`${scope}_count`]]]));
  return {...p.exam,...ranks,exam_id:row.exam_id,snapshot_version:row.snapshot_version,general_rank:row.national_rank,participant_count:row.national_count};
 }
+/** 2 Nov: a student's own outcomes are returned in full up to this guard, with the total, so a cut is never silent. */
+export const OUTCOME_LIMIT=1000;
 export function snapshotDetail(payload:any){
- return {subjects:payload.subjects.map((s:any)=>({...s,subject:s.subject_name})),outcomes:payload.outcomes.slice(0,100).map((o:any)=>({...o,outcome:o.title,success_rate:o.evidence_count>0?100*o.correct_count/o.evidence_count:null,mastery_status:null})),optionalPhilosophy:payload.optionalPhilosophy||[]};
+ return {outcomesTotal:payload.outcomes.length,subjects:payload.subjects.map((s:any)=>({...s,subject:s.subject_name})),outcomes:payload.outcomes.slice(0,OUTCOME_LIMIT).map((o:any)=>({...o,outcome:o.title,success_rate:o.evidence_count>0?100*o.correct_count/o.evidence_count:null,mastery_status:null})),optionalPhilosophy:payload.optionalPhilosophy||[]};
 }
 
 // Institution scope is checked before reading the publication payload.
