@@ -18,6 +18,11 @@ async function world() {
   const ins = t.db.prepare(`INSERT INTO question_bank(id,owner_type,academic_year,grade_level,subject_id,question_type,stem_text,options_json,correct_answer,copyright_status,review_status,option_count)
     VALUES(?,'PLATFORM','2026-2027',8,'sub_tur','MULTIPLE_CHOICE',?,'["Bir","İki","Üç","Dört"]','A','OWNED','APPROVED',4)`);
   for (let i = 1; i <= 6; i++) ins.run(`q${i}`, `Sentetik soru kökü ${i}: aşağıdakilerden hangisi doğrudur?`);
+  // Problem questions exist before a document uses them: content in a document is locked (0103), as in production.
+  t.db.prepare(`INSERT INTO question_bank(id,owner_type,academic_year,grade_level,subject_id,question_type,stem_text,options_json,correct_answer,copyright_status,review_status,option_count)
+    VALUES('nokey','PLATFORM','2026-2027',8,'sub_tur','MULTIPLE_CHOICE','Anahtarı olmayan sentetik soru?','["Bir","İki","Üç","Dört"]',NULL,'OWNED','APPROVED',4)`).run();
+  t.db.prepare(`INSERT INTO question_bank(id,owner_type,academic_year,grade_level,subject_id,question_type,stem_text,options_json,correct_answer,copyright_status,review_status,option_count)
+    VALUES('long','PLATFORM','2026-2027',8,'sub_tur','MULTIPLE_CHOICE',?,'["Bir","İki","Üç","Dört"]','A','OWNED','APPROVED',4)`).run(Array.from({ length: 140 }, (_, i) => `Uzun satır ${i} için sentetik açıklama metni.`).join('\n'));
   const create = async (ids: string[], deliveryMode = 'PDF') => (await t.request('/api/platform/studio', 'POST', { title: 'P02 deneme', documentType: 'PRACTICE_EXAM', institutionId: 'school', gradeLevel: 8, subjectId: 'sub_tur', academicYear: '2026-2027', deliveryMode, bookletCodes: ['A', 'B'], questionCount: ids.length, questionIds: ids })).data.id as string;
   const check = async (doc: string) => (await t.request(`/api/platform/studio/${doc}/check`)).data.check;
   const pdf = (doc: string, b = 'A') => t.request(`/api/platform/studio/${doc}/pdf?booklet=${b}`);
@@ -58,26 +63,25 @@ describe('P02 Studio check, plan and PDF', () => {
     expect(c.settings).toEqual(DEFAULT_LAYOUT_SETTINGS);
 
     store.set('img/q3.webp', WEBP); store.set('img/q4.png', PNG1);
-    // Approved content is immutable (DB trigger): an editor takes it back to review first.
-    t.db.exec(`UPDATE question_bank SET review_status='REVIEW' WHERE id='q1'; UPDATE question_bank SET correct_answer=NULL WHERE id='q1'; UPDATE question_bank SET review_status='APPROVED' WHERE id='q1';
-      UPDATE question_bank SET copyright_status='RESTRICTED', review_status='REVIEW' WHERE id='q2';
+    // Question content in a document is locked (0103); approval, rights and pictures still change around it.
+    const bad = await create(['nokey', 'q2', 'q3', 'q4']);
+    t.db.exec(`UPDATE question_bank SET copyright_status='RESTRICTED', review_status='REVIEW' WHERE id='q2';
       INSERT INTO question_assets(id,question_id,asset_type,r2_key,approved,placement,sort_order) VALUES('as3','q3','IMAGE','img/q3.webp',1,'STEM',1);`);
-    c = await check(doc);
+    c = await check(bad);
     expect(c.status).toBe('BLOCKED');
     const by = (code: string) => c.blockers.filter((b: any) => b.code === code);
-    expect(by('MISSING_ANSWER_KEY')[0]).toMatchObject({ questionId: 'q1', target: 'ANSWER_KEY' });
+    expect(by('MISSING_ANSWER_KEY')[0]).toMatchObject({ questionId: 'nokey', target: 'ANSWER_KEY' });
     expect(by('NOT_APPROVED')[0]).toMatchObject({ questionId: 'q2', target: 'APPROVAL' });
     expect(by('RIGHTS_NOT_CLEARED')[0]).toMatchObject({ questionId: 'q2', target: 'RIGHTS' });
     expect(by('PRINT_IMAGE_FORMAT_UNSUPPORTED')[0]).toMatchObject({ questionId: 'q3', target: 'MEDIA' });
-    const blocked = await pdf(doc);
+    const blocked = await pdf(bad);
     expect(blocked.response.status).toBe(409);
     expect(blocked.data.error.code).toBe('MISSING_ANSWER_KEY');
     expect(blocked.data.check.blockers.length).toBe(c.blockers.length);
     expect([...store.keys()].some((k) => k.endsWith('.pdf'))).toBe(false);
 
-    // Fixed content: a 1×1 picture prints, but the check warns that it will be blurry.
-    t.db.exec(`UPDATE question_bank SET review_status='REVIEW' WHERE id='q1'; UPDATE question_bank SET correct_answer='A' WHERE id='q1'; UPDATE question_bank SET review_status='APPROVED' WHERE id='q1';
-      UPDATE question_bank SET copyright_status='OWNED', review_status='APPROVED' WHERE id='q2';
+    // Fixed: rights and approval back, a 1×1 picture prints but the check warns that it will be blurry.
+    t.db.exec(`UPDATE question_bank SET copyright_status='OWNED', review_status='APPROVED' WHERE id='q2';
       UPDATE question_assets SET r2_key='img/q4.png' WHERE id='as3';`);
     c = await check(doc);
     expect(c.blockers).toEqual([]);
@@ -97,7 +101,8 @@ describe('P02 Studio check, plan and PDF', () => {
     expect(meta.questionPages).toBe(plan.plan.pages);
     expect(meta.revision).toBe(plan.revision);
     expect((await check(doc)).booklets.A.pdf).toEqual({ generated: true, stale: false });
-    t.db.exec(`UPDATE question_bank SET review_status='REVIEW' WHERE id='q2'; UPDATE question_bank SET stem_text='Değiştirilmiş kök', updated_at='2099-01-01 00:00:00' WHERE id='q2'; UPDATE question_bank SET review_status='APPROVED' WHERE id='q2';`);
+    // Text is locked in a document (0103); a picture added to a question changes the printed paper.
+    t.db.exec(`INSERT INTO question_assets(id,question_id,asset_type,r2_key,approved,placement,sort_order) VALUES('as2','q2','IMAGE','img/q2.png',1,'STEM',1);`);
     const after = await check(doc);
     expect(after.revision).not.toBe(plan.revision);
     expect(after.booklets.A.pdf).toEqual({ generated: true, stale: true });
@@ -123,12 +128,9 @@ describe('P02 Studio check, plan and PDF', () => {
 
   it('names an over-long question and the optical limit instead of printing', async () => {
     const { t, create, check } = await world();
-    const doc = await create(['q1', 'q2'], 'PDF');
-    t.db.exec(`UPDATE question_bank SET review_status='REVIEW' WHERE id='q2'`);
-    t.db.prepare(`UPDATE question_bank SET stem_text=? WHERE id='q2'`).run(Array.from({ length: 140 }, (_, i) => `Uzun satır ${i} için sentetik açıklama metni.`).join('\n'));
-    t.db.exec(`UPDATE question_bank SET review_status='APPROVED' WHERE id='q2'`);
+    const doc = await create(['q1', 'long'], 'PDF');
     const c = await check(doc);
-    expect(c.blockers.find((b: any) => b.code === 'PRINT_QUESTION_TOO_LONG')).toMatchObject({ questionId: 'q2', target: 'LAYOUT' });
+    expect(c.blockers.find((b: any) => b.code === 'PRINT_QUESTION_TOO_LONG')).toMatchObject({ questionId: 'long', target: 'LAYOUT' });
     const ins = t.db.prepare(`INSERT INTO question_bank(id,owner_type,academic_year,grade_level,subject_id,question_type,stem_text,options_json,correct_answer,copyright_status,review_status,option_count) VALUES(?,'PLATFORM','2026-2027',8,'sub_tur','MULTIPLE_CHOICE','Kısa kök','["a","b","c","d"]','A','OWNED','APPROVED',4)`);
     const ids = Array.from({ length: 45 }, (_, i) => `m${i}`); ids.forEach((id) => ins.run(id));
     t.db.prepare(`UPDATE studio_documents SET config_json=json_set(config_json,'$.deliveryMode','PDF_OPTICAL') WHERE id=?`).run(doc);
