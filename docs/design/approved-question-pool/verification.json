@@ -1,0 +1,225 @@
+[
+  {
+    "width": 1440,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1180,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1024,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 768,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 360,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1440,
+    "theme": "ANUNEX_FOCUS",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_FOCUS",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1440,
+    "theme": "ANUNEX_STUDIO",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STUDIO",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1440,
+    "theme": "ANUNEX_COSMIC",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_COSMIC",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1440,
+    "theme": "ANUNEX_NEON",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_NEON",
+    "state": "data",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "empty",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "review",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "batch",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "chart",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "written",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "error",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "success",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": [
+      "/api/platform/questions"
+    ]
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "import-busy",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": [
+      "/api/admin/question-import/preview"
+    ]
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "import-error",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": [
+      "/api/admin/question-import/preview"
+    ]
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "studio",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "nativeOverflowOutsideScope": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "long",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 1440,
+    "theme": "ANUNEX_STANDARD",
+    "state": "review",
+    "role": "SUPER_ADMIN",
+    "passed": true,
+    "writes": []
+  },
+  {
+    "width": 390,
+    "theme": "ANUNEX_STANDARD",
+    "state": "data",
+    "role": "TEACHER",
+    "passed": true,
+    "writes": []
+  }
+]
