@@ -2,13 +2,14 @@ import { KurumKarne, OgrenciKarne, SubeKarne } from './karnes';
 import { BransRaporu, Gelisim, KonuEksik, MaddeAnalizi } from './extras';
 import { NetList, SchoolAverages } from './lists';
 import { columnsOf, type Bundle } from './shared';
+import type { KarneFormat } from './karne-formats';
 import './reports.css';
 
 /** S034: the report family rendered as A4 pages (lists landscape, student cards portrait). */
 export type ReportKind = 'KURUM_ORT' | 'OKUL_NET' | 'OKUL_TEST' | 'SINIF_NET' | 'SINIF_TEST' | 'KURUM_KARNE' | 'SUBE_KARNE' | 'MADDE' | 'BRANS' | 'KONU_EKSIK' | 'OGRENCI_KARNE' | 'GELISIM';
 export const KIND_ORDER: ReportKind[] = ['KURUM_ORT', 'OKUL_NET', 'OKUL_TEST', 'SINIF_NET', 'SINIF_TEST', 'KURUM_KARNE', 'SUBE_KARNE', 'MADDE', 'BRANS', 'KONU_EKSIK', 'OGRENCI_KARNE', 'GELISIM'];
 
-export function BundlePages({ b, kinds, types }: { b: Bundle; kinds: ReportKind[]; types?: string[] }) {
+export function BundlePages({ b, kinds, types, karne = 'TWO' }: { b: Bundle; kinds: ReportKind[]; types?: string[]; karne?: KarneFormat }) {
   const has = (k: ReportKind) => kinds.includes(k);
   const scoreTypes = (b.scoreTypes as any[]).filter((t) => !types?.length || types.includes(t.key));
   const listTypes = scoreTypes.length ? scoreTypes : b.scoreTypes;
@@ -24,7 +25,7 @@ export function BundlePages({ b, kinds, types }: { b: Bundle; kinds: ReportKind[
       {has('MADDE') && <MaddeAnalizi b={b} inst={inst} />}
       {has('BRANS') && <BransRaporu b={b} inst={inst} />}
       {has('KONU_EKSIK') && <KonuEksik b={b} inst={inst} />}
-      {has('OGRENCI_KARNE') && (inst.students as any[]).slice().sort((a, z) => a.className.localeCompare(z.className, 'tr') || a.name.localeCompare(z.name, 'tr')).map((s) => <OgrenciKarne key={s.id} b={b} inst={inst} s={s} />)}
+      {has('OGRENCI_KARNE') && (inst.students as any[]).slice().sort((a, z) => a.className.localeCompare(z.className, 'tr') || a.name.localeCompare(z.name, 'tr')).map((s) => <OgrenciKarne key={s.id} b={b} inst={inst} s={s} format={karne} />)}
     </div>)}
   </>;
 }

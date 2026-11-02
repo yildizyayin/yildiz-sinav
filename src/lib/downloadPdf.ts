@@ -171,11 +171,13 @@ export async function downloadPagesAsPdf(root: Element | null | undefined, fileN
         const first = raw.search(/[^\s ]/), last = raw.length - (raw.match(/[\s ]*$/)?.[0].length || 0);
         const range = document.createRange();
         range.setStart(node, first); range.setEnd(node, last);
-        const rects = range.getClientRects();
-        if (!rects.length) return;
+        const all = [...range.getClientRects()].filter((x) => x.width > 0 || x.height > 0);
+        if (!all.length) return;
         const tt = cs.textTransform;
-        if (rects.length === 1) {
-          const r = rects[0]; let s = transformText(raw.slice(first, last), tt);
+        // Chrome reports an ellipsis-cut line twice (whole run + visible part): one line, not two.
+        const oneLine = all.every((x) => Math.abs(x.top - all[0].top) < all[0].height / 2);
+        if (oneLine) {
+          const r = all.reduce((m, x) => (x.right > m.right ? x : m), all[0]); let s = transformText(raw.slice(first, last), tt);
           if (clip && r.right > clip.right + 0.5) { // text-overflow: ellipsis
             const fit = clip.right - r.left; if (fit <= 0) return;
             const font = Number(cs.fontWeight) >= 550 ? fonts.bold : fonts.regular, pt = parseFloat(cs.fontSize) * k;

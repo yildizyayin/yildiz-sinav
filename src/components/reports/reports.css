@@ -135,6 +135,41 @@
 .rx-legend-heat{display:flex;gap:1mm;align-items:center;font-size:5.8pt;color:var(--muted)}
 .rx-legend-heat i{width:5mm;height:2.4mm;display:inline-block;border-radius:.4mm}
 
+
+/* Karne biçimleri (2 Nov): tek sayfa, Maarif kartları, öz değerlendirme */
+.rx-t.rx-compact th,.rx-t.rx-compact td{padding:.4mm .7mm;font-size:6.2pt}
+.rx-t.rx-compact thead th{font-size:5.8pt}
+.rx-t .rx-clip{max-width:30mm;overflow:hidden;text-overflow:ellipsis}
+.rx-t.rx-ttab td.rx-avg{color:var(--muted)}
+.rx-t.rx-ttab tr.rx-total td{border-top:1.2px solid var(--ink);font-weight:800;border-bottom:0}
+.rx-hero .rx-ranktab{align-self:center}
+.rx-one-kpis{grid-template-columns:repeat(auto-fit,minmax(18mm,1fr))}
+.rx-one-kpis .rx-kpi{padding:1.4mm 2.2mm}.rx-one-kpis .rx-kpi b{font-size:12pt}
+.rx-one-mid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:3.5mm;align-items:start}
+.rx-one-side{display:flex;flex-direction:column;gap:2.2mm}
+.rx-hist .rx-h{margin-bottom:.6mm}
+.rx-maarif.rx-grid3{grid-template-columns:1fr 1fr 1.2fr}
+.rx-strong{border-color:#BFE3CF}.rx-grow{border-color:#F3D9A8}
+.rx-tip{margin:1mm 0 0}
+.rx-one .rx-focus li{grid-template-columns:minmax(0,1fr) 10mm}.rx-one .rx-focus span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rx-one .rx-focus{gap:.8mm;font-size:6.6pt}
+.rx-card h4 small{font-weight:500;color:var(--muted);margin-left:1.5mm;font-size:6pt}
+.rx-self-row{display:grid;grid-template-columns:44mm 1fr;align-items:end;gap:2mm;margin-top:2.2mm;font-size:6.8pt}
+.rx-self-row i{display:block;border-bottom:.8px dashed #9AA8C4;height:4.5mm}
+.rx-ql{flex:1;min-height:0;display:flex;flex-direction:column}
+.rx-ql-cols{display:grid;gap:3mm;flex:1;min-height:0;overflow:hidden;align-items:start}
+.rx-ql-col{min-width:0}
+.rx-ql-r{display:grid;grid-template-columns:5mm 3mm 3mm 2.6mm minmax(0,1fr);gap:.8mm;align-items:center}
+.rx-ql-h{font-weight:800;font-size:6pt;background:var(--band);border-radius:.8mm;padding:.5mm .8mm;margin:.6mm 0 .3mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rx-ql-r{font-size:5.3pt;line-height:1.25;padding:.12mm .8mm;border-bottom:.4px solid var(--line)}
+.rx-ql-r b{text-align:right;font-variant-numeric:tabular-nums}
+.rx-ql-r span{text-align:center}
+.rx-ql-r .rx-ql-t{text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#2B3A5C}
+.rx-ql-r .rx-ql-t em{font-style:normal;color:var(--muted)}
+.rx-ql-c .rx-ql-m{color:var(--good);font-weight:800}
+.rx-ql-w{background:#FDF0EC}.rx-ql-w .rx-ql-m,.rx-ql-w span:nth-child(3){color:var(--bad);font-weight:800}
+.rx-ql-x{color:#9AA4B8}
+
 @media screen{.rx-page{border-radius:2mm}}
 @media print{
   @page rxland{size:A4 landscape;margin:0}

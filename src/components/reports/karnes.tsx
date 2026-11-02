@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
-import { classAdvice, schoolAdvice, studentAdvice } from './nibiru';
+import { classAdvice, maarifStudentAdvice, schoolAdvice, studentAdvice } from './nibiru';
+import { fitTopics, HistoryTable, isMaarifExam, type KarneFormat, outcomeWord, QuestionList, RankTable, SelfAssessment, StrengthCards, TestTable } from './karne-formats';
 import { Arrow, cmp, columnsOf, examLabel, f0, f2, fScore, GroupedBars, HBars, instSub, Nibiru, Page, participationChips, pctOf, rank, short, TopicColumns, type Bundle, type Inst } from './shared';
 
 /** S034 report cards: kurum (school), şube (class) and öğrenci (student). Same content as the owner's samples, new layout. */
@@ -120,11 +121,16 @@ function AnswerGrid({ b, s }: { b: Bundle; s: any }) {
     <div className="rx-legend"><span><i style={{ background: '#E1F4EA' }} />doğru</span><span><i style={{ background: '#FDE2DC' }} />yanlış</span><span><i style={{ background: '#FFF6D6' }} />boş</span><span><i style={{ background: '#EEF0F4' }} />iptal</span></div></div>;
 }
 
-export function OgrenciKarne({ b, inst, s }: { b: Bundle; inst: Inst; s: any }) {
+export function OgrenciKarne({ b, inst, s, format = 'TWO' }: { b: Bundle; inst: Inst; s: any; format?: KarneFormat }) {
   const cols = columnsOf(b, 'NET');
   const cls = inst.classes.find((c: any) => c.name === s.className);
+  const maarif = isMaarifExam(b.exam), word = outcomeWord(maarif);
   const head = { land: false, kicker: 'Öğrenci karnesi', title: s.name, sub: <>{s.number ? <>No <b>{s.number}</b> · </> : null}Şube <b>{s.className || '—'}</b> · {inst.name} · {inst.city}/{inst.district}<br />{examLabel(b.exam)}</>, provisional: b.provisional };
+  // Analysis page: at most one page (owner, 2 Nov) — when it does not all fit, the weakest are kept.
+  const fit = fitTopics(b, s.topics || [], maarif ? 118 : 150);
   return <>
+    {format !== 'TWO' && <OgrenciTekSayfa b={b} inst={inst} s={s} head={head} maarif={maarif} />}
+    {format !== 'ONE' && <>
     <Page {...head}>
       {/* S036 approved print language: score hero + rank boxes, tests with success bars, answers, focus topics + Nibiru */}
       {b.scoreTypes.length > 1 && <div className="rx-hero-multi">{b.scoreTypes.map((t: any) => { const r = s.ranks[t.key] || {}, k = s.counts[t.key] || {};
@@ -133,7 +139,7 @@ export function OgrenciKarne({ b, inst, s }: { b: Bundle; inst: Inst; s: any }) 
       {b.scoreTypes.length === 1 && b.scoreTypes.map((t: any) => { const r = s.ranks[t.key] || {}, k = s.counts[t.key] || {};
         return <div className="rx-hero" key={t.key}>
           <div className="rx-hero-score"><span>{t.isScore ? `${t.label.toLocaleUpperCase('tr-TR')} PUANI` : t.label.toLocaleUpperCase('tr-TR')}</span><b>{fScore(t, s.scores[t.key])}</b><small>Okul ortalaması {fScore(t, inst.avg.scores[t.key])} · Net {f2(s.total.n)}</small></div>
-          <div className="rx-ranks">{([['ŞUBE', 'class'], ['OKUL', 'school'], ['İLÇE', 'district'], ['İL', 'city'], ['GENEL', 'general']] as const).map(([l, key]) => <div key={key}><span>{l}</span><b>{r[key] ? Number(r[key]).toLocaleString('tr-TR') : '—'}</b><small>/ {k[key] ? Number(k[key]).toLocaleString('tr-TR') : '—'}</small></div>)}</div>
+          {maarif ? <RankTable b={b} inst={inst} s={s} compact /> : <div className="rx-ranks">{([['ŞUBE', 'class'], ['OKUL', 'school'], ['İLÇE', 'district'], ['İL', 'city'], ['GENEL', 'general']] as const).map(([l, key]) => <div key={key}><span>{l}</span><b>{r[key] ? Number(r[key]).toLocaleString('tr-TR') : '—'}</b><small>/ {k[key] ? Number(k[key]).toLocaleString('tr-TR') : '—'}</small></div>)}</div>}
         </div>; })}
       <div><div className="rx-h">Testler <small>Başarı: çubuk sen · koyu çizgi okul · açık çizgi genel</small></div>
         <table className="rx-t rx-tests"><thead><tr><th className="rx-l">Test</th><th className="rx-r">Soru</th><th className="rx-r">D</th><th className="rx-r">Y</th><th className="rx-r">B</th><th className="rx-r rx-n">Net</th><th className="rx-l" style={{ width: '44%' }}>Başarı</th></tr></thead><tbody>
@@ -145,16 +151,49 @@ export function OgrenciKarne({ b, inst, s }: { b: Bundle; inst: Inst; s: any }) 
           <tr className="rx-total"><td className="rx-l">Toplam</td><td className="rx-r">{cols.reduce((a, c) => a + c.q, 0)}</td><td className="rx-r">{s.total.d}</td><td className="rx-r">{s.total.y}</td><td className="rx-r">{s.total.b}</td><td className="rx-r rx-n">{f2(s.total.n)}</td><td className="rx-small">şube {f2(cls?.avg.total.n)} · okul {f2(inst.avg.total.n)} · genel {f2(b.general.avg.total.n)}</td></tr>
         </tbody></table></div>
       <AnswerGrid b={b} s={s} />
+      {maarif ? <div className="rx-grid3 rx-maarif" style={{ marginTop: 'auto' }}><StrengthCards b={b} s={s} /><Nibiru title="bu sınavdaki cevaplarından" lines={maarifStudentAdvice(b, inst, s)} /></div> :
       <div className="rx-grid2" style={{ marginTop: 'auto' }}>
         <div className="rx-card"><h4>Öncelikli kazanımlar</h4>{(() => { const weak = (s.topics || []).filter((t: any) => t.p < 50).sort((a: any, z: any) => a.p - z.p || z.s - a.s).slice(0, 5);
           return weak.length ? <ul className="rx-focus">{weak.map((t: any, i: number) => <li key={i}><span>{t.section || short(b.tests.find((x: any) => x.id === t.subjectId)?.name || '')} · {t.topic}</span><b className={t.p < 35 ? 'rx-bad' : 'rx-warn'}>%{t.p}</b></li>)}</ul> : <p className="rx-note">Başarısı %50'nin altında kazanım yok.</p>; })()}</div>
         <Nibiru title="bu sınavdaki cevaplarından" lines={studentAdvice(b, inst, s)} />
-      </div>
+      </div>}
     </Page>
-    {topicPages(b, s.topics || [], 150).map((list, i, all) => <Page key={i} {...head} kicker={`Öğrenci karnesi · kazanım analizi${all.length > 1 ? ` ${i + 1}/${all.length}` : ''}`}>
-      <p className="rx-note">Her kazanımda soru sayısı, doğru (D), yanlış (Y) ve başarı yüzdesi. Çubuktaki koyu çizgi okulunun başarısıdır.</p>
-      <TopicColumns b={b} topics={list} general={inst.topics} counts /></Page>)}
+    <Page {...head} kicker={`Öğrenci karnesi · ${word} analizi`}>
+      <p className="rx-note">{maarif ? 'Her öğrenme çıktısında' : 'Her kazanımda'} soru sayısı, doğru (D), yanlış (Y) ve başarı yüzdesi. Çubuktaki koyu çizgi okulunun başarısıdır.{fit.hidden ? ` Sayfaya sığmayan ${fit.hidden} ${word} (başarısı daha yüksek olanlar) bu karnede gösterilmedi.` : ''}</p>
+      <TopicColumns b={b} topics={fit.shown} general={inst.topics} counts />
+      {maarif && <div style={{ marginTop: 'auto' }}><SelfAssessment /></div>}
+    </Page>
+    </>}
   </>;
+}
+
+/** Tek sayfa karne (owner, 2 Nov): summary, ranks with participants and averages, earlier exams, focus + Nibiru,
+ * and every question with what it asks — all on one portrait page, in ANUNEX's own design. */
+function OgrenciTekSayfa({ b, inst, s, head, maarif }: { b: Bundle; inst: Inst; s: any; head: any; maarif: boolean }) {
+  const t = b.scoreTypes[0];
+  const weak = (s.topics || []).filter((x: any) => x.s >= 2 && x.p < 50).sort((a: any, z: any) => a.p - z.p || z.s - a.s).slice(0, 4);
+  // One page: the two most important notes, each kept short.
+  const advice = (maarif ? maarifStudentAdvice(b, inst, s) : studentAdvice(b, inst, s)).slice(0, 2).map((l) => (l.length > 150 ? `${l.slice(0, 147).replace(/[\s,;]+\S*$/, '')}…` : l));
+  return <Page {...head} kicker={maarif ? 'Öğrenci karnesi · tek sayfa · Maarif' : 'Öğrenci karnesi · tek sayfa'}>
+    <div className="rx-one rx-one-top">
+      <div className="rx-kpis rx-one-kpis">
+        {b.scoreTypes.slice(0, 3).map((x: any) => <div className="rx-kpi rx-hi" key={x.key}><span>{x.isScore ? `${x.label} puanı` : x.label}</span><b>{fScore(x, s.scores?.[x.key])}</b></div>)}
+        {t?.isScore && <div className="rx-kpi"><span>Net</span><b>{f2(s.total?.n)}</b></div>}
+        <div className="rx-kpi"><span>Doğru</span><b>{s.total?.d}</b></div>
+        <div className="rx-kpi"><span>Yanlış</span><b>{s.total?.y}</b></div>
+        <div className="rx-kpi"><span>Boş</span><b>{s.total?.b}</b></div>
+      </div>
+    </div>
+    <div className="rx-one-mid">
+      <div><div className="rx-h">Testler<small>yanında şube · okul · genel ortalaması; kırmızı: ortalama senin netinin üzerinde</small></div><TestTable b={b} inst={inst} s={s} /></div>
+      <div className="rx-one-side"><div><div className="rx-h">Sıralama ve katılım<small>{t?.isScore ? `${t.label} puanına göre` : 'nete göre'}</small></div><RankTable b={b} inst={inst} s={s} compact /></div><HistoryTable b={b} s={s} maarif={maarif} /></div>
+    </div>
+    <div className={`rx-one ${maarif ? 'rx-grid3 rx-maarif' : 'rx-grid2'}`}>
+      {maarif ? <StrengthCards b={b} s={s} /> : <div className="rx-card"><h4>Öncelikli kazanımlar</h4>{weak.length ? <ul className="rx-focus">{weak.map((x: any, i: number) => <li key={i}><span>{x.section || short(b.tests.find((y: any) => y.id === x.subjectId)?.name || '')} · {x.topic}</span><b className={x.p < 35 ? 'rx-bad' : 'rx-warn'}>%{x.p}</b></li>)}</ul> : <p className="rx-note">Başarısı %50'nin altında kazanım yok.</p>}</div>}
+      <Nibiru title="bu sınavdaki cevaplarından" lines={advice} />
+    </div>
+    <QuestionList b={b} s={s} maarif={maarif} />
+  </Page>;
 }
 
 
