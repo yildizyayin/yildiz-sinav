@@ -114,6 +114,17 @@ async function worksheetDetail(request:Request,env:Env,id:string){
  return json({ok:true,worksheet:row,subjects,outcomes,questionLinks:links,assets});
 }
 
+/** Föy online optik: only a student, only for a föy their grade can see. */
+async function worksheetOnlineOptic(request:Request,env:Env,id:string){
+ const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');
+ if(user.role!=='STUDENT')return fail(403,'FORBIDDEN','Föy optiğini yalnız öğrenci doldurur.');
+ const scope=await worksheetScope(env,user);
+ const row=await one<any>(env.DB.prepare(`SELECT w.id,w.grade_level,w.program_code,(SELECT group_concat(ws.subject_id, ',') FROM worksheet_subjects ws WHERE ws.worksheet_id=w.id) subject_ids FROM worksheets w WHERE w.id=? AND w.status='PUBLISHED'`).bind(id));
+ if(!row||!worksheetAllowed(row,scope))return fail(404,'WORKSHEET_NOT_FOUND','Föy bulunamadı veya bu föy için yetkiniz yok.');
+ const foy=await import('./lib/foy-evaluation');
+ return request.method==='GET'?foy.studentFoyOptic(env,user,row):foy.submitStudentFoyOptic(request,env,user,row);
+}
+
 async function worksheetAsset(request:Request,env:Env,worksheetId:string,assetId:string){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');const scope=await worksheetScope(env,user);
  const row=await one<any>(env.DB.prepare(`SELECT w.id,w.grade_level,w.program_code,(SELECT group_concat(ws.subject_id, ',') FROM worksheet_subjects ws WHERE ws.worksheet_id=w.id) subject_ids,a.r2_key,a.file_name,a.asset_type FROM worksheets w JOIN worksheet_assets a ON a.worksheet_id=w.id WHERE w.id=? AND a.id=? AND w.status='PUBLISHED' AND a.asset_type IN ('PDF','ANSWER_KEY')`).bind(worksheetId,assetId));if(!row||!worksheetAllowed(row,scope))return fail(404,'ASSET_NOT_FOUND','Föy dosyası bulunamadı.');
@@ -126,6 +137,7 @@ export default {
   if(path==='/api/standard-readiness'&&request.method==='GET')return readiness(request,env);
   if(path==='/api/worksheets'&&request.method==='GET')return listWorksheets(request,env,url);
   const asset=path.match(/^\/api\/worksheets\/([^/]+)\/assets\/([^/]+)$/);if(asset&&request.method==='GET')return worksheetAsset(request,env,asset[1],asset[2]);
+  const optic=path.match(/^\/api\/worksheets\/([^/]+)\/online-optic$/);if(optic&&(request.method==='GET'||request.method==='POST'))return worksheetOnlineOptic(request,env,optic[1]);
   const detail=path.match(/^\/api\/worksheets\/([^/]+)$/);if(detail&&request.method==='GET')return worksheetDetail(request,env,detail[1]);
   return app.fetch(request,env,ctx);
  },
