@@ -65,7 +65,7 @@ export default {
     if (scheduledJobsPaused(env)) { console.log(JSON.stringify({ event: 'scheduled_jobs_paused', worker: 'result' })); return; }
     ctx.waitUntil((async()=>{if(env.RESULT_ARTIFACT_QUEUE_ENABLED==='true')await dispatchResultArtifactQueue(env);else{await advanceResultArtifactPreparation(env);await advanceResultArtifactVerification(env)}})());
     ctx.waitUntil((async()=>{const{purgeExpiredOriginals}=await import('./lib/result-data-center');await purgeExpiredOriginals(env)})().catch((error)=>console.error('Original upload purge failed',error)));
-    // D-S039: a deleted upload is restorable for 7 days, then purged.
+    // Owner (3 Nov): uploads deleted before the permanent-delete change are purged now.
     ctx.waitUntil((async()=>{const{purgeDeletedBatches}=await import('./lib/batch-lifecycle');await purgeDeletedBatches(env)})().catch((error)=>console.error('Deleted upload purge failed',error)));
     ctx.waitUntil((async()=>{const{pruneOldSnapshotVersions}=await import('./lib/snapshot-prune');await pruneOldSnapshotVersions(env)})().catch((error)=>console.error('Snapshot prune failed',error)));
     // D-S037: live ranks — a published exam that gained students since its last snapshot is written again.

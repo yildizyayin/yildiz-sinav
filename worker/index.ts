@@ -77,7 +77,7 @@ export default {
       const scanEvaluateMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)\/evaluate$/);
       if (scanEvaluateMatch) return request.method === 'POST' ? evaluateBatch(env, user, scanEvaluateMatch[1]) : methodNotAllowed();
       const scanBatchMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)$/);
-      // Owner (3 Nov): wrong uploads can be deleted (restorable for 7 days) from the app's evaluation screen too.
+      // Owner (3 Nov): wrong uploads are deleted for good from the app evaluation screen too.
       if (scanBatchMatch && request.method === 'DELETE') { const { deleteAppUpload } = await import('./lib/app-batch-actions'); return deleteAppUpload(request, env, user, scanBatchMatch[1]); }
       if (scanBatchMatch) return request.method === 'GET' ? getScanBatch(env, user, scanBatchMatch[1]) : methodNotAllowed();
       const scanRestoreMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)\/restore$/);

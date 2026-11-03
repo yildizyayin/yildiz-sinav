@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { api } from '../api';
 
 /**
- * D-S039: one upload's "Sil", "Geri al" and (bayi / Süper Admin) "Başka okula taşı", written for someone who has never
- * used the system: every step says what will happen before it happens, and nothing is lost for 7 days.
+ * D-S039: one upload's "Sil" and (bayi / Süper Admin) "Başka okula taşı", written for someone who has never used the
+ * system: every step says what will happen before it happens. Owner (3 Nov): "Sil" is permanent.
  */
 type Row = { id: string; status: string; institution_name: string; institution_code: string; title: string; total: number; exam_id?: string; exam_type?: string; academic_year?: string; deleted_at?: string | null; purge_after?: string | null };
 type Exam = { id: string; title: string; exam_type: string; academic_year: string };
-const daysLeft = (iso?: string | null) => { if (!iso) return 0; const ms = new Date(String(iso).replace(' ', 'T') + (String(iso).includes('Z') ? '' : 'Z')).getTime() - Date.now(); return Math.max(0, Math.ceil(ms / 86400000)); };
 
 export function BatchActions({ row, mode, canMove, exams = [], onChanged }: { row: Row; mode: 'INSTITUTION' | 'DEALER'; canMove: boolean; exams?: Exam[]; onChanged: (message: string) => void }) {
   const [open, setOpen] = useState<'' | 'DELETE' | 'MOVE' | 'MOVE_EXAM'>('');
@@ -21,12 +20,8 @@ export function BatchActions({ row, mode, canMove, exams = [], onChanged }: { ro
   const close = () => { setOpen(''); setReason(''); setError(''); setQ(''); setTarget(null); setExamTarget(''); };
   const run = async (fn: () => Promise<any>, done: (r: any) => string) => { setBusy(true); setError(''); try { const r = await fn(); close(); onChanged(done(r)); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
 
-  if (row.deleted_at) {
-    const left = daysLeft(row.purge_after);
-    return <div className="ba-deleted"><span className="ba-tag">Silindi · {left ? `${left} gün içinde geri alınabilir` : 'kalıcı silinecek'}</span>
-      {left > 0 && <button type="button" className="secondary" disabled={busy} onClick={() => void run(() => api(`/api/admin/result-network/operations/scan-batches/${row.id}/restore`, { method: 'POST' }), () => 'Yükleme geri geldi. Sonuçlar için yüklemeyi açıp "Değerlendir"e basın.')}>Geri al</button>}
-      {error && <span className="ba-error" role="alert">{error}</span>}</div>;
-  }
+  // owner (3 Nov): deleted uploads are gone for good; a row deleted under the old rule shows only that
+  if (row.deleted_at) return <div className="ba-deleted"><span className="ba-tag">Silindi</span></div>;
   return <div className="ba">
     {!open && <div className="ba-buttons">
       <button type="button" className="ghost" onClick={() => setOpen('DELETE')}>Sil</button>
@@ -35,10 +30,10 @@ export function BatchActions({ row, mode, canMove, exams = [], onChanged }: { ro
     </div>}
     {open === 'DELETE' && <div className="ba-panel" role="group" aria-label="Yüklemeyi sil">
       <p><b>{row.institution_name}</b> okulunun <b>{row.title}</b> yüklemesi silinecek ({Number(row.total || 0)} satır).
-        {evaluated ? ' Bu öğrencilerin sonuçları, raporlardan ve öğrenci ekranından hemen kalkar; sıralar yeniden hesaplanır.' : ' Henüz değerlendirilmediği için hiçbir sonuç etkilenmez.'} 7 gün içinde geri alabilirsiniz.</p>
+        {evaluated ? ' Bu öğrencilerin sonuçları, raporlardan ve öğrenci ekranından hemen kalkar; sıralar yeniden hesaplanır.' : ' Henüz değerlendirilmediği için hiçbir sonuç etkilenmez.'} Dosya da silinir; <b>geri getirilemez.</b></p>
       {evaluated && <label>Neden siliyorsunuz?<input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Örn. Yanlış sınav dosyası yüklendi" autoFocus /></label>}
       {error && <div className="alert error" role="alert">{error}</div>}
-      <div className="ba-buttons"><button type="button" className="danger" disabled={busy || (evaluated && reason.trim().length < 5)} onClick={() => void run(() => api<any>(`/api/admin/result-network/operations/scan-batches/${row.id}`, { method: 'DELETE', body: JSON.stringify({ reason }) }), (r) => `Yükleme silindi${r.removed ? `; ${r.removed} öğrencinin sonucu kaldırıldı` : ''}. 7 gün içinde "Geri al" ile geri getirebilirsiniz.`)}>{busy ? 'Siliniyor…' : 'Evet, sil'}</button><button type="button" className="ghost" onClick={close}>Vazgeç</button></div>
+      <div className="ba-buttons"><button type="button" className="danger" disabled={busy || (evaluated && reason.trim().length < 5)} onClick={() => void run(() => api<any>(`/api/admin/result-network/operations/scan-batches/${row.id}`, { method: 'DELETE', body: JSON.stringify({ reason }) }), (r) => `Yükleme silindi${r.removed ? `; ${r.removed} öğrencinin sonucu kaldırıldı` : ''}`)}>{busy ? 'Siliniyor…' : 'Evet, sil'}</button><button type="button" className="ghost" onClick={close}>Vazgeç</button></div>
     </div>}
     {open === 'MOVE_EXAM' && <div className="ba-panel" role="group" aria-label="Doğru sınava taşı">
       <p>Yükleme şu an <b>{row.title}</b> sınavında. Doğru sınavı seçin; {evaluated ? 'sonuçlar bu sınavdan hemen kalkar, sıralar yeniden hesaplanır. Taşıdıktan sonra yeni sınavda "Değerlendir"e basarsınız.' : 'yükleme yeni sınava geçer, sonra "Değerlendir"e basarsınız.'} Yalnız aynı türdeki ({row.exam_type}) ve aynı eğitim yılındaki sınavlar listelenir.</p>
@@ -61,7 +56,7 @@ export function BatchActions({ row, mode, canMove, exams = [], onChanged }: { ro
 
 /**
  * Owner (3 Nov): every upload of one school in one exam deleted together, e.g. a whole wrong exam loaded for a school.
- * It shows what will go first and asks for a reason and "SİL"; everything stays restorable for 7 days, one by one.
+ * It shows what will go first and asks for a reason and "SİL"; owner (3 Nov): the deletion is permanent.
  */
 export function BulkUploadDelete({ rows, onChanged }: { rows: Array<Row & { institution_id?: string }>; onChanged: (message: string) => void }) {
   const pairs = Array.from(new Map(rows.filter((r) => !r.deleted_at && r.exam_id && r.institution_id).map((r) => [`${r.institution_id}|${r.exam_id}`, r])).values());
@@ -73,13 +68,13 @@ export function BulkUploadDelete({ rows, onChanged }: { rows: Array<Row & { inst
   const run = async () => {
     if (!pick) return; setBusy(true); setError('');
     try { const r = await api<any>('/api/admin/result-network/operations/institution-exam-uploads', { method: 'DELETE', body: JSON.stringify({ institutionId: pick.institution_id, examId: pick.exam_id, reason, confirm }) });
-      reset(); onChanged(`${r.deleted} yükleme silindi${r.removed ? `; ${r.removed} öğrencinin sonucu kaldırıldı ve sıralar yeniden hesaplandı` : ''}. Her yükleme 7 gün içinde tek tek geri alınabilir.`); }
+      reset(); onChanged(`${r.deleted} yükleme silindi${r.removed ? `; ${r.removed} öğrencinin sonucu kaldırıldı ve sıralar yeniden hesaplandı` : ''}. Silinenler geri getirilemez.`); }
     catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
   if (!pairs.length) return null;
   if (!open) return <button type="button" className="ghost ba-bulk-open" onClick={() => setOpen(true)}>Kurumun sınavdaki tüm yüklemelerini sil</button>;
   return <div className="ba-panel ba-bulk" role="group" aria-label="Toplu sil">
-    <p>Yanlış sınav veya yanlış veri yüklenen bir kurum için, o kurumun o sınavdaki <b>bütün</b> yüklemelerini birlikte silebilirsiniz. Sonuçlar raporlardan ve öğrenci ekranından hemen kalkar; yüklemeler 7 gün içinde tek tek geri alınabilir.</p>
+    <p>Yanlış sınav veya yanlış veri yüklenen bir kurum için, o kurumun o sınavdaki <b>bütün</b> yüklemelerini birlikte silebilirsiniz. Sonuçlar raporlardan ve öğrenci ekranından hemen kalkar; dosyalar da silinir ve <b>geri getirilemez</b>.</p>
     <label>Kurum ve sınav<select value={key} onChange={(e) => setKey(e.target.value)}><option value="">Seçin</option>{pairs.map((r) => <option key={`${r.institution_id}|${r.exam_id}`} value={`${r.institution_id}|${r.exam_id}`}>{r.institution_name} · {r.title}</option>)}</select></label>
     {info && <p className="ba-bulk-sum" role="status"><b>{info.uploads}</b> yükleme ({info.evaluated} değerlendirilmiş) · <b>{Number(info.rows).toLocaleString('tr-TR')}</b> satır · <b>{Number(info.students).toLocaleString('tr-TR')}</b> öğrenci sonucu silinecek.</p>}
     {info && <><label>Neden siliyorsunuz?<input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Örn. Kuruma yanlış sınavın verisi yüklendi" /></label>
