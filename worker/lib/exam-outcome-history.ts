@@ -44,8 +44,10 @@ export async function refreshExamOutcomeAnalysis(env:Env,examId:string,actorId:s
  return {revision:Number(row?.revision||0),participantCount:Number(row?.participant_count||0)};
 }
 /** Only explicitly published analysis overlays current report data; exports
- * with an asOf keep the analysis version that existed at job creation. */
+ * with an asOf keep the analysis version that existed at job creation.
+ * 3 Nov (owner): a revision that found no outcome for this student never erases the outcomes the result was
+ * published with; the newest revision that has outcomes wins, otherwise the snapshot stays as published. */
 export function examOutcomePayloadSql(alias:string,channel:'APP'|'RESULT'='APP',asOfSql?:string){
  const published=channel==='APP'?'published_app_at':'published_result_at';
- return `COALESCE((SELECT json_patch(${alias}.payload_json,h.payload_json) FROM exam_outcome_analysis_history h JOIN exam_outcome_analysis_revisions r ON r.exam_id=h.exam_id AND r.revision=h.revision WHERE h.exam_id=${alias}.exam_id AND h.participant_id=${alias}.participant_id AND h.student_id IS ${alias}.student_id AND h.institution_id=${alias}.institution_id AND h.academic_year=json_extract(${alias}.payload_json,'$.exam.academic_year') AND h.grade_level IS ${alias}.grade_level AND r.${published} IS NOT NULL ${asOfSql?`AND julianday(r.${published})<=julianday(${asOfSql})`:''} ORDER BY h.revision DESC LIMIT 1),${alias}.payload_json)`;
+ return `COALESCE((SELECT json_patch(${alias}.payload_json,h.payload_json) FROM exam_outcome_analysis_history h JOIN exam_outcome_analysis_revisions r ON r.exam_id=h.exam_id AND r.revision=h.revision WHERE h.exam_id=${alias}.exam_id AND h.participant_id=${alias}.participant_id AND h.student_id IS ${alias}.student_id AND h.institution_id=${alias}.institution_id AND h.academic_year=json_extract(${alias}.payload_json,'$.exam.academic_year') AND h.grade_level IS ${alias}.grade_level AND r.${published} IS NOT NULL AND COALESCE(json_array_length(h.payload_json,'$.outcomes'),0)>0 ${asOfSql?`AND julianday(r.${published})<=julianday(${asOfSql})`:''} ORDER BY h.revision DESC LIMIT 1),${alias}.payload_json)`;
 }
