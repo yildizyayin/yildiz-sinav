@@ -1,6 +1,7 @@
 import type { AuthUser, Env } from '../types';
 import { all, audit, json, one } from './db';
 import { examCorrectionOpen, examPublicationGuard } from './exam-publication-guard';
+import { scoringChoices } from './scoring-choices';
 
 /**
  * Puanlama profili düzeltmesi (owner decision 2 Nov). An active exam's definition stays locked; only while its
@@ -9,12 +10,11 @@ import { examCorrectionOpen, examPublicationGuard } from './exam-publication-gua
  * the uploads re-evaluated after the reopening use the new profile, and the next publication freezes them.
  */
 const err = (status: number, code: string, message: string) => json({ ok: false, error: { code, message } }, status);
-// A combined TYT+AYT exam uses the YKS score types (OSYM_YKS_SAY…); every other type matches its own token.
-const sameType = (ruleCode: unknown, examType: unknown) => { const t = String(examType || '').toUpperCase(); return String(ruleCode || '').toUpperCase().split('_').includes(t === 'TYT_AYT' ? 'YKS' : t); };
 
 export async function scoringProfileOptions(env: Env, exam: any) {
-  const rows = await all<any>(env.DB.prepare(`SELECT srv.id,srv.academic_year,srv.version,sr.code rule_code,sr.name rule_name FROM scoring_rule_versions srv JOIN scoring_rules sr ON sr.id=srv.rule_id WHERE srv.verified=1 ORDER BY sr.name,srv.academic_year DESC,srv.version`));
-  return rows.filter((r) => sameType(r.rule_code, exam.exam_type));
+  const rows = await all<any>(env.DB.prepare(`SELECT srv.id,srv.academic_year,srv.version,srv.config_json,sr.code rule_code,sr.name rule_name FROM scoring_rule_versions srv JOIN scoring_rules sr ON sr.id=srv.rule_id WHERE srv.verified=1 ORDER BY sr.name,srv.academic_year DESC`));
+  // owner (3 Nov): only puan-producing profiles of the exam's type (the current one stays listed)
+  return scoringChoices(rows, { examType: exam.exam_type, gradeLevel: exam.grade_level }, exam.scoring_rule_version_id).map(({ config_json, ...r }: any) => r);
 }
 
 export async function getScoringCorrection(env: Env, exam: any): Promise<Response> {
