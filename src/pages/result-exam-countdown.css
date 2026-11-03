@@ -32,3 +32,46 @@
 @media (prefers-reduced-motion:reduce) { .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-countdown { animation:none; } }
 }
 @media print { .sr-countdown { display:none!important; } }
+
+/* Orbit treatment stays inside the signed-in result student workspace. */
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-countdown[data-exam] {
+  --sr-accent: #07519a;
+  --sr-tint: #eff6ff;
+  --sr-line: #9dbde7;
+  background: var(--sr-tint);
+  border: 1px solid var(--sr-line);
+  color: #102943;
+}
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-countdown[data-exam="LGS"] {
+  --sr-accent: #09665a;
+  --sr-tint: #edf9f6;
+  --sr-line: #84bfb3;
+}
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-countdown[data-exam] .sr-cd-head :is(svg,.sr-cd-kicker), .sr-countdown[data-exam] .sr-cd-meta a { color: var(--sr-accent); }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-countdown[data-exam] :is(h3,.sr-cd-meta,.sr-cd-dim,.sr-cd-unit strong,.sr-cd-unit small) { color: #102943 !important; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-countdown[data-exam] .sr-cd-units { grid-template-columns: repeat(3,minmax(0,1fr)); }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-countdown[data-exam] .sr-cd-unit.is-days { grid-column: auto; flex-direction: column; gap: 0; }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-countdown[data-exam] .sr-cd-unit { background: #fff; border: 1px solid var(--sr-line); }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-countdown[data-exam] .sr-cd-unit strong { font-size: clamp(22px,5vw,34px); }
+.result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-countdown[data-exam]::after { display: none; }
+.sr-cd-orbit {
+  position: relative;
+  width: 132px;
+  height: 44px;
+  margin: 6px auto 12px;
+  border: 1px solid var(--sr-line);
+  border-radius: 50%;
+}
+.sr-cd-planet {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  offset-path: path("M 1 21 A 64 20 0 1 1 129 21 A 64 20 0 1 1 1 21");
+  offset-rotate: 0deg;
+  offset-distance: var(--sr-orbit-progress);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sr-cd-planet { animation: sr-cd-arrive .8s ease-out both; }
+  @keyframes sr-cd-arrive { from { offset-distance: max(0%, calc(var(--sr-orbit-progress) - 12%)); } }
+}
