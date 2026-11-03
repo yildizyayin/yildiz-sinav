@@ -39,14 +39,16 @@ describe('exam application and result schedule', () => {
     expect(platform).toContain('datetime(p.result_publish_at)<=CURRENT_TIMESTAMP');
   });
 
-  it('exposes later and immediate publication actions on the exam detail page', () => {
+  // owner (3 Nov): the plan and one "Sonuçları aç" (ExamRelease) for the app and sonuc together
+  it('exposes the result time and one open action on the exam detail page', () => {
     expect(detail).toContain('Uygulama başlangıcı');
     expect(detail).toContain('Uygulama bitişi');
     expect(detail).toContain('Sonuç yayın tarihi / saati');
-    expect(detail).toContain('Sonra yayınla / planı kaydet');
-    expect(detail).toContain('Şimdi yayınla');
+    expect(detail).toContain('Planı kaydet');
     expect(detail).toContain('/schedule`');
-    expect(detail).toContain('/freeze`');
-    expect(detail).toContain('/publish`');
+    expect(detail).toContain('<ExamRelease examId={examId}');
+    const release = readFileSync(new URL('../src/components/ExamRelease.tsx', import.meta.url), 'utf8');
+    expect(release).toContain('Sonuçları aç');
+    expect(release).toContain('/release`');
   });
 });

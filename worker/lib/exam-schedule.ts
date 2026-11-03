@@ -66,6 +66,8 @@ export async function saveExamSchedule(request:Request,env:Env,user:AuthUser,exa
     env.DB.prepare(`UPDATE exams SET application_start_at=?,application_end_at=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(applicationStartAt,applicationEndAt,examId),
     env.DB.prepare(`INSERT INTO exam_delivery_profiles(exam_id,result_publish_at,updated_at) VALUES(?,?,CURRENT_TIMESTAMP)
       ON CONFLICT(exam_id) DO UPDATE SET result_publish_at=excluded.result_publish_at,updated_at=CURRENT_TIMESTAMP`).bind(examId,resultPublishAt),
+    // Tek "Sonuçları aç" (3 Nov): sonuc opens at the same planned time (a published or already released one is left alone)
+    env.DB.prepare(`UPDATE exam_administrations SET result_release_at=? WHERE exam_id=? AND channel='RESULT_NETWORK' AND status IN ('UPLOADING','READY') AND scheduled_release_done_at IS NULL AND (? IS NULL OR julianday(?)>julianday('now'))`).bind(resultPublishAt,examId,resultPublishAt,resultPublishAt),
   ]);
   await audit(env.DB,user.id,exists.institution_id||user.institution_id||null,'EXAM_RESULT_SCHEDULE_UPDATED','exam',examId,{applicationStartAt,applicationEndAt,resultPublishAt});
   return getExamSchedule(env,user,examId);

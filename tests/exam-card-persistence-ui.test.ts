@@ -42,7 +42,8 @@ it('names exactly which card fields are missing and marks them',async()=>{
  const f=await mount();try{
   await f.set(f.labelled('Sınav adı'),'Deneme');await f.set(f.labelled('Eğitim yılı'),'2026');
   await act(async()=>f.btn('Devam').click());
-  expect(f.node.textContent).toContain('Sınav kartında eksik: Yayınevi adı, Eğitim yılı (ör. 2026-2027), Oturum / bölüm.');
+  // owner (3 Nov): the session is filled from the exam type, so it is no longer asked
+  expect(f.node.textContent).toContain('Sınav kartında eksik: Yayınevi adı, Eğitim yılı (ör. 2026-2027).');
   expect(f.labelled('Yayınevi adı').getAttribute('aria-invalid')).toBe('true');expect(f.labelled('Sınav adı').getAttribute('aria-invalid')).toBeNull();
   expect(f.node.querySelector('#exam-answer-key')).toBeNull();
  }finally{await f.unmount();}

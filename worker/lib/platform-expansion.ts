@@ -17,6 +17,7 @@ import { documentLayoutSettings, studioPrintCheck, studioRevision } from './stud
 import { normalizeLayoutSettings } from './print-layout';
 import { reportSnapshotStatements } from './report-snapshot';
 import { withExamOperationLock, listExamOperationLocks, recoverExamOperationLock } from './exam-operation-lock';
+import { examCorrectionOpen } from './exam-publication-guard';
 
 const NEXT_FEATURES = new Set([
   'LEARNING_GRAPH','QUESTION_BANK','RECOVERY','RBA','MEMBERSHIP','LIVE','STUDIO','PHYSICAL_BRIDGE','GAMES','CAMPUS','ENTERPRISE','PUBLISHER','ADMISSIONS','GUIDANCE_TESTS','BOARD','MOBILE_API','VIDEO_LIBRARY',
@@ -275,6 +276,22 @@ async function writeAppSnapshot(env:Env,p:any,examId:string,actorId:string|null,
  * Changing results already published (answer key, scoring profile, re-evaluating an evaluated upload) still needs
  * "Düzeltmeye aç". Best effort: when the exam is busy the next upload or a manual freeze writes the snapshot.
  */
+/**
+ * Tek "Sonuçları aç" (owner, 3 Nov): when an exam's result time comes and its results were never frozen, the schedule
+ * freezes them itself (no person to act for; the audit row has no actor), so the scheduled publication can open them.
+ */
+export async function freezeDueAppResults(env:Env,limit=20):Promise<number>{
+  const due=await all<any>(env.DB.prepare(`SELECT p.exam_id FROM exam_delivery_profiles p WHERE COALESCE(p.result_freeze_status,'OPEN')='OPEN' AND p.result_publish_at IS NOT NULL AND datetime(p.result_publish_at)<=CURRENT_TIMESTAMP
+    AND EXISTS(SELECT 1 FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id WHERE ep.exam_id=p.exam_id)
+    AND NOT EXISTS(SELECT 1 FROM exam_revision_state r WHERE r.exam_id=p.exam_id AND r.app_trashed_at IS NOT NULL) LIMIT ?`).bind(limit));
+  let n=0;
+  for(const d of due){
+    if(await examCorrectionOpen(env,d.exam_id))continue;
+    const r=await withExamOperationLock(env,d.exam_id,'FREEZE_SCHEDULED',async(env)=>{const p=await examProfile(env,d.exam_id);return p?writeAppSnapshot(env,p,d.exam_id,null,false):notFound()});
+    if(r.ok)n++;else console.warn('SCHEDULED_FREEZE_SKIPPED',d.exam_id,await r.clone().text());
+  }
+  return n;
+}
 export async function refreshAppLivePublication(env:Env,examId:string,actorId:string|null):Promise<boolean>{
   const state=await one<any>(env.DB.prepare(`SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?`).bind(examId));
   if(!state||!['FROZEN','PUBLISHED'].includes(state.result_freeze_status))return false;

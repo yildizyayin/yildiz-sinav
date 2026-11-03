@@ -54,8 +54,9 @@ describe('scoring profile correction', () => {
     expect(finalize.status, finalize.text).toBe(200);
     // published and frozen: still locked
     expect((await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_custom_exam_2627', reason: 'Yanlış profil seçilmişti.' })).data.error.code).toBe('CORRECTION_NOT_OPEN');
-    const reopened = await call('/api/admin/result-network/administrations/adm/reopen-results', { method: 'POST', body: { reason: 'Puanlama profili düzeltmesi.', expectedSnapshotVersion: finalize.data.snapshotVersion }, cookie: admin });
-    expect(reopened.status, reopened.text).toBe(200);
+    // owner (3 Nov): "Sonuçları aç" opened the app and sonuc together, so the one Düzeltme switch reopens both
+    const reopened = await t.request(`${t.base}/correction`, 'POST', { action: 'OPEN', reason: 'Puanlama profili düzeltmesi.' });
+    expect(reopened.response.status, reopened.text).toBe(200);
     expect((await t.request(url)).data.correctionOpen).toBe(true);
 
     expect((await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_custom_exam_2627', reason: 'kısa' })).data.error.code).toBe('REASON_REQUIRED');

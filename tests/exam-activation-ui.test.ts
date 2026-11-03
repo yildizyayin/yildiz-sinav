@@ -23,6 +23,7 @@ beforeEach(() => {
   state.api.mockImplementation(async (path: string, options?: RequestInit) => {
     if (options?.method === 'PATCH') { status = 'ACTIVE'; return { ok: true }; }
     if (path.endsWith('/schedule')) return { schedule: { result_freeze_status: 'OPEN' } };
+    if (path.endsWith('/release') || path.endsWith('/correction')) return { ok: true, open: false, students: 0, plannedAt: null, openedAt: null, correctionOpen: false, canOpen: false, pending: [], app: { state: 'OPEN' }, network: null };
     return { exam: { id: 'synthetic-exam', title: 'Synthetic exam', status, owner_type: 'CENTRAL' }, subjects: [], booklets: [{ code: 'A' }], readiness: { ready_to_publish: ready, blockers: ready ? [] : [{ code: 'INCOMPLETE_ANSWER_KEY', message: 'B kitapçığında 5 cevap eksik.' }] } };
   });
   vi.stubGlobal('confirm', vi.fn(() => true));
@@ -44,7 +45,8 @@ it('activates only after a deliberate action and leaves results unpublished', as
   expect(state.api).toHaveBeenCalledWith('/api/exam-definitions/synthetic-exam/status', { method: 'PATCH', body: JSON.stringify({ status: 'ACTIVE' }) });
   expect(container.textContent).toContain('Değerlendirmeye açık');
   expect(container.querySelector('a[href*="mode=upload"]')).not.toBeNull();
-  expect(action('Şimdi yayınla').disabled).toBe(true);
+  // owner (3 Nov): one 'Sonuçları aç' for app and sonuc; with no evaluated student it cannot be pressed
+  expect(action('Sonuçları aç').disabled).toBe(true);
   expect(state.api.mock.calls.some(([path]) => path.endsWith('/publish'))).toBe(false);
 });
 it('retains the draft and displays the server failure on rejected activation', async () => {

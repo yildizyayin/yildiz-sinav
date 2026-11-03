@@ -332,7 +332,10 @@ async function options(env: Env, user: AuthUser, url: URL): Promise<Response> {
   ]);
   const scope = examOutcomeScope({academicYear:url.searchParams.get('academicYear'),gradeLevel,examType:url.searchParams.get('examType')});
   const outcomes = (await scopedOutcomeCatalog(env,scope,subjectId||undefined)).map((o:any)=>({...o,exam_subject_ids:examSubjectsForOutcome(scope,o.subject_id)}));
-  return Response.json({ ok: true, subjects, scoringVersions, institutions, outcomes, scope, catalogStatus:outcomes.length ? 'AVAILABLE' : 'EMPTY', catalogYear: outcomes[0]?.academic_year || null });
+  // owner (3 Nov): the form offers the publishers already used (picked from a list, a new one can be typed)
+  const publisherRows = await env.DB.prepare(`SELECT publisher_name n,count(*) c FROM exams WHERE trim(COALESCE(publisher_name,''))<>'' ${user.role === 'SUPER_ADMIN' ? '' : "AND (owner_type='CENTRAL' OR institution_id=?)"} GROUP BY lower(trim(publisher_name)) ORDER BY c DESC,n LIMIT 200`).bind(...(user.role === 'SUPER_ADMIN' ? [] : [user.institution_id || ''])).all<any>();
+  const publishers = (publisherRows.results || []).map((r: any) => String(r.n).trim());
+  return Response.json({ ok: true, subjects, scoringVersions, institutions, outcomes, publishers, scope, catalogStatus:outcomes.length ? 'AVAILABLE' : 'EMPTY', catalogYear: outcomes[0]?.academic_year || null });
 }
 
 async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
@@ -1000,6 +1003,15 @@ export default {
     if (copy) return request.method === 'POST' ? copyDefinition(env, auth, copy[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     const structure = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/structure$/);
     if (structure) return request.method === 'PUT' ? replaceStructure(request, env, auth, structure[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    // 3 Nov: one "Sonuçları aç" for the app and sonuc together (exam-release.ts).
+    const release = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/release$/);
+    if (release) {
+      const exam = await managedExam(env, auth, release[1]); if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
+      const rl = await import('./lib/exam-release');
+      if (request.method === 'GET') return rl.getRelease(env, exam);
+      if (request.method === 'POST') return rl.releaseNow(env, auth, exam);
+      return err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
     // 3 Nov: one correction switch for every publication of the exam (exam-correction-toggle.ts).
     const correction = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/correction$/);
     if (correction) {

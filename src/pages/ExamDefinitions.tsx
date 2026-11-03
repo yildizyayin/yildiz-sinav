@@ -13,6 +13,7 @@ import { ExamChannelNotice } from '../components/ExamChannelNotice';
 import { ExamSaveReview, reviewExamInputs } from '../components/ExamSaveReview';
 import '../exam-workspace.css';
 import './approved-answer-outcomes.css';
+import '../components/exam-release.css';
 import { scoringChoices } from '../../worker/lib/scoring-choices';
 import { autoOutcomeCandidate, EXAM_CHOICES, EXAM_TEMPLATES, buildAnswerKeyTemplateRows, parseAnswerKeyFileText, cleanAnswers, matchOfficialOutcome, parseAnswerKeyText, parseAnswerKeyWorkbookRows, type ExamTemplate, type OutcomeCatalogEntry, type ParsedAnswerEntry, type SubjectOption } from '../lib/guidedDefinitions';
 
@@ -92,10 +93,11 @@ export function ExamDefinitions() {
   const [choiceKey, setChoiceKey] = useState('STD_7');
   const selectedChoice = EXAM_CHOICES.find((x) => x.key === choiceKey) || EXAM_CHOICES[0];
   const [templateKey, setTemplateKey] = useState('SCHOOL_7');
+  const [listQuery, setListQuery] = useState('');
   const selectedTemplate = EXAM_TEMPLATES.find((x) => x.key === templateKey) || EXAM_TEMPLATES[0];
   const [createForm, setCreateForm] = useState({
-    ownerType: user?.role === 'SUPER_ADMIN' ? 'CENTRAL' : 'INSTITUTION', institutionId: '', academicYear: '2026-2027', title: '', examDate: '', scoringRuleVersionId: '',
-    publisherName: '', sessionLabel: '', description: '', resultNetworkEnabled: false, gradeLevel: String(selectedChoice.gradeLevel || 7),
+    ownerType: user?.role === 'SUPER_ADMIN' ? 'CENTRAL' : 'INSTITUTION', institutionId: '', academicYear: currentAcademicYear(), title: '', examDate: '', scoringRuleVersionId: '',
+    publisherName: '', sessionLabel: '', description: '', resultNetworkEnabled: user?.role === 'SUPER_ADMIN', gradeLevel: String(selectedChoice.gradeLevel || 7),
   });
   const [customScoring, setCustomScoring] = useState({ wrongMode: 'NONE', wrongDivisor: 4, scale: 100, customScale: 100, weights: {} as Record<string, number> });
   const [resultSettings, setResultSettings] = useState({ correct: true, wrong: true, blank: true, net: true, branchNet: true, successPercent: true, rawScore: true, standardScore: true, branchScore: true, totalScore: true, ranking: true, percentile: true, rankingScopes: ['INSTITUTION', 'DISTRICT', 'CITY', 'NATIONAL'] as string[], includeObp: false });
@@ -223,7 +225,7 @@ export function ExamDefinitions() {
   }, [draftKey, draftReady, selectedId, draftHasContent, createForm, choiceKey, templateKey, definitionMode, createMethod, booklets, subjects, answerKeyText, keyEntries, resultSettings, customScoring, outcomeRequired, builderStep]);
   const clearDraft = () => { try { if (draftKey) localStorage.removeItem(draftKey); } catch { /* ignore */ } setDraftRestoredAt(''); };
   const resetCreateForm = () => {
-    setCreateForm((f) => ({ ...f, title: '', publisherName: '', sessionLabel: '', description: '', examDate: '', resultNetworkEnabled: false }));
+    setCreateForm((f) => ({ ...f, title: '', publisherName: '', sessionLabel: '', description: '', examDate: '', resultNetworkEnabled: user?.role === 'SUPER_ADMIN' }));
     setSubjects([]); setKeyEntries([]); setAnswerKeyText(''); setAnalysis(null); setAnswerKeyFile(null); setBooklets('A'); setOutcomeMappings([]);
     setPendingDocuments([]); setPendingVideos([]); setBuilderStep(1); setTriedSteps({}); setError('');
   };
@@ -362,13 +364,13 @@ export function ExamDefinitions() {
         ownerType: createForm.ownerType,
         institutionId: createForm.ownerType === 'INSTITUTION' ? createForm.institutionId : null,
         academicYear: createForm.academicYear,
-        title: createForm.title,
+        title: createForm.title.trim() || suggestedTitle,
         examType: selectedChoice.examType,
         gradeLevel: selectedChoice.key === 'CUSTOM' ? Number(createForm.gradeLevel) : selectedChoice.gradeLevel,
         examDate: createForm.examDate || null,
         scoringRuleVersionId: createForm.scoringRuleVersionId || null,
         publisherName: createForm.publisherName || null,
-        sessionLabel: createForm.sessionLabel || null,
+        sessionLabel: createForm.sessionLabel || defaultSessionLabel(selectedChoice.sessionMode),
         description: createForm.description || null,
         resultNetworkEnabled: createForm.resultNetworkEnabled,
         scoringOverride: scoringVersion?.rule_code === 'CUSTOM_EXAM' ? { wrongMode: customScoring.wrongMode, wrongDivisor: customScoring.wrongMode === 'CUSTOM' ? customScoring.wrongDivisor : customScoring.wrongMode === 'NONE' ? 0 : Number(customScoring.wrongMode), scoreScale: customScoring.scale === 0 ? customScoring.customScale : customScoring.scale, weights: customScoring.weights } : null,
@@ -613,6 +615,8 @@ export function ExamDefinitions() {
 
   const totalConfiguredQuestions = subjects.reduce((total, subject) => total + Number(subject.questionCount || 0), 0);
   const totalAnswerSlots = keyEntries.reduce((total, entry) => total + cleanAnswers(entry.answers).length, 0);
+  // owner (3 Nov): name suggested from publisher + type when left empty
+  const suggestedTitle = createForm.publisherName.trim() ? `${createForm.publisherName.trim()} ${selectedChoice.label.replace(' · ', ' ')} Deneme Sınavı` : '';
   const selectedScoring = options.scoringVersions?.find((x: any) => x.id === createForm.scoringRuleVersionId);
   const isCustomScoring = selectedScoring?.rule_code === 'CUSTOM_EXAM';
   const canEditDetail = user?.role === 'SUPER_ADMIN' || detail?.exam?.owner_type === 'INSTITUTION';
@@ -621,9 +625,8 @@ export function ExamDefinitions() {
   const academicYearValid = /^(\d{4})-(\d{4})$/.test(createForm.academicYear.trim()) && Number(createForm.academicYear.trim().slice(5)) === Number(createForm.academicYear.trim().slice(0, 4)) + 1;
   const cardMissing = [
     !createForm.publisherName.trim() && 'Yayınevi adı',
-    !createForm.title.trim() && 'Sınav adı',
+    !(createForm.title.trim() || suggestedTitle) && 'Sınav adı',
     !academicYearValid && 'Eğitim yılı (ör. 2026-2027)',
-    !createForm.sessionLabel.trim() && 'Oturum / bölüm',
     user?.role === 'SUPER_ADMIN' && createForm.ownerType === 'INSTITUTION' && !createForm.institutionId && 'Kurum',
   ].filter(Boolean) as string[];
   const invalid = (field: string) => (triedSteps[1] && cardMissing.some((m) => m.startsWith(field))) || undefined;
@@ -663,15 +666,17 @@ export function ExamDefinitions() {
         <div className="exam-simple-card-head"><span className="simple-number">01</span><div><h2>Sınav bilgileri</h2><p>Yeni sınav için temel kart bilgilerini girin. <span className="muted">* işaretli alanlar zorunludur.</span></p></div></div>
         {draftRestoredAt && <div className="alert info exam-draft-restored" role="status">Kaydedilmemiş sınav taslağınız geri yüklendi{(() => { const d = new Date(draftRestoredAt); return Number.isNaN(d.getTime()) ? '' : ` (${d.toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })})`; })()}. Seçtiğiniz dosyalar tarayıcıda saklanamadığı için yeniden eklenmeli. <button type="button" className="link-button" onClick={() => { clearDraft(); resetCreateForm(); }}>Taslağı temizle</button></div>}
         <div className="form-grid builder-form-grid exam-card-grid">
-          <label>Yayınevi adı *<input aria-invalid={invalid('Yayınevi')} value={createForm.publisherName} onChange={(e) => setCreateForm((f) => ({ ...f, publisherName: e.target.value }))} placeholder="Örn. ANUNEX Yayınları" /></label>
-          <label>Sınav adı *<input aria-invalid={invalid('Sınav adı')} value={createForm.title} onChange={(e) => setCreateForm((f) => ({ ...f, title: e.target.value }))} placeholder="Örn. TYT Türkiye Geneli Deneme 1" /></label>
           <label>Sınav türü *<select value={choiceKey} onChange={(e) => setChoiceKey(e.target.value)}>{EXAM_CHOICES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}</select></label>
-          <label>Eğitim yılı *<input aria-invalid={invalid('Eğitim yılı')} placeholder="2026-2027" value={createForm.academicYear} onChange={(e) => setCreateForm((f) => ({ ...f, academicYear: e.target.value }))} /></label>
-          <label>Sınıf düzeyi *<select value={createForm.gradeLevel} onChange={(e) => setCreateForm((f) => ({ ...f, gradeLevel: e.target.value }))}>{Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}. sınıf</option>)}</select></label>
-          <label>Oturum / bölüm *<input aria-invalid={invalid('Oturum')} value={createForm.sessionLabel} onChange={(e) => setCreateForm((f) => ({ ...f, sessionLabel: e.target.value }))} placeholder="Örn. 1. Oturum" /></label>
+          <label>Yayınevi adı *<input list="exam-publishers" aria-invalid={invalid('Yayınevi')} value={createForm.publisherName} onChange={(e) => setCreateForm((f) => ({ ...f, publisherName: e.target.value }))} placeholder="Listeden seçin veya yeni yazın" /><datalist id="exam-publishers">{(options.publishers || []).map((p: string) => <option key={p} value={p} />)}</datalist></label>
+          <label>Sınav adı *<input aria-invalid={invalid('Sınav adı')} value={createForm.title} onChange={(e) => setCreateForm((f) => ({ ...f, title: e.target.value }))} placeholder={suggestedTitle || 'Örn. TYT Türkiye Geneli Deneme 1'} />{!createForm.title.trim() && suggestedTitle && <small className="field-help">Boş bırakırsanız: {suggestedTitle}</small>}</label>
         </div>
-        <label className="builder-textarea-label"><span>Açıklama / not</span><textarea rows={2} value={createForm.description} onChange={(e) => setCreateForm((f) => ({ ...f, description: e.target.value }))} placeholder="İsteğe bağlı açıklama" /></label>
-        <label className="simple-publication"><input type="checkbox" checked={createForm.resultNetworkEnabled} onChange={(e) => setCreateForm((f) => ({ ...f, resultNetworkEnabled: e.target.checked }))} /><span><strong>Bu sınav sonuc.anunex.com'da yayınlansın</strong><small>app.anunex.com ana kaydı korunur; sonuç ağı seçilirse aynı sınav kaydı kullanılır.</small></span></label>
+        <p className="field-help exam-auto-note">Türü seçince sınıf, oturumlar, dersler, soru sayıları, puanlama ve eğitim yılı kendiliğinden gelir.</p>
+        <details className="simple-details"><summary>Gelişmiş: eğitim yılı, sınıf, oturum, açıklama</summary><div className="form-grid builder-form-grid">
+          <label>Eğitim yılı<input aria-invalid={invalid('Eğitim yılı')} placeholder="2026-2027" value={createForm.academicYear} onChange={(e) => setCreateForm((f) => ({ ...f, academicYear: e.target.value }))} /></label>
+          {selectedChoice.key === 'CUSTOM' && <label>Sınıf düzeyi<select value={createForm.gradeLevel} onChange={(e) => setCreateForm((f) => ({ ...f, gradeLevel: e.target.value }))}>{Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}. sınıf</option>)}</select></label>}
+          <label>Oturum / bölüm<input value={createForm.sessionLabel} onChange={(e) => setCreateForm((f) => ({ ...f, sessionLabel: e.target.value }))} placeholder={defaultSessionLabel(selectedChoice.sessionMode)} /></label>
+        </div>
+        <label className="builder-textarea-label"><span>Açıklama / not</span><textarea rows={2} value={createForm.description} onChange={(e) => setCreateForm((f) => ({ ...f, description: e.target.value }))} placeholder="İsteğe bağlı açıklama" /></label></details>
         <div className="builder-mode-row"><div><strong>Cevap anahtarı modu</strong><span>Kazanım bağlantısı gerekiyorsa kazanımlı modu seçin.</span></div><div className="segmented-control"><button type="button" className={definitionMode === 'STANDARD' ? 'active' : ''} onClick={() => { setDefinitionMode('STANDARD'); }}>Standart</button><button type="button" className={definitionMode === 'OUTCOME' ? 'active' : ''} onClick={() => { setDefinitionMode('OUTCOME'); }}><Sparkles size={15}/> Kazanımlı</button></div></div>
       </section>}
 
@@ -717,8 +722,8 @@ export function ExamDefinitions() {
     </div>
 
     <div className="exam-definition-list-shell">
-      <div className="exam-list-heading"><div><h2>Kayıtlı sınavlar</h2><p>Bir sınavı açtığınızda ayrı çalışma alanında düzenleme araçları görünür.</p></div></div>
-      <div className="table-card" style={{ marginBottom: 20 }}><table><thead><tr><th>Sınav</th><th>Tür / Sınıf</th><th>Durum</th><th>Platform</th><th>Ders / Soru</th><th>Cevap</th><th>Kazanım</th><th>İşlem</th></tr></thead><tbody>{rows.map((r) => { const canManageRow = user?.role === 'SUPER_ADMIN' || r.owner_type === 'INSTITUTION'; return <tr key={r.id}><td><button type="button" className="link-button" onClick={() => openExamDefinition(r.id)}><strong>{r.title}</strong></button><small>{r.academic_year}{r.publisher_name ? ` · ${r.publisher_name}` : ''}{r.institution_name ? ` · ${r.institution_name}` : ''}</small></td><td>{r.exam_type} · {r.grade_level ? `${r.grade_level}. sınıf` : '-'}</td><td><ExamLightBadge row={r}/>{r.owner_type === 'CENTRAL' && <small className="status-note">Merkezi sınav</small>}</td><td>{r.result_network_enabled ? <span className="status ok">Sonuç ağı</span> : <span className="status neutral">app</span>}</td><td>{r.subject_count} / {r.question_count}</td><td>{r.answer_count}</td><td>{r.outcome_mapped_count}</td><td>{rowActions(r, canManageRow)}</td></tr>; })}</tbody></table></div>
+      <div className="exam-list-heading"><div><h2>Kayıtlı sınavlar</h2><p>Bir sınavı açtığınızda ayrı çalışma alanında düzenleme araçları görünür.</p></div><label className="exam-list-search">Sınav ara<input type="search" value={listQuery} onChange={(e) => setListQuery(e.target.value)} placeholder="Ad, yayınevi, tür, yıl" /></label></div>
+      <div className="table-card" style={{ marginBottom: 20 }}><table><thead><tr><th>Sınav</th><th>Tür / Sınıf</th><th>Durum</th><th>Platform</th><th>Ders / Soru</th><th>Cevap</th><th>Kazanım</th><th>İşlem</th></tr></thead><tbody>{rows.filter((r) => { const words = listQuery.toLocaleLowerCase('tr-TR').split(/\s+/).filter(Boolean); const hay = `${r.title} ${r.publisher_name || ''} ${r.exam_type || ''} ${r.academic_year || ''} ${r.grade_level || ''}`.toLocaleLowerCase('tr-TR'); return words.every((w) => hay.includes(w)); }).map((r) => { const canManageRow = user?.role === 'SUPER_ADMIN' || r.owner_type === 'INSTITUTION'; return <tr key={r.id}><td><button type="button" className="link-button" onClick={() => openExamDefinition(r.id)}><strong>{r.title}</strong></button><small>{r.academic_year}{r.publisher_name ? ` · ${r.publisher_name}` : ''}{r.institution_name ? ` · ${r.institution_name}` : ''}</small></td><td>{r.exam_type} · {r.grade_level ? `${r.grade_level}. sınıf` : '-'}</td><td><ExamLightBadge row={r}/>{r.owner_type === 'CENTRAL' && <small className="status-note">Merkezi sınav</small>}</td><td>{r.result_network_enabled ? <span className="status ok">Sonuç ağı</span> : <span className="status neutral">app</span>}</td><td>{r.subject_count} / {r.question_count}</td><td>{r.answer_count}</td><td>{r.outcome_mapped_count}</td><td>{rowActions(r, canManageRow)}</td></tr>; })}</tbody></table></div>
     </div>
 
     <div id="exam-definition-detail" className="exam-definition-detail-shell">
@@ -812,3 +817,7 @@ function preferredScoringFor(versions: any[] | undefined, currentId: string, exa
   const other = (versions || []).find((v: any) => v.id !== currentId && scoringProducesScore(v.config_json) && String(v.rule_code || '').toUpperCase().split('_').includes(type));
   return other ? String(other.rule_name || '') : null;
 }
+
+/** Owner (3 Nov): the school year changes in September (2026-11 → 2026-2027). */
+export function currentAcademicYear(now = new Date()): string { const y = now.getFullYear(); return now.getMonth() >= 8 ? `${y}-${y + 1}` : `${y - 1}-${y}`; }
+export function defaultSessionLabel(mode?: string): string { return mode === 'VERBAL_NUMERIC' ? 'Sözel + Sayısal' : mode === 'TYT_AYT' ? 'TYT + AYT' : 'Tek oturum'; }

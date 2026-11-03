@@ -431,7 +431,14 @@ export async function handleResultGovernanceMutation(request:Request,env:Env):Pr
  if(readiness&&request.method==='GET')return inspectResultArtifactReadiness(request,env,user,readiness[1]);
  if(artifacts&&request.method==='POST')return prepareResultArtifacts(request,env,user,artifacts[1]);
  if(reopen&&request.method==='POST')return reopenNetworkResults(request,env,user,reopen[1]);
- if(finalize&&request.method==='POST')return freezeAndPublishAdministration(request,env,user,finalize[1]);
+ if(finalize&&request.method==='POST'){
+  // Tek "Sonuçları aç" (3 Nov): opening on sonuc opens the app results of the same exam too
+  const adm=await one<any>(env.DB.prepare(`SELECT e.* FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(finalize[1]));
+  if(!adm)return safeError(404,'ADMINISTRATION_NOT_FOUND','Sınav yönetimi bulunamadı.');
+  // closing a sonuc-only correction republishes sonuc as before; the app side has its own state then
+  const {examCorrectionOpen}=await import('./lib/exam-publication-guard');
+  if(await examCorrectionOpen(env,adm.id))return freezeAndPublishAdministration(request,env,user,finalize[1]);
+  const {releaseNow}=await import('./lib/exam-release');return releaseNow(env,user,adm)}
  if(schedule&&request.method==='PUT')return saveResultSchedule(request,env,user,schedule[1]);
  return safeError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
 }
@@ -546,7 +553,7 @@ async function ensureOpenAdministration(env:Env,examId:string,actorId:string){
  const exam=await one<any>(env.DB.prepare(`SELECT academic_year FROM exams WHERE id=?`).bind(examId));if(!exam)return;
  const id=draft?.id||uuid('eadm');
  await env.DB.batch([
-  draft?env.DB.prepare(`UPDATE exam_administrations SET status='UPLOADING' WHERE id=? AND status='DRAFT'`).bind(id):env.DB.prepare(`INSERT INTO exam_administrations(id,exam_id,academic_year,channel,status,created_by) VALUES(?,?,?,'RESULT_NETWORK','UPLOADING',?)`).bind(id,examId,exam.academic_year,actorId),
+  draft?env.DB.prepare(`UPDATE exam_administrations SET status='UPLOADING' WHERE id=? AND status='DRAFT'`).bind(id):env.DB.prepare(`INSERT INTO exam_administrations(id,exam_id,academic_year,channel,status,created_by,result_release_at) VALUES(?,?,?,'RESULT_NETWORK','UPLOADING',?,(SELECT p.result_publish_at FROM exam_delivery_profiles p WHERE p.exam_id=? AND p.result_publish_at IS NOT NULL AND julianday(p.result_publish_at)>julianday('now')))`).bind(id,examId,exam.academic_year,actorId,examId),
   env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'RESULT_ADMINISTRATION_OPENED','exam_administration',?,?)`).bind(uuid('aud'),actorId,id,JSON.stringify({reason:'İlk değerlendirmede otomatik açıldı.'})),
  ]);
 }
@@ -641,6 +648,13 @@ async function saveResultSchedule(request:Request,env:Env,user:AuthUser,id:strin
   env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'RESULT_SCHEDULE_UPDATED','exam_administration',?,?)`).bind(uuid('aud'),user.id,id,JSON.stringify({before:{applicationStartAt:row.application_start_at,applicationEndAt:row.application_end_at,releaseAt:row.result_release_at,resumeAt:row.upload_resume_at},after:s})),
  ]);
  return json({ok:true,id,schedule:s});
+}
+
+/** Tek "Sonuçları aç" (owner, 3 Nov): open an administration's results now; an upload not yet evaluated does not hold it. */
+export async function releaseAdministrationNow(env:Env,id:string,actorId:string|null){
+ const row=await one<any>(env.DB.prepare(`SELECT exam_id FROM exam_administrations WHERE id=? AND channel='RESULT_NETWORK'`).bind(id));
+ if(!row)return safeError(404,'ADMINISTRATION_NOT_FOUND','Sınav yönetimi bulunamadı.');
+ return withExamOperationLock(env,row.exam_id,'RESULT_NETWORK_RELEASE',async(env)=>publishInLock(env,id,actorId,false,true));
 }
 
 /** Türkiye geneli takvim: at the release time the administration is ranked once and published (cron, every 15 min). */
