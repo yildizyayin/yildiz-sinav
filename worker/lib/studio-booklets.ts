@@ -85,3 +85,34 @@ export function stemGroupsInstalled(env: { DB: D1Database }): Promise<boolean> {
   }
   return p;
 }
+
+/**
+ * P03 (owner, 2 Nov): a stem group's shared text (paragraph/figure description) is printed once before its questions
+ * and shown online above each of them. Only an APPROVED group text is shown — the same human-approval gate as the
+ * questions themselves. Returns, per question id in `ids` order, its group's passage (or nothing), and the ids whose
+ * group text exists but is not approved.
+ */
+export type SharedPassage = { groupId: string; title: string | null; text: string };
+export async function sharedPassages(env: { DB: D1Database }, ids: string[]): Promise<{ byQuestion: Map<string, SharedPassage>; unapproved: string[] }> {
+  const byQuestion = new Map<string, SharedPassage>(), unapproved: string[] = [];
+  if (!ids.length || !(await stemGroupsInstalled(env))) return { byQuestion, unapproved };
+  const rows: any[] = [];
+  for (let i = 0; i < ids.length; i += 90) {
+    const chunk = ids.slice(i, i + 90);
+    const r = await env.DB.prepare(`SELECT q.id,g.id gid,g.title,g.shared_stem_text,g.review_status FROM question_bank q JOIN question_stem_groups g ON g.id=q.stem_group_id
+      WHERE q.id IN (${chunk.map(() => '?').join(',')}) AND length(trim(coalesce(g.shared_stem_text,'')))>0`).bind(...chunk).all();
+    rows.push(...(r.results || []));
+  }
+  for (const r of rows) {
+    if (r.review_status !== 'APPROVED') { unapproved.push(r.id); continue; }
+    byQuestion.set(r.id, { groupId: r.gid, title: r.title || null, text: String(r.shared_stem_text) });
+  }
+  return { byQuestion, unapproved: ids.filter((id) => unapproved.includes(id)) };
+}
+
+/** Question numbers (1-based) of each passage's run in an ordered list: groupId → [first, last]. */
+export function passageRuns(ids: string[], byQuestion: Map<string, SharedPassage>): Map<string, [number, number]> {
+  const runs = new Map<string, [number, number]>();
+  ids.forEach((id, i) => { const p = byQuestion.get(id); if (!p) return; const r = runs.get(p.groupId); if (r) r[1] = i + 1; else runs.set(p.groupId, [i + 1, i + 1]); });
+  return runs;
+}

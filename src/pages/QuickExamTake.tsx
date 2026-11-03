@@ -145,7 +145,7 @@ export function QuickExamTake() {
       <div className={`qx-question ${zoom ? 'zoom' : ''}`}>
         {q.kind === 'IMAGE' && <button type="button" className="qx-zoom" onClick={() => setZoom((z) => !z)}>{zoom ? 'Küçült' : 'Büyüt'}</button>}
         {q.kind === 'IMAGE' ? <img onClick={() => setZoom((z) => !z)} src={`/api/public/quick-tests/attempts/${session.attemptId}/image/${q.id}?t=${session.token}`} alt={`Soru ${index + 1}`} style={{ aspectRatio: `${q.width} / ${q.height}` }} />
-          : <div className="qx-text"><p>{q.stem}</p><ol type="A">{(q.options || []).map((o: string, j: number) => <li key={j}>{o}</li>)}</ol></div>}
+          : <div className="qx-text">{q.passage && <aside className="qx-passage" aria-label="Ortak metin"><b>{q.passage.first === q.passage.last ? `${q.passage.first}. soruyu` : `${q.passage.first}–${q.passage.last}. soruları`} aşağıdaki metne göre cevaplayınız.</b>{q.passage.title && <strong>{q.passage.title}</strong>}<p>{q.passage.text}</p></aside>}<p>{q.stem}</p><ol type="A">{(q.options || []).map((o: string, j: number) => <li key={j}>{o}</li>)}</ol></div>}
       </div>
       <div className="qx-choices" role="radiogroup" aria-label={`Soru ${index + 1} cevabı`}>{letters.map((l) => <button type="button" role="radio" aria-checked={answers[q.id] === l} key={l} className={answers[q.id] === l ? 'on' : ''} onClick={() => choose(q.id, l)}>{l}</button>)}</div>
       <small className="qx-muted qx-hint">İşaretlediğiniz şıkka tekrar dokunursanız cevap silinir.</small>

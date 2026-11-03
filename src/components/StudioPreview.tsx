@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Eye, RefreshCw, X } from 'lucide-react';
 import { api } from '../api';
+import { StudioPrintCheck } from './StudioPrintCheck';
+import './studio-print-check.css';
 
 /** A083.3: see the booklet before printing; replace a question with another approved one from the same outcome. */
 const BAND = { EASY: 'Kolay', MEDIUM: 'Orta', HARD: 'Zor' } as Record<string, string>;
@@ -31,12 +33,15 @@ export function StudioPreview({ document, onClose, onChanged }: { document: any;
       <label className="check"><input type="checkbox" checked={sameDifficulty} onChange={e => setSameDifficulty(e.target.checked)} /> Değiştirirken aynı zorlukta kal</label>
     </div>
     {error && <div className="alert error" role="alert">{error}</div>}
+    <StudioPrintCheck documentId={document.id} locked={data?.locked} onSaved={onChanged} />
     {data?.locked && <div className="alert warning" role="status">Bu sınavın {data.results} öğrenci sonucu var; sorular artık değiştirilemez.</div>}
     {data && !data.locked && data.printed && <div className="alert info" role="status">Bu belgenin PDF'i indirilmiş. Soru değiştirirseniz eski PDF ve optikler geçersiz olur.</div>}
     {!data && !error && <p className="muted">Yükleniyor…</p>}
     <ol className="studio-preview-list">{data?.items?.map((item: any) => <li key={`${item.position}-${item.id}`} className={notice && notice.id === item.id ? `flash ${notice.kind}` : ''}>
       <div className="studio-preview-meta"><b>{item.position}.</b>{item.outcomes && <span className="chip">{item.outcomes}</span>}<span className={`chip band-${item.band}`}>{BAND[item.band] || item.band}</span>
         {!data.locked && <button type="button" className="secondary subtle" disabled={!!busy} onClick={() => void swap(item)}><RefreshCw size={13} /> {busy === item.id ? 'Değiştiriliyor…' : 'Değiştir'}</button>}</div>
+      {item.passage && <aside className="studio-preview-passage" aria-label="Ortak metin"><b>{item.passage.first === item.passage.last ? `${item.passage.first}. soruyu` : `${item.passage.first}–${item.passage.last}. soruları`} aşağıdaki metne göre cevaplayınız.</b>{item.passage.title && <strong>{item.passage.title}</strong>}<p>{item.passage.text}</p></aside>}
+      {item.passageUnapproved && <div className="alert warning" role="status">Bu sorunun ortak kök metni henüz onaylanmadı; onaylanmadan basılmaz.</div>}
       <p className="studio-preview-stem">{item.stem}</p>
       <ul className="studio-preview-options">{item.options.map((o: any) => <li key={o.label} className={o.label === item.correctAnswer ? 'correct' : ''}><b>{o.label})</b> {o.text}</li>)}</ul>
       {notice && notice.id === item.id && <div className={`alert ${notice.kind === 'ok' ? 'success' : 'error'}`} role={notice.kind === 'ok' ? 'status' : 'alert'}>{notice.text}</div>}

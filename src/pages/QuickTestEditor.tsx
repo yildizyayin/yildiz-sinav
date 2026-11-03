@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowDown, ArrowLeft, ArrowUp, Camera, CheckCircle2, Copy, Download, FileText, Globe2, ListChecks, Printer, RefreshCw, Trash2, TriangleAlert } from 'lucide-react';
 import { api } from '../api';
+import { PrintCheckPanel } from '../components/StudioPrintCheck';
+import '../components/studio-print-check.css';
 import { QuickCropper, type CropResult } from '../components/QuickCropper';
 import { imageFileToImageData, parseRuntimeTemplate, readOmrImage } from '../lib/omrEngine';
 import './quick-tests.css';
@@ -104,6 +106,7 @@ function PaperStep({ t, qs, base, ready, run, setNotice, reload }: any) {
     <section className="panel qt-card"><h2><FileText size={18} /> Test kâğıdı</h2>
       <p>Sorular, kurum adınız ve logonuzla; son sayfada telefonla okutulabilen optik form{qs.length > 44 ? ' (44 sorudan uzun testte optik form eklenmez)' : ''}.</p>
       <fieldset className="qt-seg"><legend>Düzen</legend>{[0, 2, 1].map((c) => <label key={c} className={columns === c ? 'on' : ''}><input type="radio" checked={columns === c} onChange={() => { setColumns(c); void save({ columns: c }); }} /> {c === 0 ? 'Otomatik (soruların genişliğine göre)' : c === 2 ? 'İki sütun' : 'Tek sütun'}</label>)}</fieldset>
+      <PrintCheckPanel key={`${columns}-${qs.length}`} checkUrl={`${base}/check`} layoutUrl={`${base}/layout`} showForm={false} title="Baskı kontrolü" />
       <div className="qt-actions"><button type="button" className="primary" onClick={() => void run(async () => { await download(`${base}/pdf?columns=${columns}`, fileName('')); setNotice('Test kâğıdı indirildi.'); })}><Download size={16} /> Test kâğıdını indir (PDF)</button>
         <button type="button" className="secondary" onClick={() => void run(async () => { await download(`${base}/answer-key`, fileName(' - Cevap Anahtarı')); })}><Download size={16} /> Cevap anahtarı</button></div>
     </section>

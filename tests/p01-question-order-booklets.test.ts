@@ -72,7 +72,11 @@ describe('P01 Studio', () => {
     expect((await create({ questionCount: 2, questionIds: ['q1', 'g1a'] })).data.error.code).toBe('STEM_GROUP_INTEGRITY');
     expect((await create({ questionCount: 3, questionIds: ['g1a', 'q1', 'g1b'] })).data.error.code).toBe('STEM_GROUP_INTEGRITY');
     expect((await create({ questionCount: 2, questionIds: ['g1b', 'g1a'] })).data.error.code).toBe('STEM_GROUP_INTEGRITY');
-    expect((await create({ questionCount: 2, questionIds: ['g2a', 'g2b'] })).data.error.code).toBe('STEM_GROUP_SHARED_TEXT_UNSUPPORTED');
+    // P03 (owner, 2 Nov): an approved shared text is now printed with its questions; an unapproved one is refused.
+    expect((await create({ questionCount: 2, questionIds: ['g2a', 'g2b'] })).response.status).toBe(201);
+    t.db.exec(`UPDATE question_stem_groups SET review_status='REVIEW' WHERE id='g2'`);
+    expect((await create({ questionCount: 2, questionIds: ['g2a', 'g2b'] })).data.error.code).toBe('STEM_GROUP_NOT_APPROVED');
+    t.db.exec(`UPDATE question_stem_groups SET review_status='APPROVED' WHERE id='g2'`);
     const ok = await create({ questionCount: 4, questionIds: ['q3', 'g1a', 'g1b', 'q4'] });
     expect(ok.response.status, ok.text).toBe(201);
     const b = items(ok.data.id, 'B');
