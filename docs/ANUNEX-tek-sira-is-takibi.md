@@ -536,3 +536,32 @@ Tasarım ekibinin aynı dönemdeki PR'ları: #423, #427, #433, #436, #440.
 - **Onay bekliyor:** Rapor Merkezi hızlı PDF yazıcısı. Örnek gönderildi; sayfa başına ~6–7 ms, 250 öğrenci ~2 sn. Kod `karne-writer` dalında, birleştirilmedi.
 - **Kullanıcı:** deploy onayları; ÇAP TYT puanı için Düzeltme anahtarı → profil "TYT — ÖSYM" → kapat; KVKK NIBIRU_AI kaydı; föy cevap anahtarı; Netgsm; KVKK metinleri.
 - **Sonraya bırakılan:** sonuç panelinde (giriş yapmış öğrenci için) yeni sınavın geri sayımı; yanlış soru → video zinciri kararları (app).
+
+## 3 Kasım akşam / gece: sadeleştirme
+
+### Kullanıcı kararları
+
+- **Sil = kalıcı sil** (28 Ekim D-S039'un yerine): sınav ve yükleme hemen, geri alınamaz şekilde silinir; sınavda ad yazılarak onaylanır; yalnız "kim, ne zaman, ne" denetim kaydı kalır. Eski çöp kutusu hemen boşalır.
+- **Sonuçları aç:** tek düğme (uygulama + sonuc birlikte) + planlanan saat.
+- **Sınav ekleme sadeleşir:** tür seçilince ayarlar otomatik, yayınevi listeden; kendi yüklenen sınavlar otomatik sonuc'ta; kurumlar kendi sınavlarını ekleyebilir (değişmedi).
+- **Net + puan:** her sınav ikisini de üretir; profil listesi türe göre, yalnız net üretenler kalktı; 5–7. sınıf LGS tipi 100–500 tahmini.
+- **Kazanım:** anahtardaki kazanım bilgisi kaynak; MEB cümlesiyle birebir tutmazsa açık farkla en iyi eşleşme otomatik bağlanır.
+
+### Birleşen PR'lar
+
+| PR | İş |
+|---|---|
+| #460 | Sil = kalıcı sil (sınav, yükleme), çöp kutusu kalktı |
+| #461 | Kazanım: otomatik en iyi eşleşme; raporlar 26 Ekim kapsamında (TYT 9–10, 2027-28 TYMM, ders aileleri) |
+| #462 | Net + puan; türe göre profil listesi; 5–7 LGS tipi puan |
+| #463 | Miniflare testine 30 sn (deploy doğrulamasında zaman aşımı) |
+| #464 | Eski çöp kutusu üretim zamanlayıcısından silinir |
+| #465 | Tek "Sonuçları aç" + sade sınav ekleme + liste arama/filtre |
+| #466 | sonuc: aynı adlı yeni öğrenciler de değerlendirilir |
+
+### Bekleyenler
+
+- **Deploy:** #464–#466 canlıda değil (onay bekliyor).
+- **Onay bekliyor:** Rapor Merkezi hızlı PDF yazıcısı (örnek gönderildi; `karne-writer` dalı).
+- **Kullanıcı:** 7. sınıf Fenomen denemesinin anahtarı kazanım sütunuyla yeniden yüklenmeli; ÇAP TYT'nin uygulama içi kazanım tablosu için kazanım eşleştirmesi bir kez kaydedilmeli (yeniden analiz); KVKK NIBIRU_AI kaydı, föy anahtarı, Netgsm, KVKK metinleri.
+- **Sonraki ana iş:** app öğrenci/veli panelleri.
