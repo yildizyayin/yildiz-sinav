@@ -5,16 +5,20 @@ import { api } from '../api';
  * D-S039: one upload's "Sil", "Geri al" and (bayi / Süper Admin) "Başka okula taşı", written for someone who has never
  * used the system: every step says what will happen before it happens, and nothing is lost for 7 days.
  */
-type Row = { id: string; status: string; institution_name: string; institution_code: string; title: string; total: number; deleted_at?: string | null; purge_after?: string | null };
+type Row = { id: string; status: string; institution_name: string; institution_code: string; title: string; total: number; exam_id?: string; exam_type?: string; academic_year?: string; deleted_at?: string | null; purge_after?: string | null };
+type Exam = { id: string; title: string; exam_type: string; academic_year: string };
 const daysLeft = (iso?: string | null) => { if (!iso) return 0; const ms = new Date(String(iso).replace(' ', 'T') + (String(iso).includes('Z') ? '' : 'Z')).getTime() - Date.now(); return Math.max(0, Math.ceil(ms / 86400000)); };
 
-export function BatchActions({ row, mode, canMove, onChanged }: { row: Row; mode: 'INSTITUTION' | 'DEALER'; canMove: boolean; onChanged: (message: string) => void }) {
-  const [open, setOpen] = useState<'' | 'DELETE' | 'MOVE'>('');
+export function BatchActions({ row, mode, canMove, exams = [], onChanged }: { row: Row; mode: 'INSTITUTION' | 'DEALER'; canMove: boolean; exams?: Exam[]; onChanged: (message: string) => void }) {
+  const [open, setOpen] = useState<'' | 'DELETE' | 'MOVE' | 'MOVE_EXAM'>('');
+  const [examTarget, setExamTarget] = useState('');
+  // Owner (3 Nov): the sheets fit only an exam of the same type and year
+  const examOptions = exams.filter((e) => e.id !== row.exam_id && (!row.exam_type || e.exam_type === row.exam_type) && (!row.academic_year || e.academic_year === row.academic_year));
   const [reason, setReason] = useState(''); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
   const [q, setQ] = useState(''); const [options, setOptions] = useState<any[]>([]); const [target, setTarget] = useState<any>(null);
   const evaluated = row.status === 'COMMITTED';
   useEffect(() => { if (open !== 'MOVE' || target || q.trim().length < 2) { setOptions([]); return; } const h = setTimeout(() => { void api<any>(`/api/admin/result-network/operations/institutions?mode=${mode}&q=${encodeURIComponent(q.trim())}`).then((r) => setOptions((r.institutions || []).filter((x: any) => x.code !== row.institution_code))).catch(() => setOptions([])); }, 250); return () => clearTimeout(h); }, [q, open, target]); // eslint-disable-line react-hooks/exhaustive-deps
-  const close = () => { setOpen(''); setReason(''); setError(''); setQ(''); setTarget(null); };
+  const close = () => { setOpen(''); setReason(''); setError(''); setQ(''); setTarget(null); setExamTarget(''); };
   const run = async (fn: () => Promise<any>, done: (r: any) => string) => { setBusy(true); setError(''); try { const r = await fn(); close(); onChanged(done(r)); } catch (e: any) { setError(e.message); } finally { setBusy(false); } };
 
   if (row.deleted_at) {
@@ -27,6 +31,7 @@ export function BatchActions({ row, mode, canMove, onChanged }: { row: Row; mode
     {!open && <div className="ba-buttons">
       <button type="button" className="ghost" onClick={() => setOpen('DELETE')}>Sil</button>
       {canMove && <button type="button" className="ghost" onClick={() => setOpen('MOVE')}>Başka okula taşı</button>}
+      {examOptions.length > 0 && <button type="button" className="ghost" onClick={() => setOpen('MOVE_EXAM')}>Doğru sınava taşı</button>}
     </div>}
     {open === 'DELETE' && <div className="ba-panel" role="group" aria-label="Yüklemeyi sil">
       <p><b>{row.institution_name}</b> okulunun <b>{row.title}</b> yüklemesi silinecek ({Number(row.total || 0)} satır).
@@ -34,6 +39,13 @@ export function BatchActions({ row, mode, canMove, onChanged }: { row: Row; mode
       {evaluated && <label>Neden siliyorsunuz?<input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Örn. Yanlış sınav dosyası yüklendi" autoFocus /></label>}
       {error && <div className="alert error" role="alert">{error}</div>}
       <div className="ba-buttons"><button type="button" className="danger" disabled={busy || (evaluated && reason.trim().length < 5)} onClick={() => void run(() => api<any>(`/api/admin/result-network/operations/scan-batches/${row.id}`, { method: 'DELETE', body: JSON.stringify({ reason }) }), (r) => `Yükleme silindi${r.removed ? `; ${r.removed} öğrencinin sonucu kaldırıldı` : ''}. 7 gün içinde "Geri al" ile geri getirebilirsiniz.`)}>{busy ? 'Siliniyor…' : 'Evet, sil'}</button><button type="button" className="ghost" onClick={close}>Vazgeç</button></div>
+    </div>}
+    {open === 'MOVE_EXAM' && <div className="ba-panel" role="group" aria-label="Doğru sınava taşı">
+      <p>Yükleme şu an <b>{row.title}</b> sınavında. Doğru sınavı seçin; {evaluated ? 'sonuçlar bu sınavdan hemen kalkar, sıralar yeniden hesaplanır. Taşıdıktan sonra yeni sınavda "Değerlendir"e basarsınız.' : 'yükleme yeni sınava geçer, sonra "Değerlendir"e basarsınız.'} Yalnız aynı türdeki ({row.exam_type}) ve aynı eğitim yılındaki sınavlar listelenir.</p>
+      <label>Doğru sınav<select value={examTarget} onChange={(e) => setExamTarget(e.target.value)} autoFocus><option value="">Sınav seçin</option>{examOptions.map((e) => <option key={e.id} value={e.id}>{e.academic_year} · {e.title}</option>)}</select></label>
+      <label>Neden taşıyorsunuz?<input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Örn. Dosya yanlış sınava yüklenmiş" /></label>
+      {error && <div className="alert error" role="alert">{error}</div>}
+      <div className="ba-buttons"><button type="button" className="primary" disabled={busy || !examTarget || reason.trim().length < 5} onClick={() => void run(() => api<any>(`/api/admin/result-network/operations/scan-batches/${row.id}/move-exam`, { method: 'POST', body: JSON.stringify({ examId: examTarget, reason }) }), (r) => `Yükleme "${r.exam?.title || 'seçilen sınav'}" sınavına taşındı${r.removed ? `; eski sınavdan ${r.removed} öğrencinin sonucu kaldırıldı` : ''}. Sonuçlar için yüklemeyi açıp "Değerlendir"e basın.`)}>{busy ? 'Taşınıyor…' : 'Taşı'}</button><button type="button" className="ghost" disabled={busy} onClick={close}>Vazgeç</button></div>
     </div>}
     {open === 'MOVE' && <div className="ba-panel" role="group" aria-label="Başka okula taşı">
       <p>Yükleme şu an <b>{row.institution_name}</b> ({row.institution_code}) okulunda. Doğru okulu seçin; {evaluated ? 'sonuçlar bu okuldan kalkar, yeni okulda yeniden değerlendirirsiniz.' : 'yükleme yeni okula geçer.'}</p>
@@ -44,5 +56,35 @@ export function BatchActions({ row, mode, canMove, onChanged }: { row: Row; mode
       {error && <div className="alert error" role="alert">{error}</div>}
       <div className="ba-buttons"><button type="button" className="primary" disabled={busy || !target || reason.trim().length < 5} onClick={() => void run(() => api<any>(`/api/admin/result-network/operations/scan-batches/${row.id}/move`, { method: 'POST', body: JSON.stringify({ mebCode: target.code, reason }) }), (r) => `Yükleme ${r.institution?.name || target.name} okuluna taşındı. Sonuçlar için yüklemeyi açıp "Değerlendir"e basın.`)}>{busy ? 'Taşınıyor…' : 'Bu okula taşı'}</button><button type="button" className="ghost" onClick={close}>Vazgeç</button></div>
     </div>}
+  </div>;
+}
+
+/**
+ * Owner (3 Nov): every upload of one school in one exam deleted together, e.g. a whole wrong exam loaded for a school.
+ * It shows what will go first and asks for a reason and "SİL"; everything stays restorable for 7 days, one by one.
+ */
+export function BulkUploadDelete({ rows, onChanged }: { rows: Array<Row & { institution_id?: string }>; onChanged: (message: string) => void }) {
+  const pairs = Array.from(new Map(rows.filter((r) => !r.deleted_at && r.exam_id && r.institution_id).map((r) => [`${r.institution_id}|${r.exam_id}`, r])).values());
+  const [open, setOpen] = useState(false); const [key, setKey] = useState(''); const [info, setInfo] = useState<any>(null);
+  const [reason, setReason] = useState(''); const [confirm, setConfirm] = useState(''); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
+  const pick = pairs.find((r) => `${r.institution_id}|${r.exam_id}` === key);
+  useEffect(() => { setInfo(null); if (!pick) return; void api<any>(`/api/admin/result-network/operations/institution-exam-uploads?institutionId=${encodeURIComponent(pick.institution_id!)}&examId=${encodeURIComponent(pick.exam_id!)}`).then(setInfo).catch((e) => setError(e.message)); }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  const reset = () => { setOpen(false); setKey(''); setInfo(null); setReason(''); setConfirm(''); setError(''); };
+  const run = async () => {
+    if (!pick) return; setBusy(true); setError('');
+    try { const r = await api<any>('/api/admin/result-network/operations/institution-exam-uploads', { method: 'DELETE', body: JSON.stringify({ institutionId: pick.institution_id, examId: pick.exam_id, reason, confirm }) });
+      reset(); onChanged(`${r.deleted} yükleme silindi${r.removed ? `; ${r.removed} öğrencinin sonucu kaldırıldı ve sıralar yeniden hesaplandı` : ''}. Her yükleme 7 gün içinde tek tek geri alınabilir.`); }
+    catch (e: any) { setError(e.message); } finally { setBusy(false); }
+  };
+  if (!pairs.length) return null;
+  if (!open) return <button type="button" className="ghost ba-bulk-open" onClick={() => setOpen(true)}>Kurumun sınavdaki tüm yüklemelerini sil</button>;
+  return <div className="ba-panel ba-bulk" role="group" aria-label="Toplu sil">
+    <p>Yanlış sınav veya yanlış veri yüklenen bir kurum için, o kurumun o sınavdaki <b>bütün</b> yüklemelerini birlikte silebilirsiniz. Sonuçlar raporlardan ve öğrenci ekranından hemen kalkar; yüklemeler 7 gün içinde tek tek geri alınabilir.</p>
+    <label>Kurum ve sınav<select value={key} onChange={(e) => setKey(e.target.value)}><option value="">Seçin</option>{pairs.map((r) => <option key={`${r.institution_id}|${r.exam_id}`} value={`${r.institution_id}|${r.exam_id}`}>{r.institution_name} · {r.title}</option>)}</select></label>
+    {info && <p className="ba-bulk-sum" role="status"><b>{info.uploads}</b> yükleme ({info.evaluated} değerlendirilmiş) · <b>{Number(info.rows).toLocaleString('tr-TR')}</b> satır · <b>{Number(info.students).toLocaleString('tr-TR')}</b> öğrenci sonucu silinecek.</p>}
+    {info && <><label>Neden siliyorsunuz?<input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Örn. Kuruma yanlış sınavın verisi yüklendi" /></label>
+      <label>Emin misiniz? Onay için <b>SİL</b> yazın<input value={confirm} onChange={(e) => setConfirm(e.target.value.toLocaleUpperCase('tr-TR'))} autoComplete="off" /></label></>}
+    {error && <div className="alert error" role="alert">{error}</div>}
+    <div className="ba-buttons"><button type="button" className="danger" disabled={busy || !info || !info.uploads || reason.trim().length < 5 || confirm !== 'SİL'} onClick={() => void run()}>{busy ? 'Siliniyor…' : 'Hepsini sil'}</button><button type="button" className="ghost" disabled={busy} onClick={reset}>Vazgeç</button></div>
   </div>;
 }

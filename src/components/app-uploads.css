@@ -1,0 +1,14 @@
+/* Wrong uploads in the app (owner, 3 Nov). */
+.app-uploads .au-list { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+.app-uploads .au-list > li { display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; justify-content:space-between; padding:10px 12px; border:1px solid #e2e8f0; border-radius:10px; }
+.app-uploads .au-main { display:grid; gap:2px; min-width:0; }
+.app-uploads .au-main span, .app-uploads .au-main small { color:#475569; font-size:13px; }
+.app-uploads .au-deleted { background:#f8fafc; }
+.app-uploads .au-deleted strong { color:#64748b; }
+.app-uploads .au-actions button { min-height:40px; }
+.app-uploads .au-confirm { flex-basis:100%; display:grid; gap:8px; padding:10px 12px; border-radius:10px; background:#fff4f2; border:1px solid #f3c9bf; }
+.app-uploads .au-confirm p { margin:0; font-size:14px; line-height:1.55; }
+.app-uploads .au-confirm label { display:grid; gap:4px; font-size:13px; }
+.app-uploads .au-confirm input { min-height:40px; min-width:0; }
+.app-uploads .au-buttons { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; }
+.app-uploads-open { margin:16px 0; } .app-uploads-open button { min-height:40px; }

@@ -77,7 +77,13 @@ export default {
       const scanEvaluateMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)\/evaluate$/);
       if (scanEvaluateMatch) return request.method === 'POST' ? evaluateBatch(env, user, scanEvaluateMatch[1]) : methodNotAllowed();
       const scanBatchMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)$/);
+      // Owner (3 Nov): wrong uploads can be deleted (restorable for 7 days) from the app's evaluation screen too.
+      if (scanBatchMatch && request.method === 'DELETE') { const { deleteAppUpload } = await import('./lib/app-batch-actions'); return deleteAppUpload(request, env, user, scanBatchMatch[1]); }
       if (scanBatchMatch) return request.method === 'GET' ? getScanBatch(env, user, scanBatchMatch[1]) : methodNotAllowed();
+      const scanRestoreMatch = url.pathname.match(/^\/api\/scan-batches\/([^/]+)\/restore$/);
+      if (scanRestoreMatch) { if (request.method !== 'POST') return methodNotAllowed(); const { restoreAppUpload } = await import('./lib/app-batch-actions'); return restoreAppUpload(env, user, scanRestoreMatch[1]); }
+      const examUploadsMatch = url.pathname.match(/^\/api\/exams\/([^/]+)\/uploads$/);
+      if (examUploadsMatch) { if (request.method !== 'GET') return methodNotAllowed(); const { listAppUploads } = await import('./lib/app-batch-actions'); return listAppUploads(env, user, examUploadsMatch[1], url); }
 
       if (url.pathname === '/api/students') return request.method === 'GET' ? listStudents(env, user, url) : methodNotAllowed();
       const activateGuestMatch = url.pathname.match(/^\/api\/students\/([^/]+)\/activate$/);

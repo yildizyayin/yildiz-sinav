@@ -188,3 +188,8 @@
 .own-exam-fix{display:grid;gap:10px;padding-top:10px;border-top:1px dashed #e2c48f}
 .own-exam-publish.is-open .own-exam-fix{border-top-color:#a7e3bf}
 .own-exam-fix p{margin:0;color:#334155}
+/* Owner (3 Nov): one school's uploads in one exam deleted together. */
+.ba-bulk-open{margin:0 0 12px}
+.ba-panel.ba-bulk{max-width:560px;margin:0 0 14px}
+.ba-bulk-sum{padding:8px 10px;border-radius:8px;background:#FFF4F2;color:#7A1F12!important}
+.ba-panel select{min-height:40px;min-width:0}

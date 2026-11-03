@@ -511,7 +511,7 @@ async function operatorHistory(request:Request,env:Env){
   if(mode!=='DEALER'&&user.role==='INSTITUTION_MANAGER'&&user.institution_id){where.push('b.institution_id=?');args.push(user.institution_id)}
   else{where.push(`EXISTS(SELECT 1 FROM national_institution_directory d WHERE d.meb_code=COALESCE(i.meb_code,i.code) AND ${DEALER_SCOPE_SQL})`);args.push(user.id)}
  }
- const rows=await all<any>(env.DB.prepare(`SELECT b.id,b.status,b.source_type,b.created_at,b.exam_id,b.institution_id,e.title,e.academic_year,i.name institution_name,i.code institution_code,i.city,i.district,u.display_name created_by_name,(SELECT count(*) FROM scan_records r WHERE r.batch_id=b.id) total,del.deleted_at,del.purge_after,del.reason deleted_reason FROM scan_batches b JOIN exams e ON e.id=b.exam_id JOIN institutions i ON i.id=b.institution_id LEFT JOIN users u ON u.id=b.created_by LEFT JOIN scan_batch_deletions del ON del.batch_id=b.id WHERE ${where.join(' AND ')} ORDER BY b.created_at DESC,b.rowid DESC LIMIT 100`).bind(...args));
+ const rows=await all<any>(env.DB.prepare(`SELECT b.id,b.status,b.source_type,b.created_at,b.exam_id,b.institution_id,e.title,e.academic_year,e.exam_type,e.grade_level,i.name institution_name,i.code institution_code,i.city,i.district,u.display_name created_by_name,(SELECT count(*) FROM scan_records r WHERE r.batch_id=b.id) total,del.deleted_at,del.purge_after,del.reason deleted_reason FROM scan_batches b JOIN exams e ON e.id=b.exam_id JOIN institutions i ON i.id=b.institution_id LEFT JOIN users u ON u.id=b.created_by LEFT JOIN scan_batch_deletions del ON del.batch_id=b.id WHERE ${where.join(' AND ')} ORDER BY b.created_at DESC,b.rowid DESC LIMIT 100`).bind(...args));
  return json({ok:true,batches:rows});
 }
 async function resultOperatorCatalog(request:Request,env:Env){
@@ -845,6 +845,55 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
  if(restore&&request.method==='POST'){const context=await batchOperatorContext(request,env,restore[1]);if(context instanceof Response)return context;
   const {restoreBatch}=await import('./lib/batch-lifecycle');const r=await restoreBatch(env,restore[1],context.user.id);
   return r.ok?json({ok:true,next:'Yükleme geri geldi. Sonuçlar için yeniden "Değerlendir"e basın.'}):safeError(409,'RESTORE_NOT_AVAILABLE','Bu yükleme geri alınamaz; 7 günlük süre dolmuş olabilir.')}
+ // Wrong uploads (owner, 3 Nov): move an upload to the right exam of the same school.
+ const moveExam=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/move-exam$/);
+ if(moveExam&&request.method==='POST'){const context=await batchOperatorContext(request,env,moveExam[1]);if(context instanceof Response)return context;
+  const body:any=await request.json().catch(()=>({}));const targetExamId=String(body.examId||'').trim(),reason=String(body.reason||'').trim();
+  if(!targetExamId)return badRequest('Doğru sınavı seçin.','MOVE_TARGET_REQUIRED');
+  if(reason.length<5)return badRequest('Taşıma nedenini kısaca yazın (en az 5 harf).','MOVE_REASON_REQUIRED');
+  if(targetExamId===context.batch.exam_id)return badRequest('Yükleme zaten bu sınavda.','MOVE_SAME_EXAM');
+  if(await one(env.DB.prepare('SELECT 1 x FROM scan_batch_deletions WHERE batch_id=?').bind(moveExam[1])))return safeError(409,'BATCH_DELETED','Bu yükleme silinmiş. Önce "Geri al" ile geri getirin.');
+  // the person must be able to upload to the target exam for this school
+  const targetContext=await resultOperatorContext(request,env,context.batch.institution_id,targetExamId);if(targetContext instanceof Response)return targetContext;
+  const [source,target]=await Promise.all([one<any>(env.DB.prepare('SELECT id,exam_type,academic_year,grade_level,title FROM exams WHERE id=?').bind(context.batch.exam_id)),one<any>(env.DB.prepare(`SELECT e.id,e.exam_type,e.academic_year,e.grade_level,e.title FROM exams e JOIN exam_channel_publications ecp ON ecp.exam_id=e.id AND ecp.channel='RESULT_NETWORK' AND ecp.status='ACTIVE' WHERE e.id=? AND e.status IN ('ACTIVE','CLOSED') AND NOT EXISTS(SELECT 1 FROM exam_revision_state r WHERE r.exam_id=e.id AND r.app_trashed_at IS NOT NULL)`).bind(targetExamId))]);
+  if(!target)return safeError(404,'EXAM_NOT_FOUND','Seçilen sınav Sonuç Ağı\'nda kullanılamıyor.');
+  // the sheets were read for this exam's kind of form: only an exam of the same type and year can take them
+  if(source.exam_type!==target.exam_type||source.academic_year!==target.academic_year)return badRequest(`Yükleme yalnız aynı türde ve aynı eğitim yılındaki bir sınava taşınabilir (${source.exam_type} · ${source.academic_year}).`,'MOVE_EXAM_MISMATCH');
+  const {clearBatchResults}=await import('./lib/batch-lifecycle');
+  const wasEvaluated=context.batch.status==='COMMITTED';
+  const moved=await withExamOperationLock(env,context.batch.exam_id,'RESULT_BATCH_MOVE_EXAM',async(env)=>{
+   const cleared=await clearBatchResults(env,moveExam[1]);
+   await env.DB.batch([
+    env.DB.prepare(`UPDATE scan_batches SET exam_id=?,status=CASE WHEN status='COMMITTED' THEN 'READY' ELSE status END WHERE id=?`).bind(target.id,moveExam[1]),
+    env.DB.prepare(`DELETE FROM result_deferred_evaluations WHERE batch_id=?`).bind(moveExam[1]),
+    env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,'SCAN_BATCH_MOVED_EXAM','scan_batch',?,?)`).bind(uuid('aud'),context.user.id,context.batch.institution_id,moveExam[1],JSON.stringify({from:source.id,to:target.id,reason,participantsRemoved:cleared.removed,wasEvaluated})),
+   ]);
+   return json({ok:true,removed:cleared.removed,exam:{id:target.id,title:target.title}});
+  });
+  if(!moved.ok)return moved;const out:any=await moved.json();
+  const ranks=wasEvaluated?await republishAfterRemoval(env,source.id,context.user.id):'NOT_NEEDED';
+  return json({...out,ranks,next:'Yükleme doğru sınava taşındı. Sonuçlar için "Değerlendir"e basın.'})}
+ // Wrong uploads (owner, 3 Nov): every upload of one school in one exam, listed and deleted together (restorable 7 days).
+ if(path==='/api/admin/result-network/operations/institution-exam-uploads'&&['GET','DELETE'].includes(request.method)){
+  const url=new URL(request.url);const body:any=request.method==='DELETE'?await request.json().catch(()=>({})):{};
+  const institutionId=String(body.institutionId||url.searchParams.get('institutionId')||''),examId=String(body.examId||url.searchParams.get('examId')||'');
+  if(!institutionId||!examId)return badRequest('Kurum ve sınav seçin.','SCOPE_REQUIRED');
+  const context=await resultOperatorContext(request,env,institutionId,examId);if(context instanceof Response)return context;
+  const batches=await all<any>(env.DB.prepare(`SELECT b.id,b.status,(SELECT count(*) FROM scan_records r WHERE r.batch_id=b.id) total FROM scan_batches b WHERE b.institution_id=? AND b.exam_id=? AND NOT EXISTS(SELECT 1 FROM scan_batch_deletions d WHERE d.batch_id=b.id) ORDER BY b.created_at`).bind(institutionId,examId));
+  const students=Number((await one<any>(env.DB.prepare(`SELECT count(*) c FROM exam_participants WHERE institution_id=? AND exam_id=?`).bind(institutionId,examId)))?.c||0);
+  if(request.method==='GET')return json({ok:true,uploads:batches.length,evaluated:batches.filter(b=>b.status==='COMMITTED').length,rows:batches.reduce((n,b)=>n+Number(b.total||0),0),students});
+  const reason=String(body.reason||'').trim(),confirm=String(body.confirm||'').trim();
+  if(reason.length<5)return badRequest('Neden siliyorsunuz? Kısaca yazın (en az 5 harf).','DELETE_REASON_REQUIRED');
+  if(confirm!=='SİL'&&confirm!=='SIL')return badRequest('Onay için SİL yazın.','DELETE_CONFIRM_REQUIRED');
+  if(!batches.length)return badRequest('Bu kurumun bu sınavda silinecek yüklemesi yok.','NOTHING_TO_DELETE');
+  const {deleteBatch}=await import('./lib/batch-lifecycle');
+  const done=await withExamOperationLock(env,examId,'RESULT_BATCH_BULK_DELETE',async(env)=>{let removed=0,deleted=0,evaluated=false;
+   for(const b of batches){const r=await deleteBatch(env,b.id,context.user.id,reason);if(r.ok){deleted++;removed+=r.removed;evaluated=evaluated||r.wasEvaluated}}
+   await env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,'SCAN_BATCHES_BULK_DELETED','exam',?,?)`).bind(uuid('aud'),context.user.id,institutionId,examId,JSON.stringify({reason,deleted,removed,batchIds:batches.map(b=>b.id)})).run();
+   return json({ok:true,deleted,removed,evaluated})});
+  if(!done.ok)return done;const out:any=await done.json();
+  const ranks=out.evaluated?await republishAfterRemoval(env,examId,context.user.id):'NOT_NEEDED';
+  return json({...out,ranks,restorableUntilDays:7})}
  const move=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/move$/);
  if(move&&request.method==='POST'){const context=await batchOperatorContext(request,env,move[1]);if(context instanceof Response)return context;
   if(context.user.role!=='SUPER_ADMIN'&&!context.dealerId)return forbidden('Yüklemeyi başka okula yalnız bayi veya Süper Admin taşıyabilir. Kurum yüklemesini silip doğru okula yeniden yükleyebilir.');
