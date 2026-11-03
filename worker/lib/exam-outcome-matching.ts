@@ -9,7 +9,7 @@ export function examOutcomeScope(exam:any):OutcomeScope {
  * S028: TYT and AYT questions are matched against the MEB high-school programme.
  * TYT uses grades 9–10, AYT grades 11–12 (owner decision 26 Oct). Exam subjects map to the catalogue subjects below.
  */
-const UNIVERSITY_FAMILIES:Record<string,string[]>={
+export const UNIVERSITY_FAMILIES:Record<string,string[]>={
  sub_tyt_tur:['sub_edb'],sub_tur:['sub_edb'],sub_ayt_tde:['sub_edb'],sub_edb:['sub_edb'],
  sub_tyt_mat:['sub_mat'],sub_ayt_mat:['sub_mat'],sub_mat:['sub_mat'],
  sub_tyt_fen:['sub_fiz','sub_kim','sub_biy'],sub_fen:['sub_fiz','sub_kim','sub_biy'],
@@ -18,11 +18,13 @@ const UNIVERSITY_FAMILIES:Record<string,string[]>={
  sub_ayt_tar1:['sub_tar'],sub_ayt_tar2:['sub_tar'],sub_tar:['sub_tar'],sub_ayt_cog1:['sub_cog'],sub_ayt_cog2:['sub_cog'],sub_cog:['sub_cog'],
  sub_tyt_fel:['sub_fel'],sub_ayt_fel:['sub_fel'],sub_fel:['sub_fel'],sub_ayt_din:['sub_din'],sub_din:['sub_din'],
 };
+/** Middle-school exam subjects whose catalogue subject has another code (owner, 3 Nov: a 7th-grade YAB test is English). */
+export const SCHOOL_ALIASES:Record<string,string[]>={sub_yab:['sub_ing'],sub_ing:['sub_ing'],sub_ink:['sub_ink'],sub_sos:['sub_sos']};
 export function catalogSubjectsFor(scope:OutcomeScope,examSubjectId:string):string[]{
- return scope.programCode==='SCHOOL'?[examSubjectId]:(UNIVERSITY_FAMILIES[examSubjectId]||[examSubjectId]);
+ return scope.programCode==='SCHOOL'?(SCHOOL_ALIASES[examSubjectId]||[examSubjectId]):(UNIVERSITY_FAMILIES[examSubjectId]||[examSubjectId]);
 }
 export function examSubjectsForOutcome(scope:OutcomeScope,outcomeSubjectId:string):string[]{
- if(scope.programCode==='SCHOOL')return [outcomeSubjectId];
+ if(scope.programCode==='SCHOOL')return [...new Set([outcomeSubjectId,...Object.entries(SCHOOL_ALIASES).filter(([,family])=>family.includes(outcomeSubjectId)).map(([id])=>id)])];
  return Object.entries(UNIVERSITY_FAMILIES).filter(([,family])=>family.includes(outcomeSubjectId)).map(([id])=>id);
 }
 /** The publisher label as stored in publisher_outcome_labels.label_path_json. */
@@ -78,12 +80,17 @@ export function matchScopedOutcome(reference:any,subjectId:string,catalog:any[],
  if(exact.length>1)return {reason:'AMBIGUOUS',suggestions:exact};
  // S028: publisher keys name topics ("Aralık Kavramı ve Basit Eşitsizlikler"), not MEB sentences. Suggest by shared word stems; a person approves.
  const suggestions=suggestOutcomes(`${reference.publisherTitle||reference.title||''} ${reference.topic||''} ${reference.subtopic||''}`,rows);
+ // Owner (3 Nov): the clearly best candidate is linked automatically and marked for a later look; a close call still waits.
+ const [top,second]=suggestions;
+ if(top&&top.similarity>=AUTO_MIN&&(!second||top.similarity-second.similarity>=AUTO_MARGIN))return {reason:'AUTO',outcomeId:top.id,similarity:top.similarity,suggestions};
  return {reason:suggestions.length?'AMBIGUOUS':'MISSING',suggestions};
 }
 
+/** Automatic link: at least half of the label's word stems in the outcome, and a clear lead over the next candidate. */
+export const AUTO_MIN=0.5, AUTO_MARGIN=0.2;
 const STOP=new Set(['ve','ile','bir','bu','icin','olan','ilgili','uzerine','gore','daha','kadar','gibi','karma','soru','sorular','test','konu','genel','tekrar','yapabilme','edebilme','eder','yapar','belirler','aciklar','cozer','kullanir','tema']);
 const stems=(text:string)=>new Set(normalizeName(text).split(/\s+/).filter(w=>w.length>2&&!STOP.has(w)).map(w=>w.slice(0,5)));
-/** Ranked suggestions by shared word stems (first five letters, Turkish suffixes vary). Never applied without a person. */
+/** Ranked suggestions by shared word stems (first five letters, Turkish suffixes vary). Owner (3 Nov): a clear best one is applied (AUTO). */
 export function suggestOutcomes(referenceText:string,rows:any[],limit=3):any[]{
  const ref=stems(referenceText);if(!ref.size)return [];
  return rows.map(o=>{const cand=stems(`${o.title||''} ${o.topic||''} ${o.subtopic||''}`);let hit=0;for(const w of ref)if(cand.has(w))hit++;return {...o,similarity:Math.round(hit/ref.size*100)/100}})

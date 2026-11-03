@@ -1,19 +1,30 @@
 import type {Env} from '../types';
+import {SCHOOL_ALIASES,UNIVERSITY_FAMILIES} from './exam-outcome-matching';
+
+/** Exam subject → catalogue subject pairs the mapping screen allows (a TYT Fen question maps to a Fizik outcome). */
+const FAMILY_PAIRS=[...Object.entries(UNIVERSITY_FAMILIES),...Object.entries(SCHOOL_ALIASES)].flatMap(([exam,list])=>list.map((o)=>`('${exam}','${o}')`)).join(',');
+const SUBJECT_FITS=(q:string,o:string)=>`(${o}.subject_id=${q}.subject_id OR EXISTS(SELECT 1 FROM (SELECT column1 es,column2 os FROM (VALUES ${FAMILY_PAIRS})) f WHERE f.es=${q}.subject_id AND f.os=${o}.subject_id))`;
 
 // A029: guests are participants too: evaluation gives them outcome evidence, so re-analysis must as well
 // (it used to delete theirs and rebuild only ACTIVE participants).
 // Only one verified curriculum/program context is allowed per question. Keep
 // the student's originally recorded answer status; never recompute score/net.
-const evidenceCTE=`WITH valid AS (
+// The scope is the one the mapping screen uses (exam-outcome-matching, owner decision 26 Oct): the verified MEB school
+// programme, TYT grades 9–10, AYT 11–12, other exams their own grade; the catalogue year is the exam's or the nearest
+// verified one (2026-27 exams use the 2027-28 TYMM catalogue). Mappings are only ever made from that catalogue.
+const evidenceCTE=`WITH scope AS MATERIALIZED (SELECT (SELECT substr(min(printf('%04d%04d',abs(CAST(substr(cv2.academic_year,1,4) AS INTEGER)-CAST(substr(e.academic_year,1,4) AS INTEGER)),9999-CAST(substr(cv2.academic_year,1,4) AS INTEGER))||cv2.academic_year),9)
+  FROM curriculum_versions cv2 JOIN outcomes o2 ON o2.curriculum_version_id=cv2.id
+  WHERE cv2.verified=1 AND cv2.program_code='SCHOOL' AND o2.active=1 AND o2.official=1 AND CASE e.exam_type WHEN 'TYT' THEN COALESCE(o2.grade_level,cv2.grade_level) IN (9,10) WHEN 'AYT' THEN COALESCE(o2.grade_level,cv2.grade_level) IN (11,12) ELSE COALESCE(o2.grade_level,cv2.grade_level)=e.grade_level END) wanted FROM exams e WHERE e.id=?1),
+valid AS (
  SELECT sa.participant_id,sa.exam_question_id,sa.status,o.id outcome_id,o.code,o.title,o.topic,o.subtopic,o.subject_id,s.name subject_name,
  cv.id curriculum_id,cv.academic_year,COALESCE(o.grade_level,cv.grade_level) grade_level,cv.program_version
  FROM student_answers sa JOIN exam_participants ep ON ep.id=sa.participant_id
  JOIN exams e ON e.id=ep.exam_id JOIN exam_questions q ON q.id=sa.exam_question_id AND q.exam_id=e.id
- JOIN question_outcomes qo ON qo.exam_question_id=q.id JOIN outcomes o ON o.id=qo.outcome_id AND o.subject_id=q.subject_id
+ JOIN question_outcomes qo ON qo.exam_question_id=q.id JOIN outcomes o ON o.id=qo.outcome_id AND ${SUBJECT_FITS('q','o')}
  JOIN subjects s ON s.id=o.subject_id JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id
- WHERE e.id=? AND ep.participant_status IN ('ACTIVE','GUEST') AND o.active=1 AND o.official=1 AND cv.verified=1 AND cv.academic_year=e.academic_year
- AND COALESCE(o.grade_level,cv.grade_level)=e.grade_level
- AND cv.program_code=CASE WHEN e.exam_type IN ('TYT','AYT') THEN e.exam_type ELSE 'SCHOOL' END
+ WHERE e.id=?1 AND ep.participant_status IN ('ACTIVE','GUEST') AND o.active=1 AND o.official=1 AND cv.verified=1 AND cv.program_code='SCHOOL'
+ AND CASE e.exam_type WHEN 'TYT' THEN COALESCE(o.grade_level,cv.grade_level) IN (9,10) WHEN 'AYT' THEN COALESCE(o.grade_level,cv.grade_level) IN (11,12) ELSE COALESCE(o.grade_level,cv.grade_level)=e.grade_level END
+ AND cv.academic_year=(SELECT wanted FROM scope)
  AND (SELECT COUNT(DISTINCT o2.curriculum_version_id) FROM question_outcomes qo2 JOIN outcomes o2 ON o2.id=qo2.outcome_id WHERE qo2.exam_question_id=q.id)=1
 )`;
 export const INSERT_ANALYSIS_REVISION_SQL=`INSERT INTO exam_outcome_analysis_revisions(exam_id,revision,actor_id,published_app_at) SELECT ?,COALESCE(MAX(revision),0)+1,?,CURRENT_TIMESTAMP FROM exam_outcome_analysis_revisions WHERE exam_id=?`;

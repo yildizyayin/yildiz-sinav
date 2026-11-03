@@ -42,12 +42,13 @@ describe('S028 outcome matching', () => {
     const { t, tytExam } = await setup();
     const first = await tytExam('TYT 1');
     const mapped = (id: string) => t.db.prepare(`SELECT q.question_no n,qo.outcome_id o FROM question_outcomes qo JOIN exam_questions q ON q.id=qo.exam_question_id WHERE q.exam_id=? ORDER BY 1`).all(id);
-    expect(mapped(first.id)).toEqual([{ n: 2, o: 'o_mat9b' }]); // MEB code in the key
+    // MEB code in the key; owner (3 Nov): the clearly best wording match (Asit/Baz) is linked automatically too
+    expect(mapped(first.id)).toEqual([{ n: 2, o: 'o_mat9b' }, { n: 3, o: 'o_kim9' }]);
     const preview = await t.request(`${first.base}/outcome-match-preview`, 'POST', { entries: [
       { subjectId: 'sub_tyt_mat', questionNo: 1, reference: { publisherTitle: 'Aralık Kavramı ve Basit Eşitsizlikler', officialCode: '21.4.5' } },
       { subjectId: 'sub_tyt_fen', questionNo: 3, reference: { publisherTitle: 'Asitlerin ve Bazların Tepkimeleri', officialCode: '10.3.2' } }] });
     expect(preview.response.status, preview.text).toBe(200);
-    expect(preview.data.matches.map((m: any) => [m.reason, m.suggestions[0]?.id])).toEqual([['AMBIGUOUS', 'o_mat9a'], ['AMBIGUOUS', 'o_kim9']]);
+    expect(preview.data.matches.map((m: any) => [m.reason, m.suggestions[0]?.id])).toEqual([['AMBIGUOUS', 'o_mat9a'], ['AUTO', 'o_kim9']]);
     // the person approves both suggestions
     const editor = await t.request(`${first.base}/outcome-mappings`);
     expect(editor.data.questions.find((q: any) => q.subject_id === 'sub_tyt_fen').catalog_subject_ids).toEqual(['sub_fiz', 'sub_kim', 'sub_biy']);

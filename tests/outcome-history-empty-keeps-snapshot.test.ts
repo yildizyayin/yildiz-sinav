@@ -13,8 +13,8 @@ function fixture(){
  db.exec(`INSERT INTO institutions(id,name,code,status) VALUES('ki','Test Kurum','KT','ACTIVE');
  INSERT INTO student_entities(id,first_name,last_name,normalized_name,status) VALUES('ks','Deneme','Ogrenci','denemeogrenci','ACTIVE');
  INSERT INTO exams(id,owner_type,academic_year,title,exam_type,grade_level,status,sponsor_mode) VALUES('ke','CENTRAL','2026-2027','Deneme TYT','TYT',12,'ACTIVE','ADMIN_SPONSORED');
- INSERT INTO curriculum_versions(id,academic_year,grade_level,program_version,program_code,verified) VALUES('kcv','2027-2028',9,'V1','SCHOOL',1),('tcv','2026-2027',12,'T1','TYT',1);
- INSERT INTO outcomes(id,curriculum_version_id,subject_id,grade_level,code,title,official,active) VALUES('ko','kcv','sub_mat',9,'M.9.1','Okul kazanımı',1,1),('to','tcv','sub_mat',12,'T.1','TYT kazanımı',1,1);
+ INSERT INTO curriculum_versions(id,academic_year,grade_level,program_version,program_code,verified) VALUES('kcv','2027-2028',9,'V1','SCHOOL',1),('tcv','2026-2027',12,'T1','TYT',1),('mcv','2027-2028',7,'V1','SCHOOL',1);
+ INSERT INTO outcomes(id,curriculum_version_id,subject_id,grade_level,code,title,official,active) VALUES('ko','kcv','sub_mat',9,'M.9.1','Okul kazanımı',1,1),('to','tcv','sub_mat',12,'T.1','TYT kazanımı',1,1),('mo','mcv','sub_mat',7,'M.7.1','Ortaokul kazanımı',1,1);
  INSERT INTO exam_questions(id,exam_id,subject_id,question_no) VALUES('kq','ke','sub_mat',1);
  INSERT INTO exam_participants(id,exam_id,institution_id,student_id,name_snapshot,participant_status,booklet_code) VALUES('kp','ke','ki','ks','Deneme Ogrenci','ACTIVE','A');
  INSERT INTO exam_results(id,participant_id,correct_count,net,score,institution_rank) VALUES('kr','kp',1,1,NULL,1);
@@ -29,17 +29,18 @@ function fixture(){
 describe('an empty outcome re-analysis does not erase published outcomes',()=>{
  it('keeps the snapshot outcomes on the app and the result network',async()=>{
   const f=fixture();try{
-   await refreshExamOutcomeAnalysis(f.env,'ke','admin',[f.env.DB.prepare("INSERT INTO question_outcomes VALUES('kq','ko')")]);f.publish();
-   // the gate still refuses the grade-9 school curriculum for a grade-12 TYT exam: the revision is empty
+   await refreshExamOutcomeAnalysis(f.env,'ke','admin',[f.env.DB.prepare("INSERT INTO question_outcomes VALUES('kq','mo')")]);f.publish();
+   // a grade-7 outcome is outside a TYT exam's scope (grades 9–10): the revision is empty
    expect(JSON.parse((f.db.prepare('SELECT payload_json p FROM exam_outcome_analysis_history').get() as any).p).outcomes).toEqual([]);
    expect(f.read().outcomes).toEqual(f.published);expect(f.read('RESULT').outcomes).toEqual(f.published);
   }finally{f.db.close()}});
  it('a later revision with outcomes still replaces them',async()=>{
   const f=fixture();try{
-   await refreshExamOutcomeAnalysis(f.env,'ke','admin',[f.env.DB.prepare("INSERT INTO question_outcomes VALUES('kq','to')")]);f.publish();
-   expect(f.read().outcomes.map((o:any)=>o.outcome_id)).toEqual(['to']);
+   // owner decision 26 Oct (applied to reports 3 Nov): a TYT exam uses the grade 9–10 school programme of the nearest verified year
+   await refreshExamOutcomeAnalysis(f.env,'ke','admin',[f.env.DB.prepare("INSERT INTO question_outcomes VALUES('kq','ko')")]);f.publish();
+   expect(f.read().outcomes.map((o:any)=>o.outcome_id)).toEqual(['ko']);
    // a newer empty revision falls back to the newest one with outcomes, not to nothing
-   await refreshExamOutcomeAnalysis(f.env,'ke','admin',[f.env.DB.prepare("DELETE FROM question_outcomes"),f.env.DB.prepare("INSERT INTO question_outcomes VALUES('kq','ko')")]);f.publish();
-   expect(f.read('RESULT').outcomes.map((o:any)=>o.outcome_id)).toEqual(['to']);
+   await refreshExamOutcomeAnalysis(f.env,'ke','admin',[f.env.DB.prepare("DELETE FROM question_outcomes"),f.env.DB.prepare("INSERT INTO question_outcomes VALUES('kq','to')")]);f.publish();
+   expect(f.read('RESULT').outcomes.map((o:any)=>o.outcome_id)).toEqual(['ko']);
   }finally{f.db.close()}});
 });
