@@ -106,13 +106,13 @@ export function OwnExamForm({ mode, onCreated, onCancel }: { mode: 'INSTITUTION'
 /**
  * D-S041: for its own exam the owner sees how many students are evaluated, opens the results to them, corrects the key
  * (results are taken back, every upload is evaluated again here, and results that were open are opened again) and
- * removes the exam (30-day trash, as "Kaldır" in the app).
+ * deletes the exam for good (owner, 3 Nov: no trash; its title is typed to confirm).
  */
 export function OwnExamPublishBar({ examId, refreshKey = 0, onRemoved, onChanged }: { examId: string; refreshKey?: number; onRemoved?: () => void; onChanged?: () => void }) {
   const [state, setState] = useState<any>(null);
   const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [problems, setProblems] = useState<string[]>([]); const [notice, setNotice] = useState('');
   const [panel, setPanel] = useState<'' | 'OPEN' | 'FIX' | 'REMOVE'>('');
-  const [keys, setKeys] = useState<Keys>({}); const [reason, setReason] = useState(''); const [progress, setProgress] = useState('');
+  const [keys, setKeys] = useState<Keys>({}); const [reason, setReason] = useState(''); const [confirmTitle, setConfirmTitle] = useState(''); const [progress, setProgress] = useState('');
   const base = `/api/admin/result-network/operations/own-exams/${encodeURIComponent(examId)}`;
   const load = () => api<any>(base).then((r) => { setState(r); return r; }).catch(() => { setState(null); return null; });
   useEffect(() => { setPanel(''); setError(''); setNotice(''); void load(); }, [examId, refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -137,7 +137,7 @@ export function OwnExamPublishBar({ examId, refreshKey = 0, onRemoved, onChanged
     setPanel(''); await load(); onChanged?.();
     setNotice(`Cevap anahtarı düzeltildi${ids.length ? ` ve ${ids.length} yükleme yeni anahtarla yeniden değerlendirildi` : ''}.${r.wasPublished ? ' Sonuçlar öğrencilere yeniden açıldı.' : ''}${deferredNote ? ` ${deferredNote}` : ''}`);
   });
-  const remove = () => run(async () => { await api(`${base}/remove`, { method: 'POST', body: JSON.stringify({ reason }) }); onRemoved?.(); });
+  const remove = () => run(async () => { await api(`${base}/remove`, { method: 'POST', body: JSON.stringify({ reason, confirmTitle }) }); onRemoved?.(); });
   const complete = keysComplete(state.sections || [], state.booklets || [], keys);
 
   return <div className={`own-exam-publish ${published ? 'is-open' : ''}`}>
@@ -147,7 +147,7 @@ export function OwnExamPublishBar({ examId, refreshKey = 0, onRemoved, onChanged
       {!panel && <div className="own-exam-publish-actions">
         {!published && <button type="button" className="primary" disabled={!state.participants} onClick={() => setPanel('OPEN')}>Sonuçları öğrencilere aç</button>}
         <button type="button" className="secondary" onClick={startFix}>Cevap anahtarını düzelt</button>
-        <button type="button" className="ghost" onClick={() => { setReason(''); setPanel('REMOVE'); }}>Sınavı kaldır</button>
+        <button type="button" className="ghost" onClick={() => { setReason(''); setConfirmTitle(''); setPanel('REMOVE'); }}>Sınavı sil</button>
       </div>}
     </div>
     {notice && <div className="alert success" role="status">{notice}</div>}
@@ -161,9 +161,10 @@ export function OwnExamPublishBar({ examId, refreshKey = 0, onRemoved, onChanged
       <div className="own-exam-publish-confirm"><button type="button" className="primary" disabled={busy || !complete || (!!state.participants && reason.trim().length < 5)} onClick={() => void saveFix()}>{busy ? 'Kaydediliyor…' : 'Düzeltmeyi kaydet'}</button><button type="button" className="ghost" disabled={busy} onClick={() => setPanel('')}>Vazgeç</button></div>
     </div>}
     {panel === 'REMOVE' && <div className="own-exam-fix">
-      <p><b>{state.exam?.title}</b> her yerden kaldırılacak: yükleme listesinden ve öğrenci ekranından hemen çıkar. 30 gün çöp kutusunda kalır, sonra kalıcı silinir.</p>
-      {!!state.participants && <label>Neden kaldırıyorsunuz?<input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Örn. Yanlış sınav eklendi" /></label>}
-      <div className="own-exam-publish-confirm"><button type="button" className="danger" disabled={busy || (!!state.participants && reason.trim().length < 5)} onClick={() => void remove()}>{busy ? 'Kaldırılıyor…' : 'Evet, kaldır'}</button><button type="button" className="ghost" onClick={() => setPanel('')}>Vazgeç</button></div>
+      <p><b>{state.exam?.title}</b> kalıcı olarak silinecek: sınav, yüklenen dosyalar ve {state.participants ? `${state.participants} öğrencinin sonucu` : 'sonuçlar'} hemen gider ve geri getirilemez.</p>
+      <label>Onay için sınavın adını yazın<input value={confirmTitle} onChange={(e) => setConfirmTitle(e.target.value)} placeholder={state.exam?.title || ''} autoComplete="off" /></label>
+      {!!state.participants && <label>Neden siliyorsunuz?<input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Örn. Yanlış sınav eklendi" /></label>}
+      <div className="own-exam-publish-confirm"><button type="button" className="danger" disabled={busy || confirmTitle.trim().toLocaleLowerCase('tr-TR') !== String(state.exam?.title || '').trim().toLocaleLowerCase('tr-TR') || (!!state.participants && reason.trim().length < 5)} onClick={() => void remove()}>{busy ? 'Siliniyor…' : 'Kalıcı sil'}</button><button type="button" className="ghost" onClick={() => setPanel('')}>Vazgeç</button></div>
     </div>}
   </div>;
 }

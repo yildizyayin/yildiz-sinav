@@ -131,14 +131,16 @@ describe('S042 own exams on sonuc', () => {
     expect(nets()).not.toBe(before);
     expect((await call('mgrP', `/api/admin/result-network/operations/own-exams/${id}`)).data.keys.A.MAT).toBe(fixed.MAT);
     expect((await call('mgrP', `/api/admin/result-network/operations/own-exams/${id}/publish`, { method: 'POST' })).status).toBe(200);
-    // remove: reason required when students have results; then gone from the catalog and from students
+    // delete (owner, 3 Nov: for good, no trash): the title typed and a reason when students have results
     const rm = `/api/admin/result-network/operations/own-exams/${id}/remove`;
-    expect((await call('mgrK', rm, { method: 'POST', body: { reason: 'Yanlış sınav' } })).status).toBe(403);
-    expect((await call('mgrP', rm, { method: 'POST', body: {} })).status).toBe(400);
-    const gone = await call('mgrP', rm, { method: 'POST', body: { reason: 'Yanlış sınav eklendi' } });
+    const title = (t.db.prepare(`SELECT title FROM exams WHERE id=?`).get(id) as any).title;
+    expect((await call('mgrK', rm, { method: 'POST', body: { reason: 'Yanlış sınav', confirmTitle: title } })).status).toBe(403);
+    expect((await call('mgrP', rm, { method: 'POST', body: { confirmTitle: title } })).status).toBe(400);
+    expect((await call('mgrP', rm, { method: 'POST', body: { reason: 'Yanlış sınav eklendi' } })).status).toBe(400);
+    const gone = await call('mgrP', rm, { method: 'POST', body: { reason: 'Yanlış sınav eklendi', confirmTitle: title } });
     expect(gone.status, gone.text).toBe(200);
     expect(await catalogIds('mgrP')).not.toContain(id);
-    expect((t.db.prepare(`SELECT status FROM exam_channel_publications WHERE exam_id=? AND channel='RESULT_NETWORK'`).get(id) as any).status).toBe('ARCHIVED');
+    expect((t.db.prepare(`SELECT count(*) n FROM exams WHERE id=?`).get(id) as any).n).toBe(0);
   });
 
   it('only a school manager or an approved dealer adds an own exam', async () => {

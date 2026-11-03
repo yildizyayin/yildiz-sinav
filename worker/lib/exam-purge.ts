@@ -10,7 +10,8 @@ import { clearBatchResults } from './batch-lifecycle';
  * Results that came from uploads are removed with the uploads. An exam that has results from somewhere else (online
  * answers, an app-only flow, admissions, Nibiru) is not deleted by this; the reason is told instead.
  */
-export const TRASH_DAYS = 30;
+/** Owner (3 Nov): "Sil" deletes at once; nothing waits in a trash. Exams still in the old trash are deleted by the schedule. */
+export const TRASH_DAYS = 0;
 const BLOCKERS: Array<[string, string]> = [
   ['admissions_campaigns', 'kabul kampanyası'], ['nibiru_sessions', 'Nibiru oturumu'], ['personal_book_profiles', 'kişisel kitap profili'],
   ['recovery_plans', 'telafi planı'], ['target_analysis_snapshots', 'hedef analizi'], ['zero_error_booklets', 'sıfır hata kitapçığı'],
@@ -57,15 +58,19 @@ async function purge(env: Env, examId: string, actorId: string | null, reason: s
   return { ok: true, title: exam.title, uploads: batches.length, students };
 }
 
-/** "Kalıcı sil": trashed exams (or drafts that never had a result) only, after typing the exam's title. */
+/**
+ * Owner (3 Nov): "Sil" deletes the exam for good at once — no trash. An exam with uploads or results asks for its title
+ * typed exactly (and a reason when students have results); a draft with nothing in it goes with one confirmation.
+ */
 export async function permanentlyDeleteExam(request: Request, env: Env, user: AuthUser, examId: string) {
   const exam = await one<any>(env.DB.prepare(`SELECT e.id,e.title,e.status,e.owner_type,e.institution_id,r.app_trashed_at,(SELECT count(*) FROM scan_batches b WHERE b.exam_id=e.id)+(SELECT count(*) FROM exam_participants ep WHERE ep.exam_id=e.id) used FROM exams e LEFT JOIN exam_revision_state r ON r.exam_id=e.id WHERE e.id=?`).bind(examId));
   if (!exam) return notFound();
   if (user.role !== 'SUPER_ADMIN' && !(user.role === 'INSTITUTION_MANAGER' && exam.owner_type === 'INSTITUTION' && exam.institution_id === user.institution_id)) return forbidden();
   const draftUnused = exam.status === 'DRAFT' && !Number(exam.used);
-  if (!exam.app_trashed_at && !draftUnused) return badRequest('Kalıcı silmeden önce sınavı "Kaldır" ile çöp kutusuna taşıyın.', 'NOT_IN_TRASH');
   const body: any = await request.json().catch(() => ({}));
   if (!draftUnused && norm(body.confirmTitle) !== norm(exam.title)) return badRequest('Onay için sınavın adını aynen yazın.', 'CONFIRM_TITLE_MISMATCH');
+  const students = await one<any>(env.DB.prepare('SELECT count(*) c FROM exam_participants WHERE exam_id=?').bind(examId));
+  if (Number(students?.c || 0) && String(body.reason || '').trim().length < 5) return badRequest(`Bu sınavda ${students.c} öğrencinin sonucu var. Silmek için kısa bir neden yazın.`, 'DELETE_REASON_REQUIRED');
   // No operation lock row here: it references the exam and would block its deletion. A running operation stops it instead.
   if (await one(env.DB.prepare('SELECT 1 x FROM exam_operation_locks WHERE exam_id=?').bind(examId))) return json({ ok: false, error: { code: 'EXAM_OPERATION_BUSY', message: 'Bu sınavda başka bir işlem sürüyor. Bittikten sonra tekrar deneyin.' } }, 409);
   const out = await purge(env, examId, user.id, String(body.reason || 'Kullanıcı kalıcı sildi'));

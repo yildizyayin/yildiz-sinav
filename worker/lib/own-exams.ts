@@ -269,13 +269,12 @@ export async function correctOwnExamKey(request: Request, env: Env, user: AuthUs
   return json({ ok: true, reevaluateBatchIds: wasPublished || participants ? batches : [], wasPublished });
 }
 
-/** POST …/own-exams/:id/remove { reason } — the owner removes its own exam everywhere (30-day trash, as "Kaldır" in the app). */
+/** POST …/own-exams/:id/remove { confirmTitle, reason } — the owner deletes its own exam for good (owner, 3 Nov: no trash). */
 export async function removeOwnExam(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   if (!(await isOwner(env, user, examId))) return fail(403, 'FORBIDDEN', 'Bu sınavın sahibi değilsiniz.');
   const body: any = await request.json().catch(() => ({}));
-  const { trashExam } = await import('./exam-channels');
-  const res = await trashExam(env, await actorFor(env, user, examId), examId, 'ALL', String(body.reason || '').trim());
-  return res;
+  const { permanentlyDeleteExam } = await import('./exam-purge');
+  return permanentlyDeleteExam(new Request('https://internal.invalid/', { method: 'POST', body: JSON.stringify(body) }), env, await actorFor(env, user, examId), examId);
 }
 
 /**

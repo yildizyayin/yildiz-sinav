@@ -831,7 +831,7 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
  if(resolve&&request.method==='POST'){const context=await batchOperatorContext(request,env,resolve[1]);if(context instanceof Response)return context;return resolveScanRecord(request,env,context.effective,resolve[1],resolve[2])}
  const candidates=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/records\/([^/]+)\/candidates$/);
  if(candidates&&request.method==='GET'){const context=await batchOperatorContext(request,env,candidates[1]);if(context instanceof Response)return context;return searchScanCandidates(env,context.effective,candidates[1],candidates[2],new URL(request.url))}
- // D-S039: delete (restorable for 7 days), restore, and move an upload to the right school.
+ // D-S039 + owner (3 Nov): delete an upload for good, and move an upload to the right school.
  const batchOnly=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)$/);
  if(batchOnly&&request.method==='DELETE'){const context=await batchOperatorContext(request,env,batchOnly[1]);if(context instanceof Response)return context;
   const body:any=await request.json().catch(()=>({}));const reason=String(body.reason||'').trim();
@@ -840,11 +840,11 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   const done=await withExamOperationLock(env,context.batch.exam_id,'RESULT_BATCH_DELETE',async(env)=>{const r=await deleteBatch(env,batchOnly[1],context.user.id,reason);return r.ok?json(r):safeError(r.code==='NOT_FOUND'?404:409,r.code,r.code==='ALREADY_DELETED'?'Bu yükleme zaten silinmiş.':'Yükleme bulunamadı.')});
   if(!done.ok)return done;const body2:any=await done.json();
   const ranks=body2.wasEvaluated?await republishAfterRemoval(env,context.batch.exam_id,context.user.id):'NOT_NEEDED';
-  return json({...body2,ranks,restorableUntilDays:7})}
+  return json({...body2,ranks,permanent:true})}
  const restore=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/restore$/);
  if(restore&&request.method==='POST'){const context=await batchOperatorContext(request,env,restore[1]);if(context instanceof Response)return context;
   const {restoreBatch}=await import('./lib/batch-lifecycle');const r=await restoreBatch(env,restore[1],context.user.id);
-  return r.ok?json({ok:true,next:'Yükleme geri geldi. Sonuçlar için yeniden "Değerlendir"e basın.'}):safeError(409,'RESTORE_NOT_AVAILABLE','Bu yükleme geri alınamaz; 7 günlük süre dolmuş olabilir.')}
+  return r.ok?json({ok:true}):safeError(410,'RESTORE_NOT_AVAILABLE','Silinen yükleme geri alınamaz; dosyayı yeniden yükleyin.')}
  // Wrong uploads (owner, 3 Nov): move an upload to the right exam of the same school.
  const moveExam=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/move-exam$/);
  if(moveExam&&request.method==='POST'){const context=await batchOperatorContext(request,env,moveExam[1]);if(context instanceof Response)return context;
@@ -873,7 +873,7 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   if(!moved.ok)return moved;const out:any=await moved.json();
   const ranks=wasEvaluated?await republishAfterRemoval(env,source.id,context.user.id):'NOT_NEEDED';
   return json({...out,ranks,next:'Yükleme doğru sınava taşındı. Sonuçlar için "Değerlendir"e basın.'})}
- // Wrong uploads (owner, 3 Nov): every upload of one school in one exam, listed and deleted together (restorable 7 days).
+ // Wrong uploads (owner, 3 Nov): every upload of one school in one exam, listed and deleted together, for good.
  if(path==='/api/admin/result-network/operations/institution-exam-uploads'&&['GET','DELETE'].includes(request.method)){
   const url=new URL(request.url);const body:any=request.method==='DELETE'?await request.json().catch(()=>({})):{};
   const institutionId=String(body.institutionId||url.searchParams.get('institutionId')||''),examId=String(body.examId||url.searchParams.get('examId')||'');
@@ -893,7 +893,7 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
    return json({ok:true,deleted,removed,evaluated})});
   if(!done.ok)return done;const out:any=await done.json();
   const ranks=out.evaluated?await republishAfterRemoval(env,examId,context.user.id):'NOT_NEEDED';
-  return json({...out,ranks,restorableUntilDays:7})}
+  return json({...out,ranks,permanent:true})}
  const move=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/move$/);
  if(move&&request.method==='POST'){const context=await batchOperatorContext(request,env,move[1]);if(context instanceof Response)return context;
   if(context.user.role!=='SUPER_ADMIN'&&!context.dealerId)return forbidden('Yüklemeyi başka okula yalnız bayi veya Süper Admin taşıyabilir. Kurum yüklemesini silip doğru okula yeniden yükleyebilir.');

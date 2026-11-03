@@ -19,7 +19,7 @@ describe('exam center detail navigation', () => {
   });
 
   it('provides the required three-dot management actions on the detail page', () => {
-    for (const label of ['Düzenle','Kopyala','Raporlar','Arşivle','Çöp kutusuna taşı']) expect(detail).toContain(label);
+    for (const label of ['Düzenle','Kopyala','Raporlar','Arşivle','/> Sil<'] /* owner 3 Nov: permanent delete, no trash */) expect(detail).toContain(label);
     expect(detail).toContain('<MoreVertical');
     expect(detail).toContain('/copy`');
     expect(detail).toContain("status:'ARCHIVED'");

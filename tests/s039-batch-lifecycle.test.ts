@@ -5,7 +5,7 @@ import { purgeDeletedBatches } from '../worker/lib/batch-lifecycle';
 
 process.env.TZ = 'UTC';
 
-/** D-S039: delete an upload (restorable 7 days), restore it, move it to the right school. Synthetic data only. */
+/** D-S039, owner 3 Nov: delete an upload for good (no restore), move it to the right school. Synthetic data only. */
 async function world() {
   const s = await setup();
   const { t, call, upload } = s;
@@ -19,7 +19,7 @@ async function world() {
 }
 
 describe('S039 upload lifecycle on sonuc', () => {
-  it('deletes an evaluated upload with a reason, hides it from students, and restores it', async () => {
+  it('deletes an evaluated upload with a reason, at once and for good', async () => {
     const { t, call, evaluate, adm, n, B } = await world();
     const batch = await evaluate(generatedSheets(6, 3));
     expect((await call('admin', `/api/admin/result-network/administrations/${adm().id}/finalize`, { method: 'POST' })).status).toBe(200);
@@ -30,13 +30,12 @@ describe('S039 upload lifecycle on sonuc', () => {
     expect(n(`SELECT count(*) n FROM exam_participants WHERE exam_id='${t.examId}' AND scan_record_id IN (SELECT id FROM scan_records WHERE batch_id='${batch}')`)).toBe(0);
     expect(n(`SELECT count(*) n FROM result_access_identities`)).toBe(0);
     expect(adm().status).toBe('UPLOADING');
-    expect((await call('dealerI', `${B}/${batch}/evaluate`, { method: 'POST' })).data.error.code).toBe('BATCH_DELETED');
-    const hist = (await call('dealerI', '/api/admin/result-network/operations/history?mode=DEALER')).data.batches.find((b: any) => b.id === batch);
-    expect(hist.deleted_at).toBeTruthy();
-    expect((await call('dealerI', `${B}/${batch}/restore`, { method: 'POST' })).status).toBe(200);
-    const again = await call('dealerI', `${B}/${batch}/evaluate`, { method: 'POST' });
-    expect(again.status, again.text).toBe(200);
-    expect(n(`SELECT count(*) n FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id='${t.examId}' AND ep.scan_record_id IN (SELECT id FROM scan_records WHERE batch_id='${batch}')`)).toBe(6);
+    // owner (3 Nov): the upload itself is gone too — no history row, no restore
+    expect(n(`SELECT count(*) n FROM scan_batches WHERE id='${batch}'`)).toBe(0);
+    expect(n(`SELECT count(*) n FROM scan_records WHERE batch_id='${batch}'`)).toBe(0);
+    expect((await call('dealerI', '/api/admin/result-network/operations/history?mode=DEALER')).data.batches.find((b: any) => b.id === batch)).toBeUndefined();
+    expect((await call('dealerI', `${B}/${batch}/restore`, { method: 'POST' })).status).not.toBe(200);
+    expect(n(`SELECT count(*) n FROM audit_logs WHERE action='SCAN_BATCH_DELETED' AND entity_id='${batch}'`)).toBe(1);
   });
 
   it('rewrites the live ranks without a deleted upload', async () => {
@@ -65,12 +64,12 @@ describe('S039 upload lifecycle on sonuc', () => {
     expect(n(`SELECT count(*) n FROM exam_participants ep JOIN institutions i ON i.id=ep.institution_id WHERE ep.exam_id='${t.examId}' AND i.code='740001'`)).toBe(0);
   });
 
-  it('purges a deleted upload after its 7 days', async () => {
-    const { t, call, evaluate, n, B } = await world();
+  it('purges an upload deleted under the old 7-day rule on the next run', async () => {
+    const { t, evaluate, n } = await world();
     const batch = await evaluate(generatedSheets(3, 3));
-    await call('dealerI', `${B}/${batch}`, { method: 'DELETE', body: { reason: 'Deneme yüklemesi' } });
-    expect(await purgeDeletedBatches(t.env)).toBe(0);
-    t.db.exec(`UPDATE scan_batch_deletions SET purge_after=datetime('now','-1 minute')`);
+    // an upload deleted before 3 Nov: its row waits in scan_batch_deletions with a future purge date
+    t.db.exec(`INSERT INTO scan_batch_deletions(batch_id,deleted_by,reason,prior_status,participants_removed,purge_after) VALUES('${batch}','admin','Deneme yüklemesi','COMMITTED',3,datetime('now','+5 days'));
+      INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES('aud_old','admin',NULL,'SCAN_BATCH_DELETED','scan_batch','${batch}','{}');`);
     expect(await purgeDeletedBatches(t.env)).toBe(1);
     expect(n(`SELECT count(*) n FROM scan_batches WHERE id='${batch}'`)).toBe(0);
     expect(n(`SELECT count(*) n FROM scan_records WHERE batch_id='${batch}'`)).toBe(0);

@@ -5,7 +5,7 @@ import { withExamOperationLock } from './exam-operation-lock';
 
 /**
  * Wrong uploads in the app (owner, 3 Nov): the staff who evaluate an exam see that exam's uploads for their
- * institution and can delete one (results removed at once, sheets restorable for 7 days) or bring it back.
+ * institution and can delete one for good (owner, 3 Nov: results, sheets and file go at once).
  * The same lifecycle as sonuc (D-S039), so both products agree on what a deleted upload is.
  */
 /** Same rule as the app's evaluation screen: the Super Admin everywhere, a manager in their own institution. */
@@ -51,13 +51,12 @@ export async function deleteAppUpload(request: Request, env: Env, user: AuthUser
   if (!r.ok) return r;
   const out: any = await r.json();
   if (out.wasEvaluated) await refreshPublications(env, batch.exam_id, user.id);
-  return json({ ...out, restorableUntilDays: 7 });
+  return json({ ...out, permanent: true });
 }
 
 export async function restoreAppUpload(env: Env, user: AuthUser, batchId: string): Promise<Response> {
   const batch = await batchFor(env, user, batchId); if (batch instanceof Response) return batch;
   const { restoreBatch } = await import('./batch-lifecycle');
   const r = await restoreBatch(env, batchId, user.id);
-  return r.ok ? json({ ok: true, next: 'Yükleme geri geldi. Sonuçlar için yüklemeyi açıp "Değerlendir"e basın.' })
-    : json({ ok: false, error: { code: 'RESTORE_NOT_AVAILABLE', message: 'Bu yükleme geri alınamaz; 7 günlük süre dolmuş olabilir.' } }, 409);
+  return r.ok ? json({ ok: true }) : json({ ok: false, error: { code: 'RESTORE_NOT_AVAILABLE', message: 'Silinen yükleme geri alınamaz; dosyayı yeniden yükleyin.' } }, 410);
 }
