@@ -69,13 +69,14 @@ async function ensureAccess(env: Env, request: Request, batch: AnyRow) {
 async function finaliseBatch(env: Env, userId: string, batch: AnyRow, total: number): Promise<Response> {
   const evidenceCount = await recordExamAssessments(env, batch.id);
   await recordExamEvidenceAudit(env, userId, batch.institution_id, batch.id, evidenceCount);
-  await env.DB.prepare(`UPDATE exam_results SET institution_rank=(SELECT rn FROM (
+  // Ranks are computed once and joined (UPDATE … FROM). The earlier correlated form re-ran the window for every row,
+  // so an evaluation read n² rows: 3.000 students in one school took ~15 s per upload (measured 3 Nov).
+  await env.DB.prepare(`UPDATE exam_results SET institution_rank=ranked.rn FROM (
     SELECT er2.id,row_number() OVER (ORDER BY COALESCE(er2.score,-1e9) DESC,er2.net DESC,er2.correct_count DESC) rn
     FROM exam_results er2 JOIN exam_participants ep2 ON ep2.id=er2.participant_id
     WHERE ep2.exam_id=? AND ep2.institution_id=?
-  ) ranked WHERE ranked.id=exam_results.id)
-  WHERE participant_id IN (SELECT id FROM exam_participants WHERE exam_id=? AND institution_id=?)`)
-    .bind(batch.exam_id, batch.institution_id, batch.exam_id, batch.institution_id).run();
+  ) ranked WHERE ranked.id=exam_results.id`)
+    .bind(batch.exam_id, batch.institution_id).run();
 
   await env.DB.prepare(`UPDATE scan_batches SET status='COMMITTED' WHERE id=?`).bind(batch.id).run();
   await audit(env.DB, userId, batch.institution_id, 'EXAM_EVALUATED', 'scan_batch', batch.id, { examId: batch.exam_id, processed: total, chunked: true });
