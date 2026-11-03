@@ -214,7 +214,7 @@ async function examTrashed(env:Env,examId:string):Promise<boolean>{
   return !!await one<any>(env.DB.prepare('SELECT 1 ok FROM exam_revision_state WHERE exam_id=? AND app_trashed_at IS NOT NULL').bind(examId));
 }
 
-async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
+export async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
   let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
   if(p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden('Merkezi sınav sıralamasını yalnız Süper Admin dondurabilir.');
   if(await examTrashed(env,examId))return badRequest('Çöp kutusundaki sınavın sonucu dondurulamaz. Önce sınavı geri alın.','EXAM_TRASHED');
@@ -286,7 +286,7 @@ export async function refreshAppLivePublication(env:Env,examId:string,actorId:st
   return r.ok;
 }
 
-async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
+export async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response>{
   let p=await examProfile(env,examId); if(!p)return notFound('Sınav bulunamadı.'); if(!await canManageExam(env,user,p))return forbidden();
   return withExamOperationLock(env,examId,'PUBLISH',async(env)=>{
     p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
@@ -304,7 +304,7 @@ async function publishExam(env:Env,user:AuthUser,examId:string):Promise<Response
   });
 }
 
-async function reopenExamResults(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
+export async function reopenExamResults(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
   let p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
   if(!await canManageExam(env,user,p)||p.scope==='CENTRAL'&&user.role!=='SUPER_ADMIN')return forbidden();
   return withExamOperationLock(env,examId,'REOPEN',async(env)=>{

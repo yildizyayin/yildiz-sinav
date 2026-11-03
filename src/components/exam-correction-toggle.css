@@ -1,0 +1,14 @@
+/* 3 Nov: one correction switch in the exam card */
+.ect.ect-on{border-color:#f0c48a;background:#fffaf2}
+.ect-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.ect-row h2{margin:0 0 4px}
+.ect-switch{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:4px 16px 4px 4px;border-radius:999px;border:1px solid #c9d4e6;background:#eef2f8;color:#33486e;font-weight:700;cursor:pointer}
+.ect-switch .ect-knob{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 1px 3px rgba(7,20,63,.2)}
+.ect-switch.on{background:#f59e0b;border-color:#d97706;color:#fff;flex-direction:row-reverse;padding:4px 4px 4px 16px}
+.ect-switch.on .ect-knob{color:#b45309}
+.ect-switch:focus-visible{outline:3px solid #6ca8ff;outline-offset:2px}
+.ect-confirm{margin-top:12px;border:1px solid #f0c48a;background:#fff;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.ect-confirm p{margin:0}
+.ect-confirm label{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.ect-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.ect-pending{margin:0;padding-left:18px;font-size:14px;color:#33486e}

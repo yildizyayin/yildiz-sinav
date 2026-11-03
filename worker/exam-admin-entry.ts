@@ -998,6 +998,15 @@ export default {
     if (copy) return request.method === 'POST' ? copyDefinition(env, auth, copy[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     const structure = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/structure$/);
     if (structure) return request.method === 'PUT' ? replaceStructure(request, env, auth, structure[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    // 3 Nov: one correction switch for every publication of the exam (exam-correction-toggle.ts).
+    const correction = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/correction$/);
+    if (correction) {
+      const exam = await managedExam(env, auth, correction[1]); if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
+      const ct = await import('./lib/exam-correction-toggle');
+      if (request.method === 'GET') return ct.getCorrection(env, exam);
+      if (request.method === 'POST') return ct.toggleCorrection(request, env, auth, exam);
+      return err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    }
     // 2 Nov: scoring profile correction while the publication is open for correction (exam-scoring-correction.ts).
     const scoringFix = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/scoring-profile$/);
     if (scoringFix) {

@@ -18,12 +18,12 @@ export function ExamScoringCorrection({ examId, onSaved }: { examId: string; onS
   return <section className="panel" style={{ marginBottom: 20 }}>
     <div className="panel-head"><div><h2>Puanlama profili</h2><p>Şu an: <strong>{name(data.current)}</strong></p></div></div>
     {error && <div className="alert error" role="alert">{error}</div>}{done && <div className="alert success" role="status">Profil değişti. {done}</div>}
-    {!data.correctionOpen ? <p className="field-help">Aktif sınavın puanlama profili kilitlidir. Değiştirmek için önce Sonuç Ağı'nda bu sınavı <strong>"Düzeltmeye aç"</strong> ile açın; o zaman bu bölümde profil seçebilirsiniz.</p> : <>
+    {!data.correctionOpen ? <p className="field-help">Aktif sınavın puanlama profili kilitlidir. Değiştirmek için yukarıdaki <strong>Düzeltme</strong> anahtarını açın; o zaman bu bölümde profil seçebilirsiniz.</p> : <>
       <div className="form-grid">
         <label>Yeni profil<select value={choice} onChange={(e) => setChoice(e.target.value)}>{data.options.map((o: any) => <option key={o.id} value={o.id}>{o.rule_name} · {o.academic_year} {o.version}</option>)}</select></label>
         <label>Gerekçe<input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Ör. Puan üretmeyen profil seçilmişti" /></label>
       </div>
-      <p className="field-help">Kaydettikten sonra Sonuç Ağı'nda bu sınavın yüklemelerini yeniden "Değerlendir"in ve "Sonuçları yayınla"ya basın; puanlar yeni profille hesaplanır.</p>
+      <p className="field-help">Kaydettikten sonra Düzeltme anahtarını kapatın: yüklemeler yeni profille yeniden değerlendirilir ve sonuçlar yeniden yayınlanır.</p>
       <button className="primary" disabled={busy || !choice || choice === data.current || reason.trim().length < 10} onClick={() => void save()}>{busy ? 'Kaydediliyor…' : 'Profili değiştir'}</button>
     </>}
   </section>;
