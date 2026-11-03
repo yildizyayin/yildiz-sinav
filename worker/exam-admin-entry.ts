@@ -797,7 +797,7 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
       for(const ref of refs){
         const approved=await approvedLabelOutcome(env,publisher?.id||null,programCode,subjectId,ref);
         if(approved&&catalog.some(o=>o.id===approved&&outcomeFitsQuestion(outcomeScope,subjectId,o))){automaticMappings.push({subjectId,questionNo:qNo,outcomeId:approved});continue;}
-        const matched=matchScopedOutcome(ref,subjectId,catalog,outcomeScope);if(matched.outcomeId)automaticMappings.push({subjectId,questionNo:qNo,outcomeId:matched.outcomeId});
+        const matched=matchScopedOutcome(ref,subjectId,catalog,outcomeScope);if(matched.outcomeId)automaticMappings.push({subjectId,questionNo:qNo,outcomeId:matched.outcomeId,auto:matched.reason==='AUTO',similarity:matched.similarity});
       }
     }
   }
@@ -816,7 +816,9 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
     seenMappings.add(key);
     statements.push(env.DB.prepare(`INSERT INTO question_outcomes (exam_question_id,outcome_id) VALUES(?,?)`).bind(question.id, outcomeId));
     for (const publisherOutcomeId of publisherLabelsByQuestion.get(question.id) || []) {
-      statements.push(env.DB.prepare(`UPDATE publisher_outcome_labels SET canonical_outcome_id=?,mapping_status='APPROVED',confidence=1,reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP WHERE id=?`).bind(outcomeId, user.id, publisherOutcomeId));
+      // an automatic (similarity) link stays SUGGESTED: it is used here but not carried to the publisher's later exams as approved
+      if ((mapping as any).auto) statements.push(env.DB.prepare(`UPDATE publisher_outcome_labels SET canonical_outcome_id=?,mapping_status='SUGGESTED',confidence=? WHERE id=? AND mapping_status<>'APPROVED'`).bind(outcomeId, Number((mapping as any).similarity || 0.5), publisherOutcomeId));
+      else statements.push(env.DB.prepare(`UPDATE publisher_outcome_labels SET canonical_outcome_id=?,mapping_status='APPROVED',confidence=1,reviewed_by=?,reviewed_at=CURRENT_TIMESTAMP WHERE id=?`).bind(outcomeId, user.id, publisherOutcomeId));
     }
   }
   for (const [questionId, labelIds] of publisherLabelsByQuestion.entries()) for (const publisherOutcomeId of labelIds) statements.push(env.DB.prepare(`INSERT OR IGNORE INTO question_publisher_outcomes (exam_question_id,publisher_outcome_id) VALUES(?,?)`).bind(questionId, publisherOutcomeId));

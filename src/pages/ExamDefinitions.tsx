@@ -13,7 +13,7 @@ import { ExamChannelNotice } from '../components/ExamChannelNotice';
 import { ExamSaveReview, reviewExamInputs } from '../components/ExamSaveReview';
 import '../exam-workspace.css';
 import './approved-answer-outcomes.css';
-import { EXAM_CHOICES, EXAM_TEMPLATES, buildAnswerKeyTemplateRows, parseAnswerKeyFileText, cleanAnswers, matchOfficialOutcome, parseAnswerKeyText, parseAnswerKeyWorkbookRows, type ExamTemplate, type OutcomeCatalogEntry, type ParsedAnswerEntry, type SubjectOption } from '../lib/guidedDefinitions';
+import { autoOutcomeCandidate, EXAM_CHOICES, EXAM_TEMPLATES, buildAnswerKeyTemplateRows, parseAnswerKeyFileText, cleanAnswers, matchOfficialOutcome, parseAnswerKeyText, parseAnswerKeyWorkbookRows, type ExamTemplate, type OutcomeCatalogEntry, type ParsedAnswerEntry, type SubjectOption } from '../lib/guidedDefinitions';
 
 type SubjectConfig = { subjectId: string; questionCount: number; questionStart: number; questionEnd: number; optionCount: 4 | 5; questionStatus: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'; wrongDivisor: number; sortOrder: number };
 type OutcomeMap = { subjectId: string; questionNo: number; outcomeId: string };
@@ -273,6 +273,8 @@ export function ExamDefinitions() {
         const questionNo = (result.questionStarts[entry.subjectId] || 1) + index;
         const match = matchOfficialOutcome(reference, entry.subjectId, options.outcomes as OutcomeCatalogEntry[]);
         if (match.outcomeId) { mappings.push({ subjectId: entry.subjectId, questionNo, outcomeId: match.outcomeId }); matched++; }
+        // owner (3 Nov): a clearly best one is linked by the server when the key is saved (marked for a later look)
+        else if (match.reason !== 'UNVERIFIED' && autoOutcomeCandidate(reference, entry.subjectId, options.outcomes as OutcomeCatalogEntry[])) matched++;
         else if (match.reason === 'AMBIGUOUS') ambiguous++;
         else if (match.reason === 'UNVERIFIED') unverified++;
         else missing++;

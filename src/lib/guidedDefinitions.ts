@@ -177,6 +177,19 @@ export function normalizeCatalogText(value: string | null | undefined): string {
   return norm(String(value || ''));
 }
 
+const STOP_WORDS = new Set(['ve', 'ile', 'bir', 'bu', 'icin', 'olan', 'ilgili', 'uzerine', 'gore', 'daha', 'kadar', 'gibi', 'karma', 'soru', 'sorular', 'test', 'konu', 'genel', 'tekrar', 'yapabilme', 'edebilme', 'eder', 'yapar', 'belirler', 'aciklar', 'cozer', 'kullanir', 'tema']);
+const stemSet = (text: string) => new Set(normalizeCatalogText(text).split(/\s+/).filter((w) => w.length > 2 && !STOP_WORDS.has(w)).map((w) => w.slice(0, 5)));
+/** Owner (3 Nov), same rule as the server: the clearly best outcome by shared word stems (≥ half, lead ≥ 0.2). */
+export function autoOutcomeCandidate(reference: OutcomeReference | null | undefined, subjectId: string, catalog: OutcomeCatalogEntry[]): string | undefined {
+  if (!reference) return undefined;
+  const ref = stemSet(`${reference.publisherTitle || reference.title || ''} ${reference.topic || ''} ${reference.subtopic || ''}`); if (!ref.size) return undefined;
+  const scored = catalog.filter((o) => (o.subject_id === subjectId || (o.exam_subject_ids || []).includes(subjectId)) && Number(o.official) === 1 && Number(o.verified) === 1)
+    .map((o) => { const cand = stemSet(`${o.title || ''} ${o.topic || ''} ${o.subtopic || ''}`); let hit = 0; for (const w of ref) if (cand.has(w)) hit++; return { id: o.id, s: Math.round((hit / ref.size) * 100) / 100 }; })
+    .filter((x) => x.s >= 0.25).sort((a, b) => b.s - a.s);
+  const [top, second] = scored;
+  return top && top.s >= 0.5 && (!second || top.s - second.s >= 0.2) ? top.id : undefined;
+}
+
 export function matchOfficialOutcome(reference: OutcomeReference | null | undefined, subjectId: string, catalog: OutcomeCatalogEntry[]): { outcomeId?: string; reason: 'CODE' | 'TITLE' | 'AMBIGUOUS' | 'MISSING' | 'UNVERIFIED' } {
   if (!reference) return { reason: 'MISSING' };
   // S028: TYT/AYT questions match the high-school subjects the server lists in exam_subject_ids.
