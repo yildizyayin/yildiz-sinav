@@ -1,0 +1,28 @@
+/* Föy online optik (2 Nov): bubbles sized for a thumb (44px), one column on phones. */
+.foy-optic{border:1px solid #dbe4f3;border-radius:14px;padding:16px;margin:14px 0 18px;background:#fbfcff;display:flex;flex-direction:column;gap:12px}
+.foy-optic h3{margin:2px 0 4px;font-size:18px}
+.fo-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.fo-head>svg{color:#13916b;flex:none}
+.fo-subject{border:0;margin:0;padding:0;min-width:0}
+.fo-subject legend,.fo-subject h4{font-weight:700;font-size:15px;margin:0 0 8px;display:flex;gap:8px;align-items:baseline}
+.fo-subject small{font-weight:500;color:#5b6b8c;font-size:12px}
+.fo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px 18px}
+.fo-row{display:flex;align-items:center;gap:6px}
+.fo-no{width:26px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:#5b6b8c;flex:none}
+.foy-optic .fo-bubble{width:44px;height:44px;border-radius:50%;min-width:44px;border:1.5px solid #b9c7e2;background:#fff;color:#33486e;font:inherit;font-weight:700;cursor:pointer;padding:0;flex:none}
+.foy-optic .fo-bubble.on{background:#1f4fd1;border-color:#1f4fd1;color:#fff}
+.fo-bubble:focus-visible{outline:3px solid #6ca8ff;outline-offset:2px}
+.fo-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:flex-end;position:sticky;bottom:0;background:#fbfcff;padding:10px 0 2px;border-top:1px solid #e3eaf6}
+.fo-actions .muted{margin-right:auto}
+.fo-confirm{font-weight:600;color:#8a4b00}
+.fo-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.fo-kpis div{border:1px solid #dbe4f3;border-radius:10px;padding:8px 10px;background:#fff}
+.fo-kpis b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.fo-kpis small{color:#5b6b8c}
+.fo-review{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:4px 16px}
+.fo-q{display:grid;grid-template-columns:26px 64px minmax(0,1fr) auto;gap:6px;align-items:center;padding:5px 6px;border-radius:8px;font-size:14px}
+.fo-correct{background:#e9f7ef}.fo-wrong{background:#fdeee9}.fo-blank{background:#f4f6fa}
+.fo-ans{font-weight:700;font-variant-numeric:tabular-nums}.fo-ans small{font-weight:500;color:#5b6b8c}
+.fo-out{color:#33486e;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fo-video{display:inline-flex;gap:4px;align-items:center;font-size:13px;font-weight:600;color:#1f4fd1;min-height:32px}
+@media(max-width:560px){.fo-grid,.fo-review{grid-template-columns:1fr}.fo-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.foy-optic{padding:12px}}

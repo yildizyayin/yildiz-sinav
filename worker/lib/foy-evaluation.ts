@@ -262,3 +262,68 @@ export async function handleFoyOperations(request: Request, env: Env, deps: FoyO
   }
   return null;
 }
+
+/* ───────────────────────── app: the student's online optic ───────────────────────── */
+
+/**
+ * Föy online optik (owner, 2 Nov: app öğrenci paneli). The student marks the föy's answers on screen and submits once;
+ * the same key and the same FOY evidence as the paper optic (channel DIGITAL). The key is never sent before the
+ * student's own submission; afterwards the student sees each question with the correct answer and its video links.
+ * Grades 5–8 answer A–D, 9–12 A–E (as the printed föy).
+ */
+export const foyOptionCount = (gradeLevel: unknown, programCode?: unknown) => (['TYT', 'AYT'].includes(String(programCode || '')) || Number(gradeLevel) >= 9 ? 5 : 4);
+
+async function studentFoyResult(env: Env, worksheetId: string, studentId: string, key: FoyKey) {
+  const run = await one<any>(env.DB.prepare(`SELECT id,delivery_mode,score,metadata_json,completed_at FROM assessment_runs WHERE id=?`).bind(foyRunId(worksheetId, studentId)));
+  if (!run) return null;
+  const [rows, links] = await Promise.all([
+    all<any>(env.DB.prepare(`SELECT worksheet_subject_id s,worksheet_question_no n,selected_answer a,is_correct c FROM assessment_responses WHERE run_id=?`).bind(run.id)),
+    all<any>(env.DB.prepare(`SELECT q.subject_id s,q.question_no n,q.solution_url,q.topic_url,o.title outcome FROM worksheet_question_links q LEFT JOIN outcomes o ON o.id=q.outcome_id WHERE q.worksheet_id=?`).bind(worksheetId)),
+  ]);
+  const subjects = key.subjects.map((s) => {
+    const questions = s.answers.map((correct, i) => {
+      const r = rows.find((x: any) => x.s === s.subjectId && Number(x.n) === i + 1), l = links.find((x: any) => x.s === s.subjectId && Number(x.n) === i + 1);
+      const selected = r?.a || null, status = !selected ? 'BLANK' : Number(r?.c) === 1 ? 'CORRECT' : 'WRONG';
+      return { no: i + 1, selected, correct, status, outcome: l?.outcome || null, solutionUrl: l?.solution_url || null, topicUrl: l?.topic_url || null };
+    });
+    const count = (st: string) => questions.filter((q) => q.status === st).length;
+    return { subjectId: s.subjectId, code: s.code, name: s.name, correct: count('CORRECT'), wrong: count('WRONG'), blank: count('BLANK'), questions };
+  });
+  let meta: any = {}; try { meta = JSON.parse(run.metadata_json || '{}'); } catch { /* */ }
+  return { channel: run.delivery_mode === 'DIGITAL' ? 'ONLINE' : 'PAPER', submittedAt: run.completed_at, correct: Number(meta.correct || 0), wrong: Number(meta.wrong || 0), blank: Number(meta.blank || 0), total: Number(meta.total || 0), successPercent: Math.round(Number(run.score || 0) * 1000) / 10, subjects };
+}
+
+/** GET: the form (subjects, question counts, options) or the student's own result once submitted. */
+export async function studentFoyOptic(env: Env, user: AuthUser, worksheet: any): Promise<Response> {
+  if (user.role !== 'STUDENT' || !user.student_id || !user.institution_id) return forbidden('Föy optiğini yalnız öğrenci doldurur.');
+  const key = await loadFoyKey(env, worksheet.id); if (!key) return fail(404, 'WORKSHEET_NOT_FOUND', 'Föy bulunamadı.');
+  const result = await studentFoyResult(env, worksheet.id, user.student_id, key);
+  return json({ ok: true, worksheetId: worksheet.id, title: key.worksheet.title, ready: key.complete, optionCount: foyOptionCount(worksheet.grade_level, worksheet.program_code),
+    subjects: key.subjects.map((s) => ({ subjectId: s.subjectId, code: s.code, name: s.name, questionCount: s.questionCount })), result });
+}
+
+/** POST { answers: { [subjectCode]: "AB C…" } } — scored once; a second submission is refused with the first result. */
+export async function submitStudentFoyOptic(request: Request, env: Env, user: AuthUser, worksheet: any): Promise<Response> {
+  if (user.role !== 'STUDENT' || !user.student_id || !user.institution_id) return forbidden('Föy optiğini yalnız öğrenci doldurur.');
+  const key = await loadFoyKey(env, worksheet.id); if (!key) return fail(404, 'WORKSHEET_NOT_FOUND', 'Föy bulunamadı.');
+  if (!key.complete) return fail(409, 'FOY_KEY_INCOMPLETE', 'Bu föyün cevap anahtarı henüz tamamlanmadı; online optik açıldığında burada görünecek.');
+  const body: any = await request.json().catch(() => ({}));
+  const raw = body?.answers && typeof body.answers === 'object' ? body.answers : null;
+  if (!raw) return badRequest('Cevapları gönderin.', 'FOY_ANSWERS_REQUIRED');
+  const options = FOY_ANSWERS.slice(0, foyOptionCount(worksheet.grade_level, worksheet.program_code)) as readonly string[];
+  const answers: Record<string, string> = {};
+  for (const s of key.subjects) {
+    const marks = Array.from(String(raw[s.code] ?? '')).map((x) => x.toLocaleUpperCase('tr-TR'));
+    if (marks.length > s.questionCount) return badRequest(`${s.name}: ${s.questionCount} soru var.`, 'FOY_ANSWERS_LENGTH');
+    const bad = marks.findIndex((m) => m.trim() && !options.includes(m));
+    if (bad >= 0) return badRequest(`${s.name} ${bad + 1}. soru: ${options.join(', ')} işaretlenebilir.`, 'FOY_ANSWER_INVALID');
+    answers[s.code] = marks.map((m) => (m.trim() ? m : ' ')).join('');
+  }
+  if (!Object.values(answers).some((a) => a.trim())) return badRequest('En az bir soruyu işaretleyin.', 'FOY_ANSWERS_EMPTY');
+  const scored = scoreFoySheet(key, answers);
+  const run = await writeFoyRun(env, { worksheetId: worksheet.id, institutionId: user.institution_id, studentId: user.student_id, channel: 'DIGITAL', scored, metadata: { channel: 'ONLINE_OPTIC', submittedBy: user.id } });
+  const result = await studentFoyResult(env, worksheet.id, user.student_id, key);
+  if (!run.written) return json({ ok: false, error: { code: 'FOY_ALREADY_SUBMITTED', message: 'Bu föyü daha önce gönderdin; ilk gönderimin geçerli.' }, result }, 409);
+  await audit(env.DB, user.id, user.institution_id, 'FOY_ONLINE_OPTIC_SUBMITTED', 'worksheet', worksheet.id, { correct: scored.correct, wrong: scored.wrong, blank: scored.blank });
+  return json({ ok: true, result });
+}
