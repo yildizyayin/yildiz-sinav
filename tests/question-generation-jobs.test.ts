@@ -184,7 +184,7 @@ it('commits exactly one request under native D1 and reuses its key after cancell
   expect(differentKeys.map(response=>response.status).sort()).toEqual([201,409]);
   expect(await db.prepare("SELECT COUNT(*) n FROM question_generation_jobs WHERE status='REQUESTED'").first('n')).toBe(1);
  }finally{await mf.dispose();}
-});
+},30000); // starts a local Cloudflare runtime like the other Miniflare tests (30 s); 5 s timed out in the deploy check (3 Nov)
 it('binds manual practice focus and priority to idempotency without inventing official outcome metadata',async()=>{
  const f=fixture();try{
   f.sqlite.exec("UPDATE curriculum_versions SET grade_level=5 WHERE id='cv';UPDATE outcomes SET grade_level=5,code='MAT.5.1.1' WHERE id='o'");
