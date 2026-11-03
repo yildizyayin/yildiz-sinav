@@ -183,3 +183,11 @@
   }
 }
 
+/* Telefonda Studio/Video sekmeleri (3 Nov): the tab bar scrolls inside itself on every tab, never the page. */
+.app-shell .approved-question-pool .content-tabs { max-width:100%; min-width:0; overflow-x:auto; overscroll-behavior-x:contain; scrollbar-width:thin; }
+.app-shell .approved-question-pool .content-tabs button { flex:0 0 auto; white-space:nowrap; }
+/* On a phone the Studio / Video cards stack their heading above the form (the app-wide .module-card is a row). */
+@media (max-width:760px) {
+  .app-shell .approved-question-pool .module-stack > .module-card { flex-direction:column; align-items:stretch; min-width:0; }
+  .app-shell .approved-question-pool .module-stack > .module-card > * { min-width:0; max-width:100%; }
+}
