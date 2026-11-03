@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { Activity, Building2, ChevronLeft, ChevronRight, ClipboardList, Database, FileText, GraduationCap, House, ScanLine, Settings, Upload } from 'lucide-react';
+import './result-institution-glass.css';
 import { api } from '../api';
 import { AnunexBrand } from '../components/AnunexBrand';
 import { DataCenter } from '../components/DataCenter';
@@ -15,28 +17,35 @@ import './result-operator-shell.css';
  */
 type Role = 'INSTITUTION' | 'DEALER';
 type Section = 'home' | 'upload' | 'foy' | 'reports' | 'data' | 'docs' | 'schools' | 'pins' | 'cards' | 'school' | 'profile';
-const when = (s: string) => new Date(String(s).replace(' ', 'T') + 'Z').toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+const institutionIcons = { home: House, upload: Upload, foy: ScanLine, reports: Activity, data: Database, docs: FileText, cards: GraduationCap, school: Building2, profile: Settings, schools: Building2, pins: ClipboardList };
+const batchTimestamp = (value: string) => new Date(value.includes('T') ? value : value.replace(' ', 'T') + 'Z');
+const when = (s: string) => batchTimestamp(s).toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
 export function ResultOperatorShell({ role, access, operator, onLogout }: { role: Role; access: any; operator: any; onLogout: () => void }) {
   const [section, setSection] = useState<Section>('home');
+  const [compact, setCompact] = useState(false);
+  const institution = role === 'INSTITUTION';
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => { const go = () => setSection('reports'); window.addEventListener('anunex:toplu-open', go); return () => window.removeEventListener('anunex:toplu-open', go); }, []);
   const groups: Array<[string | null, Array<[Section, string, string?]>]> = role === 'DEALER'
     ? [[null, [['home', 'Ana sayfa', 'bölge özeti']]], ['SINAVLAR', [['upload', 'Sınav yükleme', 'TXT/DAT'], ['foy', 'Föy değerlendirme', 'optik']]], ['ÇIKTILAR', [['reports', 'Rapor Merkezi'], ['data', 'Veri Merkezi'], ['docs', 'Belge Merkezi']]], ['KURUMLARIM', [['schools', 'Kurum listesi'], ['pins', "Giriş PIN'leri"]]], ['HESAP', [['profile', 'Profil ve parola']]]]
     : [[null, [['home', 'Ana sayfa', 'son sınav']]], ['SINAVLAR', [['upload', 'Sınav yükleme', 'TXT/DAT'], ['foy', 'Föy değerlendirme', 'optik']]], ['ÇIKTILAR', [['reports', 'Rapor Merkezi'], ['data', 'Veri Merkezi'], ['docs', 'Belge Merkezi']]], ['ÖĞRENCİLER', [['cards', 'Öğrenci sonuçları']]], ['HESAP', [['school', 'Kurum bilgileri'], ['profile', 'Profil ve parola']]]];
   const go = (s: Section) => { setSection(s); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-  return <div className="osh">
+  return <div className={`osh ${institution ? "institution-glass" : ""} ${institution && compact ? "glass-compact" : ""}`}>
     <aside className={`osh-side ${menuOpen ? 'open' : ''}`} aria-label={role === 'DEALER' ? 'Bayi menüsü' : 'Kurum menüsü'}>
       <div className="osh-brand"><AnunexBrand compact inverse /></div>
+      {institution && <button type="button" className="glass-collapse" aria-label={compact ? 'Menüyü genişlet' : 'Menüyü daralt'} aria-expanded={!compact} onClick={() => setCompact(!compact)}>{compact ? <ChevronRight /> : <ChevronLeft />}</button>}
       <button type="button" className="osh-toggle" aria-expanded={menuOpen} onClick={() => setMenuOpen((v) => !v)}>Menü</button>
       <nav className="osh-nav">
         {groups.map(([title, items], gi) => <div key={gi} className="osh-group">{title && <span className="osh-title">{title}</span>}
-          {items.map(([key, label, note]) => <button key={key} type="button" aria-current={section === key ? 'page' : undefined} className={section === key ? 'on' : ''} onClick={() => go(key)}><span>{label}</span>{note && <small>{note}</small>}</button>)}</div>)}
+          {items.map(([key, label, note]) => { const Icon = institutionIcons[key]; return <button aria-label={institution ? label : undefined} title={institution && compact ? label : undefined} key={key} type="button" aria-current={section === key ? 'page' : undefined} className={section === key ? 'on' : ''} onClick={() => go(key)}>{institution && <Icon size={19} aria-hidden="true" />}<span>{label}</span>{note && <small>{note}</small>}</button>; })}</div>)}
       </nav>
       <div className="osh-foot"><span>{operator?.display_name || operator?.email || ''}</span><small>{role === 'DEALER' ? 'Yalnız yetkili il/ilçedeki kurumlar ve sınavlar görünür.' : 'Yalnız kendi okulunuzun verisi görünür.'}</small><button type="button" onClick={() => void onLogout()}>Çıkış</button></div>
     </aside>
     <main className="osh-main">
-      {section === 'home' && <OperatorHome role={role} operator={operator} access={access} go={go} />}
+      {institution && <div className="glass-context"><Building2 size={17} aria-hidden="true" />{access?.institution?.name || 'Kurum'}<span>Sonuç Portalı</span></div>}
+      {section === 'home' && institution && <InstitutionHome go={go} />}
+      {section === 'home' && !institution && <OperatorHome role={role} operator={operator} access={access} go={go} />}
       {section === 'upload' && <ResultOperatorWorkspace mode={role} access={access} />}
       {section === 'foy' && <FoyEvaluation mode={role} />}
       {section === 'reports' && <ResultReportsPanel mode={role} />}
@@ -48,6 +57,95 @@ export function ResultOperatorShell({ role, access, operator, onLogout }: { role
       {section === 'school' && access?.institution?.id && <><div className="rm"><header className="rm-head"><div><div className="rm-kicker">HESAP</div><h1 className="rm-title">Kurum bilgileri</h1></div></header></div><InstitutionCardPanel institutionId={access.institution.id} /></>}
       {section === 'profile' && <Profile operator={operator} />}
     </main>
+  </div>;
+}
+
+type InstitutionBatch = {
+  id: string;
+  title: string;
+  created_at: string;
+  status: string;
+  publication_status?: string;
+  deleted_at?: string;
+};
+
+function InstitutionHome({ go }: { go: (section: Section) => void }) {
+  const [rows, setRows] = useState<InstitutionBatch[] | null>(null);
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    let current = true;
+    api<{ batches?: InstitutionBatch[] }>('/api/admin/result-network/operations/data/batches?mode=INSTITUTION')
+      .then(({ batches }) => { if (current) setRows((batches ?? []).filter((batch) => !batch.deleted_at)); })
+      .catch(() => { if (current) setError(true); });
+    return () => { current = false; };
+  }, [attempt]);
+  const committed = rows?.filter((batch) => batch.status === 'COMMITTED') ?? [];
+  const pending = rows?.filter((batch) => batch.status !== 'COMMITTED') ?? [];
+  const latest = rows?.[0];
+  const calendar = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul', year: 'numeric', month: '2-digit', day: '2-digit' });
+  const today = new Date();
+  const daily = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(today.getTime() - (6 - index) * 86_400_000);
+    const key = calendar.format(date);
+    const count = rows?.filter(({ created_at }) => {
+      const timestamp = batchTimestamp(created_at);
+      return Number.isFinite(timestamp.getTime()) && calendar.format(timestamp) === key;
+    }).length ?? 0;
+    return { key, label: date.toLocaleDateString('tr-TR', { timeZone: 'Europe/Istanbul', weekday: 'short' }), count };
+  });
+  const chartMax = Math.max(1, ...daily.map(({ count }) => count));
+
+  const metrics = [
+    ['Optik yükleme', rows?.length, Upload],
+    ['Değerlendirilen yükleme', committed.length, ClipboardList],
+    ['Bekleyen yükleme', pending.length, Activity],
+  ] as const;
+  return <div className="rm glass-home">
+    <header className="rm-head">
+      <div><div className="rm-kicker">SINAV OPERASYONU</div><h1 className="rm-title">Kurum Paneli</h1>
+        <p className="rm-sub">Yüklemeleri, değerlendirmeleri ve sonuç yayınını takip edin.</p></div>
+      <button type="button" className="glass-primary" onClick={() => go('upload')}><Upload size={18} /> Optik Yükle</button>
+    </header>
+    {error ? <div className="rm-alert" role="alert">Yükleme özeti alınamadı. <button type="button" className="rm-link" onClick={() => { setError(false); setAttempt((value) => value + 1); }}>Tekrar dene</button></div>
+      : !rows && <p role="status" className="rm-note">Yükleme özeti alınıyor…</p>}
+    <div className="osh-kpis" aria-label="Son 100 yüklemenin özeti">
+      {metrics.map(([label, count, Icon]) => <div className="rm-card" key={label}>
+        <Icon size={20} aria-hidden="true" /><b className="osh-v">{rows ? count : '—'}</b><span className="osh-k">{label}</span>
+      </div>)}
+    </div>
+    <p className="rm-note">Özet, son 100 yükleme içindeki silinmemiş kayıtları kapsar.</p>
+    <div className="glass-home-grid">
+      <section className="rm-card glass-chart" aria-labelledby="glass-activity">
+        <div className="rm-card-head"><h2 id="glass-activity">Son 7 günün optik yüklemeleri</h2></div>
+        {rows && <ul>{daily.map(({ key, label, count }) => <li key={key}>
+          <b>{count}</b><span className="glass-bar-track" aria-hidden="true"><span style={{ height: `${100 * count / chartMax}%` }} /></span><span>{label}</span>
+        </li>)}</ul>}
+      </section>
+      <section className="rm-card glass-latest" aria-labelledby="glass-last-exam">
+        <div className="rm-card-head"><h2 id="glass-last-exam">Son yüklenen sınav</h2></div>
+        {latest ? <>
+          <strong>{latest.title}</strong>
+          <p className="rm-note">{when(latest.created_at)} · {latest.status === 'COMMITTED' ? 'Değerlendirildi' : 'Değerlendirme bekliyor'}</p>
+          {latest.status === 'COMMITTED' && <p className="rm-note">{latest.publication_status === 'PUBLISHED' ? 'Öğrencilere yayımlandı' : 'Öğrencilere yayımlanmadı'}</p>}
+          <button type="button" className="glass-primary" onClick={() => go(latest.status === 'COMMITTED' ? 'reports' : 'upload')}>
+            {latest.status === 'COMMITTED' ? 'Rapor Merkezine Git' : 'Değerlendirmeye Git'}
+          </button>
+        </> : rows && <p className="rm-empty">Henüz yükleme yok.</p>}
+      </section>
+      <section className="rm-card" aria-labelledby="glass-recent">
+        <div className="rm-card-head"><h2 id="glass-recent">Son yüklemeler</h2><button type="button" className="rm-link" onClick={() => go('data')}>Tümü</button></div>
+        {rows?.length ? <ul className="osh-last">{rows.slice(0, 5).map((batch) => <li key={batch.id}>
+          <span className="rm-row-main"><b>{batch.title}</b><span>{when(batch.created_at)}</span></span>
+          <span className="glass-status" data-complete={batch.status === 'COMMITTED'}>{batch.status === 'COMMITTED' ? 'Değerlendirildi' : 'Bekliyor'}</span>
+        </li>)}</ul> : rows && <p className="rm-empty">Henüz yükleme yok.</p>}
+      </section>
+    </div>
+    <div className="osh-quick">
+      <button type="button" onClick={() => go('reports')}><b>Rapor Merkezi</b><span>Liste, karne ve sınav analizleri</span></button>
+      <button type="button" onClick={() => go('data')}><b>Veri Merkezi</b><span>Yüklenen dosyalar ve sonuç verileri</span></button>
+      <button type="button" onClick={() => go('cards')}><b>Öğrenci sonuçları</b><span>Yayın durumu ve öğrenci giriş bilgileri</span></button>
+    </div>
   </div>;
 }
 
