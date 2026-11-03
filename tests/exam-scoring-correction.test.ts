@@ -45,26 +45,26 @@ describe('scoring profile correction', () => {
     const url = `${t.base}/scoring-profile`;
     const before = await t.request(url);
     expect(before.response.status, before.text).toBe(200);
-    expect(before.data.options.map((o: any) => o.rule_code).sort()).toEqual(['ANUNEX_LGS_PRACTICE', 'MEB_LGS']);
+    expect(before.data.options.map((o: any) => o.rule_code).sort()).toEqual(['CUSTOM_EXAM', 'MEB_LGS']); // owner 3 Nov: net-only profiles are no longer offered
     expect(before.data.correctionOpen).toBe(false);
     // active and not opened for correction: locked
-    expect((await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_anunex_lgs_2627', reason: 'Yanlış profil seçilmişti.' })).data.error.code).toBe('CORRECTION_NOT_OPEN');
+    expect((await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_custom_exam_2627', reason: 'Yanlış profil seçilmişti.' })).data.error.code).toBe('CORRECTION_NOT_OPEN');
 
     const finalize = await call('/api/admin/result-network/administrations/adm/finalize', { method: 'POST', body: {}, cookie: admin });
     expect(finalize.status, finalize.text).toBe(200);
     // published and frozen: still locked
-    expect((await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_anunex_lgs_2627', reason: 'Yanlış profil seçilmişti.' })).data.error.code).toBe('CORRECTION_NOT_OPEN');
+    expect((await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_custom_exam_2627', reason: 'Yanlış profil seçilmişti.' })).data.error.code).toBe('CORRECTION_NOT_OPEN');
     const reopened = await call('/api/admin/result-network/administrations/adm/reopen-results', { method: 'POST', body: { reason: 'Puanlama profili düzeltmesi.', expectedSnapshotVersion: finalize.data.snapshotVersion }, cookie: admin });
     expect(reopened.status, reopened.text).toBe(200);
     expect((await t.request(url)).data.correctionOpen).toBe(true);
 
-    expect((await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_anunex_lgs_2627', reason: 'kısa' })).data.error.code).toBe('REASON_REQUIRED');
+    expect((await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_custom_exam_2627', reason: 'kısa' })).data.error.code).toBe('REASON_REQUIRED');
     expect((await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_osym_tyt_2627', reason: 'Yanlış profil seçilmişti.' })).data.error.code).toBe('SCORING_PROFILE_NOT_ALLOWED');
-    expect((await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_anunex_lgs_2627', reason: 'Yanlış profil seçilmişti.' }, 'teacher')).response.status).toBe(403);
-    const ok = await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_anunex_lgs_2627', reason: 'Yanlış profil seçilmişti.' });
+    expect((await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_custom_exam_2627', reason: 'Yanlış profil seçilmişti.' }, 'teacher')).response.status).toBe(403);
+    const ok = await t.request(url, 'PUT', { scoringRuleVersionId: 'srv_custom_exam_2627', reason: 'Yanlış profil seçilmişti.' });
     expect(ok.response.status, ok.text).toBe(200);
-    expect(ok.data.current).toBe('srv_anunex_lgs_2627');
-    expect((t.db.prepare(`SELECT scoring_rule_version_id v FROM exams WHERE id=?`).get(t.examId) as any).v).toBe('srv_anunex_lgs_2627');
+    expect(ok.data.current).toBe('srv_custom_exam_2627');
+    expect((t.db.prepare(`SELECT scoring_rule_version_id v FROM exams WHERE id=?`).get(t.examId) as any).v).toBe('srv_custom_exam_2627');
     expect((t.db.prepare(`SELECT details_json d FROM audit_logs WHERE action='EXAM_SCORING_PROFILE_CORRECTED'`).get() as any).d).toMatch(/Yanlış profil/);
   });
 });
