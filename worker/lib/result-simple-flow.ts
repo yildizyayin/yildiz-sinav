@@ -17,14 +17,16 @@ const batchStatusSql = (env: Env, batchId: string) => env.DB.prepare(`UPDATE sca
  * here. Only what makes a score wrong still blocks: a missing booklet when the exam has more than one booklet.
  */
 const NAME_ONLY = /Öğrenci numarası bulunamadı; ad soyad ve sınıf ile eşleşti/i;
-const NON_BLOCKING = [NAME_ONLY, /geçersiz karakter/i, /Kayıtlı öğrenciyle eşleşmedi/i, /^Ad soyad okunamadı\.?$/i, /ad soyad farklı görünüyor/i];
+/** 3 Nov: two earlier students share this name — on sonuc the sheet is simply its own participant (its number decides). */
+const NAME_AMBIGUOUS = /Aynı ad soyada sahip birden fazla öğrenci bulundu|kayıp harfler nedeniyle birden fazla öğrenci uyuyor/i;
+const NON_BLOCKING = [NAME_ONLY, NAME_AMBIGUOUS, /geçersiz karakter/i, /Kayıtlı öğrenciyle eşleşmedi/i, /^Ad soyad okunamadı\.?$/i, /ad soyad farklı görünüyor/i];
 export const isNonBlocking = (issue: string) => NON_BLOCKING.some((r) => r.test(issue));
 export const unreadableName = (c: any, rowNo: number) => `Ad okunamadı · ${String(c?.student_number || '').trim() ? `No ${String(c.student_number).trim()}` : `Satır ${rowNo}`}`;
 
 /** Every sheet that can be scored becomes a participant at once (the result network has no guest step). */
 export async function acceptReadableSheets(env: Env, batchId: string, actorId: string, institutionId: string): Promise<number> {
   const rows = await all<{ id: string; row_no: number; canonical_json: string; issues_json: string }>(env.DB.prepare(`SELECT id,row_no,canonical_json,issues_json FROM scan_records WHERE batch_id=? AND ((resolution_status!='CANCELLED'
-    AND (match_status IN ('NEW_GUEST','INVALID') OR (match_status IN ('ACTIVE_MATCH','GUEST_MATCH') AND issues_json!='[]')))
+    AND (match_status IN ('NEW_GUEST','INVALID','AMBIGUOUS') OR (match_status IN ('ACTIVE_MATCH','GUEST_MATCH') AND issues_json!='[]')))
     OR (resolution_status='CANCELLED' AND issues_json LIKE '["Değerlendirme dışı:%'))`).bind(batchId));
   // D-S039: a sheet whose grade belongs to another school level (a 7th grader in a 12th-grade exam) is not this
   // exam's student; it stays out with that reason so it can be uploaded under the right exam.
@@ -45,14 +47,14 @@ export async function acceptReadableSheets(env: Env, batchId: string, actorId: s
     if (!String(c.name || '').trim()) { c.name = unreadableName(c, Number(r.row_no)); notes.push('Ad soyad okunamadı; numarayla değerlendirildi.'); }
     c.issues = []; if (notes.length) c.notes = [...new Set([...(Array.isArray(c.notes) ? c.notes : []), ...notes])];
     // A match by name alone is not trusted on sonuc (two students can share a name): the sheet is its own participant.
-    accepted.push({ id: r.id, c: JSON.stringify(c), u: all.some((x) => NAME_ONLY.test(x)) ? 1 : 0 });
+    accepted.push({ id: r.id, c: JSON.stringify(c), u: all.some((x) => NAME_ONLY.test(x) || NAME_AMBIGUOUS.test(x)) ? 1 : 0 });
   }
   if (misfit.length) await env.DB.batch(misfit.map((m) => env.DB.prepare(`UPDATE scan_records SET match_status='INVALID',resolution_status='PENDING',issues_json=? WHERE id=? AND batch_id=?`).bind(JSON.stringify([m.issue]), m.id, batchId)));
   if (!accepted.length) { await batchStatusSql(env, batchId).run(); return 0; }
   const statements: D1PreparedStatement[] = [];
   for (let i = 0; i < accepted.length; i += 400) {
     const chunk = JSON.stringify(accepted.slice(i, i + 400));
-    statements.push(env.DB.prepare(`UPDATE scan_records SET match_status=CASE WHEN match_status IN ('NEW_GUEST','INVALID') THEN 'GUEST_MATCH' ELSE match_status END,match_confidence=1,
+    statements.push(env.DB.prepare(`UPDATE scan_records SET match_status=CASE WHEN match_status IN ('NEW_GUEST','INVALID','AMBIGUOUS') THEN 'GUEST_MATCH' ELSE match_status END,match_confidence=1,
       matched_student_id=CASE WHEN (SELECT json_extract(value,'$.u') FROM json_each(?1) WHERE json_extract(value,'$.id')=scan_records.id)=1 THEN NULL ELSE matched_student_id END,resolution_status='RESOLVED',issues_json='[]',
       canonical_json=(SELECT json_extract(value,'$.c') FROM json_each(?1) WHERE json_extract(value,'$.id')=scan_records.id)
       WHERE batch_id=?2 AND id IN (SELECT json_extract(value,'$.id') FROM json_each(?1))`).bind(chunk, batchId));
