@@ -106,3 +106,53 @@
 .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 :is(.rn-dialog,.rn-trigger>.result-tip-mark) { animation:none!important;transition:none!important; }
 }
 }
+
+/* Signed-in student exam analysis: keep screen styling out of report exports. */
+@media screen {
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2[data-view="detail"] .sr-detail-top {
+    padding: clamp(12px, 2.5vw, 24px);
+    background: #eff6ff;
+    border: 1px solid #cedff3;
+    border-radius: 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+    overflow-wrap: anywhere;
+  }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2[data-view="detail"] .sr-summary {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+    margin-block: 14px;
+  }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2[data-view="detail"] .sr-summary .sr-value {
+    grid-column: span 2;
+    min-width: 0;
+    padding: 10px 6px;
+    text-align: center;
+    border: 1px solid #d6e4ef;
+    border-radius: 10px;
+    background: #fff;
+    color: #173650;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2[data-view="detail"] .sr-summary .sr-value:nth-child(-n+2) {
+    grid-column: span 3;
+    background: #eff6ff;
+    border-color: #b6cde8;
+  }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2[data-view="detail"] .sr-summary .sr-value:nth-child(-n+2) strong {
+    font-size: clamp(22px, 4vw, 38px);
+    color: #143e69;
+  }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2[data-view="detail"] .sr-detail :is(.sr-main, .sr-side) {
+    min-width: 0;
+  }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2[data-view="detail"] .sr-detail :is(button, summary) {
+    min-height: 40px;
+  }
+  .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2[data-view="detail"] .sr-detail :is(button, summary, a):focus-visible {
+    outline: 3px solid #175f9b;
+    outline-offset: 3px;
+  }
+}
