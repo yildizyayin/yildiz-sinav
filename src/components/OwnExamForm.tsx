@@ -124,17 +124,18 @@ export function OwnExamPublishBar({ examId, refreshKey = 0, onRemoved, onChanged
   const startFix = () => { setKeys(JSON.parse(JSON.stringify(state.keys || {}))); setReason(''); setPanel('FIX'); };
   const saveFix = () => run(async () => {
     const r = await api<any>(`${base}/answer-key`, { method: 'POST', body: JSON.stringify({ keys, reason }) });
-    const ids: string[] = r.reevaluateBatchIds || [];
+    const ids: string[] = r.reevaluateBatchIds || []; let deferredNote = '';
     for (const [i, id] of ids.entries()) {
       for (let step = 0; step < 200; step++) {
         setProgress(`Yeni anahtarla değerlendiriliyor: yükleme ${i + 1}/${ids.length}…`);
         const ev = await api<any>(`/api/admin/result-network/operations/scan-batches/${encodeURIComponent(id)}/evaluate`, { method: 'POST' });
+        if (ev.deferred) deferredNote = ev.message || '';
         if (ev.done !== false) break;
       }
     }
     if (r.wasPublished) await api(`${base}/publish`, { method: 'POST' });
     setPanel(''); await load(); onChanged?.();
-    setNotice(`Cevap anahtarı düzeltildi${ids.length ? ` ve ${ids.length} yükleme yeni anahtarla yeniden değerlendirildi` : ''}.${r.wasPublished ? ' Sonuçlar öğrencilere yeniden açıldı.' : ''}`);
+    setNotice(`Cevap anahtarı düzeltildi${ids.length ? ` ve ${ids.length} yükleme yeni anahtarla yeniden değerlendirildi` : ''}.${r.wasPublished ? ' Sonuçlar öğrencilere yeniden açıldı.' : ''}${deferredNote ? ` ${deferredNote}` : ''}`);
   });
   const remove = () => run(async () => { await api(`${base}/remove`, { method: 'POST', body: JSON.stringify({ reason }) }); onRemoved?.(); });
   const complete = keysComplete(state.sections || [], state.booklets || [], keys);

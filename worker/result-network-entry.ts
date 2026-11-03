@@ -16,6 +16,7 @@ import { reopenNetworkResults } from './lib/result-network-correction';
 import { retireResultArtifactVersions } from './lib/result-artifact-retention';
 import {resultRetentionQueueDiagnostics} from './lib/result-retention-queue';
 import { reportSnapshotStatements } from './lib/report-snapshot';
+import { pausedSql,pauseMessage,queueDeferredEvaluation,trTime,uploadPause,validateResultSchedule } from './lib/result-schedule';
 
 const COOKIE='anunex_result_session';
 const SIX_HOURS=6*60*60*1000;
@@ -100,7 +101,12 @@ async function studentLogin(request:Request,env:Env){
  const ipHash=await sha256(ip),ipKey=`RESULT_LOGIN_IP|${ipHash}`,studentKey=`RESULT_LOGIN_STUDENT|${institutionCode}|${kind}|${value}`;
  if(await loginMisses(env,ipKey)>=20)return safeError(429,'LOGIN_RATE_LIMITED','Çok fazla deneme yapıldı. 15 dakika sonra tekrar deneyin.');
  const published=await one<any>(env.DB.prepare(`SELECT 1 x FROM result_network_institutions rni JOIN exam_administrations ea ON ea.id=rni.administration_id WHERE rni.meb_code=? AND ea.status='PUBLISHED' LIMIT 1`).bind(institutionCode));
- if(!published)return json({ok:true,found:false,reason:'NOT_PUBLISHED',message:'Kurumunuz için henüz yayınlanmış sonuç yok. Sonuçlar yayınlandığında burada açılır.'});
+ if(!published){
+  // Türkiye geneli takvim: a school with an announced release sees when, not only "not yet".
+  const next=await one<any>(env.DB.prepare(`SELECT e.title,ea.result_release_at FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id JOIN result_network_institutions rni ON rni.administration_id=ea.id AND rni.meb_code=? WHERE ea.channel='RESULT_NETWORK' AND ea.status IN ('UPLOADING','READY') AND ea.result_release_at IS NOT NULL AND julianday(ea.result_release_at)>julianday('now') ORDER BY ea.result_release_at LIMIT 1`).bind(institutionCode));
+  if(next)return json({ok:true,found:false,reason:'NOT_RELEASED',examTitle:next.title,releaseAt:next.result_release_at,message:`${next.title} sonuçları ${trTime(next.result_release_at)}'de açıklanacak.`});
+  return json({ok:true,found:false,reason:'NOT_PUBLISHED',message:'Kurumunuz için henüz yayınlanmış sonuç yok. Sonuçlar yayınlandığında burada açılır.'});
+ }
  const fail=async()=>{await recordLogin(env,[ipKey,studentKey],false,ipHash);return safeError(401,'LOGIN_NOT_MATCHED','Bilgiler eşleşmedi. Kurum, sınıf, numara ve adınızın ilk 3 harfini kontrol edin.')};
  if(await loginMisses(env,studentKey)>=8)return fail();
  const token=await hmac(env,`${kind}|${institutionCode}|${value}`);const column=kind==='TCKN'?'rai.tckn_lookup_token':'rai.student_number_lookup_token';
@@ -249,10 +255,10 @@ export async function freezeAndPublishAdministration(request:Request,env:Env,use
  * again as a new snapshot version (`live`), so everyone's Türkiye / il / ilçe rank is current. The first publication
  * keeps its date; later ones only move the version.
  */
-async function publishInLock(env:Env,id:string,actorId:string|null,live:boolean):Promise<Response>{
+async function publishInLock(env:Env,id:string,actorId:string|null,live:boolean,scheduled=false):Promise<Response>{
  let row=await one<any>(env.DB.prepare(`SELECT ea.*,e.id exam_id,e.academic_year FROM exam_administrations ea JOIN exams e ON e.id=ea.exam_id WHERE ea.id=? AND ea.channel='RESULT_NETWORK'`).bind(id));
  if(!row||(live?row.status!=='PUBLISHED':!['UPLOADING','READY'].includes(row.status)))return badRequest('Sonuç yayını için yönetim hazır olmalıdır. Mevcut yayın yeniden dondurulamaz.','RESULT_PUBLICATION_STATE_CHANGED');
- const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND NOT EXISTS(SELECT 1 FROM scan_batch_deletions del WHERE del.batch_id=sb.id) AND (EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)${live?'':" OR EXISTS(SELECT 1 FROM scan_records sr WHERE sr.batch_id=sb.id AND sr.resolution_status<>'CANCELLED')"})`).bind(row.exam_id));
+ const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND NOT EXISTS(SELECT 1 FROM scan_batch_deletions del WHERE del.batch_id=sb.id) AND (EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)${live||scheduled?'':" OR EXISTS(SELECT 1 FROM scan_records sr WHERE sr.batch_id=sb.id AND sr.resolution_status<>'CANCELLED')"})`).bind(row.exam_id));
  // live: an upload not yet evaluated joins at its own evaluation; only one half-written stops the refresh
  if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
  // Every issued identity must have an evaluated participant in this exam and
@@ -412,7 +418,8 @@ export async function handleResultGovernanceMutation(request:Request,env:Env):Pr
  const preparation=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/prepare-artifact-job$/);
  const verification=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/verify-artifact-job$/);
  const artifactQueue=path==='/api/admin/result-network/artifact-queue';
- if(!dealerStatus&&!removeScope&&!finalize&&!reopen&&!artifacts&&!readiness&&!preparation&&!verification&&!artifactQueue)return null;
+ const schedule=path.match(/^\/api\/admin\/result-network\/administrations\/([^/]+)\/schedule$/);
+ if(!dealerStatus&&!removeScope&&!finalize&&!schedule&&!reopen&&!artifacts&&!readiness&&!preparation&&!verification&&!artifactQueue)return null;
  const user=await requireSuper(request,env);if(user instanceof Response)return user;
  if(dealerStatus&&request.method==='POST')return setDealerStatus(request,env,user,dealerStatus[1]);
  if(removeScope&&request.method==='DELETE')return removeDealerScope(env,user,removeScope[1],removeScope[2]);
@@ -425,6 +432,7 @@ export async function handleResultGovernanceMutation(request:Request,env:Env):Pr
  if(artifacts&&request.method==='POST')return prepareResultArtifacts(request,env,user,artifacts[1]);
  if(reopen&&request.method==='POST')return reopenNetworkResults(request,env,user,reopen[1]);
  if(finalize&&request.method==='POST')return freezeAndPublishAdministration(request,env,user,finalize[1]);
+ if(schedule&&request.method==='PUT')return saveResultSchedule(request,env,user,schedule[1]);
  return safeError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
 }
 
@@ -573,7 +581,8 @@ export async function issueBatchIdentities(env:Env,batchId:string,actorId:string
 }
 
 /** A published administration is stale when a student with result access is not in its current snapshot. */
-const STALE_PUBLICATION_SQL=`SELECT ea.id,ea.exam_id FROM exam_administrations ea WHERE ea.channel='RESULT_NETWORK' AND ea.status='PUBLISHED' AND EXISTS(SELECT 1 FROM result_access_identities rai WHERE rai.administration_id=ea.id AND NOT EXISTS(SELECT 1 FROM exam_result_snapshots s WHERE s.exam_id=ea.exam_id AND s.snapshot_version=ea.published_snapshot_version AND s.participant_id=rai.participant_id))`;
+// Türkiye geneli takvim: no rank rewrite while uploads wait on the release evening.
+const STALE_PUBLICATION_SQL=`SELECT ea.id,ea.exam_id FROM exam_administrations ea WHERE ea.channel='RESULT_NETWORK' AND ea.status='PUBLISHED' AND NOT ${pausedSql('ea')} AND EXISTS(SELECT 1 FROM result_access_identities rai WHERE rai.administration_id=ea.id AND NOT EXISTS(SELECT 1 FROM exam_result_snapshots s WHERE s.exam_id=ea.exam_id AND s.snapshot_version=ea.published_snapshot_version AND s.participant_id=rai.participant_id))`;
 
 /**
  * D-S039: after an upload is deleted or moved, a published exam's ranks are written again without its students. If no
@@ -616,6 +625,69 @@ export async function refreshLivePublications(env:Env,examId?:string,actorId:str
  let refreshed=0;
  for(const s of stale){const r=await withExamOperationLock(env,s.exam_id,'RESULT_NETWORK_REFRESH',async(env)=>publishInLock(env,s.id,actorId,true));if(r.ok)refreshed++;else console.warn('RESULT_LIVE_REFRESH_SKIPPED',s.exam_id,await r.clone().text())}
  return refreshed;
+}
+
+async function saveResultSchedule(request:Request,env:Env,user:AuthUser,id:string){
+ const row=await one<any>(env.DB.prepare(`SELECT id,exam_id,status,application_start_at,application_end_at,result_release_at,upload_resume_at,scheduled_release_done_at FROM exam_administrations WHERE id=? AND channel='RESULT_NETWORK'`).bind(id));
+ if(!row)return safeError(404,'ADMINISTRATION_NOT_FOUND','Sınav yönetimi bulunamadı.');
+ const body:any=await request.json().catch(()=>({}));
+ const verdict=validateResultSchedule(body,Date.now(),{releaseAt:row.result_release_at});
+ if(!verdict.ok)return badRequest(verdict.message,'INVALID_RESULT_SCHEDULE');
+ const s=verdict.value;
+ if(row.scheduled_release_done_at&&s.releaseAt!==row.result_release_at)return badRequest('Sonuçlar bu takvimle açıklandı; açıklama zamanı artık değiştirilemez. Bekleme bitişini değiştirebilirsiniz.','RESULT_ALREADY_RELEASED');
+ if(row.status==='PUBLISHED'&&!row.scheduled_release_done_at&&s.releaseAt&&s.releaseAt!==row.result_release_at)return badRequest('Bu sınavın sonuçları zaten yayında; açıklama zamanı planlanamaz.','RESULT_ALREADY_PUBLISHED');
+ await env.DB.batch([
+  env.DB.prepare(`UPDATE exam_administrations SET application_start_at=?,application_end_at=?,result_release_at=?,upload_resume_at=? WHERE id=?`).bind(s.applicationStartAt,s.applicationEndAt,s.releaseAt,s.resumeAt,id),
+  env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'RESULT_SCHEDULE_UPDATED','exam_administration',?,?)`).bind(uuid('aud'),user.id,id,JSON.stringify({before:{applicationStartAt:row.application_start_at,applicationEndAt:row.application_end_at,releaseAt:row.result_release_at,resumeAt:row.upload_resume_at},after:s})),
+ ]);
+ return json({ok:true,id,schedule:s});
+}
+
+/** Türkiye geneli takvim: at the release time the administration is ranked once and published (cron, every 15 min). */
+export async function releaseDueAdministrations(env:Env){
+ const due=await all<any>(env.DB.prepare(`SELECT id,exam_id FROM exam_administrations WHERE channel='RESULT_NETWORK' AND status IN ('UPLOADING','READY') AND result_release_at IS NOT NULL AND scheduled_release_done_at IS NULL AND julianday(result_release_at)<=julianday('now') ORDER BY result_release_at LIMIT 10`));
+ let released=0;
+ for(const d of due){
+  const r=await withExamOperationLock(env,d.exam_id,'RESULT_SCHEDULED_RELEASE',async(env)=>publishInLock(env,d.id,null,false,true));
+  if(r.ok){await env.DB.batch([env.DB.prepare(`UPDATE exam_administrations SET scheduled_release_done_at=CURRENT_TIMESTAMP WHERE id=?`).bind(d.id),env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,NULL,NULL,'RESULT_SCHEDULED_RELEASE','exam_administration',?,?)`).bind(uuid('aud'),d.id,JSON.stringify({examId:d.exam_id}))]);released++}
+  else console.warn('RESULT_SCHEDULED_RELEASE_DEFERRED',d.exam_id,await r.clone().text());
+ }
+ return released;
+}
+
+/** Türkiye geneli takvim: after the pause the waiting uploads are evaluated here, oldest first, within a time budget. */
+export async function runDeferredEvaluations(env:Env,budgetMs=60000){
+ const started=Date.now();let done=0;
+ const rows=await all<any>(env.DB.prepare(`SELECT d.* FROM result_deferred_evaluations d WHERE d.done_at IS NULL AND NOT EXISTS(SELECT 1 FROM exam_administrations ea WHERE ea.exam_id=d.exam_id AND ea.channel='RESULT_NETWORK' AND ${pausedSql('ea')}) ORDER BY d.queued_at LIMIT 10`));
+ const finish=(batchId:string,outcome:string)=>env.DB.prepare(`UPDATE result_deferred_evaluations SET done_at=CURRENT_TIMESTAMP,outcome=? WHERE batch_id=?`).bind(outcome,batchId).run();
+ for(const row of rows){
+  if(Date.now()-started>budgetMs)break;
+  const batch=await one<any>(env.DB.prepare(`SELECT id,exam_id,institution_id,status FROM scan_batches WHERE id=?`).bind(row.batch_id));
+  if(!batch||await one(env.DB.prepare('SELECT 1 x FROM scan_batch_deletions WHERE batch_id=?').bind(row.batch_id))){await finish(row.batch_id,'DELETED');continue}
+  if(batch.exam_id!==row.exam_id){await finish(row.batch_id,'MOVED');continue}
+  try{
+   const effective=JSON.parse(row.effective_json) as AuthUser;
+   if(batch.status!=='COMMITTED'&&!await one(env.DB.prepare('SELECT 1 x FROM scan_evaluation_progress WHERE batch_id=? LIMIT 1').bind(batch.id))){
+    await acceptReadableSheets(env,batch.id,row.actor_user_id,batch.institution_id);await setAsideUnscorable(env,batch.id,row.actor_user_id,batch.institution_id);
+   }
+   let finished=false;
+   while(Date.now()-started<=budgetMs){
+    const r=await evaluateBatchStep(env,effective,batch.id);
+    if(!r.ok)throw Error(`${r.status} ${(await r.text()).slice(0,300)}`);
+    const body:any=await r.json();
+    if(body.done!==false){finished=true;break}
+   }
+   if(!finished)continue;
+   const access=await issueBatchIdentities(env,batch.id,row.actor_user_id);
+   if(access.issued)await refreshLivePublications(env,batch.exam_id,row.actor_user_id);
+   await finish(batch.id,'EVALUATED');done++;
+  }catch(e){
+   const message=e instanceof Error?e.message:String(e);
+   await env.DB.prepare(`UPDATE result_deferred_evaluations SET attempts=attempts+1,last_error=?,done_at=CASE WHEN attempts+1>=5 THEN CURRENT_TIMESTAMP END,outcome=CASE WHEN attempts+1>=5 THEN 'FAILED' END WHERE batch_id=?`).bind(message.slice(0,500),row.batch_id).run();
+   console.error('RESULT_DEFERRED_EVALUATION_FAILED',row.batch_id,message);
+  }
+ }
+ return done;
 }
 
 export async function generateBatchAccessCodes(request:Request,env:Env,batchId:string){
@@ -804,6 +876,11 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   // S030: sheets that cannot be scored are set aside with their reason; the rest is evaluated.
   // A batch uploaded before S030 (or reopened from the history) may still hold readable unmatched sheets: accept them first.
   if(await one(env.DB.prepare('SELECT 1 x FROM scan_batch_deletions WHERE batch_id=?').bind(evaluate[1])))return safeError(409,'BATCH_DELETED','Bu yükleme silinmiş. Önce "Geri al" ile geri getirin.');
+  // Türkiye geneli takvim: on the release evening a new upload waits; one already being evaluated finishes.
+  if(context.user.role!=='SUPER_ADMIN'){const pause=await uploadPause(env,context.batch.exam_id);
+   if(pause.paused&&!await one(env.DB.prepare('SELECT 1 x FROM scan_evaluation_progress WHERE batch_id=? LIMIT 1').bind(evaluate[1]))){
+    await queueDeferredEvaluation(env,context.batch,context.user,context.effective);
+    return json({ok:true,done:true,deferred:true,resumeAt:pause.resumeAt,processed:0,message:pauseMessage(pause.resumeAt)},202)}}
   if(context.batch.status!=='COMMITTED')await acceptReadableSheets(env,evaluate[1],context.user.id,context.batch.institution_id);
   const setAside=context.batch.status==='COMMITTED'?[]:await setAsideUnscorable(env,evaluate[1],context.user.id,context.batch.institution_id);
   // S035: one time-limited step; the page calls again while done is false and shows "x / n öğrenci".
