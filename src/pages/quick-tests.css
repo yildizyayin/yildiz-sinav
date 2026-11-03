@@ -165,3 +165,8 @@ kbd{display:inline-block;min-width:20px;padding:1px 6px;border:1px solid #c9d8ee
 .qt-bulk input::placeholder{text-transform:none;letter-spacing:normal;font-family:inherit}
 .qt-page .qt-new{width:auto;min-width:240px;padding:0 26px}
 .qt-page .qt-hero span.eyebrow{color:#8ec5ff}
+/* P03: shared text (paragraph/figure) above each question of its group */
+.qx-passage{display:flex;flex-direction:column;gap:6px;background:#f3f6fc;border:1px solid #d9e2f1;border-left:4px solid #2563eb;border-radius:10px;padding:12px 14px;margin:0 0 14px;max-height:45vh;overflow:auto}
+.qx-passage b{font-size:14px;color:#1d3a75}
+.qx-passage strong{font-size:15px}
+.qx-text .qx-passage p{margin:0;font-size:16px;line-height:1.6;white-space:pre-wrap}

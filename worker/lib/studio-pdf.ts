@@ -92,7 +92,7 @@ type Visual =
   | { kind: 'IMAGE'; bytes: Uint8Array; format: 'png' | 'jpg' }
   | { kind: 'TABLE'; title: string; unit: string; columns: string[]; rows: string[][] }
   | { kind: 'BAR_CHART'; title: string; unit: string; categories: string[]; values: number[] };
-type Printable = { no: number; stem: string[]; extra: string[]; visuals: Visual[]; options: string[]; correct: string | null; ai: boolean };
+type Printable = { no: number; stem: string[]; extra: string[]; visuals: Visual[]; options: string[]; correct: string | null; ai: boolean; passage?: { title: string | null; text: string; first: number; last: number } };
 
 export function sniff(bytes: Uint8Array): 'png' | 'jpg' | null {
   if (bytes.length > 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) return 'png';
@@ -111,10 +111,12 @@ async function loadPrintables(env: Env, documentId: string, booklet: string): Pr
 async function printablesFromRows(env: Env, rows: Row[]): Promise<Printable[]> {
   const ids = rows.map(r => r.id);
   const marks = ids.map(() => '?').join(',');
-  // P01: a shared stem (passage/figure) is not rendered yet; printing its questions without it would be wrong.
-  const { stemGroupsInstalled } = await import('./studio-booklets');
-  const sharedRoot = !(await stemGroupsInstalled(env)) ? null : await one<{ id: string }>(env.DB.prepare(`SELECT q.id FROM question_bank q JOIN question_stem_groups g ON g.id=q.stem_group_id WHERE q.id IN (${marks}) AND length(trim(coalesce(g.shared_stem_text,'')))>0 LIMIT 1`).bind(...ids));
-  if (sharedRoot) throw new StudioPrintError('PRINT_STEM_GROUP_SHARED_TEXT', `Soru ${ids.indexOf(sharedRoot.id) + 1}: ortak kök metni olan sorular henüz basılamıyor.`);
+  // P03: a shared stem (paragraph/figure text) prints once before its questions; only an approved text is printed.
+  const { sharedPassages, passageRuns } = await import('./studio-booklets');
+  const passages = await sharedPassages(env, ids);
+  if (passages.unapproved.length) { const k = ids.indexOf(passages.unapproved[0]); throw new StudioPrintError('PRINT_STEM_GROUP_NOT_APPROVED', `Soru ${k + 1}: ortak kök metni henüz onaylanmadı; onaylanmayan metin basılmaz.`); }
+  const runs = passageRuns(ids, passages.byQuestion);
+  for (const [, [first, last]] of runs) for (let n = first; n <= last; n++) if (passages.byQuestion.get(ids[n - 1])?.groupId !== passages.byQuestion.get(ids[first - 1])?.groupId) throw new StudioPrintError('STEM_GROUP_INTEGRITY', `Soru ${first}–${last}: ortak köklü sorular art arda olmalı.`);
   const assets = await all<Asset>(env.DB.prepare(`SELECT question_id,asset_type,r2_key,external_url,placement,option_label,sort_order,alt_text FROM question_assets WHERE question_id IN (${marks}) ORDER BY question_id,sort_order,id`).bind(...ids)).catch(() => [] as Asset[]);
   const blocks = await all<Block>(env.DB.prepare(`SELECT question_id,block_type,placement,text_content,payload_json,alt_text,sort_order FROM question_content_blocks WHERE question_id IN (${marks}) ORDER BY question_id,sort_order,id`).bind(...ids)).catch(() => [] as Block[]);
   const items: Printable[] = [];
@@ -150,7 +152,9 @@ async function printablesFromRows(env: Env, rows: Row[]): Promise<Printable[]> {
       throw new StudioPrintError('PRINT_BLOCK_UNSUPPORTED', `${where}: ${block.block_type} içeriği baskıda henüz desteklenmiyor.`);
     }
     if (row.content_mode && row.content_mode !== 'TEXT' && !visuals.some(v => v.kind === 'IMAGE')) throw new StudioPrintError('PRINT_IMAGE_MISSING', `${where}: görsel soru, ama basılabilir görseli yok.`);
-    items.push({ no, stem: [normalizePrintText(row.stem_text)], extra, visuals, options, correct: row.correct_answer, ai: isAiQuestionOrigin(row.origin_kind) });
+    const shared = passages.byQuestion.get(row.id), run = shared ? runs.get(shared.groupId) : undefined;
+    const passage = shared && run && run[0] === no ? { title: shared.title ? normalizePrintText(shared.title) : null, text: normalizePrintText(shared.text), first: run[0], last: run[1] } : undefined;
+    items.push({ no, stem: [normalizePrintText(row.stem_text)], extra, visuals, options, correct: row.correct_answer, ai: isAiQuestionOrigin(row.origin_kind), ...(passage ? { passage } : {}) });
   }
   return items;
 }
@@ -264,6 +268,21 @@ function visualOps(ctx: Ctx, v: Visual, width: number, where: string): Op[] {
   return ops;
 }
 
+/** P03: the shared text box printed once before its first question ("X–Y. soruları … cevaplayınız"). */
+function passageOps(ctx: Ctx, p: NonNullable<Printable['passage']>, where: string): Op[] {
+  const { regular, bold } = ctx.fonts, BODY = ctx.L.body, LINE = ctx.L.line, pad = 6, width = ctx.L.colW - 2 * pad;
+  const head = p.first === p.last ? `${p.first}. soruyu aşağıdaki metne göre cevaplayınız.` : `${p.first}–${p.last}. soruları aşağıdaki metne göre cevaplayınız.`;
+  assertPrintable(ctx.fonts, head, where); assertPrintable(ctx.fonts, p.text, `${where} ortak kök metni`);
+  if (p.title) assertPrintable(ctx.fonts, p.title, `${where} ortak kök başlığı`);
+  const headLines = wrapText(bold, head, BODY - 0.5, width), titleLines = p.title ? wrapText(bold, p.title, BODY, width) : [], textLines = wrapText(regular, p.text, BODY, width);
+  const lines: Array<{ t: string; b: boolean; s: number }> = [...headLines.map((t) => ({ t, b: true, s: BODY - 0.5 })), ...titleLines.map((t) => ({ t, b: true, s: BODY })), ...textLines.map((t) => ({ t, b: false, s: BODY }))];
+  const h = lines.length * LINE + 2 * pad;
+  return [{ h, draw: (page, x, y) => {
+    page.drawRectangle({ x, y: y - h, width: ctx.L.colW, height: h, color: FILL, borderColor: RULE, borderWidth: 0.6 });
+    lines.forEach((l, i) => { if (l.t) page.drawText(l.t, { x: x + pad, y: y - pad - i * LINE - l.s, size: l.s, font: l.b ? bold : regular, color: INK }); });
+  } }, { h: 6, draw: () => {} }];
+}
+
 function questionOps(ctx: Ctx, q: Printable): Op[] {
   const where = `Soru ${q.no}`;
   const { regular, bold } = ctx.fonts;
@@ -271,6 +290,7 @@ function questionOps(ctx: Ctx, q: Printable): Op[] {
   // Room for three-digit numbers so '100.' never touches the stem.
   const numW = bold.widthOfTextAtSize('100.', BODY + 0.5) + 5, inner = ctx.L.colW - numW;
   const ops: Op[] = [];
+  if (q.passage) ops.push(...passageOps(ctx, q.passage, where));
   const stemText = [...q.stem, ...q.extra].join('\n');
   assertPrintable(ctx.fonts, stemText, where);
   const stemLines = wrapText(regular, stemText, BODY, inner);

@@ -922,8 +922,9 @@ async function stemGrouping(env:Env,ids:string[]):Promise<{ordered:OrderedQuesti
   const groups=[...new Set(ordered.map(q=>q.groupId).filter(Boolean))] as string[];
   if(!groups.length)return {ordered};
   const gm=groups.map(()=>'?').join(',');
-  const shared=await all<any>(env.DB.prepare(`SELECT id FROM question_stem_groups WHERE id IN (${gm}) AND length(trim(coalesce(shared_stem_text,'')))>0`).bind(...groups));
-  if(shared.length)return json({ok:false,error:{code:'STEM_GROUP_SHARED_TEXT_UNSUPPORTED',message:'Ortak kök metni olan soru grupları kitapçıkta ve online sınavda henüz basılamıyor; bu grubu seçmeyin.'}},409);
+  // P03: a shared text is printed with its questions, but only once it is approved (human-approval gate).
+  const shared=await all<any>(env.DB.prepare(`SELECT id FROM question_stem_groups WHERE id IN (${gm}) AND length(trim(coalesce(shared_stem_text,'')))>0 AND review_status<>'APPROVED'`).bind(...groups));
+  if(shared.length)return json({ok:false,error:{code:'STEM_GROUP_NOT_APPROVED',message:'Ortak kök metni henüz onaylanmamış bir soru grubu seçildi; metin onaylanmadan bu grup kullanılamaz.'}},409);
   const members=await all<any>(env.DB.prepare(`SELECT id,stem_group_id FROM question_bank WHERE stem_group_id IN (${gm}) AND review_status<>'ARCHIVED' ORDER BY stem_group_id,stem_group_order,id`).bind(...groups));
   const expected=new Map<string,string[]>();for(const m of members)(expected.get(m.stem_group_id)||expected.set(m.stem_group_id,[]).get(m.stem_group_id)!).push(m.id);
   const problem=checkGroupIntegrity(ordered,expected);
@@ -1027,7 +1028,10 @@ async function studioItems(request:Request,env:Env,user:AuthUser,documentId:stri
   const booklet=(new URL(request.url).searchParams.get('booklet')||'A').toUpperCase();if(!bookletUsable(booklet))return badRequest(`Kitapçık ${USABLE_BOOKLETS.join(' veya ')} olmalıdır.`,'INVALID_BOOKLET');
   const rows=await all<any>(env.DB.prepare(`SELECT i.sort_order position,q.id,q.stem_text stem,q.options_json,q.correct_answer correctAnswer,q.solution_text solution,(SELECT a.external_url FROM question_assets a WHERE a.question_id=q.id AND a.asset_type='SOLUTION_VIDEO' AND a.approved=1 AND a.external_url LIKE 'https://%' ORDER BY a.created_at DESC LIMIT 1) solutionVideo,COALESCE(q.difficulty_band,'MEDIUM') band,(SELECT group_concat(o.code,', ') FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id WHERE l.question_id=q.id) outcomes FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code=? ORDER BY i.sort_order`).bind(documentId,booklet));
   const items=rows.map((r:any)=>{const opts=parseJson<any[]>(r.options_json,[]);return {position:r.position,id:r.id,stem:String(r.stem||''),options:(Array.isArray(opts)?opts:[]).map((o:any,i:number)=>typeof o==='string'?{label:'ABCDE'[i],text:o}:{label:String(o.label||'ABCDE'[i]),text:String(o.text??'')}),correctAnswer:r.correctAnswer,solution:r.solution||null,solutionVideo:r.solutionVideo||null,band:r.band,outcomes:r.outcomes||null};});
-  return json({ok:true,booklet,items,...await studioDocState(env,documentId)});
+  // P03: the preview shows each approved shared text once, before its first question (as the PDF prints it).
+  const {sharedPassages,passageRuns}=await import('./studio-booklets');const ids=items.map((x:any)=>x.id);const shared=await sharedPassages(env,ids);const runs=passageRuns(ids,shared.byQuestion);
+  const withPassages=items.map((x:any,i:number)=>{const p=shared.byQuestion.get(x.id),r=p?runs.get(p.groupId):undefined;return p&&r&&r[0]===i+1?{...x,passage:{title:p.title,text:p.text,first:r[0],last:r[1]}}:shared.unapproved.includes(x.id)?{...x,passageUnapproved:true}:x;});
+  return json({ok:true,booklet,items:withPassages,...await studioDocState(env,documentId)});
 }
 async function studioSwap(request:Request,env:Env,user:AuthUser,documentId:string):Promise<Response>{
   const document=await studioDocForStaff(env,user,documentId);if(document instanceof Response)return document;

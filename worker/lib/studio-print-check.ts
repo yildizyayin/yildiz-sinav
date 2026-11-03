@@ -1,7 +1,7 @@
 import type { Env } from '../types';
 import { all, one } from './db';
 import { contentRevision, normalizeLayoutSettings, type LayoutPlan, type PrintLayoutSettings } from './print-layout';
-import { bookletOrder, stemGroupsInstalled, USABLE_BOOKLETS } from './studio-booklets';
+import { bookletOrder, sharedPassages, stemGroupsInstalled, USABLE_BOOKLETS } from './studio-booklets';
 import { layoutStudioBooklet, printableIssue, STUDIO_OPTICAL_CAPACITY, StudioPrintError, type StudioBranding } from './studio-pdf';
 
 /**
@@ -60,7 +60,10 @@ export async function studioRevision(env: Env, doc: any): Promise<string> {
   const questions = ids.length ? await all<any>(env.DB.prepare(`SELECT id,${col(cols, 'updated_at')},stem_text,options_json,correct_answer,${col(cols, 'review_status')},${col(cols, 'copyright_status')},content_mode FROM question_bank WHERE id IN (${marks}) ORDER BY id`).bind(...ids)) : [];
   const assets = ids.length && tables.has('question_assets') ? await all<any>(env.DB.prepare(`SELECT question_id,asset_type,r2_key,external_url,placement,option_label,sort_order FROM question_assets WHERE question_id IN (${marks}) ORDER BY question_id,sort_order`).bind(...ids)) : [];
   const blocks = ids.length && tables.has('question_content_blocks') ? await all<any>(env.DB.prepare(`SELECT question_id,block_type,placement,text_content,payload_json,sort_order FROM question_content_blocks WHERE question_id IN (${marks}) ORDER BY question_id,sort_order`).bind(...ids)) : [];
-  return contentRevision(['studio-v1', config.layout ?? null, String(config.deliveryMode || 'PDF_OPTICAL').toUpperCase(), config.branding ?? null, items, questions, assets, blocks]);
+  // P03: the shared texts printed with the questions are part of the paper too.
+  const passages = await sharedPassages(env, ids);
+  const shared = [...passages.byQuestion.entries()].sort(([x], [y]) => x.localeCompare(y)).map(([id, p]) => [id, p.groupId, p.title, p.text]);
+  return contentRevision(['studio-v1', config.layout ?? null, String(config.deliveryMode || 'PDF_OPTICAL').toUpperCase(), config.branding ?? null, items, questions, assets, blocks, ...(shared.length || passages.unapproved.length ? [shared, passages.unapproved] : [])]);
 }
 
 export async function studioPrintCheck(env: Env, doc: any, branding: StudioBranding): Promise<PrintCheck & { plans: Record<string, LayoutPlan> }> {
@@ -110,6 +113,10 @@ export async function studioPrintCheck(env: Env, doc: any, branding: StudioBrand
     const issue = await printableIssue(env, q, no);
     if (issue) { printableAll = false; blockers.push({ code: issue.code, message: issue.message, questionId: id, booklet: null, target: MEDIA_CODES.test(issue.code) ? 'MEDIA' : 'CONTENT' }); }
   }
+
+  // P03: an unapproved shared text is never printed; name each question that waits for it.
+  const passages = await sharedPassages(env, a);
+  for (const id of passages.unapproved) { printableAll = false; blockers.push({ code: 'STEM_GROUP_NOT_APPROVED', message: `Soru ${a.indexOf(id) + 1}: ortak kök metni henüz onaylanmadı.`, questionId: id, booklet: null, target: 'APPROVAL' }); }
 
   if (deliveryMode === 'PDF_OPTICAL' && a.length > STUDIO_OPTICAL_CAPACITY) blockers.push({ code: 'OPTICAL_CAPACITY', message: `Telefon optiği en fazla ${STUDIO_OPTICAL_CAPACITY} soruyu okutabilir; belgede ${a.length} soru var. Soru sayısını azaltın veya optiksiz PDF seçin.`, questionId: null, booklet: null, target: 'OPTICAL' });
 

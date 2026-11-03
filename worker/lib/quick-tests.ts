@@ -238,8 +238,10 @@ async function fromStudio(env: Env, user: AuthUser, docId: string) {
   if (k >= 0) return fail(409, 'OWNERSHIP_MISMATCH', `${at(k)} bu kurumun kullanabileceği havuzda değil.`);
   k = items.findIndex((q) => q.question_type !== 'MULTIPLE_CHOICE');
   if (k >= 0) return fail(409, 'NOT_MULTIPLE_CHOICE', `${at(k)} çoktan seçmeli değil.`);
-  k = items.findIndex((q) => Boolean(q.stem_group_id));
-  if (k >= 0) return fail(409, 'STEM_GROUP_UNSUPPORTED', `${at(k)} ortak köklü bir grubun parçası; ortak kökler online sınavda henüz gösterilemiyor.`);
+  // P03: a stem group goes online with its shared text shown above each of its questions — only an approved text.
+  { const { sharedPassages } = await import('./studio-booklets'); const shared = await sharedPassages(env, items.map((q) => q.id));
+    k = items.findIndex((q) => shared.unapproved.includes(q.id));
+    if (k >= 0) return fail(409, 'STEM_GROUP_NOT_APPROVED', `${at(k)} ortak kök metni henüz onaylanmadı; onaylanmayan metin online sınavda gösterilmez.`); }
   k = items.findIndex((q) => Number(q.assets) > 0 || Number(q.blocks) > 0);
   if (k >= 0) return fail(409, 'VISUAL_QUESTION', `${at(k)} görsel, tablo veya grafik içeriyor; bu tür sorular şimdilik yalnız kâğıt (PDF) olarak verilir.`);
   if (user.role === 'TEACHER') {
@@ -277,7 +279,10 @@ async function quickRevision(env: Env, t: any, questions: any[], settings: unkno
   const { contentRevision } = await import('./print-layout');
   const bank = questions.filter((q) => q.question_bank_id).map((q) => q.question_bank_id);
   const rows = bank.length ? await all<any>(env.DB.prepare(`SELECT id,updated_at,stem_text,options_json,review_status,copyright_status FROM question_bank WHERE id IN (${bank.map(() => '?').join(',')}) ORDER BY id`).bind(...bank)) : [];
-  return contentRevision(['quick-v1', t.title, t.option_count, settings ?? null, questions.map((q) => [q.id, q.sort_order, q.kind, q.image_key, q.image_width, q.image_height, q.correct_answer, q.question_bank_id]), rows]);
+  const { sharedPassages } = await import('./studio-booklets');
+  const shared = await sharedPassages(env, bank);
+  const passages = [...shared.byQuestion.entries()].sort(([x], [y]) => x.localeCompare(y)).map(([id, p]) => [id, p.groupId, p.title, p.text]);
+  return contentRevision(['quick-v1', t.title, t.option_count, settings ?? null, questions.map((q) => [q.id, q.sort_order, q.kind, q.image_key, q.image_width, q.image_height, q.correct_answer, q.question_bank_id]), rows, ...(passages.length || shared.unapproved.length ? [passages, shared.unapproved] : [])]);
 }
 
 export async function quickPrintCheck(env: Env, t: any) {
@@ -517,7 +522,13 @@ async function attemptFor(env: Env, attemptId: string, token: string) {
 async function examPayload(env: Env, a: any) {
   const order: string[] = JSON.parse(a.question_order_json);
   const qs = new Map((await questionsOf(env, a.test_id)).map((q) => [q.id, q]));
-  return order.map((id, i) => { const q = qs.get(id); return q ? { id, no: i + 1, kind: q.kind, width: q.image_width, height: q.image_height, stem: q.kind === 'BANK' ? q.stem_text : undefined, options: q.kind === 'BANK' ? bankOptions(q.options_json) : undefined } : null; }).filter(Boolean);
+  // P03: an approved shared text travels with each question of its group ("X–Y. soruları … cevaplayınız").
+  const { sharedPassages } = await import('./studio-booklets');
+  const shared = await sharedPassages(env, order.map((id) => qs.get(id)?.question_bank_id).filter(Boolean));
+  const groupOfAttempt = (id: string) => { const b = qs.get(id)?.question_bank_id; return b ? shared.byQuestion.get(b) : undefined; };
+  const runs = new Map<string, [number, number]>(); order.forEach((id, i) => { const p = groupOfAttempt(id); if (!p) return; const r = runs.get(p.groupId); if (r) r[1] = i + 1; else runs.set(p.groupId, [i + 1, i + 1]); });
+  const passageOf = (id: string) => { const p = groupOfAttempt(id); if (!p) return undefined; const [first, last] = runs.get(p.groupId)!; return { title: p.title, text: p.text, first, last }; };
+  return order.map((id, i) => { const q = qs.get(id); const passage = passageOf(id); return q ? { id, no: i + 1, kind: q.kind, width: q.image_width, height: q.image_height, stem: q.kind === 'BANK' ? q.stem_text : undefined, options: q.kind === 'BANK' ? bankOptions(q.options_json) : undefined, ...(passage ? { passage } : {}) } : null; }).filter(Boolean);
 }
 function resultFor(a: any, closed: boolean) {
   const show = a.result_mode === 'AFTER_SUBMIT' || (a.result_mode === 'AFTER_CLOSE' && closed);
@@ -560,8 +571,12 @@ async function handlePublic(request: Request, env: Env, url: URL): Promise<Respo
     const recent = Number((await one<any>(env.DB.prepare(`SELECT count(*) c FROM quick_test_attempts WHERE ip_hash=? AND started_at>datetime('now','-10 minutes')`).bind(ipHash)))?.c || 0);
     if (recent >= 200) return fail(429, 'RATE_LIMITED', 'Çok fazla deneme yapıldı; biraz bekleyin.');
     const questions = (await questionsOf(env, s.test_id)).filter((q) => q.correct_answer !== 'X');
-    const order = questions.map((q) => q.id);
-    if (s.shuffle_questions) for (let i = order.length - 1; i > 0; i--) { const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1); [order[i], order[j]] = [order[j], order[i]]; }
+    // P03: shuffling moves a stem group as one block, so its questions stay together under their shared text.
+    const { sharedPassages, unitsOf } = await import('./studio-booklets');
+    const shared = await sharedPassages(env, questions.map((q) => q.question_bank_id).filter(Boolean));
+    const units = unitsOf(questions.map((q) => ({ id: q.id, groupId: q.question_bank_id ? shared.byQuestion.get(q.question_bank_id)?.groupId ?? null : null })));
+    if (s.shuffle_questions) for (let i = units.length - 1; i > 0; i--) { const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1); [units[i], units[j]] = [units[j], units[i]]; }
+    const order = units.flatMap((u) => u.ids);
     const deadline = new Date(Math.min(Date.now() + s.duration_minutes * 60000, parseTime(s.closes_at)!.getTime()));
     const token = randomToken(), id = uuid('qta');
     try {
