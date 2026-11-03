@@ -31,15 +31,6 @@
  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-outcomes { border-top:3px solid #0d6871;margin-top:18px; }
  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-outcome-card { background:#f7fafb;border-radius:8px;padding:14px;margin-top:10px; }
  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .rsp-pdf-error { flex-basis:100%;max-width:100%;font-size:12px; }
- .rsp-entrance { position:fixed;inset:0;z-index:2000;width:100%;height:100%;max-width:none;max-height:none;margin:0;border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:#f0f8fc;color:#17374a;animation:rsp-reveal 1.3s ease both; }
- .rsp-entrance-senior { background:radial-gradient(ellipse at center,#143e53,#091b29);color:#f4fbff; }
- .rsp-entrance .anunex-brand-canonical { max-width:250px; }
- .rsp-entrance .rsp-skip { position:absolute;right:24px;top:24px;min-width:64px;min-height:42px;background:#fff;color:#17374a;border:1px solid #b8d0da;border-radius:8px; }
- .rsp-entrance .rsp-skip:focus-visible { outline:3px solid #329bd0;outline-offset:3px; }
- .rsp-orbit { border:1px solid #9bcddd;border-radius:50%;padding:26px;animation:rsp-orbit-in 1s ease both; }
- .rsp-entrance p { color:inherit;font-size:16px; }
- @keyframes rsp-reveal { 0% {opacity:1} 75% {opacity:1} 100% {opacity:0;visibility:hidden} }
- @keyframes rsp-orbit-in { from {transform:scale(.8);opacity:0} to {transform:scale(1);opacity:1} }
  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority :is(.rsp-latest,.rsp-combined-teaser)>button { display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #b9cdd3;background:#fff;color:#234c5c;padding:10px 14px;font:600 13px/1.4 Inter,system-ui,sans-serif;cursor:pointer; }
  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2.result-student-priority .sr-exam-arrow { background:#0d6871;color:#fff; }
  @media(max-width:760px) {
