@@ -21,6 +21,7 @@ export function StudentLogin({ siteKey, onSignedIn }: { siteKey: string; onSigne
   const [needFull, setNeedFull] = useState(false);
   const [token, setToken] = useState(''); const [cycle, setCycle] = useState(0);
   const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [info, setInfo] = useState('');
+  const [release, setRelease] = useState<{ title: string; at: string } | null>(null);
   const onToken = useCallback((v: string) => setToken(v), []);
 
   useEffect(() => { void api<any>('/api/public/results/locations').then((r) => setCities(r.cities || [])).catch(() => setCities([])); }, []);
@@ -31,10 +32,10 @@ export function StudentLogin({ siteKey, onSignedIn }: { siteKey: string; onSigne
   const pick = (i: Inst | null) => { setInst(i); if (i) keep({ city: i.city, district: i.district, inst: i }); };
   const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
   const submit = async (e: React.FormEvent) => {
-    e.preventDefault(); if (!inst) return; setBusy(true); setError(''); setInfo('');
+    e.preventDefault(); if (!inst) return; setBusy(true); setError(''); setInfo(''); setRelease(null);
     try {
       const r = await api<any>('/api/public/results/login', { method: 'POST', body: JSON.stringify({ ...form, institutionCode: inst.code, turnstileToken: token }) });
-      if (r.found === false) { setInfo(r.message || 'Kurumunuz için yayınlanmış sonuç yok.'); setToken(''); setCycle((c) => c + 1); return; }
+      if (r.found === false) { if (r.reason === 'NOT_RELEASED' && r.releaseAt) setRelease({ title: r.examTitle || 'Sınav', at: r.releaseAt }); else setInfo(r.message || 'Kurumunuz için yayınlanmış sonuç yok.'); setToken(''); setCycle((c) => c + 1); return; }
       await onSignedIn();
     } catch (err) { if (err instanceof ApiError && err.code === 'FULL_NAME_REQUIRED') setNeedFull(true); setError(err instanceof ApiError ? err.message : 'Giriş yapılamadı.'); setToken(''); setCycle((c) => c + 1); } finally { setBusy(false); }
   };
@@ -44,6 +45,7 @@ export function StudentLogin({ siteKey, onSignedIn }: { siteKey: string; onSigne
     <div><span className="result-kicker">ÖĞRENCİ GİRİŞİ</span><h2>Sonucunu gör</h2><p>Kurumunu seç, sınıfını, numaranı ve adının ilk 3 harfini yaz. T.C. kimlik numarası açık olarak saklanmaz.</p></div>
     {error && <div className="result-alert" role="alert">{error}</div>}
     {info && <div className="result-info" role="status">{info}</div>}
+    {release && <ReleaseCountdown title={release.title} at={release.at} />}
     <fieldset className="sl-group"><legend>Kurum</legend>
       {!byName ? <>
         <div className="result-two">
@@ -70,4 +72,16 @@ export function StudentLogin({ siteKey, onSignedIn }: { siteKey: string; onSigne
     <Turnstile key={cycle} siteKey={siteKey} onToken={onToken} />
     <button className="result-primary" disabled={busy || !ready}>{busy ? 'Kontrol ediliyor…' : 'Sonucumu göster'}</button>
   </form>;
+}
+
+/** Türkiye geneli takvim (owner, 3 Nov): before the release the student sees when, with a countdown. */
+export function ReleaseCountdown({ title, at }: { title: string; at: string }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 30000); return () => clearInterval(t); }, []);
+  const left = Math.max(0, Date.parse(at) - now), d = Math.floor(left / 86400000), h = Math.floor((left % 86400000) / 3600000), m = Math.floor((left % 3600000) / 60000);
+  const when = new Date(at).toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul', weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+  return <div className="sl-release" role="status">
+    <div><strong>{title} sonuçların</strong><span>{when} açıklanacak</span></div>
+    {left > 0 ? <div className="sl-release-units" aria-label={`${d} gün ${h} saat ${m} dakika kaldı`}><b>{d}<small>gün</small></b><b>{String(h).padStart(2, '0')}<small>saat</small></b><b>{String(m).padStart(2, '0')}<small>dakika</small></b></div> : <span>Sonuçlar birkaç dakika içinde açılır.</span>}
+  </div>;
 }

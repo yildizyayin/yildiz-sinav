@@ -87,6 +87,8 @@ export function ResultOperatorWorkspace({mode,access}:Props){
    let result:any=null,aside:any[]=[];
    for(let step=0;step<500;step++){
     result=await api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/evaluate`,{method:'POST'});
+    // Türkiye geneli takvim: on the release evening the upload waits and is evaluated automatically afterwards
+    if(result.deferred){watch.reset();await loadBatch(preview.batchId);void loadHistory();setNotice(result.message||'Yüklemeniz alındı; sonuç gecesinden sonra otomatik değerlendirilecek.');return}
     if(step===0)aside=result.setAside||[];
     setProgress({done:Number(result.processed||0),total:Number(result.total||preview.total||0)});
     if(result.done!==false)break;
