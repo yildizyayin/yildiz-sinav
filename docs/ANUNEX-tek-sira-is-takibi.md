@@ -495,3 +495,44 @@ Tasarım ekibinin aynı dönemdeki PR'ları: #423, #427, #433, #436, #440.
 
 - Kullanıcı: ÇAP TYT için app'te "Sonuçları düzeltmeye aç" + Sonuç Ağı'nda düzeltme, sonra profil "TYT — ÖSYM"; KVKK NIBIRU_AI kaydı; föy cevap anahtarı; Netgsm; KVKK metinleri.
 - Karar bekleyen: yanlış soru → video/test/oyun/rehber uyarısı zinciri (rehber uyarı kuralı ve video onayı); PDF B/C/D adımları; app–sonuc panel listesi işaretlemesi.
+
+## 3 Kasım: teknik program
+
+### Kullanıcı kararları
+
+- **Tek Düzeltme anahtarı:** sınav kartında aç/kapa düğmesi, "emin misiniz" onayı; açıkken öğrenci sonucu görmez (değişmedi).
+- **Kazanım (seçenek A):** boş çıkan yeniden kazanım analizi yayımlanmış kazanımları silmez. Müfredat kapısı gevşetilmedi.
+- **Sıralama geçmişi:** gerek yok, programdan çıkarıldı.
+- **Türkiye geneli takvim:** uygulama tarihleri, sonuç açıklama saati ve sonuç gecesi yükleme beklemesi (örnek 13/11 17:00–21:00). Bekleme süresinde yükleme alınır, 21:00'den sonra otomatik değerlendirilip Türkiye geneli sıralamaya girer. Ölçek: ~100 okul / 2.000 öğrenci.
+- **sonuc öğrenci:** PDF üretilmez; "Yazdır" ekranı basar.
+- **Deploy:** işler sırayla birleşir, canlıya alma en sonda toplu onayla.
+- **Sonraki ana iş:** sonuc bittikten sonra app (öğrenci/veli panelleri).
+
+### Birleşen PR'lar
+
+| PR | İş |
+|---|---|
+| #451 | Tek Düzeltme anahtarı (app + Sonuç Ağı) |
+| #452 | Boş kazanım analizi yayımlanmış kazanımları silmez |
+| #453 | Türkiye geneli sınav takvimi + sonuç gecesi yükleme beklemesi + öğrenci geri sayımı |
+| #454 | Yanlış yükleme araçları: doğru sınava taşı, kurumun sınavdaki yüklemelerini toplu sil, app'te sil/geri al |
+| #455 | sonuc öğrenci "Yazdır" (A4, PDF yok) |
+| #456 | İçerik merkezi telefonda Studio taşması |
+| #457 | Değerlendirme hızı: kurum sırası tek geçişte (n² → n) |
+
+### Yük ölçümü (3 Kasım, yerel SQLite, sentetik)
+
+| | 2.000 öğrenci | 10.000 öğrenci |
+|---|---|---|
+| Sonuç saatinde yayın (sıra + rapor paketi) | 0,4 sn | 2,7 sn |
+| Öğrenci girişi / sonuç listesi / sınav ayrıntısı | ~2 ms, 7 / 4 / 5 sorgu | aynı (öğrenci sayısıyla büyümüyor) |
+| Değerlendirme (tek okul, 500'lük yüklemeler) | 20 sn | 1.351 sn → **81 sn** (#457) |
+
+- #457'den önce aynı okulda öğrenci arttıkça her yükleme yavaşlıyordu (kurum sırası n²). Düzeltildi.
+- Canlı D1'de süreler ağ gecikmesi nedeniyle daha uzun olur; sorgu sayıları ve büyüme biçimi aynıdır.
+
+### Bekleyenler
+
+- **Onay bekliyor:** Rapor Merkezi hızlı PDF yazıcısı. Örnek gönderildi; sayfa başına ~6–7 ms, 250 öğrenci ~2 sn. Kod `karne-writer` dalında, birleştirilmedi.
+- **Kullanıcı:** deploy onayları; ÇAP TYT puanı için Düzeltme anahtarı → profil "TYT — ÖSYM" → kapat; KVKK NIBIRU_AI kaydı; föy cevap anahtarı; Netgsm; KVKK metinleri.
+- **Sonraya bırakılan:** sonuç panelinde (giriş yapmış öğrenci için) yeni sınavın geri sayımı; yanlış soru → video zinciri kararları (app).
