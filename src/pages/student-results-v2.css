@@ -1,5 +1,5 @@
 /* Approved student result screens — no login, operator or print overrides. */
-@media screen {
+@media screen, print {
 .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 { border:0;background:transparent;padding:0;box-shadow:none;min-width:0;color:#202c35; }
 .result-portal.approved-result-portal[data-result-role="STUDENT"]:has(.student-results-v2) { background:#f8faf9; }
 .result-portal.approved-result-portal[data-result-role="STUDENT"]:has(.student-results-v2) .result-workspace { max-width:1200px;margin-top:24px; }

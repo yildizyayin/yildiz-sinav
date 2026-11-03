@@ -1,5 +1,5 @@
 /* Result student review: scoped presentation, local read-only interactions only. */
-@media screen {
+@media screen, print {
 .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-header { margin-bottom:20px;padding-bottom:18px; }
 .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-combined-unavailable { display:flex;flex-direction:column;align-items:center;gap:4px; }
 .result-portal.approved-result-portal[data-result-role="STUDENT"] .student-results-v2 .sr-combined-unavailable small { font-size:10px;color:#6e513a;line-height:1.5; }

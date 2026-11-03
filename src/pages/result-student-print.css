@@ -1,0 +1,38 @@
+/* sonuc "Yazdır" (owner, 3 Nov): the student prints what is on the screen; no PDF is generated. One A4 column,
+   the brand on top, the result, the ranks; navigation, buttons and interactive parts stay off paper. */
+@media print {
+  @page { size: A4 portrait; margin: 10mm 10mm 12mm; }
+  html, body { background: #fff !important; }
+  .result-portal[data-result-role="STUDENT"] { background: #fff !important; min-height: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .result-portal[data-result-role="STUDENT"] .result-nav { position: static !important; padding: 0 0 6mm !important; border: 0 !important; box-shadow: none !important; background: #fff !important; }
+  .result-portal[data-result-role="STUDENT"] .result-nav nav,
+  .result-portal[data-result-role="STUDENT"] .result-back,
+  .result-portal[data-result-role="STUDENT"] .sr-header-actions,
+  .result-portal[data-result-role="STUDENT"] .sr-detail-top > button,
+  .result-portal[data-result-role="STUDENT"] .sr-nibiru,
+  .result-portal[data-result-role="STUDENT"] .sr-countdown,
+  .result-portal[data-result-role="STUDENT"] .sr-print-hide,
+  .result-portal[data-result-role="STUDENT"] footer > span:not(:last-child),
+  .result-portal[data-result-role="STUDENT"] .rn-panel,
+  .result-portal[data-result-role="STUDENT"] .rsp-pdf-source { display: none !important; }
+  .result-portal[data-result-role="STUDENT"] .result-workspace { padding: 0 !important; margin: 0 !important; max-width: none !important; width: auto !important; }
+  .result-portal[data-result-role="STUDENT"] .result-dashboard { max-width: none !important; width: auto !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: 0 !important; }
+  .result-portal[data-result-role="STUDENT"] .sr-header { padding: 0 0 4mm !important; margin: 0 0 4mm !important; text-align: left !important; justify-content: flex-start !important; }
+  .result-portal[data-result-role="STUDENT"] .sr-detail { box-shadow: none !important; }
+  /* one column on paper: the ranks follow the subjects */
+  .result-portal[data-result-role="STUDENT"] .sr-detail-grid { display: block !important; }
+  .result-portal[data-result-role="STUDENT"] .sr-side { margin-top: 4mm; display: block !important; width: auto !important; max-width: none !important; }
+  .result-portal[data-result-role="STUDENT"] .sr-side > * { width: auto !important; max-width: none !important; }
+  .result-portal[data-result-role="STUDENT"] .sr-ranking dl { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 6mm; }
+  .result-portal[data-result-role="STUDENT"] .sr-header, .result-portal[data-result-role="STUDENT"] .sr-header > div { text-align: left !important; align-items: flex-start !important; margin-left: 0 !important; }
+  .result-portal[data-result-role="STUDENT"] .sr-panel { box-shadow: none !important; break-inside: auto; }
+  .result-portal[data-result-role="STUDENT"] .sr-summary,
+  .result-portal[data-result-role="STUDENT"] .sr-branch,
+  .result-portal[data-result-role="STUDENT"] .sr-ranking,
+  .result-portal[data-result-role="STUDENT"] .sr-outcomes li,
+  .result-portal[data-result-role="STUDENT"] tr { break-inside: avoid; }
+  .result-portal[data-result-role="STUDENT"] h2, .result-portal[data-result-role="STUDENT"] h3 { break-after: avoid; }
+  .result-portal[data-result-role="STUDENT"] footer { padding: 4mm 0 0 !important; margin: 4mm 0 0 !important; background: #fff !important; border-top: 1px solid #dce6e8 !important; text-align: right; font-size: 9pt; }
+  .result-portal[data-result-role="STUDENT"] footer .anunex-brand-canonical { display: none !important; }
+  .result-portal[data-result-role="STUDENT"] *, .result-portal[data-result-role="STUDENT"] *::before, .result-portal[data-result-role="STUDENT"] *::after { animation: none !important; transition: none !important; }
+}

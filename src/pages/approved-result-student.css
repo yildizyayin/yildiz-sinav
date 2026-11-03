@@ -1,5 +1,5 @@
 /* Approved S family: isolated result-product appearance. No app shell rules. */
-@media screen {
+@media screen, print {
  .result-portal.approved-result-portal { --rp-ink:#192638; --rp-blue:#9e4837; --rp-line:#dde4e8; --rp-cyan:#286879; color:#192638; background:#fafbfc; font-size:14px; line-height:1.5; }
  .result-portal.approved-result-portal:not(.admin-portal-mode) { display:flex; flex-direction:column; }
  .approved-result-portal:not(.admin-portal-mode) .result-nav { order:0; width:100%; max-width:1160px; min-height:76px; height:auto; padding:16px 24px; gap:20px; border-bottom:1px solid #e2e7ed; background:#fff; }
@@ -126,7 +126,7 @@
 @media (max-width:600px){ .approved-result-portal .result-tip-nibiru .result-tip-mark{ display:none } }
 
 /* Student refresh — D-S038 single-step sign-in; screen and STUDENT role only. */
-@media screen {
+@media screen, print {
  .result-portal.approved-result-portal[data-result-role="STUDENT"] { --rp-ink:#20262c;--rp-blue:#a34d38;--rp-line:#dfe3e5;background:#fdfdfc;color:#20262c; }
  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-workspace { margin-top:24px;margin-bottom:40px; }
  .result-portal.approved-result-portal[data-result-role="STUDENT"] .result-workspace:has(> .student-login) { max-width:760px; }
