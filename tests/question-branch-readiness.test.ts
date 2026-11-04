@@ -18,7 +18,7 @@ it('authenticates before reading curriculum data',async()=>{
  expect((await handleQuestionTeam(request('2027-2030'),{} as any,admin)).status).toBe(400);
 });
 it('uses real production rows and exact source text instead of staging counts',async()=>{
- const f=fixture();try{const response=await handleQuestionTeam(request(),f.env,admin),p:any=await response.json();expect(response.status).toBe(200);expect(p.environment).toBe('production');expect(p.summary).toMatchObject({expectedVersions:77,importedVersions:1,expectedOutcomes:2916});expect(p.subjects.find((s:any)=>s.subject==='MAT'&&s.grade===5).imported).toBe(true);
+ const f=fixture();try{const response=await handleQuestionTeam(request(),f.env,admin),p:any=await response.json();expect(response.status).toBe(200);expect(p.environment).toBe('production');expect(p.summary).toMatchObject({expectedVersions:97,importedVersions:1,expectedOutcomes:3443});expect(p.subjects.find((s:any)=>s.subject==='MAT'&&s.grade===5).imported).toBe(true);
  f.db.exec("UPDATE outcomes SET title='Wrong source text' WHERE id='o0'");const changed:any=await(await handleQuestionTeam(request(),f.env,admin)).json();expect(changed.summary.importedVersions).toBe(0);
  }finally{f.db.close()}
 });

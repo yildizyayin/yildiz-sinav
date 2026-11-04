@@ -1901,6 +1901,337 @@
           "sourceUrl": "https://tymm.meb.gov.tr/matematik-dersi/unite/333"
         }
       ]
+    },
+    {
+      "grade": 4,
+      "indexUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ilkokul-matematik-dersi/5",
+      "course": "ilkokul-matematik-dersi",
+      "indexHash": "3bbf60703316ed5cb9b2c46da545a9fe2a45d67a9d2be240082fe374b02d34bb",
+      "themes": [
+        {
+          "url": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/294",
+          "title": "1. Tema: Sayılar Ve Nicelikler (1)",
+          "hash": "053bb784a35faad5bdd275d0d20c78182f23b8759d1edfe5118cd23b444f70b1",
+          "codes": [
+            "MAT.4.1.1",
+            "MAT.4.1.2",
+            "MAT.4.1.3",
+            "MAT.4.1.4",
+            "MAT.4.1.5"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/299",
+          "title": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "hash": "56cb144e760ff37be5d77a89bc11d120248c1744092e961d29ba78971d4f3ae0",
+          "codes": [
+            "MAT.4.1.6",
+            "MAT.4.1.7",
+            "MAT.4.1.8",
+            "MAT.4.1.9",
+            "MAT.4.1.10",
+            "MAT.4.1.11",
+            "MAT.4.1.12",
+            "MAT.4.1.13"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/300",
+          "title": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "hash": "29adb764ac00ded57c47492bf2b7d7f4da8d2edbab8502dee75059fa26c02290",
+          "codes": [
+            "MAT.4.2.1",
+            "MAT.4.2.2",
+            "MAT.4.2.3",
+            "MAT.4.2.4",
+            "MAT.4.2.5",
+            "MAT.4.2.6",
+            "MAT.4.2.7",
+            "MAT.4.2.8",
+            "MAT.4.2.9"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/301",
+          "title": "4. Tema: Nesnelerin Geometrisi (1)",
+          "hash": "a8e45438f4da7b57f4ce718fc3ba59aa2efa3f4d9b2feb0ffd3cb1f501a14b77",
+          "codes": [
+            "MAT.4.3.1",
+            "MAT.4.3.2",
+            "MAT.4.3.3",
+            "MAT.4.3.4"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/302",
+          "title": "5. Tema: Nesnelerin Geometrisi (2)",
+          "hash": "c02f05f23a27fd22ed96d49c1a25f929a698475a0ca71f36e96ae6fa21d7d93f",
+          "codes": [
+            "MAT.4.3.5",
+            "MAT.4.3.6",
+            "MAT.4.3.7"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/303",
+          "title": "6. Tema: Nesnelerin Geometrisi (3)",
+          "hash": "bbf6087505421a0b85d7657fcd35a005608453237e22317f3d8dc27e1c35de5f",
+          "codes": [
+            "MAT.4.3.8",
+            "MAT.4.3.9",
+            "MAT.4.3.10"
+          ]
+        },
+        {
+          "url": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/304",
+          "title": "7. Tema: Olayların Olasılığı Ve Veriye Dayalı Araştırma",
+          "hash": "0dd1ac2d51e2b85fa1bf8e375e5818da268d64e8643450c99a7c9a9cf33d6b8e",
+          "codes": [
+            "MAT.4.4.1",
+            "MAT.4.4.2"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "code": "MAT.4.1.1",
+          "title": "Niceliklerin büyüklükleri için en fazla altı basamaklı olan sayıların temsillerinden yararlanabilme",
+          "topic": "1. Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1. Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/294"
+        },
+        {
+          "code": "MAT.4.1.2",
+          "title": "En fazla altı basamaklı sayıları çözümleyebilme",
+          "topic": "1. Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1. Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/294"
+        },
+        {
+          "code": "MAT.4.1.3",
+          "title": "Sayıları sıralayabilme",
+          "topic": "1. Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1. Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/294"
+        },
+        {
+          "code": "MAT.4.1.4",
+          "title": "İleriye ve geriye doğru ritmik saymayı yapılandırabilme",
+          "topic": "1. Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1. Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/294"
+        },
+        {
+          "code": "MAT.4.1.5",
+          "title": "Artan azalan sayı örüntüleri ve şekil örüntülerindeki değişimi genelleyebilme",
+          "topic": "1. Tema: Sayılar Ve Nicelikler (1)",
+          "unit": "1. Tema: Sayılar Ve Nicelikler (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/294"
+        },
+        {
+          "code": "MAT.4.1.6",
+          "title": "Basit, bileşik ve tam sayılı kesirleri kullanmak için matematiksel temsillerden yararlanabilme",
+          "topic": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/299"
+        },
+        {
+          "code": "MAT.4.1.7",
+          "title": "Denk kesirleri kullanmak için matematiksel temsillerden yararlanabilme",
+          "topic": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/299"
+        },
+        {
+          "code": "MAT.4.1.8",
+          "title": "Birim kesirlerin büyüklük küçüklük ilişkilerini çözümleyebilme",
+          "topic": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/299"
+        },
+        {
+          "code": "MAT.4.1.9",
+          "title": "Paydaları eşit olan kesirlerin büyüklük küçüklük ilişkilerini çözümleyebilme",
+          "topic": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/299"
+        },
+        {
+          "code": "MAT.4.1.10",
+          "title": "Bir çokluğun basit kesir kadarını ve bir basit kesir kadarı verilen çokluğun tamamını çözümleyebilme",
+          "topic": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/299"
+        },
+        {
+          "code": "MAT.4.1.11",
+          "title": "Paydaları eşit kesirlerle toplama ve çıkarma işlemini yapılandırabilme",
+          "topic": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/299"
+        },
+        {
+          "code": "MAT.4.1.12",
+          "title": "Paydaları eşit kesirlerle toplama ve çıkarma işlemi gerektiren günlük yaşam problemlerine çözüm geliştirebilme",
+          "topic": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/299"
+        },
+        {
+          "code": "MAT.4.1.13",
+          "title": "Uzunluk ve kütle birimlerinin kendi içerisindeki dönüşümlerini yorumlayabilme",
+          "topic": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "unit": "2. Tema: Sayılar Ve Nicelikler (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/299"
+        },
+        {
+          "code": "MAT.4.2.1",
+          "title": "Toplama ve çıkarma işlemlerini zihinden yaparak çözümleyebilme",
+          "topic": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "unit": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/300"
+        },
+        {
+          "code": "MAT.4.2.2",
+          "title": "En çok dört basamaklı sayılarla toplama ve çıkarma işlemlerini yapılandırabilme",
+          "topic": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "unit": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/300"
+        },
+        {
+          "code": "MAT.4.2.3",
+          "title": "Çarpma ve bölme işlemlerinin sonucunu tahmin edebilme",
+          "topic": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "unit": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/300"
+        },
+        {
+          "code": "MAT.4.2.4",
+          "title": "Zihinden çözümlenen çarpma ve bölme işlemleri ile bu işlemlerin kısa yollarını yapılandırabilme",
+          "topic": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "unit": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/300"
+        },
+        {
+          "code": "MAT.4.2.5",
+          "title": "Çarpma ve bölme işlemlerini çözümleyebilme",
+          "topic": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "unit": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/300"
+        },
+        {
+          "code": "MAT.4.2.6",
+          "title": "Dört işlem içeren yönergeler oluşturarak süreci yorumlayabilme",
+          "topic": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "unit": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/300"
+        },
+        {
+          "code": "MAT.4.2.7",
+          "title": "Dört işlem gerektiren problemleri çözebilme",
+          "topic": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "unit": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/300"
+        },
+        {
+          "code": "MAT.4.2.8",
+          "title": "Dört işlem gerektiren problem durumlarını yapılandırabilme",
+          "topic": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "unit": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/300"
+        },
+        {
+          "code": "MAT.4.2.9",
+          "title": "Dört işlem bağlamında eşitliğin farklı anlamlarını yorumlayabilme",
+          "topic": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "unit": "3. Tema: İşlemlerden Cebirsel Düşünmeye",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/300"
+        },
+        {
+          "code": "MAT.4.3.1",
+          "title": "Geometrik cisimlerin açınımlarını yapılandırabilme",
+          "topic": "4. Tema: Nesnelerin Geometrisi (1)",
+          "unit": "4. Tema: Nesnelerin Geometrisi (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/301"
+        },
+        {
+          "code": "MAT.4.3.2",
+          "title": "Geometrik şekilleri kenar ve köşelerine göre yorumlayabilme",
+          "topic": "4. Tema: Nesnelerin Geometrisi (1)",
+          "unit": "4. Tema: Nesnelerin Geometrisi (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/301"
+        },
+        {
+          "code": "MAT.4.3.3",
+          "title": "Geometrik şekillerin çevre uzunluğunu ölçmede matematiksel araç ve teknolojiden yararlanabilme",
+          "topic": "4. Tema: Nesnelerin Geometrisi (1)",
+          "unit": "4. Tema: Nesnelerin Geometrisi (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/301"
+        },
+        {
+          "code": "MAT.4.3.4",
+          "title": "Standart olmayan ölçü birimleri cinsinden şekillerin alanlarını tahmin edebilme",
+          "topic": "4. Tema: Nesnelerin Geometrisi (1)",
+          "unit": "4. Tema: Nesnelerin Geometrisi (1)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/301"
+        },
+        {
+          "code": "MAT.4.3.5",
+          "title": "Günlük yaşamdan örneklerle açıyı bir dönme miktarı olarak yorumlayabilme",
+          "topic": "5. Tema: Nesnelerin Geometrisi (2)",
+          "unit": "5. Tema: Nesnelerin Geometrisi (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/302"
+        },
+        {
+          "code": "MAT.4.3.6",
+          "title": "Açı ölçümüne ilişkin standart ölçme araçlarının gerekliliğini değerlendirebilme",
+          "topic": "5. Tema: Nesnelerin Geometrisi (2)",
+          "unit": "5. Tema: Nesnelerin Geometrisi (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/302"
+        },
+        {
+          "code": "MAT.4.3.7",
+          "title": "Dik açıyı referans alarak açıları dar ve geniş olarak sınıflandırabilme",
+          "topic": "5. Tema: Nesnelerin Geometrisi (2)",
+          "unit": "5. Tema: Nesnelerin Geometrisi (2)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/302"
+        },
+        {
+          "code": "MAT.4.3.8",
+          "title": "Geometrik nesneler ve şekiller üzerinden doğruya göre simetriyi yorumlayabilme",
+          "topic": "6. Tema: Nesnelerin Geometrisi (3)",
+          "unit": "6. Tema: Nesnelerin Geometrisi (3)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/303"
+        },
+        {
+          "code": "MAT.4.3.9",
+          "title": "Bir şeklin doğruya göre simetrisini yapılandırabilme",
+          "topic": "6. Tema: Nesnelerin Geometrisi (3)",
+          "unit": "6. Tema: Nesnelerin Geometrisi (3)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/303"
+        },
+        {
+          "code": "MAT.4.3.10",
+          "title": "Geometrik şekillere dayalı bir yapı oluşturabilmek için kodlama stratejilerini yapılandırabilme",
+          "topic": "6. Tema: Nesnelerin Geometrisi (3)",
+          "unit": "6. Tema: Nesnelerin Geometrisi (3)",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/303"
+        },
+        {
+          "code": "MAT.4.4.1",
+          "title": "Günlük yaşamdan herhangi bir olayın olasılığını “imkânsız, olabilir, kesin” olarak belirleyebilme",
+          "topic": "7. Tema: Olayların Olasılığı Ve Veriye Dayalı Araştırma",
+          "unit": "7. Tema: Olayların Olasılığı Ve Veriye Dayalı Araştırma",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/304"
+        },
+        {
+          "code": "MAT.4.4.2",
+          "title": "Kategorik veriye ve sayma ile elde edilen nicel veriye dayalı en çok iki veri grubu ile çalışabilme ve veriye dayalı karar verebilme",
+          "topic": "7. Tema: Olayların Olasılığı Ve Veriye Dayalı Araştırma",
+          "unit": "7. Tema: Olayların Olasılığı Ve Veriye Dayalı Araştırma",
+          "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-matematik-dersi/unite/304"
+        }
+      ]
     }
   ]
 }
