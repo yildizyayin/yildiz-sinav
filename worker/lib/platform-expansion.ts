@@ -292,6 +292,29 @@ export async function freezeDueAppResults(env:Env,limit=20):Promise<number>{
   }
   return n;
 }
+/**
+ * Owner (4 Nov): a normal exam's results open by themselves as soon as they are evaluated (no time, no button); a
+ * Türkiye geneli exam keeps its schedule. Freezes when needed and publishes, with no actor (system). Returns true when
+ * the app results are open afterwards.
+ */
+export async function openAppResultsNow(env:Env,examId:string):Promise<boolean>{
+  const r=await withExamOperationLock(env,examId,'AUTO_OPEN',async(env)=>{
+    let p=await examProfile(env,examId);if(!p)return notFound('Sınav bulunamadı.');
+    if(await examTrashed(env,examId))return badRequest('Sınav silinmiş.','EXAM_TRASHED');
+    if(p.result_freeze_status==='PUBLISHED')return json({ok:true,published:true});
+    if(p.result_freeze_status!=='FROZEN'){const f=await writeAppSnapshot(env,p,examId,null,false);if(!f.ok)return f;p=await examProfile(env,examId);}
+    const writes=await env.DB.batch([
+      env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json)
+        SELECT ?,NULL,?,'EXAM_RESULTS_AUTO_OPENED','exam',?,? WHERE EXISTS (SELECT 1 FROM exam_delivery_profiles WHERE exam_id=? AND snapshot_version=? AND result_freeze_status='FROZEN')`)
+        .bind(uuid('aud'),p.institution_id,examId,JSON.stringify({version:p.snapshot_version}),examId,p.snapshot_version),
+      env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='PUBLISHED',published_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE exam_id=? AND snapshot_version=? AND result_freeze_status='FROZEN'`).bind(examId,p.snapshot_version),
+    ]);
+    return json({ok:true,published:Number(writes[1].meta?.changes||0)>0});
+  });
+  if(!r.ok)console.warn('APP_AUTO_OPEN_SKIPPED',examId,r.status);
+  return r.ok;
+}
+
 export async function refreshAppLivePublication(env:Env,examId:string,actorId:string|null):Promise<boolean>{
   const state=await one<any>(env.DB.prepare(`SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?`).bind(examId));
   if(!state||!['FROZEN','PUBLISHED'].includes(state.result_freeze_status))return false;

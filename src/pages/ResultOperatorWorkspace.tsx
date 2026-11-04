@@ -93,6 +93,8 @@ export function ResultOperatorWorkspace({mode,access}:Props){
     setProgress({done:Number(result.processed||0),total:Number(result.total||preview.total||0)});
     if(result.done!==false)break;
    }
+   // Owner (4 Nov): a normal exam's results open by themselves once evaluated (best effort; the schedule retries).
+   await api<any>(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/auto-open`,{method:'POST'}).catch(()=>null);
    const ms=watch.stop();setLastCount({done:Number(result?.processed||0),total:Number(result?.total||result?.processed||preview.total||0)});
    setPreview((current:any)=>({...current,evaluated:result?.processed}));
    setSetAside(aside);

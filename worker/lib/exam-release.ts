@@ -13,7 +13,11 @@ async function state(env: Env, examId: string) {
   const students = await one<any>(env.DB.prepare('SELECT count(*) c FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id WHERE ep.exam_id=?').bind(examId));
   const plannedAt = app?.result_publish_at && Date.parse(String(app.result_publish_at).replace(' ', 'T') + (String(app.result_publish_at).includes('Z') ? '' : 'Z')) > Date.now() ? app.result_publish_at : (net?.result_release_at && Date.parse(net.result_release_at) > Date.now() ? net.result_release_at : null);
   const open = app?.s === 'PUBLISHED' || net?.status === 'PUBLISHED';
-  return { open, appState: app?.s || 'OPEN', networkState: net?.status || null, networkId: net?.id || null, students: Number(students?.c || 0), plannedAt, openedAt: app?.published_at || net?.published_at || null, correctionOpen: await examCorrectionOpen(env, examId) };
+  const flagged = !!(await one<any>(env.DB.prepare('SELECT 1 x FROM exams WHERE id=? AND results_auto_open=1').bind(examId)));
+  const national = !!(await one<any>(env.DB.prepare(`SELECT 1 x FROM exam_administrations WHERE exam_id=? AND (result_release_at IS NOT NULL OR application_start_at IS NOT NULL OR application_end_at IS NOT NULL) LIMIT 1`).bind(examId)));
+  // Owner (4 Nov): a normal exam opens by itself once evaluated; a Türkiye geneli exam (or a planned time) waits.
+  const auto = flagged && !national && !plannedAt;
+  return { open, auto, national, appState: app?.s || 'OPEN', networkState: net?.status || null, networkId: net?.id || null, students: Number(students?.c || 0), plannedAt, openedAt: app?.published_at || net?.published_at || null, correctionOpen: await examCorrectionOpen(env, examId) };
 }
 
 export async function getRelease(env: Env, exam: any) { return json({ ok: true, ...(await state(env, exam.id)) }); }
@@ -42,4 +46,40 @@ export async function releaseNow(env: Env, user: AuthUser, exam: any): Promise<R
   }
   // the network publication's own fields (id, snapshotVersion, counts…) stay in the answer for the sonuc screens
   return json({ ...network, ok: true, steps, state: await state(env, exam.id) });
+}
+
+/**
+ * Owner (4 Nov): "sınavı eklediğim anda yayınlansın" — a normal exam's results open in the app and on sonuc by
+ * themselves as soon as they are evaluated, and later uploads join them (live refresh). Only a Türkiye geneli exam
+ * (one with a national schedule) or an exam with a planned future result time waits. Correction keeps them closed.
+ */
+export async function autoOpenExam(env: Env, examId: string): Promise<string[]> {
+  const exam = await one<any>(env.DB.prepare(`SELECT id,status FROM exams WHERE id=? AND results_auto_open=1 AND status IN ('ACTIVE','CLOSED') AND NOT EXISTS(SELECT 1 FROM exam_revision_state r WHERE r.exam_id=exams.id AND r.app_trashed_at IS NOT NULL)`).bind(examId));
+  if (!exam) return [];
+  const s = await state(env, examId);
+  if (!s.auto || s.correctionOpen || !s.students) return [];
+  const steps: string[] = [];
+  if (s.appState !== 'PUBLISHED') { const pe = await import('./platform-expansion'); if (await pe.openAppResultsNow(env, examId)) steps.push('APP'); }
+  if (s.networkId && s.networkState !== 'PUBLISHED') {
+    const { releaseAdministrationNow } = await import('../result-network-entry');
+    const r = await releaseAdministrationNow(env, s.networkId, null);
+    if (r.ok) { await env.DB.prepare('UPDATE exam_administrations SET scheduled_release_done_at=COALESCE(scheduled_release_done_at,CURRENT_TIMESTAMP) WHERE id=?').bind(s.networkId).run(); steps.push('NETWORK'); }
+    else console.warn('NETWORK_AUTO_OPEN_SKIPPED', examId, r.status);
+  }
+  return steps;
+}
+
+/** Scheduled fallback (every 15 min): evaluated normal exams whose results are not open yet. */
+export async function autoOpenDueExams(env: Env, limit = 20): Promise<number> {
+  const { all } = await import('./db');
+  const rows = await all<any>(env.DB.prepare(`SELECT e.id FROM exams e WHERE e.results_auto_open=1 AND e.status IN ('ACTIVE','CLOSED')
+    AND EXISTS(SELECT 1 FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id WHERE ep.exam_id=e.id)
+    AND NOT EXISTS(SELECT 1 FROM exam_administrations a WHERE a.exam_id=e.id AND (a.result_release_at IS NOT NULL OR a.application_start_at IS NOT NULL OR a.application_end_at IS NOT NULL))
+    AND (COALESCE((SELECT p.result_freeze_status FROM exam_delivery_profiles p WHERE p.exam_id=e.id),'OPEN')<>'PUBLISHED'
+      OR EXISTS(SELECT 1 FROM exam_administrations a WHERE a.exam_id=e.id AND a.channel='RESULT_NETWORK' AND a.status IN ('UPLOADING','READY')))
+    AND NOT EXISTS(SELECT 1 FROM exam_revision_state r WHERE r.exam_id=e.id AND r.app_trashed_at IS NOT NULL)
+    ORDER BY e.updated_at DESC LIMIT ?`).bind(limit));
+  let n = 0;
+  for (const r of rows) { try { if ((await autoOpenExam(env, r.id)).length) n++; } catch (e) { console.error('AUTO_OPEN_FAILED', r.id, e instanceof Error ? e.message : e); } }
+  return n;
 }

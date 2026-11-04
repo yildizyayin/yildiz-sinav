@@ -59,6 +59,10 @@ export async function saveExamSchedule(request:Request,env:Env,user:AuthUser,exa
   const resultPublishAt=verdict.value.resultPublishAt===undefined?current?.result_publish_at??null:verdict.value.resultPublishAt;
   const finalVerdict=validateExamSchedule({applicationStartAt,applicationEndAt,resultPublishAt});
   if(!finalVerdict.ok)return badRequest(finalVerdict.message,'INVALID_EXAM_SCHEDULE');
+  // Owner (4 Nov): a new result time must be ahead of now; a past one would open the results at the first upload
+  // without anyone choosing that. Results that should open now use "Sonuçları aç" (a normal exam opens by itself).
+  if(body.resultPublishAt!==undefined&&resultPublishAt&&resultPublishAt!==(current?.result_publish_at??null)&&Date.parse(String(resultPublishAt).includes('T')?resultPublishAt:String(resultPublishAt).replace(' ','T')+'Z')<=Date.now())
+    return badRequest('Geçmiş bir zaman seçtiniz. Sonuç yayın zamanı ileri bir tarih olmalı; hemen açmak için "Sonuçları aç"ı kullanın.','RESULT_TIME_IN_PAST');
   if(current?.result_freeze_status==='PUBLISHED'&&body.resultPublishAt!==undefined&&resultPublishAt!==current?.result_publish_at){
     return badRequest('Yayınlanmış bir sonuç yeniden geleceğe planlanamaz. Yayın zamanı değiştirilemez.','RESULT_ALREADY_PUBLISHED');
   }

@@ -935,6 +935,11 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   if(!moved.ok)return moved;const out:any=await moved.json();
   const ranks=context.batch.status==='COMMITTED'?await republishAfterRemoval(env,context.batch.exam_id,context.user.id):'NOT_NEEDED';
   return json({...out,ranks,next:'Yükleme yeni okula taşındı. Sonuçlar için "Değerlendir"e basın.'})}
+ // Owner (4 Nov): after its evaluation finishes, the screen asks the policy to open a normal exam's results (a separate
+ // request so the evaluation step keeps its query budget). A Türkiye geneli exam or a planned time is left alone.
+ const autoOpen=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/auto-open$/);
+ if(autoOpen&&request.method==='POST'){const context=await batchOperatorContext(request,env,autoOpen[1]);if(context instanceof Response)return context;
+  const{autoOpenExam}=await import('./lib/exam-release');return json({ok:true,steps:await autoOpenExam(env,context.batch.exam_id)})}
  const evaluate=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/evaluate$/);
  if(evaluate&&request.method==='POST'){const context=await batchOperatorContext(request,env,evaluate[1]);if(context instanceof Response)return context;
   // S030: sheets that cannot be scored are set aside with their reason; the rest is evaluated.
