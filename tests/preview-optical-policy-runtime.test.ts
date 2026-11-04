@@ -64,9 +64,17 @@ describe('Phobos preview runtime policy', () => {
     expect(delegated).toHaveBeenCalledOnce();
   });
 
-  it('rejects an untested bound parser before reaching legacy evaluation', async () => {
+  // Owner (4 Nov): the sample test is optional, a published (READY) optic with a parser is used as is.
+  it('accepts a published bound parser that was not sample-tested', async () => {
     const untested = { ...candidate('own', 'INSTITUTION', 'school-a'), parser_test_passed: 0 };
     const { preview, delegated } = fixture([untested], []);
+    const response = await preview('own');
+    expect(response.status).toBe(200);
+    expect(delegated).toHaveBeenCalledOnce();
+  });
+  it('still rejects a bound optic that is not published', async () => {
+    const draft = { ...candidate('own', 'INSTITUTION', 'school-a'), template_status: 'NEEDS_DEFINITION' };
+    const { preview, delegated } = fixture([draft], []);
     const response = await preview('own');
     expect((await response.json() as any).error.code).toBe('OPTICAL_BINDING_NOT_READY');
     expect(delegated).not.toHaveBeenCalled();

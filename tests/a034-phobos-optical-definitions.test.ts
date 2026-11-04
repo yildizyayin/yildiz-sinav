@@ -41,8 +41,9 @@ describe('A034: optical definitions', () => {
       expect(fmt.status, fmt.text).toBe(201);
       expect(fmt.data.definition.recordLength).toBe(222);
       expect(Object.keys(fmt.data.definition.answers)).toEqual(['TYT_TUR', 'TYT_SOS', 'TYT_MAT', 'TYT_FEN', 'TYT_FEL']);
-      // not publishable before a sample file passes
-      expect((await t.as('mgr', `/api/optical-definition-versions/${v1}/publish`, 'POST')).data.error.code).toBe('OPTICAL_DEFINITION_INCOMPLETE');
+      // Owner (4 Nov): publishable without a sample test; the untested state is a warning
+      const untested = await t.as('mgr', `/api/optical-definition-versions/${v1}`);
+      expect(untested.data.readiness).toMatchObject({ ready: true, parserTestPassed: false });
       const test = await t.as('mgr', `/api/optical-definition-versions/${v1}/test-parser`, 'POST', { sampleText: new TextDecoder('windows-1254').decode(fixture('cap_tyt0_anon.txt')), fileName: 'cap_tyt0.txt' });
       expect(test.status, test.text).toBe(200);
       expect(test.data).toMatchObject({ passed: true, recordCount: 6 });

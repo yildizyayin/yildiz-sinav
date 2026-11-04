@@ -127,7 +127,7 @@ async function contentList(env: Env, user: AuthUser, examId: string): Promise<Re
     all<any>(env.DB.prepare(`SELECT id,exam_question_id,outcome_id,link_type,provider,url,title,description,status,publish_at,published_at,visibility,link_status,last_checked_at FROM video_links WHERE exam_id=? AND ((status='PUBLISHED' AND (publish_at IS NULL OR publish_at<=CURRENT_TIMESTAMP) AND visibility IN ('PUBLIC','STUDENT_TEACHER')) OR ? IN ('SUPER_ADMIN','INSTITUTION_MANAGER')) ORDER BY coalesce(published_at,publish_at,updated_at) DESC`).bind(examId, user.role)),
     all<any>(env.DB.prepare(`SELECT b.id,b.booklet_code,b.optical_template_version_id,b.input_modes_json,b.active,t.name template_name,t.vendor,v.version template_version,v.page_width_mm,v.page_height_mm FROM exam_optical_bindings b JOIN optical_template_versions v ON v.id=b.optical_template_version_id JOIN optical_templates t ON t.id=v.template_id WHERE b.exam_id=? AND b.active=1 ORDER BY b.booklet_code`).bind(examId)),
     ['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(user.role)
-      ? all<any>(env.DB.prepare(`SELECT v.id version_id,t.name,t.vendor,v.version,v.page_width_mm,v.page_height_mm FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id LEFT JOIN optical_definition_validations d ON d.optical_template_version_id=v.id WHERE t.active=1 AND t.status='READY' AND v.active=1 AND v.parser_definition IS NOT NULL AND coalesce(d.parser_test_passed,0)=1 ORDER BY t.name,v.version`))
+      ? all<any>(env.DB.prepare(`SELECT v.id version_id,t.name,t.vendor,v.version,v.page_width_mm,v.page_height_mm FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id LEFT JOIN optical_definition_validations d ON d.optical_template_version_id=v.id WHERE t.active=1 AND t.status='READY' AND v.active=1 AND v.parser_definition IS NOT NULL ORDER BY t.name,v.version`))
       : Promise.resolve([]),
   ]);
   return json({ ok: true, exam: { id: exam.id, title: exam.title, publisherName: exam.publisher_name }, assets, videos, opticalBindings, opticals });
@@ -145,7 +145,6 @@ async function replaceExamOptical(request: Request, env: Env, user: AuthUser, ex
   if (!modes.length) return badRequest('En az bir okuma yöntemi seçilmelidir.');
   if (!version.parser_definition && modes.some((x) => x === 'TXT' || x === 'DAT')) return badRequest('TXT/DAT okuması için parser tanımı tamamlanmalıdır.');
   if (!version.camera_geometry || !version.fiducials) { if (modes.includes('CAMERA')) return badRequest('Telefon kamerası için kamera geometrisi ve referans hedefleri tamamlanmalıdır.'); }
-  if (modes.includes('TXT') || modes.includes('DAT')) { if (!Number(version.parser_test_passed)) return badRequest('TXT/DAT için örnek dosya parser testi başarıyla tamamlanmalıdır.'); }
   const available = await all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code').bind(examId));
   const allowed = new Set(available.map((x) => x.code)); const bookletCodes = [...new Set((body.bookletCodes?.length ? body.bookletCodes : available.map((x) => x.code)).map((x) => String(x).trim().toUpperCase()).filter((x) => allowed.has(x)))];
   if (!bookletCodes.length) return badRequest('Sınavda tanımlı kitapçıklardan en az biri seçilmelidir.');

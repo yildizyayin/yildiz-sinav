@@ -19,6 +19,8 @@ export interface DefinitionReadiness {
   parserTestPassed: boolean;
   ready: boolean;
   errors: string[];
+  /** Things that do not block publishing (e.g. no sample file test). */
+  warnings: string[];
 }
 
 type JsonObject = Record<string, any>;
@@ -239,16 +241,19 @@ export function definitionReadiness(
     ...parser.errors.map((x) => `Parser: ${x}`),
     ...camera.errors.map((x) => `Kamera: ${x}`),
     ...fiducials.errors.map((x) => `Referans: ${x}`),
-    ...(values.parserTestPassed ? [] : ['Parser: örnek TXT/DAT testi başarıyla tamamlanmalıdır.']),
   ];
+  // Owner (4 Nov): the sample TXT/DAT/FMT test is optional. Manually entered parameters can be published; an
+  // untested version only carries a warning.
+  const warnings = values.parserTestPassed ? [] : ['Örnek TXT/DAT dosyasıyla test edilmedi.'];
   return {
     parser: parser.valid,
     camera: camera.valid,
     print: print.valid,
     fiducials: fiducials.valid,
     parserTestPassed: values.parserTestPassed,
-    ready: parser.valid && camera.valid && fiducials.valid && values.parserTestPassed,
+    ready: parser.valid && camera.valid && fiducials.valid,
     errors,
+    warnings,
   };
 }
 

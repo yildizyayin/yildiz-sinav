@@ -1053,7 +1053,8 @@ export function Opticals() {
   };
   const readinessCards = useMemo(
     () => [
-      ["Manuel okuma", readiness?.parser && readiness?.parserTestPassed],
+      ["Manuel okuma", readiness?.parser],
+      ["Örnek dosya testi (isteğe bağlı)", readiness?.parserTestPassed],
       ["Kamera (isteğe bağlı)", readiness?.camera],
       ["Referans (kamera için)", readiness?.fiducials],
     ],
@@ -2340,8 +2341,8 @@ export function Opticals() {
                 <div>
                   <h2>Yayın kontrolü</h2>
                   <p>
-                    Yayın için zorunlu temel manuel FMT/TXT/DAT tanımı ve
-                    gerçek örnek kayıt testidir. Kamera ve referans noktaları
+                    Yayın için zorunlu olan yalnız manuel FMT/TXT/DAT alan tanımıdır. Örnek dosya testi
+                    isteğe bağlıdır; yapılmadıysa uyarı olarak görünür. Kamera ve referans noktaları
                     isteğe bağlıdır; tanımlanırsa ayrıca doğrulanır. Kamera kullanıldığında manuel alan tanımı
                     öğrenci no, kitapçık ve cevap bölgelerinin kaynağıdır.
                   </p>
@@ -2352,6 +2353,9 @@ export function Opticals() {
                 <div className="alert warning">
                   {(readiness?.errors || []).join(" · ")}
                 </div>
+              )}
+              {readiness?.ready && !!readiness?.warnings?.length && (
+                <div className="alert info">{readiness.warnings.join(" · ")} Yayınlayabilirsiniz; isterseniz önce test edin.</div>
               )}
               <button
                 className="primary"
