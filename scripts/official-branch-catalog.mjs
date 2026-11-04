@@ -68,7 +68,7 @@ export function branchThemeOutcomesV2(html,spec,theme){
  const CODE='[A-ZÇĞİÖŞÜ]+\\d*(?:\\.[A-ZÇĞİÖŞÜ\\d]+){1,6}';
  const isCode=c=>c.startsWith(mapping[1])&&/\d/.test(c); // a code has a number ("T.C. Anayasası" is not one)
  const atStart=new RegExp(`^(${CODE})(?:\\.\\s*|\\s+)`,'u'), bare=/^(\d{1,2}(?:\.\d{1,2}){2})(?:\.\s*|\s+)/u;
- const inLine=new RegExp(`(?<![\\p{L}\\p{N}.])(${CODE})\\.\\s+`,'gu');
+ const inLine=new RegExp(`(?<![\\p{L}\\p{N}.(])(${CODE})(?:\\.\\s+|\\s+(?=\\p{Lu}))`,'gu');
  const items=[];
  for(let i=0;i<lines.length;i++){
   const line=lines[i];let m=line.match(atStart);

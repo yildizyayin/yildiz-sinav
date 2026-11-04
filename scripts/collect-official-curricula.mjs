@@ -1,4 +1,4 @@
-// Rerun: parser V2 splits same-line outcomes.
+// Rerun: parser V2 splits same-line outcomes; codes without a trailing dot.
 // Owner (4 Nov): collect missing MEB TYMM programmes straight from tymm.meb.gov.tr (read-only, no database access).
 // The output is reviewed and committed to the curriculum catalogue; the production deploy re-fetches the same pages
 // and only publishes when the content still matches exactly (scripts/production-question-curricula.mjs).
@@ -62,7 +62,7 @@ for(const p of expandBranchCatalog(JSON.parse(await readFile('data/question-bran
    if(v1!==v2||v2!==cat){const a=new Map(JSON.parse(v1).map(o=>[o.code,o.title])),b=new Map(JSON.parse(v2).map(o=>[o.code,o.title]));
     report.existingCheck.mismatches.push({course:p.course,grade:p.grade,url:t.url,v1EqualsCatalog:v1===cat,v2EqualsCatalog:v2===cat,
      added:[...b].filter(([k])=>!a.has(k)),removed:[...a].filter(([k])=>!b.has(k)),changed:[...a].filter(([k,v])=>b.has(k)&&b.get(k)!==v).map(([k,v])=>[k,v,b.get(k)]),
-     orderOnly:a.size===b.size&&[...a].every(([k,v])=>b.get(k)===v)});}
+     orderOnly:a.size===b.size&&[...a].every(([k,v])=>b.get(k)===v),section:[...a].some(([k])=>!b.has(k))?outcomeSection(html)?.slice(0,30000):undefined});}
   }catch(e){report.existingCheck.mismatches.push({course:p.course,grade:p.grade,url:t.url,error:String(e.message||e)});}
  }
 }
