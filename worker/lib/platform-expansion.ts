@@ -315,6 +315,23 @@ export async function openAppResultsNow(env:Env,examId:string):Promise<boolean>{
   return r.ok;
 }
 
+/**
+ * Owner (4 Nov): after an upload is deleted, moved or evaluated elsewhere (sonuc), the app's open results must show
+ * exactly the students that have results. With results left: the snapshot is written again (live refresh). With none
+ * left: the app publication goes back to OPEN, so a stale empty publication never stays "open".
+ */
+export async function syncAppResults(env:Env,examId:string,actorId:string|null):Promise<'REFRESHED'|'WITHDRAWN'|'NOT_NEEDED'>{
+  const p=await one<any>(env.DB.prepare(`SELECT result_freeze_status s FROM exam_delivery_profiles WHERE exam_id=?`).bind(examId));
+  if(!p||!['FROZEN','PUBLISHED'].includes(p.s))return 'NOT_NEEDED';
+  const left=await one<any>(env.DB.prepare(`SELECT 1 x FROM exam_participants ep JOIN exam_results er ON er.participant_id=ep.id WHERE ep.exam_id=? LIMIT 1`).bind(examId));
+  if(left)return (await refreshAppLivePublication(env,examId,actorId))?'REFRESHED':'NOT_NEEDED';
+  await env.DB.batch([
+    env.DB.prepare(`UPDATE exam_delivery_profiles SET result_freeze_status='OPEN',published_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE exam_id=? AND result_freeze_status IN ('FROZEN','PUBLISHED')`).bind(examId),
+    env.DB.prepare(`INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,NULL,'EXAM_RESULTS_WITHDRAWN_EMPTY','exam',?,?)`).bind(uuid('aud'),actorId,examId,JSON.stringify({reason:'Sonucu olan öğrenci kalmadı.'})),
+  ]);
+  return 'WITHDRAWN';
+}
+
 export async function refreshAppLivePublication(env:Env,examId:string,actorId:string|null):Promise<boolean>{
   const state=await one<any>(env.DB.prepare(`SELECT result_freeze_status FROM exam_delivery_profiles WHERE exam_id=?`).bind(examId));
   if(!state||!['FROZEN','PUBLISHED'].includes(state.result_freeze_status))return false;

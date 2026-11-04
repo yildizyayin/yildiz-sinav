@@ -33,8 +33,8 @@ export async function listAppUploads(env: Env, user: AuthUser, examId: string, u
 
 /** After results left an exam, both publications (app and Sonuç Ağı) are written again without them. */
 async function refreshPublications(env: Env, examId: string, actorId: string) {
-  const { refreshAppLivePublication } = await import('./platform-expansion');
-  await refreshAppLivePublication(env, examId, actorId).catch((e) => console.error('APP_REFRESH_AFTER_DELETE', e instanceof Error ? e.message : e));
+  const { syncAppResults } = await import('./platform-expansion');
+  await syncAppResults(env, examId, actorId).catch((e) => console.error('APP_REFRESH_AFTER_DELETE', e instanceof Error ? e.message : e));
   const { republishAfterRemoval } = await import('../result-network-entry');
   await republishAfterRemoval(env, examId, actorId).catch((e) => console.error('NETWORK_REFRESH_AFTER_DELETE', e instanceof Error ? e.message : e));
 }

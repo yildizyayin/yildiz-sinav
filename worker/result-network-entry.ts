@@ -855,7 +855,9 @@ export async function handleResultOperations(request:Request,env:Env):Promise<Re
   const done=await withExamOperationLock(env,context.batch.exam_id,'RESULT_BATCH_DELETE',async(env)=>{const r=await deleteBatch(env,batchOnly[1],context.user.id,reason);return r.ok?json(r):safeError(r.code==='NOT_FOUND'?404:409,r.code,r.code==='ALREADY_DELETED'?'Bu yükleme zaten silinmiş.':'Yükleme bulunamadı.')});
   if(!done.ok)return done;const body2:any=await done.json();
   const ranks=body2.wasEvaluated?await republishAfterRemoval(env,context.batch.exam_id,context.user.id):'NOT_NEEDED';
-  return json({...body2,ranks,permanent:true})}
+  // Owner (4 Nov): the app's open results follow the same removal (it showed a stale, empty publication before).
+  const app=body2.wasEvaluated?await import('./lib/platform-expansion').then((m)=>m.syncAppResults(env,context.batch.exam_id,context.user.id)).catch(()=>'NOT_NEEDED'):'NOT_NEEDED';
+  return json({...body2,ranks,app,permanent:true})}
  const restore=path.match(/^\/api\/admin\/result-network\/operations\/scan-batches\/([^/]+)\/restore$/);
  if(restore&&request.method==='POST'){const context=await batchOperatorContext(request,env,restore[1]);if(context instanceof Response)return context;
   const {restoreBatch}=await import('./lib/batch-lifecycle');const r=await restoreBatch(env,restore[1],context.user.id);
