@@ -1,6 +1,6 @@
 import type { AuthUser, Env } from '../types';
 import { all, audit, json, one } from './db';
-import { examCorrectionOpen, examPublicationGuard } from './exam-publication-guard';
+import { examCorrectionOpen, examEditableBeforeResults, examPublicationGuard } from './exam-publication-guard';
 import { scoringChoices } from './scoring-choices';
 
 /**
@@ -18,16 +18,18 @@ export async function scoringProfileOptions(env: Env, exam: any) {
 }
 
 export async function getScoringCorrection(env: Env, exam: any): Promise<Response> {
-  const correctionOpen = exam.status === 'DRAFT' ? false : await examCorrectionOpen(env, exam.id);
+  const correctionOpen = exam.status === 'DRAFT' ? false : (await examEditableBeforeResults(env, exam)) || await examCorrectionOpen(env, exam.id);
   return json({ ok: true, current: exam.scoring_rule_version_id || null, correctionOpen, options: await scoringProfileOptions(env, exam) });
 }
 
 export async function putScoringCorrection(request: Request, env: Env, user: AuthUser, exam: any): Promise<Response> {
   if (exam.status === 'DRAFT') return err(409, 'USE_EXAM_CARD', 'Taslak sınavda puanlama profili sınav kartından değiştirilir.');
-  if (!await examCorrectionOpen(env, exam.id)) return err(409, 'CORRECTION_NOT_OPEN', 'Puanlama profili yalnız sınav gerekçeyle düzeltmeye açıldığında değiştirilebilir. Önce Sonuç Ağı\'nda "Düzeltmeye aç"ı kullanın.');
+  // owner (4 Nov): before the first evaluated student the profile changes freely
+  if (!await examEditableBeforeResults(env, exam) && !await examCorrectionOpen(env, exam.id)) return err(409, 'CORRECTION_NOT_OPEN', 'Puanlama profili yalnız sınav gerekçeyle düzeltmeye açıldığında değiştirilebilir. Önce Sonuç Ağı\'nda "Düzeltmeye aç"ı kullanın.');
   const gate = await examPublicationGuard(env, exam.id); if (gate) return gate;
   const body: any = await request.json().catch(() => ({}));
-  const reason = String(body.reason || '').trim();
+  const free = await examEditableBeforeResults(env, exam);
+  const reason = String(body.reason || '').trim() || (free ? 'Sonuç oluşmadan önce puanlama profili değiştirildi.' : '');
   if (reason.length < 10 || reason.length > 500) return err(400, 'REASON_REQUIRED', 'Değişikliğin gerekçesini yazın (10–500 karakter).');
   const target = (await scoringProfileOptions(env, exam)).find((o) => o.id === String(body.scoringRuleVersionId || ''));
   if (!target) return err(400, 'SCORING_PROFILE_NOT_ALLOWED', 'Bu sınav türü için doğrulanmış bir puanlama profili seçin.');
