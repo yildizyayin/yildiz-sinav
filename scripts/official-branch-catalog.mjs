@@ -74,10 +74,12 @@ export function branchThemeOutcomesV2(html,spec,theme){
   const line=lines[i];let m=line.match(atStart);
   if(m&&!isCode(m[1]))m=null;
   if(!m&&mapping[0]==='DIN')m=line.match(bare);
-  if(!m)continue; // only a line that starts with a code holds outcomes; notes that mention codes are skipped
-  // the same line may hold more than one outcome ("… yorumlayabilme T.O.8.16. Metnin …")
-  const cuts=[{code:m[1],from:m[0].length}];
-  for(const x of line.slice(m[0].length).matchAll(inLine)){if(isCode(x[1]))cuts.push({code:x[1],at:m[0].length+x.index,from:m[0].length+x.index+x[0].length});}
+  // A line that starts with a code holds outcomes; the same line may hold more than one ("… yorumlayabilme T.O.8.16.
+  // Metnin …"). Elsewhere (a process component or a note) only a code written as a heading — dot, space, capital
+  // letter — starts an outcome; a reference in a note ("T.O.5.20. kapsamında", "(T.K.5.1)") does not.
+  const offset=m?m[0].length:0,cuts=m?[{code:m[1],from:offset}]:[];
+  for(const x of line.slice(offset).matchAll(inLine)){if(!isCode(x[1]))continue;if(!m&&!/^\.\s+\p{Lu}/u.test(line.slice(offset+x.index+x[1].length,offset+x.index+x[0].length+1)))continue;cuts.push({code:x[1],at:offset+x.index,from:offset+x.index+x[0].length});}
+  if(!cuts.length)continue;
   cuts.forEach((c,k)=>{const text=line.slice(c.from,cuts[k+1]?.at??line.length).trim();items.push({code:c.code,title:text?visibleText(text):(lines.slice(i+1).find(Boolean)??'')});});
  }
  const rows=[];
