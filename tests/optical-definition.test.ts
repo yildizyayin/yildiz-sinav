@@ -94,16 +94,19 @@ describe('optical definition validation', () => {
     expect(result.valid).toBe(false);
   });
 
-  it('does not mark a technically complete template ready before parser sample test passes', () => {
+  // Owner (4 Nov): the sample file test is optional; an untested template is ready with a warning.
+  it('marks a technically complete template ready without a sample test, with a warning', () => {
     const before = definitionReadiness({ parser, camera, print, fiducials, pageWidthMm: 210, pageHeightMm: 297, parserTestPassed: false });
     expect(before.parser).toBe(true);
     expect(before.camera).toBe(true);
     expect(before.print).toBe(true);
     expect(before.fiducials).toBe(true);
-    expect(before.ready).toBe(false);
+    expect(before.ready).toBe(true);
+    expect(before.warnings).toEqual(['Örnek TXT/DAT dosyasıyla test edilmedi.']);
 
     const after = definitionReadiness({ parser, camera, print, fiducials, pageWidthMm: 210, pageHeightMm: 297, parserTestPassed: true });
     expect(after.ready).toBe(true);
+    expect(after.warnings).toEqual([]);
   });
 
   it('allows manual parser publication without optional camera, print, or fiducials', () => {
@@ -150,7 +153,7 @@ describe('optical definition validation', () => {
       expect(definitionReadiness({
         parser, camera: null, print: draft, fiducials: null,
         pageWidthMm: 210, pageHeightMm: 297, parserTestPassed: false,
-      }).ready).toBe(false);
+      })).toMatchObject({ ready: true, warnings: ['Örnek TXT/DAT dosyasıyla test edilmedi.'] }); // owner 4 Nov: test optional
     }
   });
 

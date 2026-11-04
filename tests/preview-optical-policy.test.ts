@@ -12,9 +12,9 @@ describe('preview optical policy gate', () => {
     expect(source).toContain("/preview-file$/");
   });
 
-  it('requires bound opticals to be READY, parser-tested and tenant-safe', () => {
+  it('requires bound opticals to be READY, with a parser, and tenant-safe', () => {
     expect(source).toContain("candidate.template_status !== 'READY'");
-    expect(source).toContain('candidate.parser_test_passed');
+    expect(source).toContain('!candidate.parser_definition');
     expect(source).toContain("candidate.owner_type === 'CENTRAL'");
     expect(source).toContain("candidate.owner_type === 'INSTITUTION' && candidate.owner_id === institutionId");
     expect(source).toContain('OPTICAL_BINDING_NOT_READY');
@@ -22,7 +22,7 @@ describe('preview optical policy gate', () => {
 
   it('limits fallback catalog to central or current institution READY parsers', () => {
     expect(source).toContain("t.status='READY'");
-    expect(source).toContain('coalesce(d.parser_test_passed,0)=1');
+    expect(source).toContain('v.parser_definition IS NOT NULL');
     expect(source).toContain("t.owner_type='CENTRAL'");
     expect(source).toContain("t.owner_type='INSTITUTION' AND t.owner_id=?");
     expect(source).toContain('OPTICAL_TEMPLATE_NOT_ALLOWED');

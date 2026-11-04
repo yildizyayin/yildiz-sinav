@@ -30,7 +30,8 @@ function institutionForPreview(user: AuthUser, form: FormData): string | null {
 function candidateAllowed(candidate: OpticalCandidate, institutionId: string): boolean {
   if (!candidate.template_active || !candidate.version_active) return false;
   if (candidate.template_status !== 'READY') return false;
-  if (!candidate.parser_definition || Number(candidate.parser_test_passed || 0) !== 1) return false;
+  // Owner (4 Nov): a published optic is usable whether or not a sample file was tested.
+  if (!candidate.parser_definition) return false;
   if (candidate.owner_type === 'CENTRAL') return true;
   return candidate.owner_type === 'INSTITUTION' && candidate.owner_id === institutionId;
 }
@@ -59,7 +60,6 @@ async function loadFallbackCandidates(env: Env, institutionId: string): Promise<
       AND v.active=1
       AND t.status='READY'
       AND v.parser_definition IS NOT NULL
-      AND coalesce(d.parser_test_passed,0)=1
       AND (t.owner_type='CENTRAL' OR (t.owner_type='INSTITUTION' AND t.owner_id=?))
     ORDER BY t.owner_type,t.name,v.version
   `).bind(institutionId));
