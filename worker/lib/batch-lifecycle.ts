@@ -9,6 +9,8 @@ import { all, one, uuid } from './db';
  * original file go at the same time — a deleted upload cannot be restored.
  * Guest students the upload brought in that now take part in nothing are archived, so a later upload to the same
  * school is never matched to a student who came from a wrong file.
+ * Owner (4 Nov, KVKK): such archived students are then deleted for good (name, number, T.C., enrolment and the learning
+ * data derived from the deleted results); the learning evidence the upload's exam gave its students goes as well.
  */
 /** Kept for older readers; deleting is permanent since 3 Nov. */
 export const RESTORE_DAYS = 0;
@@ -47,6 +49,8 @@ export async function clearBatchResults(env: Env, batchId: string): Promise<{ re
       env.DB.prepare(`DELETE FROM exam_results WHERE participant_id IN ${inP}`).bind(ids),
       env.DB.prepare(`DELETE FROM outcome_results WHERE exam_id=? AND student_id IN ${inP}`).bind(batch.exam_id, students),
       env.DB.prepare(`DELETE FROM assessment_runs WHERE source_type='EXAM' AND exam_id=? AND student_id IN ${inP}`).bind(batch.exam_id, students),
+      env.DB.prepare(`DELETE FROM learning_evidence WHERE source_type='EXAM' AND source_id=? AND student_id IN ${inP}`).bind(batch.exam_id, students),
+      env.DB.prepare(`DELETE FROM student_learning_state WHERE student_id IN ${inP} AND NOT EXISTS(SELECT 1 FROM learning_evidence le WHERE le.student_id=student_learning_state.student_id AND le.node_id=student_learning_state.node_id)`).bind(students),
       env.DB.prepare(`DELETE FROM scan_evaluation_progress WHERE participant_id IN ${inP}`).bind(ids),
       env.DB.prepare(`UPDATE admissions_candidates SET participant_id=NULL WHERE participant_id IN ${inP}`).bind(ids),
       env.DB.prepare(`DELETE FROM exam_participants WHERE id IN ${inP}`).bind(ids),
@@ -60,7 +64,46 @@ export async function clearBatchResults(env: Env, batchId: string): Promise<{ re
   statements.push(env.DB.prepare(`UPDATE scan_records SET matched_student_id=NULL,match_status=CASE WHEN match_status='GUEST_MATCH' THEN 'NEW_GUEST' ELSE match_status END,resolution_status=CASE WHEN resolution_status='RESOLVED' AND match_status='GUEST_MATCH' THEN 'PENDING' ELSE resolution_status END
     WHERE batch_id=? AND matched_student_id IN (SELECT id FROM student_entities WHERE status='ARCHIVED')`).bind(batchId));
   for (let i = 0; i < statements.length; i += 50) await env.DB.batch(statements.slice(i, i + 50));
+  const studentIds = parts.map((p) => p.student_id).filter(Boolean) as string[];
+  for (let i = 0; i < studentIds.length; i += 400) await purgeArchivedStudents(env, studentIds.slice(i, i + 400), 400);
   return { removed: parts.length, examId: batch.exam_id };
+}
+
+/**
+ * Owner (4 Nov, KVKK): an archived student who takes part in nothing and has no account, parent link or read sheet is
+ * deleted for good. Rows that cascade (learning state, evidence, profiles) go with it. If anything else still points at
+ * the student, the personal data is erased instead (name, T.C., student number). Runs right after a deletion and on
+ * every scheduled run for anything left over.
+ */
+export async function purgeArchivedStudents(env: Env, ids?: string[], limit = 100): Promise<{ deleted: number; anonymized: number }> {
+  const scope = ids ? ` AND s.id IN (SELECT value FROM json_each(?))` : '';
+  const rows = await all<{ id: string }>(env.DB.prepare(`SELECT s.id FROM student_entities s WHERE s.status='ARCHIVED'${scope}
+    AND NOT EXISTS(SELECT 1 FROM exam_participants ep WHERE ep.student_id=s.id)
+    AND NOT EXISTS(SELECT 1 FROM users u WHERE u.student_id=s.id)
+    AND NOT EXISTS(SELECT 1 FROM parent_student_links l WHERE l.student_id=s.id)
+    AND NOT EXISTS(SELECT 1 FROM scan_records r WHERE r.matched_student_id=s.id)
+    AND NOT (s.first_name='Silinmiş' AND s.last_name='Öğrenci')
+    LIMIT ?`).bind(...(ids ? [JSON.stringify(ids)] : []), limit));
+  let deleted = 0, anonymized = 0;
+  for (const { id } of rows) {
+    try {
+      await env.DB.batch([
+        env.DB.prepare('DELETE FROM guest_profiles WHERE student_id=?').bind(id),
+        env.DB.prepare('DELETE FROM student_enrollments WHERE student_id=?').bind(id),
+        env.DB.prepare('DELETE FROM student_entities WHERE id=?').bind(id),
+      ]);
+      deleted++;
+    } catch {
+      await env.DB.batch([
+        env.DB.prepare('DELETE FROM guest_profiles WHERE student_id=?').bind(id),
+        env.DB.prepare('UPDATE student_enrollments SET student_number=NULL WHERE student_id=?').bind(id),
+        env.DB.prepare(`UPDATE student_entities SET first_name='Silinmiş',last_name='Öğrenci',normalized_name='silinmis ogrenci',tckn=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id),
+      ]);
+      anonymized++;
+    }
+  }
+  if (deleted || anonymized) await env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)').bind(uuid('aud'), null, null, 'ARCHIVED_STUDENTS_PURGED', 'student_entity', null, JSON.stringify({ deleted, anonymized })).run();
+  return { deleted, anonymized };
 }
 
 export const deletedBatchSql = (alias = 'b') => `NOT EXISTS(SELECT 1 FROM scan_batch_deletions d WHERE d.batch_id=${alias}.id)`;
