@@ -262,6 +262,14 @@ async function detectDenseRegions(file: File): Promise<Suggestion[]> {
   return out.sort((a, b) => b.wPct * b.hPct - a.wPct * a.hPct).slice(0, 16);
 }
 
+const OPTICAL_LEVELS: Array<[string, string]> = [["ILKOKUL", "İlkokul"], ["ORTAOKUL", "Ortaokul"], ["LISE", "Lise"]];
+const OPTICAL_LEVEL_LABEL: Record<string, string> = Object.fromEntries(OPTICAL_LEVELS);
+const OWNER_LABELS: Record<string, string> = { CENTRAL: "Ana havuz", DEALER: "Bayi", INSTITUTION: "Kurumum" };
+function opticalOwner(t: any): string {
+  if (t.owner_type === "INSTITUTION") return "INSTITUTION";
+  return Number(t.dealer_owned) ? "DEALER" : "CENTRAL";
+}
+
 export function Opticals() {
   const { user } = useAuth();
   const [templates, setTemplates] = useState<any[]>([]),
@@ -285,9 +293,15 @@ export function Opticals() {
       sortOrder: 1,
       pageWidthMm: 210,
       pageHeightMm: 297,
+      educationLevel: "",
     }),
     [newVersion, setNewVersion] = useState("");
-  const [editTemplate, setEditTemplate] = useState({ name: "", vendor: "", opticalCode: "", formType: "MANUAL" as Method, sortOrder: 1 });
+  const [editTemplate, setEditTemplate] = useState({ name: "", vendor: "", opticalCode: "", formType: "MANUAL" as Method, sortOrder: 1, educationLevel: "" });
+  // Owner (4 Nov): optics are a filterable list (hundreds expected): level, publisher, owner and a search box.
+  const [listFilter, setListFilter] = useState<{ q: string; level: string; vendor: string; owner: string }>(() => {
+    try { return { q: "", level: "", vendor: "", owner: "", ...JSON.parse(localStorage.getItem("anunex.optical.filters") || "{}") }; } catch { return { q: "", level: "", vendor: "", owner: "" }; }
+  });
+  useEffect(() => { try { localStorage.setItem("anunex.optical.filters", JSON.stringify({ ...listFilter, q: "" })); } catch { /* storage unavailable */ } }, [listFilter]);
   const [photo, setPhoto] = useState<File | null>(null),
     [photoUrl, setPhotoUrl] = useState(""),
     [suggestions, setSuggestions] = useState<Suggestion[]>([]),
@@ -347,6 +361,7 @@ export function Opticals() {
       opticalCode: r.template?.optical_code || "",
       formType: (r.template?.form_type || "MANUAL") as Method,
       sortOrder: Number(r.template?.sort_order || 1),
+      educationLevel: r.template?.education_level || "",
     });
     if (
       !selectedVersionId ||
@@ -475,7 +490,7 @@ export function Opticals() {
   const openCreateForm = () => {
     setFormDialogMode("create");
     setFormDialogOpen(true);
-    setNewTemplate((current) => ({ ...current, name: "", vendor: "", opticalCode: "", formType: "MANUAL", sortOrder: 1, version: "v1" }));
+    setNewTemplate((current) => ({ ...current, name: "", vendor: "", opticalCode: "", formType: "MANUAL", sortOrder: 1, version: "v1", educationLevel: listFilter.level && listFilter.level !== "NONE" ? listFilter.level : "" }));
     setManualRecordLength(0);
     setManualIndexBase(0);
     setManualFields(defaultManualFields());
@@ -500,6 +515,7 @@ export function Opticals() {
       opticalCode: source.opticalCode ? `${source.opticalCode}-KOPYA` : "",
       formType: source.formType,
       sortOrder: source.sortOrder,
+      educationLevel: source.educationLevel,
     }));
     setFormDialogMode("create");
     setNotice("Farklı kaydet için yeni optik form taslağı hazırlandı; kodu ve adı değiştirebilirsiniz.");
@@ -1067,33 +1083,16 @@ export function Opticals() {
     setVersionDetail(null);
     setError("");
   };
-  const opticalTree = useMemo(() => {
-    const groups = [
-      {
-        key: "CENTRAL",
-        label: "Ana Havuz",
-        detail: "Süper Admin yayınları",
-        items: templates.filter((item) => item.owner_type === "CENTRAL"),
-      },
-      {
-        key: "INSTITUTION",
-        label: "Kurum Optikleri",
-        detail: "Bu kuruma özel · ana havuza girmez",
-        items: templates.filter((item) => item.owner_type === "INSTITUTION"),
-      },
-    ];
-    return groups.filter((group) => group.items.length > 0).map((group) => {
-      const vendors = new Map<string, any[]>();
-      group.items.forEach((item) => {
-        const vendor = item.vendor?.trim() || "Üretici belirtilmemiş";
-        vendors.set(vendor, [...(vendors.get(vendor) || []), item]);
-      });
-      return {
-        ...group,
-        vendors: [...vendors.entries()].sort(([a], [b]) => a.localeCompare(b, "tr")),
-      };
-    });
-  }, [templates]);
+  const opticalVendors = useMemo(() => [...new Set(templates.map((t) => String(t.vendor || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "tr")), [templates]);
+  const visibleTemplates = useMemo(() => {
+    const q = listFilter.q.trim().toLocaleLowerCase("tr-TR");
+    return templates.filter((t) =>
+      (!listFilter.level || (listFilter.level === "NONE" ? !t.education_level : t.education_level === listFilter.level)) &&
+      (!listFilter.vendor || String(t.vendor || "").trim() === listFilter.vendor) &&
+      (!listFilter.owner || opticalOwner(t) === listFilter.owner) &&
+      (!q || [t.name, t.vendor, t.optical_code].some((x) => String(x || "").toLocaleLowerCase("tr-TR").includes(q))),
+    );
+  }, [templates, listFilter]);
 
   return (
     <div
@@ -1149,6 +1148,7 @@ export function Opticals() {
                 <label className="dialog-field-order">Sıra<input type="number" min="1" value={form.sortOrder || 1} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 })) : setNewTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 }))} /></label>
                 <label className="dialog-field-type">Form Türü *<select value={form.formType} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, formType: e.target.value as Method })) : setNewTemplate((x) => ({ ...x, formType: e.target.value as Method }))}><option value="MANUAL">Kullanıcıya özel</option><option value="FMT">FMT</option><option value="TXT">TXT / DAT</option><option value="PHOTO">Fotoğraf / kamera</option></select></label>
                 <label className="dialog-field-publisher">Yayınevi *<input value={form.vendor} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, vendor: e.target.value })) : setNewTemplate((x) => ({ ...x, vendor: e.target.value }))} placeholder="Yayınevi" /></label>
+                <label className="dialog-field-level">Kademe<select value={form.educationLevel || ""} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, educationLevel: e.target.value })) : setNewTemplate((x) => ({ ...x, educationLevel: e.target.value }))}><option value="">Belirtilmemiş</option>{OPTICAL_LEVELS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
                 <label className="dialog-field-code">Optik kodu *<input value={form.opticalCode} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, opticalCode: e.target.value })) : setNewTemplate((x) => ({ ...x, opticalCode: e.target.value }))} placeholder="Optik kodu" /></label>
                 <label className="dialog-field-owner">Kullanıcı *<div className="optical-user-picker"><input value={ownerLabel} readOnly /><button type="button" className="secondary" onClick={() => setNotice(`${ownerLabel} seçildi.`)}>Seç</button></div></label>
               </div>
@@ -1168,85 +1168,45 @@ export function Opticals() {
         </div>;
       })()}
       <div className="optical-definition-list-shell">
-        <div className="optical-tree-layout">
-          <aside className="optical-form-tree panel">
-            <div className="panel-head">
-              <div>
-                <h2>Optik Form Ağacı</h2>
-                <span className="muted">Phobos · optik tanımlama</span>
-              </div>
-              <ScanLine size={18} />
-            </div>
-            {opticalTree.length === 0 && <div className="empty-state"><ScanLine size={22} /><span>Henüz optik form yok.</span></div>}
-            {opticalTree.map((group) => (
-              <div className="optical-tree-group" key={group.key}>
-                <div className="optical-tree-root"><strong>{group.label}</strong><span>{group.detail}</span></div>
-                {group.vendors.map(([vendor, items]) => (
-                  <div className="optical-tree-vendor" key={`${group.key}-${vendor}`}>
-                    <span className="optical-tree-line" />
-                    <strong>{vendor}</strong>
-                    {items.map((item) => (
-                      <div className="optical-tree-template" key={item.id}>
-                        <span className="optical-tree-branch" />
-                        <button
-                          type="button"
-                          className={selectedTemplateId === item.id ? "selected" : ""}
-                          onClick={() => setSelectedTemplateId(item.id)}
-                        >
-                          <span>{item.name}</span>
-                          <small>{item.active_version || "Taslak"} · {item.version_count} sürüm</small>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </aside>
-          <div className="exam-grid optical-form-cards">
-          {templates.map((t) => (
-            <div
-              key={t.id}
-              className="exam-card"
-              style={{
-                textAlign: "left",
-                outline:
-                  selectedTemplateId === t.id
-                    ? "2px solid currentColor"
-                    : "none",
-              }}
-            >
-              <div className="exam-top">
-                <div className="quick-icon">
-                  <ScanLine />
-                </div>
-                <div className="optical-card-menu-wrap">
-                  <button
-                    className="icon-button optical-card-menu-button"
-                    aria-label={`${t.name} işlemleri`}
-                    aria-expanded={openCardMenu === t.id}
-                    onClick={() => setOpenCardMenu((current) => current === t.id ? null : t.id)}
-                  >
-                    <MoreVertical size={17} />
-                  </button>
-                  {openCardMenu === t.id && <div className="optical-card-menu" role="menu">
-                    <button role="menuitem" onClick={() => openEditForm(t.id)}><Pencil size={14} /> Düzenle</button>
-                    <button role="menuitem" disabled={busy || t.status === "ARCHIVED"} onClick={() => { setOpenCardMenu(null); void copyTemplateVersion(t.id); }}><CopyPlus size={14} /> Kopyala</button>
-                    <button role="menuitem" disabled={busy || t.status === "ARCHIVED"} onClick={() => { setOpenCardMenu(null); void deleteTemplate(t.id); }}><Trash2 size={14} /> Sil</button>
-                  </div>}
-                </div>
-              </div>
-              <div className="optical-card-status">
-                {t.status === "READY" ? <span className="verified"><CheckCircle2 size={14} /> Hazır</span> : t.status === "ARCHIVED" ? <span className="warning"><CircleAlert size={14} /> Arşivlendi</span> : <span className="warning"><CircleAlert size={14} /> Okuma tanımı sürüyor</span>}
-              </div>
-              <button type="button" className="optical-card-title" onClick={() => openEditForm(t.id)}><h3>{t.name}</h3></button>
-              <p>
-                {t.owner_type === "CENTRAL" ? "Ana Havuz" : "Kurum özel"} · {t.vendor || "Genel"} · Optik kodu: {t.optical_code || "—"} · {t.version_count} sürüm
-              </p>
-            </div>
-          ))}
+        <section className="panel optical-list-panel">
+          <div className="optical-list-filters" role="search">
+            <label className="optical-list-search">Ara<input id="optical-filter-q" type="search" value={listFilter.q} onChange={(e) => setListFilter((f) => ({ ...f, q: e.target.value }))} placeholder="Optik adı, yayınevi veya kodu" /></label>
+            <label>Kademe<select id="optical-filter-level" value={listFilter.level} onChange={(e) => setListFilter((f) => ({ ...f, level: e.target.value }))}><option value="">Tümü</option>{OPTICAL_LEVELS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}<option value="NONE">Belirtilmemiş</option></select></label>
+            <label>Yayınevi<select id="optical-filter-vendor" value={listFilter.vendor} onChange={(e) => setListFilter((f) => ({ ...f, vendor: e.target.value }))}><option value="">Tümü</option>{opticalVendors.map((v) => <option key={v} value={v}>{v}</option>)}</select></label>
+            <label>Sahibi<select id="optical-filter-owner" value={listFilter.owner} onChange={(e) => setListFilter((f) => ({ ...f, owner: e.target.value }))}><option value="">Tümü</option>{Object.entries(OWNER_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+            <span className="optical-list-count">{visibleTemplates.length} / {templates.length} optik</span>
           </div>
-        </div>
+          <div className="optical-list-scroll">
+            <table className="optical-list-table">
+              <thead><tr><th>Optik</th><th>Yayınevi</th><th>Kademe</th><th>Sahibi</th><th>Durum</th><th>Sürüm</th><th aria-label="İşlemler" /></tr></thead>
+              <tbody>
+                {visibleTemplates.length === 0 && <tr><td colSpan={7} className="muted">{templates.length ? "Bu filtrelere uyan optik yok." : "Henüz optik form yok."}</td></tr>}
+                {visibleTemplates.map((t) => (
+                  <tr key={t.id} className={selectedTemplateId === t.id ? "selected" : ""}>
+                    <td><button type="button" className="optical-list-name" onClick={() => openEditForm(t.id)}>{t.name}</button><small>{t.optical_code || "—"}</small></td>
+                    <td>{t.vendor || "—"}</td>
+                    <td>{OPTICAL_LEVEL_LABEL[t.education_level] || "—"}</td>
+                    <td>{OWNER_LABELS[opticalOwner(t)]}</td>
+                    <td>
+                      {t.status === "READY" ? <span className="verified"><CheckCircle2 size={14} /> Hazır</span> : t.status === "ARCHIVED" ? <span className="warning"><CircleAlert size={14} /> Arşiv</span> : <span className="warning"><CircleAlert size={14} /> Tanım sürüyor</span>}
+                      {t.status === "READY" && !Number(t.parser_tested) && <small className="optical-untested">Test edilmedi</small>}
+                    </td>
+                    <td>{t.active_version || "Taslak"} · {t.version_count}</td>
+                    <td className="optical-card-menu-wrap">
+                      <button className="icon-button optical-card-menu-button" aria-label={`${t.name} işlemleri`} aria-expanded={openCardMenu === t.id} onClick={() => setOpenCardMenu((current) => current === t.id ? null : t.id)}><MoreVertical size={17} /></button>
+                      {openCardMenu === t.id && <div className="optical-card-menu" role="menu">
+                        <button role="menuitem" onClick={() => { setSelectedTemplateId(t.id); setOpenCardMenu(null); }}><ScanLine size={14} /> Ayrıntılar</button>
+                        <button role="menuitem" onClick={() => openEditForm(t.id)}><Pencil size={14} /> Düzenle</button>
+                        <button role="menuitem" disabled={busy || t.status === "ARCHIVED"} onClick={() => { setOpenCardMenu(null); void copyTemplateVersion(t.id); }}><CopyPlus size={14} /> Kopyala</button>
+                        <button role="menuitem" disabled={busy || t.status === "ARCHIVED"} onClick={() => { setOpenCardMenu(null); void deleteTemplate(t.id); }}><Trash2 size={14} /> Sil</button>
+                      </div>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
       <div className="optical-definition-detail-shell">
         <div className="optical-detail-toolbar">

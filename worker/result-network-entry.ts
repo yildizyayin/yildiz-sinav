@@ -526,14 +526,15 @@ async function resultOperatorCatalog(request:Request,env:Env){
  const mode=new URL(request.url).searchParams.get('mode')==='DEALER'?'DEALER':'INSTITUTION';
  const institutions=await scopedOperatorInstitutions(env,user,mode);if(!institutions.length&&user.role!=='SUPER_ADMIN')return forbidden('Aktif kurum veya bayi kapsamınız bulunmuyor.');
  const institutionIds=institutions.map((x:any)=>x.id);
- const opticalScope=institutionIds.length&&user.role!=='SUPER_ADMIN'
-  ? ` AND (t.owner_type='CENTRAL' OR t.owner_id IN (${institutionIds.map(()=>'?').join(',')}))`
-  : '';
+ // Owner (4 Nov): an institution's own optic is listed only to that institution (not to its dealer or the Super Admin).
+ const opticalScope=user.role==='SUPER_ADMIN'||!user.institution_id
+  ? ` AND t.owner_type<>'INSTITUTION'`
+  : ` AND (t.owner_type<>'INSTITUTION' OR t.owner_id=?)`;
  const {ownExamCatalogSql,ownOpticalCatalogSql}=await import('./lib/own-exams');
  const ownExam=await ownExamCatalogSql(env,user),ownOptic=await ownOpticalCatalogSql(env,user);
  const [exams,opticals]=await Promise.all([
   all<any>(env.DB.prepare(`SELECT DISTINCT e.id,e.title,e.exam_type,e.academic_year,e.grade_level,e.publisher_name,srv.verified scoring_verified,o.owner_kind own_kind FROM exams e JOIN exam_channel_publications ecp ON ecp.exam_id=e.id AND ecp.channel='RESULT_NETWORK' AND ecp.status='ACTIVE' JOIN scoring_rule_versions srv ON srv.id=e.scoring_rule_version_id AND srv.verified=1 LEFT JOIN result_network_own_exams o ON o.exam_id=e.id WHERE e.status IN ('ACTIVE','CLOSED') AND NOT EXISTS(SELECT 1 FROM exam_revision_state r WHERE r.exam_id=e.id AND r.app_trashed_at IS NOT NULL)${ownExam.sql} ORDER BY e.academic_year DESC,e.title LIMIT 500`).bind(...ownExam.args)),
-  all<any>(env.DB.prepare(`SELECT v.id,t.name,t.owner_type,t.owner_id,v.version,CASE WHEN oo.template_id IS NOT NULL OR t.owner_type='INSTITUTION' THEN 1 ELSE 0 END own FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id LEFT JOIN result_network_own_opticals oo ON oo.template_id=t.id WHERE v.active=1 AND t.active=1 AND v.parser_definition IS NOT NULL${opticalScope}${ownOptic.sql} ORDER BY t.name,v.version DESC LIMIT 200`).bind(...institutionIds.filter((x:any)=>user.role!=='SUPER_ADMIN'),...ownOptic.args)),
+  all<any>(env.DB.prepare(`SELECT v.id,t.name,t.owner_type,t.owner_id,v.version,CASE WHEN oo.template_id IS NOT NULL OR t.owner_type='INSTITUTION' THEN 1 ELSE 0 END own FROM optical_template_versions v JOIN optical_templates t ON t.id=v.template_id LEFT JOIN result_network_own_opticals oo ON oo.template_id=t.id WHERE v.active=1 AND t.active=1 AND v.parser_definition IS NOT NULL${opticalScope}${ownOptic.sql} ORDER BY t.name,v.version DESC LIMIT 200`).bind(...(user.role==='SUPER_ADMIN'||!user.institution_id?[]:[user.institution_id]),...ownOptic.args)),
  ]);
  await publishedDefinitions(env,exams);
  return json({ok:true,institutions,exams,opticals});

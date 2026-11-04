@@ -28,7 +28,8 @@ export async function quickOptical(request: Request, env: Env): Promise<Response
   const fmt = form?.get('fmt'), sample = form?.get('sample');
   if (!name) return json({ ok: false, error: { code: 'VALIDATION_ERROR', message: 'Optik adını yazın (ör. "4K Yayınları TYT").' } }, 400);
   if (!(fmt instanceof File)) return json({ ok: false, error: { code: 'VALIDATION_ERROR', message: 'Optiğin FMT dosyasını seçin.' } }, 400);
-  if (!(sample instanceof File)) return json({ ok: false, error: { code: 'VALIDATION_ERROR', message: 'Optiği denemek için değerlendireceğiniz TXT/DAT dosyasını da seçin.' } }, 400);
+  // Owner (4 Nov): the sample TXT/DAT is optional; without it the optic is published untested.
+  const hasSample = sample instanceof File && sample.size > 0;
   const { routeOpticalAdmin } = await import('../optical-admin-entry');
   const origin = new URL(request.url).origin;
   const headers = (extra: Record<string, string> = {}) => ({ Cookie: request.headers.get('Cookie') || '', Origin: origin, ...extra });
@@ -45,9 +46,9 @@ export async function quickOptical(request: Request, env: Env): Promise<Response
   const fd = new FormData(); fd.set('file', fmt, fmt.name || 'optik.fmt');
   const imported = await call(`/api/optical-definition-versions/${versionId}/fmt`, { method: 'POST', headers: headers(), body: fd });
   if (!imported.ok) return json({ ok: false, step: 'FMT', versionId, error: { code: imported.data?.error?.code || 'INVALID_FMT', message: `FMT okunamadı: ${imported.data?.error?.message || 'dosya tanınmadı'}. Optik taslak olarak Optikler sayfasında duruyor.` } }, 422);
-  const tested = await call(`/api/optical-definition-versions/${versionId}/test-parser`, { method: 'POST', headers: headers({ 'Content-Type': 'application/json' }), body: JSON.stringify({ sampleText: await sample.text(), fileName: sample.name || 'veri.txt' }) });
-  if (!tested.ok || !tested.data?.passed) return json({ ok: false, step: 'TEST', versionId, issues: tested.data?.issues || [], error: { code: 'OPTICAL_TEST_FAILED', message: `FMT bu TXT dosyasını okuyamadı${tested.data?.issues?.length ? `: ${tested.data.issues.slice(0, 3).join(' · ')}` : ''}. Doğru FMT ile tekrar deneyin; optik taslak olarak Optikler sayfasında duruyor.` } }, 422);
+  const tested = hasSample ? await call(`/api/optical-definition-versions/${versionId}/test-parser`, { method: 'POST', headers: headers({ 'Content-Type': 'application/json' }), body: JSON.stringify({ sampleText: await (sample as File).text(), fileName: (sample as File).name || 'veri.txt' }) }) : null;
+  if (tested && (!tested.ok || !tested.data?.passed)) return json({ ok: false, step: 'TEST', versionId, issues: tested.data?.issues || [], error: { code: 'OPTICAL_TEST_FAILED', message: `FMT bu TXT dosyasını okuyamadı${tested.data?.issues?.length ? `: ${tested.data.issues.slice(0, 3).join(' · ')}` : ''}. Doğru FMT ile tekrar deneyin; optik taslak olarak Optikler sayfasında duruyor.` } }, 422);
   const published = await call(`/api/optical-definition-versions/${versionId}/publish`, { method: 'POST', headers: headers() });
   if (!published.ok) return json({ ok: false, step: 'PUBLISH', versionId, error: { code: published.data?.error?.code || 'OPTICAL_PUBLISH_FAILED', message: published.data?.error?.message || 'Optik yayına alınamadı.' } }, 422);
-  return json({ ok: true, optical: { id: versionId, name, version: 'v1' }, recordCount: tested.data.recordCount, sample: (tested.data.sample || []).slice(0, 3).map((r: any) => ({ name: r.name, booklet: r.booklet })) }, 201);
+  return json({ ok: true, optical: { id: versionId, name, version: 'v1' }, tested: !!tested, recordCount: tested?.data.recordCount ?? null, sample: (tested?.data.sample || []).slice(0, 3).map((r: any) => ({ name: r.name, booklet: r.booklet })) }, 201);
 }

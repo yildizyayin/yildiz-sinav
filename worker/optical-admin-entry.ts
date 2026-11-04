@@ -30,12 +30,23 @@ async function requireOpticalManager(env: Env, request: Request): Promise<AuthUs
   return user;
 }
 
+// Owner (4 Nov): an institution's own optic is seen and edited only by that institution — not by other
+// institutions, dealers or the Super Admin.
 function canReadTemplate(user: AuthUser, row: any): boolean {
-  return user.role === 'SUPER_ADMIN' || row.owner_type === 'CENTRAL' || row.owner_id === user.institution_id;
+  if (row.owner_type === 'INSTITUTION') return !!user.institution_id && row.owner_id === user.institution_id && user.role !== 'SUPER_ADMIN';
+  return user.role === 'SUPER_ADMIN' || row.owner_type === 'CENTRAL';
 }
 
 function canEditTemplate(user: AuthUser, row: any): boolean {
-  return user.role === 'SUPER_ADMIN' || (row.owner_type === 'INSTITUTION' && row.owner_id === user.institution_id);
+  if (row.owner_type === 'INSTITUTION') return user.role !== 'SUPER_ADMIN' && !!user.institution_id && row.owner_id === user.institution_id;
+  return user.role === 'SUPER_ADMIN';
+}
+
+const LEVELS = ['ILKOKUL', 'ORTAOKUL', 'LISE'];
+function educationLevel(value: unknown): string | null | undefined {
+  if (value === undefined) return undefined;
+  const v = String(value || '').trim().toUpperCase();
+  return v ? (LEVELS.includes(v) ? v : undefined) : null;
 }
 
 async function getVersion(env: Env, versionId: string): Promise<any | null> {
@@ -65,7 +76,7 @@ function readinessFor(row: any) {
 
 async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
   const scope = user.role === 'SUPER_ADMIN'
-    ? { sql: '', params: [] as unknown[] }
+    ? { sql: ` AND t.owner_type<>'INSTITUTION'`, params: [] as unknown[] }
     : {
         sql: ` AND (
           (t.owner_type='INSTITUTION' AND t.owner_id=?)
@@ -81,7 +92,9 @@ async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
         params: [user.institution_id],
       };
   const rows = await all<any>(env.DB.prepare(`
-    SELECT t.id,t.name,t.vendor,t.optical_code,t.form_type,t.sort_order,t.status,t.active,t.owner_type,t.owner_id,t.created_at,
+    SELECT t.id,t.name,t.vendor,t.optical_code,t.form_type,t.sort_order,t.status,t.active,t.owner_type,t.owner_id,t.created_at,t.education_level,
+      EXISTS(SELECT 1 FROM result_network_own_opticals oo WHERE oo.template_id=t.id) dealer_owned,
+      (SELECT coalesce(d.parser_test_passed,0) FROM optical_template_versions v LEFT JOIN optical_definition_validations d ON d.optical_template_version_id=v.id WHERE v.template_id=t.id ORDER BY v.active DESC,v.created_at DESC LIMIT 1) parser_tested,
       (SELECT count(*) FROM optical_template_versions v WHERE v.template_id=t.id) version_count,
       (SELECT v.id FROM optical_template_versions v WHERE v.template_id=t.id AND v.active=1 ORDER BY v.created_at DESC LIMIT 1) active_version_id,
       (SELECT v.version FROM optical_template_versions v WHERE v.template_id=t.id AND v.active=1 ORDER BY v.created_at DESC LIMIT 1) active_version
@@ -93,7 +106,9 @@ async function listDefinitions(env: Env, user: AuthUser): Promise<Response> {
 }
 
 async function createTemplate(request: Request, env: Env, actor: AuthUser): Promise<Response> {
-  const body = await request.json<{ name?: string; vendor?: string; opticalCode?: string; version?: string; formType?: string; sortOrder?: number; pageWidthMm?: number; pageHeightMm?: number; institutionId?: string }>();
+  const body = await request.json<{ name?: string; vendor?: string; opticalCode?: string; version?: string; formType?: string; sortOrder?: number; pageWidthMm?: number; pageHeightMm?: number; institutionId?: string; educationLevel?: string | null }>();
+  const level = educationLevel(body.educationLevel);
+  if (level === undefined && body.educationLevel !== undefined) return badRequest('Kademe geçersiz.');
   const opticalCode = body.opticalCode?.trim() || '';
   const name = body.name?.trim() || opticalCode;
   const vendor = body.vendor?.trim() || null;
@@ -117,7 +132,7 @@ async function createTemplate(request: Request, env: Env, actor: AuthUser): Prom
   const templateId = uuid('opt');
   const versionId = uuid('optv');
   await env.DB.batch([
-    env.DB.prepare(`INSERT INTO optical_templates (id,name,vendor,optical_code,form_type,sort_order,status,active,owner_type,owner_id) VALUES (?,?,?,?,? ,?,'NEEDS_DEFINITION',1,?,?)`).bind(templateId, name, vendor, opticalCode, formType, sortOrder, ownerType, ownerId),
+    env.DB.prepare(`INSERT INTO optical_templates (id,name,vendor,optical_code,form_type,sort_order,status,active,owner_type,owner_id,education_level) VALUES (?,?,?,?,? ,?,'NEEDS_DEFINITION',1,?,?,?)`).bind(templateId, name, vendor, opticalCode, formType, sortOrder, ownerType, ownerId, level ?? null),
     env.DB.prepare(`INSERT INTO optical_template_versions (id,template_id,version,page_width_mm,page_height_mm,active) VALUES (?,?,?,?,?,0)`).bind(versionId, templateId, version, pageWidthMm, pageHeightMm),
     env.DB.prepare(`INSERT INTO optical_definition_validations (optical_template_version_id) VALUES (?)`).bind(versionId),
   ]);
@@ -129,7 +144,10 @@ async function updateTemplate(request: Request, env: Env, actor: AuthUser, templ
   const template = await one<any>(env.DB.prepare('SELECT * FROM optical_templates WHERE id=?').bind(templateId));
   if (!template) return notFound('Optik şablon bulunamadı.');
   if (!canEditTemplate(actor, template)) return forbidden('Bu optik şablonu düzenleme yetkiniz bulunmuyor.');
-  const body = await request.json<{ name?: string; vendor?: string | null; opticalCode?: string; formType?: string; sortOrder?: number; reason?: string | null }>();
+  const body = await request.json<{ name?: string; vendor?: string | null; opticalCode?: string; formType?: string; sortOrder?: number; reason?: string | null; educationLevel?: string | null }>();
+  const parsedLevel = educationLevel(body.educationLevel);
+  if (parsedLevel === undefined && body.educationLevel !== undefined) return badRequest('Kademe geçersiz.');
+  const level = parsedLevel === undefined ? (template.education_level ?? null) : parsedLevel;
   const opticalCode = body.opticalCode?.trim() || template.optical_code || '';
   const name = body.name?.trim() || opticalCode;
   const vendor = body.vendor?.trim() || null;
@@ -143,9 +161,9 @@ async function updateTemplate(request: Request, env: Env, actor: AuthUser, templ
   if (duplicate) return error(409, 'TEMPLATE_EXISTS', 'Bu optik kodu veya yayınevi/optik adı aynı kapsamda zaten kullanılıyor.');
   const reason = body.reason?.trim() || 'Optik yönetim ekranı güncellemesi.';
   if (reason.length > 500) return badRequest('Değişiklik gerekçesi 500 karakteri geçemez.');
-  await env.DB.prepare('UPDATE optical_templates SET name=?,vendor=?,optical_code=?,form_type=?,sort_order=? WHERE id=?').bind(name, vendor, opticalCode, formType, sortOrder, templateId).run();
+  await env.DB.prepare('UPDATE optical_templates SET name=?,vendor=?,optical_code=?,form_type=?,sort_order=?,education_level=? WHERE id=?').bind(name, vendor, opticalCode, formType, sortOrder, level, templateId).run();
   await audit(env.DB, actor.id, template.owner_id || null, 'OPTICAL_TEMPLATE_UPDATED', 'optical_template', templateId, { before: { name: template.name, vendor: template.vendor, opticalCode: template.optical_code, formType: template.form_type, sortOrder: template.sort_order }, after: { name, vendor, opticalCode, formType, sortOrder }, reason });
-  return json({ ok: true, template: { ...template, name, vendor, optical_code: opticalCode, form_type: formType, sort_order: sortOrder } });
+  return json({ ok: true, template: { ...template, name, vendor, optical_code: opticalCode, form_type: formType, sort_order: sortOrder, education_level: level } });
 }
 
 async function getTemplateDetail(env: Env, user: AuthUser, templateId: string): Promise<Response> {
