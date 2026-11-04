@@ -1,0 +1,30 @@
+name: Collect official curricula (read-only)
+
+# Owner (4 Nov): fetches missing MEB TYMM programmes from tymm.meb.gov.tr for review. No secrets, no database access.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - curriculum-collect
+    paths:
+      - 'scripts/collect-official-curricula.mjs'
+      - '.github/workflows/collect-official-curricula.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: node scripts/collect-official-curricula.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: official-curricula-collected
+          path: official-curricula-collected.json
+          retention-days: 7

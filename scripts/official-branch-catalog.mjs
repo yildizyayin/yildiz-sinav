@@ -1,6 +1,6 @@
 import {visibleText,sourceHash} from './official-math-catalog.mjs';
 export const branchSubjects={
- 'ortaokul-turkce-dersi':['TUR','T'], 'fen-bilimleri-dersi':['FEN','FB'],
+ 'ortaokul-turkce-dersi':['TUR','T'], 'ilkokul-turkce-dersi':['TUR','T'], 'fen-bilimleri-dersi':['FEN','FB'],
  'sosyal-bilgiler-dersi':['SOS','SB'], 'turk-dili-ve-edebiyati-dersi':['EDB','TDE'],
  'fizik-dersi':['FIZ','FİZ'], 'kimya-dersi':['KIM','KİM'], 'biyoloji-dersi':['BIY','BİY'],
  'tarih-dersi':['TAR','TAR'], 'cografya-dersi':['COG','COĞ'], 'felsefe-dersi':['FEL','FEL'],
