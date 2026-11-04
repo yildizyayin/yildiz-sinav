@@ -73,6 +73,8 @@ export default {
     ctx.waitUntil((async()=>{const m=await import('./result-network-entry');
       await m.releaseDueAdministrations(env).catch((error)=>console.error('Scheduled release failed',error));
       await m.runDeferredEvaluations(env).catch((error)=>console.error('Deferred evaluation failed',error));
+      // Owner (4 Nov): evaluated normal exams open by themselves (fallback when the evaluation hook could not).
+      await import('./lib/exam-release').then(r=>r.autoOpenDueExams(env)).catch((error)=>console.error('Auto open failed',error));
       await m.refreshLivePublications(env)})().catch((error)=>console.error('Live rank refresh failed',error)));
     ctx.waitUntil(env.RESULT_RETENTION_QUEUE_ENABLED==='true'?(async()=>{await emitResultRetentionNotices(env);await dispatchResultRetentionQueue(env)})():(async()=>{await sweepRetiredResultArtifacts(env);await purgeExpiredResultNetwork(env)})());
   },

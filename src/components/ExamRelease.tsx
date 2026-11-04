@@ -7,7 +7,7 @@ import './exam-release.css';
  * Tek "Sonuçları aç" (owner, 3 Nov): one button opens the results in the app (students, parents) and on
  * sonuc.anunex.com together. A planned result time does the same by itself; correction is the Düzeltme switch.
  */
-type State = { open: boolean; students: number; plannedAt: string | null; openedAt: string | null; correctionOpen: boolean };
+type State = { open: boolean; auto?: boolean; students: number; plannedAt: string | null; openedAt: string | null; correctionOpen: boolean };
 const when = (s: string | null) => (s ? new Date(String(s).includes('T') ? s : String(s).replace(' ', 'T') + 'Z').toLocaleString('tr-TR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : '');
 
 export function ExamRelease({ examId, onChanged }: { examId: string; onChanged?: () => void }) {
@@ -28,6 +28,7 @@ export function ExamRelease({ examId, onChanged }: { examId: string; onChanged?:
         <p className="er-state" role="status">{s.open ? <><CheckCircle2 size={16} aria-hidden="true" /> Açık{s.openedAt ? ` · ${when(s.openedAt)}` : ''}. Öğrenciler uygulamada ve sonuc.anunex.com’da görüyor; sonradan yüklenenler sıralamaya eklenir.</>
           : s.correctionOpen ? <>Sınav düzeltmede. Sonuçlar Düzeltme kapatılınca yeniden açılır.</>
           : s.plannedAt ? <><Clock size={16} aria-hidden="true" /> {when(s.plannedAt)}’de kendiliğinden açılacak · {s.students} öğrenci değerlendirildi.</>
+          : s.auto ? <>{s.students ? `${s.students} öğrenci değerlendirildi; sonuçlar birkaç dakika içinde kendiliğinden açılır.` : 'Değerlendirme bitince sonuçlar uygulamada ve sonuc.anunex.com’da kendiliğinden açılır.'}</>
           : <>Kapalı · {s.students} öğrenci değerlendirildi. Açınca uygulamada ve sonuc.anunex.com’da birlikte görünür.</>}</p></div>
       {!s.open && !s.correctionOpen && !ask && <button type="button" className="primary" disabled={busy || !s.students} onClick={() => setAsk(true)}><Send size={16} aria-hidden="true" /> Sonuçları aç</button>}
     </div>

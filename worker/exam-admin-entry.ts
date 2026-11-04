@@ -434,8 +434,8 @@ export async function createDefinition(request: Request, env: Env, user: AuthUse
   const outcomeMode = body.outcomeMode === 'OFFICIAL_REQUIRED' ? 'OFFICIAL_REQUIRED' : 'OPTIONAL';
   const id = uuid('exam');
   await env.DB.prepare(`
-    INSERT INTO exams (id,owner_type,institution_id,academic_year,title,exam_type,grade_level,exam_date,status,scoring_rule_version_id,sponsor_mode,created_by,publisher_name,session_label,description,result_network_enabled,scoring_override_json,scoring_settings_json,outcome_mode)
-    VALUES (?,?,?,?,?,?,?,?, 'DRAFT',?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO exams (id,owner_type,institution_id,academic_year,title,exam_type,grade_level,exam_date,status,scoring_rule_version_id,sponsor_mode,created_by,publisher_name,session_label,description,result_network_enabled,scoring_override_json,scoring_settings_json,outcome_mode,results_auto_open)
+    VALUES (?,?,?,?,?,?,?,?, 'DRAFT',?,?,?,?,?,?,?,?,?,?,1)
   `).bind(
     id, ownerType, institutionId, academicYear, title, examType, gradeLevel,
     body.examDate || null, body.scoringRuleVersionId || null,
@@ -551,8 +551,8 @@ async function copyDefinition(env: Env, user: AuthUser, examId: string): Promise
   const id = uuid('exam');
   const title = `${source.title} - Kopya`;
   const statements: D1PreparedStatement[] = [env.DB.prepare(`
-    INSERT INTO exams (id,owner_type,institution_id,academic_year,title,exam_type,grade_level,exam_date,status,scoring_rule_version_id,sponsor_mode,created_by,publisher_name,session_label,description,result_network_enabled,scoring_override_json,scoring_settings_json,outcome_mode)
-    VALUES (?,?,?,?,?,?,?,?, 'DRAFT',?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO exams (id,owner_type,institution_id,academic_year,title,exam_type,grade_level,exam_date,status,scoring_rule_version_id,sponsor_mode,created_by,publisher_name,session_label,description,result_network_enabled,scoring_override_json,scoring_settings_json,outcome_mode,results_auto_open)
+    VALUES (?,?,?,?,?,?,?,?, 'DRAFT',?,?,?,?,?,?,?,?,?,?,1)
   `).bind(id, source.owner_type, source.institution_id, source.academic_year, title, source.exam_type, source.grade_level, source.exam_date, source.scoring_rule_version_id, source.sponsor_mode, user.id, source.publisher_name, source.session_label, source.description, 0, source.scoring_override_json, source.scoring_settings_json, source.outcome_mode || 'OPTIONAL')];
   const booklets = await all<any>(env.DB.prepare('SELECT code,active FROM exam_booklets WHERE exam_id=?').bind(examId));
   for (const booklet of booklets) statements.push(env.DB.prepare('INSERT INTO exam_booklets (id,exam_id,code,active) VALUES(?,?,?,?)').bind(uuid('book'), id, booklet.code, booklet.active));
@@ -1004,6 +1004,15 @@ export default {
     if (copy) return request.method === 'POST' ? copyDefinition(env, auth, copy[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     const structure = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/structure$/);
     if (structure) return request.method === 'PUT' ? replaceStructure(request, env, auth, structure[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    // Owner (4 Nov): after an evaluation the screen asks the policy to open a normal exam's results (no ownership needed:
+    // the policy itself decides; a Türkiye geneli exam or a planned time is left alone).
+    const autoOpen = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/release\/auto$/);
+    if (autoOpen) {
+      if (request.method !== 'POST') return err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+      if (!['SUPER_ADMIN', 'INSTITUTION_MANAGER'].includes(auth.role)) return err(403, 'FORBIDDEN', 'Bu işlem için yetkiniz yok.');
+      const { autoOpenExam } = await import('./lib/exam-release');
+      return Response.json({ ok: true, steps: await autoOpenExam(env, autoOpen[1]) });
+    }
     // 3 Nov: one "Sonuçları aç" for the app and sonuc together (exam-release.ts).
     const release = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/release$/);
     if (release) {
