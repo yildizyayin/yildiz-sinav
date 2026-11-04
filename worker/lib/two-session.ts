@@ -53,7 +53,14 @@ export function alignRecordsToExam(records: CanonicalRecord[], examCodes: string
     const group = indexes.map((i) => records[i]);
     const fileCodes = new Set(group.flatMap((r) => Object.keys(r.answers_by_subject || {}).map((c) => c.toUpperCase())));
     const rename: Record<string, string> = {};
+    // Owner (4 Nov): a manually defined optic may name its answer blocks TEST-1, TEST-2, … instead of the subjects.
+    // When the file's generic blocks are exactly as many as the exam's tests that the file does not name, they are
+    // read in order (TEST-1 → the exam's first test, …), the order an optical form prints its tests in.
+    const generic = [...fileCodes].filter((c) => /^TEST-?\d+$/.test(c)).sort((a, b) => Number(a.replace(/\D/g, '')) - Number(b.replace(/\D/g, '')));
+    const unnamed = examCodes.map((c) => c.toUpperCase()).filter((c) => !fileCodes.has(c));
+    if (generic.length && generic.length === unnamed.length) generic.forEach((c, i) => { rename[c] = unnamed[i]; });
     for (const code of fileCodes) {
+      if (rename[code]) continue;
       if (exam.has(code)) continue;
       const aliases = ALIAS_GROUPS.find((g) => g.includes(code));
       const targets = aliases ? aliases.filter((c) => c !== code && exam.has(c) && !fileCodes.has(c)) : [];
