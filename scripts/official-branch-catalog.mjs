@@ -69,7 +69,7 @@ export function branchThemeOutcomesV2(html,spec,theme){
  const rows=[];
  for(let i=0;i<lines.length;i++){
   let m=lines[i].match(prefixed);
-  if(m&&!m[1].startsWith(mapping[1]))m=null;
+  if(m&&(!m[1].startsWith(mapping[1])||!/\d/.test(m[1])))m=null; // a code has a number ("T.C. Anayasası" is not one)
   if(!m&&mapping[0]==='DIN')m=lines[i].match(bare);
   if(!m)continue;
   const code=m[1],parts=code.split('.');

@@ -58,7 +58,10 @@ for(const p of expandBranchCatalog(JSON.parse(await readFile('data/question-bran
  report.existingCheck.programs++;
  for(const t of p.themes){report.existingCheck.themes++;
   try{const html=await get(t.url);const v1=JSON.stringify(branchThemeOutcomes(html,p,t)),v2=JSON.stringify(branchThemeOutcomesV2(html,p,t)),cat=JSON.stringify(t.outcomes);
-   if(v1!==v2||v2!==cat)report.existingCheck.mismatches.push({course:p.course,grade:p.grade,url:t.url,v1EqualsCatalog:v1===cat,v2EqualsCatalog:v2===cat,v1:v1.slice(0,3000),v2:v2.slice(0,3000)});
+   if(v1!==v2||v2!==cat){const a=new Map(JSON.parse(v1).map(o=>[o.code,o.title])),b=new Map(JSON.parse(v2).map(o=>[o.code,o.title]));
+    report.existingCheck.mismatches.push({course:p.course,grade:p.grade,url:t.url,v1EqualsCatalog:v1===cat,v2EqualsCatalog:v2===cat,
+     added:[...b].filter(([k])=>!a.has(k)),removed:[...a].filter(([k])=>!b.has(k)),changed:[...a].filter(([k,v])=>b.has(k)&&b.get(k)!==v).map(([k,v])=>[k,v,b.get(k)]),
+     orderOnly:a.size===b.size&&[...a].every(([k,v])=>b.get(k)===v)});}
   }catch(e){report.existingCheck.mismatches.push({course:p.course,grade:p.grade,url:t.url,error:String(e.message||e)});}
  }
 }
