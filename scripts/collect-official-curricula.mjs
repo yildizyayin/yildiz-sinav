@@ -1,3 +1,4 @@
+// Rerun: parser V2 splits same-line outcomes.
 // Owner (4 Nov): collect missing MEB TYMM programmes straight from tymm.meb.gov.tr (read-only, no database access).
 // The output is reviewed and committed to the curriculum catalogue; the production deploy re-fetches the same pages
 // and only publishes when the content still matches exactly (scripts/production-question-curricula.mjs).

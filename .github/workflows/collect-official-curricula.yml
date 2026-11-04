@@ -8,6 +8,8 @@ on:
       - curriculum-collect
     paths:
       - 'scripts/collect-official-curricula.mjs'
+      - 'scripts/official-branch-catalog.mjs'
+      - 'scripts/official-math-catalog.mjs'
       - '.github/workflows/collect-official-curricula.yml'
 
 permissions:
