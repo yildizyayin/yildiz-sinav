@@ -6,6 +6,8 @@ import { AnunexBrand } from '../components/AnunexBrand';
 import { DataCenter } from '../components/DataCenter';
 import { InstitutionCardPanel, InstitutionPinIssuer } from '../components/InstitutionClaim';
 import { ResultOperatorWorkspace, ResultReportsPanel } from './ResultOperatorWorkspace';
+import type { ReviewBatch } from './ResultOperatorWorkspace';
+import { openTopluListe } from '../components/ResultTopluListe';
 import { FoyEvaluation } from '../components/FoyEvaluation';
 import '../components/report-center.css';
 import './result-operator-shell.css';
@@ -23,6 +25,7 @@ const when = (s: string) => batchTimestamp(s).toLocaleString('tr-TR', { timeZone
 
 export function ResultOperatorShell({ role, access, operator, onLogout }: { role: Role; access: any; operator: any; onLogout: () => void }) {
   const [section, setSection] = useState<Section>('home');
+  const [reviewBatch, setReviewBatch] = useState<ReviewBatch>();
   const [compact, setCompact] = useState(false);
   const institution = role === 'INSTITUTION';
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,7 +33,7 @@ export function ResultOperatorShell({ role, access, operator, onLogout }: { role
   const groups: Array<[string | null, Array<[Section, string, string?]>]> = role === 'DEALER'
     ? [[null, [['home', 'Ana sayfa', 'bölge özeti']]], ['SINAVLAR', [['upload', 'Sınav yükleme', 'TXT/DAT'], ['foy', 'Föy değerlendirme', 'optik']]], ['ÇIKTILAR', [['reports', 'Rapor Merkezi'], ['data', 'Veri Merkezi'], ['docs', 'Belge Merkezi']]], ['KURUMLARIM', [['schools', 'Kurum listesi'], ['pins', "Giriş PIN'leri"]]], ['HESAP', [['profile', 'Profil ve parola']]]]
     : [[null, [['home', 'Ana sayfa', 'son sınav']]], ['SINAVLAR', [['upload', 'Sınav yükleme', 'TXT/DAT'], ['foy', 'Föy değerlendirme', 'optik']]], ['ÇIKTILAR', [['reports', 'Rapor Merkezi'], ['data', 'Veri Merkezi'], ['docs', 'Belge Merkezi']]], ['ÖĞRENCİLER', [['cards', 'Öğrenci sonuçları']]], ['HESAP', [['school', 'Kurum bilgileri'], ['profile', 'Profil ve parola']]]];
-  const go = (s: Section) => { setSection(s); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const go = (s: Section, batch?: ReviewBatch) => { setReviewBatch(batch); setSection(s); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   return <div className={`osh ${institution ? "institution-glass" : ""} ${institution && compact ? "glass-compact" : ""}`}>
     <aside className={`osh-side ${menuOpen ? 'open' : ''}`} aria-label={role === 'DEALER' ? 'Bayi menüsü' : 'Kurum menüsü'}>
       <div className="osh-brand"><AnunexBrand compact inverse /></div>
@@ -46,7 +49,7 @@ export function ResultOperatorShell({ role, access, operator, onLogout }: { role
       {institution && <div className="glass-context"><Building2 size={17} aria-hidden="true" />{access?.institution?.name || 'Kurum'}<span>Sonuç Portalı</span></div>}
       {section === 'home' && institution && <InstitutionHome go={go} />}
       {section === 'home' && !institution && <OperatorHome role={role} operator={operator} access={access} go={go} />}
-      {section === 'upload' && <ResultOperatorWorkspace mode={role} access={access} />}
+      {section === 'upload' && <ResultOperatorWorkspace mode={role} access={access} initialBatch={reviewBatch} />}
       {section === 'foy' && <FoyEvaluation mode={role} />}
       {section === 'reports' && <ResultReportsPanel mode={role} />}
       {section === 'data' && <DataCenter mode={role} tab="DATA" />}
@@ -60,16 +63,14 @@ export function ResultOperatorShell({ role, access, operator, onLogout }: { role
   </div>;
 }
 
-type InstitutionBatch = {
-  id: string;
-  title: string;
+type InstitutionBatch = ReviewBatch & {
   created_at: string;
   status: string;
   publication_status?: string;
   deleted_at?: string;
 };
 
-function InstitutionHome({ go }: { go: (section: Section) => void }) {
+function InstitutionHome({ go }: { go: (section: Section, batch?: ReviewBatch) => void }) {
   const [rows, setRows] = useState<InstitutionBatch[] | null>(null);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -81,8 +82,8 @@ function InstitutionHome({ go }: { go: (section: Section) => void }) {
     return () => { current = false; };
   }, [attempt]);
   const committed = rows?.filter((batch) => batch.status === 'COMMITTED') ?? [];
-  const pending = rows?.filter((batch) => batch.status !== 'COMMITTED') ?? [];
-  const latest = rows?.[0];
+  const pending = rows?.filter(({ status }) => ['PREVIEW', 'NEEDS_REVIEW', 'READY'].includes(status)) ?? [];
+  const focusBatch = pending[0] ?? committed[0];
   const calendar = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul', year: 'numeric', month: '2-digit', day: '2-digit' });
   const today = new Date();
   const daily = Array.from({ length: 7 }, (_, index) => {
@@ -109,12 +110,26 @@ function InstitutionHome({ go }: { go: (section: Section) => void }) {
     </header>
     {error ? <div className="rm-alert" role="alert">Yükleme özeti alınamadı. <button type="button" className="rm-link" onClick={() => { setError(false); setAttempt((value) => value + 1); }}>Tekrar dene</button></div>
       : !rows && <p role="status" className="rm-note">Yükleme özeti alınıyor…</p>}
-    <div className="osh-kpis" aria-label="Son 100 yüklemenin özeti">
+    {rows && <section className="rm-card glass-focus" aria-labelledby="glass-next">
+      <div>
+        <p className="rm-kicker">{pending.length ? 'İŞLEM BEKLİYOR' : focusBatch ? 'SON DEĞERLENDİRİLEN SINAV' : 'İLK YÜKLEME'}</p>
+        <h2 id="glass-next">{focusBatch?.title ?? 'Bir sınav dosyası yükleyin'}</h2>
+        <p className="rm-note">{pending.length
+          ? `${pending.length} yükleme kontrol veya değerlendirme bekliyor.`
+          : focusBatch
+            ? focusBatch.publication_status === 'PUBLISHED' ? 'Sonuçlar öğrencilere yayımlandı.' : 'Sonuçlar henüz öğrencilere yayımlanmadı.'
+            : 'Optik dosyanızı yükleyerek değerlendirmeye başlayın.'}</p>
+      </div>
+      {focusBatch && (pending.length
+        ? <button type="button" className="glass-primary" onClick={() => go('upload', focusBatch)}>Değerlendirmeye devam et</button>
+        : <button type="button" className="glass-primary" onClick={() => openTopluListe(focusBatch.exam_id, focusBatch.institution_id)}>Raporu aç</button>)}
+    </section>}
+    <div className="osh-kpis" aria-label="Yükleme özeti">
       {metrics.map(([label, count, Icon]) => <div className="rm-card" key={label}>
         <Icon size={20} aria-hidden="true" /><b className="osh-v">{rows ? count : '—'}</b><span className="osh-k">{label}</span>
       </div>)}
     </div>
-    <p className="rm-note">Özet, son 100 yükleme içindeki silinmemiş kayıtları kapsar.</p>
+    <p className="rm-note">Özet, en son 300 yükleme içindeki silinmemiş kayıtları kapsar.</p>
     <div className="glass-home-grid">
       <section className="rm-card glass-chart" aria-labelledby="glass-activity">
         <div className="rm-card-head"><h2 id="glass-activity">Son 7 günün optik yüklemeleri</h2></div>
@@ -122,22 +137,11 @@ function InstitutionHome({ go }: { go: (section: Section) => void }) {
           <b>{count}</b><span className="glass-bar-track" aria-hidden="true"><span style={{ height: `${100 * count / chartMax}%` }} /></span><span>{label}</span>
         </li>)}</ul>}
       </section>
-      <section className="rm-card glass-latest" aria-labelledby="glass-last-exam">
-        <div className="rm-card-head"><h2 id="glass-last-exam">Son yüklenen sınav</h2></div>
-        {latest ? <>
-          <strong>{latest.title}</strong>
-          <p className="rm-note">{when(latest.created_at)} · {latest.status === 'COMMITTED' ? 'Değerlendirildi' : 'Değerlendirme bekliyor'}</p>
-          {latest.status === 'COMMITTED' && <p className="rm-note">{latest.publication_status === 'PUBLISHED' ? 'Öğrencilere yayımlandı' : 'Öğrencilere yayımlanmadı'}</p>}
-          <button type="button" className="glass-primary" onClick={() => go(latest.status === 'COMMITTED' ? 'reports' : 'upload')}>
-            {latest.status === 'COMMITTED' ? 'Rapor Merkezine Git' : 'Değerlendirmeye Git'}
-          </button>
-        </> : rows && <p className="rm-empty">Henüz yükleme yok.</p>}
-      </section>
       <section className="rm-card" aria-labelledby="glass-recent">
         <div className="rm-card-head"><h2 id="glass-recent">Son yüklemeler</h2><button type="button" className="rm-link" onClick={() => go('data')}>Tümü</button></div>
         {rows?.length ? <ul className="osh-last">{rows.slice(0, 5).map((batch) => <li key={batch.id}>
           <span className="rm-row-main"><b>{batch.title}</b><span>{when(batch.created_at)}</span></span>
-          <span className="glass-status" data-complete={batch.status === 'COMMITTED'}>{batch.status === 'COMMITTED' ? 'Değerlendirildi' : 'Bekliyor'}</span>
+          <span className="glass-status" data-complete={batch.status === 'COMMITTED'}>{batch.status === 'COMMITTED' ? 'Değerlendirildi' : batch.status === 'FAILED' ? 'Hatalı' : 'Bekliyor'}</span>
         </li>)}</ul> : rows && <p className="rm-empty">Henüz yükleme yok.</p>}
       </section>
     </div>
