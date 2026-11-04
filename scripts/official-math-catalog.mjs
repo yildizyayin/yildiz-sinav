@@ -1,5 +1,7 @@
 import {createHash} from 'node:crypto';
-export const officialMathGrades=[5,6,7,8,9,10,11,12].map(grade=>({grade,indexUrl:`https://tymm.meb.gov.tr/ogretim-programlari/${grade<9?'ortaokul-matematik-dersi':'matematik-dersi'}/${grade<9?grade+1:grade+2}`,course:grade<9?'ortaokul-matematik-dersi':'matematik-dersi'}));
+// Owner (4 Nov): 4th grade (ilkokul) added.
+const mathCourse=grade=>grade<5?'ilkokul-matematik-dersi':grade<9?'ortaokul-matematik-dersi':'matematik-dersi';
+export const officialMathGrades=[4,5,6,7,8,9,10,11,12].map(grade=>({grade,indexUrl:`https://tymm.meb.gov.tr/ogretim-programlari/${mathCourse(grade)}/${grade<9?grade+1:grade+2}`,course:mathCourse(grade)}));
 export const sourceHash=html=>createHash('sha256').update(html).digest('hex');
 export function visibleText(s){return s.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]*>/g,' ').replace(/&nbsp;|&#160;|&#xA0;/gi,' ').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&#(\d+);/g,(_,n)=>String.fromCodePoint(Number(n))).replace(/\s+/gu,' ').trim();}
 export function mathThemeLinks(html,grade){

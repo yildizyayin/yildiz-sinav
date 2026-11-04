@@ -3,7 +3,9 @@
 // and only publishes when the content still matches exactly (scripts/production-question-curricula.mjs).
 import {writeFile} from 'node:fs/promises';
 import {visibleText,sourceHash,mathThemeOutcomes} from './official-math-catalog.mjs';
-import {branchThemeOutcomes} from './official-branch-catalog.mjs';
+import {readFile} from 'node:fs/promises';
+import {branchThemeOutcomes,branchThemeOutcomesV2} from './official-branch-catalog.mjs';
+import {expandBranchCatalog} from './production-question-curricula.mjs';
 const ORIGIN='https://tymm.meb.gov.tr';
 const BRANCH=[
  ['ilkokul-turkce-dersi',4,'/ogretim-programlari/ilkokul-turkce-dersi/5'],
@@ -29,7 +31,7 @@ for(const [course,grade,path] of BRANCH){
   for(const link of themeLinks(index,course,indexUrl)){
    const html=await get(link.url),title=visibleText(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]??'');
    const theme={url:link.url,label:link.label,title,hash:sourceHash(html)};
-   try{theme.outcomes=branchThemeOutcomes(html,{course,grade},{url:link.url,title}).map(o=>[o.code,o.title]);}
+   try{theme.outcomes=branchThemeOutcomesV2(html,{course,grade},{url:link.url,title}).map(o=>[o.code,o.title]);}
    catch(e){theme.error=String(e.message||e);theme.section=outcomeSection(html)?.slice(0,20000)??null;}
    entry.themes.push(theme);
   }
@@ -50,4 +52,15 @@ for(const [course,grade,path] of MATH){
  }catch(e){entry.errors.push(String(e.message||e));}
  report.math.push(entry);console.log(course,grade,entry.themes.length,'themes',entry.themes.filter(t=>t.error).length,'errors',entry.errors.join(';'));
 }
+// The robust reader must read every programme already in the catalogue exactly as before.
+report.existingCheck={programs:0,themes:0,mismatches:[]};
+for(const p of expandBranchCatalog(JSON.parse(await readFile('data/question-branch-catalog-2028.json','utf8'))).programs){
+ report.existingCheck.programs++;
+ for(const t of p.themes){report.existingCheck.themes++;
+  try{const html=await get(t.url);const v1=JSON.stringify(branchThemeOutcomes(html,p,t)),v2=JSON.stringify(branchThemeOutcomesV2(html,p,t)),cat=JSON.stringify(t.outcomes);
+   if(v1!==v2||v2!==cat)report.existingCheck.mismatches.push({course:p.course,grade:p.grade,url:t.url,v1EqualsCatalog:v1===cat,v2EqualsCatalog:v2===cat,v1:v1.slice(0,3000),v2:v2.slice(0,3000)});
+  }catch(e){report.existingCheck.mismatches.push({course:p.course,grade:p.grade,url:t.url,error:String(e.message||e)});}
+ }
+}
+console.log('existing',JSON.stringify({...report.existingCheck,mismatches:report.existingCheck.mismatches.length}));
 await writeFile('official-curricula-collected.json',JSON.stringify(report,null,1));
