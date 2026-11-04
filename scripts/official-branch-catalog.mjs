@@ -64,23 +64,27 @@ export function branchThemeOutcomesV2(html,spec,theme){
  if(heading.toLocaleLowerCase('tr-TR')!==visibleText(theme.title).toLocaleLowerCase('tr-TR'))throw Error('THEME_TITLE_MISMATCH');
  const start=html.indexOf('Öğrenme Çıktıları ve Süreç Bileşenleri'),end=html.indexOf('İçerik Çerçevesi',start);
  if(start<0||end<=start)throw Error('OUTCOME_SECTION_MISSING');
- const lines=html.slice(start,end).replace(/\s+/gu,' ').replace(/<br\b[^>]*>|<\/(?:p|div|li)>/gi,'\n').split('\n').map(l=>visibleText(l)).filter(Boolean);
- const prefixed=/^([A-ZÇĞİÖŞÜ]+\d*(?:\.[A-ZÇĞİÖŞÜ\d]+){1,6})(?:\.\s*|\s+)(\S.*)?$/u, bare=/^(\d{1,2}(?:\.\d{1,2}){2})(?:\.\s*|\s+)(\S.*)?$/u;
- const rows=[];
+ const lines=html.slice(start,end).replace(/\s+/gu,' ').replace(/<br\b[^>]*>|<\/(?:p|div|li|h[1-6]|td|th|tr)>/gi,'\n').split('\n').map(l=>visibleText(l)).filter(Boolean);
+ const CODE='[A-ZÇĞİÖŞÜ]+\\d*(?:\\.[A-ZÇĞİÖŞÜ\\d]+){1,6}';
+ const isCode=c=>c.startsWith(mapping[1])&&/\d/.test(c); // a code has a number ("T.C. Anayasası" is not one)
+ const atStart=new RegExp(`^(${CODE})(?:\\.\\s*|\\s+)`,'u'), bare=/^(\d{1,2}(?:\.\d{1,2}){2})(?:\.\s*|\s+)/u;
+ const inLine=new RegExp(`(?<![\\p{L}\\p{N}.])(${CODE})\\.\\s+`,'gu');
+ const items=[];
  for(let i=0;i<lines.length;i++){
-  let m=lines[i].match(prefixed);
-  if(m&&(!m[1].startsWith(mapping[1])||!/\d/.test(m[1])))m=null; // a code has a number ("T.C. Anayasası" is not one)
-  if(!m&&mapping[0]==='DIN')m=lines[i].match(bare);
-  if(!m)continue;
-  const code=m[1],parts=code.split('.');
-  const gradeOf=()=>{
-   if(/^\d/.test(code))return Number(parts[0]);
-   if(mapping[0]==='TUR')return /^[A-ZÇĞİÖŞÜ]+(\d+)$/u.test(parts[1])?Number(parts[1].replace(/\D/g,'')):Number(parts[2]);
-   if(mapping[0]==='EDB')return spec.grade;
-   return /^ENG\d+$/.test(parts[0])?Number(parts[0].slice(3)):Number(parts[1]);
-  };
-  if(gradeOf()!==spec.grade)throw Error('OUTCOME_GRADE_MISMATCH:'+code);
-  const title=m[2]?visibleText(m[2]):(lines.slice(i+1).find(Boolean)??'');
+  const line=lines[i];let m=line.match(atStart);
+  if(m&&!isCode(m[1]))m=null;
+  if(!m&&mapping[0]==='DIN')m=line.match(bare);
+  if(!m)continue; // only a line that starts with a code holds outcomes; notes that mention codes are skipped
+  // the same line may hold more than one outcome ("… yorumlayabilme T.O.8.16. Metnin …")
+  const cuts=[{code:m[1],from:m[0].length}];
+  for(const x of line.slice(m[0].length).matchAll(inLine)){if(isCode(x[1]))cuts.push({code:x[1],at:m[0].length+x.index,from:m[0].length+x.index+x[0].length});}
+  cuts.forEach((c,k)=>{const text=line.slice(c.from,cuts[k+1]?.at??line.length).trim();items.push({code:c.code,title:text?visibleText(text):(lines.slice(i+1).find(Boolean)??'')});});
+ }
+ const rows=[];
+ for(const {code,title} of items){
+  const parts=code.split('.');
+  const grade=/^\d/.test(code)?Number(parts[0]):mapping[0]==='TUR'?(/^[A-ZÇĞİÖŞÜ]+\d+$/u.test(parts[1])?Number(parts[1].replace(/\D/g,'')):Number(parts[2])):mapping[0]==='EDB'?spec.grade:/^ENG\d+$/.test(parts[0])?Number(parts[0].slice(3)):Number(parts[1]);
+  if(grade!==spec.grade)throw Error('OUTCOME_GRADE_MISMATCH:'+code);
   if(title.length<8||title.length>2000)throw Error('INVALID_OUTCOME_TITLE:'+code);
   const prior=rows.find(r=>r.code===code); if(prior){if(prior.title!==title)throw Error('CONFLICTING_THEME_CODE:'+code);continue;}
   rows.push({code,title,unit:visibleText(theme.title),topic:visibleText(theme.title),sourceUrl:theme.url});
