@@ -15,7 +15,8 @@ export const UNIVERSITY_FAMILIES:Record<string,string[]>={
  sub_tyt_fen:['sub_fiz','sub_kim','sub_biy'],sub_fen:['sub_fiz','sub_kim','sub_biy'],
  sub_ayt_fiz:['sub_fiz'],sub_fiz:['sub_fiz'],sub_ayt_kim:['sub_kim'],sub_kim:['sub_kim'],sub_ayt_biy:['sub_biy'],sub_biy:['sub_biy'],
  sub_tyt_sos:['sub_tar','sub_cog','sub_fel','sub_din'],sub_sos:['sub_tar','sub_cog','sub_fel','sub_din'],
- sub_ayt_tar1:['sub_tar'],sub_ayt_tar2:['sub_tar'],sub_tar:['sub_tar'],sub_ayt_cog1:['sub_cog'],sub_ayt_cog2:['sub_cog'],sub_cog:['sub_cog'],
+ // Owner (4 Nov): AYT Tarih-1/2 also cover T.C. İnkılap Tarihi ve Atatürkçülük (12th-grade catalogue subject sub_ink).
+ sub_ayt_tar1:['sub_tar','sub_ink'],sub_ayt_tar2:['sub_tar','sub_ink'],sub_tar:['sub_tar'],sub_ayt_cog1:['sub_cog'],sub_ayt_cog2:['sub_cog'],sub_cog:['sub_cog'],
  sub_tyt_fel:['sub_fel'],sub_ayt_fel:['sub_fel'],sub_fel:['sub_fel'],sub_ayt_din:['sub_din'],sub_din:['sub_din'],
 };
 /** Middle-school exam subjects whose catalogue subject has another code (owner, 3 Nov: a 7th-grade YAB test is English). */
