@@ -4,7 +4,7 @@ import { trashExam } from './lib/exam-channels';
 import { refreshExamOutcomeAnalysis } from './lib/exam-outcome-history';
 import { approvedLabelOutcome, examOutcomeScope, examSubjectsForOutcome, outcomeFitsQuestion, publisherLabelPath, scopedOutcomeCatalog, matchScopedOutcome } from './lib/exam-outcome-matching';
 import { withExamOperationLock } from './lib/exam-operation-lock';
-import { examPublicationGuard, examCorrectionOpen } from './lib/exam-publication-guard';
+import { examPublicationGuard, examCorrectionOpen, examEditableBeforeResults } from './lib/exam-publication-guard';
 import { examReadiness as readiness } from './lib/exam-readiness';
 import { activationStatements, examLight } from './lib/exam-lifecycle';
 import accessApp from './access-entry';
@@ -479,7 +479,8 @@ async function getDefinition(env: Env, user: AuthUser, examId: string): Promise<
   ]);
   const correctionOpen=await examCorrectionOpen(env,examId);
   const publicationBlocked=!!await examPublicationGuard(env,examId);
-  return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, optionalAnswerKey, readiness: ready,answerKeyEditable:!publicationBlocked&&(exam.status==='DRAFT'||correctionOpen),correctionOpen:correctionOpen&&!publicationBlocked });
+  const editable=!publicationBlocked&&await examEditableBeforeResults(env,exam);
+  return Response.json({ ok: true, exam, subjects, booklets, institutions, answerKey: keys, optionalAnswerKey, readiness: ready,editable,answerKeyEditable:!publicationBlocked&&(editable||correctionOpen),correctionOpen:correctionOpen&&!publicationBlocked });
 }
 
 export async function updateGeneral(request: Request, env: Env, user: AuthUser, examId: string):Promise<Response>{
@@ -492,7 +493,7 @@ export async function updateGeneral(request: Request, env: Env, user: AuthUser, 
 async function updateGeneralUnlocked(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
-  if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Aktif veya kapanmış sınavın temel tanımı değiştirilemez.');
+  if (!await examEditableBeforeResults(env, exam)) return err(409, 'EXAM_LOCKED', 'Değerlendirilmiş öğrencisi olan sınavın temel tanımı değiştirilemez.');
   const body = await request.json<{ title?: string; examType?: string; gradeLevel?: number | null; examDate?: string | null; scoringRuleVersionId?: string | null; publisherName?: string | null; sessionLabel?: string | null; description?: string | null; resultNetworkEnabled?: boolean; scoringOverride?: Record<string, unknown> | null; scoringSettings?: Record<string, unknown> | null; outcomeMode?: 'OPTIONAL' | 'OFFICIAL_REQUIRED'; reason?: string | null }>();
   const title = body.title?.trim() || exam.title;
   const examType = body.examType?.trim().toUpperCase() || exam.exam_type;
@@ -541,7 +542,9 @@ async function updateGeneralUnlocked(request: Request, env: Env, user: AuthUser,
   const update=env.DB.prepare(`UPDATE exams SET title=?,exam_type=?,grade_level=?,exam_date=?,scoring_rule_version_id=?,publisher_name=?,session_label=?,description=?,result_network_enabled=?,scoring_override_json=?,scoring_settings_json=?,outcome_mode=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
     .bind(title, examType, gradeLevel, examDate,
       scoringRuleVersionId, publisherName, sessionLabel, description, resultNetworkEnabled, scoringOverride, scoringSettings, outcomeMode, examId);
-  await env.DB.batch([update,examAuditStatement(env,user,exam.institution_id,'EXAM_DEFINITION_UPDATED',examId,{before,after,reason})]);
+  await env.DB.batch([update,examAuditStatement(env,user,exam.institution_id,'EXAM_DEFINITION_UPDATED',examId,{before,after,reason}),
+    // an active exam edited before its first result: the catalogues (app, sonuc) show the new card at once
+    env.DB.prepare(`UPDATE channel_definition_publications SET definition_json=(SELECT json_object('title',e.title,'publisher_name',e.publisher_name,'exam_date',e.exam_date,'description',e.description,'listed_by','ACTIVATION') FROM exams e WHERE e.id=?),published_at=CURRENT_TIMESTAMP WHERE exam_id=? AND status='ACTIVE'`).bind(examId,examId)]);
   return Response.json({ ok: true });
 }
 
@@ -593,7 +596,7 @@ export async function replaceStructure(request: Request, env: Env, user: AuthUse
 async function replaceStructureUnlocked(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
-  if (exam.status !== 'DRAFT') return err(409, 'EXAM_LOCKED', 'Sınav yapısı yalnız taslak durumunda değiştirilebilir.');
+  if (!await examEditableBeforeResults(env, exam)) return err(409, 'EXAM_LOCKED', 'Değerlendirilmiş öğrencisi olan sınavın soru yapısı değiştirilemez.');
   const participant = await one<{ c: number }>(env.DB.prepare('SELECT count(*) c FROM exam_participants WHERE exam_id=?').bind(examId));
   if ((participant?.c || 0) > 0) return err(409, 'EXAM_HAS_RESULTS', 'Katılımcısı bulunan sınavın soru yapısı değiştirilemez.');
   const previousBooklets = await all<any>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code').bind(examId));
@@ -657,7 +660,7 @@ export async function replaceAnswerKey(request: Request, env: Env, user: AuthUse
 async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
   const exam = await managedExam(env, user, examId);
   if (!exam) return err(404, 'NOT_FOUND', 'Sınav tanımı bulunamadı.');
-  if (exam.status !== 'DRAFT'&&!await examCorrectionOpen(env,examId)) return err(409, 'EXAM_LOCKED', 'Cevap anahtarı taslak veya gerekçeyle düzeltmeye açılmış sınavda değiştirilebilir.');
+  if (!await examEditableBeforeResults(env, exam)&&!await examCorrectionOpen(env,examId)) return err(409, 'EXAM_LOCKED', 'Cevap anahtarı, sınavın değerlendirilmiş öğrencisi yokken ya da gerekçeyle düzeltmeye açıldığında değiştirilebilir.');
   const body = await request.json<{
     entries?: Array<{ subjectId?: string; bookletCode?: string; answers?: string; optionCount?: 4 | 5; acceptedAnswers?: Array<string | string[]>; questionStatuses?: Array<'ACTIVE' | 'CANCELLED' | 'EXCLUDED'>; bookletQuestionNumbers?: number[]; outcomeRefs?: Array<{ code?: string; title?: string; publisherCode?: string; publisherTitle?: string; officialCode?: string } | null>; outcomeRefsByQuestion?: Array<Array<{ code?: string; title?: string; publisherCode?: string; publisherTitle?: string; officialCode?: string }>> }>;
     outcomeMappings?: Array<{ subjectId?: string; questionNo?: number; outcomeId?: string }>;
