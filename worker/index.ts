@@ -852,8 +852,9 @@ async function teacherInsights(env: Env, user: AuthUser, url: URL): Promise<Resp
 async function listOpticalTemplates(env: Env, user: AuthUser, url: URL): Promise<Response> {
   if (!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role)) return forbidden();
   const institutionId = user.role === 'SUPER_ADMIN' ? url.searchParams.get('institutionId') : user.institution_id;
-  const scope = user.role === 'SUPER_ADMIN' && !institutionId
-    ? { sql: '', params: [] as unknown[] }
+  // Owner (4 Nov): the Super Admin never sees an institution's own optic.
+  const scope = user.role === 'SUPER_ADMIN'
+    ? { sql: ` AND t.owner_type<>'INSTITUTION'`, params: [] as unknown[] }
     : {
         sql: ` AND (
           (t.owner_type='INSTITUTION' AND t.owner_id=?)

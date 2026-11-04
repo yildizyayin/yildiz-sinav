@@ -83,8 +83,12 @@ describe('A034: optical definitions', () => {
       expect((await t.as('mgr', `/api/optical-definitions/${central.data.templateId}`, 'PATCH', { name: 'x', vendor: 'y', opticalCode: 'z' })).status).toBe(403);
       expect((await t.as('mgr', `/api/optical-definition-versions/${central.data.versionId}/fmt`, 'POST', fmtForm())).status).toBe(403);
       expect((await t.as('teacher', '/api/optical-definitions')).status).toBe(403);
-      // the Super Admin manages every optic and can define one on behalf of an institution
-      expect((await t.as('admin', `/api/optical-definitions/${own.data.templateId}`, 'PATCH', { name: 'Kurum Formu', vendor: 'Sekonic', opticalCode: 'KF1' })).status).toBe(200);
+      // Owner (4 Nov): an institution's own optic is seen only by that institution — not even the Super Admin
+      expect((await t.as('admin', `/api/optical-definitions/${own.data.templateId}`, 'PATCH', { name: 'Kurum Formu', vendor: 'Sekonic', opticalCode: 'KF1' })).status).toBe(403);
+      expect((await t.as('admin', `/api/optical-definitions/${own.data.templateId}`)).status).toBe(403);
+      expect((await t.as('admin', '/api/optical-definitions')).data.templates.map((x: any) => x.id)).not.toContain(own.data.templateId);
+      expect((await t.as('mgr', `/api/optical-definitions/${own.data.templateId}`, 'PATCH', { name: 'Kurum Formu', vendor: 'Sekonic', opticalCode: 'KF1' })).status).toBe(200);
+      // the Super Admin can still set one up on behalf of an institution, which then belongs to it alone
       const forOther = await t.as('admin', '/api/optical-definitions', 'POST', { name: 'Diğer Kurum Formu', vendor: 'Sekonic', opticalCode: 'OF1', institutionId: 'other' });
       expect(forOther.data).toMatchObject({ ownerType: 'INSTITUTION', ownerId: 'other' });
       expect((await t.as('othermgr', `/api/optical-definitions/${forOther.data.templateId}`)).status).toBe(200);

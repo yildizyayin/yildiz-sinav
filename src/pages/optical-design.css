@@ -73,3 +73,25 @@
 @media (max-width: 850px) { .optical-design-head, .optical-design-selector { display: grid; grid-template-columns: 1fr; } .optical-design-field { grid-template-columns: 1fr 1fr; } .optical-design-field label:first-child { grid-column: 1 / -1; } .optical-design-field button { width: max-content; } }
 @media (max-width: 900px) { .optical-tree-layout { grid-template-columns: 1fr; } .optical-form-tree { order: 0; } .optical-form-cards { order: 1; } }
 @media (max-width: 760px) { .optical-form-dialog-backdrop { padding: 8px; } .optical-form-dialog { max-height: 94vh; } .optical-schoolizyon-top-fields { grid-template-columns: 1fr 1fr; } .optical-schoolizyon-top-fields label:first-child, .optical-schoolizyon-top-fields label:nth-child(4), .optical-schoolizyon-top-fields label:nth-child(5), .optical-schoolizyon-top-fields label:nth-child(6) { grid-column: 1 / -1; } .optical-schoolizyon-columns { grid-template-columns: 1fr; } .optical-form-dialog-footer { flex-wrap: wrap; } }
+
+/* 4 Nov (owner): optics as a filterable list — hundreds of rows expected. */
+.optical-list-panel { padding: 14px; margin-bottom: 20px; }
+.optical-list-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin-bottom: 12px; }
+.optical-list-filters label { display: grid; gap: 4px; font-size: 12px; color: var(--muted, #5b6575); min-width: 140px; }
+.optical-list-filters .optical-list-search { flex: 1 1 220px; }
+.optical-list-count { margin-left: auto; font-size: 12px; color: var(--muted, #5b6575); font-variant-numeric: tabular-nums; }
+.optical-list-scroll { border: 1px solid var(--border, #dfe5ee); border-radius: 10px; }
+.optical-list-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.optical-list-table th { position: sticky; top: 0; z-index: 1; background: var(--surface, #f6f8fb); text-align: left; font-weight: 600; font-size: 12px; color: var(--muted, #5b6575); padding: 8px 10px; border-bottom: 1px solid var(--border, #dfe5ee); white-space: nowrap; }
+.optical-list-table td { padding: 8px 10px; border-bottom: 1px solid var(--border, #eef1f5); vertical-align: top; }
+.optical-list-table tr.selected td { background: rgba(37, 99, 235, .06); }
+.optical-list-table td small { display: block; color: var(--muted, #5b6575); font-size: 11px; }
+.optical-list-table .optical-list-name { display: block; width: auto; min-height: 0 !important; height: auto !important; background: none !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; font: inherit; font-weight: 650; color: var(--ink, #1b2230); cursor: pointer; text-align: left; }
+.optical-list-table td { vertical-align: middle; }
+.optical-list-table .optical-card-menu-button { width: 30px !important; min-width: 30px !important; height: 30px !important; min-height: 30px !important; border-color: transparent !important; background: transparent !important; }
+.optical-list-name:hover, .optical-list-name:focus-visible { text-decoration: underline; }
+.optical-list-table .verified, .optical-list-table .warning { display: inline-flex; gap: 4px; align-items: center; white-space: nowrap; }
+.optical-untested { color: #a35d00 !important; }
+.optical-list-table .optical-card-menu-wrap { position: relative; width: 40px; }
+@media (max-width: 760px) { .optical-list-scroll { overflow-x: auto; } .optical-list-table { min-width: 680px; } }
+@media (max-width: 640px) { .optical-list-filters label { min-width: 0; flex: 1 1 45%; } .optical-list-count { margin-left: 0; } }
