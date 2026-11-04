@@ -1,5 +1,6 @@
 import type { Env } from '../types';
 import { all, one, uuid } from './db';
+import { compareBooklets } from './booklet-review';
 
 /**
  * S030/D-S038: sonuc.anunex.com is an open evaluation platform. Every uploaded sheet is a participant; there is no
@@ -19,7 +20,9 @@ const batchStatusSql = (env: Env, batchId: string) => env.DB.prepare(`UPDATE sca
 const NAME_ONLY = /Öğrenci numarası bulunamadı; ad soyad ve sınıf ile eşleşti/i;
 /** 3 Nov: two earlier students share this name — on sonuc the sheet is simply its own participant (its number decides). */
 const NAME_AMBIGUOUS = /Aynı ad soyada sahip birden fazla öğrenci bulundu|kayıp harfler nedeniyle birden fazla öğrenci uyuyor/i;
-const NON_BLOCKING = [NAME_ONLY, NAME_AMBIGUOUS, /geçersiz karakter/i, /Kayıtlı öğrenciyle eşleşmedi/i, /^Ad soyad okunamadı\.?$/i, /ad soyad farklı görünüyor/i];
+const MISSING_BOOKLET = /^Kitapçık: işaretlenmemiş/i;
+const BOOKLET_GUESSED = /^Kitapçık boştu;/i;
+const NON_BLOCKING = [BOOKLET_GUESSED, NAME_ONLY, NAME_AMBIGUOUS, /geçersiz karakter/i, /Kayıtlı öğrenciyle eşleşmedi/i, /^Ad soyad okunamadı\.?$/i, /ad soyad farklı görünüyor/i];
 export const isNonBlocking = (issue: string) => NON_BLOCKING.some((r) => r.test(issue));
 export const unreadableName = (c: any, rowNo: number) => `Ad okunamadı · ${String(c?.student_number || '').trim() ? `No ${String(c.student_number).trim()}` : `Satır ${rowNo}`}`;
 
@@ -32,6 +35,9 @@ export async function acceptReadableSheets(env: Env, batchId: string, actorId: s
   // exam's student; it stays out with that reason so it can be uploaded under the right exam.
   const exam = await one<{ g: number | null }>(env.DB.prepare('SELECT e.grade_level g FROM scan_batches b JOIN exams e ON e.id=b.exam_id WHERE b.id=?').bind(batchId));
   const level = (g: number) => (g <= 4 ? 1 : g <= 8 ? 2 : 3);
+  // Owner (4 Nov): a sheet without a marked booklet in a multi-booklet exam is no longer a decision for a person. Its
+  // answers are scored against every booklet's key; the clearly better fit is used, otherwise the first booklet (A).
+  const guess = await bookletGuesser(env, batchId);
   const misfit: Array<{ id: string; issue: string }> = [];
   const accepted: Array<{ id: string; c: string; u: number }> = [];
   for (const r of rows) {
@@ -39,7 +45,11 @@ export async function acceptReadableSheets(env: Env, batchId: string, actorId: s
     let stored: string[] = []; try { stored = JSON.parse(r.issues_json || '[]'); } catch { /* */ }
     // A row set aside automatically before D-S038 carries its reasons as one "Değerlendirme dışı: a · b" line.
     stored = stored.flatMap((x) => String(x).startsWith('Değerlendirme dışı:') ? String(x).slice('Değerlendirme dışı:'.length).split(' · ').map((y) => y.trim()).filter(Boolean) : [String(x)]);
-    const all = [...new Set([...(Array.isArray(c.issues) ? c.issues : []), ...stored].map(String))];
+    let all = [...new Set([...(Array.isArray(c.issues) ? c.issues : []), ...stored].map(String))];
+    if (guess && all.some((x) => MISSING_BOOKLET.test(x))) {
+      const pick = guess(c);
+      if (pick) { c.booklet = pick.code; all = [...all.filter((x) => !MISSING_BOOKLET.test(x)), pick.note]; }
+    }
     if (all.some((x) => !isNonBlocking(x))) continue;
     const g = Number(c.grade_level || 0), eg = Number(exam?.g || 0);
     if (g >= 1 && g <= 12 && eg >= 1 && eg <= 12 && level(g) !== level(eg)) { misfit.push({ id: r.id, issue: `Sınıf düzeyi bu sınava uymuyor: ${g}. sınıf öğrencisi, sınav ${eg}. sınıf için. Bu öğrenciyi kendi sınavına yükleyin.` }); continue; }
@@ -86,4 +96,30 @@ export async function setAsideUnscorable(env: Env, batchId: string, actorId: str
     .bind(uuid('aud'), actorId, institutionId, 'SCAN_BATCH_ROWS_SET_ASIDE', 'scan_batch', batchId, JSON.stringify({ rows: out.map(({ row, reason }) => ({ row, reason })) })));
   await env.DB.batch(statements);
   return out.map(({ row, name, reason }) => ({ row, name, reason }));
+}
+
+/**
+ * Picks a booklet for a sheet whose booklet was left blank: the key with clearly more correct answers (at least 3 more
+ * and 10% of the answered questions), otherwise the first booklet. Null when the exam has one booklet or no full key.
+ */
+async function bookletGuesser(env: Env, batchId: string) {
+  const b = await one<{ exam_id: string }>(env.DB.prepare('SELECT exam_id FROM scan_batches WHERE id=?').bind(batchId));
+  if (!b) return null;
+  const [booklets, subjects, keys] = await Promise.all([
+    all<{ code: string }>(env.DB.prepare('SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code').bind(b.exam_id)),
+    all<any>(env.DB.prepare('SELECT es.subject_id,s.code,es.question_count,es.wrong_divisor FROM exam_subjects es JOIN subjects s ON s.id=es.subject_id WHERE es.exam_id=?').bind(b.exam_id)),
+    all<any>(env.DB.prepare(`SELECT q.subject_id,ak.booklet_code,q.question_no,ak.correct_answer,ak.accepted_answers,coalesce(ak.question_status,q.question_status,'ACTIVE') question_status,coalesce(bqo.printed_question_no,q.question_no) printed_question_no FROM exam_questions q JOIN answer_keys ak ON ak.exam_question_id=q.id LEFT JOIN exam_question_booklet_orders bqo ON bqo.exam_question_id=q.id AND bqo.booklet_code=ak.booklet_code WHERE q.exam_id=?`).bind(b.exam_id)),
+  ]);
+  const codes = booklets.map((x) => String(x.code).toUpperCase());
+  if (codes.length < 2) return null;
+  return (c: any): { code: string; note: string } | null => {
+    const options = compareBooklets({ ...c, booklet: undefined }, codes, subjects, keys).filter((o: any) => o.available);
+    if (!options.length) return null;
+    const sorted = [...options].sort((x: any, y: any) => Number(y.correct) - Number(x.correct));
+    const [best, second] = sorted as any[];
+    const answered = Number(best.correct) + Number(best.wrong);
+    const clear = !second || Number(best.correct) - Number(second.correct) >= Math.max(3, Math.ceil(answered * 0.1));
+    const code = clear ? best.code : codes[0];
+    return { code, note: clear ? `Kitapçık boştu; cevaplara göre ${code} kitapçığı seçildi (${best.correct} doğru, diğeri ${second ? second.correct : '-'}).` : `Kitapçık boştu; cevaplar kitapçıkları ayırt etmedi, ${code} sayıldı.` };
+  };
 }
