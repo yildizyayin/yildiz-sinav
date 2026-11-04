@@ -5,7 +5,7 @@ import {productionCurriculumPlan,reverifyCurricula,importProductionCurricula,exp
 const read=(file:string)=>JSON.parse(readFileSync(file,'utf8'));
 it('imports exactly the registered contexts without inventing annual plans or changing official codes',()=>{
  const plan=productionCurriculumPlan(read('data/question-branch-catalog-2028.json'),read('data/question-full-math-target-2028.json'),read('data/app-question-scope-2028.json'));
- expect(plan).toHaveLength(77);expect(plan.reduce((n:number,p:any)=>n+p.outcomes.length,0)).toBe(2916);
+ expect(plan).toHaveLength(97);expect(plan.reduce((n:number,p:any)=>n+p.outcomes.length,0)).toBe(3443);
  const changed=expandBranchCatalog(read('data/question-branch-catalog-2028.json')); changed.programs[0].outcomes[0].title='changed';
  expect(()=>productionCurriculumPlan(changed,read('data/question-full-math-target-2028.json'),read('data/app-question-scope-2028.json'))).toThrow(/REGISTRY_CONTENT_MISMATCH/);
 });
@@ -44,16 +44,16 @@ it('keeps a partially imported version unverified when node/content checks fail 
  }finally{db.close();}
 });
 
-it('publishes the entire 77-scope registry into the production schema with all 2916 exact node identities',async()=>{
+it('publishes the entire 97-scope registry into the production schema with all 3443 exact node identities',async()=>{
  const db=database(),log=vi.spyOn(console,'log').mockImplementation(()=>{});try{
   const query=async(sql:string,params:any[]=[])=>db.prepare(sql).all(...params);
   const imports=productionCurriculumPlan(read('data/question-branch-catalog-2028.json'),read('data/question-full-math-target-2028.json'),read('data/app-question-scope-2028.json'));
   const result=await importProductionCurricula({query,imports,evidence:{verifiedAt:'2026-10-19T00:00:00Z'},runId:'schema-fixture'});
-  expect(result).toHaveLength(77);expect(result.reduce((n:number,p:any)=>n+p.outcomes,0)).toBe(2916);
-  expect((db.prepare("SELECT count(*) n FROM curriculum_versions WHERE id LIKE 'cv_prod_%' AND verified=1").get() as any).n).toBe(77);
-  expect((db.prepare("SELECT count(*) n FROM learning_nodes WHERE curriculum_version_id LIKE 'cv_prod_%' AND official_code IS NOT NULL").get() as any).n).toBe(2916);
+  expect(result).toHaveLength(97);expect(result.reduce((n:number,p:any)=>n+p.outcomes,0)).toBe(3443);
+  expect((db.prepare("SELECT count(*) n FROM curriculum_versions WHERE id LIKE 'cv_prod_%' AND verified=1").get() as any).n).toBe(97);
+  expect((db.prepare("SELECT count(*) n FROM learning_nodes WHERE curriculum_version_id LIKE 'cv_prod_%' AND official_code IS NOT NULL").get() as any).n).toBe(3443);
   const repeated=await importProductionCurricula({query,imports,evidence:{verifiedAt:'2026-10-19T00:00:00Z'},runId:'retry-fixture'});
   expect(repeated.every((p:any)=>p.reused)).toBe(true);
-  expect((db.prepare("SELECT count(*) n FROM outcomes WHERE id LIKE 'out_prod_%'").get() as any).n).toBe(2916);
+  expect((db.prepare("SELECT count(*) n FROM outcomes WHERE id LIKE 'out_prod_%'").get() as any).n).toBe(3443);
  }finally{log.mockRestore();db.close();}
 });

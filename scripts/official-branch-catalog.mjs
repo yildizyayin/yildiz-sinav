@@ -1,6 +1,6 @@
 import {visibleText,sourceHash} from './official-math-catalog.mjs';
 export const branchSubjects={
- 'ortaokul-turkce-dersi':['TUR','T'], 'fen-bilimleri-dersi':['FEN','FB'],
+ 'ortaokul-turkce-dersi':['TUR','T'], 'ilkokul-turkce-dersi':['TUR','T'], 'fen-bilimleri-dersi':['FEN','FB'],
  'sosyal-bilgiler-dersi':['SOS','SB'], 'turk-dili-ve-edebiyati-dersi':['EDB','TDE'],
  'fizik-dersi':['FIZ','FİZ'], 'kimya-dersi':['KIM','KİM'], 'biyoloji-dersi':['BIY','BİY'],
  'tarih-dersi':['TAR','TAR'], 'cografya-dersi':['COG','COĞ'], 'felsefe-dersi':['FEL','FEL'],
@@ -45,4 +45,52 @@ export function assembleBranchProgram(spec,pages){
  });
  return {...spec,subjectCode:branchSubjects[spec.course][0],themes,outcomes:[...byCode.values()],conflicts,
   importStatus:conflicts.length?'BLOCKED_CONTEXT_IDENTITY':'SOURCE_VERIFIED',examSpecification:false};
+}
+
+/**
+ * Owner (4 Nov): the same exact reading, made robust to defects seen on official pages (5th-grade Türkçe, 4th-grade
+ * Türkçe and Fen, 12th-grade Din). Official codes and titles are kept verbatim; only how they are found changes:
+ * - entities (&nbsp;) are decoded before codes are recognised;
+ * - a code counts only at the start of a line, so a reference inside an explanatory note ("… T.O.5.20. kapsamında
+ *   yapılır") is not taken for an outcome;
+ * - a missing dot or space after the code ("12.3.2.Gıda", "12.3.3 Bağımlılık") and a code printed without its
+ *   course prefix on the official page ("12.3.1." under DKAB) are accepted as printed;
+ * - the grade is also read from a code printed without a dot ("T.Y4.2").
+ * It must give byte-identical results to branchThemeOutcomes on every programme already in the catalogue.
+ */
+export function branchThemeOutcomesV2(html,spec,theme){
+ const mapping=branchSubjects[spec.course]; if(!mapping)throw Error('UNKNOWN_COURSE');
+ const heading=visibleText(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]??'');
+ if(heading.toLocaleLowerCase('tr-TR')!==visibleText(theme.title).toLocaleLowerCase('tr-TR'))throw Error('THEME_TITLE_MISMATCH');
+ const start=html.indexOf('Öğrenme Çıktıları ve Süreç Bileşenleri'),end=html.indexOf('İçerik Çerçevesi',start);
+ if(start<0||end<=start)throw Error('OUTCOME_SECTION_MISSING');
+ const lines=html.slice(start,end).replace(/\s+/gu,' ').replace(/<br\b[^>]*>|<\/(?:p|div|li|h[1-6]|td|th|tr)>/gi,'\n').split('\n').map(l=>visibleText(l)).filter(Boolean);
+ const CODE='[A-ZÇĞİÖŞÜ]+\\d*(?:\\.[A-ZÇĞİÖŞÜ\\d]+){1,6}';
+ const isCode=c=>c.startsWith(mapping[1])&&/\d/.test(c); // a code has a number ("T.C. Anayasası" is not one)
+ const atStart=new RegExp(`^(${CODE})(?:\\.\\s*|\\s+)`,'u'), bare=/^(\d{1,2}(?:\.\d{1,2}){2})(?:\.\s*|\s+)/u;
+ const inLine=new RegExp(`(?<![\\p{L}\\p{N}.(])(${CODE})(?:\\.\\s+|\\s+(?=\\p{Lu}))`,'gu');
+ const items=[];
+ for(let i=0;i<lines.length;i++){
+  const line=lines[i];let m=line.match(atStart);
+  if(m&&!isCode(m[1]))m=null;
+  if(!m&&mapping[0]==='DIN')m=line.match(bare);
+  // A line that starts with a code holds outcomes; the same line may hold more than one ("… yorumlayabilme T.O.8.16.
+  // Metnin …"). Elsewhere (a process component or a note) only a code written as a heading — dot, space, capital
+  // letter — starts an outcome; a reference in a note ("T.O.5.20. kapsamında", "(T.K.5.1)") does not.
+  const offset=m?m[0].length:0,cuts=m?[{code:m[1],from:offset}]:[];
+  for(const x of line.slice(offset).matchAll(inLine)){if(!isCode(x[1]))continue;if(!m&&!/^\.\s+\p{Lu}/u.test(line.slice(offset+x.index+x[1].length,offset+x.index+x[0].length+1)))continue;cuts.push({code:x[1],at:offset+x.index,from:offset+x.index+x[0].length});}
+  if(!cuts.length)continue;
+  cuts.forEach((c,k)=>{const text=line.slice(c.from,cuts[k+1]?.at??line.length).trim();items.push({code:c.code,title:text?visibleText(text):(lines.slice(i+1).find(Boolean)??'')});});
+ }
+ const rows=[];
+ for(const {code,title:raw} of items){
+  const title=raw.replace(/^[.\s]+/u,''); // "ENG.9.7.W1.. Students …" is printed with a doubled dot
+  const parts=code.split('.');
+  const grade=/^\d/.test(code)?Number(parts[0]):mapping[0]==='TUR'?(/^[A-ZÇĞİÖŞÜ]+\d+$/u.test(parts[1])?Number(parts[1].replace(/\D/g,'')):Number(parts[2])):mapping[0]==='EDB'?spec.grade:/^ENG\d+$/.test(parts[0])?Number(parts[0].slice(3)):Number(parts[1]);
+  if(grade!==spec.grade)throw Error('OUTCOME_GRADE_MISMATCH:'+code);
+  if(title.length<8||title.length>2000)throw Error('INVALID_OUTCOME_TITLE:'+code);
+  const prior=rows.find(r=>r.code===code); if(prior){if(prior.title!==title)throw Error('CONFLICTING_THEME_CODE:'+code);continue;}
+  rows.push({code,title,unit:visibleText(theme.title),topic:visibleText(theme.title),sourceUrl:theme.url});
+ }
+ if(!rows.length)throw Error('EMPTY_OUTCOME_SECTION');return rows;
 }

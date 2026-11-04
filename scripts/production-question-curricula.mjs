@@ -3,15 +3,15 @@ import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {buildBranchImportPlan} from './branch-import-plan.mjs';
 import {visibleText,mathThemeLinks,mathThemeOutcomes} from './official-math-catalog.mjs';
-import {branchThemeOutcomes} from './official-branch-catalog.mjs';
+import {branchThemeOutcomes,branchThemeOutcomesV2} from './official-branch-catalog.mjs';
 const digest=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
 export const contentHash=rows=>digest(rows.map(o=>JSON.stringify([o.code,o.title,o.unit??null])).sort());
 export function expandBranchCatalog(compact){
  if(!Array.isArray(compact.programs[0]))return compact;
- return {...compact,programs:compact.programs.map(([course,grade,indexUrl,subjectCode,raw])=>{
+ return {...compact,programs:compact.programs.map(([course,grade,indexUrl,subjectCode,raw,parser])=>{
   const byCode=new Map(),conflicts=[];
   const themes=raw.map(([url,title,values])=>{const outcomes=values.map(([code,text])=>({code,title:text,unit:title,topic:title,sourceUrl:url}));for(const o of outcomes){const prior=byCode.get(o.code);if(prior&&prior.title!==o.title)conflicts.push({code:o.code});else if(!prior)byCode.set(o.code,{...o,sourceUrls:[url]});else prior.sourceUrls.push(url);}return {url,title,outcomes};});
-  return {course,grade,indexUrl,subjectCode,themes,outcomes:[...byCode.values()],conflicts};
+  return {course,grade,indexUrl,subjectCode,themes,outcomes:[...byCode.values()],conflicts,...(parser?{parser}:{})};
  })};
 }
 export function productionCurriculumPlan(branches,math,registry){
@@ -28,7 +28,7 @@ export async function reverifyCurricula(branches,math,get){
   if(!new RegExp(`(?:^|\\s)${p.grade}\\.\\s*Sınıf`,'u').test(heading))throw Error('INDEX_GRADE_CHANGED');
   const urls=[];for(const m of html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)){const u=new URL(m[1],p.indexUrl);if(u.origin==='https://tymm.meb.gov.tr'&&new RegExp(`^/${p.course}/unite/\\d+$`).test(u.pathname)&&visibleText(m[2])&&!urls.includes(u.href))urls.push(u.href);}
   if(JSON.stringify(urls.sort())!==JSON.stringify(p.themes.map(t=>t.url).sort()))throw Error('INDEX_THEMES_CHANGED');
-  for(let i=0;i<p.themes.length;i+=4)await Promise.all(p.themes.slice(i,i+4).map(async t=>{if(JSON.stringify(branchThemeOutcomes(await page(t.url),p,t))!==JSON.stringify(t.outcomes))throw Error('OFFICIAL_OUTCOMES_CHANGED:'+t.url);}));
+  for(let i=0;i<p.themes.length;i+=4)await Promise.all(p.themes.slice(i,i+4).map(async t=>{if(JSON.stringify((p.parser==='V2'?branchThemeOutcomesV2:branchThemeOutcomes)(await page(t.url),p,t))!==JSON.stringify(t.outcomes))throw Error('OFFICIAL_OUTCOMES_CHANGED:'+t.url);}));
  }
  for(const p of math.grades){
   const links=mathThemeLinks(await page(p.indexUrl),p.grade);

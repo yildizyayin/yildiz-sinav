@@ -770,20 +770,207 @@
       "outcomeCount": 21,
       "themeCount": 8,
       "contentHash": "af4e9f672d438086dd7ccf017d0b24e886a88d5dc6a377795888a864f29eb7ab"
-    }
-  ],
-  "blocked": [
-    {
-      "course": "ortaokul-turkce-dersi",
-      "grade": 5,
-      "error": "CONFLICTING_THEME_CODE:T.O.5.20",
-      "subjectCode": "TUR"
     },
     {
-      "course": "din-kulturu-ve-ahlak-bilgisi-dersi-ortaogretim",
+      "subjectCode": "MAT",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-MAT4-ALLTHEMES-TARGET2028-20261019-V2",
+      "sourceUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ilkokul-matematik-dersi/5",
+      "scopeKind": "SUBJECT_PROGRAM",
+      "outcomeCount": 34,
+      "themeCount": 7,
+      "contentHash": "15aa56d1a0aa85a9f30aa98b5c1296c4a620d82530a30028cf43dee3e74f5d31"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-TUR4-TARGET2028-20261019-37020e6eac751c11",
+      "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-turkce-dersi/unite/390",
+      "scopeKind": "THEME",
+      "outcomeCount": 14,
+      "themeCount": 1,
+      "contentHash": "204f601064963c1dbe483b6b29d1160cc02827755a3f03a8974ade5038d3dcf8"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-TUR4-TARGET2028-20261019-71ceb45dba9563db",
+      "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-turkce-dersi/unite/392",
+      "scopeKind": "THEME",
+      "outcomeCount": 13,
+      "themeCount": 1,
+      "contentHash": "61eeecc5abbd17dc2e4b456508dfa03fa1b037a49b6559e4a1cb1504ad243966"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-TUR4-TARGET2028-20261019-9ee3171ffacd219b",
+      "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-turkce-dersi/unite/398",
+      "scopeKind": "THEME",
+      "outcomeCount": 13,
+      "themeCount": 1,
+      "contentHash": "7d71f0c5ae38eb45d0cebc1bb97fad7cfa34de697a54273d4e0aa056a472f0c3"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-TUR4-TARGET2028-20261019-20623ad94042271b",
+      "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-turkce-dersi/unite/397",
+      "scopeKind": "THEME",
+      "outcomeCount": 15,
+      "themeCount": 1,
+      "contentHash": "483763b185b425b707529dec94db7b7633dfa0ec762108e262fc43a08e9b0303"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-TUR4-TARGET2028-20261019-2868936b3457de82",
+      "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-turkce-dersi/unite/401",
+      "scopeKind": "THEME",
+      "outcomeCount": 14,
+      "themeCount": 1,
+      "contentHash": "0093432e22c28db570ec9cbff69fafd81c7dffdf53be500d63f1dd715dd1dd1c"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-TUR4-TARGET2028-20261019-48190e544432d720",
+      "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-turkce-dersi/unite/406",
+      "scopeKind": "THEME",
+      "outcomeCount": 17,
+      "themeCount": 1,
+      "contentHash": "0a4cf1bc3794b07c6382abfb161e0578b2a7da90ee7487be1e4cf665e3460e99"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-TUR4-TARGET2028-20261019-e4abed0356f5f560",
+      "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-turkce-dersi/unite/403",
+      "scopeKind": "THEME",
+      "outcomeCount": 13,
+      "themeCount": 1,
+      "contentHash": "880f9a6fe5dba998a0e4fbf4dc54af6315016dd5403796b675ee08190a18cfc1"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-TUR4-TARGET2028-20261019-2a88f3b9b44306ec",
+      "sourceUrl": "https://tymm.meb.gov.tr/ilkokul-turkce-dersi/unite/400",
+      "scopeKind": "THEME",
+      "outcomeCount": 15,
+      "themeCount": 1,
+      "contentHash": "3d723a13fe51d4eab57e032741001920897622ab9dcc4ad43d0caccf2acd1d63"
+    },
+    {
+      "subjectCode": "FEN",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-FEN4-TARGET2028-20261019-aaf70611642d4fbe",
+      "sourceUrl": "https://tymm.meb.gov.tr/ogretim-programlari/fen-bilimleri-dersi/5",
+      "scopeKind": "SUBJECT_PROGRAM",
+      "outcomeCount": 19,
+      "themeCount": 8,
+      "contentHash": "c5fc7d39cdc75e4fcf0382ab3bd37389482f2111f6e4335ccb9b8c54d7c350e6"
+    },
+    {
+      "subjectCode": "SOS",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-SOS4-TARGET2028-20261019-a2fff75e030cc147",
+      "sourceUrl": "https://tymm.meb.gov.tr/ogretim-programlari/sosyal-bilgiler-dersi/5",
+      "scopeKind": "SUBJECT_PROGRAM",
+      "outcomeCount": 17,
+      "themeCount": 6,
+      "contentHash": "802f90c57573afbb686514e7ae4ab7c7ab17bfc00e560c35b9f084cdc334ff2a"
+    },
+    {
+      "subjectCode": "ING",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-ING4-TARGET2028-20261019-55488e0a2a64edc9",
+      "sourceUrl": "https://tymm.meb.gov.tr/ogretim-programlari/ingilizce-dersi-temel-egitim/5",
+      "scopeKind": "SUBJECT_PROGRAM",
+      "outcomeCount": 138,
+      "themeCount": 6,
+      "contentHash": "8ff788bfdbf7214c060472b7327b36588afb7bd02ed043413d37a62f00a12a40"
+    },
+    {
+      "subjectCode": "DIN",
+      "grade": 4,
+      "programVersion": "ANUNEX-TYMM-DIN4-TARGET2028-20261019-f0eb067daae776a9",
+      "sourceUrl": "https://tymm.meb.gov.tr/ogretim-programlari/din-kulturu-ve-ahlak-bilgisi-dersi-temel-egitim/5",
+      "scopeKind": "SUBJECT_PROGRAM",
+      "outcomeCount": 24,
+      "themeCount": 5,
+      "contentHash": "0d407b74090fbd6b4646b477625cdfc369d27cb5d4fd7e6f0bea6358d14979ea"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 5,
+      "programVersion": "ANUNEX-TYMM-TUR5-TARGET2028-20261019-c780ec847a1481b2",
+      "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-turkce-dersi/unite/54",
+      "scopeKind": "THEME",
+      "outcomeCount": 24,
+      "themeCount": 1,
+      "contentHash": "21605e744e850e065395eca41372642820d3f1ca0feeafce5ab3afd745b72ef0"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 5,
+      "programVersion": "ANUNEX-TYMM-TUR5-TARGET2028-20261019-ee7f056600eb6031",
+      "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-turkce-dersi/unite/61",
+      "scopeKind": "THEME",
+      "outcomeCount": 28,
+      "themeCount": 1,
+      "contentHash": "578d1197d199677fc0ee458147d3f74368961c650bb57b351fedfd8ed84d1f76"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 5,
+      "programVersion": "ANUNEX-TYMM-TUR5-TARGET2028-20261019-c709450e3a67dfb3",
+      "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-turkce-dersi/unite/67",
+      "scopeKind": "THEME",
+      "outcomeCount": 30,
+      "themeCount": 1,
+      "contentHash": "a0066923318d690a8e449b15de53e3e68325bd7ddeb3cc837bf9838a8f3fcd77"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 5,
+      "programVersion": "ANUNEX-TYMM-TUR5-TARGET2028-20261019-367741bdad4faa43",
+      "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-turkce-dersi/unite/74",
+      "scopeKind": "THEME",
+      "outcomeCount": 29,
+      "themeCount": 1,
+      "contentHash": "ee7b01a899dc6ca2db0719ba3a3dc1b8c52e3ac23b5d4186ef2df21945ca2d2f"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 5,
+      "programVersion": "ANUNEX-TYMM-TUR5-TARGET2028-20261019-fd59596461b050f5",
+      "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-turkce-dersi/unite/78",
+      "scopeKind": "THEME",
+      "outcomeCount": 27,
+      "themeCount": 1,
+      "contentHash": "f8dcbeeca735d512731ecefc3d7202ce2126539ea5ce410f8b67d3ecf67189ab"
+    },
+    {
+      "subjectCode": "TUR",
+      "grade": 5,
+      "programVersion": "ANUNEX-TYMM-TUR5-TARGET2028-20261019-41b64daf22acdf1e",
+      "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-turkce-dersi/unite/87",
+      "scopeKind": "THEME",
+      "outcomeCount": 23,
+      "themeCount": 1,
+      "contentHash": "5d59a3d34a7ef68eadf55f5d92d66a39f91a316b8c9c3442ab18253e8dd563eb"
+    },
+    {
+      "subjectCode": "DIN",
       "grade": 12,
-      "error": "EMPTY_OUTCOME_SECTION",
-      "subjectCode": "DIN"
+      "programVersion": "ANUNEX-TYMM-DIN12-TARGET2028-20261019-8273ed9383446387",
+      "sourceUrl": "https://tymm.meb.gov.tr/ogretim-programlari/din-kulturu-ve-ahlak-bilgisi-dersi-ortaogretim/14",
+      "scopeKind": "SUBJECT_PROGRAM",
+      "outcomeCount": 20,
+      "themeCount": 5,
+      "contentHash": "dc8761fa0572fef561d3ab80f9b73eeb75bef644a116f9ad4ff9fde33edea0c9"
     }
-  ]
+  ],
+  "blocked": []
 }
