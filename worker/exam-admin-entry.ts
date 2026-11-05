@@ -711,7 +711,11 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
     outcomeMappings?: Array<{ subjectId?: string; questionNo?: number; outcomeId?: string }>;
     outcomeMode?: 'OPTIONAL' | 'OFFICIAL_REQUIRED';
     reason?: string | null;
+    /** Owner (5 Nov): a key uploaded again from a file replaces the old one with its outcomes; nothing of the old key is carried over. */
+    replaceSource?: boolean;
   }>();
+  const replaceSource = body.replaceSource === true;
+  if (replaceSource && body.outcomeMappings === undefined) body.outcomeMappings = [];
   const subjects = await all<any>(env.DB.prepare(`SELECT subject_id,question_count,question_start,question_end,option_count FROM exam_subjects WHERE exam_id=? ORDER BY sort_order`).bind(examId));
   const booklets = await all<{ code: string }>(env.DB.prepare(`SELECT code FROM exam_booklets WHERE exam_id=? AND active=1 ORDER BY code`).bind(examId));
   if (!subjects.length || !booklets.length) return err(409, 'STRUCTURE_REQUIRED', 'Önce ders ve kitapçık yapısını kaydedin.');
@@ -773,7 +777,7 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
   const publisherLabelsByQuestion = new Map<string, string[]>();
   // Key edits do not erase imported source labels. Their review state is
   // independent from answer letters and can be edited in the outcome editor.
-  const existingPublisherReferences=await all<any>(env.DB.prepare('SELECT qpo.exam_question_id,qpo.publisher_outcome_id FROM question_publisher_outcomes qpo JOIN exam_questions q ON q.id=qpo.exam_question_id WHERE q.exam_id=?').bind(examId));
+  const existingPublisherReferences=replaceSource?[]:await all<any>(env.DB.prepare('SELECT qpo.exam_question_id,qpo.publisher_outcome_id FROM question_publisher_outcomes qpo JOIN exam_questions q ON q.id=qpo.exam_question_id WHERE q.exam_id=?').bind(examId));
   for(const row of existingPublisherReferences){const ids=publisherLabelsByQuestion.get(row.exam_question_id)||[];if(!ids.includes(row.publisher_outcome_id))ids.push(row.publisher_outcome_id);publisherLabelsByQuestion.set(row.exam_question_id,ids);}
 
   const programCode = ['TYT', 'AYT'].includes(String(exam.exam_type || '').toUpperCase()) ? String(exam.exam_type).toUpperCase() : 'SCHOOL';
@@ -878,6 +882,46 @@ async function replaceAnswerKeyUnlocked(request: Request, env: Env, user: AuthUs
   statements.push(env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)').bind(uuid('aud'),user.id,exam.institution_id,'EXAM_ANSWER_KEY_REPLACED','exam',examId,JSON.stringify(sanitizeAuditDetails({ before: { entryCount: subjects.length * booklets.length, outcomeMappingCount: 'existing' }, after: { entryCount: entryMap.size, outcomeMappingCount: seenMappings.size }, reason }))));
   await refreshExamOutcomeAnalysis(env,examId,user.id,statements);
   return Response.json({ ok: true, answerCount: subjects.reduce((sum, s) => sum + Number(s.question_count), 0) * booklets.length, outcomeMappingCount: seenMappings.size });
+}
+
+/**
+ * Owner (5 Nov): an answer key or its outcomes that were loaded wrong can be cleared and loaded again.
+ * scope OUTCOMES: every outcome link (official and publisher) of the exam's questions; the answers stay.
+ * scope ALL: the whole key with its outcomes. Only a draft exam can be left without a key; an active exam's key is
+ * changed by uploading it again, which replaces it in one step.
+ */
+export async function deleteAnswerKey(request: Request, env: Env, user: AuthUser, examId: string): Promise<Response> {
+  const exam = await managedExam(env, user, examId); if (!exam) return notFound();
+  return withExamOperationLock(env, examId, 'EXAM_SOURCE_EDIT', async (env) => {
+    const gate = await examPublicationGuard(env, examId); if (gate) return gate;
+    const current = await managedExam(env, user, examId); if (!current) return notFound();
+    if (!await examEditableBeforeResults(env, current) && !await examCorrectionOpen(env, examId)) return err(409, 'EXAM_LOCKED', 'Cevap anahtarı, sınavın değerlendirilmiş öğrencisi yokken ya da gerekçeyle düzeltmeye açıldığında değiştirilebilir.');
+    const body = await request.json<{ scope?: string; reason?: string | null }>().catch(() => ({} as { scope?: string; reason?: string | null }));
+    const scope = body.scope === 'ALL' ? 'ALL' : body.scope === 'OUTCOMES' ? 'OUTCOMES' : '';
+    if (!scope) return err(400, 'INVALID_SCOPE', 'Silinecek kapsamı seçin: yalnız kazanımlar ya da tüm cevap anahtarı.');
+    if (scope === 'ALL' && current.status !== 'DRAFT') return err(409, 'EXAM_NOT_DRAFT', 'Aktif sınavın cevap anahtarı silinemez; Excel\'den yeniden yükleyerek tek adımda değiştirin.');
+    const reason = String(body.reason || '').trim() || (scope === 'ALL' ? 'Cevap anahtarı silindi.' : 'Kazanım eşleştirmeleri silindi.');
+    if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Değişiklik gerekçesi 500 karakteri geçemez.');
+    const counts = await one<{ answers: number; outcomes: number; publisher: number }>(env.DB.prepare(`SELECT
+      (SELECT count(*) FROM answer_keys WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?1)) answers,
+      (SELECT count(*) FROM question_outcomes WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?1)) outcomes,
+      (SELECT count(*) FROM question_publisher_outcomes WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?1)) publisher`).bind(examId));
+    const inExam = 'exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)';
+    const statements: D1PreparedStatement[] = [
+      env.DB.prepare(`DELETE FROM question_outcomes WHERE ${inExam}`).bind(examId),
+      env.DB.prepare(`DELETE FROM question_publisher_outcomes WHERE ${inExam}`).bind(examId),
+    ];
+    if (scope === 'ALL') statements.push(
+      env.DB.prepare(`DELETE FROM answer_keys WHERE ${inExam}`).bind(examId),
+      env.DB.prepare('DELETE FROM exam_question_booklet_orders WHERE exam_id=?').bind(examId),
+      env.DB.prepare('DELETE FROM exam_optional_answer_keys WHERE exam_id=?').bind(examId),
+      env.DB.prepare(`UPDATE exam_questions SET question_status='ACTIVE' WHERE exam_id=?`).bind(examId),
+    );
+    const deleted = { answers: scope === 'ALL' ? Number(counts?.answers || 0) : 0, outcomeLinks: Number(counts?.outcomes || 0), publisherLinks: Number(counts?.publisher || 0) };
+    statements.push(examAuditStatement(env, user, current.institution_id, scope === 'ALL' ? 'EXAM_ANSWER_KEY_DELETED' : 'EXAM_OUTCOMES_CLEARED', examId, { scope, reason, deleted }));
+    await refreshExamOutcomeAnalysis(env, examId, user.id, statements);
+    return Response.json({ ok: true, scope, deleted });
+  });
 }
 
 export async function replaceInstitutions(request:Request,env:Env,user:AuthUser,examId:string):Promise<Response>{
@@ -1089,7 +1133,7 @@ export default {
       return err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     }
     const answerKey = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/answer-key$/);
-    if (answerKey) return request.method === 'PUT' ? replaceAnswerKey(request, env, auth, answerKey[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+    if (answerKey) return request.method === 'PUT' ? replaceAnswerKey(request, env, auth, answerKey[1]) : request.method === 'DELETE' ? deleteAnswerKey(request, env, auth, answerKey[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     const institutions = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/institutions$/);
     if (institutions) return request.method === 'PUT' ? replaceInstitutions(request, env, auth, institutions[1]) : err(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
     const status = url.pathname.match(/^\/api\/exam-definitions\/([^/]+)\/status$/);
