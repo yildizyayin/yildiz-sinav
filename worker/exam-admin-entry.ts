@@ -625,29 +625,74 @@ async function replaceStructureUnlocked(request: Request, env: Env, user: AuthUs
   const reason = body.reason?.trim() || 'Sınav soru yapısı güncellemesi.';
   if (reason.length > 500) return err(400, 'VALIDATION_ERROR', 'Değişiklik gerekçesi 500 karakteri geçemez.');
 
-  const statements: D1PreparedStatement[] = [
-    env.DB.prepare(`DELETE FROM question_outcomes WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
-    env.DB.prepare(`DELETE FROM answer_keys WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?)`).bind(examId),
-    env.DB.prepare(`DELETE FROM exam_question_booklet_orders WHERE exam_id=?`).bind(examId),
-    env.DB.prepare('DELETE FROM exam_questions WHERE exam_id=?').bind(examId),
-    env.DB.prepare('DELETE FROM exam_subjects WHERE exam_id=?').bind(examId),
-    env.DB.prepare('DELETE FROM exam_booklets WHERE exam_id=?').bind(examId),
-  ];
+  // Owner (5 Nov, Fenomen 8): a structure change keeps what is already entered. A question that still exists (same
+  // subject, same number) is updated in place, so its answer key, outcomes, booklet order and videos stay. Only answers
+  // that no longer fit are dropped: a removed question, a removed booklet, or an "E" answer when the test becomes 4-option.
+  const oldQuestions = await all<{ id: string; subject_id: string; question_no: number }>(env.DB.prepare('SELECT id,subject_id,question_no FROM exam_questions WHERE exam_id=?').bind(examId));
+  const oldByPosition = new Map(oldQuestions.map((q) => [`${q.subject_id}#${q.question_no}`, q.id]));
+  const keptIds = new Set<string>();
+  const dropped = await one<{ removed: number; booklet: number; option: number }>(env.DB.prepare(`SELECT
+    0 removed,
+    (SELECT count(*) FROM answer_keys ak JOIN exam_questions q ON q.id=ak.exam_question_id WHERE q.exam_id=? AND ak.booklet_code NOT IN (SELECT value FROM json_each(?))) booklet,
+    0 option`).bind(examId, JSON.stringify(booklets)));
+  const statements: D1PreparedStatement[] = [];
   let globalNo = 1;
+  let removedAnswers = 0, optionAnswers = 0;
   for (const [index, s] of subjects.entries()) {
     statements.push(env.DB.prepare(`INSERT INTO exam_subjects (id,exam_id,subject_id,question_count,sort_order,wrong_divisor,question_start,question_end,option_count) VALUES(?,?,?,?,?,?,?,?,?)`)
       .bind(uuid('es'), examId, s.subjectId, s.questionCount, s.sortOrder || index + 1, s.wrongDivisor, s.questionStart, s.questionEnd, s.optionCount));
     for (let q = s.questionStart; q <= s.questionEnd; q++) {
-      statements.push(env.DB.prepare(`INSERT INTO exam_questions (id,exam_id,subject_id,question_no,global_no,option_count,question_status) VALUES(?,?,?,?,?,?,?)`)
-        .bind(uuid('q'), examId, s.subjectId, q, globalNo++, s.optionCount, s.questionStatus));
+      const existing = oldByPosition.get(`${s.subjectId}#${q}`);
+      if (existing) {
+        keptIds.add(existing);
+        statements.push(env.DB.prepare('UPDATE exam_questions SET global_no=?,option_count=?,question_status=? WHERE id=?').bind(globalNo++, s.optionCount, s.questionStatus, existing));
+      } else {
+        statements.push(env.DB.prepare(`INSERT INTO exam_questions (id,exam_id,subject_id,question_no,global_no,option_count,question_status) VALUES(?,?,?,?,?,?,?)`)
+          .bind(uuid('q'), examId, s.subjectId, q, globalNo++, s.optionCount, s.questionStatus));
+      }
+    }
+    if (s.optionCount === 4) {
+      const e = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM answer_keys ak JOIN exam_questions q ON q.id=ak.exam_question_id WHERE q.exam_id=? AND q.subject_id=? AND q.question_no BETWEEN ? AND ? AND ak.booklet_code IN (SELECT value FROM json_each(?)) AND (ak.correct_answer='E' OR ak.accepted_answers LIKE '%"E"%')`).bind(examId, s.subjectId, s.questionStart, s.questionEnd, JSON.stringify(booklets)));
+      optionAnswers += Number(e?.c || 0);
     }
   }
-  for (const code of booklets) statements.push(env.DB.prepare(`INSERT INTO exam_booklets (id,exam_id,code,active) VALUES(?,?,?,1)`).bind(uuid('book'), examId, code));
-  statements.push(examAuditStatement(env,user,exam.institution_id,'EXAM_STRUCTURE_REPLACED',examId,{
+  const removedIds = oldQuestions.filter((q) => !keptIds.has(q.id)).map((q) => q.id);
+  if (removedIds.length) {
+    const r = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM answer_keys WHERE exam_question_id IN (SELECT value FROM json_each(?)) AND booklet_code IN (SELECT value FROM json_each(?))`).bind(JSON.stringify(removedIds), JSON.stringify(booklets)));
+    removedAnswers = Number(r?.c || 0);
+  }
+  const dependents = ['question_outcomes', 'question_publisher_outcomes', 'answer_keys', 'exam_question_booklet_orders', 'studio_exam_booklet_positions', 'video_links', 'youtube_micro_video_candidates', 'publisher_question_analytics'];
+  const cleanup: D1PreparedStatement[] = [];
+  if (removedIds.length) {
+    for (const table of dependents) cleanup.push(env.DB.prepare(`DELETE FROM ${table} WHERE exam_question_id IN (SELECT value FROM json_each(?))`).bind(JSON.stringify(removedIds)));
+    cleanup.push(env.DB.prepare('DELETE FROM exam_questions WHERE id IN (SELECT value FROM json_each(?))').bind(JSON.stringify(removedIds)));
+  }
+  cleanup.push(
+    env.DB.prepare(`DELETE FROM answer_keys WHERE exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=?) AND booklet_code NOT IN (SELECT value FROM json_each(?))`).bind(examId, JSON.stringify(booklets)),
+    env.DB.prepare(`DELETE FROM exam_question_booklet_orders WHERE exam_id=? AND booklet_code NOT IN (SELECT value FROM json_each(?))`).bind(examId, JSON.stringify(booklets)),
+    env.DB.prepare('DELETE FROM exam_subjects WHERE exam_id=?').bind(examId),
+    env.DB.prepare('DELETE FROM exam_booklets WHERE exam_id=?').bind(examId),
+  );
+  // after the questions are in place: a 4-option test keeps no "E" answer, and every kept answer carries the new option count
+  const after: D1PreparedStatement[] = [];
+  for (const s of subjects) {
+    const scope = `exam_question_id IN (SELECT id FROM exam_questions WHERE exam_id=? AND subject_id=? AND question_no BETWEEN ? AND ?)`;
+    if (s.optionCount === 4) after.push(env.DB.prepare(`DELETE FROM answer_keys WHERE ${scope} AND (correct_answer='E' OR accepted_answers LIKE '%"E"%')`).bind(examId, s.subjectId, s.questionStart, s.questionEnd));
+    after.push(env.DB.prepare(`UPDATE answer_keys SET option_count=? WHERE ${scope}`).bind(s.optionCount, examId, s.subjectId, s.questionStart, s.questionEnd));
+  }
+  const droppedAnswers = { removedQuestions: removedAnswers, removedBooklets: Number(dropped?.booklet || 0), optionE: optionAnswers };
+  const keptAnswers = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM answer_keys ak JOIN exam_questions q ON q.id=ak.exam_question_id WHERE q.exam_id=?`).bind(examId));
+  const keptAnswerCount = Math.max(0, Number(keptAnswers?.c || 0) - droppedAnswers.removedQuestions - droppedAnswers.removedBooklets - droppedAnswers.optionE);
+  // preview: what the change would keep and drop, nothing is written
+  if (new URL(request.url).searchParams.get('preview') === '1') return Response.json({ ok: true, preview: true, questionCount: globalNo - 1, booklets, keptAnswers: keptAnswerCount, droppedAnswers });
+  for (const code of booklets) after.push(env.DB.prepare(`INSERT INTO exam_booklets (id,exam_id,code,active) VALUES(?,?,?,1)`).bind(uuid('book'), examId, code));
+  after.push(examAuditStatement(env,user,exam.institution_id,'EXAM_STRUCTURE_REPLACED',examId,{
     before: { booklets: previousBooklets.map(row=>row.code), subjects: previousSubjects }, after: { booklets, subjects }, reason,
+    keptAnswers: keptAnswerCount, droppedAnswers,
   }));
-  await env.DB.batch(statements);
-  return Response.json({ ok: true, questionCount: globalNo - 1, booklets });
+  // unique (exam,subject,question_no): removed rows go first, then the kept rows are renumbered and new ones inserted
+  await env.DB.batch([...cleanup, ...statements, ...after]);
+  return Response.json({ ok: true, questionCount: globalNo - 1, booklets, keptAnswers: keptAnswerCount, droppedAnswers });
 }
 
 export async function replaceAnswerKey(request: Request, env: Env, user: AuthUser, examId: string):Promise<Response>{
