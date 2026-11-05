@@ -90,6 +90,19 @@ export function examBranchesInstalled(env: Env): Promise<boolean> {
   return p;
 }
 /** The snapshot payload statement plus, when ranges can exist, the sub-subject statement, for one batch. */
+/**
+ * Next free snapshot version of an exam. Owner (5 Nov, MEBİ): an upload deleted and evaluated again removes the result
+ * rows but keeps the publication stats of their versions, so the stats count too — otherwise the new version is one
+ * already in exam_publication_stats, its insert fails and the whole publication is rolled back on every try.
+ */
+export async function nextSnapshotVersion(env: Env, examId: string, floor = 0): Promise<number> {
+  const row = await env.DB.prepare(`SELECT MAX(version) version FROM (
+    SELECT snapshot_version version FROM exam_result_snapshots WHERE exam_id=?
+    UNION ALL SELECT retired_through_version FROM result_artifact_retirements WHERE exam_id=?
+    UNION ALL SELECT snapshot_version FROM exam_publication_stats WHERE exam_id=?)`).bind(examId, examId, examId).first<any>();
+  return Math.max(Number(floor || 0), Number(row?.version || 0)) + 1;
+}
+
 export async function reportSnapshotStatements(env: Env, examId: string, version: number): Promise<D1PreparedStatement[]> {
   const out = [env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(examId, version)];
   if (await examBranchesInstalled(env)) out.push(env.DB.prepare(REPORT_BRANCHES_SQL).bind(examId, version));
