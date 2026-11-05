@@ -95,3 +95,19 @@
 .optical-list-table .optical-card-menu-wrap { position: relative; width: 40px; }
 @media (max-width: 760px) { .optical-list-scroll { overflow-x: auto; } .optical-list-table { min-width: 680px; } }
 @media (max-width: 640px) { .optical-list-filters label { min-width: 0; flex: 1 1 45%; } .optical-list-count { margin-left: 0; } }
+
+/* Owner (5 Nov): manual optic with 1-based positions — start, number of characters, and the range that is read */
+.optical-definition-page .optical-form-dialog .optical-schoolizyon-row.optical-manual-1b { display:grid!important; grid-template-columns:minmax(0,1fr) 58px 50px 58px!important; gap:6px!important; }
+.optical-definition-page .optical-form-dialog .optical-schoolizyon-section-head { display:grid!important; grid-template-columns:minmax(0,1fr) 58px 50px 58px!important; gap:6px!important; }
+.optical-definition-page .optical-form-dialog .optical-schoolizyon-row.optical-manual-1b > input { min-width:0; padding:6px!important; }
+.optical-manual-range { font-variant-numeric:tabular-nums; font-size:13px; color:var(--phobos-muted,#5b6b75); white-space:nowrap; }
+.optical-manual-settings { display:grid; grid-template-columns:minmax(0,220px) minmax(0,240px) minmax(0,1fr); gap:12px; align-items:end; margin:0 0 14px; }
+.optical-manual-settings label { display:grid; gap:4px; font-weight:600; }
+.optical-manual-hint { margin:0; font-size:13px; line-height:1.5; color:var(--phobos-muted,#5b6b75); }
+.optical-manual-problems { display:block!important; margin:14px 0 0; }
+.optical-manual-problems ul { margin:6px 0 0 18px; }
+.optical-manual-sample { display:grid; gap:6px; margin:14px 0 0; }
+.optical-manual-sample > label { justify-self:start; display:inline-flex; align-items:center; min-height:40px; padding:8px 14px; border:1px solid var(--border,#d6dde3); border-radius:10px; cursor:pointer; font-weight:600; }
+.optical-manual-preview code { font-size:12px; white-space:pre; }
+.optical-manual-preview th small { display:block; font-weight:400; opacity:.75; }
+@media (max-width:760px) { .optical-manual-settings { grid-template-columns:1fr; } }

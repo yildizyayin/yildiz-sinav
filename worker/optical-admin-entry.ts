@@ -4,6 +4,7 @@ import { getAuthUser } from './lib/auth';
 import { all, audit, badRequest, forbidden, json, notFound, one, uuid } from './lib/db';
 import { parseWithTemplate } from './lib/parse';
 import { parseFmtBytes } from './lib/fmt';
+import { buildManualParserDefinition, manualLayoutProblems, type ManualAnswerBlock, type ManualOpticalField } from '../src/lib/opticalManual';
 import {
   definitionReadiness,
   parseDefinition,
@@ -179,6 +180,58 @@ async function getTemplateDetail(env: Env, user: AuthUser, templateId: string): 
     WHERE v.template_id=? ORDER BY v.active DESC,v.created_at DESC
   `).bind(templateId));
   return json({ ok: true, template, versions });
+}
+
+/**
+ * Owner (5 Nov): an optic is saved from the numbers typed on one screen, in one step. Positions arrive 1-based
+ * (as the user counts characters in a TXT line). The definition is checked (overlap, line length, Ad Soyad, tests)
+ * and published at once: the draft version is used when there is one, otherwise a new version is made, so a
+ * published optic is corrected without touching uploads already read with the old version. Exams bound to an older
+ * version of this optic move to the corrected one. Nothing is taken from a sample file.
+ */
+async function saveManualOptic(request: Request, env: Env, actor: AuthUser, templateId: string): Promise<Response> {
+  const template = await one<any>(env.DB.prepare('SELECT * FROM optical_templates WHERE id=?').bind(templateId));
+  if (!template) return notFound('Optik şablon bulunamadı.');
+  if (!canEditTemplate(actor, template)) return forbidden('Bu optiği düzenleme yetkiniz bulunmuyor.');
+  if (!template.active || template.status === 'ARCHIVED') return badRequest('Arşivlenmiş optik düzenlenemez.', 'ARCHIVED_TEMPLATE');
+  const body = await request.json<{ recordLength?: number; fields?: ManualOpticalField[]; answers?: ManualAnswerBlock[]; reason?: string | null }>().catch(() => ({} as any));
+  const recordLength = Number(body.recordLength);
+  const fields = (Array.isArray(body.fields) ? body.fields : []).map((f: any) => ({ key: f.key, label: String(f.label || f.key), enabled: !!f.enabled, start: Number(f.start), length: Number(f.length) })) as ManualOpticalField[];
+  const answers = (Array.isArray(body.answers) ? body.answers : []).map((a: any) => ({ code: String(a.code || '').trim().toUpperCase(), label: String(a.label || a.code || ''), enabled: !!a.enabled, start: Number(a.start), length: Number(a.length), questionCount: Number(a.questionCount || a.length), options: Number(a.options) === 4 ? 4 : 5 })) as ManualAnswerBlock[];
+  const problems = manualLayoutProblems(recordLength, fields, answers);
+  if (problems.length) return badRequest('Optik alanlarında düzeltilmesi gereken yerler var.', 'MANUAL_LAYOUT_INVALID', problems);
+  const definition = buildManualParserDefinition(recordLength, fields, answers, 1);
+  const check = validateParserDefinition(definition);
+  if (!check.valid) return badRequest('Optik tanımı doğrulanamadı.', 'INVALID_DEFINITION', check.errors);
+  const versions = await all<any>(env.DB.prepare(`SELECT v.id,v.version,v.active,v.parser_definition,v.page_width_mm,v.page_height_mm,
+      (SELECT count(*) FROM scan_batches b WHERE b.optical_template_version_id=v.id) batches
+    FROM optical_template_versions v WHERE v.template_id=? ORDER BY v.created_at DESC`).bind(templateId));
+  const current = versions.find((v) => Number(v.active) === 1) || null;
+  const draft = versions.find((v) => Number(v.active) !== 1 && Number(v.batches) === 0) || null;
+  let versionId = draft?.id as string | undefined;
+  let versionName = draft?.version as string | undefined;
+  const statements: D1PreparedStatement[] = [];
+  if (!versionId) {
+    const used = new Set(versions.map((v) => String(v.version)));
+    let n = versions.length + 1; while (used.has(`v${n}`)) n++;
+    versionId = uuid('optv'); versionName = `v${n}`;
+    statements.push(
+      env.DB.prepare(`INSERT INTO optical_template_versions (id,template_id,version,page_width_mm,page_height_mm,active) VALUES (?,?,?,?,?,0)`).bind(versionId, templateId, versionName, Number(current?.page_width_mm || 210), Number(current?.page_height_mm || 297)),
+      env.DB.prepare(`INSERT INTO optical_definition_validations (optical_template_version_id) VALUES (?)`).bind(versionId),
+    );
+  }
+  const reason = String(body.reason || '').trim() || 'Optik manuel parametrelerle kaydedildi.';
+  statements.push(
+    env.DB.prepare('UPDATE optical_template_versions SET parser_definition=? WHERE id=?').bind(JSON.stringify(definition), versionId),
+    env.DB.prepare('UPDATE optical_template_versions SET active=0 WHERE template_id=? AND id<>?').bind(templateId, versionId),
+    env.DB.prepare('UPDATE optical_template_versions SET active=1 WHERE id=?').bind(versionId),
+    env.DB.prepare(`UPDATE optical_templates SET status='READY',active=1,form_type='MANUAL' WHERE id=?`).bind(templateId),
+    env.DB.prepare(`UPDATE exam_optical_bindings SET optical_template_version_id=? WHERE active=1 AND optical_template_version_id IN (SELECT id FROM optical_template_versions WHERE template_id=? AND id<>?)`).bind(versionId, templateId, versionId),
+  );
+  const rebound = await one<{ c: number }>(env.DB.prepare(`SELECT count(*) c FROM exam_optical_bindings WHERE active=1 AND optical_template_version_id IN (SELECT id FROM optical_template_versions WHERE template_id=? AND id<>?)`).bind(templateId, versionId));
+  await env.DB.batch(statements);
+  await audit(env.DB, actor.id, template.owner_id || null, 'OPTICAL_MANUAL_SAVED', 'optical_template', templateId, { versionId, version: versionName, before: current?.parser_definition ? JSON.parse(current.parser_definition) : null, after: definition, rebound: Number(rebound?.c || 0), reason });
+  return json({ ok: true, templateId, versionId, version: versionName, status: 'READY', rebound: Number(rebound?.c || 0), definition });
 }
 
 async function createVersion(request: Request, env: Env, actor: AuthUser, templateId: string): Promise<Response> {
@@ -394,6 +447,9 @@ export async function routeOpticalAdmin(request: Request, env: Env, actor: AuthU
 
       const templateArchive = url.pathname.match(/^\/api\/optical-definitions\/([^/]+)\/archive$/);
       if (templateArchive) return request.method === 'POST' ? archiveTemplate(env, actor, templateArchive[1]) : error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
+
+      const manualSave = url.pathname.match(/^\/api\/optical-definitions\/([^/]+)\/manual$/);
+      if (manualSave) return request.method === 'PUT' ? saveManualOptic(request, env, actor, manualSave[1]) : error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
 
       const templateVersions = url.pathname.match(/^\/api\/optical-definitions\/([^/]+)\/versions$/);
       if (templateVersions) return request.method === 'POST' ? createVersion(request, env, actor, templateVersions[1]) : error(405, 'METHOD_NOT_ALLOWED', 'Bu yöntem desteklenmiyor.');
