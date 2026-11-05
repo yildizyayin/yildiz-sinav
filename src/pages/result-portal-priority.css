@@ -233,3 +233,27 @@
     .sr-subject-table tr,.sr-subject-table th,.sr-subject-table td,.sr-outcome-card,.sr-outcome-card b,.sr-ranking dl > div
   ) { background:#fff!important; color:#18232a!important; }
 }
+
+/* Review fixes (5 Nov): buttons follow the theme; mobile folds and panels use the full width; empty sub-subject rows stay quiet */
+@media screen {
+  .result-portal.approved-result-portal[data-result-role=STUDENT][data-sr-theme] .student-results-v2.result-student-priority .sr-exam-arrow {
+    background:var(--sr-accent)!important; color:var(--sr-on-accent)!important; border-color:var(--sr-accent)!important;
+  }
+  .result-portal.approved-result-portal[data-result-role=STUDENT][data-sr-theme] .student-results-v2.result-student-priority .sr-exam-arrow svg { color:var(--sr-on-accent)!important; }
+  .result-portal.approved-result-portal[data-result-role=STUDENT][data-sr-theme] .student-results-v2.result-student-priority .rsp-combined-teaser>button {
+    background:var(--sr-surface)!important; color:var(--sr-accent)!important; border-color:var(--sr-accent)!important;
+  }
+  .result-portal.approved-result-portal[data-result-role=STUDENT][data-sr-theme] .student-results-v2 .sr-no-data { background:transparent; }
+}
+@media screen and (max-width:760px) {
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2 :is(.sr-main,.sr-section-fold,.sr-nibiru,.sr-ranking,.sr-videos) { width:100%; max-width:100%; box-sizing:border-box; align-self:stretch; }
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2 .sr-section-fold > summary { display:flex; align-items:center; width:100%; box-sizing:border-box; font-weight:700; background:var(--sr-surface); border-radius:12px; }
+}
+@media screen {
+  .result-portal.approved-result-portal[data-result-role=STUDENT][data-sr-theme] .student-results-v2 .sr-branch .sr-data-note {
+    background:var(--sr-accent-soft)!important; color:var(--sr-muted)!important; border-color:var(--sr-border)!important;
+  }
+}
+@media screen and (max-width:760px) {
+  .result-portal.approved-result-portal[data-result-role=STUDENT] .student-results-v2 .sr-section-fold > .sr-panel > h3:first-child { display:none; }
+}
