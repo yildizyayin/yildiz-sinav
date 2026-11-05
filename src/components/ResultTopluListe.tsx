@@ -44,9 +44,12 @@ const LEVELS: Array<[string, (e: Exam) => boolean]> = [
 ];
 const MEMORY = 'anunex_toplu_liste_v2';
 const PENDING = 'anunex_toplu_open';
+type ReportSelection = { examId?: string; institutionId?: string };
+let pendingSelection: ReportSelection | undefined;
 /** Opens Rapor Merkezi with an exam (and institution) already ticked: used by the evaluation screen and its history. */
 export function openTopluListe(examId?: string, institutionId?: string) {
   const detail = { examId, institutionId };
+  pendingSelection = detail;
   try { sessionStorage.setItem(PENDING, JSON.stringify(detail)); } catch { /* */ }
   window.dispatchEvent(new CustomEvent('anunex:toplu-open', { detail }));
   setTimeout(() => document.getElementById('result-toplu')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
@@ -62,6 +65,7 @@ function GlyphIcon({ g }: { g: Glyph }) {
 }
 
 export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITUTION' | 'DEALER'; level?: string }) {
+  const [loadingExams, setLoadingExams] = useState(true);
   const [exams, setExams] = useState<Exam[]>([]);
   const [examIds, setExamIds] = useState<string[]>([]);
   const [instByExam, setInstByExam] = useState<Record<string, Inst[]>>({});
@@ -88,12 +92,13 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
   const ref = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
 
-  const loadExams = async () => { setError(''); try { setExams((await api<any>(`/api/admin/result-network/operations/toplu/exams?mode=${mode}`)).exams || []); } catch (e: any) { setError(e.message); } };
+  const loadExams = async () => { setError(''); setLoadingExams(true); try { setExams((await api<any>(`/api/admin/result-network/operations/toplu/exams?mode=${mode}`)).exams || []); } catch (e: any) { setError(e.message); } finally { setLoadingExams(false); } };
   useEffect(() => {
     void loadExams();
     try { const m = JSON.parse(localStorage.getItem(MEMORY) || '{}'); if (Array.isArray(m.kinds) && m.kinds.length) setKinds(m.kinds.filter((k: any) => KIND_ORDER.includes(k))); if (m.aytMode) setAytMode(m.aytMode); if (KARNE_FORMATS.some(([k]) => k === m.karneFormat)) setKarneFormat(m.karneFormat); if (Array.isArray(m.aytTypes) && m.aytTypes.length) setAytTypes(m.aytTypes); } catch { /* storage may be blocked */ }
-    const apply = (d: any) => { try { sessionStorage.removeItem(PENDING); } catch { /* */ } if (d?.examId) { setExamIds([d.examId]); setInstIds(d.institutionId ? [d.institutionId] : []); setEditExam(false); setEditInst(!d.institutionId); setPacks([]); } };
-    try { apply(JSON.parse(sessionStorage.getItem(PENDING) || 'null')); } catch { /* */ }
+    const apply = (d: ReportSelection | null) => { pendingSelection = undefined; try { sessionStorage.removeItem(PENDING); } catch { /* */ } if (d?.examId) { setExamIds([d.examId]); setInstIds(d.institutionId ? [d.institutionId] : []); setEditExam(false); setEditInst(!d.institutionId); setPacks([]); } };
+    if (pendingSelection) apply(pendingSelection);
+    else try { apply(JSON.parse(sessionStorage.getItem(PENDING) || 'null')); } catch { /* */ }
     const onOpen = (ev: Event) => apply((ev as CustomEvent).detail);
     window.addEventListener('anunex:toplu-open', onOpen); return () => window.removeEventListener('anunex:toplu-open', onOpen);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -169,6 +174,8 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
   }, [packs, growth, page]);
   const pageTitle = (() => { const el = ref.current?.querySelectorAll<HTMLElement>('.rx-page')[page]; return el?.querySelector('.rx-kicker')?.textContent || ''; })();
 
+  const loadingInstitutions = selectedExams.some(({ id }) => !instByExam[id]);
+  const canBuild = !loadingExams && !loadingInstitutions && selectedExams.length > 0 && selectedInst.length > 0 && kinds.length > 0;
   const examSummary = selectedExams.map((e) => e.title).join(', ');
   const instSummary = selectedInst.length === 1 ? `${selectedInst[0].name} · ${selectedInst[0].city} / ${selectedInst[0].district}` : `${selectedInst.length} kurum`;
 
@@ -184,10 +191,10 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
         <section className={`rm-card ${!editExam && examIds.length ? 'rm-done' : 'rm-active'}`} aria-labelledby="rm-s1">
           <div className="rm-card-head"><h2 id="rm-s1">{!editExam && examIds.length ? <span className="rm-check" aria-hidden="true">✓</span> : null}1 · Sınav</h2>
             {!editExam && examIds.length ? <button type="button" className="rm-link" onClick={() => setEditExam(true)}>Değiştir</button> : <button type="button" className="rm-link" onClick={() => void loadExams()}>Yenile</button>}</div>
-          {!editExam && examIds.length ? <p className="rm-summary"><b>{examSummary}</b> <span>· {selectedExams.reduce((n, e) => n + Number(e.participants || 0), 0)} öğrenci</span></p> : <>
+          {!editExam && examIds.length ? <p className="rm-summary"><b>{examSummary || (loadingExams ? 'Sınav yükleniyor…' : 'Seçili sınav raporlarda bulunamadı.')}</b>{examSummary && <span> · {selectedExams.reduce((n, e) => n + Number(e.participants || 0), 0)} öğrenci</span>}</p> : <>
             <label className="rm-search"><span className="rm-visually-hidden">Sınav ara</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20 16 16" /></svg><input value={examQuery} onChange={(e) => setExamQuery(e.target.value)} placeholder="Sınav, yayınevi veya yıl ara" /></label>
             <div className="rm-list">
-              {!visibleExams.length && <p className="rm-empty">{exams.length ? 'Bu seviyede sonucu olan sınav yok.' : 'Sonucu yüklenmiş sınav yok.'}</p>}
+              {!visibleExams.length && <p className="rm-empty">{loadingExams ? 'Sınavlar yükleniyor…' : exams.length ? 'Bu seviyede sonucu olan sınav yok.' : 'Sonucu yüklenmiş sınav yok.'}</p>}
               {visibleExams.map((e) => <label key={e.id} className={`rm-row ${examIds.includes(e.id) ? 'sel' : ''}`}>
                 <input type="checkbox" checked={examIds.includes(e.id)} onChange={() => setExamIds((c) => toggle(c, e.id))} />
                 <span className="rm-row-main"><b>{e.title}</b><span>{e.publisher_name} · {e.academic_year} · {e.exam_type} · {e.participants} öğrenci · {e.institutions} kurum</span></span>
@@ -201,7 +208,7 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
         <section className={`rm-card ${!examIds.length ? 'rm-locked' : !editInst && instIds.length ? 'rm-done' : 'rm-active'}`} aria-labelledby="rm-s2">
           <div className="rm-card-head"><h2 id="rm-s2">{!editInst && instIds.length ? <span className="rm-check" aria-hidden="true">✓</span> : null}2 · Kurum</h2>
             {!editInst && instIds.length ? <button type="button" className="rm-link" onClick={() => setEditInst(true)}>Değiştir</button> : null}</div>
-          {!examIds.length ? <p className="rm-summary"><span>Önce sınav seçin.</span></p> : !editInst && instIds.length ? <p className="rm-summary"><b>{instSummary}</b> <span>· {students} öğrenci</span></p> : <>
+          {!examIds.length ? <p className="rm-summary"><span>Önce sınav seçin.</span></p> : !editInst && instIds.length ? <p className="rm-summary"><b>{selectedInst.length ? instSummary : error ? 'Kurum bilgileri alınamadı.' : loadingInstitutions || loadingExams ? 'Kurum yükleniyor…' : 'Seçili kurumun bu sınavda sonucu yok.'}</b>{selectedInst.length > 0 && <span> · {students} öğrenci</span>}</p> : <>
             <div className="rm-tools">
               <label className="rm-select"><span className="rm-visually-hidden">İl</span><select value={city} onChange={(e) => setCity(e.target.value)}><option value="">Bütün iller</option>{cities.map((c) => <option key={c} value={c}>{c}</option>)}</select></label>
               <label className="rm-search rm-grow"><span className="rm-visually-hidden">Kurum ara</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20 16 16" /></svg><input value={instQuery} onChange={(e) => setInstQuery(e.target.value)} placeholder="Kurum, kod veya ilçe ara" /></label>
@@ -249,13 +256,13 @@ export function ResultTopluListe({ mode, level: initialLevel }: { mode: 'INSTITU
         <div className="rm-card-head"><h2 id="rm-s4">4 · Önizleme ve çıktı</h2>
           {ready && pageCount > 0 && <div className="rm-pager"><button type="button" aria-label="Önceki sayfa" disabled={page <= 0} onClick={() => setPage((p) => Math.max(0, p - 1))}>‹</button><span className="num">{pageTitle ? `${pageTitle.split('·')[0].trim()} · ` : ''}{page + 1} / {pageCount}</span><button type="button" aria-label="Sonraki sayfa" disabled={page >= pageCount - 1} onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}>›</button></div>}</div>
         <div className="rm-stage-wrap">
-          {!ready && <div className="rm-placeholder">{busy ? <><span className="rm-spin" aria-hidden="true" /><b>Hazırlanıyor…</b><span>{progress}</span></> : <><b>{instIds.length && kinds.length ? `Seçiminiz hazır · ~${estimate} sayfa` : 'Sınav, kurum ve rapor seçin'}</b><span>Raporları hazırlayınca sayfalar burada tek tek görünür.</span></>}</div>}
+          {!ready && <div className="rm-placeholder">{busy ? <><span className="rm-spin" aria-hidden="true" /><b>Hazırlanıyor…</b><span>{progress}</span></> : <><b>{canBuild ? `Seçiminiz hazır · ~${estimate} sayfa` : 'Sınav, kurum ve rapor seçin'}</b><span>Raporları hazırlayınca sayfalar burada tek tek görünür.</span></>}</div>}
           <div ref={stage} className="rm-stage" hidden={!ready}>
             <div className="rx-pages rm-preview" ref={ref}><PrintSetup />{packs.map((p, i) => <BundlePages key={i} b={p} kinds={ordered} types={p.family === 'AYT' ? aytTypes : undefined} karne={karneFormat} />)}{growth.map((g, i) => <GrowthPages key={`g${i}`} g={g} />)}</div>
           </div>
         </div>
         <div className="rm-actions">
-          {!ready ? <button type="button" className="rm-primary" disabled={busy || !examIds.length || !instIds.length || !kinds.length} onClick={() => void build()}>{busy ? 'Hazırlanıyor…' : 'Raporları hazırla'}</button>
+          {!ready ? <button type="button" className="rm-primary" disabled={busy || !canBuild} onClick={() => void build()}>{busy ? 'Hazırlanıyor…' : 'Raporları hazırla'}</button>
             : <><button type="button" className="rm-primary" disabled={!!pdfBusy} aria-live="polite" onClick={() => void pdf()}>{pdfBusy || `Tümünü PDF indir · ${pageCount} sayfa`}</button><button type="button" className="rm-secondary" disabled={!!pdfBusy || xlsBusy} onClick={() => void excel()}>{xlsBusy ? 'Excel hazırlanıyor…' : 'Excel indir'}</button></>}
         </div>
         <p className="rm-note">Tek PDF dosyası iner, kurumlar sırayla. Listeler A4 yatay, öğrenci karnesi A4 dikey.</p>

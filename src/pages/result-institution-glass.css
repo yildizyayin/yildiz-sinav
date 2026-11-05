@@ -30,15 +30,15 @@
     backdrop-filter: blur(14px);
   }
 
-  .result-portal .institution-glass .osh-brand { padding-right: 24px; }
+  .result-portal .institution-glass .osh-brand { padding-right: 36px; }
   .result-portal .institution-glass .glass-collapse {
     position: absolute;
     top: 10px;
     right: 9px;
     display: grid;
     place-items: center;
-    width: 34px;
-    min-height: 34px;
+    width: 44px;
+    min-height: 44px;
     padding: 0;
     background: var(--glass-field);
     border: 1px solid var(--glass-line);
@@ -130,17 +130,16 @@
   .result-portal .institution-glass :is(button, a, input, select, textarea):focus-visible { outline: 2px solid #8dfff1; outline-offset: 3px; }
   .result-portal .institution-glass .glass-home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .result-portal .institution-glass .glass-home .osh-kpis .rm-card {
-    background: linear-gradient(140deg, #19444f, var(--glass-surface));
+    background: var(--glass-surface);
     border-color: #5a8c97;
   }
   .result-portal .institution-glass .glass-home .osh-kpis .rm-card:last-child {
-    background: linear-gradient(140deg, #443822, var(--glass-surface));
-    border-color: #a48954;
+    background: var(--glass-surface);
+    border-color: var(--glass-line);
   }
   .result-portal .institution-glass .glass-home .osh-kpis svg { color: var(--glass-accent); }
   .result-portal .institution-glass .glass-status { color: #ffda91; font-size: 12px; }
   .result-portal .institution-glass .glass-status[data-complete=true] { color: #86e7c0; }
-  .result-portal .institution-glass .glass-latest { grid-column: 1 / -1; grid-row: 2; }
   .result-portal .institution-glass .glass-chart ul {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -185,7 +184,6 @@
 }
 @media screen and (max-width: 650px) {
   .result-portal .institution-glass .glass-home-grid { grid-template-columns: minmax(0, 1fr); }
-  .result-portal .institution-glass .glass-latest { grid-row: auto; }
 }
 @media screen and (prefers-reduced-motion: reduce) {
   .result-portal .institution-glass .osh-nav button { transition: none; }
@@ -208,4 +206,152 @@
   .result-portal .institution-glass .rm-alert .rm-link { color: #762c1a; }
   .result-portal .institution-glass .osh-ok { color: #86e7c0; }
   .result-portal .institution-glass .osh-last .rm-row-main b { overflow-wrap: anywhere; }
+}
+
+@media screen {
+  .result-portal .institution-glass .glass-home .glass-focus {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: clamp(16px, 3vw, 28px);
+  }
+  .result-portal .institution-glass .glass-focus h2 {
+    margin: 6px 0;
+    font-size: clamp(18px, 2.5vw, 24px);
+    overflow-wrap: anywhere;
+  }
+}
+
+@media screen {
+  .result-portal .institution-glass .glass-upload-steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    padding: 0;
+    margin: 0 0 24px;
+    list-style: none;
+  }
+
+  .result-portal .institution-glass .glass-upload-steps li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 9px;
+    border: 1px solid var(--glass-line);
+    border-radius: 9px;
+    color: var(--glass-muted);
+    font-size: 13px;
+  }
+
+  .result-portal .institution-glass .glass-upload-steps li span {
+    flex: 0 0 24px;
+    display: grid;
+    place-items: center;
+    min-height: 24px;
+    border-radius: 50%;
+    background: var(--glass-field);
+  }
+
+  .result-portal .institution-glass .glass-upload-steps li[aria-current] {
+    color: var(--glass-text);
+    background: #19434b;
+    border-color: var(--glass-accent);
+    font-weight: 700;
+  }
+
+  .result-portal .institution-glass .glass-upload-steps li[data-complete=true] span {
+    color: var(--glass-accent);
+  }
+
+  .result-portal .institution-glass .glass-step-hint {
+    margin: 14px 0 8px;
+    color: var(--glass-muted);
+  }
+
+  .result-portal.approved-result-portal[data-result-role=INSTITUTION]:not(.admin-portal-mode) .institution-glass .osh-main
+    :is(.booklet-pick, .uc-chip, .uc-school, .success-box) {
+    background: var(--glass-field);
+    border-color: var(--glass-line);
+    color: var(--glass-text);
+  }
+
+  .result-portal .institution-glass .upload-check .uc-school b {
+    color: var(--glass-text);
+  }
+
+  .result-portal .institution-glass .upload-check .uc-school :is(small, span) {
+    color: var(--glass-muted);
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .result-portal .institution-glass .glass-upload-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen {
+  .result-portal .institution-glass #result-toplu
+    :is(.rm-stage-wrap, .rm-secondary, .rm-pager button, .rm-soft, .rm-chip, .rm-next) {
+    background: var(--glass-field);
+    border-color: var(--glass-line);
+    color: var(--glass-text);
+  }
+
+  .result-portal .institution-glass #result-toplu :is(.rm-chip.sel, .rm-seg button.on) {
+    background: #19434b;
+    border-color: var(--glass-accent);
+    color: var(--glass-accent);
+  }
+
+  .result-portal .institution-glass #result-toplu .rm-pill {
+    background: #183b37;
+    color: #86e7c0;
+  }
+
+  .result-portal .institution-glass #result-toplu .rm-seg {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  .result-portal .institution-glass #result-toplu :is(.rm-steps, .rm-out, .rm-stage-wrap, .rm-card-head) {
+    min-width: 0;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .result-portal .institution-glass #result-toplu .rm-out { position: static; }
+  .result-portal .institution-glass #result-toplu .rm-card-head { flex-wrap: wrap; }
+  .result-portal .institution-glass #result-toplu .rm-row {
+    grid-template-columns: 18px minmax(0, 1fr);
+  }
+  .result-portal .institution-glass #result-toplu .rm-row .rm-pill {
+    grid-column: 2;
+    justify-self: start;
+    white-space: normal;
+  }
+  .result-portal .institution-glass #result-toplu :is(.rm-summary, .rm-row-main b) {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media screen {
+  .result-portal .institution-glass .result-operator-workspace .uc-confirm {
+    min-width: 0;
+    background: var(--glass-field);
+    border-color: var(--glass-line);
+    color: var(--glass-text);
+  }
+
+  .result-portal .institution-glass .result-operator-workspace .uc-confirm input[type=checkbox] {
+    flex: 0 0 22px;
+    width: 22px;
+    height: 22px;
+    min-height: 22px;
+    accent-color: var(--glass-accent);
+  }
 }

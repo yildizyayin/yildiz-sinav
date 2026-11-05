@@ -7,9 +7,13 @@ import { BatchActions, BulkUploadDelete } from '../components/BatchActions';
 import { OwnExamForm, OwnExamPublishBar } from '../components/OwnExamForm';
 import './result-network-admin.css';
 
-type Props={mode:'INSTITUTION'|'DEALER';access:any};
+export type ReviewBatch = {
+ id: string; title: string; exam_id: string; institution_id: string;
+ institution_name: string; institution_code: string; city: string; district: string; total: number;
+};
+type Props={initialBatch?: ReviewBatch;mode:'INSTITUTION'|'DEALER';access:any};
 
-export function ResultOperatorWorkspace({mode,access}:Props){
+export function ResultOperatorWorkspace({mode,access,initialBatch}:Props){
  const[catalog,setCatalog]=useState<any>({institutions:[],exams:[],opticals:[]});
  const[institutionId,setInstitutionId]=useState('');
  const searchable=!!access?.canManageNetwork||mode==='DEALER';
@@ -33,7 +37,7 @@ export function ResultOperatorWorkspace({mode,access}:Props){
  const[candidates,setCandidates]=useState<Record<string,any[]>>({});
  const[resolving,setResolving]=useState('');
  const[reviewTab,setReviewTab]=useState<'UNMATCHED'|'ALL'>('UNMATCHED');
- const[busy,setBusy]=useState(false);
+ const[busy,setBusy]=useState(!!initialBatch);
  const[error,setError]=useState('');
  const[notice,setNotice]=useState('');
 
@@ -111,7 +115,10 @@ export function ResultOperatorWorkspace({mode,access}:Props){
    setNotice(r.tested?`"${r.optical.name}" optiği eklendi ve seçildi: dosyanızdaki ${r.recordCount} satır bu optikle okundu.`:`"${r.optical.name}" optiği eklendi ve seçildi. Örnek dosyayla test edilmedi.`);
   }catch(e:any){setError(e.message)}finally{setBusy(false)}
  };
- const openBatch=async(row:any)=>{setBusy(true);setError('');setNotice('');setSetAside([]);setCandidates({});try{const b=await api<any>(`/api/admin/result-network/operations/scan-batches/${row.id}`);setBatch(b);setPreview({batchId:row.id,total:Number(row.total||b.records?.length||0),counts:b.counts,detection:{templateName:`${row.institution_name} · ${row.title}`,confidence:b.batch?.detection_confidence||0},checks:{school:{name:row.institution_name,code:row.institution_code,city:row.city,district:row.district}}});setSchoolOk(false);document.getElementById('result-evaluation')?.scrollIntoView({behavior:'smooth',block:'start'})}catch(e:any){setError(e.message)}finally{setBusy(false)}};
+ const openBatch=async(row:ReviewBatch)=>{setBusy(true);setError('');setNotice('');setSetAside([]);setCandidates({});try{const b=await api<any>(`/api/admin/result-network/operations/scan-batches/${row.id}`);setBatch(b);setSkipBooklet(false);setCandidateQueries({});setReviewTab('UNMATCHED');setPreview({batchId:row.id,total:Number(row.total||b.records?.length||0),counts:b.counts,detection:{templateName:`${row.institution_name} · ${row.title}`,confidence:b.batch?.detection_confidence||0},checks:{school:{name:row.institution_name,code:row.institution_code,city:row.city,district:row.district}}});setSchoolOk(false);document.getElementById('result-evaluation')?.scrollIntoView({behavior:'smooth',block:'start'})}catch(e:any){setError(e.message)}finally{setBusy(false)}};
+ useEffect(() => {
+  if(initialBatch) void openBatch(initialBatch);
+ }, [initialBatch]);
  // D-S039 (a): a sheet with no booklet mark in a multi-booklet exam waits for the school to choose the booklet.
  const chooseBooklet=async(row:any,code:string)=>{setBusy(true);setError('');try{await api(`/api/admin/result-network/operations/scan-batches/${preview.batchId}/records/${row.id}/resolve`,{method:'POST',body:JSON.stringify({action:'BOOKLET',bookletCode:code})});await loadBatch(preview.batchId)}catch(e:any){setError(e.message)}finally{setBusy(false)}};
  const reset=()=>{setSetAside([]);setFile(null);setPreview(null);setBatch(null);setCandidates({});setCandidateQueries({});setError('');setNotice('')};
@@ -120,10 +127,26 @@ export function ResultOperatorWorkspace({mode,access}:Props){
  const reviewRows=reviewTab==='UNMATCHED'?pendingRows.filter((row:any)=>['NEW_GUEST','AMBIGUOUS','INVALID'].includes(row.match_status)):pendingRows;
  const ready=batch?.batch?.status==='READY'||batch?.batch?.status==='COMMITTED';
 
+ const institution = mode === 'INSTITUTION';
+ const completed = batch?.batch?.status === 'COMMITTED';
+ const stage = completed ? 3 : progress ? 2 : preview ? 1 : 0;
+ const excludedCount = pendingRows.length + (batch?.records || []).filter((row: any) => row.resolution_status === 'CANCELLED').length;
+ const nextHint = !examId ? 'Sınavı seçin.' : !templateVersionId ? 'Optik şablonunu seçin.'
+  : !(searchable ? picked : institutionId) ? 'Kurumu seçin.' : !file ? 'DAT, TXT veya CSV dosyasını seçin.' : 'Dosya kontrole hazır.';
+ const reviewHint = bookletRows.length > 0 && !skipBooklet ? 'Kitapçığı eksik kayıtlar için yukarıdaki seçimi tamamlayın.'
+  : preview?.checks?.school && !schoolOk ? 'Değerlendirmeden önce dosyanın doğru kuruma ait olduğunu onaylayın.'
+  : Number(preview?.total || 0) - pendingRows.length <= 0 ? 'Değerlendirmeye alınabilecek kayıt bulunamadı.'
+  : 'Kayıtlar değerlendirmeye hazır.';
+
  return <section className="panel result-operator-workspace" style={{marginTop:18}}>
-  <div className="panel-head"><div><span className="eyebrow">{mode==='DEALER'?'Bayi kapsamlı işlem':'Kurum işlemi'}</span><h2>Sınav değerlendirme merkezi</h2><p>Sınav, optik ve kurumu seçin; DAT/TXT/CSV dosyasını kontrol ederek güvenli biçimde değerlendirin.</p></div><ScanLine/></div>
+  <div className="panel-head"><div><span className="eyebrow">{mode==='DEALER'?'Bayi kapsamlı işlem':'Kurum işlemi'}</span><h2>{institution ? completed ? 'Değerlendirme tamamlandı' : preview ? 'Optik kayıtlarını kontrol edin' : 'Optik yükleme' : 'Sınav değerlendirme merkezi'}</h2><p>{institution && preview ? preview.detection?.templateName : 'Sınav, optik ve kurumu seçin; DAT/TXT/CSV dosyasını kontrol ederek değerlendirin.'}</p></div><ScanLine/></div>
+  {institution && <ol className="glass-upload-steps" aria-label="Sınav değerlendirme aşamaları">
+    {['Dosyayı yükle', 'Kayıtları kontrol et', 'Değerlendir', 'Raporu aç'].map((label, index) => <li key={label}
+      aria-current={index === stage ? 'step' : undefined}
+      data-complete={index < stage}><span aria-hidden="true">{index + 1}</span>{label}</li>)}
+  </ol>}
   {access?.dealer&&<div className="alert info"><ShieldCheck/> {access.dealer.displayName||'Bayi'} · {access.dealer.scopeCount} aktif yetki kapsamı</div>}
-  {error&&<div className="alert error">{error}</div>}{notice&&<div className="alert success">{notice}</div>}
+  {error&&<div className="alert error" role="alert">{error}</div>}{notice&&<div className="alert success" role="status">{notice}</div>}
   {!preview?<div>
    <div className="form-grid">
     <label>1 · Sınav<select value={examId} onChange={e=>setExamId(e.target.value)}><option value="">Sınav seçin</option>{catalog.exams.map((exam:any)=><option key={exam.id} value={exam.id}>{exam.academic_year} · {exam.publisher_name?`${exam.publisher_name} · `:''}{exam.title}{exam.own_kind?' · kendi sınavı':''}</option>)}</select>{!access?.canManageNetwork&&<button type="button" className="link-button result-add-optical" onClick={()=>setAddExam(v=>!v)}>{addExam?'Vazgeç':'Sınav listede yok mu? Kendi sınavını ekle'}</button>}</label>
@@ -137,11 +160,12 @@ export function ResultOperatorWorkspace({mode,access}:Props){
    {addOptical&&<div className="panel result-optical-add"><h3>Optik ekle</h3><p>Optiğin adını ve FMT dosyasını verin. 4. adımda bir TXT/DAT dosyası seçtiyseniz sistem FMT'yi onunla dener; dosya seçmediyseniz optik test edilmeden kaydedilip seçilir.{access?.canManageNetwork?'':mode==='DEALER'?' Optik yalnız sizin ve size kayıtlı kurumların listesinde görünür.':' Optik yalnız kurumunuzun listesinde görünür.'}</p><div className="form-grid"><label>Optik adı<input value={opticalName} onChange={e=>setOpticalName(e.target.value)} placeholder="ör. 4K Yayınları TYT optiği"/></label><label>FMT dosyası<input type="file" accept=".fmt,.FMT,.txt" onChange={e=>setFmtFile(e.target.files?.[0]||null)}/></label></div>{!file&&<small className="field-help">Önce 4. adımda değerlendireceğiniz TXT/DAT dosyasını seçin.</small>}<button className="primary" type="button" disabled={busy||!opticalName.trim()||!fmtFile||!access?.canManageNetwork} onClick={()=>void saveOptical()}>{busy?'Deneniyor…':'Optiği dene ve kaydet'}</button></div>}
    {!catalog.exams.length&&<div className="alert warning"><TriangleAlert/> Değerlendirmeye açık sınav yok. Merkezi sınavlar hazır olunca burada kendiliğinden görünür; kendi sınavınızı "Kendi sınavını ekle" ile ekleyebilirsiniz.</div>}
    {!catalog.opticals.length&&<div className="alert warning"><TriangleAlert/> Kayıtlı optik yok. "Optik ekle" ile FMT dosyasını yükleyin.</div>}
+   {institution && <p className="glass-step-hint">{busy ? 'Yükleme bilgileri hazırlanıyor…' : nextHint}</p>}
    <button className="primary huge" disabled={busy||!file||!(searchable?picked:institutionId)||!examId||!templateVersionId} onClick={()=>void upload()}><FileUp/> {busy?'Dosya okunuyor…':'Dosyayı yükle ve kontrol et'}</button>
   </div>:<>
    {(()=>{const out=pendingRows.length+(batch?.records||[]).filter((r:any)=>r.resolution_status==='CANCELLED').length;const committed=batch?.batch?.status==='COMMITTED';return <div className="summary-strip"><Summary label="Okunan satır" value={preview.total}/><Summary label={committed?'Değerlendirilen':'Değerlendirilecek'} value={Math.max(0,Number(preview.total||0)-out)}/><Summary label="Değerlendirme dışı" value={out} warn/></div>})()}
    <div className="panel-head"><div><h3>5 · Kontrol</h3><p>{preview.detection?.templateName} · optik tanıma %{Math.round(Number(preview.detection?.confidence||0)*100)}</p></div><button className="ghost" onClick={reset}><RefreshCw/> Yeni dosya</button></div>
-   {batch?.batch?.status!=='COMMITTED'&&(pendingRows.length?<div className="alert warning"><TriangleAlert/><div><strong>{pendingRows.length} satır değerlendirmeye alınmayacak.</strong> Diğer {Math.max(0,Number(preview.total||0)-pendingRows.length)} öğrenci değerlendirilir. Bu satırları düzeltmek için TXT dosyasını düzeltip ayrıca yükleyin.<ul className="result-setaside-list">{pendingRows.map((row:any)=><li key={row.id}><strong>Satır {row.row_no}{row.canonical?.name?` · ${row.canonical.name}`:''}</strong>: {(row.issues||[]).join(' · ')||(row.match_status==='AMBIGUOUS'?'Aynı ada sahip birden fazla kayıtlı öğrenci var.':'Ad soyad okunamadı.')}</li>)}</ul></div></div>:<div className="alert success"><CheckCircle2/> Bütün satırlar okundu; değerlendirmeye hazır.</div>)}
+   {batch?.batch?.status!=='COMMITTED'&&(pendingRows.length?<div className="alert warning"><TriangleAlert/><div><strong>{pendingRows.length} satır değerlendirmeye alınmayacak.</strong> Diğer {Math.max(0,Number(preview.total||0)-excludedCount)} öğrenci değerlendirilir. Bu satırları düzeltmek için TXT dosyasını düzeltip ayrıca yükleyin.<ul className="result-setaside-list">{pendingRows.map((row:any)=><li key={row.id}><strong>Satır {row.row_no}{row.canonical?.name?` · ${row.canonical.name}`:''}</strong>: {(row.issues||[]).join(' · ')||(row.match_status==='AMBIGUOUS'?'Aynı ada sahip birden fazla kayıtlı öğrenci var.':'Ad soyad okunamadı.')}</li>)}</ul></div></div>:<div className="alert success"><CheckCircle2/> Bütün satırlar okundu; değerlendirmeye hazır.</div>)}
    {batch?.batch?.status!=='COMMITTED'&&bookletRows.length>0&&<div className="booklet-pick" role="group" aria-labelledby="bp-t"><h4 id="bp-t">Kitapçığı işaretlenmemiş {bookletRows.length} öğrenci</h4><p>Bu sınavda birden çok kitapçık var. Öğrencinin kitapçığını seçin; her seçenekte o kitapçıkla çıkacak net yazıyor. Genelde neti belirgin yüksek olan doğrudur, emin değilseniz öğrencinin kitapçığına bakın.</p>
     <ul>{bookletRows.map((row:any)=><li key={row.id}><span className="bp-who"><b>{row.canonical?.name||'Ad okunamadı'}</b><small>No {row.canonical?.student_number||'—'} · Satır {row.row_no}</small></span><span className="bp-opts">{(row.bookletOptions||[]).map((o:any)=><button key={o.code} type="button" className="secondary" disabled={busy||!o.available} onClick={()=>void chooseBooklet(row,o.code)}>Kitapçık {o.code}<small>{o.net==null?'—':`net ${Number(o.net).toLocaleString('tr-TR',{maximumFractionDigits:2})}`}</small></button>)}</span></li>)}</ul>
     <label className="uc-confirm"><input type="checkbox" checked={skipBooklet} onChange={e=>setSkipBooklet(e.target.checked)}/> Seçmeden devam et; bu öğrenciler değerlendirmeye alınmasın.</label></div>}
@@ -156,9 +180,10 @@ export function ResultOperatorWorkspace({mode,access}:Props){
      <label className="uc-confirm"><input type="checkbox" checked={schoolOk} onChange={e=>setSchoolOk(e.target.checked)}/> Evet, bu dosya <b>{c.school.name}</b> öğrencilerine ait.</label>
     </div>})()}
    <EvalTimer watch={watch} done={progress?.done??lastCount?.done} total={progress?.total||lastCount?.total||undefined}/>
+   {institution && !completed && !busy && <p className="glass-step-hint">{reviewHint}</p>}
    {batch?.batch?.status!=='COMMITTED'&&<button className="primary huge" disabled={busy||Number(preview.total||0)-pendingRows.length<=0||(!!preview?.checks?.school&&!schoolOk)||(bookletRows.length>0&&!skipBooklet)} title={bookletRows.length>0&&!skipBooklet?'Önce kitapçığı işaretlenmemiş öğrencilerin kitapçığını seçin.':preview?.checks?.school&&!schoolOk?'Önce okulun doğru olduğunu onaylayın.':''} onClick={()=>void evaluate()}><ScanLine/> {busy?(progress&&progress.total?`Değerlendiriliyor… ${progress.done} / ${progress.total} öğrenci`:'Değerlendiriliyor…'):'6 · Değerlendir'}</button>}
    {setAside.length>0&&<div className="alert warning"><TriangleAlert/><div><strong>Değerlendirmeye alınmayan {setAside.length} satır:</strong><ul className="result-setaside-list">{setAside.map((x:any)=><li key={x.row}><strong>Satır {x.row}{x.name?` · ${x.name}`:''}</strong>: {x.reason}</li>)}</ul></div></div>}
-   {batch?.batch?.status==='COMMITTED'&&<><div className="success-box"><CheckCircle2/><div><strong>Değerlendirme tamamlandı</strong><span>{preview.evaluated||preview.total} öğrencinin sonucu işlendi. Sonuçlar yayınlandığında öğrenciler sonuc.anunex.com'da il, ilçe, kurum, sınıf, numara ve adlarının ilk 3 harfiyle görür; kart ya da kod gerekmez.</span></div></div><div className="result-completion-actions"><button className="primary" onClick={()=>openTopluListe(examId||batch?.batch?.exam_id,batch?.batch?.institution_id)}><Printer/> Raporlara git (Toplu Liste)</button></div></>}
+   {batch?.batch?.status==='COMMITTED'&&<><div className="success-box"><CheckCircle2/><div><strong>Değerlendirme tamamlandı</strong><span>{preview.evaluated||preview.total} öğrencinin sonucu işlendi. Sonuçlar yayınlandığında öğrenciler sonuc.anunex.com'da il, ilçe, kurum, sınıf, numara ve adlarının ilk 3 harfiyle görür; kart ya da kod gerekmez.</span></div></div><div className="result-completion-actions"><button className="primary" onClick={()=>openTopluListe(batch?.batch?.exam_id||examId,batch?.batch?.institution_id)}><Printer/> Raporlara git (Toplu Liste)</button></div></>}
   </>}
   <div id="result-evaluation-history" className="result-history"><div className="panel-head"><div><h3>Değerlendirme geçmişi</h3><p>Önceki değerlendirmeyi açarak kontrole, değerlendirmeye ve raporlara dönebilirsiniz.</p></div><button className="ghost" type="button" onClick={()=>void loadHistory()}><RefreshCw/> Yenile</button></div>
    <BulkUploadDelete rows={history} onChanged={(m)=>{reset();setNotice(m);void loadHistory()}}/>
