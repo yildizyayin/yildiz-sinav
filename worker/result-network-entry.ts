@@ -15,7 +15,7 @@ import { prepareResultArtifacts, readResultArtifact, inspectResultArtifactReadin
 import { reopenNetworkResults } from './lib/result-network-correction';
 import { retireResultArtifactVersions } from './lib/result-artifact-retention';
 import {resultRetentionQueueDiagnostics} from './lib/result-retention-queue';
-import { reportSnapshotStatements } from './lib/report-snapshot';
+import { nextSnapshotVersion, reportSnapshotStatements } from './lib/report-snapshot';
 import { pausedSql,pauseMessage,queueDeferredEvaluation,trTime,uploadPause,validateResultSchedule } from './lib/result-schedule';
 
 const COOKIE='anunex_result_session';
@@ -272,7 +272,7 @@ async function publishInLock(env:Env,id:string,actorId:string|null,live:boolean,
  if(missing)return badRequest('Erişim kaydı bulunan bazı öğrencilerin sınava ait değerlendirilmiş sonucu veya kurum kaydı eksik. Eksik kayıtları tamamlayın.','RESULT_COHORT_INCOMPLETE');
  const totals=await one<any>(env.DB.prepare(`SELECT COUNT(*) participant_count,COUNT(DISTINCT ep.institution_id) institution_count FROM result_access_identities rai JOIN exam_results er ON er.participant_id=rai.participant_id JOIN exam_participants ep ON ep.id=er.participant_id WHERE rai.administration_id=? AND ep.exam_id=?`).bind(id,row.exam_id));
  if(!Number(totals?.participant_count||0))return badRequest('Yayımlanacak değerlendirilmiş öğrenci sonucu bulunmuyor.','NO_RESULTS');
- const version=Number((await one<any>(env.DB.prepare(`SELECT MAX(version) version FROM (SELECT snapshot_version version FROM exam_result_snapshots WHERE exam_id=? UNION ALL SELECT retired_through_version FROM result_artifact_retirements WHERE exam_id=?)`).bind(row.exam_id,row.exam_id)))?.version||0)+1;
+ const version=await nextSnapshotVersion(env,row.exam_id);
  const academicEnd=Number(String(row.academic_year).slice(0,4))+1,sept30=new Date(`${academicEnd}-09-30T23:59:59.000Z`),ninetyDays=new Date(Date.now()+90*86400000),due=(ninetyDays>sept30?ninetyDays:sept30).toISOString();
  const snapshotStatements=await reportSnapshotStatements(env,row.exam_id,version);
  await env.DB.batch([
