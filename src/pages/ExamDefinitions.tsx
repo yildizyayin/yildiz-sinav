@@ -107,6 +107,8 @@ export function ExamDefinitions() {
   const [booklets, setBooklets] = useState('A');
   const [subjects, setSubjects] = useState<SubjectConfig[]>([]);
   const [keyEntries, setKeyEntries] = useState<ParsedAnswerEntry[]>([]);
+  // Owner (5 Nov, Fenomen 8): a key read from the file but not saved at creation is kept for that exam until it is saved
+  const unsavedKeyRef = useRef<{ examId: string; entries: ParsedAnswerEntry[] } | null>(null);
   const [outcomeMappings, setOutcomeMappings] = useState<OutcomeMap[]>([]);
   const [assignedInstitutions, setAssignedInstitutions] = useState<string[]>([]);
   const [outcomeRequired, setOutcomeRequired] = useState(false);
@@ -181,7 +183,10 @@ export function ExamDefinitions() {
       acc[key] = current;
       return acc;
     }, {}))) entries.push(group as ParsedAnswerEntry);
-    setKeyEntries(entries);
+    const unsaved = unsavedKeyRef.current;
+    const serverHasKey = (data.answerKey || []).some((x: any) => x.correct_answer);
+    if (unsaved && unsaved.examId === id && !serverHasKey) setKeyEntries(unsaved.entries);
+    else { if (unsaved && unsaved.examId === id) unsavedKeyRef.current = null; setKeyEntries(entries); }
     const maps: OutcomeMap[] = [];
     for (const r of data.answerKey || []) for (const outcomeId of String(r.outcome_ids || '').split(',').filter(Boolean)) maps.push({ subjectId: r.subject_id, questionNo: Number(r.question_no), outcomeId });
     setOutcomeMappings(maps);
@@ -383,7 +388,12 @@ export function ExamDefinitions() {
         await api(`/api/exam-definitions/${created.id}/structure`, { method: 'PUT', body: JSON.stringify({ booklets: booklets.split(',').map((x) => x.trim()).filter(Boolean), subjects }) });
       }
       if (keyEntries.length) {
-        await api(`/api/exam-definitions/${created.id}/answer-key`, { method: 'PUT', body: JSON.stringify({ entries: keyEntries, outcomeMode: requiresOfficialOutcomes ? 'OFFICIAL_REQUIRED' : 'OPTIONAL' }) });
+        try {
+          await api(`/api/exam-definitions/${created.id}/answer-key`, { method: 'PUT', body: JSON.stringify({ entries: keyEntries, outcomeMode: requiresOfficialOutcomes ? 'OFFICIAL_REQUIRED' : 'OPTIONAL' }) });
+        } catch (e: any) {
+          unsavedKeyRef.current = { examId: created.id, entries: keyEntries };
+          throw new Error(`Cevap anahtarı kaydedilemedi: ${e.message} Dosyadan okunan cevaplar Cevap anahtarı bölümünde duruyor; gerekirse yapıyı düzeltip “Cevap anahtarını kaydet” düğmesine basın`);
+        }
         if (answerKeyFile) { await uploadArchiveForExam(created.id, 'QUALIFIED_ANSWER_KEY', answerKeyFile, { documentKind: 'OUTCOME_TABLE', title: answerKeyFile.name, source: 'ANSWER_KEY_PARSER' }); }
       }
       const documentFailures: string[] = [];
@@ -407,7 +417,7 @@ export function ExamDefinitions() {
       setNotice(documentFailures.length ? `Sınav oluşturuldu; bazı belgeler daha sonra tekrar yüklenmeli: ${documentFailures.join(' · ')}` : definitionMode === 'OUTCOME' ? 'Sınav oluşturuldu. Şimdi soru-kazanım eşleştirmelerini tamamlayın.' : 'Sınav taslak olarak kaydedildi. Eksikleri kontrol edip Sınavı aktifleştir düğmesini kullanın.');
       await loadRows();
     } catch (e: any) {
-      if (savedId) { openExamDefinition(savedId); await loadRows().catch(() => undefined); setError(`Sınav taslağı kaydedildi; sonraki adım tamamlanamadı: ${e.message}. Bu kaydı düzenleyerek devam edin.`); }
+      if (savedId) { openExamDefinition(savedId); await loadRows().catch(() => undefined); setError(`Sınav taslağı kaydedildi; sonraki adım tamamlanamadı. ${e.message}. Bu kaydı düzenleyerek devam edin.`); }
       else setError(e.message);
     } finally { setBusy(false); setSaveReviewOpen(false); }
   };
@@ -421,8 +431,17 @@ export function ExamDefinitions() {
     if (!selectedId) return;
     setBusy(true); setError('');
     try {
-      await api(`/api/exam-definitions/${selectedId}/structure`, { method: 'PUT', body: JSON.stringify({ booklets: booklets.split(',').map((x) => x.trim()).filter(Boolean), subjects }) });
-      setNotice('Dersler, soru sayıları ve kitapçıklar kaydedildi.'); await loadDetail(selectedId); await loadRows();
+      const body = JSON.stringify({ booklets: booklets.split(',').map((x) => x.trim()).filter(Boolean), subjects });
+      // Owner (5 Nov): answers that no longer fit are shown before they are dropped; everything else is kept
+      const preview = await api<any>(`/api/exam-definitions/${selectedId}/structure?preview=1`, { method: 'PUT', body });
+      const lost = preview?.droppedAnswers || {};
+      const lostTotal = Number(lost.removedQuestions || 0) + Number(lost.removedBooklets || 0) + Number(lost.optionE || 0);
+      if (lostTotal > 0) {
+        const parts = [lost.removedQuestions ? `${lost.removedQuestions} cevap kaldırılan sorularda` : '', lost.removedBooklets ? `${lost.removedBooklets} cevap kaldırılan kitapçıklarda` : '', lost.optionE ? `${lost.optionE} cevap "E" şıkkı (test 4 şıklı oluyor)` : ''].filter(Boolean).join(', ');
+        if (!window.confirm(`Bu değişiklikle cevap anahtarından ${lostTotal} cevap silinecek: ${parts}. Diğer ${Number(preview.keptAnswers || 0)} cevap ve kazanım eşleştirmeleri korunur. Devam edilsin mi?`)) return;
+      }
+      const saved = await api<any>(`/api/exam-definitions/${selectedId}/structure`, { method: 'PUT', body });
+      setNotice(Number(saved?.keptAnswers || 0) > 0 ? `Dersler, soru sayıları ve kitapçıklar kaydedildi. Cevap anahtarındaki ${saved.keptAnswers} cevap korundu.` : 'Dersler, soru sayıları ve kitapçıklar kaydedildi.'); await loadDetail(selectedId); await loadRows();
     } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
 
@@ -454,6 +473,7 @@ export function ExamDefinitions() {
     setBusy(true); setError('');
     try {
       await api(`/api/exam-definitions/${selectedId}/answer-key`, { method: 'PUT', body: JSON.stringify({ entries: keyEntries }) });
+      if (unsavedKeyRef.current?.examId === selectedId) unsavedKeyRef.current = null;
       setNotice('Cevap anahtarı kaydedildi.'); await loadDetail(selectedId); await loadRows();
     } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
