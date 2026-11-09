@@ -7,7 +7,7 @@ import './unified-outcome-report.css';
  * worksheets — with the institution's question target and the "learned" rule (last 30 days, 8 different questions,
  * 80%). Plain words for students and parents; the source breakdown for staff.
  */
-const SOURCE: Record<string, string> = { EXAM: 'Sınav', QUESTION_BANK: 'Soru çözme', MINI_TEST: 'Mini test', FOY: 'Föy' };
+const SOURCE: Record<string, string> = { EXAM: 'Sınav', QUESTION_BANK: 'Soru çözme', MINI_TEST: 'Mini test', FOY: 'Föy', WRITTEN: 'Yazılı' };
 const pct = (v: number | null | undefined) => (v == null ? '—' : `%${Math.round(v * 100)}`);
 
 export function UnifiedOutcomeReport({ studentId, role, institutionId }: { studentId: string; role: string; institutionId?: string }) {
@@ -37,7 +37,7 @@ export function UnifiedOutcomeReport({ studentId, role, institutionId }: { stude
   return <section className="panel unified-outcomes" aria-labelledby="unified-outcomes-title">
     <div className="panel-head unified-head">
       <div><h2 id="unified-outcomes-title">Kazanım karnesi</h2>
-        <p>{learner ? 'Her konuda kaç farklı soru çözdüğün ve son bir ayda ne kadarını doğru yaptığın.' : 'Sınav, soru çözme, mini test ve föyden gelen tüm cevaplar kazanım bazında tek kayıtta.'}</p></div>
+        <p>{learner ? 'Her konuda kaç farklı soru çözdüğün ve son bir ayda ne kadarını doğru yaptığın.' : 'Sınav, yazılı, soru çözme, mini test ve föyden gelen tüm cevaplar kazanım bazında tek kayıtta. Yazılıda maddenin puanının en az %70\'i alındıysa doğru sayılır.'}</p></div>
       {data && <div className="unified-summary"><strong>{learned}</strong><span>/ {all.length} kazanım öğrenildi</span></div>}
     </div>
     {error && <div className="alert error" role="alert">{error}</div>}
