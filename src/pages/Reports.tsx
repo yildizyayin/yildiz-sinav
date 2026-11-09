@@ -108,14 +108,14 @@ export function Reports(){
    {canChooseInstitution&&<p className="alert info approved-report-context" role="note">Personel önizlemesi. Bu ekranda rapor hazırlamak öğrenciye sonuç yayını yapmaz.</p>}
    <div className="approved-report-layout">
    <aside className="approved-report-selection">
-   <div className="panel report-controls">
+   {user?.role!=='STUDENT'&&<div className="panel report-controls">
     <div className="form-grid">
      {canChooseInstitution&&<label>Kurum<select value={institutionId} onChange={e=>{setReport(null);setSelectedExams([]);setStudentId('');setInstitutionId(e.target.value)}}><option value="">Kurum seçin</option>{institutions.map(i=><option key={i.id} value={i.id}>{i.name}</option>)}</select></label>}
      {user?.role!=='STUDENT'&&<label>{user?.role==='PARENT'?'Çocuk':'Öğrenci'}<select value={studentId} onChange={e=>selectStudent(e.target.value)}><option value="">{user?.role==='PARENT'?'Çocuk seçin':'Öğrenci seçin'}</option>{students.map(s=><option key={s.id} value={s.id}>{s.first_name} {s.last_name}{s.class_name?` · ${s.class_name}`:''}</option>)}</select></label>}
     </div>
     {!students.length&&<div className="empty">Bu kapsamda raporlanabilir aktif öğrenci bulunmuyor.</div>}
     {user?.role==='PARENT'&&students.length>1&&!studentId&&<div className="alert info">Birden fazla bağlı öğrenci var. Gelişimini görmek istediğiniz çocuğu seçin.</div>}
-   </div>
+   </div>}
 
     {report&&<>
     <div className="panel approved-report-exams" style={{marginBottom:20}}>{(report.availableYears||[]).length>1&&<label>Dönem<select value={report.selectedAcademicYear||''} onChange={e=>{setAcademicYear(e.target.value);setSelectedExams([]);void loadReport([],e.target.value)}}><option value="">Tüm dönemler</option>{report.availableYears.map((y:string)=><option key={y} value={y}>{y}</option>)}</select></label>}<div className="panel-head"><div><h2>Raporlanacak sınavlar</h2><p>En fazla 20 sınav seçebilirsiniz. Seçimi değiştirince sınav özetini güncelleyin; diğer çalışma kaynakları kendi bölümlerinden seçilir.</p></div><button className="secondary" onClick={()=>void loadReport()} disabled={!selectedExams.length||busy}><BarChart3 size={16}/> {busy?'Hazırlanıyor…':'Raporu Güncelle'}</button></div><div className="cards-list">{(report.availableExams||[]).map((e:any)=><label className="list-card" key={e.exam_id} style={{alignItems:'center',cursor:'pointer'}}><input type="checkbox" checked={selectedExams.includes(e.exam_id)} disabled={!selectedExams.includes(e.exam_id)&&selectedExams.length>=20} onChange={()=>toggleExam(e.exam_id)}/><div><strong>{e.title}</strong><span>{e.exam_date||'Tarih yok'} · {e.exam_type}</span></div></label>)}</div></div>
