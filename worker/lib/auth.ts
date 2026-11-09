@@ -55,7 +55,22 @@ export function isServiceAccountId(userId: string | null | undefined): boolean {
   return typeof userId === 'string' && userId.startsWith(SERVICE_ACCOUNT_ID_PREFIX);
 }
 
-export async function getAuthUser(env: Env, request: Request): Promise<AuthUser | null> {
+// One request passes through several entry layers, and each used to look the session up again: every lookup is a
+// database round trip. For reads (GET/HEAD) the answer is kept for the life of that one Request object and its
+// cookie, never longer. Writes always look again: a write may itself end the session (logout, password change).
+const authByRequest = new WeakMap<Request, { cookie: string; user: Promise<AuthUser | null> }>();
+export function getAuthUser(env: Env, request: Request): Promise<AuthUser | null> {
+  if (request.method !== 'GET' && request.method !== 'HEAD') return lookupAuthUser(env, request);
+  const cookie = request.headers.get('Cookie') || '';
+  const hit = authByRequest.get(request);
+  if (hit && hit.cookie === cookie) return hit.user;
+  const user = lookupAuthUser(env, request);
+  authByRequest.set(request, { cookie, user });
+  user.catch(() => authByRequest.delete(request));
+  return user;
+}
+
+async function lookupAuthUser(env: Env, request: Request): Promise<AuthUser | null> {
   const rawToken = getCookie(request, SESSION_COOKIE);
   if (!rawToken) return null;
   const tokenHash = await sha256Hex(rawToken);
@@ -108,6 +123,7 @@ export async function revokeOtherSessions(env: Env, request: Request, userId: st
 }
 
 export async function revokeSession(env: Env, request: Request): Promise<Response> {
+  authByRequest.delete(request);
   const raw = getCookie(request, SESSION_COOKIE);
   if (raw) {
     const hash = await sha256Hex(raw);
