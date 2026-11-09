@@ -824,7 +824,7 @@ export function ExamDefinitions() {
       {detail.exam.status === 'DRAFT' && canEditDetail && <ExamStartDate examId={selectedId} onSaved={() => { void loadDetail(selectedId); void loadRows(); }}/>}
       {detail.exam.status === 'DRAFT' && <ExamReadiness readiness={detail.readiness}/>}
       {detail.exam.status !== 'DRAFT' && user?.role === 'SUPER_ADMIN' && <ExamCorrectionToggle examId={selectedId} onChanged={() => void loadDetail(selectedId)}/>}
-      {detail.exam.status !== 'DRAFT' && !detail.editable && canEditDetail && <ExamScoringCorrection examId={selectedId} onSaved={() => void loadDetail(selectedId)}/>}
+      {detail.exam.status !== 'DRAFT' && !detail.editable && canEditDetail && <ExamScoringCorrection key={`${selectedId}:${detail.correctionOpen ? 'open' : 'closed'}`} examId={selectedId} onSaved={() => void loadDetail(selectedId)}/>}
       {(detail.exam.status === 'DRAFT' || detail.editable) && canEditDetail && <section className="panel" style={{marginBottom:20}}><h2>Sınav kartı ve puanlama</h2>{detail.exam.status !== 'DRAFT' && <p className="muted">Sınav aktif; henüz değerlendirilmiş öğrencisi olmadığı için her şeyi değiştirebilirsiniz. İlk sonuçlar oluşunca kilitlenir.</p>}<div className="form-grid">
         <label>Sınav adı<input value={createForm.title} onChange={e=>setCreateForm(f=>({...f,title:e.target.value}))}/></label>
         <label>Yayınevi<input value={createForm.publisherName} onChange={e=>setCreateForm(f=>({...f,publisherName:e.target.value}))}/></label>
