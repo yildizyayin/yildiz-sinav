@@ -33,4 +33,10 @@
 .unified-period-stats>div{padding:12px 14px;border-radius:12px;border:1px solid var(--border,#dde4e5);display:flex;flex-direction:column}
 .unified-period-stats strong{font-size:22px}.unified-period-stats span{font-size:12px;color:var(--muted,#59666c)}
 .unified-chip.none{background:var(--border,#e5e9e7);color:var(--muted,#59666c)}
-@media print{.unified-target,.unified-filter{display:none}}
+.unified-interventions{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.unified-intervention{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;font-size:13px;padding:6px 10px;border-radius:10px;background:var(--workspace-soft,#eef5f7)}
+.unified-intervention span{color:var(--muted,#59666c);font-size:12px}.unified-intervention em{font-style:normal;flex-basis:100%}
+.unified-intervention-form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;width:100%}
+.unified-intervention-form label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;flex:1 1 200px}
+.unified-intervention-actions{display:flex;gap:8px}
+@media print{.unified-target,.unified-filter,.unified-interventions button,.unified-intervention-form{display:none}}
