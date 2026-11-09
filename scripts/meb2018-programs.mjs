@@ -3,11 +3,11 @@
 // outcome with its official code. Nothing is guessed: an outcome is a line that starts with its code at the left
 // margin, continued by the following unindented lines; English outcomes are read from their table column.
 const CODE={
- TUR:g=>new RegExp(`^T\\.${g}\\.\\d+\\.\\d+\\.(?=[\\s\\p{L}])`,'u'),
- MAT:g=>new RegExp(`^M\\.${g}\\.\\d+\\.\\d+\\.\\d+\\.(?=[\\s\\p{L}])`,'u'),
- FEN:g=>new RegExp(`^F\\.${g}\\.\\d+\\.\\d+\\.\\d+\\.(?=[\\s\\p{L}])`,'u'),
- INK:g=>new RegExp(`^İTA\\.${g}\\.\\d+\\.\\d+\\.(?=[\\s\\p{L}])`,'u'),
- DIN:g=>new RegExp(`^${g}\\.\\d+\\.\\d+\\.(?=[\\s\\p{L}])`,'u'),
+ TUR:g=>new RegExp(`^T\\.${g}\\.\\d+\\.\\d+(?:\\.(?=[\\s\\p{L}])|(?=\\s))`,'u'),
+ MAT:g=>new RegExp(`^M\\.${g}\\.\\d+\\.\\d+\\.\\d+(?:\\.(?=[\\s\\p{L}])|(?=\\s))`,'u'),
+ FEN:g=>new RegExp(`^F\\.${g}\\.\\d+\\.\\d+\\.\\d+(?:\\.(?=[\\s\\p{L}])|(?=\\s))`,'u'),
+ INK:g=>new RegExp(`^İTA\\.${g}\\.\\d+\\.\\d+(?:\\.(?=[\\s\\p{L}])|(?=\\s))`,'u'),
+ DIN:g=>new RegExp(`^${g}\\.\\d+\\.\\d+(?:\\.(?=[\\s\\p{L}])|(?=\\s))`,'u'),
 };
 const UNIT={
  TUR:g=>new RegExp(`^T\\.${g}\\.(\\d+)\\.\\s+(.+)$`),
