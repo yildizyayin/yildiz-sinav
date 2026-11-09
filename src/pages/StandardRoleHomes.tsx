@@ -3,10 +3,16 @@ import { BarChart3,Bell,BookOpenCheck,Building2,CalendarDays,ClipboardCheck,Grad
 import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../auth';
+import { useFeatures } from '../lib/useFeatures';
 
 function useDashboard(){const[data,setData]=useState<any>(null);const[error,setError]=useState('');useEffect(()=>{void api<any>('/api/dashboard').then(setData).catch(e=>setError(e.message))},[]);return{data,error}}
 function Kpis({cards}:{cards:any[]}){return <div className="kpi-grid">{(cards||[]).map((c:any)=><div className="kpi-card" key={c.label}><span>{c.label}</span><strong>{c.value}</strong></div>)}</div>}
-function Action({to,icon,title,text}:{to:string;icon:ReactNode;title:string;text:string}){return <Link to={to} className="exam-card module-card"><div className="quick-icon">{icon}</div><div><h3>{title}</h3><p>{text}</p><span className="link-button">Aç →</span></div></Link>}
+// Tiles for features an institution has not switched on are left out (owner, 9 Nov: "kapalıysa menüde gizle").
+const TILE_FEATURE:Record<string,string>={'/assignments':'ASSIGNMENTS','/guidance-tests':'GUIDANCE_TESTS','/live-lessons':'LIVE','/quick-tests':'STUDIO'};
+type ActionProps={to:string;icon:ReactNode;title:string;text:string};
+function GatedAction(props:ActionProps&{gate:string}){const features=useFeatures();return features.has(props.gate)?<PlainAction {...props}/>:null}
+function Action(props:ActionProps){const gate=TILE_FEATURE[props.to];return gate?<GatedAction {...props} gate={gate}/>:<PlainAction {...props}/>}
+function PlainAction({to,icon,title,text}:ActionProps){return <Link to={to} className="exam-card module-card"><div className="quick-icon">{icon}</div><div><h3>{title}</h3><p>{text}</p><span className="link-button">Aç →</span></div></Link>}
 function Welcome({eyebrow,title,text,icon}:{eyebrow:string;title:string;text:string;icon:ReactNode}){return <section className="role-welcome"><div><span className="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{text}</p></div><div className="role-welcome-icon">{icon}</div></section>}
 function SectionTitle({eyebrow,title,text}:{eyebrow:string;title:string;text:string}){return <div className="role-section-title"><div><span className="eyebrow">{eyebrow}</span><h2>{title}</h2><p>{text}</p></div></div>}
 
