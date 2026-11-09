@@ -121,3 +121,12 @@
 }
 /* Weak phones and people who ask for less motion: drop the blur, keep the colours. */
 @media (prefers-reduced-motion:reduce),(prefers-reduced-transparency:reduce){.sg-home{--sg-blur:none}.sg-card,.sg-pill,.sg-icon-button,.sg-quick a{background:var(--sg-tile)}}
+/* Parent home extras */
+.sg-child-switch{display:flex;gap:6px;padding:4px;border-radius:16px;background:var(--sg-card);border:1px solid var(--sg-card-border)}
+.sg-child-switch button{min-height:40px;padding:0 14px;border:0;border-radius:12px;background:transparent;color:var(--sg-ink);font-weight:600;cursor:pointer}
+.sg-child-switch button.active{background:var(--sg-accent);color:#fff}
+.sg-att{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:8px}
+.sg-att>div{border-radius:14px;background:var(--sg-tile);padding:10px 12px;display:flex;flex-direction:column}
+.sg-att strong{font-size:22px}.sg-att span{font-size:12px;color:var(--sg-muted)}
+.sg-att .warn strong{color:var(--sg-down)}
+.sg-up-text{color:var(--sg-up);font-weight:600}.sg-down-text{color:var(--sg-down);font-weight:600}
