@@ -10,6 +10,8 @@ import { activePanelTheme, readPanelTheme } from '../lib/panelTheme';
 import { LicenseBoundary } from './LicenseBoundary';
 import { NibiruMark,NibiruNavIcon } from './NibiruMark';
 import { AnunexBrand } from './AnunexBrand';
+import { StudentDock } from './StudentDock';
+import '../student-panel-design.css';
 
 type NavItem={to:string;label:string;icon:any;feature?:string;children?:NavItem[]};
 type NavGroup={label:string;items:NavItem[]};
@@ -241,6 +243,7 @@ export function Layout() {
       {panelExperience?.specialDay&&<div className="special-day-banner" style={{background:`linear-gradient(90deg,${panelExperience.specialDay.accent_color},${panelExperience.specialDay.accent_color}dd)`}}><Sparkles size={20}/><div><strong>{panelExperience.specialDay.title}</strong><span>{panelExperience.specialDay.short_message}</span></div></div>}
       <div className="page-wrap"><PrivacyNoticeGate/>{logoutError&&<div className="alert error" role="alert">{logoutError}</div>}<LicenseBoundary><PageLoader routeKey={location.pathname+location.search}><Outlet/></PageLoader></LicenseBoundary></div>
     </main>
+    {user.role==='STUDENT'&&<StudentDock items={visibleNav} onMenu={()=>setMobileNavOpen(true)}/>}
   </div>;
 }
 
