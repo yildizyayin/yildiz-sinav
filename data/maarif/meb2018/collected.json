@@ -1,0 +1,107 @@
+{
+ "collectedAt": "2026-11-09T07:28:24.499Z",
+ "source": "https://mufredat.meb.gov.tr",
+ "programs": [
+  {
+   "key": "tur-2019",
+   "pid": 663,
+   "subject": "TUR",
+   "grades": [
+    4,
+    8
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=663",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/20195716392253-02-T%C3%BCrk%C3%A7e%20%C3%96%C4%9Fretim%20Program%C4%B1%202019.pdf",
+   "sha256": "10e55d403a708d35abc192710977a47df933210a0c54a15e86ea7b9d09401633",
+   "bytes": 568816,
+   "textFile": "data/maarif/meb2018/tur-2019.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "mat-temel-2018",
+   "pid": 329,
+   "subject": "MAT",
+   "grades": [
+    4,
+    8
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=329",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/201813017165445-MATEMAT%C4%B0K%20%C3%96%C4%9ERET%C4%B0M%20PROGRAMI%202018v.pdf",
+   "sha256": "ca94096da33478c822772425b1384bacdbe40548b0813302257fec7e8c9f9c8b",
+   "bytes": 595703,
+   "textFile": "data/maarif/meb2018/mat-temel-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "fen-2018",
+   "pid": 325,
+   "subject": "FEN",
+   "grades": [
+    4,
+    8
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=325",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812312311937-FEN%20B%C4%B0L%C4%B0MLER%C4%B0%20%C3%96%C4%9ERET%C4%B0M%20PROGRAMI2018.pdf",
+   "sha256": "3a8aa21327083bf15c33b9c404f299ff784b11d26024522a8c24b61387c8c0c1",
+   "bytes": 473150,
+   "textFile": "data/maarif/meb2018/fen-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "ink-temel-2018",
+   "pid": 355,
+   "subject": "INK",
+   "grades": [
+    8
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=355",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812104016155-%C4%B0NKILAP%20TAR%C4%B0H%C4%B0%20VE%20ATAT%C3%9CRK%C3%87%C3%9CL%C3%9CK%20%C3%96%C4%9ERET%C4%B0M%20PROGRAMI.pdf",
+   "sha256": "38a24b11191f7ebca2fc85831d787e7187eca70e82f0bd36e7de5c81524357d5",
+   "bytes": 329496,
+   "textFile": "data/maarif/meb2018/ink-temel-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "din-4-8-2018",
+   "pid": 318,
+   "subject": "DIN",
+   "grades": [
+    4,
+    8
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=318",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/20221229134650712-DKAB_(4-8.%20S%C4%B1n%C4%B1f)_DOP_%202018.pdf",
+   "sha256": "baace330fd3b7c5b5dde6061bbd0af3b885382d6eb5e7049095a30db8c075608",
+   "bytes": 1548815,
+   "textFile": "data/maarif/meb2018/din-4-8-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "ing-2-8-2018",
+   "pid": 327,
+   "subject": "ING",
+   "grades": [
+    4,
+    8
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=327",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812411191321-%C4%B0NG%C4%B0L%C4%B0ZCE%20%C3%96%C4%9ERET%C4%B0M%20PROGRAMI%20Klas%C3%B6r%C3%BC.pdf",
+   "sha256": "e976ae163c83bb1b3bcf79d7d77ce8cb8308dbdc97a630b941951b9b57653279",
+   "bytes": 1350275,
+   "textFile": "data/maarif/meb2018/ing-2-8-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  }
+ ]
+}
