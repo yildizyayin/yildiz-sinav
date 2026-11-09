@@ -1,5 +1,5 @@
 {
- "collectedAt": "2026-11-09T07:28:24.499Z",
+ "collectedAt": "2026-11-09T11:47:48.724Z",
  "source": "https://mufredat.meb.gov.tr",
  "programs": [
   {
@@ -102,6 +102,2679 @@
    "textFile": "data/maarif/meb2018/ing-2-8-2018.txt",
    "error": null,
    "otherPdfs": []
+  },
+  {
+   "key": "sos-2018",
+   "pid": 354,
+   "subject": "SOS",
+   "grades": [
+    4
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=354",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812103847686-SOSYAL%20B%C4%B0LG%C4%B0LER%20%C3%96%C4%9ERET%C4%B0M%20PROGRAMI%20.pdf",
+   "sha256": "b7525cf93fce45c0f97f047f93e6f5496d071071f4510544a2815467304381f1",
+   "bytes": 327477,
+   "textFile": "data/maarif/meb2018/sos-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  }
+ ],
+ "index": [
+  {
+   "pid": 1945,
+   "text": "TÜRKİYE YÜZYILI MAARİF MODELİ ÖĞRETİM PROGRAMLARI ORTAK METNİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2330,
+   "text": "[TYMM] AFET BİLİNCİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2355,
+   "text": "[TYMM] AHLAK VE VATANDAŞLIK EĞİTİMİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1944,
+   "text": "[TYMM] BEDEN EĞİTİMİ VE OYUN DERSİ (1-4) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1946,
+   "text": "[TYMM] BEDEN EĞİTİMİ VE SPOR (5-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2024,
+   "text": "[TYMM] BİLİŞİM TEKNOLOJİLERİ VE YAZILIM DERSİ (5-6) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2331,
+   "text": "[TYMM] ÇEVRE EĞİTİMİ VE İKLİM DEĞİŞİKLİĞİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2023,
+   "text": "[TYMM] ÇOKLU YABANCI DİL EĞİTİM MODELİ ALMANCA DERSİ (5-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1904,
+   "text": "[TYMM] ÇOKLU YABANCI DİL EĞİTİM MODELİ İNGİLİZCE DERSİ (5-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2332,
+   "text": "[TYMM] DİJİTAL SANATLAR DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2150,
+   "text": "[TYMM] DİN KÜLTÜRÜ VE AHLAK BİLGİSİ DERSİ (4-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2333,
+   "text": "[TYMM] DÜŞÜNME EĞİTİMİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2334,
+   "text": "[TYMM] FEN BİLİMLERİ DERSİ (3-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2335,
+   "text": "[TYMM] GELENEKSEL SANATLAR DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2336,
+   "text": "[TYMM] GÖRGÜ KURALLARI VE NEZAKET DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2043,
+   "text": "[TYMM] GÖRSEL SANATLAR DERSİ ÖĞRETİM PROGRAMI (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2337,
+   "text": "[TYMM] HALK OYUNLARI DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2310,
+   "text": "[TYMM] HAYAT BİLGİSİ DERSİ (1-3) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2338,
+   "text": "[TYMM] HUKUK VE ADALET DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2026,
+   "text": "[TYMM] İLKOKUL ARAPÇA DERSİ (2-4) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2339,
+   "text": "[TYMM] İLKOKUL MATEMATİK DERSİ (1-4) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2351,
+   "text": "[TYMM] İLKOKUL TÜRKÇE DERSİ (1-4) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1903,
+   "text": "[TYMM] İNGİLİZCE DERSİ (2-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1975,
+   "text": "[TYMM] İNSAN HAKLARI, VATANDAŞLIK VE DEMOKRASİ DERSİ (4. Sınıf) (2024)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2152,
+   "text": "[TYMM] KUR'AN-I KERİM DERSİ (5-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2363,
+   "text": "[TYMM] KÜLTÜR VE MEDENİYETİMİZE YÖN VERENLER (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2311,
+   "text": "[TYMM] MASAL VE DESTANLARIMIZ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2341,
+   "text": "[TYMM] MATEMATİK VE BİLİM UYGULAMALARI DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2342,
+   "text": "[TYMM] MEDYA OKURYAZARLIĞI DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1924,
+   "text": "[TYMM] MÜZİK DERSİ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2390,
+   "text": "[TYMM] OKUL ÖNCESİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2343,
+   "text": "[TYMM] OKUL TEMELLİ SOSYAL SORUMLULUK ÇALIŞMALARI DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2344,
+   "text": "[TYMM] OKUMA BECERİLERİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2340,
+   "text": "[TYMM] ORTAOKUL MATEMATİK DERSİ (5-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1979,
+   "text": "[TYMM] ORTAOKUL TÜRKÇE DERSİ (5-8) (2024)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2352,
+   "text": "[TYMM] ORTAOKUL TÜRKÇE DERSİ (5-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2027,
+   "text": "[TYMM] ORTAOKUL VE İMAM HATİP ORTAOKULU ARAPÇA DERSİ (5-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2215,
+   "text": "[TYMM] ORTAOKUL VE İMAM HATİP ORTAOKULU TEMEL DİNÎ BİLGİLER (İslam 1-2) DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2365,
+   "text": "[TYMM] OYUN VE OYUN ETKİNLİKLERİ DERSİ DRAMA MODÜLÜ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2366,
+   "text": "[TYMM] OYUN VE OYUN ETKİNLİKLERİ DERSİ GELENEKSEL OYUNLAR MODÜLÜ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2367,
+   "text": "[TYMM] OYUN VE OYUN ETKİNLİKLERİ DERSİ SATRANÇ MODÜLÜ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2368,
+   "text": "[TYMM] OYUN VE OYUN ETKİNLİKLERİ DERSİ ZEKÂ OYUNLARI MODÜLÜ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2151,
+   "text": "[TYMM] PEYGAMBERİMİZİN HAYATI DERSİ (5-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2345,
+   "text": "[TYMM] PROJE TASARIMI VE UYGULAMALARI DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2346,
+   "text": "[TYMM] ROBOTİK KODLAMA DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2356,
+   "text": "[TYMM] SEÇMELİ MÜZİK DERSİ BAĞLAMA MODÜLÜ (5-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2357,
+   "text": "[TYMM] SEÇMELİ MÜZİK DERSİ GENEL MÜZİK EĞİTİMİ MODÜLÜ (5-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2358,
+   "text": "[TYMM] SEÇMELİ MÜZİK DERSİ GİTAR MODÜLÜ (5-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2359,
+   "text": "[TYMM] SEÇMELİ MÜZİK DERSİ KEMAN MODÜLÜ (5-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2360,
+   "text": "[TYMM] SEÇMELİ MÜZİK DERSİ PİYANO MODÜLÜ (5-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2362,
+   "text": "[TYMM] SEÇMELİ MÜZİK DERSİ TÜRK HALK MÜZİĞİ KORO MODÜLÜ (5-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2361,
+   "text": "[TYMM] SEÇMELİ MÜZİK DERSİ UD MODÜLÜ (5-8) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2347,
+   "text": "[TYMM] SOSYAL BİLGİLER DERSİ (4-7) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2348,
+   "text": "[TYMM] SPOR VE FİZİKİ ETKİNLİKLER DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2364,
+   "text": "[TYMM] ŞEHRİMİZ... DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1974,
+   "text": "[TYMM] T.C. İNKILAP TARİHİ VE ATATÜRKÇÜLÜK DERSİ (8. Sınıf) (2024)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2230,
+   "text": "[TYMM] TEKNOLOJİ VE TASARIM DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2349,
+   "text": "[TYMM] TEMEL YAŞAM BECERİLERİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2005,
+   "text": "[TYMM] TRAFİK GÜVENLİĞİ DERSİ (4. SINIF) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2350,
+   "text": "[TYMM] TÜRK SOSYAL HAYATINDA AİLE DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2353,
+   "text": "[TYMM] YAPAY ZEKÂ UYGULAMALARI DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2370,
+   "text": "[TYMM] YAŞAYAN DİL VE LEHÇELER DERSİ (ABAZACA) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2371,
+   "text": "[TYMM] YAŞAYAN DİL VE LEHÇELER DERSİ (ADİGECE) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2372,
+   "text": "[TYMM] YAŞAYAN DİL VE LEHÇELER DERSİ (ARNAVUTÇA) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2410,
+   "text": "[TYMM] YAŞAYAN DİL VE LEHÇELER DERSİ (BOŞNAKÇA) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2411,
+   "text": "[TYMM] YAŞAYAN DİL VE LEHÇELER DERSİ (GÜRCÜCE) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2373,
+   "text": "[TYMM] YAŞAYAN DİL VE LEHÇELER DERSİ (KURMANCCA) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2374,
+   "text": "[TYMM] YAŞAYAN DİL VE LEHÇELER DERSİ (LAZCA) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2375,
+   "text": "[TYMM] YAŞAYAN DİL VE LEHÇELER DERSİ (ZAZACA) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2354,
+   "text": "[TYMM] YAZARLIK VE YAZMA BECERİLERİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2250,
+   "text": "[TYMM] BİYOLOJİ DERSİ (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2251,
+   "text": "[TYMM] COĞRAFYA DERSİ (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2153,
+   "text": "[TYMM] DİN KÜLTÜRÜ VE AHLAK BİLGİSİ DERSİ (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2253,
+   "text": "[TYMM] FELSEFE DERSİ (10-11) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2254,
+   "text": "[TYMM] FİZİK DERSİ (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2171,
+   "text": "[TYMM] İSLAM BİLİM TARİHİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2255,
+   "text": "[TYMM] KİMYA DERSİ (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2155,
+   "text": "[TYMM] KUR'AN-I KERİM DERSİ (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2256,
+   "text": "[TYMM] MATEMATİK DERSİ (Hazırlık, 9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2290,
+   "text": "[TYMM] ORAÖĞRETİM ASTRONOMİ VE UZAY BİLİMLERİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1955,
+   "text": "[TYMM] ORTAÖĞRETİM BEDEN EĞİTİMİ VE SPOR DERSİ (Hazırlık, 9-12) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2173,
+   "text": "[TYMM] ORTAÖĞRETİM ÇAĞDAŞ TÜRK VE DÜNYA TARİHİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2176,
+   "text": "[TYMM] ORTAÖĞRETİM DEMOKRASİ VE İNSAN HAKLARI DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2003,
+   "text": "[TYMM] ORTAÖĞRETİM GÖRSEL SANATLAR DERSİ (Hazırlık, 9-12) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2178,
+   "text": "[TYMM] ORTAÖĞRETİM İKLİM, ÇEVRE VE YENİLİKÇİ ÇÖZÜMLER DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1906,
+   "text": "[TYMM] ORTAÖĞRETİM İNGİLİZCE DERSİ (9-12) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1905,
+   "text": "[TYMM] ORTAÖĞRETİM İNGİLİZCE DERSİ (Hazırlık, 9-12) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2172,
+   "text": "[TYMM] ORTAÖĞRETİM MANTIK DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2180,
+   "text": "[TYMM] ORTAÖĞRETİM MATEMATİK UYGULAMALARI DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2025,
+   "text": "[TYMM] ORTAÖĞRETİM MÜZİK DERSİ (Hazırlık, 9-12) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2170,
+   "text": "[TYMM] ORTAÖĞRETİM PSİKOLOJİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2217,
+   "text": "[TYMM] ORTAÖĞRETİM SAĞLIK BİLGİSİ VE TRAFİK KÜLTÜRÜ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2182,
+   "text": "[TYMM] ORTAÖĞRETİM SOSYAL BİLİM ÇALIŞMALARI DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2174,
+   "text": "[TYMM] ORTAÖĞRETİM SOSYOLOJİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2214,
+   "text": "[TYMM] ORTAÖĞRETİM TEMEL DİNÎ BİLGİLER (İslam 1-2) DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2181,
+   "text": "[TYMM] ORTAÖĞRETİM TEMEL MATEMATİK DERSİ (11-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2175,
+   "text": "[TYMM] ORTAÖĞRETİM TÜRK KÜLTÜR VE MEDENİYET TARİHİ DERSİ (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2154,
+   "text": "[TYMM] PEYGAMBERİMİZİN HAYATI (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2270,
+   "text": "[TYMM] T.C. İNKILAP TARİHİ VE ATATÜRKÇÜLÜK DERSİ (12. Sınıf) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2271,
+   "text": "[TYMM] TARİH DERSİ (9-11) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2252,
+   "text": "[TYMM] TÜRK DİLİ VE EDEBİYATI DERSİ (Hazırlık, 9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2143,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ AKAİD DERSİ (11. Sınıf) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2028,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ ARAPÇA DERSİ (9-10) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2144,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ DİN EĞİTİMİ DERSİ (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1953,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ DİNÎ MUSİKİ DERSİ (I, II, III) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2210,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ DİNLER TARİHİ DERSİ (12. Sınıf) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1950,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ EBRU DERSİ (I, II, III) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1949,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ FIKIH DERSİ (10. Sınıf) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1948,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ HADİS DERSİ (10. Sınıf) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2211,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ HİTABET VE MESLEKİ UYGULAMA DERSİ (11. Sınıf) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1954,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ HÜSNÜHAT DERSİ (I, II, III) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2146,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ İSLAM FELSEFESİ DERSİ (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2145,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ İSLAM'DA ÇOCUK EĞİTİMİ DERSİ (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2212,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ KELAM DERSİ (12. Sınıf) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2213,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ KUR'AN-I KERİM DERSİ (Hazırlık, 9-12. Sınıflar) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2147,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ KUR'AN'IN ANA KONULARI (I-II) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2148,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ MESLEKİ ARAPÇA DERSİ (11 ve 12. Sınıflar) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1947,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ SİYER DERSİ (10. Sınıf) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2149,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ TASAVVUF KÜLTÜRÜ DERSİ (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2216,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ TEFSİR DERSİ (11. Sınıf) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1982,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ TEMEL DİNÎ BİLGİLER (9. Sınıf) (2024)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2156,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ TEMEL DİNÎ BİLGİLER (9. Sınıf) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1951,
+   "text": "[TYMM] ANADOLU İMAM HATİP LİSESİ TEZHİP DERSİ (I, II, III) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2292,
+   "text": "[TYMM] GSL BAĞLAMA DERSİ (11-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2293,
+   "text": "[TYMM] GSL ÇALGI EĞİTİMİ BAĞLAMA DERSİ (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2185,
+   "text": "[TYMM] GSL ÇALGI EĞİTİMİ KANUN DERSİ (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2183,
+   "text": "[TYMM] GSL ÇALGI EĞİTİMİ PİYANO DERSİ (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2188,
+   "text": "[TYMM] GSL ÇALGI EĞİTİMİ UD DERSİ (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2190,
+   "text": "[TYMM] GSL ÇALGI TOPLULUKLARI (TÜRK MÜZİĞİ) DERSİ (11-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1963,
+   "text": "[TYMM] GSL ENDÜSTRİYEL TASARIM DERSİ (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1966,
+   "text": "[TYMM] GSL GELENEKSEL TÜRK SANATLARI DERSİ (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2186,
+   "text": "[TYMM] GSL KANUN DERSİ (11-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1964,
+   "text": "[TYMM] GSL KORO VE REPERTUVAR DERSİ (10-12) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2184,
+   "text": "[TYMM] GSL PİYANO DERSİ (9-10) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1956,
+   "text": "[TYMM] GSL TÜRK DÜNYASI VE TÜRK İSLAM MUSİKİSİ DERSİ (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1960,
+   "text": "[TYMM] GSL TÜRK MÜZİĞİ KORO VE REPERTUVARI DERSİ (10-12) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2291,
+   "text": "[TYMM] GSL UD DERSİ (11-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2135,
+   "text": "[TYMM] BAĞIMSIZ YAŞAM BECERİLERİ DERSİ (III. Kademe) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2134,
+   "text": "[TYMM] BEDEN EĞİTİMİ, OYUN VE SPOR DERSİ (I, II ve III. Kademeler) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2129,
+   "text": "[TYMM] DİN KÜLTÜRÜ VE AHLAK BİLGİSİ DERSİ (I, II ve III. Kademeler) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2131,
+   "text": "[TYMM] GÖRSEL SANATLAR DERSİ (I, II ve III. Kademeler) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2126,
+   "text": "[TYMM] HAYAT BİLGİSİ VE GÜNLÜK YAŞAM BECERİLERİ DERSİ (I ve II. Kademeler) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2127,
+   "text": "[TYMM] İLETİŞİM BECERİLERİ DERSİ (I ve II. Kademeler) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2124,
+   "text": "[TYMM] MATEMATİK DERSİ (I, II ve III. Kademeler) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2132,
+   "text": "[TYMM] MÜZİK DERSİ (I, II ve III. Kademeler) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2130,
+   "text": "[TYMM] SAĞLIKLI YAŞAM VE GÜVENLİK BECERİLERİ DERSİ (I, II ve III. Kademeler) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2128,
+   "text": "[TYMM] SOSYAL BECERİLER DERSİ (I, II ve III. Kademeler) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1968,
+   "text": "[TYMM] TOPLUMSAL UYUM BECERİLERİ DERSİ (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1967,
+   "text": "[TYMM] TÜRK İŞARET DİLİ DERSİ (1-3) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2125,
+   "text": "[TYMM] TÜRKÇE DERSİ (I, II VE III. Kademeler) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2064,
+   "text": "[TYMM] BEDEN EĞİTİMİ VE SPORUN TEMELLERİ DERSİ (5-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2066,
+   "text": "[TYMM] ÇOCUKLARDA ATLETİK PERFORMANS UYGULAMALARI DERSİ (5-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2067,
+   "text": "[TYMM] KAPSAMLI SPOR EĞİTİMİ DERSİ (5-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2068,
+   "text": "[TYMM] OYUN VE TAKTİKSEL FARKINDALIK DERSİ (5-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2070,
+   "text": "[TYMM] RİTİM EĞİTİMİ VE HALK OYUNLARI DERSİ (5-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2179,
+   "text": "[TYMM] ORTAÖĞRETİM TAKIM SPORLARI DERSİ (9-12) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2192,
+   "text": "[TYMM] SL GENEL JİMNASTİK DERSİ (9. Sınıf) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2193,
+   "text": "[TYMM] SL SPOR VE BESLENME DERSİ (9. Sınıf) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2194,
+   "text": "[TYMM] SL TEMEL SPOR EĞİTİMİ DERSİ (9. Sınıf) (2026)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2083,
+   "text": "[TYMM] BEDEN EĞİTİMİ, OYUN VE MÜZİK DERSİ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2104,
+   "text": "[TYMM] BİREYSEL ÇALGI EĞİTİMİ DERSİ BAĞLAMA MODÜLÜ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2105,
+   "text": "[TYMM] BİREYSEL ÇALGI EĞİTİMİ DERSİ FLÜT MODÜLÜ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2106,
+   "text": "[TYMM] BİREYSEL ÇALGI EĞİTİMİ DERSİ GİTAR MODÜLÜ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2107,
+   "text": "[TYMM] BİREYSEL ÇALGI EĞİTİMİ DERSİ KANUN MODÜLÜ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2108,
+   "text": "[TYMM] BİREYSEL ÇALGI EĞİTİMİ DERSİ KAVAL MODÜLÜ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2109,
+   "text": "[TYMM] BİREYSEL ÇALGI EĞİTİMİ DERSİ KEMAN MODÜLÜ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2110,
+   "text": "[TYMM] BİREYSEL ÇALGI EĞİTİMİ DERSİ NEY MODÜLÜ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2111,
+   "text": "[TYMM] BİREYSEL ÇALGI EĞİTİMİ DERSİ PİYANO MODÜLÜ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2112,
+   "text": "[TYMM] BİREYSEL ÇALGI EĞİTİMİ DERSİ UD MODÜLÜ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2113,
+   "text": "[TYMM] BİREYSEL ÇALGI EĞİTİMİ DERSİ VİYOLA MODÜLÜ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2114,
+   "text": "[TYMM] BİREYSEL ÇALGI EĞİTİMİ DERSİ VİYOLONSEL MODÜLÜ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2084,
+   "text": "[TYMM] BİREYSEL SES EĞİTİMİ DERSİ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2085,
+   "text": "[TYMM] ÇALGI TOPLULUKLARI DERSİ (3-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2086,
+   "text": "[TYMM] KORO VE REPERTUVAR DERSİ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2087,
+   "text": "[TYMM] MÜZİK KÜLTÜRÜ DERSİ (3-4) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2088,
+   "text": "[TYMM] MÜZİK TARİHİ DERSİ (5-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2089,
+   "text": "[TYMM] MÜZİKSEL İŞİTME, OKUMA VE YAZMA DERSİ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 2090,
+   "text": "[TYMM] TÜRK MÜZİĞİ TEORİ VE UYGULAMALARI DERSİ (1-8) (2025)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 738,
+   "text": "GSL (THM) BAĞLAMA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 739,
+   "text": "GSL (THM) BATI MÜZİĞİ VE TEORİ UYGULAMALARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 740,
+   "text": "GSL (THM) ÇALGI TOPLULUKLARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 741,
+   "text": "GSL (THM) KANUN",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 744,
+   "text": "GSL (THM) TÜRK HALK MÜZİĞİ KORO",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 746,
+   "text": "GSL (THM) TÜRK SANAT MÜZİĞİ TEORİ VE UYGULAMASI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 747,
+   "text": "GSL (THM) UT",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 748,
+   "text": "GSL (TSM) BAĞLAMA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 749,
+   "text": "GSL (TSM) BATI MÜZİĞİ TEORİ VE UYGULAMASI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 750,
+   "text": "GSL (TSM) ÇALGI TOPLULUKLARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 751,
+   "text": "GSL (TSM) PİYANO",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 754,
+   "text": "GSL (TSM) TÜRK MÜZİĞİ TARİHİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 752,
+   "text": "GSL (TSM) TÜRK SANAT MÜZİĞİ KORO",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 753,
+   "text": "GSL (TSM) TÜRK SANAT MÜZİĞİ TEORİ VE UYGULAMASI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 702,
+   "text": "GSL BAĞLAMA (2016)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1703,
+   "text": "GSL BAĞLAMA (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 983,
+   "text": "GSL BATI MÜZİĞİ TEORİ VE UYGULAMASI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1704,
+   "text": "GSL BATI MÜZİĞİ TEORİ VE UYGULAMASI (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 704,
+   "text": "GSL BİLİŞİM DESTEKLİ MÜZİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1705,
+   "text": "GSL BİLİŞİM DESTEKLİ MÜZİK (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 705,
+   "text": "GSL BİREYSEL SES EĞİTİMİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1706,
+   "text": "GSL BİREYSEL SES EĞİTİMİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 685,
+   "text": "GSL ÇAĞDAŞ DÜNYA SANATI TARİHİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1707,
+   "text": "GSL ÇALGI BAKIM VE ONARIMI (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 706,
+   "text": "GSL ÇALGI EĞİTİMİ BAĞLAMA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1708,
+   "text": "GSL ÇALGI EĞİTİMİ BAĞLAMA (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1709,
+   "text": "GSL ÇALGI EĞİTİMİ ÇELLO (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 722,
+   "text": "GSL ÇALGI EĞİTİMİ ÇELLO (VİYOLONSEL)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 707,
+   "text": "GSL ÇALGI EĞİTİMİ FLÜT",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1710,
+   "text": "GSL ÇALGI EĞİTİMİ FLÜT (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 985,
+   "text": "GSL ÇALGI EĞİTİMİ GİTAR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1711,
+   "text": "GSL ÇALGI EĞİTİMİ GİTAR (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 709,
+   "text": "GSL ÇALGI EĞİTİMİ KANUN",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1712,
+   "text": "GSL ÇALGI EĞİTİMİ KANUN (2022, 2023 DEĞİŞİKLİK)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 986,
+   "text": "GSL ÇALGI EĞİTİMİ KAVAL",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1713,
+   "text": "GSL ÇALGI EĞİTİMİ KAVAL (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 711,
+   "text": "GSL ÇALGI EĞİTİMİ KEMAN",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1714,
+   "text": "GSL ÇALGI EĞİTİMİ KEMAN (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 987,
+   "text": "GSL ÇALGI EĞİTİMİ KEMANE",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1715,
+   "text": "GSL ÇALGI EĞİTİMİ KEMANE (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 713,
+   "text": "GSL ÇALGI EĞİTİMİ KLARNET",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1716,
+   "text": "GSL ÇALGI EĞİTİMİ KLARNET (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 714,
+   "text": "GSL ÇALGI EĞİTİMİ KLASİK KEMENÇE",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1717,
+   "text": "GSL ÇALGI EĞİTİMİ KLASİK KEMENÇE (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 723,
+   "text": "GSL ÇALGI EĞİTİMİ KONTRABAS",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1718,
+   "text": "GSL ÇALGI EĞİTİMİ KONTRBAS (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 988,
+   "text": "GSL ÇALGI EĞİTİMİ NEY",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1719,
+   "text": "GSL ÇALGI EĞİTİMİ NEY (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1720,
+   "text": "GSL ÇALGI EĞİTİMİ RİTİM (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 716,
+   "text": "GSL ÇALGI EĞİTİMİ TAMBUR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1721,
+   "text": "GSL ÇALGI EĞİTİMİ TAMBUR (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 717,
+   "text": "GSL ÇALGI EĞİTİMİ TAR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1722,
+   "text": "GSL ÇALGI EĞİTİMİ TAR (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 718,
+   "text": "GSL ÇALGI EĞİTİMİ UT",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1723,
+   "text": "GSL ÇALGI EĞİTİMİ UT (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 719,
+   "text": "GSL ÇALGI EĞİTİMİ VİYOLA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1724,
+   "text": "GSL ÇALGI EĞİTİMİ VİYOLA (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 720,
+   "text": "GSL ÇALGI EĞİTİMİ VURMALI ÇALGILAR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 984,
+   "text": "GSL ÇALGI EĞİTİMİ YAYLI SAZLAR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 725,
+   "text": "GSL ÇALGI TOPLULUKLARI (BATI MÜZİĞİ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 726,
+   "text": "GSL ÇALGI TOPLULUKLARI (THM)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 724,
+   "text": "GSL ÇALGI TOPLULUKLARI (TSM)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1725,
+   "text": "GSL ÇALGI TOPLULUKLARI BATI MÜZİĞİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1726,
+   "text": "GSL ÇALGI TOPLULUKLARI TÜRK HALK MÜZİĞİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1727,
+   "text": "GSL ÇALGI TOPLULUKLARI TÜRK SANAT MÜZİĞİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 727,
+   "text": "GSL ÇOK SESLİ KORO",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1728,
+   "text": "GSL ÇOK SESLİ KORO (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 686,
+   "text": "GSL DESEN",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1729,
+   "text": "GSL DESEN ÇALIŞMALARI (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1730,
+   "text": "GSL DESEN DERSİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 687,
+   "text": "GSL DİJİTAL GRAFİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1731,
+   "text": "GSL DİJİTAL GRAFİK (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 688,
+   "text": "GSL DRAMA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1732,
+   "text": "GSL DRAMATURJİ (2022, 2023 DEĞİŞİKLİK)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 689,
+   "text": "GSL ESTETİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1733,
+   "text": "GSL ESTETİK (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 690,
+   "text": "GSL FOTOĞRAF",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1734,
+   "text": "GSL FOTOĞRAF (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1759,
+   "text": "GSL GELENEKSEL TÜRK SANATLARI (2022, 2023 DEĞİŞİKLİK)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 691,
+   "text": "GSL GELENEKSEL TÜRK SANATLARI EBRU",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 692,
+   "text": "GSL GELENEKSEL TÜRK SANATLARI MİNYATÜR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1779,
+   "text": "GSL GENEL SANAT TARİHİ (2016)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1758,
+   "text": "GSL GENEL SANAT TARİHİ (2022, 2023 DEĞİŞİKLİK)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 694,
+   "text": "GSL GRAFİK TASARIM",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1765,
+   "text": "GSL GRAFİK TASARIM (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 728,
+   "text": "GSL HALK DANSLARI VE MÜZİKLERİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1735,
+   "text": "GSL HALK DANSLARI VE MÜZİKLERİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1761,
+   "text": "GSL HAREKET (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 695,
+   "text": "GSL İKİ BOYUTLU SANAT ATÖLYE",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1766,
+   "text": "GSL İKİ BOYUTLU SANAT ATÖLYE (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 696,
+   "text": "GSL İMGESEL RESİM",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1767,
+   "text": "GSL İMGESEL RESİM (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1736,
+   "text": "GSL KANUN (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1776,
+   "text": "GSL MÜZE EĞİTİMİ (2016)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1773,
+   "text": "GSL MÜZE EĞİTİMİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 729,
+   "text": "GSL MÜZİK KÜLTÜRÜ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1737,
+   "text": "GSL MÜZİK KÜLTÜRÜ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 990,
+   "text": "GSL NEFESLİ ÇALGILAR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1763,
+   "text": "GSL OYUN ÇALIŞMASI (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1762,
+   "text": "GSL OYUNCULUK (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 730,
+   "text": "GSL PİYANO",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1738,
+   "text": "GSL PİYANO (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 698,
+   "text": "GSL SANAT ESERLERİ ANALİZİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1768,
+   "text": "GSL SANAT ESERLERİNİ İNCELEME (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1740,
+   "text": "GSL SEÇMELİ BATI MÜZİĞİ TEORİ VE UYGULAMASI (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 991,
+   "text": "GSL SEÇMELİ PİYANO",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1741,
+   "text": "GSL SEÇMELİ PİYANO (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1742,
+   "text": "GSL SEÇMELİ TÜRK HALK MÜZİĞİ KORO (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1743,
+   "text": "GSL SEÇMELİ TÜRK HALK MÜZİĞİ TEORİ VE UYGULAMASI (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1744,
+   "text": "GSL SEÇMELİ TÜRK SANAT MÜZİĞİ KORO (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1745,
+   "text": "GSL SEÇMELİ TÜRK SANAT MÜZİĞİ TEORİ VE UYGULAMASI (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1764,
+   "text": "GSL SES VE KONUŞMA (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1772,
+   "text": "GSL TEMEL DESEN (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1746,
+   "text": "GSL TEMEL PİYANO (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 699,
+   "text": "GSL TEMEL SANAT EĞİTİMİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1769,
+   "text": "GSL TEMEL SANAT EĞİTİMİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1757,
+   "text": "GSL TİYATRO TARİHİ (2022, 2023 DEĞİŞİKLİK)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1747,
+   "text": "GSL TOPLU SES EĞİTİMİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 989,
+   "text": "GSL TÜRK DÜNYASI MÜZİKLERİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1748,
+   "text": "GSL TÜRK DÜNYASI MÜZİKLERİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 731,
+   "text": "GSL TÜRK HALK MÜZİĞİ KORO",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1749,
+   "text": "GSL TÜRK HALK MÜZİĞİ KORO (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1750,
+   "text": "GSL TÜRK HALK MÜZİĞİ TEORİ VE UYGULAMASI (11-12 SINIFLAR) (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 992,
+   "text": "GSL TÜRK HALK MÜZİĞİ TEORİ VE UYGULAMASI (11-12. SINIF)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 993,
+   "text": "GSL TÜRK HALK MÜZİĞİ TEORİ VE UYGULAMASI (9-12. SINIF)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 736,
+   "text": "GSL TÜRK İSLAM MUSİKİSİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1751,
+   "text": "GSL TÜRK İSLAM MUSİKİSİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 700,
+   "text": "GSL TÜRK İSLAM SANATI TARİHİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1770,
+   "text": "GSL TÜRK İSLAM SANATI TARİHİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1752,
+   "text": "GSL TÜRK MÜZİĞİ TARİHİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1753,
+   "text": "GSL TÜRK MÜZİĞİ TEORİ VE UYGULAMASI (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 732,
+   "text": "GSL TÜRK SANAT MÜZİĞİ KORO",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1754,
+   "text": "GSL TÜRK SANAT MÜZİĞİ KORO (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 734,
+   "text": "GSL TÜRK SANAT MÜZİĞİ TEORİ VE UYGULAMASI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1755,
+   "text": "GSL TÜRK SANAT MÜZİĞİ TEORİ VE UYGULAMASI (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 737,
+   "text": "GSL TÜRK VE BATI MÜZİĞİ TARİHİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1756,
+   "text": "GSL TÜRK VE BATI MÜZİĞİ TARİHİ (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 701,
+   "text": "GSL ÜÇ BOYUTLU SANAT ATÖLYE",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1771,
+   "text": "GSL ÜÇ BOYUTLU SANAT ATÖLYE (2022)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1783,
+   "text": "ADABIMUAŞERET",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 333,
+   "text": "ALMANCA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 317,
+   "text": "ANADOLU İMAM HATİP LİSESİ MESLEK DERSLERİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 784,
+   "text": "ASTRONOMİ VE UZAY BİLİMLERİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 334,
+   "text": "BEDEN EĞİTİMİ VE SPOR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1663,
+   "text": "BİLİŞİM TEKNOLOJİLERİ VE YAZILIM",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 361,
+   "text": "BİYOLOJİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 337,
+   "text": "CAĞDAŞ TÜRK VE DÜNYA TARİHİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 336,
+   "text": "COĞRAFYA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1356,
+   "text": "ÇİNCE",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1106,
+   "text": "DEMOKRASİ VE İNSAN HAKLARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 319,
+   "text": "DİN KÜLTÜRÜ VE AHLAK BİLGİSİ (9-12)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1292,
+   "text": "DÜŞÜNME EĞİTİMİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1363,
+   "text": "EDEBİYAT UYGULAMALARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1365,
+   "text": "EKONOMİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 338,
+   "text": "FELSEFE",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1294,
+   "text": "FEN BİLİMLERİ UYGULAMALARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 363,
+   "text": "FEN LİSESİ BİYOLOJİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 349,
+   "text": "FEN LİSESİ FİZİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 347,
+   "text": "FEN LİSESİ KİMYA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 340,
+   "text": "FEN LİSESİ MATEMATİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 351,
+   "text": "FİZİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 341,
+   "text": "FRANSIZCA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1359,
+   "text": "GENETİK BİLİMİNE GİRİŞ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1354,
+   "text": "GİRİŞİMCİLİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 339,
+   "text": "GÖRSEL SANATLAR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1355,
+   "text": "İKLİM, ÇEVRE VE YENİLİKÇİ ÇÖZÜMLER",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 342,
+   "text": "İNGİLİZCE",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 783,
+   "text": "İNGİLİZCE (HAZIRLIK SINIF BULUNAN KURUMLAR)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 432,
+   "text": "İSLAM BİLİM TARİHİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1107,
+   "text": "İSLAM KÜLTÜR VE MEDENİYETİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1298,
+   "text": "İSPANYOLCA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 789,
+   "text": "İŞLETME",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1299,
+   "text": "JAPONCA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 350,
+   "text": "KİMYA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1300,
+   "text": "KLASİK AHLAK METİNLERİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1110,
+   "text": "KUR'AN-I KERİM",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1358,
+   "text": "KUR'AN-I KERİM'İN ANLAM DÜNYASI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 790,
+   "text": "MANTIK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 343,
+   "text": "MATEMATİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1104,
+   "text": "MATEMATİK (HAZIRLIK)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1403,
+   "text": "MATEMATİK UYGULAMALARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1357,
+   "text": "METİN TAHLİLLERİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 359,
+   "text": "MÜZİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1204,
+   "text": "ORTAK TÜRK EDEBİYATI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1203,
+   "text": "ORTAK TÜRK TARİHİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 791,
+   "text": "OSMANLI TÜRKÇESİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 321,
+   "text": "PEYGAMBERİMİZİN HAYATI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1361,
+   "text": "PROJE TASARIMI VE UYGULAMALARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 793,
+   "text": "PSİKOLOJİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1304,
+   "text": "RUSÇA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 348,
+   "text": "SAĞLIK BİLGİSİ VE TRAFİK KÜLTÜRÜ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1424,
+   "text": "SANAT EĞİTİMİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1368,
+   "text": "SANAT TARİHİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1443,
+   "text": "SOSYAL BİLİM ÇALIŞMALARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 795,
+   "text": "SOSYOLOJİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1243,
+   "text": "SOSYOLOJİ (1-2)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1404,
+   "text": "SPOR EĞİTİMİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1305,
+   "text": "SÜRDÜRÜLEBİLİR TARIM VE GIDA GÜVENLİĞİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 346,
+   "text": "T.C.İNKILAP TARİHİ VE ATATÜRKÇÜLÜK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 344,
+   "text": "TARİH (2018)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1265,
+   "text": "TARİH (2023)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 323,
+   "text": "TEMEL DİNİ BİLGİLER (İSLAM 1-2)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1306,
+   "text": "TEMEL HUKUK BİLGİSİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1360,
+   "text": "TIP BİLİMİNE GİRİŞ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 353,
+   "text": "TÜRK DİLİ VE EDEBİYATI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 421,
+   "text": "TÜRK DİLİ VE EDEBİYATI (HAZIRLIK)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1205,
+   "text": "TÜRK DÜNYASI COĞRAFYASI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1308,
+   "text": "TÜRK DÜŞÜNCE TARİHİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 345,
+   "text": "TÜRK KÜLTÜR VE MEDENİYET TARİHİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1362,
+   "text": "TÜRK SOSYAL HAYATINDA AİLE",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1367,
+   "text": "ULUSLARARASI İLİŞKİLER",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1366,
+   "text": "YÖNETİM BİLİMİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 943,
+   "text": "ERKEN ÇOCUKLUK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 946,
+   "text": "GÖRME ENGELLİLER İLKOKULLARI OYUN, FİZİKİ ETKİNLİKLER VE BAĞIMSIZ HAREKET",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 947,
+   "text": "GÖRME ENGELLİLER ORTAOKULLARI BEDEN EĞİTİMİ, SPOR VE BAĞIMSIZ HAREKET",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 948,
+   "text": "GÖRME ENGELLİLER ÖZEL EĞİTİM MESLEK OKULU BEDEN EĞİTİMİ, SPOR VE BAĞIMSIZ HAREKET",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 944,
+   "text": "OKUL ÖNCESİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 971,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU BAĞIMSIZ YAŞAM BECERİLERİ (3. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 951,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU BESLENME, SAĞLIK VE GÜVENLİK (1. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 961,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU BESLENME, SAĞLIK VE GÜVENLİK (2. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 972,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU BESLENME, SAĞLIK VE GÜVENLİK (3. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 952,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU DİN KÜLTÜRÜ VE AHLAK BİLGİSİ (1. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 962,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU DİN KÜLTÜRÜ VE AHLAK BİLGİSİ (2. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 973,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU DİN KÜLTÜRÜ VE AHLAK BİLGİSİ (3. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 974,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU GÖRSEL SANATLAR (3. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 953,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU GÖRSEL SANATLAR VE EL BECERİLERİ (1. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 963,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU GÖRSEL SANATLAR VE EL BECERİLERİ (2. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 964,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU GÜNLÜK YAŞAM BECERİLERİ (2. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 954,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU HAYAT BİLGİSİ (1. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 955,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU İLETİŞİM BECERİLERİ (1. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 965,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU İLETİŞİM BECERİLERİ (2. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 975,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU İLETİŞİM VE SOSYAL BECERİLER (3. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 956,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU MATEMATİK (1. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 966,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU MATEMATİK (2. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 976,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU MATEMATİK (3. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 957,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU MÜZİK VE OYUN (1. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 967,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU MÜZİK VE OYUN (2. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 977,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU MÜZİK VE OYUN (3. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 960,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU OKUMA-YAZMA (1. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 970,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU OKUMA-YAZMA (2. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 979,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU OKUMA-YAZMA (3. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 958,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU OYUN, SPOR VE FİZİKİ ETKİNLİKLER (1. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 959,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU SOSYAL BECERİLER (1. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 968,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU SOSYAL BECERİLER (2. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 969,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU SPOR VE FİZİKİ ETKİNLİKLER (2. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 978,
+   "text": "ÖZEL EĞİTİM UYGULAMA OKULU SPOR VE FİZİKİ ETKİNLİKLER (3. KADEME)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 950,
+   "text": "SINIF REHBERLİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 949,
+   "text": "SINIF REHBERLİK (ÖZEL EĞİTİM MESLEK OKULU)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 945,
+   "text": "TÜRK İŞARET DİLİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 781,
+   "text": "SL ANTRENMAN BİLGİSİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1777,
+   "text": "SL ANTRENÖRLÜK EĞİTİMİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 755,
+   "text": "SL ARTİSTİK JİMNASTİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 756,
+   "text": "SL ATLETİZM",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1775,
+   "text": "SL BEDEN EĞİTİMİ VE SPOR TARİHİ (2018)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 758,
+   "text": "SL BİREYSEL SPORLAR BADMİNTON",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 759,
+   "text": "SL BİREYSEL SPORLAR BİSİKLET",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 760,
+   "text": "SL BİREYSEL SPORLAR ESKRİM",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 761,
+   "text": "SL BİREYSEL SPORLAR GÜREŞ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 762,
+   "text": "SL BİREYSEL SPORLAR HALTER",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 763,
+   "text": "SL BİREYSEL SPORLAR JUDO",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 764,
+   "text": "SL BİREYSEL SPORLAR KARETE",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 765,
+   "text": "SL BİREYSEL SPORLAR KAYAK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 766,
+   "text": "SL BİREYSEL SPORLAR MASA TENİSİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 767,
+   "text": "SL BİREYSEL SPORLAR OKÇULUK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 768,
+   "text": "SL BİREYSEL SPORLAR ORYANTİRİNG",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 769,
+   "text": "SL BİREYSEL SPORLAR TAEKWONDO",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 770,
+   "text": "SL BİREYSEL SPORLAR TENİS",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 771,
+   "text": "SL BİREYSEL SPORLAR YÜZME",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 772,
+   "text": "SL EĞİTSEL OYUNLAR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 773,
+   "text": "SL GENEL JİMNASTİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 774,
+   "text": "SL RİTİM EĞİTİMİ VE HALK DANSLARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 775,
+   "text": "SL SPOR ANATOMİSİ VE FİZYOLOJİSİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 782,
+   "text": "SL SPOR PSİKOLOJİSİ VE SOSYOLOJİSİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 776,
+   "text": "SL SPOR VE BESLENME",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1774,
+   "text": "SL SPOR YÖNETİMİ VE ORGANİZASYONU (2018)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 778,
+   "text": "SL SPORCU SAĞLIĞI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 779,
+   "text": "SL TAKIM SPORLARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 780,
+   "text": "SL TEMEL SPOR EĞİTİMİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1322,
+   "text": "AFET BİLİNCİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1583,
+   "text": "AHLAK VE VATANDAŞLIK EĞİTİMİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1123,
+   "text": "ALMANCA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 443,
+   "text": "BEDEN EĞİTİMİ VE OYUN",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 324,
+   "text": "BEDEN EĞİTİMİ VE SPOR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1383,
+   "text": "BİLİŞİM TEKNOLOJİLERİ VE YAZILIM",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 407,
+   "text": "BİLİŞİM TEKNOLOJİLERİ VE YAZILIM (1-4. SINIFLAR)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1143,
+   "text": "ÇEVRE EĞİTİMİ VE İKLİM DEĞİŞİKLİĞİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 403,
+   "text": "ÇİNCE (SEÇMELİ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1343,
+   "text": "DİJİTAL SANATLAR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 318,
+   "text": "DİN KÜLTÜRÜ VE AHLAK BİLGİSİ (4-8)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1083,
+   "text": "DÜŞÜNME EĞİTİMİ (SEÇMELİ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 325,
+   "text": "FEN BİLİMLERİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1124,
+   "text": "FRANSIZCA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1326,
+   "text": "GELENEKSEL SANATLAR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1327,
+   "text": "GÖRGÜ KURALLARI VE NEZAKET",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 358,
+   "text": "GÖRSEL SANATLAR",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1328,
+   "text": "HALK OYUNLARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 326,
+   "text": "HAYAT BİLGİSİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1263,
+   "text": "HAYAT BİLGİSİ (2023-2024 EĞİTİM ÖĞRETİM YILINDAN İTİBAREN)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 241,
+   "text": "HUKUK VE ADALET (SEÇMELİ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 327,
+   "text": "İNGİLİZCE (2-8)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 328,
+   "text": "İNSAN HAKLARI YURTTAŞLIK VE DEMOKRASİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1125,
+   "text": "İTALYANCA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1183,
+   "text": "KUR'AN-I KERİM",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1329,
+   "text": "KÜLTÜR VE MEDENİYETİMİZE YÖN VERENLER",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1330,
+   "text": "MASAL VE DESTANLARIMIZ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 329,
+   "text": "MATEMATİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1331,
+   "text": "MATEMATİK VE BİLİM UYGULAMALARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 410,
+   "text": "MEDYA OKURYAZARLIĞI (SEÇMELİ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 357,
+   "text": "MÜZİK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 652,
+   "text": "OKUL ÖNCESİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1347,
+   "text": "OKUL TEMELLİ SOSYAL SORUMLULUK ÇALIŞMALARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 408,
+   "text": "OKUMA BECERİLERİ (SEÇMELİ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1333,
+   "text": "OYUN VE OYUN ETKİNLİKLERİ (DRAMA MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1334,
+   "text": "OYUN VE OYUN ETKİNLİKLERİ (GELENEKSEL OYUNLAR MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1335,
+   "text": "OYUN VE OYUN ETKİNLİKLERİ (SATRANÇ MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1336,
+   "text": "OYUN VE OYUN ETKİNLİKLERİ (ZEKÂ OYUNLARI MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 322,
+   "text": "PEYGAMBERİMİZİN HAYATI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1337,
+   "text": "PROJE TASARIMI VE UYGULAMALARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1345,
+   "text": "ROBOTİK KODLAMA",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 603,
+   "text": "SATRANÇ (OKUL ÖNCESİ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 413,
+   "text": "SEÇMELİ MÜZİK (GENEL MÜZİK EĞİTİMİ MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 414,
+   "text": "SEÇMELİ MÜZİK (GİTAR MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 415,
+   "text": "SEÇMELİ MÜZİK (KEMAN MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 416,
+   "text": "SEÇMELİ MÜZİK (PİYANO MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 417,
+   "text": "SEÇMELİ MÜZİK (THM KORO MÜDÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 418,
+   "text": "SEÇMELİ MÜZİK (UT MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 412,
+   "text": "SEÇMELİ MÜZİK [BAĞLAMA (SAZ) MODÜLÜ]",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 425,
+   "text": "SEÇMELİ SPOR VE FİZİKİ ETKİNLİKLER",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 426,
+   "text": "SEÇMELİ SPOR VE FİZİKİ ETKİNLİKLER (ATLETİZM MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 427,
+   "text": "SEÇMELİ SPOR VE FİZİKİ ETKİNLİKLER (BASKETBOL MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 428,
+   "text": "SEÇMELİ SPOR VE FİZİKİ ETKİNLİKLER (BİSİKLET MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 429,
+   "text": "SEÇMELİ SPOR VE FİZİKİ ETKİNLİKLER (OKÇULUK MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 430,
+   "text": "SEÇMELİ SPOR VE FİZİKİ ETKİNLİKLER (TENİS MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 431,
+   "text": "SEÇMELİ SPOR VE FİZİKİ ETKİNLİKLER (YÜZME MODÜLÜ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 354,
+   "text": "SOSYAL BİLGİLER",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1264,
+   "text": "SOSYAL BİLGİLER (2023-2024 EĞİTİM ÖĞRETİM YILINDAN İTİBAREN)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1043,
+   "text": "ŞEHRİMİZ (SEÇMELİ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 355,
+   "text": "T.C.İNKILAP TARİHİ VE ATATÜRKÇÜLÜK",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 380,
+   "text": "TEKNOLOJİ VE TASARIM",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 383,
+   "text": "TEMEL DİNİ BİLGİLER",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1348,
+   "text": "TEMEL YAŞAM BECERİLERİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 331,
+   "text": "TRAFİK GÜVENLİĞİ",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1346,
+   "text": "TÜRK SOSYAL HAYATINDA AİLE",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 663,
+   "text": "TÜRKÇE",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1349,
+   "text": "YAPAY ZEKÂ UYGULAMALARI",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1169,
+   "text": "YAŞAYAN DİLLER VE LEHÇELER (ADIĞECE LATİN ALFABESİ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1168,
+   "text": "YAŞAYAN DİLLER VE LEHÇELER (ADIĞECE VE ABAZACA)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1166,
+   "text": "YAŞAYAN DİLLER VE LEHÇELER (ARNAVUTÇA)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1167,
+   "text": "YAŞAYAN DİLLER VE LEHÇELER (BOŞNAKÇA)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1165,
+   "text": "YAŞAYAN DİLLER VE LEHÇELER (GÜRCÜCE)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1163,
+   "text": "YAŞAYAN DİLLER VE LEHÇELER (KÜRTÇE)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 1164,
+   "text": "YAŞAYAN DİLLER VE LEHÇELER (LAZCA)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
+  },
+  {
+   "pid": 424,
+   "text": "YAZARLIK VE YAZMA BECERİLERİ (SEÇMELİ)",
+   "from": "https://mufredat.meb.gov.tr/Programlar.aspx"
   }
  ]
 }
