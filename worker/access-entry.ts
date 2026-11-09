@@ -211,6 +211,45 @@ async function createStudentAccountsBulk(request: Request, env: Env, actor: Auth
   return Response.json({ ok: true, created: created.length, skipped: errors.length, errors, notification }, { status: created.length ? 201 : 400 });
 }
 
+/**
+ * Owner (9 Nov): no student could sign in to the app yet. An institution opens its students' accounts in one step:
+ * username = institution code + "-" + student number, a temporary password that must be changed at first sign-in.
+ * The passwords are returned once, for printing sign-in cards; they are never stored or shown again. Students without a
+ * number, guests and students who already have an account are listed back instead of being guessed.
+ */
+async function createStudentAccountsAuto(request: Request, env: Env, actor: AuthUser): Promise<Response> {
+  const body = await request.json<{ institutionId?: string; studentIds?: string[] }>().catch(() => ({} as { institutionId?: string; studentIds?: string[] }));
+  const institutionId = institutionFrom(actor, new URL(request.url), body.institutionId || null);
+  if (!institutionId || !(await ensureInstitution(env, actor, institutionId))) return error(403, 'FORBIDDEN', 'Bu kuruma erişim yetkiniz bulunmuyor.');
+  const ids = [...new Set((Array.isArray(body.studentIds) ? body.studentIds : []).map(String).filter(Boolean))].slice(0, 500);
+  if (!ids.length) return error(400, 'ROWS_REQUIRED', 'Hesabı açılacak öğrencileri seçin.');
+  const institution = await one<any>(env.DB.prepare('SELECT id,name,code FROM institutions WHERE id=?').bind(institutionId));
+  const prefix = String(institution?.code || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
+  if (!prefix) return error(400, 'INSTITUTION_CODE_REQUIRED', 'Kurumun kodu tanımlı değil; kullanıcı adı oluşturulamaz.');
+  const created: Array<{ studentId: string; name: string; gradeLevel: number | null; section: string | null; studentNumber: string; username: string; password: string }> = [];
+  const skipped: Array<{ studentId: string; name: string; reason: string }> = [];
+  const statements: D1PreparedStatement[] = [];
+  for (const studentId of ids) {
+    const student = await one<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name,s.status,e.student_number,e.grade_level,e.section FROM student_entities s JOIN student_enrollments e ON e.student_id=s.id JOIN institution_seasons se ON se.id=e.season_id WHERE s.id=? AND e.institution_id=? AND e.status='ACTIVE' AND se.status='ACTIVE' LIMIT 1`).bind(studentId, institutionId));
+    const name = student ? `${student.first_name} ${student.last_name}`.trim() : studentId;
+    if (!student || !studentEligibleForAccount(student.status)) { skipped.push({ studentId, name, reason: 'Öğrenci aktif değil veya bu kuruma bağlı değil.' }); continue; }
+    if (await one(env.DB.prepare(`SELECT id FROM users WHERE student_id=? AND role='STUDENT' LIMIT 1`).bind(studentId))) { skipped.push({ studentId, name, reason: 'Hesabı zaten açık.' }); continue; }
+    const number = String(student.student_number || '').trim().replace(/\s+/g, '');
+    if (!number) { skipped.push({ studentId, name, reason: 'Öğrenci numarası yok; hesabı elle açın.' }); continue; }
+    const username = `${prefix}-${number.toLowerCase().replace(/[^a-z0-9]+/g, '')}`;
+    if (created.some((c) => c.username === username) || await identifierAvailable(env, null, username)) { skipped.push({ studentId, name, reason: `Kullanıcı adı ${username} zaten kullanılıyor (aynı numara iki kez olabilir); elle açın.` }); continue; }
+    const password = generateTemporaryPassword();
+    const passwordData = await hashPassword(password);
+    const id = uuid('usr');
+    statements.push(env.DB.prepare(`INSERT INTO users (id,institution_id,student_id,role,display_name,email,phone,username,password_hash,password_salt,password_iterations,password_algo,must_change_password,active) VALUES (?,?,?,'STUDENT',?,NULL,NULL,?,?,?,?,?,1,1)`)
+      .bind(id, institutionId, studentId, name, username, passwordData.hash, passwordData.salt, passwordData.iterations, 'PBKDF2-SHA256-v1'));
+    statements.push(env.DB.prepare(`INSERT INTO audit_logs (id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES (?,?,?,'STUDENT_ACCESS_CREATED','user',?,?)`).bind(uuid('aud'), actor.id, institutionId, id, JSON.stringify({ studentId, username, mode: 'AUTO_CARD' })));
+    created.push({ studentId, name, gradeLevel: student.grade_level ?? null, section: student.section ?? null, studentNumber: number, username, password });
+  }
+  if (statements.length) await env.DB.batch(statements);
+  return Response.json({ ok: true, institution: { name: institution.name, code: institution.code }, created, skipped }, { status: created.length ? 201 : 200 });
+}
+
 async function createParentAccountsBulk(request: Request, env: Env, actor: AuthUser): Promise<Response> {
   const body = await request.json<{ institutionId?: string; parents?: BulkParentAccountRow[]; notifyChannels?: string[] }>();
   const institutionId = institutionFrom(actor, new URL(request.url), body.institutionId || null);
@@ -301,6 +340,11 @@ export default {
       return createParentAccount(request, env, actor);
     }
 
+    if (url.pathname === '/api/students/access-accounts/auto' && request.method === 'POST') {
+      const actor = await requireActor(env, request);
+      if (actor instanceof Response) return actor;
+      return createStudentAccountsAuto(request, env, actor);
+    }
     if (url.pathname === '/api/students/access-accounts/bulk' && request.method === 'POST') {
       const actor = await requireActor(env, request);
       if (actor instanceof Response) return actor;
