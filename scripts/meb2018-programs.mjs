@@ -51,7 +51,7 @@ export function readMarginOutcomes(text,subject,grade){
 // English: "E8.1.SI1. Students will be able to …" sits in the middle column; the sentence is read from that column
 // (text before the next run of 2+ spaces) on the following lines until it ends with a full stop.
 export function readEnglishOutcomes(text,grade){
- const re=new RegExp(`E${grade}\\.(\\d+)\\.([A-Z]+\\d+)\\.`),lines=String(text).split(/\r?\n/),out=[],seen=new Set();
+ const re=new RegExp(`E${grade}\\.(\\d+)\\.([A-Z]+\\d+)\\.?`),lines=String(text).split(/\r?\n/),out=[],seen=new Set();
  for(let i=0;i<lines.length;i++){
   const m=lines[i].match(re);if(!m)continue;
   const col=m.index,code=`E${grade}.${m[1]}.${m[2]}`;if(seen.has(code))continue;
@@ -67,4 +67,47 @@ export function readEnglishOutcomes(text,grade){
  }
  return out;
 }
-export function readProgram(text,subject,grade){return subject==='ING'?readEnglishOutcomes(text,grade):readMarginOutcomes(text,subject,grade);}
+
+// Grade 12 (secondary programmes, 2018): each programme numbers its outcomes its own way.
+//  MAT/FIZ/KIM/BIY: "12.1.1.1. …" (unit "12.1. …"); COG/DIN: "12.1.1. …" (unit "12.1. …");
+//  INK (T.C. İnkılap Tarihi, a 12th-grade-only course): "1.1. …" under "1. ÜNİTE: …";
+//  EDB (Türk Dili ve Edebiyatı): one outcome set for grades 9-12, "A.1. 1." / "B.1." / "C.2. 3.".
+// Table rows (code, title, then numbers) and contents lines (dot leaders) are never outcomes.
+const TABLE_ROW=/\s{3,}\d+(\s+\d+)*\s*$|\.{5,}/;
+const SCHOOL12={
+ MAT:{code:/^\s*12\.\d+\.\d+\.\d+(?:\.(?=[\s\p{L}])|(?=\s))/u,unit:/^\s*12\.(\d+)\.\s+(\S.*?)\s*$/},
+ FIZ:{code:/^\s*12\.\d+\.\d+\.\d+(?:\.(?=[\s\p{L}])|(?=\s))/u,unit:/^\s*12\.(\d+)\.\s+(\S.*?)\s*$/},
+ KIM:{code:/^\s*12\.\d+\.\d+\.\d+(?:\.(?=[\s\p{L}])|(?=\s))/u,unit:/^\s*12\.(\d+)\.\s+(\S.*?)\s*$/},
+ BIY:{code:/^\s*12\.\d+\.\d+\.\d+(?:\.(?=[\s\p{L}])|(?=\s))/u,unit:/^\s*12\.(\d+)\.\s+(\S.*?)\s*$/},
+ // Coğrafya has two 12th-grade sets with the same codes: the 4-hour programme (AYT) comes first, the 2-hour one after
+ // "COĞRAFYA DERSİ 11 VE 12. SINIFLAR"; the 4-hour set is read.
+ COG:{code:/^\s*12\.\d+\.\d+(?:\.(?=[\s\p{L}])|(?=\s))/u,unit:/^\s*12\.(\d+)\.\s+(\S.*?)\s*$/,start:/^\s*12\. SINIF ÜNİTE, KAZANIM VE AÇIKLAMALARI\s*$/,end:/^\s*COĞRAFYA DERSİ 11 VE 12\. SINIFLAR\s*$/},
+ // the PDF prints 12.2.1 as "12,2.1."; the comma is read as the dot it stands for
+ DIN:{code:/^\s*12[.,]\d+\.\d+(?:\.(?=[\s\p{L}])|(?=\s))/u,unit:/^\s*12\.(\d+)\.\s+(\S.*?)\s*$/},
+ // the PDF prints outcome 8.2 as "8.2.1990 sonrasında …" (no space before the year)
+ INK:{code:/^\s*\d+\.\d+\.(?=\s|\d{4}\s)/u,unit:/^\s*(\d+)\.\s*ÜNİTE:\s*(.+?)\s*$/,start:/^\s*1\.\s*ÜNİTE:/},
+ EDB:{code:/^\s*[A-C]\.(?:\d+\.\s*)?\d+\.(?=\s)/u,unit:/^\s*(?:([A-C])\)\s+|(\d+)\.\s+)([A-ZÇĞİÖŞÜ][A-ZÇĞİÖŞÜ ()/,-]+?)\s*$/u,start:/^\s*3\.2\.\s*KONU, KAZANIM/},
+};
+const CODE12=new RegExp('^\\s*(?:'+['12\\.\\d+\\.\\d+','[A-C]\\.(?:\\d+\\.\\s*)?\\d+\\.','\\d+\\.\\d+\\.(?=\\s)'].join('|')+')','u');
+export function readSchool12(text,subject){
+ const cfg=SCHOOL12[subject];if(!cfg)throw Error('NO_GRADE12_READER:'+subject);
+ let lines=String(text).split(/\r?\n/);
+ if(cfg.start){const at=lines.findIndex(l=>cfg.start.test(l)&&!TABLE_ROW.test(l));if(at<0)throw Error('START_NOT_FOUND:'+subject);lines=lines.slice(at);}
+ if(cfg.end){const to=lines.findIndex(l=>cfg.end.test(l));if(to<0)throw Error('END_NOT_FOUND:'+subject);lines=lines.slice(0,to);}
+ const out=[],seen=new Map();let unit=null;
+ for(let i=0;i<lines.length;i++){
+  const line=lines[i];if(TABLE_ROW.test(line))continue;
+  const m=line.match(cfg.code);
+  if(!m){const u=line.match(cfg.unit);if(u)unit=clean(u[u.length-1]);continue;}
+  const parts=[line.slice(m[0].length)];
+  for(let j=i+1;j<lines.length;j++){const n=lines[j];
+   if(!n.trim()||cfg.code.test(n)||CODE12.test(n)||STOP.test(n.trim())||TABLE_ROW.test(n)||cfg.unit.test(n))break;
+   if(ENDED.test(joinLines(parts))||BULLET.test(n))break;
+   parts.push(n);}
+  const c=m[0].trim().replace(/\s+/g,'').replace(/,/g,'.').replace(/\.$/,''),title=joinLines(parts);
+  if(seen.has(c)){const prev=seen.get(c);if(prev.title!==title)prev.conflicts=(prev.conflicts||[]).concat(title);continue;}
+  const o={code:c,title,unit};seen.set(c,o);out.push(o);
+ }
+ return out;
+}
+export function readProgram(text,subject,grade){return subject==='ING'?readEnglishOutcomes(text,grade):grade===12?readSchool12(text,subject):readMarginOutcomes(text,subject,grade);}

@@ -17,8 +17,10 @@ export const PLAN=[
  ['tur-2019','TUR',[8,4]],['mat-temel-2018','MAT',[8,4]],['fen-2018','FEN',[8,4]],
  ['ink-temel-2018','INK',[8]],['din-4-8-2018','DIN',[8,4]],['ing-2-8-2018','ING',[8,4]],
  ['sos-2018','SOS',[4]],
+ ['mat-orta-2018','MAT',[12]],['fiz-2018','FIZ',[12]],['kim-2018','KIM',[12]],['biy-2018','BIY',[12]],
+ ['cog-2018','COG',[12]],['din-9-12-2018','DIN',[12]],['ink-orta-2018','INK',[12]],['tde-2018','EDB',[12]],['ing-9-12-2018','ING',[12]],
 ];
-const NAMES={TUR:'Türkçe',MAT:'Matematik',FEN:'Fen Bilimleri',INK:'T.C. İnkılap Tarihi ve Atatürkçülük',DIN:'Din Kültürü ve Ahlak Bilgisi',ING:'İngilizce',SOS:'Sosyal Bilgiler'};
+const NAMES={TUR:'Türkçe',MAT:'Matematik',FEN:'Fen Bilimleri',INK:'T.C. İnkılap Tarihi ve Atatürkçülük',DIN:'Din Kültürü ve Ahlak Bilgisi',ING:'İngilizce',SOS:'Sosyal Bilgiler',FIZ:'Fizik',KIM:'Kimya',BIY:'Biyoloji',COG:'Coğrafya',EDB:'Türk Dili ve Edebiyatı'};
 export function catalogItems(collected,textOf){
  const items=[];
  for(const [key,subject,grades] of PLAN){
