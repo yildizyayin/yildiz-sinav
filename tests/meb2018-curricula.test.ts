@@ -78,3 +78,16 @@ it('reads the six 4th-grade programmes of the previous MEB curriculum with offic
  expect(find('SOS','SB.4.1.1')).toBe('Resmî kimlik belgesini inceleyerek kişisel kimliğine ilişkin çıkarımlarda bulunur.');
  expect(catalog.items.find((i:any)=>i.subjectCode==='SOS').outcomes.every((o:any)=>o.unit)).toBe(true);
 });
+it('reads the 12th-grade secondary programmes; counts equal the official count tables (owner, 9 Nov)',()=>{
+ const counts=Object.fromEntries(catalog.items.filter((i:any)=>i.grade===12).map((i:any)=>[i.subjectCode+i.grade,i.outcomes.length]));
+ expect(counts).toEqual({MAT12:34,FIZ12:68,KIM12:31,BIY12:29,COG12:34,DIN12:22,INK12:33,EDB12:95,ING12:86});
+ const find=(s:string,c:string)=>readProgram(text(PLAN.find(p=>p[1]===s&&p[2].includes(12))![0]),s,12).find((o:any)=>o.code===c)!.title;
+ expect(find('DIN','12.2.1')).toBe('Türklerin Müslüman olma sürecini açıklar.'); // printed "12,2.1." in the PDF
+ expect(find('INK','8.2')).toMatch(/^1990 sonrasında meydana gelen siyasi gelişmeleri/); // printed "8.2.1990 …"
+ expect(find('EDB','A.1.1')).toBe('Metinde geçen kelime ve kelime gruplarının anlamlarını tespit eder.');
+ expect(find('MAT','12.1.1.1')).toBe('Üstel fonksiyonu açıklar.');
+ expect(find('ING','E12.8.S2').replace(/\s+/g,' ')).toContain('informal debate about alternative energy'); // no full stop after the code in the PDF
+ // Coğrafya: the 4-hour programme (two sets share the codes); its table lists 2 + 17 + 11 + 4 outcomes
+ expect(readProgram(text('cog-2018'),'COG',12).every((o:any)=>!o.conflicts)).toBe(true);
+ for(const i of catalog.items.filter((x:any)=>x.grade===12))for(const o of i.outcomes)expect(o.unit,o.code).toBeTruthy();
+});

@@ -3246,6 +3246,2301 @@
      "unit": "KÜRESEL BAĞLANTILAR"
     }
    ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 12,
+   "subjectCode": "MAT",
+   "programKey": "mat-orta-2018",
+   "pid": 343,
+   "programVersion": "MEB-MUFREDAT-MAT12-43f68f4e03e61ab6",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/201821102727101-OGM%20MATEMAT%C4%B0K%20PRG%2020.01.2018.pdf",
+   "pdfSha256": "43f68f4e03e61ab677cac24400d3e89f18f364c72291577b4ebac603de4afbe7",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "12. Sınıf Matematik / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "12.1.1.1",
+     "title": "Üstel fonksiyonu açıklar.",
+     "unit": "Üstel ve Logaritmik Fonksiyonlar"
+    },
+    {
+     "code": "12.1.2.1",
+     "title": "Logaritma fonksiyonu ile üstel fonksiyonu ilişkilendirerek problemler çözer.",
+     "unit": "Üstel ve Logaritmik Fonksiyonlar"
+    },
+    {
+     "code": "12.1.2.2",
+     "title": "10 ve e tabanında logaritma fonksiyonunu tanımlayarak problemler çözer.",
+     "unit": "Üstel ve Logaritmik Fonksiyonlar"
+    },
+    {
+     "code": "12.1.2.3",
+     "title": "Logaritma fonksiyonunun özelliklerini kullanarak işlemler yapar.",
+     "unit": "Üstel ve Logaritmik Fonksiyonlar"
+    },
+    {
+     "code": "12.1.3.1",
+     "title": "Üstel, logaritmik denklemlerin ve eşitsizliklerin çözüm kümelerini bulur.",
+     "unit": "Üstel ve Logaritmik Fonksiyonlar"
+    },
+    {
+     "code": "12.1.3.2",
+     "title": "Üstel ve logaritmik fonksiyonları gerçek hayat durumlarını modellemede kullanır.",
+     "unit": "Üstel ve Logaritmik Fonksiyonlar"
+    },
+    {
+     "code": "12.2.1.1",
+     "title": "Dizi kavramını fonksiyon kavramıyla ilişkilendirerek açıklar.",
+     "unit": "Diziler"
+    },
+    {
+     "code": "12.2.1.2",
+     "title": "Genel terimi veya indirgeme bağıntısı verilen bir sayı dizisinin terimlerini bulur.",
+     "unit": "Diziler"
+    },
+    {
+     "code": "12.2.1.3",
+     "title": "Aritmetik ve geometrik dizilerin özelliklerini kullanarak işlemler yapar.",
+     "unit": "Diziler"
+    },
+    {
+     "code": "12.2.1.4",
+     "title": "Diziler yardımıyla gerçek hayat durumları ile ilgili problemler çözer.",
+     "unit": "Diziler"
+    },
+    {
+     "code": "12.3.1.1",
+     "title": "İki açının ölçüleri toplamının ve farkının trigonometrik değerlerine ait formülleri oluşturarak işlemler yapar.",
+     "unit": "Trigonometri"
+    },
+    {
+     "code": "12.3.1.2",
+     "title": "İki kat açı formüllerini oluşturarak işlemler yapar.",
+     "unit": "Trigonometri"
+    },
+    {
+     "code": "12.3.2.1",
+     "title": "Trigonometrik denklemlerin çözüm kümelerini bulur.",
+     "unit": "Trigonometri"
+    },
+    {
+     "code": "12.4.1.1",
+     "title": "Analitik düzlemde koordinatları verilen bir noktanın öteleme, dönme ve simetri dönüşümleri altındaki görüntüsünün koordinatlarını bulur.",
+     "unit": "Dönüşümler"
+    },
+    {
+     "code": "12.4.1.2",
+     "title": "Temel dönüşümler ve bileşkeleriyle ilgili problem çözer.",
+     "unit": "Dönüşümler"
+    },
+    {
+     "code": "12.5.1.1",
+     "title": "Bir fonksiyonun bir noktadaki limiti, soldan limit ve sağdan limit kavramlarını açıklar.",
+     "unit": "Türev"
+    },
+    {
+     "code": "12.5.1.2",
+     "title": "Limit ile ilgili özellikleri belirterek uygulamalar yapar.",
+     "unit": "Türev"
+    },
+    {
+     "code": "12.5.1.3",
+     "title": "Bir fonksiyonun bir noktadaki sürekliliğini açıklar.",
+     "unit": "Türev"
+    },
+    {
+     "code": "12.5.2.1",
+     "title": "Türev kavramını açıklayarak işlemler yapar.",
+     "unit": "Türev"
+    },
+    {
+     "code": "12.5.2.2",
+     "title": "Bir fonksiyonun bir noktada ve bir aralıkta türevlenebilirliğini değerlendirir.",
+     "unit": "Türev"
+    },
+    {
+     "code": "12.5.2.3",
+     "title": "Türevlenebilen iki fonksiyonun toplamı, farkı, çarpımı ve bölümünün türevine ait kurallar yardımıyla işlemler yapar.",
+     "unit": "Türev"
+    },
+    {
+     "code": "12.5.2.4",
+     "title": "İki fonksiyonun bileşkesinin türevine ait kuralı (zincir kuralı) oluşturularak türev hesabı yapar.",
+     "unit": "Türev"
+    },
+    {
+     "code": "12.5.3.1",
+     "title": "Bir fonksiyonun artan veya azalan olduğu aralıkları türev yardımıyla belirler.",
+     "unit": "Türev"
+    },
+    {
+     "code": "12.5.3.2",
+     "title": "Bir fonksiyonun mutlak maksimum ve mutlak minimum, yerel maksimum, yerel minimum noktalarını belirler.",
+     "unit": "Türev"
+    },
+    {
+     "code": "12.5.3.3",
+     "title": "Türevi yardımıyla bir fonksiyonun grafiğini çizer.",
+     "unit": "Türev"
+    },
+    {
+     "code": "12.5.3.4",
+     "title": "Maksimum ve minimum problemlerini türev yardımıyla çözer.",
+     "unit": "Türev"
+    },
+    {
+     "code": "12.6.1.1",
+     "title": "Bir fonksiyonun belirsiz integralini açıklayarak integral alma kurallarını oluşturur.",
+     "unit": "İntegral"
+    },
+    {
+     "code": "12.6.1.2",
+     "title": "Değişken değiştirme yoluyla integral alma işlemleri yapar.",
+     "unit": "İntegral"
+    },
+    {
+     "code": "12.6.2.1",
+     "title": "Bir fonksiyonun grafiği ile x ekseni arasında kalan sınırlı bölgenin alanını Riemann toplamı yardımıyla yaklaşık olarak hesaplar.",
+     "unit": "İntegral"
+    },
+    {
+     "code": "12.6.2.2",
+     "title": "Bir fonksiyonun belirli ve belirsiz integralleri arasındaki ilişkiyi açıklayarak işlemler yapar.",
+     "unit": "İntegral"
+    },
+    {
+     "code": "12.6.2.3",
+     "title": "Belirli integralin özelliklerini kullanarak işlemler yapar.",
+     "unit": "İntegral"
+    },
+    {
+     "code": "12.6.2.4",
+     "title": "Belirli integral ile alan hesabı yapar.",
+     "unit": "İntegral"
+    },
+    {
+     "code": "12.7.1.1",
+     "title": "Merkezi ve yarıçapı verilen çemberin denklemini oluşturur.",
+     "unit": "Analitik Geometri"
+    },
+    {
+     "code": "12.7.1.2",
+     "title": "Denklemleri verilen doğru ile çemberin birbirine göre durumlarını belirleyerek işlemler yapar.",
+     "unit": "Analitik Geometri"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 12,
+   "subjectCode": "FIZ",
+   "programKey": "fiz-2018",
+   "pid": 351,
+   "programVersion": "MEB-MUFREDAT-FIZ12-6f0adf395fc98c96",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812103112910-orta%C3%B6%C4%9Fretim_fizik_son.pdf",
+   "pdfSha256": "6f0adf395fc98c961da08cbb10fa72fda04573aab8e796049f64388117a0f051",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "12. Sınıf Fizik / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "12.1.1.1",
+     "title": "Düzgün çembersel hareketi açıklar.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.1.2",
+     "title": "Düzgün çembersel harekette merkezcil kuvvetin bağlı olduğu değişkenleri analiz eder.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.1.3",
+     "title": "Düzgün çembersel hareket yapan cisimlerin hareketini analiz eder.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.1.4",
+     "title": "Yatay, düşey, eğimli zeminlerde araçların emniyetli dönüş şartları ile ilgili hesaplamalar yapar.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.2.1",
+     "title": "Öteleme ve dönme hareketini karşılaştırır.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.2.2",
+     "title": "Eylemsizlik momenti kavramını açıklar.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.2.3",
+     "title": "Dönme ve dönerek öteleme hareketi yapan cismin kinetik enerjisinin bağlı olduğu değişkenleri açıklar.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.3.1",
+     "title": "Açısal momentumun fiziksel bir nicelik olduğunu açıklar.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.3.2",
+     "title": "Açısal momentumu çizgisel momentum ile ilişkilendirerek açıklar.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.3.3",
+     "title": "Açısal momentumu torkla ilişkilendirir.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.3.4",
+     "title": "Açısal momentumun korunumunu günlük hayattan örneklerle açıklar.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.4.1",
+     "title": "Kütle çekim kuvvetini açıklar.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.4.2",
+     "title": "Newton’ın Hareket Kanunları’nı kullanarak kütle çekim ivmesinin bağlı olduğu değişkenleri belirler.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.4.3",
+     "title": "Kütle çekim potansiyel enerjisini açıklar.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.1.5.1",
+     "title": "Kepler Kanunları’nı açıklar.",
+     "unit": "ÇEMBERSEL HAREKET"
+    },
+    {
+     "code": "12.2.1.1",
+     "title": "Basit harmonik hareketi düzgün çembersel hareketi kullanarak açıklar.",
+     "unit": "BASİT HARMONİK HAREKET"
+    },
+    {
+     "code": "12.2.1.2",
+     "title": "Basit harmonik harekette konumun zamana göre değişimini analiz eder.",
+     "unit": "BASİT HARMONİK HAREKET"
+    },
+    {
+     "code": "12.2.1.3",
+     "title": "Basit harmonik harekette kuvvet, hız ve ivmenin konuma göre değişimi ile ilgili hesaplamalar yapar.",
+     "unit": "BASİT HARMONİK HAREKET"
+    },
+    {
+     "code": "12.2.1.4",
+     "title": "Yay sarkacı ve basit sarkaçta periyodun bağlı olduğu değişkenleri belirler.",
+     "unit": "BASİT HARMONİK HAREKET"
+    },
+    {
+     "code": "12.2.1.5",
+     "title": "Yay sarkacı ve basit sarkacın periyodu ile ilgili hesaplamalar yapar.",
+     "unit": "BASİT HARMONİK HAREKET"
+    },
+    {
+     "code": "12.3.1.1",
+     "title": "Su dalgalarında kırınım olayının dalga boyu ve yarık genişliği ile ilişkisini belirler.",
+     "unit": "DALGA MEKANİĞİ"
+    },
+    {
+     "code": "12.3.1.2",
+     "title": "Su dalgalarında girişim olayını açıklar.",
+     "unit": "DALGA MEKANİĞİ"
+    },
+    {
+     "code": "12.3.1.3",
+     "title": "Işığın çift yarıkta girişimine etki eden değişkenleri açıklar.",
+     "unit": "DALGA MEKANİĞİ"
+    },
+    {
+     "code": "12.3.1.4",
+     "title": "Işığın tek yarıkta kırınımına etki eden değişkenleri açıklar.",
+     "unit": "DALGA MEKANİĞİ"
+    },
+    {
+     "code": "12.3.1.5",
+     "title": "Kırınım ve girişim olaylarını inceleyerek ışığın dalga doğası hakkında çıkarım yapar.",
+     "unit": "DALGA MEKANİĞİ"
+    },
+    {
+     "code": "12.3.1.6",
+     "title": "Doppler olayının etkilerini ışık ve ses dalgalarından örneklerle açıklar.",
+     "unit": "DALGA MEKANİĞİ"
+    },
+    {
+     "code": "12.3.2.1",
+     "title": "Elektromanyetik dalgaların ortak özelliklerini açıklar.",
+     "unit": "DALGA MEKANİĞİ"
+    },
+    {
+     "code": "12.3.2.2",
+     "title": "Elektromanyetik spektrumu günlük hayattan örneklerle ilişkilendirerek açıklar.",
+     "unit": "DALGA MEKANİĞİ"
+    },
+    {
+     "code": "12.4.1.1",
+     "title": "Atom kavramını açıklar.",
+     "unit": "ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE"
+    },
+    {
+     "code": "12.4.1.2",
+     "title": "Atomun uyarılma yollarını açıklar.",
+     "unit": "ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE"
+    },
+    {
+     "code": "12.4.1.3",
+     "title": "Modern atom teorisinin önemini açıklar.",
+     "unit": "ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE"
+    },
+    {
+     "code": "12.4.2.1",
+     "title": "Büyük patlama teorisini açıklar.",
+     "unit": "ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE"
+    },
+    {
+     "code": "12.4.2.2",
+     "title": "Atom altı parçacıkların özelliklerini temel düzeyde açıklar.",
+     "unit": "ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE"
+    },
+    {
+     "code": "12.4.2.3",
+     "title": "Madde oluşum sürecini açıklar.",
+     "unit": "ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE"
+    },
+    {
+     "code": "12.4.2.4",
+     "title": "Madde ve antimadde kavramlarını açıklar.",
+     "unit": "ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE"
+    },
+    {
+     "code": "12.4.3.1",
+     "title": "Kararlı ve kararsız durumdaki atomların özelliklerini karşılaştırır.",
+     "unit": "ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE"
+    },
+    {
+     "code": "12.4.3.2",
+     "title": "Radyoaktif bozunma sonucu atomun kütle numarası, atom numarası ve enerjisindeki değişimi açıklar.",
+     "unit": "ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE"
+    },
+    {
+     "code": "12.4.3.3",
+     "title": "Nükleer fisyon ve füzyon olaylarını açıklar.",
+     "unit": "ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE"
+    },
+    {
+     "code": "12.4.3.4",
+     "title": "Radyasyonun canlılar üzerindeki etkilerini açıklar.",
+     "unit": "ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE"
+    },
+    {
+     "code": "12.5.1.1",
+     "title": "Michelson–Morley deneyinin amacını ve sonuçlarını açıklar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.1.2",
+     "title": "Einstein’ın özel görelilik teorisinin temel postülalarını ifade eder.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.1.3",
+     "title": "Göreli zaman ve göreli uzunluk kavramlarını açıklar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.1.4",
+     "title": "Kütle-enerji eşdeğerliğini açıklar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.2.1",
+     "title": "Siyah cisim ışımasını açıklar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.3.1",
+     "title": "Foton kavramını açıklar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.3.2",
+     "title": "Fotoelektrik olayını açıklar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.3.3",
+     "title": "Farklı metaller için maksimum kinetik enerji-frekans grafiğini çizer.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.3.4",
+     "title": "Fotoelektronların sahip olduğu maksimum kinetik enerji, durdurma gerilimi ve metalin eşik enerjisi arasındaki matematiksel ilişkiyi açıklar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.3.5",
+     "title": "Fotoelektrik olayın günlük hayattaki uygulamalarına örnekler verir.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.3.6",
+     "title": "Fotoelektrik olayla ilgili hesaplamalar yapar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.4.1",
+     "title": "Compton olayında foton ve elektron etkileşimini açıklar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.4.2",
+     "title": "Compton ve fotoelektrik olaylarının benzer yönlerini belirterek ışığın tanecik doğası hakkında çıkarım yapar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.4.3",
+     "title": "Işığın ikili doğasını açıklar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.5.4.4",
+     "title": "Madde ve dalga arasındaki ilişkiyi açıklar.",
+     "unit": "MODERN FİZİK"
+    },
+    {
+     "code": "12.6.1.1",
+     "title": "Görüntüleme cihazlarının çalışma prensiplerini açıklar.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.1.2",
+     "title": "LCD ve plazma teknolojilerinde fizik biliminin yerini açıklar.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.2.1",
+     "title": "Yarı iletken maddelerin genel özelliklerini açıklar.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.2.2",
+     "title": "Yarı iletken malzemelerin teknolojideki önemini açıklar.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.2.3",
+     "title": "LED teknolojisinin kullanıldığı yerlere örnekler verir.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.2.4",
+     "title": "Güneş pillerinin çalışma şeklini açıklar.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.2.5",
+     "title": "Günlük hayatı kolaylaştıran, güneş pillerinin kullanıldığı sistem tasarlar.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.3.1",
+     "title": "Süper iletken maddenin temel özelliklerini açıklar.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.3.2",
+     "title": "Süper iletkenlerin teknolojideki kullanım alanlarına örnekler verir.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.4.1",
+     "title": "Nanobilimin temellerini açıklar.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.4.2",
+     "title": "Nanomalzemelerin temel özelliklerini açıklar.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.4.3",
+     "title": "Nanomalzemelerin teknolojideki kullanım alanlarına örnekler verir.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.5.1",
+     "title": "LASER ışınlarının elde edilişini açıklar.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    },
+    {
+     "code": "12.6.5.2",
+     "title": "LASER ışınlarının teknolojideki kullanım alanlarına örnekler verir.",
+     "unit": "MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 12,
+   "subjectCode": "KIM",
+   "programKey": "kim-2018",
+   "pid": 350,
+   "programVersion": "MEB-MUFREDAT-KIM12-fb17e88c798f4267",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812102955190-19.01.2018%20Kimya%20Dersi%20%C3%96%C4%9Fretim%20Program%C4%B1.pdf",
+   "pdfSha256": "fb17e88c798f42670c047e7023bbbde8525a8ce253370b05f67dc89364149fc4",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "12. Sınıf Kimya / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "12.1.1.1",
+     "title": "Redoks tepkimelerini tanır.",
+     "unit": "KİMYA VE ELEKTRİK"
+    },
+    {
+     "code": "12.1.1.2",
+     "title": "Redoks tepkimeleriyle elektrik enerjisi arasındaki ilişkiyi açıklar.",
+     "unit": "KİMYA VE ELEKTRİK"
+    },
+    {
+     "code": "12.1.2.1",
+     "title": "Elektrot ve elektrokimyasal hücre kavramlarını açıklar.",
+     "unit": "KİMYA VE ELEKTRİK"
+    },
+    {
+     "code": "12.1.3.1",
+     "title": "Redoks tepkimelerinin istemliliğini standart elektrot potansiyellerini kullanarak açıklar.",
+     "unit": "KİMYA VE ELEKTRİK"
+    },
+    {
+     "code": "12.1.4.1",
+     "title": "Standart koşullarda galvanik pillerin voltajını ve kullanım ömrünü örnekler vererek açıklar.",
+     "unit": "KİMYA VE ELEKTRİK"
+    },
+    {
+     "code": "12.1.4.2",
+     "title": "Lityum iyon pillerinin önemini kullanım alanlarıyla ilişkilendirerek açıklar.",
+     "unit": "KİMYA VE ELEKTRİK"
+    },
+    {
+     "code": "12.1.5.1",
+     "title": "Elektroliz olayını elektrik akımı, zaman ve değişime uğrayan madde kütlesi açısından açıklar.",
+     "unit": "KİMYA VE ELEKTRİK"
+    },
+    {
+     "code": "12.1.5.2",
+     "title": "Kimyasal maddelerin elektroliz yöntemiyle elde ediliş sürecini açıklar.",
+     "unit": "KİMYA VE ELEKTRİK"
+    },
+    {
+     "code": "12.1.6.1",
+     "title": "Korozyon önleme yöntemlerinin elektrokimyasal temellerini açıklar.",
+     "unit": "KİMYA VE ELEKTRİK"
+    },
+    {
+     "code": "12.2.1.1",
+     "title": "Anorganik ve organik bileşikleri ayırt eder.",
+     "unit": "KARBON KİMYASINA GİRİŞ"
+    },
+    {
+     "code": "12.2.2.1",
+     "title": "Organik bileşiklerin basit ve molekül formüllerinin bulunması ile ilgili hesaplamalar yapar.",
+     "unit": "KARBON KİMYASINA GİRİŞ"
+    },
+    {
+     "code": "12.2.3.1",
+     "title": "Karbon allotroplarının özelliklerini yapılarıyla ilişkilendirir.",
+     "unit": "KARBON KİMYASINA GİRİŞ"
+    },
+    {
+     "code": "12.2.4.1",
+     "title": "Kovalent bağlı kimyasal türlerin Lewis formüllerini yazar.",
+     "unit": "KARBON KİMYASINA GİRİŞ"
+    },
+    {
+     "code": "12.2.5.1",
+     "title": "Tek, çift ve üçlü bağların oluşumunu hibrit ve atom orbitalleri temelinde açıklar.",
+     "unit": "KARBON KİMYASINA GİRİŞ"
+    },
+    {
+     "code": "12.2.5.2",
+     "title": "Moleküllerin geometrilerini merkez atomu orbitallerinin hibritleşmesi esasına göre belirler.",
+     "unit": "KARBON KİMYASINA GİRİŞ"
+    },
+    {
+     "code": "12.3.1.1",
+     "title": "Hidrokarbon türlerini ayırt eder.",
+     "unit": "ORGANİK BİLEŞİKLER"
+    },
+    {
+     "code": "12.3.1.2",
+     "title": "Basit alkanların adlarını, formüllerini, özelliklerini ve kullanım alanlarını açıklar.",
+     "unit": "ORGANİK BİLEŞİKLER"
+    },
+    {
+     "code": "12.3.1.3",
+     "title": "Basit alkenlerin adlarını, formüllerini, özelliklerini ve kullanım alanlarını açıklar.",
+     "unit": "ORGANİK BİLEŞİKLER"
+    },
+    {
+     "code": "12.3.1.4",
+     "title": "Basit alkinlerin adlarını, formüllerini, özelliklerini ve kullanım alanlarını açıklar.",
+     "unit": "ORGANİK BİLEŞİKLER"
+    },
+    {
+     "code": "12.3.1.5",
+     "title": "Basit aromatik bileşiklerin adlarını, formüllerini ve kullanım alanlarını açıklar.",
+     "unit": "ORGANİK BİLEŞİKLER"
+    },
+    {
+     "code": "12.3.2.1",
+     "title": "Organik bileşikleri fonksiyonel gruplarına göre sınıflandırır.",
+     "unit": "ORGANİK BİLEŞİKLER"
+    },
+    {
+     "code": "12.3.3.1",
+     "title": "Alkolleri sınıflandırarak adlarını, formüllerini, özelliklerini ve kullanım alanlarını açıklar.",
+     "unit": "ORGANİK BİLEŞİKLER"
+    },
+    {
+     "code": "12.3.4.1",
+     "title": "Eterleri sınıflandırarak adlarını, formüllerini, özelliklerini ve kullanım alanlarını açıklar.",
+     "unit": "ORGANİK BİLEŞİKLER"
+    },
+    {
+     "code": "12.3.5.1",
+     "title": "Karbonil bileşiklerini sınıflandırarak adlarını, formüllerini, özelliklerini ve kullanım alanlarını açıklar.",
+     "unit": "ORGANİK BİLEŞİKLER"
+    },
+    {
+     "code": "12.3.6.1",
+     "title": "Karboksilik asitleri sınıflandırarak adlarını, formüllerini ve kullanım alanlarını açıklar.",
+     "unit": "ORGANİK BİLEŞİKLER"
+    },
+    {
+     "code": "12.3.7.1",
+     "title": "Esterlerin adlarını, formüllerini ve kullanım alanlarını açıklar.",
+     "unit": "ORGANİK BİLEŞİKLER"
+    },
+    {
+     "code": "12.4.1.1",
+     "title": "Fosil yakıtların çevreye zararlı etkilerini azaltmak için çözüm önerilerinde bulunur.",
+     "unit": "ENERJİ KAYNAKLARI VE BİLİMSEL GELİŞMELER"
+    },
+    {
+     "code": "12.4.2.1",
+     "title": "Alternatif enerji kaynaklarını tanır.",
+     "unit": "ENERJİ KAYNAKLARI VE BİLİMSEL GELİŞMELER"
+    },
+    {
+     "code": "12.4.2.2",
+     "title": "Nükleer enerji kullanımını bilim, toplum, teknoloji, çevre ve ekonomi açısından değerlendirir.",
+     "unit": "ENERJİ KAYNAKLARI VE BİLİMSEL GELİŞMELER"
+    },
+    {
+     "code": "12.4.3.1",
+     "title": "Sürdürülebilir hayat ve kalkınmanın toplum ve çevre için önemini kimya bilimi ile ilişkilendirerek açıklar.",
+     "unit": "ENERJİ KAYNAKLARI VE BİLİMSEL GELİŞMELER"
+    },
+    {
+     "code": "12.4.4.1",
+     "title": "Nanoteknoloji alanındaki gelişmeleri bilim, toplum, teknoloji, çevre ve ekonomiye etkileri açısından değerlendirir.",
+     "unit": "ENERJİ KAYNAKLARI VE BİLİMSEL GELİŞMELER"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 12,
+   "subjectCode": "BIY",
+   "programKey": "biy-2018",
+   "pid": 361,
+   "programVersion": "MEB-MUFREDAT-BIY12-187254fb4e173c95",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/20182215535566-Biyoloji%20d%C3%B6p.pdf",
+   "pdfSha256": "187254fb4e173c95e767060f0c2f92f4d6abb36ab55dd47589b47a612fedf3d8",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "12. Sınıf Biyoloji / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "12.1.1.1",
+     "title": "Nükleik asitlerin keşif sürecini özetler.",
+     "unit": "Genden Proteine"
+    },
+    {
+     "code": "12.1.1.2",
+     "title": "Nükleik asitlerin çeşitlerini ve görevlerini açıklar.",
+     "unit": "Genden Proteine"
+    },
+    {
+     "code": "12.1.1.3",
+     "title": "Hücredeki genetik materyalin organizasyonunda parça bütün ilişkisi kurar.",
+     "unit": "Genden Proteine"
+    },
+    {
+     "code": "12.1.1.4",
+     "title": "DNA' nın kendini eşlemesini açıklar.",
+     "unit": "Genden Proteine"
+    },
+    {
+     "code": "12.1.2.1",
+     "title": "Protein sentezinin mekanizmasını açıklar.",
+     "unit": "Genden Proteine"
+    },
+    {
+     "code": "12.1.2.2",
+     "title": "Genetik mühendisliği ve biyoteknoloji kavramlarını açıklar.",
+     "unit": "Genden Proteine"
+    },
+    {
+     "code": "12.1.2.3",
+     "title": "Genetik mühendisliği ve biyoteknoloji uygulamalarını açıklar.",
+     "unit": "Genden Proteine"
+    },
+    {
+     "code": "12.1.2.4",
+     "title": "Genetik mühendisliği ve biyoteknoloji uygulamalarının insan hayatına etkisini değerlendirir.",
+     "unit": "Genden Proteine"
+    },
+    {
+     "code": "12.2.1.1",
+     "title": "Canlılığın devamı için enerjinin gerekliliğini açıklar.",
+     "unit": "Canlılarda Enerji Dönüşümleri"
+    },
+    {
+     "code": "12.2.2.1",
+     "title": "Fotosentezin canlılar açısından önemini sorgular.",
+     "unit": "Canlılarda Enerji Dönüşümleri"
+    },
+    {
+     "code": "12.2.2.2",
+     "title": "Fotosentez sürecini şema üzerinde açıklar.",
+     "unit": "Canlılarda Enerji Dönüşümleri"
+    },
+    {
+     "code": "12.2.2.3",
+     "title": "Fotosentez hızını etkileyen faktörleri değerlendirir.",
+     "unit": "Canlılarda Enerji Dönüşümleri"
+    },
+    {
+     "code": "12.2.3.1",
+     "title": "Kemosentez olayını açıklar.",
+     "unit": "Canlılarda Enerji Dönüşümleri"
+    },
+    {
+     "code": "12.2.4.1",
+     "title": "Hücresel solunumu açıklar.",
+     "unit": "Canlılarda Enerji Dönüşümleri"
+    },
+    {
+     "code": "12.2.4.2",
+     "title": "Oksijenli solunumda reaksiyona girenler ve reaksiyon sonunda açığa çıkan son ürünlere ilişkin deney yapar.",
+     "unit": "Canlılarda Enerji Dönüşümleri"
+    },
+    {
+     "code": "12.2.4.3",
+     "title": "Fotosentez ve solunum ilişkisi ile ilgili çıkarımlarda bulunur.",
+     "unit": "Canlılarda Enerji Dönüşümleri"
+    },
+    {
+     "code": "12.3.1.1",
+     "title": "Çiçekli bir bitkinin temel kısımlarının yapı ve görevlerini açıklar.",
+     "unit": "Bitki Biyolojisi"
+    },
+    {
+     "code": "12.3.1.2",
+     "title": "Bitki gelişiminde hormonların etkisini örneklerle açıklar.",
+     "unit": "Bitki Biyolojisi"
+    },
+    {
+     "code": "12.3.1.3",
+     "title": "Bitki hareketlerini gözlemleyebileceği kontrollü deney yapar.",
+     "unit": "Bitki Biyolojisi"
+    },
+    {
+     "code": "12.3.2.1",
+     "title": "Köklerde su ve mineral emilimini açıklar.",
+     "unit": "Bitki Biyolojisi"
+    },
+    {
+     "code": "12.3.2.2",
+     "title": "Bitkilerde su ve mineral taşınma mekanizmasını açıklar.",
+     "unit": "Bitki Biyolojisi"
+    },
+    {
+     "code": "12.3.2.3",
+     "title": "Bitkilerde fotosentez ürünlerinin taşınma mekanizmasını açıklar.",
+     "unit": "Bitki Biyolojisi"
+    },
+    {
+     "code": "12.3.2.4",
+     "title": "Bitkilerde su ve madde taşınması ile ilgili deney tasarlar.",
+     "unit": "Bitki Biyolojisi"
+    },
+    {
+     "code": "12.3.3.1",
+     "title": "Çiçeğin kısımlarını ve bu kısımların görevlerini açıklar.",
+     "unit": "Bitki Biyolojisi"
+    },
+    {
+     "code": "12.3.3.2",
+     "title": "Çiçekli bitkilerde döllenmeyi, tohum ve meyvenin oluşumunu açıklar.",
+     "unit": "Bitki Biyolojisi"
+    },
+    {
+     "code": "12.3.3.3",
+     "title": "Tohum çimlenmesini gözleyebileceği deney tasarlar.",
+     "unit": "Bitki Biyolojisi"
+    },
+    {
+     "code": "12.3.3.4",
+     "title": "Dormansi ve çimlenme arasında ilişki kurar.",
+     "unit": "Bitki Biyolojisi"
+    },
+    {
+     "code": "12.4.1.1",
+     "title": "Çevre şartlarının genetik değişimlerin sürekliliğine olan etkisini açıklar.",
+     "unit": "Canlılar ve Çevre"
+    },
+    {
+     "code": "12.4.1.2",
+     "title": "Tarım ve hayvancılıkta yapay seçilim uygulamalarına örnekler verir.",
+     "unit": "Canlılar ve Çevre"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 12,
+   "subjectCode": "COG",
+   "programKey": "cog-2018",
+   "pid": 336,
+   "programVersion": "MEB-MUFREDAT-COG12-074713f34edfd638",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/2018120203724482-Cografya%20dop%20pdf.pdf",
+   "pdfSha256": "074713f34edfd638dc59b99dc03350afb2f75d67c27fa4c953a7d6f8c7584df8",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "12. Sınıf Coğrafya / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "12.1.1",
+     "title": "Doğa olaylarının ekstrem durumlarını ve etkilerini açıklar.",
+     "unit": "DOĞAL SİSTEMLER"
+    },
+    {
+     "code": "12.1.2",
+     "title": "Doğal sistemlerdeki değişimlerle ilgili geleceğe yönelik çıkarımlarda bulunur.",
+     "unit": "DOĞAL SİSTEMLER"
+    },
+    {
+     "code": "12.2.1",
+     "title": "Bir bölgedeki baskın ekonomik faaliyet türünü sosyal ve kültürel hayata etkileri açısından analiz eder.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.2",
+     "title": "Şehirleşme, göç ve sanayileşme ilişkisini toplumsal etkileri açısından yorumlar.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.3",
+     "title": "Nüfus, yerleşme ve ekonomik faaliyetlerde gelecekte olabilecek değişimlerle ilgili çıkarımlarda bulunur.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.4",
+     "title": "Ülkemizdeki işlevsel bölgeleri özelliklerine göre analiz eder.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.5",
+     "title": "Türkiye’deki bölgesel kalkınma projelerini ekonomik, sosyal ve kültürel etkileri açısından değerlendirir.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.6",
+     "title": "Hizmet sektörünün Türkiye’nin ekonomik kalkınmasıyla olan ilişkisini açıklar.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.7",
+     "title": "Ulaşım sisteminin gelişiminde etkili olan faktörleri açıklar.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.8",
+     "title": "Ulaşım ağları ile yerleşme ve ekonomik faaliyetler arasında ilişki kurar.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.9",
+     "title": "Türkiye’deki ulaşım sisteminin gelişim sürecini açıklar.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.10",
+     "title": "Dünya ticaret merkezleri ve ağlarını küresel ekonomideki yerleri açısından analiz eder.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.11",
+     "title": "Türkiye’deki ticaret merkezlerinin ticarete konu olan ürünlere ve akış yönlerine etkilerini açıklar.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.12",
+     "title": "Tarihî ticaret yollarını Türkiye'nin konumu açısından değerlendirir.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.13",
+     "title": "Türkiye’nin dış ticaretini ve dünya pazarlarındaki yerini ticarete konu olan ürünler açısından analiz eder.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.14",
+     "title": "Türkiye'deki doğal ve kültürel sembollerin mekânla ilişkisini açıklar.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.15",
+     "title": "Türkiye’nin turizm potansiyelini ve varlıklarını açıklar.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.16",
+     "title": "Türkiye’nin turizm politikalarını çevresel, kültürel ve ekonomik etkileri açısından değerlendirir.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.2.17",
+     "title": "Turizmin Türkiye ekonomisindeki yerini değerlendirir.",
+     "unit": "BEŞERÎ SİSTEMLER"
+    },
+    {
+     "code": "12.3.1",
+     "title": "Kıtaların ve okyanusların konumsal önemindeki değişimi örneklerle açıklar.",
+     "unit": "KÜRESEL ORTAM: BÖLGELER VE ÜLKELER"
+    },
+    {
+     "code": "12.3.2",
+     "title": "Ülkelerin konumunun bölgesel ve küresel etkilerini değerlendirir.",
+     "unit": "KÜRESEL ORTAM: BÖLGELER VE ÜLKELER"
+    },
+    {
+     "code": "12.3.3",
+     "title": "Tarihsel süreçte Türkiye’nin jeopolitik konumunu değerlendirir.",
+     "unit": "KÜRESEL ORTAM: BÖLGELER VE ÜLKELER"
+    },
+    {
+     "code": "12.3.4",
+     "title": "Türkiye’nin içinde yer aldığı jeopolitik bölgelerle olan ilişkisini açıklar.",
+     "unit": "KÜRESEL ORTAM: BÖLGELER VE ÜLKELER"
+    },
+    {
+     "code": "12.3.5",
+     "title": "Türk kültür bölgeleri ile ülkemiz arasındaki tarihî ve kültürel bağları açıklar.",
+     "unit": "KÜRESEL ORTAM: BÖLGELER VE ÜLKELER"
+    },
+    {
+     "code": "12.3.6",
+     "title": "Teknolojik gelişmelerin, bölgeler ve ülkeler arası kültürel ve ekonomik etkileşimdeki rolünü açıklar.",
+     "unit": "KÜRESEL ORTAM: BÖLGELER VE ÜLKELER"
+    },
+    {
+     "code": "12.3.7",
+     "title": "Ülkelerin gelişmişlik seviyelerinin belirlenmesinde etkili olan faktörleri açıklar.",
+     "unit": "KÜRESEL ORTAM: BÖLGELER VE ÜLKELER"
+    },
+    {
+     "code": "12.3.8",
+     "title": "Gelişmiş ve gelişmekte olan ülkelerin ekonomik özelliklerini karşılaştırır.",
+     "unit": "KÜRESEL ORTAM: BÖLGELER VE ÜLKELER"
+    },
+    {
+     "code": "12.3.9",
+     "title": "Ülkelerin bölgesel ve küresel ilişkilerini doğal kaynak potansiyeli açısından değerlendirir.",
+     "unit": "KÜRESEL ORTAM: BÖLGELER VE ÜLKELER"
+    },
+    {
+     "code": "12.3.10",
+     "title": "Dünyadaki başlıca enerji nakil hatlarının bölge ve ülkelere etkisini açıklar.",
+     "unit": "KÜRESEL ORTAM: BÖLGELER VE ÜLKELER"
+    },
+    {
+     "code": "12.3.11",
+     "title": "Ülkeler arasında sorun oluşturan mekânsal unsurları günümüz çatışma alanlarıyla ilişkilendirir.",
+     "unit": "KÜRESEL ORTAM: BÖLGELER VE ÜLKELER"
+    },
+    {
+     "code": "12.4.1",
+     "title": "Doğal çevrenin sınırlılığını açıklar.",
+     "unit": "ÇEVRE VE TOPLUM"
+    },
+    {
+     "code": "12.4.2",
+     "title": "Farklı gelişmişlik düzeyine sahip ülkelerin çevre sorunlarının önlenmesine yönelik politika ve uygulamalarını karşılaştırır.",
+     "unit": "ÇEVRE VE TOPLUM"
+    },
+    {
+     "code": "12.4.3",
+     "title": "Çevresel örgüt ve anlaşmaların çevre yönetimi ve korunmasına etkilerini açıklar.",
+     "unit": "ÇEVRE VE TOPLUM"
+    },
+    {
+     "code": "12.4.4",
+     "title": "Ortak doğal ve kültürel mirasa yönelik tehditleri açıklar.",
+     "unit": "ÇEVRE VE TOPLUM"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 12,
+   "subjectCode": "DIN",
+   "programKey": "din-9-12-2018",
+   "pid": 319,
+   "programVersion": "MEB-MUFREDAT-DIN12-da31fb7e62fa40f7",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/20221229134742302-DKAB_(9-12.%20S%C4%B1n%C4%B1f)_DOP_%202018.pdf",
+   "pdfSha256": "da31fb7e62fa40f7ef7bbdb67582557ade943dd1e562d914e7be6b56ad915594",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "12. Sınıf Din Kültürü ve Ahlak Bilgisi / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "12.1.1",
+     "title": "Din-bilim ilişkisini tartışır.",
+     "unit": "İSLAM VE BİLİM"
+    },
+    {
+     "code": "12.1.2",
+     "title": "İslam medeniyetinde bilim ve düşüncenin gelişim sürecini değerlendirir.",
+     "unit": "İSLAM VE BİLİM"
+    },
+    {
+     "code": "12.1.3",
+     "title": "İslam medeniyetinde öne çıkan eğitim ve bilim kurumlarını tanır.",
+     "unit": "İSLAM VE BİLİM"
+    },
+    {
+     "code": "12.1.4",
+     "title": "Müslümanların bilim alanında yaptığı özgün çalışmaları sınıflandırır.",
+     "unit": "İSLAM VE BİLİM"
+    },
+    {
+     "code": "12.1.5",
+     "title": "Fâtır suresi 27-28. ayette verilen mesajları değerlendirir.",
+     "unit": "İSLAM VE BİLİM"
+    },
+    {
+     "code": "12.2.1",
+     "title": "Türklerin Müslüman olma sürecini açıklar.",
+     "unit": "ANADOLU’DA İSLAM"
+    },
+    {
+     "code": "12.2.2",
+     "title": "Dinî anlayış ve kültürümüzün oluşmasında etkili olan bazı şahsiyetleri tanır.",
+     "unit": "ANADOLU’DA İSLAM"
+    },
+    {
+     "code": "12.2.3",
+     "title": "Nisâ suresi 69. ayette verilen mesajları değerlendirir.",
+     "unit": "ANADOLU’DA İSLAM"
+    },
+    {
+     "code": "12.3.1",
+     "title": "İslam düşüncesinde tasavvufi düşüncenin oluşum sürecini değerlendirir.",
+     "unit": "İSLAM DÜŞÜNCESİNDE TASAVVUFİ YORUMLAR"
+    },
+    {
+     "code": "12.3.2",
+     "title": "Tasavvufi düşüncede ahlaki boyutun önemini fark eder.",
+     "unit": "İSLAM DÜŞÜNCESİNDE TASAVVUFİ YORUMLAR"
+    },
+    {
+     "code": "12.3.3",
+     "title": "Kültürümüzde etkin olan bazı tasavvufi yorumları tanır.",
+     "unit": "İSLAM DÜŞÜNCESİNDE TASAVVUFİ YORUMLAR"
+    },
+    {
+     "code": "12.3.4",
+     "title": "Alevilik-Bektaşilikteki temel kavram ve erkânları tanır.",
+     "unit": "İSLAM DÜŞÜNCESİNDE TASAVVUFİ YORUMLAR"
+    },
+    {
+     "code": "12.3.5",
+     "title": "Hucurât Suresi 10. ayette verilen mesajları değerlendirir.",
+     "unit": "İSLAM DÜŞÜNCESİNDE TASAVVUFİ YORUMLAR"
+    },
+    {
+     "code": "12.4.1",
+     "title": "Dinî meselelerin çözümüyle ilgili temel ilke ve yöntemleri analiz eder.",
+     "unit": "GÜNCEL DİNÎ MESELELER"
+    },
+    {
+     "code": "12.4.2",
+     "title": "İslam’ın ekonomik hayatla ilgili ahlaki ölçülerini yorumlar.",
+     "unit": "GÜNCEL DİNÎ MESELELER"
+    },
+    {
+     "code": "12.4.3",
+     "title": "Gıda maddeleri ve bağımlılık konusundaki dinî ve ahlaki ilkeleri açıklar.",
+     "unit": "GÜNCEL DİNÎ MESELELER"
+    },
+    {
+     "code": "12.4.4",
+     "title": "Sağlık ve tıpla ilgili bazı meseleleri dinî ve ahlaki ölçüler çerçevesinde yorumlar.",
+     "unit": "GÜNCEL DİNÎ MESELELER"
+    },
+    {
+     "code": "12.4.5",
+     "title": "En’âm suresi 151-152. ayetlerde verilen mesajları değerlendirir.",
+     "unit": "GÜNCEL DİNÎ MESELELER"
+    },
+    {
+     "code": "12.5.1",
+     "title": "Hinduizm’in doğuşunu ve gelişim sürecini özetler.",
+     "unit": "HİNT VE ÇİN DİNLERİ"
+    },
+    {
+     "code": "12.5.2",
+     "title": "Budizm’in doğuşunu ve gelişim sürecini özetler.",
+     "unit": "HİNT VE ÇİN DİNLERİ"
+    },
+    {
+     "code": "12.5.3",
+     "title": "Konfüçyanizm’in doğuşunu ve gelişim sürecini özetler.",
+     "unit": "HİNT VE ÇİN DİNLERİ"
+    },
+    {
+     "code": "12.5.4",
+     "title": "Taoizm’in doğuşunu ve gelişim sürecini özetler.",
+     "unit": "HİNT VE ÇİN DİNLERİ"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 12,
+   "subjectCode": "INK",
+   "programKey": "ink-orta-2018",
+   "pid": 346,
+   "programVersion": "MEB-MUFREDAT-INK12-0eeb61d5eef4c9ff",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/20221229131923491-T.C.%20%C4%B0nk%C4%B1lap%20Tarihi%20ve%20Atat%C3%BCrk%C3%A7%C3%BCl%C3%BCk%20Dersi%20%C3%96%C4%9Fretim%20Program%C4%B1.pdf",
+   "pdfSha256": "0eeb61d5eef4c9ff65e709ca2043e2404e05d6f0926a4c4f011677387c4ea7f2",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "12. Sınıf T.C. İnkılap Tarihi ve Atatürkçülük / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "1.1",
+     "title": "Mustafa Kemal’in Birinci Dünya Savaşı’na kadarki eğitim ve askerlik hayatını içinde bulunduğu toplumun siyasi, sosyal ve kültürel yapısı ile ilişkilendirir.",
+     "unit": "20. YÜZYIL BAŞLARINDA OSMANLI DEVLETİ VE DÜNYA"
+    },
+    {
+     "code": "1.2",
+     "title": "20. yüzyıl başlarında Osmanlı Devleti’nin siyasi, sosyal ve ekonomik durumunu analiz eder.",
+     "unit": "20. YÜZYIL BAŞLARINDA OSMANLI DEVLETİ VE DÜNYA"
+    },
+    {
+     "code": "1.3",
+     "title": "I. Dünya Savaşı sürecinde Osmanlı Devleti’nin durumunu siyasi, askerî ve sosyal açılardan analiz eder.",
+     "unit": "20. YÜZYIL BAŞLARINDA OSMANLI DEVLETİ VE DÜNYA"
+    },
+    {
+     "code": "1.4",
+     "title": "I. Dünya Savaşı’nın sonuçlarını Osmanlı Devleti ve Batılı devletler açısından değerlendirir.",
+     "unit": "20. YÜZYIL BAŞLARINDA OSMANLI DEVLETİ VE DÜNYA"
+    },
+    {
+     "code": "2.1",
+     "title": "Kuvay-ı Millîye hareketinin oluşumundan Büyük Millet Meclisinin açılışına kadar olan süreçte meydana gelen gelişmeleri açıklar.",
+     "unit": "MİLLÎ MÜCADELE"
+    },
+    {
+     "code": "2.2",
+     "title": "Büyük Millet Meclisinin açılış sürecini ve sonrasında meydana gelen gelişmeleri kavrar.",
+     "unit": "MİLLÎ MÜCADELE"
+    },
+    {
+     "code": "2.3",
+     "title": "Sevr Antlaşması’nın Millî Mücadele sürecine etkilerini analiz eder.",
+     "unit": "MİLLÎ MÜCADELE"
+    },
+    {
+     "code": "2.4",
+     "title": "Doğu ve Güney Cephelerinde verilen mücadelelerin ülkemizin bağımsızlık sürecine katkılarını kavrar.",
+     "unit": "MİLLÎ MÜCADELE"
+    },
+    {
+     "code": "2.5",
+     "title": "Düzenli ordunun kurulmasından Mudanya Ateşkes Antlaşması’na kadar meydana gelen gelişmeleri Türkiye’nin bağımsızlık sürecine katkıları açısından analiz eder.",
+     "unit": "MİLLÎ MÜCADELE"
+    },
+    {
+     "code": "2.6",
+     "title": "Millî Mücadele sonucunda kazanılan diplomatik başarıları ülkemizin bağımsızlığı açısından değerlendirir.",
+     "unit": "MİLLÎ MÜCADELE"
+    },
+    {
+     "code": "2.7",
+     "title": "Millî Mücadele sürecine katkıda bulunmuş önemli şahsiyetlerin kişilik özellikleri ile faaliyetlerini ilişkilendirir.",
+     "unit": "MİLLÎ MÜCADELE"
+    },
+    {
+     "code": "3.1",
+     "title": "Çağdaşlaşan Türkiye’nin temeli olan Atatürk ilkelerini kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE TÜRK İNKILABI"
+    },
+    {
+     "code": "3.2",
+     "title": "Siyasi alanda meydana gelen gelişmeleri kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE TÜRK İNKILABI"
+    },
+    {
+     "code": "3.3",
+     "title": "Hukuk alanında meydana gelen gelişmelerin Türk toplumunda meydana getirdiği değişimleri kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE TÜRK İNKILABI"
+    },
+    {
+     "code": "3.4",
+     "title": "Eğitim ve kültür alanında yapılan inkılapları ve gelişmeleri kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE TÜRK İNKILABI"
+    },
+    {
+     "code": "3.5",
+     "title": "Toplumsal alanda yapılan inkılapları ve meydana gelen gelişmeleri kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE TÜRK İNKILABI"
+    },
+    {
+     "code": "3.6",
+     "title": "Ekonomi alanında meydana gelen gelişmeleri kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE TÜRK İNKILABI"
+    },
+    {
+     "code": "3.7",
+     "title": "Atatürk Dönemi’nde sağlık alanında yapılan çalışmaları kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE TÜRK İNKILABI"
+    },
+    {
+     "code": "3.8",
+     "title": "Atatürk ilke ve inkılaplarını oluşturan temel esasları Atatürkçü düşünce sistemi açısından analiz eder.",
+     "unit": "ATATÜRKÇÜLÜK VE TÜRK İNKILABI"
+    },
+    {
+     "code": "4.1",
+     "title": "Atatürk Dönemi’nde Türkiye Cumhuriyeti’nin iç politikasındaki önemli gelişmeleri açıklar.",
+     "unit": "İKİ SAVAŞ ARASINDAKİ DÖNEMDE TÜRKİYE VE DÜNYA"
+    },
+    {
+     "code": "4.2",
+     "title": "Atatürk Dönemi’nde (1923-1938) Türkiye Cumhuriyeti’nin dış politikasındaki başlıca gelişmeleri açıklar.",
+     "unit": "İKİ SAVAŞ ARASINDAKİ DÖNEMDE TÜRKİYE VE DÜNYA"
+    },
+    {
+     "code": "4.3",
+     "title": "İki dünya savaşı arasındaki dönemde dünyada meydana gelen siyasi ve ekonomik gelişmeleri kavrar.",
+     "unit": "İKİ SAVAŞ ARASINDAKİ DÖNEMDE TÜRKİYE VE DÜNYA"
+    },
+    {
+     "code": "5.1",
+     "title": "II. Dünya Savaşı’nın sebepleri, başlaması ve yayılmasıyla ilgili başlıca gelişmeleri kavrar.",
+     "unit": "II. DÜNYA SAVAŞI SÜRECİNDE TÜRKİYE VE DÜNYA"
+    },
+    {
+     "code": "5.2",
+     "title": "II. Dünya Savaşı sürecinde Türkiye’nin izlediği siyaset ile savaşın Türkiye üzerindeki ekonomik ve toplumsal etkilerini analiz eder.",
+     "unit": "II. DÜNYA SAVAŞI SÜRECİNDE TÜRKİYE VE DÜNYA"
+    },
+    {
+     "code": "5.3",
+     "title": "II. Dünya Savaşı’nın sonuçlarını değerlendirir.",
+     "unit": "II. DÜNYA SAVAŞI SÜRECİNDE TÜRKİYE VE DÜNYA"
+    },
+    {
+     "code": "6.1",
+     "title": "1945-1950 yılları arasında Türkiye’de meydana gelen siyasi, sosyal ve ekonomik gelişmeleri kavrar.",
+     "unit": "II. DÜNYA SAVAŞI SONRASINDA TÜRKİYE VE DÜNYA"
+    },
+    {
+     "code": "6.2",
+     "title": "II. Dünya Savaşı sonrası dönemde uluslararası ilişkilerde ve Türk dış politikasında meydana gelen gelişmeleri kavrar.",
+     "unit": "II. DÜNYA SAVAŞI SONRASINDA TÜRKİYE VE DÜNYA"
+    },
+    {
+     "code": "6.3",
+     "title": "1950’ler Türkiye’sinde meydana gelen siyasi, sosyal ve ekonomik gelişmeleri analiz eder.",
+     "unit": "II. DÜNYA SAVAŞI SONRASINDA TÜRKİYE VE DÜNYA"
+    },
+    {
+     "code": "7.1",
+     "title": "1960 sonrasında dünya siyasetinde ortaya çıkan gelişmeleri açıklar.",
+     "unit": "TOPLUMSAL DEVRİM ÇAĞINDA DÜNYA VE TÜRKİYE"
+    },
+    {
+     "code": "7.2",
+     "title": "1960’lardan itibaren Türk dış politikasını etkileyen önemli gelişmeleri kavrar.",
+     "unit": "TOPLUMSAL DEVRİM ÇAĞINDA DÜNYA VE TÜRKİYE"
+    },
+    {
+     "code": "7.3",
+     "title": "1960’lardan itibaren Türkiye’de meydana gelen siyasi, ekonomik ve sosyo-kültürel gelişmeleri analiz eder.",
+     "unit": "TOPLUMSAL DEVRİM ÇAĞINDA DÜNYA VE TÜRKİYE"
+    },
+    {
+     "code": "8.1",
+     "title": "1990 sonrasında Türkiye’de meydana gelen ekonomik, siyasi, sosyal ve kültürel gelişmeleri kavrar.",
+     "unit": "21. YÜZYILIN EŞİĞİNDE TÜRKİYE VE DÜNYA"
+    },
+    {
+     "code": "8.2",
+     "title": "1990 sonrasında meydana gelen siyasi gelişmeleri Türkiye’ye etkileri ve dünya siyasi konjonktürü bağlamında analiz eder.",
+     "unit": "21. YÜZYILIN EŞİĞİNDE TÜRKİYE VE DÜNYA"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 12,
+   "subjectCode": "EDB",
+   "programKey": "tde-2018",
+   "pid": 353,
+   "programVersion": "MEB-MUFREDAT-EDB12-26165bf1bde7c137",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/20221229132522794-T%C3%BCrk%20Dili%20ve%20Edebiyat%C4%B1%20Dersi%20%C3%96%C4%9Fretim%20Program%C4%B1.pdf",
+   "pdfSha256": "26165bf1bde7c1372805b5e8bf5f5e3f1720f25bf5f1f9f969a9e0bedf0de105",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "12. Sınıf Türk Dili ve Edebiyatı / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "A.1.1",
+     "title": "Metinde geçen kelime ve kelime gruplarının anlamlarını tespit eder.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.2",
+     "title": "Şiirin temasını belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.3",
+     "title": "Şiirde ahengi sağlayan özellikleri/unsurları belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.4",
+     "title": "Şiirin nazım biçimini ve nazım türünü tespit eder.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.5",
+     "title": "Şiirdeki mazmun, imge ve edebî sanatları belirleyerek bunların anlama katkısını değerlendirir.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.6",
+     "title": "Şiirde söyleyici ile hitap edilen kişi/varlık arasındaki ilişkiyi belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.7",
+     "title": "Şiirde millî, manevi ve evrensel değerler ile sosyal, siyasi, tarihî ve mitolojik ögeleri belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.8",
+     "title": "Şiirde edebiyat, sanat ve fikir akımlarının/anlayışlarının yansımalarını değerlendirir.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.9",
+     "title": "Şiiri yorumlar.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.10",
+     "title": "Şair ile şiir arasındaki ilişkiyi değerlendirir.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.11",
+     "title": "Türün/biçimin ve dönemin/akımın diğer önemli yazarlarını ve eserlerini sıralar.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.12",
+     "title": "Metinden hareketle dil bilgisi çalışmaları yapar.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.1.13",
+     "title": "Metinler arası karşılaştırmalar yapar.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.1",
+     "title": "Metinde geçen kelime ve kelime gruplarının anlamlarını tespit eder.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.2",
+     "title": "Metnin türünün ortaya çıkışı ve tarihsel dönem ile ilişkisini belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.3",
+     "title": "Metnin tema ve konusunu belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.4",
+     "title": "Metindeki çatışmaları belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.5",
+     "title": "Metnin olay örgüsünü belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.6",
+     "title": "Metindeki şahıs kadrosunun özelliklerini belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.7",
+     "title": "Metindeki zaman ve mekânın özelliklerini belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.8",
+     "title": "Metinde anlatıcı ve bakış açısının işlevini belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.9",
+     "title": "Metindeki anlatım biçimleri ve tekniklerinin işlevlerini belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.10",
+     "title": "Metnin üslup özelliklerini belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.11",
+     "title": "Metinde millî, manevi ve evrensel değerler ile sosyal, siyasi, tarihî ve mitolojik ögeleri belirler.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.12",
+     "title": "Metinde edebiyat, sanat ve fikir akımlarının/anlayışlarının yansımalarını değerlendirir.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.13",
+     "title": "Metni yorumlar.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.14",
+     "title": "Yazar ile metin arasındaki ilişkiyi değerlendirir.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.15",
+     "title": "Türün ve dönemin/akımın diğer önemli yazarlarını ve eserlerini sıralar.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.2.16",
+     "title": "Metinlerden hareketle dil bilgisi çalışmaları yapar.",
+     "unit": "ŞİİR"
+    },
+    {
+     "code": "A.3.1",
+     "title": "Metinde geçen kelime ve kelime gruplarının anlamlarını tespit eder.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.2",
+     "title": "Metnin türünün ortaya çıkışı ve tarihsel dönemle ilişkisini belirler.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.3",
+     "title": "Metnin tema ve konusunu belirler.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.4",
+     "title": "Metindeki çatışmaları belirler.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.5",
+     "title": "Metindeki olay örgüsünü belirler.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.6",
+     "title": "Metindeki şahıs kadrosunun özelliklerini belirler.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.7",
+     "title": "Metindeki zaman ve mekânın özelliklerini belirler.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.8",
+     "title": "Metnin dil, üslup ve anlatım/sunum özelliklerini belirler.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.9",
+     "title": "Metinde millî, manevi ve evrensel değerler ile sosyal, siyasi, tarihî ve mitolojik ögeleri belirler.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.10",
+     "title": "Metinde edebiyat, sanat ve fikir akımlarının/anlayışlarının yansımalarını değerlendirir.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.11",
+     "title": "Metni yorumlar.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.12",
+     "title": "Yazar ve metin arasındaki ilişkiyi değerlendirir.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.13",
+     "title": "Türün ve dönemin/akımın diğer önemli yazarlarını ve eserlerini sıralar.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.3.14",
+     "title": "Metinlerden hareketle dil bilgisi çalışmaları yapar.",
+     "unit": "TİYATRO"
+    },
+    {
+     "code": "A.4.1",
+     "title": "Metinde geçen kelime ve kelime gruplarının anlamlarını tespit eder.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.2",
+     "title": "Metnin türünün ortaya çıkışı ve tarihsel dönemle ilişkisini belirler.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.3",
+     "title": "Metin ile metnin konusu, amacı ve hedef kitlesi arasında ilişki kurar.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.4",
+     "title": "Metnin ana düşüncesi ve yardımcı düşüncelerini belirler.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.5",
+     "title": "Metindeki anlatım biçimlerini, düşünceyi geliştirme yollarını ve bunların işlevlerini belirler.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.6",
+     "title": "Metnin görsel unsurlarla ilişkisini belirler.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.7",
+     "title": "Metnin üslup özelliklerini belirler.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.8",
+     "title": "Metinde millî, manevi ve evrensel değerler ile sosyal, siyasi, tarihî ve mitolojik ögeleri belirler.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.9",
+     "title": "Metinde ortaya konulan bilgi ve yorumları ayırt eder.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.10",
+     "title": "Metinde yazarın bakış açısını belirler.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.11",
+     "title": "Metinde fikrî, felsefi veya siyasi akım, gelenek veya anlayışların yansımalarını değerlendirir.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.12",
+     "title": "Metni yorumlar.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.13",
+     "title": "Yazar ve metin arasındaki ilişkiyi değerlendirir.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.14",
+     "title": "Türün ve dönemin/akımın diğer önemli yazarlarını ve eserlerini sıralar.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "A.4.15",
+     "title": "Metinlerden hareketle dil bilgisi çalışmaları yapar.",
+     "unit": "BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER"
+    },
+    {
+     "code": "B.1",
+     "title": "Farklı türlerde metinler yazar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "B.2",
+     "title": "Yazacağı metnin türüne göre konu, tema, ana düşünce, amaç ve hedef kitleyi belirler.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "B.3",
+     "title": "Yazma konusuyla ilgili hazırlık yapar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "B.4",
+     "title": "Yazacağı metni planlar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "B.5",
+     "title": "Metin türüne özgü yapı özelliklerine uygun yazar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "B.6",
+     "title": "Metin türüne özgü dil ve anlatım özelliklerine uygun yazar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "B.7",
+     "title": "İyi bir anlatımda bulunması gereken özelliklere dikkat ederek yazar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "B.8",
+     "title": "Farklı cümle yapılarını ve türlerini kullanır.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "B.9",
+     "title": "Görsel ve işitsel unsurları doğru ve etkili kullanır.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "B.10",
+     "title": "Yazdığı metni gözden geçirir.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "B.11",
+     "title": "Ürettiği ve paylaştığı metinlerin sorumluluğunu üstlenir.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "B.12",
+     "title": "Yazdığı metni başkalarıyla paylaşır.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "C.1.1",
+     "title": "İletişim sürecini oluşturan ögeleri ve iletişimde dilin önemini belirler.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.2",
+     "title": "Konuşmanın konusunu, amacını, hedef kitlesini ve türünü belirler.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.3",
+     "title": "Konuyla ilgili gözlem, inceleme veya araştırma yapar.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.4",
+     "title": "Konuşma metnini planlar.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.5",
+     "title": "Konuşma planına uygun olarak konuşma kartları hazırlar.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.6",
+     "title": "Konuşmasında yararlanacağı görsel ve işitsel araçları hazırlar.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.7",
+     "title": "Konuşmasına uygun sunu hazırlar.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.8",
+     "title": "Konuşma provası yapar.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.9",
+     "title": "Boğumlama, vurgulama, tonlama ve duraklamaya dikkat ederek konuşur.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.10",
+     "title": "Konuşurken gereksiz ses ve kelimeler kullanmaktan kaçınır.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.11",
+     "title": "Konuşmasında beden dilini doğru ve etkili biçimde kullanır.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.12",
+     "title": "Konuşmasına etkili bir başlangıç yapar.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.13",
+     "title": "Konuşmasının içeriğini zenginleştirir.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.14",
+     "title": "Konuşmasında önemli noktaları vurgulayan ve konuşmayı takip etmeyi kolaylaştıran ifadeler kullanır.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.15",
+     "title": "Konuşmasını etkili bir biçimde sonlandırır.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.16",
+     "title": "Konuşmasında süreyi verimli kullanır.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.1.17",
+     "title": "Konuşmasında teknolojik araçları etkili biçimde kullanır.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "C.2.1",
+     "title": "Amacına uygun dinleme tekniklerini kullanır.",
+     "unit": "DİNLEME"
+    },
+    {
+     "code": "C.2.2",
+     "title": "Dinlediği konuşmanın konu ve ana düşüncesini tespit eder.",
+     "unit": "DİNLEME"
+    },
+    {
+     "code": "C.2.3",
+     "title": "Dinlediği konuşmada konu akışını takip eder.",
+     "unit": "DİNLEME"
+    },
+    {
+     "code": "C.2.4",
+     "title": "Dinlediği konuşmadaki açık ve örtük iletileri belirler.",
+     "unit": "DİNLEME"
+    },
+    {
+     "code": "C.2.5",
+     "title": "Dinlediklerini özetler.",
+     "unit": "DİNLEME"
+    },
+    {
+     "code": "C.2.6",
+     "title": "Dinlediklerini ön bilgileriyle karşılaştırır.",
+     "unit": "DİNLEME"
+    },
+    {
+     "code": "C.2.7",
+     "title": "Dinlediği konuşmanın tutarlılığını sorgular.",
+     "unit": "DİNLEME"
+    },
+    {
+     "code": "C.2.8",
+     "title": "Dinlediği konuşmada öne sürülen düşüncelerin dayanaklarının geçerliliğini sorgular.",
+     "unit": "DİNLEME"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 12,
+   "subjectCode": "ING",
+   "programKey": "ing-9-12-2018",
+   "pid": 342,
+   "programVersion": "MEB-MUFREDAT-ING12-6078d3eb804ecb1f",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812020472656-OGM%20INGILIZCE%20PRG%2020.012018.pdf",
+   "pdfSha256": "6078d3eb804ecb1fd7583d790b6e50b66aec460bc08ded196d970335d820a473",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "12. Sınıf İngilizce / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "E12.1.L1",
+     "title": "Students will be able to detect the embedded information in songs/media tools.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E12.1.P1",
+     "title": "Students will be able to practice intonation in sentences.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E12.1.S1",
+     "title": "Students will be able to exchange ideas about their music preferences.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E12.1.S2",
+     "title": "Students will be able to agree or disagree with others by sharing their opinions about music.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E12.1.R1",
+     "title": "Students will be able to infer people’s music preferences from their ideas about music in a reading text.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E12.1.R2",
+     "title": "Students will be able to analyze surveys/interviews to answer related questions.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E12.1.W1",
+     "title": "Students will be able to write a survey report on their friends’/teachers’ music preferences.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E12.2.L1",
+     "title": "Students will be able to extract specific information from a conversation between friends.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E12.2.L2",
+     "title": "Students will be able to make inferences about the quatlities of a good friend through a recorded text.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E12.2.P1",
+     "title": "Students will be able to practice syllable/word stress.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E12.2.S1",
+     "title": "Students will be able to ask and answer questions about personal features.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E12.2.S2",
+     "title": "Students will be able to state reasons while giving clear detailed descriptions about physical appearances.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E12.2.S3",
+     "title": "Students will be able to interpret information from graphic features (graphs, charts, tables, etc.) descriptions of the people in a text.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E12.2.R1",
+     "title": "Students will be able to find irrelevant content about the descriptions of the people in a text.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E12.2.R2",
+     "title": "Students will be able to identify the main conclusions in argumentative texts.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E12.2.W1",
+     "title": "Students will be able to write an opinion essay about qualities of a good friend by stating reasons.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E12.3.L1",
+     "title": "Students will be able to guess the meaning of lexis and jargon about human rights in a recorded text/video.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E12.3.L2",
+     "title": "Students will be able to distinguish the positive and negative expressions about human rights in a recorded text/video.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E12.3.P1",
+     "title": "Students will be able to practice syllable/word stress.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E12.3.S1",
+     "title": "Students will be able to make suggestions about improving human rights.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E12.3.S2",
+     "title": "Students will be able to discuss the problems/difficulties of the disadvantaged people in the world.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E12.3.R1",
+     "title": "Students will be able to find the supporting ideas in a text about good practices on human rights around the world.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E12.3.R2",
+     "title": "Students will be able to match the paragraphs with the correct phrases/visuals (children rights/gender equality/animal rights/the rights of disadvantaged people, etc.).",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E12.3.W1",
+     "title": "Students will be able to write mottos/slogans about human rights.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E12.3.W2",
+     "title": "Students will be able to write an argumentative essay including solutions for disadvantaged people’s problems.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E12.4.L1",
+     "title": "Students will be able to take notes during an informal debate/poster presentation/seminar in a video.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E12.4.L2",
+     "title": "Students will be able to match the topics with recorded passages corresponding to virtual reality and imaginary world.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E12.4.P1",
+     "title": "Students will be able to pronounce reduced forms (e.g.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E12.4.S1",
+     "title": "Students will be able to talk about predictions and plans.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E12.4.S2",
+     "title": "Students will be able to participate in an informal debate about virtual reality and imaginary world/ cyber games to share ideas.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E12.4.R1",
+     "title": "Students will be able to read (aloud) a text about cyber crimes and rights to distinguish the lexis and jargon.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E12.4.R2",
+     "title": "Students will be able to reorder the scrambled steps of a cyber game in a text.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E12.4.W1",
+     "title": "Students will be able to write detailed descriptions of an imaginary future.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E12.4.W2",
+     "title": "Students will be able to compose a cyber game scenerio.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E12.5.L1",
+     "title": "Students will be able to list the suggestions to change mood given by a psychologist/friend in recorded text.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E12.5.L2",
+     "title": "Students will be able to identify the speaker’s mood, tone, etc in a recorded text.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E12.5.P1",
+     "title": "Students will be able to practice sentence intonation and stress.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E12.5.S1",
+     "title": "Students will be able to make a Roleplay between a psychologist/school counsellor and a client.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E12.5.S2",
+     "title": "Students will be able to make comment on moods by looking at flashcards.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E12.5.S3",
+     "title": "Students will be able to use different voice levels, phrasing and intonation to give and follow instructions in different moods.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E12.5.R2",
+     "title": "Students will be able to identify specific information in a real-life text.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E12.5.W1",
+     "title": "Students will be able to describe their current mood / mood reflected in a song/ painting/photograph through creative writing.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E12.6.L1",
+     "title": "Students will be able to identify phrases and the highest frequency vocabulary related to requests in various contexts in a recorded text.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E12.6.L2",
+     "title": "Students will be able to complete a conversation about favors in a recorded text/video.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E12.6.P1",
+     "title": "Students will be able to practice “ yod coalescence” \"Would you / /wʊdʒu/ and could you /kʊdʒu/ \".",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E12.6.S1",
+     "title": "Students will be able to distinguish between formal and informal language while accepting and declining requests.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E12.6.S2",
+     "title": "Students will be able to act out a self-prepared dialogue about requests/favours.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E12.6.R1",
+     "title": "Students will be able to scan a text for the specific information about a charity organization/foundation.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E12.6.W1",
+     "title": "Students will be able to write an announcement to invite people for a charity organization.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E12.6.W2",
+     "title": "Students will be able to write an application letter to an organization for scholarship.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E12.7.L1",
+     "title": "Students will be able to list the sequences of the past events in a recorded text/video.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E12.7.L2",
+     "title": "Students will be able to complete a recorded text using cohesive devices.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E12.7.P1",
+     "title": "Students will be able to practice sentence stress appropriately.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E12.7.S1",
+     "title": "Students will be able to narrate the events in the past.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E12.7.S2",
+     "title": "Students will be able to make a presentation about unusual/odd news stories.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E12.7.R1",
+     "title": "Students will be able to list vocabulary for narrating and describing events in a text.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E12.7.R2",
+     "title": "Students will be able to reorder the past events in a news story.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E12.7.W1",
+     "title": "Students will be able to paraphrase news/ stories/ past events.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E12.7.W2",
+     "title": "Students will be able to write a news story/a past experience/an imaginary story.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E12.8.L1",
+     "title": "Students will be able to note down the solutions to the problems of excessive energy consumption around the world in a recorded text.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E12.8.P1",
+     "title": "Students will be able to use intonation in a sentence appropriately.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E12.8.S1",
+     "title": "Students will be able to make complaints and offer solutions to environmental /energy problems.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E12.8.S2",
+     "title": "Students will be able to participate in an informal debate about alternative energy in the future.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E12.8.R1",
+     "title": "Students will be able to summarize a reading passage about alternative energy.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E12.8.R2",
+     "title": "Students will be able to analyze a reading passage to find out solutions to environmental problems.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E12.8.W1",
+     "title": "Students will be able to write an email/a letter of complaint to a local authority about an environmental problem to suggest solutions.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E12.8.W2",
+     "title": "Students will be able to write their opinions about the usage of alternative energy.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E12.9.L1",
+     "title": "Students will be able to list the things needed to be done in a recorded text/video.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E12.9.L2",
+     "title": "Students will be able to find the main idea of a video about technological developments.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E12.9.P1",
+     "title": "Students will be able to practice word stress correctly.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E12.9.S1",
+     "title": "Students will be able to exchange ideas and feelings such as surprise, happiness, interest, and indifference about technological devices.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E12.9.S2",
+     "title": "Students will be able to make an interview with a friend about the influence of technology on social life.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E12.9.R1",
+     "title": "Students will be able to identify the written lexis and jargon about a web-page on technology.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E12.9.R2",
+     "title": "Students will be able to categorize information in everyday material, such as websites, brochures and magazines.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E12.9.W1",
+     "title": "Students will be able to write a note asking someone to have something done.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E12.9.W2",
+     "title": "Students will be able to write a for and against essay discussing technology.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E12.9.W3",
+     "title": "Students will be able to write a description of a hi-tech product by using linking words.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E12.10.L1",
+     "title": "Students will be able to identify the phrases about wishes, regrets and apologies in a recorded text.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E12.10.L2",
+     "title": "Students will be able to classify the manners in a TV or radio program regarding their origin and practice in daily life.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E12.10.P1",
+     "title": "Students will be able to practice sentence stress correctly.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E12.10.S1",
+     "title": "Students will be able to express regrets, wishes and apologies.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E12.10.S2",
+     "title": "Students will be able to discuss manners in different cultures.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E12.10.R1",
+     "title": "Students will be able to identify the main conclusions in argumentative texts.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E12.10.R2",
+     "title": "Students will be able to organize description of events, feelings and wishes in diaries and personal letters.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E12.10.W1",
+     "title": "Students will be able to write a letter, note or report on wishes, regrets and apology.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E12.10.W2",
+     "title": "Students will be able to write personal letters describing experiences, feelings and events in detail in relation to the topic.",
+     "unit": "Unit 10"
+    }
+   ]
   }
  ]
 }

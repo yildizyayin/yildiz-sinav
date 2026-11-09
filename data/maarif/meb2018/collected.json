@@ -1,5 +1,5 @@
 {
- "collectedAt": "2026-11-09T11:47:48.724Z",
+ "collectedAt": "2026-11-09T11:51:24.416Z",
  "source": "https://mufredat.meb.gov.tr",
  "programs": [
   {
@@ -116,6 +116,166 @@
    "sha256": "b7525cf93fce45c0f97f047f93e6f5496d071071f4510544a2815467304381f1",
    "bytes": 327477,
    "textFile": "data/maarif/meb2018/sos-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "tde-2018",
+   "pid": 353,
+   "subject": "EDB",
+   "grades": [
+    12
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=353",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/20221229132522794-T%C3%BCrk%20Dili%20ve%20Edebiyat%C4%B1%20Dersi%20%C3%96%C4%9Fretim%20Program%C4%B1.pdf",
+   "sha256": "26165bf1bde7c1372805b5e8bf5f5e3f1720f25bf5f1f9f969a9e0bedf0de105",
+   "bytes": 2290425,
+   "textFile": "data/maarif/meb2018/tde-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "mat-orta-2018",
+   "pid": 343,
+   "subject": "MAT",
+   "grades": [
+    12
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=343",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/201821102727101-OGM%20MATEMAT%C4%B0K%20PRG%2020.01.2018.pdf",
+   "sha256": "43f68f4e03e61ab677cac24400d3e89f18f364c72291577b4ebac603de4afbe7",
+   "bytes": 1097267,
+   "textFile": "data/maarif/meb2018/mat-orta-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "fiz-2018",
+   "pid": 351,
+   "subject": "FIZ",
+   "grades": [
+    12
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=351",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812103112910-orta%C3%B6%C4%9Fretim_fizik_son.pdf",
+   "sha256": "6f0adf395fc98c961da08cbb10fa72fda04573aab8e796049f64388117a0f051",
+   "bytes": 1802728,
+   "textFile": "data/maarif/meb2018/fiz-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "kim-2018",
+   "pid": 350,
+   "subject": "KIM",
+   "grades": [
+    12
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=350",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812102955190-19.01.2018%20Kimya%20Dersi%20%C3%96%C4%9Fretim%20Program%C4%B1.pdf",
+   "sha256": "fb17e88c798f42670c047e7023bbbde8525a8ce253370b05f67dc89364149fc4",
+   "bytes": 2086899,
+   "textFile": "data/maarif/meb2018/kim-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "biy-2018",
+   "pid": 361,
+   "subject": "BIY",
+   "grades": [
+    12
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=361",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/20182215535566-Biyoloji%20d%C3%B6p.pdf",
+   "sha256": "187254fb4e173c95e767060f0c2f92f4d6abb36ab55dd47589b47a612fedf3d8",
+   "bytes": 2372217,
+   "textFile": "data/maarif/meb2018/biy-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "cog-2018",
+   "pid": 336,
+   "subject": "COG",
+   "grades": [
+    12
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=336",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/2018120203724482-Cografya%20dop%20pdf.pdf",
+   "sha256": "074713f34edfd638dc59b99dc03350afb2f75d67c27fa4c953a7d6f8c7584df8",
+   "bytes": 1052167,
+   "textFile": "data/maarif/meb2018/cog-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "din-9-12-2018",
+   "pid": 319,
+   "subject": "DIN",
+   "grades": [
+    12
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=319",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/20221229134742302-DKAB_(9-12.%20S%C4%B1n%C4%B1f)_DOP_%202018.pdf",
+   "sha256": "da31fb7e62fa40f7ef7bbdb67582557ade943dd1e562d914e7be6b56ad915594",
+   "bytes": 995296,
+   "textFile": "data/maarif/meb2018/din-9-12-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "ing-9-12-2018",
+   "pid": 342,
+   "subject": "ING",
+   "grades": [
+    12
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=342",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812020472656-OGM%20INGILIZCE%20PRG%2020.012018.pdf",
+   "sha256": "6078d3eb804ecb1fd7583d790b6e50b66aec460bc08ded196d970335d820a473",
+   "bytes": 4209967,
+   "textFile": "data/maarif/meb2018/ing-9-12-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "ink-orta-2018",
+   "pid": 346,
+   "subject": "INK",
+   "grades": [
+    12
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=346",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/20221229131923491-T.C.%20%C4%B0nk%C4%B1lap%20Tarihi%20ve%20Atat%C3%BCrk%C3%A7%C3%BCl%C3%BCk%20Dersi%20%C3%96%C4%9Fretim%20Program%C4%B1.pdf",
+   "sha256": "0eeb61d5eef4c9ff65e709ca2043e2404e05d6f0926a4c4f011677387c4ea7f2",
+   "bytes": 3110059,
+   "textFile": "data/maarif/meb2018/ink-orta-2018.txt",
+   "error": null,
+   "otherPdfs": []
+  },
+  {
+   "key": "cagdas-2018",
+   "pid": 337,
+   "subject": "TAR",
+   "grades": [
+    12
+   ],
+   "page": "https://mufredat.meb.gov.tr/ProgramDetay.aspx?PID=337",
+   "title": "T.C. Millî Eğitim Bakanlığı Talim Terbiye Kurulu Başkanlığı",
+   "pdfUrl": "https://mufredat.meb.gov.tr/Dosyalar/20221229131248916-%C3%87a%C4%9Fda%C5%9F%20T%C3%BCrk%20ve%20D%C3%BCnya%20Tarihi%20Dersi%20%C3%96%C4%9Fretim%20Program%C4%B1%20(D%C3%BCzenlenmi%C5%9F).pdf",
+   "sha256": "1ebe3c9d88195ae77925054d5434bb53759df3440d9ec22df50b575f71c727a6",
+   "bytes": 2989296,
+   "textFile": "data/maarif/meb2018/cagdas-2018.txt",
    "error": null,
    "otherPdfs": []
   }
