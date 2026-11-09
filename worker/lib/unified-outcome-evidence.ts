@@ -17,7 +17,7 @@ import { all } from './db';
 export const OUTCOME_QUESTION_TARGET = 30;
 export const LEARNED_RULE = { days: 30, minQuestions: 8, minRate: 0.8 } as const;
 
-export type EvidenceSource = 'EXAM' | 'QUESTION_BANK' | 'MINI_TEST' | 'FOY';
+export type EvidenceSource = 'EXAM' | 'QUESTION_BANK' | 'MINI_TEST' | 'FOY' | 'WRITTEN';
 type Row = { outcome_id: string; question_key: string; source: EvidenceSource; result: number | null; at: string | null };
 
 export type OutcomeEvidence = {
@@ -56,9 +56,7 @@ async function evidenceRows(env: Env, studentId: string, learnerView: boolean): 
     all<Row>(env.DB.prepare(`SELECT o.id outcome_id, 'QB:'||a.question_id question_key, 'QUESTION_BANK' source, a.is_correct result, a.created_at at
       FROM question_practice_attempts a
       JOIN question_learning_links l ON l.question_id=a.question_id
-      JOIN learning_nodes n ON n.id=l.node_id AND n.node_type='OUTCOME' AND n.code IS NOT NULL
-      JOIN curriculum_versions cv ON cv.academic_year=n.academic_year
-      JOIN outcomes o ON o.curriculum_version_id=cv.id AND o.code=n.code AND o.active=1
+      JOIN outcomes o ON l.node_id='ln_'||o.id AND o.active=1
       WHERE a.student_id=?`).bind(studentId)),
     all<Row>(env.DB.prepare(`SELECT t.outcome_id, 'QB:'||q.question_id question_key, 'MINI_TEST' source,
         CASE WHEN q.student_answer IS NULL OR q.student_answer='' THEN NULL ELSE q.correct END result, q.answered_at at
@@ -70,7 +68,40 @@ async function evidenceRows(env: Env, studentId: string, learnerView: boolean): 
       JOIN worksheet_question_links w ON w.worksheet_id=run.source_id AND w.subject_id=r.worksheet_subject_id AND w.question_no=r.worksheet_question_no
       WHERE run.student_id=? AND run.source_type='FOY' AND run.status IN ('SUBMITTED','SCORED') AND w.outcome_id IS NOT NULL`).bind(studentId)),
   ]);
-  return [...exam, ...bank, ...mini, ...foy];
+  return [...exam, ...bank, ...mini, ...foy, ...(learnerView ? [] : await writtenRows(env, studentId))];
+}
+
+/**
+ * Written exams: the teacher's finalised grade (latest version) per item, in points. An item counts as right when the
+ * student earned at least WRITTEN_RIGHT_AT of its points — the "strong" threshold of the written outcome report.
+ * The item's outcome comes from its bank question's outcome link or the committee scenario row's outcome.
+ * Written grades are not shown to students and parents anywhere yet, so this source is for staff only.
+ */
+export const WRITTEN_RIGHT_AT = 0.7;
+async function writtenRows(env: Env, studentId: string): Promise<Row[]> {
+  const items = await all<any>(env.DB.prepare(`SELECT f.paper_id, i.id item_id, i.points possible, i.question_id, r.outcome_id row_outcome_id, r.outcome_code,
+      t.academic_year, t.grade_level, t.subject_id, coalesce(p.exam_date, f.finalized_at) at,
+      (SELECT json_extract(j.value,'$.points') FROM json_each(f.scores_json) j WHERE json_extract(j.value,'$.itemId')=i.id) earned
+    FROM written_grade_finalizations f
+    JOIN written_papers p ON p.id=f.paper_id AND p.status='FINAL'
+    JOIN written_exam_tables t ON t.id=p.table_id
+    JOIN written_paper_items i ON i.paper_id=p.id
+    JOIN written_exam_scenario_rows r ON r.id=i.scenario_row_id
+    WHERE f.student_id=? AND f.version=(SELECT max(x.version) FROM written_grade_finalizations x WHERE x.paper_id=f.paper_id AND x.student_id=f.student_id)`).bind(studentId));
+  const rows: Row[] = [];
+  for (const it of items) {
+    let outcomes: string[] = [];
+    if (it.question_id) outcomes = (await all<any>(env.DB.prepare(`SELECT o.id FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id AND o.active=1 WHERE l.question_id=?`).bind(it.question_id))).map((o) => o.id);
+    if (!outcomes.length && it.row_outcome_id) outcomes = [it.row_outcome_id];
+    if (!outcomes.length && it.outcome_code) {
+      const o = await env.DB.prepare(`SELECT o.id FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id WHERE o.code=? AND cv.verified=1 AND cv.academic_year=? AND o.grade_level=? AND o.subject_id=? AND o.active=1 LIMIT 1`).bind(it.outcome_code, it.academic_year, it.grade_level, it.subject_id).first<{ id: string }>();
+      if (o) outcomes = [o.id];
+    }
+    const possible = Number(it.possible || 0), earned = it.earned == null ? 0 : Number(it.earned);
+    if (!possible) continue;
+    for (const outcomeId of outcomes) rows.push({ outcome_id: outcomeId, question_key: `WR:${it.item_id}`, source: 'WRITTEN', result: earned / possible >= WRITTEN_RIGHT_AT ? 1 : 0, at: it.at });
+  }
+  return rows;
 }
 
 const time = (v: string | null) => { if (!v) return 0; const t = Date.parse(v.length <= 10 ? `${v}T00:00:00Z` : v.replace(' ', 'T') + (/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? '' : 'Z')); return Number.isFinite(t) ? t : 0; };
@@ -81,7 +112,7 @@ export function aggregateEvidence(rows: Row[], now = new Date(), target: number 
   const out = new Map<string, any>();
   for (const r of rows) {
     let o = out.get(r.outcome_id);
-    if (!o) { o = { outcomeId: r.outcome_id, keys: new Set<string>(), latest: new Map<string, { t: number; result: number | null }>(), attempts: 0, correct: 0, wrong: 0, blank: 0, bySource: { EXAM: { attempts: 0, correct: 0 }, QUESTION_BANK: { attempts: 0, correct: 0 }, MINI_TEST: { attempts: 0, correct: 0 }, FOY: { attempts: 0, correct: 0 } }, lastAt: null as string | null, lastT: 0 }; out.set(r.outcome_id, o); }
+    if (!o) { o = { outcomeId: r.outcome_id, keys: new Set<string>(), latest: new Map<string, { t: number; result: number | null }>(), attempts: 0, correct: 0, wrong: 0, blank: 0, bySource: { EXAM: { attempts: 0, correct: 0 }, QUESTION_BANK: { attempts: 0, correct: 0 }, MINI_TEST: { attempts: 0, correct: 0 }, FOY: { attempts: 0, correct: 0 }, WRITTEN: { attempts: 0, correct: 0 } }, lastAt: null as string | null, lastT: 0 }; out.set(r.outcome_id, o); }
     o.keys.add(r.question_key); o.attempts++;
     if (r.result === 1) o.correct++; else if (r.result === null) o.blank++; else o.wrong++;
     o.bySource[r.source].attempts++; if (r.result === 1) o.bySource[r.source].correct++;
