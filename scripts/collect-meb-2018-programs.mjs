@@ -14,6 +14,17 @@ const PROGRAMS=[
  ['din-4-8-2018',318,'DIN',[4,8]],
  ['ing-2-8-2018',327,'ING',[4,8]],
  ['sos-2018',354,'SOS',[4]],
+ // grade 12, programme ids read from the official programme index (collected.json "index")
+ ['tde-2018',353,'EDB',[12]],
+ ['mat-orta-2018',343,'MAT',[12]],
+ ['fiz-2018',351,'FIZ',[12]],
+ ['kim-2018',350,'KIM',[12]],
+ ['biy-2018',361,'BIY',[12]],
+ ['cog-2018',336,'COG',[12]],
+ ['din-9-12-2018',319,'DIN',[12]],
+ ['ing-9-12-2018',342,'ING',[12]],
+ ['ink-orta-2018',346,'INK',[12]],
+ ['cagdas-2018',337,'TAR',[12]],
 ];
 const get=async(url,binary=false)=>{const r=await fetch(url,{signal:AbortSignal.timeout(60000),headers:{'user-agent':'ANUNEX curriculum collector'}});if(!r.ok)throw Error('HTTP_'+r.status+':'+url);return binary?Buffer.from(await r.arrayBuffer()):r.text();};
 await mkdir('meb2018',{recursive:true});
