@@ -3,8 +3,6 @@
   "name": "anunex-result-prod",
   "main": "./worker/result-worker-entry.ts",
   "compatibility_date": "2026-08-26",
-  // D1 lives in North America (DFW) while users are in Türkiye: every query from an Istanbul data centre crosses the
-  // Atlantic. Smart Placement runs API requests next to the database (free on all plans; static assets stay local).
   "placement": {
     "mode": "smart"
   },
