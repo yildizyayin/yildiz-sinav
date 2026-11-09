@@ -14,9 +14,13 @@ export function UnifiedOutcomeReport({ studentId, role, institutionId }: { stude
   const [data, setData] = useState<any>(null); const [error, setError] = useState(''); const [filter, setFilter] = useState<'ALL' | 'DEVELOPING' | 'LEARNED'>('ALL');
   const learner = role === 'STUDENT' || role === 'PARENT';
   const canSetTarget = role === 'SUPER_ADMIN' || role === 'INSTITUTION_MANAGER';
-  const [target, setTarget] = useState(''); const [saving, setSaving] = useState(false); const [notice, setNotice] = useState('');
+  const [target, setTarget] = useState('');
+  const [period, setPeriod] = useState<'NOW' | 'M3' | 'M6' | 'YEAR'>('NOW'); const [periods, setPeriods] = useState<any>(null); const [saving, setSaving] = useState(false); const [notice, setNotice] = useState('');
   const load = () => api<any>(`/api/reporting/students/${encodeURIComponent(studentId)}/outcome-evidence`).then((r) => { setData(r); setTarget(String(r.rules?.target || 30)); }).catch((e: any) => setError(e.message));
-  useEffect(() => { if (!studentId) return; setData(null); setError(''); void load(); }, [studentId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (!studentId) return; setData(null); setPeriods(null); setPeriod('NOW'); setError(''); void load(); }, [studentId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (!studentId || period === 'NOW' || periods) return; void api<any>(`/api/reporting/students/${encodeURIComponent(studentId)}/outcome-evidence/periods`).then(setPeriods).catch((e: any) => setError(e.message)); }, [studentId, period, periods]);
+  const activePeriod = period === 'NOW' ? null : periods?.periods?.find((p: any) => p.key === period);
+  const periodStatus = (outcomeId: string) => periods?.trajectories?.find((t: any) => t.outcomeId === outcomeId)?.statuses?.[period] || null;
   const groups = useMemo(() => {
     const map = new Map<string, any[]>();
     for (const o of data?.outcomes || []) { if (filter !== 'ALL' && o.status !== filter) continue; const k = o.subjectName || 'Diğer'; if (!map.has(k)) map.set(k, []); map.get(k)!.push(o); }
@@ -39,6 +43,19 @@ export function UnifiedOutcomeReport({ studentId, role, institutionId }: { stude
     {error && <div className="alert error" role="alert">{error}</div>}
     {notice && <div className="alert success" role="status">{notice}</div>}
     {data && <p className="unified-rule">Öğrenildi sayılması için son {data.rules.learned.days} günde en az {data.rules.learned.minQuestions} farklı soru ve %{Math.round(data.rules.learned.minRate * 100)} doğru gerekir. Hedef: kazanım başına {data.rules.target} farklı soru.</p>}
+    {data && all.length > 0 && <div className="unified-periods" role="tablist" aria-label="Karne dönemi">
+      {([['NOW', 'Şu an'], ['M3', '3. ay'], ['M6', '6. ay'], ['YEAR', 'Yıl sonu']] as const).map(([k, l]) => <button key={k} type="button" role="tab" aria-selected={period === k} className={period === k ? 'active' : ''} onClick={() => setPeriod(k)}>{l}</button>)}
+    </div>}
+    {period !== 'NOW' && !activePeriod && !error && <p className="muted">Dönem raporu hazırlanıyor…</p>}
+    {activePeriod && <div className="unified-period-card">
+      <p className="unified-rule">{activePeriod.label}: {new Date(`${activePeriod.from}T00:00:00`).toLocaleDateString('tr-TR')} – {new Date(`${activePeriod.to}T00:00:00`).toLocaleDateString('tr-TR')} · {activePeriod.state === 'COMPLETE' ? 'tamamlandı' : activePeriod.state === 'IN_PROGRESS' ? `devam ediyor (${new Date(`${activePeriod.asOf}T00:00:00`).toLocaleDateString('tr-TR')} itibarıyla)` : 'henüz başlamadı'}</p>
+      <div className="unified-period-stats">
+        <div><strong>{activePeriod.summary.learned}</strong><span>öğrenilen kazanım</span></div>
+        <div><strong>{activePeriod.summary.developing}</strong><span>gelişen kazanım</span></div>
+        <div><strong>{activePeriod.summary.uniqueQuestions}</strong><span>farklı soru</span></div>
+        <div><strong>{pct(activePeriod.summary.recentRate)}</strong><span>son 30 gün doğru</span></div>
+      </div>
+    </div>}
     {canSetTarget && data && <div className="unified-target"><label>Kurumun kazanım başına soru hedefi<input type="number" min={20} max={100} step={1} value={target} onChange={(e) => setTarget(e.target.value)} /></label><button type="button" className="secondary" onClick={() => void saveTarget()} disabled={saving || Number(target) === data.rules.target}>{saving ? 'Kaydediliyor…' : 'Kaydet'}</button><small>20 ile 100 arası.</small></div>}
     {data && all.length > 0 && <div className="unified-filter" role="group" aria-label="Kazanım filtresi">
       {([['ALL', 'Tümü'], ['DEVELOPING', learner ? 'Çalışmam gerekenler' : 'Gelişiyor'], ['LEARNED', 'Öğrenildi']] as const).map(([k, l]) => <button key={k} type="button" aria-pressed={filter === k} className={filter === k ? 'active' : ''} onClick={() => setFilter(k)}>{l}</button>)}
@@ -50,7 +67,7 @@ export function UnifiedOutcomeReport({ studentId, role, institutionId }: { stude
       <ul>{items.map((o: any) => <li key={o.outcomeId} className={`unified-row ${o.status === 'LEARNED' ? 'learned' : ''}`}>
         <div className="unified-title"><span className="unified-code">{o.code}</span><span>{o.title}</span></div>
         <div className="unified-meta">
-          <span className={`unified-chip ${o.status === 'LEARNED' ? 'ok' : 'dev'}`}>{o.status === 'LEARNED' ? 'Öğrenildi' : learner ? 'Çalışmaya devam' : 'Gelişiyor'}</span>
+          {(() => { const st = period === 'NOW' ? o.status : periodStatus(o.outcomeId); return st ? <span className={`unified-chip ${st === 'LEARNED' ? 'ok' : 'dev'}`}>{st === 'LEARNED' ? 'Öğrenildi' : learner ? 'Çalışmaya devam' : 'Gelişiyor'}</span> : <span className="unified-chip none">Bu dönemde veri yok</span>; })()}
           <span>{o.uniqueQuestions} / {o.target} farklı soru</span>
           <span>son {o.recent.days} gün: {o.recent.uniqueQuestions ? `${o.recent.uniqueQuestions} soru, ${pct(o.recent.rate)}` : 'çalışma yok'}</span>
           {!learner && <span className="unified-sources">{Object.entries(o.bySource).filter(([, v]: any) => v.attempts).map(([k, v]: any) => `${SOURCE[k]} ${v.correct}/${v.attempts}`).join(' · ')}{o.attempts > o.uniqueQuestions ? ` · ${o.attempts} çözüm` : ''}</span>}
