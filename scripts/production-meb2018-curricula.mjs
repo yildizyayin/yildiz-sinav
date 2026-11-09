@@ -14,10 +14,11 @@ import {contentHash,importProductionCurricula,productionDatabase} from './produc
 export const ACADEMIC_YEAR='2026-2027';
 // [collected key, subject code, grades read from it]
 export const PLAN=[
- ['tur-2019','TUR',[8]],['mat-temel-2018','MAT',[8]],['fen-2018','FEN',[8]],
- ['ink-temel-2018','INK',[8]],['din-4-8-2018','DIN',[8]],['ing-2-8-2018','ING',[8]],
+ ['tur-2019','TUR',[8,4]],['mat-temel-2018','MAT',[8,4]],['fen-2018','FEN',[8,4]],
+ ['ink-temel-2018','INK',[8]],['din-4-8-2018','DIN',[8,4]],['ing-2-8-2018','ING',[8,4]],
+ ['sos-2018','SOS',[4]],
 ];
-const NAMES={TUR:'Türkçe',MAT:'Matematik',FEN:'Fen Bilimleri',INK:'T.C. İnkılap Tarihi ve Atatürkçülük',DIN:'Din Kültürü ve Ahlak Bilgisi',ING:'İngilizce'};
+const NAMES={TUR:'Türkçe',MAT:'Matematik',FEN:'Fen Bilimleri',INK:'T.C. İnkılap Tarihi ve Atatürkçülük',DIN:'Din Kültürü ve Ahlak Bilgisi',ING:'İngilizce',SOS:'Sosyal Bilgiler'};
 export function catalogItems(collected,textOf){
  const items=[];
  for(const [key,subject,grades] of PLAN){

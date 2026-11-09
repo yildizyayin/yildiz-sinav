@@ -13,6 +13,7 @@ const PROGRAMS=[
  ['ink-temel-2018',355,'INK',[8]],
  ['din-4-8-2018',318,'DIN',[4,8]],
  ['ing-2-8-2018',327,'ING',[4,8]],
+ ['sos-2018',354,'SOS',[4]],
 ];
 const get=async(url,binary=false)=>{const r=await fetch(url,{signal:AbortSignal.timeout(60000),headers:{'user-agent':'ANUNEX curriculum collector'}});if(!r.ok)throw Error('HTTP_'+r.status+':'+url);return binary?Buffer.from(await r.arrayBuffer()):r.text();};
 await mkdir('meb2018',{recursive:true});
@@ -32,4 +33,19 @@ for(const [key,pid,subject,grades] of PROGRAMS){
  }catch(e){entry.error=String(e.message||e);}
  report.programs.push(entry);console.log(key,pid,entry.bytes,'bytes',entry.sha256?.slice(0,12)||'',entry.error||'');
 }
+// Programme index: every ProgramDetay link reachable from the site's programme list pages, with its link text,
+// so the next grades' programme ids are read from the official site rather than guessed.
+report.index=[];
+try{
+ const seen=new Set(),queue=[ORIGIN+'/'];
+ for(let k=0;k<queue.length&&k<25;k++){
+  const html=await get(queue[k]).catch(()=>'');
+  for(const m of html.matchAll(/<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)){
+   const href=new URL(m[1].replace(/&amp;/g,'&'),queue[k]).href,text=m[2].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+   const pid=href.match(/ProgramDetay\.aspx\?PID=(\d+)/i)?.[1];
+   if(pid&&!seen.has(pid)){seen.add(pid);report.index.push({pid:Number(pid),text,from:queue[k]});}
+   else if(!pid&&href.startsWith(ORIGIN)&&/Program/i.test(href)&&!queue.includes(href))queue.push(href);
+  }
+ }
+}catch(e){report.indexError=String(e.message||e);}
 await writeFile('meb2018/collected.json',JSON.stringify(report,null,1));
