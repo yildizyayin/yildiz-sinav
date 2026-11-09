@@ -1,0 +1,27 @@
+/* Birleşik Karne: kazanım karnesi. Uses the panel's own colour variables. */
+.unified-outcomes{margin-top:20px;display:flex;flex-direction:column;gap:12px}
+.unified-head{align-items:flex-start}
+.unified-summary{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+.unified-summary strong{font-size:28px}
+.unified-summary span,.unified-rule,.unified-target small{color:var(--muted,#59666c)}
+.unified-rule{margin:0;font-size:13px}
+.unified-target{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px}
+.unified-target label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:13px}
+.unified-target input{width:110px}
+.unified-filter{display:flex;flex-wrap:wrap;gap:6px}
+.unified-filter button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--border,#dde4e5);background:transparent;color:inherit;font-weight:600;cursor:pointer}
+.unified-filter button.active{background:var(--workspace-accent,#1d4ed8);border-color:transparent;color:#fff}
+.unified-subject h3{margin:8px 0;font-size:16px}
+.unified-subject ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.unified-row{padding:12px 14px;border-radius:12px;border:1px solid var(--border,#dde4e5);display:flex;flex-direction:column;gap:8px}
+.unified-row.learned{background:rgba(22,101,52,.05)}
+.unified-title{display:flex;gap:10px;font-weight:600;line-height:1.35}
+.unified-code{flex:0 0 auto;font-family:ui-monospace,monospace;font-size:12px;color:var(--muted,#59666c);padding-top:2px}
+.unified-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted,#59666c);align-items:center}
+.unified-chip{padding:3px 10px;border-radius:999px;font-weight:700;font-size:12px}
+.unified-chip.ok{background:#dcfce7;color:#166534}
+.unified-chip.dev{background:#ffedd5;color:#9a3412}
+.unified-sources{font-size:12px}
+.unified-bar{height:6px;border-radius:999px;background:var(--border,#e5e9e7);overflow:hidden}
+.unified-bar i{display:block;height:100%;border-radius:999px;background:var(--workspace-accent,#1d4ed8)}
+@media print{.unified-target,.unified-filter{display:none}}
