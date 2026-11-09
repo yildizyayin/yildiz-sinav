@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api, qs } from '../api';
 import './unified-outcome-report.css';
 
@@ -64,6 +65,19 @@ export function UnifiedOutcomeReport({ studentId, role, institutionId }: { stude
         <div><strong>{activePeriod.summary.uniqueQuestions}</strong><span>farklı soru</span></div>
         <div><strong>{pct(activePeriod.summary.recentRate)}</strong><span>son 30 gün doğru</span></div>
       </div>
+    </div>}
+    {data?.recommendations?.length > 0 && <div className="unified-recs">
+      <h3>{learner ? 'Sıradaki çalışman' : 'Önerilen çalışma'}</h3>
+      <ol>{data.recommendations.map((r: any) => <li key={r.outcomeId}>
+        <div className="unified-title"><span className="unified-code">{r.code}</span><span>{r.title}</span></div>
+        <p>{r.needForLearned > 0 ? `Öğrenildi sayılması için son 30 günde ${r.needForLearned} farklı soru daha${r.recentRate != null ? ` (şu an ${pct(r.recentRate)} doğru)` : ''}.` : `Son 30 gündeki doğru oranını %${Math.round(data.rules.learned.minRate * 100)}'e çıkarmak yeterli (şu an ${pct(r.recentRate)}).`}</p>
+        <div className="unified-rec-actions">
+          {r.practice.available > 0 && (role === 'STUDENT' ? <Link className="unified-rec-link" to={`/question-practice?nodeId=${encodeURIComponent(r.practice.nodeId)}`}>Bu konudan soru çöz ({r.practice.available})</Link> : <span className="unified-rec-tag">{r.practice.available} çözülmemiş onaylı soru</span>)}
+          {r.worksheets.map((w: any) => <span className="unified-rec-tag" key={w.id}>Föy: {w.title}</span>)}
+          {r.video && <a className="unified-rec-link" href={r.video.url} target="_blank" rel="noopener noreferrer">Konu videosu{r.video.title ? `: ${r.video.title}` : ''}</a>}
+          {r.askTeacher && <span className="unified-rec-tag muted">Bu kazanım için henüz onaylı içerik yok{learner ? '; öğretmenine danışabilirsin' : ''}.</span>}
+        </div>
+      </li>)}</ol>
     </div>}
     {canSetTarget && data && <div className="unified-target"><label>Kurumun kazanım başına soru hedefi<input type="number" min={20} max={100} step={1} value={target} onChange={(e) => setTarget(e.target.value)} /></label><button type="button" className="secondary" onClick={() => void saveTarget()} disabled={saving || Number(target) === data.rules.target}>{saving ? 'Kaydediliyor…' : 'Kaydet'}</button><small>20 ile 100 arası.</small></div>}
     {data && all.length > 0 && <div className="unified-filter" role="group" aria-label="Kazanım filtresi">

@@ -1,7 +1,7 @@
 import {QuestionDataVisual} from '../components/QuestionDataVisual';
 import { useEffect, useState } from 'react';
 import { BookOpen, Check, CheckCircle2, ChevronRight, Image, Lightbulb, RotateCcw, Sparkles, Target, XCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
 import './student-question-practice.css';
 
@@ -21,6 +21,7 @@ function DifficultyMeter({ level }: { level: number }) {
 }
 
 export function StudentQuestionPractice() {
+  const [searchParams] = useSearchParams();
   const [questions, setQuestions] = useState<any[]>([]);
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState('');
@@ -32,12 +33,12 @@ export function StudentQuestionPractice() {
 
   const loadQuestions = async () => {
     setLoading(true); setError(''); setResult(null); setAnswer(''); setHintVisible(false); setIndex(0);
-    try { const response = await api<any>('/api/platform/student-practice?limit=10'); setQuestions(response.questions || []); setCompletedToday(Number(response.progress?.completedToday || 0)); }
+    try { const nodeId = searchParams.get('nodeId'); const response = await api<any>(`/api/platform/student-practice?limit=10${nodeId && /^ln_[A-Za-z0-9_-]{1,80}$/.test(nodeId) ? `&nodeId=${encodeURIComponent(nodeId)}` : ''}`); setQuestions(response.questions || []); setCompletedToday(Number(response.progress?.completedToday || 0)); }
     catch (e: any) { setError(e.message || 'Bugünkü sorular yüklenemedi.'); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { void loadQuestions(); }, []);
+  useEffect(() => { void loadQuestions(); }, [searchParams.get('nodeId')]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const current = questions[index];
   const submit = async () => {
