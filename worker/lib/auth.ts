@@ -55,7 +55,20 @@ export function isServiceAccountId(userId: string | null | undefined): boolean {
   return typeof userId === 'string' && userId.startsWith(SERVICE_ACCOUNT_ID_PREFIX);
 }
 
-export async function getAuthUser(env: Env, request: Request): Promise<AuthUser | null> {
+// One request passes through several entry layers, and each used to look the session up again: every lookup is a
+// database round trip. The answer is kept for the life of that one Request object (and its cookie), never longer.
+const authByRequest = new WeakMap<Request, { cookie: string; user: Promise<AuthUser | null> }>();
+export function getAuthUser(env: Env, request: Request): Promise<AuthUser | null> {
+  const cookie = request.headers.get('Cookie') || '';
+  const hit = authByRequest.get(request);
+  if (hit && hit.cookie === cookie) return hit.user;
+  const user = lookupAuthUser(env, request);
+  authByRequest.set(request, { cookie, user });
+  user.catch(() => authByRequest.delete(request));
+  return user;
+}
+
+async function lookupAuthUser(env: Env, request: Request): Promise<AuthUser | null> {
   const rawToken = getCookie(request, SESSION_COOKIE);
   if (!rawToken) return null;
   const tokenHash = await sha256Hex(rawToken);
