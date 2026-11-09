@@ -1,5 +1,6 @@
 import { RubricArchiveDirectory } from '../components/RubricArchiveDirectory';
 import { RubricObservationReport } from '../components/RubricObservationReport';
+import { UnifiedOutcomeReport } from '../components/UnifiedOutcomeReport';
 import {GuidanceFrozenReport} from '../components/GuidanceFrozenReport';
 import {InstitutionFrozenReport} from '../components/InstitutionFrozenReport';
 import { FrozenExamReport } from '../components/FrozenExamReport';
@@ -129,6 +130,8 @@ export function Reports(){
     <div className="section-head"><div><h2>{report.student.first_name} {report.student.last_name}</h2><p>{report.student.institution_name||selectedStudent?.institution_name||''}{report.student.class_name?` · ${report.student.class_name}`:''}{report.restrictedToSubjects?' · Branş yetkisiyle filtrelendi':''}</p></div></div>
 
     {report.summary?<div className="kpi-grid" style={{marginBottom:20}}><Kpi label="Sınav" value={report.summary.exam_count}/><Kpi label="İlk Net" value={fmt(report.summary.first_net)}/><Kpi label="Son Net" value={fmt(report.summary.last_net)}/><Kpi label="Net Değişimi" value={`${report.summary.delta_net>0?'+':''}${fmt(report.summary.delta_net)}`}/><Kpi label="Ortalama Net" value={fmt(report.summary.average_net)}/></div>:<div className="alert info">Bu görünüm branş öğretmeni yetkisiyle sınırlandırılmıştır; toplam sınav neti yerine yalnız yetkili branş verileri gösterilir.</div>}
+
+    <UnifiedOutcomeReport key={`${scopeKey}-unified`} studentId={studentId} role={user?.role||''} institutionId={institutionId}/>
 
     <div className="report-grid">
      <div className="panel"><div className="panel-head"><div><h2>Ders gelişimi</h2><p>Seçili sınavlar içindeki ilk ve son net farkı.</p></div><TrendingUp size={20}/></div>{(report.subjectSummary||[]).map((s:any)=><div className="issue-row" key={s.subject_id}><div><strong>{s.subject_name}</strong><span>{s.exam_count} sınav · Ortalama {fmt(s.average_net)}</span></div><div style={{textAlign:'right'}}><strong>{fmt(s.first_net)} → {fmt(s.last_net)}</strong><span className={s.delta_net>=0?'status ok':'status warn'}>{s.delta_net>0?'+':''}{fmt(s.delta_net)}</span></div></div>)}{!report.subjectSummary?.length&&<div className="empty">Ders sonucu bulunmuyor.</div>}</div>

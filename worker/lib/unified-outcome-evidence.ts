@@ -32,6 +32,8 @@ export type OutcomeEvidence = {
 };
 
 export type EvidenceOptions = {
+  /** the institution's own target (20–100); OUTCOME_QUESTION_TARGET when it has none */
+  target?: number;
   /** students and parents only see exams whose results were published to them */
   learnerView: boolean;
   /** teachers limited to their subjects */
@@ -74,7 +76,7 @@ async function evidenceRows(env: Env, studentId: string, learnerView: boolean): 
 const time = (v: string | null) => { if (!v) return 0; const t = Date.parse(v.length <= 10 ? `${v}T00:00:00Z` : v.replace(' ', 'T') + (/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? '' : 'Z')); return Number.isFinite(t) ? t : 0; };
 
 /** Pure aggregation, so the rules are tested without a database. */
-export function aggregateEvidence(rows: Row[], now = new Date()): Map<string, Omit<OutcomeEvidence, 'code' | 'title' | 'subjectId' | 'subjectName' | 'gradeLevel' | 'academicYear' | 'programVersion'>> {
+export function aggregateEvidence(rows: Row[], now = new Date(), target: number = OUTCOME_QUESTION_TARGET): Map<string, Omit<OutcomeEvidence, 'code' | 'title' | 'subjectId' | 'subjectName' | 'gradeLevel' | 'academicYear' | 'programVersion'>> {
   const since = now.getTime() - LEARNED_RULE.days * 86400000;
   const out = new Map<string, any>();
   for (const r of rows) {
@@ -94,7 +96,7 @@ export function aggregateEvidence(rows: Row[], now = new Date()): Map<string, Om
     const learned = recentQuestions >= LEARNED_RULE.minQuestions && rate !== null && rate >= LEARNED_RULE.minRate;
     result.set(id, {
       outcomeId: id, uniqueQuestions: o.keys.size, attempts: o.attempts, correct: o.correct, wrong: o.wrong, blank: o.blank,
-      target: OUTCOME_QUESTION_TARGET, targetProgress: Math.min(1, o.keys.size / OUTCOME_QUESTION_TARGET), bySource: o.bySource,
+      target, targetProgress: Math.min(1, o.keys.size / target), bySource: o.bySource,
       recent: { days: LEARNED_RULE.days, uniqueQuestions: recentQuestions, correct: recentCorrect, rate },
       status: learned ? 'LEARNED' : o.attempts ? 'DEVELOPING' : 'NO_DATA', lastAt: o.lastAt,
     });
@@ -105,7 +107,7 @@ export function aggregateEvidence(rows: Row[], now = new Date()): Map<string, Om
 export async function unifiedOutcomeEvidence(env: Env, studentId: string, options: EvidenceOptions): Promise<OutcomeEvidence[]> {
   const rows = await evidenceRows(env, studentId, options.learnerView);
   if (!rows.length) return [];
-  const agg = aggregateEvidence(rows, options.now);
+  const agg = aggregateEvidence(rows, options.now, options.target || OUTCOME_QUESTION_TARGET);
   const ids = [...agg.keys()];
   const meta: any[] = [];
   for (let i = 0; i < ids.length; i += 90) {
@@ -119,4 +121,11 @@ export async function unifiedOutcomeEvidence(env: Env, studentId: string, option
     .filter((m) => (!subjects || subjects.has(m.subject_id)) && (!options.academicYear || m.academic_year === options.academicYear))
     .map((m) => ({ ...agg.get(m.id), code: m.code, title: m.title, subjectId: m.subject_id, subjectName: m.subject_name, gradeLevel: m.grade_level, academicYear: m.academic_year, programVersion: m.program_version }) as OutcomeEvidence)
     .sort((a, b) => (a.subjectName || '').localeCompare(b.subjectName || '', 'tr') || (a.code || '').localeCompare(b.code || '', 'tr', { numeric: true }));
+}
+
+export async function outcomeQuestionTarget(env: Env, institutionId: string | null | undefined): Promise<number> {
+  if (!institutionId) return OUTCOME_QUESTION_TARGET;
+  const row = await env.DB.prepare('SELECT outcome_question_target t FROM institution_learning_settings WHERE institution_id=?').bind(institutionId).first<{ t: number }>();
+  const t = Number(row?.t);
+  return Number.isInteger(t) && t >= 20 && t <= 100 ? t : OUTCOME_QUESTION_TARGET;
 }
