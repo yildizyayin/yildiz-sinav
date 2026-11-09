@@ -129,3 +129,52 @@ export async function outcomeQuestionTarget(env: Env, institutionId: string | nu
   const t = Number(row?.t);
   return Number.isInteger(t) && t >= 20 && t <= 100 ? t : OUTCOME_QUESTION_TARGET;
 }
+
+/**
+ * Birleşik Karne periods (plan: 3. ay, 6. ay, yıl sonu). Each period runs from the start of the school year to its end,
+ * so a later period includes the earlier evidence; "learned" is judged at the period's end with the same 30-day rule.
+ * The year starts on the institution season's start date when set, otherwise on MEB's first school day.
+ */
+const MEB_YEARS: Record<string, { start: string; end: string }> = {
+  // MEB 2026-2027 çalışma takvimi: ders yılı 14 Eylül 2026 – 25 Haziran 2027
+  '2026-2027': { start: '2026-09-14', end: '2027-06-25' },
+};
+export function schoolYearBounds(academicYear: string, seasonStart?: string | null): { start: string; end: string } {
+  const known = MEB_YEARS[academicYear]; const first = Number(academicYear.slice(0, 4));
+  const start = seasonStart && /^\d{4}-\d{2}-\d{2}/.test(seasonStart) ? seasonStart.slice(0, 10) : known?.start || `${first}-09-15`;
+  return { start, end: known?.end || `${first + 1}-06-25` };
+}
+const addMonths = (iso: string, n: number) => { const d = new Date(`${iso}T00:00:00Z`); d.setUTCMonth(d.getUTCMonth() + n); return d.toISOString().slice(0, 10); };
+export type PeriodKey = 'M3' | 'M6' | 'YEAR';
+export function schoolPeriods(bounds: { start: string; end: string }) {
+  return [
+    { key: 'M3' as PeriodKey, label: '3. ay', from: bounds.start, to: addMonths(bounds.start, 3) },
+    { key: 'M6' as PeriodKey, label: '6. ay', from: bounds.start, to: addMonths(bounds.start, 6) },
+    { key: 'YEAR' as PeriodKey, label: 'Yıl sonu', from: bounds.start, to: bounds.end },
+  ];
+}
+
+export async function periodOutcomeEvidence(env: Env, studentId: string, options: EvidenceOptions & { academicYear: string; seasonStart?: string | null; today?: Date; allowedOutcomeIds: Set<string> }) {
+  const today = options.today || new Date();
+  const bounds = schoolYearBounds(options.academicYear, options.seasonStart);
+  // only the outcomes this viewer may see (subject scope, academic year), as the current record already decided
+  const rows = (await evidenceRows(env, studentId, options.learnerView)).filter((r) => options.allowedOutcomeIds.has(r.outcome_id));
+  const startT = time(bounds.start);
+  const periods = [] as any[];
+  const byOutcome = new Map<string, Record<PeriodKey, string | null>>();
+  for (const p of schoolPeriods(bounds)) {
+    const endT = time(p.to) + 86400000 - 1;
+    const state = today.getTime() < startT ? 'NOT_STARTED' : today.getTime() <= endT ? 'IN_PROGRESS' : 'COMPLETE';
+    const asOf = new Date(Math.min(endT, today.getTime()));
+    const inside = state === 'NOT_STARTED' ? [] : rows.filter((r) => { const t = time(r.at); return t >= startT && t <= asOf.getTime(); });
+    const agg = aggregateEvidence(inside, asOf, options.target || OUTCOME_QUESTION_TARGET);
+    let unique = 0, attempts = 0, recentQ = 0, recentC = 0, learned = 0;
+    for (const o of agg.values()) {
+      unique += o.uniqueQuestions; attempts += o.attempts; recentQ += o.recent.uniqueQuestions; recentC += o.recent.correct; if (o.status === 'LEARNED') learned++;
+      if (!byOutcome.has(o.outcomeId)) byOutcome.set(o.outcomeId, { M3: null, M6: null, YEAR: null });
+      byOutcome.get(o.outcomeId)![p.key] = o.status;
+    }
+    periods.push({ ...p, state, asOf: asOf.toISOString().slice(0, 10), summary: { outcomes: agg.size, learned, developing: agg.size - learned, uniqueQuestions: unique, attempts, recentRate: recentQ ? recentC / recentQ : null } });
+  }
+  return { bounds, periods, trajectories: [...byOutcome.entries()].map(([outcomeId, statuses]) => ({ outcomeId, statuses })) };
+}

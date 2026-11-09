@@ -24,4 +24,13 @@
 .unified-sources{font-size:12px}
 .unified-bar{height:6px;border-radius:999px;background:var(--border,#e5e9e7);overflow:hidden}
 .unified-bar i{display:block;height:100%;border-radius:999px;background:var(--workspace-accent,#1d4ed8)}
+
+.unified-periods{display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border,#dde4e5);padding-bottom:8px}
+.unified-periods button{min-height:40px;padding:0 14px;border:0;border-radius:10px;background:transparent;color:inherit;font-weight:600;cursor:pointer}
+.unified-periods button.active{background:var(--workspace-soft,#eef5f7);color:var(--workspace-accent,#1d4ed8)}
+.unified-period-card{display:flex;flex-direction:column;gap:10px}
+.unified-period-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.unified-period-stats>div{padding:12px 14px;border-radius:12px;border:1px solid var(--border,#dde4e5);display:flex;flex-direction:column}
+.unified-period-stats strong{font-size:22px}.unified-period-stats span{font-size:12px;color:var(--muted,#59666c)}
+.unified-chip.none{background:var(--border,#e5e9e7);color:var(--muted,#59666c)}
 @media print{.unified-target,.unified-filter{display:none}}
