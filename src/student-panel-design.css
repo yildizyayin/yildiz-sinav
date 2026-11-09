@@ -1,0 +1,70 @@
+/* Student panel frame (owner approved the glass draft, 9 Nov 2026):
+   wide screens get a floating glass icon rail that opens with its labels on hover or keyboard focus;
+   phones get a bottom bar (StudentDock) next to the existing full menu. Colours follow the panel theme. */
+.app-shell.role-student{
+  --sd-bg:#e9f0fb;--sd-ink:#0f1d3a;--sd-muted:#44557a;--sd-accent:#1d4ed8;--sd-accent-ink:#fff;
+  --sd-card:rgba(255,255,255,.6);--sd-border:rgba(255,255,255,.9);--sd-blur:blur(24px);--sd-shadow:0 18px 40px rgba(15,29,58,.14);
+  --sd-hover:rgba(255,255,255,.75);--sd-rail-open:rgba(255,255,255,.94);--sd-cta:linear-gradient(145deg,#f97316,#ea580c);--sd-cta-shadow:0 10px 22px rgba(234,88,12,.45)
+}
+.app-shell.role-student[data-panel-theme="ANUNEX_COSMIC"]{--sd-bg:#070b1f;--sd-ink:#eef2ff;--sd-muted:#a5b4d4;--sd-accent:#7dd3fc;--sd-accent-ink:#07122b;--sd-card:rgba(255,255,255,.08);--sd-border:rgba(255,255,255,.14);--sd-shadow:0 18px 40px rgba(0,0,0,.5);--sd-hover:rgba(255,255,255,.12);--sd-rail-open:rgba(10,15,40,.95);--sd-cta:linear-gradient(145deg,#38bdf8,#6366f1);--sd-cta-shadow:0 10px 22px rgba(56,189,248,.45)}
+.app-shell.role-student[data-panel-theme="ANUNEX_NEON"]{--sd-bg:#fdf4ff;--sd-ink:#1e1035;--sd-muted:#5b4a73;--sd-accent:#7c3aed;--sd-card:rgba(255,255,255,.66);--sd-shadow:0 18px 40px rgba(124,58,237,.16);--sd-hover:rgba(255,255,255,.85);--sd-cta:linear-gradient(145deg,#22d3ee,#0891b2);--sd-cta-shadow:0 10px 22px rgba(8,145,178,.45)}
+.app-shell.role-student[data-panel-theme="ANUNEX_FOCUS"]{--sd-bg:#f4f5f7;--sd-ink:#111827;--sd-muted:#4b5563;--sd-accent:#1f3a5f;--sd-card:#fff;--sd-border:#e5e7eb;--sd-blur:none;--sd-shadow:none;--sd-hover:#f4f5f7;--sd-cta:#1f3a5f;--sd-cta-shadow:none}
+
+.student-dock{display:none}
+
+@media (min-width:1001px){
+  .app-shell.role-student[data-panel-theme]{grid-template-columns:112px minmax(0,1fr);background:var(--sd-bg)}
+  .app-shell.role-student[data-panel-theme] .main-area{grid-column:2;background:transparent}
+  .app-shell.role-student[data-panel-theme] .sidebar{
+    position:fixed;z-index:60;left:16px;top:16px;bottom:16px;width:80px;height:auto;padding:16px 12px;border-radius:36px;
+    background:var(--sd-card);backdrop-filter:var(--sd-blur);-webkit-backdrop-filter:var(--sd-blur);border:1px solid var(--sd-border);
+    box-shadow:var(--sd-shadow);color:var(--sd-ink);overflow-x:hidden;overflow-y:auto;scrollbar-width:none;
+    transition:width .2s ease,box-shadow .2s ease;transform:none;min-width:0;max-width:none;box-sizing:border-box;display:flex;flex-direction:column
+  }
+  .app-shell.role-student[data-panel-theme] .sidebar::-webkit-scrollbar{display:none}
+  .app-shell.role-student[data-panel-theme] .sidebar:hover,.app-shell.role-student[data-panel-theme] .sidebar:focus-within{width:272px;background:var(--sd-rail-open);box-shadow:0 24px 60px rgba(15,29,58,.22)}
+  .app-shell.role-student[data-panel-theme] .sidebar .brand{border:0;padding:0 0 12px 6px;min-height:44px;max-width:44px;overflow:hidden;color:var(--sd-ink);transition:max-width .2s ease}
+  .app-shell.role-student[data-panel-theme] .sidebar:hover .brand,.app-shell.role-student[data-panel-theme] .sidebar:focus-within .brand{max-width:none}
+  .app-shell.role-student[data-panel-theme] .sidebar .user-card{display:none}
+  .app-shell.role-student[data-panel-theme] .sidebar nav{display:flex;flex-direction:column;gap:4px}
+  .app-shell.role-student[data-panel-theme] .sidebar .nav-item{
+    display:flex;align-items:center;gap:14px;min-height:48px;padding:0 15px;border-radius:16px;color:var(--sd-muted);
+    white-space:nowrap;background:transparent;border:0;box-shadow:none
+  }
+  .app-shell.role-student[data-panel-theme] .sidebar .nav-item svg{flex:0 0 auto}
+  .app-shell.role-student[data-panel-theme] .sidebar .nav-item>span:last-child{opacity:0;transition:opacity .15s ease}
+  .app-shell.role-student[data-panel-theme] .sidebar:hover .nav-item>span:last-child,.app-shell.role-student[data-panel-theme] .sidebar:focus-within .nav-item>span:last-child{opacity:1}
+  .app-shell.role-student[data-panel-theme] .sidebar .nav-item:hover{background:var(--sd-hover);color:var(--sd-ink)}
+  .app-shell.role-student[data-panel-theme] .sidebar .nav-item.active{background:var(--sd-accent);color:var(--sd-accent-ink);font-weight:700}
+  .app-shell.role-student[data-panel-theme] .sidebar .nav-item:focus-visible{outline:3px solid var(--sd-accent);outline-offset:2px}
+  .app-shell.role-student[data-panel-theme] .sidebar .sidebar-footer{margin-top:auto;padding-top:12px;border-top:1px solid var(--sd-border);display:flex;flex-direction:column;gap:6px;background:transparent}
+  .app-shell.role-student[data-panel-theme] .sidebar .nibiru-sidebar-card{display:none}
+  .app-shell.role-student[data-panel-theme] .sidebar .sidebar-logout{justify-content:flex-start;gap:14px;min-height:44px;padding:0 15px;white-space:nowrap;color:var(--sd-muted);overflow:hidden;font-size:0}
+  .app-shell.role-student[data-panel-theme] .sidebar:hover .sidebar-logout,.app-shell.role-student[data-panel-theme] .sidebar:focus-within .sidebar-logout{font-size:14px}
+  .app-shell.role-student[data-panel-theme] .topbar{background:transparent;border-bottom:0}
+}
+
+@media (max-width:1000px){
+  .app-shell.role-student[data-panel-theme="ANUNEX_STANDARD"] .student-dock{display:grid}
+  .app-shell.role-student[data-panel-theme="ANUNEX_STANDARD"] .page-wrap{padding-bottom:112px}
+}
+@media (max-width:760px){
+  .app-shell.role-student[data-panel-theme] .student-dock{display:grid}
+  .app-shell.role-student[data-panel-theme] .page-wrap{padding-bottom:112px}
+}
+.student-dock{
+  position:fixed;z-index:70;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));height:72px;
+  grid-template-columns:repeat(5,minmax(0,1fr));align-items:center;border-radius:26px;
+  background:var(--sd-card);backdrop-filter:var(--sd-blur);-webkit-backdrop-filter:var(--sd-blur);
+  border:1px solid var(--sd-border);box-shadow:0 16px 36px rgba(15,29,58,.18)
+}
+.app-shell.role-student[data-panel-theme="ANUNEX_STANDARD"] .student-dock,.app-shell.role-student[data-panel-theme="ANUNEX_NEON"] .student-dock{background:rgba(255,255,255,.82)}
+.app-shell.role-student[data-panel-theme="ANUNEX_COSMIC"] .student-dock{background:rgba(12,18,48,.82)}
+.student-dock-link{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;padding:0;border:0;background:transparent;color:var(--sd-muted);font:600 11px/1.2 Inter,"Segoe UI",system-ui,sans-serif;text-decoration:none;cursor:pointer}
+.student-dock-link.active{color:var(--sd-accent);font-weight:700}
+.student-dock-main{justify-self:center;width:58px;height:58px;margin-top:-30px;border-radius:20px;display:grid;place-items:center;color:#fff;background:var(--sd-cta);box-shadow:var(--sd-cta-shadow);border:3px solid var(--sd-bg)}
+.app-shell.role-student[data-panel-theme="ANUNEX_FOCUS"] .student-dock-main{color:#fff}
+.student-dock-main.active{outline:3px solid var(--sd-accent);outline-offset:2px}
+.student-dock a:focus-visible,.student-dock button:focus-visible{outline:3px solid var(--sd-accent);outline-offset:2px;border-radius:14px}
+@media (prefers-reduced-motion:reduce){.app-shell.role-student[data-panel-theme] .sidebar,.app-shell.role-student[data-panel-theme] .sidebar .nav-item span{transition:none}}
+@media print{.student-dock{display:none!important}}
