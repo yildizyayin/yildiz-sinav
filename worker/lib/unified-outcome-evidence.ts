@@ -1,5 +1,6 @@
 import type { Env } from '../types';
 import { all } from './db';
+import { SERVABLE_VIDEO_SQL } from './video-links';
 
 /**
  * Birleşik Karne, step 1 (owner, 9 Nov 2026): every answered question a student met — in exams, the question bank,
@@ -208,4 +209,36 @@ export async function periodOutcomeEvidence(env: Env, studentId: string, options
     periods.push({ ...p, state, asOf: asOf.toISOString().slice(0, 10), summary: { outcomes: agg.size, learned, developing: agg.size - learned, uniqueQuestions: unique, attempts, recentRate: recentQ ? recentC / recentQ : null } });
   }
   return { bounds, periods, trajectories: [...byOutcome.entries()].map(([outcomeId, statuses]) => ({ outcomeId, statuses })) };
+}
+
+/**
+ * Birleşik Karne: personal study suggestions for the outcomes still developing. Only content that already exists and
+ * may be shown to the student is offered: approved, rights-cleared question bank items not yet solved, published
+ * worksheets that cover the outcome, approved videos. When there is nothing, the suggestion says so and points to the
+ * teacher — no content is made up.
+ */
+export async function studyRecommendations(env: Env, studentId: string, institutionId: string | null, outcomes: OutcomeEvidence[], limit = 5) {
+  const developing = outcomes.filter((o) => o.status === 'DEVELOPING')
+    .sort((a, b) => (a.recent.rate ?? 1) - (b.recent.rate ?? 1) || b.attempts - a.attempts).slice(0, limit);
+  const out = [];
+  for (const o of developing) {
+    const [questions, worksheets, videos] = await Promise.all([
+      env.DB.prepare(`SELECT count(*) n FROM question_bank q JOIN question_learning_links l ON l.question_id=q.id AND l.node_id=?
+        WHERE q.review_status='APPROVED' AND q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN') AND q.correct_answer IS NOT NULL AND q.options_json IS NOT NULL
+          AND (q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))
+          AND NOT EXISTS(SELECT 1 FROM question_practice_attempts a WHERE a.student_id=? AND a.question_id=q.id)`).bind(`ln_${o.outcomeId}`, institutionId, studentId).first<{ n: number }>(),
+      all<any>(env.DB.prepare(`SELECT DISTINCT w.id,w.title FROM worksheet_question_links l JOIN worksheets w ON w.id=l.worksheet_id AND w.status='PUBLISHED' WHERE l.outcome_id=? ORDER BY w.title LIMIT 2`).bind(o.outcomeId)),
+      all<any>(env.DB.prepare(`SELECT vl.id,vl.title,vl.url FROM video_links vl WHERE vl.outcome_id=? AND vl.link_type='TOPIC' AND ${SERVABLE_VIDEO_SQL} LIMIT 1`).bind(o.outcomeId)),
+    ]);
+    const needForLearned = Math.max(0, LEARNED_RULE.minQuestions - o.recent.uniqueQuestions);
+    out.push({
+      outcomeId: o.outcomeId, code: o.code, title: o.title, subjectName: o.subjectName,
+      recentRate: o.recent.rate, needForLearned, targetGap: Math.max(0, o.target - o.uniqueQuestions),
+      practice: { available: Number(questions?.n || 0), nodeId: `ln_${o.outcomeId}` },
+      worksheets: worksheets.map((w) => ({ id: w.id, title: w.title })),
+      video: videos[0] ? { title: videos[0].title, url: videos[0].url } : null,
+      askTeacher: !Number(questions?.n || 0) && !worksheets.length && !videos.length,
+    });
+  }
+  return out;
 }

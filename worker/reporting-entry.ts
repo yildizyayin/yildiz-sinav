@@ -10,7 +10,7 @@ import { all, forbidden, json, notFound, one } from './lib/db';
 import { loadPermissionScope } from './lib/permissions';
 import { masteryStatus } from './lib/outcome';
 import { combineFrozenReports } from './lib/combined-frozen-report';
-import { LEARNED_RULE, OUTCOME_QUESTION_TARGET, outcomeQuestionTarget, periodOutcomeEvidence, unifiedOutcomeEvidence } from './lib/unified-outcome-evidence';
+import { LEARNED_RULE, OUTCOME_QUESTION_TARGET, outcomeQuestionTarget, periodOutcomeEvidence, studyRecommendations, unifiedOutcomeEvidence } from './lib/unified-outcome-evidence';
 import { frozenPracticeReport } from './lib/frozen-practice-report';
 import { frozenExamReport } from './lib/frozen-exam-report';
 import { frozenMiniTestReport } from './lib/frozen-mini-test-report';
@@ -442,7 +442,8 @@ async function outcomeEvidenceReport(env:Env,user:AuthUser,studentId:string,url:
   const academicYear=url.searchParams.get('academicYear');if(academicYear&&!/^\d{4}-\d{4}$/.test(academicYear))return apiError(400,'INVALID_YEAR','Eğitim yılı geçersiz.');
   const target=await outcomeQuestionTarget(env,access.student.institution_id);
   const outcomes=await unifiedOutcomeEvidence(env,studentId,{learnerView:user.role==='STUDENT'||user.role==='PARENT',subjectIds:access.subjectFilter||null,academicYear,target});
-  return json({ok:true,student:{id:access.student.id,name:`${access.student.first_name} ${access.student.last_name}`},rules:{target,learned:LEARNED_RULE},outcomes});
+  const recommendations=await studyRecommendations(env,studentId,access.student.institution_id,outcomes);
+  return json({ok:true,student:{id:access.student.id,name:`${access.student.first_name} ${access.student.last_name}`},rules:{target,learned:LEARNED_RULE},outcomes,recommendations});
 }
 
 async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Promise<Response>{
