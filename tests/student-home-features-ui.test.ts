@@ -40,3 +40,29 @@ it('shows the countdown and switched-on features', async () => {
   expect(v.node.textContent).toContain('214gün kaldı');
   await v.done();
 });
+
+it('shows the latest published result with its change, ranks and lesson nets', async () => {
+  state.features = ['QUESTION_BANK']; state.days = 120;
+  const base = state.api.getMockImplementation()!;
+  state.api.mockImplementation(async (url: string) => {
+    if (url === '/api/platform/exam-center/results') return { results: [
+      { id: 'e2', snapshot_version: 1, title: 'Deneme 2', net: 40.5, score: 350.25, institution_rank: 4, institution_count: 50, class_rank: 2, class_count: 20 },
+      { id: 'e1', snapshot_version: 1, title: 'Deneme 1', net: 38, score: 330 },
+    ] };
+    if (url === '/api/platform/exam-center/e2/result') return { result: { subjects: [{ subject: 'Matematik', net: 12, correct_count: 13, wrong_count: 4, blank_count: 3 }] } };
+    if (url === '/api/platform/exam-center/e1/result') return { result: { subjects: [{ subject: 'Matematik', net: 10, correct_count: 11, wrong_count: 4, blank_count: 5 }] } };
+    if (url === '/api/dashboard') return { developing: [{ id: 'o1', title: 'Kesirler', subject_name: 'Matematik', evidence_count: 6, correct_count: 2 }] };
+    return base(url);
+  });
+  const v = await render();
+  await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+  const text = v.node.textContent || '';
+  expect(text).toContain('40,5');
+  expect(text).toContain('2,5 net');
+  expect(text).toContain('4 / 50');
+  expect(text).toContain('2 / 20');
+  expect(text).toContain('Matematik');
+  expect(text).toContain('/ 20');
+  expect(text).toContain('Kesirler');
+  await v.done();
+});
