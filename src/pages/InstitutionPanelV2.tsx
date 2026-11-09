@@ -3,14 +3,41 @@ import { BarChart3,Bell,BookOpenCheck,BrainCircuit,ClipboardCheck,KeyRound,Layer
 import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../auth';
+import { useFeatures } from '../lib/useFeatures';
+import './teacher-today.css';
+
+/** Owner (9 Nov): "iş odaklı sade" — the institution home leads with today's work, in the existing look. */
+function InstitutionToday({today}:{today:any}){
+ if(!today)return null;
+ const missing=today.attendanceMissing||[],teacherless=today.classesWithoutTeacher||[];
+ return <section className="teacher-today" aria-labelledby="inst-today-title">
+  <div className="section-head"><div><span className="eyebrow">Bugün</span><h2 id="inst-today-title">Yapılacaklar</h2></div></div>
+  <div className="teacher-today-grid">
+   <div className="panel teacher-today-card">
+    <div className="teacher-today-head"><h3>Yoklama</h3><Link className="link-button" to="/attendance">Yoklamaya git →</Link></div>
+    {missing.length?<><p><strong>{missing.length}</strong> sınıfta bugünün yoklaması girilmedi.</p><ul className="teacher-today-list">{missing.slice(0,6).map((c:any)=><li key={c.id}><span>{c.name}</span><small>{c.student_count} öğrenci</small></li>)}</ul>{missing.length>6&&<small className="muted">ve {missing.length-6} sınıf daha</small>}</>:<p className="ok-text">Bugünün yoklaması tüm sınıflarda girildi.</p>}
+   </div>
+   <div className="panel teacher-today-card">
+    <div className="teacher-today-head"><h3>Öğrenci hesapları</h3><Link className="link-button" to="/access-accounts">Erişim →</Link></div>
+    {today.studentsWithoutAccount?<p><strong>{today.studentsWithoutAccount}</strong> öğrencinin giriş hesabı yok. Toplu açıp kartlarını yazdırabilirsiniz.</p>:<p className="ok-text">Tüm öğrencilerin giriş hesabı açık.</p>}
+    {today.studentsWithoutNumber>0&&<p className="muted"><strong>{today.studentsWithoutNumber}</strong> öğrencinin numarası eksik; numarası olmayan öğrenciye hesap açılamaz.</p>}
+   </div>
+   <div className="panel teacher-today-card">
+    <div className="teacher-today-head"><h3>Öğretmen atamaları</h3><Link className="link-button" to="/teacher-assignments">Yetkiler →</Link></div>
+    {teacherless.length?<><p><strong>{teacherless.length}</strong> sınıfa henüz öğretmen atanmadı.</p><ul className="teacher-today-list">{teacherless.slice(0,6).map((c:any)=><li key={c.id}><span>{c.name}</span></li>)}</ul></>:<p className="ok-text">Her sınıfın atanmış öğretmeni var.</p>}
+   </div>
+  </div>
+ </section>
+}
 
 export function InstitutionPanelV2(){
- const{institution}=useAuth();const[data,setData]=useState<any>(null);const[error,setError]=useState('');
+ const{institution}=useAuth();const features=useFeatures();const[data,setData]=useState<any>(null);const[error,setError]=useState('');
  useEffect(()=>{void api<any>('/api/v2/institution-dashboard').then(setData).catch(e=>setError(e.message))},[]);
  if(error)return <div className="alert error">{error}</div>;
  return <div className="role-dashboard institution-dashboard">
   <section className="role-welcome"><div><span className="eyebrow">ANUNEX · Kurum Yönetimi</span><h1>{institution?.name||'Kurum Yönetimi'}</h1><p>Sınav, öğrenci, optik, içerik, föy, Nibiru analizi ve rapor süreçlerini tek kontrol merkezinden yönetin.</p></div><div className="role-welcome-icon"><ShieldCheck/></div></section>
   <div className="kpi-grid">{(data?.cards||[]).map((c:any)=><div className="kpi-card" key={c.label}><span>{c.label}</span><strong>{c.value}</strong></div>)}</div>
+  <InstitutionToday today={data?.today}/>
 
   <div className="section-head"><div><span className="eyebrow">Nibiru AI</span><h2>Kurum ölçme ve gelişim zekâsı</h2><p>Nibiru yalnız yetkiniz kapsamındaki ANUNEX verilerini kullanır; eksik veri varsa tahmin üretmez.</p></div><Link className="link-button" to="/nibiru">Nibiru’yu Aç</Link></div>
   <div className="action-grid">
@@ -26,7 +53,7 @@ export function InstitutionPanelV2(){
    <Link className="quick-card" to="/optical-prepare"><div className="quick-icon"><Printer/></div><div><h3>Optik Hazırla / Bas</h3><p>Öğrenci bilgileri ve kitapçık kodu işlenmiş optikleri tekil veya toplu basın.</p></div></Link>
    <Link className="quick-card" to="/students"><div className="quick-icon"><Users/></div><div><h3>Öğrenciler</h3><p>Aktif ve misafir öğrencileri yönetin.</p></div></Link>
    <Link className="quick-card" to="/attendance"><div className="quick-icon"><Users/></div><div><h3>Yoklama</h3><p>Sınıf yoklamasını web veya mobil üzerinden kaydedin.</p></div></Link>
-   <Link className="quick-card" to="/assignments"><div className="quick-icon"><BookOpenCheck/></div><div><h3>Ödev Merkezi</h3><p>Fiziksel ve dijital kitap çalışmalarını atayın, takip edin.</p></div></Link>
+   {features.has('ASSIGNMENTS')&&<Link className="quick-card" to="/assignments"><div className="quick-icon"><BookOpenCheck/></div><div><h3>Ödev Merkezi</h3><p>Fiziksel ve dijital kitap çalışmalarını atayın, takip edin.</p></div></Link>}
    <Link className="quick-card" to="/content-center"><div className="quick-icon"><Layers3/></div><div><h3>Soru Havuzu & Studio</h3><p>Kurum sorularını ekleyin; inceleme akışına gönderin ve sınav/föy taslağı üretin.</p></div></Link>
    <Link className="quick-card" to="/worksheets"><div className="quick-icon"><BookOpenCheck/></div><div><h3>Föy Merkezi</h3><p>Yayınlanmış haftalık föyleri ve video bağlantılarını kullanın.</p></div></Link>
    <Link className="quick-card" to="/bulk-operations"><div className="quick-icon"><Layers3/></div><div><h3>Toplu İşlemler</h3><p>Sınıflara toplu sınav katılımcısı veya föy atayın.</p></div></Link>
