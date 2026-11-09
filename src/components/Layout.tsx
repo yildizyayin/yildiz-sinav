@@ -10,7 +10,7 @@ import { activePanelTheme, readPanelTheme } from '../lib/panelTheme';
 import { LicenseBoundary } from './LicenseBoundary';
 import { NibiruMark,NibiruNavIcon } from './NibiruMark';
 import { AnunexBrand } from './AnunexBrand';
-import { StudentDock } from './StudentDock';
+import { ParentDock, StudentDock } from './StudentDock';
 import '../student-panel-design.css';
 
 type NavItem={to:string;label:string;icon:any;feature?:string;children?:NavItem[]};
@@ -244,6 +244,7 @@ export function Layout() {
       <div className="page-wrap"><PrivacyNoticeGate/>{logoutError&&<div className="alert error" role="alert">{logoutError}</div>}<LicenseBoundary><PageLoader routeKey={location.pathname+location.search}><Outlet/></PageLoader></LicenseBoundary></div>
     </main>
     {user.role==='STUDENT'&&<StudentDock items={visibleNav} onMenu={()=>setMobileNavOpen(true)}/>}
+    {user.role==='PARENT'&&<ParentDock onMenu={()=>setMobileNavOpen(true)}/>}
   </div>;
 }
 

@@ -25,3 +25,15 @@ it('leaves out Soru Çöz when the institution has the question bank off', async
   expect(v.node.querySelectorAll('a').length).toBe(3);
   await v.done();
 });
+
+it('gives parents their own quick places and the full menu', async () => {
+  const { ParentDock } = await import('../src/components/StudentDock');
+  const onMenu = vi.fn();
+  const node = document.createElement('div'); document.body.append(node); const root = createRoot(node);
+  await act(async () => root.render(createElement(MemoryRouter, {}, createElement(ParentDock, { onMenu }))));
+  for (const href of ['/', '/weekly-summary', '/reports', '/attendance']) expect(node.querySelector(`a[href="${href}"]`)).not.toBeNull();
+  expect(node.querySelector('a[href="/question-practice"]')).toBeNull();
+  await act(async () => { (node.querySelector('button') as HTMLButtonElement).click(); });
+  expect(onMenu).toHaveBeenCalledTimes(1);
+  await act(async () => root.unmount()); node.remove();
+});
