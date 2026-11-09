@@ -8,7 +8,7 @@ import './unified-outcome-report.css';
  * worksheets — with the institution's question target and the "learned" rule (last 30 days, 8 different questions,
  * 80%). Plain words for students and parents; the source breakdown for staff.
  */
-const SOURCE: Record<string, string> = { EXAM: 'Sınav', QUESTION_BANK: 'Soru çözme', MINI_TEST: 'Mini test', FOY: 'Föy', WRITTEN: 'Yazılı' };
+const SOURCE: Record<string, string> = { EXAM: 'Sınav', QUESTION_BANK: 'Soru çözme', MINI_TEST: 'Mini test', FOY: 'Föy', WRITTEN: 'Yazılı', GAME: 'Mini oyun' };
 const KINDS: Record<string, string> = { ONE_TO_ONE: 'Birebir çalışma', EXTRA_PRACTICE: 'Ek çalışma verildi', CLASS_REVIEW: 'Sınıfta tekrar', PARENT_CONTACT: 'Veliyle görüşme', GUIDANCE_REFERRAL: 'Rehberliğe yönlendirme', OTHER: 'Diğer' };
 const pct = (v: number | null | undefined) => (v == null ? '—' : `%${Math.round(v * 100)}`);
 
