@@ -8,6 +8,7 @@ const CODE={
  FEN:g=>new RegExp(`^F\\.${g}\\.\\d+\\.\\d+\\.\\d+(?:\\.(?=[\\s\\p{L}])|(?=\\s))`,'u'),
  INK:g=>new RegExp(`^İTA\\.${g}\\.\\d+\\.\\d+(?:\\.(?=[\\s\\p{L}])|(?=\\s))`,'u'),
  DIN:g=>new RegExp(`^${g}\\.\\d+\\.\\d+(?:\\.(?=[\\s\\p{L}])|(?=\\s))`,'u'),
+ SOS:g=>new RegExp(`^SB\\.${g}\\.\\d+\\.\\d+(?:\\.(?=[\\s\\p{L}])|(?=\\s))`,'u'),
 };
 const UNIT={
  TUR:g=>new RegExp(`^T\\.${g}\\.(\\d+)\\.\\s+(.+)$`),
@@ -15,12 +16,13 @@ const UNIT={
  FEN:g=>new RegExp(`^F\\.${g}\\.(\\d+\\.\\d+)\\.\\s+(.+)$`),
  INK:()=>/^\s*(\d+)\.\s*ÜNİTE:\s*(.+)$/,
  DIN:g=>new RegExp(`^\\s*${g}\\.(\\d+)\\.\\s+([^.]+?)\\s*$`),
+ SOS:()=>/^\s*(\d+)\.\s+([A-ZÇĞİÖŞÜ][A-ZÇĞİÖŞÜ ,'’-]+?)\s*$/u,
 };
 const STOP=/^(Önerilen Süre|Konu \/ Kavramlar|Kazanım ve Açıklamaları|\d+\.\s*SINIF)/;
 const clean=s=>s.replace(/[\s\u00a0]+/g,' ').trim();
 const ENDED=/[.!?)]\s*$/;
 const BULLET=/^\s*([\uf000-\uf8ff•●▪\-–]|[a-zçğıöşü]\)|[a-zçğıöşü]\.\s)/;
-const ANY_CODE=/^\s*(T|M|F|İTA|E\d+)\.\d+\.\d+|^\s*\d+\.\d+\.\d+\./;
+const ANY_CODE=/^\s*(T|M|F|İTA|SB|E\d+)\.\d+\.\d+|^\s*\d+\.\d+\.\d+\./;
 function joinLines(lines){
  let out='';
  for(const raw of lines){const l=raw.trim();if(!out){out=l;continue;}

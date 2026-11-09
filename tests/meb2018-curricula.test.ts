@@ -16,7 +16,7 @@ import {scopedOutcomeCatalog} from '../worker/lib/exam-outcome-matching';
 const text=(key:string)=>readFileSync(`data/maarif/meb2018/${key}.txt`,'utf8');
 const catalog=JSON.parse(readFileSync('data/meb2018-catalog-2027.json','utf8'));
 it('reads every 8th-grade outcome of the six LGS programmes with its official code and full sentence',()=>{
- const counts=Object.fromEntries(catalog.items.map((i:any)=>[i.subjectCode+i.grade,i.outcomes.length]));
+ const counts=Object.fromEntries(catalog.items.filter((i:any)=>i.grade===8).map((i:any)=>[i.subjectCode+i.grade,i.outcomes.length]));
  expect(counts).toEqual({TUR8:76,MAT8:52,FEN8:61,INK8:39,DIN8:28,ING8:70});
  const find=(s:string,c:string)=>readProgram(text(PLAN.find(p=>p[1]===s)![0]),s,8).find((o:any)=>o.code===c)!.title;
  expect(find('TUR','T.8.3.20')).toBe('Okuduğu metinlerdeki hikâye unsurlarını belirler.'); // no space after the code in the PDF
@@ -68,3 +68,13 @@ it('a 2026-2027 8th-grade exam uses the previous programme; a 2027-2028 exam kee
   expect(next.map((o:any)=>o.code)).toEqual(['T.D.8.1']);
  }finally{t.db.close();}
 },60000);
+it('reads the six 4th-grade programmes of the previous MEB curriculum with official codes (owner, 9 Nov)',()=>{
+ const counts=Object.fromEntries(catalog.items.filter((i:any)=>i.grade===4).map((i:any)=>[i.subjectCode+i.grade,i.outcomes.length]));
+ // equal to the number of distinct grade-4 codes in each official PDF's text
+ expect(counts).toEqual({TUR4:77,MAT4:71,FEN4:43,DIN4:16,ING4:47,SOS4:33});
+ const find=(s:string,c:string)=>readProgram(text(PLAN.find(p=>p[1]===s)![0]),s,4).find((o:any)=>o.code===c)!.title;
+ expect(find('TUR','T.4.3.6')).toBe('Okuma stratejilerini uygular.'); // no full stop after the code in the PDF
+ expect(find('MAT','M.4.1.4.1')).toBe('Üç basamaklı doğal sayılarla iki basamaklı doğal sayıları çarpar.');
+ expect(find('SOS','SB.4.1.1')).toBe('Resmî kimlik belgesini inceleyerek kişisel kimliğine ilişkin çıkarımlarda bulunur.');
+ expect(catalog.items.find((i:any)=>i.subjectCode==='SOS').outcomes.every((o:any)=>o.unit)).toBe(true);
+});
