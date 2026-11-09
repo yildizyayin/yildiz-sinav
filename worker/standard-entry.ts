@@ -126,7 +126,9 @@ async function homeContext(env:Env,user:AuthUser){
     targetDate=next?.exam_date||null;label=label||next?.title||null;
   }
   const targets=await all<any>(env.DB.prepare(`SELECT priority,target_type,motivation_label,motivation_enabled,up.university_name,up.program_name,ss.name school_name FROM student_academic_targets sat LEFT JOIN university_program_targets up ON up.id=sat.university_program_target_id LEFT JOIN secondary_school_targets ss ON ss.id=sat.secondary_school_target_id WHERE sat.student_id=? AND sat.status='ACTIVE' ORDER BY priority`).bind(user.student_id));
-  return json({ok:true,student:{id:user.student_id,gradeLevel:enrollment?.grade_level??null,className:enrollment?.class_name??null,enrollmentStatus:enrollment?.status??null},countdown:{enabled:Boolean(preferences.countdown_enabled),label,targetDate,days:daysUntil(targetDate),flipClock:Boolean(preferences.countdown_flip_clock)},preferences,targets});
+  // Days (Istanbul time) on which the student solved practice questions during the last 14 days: feeds the weekly streak.
+  const practiceDays=(await all<any>(env.DB.prepare(`SELECT DISTINCT date(created_at,'+3 hours') d FROM question_practice_attempts WHERE student_id=? AND created_at>=datetime('now','-14 days') ORDER BY d`).bind(user.student_id))).map((r:any)=>r.d);
+  return json({ok:true,student:{id:user.student_id,gradeLevel:enrollment?.grade_level??null,className:enrollment?.class_name??null,enrollmentStatus:enrollment?.status??null},countdown:{enabled:Boolean(preferences.countdown_enabled),label,targetDate,days:daysUntil(targetDate),flipClock:Boolean(preferences.countdown_flip_clock)},preferences,targets,practiceDays});
 }
 
 async function games(env:Env,user:AuthUser){
