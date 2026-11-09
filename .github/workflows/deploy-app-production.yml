@@ -167,6 +167,13 @@ jobs:
       - name: Import source-verified production curricula and enable unlimited question quota
         run: node scripts/production-question-curricula.mjs
 
+      # Owner (9 Nov): grades 4, 8, 12 follow the previous MEB programmes in 2026-2027; the official PDFs are fetched
+      # again, their SHA-256 and re-read outcomes must equal the reviewed catalogue before anything is written.
+      - name: Import source-verified 2026-2027 previous-programme curricula (mufredat.meb.gov.tr)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+          node scripts/production-meb2018-curricula.mjs
+
       - name: Inspect question runtime without provider calls or data changes
         run: node scripts/inspect-question-runtime.mjs
 

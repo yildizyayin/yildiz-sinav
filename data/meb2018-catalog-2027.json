@@ -1,0 +1,1726 @@
+{
+ "academicYear": "2026-2027",
+ "source": "https://mufredat.meb.gov.tr/",
+ "items": [
+  {
+   "academicYear": "2026-2027",
+   "grade": 8,
+   "subjectCode": "TUR",
+   "programKey": "tur-2019",
+   "pid": 663,
+   "programVersion": "MEB-MUFREDAT-TUR8-10e55d403a708d35",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/20195716392253-02-T%C3%BCrk%C3%A7e%20%C3%96%C4%9Fretim%20Program%C4%B1%202019.pdf",
+   "pdfSha256": "10e55d403a708d35abc192710977a47df933210a0c54a15e86ea7b9d09401633",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "8. Sınıf Türkçe / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "T.8.1.1",
+     "title": "Dinlediklerinde/izlediklerinde geçen olayların gelişimi ve sonucu hakkında tahminde bulunur.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.2",
+     "title": "Dinlediklerinde/izlediklerinde geçen bilmediği kelimelerin anlamını tahmin eder.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.3",
+     "title": "Dinlediklerini/izlediklerini özetler.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.4",
+     "title": "Dinledikleri/izlediklerine yönelik sorulara cevap verir.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.5",
+     "title": "Dinlediklerinin/izlediklerinin konusunu tespit eder.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.6",
+     "title": "Dinlediklerinin/izlediklerinin ana fikrini/ana duygusunu tespit eder.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.7",
+     "title": "Dinlediklerine/izlediklerine yönelik farklı başlıklar önerir.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.8",
+     "title": "Dinlediği/izlediği hikâye edici metinleri canlandırır.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.9",
+     "title": "Dinlediklerinde/izlediklerinde tutarlılığı sorgular.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.10",
+     "title": "Dinledikleriyle/izledikleriyle ilgili görüşlerini bildirir.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.11",
+     "title": "Dinledikleri/izledikleri medya metinlerini değerlendirir.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.12",
+     "title": "Dinlediklerinde/izlediklerinde başvurulan düşünceyi geliştirme yollarını tespit eder.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.13",
+     "title": "Konuşmacının sözlü olmayan mesajlarını kavrar.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.1.14",
+     "title": "Dinleme stratejilerini uygular.",
+     "unit": "DİNLEME/İZLEME"
+    },
+    {
+     "code": "T.8.2.1",
+     "title": "Hazırlıklı konuşma yapar.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "T.8.2.2",
+     "title": "Hazırlıksız konuşma yapar.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "T.8.2.3",
+     "title": "Konuşma stratejilerini uygular.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "T.8.2.4",
+     "title": "Konuşmalarında beden dilini etkili bir şekilde kullanır.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "T.8.2.5",
+     "title": "Kelimeleri anlamlarına uygun kullanır.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "T.8.2.6",
+     "title": "Konuşmalarında yabancı dillerden alınmış, dilimize henüz yerleşmemiş kelimelerin Türkçelerini kullanır.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "T.8.2.7",
+     "title": "Konuşmalarında uygun geçiş ve bağlantı ifadelerini kullanır.",
+     "unit": "KONUŞMA"
+    },
+    {
+     "code": "T.8.3.1",
+     "title": "Noktalama işaretlerine dikkat ederek sesli ve sessiz okur.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.2",
+     "title": "Metni türün özelliklerine uygun biçimde okur.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.3",
+     "title": "Farklı yazı karakterleri ile yazılmış yazıları okur.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.4",
+     "title": "Okuma stratejilerini kullanır.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.5",
+     "title": "Bağlamdan yararlanarak bilmediği kelime ve kelime gruplarının anlamını tahmin eder.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.6",
+     "title": "Deyim, atasözü ve özdeyişlerin metne katkısını belirler.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.7",
+     "title": "Metindeki söz sanatlarını tespit eder.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.8",
+     "title": "Metindeki anlatım bozukluklarını belirler.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.9",
+     "title": "Fiilimsilerin cümledeki işlevlerini kavrar.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.10",
+     "title": "Geçiş ve bağlantı ifadelerinin metnin anlamına olan katkısını değerlendirir.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.11",
+     "title": "Metindeki anlatım biçimlerini belirler.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.12",
+     "title": "Görsel ve başlıktan hareketle okuyacağı metnin konusunu tahmin eder.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.13",
+     "title": "Okuduklarını özetler.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.14",
+     "title": "Metinle ilgili soruları cevaplar.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.15",
+     "title": "Metinle ilgili sorular sorar.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.16",
+     "title": "Metnin konusunu belirler.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.17",
+     "title": "Metnin ana fikrini/ana duygusunu belirler.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.18",
+     "title": "Metindeki yardımcı fikirleri belirler.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.19",
+     "title": "Metnin içeriğine uygun başlık/başlıklar belirler.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.20",
+     "title": "Okuduğu metinlerdeki hikâye unsurlarını belirler.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.21",
+     "title": "Metnin içeriğini yorumlar.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.22",
+     "title": "Metinde ele alınan sorunlara farklı çözümler üretir.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.23",
+     "title": "Metinler arasında karşılaştırma yapar.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.24",
+     "title": "Metindeki gerçek ve kurgusal unsurları ayırt eder.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.25",
+     "title": "Okudukları ile ilgili çıkarımlarda bulunur.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.26",
+     "title": "Metin türlerini ayırt eder.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.27",
+     "title": "Görsellerle ilgili soruları cevaplar.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.28",
+     "title": "Metinde önemli noktaların vurgulanış biçimlerini kavrar.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.29",
+     "title": "Medya metinlerini analiz eder.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.30",
+     "title": "Bilgi kaynaklarını etkili bir şekilde kullanır.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.31",
+     "title": "Bilgi kaynaklarının güvenilirliğini sorgular.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.32",
+     "title": "Grafik, tablo ve çizelgeyle sunulan bilgileri yorumlar.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.33",
+     "title": "Edebî eserin yazılı metni ile medya sunumunu karşılaştırır.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.34",
+     "title": "Okuduklarında kullanılan düşünceyi geliştirme yollarını belirler.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.3.35",
+     "title": "Metindeki iş ve işlem basamaklarını kavrar.",
+     "unit": "OKUMA"
+    },
+    {
+     "code": "T.8.4.1",
+     "title": "Şiir yazar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.2",
+     "title": "Bilgilendirici metin yazar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.3",
+     "title": "Hikâye edici metin yazar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.4",
+     "title": "Yazma stratejilerini uygular.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.5",
+     "title": "Anlatımı desteklemek için grafik ve tablo kullanır.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.6",
+     "title": "Bir işi işlem basamaklarına göre yazar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.7",
+     "title": "Yazılarını zenginleştirmek için atasözleri, deyimler ve özdeyişler kullanır.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.8",
+     "title": "Yazılarında mizahi ögeler kullanır.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.9",
+     "title": "Yazılarında anlatım biçimlerini kullanır.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.10",
+     "title": "Yazdıklarında yabancı dillerden alınmış, dilimize henüz yerleşmemiş kelimelerin Türkçelerini kullanır.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.11",
+     "title": "Formları yönergelerine uygun doldurur.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.12",
+     "title": "Kısa metinler yazar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.13",
+     "title": "Yazdıklarının içeriğine uygun başlık belirler.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.14",
+     "title": "Araştırmalarının sonuçlarını yazılı olarak sunar.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.15",
+     "title": "Yazılarında uygun geçiş ve bağlantı ifadelerini kullanır.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.16",
+     "title": "Yazdıklarını düzenler.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.17",
+     "title": "Yazdıklarını paylaşır.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.18",
+     "title": "Cümlenin ögelerini ayırt eder.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.19",
+     "title": "Cümle türlerini tanır.",
+     "unit": "YAZMA"
+    },
+    {
+     "code": "T.8.4.20",
+     "title": "Fiillerin çatı özelliklerinin anlama olan katkısını kavrar.",
+     "unit": "YAZMA"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 8,
+   "subjectCode": "MAT",
+   "programKey": "mat-temel-2018",
+   "pid": 329,
+   "programVersion": "MEB-MUFREDAT-MAT8-ca94096da33478c8",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/201813017165445-MATEMAT%C4%B0K%20%C3%96%C4%9ERET%C4%B0M%20PROGRAMI%202018v.pdf",
+   "pdfSha256": "ca94096da33478c822772425b1384bacdbe40548b0813302257fec7e8c9f9c8b",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "8. Sınıf Matematik / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "M.8.1.1.1",
+     "title": "Verilen pozitif tam sayıların pozitif tam sayı çarpanlarını bulur, pozitif tam sayıların pozitif tam sayı çarpanlarını üslü ifadelerin çarpımı şeklinde yazar.",
+     "unit": "Çarpanlar ve Katlar"
+    },
+    {
+     "code": "M.8.1.1.2",
+     "title": "İki doğal sayının en büyük ortak bölenini (EBOB) ve en küçük ortak katını (EKOK) hesaplar, ilgili problemleri çözer.",
+     "unit": "Çarpanlar ve Katlar"
+    },
+    {
+     "code": "M.8.1.1.3",
+     "title": "Verilen iki doğal sayının aralarında asal olup olmadığını belirler.",
+     "unit": "Çarpanlar ve Katlar"
+    },
+    {
+     "code": "M.8.1.2.1",
+     "title": "Tam sayıların, tam sayı kuvvetlerini hesaplar.",
+     "unit": "Üslü İfadeler"
+    },
+    {
+     "code": "M.8.1.2.2",
+     "title": "Üslü ifadelerle ilgili temel kuralları anlar, birbirine denk ifadeler oluşturur.",
+     "unit": "Üslü İfadeler"
+    },
+    {
+     "code": "M.8.1.2.3",
+     "title": "Sayıların ondalık gösterimlerini 10’un tam sayı kuvvetlerini kullanarak çözümler.",
+     "unit": "Üslü İfadeler"
+    },
+    {
+     "code": "M.8.1.2.4",
+     "title": "Verilen bir sayıyı 10’un farklı tam sayı kuvvetlerini kullanarak ifade eder.",
+     "unit": "Üslü İfadeler"
+    },
+    {
+     "code": "M.8.1.2.5",
+     "title": "Çok büyük ve çok küçük sayıları bilimsel gösterimle ifade eder ve karşılaştırır.",
+     "unit": "Üslü İfadeler"
+    },
+    {
+     "code": "M.8.1.3.1",
+     "title": "Tam kare pozitif tam sayılarla bu sayıların karekökleri arasındaki ilişkiyi belirler.",
+     "unit": "Kareköklü İfadeler"
+    },
+    {
+     "code": "M.8.1.3.2",
+     "title": "Tam kare olmayan kareköklü bir sayının hangi iki doğal sayı arasında olduğunu belirler.",
+     "unit": "Kareköklü İfadeler"
+    },
+    {
+     "code": "M.8.1.3.3",
+     "title": "Kareköklü bir ifadeyi a b şeklinde yazar ve a b şeklindeki ifadede katsayıyı kök içine alır.",
+     "unit": "Kareköklü İfadeler"
+    },
+    {
+     "code": "M.8.1.3.4",
+     "title": "Kareköklü ifadelerde çarpma ve bölme işlemlerini yapar.",
+     "unit": "Kareköklü İfadeler"
+    },
+    {
+     "code": "M.8.1.3.5",
+     "title": "Kareköklü ifadelerde toplama ve çıkarma işlemlerini yapar.",
+     "unit": "Kareköklü İfadeler"
+    },
+    {
+     "code": "M.8.1.3.6",
+     "title": "Kareköklü bir ifade ile çarpıldığında, sonucu bir doğal sayı yapan çarpanlara örnek verir.",
+     "unit": "Kareköklü İfadeler"
+    },
+    {
+     "code": "M.8.1.3.7",
+     "title": "Ondalık ifadelerin kareköklerini belirler.",
+     "unit": "Kareköklü İfadeler"
+    },
+    {
+     "code": "M.8.1.3.8",
+     "title": "Gerçek sayıları tanır, rasyonel ve irrasyonel sayılarla ilişkilendirir.",
+     "unit": "Kareköklü İfadeler"
+    },
+    {
+     "code": "M.8.2.1.1",
+     "title": "Basit cebirsel ifadeleri anlar ve farklı biçimlerde yazar.",
+     "unit": "Cebirsel İfadeler ve Özdeşlikler"
+    },
+    {
+     "code": "M.8.2.1.2",
+     "title": "Cebirsel ifadelerin çarpımını yapar.",
+     "unit": "Cebirsel İfadeler ve Özdeşlikler"
+    },
+    {
+     "code": "M.8.2.1.3",
+     "title": "Özdeşlikleri modellerle açıklar.",
+     "unit": "Cebirsel İfadeler ve Özdeşlikler"
+    },
+    {
+     "code": "M.8.2.1.4",
+     "title": "Cebirsel ifadeleri çarpanlara ayırır.",
+     "unit": "Cebirsel İfadeler ve Özdeşlikler"
+    },
+    {
+     "code": "M.8.2.2.1",
+     "title": "Birinci dereceden bir bilinmeyenli denklemleri çözer.",
+     "unit": "Doğrusal Denklemler"
+    },
+    {
+     "code": "M.8.2.2.2",
+     "title": "Koordinat sistemini özellikleriyle tanır ve sıralı ikilileri gösterir.",
+     "unit": "Doğrusal Denklemler"
+    },
+    {
+     "code": "M.8.2.2.3",
+     "title": "Aralarında doğrusal ilişki bulunan iki değişkenden birinin diğerine bağlı olarak nasıl değiştiğini tablo ve denklem ile ifade eder.",
+     "unit": "Doğrusal Denklemler"
+    },
+    {
+     "code": "M.8.2.2.4",
+     "title": "Doğrusal denklemlerin grafiğini çizer.",
+     "unit": "Doğrusal Denklemler"
+    },
+    {
+     "code": "M.8.2.2.5",
+     "title": "Doğrusal ilişki içeren gerçek hayat durumlarına ait denklem, tablo ve grafiği oluşturur ve yorumlar.",
+     "unit": "Doğrusal Denklemler"
+    },
+    {
+     "code": "M.8.2.2.6",
+     "title": "Doğrunun eğimini modellerle açıklar, doğrusal denklemleri ve grafiklerini eğimle ilişkilendirir.",
+     "unit": "Doğrusal Denklemler"
+    },
+    {
+     "code": "M.8.2.3.1",
+     "title": "Birinci dereceden bir bilinmeyenli eşitsizlik içeren günlük hayat durumlarına uygun matematik cümleleri yazar.",
+     "unit": "Eşitsizlikler"
+    },
+    {
+     "code": "M.8.2.3.2",
+     "title": "Birinci dereceden bir bilinmeyenli eşitsizlikleri sayı doğrusunda gösterir.",
+     "unit": "Eşitsizlikler"
+    },
+    {
+     "code": "M.8.2.3.3",
+     "title": "Birinci dereceden bir bilinmeyenli eşitsizlikleri çözer.",
+     "unit": "Eşitsizlikler"
+    },
+    {
+     "code": "M.8.3.1.1",
+     "title": "Üçgende kenarortay, açıortay ve yüksekliği inşa eder.",
+     "unit": "Üçgenler"
+    },
+    {
+     "code": "M.8.3.1.2",
+     "title": "Üçgenin iki kenar uzunluğunun toplamı veya farkı ile üçüncü kenarının uzunluğunu ilişkilendirir.",
+     "unit": "Üçgenler"
+    },
+    {
+     "code": "M.8.3.1.3",
+     "title": "Üçgenin kenar uzunlukları ile bu kenarların karşısındaki açıların ölçülerini ilişkilendirir.",
+     "unit": "Üçgenler"
+    },
+    {
+     "code": "M.8.3.1.4",
+     "title": "Yeterli sayıda elemanının ölçüleri verilen bir üçgeni çizer.",
+     "unit": "Üçgenler"
+    },
+    {
+     "code": "M.8.3.1.5",
+     "title": "Pisagor bağıntısını oluşturur, ilgili problemleri çözer.",
+     "unit": "Üçgenler"
+    },
+    {
+     "code": "M.8.3.2.1",
+     "title": "Nokta, doğru parçası ve diğer şekillerin öteleme sonucundaki görüntülerini çizer.",
+     "unit": "Dönüşüm Geometrisi"
+    },
+    {
+     "code": "M.8.3.2.2",
+     "title": "Nokta, doğru parçası ve diğer şekillerin yansıma sonucu oluşan görüntüsünü oluşturur.",
+     "unit": "Dönüşüm Geometrisi"
+    },
+    {
+     "code": "M.8.3.2.3",
+     "title": "Çokgenlerin öteleme ve yansımalar sonucunda ortaya çıkan görüntüsünü oluşturur.",
+     "unit": "Dönüşüm Geometrisi"
+    },
+    {
+     "code": "M.8.3.3.1",
+     "title": "Eşlik ve benzerliği ilişkilendirir, eş ve benzer şekillerin kenar ve açı ilişkilerini belirler.",
+     "unit": "Eşlik ve Benzerlik"
+    },
+    {
+     "code": "M.8.3.3.2",
+     "title": "Benzer çokgenlerin benzerlik oranını belirler, bir çokgene eş ve benzer çokgenler oluşturur.",
+     "unit": "Eşlik ve Benzerlik"
+    },
+    {
+     "code": "M.8.3.4.1",
+     "title": "Dik prizmaları tanır, temel elemanlarını belirler, inşa eder ve açınımını çizer.",
+     "unit": "Geometrik Cisimler"
+    },
+    {
+     "code": "M.8.3.4.2",
+     "title": "Dik dairesel silindirin temel elemanlarını belirler, inşa eder ve açınımını çizer.",
+     "unit": "Geometrik Cisimler"
+    },
+    {
+     "code": "M.8.3.4.3",
+     "title": "Dik dairesel silindirin yüzey alanı bağıntısını oluşturur, ilgili problemleri çözer.",
+     "unit": "Geometrik Cisimler"
+    },
+    {
+     "code": "M.8.3.4.4",
+     "title": "Dik dairesel silindirin hacim bağıntısını oluşturur; ilgili problemleri çözer.",
+     "unit": "Geometrik Cisimler"
+    },
+    {
+     "code": "M.8.3.4.5",
+     "title": "Dik piramidi tanır, temel elemanlarını belirler, inşa eder ve açınımını çizer.",
+     "unit": "Geometrik Cisimler"
+    },
+    {
+     "code": "M.8.3.4.6",
+     "title": "Dik koniyi tanır, temel elemanlarını belirler, inşa eder ve açınımını çizer.",
+     "unit": "Geometrik Cisimler"
+    },
+    {
+     "code": "M.8.4.1.1",
+     "title": "En fazla üç veri grubuna ait çizgi ve sütun grafiklerini yorumlar.",
+     "unit": "Veri Analizi"
+    },
+    {
+     "code": "M.8.4.1.2",
+     "title": "Verileri sütun, daire veya çizgi grafiği ile gösterir ve bu gösterimler arasında uygun olan dönüşümleri yapar.",
+     "unit": "Veri Analizi"
+    },
+    {
+     "code": "M.8.5.1.1",
+     "title": "Bir olaya ait olası durumları belirler.",
+     "unit": "Basit Olayların Olma Olasılığı"
+    },
+    {
+     "code": "M.8.5.1.2",
+     "title": "“Daha fazla”, “eşit”, “daha az” olasılıklı olayları ayırt eder, örnek verir.",
+     "unit": "Basit Olayların Olma Olasılığı"
+    },
+    {
+     "code": "M.8.5.1.3",
+     "title": "Eşit şansa sahip olan olaylarda her bir çıktının olasılık değerinin eşit olduğunu ve bu değerin 1/n olduğunu açıklar.",
+     "unit": "Basit Olayların Olma Olasılığı"
+    },
+    {
+     "code": "M.8.5.1.4",
+     "title": "Olasılık değerinin 0 ile 1 arasında (0 ve 1 dâhil) olduğunu anlar.",
+     "unit": "Basit Olayların Olma Olasılığı"
+    },
+    {
+     "code": "M.8.5.1.5",
+     "title": "Basit bir olayın olma olasılığını hesaplar.",
+     "unit": "Basit Olayların Olma Olasılığı"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 8,
+   "subjectCode": "FEN",
+   "programKey": "fen-2018",
+   "pid": 325,
+   "programVersion": "MEB-MUFREDAT-FEN8-3a8aa21327083bf1",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812312311937-FEN%20B%C4%B0L%C4%B0MLER%C4%B0%20%C3%96%C4%9ERET%C4%B0M%20PROGRAMI2018.pdf",
+   "pdfSha256": "3a8aa21327083bf15c33b9c404f299ff784b11d26024522a8c24b61387c8c0c1",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "8. Sınıf Fen Bilimleri / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "F.8.1.1.1",
+     "title": "Mevsimlerin oluşumuna yönelik tahminlerde bulunur.",
+     "unit": "Mevsimlerin Oluşumu"
+    },
+    {
+     "code": "F.8.1.2.1",
+     "title": "İklim ve hava olayları arasındaki farkı açıklar.",
+     "unit": "İklim ve Hava Hareketleri"
+    },
+    {
+     "code": "F.8.1.2.2",
+     "title": "İklim biliminin (klimatoloji) bir bilim dalı olduğunu ve bu alanda çalışan uzmanlara iklim bilimci (klimatolog) adı verildiğini söyler.",
+     "unit": "İklim ve Hava Hareketleri"
+    },
+    {
+     "code": "F.8.2.1.1",
+     "title": "Nükleotid, gen, DNA ve kromozom kavramlarını açıklayarak bu kavramlar arasında ilişki kurar.",
+     "unit": "DNA ve Genetik Kod"
+    },
+    {
+     "code": "F.8.2.1.2",
+     "title": "DNA’nın yapısını model üzerinde gösterir.",
+     "unit": "DNA ve Genetik Kod"
+    },
+    {
+     "code": "F.8.2.1.3",
+     "title": "DNA’nın kendini nasıl eşlediğini ifade eder.",
+     "unit": "DNA ve Genetik Kod"
+    },
+    {
+     "code": "F.8.2.2.1",
+     "title": "Kalıtım ile ilgili kavramları tanımlar.",
+     "unit": "Kalıtım"
+    },
+    {
+     "code": "F.8.2.2.2",
+     "title": "Tek karakter çaprazlamaları ile ilgili problemler çözerek sonuçlar hakkında yorum yapar.",
+     "unit": "Kalıtım"
+    },
+    {
+     "code": "F.8.2.2.3",
+     "title": "Akraba evliliklerinin genetik sonuçlarını tartışır.",
+     "unit": "Kalıtım"
+    },
+    {
+     "code": "F.8.2.3.1",
+     "title": "Örneklerden yola çıkarak mutasyonu açıklar.",
+     "unit": "Mutasyon ve Modifikasyon"
+    },
+    {
+     "code": "F.8.2.3.2",
+     "title": "Örneklerden yola çıkarak modifikasyonu açıklar.",
+     "unit": "Mutasyon ve Modifikasyon"
+    },
+    {
+     "code": "F.8.2.3.3",
+     "title": "Mutasyonla modifikasyon arasındaki farklar ile ilgili çıkarımda bulunur.",
+     "unit": "Mutasyon ve Modifikasyon"
+    },
+    {
+     "code": "F.8.2.4.1",
+     "title": "Canlıların yaşadıkları çevreye uyumlarını gözlem yaparak açıklar.",
+     "unit": "Adaptasyon (Çevreye Uyum)"
+    },
+    {
+     "code": "F.8.2.5.1",
+     "title": "Genetik mühendisliğini ve biyoteknolojiyi ilişkilendirir.",
+     "unit": "Biyoteknoloji"
+    },
+    {
+     "code": "F.8.2.5.2",
+     "title": "Biyoteknolojik uygulamalar kapsamında oluşturulan ikilemlerle bu uygulamaların insanlık için yararlı ve zararlı yönlerini tartışır.",
+     "unit": "Biyoteknoloji"
+    },
+    {
+     "code": "F.8.2.5.3",
+     "title": "Gelecekteki genetik mühendisliği ve biyoteknoloji uygulamalarının neler olabileceği hakkında tahminde bulunur.",
+     "unit": "Biyoteknoloji"
+    },
+    {
+     "code": "F.8.3.1.1",
+     "title": "Katı basıncını etkileyen değişkenleri deneyerek keşfeder.",
+     "unit": "Basınç"
+    },
+    {
+     "code": "F.8.3.1.2",
+     "title": "Sıvı basıncını etkileyen değişkenleri tahmin eder ve tahminlerini test eder.",
+     "unit": "Basınç"
+    },
+    {
+     "code": "F.8.3.1.3",
+     "title": "Katı, sıvı ve gazların basınç özelliklerinin günlük yaşam ve teknolojideki uygulamalarına örnekler verir.",
+     "unit": "Basınç"
+    },
+    {
+     "code": "F.8.4.1.1",
+     "title": "Periyodik sistemde, grup ve periyotların nasıl oluşturulduğunu açıklar.",
+     "unit": "Periyodik Sistem"
+    },
+    {
+     "code": "F.8.4.1.2",
+     "title": "Elementleri periyodik tablo üzerinde metal, yarımetal ve ametal olarak sınıflandırır.",
+     "unit": "Periyodik Sistem"
+    },
+    {
+     "code": "F.8.4.2.1",
+     "title": "Fiziksel ve kimyasal değişim arasındaki farkları, çeşitli olayları gözlemleyerek açıklar.",
+     "unit": "Fiziksel ve Kimyasal Değişimler"
+    },
+    {
+     "code": "F.8.4.3.1",
+     "title": "Bileşiklerin kimyasal tepkime sonucunda oluştuğunu bilir.",
+     "unit": "Kimyasal Tepkimeler"
+    },
+    {
+     "code": "F.8.4.4.1",
+     "title": "Asit ve bazların genel özelliklerini ifade eder.",
+     "unit": "Asitler ve Bazlar"
+    },
+    {
+     "code": "F.8.4.4.2",
+     "title": "Asit ve bazlara günlük yaşamdan örnekler verir.",
+     "unit": "Asitler ve Bazlar"
+    },
+    {
+     "code": "F.8.4.4.3",
+     "title": "Günlük hayatta ulaşılabilecek malzemeleri asit-baz ayracı olarak kullanır.",
+     "unit": "Asitler ve Bazlar"
+    },
+    {
+     "code": "F.8.4.4.4",
+     "title": "Maddelerin asitlik ve bazlık durumlarına ilişkin pH değerlerini kullanarak çıkarımda bulunur.",
+     "unit": "Asitler ve Bazlar"
+    },
+    {
+     "code": "F.8.4.4.5",
+     "title": "Asit ve bazların çeşitli maddeler üzerindeki etkilerini gözlemler.",
+     "unit": "Asitler ve Bazlar"
+    },
+    {
+     "code": "F.8.4.4.6",
+     "title": "Asit ve bazların temizlik malzemesi olarak kullanılması esnasında oluşabilecek tehlikelerle ilgili gerekli tedbirleri alır.",
+     "unit": "Asitler ve Bazlar"
+    },
+    {
+     "code": "F.8.4.4.7",
+     "title": "Asit yağmurlarının önlenmesine yönelik çözüm önerileri sunar.",
+     "unit": "Asitler ve Bazlar"
+    },
+    {
+     "code": "F.8.4.5.1",
+     "title": "Isınmanın maddenin cinsine, kütlesine ve/veya sıcaklık değişimine bağlı olduğunu deney yaparak keşfeder.",
+     "unit": "Maddenin Isı ile Etkileşimi"
+    },
+    {
+     "code": "F.8.4.5.2",
+     "title": "Hâl değiştirmek için gerekli ısının maddenin cinsi ve kütlesiyle ilişkili olduğunu deney yaparak keşfeder.",
+     "unit": "Maddenin Isı ile Etkileşimi"
+    },
+    {
+     "code": "F.8.4.5.3",
+     "title": "Maddelerin hâl değişimi ve ısınma grafiğini çizerek yorumlar.",
+     "unit": "Maddenin Isı ile Etkileşimi"
+    },
+    {
+     "code": "F.8.4.5.4",
+     "title": "Günlük yaşamda meydana gelen hâl değişimleri ile ısı alışverişini ilişkilendirir.",
+     "unit": "Maddenin Isı ile Etkileşimi"
+    },
+    {
+     "code": "F.8.4.6.1",
+     "title": "Geçmişten günümüze Türkiye’deki kimya endüstrisinin gelişimini araştırır.",
+     "unit": "Maddenin Isı ile Etkileşimi"
+    },
+    {
+     "code": "F.8.4.6.2",
+     "title": "Kimya endüstrisinde meslek dallarını araştırır ve gelecekteki yeni meslek alanları hakkında öneriler sunar.",
+     "unit": "Maddenin Isı ile Etkileşimi"
+    },
+    {
+     "code": "F.8.5.1.1",
+     "title": "Basit makinelerin sağladığı avantajları örnekler üzerinden açıklar.",
+     "unit": "Basit Makineler"
+    },
+    {
+     "code": "F.8.5.1.2",
+     "title": "Basit makinelerden yararlanarak günlük yaşamda iş kolaylığı sağlayacak bir düzenek tasarlar.",
+     "unit": "Basit Makineler"
+    },
+    {
+     "code": "F.8.6.1.1",
+     "title": "Besin zincirindeki üretici, tüketici, ayrıştırıcılara örnekler verir.",
+     "unit": "Besin Zinciri ve Enerji Akışı"
+    },
+    {
+     "code": "F.8.6.2.1",
+     "title": "Bitkilerde besin üretiminde fotosentezin önemini fark eder.",
+     "unit": "Enerji Dönüşümleri"
+    },
+    {
+     "code": "F.8.6.2.2",
+     "title": "Fotosentez hızını etkileyen faktörler ile ilgili çıkarımlarda bulunur.",
+     "unit": "Enerji Dönüşümleri"
+    },
+    {
+     "code": "F.8.6.2.3",
+     "title": "Canlılarda solunumun önemini belirtir.",
+     "unit": "Enerji Dönüşümleri"
+    },
+    {
+     "code": "F.8.6.3.1",
+     "title": "Madde döngülerini şema üzerinde göstererek açıklar.",
+     "unit": "Madde Döngüleri ve Çevre Sorunları"
+    },
+    {
+     "code": "F.8.6.3.2",
+     "title": "Madde döngülerinin yaşam açısından önemini sorgular.",
+     "unit": "Madde Döngüleri ve Çevre Sorunları"
+    },
+    {
+     "code": "F.8.6.3.3",
+     "title": "Küresel iklim değişikliklerinin nedenlerini ve olası sonuçlarını tartışır.",
+     "unit": "Madde Döngüleri ve Çevre Sorunları"
+    },
+    {
+     "code": "F.8.6.4.1",
+     "title": "Kaynakların kullanımında tasarruflu davranmaya özen gösterir.",
+     "unit": "Sürdürülebilir Kalkınma"
+    },
+    {
+     "code": "F.8.6.4.2",
+     "title": "Kaynakların tasarruflu kullanımına yönelik proje tasarlar.",
+     "unit": "Sürdürülebilir Kalkınma"
+    },
+    {
+     "code": "F.8.6.4.3",
+     "title": "Geri dönüşüm için katı atıkların ayrıştırılmasının önemini açıklar.",
+     "unit": "Sürdürülebilir Kalkınma"
+    },
+    {
+     "code": "F.8.6.4.4",
+     "title": "Geri dönüşümün ülke ekonomisine katkısına ilişkin araştırma verilerini kullanarak çözüm önerileri sunar.",
+     "unit": "Sürdürülebilir Kalkınma"
+    },
+    {
+     "code": "F.8.6.4.5",
+     "title": "Kaynakların tasarruflu kullanılmaması durumunda gelecekte karşılaşılabilecek problemleri belirterek çözüm önerileri sunar.",
+     "unit": "Sürdürülebilir Kalkınma"
+    },
+    {
+     "code": "F.8.7.1.1",
+     "title": "Elektriklenmeyi, bazı doğa olayları ve teknolojideki uygulama örnekleri ile açıklar.",
+     "unit": "Elektrik Yükleri ve Elektriklenme"
+    },
+    {
+     "code": "F.8.7.1.2",
+     "title": "Elektrik yüklerini sınıflandırarak aynı ve farklı cins elektrik yüklerinin birbirlerine etkisini açıklar.",
+     "unit": "Elektrik Yükleri ve Elektriklenme"
+    },
+    {
+     "code": "F.8.7.1.3",
+     "title": "Deneyler yaparak elektriklenme çeşitlerini fark eder.",
+     "unit": "Elektrik Yükleri ve Elektriklenme"
+    },
+    {
+     "code": "F.8.7.2.1",
+     "title": "Cisimleri, sahip oldukları elektrik yükleri bakımından sınıflandırır.",
+     "unit": "Elektrik Yüklü Cisimler"
+    },
+    {
+     "code": "F.8.7.2.2",
+     "title": "Topraklamayı açıklar.",
+     "unit": "Elektrik Yüklü Cisimler"
+    },
+    {
+     "code": "F.8.7.3.1",
+     "title": "Elektrik enerjisinin ısı, ışık ve hareket enerjisine dönüştüğü uygulamalara örnekler verir.",
+     "unit": "Elektrik Enerjisinin Dönüşümü"
+    },
+    {
+     "code": "F.8.7.3.2",
+     "title": "Elektirik enerjisinin ısı, ışık veya hareket enerjisine dönüşümü temel alan bir model tasarlar.",
+     "unit": "Elektrik Enerjisinin Dönüşümü"
+    },
+    {
+     "code": "F.8.7.3.3",
+     "title": "Güç santrallerinde elektrik enerjisinin nasıl üretildiğini açıklar.",
+     "unit": "Elektrik Enerjisinin Dönüşümü"
+    },
+    {
+     "code": "F.8.7.3.4",
+     "title": "Güç santrallerinin avantaj ve dezavantajları konusunda fikirler üretir.",
+     "unit": "Elektrik Enerjisinin Dönüşümü"
+    },
+    {
+     "code": "F.8.7.3.5",
+     "title": "Elektrik enerjisinin bilinçli ve tasarruflu kullanılmasının aile ve ülke ekonomisi bakımından önemini tartışır.",
+     "unit": "Elektrik Enerjisinin Dönüşümü"
+    },
+    {
+     "code": "F.8.7.3.6",
+     "title": "Evlerde elektriği tasarruflu kullanmaya özen gösterir.",
+     "unit": "Elektrik Enerjisinin Dönüşümü"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 8,
+   "subjectCode": "INK",
+   "programKey": "ink-temel-2018",
+   "pid": 355,
+   "programVersion": "MEB-MUFREDAT-INK8-38a24b11191f7ebc",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812104016155-%C4%B0NKILAP%20TAR%C4%B0H%C4%B0%20VE%20ATAT%C3%9CRK%C3%87%C3%9CL%C3%9CK%20%C3%96%C4%9ERET%C4%B0M%20PROGRAMI.pdf",
+   "pdfSha256": "38a24b11191f7ebca2fc85831d787e7187eca70e82f0bd36e7de5c81524357d5",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "8. Sınıf T.C. İnkılap Tarihi ve Atatürkçülük / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "İTA.8.1.1",
+     "title": "Avrupa’daki gelişmelerin yansımaları bağlamında Osmanlı Devleti’nin yirminci yüzyılın başlarındaki siyasi ve sosyal durumunu kavrar.",
+     "unit": "BİR KAHRAMAN DOĞUYOR"
+    },
+    {
+     "code": "İTA.8.1.2",
+     "title": "Mustafa Kemal’in çocukluk ve öğrenim hayatından hareketle onun kişilik özelliklerinin oluşumu hakkında çıkarımlarda bulunur.",
+     "unit": "BİR KAHRAMAN DOĞUYOR"
+    },
+    {
+     "code": "İTA.8.1.3",
+     "title": "Gençlik döneminde Mustafa Kemal’in fikir hayatını etkileyen önemli kişileri ve olayları kavrar.",
+     "unit": "BİR KAHRAMAN DOĞUYOR"
+    },
+    {
+     "code": "İTA.8.1.4",
+     "title": "Mustafa Kemal’in askerlik hayatı ile ilgili olayları ve olguları onun kişilik özellikleri ile ilişkilendirir.",
+     "unit": "BİR KAHRAMAN DOĞUYOR"
+    },
+    {
+     "code": "İTA.8.2.1",
+     "title": "Birinci Dünya Savaşı’nın sebeplerini ve savaşın başlamasına yol açan gelişmeleri kavrar.",
+     "unit": "MİLLÎ UYANIŞ: BAĞIMSIZLIK YOLUNDA ATILAN ADIMLAR"
+    },
+    {
+     "code": "İTA.8.2.2",
+     "title": "Birinci Dünya Savaşı’nda Osmanlı Devleti’nin durumu hakkında çıkarımlarda bulunur.",
+     "unit": "MİLLÎ UYANIŞ: BAĞIMSIZLIK YOLUNDA ATILAN ADIMLAR"
+    },
+    {
+     "code": "İTA.8.2.3",
+     "title": "Mondros Ateşkes Antlaşması’nın imzalanması ve uygulanması karşısında Osmanlı yönetiminin, Mustafa Kemal’in ve halkın tutumunu analiz eder.",
+     "unit": "MİLLÎ UYANIŞ: BAĞIMSIZLIK YOLUNDA ATILAN ADIMLAR"
+    },
+    {
+     "code": "İTA.8.2.4",
+     "title": "Kuvâ-yı Millîye’nin oluşum sürecini ve sonrasında meydana gelen gelişmeleri kavrar.",
+     "unit": "MİLLÎ UYANIŞ: BAĞIMSIZLIK YOLUNDA ATILAN ADIMLAR"
+    },
+    {
+     "code": "İTA.8.2.5",
+     "title": "Millî Mücadele’nin hazırlık döneminde Mustafa Kemal’in yaptığı çalışmaları analiz eder.",
+     "unit": "MİLLÎ UYANIŞ: BAĞIMSIZLIK YOLUNDA ATILAN ADIMLAR"
+    },
+    {
+     "code": "İTA.8.2.6",
+     "title": "Misakımilli’nin kabulünü ve Büyük Millet Meclisinin açılışını vatanın bütünlüğü esası ile “ulusal egemenlik” ve “tam bağımsızlık” ilkeleri ile ilişkilendirir.",
+     "unit": "MİLLÎ UYANIŞ: BAĞIMSIZLIK YOLUNDA ATILAN ADIMLAR"
+    },
+    {
+     "code": "İTA.8.2.7",
+     "title": "Büyük Millet Meclisine karşı ayaklanmalar ile ayaklanmaların bastırılması için alınan tedbirleri analiz eder.",
+     "unit": "MİLLÎ UYANIŞ: BAĞIMSIZLIK YOLUNDA ATILAN ADIMLAR"
+    },
+    {
+     "code": "İTA.8.2.8",
+     "title": "Mustafa Kemal’in ve Türk milletinin Sevr Antlaşması’na karşı tepkilerini değerlendirir.",
+     "unit": "MİLLÎ UYANIŞ: BAĞIMSIZLIK YOLUNDA ATILAN ADIMLAR"
+    },
+    {
+     "code": "İTA.8.3.1",
+     "title": "Millî Mücadele Dönemi’nde Doğu Cephesi ve Güney Cephesi’nde meydana gelen gelişmeleri kavrar.",
+     "unit": "MİLLÎ BİR DESTAN: YA İSTİKLAL YA ÖLÜM!"
+    },
+    {
+     "code": "İTA.8.3.2",
+     "title": "Millî Mücadele Dönemi’nde Batı Cephesi’nde meydana gelen gelişmeleri kavrar.",
+     "unit": "MİLLÎ BİR DESTAN: YA İSTİKLAL YA ÖLÜM!"
+    },
+    {
+     "code": "İTA.8.3.3",
+     "title": "Millî Mücadele’nin zor bir döneminde Maarif Kongresi yapan Atatürk’ün, millî ve çağdaş eğitime verdiği önemi kavrar.",
+     "unit": "MİLLÎ BİR DESTAN: YA İSTİKLAL YA ÖLÜM!"
+    },
+    {
+     "code": "İTA.8.3.4",
+     "title": "Türk milletinin millî birlik, beraberlik ve dayanışmasının bir örneği olarak Tekalif-i Millîye Emirleri doğrultusunda yapılan uygulamaları analiz eder.",
+     "unit": "MİLLÎ BİR DESTAN: YA İSTİKLAL YA ÖLÜM!"
+    },
+    {
+     "code": "İTA.8.3.5",
+     "title": "Sakarya Meydan Savaşı’nın kazanılmasında ve Büyük Taarruz’un başarılı olmasında Mustafa Kemal’in rolüne ilişkin çıkarımlarda bulunur.",
+     "unit": "MİLLÎ BİR DESTAN: YA İSTİKLAL YA ÖLÜM!"
+    },
+    {
+     "code": "İTA.8.3.6",
+     "title": "Lozan Antlaşması’nın sağladığı kazanımları analiz eder.",
+     "unit": "MİLLÎ BİR DESTAN: YA İSTİKLAL YA ÖLÜM!"
+    },
+    {
+     "code": "İTA.8.3.7",
+     "title": "Millî Mücadele Dönemi’nin siyasi, sosyal ve kültürel olaylarının sanat ve edebiyat ürünlerine yansımalarına kanıtlar gösterir.",
+     "unit": "MİLLÎ BİR DESTAN: YA İSTİKLAL YA ÖLÜM!"
+    },
+    {
+     "code": "İTA.8.4.1",
+     "title": "Çağdaşlaşan Türkiye’nin temeli olan Atatürk ilkelerini açıklar.",
+     "unit": "ATATÜRKÇÜLÜK VE ÇAĞDAŞLAŞAN TÜRKİYE"
+    },
+    {
+     "code": "İTA.8.4.2",
+     "title": "Siyasi alanda meydana gelen gelişmeleri kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE ÇAĞDAŞLAŞAN TÜRKİYE"
+    },
+    {
+     "code": "İTA.8.4.3",
+     "title": "Hukuk alanında meydana gelen gelişmelerin toplumsal hayata yansımalarını kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE ÇAĞDAŞLAŞAN TÜRKİYE"
+    },
+    {
+     "code": "İTA.8.4.4",
+     "title": "Eğitim ve kültür alanında yapılan inkılapları ve gelişmeleri kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE ÇAĞDAŞLAŞAN TÜRKİYE"
+    },
+    {
+     "code": "İTA.8.4.5",
+     "title": "Toplumsal alanda yapılan inkılapları ve meydana gelen gelişmeleri kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE ÇAĞDAŞLAŞAN TÜRKİYE"
+    },
+    {
+     "code": "İTA.8.4.6",
+     "title": "Ekonomi alanında meydana gelen gelişmeleri kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE ÇAĞDAŞLAŞAN TÜRKİYE"
+    },
+    {
+     "code": "İTA.8.4.7",
+     "title": "Atatürk Dönemi’nde sağlık alanında yapılan çalışmaları devletin temel görevleri ile ilişkilendirir.",
+     "unit": "ATATÜRKÇÜLÜK VE ÇAĞDAŞLAŞAN TÜRKİYE"
+    },
+    {
+     "code": "İTA.8.4.8",
+     "title": "Cumhuriyet’in sağladığı kazanımları ve Atatürk’ün Türk milleti için gösterdiği hedefleri analiz eder.",
+     "unit": "ATATÜRKÇÜLÜK VE ÇAĞDAŞLAŞAN TÜRKİYE"
+    },
+    {
+     "code": "İTA.8.4.9",
+     "title": "Atatürk ilke ve inkılaplarını oluşturan temel esasları kavrar.",
+     "unit": "ATATÜRKÇÜLÜK VE ÇAĞDAŞLAŞAN TÜRKİYE"
+    },
+    {
+     "code": "İTA.8.5.1",
+     "title": "Atatürk Dönemi’ndeki demokratikleşme yolunda atılan adımları açıklar.",
+     "unit": "DEMOKRATİKLEŞME ÇABALARI"
+    },
+    {
+     "code": "İTA.8.5.2",
+     "title": "Mustafa Kemal’e suikast girişimini analiz eder.",
+     "unit": "DEMOKRATİKLEŞME ÇABALARI"
+    },
+    {
+     "code": "İTA.8.5.3",
+     "title": "Cumhuriyetin ilk yıllarında Türkiye Cumhuriyetine yönelik tehditleri analiz eder.",
+     "unit": "DEMOKRATİKLEŞME ÇABALARI"
+    },
+    {
+     "code": "İTA.8.6.1",
+     "title": "Atatürk Dönemi Türk dış politikasının temel ilkelerini ve amaçlarını açıklar.",
+     "unit": "ATATÜRK DÖNEMİ TÜRK DIŞ POLİTİKASI"
+    },
+    {
+     "code": "İTA.8.6.2",
+     "title": "Atatürk Dönemi Türk dış politikasında yaşanan gelişmeleri analiz eder.",
+     "unit": "ATATÜRK DÖNEMİ TÜRK DIŞ POLİTİKASI"
+    },
+    {
+     "code": "İTA.8.6.3",
+     "title": "Atatürk’ün Hatay’ı ülkemize katmak konusunda yaptıklarına ve bu uğurda gösterdiği özveriye kanıtlar gösterir.",
+     "unit": "ATATÜRK DÖNEMİ TÜRK DIŞ POLİTİKASI"
+    },
+    {
+     "code": "İTA.8.7.1",
+     "title": "Atatürk’ün ölümüne ilişkin yansıma ve değerlendirmelerden hareketle onun fikir ve eserlerinin evrensel değerine ilişkin çıkarımlarda bulunur.",
+     "unit": "ATATÜRK’ÜN ÖLÜMÜ VE SONRASI"
+    },
+    {
+     "code": "İTA.8.7.2",
+     "title": "Atatürk’ün Türk Milleti’ne bıraktığı eserlerinden örnekler verir.",
+     "unit": "ATATÜRK’ÜN ÖLÜMÜ VE SONRASI"
+    },
+    {
+     "code": "İTA.8.7.3",
+     "title": "Atatürk’ün İkinci Dünya Savaşı öncesi tespitleri ve girişimleri Türkiye’nin savaşta izlediği denge siyaseti ile ilişkilendirilir.",
+     "unit": "ATATÜRK’ÜN ÖLÜMÜ VE SONRASI"
+    },
+    {
+     "code": "İTA.8.7.4",
+     "title": "İkinci Dünya Savaşı’ndaki gelişmelerin ve bu savaşın sonuçlarının Türkiye’ye etkilerini analiz eder.",
+     "unit": "ATATÜRK’ÜN ÖLÜMÜ VE SONRASI"
+    },
+    {
+     "code": "İTA.8.7.5",
+     "title": "Türkiye’de çok partili siyasi hayata geçişi hızlandıran gelişmeleri, demokrasinin gerekleri açısından analiz eder.",
+     "unit": "ATATÜRK’ÜN ÖLÜMÜ VE SONRASI"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 8,
+   "subjectCode": "DIN",
+   "programKey": "din-4-8-2018",
+   "pid": 318,
+   "programVersion": "MEB-MUFREDAT-DIN8-baace330fd3b7c5b",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/20221229134650712-DKAB_(4-8.%20S%C4%B1n%C4%B1f)_DOP_%202018.pdf",
+   "pdfSha256": "baace330fd3b7c5b5dde6061bbd0af3b885382d6eb5e7049095a30db8c075608",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "8. Sınıf Din Kültürü ve Ahlak Bilgisi / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "8.1.1",
+     "title": "Kader ve kaza inancını ayet ve hadislerle açıklar.",
+     "unit": "KADER İNANCI"
+    },
+    {
+     "code": "8.1.2",
+     "title": "İnsanın ilmi, iradesi, sorumluluğu ile kader arasında ilişki kurar.",
+     "unit": "KADER İNANCI"
+    },
+    {
+     "code": "8.1.3",
+     "title": "Kaza ve kader ile ilgili kavramları analiz eder.",
+     "unit": "KADER İNANCI"
+    },
+    {
+     "code": "8.1.4",
+     "title": "Toplumda kader ve kaza ile ilgili yaygın olan yanlış anlayışları sorgular.",
+     "unit": "KADER İNANCI"
+    },
+    {
+     "code": "8.1.5",
+     "title": "Hz. Musa’nın (a.s.) hayatını ana hatlarıyla tanır.",
+     "unit": "KADER İNANCI"
+    },
+    {
+     "code": "8.1.6",
+     "title": "Ayet el-Kürsi'yi okur, anlamını söyler.",
+     "unit": "KADER İNANCI"
+    },
+    {
+     "code": "8.2.1",
+     "title": "İslam’ın paylaşma ve yardımlaşmaya verdiği önemi ayet ve hadisler ışığında yorumlar.",
+     "unit": "ZEKÂT VE SADAKA"
+    },
+    {
+     "code": "8.2.2",
+     "title": "Zekât ve sadaka ibadetini ayet ve hadislerle açıklar.",
+     "unit": "ZEKÂT VE SADAKA"
+    },
+    {
+     "code": "8.2.3",
+     "title": "Zekât, infak ve sadakanın bireysel ve toplumsal önemini fark eder.",
+     "unit": "ZEKÂT VE SADAKA"
+    },
+    {
+     "code": "8.2.4",
+     "title": "Hz. Şuayb’in (a.s.) hayatını ana hatlarıyla tanır.",
+     "unit": "ZEKÂT VE SADAKA"
+    },
+    {
+     "code": "8.2.5",
+     "title": "Maûn suresini okur, anlamını söyler.",
+     "unit": "ZEKÂT VE SADAKA"
+    },
+    {
+     "code": "8.3.1",
+     "title": "Din, birey ve toplum arasındaki ilişkiyi yorumlar.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.3.2",
+     "title": "İslam dininin can, nesil, akıl, mal ve din emniyetiyle ilgili ortaya koyduğu ilke ve hedefleri analiz eder.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.3.3",
+     "title": "Hz. Yusuf’un (a.s.) örnek hayatından ilkeler çıkarır.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.3.4",
+     "title": "Asr suresini okur, anlamını söyler.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.4.1",
+     "title": "Hz. Muhammed’in (s.a.v.) doğruluğu ve güvenilir kişiliği ile peygamberlerin özellikleri arasında ilişki kurar.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.4.2",
+     "title": "Hz. Muhammed’in (s.a.v.) merhametli ve affedici oluşunu davranışlarında yansıtmaya özen gösterir.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.4.3",
+     "title": "Hz. Muhammed’in (s.a.v.) istişareye verdiği önemi ortaya koyan örnek olaylardan hareketle gündelik hayatla ilgili çıkarımlarda bulunur.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.4.4",
+     "title": "Hz. Muhammed’in (s.a.v.) cesaret ve kararlılığını örnek olaylarla açıklar.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.4.5",
+     "title": "Hz. Muhammed’in (s.a.v.) hakkı gözetmedeki hassasiyetine örnekler verir.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.4.6",
+     "title": "Hz. Muhammed’in (s.a.v.) insanlara verdiği değeri örneklerle açıklar.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.4.7",
+     "title": "Hz. Muhammed’in (s.a.v.) örnek davranışlarının toplumsal hayattaki önemini değerlendirir.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.4.8",
+     "title": "Hz. Muhammed’in (s.a.v.) hikmetli söz ve davranışlarıyla insanları iyiye ve güzele yönlendirdiğini fark eder.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.4.9",
+     "title": "Kureyş suresini okur, anlamını söyler.",
+     "unit": "DİN VE HAYAT"
+    },
+    {
+     "code": "8.5.1",
+     "title": "İslam dininin temel kaynaklarını tanır.",
+     "unit": "KUR’AN-I KERİM VE ÖZELLİKLERİ"
+    },
+    {
+     "code": "8.5.2",
+     "title": "Ayetlerden hareketle Kur’an’ın ana konularını sınıflandırır.",
+     "unit": "KUR’AN-I KERİM VE ÖZELLİKLERİ"
+    },
+    {
+     "code": "8.5.3",
+     "title": "Kur’an-ı Kerim’in temel özelliklerini değerlendirir.",
+     "unit": "KUR’AN-I KERİM VE ÖZELLİKLERİ"
+    },
+    {
+     "code": "8.5.4",
+     "title": "Hz. Nuh’un (a.s.) tevhide davetini özetler.",
+     "unit": "KUR’AN-I KERİM VE ÖZELLİKLERİ"
+    }
+   ]
+  },
+  {
+   "academicYear": "2026-2027",
+   "grade": 8,
+   "subjectCode": "ING",
+   "programKey": "ing-2-8-2018",
+   "pid": 327,
+   "programVersion": "MEB-MUFREDAT-ING8-e976ae163c83bb1b",
+   "sourceUrl": "https://mufredat.meb.gov.tr/Dosyalar/201812411191321-%C4%B0NG%C4%B0L%C4%B0ZCE%20%C3%96%C4%9ERET%C4%B0M%20PROGRAMI%20Klas%C3%B6r%C3%BC.pdf",
+   "pdfSha256": "e976ae163c83bb1b3bcf79d7d77ce8cb8308dbdc97a630b941951b9b57653279",
+   "sourceKind": "MEB_MUFREDAT",
+   "scopeKind": "SUBJECT_PROGRAM",
+   "sourceTitle": "8. Sınıf İngilizce / önceki MEB öğretim programı / 2026-2027",
+   "outcomes": [
+    {
+     "code": "E8.1.L1",
+     "title": "Students will be able to understand the specific information in short conversations on everyday topics, such as accepting and refusing an offer/invitation, apologizing and making simple inquiries.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E8.1.SI1",
+     "title": "Students will be able to interact with reasonable ease in structured situations and short conversations involving accepting and refusing an offer/invitation, apologizing and making simple inquiries.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E8.1.SP1",
+     "title": "Students will be able to structure a talk to make simple inquiries, give explanations and reasons.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E8.1.R1",
+     "title": "Students will be able to understand short and simple texts about friendship.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E8.1.R2",
+     "title": "Students will be able to understand short and simple invitation letters, cards and e-mails.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E8.1.W1",
+     "title": "Students will be able to write a short and simple letter apologizing and giving reasons for not attending a party in response to an invitation.",
+     "unit": "Unit 1"
+    },
+    {
+     "code": "E8.2.L1",
+     "title": "Students will be able to understand phrases and expressions about regular activities of teenagers.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E8.2.SI1",
+     "title": "Students will be able to talk about regular activities of teenagers.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E8.2.SP1",
+     "title": "Students will be able to express what they prefer, like and dislike.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E8.2.SP2",
+     "title": "Students will be able to give a simple description of daily activities in a simple way.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E8.2.R1",
+     "title": "Students will be able to understand short and simple texts about regular activities of teenagers.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E8.2.W1",
+     "title": "Students will be able to write a short and simple paragraph about regular activities of teenagers.",
+     "unit": "Unit 2"
+    },
+    {
+     "code": "E8.3.L1",
+     "title": "Students will be able to get the gist of short, clear, simple descriptions of a process.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E8.3.SI1",
+     "title": "Students will be able to ask and answer questions and exchange ideas and information on a topic related to how something is processed.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E8.3.SP1",
+     "title": "Students will be able to give a simple description about a process.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E8.3.R1",
+     "title": "Students will be able to understand the overall meaning of short texts about a process.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E8.3.R2",
+     "title": "Students will be able to guess the meaning of unknown words from the text.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E8.3.W1",
+     "title": "Students will be able to write a series of simple phrases and sentences by using linkers to describe a process.",
+     "unit": "Unit 3"
+    },
+    {
+     "code": "E8.4.L1",
+     "title": "Students will be able to understand phrases and related vocabulary items.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E8.4.L2",
+     "title": "Students will be able to follow a phone conversation.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E8.4.SI1",
+     "title": "Students will be able to make a simple phone call asking and responding to questions.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E8.4.SP1",
+     "title": "Students will be able to express their decisions taken at the moment of conversation.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E8.4.R1",
+     "title": "Students will be able to understand short and simple texts with related vocabulary.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E8.4.W1",
+     "title": "Students will be able to write short and simple conversations.",
+     "unit": "Unit 4"
+    },
+    {
+     "code": "E8.5.L1",
+     "title": "Students will be able to understand the gist of oral texts.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E8.5.L2",
+     "title": "Students will be able to comprehend phrases and related vocabulary items.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E8.5.SI1",
+     "title": "Students will be able to talk about their Internet habits.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E8.5.SI2",
+     "title": "Students will be able to exchange information about the Internet.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E8.5.SP1",
+     "title": "Students will be able to make excuses, and to accept and refuse offers by using a series of phrases and simple sentences.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E8.5.R1",
+     "title": "Students will be able to identify main ideas in short and simple texts about internet habits.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E8.5.R2",
+     "title": "Students will be able to find specific information about the Internet in various texts.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E8.5.W1",
+     "title": "Students will be able to write a basic paragraph to describe their internet habits.",
+     "unit": "Unit 5"
+    },
+    {
+     "code": "E8.6.L1",
+     "title": "Students will be able to follow a discussion on adventures.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E8.6.L2",
+     "title": "Students will be able to understand the main points of simple messages.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E8.6.SI1",
+     "title": "Students will be able to interact with reasonable ease in short conversations.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E8.6.SI2",
+     "title": "Students will be able to talk about comparisons, preferences and their reasons.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E8.6.SP1",
+     "title": "Students will be able to make comparisons about sports and games by using simple descriptive language.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E8.6.R1",
+     "title": "Students will be able to understand short and simple texts to find the main points about adventures.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E8.6.W1",
+     "title": "Students will be able to write a short and simple paragraph comparing two objects.",
+     "unit": "Unit 6"
+    },
+    {
+     "code": "E8.7.L1",
+     "title": "Students will be able to understand and extract the specific information from short and simple oral texts.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E8.7.SI1",
+     "title": "Students will be able to exchange information about tourism.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E8.7.SI2",
+     "title": "Students will be able to talk about their favorite tourist attractions by giving details.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E8.7.SP1",
+     "title": "Students will be able to express their preferences for particular tourist attractions and give reasons.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E8.7.SP2",
+     "title": "Students will be able to make simple comparisons between different tourist attractions.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E8.7.SP3",
+     "title": "Students will be able to express their experiences about places.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E8.7.R1",
+     "title": "Students will be able to find specific information from various texts about tourism.",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E8.7.W1",
+     "title": "Students will be able to design a brochure, advertisement or a postcard about their favorite tourist attraction(s).",
+     "unit": "Unit 7"
+    },
+    {
+     "code": "E8.8.L1",
+     "title": "Students will be able to identify the main points of a short talk describing the responsibilities of people.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E8.8.L2",
+     "title": "Students will be able to understand obligations, likes and dislikes in various oral texts.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E8.8.L3",
+     "title": "Students will be able to follow topic change during factual, short talks.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E8.8.SI1",
+     "title": "Students will be able to interact during simple, routine tasks requiring a direct exchange of information.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E8.8.SI2",
+     "title": "Students will be able to talk about responsibilities.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E8.8.SP1",
+     "title": "Students will be able to express their obligations, likes and dislikes in simple terms.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E8.8.R1",
+     "title": "Students will be able to understand various short and simple texts about responsibilities.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E8.8.W1",
+     "title": "Students will be able to write short and simple poems/stories about their feelings and responsibilities.",
+     "unit": "Unit 8"
+    },
+    {
+     "code": "E8.9.L1",
+     "title": "Students will be able to recognize main ideas and key information in short oral texts about science.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E8.9.SI1",
+     "title": "Students will be able to talk about actions happening currently and in the past.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E8.9.SI2",
+     "title": "Students will be able to involve in simple discussions about scientific achievements.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E8.9.SP1",
+     "title": "Students will be able to describe actions happening currently.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E8.9.SP2",
+     "title": "Students will be able to present information about scientific achievements in a simple way.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E8.9.R1",
+     "title": "Students will be able to understand short and simple texts about actions happening currently and in the past.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E8.9.R2",
+     "title": "Students will be able to identify main ideas and supporting details in short texts about science.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E8.9.W1",
+     "title": "Students will be able to write simple descriptions of scientific achievements in a short paragraph.",
+     "unit": "Unit 9"
+    },
+    {
+     "code": "E8.10.L1",
+     "title": "Students will be able to identify the main points of TV news about natural forces and disasters.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E8.10.SI1",
+     "title": "Students will be able to talk about predictions concerning future of the Earth.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E8.10.SI2",
+     "title": "Students will be able to negotiate reasons and results to support their predictions about natural forces and disasters.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E8.10.SP1",
+     "title": "Students will be able to express predictions concerning future of the Earth.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E8.10.SP2",
+     "title": "Students will be able to give reasons and results to support their predictions about natural forces and disasters.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E8.10.R1",
+     "title": "Students will be able to identify specific information in simple texts about natural forces and disasters.",
+     "unit": "Unit 10"
+    },
+    {
+     "code": "E8.10.W1",
+     "title": "Students will be able to write a short and simple paragraph about reasons and results of natural forces and disasters.",
+     "unit": "Unit 10"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,37 @@
+name: Collect MEB 2018 programmes (read-only)
+
+# Owner (9 Nov): grades 4, 8 and 12 follow the previous MEB programmes in 2026-2027. Fetches the official programme PDFs
+# from mufredat.meb.gov.tr for review. No secrets, no database access; output goes to the collection branch only.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - curriculum-collect-2018
+    paths:
+      - 'scripts/collect-meb-2018-programs.mjs'
+      - '.github/workflows/collect-meb-2018-programs.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+      - run: node scripts/collect-meb-2018-programs.mjs
+      - name: Commit the extracted text to the collection branch
+        if: github.ref == 'refs/heads/curriculum-collect-2018'
+        run: |
+          mkdir -p data/maarif/meb2018
+          cp meb2018/*.txt meb2018/collected.json data/maarif/meb2018/ 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add data/maarif/meb2018
+          git commit -m "Toplanan MEB 2018 programları (salt okunur)" || exit 0
+          git push origin HEAD:curriculum-collect-2018
