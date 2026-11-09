@@ -18,7 +18,7 @@ const StudentBooks=lazy(()=>import('./pages/StudentBooks').then(module=>({defaul
 const StandardReadiness=lazy(()=>import('./pages/StandardReadiness').then(module=>({default:module.StandardReadiness})));
 const SuperAdminStandardHome=lazy(()=>import('./pages/StandardRoleHomes').then(module=>({default:module.SuperAdminStandardHome})));
 const TeacherStandardHome=lazy(()=>import('./pages/StandardRoleHomes').then(module=>({default:module.TeacherStandardHome})));
-const ParentStandardHome=lazy(()=>import('./pages/StandardRoleHomes').then(module=>({default:module.ParentStandardHome})));
+const ParentGlassHome=lazy(()=>import('./pages/ParentGlassHome').then(module=>({default:module.ParentGlassHome})));
 const InstitutionPanelV2=lazy(()=>import('./pages/InstitutionPanelV2').then(module=>({default:module.InstitutionPanelV2})));
 const Institutions=lazy(()=>import('./pages/Institutions').then(module=>({default:module.Institutions})));
 const Exams=lazy(()=>import('./pages/Exams').then(module=>({default:module.Exams})));
@@ -99,7 +99,7 @@ const ALL_ROLES: Role[] = ['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDAN
 /** Owner (9 Nov): a page whose feature is off for the institution says so instead of loading and failing. */
 function FeatureGate({feature,children}:{feature:string;children:React.ReactNode}){const{has,ready}=useFeatures();if(!ready)return null;if(!has(feature))return <section className="panel feature-off" role="status" style={{maxWidth:640,margin:'32px auto'}}><h2>Bu özellik kurumunda henüz açık değil</h2><p>Kurumun bu özelliği açtığında burada görünecek. Sorunun varsa öğretmenine ya da kurum yöneticine yazabilirsin.</p></section>;return <>{children}</>}
 function RoleGate({allowed,children}:{allowed:Role[];children:React.ReactNode}){const{user}=useAuth();if(!user||!allowed.includes(user.role))return <Navigate to="/" replace/>;return <>{children}</>}
-function Home(){const{user}=useAuth();if(user?.role==='SUPER_ADMIN')return <AdminCommandCenter/>;if(user?.role==='INSTITUTION_MANAGER')return <InstitutionPanelV2/>;if(user?.role==='TEACHER'||user?.role==='GUIDANCE_TEACHER')return <TeacherStandardHome/>;if(user?.role==='STUDENT')return <StudentStandardHome/>;if(user?.role==='PARENT')return <ParentStandardHome/>;return null}
+function Home(){const{user}=useAuth();if(user?.role==='SUPER_ADMIN')return <AdminCommandCenter/>;if(user?.role==='INSTITUTION_MANAGER')return <InstitutionPanelV2/>;if(user?.role==='TEACHER'||user?.role==='GUIDANCE_TEACHER')return <TeacherStandardHome/>;if(user?.role==='STUDENT')return <StudentStandardHome/>;if(user?.role==='PARENT')return <ParentGlassHome/>;return null}
 
 function AppContent(){
  const{user,loading}=useAuth();const location=useLocation();
