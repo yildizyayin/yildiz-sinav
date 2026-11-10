@@ -11,6 +11,7 @@ import { nibiruRoutingMatrix } from './lib/nibiru-model-router';
 import { evaluateProviderActivation,evaluateStandardReadiness } from './lib/standard-readiness';
 import { guidanceAssessmentChatExtension,handleGuidanceAssessmentApi } from './lib/guidance-assessment-controller';
 import { completeCoachFollowup,getCoachMiniTest,startCoachMiniTest,submitCoachMiniTest } from './lib/coach-mastery-cycle';
+import { listOutcomeLoops,loopGame,markLoopVideoWatched,outcomeLoopState,startLoopGame,startLoopMiniTest,startOutcomeLoop,submitLoopGame } from './lib/nibiru-outcome-loop';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
 type OperationalCheck={key:string;label:string;state:'READY'|'SETUP_REQUIRED';value:number;detail:string;blocking:boolean};
@@ -72,11 +73,42 @@ async function routingApi(request:Request,env:Env){
   return json({ok:true,environment:env.ENVIRONMENT||'unknown',routing:nibiruRoutingMatrix(env),policy:{identity:'Nibiru',gateway:'Cloudflare AI Gateway',personalizedCache:false,authoritativeCalculations:'DETERMINISTIC_ENGINES',providerNamesHiddenFromEndUsers:true}});
 }
 
+const LOOP_MESSAGES:Record<string,[number,string]>={
+ STUDENT_ONLY:[403,'Kazanım döngüsü öğrenci hesabına açıktır.'],
+ QUESTION_NOT_FOUND:[404,'Bu soru yanlış ya da boş bıraktığın, sonucu yayımlanmış bir deneme sorusu olarak bulunamadı.'],
+ OUTCOME_REQUIRED:[400,'Çalışılacak kazanım seçilmelidir.'],
+ OUTCOME_NOT_VERIFIED:[409,'Bu sorunun kazanımı senin sınıf düzeyindeki doğrulanmış MEB programında eşleşmiyor. Öğretmenin incelemesi gerekiyor.'],
+ LOOP_NOT_FOUND:[404,'Kazanım çalışması bulunamadı.'],
+ LOOP_CLOSED:[409,'Bu kazanım çalışması tamamlandı.'],
+ VIDEO_FIRST:[409,'Önce konu videosunu izle.'],
+ MINI_TEST_FIRST:[409,'Mini oyun, mini testten sonra açılır.'],
+ GAME_NOT_FOUND:[404,'Mini oyun bulunamadı.'],
+ ALL_QUESTIONS_REQUIRED:[400,'Bütün soruların cevabı gönderilmelidir.'],
+ NOT_ENOUGH_QUESTIONS:[409,'Bu kazanım için yeterli onaylı soru yok; mini test açılamadı. Öğretmenine bildirildi.'],
+ NO_GAME_QUESTIONS:[409,'Mini oyun için yeterli onaylı soru yok. Öğretmenine bildirildi.'],
+};
+async function outcomeLoopApi(request:Request,env:Env,user:any,url:URL){
+ const done=(result:any,status=200)=>{if(result.ok)return json(result,status);const [code,message]=LOOP_MESSAGES[result.reason]||[400,'Kazanım çalışması güncellenemedi.'];return json({...result,error:{code:result.reason,message}},code);};
+ if(url.pathname==='/api/nibiru/coach/loops'&&request.method==='GET')return json({ok:true,loops:await listOutcomeLoops(env,user)});
+ if(url.pathname==='/api/nibiru/coach/loops'&&request.method==='POST'){const body:any=await request.json().catch(()=>({}));const started=await startOutcomeLoop(env,user,body);if(!started.ok)return done(started);return done(await outcomeLoopState(env,user,started.loopId),started.reused?200:201);}
+ const m=url.pathname.match(/^\/api\/nibiru\/coach\/loops\/([^/]+)(\/video-done|\/mini-test|\/game|\/game\/submit)?$/);
+ if(!m)return fail(404,'NOT_FOUND','Bulunamadı.');
+ const [,id,action]=m;
+ if(!action&&request.method==='GET')return done(await outcomeLoopState(env,user,id));
+ if(action==='/video-done'&&request.method==='POST'){const r=await markLoopVideoWatched(env,user,id);return r.ok?done(await outcomeLoopState(env,user,id)):done(r);}
+ if(action==='/mini-test'&&request.method==='POST')return done(await startLoopMiniTest(env,user,id));
+ if(action==='/game'&&request.method==='GET')return done(await loopGame(env,user,id));
+ if(action==='/game'&&request.method==='POST')return done(await startLoopGame(env,user,id));
+ if(action==='/game/submit'&&request.method==='POST'){const body:any=await request.json().catch(()=>({}));return done(await submitLoopGame(env,user,id,body));}
+ return fail(405,'METHOD_NOT_ALLOWED','Bu işlem desteklenmiyor.');
+}
+
 async function coachApi(request:Request,env:Env,url:URL){
  const user=await getAuthUser(env,request);if(!user)return fail(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.');if(user.role!=='STUDENT'||!user.student_id)return fail(403,'STUDENT_ONLY','Eğitim Koçu günlük planı öğrenci hesabına açıktır.');
  if(url.pathname==='/api/nibiru/coach/daily-plan'&&request.method==='GET'){const result=await getTodayCoachPlan(env,user);return json({ok:true,...result});}
  if(url.pathname==='/api/nibiru/coach/daily-plan'&&request.method==='POST'){const result=await createOrReuseDailyCoachPlan(env,user);if(!result.available)return fail(result.reason==='INSUFFICIENT_EVIDENCE'?409:400,result.reason||'COACH_PLAN_UNAVAILABLE','Günlük plan oluşturmak için yeterli doğrulanmış akademik kanıt bulunamadı.');return json({ok:true,...result},result.reused?200:201);}
  if(url.pathname==='/api/nibiru/coach/mini-test-catalog'&&request.method==='GET')return listOutcomeMiniTests(env,user,url);
+ if(url.pathname.startsWith('/api/nibiru/coach/loops'))return outcomeLoopApi(request,env,user,url);
  const startOutcome=url.pathname.match(/^\/api\/nibiru\/coach\/outcomes\/([^/]+)\/mini-test$/);
  const startTest=url.pathname.match(/^\/api\/nibiru\/coach\/items\/([^/]+)\/mini-test$/);
  if((startTest||startOutcome)&&request.method==='POST'){

@@ -60,7 +60,7 @@ async function teacherToday(env:Env,user:any){
   const scope=`FROM teacher_assignments ta JOIN institution_seasons se ON se.id=ta.season_id AND se.status='ACTIVE'
     JOIN student_enrollments e ON e.class_id=ta.class_id AND e.season_id=ta.season_id AND e.status='ACTIVE'
     JOIN student_entities st ON st.id=e.student_id AND st.status='ACTIVE'`;
-  const [classes,recentExams,weakOutcomes]=await Promise.all([
+  const [classes,recentExams,weakOutcomes,support]=await Promise.all([
     all<any>(env.DB.prepare(`
       SELECT c.id,c.name,c.grade_level,c.section,count(DISTINCT e.student_id) student_count,
         EXISTS(SELECT 1 FROM attendance_period_sessions s WHERE s.class_id=c.id AND s.attendance_date=date('now','+3 hours') AND s.session_type='DAILY' AND s.status IN ('COMPLETED','CORRECTED')) attendance_today
@@ -87,11 +87,20 @@ async function teacherToday(env:Env,user:any){
       WHERE ta.user_id=? AND ta.active=1 AND ta.assignment_type='SUBJECT' AND date(coalesce(x.exam_date,x.created_at))>=date('now','-60 days')
       GROUP BY o.id,o.code,o.title,sb.name HAVING sum(r.evidence_count)>=5
       ORDER BY (1.0*sum(r.correct_count)/sum(r.evidence_count)) ASC LIMIT 5`).bind(user.id)),
+    // Nibiru kazanım döngüsü: students handed to this teacher (same scope as the notification)
+    one<any>(env.DB.prepare(`
+      SELECT count(DISTINCT l.id) n FROM nibiru_outcome_loops l JOIN outcomes o ON o.id=l.outcome_id
+      JOIN student_enrollments e ON e.student_id=l.student_id AND e.season_id=l.season_id AND e.status='ACTIVE'
+      JOIN teacher_assignments ta ON ta.user_id=? AND ta.active=1 AND ta.institution_id=l.institution_id AND ta.season_id=l.season_id AND ta.class_id=e.class_id
+        AND (ta.assignment_type='GUIDANCE' OR (ta.assignment_type='SUBJECT' AND ta.subject_id=o.subject_id))
+      WHERE l.status='TEACHER_REVIEW'`).bind(user.id)),
   ]);
   return {
     classes:classes.map((c:any)=>({...c,student_count:Number(c.student_count||0),attendance_today:Boolean(c.attendance_today)})),
     recentExams:recentExams.map((x:any)=>({...x,participant_count:Number(x.participant_count||0),average_net:x.average_net==null?null:Number(x.average_net)})),
     weakOutcomes:weakOutcomes.map((o:any)=>({...o,evidence_count:Number(o.evidence_count),correct_count:Number(o.correct_count),student_count:Number(o.student_count),success_rate:Number(o.evidence_count)?Number(o.correct_count)/Number(o.evidence_count):0})),
+    // only present when someone is waiting, so an empty home keeps its earlier shape
+    ...(Number(support?.n||0)>0?{outcomeSupport:Number(support.n)}:{}),
   };
 }
 

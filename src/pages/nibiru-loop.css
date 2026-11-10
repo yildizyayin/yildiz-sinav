@@ -1,0 +1,50 @@
+/* Nibiru kazanım çalışması (video → mini test → mini oyun). Colours follow the student panel theme when present. */
+.nl-page{--nl-ink:var(--sd-ink,#0f1d3a);--nl-muted:var(--sd-muted,#4b5a78);--nl-accent:var(--sd-accent,#1d4ed8);--nl-card:var(--sd-card,#fff);--nl-border:var(--sd-border,#e2e8f0);
+  max-width:820px;margin:0 auto;display:grid;gap:16px;color:var(--nl-ink)}
+.nl-head h1{margin:4px 0 0;font-size:clamp(20px,3.2vw,28px);line-height:1.25}
+.nl-kicker{font-size:13px;font-weight:600;color:var(--nl-muted);text-transform:uppercase;letter-spacing:.04em}
+.nl-card{background:var(--nl-card);border:1px solid var(--nl-border);border-radius:22px;padding:20px;display:grid;gap:12px;backdrop-filter:var(--sd-blur,none);-webkit-backdrop-filter:var(--sd-blur,none);box-shadow:var(--sd-shadow,0 6px 20px rgba(15,29,58,.06))}
+.nl-card h2{margin:0;font-size:18px;display:flex;align-items:center;gap:8px}
+.nl-card p{margin:0;line-height:1.55}
+.nl-muted{color:var(--nl-muted);font-size:14px}
+.nl-note{background:rgba(234,179,8,.12);border-radius:12px;padding:10px 12px;font-size:14px}
+.nl-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.nl-actions a,.nl-actions button{display:inline-flex;align-items:center;gap:7px;min-height:44px}
+
+.nl-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.nl-step{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--nl-muted);text-align:center;position:relative}
+.nl-step small{font-weight:500;font-size:11px}
+.nl-dot{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:var(--nl-card);border:1px solid var(--nl-border)}
+.nl-step.done .nl-dot{background:#16a34a;color:#fff;border-color:#16a34a}
+.nl-step.skip .nl-dot{opacity:.55}
+.nl-step.now{color:var(--nl-ink)}
+.nl-step.now .nl-dot{background:var(--nl-accent);color:var(--sd-accent-ink,#fff);border-color:var(--nl-accent);box-shadow:0 0 0 4px rgba(29,78,216,.18)}
+
+.nl-video{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000}
+.nl-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+.nl-q{border:0;margin:0;padding:12px 0 0;border-top:1px solid var(--nl-border);display:grid;gap:8px;min-width:0}
+.nl-stem{font-size:15px;line-height:1.5;white-space:pre-wrap}
+.nl-img{max-width:100%;max-height:320px;object-fit:contain;border-radius:10px}
+.nl-options{display:grid;gap:8px}
+.nl-options.big{grid-template-columns:repeat(2,minmax(0,1fr))}
+.nl-opt{position:relative;display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 12px;border-radius:14px;border:1px solid var(--nl-border);background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.nl-opt input{position:absolute;opacity:0;pointer-events:none}
+.nl-opt b{width:30px;height:30px;flex:0 0 30px;border-radius:10px;display:grid;place-items:center;background:rgba(29,78,216,.1);color:var(--nl-accent)}
+.nl-opt.on,.nl-opt:hover{border-color:var(--nl-accent)}
+.nl-opt.on b{background:var(--nl-accent);color:var(--sd-accent-ink,#fff)}
+.nl-opt:focus-within,.nl-opt:focus-visible{outline:3px solid var(--nl-accent);outline-offset:2px}
+
+.nl-game-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.nl-progress{display:flex;gap:6px}
+.nl-progress i{width:26px;height:8px;border-radius:8px;background:var(--nl-border)}
+.nl-progress i.done{background:#16a34a}
+.nl-progress i.now{background:var(--nl-accent)}
+.nl-timer{display:inline-flex;align-items:center;gap:5px;font-weight:700;font-variant-numeric:tabular-nums}
+.nl-timer.low{color:#dc2626}
+.nl-bar{height:6px;border-radius:6px;background:var(--nl-border);overflow:hidden}
+.nl-bar span{display:block;height:100%;background:linear-gradient(90deg,#f97316,#eab308);transition:width 1s linear}
+.nl-end.ok{border-color:rgba(22,163,74,.45)}
+.nl-end.ok h2{color:#15803d}
+@media (max-width:560px){.nl-options.big{grid-template-columns:1fr}.nl-card{padding:16px}.nl-dot{width:34px;height:34px}}
+@media (prefers-reduced-motion:reduce){.nl-bar span{transition:none}}

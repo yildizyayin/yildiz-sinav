@@ -38,6 +38,10 @@ function TeacherToday({today,guidance}:{today:any;guidance:boolean}){
     <div className="teacher-today-head"><h3>Yeni sonuçlar</h3><Link className="link-button" to="/exams">Sınavlar →</Link></div>
     {exams.length?<ul className="teacher-today-list">{exams.map((x:any)=><li key={x.id}><span>{x.title}</span><small>{x.participant_count} öğrenciniz · ortalama {fmt(x.average_net)} net</small></li>)}</ul>:<p className="muted">Son 30 günde öğrencilerinizin girdiği değerlendirilmiş sınav yok.</p>}
    </div>
+   <div className="panel teacher-today-card">
+    <div className="teacher-today-head"><h3>Kazanım desteği</h3><Link className="link-button" to="/kazanim-destek">Listeye git →</Link></div>
+    {Number(today.outcomeSupport||0)>0?<p><strong>{today.outcomeSupport}</strong> öğrenci video, mini test ve mini oyundan sonra desteğinizi bekliyor.</p>:<p className="muted">Desteğinizi bekleyen öğrenci yok.</p>}
+   </div>
    {!guidance&&<div className="panel teacher-today-card">
     <div className="teacher-today-head"><h3>Zorlanılan kazanımlar</h3><Link className="link-button" to="/outcomes">Kazanımlar →</Link></div>
     {weak.length?<ul className="teacher-today-list">{weak.map((o:any)=><li key={o.id}><span>{o.code?`${o.code} · `:''}{o.title}</span><small>%{Math.round(o.success_rate*100)} doğru · {o.student_count} öğrenci · {o.subject_name}</small></li>)}</ul>:<p className="muted">Son 60 günde yeterli kanıt yok.</p>}

@@ -18,7 +18,7 @@ import { SERVABLE_VIDEO_SQL } from './video-links';
 export const OUTCOME_QUESTION_TARGET = 30;
 export const LEARNED_RULE = { days: 30, minQuestions: 8, minRate: 0.8 } as const;
 
-export type EvidenceSource = 'EXAM' | 'QUESTION_BANK' | 'MINI_TEST' | 'FOY' | 'WRITTEN';
+export type EvidenceSource = 'EXAM' | 'QUESTION_BANK' | 'MINI_TEST' | 'FOY' | 'WRITTEN' | 'GAME';
 type Row = { outcome_id: string; question_key: string; source: EvidenceSource; result: number | null; at: string | null };
 
 export type OutcomeEvidence = {
@@ -46,7 +46,7 @@ export type EvidenceOptions = {
 const PUBLISHED = `EXISTS (SELECT 1 FROM exam_delivery_profiles publication WHERE publication.exam_id=e.id AND publication.result_freeze_status='PUBLISHED' AND publication.published_at IS NOT NULL AND (publication.result_publish_at IS NULL OR datetime(publication.result_publish_at)<=CURRENT_TIMESTAMP))`;
 
 async function evidenceRows(env: Env, studentId: string, learnerView: boolean): Promise<Row[]> {
-  const [exam, bank, mini, foy] = await Promise.all([
+  const [exam, bank, mini, foy, game] = await Promise.all([
     all<Row>(env.DB.prepare(`SELECT qo.outcome_id, 'EQ:'||sa.exam_question_id question_key, 'EXAM' source,
         CASE sa.status WHEN 'CORRECT' THEN 1 WHEN 'BLANK' THEN NULL ELSE 0 END result,
         coalesce(e.exam_date, e.created_at) at
@@ -68,8 +68,13 @@ async function evidenceRows(env: Env, studentId: string, learnerView: boolean): 
       FROM assessment_runs run JOIN assessment_responses r ON r.run_id=run.id
       JOIN worksheet_question_links w ON w.worksheet_id=run.source_id AND w.subject_id=r.worksheet_subject_id AND w.question_no=r.worksheet_question_no
       WHERE run.student_id=? AND run.source_type='FOY' AND run.status IN ('SUBMITTED','SCORED') AND w.outcome_id IS NOT NULL`).bind(studentId)),
+    // Nibiru outcome mini game: server-graded approved questions of the outcome; its XP is not read here
+    all<Row>(env.DB.prepare(`SELECT g.outcome_id, 'QB:'||q.question_id question_key, 'GAME' source,
+        CASE WHEN q.student_answer IS NULL OR q.student_answer='' THEN NULL ELSE q.correct END result, q.answered_at at
+      FROM nibiru_game_rounds g JOIN nibiru_game_questions q ON q.round_id=g.id
+      WHERE g.student_id=? AND g.status IN ('PASSED','FAILED') AND q.answered_at IS NOT NULL`).bind(studentId)),
   ]);
-  return [...exam, ...bank, ...mini, ...foy, ...(learnerView ? [] : await writtenRows(env, studentId))];
+  return [...exam, ...bank, ...mini, ...foy, ...game, ...(learnerView ? [] : await writtenRows(env, studentId))];
 }
 
 /**
@@ -113,7 +118,7 @@ export function aggregateEvidence(rows: Row[], now = new Date(), target: number 
   const out = new Map<string, any>();
   for (const r of rows) {
     let o = out.get(r.outcome_id);
-    if (!o) { o = { outcomeId: r.outcome_id, keys: new Set<string>(), latest: new Map<string, { t: number; result: number | null }>(), attempts: 0, correct: 0, wrong: 0, blank: 0, bySource: { EXAM: { attempts: 0, correct: 0 }, QUESTION_BANK: { attempts: 0, correct: 0 }, MINI_TEST: { attempts: 0, correct: 0 }, FOY: { attempts: 0, correct: 0 }, WRITTEN: { attempts: 0, correct: 0 } }, lastAt: null as string | null, lastT: 0 }; out.set(r.outcome_id, o); }
+    if (!o) { o = { outcomeId: r.outcome_id, keys: new Set<string>(), latest: new Map<string, { t: number; result: number | null }>(), attempts: 0, correct: 0, wrong: 0, blank: 0, bySource: { EXAM: { attempts: 0, correct: 0 }, QUESTION_BANK: { attempts: 0, correct: 0 }, MINI_TEST: { attempts: 0, correct: 0 }, FOY: { attempts: 0, correct: 0 }, WRITTEN: { attempts: 0, correct: 0 }, GAME: { attempts: 0, correct: 0 } }, lastAt: null as string | null, lastT: 0 }; out.set(r.outcome_id, o); }
     o.keys.add(r.question_key); o.attempts++;
     if (r.result === 1) o.correct++; else if (r.result === null) o.blank++; else o.wrong++;
     o.bySource[r.source].attempts++; if (r.result === 1) o.bySource[r.source].correct++;
