@@ -10,3 +10,12 @@
 
 /* Owner (9 Nov): no target yet — the card invites to set one instead of an empty countdown */
 .countdown-face strong.countdown-empty{font-size:clamp(24px,4vw,32px);line-height:1.15;letter-spacing:0}
+/* Dejavu answer sheet (10 Nov 2026) */
+.dejavu-sheet{display:grid;gap:6px;margin-top:6px}
+.dejavu-sheet-head{padding:8px 0 2px;border-top:1px solid var(--border,#e5e7eb)}
+.dejavu-sheet-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dejavu-no{width:30px;height:30px;flex:0 0 30px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-weight:700;background:var(--surface-2,#eef2f8)}
+.dejavu-choices{display:flex;gap:6px}
+.dejavu-choices button{min-width:44px;min-height:40px;padding:0 10px}
+.dejavu-done{display:inline-flex;align-items:center;gap:4px;font-weight:700}
+.dejavu-done.ok{color:#15803d}.dejavu-done.no{color:#b45309}
