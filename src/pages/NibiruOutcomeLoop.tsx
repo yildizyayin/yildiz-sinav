@@ -37,7 +37,7 @@ const STEPS: Array<{ key: string; label: string; icon: any }> = [
 function Stepper({ s }: { s: State }) {
   const order = ['VIDEO', 'MINI_TEST', 'GAME', 'END'];
   const at = ['PASSED', 'TEACHER_REVIEW', 'CLOSED'].includes(s.step) ? 3 : order.indexOf(s.step);
-  const skipped = (k: string) => (k === 'VIDEO' && s.videoMissing) || (k === 'GAME' && !s.game && at === 3);
+  const skipped = (k: string) => (k === 'VIDEO' && s.videoMissing) || (k === 'MINI_TEST' && !s.miniTest && at === 3) || (k === 'GAME' && !s.game && at === 3);
   return <ol className="nl-steps" aria-label="Çalışma adımları">{STEPS.map((st, i) => {
     const Icon = st.icon, state = i < at ? (skipped(st.key) ? 'skip' : 'done') : i === at ? 'now' : 'next';
     return <li key={st.key} className={`nl-step ${state}`} aria-current={state === 'now' ? 'step' : undefined}><span className="nl-dot"><Icon size={18} aria-hidden="true" /></span><span>{st.label}</span>{state === 'skip' && <small>atlandı</small>}</li>;
@@ -102,8 +102,7 @@ export function NibiruOutcomeLoop() {
 
     {test && <section className="nl-card">
       <h2><ClipboardCheck size={20} aria-hidden="true" /> Mini test</h2>
-      {(test.questions || []).map((q: any, i: number) => <fieldset key={q.question_id} className="nl-q">
-        <legend className="sr-only">{i + 1}. soru</legend>
+      {(test.questions || []).map((q: any, i: number) => <fieldset key={q.question_id} className="nl-q" aria-label={`${i + 1}. soru`}>
         <QuestionBody q={q} no={i + 1} />
         <div className="nl-options">{optionEntries(q.options).map(([key, label]) => <label key={key} className={`nl-opt${answers[q.question_id] === key ? ' on' : ''}`}>
           <input type="radio" name={`t_${q.question_id}`} value={key} checked={answers[q.question_id] === key} onChange={() => setAnswers((a) => ({ ...a, [q.question_id]: key }))} />

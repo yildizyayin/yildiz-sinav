@@ -1,6 +1,15 @@
 import { expect, it } from 'vitest';
 import { evaluatedExam } from './helpers/exam-flow';
 import { questionsToLearned } from '../worker/lib/nibiru-outcome-loop';
+import app from '../worker/preview-policy-production-entry';
+import { createSession } from '../worker/lib/auth';
+
+/** Requests as a user the shared helper has no session for (the synthetic guidance and other-class teachers). */
+async function asUser(t: any, userId: string, path: string, method = 'GET', body?: any) {
+  const cookie = (await createSession(t.env, userId, new Request('https://app.anunex.com'), false)).headers.get('Set-Cookie')!.split(';')[0];
+  const res = await (app as any).fetch(new Request(`https://app.anunex.com${path}`, { method, headers: { Cookie: cookie, Origin: 'https://app.anunex.com', ...(body === undefined ? {} : { 'Content-Type': 'application/json' }) }, body: body === undefined ? undefined : JSON.stringify(body) }), t.env, { waitUntil() {}, passThroughOnException() {} });
+  return { response: res, data: await res.json().catch(() => null) as any };
+}
 
 /**
  * Nibiru kazanım iyileştirme döngüsü (owner, 9 Nov 2026): a wrong/blank deneme question → approved video →
@@ -72,6 +81,24 @@ it('walks a blank deneme question through video, mini test and game, then tells 
     // the game answers are evidence in the unified karne (XP is not)
     const ev = (await t.request('/api/reporting/students/s1/outcome-evidence', 'GET', undefined, 'admin')).data.outcomes.find((x: any) => x.code === 'M.8.1.1');
     expect(ev.bySource.GAME).toEqual({ attempts: 5, correct: 3 });
+
+    // the teachers who were told see the student in their list; a teacher of another class or subject does not
+    const queue = async (who: string, q = '') => (['rehber', 'other'].includes(who) ? await asUser(t, who, `/api/reporting/outcome-loops${q}`) : await t.request(`/api/reporting/outcome-loops${q}`, 'GET', undefined, who)).data;
+    expect((await queue('teacher')).loops.map((r: any) => [r.id, r.outcome_code, r.game_correct, r.class_name])).toEqual([[id, 'M.8.1.1', 3, '8/A']]);
+    expect((await queue('rehber')).loops).toHaveLength(1);
+    expect((await queue('other')).loops).toHaveLength(0);
+    expect((await queue('admin')).loops).toHaveLength(1);
+    expect((await t.request('/api/reporting/outcome-loops', 'GET', undefined, 'stuuser')).response.status).toBe(403);
+    expect((await t.request('/api/dashboard', 'GET', undefined, 'teacher')).data.today?.outcomeSupport).toBe(1);
+    expect((await asUser(t, 'other', `/api/reporting/outcome-loops/${id}/close`, 'POST', { kind: 'ONE_TO_ONE' })).response.status).toBe(404);
+    expect((await t.request(`/api/reporting/outcome-loops/${id}/close`, 'POST', { kind: 'NOPE' }, 'teacher')).response.status).toBe(400);
+    const closed = await t.request(`/api/reporting/outcome-loops/${id}/close`, 'POST', { kind: 'ONE_TO_ONE', note: 'Birebir tekrar yapıldı' }, 'teacher');
+    expect(closed.response.status, closed.text).toBe(200);
+    expect((await asUser(t, 'rehber', `/api/reporting/outcome-loops/${id}/close`, 'POST', { kind: 'ONE_TO_ONE' })).response.status).toBe(409);
+    expect(t.db.prepare(`SELECT kind,note,created_by FROM learning_interventions WHERE student_id='s1'`).all()).toEqual([{ kind: 'ONE_TO_ONE', note: 'Birebir tekrar yapıldı', created_by: 'teacher' }]);
+    expect((await queue('teacher')).loops).toHaveLength(0);
+    expect((await queue('teacher', '?status=CLOSED')).loops).toHaveLength(1);
+    expect(t.db.prepare(`SELECT read_at FROM notifications WHERE recipient_user_id='teacher'`).get()).toMatchObject({ read_at: expect.any(String) });
 
     // a new loop for the same outcome may start, but it cannot repeat the notification within the quiet period:
     // no new approved questions are left, so the teacher review is noted without telling anyone again

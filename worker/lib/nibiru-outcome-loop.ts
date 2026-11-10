@@ -132,7 +132,7 @@ async function toTeacher(env: Env, loop: Loop, reason: string, detail: Record<st
   const body = `${name} · ${info?.subject_name || 'Ders'} · ${[info?.code, info?.title].filter(Boolean).join(' ')}: ${REASON_TEXT[reason] || 'öğretmen desteği gerekiyor'}.`;
   const statements = to.map((uid) => env.DB.prepare(`INSERT INTO notifications(id,recipient_user_id,institution_id,type,title,body,action_url,entity_type,entity_id)
     SELECT ?,?,?,'NIBIRU_OUTCOME_SUPPORT',?,?,?,'nibiru_outcome_loop',? WHERE NOT EXISTS(SELECT 1 FROM notifications WHERE recipient_user_id=? AND entity_type='nibiru_outcome_loop' AND entity_id=?)`)
-    .bind(uuid('not'), uid, loop.institution_id, 'Kazanım desteği gerekiyor', body, `/reports?studentId=${encodeURIComponent(loop.student_id)}`, loop.id, uid, loop.id));
+    .bind(uuid('not'), uid, loop.institution_id, 'Kazanım desteği gerekiyor', body, '/kazanim-destek', loop.id, uid, loop.id));
   statements.push(env.DB.prepare(`UPDATE nibiru_outcome_loops SET notified_count=? WHERE id=?`).bind(to.length, loop.id));
   await env.DB.batch(statements);
   await audit(env.DB, null, loop.institution_id, 'NIBIRU_LOOP_TEACHER_NOTIFIED', 'nibiru_outcome_loop', loop.id, { outcomeId: loop.outcome_id, reason, recipients: to.length, ...detail });

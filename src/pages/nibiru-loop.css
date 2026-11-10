@@ -28,7 +28,7 @@
 .nl-img{max-width:100%;max-height:320px;object-fit:contain;border-radius:10px}
 .nl-options{display:grid;gap:8px}
 .nl-options.big{grid-template-columns:repeat(2,minmax(0,1fr))}
-.nl-opt{display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 12px;border-radius:14px;border:1px solid var(--nl-border);background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.nl-opt{position:relative;display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 12px;border-radius:14px;border:1px solid var(--nl-border);background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .nl-opt input{position:absolute;opacity:0;pointer-events:none}
 .nl-opt b{width:30px;height:30px;flex:0 0 30px;border-radius:10px;display:grid;place-items:center;background:rgba(29,78,216,.1);color:var(--nl-accent)}
 .nl-opt.on,.nl-opt:hover{border-color:var(--nl-accent)}
