@@ -38,9 +38,16 @@ const outerPrefixes:Array<[string,string]>=[
   ['/api/quick-tests','STUDIO'],
 ];
 export function requiredOuterFeatureForPath(path:string){return outerPrefixes.find(([prefix])=>path.startsWith(prefix))?.[1]||null}
+// Owner (10 Nov 2026): Gold / Premium / Live and the AI teacher are suspended on the student side, whatever the
+// institution's switches say. (The retired credit booking /api/platform/live keeps its own 410 answer.)
+const studentSuspendedPrefixes=['/api/platform/membership','/api/platform/ai-coach','/api/platform/ai-guidance','/api/membership/'];
+export function suspendedForStudent(path:string){return studentSuspendedPrefixes.some((prefix)=>path.startsWith(prefix))}
+
 export async function outerFeatureGate(request:Request,env:Env):Promise<Response|null>{
-  const path=new URL(request.url).pathname;const key=requiredOuterFeatureForPath(path);if(!key)return null;
+  const path=new URL(request.url).pathname;const key=requiredOuterFeatureForPath(path);const suspended=suspendedForStudent(path);if(!key&&!suspended)return null;
   const { getAuthUser } = await import('./auth');const user=await getAuthUser(env,request);if(!user)return null; // the route itself answers 401
+  if(suspended&&user.role==='STUDENT')return json({ok:false,error:{code:'STUDENT_SUSPENDED',message:'Bu bölüm öğrenciler için şu an kapalı.'}},403);
+  if(!key)return null;
   return featureGateFor(env,user,key);
 }
 
