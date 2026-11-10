@@ -623,7 +623,8 @@ export async function studentPracticeQuestions(request:Request,env:Env,user:Auth
   const u=new URL(request.url);const enrollment=await one<any>(env.DB.prepare(`SELECT e.id enrollment_id,e.institution_id,e.season_id,e.grade_level,s.academic_year FROM student_enrollments e LEFT JOIN institution_seasons s ON s.id=e.season_id AND s.institution_id=e.institution_id WHERE e.student_id=? AND e.institution_id=? AND e.status='ACTIVE' ORDER BY e.created_at DESC,e.id DESC LIMIT 1`).bind(user.student_id,user.institution_id));
   if(!enrollment)return forbidden('Bu kurumda aktif öğrenci kaydınız bulunmuyor.');
   if(!env.SESSION_SECRET)return json({ok:false,error:{code:'PRACTICE_SIGNING_UNAVAILABLE',message:'Soru doğrulama yapılandırması hazır değil.'}},503);
-  const gradeValue=u.searchParams.get('gradeLevel')||enrollment?.grade_level;if(!gradeValue)return badRequest('Öğrencinin aktif sınıf bilgisi bulunamadı.','ENROLLMENT_REQUIRED');
+  // owner (10 Nov 2026): a student practises only their own grade; a gradeLevel in the address is ignored
+  const gradeValue=enrollment?.grade_level;if(!gradeValue)return badRequest('Öğrencinin aktif sınıf bilgisi bulunamadı.','ENROLLMENT_REQUIRED');
   const grade=Number(gradeValue);if(!Number.isInteger(grade)||grade<1||grade>12)return badRequest('Geçersiz sınıf seviyesi.','INVALID_GRADE');
   const subject=u.searchParams.get('subjectId');const nodeId=u.searchParams.get('nodeId');const difficulty=u.searchParams.get('difficultyLevel');const limit=Math.max(1,Math.min(20,Number(u.searchParams.get('limit')||10)));
   const wh=[`q.review_status='APPROVED'`,`q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')`,`q.grade_level=?`,`(q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`,`q.correct_answer IS NOT NULL`,`q.options_json IS NOT NULL`];const ps:any[]=[grade,enrollment?.institution_id||user.institution_id||null];

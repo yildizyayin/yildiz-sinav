@@ -5,6 +5,7 @@ import {fetchYoutubeMetadata,youtubeCandidateAvailable} from './lib/youtube-cand
 import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, json, one, uuid } from './lib/db';
+import { gradeProfile, nibiruStudentPrompts } from '../src/lib/gradeProfile';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
 
@@ -117,18 +118,45 @@ function daysUntil(dateValue:string|null|undefined){
   const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());return Math.max(0,Math.ceil((target.getTime()-today.getTime())/86400000));
 }
 
+/** The student's grade profile from their own enrollment (never from the request). */
+function profileOf(enrollment:any){return gradeProfile(enrollment?.grade_level,enrollment?.status==='GRADUATED')}
+
+/** Official LGS/YKS date for the student's school year; nothing for grades without a countdown. */
+async function officialCountdown(env:Env,enrollment:any){
+  const profile=profileOf(enrollment);if(!profile.countdown||!profile.officialExam)return null;
+  const season=enrollment?.season_id?await one<any>(env.DB.prepare('SELECT academic_year FROM institution_seasons WHERE id=?').bind(enrollment.season_id)):null;
+  return one<any>(env.DB.prepare(`SELECT exam_date,label FROM official_exam_dates WHERE exam_code=? AND (academic_year=? OR ? IS NULL) AND exam_date>=date('now','+3 hours') ORDER BY exam_date LIMIT 1`).bind(profile.officialExam,season?.academic_year??null,season?.academic_year??null));
+}
+
+/**
+ * The student's grade profile and Nibiru's quick questions, led by their own weakest outcome in published results
+ * (at least two answers, lowest share right).
+ */
+async function studentProfile(env:Env,user:AuthUser){
+  const enrollment=await latestEnrollment(env,user.student_id!);const profile=profileOf(enrollment);
+  const weak=await one<any>(env.DB.prepare(`SELECT o.title,sum(r.correct_count) c,sum(r.evidence_count) n FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id
+    WHERE r.student_id=? AND ${publishedForLearnersSql('r.exam_id')} GROUP BY o.id,o.title HAVING sum(r.evidence_count)>=2 AND 1.0*sum(r.correct_count)/sum(r.evidence_count)<0.7
+    ORDER BY 1.0*sum(r.correct_count)/sum(r.evidence_count),sum(r.evidence_count) DESC LIMIT 1`).bind(user.student_id));
+  return json({ok:true,gradeLevel:profile.grade,enrollmentStatus:enrollment?.status??null,profile,nibiruPrompts:nibiruStudentPrompts(profile,weak?.title),weakOutcome:weak?{title:weak.title,correct:Number(weak.c),answered:Number(weak.n)}:null});
+}
+
 async function homeContext(env:Env,user:AuthUser){
   const {enrollment,preferences}=await getPreferences(env,user);
-  let targetDate=preferences.countdown_target_date as string|null;
-  let label=preferences.countdown_label as string|null;
-  if(!targetDate&&enrollment){
-    const next=await one<any>(env.DB.prepare(`SELECT title,exam_date FROM exams WHERE exam_date>date('now') AND (grade_level=? OR grade_level IS NULL) AND status IN ('DRAFT','ACTIVE') ORDER BY exam_date LIMIT 1`).bind(enrollment.grade_level));
-    targetDate=next?.exam_date||null;label=label||next?.title||null;
+  const profile=profileOf(enrollment);
+  // owner (10 Nov 2026): a countdown only for 8 (LGS) and 12 (YKS), against the official date or the student's own
+  // date; never another institution's exam (the earlier fallback read every institution's exams)
+  let targetDate:string|null=null,label:string|null=null;
+  if(profile.countdown){
+    const official=await officialCountdown(env,enrollment);
+    targetDate=(preferences.countdown_target_date as string|null)||official?.exam_date||null;
+    label=(preferences.countdown_label as string|null)||official?.label||null;
   }
   const targets=await all<any>(env.DB.prepare(`SELECT priority,target_type,motivation_label,motivation_enabled,up.university_name,up.program_name,ss.name school_name FROM student_academic_targets sat LEFT JOIN university_program_targets up ON up.id=sat.university_program_target_id LEFT JOIN secondary_school_targets ss ON ss.id=sat.secondary_school_target_id WHERE sat.student_id=? AND sat.status='ACTIVE' ORDER BY priority`).bind(user.student_id));
+  // grades without an academic target show the student's chosen interests (meslekler) on the home card instead
+  const professions=profile.academicTarget?[]:await all<any>(env.DB.prepare(`SELECT spt.priority,pc.title,pc.motivation_title FROM student_profession_targets spt JOIN profession_catalog pc ON pc.code=spt.profession_code WHERE spt.student_id=? AND spt.status='ACTIVE' ORDER BY spt.priority LIMIT 3`).bind(user.student_id));
   // Days (Istanbul time) on which the student solved practice questions during the last 14 days: feeds the weekly streak.
   const practiceDays=(await all<any>(env.DB.prepare(`SELECT DISTINCT date(created_at,'+3 hours') d FROM question_practice_attempts WHERE student_id=? AND created_at>=datetime('now','-14 days') ORDER BY d`).bind(user.student_id))).map((r:any)=>r.d);
-  return json({ok:true,student:{id:user.student_id,gradeLevel:enrollment?.grade_level??null,className:enrollment?.class_name??null,enrollmentStatus:enrollment?.status??null},countdown:{enabled:Boolean(preferences.countdown_enabled),label,targetDate,days:daysUntil(targetDate),flipClock:Boolean(preferences.countdown_flip_clock)},preferences,targets,practiceDays});
+  return json({ok:true,student:{id:user.student_id,gradeLevel:enrollment?.grade_level??null,className:enrollment?.class_name??null,enrollmentStatus:enrollment?.status??null},profile,countdown:{enabled:profile.countdown&&Boolean(preferences.countdown_enabled),label,targetDate,days:daysUntil(targetDate),flipClock:Boolean(preferences.countdown_flip_clock)},preferences,targets,professions,practiceDays});
 }
 
 async function games(env:Env,user:AuthUser){
@@ -207,6 +235,7 @@ export default {
     if(path==='/api/student-standard/preferences'&&request.method==='GET')return json({ok:true,...await getPreferences(env,auth)});
     if(path==='/api/student-standard/preferences'&&request.method==='PATCH')return updatePreferences(request,env,auth);
     if(path==='/api/student-standard/home-context'&&request.method==='GET')return homeContext(env,auth);
+    if(path==='/api/student-standard/profile'&&request.method==='GET')return studentProfile(env,auth);
     if(path==='/api/student-standard/games'&&request.method==='GET')return games(env,auth);
     if(path==='/api/student-standard/question-support'&&request.method==='GET')return questionSupport(env,auth,url);
     return fail(404,'NOT_FOUND','Standard öğrenci API yolu bulunamadı.');

@@ -40,6 +40,7 @@ export function StudentStandardHome(){
  const developing=dashboard?.developing||[];const focus=developing[0];
  const targets=home?.targets||[];const primary=targets.find((x:any)=>Number(x.priority)===1)||targets[0];
  const days=home?.countdown?.days;
+ const dream=(home?.professions||[])[0];
  const practiced=new Set<string>(home?.practiceDays||[]);
  const week=useMemo(()=>{const today=new Date();const dow=(today.getDay()+6)%7;return DAY_LABELS.map((label,i)=>{const d=new Date(today.getTime()+(i-dow)*864e5);const key=istanbulDay(d);return{label,key,done:practiced.has(key),future:i>dow}})},[home]);
  const streak=useMemo(()=>{let n=0;const today=new Date();for(let i=0;i<14;i++){const key=istanbulDay(new Date(today.getTime()-i*864e5));if(practiced.has(key))n++;else if(i>0)break}return n},[home]);
@@ -92,12 +93,16 @@ export function StudentStandardHome(){
     </>}
    </section>
 
-   <section className="sg-card sg-target" aria-labelledby="sg-target-title">
+   {home?.profile&&!home.profile.academicTarget?<section className="sg-card sg-target" aria-labelledby="sg-target-title">
+    <div className="sg-row"><h2 id="sg-target-title">Hayalindeki meslek</h2><Link className="sg-link sg-small" to="/academic-target">{dream?'Değiştir':'Seç'}</Link></div>
+    <div className="sg-countdown"><strong className="sg-countdown-empty">{dream?dream.title:'Henüz seçmedin'}</strong></div>
+    <p className="sg-muted">{dream?(dream.motivation_title||'Nibiru seni bu yolda destekler.'):'İlgi duyduğun meslekleri seç; Nibiru seni bu yolda motive etsin.'}</p>
+   </section>:   <section className="sg-card sg-target" aria-labelledby="sg-target-title">
     <div className="sg-row"><h2 id="sg-target-title">Hedefin</h2><Link className="sg-link sg-small" to="/academic-target">{primary?'Değiştir':'Belirle'}</Link></div>
     {days!=null?<div className="sg-countdown"><strong>{days}</strong><span>gün kaldı</span>{home?.countdown?.label&&<em>· {home.countdown.label}</em>}</div>:<div className="sg-countdown"><strong className="sg-countdown-empty">Hedefini belirle</strong></div>}
     <p className="sg-muted">{primary?targetName(primary):'Hedef okulunu ya da bölümünü seçtiğinde geri sayım ve hedef takibi burada başlar.'}</p>
     {primary?.motivation_enabled&&primary?.motivation_label?<p className="sg-small sg-strong">{primary.motivation_label}</p>:null}
-   </section>
+   </section>}
 
    {lessons.length>0&&<section className="sg-card sg-lessons" aria-labelledby="sg-lessons-title">
     <div className="sg-row"><h2 id="sg-lessons-title">Derslerin</h2><Link className="sg-link sg-small" to="/student-report">Karnem</Link></div>
