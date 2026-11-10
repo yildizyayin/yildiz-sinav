@@ -1,3 +1,4 @@
+import qrcode from 'qrcode-generator';
 import fontkit from '@pdf-lib/fontkit';
 import { PDFDocument, PDFFont, PDFPage, rgb } from 'pdf-lib';
 import type { Env } from '../types';
@@ -186,13 +187,12 @@ function newPage(ctx: Ctx, first: boolean): Cursor {
       page.drawImage(marks.anunex, { x: L.pageW - L.margin - size, y: top - size, width: size, height: size });
       page.drawText(label, { x: L.pageW - L.margin - size - 5 - lw, y: top - 15, size: 10, font: fonts.bold, color: rgb(0.07, 0.2, 0.5) });
     }
-    const bk = `Kitapçık ${ctx.booklet}`;
-    page.drawText(bk, { x: L.pageW - L.margin - fonts.bold.widthOfTextAtSize(bk, 12), y: top - 40, size: 12, font: fonts.bold, color: INK });
+    if (ctx.booklet) { const bk = `Kitapçık ${ctx.booklet}`; page.drawText(bk, { x: L.pageW - L.margin - fonts.bold.widthOfTextAtSize(bk, 12), y: top - 40, size: 12, font: fonts.bold, color: INK }); }
     page.drawText('Ad Soyad: ______________________________   Sınıf: ________   Numara: ____________', { x: L.margin, y: top - 56, size: 9, font: fonts.regular, color: INK });
     page.drawLine({ start: { x: L.margin, y: top - 66 }, end: { x: L.pageW - L.margin, y: top - 66 }, thickness: 0.8, color: RULE });
     top -= 78;
   } else {
-    page.drawText(`${ctx.title} · Kitapçık ${ctx.booklet}`, { x: L.margin, y: top - 9, size: 8, font: ctx.fonts.regular, color: MUTED, maxWidth: L.pageW - 2 * L.margin });
+    page.drawText(ctx.booklet ? `${ctx.title} · Kitapçık ${ctx.booklet}` : ctx.title, { x: L.margin, y: top - 9, size: 8, font: ctx.fonts.regular, color: MUTED, maxWidth: L.pageW - 2 * L.margin });
     top -= 20;
   }
   if (L.columns === 2) page.drawLine({ start: { x: L.pageW / 2, y: top + 4 }, end: { x: L.pageW / 2, y: L.bottom - 4 }, thickness: 0.5, color: RULE });
@@ -563,6 +563,129 @@ export async function renderQuestionBookPdf(env: Env, title: string, sections: {
   }
   const bytes = await pdf.save();
   return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, questionCount: items.length };
+}
+
+/** A QR code drawn as squares (no image, crisp in print). */
+function drawQr(page: PDFPage, text: string, x: number, y: number, size: number) {
+  const qr = qrcode(0, 'M'); qr.addData(text); qr.make();
+  const n = qr.getModuleCount(), m = size / n;
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) page.drawRectangle({ x: x + c * m, y: y + size - (r + 1) * m, width: m + 0.02, height: m + 0.02, color: INK });
+}
+
+export type DejavuSection = { heading: string; note: string | null; items: Array<{ questionId: string; solutionUrl: string | null }> };
+export type DejavuPrint = { title: string; studentName: string; classLine: string; institutionName: string | null; dateLabel: string; bookUrl: string | null; sections: DejavuSection[]; answerKey: 'APPEND' | 'NONE' };
+
+/**
+ * Dejavu (owner, 10 Nov 2026): the student's personal book. A cover with the student and the outcomes it works on,
+ * each outcome's questions in two columns with a QR code under every question that opens its solution page in the
+ * app, and the answer key on its own last page (or left out, for a teacher printing it separately).
+ */
+export async function renderDejavuBookPdf(env: Env, input: DejavuPrint): Promise<{ bytes: ArrayBuffer; questionCount: number; pageCount: number }> {
+  const ordered = input.sections.flatMap((sec) => sec.items.map((i) => i.questionId));
+  if (!ordered.length) throw new StudioPrintError('BOOKLET_EMPTY', 'Kitapta soru yok.');
+  const found = await all<Row>(env.DB.prepare(`SELECT q.id,q.stem_text,q.options_json,q.correct_answer,q.content_mode,q.origin_kind,0 question_no FROM question_bank q WHERE q.id IN (${ordered.map(() => '?').join(',')})`).bind(...ordered));
+  const rows = ordered.map((id) => found.find((r) => r.id === id)).filter(Boolean) as Row[];
+  if (rows.length !== ordered.length) throw new StudioPrintError('PRINT_QUESTION_MISSING', 'Kitaptaki bir soru artık havuzda yok; kitabı yeniden oluşturun.');
+  const items = await printablesFromRows(env, rows);
+  const pdf = await PDFDocument.create();
+  pdf.setTitle(input.title); pdf.setCreator('ANUNEX'); pdf.setProducer('ANUNEX');
+  const fonts = await loadFonts(pdf);
+  const clean = (v: string, where: string) => { const t = normalizePrintText(v); assertPrintable(fonts, t, where); return t; };
+  const title = clean(input.title, 'Kitap başlığı');
+  const anunex = await pdf.embedPng(b64(ANUNEX_MARK_PNG_BASE64));
+  const marksCtx: Ctx['marks'] = { anunex };
+  if (items.some((q) => q.ai)) marksCtx.nibiru = await pdf.embedPng(b64(NIBIRU_MARK_PNG_BASE64));
+  const ctx: Ctx = { pdf, fonts, images: new Map(), title, booklet: '', pages: [], branding: DEFAULT_BRANDING, marks: marksCtx, L: DEFAULT_MODEL };
+  await prepareImages(ctx, items);
+
+  // cover
+  const cover = pdf.addPage([PAGE_W, PAGE_H]); ctx.pages.push(cover);
+  cover.drawRectangle({ x: 0, y: PAGE_H - 250, width: PAGE_W, height: 250, color: rgb(0.06, 0.13, 0.32) });
+  cover.drawImage(anunex, { x: MARGIN, y: PAGE_H - 80, width: 30, height: 30 });
+  cover.drawText('ANUNEX', { x: MARGIN + 38, y: PAGE_H - 70, size: 12, font: fonts.bold, color: rgb(1, 1, 1) });
+  if (input.institutionName) cover.drawText(clean(input.institutionName, 'Kurum adı'), { x: MARGIN, y: PAGE_H - 108, size: 10, font: fonts.regular, color: rgb(0.78, 0.84, 0.95), maxWidth: PAGE_W - 2 * MARGIN });
+  cover.drawText('DEJAVU', { x: MARGIN, y: PAGE_H - 150, size: 34, font: fonts.bold, color: rgb(1, 1, 1) });
+  cover.drawText('Kişiye özel çalışma kitabı', { x: MARGIN, y: PAGE_H - 176, size: 14, font: fonts.regular, color: rgb(0.86, 0.9, 1) });
+  cover.drawText(clean(input.studentName, 'Öğrenci adı'), { x: MARGIN, y: PAGE_H - 214, size: 16, font: fonts.bold, color: rgb(1, 1, 1), maxWidth: PAGE_W - 2 * MARGIN - 90 });
+  cover.drawText(clean(`${input.classLine} · ${input.dateLabel}`, 'Sınıf'), { x: MARGIN, y: PAGE_H - 232, size: 10, font: fonts.regular, color: rgb(0.78, 0.84, 0.95) });
+  if (input.bookUrl) { cover.drawRectangle({ x: PAGE_W - MARGIN - 78, y: PAGE_H - 238, width: 78, height: 78, color: rgb(1, 1, 1) }); drawQr(cover, input.bookUrl, PAGE_W - MARGIN - 74, PAGE_H - 234, 70); }
+  let y = PAGE_H - 290;
+  cover.drawText('Bu kitapta çalışacağın kazanımlar', { x: MARGIN, y, size: 13, font: fonts.bold, color: INK }); y -= 22;
+  for (const sec of input.sections) {
+    const head = wrapText(fonts.bold, clean(sec.heading, 'Bölüm başlığı'), 10, PAGE_W - 2 * MARGIN - 70);
+    if (y - head.length * 13 - 16 < 150) break;
+    cover.drawText(`${sec.items.length} soru`, { x: PAGE_W - MARGIN - 50, y: y - 10, size: 9, font: fonts.regular, color: MUTED });
+    for (const line of head) { cover.drawText(line, { x: MARGIN + 12, y: y - 10, size: 10, font: fonts.bold, color: INK }); y -= 13; }
+    cover.drawCircle({ x: MARGIN + 3, y: y + 9, size: 2.4, color: BAR });
+    if (sec.note) { const n = clean(sec.note, 'Bölüm notu'); cover.drawText(n, { x: MARGIN + 12, y: y - 8, size: 8.5, font: fonts.regular, color: MUTED, maxWidth: PAGE_W - 2 * MARGIN - 70 }); y -= 12; }
+    y -= 10;
+  }
+  const steps = ['1. Soruları sırayla çöz; işaretlerini kitabın üzerine yap.', '2. Takıldığın sorunun altındaki QR kodu okut: çözümü uygulamada açılır.', '3. Bitirince cevaplarını uygulamada "Benim Kitaplarım" bölümüne gir; sonuçların karnene işlenir.', input.answerKey === 'APPEND' ? '4. Cevap anahtarı son sayfadadır; cevaplarını girdikten sonra kontrol et.' : '4. Cevap anahtarı öğretmenindedir.'];
+  let sy = 128;
+  cover.drawText('Nasıl çalışırım?', { x: MARGIN, y: sy, size: 11, font: fonts.bold, color: INK }); sy -= 16;
+  for (const st of steps) { cover.drawText(clean(st, 'Yönerge'), { x: MARGIN, y: sy, size: 9, font: fonts.regular, color: INK, maxWidth: PAGE_W - 2 * MARGIN }); sy -= 13; }
+
+  // questions: each outcome starts with a titled band; a QR under every question opens its solution
+  const QR = 34;
+  let cur = newPage(ctx, false), k = 0;
+  for (const sec of input.sections) {
+    const headLines = wrapText(fonts.bold, clean(sec.heading, 'Bölüm başlığı'), 10.5, COL_W - 8);
+    for (let j = 0; j < sec.items.length; j++, k++) {
+      const ops = questionOps(ctx, items[k]);
+      const url = sec.items[j].solutionUrl;
+      if (url) {
+        ops.splice(ops.length - 1, 0, { h: QR + 4, draw: (page, x, yy) => {
+          drawQr(page, url, x + COL_W - QR, yy - QR - 2, QR);
+          page.drawText('Çözüm için okut', { x: x + COL_W - QR - 6 - fonts.regular.widthOfTextAtSize('Çözüm için okut', 7), y: yy - QR / 2 - 4, size: 7, font: fonts.regular, color: MUTED });
+        } });
+      }
+      const head = j === 0 ? headLines.length * 14 + 12 : 0;
+      const height = head + ops.reduce((t, o) => t + o.h, 0);
+      if (height > TOP - 20 - BOTTOM) throw new StudioPrintError('PRINT_QUESTION_TOO_LONG', `Soru ${items[k].no}: tek sütuna sığmayacak kadar uzun. İçerik eksiltilerek PDF üretilmez.`);
+      if (cur.y - height < BOTTOM) { cur = cur.col === 0 ? { ...cur, col: 1, y: cur.top } : newPage(ctx, false); if (cur.y - height < BOTTOM) cur = newPage(ctx, false); }
+      let yy = cur.y;
+      if (head) {
+        cur.page.drawRectangle({ x: colX(ctx, cur) - 4, y: yy - headLines.length * 14 - 6, width: COL_W + 8, height: headLines.length * 14 + 8, color: FILL });
+        cur.page.drawRectangle({ x: colX(ctx, cur) - 4, y: yy - headLines.length * 14 - 6, width: 3, height: headLines.length * 14 + 8, color: BAR });
+        for (const line of headLines) { cur.page.drawText(line, { x: colX(ctx, cur) + 4, y: yy - 11, size: 10.5, font: fonts.bold, color: INK }); yy -= 14; }
+        yy -= 12;
+      }
+      for (const op of ops) { op.draw(cur.page, colX(ctx, cur), yy); yy -= op.h; }
+      cur.y = yy;
+    }
+  }
+  footer(ctx);
+  if (input.answerKey === 'APPEND') drawAnswerKeyPage(pdf, fonts, items.map((q) => q.correct), title);
+  const bytes = await pdf.save();
+  return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, questionCount: items.length, pageCount: pdf.getPageCount() };
+}
+
+function drawAnswerKeyPage(pdf: PDFDocument, fonts: Fonts, answers: Array<string | null | undefined>, title: string) {
+  const page = pdf.addPage([PAGE_W, PAGE_H]);
+  page.drawText('Cevap Anahtarı', { x: MARGIN, y: TOP - 14, size: 14, font: fonts.bold, color: INK });
+  page.drawText(title, { x: MARGIN, y: TOP - 32, size: 9, font: fonts.regular, color: MUTED, maxWidth: PAGE_W - 2 * MARGIN });
+  const perRow = 10, cellW = (PAGE_W - 2 * MARGIN) / perRow, cellH = 26, top = TOP - 50;
+  answers.forEach((a, i) => {
+    const answer = String(a || '').trim().toUpperCase();
+    if (!LABELS.includes(answer)) throw new StudioPrintError('PRINT_ANSWER_KEY_INVALID', `Soru ${i + 1}: cevap anahtarı geçersiz.`);
+    const r = Math.floor(i / perRow), c = i % perRow, x = MARGIN + c * cellW, cy = top - r * cellH;
+    if (cy - cellH < BOTTOM) throw new StudioPrintError('PRINT_ANSWER_KEY_TOO_LONG', 'Cevap anahtarı tek sayfaya sığmıyor.');
+    page.drawRectangle({ x, y: cy - cellH, width: cellW, height: cellH, borderColor: RULE, borderWidth: 0.6 });
+    page.drawText(`${i + 1}`, { x: x + 4, y: cy - 10, size: 7, font: fonts.regular, color: MUTED });
+    page.drawText(answer, { x: x + cellW / 2 - 4, y: cy - 21, size: 12, font: fonts.bold, color: INK });
+  });
+}
+
+/** The answer key alone, for a teacher who prints the books without it. */
+export async function renderDejavuAnswerKeyPdf(env: Env, title: string, questionIds: string[]): Promise<ArrayBuffer> {
+  if (!questionIds.length) throw new StudioPrintError('BOOKLET_EMPTY', 'Kitapta soru yok.');
+  const found = await all<any>(env.DB.prepare(`SELECT id,correct_answer FROM question_bank WHERE id IN (${questionIds.map(() => '?').join(',')})`).bind(...questionIds));
+  const pdf = await PDFDocument.create(); pdf.setTitle(`${title} · Cevap Anahtarı`); pdf.setCreator('ANUNEX');
+  const fonts = await loadFonts(pdf);
+  const t = normalizePrintText(title); assertPrintable(fonts, t, 'Kitap başlığı');
+  drawAnswerKeyPage(pdf, fonts, questionIds.map((id) => found.find((r) => r.id === id)?.correct_answer), t);
+  const bytes = await pdf.save();
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
 }
 
 /** P02 check: whether one question can be printed at all, as a named reason (never thrown). */
