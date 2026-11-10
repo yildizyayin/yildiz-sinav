@@ -76,7 +76,8 @@ export async function evidenceRows(env: Env, studentId: string, learnerView: boo
     // Dejavu kişiye özel kitap: answers entered back for the book's approved questions, graded on the server
     all<Row>(env.DB.prepare(`SELECT i.outcome_id, 'QB:'||i.bank_question_id question_key, 'DEJAVU' source, i.correct result, i.answered_at at
       FROM student_personal_book_items i JOIN student_personal_books b ON b.id=i.book_id
-      WHERE b.student_id=? AND i.item_type='PRACTICE_QUESTION' AND i.answered_at IS NOT NULL AND i.outcome_id IS NOT NULL`).bind(studentId)),
+      WHERE b.student_id=? AND i.item_type='PRACTICE_QUESTION' AND i.answered_at IS NOT NULL AND i.outcome_id IS NOT NULL
+        AND (i.solution_viewed_at IS NULL OR datetime(i.solution_viewed_at)>datetime(i.answered_at))`).bind(studentId)),
   ]);
   return [...exam, ...bank, ...mini, ...foy, ...game, ...dejavu, ...(learnerView ? [] : await writtenRows(env, studentId))];
 }
