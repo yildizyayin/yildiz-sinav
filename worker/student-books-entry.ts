@@ -3,8 +3,8 @@ import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,json,one,uuid } from './lib/db';
 import { publishedForLearnersSql } from './lib/exam-schedule';
-import { buildDejavuBook, gradeDejavuAnswers, type ExamGapSource } from './lib/dejavu';
-import { renderDejavuBookPdf, StudioPrintError, type DejavuPrint, type DejavuSection } from './lib/studio-pdf';
+import { buildDejavuBook, dejavuPrintInput, gradeDejavuAnswers, type ExamGapSource } from './lib/dejavu';
+import { renderDejavuBookPdf, StudioPrintError } from './lib/studio-pdf';
 import { SERVABLE_VIDEO_SQL } from './lib/video-links';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
@@ -42,26 +42,6 @@ async function personalBookAnswers(request:Request,env:Env,user:AuthUser,id:stri
  const body:any=await request.json().catch(()=>({}));
  const result=await gradeDejavuAnswers(env,id,user.student_id!,body.answers);
  return json({ok:true,...result});
-}
-
-/** Everything the Dejavu PDF needs for one book; shared by the student and staff downloads. */
-export async function dejavuPrintInput(env:Env,bookId:string,origin:string,answerKey:'APPEND'|'NONE'):Promise<{error:Response}|{book:any;input:DejavuPrint}>{
- const book=await one<any>(env.DB.prepare(`SELECT b.*,st.first_name,st.last_name,i.name institution_name FROM student_personal_books b JOIN student_entities st ON st.id=b.student_id LEFT JOIN institutions i ON i.id=b.institution_id WHERE b.id=?`).bind(bookId));
- if(!book)return {error:fail(404,'BOOK_NOT_FOUND','Kişiye Özel Kitap bulunamadı.')};
- const items=await all<any>(env.DB.prepare(`SELECT i.item_type,i.outcome_id,i.bank_question_id,i.payload_json,i.solution_code,q.review_status,q.copyright_status FROM student_personal_book_items i LEFT JOIN question_bank q ON q.id=i.bank_question_id WHERE i.book_id=? ORDER BY i.sort_order`).bind(bookId));
- const cls=await one<any>(env.DB.prepare(`SELECT c.name FROM student_enrollments e LEFT JOIN classes c ON c.id=e.class_id WHERE e.student_id=? AND e.status='ACTIVE' ORDER BY e.created_at DESC LIMIT 1`).bind(book.student_id));
- const sections:DejavuSection[]=[];
- for(const it of items){
-  if(it.item_type==='OUTCOME_HEADER'){const p=JSON.parse(it.payload_json||'{}');const short=Number(p.found)<Number(p.wanted)?`Bu kazanımda şimdilik ${p.found} yeni onaylı soru var.`:null;sections.push({heading:[p.subject,p.title].filter(Boolean).join(' · ')||'Kazanım',note:short,items:[]});continue;}
-  if(it.item_type!=='PRACTICE_QUESTION')continue;
-  if(it.review_status!=='APPROVED'||!['OWNED','LICENSED','PUBLIC_DOMAIN'].includes(it.copyright_status))return {error:fail(409,'BOOK_CONTENT_CHANGED','Kitaptaki bir sorunun onayı veya kullanım hakkı değişti; kitabı yeniden oluşturun.')};
-  sections[sections.length-1]?.items.push({questionId:it.bank_question_id,solutionUrl:it.solution_code?`${origin}/dejavu/cozum/${it.solution_code}`:null});
- }
- const filled=sections.filter(x=>x.items.length);if(!filled.length)return {error:fail(409,'BOOK_EMPTY','Kitapta basılabilir soru yok.')};
- const name=[book.first_name,book.last_name].filter(Boolean).join(' ').toLocaleLowerCase('tr-TR').replace(/(^|\s)\S/g,(c:string)=>c.toLocaleUpperCase('tr-TR'));
- const date=new Date(String(book.created_at||'').replace(' ','T')+'Z');
- const input:DejavuPrint={title:book.title||'Dejavu · Kişiye Özel Kitabım',studentName:name||'Öğrenci',classLine:[cls?.name||(book.grade_level?`${book.grade_level}. sınıf`:''),book.academic_year].filter(Boolean).join(' · ')||'—',institutionName:book.institution_name||null,dateLabel:Number.isNaN(date.getTime())?'':date.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'}),bookUrl:`${origin}/my-books`,sections:filled,answerKey};
- return {book,input};
 }
 
 /** Dejavu PDF: cover, outcome sections, a solution QR under each question, the answer key at the back. */

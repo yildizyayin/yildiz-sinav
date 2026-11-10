@@ -6,7 +6,7 @@ import { combineExpandedFrozenReports } from './lib/expanded-frozen-report';
 import answerApp from './answer-correctness-entry';
 import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
-import { all, forbidden, json, notFound, one } from './lib/db';
+import { all, audit, forbidden, json, notFound, one } from './lib/db';
 import { loadPermissionScope } from './lib/permissions';
 import { masteryStatus } from './lib/outcome';
 import { combineFrozenReports } from './lib/combined-frozen-report';
@@ -14,6 +14,10 @@ import { LEARNED_RULE, OUTCOME_QUESTION_TARGET, outcomeQuestionTarget, periodOut
 import { frozenPracticeReport } from './lib/frozen-practice-report';
 import { frozenExamReport } from './lib/frozen-exam-report';
 import { frozenMiniTestReport } from './lib/frozen-mini-test-report';
+
+import { PDFDocument } from 'pdf-lib';
+import { buildDejavuBook, dejavuPrintInput } from './lib/dejavu';
+import { renderDejavuAnswerKeyPdf, renderDejavuBookPdf, StudioPrintError } from './lib/studio-pdf';
 
 function apiError(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
 async function requireUser(env:Env,request:Request){const user=await getAuthUser(env,request);return user||apiError(401,'UNAUTHENTICATED','Oturum açmanız gerekiyor.')}
@@ -468,6 +472,98 @@ async function outcomeSupportQueue(request:Request,env:Env,user:AuthUser,url:URL
   return json({ok:true,id:closeId,interventionId:id});
 }
 
+/**
+ * Dejavu, staff side (owner, 10 Nov 2026): a teacher, guidance teacher or manager prepares and previews the books of
+ * the students they may see, one by one or for a whole class (at most DEJAVU_CLASS_LIMIT), and prints them in one PDF.
+ * A subject teacher's book holds only their own subjects' outcomes. The answer key can be left out and printed apart.
+ */
+const DEJAVU_CLASS_LIMIT=40;
+const DEJAVU_STAFF=['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'];
+function pdfResponse(bytes:ArrayBuffer,name:string){return new Response(bytes,{headers:{'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="${name}"`,'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}})}
+async function bookAccess(env:Env,user:AuthUser,bookId:string){
+  const book=await one<any>(env.DB.prepare('SELECT id,student_id,title FROM student_personal_books WHERE id=?').bind(bookId));if(!book)return null;
+  const access=await studentAccess(env,user,book.student_id);return access.allowed?book:null;
+}
+async function staffDejavu(request:Request,env:Env,user:AuthUser,url:URL):Promise<Response|null>{
+  const path=url.pathname;
+  const forStudent=path.match(/^\/api\/reporting\/students\/([^/]+)\/dejavu$/);
+  const bookPdf=path.match(/^\/api\/reporting\/dejavu\/([^/]+)\/(pdf|answer-key)$/);
+  const forClass=path.match(/^\/api\/reporting\/classes\/([^/]+)\/dejavu(\/pdf)?$/);
+  if(!forStudent&&!bookPdf&&!forClass)return null;
+  if(!DEJAVU_STAFF.includes(user.role))return forbidden('Dejavu kitaplarını okul personeli hazırlar.');
+  if(forStudent){
+    const access=await studentAccess(env,user,forStudent[1]);if(!access.allowed)return forbidden('Bu öğrenci için erişiminiz bulunmuyor.');
+    if(request.method==='GET'){
+      const books=await all<any>(env.DB.prepare(`SELECT b.id,b.title,b.status,b.outcome_count,b.question_count,b.created_at,b.config_json,u.display_name generated_by_name,
+          (SELECT count(*) FROM student_personal_book_items i WHERE i.book_id=b.id AND i.item_type='PRACTICE_QUESTION' AND i.student_answer IS NOT NULL) answered_count,
+          (SELECT COALESCE(sum(i.correct),0) FROM student_personal_book_items i WHERE i.book_id=b.id AND i.item_type='PRACTICE_QUESTION') correct_count
+        FROM student_personal_books b LEFT JOIN users u ON u.id=b.generated_by WHERE b.student_id=? ORDER BY b.created_at DESC LIMIT 30`).bind(forStudent[1]));
+      return json({ok:true,books:books.map(({config_json,...b})=>({...b,shortages:(()=>{try{return JSON.parse(config_json||'{}').shortages||[]}catch{return []}})()}))});
+    }
+    if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+    const body:any=await request.json().catch(()=>({}));
+    const built=await buildDejavuBook(env,{studentId:forStudent[1],generatedBy:user.id,title:body.title,outcomeLimit:body.outcomeLimit,subjectIds:access.subjectFilter});
+    if('error' in built)return apiError(400,built.error,built.error==='ENROLLMENT_REQUIRED'?'Öğrencinin aktif kaydı bulunamadı.':'Bu öğrenci için henüz yeterli gelişim alanı kanıtı yok.');
+    await audit(env.DB,user.id,access.student?.institution_id??null,'DEJAVU_BOOK_PREPARED','student',forStudent[1],{bookId:built.id,questions:built.questionCount});
+    return json({ok:true,...built},201);
+  }
+  if(bookPdf){
+    if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+    const book=await bookAccess(env,user,bookPdf[1]);if(!book)return notFound('Dejavu kitabı bulunamadı.');
+    if(bookPdf[2]==='answer-key'){
+      const ids=(await all<any>(env.DB.prepare(`SELECT bank_question_id id FROM student_personal_book_items WHERE book_id=? AND item_type='PRACTICE_QUESTION' ORDER BY sort_order`).bind(book.id))).map(r=>r.id);
+      try{return pdfResponse(await renderDejavuAnswerKeyPdf(env,book.title||'Dejavu',ids),'dejavu-cevap-anahtari.pdf')}catch(e){if(e instanceof StudioPrintError)return apiError(422,e.code,e.message);throw e}
+    }
+    const prepared=await dejavuPrintInput(env,book.id,url.origin,url.searchParams.get('answerKey')==='0'?'NONE':'APPEND');if('error' in prepared)return prepared.error;
+    try{return pdfResponse((await renderDejavuBookPdf(env,prepared.input)).bytes,'dejavu-kitap.pdf')}catch(e){if(e instanceof StudioPrintError)return apiError(422,e.code,e.message);throw e}
+  }
+  // a whole class
+  const classId=forClass![1];
+  const cls=await one<any>(env.DB.prepare('SELECT id,name,institution_id,season_id FROM classes WHERE id=?').bind(classId));if(!cls)return notFound('Sınıf bulunamadı.');
+  const students=await all<any>(env.DB.prepare(`SELECT e.student_id id FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id AND s.status='ACTIVE' WHERE e.class_id=? AND e.status='ACTIVE' ORDER BY s.last_name,s.first_name LIMIT ?`).bind(classId,DEJAVU_CLASS_LIMIT+1));
+  if(students.length>DEJAVU_CLASS_LIMIT)return apiError(413,'CLASS_TOO_LARGE',`Toplu Dejavu tek seferde en çok ${DEJAVU_CLASS_LIMIT} öğrenci için hazırlanır.`);
+  const allowed:{id:string;subjectFilter:string[]|null}[]=[];
+  for(const st of students){const a=await studentAccess(env,user,st.id);if(a.allowed)allowed.push({id:st.id,subjectFilter:a.subjectFilter});}
+  if(!allowed.length)return forbidden('Bu sınıf için erişiminiz bulunmuyor.');
+  if(!forClass![2]&&request.method==='GET'){
+    const rows=[];
+    for(const st of allowed){
+      const info=await one<any>(env.DB.prepare(`SELECT s.first_name,s.last_name,(SELECT json_object('id',b.id,'questionCount',b.question_count,'outcomeCount',b.outcome_count,'createdAt',b.created_at,
+          'answered',(SELECT count(*) FROM student_personal_book_items i WHERE i.book_id=b.id AND i.item_type='PRACTICE_QUESTION' AND i.student_answer IS NOT NULL),
+          'correct',(SELECT COALESCE(sum(i.correct),0) FROM student_personal_book_items i WHERE i.book_id=b.id AND i.item_type='PRACTICE_QUESTION'))
+        FROM student_personal_books b WHERE b.student_id=s.id ORDER BY b.created_at DESC LIMIT 1) latest FROM student_entities s WHERE s.id=?`).bind(st.id));
+      rows.push({studentId:st.id,firstName:info?.first_name,lastName:info?.last_name,subjectLimited:Boolean(st.subjectFilter),latest:info?.latest?JSON.parse(info.latest):null});
+    }
+    return json({ok:true,className:cls.name,limit:DEJAVU_CLASS_LIMIT,students:rows});
+  }
+  if(!forClass![2]){
+    if(request.method!=='POST')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+    const results=[];
+    for(const st of allowed){
+      const built=await buildDejavuBook(env,{studentId:st.id,generatedBy:user.id,subjectIds:st.subjectFilter});
+      results.push('error' in built?{studentId:st.id,error:built.error}:{studentId:st.id,bookId:built.id,questionCount:built.questionCount,shortages:built.shortages.length});
+    }
+    await audit(env.DB,user.id,cls.institution_id,'DEJAVU_CLASS_PREPARED','class',classId,{students:results.length,books:results.filter((r:any)=>r.bookId).length});
+    return json({ok:true,className:cls.name,results},201);
+  }
+  if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+  // one PDF: each allowed student's newest printable book, in class order
+  const merged=await PDFDocument.create();merged.setTitle(`Dejavu · ${cls.name}`);merged.setCreator('ANUNEX');
+  const answerKey=url.searchParams.get('answerKey')==='1'?'APPEND':'NONE';let books=0;const skipped:string[]=[];
+  for(const st of allowed){
+    const latest=await one<any>(env.DB.prepare(`SELECT id FROM student_personal_books WHERE student_id=? AND question_count>0 ORDER BY created_at DESC LIMIT 1`).bind(st.id));
+    if(!latest){skipped.push(st.id);continue;}
+    const prepared=await dejavuPrintInput(env,latest.id,url.origin,answerKey);if('error' in prepared){skipped.push(st.id);continue;}
+    try{const out=await renderDejavuBookPdf(env,prepared.input);const doc=await PDFDocument.load(out.bytes);for(const page of await merged.copyPages(doc,doc.getPageIndices()))merged.addPage(page);books++;}
+    catch(e){if(e instanceof StudioPrintError){skipped.push(st.id);continue;}throw e}
+  }
+  if(!books)return apiError(409,'NO_PRINTABLE_BOOKS','Bu sınıfta basılabilir Dejavu kitabı yok; önce kitapları hazırlayın.');
+  const bytes=await merged.save();
+  const res=pdfResponse(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength) as ArrayBuffer,'dejavu-sinif.pdf');
+  res.headers.set('X-Dejavu-Books',String(books));res.headers.set('X-Dejavu-Skipped',String(skipped.length));
+  return res;
+}
+
 /** Birleşik Karne: 3. ay, 6. ay and year-end views of the same outcome record (cumulative from the school year start). */
 async function outcomePeriodReport(env:Env,user:AuthUser,studentId:string,url:URL):Promise<Response>{
   const access=await studentAccess(env,user,studentId);if(!access.allowed||!access.student)return forbidden('Bu öğrenci için birleşik rapor erişiminiz bulunmuyor.');
@@ -533,4 +629,4 @@ async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Pr
   return json({ok:true,availableYears,selectedAcademicYear,student:access.student,unavailableSnapshotExamIds,restrictedToSubjects:access.restricted,availableExams:allExams.map(e=>access.restricted?{exam_id:e.exam_id,title:e.title,exam_date:e.exam_date,exam_type:e.exam_type,academic_year:e.academic_year}:e),selectedExamIds:selectedIds,exams:examsForClient,summary,subjectTrend,subjectSummary,outcomes,developing:outcomes.filter(o=>o.mastery_status==='DEVELOPING').sort((a,b)=>a.success_rate-b.success_rate),strong:outcomes.filter(o=>o.mastery_status==='STRONG').sort((a,b)=>b.success_rate-a.success_rate)});
 }
 
-export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/institution/frozen-rubric-summary'||url.pathname==='/api/reporting/guidance/frozen-rubric-summary'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');if(url.pathname.includes('/guidance/')){const cls=await guidanceReportClass(env,auth,url);if(!cls)return forbidden();return await cohortRubricReport(env,auth,url,cls);}return await cohortRubricReport(env,auth,url);}if(url.pathname==='/api/reporting/institution/frozen-learning-summary'||url.pathname==='/api/reporting/guidance/frozen-learning-summary'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');if(url.pathname.includes('/guidance/')){const cls=await guidanceReportClass(env,auth,url);if(!cls)return forbidden();return await cohortLearningReport(env,auth,url,cls);}return await cohortLearningReport(env,auth,url);}if(url.pathname==='/api/reporting/guidance/classes'||url.pathname==='/api/reporting/guidance/frozen-exams'||url.pathname==='/api/reporting/guidance/frozen-summary'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');if(url.pathname.endsWith('/classes'))return await listGuidanceReportClasses(env,auth,url);return await guidanceFrozenReport(env,auth,url,url.pathname.endsWith('/frozen-exams')?'exams':'summary');}if(url.pathname==='/api/reporting/institution/frozen-exams'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');return await listInstitutionFrozenExams(env,auth,url);}if(url.pathname==='/api/reporting/institution/frozen-summary'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');return await institutionFrozenSummary(env,auth,url);}const activity=handleFrozenFoyGameReport(request,env,auth);if(activity)return await activity;const expanded=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-expanded$/);if(expanded){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');return await selectedExpandedFrozenReport(request,env,auth,expanded[1],url);}if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const combinedFrozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-combined$/);if(combinedFrozen&&request.method==='GET')return selectedCombinedFrozenReport(env,auth,combinedFrozen[1],url);const miniTests=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-mini-tests$/);if(miniTests&&request.method==='GET')return selectedFrozenMiniTestReport(env,auth,miniTests[1],url);const miniRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/mini-test-runs$/);if(miniRuns&&request.method==='GET')return await listFrozenMiniTestRuns(env,auth,miniRuns[1],url);const practiceRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/practice-runs$/);if(practiceRuns&&request.method==='GET')return listFrozenPracticeRuns(env,auth,practiceRuns[1],url);const practice=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-practice$/);if(practice&&request.method==='GET')return selectedFrozenPracticeReport(env,auth,practice[1],url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);if(url.pathname==='/api/reporting/learning-settings')return learningSettings(request,env,auth,url);const loopQueue=url.pathname.match(/^\/api\/reporting\/outcome-loops(?:\/([^/]+)\/close)?$/);if(loopQueue)return outcomeSupportQueue(request,env,auth,url,loopQueue[1]||null);const interventions=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/interventions(?:\/([^/]+)\/withdraw)?$/);if(interventions)return learningInterventions(request,env,auth,interventions[1],interventions[2]||null);const periods=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/outcome-evidence\/periods$/);if(periods&&request.method==='GET')return outcomePeriodReport(env,auth,periods[1],url);const evidence=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/outcome-evidence$/);if(evidence&&request.method==='GET')return outcomeEvidenceReport(env,auth,evidence[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;
+export default {async fetch(request:Request,env:Env):Promise<Response>{const url=new URL(request.url);if(!url.pathname.startsWith('/api/reporting'))return answerApp.fetch(request,env);try{const auth=await requireUser(env,request);if(auth instanceof Response)return auth;if(url.pathname==='/api/reporting/institution/frozen-rubric-summary'||url.pathname==='/api/reporting/guidance/frozen-rubric-summary'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');if(url.pathname.includes('/guidance/')){const cls=await guidanceReportClass(env,auth,url);if(!cls)return forbidden();return await cohortRubricReport(env,auth,url,cls);}return await cohortRubricReport(env,auth,url);}if(url.pathname==='/api/reporting/institution/frozen-learning-summary'||url.pathname==='/api/reporting/guidance/frozen-learning-summary'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');if(url.pathname.includes('/guidance/')){const cls=await guidanceReportClass(env,auth,url);if(!cls)return forbidden();return await cohortLearningReport(env,auth,url,cls);}return await cohortLearningReport(env,auth,url);}if(url.pathname==='/api/reporting/guidance/classes'||url.pathname==='/api/reporting/guidance/frozen-exams'||url.pathname==='/api/reporting/guidance/frozen-summary'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');if(url.pathname.endsWith('/classes'))return await listGuidanceReportClasses(env,auth,url);return await guidanceFrozenReport(env,auth,url,url.pathname.endsWith('/frozen-exams')?'exams':'summary');}if(url.pathname==='/api/reporting/institution/frozen-exams'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');return await listInstitutionFrozenExams(env,auth,url);}if(url.pathname==='/api/reporting/institution/frozen-summary'){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');return await institutionFrozenSummary(env,auth,url);}const activity=handleFrozenFoyGameReport(request,env,auth);if(activity)return await activity;const expanded=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-expanded$/);if(expanded){if(request.method!=='GET')return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');return await selectedExpandedFrozenReport(request,env,auth,expanded[1],url);}if(url.pathname==='/api/reporting/students'&&request.method==='GET')return listStudents(env,auth,url);const combinedFrozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-combined$/);if(combinedFrozen&&request.method==='GET')return selectedCombinedFrozenReport(env,auth,combinedFrozen[1],url);const miniTests=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-mini-tests$/);if(miniTests&&request.method==='GET')return selectedFrozenMiniTestReport(env,auth,miniTests[1],url);const miniRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/mini-test-runs$/);if(miniRuns&&request.method==='GET')return await listFrozenMiniTestRuns(env,auth,miniRuns[1],url);const practiceRuns=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/practice-runs$/);if(practiceRuns&&request.method==='GET')return listFrozenPracticeRuns(env,auth,practiceRuns[1],url);const practice=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-practice$/);if(practice&&request.method==='GET')return selectedFrozenPracticeReport(env,auth,practice[1],url);const frozen=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/frozen-exams$/);if(frozen&&request.method==='GET')return selectedFrozenExamReport(env,auth,frozen[1],url);const combined=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/combined$/);if(combined&&request.method==='GET')return combinedReport(env,auth,combined[1],url);if(url.pathname==='/api/reporting/learning-settings')return learningSettings(request,env,auth,url);const dejavuStaff=await staffDejavu(request,env,auth,url);if(dejavuStaff)return dejavuStaff;const loopQueue=url.pathname.match(/^\/api\/reporting\/outcome-loops(?:\/([^/]+)\/close)?$/);if(loopQueue)return outcomeSupportQueue(request,env,auth,url,loopQueue[1]||null);const interventions=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/interventions(?:\/([^/]+)\/withdraw)?$/);if(interventions)return learningInterventions(request,env,auth,interventions[1],interventions[2]||null);const periods=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/outcome-evidence\/periods$/);if(periods&&request.method==='GET')return outcomePeriodReport(env,auth,periods[1],url);const evidence=url.pathname.match(/^\/api\/reporting\/students\/([^/]+)\/outcome-evidence$/);if(evidence&&request.method==='GET')return outcomeEvidenceReport(env,auth,evidence[1],url);return notFound('Raporlama API yolu bulunamadı.')}catch(e){console.error('Reporting error',e);return apiError(500,'SERVER_ERROR','Rapor hazırlanırken sunucu hatası oluştu.')}}} satisfies ExportedHandler<Env>;

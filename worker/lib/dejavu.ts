@@ -1,5 +1,6 @@
 import type { Env } from '../types';
-import { all, one, uuid } from './db';
+import { all, json, one, uuid } from './db';
+import type { DejavuPrint, DejavuSection } from './studio-pdf';
 import { evidenceRows, outcomeQuestionTarget, unifiedOutcomeEvidence } from './unified-outcome-evidence';
 
 /**
@@ -33,11 +34,12 @@ export function difficultyCentre(rate: number | null) {
 }
 
 export type ExamGapSource = (studentId: string, limit: number) => Promise<DejavuGap[]>;
-export async function dejavuGaps(env: Env, studentId: string, institutionId: string | null, limit: number, examGaps?: ExamGapSource): Promise<DejavuGap[]> {
+export async function dejavuGaps(env: Env, studentId: string, institutionId: string | null, limit: number, subjectIds: string[] | null = null, examGaps?: ExamGapSource): Promise<DejavuGap[]> {
+  const inScope = (subjectId: string | null) => !subjectIds || (subjectId != null && subjectIds.includes(subjectId));
   const target = await outcomeQuestionTarget(env, institutionId);
   const karne = (await unifiedOutcomeEvidence(env, studentId, { learnerView: true, target }))
     .map((o) => ({ o, rate: o.recent.uniqueQuestions ? o.recent.rate : (o.uniqueQuestions ? o.correct / Math.max(1, o.correct + o.wrong + o.blank) : null) }))
-    .filter(({ o, rate }) => o.status === 'DEVELOPING' && o.uniqueQuestions >= 2 && rate != null && rate < 0.8)
+    .filter(({ o, rate }) => o.status === 'DEVELOPING' && o.uniqueQuestions >= 2 && rate != null && rate < 0.8 && inScope(o.subjectId))
     .sort((a, b) => (a.rate ?? 1) - (b.rate ?? 1) || b.o.attempts - a.o.attempts)
     .slice(0, limit);
   if (karne.length) {
@@ -46,7 +48,7 @@ export async function dejavuGaps(env: Env, studentId: string, institutionId: str
   }
   // no outcome evidence in the karne yet: the caller's deneme outcome results (A058 rule, kept in student-books-entry)
   if (!examGaps) return [];
-  return examGaps(studentId, limit);
+  return (await examGaps(studentId, subjectIds ? 200 : limit)).filter((g) => inScope(g.subjectId)).slice(0, limit);
 }
 
 /** Every bank question the student has already met, wherever: karne evidence, earlier books, coach exposures. */
@@ -66,13 +68,13 @@ function code() { const b = new Uint8Array(9); crypto.getRandomValues(b); return
 
 export type DejavuBuild = { id: string; outcomeCount: number; questionCount: number; status: 'READY' | 'DRAFT'; shortages: Array<{ outcomeId: string; title: string; wanted: number; found: number }> };
 
-export async function buildDejavuBook(env: Env, args: { studentId: string; generatedBy: string; title?: string; outcomeLimit?: number; questionsPerOutcome?: number | null; sourceMode?: string; examGaps?: ExamGapSource }): Promise<DejavuBuild | { error: 'ENROLLMENT_REQUIRED' | 'INSUFFICIENT_EVIDENCE' }> {
+export async function buildDejavuBook(env: Env, args: { studentId: string; generatedBy: string; title?: string; outcomeLimit?: number; questionsPerOutcome?: number | null; sourceMode?: string; subjectIds?: string[] | null; examGaps?: ExamGapSource }): Promise<DejavuBuild | { error: 'ENROLLMENT_REQUIRED' | 'INSUFFICIENT_EVIDENCE' }> {
   const enr = await one<any>(env.DB.prepare(`SELECT e.institution_id,e.grade_level,s.academic_year FROM student_enrollments e LEFT JOIN institution_seasons s ON s.id=e.season_id
     WHERE e.student_id=? AND e.status='ACTIVE' ORDER BY e.created_at DESC LIMIT 1`).bind(args.studentId));
   if (!enr) return { error: 'ENROLLMENT_REQUIRED' };
   const outcomeLimit = Math.max(1, Math.min(16, Number(args.outcomeLimit || 8)));
   const fixed = args.questionsPerOutcome ? Math.max(1, Math.min(8, Number(args.questionsPerOutcome))) : null;
-  const gaps = await dejavuGaps(env, args.studentId, enr.institution_id, outcomeLimit, args.examGaps);
+  const gaps = await dejavuGaps(env, args.studentId, enr.institution_id, outcomeLimit, args.subjectIds ?? null, args.examGaps);
   if (!gaps.length) return { error: 'INSUFFICIENT_EVIDENCE' };
   const seen = await seenQuestionIds(env, args.studentId);
   const used = new Set<string>();
@@ -128,3 +130,25 @@ export async function gradeDejavuAnswers(env: Env, bookId: string, studentId: st
   const sum = await one<any>(env.DB.prepare(`SELECT count(*) total,sum(CASE WHEN student_answer IS NOT NULL THEN 1 ELSE 0 END) answered,sum(COALESCE(correct,0)) correct FROM student_personal_book_items WHERE book_id=? AND item_type='PRACTICE_QUESTION'`).bind(bookId));
   return { newlyAnswered: newly, total: Number(sum?.total || 0), answered: Number(sum?.answered || 0), correct: Number(sum?.correct || 0) };
 }
+
+/** Everything the Dejavu PDF needs for one book; shared by the student and staff downloads. */
+export async function dejavuPrintInput(env:Env,bookId:string,origin:string,answerKey:'APPEND'|'NONE'):Promise<{error:Response}|{book:any;input:DejavuPrint}>{
+ const fail=(status:number,code:string,message:string)=>json({ok:false,error:{code,message}},status);
+ const book=await one<any>(env.DB.prepare(`SELECT b.*,st.first_name,st.last_name,i.name institution_name FROM student_personal_books b JOIN student_entities st ON st.id=b.student_id LEFT JOIN institutions i ON i.id=b.institution_id WHERE b.id=?`).bind(bookId));
+ if(!book)return {error:fail(404,'BOOK_NOT_FOUND','Kişiye Özel Kitap bulunamadı.')};
+ const items=await all<any>(env.DB.prepare(`SELECT i.item_type,i.outcome_id,i.bank_question_id,i.payload_json,i.solution_code,q.review_status,q.copyright_status FROM student_personal_book_items i LEFT JOIN question_bank q ON q.id=i.bank_question_id WHERE i.book_id=? ORDER BY i.sort_order`).bind(bookId));
+ const cls=await one<any>(env.DB.prepare(`SELECT c.name FROM student_enrollments e LEFT JOIN classes c ON c.id=e.class_id WHERE e.student_id=? AND e.status='ACTIVE' ORDER BY e.created_at DESC LIMIT 1`).bind(book.student_id));
+ const sections:DejavuSection[]=[];
+ for(const it of items){
+  if(it.item_type==='OUTCOME_HEADER'){const p=JSON.parse(it.payload_json||'{}');const short=Number(p.found)<Number(p.wanted)?`Bu kazanımda şimdilik ${p.found} yeni onaylı soru var.`:null;sections.push({heading:[p.subject,p.title].filter(Boolean).join(' · ')||'Kazanım',note:short,items:[]});continue;}
+  if(it.item_type!=='PRACTICE_QUESTION')continue;
+  if(it.review_status!=='APPROVED'||!['OWNED','LICENSED','PUBLIC_DOMAIN'].includes(it.copyright_status))return {error:fail(409,'BOOK_CONTENT_CHANGED','Kitaptaki bir sorunun onayı veya kullanım hakkı değişti; kitabı yeniden oluşturun.')};
+  sections[sections.length-1]?.items.push({questionId:it.bank_question_id,solutionUrl:it.solution_code?`${origin}/dejavu/cozum/${it.solution_code}`:null});
+ }
+ const filled=sections.filter(x=>x.items.length);if(!filled.length)return {error:fail(409,'BOOK_EMPTY','Kitapta basılabilir soru yok.')};
+ const name=[book.first_name,book.last_name].filter(Boolean).join(' ').toLocaleLowerCase('tr-TR').replace(/(^|\s)\S/g,(c:string)=>c.toLocaleUpperCase('tr-TR'));
+ const date=new Date(String(book.created_at||'').replace(' ','T')+'Z');
+ const input:DejavuPrint={title:book.title||'Dejavu · Kişiye Özel Kitabım',studentName:name||'Öğrenci',classLine:[cls?.name||(book.grade_level?`${book.grade_level}. sınıf`:''),book.academic_year].filter(Boolean).join(' · ')||'—',institutionName:book.institution_name||null,dateLabel:Number.isNaN(date.getTime())?'':date.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'}),bookUrl:`${origin}/my-books`,sections:filled,answerKey};
+ return {book,input};
+}
+
