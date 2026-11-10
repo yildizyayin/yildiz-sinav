@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Award, BellRing, CheckCircle2, ClipboardCheck, ExternalLink, Gamepad2, PlayCircle, Timer, Zap } from 'lucide-react';
 import { api } from '../api';
 import { embeddableVideo } from '../lib/physicalLink';
+import { soundCue } from '../lib/glassSounds';
 import { QuestionDataVisual } from '../components/QuestionDataVisual';
 import './nibiru-loop.css';
 
@@ -57,6 +58,8 @@ export function NibiruOutcomeLoop() {
     try { setS(await api<State>(`/api/nibiru/coach/loops/${encodeURIComponent(id)}`)); setError(''); } catch (e: any) { setError(e.message); }
   }, [id]);
   useEffect(() => { void load(); }, [load]);
+  const lastStep = useRef<string | null>(null);
+  useEffect(() => { const step = s?.step; if (lastStep.current && step && step !== lastStep.current) { if (step === 'PASSED') soundCue('success'); else if (step === 'TEACHER_REVIEW' || step === 'GAME') soundCue('soft'); } lastStep.current = step ?? null; }, [s?.step]);
 
   const run = async (fn: () => Promise<void>) => { setBusy(true); setError(''); try { await fn(); } catch (e: any) { setError(e.message); await load(); } finally { setBusy(false); } };
   const watched = () => run(async () => { setS(await api(`/api/nibiru/coach/loops/${id}/video-done`, { method: 'POST', body: '{}' })); });

@@ -69,3 +69,37 @@
 .student-dock a:focus-visible,.student-dock button:focus-visible{outline:3px solid var(--sd-accent);outline-offset:2px;border-radius:14px}
 @media (prefers-reduced-motion:reduce){.app-shell:is(.role-student,.role-parent)[data-panel-theme] .sidebar,.app-shell:is(.role-student,.role-parent)[data-panel-theme] .sidebar .nav-item span{transition:none}}
 @media print{.student-dock{display:none!important}}
+
+/* Owner (10 Nov 2026): the four themes are open to students, so the top bar and the page edge follow the theme too
+   (on the dark theme the bar's buttons were white boxes and the page ended in a white strip). */
+.app-shell:is(.role-student,.role-parent)[data-panel-theme]{background:var(--sd-bg);min-height:100vh}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme] .topbar{background:transparent;border-bottom:0;color:var(--sd-ink)}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme] .topbar-context strong{color:var(--sd-ink)}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme] .topbar :is(.mobile-menu-button,.topbar-icon,.nibiru-topbar,.status){background:var(--sd-card);border-color:var(--sd-border);color:var(--sd-ink);backdrop-filter:var(--sd-blur);-webkit-backdrop-filter:var(--sd-blur)}
+body:has(.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_STANDARD"]){background:#e9f0fb}
+body:has(.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"]){background:#070b1f}
+body:has(.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_NEON"]){background:#fdf4ff}
+body:has(.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_FOCUS"]){background:#f4f5f7}
+html:has(.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"]){background:#070b1f}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme] .nibiru-topbar .nibiru-mark{display:inline-grid}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme] .nibiru-topbar .nibiru-mark span{display:block}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme] .target-slot.first{background:var(--sd-card);border-color:var(--sd-accent);color:var(--sd-ink)}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme] .target-slot.first :is(span,p){color:var(--sd-muted)}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] :is(button.ghost,a.ghost,.link-button){color:var(--sd-ink)}
+
+/* Dark (Kozmik) theme on the student pages: surfaces that were written white (found page by page, 10 Nov 2026) */
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] .target-slot.first{background-image:none}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] :is(.result-list-card,.list-card,.practice-goal-strip,.calendar-day,a.secondary,button.secondary,.status.neutral){background:rgba(255,255,255,.07);border-color:var(--sd-border);color:var(--sd-ink)}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] :is(.result-list-card,.list-card,.calendar-day) :is(h2,h3,h4,strong,b,span,p,small,div){color:inherit}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] :is(.result-list-card,.list-card) :is(small,.muted){color:var(--sd-muted)}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] .calendar-day.today{background:rgba(125,211,252,.14);border-color:var(--sd-accent)}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] .practice-progress-track{background:rgba(255,255,255,.12)}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background:rgba(255,255,255,.06);color:var(--sd-ink);border-color:var(--sd-border)}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] select option{background:#0b1430;color:#eef2ff}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] .alert.info{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.35);color:var(--sd-ink)}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] .alert.error{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.4);color:#fecaca}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] .status.ok{background:rgba(34,197,94,.14);color:#bbf7d0}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] .nibiru-task-links a{background:rgba(255,255,255,.07);border-color:var(--sd-border);color:var(--sd-ink)}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] .calendar-days{background:transparent}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme] .nibiru-topbar .nibiru-brand-lockup{display:inline-flex}
+.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] :is(.quick-icon,.scope-badge){background:rgba(125,211,252,.16);color:var(--sd-accent);border-color:transparent}

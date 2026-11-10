@@ -1,3 +1,4 @@
+import { installGlassSounds } from '../lib/glassSounds';
 import { ApprovedAdminNavigation } from './ApprovedAdminNavigation';
 import { PageLoader } from './PageLoader';
 import { useEffect,useMemo,useState } from 'react';
@@ -186,6 +187,8 @@ export function Layout() {
   const [themeRevision,setThemeRevision]=useState(0);
   const [logoutError,setLogoutError]=useState('');
   useEffect(()=>{if(!user||user.role==='SUPER_ADMIN')return;void api<any>('/api/platform/features').then(r=>setEnabledFeatures(new Set((r.features||[]).filter((f:any)=>Number(f.effective_enabled||0)===1).map((f:any)=>String(f.feature_key))))).catch(()=>setEnabledFeatures(new Set()));},[user?.id,user?.role]);
+  // owner (10 Nov 2026): glass-touch sounds on the student panel (synthesised, switchable in Görünüm ayarları)
+  useEffect(()=>{if(user?.role!=='STUDENT')return;return installGlassSounds()},[user?.role]);
   useEffect(()=>{if(!user)return;void api<any>('/api/panel-experience').then(setPanelExperience).catch(()=>setPanelExperience(null))},[user?.id,user?.role,user?.institution_id]);
   useEffect(()=>{const refresh=()=>setThemeRevision(value=>value+1);window.addEventListener('anunex-theme-change',refresh);return()=>window.removeEventListener('anunex-theme-change',refresh)},[]);
   const visibleNav=useMemo(()=>user?nav[user.role].filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature)):[],[user,enabledFeatures]);

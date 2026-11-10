@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { BookOpen, Check, CheckCircle2, ChevronRight, Image, Lightbulb, RotateCcw, Sparkles, Target, XCircle } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
+import { soundCue } from '../lib/glassSounds';
 import './student-question-practice.css';
 
 const difficultyLabels: Record<number, string> = { 1: 'Başlangıç', 2: 'Kolay', 3: 'Orta', 4: 'Orta-üstü', 5: 'Zor', 6: 'Olimpiyat' };
@@ -43,7 +44,7 @@ export function StudentQuestionPractice() {
   const current = questions[index];
   const submit = async () => {
     if (!current || !answer || result) return;
-    try { setError(''); setResult(await api<any>('/api/platform/student-practice/attempts', { method: 'POST', body: JSON.stringify({ questionId: current.id, answer, practiceToken: current.practiceToken }) })); setCompletedToday(value => value + 1); }
+    try { setError(''); const r = await api<any>('/api/platform/student-practice/attempts', { method: 'POST', body: JSON.stringify({ questionId: current.id, answer, practiceToken: current.practiceToken }) }); setResult(r); soundCue(r?.correct ? 'success' : 'soft'); setCompletedToday(value => value + 1); }
     catch (e: any) { setError(e.message || 'Cevap kontrol edilemedi.'); }
   };
 
