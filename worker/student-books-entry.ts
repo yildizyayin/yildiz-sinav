@@ -3,7 +3,7 @@ import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all,json,one,uuid } from './lib/db';
 import { publishedForLearnersSql } from './lib/exam-schedule';
-import { buildDejavuBook, dejavuPrintInput, gradeDejavuAnswers } from './lib/dejavu';
+import { buildDejavuBook, dejavuPrintInput, gradeDejavuAnswers, type ExamGapSource } from './lib/dejavu';
 import { renderDejavuBookPdf, StudioPrintError } from './lib/studio-pdf';
 import { SERVABLE_VIDEO_SQL } from './lib/video-links';
 
@@ -14,10 +14,24 @@ function safeCount(v:any,min=0,max=100){return Math.max(min,Math.min(max,Number(
 
 async function personalBooks(env:Env,user:AuthUser){const rows=await all<any>(env.DB.prepare(`SELECT b.*,(SELECT count(*) FROM student_personal_book_items i WHERE i.book_id=b.id AND i.item_type='PRACTICE_QUESTION' AND i.student_answer IS NOT NULL) answered_count,(SELECT COALESCE(sum(i.correct),0) FROM student_personal_book_items i WHERE i.book_id=b.id AND i.item_type='PRACTICE_QUESTION') correct_count FROM student_personal_books b WHERE b.student_id=? ORDER BY b.created_at DESC LIMIT 50`).bind(user.student_id));return json({ok:true,books:rows.map(r=>({...r,config:JSON.parse(r.config_json||'{}')}))});}
 
+/**
+ * A058 gaps from the published deneme outcome results: used by Dejavu when the karne has no outcome evidence yet.
+ * Filters on the aggregate correct/evidence ratio, never on the stored success_rate column.
+ */
+const examOutcomeGaps=(env:Env):ExamGapSource=>async(studentId,limit)=>{
+ const rows=await all<any>(env.DB.prepare(`SELECT o.id outcome_id,o.title,o.topic,o.subtopic,o.subject_id,s.name subject_name,SUM(r.evidence_count) evidence_count,
+   CASE WHEN SUM(r.evidence_count)>0 THEN CAST(SUM(r.correct_count) AS REAL)/SUM(r.evidence_count) ELSE 0 END success_rate
+   FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id
+   WHERE r.student_id=? AND ${publishedForLearnersSql('r.exam_id')} GROUP BY o.id,o.title,o.topic,o.subtopic,o.subject_id,s.name
+   HAVING SUM(r.evidence_count)>=3 AND (CAST(SUM(r.correct_count) AS REAL)/NULLIF(SUM(r.evidence_count),0))<0.70
+   ORDER BY success_rate ASC,evidence_count DESC LIMIT ?`).bind(studentId,limit));
+ return rows.map(r=>({outcomeId:r.outcome_id,title:r.title,subjectId:r.subject_id,subjectName:r.subject_name,topic:r.topic,subtopic:r.subtopic,rate:Number(r.success_rate),evidence:Number(r.evidence_count),source:'EXAM' as const}));
+};
+
 /** Dejavu (owner, 10 Nov 2026): the book from the unified karne — see worker/lib/dejavu.ts for the rules. */
 async function generatePersonalBook(request:Request,env:Env,user:AuthUser){
  const body:any=await request.json().catch(()=>({}));
- const built=await buildDejavuBook(env,{studentId:user.student_id!,generatedBy:user.id,title:body.title,outcomeLimit:body.outcomeLimit,questionsPerOutcome:body.questionsPerOutcome,sourceMode:body.sourceMode});
+ const built=await buildDejavuBook(env,{studentId:user.student_id!,generatedBy:user.id,title:body.title,outcomeLimit:body.outcomeLimit,questionsPerOutcome:body.questionsPerOutcome,sourceMode:body.sourceMode,examGaps:examOutcomeGaps(env)});
  if('error' in built)return built.error==='ENROLLMENT_REQUIRED'?fail(400,'ENROLLMENT_REQUIRED','Öğrenci sınıf kaydı bulunamadı.'):fail(400,'INSUFFICIENT_EVIDENCE','Kişiye Özel Kitap oluşturmak için henüz yeterli gelişim alanı kanıtı yok.');
  return json({ok:true,...built,note:built.questionCount>0?(built.shortages.length?'Yalnız onaylı ve telif durumu uygun sorular kullanıldı; bazı kazanımlarda yeterli yeni soru yok.':'Yalnız telif durumu uygun, onaylı soru havuzu içerikleri kitaba alındı.'):'Gelişim alanları hazır; basılabilir soru havuzu henüz yeterli değil.'},201);
 }
