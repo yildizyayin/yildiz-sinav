@@ -1,6 +1,5 @@
 import type { Env } from '../types';
 import { all, one, uuid } from './db';
-import { publishedForLearnersSql } from './exam-schedule';
 import { evidenceRows, outcomeQuestionTarget, unifiedOutcomeEvidence } from './unified-outcome-evidence';
 
 /**
@@ -33,7 +32,8 @@ export function difficultyCentre(rate: number | null) {
   return 4;
 }
 
-export async function dejavuGaps(env: Env, studentId: string, institutionId: string | null, limit: number): Promise<DejavuGap[]> {
+export type ExamGapSource = (studentId: string, limit: number) => Promise<DejavuGap[]>;
+export async function dejavuGaps(env: Env, studentId: string, institutionId: string | null, limit: number, examGaps?: ExamGapSource): Promise<DejavuGap[]> {
   const target = await outcomeQuestionTarget(env, institutionId);
   const karne = (await unifiedOutcomeEvidence(env, studentId, { learnerView: true, target }))
     .map((o) => ({ o, rate: o.recent.uniqueQuestions ? o.recent.rate : (o.uniqueQuestions ? o.correct / Math.max(1, o.correct + o.wrong + o.blank) : null) }))
@@ -44,14 +44,9 @@ export async function dejavuGaps(env: Env, studentId: string, institutionId: str
     const meta = await all<any>(env.DB.prepare(`SELECT id,topic,subtopic FROM outcomes WHERE id IN (${karne.map(() => '?').join(',')})`).bind(...karne.map((k) => k.o.outcomeId)));
     return karne.map(({ o, rate }) => { const m = meta.find((x) => x.id === o.outcomeId); return { outcomeId: o.outcomeId, title: o.title, subjectId: o.subjectId, subjectName: o.subjectName, topic: m?.topic ?? null, subtopic: m?.subtopic ?? null, rate, evidence: o.uniqueQuestions, source: 'KARNE' as const }; });
   }
-  // no outcome evidence in the karne yet: the published deneme outcome results (A058 rule)
-  const rows = await all<any>(env.DB.prepare(`SELECT o.id outcome_id,o.title,o.topic,o.subtopic,o.subject_id,s.name subject_name,SUM(r.evidence_count) evidence_count,
-      CASE WHEN SUM(r.evidence_count)>0 THEN CAST(SUM(r.correct_count) AS REAL)/SUM(r.evidence_count) ELSE 0 END success_rate
-    FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id JOIN subjects s ON s.id=o.subject_id
-    WHERE r.student_id=? AND ${publishedForLearnersSql('r.exam_id')} GROUP BY o.id,o.title,o.topic,o.subtopic,o.subject_id,s.name
-    HAVING SUM(r.evidence_count)>=3 AND (CAST(SUM(r.correct_count) AS REAL)/NULLIF(SUM(r.evidence_count),0))<0.70
-    ORDER BY success_rate ASC,evidence_count DESC LIMIT ?`).bind(studentId, limit));
-  return rows.map((r) => ({ outcomeId: r.outcome_id, title: r.title, subjectId: r.subject_id, subjectName: r.subject_name, topic: r.topic, subtopic: r.subtopic, rate: Number(r.success_rate), evidence: Number(r.evidence_count), source: 'EXAM' as const }));
+  // no outcome evidence in the karne yet: the caller's deneme outcome results (A058 rule, kept in student-books-entry)
+  if (!examGaps) return [];
+  return examGaps(studentId, limit);
 }
 
 /** Every bank question the student has already met, wherever: karne evidence, earlier books, coach exposures. */
@@ -71,13 +66,13 @@ function code() { const b = new Uint8Array(9); crypto.getRandomValues(b); return
 
 export type DejavuBuild = { id: string; outcomeCount: number; questionCount: number; status: 'READY' | 'DRAFT'; shortages: Array<{ outcomeId: string; title: string; wanted: number; found: number }> };
 
-export async function buildDejavuBook(env: Env, args: { studentId: string; generatedBy: string; title?: string; outcomeLimit?: number; questionsPerOutcome?: number | null; sourceMode?: string }): Promise<DejavuBuild | { error: 'ENROLLMENT_REQUIRED' | 'INSUFFICIENT_EVIDENCE' }> {
+export async function buildDejavuBook(env: Env, args: { studentId: string; generatedBy: string; title?: string; outcomeLimit?: number; questionsPerOutcome?: number | null; sourceMode?: string; examGaps?: ExamGapSource }): Promise<DejavuBuild | { error: 'ENROLLMENT_REQUIRED' | 'INSUFFICIENT_EVIDENCE' }> {
   const enr = await one<any>(env.DB.prepare(`SELECT e.institution_id,e.grade_level,s.academic_year FROM student_enrollments e LEFT JOIN institution_seasons s ON s.id=e.season_id
     WHERE e.student_id=? AND e.status='ACTIVE' ORDER BY e.created_at DESC LIMIT 1`).bind(args.studentId));
   if (!enr) return { error: 'ENROLLMENT_REQUIRED' };
   const outcomeLimit = Math.max(1, Math.min(16, Number(args.outcomeLimit || 8)));
   const fixed = args.questionsPerOutcome ? Math.max(1, Math.min(8, Number(args.questionsPerOutcome))) : null;
-  const gaps = await dejavuGaps(env, args.studentId, enr.institution_id, outcomeLimit);
+  const gaps = await dejavuGaps(env, args.studentId, enr.institution_id, outcomeLimit, args.examGaps);
   if (!gaps.length) return { error: 'INSUFFICIENT_EVIDENCE' };
   const seen = await seenQuestionIds(env, args.studentId);
   const used = new Set<string>();
