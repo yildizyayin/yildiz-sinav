@@ -15,11 +15,11 @@
       "ING": 178,
       "DIN": 18
     },
-    "draftQuestions": 1050,
+    "draftQuestions": 1150,
     "approvedQuestions": 0,
-    "unstartedOutcomes": 322,
-    "draftOutcomes": 21,
-    "outstandingDraftQuestions": 16100
+    "unstartedOutcomes": 320,
+    "draftOutcomes": 23,
+    "outstandingDraftQuestions": 16000
   },
   "sourceInventory": {
     "math": "data/question-full-math-target-2028.json",
@@ -1823,10 +1823,15 @@
       "repeatThemeCount": 1,
       "targetCount": 50,
       "approvedCount": 0,
-      "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
+      "storedInThisBranch": 50,
+      "reviewStatus": "DRAFT_PROBABILITY_REQUIRES_EXPERT_AND_VISUAL_REVIEW",
       "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "priorDraftCount": 0,
+      "draftFilePaths": [
+        "data/question-import-drafts/grade5/MAT561_part01_25_questions.json",
+        "data/question-import-drafts/grade5/MAT561_part02_25_questions.json"
+      ],
+      "supplementaryPerformanceTasksFile": "data/question-import-drafts/grade5/MAT561_10_performance_tasks_review_only.json"
     },
     {
       "gradeLevel": 5,
@@ -1839,10 +1844,15 @@
       "repeatThemeCount": 1,
       "targetCount": 50,
       "approvedCount": 0,
-      "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
+      "storedInThisBranch": 50,
+      "reviewStatus": "DRAFT_PROBABILITY_REQUIRES_EXPERT_AND_VISUAL_REVIEW",
       "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "priorDraftCount": 0,
+      "draftFilePaths": [
+        "data/question-import-drafts/grade5/MAT562_part01_25_questions.json",
+        "data/question-import-drafts/grade5/MAT562_part02_25_questions.json"
+      ],
+      "supplementaryPerformanceTasksFile": "data/question-import-drafts/grade5/MAT562_10_performance_tasks_review_only.json"
     },
     {
       "gradeLevel": 5,
@@ -5724,8 +5734,12 @@
     "data/question-import-drafts/grade5/MAT551_part01_25_questions.json",
     "data/question-import-drafts/grade5/MAT551_part02_25_questions.json",
     "data/question-import-drafts/grade5/MAT552_part01_25_questions.json",
-    "data/question-import-drafts/grade5/MAT552_part02_25_questions.json"
+    "data/question-import-drafts/grade5/MAT552_part02_25_questions.json",
+    "data/question-import-drafts/grade5/MAT561_part01_25_questions.json",
+    "data/question-import-drafts/grade5/MAT561_part02_25_questions.json",
+    "data/question-import-drafts/grade5/MAT562_part01_25_questions.json",
+    "data/question-import-drafts/grade5/MAT562_part02_25_questions.json"
   ],
-  "status": "IN_PROGRESS_DRAFT_ONLY",
+  "status": "IN_PROGRESS_DRAFT_ONLY_MATH_COVERAGE_FILLED",
   "lastCheckedAt": "2026-11-11"
 }
