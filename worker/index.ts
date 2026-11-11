@@ -47,7 +47,8 @@ export default {
       if (!user) return json({ ok: false, error: { code: 'UNAUTHENTICATED', message: 'Oturum açmanız gerekiyor.' } }, 401);
 
       if (url.pathname === '/api/auth/me' && request.method === 'GET') {
-        const institution = user.institution_id ? await one<{ status: string; name: string }>(env.DB.prepare('SELECT status, name FROM institutions WHERE id = ?').bind(user.institution_id)) : null;
+        // academic_year: the institution's active season, so the header shows the right school year (owner, 11 Nov 2026)
+        const institution = user.institution_id ? await one<{ status: string; name: string; academic_year: string | null }>(env.DB.prepare("SELECT i.status, i.name, (SELECT s.academic_year FROM institution_seasons s WHERE s.institution_id=i.id AND s.status='ACTIVE' ORDER BY s.started_at DESC LIMIT 1) academic_year FROM institutions i WHERE i.id = ?").bind(user.institution_id)) : null;
         return json({ ok: true, user, institution });
       }
       if (url.pathname === '/api/auth/change-password' && request.method === 'POST') return changePassword(request, env, user);

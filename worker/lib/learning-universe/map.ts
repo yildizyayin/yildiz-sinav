@@ -114,7 +114,8 @@ export async function universeMap(env: Env, user: AuthUser, now = Date.now()) {
     missions,
     tasks,
     summary: { outcomes: all_.length, playable: all_.filter(playable).length, learned: all_.filter((n) => n.stage === 'LEARNED').length },
-    subjects: [...subjects.values()].map((s) => ({ id: s.id, name: s.name, planets: [...s.planets.entries()].map(([name, nodes]) => ({
+    // subjects with something to play first, then by name
+    subjects: [...subjects.values()].map((s) => ({ s, playable: [...s.planets.values()].flat().filter(playable).length })).sort((a, b) => b.playable - a.playable || a.s.name.localeCompare(b.s.name, 'tr')).map(({ s }) => ({ id: s.id, name: s.name, planets: [...s.planets.entries()].map(([name, nodes]) => ({
       name, outcomes: nodes, discovered: nodes.some((n) => n.stage !== 'NO_DATA'), learned: nodes.filter((n) => n.stage === 'LEARNED').length, playable: nodes.filter(playable).length,
     })) })),
   };
