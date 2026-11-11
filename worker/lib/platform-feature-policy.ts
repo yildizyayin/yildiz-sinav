@@ -60,6 +60,9 @@ export async function platformFeatureGate(env:Env,user:AuthUser,path:string):Pro
   return featureGateFor(env,user,key);
 }
 
+/** True when the feature is on for this user's institution (Super Admin: always). */
+export async function featureEnabledFor(env:Env,user:AuthUser,key:string){return (await featureGateFor(env,user,key))===null}
+
 async function featureGateFor(env:Env,user:AuthUser,key:string):Promise<Response|null>{
   if(user.role==='SUPER_ADMIN')return null;
   if(!user.institution_id)return json({ok:false,error:{code:'FEATURE_DISABLED',message:'Bu özellik hesabınız için etkin değil.',feature:key}},403);
