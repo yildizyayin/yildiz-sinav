@@ -7,14 +7,14 @@
 | Ders | Resmî öğrenme çıktısı | Hedef soru | Taslak | Editoryal onay |
 |---|---:|---:|---:|---:|
 | Türkçe | 80 | 4.000 | 0 | 0 |
-| Matematik | 23 | 1.150 | 1.050 | 0 |
+| Matematik | 23 | 1.150 | 1.150 | 0 |
 | Fen Bilimleri | 26 | 1.300 | 0 | 0 |
 | Sosyal Bilgiler | 18 | 900 | 0 | 0 |
 | İngilizce | 178 | 8.900 | 0 | 0 |
 | Din Kültürü | 18 | 900 | 0 | 0 |
-| **Toplam** | **343** | **17.150** | **1.050** | **0** |
+| **Toplam** | **343** | **17.150** | **1.150** | **0** |
 
-### Tam 50 taslağa ulaşan yirmi bir matematik çıktısı
+### Tam 50 taslağa ulaşan yirmi üç matematik çıktısı
 - MAT.5.1.1: 50, eski PR #519.
 - MAT.5.1.2: 50, eski PR #522.
 - MAT.5.1.3: 50, `MAT513_part01/02_25_questions.json`.
@@ -36,10 +36,12 @@
 - MAT.5.4.4: 50, `MAT544_part01/02_25_questions.json`, ayrıca **10 gerçek yaşam problem çözme görevi** (kota dışında).
 - MAT.5.5.1: 50, `MAT551_part01/02_25_questions.json`, ayrıca **10 anket/veri/toplama/poster görevi** (kota dışında).
 - MAT.5.5.2: 50, `MAT552_part01/02_25_questions.json`, ayrıca **10 yanlılık/hata/kanıta dayalı tartışma görevi** (kota dışında).
+- MAT.5.6.1: 50, `MAT561_part01/02_25_questions.json`, ayrıca **10 olasılık spektrumu ve modelleme görevi** (kota dışında).
+- MAT.5.6.2: 50, `MAT562_part01/02_25_questions.json`, ayrıca **10 adil oyun/az-çok olasılık gerekçelendirme görevi** (kota dışında).
 
 ## Yapısal denetim (GitHub'dan dosyalar yeniden okunarak)
-- 39 JSON soru içerik dosyası, toplam **1.050** taslak soru.
-- 21 öğrenme çıktısına tam 50'şer kayıt.
+- 43 JSON soru içerik dosyası, toplam **1.150** taslak soru.
+- 23 öğrenme çıktısına tam 50'şer kayıt.
 - Her soruda 4 farklı seçenek ve dolu doğru cevap/çözüm alanı.
 - Yanlış sınıf/kazanım kodu, birebir tekrarlanan soru kökü veya eksik anahtar **saptanmadı**.
 - Her kazanımda cevap şıkları dengeli (A=13, B=13, C=12, D=12).
@@ -55,7 +57,7 @@
 6. **Müfredat yılı farkı:** İlk 100 soru `2026-2027` kaynağıyla, hedef registry `2027-2028` olarak kaydedilmiştir. Yıl eşdeğerliği resmî kayıtlarla doğrulanmadan D1 commit yok.
 7. **Resmî katalog belirsizliği:** Türkçe kataloğunda dokuz tema açıklaması çatışma kaydı bulunuyor; resmî sürümle düzeltilmeli.
 8. **Telif beyanı:** `OWNED` içeriğin başlangıç etiketidir, otomatik özgünlük/telif sertifikası değildir; kayıtlar incelenmeli.
-9. **Onay/yükleme:** 1.050 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
+9. **Onay/yükleme:** 1.150 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
 
 ## Sonraki kabul
 Öğretmen bağımsız çözümleri ve kapsam gözden geçirmesi, benzer kalıpları özgün görevlerle değiştirme, zorluk 5–6 tamamlama, hakları belgelenmiş görsel/grafik ekleme, resmî yıl/kod eşleştirmesi, uygun soru biçimleri, toplu 500-satırlık import preview/REVIEW aşaması, staging regresyon testleri, kullanıcı tarafından onaylı **son deploy**.
@@ -122,3 +124,11 @@ node scripts/grade5-question-bulk-audit.mjs --strict
 - GitHub'dan 4 yeni JSON yeniden okunarak her biri 25'lik 100 satırda 5. sınıf kodu, 4 benzersiz seçenek, doğru cevap harfi, dolu açıklama, 1–6 arası zorluk ve birebir soru kökü tekrar denetimi yapıldı. **Yapısal hata yok**. Bu, cevapların bağımsız istatistik uzmanı kontrolünü, gerçek veri kaynağı uygunluğunu veya pedagojik onayı **kanıtlamaz**.
 - MAT.5.5.1 zorluk dağılımı: L1=8, L2=22, L3=11, L4=8, L5=1, L6=0; yüksek zorlukta nitelikli görev eksikliği var. MAT.5.5.2: L1=0, L2=11, L3=19, L4=16, L5=3, L6=1. En az 6 düzey için 5.5.1'de uzman denetiminde özgün görev gerekir.
 - Grafikler yalnız metinsel verilerle temsil edilmiştir. Geçerli eksenli, matematiksel doğruluğu kontrol edilmiş özgün SVG/vektör grafik, veri kaynağı/izin ve yaş uygunluğu onayı henüz eklenmedi. Gerçek öğrenciye yayımlama engeli sürüyor.
+
+## MAT.5.6.1 ve MAT.5.6.2: Matematik kazanım sayısı taslakta 23/23 (11 Kasım 2026)
+- Resmî kaynak https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/455 (28 Ağustos 2026 güncellemesi). MAT.5.6.1: 0–1 spektrumunda imkânsız/kesin ve ara olasılık tahminlerini yüzde, kesir ve ondalıkla yorumlama. MAT.5.6.2: olaylar arasındaki neden-sonuç ilişkisine dayanarak az/çok olasılıklı ayrımı; adil oyun ve öznel tahmini gerekçelendirme.
+- Bu bölümde **100 yeni MC soru**, dört ayrı 25 soruluk dosyada; iki kazanım için **20 ayrı rubrikli performans görevi**. Güncel matematik toplamı **1.150 MC taslağı**, **23 resmî çıktı × 50**, **148 ayrı görev** (MC sayısına dahil değildir). Diğer derslerde bu PR kapsamında soru taslakları hâlâ sıfırdır.
+- Yeni 8 dosyadan (MAT551/552/561/562 part01/02) **200 soru** GitHub üzerinden tekrar okunarak dörder şık, geçerli anahtar, açıklama, 5. sınıf/kod, 1–6 zorluk ve birebir kök tekrarı kontrol edildi: yapısal hata tespit edilmedi. Bu denetim **akademik doğruluk veya telif/özgünlük onayı değildir**.
+- MAT.5.6.1 zorluk etiketleri: L1=6, L2=31, L3=13, L4–L6=0. MAT.5.6.2: L1=2, L2=14, L3=19, L4=12, L5=3, L6=0. Her öğrenme çıktısında tüm altı zorluk düzeyinin nitelikli temsilini sağlama ve soru şablonu çeşitliliği ayrıca gerekli; yalnız etiketi yükseltme kabul edilmez.
+- Olasılık spektrumunun özgün SVG çizimleri ve çark/dart/torba modellerinin uygun görselleri henüz eklenmedi. Oyun/rastgelelik varsayımlarının pedagojik ve matematiksel öğretmen kontrolü, hassasiyet/kavram geçerliği, resmî yıl/kod eşleştirmesi ve yayımlama onayı beklenmektedir.
+- Matematikte hedef sayı **taslak olarak tamamlandı**, ancak öğretmen onaylı soru **0**. 5. sınıfın tüm altı dersi bitmiş gibi işaretlenmemeli. D1 import, main merge ve deploy yok.
