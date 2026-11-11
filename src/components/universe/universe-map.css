@@ -1,6 +1,8 @@
 /* Nibiru Öğrenme Evreni map (11 Nov 2026). Three looks on one structure: data-group A (4–6), B (7–8), C (9–12). */
 .um{--um-ink:var(--sd-ink,#0f1d3a);--um-muted:var(--sd-muted,#4b5a78);--um-accent:var(--sd-accent,#1d4ed8);--um-card:var(--sd-card,#fff);--um-border:var(--sd-border,#e2e8f0);--um-radius:24px;--um-pad:18px;
-  display:grid;gap:20px;color:var(--um-ink);max-width:1080px;margin:0 auto}
+  display:grid;gap:20px;color:var(--um-ink);max-width:1080px;margin:0 auto;min-width:0}
+.um>*{min-width:0}
+.um-mission,.um-planet-text strong,.um-o-text strong{overflow-wrap:anywhere}
 .um[data-group="A"]{--um-radius:30px;--um-pad:22px}
 .um[data-group="C"]{--um-radius:16px;--um-pad:16px}
 .um-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,420px);gap:16px;align-items:center;padding:var(--um-pad);border-radius:var(--um-radius);background:var(--um-card);border:1px solid var(--um-border);backdrop-filter:var(--sd-blur,none);-webkit-backdrop-filter:var(--sd-blur,none)}
@@ -19,7 +21,7 @@
 .um-bar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#22c55e,#06b6d4)}
 .um-exam{justify-self:start;display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--um-border);background:var(--um-card);color:var(--um-accent);font-weight:700;text-decoration:none}
 .um-h2{margin:0 0 10px;font-size:18px}
-.um-missions{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.um-missions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:12px}
 .um-mission{display:grid;gap:6px;padding:var(--um-pad);border-radius:var(--um-radius);background:var(--um-card);border:1px solid var(--um-border);color:inherit;text-decoration:none;min-height:120px}
 .um-mission:hover,.um-mission:focus-visible{border-color:var(--um-accent);outline:none;box-shadow:0 0 0 3px rgba(29,78,216,.15)}
 .um-mission-type{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
@@ -30,11 +32,11 @@
 .um-go{margin-top:auto;font-weight:700;color:var(--um-accent)}
 .um-empty{margin:0;padding:14px 16px;border-radius:16px;border:1px dashed var(--um-border);color:var(--um-muted)}
 .um-map-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
-.um-map-head small{color:var(--um-muted)}
+.um-map-head small{color:var(--um-muted);min-width:0}
 .um-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:thin}
 .um-tabs button{flex:0 0 auto;min-height:42px;padding:0 16px;border-radius:999px;border:1px solid var(--um-border);background:var(--um-card);color:inherit;font:inherit;font-weight:600;cursor:pointer}
 .um-tabs button.on{background:var(--um-accent);border-color:var(--um-accent);color:var(--sd-accent-ink,#fff)}
-.um-planets{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;align-items:start}
+.um-planets{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:12px;align-items:start}
 .um[data-group="C"] .um-planets{grid-template-columns:1fr}
 .um-planet{border-radius:var(--um-radius);background:var(--um-card);border:1px solid var(--um-border);overflow:hidden}
 .um-planet.open{grid-column:1/-1}
