@@ -7,14 +7,14 @@
 | Ders | Resmî öğrenme çıktısı | Hedef soru | Taslak | Editoryal onay |
 |---|---:|---:|---:|---:|
 | Türkçe | 80 | 4.000 | 0 | 0 |
-| Matematik | 23 | 1.150 | 750 | 0 |
+| Matematik | 23 | 1.150 | 850 | 0 |
 | Fen Bilimleri | 26 | 1.300 | 0 | 0 |
 | Sosyal Bilgiler | 18 | 900 | 0 | 0 |
 | İngilizce | 178 | 8.900 | 0 | 0 |
 | Din Kültürü | 18 | 900 | 0 | 0 |
-| **Toplam** | **343** | **17.150** | **750** | **0** |
+| **Toplam** | **343** | **17.150** | **850** | **0** |
 
-### Tam 50 taslağa ulaşan on beş matematik çıktısı
+### Tam 50 taslağa ulaşan on yedi matematik çıktısı
 - MAT.5.1.1: 50, eski PR #519.
 - MAT.5.1.2: 50, eski PR #522.
 - MAT.5.1.3: 50, `MAT513_part01/02_25_questions.json`.
@@ -30,10 +30,12 @@
 - MAT.5.3.5: 50, `MAT535_part01/02_25_questions.json`, ayrıca **10 çokgen inşa görevi** (kota dışında).
 - MAT.5.3.6: 50, `MAT536_part01/02_25_questions.json`, ayrıca **10 çokgen/üçgen deney görevi** (kota dışında).
 - MAT.5.3.7: 50, `MAT537_part01/02_25_questions.json`, ayrıca **10 kesişen çember ve üçgen inşa görevi** (kota dışında).
+- MAT.5.4.1: 50, `MAT541_part01/02_25_questions.json`, ayrıca **10 çevre/kenar tasarım görevi** (kota dışında).
+- MAT.5.4.2: 50, `MAT542_part01/02_25_questions.json`, ayrıca **10 birim kare/alan keşif görevi** (kota dışında).
 
 ## Yapısal denetim (GitHub'dan dosyalar yeniden okunarak)
-- 27 JSON soru içerik dosyası, toplam **750** taslak soru.
-- 15 öğrenme çıktısına tam 50'şer kayıt.
+- 31 JSON soru içerik dosyası, toplam **850** taslak soru.
+- 17 öğrenme çıktısına tam 50'şer kayıt.
 - Her soruda 4 farklı seçenek ve dolu doğru cevap/çözüm alanı.
 - Yanlış sınıf/kazanım kodu, birebir tekrarlanan soru kökü veya eksik anahtar **saptanmadı**.
 - Her kazanımda cevap şıkları dengeli (A=13, B=13, C=12, D=12).
@@ -49,7 +51,7 @@
 6. **Müfredat yılı farkı:** İlk 100 soru `2026-2027` kaynağıyla, hedef registry `2027-2028` olarak kaydedilmiştir. Yıl eşdeğerliği resmî kayıtlarla doğrulanmadan D1 commit yok.
 7. **Resmî katalog belirsizliği:** Türkçe kataloğunda dokuz tema açıklaması çatışma kaydı bulunuyor; resmî sürümle düzeltilmeli.
 8. **Telif beyanı:** `OWNED` içeriğin başlangıç etiketidir, otomatik özgünlük/telif sertifikası değildir; kayıtlar incelenmeli.
-9. **Onay/yükleme:** 750 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
+9. **Onay/yükleme:** 850 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
 
 ## Sonraki kabul
 Öğretmen bağımsız çözümleri ve kapsam gözden geçirmesi, benzer kalıpları özgün görevlerle değiştirme, zorluk 5–6 tamamlama, hakları belgelenmiş görsel/grafik ekleme, resmî yıl/kod eşleştirmesi, uygun soru biçimleri, toplu 500-satırlık import preview/REVIEW aşaması, staging regresyon testleri, kullanıcı tarafından onaylı **son deploy**.
@@ -91,3 +93,12 @@ node scripts/grade5-question-bulk-audit.mjs --strict
 - Yeni 100 sorunun tamamı GitHub'dan tekrar okunarak kazanım, sınıf, 4 farklı seçenek, doğru cevap/çözüm alanı ve birebir soru kökü yönünden denetlendi. **Yapısal hata yok**, fakat bu inceleme bağımsız matematik öğretmeni onayı değildir.
 - MAT.5.3.6 zorluk: 1=8, 2=17, 3=19, 4=6. MAT.5.3.7 zorluk: 1=6, 2=18, 3=22, 4=4. Zorluk 5 ve 6 yok; bunları etiket değiştirerek tamamlamayacağız.
 - Geometrik çizimlerin/çember kesişimlerinin matematiksel doğruluğu uzman tarafından ayrıca teyit edilmeli. Görseller henüz lisanslı medya olarak eklenmedi. Öğrenciye yayımlama, D1 import ve deploy yapılmadı.
+
+## MAT.5.4.1 ve MAT.5.4.2 — yeni 100 soru, 20 görev (11 Kasım 2026)
+- Resmî MEB kaynak https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451 (güncelleme 28.08.2026). MAT.5.4.1 çevresi verilen doğal sayı kenarlı farklı dikdörtgenleri oluşturma/yorumlama; MAT.5.4.2 seçilmiş eş birim kareyle alan ölçme ve satır-sütun çarpımına ulaşma.
+- 100 çoktan seçmeli soru **dört ayrı 25'lik JSON dosyasında**. MAT.5.4.1 için 50; MAT.5.4.2 için 50. Ayrıca 10'ar uygulamalı görev, ayrı performans JSON'larında. **88 toplam uygulama görevi** soru sayısına dahil değildir ve mevcut çoktan seçmeli importer ile aktarılmamalıdır.
+- Yeni 100 soruda GitHub yeniden okuma denetimi: geçerli 5. sınıf/kazanım kodu, 4 farklı seçenek, dolu anahtar ve çözüm, birebir tekrar yok. Yapısal kontrol geçildi; öğretmen onayı veya bağımsız matematik doğrulaması henüz yok.
+- MAT.5.4.1 zorluk etiketleri: L1=7, L2=17, L3=12, L4=9, L5=4, L6=1. MAT.5.4.2: L1=7, L2=23, L3=15, L4=3, L5=2, L6=0. 6. düzey alan paketi için gerçek beceri temelli zorlu görevler hazırlanmalı; etiket yapay biçimde yükseltilmemeli.
+- MEB MAT.5.4.2'nin bu bölümünde alan ölçü birimleri arası dönüşüm çalışmaları yer almıyor; dosyalara alan birimi dönüşümü sorusu konulmadı.
+- Birim kare grid görselleri henüz oluşturulmadı; dolayısıyla metin tabanlı kareli modeller geometri görseli gibi gösterilemez. Hakları uygun, matematiksel olarak doğru görseller bağımsız QA sonrasında eklenmeli.
+- Önceden tespit edilen 2026–27 / 2027–28 eşdeğerlik, telif ve akademik onay engelleri hâlâ geçerlidir. Staging D1/production yüklemesi ve deploy yapılmadı.
