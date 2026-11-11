@@ -7,14 +7,14 @@
 | Ders | Resmî öğrenme çıktısı | Hedef soru | Taslak | Editoryal onay |
 |---|---:|---:|---:|---:|
 | Türkçe | 80 | 4.000 | 0 | 0 |
-| Matematik | 23 | 1.150 | 400 | 0 |
+| Matematik | 23 | 1.150 | 450 | 0 |
 | Fen Bilimleri | 26 | 1.300 | 0 | 0 |
 | Sosyal Bilgiler | 18 | 900 | 0 | 0 |
 | İngilizce | 178 | 8.900 | 0 | 0 |
 | Din Kültürü | 18 | 900 | 0 | 0 |
-| **Toplam** | **343** | **17.150** | **400** | **0** |
+| **Toplam** | **343** | **17.150** | **450** | **0** |
 
-### Tam 50 taslağa ulaşan sekiz matematik çıktısı
+### Tam 50 taslağa ulaşan dokuz matematik çıktısı
 - MAT.5.1.1: 50, eski PR #519.
 - MAT.5.1.2: 50, eski PR #522.
 - MAT.5.1.3: 50, `MAT513_part01/02_25_questions.json`.
@@ -23,9 +23,10 @@
 - MAT.5.2.2: 50, `MAT522_part01/02_25_questions.json`.
 - MAT.5.2.3: 50, `MAT523_part01/02_25_questions.json`.
 - MAT.5.2.4: 50, `MAT524_part01/02_25_questions.json`.
+- MAT.5.3.1: 50, `MAT531_part01/02_25_questions.json`, ayrıca **8 uygulamalı çizim görevi** (`MAT531_8_performance_tasks_review_only.json`, çoktan seçmeli sayıya dahil değildir).
 
 ## Yapısal denetim (GitHub'dan dosyalar yeniden okunarak)
-- 13 JSON içerik dosyası, toplam **400** taslak soru.
+- 15 JSON soru içerik dosyası, toplam **450** taslak soru.
 - 8 öğrenme çıktısına tam 50'şer kayıt.
 - Her soruda 4 farklı seçenek ve dolu doğru cevap/çözüm alanı.
 - Yanlış sınıf/kazanım kodu, birebir tekrarlanan soru kökü veya eksik anahtar **saptanmadı**.
@@ -42,7 +43,7 @@
 6. **Müfredat yılı farkı:** İlk 100 soru `2026-2027` kaynağıyla, hedef registry `2027-2028` olarak kaydedilmiştir. Yıl eşdeğerliği resmî kayıtlarla doğrulanmadan D1 commit yok.
 7. **Resmî katalog belirsizliği:** Türkçe kataloğunda dokuz tema açıklaması çatışma kaydı bulunuyor; resmî sürümle düzeltilmeli.
 8. **Telif beyanı:** `OWNED` içeriğin başlangıç etiketidir, otomatik özgünlük/telif sertifikası değildir; kayıtlar incelenmeli.
-9. **Onay/yükleme:** 400 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
+9. **Onay/yükleme:** 450 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
 
 ## Sonraki kabul
 Öğretmen bağımsız çözümleri ve kapsam gözden geçirmesi, benzer kalıpları özgün görevlerle değiştirme, zorluk 5–6 tamamlama, hakları belgelenmiş görsel/grafik ekleme, resmî yıl/kod eşleştirmesi, uygun soru biçimleri, toplu 500-satırlık import preview/REVIEW aşaması, staging regresyon testleri, kullanıcı tarafından onaylı **son deploy**.
@@ -53,3 +54,10 @@ node scripts/grade5-question-bulk-audit.mjs
 node scripts/grade5-question-bulk-audit.mjs --strict
 ```
 `--strict` mevcut eksik hedefler, resmî sürüm/etiket çatışmaları ve onay engelleri nedeniyle **bilerek başarısızdır**; bu durum güvenlik koşuludur.
+
+## Sonraki çalışma: MAT.5.3.1 çizim becerisi (50 + 8)
+- Resmî süreç bileşenleri: (a) nokta/doğru/doğru parçası/ışın/açı/çember/dikme araçlarını tanıma; (b) uygun aracı belirleme; (c) aracı kullanarak çizme. Resmî kaynak: https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448
+- 50 çoktan seçmeli taslak soru, iki ayrı 25 satırlık JSON dosyasında. Ek olarak sekiz rubrikli performans görevi hazırlanmıştır. **Performans görevi sayısı 450 soru sayısına dahil değildir**, mevcut A082 MC aktarım API'si bu formatı kabul etmez.
+- Şekil çizme yeteneği yalnız çoktan seçmeli soruyla kanıtlanamaz. Öğrencinin cetvel, pergel, gönye ve uygun dijital aracı gerçek kullanımına ilişkin öğretmen gözlemi gerekir.
+- Fotoğraf/dijital çizim görselleri henüz sisteme bağlı değil. Telif/yaş uygunluğu/vektörel doğruluk kontrolü gerekir.
+- Bu bölüm için son durumda soruların cevap anahtarı alanları ve seçenekleri yapısal olarak kontrol edildi; akademik uzman denetimi ve öğrenci kullanımı testi yapılmadı.
