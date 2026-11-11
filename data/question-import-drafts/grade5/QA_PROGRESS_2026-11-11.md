@@ -7,14 +7,14 @@
 | Ders | Resmî öğrenme çıktısı | Hedef soru | Taslak | Editoryal onay |
 |---|---:|---:|---:|---:|
 | Türkçe | 80 | 4.000 | 0 | 0 |
-| Matematik | 23 | 1.150 | 850 | 0 |
+| Matematik | 23 | 1.150 | 950 | 0 |
 | Fen Bilimleri | 26 | 1.300 | 0 | 0 |
 | Sosyal Bilgiler | 18 | 900 | 0 | 0 |
 | İngilizce | 178 | 8.900 | 0 | 0 |
 | Din Kültürü | 18 | 900 | 0 | 0 |
-| **Toplam** | **343** | **17.150** | **850** | **0** |
+| **Toplam** | **343** | **17.150** | **950** | **0** |
 
-### Tam 50 taslağa ulaşan on yedi matematik çıktısı
+### Tam 50 taslağa ulaşan on dokuz matematik çıktısı
 - MAT.5.1.1: 50, eski PR #519.
 - MAT.5.1.2: 50, eski PR #522.
 - MAT.5.1.3: 50, `MAT513_part01/02_25_questions.json`.
@@ -32,10 +32,12 @@
 - MAT.5.3.7: 50, `MAT537_part01/02_25_questions.json`, ayrıca **10 kesişen çember ve üçgen inşa görevi** (kota dışında).
 - MAT.5.4.1: 50, `MAT541_part01/02_25_questions.json`, ayrıca **10 çevre/kenar tasarım görevi** (kota dışında).
 - MAT.5.4.2: 50, `MAT542_part01/02_25_questions.json`, ayrıca **10 birim kare/alan keşif görevi** (kota dışında).
+- MAT.5.4.3: 50, `MAT543_part01/02_25_questions.json`, ayrıca **10 alan/çevre karşılaştırma ve piksel sanat görevi** (kota dışında).
+- MAT.5.4.4: 50, `MAT544_part01/02_25_questions.json`, ayrıca **10 gerçek yaşam problem çözme görevi** (kota dışında).
 
 ## Yapısal denetim (GitHub'dan dosyalar yeniden okunarak)
-- 31 JSON soru içerik dosyası, toplam **850** taslak soru.
-- 17 öğrenme çıktısına tam 50'şer kayıt.
+- 35 JSON soru içerik dosyası, toplam **950** taslak soru.
+- 19 öğrenme çıktısına tam 50'şer kayıt.
 - Her soruda 4 farklı seçenek ve dolu doğru cevap/çözüm alanı.
 - Yanlış sınıf/kazanım kodu, birebir tekrarlanan soru kökü veya eksik anahtar **saptanmadı**.
 - Her kazanımda cevap şıkları dengeli (A=13, B=13, C=12, D=12).
@@ -51,7 +53,7 @@
 6. **Müfredat yılı farkı:** İlk 100 soru `2026-2027` kaynağıyla, hedef registry `2027-2028` olarak kaydedilmiştir. Yıl eşdeğerliği resmî kayıtlarla doğrulanmadan D1 commit yok.
 7. **Resmî katalog belirsizliği:** Türkçe kataloğunda dokuz tema açıklaması çatışma kaydı bulunuyor; resmî sürümle düzeltilmeli.
 8. **Telif beyanı:** `OWNED` içeriğin başlangıç etiketidir, otomatik özgünlük/telif sertifikası değildir; kayıtlar incelenmeli.
-9. **Onay/yükleme:** 850 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
+9. **Onay/yükleme:** 950 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
 
 ## Sonraki kabul
 Öğretmen bağımsız çözümleri ve kapsam gözden geçirmesi, benzer kalıpları özgün görevlerle değiştirme, zorluk 5–6 tamamlama, hakları belgelenmiş görsel/grafik ekleme, resmî yıl/kod eşleştirmesi, uygun soru biçimleri, toplu 500-satırlık import preview/REVIEW aşaması, staging regresyon testleri, kullanıcı tarafından onaylı **son deploy**.
@@ -102,3 +104,11 @@ node scripts/grade5-question-bulk-audit.mjs --strict
 - MEB MAT.5.4.2'nin bu bölümünde alan ölçü birimleri arası dönüşüm çalışmaları yer almıyor; dosyalara alan birimi dönüşümü sorusu konulmadı.
 - Birim kare grid görselleri henüz oluşturulmadı; dolayısıyla metin tabanlı kareli modeller geometri görseli gibi gösterilemez. Hakları uygun, matematiksel olarak doğru görseller bağımsız QA sonrasında eklenmeli.
 - Önceden tespit edilen 2026–27 / 2027–28 eşdeğerlik, telif ve akademik onay engelleri hâlâ geçerlidir. Staging D1/production yüklemesi ve deploy yapılmadı.
+
+## 5.4.3–5.4.4 / 100 yeni taslak ve 20 performans görevi (11 Kasım 2026)
+- Resmî kaynak: https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451 (28 Ağustos 2026 güncellemesi).
+- MAT.5.4.3: aynı alanlı farklı dikdörtgenlerin farklı çevreleri ve aynı çevreli farklı dikdörtgenlerin farklı alanlarını sayı tabloları ve karşı örneklerle karşılaştırma; çizim bağlamlarında **alan en fazla 36 birim kare**, kenarlar pozitif doğal sayı. MAT.5.4.4: günlük yaşamda alan/çevre için problem bileşenlerini ayırt etme, modelleme, farklı çözümleri karşılaştırma, tahmin ve kontrol etme. Alan ölçü birimi dönüştürme sorusu konulmadı.
+- Bu turda `MAT543_part01/02_25_questions.json` ve `MAT544_part01/02_25_questions.json`: **100 yeni MC taslağı**, ayrıca `MAT543_10_performance_tasks_review_only.json` ve `MAT544_10_performance_tasks_review_only.json`: 20 uygulama görevi. Genel uygulama görevi sayısı **108**, 950 çoktan seçmeli soruya dahil değildir ve mevcut MC importer tarafından desteklenmez.
+- Yeni dört JSON dosyası GitHub'dan yeniden okunarak 100 sorunun tamamında doğru sınıf/kazanım, dört benzersiz seçenek, cevap harfi, açıklama, 1–6 zorluk aralığı ve birebir kök tekrarı denetlendi. Yapısal hata bulunmadı. **Bu, bağımsız matematiksel doğruluk, ölçme-değerlendirme uzmanı onayı veya özgünlük sertifikası değildir.**
+- MAT.5.4.3 zorluk: L1=4, L2=11, L3=25, L4=6, L5=3, L6=1. MAT.5.4.4 zorluk: L1=5, L2=12, L3=16, L4=13, L5=3, L6=1. Etiketlerin pedagojik uygunluğu uzman tarafından doğrulanmalı.
+- Alan/çevre görselleri ve dijital piksel sanatı çıktıları eklenmiş değil. Telif, görsel doğruluk, resmî yıl/kod uyumu ve editoryal onay kontrol edilmeden üretim ortamına yazılmayacak.
