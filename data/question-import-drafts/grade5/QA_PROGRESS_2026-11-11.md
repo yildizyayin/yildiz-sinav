@@ -7,14 +7,14 @@
 | Ders | Resmî öğrenme çıktısı | Hedef soru | Taslak | Editoryal onay |
 |---|---:|---:|---:|---:|
 | Türkçe | 80 | 4.000 | 0 | 0 |
-| Matematik | 23 | 1.150 | 550 | 0 |
+| Matematik | 23 | 1.150 | 650 | 0 |
 | Fen Bilimleri | 26 | 1.300 | 0 | 0 |
 | Sosyal Bilgiler | 18 | 900 | 0 | 0 |
 | İngilizce | 178 | 8.900 | 0 | 0 |
 | Din Kültürü | 18 | 900 | 0 | 0 |
-| **Toplam** | **343** | **17.150** | **550** | **0** |
+| **Toplam** | **343** | **17.150** | **650** | **0** |
 
-### Tam 50 taslağa ulaşan on bir matematik çıktısı
+### Tam 50 taslağa ulaşan on üç matematik çıktısı
 - MAT.5.1.1: 50, eski PR #519.
 - MAT.5.1.2: 50, eski PR #522.
 - MAT.5.1.3: 50, `MAT513_part01/02_25_questions.json`.
@@ -26,9 +26,11 @@
 - MAT.5.3.1: 50, `MAT531_part01/02_25_questions.json`, ayrıca **8 uygulamalı çizim görevi** (`MAT531_8_performance_tasks_review_only.json`, çoktan seçmeli sayıya dahil değildir).
 - MAT.5.3.2: 50, `MAT532_part01/02_25_questions.json`, ayrıca **10 çizim-öz değerlendirme görevi** (kota dışında).
 - MAT.5.3.3: 50, `MAT533_part01/02_25_questions.json`, ayrıca **10 açıölçer uygulama görevi** (kota dışında).
+- MAT.5.3.4: 50, `MAT534_part01/02_25_questions.json`, ayrıca **10 çizim/ölçüm/gerekçe görevi** (kota dışında).
+- MAT.5.3.5: 50, `MAT535_part01/02_25_questions.json`, ayrıca **10 çokgen inşa görevi** (kota dışında).
 
 ## Yapısal denetim (GitHub'dan dosyalar yeniden okunarak)
-- 19 JSON soru içerik dosyası, toplam **550** taslak soru.
+- 23 JSON soru içerik dosyası, toplam **650** taslak soru.
 - 8 öğrenme çıktısına tam 50'şer kayıt.
 - Her soruda 4 farklı seçenek ve dolu doğru cevap/çözüm alanı.
 - Yanlış sınıf/kazanım kodu, birebir tekrarlanan soru kökü veya eksik anahtar **saptanmadı**.
@@ -45,7 +47,7 @@
 6. **Müfredat yılı farkı:** İlk 100 soru `2026-2027` kaynağıyla, hedef registry `2027-2028` olarak kaydedilmiştir. Yıl eşdeğerliği resmî kayıtlarla doğrulanmadan D1 commit yok.
 7. **Resmî katalog belirsizliği:** Türkçe kataloğunda dokuz tema açıklaması çatışma kaydı bulunuyor; resmî sürümle düzeltilmeli.
 8. **Telif beyanı:** `OWNED` içeriğin başlangıç etiketidir, otomatik özgünlük/telif sertifikası değildir; kayıtlar incelenmeli.
-9. **Onay/yükleme:** 550 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
+9. **Onay/yükleme:** 650 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
 
 ## Sonraki kabul
 Öğretmen bağımsız çözümleri ve kapsam gözden geçirmesi, benzer kalıpları özgün görevlerle değiştirme, zorluk 5–6 tamamlama, hakları belgelenmiş görsel/grafik ekleme, resmî yıl/kod eşleştirmesi, uygun soru biçimleri, toplu 500-satırlık import preview/REVIEW aşaması, staging regresyon testleri, kullanıcı tarafından onaylı **son deploy**.
@@ -70,3 +72,11 @@ node scripts/grade5-question-bulk-audit.mjs --strict
 - Yeni 100 soruda 4 farklı seçenek, dolu cevap/çözüm ve mükerrer-kök denetimi yapıldı, yapısal hata bulunmadı. **Bağımsız akademik/öğretmen onayı değildir.**
 - Zorluk: MAT.5.3.2'de 1:4, 2:11, 3:24, 4:11; MAT.5.3.3'te 1:10, 2:24, 3:15, 4:1. 5–6 düzeyi bu çıktılarda bulunmuyor, akademik genişletme gerekir.
 - Açıölçer şık/ölçek soruları henüz basıma uygun gerçek açıölçer görsellerine bağlanmadı. Doğru görsel kurulup kaynağı, ölçeği ve matematiksel doğruluğu kontrol edilmeden görsel soru olarak yayımlanamaz.
+
+## MAT.5.3.4 ve MAT.5.3.5 ek çalışma — 11 Kasım 2026
+- Resmî kaynak: https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448 (iki/üç doğru ve açı ilişkileri; ardışık kesişerek kapanan dış bükey çokgenler).
+- **100 yeni çoktan seçmeli taslak:** MAT.5.3.4 ve MAT.5.3.5 için 50'şer. Ayrıca 20 rubrikli uygulama görevi. Bu 20 görev 650 soru sayısına **dahil değildir** ve mevcut MC API ile yüklenmez.
+- Yeni 100 sorunun GitHub dosyaları yeniden okunarak 4 farklı seçenek, dolu anahtar ve çözüm, birebir kök tekrarı ve kazanım eşleştirmesi denetlendi: **yapısal hata bulunmadı**. Bu kontrol uzman akademik onayı yerine geçmez.
+- Zorluk dağılımı MAT.5.3.4: L1=4, L2=19, L3=21, L4=6; MAT.5.3.5: L1=9, L2=23, L3=13, L4=5. **L5 ve L6 eksik**, sırf etiketi değiştirerek tamamlama yapılamaz.
+- Açılı doğru çizimleri, açıölçer grafiklerinin orijinal geometrik doğruluğu; çokgenlerin kesişim/kapalılık gösterimi ve lisanslı görseller **eklenmedi**. Şekil dosyaları olmadan resimli soru olarak yayınlama.
+- Doğrudan D1 içe aktarım, 2026–27 / 2027–28 resmî müfredat sürüm eşdeğerlik doğrulaması, matematik öğretmeni kontrolü ve nihai Claude Code promptu bekliyor.
