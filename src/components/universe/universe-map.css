@@ -25,6 +25,7 @@
 .um-mission.review .um-mission-type{color:#b45309}.um-mission.strengthen .um-mission-type{color:#1d4ed8}.um-mission.discover .um-mission-type{color:#15803d}
 .um[data-group="A"] .um-mission{min-height:140px;font-size:17px}
 .um-mission small{color:var(--um-muted)}
+.um-mission.task .um-mission-type{color:#7c3aed}.um-mission.off .um-go{color:var(--um-muted);font-weight:600}.um-note{color:var(--um-muted);font-size:14px}
 .um-go{margin-top:auto;font-weight:700;color:var(--um-accent)}
 .um-empty{margin:0;padding:14px 16px;border-radius:16px;border:1px dashed var(--um-border);color:var(--um-muted)}
 .um-map-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
