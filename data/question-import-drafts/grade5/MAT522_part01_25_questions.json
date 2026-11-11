@@ -340,7 +340,7 @@
       "stem": "Bir öğrenci 6 + 2 × 5 = 40 hesabını yapmış. Hangi hatayı yapmıştır?",
       "optionA": "Çarpmayı toplamadan önce yapmıştır",
       "optionB": "Parantezi doğru uygulamıştır",
-      "optionC": "İfadeyi soldan sağa doğru hesaplamıştır",
+      "optionC": "Bir bölme işlemini toplamadan sonra yapmıştır",
       "optionD": "Toplamayı çarpmadan önce yapmıştır",
       "correctAnswer": "D",
       "solution": "Öğrenci önce 6 + 2 = 8, sonra 8 × 5 = 40 yapmıştır; doğru hesap 6 + 10 = 16'dır.",
