@@ -2,13 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, BarChart3, BookOpen, BookOpenCheck, BrainCircuit, Building2, CalendarClock, Camera, Check, CheckCircle2, ChevronRight, ClipboardCheck, FileText, Gamepad2, GraduationCap, HeartHandshake, Layers3, LineChart, LockKeyhole, MapPin, MessageCircle, Mic2, Monitor, Network, Phone, PlayCircle, ScanLine, Send, ShieldCheck, Sparkles, Target, Trophy, UserRoundCheck, Users, Volume2 } from 'lucide-react';
 import { AnunexBrand } from '../components/AnunexBrand';
 import { NibiruMark } from '../components/NibiruMark';
+import { SITE_NIBIRU_OPEN_EVENT, SiteNibiruChat } from '../components/SiteNibiruChat';
 import './marketing-home.css';
 import './marketing-premium.css';
 
 const APP_URL='https://app.anunex.com';
 const PHONE_DISPLAY='0543 306 61 72';
 const PHONE_URL='tel:+905433066172';
-const WHATSAPP_URL='https://wa.me/905433066172?text=Merhaba%2C%20ANUNEX%20kurum%20demosu%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.';
+const WHATSAPP_URL='https://wa.me/905433066172?text=Merhaba%2C%20ANUNEX%20tan%C4%B1t%C4%B1m%C4%B1%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.';
 
 const features=[
   {icon:ScanLine,title:'Optik ve kamera ile hızlı veri toplama',text:'Kişiselleştirilmiş optikler hazırlayın; tarayıcıdan veya telefon kamerasından cevapları güvenli biçimde yakalayın.'},
@@ -146,7 +147,7 @@ export function MarketingHome(){
             <div className="conversation-user"><span><small>{conversation.audience}</small>{conversation.question}</span><div>{conversation.initial}</div></div>
             {nibiruOpen?<div className="conversation-nibiru"><NibiruMark size={34} state={voicePlaying?'speaking':'active'}/><div><small className="identity-recognition"><ShieldCheck/> {conversation.identity}</small><strong>{conversation.title}</strong><p>{conversation.body}</p><ul>{conversation.tasks.map(task=><li key={task}><CheckCircle2/> {task}</li>)}</ul><p className="career-signoff">{conversation.signoff}</p><button type="button" onClick={()=>void playNibiruVoice(conversation.key,[conversation.title,conversation.body,...conversation.tasks,conversation.signoff].join(' '))} disabled={voicePlaying}><Volume2/> {voicePlaying?'Nibiru konuşuyor…':'Gerçek rehber sesinden dinle'}</button>{voiceError&&<small className="voice-error" role="status">{voiceError}</small>}</div></div>:<button className="ask-nibiru" type="button" onClick={()=>setNibiruOpen(true)}><Sparkles/> Nibiru’ya sor <Send/></button>}
           </div>
-          <p className="nibiru-note">Örnek görüşmeler. Nibiru bugün rolünüzü tanır ve yalnız doğrulanmış verilerle yanıt verir; gelişmiş yapay zekâ yanıtları KVKK süreci tamamlandığında açılır.</p><div className="nibiru-capabilities"><div><Sparkles/><span><strong>Tanır</strong><small>Rolü ve doğrulanmış bağlamı bilir</small></span></div><div><LineChart/><span><strong>Birleştirir</strong><small>Uzman zekâları tek yanıtta buluşturur</small></span></div><div><Mic2/><span><strong>Sesli yanıt</strong><small>Sıcak, öğretici ve güven veren ses</small></span></div><div><LockKeyhole/><span><strong>Sınırlarını korur</strong><small>Yetki, KVKK ve mahremiyet önce gelir</small></span></div></div>
+          <p className="nibiru-note">Örnek görüşmeler. Nibiru bugün rolünüzü tanır ve yalnız doğrulanmış verilerle yanıt verir; gelişmiş yapay zekâ yanıtları KVKK süreci tamamlandığında açılır.</p><button type="button" className="ask-site-nibiru" onClick={()=>window.dispatchEvent(new Event(SITE_NIBIRU_OPEN_EVENT))}><MessageCircle size={18}/> Nibiru ile yazışın</button><div className="nibiru-capabilities"><div><Sparkles/><span><strong>Tanır</strong><small>Rolü ve doğrulanmış bağlamı bilir</small></span></div><div><LineChart/><span><strong>Birleştirir</strong><small>Uzman zekâları tek yanıtta buluşturur</small></span></div><div><Mic2/><span><strong>Sesli yanıt</strong><small>Sıcak, öğretici ve güven veren ses</small></span></div><div><LockKeyhole/><span><strong>Sınırlarını korur</strong><small>Yetki, KVKK ve mahremiyet önce gelir</small></span></div></div>
         </div>
       </section>
 
@@ -217,6 +218,7 @@ export function MarketingHome(){
       <section className="final-cta"><div className="cta-orb"><NibiruMark size={120} state="speaking"/></div><AnunexBrand inverse tagline/><h2>Akademik gelişimi<br/>tek yörüngede buluşturun.</h2><p>Hayal edilen özellikleri anlatmakla kalmıyoruz. Optikten kişisel öğrenmeye, Nibiru’dan kurum yönetimine kadar aynı sistem içinde çalıştırıyoruz.</p><div><a className="marketing-button light" href={PHONE_URL}>Tanıtım için arayın <ArrowRight size={18}/></a><a className="marketing-button ghost" href={WHATSAPP_URL} target="_blank" rel="noreferrer">İletişime Geç</a></div></section>
     </main>
 
+    <SiteNibiruChat/>
     <a className="floating-whatsapp" href={WHATSAPP_URL} target="_blank" rel="noreferrer" aria-label="WhatsApp ile ANUNEX hakkında bilgi alın"><MessageCircle/><span>Bilgi alın</span></a>
     <footer><AnunexBrand compact tagline/><p>ANUNEX — Nibiru AI Destekli Ölçme ve Analiz Platformu · Kartal / İSTANBUL · {PHONE_DISPLAY}</p><div><a href={APP_URL}>Sisteme Giriş</a><a href="#guven">Güven ve KVKK</a><a href={PHONE_URL}>İletişim</a></div><small>© 2026 ANUNEX. Bilginin yörüngesinde.</small></footer>
   </div>;
