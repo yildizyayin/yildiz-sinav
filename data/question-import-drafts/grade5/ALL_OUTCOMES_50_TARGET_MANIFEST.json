@@ -15,11 +15,11 @@
       "ING": 178,
       "DIN": 18
     },
-    "draftQuestions": 400,
+    "draftQuestions": 450,
     "approvedQuestions": 0,
-    "unstartedOutcomes": 335,
-    "draftOutcomes": 8,
-    "outstandingDraftQuestions": 16750
+    "unstartedOutcomes": 334,
+    "draftOutcomes": 9,
+    "outstandingDraftQuestions": 16700
   },
   "sourceInventory": {
     "math": "data/question-full-math-target-2028.json",
@@ -1550,10 +1550,15 @@
       "repeatThemeCount": 1,
       "targetCount": 50,
       "approvedCount": 0,
-      "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
+      "storedInThisBranch": 50,
+      "reviewStatus": "DRAFT_NEEDS_EXPERT_REVIEW_AND_PRACTICAL_PERFORMANCE",
       "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "priorDraftCount": 0,
+      "draftFilePaths": [
+        "data/question-import-drafts/grade5/MAT531_part01_25_questions.json",
+        "data/question-import-drafts/grade5/MAT531_part02_25_questions.json"
+      ],
+      "supplementaryPerformanceTasksFile": "data/question-import-drafts/grade5/MAT531_8_performance_tasks_review_only.json"
     },
     {
       "gradeLevel": 5,
@@ -5633,7 +5638,9 @@
     "data/question-import-drafts/grade5/MAT523_part01_25_questions.json",
     "data/question-import-drafts/grade5/MAT523_part02_25_questions.json",
     "data/question-import-drafts/grade5/MAT524_part01_25_questions.json",
-    "data/question-import-drafts/grade5/MAT524_part02_25_questions.json"
+    "data/question-import-drafts/grade5/MAT524_part02_25_questions.json",
+    "data/question-import-drafts/grade5/MAT531_part01_25_questions.json",
+    "data/question-import-drafts/grade5/MAT531_part02_25_questions.json"
   ],
   "status": "IN_PROGRESS_DRAFT_ONLY",
   "lastCheckedAt": "2026-11-11"
