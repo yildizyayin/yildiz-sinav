@@ -90,7 +90,7 @@
       "optionC": "8.400",
       "optionD": "8.000",
       "correctAnswer": "D",
-      "solution": "32 × 250 = 8.000 sayfa.",
+      "solution": "Bir derginin 32 sayfası her basılan nüshada yeniden basılır. 250 dergi için 32 × 250 = 8.000 sayfa basılır; bu sayı dergi sayısı ile bir derginin sayfa sayısının çarpımıdır.",
       "difficultyLevel": 1,
       "copyrightStatus": "OWNED"
     },
@@ -132,7 +132,7 @@
       "optionC": "108",
       "optionD": "113",
       "correctAnswer": "C",
-      "solution": "24 × 36 = 864 kalem; 864 ÷ 8 = 108.",
+      "solution": "Önce toplam kalem sayısı bulunur: 24 × 36 = 864 kalem. Sınıflar eşit pay aldığı için 864 ÷ 8 = 108 kalem sınıf başına düşer.",
       "difficultyLevel": 3,
       "copyrightStatus": "OWNED"
     },
@@ -146,7 +146,7 @@
       "optionC": "792",
       "optionD": "755",
       "correctAnswer": "D",
-      "solution": "35 × 18 = 630 kg; 630 + 125 = 755 kg.",
+      "solution": "Bir kasada 18 kg vardır. 35 kasa için 35 × 18 = 630 kg toplanır. Sonradan gelen 125 kg eklenince 630 + 125 = 755 kg olur.",
       "difficultyLevel": 2,
       "copyrightStatus": "OWNED"
     }
