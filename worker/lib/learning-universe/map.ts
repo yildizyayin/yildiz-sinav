@@ -3,6 +3,7 @@ import { all, one } from '../db';
 import { outcomeQuestionTarget, unifiedOutcomeEvidence, type OutcomeEvidence } from '../unified-outcome-evidence';
 import { gradeProfile } from '../../../src/lib/gradeProfile';
 import { studentContext } from './sessions';
+import { studentUniverseTasks } from './tasks';
 
 /**
  * Nibiru Öğrenme Evreni — the learning map (owner, 11 Nov 2026).
@@ -68,13 +69,14 @@ export async function universeMap(env: Env, user: AuthUser, now = Date.now()) {
   const ctx = await studentContext(env, user);
   if (!ctx) return null;
   const profile = gradeProfile(ctx.grade_level);
-  const [outcomes, kindsFor, evidence, week, xp] = await Promise.all([
+  const [outcomes, kindsFor, evidence, week, xp, tasks] = await Promise.all([
     all<any>(env.DB.prepare(`SELECT o.id,o.code,o.title,o.topic,o.subtopic,o.subject_id,COALESCE(s.name,'Ders') subject_name FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id LEFT JOIN subjects s ON s.id=o.subject_id
       WHERE o.active=1 AND cv.verified=1 AND cv.academic_year=? AND cv.grade_level=? AND o.grade_level=? ORDER BY s.name,o.code`).bind(ctx.academic_year, ctx.grade_level, ctx.grade_level)),
     gameAvailability(env, ctx),
     (async () => unifiedOutcomeEvidence(env, user.student_id!, { learnerView: true, target: await outcomeQuestionTarget(env, ctx.institution_id) }))(),
     one<any>(env.DB.prepare(`SELECT count(*) n FROM lu_sessions WHERE student_id=? AND status='SUBMITTED' AND date(submitted_at,'+3 hours')>=date('now','+3 hours','weekday 1','-7 days')`).bind(user.student_id)),
     one<any>(env.DB.prepare(`SELECT xp FROM gamification_profiles WHERE student_id=?`).bind(user.student_id)),
+    studentUniverseTasks(env, user),
   ]);
   const evBy = new Map(evidence.map((e) => [e.outcomeId, e]));
 
@@ -110,6 +112,7 @@ export async function universeMap(env: Env, user: AuthUser, now = Date.now()) {
     week: { done: Number(week?.n || 0), goal: WEEKLY_GOAL },
     reviewAfterDays: REVIEW_AFTER_DAYS,
     missions,
+    tasks,
     summary: { outcomes: all_.length, playable: all_.filter(playable).length, learned: all_.filter((n) => n.stage === 'LEARNED').length },
     subjects: [...subjects.values()].map((s) => ({ id: s.id, name: s.name, planets: [...s.planets.entries()].map(([name, nodes]) => ({
       name, outcomes: nodes, discovered: nodes.some((n) => n.stage !== 'NO_DATA'), learned: nodes.filter((n) => n.stage === 'LEARNED').length, playable: nodes.filter(playable).length,

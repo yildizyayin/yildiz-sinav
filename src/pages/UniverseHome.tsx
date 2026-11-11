@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Compass, Flame, RotateCcw, Sparkles, Target } from 'lucide-react';
+import { ChevronDown, ClipboardList, Compass, Flame, RotateCcw, Sparkles, Target } from 'lucide-react';
 import { api } from '../api';
 import { NibiruMark } from '../components/NibiruMark';
 import '../components/universe/universe-map.css';
@@ -33,6 +33,16 @@ export function UniverseHome() {
         <div className="um-stat"><Flame size={18} aria-hidden="true" /><div><strong>Bu hafta {d.week.done}/{d.week.goal}</strong><span className="um-bar"><i style={{ width: `${weekPct}%` }} /></span><small>Haftalık hedef bir öneridir.</small></div></div>
       </div>
     </header>
+
+    {d.tasks?.length > 0 && <section aria-labelledby="um-tasks">
+      <h2 id="um-tasks" className="um-h2">Öğretmeninden görevler</h2>
+      <div className="um-missions">{d.tasks.map((t: any) => {
+        const inner = <><span className="um-mission-type"><ClipboardList size={16} aria-hidden="true" /> {t.teacher || 'Öğretmen'} verdi{t.dueAt ? ` · son gün ${new Date(`${t.dueAt}T00:00:00`).toLocaleDateString('tr-TR')}` : ''}</span>
+          <strong>{t.title}</strong>{t.code && <small>{t.code}{t.gameTitle ? ` · ${t.gameTitle}` : ''}</small>}{t.note && <em className="um-note">{t.note}</em>}
+          <span className="um-go">{t.game ? 'Başla →' : 'Etkinlik hazırlanıyor'}</span></>;
+        return t.game ? <Link key={t.id} className="um-mission task" to={play(t.outcomeId, t.game)}>{inner}</Link> : <div key={t.id} className="um-mission task off">{inner}</div>;
+      })}</div>
+    </section>}
 
     <section aria-labelledby="um-missions">
       <h2 id="um-missions" className="um-h2">Bugünün görevleri</h2>
