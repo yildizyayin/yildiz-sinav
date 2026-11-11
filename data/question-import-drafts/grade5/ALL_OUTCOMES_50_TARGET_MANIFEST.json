@@ -14,7 +14,11 @@
       "SOS": 18,
       "ING": 178,
       "DIN": 18
-    }
+    },
+    "draftQuestions": 100,
+    "approvedQuestions": 0,
+    "unstartedOutcomes": 341,
+    "draftOutcomes": 2
   },
   "sourceInventory": {
     "math": "data/question-full-math-target-2028.json",
@@ -1391,8 +1395,8 @@
       "repeatThemeCount": 1,
       "targetCount": 50,
       "approvedCount": 0,
-      "storedInThisBranch": 0,
-      "reviewStatus": "EXTERNAL_DRAFT_YEAR_REVIEW_REQUIRED",
+      "storedInThisBranch": 50,
+      "reviewStatus": "DRAFT_YEAR_MISMATCH_AND_HUMAN_REVIEW_REQUIRED",
       "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
       "priorDraftCount": 50,
       "priorDraftPr": 519
@@ -1408,8 +1412,8 @@
       "repeatThemeCount": 1,
       "targetCount": 50,
       "approvedCount": 0,
-      "storedInThisBranch": 0,
-      "reviewStatus": "EXTERNAL_DRAFT_YEAR_REVIEW_REQUIRED",
+      "storedInThisBranch": 50,
+      "reviewStatus": "DRAFT_YEAR_MISMATCH_AND_HUMAN_REVIEW_REQUIRED",
       "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
       "priorDraftCount": 50,
       "priorDraftPr": 522
@@ -5590,5 +5594,6 @@
       "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
       "priorDraftCount": 0
     }
-  ]
+  ],
+  "bulkDraftFile": "data/question-import-drafts/grade5/EXISTING_100_REVIEW_ONLY.json"
 }
