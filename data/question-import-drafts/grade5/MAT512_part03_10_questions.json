@@ -20,7 +20,7 @@
       "optionC": "37",
       "optionD": "46",
       "correctAnswer": "A",
-      "solution": "1.120 ÷ 28 = 40; kontrol 40 × 28 = 1.120.",
+      "solution": "1.120 ÷ 28 işleminin sonucunu çarpmayla kontrol ederiz: 28 × 40 = 1.120. Bu nedenle bir rafa 40 kitap düşer.",
       "difficultyLevel": 1,
       "copyrightStatus": "OWNED"
     },
@@ -76,7 +76,7 @@
       "optionC": "36",
       "optionD": "45",
       "correctAnswer": "A",
-      "solution": "1.365 ÷ 35 = 39 çuval; kontrol 39 × 35 = 1.365.",
+      "solution": "1.365 ÷ 35 işlemini 35 × 39 = 1.365 eşitliğiyle kontrol ederiz. Bu nedenle 39 çuval tamamen dolar.",
       "difficultyLevel": 2,
       "copyrightStatus": "OWNED"
     },
@@ -118,7 +118,7 @@
       "optionC": "63",
       "optionD": "55",
       "correctAnswer": "D",
-      "solution": "2.500 ÷ 45 = 55 tam zarf; 25 çıkartma artar.",
+      "solution": "2.500 ÷ 45 işleminde 45 × 55 = 2.475 çıkartma zarflara konur; 25 çıkartma artar. İstenen tam zarf sayısı 55'tir.",
       "difficultyLevel": 3,
       "copyrightStatus": "OWNED"
     },
