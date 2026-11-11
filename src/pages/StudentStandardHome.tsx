@@ -135,7 +135,7 @@ export function StudentStandardHome(){
    {features.has('ASSIGNMENTS')&&<Link to="/assignments"><BookOpenCheck size={20}/>Ödevlerim</Link>}
    <Link to="/academic-target"><GraduationCap size={20}/>Hedeflerim</Link>
    <Link to="/my-books"><BookOpenCheck size={20}/>Kitaplarım</Link>
-   <Link to="/student-games"><Gamepad2 size={20}/>Oyunlar</Link>
+   <Link to="/evren"><Gamepad2 size={20}/>Öğrenme Evreni</Link>
   </nav>
  </div>
 }

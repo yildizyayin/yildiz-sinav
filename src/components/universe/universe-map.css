@@ -1,0 +1,67 @@
+/* Nibiru Öğrenme Evreni map (11 Nov 2026). Three looks on one structure: data-group A (4–6), B (7–8), C (9–12). */
+.um{--um-ink:var(--sd-ink,#0f1d3a);--um-muted:var(--sd-muted,#4b5a78);--um-accent:var(--sd-accent,#1d4ed8);--um-card:var(--sd-card,#fff);--um-border:var(--sd-border,#e2e8f0);--um-radius:24px;--um-pad:18px;
+  display:grid;gap:20px;color:var(--um-ink);max-width:1080px;margin:0 auto}
+.um[data-group="A"]{--um-radius:30px;--um-pad:22px}
+.um[data-group="C"]{--um-radius:16px;--um-pad:16px}
+.um-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,420px);gap:16px;align-items:center;padding:var(--um-pad);border-radius:var(--um-radius);background:var(--um-card);border:1px solid var(--um-border);backdrop-filter:var(--sd-blur,none);-webkit-backdrop-filter:var(--sd-blur,none)}
+.um[data-group="A"] .um-hero{background:linear-gradient(135deg,rgba(56,189,248,.22),rgba(167,139,250,.24) 55%,rgba(251,146,60,.2)),var(--um-card)}
+.um[data-group="B"] .um-hero{background:linear-gradient(135deg,rgba(29,78,216,.12),rgba(99,102,241,.1)),var(--um-card)}
+.um-guide{display:flex;align-items:center;gap:14px;min-width:0}
+.um-guide h1{margin:2px 0 0;font-size:clamp(20px,3vw,28px);line-height:1.2}
+.um[data-group="A"] .um-guide h1{font-size:clamp(22px,3.6vw,32px)}
+.um[data-group="C"] .um-guide h1{font-size:clamp(18px,2.4vw,24px);font-weight:700}
+.um-kicker{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--um-muted)}
+.um-stats{display:grid;gap:10px}
+.um-stat{display:flex;gap:10px;align-items:flex-start}
+.um-stat>div{display:grid;gap:4px;flex:1}
+.um-stat small{color:var(--um-muted)}
+.um-bar{display:block;height:8px;border-radius:8px;background:rgba(15,29,58,.1);overflow:hidden}
+.um-bar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#22c55e,#06b6d4)}
+.um-h2{margin:0 0 10px;font-size:18px}
+.um-missions{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.um-mission{display:grid;gap:6px;padding:var(--um-pad);border-radius:var(--um-radius);background:var(--um-card);border:1px solid var(--um-border);color:inherit;text-decoration:none;min-height:120px}
+.um-mission:hover,.um-mission:focus-visible{border-color:var(--um-accent);outline:none;box-shadow:0 0 0 3px rgba(29,78,216,.15)}
+.um-mission-type{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.um-mission.review .um-mission-type{color:#b45309}.um-mission.strengthen .um-mission-type{color:#1d4ed8}.um-mission.discover .um-mission-type{color:#15803d}
+.um[data-group="A"] .um-mission{min-height:140px;font-size:17px}
+.um-mission small{color:var(--um-muted)}
+.um-go{margin-top:auto;font-weight:700;color:var(--um-accent)}
+.um-empty{margin:0;padding:14px 16px;border-radius:16px;border:1px dashed var(--um-border);color:var(--um-muted)}
+.um-map-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.um-map-head small{color:var(--um-muted)}
+.um-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:thin}
+.um-tabs button{flex:0 0 auto;min-height:42px;padding:0 16px;border-radius:999px;border:1px solid var(--um-border);background:var(--um-card);color:inherit;font:inherit;font-weight:600;cursor:pointer}
+.um-tabs button.on{background:var(--um-accent);border-color:var(--um-accent);color:var(--sd-accent-ink,#fff)}
+.um-planets{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;align-items:start}
+.um[data-group="C"] .um-planets{grid-template-columns:1fr}
+.um-planet{border-radius:var(--um-radius);background:var(--um-card);border:1px solid var(--um-border);overflow:hidden}
+.um-planet.open{grid-column:1/-1}
+.um-planet-head{display:flex;align-items:center;gap:12px;width:100%;padding:var(--um-pad);border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.um-planet-head:focus{outline:none}.um-planet-head:focus-visible{outline:3px solid var(--um-accent);outline-offset:-3px;border-radius:var(--um-radius)}
+.um-orb{width:52px;height:52px;flex:0 0 52px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 30%,hsl(var(--hue) 90% 80%),hsl(var(--hue) 70% 45%));box-shadow:inset -6px -6px 12px rgba(0,0,0,.18)}
+.um[data-group="A"] .um-orb{width:64px;height:64px;flex-basis:64px}
+.um[data-group="C"] .um-orb{width:40px;height:40px;flex-basis:40px;background:none;box-shadow:none}
+.um-orb svg{width:100%;height:100%;transform:rotate(-90deg)}
+.um-orb .track{fill:none;stroke:rgba(255,255,255,.35);stroke-width:3}
+.um[data-group="C"] .um-orb .track{stroke:rgba(15,29,58,.12)}
+.um-orb .fill{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round}
+.um[data-group="C"] .um-orb .fill{stroke:var(--um-accent)}
+.um-planet:not(.found) .um-orb{filter:saturate(.35) brightness(.95)}
+.um-planet-text{display:grid;gap:2px;flex:1;min-width:0}
+.um-planet-text small{color:var(--um-muted)}
+.um-chev{transition:transform .2s ease}.um-planet.open .um-chev{transform:rotate(180deg)}
+.um-outcomes{list-style:none;margin:0;padding:0 var(--um-pad) var(--um-pad);display:grid;gap:10px}
+.um-outcomes li{display:grid;gap:8px;padding:12px;border-radius:16px;border:1px solid var(--um-border)}
+.um-o-text{display:grid;gap:4px}
+.um-stage{justify-self:start;font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;background:rgba(15,29,58,.08)}
+.um-stage.learned{background:rgba(22,163,74,.15);color:#15803d}.um-stage.consolidating{background:rgba(6,182,212,.15);color:#0e7490}
+.um-stage.developing{background:rgba(234,179,8,.18);color:#a16207}.um-stage.started{background:rgba(29,78,216,.12);color:#1d4ed8}
+.um-stage.review_needed{background:rgba(234,88,12,.15);color:#c2410c}
+.um-games{display:flex;flex-wrap:wrap;gap:6px}
+.um-game{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--um-border);color:inherit;text-decoration:none;font-weight:600;font-size:14px}
+.um-game:hover,.um-game:focus-visible{border-color:var(--um-accent);color:var(--um-accent)}
+.um-none{color:var(--um-muted)}
+.app-shell[data-panel-theme="ANUNEX_COSMIC"] .um-bar{background:rgba(255,255,255,.12)}
+.app-shell[data-panel-theme="ANUNEX_COSMIC"] .um-stage{background:rgba(255,255,255,.1)}
+@media (max-width:760px){.um-hero{grid-template-columns:1fr}.um-planets{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.um *{transition:none!important}}

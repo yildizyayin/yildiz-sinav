@@ -7,6 +7,7 @@ import { getAuthUser } from './lib/auth';
 import { all, json, one, uuid } from './lib/db';
 import { gradeProfile, nibiruStudentPrompts } from '../src/lib/gradeProfile';
 import { startUniverseSession, submitUniverseSession, universeSessionView } from './lib/learning-universe/sessions';
+import { universeMap } from './lib/learning-universe/map';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
 
@@ -234,6 +235,7 @@ const UNIVERSE_MESSAGES:Record<string,[number,string]>={
 /** Nibiru Öğrenme Evreni: start a play, read it, submit it (graded on the server, once). */
 async function universeApi(request:Request,env:Env,user:AuthUser,path:string){
  const out=(r:any,status=200)=>{if(r.ok)return json(r,status);const[code,message]=UNIVERSE_MESSAGES[r.reason]||[400,'Etkinlik güncellenemedi.'];return json({...r,error:{code:r.reason,message,details:{available:r.available??null,needed:r.needed??null,repeatAvailable:r.repeatAvailable??null}}},code)};
+ if(path==='/api/student-standard/universe/map'&&request.method==='GET'){const m=await universeMap(env,user);return m?json(m):out({ok:false,reason:'STUDENT_ONLY'});}
  if(path==='/api/student-standard/universe/sessions'&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await startUniverseSession(env,user,body);if(!r.ok)return out(r);return json(await universeSessionView(env,user,r.sessionId),r.reused?200:201);}
  const m=path.match(/^\/api\/student-standard\/universe\/sessions\/([^/]+)(\/submit)?$/);
  if(m&&!m[2]&&request.method==='GET'){const v=await universeSessionView(env,user,m[1]);return v?json(v):out({ok:false,reason:'SESSION_NOT_FOUND'});}
