@@ -1,0 +1,165 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.3.7",
+    "academicYearCatalog": "2027-2028",
+    "officialSource": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+    "status": "DRAFT_NOT_APPROVED",
+    "taskCount": 10,
+    "notIncludedInFiftyQuestionQuota": true,
+    "importableByExistingMultipleChoiceAPI": false,
+    "requiresPhysicalOrDigitalConstruction": true
+  },
+  "tasks": [
+    {
+      "id": "MAT537-P01",
+      "title": "Pergelle eşkenar üçgen",
+      "prompt": "AB=5 cm çiz. Pergeli 5 cm açıp A ve B merkezli çemberleri çiz. Ortak P noktasını seçerek ABP üçgenini oluştur ve tüm kenarları ölç.",
+      "evidence": [
+        "İki noktada kesişen çemberler",
+        "AP=BP=AB=5 cm",
+        "Eşkenar gerekçesi"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT537-P02",
+      "title": "Eş yarıçaplı ikizkenar",
+      "prompt": "AB=6 cm çiz. Pergeli 5 cm açarak A ve B merkezli iki çember oluştur. Ortak noktalardan biriyle kurduğun üçgeni ölçüp sınıflandır.",
+      "evidence": [
+        "İki gerçek kesişim",
+        "5-5-6 kenarlar",
+        "Eşkenar olmayan ikizkenar açıklaması"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT537-P03",
+      "title": "Yarıçapları farklı çeşitkenar",
+      "prompt": "AB=5 cm olacak biçimde merkezleri belirle. A merkezli 3 cm ve B merkezli 4 cm yarıçaplı çemberleri çiz. P ortak noktasıyla üçgen oluştur.",
+      "evidence": [
+        "İki kesişim noktası",
+        "3-4-5 kenar ölçümleri",
+        "Çeşitkenarlık gerekçesi"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT537-P04",
+      "title": "İkizkenar için başka yol",
+      "prompt": "AB=6 cm seç. A merkezli 6 cm ve B merkezli 4 cm yarıçaplı çember çiz. Ortak noktadan ABP oluştur ve hangi iki kenarın eşit olduğunu belirt.",
+      "evidence": [
+        "İki kesişim",
+        "AB=AP=6 cm",
+        "İkizkenar için yalnız eş yarıçap gerekmemesi"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT537-P05",
+      "title": "P ve Q karşılaştırması",
+      "prompt": "İki noktada kesişen iki çember çiz. P ve Q ortak noktalarını ayrı ayrı kullanarak ABP ve ABQ üçgenlerini oluştur ve üçer kenarlarını tabloda karşılaştır.",
+      "evidence": [
+        "İki üçgen",
+        "Eş yarıçap ölçümleri",
+        "Kenar türünün değişmediğine çıkarım"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT537-P06",
+      "title": "Teğet durumla iki kesişimi ayır",
+      "prompt": "Yarıçapları 3 cm ve 4 cm olan iki çemberi önce merkezleri 7 cm ayrı, sonra 5 cm ayrı olacak biçimde çiz. Kesişim sayısını karşılaştır.",
+      "evidence": [
+        "Dıştan teğette tek ortak nokta",
+        "5 cm aralıkta iki ortak nokta",
+        "İki kesişim gerekliliğine gerekçe"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT537-P07",
+      "title": "Çemberler ayrık kaldığında",
+      "prompt": "A ve B merkezli yarıçapları 3 cm olan çemberleri merkezler 8 cm ayrıkken çiz. Sonra merkezleri yaklaştırarak iki noktada kesişim oluştur ve farkı açıkla.",
+      "evidence": [
+        "Ayrık çember başlangıcı",
+        "İki kesişimli son durum",
+        "Merkez uzaklığına bağlı gözlem"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT537-P08",
+      "title": "Dijital dinamik çizim",
+      "prompt": "Dinamik geometri yazılımında iki çember oluştur. Merkez uzaklığını sürükleyerek eşkenar, eşkenar olmayan ikizkenar ve çeşitkenar üçgen örneklerini kaydet.",
+      "evidence": [
+        "Üç geçerli farklı kenar durumu",
+        "Yarıçap/AB tablosu",
+        "Dijital ölçüm doğrulaması"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT537-P09",
+      "title": "Karşı örnek panosu",
+      "prompt": "'Eş yarıçaplı çemberler daima eşkenar üçgen oluşturur' ve 'farklı yarıçaplı çemberler daima çeşitkenar oluşturur' ifadelerine birer karşı örnek çiz.",
+      "evidence": [
+        "İki geçerli karşı örnek",
+        "İki kesişim koşulu",
+        "Doğru karşılaştırma ve açıklama"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT537-P10",
+      "title": "Yarıçap-köşe tablo tasarımı",
+      "prompt": "Üç farklı çember çifti için A yarıçapı, B yarıçapı ve AB mesafesini tabloya yaz. Kesişen çemberlerden üçgen oluştur, kenar türünü göster ve en az bir hipotez kur.",
+      "evidence": [
+        "Üç kesişimli kurulum",
+        "Kenar uzunlukları tablosu",
+        "Hipotez/kanıt ilişkisi"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "construction",
+        "weight": 35,
+        "description": "İki çember ve ABP üçgenini doğru inşa etme"
+      },
+      {
+        "id": "measurement",
+        "weight": 25,
+        "description": "Merkez aralığı ve yarıçapları güvenilir ölçme"
+      },
+      {
+        "id": "classification",
+        "weight": 25,
+        "description": "Kenarlarına göre sınıflandırma ve gerekçe"
+      },
+      {
+        "id": "reflection",
+        "weight": 15,
+        "description": "Farklı kesişim ve karşı örnekleri değerlendirme"
+      }
+    ],
+    "levels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "teacherSignoffRequired": true
+  }
+}
