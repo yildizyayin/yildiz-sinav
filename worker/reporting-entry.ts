@@ -21,7 +21,7 @@ import { buildDejavuBook, dejavuPrintInput } from './lib/dejavu';
 import { validateContent } from './lib/learning-universe/grading';
 import { cancelUniverseTask, classTaskOutcomes, createUniverseTask, listUniverseTasks, TASK_STAFF, universeTaskDetail } from './lib/learning-universe/tasks';
 import { featureEnabledFor } from './lib/platform-feature-policy';
-import { authoringOutcomes, contentGaps, listTemplates, universeUsage, updateTemplate, XP_RULES } from './lib/learning-universe/admin';
+import { authoringOutcomes, contentGaps, institutionUniverseUsage, listTemplates, universeUsage, updateTemplate, XP_RULES } from './lib/learning-universe/admin';
 import { renderDejavuAnswerKeyPdf, renderDejavuBookPdf, StudioPrintError } from './lib/studio-pdf';
 
 function apiError(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
@@ -601,6 +601,12 @@ async function universeContents(request:Request,env:Env,user:AuthUser,url:URL):P
   const path=url.pathname;
   if(!path.startsWith('/api/reporting/universe/'))return null;
   if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden('Öğrenme Evreni içerikleri okul personeline açıktır.');
+  if(path==='/api/reporting/universe/institution-usage'&&request.method==='GET'){
+    const inst=user.role==='SUPER_ADMIN'?url.searchParams.get('institutionId'):user.role==='INSTITUTION_MANAGER'?user.institution_id:null;
+    if(!inst)return forbidden('Kurum özeti kurum yöneticisi içindir.');
+    if(user.role!=='SUPER_ADMIN'&&!(await featureEnabledFor(env,user,'LEARNING_UNIVERSE')))return json({ok:true,enabled:false});
+    return json({ok:true,enabled:true,...await institutionUniverseUsage(env,inst)});
+  }
   // Evren merkezi: outcomes to write for (staff), gaps / templates / usage (Super Admin only)
   if(path==='/api/reporting/universe/outcomes'&&request.method==='GET'){
     const g=Number(url.searchParams.get('gradeLevel'));if(!Number.isInteger(g)||g<4||g>12)return apiError(400,'INVALID_GRADE','Sınıf 4–12 arasında olmalı.');

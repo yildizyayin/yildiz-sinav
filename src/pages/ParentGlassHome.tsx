@@ -1,3 +1,4 @@
+import { properName } from '../lib/personName';
 import { useEffect,useState } from 'react';
 import { ArrowDown,ArrowRight,ArrowUp,BarChart3,Bell,CalendarDays,UserCheck,Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -29,7 +30,7 @@ export function ParentGlassHome(){
  const att=attendance.find((a:any)=>a.student?.id===childId);
  const summary=weekly?.summary;const developing=weekly?.developing||[];
  const firstName=String(user?.display_name||'').split(' ')[0];
- const childName=child?String(child.name||'').split(' ')[0].toLocaleLowerCase('tr-TR').replace(/^./,(c:string)=>c.toLocaleUpperCase('tr-TR')):'';
+ const childName=child?properName(String(child.name||'').split(' ')[0]):'';
  if(error)return <div className="alert error">{error}</div>;
  return <div className="sg-home sg-parent">
   <div className="sg-orbs" aria-hidden="true"><i/><i/><i/></div>
