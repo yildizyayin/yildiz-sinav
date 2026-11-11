@@ -1,0 +1,43 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "anunex-tanitim",
+  "main": "./worker/preview-policy-production-entry.ts",
+  "compatibility_date": "2026-08-26",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1
+  },
+  "assets": {
+    "directory": "./dist/client",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "anunex-tanitim-db",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "FILES",
+      "bucket_name": "anunex-tanitim-files"
+    }
+  ],
+  "vars": {
+    "ENVIRONMENT": "tanitim",
+    "SCHEDULED_JOBS_PAUSED": "true",
+    "PRODUCT_NAME": "Anunex — Tanıtım Ortamı",
+    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+    "QUESTION_GENERATION_ENABLED": "false",
+    "QUESTION_AGENT_EXECUTION_ENABLED": "false",
+    "QUESTION_VIDEO_RENDER_ENABLED": "false",
+    "QUESTION_AUTOMATED_ACADEMIC_YEAR": "2027-2028"
+  }
+}

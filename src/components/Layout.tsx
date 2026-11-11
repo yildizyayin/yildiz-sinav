@@ -219,6 +219,7 @@ export function Layout() {
   const activeTheme=activePanelTheme(readPanelTheme(user.id),allowedThemeKeys,panelExperience?.specialDay?.theme_key,panelExperience?.defaultTheme||'ANUNEX_STANDARD');
   return <div className={`app-shell role-${user.role.toLowerCase()} ${mobileNavOpen?'nav-open':''}`} data-panel-theme={activeTheme} data-panel-module={moduleView}>
     <button className="nav-scrim" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}/>
+    {typeof window!=='undefined'&&window.location.hostname==='tanitim.anunex.com'&&<div className="tanitim-ribbon" role="note">TANITIM ORTAMI · örnek veriler</div>}
     <aside className="sidebar" aria-label="Ana menü">
       <div className="brand"><AnunexBrand compact inverse tagline/><button className="mobile-nav-close" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}><X size={20}/></button></div>
       {user.role==='SUPER_ADMIN' && activeTheme==='ANUNEX_STANDARD' ? <ApprovedAdminNavigation items={[...visibleNav,...(groupedItems?.flatMap(group=>group.items)||[])]} displayName={user.display_name} onNavigate={()=>setMobileNavOpen(false)} onLogout={async()=>{try{await logout();navigate('/login')}catch(e:any){setLogoutError(e.message)}}}/> : <>
