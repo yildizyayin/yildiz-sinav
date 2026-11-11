@@ -7,14 +7,14 @@
 | Ders | Resmî öğrenme çıktısı | Hedef soru | Taslak | Editoryal onay |
 |---|---:|---:|---:|---:|
 | Türkçe | 80 | 4.000 | 0 | 0 |
-| Matematik | 23 | 1.150 | 950 | 0 |
+| Matematik | 23 | 1.150 | 1.050 | 0 |
 | Fen Bilimleri | 26 | 1.300 | 0 | 0 |
 | Sosyal Bilgiler | 18 | 900 | 0 | 0 |
 | İngilizce | 178 | 8.900 | 0 | 0 |
 | Din Kültürü | 18 | 900 | 0 | 0 |
-| **Toplam** | **343** | **17.150** | **950** | **0** |
+| **Toplam** | **343** | **17.150** | **1.050** | **0** |
 
-### Tam 50 taslağa ulaşan on dokuz matematik çıktısı
+### Tam 50 taslağa ulaşan yirmi bir matematik çıktısı
 - MAT.5.1.1: 50, eski PR #519.
 - MAT.5.1.2: 50, eski PR #522.
 - MAT.5.1.3: 50, `MAT513_part01/02_25_questions.json`.
@@ -34,10 +34,12 @@
 - MAT.5.4.2: 50, `MAT542_part01/02_25_questions.json`, ayrıca **10 birim kare/alan keşif görevi** (kota dışında).
 - MAT.5.4.3: 50, `MAT543_part01/02_25_questions.json`, ayrıca **10 alan/çevre karşılaştırma ve piksel sanat görevi** (kota dışında).
 - MAT.5.4.4: 50, `MAT544_part01/02_25_questions.json`, ayrıca **10 gerçek yaşam problem çözme görevi** (kota dışında).
+- MAT.5.5.1: 50, `MAT551_part01/02_25_questions.json`, ayrıca **10 anket/veri/toplama/poster görevi** (kota dışında).
+- MAT.5.5.2: 50, `MAT552_part01/02_25_questions.json`, ayrıca **10 yanlılık/hata/kanıta dayalı tartışma görevi** (kota dışında).
 
 ## Yapısal denetim (GitHub'dan dosyalar yeniden okunarak)
-- 35 JSON soru içerik dosyası, toplam **950** taslak soru.
-- 19 öğrenme çıktısına tam 50'şer kayıt.
+- 39 JSON soru içerik dosyası, toplam **1.050** taslak soru.
+- 21 öğrenme çıktısına tam 50'şer kayıt.
 - Her soruda 4 farklı seçenek ve dolu doğru cevap/çözüm alanı.
 - Yanlış sınıf/kazanım kodu, birebir tekrarlanan soru kökü veya eksik anahtar **saptanmadı**.
 - Her kazanımda cevap şıkları dengeli (A=13, B=13, C=12, D=12).
@@ -53,7 +55,7 @@
 6. **Müfredat yılı farkı:** İlk 100 soru `2026-2027` kaynağıyla, hedef registry `2027-2028` olarak kaydedilmiştir. Yıl eşdeğerliği resmî kayıtlarla doğrulanmadan D1 commit yok.
 7. **Resmî katalog belirsizliği:** Türkçe kataloğunda dokuz tema açıklaması çatışma kaydı bulunuyor; resmî sürümle düzeltilmeli.
 8. **Telif beyanı:** `OWNED` içeriğin başlangıç etiketidir, otomatik özgünlük/telif sertifikası değildir; kayıtlar incelenmeli.
-9. **Onay/yükleme:** 950 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
+9. **Onay/yükleme:** 1.050 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
 
 ## Sonraki kabul
 Öğretmen bağımsız çözümleri ve kapsam gözden geçirmesi, benzer kalıpları özgün görevlerle değiştirme, zorluk 5–6 tamamlama, hakları belgelenmiş görsel/grafik ekleme, resmî yıl/kod eşleştirmesi, uygun soru biçimleri, toplu 500-satırlık import preview/REVIEW aşaması, staging regresyon testleri, kullanıcı tarafından onaylı **son deploy**.
@@ -112,3 +114,11 @@ node scripts/grade5-question-bulk-audit.mjs --strict
 - Yeni dört JSON dosyası GitHub'dan yeniden okunarak 100 sorunun tamamında doğru sınıf/kazanım, dört benzersiz seçenek, cevap harfi, açıklama, 1–6 zorluk aralığı ve birebir kök tekrarı denetlendi. Yapısal hata bulunmadı. **Bu, bağımsız matematiksel doğruluk, ölçme-değerlendirme uzmanı onayı veya özgünlük sertifikası değildir.**
 - MAT.5.4.3 zorluk: L1=4, L2=11, L3=25, L4=6, L5=3, L6=1. MAT.5.4.4 zorluk: L1=5, L2=12, L3=16, L4=13, L5=3, L6=1. Etiketlerin pedagojik uygunluğu uzman tarafından doğrulanmalı.
 - Alan/çevre görselleri ve dijital piksel sanatı çıktıları eklenmiş değil. Telif, görsel doğruluk, resmî yıl/kod uyumu ve editoryal onay kontrol edilmeden üretim ortamına yazılmayacak.
+
+## MAT.5.5.1 ve MAT.5.5.2 / İstatistiksel Araştırma Süreci (11 Kasım 2026)
+- Resmî MEB kaynak: https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/452. MAT.5.5.1'in araştırma sorusu, veri toplama planı, anket, sıklık tablosu/grafik, analiz, sonuç ve öz değerlendirme bileşenleri; MAT.5.5.2'nin eleştirel inceleme, istatistiksel gerekçe, hata-yanlılık bulma ve kabul/çürütme süreçleri kullanıldı.
+- **Dört yeni JSON dosyasında 100 taslak soru**, ayrıca 20 rubrikli araştırma/rapor inceleme görevi kaydedildi. Güncel toplam **1.050 MC taslak + 128 rubrikli ayrı görev**. Uygulama görevleri 1.050 sayısına dahil değildir; mevcut MC importer ile içe aktarılamaz.
+- Tüm anket sayıları ve gazete/sosyal medya örnekleri sentetiktir; gerçek öğrenci/kişisel verisi alınmadı.
+- GitHub'dan 4 yeni JSON yeniden okunarak her biri 25'lik 100 satırda 5. sınıf kodu, 4 benzersiz seçenek, doğru cevap harfi, dolu açıklama, 1–6 arası zorluk ve birebir soru kökü tekrar denetimi yapıldı. **Yapısal hata yok**. Bu, cevapların bağımsız istatistik uzmanı kontrolünü, gerçek veri kaynağı uygunluğunu veya pedagojik onayı **kanıtlamaz**.
+- MAT.5.5.1 zorluk dağılımı: L1=8, L2=22, L3=11, L4=8, L5=1, L6=0; yüksek zorlukta nitelikli görev eksikliği var. MAT.5.5.2: L1=0, L2=11, L3=19, L4=16, L5=3, L6=1. En az 6 düzey için 5.5.1'de uzman denetiminde özgün görev gerekir.
+- Grafikler yalnız metinsel verilerle temsil edilmiştir. Geçerli eksenli, matematiksel doğruluğu kontrol edilmiş özgün SVG/vektör grafik, veri kaynağı/izin ve yaş uygunluğu onayı henüz eklenmedi. Gerçek öğrenciye yayımlama engeli sürüyor.
