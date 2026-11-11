@@ -67,3 +67,18 @@ export async function authoringOutcomes(env: Env, gradeLevel: number, q: string 
     WHERE o.active=1 AND cv.verified=1 AND o.grade_level=? AND cv.grade_level=? AND (? IS NULL OR lower(o.code||' '||o.title||' '||COALESCE(o.topic,'')) LIKE ?)
     ORDER BY cv.academic_year DESC,s.name,o.code LIMIT 100`).bind(gradeLevel, gradeLevel, like, like));
 }
+
+/** One institution's last 7 days for its manager's home page: counts only, no student is named. */
+export async function institutionUniverseUsage(env: Env, institutionId: string) {
+  const [plays, exams, tasks, waiting] = await Promise.all([
+    one<any>(env.DB.prepare(`SELECT count(*) n,count(DISTINCT student_id) students,ROUND(AVG(CASE WHEN item_count>0 THEN 100.0*correct_count/item_count END),1) avg_percent FROM lu_sessions WHERE institution_id=? AND status='SUBMITTED' AND submitted_at>=datetime('now','-7 days')`).bind(institutionId)),
+    one<any>(env.DB.prepare(`SELECT count(*) n,count(DISTINCT student_id) students FROM nibiru_practice_exams WHERE institution_id=? AND created_at>=datetime('now','-7 days')`).bind(institutionId)),
+    one<any>(env.DB.prepare(`SELECT count(DISTINCT t.id) n,count(r.student_id) recipients,
+        SUM(CASE WHEN EXISTS(SELECT 1 FROM lu_sessions s WHERE s.student_id=r.student_id AND s.outcome_id=t.outcome_id AND s.status='SUBMITTED' AND (t.template_code IS NULL OR s.template_code=t.template_code) AND s.started_at>=t.created_at) THEN 1 ELSE 0 END) done
+      FROM lu_tasks t JOIN lu_task_recipients r ON r.task_id=t.id WHERE t.institution_id=? AND t.status='ACTIVE'`).bind(institutionId)),
+    one<any>(env.DB.prepare(`SELECT count(*) n FROM lu_game_contents WHERE owner_type='INSTITUTION' AND owner_id=? AND review_status='REVIEW'`).bind(institutionId)),
+  ]);
+  return { days: 7, plays: Number(plays?.n || 0), students: Number(plays?.students || 0), avgPercent: plays?.avg_percent ?? null,
+    nibiruExams: Number(exams?.n || 0), examStudents: Number(exams?.students || 0),
+    tasks: { active: Number(tasks?.n || 0), recipients: Number(tasks?.recipients || 0), done: Number(tasks?.done || 0) }, contentWaiting: Number(waiting?.n || 0) };
+}

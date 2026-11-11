@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../auth';
 import { useFeatures } from '../lib/useFeatures';
+import { UniverseStaffSummary } from '../components/UniverseStaffSummary';
 import './teacher-today.css';
 
 function useDashboard(){const[data,setData]=useState<any>(null);const[error,setError]=useState('');useEffect(()=>{void api<any>('/api/dashboard').then(setData).catch(e=>setError(e.message))},[]);return{data,error}}
@@ -46,6 +47,7 @@ function TeacherToday({today,guidance}:{today:any;guidance:boolean}){
     <div className="teacher-today-head"><h3>Zorlanılan kazanımlar</h3><Link className="link-button" to="/outcomes">Kazanımlar →</Link></div>
     {weak.length?<ul className="teacher-today-list">{weak.map((o:any)=><li key={o.id}><span>{o.code?`${o.code} · `:''}{o.title}</span><small>%{Math.round(o.success_rate*100)} doğru · {o.student_count} öğrenci · {o.subject_name}</small></li>)}</ul>:<p className="muted">Son 60 günde yeterli kanıt yok.</p>}
    </div>}
+   <UniverseStaffSummary mode="TEACHER"/>
   </div>
  </section>
 }

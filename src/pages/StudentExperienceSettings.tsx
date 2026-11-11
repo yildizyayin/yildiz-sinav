@@ -3,15 +3,9 @@ import { Check,RotateCcw,Sparkles,Volume2,VolumeX } from 'lucide-react';
 import { api } from '../api';
 import { gradeProfile } from '../lib/gradeProfile';
 import { playGlass, readSoundSettings, writeSoundSettings } from '../lib/glassSounds';
+import { LEARNER_THEMES as STUDENT_THEMES } from '../lib/learnerThemes';
 import './student-standard.css';
 
-/** Student-facing names of the approved themes (owner, 10 Nov 2026); the catalogue names are written for staff. */
-const STUDENT_THEMES:Record<string,{name:string;text:string;colors:string[]}>={
- ANUNEX_STANDARD:{name:'Cam',text:'Açık mavi cam görünüm; ANUNEX’in standart teması.',colors:['#e9f0fb','#1d4ed8','#f97316']},
- ANUNEX_COSMIC:{name:'Kozmik',text:'Koyu uzay zemin ve parlak mavi vurgular.',colors:['#070b1f','#7dd3fc','#6366f1']},
- ANUNEX_NEON:{name:'Neon',text:'Açık lila zemin, mor ve camgöbeği vurgular.',colors:['#fdf4ff','#7c3aed','#22d3ee']},
- ANUNEX_FOCUS:{name:'Odak',text:'Sade ve düz renkler; dikkat dağıtmayan görünüm.',colors:['#f4f5f7','#1f3a5f','#111827']},
-};
 
 export function StudentExperienceSettings(){
  const [data,setData]=useState<any>(null);const[themes,setThemes]=useState<any[]>([]);const[form,setForm]=useState<any>(null);const[busy,setBusy]=useState(false);const[message,setMessage]=useState('');const[error,setError]=useState('');

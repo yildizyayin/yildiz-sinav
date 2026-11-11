@@ -17,8 +17,9 @@ async function currentExperience(env:Env,user:AuthUser){
   const themes=user.role==='SUPER_ADMIN'
     ? await all<any>(env.DB.prepare(`SELECT theme_key,name,description,is_standard FROM panel_themes WHERE active=1 ORDER BY sort_order,name`))
     // owner (10 Nov 2026): students choose among all approved themes unless the Super Admin switched one off for
-    // their institution (an explicit disabled row); other roles still need the theme switched on for them
-    : await all<any>(env.DB.prepare(`SELECT DISTINCT t.theme_key,t.name,t.description,t.is_standard FROM panel_themes t LEFT JOIN institution_panel_theme_access a ON a.theme_key=t.theme_key AND a.institution_id=? AND a.role=? WHERE t.active=1 AND (t.is_standard=1 OR a.enabled=1 OR (?='STUDENT' AND a.theme_key IS NULL)) ORDER BY t.sort_order,t.name`).bind(user.institution_id,user.role,user.role));
+    // their institution (an explicit disabled row); parents too since 11 Nov 2026; other roles still need the theme
+    // switched on for them
+    : await all<any>(env.DB.prepare(`SELECT DISTINCT t.theme_key,t.name,t.description,t.is_standard FROM panel_themes t LEFT JOIN institution_panel_theme_access a ON a.theme_key=t.theme_key AND a.institution_id=? AND a.role=? WHERE t.active=1 AND (t.is_standard=1 OR a.enabled=1 OR (? IN ('STUDENT','PARENT') AND a.theme_key IS NULL)) ORDER BY t.sort_order,t.name`).bind(user.institution_id,user.role,user.role));
   const specialDay=await one<any>(env.DB.prepare(`SELECT id,title,short_message,theme_key,accent_color,starts_at,ends_at FROM special_day_experiences WHERE active=1 AND datetime(starts_at)<=CURRENT_TIMESTAMP AND datetime(ends_at)>CURRENT_TIMESTAMP AND (institution_id IS NULL OR institution_id=?) AND (role IS NULL OR role=?) ORDER BY priority DESC,created_at DESC LIMIT 1`).bind(user.institution_id,user.role));
   return json({ok:true,defaultTheme:'ANUNEX_STANDARD',allowedThemes:themes,specialDay});
 }

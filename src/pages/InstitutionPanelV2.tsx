@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../auth';
 import { useFeatures } from '../lib/useFeatures';
+import { UniverseStaffSummary } from '../components/UniverseStaffSummary';
+// same words as the exam center (ExamCenterHub)
+const EXAM_STATUS:Record<string,string>={DRAFT:'Taslak',ACTIVE:'Hazır',CLOSED:'Kapandı',ARCHIVED:'Arşivde'};
 import './teacher-today.css';
 
 /** Owner (9 Nov): "iş odaklı sade" — the institution home leads with today's work, in the existing look. */
@@ -26,6 +29,7 @@ function InstitutionToday({today}:{today:any}){
     <div className="teacher-today-head"><h3>Öğretmen atamaları</h3><Link className="link-button" to="/teacher-assignments">Yetkiler →</Link></div>
     {teacherless.length?<><p><strong>{teacherless.length}</strong> sınıfa henüz öğretmen atanmadı.</p><ul className="teacher-today-list">{teacherless.slice(0,6).map((c:any)=><li key={c.id}><span>{c.name}</span></li>)}</ul></>:<p className="ok-text">Her sınıfın atanmış öğretmeni var.</p>}
    </div>
+   <UniverseStaffSummary mode="MANAGER"/>
   </div>
  </section>
 }
@@ -63,6 +67,6 @@ export function InstitutionPanelV2(){
    <Link className="quick-card" to="/announcements"><div className="quick-icon"><Bell/></div><div><h3>Duyuru Merkezi</h3><p>Hedef kitle ve kanala göre kurum duyurularını yönetin.</p></div></Link>
   </div>
   <div className="section-head"><div><h2>Son sınavlar</h2><p>Kurumunuzun son sınav hareketleri.</p></div></div>
-  <div className="cards-list">{(data?.recentExams||[]).map((e:any)=><div className="list-card" key={e.id}><div><strong>{e.title}</strong><span>{e.exam_type} · {e.exam_date||'Tarih yok'} · {e.status}</span></div><Link className="link-button" to={`/exams/${e.id}/evaluate`}>Aç</Link></div>)}{!data?.recentExams?.length&&<div className="empty">Henüz sınav hareketi bulunmuyor.</div>}</div>
+  <div className="cards-list">{(data?.recentExams||[]).map((e:any)=><div className="list-card" key={e.id}><div><strong>{e.title}</strong><span>{e.exam_type} · {e.exam_date||'Tarih yok'} · {EXAM_STATUS[e.status]||e.status}</span></div><Link className="link-button" to={`/exams/${e.id}/evaluate`}>Aç</Link></div>)}{!data?.recentExams?.length&&<div className="empty">Henüz sınav hareketi bulunmuyor.</div>}</div>
  </div>;
 }
