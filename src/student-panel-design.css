@@ -103,3 +103,7 @@ html:has(.app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSM
 .app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] .calendar-days{background:transparent}
 .app-shell:is(.role-student,.role-parent)[data-panel-theme] .nibiru-topbar .nibiru-brand-lockup{display:inline-flex}
 .app-shell:is(.role-student,.role-parent)[data-panel-theme="ANUNEX_COSMIC"] :is(.quick-icon,.scope-badge){background:rgba(125,211,252,.16);color:var(--sd-accent);border-color:transparent}
+
+/* Tanıtım ortamı (11 Nov 2026): always say it is a showcase with invented data */
+.tanitim-ribbon{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:60;padding:4px 12px;border-radius:999px;background:#7c3aed;color:#fff;font:700 11px/1.6 system-ui,sans-serif;letter-spacing:.06em;pointer-events:none;box-shadow:0 4px 14px rgba(124,58,237,.35)}
+@media (max-width:760px){.tanitim-ribbon{bottom:auto;top:6px}}
