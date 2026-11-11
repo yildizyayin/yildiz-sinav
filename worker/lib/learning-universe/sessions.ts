@@ -116,7 +116,7 @@ export async function startUniverseSession(env: Env, user: AuthUser, body: any):
     const picked = template.content_kind === 'QUESTION' ? await pickQuestions(env, ctx, outcome, user.student_id!, need, allowRepeat)
       : template.content_kind === 'AUDIO_QUESTION' || ['PAIRS', 'SEQUENCE', 'CLOZE', 'HOTSPOT', 'STEPS'].includes(template.content_kind) ? await pickContents(env, ctx, outcome, user.student_id!, template.content_kind, need, allowRepeat)
       : { items: [], fresh: 0, met: 0 };
-    items = picked.items;
+    items = template.kind === 'MEMORY' ? picked.items.map((it) => ({ ...it, pub: { ...it.pub, mode: 'MEMORY' } })) : picked.items;
     if (items.length < template.min_items) {
       await recordGap(env, ctx, outcome, template.kind, template.min_items, picked.fresh);
       return { ok: false, reason: 'CONTENT_GAP', available: picked.fresh, needed: template.min_items, repeatAvailable: allowRepeat ? undefined : picked.met };
