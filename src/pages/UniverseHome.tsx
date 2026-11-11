@@ -31,6 +31,7 @@ export function UniverseHome() {
       <div className="um-stats">
         <div className="um-stat"><Sparkles size={18} aria-hidden="true" /><div><strong>Seviye {d.xp.level}</strong><span className="um-bar" aria-label={`Sonraki seviyeye ${d.xp.toNext} XP`}><i style={{ width: `${100 - (d.xp.toNext / 200) * 100}%` }} /></span><small>{d.xp.total} XP · sonrakine {d.xp.toNext}</small></div></div>
         <div className="um-stat"><Flame size={18} aria-hidden="true" /><div><strong>Bu hafta {d.week.done}/{d.week.goal}</strong><span className="um-bar"><i style={{ width: `${weekPct}%` }} /></span><small>Haftalık hedef bir öneridir.</small></div></div>
+        <Link className="um-exam" to="/evren/deneme">Nibiru denemesi · 10 / 20 soru →</Link>
       </div>
     </header>
 

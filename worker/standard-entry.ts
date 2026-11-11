@@ -7,6 +7,7 @@ import { getAuthUser } from './lib/auth';
 import { all, json, one, uuid } from './lib/db';
 import { gradeProfile, nibiruStudentPrompts } from '../src/lib/gradeProfile';
 import { startUniverseSession, submitUniverseSession, universeSessionView } from './lib/learning-universe/sessions';
+import { listNibiruExams, nibiruExamView, startNibiruExam, submitNibiruExam } from './lib/learning-universe/nibiru-exam';
 import { universeMap } from './lib/learning-universe/map';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
@@ -231,6 +232,10 @@ const UNIVERSE_MESSAGES:Record<string,[number,string]>={
  CONTENT_GAP:[409,'Bu kazanım için bu etkinliğe uygun yeterli onaylı içerik henüz yok.'],
  SESSION_NOT_FOUND:[404,'Etkinlik bulunamadı.'],
  SESSION_EXPIRED:[409,'Bu etkinliğin süresi doldu; yeniden başlatabilirsin.'],
+ INVALID_SIZE:[400,'Deneme 10 ya da 20 soruluk olabilir.'],
+ NOT_ENOUGH_QUESTIONS:[409,'Bu deneme için daha önce görmediğin yeterli onaylı soru henüz yok.'],
+ EXAM_NOT_FOUND:[404,'Deneme bulunamadı.'],
+ ALL_QUESTIONS_REQUIRED:[400,'Bütün sorular gönderilmeli; boş bıraktıkların boş sayılır.'],
 };
 /** Nibiru Öğrenme Evreni: start a play, read it, submit it (graded on the server, once). */
 async function universeApi(request:Request,env:Env,user:AuthUser,path:string){
@@ -240,6 +245,12 @@ async function universeApi(request:Request,env:Env,user:AuthUser,path:string){
  const m=path.match(/^\/api\/student-standard\/universe\/sessions\/([^/]+)(\/submit)?$/);
  if(m&&!m[2]&&request.method==='GET'){const v=await universeSessionView(env,user,m[1]);return v?json(v):out({ok:false,reason:'SESSION_NOT_FOUND'});}
  if(m&&m[2]&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await submitUniverseSession(env,user,m[1],body);if(!r.ok)return out(r);return json(await universeSessionView(env,user,m[1]));}
+ // Nibiru denemesi: 10 or 20 new questions of the student's own grade, weaker outcomes first
+ if(path==='/api/student-standard/universe/exams'&&request.method==='GET')return json({ok:true,exams:await listNibiruExams(env,user)});
+ if(path==='/api/student-standard/universe/exams'&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await startNibiruExam(env,user,body);if(!r.ok)return out(r);return json(await nibiruExamView(env,user,r.examId),r.reused?200:201);}
+ const x=path.match(/^\/api\/student-standard\/universe\/exams\/([^/]+)(\/submit)?$/);
+ if(x&&!x[2]&&request.method==='GET'){const v=await nibiruExamView(env,user,x[1]);return v?json(v):out({ok:false,reason:'EXAM_NOT_FOUND'});}
+ if(x&&x[2]&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await submitNibiruExam(env,user,x[1],body);if(!r.ok)return out(r);return json(await nibiruExamView(env,user,x[1]));}
  return fail(404,'NOT_FOUND','Öğrenme Evreni yolu bulunamadı.');
 }
 
