@@ -12,9 +12,9 @@ Kazanım kazanım onay bekleme; 5. sınıfı **tek toplu iş** olarak yönet. He
 - Tam resmî süreç bileşenleri ile yayımlanabilir yıllık kapsam, örnek soru sayısı değil, uzman incelemesi gerektirir.
 
 ## Mevcut içerik
-- `EXISTING_100_REVIEW_ONLY.json`: önceden hazırlanmış MAT.5.1.1 (PR #519, 50) ve MAT.5.1.2 (PR #522, 50) taslaklarını tek dosyada toplar.
+- `EXISTING_100_REVIEW_ONLY.json`: önceden hazırlanmış MAT.5.1.1 (PR #519, 50) ve MAT.5.1.2 (PR #522, 50) taslaklarını tek dosyada toplar. Ayrıca MAT513_part01/02 ve MAT514_part01/02 dosyalarında MAT.5.1.3 ve MAT.5.1.4 için 50'şer soru taslağı vardır.
 - Bunlar **öğretmen onaylı değildir** ve eski `2026–2027` kaynak yılıyla hazırlandıklarından `2027–2028` içe aktarımına direkt sokulamaz.
-- Resmî amaç: 17.150. Hazırlanmış taslak: 100. Öğrenciye açılmış/onaylı: **0 bu paket kapsamında**. Geri kalan 17.050 içerik **üretilmedi**.
+- Resmî amaç: 17.150. Hazırlanmış taslak: 200. Öğrenciye açılmış/onaylı: **0 bu paket kapsamında**. Geri kalan 16.950 içerik **üretilmedi**.
 - Var olmayan fotoğraf dosyası veya görsel lisans onayı uydurulmaz. Gerçek fotoğraf seçimi, izin belgesi, atıf, yaşa uygunluk ve soru ile bağlantısı doğrulandıktan sonra `question_assets` ile saklanır.
 
 ## Toplu denetim
