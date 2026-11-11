@@ -3,14 +3,16 @@ name: Tanıtım ortamı (tanitim.anunex.com)
 # Owner (11 Nov 2026): a separate showcase for field sales from December 2026 — its own Worker and D1, the 2027–2028
 # season, invented data only, no AI binding, no scheduled jobs. "deploy" updates the code (migrations + Worker);
 # "reset" deletes the showcase database and builds it again from the migrations, the verified 2027–2028 MEB programs
-# (read-only copy from production; public data) and scripts/generate-tanitim-seed.mjs.
+# (read-only copy from production; public data) and scripts/generate-tanitim-seed.mjs. "content" reloads the TANITIM
+# activities (scripts/generate-tanitim-content.mjs) and the TANITIM exams (scripts/tanitim-exams.sql, made from the real
+# exam flow on invented answers) without touching anything else.
 on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'deploy: yalnız kodu güncelle · reset: veritabanını sıfırla ve tanıtım verisini yeniden kur'
+        description: 'deploy: yalnız kodu güncelle · reset: veritabanını sıfırla ve tanıtım verisini yeniden kur · content: TANITIM etkinliklerini ve denemelerini yeniden yükle'
         type: choice
-        options: [deploy, reset]
+        options: [deploy, reset, content]
         default: deploy
 
 permissions:
@@ -100,6 +102,13 @@ jobs:
         run: |
           node scripts/generate-tanitim-seed.mjs
           npx wrangler d1 execute DB --remote --file tmp/tanitim-seed.sql --config wrangler.tanitim.resolved.json
+
+      - name: Load TANITIM activities and exams
+        if: steps.db.outputs.fresh == 'true' || inputs.mode == 'content'
+        run: |
+          node scripts/generate-tanitim-content.mjs
+          npx wrangler d1 execute DB --remote --file tmp/tanitim-content.sql --config wrangler.tanitim.resolved.json
+          npx wrangler d1 execute DB --remote --file scripts/tanitim-exams.sql --config wrangler.tanitim.resolved.json
 
       - name: Deploy the showcase Worker
         run: npx wrangler deploy --config wrangler.tanitim.resolved.json --var RELEASE_SHA:${{ github.sha }}
