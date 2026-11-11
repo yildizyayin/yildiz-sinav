@@ -21,6 +21,7 @@ import { buildDejavuBook, dejavuPrintInput } from './lib/dejavu';
 import { validateContent } from './lib/learning-universe/grading';
 import { cancelUniverseTask, classTaskOutcomes, createUniverseTask, listUniverseTasks, TASK_STAFF, universeTaskDetail } from './lib/learning-universe/tasks';
 import { featureEnabledFor } from './lib/platform-feature-policy';
+import { authoringOutcomes, contentGaps, listTemplates, universeUsage, updateTemplate, XP_RULES } from './lib/learning-universe/admin';
 import { renderDejavuAnswerKeyPdf, renderDejavuBookPdf, StudioPrintError } from './lib/studio-pdf';
 
 function apiError(status:number,code:string,message:string,details?:unknown){return json({ok:false,error:{code,message,details}},status)}
@@ -600,6 +601,20 @@ async function universeContents(request:Request,env:Env,user:AuthUser,url:URL):P
   const path=url.pathname;
   if(!path.startsWith('/api/reporting/universe/'))return null;
   if(!['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER'].includes(user.role))return forbidden('Öğrenme Evreni içerikleri okul personeline açıktır.');
+  // Evren merkezi: outcomes to write for (staff), gaps / templates / usage (Super Admin only)
+  if(path==='/api/reporting/universe/outcomes'&&request.method==='GET'){
+    const g=Number(url.searchParams.get('gradeLevel'));if(!Number.isInteger(g)||g<4||g>12)return apiError(400,'INVALID_GRADE','Sınıf 4–12 arasında olmalı.');
+    return json({ok:true,outcomes:await authoringOutcomes(env,g,url.searchParams.get('q')?.trim()||null)});
+  }
+  if(['/api/reporting/universe/gaps','/api/reporting/universe/templates','/api/reporting/universe/usage'].includes(path)||path.startsWith('/api/reporting/universe/templates/')){
+    if(user.role!=='SUPER_ADMIN')return forbidden('Evren merkezi Süper Admin içindir.');
+    if(path==='/api/reporting/universe/gaps'&&request.method==='GET'){const g=Number(url.searchParams.get('gradeLevel'))||null;return json({ok:true,gaps:await contentGaps(env,{academicYear:url.searchParams.get('academicYear'),gradeLevel:g})})}
+    if(path==='/api/reporting/universe/templates'&&request.method==='GET')return json({ok:true,templates:await listTemplates(env),rules:XP_RULES});
+    if(path==='/api/reporting/universe/usage'&&request.method==='GET')return json({ok:true,...await universeUsage(env)});
+    const tm=path.match(/^\/api\/reporting\/universe\/templates\/([A-Z_]+)$/);
+    if(tm&&request.method==='POST'){const r=await updateTemplate(env,user,tm[1],await request.json().catch(()=>({})));return r.ok?json({ok:true}):apiError(r.status,r.code,r.message)}
+    return apiError(405,'METHOD_NOT_ALLOWED','Bu yöntem desteklenmiyor.');
+  }
   if(path==='/api/reporting/universe/contents'&&request.method==='GET'){
     const outcomeId=url.searchParams.get('outcomeId'),status=url.searchParams.get('status');
     const rows=await all<any>(env.DB.prepare(`SELECT c.id,c.content_kind,c.outcome_id,o.code outcome_code,o.title outcome_title,c.grade_level,c.academic_year,c.title,c.review_status,c.copyright_status,c.owner_type,c.owner_id,c.created_at,c.reviewed_at,c.public_json
