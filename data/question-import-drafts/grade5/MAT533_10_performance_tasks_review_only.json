@@ -1,0 +1,184 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.3.3",
+    "curriculumSource": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+    "catalogYear": "2027-2028",
+    "reviewStatus": "DRAFT_NOT_APPROVED",
+    "count": 10,
+    "notCountedToward50Questions": true,
+    "importableByExistingMCAPI": false
+  },
+  "tasks": [
+    {
+      "id": "MAT533-P01",
+      "title": "Açıölçer merkezini yerleştirme",
+      "category": "tool_use",
+      "taskType": "PRACTICAL_MEASUREMENT",
+      "prompt": "Deftere A köşeli bir açı çiz. Açıölçerin merkezini A'ya, sıfır doğrultusunu bir kola yerleştirerek açıyı iki kez ölç. Adımlarını yaz.",
+      "evidence": [
+        "Merkez ve başlangıç hizası",
+        "Doğru ölçeği okuma",
+        "Ölçümü tekrarlayarak kontrol"
+      ],
+      "requiresStudentWork": true,
+      "teacherReview": true
+    },
+    {
+      "id": "MAT533-P02",
+      "title": "30° ve 150° oluşturma",
+      "category": "construction",
+      "taskType": "PRACTICAL_MEASUREMENT",
+      "prompt": "A köşeli 30° ve B köşeli 150° açılarını açıölçerle çiz. İkisini de ölçerek dar/geniş olarak adlandır.",
+      "evidence": [
+        "İki farklı açı çizimi",
+        "30° ve 150° doğruluk kontrolü",
+        "Dar/geniş sınıflandırma"
+      ],
+      "requiresStudentWork": true,
+      "teacherReview": true
+    },
+    {
+      "id": "MAT533-P03",
+      "title": "Farklı yönde eş açı",
+      "category": "reflection",
+      "taskType": "PRACTICAL_MEASUREMENT",
+      "prompt": "60°'lik açı çizip kâğıdı döndür. Başka bir köşede yine 60° çiz ve aynı ölçünün nasıl korunduğunu açıklayarak kontrol et.",
+      "evidence": [
+        "Farklı yönlerde iki açı",
+        "Doğru derece ölçümleri",
+        "Yön ile büyüklüğü ayırt etme"
+      ],
+      "requiresStudentWork": true,
+      "teacherReview": true
+    },
+    {
+      "id": "MAT533-P04",
+      "title": "İç/dış derece ölçeği",
+      "category": "scale",
+      "taskType": "PRACTICAL_MEASUREMENT",
+      "prompt": "Çift ölçekli açıölçerde sağdan başlayan 0° ve soldan başlayan 0° değerlerini işaretle. Kendi çizdiğin dar açı için hangi ölçekte okuma yaptığını açıkla.",
+      "evidence": [
+        "İki başlangıç ölçeğini gösterme",
+        "Hizalı kolu belirleme",
+        "Doğru derece okuma gerekçesi"
+      ],
+      "requiresStudentWork": true,
+      "teacherReview": true
+    },
+    {
+      "id": "MAT533-P05",
+      "title": "Gerçek nesnede açı",
+      "category": "real_life",
+      "taskType": "PRACTICAL_MEASUREMENT",
+      "prompt": "Sınıftaki kitap kapağı, kapı veya makas gibi bir nesnenin iki kenarı arasındaki açıyı belirle. Açıölçerle ölçüp nesnenin fotoğrafını zorunlu tutmadan eskizle göster.",
+      "evidence": [
+        "Ortak köşe ve kenarlar",
+        "Açıölçerle tahmini veya uygun doğrudan ölçüm",
+        "Nesne ve ölçüm açıklaması"
+      ],
+      "requiresStudentWork": true,
+      "teacherReview": true
+    },
+    {
+      "id": "MAT533-P06",
+      "title": "Hatalı ölçüm düzeltme",
+      "category": "error",
+      "taskType": "PRACTICAL_MEASUREMENT",
+      "prompt": "Öğretmenin hazırladığı, merkezi yanlış yerleştirilmiş açıölçer örneğini incele. Hatanın nedenini bul ve doğru ölçümü yeniden yap.",
+      "evidence": [
+        "Yerleşim hatasının tespiti",
+        "Düzeltme adımları",
+        "Yeni ölçüm kanıtı"
+      ],
+      "requiresStudentWork": true,
+      "teacherReview": true
+    },
+    {
+      "id": "MAT533-P07",
+      "title": "Dik, doğru, tam açı",
+      "category": "representation",
+      "taskType": "PRACTICAL_MEASUREMENT",
+      "prompt": "90°, 180° ve 360°'lik dönmeleri kol/ok çizimleriyle göster. Dönme miktarını saat kadranı üzerinde de açıklayabilirsin.",
+      "evidence": [
+        "Üç ölçü ve türü",
+        "Dönme örnekleri",
+        "Dönme-mesafe ayrımı"
+      ],
+      "requiresStudentWork": true,
+      "teacherReview": true
+    },
+    {
+      "id": "MAT533-P08",
+      "title": "Dijital açı oluşturma",
+      "category": "digital",
+      "taskType": "PRACTICAL_MEASUREMENT",
+      "prompt": "Dinamik geometri yazılımında 75° açı oluştur. İkinci kolu sürükleyip 100° yap ve değişim miktarını yaz.",
+      "evidence": [
+        "Dijital açı aracı kullanma",
+        "Önce/sonra ölçü",
+        "25° değişim gerekçesi"
+      ],
+      "requiresStudentWork": true,
+      "teacherReview": true
+    },
+    {
+      "id": "MAT533-P09",
+      "title": "Eş açıyı kopyalama",
+      "category": "construction",
+      "taskType": "PRACTICAL_MEASUREMENT",
+      "prompt": "Öğretmenin verdiği 65° açıyı açıölçer yardımıyla başka konumda yeniden çiz. İki açıyı ölçüp karşılaştır.",
+      "evidence": [
+        "Başlangıç açısını ölçme",
+        "Yeniden çizme",
+        "Eşlik kontrolü ve hata payı notu"
+      ],
+      "requiresStudentWork": true,
+      "teacherReview": true
+    },
+    {
+      "id": "MAT533-P10",
+      "title": "Ölçme günlüğü",
+      "category": "reflection",
+      "taskType": "PRACTICAL_MEASUREMENT",
+      "prompt": "Bir çalışma sayfasındaki beş farklı açıdan her birinin türünü önce tahmin et, açıölçerle ölç, tahmin/ölçüm farkını iki sütunlu tabloya işle.",
+      "evidence": [
+        "Beş bağımsız ölçüm",
+        "Ölçü-tahmin karşılaştırma",
+        "Öz değerlendirme açıklaması"
+      ],
+      "requiresStudentWork": true,
+      "teacherReview": true
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "placement",
+        "weight": 25,
+        "description": "Merkezi ve sıfır ölçeğini doğru hizalama"
+      },
+      {
+        "id": "reading",
+        "weight": 25,
+        "description": "Ölçek ve açı değerini doğru okuma"
+      },
+      {
+        "id": "construction",
+        "weight": 30,
+        "description": "İstenen açıyı uygun araçla oluşturma"
+      },
+      {
+        "id": "reflection",
+        "weight": 20,
+        "description": "Ölçüm/hata kontrolü ve gerekçelendirme"
+      }
+    ],
+    "performanceLevels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "manualTeacherScoringRequired": true
+  }
+}
