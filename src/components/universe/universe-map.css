@@ -17,6 +17,7 @@
 .um-stat small{color:var(--um-muted)}
 .um-bar{display:block;height:8px;border-radius:8px;background:rgba(15,29,58,.1);overflow:hidden}
 .um-bar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#22c55e,#06b6d4)}
+.um-exam{justify-self:start;display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--um-border);background:var(--um-card);color:var(--um-accent);font-weight:700;text-decoration:none}
 .um-h2{margin:0 0 10px;font-size:18px}
 .um-missions{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 .um-mission{display:grid;gap:6px;padding:var(--um-pad);border-radius:var(--um-radius);background:var(--um-card);border:1px solid var(--um-border);color:inherit;text-decoration:none;min-height:120px}
