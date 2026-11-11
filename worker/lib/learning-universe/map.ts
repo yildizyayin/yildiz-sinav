@@ -29,44 +29,61 @@ export function masteryStage(o: Pick<OutcomeEvidence, 'status' | 'uniqueQuestion
   return rate >= 0.6 ? 'CONSOLIDATING' : 'DEVELOPING';
 }
 
-const daysSince = (at: string | null, now: number) => at ? Math.floor((now - Date.parse(at.replace(' ', 'T') + (at.includes('Z') ? '' : 'Z'))) / 86400000) : null;
+export const daysSince = (at: string | null, now: number) => at ? Math.floor((now - Date.parse(at.replace(' ', 'T') + (at.includes('Z') ? '' : 'Z'))) / 86400000) : null;
+
+/** Which game kinds an outcome (or every outcome of the grade) can be played with right now: enough approved,
+ * rights-cleared content of the student's own grade and year; a final needs two different content kinds. */
+/** Stage, label and the delayed-review hint for one karne record (map, karne and teachers read the same rule). */
+export function stageOf(o: OutcomeEvidence | undefined, now = Date.now()) {
+  const stage = masteryStage(o), lastDays = daysSince(o?.lastAt ?? null, now);
+  return { stage, stageLabel: STAGE_LABEL[stage], lastDays, reviewDue: stage === 'REVIEW_NEEDED' || (stage === 'LEARNED' && lastDays != null && lastDays >= REVIEW_AFTER_DAYS) };
+}
+
+export async function gameAvailability(env: Env, ctx: any, outcomeId?: string) {
+  const one_ = outcomeId ? ' AND l.node_id=?' : '', oneC = outcomeId ? ' AND outcome_id=?' : '';
+  const qArgs: any[] = [ctx.grade_level, ctx.institution_id], cArgs: any[] = [ctx.grade_level, ctx.academic_year, ctx.institution_id];
+  if (outcomeId) { qArgs.push(`ln_${outcomeId}`); cArgs.push(outcomeId); }
+  const [qCounts, cCounts, templates] = await Promise.all([
+    all<any>(env.DB.prepare(`SELECT substr(l.node_id,4) outcome_id,count(DISTINCT q.id) n FROM question_learning_links l JOIN question_bank q ON q.id=l.question_id
+      WHERE l.node_id LIKE 'ln_%' AND q.review_status='APPROVED' AND q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN') AND q.grade_level=?
+        AND COALESCE(q.question_type,'MULTIPLE_CHOICE')='MULTIPLE_CHOICE' AND (q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))${one_} GROUP BY l.node_id`).bind(...qArgs)),
+    all<any>(env.DB.prepare(`SELECT outcome_id,content_kind,count(*) n FROM lu_game_contents WHERE review_status='APPROVED' AND copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN') AND grade_level=? AND academic_year=?
+      AND (owner_type='PLATFORM' OR (owner_type='INSTITUTION' AND owner_id=?))${oneC} GROUP BY outcome_id,content_kind`).bind(...cArgs)),
+    all<any>(env.DB.prepare(`SELECT code,kind,title,content_kind,min_items FROM lu_game_templates WHERE active=1 AND ?>=min_grade AND ?<=max_grade ORDER BY sort_order`).bind(ctx.grade_level, ctx.grade_level)),
+  ]);
+  const qBy = new Map(qCounts.map((r) => [r.outcome_id, Number(r.n)]));
+  const cBy = new Map<string, Record<string, number>>();
+  for (const r of cCounts) { const m = cBy.get(r.outcome_id) || {}; m[r.content_kind] = Number(r.n); cBy.set(r.outcome_id, m); }
+  return (id: string) => {
+    const q = qBy.get(id) || 0, c = cBy.get(id) || {};
+    const open = templates.filter((t) => t.kind !== 'FINAL' && (t.content_kind === 'QUESTION' ? q >= t.min_items : (c[t.content_kind] || 0) >= t.min_items));
+    const distinct = new Set(open.map((t) => t.content_kind));
+    const fin = templates.find((t) => t.kind === 'FINAL');
+    if (fin && distinct.size >= 2) open.push(fin);
+    return open.map((t) => ({ code: t.code as string, kind: t.kind as string, title: t.title as string, contentKind: t.content_kind as string }));
+  };
+}
 
 export async function universeMap(env: Env, user: AuthUser, now = Date.now()) {
   const ctx = await studentContext(env, user);
   if (!ctx) return null;
   const profile = gradeProfile(ctx.grade_level);
-  const [outcomes, qCounts, cCounts, templates, evidence, week, xp] = await Promise.all([
+  const [outcomes, kindsFor, evidence, week, xp] = await Promise.all([
     all<any>(env.DB.prepare(`SELECT o.id,o.code,o.title,o.topic,o.subtopic,o.subject_id,COALESCE(s.name,'Ders') subject_name FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id LEFT JOIN subjects s ON s.id=o.subject_id
       WHERE o.active=1 AND cv.verified=1 AND cv.academic_year=? AND cv.grade_level=? AND o.grade_level=? ORDER BY s.name,o.code`).bind(ctx.academic_year, ctx.grade_level, ctx.grade_level)),
-    all<any>(env.DB.prepare(`SELECT substr(l.node_id,4) outcome_id,count(DISTINCT q.id) n FROM question_learning_links l JOIN question_bank q ON q.id=l.question_id
-      WHERE l.node_id LIKE 'ln_%' AND q.review_status='APPROVED' AND q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN') AND q.grade_level=?
-        AND COALESCE(q.question_type,'MULTIPLE_CHOICE')='MULTIPLE_CHOICE' AND (q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?)) GROUP BY l.node_id`).bind(ctx.grade_level, ctx.institution_id)),
-    all<any>(env.DB.prepare(`SELECT outcome_id,content_kind,count(*) n FROM lu_game_contents WHERE review_status='APPROVED' AND copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN') AND grade_level=? AND academic_year=?
-      AND (owner_type='PLATFORM' OR (owner_type='INSTITUTION' AND owner_id=?)) GROUP BY outcome_id,content_kind`).bind(ctx.grade_level, ctx.academic_year, ctx.institution_id)),
-    all<any>(env.DB.prepare(`SELECT code,kind,title,content_kind,min_items FROM lu_game_templates WHERE active=1 AND ?>=min_grade AND ?<=max_grade ORDER BY sort_order`).bind(ctx.grade_level, ctx.grade_level)),
+    gameAvailability(env, ctx),
     (async () => unifiedOutcomeEvidence(env, user.student_id!, { learnerView: true, target: await outcomeQuestionTarget(env, ctx.institution_id) }))(),
     one<any>(env.DB.prepare(`SELECT count(*) n FROM lu_sessions WHERE student_id=? AND status='SUBMITTED' AND date(submitted_at,'+3 hours')>=date('now','+3 hours','weekday 1','-7 days')`).bind(user.student_id)),
     one<any>(env.DB.prepare(`SELECT xp FROM gamification_profiles WHERE student_id=?`).bind(user.student_id)),
   ]);
-  const qBy = new Map(qCounts.map((r) => [r.outcome_id, Number(r.n)]));
-  const cBy = new Map<string, Record<string, number>>();
-  for (const r of cCounts) { const m = cBy.get(r.outcome_id) || {}; m[r.content_kind] = Number(r.n); cBy.set(r.outcome_id, m); }
   const evBy = new Map(evidence.map((e) => [e.outcomeId, e]));
-  const kindsFor = (outcomeId: string) => {
-    const q = qBy.get(outcomeId) || 0, c = cBy.get(outcomeId) || {};
-    const open = templates.filter((t) => t.kind !== 'FINAL' && (t.content_kind === 'QUESTION' ? q >= t.min_items : (c[t.content_kind] || 0) >= t.min_items));
-    const distinct = new Set(open.map((t) => t.content_kind));
-    const fin = templates.find((t) => t.kind === 'FINAL');
-    if (fin && distinct.size >= 2) open.push(fin);
-    return open.map((t) => ({ code: t.code, kind: t.kind, title: t.title }));
-  };
 
-  type Node = { id: string; code: string | null; title: string; stage: Stage; stageLabel: string; games: ReturnType<typeof kindsFor>; lastDays: number | null; reviewDue: boolean; uniqueQuestions: number };
+  type Node = { id: string; code: string | null; title: string; stage: Stage; stageLabel: string; games: Array<{ code: string; kind: string; title: string }>; lastDays: number | null; reviewDue: boolean; uniqueQuestions: number };
   const subjects = new Map<string, { id: string; name: string; planets: Map<string, Node[]> }>();
   const all_: Node[] = [];
   for (const o of outcomes) {
-    const ev = evBy.get(o.id), stage = masteryStage(ev), last = daysSince(ev?.lastAt ?? null, now);
-    const node: Node = { id: o.id, code: o.code, title: o.title, stage, stageLabel: STAGE_LABEL[stage], games: kindsFor(o.id), lastDays: last, reviewDue: stage === 'REVIEW_NEEDED' || (stage === 'LEARNED' && last != null && last >= REVIEW_AFTER_DAYS), uniqueQuestions: ev?.uniqueQuestions ?? 0 };
+    const ev = evBy.get(o.id), st = stageOf(ev, now);
+    const node: Node = { id: o.id, code: o.code, title: o.title, ...st, games: kindsFor(o.id).map(({ code, kind, title }) => ({ code, kind, title })), uniqueQuestions: ev?.uniqueQuestions ?? 0 };
     all_.push(node);
     const sid = o.subject_id || 'other';
     if (!subjects.has(sid)) subjects.set(sid, { id: sid, name: o.subject_name, planets: new Map() });

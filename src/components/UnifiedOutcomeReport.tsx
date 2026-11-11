@@ -90,7 +90,8 @@ export function UnifiedOutcomeReport({ studentId, role, institutionId }: { stude
       <ul>{items.map((o: any) => <li key={o.outcomeId} className={`unified-row ${o.status === 'LEARNED' ? 'learned' : ''}`}>
         <div className="unified-title"><span className="unified-code">{o.code}</span><span>{o.title}</span></div>
         <div className="unified-meta">
-          {(() => { const st = period === 'NOW' ? o.status : periodStatus(o.outcomeId); return st ? <span className={`unified-chip ${st === 'LEARNED' ? 'ok' : 'dev'}`}>{st === 'LEARNED' ? 'Öğrenildi' : learner ? 'Çalışmaya devam' : 'Gelişiyor'}</span> : <span className="unified-chip none">Bu dönemde veri yok</span>; })()}
+          {period === 'NOW' && o.stageLabel ? <span className={`unified-chip stage-${String(o.stage).toLowerCase()}`} title="Öğrenme aşaması">{o.stageLabel}{o.reviewDue ? ' · tekrar zamanı' : ''}</span>
+            : (() => { const st = period === 'NOW' ? o.status : periodStatus(o.outcomeId); return st ? <span className={`unified-chip ${st === 'LEARNED' ? 'ok' : 'dev'}`}>{st === 'LEARNED' ? 'Öğrenildi' : learner ? 'Çalışmaya devam' : 'Gelişiyor'}</span> : <span className="unified-chip none">Bu dönemde veri yok</span>; })()}
           <span>{o.uniqueQuestions} / {o.target} farklı soru</span>
           <span>son {o.recent.days} gün: {o.recent.uniqueQuestions ? `${o.recent.uniqueQuestions} soru, ${pct(o.recent.rate)}` : 'çalışma yok'}</span>
           {!learner && <span className="unified-sources">{Object.entries(o.bySource).filter(([, v]: any) => v.attempts).map(([k, v]: any) => `${SOURCE[k]} ${v.correct}/${v.attempts}`).join(' · ')}{o.attempts > o.uniqueQuestions ? ` · ${o.attempts} çözüm` : ''}</span>}

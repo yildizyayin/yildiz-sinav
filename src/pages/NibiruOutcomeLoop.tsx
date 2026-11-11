@@ -5,6 +5,8 @@ import { api } from '../api';
 import { embeddableVideo } from '../lib/physicalLink';
 import { soundCue } from '../lib/glassSounds';
 import { QuestionDataVisual } from '../components/QuestionDataVisual';
+import { UniversePlayer } from '../components/universe/UniversePlayer';
+import '../components/universe/universe.css';
 import './nibiru-loop.css';
 
 /**
@@ -71,7 +73,11 @@ export function NibiruOutcomeLoop() {
     await api(`/api/nibiru/coach/mini-tests/${encodeURIComponent(test.test.id)}/submit`, { method: 'POST', body: JSON.stringify({ answers: Object.entries(answers).map(([questionId, answer]) => ({ questionId, answer })) }) });
     setTest(null); await load();
   });
-  const openGame = () => run(async () => { setGame(await api<any>(`/api/nibiru/coach/loops/${id}/game`, { method: 'POST', body: '{}' })); });
+  const openGame = () => run(async () => {
+    const r = await api<any>(`/api/nibiru/coach/loops/${id}/game`, { method: 'POST', body: '{}' });
+    // with approved activity content the step is an Öğrenme Evreni game, played and graded by the engine
+    setGame(r.universe ? { universe: await api<any>(`/api/student-standard/universe/sessions/${encodeURIComponent(r.universe.sessionId)}`) } : r);
+  });
 
   if (error && !s) return <div className="nl-page"><div className="alert error">{error}</div><Link className="ghost" to="/wrong-answers">Yanlış ve boş sorularıma dön</Link></div>;
   if (!s) return <div className="nl-page"><div className="nl-card">Yükleniyor…</div></div>;
@@ -115,12 +121,18 @@ export function NibiruOutcomeLoop() {
     </section>}
 
     {s.step === 'GAME' && !game && <section className="nl-card nl-game-intro">
-      <h2><Gamepad2 size={20} aria-hidden="true" /> Mini test %{Math.round(Number(s.miniTest?.scorePercent || 0))} oldu, şimdi Hızlı Seri!</h2>
-      <p>Aynı kazanımdan 5 yeni soru, her biri için {GAME_SECONDS} saniye. Doğru cevaplar seri yapar; XP ödülü notuna karışmaz.</p>
-      <div className="nl-actions"><button className="primary" disabled={busy} onClick={() => void openGame()}><Zap size={16} aria-hidden="true" /> Oyunu başlat</button></div>
+      {s.gameKind === 'UNIVERSE' ? <>
+        <h2><Gamepad2 size={20} aria-hidden="true" /> Mini test %{Math.round(Number(s.miniTest?.scorePercent || 0))} oldu, şimdi Öğrenme Evreni oyunu!</h2>
+        <p>{s.game?.universe?.title ? `${s.game.universe.title}: ` : ''}aynı kazanımdan onaylı etkinliklerle kısa bir oyun. %80 ve üstü bu adımı geçirir; XP ödülü notuna karışmaz.</p>
+      </> : <>
+        <h2><Gamepad2 size={20} aria-hidden="true" /> Mini test %{Math.round(Number(s.miniTest?.scorePercent || 0))} oldu, şimdi Hızlı Seri!</h2>
+        <p>Aynı kazanımdan 5 yeni soru, her biri için {GAME_SECONDS} saniye. Doğru cevaplar seri yapar; XP ödülü notuna karışmaz.</p>
+      </>}
+      <div className="nl-actions"><button className="primary" disabled={busy} onClick={() => void openGame()}><Zap size={16} aria-hidden="true" /> {s.game ? 'Oyuna devam et' : 'Oyunu başlat'}</button></div>
     </section>}
 
-    {game && s.step === 'GAME' && <Game loopId={id} data={game} onDone={(next) => { setGame(null); setS(next); }} onError={setError} />}
+    {game?.universe && s.step === 'GAME' && <UniversePlayer data={game.universe} onDone={() => { setGame(null); void load(); }} />}
+    {game && !game.universe && s.step === 'GAME' && <Game loopId={id} data={game} onDone={(next) => { setGame(null); setS(next); }} onError={setError} />}
 
     {s.step === 'PASSED' && <section className="nl-card nl-end ok">
       <h2><Award size={22} aria-hidden="true" /> {s.loop.badgeAt ? 'Kazanım rozeti senin!' : 'Bu adımı başardın'}</h2>

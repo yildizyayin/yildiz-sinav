@@ -5,6 +5,9 @@ import { startOutcomeMiniTest } from './mini-test-catalog';
 import { hydrateQuestionMedia } from './question-content';
 import { SERVABLE_VIDEO_SQL } from './video-links';
 import { publishedForLearnersSql } from './exam-schedule';
+import { gameAvailability } from './learning-universe/map';
+import { startUniverseSession, studentContext } from './learning-universe/sessions';
+import { featureEnabledFor } from './platform-feature-policy';
 import { LEARNED_RULE, outcomeQuestionTarget, unifiedOutcomeEvidence } from './unified-outcome-evidence';
 
 /**
@@ -16,7 +19,9 @@ import { LEARNED_RULE, outcomeQuestionTarget, unifiedOutcomeEvidence } from './u
  *  2. video: only an approved, published video for that outcome. Automatically found YouTube videos stay candidates
  *     for a teacher to approve (A067), so with none the step says so and the loop goes on to the mini test;
  *  3. mini test: the existing coach mini test (5 different approved questions, pass at 80%);
- *  4. failed → the outcome mini game: a timed round of 5 other approved questions of the same outcome, graded here;
+ *  4. failed → the outcome mini game. With approved activity content for the outcome (and Öğrenme Evreni switched on)
+ *     it is an Öğrenme Evreni game (a final when two kinds exist, else a non-question activity), graded by the engine;
+ *     otherwise a timed round of 5 other approved questions of the same outcome, graded here;
  *  5. passed (test or game) → the loop is done; the badge is given only when the unified karne already counts the
  *     outcome as learned (enough different questions), otherwise it says how many more are needed;
  *  6. game failed, or no questions/curriculum match to measure with → one notification to the class's subject and
@@ -147,13 +152,32 @@ async function finishPassed(env: Env, loop: Loop) {
   if (evidence?.status === 'LEARNED') await env.DB.prepare(`UPDATE nibiru_outcome_loops SET badge_at=CURRENT_TIMESTAMP WHERE id=? AND badge_at IS NULL`).bind(loop.id).run();
 }
 
+/** The Öğrenme Evreni game for this loop, when the outcome has approved activity content: a final first, else the first
+ * non-question activity. Null means the question round is used. */
+async function engineGameFor(env: Env, user: AuthUser, loop: Loop) {
+  if (!(await featureEnabledFor(env, user, 'LEARNING_UNIVERSE'))) return null;
+  const ctx = await studentContext(env, user);
+  if (!ctx) return null;
+  const games = (await gameAvailability(env, ctx, loop.outcome_id))(loop.outcome_id);
+  return games.find((g) => g.kind === 'FINAL') || games.find((g) => g.contentKind !== 'QUESTION' && g.contentKind !== 'AUDIO_QUESTION') || null;
+}
+
+async function universeRound(env: Env, loop: Loop) {
+  if (!loop.lu_session_id) return null;
+  const s = await one<any>(env.DB.prepare(`SELECT s.id,s.status,s.item_count,s.correct_count,s.xp_awarded,t.title FROM lu_sessions s JOIN lu_game_templates t ON t.code=s.template_code WHERE s.id=? AND s.student_id=?`).bind(loop.lu_session_id, loop.student_id));
+  if (!s) return null;
+  const total = Number(s.item_count || 0), correct = Number(s.correct_count || 0);
+  const done = s.status === 'SUBMITTED', passed = done && evaluateMiniTest(correct, total, GAME_PASS).passed;
+  return { id: s.id as string, status: done ? (passed ? 'PASSED' : 'FAILED') : 'READY', questionCount: total, correct: done ? correct : null, scorePercent: done && total ? Math.round((correct / total) * 1000) / 10 : null, xp: done ? Number(s.xp_awarded || 0) : null, universe: { sessionId: s.id as string, title: s.title as string } };
+}
+
 /** Reads the loop and settles any step whose result is already recorded (a submitted mini test or game). */
 export async function outcomeLoopState(env: Env, user: AuthUser, loopId: string) {
   let loop = await ownLoop(env, user, loopId);
   if (!loop) return { ok: false, reason: 'LOOP_NOT_FOUND' } as const;
   if (loop.status === 'ACTIVE') {
     const test = loop.mini_test_id ? await one<any>(env.DB.prepare(`SELECT status FROM coach_mini_tests WHERE id=? AND student_id=?`).bind(loop.mini_test_id, loop.student_id)) : null;
-    const round = loop.game_round_id ? await one<any>(env.DB.prepare(`SELECT status FROM nibiru_game_rounds WHERE id=? AND loop_id=?`).bind(loop.game_round_id, loop.id)) : null;
+    const round = loop.lu_session_id ? await universeRound(env, loop) : loop.game_round_id ? await one<any>(env.DB.prepare(`SELECT status FROM nibiru_game_rounds WHERE id=? AND loop_id=?`).bind(loop.game_round_id, loop.id)) : null;
     if (test?.status === 'PASSED' || round?.status === 'PASSED') await finishPassed(env, loop);
     else if (round?.status === 'FAILED') await toTeacher(env, loop, 'GAME_NOT_ENOUGH');
     loop = (await ownLoop(env, user, loopId))!;
@@ -161,7 +185,7 @@ export async function outcomeLoopState(env: Env, user: AuthUser, loopId: string)
   const [outcome, test, round, video] = await Promise.all([
     one<any>(env.DB.prepare(`SELECT o.id,o.code,o.title,s.name subject_name FROM outcomes o LEFT JOIN subjects s ON s.id=o.subject_id WHERE o.id=?`).bind(loop.outcome_id)),
     loop.mini_test_id ? one<any>(env.DB.prepare(`SELECT id,status,question_count,correct_count,score_percent FROM coach_mini_tests WHERE id=?`).bind(loop.mini_test_id)) : null,
-    loop.game_round_id ? one<any>(env.DB.prepare(`SELECT id,status,question_count,correct_count,score_percent,xp_earned FROM nibiru_game_rounds WHERE id=?`).bind(loop.game_round_id)) : null,
+    loop.lu_session_id ? universeRound(env, loop) : loop.game_round_id ? one<any>(env.DB.prepare(`SELECT id,status,question_count,correct_count,score_percent,xp_earned FROM nibiru_game_rounds WHERE id=?`).bind(loop.game_round_id)) : null,
     videoDetail(env, loop),
   ]);
   let step: 'VIDEO' | 'MINI_TEST' | 'GAME' | 'PASSED' | 'TEACHER_REVIEW' | 'CLOSED';
@@ -187,7 +211,8 @@ export async function outcomeLoopState(env: Env, user: AuthUser, loopId: string)
     video: video ? { ...video, provider: /youtu\.?be/i.test(video.url) ? 'YOUTUBE' : 'OTHER' } : null,
     videoMissing: !loop.video_ref,
     miniTest: test ? { id: test.id, status: test.status, questionCount: test.question_count, correct: test.correct_count, scorePercent: test.score_percent } : null,
-    game: round ? { id: round.id, status: round.status, questionCount: round.question_count, correct: round.correct_count, scorePercent: round.score_percent, xp: round.xp_earned } : null,
+    game: round ? ('universe' in round ? round : { id: round.id, status: round.status, questionCount: round.question_count, correct: round.correct_count, scorePercent: round.score_percent, xp: round.xp_earned }) : null,
+    gameKind: step === 'GAME' && !round ? ((await engineGameFor(env, user, loop)) ? 'UNIVERSE' : 'QUICK') : round && 'universe' in round ? 'UNIVERSE' : round ? 'QUICK' : null,
   } as const;
 }
 
@@ -238,10 +263,19 @@ function publicQuestion(q: any) {
 export async function startLoopGame(env: Env, user: AuthUser, loopId: string) {
   const loop = await ownLoop(env, user, loopId);
   if (!loop) return { ok: false, reason: 'LOOP_NOT_FOUND' } as const;
-  if (loop.game_round_id) return loopGame(env, user, loopId);
+  if (loop.game_round_id || loop.lu_session_id) return loopGame(env, user, loopId);
   if (loop.status !== 'ACTIVE') return { ok: false, reason: 'LOOP_CLOSED' } as const;
   const test = loop.mini_test_id ? await one<any>(env.DB.prepare(`SELECT id,status FROM coach_mini_tests WHERE id=?`).bind(loop.mini_test_id)) : null;
   if (test?.status !== 'FAILED') return { ok: false, reason: 'MINI_TEST_FIRST' } as const;
+  const engine = await engineGameFor(env, user, loop);
+  if (engine) {
+    const started = await startUniverseSession(env, user, { outcomeId: loop.outcome_id, templateCode: engine.code, clientKey: `loop-${loop.id}` });
+    if (started.ok) {
+      await env.DB.prepare(`UPDATE nibiru_outcome_loops SET lu_session_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND lu_session_id IS NULL AND game_round_id IS NULL`).bind(started.sessionId, loop.id).run();
+      return loopGame(env, user, loopId);
+    }
+    // the activities were already played elsewhere: fall back to the question round below
+  }
   const used = new Set((await all<any>(env.DB.prepare(`SELECT question_id FROM coach_mini_test_questions WHERE test_id=?`).bind(test.id))).map((r) => r.question_id));
   const pool: any[] = [];
   for (const mode of ['NEW', 'REPEAT'] as const) for (const q of await eligibleCoachMiniTestQuestions(env, user, loop.outcome_id, mode)) if (!used.has(q.id) && !pool.some((p) => p.id === q.id)) pool.push(q);
@@ -262,6 +296,7 @@ export async function startLoopGame(env: Env, user: AuthUser, loopId: string) {
 
 export async function loopGame(env: Env, user: AuthUser, loopId: string) {
   const loop = await ownLoop(env, user, loopId);
+  if (loop?.lu_session_id) { const u = await universeRound(env, loop); if (u) return { ok: true, round: u, universe: u.universe, questions: [] } as const; }
   if (!loop?.game_round_id) return { ok: false, reason: 'GAME_NOT_FOUND' } as const;
   const round = await one<any>(env.DB.prepare(`SELECT * FROM nibiru_game_rounds WHERE id=? AND loop_id=?`).bind(loop.game_round_id, loop.id));
   if (!round) return { ok: false, reason: 'GAME_NOT_FOUND' } as const;

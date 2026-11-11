@@ -10,6 +10,7 @@ import { all, audit, forbidden, json, notFound, one } from './lib/db';
 import { loadPermissionScope } from './lib/permissions';
 import { masteryStatus } from './lib/outcome';
 import { combineFrozenReports } from './lib/combined-frozen-report';
+import { stageOf } from './lib/learning-universe/map';
 import { LEARNED_RULE, OUTCOME_QUESTION_TARGET, outcomeQuestionTarget, periodOutcomeEvidence, studyRecommendations, unifiedOutcomeEvidence } from './lib/unified-outcome-evidence';
 import { frozenPracticeReport } from './lib/frozen-practice-report';
 import { frozenExamReport } from './lib/frozen-exam-report';
@@ -638,7 +639,10 @@ async function outcomeEvidenceReport(env:Env,user:AuthUser,studentId:string,url:
   const target=await outcomeQuestionTarget(env,access.student.institution_id);
   const outcomes=await unifiedOutcomeEvidence(env,studentId,{learnerView:user.role==='STUDENT'||user.role==='PARENT',subjectIds:access.subjectFilter||null,academicYear,target});
   const recommendations=await studyRecommendations(env,studentId,access.student.institution_id,outcomes);
-  return json({ok:true,student:{id:access.student.id,name:`${access.student.first_name} ${access.student.last_name}`},rules:{target,learned:LEARNED_RULE},outcomes,recommendations});
+  // Öğrenme Evreni PR-4: the six learning stages and the delayed-review hint, from the same karne record
+  const now=Date.now();
+  const staged=outcomes.map(o=>{const {stage,stageLabel,reviewDue}=stageOf(o,now);return {...o,stage,stageLabel,reviewDue}});
+  return json({ok:true,student:{id:access.student.id,name:`${access.student.first_name} ${access.student.last_name}`},rules:{target,learned:LEARNED_RULE},outcomes:staged,recommendations});
 }
 
 async function combinedReport(env:Env,user:AuthUser,studentId:string,url:URL):Promise<Response>{
