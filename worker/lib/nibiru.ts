@@ -8,6 +8,7 @@ import { externalPersonalDataGate } from './privacy-external-gate';
 import { minimizeNibiruAiMessages } from './privacy-minimization';
 import { chooseNibiruModelDecision, runNibiruInference, type NibiruInferenceResult, type NibiruStickyRouting, type NibiruWorkload } from './nibiru-model-router';
 import { routeNibiruSpecialist } from './nibiru-specialists';
+import { clarifyAnswer, conversationAnswer, conversationKind } from './nibiru-conversation';
 import type { NibiruSpecialist } from './nibiru-specialists';
 
 export type NibiruIntent =
@@ -44,6 +45,8 @@ export type NibiruResult = {
     attempts: Array<{ family: string; ok: boolean; transport?: string }>;
   };
   persistenceWarning?: string;
+  /** Clickable next questions (11 Nov 2026 conversation layer). */
+  suggestions?: string[];
 };
 
 const AI_PREFIX = 'Nibiru:';
@@ -306,7 +309,9 @@ function fallbackAnswer(intent: NibiruIntent, context: any) {
 
 export async function runNibiru(env: Env, user: AuthUser, message: string, channel: 'WHATSAPP' | 'WEB', channelKey: string, options: { labStudentId?: string | null; studentId?: string | null } = {}): Promise<NibiruResult> {
   const session = await latestSession(env,channel,channelKey);
-  const intent = detectNibiruIntent(message,session?.last_intent);
+  // everyday conversation (greeting, how are you, thanks …) is answered here, never by a model and never with exam data
+  const social = detectNibiruIntent(message,session?.last_intent) === 'PSYCHOLOGICAL_MEDICAL' ? null : conversationKind(message);
+  const intent: NibiruIntent = social ? (social === 'CAPABILITIES' || social === 'WHO' ? 'HELP' : 'GREETING') : detectNibiruIntent(message,session?.last_intent);
   const specialist = routeNibiruSpecialist(user,message);
   const stickyRouting = sessionRouting(session,intent);
   const decision = chooseNibiruModelDecision(env,user,intent,message,specialist,stickyRouting);
@@ -360,13 +365,21 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
     }
   }
 
-  const fixed = deterministic(intent,context);
+  const talk = { role: user.role, firstName: user.role === 'STUDENT' ? context.student?.first_name ?? null : String(user.display_name || '').trim().split(/\s+/)[0] || null, gradeLevel: context.student?.grade_level ?? null };
+  const socialReply = social ? conversationAnswer(social,talk) : null;
+  const fixed = socialReply?.answer || deterministic(intent,context);
   const planSummary = coachPlan?.available ? coachPlanSummary(coachPlan) : null;
   const planAnswer = planSummary
     ? AI_PREFIX + ' Bugün için doğrulanmış kısa çalışma planın hazır:\n' + planSummary + '\nGörevleri tamamladıktan sonra mini test ile pekiştirme yapabilirsin.'
     : null;
   const ai = fixed || planAnswer ? null : await aiAnswer(env,user,intent,message,context,decision);
-  const answer = fixed || planAnswer || ai?.text || fallbackAnswer(intent,context);
+  // without a model answer: a greeting or help gets the conversation layer, an unclear or off-topic question is asked
+  // back with what can be answered — never the same exam summary for everything
+  const noModel = !(fixed || planAnswer || ai?.text);
+  const plain = !noModel ? null : intent === 'GREETING' ? conversationAnswer('GREETING',talk) : intent === 'HELP' ? conversationAnswer('CAPABILITIES',talk)
+    : intent === 'UNKNOWN' || intent === 'OUT_OF_SCOPE' ? clarifyAnswer(talk,intent === 'OUT_OF_SCOPE') : null;
+  const answer = fixed || planAnswer || ai?.text || plain?.answer || fallbackAnswer(intent,context);
+  const suggestions = socialReply?.suggestions || plain?.suggestions;
   const inference = ai?.inference || null;
   const orchestration = {
     specialist:decision.specialist,
@@ -394,5 +407,5 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
     persistenceWarning = 'STAGING_D1_WRITE_SKIPPED';
   }
 
-  return { answer, intent, studentId, examId, outcome, coachPlan, orchestration, persistenceWarning };
+  return { answer, intent, studentId, examId, outcome, coachPlan, orchestration, persistenceWarning, ...(suggestions ? { suggestions } : {}) };
 }
