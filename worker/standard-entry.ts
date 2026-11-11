@@ -6,6 +6,7 @@ import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, json, one, uuid } from './lib/db';
 import { gradeProfile, nibiruStudentPrompts } from '../src/lib/gradeProfile';
+import { startUniverseSession, submitUniverseSession, universeSessionView } from './lib/learning-universe/sessions';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
 
@@ -221,6 +222,25 @@ async function questionSupport(env:Env,user:AuthUser,url:URL){
   return json({ok:true,question:{id:row.question_id,questionNo:row.question_no,globalNo:row.global_no,status:row.answer_status,subject:row.subject_name,outcome:row.outcome_title,topic:row.topic,subtopic:row.subtopic},options:{solutionVideo:row.solution_url?{url:row.solution_url,title:row.solution_title||'Video Çözümü',source:'PUBLISHER'}:null,topicVideo},microLearning:selection?{reason:selection.reason,candidateCount:selection.candidateCount,awaitingReview:!!selection.video}:null});
 }
 
+const UNIVERSE_MESSAGES:Record<string,[number,string]>={
+ STUDENT_ONLY:[403,'Öğrenme Evreni öğrenci hesabına açıktır.'],
+ TEMPLATE_NOT_FOUND:[404,'Bu etkinlik türü bulunamadı ya da kapalı.'],
+ TEMPLATE_NOT_FOR_GRADE:[409,'Bu etkinlik türü senin sınıf düzeyin için açık değil.'],
+ OUTCOME_NOT_VERIFIED:[409,'Bu kazanım senin sınıf düzeyinin bu yılki doğrulanmış MEB programında yok.'],
+ CONTENT_GAP:[409,'Bu kazanım için bu etkinliğe uygun yeterli onaylı içerik henüz yok.'],
+ SESSION_NOT_FOUND:[404,'Etkinlik bulunamadı.'],
+ SESSION_EXPIRED:[409,'Bu etkinliğin süresi doldu; yeniden başlatabilirsin.'],
+};
+/** Nibiru Öğrenme Evreni: start a play, read it, submit it (graded on the server, once). */
+async function universeApi(request:Request,env:Env,user:AuthUser,path:string){
+ const out=(r:any,status=200)=>{if(r.ok)return json(r,status);const[code,message]=UNIVERSE_MESSAGES[r.reason]||[400,'Etkinlik güncellenemedi.'];return json({...r,error:{code:r.reason,message}},code)};
+ if(path==='/api/student-standard/universe/sessions'&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await startUniverseSession(env,user,body);if(!r.ok)return out(r);return json(await universeSessionView(env,user,r.sessionId),r.reused?200:201);}
+ const m=path.match(/^\/api\/student-standard\/universe\/sessions\/([^/]+)(\/submit)?$/);
+ if(m&&!m[2]&&request.method==='GET'){const v=await universeSessionView(env,user,m[1]);return v?json(v):out({ok:false,reason:'SESSION_NOT_FOUND'});}
+ if(m&&m[2]&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await submitUniverseSession(env,user,m[1],body);if(!r.ok)return out(r);return json(await universeSessionView(env,user,m[1]));}
+ return fail(404,'NOT_FOUND','Öğrenme Evreni yolu bulunamadı.');
+}
+
 export default {
   async fetch(request:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
     const url=new URL(request.url);const path=url.pathname;
@@ -237,6 +257,7 @@ export default {
     if(path==='/api/student-standard/home-context'&&request.method==='GET')return homeContext(env,auth);
     if(path==='/api/student-standard/profile'&&request.method==='GET')return studentProfile(env,auth);
     if(path==='/api/student-standard/games'&&request.method==='GET')return games(env,auth);
+    if(path.startsWith('/api/student-standard/universe/'))return universeApi(request,env,auth,path);
     if(path==='/api/student-standard/question-support'&&request.method==='GET')return questionSupport(env,auth,url);
     return fail(404,'NOT_FOUND','Standard öğrenci API yolu bulunamadı.');
   },

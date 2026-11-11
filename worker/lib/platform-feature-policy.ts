@@ -34,6 +34,7 @@ const outerPrefixes:Array<[string,string]>=[
   ['/api/student-books/zero-error','ZERO_ERROR_BOOKLET'],
   ['/api/nibiru/guidance/','GUIDANCE_TESTS'],
   ['/api/student-standard/games','GAMES'],
+  ['/api/student-standard/universe/','LEARNING_UNIVERSE'],
   // S044: Hızlı Test is part of the Studio switch (the student exam page /api/public/quick-tests stays open).
   ['/api/quick-tests','STUDIO'],
 ];

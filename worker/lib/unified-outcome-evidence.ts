@@ -46,7 +46,7 @@ export type EvidenceOptions = {
 const PUBLISHED = `EXISTS (SELECT 1 FROM exam_delivery_profiles publication WHERE publication.exam_id=e.id AND publication.result_freeze_status='PUBLISHED' AND publication.published_at IS NOT NULL AND (publication.result_publish_at IS NULL OR datetime(publication.result_publish_at)<=CURRENT_TIMESTAMP))`;
 
 export async function evidenceRows(env: Env, studentId: string, learnerView: boolean): Promise<Row[]> {
-  const [exam, bank, mini, foy, game, dejavu] = await Promise.all([
+  const [exam, bank, mini, foy, game, dejavu, universe] = await Promise.all([
     all<Row>(env.DB.prepare(`SELECT qo.outcome_id, 'EQ:'||sa.exam_question_id question_key, 'EXAM' source,
         CASE sa.status WHEN 'CORRECT' THEN 1 WHEN 'BLANK' THEN NULL ELSE 0 END result,
         coalesce(e.exam_date, e.created_at) at
@@ -78,8 +78,13 @@ export async function evidenceRows(env: Env, studentId: string, learnerView: boo
       FROM student_personal_book_items i JOIN student_personal_books b ON b.id=i.book_id
       WHERE b.student_id=? AND i.item_type='PRACTICE_QUESTION' AND i.answered_at IS NOT NULL AND i.outcome_id IS NOT NULL
         AND (i.solution_viewed_at IS NULL OR datetime(i.solution_viewed_at)>datetime(i.answered_at))`).bind(studentId)),
+    // Nibiru Öğrenme Evreni: server-graded items of verified-outcome plays; XP lives elsewhere and is never read here
+    all<Row>(env.DB.prepare(`SELECT s.outcome_id, CASE i.source WHEN 'QUESTION_BANK' THEN 'QB:' ELSE 'GC:' END||i.ref_id question_key, 'GAME' source,
+        i.correct result, i.answered_at at
+      FROM lu_sessions s JOIN lu_session_items i ON i.session_id=s.id
+      WHERE s.student_id=? AND s.status='SUBMITTED' AND i.answered_at IS NOT NULL`).bind(studentId)),
   ]);
-  return [...exam, ...bank, ...mini, ...foy, ...game, ...dejavu, ...(learnerView ? [] : await writtenRows(env, studentId))];
+  return [...exam, ...bank, ...mini, ...foy, ...game, ...dejavu, ...universe, ...(learnerView ? [] : await writtenRows(env, studentId))];
 }
 
 /**
