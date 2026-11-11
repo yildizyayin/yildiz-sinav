@@ -12,13 +12,15 @@ Kazanım kazanım onay bekleme; 5. sınıfı **tek toplu iş** olarak yönet. He
 - Tam resmî süreç bileşenleri ile yayımlanabilir yıllık kapsam, örnek soru sayısı değil, uzman incelemesi gerektirir.
 
 ## Mevcut içerik
-- `EXISTING_100_REVIEW_ONLY.json`: önceden hazırlanmış MAT.5.1.1 (PR #519, 50) ve MAT.5.1.2 (PR #522, 50) taslaklarını tek dosyada toplar. Ayrıca MAT513/514/521/522/523/524 part01/part02 dosyalarında on bir kazanım için 50'şer soru taslağı vardır. Toplam 13 öğrenme çıktısı × 50 = 650 taslak. MAT531 için 8, MAT532–535 için 10'ar ek uygulama/ölçme görevi de ayrıca bulunmaktadır.
-- İlk 100 taslak `2026–2027` kaynak yılına dayanır. MAT.5.1.3 ve MAT.5.1.4 için eklenen 100 taslak, repodaki `2027–2028` katalog hedefiyle etiketlenmiştir; bu yılın resmî kaynak uygunluğu ayrıca doğrulanacaktır. Hiçbiri **öğretmen onaylı değildir**, bu nedenle inceleme yapılmadan içe aktarım/öğrenci yayını yapılamaz.
-- Resmî amaç: 17.150. Hazırlanmış taslak: 650. Öğrenciye açılmış/onaylı: **0 bu paket kapsamında**. Geri kalan 16.500 içerik **üretilmedi**.
-- Var olmayan fotoğraf dosyası veya görsel lisans onayı uydurulmaz. Gerçek fotoğraf seçimi, izin belgesi, atıf, yaşa uygunluk ve soru ile bağlantısı doğrulandıktan sonra `question_assets` ile saklanır.
+- `EXISTING_100_REVIEW_ONLY.json`: MAT.5.1.1 (PR #519, 50) ve MAT.5.1.2 (PR #522, 50) taslaklarını tek dosyada toplar.
+- `MAT513`–`MAT537` kazanım paketlerinin ikişer 25'lik JSON dosyaları `newDraftFiles` üzerinden takip edilir; hangi kazanımın dosyasının hazır olduğu için tek otorite `ALL_OUTCOMES_50_TARGET_MANIFEST.json` kaydıdır.
+- Şimdiye kadar 15 matematik kazanımında 50'şer **750 taslak çoktan seçmeli soru** ve ayrı olarak **68 rubrikli uygulama görevi** oluşturulmuştur. 68 uygulama görevi soru kotasına dahil değildir, mevcut MC aktarımı için uyumlu değildir.
+- İlk 100 taslak `2026–2027` kaynağına dayanır; envanter `2027–2028` hedef sürümüdür. Resmî yıl/kod eşdeğerliği ayrıca doğrulanmalıdır. **Öğretmen onaylı soru bu çalışma kapsamında 0'dır.**
+- Genel hedef 17.150; hazırlanan 750, kalan **16.400 soru/görev henüz üretilmedi**.
+- Resim/fotoğraf varlığı ya da medya hakkı onayı uydurulmaz; çizimler ve lisanslı fotoğraflar akademik ve telif incelemesinden sonra `question_assets` üzerinden bağlanır.
 
 ## Güncel kontrol kaydı
-- `QA_PROGRESS_2026-11-11.md` dosyasında 400 taslağın yapısal testleri ve akademik/medya/özgünlük eksikleri kayıtlıdır.
+- `QA_PROGRESS_2026-11-11.md` dosyasında 750 taslağın yapısal testleri ve akademik/medya/özgünlük eksikleri kayıtlıdır.
 - Sırf sayı/isim değiştirerek aynı örnek soruları çoğaltma; tekrar eden soru tasarımlarını editoryal incelemeden geçir.
 - Bu iş tamamlanmadan Claude Code'a nihai aktarma dosyası ve promptu gönderilmez.
 
