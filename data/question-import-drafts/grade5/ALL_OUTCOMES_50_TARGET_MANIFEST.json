@@ -15,10 +15,11 @@
       "ING": 178,
       "DIN": 18
     },
-    "draftQuestions": 100,
+    "draftQuestions": 200,
     "approvedQuestions": 0,
-    "unstartedOutcomes": 341,
-    "draftOutcomes": 2
+    "unstartedOutcomes": 339,
+    "draftOutcomes": 4,
+    "outstandingDraftQuestions": 16950
   },
   "sourceInventory": {
     "math": "data/question-full-math-target-2028.json",
@@ -1429,10 +1430,14 @@
       "repeatThemeCount": 1,
       "targetCount": 50,
       "approvedCount": 0,
-      "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
+      "storedInThisBranch": 50,
+      "reviewStatus": "DRAFT_NEEDS_EXPERT_REVIEW",
       "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "priorDraftCount": 0,
+      "draftFilePaths": [
+        "data/question-import-drafts/grade5/MAT513_part01_25_questions.json",
+        "data/question-import-drafts/grade5/MAT513_part02_25_questions.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -1445,10 +1450,14 @@
       "repeatThemeCount": 1,
       "targetCount": 50,
       "approvedCount": 0,
-      "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
+      "storedInThisBranch": 50,
+      "reviewStatus": "DRAFT_NEEDS_EXPERT_REVIEW",
       "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "priorDraftCount": 0,
+      "draftFilePaths": [
+        "data/question-import-drafts/grade5/MAT514_part01_25_questions.json",
+        "data/question-import-drafts/grade5/MAT514_part02_25_questions.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -5595,5 +5604,12 @@
       "priorDraftCount": 0
     }
   ],
-  "bulkDraftFile": "data/question-import-drafts/grade5/EXISTING_100_REVIEW_ONLY.json"
+  "bulkDraftFile": "data/question-import-drafts/grade5/EXISTING_100_REVIEW_ONLY.json",
+  "newDraftFiles": [
+    "data/question-import-drafts/grade5/MAT513_part01_25_questions.json",
+    "data/question-import-drafts/grade5/MAT513_part02_25_questions.json",
+    "data/question-import-drafts/grade5/MAT514_part01_25_questions.json",
+    "data/question-import-drafts/grade5/MAT514_part02_25_questions.json"
+  ],
+  "status": "IN_PROGRESS_DRAFT_ONLY"
 }
