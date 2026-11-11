@@ -7,14 +7,14 @@
 | Ders | Resmî öğrenme çıktısı | Hedef soru | Taslak | Editoryal onay |
 |---|---:|---:|---:|---:|
 | Türkçe | 80 | 4.000 | 0 | 0 |
-| Matematik | 23 | 1.150 | 450 | 0 |
+| Matematik | 23 | 1.150 | 550 | 0 |
 | Fen Bilimleri | 26 | 1.300 | 0 | 0 |
 | Sosyal Bilgiler | 18 | 900 | 0 | 0 |
 | İngilizce | 178 | 8.900 | 0 | 0 |
 | Din Kültürü | 18 | 900 | 0 | 0 |
-| **Toplam** | **343** | **17.150** | **450** | **0** |
+| **Toplam** | **343** | **17.150** | **550** | **0** |
 
-### Tam 50 taslağa ulaşan dokuz matematik çıktısı
+### Tam 50 taslağa ulaşan on bir matematik çıktısı
 - MAT.5.1.1: 50, eski PR #519.
 - MAT.5.1.2: 50, eski PR #522.
 - MAT.5.1.3: 50, `MAT513_part01/02_25_questions.json`.
@@ -24,9 +24,11 @@
 - MAT.5.2.3: 50, `MAT523_part01/02_25_questions.json`.
 - MAT.5.2.4: 50, `MAT524_part01/02_25_questions.json`.
 - MAT.5.3.1: 50, `MAT531_part01/02_25_questions.json`, ayrıca **8 uygulamalı çizim görevi** (`MAT531_8_performance_tasks_review_only.json`, çoktan seçmeli sayıya dahil değildir).
+- MAT.5.3.2: 50, `MAT532_part01/02_25_questions.json`, ayrıca **10 çizim-öz değerlendirme görevi** (kota dışında).
+- MAT.5.3.3: 50, `MAT533_part01/02_25_questions.json`, ayrıca **10 açıölçer uygulama görevi** (kota dışında).
 
 ## Yapısal denetim (GitHub'dan dosyalar yeniden okunarak)
-- 15 JSON soru içerik dosyası, toplam **450** taslak soru.
+- 19 JSON soru içerik dosyası, toplam **550** taslak soru.
 - 8 öğrenme çıktısına tam 50'şer kayıt.
 - Her soruda 4 farklı seçenek ve dolu doğru cevap/çözüm alanı.
 - Yanlış sınıf/kazanım kodu, birebir tekrarlanan soru kökü veya eksik anahtar **saptanmadı**.
@@ -43,7 +45,7 @@
 6. **Müfredat yılı farkı:** İlk 100 soru `2026-2027` kaynağıyla, hedef registry `2027-2028` olarak kaydedilmiştir. Yıl eşdeğerliği resmî kayıtlarla doğrulanmadan D1 commit yok.
 7. **Resmî katalog belirsizliği:** Türkçe kataloğunda dokuz tema açıklaması çatışma kaydı bulunuyor; resmî sürümle düzeltilmeli.
 8. **Telif beyanı:** `OWNED` içeriğin başlangıç etiketidir, otomatik özgünlük/telif sertifikası değildir; kayıtlar incelenmeli.
-9. **Onay/yükleme:** 450 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
+9. **Onay/yükleme:** 550 taslağın hiçbiri bu çalışma kapsamında `APPROVED` değil. D1, staging veya production'a yazıldığı iddia edilmez.
 
 ## Sonraki kabul
 Öğretmen bağımsız çözümleri ve kapsam gözden geçirmesi, benzer kalıpları özgün görevlerle değiştirme, zorluk 5–6 tamamlama, hakları belgelenmiş görsel/grafik ekleme, resmî yıl/kod eşleştirmesi, uygun soru biçimleri, toplu 500-satırlık import preview/REVIEW aşaması, staging regresyon testleri, kullanıcı tarafından onaylı **son deploy**.
@@ -61,3 +63,10 @@ node scripts/grade5-question-bulk-audit.mjs --strict
 - Şekil çizme yeteneği yalnız çoktan seçmeli soruyla kanıtlanamaz. Öğrencinin cetvel, pergel, gönye ve uygun dijital aracı gerçek kullanımına ilişkin öğretmen gözlemi gerekir.
 - Fotoğraf/dijital çizim görselleri henüz sisteme bağlı değil. Telif/yaş uygunluğu/vektörel doğruluk kontrolü gerekir.
 - Bu bölüm için son durumda soruların cevap anahtarı alanları ve seçenekleri yapısal olarak kontrol edildi; akademik uzman denetimi ve öğrenci kullanımı testi yapılmadı.
+
+## MAT.5.3.2 ve MAT.5.3.3 ek çalışma (11 Kasım 2026)
+- MEB resmî kaynak: https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448 . MAT.5.3.2 süreç bileşenleri deneyimi gözden geçirme, geometrik özellik çıkarımı, çıkarımı farklı örneklerde değerlendirme; MAT.5.3.3 ise açıölçeri tanıma, uygun aracın seçimi ve fiilen kullanılmasıdır.
+- Bu turda dört JSON dosyasında **100 yeni taslak soru**; ek olarak MAT.5.3.2 için **10 yansıtma/çizim**, MAT.5.3.3 için **10 ölçme/çizim** rubrikli görev. Uygulama görevleri 550 soru sayısına dâhil değildir.
+- Yeni 100 soruda 4 farklı seçenek, dolu cevap/çözüm ve mükerrer-kök denetimi yapıldı, yapısal hata bulunmadı. **Bağımsız akademik/öğretmen onayı değildir.**
+- Zorluk: MAT.5.3.2'de 1:4, 2:11, 3:24, 4:11; MAT.5.3.3'te 1:10, 2:24, 3:15, 4:1. 5–6 düzeyi bu çıktılarda bulunmuyor, akademik genişletme gerekir.
+- Açıölçer şık/ölçek soruları henüz basıma uygun gerçek açıölçer görsellerine bağlanmadı. Doğru görsel kurulup kaynağı, ölçeği ve matematiksel doğruluğu kontrol edilmeden görsel soru olarak yayımlanamaz.
