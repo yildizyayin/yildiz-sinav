@@ -565,3 +565,49 @@ Tasarım ekibinin aynı dönemdeki PR'ları: #423, #427, #433, #436, #440.
 - **Onay bekliyor:** Rapor Merkezi hızlı PDF yazıcısı (örnek gönderildi; `karne-writer` dalı).
 - **Kullanıcı:** 7. sınıf Fenomen denemesinin anahtarı kazanım sütunuyla yeniden yüklenmeli; ÇAP TYT'nin uygulama içi kazanım tablosu için kazanım eşleştirmesi bir kez kaydedilmeli (yeniden analiz); KVKK NIBIRU_AI kaydı, föy anahtarı, Netgsm, KVKK metinleri.
 - **Sonraki ana iş:** app öğrenci/veli panelleri.
+
+## Rehberlik paneli — kararlar ve iş sırası (11 Kasım 2026)
+
+Sahip kararı: rehberlik bölümü baştan, MEB çerçevesine uygun kurulacak. Mevcut parçalar (onay akışı, rehberlik karnesi, destek planı, özel kayıtlar, takvim, erken sinyaller) yeniden kullanılır. Çerçeve kaynakları: Rehberlik ve Psikolojik Danışma Hizmetleri Yönetmeliği (2020), RİBA açıklamaları, MEB 2026–2027 rehberlik teması.
+
+### Kararlar
+
+- **Vaka yönetimi yapılmayacak.** Akran zorbalığı takibi görüşme (konu: akran zorbalığı), destek planı ve gizli notla yürür. Okul İklimi Komisyonu ekranı ve vaka akışı yok.
+- **Önleme kalır:** kütüphanede zorbalık içerikleri, sınıf etkinlikleri ve isimsiz okul iklimi anketi.
+- **"Rehber öğretmenime yaz" kalır:** bildirim yalnız rehber öğretmenin ana sayfasına düşer, takip görüşmeyle yürür. Acil durumda ekranda 112 ve 147 yönlendirmesi çıkar; yasal bildirim kararını insan verir.
+- **RBA yeniden kurulacak.** Mevcut 9 maddelik test (her boyuta tek madde) yeterli değil. "Beyin analizi" ifadesi kullanılmayacak, çünkü öğrenme stilleri ve sağ/sol beyin eşleştirmesi bilimsel olarak desteklenmiyor. Profil üç kaynaktan oluşur: ANUNEX'in ölçülen verisi, yaşa göre üç formlu öz değerlendirme (boyut başına 4–6 madde) ve rehber öğretmen yorumu. Açılım kararı sahipte.
+- **RİBA ayrı modül olacak:** öğrenci, veli ve öğretmen formları; %30 örneklem; isimsiz; A/B seçim; sınıf ve okul sonuç çizelgesi; RAM'a Excel çıktısı.
+- **Temel ilkeler:**
+  - İnsan karar verir; sistem tanı koymaz, öğrenciyi etiketlemez.
+  - Üç gizlilik katmanı: açık (öğrenci/veli), kurum içi (rehber, sınıf rehber öğretmeni, müdür özeti), gizli (yalnız rehber).
+  - Her erişim denetim kaydına geçer.
+  - ANUNEX e-Rehberlik ve MEBBİS'in yerine geçmez, onlara giriş için çıktı üretir.
+- **Telif ve içerik:** ölçek, etkinlik ve kütüphane içerikleri yayından önce uzman onayından geçer. MEB formlarının kullanımı resmî kaynaktan teyit edilir, akademik ölçekler izinsiz kullanılmaz.
+
+### Rehber öğretmen paneli (menü)
+
+Bugün · Öğrenciler (rehberlik dosyası) · Erken Uyarı · Görüşmeler · Ölçme Araçları · RİBA · Akademik Takip · Yıllık Plan ve Etkinlikler · Kaynak Kütüphanesi · Dijital Sağlık · Kariyer · Yönlendirmeler · Raporlar.
+
+Diğer roller:
+- Sınıf rehber öğretmeni: etkinlik işaretleme, gözlem notu, RİBA öğrenci formu, sınıf soru takibi; gizli kayıt görmez.
+- Branş öğretmeni: gözlem/endişe bildirimi, ders soru hedefi.
+- Müdür: okul özeti ve isimsiz istatistik; gizli not görmez.
+- Öğrenci "Rehberlik Köşem": testlerim, destek planım, haftalık soru planım, "Rehber öğretmenime yaz", randevu, kaynaklar, ekran günlüğü.
+- Veli: sade özet, görüşme daveti/randevu, veli formları, haftalık soru özeti, veli kaynakları, endişe bildirimi.
+
+### İş sırası
+
+| Kod | İş | Kabul |
+|---|---|---|
+| R1 | Temel ve bildirim | Özellikler açılır; rehber menüsü yeniden düzenlenir; öğrenci rehberlik dosyası; görüşmeler (takvimle bağlı, gizli not ayrı); erken uyarı (nedeni görünür); gizlilik katmanları; "Rehber öğretmenime yaz" ve acil yönlendirme. |
+| R2 | Akademik takip | Haftalık soru hedefi (ders/konu/sayı); ANUNEX içi otomatik sayım ve öğrencinin doğru/yanlış/boş girişi; deneme net trendi ve hedef farkı; sınıf görünümü; veli haftalık özeti. |
+| R3 | Ölçme araçları | Yeni soru tipleri (A/B, evet/hayır, çoktan seçmeli, arkadaş seçimi, kısa açık uç); sınıfa/şubeye toplu uygulama; sınıf raporu; rehberin taslak araç hazırlaması ve uzman onayı; yeni RBA; RİBA. |
+| R4 | İçerik | Yıllık plan (MEB teması ve RİBA hedefleri), sınıf etkinliği havuzu, kaynak kütüphanesi, dijital sağlık (öz değerlendirme, ekran ve uyku günlüğü, Öğrenme Evreni süre/mola hatırlatması), kariyer. |
+| R5 | Rapor | Öğrenci/sınıf/okul raporları, dönemlik faaliyet raporu, RİBA Excel çıktısı, PDF'ler, Nibiru bağlantıları, tanıtım okuluna örnek rehberlik verisi. |
+
+### Açık kararlar (sahip)
+
+1. RBA açılımı.
+2. Hedef kurum türü: devlet okulu, özel okul, kurs.
+3. Zorbalık bildiriminin isimsiz yapılabilmesi (öneri: evet, yalnız rehber görür).
+4. İçerik onayı için PDR uzmanı.
