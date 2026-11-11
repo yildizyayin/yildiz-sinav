@@ -48,7 +48,7 @@
       "optionC": "20",
       "optionD": "23",
       "correctAnswer": "C",
-      "solution": "920 ÷ 46 = 20 otobüs.",
+      "solution": "Bir otobüs 46 öğrenci taşıyor. 46 × 2 = 92 olduğundan 46 × 20 = 920 öğrenciyi taşır. 920 ÷ 46 = 20 otobüs gerekir.",
       "difficultyLevel": 1,
       "copyrightStatus": "OWNED"
     },
@@ -104,7 +104,7 @@
       "optionC": "12",
       "optionD": "15",
       "correctAnswer": "C",
-      "solution": "456 ÷ 38 = 12 servis.",
+      "solution": "On servis 38 × 10 = 380 öğrenci taşır. İki servis daha 38 × 2 = 76 öğrenci taşır. 380 + 76 = 456 olduğundan 12 servis gerekir.",
       "difficultyLevel": 2,
       "copyrightStatus": "OWNED"
     },
