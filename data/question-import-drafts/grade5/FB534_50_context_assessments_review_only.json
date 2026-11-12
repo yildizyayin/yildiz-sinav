@@ -1,0 +1,2304 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.3.4",
+    "outcomeTitle": "Destek ve hareket sisteminin sağlığı için yapılması gerekenler konusunda bilgi toplayabilme",
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/388",
+    "sourceTextCheckedAt": "2026-11-12",
+    "academicYearCatalog": "2027-2028",
+    "sourceYearEquivalenceVerified": false,
+    "status": "DRAFT_NOT_APPROVED",
+    "teacherApprovedCount": 0,
+    "rowsCount": 50,
+    "distinctSharedContexts": 10,
+    "openEndedCount": 40,
+    "performanceTaskCount": 10,
+    "notIndependentStimuli": true,
+    "sourceLabel": "ANUNEX_ORIGINAL_AI_ASSISTED_DRAFT_2026_11_12",
+    "rubricScale": {
+      "0": "Ölçüt karşılanmıyor veya bilimsel olarak yanlış.",
+      "1": "Kısmen doğru; ilişki, gerekçe veya gerekli kayıt eksik.",
+      "2": "Ölçüt bilimsel olarak doğru ve yeterli kanıt/kayıtla karşılanıyor."
+    },
+    "scoringNotes": [
+      "Örnek cevabın sözcükleri zorunlu değildir.",
+      "Aynı eksik iki ölçütte mükerrer cezalandırılmaz.",
+      "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
+    ],
+    "reviewGates": [
+      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
+      "EXACT_PROGRAM_YEAR_CODE",
+      "SEMANTIC_CROSS_POOL_ORIGINALITY",
+      "MEDIA_LAYOUT_RIGHTS",
+      "VERTICAL_CURRICULUM_MAP",
+      "HISTORICAL_EXAM_AUDIT",
+      "IMPORTER_TYPE_SUPPORT"
+    ],
+    "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
+    "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+  },
+  "contexts": [
+    {
+      "contextId": "FB534-C01",
+      "title": "Çanta taşıma",
+      "stimulus": "Sosyal medya her çocuk için aynı çanta yükünü öneriyor; kaynak yok.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB534-C02",
+      "title": "Ekran başı duruş",
+      "stimulus": "Sınıfta uzun süre eğilerek oturma alışkanlığı tartışılıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB534-C03",
+      "title": "Beslenme reklamı",
+      "stimulus": "Bir reklam tek ürünün kemikleri kesin güçlendirdiğini söylüyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB534-C04",
+      "title": "Spor öncesi",
+      "stimulus": "Arkadaş tüm sporlar için tek hareketin yeterli hazırlık olduğunu iddia ediyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB534-C05",
+      "title": "Kırık şüphesi",
+      "stimulus": "Kurgusal olayda düşen çocuğun kolunu arkadaşları çekerek düzeltmek istiyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB534-C06",
+      "title": "Uyku ve hareket",
+      "stimulus": "Öğrenci yalnız spor yapmanın tüm sağlıklı alışkanlıkların yerine geçtiğini söylüyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB534-C07",
+      "title": "Eski afiş",
+      "stimulus": "Yıllar önceki afişin yazarı ve tarihi belirsiz.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB534-C08",
+      "title": "Akran deneyimi",
+      "stimulus": "Bir arkadaşın ağrısı geçmiş; aynı çözüm herkese öneriliyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB534-C09",
+      "title": "Spor ekipmanı",
+      "stimulus": "Reklam, koruyucunun her düşmede yaralanmayı önlediğini söylüyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB534-C10",
+      "title": "Ortak poster",
+      "stimulus": "Grup posterinde kaynaklar yok; bazı öneriler doğrulanmamış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    }
+  ],
+  "rows": [
+    {
+      "id": "ANX-FB534-001",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C01",
+      "title": "Çanta taşıma — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sosyal medya her çocuk için aynı çanta yükünü öneriyor; kaynak yok.\n\nBu konuda bilgi toplamak için hangi güvenilir araç veya kaynağı seçersin?",
+      "sampleAnswer": "MEB/sağlık kurumu ve alan uzmanı.",
+      "solution": "MEB/sağlık kurumu ve alan uzmanı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "MEB/sağlık kurumu ve alan uzmanı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-002",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C01",
+      "title": "Çanta taşıma — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sosyal medya her çocuk için aynı çanta yükünü öneriyor; kaynak yok.\n\nKaynakta hangi somut sorunun cevabını ararsın?",
+      "sampleAnswer": "Uygun taşıma ve kişiye uygun yük.",
+      "solution": "Uygun taşıma ve kişiye uygun yük. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Uygun taşıma ve kişiye uygun yük."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-003",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C01",
+      "title": "Çanta taşıma — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sosyal medya her çocuk için aynı çanta yükünü öneriyor; kaynak yok.\n\nUlaştığın bilginin doğruluğunu nasıl kontrol edersin?",
+      "sampleAnswer": "Öğretmen ve uzman kaynağıyla karşılaştırırım.",
+      "solution": "Öğretmen ve uzman kaynağıyla karşılaştırırım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Öğretmen ve uzman kaynağıyla karşılaştırırım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-004",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C01",
+      "title": "Çanta taşıma — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sosyal medya her çocuk için aynı çanta yükünü öneriyor; kaynak yok.\n\nDoğrulanmış bilgiyle öneri veya iddiayı nasıl kaydedersin?",
+      "sampleAnswer": "Kaynağı olmayan kesin sayıyı aktarmam.",
+      "solution": "Kaynağı olmayan kesin sayıyı aktarmam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynağı olmayan kesin sayıyı aktarmam."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-005",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C01",
+      "title": "Çanta taşıma — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Sosyal medya her çocuk için aynı çanta yükünü öneriyor; kaynak yok.\n\nKısa araştırma yap; kaynak, tarih, doğrulama ve kişisel uygulama notunu içeren kayıt hazırla.",
+      "sampleAnswer": "Kaynaklı doğru taşıma araştırma kartı.",
+      "solution": "Kaynaklı doğru taşıma araştırma kartı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynaklı doğru taşıma araştırma kartı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-006",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C02",
+      "title": "Ekran başı duruş — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sınıfta uzun süre eğilerek oturma alışkanlığı tartışılıyor.\n\nBu konuda bilgi toplamak için hangi güvenilir araç veya kaynağı seçersin?",
+      "sampleAnswer": "Güvenilir sağlık eğitimi kaynağı.",
+      "solution": "Güvenilir sağlık eğitimi kaynağı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Güvenilir sağlık eğitimi kaynağı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-007",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C02",
+      "title": "Ekran başı duruş — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sınıfta uzun süre eğilerek oturma alışkanlığı tartışılıyor.\n\nKaynakta hangi somut sorunun cevabını ararsın?",
+      "sampleAnswer": "Duruş ve hareket molası bilgisi.",
+      "solution": "Duruş ve hareket molası bilgisi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Duruş ve hareket molası bilgisi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-008",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C02",
+      "title": "Ekran başı duruş — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sınıfta uzun süre eğilerek oturma alışkanlığı tartışılıyor.\n\nUlaştığın bilginin doğruluğunu nasıl kontrol edersin?",
+      "sampleAnswer": "Birden fazla yetkin kaynakla doğrularım.",
+      "solution": "Birden fazla yetkin kaynakla doğrularım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Birden fazla yetkin kaynakla doğrularım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-009",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C02",
+      "title": "Ekran başı duruş — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sınıfta uzun süre eğilerek oturma alışkanlığı tartışılıyor.\n\nDoğrulanmış bilgiyle öneri veya iddiayı nasıl kaydedersin?",
+      "sampleAnswer": "Genel bilgi ile tanıyı ayırırım.",
+      "solution": "Genel bilgi ile tanıyı ayırırım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Genel bilgi ile tanıyı ayırırım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-010",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C02",
+      "title": "Ekran başı duruş — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Sınıfta uzun süre eğilerek oturma alışkanlığı tartışılıyor.\n\nKısa araştırma yap; kaynak, tarih, doğrulama ve kişisel uygulama notunu içeren kayıt hazırla.",
+      "sampleAnswer": "Doğrulanmış duruş bilgisi afişi.",
+      "solution": "Doğrulanmış duruş bilgisi afişi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Doğrulanmış duruş bilgisi afişi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-011",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C03",
+      "title": "Beslenme reklamı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir reklam tek ürünün kemikleri kesin güçlendirdiğini söylüyor.\n\nBu konuda bilgi toplamak için hangi güvenilir araç veya kaynağı seçersin?",
+      "sampleAnswer": "Sağlık kurumu/alan uzmanı.",
+      "solution": "Sağlık kurumu/alan uzmanı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sağlık kurumu/alan uzmanı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-012",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C03",
+      "title": "Beslenme reklamı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir reklam tek ürünün kemikleri kesin güçlendirdiğini söylüyor.\n\nKaynakta hangi somut sorunun cevabını ararsın?",
+      "sampleAnswer": "Dengeli beslenmenin rolü.",
+      "solution": "Dengeli beslenmenin rolü. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dengeli beslenmenin rolü."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-013",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C03",
+      "title": "Beslenme reklamı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir reklam tek ürünün kemikleri kesin güçlendirdiğini söylüyor.\n\nUlaştığın bilginin doğruluğunu nasıl kontrol edersin?",
+      "sampleAnswer": "Reklamdan bağımsız kaynak ararım.",
+      "solution": "Reklamdan bağımsız kaynak ararım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Reklamdan bağımsız kaynak ararım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-014",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C03",
+      "title": "Beslenme reklamı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir reklam tek ürünün kemikleri kesin güçlendirdiğini söylüyor.\n\nDoğrulanmış bilgiyle öneri veya iddiayı nasıl kaydedersin?",
+      "sampleAnswer": "Tek ürünle kesin sonuç iddiasını benimsemem.",
+      "solution": "Tek ürünle kesin sonuç iddiasını benimsemem. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tek ürünle kesin sonuç iddiasını benimsemem."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-015",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C03",
+      "title": "Beslenme reklamı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Bir reklam tek ürünün kemikleri kesin güçlendirdiğini söylüyor.\n\nKısa araştırma yap; kaynak, tarih, doğrulama ve kişisel uygulama notunu içeren kayıt hazırla.",
+      "sampleAnswer": "Kaynak ve reklam ayrımlı araştırma.",
+      "solution": "Kaynak ve reklam ayrımlı araştırma. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak ve reklam ayrımlı araştırma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-016",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C04",
+      "title": "Spor öncesi — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Arkadaş tüm sporlar için tek hareketin yeterli hazırlık olduğunu iddia ediyor.\n\nBu konuda bilgi toplamak için hangi güvenilir araç veya kaynağı seçersin?",
+      "sampleAnswer": "Beden eğitimi öğretmeni ve uzman kaynak.",
+      "solution": "Beden eğitimi öğretmeni ve uzman kaynak. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Beden eğitimi öğretmeni ve uzman kaynak."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-017",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C04",
+      "title": "Spor öncesi — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Arkadaş tüm sporlar için tek hareketin yeterli hazırlık olduğunu iddia ediyor.\n\nKaynakta hangi somut sorunun cevabını ararsın?",
+      "sampleAnswer": "Güvenli, uygun etkinlik hazırlığı.",
+      "solution": "Güvenli, uygun etkinlik hazırlığı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Güvenli, uygun etkinlik hazırlığı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-018",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C04",
+      "title": "Spor öncesi — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Arkadaş tüm sporlar için tek hareketin yeterli hazırlık olduğunu iddia ediyor.\n\nUlaştığın bilginin doğruluğunu nasıl kontrol edersin?",
+      "sampleAnswer": "Yaşa ve etkinliğe uygunluğu sorarım.",
+      "solution": "Yaşa ve etkinliğe uygunluğu sorarım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yaşa ve etkinliğe uygunluğu sorarım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-019",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C04",
+      "title": "Spor öncesi — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Arkadaş tüm sporlar için tek hareketin yeterli hazırlık olduğunu iddia ediyor.\n\nDoğrulanmış bilgiyle öneri veya iddiayı nasıl kaydedersin?",
+      "sampleAnswer": "Kişiye özel reçete vermeden kaydederim.",
+      "solution": "Kişiye özel reçete vermeden kaydederim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kişiye özel reçete vermeden kaydederim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-020",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C04",
+      "title": "Spor öncesi — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Arkadaş tüm sporlar için tek hareketin yeterli hazırlık olduğunu iddia ediyor.\n\nKısa araştırma yap; kaynak, tarih, doğrulama ve kişisel uygulama notunu içeren kayıt hazırla.",
+      "sampleAnswer": "Öğretmen doğrulamalı hazırlık notu.",
+      "solution": "Öğretmen doğrulamalı hazırlık notu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Öğretmen doğrulamalı hazırlık notu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-021",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C05",
+      "title": "Kırık şüphesi — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgusal olayda düşen çocuğun kolunu arkadaşları çekerek düzeltmek istiyor.\n\nBu konuda bilgi toplamak için hangi güvenilir araç veya kaynağı seçersin?",
+      "sampleAnswer": "Yetkin ilk yardım/sağlık kaynağı.",
+      "solution": "Yetkin ilk yardım/sağlık kaynağı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yetkin ilk yardım/sağlık kaynağı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-022",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C05",
+      "title": "Kırık şüphesi — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgusal olayda düşen çocuğun kolunu arkadaşları çekerek düzeltmek istiyor.\n\nKaynakta hangi somut sorunun cevabını ararsın?",
+      "sampleAnswer": "Şüpheli yaralanmada yetişkin ve sağlık yardımı.",
+      "solution": "Şüpheli yaralanmada yetişkin ve sağlık yardımı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Şüpheli yaralanmada yetişkin ve sağlık yardımı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-023",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C05",
+      "title": "Kırık şüphesi — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgusal olayda düşen çocuğun kolunu arkadaşları çekerek düzeltmek istiyor.\n\nUlaştığın bilginin doğruluğunu nasıl kontrol edersin?",
+      "sampleAnswer": "Yetkin uzmanla doğrularım.",
+      "solution": "Yetkin uzmanla doğrularım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yetkin uzmanla doğrularım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-024",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C05",
+      "title": "Kırık şüphesi — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgusal olayda düşen çocuğun kolunu arkadaşları çekerek düzeltmek istiyor.\n\nDoğrulanmış bilgiyle öneri veya iddiayı nasıl kaydedersin?",
+      "sampleAnswer": "Çekip düzeltme önerisini yaymam.",
+      "solution": "Çekip düzeltme önerisini yaymam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Çekip düzeltme önerisini yaymam."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-025",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C05",
+      "title": "Kırık şüphesi — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kurgusal olayda düşen çocuğun kolunu arkadaşları çekerek düzeltmek istiyor.\n\nKısa araştırma yap; kaynak, tarih, doğrulama ve kişisel uygulama notunu içeren kayıt hazırla.",
+      "sampleAnswer": "Müdahale denemesi yapmadan kaynaklı güvenlik kartı.",
+      "solution": "Müdahale denemesi yapmadan kaynaklı güvenlik kartı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Müdahale denemesi yapmadan kaynaklı güvenlik kartı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-026",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C06",
+      "title": "Uyku ve hareket — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci yalnız spor yapmanın tüm sağlıklı alışkanlıkların yerine geçtiğini söylüyor.\n\nBu konuda bilgi toplamak için hangi güvenilir araç veya kaynağı seçersin?",
+      "sampleAnswer": "Yetkin sağlık eğitimi kaynağı.",
+      "solution": "Yetkin sağlık eğitimi kaynağı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yetkin sağlık eğitimi kaynağı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-027",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C06",
+      "title": "Uyku ve hareket — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci yalnız spor yapmanın tüm sağlıklı alışkanlıkların yerine geçtiğini söylüyor.\n\nKaynakta hangi somut sorunun cevabını ararsın?",
+      "sampleAnswer": "Dinlenme, beslenme, hareket ilişkisi.",
+      "solution": "Dinlenme, beslenme, hareket ilişkisi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dinlenme, beslenme, hareket ilişkisi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-028",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C06",
+      "title": "Uyku ve hareket — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci yalnız spor yapmanın tüm sağlıklı alışkanlıkların yerine geçtiğini söylüyor.\n\nUlaştığın bilginin doğruluğunu nasıl kontrol edersin?",
+      "sampleAnswer": "Öneriyi farklı kaynaklarla kontrol ederim.",
+      "solution": "Öneriyi farklı kaynaklarla kontrol ederim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Öneriyi farklı kaynaklarla kontrol ederim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-029",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C06",
+      "title": "Uyku ve hareket — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci yalnız spor yapmanın tüm sağlıklı alışkanlıkların yerine geçtiğini söylüyor.\n\nDoğrulanmış bilgiyle öneri veya iddiayı nasıl kaydedersin?",
+      "sampleAnswer": "Tek davranışla her şeyi açıklamam.",
+      "solution": "Tek davranışla her şeyi açıklamam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tek davranışla her şeyi açıklamam."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-030",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C06",
+      "title": "Uyku ve hareket — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Öğrenci yalnız spor yapmanın tüm sağlıklı alışkanlıkların yerine geçtiğini söylüyor.\n\nKısa araştırma yap; kaynak, tarih, doğrulama ve kişisel uygulama notunu içeren kayıt hazırla.",
+      "sampleAnswer": "Birlikte ele alınan alışkanlıklar posteri.",
+      "solution": "Birlikte ele alınan alışkanlıklar posteri. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Birlikte ele alınan alışkanlıklar posteri."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-031",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C07",
+      "title": "Eski afiş — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yıllar önceki afişin yazarı ve tarihi belirsiz.\n\nBu konuda bilgi toplamak için hangi güvenilir araç veya kaynağı seçersin?",
+      "sampleAnswer": "Tarihi ve sorumlusu belli kurum kaynağı.",
+      "solution": "Tarihi ve sorumlusu belli kurum kaynağı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tarihi ve sorumlusu belli kurum kaynağı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-032",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C07",
+      "title": "Eski afiş — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yıllar önceki afişin yazarı ve tarihi belirsiz.\n\nKaynakta hangi somut sorunun cevabını ararsın?",
+      "sampleAnswer": "Bilginin güncel ve güvenilir olup olmadığı.",
+      "solution": "Bilginin güncel ve güvenilir olup olmadığı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bilginin güncel ve güvenilir olup olmadığı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-033",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C07",
+      "title": "Eski afiş — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yıllar önceki afişin yazarı ve tarihi belirsiz.\n\nUlaştığın bilginin doğruluğunu nasıl kontrol edersin?",
+      "sampleAnswer": "Yeni kaynakla tutarlılığı denetlerim.",
+      "solution": "Yeni kaynakla tutarlılığı denetlerim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yeni kaynakla tutarlılığı denetlerim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-034",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C07",
+      "title": "Eski afiş — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yıllar önceki afişin yazarı ve tarihi belirsiz.\n\nDoğrulanmış bilgiyle öneri veya iddiayı nasıl kaydedersin?",
+      "sampleAnswer": "Kaynak belirsizliğini görünür yazarım.",
+      "solution": "Kaynak belirsizliğini görünür yazarım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak belirsizliğini görünür yazarım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-035",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C07",
+      "title": "Eski afiş — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Yıllar önceki afişin yazarı ve tarihi belirsiz.\n\nKısa araştırma yap; kaynak, tarih, doğrulama ve kişisel uygulama notunu içeren kayıt hazırla.",
+      "sampleAnswer": "Sürüm/tarih alanlı araştırma tablosu.",
+      "solution": "Sürüm/tarih alanlı araştırma tablosu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sürüm/tarih alanlı araştırma tablosu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-036",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C08",
+      "title": "Akran deneyimi — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir arkadaşın ağrısı geçmiş; aynı çözüm herkese öneriliyor.\n\nBu konuda bilgi toplamak için hangi güvenilir araç veya kaynağı seçersin?",
+      "sampleAnswer": "Alan uzmanı ve resmî eğitim kaynağı.",
+      "solution": "Alan uzmanı ve resmî eğitim kaynağı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Alan uzmanı ve resmî eğitim kaynağı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-037",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C08",
+      "title": "Akran deneyimi — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir arkadaşın ağrısı geçmiş; aynı çözüm herkese öneriliyor.\n\nKaynakta hangi somut sorunun cevabını ararsın?",
+      "sampleAnswer": "Tek deneyimin genellenebilirliği.",
+      "solution": "Tek deneyimin genellenebilirliği. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tek deneyimin genellenebilirliği."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-038",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C08",
+      "title": "Akran deneyimi — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir arkadaşın ağrısı geçmiş; aynı çözüm herkese öneriliyor.\n\nUlaştığın bilginin doğruluğunu nasıl kontrol edersin?",
+      "sampleAnswer": "Kişisel örneği bilimsel kaynakla ayırırım.",
+      "solution": "Kişisel örneği bilimsel kaynakla ayırırım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kişisel örneği bilimsel kaynakla ayırırım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-039",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C08",
+      "title": "Akran deneyimi — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir arkadaşın ağrısı geçmiş; aynı çözüm herkese öneriliyor.\n\nDoğrulanmış bilgiyle öneri veya iddiayı nasıl kaydedersin?",
+      "sampleAnswer": "Anekdotu evrensel tedavi saymam.",
+      "solution": "Anekdotu evrensel tedavi saymam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Anekdotu evrensel tedavi saymam."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-040",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C08",
+      "title": "Akran deneyimi — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Bir arkadaşın ağrısı geçmiş; aynı çözüm herkese öneriliyor.\n\nKısa araştırma yap; kaynak, tarih, doğrulama ve kişisel uygulama notunu içeren kayıt hazırla.",
+      "sampleAnswer": "Deneyim/kanıt ayrımlı bilgi kaydı.",
+      "solution": "Deneyim/kanıt ayrımlı bilgi kaydı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Deneyim/kanıt ayrımlı bilgi kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-041",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C09",
+      "title": "Spor ekipmanı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Reklam, koruyucunun her düşmede yaralanmayı önlediğini söylüyor.\n\nBu konuda bilgi toplamak için hangi güvenilir araç veya kaynağı seçersin?",
+      "sampleAnswer": "Güvenilir güvenlik/sağlık eğitimi kaynağı.",
+      "solution": "Güvenilir güvenlik/sağlık eğitimi kaynağı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Güvenilir güvenlik/sağlık eğitimi kaynağı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-042",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C09",
+      "title": "Spor ekipmanı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Reklam, koruyucunun her düşmede yaralanmayı önlediğini söylüyor.\n\nKaynakta hangi somut sorunun cevabını ararsın?",
+      "sampleAnswer": "Koruyucunun amacı ve sınırları.",
+      "solution": "Koruyucunun amacı ve sınırları. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Koruyucunun amacı ve sınırları."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-043",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C09",
+      "title": "Spor ekipmanı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Reklam, koruyucunun her düşmede yaralanmayı önlediğini söylüyor.\n\nUlaştığın bilginin doğruluğunu nasıl kontrol edersin?",
+      "sampleAnswer": "Ürün reklamı dışındaki bilgiyi ararım.",
+      "solution": "Ürün reklamı dışındaki bilgiyi ararım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ürün reklamı dışındaki bilgiyi ararım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-044",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C09",
+      "title": "Spor ekipmanı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Reklam, koruyucunun her düşmede yaralanmayı önlediğini söylüyor.\n\nDoğrulanmış bilgiyle öneri veya iddiayı nasıl kaydedersin?",
+      "sampleAnswer": "Risk sıfır iddiasından kaçınırım.",
+      "solution": "Risk sıfır iddiasından kaçınırım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Risk sıfır iddiasından kaçınırım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-045",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C09",
+      "title": "Spor ekipmanı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Reklam, koruyucunun her düşmede yaralanmayı önlediğini söylüyor.\n\nKısa araştırma yap; kaynak, tarih, doğrulama ve kişisel uygulama notunu içeren kayıt hazırla.",
+      "sampleAnswer": "Kaynaklı güvenli etkinlik afişi.",
+      "solution": "Kaynaklı güvenli etkinlik afişi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynaklı güvenli etkinlik afişi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-046",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C10",
+      "title": "Ortak poster — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Grup posterinde kaynaklar yok; bazı öneriler doğrulanmamış.\n\nBu konuda bilgi toplamak için hangi güvenilir araç veya kaynağı seçersin?",
+      "sampleAnswer": "Kütüphane ve yetkin kurum yayınları.",
+      "solution": "Kütüphane ve yetkin kurum yayınları. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kütüphane ve yetkin kurum yayınları."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-047",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C10",
+      "title": "Ortak poster — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Grup posterinde kaynaklar yok; bazı öneriler doğrulanmamış.\n\nKaynakta hangi somut sorunun cevabını ararsın?",
+      "sampleAnswer": "Her önerinin dayanağı.",
+      "solution": "Her önerinin dayanağı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Her önerinin dayanağı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-048",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C10",
+      "title": "Ortak poster — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Grup posterinde kaynaklar yok; bazı öneriler doğrulanmamış.\n\nUlaştığın bilginin doğruluğunu nasıl kontrol edersin?",
+      "sampleAnswer": "Önerileri tek tek doğrularım.",
+      "solution": "Önerileri tek tek doğrularım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Önerileri tek tek doğrularım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-049",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C10",
+      "title": "Ortak poster — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Grup posterinde kaynaklar yok; bazı öneriler doğrulanmamış.\n\nDoğrulanmış bilgiyle öneri veya iddiayı nasıl kaydedersin?",
+      "sampleAnswer": "Doğrulanmayanları ayrı işaretlerim.",
+      "solution": "Doğrulanmayanları ayrı işaretlerim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Doğrulanmayanları ayrı işaretlerim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB534-050",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.4",
+      "contextId": "FB534-C10",
+      "title": "Ortak poster — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Grup posterinde kaynaklar yok; bazı öneriler doğrulanmamış.\n\nKısa araştırma yap; kaynak, tarih, doğrulama ve kişisel uygulama notunu içeren kayıt hazırla.",
+      "sampleAnswer": "Kaynakçalı ve doğrulama durumlu son poster.",
+      "solution": "Kaynakçalı ve doğrulama durumlu son poster. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynakçalı ve doğrulama durumlu son poster."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    }
+  ]
+}

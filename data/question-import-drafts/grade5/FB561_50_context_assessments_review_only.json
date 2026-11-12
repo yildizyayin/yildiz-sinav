@@ -1,0 +1,2338 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.6.1",
+    "outcomeTitle": "Bir elektrik devresindeki elemanları sembollerinin olup olmamasına göre sınıflandırabilme",
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/407",
+    "sourceTextCheckedAt": "2026-11-12",
+    "academicYearCatalog": "2027-2028",
+    "sourceYearEquivalenceVerified": false,
+    "status": "DRAFT_NOT_APPROVED",
+    "teacherApprovedCount": 0,
+    "rowsCount": 50,
+    "distinctSharedContexts": 10,
+    "openEndedCount": 40,
+    "performanceTaskCount": 10,
+    "notIndependentStimuli": true,
+    "sourceLabel": "ANUNEX_ORIGINAL_AI_ASSISTED_DRAFT_2026_11_12",
+    "rubricScale": {
+      "0": "Ölçüt karşılanmıyor veya bilimsel olarak yanlış.",
+      "1": "Kısmen doğru; ilişki, gerekçe veya gerekli kayıt eksik.",
+      "2": "Ölçüt bilimsel olarak doğru ve yeterli kanıt/kayıtla karşılanıyor."
+    },
+    "scoringNotes": [
+      "Örnek cevabın sözcükleri zorunlu değildir.",
+      "Aynı eksik iki ölçütte mükerrer cezalandırılmaz.",
+      "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
+    ],
+    "reviewGates": [
+      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
+      "EXACT_PROGRAM_YEAR_CODE",
+      "SEMANTIC_CROSS_POOL_ORIGINALITY",
+      "MEDIA_LAYOUT_RIGHTS",
+      "VERTICAL_CURRICULUM_MAP",
+      "HISTORICAL_EXAM_AUDIT",
+      "IMPORTER_TYPE_SUPPORT"
+    ],
+    "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
+    "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+  },
+  "contexts": [
+    {
+      "contextId": "FB561-C01",
+      "title": "Temel kutu",
+      "stimulus": "Katalog pil, ampul, anahtar ve kabloyu içeriyor; plastik taban içermiyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB561-C02",
+      "title": "Pil çizgileri",
+      "stimulus": "Öğrenci pili daire içindeki çarpıyla etiketliyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB561-C03",
+      "title": "Açık anahtar",
+      "stimulus": "Anahtarın kontakları ayrık; şemada kesintisiz tel çizilmiş.",
+      "studentAssetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_open.svg"
+      ],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB561-C04",
+      "title": "Kapalı anahtar",
+      "stimulus": "Anahtar kapalı; şemada açık kontak çizilmiş.",
+      "studentAssetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_closed.svg"
+      ],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB561-C05",
+      "title": "Duy ve ampul",
+      "stimulus": "Sınıf kataloğu ampul sembolünü verir; duy için ayrı sembol kullanmaz.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB561-C06",
+      "title": "Pil yatağı",
+      "stimulus": "Katalog tek pil sembolünü kullanıyor; pil yatağı ayrıca çizilmiyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB561-C07",
+      "title": "Kablo biçimi",
+      "stimulus": "Gerçekte kıvrılan kablo şemada düz bağlantı çizgisiyle verilmiş.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB561-C08",
+      "title": "Bant parçası",
+      "stimulus": "Yalıtım bandı devre elemanları afişine pil sembolüyle eklenmiş.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB561-C09",
+      "title": "Eksik katalog",
+      "stimulus": "Grup kendi şekillerini kullanmış; açıklama anahtarı yok.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB561-C10",
+      "title": "Fotoğraf ile şema",
+      "stimulus": "Afişte ampul fotoğrafı sembol yerine konmuş; parça ve sembol aynı sayılıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    }
+  ],
+  "rows": [
+    {
+      "id": "ANX-FB561-001",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C01",
+      "title": "Temel kutu — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Katalog pil, ampul, anahtar ve kabloyu içeriyor; plastik taban içermiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nBağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
+      "sampleAnswer": "Pil, ampul, anahtar, kablo sembolleri.",
+      "solution": "Pil, ampul, anahtar, kablo sembolleri. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil, ampul, anahtar, kablo sembolleri."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-002",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C01",
+      "title": "Temel kutu — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Katalog pil, ampul, anahtar ve kabloyu içeriyor; plastik taban içermiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nParçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
+      "sampleAnswer": "Dört devre elemanı katalogda; taban değil.",
+      "solution": "Dört devre elemanı katalogda; taban değil. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dört devre elemanı katalogda; taban değil."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-003",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C01",
+      "title": "Temel kutu — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Katalog pil, ampul, anahtar ve kabloyu içeriyor; plastik taban içermiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "sampleAnswer": "Taban destek parçasıdır.",
+      "solution": "Taban destek parçasıdır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Taban destek parçasıdır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-004",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C01",
+      "title": "Temel kutu — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Katalog pil, ampul, anahtar ve kabloyu içeriyor; plastik taban içermiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
+      "sampleAnswer": "Katalog dışında olmak evrensel sembolsüzlük değildir.",
+      "solution": "Katalog dışında olmak evrensel sembolsüzlük değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Katalog dışında olmak evrensel sembolsüzlük değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-005",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C01",
+      "title": "Temel kutu — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Katalog pil, ampul, anahtar ve kabloyu içeriyor; plastik taban içermiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nSeçilen sembol kataloğuna göre parça–sembol afişi hazırla.",
+      "sampleAnswer": "Tabanı ayrı gösteren eşleştirme afişi.",
+      "solution": "Tabanı ayrı gösteren eşleştirme afişi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tabanı ayrı gösteren eşleştirme afişi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-006",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C02",
+      "title": "Pil çizgileri — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci pili daire içindeki çarpıyla etiketliyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nBağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
+      "sampleAnswer": "Pil uzun/kısa paralel çizgilerle gösterilir.",
+      "solution": "Pil uzun/kısa paralel çizgilerle gösterilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil uzun/kısa paralel çizgilerle gösterilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-007",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C02",
+      "title": "Pil çizgileri — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci pili daire içindeki çarpıyla etiketliyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nParçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
+      "sampleAnswer": "Pil ve ampul katalogda sembollüdür.",
+      "solution": "Pil ve ampul katalogda sembollüdür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil ve ampul katalogda sembollüdür."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-008",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C02",
+      "title": "Pil çizgileri — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci pili daire içindeki çarpıyla etiketliyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "sampleAnswer": "Daire içi çarpı ampuldür.",
+      "solution": "Daire içi çarpı ampuldür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Daire içi çarpı ampuldür."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-009",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C02",
+      "title": "Pil çizgileri — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci pili daire içindeki çarpıyla etiketliyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
+      "sampleAnswer": "İki sembol karıştırılmamalı.",
+      "solution": "İki sembol karıştırılmamalı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İki sembol karıştırılmamalı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-010",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C02",
+      "title": "Pil çizgileri — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Öğrenci pili daire içindeki çarpıyla etiketliyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nSeçilen sembol kataloğuna göre parça–sembol afişi hazırla.",
+      "sampleAnswer": "Pil–ampul ayrımlı kartlar.",
+      "solution": "Pil–ampul ayrımlı kartlar. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil–ampul ayrımlı kartlar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-011",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C03",
+      "title": "Açık anahtar — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Anahtarın kontakları ayrık; şemada kesintisiz tel çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nBağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
+      "sampleAnswer": "Açık anahtar ayrık kontakla gösterilir.",
+      "solution": "Açık anahtar ayrık kontakla gösterilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Açık anahtar ayrık kontakla gösterilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_open.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-012",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C03",
+      "title": "Açık anahtar — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Anahtarın kontakları ayrık; şemada kesintisiz tel çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nParçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
+      "sampleAnswer": "Anahtar ve kablo sembollüdür.",
+      "solution": "Anahtar ve kablo sembollüdür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Anahtar ve kablo sembollüdür."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_open.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-013",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C03",
+      "title": "Açık anahtar — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Anahtarın kontakları ayrık; şemada kesintisiz tel çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "sampleAnswer": "Açık anahtar yolun kesildiğini gösterir.",
+      "solution": "Açık anahtar yolun kesildiğini gösterir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Açık anahtar yolun kesildiğini gösterir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_open.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-014",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C03",
+      "title": "Açık anahtar — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Anahtarın kontakları ayrık; şemada kesintisiz tel çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
+      "sampleAnswer": "Anahtar tel gibi etiketlenmez.",
+      "solution": "Anahtar tel gibi etiketlenmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Anahtar tel gibi etiketlenmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_open.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-015",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C03",
+      "title": "Açık anahtar — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Anahtarın kontakları ayrık; şemada kesintisiz tel çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nSeçilen sembol kataloğuna göre parça–sembol afişi hazırla.",
+      "sampleAnswer": "Açık/kapalı anahtar eşleştirmesi.",
+      "solution": "Açık/kapalı anahtar eşleştirmesi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Açık/kapalı anahtar eşleştirmesi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_open.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-016",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C04",
+      "title": "Kapalı anahtar — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Anahtar kapalı; şemada açık kontak çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nBağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
+      "sampleAnswer": "Kapalı kontak sembolü gerekir.",
+      "solution": "Kapalı kontak sembolü gerekir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kapalı kontak sembolü gerekir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_closed.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-017",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C04",
+      "title": "Kapalı anahtar — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Anahtar kapalı; şemada açık kontak çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nParçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
+      "sampleAnswer": "Anahtar katalogda sembollüdür.",
+      "solution": "Anahtar katalogda sembollüdür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Anahtar katalogda sembollüdür."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_closed.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-018",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C04",
+      "title": "Kapalı anahtar — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Anahtar kapalı; şemada açık kontak çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "sampleAnswer": "Bağlantı durumu sembolde görünür.",
+      "solution": "Bağlantı durumu sembolde görünür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bağlantı durumu sembolde görünür."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_closed.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-019",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C04",
+      "title": "Kapalı anahtar — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Anahtar kapalı; şemada açık kontak çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
+      "sampleAnswer": "Açık ve kapalı aynı gösterilmez.",
+      "solution": "Açık ve kapalı aynı gösterilmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Açık ve kapalı aynı gösterilmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_closed.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-020",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C04",
+      "title": "Kapalı anahtar — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Anahtar kapalı; şemada açık kontak çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nSeçilen sembol kataloğuna göre parça–sembol afişi hazırla.",
+      "sampleAnswer": "Durumu belirten iki anahtar kartı.",
+      "solution": "Durumu belirten iki anahtar kartı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Durumu belirten iki anahtar kartı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_closed.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-021",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C05",
+      "title": "Duy ve ampul — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sınıf kataloğu ampul sembolünü verir; duy için ayrı sembol kullanmaz.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nBağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
+      "sampleAnswer": "Ampul daire içi çarpı.",
+      "solution": "Ampul daire içi çarpı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ampul daire içi çarpı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-022",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C05",
+      "title": "Duy ve ampul — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sınıf kataloğu ampul sembolünü verir; duy için ayrı sembol kullanmaz.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nParçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
+      "sampleAnswer": "Ampul katalogda; duy ayrı simgeyle verilmemiş.",
+      "solution": "Ampul katalogda; duy ayrı simgeyle verilmemiş. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ampul katalogda; duy ayrı simgeyle verilmemiş."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-023",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C05",
+      "title": "Duy ve ampul — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sınıf kataloğu ampul sembolünü verir; duy için ayrı sembol kullanmaz.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "sampleAnswer": "Duy bağlantı desteğidir.",
+      "solution": "Duy bağlantı desteğidir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Duy bağlantı desteğidir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-024",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C05",
+      "title": "Duy ve ampul — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Sınıf kataloğu ampul sembolünü verir; duy için ayrı sembol kullanmaz.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
+      "sampleAnswer": "Bu düzeyde ayrı sembol yok denir.",
+      "solution": "Bu düzeyde ayrı sembol yok denir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bu düzeyde ayrı sembol yok denir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-025",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C05",
+      "title": "Duy ve ampul — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Sınıf kataloğu ampul sembolünü verir; duy için ayrı sembol kullanmaz.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nSeçilen sembol kataloğuna göre parça–sembol afişi hazırla.",
+      "sampleAnswer": "Duy/ampul ayrımlı katalog afişi.",
+      "solution": "Duy/ampul ayrımlı katalog afişi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Duy/ampul ayrımlı katalog afişi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-026",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C06",
+      "title": "Pil yatağı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Katalog tek pil sembolünü kullanıyor; pil yatağı ayrıca çizilmiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nBağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
+      "sampleAnswer": "Pil enerji kaynağı sembolüyle gösterilir.",
+      "solution": "Pil enerji kaynağı sembolüyle gösterilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil enerji kaynağı sembolüyle gösterilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-027",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C06",
+      "title": "Pil yatağı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Katalog tek pil sembolünü kullanıyor; pil yatağı ayrıca çizilmiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nParçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
+      "sampleAnswer": "Pil katalogda; yatak ayrı gösterilmez.",
+      "solution": "Pil katalogda; yatak ayrı gösterilmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil katalogda; yatak ayrı gösterilmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-028",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C06",
+      "title": "Pil yatağı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Katalog tek pil sembolünü kullanıyor; pil yatağı ayrıca çizilmiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "sampleAnswer": "Yatak ile pil aynı parça değildir.",
+      "solution": "Yatak ile pil aynı parça değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yatak ile pil aynı parça değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-029",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C06",
+      "title": "Pil yatağı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Katalog tek pil sembolünü kullanıyor; pil yatağı ayrıca çizilmiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
+      "sampleAnswer": "Katalog kapsamı belirtilmeli.",
+      "solution": "Katalog kapsamı belirtilmeli. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Katalog kapsamı belirtilmeli."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-030",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C06",
+      "title": "Pil yatağı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Katalog tek pil sembolünü kullanıyor; pil yatağı ayrıca çizilmiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nSeçilen sembol kataloğuna göre parça–sembol afişi hazırla.",
+      "sampleAnswer": "Gerçek parça ve şema farkı afişi.",
+      "solution": "Gerçek parça ve şema farkı afişi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek parça ve şema farkı afişi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-031",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C07",
+      "title": "Kablo biçimi — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Gerçekte kıvrılan kablo şemada düz bağlantı çizgisiyle verilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nBağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
+      "sampleAnswer": "Kablo bağlantı çizgisiyle gösterilir.",
+      "solution": "Kablo bağlantı çizgisiyle gösterilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kablo bağlantı çizgisiyle gösterilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-032",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C07",
+      "title": "Kablo biçimi — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Gerçekte kıvrılan kablo şemada düz bağlantı çizgisiyle verilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nParçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
+      "sampleAnswer": "Kablo sembolü katalogdadır.",
+      "solution": "Kablo sembolü katalogdadır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kablo sembolü katalogdadır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-033",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C07",
+      "title": "Kablo biçimi — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Gerçekte kıvrılan kablo şemada düz bağlantı çizgisiyle verilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "sampleAnswer": "Şema elektriksel bağlantıyı anlatır.",
+      "solution": "Şema elektriksel bağlantıyı anlatır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Şema elektriksel bağlantıyı anlatır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-034",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C07",
+      "title": "Kablo biçimi — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Gerçekte kıvrılan kablo şemada düz bağlantı çizgisiyle verilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
+      "sampleAnswer": "Çizgi gerçek kablo biçimini kopyalamaz.",
+      "solution": "Çizgi gerçek kablo biçimini kopyalamaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Çizgi gerçek kablo biçimini kopyalamaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-035",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C07",
+      "title": "Kablo biçimi — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Gerçekte kıvrılan kablo şemada düz bağlantı çizgisiyle verilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nSeçilen sembol kataloğuna göre parça–sembol afişi hazırla.",
+      "sampleAnswer": "Farklı kıvrım–aynı bağlantı kartı.",
+      "solution": "Farklı kıvrım–aynı bağlantı kartı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Farklı kıvrım–aynı bağlantı kartı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-036",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C08",
+      "title": "Bant parçası — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yalıtım bandı devre elemanları afişine pil sembolüyle eklenmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nBağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
+      "sampleAnswer": "Pil sembolü banda ait değildir.",
+      "solution": "Pil sembolü banda ait değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil sembolü banda ait değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-037",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C08",
+      "title": "Bant parçası — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yalıtım bandı devre elemanları afişine pil sembolüyle eklenmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nParçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
+      "sampleAnswer": "Bant bu temel katalogda yoktur.",
+      "solution": "Bant bu temel katalogda yoktur. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bant bu temel katalogda yoktur."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-038",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C08",
+      "title": "Bant parçası — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yalıtım bandı devre elemanları afişine pil sembolüyle eklenmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "sampleAnswer": "Bant yardımcı malzemedir.",
+      "solution": "Bant yardımcı malzemedir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bant yardımcı malzemedir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-039",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C08",
+      "title": "Bant parçası — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yalıtım bandı devre elemanları afişine pil sembolüyle eklenmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
+      "sampleAnswer": "Her malzemeye pil sembolü verilemez.",
+      "solution": "Her malzemeye pil sembolü verilemez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Her malzemeye pil sembolü verilemez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-040",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C08",
+      "title": "Bant parçası — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Yalıtım bandı devre elemanları afişine pil sembolüyle eklenmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nSeçilen sembol kataloğuna göre parça–sembol afişi hazırla.",
+      "sampleAnswer": "Yardımcı malzemeyi ayrı etiketle.",
+      "solution": "Yardımcı malzemeyi ayrı etiketle. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yardımcı malzemeyi ayrı etiketle."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-041",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C09",
+      "title": "Eksik katalog — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Grup kendi şekillerini kullanmış; açıklama anahtarı yok.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nBağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
+      "sampleAnswer": "Ortak semboller tercih edilir.",
+      "solution": "Ortak semboller tercih edilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ortak semboller tercih edilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-042",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C09",
+      "title": "Eksik katalog — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Grup kendi şekillerini kullanmış; açıklama anahtarı yok.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nParçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
+      "sampleAnswer": "Katalog kapsamı görünür olmalı.",
+      "solution": "Katalog kapsamı görünür olmalı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Katalog kapsamı görünür olmalı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-043",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C09",
+      "title": "Eksik katalog — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Grup kendi şekillerini kullanmış; açıklama anahtarı yok.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "sampleAnswer": "Ortak dil eşleştirmeyi kolaylaştırır.",
+      "solution": "Ortak dil eşleştirmeyi kolaylaştırır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ortak dil eşleştirmeyi kolaylaştırır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-044",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C09",
+      "title": "Eksik katalog — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Grup kendi şekillerini kullanmış; açıklama anahtarı yok.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
+      "sampleAnswer": "Açıklamasız kişisel işaret belirsizdir.",
+      "solution": "Açıklamasız kişisel işaret belirsizdir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Açıklamasız kişisel işaret belirsizdir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-045",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C09",
+      "title": "Eksik katalog — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Grup kendi şekillerini kullanmış; açıklama anahtarı yok.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nSeçilen sembol kataloğuna göre parça–sembol afişi hazırla.",
+      "sampleAnswer": "Standart ders sembollü afiş yenilemesi.",
+      "solution": "Standart ders sembollü afiş yenilemesi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Standart ders sembollü afiş yenilemesi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-046",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C10",
+      "title": "Fotoğraf ile şema — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte ampul fotoğrafı sembol yerine konmuş; parça ve sembol aynı sayılıyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nBağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
+      "sampleAnswer": "Fotoğraf ve şematik sembol farklıdır.",
+      "solution": "Fotoğraf ve şematik sembol farklıdır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Fotoğraf ve şematik sembol farklıdır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-047",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C10",
+      "title": "Fotoğraf ile şema — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte ampul fotoğrafı sembol yerine konmuş; parça ve sembol aynı sayılıyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nParçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
+      "sampleAnswer": "Ampul sembollü elemandır.",
+      "solution": "Ampul sembollü elemandır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ampul sembollü elemandır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-048",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C10",
+      "title": "Fotoğraf ile şema — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte ampul fotoğrafı sembol yerine konmuş; parça ve sembol aynı sayılıyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "sampleAnswer": "Sembol parçayı sadeleştirir.",
+      "solution": "Sembol parçayı sadeleştirir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sembol parçayı sadeleştirir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-049",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C10",
+      "title": "Fotoğraf ile şema — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte ampul fotoğrafı sembol yerine konmuş; parça ve sembol aynı sayılıyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
+      "sampleAnswer": "Her fotoğraf devre sembolü değildir.",
+      "solution": "Her fotoğraf devre sembolü değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Her fotoğraf devre sembolü değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB561-050",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.1",
+      "contextId": "FB561-C10",
+      "title": "Fotoğraf ile şema — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Afişte ampul fotoğrafı sembol yerine konmuş; parça ve sembol aynı sayılıyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nSeçilen sembol kataloğuna göre parça–sembol afişi hazırla.",
+      "sampleAnswer": "Fotoğraf/ad/sembol üç sütunlu afiş.",
+      "solution": "Fotoğraf/ad/sembol üç sütunlu afiş. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Fotoğraf/ad/sembol üç sütunlu afiş."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    }
+  ]
+}

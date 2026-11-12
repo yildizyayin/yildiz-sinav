@@ -1,0 +1,2299 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.7.3",
+    "outcomeTitle": "Yakın çevresinde atık yönetiminin uygulanabilirliğine ilişkin deneyimlerini yansıtabilme",
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/408",
+    "sourceTextCheckedAt": "2026-11-12",
+    "academicYearCatalog": "2027-2028",
+    "sourceYearEquivalenceVerified": false,
+    "status": "DRAFT_NOT_APPROVED",
+    "teacherApprovedCount": 0,
+    "rowsCount": 50,
+    "distinctSharedContexts": 10,
+    "openEndedCount": 40,
+    "performanceTaskCount": 10,
+    "notIndependentStimuli": true,
+    "sourceLabel": "ANUNEX_ORIGINAL_AI_ASSISTED_DRAFT_2026_11_12",
+    "rubricScale": {
+      "0": "Ölçüt karşılanmıyor veya bilimsel olarak yanlış.",
+      "1": "Kısmen doğru; ilişki, gerekçe veya gerekli kayıt eksik.",
+      "2": "Ölçüt bilimsel olarak doğru ve yeterli kanıt/kayıtla karşılanıyor."
+    },
+    "scoringNotes": [
+      "Örnek cevabın sözcükleri zorunlu değildir.",
+      "Aynı eksik iki ölçütte mükerrer cezalandırılmaz.",
+      "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
+    ],
+    "reviewGates": [
+      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
+      "EXACT_PROGRAM_YEAR_CODE",
+      "SEMANTIC_CROSS_POOL_ORIGINALITY",
+      "MEDIA_LAYOUT_RIGHTS",
+      "VERTICAL_CURRICULUM_MAP",
+      "HISTORICAL_EXAM_AUDIT",
+      "IMPORTER_TYPE_SUPPORT"
+    ],
+    "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
+    "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+  },
+  "contexts": [
+    {
+      "contextId": "FB573-C01",
+      "title": "Yanlış kutu",
+      "stimulus": "Kurgu gözlemde birçok kişi etiketleri karıştırmış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB573-C02",
+      "title": "Uzak istasyon",
+      "stimulus": "Kutu sınıftan uzak; öğrenciler sık kullanmadıklarını söylüyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB573-C03",
+      "title": "Dolan kutu",
+      "stimulus": "Kutu taşınca temiz malzemeler karışıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB573-C04",
+      "title": "Belirsiz sorumluluk",
+      "stimulus": "Kutuyu kimin teslim edeceği bilinmiyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB573-C05",
+      "title": "Tek günlük başarı",
+      "stimulus": "Bir gün yanlış atım yok; sistem kalıcı başarılı sayılıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB573-C06",
+      "title": "Erişilemeyen etiket",
+      "stimulus": "Yazılar küçük; bazı kullanıcılar okuyamıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB573-C07",
+      "title": "Yeni kullanıcılar",
+      "stimulus": "Yeni öğrenciler okulun kabul kurallarını bilmiyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB573-C08",
+      "title": "Gıda atığı haftası",
+      "stimulus": "2026 teması gıda atığı; kurgu sınıf yalnız afiş yapmış, davranış kaydı yok.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": {
+        "sourceUrl": "https://www.unep.org/en/events/un-day/international-day-zero-waste-2026",
+        "eventDate": "2026-03-30",
+        "verifiedFact": "2026 International Day of Zero Waste theme: food waste.",
+        "classroomDataAreFictional": true
+      }
+    },
+    {
+      "contextId": "FB573-C09",
+      "title": "Yerel kural değişimi",
+      "stimulus": "Kabul kartı güncellenmiş; eski etiketler kullanılmaya devam ediyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB573-C10",
+      "title": "Geribildirim döngüsü",
+      "stimulus": "Öneri uygulanmış ama sonuç kimseyle paylaşılmamış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    }
+  ],
+  "rows": [
+    {
+      "id": "ANX-FB573-001",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C01",
+      "title": "Yanlış kutu — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgu gözlemde birçok kişi etiketleri karıştırmış.\n\nBağlamdaki deneyim veya kaydı hangi somut noktalarla gözden geçirirsin?",
+      "sampleAnswer": "Hangi etiketin karıştığı incelenir.",
+      "solution": "Hangi etiketin karıştığı incelenir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hangi etiketin karıştığı incelenir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-002",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C01",
+      "title": "Yanlış kutu — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgu gözlemde birçok kişi etiketleri karıştırmış.\n\nDeneyimden çıkarılabilecek sınırlı sonucu yaz.",
+      "sampleAnswer": "Mevcut etiketler yeterince anlaşılmamış olabilir.",
+      "solution": "Mevcut etiketler yeterince anlaşılmamış olabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Mevcut etiketler yeterince anlaşılmamış olabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-003",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C01",
+      "title": "Yanlış kutu — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgu gözlemde birçok kişi etiketleri karıştırmış.\n\nUygulanabilir bir iyileştirme öner ve gerekçelendir.",
+      "sampleAnswer": "Örnek resimli açık etiket.",
+      "solution": "Örnek resimli açık etiket. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Örnek resimli açık etiket."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-004",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C01",
+      "title": "Yanlış kutu — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgu gözlemde birçok kişi etiketleri karıştırmış.\n\nÖnerinin işe yaradığını hangi ölçütle değerlendirirsin?",
+      "sampleAnswer": "Yanlış atım sayısı ve akran açıklaması.",
+      "solution": "Yanlış atım sayısı ve akran açıklaması. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yanlış atım sayısı ve akran açıklaması."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-005",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C01",
+      "title": "Yanlış kutu — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kurgu gözlemde birçok kişi etiketleri karıştırmış.\n\nKendi güvenli okul/ev gözlemini yap; gerçek deneyim, çıkarım, uygulama ve değerlendirme günlüğü hazırla.",
+      "sampleAnswer": "Kişisel veri toplamadan gerçek gözlem.",
+      "solution": "Kişisel veri toplamadan gerçek gözlem. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kişisel veri toplamadan gerçek gözlem."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-006",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C02",
+      "title": "Uzak istasyon — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutu sınıftan uzak; öğrenciler sık kullanmadıklarını söylüyor.\n\nBağlamdaki deneyim veya kaydı hangi somut noktalarla gözden geçirirsin?",
+      "sampleAnswer": "Uzaklık ve erişim kaydı.",
+      "solution": "Uzaklık ve erişim kaydı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Uzaklık ve erişim kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-007",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C02",
+      "title": "Uzak istasyon — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutu sınıftan uzak; öğrenciler sık kullanmadıklarını söylüyor.\n\nDeneyimden çıkarılabilecek sınırlı sonucu yaz.",
+      "sampleAnswer": "Yerleşim katılımı etkileyebilir.",
+      "solution": "Yerleşim katılımı etkileyebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yerleşim katılımı etkileyebilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-008",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C02",
+      "title": "Uzak istasyon — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutu sınıftan uzak; öğrenciler sık kullanmadıklarını söylüyor.\n\nUygulanabilir bir iyileştirme öner ve gerekçelendir.",
+      "sampleAnswer": "Uygun erişilebilir konum önerisi.",
+      "solution": "Uygun erişilebilir konum önerisi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Uygun erişilebilir konum önerisi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-009",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C02",
+      "title": "Uzak istasyon — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutu sınıftan uzak; öğrenciler sık kullanmadıklarını söylüyor.\n\nÖnerinin işe yaradığını hangi ölçütle değerlendirirsin?",
+      "sampleAnswer": "Kullanım ve yanlış atım takibi.",
+      "solution": "Kullanım ve yanlış atım takibi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kullanım ve yanlış atım takibi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-010",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C02",
+      "title": "Uzak istasyon — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kutu sınıftan uzak; öğrenciler sık kullanmadıklarını söylüyor.\n\nKendi güvenli okul/ev gözlemini yap; gerçek deneyim, çıkarım, uygulama ve değerlendirme günlüğü hazırla.",
+      "sampleAnswer": "İzinli konum incelemesi günlüğü.",
+      "solution": "İzinli konum incelemesi günlüğü. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İzinli konum incelemesi günlüğü."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-011",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C03",
+      "title": "Dolan kutu — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutu taşınca temiz malzemeler karışıyor.\n\nBağlamdaki deneyim veya kaydı hangi somut noktalarla gözden geçirirsin?",
+      "sampleAnswer": "Doluluk ve boşaltma sıklığı.",
+      "solution": "Doluluk ve boşaltma sıklığı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Doluluk ve boşaltma sıklığı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-012",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C03",
+      "title": "Dolan kutu — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutu taşınca temiz malzemeler karışıyor.\n\nDeneyimden çıkarılabilecek sınırlı sonucu yaz.",
+      "sampleAnswer": "Toplama düzeni yetersiz olabilir.",
+      "solution": "Toplama düzeni yetersiz olabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Toplama düzeni yetersiz olabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-013",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C03",
+      "title": "Dolan kutu — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutu taşınca temiz malzemeler karışıyor.\n\nUygulanabilir bir iyileştirme öner ve gerekçelendir.",
+      "sampleAnswer": "Sorumlu ve boşaltma çizelgesi.",
+      "solution": "Sorumlu ve boşaltma çizelgesi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sorumlu ve boşaltma çizelgesi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-014",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C03",
+      "title": "Dolan kutu — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutu taşınca temiz malzemeler karışıyor.\n\nÖnerinin işe yaradığını hangi ölçütle değerlendirirsin?",
+      "sampleAnswer": "Taşma sıklığının değişimi.",
+      "solution": "Taşma sıklığının değişimi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Taşma sıklığının değişimi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-015",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C03",
+      "title": "Dolan kutu — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kutu taşınca temiz malzemeler karışıyor.\n\nKendi güvenli okul/ev gözlemini yap; gerçek deneyim, çıkarım, uygulama ve değerlendirme günlüğü hazırla.",
+      "sampleAnswer": "Atığa dokunmadan doluluk gözlemi.",
+      "solution": "Atığa dokunmadan doluluk gözlemi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Atığa dokunmadan doluluk gözlemi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-016",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C04",
+      "title": "Belirsiz sorumluluk — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutuyu kimin teslim edeceği bilinmiyor.\n\nBağlamdaki deneyim veya kaydı hangi somut noktalarla gözden geçirirsin?",
+      "sampleAnswer": "Görev ve teslim kaydı.",
+      "solution": "Görev ve teslim kaydı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Görev ve teslim kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-017",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C04",
+      "title": "Belirsiz sorumluluk — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutuyu kimin teslim edeceği bilinmiyor.\n\nDeneyimden çıkarılabilecek sınırlı sonucu yaz.",
+      "sampleAnswer": "Ayrıştırma tek başına süreç değildir.",
+      "solution": "Ayrıştırma tek başına süreç değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ayrıştırma tek başına süreç değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-018",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C04",
+      "title": "Belirsiz sorumluluk — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutuyu kimin teslim edeceği bilinmiyor.\n\nUygulanabilir bir iyileştirme öner ve gerekçelendir.",
+      "sampleAnswer": "Yetişkin sorumluluğunda görev akışı.",
+      "solution": "Yetişkin sorumluluğunda görev akışı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yetişkin sorumluluğunda görev akışı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-019",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C04",
+      "title": "Belirsiz sorumluluk — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutuyu kimin teslim edeceği bilinmiyor.\n\nÖnerinin işe yaradığını hangi ölçütle değerlendirirsin?",
+      "sampleAnswer": "Teslim kayıtlarının tamamlanması.",
+      "solution": "Teslim kayıtlarının tamamlanması. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Teslim kayıtlarının tamamlanması."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-020",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C04",
+      "title": "Belirsiz sorumluluk — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kutuyu kimin teslim edeceği bilinmiyor.\n\nKendi güvenli okul/ev gözlemini yap; gerçek deneyim, çıkarım, uygulama ve değerlendirme günlüğü hazırla.",
+      "sampleAnswer": "Güvenli görev dağılımı günlüğü.",
+      "solution": "Güvenli görev dağılımı günlüğü. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Güvenli görev dağılımı günlüğü."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-021",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C05",
+      "title": "Tek günlük başarı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir gün yanlış atım yok; sistem kalıcı başarılı sayılıyor.\n\nBağlamdaki deneyim veya kaydı hangi somut noktalarla gözden geçirirsin?",
+      "sampleAnswer": "Süre ve gözlem kapsamı.",
+      "solution": "Süre ve gözlem kapsamı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Süre ve gözlem kapsamı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-022",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C05",
+      "title": "Tek günlük başarı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir gün yanlış atım yok; sistem kalıcı başarılı sayılıyor.\n\nDeneyimden çıkarılabilecek sınırlı sonucu yaz.",
+      "sampleAnswer": "Bir gün sınırlı kanıttır.",
+      "solution": "Bir gün sınırlı kanıttır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bir gün sınırlı kanıttır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-023",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C05",
+      "title": "Tek günlük başarı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir gün yanlış atım yok; sistem kalıcı başarılı sayılıyor.\n\nUygulanabilir bir iyileştirme öner ve gerekçelendir.",
+      "sampleAnswer": "Farklı günlerde izleme.",
+      "solution": "Farklı günlerde izleme. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Farklı günlerde izleme."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-024",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C05",
+      "title": "Tek günlük başarı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir gün yanlış atım yok; sistem kalıcı başarılı sayılıyor.\n\nÖnerinin işe yaradığını hangi ölçütle değerlendirirsin?",
+      "sampleAnswer": "Tekrarlı uygun ayrıştırma.",
+      "solution": "Tekrarlı uygun ayrıştırma. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tekrarlı uygun ayrıştırma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-025",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C05",
+      "title": "Tek günlük başarı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Bir gün yanlış atım yok; sistem kalıcı başarılı sayılıyor.\n\nKendi güvenli okul/ev gözlemini yap; gerçek deneyim, çıkarım, uygulama ve değerlendirme günlüğü hazırla.",
+      "sampleAnswer": "Uzunlamasına gerçek gözlem planı.",
+      "solution": "Uzunlamasına gerçek gözlem planı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Uzunlamasına gerçek gözlem planı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-026",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C06",
+      "title": "Erişilemeyen etiket — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yazılar küçük; bazı kullanıcılar okuyamıyor.\n\nBağlamdaki deneyim veya kaydı hangi somut noktalarla gözden geçirirsin?",
+      "sampleAnswer": "Okunabilirlik ve erişim.",
+      "solution": "Okunabilirlik ve erişim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Okunabilirlik ve erişim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-027",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C06",
+      "title": "Erişilemeyen etiket — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yazılar küçük; bazı kullanıcılar okuyamıyor.\n\nDeneyimden çıkarılabilecek sınırlı sonucu yaz.",
+      "sampleAnswer": "Sorun yalnız isteksizlik olmayabilir.",
+      "solution": "Sorun yalnız isteksizlik olmayabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sorun yalnız isteksizlik olmayabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-028",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C06",
+      "title": "Erişilemeyen etiket — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yazılar küçük; bazı kullanıcılar okuyamıyor.\n\nUygulanabilir bir iyileştirme öner ve gerekçelendir.",
+      "sampleAnswer": "Büyük yazı, resim ve uygun yükseklik.",
+      "solution": "Büyük yazı, resim ve uygun yükseklik. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Büyük yazı, resim ve uygun yükseklik."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-029",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C06",
+      "title": "Erişilemeyen etiket — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yazılar küçük; bazı kullanıcılar okuyamıyor.\n\nÖnerinin işe yaradığını hangi ölçütle değerlendirirsin?",
+      "sampleAnswer": "Kullanıcı geribildirimi ve doğru eşleştirme.",
+      "solution": "Kullanıcı geribildirimi ve doğru eşleştirme. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kullanıcı geribildirimi ve doğru eşleştirme."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-030",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C06",
+      "title": "Erişilemeyen etiket — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Yazılar küçük; bazı kullanıcılar okuyamıyor.\n\nKendi güvenli okul/ev gözlemini yap; gerçek deneyim, çıkarım, uygulama ve değerlendirme günlüğü hazırla.",
+      "sampleAnswer": "İzinli erişilebilirlik incelemesi.",
+      "solution": "İzinli erişilebilirlik incelemesi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İzinli erişilebilirlik incelemesi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-031",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C07",
+      "title": "Yeni kullanıcılar — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yeni öğrenciler okulun kabul kurallarını bilmiyor.\n\nBağlamdaki deneyim veya kaydı hangi somut noktalarla gözden geçirirsin?",
+      "sampleAnswer": "Bilgilendirme deneyimi.",
+      "solution": "Bilgilendirme deneyimi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bilgilendirme deneyimi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-032",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C07",
+      "title": "Yeni kullanıcılar — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yeni öğrenciler okulun kabul kurallarını bilmiyor.\n\nDeneyimden çıkarılabilecek sınırlı sonucu yaz.",
+      "sampleAnswer": "Eksik tanıtım hataları etkileyebilir.",
+      "solution": "Eksik tanıtım hataları etkileyebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Eksik tanıtım hataları etkileyebilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-033",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C07",
+      "title": "Yeni kullanıcılar — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yeni öğrenciler okulun kabul kurallarını bilmiyor.\n\nUygulanabilir bir iyileştirme öner ve gerekçelendir.",
+      "sampleAnswer": "Kısa örnekli tanıtım.",
+      "solution": "Kısa örnekli tanıtım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kısa örnekli tanıtım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-034",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C07",
+      "title": "Yeni kullanıcılar — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Yeni öğrenciler okulun kabul kurallarını bilmiyor.\n\nÖnerinin işe yaradığını hangi ölçütle değerlendirirsin?",
+      "sampleAnswer": "Tanıtım öncesi/sonrası anlayış.",
+      "solution": "Tanıtım öncesi/sonrası anlayış. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tanıtım öncesi/sonrası anlayış."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-035",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C07",
+      "title": "Yeni kullanıcılar — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Yeni öğrenciler okulun kabul kurallarını bilmiyor.\n\nKendi güvenli okul/ev gözlemini yap; gerçek deneyim, çıkarım, uygulama ve değerlendirme günlüğü hazırla.",
+      "sampleAnswer": "Akran izniyle kişisiz geribildirim.",
+      "solution": "Akran izniyle kişisiz geribildirim. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Akran izniyle kişisiz geribildirim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-036",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C08",
+      "title": "Gıda atığı haftası — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2026 teması gıda atığı; kurgu sınıf yalnız afiş yapmış, davranış kaydı yok.\n\nBağlamdaki deneyim veya kaydı hangi somut noktalarla gözden geçirirsin?",
+      "sampleAnswer": "Afiş ile uygulama ayrılır.",
+      "solution": "Afiş ile uygulama ayrılır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Afiş ile uygulama ayrılır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-037",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C08",
+      "title": "Gıda atığı haftası — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2026 teması gıda atığı; kurgu sınıf yalnız afiş yapmış, davranış kaydı yok.\n\nDeneyimden çıkarılabilecek sınırlı sonucu yaz.",
+      "sampleAnswer": "Farkındalık kanıtı davranış kanıtı değildir.",
+      "solution": "Farkındalık kanıtı davranış kanıtı değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Farkındalık kanıtı davranış kanıtı değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-038",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C08",
+      "title": "Gıda atığı haftası — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2026 teması gıda atığı; kurgu sınıf yalnız afiş yapmış, davranış kaydı yok.\n\nUygulanabilir bir iyileştirme öner ve gerekçelendir.",
+      "sampleAnswer": "Önleme ve miktar izleme planı.",
+      "solution": "Önleme ve miktar izleme planı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Önleme ve miktar izleme planı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-039",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C08",
+      "title": "Gıda atığı haftası — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2026 teması gıda atığı; kurgu sınıf yalnız afiş yapmış, davranış kaydı yok.\n\nÖnerinin işe yaradığını hangi ölçütle değerlendirirsin?",
+      "sampleAnswer": "Gerçek gıda artığı ve katılım kaydı.",
+      "solution": "Gerçek gıda artığı ve katılım kaydı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek gıda artığı ve katılım kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-040",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C08",
+      "title": "Gıda atığı haftası — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "2026 teması gıda atığı; kurgu sınıf yalnız afiş yapmış, davranış kaydı yok.\n\nKendi güvenli okul/ev gözlemini yap; gerçek deneyim, çıkarım, uygulama ve değerlendirme günlüğü hazırla.",
+      "sampleAnswer": "Atığa temas etmeden yetişkin ölçümünü incele.",
+      "solution": "Atığa temas etmeden yetişkin ölçümünü incele. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Atığa temas etmeden yetişkin ölçümünü incele."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-041",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C09",
+      "title": "Yerel kural değişimi — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kabul kartı güncellenmiş; eski etiketler kullanılmaya devam ediyor.\n\nBağlamdaki deneyim veya kaydı hangi somut noktalarla gözden geçirirsin?",
+      "sampleAnswer": "Kart tarihi ve etiket sürümü.",
+      "solution": "Kart tarihi ve etiket sürümü. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kart tarihi ve etiket sürümü."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-042",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C09",
+      "title": "Yerel kural değişimi — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kabul kartı güncellenmiş; eski etiketler kullanılmaya devam ediyor.\n\nDeneyimden çıkarılabilecek sınırlı sonucu yaz.",
+      "sampleAnswer": "Bilgi güncelleme süreci eksik.",
+      "solution": "Bilgi güncelleme süreci eksik. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bilgi güncelleme süreci eksik."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-043",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C09",
+      "title": "Yerel kural değişimi — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kabul kartı güncellenmiş; eski etiketler kullanılmaya devam ediyor.\n\nUygulanabilir bir iyileştirme öner ve gerekçelendir.",
+      "sampleAnswer": "Yetkili kartla etiket yenileme.",
+      "solution": "Yetkili kartla etiket yenileme. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yetkili kartla etiket yenileme."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-044",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C09",
+      "title": "Yerel kural değişimi — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kabul kartı güncellenmiş; eski etiketler kullanılmaya devam ediyor.\n\nÖnerinin işe yaradığını hangi ölçütle değerlendirirsin?",
+      "sampleAnswer": "Yeni kurala uygun eşleştirme.",
+      "solution": "Yeni kurala uygun eşleştirme. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yeni kurala uygun eşleştirme."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-045",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C09",
+      "title": "Yerel kural değişimi — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kabul kartı güncellenmiş; eski etiketler kullanılmaya devam ediyor.\n\nKendi güvenli okul/ev gözlemini yap; gerçek deneyim, çıkarım, uygulama ve değerlendirme günlüğü hazırla.",
+      "sampleAnswer": "Kaynak/sürüm bilgili deneyim günlüğü.",
+      "solution": "Kaynak/sürüm bilgili deneyim günlüğü. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak/sürüm bilgili deneyim günlüğü."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-046",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C10",
+      "title": "Geribildirim döngüsü — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öneri uygulanmış ama sonuç kimseyle paylaşılmamış.\n\nBağlamdaki deneyim veya kaydı hangi somut noktalarla gözden geçirirsin?",
+      "sampleAnswer": "Önce/sonra kayıt ve paylaşım.",
+      "solution": "Önce/sonra kayıt ve paylaşım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Önce/sonra kayıt ve paylaşım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-047",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C10",
+      "title": "Geribildirim döngüsü — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öneri uygulanmış ama sonuç kimseyle paylaşılmamış.\n\nDeneyimden çıkarılabilecek sınırlı sonucu yaz.",
+      "sampleAnswer": "Değerlendirme tamamlanmamış.",
+      "solution": "Değerlendirme tamamlanmamış. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Değerlendirme tamamlanmamış."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-048",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C10",
+      "title": "Geribildirim döngüsü — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öneri uygulanmış ama sonuç kimseyle paylaşılmamış.\n\nUygulanabilir bir iyileştirme öner ve gerekçelendir.",
+      "sampleAnswer": "Kısa ölçütlü sonuç paylaşımı.",
+      "solution": "Kısa ölçütlü sonuç paylaşımı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kısa ölçütlü sonuç paylaşımı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-049",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C10",
+      "title": "Geribildirim döngüsü — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öneri uygulanmış ama sonuç kimseyle paylaşılmamış.\n\nÖnerinin işe yaradığını hangi ölçütle değerlendirirsin?",
+      "sampleAnswer": "Kanıtlı değişim ve yeni ihtiyaç.",
+      "solution": "Kanıtlı değişim ve yeni ihtiyaç. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kanıtlı değişim ve yeni ihtiyaç."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB573-050",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.3",
+      "contextId": "FB573-C10",
+      "title": "Geribildirim döngüsü — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Öneri uygulanmış ama sonuç kimseyle paylaşılmamış.\n\nKendi güvenli okul/ev gözlemini yap; gerçek deneyim, çıkarım, uygulama ve değerlendirme günlüğü hazırla.",
+      "sampleAnswer": "Mahremiyet koruyan sonuç günlüğü.",
+      "solution": "Mahremiyet koruyan sonuç günlüğü. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Mahremiyet koruyan sonuç günlüğü."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    }
+  ]
+}

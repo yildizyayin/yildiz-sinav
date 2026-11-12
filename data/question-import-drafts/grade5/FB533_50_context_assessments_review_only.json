@@ -1,0 +1,2304 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.3.3",
+    "outcomeTitle": "Destek ve hareket sistemine ait yapıları sınıflandırabilme",
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/388",
+    "sourceTextCheckedAt": "2026-11-12",
+    "academicYearCatalog": "2027-2028",
+    "sourceYearEquivalenceVerified": false,
+    "status": "DRAFT_NOT_APPROVED",
+    "teacherApprovedCount": 0,
+    "rowsCount": 50,
+    "distinctSharedContexts": 10,
+    "openEndedCount": 40,
+    "performanceTaskCount": 10,
+    "notIndependentStimuli": true,
+    "sourceLabel": "ANUNEX_ORIGINAL_AI_ASSISTED_DRAFT_2026_11_12",
+    "rubricScale": {
+      "0": "Ölçüt karşılanmıyor veya bilimsel olarak yanlış.",
+      "1": "Kısmen doğru; ilişki, gerekçe veya gerekli kayıt eksik.",
+      "2": "Ölçüt bilimsel olarak doğru ve yeterli kanıt/kayıtla karşılanıyor."
+    },
+    "scoringNotes": [
+      "Örnek cevabın sözcükleri zorunlu değildir.",
+      "Aynı eksik iki ölçütte mükerrer cezalandırılmaz.",
+      "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
+    ],
+    "reviewGates": [
+      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
+      "EXACT_PROGRAM_YEAR_CODE",
+      "SEMANTIC_CROSS_POOL_ORIGINALITY",
+      "MEDIA_LAYOUT_RIGHTS",
+      "VERTICAL_CURRICULUM_MAP",
+      "HISTORICAL_EXAM_AUDIT",
+      "IMPORTER_TYPE_SUPPORT"
+    ],
+    "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
+    "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+  },
+  "contexts": [
+    {
+      "contextId": "FB533-C01",
+      "title": "Kol modeli",
+      "stimulus": "Üst kol kemiği, dirsek eklemi ve kol kası kartları var.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB533-C02",
+      "title": "Kafatası",
+      "stimulus": "Kafatası kemiğine 'kol kası' etiketi yapıştırılmış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB533-C03",
+      "title": "El bileği",
+      "stimulus": "El bileği kemikleri uzun kemik diye yazılmış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB533-C04",
+      "title": "Kaburga",
+      "stimulus": "Kaburga ile uyluk kemiği aynı biçim grubuna alınmış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB533-C05",
+      "title": "Omur bağlantısı",
+      "stimulus": "Omurlar arasındaki hareket, kol eklemi kadar serbest sanılıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB533-C06",
+      "title": "Kafatası bağlantısı",
+      "stimulus": "Kafatası kemikleri arasındaki bağlantı oynar diye yazılmış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB533-C07",
+      "title": "Kıkırdak örneği",
+      "stimulus": "Kulak kepçesi ve eklem yüzü kartlarında kıkırdak gösteriliyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB533-C08",
+      "title": "Kalp kası",
+      "stimulus": "Kalp kası kemiğin çeşidi diye gruplanmış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB533-C09",
+      "title": "Mide duvarı",
+      "stimulus": "Mide duvarındaki kasla kol kasının aynı tür olduğu söyleniyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB533-C10",
+      "title": "Eksik iskelet",
+      "stimulus": "Afişte iskelet yalnız kemik olarak tanımlanmış; eklem ve kıkırdak unutulmuş.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    }
+  ],
+  "rows": [
+    {
+      "id": "ANX-FB533-001",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C01",
+      "title": "Kol modeli — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Üst kol kemiği, dirsek eklemi ve kol kası kartları var.\n\nBağlamdaki yapıların niteliğini belirt.",
+      "sampleAnswer": "Kemik destek; eklem bağlantı; kas hareketle ilişkili.",
+      "solution": "Kemik destek; eklem bağlantı; kas hareketle ilişkili. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kemik destek; eklem bağlantı; kas hareketle ilişkili."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-002",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C01",
+      "title": "Kol modeli — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Üst kol kemiği, dirsek eklemi ve kol kası kartları var.\n\nYapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
+      "sampleAnswer": "Kemik/eklem iskelet; kas ayrı grup.",
+      "solution": "Kemik/eklem iskelet; kas ayrı grup. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kemik/eklem iskelet; kas ayrı grup."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-003",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C01",
+      "title": "Kol modeli — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Üst kol kemiği, dirsek eklemi ve kol kası kartları var.\n\nUygun alt grubu veya örneği yaz.",
+      "sampleAnswer": "Üst kol uzun kemik; dirsek oynar eklem.",
+      "solution": "Üst kol uzun kemik; dirsek oynar eklem. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Üst kol uzun kemik; dirsek oynar eklem."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-004",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C01",
+      "title": "Kol modeli — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Üst kol kemiği, dirsek eklemi ve kol kası kartları var.\n\nYanlış etiketin neden uygun olmadığını açıkla.",
+      "sampleAnswer": "Eklem kas değildir.",
+      "solution": "Eklem kas değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Eklem kas değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-005",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C01",
+      "title": "Kol modeli — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Üst kol kemiği, dirsek eklemi ve kol kası kartları var.\n\nBu örnekleri içeren etiketli sınıflandırma tablosu hazırla.",
+      "sampleAnswer": "İskelet–kas ayrımlı tablo.",
+      "solution": "İskelet–kas ayrımlı tablo. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İskelet–kas ayrımlı tablo."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-006",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C02",
+      "title": "Kafatası — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kafatası kemiğine 'kol kası' etiketi yapıştırılmış.\n\nBağlamdaki yapıların niteliğini belirt.",
+      "sampleAnswer": "Sert kemik yapı korumaya katılır.",
+      "solution": "Sert kemik yapı korumaya katılır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sert kemik yapı korumaya katılır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-007",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C02",
+      "title": "Kafatası — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kafatası kemiğine 'kol kası' etiketi yapıştırılmış.\n\nYapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
+      "sampleAnswer": "İskelet grubunda.",
+      "solution": "İskelet grubunda. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İskelet grubunda."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-008",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C02",
+      "title": "Kafatası — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kafatası kemiğine 'kol kası' etiketi yapıştırılmış.\n\nUygun alt grubu veya örneği yaz.",
+      "sampleAnswer": "Kafatası yassı kemik örneği.",
+      "solution": "Kafatası yassı kemik örneği. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kafatası yassı kemik örneği."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-009",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C02",
+      "title": "Kafatası — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kafatası kemiğine 'kol kası' etiketi yapıştırılmış.\n\nYanlış etiketin neden uygun olmadığını açıkla.",
+      "sampleAnswer": "Kemik kas olarak etiketlenmez.",
+      "solution": "Kemik kas olarak etiketlenmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kemik kas olarak etiketlenmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-010",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C02",
+      "title": "Kafatası — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kafatası kemiğine 'kol kası' etiketi yapıştırılmış.\n\nBu örnekleri içeren etiketli sınıflandırma tablosu hazırla.",
+      "sampleAnswer": "Kemik türü ve görevli tablo.",
+      "solution": "Kemik türü ve görevli tablo. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kemik türü ve görevli tablo."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-011",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C03",
+      "title": "El bileği — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "El bileği kemikleri uzun kemik diye yazılmış.\n\nBağlamdaki yapıların niteliğini belirt.",
+      "sampleAnswer": "Bilekte kısa kemikler bulunur.",
+      "solution": "Bilekte kısa kemikler bulunur. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bilekte kısa kemikler bulunur."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-012",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C03",
+      "title": "El bileği — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "El bileği kemikleri uzun kemik diye yazılmış.\n\nYapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
+      "sampleAnswer": "İskelet grubunda.",
+      "solution": "İskelet grubunda. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İskelet grubunda."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-013",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C03",
+      "title": "El bileği — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "El bileği kemikleri uzun kemik diye yazılmış.\n\nUygun alt grubu veya örneği yaz.",
+      "sampleAnswer": "Kısa kemik örneği.",
+      "solution": "Kısa kemik örneği. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kısa kemik örneği."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-014",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C03",
+      "title": "El bileği — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "El bileği kemikleri uzun kemik diye yazılmış.\n\nYanlış etiketin neden uygun olmadığını açıkla.",
+      "sampleAnswer": "Büyüklük değil biçim özellikleri esas.",
+      "solution": "Büyüklük değil biçim özellikleri esas. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Büyüklük değil biçim özellikleri esas."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-015",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C03",
+      "title": "El bileği — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "El bileği kemikleri uzun kemik diye yazılmış.\n\nBu örnekleri içeren etiketli sınıflandırma tablosu hazırla.",
+      "sampleAnswer": "Örnek ve tür etiketli tablo.",
+      "solution": "Örnek ve tür etiketli tablo. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Örnek ve tür etiketli tablo."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-016",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C04",
+      "title": "Kaburga — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaburga ile uyluk kemiği aynı biçim grubuna alınmış.\n\nBağlamdaki yapıların niteliğini belirt.",
+      "sampleAnswer": "İkisi kemiktir; biçimleri farklıdır.",
+      "solution": "İkisi kemiktir; biçimleri farklıdır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İkisi kemiktir; biçimleri farklıdır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-017",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C04",
+      "title": "Kaburga — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaburga ile uyluk kemiği aynı biçim grubuna alınmış.\n\nYapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
+      "sampleAnswer": "İkisi de iskelet grubunda.",
+      "solution": "İkisi de iskelet grubunda. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İkisi de iskelet grubunda."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-018",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C04",
+      "title": "Kaburga — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaburga ile uyluk kemiği aynı biçim grubuna alınmış.\n\nUygun alt grubu veya örneği yaz.",
+      "sampleAnswer": "Kaburga yassı; uyluk uzun kemik.",
+      "solution": "Kaburga yassı; uyluk uzun kemik. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaburga yassı; uyluk uzun kemik."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-019",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C04",
+      "title": "Kaburga — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaburga ile uyluk kemiği aynı biçim grubuna alınmış.\n\nYanlış etiketin neden uygun olmadığını açıkla.",
+      "sampleAnswer": "Tüm kemikler aynı çeşit değildir.",
+      "solution": "Tüm kemikler aynı çeşit değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tüm kemikler aynı çeşit değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-020",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C04",
+      "title": "Kaburga — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kaburga ile uyluk kemiği aynı biçim grubuna alınmış.\n\nBu örnekleri içeren etiketli sınıflandırma tablosu hazırla.",
+      "sampleAnswer": "İki kemik türünü karşılaştıran tablo.",
+      "solution": "İki kemik türünü karşılaştıran tablo. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İki kemik türünü karşılaştıran tablo."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-021",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C05",
+      "title": "Omur bağlantısı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Omurlar arasındaki hareket, kol eklemi kadar serbest sanılıyor.\n\nBağlamdaki yapıların niteliğini belirt.",
+      "sampleAnswer": "Bazı eklemler sınırlı hareketlidir.",
+      "solution": "Bazı eklemler sınırlı hareketlidir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bazı eklemler sınırlı hareketlidir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-022",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C05",
+      "title": "Omur bağlantısı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Omurlar arasındaki hareket, kol eklemi kadar serbest sanılıyor.\n\nYapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
+      "sampleAnswer": "Eklemler iskelet bileşenidir.",
+      "solution": "Eklemler iskelet bileşenidir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Eklemler iskelet bileşenidir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-023",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C05",
+      "title": "Omur bağlantısı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Omurlar arasındaki hareket, kol eklemi kadar serbest sanılıyor.\n\nUygun alt grubu veya örneği yaz.",
+      "sampleAnswer": "Omurlar arası yarı oynar örneği.",
+      "solution": "Omurlar arası yarı oynar örneği. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Omurlar arası yarı oynar örneği."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-024",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C05",
+      "title": "Omur bağlantısı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Omurlar arasındaki hareket, kol eklemi kadar serbest sanılıyor.\n\nYanlış etiketin neden uygun olmadığını açıkla.",
+      "sampleAnswer": "Hareket miktarları aynı değildir.",
+      "solution": "Hareket miktarları aynı değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hareket miktarları aynı değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-025",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C05",
+      "title": "Omur bağlantısı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Omurlar arasındaki hareket, kol eklemi kadar serbest sanılıyor.\n\nBu örnekleri içeren etiketli sınıflandırma tablosu hazırla.",
+      "sampleAnswer": "Oynar/yarı oynar/oynamaz örnekli tablo.",
+      "solution": "Oynar/yarı oynar/oynamaz örnekli tablo. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Oynar/yarı oynar/oynamaz örnekli tablo."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-026",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C06",
+      "title": "Kafatası bağlantısı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kafatası kemikleri arasındaki bağlantı oynar diye yazılmış.\n\nBağlamdaki yapıların niteliğini belirt.",
+      "sampleAnswer": "Bu bağlantılar sınırlı/hareketsizdir.",
+      "solution": "Bu bağlantılar sınırlı/hareketsizdir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bu bağlantılar sınırlı/hareketsizdir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-027",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C06",
+      "title": "Kafatası bağlantısı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kafatası kemikleri arasındaki bağlantı oynar diye yazılmış.\n\nYapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
+      "sampleAnswer": "İskeletin eklem grubunda.",
+      "solution": "İskeletin eklem grubunda. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İskeletin eklem grubunda."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-028",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C06",
+      "title": "Kafatası bağlantısı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kafatası kemikleri arasındaki bağlantı oynar diye yazılmış.\n\nUygun alt grubu veya örneği yaz.",
+      "sampleAnswer": "Oynamaz eklem örneği.",
+      "solution": "Oynamaz eklem örneği. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Oynamaz eklem örneği."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-029",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C06",
+      "title": "Kafatası bağlantısı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kafatası kemikleri arasındaki bağlantı oynar diye yazılmış.\n\nYanlış etiketin neden uygun olmadığını açıkla.",
+      "sampleAnswer": "Dirsek gibi oynar sayılmaz.",
+      "solution": "Dirsek gibi oynar sayılmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dirsek gibi oynar sayılmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-030",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C06",
+      "title": "Kafatası bağlantısı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kafatası kemikleri arasındaki bağlantı oynar diye yazılmış.\n\nBu örnekleri içeren etiketli sınıflandırma tablosu hazırla.",
+      "sampleAnswer": "Konum ve eklem türü tablosu.",
+      "solution": "Konum ve eklem türü tablosu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Konum ve eklem türü tablosu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-031",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C07",
+      "title": "Kıkırdak örneği — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kulak kepçesi ve eklem yüzü kartlarında kıkırdak gösteriliyor.\n\nBağlamdaki yapıların niteliğini belirt.",
+      "sampleAnswer": "Esnek destek yapı niteliği.",
+      "solution": "Esnek destek yapı niteliği. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Esnek destek yapı niteliği."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-032",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C07",
+      "title": "Kıkırdak örneği — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kulak kepçesi ve eklem yüzü kartlarında kıkırdak gösteriliyor.\n\nYapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
+      "sampleAnswer": "İskelet bileşenleri arasında kıkırdak.",
+      "solution": "İskelet bileşenleri arasında kıkırdak. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İskelet bileşenleri arasında kıkırdak."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-033",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C07",
+      "title": "Kıkırdak örneği — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kulak kepçesi ve eklem yüzü kartlarında kıkırdak gösteriliyor.\n\nUygun alt grubu veya örneği yaz.",
+      "sampleAnswer": "Kulak kepçesinde kıkırdak örneği.",
+      "solution": "Kulak kepçesinde kıkırdak örneği. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kulak kepçesinde kıkırdak örneği."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-034",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C07",
+      "title": "Kıkırdak örneği — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kulak kepçesi ve eklem yüzü kartlarında kıkırdak gösteriliyor.\n\nYanlış etiketin neden uygun olmadığını açıkla.",
+      "sampleAnswer": "Her esnek yapı kas değildir.",
+      "solution": "Her esnek yapı kas değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Her esnek yapı kas değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-035",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C07",
+      "title": "Kıkırdak örneği — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kulak kepçesi ve eklem yüzü kartlarında kıkırdak gösteriliyor.\n\nBu örnekleri içeren etiketli sınıflandırma tablosu hazırla.",
+      "sampleAnswer": "Kemik–kıkırdak ayrımlı tablo.",
+      "solution": "Kemik–kıkırdak ayrımlı tablo. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kemik–kıkırdak ayrımlı tablo."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-036",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C08",
+      "title": "Kalp kası — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kalp kası kemiğin çeşidi diye gruplanmış.\n\nBağlamdaki yapıların niteliğini belirt.",
+      "sampleAnswer": "Kas dokusu niteliğindedir.",
+      "solution": "Kas dokusu niteliğindedir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kas dokusu niteliğindedir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-037",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C08",
+      "title": "Kalp kası — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kalp kası kemiğin çeşidi diye gruplanmış.\n\nYapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
+      "sampleAnswer": "Kas grubuna alınır.",
+      "solution": "Kas grubuna alınır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kas grubuna alınır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-038",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C08",
+      "title": "Kalp kası — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kalp kası kemiğin çeşidi diye gruplanmış.\n\nUygun alt grubu veya örneği yaz.",
+      "sampleAnswer": "Kalp kası ayrı kas çeşidi.",
+      "solution": "Kalp kası ayrı kas çeşidi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kalp kası ayrı kas çeşidi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-039",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C08",
+      "title": "Kalp kası — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kalp kası kemiğin çeşidi diye gruplanmış.\n\nYanlış etiketin neden uygun olmadığını açıkla.",
+      "sampleAnswer": "Kemik çeşidi değildir.",
+      "solution": "Kemik çeşidi değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kemik çeşidi değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-040",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C08",
+      "title": "Kalp kası — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kalp kası kemiğin çeşidi diye gruplanmış.\n\nBu örnekleri içeren etiketli sınıflandırma tablosu hazırla.",
+      "sampleAnswer": "Çizgili/düz/kalp kası örnek tablosu.",
+      "solution": "Çizgili/düz/kalp kası örnek tablosu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Çizgili/düz/kalp kası örnek tablosu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-041",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C09",
+      "title": "Mide duvarı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Mide duvarındaki kasla kol kasının aynı tür olduğu söyleniyor.\n\nBağlamdaki yapıların niteliğini belirt.",
+      "sampleAnswer": "İkisi kas; türleri farklı.",
+      "solution": "İkisi kas; türleri farklı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İkisi kas; türleri farklı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-042",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C09",
+      "title": "Mide duvarı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Mide duvarındaki kasla kol kasının aynı tür olduğu söyleniyor.\n\nYapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
+      "sampleAnswer": "Kas grubunda.",
+      "solution": "Kas grubunda. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kas grubunda."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-043",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C09",
+      "title": "Mide duvarı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Mide duvarındaki kasla kol kasının aynı tür olduğu söyleniyor.\n\nUygun alt grubu veya örneği yaz.",
+      "sampleAnswer": "Mide düz kas; kol çizgili kas.",
+      "solution": "Mide düz kas; kol çizgili kas. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Mide düz kas; kol çizgili kas."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-044",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C09",
+      "title": "Mide duvarı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Mide duvarındaki kasla kol kasının aynı tür olduğu söyleniyor.\n\nYanlış etiketin neden uygun olmadığını açıkla.",
+      "sampleAnswer": "Bütün kaslar aynı çeşit değildir.",
+      "solution": "Bütün kaslar aynı çeşit değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bütün kaslar aynı çeşit değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-045",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C09",
+      "title": "Mide duvarı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Mide duvarındaki kasla kol kasının aynı tür olduğu söyleniyor.\n\nBu örnekleri içeren etiketli sınıflandırma tablosu hazırla.",
+      "sampleAnswer": "Tür ve bulunduğu yer eşleştirmesi.",
+      "solution": "Tür ve bulunduğu yer eşleştirmesi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tür ve bulunduğu yer eşleştirmesi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-046",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C10",
+      "title": "Eksik iskelet — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte iskelet yalnız kemik olarak tanımlanmış; eklem ve kıkırdak unutulmuş.\n\nBağlamdaki yapıların niteliğini belirt.",
+      "sampleAnswer": "İskelette farklı destek bileşenleri vardır.",
+      "solution": "İskelette farklı destek bileşenleri vardır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İskelette farklı destek bileşenleri vardır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-047",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C10",
+      "title": "Eksik iskelet — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte iskelet yalnız kemik olarak tanımlanmış; eklem ve kıkırdak unutulmuş.\n\nYapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
+      "sampleAnswer": "Kemik, eklem, kıkırdak iskelete alınır.",
+      "solution": "Kemik, eklem, kıkırdak iskelete alınır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kemik, eklem, kıkırdak iskelete alınır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-048",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C10",
+      "title": "Eksik iskelet — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte iskelet yalnız kemik olarak tanımlanmış; eklem ve kıkırdak unutulmuş.\n\nUygun alt grubu veya örneği yaz.",
+      "sampleAnswer": "Kaslar ayrı ana grupta.",
+      "solution": "Kaslar ayrı ana grupta. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaslar ayrı ana grupta."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-049",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C10",
+      "title": "Eksik iskelet — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte iskelet yalnız kemik olarak tanımlanmış; eklem ve kıkırdak unutulmuş.\n\nYanlış etiketin neden uygun olmadığını açıkla.",
+      "sampleAnswer": "İskelet yalnız kemik değildir.",
+      "solution": "İskelet yalnız kemik değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İskelet yalnız kemik değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB533-050",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.3.3",
+      "contextId": "FB533-C10",
+      "title": "Eksik iskelet — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Afişte iskelet yalnız kemik olarak tanımlanmış; eklem ve kıkırdak unutulmuş.\n\nBu örnekleri içeren etiketli sınıflandırma tablosu hazırla.",
+      "sampleAnswer": "Tamamlanmış hiyerarşik sınıflandırma.",
+      "solution": "Tamamlanmış hiyerarşik sınıflandırma. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tamamlanmış hiyerarşik sınıflandırma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,2294 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.5.2",
+    "outcomeTitle": "Isı ve sıcaklık kavramlarını karşılaştırabilme",
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/404",
+    "sourceTextCheckedAt": "2026-11-12",
+    "academicYearCatalog": "2027-2028",
+    "sourceYearEquivalenceVerified": false,
+    "status": "DRAFT_NOT_APPROVED",
+    "teacherApprovedCount": 0,
+    "rowsCount": 50,
+    "distinctSharedContexts": 10,
+    "openEndedCount": 40,
+    "performanceTaskCount": 10,
+    "notIndependentStimuli": true,
+    "sourceLabel": "ANUNEX_ORIGINAL_AI_ASSISTED_DRAFT_2026_11_12",
+    "rubricScale": {
+      "0": "Ölçüt karşılanmıyor veya bilimsel olarak yanlış.",
+      "1": "Kısmen doğru; ilişki, gerekçe veya gerekli kayıt eksik.",
+      "2": "Ölçüt bilimsel olarak doğru ve yeterli kanıt/kayıtla karşılanıyor."
+    },
+    "scoringNotes": [
+      "Örnek cevabın sözcükleri zorunlu değildir.",
+      "Aynı eksik iki ölçütte mükerrer cezalandırılmaz.",
+      "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
+    ],
+    "reviewGates": [
+      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
+      "EXACT_PROGRAM_YEAR_CODE",
+      "SEMANTIC_CROSS_POOL_ORIGINALITY",
+      "MEDIA_LAYOUT_RIGHTS",
+      "VERTICAL_CURRICULUM_MAP",
+      "HISTORICAL_EXAM_AUDIT",
+      "IMPORTER_TYPE_SUPPORT"
+    ],
+    "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
+    "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+  },
+  "contexts": [
+    {
+      "contextId": "FB552-C01",
+      "title": "Termometre etiketi",
+      "stimulus": "Termometre 25 °C; öğrenci 'ısısı 25 derece' yazıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB552-C02",
+      "title": "Enerji kaydı",
+      "stimulus": "Deney kartı aktarılan enerjiyi 200 J, sıcaklığı 30 °C veriyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB552-C03",
+      "title": "Eşit sıcaklık",
+      "stimulus": "İki farklı miktarda su aynı 20 °C; toplam enerjileri eşit sanılıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB552-C04",
+      "title": "Dokunma yanılgısı",
+      "stimulus": "Metal ve tahta aynı odada; dokunma hissi farklı, ölçüm sıcaklığı eşit.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB552-C05",
+      "title": "Yanan etiket",
+      "stimulus": "Afişte 'sıcaklık bir enerji çeşididir' yazıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB552-C06",
+      "title": "Isınan kaşık",
+      "stimulus": "Ilık suya konan daha soğuk kaşığın sıcaklığı artıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB552-C07",
+      "title": "Değişmeyen sıcaklık",
+      "stimulus": "Saf buz erirken enerji alıyor; sıcaklık bir süre sabit.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB552-C08",
+      "title": "Hatalı birim",
+      "stimulus": "Deney tablosunda ısı kg, sıcaklık N yazılmış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB552-C09",
+      "title": "Kalorimetre",
+      "stimulus": "Öğrenci kalorimetreyi doğrudan derece gösteren her cihaz sanıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB552-C10",
+      "title": "Aynı artış",
+      "stimulus": "İki deneyde sıcaklık artışı aynı; miktarlar farklı. Isı kesin eşit deniyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    }
+  ],
+  "rows": [
+    {
+      "id": "ANX-FB552-001",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C01",
+      "title": "Termometre etiketi — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Termometre 25 °C; öğrenci 'ısısı 25 derece' yazıyor.\n\nBu durumda ısı ile sıcaklığın hangi özellikleri söz konusu?",
+      "sampleAnswer": "25 °C sıcaklık değeridir.",
+      "solution": "25 °C sıcaklık değeridir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "25 °C sıcaklık değeridir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-002",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C01",
+      "title": "Termometre etiketi — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Termometre 25 °C; öğrenci 'ısısı 25 derece' yazıyor.\n\nKavramların ortak ilişkisini belirt; neden aynı kavram olmadıklarını açıkla.",
+      "sampleAnswer": "İkisi termal olaylarla ilişkilidir.",
+      "solution": "İkisi termal olaylarla ilişkilidir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İkisi termal olaylarla ilişkilidir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-003",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C01",
+      "title": "Termometre etiketi — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Termometre 25 °C; öğrenci 'ısısı 25 derece' yazıyor.\n\nUygun araç ve birim ayrımını yap.",
+      "sampleAnswer": "Sıcaklık termometre/°C; ısı J veya cal.",
+      "solution": "Sıcaklık termometre/°C; ısı J veya cal. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sıcaklık termometre/°C; ısı J veya cal."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-004",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C01",
+      "title": "Termometre etiketi — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Termometre 25 °C; öğrenci 'ısısı 25 derece' yazıyor.\n\nYanlış ifadeyi veya verinin izin vermediği çıkarımı düzelt.",
+      "sampleAnswer": "Isı dereceyle ifade edilmez.",
+      "solution": "Isı dereceyle ifade edilmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı dereceyle ifade edilmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-005",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C01",
+      "title": "Termometre etiketi — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Termometre 25 °C; öğrenci 'ısısı 25 derece' yazıyor.\n\nIsı–sıcaklık karşılaştırma kartı hazırla; bağlamı doğru kavramlarla yeniden anlat.",
+      "sampleAnswer": "Düzeltilmiş araç–birim tablosu.",
+      "solution": "Düzeltilmiş araç–birim tablosu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Düzeltilmiş araç–birim tablosu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-006",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C02",
+      "title": "Enerji kaydı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Deney kartı aktarılan enerjiyi 200 J, sıcaklığı 30 °C veriyor.\n\nBu durumda ısı ile sıcaklığın hangi özellikleri söz konusu?",
+      "sampleAnswer": "J enerji aktarımı, °C sıcaklık.",
+      "solution": "J enerji aktarımı, °C sıcaklık. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "J enerji aktarımı, °C sıcaklık."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-007",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C02",
+      "title": "Enerji kaydı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Deney kartı aktarılan enerjiyi 200 J, sıcaklığı 30 °C veriyor.\n\nKavramların ortak ilişkisini belirt; neden aynı kavram olmadıklarını açıkla.",
+      "sampleAnswer": "Isı aktarımı sıcaklığı etkileyebilir.",
+      "solution": "Isı aktarımı sıcaklığı etkileyebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı aktarımı sıcaklığı etkileyebilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-008",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C02",
+      "title": "Enerji kaydı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Deney kartı aktarılan enerjiyi 200 J, sıcaklığı 30 °C veriyor.\n\nUygun araç ve birim ayrımını yap.",
+      "sampleAnswer": "Isı kalorimetreyle hesaplanabilir; sıcaklık ölçülür.",
+      "solution": "Isı kalorimetreyle hesaplanabilir; sıcaklık ölçülür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı kalorimetreyle hesaplanabilir; sıcaklık ölçülür."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-009",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C02",
+      "title": "Enerji kaydı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Deney kartı aktarılan enerjiyi 200 J, sıcaklığı 30 °C veriyor.\n\nYanlış ifadeyi veya verinin izin vermediği çıkarımı düzelt.",
+      "sampleAnswer": "200 J ile 30 °C toplanmaz.",
+      "solution": "200 J ile 30 °C toplanmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "200 J ile 30 °C toplanmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-010",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C02",
+      "title": "Enerji kaydı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Deney kartı aktarılan enerjiyi 200 J, sıcaklığı 30 °C veriyor.\n\nIsı–sıcaklık karşılaştırma kartı hazırla; bağlamı doğru kavramlarla yeniden anlat.",
+      "sampleAnswer": "İki niceliği ayıran açıklama kartı.",
+      "solution": "İki niceliği ayıran açıklama kartı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İki niceliği ayıran açıklama kartı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-011",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C03",
+      "title": "Eşit sıcaklık — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki farklı miktarda su aynı 20 °C; toplam enerjileri eşit sanılıyor.\n\nBu durumda ısı ile sıcaklığın hangi özellikleri söz konusu?",
+      "sampleAnswer": "Sıcaklıklar eşittir.",
+      "solution": "Sıcaklıklar eşittir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sıcaklıklar eşittir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-012",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C03",
+      "title": "Eşit sıcaklık — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki farklı miktarda su aynı 20 °C; toplam enerjileri eşit sanılıyor.\n\nKavramların ortak ilişkisini belirt; neden aynı kavram olmadıklarını açıkla.",
+      "sampleAnswer": "Madde ve enerji davranışıyla ilişkilidir.",
+      "solution": "Madde ve enerji davranışıyla ilişkilidir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Madde ve enerji davranışıyla ilişkilidir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-013",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C03",
+      "title": "Eşit sıcaklık — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki farklı miktarda su aynı 20 °C; toplam enerjileri eşit sanılıyor.\n\nUygun araç ve birim ayrımını yap.",
+      "sampleAnswer": "Termometre toplam enerjiyi doğrudan vermez.",
+      "solution": "Termometre toplam enerjiyi doğrudan vermez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Termometre toplam enerjiyi doğrudan vermez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-014",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C03",
+      "title": "Eşit sıcaklık — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki farklı miktarda su aynı 20 °C; toplam enerjileri eşit sanılıyor.\n\nYanlış ifadeyi veya verinin izin vermediği çıkarımı düzelt.",
+      "sampleAnswer": "Eşit sıcaklık eşit toplam enerji demek değildir.",
+      "solution": "Eşit sıcaklık eşit toplam enerji demek değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Eşit sıcaklık eşit toplam enerji demek değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-015",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C03",
+      "title": "Eşit sıcaklık — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "İki farklı miktarda su aynı 20 °C; toplam enerjileri eşit sanılıyor.\n\nIsı–sıcaklık karşılaştırma kartı hazırla; bağlamı doğru kavramlarla yeniden anlat.",
+      "sampleAnswer": "Miktar ve sıcaklığı ayrı sütunla göster.",
+      "solution": "Miktar ve sıcaklığı ayrı sütunla göster. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Miktar ve sıcaklığı ayrı sütunla göster."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-016",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C04",
+      "title": "Dokunma yanılgısı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Metal ve tahta aynı odada; dokunma hissi farklı, ölçüm sıcaklığı eşit.\n\nBu durumda ısı ile sıcaklığın hangi özellikleri söz konusu?",
+      "sampleAnswer": "His ve sıcaklık ölçümü farklıdır.",
+      "solution": "His ve sıcaklık ölçümü farklıdır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "His ve sıcaklık ölçümü farklıdır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-017",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C04",
+      "title": "Dokunma yanılgısı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Metal ve tahta aynı odada; dokunma hissi farklı, ölçüm sıcaklığı eşit.\n\nKavramların ortak ilişkisini belirt; neden aynı kavram olmadıklarını açıkla.",
+      "sampleAnswer": "Isı aktarımı hissi etkiler.",
+      "solution": "Isı aktarımı hissi etkiler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı aktarımı hissi etkiler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-018",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C04",
+      "title": "Dokunma yanılgısı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Metal ve tahta aynı odada; dokunma hissi farklı, ölçüm sıcaklığı eşit.\n\nUygun araç ve birim ayrımını yap.",
+      "sampleAnswer": "Sıcaklık için termometre kullanılır.",
+      "solution": "Sıcaklık için termometre kullanılır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sıcaklık için termometre kullanılır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-019",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C04",
+      "title": "Dokunma yanılgısı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Metal ve tahta aynı odada; dokunma hissi farklı, ölçüm sıcaklığı eşit.\n\nYanlış ifadeyi veya verinin izin vermediği çıkarımı düzelt.",
+      "sampleAnswer": "His tek başına sıcaklık ölçüsü değildir.",
+      "solution": "His tek başına sıcaklık ölçüsü değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "His tek başına sıcaklık ölçüsü değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-020",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C04",
+      "title": "Dokunma yanılgısı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Metal ve tahta aynı odada; dokunma hissi farklı, ölçüm sıcaklığı eşit.\n\nIsı–sıcaklık karşılaştırma kartı hazırla; bağlamı doğru kavramlarla yeniden anlat.",
+      "sampleAnswer": "Ölçüm/his ayrımlı kart.",
+      "solution": "Ölçüm/his ayrımlı kart. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ölçüm/his ayrımlı kart."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-021",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C05",
+      "title": "Yanan etiket — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte 'sıcaklık bir enerji çeşididir' yazıyor.\n\nBu durumda ısı ile sıcaklığın hangi özellikleri söz konusu?",
+      "sampleAnswer": "Isı enerji aktarımıyla ilişkilidir.",
+      "solution": "Isı enerji aktarımıyla ilişkilidir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı enerji aktarımıyla ilişkilidir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-022",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C05",
+      "title": "Yanan etiket — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte 'sıcaklık bir enerji çeşididir' yazıyor.\n\nKavramların ortak ilişkisini belirt; neden aynı kavram olmadıklarını açıkla.",
+      "sampleAnswer": "İkisi aynı olayda incelenebilir.",
+      "solution": "İkisi aynı olayda incelenebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İkisi aynı olayda incelenebilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-023",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C05",
+      "title": "Yanan etiket — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte 'sıcaklık bir enerji çeşididir' yazıyor.\n\nUygun araç ve birim ayrımını yap.",
+      "sampleAnswer": "Sıcaklık °C; ısı J/cal.",
+      "solution": "Sıcaklık °C; ısı J/cal. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sıcaklık °C; ısı J/cal."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-024",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C05",
+      "title": "Yanan etiket — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Afişte 'sıcaklık bir enerji çeşididir' yazıyor.\n\nYanlış ifadeyi veya verinin izin vermediği çıkarımı düzelt.",
+      "sampleAnswer": "Sıcaklık enerji değildir.",
+      "solution": "Sıcaklık enerji değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sıcaklık enerji değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-025",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C05",
+      "title": "Yanan etiket — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Afişte 'sıcaklık bir enerji çeşididir' yazıyor.\n\nIsı–sıcaklık karşılaştırma kartı hazırla; bağlamı doğru kavramlarla yeniden anlat.",
+      "sampleAnswer": "Kavram özelliklerini doğru etiketle.",
+      "solution": "Kavram özelliklerini doğru etiketle. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kavram özelliklerini doğru etiketle."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-026",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C06",
+      "title": "Isınan kaşık — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Ilık suya konan daha soğuk kaşığın sıcaklığı artıyor.\n\nBu durumda ısı ile sıcaklığın hangi özellikleri söz konusu?",
+      "sampleAnswer": "Isı sıcaktan soğuğa aktarılır.",
+      "solution": "Isı sıcaktan soğuğa aktarılır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı sıcaktan soğuğa aktarılır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-027",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C06",
+      "title": "Isınan kaşık — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Ilık suya konan daha soğuk kaşığın sıcaklığı artıyor.\n\nKavramların ortak ilişkisini belirt; neden aynı kavram olmadıklarını açıkla.",
+      "sampleAnswer": "Enerji aktarımı sıcaklık değişimiyle ilişkili.",
+      "solution": "Enerji aktarımı sıcaklık değişimiyle ilişkili. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Enerji aktarımı sıcaklık değişimiyle ilişkili."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-028",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C06",
+      "title": "Isınan kaşık — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Ilık suya konan daha soğuk kaşığın sıcaklığı artıyor.\n\nUygun araç ve birim ayrımını yap.",
+      "sampleAnswer": "Termometre sıcaklığı kaydeder.",
+      "solution": "Termometre sıcaklığı kaydeder. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Termometre sıcaklığı kaydeder."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-029",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C06",
+      "title": "Isınan kaşık — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Ilık suya konan daha soğuk kaşığın sıcaklığı artıyor.\n\nYanlış ifadeyi veya verinin izin vermediği çıkarımı düzelt.",
+      "sampleAnswer": "Aktarılan şey sıcaklık adlı madde değildir.",
+      "solution": "Aktarılan şey sıcaklık adlı madde değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aktarılan şey sıcaklık adlı madde değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-030",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C06",
+      "title": "Isınan kaşık — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Ilık suya konan daha soğuk kaşığın sıcaklığı artıyor.\n\nIsı–sıcaklık karşılaştırma kartı hazırla; bağlamı doğru kavramlarla yeniden anlat.",
+      "sampleAnswer": "Önce/sonra sıcaklık ve aktarım oku.",
+      "solution": "Önce/sonra sıcaklık ve aktarım oku. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Önce/sonra sıcaklık ve aktarım oku."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-031",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C07",
+      "title": "Değişmeyen sıcaklık — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf buz erirken enerji alıyor; sıcaklık bir süre sabit.\n\nBu durumda ısı ile sıcaklığın hangi özellikleri söz konusu?",
+      "sampleAnswer": "Isı alınması her zaman sıcaklık artışı değildir.",
+      "solution": "Isı alınması her zaman sıcaklık artışı değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı alınması her zaman sıcaklık artışı değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-032",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C07",
+      "title": "Değişmeyen sıcaklık — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf buz erirken enerji alıyor; sıcaklık bir süre sabit.\n\nKavramların ortak ilişkisini belirt; neden aynı kavram olmadıklarını açıkla.",
+      "sampleAnswer": "Hâl değişimi termal olaydır.",
+      "solution": "Hâl değişimi termal olaydır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hâl değişimi termal olaydır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-033",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C07",
+      "title": "Değişmeyen sıcaklık — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf buz erirken enerji alıyor; sıcaklık bir süre sabit.\n\nUygun araç ve birim ayrımını yap.",
+      "sampleAnswer": "Isı J/cal, sıcaklık °C.",
+      "solution": "Isı J/cal, sıcaklık °C. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı J/cal, sıcaklık °C."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-034",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C07",
+      "title": "Değişmeyen sıcaklık — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf buz erirken enerji alıyor; sıcaklık bir süre sabit.\n\nYanlış ifadeyi veya verinin izin vermediği çıkarımı düzelt.",
+      "sampleAnswer": "Sabit sıcaklık ısı alınmadığını kanıtlamaz.",
+      "solution": "Sabit sıcaklık ısı alınmadığını kanıtlamaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sabit sıcaklık ısı alınmadığını kanıtlamaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-035",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C07",
+      "title": "Değişmeyen sıcaklık — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Saf buz erirken enerji alıyor; sıcaklık bir süre sabit.\n\nIsı–sıcaklık karşılaştırma kartı hazırla; bağlamı doğru kavramlarla yeniden anlat.",
+      "sampleAnswer": "Hâl ve sıcaklık ayrımlı kart.",
+      "solution": "Hâl ve sıcaklık ayrımlı kart. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hâl ve sıcaklık ayrımlı kart."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-036",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C08",
+      "title": "Hatalı birim — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Deney tablosunda ısı kg, sıcaklık N yazılmış.\n\nBu durumda ısı ile sıcaklığın hangi özellikleri söz konusu?",
+      "sampleAnswer": "Isı ve sıcaklık birimleri karışmış.",
+      "solution": "Isı ve sıcaklık birimleri karışmış. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı ve sıcaklık birimleri karışmış."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-037",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C08",
+      "title": "Hatalı birim — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Deney tablosunda ısı kg, sıcaklık N yazılmış.\n\nKavramların ortak ilişkisini belirt; neden aynı kavram olmadıklarını açıkla.",
+      "sampleAnswer": "İkisi kütle/kuvvetten farklı kavramlar.",
+      "solution": "İkisi kütle/kuvvetten farklı kavramlar. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İkisi kütle/kuvvetten farklı kavramlar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-038",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C08",
+      "title": "Hatalı birim — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Deney tablosunda ısı kg, sıcaklık N yazılmış.\n\nUygun araç ve birim ayrımını yap.",
+      "sampleAnswer": "Isı J/cal; sıcaklık °C.",
+      "solution": "Isı J/cal; sıcaklık °C. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı J/cal; sıcaklık °C."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-039",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C08",
+      "title": "Hatalı birim — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Deney tablosunda ısı kg, sıcaklık N yazılmış.\n\nYanlış ifadeyi veya verinin izin vermediği çıkarımı düzelt.",
+      "sampleAnswer": "Kg ve N burada uygun değil.",
+      "solution": "Kg ve N burada uygun değil. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kg ve N burada uygun değil."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-040",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C08",
+      "title": "Hatalı birim — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Deney tablosunda ısı kg, sıcaklık N yazılmış.\n\nIsı–sıcaklık karşılaştırma kartı hazırla; bağlamı doğru kavramlarla yeniden anlat.",
+      "sampleAnswer": "Dört birimi doğru niceliklerle eşleştir.",
+      "solution": "Dört birimi doğru niceliklerle eşleştir. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dört birimi doğru niceliklerle eşleştir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-041",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C09",
+      "title": "Kalorimetre — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci kalorimetreyi doğrudan derece gösteren her cihaz sanıyor.\n\nBu durumda ısı ile sıcaklığın hangi özellikleri söz konusu?",
+      "sampleAnswer": "Isı alışverişi hesaplaması için düzenektir.",
+      "solution": "Isı alışverişi hesaplaması için düzenektir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı alışverişi hesaplaması için düzenektir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-042",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C09",
+      "title": "Kalorimetre — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci kalorimetreyi doğrudan derece gösteren her cihaz sanıyor.\n\nKavramların ortak ilişkisini belirt; neden aynı kavram olmadıklarını açıkla.",
+      "sampleAnswer": "Sıcaklık ölçümleri hesapta kullanılabilir.",
+      "solution": "Sıcaklık ölçümleri hesapta kullanılabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sıcaklık ölçümleri hesapta kullanılabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-043",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C09",
+      "title": "Kalorimetre — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci kalorimetreyi doğrudan derece gösteren her cihaz sanıyor.\n\nUygun araç ve birim ayrımını yap.",
+      "sampleAnswer": "Termometre ile kalorimetre işlevleri farklı.",
+      "solution": "Termometre ile kalorimetre işlevleri farklı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Termometre ile kalorimetre işlevleri farklı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-044",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C09",
+      "title": "Kalorimetre — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci kalorimetreyi doğrudan derece gösteren her cihaz sanıyor.\n\nYanlış ifadeyi veya verinin izin vermediği çıkarımı düzelt.",
+      "sampleAnswer": "Aynı araç sayılmaz.",
+      "solution": "Aynı araç sayılmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı araç sayılmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-045",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C09",
+      "title": "Kalorimetre — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Öğrenci kalorimetreyi doğrudan derece gösteren her cihaz sanıyor.\n\nIsı–sıcaklık karşılaştırma kartı hazırla; bağlamı doğru kavramlarla yeniden anlat.",
+      "sampleAnswer": "Araç ve işlevli karşılaştırma kartı.",
+      "solution": "Araç ve işlevli karşılaştırma kartı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Araç ve işlevli karşılaştırma kartı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-046",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C10",
+      "title": "Aynı artış — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki deneyde sıcaklık artışı aynı; miktarlar farklı. Isı kesin eşit deniyor.\n\nBu durumda ısı ile sıcaklığın hangi özellikleri söz konusu?",
+      "sampleAnswer": "Sıcaklık değişimleri eşit verilmiş.",
+      "solution": "Sıcaklık değişimleri eşit verilmiş. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sıcaklık değişimleri eşit verilmiş."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-047",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C10",
+      "title": "Aynı artış — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki deneyde sıcaklık artışı aynı; miktarlar farklı. Isı kesin eşit deniyor.\n\nKavramların ortak ilişkisini belirt; neden aynı kavram olmadıklarını açıkla.",
+      "sampleAnswer": "Isı aktarımı değişimi etkiler.",
+      "solution": "Isı aktarımı değişimi etkiler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı aktarımı değişimi etkiler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-048",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C10",
+      "title": "Aynı artış — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki deneyde sıcaklık artışı aynı; miktarlar farklı. Isı kesin eşit deniyor.\n\nUygun araç ve birim ayrımını yap.",
+      "sampleAnswer": "Isı hesabı ek bilgi gerektirir.",
+      "solution": "Isı hesabı ek bilgi gerektirir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Isı hesabı ek bilgi gerektirir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-049",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C10",
+      "title": "Aynı artış — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki deneyde sıcaklık artışı aynı; miktarlar farklı. Isı kesin eşit deniyor.\n\nYanlış ifadeyi veya verinin izin vermediği çıkarımı düzelt.",
+      "sampleAnswer": "Eşit artıştan kesin eşit ısı çıkarılmaz.",
+      "solution": "Eşit artıştan kesin eşit ısı çıkarılmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Eşit artıştan kesin eşit ısı çıkarılmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB552-050",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.2",
+      "contextId": "FB552-C10",
+      "title": "Aynı artış — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "İki deneyde sıcaklık artışı aynı; miktarlar farklı. Isı kesin eşit deniyor.\n\nIsı–sıcaklık karşılaştırma kartı hazırla; bağlamı doğru kavramlarla yeniden anlat.",
+      "sampleAnswer": "Verilen/verilmeyen bilgi tablosu.",
+      "solution": "Verilen/verilmeyen bilgi tablosu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Verilen/verilmeyen bilgi tablosu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    }
+  ]
+}

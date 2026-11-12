@@ -1,0 +1,2324 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.6.3",
+    "outcomeTitle": "Bir elektrik devresindeki ampul parlaklığını etkileyen değişkenlerin neler olduğuna ilişkin hipotez oluşturabilme",
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/407",
+    "sourceTextCheckedAt": "2026-11-12",
+    "academicYearCatalog": "2027-2028",
+    "sourceYearEquivalenceVerified": false,
+    "status": "DRAFT_NOT_APPROVED",
+    "teacherApprovedCount": 0,
+    "rowsCount": 50,
+    "distinctSharedContexts": 10,
+    "openEndedCount": 40,
+    "performanceTaskCount": 10,
+    "notIndependentStimuli": true,
+    "sourceLabel": "ANUNEX_ORIGINAL_AI_ASSISTED_DRAFT_2026_11_12",
+    "rubricScale": {
+      "0": "Ölçüt karşılanmıyor veya bilimsel olarak yanlış.",
+      "1": "Kısmen doğru; ilişki, gerekçe veya gerekli kayıt eksik.",
+      "2": "Ölçüt bilimsel olarak doğru ve yeterli kanıt/kayıtla karşılanıyor."
+    },
+    "scoringNotes": [
+      "Örnek cevabın sözcükleri zorunlu değildir.",
+      "Aynı eksik iki ölçütte mükerrer cezalandırılmaz.",
+      "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
+    ],
+    "reviewGates": [
+      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
+      "EXACT_PROGRAM_YEAR_CODE",
+      "SEMANTIC_CROSS_POOL_ORIGINALITY",
+      "MEDIA_LAYOUT_RIGHTS",
+      "VERTICAL_CURRICULUM_MAP",
+      "HISTORICAL_EXAM_AUDIT",
+      "IMPORTER_TYPE_SUPPORT"
+    ],
+    "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
+    "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+  },
+  "contexts": [
+    {
+      "contextId": "FB563-C01",
+      "title": "Pil artışı",
+      "stimulus": "Özdeş ampullü seri devrede bir ve iki uygun pil aynı yönde karşılaştırılacak.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB563-C02",
+      "title": "Ampul artışı",
+      "stimulus": "Aynı pil grubuna seri ikinci özdeş ampul eklenecek.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB563-C03",
+      "title": "İki sayı değişimi",
+      "stimulus": "Pil ve seri ampul sayısı birlikte değişmiş; sonuç yalnız pile bağlanmış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB563-C04",
+      "title": "Eski yeni pil",
+      "stimulus": "İki deneyde pil sayısı aynı; biri eski, biri yeni pil kullanıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB563-C05",
+      "title": "Farklı ampuller",
+      "stimulus": "Bir deneyde küçük, diğerinde farklı özellikte ampul var; pil sayısı etkisi aranıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB563-C06",
+      "title": "Ortam aydınlığı",
+      "stimulus": "Aynı devre karanlık ve aydınlık odada farklı parlak sanılıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB563-C07",
+      "title": "Gevşek temas",
+      "stimulus": "Pil artırılan devrede tel gevşek; ampul sönüyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB563-C08",
+      "title": "Tek gözlem",
+      "stimulus": "Bir denemede iki pilli devre daha parlak; öğrenci her koşulda sonsuza dek artar diyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB563-C09",
+      "title": "Ters pil",
+      "stimulus": "İki pilden biri ters bağlanmış; öğrenci sayı arttı diye kesin artış bekliyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB563-C10",
+      "title": "Ölçüt belirsiz",
+      "stimulus": "Kayıt yalnız 'iyi yandı' diyor; karşılaştırma ölçütü yok.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    }
+  ],
+  "rows": [
+    {
+      "id": "ANX-FB563-001",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C01",
+      "title": "Pil artışı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Özdeş ampullü seri devrede bir ve iki uygun pil aynı yönde karşılaştırılacak.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
+      "sampleAnswer": "Pil artarsa parlaklık artabilir.",
+      "solution": "Pil artarsa parlaklık artabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil artarsa parlaklık artabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-002",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C01",
+      "title": "Pil artışı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Özdeş ampullü seri devrede bir ve iki uygun pil aynı yönde karşılaştırılacak.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
+      "sampleAnswer": "Pil sayısı/parlaklık; ampul sabit.",
+      "solution": "Pil sayısı/parlaklık; ampul sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil sayısı/parlaklık; ampul sabit."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-003",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C01",
+      "title": "Pil artışı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Özdeş ampullü seri devrede bir ve iki uygun pil aynı yönde karşılaştırılacak.\n\nHipotezi sınamak için nasıl bir karşılaştırma yaparsın?",
+      "sampleAnswer": "Aynı ampulle pil sayısını değiştiririm.",
+      "solution": "Aynı ampulle pil sayısını değiştiririm. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı ampulle pil sayısını değiştiririm."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-004",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C01",
+      "title": "Pil artışı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Özdeş ampullü seri devrede bir ve iki uygun pil aynı yönde karşılaştırılacak.\n\nVerilen kanıtın sınırını veya karıştırıcı etkeni açıkla.",
+      "sampleAnswer": "Pil ve ampul uygunluk sınırı korunmalı.",
+      "solution": "Pil ve ampul uygunluk sınırı korunmalı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil ve ampul uygunluk sınırı korunmalı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-005",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C01",
+      "title": "Pil artışı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Özdeş ampullü seri devrede bir ve iki uygun pil aynı yönde karşılaştırılacak.\n\nUygun pil/ampul sınırları içinde öğretmen gözetimli deneme planla ve gerçek sonuçla hipotezi değerlendir.",
+      "sampleAnswer": "Öngörü, iki düzen ve sonuç kaydı.",
+      "solution": "Öngörü, iki düzen ve sonuç kaydı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Öngörü, iki düzen ve sonuç kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-006",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C02",
+      "title": "Ampul artışı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı pil grubuna seri ikinci özdeş ampul eklenecek.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
+      "sampleAnswer": "Seri ampul artarsa parlaklık azalabilir.",
+      "solution": "Seri ampul artarsa parlaklık azalabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Seri ampul artarsa parlaklık azalabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-007",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C02",
+      "title": "Ampul artışı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı pil grubuna seri ikinci özdeş ampul eklenecek.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
+      "sampleAnswer": "Ampul sayısı/parlaklık; pil sabit.",
+      "solution": "Ampul sayısı/parlaklık; pil sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ampul sayısı/parlaklık; pil sabit."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-008",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C02",
+      "title": "Ampul artışı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı pil grubuna seri ikinci özdeş ampul eklenecek.\n\nHipotezi sınamak için nasıl bir karşılaştırma yaparsın?",
+      "sampleAnswer": "Bir ve iki seri ampulü karşılaştırırım.",
+      "solution": "Bir ve iki seri ampulü karşılaştırırım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bir ve iki seri ampulü karşılaştırırım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-009",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C02",
+      "title": "Ampul artışı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı pil grubuna seri ikinci özdeş ampul eklenecek.\n\nVerilen kanıtın sınırını veya karıştırıcı etkeni açıkla.",
+      "sampleAnswer": "Bağlantı seri ve ampuller özdeş olmalı.",
+      "solution": "Bağlantı seri ve ampuller özdeş olmalı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bağlantı seri ve ampuller özdeş olmalı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-010",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C02",
+      "title": "Ampul artışı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Aynı pil grubuna seri ikinci özdeş ampul eklenecek.\n\nUygun pil/ampul sınırları içinde öğretmen gözetimli deneme planla ve gerçek sonuçla hipotezi değerlendir.",
+      "sampleAnswer": "Hipotez–gözlem karşılaştırma raporu.",
+      "solution": "Hipotez–gözlem karşılaştırma raporu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hipotez–gözlem karşılaştırma raporu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-011",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C03",
+      "title": "İki sayı değişimi — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Pil ve seri ampul sayısı birlikte değişmiş; sonuç yalnız pile bağlanmış.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
+      "sampleAnswer": "Tek değişkenli hipotez gerekir.",
+      "solution": "Tek değişkenli hipotez gerekir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tek değişkenli hipotez gerekir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-012",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C03",
+      "title": "İki sayı değişimi — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Pil ve seri ampul sayısı birlikte değişmiş; sonuç yalnız pile bağlanmış.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
+      "sampleAnswer": "Bir sayıyı bağımsız seçerim.",
+      "solution": "Bir sayıyı bağımsız seçerim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bir sayıyı bağımsız seçerim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-013",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C03",
+      "title": "İki sayı değişimi — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Pil ve seri ampul sayısı birlikte değişmiş; sonuç yalnız pile bağlanmış.\n\nHipotezi sınamak için nasıl bir karşılaştırma yaparsın?",
+      "sampleAnswer": "Diğer sayıyı sabit tutarım.",
+      "solution": "Diğer sayıyı sabit tutarım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Diğer sayıyı sabit tutarım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-014",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C03",
+      "title": "İki sayı değişimi — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Pil ve seri ampul sayısı birlikte değişmiş; sonuç yalnız pile bağlanmış.\n\nVerilen kanıtın sınırını veya karıştırıcı etkeni açıkla.",
+      "sampleAnswer": "Birlikte değişim nedenleri karıştırır.",
+      "solution": "Birlikte değişim nedenleri karıştırır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Birlikte değişim nedenleri karıştırır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-015",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C03",
+      "title": "İki sayı değişimi — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Pil ve seri ampul sayısı birlikte değişmiş; sonuç yalnız pile bağlanmış.\n\nUygun pil/ampul sınırları içinde öğretmen gözetimli deneme planla ve gerçek sonuçla hipotezi değerlendir.",
+      "sampleAnswer": "Kontrollü yeniden tasarım raporu.",
+      "solution": "Kontrollü yeniden tasarım raporu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kontrollü yeniden tasarım raporu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-016",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C04",
+      "title": "Eski yeni pil — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki deneyde pil sayısı aynı; biri eski, biri yeni pil kullanıyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
+      "sampleAnswer": "Pil durumu parlaklığı etkileyebilir.",
+      "solution": "Pil durumu parlaklığı etkileyebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil durumu parlaklığı etkileyebilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-017",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C04",
+      "title": "Eski yeni pil — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki deneyde pil sayısı aynı; biri eski, biri yeni pil kullanıyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
+      "sampleAnswer": "Hedef sayıysa pil durumu kontrol edilmeli.",
+      "solution": "Hedef sayıysa pil durumu kontrol edilmeli. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hedef sayıysa pil durumu kontrol edilmeli."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-018",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C04",
+      "title": "Eski yeni pil — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki deneyde pil sayısı aynı; biri eski, biri yeni pil kullanıyor.\n\nHipotezi sınamak için nasıl bir karşılaştırma yaparsın?",
+      "sampleAnswer": "Benzer durumlu pillerle sayıyı sınarım.",
+      "solution": "Benzer durumlu pillerle sayıyı sınarım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Benzer durumlu pillerle sayıyı sınarım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-019",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C04",
+      "title": "Eski yeni pil — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki deneyde pil sayısı aynı; biri eski, biri yeni pil kullanıyor.\n\nVerilen kanıtın sınırını veya karıştırıcı etkeni açıkla.",
+      "sampleAnswer": "Sayı tek değişen koşul değildir.",
+      "solution": "Sayı tek değişen koşul değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sayı tek değişen koşul değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-020",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C04",
+      "title": "Eski yeni pil — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "İki deneyde pil sayısı aynı; biri eski, biri yeni pil kullanıyor.\n\nUygun pil/ampul sınırları içinde öğretmen gözetimli deneme planla ve gerçek sonuçla hipotezi değerlendir.",
+      "sampleAnswer": "Kaynak durumunu yazan test planı.",
+      "solution": "Kaynak durumunu yazan test planı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak durumunu yazan test planı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-021",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C05",
+      "title": "Farklı ampuller — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir deneyde küçük, diğerinde farklı özellikte ampul var; pil sayısı etkisi aranıyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
+      "sampleAnswer": "Aynı ampulle pil sayısı sınanır.",
+      "solution": "Aynı ampulle pil sayısı sınanır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı ampulle pil sayısı sınanır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-022",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C05",
+      "title": "Farklı ampuller — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir deneyde küçük, diğerinde farklı özellikte ampul var; pil sayısı etkisi aranıyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
+      "sampleAnswer": "Pil sayısı/parlaklık; ampul türü sabit.",
+      "solution": "Pil sayısı/parlaklık; ampul türü sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil sayısı/parlaklık; ampul türü sabit."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-023",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C05",
+      "title": "Farklı ampuller — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir deneyde küçük, diğerinde farklı özellikte ampul var; pil sayısı etkisi aranıyor.\n\nHipotezi sınamak için nasıl bir karşılaştırma yaparsın?",
+      "sampleAnswer": "Özdeş ampullerle yeniden karşılaştırırım.",
+      "solution": "Özdeş ampullerle yeniden karşılaştırırım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Özdeş ampullerle yeniden karşılaştırırım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-024",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C05",
+      "title": "Farklı ampuller — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir deneyde küçük, diğerinde farklı özellikte ampul var; pil sayısı etkisi aranıyor.\n\nVerilen kanıtın sınırını veya karıştırıcı etkeni açıkla.",
+      "sampleAnswer": "Farklı ampuller sonuçları karıştırır.",
+      "solution": "Farklı ampuller sonuçları karıştırır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Farklı ampuller sonuçları karıştırır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-025",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C05",
+      "title": "Farklı ampuller — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Bir deneyde küçük, diğerinde farklı özellikte ampul var; pil sayısı etkisi aranıyor.\n\nUygun pil/ampul sınırları içinde öğretmen gözetimli deneme planla ve gerçek sonuçla hipotezi değerlendir.",
+      "sampleAnswer": "Parça özellikli karşılaştırma planı.",
+      "solution": "Parça özellikli karşılaştırma planı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Parça özellikli karşılaştırma planı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-026",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C06",
+      "title": "Ortam aydınlığı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı devre karanlık ve aydınlık odada farklı parlak sanılıyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
+      "sampleAnswer": "Devre aynıysa algı ortamdan etkilenebilir.",
+      "solution": "Devre aynıysa algı ortamdan etkilenebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Devre aynıysa algı ortamdan etkilenebilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-027",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C06",
+      "title": "Ortam aydınlığı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı devre karanlık ve aydınlık odada farklı parlak sanılıyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
+      "sampleAnswer": "Hedef pil/ampul; ortam sabit.",
+      "solution": "Hedef pil/ampul; ortam sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hedef pil/ampul; ortam sabit."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-028",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C06",
+      "title": "Ortam aydınlığı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı devre karanlık ve aydınlık odada farklı parlak sanılıyor.\n\nHipotezi sınamak için nasıl bir karşılaştırma yaparsın?",
+      "sampleAnswer": "Aynı ortamda iki devreyi karşılaştırırım.",
+      "solution": "Aynı ortamda iki devreyi karşılaştırırım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı ortamda iki devreyi karşılaştırırım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-029",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C06",
+      "title": "Ortam aydınlığı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı devre karanlık ve aydınlık odada farklı parlak sanılıyor.\n\nVerilen kanıtın sınırını veya karıştırıcı etkeni açıkla.",
+      "sampleAnswer": "Algı değişimi devre etkisi değildir.",
+      "solution": "Algı değişimi devre etkisi değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Algı değişimi devre etkisi değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-030",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C06",
+      "title": "Ortam aydınlığı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Aynı devre karanlık ve aydınlık odada farklı parlak sanılıyor.\n\nUygun pil/ampul sınırları içinde öğretmen gözetimli deneme planla ve gerçek sonuçla hipotezi değerlendir.",
+      "sampleAnswer": "Ortam kontrollü gözlem planı.",
+      "solution": "Ortam kontrollü gözlem planı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ortam kontrollü gözlem planı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-031",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C07",
+      "title": "Gevşek temas — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Pil artırılan devrede tel gevşek; ampul sönüyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
+      "sampleAnswer": "Sağlam devrede pil sayısı sınanmalı.",
+      "solution": "Sağlam devrede pil sayısı sınanmalı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sağlam devrede pil sayısı sınanmalı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-032",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C07",
+      "title": "Gevşek temas — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Pil artırılan devrede tel gevşek; ampul sönüyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
+      "sampleAnswer": "Pil sayısı/parlaklık; temas sabit.",
+      "solution": "Pil sayısı/parlaklık; temas sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil sayısı/parlaklık; temas sabit."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-033",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C07",
+      "title": "Gevşek temas — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Pil artırılan devrede tel gevşek; ampul sönüyor.\n\nHipotezi sınamak için nasıl bir karşılaştırma yaparsın?",
+      "sampleAnswer": "Önce bağlantıyı düzeltirim.",
+      "solution": "Önce bağlantıyı düzeltirim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Önce bağlantıyı düzeltirim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-034",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C07",
+      "title": "Gevşek temas — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Pil artırılan devrede tel gevşek; ampul sönüyor.\n\nVerilen kanıtın sınırını veya karıştırıcı etkeni açıkla.",
+      "sampleAnswer": "Sönme hipotezi tek başına çürütmez.",
+      "solution": "Sönme hipotezi tek başına çürütmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sönme hipotezi tek başına çürütmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-035",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C07",
+      "title": "Gevşek temas — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Pil artırılan devrede tel gevşek; ampul sönüyor.\n\nUygun pil/ampul sınırları içinde öğretmen gözetimli deneme planla ve gerçek sonuçla hipotezi değerlendir.",
+      "sampleAnswer": "Temas kontrolü ve tekrar kaydı.",
+      "solution": "Temas kontrolü ve tekrar kaydı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Temas kontrolü ve tekrar kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-036",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C08",
+      "title": "Tek gözlem — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir denemede iki pilli devre daha parlak; öğrenci her koşulda sonsuza dek artar diyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
+      "sampleAnswer": "Uygun sınırlar içinde artış beklenebilir.",
+      "solution": "Uygun sınırlar içinde artış beklenebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Uygun sınırlar içinde artış beklenebilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-037",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C08",
+      "title": "Tek gözlem — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir denemede iki pilli devre daha parlak; öğrenci her koşulda sonsuza dek artar diyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
+      "sampleAnswer": "Pil sayısı/parlaklık; diğerleri sabit.",
+      "solution": "Pil sayısı/parlaklık; diğerleri sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil sayısı/parlaklık; diğerleri sabit."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-038",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C08",
+      "title": "Tek gözlem — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir denemede iki pilli devre daha parlak; öğrenci her koşulda sonsuza dek artar diyor.\n\nHipotezi sınamak için nasıl bir karşılaştırma yaparsın?",
+      "sampleAnswer": "Güvenli aralıkta tekrar yaparım.",
+      "solution": "Güvenli aralıkta tekrar yaparım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Güvenli aralıkta tekrar yaparım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-039",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C08",
+      "title": "Tek gözlem — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bir denemede iki pilli devre daha parlak; öğrenci her koşulda sonsuza dek artar diyor.\n\nVerilen kanıtın sınırını veya karıştırıcı etkeni açıkla.",
+      "sampleAnswer": "Sınırsız pil artışı çıkarılmaz.",
+      "solution": "Sınırsız pil artışı çıkarılmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sınırsız pil artışı çıkarılmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-040",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C08",
+      "title": "Tek gözlem — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Bir denemede iki pilli devre daha parlak; öğrenci her koşulda sonsuza dek artar diyor.\n\nUygun pil/ampul sınırları içinde öğretmen gözetimli deneme planla ve gerçek sonuçla hipotezi değerlendir.",
+      "sampleAnswer": "Sınırlı hipotez ve tekrar planı.",
+      "solution": "Sınırlı hipotez ve tekrar planı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sınırlı hipotez ve tekrar planı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-041",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C09",
+      "title": "Ters pil — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki pilden biri ters bağlanmış; öğrenci sayı arttı diye kesin artış bekliyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
+      "sampleAnswer": "Aynı yönlü uygun kaynak koşulu gerekir.",
+      "solution": "Aynı yönlü uygun kaynak koşulu gerekir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı yönlü uygun kaynak koşulu gerekir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-042",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C09",
+      "title": "Ters pil — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki pilden biri ters bağlanmış; öğrenci sayı arttı diye kesin artış bekliyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
+      "sampleAnswer": "Pil sayısı yanında yön kontrol edilir.",
+      "solution": "Pil sayısı yanında yön kontrol edilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil sayısı yanında yön kontrol edilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-043",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C09",
+      "title": "Ters pil — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki pilden biri ters bağlanmış; öğrenci sayı arttı diye kesin artış bekliyor.\n\nHipotezi sınamak için nasıl bir karşılaştırma yaparsın?",
+      "sampleAnswer": "Öğretmenle doğru yönü kontrol ederim.",
+      "solution": "Öğretmenle doğru yönü kontrol ederim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Öğretmenle doğru yönü kontrol ederim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-044",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C09",
+      "title": "Ters pil — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki pilden biri ters bağlanmış; öğrenci sayı arttı diye kesin artış bekliyor.\n\nVerilen kanıtın sınırını veya karıştırıcı etkeni açıkla.",
+      "sampleAnswer": "Sayı tek başına yeterli değildir.",
+      "solution": "Sayı tek başına yeterli değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sayı tek başına yeterli değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-045",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C09",
+      "title": "Ters pil — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "İki pilden biri ters bağlanmış; öğrenci sayı arttı diye kesin artış bekliyor.\n\nUygun pil/ampul sınırları içinde öğretmen gözetimli deneme planla ve gerçek sonuçla hipotezi değerlendir.",
+      "sampleAnswer": "Kaynak yönü etiketli plan.",
+      "solution": "Kaynak yönü etiketli plan. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak yönü etiketli plan."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-046",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C10",
+      "title": "Ölçüt belirsiz — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kayıt yalnız 'iyi yandı' diyor; karşılaştırma ölçütü yok.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
+      "sampleAnswer": "Parlaklık için tutarlı gözlem ölçütü gerekir.",
+      "solution": "Parlaklık için tutarlı gözlem ölçütü gerekir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Parlaklık için tutarlı gözlem ölçütü gerekir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-047",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C10",
+      "title": "Ölçüt belirsiz — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kayıt yalnız 'iyi yandı' diyor; karşılaştırma ölçütü yok.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
+      "sampleAnswer": "Pil veya ampul sayısı/parlaklık.",
+      "solution": "Pil veya ampul sayısı/parlaklık. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Pil veya ampul sayısı/parlaklık."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-048",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C10",
+      "title": "Ölçüt belirsiz — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kayıt yalnız 'iyi yandı' diyor; karşılaştırma ölçütü yok.\n\nHipotezi sınamak için nasıl bir karşılaştırma yaparsın?",
+      "sampleAnswer": "Aynı koşulda göreli parlaklık kaydı.",
+      "solution": "Aynı koşulda göreli parlaklık kaydı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı koşulda göreli parlaklık kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-049",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C10",
+      "title": "Ölçüt belirsiz — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kayıt yalnız 'iyi yandı' diyor; karşılaştırma ölçütü yok.\n\nVerilen kanıtın sınırını veya karıştırıcı etkeni açıkla.",
+      "sampleAnswer": "Belirsiz sözcük güçlü kanıt değildir.",
+      "solution": "Belirsiz sözcük güçlü kanıt değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Belirsiz sözcük güçlü kanıt değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB563-050",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.6.3",
+      "contextId": "FB563-C10",
+      "title": "Ölçüt belirsiz — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kayıt yalnız 'iyi yandı' diyor; karşılaştırma ölçütü yok.\n\nUygun pil/ampul sınırları içinde öğretmen gözetimli deneme planla ve gerçek sonuçla hipotezi değerlendir.",
+      "sampleAnswer": "Açık ölçütlü hipotez değerlendirme raporu.",
+      "solution": "Açık ölçütlü hipotez değerlendirme raporu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Açık ölçütlü hipotez değerlendirme raporu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    }
+  ]
+}

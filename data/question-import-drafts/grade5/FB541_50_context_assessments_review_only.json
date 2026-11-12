@@ -1,0 +1,2318 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.4.1",
+    "outcomeTitle": "Bir kaynaktan çıkan ışığın her yönde doğrusal bir yol izlediğini bilimsel olarak gözlemleyebilme",
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/399",
+    "sourceTextCheckedAt": "2026-11-12",
+    "academicYearCatalog": "2027-2028",
+    "sourceYearEquivalenceVerified": false,
+    "status": "DRAFT_NOT_APPROVED",
+    "teacherApprovedCount": 0,
+    "rowsCount": 50,
+    "distinctSharedContexts": 10,
+    "openEndedCount": 40,
+    "performanceTaskCount": 10,
+    "notIndependentStimuli": true,
+    "sourceLabel": "ANUNEX_ORIGINAL_AI_ASSISTED_DRAFT_2026_11_12",
+    "rubricScale": {
+      "0": "Ölçüt karşılanmıyor veya bilimsel olarak yanlış.",
+      "1": "Kısmen doğru; ilişki, gerekçe veya gerekli kayıt eksik.",
+      "2": "Ölçüt bilimsel olarak doğru ve yeterli kanıt/kayıtla karşılanıyor."
+    },
+    "scoringNotes": [
+      "Örnek cevabın sözcükleri zorunlu değildir.",
+      "Aynı eksik iki ölçütte mükerrer cezalandırılmaz.",
+      "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
+    ],
+    "reviewGates": [
+      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
+      "EXACT_PROGRAM_YEAR_CODE",
+      "SEMANTIC_CROSS_POOL_ORIGINALITY",
+      "MEDIA_LAYOUT_RIGHTS",
+      "VERTICAL_CURRICULUM_MAP",
+      "HISTORICAL_EXAM_AUDIT",
+      "IMPORTER_TYPE_SUPPORT"
+    ],
+    "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
+    "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+  },
+  "contexts": [
+    {
+      "contextId": "FB541-C01",
+      "title": "Delikli karton",
+      "stimulus": "Üç delik aynı hizadayken LED görülüyor; ortadaki kart kayınca görülmüyor.",
+      "studentAssetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB541-C02",
+      "title": "Düz ve bükülü tüp",
+      "stimulus": "LED düz tüpten görülüyor; opak bükülü tüpten doğrudan görülmüyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB541-C03",
+      "title": "Kutu delikleri",
+      "stimulus": "Kutudaki küçük LED farklı yönlerdeki deliklerden görülüyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB541-C04",
+      "title": "El feneri sınırı",
+      "stimulus": "El feneri ışığı öne yönlendiriyor; öğrenci tüm kaynaklar yalnız öne ışık yayar diyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB541-C05",
+      "title": "Işın çizimi",
+      "stimulus": "Öğrenci gözlem yolunu dalgalı çizip doğrusal yayılma diye etiketliyor.",
+      "studentAssetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB541-C06",
+      "title": "Görünmeyen yol",
+      "stimulus": "Temiz havada LED ve aydınlanan ekran görülüyor; aradaki yol seçilmiyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB541-C07",
+      "title": "Kenar engeli",
+      "stimulus": "Opak kart doğrudan yolun önüne gelince LED görülmüyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB541-C08",
+      "title": "Çok yönlü pano",
+      "stimulus": "Küçük ışık kaynağının sağ, sol ve üstündeki ekranlar aydınlanıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB541-C09",
+      "title": "Eksik gözlem kaydı",
+      "stimulus": "Kayıt 'ışık geçti' diyor; delik konumları belirtilmemiş.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB541-C10",
+      "title": "İki değişken",
+      "stimulus": "Kart kaydırılırken LED de kapatılıyor; ışık kayboluyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    }
+  ],
+  "rows": [
+    {
+      "id": "ANX-FB541-001",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C01",
+      "title": "Delikli karton — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Üç delik aynı hizadayken LED görülüyor; ortadaki kart kayınca görülmüyor.\n\nBu gözlem ışığın izlediği yol hakkında ne gösteriyor?",
+      "sampleAnswer": "Işık bu düzende doğrusal ilerler.",
+      "solution": "Işık bu düzende doğrusal ilerler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Işık bu düzende doğrusal ilerler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-002",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C01",
+      "title": "Delikli karton — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Üç delik aynı hizadayken LED görülüyor; ortadaki kart kayınca görülmüyor.\n\nDüzenekteki hangi karşılaştırma bu açıklamayı destekler?",
+      "sampleAnswer": "Hizalı ve kaymış delikler.",
+      "solution": "Hizalı ve kaymış delikler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hizalı ve kaymış delikler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-003",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C01",
+      "title": "Delikli karton — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Üç delik aynı hizadayken LED görülüyor; ortadaki kart kayınca görülmüyor.\n\nGözlemi çizgi ve yön belirten bir kayıtla nasıl gösterirsin?",
+      "sampleAnswer": "Delikleri bağlayan düz ışın çizgisi.",
+      "solution": "Delikleri bağlayan düz ışın çizgisi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Delikleri bağlayan düz ışın çizgisi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-004",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C01",
+      "title": "Delikli karton — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Üç delik aynı hizadayken LED görülüyor; ortadaki kart kayınca görülmüyor.\n\nGözlemden çıkarılamayacak sonucu veya düzenek hatasını belirt.",
+      "sampleAnswer": "Kartonun kayması ışığın kıvrıldığını göstermez.",
+      "solution": "Kartonun kayması ışığın kıvrıldığını göstermez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kartonun kayması ışığın kıvrıldığını göstermez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-005",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C01",
+      "title": "Delikli karton — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Üç delik aynı hizadayken LED görülüyor; ortadaki kart kayınca görülmüyor.\n\nGüvenli LED ışıkla bağlamı sınayan gözlem yap; gerçek çizim ve koşulları kaydet.",
+      "sampleAnswer": "Delik hizasını değiştirip gözlemi kaydet.",
+      "solution": "Delik hizasını değiştirip gözlemi kaydet. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Delik hizasını değiştirip gözlemi kaydet."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-006",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C02",
+      "title": "Düz ve bükülü tüp — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "LED düz tüpten görülüyor; opak bükülü tüpten doğrudan görülmüyor.\n\nBu gözlem ışığın izlediği yol hakkında ne gösteriyor?",
+      "sampleAnswer": "Doğrudan ışık yolu düzdür.",
+      "solution": "Doğrudan ışık yolu düzdür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Doğrudan ışık yolu düzdür."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-007",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C02",
+      "title": "Düz ve bükülü tüp — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "LED düz tüpten görülüyor; opak bükülü tüpten doğrudan görülmüyor.\n\nDüzenekteki hangi karşılaştırma bu açıklamayı destekler?",
+      "sampleAnswer": "Tüp biçimi değişince görünürlük değişmiş.",
+      "solution": "Tüp biçimi değişince görünürlük değişmiş. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tüp biçimi değişince görünürlük değişmiş."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-008",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C02",
+      "title": "Düz ve bükülü tüp — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "LED düz tüpten görülüyor; opak bükülü tüpten doğrudan görülmüyor.\n\nGözlemi çizgi ve yön belirten bir kayıtla nasıl gösterirsin?",
+      "sampleAnswer": "Düz tüpte kesintisiz ışın yolu.",
+      "solution": "Düz tüpte kesintisiz ışın yolu. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Düz tüpte kesintisiz ışın yolu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-009",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C02",
+      "title": "Düz ve bükülü tüp — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "LED düz tüpten görülüyor; opak bükülü tüpten doğrudan görülmüyor.\n\nGözlemden çıkarılamayacak sonucu veya düzenek hatasını belirt.",
+      "sampleAnswer": "Bükülü tüpte kıvrılan ışık varsayılmaz.",
+      "solution": "Bükülü tüpte kıvrılan ışık varsayılmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bükülü tüpte kıvrılan ışık varsayılmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-010",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C02",
+      "title": "Düz ve bükülü tüp — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "LED düz tüpten görülüyor; opak bükülü tüpten doğrudan görülmüyor.\n\nGüvenli LED ışıkla bağlamı sınayan gözlem yap; gerçek çizim ve koşulları kaydet.",
+      "sampleAnswer": "Tüplerle doğrudan görünürlüğü karşılaştır.",
+      "solution": "Tüplerle doğrudan görünürlüğü karşılaştır. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tüplerle doğrudan görünürlüğü karşılaştır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-011",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C03",
+      "title": "Kutu delikleri — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutudaki küçük LED farklı yönlerdeki deliklerden görülüyor.\n\nBu gözlem ışığın izlediği yol hakkında ne gösteriyor?",
+      "sampleAnswer": "Kaynak farklı yönlere ışık yayar.",
+      "solution": "Kaynak farklı yönlere ışık yayar. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak farklı yönlere ışık yayar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-012",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C03",
+      "title": "Kutu delikleri — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutudaki küçük LED farklı yönlerdeki deliklerden görülüyor.\n\nDüzenekteki hangi karşılaştırma bu açıklamayı destekler?",
+      "sampleAnswer": "Farklı yönlerde ışık çıkışı.",
+      "solution": "Farklı yönlerde ışık çıkışı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Farklı yönlerde ışık çıkışı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-013",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C03",
+      "title": "Kutu delikleri — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutudaki küçük LED farklı yönlerdeki deliklerden görülüyor.\n\nGözlemi çizgi ve yön belirten bir kayıtla nasıl gösterirsin?",
+      "sampleAnswer": "Kaynak merkezinden farklı düz ışınlar.",
+      "solution": "Kaynak merkezinden farklı düz ışınlar. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak merkezinden farklı düz ışınlar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-014",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C03",
+      "title": "Kutu delikleri — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutudaki küçük LED farklı yönlerdeki deliklerden görülüyor.\n\nGözlemden çıkarılamayacak sonucu veya düzenek hatasını belirt.",
+      "sampleAnswer": "Her yönde eşit parlaklık kanıtlanmış değildir.",
+      "solution": "Her yönde eşit parlaklık kanıtlanmış değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Her yönde eşit parlaklık kanıtlanmış değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-015",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C03",
+      "title": "Kutu delikleri — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kutudaki küçük LED farklı yönlerdeki deliklerden görülüyor.\n\nGüvenli LED ışıkla bağlamı sınayan gözlem yap; gerçek çizim ve koşulları kaydet.",
+      "sampleAnswer": "Güvenli kutu modelinde yönleri kaydet.",
+      "solution": "Güvenli kutu modelinde yönleri kaydet. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Güvenli kutu modelinde yönleri kaydet."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-016",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C04",
+      "title": "El feneri sınırı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "El feneri ışığı öne yönlendiriyor; öğrenci tüm kaynaklar yalnız öne ışık yayar diyor.\n\nBu gözlem ışığın izlediği yol hakkında ne gösteriyor?",
+      "sampleAnswer": "Fener ışığı belirli yöne yönlendirebilir.",
+      "solution": "Fener ışığı belirli yöne yönlendirebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Fener ışığı belirli yöne yönlendirebilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-017",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C04",
+      "title": "El feneri sınırı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "El feneri ışığı öne yönlendiriyor; öğrenci tüm kaynaklar yalnız öne ışık yayar diyor.\n\nDüzenekteki hangi karşılaştırma bu açıklamayı destekler?",
+      "sampleAnswer": "Açık küçük LED ile karşılaştırılır.",
+      "solution": "Açık küçük LED ile karşılaştırılır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Açık küçük LED ile karşılaştırılır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-018",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C04",
+      "title": "El feneri sınırı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "El feneri ışığı öne yönlendiriyor; öğrenci tüm kaynaklar yalnız öne ışık yayar diyor.\n\nGözlemi çizgi ve yön belirten bir kayıtla nasıl gösterirsin?",
+      "sampleAnswer": "Kaynak ve fener gövdesini ayrı çizerim.",
+      "solution": "Kaynak ve fener gövdesini ayrı çizerim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak ve fener gövdesini ayrı çizerim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-019",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C04",
+      "title": "El feneri sınırı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "El feneri ışığı öne yönlendiriyor; öğrenci tüm kaynaklar yalnız öne ışık yayar diyor.\n\nGözlemden çıkarılamayacak sonucu veya düzenek hatasını belirt.",
+      "sampleAnswer": "Tek fenerden tüm kaynaklara genelleme yapılmaz.",
+      "solution": "Tek fenerden tüm kaynaklara genelleme yapılmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tek fenerden tüm kaynaklara genelleme yapılmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-020",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C04",
+      "title": "El feneri sınırı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "El feneri ışığı öne yönlendiriyor; öğrenci tüm kaynaklar yalnız öne ışık yayar diyor.\n\nGüvenli LED ışıkla bağlamı sınayan gözlem yap; gerçek çizim ve koşulları kaydet.",
+      "sampleAnswer": "Kaynağın çevresinde güvenli gözlem yap.",
+      "solution": "Kaynağın çevresinde güvenli gözlem yap. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynağın çevresinde güvenli gözlem yap."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-021",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C05",
+      "title": "Işın çizimi — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci gözlem yolunu dalgalı çizip doğrusal yayılma diye etiketliyor.\n\nBu gözlem ışığın izlediği yol hakkında ne gösteriyor?",
+      "sampleAnswer": "Doğrusal yol düz çizgiyle temsil edilir.",
+      "solution": "Doğrusal yol düz çizgiyle temsil edilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Doğrusal yol düz çizgiyle temsil edilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-022",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C05",
+      "title": "Işın çizimi — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci gözlem yolunu dalgalı çizip doğrusal yayılma diye etiketliyor.\n\nDüzenekteki hangi karşılaştırma bu açıklamayı destekler?",
+      "sampleAnswer": "Hizalı delik gözlemi destekler.",
+      "solution": "Hizalı delik gözlemi destekler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hizalı delik gözlemi destekler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-023",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C05",
+      "title": "Işın çizimi — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci gözlem yolunu dalgalı çizip doğrusal yayılma diye etiketliyor.\n\nGözlemi çizgi ve yön belirten bir kayıtla nasıl gösterirsin?",
+      "sampleAnswer": "Kaynağı ve yönü belirten düz çizgi.",
+      "solution": "Kaynağı ve yönü belirten düz çizgi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynağı ve yönü belirten düz çizgi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-024",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C05",
+      "title": "Işın çizimi — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci gözlem yolunu dalgalı çizip doğrusal yayılma diye etiketliyor.\n\nGözlemden çıkarılamayacak sonucu veya düzenek hatasını belirt.",
+      "sampleAnswer": "Dalgalı şema gözlemle uyumlu değildir.",
+      "solution": "Dalgalı şema gözlemle uyumlu değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dalgalı şema gözlemle uyumlu değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-025",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C05",
+      "title": "Işın çizimi — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Öğrenci gözlem yolunu dalgalı çizip doğrusal yayılma diye etiketliyor.\n\nGüvenli LED ışıkla bağlamı sınayan gözlem yap; gerçek çizim ve koşulları kaydet.",
+      "sampleAnswer": "Delik düzeni gözlemiyle çizimi karşılaştır.",
+      "solution": "Delik düzeni gözlemiyle çizimi karşılaştır. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Delik düzeni gözlemiyle çizimi karşılaştır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-026",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C06",
+      "title": "Görünmeyen yol — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Temiz havada LED ve aydınlanan ekran görülüyor; aradaki yol seçilmiyor.\n\nBu gözlem ışığın izlediği yol hakkında ne gösteriyor?",
+      "sampleAnswer": "Görünmeyen yol, ışık yokluğu değildir.",
+      "solution": "Görünmeyen yol, ışık yokluğu değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Görünmeyen yol, ışık yokluğu değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-027",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C06",
+      "title": "Görünmeyen yol — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Temiz havada LED ve aydınlanan ekran görülüyor; aradaki yol seçilmiyor.\n\nDüzenekteki hangi karşılaştırma bu açıklamayı destekler?",
+      "sampleAnswer": "Kaynak ile aydınlanan hedef.",
+      "solution": "Kaynak ile aydınlanan hedef. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak ile aydınlanan hedef."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-028",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C06",
+      "title": "Görünmeyen yol — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Temiz havada LED ve aydınlanan ekran görülüyor; aradaki yol seçilmiyor.\n\nGözlemi çizgi ve yön belirten bir kayıtla nasıl gösterirsin?",
+      "sampleAnswer": "Kaynak–hedef arasına temsili düz ışın.",
+      "solution": "Kaynak–hedef arasına temsili düz ışın. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak–hedef arasına temsili düz ışın."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-029",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C06",
+      "title": "Görünmeyen yol — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Temiz havada LED ve aydınlanan ekran görülüyor; aradaki yol seçilmiyor.\n\nGözlemden çıkarılamayacak sonucu veya düzenek hatasını belirt.",
+      "sampleAnswer": "Her noktada ışını gözle görmek gerekmez.",
+      "solution": "Her noktada ışını gözle görmek gerekmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Her noktada ışını gözle görmek gerekmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-030",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C06",
+      "title": "Görünmeyen yol — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Temiz havada LED ve aydınlanan ekran görülüyor; aradaki yol seçilmiyor.\n\nGüvenli LED ışıkla bağlamı sınayan gözlem yap; gerçek çizim ve koşulları kaydet.",
+      "sampleAnswer": "Ek toz/duman üretmeden hedef gözlemi.",
+      "solution": "Ek toz/duman üretmeden hedef gözlemi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ek toz/duman üretmeden hedef gözlemi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-031",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C07",
+      "title": "Kenar engeli — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Opak kart doğrudan yolun önüne gelince LED görülmüyor.\n\nBu gözlem ışığın izlediği yol hakkında ne gösteriyor?",
+      "sampleAnswer": "Engel doğrudan yolu keser.",
+      "solution": "Engel doğrudan yolu keser. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Engel doğrudan yolu keser."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-032",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C07",
+      "title": "Kenar engeli — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Opak kart doğrudan yolun önüne gelince LED görülmüyor.\n\nDüzenekteki hangi karşılaştırma bu açıklamayı destekler?",
+      "sampleAnswer": "Engel öncesi/sonrası.",
+      "solution": "Engel öncesi/sonrası. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Engel öncesi/sonrası."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-033",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C07",
+      "title": "Kenar engeli — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Opak kart doğrudan yolun önüne gelince LED görülmüyor.\n\nGözlemi çizgi ve yön belirten bir kayıtla nasıl gösterirsin?",
+      "sampleAnswer": "Kesilen düz yolu şemada gösteririm.",
+      "solution": "Kesilen düz yolu şemada gösteririm. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kesilen düz yolu şemada gösteririm."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-034",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C07",
+      "title": "Kenar engeli — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Opak kart doğrudan yolun önüne gelince LED görülmüyor.\n\nGözlemden çıkarılamayacak sonucu veya düzenek hatasını belirt.",
+      "sampleAnswer": "Kartın arkasına ışık kıvrıldı denemez.",
+      "solution": "Kartın arkasına ışık kıvrıldı denemez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kartın arkasına ışık kıvrıldı denemez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-035",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C07",
+      "title": "Kenar engeli — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Opak kart doğrudan yolun önüne gelince LED görülmüyor.\n\nGüvenli LED ışıkla bağlamı sınayan gözlem yap; gerçek çizim ve koşulları kaydet.",
+      "sampleAnswer": "Engeli yer değiştirerek kayıt tut.",
+      "solution": "Engeli yer değiştirerek kayıt tut. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Engeli yer değiştirerek kayıt tut."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-036",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C08",
+      "title": "Çok yönlü pano — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Küçük ışık kaynağının sağ, sol ve üstündeki ekranlar aydınlanıyor.\n\nBu gözlem ışığın izlediği yol hakkında ne gösteriyor?",
+      "sampleAnswer": "Işık farklı yönlerde yayılmış.",
+      "solution": "Işık farklı yönlerde yayılmış. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Işık farklı yönlerde yayılmış."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-037",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C08",
+      "title": "Çok yönlü pano — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Küçük ışık kaynağının sağ, sol ve üstündeki ekranlar aydınlanıyor.\n\nDüzenekteki hangi karşılaştırma bu açıklamayı destekler?",
+      "sampleAnswer": "Üç ekranın aydınlanma kaydı.",
+      "solution": "Üç ekranın aydınlanma kaydı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Üç ekranın aydınlanma kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-038",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C08",
+      "title": "Çok yönlü pano — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Küçük ışık kaynağının sağ, sol ve üstündeki ekranlar aydınlanıyor.\n\nGözlemi çizgi ve yön belirten bir kayıtla nasıl gösterirsin?",
+      "sampleAnswer": "Farklı yönlere düz ışınlar.",
+      "solution": "Farklı yönlere düz ışınlar. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Farklı yönlere düz ışınlar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-039",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C08",
+      "title": "Çok yönlü pano — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Küçük ışık kaynağının sağ, sol ve üstündeki ekranlar aydınlanıyor.\n\nGözlemden çıkarılamayacak sonucu veya düzenek hatasını belirt.",
+      "sampleAnswer": "Yalnız bir yönde yayılır iddiası desteklenmez.",
+      "solution": "Yalnız bir yönde yayılır iddiası desteklenmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yalnız bir yönde yayılır iddiası desteklenmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-040",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C08",
+      "title": "Çok yönlü pano — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Küçük ışık kaynağının sağ, sol ve üstündeki ekranlar aydınlanıyor.\n\nGüvenli LED ışıkla bağlamı sınayan gözlem yap; gerçek çizim ve koşulları kaydet.",
+      "sampleAnswer": "Birden fazla yönü aynı kaynakla incele.",
+      "solution": "Birden fazla yönü aynı kaynakla incele. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Birden fazla yönü aynı kaynakla incele."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-041",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C09",
+      "title": "Eksik gözlem kaydı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kayıt 'ışık geçti' diyor; delik konumları belirtilmemiş.\n\nBu gözlem ışığın izlediği yol hakkında ne gösteriyor?",
+      "sampleAnswer": "Yol için konum bilgisi gerekir.",
+      "solution": "Yol için konum bilgisi gerekir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yol için konum bilgisi gerekir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-042",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C09",
+      "title": "Eksik gözlem kaydı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kayıt 'ışık geçti' diyor; delik konumları belirtilmemiş.\n\nDüzenekteki hangi karşılaştırma bu açıklamayı destekler?",
+      "sampleAnswer": "Hizalı/kaymış düzenler ayrı kaydedilir.",
+      "solution": "Hizalı/kaymış düzenler ayrı kaydedilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hizalı/kaymış düzenler ayrı kaydedilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-043",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C09",
+      "title": "Eksik gözlem kaydı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kayıt 'ışık geçti' diyor; delik konumları belirtilmemiş.\n\nGözlemi çizgi ve yön belirten bir kayıtla nasıl gösterirsin?",
+      "sampleAnswer": "Kart ve delik yerlerini çizimle eklerim.",
+      "solution": "Kart ve delik yerlerini çizimle eklerim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kart ve delik yerlerini çizimle eklerim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-044",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C09",
+      "title": "Eksik gözlem kaydı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kayıt 'ışık geçti' diyor; delik konumları belirtilmemiş.\n\nGözlemden çıkarılamayacak sonucu veya düzenek hatasını belirt.",
+      "sampleAnswer": "Eksik kayıttan düzenek kesin kurulamaz.",
+      "solution": "Eksik kayıttan düzenek kesin kurulamaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Eksik kayıttan düzenek kesin kurulamaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-045",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C09",
+      "title": "Eksik gözlem kaydı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kayıt 'ışık geçti' diyor; delik konumları belirtilmemiş.\n\nGüvenli LED ışıkla bağlamı sınayan gözlem yap; gerçek çizim ve koşulları kaydet.",
+      "sampleAnswer": "Konum etiketli tekrar gözlemi.",
+      "solution": "Konum etiketli tekrar gözlemi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Konum etiketli tekrar gözlemi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-046",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C10",
+      "title": "İki değişken — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kart kaydırılırken LED de kapatılıyor; ışık kayboluyor.\n\nBu gözlem ışığın izlediği yol hakkında ne gösteriyor?",
+      "sampleAnswer": "Hangi değişimin etkili olduğu belirsiz.",
+      "solution": "Hangi değişimin etkili olduğu belirsiz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hangi değişimin etkili olduğu belirsiz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-047",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C10",
+      "title": "İki değişken — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kart kaydırılırken LED de kapatılıyor; ışık kayboluyor.\n\nDüzenekteki hangi karşılaştırma bu açıklamayı destekler?",
+      "sampleAnswer": "LED açıkken yalnız kart kaydırılmalı.",
+      "solution": "LED açıkken yalnız kart kaydırılmalı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "LED açıkken yalnız kart kaydırılmalı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-048",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C10",
+      "title": "İki değişken — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kart kaydırılırken LED de kapatılıyor; ışık kayboluyor.\n\nGözlemi çizgi ve yön belirten bir kayıtla nasıl gösterirsin?",
+      "sampleAnswer": "Her durumun ayrı şeması.",
+      "solution": "Her durumun ayrı şeması. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Her durumun ayrı şeması."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-049",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C10",
+      "title": "İki değişken — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kart kaydırılırken LED de kapatılıyor; ışık kayboluyor.\n\nGözlemden çıkarılamayacak sonucu veya düzenek hatasını belirt.",
+      "sampleAnswer": "İki değişimle yalnız doğrultu etkisi kanıtlanmaz.",
+      "solution": "İki değişimle yalnız doğrultu etkisi kanıtlanmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İki değişimle yalnız doğrultu etkisi kanıtlanmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB541-050",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.4.1",
+      "contextId": "FB541-C10",
+      "title": "İki değişken — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kart kaydırılırken LED de kapatılıyor; ışık kayboluyor.\n\nGüvenli LED ışıkla bağlamı sınayan gözlem yap; gerçek çizim ve koşulları kaydet.",
+      "sampleAnswer": "Tek değişkenli güvenli tekrar.",
+      "solution": "Tek değişkenli güvenli tekrar. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tek değişkenli güvenli tekrar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    }
+  ]
+}

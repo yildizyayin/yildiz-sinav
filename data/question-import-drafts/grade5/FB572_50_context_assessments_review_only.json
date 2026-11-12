@@ -1,0 +1,2299 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.7.2",
+    "outcomeTitle": "Kaynakların etkili kullanımı konusunda geri dönüşümün önemli olduğuna yönelik bilimsel çıkarım yapabilme",
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/408",
+    "sourceTextCheckedAt": "2026-11-12",
+    "academicYearCatalog": "2027-2028",
+    "sourceYearEquivalenceVerified": false,
+    "status": "DRAFT_NOT_APPROVED",
+    "teacherApprovedCount": 0,
+    "rowsCount": 50,
+    "distinctSharedContexts": 10,
+    "openEndedCount": 40,
+    "performanceTaskCount": 10,
+    "notIndependentStimuli": true,
+    "sourceLabel": "ANUNEX_ORIGINAL_AI_ASSISTED_DRAFT_2026_11_12",
+    "rubricScale": {
+      "0": "Ölçüt karşılanmıyor veya bilimsel olarak yanlış.",
+      "1": "Kısmen doğru; ilişki, gerekçe veya gerekli kayıt eksik.",
+      "2": "Ölçüt bilimsel olarak doğru ve yeterli kanıt/kayıtla karşılanıyor."
+    },
+    "scoringNotes": [
+      "Örnek cevabın sözcükleri zorunlu değildir.",
+      "Aynı eksik iki ölçütte mükerrer cezalandırılmaz.",
+      "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
+    ],
+    "reviewGates": [
+      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
+      "EXACT_PROGRAM_YEAR_CODE",
+      "SEMANTIC_CROSS_POOL_ORIGINALITY",
+      "MEDIA_LAYOUT_RIGHTS",
+      "VERTICAL_CURRICULUM_MAP",
+      "HISTORICAL_EXAM_AUDIT",
+      "IMPORTER_TYPE_SUPPORT"
+    ],
+    "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
+    "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+  },
+  "contexts": [
+    {
+      "contextId": "FB572-C01",
+      "title": "Kâğıt kaydı",
+      "stimulus": "Kurgu okulda 10 kg kâğıt ayrılmış; tesise teslim bilgisi henüz yok.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB572-C02",
+      "title": "Plastik işleme",
+      "stimulus": "Kaynak kartı plastik ambalajın işlenip yeni ham maddeye dönüştürüldüğünü anlatıyor; miktar yok.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB572-C03",
+      "title": "Alım ve atık",
+      "stimulus": "Daha az gereksiz ambalaj alınınca ayrılan atık da azalıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB572-C04",
+      "title": "Metal döngüsü",
+      "stimulus": "Kaynak kartı metalin işlenip yeni üründe kullanıldığını belirtiyor; oran vermiyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB572-C05",
+      "title": "Kontaminasyon",
+      "stimulus": "Aynı miktar ambalajdan kirli karışımda daha azı kabul ediliyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB572-C06",
+      "title": "Ağırlık artışı",
+      "stimulus": "Kutudaki ıslak kâğıt ağır gelmiş; tasarruf daha çok sanılıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB572-C07",
+      "title": "Karşılaştırmasız kampanya",
+      "stimulus": "Kampanya sonrası atık az; öncesi veri yok.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB572-C08",
+      "title": "Gıda israfı",
+      "stimulus": "2026 Sıfır Atık Günü gıda atığı temalı. Kurgu yemekhane artık ve ambalajı ayrı tartıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": {
+        "sourceUrl": "https://www.unep.org/en/events/un-day/international-day-zero-waste-2026",
+        "eventDate": "2026-03-30",
+        "verifiedFact": "2026 International Day of Zero Waste theme: food waste.",
+        "classroomDataAreFictional": true
+      }
+    },
+    {
+      "contextId": "FB572-C09",
+      "title": "Kişi sayısı farkı",
+      "stimulus": "İki gün atık aynı; ikinci gün öğrenci sayısı daha fazla.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB572-C10",
+      "title": "İşlenmeyen stok",
+      "stimulus": "Toplanan şişeler depoda bekliyor; okul tümü yeni ürüne dönüştü diyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    }
+  ],
+  "rows": [
+    {
+      "id": "ANX-FB572-001",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C01",
+      "title": "Kâğıt kaydı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgu okulda 10 kg kâğıt ayrılmış; tesise teslim bilgisi henüz yok.\n\nBağlamda geri dönüşüm ve kaynak kullanımı açısından hangi ilişki araştırılıyor?",
+      "sampleAnswer": "Malzemenin yeniden kazanım olasılığı.",
+      "solution": "Malzemenin yeniden kazanım olasılığı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Malzemenin yeniden kazanım olasılığı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-002",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C01",
+      "title": "Kâğıt kaydı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgu okulda 10 kg kâğıt ayrılmış; tesise teslim bilgisi henüz yok.\n\nVerileri hangi başlıklarla kaydeder ve karşılaştırırsın?",
+      "sampleAnswer": "Ayrılan/teslim edilen/işlenen miktar.",
+      "solution": "Ayrılan/teslim edilen/işlenen miktar. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ayrılan/teslim edilen/işlenen miktar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-003",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C01",
+      "title": "Kâğıt kaydı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgu okulda 10 kg kâğıt ayrılmış; tesise teslim bilgisi henüz yok.\n\nVerilerin desteklediği bilimsel çıkarımı yaz.",
+      "sampleAnswer": "Ayrıştırma yapılmış; işlem tamamlanması bilinmiyor.",
+      "solution": "Ayrıştırma yapılmış; işlem tamamlanması bilinmiyor. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ayrıştırma yapılmış; işlem tamamlanması bilinmiyor."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-004",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C01",
+      "title": "Kâğıt kaydı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kurgu okulda 10 kg kâğıt ayrılmış; tesise teslim bilgisi henüz yok.\n\nVerilerin kanıtlamadığı tasarruf veya başarı iddiasını belirt.",
+      "sampleAnswer": "Kesin ağaç/enerji sayısı çıkarılmaz.",
+      "solution": "Kesin ağaç/enerji sayısı çıkarılmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kesin ağaç/enerji sayısı çıkarılmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-005",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C01",
+      "title": "Kâğıt kaydı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kurgu okulda 10 kg kâğıt ayrılmış; tesise teslim bilgisi henüz yok.\n\nKaynaklı küçük bir inceleme yap; gerçek kayıt, sınırlılık ve uygulanabilir öneri sun.",
+      "sampleAnswer": "Teslim kanıtı ve kaynaklı inceleme.",
+      "solution": "Teslim kanıtı ve kaynaklı inceleme. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Teslim kanıtı ve kaynaklı inceleme."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-006",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C02",
+      "title": "Plastik işleme — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak kartı plastik ambalajın işlenip yeni ham maddeye dönüştürüldüğünü anlatıyor; miktar yok.\n\nBağlamda geri dönüşüm ve kaynak kullanımı açısından hangi ilişki araştırılıyor?",
+      "sampleAnswer": "Geri dönüşüm malzemeyi yeniden üretime katabilir.",
+      "solution": "Geri dönüşüm malzemeyi yeniden üretime katabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Geri dönüşüm malzemeyi yeniden üretime katabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-007",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C02",
+      "title": "Plastik işleme — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak kartı plastik ambalajın işlenip yeni ham maddeye dönüştürüldüğünü anlatıyor; miktar yok.\n\nVerileri hangi başlıklarla kaydeder ve karşılaştırırsın?",
+      "sampleAnswer": "Toplanan, işlenen ve yeni kullanım.",
+      "solution": "Toplanan, işlenen ve yeni kullanım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Toplanan, işlenen ve yeni kullanım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-008",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C02",
+      "title": "Plastik işleme — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak kartı plastik ambalajın işlenip yeni ham maddeye dönüştürüldüğünü anlatıyor; miktar yok.\n\nVerilerin desteklediği bilimsel çıkarımı yaz.",
+      "sampleAnswer": "Malzeme döngüsü kaynak kullanımını destekler.",
+      "solution": "Malzeme döngüsü kaynak kullanımını destekler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Malzeme döngüsü kaynak kullanımını destekler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-009",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C02",
+      "title": "Plastik işleme — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak kartı plastik ambalajın işlenip yeni ham maddeye dönüştürüldüğünü anlatıyor; miktar yok.\n\nVerilerin kanıtlamadığı tasarruf veya başarı iddiasını belirt.",
+      "sampleAnswer": "Verilmeyen tasarruf miktarı hesaplanamaz.",
+      "solution": "Verilmeyen tasarruf miktarı hesaplanamaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Verilmeyen tasarruf miktarı hesaplanamaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-010",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C02",
+      "title": "Plastik işleme — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kaynak kartı plastik ambalajın işlenip yeni ham maddeye dönüştürüldüğünü anlatıyor; miktar yok.\n\nKaynaklı küçük bir inceleme yap; gerçek kayıt, sınırlılık ve uygulanabilir öneri sun.",
+      "sampleAnswer": "Kaynaklı işlem aşamaları incelemesi.",
+      "solution": "Kaynaklı işlem aşamaları incelemesi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynaklı işlem aşamaları incelemesi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-011",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C03",
+      "title": "Alım ve atık — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Daha az gereksiz ambalaj alınınca ayrılan atık da azalıyor.\n\nBağlamda geri dönüşüm ve kaynak kullanımı açısından hangi ilişki araştırılıyor?",
+      "sampleAnswer": "Önleme kaynak kullanımını etkiler.",
+      "solution": "Önleme kaynak kullanımını etkiler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Önleme kaynak kullanımını etkiler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-012",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C03",
+      "title": "Alım ve atık — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Daha az gereksiz ambalaj alınınca ayrılan atık da azalıyor.\n\nVerileri hangi başlıklarla kaydeder ve karşılaştırırsın?",
+      "sampleAnswer": "Alınan ve atılan ambalaj.",
+      "solution": "Alınan ve atılan ambalaj. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Alınan ve atılan ambalaj."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-013",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C03",
+      "title": "Alım ve atık — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Daha az gereksiz ambalaj alınınca ayrılan atık da azalıyor.\n\nVerilerin desteklediği bilimsel çıkarımı yaz.",
+      "sampleAnswer": "Az atık, önlemeden kaynaklanabilir.",
+      "solution": "Az atık, önlemeden kaynaklanabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Az atık, önlemeden kaynaklanabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-014",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C03",
+      "title": "Alım ve atık — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Daha az gereksiz ambalaj alınınca ayrılan atık da azalıyor.\n\nVerilerin kanıtlamadığı tasarruf veya başarı iddiasını belirt.",
+      "sampleAnswer": "Az geri dönüşüm miktarı başarısızlık değildir.",
+      "solution": "Az geri dönüşüm miktarı başarısızlık değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Az geri dönüşüm miktarı başarısızlık değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-015",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C03",
+      "title": "Alım ve atık — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Daha az gereksiz ambalaj alınınca ayrılan atık da azalıyor.\n\nKaynaklı küçük bir inceleme yap; gerçek kayıt, sınırlılık ve uygulanabilir öneri sun.",
+      "sampleAnswer": "Önleme/ayrıştırma ayrı kayıtlı inceleme.",
+      "solution": "Önleme/ayrıştırma ayrı kayıtlı inceleme. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Önleme/ayrıştırma ayrı kayıtlı inceleme."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-016",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C04",
+      "title": "Metal döngüsü — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak kartı metalin işlenip yeni üründe kullanıldığını belirtiyor; oran vermiyor.\n\nBağlamda geri dönüşüm ve kaynak kullanımı açısından hangi ilişki araştırılıyor?",
+      "sampleAnswer": "Malzeme tekrar üretime girebilir.",
+      "solution": "Malzeme tekrar üretime girebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Malzeme tekrar üretime girebilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-017",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C04",
+      "title": "Metal döngüsü — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak kartı metalin işlenip yeni üründe kullanıldığını belirtiyor; oran vermiyor.\n\nVerileri hangi başlıklarla kaydeder ve karşılaştırırsın?",
+      "sampleAnswer": "Malzeme girişi ve yeni kullanım.",
+      "solution": "Malzeme girişi ve yeni kullanım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Malzeme girişi ve yeni kullanım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-018",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C04",
+      "title": "Metal döngüsü — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak kartı metalin işlenip yeni üründe kullanıldığını belirtiyor; oran vermiyor.\n\nVerilerin desteklediği bilimsel çıkarımı yaz.",
+      "sampleAnswer": "Birincil kaynak ihtiyacını azaltmaya katkı olabilir.",
+      "solution": "Birincil kaynak ihtiyacını azaltmaya katkı olabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Birincil kaynak ihtiyacını azaltmaya katkı olabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-019",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C04",
+      "title": "Metal döngüsü — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak kartı metalin işlenip yeni üründe kullanıldığını belirtiyor; oran vermiyor.\n\nVerilerin kanıtlamadığı tasarruf veya başarı iddiasını belirt.",
+      "sampleAnswer": "Verilmeyen enerji yüzdesi uydurulmaz.",
+      "solution": "Verilmeyen enerji yüzdesi uydurulmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Verilmeyen enerji yüzdesi uydurulmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-020",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C04",
+      "title": "Metal döngüsü — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kaynak kartı metalin işlenip yeni üründe kullanıldığını belirtiyor; oran vermiyor.\n\nKaynaklı küçük bir inceleme yap; gerçek kayıt, sınırlılık ve uygulanabilir öneri sun.",
+      "sampleAnswer": "Kaynak metninin sınırlarını yaz.",
+      "solution": "Kaynak metninin sınırlarını yaz. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak metninin sınırlarını yaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-021",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C05",
+      "title": "Kontaminasyon — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı miktar ambalajdan kirli karışımda daha azı kabul ediliyor.\n\nBağlamda geri dönüşüm ve kaynak kullanımı açısından hangi ilişki araştırılıyor?",
+      "sampleAnswer": "Ayrıştırma kalitesi kazanımı etkiler.",
+      "solution": "Ayrıştırma kalitesi kazanımı etkiler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ayrıştırma kalitesi kazanımı etkiler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-022",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C05",
+      "title": "Kontaminasyon — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı miktar ambalajdan kirli karışımda daha azı kabul ediliyor.\n\nVerileri hangi başlıklarla kaydeder ve karşılaştırırsın?",
+      "sampleAnswer": "Toplanan/kabul/ret miktarı.",
+      "solution": "Toplanan/kabul/ret miktarı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Toplanan/kabul/ret miktarı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-023",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C05",
+      "title": "Kontaminasyon — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı miktar ambalajdan kirli karışımda daha azı kabul ediliyor.\n\nVerilerin desteklediği bilimsel çıkarımı yaz.",
+      "sampleAnswer": "Doğru ayrıştırma verimi destekler.",
+      "solution": "Doğru ayrıştırma verimi destekler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Doğru ayrıştırma verimi destekler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-024",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C05",
+      "title": "Kontaminasyon — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı miktar ambalajdan kirli karışımda daha azı kabul ediliyor.\n\nVerilerin kanıtlamadığı tasarruf veya başarı iddiasını belirt.",
+      "sampleAnswer": "Toplanan her şey işlenmiş sayılmaz.",
+      "solution": "Toplanan her şey işlenmiş sayılmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Toplanan her şey işlenmiş sayılmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-025",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C05",
+      "title": "Kontaminasyon — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Aynı miktar ambalajdan kirli karışımda daha azı kabul ediliyor.\n\nKaynaklı küçük bir inceleme yap; gerçek kayıt, sınırlılık ve uygulanabilir öneri sun.",
+      "sampleAnswer": "Kabul koşullu kaynak incelemesi.",
+      "solution": "Kabul koşullu kaynak incelemesi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kabul koşullu kaynak incelemesi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-026",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C06",
+      "title": "Ağırlık artışı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutudaki ıslak kâğıt ağır gelmiş; tasarruf daha çok sanılıyor.\n\nBağlamda geri dönüşüm ve kaynak kullanımı açısından hangi ilişki araştırılıyor?",
+      "sampleAnswer": "Nem ölçümü etkiliyor.",
+      "solution": "Nem ölçümü etkiliyor. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Nem ölçümü etkiliyor."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-027",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C06",
+      "title": "Ağırlık artışı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutudaki ıslak kâğıt ağır gelmiş; tasarruf daha çok sanılıyor.\n\nVerileri hangi başlıklarla kaydeder ve karşılaştırırsın?",
+      "sampleAnswer": "Kuru/ıslak durum ve miktar.",
+      "solution": "Kuru/ıslak durum ve miktar. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kuru/ıslak durum ve miktar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-028",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C06",
+      "title": "Ağırlık artışı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutudaki ıslak kâğıt ağır gelmiş; tasarruf daha çok sanılıyor.\n\nVerilerin desteklediği bilimsel çıkarımı yaz.",
+      "sampleAnswer": "Ham ağırlık karşılaştırması yanıltabilir.",
+      "solution": "Ham ağırlık karşılaştırması yanıltabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ham ağırlık karşılaştırması yanıltabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-029",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C06",
+      "title": "Ağırlık artışı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kutudaki ıslak kâğıt ağır gelmiş; tasarruf daha çok sanılıyor.\n\nVerilerin kanıtlamadığı tasarruf veya başarı iddiasını belirt.",
+      "sampleAnswer": "Daha ağır kutu kesin daha çok malzeme değildir.",
+      "solution": "Daha ağır kutu kesin daha çok malzeme değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Daha ağır kutu kesin daha çok malzeme değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-030",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C06",
+      "title": "Ağırlık artışı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kutudaki ıslak kâğıt ağır gelmiş; tasarruf daha çok sanılıyor.\n\nKaynaklı küçük bir inceleme yap; gerçek kayıt, sınırlılık ve uygulanabilir öneri sun.",
+      "sampleAnswer": "Koşulları eşitleyen kayıt önerisi.",
+      "solution": "Koşulları eşitleyen kayıt önerisi. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Koşulları eşitleyen kayıt önerisi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-031",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C07",
+      "title": "Karşılaştırmasız kampanya — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kampanya sonrası atık az; öncesi veri yok.\n\nBağlamda geri dönüşüm ve kaynak kullanımı açısından hangi ilişki araştırılıyor?",
+      "sampleAnswer": "Etkiyi görmek için başlangıç kaydı gerekir.",
+      "solution": "Etkiyi görmek için başlangıç kaydı gerekir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Etkiyi görmek için başlangıç kaydı gerekir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-032",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C07",
+      "title": "Karşılaştırmasız kampanya — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kampanya sonrası atık az; öncesi veri yok.\n\nVerileri hangi başlıklarla kaydeder ve karşılaştırırsın?",
+      "sampleAnswer": "Önce/sonra miktar ve katılım.",
+      "solution": "Önce/sonra miktar ve katılım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Önce/sonra miktar ve katılım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-033",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C07",
+      "title": "Karşılaştırmasız kampanya — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kampanya sonrası atık az; öncesi veri yok.\n\nVerilerin desteklediği bilimsel çıkarımı yaz.",
+      "sampleAnswer": "Tek son ölçüm etkiyi kesinleştirmez.",
+      "solution": "Tek son ölçüm etkiyi kesinleştirmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tek son ölçüm etkiyi kesinleştirmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-034",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C07",
+      "title": "Karşılaştırmasız kampanya — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kampanya sonrası atık az; öncesi veri yok.\n\nVerilerin kanıtlamadığı tasarruf veya başarı iddiasını belirt.",
+      "sampleAnswer": "Kesin yüzde başarı çıkarılmaz.",
+      "solution": "Kesin yüzde başarı çıkarılmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kesin yüzde başarı çıkarılmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-035",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C07",
+      "title": "Karşılaştırmasız kampanya — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kampanya sonrası atık az; öncesi veri yok.\n\nKaynaklı küçük bir inceleme yap; gerçek kayıt, sınırlılık ve uygulanabilir öneri sun.",
+      "sampleAnswer": "Başlangıç verili takip planı.",
+      "solution": "Başlangıç verili takip planı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Başlangıç verili takip planı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-036",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C08",
+      "title": "Gıda israfı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2026 Sıfır Atık Günü gıda atığı temalı. Kurgu yemekhane artık ve ambalajı ayrı tartıyor.\n\nBağlamda geri dönüşüm ve kaynak kullanımı açısından hangi ilişki araştırılıyor?",
+      "sampleAnswer": "Gıda israfı kaynak kaybıyla ilişkilidir.",
+      "solution": "Gıda israfı kaynak kaybıyla ilişkilidir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Gıda israfı kaynak kaybıyla ilişkilidir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-037",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C08",
+      "title": "Gıda israfı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2026 Sıfır Atık Günü gıda atığı temalı. Kurgu yemekhane artık ve ambalajı ayrı tartıyor.\n\nVerileri hangi başlıklarla kaydeder ve karşılaştırırsın?",
+      "sampleAnswer": "Gıda/ambalaj miktarı ve porsiyon sayısı.",
+      "solution": "Gıda/ambalaj miktarı ve porsiyon sayısı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Gıda/ambalaj miktarı ve porsiyon sayısı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-038",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C08",
+      "title": "Gıda israfı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2026 Sıfır Atık Günü gıda atığı temalı. Kurgu yemekhane artık ve ambalajı ayrı tartıyor.\n\nVerilerin desteklediği bilimsel çıkarımı yaz.",
+      "sampleAnswer": "Önleme ve uygun yönetim birlikte incelenir.",
+      "solution": "Önleme ve uygun yönetim birlikte incelenir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Önleme ve uygun yönetim birlikte incelenir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-039",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C08",
+      "title": "Gıda israfı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2026 Sıfır Atık Günü gıda atığı temalı. Kurgu yemekhane artık ve ambalajı ayrı tartıyor.\n\nVerilerin kanıtlamadığı tasarruf veya başarı iddiasını belirt.",
+      "sampleAnswer": "Kurgu okul verisi küresel istatistik değildir.",
+      "solution": "Kurgu okul verisi küresel istatistik değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kurgu okul verisi küresel istatistik değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-040",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C08",
+      "title": "Gıda israfı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "2026 Sıfır Atık Günü gıda atığı temalı. Kurgu yemekhane artık ve ambalajı ayrı tartıyor.\n\nKaynaklı küçük bir inceleme yap; gerçek kayıt, sınırlılık ve uygulanabilir öneri sun.",
+      "sampleAnswer": "Resmî tema ve yerel gerçek kayıt ayrımı.",
+      "solution": "Resmî tema ve yerel gerçek kayıt ayrımı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Resmî tema ve yerel gerçek kayıt ayrımı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-041",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C09",
+      "title": "Kişi sayısı farkı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki gün atık aynı; ikinci gün öğrenci sayısı daha fazla.\n\nBağlamda geri dönüşüm ve kaynak kullanımı açısından hangi ilişki araştırılıyor?",
+      "sampleAnswer": "Kişi sayısı karşılaştırmayı etkiler.",
+      "solution": "Kişi sayısı karşılaştırmayı etkiler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kişi sayısı karşılaştırmayı etkiler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-042",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C09",
+      "title": "Kişi sayısı farkı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki gün atık aynı; ikinci gün öğrenci sayısı daha fazla.\n\nVerileri hangi başlıklarla kaydeder ve karşılaştırırsın?",
+      "sampleAnswer": "Toplam ve kişi sayısı.",
+      "solution": "Toplam ve kişi sayısı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Toplam ve kişi sayısı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-043",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C09",
+      "title": "Kişi sayısı farkı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki gün atık aynı; ikinci gün öğrenci sayısı daha fazla.\n\nVerilerin desteklediği bilimsel çıkarımı yaz.",
+      "sampleAnswer": "Aynı toplam farklı koşullarda oluşmuş.",
+      "solution": "Aynı toplam farklı koşullarda oluşmuş. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı toplam farklı koşullarda oluşmuş."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-044",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C09",
+      "title": "Kişi sayısı farkı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "İki gün atık aynı; ikinci gün öğrenci sayısı daha fazla.\n\nVerilerin kanıtlamadığı tasarruf veya başarı iddiasını belirt.",
+      "sampleAnswer": "Tek toplamla davranış eşit denmez.",
+      "solution": "Tek toplamla davranış eşit denmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tek toplamla davranış eşit denmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-045",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C09",
+      "title": "Kişi sayısı farkı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "İki gün atık aynı; ikinci gün öğrenci sayısı daha fazla.\n\nKaynaklı küçük bir inceleme yap; gerçek kayıt, sınırlılık ve uygulanabilir öneri sun.",
+      "sampleAnswer": "Katılım bilgili inceleme.",
+      "solution": "Katılım bilgili inceleme. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Katılım bilgili inceleme."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-046",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C10",
+      "title": "İşlenmeyen stok — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Toplanan şişeler depoda bekliyor; okul tümü yeni ürüne dönüştü diyor.\n\nBağlamda geri dönüşüm ve kaynak kullanımı açısından hangi ilişki araştırılıyor?",
+      "sampleAnswer": "Toplama ile işlem farklı aşamalar.",
+      "solution": "Toplama ile işlem farklı aşamalar. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Toplama ile işlem farklı aşamalar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-047",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C10",
+      "title": "İşlenmeyen stok — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Toplanan şişeler depoda bekliyor; okul tümü yeni ürüne dönüştü diyor.\n\nVerileri hangi başlıklarla kaydeder ve karşılaştırırsın?",
+      "sampleAnswer": "Toplama, teslim, işlem kanıtı.",
+      "solution": "Toplama, teslim, işlem kanıtı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Toplama, teslim, işlem kanıtı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-048",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C10",
+      "title": "İşlenmeyen stok — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Toplanan şişeler depoda bekliyor; okul tümü yeni ürüne dönüştü diyor.\n\nVerilerin desteklediği bilimsel çıkarımı yaz.",
+      "sampleAnswer": "Toplama hazırlık aşamasıdır.",
+      "solution": "Toplama hazırlık aşamasıdır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Toplama hazırlık aşamasıdır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-049",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C10",
+      "title": "İşlenmeyen stok — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Toplanan şişeler depoda bekliyor; okul tümü yeni ürüne dönüştü diyor.\n\nVerilerin kanıtlamadığı tasarruf veya başarı iddiasını belirt.",
+      "sampleAnswer": "Stok işlenmiş ürün değildir.",
+      "solution": "Stok işlenmiş ürün değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Stok işlenmiş ürün değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB572-050",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.7.2",
+      "contextId": "FB572-C10",
+      "title": "İşlenmeyen stok — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Toplanan şişeler depoda bekliyor; okul tümü yeni ürüne dönüştü diyor.\n\nKaynaklı küçük bir inceleme yap; gerçek kayıt, sınırlılık ve uygulanabilir öneri sun.",
+      "sampleAnswer": "Aşamaları kaynakla izleyen rapor.",
+      "solution": "Aşamaları kaynakla izleyen rapor. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aşamaları kaynakla izleyen rapor."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    }
+  ]
+}

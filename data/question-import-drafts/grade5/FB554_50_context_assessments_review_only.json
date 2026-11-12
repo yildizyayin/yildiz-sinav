@@ -1,0 +1,2314 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.5.4",
+    "outcomeTitle": "Maddenin ısı etkisiyle hâl değiştirebileceğini bilimsel gözleme dayalı tahmin edebilme",
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/404",
+    "sourceTextCheckedAt": "2026-11-12",
+    "academicYearCatalog": "2027-2028",
+    "sourceYearEquivalenceVerified": false,
+    "status": "DRAFT_NOT_APPROVED",
+    "teacherApprovedCount": 0,
+    "rowsCount": 50,
+    "distinctSharedContexts": 10,
+    "openEndedCount": 40,
+    "performanceTaskCount": 10,
+    "notIndependentStimuli": true,
+    "sourceLabel": "ANUNEX_ORIGINAL_AI_ASSISTED_DRAFT_2026_11_12",
+    "rubricScale": {
+      "0": "Ölçüt karşılanmıyor veya bilimsel olarak yanlış.",
+      "1": "Kısmen doğru; ilişki, gerekçe veya gerekli kayıt eksik.",
+      "2": "Ölçüt bilimsel olarak doğru ve yeterli kanıt/kayıtla karşılanıyor."
+    },
+    "scoringNotes": [
+      "Örnek cevabın sözcükleri zorunlu değildir.",
+      "Aynı eksik iki ölçütte mükerrer cezalandırılmaz.",
+      "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
+    ],
+    "reviewGates": [
+      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
+      "EXACT_PROGRAM_YEAR_CODE",
+      "SEMANTIC_CROSS_POOL_ORIGINALITY",
+      "MEDIA_LAYOUT_RIGHTS",
+      "VERTICAL_CURRICULUM_MAP",
+      "HISTORICAL_EXAM_AUDIT",
+      "IMPORTER_TYPE_SUPPORT"
+    ],
+    "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
+    "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+  },
+  "contexts": [
+    {
+      "contextId": "FB554-C01",
+      "title": "Buz küpü",
+      "stimulus": "Buz odada suya dönüşüyor; öğrenci başka buzun da eriyeceğini söylüyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB554-C02",
+      "title": "Dondurucu suyu",
+      "stimulus": "Su soğutulunca buz olmuş; yeni su kabı henüz gözlenmemiş.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB554-C03",
+      "title": "Çamaşır kuruma",
+      "stimulus": "Islak bez zamanla kuruyor; öğrenci kaynama olmadığından hâl değişimi yok diyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB554-C04",
+      "title": "Soğuk bardak",
+      "stimulus": "Soğuk bardağın dışına su damlaları oluşuyor; bardak sızdırmıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB554-C05",
+      "title": "Kaynama kaydı",
+      "stimulus": "Saf sıvı sabit basınçta kaynarken sıcaklık bir süre sabit kalmış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB554-C06",
+      "title": "Erime çizelgesi",
+      "stimulus": "Saf buz erirken ısıtılıyor; sıcaklık bir süre değişmiyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB554-C07",
+      "title": "Süblimleşme örneği",
+      "stimulus": "Güvenli video katının sıvı evre görülmeden gaza geçtiğini gösteriyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB554-C08",
+      "title": "Kırağı kaydı",
+      "stimulus": "Videoda su buharı soğuk yüzeyde doğrudan katı kristal oluşturuyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB554-C09",
+      "title": "Görünür buhar bulutu",
+      "stimulus": "Öğrenci beyaz bulutun gaz hâlindeki suyun kendisi olduğunu söylüyor; küçük damlacık bilgisi veriliyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB554-C10",
+      "title": "Yumuşayan hamur",
+      "stimulus": "Hamur yoğrulunca şekli değişiyor; sıvı hâle geçiş gözlenmemiş.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    }
+  ],
+  "rows": [
+    {
+      "id": "ANX-FB554-001",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C01",
+      "title": "Buz küpü — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Buz odada suya dönüşüyor; öğrenci başka buzun da eriyeceğini söylüyor.\n\nGözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
+      "sampleAnswer": "Erime; ısı alma.",
+      "solution": "Erime; ısı alma. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Erime; ısı alma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-002",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C01",
+      "title": "Buz küpü — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Buz odada suya dönüşüyor; öğrenci başka buzun da eriyeceğini söylüyor.\n\nHangi kayıt gözleme, hangisi tahmine dayanır?",
+      "sampleAnswer": "İlk dönüşüm gözlem, diğeri tahmin.",
+      "solution": "İlk dönüşüm gözlem, diğeri tahmin. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İlk dönüşüm gözlem, diğeri tahmin."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-003",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C01",
+      "title": "Buz küpü — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Buz odada suya dönüşüyor; öğrenci başka buzun da eriyeceğini söylüyor.\n\nBenzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
+      "sampleAnswer": "Benzer koşuldaki buz eriyebilir.",
+      "solution": "Benzer koşuldaki buz eriyebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Benzer koşuldaki buz eriyebilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-004",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C01",
+      "title": "Buz küpü — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Buz odada suya dönüşüyor; öğrenci başka buzun da eriyeceğini söylüyor.\n\nTahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
+      "sampleAnswer": "Ortam ve bekleme süresi kontrol edilir.",
+      "solution": "Ortam ve bekleme süresi kontrol edilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ortam ve bekleme süresi kontrol edilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-005",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C01",
+      "title": "Buz küpü — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Buz odada suya dönüşüyor; öğrenci başka buzun da eriyeceğini söylüyor.\n\nGüvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla.",
+      "sampleAnswer": "Erimeyi gerçek zaman kaydıyla izle.",
+      "solution": "Erimeyi gerçek zaman kaydıyla izle. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Erimeyi gerçek zaman kaydıyla izle."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-006",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C02",
+      "title": "Dondurucu suyu — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Su soğutulunca buz olmuş; yeni su kabı henüz gözlenmemiş.\n\nGözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
+      "sampleAnswer": "Donma; ısı verme.",
+      "solution": "Donma; ısı verme. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Donma; ısı verme."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-007",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C02",
+      "title": "Dondurucu suyu — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Su soğutulunca buz olmuş; yeni su kabı henüz gözlenmemiş.\n\nHangi kayıt gözleme, hangisi tahmine dayanır?",
+      "sampleAnswer": "Buz oluşumu gözlem, yeni kap tahmin.",
+      "solution": "Buz oluşumu gözlem, yeni kap tahmin. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Buz oluşumu gözlem, yeni kap tahmin."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-008",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C02",
+      "title": "Dondurucu suyu — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Su soğutulunca buz olmuş; yeni su kabı henüz gözlenmemiş.\n\nBenzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
+      "sampleAnswer": "Yeterince soğutulursa donabilir.",
+      "solution": "Yeterince soğutulursa donabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yeterince soğutulursa donabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-009",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C02",
+      "title": "Dondurucu suyu — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Su soğutulunca buz olmuş; yeni su kabı henüz gözlenmemiş.\n\nTahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
+      "sampleAnswer": "Süre ve soğutma koşulu gerekir.",
+      "solution": "Süre ve soğutma koşulu gerekir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Süre ve soğutma koşulu gerekir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-010",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C02",
+      "title": "Dondurucu suyu — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Su soğutulunca buz olmuş; yeni su kabı henüz gözlenmemiş.\n\nGüvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla.",
+      "sampleAnswer": "Öğretmen kayıtlarıyla donma raporu.",
+      "solution": "Öğretmen kayıtlarıyla donma raporu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Öğretmen kayıtlarıyla donma raporu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-011",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C03",
+      "title": "Çamaşır kuruma — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Islak bez zamanla kuruyor; öğrenci kaynama olmadığından hâl değişimi yok diyor.\n\nGözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
+      "sampleAnswer": "Buharlaşma; ısı alma.",
+      "solution": "Buharlaşma; ısı alma. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Buharlaşma; ısı alma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-012",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C03",
+      "title": "Çamaşır kuruma — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Islak bez zamanla kuruyor; öğrenci kaynama olmadığından hâl değişimi yok diyor.\n\nHangi kayıt gözleme, hangisi tahmine dayanır?",
+      "sampleAnswer": "Kuruma gözlemdir.",
+      "solution": "Kuruma gözlemdir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kuruma gözlemdir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-013",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C03",
+      "title": "Çamaşır kuruma — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Islak bez zamanla kuruyor; öğrenci kaynama olmadığından hâl değişimi yok diyor.\n\nBenzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
+      "sampleAnswer": "Benzer bez başka sıcaklıkta da kuruyabilir.",
+      "solution": "Benzer bez başka sıcaklıkta da kuruyabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Benzer bez başka sıcaklıkta da kuruyabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-014",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C03",
+      "title": "Çamaşır kuruma — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Islak bez zamanla kuruyor; öğrenci kaynama olmadığından hâl değişimi yok diyor.\n\nTahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
+      "sampleAnswer": "Hava, sıcaklık ve süre etkili.",
+      "solution": "Hava, sıcaklık ve süre etkili. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hava, sıcaklık ve süre etkili."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-015",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C03",
+      "title": "Çamaşır kuruma — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Islak bez zamanla kuruyor; öğrenci kaynama olmadığından hâl değişimi yok diyor.\n\nGüvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla.",
+      "sampleAnswer": "Bez kütlesi/kuruluk gözlemli rapor.",
+      "solution": "Bez kütlesi/kuruluk gözlemli rapor. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bez kütlesi/kuruluk gözlemli rapor."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-016",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C04",
+      "title": "Soğuk bardak — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Soğuk bardağın dışına su damlaları oluşuyor; bardak sızdırmıyor.\n\nGözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
+      "sampleAnswer": "Yoğuşma; ısı verme.",
+      "solution": "Yoğuşma; ısı verme. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yoğuşma; ısı verme."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-017",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C04",
+      "title": "Soğuk bardak — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Soğuk bardağın dışına su damlaları oluşuyor; bardak sızdırmıyor.\n\nHangi kayıt gözleme, hangisi tahmine dayanır?",
+      "sampleAnswer": "Dış damlalar gözlemdir.",
+      "solution": "Dış damlalar gözlemdir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dış damlalar gözlemdir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-018",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C04",
+      "title": "Soğuk bardak — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Soğuk bardağın dışına su damlaları oluşuyor; bardak sızdırmıyor.\n\nBenzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
+      "sampleAnswer": "Benzer soğuk yüzeyde damla oluşabilir.",
+      "solution": "Benzer soğuk yüzeyde damla oluşabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Benzer soğuk yüzeyde damla oluşabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-019",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C04",
+      "title": "Soğuk bardak — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Soğuk bardağın dışına su damlaları oluşuyor; bardak sızdırmıyor.\n\nTahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
+      "sampleAnswer": "Havadaki nem koşulu gerekir.",
+      "solution": "Havadaki nem koşulu gerekir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Havadaki nem koşulu gerekir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-020",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C04",
+      "title": "Soğuk bardak — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Soğuk bardağın dışına su damlaları oluşuyor; bardak sızdırmıyor.\n\nGüvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla.",
+      "sampleAnswer": "Sızdırmazlık kontrolü ve damla kaydı.",
+      "solution": "Sızdırmazlık kontrolü ve damla kaydı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sızdırmazlık kontrolü ve damla kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-021",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C05",
+      "title": "Kaynama kaydı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf sıvı sabit basınçta kaynarken sıcaklık bir süre sabit kalmış.\n\nGözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
+      "sampleAnswer": "Kaynama; ısı alma.",
+      "solution": "Kaynama; ısı alma. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynama; ısı alma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-022",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C05",
+      "title": "Kaynama kaydı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf sıvı sabit basınçta kaynarken sıcaklık bir süre sabit kalmış.\n\nHangi kayıt gözleme, hangisi tahmine dayanır?",
+      "sampleAnswer": "Sabit sıcaklık ölçüm kaydı.",
+      "solution": "Sabit sıcaklık ölçüm kaydı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sabit sıcaklık ölçüm kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-023",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C05",
+      "title": "Kaynama kaydı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf sıvı sabit basınçta kaynarken sıcaklık bir süre sabit kalmış.\n\nBenzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
+      "sampleAnswer": "Aynı koşulda kaynama boyunca sabitlik beklenir.",
+      "solution": "Aynı koşulda kaynama boyunca sabitlik beklenir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı koşulda kaynama boyunca sabitlik beklenir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-024",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C05",
+      "title": "Kaynama kaydı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf sıvı sabit basınçta kaynarken sıcaklık bir süre sabit kalmış.\n\nTahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
+      "sampleAnswer": "Saflık ve basınç koşulu korunmalı.",
+      "solution": "Saflık ve basınç koşulu korunmalı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Saflık ve basınç koşulu korunmalı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-025",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C05",
+      "title": "Kaynama kaydı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Saf sıvı sabit basınçta kaynarken sıcaklık bir süre sabit kalmış.\n\nGüvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla.",
+      "sampleAnswer": "Hazır güvenli gösteri verisini yorumla.",
+      "solution": "Hazır güvenli gösteri verisini yorumla. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hazır güvenli gösteri verisini yorumla."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-026",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C06",
+      "title": "Erime çizelgesi — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf buz erirken ısıtılıyor; sıcaklık bir süre değişmiyor.\n\nGözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
+      "sampleAnswer": "Erime; ısı alma.",
+      "solution": "Erime; ısı alma. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Erime; ısı alma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-027",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C06",
+      "title": "Erime çizelgesi — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf buz erirken ısıtılıyor; sıcaklık bir süre değişmiyor.\n\nHangi kayıt gözleme, hangisi tahmine dayanır?",
+      "sampleAnswer": "Sıcaklık ve hâl kaydı gözlem.",
+      "solution": "Sıcaklık ve hâl kaydı gözlem. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sıcaklık ve hâl kaydı gözlem."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-028",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C06",
+      "title": "Erime çizelgesi — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf buz erirken ısıtılıyor; sıcaklık bir süre değişmiyor.\n\nBenzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
+      "sampleAnswer": "Aynı koşulda erime sırasında sabitlik beklenir.",
+      "solution": "Aynı koşulda erime sırasında sabitlik beklenir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı koşulda erime sırasında sabitlik beklenir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-029",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C06",
+      "title": "Erime çizelgesi — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Saf buz erirken ısıtılıyor; sıcaklık bir süre değişmiyor.\n\nTahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
+      "sampleAnswer": "Karışım değil saf madde koşulu.",
+      "solution": "Karışım değil saf madde koşulu. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Karışım değil saf madde koşulu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-030",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C06",
+      "title": "Erime çizelgesi — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Saf buz erirken ısıtılıyor; sıcaklık bir süre değişmiyor.\n\nGüvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla.",
+      "sampleAnswer": "Öğretmen verisinden zaman–hâl tablosu.",
+      "solution": "Öğretmen verisinden zaman–hâl tablosu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Öğretmen verisinden zaman–hâl tablosu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-031",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C07",
+      "title": "Süblimleşme örneği — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Güvenli video katının sıvı evre görülmeden gaza geçtiğini gösteriyor.\n\nGözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
+      "sampleAnswer": "Süblimleşme; ısı alma.",
+      "solution": "Süblimleşme; ısı alma. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Süblimleşme; ısı alma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-032",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C07",
+      "title": "Süblimleşme örneği — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Güvenli video katının sıvı evre görülmeden gaza geçtiğini gösteriyor.\n\nHangi kayıt gözleme, hangisi tahmine dayanır?",
+      "sampleAnswer": "Videodaki değişim gözlem verisi.",
+      "solution": "Videodaki değişim gözlem verisi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Videodaki değişim gözlem verisi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-033",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C07",
+      "title": "Süblimleşme örneği — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Güvenli video katının sıvı evre görülmeden gaza geçtiğini gösteriyor.\n\nBenzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
+      "sampleAnswer": "Aynı madde uygun koşulda benzer geçiş yapabilir.",
+      "solution": "Aynı madde uygun koşulda benzer geçiş yapabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı madde uygun koşulda benzer geçiş yapabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-034",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C07",
+      "title": "Süblimleşme örneği — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Güvenli video katının sıvı evre görülmeden gaza geçtiğini gösteriyor.\n\nTahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
+      "sampleAnswer": "Her katı böyle davranır denmez.",
+      "solution": "Her katı böyle davranır denmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Her katı böyle davranır denmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-035",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C07",
+      "title": "Süblimleşme örneği — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Güvenli video katının sıvı evre görülmeden gaza geçtiğini gösteriyor.\n\nGüvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla.",
+      "sampleAnswer": "Maddeye dokunmadan video kanıt raporu.",
+      "solution": "Maddeye dokunmadan video kanıt raporu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Maddeye dokunmadan video kanıt raporu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-036",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C08",
+      "title": "Kırağı kaydı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Videoda su buharı soğuk yüzeyde doğrudan katı kristal oluşturuyor.\n\nGözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
+      "sampleAnswer": "Kırağılaşma; ısı verme.",
+      "solution": "Kırağılaşma; ısı verme. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kırağılaşma; ısı verme."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-037",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C08",
+      "title": "Kırağı kaydı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Videoda su buharı soğuk yüzeyde doğrudan katı kristal oluşturuyor.\n\nHangi kayıt gözleme, hangisi tahmine dayanır?",
+      "sampleAnswer": "Doğrudan kristal oluşumu gözlem.",
+      "solution": "Doğrudan kristal oluşumu gözlem. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Doğrudan kristal oluşumu gözlem."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-038",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C08",
+      "title": "Kırağı kaydı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Videoda su buharı soğuk yüzeyde doğrudan katı kristal oluşturuyor.\n\nBenzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
+      "sampleAnswer": "Uygun soğuk yüzeyde tekrarlanabilir.",
+      "solution": "Uygun soğuk yüzeyde tekrarlanabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Uygun soğuk yüzeyde tekrarlanabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-039",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C08",
+      "title": "Kırağı kaydı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Videoda su buharı soğuk yüzeyde doğrudan katı kristal oluşturuyor.\n\nTahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
+      "sampleAnswer": "Önce sıvı oluşmuşsa aynı süreç değildir.",
+      "solution": "Önce sıvı oluşmuşsa aynı süreç değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Önce sıvı oluşmuşsa aynı süreç değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-040",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C08",
+      "title": "Kırağı kaydı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Videoda su buharı soğuk yüzeyde doğrudan katı kristal oluşturuyor.\n\nGüvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla.",
+      "sampleAnswer": "Önce/sonra hâl etiketli video raporu.",
+      "solution": "Önce/sonra hâl etiketli video raporu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Önce/sonra hâl etiketli video raporu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-041",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C09",
+      "title": "Görünür buhar bulutu — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci beyaz bulutun gaz hâlindeki suyun kendisi olduğunu söylüyor; küçük damlacık bilgisi veriliyor.\n\nGözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
+      "sampleAnswer": "Damlacık oluşumu yoğuşmayla ilişkilidir.",
+      "solution": "Damlacık oluşumu yoğuşmayla ilişkilidir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Damlacık oluşumu yoğuşmayla ilişkilidir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-042",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C09",
+      "title": "Görünür buhar bulutu — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci beyaz bulutun gaz hâlindeki suyun kendisi olduğunu söylüyor; küçük damlacık bilgisi veriliyor.\n\nHangi kayıt gözleme, hangisi tahmine dayanır?",
+      "sampleAnswer": "Damlacık bilgisi kanıt kartıdır.",
+      "solution": "Damlacık bilgisi kanıt kartıdır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Damlacık bilgisi kanıt kartıdır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-043",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C09",
+      "title": "Görünür buhar bulutu — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci beyaz bulutun gaz hâlindeki suyun kendisi olduğunu söylüyor; küçük damlacık bilgisi veriliyor.\n\nBenzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
+      "sampleAnswer": "Soğutma damlacıkları artırabilir.",
+      "solution": "Soğutma damlacıkları artırabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Soğutma damlacıkları artırabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-044",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C09",
+      "title": "Görünür buhar bulutu — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci beyaz bulutun gaz hâlindeki suyun kendisi olduğunu söylüyor; küçük damlacık bilgisi veriliyor.\n\nTahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
+      "sampleAnswer": "Görünmez su gazı ile damlacık ayrılır.",
+      "solution": "Görünmez su gazı ile damlacık ayrılır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Görünmez su gazı ile damlacık ayrılır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-045",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C09",
+      "title": "Görünür buhar bulutu — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Öğrenci beyaz bulutun gaz hâlindeki suyun kendisi olduğunu söylüyor; küçük damlacık bilgisi veriliyor.\n\nGüvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla.",
+      "sampleAnswer": "Sıcak kaynağa yaklaşmadan kaynaklı rapor.",
+      "solution": "Sıcak kaynağa yaklaşmadan kaynaklı rapor. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sıcak kaynağa yaklaşmadan kaynaklı rapor."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-046",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C10",
+      "title": "Yumuşayan hamur — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Hamur yoğrulunca şekli değişiyor; sıvı hâle geçiş gözlenmemiş.\n\nGözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
+      "sampleAnswer": "Şekil değişimi tek başına hâl değişimi değildir.",
+      "solution": "Şekil değişimi tek başına hâl değişimi değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Şekil değişimi tek başına hâl değişimi değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-047",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C10",
+      "title": "Yumuşayan hamur — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Hamur yoğrulunca şekli değişiyor; sıvı hâle geçiş gözlenmemiş.\n\nHangi kayıt gözleme, hangisi tahmine dayanır?",
+      "sampleAnswer": "Gözlenen yalnız biçim değişimi.",
+      "solution": "Gözlenen yalnız biçim değişimi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Gözlenen yalnız biçim değişimi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-048",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C10",
+      "title": "Yumuşayan hamur — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Hamur yoğrulunca şekli değişiyor; sıvı hâle geçiş gözlenmemiş.\n\nBenzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
+      "sampleAnswer": "Aynı işlem mutlaka erime sağlamaz.",
+      "solution": "Aynı işlem mutlaka erime sağlamaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı işlem mutlaka erime sağlamaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "ç"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-049",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C10",
+      "title": "Yumuşayan hamur — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Hamur yoğrulunca şekli değişiyor; sıvı hâle geçiş gözlenmemiş.\n\nTahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
+      "sampleAnswer": "Hâl özellikleri ayrıca gözlenmeli.",
+      "solution": "Hâl özellikleri ayrıca gözlenmeli. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hâl özellikleri ayrıca gözlenmeli."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB554-050",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.5.4",
+      "contextId": "FB554-C10",
+      "title": "Yumuşayan hamur — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Hamur yoğrulunca şekli değişiyor; sıvı hâle geçiş gözlenmemiş.\n\nGüvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla.",
+      "sampleAnswer": "Şekil/hâl ayrımlı gözlem raporu.",
+      "solution": "Şekil/hâl ayrımlı gözlem raporu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Şekil/hâl ayrımlı gözlem raporu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c",
+        "ç",
+        "d"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    }
+  ]
+}

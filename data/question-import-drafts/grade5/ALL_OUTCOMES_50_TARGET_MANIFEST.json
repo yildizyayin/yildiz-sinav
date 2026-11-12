@@ -20,11 +20,17 @@
     "unstartedOutcomes": 319,
     "draftOutcomes": 25,
     "outstandingDraftQuestions": 15950,
-    "reviewOnlyAssessmentItems": 100,
-    "combinedDraftContentItems": 1350,
-    "combinedOutstandingContentItems": 15850,
-    "combinedDraftOutcomes": 27,
-    "combinedUnstartedOutcomes": 317
+    "reviewOnlyAssessmentItems": 1350,
+    "combinedDraftContentItems": 2500,
+    "combinedOutstandingContentItems": 14700,
+    "combinedDraftOutcomes": 50,
+    "combinedUnstartedOutcomes": 294,
+    "fenDraftContentItems": 1350,
+    "fenDraftedOutcomes": 27,
+    "fenRemainingUndraftedOutcomes": 0,
+    "supersededFenMCItems": 100,
+    "activeMCItems": 1150,
+    "rawStoredDraftItems": 2600
   },
   "sourceInventory": {
     "math": "data/question-full-math-target-2028.json",
@@ -1880,8 +1886,8 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 50,
-      "reviewStatus": "DRAFT_NEEDS_VISUAL_SCIENTIFIC_AND_TEACHER_REVIEW",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "New 10-context × 5-task replacement. Legacy 50 MC records kept for history only; exclude from active Fen quota.",
       "priorDraftCount": 0,
       "draftFilePaths": [
         "data/question-import-drafts/grade5/FB511_part01_25_questions.json",
@@ -1898,7 +1904,17 @@
       ],
       "visualDependentDraftCount": 22,
       "realPhotographsAttached": 0,
-      "visualReviewStatus": "ORIGINAL_DIAGRAMS_UNAPPROVED"
+      "visualReviewStatus": "ORIGINAL_DIAGRAMS_UNAPPROVED",
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "REPLACEMENT_DRAFT_NOT_APPROVED",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB511_50_context_assessments_review_only.json"
+      ],
+      "supersededDraftFiles": [
+        "data/question-import-drafts/grade5/FB511_part01_25_questions.json",
+        "data/question-import-drafts/grade5/FB511_part02_25_questions.json"
+      ],
+      "activeDraftFile": "data/question-import-drafts/grade5/FB511_50_context_assessments_review_only.json"
     },
     {
       "gradeLevel": 5,
@@ -1912,8 +1928,8 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 50,
-      "reviewStatus": "DRAFT_NEEDS_VISUAL_SCIENTIFIC_AND_TEACHER_REVIEW",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "New 10-context × 5-task replacement. Legacy 50 MC records kept for history only; exclude from active Fen quota.",
       "priorDraftCount": 0,
       "draftFilePaths": [
         "data/question-import-drafts/grade5/FB512_part01_25_questions.json",
@@ -1929,7 +1945,17 @@
       ],
       "visualDependentDraftCount": 23,
       "realPhotographsAttached": 0,
-      "visualReviewStatus": "ORIGINAL_DIAGRAMS_UNAPPROVED"
+      "visualReviewStatus": "ORIGINAL_DIAGRAMS_UNAPPROVED",
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "REPLACEMENT_DRAFT_NOT_APPROVED",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB512_50_context_assessments_review_only.json"
+      ],
+      "supersededDraftFiles": [
+        "data/question-import-drafts/grade5/FB512_part01_25_questions.json",
+        "data/question-import-drafts/grade5/FB512_part02_25_questions.json"
+      ],
+      "activeDraftFile": "data/question-import-drafts/grade5/FB512_50_context_assessments_review_only.json"
     },
     {
       "gradeLevel": 5,
@@ -1988,9 +2014,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB521_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2004,9 +2035,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB522_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2020,9 +2056,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB523_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2036,9 +2077,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB524_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2052,9 +2098,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB531_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2068,9 +2119,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB532_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2084,9 +2140,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB533_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2100,9 +2161,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB534_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2116,9 +2182,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB541_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2132,9 +2203,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB542_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2148,9 +2224,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB543_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2164,9 +2245,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB551_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2180,9 +2266,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB552_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2196,9 +2287,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB553_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2212,9 +2308,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB554_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2228,9 +2329,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB555_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2244,9 +2350,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB556_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2260,9 +2371,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB561_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2276,9 +2392,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB562_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2292,9 +2413,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB563_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2308,9 +2434,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB571_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2324,9 +2455,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB572_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -2340,9 +2476,14 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "10 distinct shared contexts × 5 tasks: 40 OPEN_ENDED + 10 PERFORMANCE_TASK. Preserve context dependencies; not 50 independent stimuli.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_CONTEXT_SETS",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB573_50_context_assessments_review_only.json"
+      ]
     },
     {
       "gradeLevel": 5,
@@ -5818,11 +5959,36 @@
     "data/question-import-drafts/grade5/FB512_part01_25_questions.json",
     "data/question-import-drafts/grade5/FB512_part02_25_questions.json"
   ],
-  "status": "IN_PROGRESS_MATH_DRAFT_FILLED_FEN_STARTED",
+  "status": "IN_PROGRESS_FEN_DRAFT_COVERAGE_FILLED_REVIEW_PENDING",
   "lastCheckedAt": "2026-11-12",
   "newAssessmentDraftFiles": [
     "data/question-import-drafts/grade5/FB513_50_mixed_assessments_review_only.json",
-    "data/question-import-drafts/grade5/FB514_50_mixed_assessments_review_only.json"
+    "data/question-import-drafts/grade5/FB514_50_mixed_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB521_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB522_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB523_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB524_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB531_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB532_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB533_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB534_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB541_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB542_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB543_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB551_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB552_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB553_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB554_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB555_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB556_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB561_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB562_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB563_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB571_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB572_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB573_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB511_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB512_50_context_assessments_review_only.json"
   ],
   "countingNotes": {
     "legacyMCFields": [
@@ -5835,6 +6001,49 @@
     "combinedContentIncludes": "legacy MC + separately registered OPEN_ENDED/PERFORMANCE_TASK quota items",
     "supplementaryTasksExcluded": 168,
     "approvalStatus": "All draft; teacher-approved 0",
-    "englishQuota": "Existing general target remains provisional pending English revision."
-  }
+    "englishQuota": "Existing general target remains provisional pending English revision.",
+    "newFenBatch": "1250 tasks in 250 shared contexts; 25 outcomes including replacement of first two. Retain context dependencies.",
+    "fenPublicationReady": false,
+    "fenTeacherApprovedCount": 0,
+    "legacyCountsAreMCOnly": true,
+    "combinedFormula": "1250 legacy MC + 1350 assessment drafts - 100 superseded Fen MC = 2500 active quota items",
+    "fenExisting100Revised": true,
+    "fenActiveRegistry": "activeFenDraftFiles",
+    "legacyMCRegistryIncludesArchivedFen": true
+  },
+  "activeFenDraftFiles": [
+    "data/question-import-drafts/grade5/FB511_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB512_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB513_50_mixed_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB514_50_mixed_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB521_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB522_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB523_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB524_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB531_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB532_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB533_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB534_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB541_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB542_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB543_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB551_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB552_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB553_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB554_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB555_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB556_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB561_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB562_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB563_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB571_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB572_50_context_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB573_50_context_assessments_review_only.json"
+  ],
+  "fenSupersededMCFiles": [
+    "data/question-import-drafts/grade5/FB511_part01_25_questions.json",
+    "data/question-import-drafts/grade5/FB511_part02_25_questions.json",
+    "data/question-import-drafts/grade5/FB512_part01_25_questions.json",
+    "data/question-import-drafts/grade5/FB512_part02_25_questions.json"
+  ]
 }

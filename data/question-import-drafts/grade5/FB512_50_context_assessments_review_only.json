@@ -1,0 +1,2324 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.1.2",
+    "outcomeTitle": "Ay’ın özellikleri, dönme ve dolanma hareketleri ile ilgili bilimsel çıkarım yapabilme",
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/367",
+    "sourceTextCheckedAt": "2026-11-12",
+    "academicYearCatalog": "2027-2028",
+    "sourceYearEquivalenceVerified": false,
+    "status": "DRAFT_NOT_APPROVED",
+    "teacherApprovedCount": 0,
+    "rowsCount": 50,
+    "distinctSharedContexts": 10,
+    "openEndedCount": 40,
+    "performanceTaskCount": 10,
+    "notIndependentStimuli": true,
+    "sourceLabel": "ANUNEX_ORIGINAL_AI_ASSISTED_DRAFT_2026_11_12",
+    "rubricScale": {
+      "0": "Ölçüt karşılanmıyor veya bilimsel olarak yanlış.",
+      "1": "Kısmen doğru; ilişki, gerekçe veya gerekli kayıt eksik.",
+      "2": "Ölçüt bilimsel olarak doğru ve yeterli kanıt/kayıtla karşılanıyor."
+    },
+    "scoringNotes": [
+      "Örnek cevabın sözcükleri zorunlu değildir.",
+      "Aynı eksik iki ölçütte mükerrer cezalandırılmaz.",
+      "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
+    ],
+    "reviewGates": [
+      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
+      "EXACT_PROGRAM_YEAR_CODE",
+      "SEMANTIC_CROSS_POOL_ORIGINALITY",
+      "MEDIA_LAYOUT_RIGHTS",
+      "VERTICAL_CURRICULUM_MAP",
+      "HISTORICAL_EXAM_AUDIT",
+      "IMPORTER_TYPE_SUPPORT"
+    ],
+    "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
+    "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+  },
+  "contexts": [
+    {
+      "contextId": "FB512-C01",
+      "title": "Kraterli yüzey",
+      "stimulus": "Kaynak görseli Ay’ın kayalık yüzeyinde çok sayıda çarpma krateri gösteriyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB512-C02",
+      "title": "Dönme–dolanma",
+      "stimulus": "Veri kartı Ay’ın kendi ekseninde dönmesini ve Dünya çevresinde dolanmasını ayrı gösteriyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB512-C03",
+      "title": "Uzak yüz kaydı",
+      "stimulus": "DSCOVR görüntüsünde Ay’ın Dünya’dan görünmeyen yüzü aydınlık.",
+      "studentAssetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB512-C04",
+      "title": "Göreli yer değişimi",
+      "stimulus": "2015 DSCOVR dizisindeki iki seçili karede Ay’ın Dünya’ya göre yeri değişmiş.",
+      "studentAssetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame06.jpg",
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB512-C05",
+      "title": "Aynı yüz",
+      "stimulus": "Kaynak Ay’ın dönme ve Dünya çevresinde dolanma sürelerinin yaklaşık eşit olduğunu belirtiyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB512-C06",
+      "title": "Dünya ile boyut",
+      "stimulus": "Kaynakta Dünya Ay’dan büyük; eş boyda oyuncak görseli yanında verilmiş.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB512-C07",
+      "title": "Koyu düzlükler",
+      "stimulus": "Kaynak Ay’daki koyu düzlüklerin su denizi olmadığını açıklıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB512-C08",
+      "title": "Hareket tablosu",
+      "stimulus": "Öğrenci Ay’ın Dünya çevresindeki yoluna dönme, kendi eksenine dolanma yazmış.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB512-C09",
+      "title": "Eksik yüzey görüntüsü",
+      "stimulus": "Bulanık Ay karesinde krater seçilmiyor; öğrenci Ay’da krater yok diyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB512-C10",
+      "title": "Işık kaynağı iddiası",
+      "stimulus": "Kaynak Ay’ın Güneş ışığını yansıttığını söylüyor; öğrenci kendi ışığı var diyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    }
+  ],
+  "rows": [
+    {
+      "id": "ANX-FB512-001",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C01",
+      "title": "Kraterli yüzey — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak görseli Ay’ın kayalık yüzeyinde çok sayıda çarpma krateri gösteriyor.\n\nBağlamda Ay’ın hangi özelliği veya hareketi belirtiliyor?",
+      "sampleAnswer": "Kayalık ve kraterli yüzey.",
+      "solution": "Kayalık ve kraterli yüzey. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kayalık ve kraterli yüzey."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-002",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C01",
+      "title": "Kraterli yüzey — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak görseli Ay’ın kayalık yüzeyinde çok sayıda çarpma krateri gösteriyor.\n\nVeriyi hangi başlıklarla kaydetmelisin?",
+      "sampleAnswer": "Kaynak, görüntü ve gözlenen özellik.",
+      "solution": "Kaynak, görüntü ve gözlenen özellik. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak, görüntü ve gözlenen özellik."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-003",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C01",
+      "title": "Kraterli yüzey — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak görseli Ay’ın kayalık yüzeyinde çok sayıda çarpma krateri gösteriyor.\n\nKayıttan hangi bilimsel çıkarımı yapabilirsin?",
+      "sampleAnswer": "Ay yüzeyinde çarpma izleri bulunur.",
+      "solution": "Ay yüzeyinde çarpma izleri bulunur. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ay yüzeyinde çarpma izleri bulunur."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-004",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C01",
+      "title": "Kraterli yüzey — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak görseli Ay’ın kayalık yüzeyinde çok sayıda çarpma krateri gösteriyor.\n\nDesteklenmeyen iddiayı veya gözlemin sınırını belirt.",
+      "sampleAnswer": "Şema gerçek fotoğraf diye sunulmaz.",
+      "solution": "Şema gerçek fotoğraf diye sunulmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Şema gerçek fotoğraf diye sunulmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-005",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C01",
+      "title": "Kraterli yüzey — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kaynak görseli Ay’ın kayalık yüzeyinde çok sayıda çarpma krateri gösteriyor.\n\nGüvenilir kaynak veya güvenli modelle ilgili veriyi incele; gerçek kayıtla gerekçeli çıkarım raporu sun.",
+      "sampleAnswer": "Kaynak türünü belirten yüzey raporu.",
+      "solution": "Kaynak türünü belirten yüzey raporu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynak türünü belirten yüzey raporu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-006",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C02",
+      "title": "Dönme–dolanma — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Veri kartı Ay’ın kendi ekseninde dönmesini ve Dünya çevresinde dolanmasını ayrı gösteriyor.\n\nBağlamda Ay’ın hangi özelliği veya hareketi belirtiliyor?",
+      "sampleAnswer": "İki farklı hareket.",
+      "solution": "İki farklı hareket. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İki farklı hareket."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-007",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C02",
+      "title": "Dönme–dolanma — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Veri kartı Ay’ın kendi ekseninde dönmesini ve Dünya çevresinde dolanmasını ayrı gösteriyor.\n\nVeriyi hangi başlıklarla kaydetmelisin?",
+      "sampleAnswer": "Hareket adı, merkez/eksen.",
+      "solution": "Hareket adı, merkez/eksen. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hareket adı, merkez/eksen."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-008",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C02",
+      "title": "Dönme–dolanma — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Veri kartı Ay’ın kendi ekseninde dönmesini ve Dünya çevresinde dolanmasını ayrı gösteriyor.\n\nKayıttan hangi bilimsel çıkarımı yapabilirsin?",
+      "sampleAnswer": "Dönme ile dolanma aynı hareket değildir.",
+      "solution": "Dönme ile dolanma aynı hareket değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dönme ile dolanma aynı hareket değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-009",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C02",
+      "title": "Dönme–dolanma — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Veri kartı Ay’ın kendi ekseninde dönmesini ve Dünya çevresinde dolanmasını ayrı gösteriyor.\n\nDesteklenmeyen iddiayı veya gözlemin sınırını belirt.",
+      "sampleAnswer": "Bir hareket diğerini yok saydırmaz.",
+      "solution": "Bir hareket diğerini yok saydırmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bir hareket diğerini yok saydırmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-010",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C02",
+      "title": "Dönme–dolanma — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Veri kartı Ay’ın kendi ekseninde dönmesini ve Dünya çevresinde dolanmasını ayrı gösteriyor.\n\nGüvenilir kaynak veya güvenli modelle ilgili veriyi incele; gerçek kayıtla gerekçeli çıkarım raporu sun.",
+      "sampleAnswer": "İki hareketi ayrı çizimle kaydet.",
+      "solution": "İki hareketi ayrı çizimle kaydet. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İki hareketi ayrı çizimle kaydet."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-011",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C03",
+      "title": "Uzak yüz kaydı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "DSCOVR görüntüsünde Ay’ın Dünya’dan görünmeyen yüzü aydınlık.\n\nBağlamda Ay’ın hangi özelliği veya hareketi belirtiliyor?",
+      "sampleAnswer": "Uzak yüz Güneş ışığı alabilir.",
+      "solution": "Uzak yüz Güneş ışığı alabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Uzak yüz Güneş ışığı alabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-012",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C03",
+      "title": "Uzak yüz kaydı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "DSCOVR görüntüsünde Ay’ın Dünya’dan görünmeyen yüzü aydınlık.\n\nVeriyi hangi başlıklarla kaydetmelisin?",
+      "sampleAnswer": "Çekim tarihi, bakış noktası, aydınlık yüz.",
+      "solution": "Çekim tarihi, bakış noktası, aydınlık yüz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Çekim tarihi, bakış noktası, aydınlık yüz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-013",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C03",
+      "title": "Uzak yüz kaydı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "DSCOVR görüntüsünde Ay’ın Dünya’dan görünmeyen yüzü aydınlık.\n\nKayıttan hangi bilimsel çıkarımı yapabilirsin?",
+      "sampleAnswer": "Uzak yüz daima karanlık değildir.",
+      "solution": "Uzak yüz daima karanlık değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Uzak yüz daima karanlık değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-014",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C03",
+      "title": "Uzak yüz kaydı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "DSCOVR görüntüsünde Ay’ın Dünya’dan görünmeyen yüzü aydınlık.\n\nDesteklenmeyen iddiayı veya gözlemin sınırını belirt.",
+      "sampleAnswer": "Bu tek kare tüm hareket dönemini vermez.",
+      "solution": "Bu tek kare tüm hareket dönemini vermez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Bu tek kare tüm hareket dönemini vermez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-015",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C03",
+      "title": "Uzak yüz kaydı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "DSCOVR görüntüsünde Ay’ın Dünya’dan görünmeyen yüzü aydınlık.\n\nGüvenilir kaynak veya güvenli modelle ilgili veriyi incele; gerçek kayıtla gerekçeli çıkarım raporu sun.",
+      "sampleAnswer": "2015 görüntüsünü kaynaklı yorumla.",
+      "solution": "2015 görüntüsünü kaynaklı yorumla. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "2015 görüntüsünü kaynaklı yorumla."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-016",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C04",
+      "title": "Göreli yer değişimi — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2015 DSCOVR dizisindeki iki seçili karede Ay’ın Dünya’ya göre yeri değişmiş.\n\nBağlamda Ay’ın hangi özelliği veya hareketi belirtiliyor?",
+      "sampleAnswer": "Ay’ın göreli konumu değişiyor.",
+      "solution": "Ay’ın göreli konumu değişiyor. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ay’ın göreli konumu değişiyor."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame06.jpg",
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-017",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C04",
+      "title": "Göreli yer değişimi — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2015 DSCOVR dizisindeki iki seçili karede Ay’ın Dünya’ya göre yeri değişmiş.\n\nVeriyi hangi başlıklarla kaydetmelisin?",
+      "sampleAnswer": "Kare sırası ve kaynak tarihi.",
+      "solution": "Kare sırası ve kaynak tarihi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kare sırası ve kaynak tarihi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame06.jpg",
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-018",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C04",
+      "title": "Göreli yer değişimi — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2015 DSCOVR dizisindeki iki seçili karede Ay’ın Dünya’ya göre yeri değişmiş.\n\nKayıttan hangi bilimsel çıkarımı yapabilirsin?",
+      "sampleAnswer": "Görüntü dizisi hareket kanıtı sunar.",
+      "solution": "Görüntü dizisi hareket kanıtı sunar. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Görüntü dizisi hareket kanıtı sunar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame06.jpg",
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-019",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C04",
+      "title": "Göreli yer değişimi — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "2015 DSCOVR dizisindeki iki seçili karede Ay’ın Dünya’ya göre yeri değişmiş.\n\nDesteklenmeyen iddiayı veya gözlemin sınırını belirt.",
+      "sampleAnswer": "İki kareden tam dönem hesaplanmaz.",
+      "solution": "İki kareden tam dönem hesaplanmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İki kareden tam dönem hesaplanmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame06.jpg",
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-020",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C04",
+      "title": "Göreli yer değişimi — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "2015 DSCOVR dizisindeki iki seçili karede Ay’ın Dünya’ya göre yeri değişmiş.\n\nGüvenilir kaynak veya güvenli modelle ilgili veriyi incele; gerçek kayıtla gerekçeli çıkarım raporu sun.",
+      "sampleAnswer": "Görüntü ile çıkarımı ayıran rapor.",
+      "solution": "Görüntü ile çıkarımı ayıran rapor. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Görüntü ile çıkarımı ayıran rapor."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame06.jpg",
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-021",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C05",
+      "title": "Aynı yüz — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’ın dönme ve Dünya çevresinde dolanma sürelerinin yaklaşık eşit olduğunu belirtiyor.\n\nBağlamda Ay’ın hangi özelliği veya hareketi belirtiliyor?",
+      "sampleAnswer": "Uyumlu dönme ve dolanma.",
+      "solution": "Uyumlu dönme ve dolanma. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Uyumlu dönme ve dolanma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-022",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C05",
+      "title": "Aynı yüz — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’ın dönme ve Dünya çevresinde dolanma sürelerinin yaklaşık eşit olduğunu belirtiyor.\n\nVeriyi hangi başlıklarla kaydetmelisin?",
+      "sampleAnswer": "İki hareket ve yaklaşık süre ilişkisi.",
+      "solution": "İki hareket ve yaklaşık süre ilişkisi. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İki hareket ve yaklaşık süre ilişkisi."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-023",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C05",
+      "title": "Aynı yüz — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’ın dönme ve Dünya çevresinde dolanma sürelerinin yaklaşık eşit olduğunu belirtiyor.\n\nKayıttan hangi bilimsel çıkarımı yapabilirsin?",
+      "sampleAnswer": "Dünya’dan yaklaşık aynı yüz görülür.",
+      "solution": "Dünya’dan yaklaşık aynı yüz görülür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dünya’dan yaklaşık aynı yüz görülür."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-024",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C05",
+      "title": "Aynı yüz — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’ın dönme ve Dünya çevresinde dolanma sürelerinin yaklaşık eşit olduğunu belirtiyor.\n\nDesteklenmeyen iddiayı veya gözlemin sınırını belirt.",
+      "sampleAnswer": "Ay hiç dönmüyor sonucu yanlıştır.",
+      "solution": "Ay hiç dönmüyor sonucu yanlıştır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ay hiç dönmüyor sonucu yanlıştır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-025",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C05",
+      "title": "Aynı yüz — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kaynak Ay’ın dönme ve Dünya çevresinde dolanma sürelerinin yaklaşık eşit olduğunu belirtiyor.\n\nGüvenilir kaynak veya güvenli modelle ilgili veriyi incele; gerçek kayıtla gerekçeli çıkarım raporu sun.",
+      "sampleAnswer": "İşaretli top modeliyle kaynak karşılaştırması.",
+      "solution": "İşaretli top modeliyle kaynak karşılaştırması. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İşaretli top modeliyle kaynak karşılaştırması."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-026",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C06",
+      "title": "Dünya ile boyut — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynakta Dünya Ay’dan büyük; eş boyda oyuncak görseli yanında verilmiş.\n\nBağlamda Ay’ın hangi özelliği veya hareketi belirtiliyor?",
+      "sampleAnswer": "Ay Dünya’dan küçüktür.",
+      "solution": "Ay Dünya’dan küçüktür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ay Dünya’dan küçüktür."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-027",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C06",
+      "title": "Dünya ile boyut — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynakta Dünya Ay’dan büyük; eş boyda oyuncak görseli yanında verilmiş.\n\nVeriyi hangi başlıklarla kaydetmelisin?",
+      "sampleAnswer": "Gerçek boyut kaynağı ve model sınırı.",
+      "solution": "Gerçek boyut kaynağı ve model sınırı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek boyut kaynağı ve model sınırı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-028",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C06",
+      "title": "Dünya ile boyut — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynakta Dünya Ay’dan büyük; eş boyda oyuncak görseli yanında verilmiş.\n\nKayıttan hangi bilimsel çıkarımı yapabilirsin?",
+      "sampleAnswer": "Oyuncak çizimi ölçekli olmayabilir.",
+      "solution": "Oyuncak çizimi ölçekli olmayabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Oyuncak çizimi ölçekli olmayabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-029",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C06",
+      "title": "Dünya ile boyut — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynakta Dünya Ay’dan büyük; eş boyda oyuncak görseli yanında verilmiş.\n\nDesteklenmeyen iddiayı veya gözlemin sınırını belirt.",
+      "sampleAnswer": "Oyuncak görünüşü ölçüm değildir.",
+      "solution": "Oyuncak görünüşü ölçüm değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Oyuncak görünüşü ölçüm değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-030",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C06",
+      "title": "Dünya ile boyut — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kaynakta Dünya Ay’dan büyük; eş boyda oyuncak görseli yanında verilmiş.\n\nGüvenilir kaynak veya güvenli modelle ilgili veriyi incele; gerçek kayıtla gerekçeli çıkarım raporu sun.",
+      "sampleAnswer": "Kaynaklı boyut karşılaştırma kaydı.",
+      "solution": "Kaynaklı boyut karşılaştırma kaydı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kaynaklı boyut karşılaştırma kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-031",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C07",
+      "title": "Koyu düzlükler — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’daki koyu düzlüklerin su denizi olmadığını açıklıyor.\n\nBağlamda Ay’ın hangi özelliği veya hareketi belirtiliyor?",
+      "sampleAnswer": "Katı koyu düzlükler.",
+      "solution": "Katı koyu düzlükler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Katı koyu düzlükler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-032",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C07",
+      "title": "Koyu düzlükler — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’daki koyu düzlüklerin su denizi olmadığını açıklıyor.\n\nVeriyi hangi başlıklarla kaydetmelisin?",
+      "sampleAnswer": "Görsel, açıklama ve adlandırma.",
+      "solution": "Görsel, açıklama ve adlandırma. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Görsel, açıklama ve adlandırma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-033",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C07",
+      "title": "Koyu düzlükler — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’daki koyu düzlüklerin su denizi olmadığını açıklıyor.\n\nKayıttan hangi bilimsel çıkarımı yapabilirsin?",
+      "sampleAnswer": "Deniz adı sıvı suyu kanıtlamaz.",
+      "solution": "Deniz adı sıvı suyu kanıtlamaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Deniz adı sıvı suyu kanıtlamaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-034",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C07",
+      "title": "Koyu düzlükler — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’daki koyu düzlüklerin su denizi olmadığını açıklıyor.\n\nDesteklenmeyen iddiayı veya gözlemin sınırını belirt.",
+      "sampleAnswer": "Görsel koyuluğu su varlığına eşitlenmez.",
+      "solution": "Görsel koyuluğu su varlığına eşitlenmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Görsel koyuluğu su varlığına eşitlenmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-035",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C07",
+      "title": "Koyu düzlükler — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kaynak Ay’daki koyu düzlüklerin su denizi olmadığını açıklıyor.\n\nGüvenilir kaynak veya güvenli modelle ilgili veriyi incele; gerçek kayıtla gerekçeli çıkarım raporu sun.",
+      "sampleAnswer": "Görsel–terim–açıklama tablosu.",
+      "solution": "Görsel–terim–açıklama tablosu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Görsel–terim–açıklama tablosu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-036",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C08",
+      "title": "Hareket tablosu — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci Ay’ın Dünya çevresindeki yoluna dönme, kendi eksenine dolanma yazmış.\n\nBağlamda Ay’ın hangi özelliği veya hareketi belirtiliyor?",
+      "sampleAnswer": "Hareket adları ters eşleştirilmiş.",
+      "solution": "Hareket adları ters eşleştirilmiş. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hareket adları ters eşleştirilmiş."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-037",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C08",
+      "title": "Hareket tablosu — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci Ay’ın Dünya çevresindeki yoluna dönme, kendi eksenine dolanma yazmış.\n\nVeriyi hangi başlıklarla kaydetmelisin?",
+      "sampleAnswer": "Doğru hareket ve referans noktası.",
+      "solution": "Doğru hareket ve referans noktası. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Doğru hareket ve referans noktası."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-038",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C08",
+      "title": "Hareket tablosu — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci Ay’ın Dünya çevresindeki yoluna dönme, kendi eksenine dolanma yazmış.\n\nKayıttan hangi bilimsel çıkarımı yapabilirsin?",
+      "sampleAnswer": "Kendi ekseni dönme, Dünya çevresi dolanma.",
+      "solution": "Kendi ekseni dönme, Dünya çevresi dolanma. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kendi ekseni dönme, Dünya çevresi dolanma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-039",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C08",
+      "title": "Hareket tablosu — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Öğrenci Ay’ın Dünya çevresindeki yoluna dönme, kendi eksenine dolanma yazmış.\n\nDesteklenmeyen iddiayı veya gözlemin sınırını belirt.",
+      "sampleAnswer": "Yanlış etiketi aynen aktarmam.",
+      "solution": "Yanlış etiketi aynen aktarmam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yanlış etiketi aynen aktarmam."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-040",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C08",
+      "title": "Hareket tablosu — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Öğrenci Ay’ın Dünya çevresindeki yoluna dönme, kendi eksenine dolanma yazmış.\n\nGüvenilir kaynak veya güvenli modelle ilgili veriyi incele; gerçek kayıtla gerekçeli çıkarım raporu sun.",
+      "sampleAnswer": "Düzeltilmiş hareket tablosu.",
+      "solution": "Düzeltilmiş hareket tablosu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Düzeltilmiş hareket tablosu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-041",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C09",
+      "title": "Eksik yüzey görüntüsü — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bulanık Ay karesinde krater seçilmiyor; öğrenci Ay’da krater yok diyor.\n\nBağlamda Ay’ın hangi özelliği veya hareketi belirtiliyor?",
+      "sampleAnswer": "Görüntü kalitesi gözlemi sınırlar.",
+      "solution": "Görüntü kalitesi gözlemi sınırlar. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Görüntü kalitesi gözlemi sınırlar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-042",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C09",
+      "title": "Eksik yüzey görüntüsü — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bulanık Ay karesinde krater seçilmiyor; öğrenci Ay’da krater yok diyor.\n\nVeriyi hangi başlıklarla kaydetmelisin?",
+      "sampleAnswer": "Görüntü kalitesi ve seçilen özellik.",
+      "solution": "Görüntü kalitesi ve seçilen özellik. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Görüntü kalitesi ve seçilen özellik."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-043",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C09",
+      "title": "Eksik yüzey görüntüsü — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bulanık Ay karesinde krater seçilmiyor; öğrenci Ay’da krater yok diyor.\n\nKayıttan hangi bilimsel çıkarımı yapabilirsin?",
+      "sampleAnswer": "Seçilememek yokluk kanıtı değildir.",
+      "solution": "Seçilememek yokluk kanıtı değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Seçilememek yokluk kanıtı değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-044",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C09",
+      "title": "Eksik yüzey görüntüsü — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Bulanık Ay karesinde krater seçilmiyor; öğrenci Ay’da krater yok diyor.\n\nDesteklenmeyen iddiayı veya gözlemin sınırını belirt.",
+      "sampleAnswer": "Tek bulanık kareye genelleme yapılmaz.",
+      "solution": "Tek bulanık kareye genelleme yapılmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tek bulanık kareye genelleme yapılmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-045",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C09",
+      "title": "Eksik yüzey görüntüsü — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Bulanık Ay karesinde krater seçilmiyor; öğrenci Ay’da krater yok diyor.\n\nGüvenilir kaynak veya güvenli modelle ilgili veriyi incele; gerçek kayıtla gerekçeli çıkarım raporu sun.",
+      "sampleAnswer": "Daha açık kaynakla karşılaştırmalı kayıt.",
+      "solution": "Daha açık kaynakla karşılaştırmalı kayıt. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Daha açık kaynakla karşılaştırmalı kayıt."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-046",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C10",
+      "title": "Işık kaynağı iddiası — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’ın Güneş ışığını yansıttığını söylüyor; öğrenci kendi ışığı var diyor.\n\nBağlamda Ay’ın hangi özelliği veya hareketi belirtiliyor?",
+      "sampleAnswer": "Yansıyan ışıkla görünür.",
+      "solution": "Yansıyan ışıkla görünür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yansıyan ışıkla görünür."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-047",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C10",
+      "title": "Işık kaynağı iddiası — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’ın Güneş ışığını yansıttığını söylüyor; öğrenci kendi ışığı var diyor.\n\nVeriyi hangi başlıklarla kaydetmelisin?",
+      "sampleAnswer": "Işık kaynağı ve yansıtan cisim ayrımı.",
+      "solution": "Işık kaynağı ve yansıtan cisim ayrımı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Işık kaynağı ve yansıtan cisim ayrımı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-048",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C10",
+      "title": "Işık kaynağı iddiası — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’ın Güneş ışığını yansıttığını söylüyor; öğrenci kendi ışığı var diyor.\n\nKayıttan hangi bilimsel çıkarımı yapabilirsin?",
+      "sampleAnswer": "Ay kendi ışığını üretmez.",
+      "solution": "Ay kendi ışığını üretmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ay kendi ışığını üretmez."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-049",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C10",
+      "title": "Işık kaynağı iddiası — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kaynak Ay’ın Güneş ışığını yansıttığını söylüyor; öğrenci kendi ışığı var diyor.\n\nDesteklenmeyen iddiayı veya gözlemin sınırını belirt.",
+      "sampleAnswer": "Parlak görünmek ışık kaynağı olmak değildir.",
+      "solution": "Parlak görünmek ışık kaynağı olmak değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Parlak görünmek ışık kaynağı olmak değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB512-050",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.1.2",
+      "contextId": "FB512-C10",
+      "title": "Işık kaynağı iddiası — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kaynak Ay’ın Güneş ışığını yansıttığını söylüyor; öğrenci kendi ışığı var diyor.\n\nGüvenilir kaynak veya güvenli modelle ilgili veriyi incele; gerçek kayıtla gerekçeli çıkarım raporu sun.",
+      "sampleAnswer": "Lamba–mat top modeliyle kaynak raporu.",
+      "solution": "Lamba–mat top modeliyle kaynak raporu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Lamba–mat top modeliyle kaynak raporu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    }
+  ]
+}

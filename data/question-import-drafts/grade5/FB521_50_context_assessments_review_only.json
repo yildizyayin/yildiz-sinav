@@ -1,0 +1,2326 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.2.1",
+    "outcomeTitle": "Kuvveti büyüklüğü ile operasyonel tanımlayabilme",
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/368",
+    "sourceTextCheckedAt": "2026-11-12",
+    "academicYearCatalog": "2027-2028",
+    "sourceYearEquivalenceVerified": false,
+    "status": "DRAFT_NOT_APPROVED",
+    "teacherApprovedCount": 0,
+    "rowsCount": 50,
+    "distinctSharedContexts": 10,
+    "openEndedCount": 40,
+    "performanceTaskCount": 10,
+    "notIndependentStimuli": true,
+    "sourceLabel": "ANUNEX_ORIGINAL_AI_ASSISTED_DRAFT_2026_11_12",
+    "rubricScale": {
+      "0": "Ölçüt karşılanmıyor veya bilimsel olarak yanlış.",
+      "1": "Kısmen doğru; ilişki, gerekçe veya gerekli kayıt eksik.",
+      "2": "Ölçüt bilimsel olarak doğru ve yeterli kanıt/kayıtla karşılanıyor."
+    },
+    "scoringNotes": [
+      "Örnek cevabın sözcükleri zorunlu değildir.",
+      "Aynı eksik iki ölçütte mükerrer cezalandırılmaz.",
+      "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
+    ],
+    "reviewGates": [
+      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
+      "EXACT_PROGRAM_YEAR_CODE",
+      "SEMANTIC_CROSS_POOL_ORIGINALITY",
+      "MEDIA_LAYOUT_RIGHTS",
+      "VERTICAL_CURRICULUM_MAP",
+      "HISTORICAL_EXAM_AUDIT",
+      "IMPORTER_TYPE_SUPPORT"
+    ],
+    "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
+    "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+  },
+  "contexts": [
+    {
+      "contextId": "FB521-C01",
+      "title": "Kutu çekme",
+      "stimulus": "Aynı kutu iki kez dinamometreyle çekiliyor: 3 N ve 5 N. Öğrenci 'kutunun rengi kuvvettir' diyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB521-C02",
+      "title": "Boş gösterge",
+      "stimulus": "Dinamometre yük yokken 2 N gösteriyor. Öğrenci 'hiç kuvvet yokken 2 N doğru' diyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB521-C03",
+      "title": "Bölme okuma",
+      "stimulus": "0–10 N ölçeğinde beş eşit aralık var; ibre üçüncü aralıkta. Öğrenci 3 N yazmış.",
+      "studentAssetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_force_scale.svg"
+      ],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB521-C04",
+      "title": "Sınırı aşan yük",
+      "stimulus": "Araç en çok 5 N ölçüyor; öğretmenin yük kartında 8 N yazıyor. Öğrenci yayı zorlamak istiyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB521-C05",
+      "title": "Hareket etmeyen kapı",
+      "stimulus": "Kapı açılmıyor; dinamometre çekme sırasında 4 N gösteriyor. Öğrenci 'hareket yoksa kuvvet yok' diyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB521-C06",
+      "title": "Yay esnemesi",
+      "stimulus": "Aynı dinamometrede 2 N ve 6 N uygulanınca ikinci uzama daha fazla. Öğrenci 'uzama birimi kilogram' diyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB521-C07",
+      "title": "İki farklı araç",
+      "stimulus": "Aynı cisim iki farklı yaylı araçta farklı uzunlukta uzama oluşturuyor. Öğrenci uzun uzayanın kuvvetini büyük sayıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB521-C08",
+      "title": "Sayı var birim yok",
+      "stimulus": "Çekme kayıtları K:4, L:7; araç ve birim yazılmamış. Öğrenci kesin kuvvet karşılaştırması yayımlıyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB521-C09",
+      "title": "Sallanan askı",
+      "stimulus": "Dinamometre yükü sallanırken gösterge değişiyor. Öğrenci rastgele en yüksek sayıyı sonuç seçiyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    },
+    {
+      "contextId": "FB521-C10",
+      "title": "Dört istasyon",
+      "stimulus": "Aynı araçla sünger sıkma, ip çekme ve oyuncak itme inceleniyor. Öğrenci yalnız çekmenin kuvvet olduğunu söylüyor.",
+      "studentAssetPaths": [],
+      "dataStatus": "FICTIONAL_EDUCATIONAL_EXAMPLE_EXCEPT_EXPLICIT_SOURCE_FACTS",
+      "currentEvent": null
+    }
+  ],
+  "rows": [
+    {
+      "id": "ANX-FB521-001",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C01",
+      "title": "Kutu çekme — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı kutu iki kez dinamometreyle çekiliyor: 3 N ve 5 N. Öğrenci 'kutunun rengi kuvvettir' diyor.\n\nBu durumda kuvvetin büyüklüğünü belirlemek için hangi ölçüm veya okuma uygundur?",
+      "sampleAnswer": "Dinamometreyle çekme kuvvetini okurum.",
+      "solution": "Dinamometreyle çekme kuvvetini okurum. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dinamometreyle çekme kuvvetini okurum."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-002",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C01",
+      "title": "Kutu çekme — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı kutu iki kez dinamometreyle çekiliyor: 3 N ve 5 N. Öğrenci 'kutunun rengi kuvvettir' diyor.\n\nHangi kayıt kuvvetlerin karşılaştırılmasını destekler?",
+      "sampleAnswer": "5 N, 3 N’den büyüktür.",
+      "solution": "5 N, 3 N’den büyüktür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "5 N, 3 N’den büyüktür."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-003",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C01",
+      "title": "Kutu çekme — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı kutu iki kez dinamometreyle çekiliyor: 3 N ve 5 N. Öğrenci 'kutunun rengi kuvvettir' diyor.\n\nÖğrencinin iddiasını değerlendir ve doğru ifadeyi yaz.",
+      "sampleAnswer": "Renk kuvvet büyüklüğü değildir.",
+      "solution": "Renk kuvvet büyüklüğü değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Renk kuvvet büyüklüğü değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-004",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C01",
+      "title": "Kutu çekme — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı kutu iki kez dinamometreyle çekiliyor: 3 N ve 5 N. Öğrenci 'kutunun rengi kuvvettir' diyor.\n\nGüvenilir ölçüm için hangi koşulu kontrol etmelisin?",
+      "sampleAnswer": "Aynı yönde, sıfırlanmış araçla okurum.",
+      "solution": "Aynı yönde, sıfırlanmış araçla okurum. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı yönde, sıfırlanmış araçla okurum."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-005",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C01",
+      "title": "Kutu çekme — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Aynı kutu iki kez dinamometreyle çekiliyor: 3 N ve 5 N. Öğrenci 'kutunun rengi kuvvettir' diyor.\n\nBu bağlam için güvenli bir ölçüm yap; sonucu araç ve birimiyle kaydet.",
+      "sampleAnswer": "Çekme denemesi; gerçek N kaydı.",
+      "solution": "Çekme denemesi; gerçek N kaydı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Çekme denemesi; gerçek N kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-006",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C02",
+      "title": "Boş gösterge — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Dinamometre yük yokken 2 N gösteriyor. Öğrenci 'hiç kuvvet yokken 2 N doğru' diyor.\n\nBu durumda kuvvetin büyüklüğünü belirlemek için hangi ölçüm veya okuma uygundur?",
+      "sampleAnswer": "Yüksüz sıfır ayarını kontrol ederim.",
+      "solution": "Yüksüz sıfır ayarını kontrol ederim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yüksüz sıfır ayarını kontrol ederim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-007",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C02",
+      "title": "Boş gösterge — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Dinamometre yük yokken 2 N gösteriyor. Öğrenci 'hiç kuvvet yokken 2 N doğru' diyor.\n\nHangi kayıt kuvvetlerin karşılaştırılmasını destekler?",
+      "sampleAnswer": "Sıfır sapması karşılaştırmayı bozabilir.",
+      "solution": "Sıfır sapması karşılaştırmayı bozabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sıfır sapması karşılaştırmayı bozabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-008",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C02",
+      "title": "Boş gösterge — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Dinamometre yük yokken 2 N gösteriyor. Öğrenci 'hiç kuvvet yokken 2 N doğru' diyor.\n\nÖğrencinin iddiasını değerlendir ve doğru ifadeyi yaz.",
+      "sampleAnswer": "Gösterge ayarsız olabilir.",
+      "solution": "Gösterge ayarsız olabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Gösterge ayarsız olabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-009",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C02",
+      "title": "Boş gösterge — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Dinamometre yük yokken 2 N gösteriyor. Öğrenci 'hiç kuvvet yokken 2 N doğru' diyor.\n\nGüvenilir ölçüm için hangi koşulu kontrol etmelisin?",
+      "sampleAnswer": "Ölçmeden önce sıfırlarım.",
+      "solution": "Ölçmeden önce sıfırlarım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ölçmeden önce sıfırlarım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-010",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C02",
+      "title": "Boş gösterge — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Dinamometre yük yokken 2 N gösteriyor. Öğrenci 'hiç kuvvet yokken 2 N doğru' diyor.\n\nBu bağlam için güvenli bir ölçüm yap; sonucu araç ve birimiyle kaydet.",
+      "sampleAnswer": "Öğretmenle sıfır kontrolü; önce/sonra kayıt.",
+      "solution": "Öğretmenle sıfır kontrolü; önce/sonra kayıt. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Öğretmenle sıfır kontrolü; önce/sonra kayıt."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-011",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C03",
+      "title": "Bölme okuma — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "0–10 N ölçeğinde beş eşit aralık var; ibre üçüncü aralıkta. Öğrenci 3 N yazmış.\n\nBu durumda kuvvetin büyüklüğünü belirlemek için hangi ölçüm veya okuma uygundur?",
+      "sampleAnswer": "Her aralık 2 N; gösterge 6 N.",
+      "solution": "Her aralık 2 N; gösterge 6 N. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Her aralık 2 N; gösterge 6 N."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_force_scale.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-012",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C03",
+      "title": "Bölme okuma — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "0–10 N ölçeğinde beş eşit aralık var; ibre üçüncü aralıkta. Öğrenci 3 N yazmış.\n\nHangi kayıt kuvvetlerin karşılaştırılmasını destekler?",
+      "sampleAnswer": "Üç aralık, 6 N eder.",
+      "solution": "Üç aralık, 6 N eder. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Üç aralık, 6 N eder."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_force_scale.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-013",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C03",
+      "title": "Bölme okuma — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "0–10 N ölçeğinde beş eşit aralık var; ibre üçüncü aralıkta. Öğrenci 3 N yazmış.\n\nÖğrencinin iddiasını değerlendir ve doğru ifadeyi yaz.",
+      "sampleAnswer": "Aralık sayısı birim değer değildir.",
+      "solution": "Aralık sayısı birim değer değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aralık sayısı birim değer değildir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_force_scale.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-014",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C03",
+      "title": "Bölme okuma — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "0–10 N ölçeğinde beş eşit aralık var; ibre üçüncü aralıkta. Öğrenci 3 N yazmış.\n\nGüvenilir ölçüm için hangi koşulu kontrol etmelisin?",
+      "sampleAnswer": "Ölçeği ve göz hizasını kontrol ederim.",
+      "solution": "Ölçeği ve göz hizasını kontrol ederim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ölçeği ve göz hizasını kontrol ederim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_force_scale.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-015",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C03",
+      "title": "Bölme okuma — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "0–10 N ölçeğinde beş eşit aralık var; ibre üçüncü aralıkta. Öğrenci 3 N yazmış.\n\nBu bağlam için güvenli bir ölçüm yap; sonucu araç ve birimiyle kaydet.",
+      "sampleAnswer": "Eşit aralıklı ölçek çizip okuma yaparım.",
+      "solution": "Eşit aralıklı ölçek çizip okuma yaparım. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Eşit aralıklı ölçek çizip okuma yaparım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [
+        "data/question-import-drafts/grade5/assets/FEN_BULK_force_scale.svg"
+      ],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-016",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C04",
+      "title": "Sınırı aşan yük — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Araç en çok 5 N ölçüyor; öğretmenin yük kartında 8 N yazıyor. Öğrenci yayı zorlamak istiyor.\n\nBu durumda kuvvetin büyüklüğünü belirlemek için hangi ölçüm veya okuma uygundur?",
+      "sampleAnswer": "Daha yüksek kapasiteli uygun araç seçerim.",
+      "solution": "Daha yüksek kapasiteli uygun araç seçerim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Daha yüksek kapasiteli uygun araç seçerim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-017",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C04",
+      "title": "Sınırı aşan yük — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Araç en çok 5 N ölçüyor; öğretmenin yük kartında 8 N yazıyor. Öğrenci yayı zorlamak istiyor.\n\nHangi kayıt kuvvetlerin karşılaştırılmasını destekler?",
+      "sampleAnswer": "8 N, 5 N sınırını aşar.",
+      "solution": "8 N, 5 N sınırını aşar. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "8 N, 5 N sınırını aşar."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-018",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C04",
+      "title": "Sınırı aşan yük — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Araç en çok 5 N ölçüyor; öğretmenin yük kartında 8 N yazıyor. Öğrenci yayı zorlamak istiyor.\n\nÖğrencinin iddiasını değerlendir ve doğru ifadeyi yaz.",
+      "sampleAnswer": "Sınırı zorlamak güvenilir ölçüm sağlamaz.",
+      "solution": "Sınırı zorlamak güvenilir ölçüm sağlamaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sınırı zorlamak güvenilir ölçüm sağlamaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-019",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C04",
+      "title": "Sınırı aşan yük — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Araç en çok 5 N ölçüyor; öğretmenin yük kartında 8 N yazıyor. Öğrenci yayı zorlamak istiyor.\n\nGüvenilir ölçüm için hangi koşulu kontrol etmelisin?",
+      "sampleAnswer": "Ölçüm aralığı yükü kapsamalı.",
+      "solution": "Ölçüm aralığı yükü kapsamalı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ölçüm aralığı yükü kapsamalı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-020",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C04",
+      "title": "Sınırı aşan yük — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Araç en çok 5 N ölçüyor; öğretmenin yük kartında 8 N yazıyor. Öğrenci yayı zorlamak istiyor.\n\nBu bağlam için güvenli bir ölçüm yap; sonucu araç ve birimiyle kaydet.",
+      "sampleAnswer": "Uygun küçük yükle, sınırı aşmadan kayıt.",
+      "solution": "Uygun küçük yükle, sınırı aşmadan kayıt. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Uygun küçük yükle, sınırı aşmadan kayıt."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-021",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C05",
+      "title": "Hareket etmeyen kapı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kapı açılmıyor; dinamometre çekme sırasında 4 N gösteriyor. Öğrenci 'hareket yoksa kuvvet yok' diyor.\n\nBu durumda kuvvetin büyüklüğünü belirlemek için hangi ölçüm veya okuma uygundur?",
+      "sampleAnswer": "Çekme sırasında dinamometre okurum.",
+      "solution": "Çekme sırasında dinamometre okurum. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Çekme sırasında dinamometre okurum."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-022",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C05",
+      "title": "Hareket etmeyen kapı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kapı açılmıyor; dinamometre çekme sırasında 4 N gösteriyor. Öğrenci 'hareket yoksa kuvvet yok' diyor.\n\nHangi kayıt kuvvetlerin karşılaştırılmasını destekler?",
+      "sampleAnswer": "4 N, kuvvet uygulandığını destekler.",
+      "solution": "4 N, kuvvet uygulandığını destekler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "4 N, kuvvet uygulandığını destekler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-023",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C05",
+      "title": "Hareket etmeyen kapı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kapı açılmıyor; dinamometre çekme sırasında 4 N gösteriyor. Öğrenci 'hareket yoksa kuvvet yok' diyor.\n\nÖğrencinin iddiasını değerlendir ve doğru ifadeyi yaz.",
+      "sampleAnswer": "Hareketsizlik uygulanan kuvveti yok saydırmaz.",
+      "solution": "Hareketsizlik uygulanan kuvveti yok saydırmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Hareketsizlik uygulanan kuvveti yok saydırmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-024",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C05",
+      "title": "Hareket etmeyen kapı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Kapı açılmıyor; dinamometre çekme sırasında 4 N gösteriyor. Öğrenci 'hareket yoksa kuvvet yok' diyor.\n\nGüvenilir ölçüm için hangi koşulu kontrol etmelisin?",
+      "sampleAnswer": "Kapıya zarar vermeden küçük kuvvet uygularım.",
+      "solution": "Kapıya zarar vermeden küçük kuvvet uygularım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kapıya zarar vermeden küçük kuvvet uygularım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-025",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C05",
+      "title": "Hareket etmeyen kapı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Kapı açılmıyor; dinamometre çekme sırasında 4 N gösteriyor. Öğrenci 'hareket yoksa kuvvet yok' diyor.\n\nBu bağlam için güvenli bir ölçüm yap; sonucu araç ve birimiyle kaydet.",
+      "sampleAnswer": "Güvenli sabit nesnede öğretmen gözetimli okuma.",
+      "solution": "Güvenli sabit nesnede öğretmen gözetimli okuma. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Güvenli sabit nesnede öğretmen gözetimli okuma."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-026",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C06",
+      "title": "Yay esnemesi — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı dinamometrede 2 N ve 6 N uygulanınca ikinci uzama daha fazla. Öğrenci 'uzama birimi kilogram' diyor.\n\nBu durumda kuvvetin büyüklüğünü belirlemek için hangi ölçüm veya okuma uygundur?",
+      "sampleAnswer": "Kuvveti N ölçeğinden okurum.",
+      "solution": "Kuvveti N ölçeğinden okurum. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kuvveti N ölçeğinden okurum."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-027",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C06",
+      "title": "Yay esnemesi — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı dinamometrede 2 N ve 6 N uygulanınca ikinci uzama daha fazla. Öğrenci 'uzama birimi kilogram' diyor.\n\nHangi kayıt kuvvetlerin karşılaştırılmasını destekler?",
+      "sampleAnswer": "Aynı araçta 6 N daha büyük uzama oluşturmuş.",
+      "solution": "Aynı araçta 6 N daha büyük uzama oluşturmuş. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı araçta 6 N daha büyük uzama oluşturmuş."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-028",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C06",
+      "title": "Yay esnemesi — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı dinamometrede 2 N ve 6 N uygulanınca ikinci uzama daha fazla. Öğrenci 'uzama birimi kilogram' diyor.\n\nÖğrencinin iddiasını değerlendir ve doğru ifadeyi yaz.",
+      "sampleAnswer": "Kuvvet birimi N’dir; uzama uzunluktur.",
+      "solution": "Kuvvet birimi N’dir; uzama uzunluktur. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kuvvet birimi N’dir; uzama uzunluktur."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-029",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C06",
+      "title": "Yay esnemesi — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı dinamometrede 2 N ve 6 N uygulanınca ikinci uzama daha fazla. Öğrenci 'uzama birimi kilogram' diyor.\n\nGüvenilir ölçüm için hangi koşulu kontrol etmelisin?",
+      "sampleAnswer": "Aynı yay ve esneklik sınırı korunmalı.",
+      "solution": "Aynı yay ve esneklik sınırı korunmalı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı yay ve esneklik sınırı korunmalı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-030",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C06",
+      "title": "Yay esnemesi — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Aynı dinamometrede 2 N ve 6 N uygulanınca ikinci uzama daha fazla. Öğrenci 'uzama birimi kilogram' diyor.\n\nBu bağlam için güvenli bir ölçüm yap; sonucu araç ve birimiyle kaydet.",
+      "sampleAnswer": "Küçük kuvvetleri N ile tabloya yazarım.",
+      "solution": "Küçük kuvvetleri N ile tabloya yazarım. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Küçük kuvvetleri N ile tabloya yazarım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-031",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C07",
+      "title": "İki farklı araç — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı cisim iki farklı yaylı araçta farklı uzunlukta uzama oluşturuyor. Öğrenci uzun uzayanın kuvvetini büyük sayıyor.\n\nBu durumda kuvvetin büyüklüğünü belirlemek için hangi ölçüm veya okuma uygundur?",
+      "sampleAnswer": "Her aracın N ölçeğini okurum.",
+      "solution": "Her aracın N ölçeğini okurum. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Her aracın N ölçeğini okurum."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-032",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C07",
+      "title": "İki farklı araç — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı cisim iki farklı yaylı araçta farklı uzunlukta uzama oluşturuyor. Öğrenci uzun uzayanın kuvvetini büyük sayıyor.\n\nHangi kayıt kuvvetlerin karşılaştırılmasını destekler?",
+      "sampleAnswer": "Ham uzamalar farklı araçlarda doğrudan karşılaştırılmaz.",
+      "solution": "Ham uzamalar farklı araçlarda doğrudan karşılaştırılmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ham uzamalar farklı araçlarda doğrudan karşılaştırılmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-033",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C07",
+      "title": "İki farklı araç — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı cisim iki farklı yaylı araçta farklı uzunlukta uzama oluşturuyor. Öğrenci uzun uzayanın kuvvetini büyük sayıyor.\n\nÖğrencinin iddiasını değerlendir ve doğru ifadeyi yaz.",
+      "sampleAnswer": "Yayın özelliği uzamayı etkiler.",
+      "solution": "Yayın özelliği uzamayı etkiler. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yayın özelliği uzamayı etkiler."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-034",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C07",
+      "title": "İki farklı araç — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı cisim iki farklı yaylı araçta farklı uzunlukta uzama oluşturuyor. Öğrenci uzun uzayanın kuvvetini büyük sayıyor.\n\nGüvenilir ölçüm için hangi koşulu kontrol etmelisin?",
+      "sampleAnswer": "Her aracın kalibrasyonunu kontrol ederim.",
+      "solution": "Her aracın kalibrasyonunu kontrol ederim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Her aracın kalibrasyonunu kontrol ederim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-035",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C07",
+      "title": "İki farklı araç — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Aynı cisim iki farklı yaylı araçta farklı uzunlukta uzama oluşturuyor. Öğrenci uzun uzayanın kuvvetini büyük sayıyor.\n\nBu bağlam için güvenli bir ölçüm yap; sonucu araç ve birimiyle kaydet.",
+      "sampleAnswer": "Aynı küçük kuvvet için iki N kaydı.",
+      "solution": "Aynı küçük kuvvet için iki N kaydı. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı küçük kuvvet için iki N kaydı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-036",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C08",
+      "title": "Sayı var birim yok — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Çekme kayıtları K:4, L:7; araç ve birim yazılmamış. Öğrenci kesin kuvvet karşılaştırması yayımlıyor.\n\nBu durumda kuvvetin büyüklüğünü belirlemek için hangi ölçüm veya okuma uygundur?",
+      "sampleAnswer": "Araç ile N birimini doğrularım.",
+      "solution": "Araç ile N birimini doğrularım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Araç ile N birimini doğrularım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-037",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C08",
+      "title": "Sayı var birim yok — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Çekme kayıtları K:4, L:7; araç ve birim yazılmamış. Öğrenci kesin kuvvet karşılaştırması yayımlıyor.\n\nHangi kayıt kuvvetlerin karşılaştırılmasını destekler?",
+      "sampleAnswer": "Aynı ölçüm türü ve birim gerekli.",
+      "solution": "Aynı ölçüm türü ve birim gerekli. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Aynı ölçüm türü ve birim gerekli."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-038",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C08",
+      "title": "Sayı var birim yok — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Çekme kayıtları K:4, L:7; araç ve birim yazılmamış. Öğrenci kesin kuvvet karşılaştırması yayımlıyor.\n\nÖğrencinin iddiasını değerlendir ve doğru ifadeyi yaz.",
+      "sampleAnswer": "Eksik birimle kesin sonuç sunulmaz.",
+      "solution": "Eksik birimle kesin sonuç sunulmaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Eksik birimle kesin sonuç sunulmaz."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-039",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C08",
+      "title": "Sayı var birim yok — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Çekme kayıtları K:4, L:7; araç ve birim yazılmamış. Öğrenci kesin kuvvet karşılaştırması yayımlıyor.\n\nGüvenilir ölçüm için hangi koşulu kontrol etmelisin?",
+      "sampleAnswer": "Özgün ölçüm notuna dönerim.",
+      "solution": "Özgün ölçüm notuna dönerim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Özgün ölçüm notuna dönerim."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-040",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C08",
+      "title": "Sayı var birim yok — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Çekme kayıtları K:4, L:7; araç ve birim yazılmamış. Öğrenci kesin kuvvet karşılaştırması yayımlıyor.\n\nBu bağlam için güvenli bir ölçüm yap; sonucu araç ve birimiyle kaydet.",
+      "sampleAnswer": "Dinamometre, tarih ve N ile kayıt.",
+      "solution": "Dinamometre, tarih ve N ile kayıt. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dinamometre, tarih ve N ile kayıt."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-041",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C09",
+      "title": "Sallanan askı — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Dinamometre yükü sallanırken gösterge değişiyor. Öğrenci rastgele en yüksek sayıyı sonuç seçiyor.\n\nBu durumda kuvvetin büyüklüğünü belirlemek için hangi ölçüm veya okuma uygundur?",
+      "sampleAnswer": "Yük sakinleşince uygun okumayı yaparım.",
+      "solution": "Yük sakinleşince uygun okumayı yaparım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Yük sakinleşince uygun okumayı yaparım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-042",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C09",
+      "title": "Sallanan askı — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Dinamometre yükü sallanırken gösterge değişiyor. Öğrenci rastgele en yüksek sayıyı sonuç seçiyor.\n\nHangi kayıt kuvvetlerin karşılaştırılmasını destekler?",
+      "sampleAnswer": "Tekrarlı dengeli okumalar daha tutarlıdır.",
+      "solution": "Tekrarlı dengeli okumalar daha tutarlıdır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Tekrarlı dengeli okumalar daha tutarlıdır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-043",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C09",
+      "title": "Sallanan askı — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Dinamometre yükü sallanırken gösterge değişiyor. Öğrenci rastgele en yüksek sayıyı sonuç seçiyor.\n\nÖğrencinin iddiasını değerlendir ve doğru ifadeyi yaz.",
+      "sampleAnswer": "Rastgele tepe değer gerekçesizdir.",
+      "solution": "Rastgele tepe değer gerekçesizdir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Rastgele tepe değer gerekçesizdir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-044",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C09",
+      "title": "Sallanan askı — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Dinamometre yükü sallanırken gösterge değişiyor. Öğrenci rastgele en yüksek sayıyı sonuç seçiyor.\n\nGüvenilir ölçüm için hangi koşulu kontrol etmelisin?",
+      "sampleAnswer": "Sarsıntı ve yan çekmeyi azaltırım.",
+      "solution": "Sarsıntı ve yan çekmeyi azaltırım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Sarsıntı ve yan çekmeyi azaltırım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-045",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C09",
+      "title": "Sallanan askı — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Dinamometre yükü sallanırken gösterge değişiyor. Öğrenci rastgele en yüksek sayıyı sonuç seçiyor.\n\nBu bağlam için güvenli bir ölçüm yap; sonucu araç ve birimiyle kaydet.",
+      "sampleAnswer": "Dengeli üç okuma ve sapma notu.",
+      "solution": "Dengeli üç okuma ve sapma notu. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Dengeli üç okuma ve sapma notu."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 5,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-046",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C10",
+      "title": "Dört istasyon — görev 1",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı araçla sünger sıkma, ip çekme ve oyuncak itme inceleniyor. Öğrenci yalnız çekmenin kuvvet olduğunu söylüyor.\n\nBu durumda kuvvetin büyüklüğünü belirlemek için hangi ölçüm veya okuma uygundur?",
+      "sampleAnswer": "Ölçülebilen itme/çekmeyi N ile tanımlarım.",
+      "solution": "Ölçülebilen itme/çekmeyi N ile tanımlarım. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Ölçülebilen itme/çekmeyi N ile tanımlarım."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 1,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-047",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C10",
+      "title": "Dört istasyon — görev 2",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı araçla sünger sıkma, ip çekme ve oyuncak itme inceleniyor. Öğrenci yalnız çekmenin kuvvet olduğunu söylüyor.\n\nHangi kayıt kuvvetlerin karşılaştırılmasını destekler?",
+      "sampleAnswer": "Kuvvet etkileri farklı görevlerde karşılaştırılabilir.",
+      "solution": "Kuvvet etkileri farklı görevlerde karşılaştırılabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Kuvvet etkileri farklı görevlerde karşılaştırılabilir."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 2,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-048",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C10",
+      "title": "Dört istasyon — görev 3",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı araçla sünger sıkma, ip çekme ve oyuncak itme inceleniyor. Öğrenci yalnız çekmenin kuvvet olduğunu söylüyor.\n\nÖğrencinin iddiasını değerlendir ve doğru ifadeyi yaz.",
+      "sampleAnswer": "İtme de kuvvet uygulamasıdır.",
+      "solution": "İtme de kuvvet uygulamasıdır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "İtme de kuvvet uygulamasıdır."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 3,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-049",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C10",
+      "title": "Dört istasyon — görev 4",
+      "assessmentType": "OPEN_ENDED",
+      "stem": "Aynı araçla sünger sıkma, ip çekme ve oyuncak itme inceleniyor. Öğrenci yalnız çekmenin kuvvet olduğunu söylüyor.\n\nGüvenilir ölçüm için hangi koşulu kontrol etmelisin?",
+      "sampleAnswer": "Araç doğru doğrultuda kullanılmalı.",
+      "solution": "Araç doğru doğrultuda kullanılmalı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Araç doğru doğrultuda kullanılmalı."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Yanıtını verilen bağlamdaki ilgili gözlem, veri, ilişki veya kaynak niteliğiyle açıkça gerekçelendirir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "b"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 4,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": false,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    },
+    {
+      "id": "ANX-FB521-050",
+      "gradeLevel": 5,
+      "outcomeCode": "FB.5.2.1",
+      "contextId": "FB521-C10",
+      "title": "Dört istasyon — görev 5",
+      "assessmentType": "PERFORMANCE_TASK",
+      "stem": "Aynı araçla sünger sıkma, ip çekme ve oyuncak itme inceleniyor. Öğrenci yalnız çekmenin kuvvet olduğunu söylüyor.\n\nBu bağlam için güvenli bir ölçüm yap; sonucu araç ve birimiyle kaydet.",
+      "sampleAnswer": "Uygun çekme istasyonu kurup gerçek kayıt.",
+      "solution": "Uygun çekme istasyonu kurup gerçek kayıt. Gerçek ürün/ölçüm/gözlem veya kaynak kaydı öğrenci tarafından sağlanır; hazır sonuç üretilmiş sayılmaz.",
+      "rubric": {
+        "maxScore": 4,
+        "scaleRef": "metadata.rubricScale",
+        "criteria": [
+          {
+            "maxScore": 2,
+            "criterion": "Uygun çekme istasyonu kurup gerçek kayıt."
+          },
+          {
+            "maxScore": 2,
+            "criterion": "Gerçek ürün/deneyim/kaynak kaydını dürüstçe sunar; güvenlik, kaynak veya bağlam sınırını belirtir."
+          }
+        ]
+      },
+      "processComponentRefs": [
+        "a",
+        "b",
+        "c"
+      ],
+      "processAlignmentStatus": "PROPOSED_REQUIRES_EXPERT_REVIEW",
+      "difficultyLevel": 6,
+      "difficultyStatus": "UNCALIBRATED_EDITORIAL_ESTIMATE",
+      "studentEvidenceRequired": true,
+      "dependsOnSharedStimulus": true,
+      "assetPaths": [],
+      "status": "DRAFT_NOT_APPROVED",
+      "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
+      "priorLearningLinks": [],
+      "futureLearningLinks": [],
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "status": "NOT_SCANNED",
+        "matches": []
+      }
+    }
+  ]
+}

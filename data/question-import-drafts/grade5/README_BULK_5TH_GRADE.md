@@ -1,3 +1,17 @@
+# Güncel Fen toplu üretimi — 12 Kasım 2026
+
+**Fen taslak kapsamı: 27 çıktı × 50 = 1.350 etkin değerlendirme.** Önceki bölüm ve sayılar tarihsel aşamaları anlatır; güncel kapsam `activeFenDraftFiles` ve `FEN_TUM_TASLAKLAR_KATALOG_2026-11-12.md` dosyalarıdır.
+
+- Kalan 23 çıktı için 1.150 içerik; ilk iki çıktının eski 100 MC taslağı yerine 100 yeni içerik: bu turda 1.250 değerlendirme, 250 ayrı bağlamda beşer alt görev.
+- Etkin Fen türleri: 1.087 açık uçlu + 263 performans görevi. Paylaşılan bağlamlar korunur; 1.250 ayrı senaryo iddiası yoktur.
+- İlk 100 eski MC dosyası silinmedi; tarihçe olarak `fenSupersededMCFiles` içinde ve etkin Fen kotasından hariçtir. Eski 20 ek Fen görevi de kotaya eklenmez.
+- Proje etkin toplamı: Matematik 1.150 + Fen 1.350 = 2.500 taslak. Ham saklanan kayıt 2.600; bunun 100'ü eski Fen MC sürümüdür. Eski `draftQuestions` sayacı yalnız ham legacy MC kapsamıdır.
+- Öğretmen onaylı: 0. Canlı aktarım ve deploy yok. Sınıflar arası bağlantı ve geçmiş sınav sayıları doğrulanmadan boş/null kaldı.
+- Gerçek mikrograf, mevcut tarihî uzay gözlemleri ve 6 yeni bilimsel SVG şeması kaynak/tür/lisans bilgileriyle ayrıldı.
+- Yeni sorular resmî web kodu ve süreç referanslarıyla eşleştirildi. Uzman içerik/rubrik, yıl/kod sürümü, anlam düzeyinde özgünlük ve son medya incelemesi açık. **Taslak kapsamı tamam; yayıma hazır değil.**
+
+---
+
 # ANUNEX: 5. sınıf tüm kazanımların toplu üretim/inceleme dosyası
 
 ## Kullanıcı kararı (11–12 Kasım 2026)

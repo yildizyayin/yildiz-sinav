@@ -1,0 +1,158 @@
+{
+  "assetCount": 12,
+  "realPhotoFiles": 4,
+  "scientificSvgFiles": 8,
+  "assets": [
+    {
+      "path": "data/question-import-drafts/grade5/assets/FB513_model_error_card.svg",
+      "mediaType": "ORIGINAL_SCIENTIFIC_SVG_NOT_PHOTOGRAPH",
+      "rightsStatus": "ORIGINAL_REVIEW_PENDING",
+      "scientificReviewStatus": "PENDING",
+      "fileSha256": "797f9bd86a284ca7164c425c7665656c27aa1f44c45a1c00e46547bb9de43471"
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FB513_observation_gap.svg",
+      "mediaType": "ORIGINAL_SCIENTIFIC_SVG_NOT_PHOTOGRAPH",
+      "rightsStatus": "ORIGINAL_REVIEW_PENDING",
+      "scientificReviewStatus": "PENDING",
+      "fileSha256": "8bfe8a8fd6d81332da6df657857466f2d9bdb95fadaa25ac2c3e91e965b9e756"
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame06.jpg",
+      "url": "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/m/MillionMilesMoon.gif",
+      "frameIndex": 6,
+      "totalFrames": 20,
+      "width": 900,
+      "height": 506,
+      "bytes": 50979,
+      "sourceSha256": "c8bb3d8bcc51a3b197fb14353034f9108b6b93cb7c1be2155729e9bfa768318f",
+      "sha256": "e2793cf9d2810f32a74b8b65c1ed6a147391c80fee81c0be666237bc3b36ac25",
+      "mediaType": "REAL_SPACECRAFT_OBSERVATION_FRAME_NATURAL_COLOR_COMPOSITE",
+      "captureDate": "2015-07-16",
+      "credit": "NASA/NOAA",
+      "sourcePage": "https://science.nasa.gov/resource/from-a-million-miles-away-nasa-camera-shows-moon-crossing-face-of-earth/",
+      "processing": "Extracted one original observation frame from 20-frame GIF; JPEG downsample to 900px; no crop/retouch/generated content.",
+      "intendedUse": "Factual educational/editorial context inside question; not promotion or endorsement.",
+      "rightsEvidence": {
+        "guidelineUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "checkedAt": "2026-11-12",
+        "status": "NASA_EDITORIAL_GUIDELINES_CHECKED_FINAL_REVIEW_PENDING",
+        "notice": "NASA imagery credit retained; ANUNEX wrote questions. No NASA approval or endorsement claimed."
+      },
+      "scientificReviewStatus": "EXPERT_REVIEW_PENDING",
+      "frameExactTime": null,
+      "fileSha256": "e2793cf9d2810f32a74b8b65c1ed6a147391c80fee81c0be666237bc3b36ac25"
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg",
+      "url": "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/m/MillionMilesMoon.gif",
+      "frameIndex": 12,
+      "totalFrames": 20,
+      "width": 900,
+      "height": 506,
+      "bytes": 49677,
+      "sourceSha256": "c8bb3d8bcc51a3b197fb14353034f9108b6b93cb7c1be2155729e9bfa768318f",
+      "sha256": "75a05680cd668450601d4b889ed9e021dedc8d3fe5521513f94ac8a55fbe74e2",
+      "mediaType": "REAL_SPACECRAFT_OBSERVATION_FRAME_NATURAL_COLOR_COMPOSITE",
+      "captureDate": "2015-07-16",
+      "credit": "NASA/NOAA",
+      "sourcePage": "https://science.nasa.gov/resource/from-a-million-miles-away-nasa-camera-shows-moon-crossing-face-of-earth/",
+      "processing": "Extracted one original observation frame from 20-frame GIF; JPEG downsample to 900px; no crop/retouch/generated content.",
+      "intendedUse": "Factual educational/editorial context inside question; not promotion or endorsement.",
+      "rightsEvidence": {
+        "guidelineUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "checkedAt": "2026-11-12",
+        "status": "NASA_EDITORIAL_GUIDELINES_CHECKED_FINAL_REVIEW_PENDING",
+        "notice": "NASA imagery credit retained; ANUNEX wrote questions. No NASA approval or endorsement claimed."
+      },
+      "scientificReviewStatus": "EXPERT_REVIEW_PENDING",
+      "frameExactTime": null,
+      "fileSha256": "75a05680cd668450601d4b889ed9e021dedc8d3fe5521513f94ac8a55fbe74e2"
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FB514_earthrise_1968.jpg",
+      "url": "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/a/as08-14-2383.jpg",
+      "width": 1400,
+      "height": 1400,
+      "bytes": 117178,
+      "sourceSha256": "4b1484e9bb55652e30a56c03c27141938885a09e4b3c0bcabb8841e1e94ed9d9",
+      "sha256": "8d816abdd8c4b5dfe392383b44e14fdefe17ee48f73171240731ee255db37bdd",
+      "mediaType": "HISTORICAL_SPACECRAFT_PHOTOGRAPH",
+      "captureDate": "1968-12-24",
+      "credit": "NASA/Bill Anders",
+      "sourcePage": "https://science.nasa.gov/resource/apollo-8s-iconic-earthrise/",
+      "processing": "JPEG downsample to 1400px; no crop/retouch/generated content.",
+      "intendedUse": "Factual educational/editorial context inside question; not promotion or endorsement.",
+      "rightsEvidence": {
+        "guidelineUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "checkedAt": "2026-11-12",
+        "status": "NASA_EDITORIAL_GUIDELINES_CHECKED_FINAL_REVIEW_PENDING",
+        "notice": "NASA imagery credit retained; ANUNEX wrote questions. No NASA approval or endorsement claimed."
+      },
+      "scientificReviewStatus": "EXPERT_REVIEW_PENDING",
+      "frameExactTime": null,
+      "fileSha256": "8d816abdd8c4b5dfe392383b44e14fdefe17ee48f73171240731ee255db37bdd"
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FB531_elodea_delta_ccbysa4.jpg",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Elodea_cells_under_microscope.jpg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Elodea_cells_under_microscope.jpg",
+      "author": "~delta",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "captureDate": "2022-12-30",
+      "changes": "EXIF orientation applied; downsampled to 1400px; JPEG re-encoded, no crop/retouch/generated content.",
+      "sourceSha256": "e8270f4397f6efa33f0c2ecd6e50ea571b528672d0a4a0c8ce4f3ba3ebf45a45",
+      "sha256": "8a698e024c8b281bb17f5ada602ae14c1fb3bdf02ab5acab1889fbf97e22a30b",
+      "width": 1050,
+      "height": 1400,
+      "mediaType": "REAL_MICROGRAPH_PHOTOGRAPH",
+      "attribution": "Elodea cells under microscope — ~delta, CC BY-SA 4.0, Wikimedia Commons; resized/oriented.",
+      "reviewStatus": "SOURCE_AND_LICENSE_CHECKED_SCIENCE_REVIEW_PENDING",
+      "fileSha256": "8a698e024c8b281bb17f5ada602ae14c1fb3bdf02ab5acab1889fbf97e22a30b"
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_closed.svg",
+      "mediaType": "ORIGINAL_SCIENTIFIC_SVG_NOT_PHOTOGRAPH",
+      "rightsStatus": "ORIGINAL_REVIEW_PENDING",
+      "scientificReviewStatus": "PENDING",
+      "fileSha256": "4d13e7f2df1582c3d74a81397281b4501cb6bd7c8e11e967bb70082025dd5be0"
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FEN_BULK_circuit_open.svg",
+      "mediaType": "ORIGINAL_SCIENTIFIC_SVG_NOT_PHOTOGRAPH",
+      "rightsStatus": "ORIGINAL_REVIEW_PENDING",
+      "scientificReviewStatus": "PENDING",
+      "fileSha256": "412bae7f720f540514523e37d8f28f1b459a72b65e3561a8fb082e1b63fe7b75"
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FEN_BULK_force_scale.svg",
+      "mediaType": "ORIGINAL_SCIENTIFIC_SVG_NOT_PHOTOGRAPH",
+      "rightsStatus": "ORIGINAL_REVIEW_PENDING",
+      "scientificReviewStatus": "PENDING",
+      "fileSha256": "af8ef05185d82a706454338920f56829c8cfb390b8ddaaf5cf7788da5ee7d2e2"
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FEN_BULK_light_alignment.svg",
+      "mediaType": "ORIGINAL_SCIENTIFIC_SVG_NOT_PHOTOGRAPH",
+      "rightsStatus": "ORIGINAL_REVIEW_PENDING",
+      "scientificReviewStatus": "PENDING",
+      "fileSha256": "887fe36b920aa4edef4155e7e11664250d8cb532b5eae41e7fb696fb503a037a"
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FEN_BULK_particle_models.svg",
+      "mediaType": "ORIGINAL_SCIENTIFIC_SVG_NOT_PHOTOGRAPH",
+      "rightsStatus": "ORIGINAL_REVIEW_PENDING",
+      "scientificReviewStatus": "PENDING",
+      "fileSha256": "041a479d409f3d132117ca8cb512b9817ebfe475ac98d4eac5fe088cf715f309"
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FEN_BULK_shadow_positions.svg",
+      "mediaType": "ORIGINAL_SCIENTIFIC_SVG_NOT_PHOTOGRAPH",
+      "rightsStatus": "ORIGINAL_REVIEW_PENDING",
+      "scientificReviewStatus": "PENDING",
+      "fileSha256": "3a3a375f381c6927d64d5124a4eec9af0c9d9927c251d5037505e041eb75fd21"
+    }
+  ],
+  "limits": "Source/license records do not constitute expert scientific or final print/layout approval."
+}
