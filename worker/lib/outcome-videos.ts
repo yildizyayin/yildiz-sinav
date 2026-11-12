@@ -22,7 +22,7 @@ import { fetchYoutubeMetadata, youtubeCandidateAvailable } from './youtube-candi
 export const SEARCH_CAP = 80;               // YouTube Data API: 100 units a search, 10 000 units a day shared with others
 export const GEMINI_SECONDS_CAP = 7 * 3600;  // Gemini YouTube input: 8 hours of video a day on the free tier
 export const REPORTS_TO_REMOVE = 3;
-const MIN_CLIP = 30, MAX_CLIP = 20 * 60, MAX_VIDEO = 40 * 60, SHORT_VIDEO = 7 * 60;
+const MIN_VIDEO = 45, MIN_CLIP = 30, MAX_CLIP = 20 * 60, MAX_VIDEO = 40 * 60, SHORT_VIDEO = 7 * 60;
 const STAFF = ['SUPER_ADMIN', 'INSTITUTION_MANAGER', 'TEACHER', 'GUIDANCE_TEACHER'];
 
 const fail = (status: number, code: string, message: string) => json({ ok: false, error: { code, message } }, status);
@@ -119,40 +119,60 @@ covers: video bu kazanımı gerçekten anlatıyor mu (yalnız adı geçiyorsa fa
 // ------------------------------------------------------------------ finding a clip for one outcome
 const iso = (v: string) => { const m = String(v || '').match(/^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/); return m ? Number(m[1] || 0) * 3600 + Number(m[2] || 0) * 60 + Number(m[3] || 0) : 0; };
 
-export function searchQuery(o: any) {
-  const title = String(o.title || '').replace(/[.:;()]/g, ' ').split(/\s+/).filter(Boolean).slice(0, 9).join(' ');
-  return [o.grade_level ? `${o.grade_level}. sınıf` : null, o.subject_name, o.subtopic || o.topic, title, 'konu anlatımı'].filter(Boolean).join(' ').slice(0, 200);
+/** The outcome's own words, without the unit heading, honorifics or the "-ebilme" ending of MEB's wording. */
+export function cleanTitle(title: string) {
+  const words = String(title || '').replace(/\((?:cc|sav|as)\)/gi, ' ').replace(/[’'.:;()]/g, ' ').split(/\s+/).filter(Boolean);
+  if (words.length > 3 && /(abilme|ebilme|ebilir|abilir)$/i.test(words[words.length - 1])) words.pop();
+  return words.join(' ');
 }
+const cleanTopic = (t: string | null) => String(t || '').replace(/^\s*\d+\.?\s*(?:ünite|tema|bölüm)\s*[:.-]?\s*/i, '').trim();
 
-export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ status: 'FOUND' | 'NOT_FOUND' | 'ERROR' | 'QUOTA'; reason: string; geminiTried?: boolean }> {
+/** Two searches at most: the precise one first, then a broader one when the first gives nothing usable. */
+export function searchQueries(o: any) {
+  const title = cleanTitle(o.title).split(' ').slice(0, 9).join(' ');
+  const grade = o.grade_level ? `${o.grade_level}. sınıf` : null;
+  return [
+    [grade, o.subject_name, title, 'konu anlatımı'].filter(Boolean).join(' ').slice(0, 200),
+    [grade, o.subject_name, cleanTopic(o.subtopic || o.topic) || title.split(' ').slice(0, 5).join(' ')].filter(Boolean).join(' ').slice(0, 200),
+  ];
+}
+export const searchQuery = (o: any) => searchQueries(o)[0];
+
+export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ status: 'FOUND' | 'NOT_FOUND' | 'ERROR' | 'QUOTA'; reason: string; geminiTried?: boolean; detail?: string }> {
   if (!env.YOUTUBE_API_KEY) return { status: 'QUOTA', reason: 'YOUTUBE_NOT_CONFIGURED' };
   const o = await one<any>(env.DB.prepare(`SELECT o.id,o.code,o.title,o.topic,o.subtopic,o.grade_level,s.name subject_name FROM outcomes o LEFT JOIN subjects s ON s.id=o.subject_id WHERE o.id=?`).bind(outcomeId));
   if (!o) return { status: 'NOT_FOUND', reason: 'OUTCOME_MISSING' };
   const u = await usage(env);
   if (u.searches >= SEARCH_CAP) return { status: 'QUOTA', reason: 'SEARCH_QUOTA' };
-  const query = searchQuery(o);
-  const search = new URL('https://www.googleapis.com/youtube/v3/search');
-  for (const [k, v] of Object.entries({ part: 'snippet', type: 'video', safeSearch: 'strict', videoEmbeddable: 'true', regionCode: 'TR', relevanceLanguage: 'tr', maxResults: '10', q: query, key: env.YOUTUBE_API_KEY })) search.searchParams.set(k, v);
-  await spend(env, 1, 0, 0);
-  const found = await fetchYoutubeMetadata(search);
-  if (!found) return { status: 'ERROR', reason: 'YOUTUBE_SEARCH_FAILED' };
   const blocked = new Set((await all<any>(env.DB.prepare(`SELECT youtube_video_id FROM outcome_video_blocks WHERE outcome_id=?`).bind(outcomeId))).map((b) => b.youtube_video_id));
-  const ids = (found.items || []).map((x: any) => x.id?.videoId).filter((id: any) => typeof id === 'string' && !blocked.has(id));
-  if (!ids.length) return { status: 'NOT_FOUND', reason: 'NO_CANDIDATE' };
-  const details = new URL('https://www.googleapis.com/youtube/v3/videos');
-  for (const [k, v] of Object.entries({ part: 'snippet,contentDetails,status,statistics', id: ids.join(','), key: env.YOUTUBE_API_KEY })) details.searchParams.set(k, v);
-  const det = await fetchYoutubeMetadata(details);
-  if (!det) return { status: 'ERROR', reason: 'YOUTUBE_DETAILS_FAILED' };
-  const keys = stems([o.topic, o.subtopic, o.title].filter(Boolean).join(' '));
-  const cands = det.items.filter((v: any) => youtubeCandidateAvailable(v) && !blocked.has(v.id)).map((v: any) => {
-    const duration = iso(v.contentDetails?.duration);
-    const chapters = parseChapters(v.snippet?.description || '', duration);
-    const chapter = matchChapter(chapters, keys);
-    const titleHit = overlap(stems(v.snippet?.title || ''), keys);
-    return { id: v.id as string, title: String(v.snippet?.title || 'Konu anlatımı').slice(0, 200), channel: String(v.snippet?.channelTitle || '').slice(0, 120), duration, chapter, titleHit, views: Number(v.statistics?.viewCount || 0) };
-  }).filter((c: any) => c.duration >= 60 && c.duration <= MAX_VIDEO)
-    .sort((a: any, b: any) => ((b.chapter ? 2 : 0) + b.titleHit + Math.log10(b.views + 1) / 3) - ((a.chapter ? 2 : 0) + a.titleHit + Math.log10(a.views + 1) / 3));
-  if (!cands.length) return { status: 'NOT_FOUND', reason: 'NO_SAFE_CANDIDATE' };
+  const keys = stems([cleanTopic(o.topic), cleanTopic(o.subtopic), o.title].filter(Boolean).join(' '));
+  let query = '', cands: any[] = [], detail = '', searches = 0;
+  for (const q of searchQueries(o)) {
+    if (searches && (await usage(env)).searches >= SEARCH_CAP) break;
+    query = q; searches++;
+    const search = new URL('https://www.googleapis.com/youtube/v3/search');
+    for (const [k, v] of Object.entries({ part: 'snippet', type: 'video', safeSearch: 'strict', videoEmbeddable: 'true', regionCode: 'TR', relevanceLanguage: 'tr', maxResults: '10', q, key: env.YOUTUBE_API_KEY })) search.searchParams.set(k, v);
+    await spend(env, 1, 0, 0);
+    const found = await fetchYoutubeMetadata(search);
+    if (!found) return { status: 'ERROR', reason: 'YOUTUBE_SEARCH_FAILED' };
+    const ids = (found.items || []).map((x: any) => x.id?.videoId).filter((id: any) => typeof id === 'string' && !blocked.has(id));
+    if (!ids.length) { detail = `"${q}": sonuç yok`; continue; }
+    const details = new URL('https://www.googleapis.com/youtube/v3/videos');
+    for (const [k, v] of Object.entries({ part: 'snippet,contentDetails,status,statistics', id: ids.join(','), key: env.YOUTUBE_API_KEY })) details.searchParams.set(k, v);
+    const det = await fetchYoutubeMetadata(details);
+    if (!det) return { status: 'ERROR', reason: 'YOUTUBE_DETAILS_FAILED' };
+    const available = det.items.filter((v: any) => youtubeCandidateAvailable(v) && !blocked.has(v.id));
+    cands = available.map((v: any) => {
+      const duration = iso(v.contentDetails?.duration);
+      const chapter = matchChapter(parseChapters(v.snippet?.description || '', duration), keys);
+      const titleHit = overlap(stems(v.snippet?.title || ''), keys);
+      return { id: v.id as string, title: String(v.snippet?.title || 'Konu anlatımı').slice(0, 200), channel: String(v.snippet?.channelTitle || '').slice(0, 120), duration, chapter, titleHit, views: Number(v.statistics?.viewCount || 0) };
+    }).filter((c: any) => c.duration >= MIN_VIDEO && c.duration <= MAX_VIDEO)
+      .sort((a: any, b: any) => ((b.chapter ? 2 : 0) + b.titleHit + Math.log10(b.views + 1) / 3) - ((a.chapter ? 2 : 0) + a.titleHit + Math.log10(a.views + 1) / 3));
+    detail = `"${q}": ${ids.length} sonuç, ${available.length} güvenli, ${cands.length} uygun süreli`;
+    if (cands.length) break;
+  }
+  if (!cands.length) return { status: 'NOT_FOUND', reason: detail.includes('sonuç yok') ? 'NO_CANDIDATE' : 'NO_SAFE_CANDIDATE', detail };
 
   const save = async (c: any, start: number, end: number, method: 'GEMINI' | 'CHAPTER' | 'SHORT_TITLE', confidence: number) => {
     await env.DB.prepare(`INSERT INTO outcome_auto_videos(id,outcome_id,youtube_video_id,title,channel_title,duration_seconds,start_seconds,end_seconds,method,confidence,search_query) VALUES(?,?,?,?,?,?,?,?,?,?,?)`)
@@ -161,7 +181,7 @@ export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ s
   };
 
   // 1. Gemini watches up to two of the best candidates and gives the exact part
-  let geminiTried = false;
+  let geminiTried = false; const verdicts: string[] = [];
   if (env.GEMINI_API_KEY) {
     let spent = u.gemini_seconds;
     for (const c of cands.slice(0, 2)) {
@@ -169,7 +189,8 @@ export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ s
       geminiTried = true; spent += c.duration;
       await spend(env, 0, 1, c.duration);
       const answer = await askGemini(env, c.id, o);
-      if (answer === 'LIMIT') break;
+      if (answer === 'LIMIT') { detail = 'Gemini kotası'; break; }
+      verdicts.push(answer ? `${c.id}: covers=${answer.covers} suitable=${answer.suitable} conf=${answer.confidence} ${answer.start ?? ''}-${answer.end ?? ''}` : `${c.id}: yanıt yok`);
       const clip = acceptGemini(answer, c.duration);
       if (clip) return save(c, clip.start, clip.end, 'GEMINI', clip.confidence);
     }
@@ -180,7 +201,7 @@ export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ s
   // 3. a short video whose title clearly names the outcome is itself the segment
   const short = cands.find((c: any) => c.duration <= SHORT_VIDEO && c.titleHit >= Math.min(3, Math.max(2, keys.length)));
   if (short) return save(short, 0, short.duration, 'SHORT_TITLE', 0.6);
-  return { status: 'NOT_FOUND', reason: 'NO_SEGMENT', geminiTried };
+  return { status: 'NOT_FOUND', reason: 'NO_SEGMENT', geminiTried, detail: [detail, ...verdicts].join(' | ') };
 }
 
 /** Ask for an outcome to be searched (a learner needed it, or a teacher removed its video). */
@@ -191,7 +212,7 @@ export async function enqueueOutcome(env: Env, outcomeId: string, priority = 10,
     .bind(outcomeId, priority, force ? 1 : 0, force ? 1 : 0).run();
 }
 
-/** Cron: search the next outcome(s). Needed outcomes first, then every outcome once; misses are retried later. */
+/** Cron: search the next outcome(s). Needed outcomes first, then outcomes with questions, grades 8→5, Matematik/Fen/Türkçe first; misses are retried later. */
 export async function runOutcomeVideoQueue(env: Env, max = 1) {
   if (!env.YOUTUBE_API_KEY) return 0;
   let done = 0;
@@ -202,7 +223,8 @@ export async function runOutcomeVideoQueue(env: Env, max = 1) {
       next = await one<any>(env.DB.prepare(`SELECT o.id outcome_id FROM outcomes o WHERE o.active=1 AND coalesce(o.node_type,'OUTCOME')='OUTCOME'
         AND NOT EXISTS (SELECT 1 FROM outcome_video_queue q WHERE q.outcome_id=o.id)
         AND NOT EXISTS (SELECT 1 FROM video_links vl WHERE vl.outcome_id=o.id AND vl.link_type='TOPIC' AND vl.approved=1)
-        ORDER BY o.grade_level,o.subject_id,o.code,o.id LIMIT 1`));
+        ORDER BY EXISTS (SELECT 1 FROM question_outcomes qo WHERE qo.outcome_id=o.id) DESC, CASE WHEN o.grade_level BETWEEN 5 AND 8 THEN 0 ELSE 1 END, o.grade_level DESC,
+          CASE WHEN (SELECT s.name FROM subjects s WHERE s.id=o.subject_id) IN ('Matematik','Fen Bilimleri','Türkçe') THEN 0 ELSE 1 END, o.subject_id,o.code,o.id LIMIT 1`));
       if (!next) break;
       await enqueueOutcome(env, next.outcome_id, 0);
     }
@@ -211,7 +233,7 @@ export async function runOutcomeVideoQueue(env: Env, max = 1) {
     // a miss without Gemini's look is tried again soon (Gemini may have a free quota tomorrow); a real miss after 60 days
     const retryDays = r.status === 'FOUND' ? null : r.status === 'ERROR' ? 1 : r.reason === 'NO_SEGMENT' && !r.geminiTried ? (env.GEMINI_API_KEY ? 2 : 14) : 60;
     await env.DB.prepare(`UPDATE outcome_video_queue SET status=?,attempts=attempts+1,last_reason=?,next_try_at=?,updated_at=CURRENT_TIMESTAMP WHERE outcome_id=?`)
-      .bind(r.status, r.reason, retryDays == null ? null : new Date(Date.now() + retryDays * 86400_000).toISOString().replace('T', ' ').slice(0, 19), next.outcome_id).run();
+      .bind(r.status, (r.detail ? `${r.reason} · ${r.detail}` : r.reason).slice(0, 600), retryDays == null ? null : new Date(Date.now() + retryDays * 86400_000).toISOString().replace('T', ' ').slice(0, 19), next.outcome_id).run();
     done++;
   }
   return done;
