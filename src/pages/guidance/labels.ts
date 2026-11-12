@@ -23,3 +23,14 @@ export const nowLocal = () => {
   return { date: `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`, time: `${p(d.getHours())}:${p(d.getMinutes())}` };
 };
 export const properCase = (name?: string | null) => (name || '').toLocaleLowerCase('tr-TR').replace(/(^|\s)(\S)/g, (_, s, c) => s + c.toLocaleUpperCase('tr-TR'));
+
+// R2 — haftalık program
+export const SOURCE: Record<string, string> = { MAVI_FOY: 'Mavi Föy', KIRMIZI_FOY: 'Kırmızı Föy', DEJAVU: 'Dejavu', SIFIR_HATA: 'Sıfır Hata', OKUL_KITABI: 'Okul kitabı', ANUNEX: 'ANUNEX', DIGER: 'Diğer' };
+export const DAY: Record<number, string> = { 1: 'Pazartesi', 2: 'Salı', 3: 'Çarşamba', 4: 'Perşembe', 5: 'Cuma', 6: 'Cumartesi', 7: 'Pazar' };
+export const DAY_SHORT: Record<number, string> = { 1: 'Pzt', 2: 'Sal', 3: 'Çar', 4: 'Per', 5: 'Cum', 6: 'Cmt', 7: 'Paz' };
+export const ORIGIN: Record<string, string> = { SYSTEM: 'Sistem', COUNSELOR: 'Rehber', TEACHER: 'Branş öğretmeni', STUDENT: 'Kendi hedefim' };
+export const KIND_LABEL: Record<string, string> = { WEAK: 'Eksik kazanım', WORKSHEET: 'Föy', SUPPORT: 'Destek döngüsü', REVIEW: 'Tekrar', TEACHER: 'Ders hedefi', OWN: 'Kendi hedefim', EXTRA: 'Ek' };
+export const mondayOf = (date: string) => { const d = new Date(`${date}T12:00:00Z`); const dow = (d.getUTCDay() + 6) % 7; d.setUTCDate(d.getUTCDate() - dow); return d.toISOString().slice(0, 10); };
+export const plusDays = (date: string, n: number) => { const d = new Date(`${date}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+export const weekLabel = (monday: string) => { const a = new Date(`${monday}T12:00:00Z`), b = new Date(`${plusDays(monday, 6)}T12:00:00Z`); return `${a.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })} – ${b.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}`; };
+export const pct = (x?: number | null) => (x == null ? '—' : `%${Math.round(x * 100)}`);
