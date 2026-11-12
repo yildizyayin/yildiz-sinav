@@ -96,20 +96,54 @@ async function spend(env: Env, searches: number, geminiCalls: number, geminiSeco
 }
 
 // ------------------------------------------------------------------ Gemini (free tier; public YouTube link + outcome text only)
-async function askGemini(env: Env, videoId: string, o: any): Promise<any | 'LIMIT' | null> {
+// Google retires model names for new keys (12 Nov 2026: "gemini-2.5-flash is no longer available to new users").
+// So the alias for the newest flash is tried first; if refused, the model Google names, else the newest plain
+// "gemini-X-flash" in the key's own model list.
+let geminiModel: string | null = null;
+export function resetGeminiModel() { geminiModel = null; }
+export function pickFlashModel(models: any[]): string | null {
+  const ok = (models || []).filter((m) => (m?.supportedGenerationMethods || []).includes('generateContent'))
+    .map((m) => String(m.name || '').replace(/^models\//, '')).filter((n) => /^gemini-\d+(\.\d+)?-flash$/.test(n))
+    .sort((a, b) => parseFloat(b.slice(7)) - parseFloat(a.slice(7)));
+  return ok[0] || null;
+}
+/** Google's own alias for the newest flash model first; only when it is refused is the key's model list read. */
+async function resolveGeminiModel(env: Env, list = false): Promise<string> {
+  if (env.GEMINI_MODEL) return env.GEMINI_MODEL;
+  if (geminiModel && !list) return geminiModel;
+  if (!list) return 'gemini-flash-latest';
+  try {
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200', { headers: { 'x-goog-api-key': env.GEMINI_API_KEY! }, signal: AbortSignal.timeout(15_000) });
+    if (res.ok) return pickFlashModel(((await res.json()) as any)?.models) || 'gemini-flash-latest';
+  } catch { /* fall through */ }
+  return 'gemini-flash-latest';
+}
+
+async function askGemini(env: Env, videoId: string, o: any, retried = false): Promise<any | 'LIMIT' | null> {
   const prompt = `Bu YouTube videosu Türkiye'de ${o.grade_level ? `${o.grade_level}. sınıf ` : ''}öğrencilerine "${o.subject_name || ''}" dersinin şu kazanımını öğretmek için kullanılacak:
 ${o.code ? `${o.code} ` : ''}${o.title}${o.topic ? `\nKonu: ${o.topic}${o.subtopic ? ` / ${o.subtopic}` : ''}` : ''}
 Videoyu izle ve bu kazanımın doğrudan anlatıldığı tek, kesintisiz bölümü bul. Bölüm en az 30 saniye, en fazla 20 dakika olsun.
 Yalnız şu JSON'u ver: {"covers": true ya da false, "start": "MM:SS", "end": "MM:SS", "confidence": 0 ile 1 arası, "suitable": true ya da false}
 covers: video bu kazanımı gerçekten anlatıyor mu (yalnız adı geçiyorsa false). suitable: dil ve içerik okul çağındaki bir öğrenciye uygun mu (argo, şiddet, uygunsuz içerik yoksa true). Emin değilsen covers false ver.`;
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${env.GEMINI_MODEL || 'gemini-2.5-flash'}:generateContent`, {
+    const model = await resolveGeminiModel(env);
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY! },
       body: JSON.stringify({ contents: [{ parts: [{ fileData: { fileUri: `https://www.youtube.com/watch?v=${videoId}` } }, { text: prompt }] }], generationConfig: { responseMimeType: 'application/json', temperature: 0, mediaResolution: 'MEDIA_RESOLUTION_LOW' } }),
       signal: AbortSignal.timeout(180_000),
     });
     if (res.status === 429 || res.status === 403) return 'LIMIT';
-    if (!res.ok) { const body = await res.text().catch(() => ''); return { __error: `HTTP ${res.status} ${body.replace(/\s+/g, ' ').slice(0, 160)}` }; }
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      if (res.status === 404 && !retried && !env.GEMINI_MODEL) {
+        // the model was retired: take the one Google names in the error, else list again
+        const named = body.match(/use (?:models\/)?(gemini-[A-Za-z0-9.-]+)/)?.[1]?.replace(/[.-]+$/, "");
+        geminiModel = named && named !== model ? named : null;
+        if (!geminiModel) geminiModel = await resolveGeminiModel(env, true).then((m) => (m === model ? null : m));
+        if (geminiModel) return askGemini(env, videoId, o, true);
+      }
+      return { __error: `HTTP ${res.status} ${model} ${body.replace(/\s+/g, ' ').slice(0, 160)}` };
+    }
     const data: any = await res.json();
     const out = data?.candidates?.[0]?.content?.parts?.map((p: any) => p.text || '').join('') || '';
     try { return JSON.parse(out.replace(/^```(?:json)?|```$/g, '').trim()); } catch { return { __error: `yanıt okunamadı: ${(out || data?.promptFeedback?.blockReason || data?.candidates?.[0]?.finishReason || 'boş').toString().slice(0, 120)}` }; }
