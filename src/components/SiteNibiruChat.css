@@ -27,5 +27,5 @@
 @keyframes site-nibiru-dot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
 @keyframes site-nibiru-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @keyframes site-nibiru-float{0%,100%{transform:translateY(-6px)}50%{transform:translateY(10px)}}
-@media(max-width:540px){.site-nibiru-launcher{left:14px;bottom:14px;height:48px}.site-nibiru-panel{left:8px;right:8px;bottom:8px;width:auto;height:calc(100dvh - 16px)}}
+@media(max-width:540px){.site-nibiru-launcher{left:14px;bottom:14px;height:48px;width:48px;padding:0;justify-content:center}.site-nibiru-launcher>span:last-child:not(:first-child){position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.site-nibiru-panel{left:8px;right:8px;bottom:8px;width:auto;height:calc(100dvh - 16px)}}
 @media(prefers-reduced-motion:reduce){.site-nibiru-launcher,.site-nibiru-panel,.site-nibiru-msg,.site-nibiru-msg.typing i,.nibiru-live-stage>.nibiru-brand-lockup{animation:none!important}}

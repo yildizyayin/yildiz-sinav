@@ -115,7 +115,7 @@
   .sg-hero{grid-template-columns:1fr;padding:20px}
   .sg-net>strong{font-size:56px}
   .sg-stats strong{font-size:17px}
-  .sg-bars{height:64px}.sg-bars i{max-height:56px}.sg-bars span{display:none}
+  .sg-bars{height:80px}.sg-bars i{max-height:52px}.sg-bars span{font-size:11px}
   .sg-hero-link{justify-self:stretch;justify-content:center;border-radius:14px;background:var(--sg-soft)}
   .sg-pill{display:none}
 }

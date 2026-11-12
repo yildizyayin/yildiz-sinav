@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, BarChart3, BookOpen, BookOpenCheck, BrainCircuit, Building2, CalendarClock, Camera, Check, CheckCircle2, ChevronRight, ClipboardCheck, FileText, Gamepad2, GraduationCap, HeartHandshake, Layers3, LineChart, LockKeyhole, MapPin, MessageCircle, Mic2, Monitor, Network, Phone, PlayCircle, ScanLine, Send, ShieldCheck, Sparkles, Target, Trophy, UserRoundCheck, Users, Volume2 } from 'lucide-react';
 import { AnunexBrand } from '../components/AnunexBrand';
 import { NibiruMark } from '../components/NibiruMark';
+import { PilotApplicationForm } from '../components/PilotApplicationForm';
 import { SITE_NIBIRU_OPEN_EVENT, SiteNibiruChat } from '../components/SiteNibiruChat';
 import './marketing-home.css';
 import './marketing-premium.css';
@@ -122,7 +123,7 @@ export function MarketingHome(){
           <div className="hero-kicker"><NibiruMark size={24} state="active"/><span>Nibiru AI destekli ölçme ve analiz platformu</span></div>
           <h1>Ölçmenin ötesinde.<br/><em>Her öğrenci için yön.</em></h1>
           <p>ANUNEX; optik cevap yakalamadan kazanım analizine, kişiselleştirilmiş öğrenmeden rehberliğe kadar okulun akademik kararlarını tek ve güvenli bir sistemde birleştirir.</p>
-          <div className="hero-actions"><a className="marketing-button" href={PHONE_URL}>Tanıtım için arayın <ArrowRight size={18}/></a><a className="marketing-button secondary" href="#roller">Panelleri Gör <ChevronRight size={18}/></a></div>
+          <div className="hero-actions"><a className="marketing-button" href={PHONE_URL}>Tanıtım için arayın <ArrowRight size={18}/></a><a className="marketing-button secondary" href="#pilot">Pilot okul başvurusu <ChevronRight size={18}/></a><a className="marketing-button secondary" href="#roller">Panelleri Gör <ChevronRight size={18}/></a></div>
           <div className="hero-assurances"><span><Check/> 2027–2028 Maarif Modeli programlarıyla</span><span><Check/> KVKK odaklı mimari</span><span><Check/> Web ve mobil</span></div>
         </div>
         <div className="hero-product" aria-label="ANUNEX platform görünümü">
@@ -194,17 +195,15 @@ export function MarketingHome(){
           </article>
           <article className="youtube-learning-story">
             <div className="youtube-result-head"><div><span>ANUNEX · SINAV SONUCU</span><h3>Matematik · Çarpanlar ve Katlar</h3><p>Aras Bulut bu kazanımda 4 sorunun 2’sinde desteğe ihtiyaç duyuyor.</p></div><span className="yt-score">2 / 4</span></div>
-            <div className="nibiru-video-advice"><NibiruMark size={40} state="thinking" title="Nibiru"/><div><strong>Nibiru önerisi</strong><p>Önce 4 dakika 18 saniyelik öğretmen onaylı özeti izlemeni öneriyorum. Ardından sana üç kısa kontrol sorusu hazırlayacağım.</p></div></div>
+            <div className="nibiru-video-advice"><NibiruMark size={40} state="thinking" title="Nibiru"/><div><strong>Nibiru önerisi</strong><p>Önce bu kazanımın anlatıldığı 4 dakikalık bölümü izlemeni öneriyorum. Ardından sana üç kısa kontrol sorusu hazırlayacağım.</p></div></div>
             <div className="video-candidate-list">
               {[
-               ['01','Çarpanlar ve Katlar · Hızlı Konu Özeti','4:18','1,2 Mn izlenme','Öğretmen onaylı','ÖNERİLEN'],
-               ['02','Asal Çarpanlara Ayırma · Pratik Yöntem','6:42','846 B izlenme','MEB kazanımıyla uyumlu',''],
-               ['03','EBOB–EKOK Mantığını Anlayalım','8:05','2,1 Mn izlenme','Yaş düzeyine uygun',''],
-               ['04','Yeni Nesil Çarpanlar Soruları','7:24','623 B izlenme','Soru çözümü',''],
-               ['05','Çarpanlar · 5 Dakikada Tekrar','5:11','504 B izlenme','Kısa tekrar','']
-              ].map(([no,title,duration,views,trust,badge])=><button type="button" className={badge?'recommended':''} key={no}><span className="yt-thumb"><PlayCircle/><small>{duration}</small></span><span className="yt-copy"><small>{no} · {trust}</small><strong>{title}</strong><em>{views}</em></span>{badge&&<b>{badge}</b>}<ChevronRight/></button>)}
+               ['01','Çarpanlar ve Katlar · Konu Özeti','4:18','Videonun tamamı','Yayının videosu','ÖNERİLEN'],
+               ['02','Asal Çarpanlara Ayırma · Pratik Yöntem','6:42','Videonun tamamı','Okulunun eklediği video',''],
+               ['03','EBOB–EKOK Mantığını Anlayalım','3:55','12:40’lık videonun 2:10–6:05 arası','YouTube · kazanımın bölümü','']
+              ].map(([no,title,duration,part,source,badge])=><button type="button" className={badge?'recommended':''} key={no}><span className="yt-thumb"><PlayCircle/><small>{duration}</small></span><span className="yt-copy"><small>{no} · {source}</small><strong>{title}</strong><em>{part}</em></span>{badge&&<b>{badge}</b>}<ChevronRight/></button>)}
             </div>
-            <div className="youtube-policy"><ShieldCheck/><p><strong>Beş aday nasıl seçilir?</strong> Önce yayınevinin kendi çözümü; yoksa kazanım eşleşmesi, yaş düzeyi, süre, popülerlik, kanal güvenilirliği ve öğretmen onayı birlikte değerlendirilir. Kurum isterse yalnız kendi onaylı kanal listesini açar.</p></div>
+            <div className="youtube-policy"><ShieldCheck/><p><strong>Video nasıl seçilir?</strong> Önce yayının ya da sistemin videosu; yoksa okulunuzun öğretmeninin eklediği video; o da yoksa YouTube’dan yalnız bu kazanımın anlatıldığı bölüm. Güvenli arama açıktır, yaş sınırlı videolar elenir; öğretmen uygun bulmadığı videoyu kaldırır. <em>Görünüm örnektir.</em></p></div>
           </article>
         </div>
       </section>
@@ -213,6 +212,7 @@ export function MarketingHome(){
 
       <section className="security-section" id="guven"><div className="security-mark"><ShieldCheck/></div><div><span>GÜVEN, SONRADAN EKLENEN BİR ÖZELLİK DEĞİL</span><h2>Okul verisi okulun sorumluluğudur.<br/><em>ANUNEX bunu ciddiye alır.</em></h2></div><div className="security-points"><p><Check/> Kurum ve rol bazlı erişim sınırları</p><p><Check/> Hassas işlemler için denetim kayıtları</p><p><Check/> Kamera ve optik süreçlerinde veri minimizasyonu</p><p><Check/> Saklama, silme ve dışa aktarma yaşam döngüsü</p></div></section>
 
+      <section className="pilot-section" id="pilot"><PilotApplicationForm/></section>
       <section className="contact-section" id="iletisim"><div><span>ANUNEX’İ KURUMUNUZDA GÖRÜN</span><h2>Aradığınız sistemin<br/><em>gerçekte nasıl çalıştığını konuşalım.</em></h2><p>İhtiyacınızı dinleyelim; kurum yapınıza uygun modülleri ve kurulum planını birlikte oluşturalım.</p></div><div className="contact-cards"><a href={PHONE_URL}><Phone/><span><small>Telefon</small><strong>{PHONE_DISPLAY}</strong></span><ArrowRight/></a><a href={WHATSAPP_URL} target="_blank" rel="noreferrer"><MessageCircle/><span><small>WhatsApp</small><strong>Hemen bilgi alın</strong></span><ArrowRight/></a><div><MapPin/><span><small>Merkez</small><strong>Kartal / İSTANBUL</strong></span></div></div></section>
 
       <section className="final-cta"><div className="cta-orb"><NibiruMark size={120} state="speaking"/></div><AnunexBrand inverse tagline/><h2>Akademik gelişimi<br/>tek yörüngede buluşturun.</h2><p>Hayal edilen özellikleri anlatmakla kalmıyoruz. Optikten kişisel öğrenmeye, Nibiru’dan kurum yönetimine kadar aynı sistem içinde çalıştırıyoruz.</p><div><a className="marketing-button light" href={PHONE_URL}>Tanıtım için arayın <ArrowRight size={18}/></a><a className="marketing-button ghost" href={WHATSAPP_URL} target="_blank" rel="noreferrer">İletişime Geç</a></div></section>

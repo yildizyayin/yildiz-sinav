@@ -66,3 +66,10 @@
 .nibiru-note{margin:12px 0 0;font-size:13px;line-height:1.5;color:rgba(214,228,255,.78)}
 @media(max-width:820px){.product-mobile.real-shot{display:none}.product-window.real-shot{height:auto;aspect-ratio:1366/860}.hero-product{height:auto;margin-top:28px}}
 @media(max-width:540px){.hero-product{justify-content:center}.product-window.real-shot{display:none}.product-mobile.real-shot{display:block;position:relative;right:auto;bottom:auto;transform:none;width:230px;height:470px}}
+/* 12 Nov 2026 — 360px phones: grid children must be allowed to shrink, or long lines push the section past the screen */
+@media(max-width:900px){.nibiru-planet-section>*,.nibiru-planet-section .nibiru-copy,.nibiru-planet-section .nibiru-stage,.real-story-grid>*,.whatsapp-phone-story>*,.youtube-learning-story,.youtube-learning-story *,.video-candidate-list>button{min-width:0;max-width:100%}.nibiru-copy h2,.nibiru-copy p,.story-explain h3,.youtube-learning-story h3,.youtube-learning-story p{overflow-wrap:anywhere}}
+@media(max-width:540px){.marketing-header nav{flex-wrap:wrap;justify-content:center;overflow-x:visible;row-gap:4px}}
+@media(max-width:700px){.whatsapp-phone-story{grid-template-columns:1fr}}
+@media(max-width:540px){.nibiru-tabs,.role-switcher{flex-wrap:wrap!important;overflow-x:visible!important;justify-content:center}.nibiru-tabs button,.role-switcher button{min-width:0!important;white-space:nowrap}}
+.pilot-section{padding:20px max(20px,calc((100vw - 1330px)/2)) 80px;scroll-margin-top:90px}
+@media(max-width:540px){.hero-actions{flex-wrap:wrap}.hero-actions .marketing-button{flex:1 1 100%;justify-content:center}}

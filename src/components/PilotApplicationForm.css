@@ -1,0 +1,19 @@
+.pilot-form{display:grid;gap:14px;max-width:760px;margin:0 auto;padding:28px;border:1px solid #dce5f3;border-radius:26px;background:#fff;box-shadow:0 24px 60px rgba(16,42,85,.10);color:#07143f;min-width:0}
+.pilot-form h3{margin:0;font-size:24px}
+.pilot-lead{margin:0;color:#4a5876;font-size:15px;line-height:1.55}
+.pilot-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pilot-grid label{display:grid;gap:5px;font-size:13px;font-weight:700;color:#34445f;min-width:0}
+.pilot-grid .wide{grid-column:1/-1}
+.pilot-grid input,.pilot-grid select,.pilot-grid textarea{width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;border:1px solid #d3dcec;border-radius:12px;font:inherit;font-weight:500;color:#07143f;background:#fbfcff}
+.pilot-grid textarea{resize:vertical}
+.pilot-hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+.pilot-kvkk{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#34445f;line-height:1.5}
+.pilot-kvkk input{width:20px;height:20px;margin-top:1px;flex:0 0 auto}
+.pilot-link{border:0;background:none;padding:0;color:#1d4ed8;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
+.pilot-notice{padding:12px 14px;border-radius:14px;background:#f4f7fd;font-size:12.5px;line-height:1.55;color:#34445f}
+.pilot-notice p{margin:0 0 8px}.pilot-notice p:last-child{margin:0}
+.pilot-error{padding:10px 12px;border-radius:12px;background:#fff1f0;color:#b42318;font-size:14px}
+.pilot-form>.marketing-button{justify-self:start}
+.pilot-done{text-align:center;justify-items:center;color:#0f6b3a}
+.pilot-done h3{color:#07143f}.pilot-done p{margin:0;color:#4a5876}
+@media(max-width:600px){.pilot-form{padding:20px 16px;border-radius:20px}.pilot-grid{grid-template-columns:1fr}.pilot-form>.marketing-button{justify-self:stretch;justify-content:center}}
