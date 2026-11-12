@@ -15,11 +15,11 @@
       "ING": 178,
       "DIN": 18
     },
-    "draftQuestions": 1200,
+    "draftQuestions": 1250,
     "approvedQuestions": 0,
-    "unstartedOutcomes": 320,
-    "draftOutcomes": 24,
-    "outstandingDraftQuestions": 16000
+    "unstartedOutcomes": 319,
+    "draftOutcomes": 25,
+    "outstandingDraftQuestions": 15950
   },
   "sourceInventory": {
     "math": "data/question-full-math-target-2028.json",
@@ -1906,10 +1906,25 @@
       "repeatThemeCount": 1,
       "targetCount": 50,
       "approvedCount": 0,
-      "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
+      "storedInThisBranch": 50,
+      "reviewStatus": "DRAFT_NEEDS_VISUAL_SCIENTIFIC_AND_TEACHER_REVIEW",
       "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "priorDraftCount": 0,
+      "draftFilePaths": [
+        "data/question-import-drafts/grade5/FB512_part01_25_questions.json",
+        "data/question-import-drafts/grade5/FB512_part02_25_questions.json"
+      ],
+      "supplementaryPerformanceTasksFile": "data/question-import-drafts/grade5/FB512_10_performance_tasks_review_only.json",
+      "visualAssetFiles": [
+        "data/question-import-drafts/grade5/assets/FEN112_01_lunar_crater_surface.svg",
+        "data/question-import-drafts/grade5/assets/FEN112_02_orbit_near_face.svg",
+        "data/question-import-drafts/grade5/assets/FEN112_03_rotation_orbit_table.svg",
+        "data/question-import-drafts/grade5/assets/FEN112_04_earth_moon_size.svg",
+        "data/question-import-drafts/grade5/assets/FEN112_05_2026_crater_context.svg"
+      ],
+      "visualDependentDraftCount": 23,
+      "realPhotographsAttached": 0,
+      "visualReviewStatus": "ORIGINAL_DIAGRAMS_UNAPPROVED"
     },
     {
       "gradeLevel": 5,
@@ -5781,7 +5796,9 @@
     "data/question-import-drafts/grade5/MAT562_part01_25_questions.json",
     "data/question-import-drafts/grade5/MAT562_part02_25_questions.json",
     "data/question-import-drafts/grade5/FB511_part01_25_questions.json",
-    "data/question-import-drafts/grade5/FB511_part02_25_questions.json"
+    "data/question-import-drafts/grade5/FB511_part02_25_questions.json",
+    "data/question-import-drafts/grade5/FB512_part01_25_questions.json",
+    "data/question-import-drafts/grade5/FB512_part02_25_questions.json"
   ],
   "status": "IN_PROGRESS_MATH_DRAFT_FILLED_FEN_STARTED",
   "lastCheckedAt": "2026-11-12"
