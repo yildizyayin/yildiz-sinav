@@ -53,3 +53,7 @@
 @media(max-width:520px){.gt-ab{grid-template-columns:1fr}}
 .gd-form>label,.gd-form .two>label{display:grid;gap:6px;align-content:start}
 .gd-form textarea{width:100%}
+.gd-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:4px 0 8px}
+.gd-kpis>div{display:grid;gap:2px;padding:12px 14px;border:1px solid var(--line,#e3e6ee);border-radius:14px;background:var(--surface,#fff)}
+.gd-kpis b{font-size:1.4rem}
+.gd-kpis span{font-size:.85rem;color:var(--muted,#6b7280)}
