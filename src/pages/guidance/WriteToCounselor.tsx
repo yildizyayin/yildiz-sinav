@@ -4,6 +4,7 @@ import { useAuth } from '../../auth';
 import { MESSAGE_CATEGORY, MESSAGE_STATUS, dateTr, properCase } from './labels';
 import './guidance.css';
 import { SurveyInbox } from './ToolsViews';
+import { SharedResources } from './ContentViews';
 
 /**
  * "Rehber öğretmenime yaz" (owner, 12 Nov 2026): a student (by name or without one), a parent about their own child
@@ -54,6 +55,7 @@ export function WriteToCounselor() {
       <div className="gd-actions"><button className="primary" type="button" disabled={busy || body.trim().length < 3 || (role === 'PARENT' && !studentId)} onClick={send}>Gönder</button></div>
     </section>
     {role !== 'STUDENT' && <SurveyInbox />}
+    <SharedResources />
     {mine?.messages?.length > 0 && <section className="gd-card"><h2>Gönderdiklerim</h2><ul className="gd-list">{mine.messages.map((m: any) => <li key={m.id} className="gd-item">
       <div className="row"><strong>{MESSAGE_CATEGORY[m.category]}{m.student && role !== 'STUDENT' ? ` · ${properCase(m.student)}` : ''}</strong><span className="gd-chip">{MESSAGE_STATUS[m.status]}</span></div><p>{m.body}</p><small>{dateTr(m.created_at)}</small></li>)}</ul></section>}
   </div>;

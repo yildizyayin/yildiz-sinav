@@ -1,3 +1,4 @@
+import { BreakReminder } from '../components/universe/BreakReminder';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
@@ -29,6 +30,7 @@ export function UniversePlay() {
   if (result) return <><UniverseResults data={result} /><div style={{ textAlign: 'center', marginTop: 12 }}><Link className="primary" to="/evren">Haritaya dön</Link></div></>;
   if (!data) return <div className="panel">Hazırlanıyor…</div>;
   return <>
+    <div style={{ maxWidth: 760, margin: '0 auto 12px' }}><BreakReminder /></div>
     <div className="page-head" style={{ maxWidth: 760, margin: '0 auto' }}><div><span className="eyebrow">{data.session.template.title}{data.session.mode === 'REVIEW' ? ' · tekrar' : ''}</span><h1 style={{ fontSize: 'clamp(18px,3vw,24px)' }}>{data.session.outcome.code} · {data.session.outcome.title}</h1></div></div>
     <UniversePlayer data={data} onDone={setResult} />
   </>;

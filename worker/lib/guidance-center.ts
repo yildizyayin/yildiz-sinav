@@ -10,6 +10,7 @@ import type { AuthUser, Env } from '../types';
 import { all, audit, json, one, uuid } from './db';
 import { guidanceStudentIds } from './guidance-records';
 import { programWarnings } from './guidance-program';
+import { screenWarnings } from './guidance-content';
 
 const fail = (status: number, code: string, message: string) => json({ ok: false, error: { code, message } }, status);
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -70,6 +71,7 @@ export async function computeWarnings(env: Env, studentIds: string[], today = is
   const msgs = await all<{ student_id: string; n: number; urgent: number }>(env.DB.prepare(`SELECT student_id,count(*) n,max(urgent) urgent FROM guidance_messages WHERE student_id IN (${m}) AND status<>'CLOSED' GROUP BY student_id`).bind(...studentIds));
   for (const g of msgs) out.push({ studentId: g.student_id, key: 'MESSAGE', level: g.urgent ? 'HIGH' : 'MEDIUM', reason: g.urgent ? 'Acil olarak işaretlenen bir rehberlik mesajı var.' : `${g.n} açık rehberlik mesajı var.` });
   out.push(...await programWarnings(env, studentIds, today));
+  out.push(...await screenWarnings(env, studentIds));
   const actions = await all<{ student_id: string; signal_key: string; action: string; until_date: string | null }>(env.DB.prepare(`SELECT student_id,signal_key,action,until_date FROM guidance_warning_actions WHERE student_id IN (${m})`).bind(...studentIds));
   const act = new Map(actions.map((a) => [`${a.student_id}|${a.signal_key}`, a]));
   return out.filter((w) => {
@@ -110,6 +112,7 @@ async function studentFile(env: Env, user: AuthUser, studentId: string) {
   const exams = await all<any>(env.DB.prepare(`SELECT e.title,e.exam_date,snap.net,snap.score FROM exam_result_snapshots snap JOIN exam_delivery_profiles p ON p.exam_id=snap.exam_id AND p.snapshot_version=snap.snapshot_version JOIN exams e ON e.id=snap.exam_id
     WHERE snap.student_id=? AND p.result_freeze_status='PUBLISHED' AND p.published_at IS NOT NULL ORDER BY coalesce(e.exam_date,p.published_at) DESC LIMIT 6`).bind(studentId));
   const loops = await one<any>(env.DB.prepare(`SELECT sum(status='ACTIVE') active,sum(status='PASSED') passed,sum(status='TEACHER_REVIEW') review FROM nibiru_outcome_loops WHERE student_id=?`).bind(studentId));
+  const professions = await all<any>(env.DB.prepare(`SELECT p.title,t.priority FROM student_profession_targets t JOIN profession_catalog p ON p.code=t.profession_code WHERE t.student_id=? AND t.status='ACTIVE' ORDER BY t.priority`).bind(studentId)).catch(() => []);
   const target = await one<any>(env.DB.prepare(`SELECT target_type FROM student_academic_targets WHERE student_id=? AND status='ACTIVE' ORDER BY rowid DESC LIMIT 1`).bind(studentId)).catch(() => null);
   const signals = await all<any>(env.DB.prepare(`SELECT g.signal_key,g.score,g.created_at FROM guidance_development_signals g JOIN guidance_assessment_sessions ss ON ss.id=g.source_session_id AND ss.status='REVIEWED' WHERE g.student_id=? ORDER BY g.created_at DESC LIMIT 12`).bind(studentId));
   const assessments = await all<any>(env.DB.prepare(`SELECT ss.id,ss.status,ss.created_at,i.title FROM guidance_assessment_sessions ss JOIN guidance_assessment_instruments i ON i.id=ss.instrument_id WHERE ss.student_id=? ORDER BY ss.created_at DESC LIMIT 12`).bind(studentId));
@@ -119,7 +122,7 @@ async function studentFile(env: Env, user: AuthUser, studentId: string) {
   const privateCount = Number((await one<any>(env.DB.prepare('SELECT count(*) c FROM guidance_private_records WHERE student_id=?').bind(studentId)))?.c || 0);
   const warnings = (await computeWarnings(env, [studentId], today)).map((w) => ({ key: w.key, level: w.level, reason: w.reason, watched: !!w.watched }));
   await audit(env.DB, user.id, user.institution_id, 'GUIDANCE_FILE_READ', 'student', studentId, {});
-  return json({ ok: true, student: { id: s.id, name: `${s.first_name} ${s.last_name}`, number: s.student_number, grade: s.grade_level, className: s.class_name, parents, targetType: target?.target_type || null },
+  return json({ ok: true, student: { id: s.id, name: `${s.first_name} ${s.last_name}`, number: s.student_number, grade: s.grade_level, className: s.class_name, parents, targetType: target?.target_type || null, professions: professions.map((x: any) => x.title) },
     attendance: { days: 60, absent: Number(attendance?.absent || 0), late: Number(attendance?.late || 0), excused: Number(attendance?.excused || 0), total: Number(attendance?.total || 0) },
     exams, supportLoops: { active: Number(loops?.active || 0), passed: Number(loops?.passed || 0), review: Number(loops?.review || 0) },
     signals, assessments, meetings, messages, plan, privateRecordCount: privateCount, warnings });

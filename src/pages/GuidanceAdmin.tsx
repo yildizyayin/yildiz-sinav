@@ -3,6 +3,7 @@ import { CheckCircle2, ClipboardCheck, FileUp, Printer, RefreshCw, ShieldCheck, 
 import { api } from '../api';
 import { useAuth } from '../auth';
 import { GuidanceToolReview } from './guidance/ToolsViews';
+import { GuidanceContentReview } from './guidance/ContentViews';
 
 type Instrument = {
   id: string;
@@ -212,5 +213,6 @@ export function GuidanceAdmin() {
 
     <div className="alert warning"><Printer size={18} /><div><strong>Matbu baskı kuralı</strong><span>Form, mevcut Optik Form Tasarımcısı ve yayınlanmış FMT/optik sürümüyle basılır. Test cevap bloğu optik tanımında seçilen blok koduyla eşleşmelidir.</span></div></div>
     <GuidanceToolReview />
+    <GuidanceContentReview />
   </>;
 }

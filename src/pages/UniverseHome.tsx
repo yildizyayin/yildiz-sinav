@@ -1,3 +1,4 @@
+import { BreakReminder } from '../components/universe/BreakReminder';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, ClipboardList, Compass, Flame, RotateCcw, Sparkles, Target } from 'lucide-react';
@@ -26,6 +27,7 @@ export function UniverseHome() {
   const group = d.student.designGroup || 'B';
   const weekPct = Math.min(100, Math.round((d.week.done / Math.max(1, d.week.goal)) * 100));
   return <div className="um" data-group={group}>
+    <BreakReminder />
     <header className="um-hero">
       <div className="um-guide"><NibiruMark size={group === 'A' ? 64 : 48} state="active" title="" /><div><span className="um-kicker">Nibiru Öğrenme Evreni · {d.student.gradeLevel}. sınıf</span><h1>{GREETING[group]}</h1></div></div>
       <div className="um-stats">
