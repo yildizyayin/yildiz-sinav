@@ -12,15 +12,16 @@ Kazanım kazanım onay bekleme; 5. sınıfı **tek toplu iş** olarak yönet. He
 - Tam resmî süreç bileşenleri ile yayımlanabilir yıllık kapsam, örnek soru sayısı değil, uzman incelemesi gerektirir.
 
 ## Mevcut içerik
-- `FB511_part01/02_25_questions.json`: Fen 1. ünite ilk kazanım için 50 taslak, 22 görsel bağımlı soru. `assets/FEN111_01..06` altı temsili özgün SVG dosyasıdır, gerçek NASA fotoğrafı değildir. `FB511_visual_asset_manifest.json` görsel izin/kalite durumlarını taşır. Fen için ayrıca `FB511_10_performance_tasks_review_only.json` dosyasında 10 görev var. Toplam ek görev 158.
+- `FB511_part01/02_25_questions.json`: Fen 1. ünite ilk kazanım için 50 taslak, 22 görsel bağımlı soru. `assets/FEN111_01..06` altı temsili özgün SVG dosyasıdır, gerçek NASA fotoğrafı değildir. `FB511_visual_asset_manifest.json` görsel izin/kalite durumlarını taşır. Fen için ayrıca `FB511_10_performance_tasks_review_only.json` dosyasında 10 görev var. Toplam ek görev 168.
+- `FB512_part01/02_25_questions.json`: Fen 1. ünite ikinci kazanım için 50 taslak ve 23 görsele bağlı soru. `assets/FEN112_01..05` içinde 5 özgün temsili Ay SVG'si, `FB512_visual_asset_manifest.json` içinde görsel kaynağı/inceleme durumu, `FB512_10_performance_tasks_review_only.json` içinde 10 ek görev. Gerçek NASA fotoğrafı bağlı değildir; hem bilimsel hem medya hak incelemesi gerekiyor.
 - Resmî Fen 7. ünitesinde eksik `FB.5.7.1` kodu 12 Kasım 2026 tarihinde ana envantere ve kaynak kataloğuna eklendi. MEB resmî sayfa: https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/408. Eski 26/343 sayıları geçersizdir.
 - İngilizce çıktı başına 50 yerine azaltılmış beceri temelli içerik planı kullanıcı tarafından kabul edildi; İngilizce en son çalışılacağından 17.200 geçici genel hedef, İngilizce kota güncellemesinde ayrıca yeniden hesaplanacaktır.
 
 - `EXISTING_100_REVIEW_ONLY.json`: MAT.5.1.1 (PR #519, 50) ve MAT.5.1.2 (PR #522, 50) taslaklarını tek dosyada toplar.
 - `MAT513`–`MAT562` arasında tamamlanmış matematik kazanımlarının ikişer 25'lik JSON dosyaları `newDraftFiles` üzerinden takip edilir; hangi kazanımın dosyasının hazır olduğu için tek otorite `ALL_OUTCOMES_50_TARGET_MANIFEST.json` kaydıdır.
-- Şimdiye kadar 23 matematik kazanımının tamamında 50'şer **1.150 taslak çoktan seçmeli soru** ve ayrı olarak **148 rubrikli uygulama görevi** oluşturulmuştur. 148 uygulama görevi soru kotasına dahil değildir, mevcut MC aktarımı için uyumlu değildir.
+- Şimdiye kadar Matematikte 23 kazanıma 1.150, Fen Bilimleri ilk iki kazanıma 100 olmak üzere **1.250 taslak çoktan seçmeli soru** ve toplam **168 rubrikli ek uygulama görevi** oluşturulmuştur. 168 uygulama görevi soru kotasına dahil değildir, mevcut MC aktarımı için uyumlu değildir.
 - İlk 100 taslak `2026–2027` kaynağına dayanır; envanter `2027–2028` hedef sürümüdür. Resmî yıl/kod eşdeğerliği ayrıca doğrulanmalıdır. **Öğretmen onaylı soru bu çalışma kapsamında 0'dır.**
-- Genel hedef 17.200; hazırlanan 1.200, kalan **16.000 soru/görev henüz üretilmedi**.
+- Genel hedef 17.200; hazırlanan 1.250, kalan **15.950 soru/görev henüz üretilmedi**.
 - Resim/fotoğraf varlığı ya da medya hakkı onayı uydurulmaz; çizimler ve lisanslı fotoğraflar akademik ve telif incelemesinden sonra `question_assets` üzerinden bağlanır.
 
 ## Güncel kontrol kaydı
