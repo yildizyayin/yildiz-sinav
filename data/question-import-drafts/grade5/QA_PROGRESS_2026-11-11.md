@@ -1,5 +1,5 @@
 # ANUNEX 5. sınıf soru havuzu — toplu taslak kalite raporu
-**İnceleme tarihi:** 11 Kasım 2026  
+**Son inceleme tarihi:** 12 Kasım 2026  
 **Ana dal/PR:** `content/grade5-all-outcomes-bulk-20261111` / PR #525  
 **Durum:** Yalnız taslak dosyalar. **Akademik onay, D1 aktarımı ve deploy yapılmadı.**
 
@@ -8,11 +8,11 @@
 |---|---:|---:|---:|---:|
 | Türkçe | 80 | 4.000 | 0 | 0 |
 | Matematik | 23 | 1.150 | 1.150 | 0 |
-| Fen Bilimleri | 26 | 1.300 | 0 | 0 |
+| Fen Bilimleri | 27 | 1.350 | 50 | 0 |
 | Sosyal Bilgiler | 18 | 900 | 0 | 0 |
 | İngilizce | 178 | 8.900 | 0 | 0 |
 | Din Kültürü | 18 | 900 | 0 | 0 |
-| **Toplam** | **343** | **17.150** | **1.150** | **0** |
+| **Toplam** | **344** | **17.200** | **1.200** | **0** |
 
 ### Tam 50 taslağa ulaşan yirmi üç matematik çıktısı
 - MAT.5.1.1: 50, eski PR #519.
@@ -147,3 +147,11 @@ node scripts/grade5-question-bulk-audit.mjs --strict
 - Fen ünitesi için doğrulanmış **12 Ağustos 2026 tam Güneş tutulması** örneği: `https://www.nasa.gov/image-article/2026-total-solar-eclipse-in-spain/`. Bu olayın hareket/konum kazanımıyla eşleştirilmesi gerekir; Güneş'in kendi ekseninde dönüşünü kanıtlayan olgu gibi kullanılmaz. NASA görseli bile yayınlanmadan önce hak/kredi kontrolünden geçecek.
 - Mevcut 1.150 Matematik taslağına görüntü `assetId` eklenmedi, görsele bağımlı ve güncel gerçek haber içeren içerikler yeterince yok. **Matematik akademik/görsel kalite kapısı açık**; konu başına 50 kayıt bulunması bitmiş soru bankası anlamına gelmez.
 - Fen soruları görsel/dönem verisi olmadan yüksek kalite diye pazarlanmayacak. Kaynağı, tarihi ve lisansı açık, kullanımı doğrulanmış gerçek görseller veya denetlenmiş özgün SVG/vektör grafiklerle tamamlanacak. İlk PDF tekrar gözden geçirilerek yeni basıma uygun V2 seçkide bu eksikler giderilmeli.
+
+## 12 Kasım 2026 – Fen Bilimleri FB.5.1.1 yeni ilk gerçek paket
+- Resmî MEB: https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/367; çıktı 'Güneş’in yapısı ve dönme hareketi ile ilgili bilgi toplayabilme'. Araç seçme, veri bulma, doğrulama ve kaydetme süreç bileşenlerinin hepsi için sorular bulunuyor.
+- **50 soru taslağı**, `FB511_part01_25_questions.json` + `FB511_part02_25_questions.json`. **22 tanesi** altı gerçek dosyaya bağlanmış özgün SVG eğitim görseline dayanıyor. `assets/FEN111_01..06` dosyaları; altText ve kullanım gerekçeleri `FB511_visual_asset_manifest.json` içinde. **Gerçek NASA fotoğrafı yüklenmedi**, SVG'ler temsili diye etiketli. Orijinal çizimlerin matematiksel/bilimsel doğruluğu ve baskı okunabilirliği inceleme bekliyor.
+- **10 ek bilimsel araştırma/gözlem görevi** `FB511_10_performance_tasks_review_only.json`; çoktan seçmeli soru kotası dışında. Matematiğin 148 ek göreviyle toplam **158** ek görev vardır.
+- GitHub'daki 50 soru ve 6 görsel dosyası yeniden okunarak kazanım, 5. sınıf, 4 farklı seçenek, cevap anahtarı, çözüm, özgün soru kökü ve görsel linklerinin varlığı tarandı. **0 yapısal hata**. Cevap dağılımı A=13 B=13 C=12 D=12. Zorluk 1=3, 2=13, 3=19, 4=13, 5=2, 6=0; üst düzey beceri ve öğretmen kontrolü eksik.
+- MEB resmi 7. ünite: https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/408. Katalogdan eksik `FB.5.7.1` (evsel atık sınıflandırma) bulundu ve hem ana manifest hem `data/question-branch-catalog-2028.json` güncellendi. Fen çıktısı **26 -> 27**, toplam **343 -> 344**, planlanan tüm 50'lik hedef **17.150 -> 17.200** olarak düzeltildi. Bu hedef İngilizce için karar verilen azaltılmış içerik modeli uygulanmadan önceki **geçici üst hedef**tir.
+- Güncel taslak sayısı: Matematik 1.150 + Fen 50 = **1.200 / 17.200**. Onay 0. Başka öğrenme çıktısı Fen'de bitmiş gösterilmedi. Gerçek olaylı NASA arşiv sayfası ve kullanım şartları kaynak adayları arasında, fakat hak/teknik entegrasyon tamamlanmadan fotoğraflı nihai soru olarak sayılmayacak.
