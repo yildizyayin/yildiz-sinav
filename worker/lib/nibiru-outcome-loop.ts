@@ -4,6 +4,7 @@ import { completeCoachFollowup, eligibleCoachMiniTestQuestions, evaluateMiniTest
 import { startOutcomeMiniTest } from './mini-test-catalog';
 import { hydrateQuestionMedia } from './question-content';
 import { SERVABLE_VIDEO_SQL } from './video-links';
+import { outcomeClip } from './outcome-videos';
 import { publishedForLearnersSql } from './exam-schedule';
 import { gameAvailability } from './learning-universe/map';
 import { startUniverseSession, studentContext } from './learning-universe/sessions';
@@ -50,19 +51,30 @@ async function verifiedOutcome(env: Env, outcomeId: string, enr: any) {
     WHERE o.id=? AND o.active=1 AND cv.verified=1 AND cv.academic_year=? AND cv.grade_level=? AND o.grade_level=?`).bind(outcomeId, enr.academic_year, enr.grade_level, enr.grade_level));
 }
 
-/** The approved video for the outcome: a published topic video link first, then an approved learning video. */
-async function approvedVideo(env: Env, outcomeId: string, examQuestionId: string | null) {
+/** The video for the outcome: a published topic video link, an approved learning video, the school's link, an automatic segment. */
+async function approvedVideo(env: Env, outcomeId: string, examQuestionId: string | null, institutionId: string | null = null) {
   const link = await one<any>(env.DB.prepare(`SELECT vl.id,vl.url,vl.title FROM video_links vl
     WHERE vl.link_type='TOPIC' AND (vl.outcome_id=? OR (? IS NOT NULL AND vl.exam_question_id=?)) AND ${SERVABLE_VIDEO_SQL}
     ORDER BY CASE WHEN vl.outcome_id=? THEN 0 ELSE 1 END,vl.id LIMIT 1`).bind(outcomeId, examQuestionId, examQuestionId, outcomeId));
   if (link) return { kind: 'VIDEO_LINK', id: link.id as string };
   const lv = await one<any>(env.DB.prepare(`SELECT id FROM learning_videos WHERE node_id=? AND approved=1 AND active=1
     ORDER BY CASE WHEN duration_seconds BETWEEN 180 AND 300 THEN 0 WHEN duration_seconds BETWEEN 60 AND 600 THEN 1 ELSE 2 END,created_at DESC,id LIMIT 1`).bind(`ln_${outcomeId}`));
-  return lv ? { kind: 'LEARNING_VIDEO', id: lv.id as string } : null;
+  if (lv) return { kind: 'LEARNING_VIDEO', id: lv.id as string };
+  // owner 12 Nov 2026: then the school's own link, then an automatically found YouTube segment of the outcome
+  const clip = await outcomeClip(env, outcomeId, institutionId);
+  return clip ? { kind: clip.kind as string, id: clip.id } : null;
 }
 
 async function videoDetail(env: Env, loop: Loop) {
   if (!loop.video_ref) return null;
+  if (loop.video_kind === 'TEACHER_VIDEO') {
+    const v = await one<any>(env.DB.prepare(`SELECT url,title,start_seconds,end_seconds FROM outcome_teacher_videos WHERE id=? AND active=1`).bind(loop.video_ref));
+    return v ? { url: v.url, title: v.title, durationSeconds: v.end_seconds ? v.end_seconds - Number(v.start_seconds || 0) : null, start: Number(v.start_seconds || 0), end: v.end_seconds ?? null, source: 'TEACHER' } : null;
+  }
+  if (loop.video_kind === 'AUTO_YOUTUBE') {
+    const v = await one<any>(env.DB.prepare(`SELECT id,youtube_video_id,title,start_seconds,end_seconds,duration_seconds FROM outcome_auto_videos WHERE id=? AND status='ACTIVE'`).bind(loop.video_ref));
+    return v ? { url: `https://www.youtube.com/watch?v=${v.youtube_video_id}`, title: v.title, durationSeconds: v.end_seconds != null ? v.end_seconds - Number(v.start_seconds || 0) : v.duration_seconds ?? null, start: Number(v.start_seconds || 0), end: v.end_seconds ?? null, source: 'AUTO', autoId: v.id } : null;
+  }
   if (loop.video_kind === 'VIDEO_LINK') {
     const v = await one<any>(env.DB.prepare(`SELECT vl.url,vl.title FROM video_links vl WHERE vl.id=? AND ${SERVABLE_VIDEO_SQL}`).bind(loop.video_ref));
     return v ? { url: v.url, title: v.title || 'Konu anlatımı', durationSeconds: null } : null;
@@ -95,7 +107,7 @@ export async function startOutcomeLoop(env: Env, user: AuthUser, body: { outcome
   if (!outcome) return { ok: false, reason: 'OUTCOME_NOT_VERIFIED' } as const;
   const running = await one<Loop>(env.DB.prepare(`SELECT id FROM nibiru_outcome_loops WHERE student_id=? AND outcome_id=? AND status='ACTIVE'`).bind(user.student_id, outcomeId));
   if (running) return { ok: true, reused: true, loopId: running.id as string } as const;
-  const video = await approvedVideo(env, outcomeId, examQuestionId);
+  const video = await approvedVideo(env, outcomeId, examQuestionId, enr.institution_id);
   const id = uuid('nol');
   await env.DB.prepare(`INSERT OR IGNORE INTO nibiru_outcome_loops(id,student_id,institution_id,season_id,outcome_id,source_type,source_ref,video_kind,video_ref)
     VALUES(?,?,?,?,?,?,?,?,?)`).bind(id, user.student_id, enr.institution_id, enr.season_id, outcomeId, examQuestionId ? 'EXAM_QUESTION' : 'WEAK_OUTCOME', examQuestionId, video?.kind ?? null, video?.id ?? null).run();
@@ -175,6 +187,14 @@ async function universeRound(env: Env, loop: Loop) {
 export async function outcomeLoopState(env: Env, user: AuthUser, loopId: string) {
   let loop = await ownLoop(env, user, loopId);
   if (!loop) return { ok: false, reason: 'LOOP_NOT_FOUND' } as const;
+  // before the video is watched and the mini test starts: a video found since (or a removed one) is swapped in
+  if (loop.status === 'ACTIVE' && !loop.video_done_at && !loop.mini_test_id && (!loop.video_ref || !(await videoDetail(env, loop)))) {
+    const v = await approvedVideo(env, loop.outcome_id, loop.source_type === 'EXAM_QUESTION' ? loop.source_ref : null, loop.institution_id);
+    if ((v?.id ?? null) !== (loop.video_ref ?? null)) {
+      await env.DB.prepare(`UPDATE nibiru_outcome_loops SET video_kind=?,video_ref=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND video_done_at IS NULL AND mini_test_id IS NULL`).bind(v?.kind ?? null, v?.id ?? null, loop.id).run();
+      loop = (await ownLoop(env, user, loopId))!;
+    }
+  }
   if (loop.status === 'ACTIVE') {
     const test = loop.mini_test_id ? await one<any>(env.DB.prepare(`SELECT status FROM coach_mini_tests WHERE id=? AND student_id=?`).bind(loop.mini_test_id, loop.student_id)) : null;
     const round = loop.lu_session_id ? await universeRound(env, loop) : loop.game_round_id ? await one<any>(env.DB.prepare(`SELECT status FROM nibiru_game_rounds WHERE id=? AND loop_id=?`).bind(loop.game_round_id, loop.id)) : null;
@@ -209,7 +229,7 @@ export async function outcomeLoopState(env: Env, user: AuthUser, loopId: string)
     loop: { id: loop.id, status: loop.status, source: loop.source_type, createdAt: loop.created_at, videoDoneAt: loop.video_done_at, teacherReason: loop.teacher_reason, teacherNotified: Number(loop.notified_count || 0), notifiedAt: loop.notified_at, badgeAt: loop.badge_at, badgeNeed },
     outcome: outcome ? { id: outcome.id, code: outcome.code, title: outcome.title, subjectName: outcome.subject_name } : null,
     video: video ? { ...video, provider: /youtu\.?be/i.test(video.url) ? 'YOUTUBE' : 'OTHER' } : null,
-    videoMissing: !loop.video_ref,
+    videoMissing: !loop.video_ref || !video,
     miniTest: test ? { id: test.id, status: test.status, questionCount: test.question_count, correct: test.correct_count, scorePercent: test.score_percent } : null,
     game: round ? ('universe' in round ? round : { id: round.id, status: round.status, questionCount: round.question_count, correct: round.correct_count, scorePercent: round.score_percent, xp: round.xp_earned }) : null,
     gameKind: step === 'GAME' && !round ? ((await engineGameFor(env, user, loop)) ? 'UNIVERSE' : 'QUICK') : round && 'universe' in round ? 'UNIVERSE' : round ? 'QUICK' : null,
@@ -234,7 +254,7 @@ export async function startLoopMiniTest(env: Env, user: AuthUser, loopId: string
   const loop = await ownLoop(env, user, loopId);
   if (!loop) return { ok: false, reason: 'LOOP_NOT_FOUND' } as const;
   if (loop.status !== 'ACTIVE') return { ok: false, reason: 'LOOP_CLOSED' } as const;
-  if (loop.video_ref && !loop.video_done_at) return { ok: false, reason: 'VIDEO_FIRST' } as const;
+  if (loop.video_ref && !loop.video_done_at && await videoDetail(env, loop)) return { ok: false, reason: 'VIDEO_FIRST' } as const;
   if (loop.mini_test_id) {
     const t = await one<any>(env.DB.prepare(`SELECT id,status FROM coach_mini_tests WHERE id=?`).bind(loop.mini_test_id));
     if (t) return { ok: true, testId: t.id as string, status: t.status as string } as const;

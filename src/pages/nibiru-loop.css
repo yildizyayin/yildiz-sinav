@@ -48,3 +48,4 @@
 .nl-end.ok h2{color:#15803d}
 @media (max-width:560px){.nl-options.big{grid-template-columns:1fr}.nl-card{padding:16px}.nl-dot{width:34px;height:34px}}
 @media (prefers-reduced-motion:reduce){.nl-bar span{transition:none}}
+.nl-card button.link{background:none;border:0;padding:0;color:inherit;opacity:.75;text-decoration:underline;cursor:pointer;font:inherit}

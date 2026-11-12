@@ -628,3 +628,12 @@ Diğer roller:
 - Ücretli olsaydı tahmini tek seferlik maliyet (3.449 kazanım × 3 aday): Flash-Lite ~75 $, 2.5 Flash ~225 $, 3 Flash ~375 $. Ödeme yapılmayacak.
 - Korumalar: safeSearch=strict, yaş sınırlı/gömülemeyen/canlı elenir, youtube-nocookie, öğretmende "Kaldır / başka video bul", öğrencide "konuyla ilgili değil" bildirimi.
 - Gerekli: ücretsiz Gemini API anahtarı (Google AI Studio, kart istemez) — sahip ekleyecek.
+
+### YouTube işi — yapıldı (12 Kasım, PR kazanim-videolari)
+
+- Sıra: sistem videosu → okulun eklediği video (`outcome_teacher_videos`, onaysız, yalnız o okul) → otomatik YouTube bölümü (`outcome_auto_videos`, onaysız).
+- Otomatik bölüm yalnız gerçek kesitse gösterilir: Gemini'nin verdiği başlangıç–bitiş, yoksa videonun bölüm listesi, yoksa başlığı kazanımı açıkça söyleyen kısa (≤7 dk) video. Hiçbiri yoksa video gösterilmez.
+- Cron her 15 dakikada 1 kazanım arar; öğrencinin ihtiyaç duyduğu kazanım öne alınır. Günlük sınır: 80 YouTube araması, 7 saat Gemini video süresi (ücretsiz kotalar).
+- Öğretmen: "Kazanım Videoları" sayfası (/kazanim-videolari) — izle, "Kaldır, başka video bul", "Okulun videosunu ekle", "Şimdi aramaya al". Kaldırılan video o kazanıma bir daha gelmez.
+- Öğrenci: "Bu video konuyla ilgili değil"; 3 farklı öğrenci derse video kalkar ve yenisi aranır.
+- Gemini anahtarı: GitHub secret `PROD_GEMINI_API_KEY` (test için `GEMINI_API_KEY`); canlıya almada sunucuya aktarılır. Anahtar yokken bölüm listesi yöntemi çalışır.
