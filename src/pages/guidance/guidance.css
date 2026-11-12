@@ -37,3 +37,4 @@
 .gd-pick{display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow:auto;padding:6px;border:1px solid var(--sd-border,#e2e8f0);border-radius:12px}
 .gd-pick label{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--sd-border,#e2e8f0);font-size:13px;cursor:pointer}
 @media print{.gd-actions,.gd-tabs{display:none}}
+.gd input[type=checkbox],.gd input[type=radio]{width:18px;height:18px;min-height:0;flex:0 0 auto;padding:0;margin:0}

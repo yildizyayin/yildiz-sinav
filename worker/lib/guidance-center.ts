@@ -9,6 +9,7 @@
 import type { AuthUser, Env } from '../types';
 import { all, audit, json, one, uuid } from './db';
 import { guidanceStudentIds } from './guidance-records';
+import { programWarnings } from './guidance-program';
 
 const fail = (status: number, code: string, message: string) => json({ ok: false, error: { code, message } }, status);
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -68,7 +69,7 @@ export async function computeWarnings(env: Env, studentIds: string[], today = is
   for (const l of loops) out.push({ studentId: l.student_id, key: 'SUPPORT_LOOP', level: 'MEDIUM', reason: `${l.n} kazanımda destek döngüsü tamamlanamadı; öğretmen incelemesinde.` });
   const msgs = await all<{ student_id: string; n: number; urgent: number }>(env.DB.prepare(`SELECT student_id,count(*) n,max(urgent) urgent FROM guidance_messages WHERE student_id IN (${m}) AND status<>'CLOSED' GROUP BY student_id`).bind(...studentIds));
   for (const g of msgs) out.push({ studentId: g.student_id, key: 'MESSAGE', level: g.urgent ? 'HIGH' : 'MEDIUM', reason: g.urgent ? 'Acil olarak işaretlenen bir rehberlik mesajı var.' : `${g.n} açık rehberlik mesajı var.` });
-  // R2 adds the weekly programme signal here.
+  out.push(...await programWarnings(env, studentIds, today));
   const actions = await all<{ student_id: string; signal_key: string; action: string; until_date: string | null }>(env.DB.prepare(`SELECT student_id,signal_key,action,until_date FROM guidance_warning_actions WHERE student_id IN (${m})`).bind(...studentIds));
   const act = new Map(actions.map((a) => [`${a.student_id}|${a.signal_key}`, a]));
   return out.filter((w) => {
