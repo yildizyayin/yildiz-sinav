@@ -9,6 +9,7 @@ import { minimizeNibiruAiMessages } from './privacy-minimization';
 import { chooseNibiruModelDecision, runNibiruInference, type NibiruInferenceResult, type NibiruStickyRouting, type NibiruWorkload } from './nibiru-model-router';
 import { routeNibiruSpecialist } from './nibiru-specialists';
 import { clarifyAnswer, conversationAnswer, conversationKind } from './nibiru-conversation';
+import { NIBIRU_SAFETY_ANSWER, flagSafetyFromNibiru, isPersonalHarm } from './guidance-center';
 import type { NibiruSpecialist } from './nibiru-specialists';
 
 export type NibiruIntent =
@@ -367,7 +368,9 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
 
   const talk = { role: user.role, firstName: user.role === 'STUDENT' ? context.student?.first_name ?? null : String(user.display_name || '').trim().split(/\s+/)[0] || null, gradeLevel: context.student?.grade_level ?? null };
   const socialReply = social ? conversationAnswer(social,talk) : null;
-  const fixed = socialReply?.answer || deterministic(intent,context);
+  // Nibiru güvenlik bağlantısı (owner, 12 Nov 2026): words of harm or bullying from a student → safe answer + the guidance teacher is told (no text)
+  const safety = user.role === 'STUDENT' && isPersonalHarm(message) ? (await flagSafetyFromNibiru(env, user).catch(() => false), NIBIRU_SAFETY_ANSWER) : null;
+  const fixed = safety || socialReply?.answer || deterministic(intent,context);
   const planSummary = coachPlan?.available ? coachPlanSummary(coachPlan) : null;
   const planAnswer = planSummary
     ? AI_PREFIX + ' Bugün için doğrulanmış kısa çalışma planın hazır:\n' + planSummary + '\nGörevleri tamamladıktan sonra mini test ile pekiştirme yapabilirsin.'

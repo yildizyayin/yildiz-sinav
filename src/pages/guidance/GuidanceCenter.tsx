@@ -153,7 +153,7 @@ export function GuidanceStudentFile() {
   return <div className="page gd">
     <div className="page-head"><div><span className="eyebrow"><Link to="/rehberlik/ogrenciler">Öğrenciler</Link> · Rehberlik dosyası</span><h1>{properCase(s.name)}</h1>
       <p className="muted">{s.className} · No {s.number}{s.parents.length ? ` · Veli: ${s.parents.map((p: any) => p.name).join(', ')}` : ''}</p></div>
-      <div className="gd-actions"><button className="primary" type="button" onClick={() => setPlanning((v) => !v)}>Görüşme planla</button></div></div>
+      <div className="gd-actions"><button className="primary" type="button" onClick={() => setPlanning((v) => !v)}>Görüşme planla</button><Link to={`/rehberlik/ogrenciler/${encodeURIComponent(s.id)}/rapor`}>Rapor</Link></div></div>
     {data.warnings.length > 0 && <div className="gd-card"><h2>Erken uyarı</h2><ul className="gd-list">{data.warnings.map((w: any) => <li key={w.key} className="gd-item"><div className="row"><WarningChip w={w} /></div><small>{w.reason}</small></li>)}</ul></div>}
     {planning && <section className="gd-card"><h2>Görüşme planla</h2><MeetingForm students={[{ id: s.id, name: s.name, className: s.className }]} preset={{ studentIds: [s.id] }} onDone={() => { setPlanning(false); reload(); setTab('meetings'); }} /></section>}
     <div className="gd-tabs" role="tablist">{TABS.map(([k, v]) => <button key={k} type="button" role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{v}</button>)}</div>

@@ -30,6 +30,9 @@ const addDays = (date: string, days: number) => { const d = new Date(`${date}T12
 // Words that make a message urgent. Matching is on a Turkish-folded copy; the message itself is stored as written.
 const fold = (s: string) => s.toLocaleLowerCase('tr').replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u');
 const URGENT_WORDS = ['intihar', 'kendimi oldur', 'olmek istiyorum', 'yasamak istemiyorum', 'kendime zarar', 'kendimi kes', 'beni dovuyor', 'bana vuruyor', 'taciz', 'istismar', 'tehdit ediyor', 'zorbalik', 'siddet'];
+// Nibiru is asked about many things (a homework question about bullying is not a cry for help): only first-person harm.
+const PERSONAL_HARM = ['intihar', 'kendimi oldur', 'olmek istiyorum', 'yasamak istemiyorum', 'kendime zarar', 'kendimi kes', 'beni dovuyor', 'bana vuruyor', 'beni tehdit', 'bana zorbalik', 'beni taciz', 'bana taciz', 'istismar ediyor', 'canima kiy'];
+export function isPersonalHarm(text: string) { const f = fold(text); return PERSONAL_HARM.some((w) => f.includes(w)); }
 export function isUrgentMessage(category: string, body: string) {
   if (category === 'PEER_BULLYING') return true;
   const f = fold(body);
@@ -326,3 +329,26 @@ export async function handleGuidanceCenter(request: Request, env: Env): Promise<
   }
   return fail(404, 'NOT_FOUND', 'Yol bulunamadı.');
 }
+
+/**
+ * Nibiru güvenlik bağlantısı (owner, 12 Nov 2026): when a student writes words of harm or bullying to Nibiru, the
+ * guidance teachers of that student are told at once — without the text of the conversation — and Nibiru answers
+ * with safe guidance. At most one such notice a day per student.
+ */
+export async function flagSafetyFromNibiru(env: Env, user: AuthUser) {
+  if (user.role !== 'STUDENT' || !user.student_id || !user.institution_id) return false;
+  const enr = await one<any>(env.DB.prepare(`SELECT class_id FROM student_enrollments WHERE student_id=? AND institution_id=? AND status='ACTIVE' LIMIT 1`).bind(user.student_id, user.institution_id));
+  if (!enr) return false;
+  const recent = await one(env.DB.prepare(`SELECT 1 FROM guidance_messages WHERE student_id=? AND category='WORRY' AND body LIKE 'Nibiru%' AND created_at>=datetime('now','-1 day')`).bind(user.student_id));
+  if (recent) return true;
+  const id = uuid('gms');
+  await env.DB.prepare(`INSERT INTO guidance_messages(id,institution_id,class_id,student_id,sender_user_id,sender_role,anonymous,category,body,urgent) VALUES(?,?,?,?,?,'STUDENT',0,'WORRY',?,1)`)
+    .bind(id, user.institution_id, enr.class_id, user.student_id, user.id, 'Nibiru konuşmasında zarar ya da zorbalıkla ilgili bir ifade algılandı. Konuşmanın metni paylaşılmaz; öğrenciyle kısa sürede görüşmeniz önerilir.').run();
+  const counselors = await all<{ user_id: string }>(env.DB.prepare(`SELECT DISTINCT ta.user_id FROM teacher_assignments ta JOIN users u ON u.id=ta.user_id AND u.active=1 AND u.role='GUIDANCE_TEACHER'
+    WHERE ta.institution_id=? AND ta.assignment_type='GUIDANCE' AND ta.active=1 AND (ta.class_id IS NULL OR ta.class_id IS ?)`).bind(user.institution_id, enr.class_id));
+  if (counselors.length) await env.DB.batch(counselors.map((c) => env.DB.prepare(`INSERT INTO notifications(id,recipient_user_id,institution_id,type,title,body,action_url,entity_type,entity_id) VALUES(?,?,?,?,?,?,?,?,?)`)
+    .bind(uuid('ntf'), c.user_id, user.institution_id, 'GUIDANCE_MESSAGE', 'Acil rehberlik işareti', 'Nibiru konuşmasında bir öğrenci için acil destek işareti oluştu. Lütfen hemen bakın.', '/', 'guidance_message', id)));
+  await audit(env.DB, null, user.institution_id, 'GUIDANCE_NIBIRU_SAFETY_FLAG', 'guidance_message', id, {});
+  return true;
+}
+export const NIBIRU_SAFETY_ANSWER = 'Bunu yazdığın için teşekkür ederim; yaşadığın şey önemli ve yalnız taşımak zorunda değilsin. Okulundaki rehber öğretmenine seninle konuşması için haber verdim. Şu an kendini ya da bir başkasını tehlikede hissediyorsan hemen güvendiğin bir yetişkine söyle ya da 112’yi ara. Alo 147 Çocuk Destek Hattı da yanında.';
