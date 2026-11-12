@@ -1,0 +1,103 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.1.2",
+    "reviewStatus": "DRAFT_NOT_APPROVED",
+    "date": "2026-11-12",
+    "assetCount": 5,
+    "visualDependentQuestionCount": 23,
+    "realObservationPhotographsStored": 0,
+    "readyForPublishing": false
+  },
+  "assets": [
+    {
+      "assetId": "FEN112-01",
+      "assetType": "SCIENTIFIC_DIAGRAM",
+      "path": "data/question-import-drafts/grade5/assets/FEN112_01_lunar_crater_surface.svg",
+      "altText": "Ay'ın kraterli kayalık yüzeyini gösteren temsili çizim",
+      "educationalRationale": "Ay yüzeyindeki kraterleri ayırt etme",
+      "creatorCredit": "ANUNEX original editable educational vector diagram (AI-assisted)",
+      "licenseEvidence": "Original SVG created on draft branch; copyright/commercial originality review is pending",
+      "rightsStatus": "DRAFT_UNAPPROVED",
+      "notRealNASAImage": true,
+      "teacherReviewStatus": "PENDING",
+      "printReviewStatus": "PENDING"
+    },
+    {
+      "assetId": "FEN112-02",
+      "assetType": "SCIENTIFIC_DIAGRAM",
+      "path": "data/question-import-drafts/grade5/assets/FEN112_02_orbit_near_face.svg",
+      "altText": "Dünya çevresinde dört konumdaki Ay'ın aynı tarafının Dünya'ya dönük olduğunu gösteren model",
+      "educationalRationale": "Dönme ve dolanma ilişkisinden çıkarım",
+      "creatorCredit": "ANUNEX original editable educational vector diagram (AI-assisted)",
+      "licenseEvidence": "Original SVG created on draft branch; copyright/commercial originality review is pending",
+      "rightsStatus": "DRAFT_UNAPPROVED",
+      "notRealNASAImage": true,
+      "teacherReviewStatus": "PENDING",
+      "printReviewStatus": "PENDING"
+    },
+    {
+      "assetId": "FEN112-03",
+      "assetType": "TABLE",
+      "path": "data/question-import-drafts/grade5/assets/FEN112_03_rotation_orbit_table.svg",
+      "altText": "Ay'ın kendi ekseninde dönme ve Dünya çevresinde dolanma sürelerini gösteren karşılaştırma tablosu",
+      "educationalRationale": "İki hareketi karşılaştırma",
+      "creatorCredit": "ANUNEX original editable educational vector diagram (AI-assisted)",
+      "licenseEvidence": "Original SVG created on draft branch; copyright/commercial originality review is pending",
+      "rightsStatus": "DRAFT_UNAPPROVED",
+      "notRealNASAImage": true,
+      "teacherReviewStatus": "PENDING",
+      "printReviewStatus": "PENDING"
+    },
+    {
+      "assetId": "FEN112-04",
+      "assetType": "SCIENTIFIC_DIAGRAM",
+      "path": "data/question-import-drafts/grade5/assets/FEN112_04_earth_moon_size.svg",
+      "altText": "Dünya ile Ay çaplarını yaklaşık dörtte bir oranında gösteren boyut şeması",
+      "educationalRationale": "Çap büyüklüğünü karşılaştırma ve ölçek sınırlılığını sorgulama",
+      "creatorCredit": "ANUNEX original editable educational vector diagram (AI-assisted)",
+      "licenseEvidence": "Original SVG created on draft branch; copyright/commercial originality review is pending",
+      "rightsStatus": "DRAFT_UNAPPROVED",
+      "notRealNASAImage": true,
+      "teacherReviewStatus": "PENDING",
+      "printReviewStatus": "PENDING"
+    },
+    {
+      "assetId": "FEN112-05",
+      "assetType": "SCIENTIFIC_DIAGRAM",
+      "path": "data/question-import-drafts/grade5/assets/FEN112_05_2026_crater_context.svg",
+      "altText": "Gerçek 2026 çarpma olayı için fotoğraf olmayan temsili önce/sonra çarpma krateri çizimi",
+      "educationalRationale": "Olay ve gözlem tarihi ayrımı, bilimsel fotoğrafa başvurma",
+      "creatorCredit": "ANUNEX original editable educational vector diagram (AI-assisted)",
+      "licenseEvidence": "Original SVG created on draft branch; copyright/commercial originality review is pending",
+      "rightsStatus": "DRAFT_UNAPPROVED",
+      "notRealNASAImage": true,
+      "teacherReviewStatus": "PENDING",
+      "printReviewStatus": "PENDING"
+    }
+  ],
+  "realContextSourceCandidates": [
+    {
+      "title": "Moon facts and rotation",
+      "url": "https://science.nasa.gov/moon/facts/",
+      "verified": "2026-11-12",
+      "status": "SOURCE_ONLY"
+    },
+    {
+      "title": "2026 Lunar impact crater",
+      "url": "https://science.nasa.gov/solar-system/moon/nasas-lro-images-falcon-9-crater-on-moon-learns-new-details/",
+      "eventDate": "2026-08-05",
+      "observedDateRange": "2026-08-11..12",
+      "status": "SOURCE_VERIFIED_BUT_IMAGE_NOT_INCLUDED"
+    },
+    {
+      "title": "Media usage",
+      "url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "status": "RIGHTS_GUIDELINE_REVIEW_REQUIRED"
+    }
+  ],
+  "warnings": [
+    "Temsili önce/sonra krater çizimi NASA fotoğrafı veya gerçek ölçüm değildir.",
+    "Kaynak görseli kullanılmadan önce fotoğrafın tarihi, telif, hak ve kredi şartları incelenmelidir.",
+    "Tüm SVG'ler bilimsel doğruluk, metin ve baskı kontrolü bekler."
+  ]
+}
