@@ -24,6 +24,12 @@ Kazanım kazanım onay bekleme; 5. sınıfı **tek toplu iş** olarak yönet. He
 - Genel hedef 17.200; hazırlanan 1.250, kalan **15.950 soru/görev henüz üretilmedi**.
 - Resim/fotoğraf varlığı ya da medya hakkı onayı uydurulmaz; çizimler ve lisanslı fotoğraflar akademik ve telif incelemesinden sonra `question_assets` üzerinden bağlanır.
 
+## Yeni açık uçlu/modelleme paketi — 12 Kasım 2026
+- `FB513_50_mixed_assessments_review_only.json`: 43 açık uçlu, 7 performans görevi; iki özgün SVG inceleme kartı ve madde bazlı 4 puanlık rubrik.
+- Mevcut 1.250 çoktan seçmeliye eklenen 50 değerlendirmeyle toplam 1.300 taslak içerik vardır. Önceki 168 ek görev bu toplama dahil değildir.
+- Bu türler legacy MC denetim/aktarımına sokulmaz; `newAssessmentDraftFiles` altında ayrı sayılır. Kaynak sürümü, akademik onay, gerçek fotoğraf ve hak denetimleri açıktır. `FB513_REVIEW_PROGRESS_2026-11-12.md` sınırları ve devam noktasını açıklar.
+- 41–43. maddelerde doğrulanmış Kasım 2026 NASA duyurusu kullanılır; gelecekteki gözlem gerçekleşmiş sayılmaz. Gerçek fotoğraf pakete eklenmedi.
+
 ## Güncel kontrol kaydı
 - `QA_PROGRESS_2026-11-11.md` dosyasında 1.150 taslağın yapısal testleri ve akademik/medya/özgünlük eksikleri kayıtlıdır.
 - Sırf sayı/isim değiştirerek aynı örnek soruları çoğaltma; tekrar eden soru tasarımlarını editoryal incelemeden geçir.
@@ -48,6 +54,6 @@ node scripts/grade5-question-bulk-audit.mjs --strict
 8. `main`, production, Cloudflare D1, mevcut soru onayları ve öğrenci verileri değiştirilmez.
 
 ## Tamamlanma kriteri
-Bütün 343 kod için en az 50 kaliteli, bağımsız içerik; doğru yıl/müfredat; gerekli medya lisansları; uzman ve hak incelemesi; sistemde kontrollü içe aktarım; duplikasyon ve güvenlik denetimi; staging/perf/regresyon testleri ve son kullanıcı deploy onayı. Bu kriterler tamamlanmadan **TAMAMLANDI** denmez.
+Bütün 344 kod için en az 50 kaliteli, bağımsız içerik; doğru yıl/müfredat; gerekli medya lisansları; uzman ve hak incelemesi; sistemde kontrollü içe aktarım; duplikasyon ve güvenlik denetimi; staging/perf/regresyon testleri ve son kullanıcı deploy onayı. Bu kriterler tamamlanmadan **TAMAMLANDI** denmez.
 
 Bu dosya toplu işin **ölçekli hazırlık ve izleme aşamasıdır**, 17.200 soru üretilmiş gibi kabul edilmemelidir.

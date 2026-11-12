@@ -19,7 +19,10 @@
     "approvedQuestions": 0,
     "unstartedOutcomes": 319,
     "draftOutcomes": 25,
-    "outstandingDraftQuestions": 15950
+    "outstandingDraftQuestions": 15950,
+    "reviewOnlyAssessmentItems": 50,
+    "combinedDraftContentItems": 1300,
+    "combinedOutstandingContentItems": 15900
   },
   "sourceInventory": {
     "math": "data/question-full-math-target-2028.json",
@@ -1939,8 +1942,10 @@
       "approvedCount": 0,
       "storedInThisBranch": 0,
       "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "assessmentNote": "43 OPEN_ENDED + 7 PERFORMANCE_TASK. Separate review-only registry; legacy MC storedInThisBranch remains 0.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_OPEN_ENDED_AND_PERFORMANCE"
     },
     {
       "gradeLevel": 5,
@@ -5801,5 +5806,8 @@
     "data/question-import-drafts/grade5/FB512_part02_25_questions.json"
   ],
   "status": "IN_PROGRESS_MATH_DRAFT_FILLED_FEN_STARTED",
-  "lastCheckedAt": "2026-11-12"
+  "lastCheckedAt": "2026-11-12",
+  "newAssessmentDraftFiles": [
+    "data/question-import-drafts/grade5/FB513_50_mixed_assessments_review_only.json"
+  ]
 }
