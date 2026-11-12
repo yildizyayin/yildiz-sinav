@@ -9,7 +9,7 @@ const groups=[
   {label:'İçerik ve Öğrenme',icon:BookOpen,paths:['/content-center','/quick-tests','/question-team','/worksheet-admin','/outcomes','/kazanim-videolari','/curriculum','/written-scenarios','/written-rubrics','/written-papers','/official-question-intelligence']},
   {label:'Eğitim Operasyonu',icon:CalendarDays,paths:['/calendar','/worksheet-calendar','/attendance','/live-lessons','/transfers','/bulk-operations','/seasons']},
   {label:'Rehberlik ve Analiz',icon:ChartNoAxesCombined,paths:['/guidance-admin','/rehberlik-onaylari','/reports','/academic-target-admin']},
-  {label:'Kullanıcılar ve Kurumlar',icon:Users,paths:['/institutions','/students','/users','/activation-requests','/access-accounts','/teacher-assignments','/enterprise','/licenses','/membership-orders']},
+  {label:'Kullanıcılar ve Kurumlar',icon:Users,paths:['/institutions','/pilot-basvurulari','/students','/users','/activation-requests','/access-accounts','/teacher-assignments','/enterprise','/licenses','/membership-orders']},
   {label:'Nibiru ve Ajanlar',icon:Orbit,paths:['/nibiru','/nibiru-admin','/agent-center']},
   {label:'Sistem Yönetimi',icon:Settings,paths:['/admin-center','/standard-readiness','/theme-management','/settings','/feature-lab','/demo-mode','/scale','/completion-center','/security','/privacy-notices','/privacy-processors','/notifications','/profile']},
 ];
