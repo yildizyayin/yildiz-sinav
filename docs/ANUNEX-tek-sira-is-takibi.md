@@ -651,3 +651,36 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 7. **"X bin kazanım bazlı soru":** Soru havuzu dolunca (2027) gerçek sayı yazılacak.
 
 Önizleme gösterilmeden canlıya alınmaz.
+
+## 12 Kasım 2026 akşam: güncel iş sırası (sahip kararlarıyla)
+
+### Kararlar
+
+- **Nibiru:** Sahiple birlikte yeniden ele alınacak ("tam istediğim gibi değil"); NIBIRU_AI KVKK kaydı bu çalışmayla birlikte.
+- **KVKK metinleri:** Claude yazacak (aydınlatma metinleri, açık rıza, pilot başvuru formu metni); sahip onaylar.
+- **Föy cevap anahtarı:** Föyler basılınca kitapçıklarla eklenecek; bekliyor.
+- **Bildirimler:** Trendyol benzeri "siparişiniz alındı/teslim edildi" düzeni — WhatsApp, e-posta, SMS; Android'de marka adı/logosuyla görünen SMS (Google RCS Business Messaging) araştırılacak.
+- **ÇAP TYT ve 7. sınıf Fenomen denemesi:** Sahip "sil gitsin" dedi. Kalıcı silme geri alınamaz; ÇAP TYT'de 207 katılımcı sonucu var, Fenomen 7'de katılımcı yok. Silmeden önce sahibe kesin onay soruldu. Bu iki sınavla ilgili eski "bekleyen" işler (TYT puan düzeltmesi, Fenomen 7 anahtarı) listeden çıkarıldı.
+
+### Sıra
+
+1. anunex.com mobil düzeltmeleri + pilot okul başvuru formu (önizleme → onay).
+2. Gemini hata kaydı → kazanım videosu bulma oranı.
+3. KVKK metinleri (genel aydınlatma, veli/öğrenci, öğretmen, pilot başvuru, Nibiru/Gemini veri aktarımı).
+4. Bildirim kanalları araştırması ve planı (WhatsApp / e-posta / SMS / RCS; ücretsiz kalan kısım önce).
+5. Nibiru — sahiple birlikte yeniden tasarım.
+6. ÇAP TYT ve Fenomen 7 silme (kesin onaydan sonra).
+
+### Sahibin onayı bekleyenler
+
+- Canlıya alma onayları.
+- Rehberlik Onayları sayfasındaki taslaklar (testler, anket, etkinlik, kaynak).
+- Hedef kurum türü (pilot formundaki seçenekler buna göre).
+
+### Beklemede / başkasında
+
+- Föy cevap anahtarı (föy basımı).
+- ChatGPT PR'ları #519, #522, #525, #483 — bitince Claude canlıya alır.
+- Rapor Merkezi hızlı PDF yazıcısı (`karne-writer` dalı GitHub'da yok; istenirse yeniden).
+- Yanlış soru zincirinde "oyun" adımı kararı.
+- Soru havuzu dolunca (2027) sitede gerçek soru sayısı.
