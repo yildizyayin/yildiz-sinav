@@ -51,3 +51,5 @@
 .gt-items textarea{width:100%;min-height:80px}
 .gt-ab{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 @media(max-width:520px){.gt-ab{grid-template-columns:1fr}}
+.gd-form>label,.gd-form .two>label{display:grid;gap:6px;align-content:start}
+.gd-form textarea{width:100%}
