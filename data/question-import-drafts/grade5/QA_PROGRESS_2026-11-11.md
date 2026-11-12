@@ -8,11 +8,11 @@
 |---|---:|---:|---:|---:|
 | Türkçe | 80 | 4.000 | 0 | 0 |
 | Matematik | 23 | 1.150 | 1.150 | 0 |
-| Fen Bilimleri | 27 | 1.350 | 50 | 0 |
+| Fen Bilimleri | 27 | 1.350 | 100 | 0 |
 | Sosyal Bilgiler | 18 | 900 | 0 | 0 |
 | İngilizce | 178 | 8.900 | 0 | 0 |
 | Din Kültürü | 18 | 900 | 0 | 0 |
-| **Toplam** | **344** | **17.200** | **1.200** | **0** |
+| **Toplam** | **344** | **17.200** | **1.250** | **0** |
 
 ### Tam 50 taslağa ulaşan yirmi üç matematik çıktısı
 - MAT.5.1.1: 50, eski PR #519.
@@ -155,3 +155,11 @@ node scripts/grade5-question-bulk-audit.mjs --strict
 - GitHub'daki 50 soru ve 6 görsel dosyası yeniden okunarak kazanım, 5. sınıf, 4 farklı seçenek, cevap anahtarı, çözüm, özgün soru kökü ve görsel linklerinin varlığı tarandı. **0 yapısal hata**. Cevap dağılımı A=13 B=13 C=12 D=12. Zorluk 1=3, 2=13, 3=19, 4=13, 5=2, 6=0; üst düzey beceri ve öğretmen kontrolü eksik.
 - MEB resmi 7. ünite: https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/408. Katalogdan eksik `FB.5.7.1` (evsel atık sınıflandırma) bulundu ve hem ana manifest hem `data/question-branch-catalog-2028.json` güncellendi. Fen çıktısı **26 -> 27**, toplam **343 -> 344**, planlanan tüm 50'lik hedef **17.150 -> 17.200** olarak düzeltildi. Bu hedef İngilizce için karar verilen azaltılmış içerik modeli uygulanmadan önceki **geçici üst hedef**tir.
 - Güncel taslak sayısı: Matematik 1.150 + Fen 50 = **1.200 / 17.200**. Onay 0. Başka öğrenme çıktısı Fen'de bitmiş gösterilmedi. Gerçek olaylı NASA arşiv sayfası ve kullanım şartları kaynak adayları arasında, fakat hak/teknik entegrasyon tamamlanmadan fotoğraflı nihai soru olarak sayılmayacak.
+
+## 12 Kasım 2026 – İkinci Fen kazanımı FB.5.1.2 (Ay)
+- `FB512_part01_25_questions.json` ve `FB512_part02_25_questions.json` içinde **50 soru taslağı**, bunların **23'ü görsele dayalı**. `assets/FEN112_01..05` içinde **5 özgün temsili SVG**. `FB512_visual_asset_manifest.json` içinde soru bağlantıları ve görsel hak/kalite durumları. Fotoğraflar yüklenmedi: **0 gerçek NASA fotoğrafı**.
+- Ay'ın kayalık/kraterli yüzeyi, doğal uydu oluşu, kendi dönüşü ve Dünya çevresinde dolanması ile yaklaşık aynı yüzünü göstermesi MEB FB.5.1.2 süreçlerine göre işlendi. Ay evrelerinin ayrı modellemesi FB.5.1.3 kazanımına bırakıldı. Resmî kaynak: https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/367. Bilimsel kaynak: https://science.nasa.gov/moon/facts/.
+- 2026 güncel olay kaynağı https://science.nasa.gov/solar-system/moon/nasas-lro-images-falcon-9-crater-on-moon-learns-new-details/ (5 Ağustos 2026 olay, 11–12 Ağustos gözlem). Eşleşen SVG yalnız **temsili önce/sonra**, gerçek olay fotoğrafı diye sunulmaz. Görsel hakları doğrulanmadan gerçek fotoğraf eklenmez.
+- `FB512_10_performance_tasks_review_only.json` içinde 10 uygulamalı bilimsel gözlem/model görevi, kota dışıdır. Fen iki kazanım **100 soru + 20 görev**, matematik 1.150 + 148 görev ile toplam **1.250 taslak ve 168 ek görev**.
+- Fen iki kazanımının 100 soru kaydı ve **11 SVG varlığı** GitHub'dan kontrol edildi: 50+50, görsel bağımlı soru 22+23=**45**, geçerli şık/cevap/çözüm, birbiriyle aynı soru kökü yok, **0 yapısal hata**. FB.5.1.2 cevap dengesi A13/B13/C12/D12. Zorluk dağılımı 1=6, 2=15, 3=15, 4=13, 5=1, 6=0; bilimsel ve öğretmen incelemesi bekler.
+- **Sayı doğrulama:** `ALL_OUTCOMES_50_TARGET_MANIFEST.json` içinde 25 öğrenme çıktısında 50 taslak (23 MAT+2 FEN). Fen resmi 27 çıktıdan 2'si taslak içerikle dolu. Toplam hedef **344 × 50 = 17.200** (İngilizce azaltılmış hedefi uygulamadan önce); kalan **15.950**. Öğretmen onayı 0, D1/production/deploy 0.
