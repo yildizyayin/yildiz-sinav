@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Award, BellRing, CheckCircle2, ClipboardCheck, ExternalLink, Gamepad2, PlayCircle, Timer, Zap } from 'lucide-react';
 import { api } from '../api';
-import { embeddableVideo } from '../lib/physicalLink';
+import { clipEmbed } from '../lib/physicalLink';
 import { soundCue } from '../lib/glassSounds';
 import { QuestionDataVisual } from '../components/QuestionDataVisual';
 import { UniversePlayer } from '../components/universe/UniversePlayer';
@@ -65,6 +65,8 @@ export function NibiruOutcomeLoop() {
 
   const run = async (fn: () => Promise<void>) => { setBusy(true); setError(''); try { await fn(); } catch (e: any) { setError(e.message); await load(); } finally { setBusy(false); } };
   const watched = () => run(async () => { setS(await api(`/api/nibiru/coach/loops/${id}/video-done`, { method: 'POST', body: '{}' })); });
+  const [reported, setReported] = useState(false);
+  const report = (autoId: string) => run(async () => { await api(`/api/outcome-videos/auto/${encodeURIComponent(autoId)}/report`, { method: 'POST', body: '{}' }); setReported(true); });
   const openTest = () => run(async () => {
     const r = await api<any>(`/api/nibiru/coach/loops/${id}/mini-test`, { method: 'POST', body: '{}' });
     setTest(await api<any>(`/api/nibiru/coach/mini-tests/${encodeURIComponent(r.testId)}`)); setAnswers({});
@@ -92,19 +94,20 @@ export function NibiruOutcomeLoop() {
 
     {s.step === 'VIDEO' && s.video && <section className="nl-card">
       <h2><PlayCircle size={20} aria-hidden="true" /> Önce konuyu kısa bir videoyla hatırla</h2>
-      {embeddableVideo(s.video.url)
-        ? <div className="nl-video"><iframe title={s.video.title} src={embeddableVideo(s.video.url)!} allow="encrypted-media; picture-in-picture" allowFullScreen loading="lazy" referrerPolicy="strict-origin-when-cross-origin" /></div>
+      {clipEmbed(s.video.url, s.video.start, s.video.end)
+        ? <div className="nl-video"><iframe title={s.video.title} src={clipEmbed(s.video.url, s.video.start, s.video.end)!} allow="encrypted-media; picture-in-picture" allowFullScreen loading="lazy" referrerPolicy="strict-origin-when-cross-origin" /></div>
         : null}
-      <p className="nl-muted">{s.video.title}{s.video.durationSeconds ? ` · ${Math.max(1, Math.round(s.video.durationSeconds / 60))} dk` : ''} · öğretmen onaylı video</p>
+      <p className="nl-muted">{s.video.title}{s.video.durationSeconds ? ` · ${Math.max(1, Math.round(s.video.durationSeconds / 60))} dk` : ''} · {s.video.source === 'AUTO' ? 'kazanımın anlatıldığı bölüm YouTube’dan otomatik seçildi' : s.video.source === 'TEACHER' ? 'öğretmeninin eklediği video' : 'öğretmen onaylı video'}</p>
       <div className="nl-actions">
-        <a className="secondary" href={s.video.url} target="_blank" rel="noreferrer"><ExternalLink size={16} aria-hidden="true" /> {s.video.provider === 'YOUTUBE' ? "YouTube'da aç" : 'Videoyu aç'}</a>
+        <a className="secondary" href={s.video.start ? `${s.video.url}${s.video.url.includes('?') ? '&' : '?'}t=${s.video.start}s` : s.video.url} target="_blank" rel="noreferrer"><ExternalLink size={16} aria-hidden="true" /> {s.video.provider === 'YOUTUBE' ? "YouTube'da aç" : 'Videoyu aç'}</a>
         <button className="primary" disabled={busy} onClick={() => void watched()}><CheckCircle2 size={16} aria-hidden="true" /> İzledim, mini teste geç</button>
       </div>
+      {s.video.source === 'AUTO' && s.video.autoId && <p className="nl-muted">{reported ? 'Teşekkürler, bildirimin alındı.' : <button type="button" className="link" disabled={busy} onClick={() => void report(s.video.autoId)}>Bu video konuyla ilgili değil</button>}</p>}
     </section>}
 
     {s.step === 'MINI_TEST' && !test && <section className="nl-card">
       <h2><ClipboardCheck size={20} aria-hidden="true" /> Mini test</h2>
-      {s.videoMissing && <p className="nl-note">Bu kazanım için henüz öğretmen onaylı bir video yok. Bulunan videolar öğretmen onayından sonra burada görünür.</p>}
+      {s.videoMissing && <p className="nl-note">Bu kazanım için henüz öğretmen onaylı bir video yok; uygun bir YouTube bölümü de henüz bulunamadı, aramaya devam ediliyor.</p>}
       <p>Aynı kazanımdan 5 farklı soru. 5 sorudan en az 4'ünü doğru yaparsan bu adım tamam.</p>
       <div className="nl-actions"><button className="primary" disabled={busy} onClick={() => void openTest()}>{s.miniTest?.status === 'READY' ? 'Mini teste devam et' : 'Mini teste başla'}</button></div>
     </section>}

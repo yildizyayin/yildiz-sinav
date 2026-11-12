@@ -1,0 +1,32 @@
+.ov{display:grid;gap:16px;min-width:0}
+.ov-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.ov-stats>div{display:grid;gap:2px;padding:12px 14px;border:1px solid var(--line,#e3e6ee);border-radius:14px;background:var(--surface,#fff)}
+.ov-stats b{font-size:1.25rem}
+.ov-stats span{font-size:.9rem}
+.ov-stats small{color:var(--muted,#6b7280);font-size:.8rem}
+.ov-stats .warn{border-color:#f0b4a6;background:#fff6f3}
+.ov-filters{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.ov-filters label{display:grid;gap:4px;font-size:.85rem;min-width:140px}
+.ov-filters label.grow{flex:1 1 220px}
+.ov-filters select,.ov-filters input,.ov-form input{min-height:40px;padding:0 10px;border:1px solid var(--line,#d7dbe5);border-radius:10px;font:inherit;background:var(--surface,#fff);color:inherit;width:100%;box-sizing:border-box}
+.ov-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ov-item{display:grid;gap:8px;padding:14px;border:1px solid var(--line,#e3e6ee);border-radius:14px;background:var(--surface,#fff);min-width:0}
+.ov-head{display:grid;gap:2px}
+.ov-head small{color:var(--muted,#6b7280)}
+.ov-head strong{font-weight:600;overflow-wrap:anywhere}
+.ov-video{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;min-width:0}
+.ov-video small{color:var(--muted,#6b7280)}
+.ov-title{overflow-wrap:anywhere;min-width:0}
+.ov-chip{font-size:.75rem;padding:3px 9px;border-radius:999px;background:#eef1f7;white-space:nowrap}
+.ov-chip.system{background:#e6f4ea;color:#1e6b34}
+.ov-chip.teacher{background:#e8effd;color:#1f4fa8}
+.ov-chip.auto{background:#fff3dc;color:#8a5a00}
+.ov-chip.none{background:#f3f4f6;color:#555}
+.ov-actions{display:flex;flex-wrap:wrap;gap:8px}
+.ov-actions button{min-height:36px}
+.ov-player{position:relative;width:100%;max-width:640px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+.ov-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ov-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-top:6px}
+.ov-form label{display:grid;gap:4px;font-size:.85rem;min-width:0}
+.ov-form .wide,.ov-form .ov-actions{grid-column:1/-1}
+@media (max-width:600px){.ov-form{grid-template-columns:1fr}.ov-filters label{flex:1 1 100%}}

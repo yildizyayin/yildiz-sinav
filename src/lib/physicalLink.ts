@@ -19,3 +19,9 @@ export function embeddableVideo(url: string | null | undefined): string | null {
   const m = url.match(/^https:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
   return m ? `https://www.youtube-nocookie.com/embed/${m[1]}` : null;
 }
+/** A segment of a video: the embed starts and stops at the outcome's part (owner, 12 Nov 2026). */
+export function clipEmbed(url: string | null | undefined, start?: number | null, end?: number | null): string | null {
+  const base = embeddableVideo(url); if (!base) return null;
+  const q = [start && start > 0 ? `start=${Math.floor(start)}` : null, end && end > 0 ? `end=${Math.floor(end)}` : null].filter(Boolean);
+  return q.length ? `${base}?${q.join('&')}&rel=0` : base;
+}

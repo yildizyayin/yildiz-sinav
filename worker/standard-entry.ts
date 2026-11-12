@@ -2,6 +2,7 @@ import { publishedForLearnersSql } from './lib/exam-schedule';
 import { SERVABLE_VIDEO_SQL } from './lib/video-links';
 import app from './platform-entry';
 import {fetchYoutubeMetadata,youtubeCandidateAvailable} from './lib/youtube-candidate-policy';
+import {outcomeClip} from './lib/outcome-videos';
 import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, json, one, uuid } from './lib/db';
@@ -220,6 +221,8 @@ async function questionSupport(env:Env,user:AuthUser,url:URL){
   if(!row)return fail(404,'QUESTION_NOT_FOUND','Bu soru öğrenci sonuçlarında bulunamadı.');
   let topicVideo=row.topic_url?{url:row.topic_url,title:row.topic_title||'Konu Anlatımı',source:'REGISTERED'}:null;let selection:any=null;
   // A067: an automatically found video is only a candidate for a person to review; it is not shown to the student
+  // owner 12 Nov 2026: no system video → the school's own link, then an automatically found YouTube segment of the outcome
+  if(!topicVideo&&row.outcome_id){const clip=await outcomeClip(env,row.outcome_id,user.institution_id||null);if(clip)topicVideo={url:clip.url,title:clip.title,source:clip.source==='TEACHER'?'TEACHER':'AUTO_SEGMENT',start:clip.start,end:clip.end,autoId:clip.source==='AUTO'?clip.id:null} as any;}
   if(!topicVideo)selection=await youtubeMicroVideo(env,row);
   return json({ok:true,question:{id:row.question_id,questionNo:row.question_no,globalNo:row.global_no,status:row.answer_status,subject:row.subject_name,outcome:row.outcome_title,topic:row.topic,subtopic:row.subtopic},options:{solutionVideo:row.solution_url?{url:row.solution_url,title:row.solution_title||'Video Çözümü',source:'PUBLISHER'}:null,topicVideo},microLearning:selection?{reason:selection.reason,candidateCount:selection.candidateCount,awaitingReview:!!selection.video}:null});
 }

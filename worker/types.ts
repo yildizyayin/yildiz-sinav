@@ -84,6 +84,8 @@ export interface Env {
   GOOGLE_TTS_SERVICE_ACCOUNT_JSON?: string;
   OPENAI_TTS_API_KEY?: string;
   YOUTUBE_API_KEY?: string;
+  GEMINI_API_KEY?: string;
+  GEMINI_MODEL?: string;
   WHATSAPP_VERIFY_TOKEN?: string;
   WHATSAPP_APP_SECRET?: string;
   WHATSAPP_ACCESS_TOKEN?: string;
