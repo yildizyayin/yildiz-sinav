@@ -13,6 +13,8 @@
  */
 import type { AuthUser, Env } from '../types';
 import { all, audit, json, one, uuid } from './db';
+import { SERVABLE_VIDEO_SQL } from './video-links';
+import { outcomeClip } from './outcome-videos';
 import { guidanceStudentIds } from './guidance-records';
 import { publishedForLearnersSql } from './exam-schedule';
 
@@ -232,6 +234,8 @@ async function programDetail(env: Env, user: AuthUser, id: string) {
   if (!who || (who !== 'COUNSELOR' && p.status !== 'GIVEN')) return fail(404, 'NOT_FOUND', 'Program bulunamadı.');
   const items = await all<any>(env.DB.prepare(`SELECT i.*,s.name subject_name FROM guidance_program_items i LEFT JOIN subjects s ON s.id=i.subject_id WHERE i.program_id=? ORDER BY i.day,i.sort,i.rowid`).bind(id));
   const logs = await all<any>(env.DB.prepare(`SELECT l.*,s.name subject_name FROM guidance_study_logs l LEFT JOIN subjects s ON s.id=l.subject_id WHERE l.student_id=? AND l.log_date BETWEEN ? AND ? ORDER BY l.log_date DESC,l.created_at DESC`).bind(p.student_id, p.week_start, addDays(p.week_start, 6)));
+  // owner 12 Nov 2026: each outcome row carries its video — system video, else the school's link, else the automatic segment
+  for (const it of items) if (it.outcome_id) it.video = await programItemVideo(env, it.outcome_id, p.institution_id);
   const progress = await programProgress(env, id);
   const counselor = await one<any>(env.DB.prepare(`SELECT display_name FROM users WHERE id=?`).bind(p.given_by || p.created_by));
   return json({ ok: true, viewer: who, program: { ...p, counselor: counselor?.display_name || null }, items, logs, progress });
@@ -468,4 +472,11 @@ export async function handleGuidanceProgram(request: Request, env: Env): Promise
   m = p.match(/^\/api\/guidance-program\/templates\/([^/]+)$/);
   if (m && request.method === 'DELETE') { await env.DB.prepare(`DELETE FROM guidance_program_templates WHERE id=? AND owner_id=?`).bind(decodeURIComponent(m[1]), user.id).run(); return json({ ok: true }); }
   return fail(404, 'NOT_FOUND', 'Yol bulunamadı.');
+}
+
+async function programItemVideo(env: Env, outcomeId: string, institutionId: string) {
+  const v = await one<any>(env.DB.prepare(`SELECT vl.url,vl.title FROM video_links vl WHERE vl.link_type='TOPIC' AND vl.outcome_id=? AND ${SERVABLE_VIDEO_SQL} ORDER BY vl.rowid DESC LIMIT 1`).bind(outcomeId));
+  if (v) return { url: v.url, title: v.title, source: 'SYSTEM', start: 0, end: null };
+  const c = await outcomeClip(env, outcomeId, institutionId);
+  return c ? { url: c.url, title: c.title, source: c.source, start: c.start, end: c.end } : null;
 }

@@ -34,6 +34,8 @@ export function OutcomeVideos() {
     try { await fn(); setNotice(done); await load(); } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
   const st = data?.status;
+  const [cov, setCov] = useState<any[] | null>(null);
+  const loadCoverage = async () => { try { setCov((await api<any>('/api/outcome-videos/coverage')).rows); } catch (e: any) { setError(e.message); } };
 
   return <div className="ov">
     <div className="page-head"><div><span className="eyebrow">İçerik</span><h1>Kazanım Videoları</h1>
@@ -47,6 +49,13 @@ export function OutcomeVideos() {
       <div><b>{st.gemini ? `${st.today.geminiMinutes}/${st.today.geminiMinuteCap} dk` : 'Kapalı'}</b><span>Gemini ile izleme</span><small>{st.gemini ? 'ücretsiz kota' : 'anahtar eklenince açılır; şimdilik bölüm listeleri kullanılıyor'}</small></div>
       {!st.youtube && <div className="warn"><b>YouTube kapalı</b><span>YouTube API anahtarı tanımlı değil</span></div>}
     </div>}
+
+    <details className="ov-coverage" onToggle={(e) => { if ((e.target as HTMLDetailsElement).open && !cov) void loadCoverage(); }}>
+      <summary>Kapsam: sınıf ve derse göre video durumu</summary>
+      {cov && <div className="ov-table"><table><thead><tr><th>Sınıf</th><th>Ders</th><th>Kazanım</th><th>Sistem</th><th>Okulunuz</th><th>Otomatik</th><th>Videosu olan</th><th>Bulunamadı</th></tr></thead>
+        <tbody>{cov.map((r) => { const has = Math.min(r.total, r.system + r.teacher + r.auto); return <tr key={`${r.grade}-${r.subject}`}><td>{r.grade ?? '—'}</td><td>{r.subject}</td><td>{r.total}</td><td>{r.system}</td><td>{r.teacher}</td><td>{r.auto}</td><td><b>%{r.total ? Math.round(has * 100 / r.total) : 0}</b></td><td>{r.missed}</td></tr>; })}</tbody></table></div>}
+      {cov && !cov.length && <div className="empty">Kazanım yok.</div>}
+    </details>
 
     <form className="ov-filters" onSubmit={(e) => { e.preventDefault(); void load(); }}>
       <label>Sınıf<select value={f.grade} onChange={(e) => setF({ ...f, grade: e.target.value })}><option value="">Tümü</option>{Array.from({ length: 12 }, (_, k) => k + 1).map((g) => <option key={g} value={g}>{g}. sınıf</option>)}</select></label>
