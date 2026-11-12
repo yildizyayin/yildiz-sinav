@@ -607,9 +607,9 @@ Diğer roller:
 
 ### Açık kararlar (sahip)
 
-1. RBA açılımı.
+1. ~~RBA açılımı.~~ Karar (12 Kasım): Rehberlik Bilgi Anketi (PR #542).
 2. Hedef kurum türü: devlet okulu, özel okul, kurs.
-3. Zorbalık bildiriminin isimsiz yapılabilmesi (öneri: evet, yalnız rehber görür).
+3. ~~Zorbalık bildiriminin isimsiz yapılabilmesi.~~ R1'de yapıldı: "Rehber öğretmenime yaz" isimsiz gönderilebilir, yalnız rehber görür.
 4. ~~İçerik onayı için PDR uzmanı.~~ Karar (12 Kasım): PDR uzmanı gerekmiyor; içerik Süper Admin onayından geçer.
 
 ## 12 Kasım 2026: rehberlik tamamlandı, RİBA kaldırıldı, YouTube planı
@@ -637,3 +637,17 @@ Diğer roller:
 - Öğretmen: "Kazanım Videoları" sayfası (/kazanim-videolari) — izle, "Kaldır, başka video bul", "Okulun videosunu ekle", "Şimdi aramaya al". Kaldırılan video o kazanıma bir daha gelmez.
 - Öğrenci: "Bu video konuyla ilgili değil"; 3 farklı öğrenci derse video kalkar ve yenisi aranır.
 - Gemini anahtarı: GitHub secret `PROD_GEMINI_API_KEY` (test için `GEMINI_API_KEY`); canlıya almada sunucuya aktarılır. Anahtar yokken bölüm listesi yöntemi çalışır.
+
+## 12 Kasım 2026 akşam: anunex.com mobil düzeltmeleri (karar, sırada)
+
+Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılacaklar:
+
+1. **Mobil taşma:** Nibiru bölümü ("Tek bir yapay zekâ değil", sekmeler, "Merhaba Efe" kartı), WhatsApp bölümü, YouTube video kartı ve "Beş aday nasıl seçilir?" kutusu sağdan kesiliyor; üst menüde "Entegrasyonlar/İletişim" sığmıyor. 360 px'e sığdırılacak.
+2. **İngilizce kazanım:** Öğrenci ekran görüntüsünde "Students can prepare…" görünüyor (örnek öğrencinin en zayıf kazanımı İngilizce). Türkçe/Matematik kazanımlı örnekle yeniden çekilecek.
+3. **"Son 2 sınavda netin" çubukları:** Uygulamadaki öğrenci ana sayfasında çubuklarda rakam yok; net değerleri yazılacak (uygulamada), görüntü yenilenecek.
+4. **Video kartları:** "1,2 Mn izlenme" gibi örnek sayılar kaldırılacak; süre + "örnek" etiketi.
+5. **"Nibiru'ya sor" düğmesi:** Mobilde yalnız simge.
+6. **Pilot okul başvurusu:** "Tanıtım için arayın" yanında "Pilot okul başvurusu" formu — kurum adı, il, kurum türü, yaklaşık öğrenci sayısı, yetkili adı, telefon, e-posta, KVKK onayı + kısa aydınlatma metni. Yeni Cloudflare kaynağı yok; kayıt app veritabanına, Süper Admin'de "Pilot Başvuruları" listesi ve bildirim; telefon başına sınır.
+7. **"X bin kazanım bazlı soru":** Soru havuzu dolunca (2027) gerçek sayı yazılacak.
+
+Önizleme gösterilmeden canlıya alınmaz.
