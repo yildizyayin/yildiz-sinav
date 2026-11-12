@@ -43,6 +43,7 @@ function WeekGrid({ items, days = [1, 2, 3, 4, 5, 6, 7], editable, studentMode, 
           <input type="number" min={0} max={500} defaultValue={i.target_count} onBlur={(e) => Number(e.target.value) !== i.target_count && patch(i.id, { targetCount: Number(e.target.value) })} aria-label="Soru sayısı" />
           <button type="button" onClick={() => remove(i.id)} aria-label="Satırı sil">Sil</button>
         </div>}
+        {i.video && <a className="gp-link" href={i.video.url} target="_blank" rel="noreferrer">▶ Konu videosu{i.video.end != null ? ` (${Math.max(1, Math.round((i.video.end - (i.video.start || 0)) / 60))} dk)` : ''}</a>}
         {editable && i.reason && <small className="gp-reason">{i.reason}</small>}
         {studentMode && i.origin === 'STUDENT' && <button type="button" className="gp-link" onClick={() => remove(i.id)}>Kaldır</button>}
       </article>)}

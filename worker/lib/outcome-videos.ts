@@ -341,6 +341,16 @@ export async function handleOutcomeVideos(request: Request, env: Env): Promise<R
   }
   if (!STAFF.includes(user.role)) return fail(403, 'FORBIDDEN', 'Kazanım videoları öğretmen ve yöneticilere açıktır.');
   if (p === '/api/outcome-videos' && request.method === 'GET') return list(env, user, url);
+  if (p === '/api/outcome-videos/coverage' && request.method === 'GET') {
+    const rows = await all<any>(env.DB.prepare(`SELECT o.grade_level grade,coalesce(s.name,'—') subject,count(*) total,
+        sum(EXISTS (SELECT 1 FROM video_links vl WHERE vl.outcome_id=o.id AND vl.link_type='TOPIC' AND vl.approved=1)) system,
+        sum(EXISTS (SELECT 1 FROM outcome_teacher_videos t WHERE t.outcome_id=o.id AND t.institution_id=? AND t.active=1)) teacher,
+        sum(EXISTS (SELECT 1 FROM outcome_auto_videos a WHERE a.outcome_id=o.id AND a.status='ACTIVE')) auto,
+        sum(EXISTS (SELECT 1 FROM outcome_video_queue q WHERE q.outcome_id=o.id AND q.status='NOT_FOUND')) missed
+      FROM outcomes o LEFT JOIN subjects s ON s.id=o.subject_id WHERE o.active=1 AND coalesce(o.node_type,'OUTCOME')='OUTCOME'
+      GROUP BY o.grade_level,s.name ORDER BY o.grade_level,s.name`).bind(user.institution_id || ''));
+    return json({ ok: true, rows: rows.map((r) => ({ grade: r.grade, subject: r.subject, total: Number(r.total), system: Number(r.system || 0), teacher: Number(r.teacher || 0), auto: Number(r.auto || 0), missed: Number(r.missed || 0) })) });
+  }
   m = p.match(/^\/api\/outcome-videos\/auto\/([^/]+)\/remove$/);
   if (m && request.method === 'POST') {
     const b = await request.json().catch(() => ({})) as any;

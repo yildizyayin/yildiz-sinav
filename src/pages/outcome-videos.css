@@ -30,3 +30,8 @@
 .ov-form label{display:grid;gap:4px;font-size:.85rem;min-width:0}
 .ov-form .wide,.ov-form .ov-actions{grid-column:1/-1}
 @media (max-width:600px){.ov-form{grid-template-columns:1fr}.ov-filters label{flex:1 1 100%}}
+.ov-coverage{border:1px solid var(--line,#e3e6ee);border-radius:14px;background:var(--surface,#fff);padding:10px 14px}
+.ov-coverage summary{cursor:pointer;font-weight:600}
+.ov-table{overflow-x:auto;margin-top:10px}
+.ov-table table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:620px}
+.ov-table th,.ov-table td{padding:6px 8px;border-bottom:1px solid var(--line,#eef0f4);text-align:left;white-space:nowrap}
