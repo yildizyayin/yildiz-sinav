@@ -38,3 +38,16 @@
 .gd-pick label{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--sd-border,#e2e8f0);font-size:13px;cursor:pointer}
 @media print{.gd-actions,.gd-tabs{display:none}}
 .gd input[type=checkbox],.gd input[type=radio]{width:18px;height:18px;min-height:0;flex:0 0 auto;padding:0;margin:0}
+/* R3 — form items */
+.gt-items{list-style:decimal;margin:0;padding-left:22px;display:grid;gap:14px}
+.gt-item p{margin:0 0 8px;font-weight:600}
+.gt-scale{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:6px}
+.gt-scale.two{grid-template-columns:repeat(2,minmax(0,160px))}
+.gt-items .gt-scale label,.gt-items .gt-ab label{position:relative;margin:0;font-weight:500;display:flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:6px 10px;border-radius:12px;border:1px solid var(--sd-border,#cbd5e1);background:var(--sd-card,#fff);cursor:pointer;text-align:center;font-size:13.5px}
+.gt-items .gt-scale label.on,.gt-items .gt-ab label.on{border-color:var(--brand,#1d4ed8);background:rgba(29,78,216,.08);font-weight:700}
+.gt-items .gt-scale input,.gt-items .gt-ab input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;pointer-events:none}
+.gt-items .gd-pick label{position:relative;margin:0;font-weight:500}
+.gt-items input[type=checkbox]{width:18px;height:18px;min-height:0;flex:0 0 auto;padding:0;margin:0}
+.gt-items textarea{width:100%;min-height:80px}
+.gt-ab{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:520px){.gt-ab{grid-template-columns:1fr}}
