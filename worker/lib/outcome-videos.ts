@@ -109,11 +109,11 @@ covers: video bu kazanımı gerçekten anlatıyor mu (yalnız adı geçiyorsa fa
       signal: AbortSignal.timeout(180_000),
     });
     if (res.status === 429 || res.status === 403) return 'LIMIT';
-    if (!res.ok) return null;
+    if (!res.ok) { const body = await res.text().catch(() => ''); return { __error: `HTTP ${res.status} ${body.replace(/\s+/g, ' ').slice(0, 160)}` }; }
     const data: any = await res.json();
     const out = data?.candidates?.[0]?.content?.parts?.map((p: any) => p.text || '').join('') || '';
-    return JSON.parse(out.replace(/^```(?:json)?|```$/g, '').trim());
-  } catch { return null; }
+    try { return JSON.parse(out.replace(/^```(?:json)?|```$/g, '').trim()); } catch { return { __error: `yanıt okunamadı: ${(out || data?.promptFeedback?.blockReason || data?.candidates?.[0]?.finishReason || 'boş').toString().slice(0, 120)}` }; }
+  } catch (e: any) { return { __error: `bağlantı: ${String(e?.name || e).slice(0, 60)}` }; }
 }
 
 // ------------------------------------------------------------------ finding a clip for one outcome
@@ -190,7 +190,7 @@ export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ s
       await spend(env, 0, 1, c.duration);
       const answer = await askGemini(env, c.id, o);
       if (answer === 'LIMIT') { detail = 'Gemini kotası'; break; }
-      verdicts.push(answer ? `${c.id}: covers=${answer.covers} suitable=${answer.suitable} conf=${answer.confidence} ${answer.start ?? ''}-${answer.end ?? ''}` : `${c.id}: yanıt yok`);
+      verdicts.push(answer?.__error ? `${c.id}: ${answer.__error}` : answer ? `${c.id}: covers=${answer.covers} suitable=${answer.suitable} conf=${answer.confidence} ${answer.start ?? ''}-${answer.end ?? ''}` : `${c.id}: yanıt yok`);
       const clip = acceptGemini(answer, c.duration);
       if (clip) return save(c, clip.start, clip.end, 'GEMINI', clip.confidence);
     }
