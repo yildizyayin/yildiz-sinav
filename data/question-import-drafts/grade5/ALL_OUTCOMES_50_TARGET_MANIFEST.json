@@ -5,20 +5,20 @@
   "generatedDate": "2026-11-11",
   "goal": "50 distinct editorially verified items per outcome; variable format based on MEB evidence type",
   "targets": {
-    "totalOutcomes": 343,
-    "totalTargetQuestions": 17150,
+    "totalOutcomes": 344,
+    "totalTargetQuestions": 17200,
     "subjectCounts": {
       "TUR": 80,
       "MAT": 23,
-      "FEN": 26,
+      "FEN": 27,
       "SOS": 18,
       "ING": 178,
       "DIN": 18
     },
-    "draftQuestions": 1150,
+    "draftQuestions": 1200,
     "approvedQuestions": 0,
     "unstartedOutcomes": 320,
-    "draftOutcomes": 23,
+    "draftOutcomes": 24,
     "outstandingDraftQuestions": 16000
   },
   "sourceInventory": {
@@ -80,7 +80,16 @@
         "first": "Üst düzey çıkarımlar yoluyla dinlediğinin/izlediğinin derin anlamını be lirleyebilme",
         "later": "Üst düzey çıkarımlar yoluyla dinlediğinin/izlediğinin derin anlamını belirleyebilme"
       }
-    ]
+    ],
+    "fenCatalogCorrection20261112": {
+      "code": "FB.5.7.1",
+      "officialUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/408",
+      "reason": "MEB official unit has FB.5.7.1, FB.5.7.2, FB.5.7.3 but existing snapshot skipped FB.5.7.1",
+      "previousFenOutputs": 26,
+      "correctedFenOutputs": 27,
+      "previousGrade5Target": 17150,
+      "correctedGrade5Target": 17200
+    }
   },
   "safety": {
     "automationPaused": true,
@@ -1865,10 +1874,26 @@
       "repeatThemeCount": 1,
       "targetCount": 50,
       "approvedCount": 0,
-      "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
+      "storedInThisBranch": 50,
+      "reviewStatus": "DRAFT_NEEDS_VISUAL_SCIENTIFIC_AND_TEACHER_REVIEW",
       "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "priorDraftCount": 0,
+      "draftFilePaths": [
+        "data/question-import-drafts/grade5/FB511_part01_25_questions.json",
+        "data/question-import-drafts/grade5/FB511_part02_25_questions.json"
+      ],
+      "supplementaryPerformanceTasksFile": "data/question-import-drafts/grade5/FB511_10_performance_tasks_review_only.json",
+      "visualAssetFiles": [
+        "data/question-import-drafts/grade5/assets/FEN111_01_sunspot_sequence.svg",
+        "data/question-import-drafts/grade5/assets/FEN111_02_source_reliability.svg",
+        "data/question-import-drafts/grade5/assets/FEN111_03_solar_structure.svg",
+        "data/question-import-drafts/grade5/assets/FEN111_04_apparent_size.svg",
+        "data/question-import-drafts/grade5/assets/FEN111_05_spot_data_table.svg",
+        "data/question-import-drafts/grade5/assets/FEN111_06_safe_observation.svg"
+      ],
+      "visualDependentDraftCount": 22,
+      "realPhotographsAttached": 0,
+      "visualReviewStatus": "ORIGINAL_DIAGRAMS_UNAPPROVED"
     },
     {
       "gradeLevel": 5,
@@ -2230,6 +2255,22 @@
       "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/407",
       "sourceCourse": "fen-bilimleri-dersi",
       "sourceTheme": "6. Ünite: Yaşamımızdaki Elektrik",
+      "repeatThemeCount": 1,
+      "targetCount": 50,
+      "approvedCount": 0,
+      "storedInThisBranch": 0,
+      "reviewStatus": "NOT_STARTED",
+      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
+      "priorDraftCount": 0
+    },
+    {
+      "gradeLevel": 5,
+      "subjectCode": "FEN",
+      "outcomeCode": "FB.5.7.1",
+      "outcomeTitle": "Evsel atıklarda geri dönüştürülebilen ve dönüştürülemeyen maddeleri sınıflandırabilme",
+      "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/408",
+      "sourceCourse": "fen-bilimleri-dersi",
+      "sourceTheme": "7. Ünite: Sürdürülebilir Yaşam Ve Geri Dönüşüm",
       "repeatThemeCount": 1,
       "targetCount": 50,
       "approvedCount": 0,
@@ -5738,8 +5779,10 @@
     "data/question-import-drafts/grade5/MAT561_part01_25_questions.json",
     "data/question-import-drafts/grade5/MAT561_part02_25_questions.json",
     "data/question-import-drafts/grade5/MAT562_part01_25_questions.json",
-    "data/question-import-drafts/grade5/MAT562_part02_25_questions.json"
+    "data/question-import-drafts/grade5/MAT562_part02_25_questions.json",
+    "data/question-import-drafts/grade5/FB511_part01_25_questions.json",
+    "data/question-import-drafts/grade5/FB511_part02_25_questions.json"
   ],
-  "status": "IN_PROGRESS_DRAFT_ONLY_MATH_COVERAGE_FILLED",
-  "lastCheckedAt": "2026-11-11"
+  "status": "IN_PROGRESS_MATH_DRAFT_FILLED_FEN_STARTED",
+  "lastCheckedAt": "2026-11-12"
 }
