@@ -20,9 +20,11 @@
     "unstartedOutcomes": 319,
     "draftOutcomes": 25,
     "outstandingDraftQuestions": 15950,
-    "reviewOnlyAssessmentItems": 50,
-    "combinedDraftContentItems": 1300,
-    "combinedOutstandingContentItems": 15900
+    "reviewOnlyAssessmentItems": 100,
+    "combinedDraftContentItems": 1350,
+    "combinedOutstandingContentItems": 15850,
+    "combinedDraftOutcomes": 27,
+    "combinedUnstartedOutcomes": 317
   },
   "sourceInventory": {
     "math": "data/question-full-math-target-2028.json",
@@ -1941,7 +1943,7 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
       "assessmentNote": "43 OPEN_ENDED + 7 PERFORMANCE_TASK. Separate review-only registry; legacy MC storedInThisBranch remains 0.",
       "priorDraftCount": 0,
       "storedAssessmentDrafts": 50,
@@ -1959,9 +1961,20 @@
       "targetCount": 50,
       "approvedCount": 0,
       "storedInThisBranch": 0,
-      "reviewStatus": "NOT_STARTED",
-      "assessmentNote": "ASSESSMENT_TYPE_MUST_MATCH_OUTCOME",
-      "priorDraftCount": 0
+      "reviewStatus": "DRAFT_NEEDS_ACADEMIC_MEDIA_AND_YEAR_REVIEW",
+      "assessmentNote": "44 OPEN_ENDED + 6 PERFORMANCE_TASK; separate review-only registry, not legacy MC import.",
+      "priorDraftCount": 0,
+      "storedAssessmentDrafts": 50,
+      "assessmentReviewStatus": "DRAFT_NOT_APPROVED_OPEN_ENDED_AND_PERFORMANCE",
+      "assessmentDraftFilePaths": [
+        "data/question-import-drafts/grade5/FB514_50_mixed_assessments_review_only.json"
+      ],
+      "realObservationAssetFiles": [
+        "data/question-import-drafts/grade5/assets/FB514_earthrise_1968.jpg",
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame06.jpg",
+        "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg"
+      ],
+      "realPhotographsAttached": 3
     },
     {
       "gradeLevel": 5,
@@ -5808,6 +5821,20 @@
   "status": "IN_PROGRESS_MATH_DRAFT_FILLED_FEN_STARTED",
   "lastCheckedAt": "2026-11-12",
   "newAssessmentDraftFiles": [
-    "data/question-import-drafts/grade5/FB513_50_mixed_assessments_review_only.json"
-  ]
+    "data/question-import-drafts/grade5/FB513_50_mixed_assessments_review_only.json",
+    "data/question-import-drafts/grade5/FB514_50_mixed_assessments_review_only.json"
+  ],
+  "countingNotes": {
+    "legacyMCFields": [
+      "draftQuestions",
+      "outstandingDraftQuestions",
+      "draftOutcomes",
+      "unstartedOutcomes",
+      "storedInThisBranch"
+    ],
+    "combinedContentIncludes": "legacy MC + separately registered OPEN_ENDED/PERFORMANCE_TASK quota items",
+    "supplementaryTasksExcluded": 168,
+    "approvalStatus": "All draft; teacher-approved 0",
+    "englishQuota": "Existing general target remains provisional pending English revision."
+  }
 }

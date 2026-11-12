@@ -30,6 +30,13 @@ Kazanım kazanım onay bekleme; 5. sınıfı **tek toplu iş** olarak yönet. He
 - Bu türler legacy MC denetim/aktarımına sokulmaz; `newAssessmentDraftFiles` altında ayrı sayılır. Kaynak sürümü, akademik onay, gerçek fotoğraf ve hak denetimleri açıktır. `FB513_REVIEW_PROGRESS_2026-11-12.md` sınırları ve devam noktasını açıklar.
 - 41–43. maddelerde doğrulanmış Kasım 2026 NASA duyurusu kullanılır; gelecekteki gözlem gerçekleşmiş sayılmaz. Gerçek fotoğraf pakete eklenmedi.
 
+## Güneş–Dünya–Ay modelleme paketi — 12 Kasım 2026
+- `FB514_50_mixed_assessments_review_only.json`: 44 açık uçlu ve 6 performans görevi; madde bazlı 4 puanlık rubrik.
+- 3 gerçek gözlem görüntüsü, 8 görselle ilişkilendirilmiş madde. 1968/2015 çekimleri; kaynak/tarih/kredi bilgileri `FB514_visual_asset_manifest.json` içinde.
+- Güncel toplam: 1.250 MC + 100 farklı türde değerlendirme = **1.350 taslak içerik**; önceki 168 ek görev ayrıca. Fen: 200 taslak.
+- Önceki sayaç ve adetler tarihsel aşamaları anlatır; güncel toplam ve inceleme durumu bu bölüm ve ana manifestin combined sayaçlarıdır. Öğretmen onaylı: 0.
+- Ayrıntı ve açık işler: `FB514_REVIEW_PROGRESS_2026-11-12.md`. Sıradaki: FB.5.2.1.
+
 ## Güncel kontrol kaydı
 - `QA_PROGRESS_2026-11-11.md` dosyasında 1.150 taslağın yapısal testleri ve akademik/medya/özgünlük eksikleri kayıtlıdır.
 - Sırf sayı/isim değiştirerek aynı örnek soruları çoğaltma; tekrar eden soru tasarımlarını editoryal incelemeden geçir.
