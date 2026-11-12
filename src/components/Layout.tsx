@@ -79,6 +79,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/nibiru',label:'Nibiru',icon:NibiruNavIcon},
       {to:'/nibiru-admin',label:'Nibiru Yönetimi',icon:MessageCircle}, { to: '/evren-merkezi', label: 'Evren Merkezi', icon: Orbit, feature:'LEARNING_UNIVERSE' },
       {to:'/guidance-admin',label:'RBA & Rehberlik Testleri',icon:ClipboardCheck},
+      {to:'/rehberlik-onaylari',label:'Rehberlik Onayları',icon:ShieldCheck},
       {to:'/agent-center',label:'AI Ajan Merkezi',icon:Activity},
       {to:'/licenses',label:'Lisanslar',icon:KeyRound},
       {to:'/theme-management',label:'Tema & Özel Günler',icon:Palette},
