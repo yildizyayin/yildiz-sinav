@@ -4,7 +4,7 @@
  *  - the class report: who answered, dimension averages, and for the classmate-choice tool a sociogram summary that
  *    only the guidance teacher sees;
  *  - a guidance teacher may draft their own tool; it reaches students only after the Super Admin (expert) approves;
- *  - anonymous school surveys (RİBA, okul iklimi): a sample of each class is invited, the answers carry no person, and
+ *  - anonymous school surveys (okul iklimi; RİBA is not used — owner, 12 Nov 2026): a sample of each class is invited, the answers carry no person, and
  *    groups of fewer than five answers are never shown on their own.
  * Nothing here diagnoses or labels a student.
  */
@@ -45,7 +45,7 @@ export function validateItems(items: any, opts: { survey?: 'RIBA' | 'CLIMATE' } 
 async function catalog(env: Env, user: AuthUser) {
   const instruments = await all<any>(env.DB.prepare(`SELECT id,code,title,category,description,grade_min,grade_max,active,review_status,review_note,owner_user_id,question_schema_json FROM guidance_assessment_instruments
     WHERE clinical_use=0 AND ((active=1 AND (institution_id IS NULL OR institution_id=?)) OR owner_user_id=?) ORDER BY active DESC,CASE category WHEN 'RBA' THEN 0 ELSE 1 END,title`).bind(user.institution_id, user.id));
-  const templates = await all<any>(env.DB.prepare(`SELECT id,code,kind,title,description,active,review_status FROM guidance_survey_templates ORDER BY code`));
+  const templates = await all<any>(env.DB.prepare(`SELECT id,code,kind,title,description,active,review_status FROM guidance_survey_templates WHERE kind<>'RIBA' ORDER BY code`));
   return json({ ok: true, instruments: instruments.map((i) => ({ ...i, itemCount: (parse<any>(i.question_schema_json, {}).items || []).length, question_schema_json: undefined, mine: i.owner_user_id === user.id })), templates });
 }
 
@@ -156,16 +156,18 @@ async function decide(request: Request, env: Env, user: AuthUser, kind: string, 
     const t = await one<any>(env.DB.prepare(`SELECT * FROM guidance_survey_templates WHERE id=?`).bind(id));
     if (!t) return fail(404, 'NOT_FOUND', 'Anket şablonu bulunamadı.');
     if (approve && parse<any>(t.forms_json, {}).forms?.some((f: any) => !f.items?.length)) return fail(400, 'FORMS_EMPTY', 'Formlardan birinde madde yok; önce maddeleri yükleyin.');
+    if (approve && t.kind === 'RIBA') return fail(410, 'RETIRED', 'RİBA kullanılmıyor.');
     await env.DB.prepare(`UPDATE guidance_survey_templates SET review_status=?,review_note=?,active=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(approve ? 'APPROVED' : 'REJECTED', note, approve ? 1 : 0, id).run();
   }
   await audit(env.DB, user.id, null, approve ? 'GUIDANCE_TOOL_APPROVED' : 'GUIDANCE_TOOL_REJECTED', kind === 'instruments' ? 'guidance_instrument' : 'guidance_survey_template', id, { note });
   return json({ ok: true });
 }
 
-/** The Super Admin loads a survey form's items (RİBA after the official use is confirmed). */
+/** The Super Admin loads a survey form's items. RİBA is not used (owner, 12 Nov 2026): its forms cannot be loaded. */
 async function saveTemplateForm(request: Request, env: Env, user: AuthUser, id: string) {
   const t = await one<any>(env.DB.prepare(`SELECT * FROM guidance_survey_templates WHERE id=?`).bind(id));
   if (!t) return fail(404, 'NOT_FOUND', 'Anket şablonu bulunamadı.');
+  if (t.kind === 'RIBA') return fail(410, 'RETIRED', 'RİBA kullanılmıyor.');
   const b = await request.json().catch(() => ({})) as any;
   const forms = parse<any>(t.forms_json, {});
   const form = (forms.forms || []).find((f: any) => f.code === b?.formCode);

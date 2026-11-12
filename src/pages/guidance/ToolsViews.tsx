@@ -65,7 +65,7 @@ export function GuidanceToolsPanel() {
   const active = (cat?.instruments || []).filter((i: any) => i.active);
   return <section className="gd gd-card" style={{ marginBottom: 16 }}>
     <h2>Ölçme araçları</h2>
-    <div className="gd-tabs">{[['apply', 'Sınıfa uygula'], ['report', 'Sınıf raporu'], ['surveys', 'Anketler (RİBA, okul iklimi)'], ['draft', 'Kendi aracım']].map(([k, v]) => <button key={k} type="button" className={tab === k ? 'on' : ''} onClick={() => { setTab(k); setNotice(''); setError(''); }}>{v}</button>)}</div>
+    <div className="gd-tabs">{[['apply', 'Sınıfa uygula'], ['report', 'Sınıf raporu'], ['surveys', 'Anketler (okul iklimi)'], ['draft', 'Kendi aracım']].map(([k, v]) => <button key={k} type="button" className={tab === k ? 'on' : ''} onClick={() => { setTab(k); setNotice(''); setError(''); }}>{v}</button>)}</div>
     {error && <div className="alert error">{error}</div>}{notice && <div className="alert success" role="status">{notice}</div>}
     {tab === 'apply' && <ApplyTab tools={active} classes={classes} drafts={(cat?.instruments || []).filter((i: any) => !i.active)} onDone={(m) => setNotice(m)} onError={setError} />}
     {tab === 'report' && <ReportTab tools={active} classes={classes} />}
@@ -121,7 +121,7 @@ function SurveysTab({ templates, onError }: { templates: any[]; onError: (m: str
     XLSX.writeFile(wb, `${open.survey.title.replace(/[^\p{L}\p{N} ]/gu, '')}.xlsx`);
   };
   return <div className="gd-form">
-    {!ready.length && <div className="empty">Henüz onaylanmış anket şablonu yok. RİBA formları resmî MEB kaynağından teyit alındıktan sonra yüklenecek; okul iklimi anketi uzman onayında.</div>}
+    {!ready.length && <div className="empty">Henüz onaylanmış anket şablonu yok. Okul iklimi anketi Süper Admin onayında.</div>}
     {ready.length > 0 && <div className="two"><label>Anket<select value={tpl} onChange={(e) => setTpl(e.target.value)}><option value="">Seçin</option>{ready.map((t) => <option key={t.code} value={t.code}>{t.title}</option>)}</select></label>
       <label>Örneklem (%)<input type="number" min={5} max={100} value={pct} onChange={(e) => setPct(Number(e.target.value))} /></label></div>}
     {ready.length > 0 && <div className="gd-actions"><button className="primary" type="button" disabled={!tpl} onClick={start}>Anketi başlat</button></div>}
@@ -162,23 +162,17 @@ function DraftTab({ onDone, onError }: { onDone: () => void; onError: (m: string
   </div>;
 }
 
-// ------------------------------------------------------------------ Super Admin: review new tools and load RİBA forms
+// ------------------------------------------------------------------ Super Admin: review new tools and survey templates
 export function GuidanceToolReview() {
   const [q, setQ] = useState<any>(null); const [error, setError] = useState(''); const [notice, setNotice] = useState(''); const [preview, setPreview] = useState<string | null>(null);
-  const [form, setForm] = useState<{ tpl: string; code: string; lines: string }>({ tpl: '', code: '', lines: '' });
   const [note, setNote] = useState('');
   const load = () => api<any>('/api/guidance-tools/review-queue').then(setQ).catch((e) => setError(e.message));
   useEffect(() => { void load(); }, []);
   const decide = async (kind: string, id: string, decision: string) => { setError(''); setNotice(''); try { await api(`/api/guidance-tools/review/${kind}/${encodeURIComponent(id)}`, { method: 'POST', body: JSON.stringify({ decision, note: decision === 'REJECT' ? note : '' }) }); setNotice(decision === 'APPROVE' ? 'Onaylandı ve kullanıma açıldı.' : 'Reddedildi.'); await load(); } catch (e: any) { setError(e.message); } };
-  const saveForm = async () => {
-    const items = form.lines.split('\n').map((l) => l.trim()).filter(Boolean).map((l, k) => { const [text, area] = l.split('|').map((x) => x.trim()); return { id: `r${k + 1}`, text, ...(area ? { area } : {}) }; });
-    try { await api(`/api/guidance-tools/templates/${encodeURIComponent(form.tpl)}/form`, { method: 'PUT', body: JSON.stringify({ formCode: form.code, items }) }); setNotice(`${items.length} madde kaydedildi; şablon yeniden onaya düştü.`); setForm({ ...form, lines: '' }); await load(); } catch (e: any) { setError(e.message); }
-  };
   if (!q) return error ? <div className="alert error">{error}</div> : null;
-  const riba = q.templates.find((t: any) => t.kind === 'RIBA');
   return <section className="gd gd-card" style={{ marginTop: 16 }}><h2>Rehberlik araçları · uzman onayı</h2>
     {error && <div className="alert error">{error}</div>}{notice && <div className="alert success">{notice}</div>}
-    <p className="gd-note">ANUNEX’in yazdığı yeni araçlar ve rehber öğretmenlerin taslakları burada bekler. Onaylanmayan hiçbir araç öğrenciye ulaşmaz. Lütfen maddeleri bir PDR uzmanıyla okuyun.</p>
+    <p className="gd-note">ANUNEX’in yazdığı yeni araçlar ve rehber öğretmenlerin taslakları burada bekler. Onaylanmayan hiçbir araç öğrenciye ulaşmaz.</p>
     <label>Ret notu (isteğe bağlı, rehber öğretmen görür)<input value={note} maxLength={600} onChange={(e) => setNote(e.target.value)} /></label>
     {!q.instruments.length && <div className="empty">Onay bekleyen araç yok.</div>}
     <ul className="gd-list">{q.instruments.map((i: any) => <li key={i.id} className="gd-item"><div className="row"><strong>{i.title}</strong><small>{i.institution_name ? `${i.institution_name} · ${i.owner}` : 'ANUNEX'}{i.grade_min ? ` · ${i.grade_min}–${i.grade_max}. sınıf` : ''}</small></div>
@@ -186,13 +180,8 @@ export function GuidanceToolReview() {
       {preview === i.id && <ol className="gt-items">{(i.schema.items || []).map((it: any) => <li key={it.id} className="gt-item"><p>{it.text}</p><small className="gd-note">{it.type || 'LIKERT'}{it.dimension ? ` · ${it.dimension}` : ''}{it.reverse ? ' · ters' : ''}{it.a ? ` · A: ${it.a.text} / B: ${it.b.text}` : ''}{it.options ? ` · ${it.options.map((o: any) => o.text).join(' / ')}` : ''}</small></li>)}</ol>}
       <div className="gd-actions"><button type="button" onClick={() => setPreview(preview === i.id ? null : i.id)}>{preview === i.id ? 'Gizle' : `Maddeleri gör (${(i.schema.items || []).length})`}</button><button type="button" className="primary" onClick={() => decide('instruments', i.id, 'APPROVE')}>Onayla</button><button type="button" onClick={() => decide('instruments', i.id, 'REJECT')}>Reddet</button></div></li>)}</ul>
     <h3 style={{ margin: '8px 0 0' }}>Anket şablonları</h3>
-    <ul className="gd-list">{q.templates.map((t: any) => <li key={t.id} className="gd-item"><div className="row"><strong>{t.title}</strong><span className={`gd-chip ${t.active ? 'ok' : 'medium'}`}>{t.active ? 'Kullanımda' : t.review_status === 'REJECTED' ? 'Reddedildi' : 'Onay bekliyor'}</span></div>
+    <ul className="gd-list">{q.templates.filter((t: any) => t.kind !== 'RIBA').map((t: any) => <li key={t.id} className="gd-item"><div className="row"><strong>{t.title}</strong><span className={`gd-chip ${t.active ? 'ok' : 'medium'}`}>{t.active ? 'Kullanımda' : t.review_status === 'REJECTED' ? 'Reddedildi' : 'Onay bekliyor'}</span></div>
       <small>{t.forms.forms.map((f: any) => `${f.title}: ${f.items.length} madde`).join(' · ')}</small>
       <div className="gd-actions">{!t.active && <button type="button" className="primary" onClick={() => decide('templates', t.id, 'APPROVE')}>Onayla</button>}{t.active && <button type="button" onClick={() => decide('templates', t.id, 'REJECT')}>Kullanımdan kaldır</button>}</div></li>)}</ul>
-    {riba && <div className="gd-form"><h3 style={{ margin: '8px 0 0' }}>RİBA form maddelerini yükle</h3>
-      <p className="gd-note">Maddeleri yalnız resmî MEB kaynağından kullanım teyidi alındıktan sonra yükleyin. Her satıra bir madde; isterseniz “madde | alan” biçiminde alan yazın.</p>
-      <div className="two"><label>Form<select value={form.code} onChange={(e) => setForm({ ...form, tpl: riba.id, code: e.target.value })}><option value="">Seçin</option>{riba.forms.forms.map((f: any) => <option key={f.code} value={f.code}>{f.title} ({f.items.length})</option>)}</select></label></div>
-      <textarea value={form.lines} onChange={(e) => setForm({ ...form, tpl: riba.id, lines: e.target.value })} rows={8} />
-      <div className="gd-actions"><button type="button" className="primary" disabled={!form.code || !form.lines.trim()} onClick={saveForm}>Formu kaydet</button></div></div>}
   </section>;
 }

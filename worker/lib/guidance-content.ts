@@ -31,21 +31,8 @@ async function plan(request: Request, env: Env, user: AuthUser, url: URL) {
   }
   const p = await one<any>(env.DB.prepare(`SELECT * FROM guidance_annual_plans WHERE institution_id=? AND academic_year=?`).bind(user.institution_id, year));
   const entries = p ? await all<any>(env.DB.prepare(`SELECT e.*,a.title activity_title FROM guidance_plan_entries e LEFT JOIN guidance_activities a ON a.id=e.activity_id WHERE e.plan_id=? ORDER BY CASE WHEN e.month>=9 THEN e.month-9 ELSE e.month+3 END,e.target_date,e.created_at`).bind(p.id)) : [];
-  // suggestions from the latest closed or open RİBA of the school: its five most-needed items
-  const riba = await one<any>(env.DB.prepare(`SELECT s.id FROM guidance_surveys s JOIN guidance_survey_templates t ON t.id=s.template_id WHERE s.institution_id=? AND t.kind='RIBA' ORDER BY s.created_at DESC LIMIT 1`).bind(user.institution_id));
-  let ribaTop: any[] = [];
-  if (riba) {
-    const rows = await all<any>(env.DB.prepare(`SELECT form_code,answers_json FROM guidance_survey_responses WHERE survey_id=?`).bind(riba.id));
-    const s = await one<any>(env.DB.prepare(`SELECT forms_json FROM guidance_surveys WHERE id=?`).bind(riba.id));
-    const forms = JSON.parse(s?.forms_json || '{}').forms || [];
-    for (const f of forms) {
-      const rs = rows.filter((r) => r.form_code === f.code); if (rs.length < 5) continue;
-      for (const it of f.items) { const vals = rs.map((r) => JSON.parse(r.answers_json)[it.id]); const a = vals.filter((v) => v === 'A').length; ribaTop.push({ form: f.title, text: it.text, aPct: a / vals.length }); }
-    }
-    ribaTop = ribaTop.sort((x, y) => y.aPct - x.aPct).slice(0, 5);
-  }
   const teacherCount = await one<any>(env.DB.prepare(`SELECT count(*) n FROM users WHERE institution_id=? AND role='TEACHER' AND active=1`).bind(user.institution_id));
-  return json({ ok: true, year, plan: p, entries, ribaTop, teacherCount: Number(teacherCount?.n || 0) });
+  return json({ ok: true, year, plan: p, entries, teacherCount: Number(teacherCount?.n || 0) });
 }
 
 async function planEntry(request: Request, env: Env, user: AuthUser, id?: string) {
